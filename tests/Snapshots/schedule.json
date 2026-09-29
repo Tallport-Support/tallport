@@ -1,0 +1,55 @@
+[
+    {
+        "command": "artisan queue:flush",
+        "expression": "0 0 * * 0 *"
+    },
+    {
+        "command": "artisan queue:restart",
+        "expression": "0 * * * * *"
+    },
+    {
+        "command": "artisan freescout:fetch-monitor",
+        "expression": "* * * * * *",
+        "without_overlapping": true
+    },
+    {
+        "command": "artisan freescout:send-monitor",
+        "expression": "*/10 * * * *",
+        "without_overlapping": true
+    },
+    {
+        "command": "artisan freescout:update-folder-counters",
+        "expression": "0 * * * * *"
+    },
+    {
+        "command": "artisan freescout:module-check-licenses",
+        "expression": "57 9 * * *"
+    },
+    {
+        "command": "artisan freescout:check-conv-viewers",
+        "expression": "* * * * * *",
+        "without_overlapping": true
+    },
+    {
+        "command": "artisan freescout:clean-send-log",
+        "expression": "0 0 1 * * *"
+    },
+    {
+        "command": "artisan freescout:clean-notifications-table",
+        "expression": "0 0 * * 0 *"
+    },
+    {
+        "command": "artisan freescout:clean-tmp",
+        "expression": "0 0 * * * *"
+    },
+    {
+        "command": "artisan freescout:fetch-emails --identifier=c50515c7945d983619ff431603863c21 --unseen=1",
+        "expression": "* * * * * *",
+        "without_overlapping": true
+    },
+    {
+        "command": "artisan queue:work --queue='emails,default,19ff979146ebd75537d441930bf1d469' --sleep=5 --tries=1 --timeout=1800",
+        "expression": "* * * * * *",
+        "without_overlapping": true
+    }
+]

@@ -1,0 +1,2127 @@
+{
+    "activity_logs": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "log_name": {
+                "type": "varchar(191)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "description": {
+                "type": "text",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "subject_id": {
+                "type": "int(11)",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "subject_type": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "causer_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "causer_type": {
+                "type": "varchar(55)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "properties": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "activity_logs_log_name_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "log_name"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "attachments": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "thread_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "file_dir": {
+                "type": "varchar(20)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "file_name": {
+                "type": "varchar(255)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "mime_type": {
+                "type": "varchar(127)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "type": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "size": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "embedded": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "token_type": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "3"
+            }
+        },
+        "indexes": {
+            "attachments_thread_id_embedded_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "thread_id",
+                    "embedded"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "conversation_folder": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "folder_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "conversation_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            }
+        },
+        "indexes": {
+            "conversation_folder_folder_id_conversation_id_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "folder_id",
+                    "conversation_id"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "conversations": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "number": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "threads_count": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "default": "0"
+            },
+            "type": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false
+            },
+            "folder_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "status": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "state": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "subject": {
+                "type": "varchar(998)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "customer_email": {
+                "type": "varchar(191)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "cc": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "bcc": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "preview": {
+                "type": "varchar(255)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "imported": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "has_attachments": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "customer_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_by_user_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_by_customer_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "source_via": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false
+            },
+            "source_type": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false
+            },
+            "closed_by_user_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "closed_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "user_updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "last_reply_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "last_reply_from": {
+                "type": "tinyint(3) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "last_customer_reply_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "read_by_user": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "channel": {
+                "type": "tinyint(3) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "meta": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            }
+        },
+        "indexes": {
+            "conversations_customer_email_status_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "customer_email",
+                    "status",
+                    "created_at"
+                ]
+            },
+            "conversations_customer_id_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "customer_id",
+                    "created_at"
+                ]
+            },
+            "conversations_folder_id_state_closed_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "folder_id",
+                    "state",
+                    "closed_at"
+                ]
+            },
+            "conversations_folder_id_status_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "folder_id",
+                    "status"
+                ]
+            },
+            "conversations_mailbox_id_created_at_closed_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id",
+                    "created_at",
+                    "closed_at"
+                ]
+            },
+            "conversations_mailbox_id_customer_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id",
+                    "customer_id"
+                ]
+            },
+            "conversations_mailbox_id_state_status_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id",
+                    "state",
+                    "status"
+                ]
+            },
+            "conversations_mailbox_state_status_dates": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id",
+                    "state",
+                    "status",
+                    "last_reply_at",
+                    "created_at"
+                ]
+            },
+            "conversations_state_mailbox_id_status_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "state",
+                    "mailbox_id",
+                    "status"
+                ]
+            },
+            "conversations_user_id_mailbox_id_state_status_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "user_id",
+                    "mailbox_id",
+                    "state",
+                    "status"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "customer_channel": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "customer_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "channel": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false
+            },
+            "channel_id": {
+                "type": "varchar(64)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            }
+        },
+        "indexes": {
+            "customer_channel_channel_channel_id_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "channel",
+                    "channel_id"
+                ]
+            },
+            "customer_channel_customer_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "customer_id"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "customers": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "first_name": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "last_name": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "company": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "job_title": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "photo_type": {
+                "type": "tinyint(3) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "photo_url": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "phones": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "websites": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "social_profiles": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "notes": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "address": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "city": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "state": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "zip": {
+                "type": "varchar(12)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "country": {
+                "type": "varchar(2)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "channel": {
+                "type": "tinyint(3) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "channel_id": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "meta": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            }
+        },
+        "indexes": {
+            "customers_first_name(80)_last_name(80)_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "first_name(80)",
+                    "last_name(80)"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "emails": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "customer_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "email": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "type": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            }
+        },
+        "indexes": {
+            "emails_customer_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "customer_id"
+                ]
+            },
+            "emails_email_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "email"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "failed_jobs": {
+        "columns": {
+            "id": {
+                "type": "bigint(20) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "connection": {
+                "type": "text",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "queue": {
+                "type": "text",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "payload": {
+                "type": "longtext",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "exception": {
+                "type": "longtext",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "failed_at": {
+                "type": "timestamp",
+                "nullable": false,
+                "default": "current_timestamp()"
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "folders": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "type": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false
+            },
+            "total_count": {
+                "type": "int(11)",
+                "nullable": false,
+                "default": "0"
+            },
+            "active_count": {
+                "type": "int(11)",
+                "nullable": false,
+                "default": "0"
+            },
+            "meta": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            }
+        },
+        "indexes": {
+            "folders_mailbox_id_user_id_type_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id",
+                    "user_id",
+                    "type"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "followers": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "conversation_id": {
+                "type": "int(11)",
+                "nullable": false
+            },
+            "user_id": {
+                "type": "int(11)",
+                "nullable": false
+            },
+            "added_by_user_id": {
+                "type": "int(11)",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "followers_conversation_id_user_id_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "conversation_id",
+                    "user_id"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "jobs": {
+        "columns": {
+            "id": {
+                "type": "bigint(20) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "queue": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "payload": {
+                "type": "longtext",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "attempts": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false
+            },
+            "reserved_at": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "available_at": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "created_at": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            }
+        },
+        "indexes": {
+            "jobs_queue_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "queue"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "ltm_translations": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "status": {
+                "type": "int(11)",
+                "nullable": false,
+                "default": "0"
+            },
+            "locale": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "group": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "key": {
+                "type": "text",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "value": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "hash": {
+                "type": "varchar(191)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            }
+        },
+        "indexes": {
+            "ltm_translations_hash_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "hash"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "mailbox_user": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "after_send": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "2"
+            },
+            "hide": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "mute": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "access": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            }
+        },
+        "indexes": {
+            "mailbox_user_mailbox_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id"
+                ]
+            },
+            "mailbox_user_user_id_mailbox_id_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "user_id",
+                    "mailbox_id"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "mailboxes": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "name": {
+                "type": "varchar(40)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "email": {
+                "type": "varchar(128)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "aliases": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "from_name": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "from_name_custom": {
+                "type": "varchar(128)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "ticket_status": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "2"
+            },
+            "ticket_assignee": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "2"
+            },
+            "template": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "signature": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "out_method": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "out_server": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "out_username": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "out_password": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "out_port": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "out_encryption": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "in_server": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "in_port": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "default": "143"
+            },
+            "in_username": {
+                "type": "varchar(100)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "in_password": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "in_protocol": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "in_encryption": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "auto_reply_enabled": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "auto_reply_subject": {
+                "type": "varchar(128)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "auto_reply_message": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "office_hours_enabled": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "ratings": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "ratings_placement": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "ratings_text": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "in_validate_cert": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "1"
+            },
+            "in_imap_folders": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "auto_bcc": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "before_reply": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "imap_sent_folder": {
+                "type": "varchar(50)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "meta": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "aliases_reply": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            }
+        },
+        "indexes": {
+            "mailboxes_email_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "email"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "migrations": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "migration": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "batch": {
+                "type": "int(11)",
+                "nullable": false
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "modules": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "alias": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "active": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "activated": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "license": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            }
+        },
+        "indexes": {
+            "modules_alias_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "alias"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "notifications": {
+        "columns": {
+            "id": {
+                "type": "char(36)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "type": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "notifiable_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "notifiable_type": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "data": {
+                "type": "text",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "conversation_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "read_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "notifications_conversation_id": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "notifiable_id",
+                    "notifiable_type",
+                    "conversation_id"
+                ]
+            },
+            "notifications_notifiable_read": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "notifiable_id",
+                    "notifiable_type",
+                    "read_at",
+                    "created_at"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "options": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "name": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "value": {
+                "type": "longtext",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            }
+        },
+        "indexes": {
+            "options_name_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "name"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "password_resets": {
+        "columns": {
+            "email": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "token": {
+                "type": "varchar(255)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "password_resets_email_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "email"
+                ]
+            }
+        }
+    },
+    "polycast_events": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "channels": {
+                "type": "text",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "event": {
+                "type": "text",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "payload": {
+                "type": "text",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "polycast_events_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "created_at"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "send_logs": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "thread_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "customer_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "message_id": {
+                "type": "varchar(998)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "email": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "mail_type": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false
+            },
+            "status": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false
+            },
+            "status_message": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "smtp_queue_id": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            },
+            "send_logs_customer_id_mail_type_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "customer_id",
+                    "mail_type",
+                    "created_at"
+                ]
+            },
+            "send_logs_message_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "message_id(191)"
+                ]
+            },
+            "send_logs_thread_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "thread_id"
+                ]
+            }
+        }
+    },
+    "subscriptions": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "medium": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false
+            },
+            "event": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            },
+            "subscriptions_user_id_event_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "user_id",
+                    "event"
+                ]
+            },
+            "subscriptions_user_id_medium_event_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "user_id",
+                    "medium",
+                    "event"
+                ]
+            }
+        }
+    },
+    "threads": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "conversation_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "type": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false
+            },
+            "subtype": {
+                "type": "tinyint(3) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "status": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "state": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "action_type": {
+                "type": "tinyint(3) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "action_data": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "body": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "headers": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "from": {
+                "type": "varchar(191)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "to": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "cc": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "bcc": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "has_attachments": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "message_id": {
+                "type": "varchar(998)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "source_via": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false
+            },
+            "source_type": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false
+            },
+            "customer_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_by_user_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_by_customer_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "edited_by_user_id": {
+                "type": "int(11)",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "edited_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "body_original": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "first": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "saved_reply_id": {
+                "type": "int(11)",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "send_status": {
+                "type": "tinyint(3) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "send_status_data": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "opened_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "meta": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "imported": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            },
+            "threads_conversation_id_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "conversation_id",
+                    "created_at"
+                ]
+            },
+            "threads_conversation_id_type_from_customer_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "conversation_id",
+                    "type",
+                    "from",
+                    "customer_id"
+                ]
+            },
+            "threads_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "created_at"
+                ]
+            },
+            "threads_created_by_user_id_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "created_by_user_id",
+                    "created_at"
+                ]
+            },
+            "threads_message_id_index": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "message_id(191)"
+                ]
+            },
+            "threads_type_state_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "type",
+                    "state",
+                    "created_at"
+                ]
+            }
+        }
+    },
+    "users": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "first_name": {
+                "type": "varchar(20)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "last_name": {
+                "type": "varchar(30)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "email": {
+                "type": "varchar(100)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "password": {
+                "type": "varchar(255)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "role": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "timezone": {
+                "type": "varchar(255)",
+                "nullable": false,
+                "default": "'UTC'",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "photo_url": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "type": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "status": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "invite_state": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "3"
+            },
+            "invite_hash": {
+                "type": "varchar(100)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "emails": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "job_title": {
+                "type": "varchar(100)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "phone": {
+                "type": "varchar(60)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "time_format": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "2"
+            },
+            "enable_kb_shortcuts": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "1"
+            },
+            "locked": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "remember_token": {
+                "type": "varchar(100)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "locale": {
+                "type": "varchar(191)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "permissions": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            },
+            "users_email_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "email"
+                ]
+            },
+            "users_role_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "role"
+                ]
+            },
+            "users_status_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "status"
+                ]
+            }
+        }
+    }
+}

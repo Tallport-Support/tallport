@@ -1,0 +1,1558 @@
+[
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "/",
+        "name": "dashboard",
+        "action": "SecureController@dashboard",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "app-logs/app",
+        "name": "logs.app",
+        "action": "\\Rap2hpoutre\\LaravelLogViewer\\LogViewerController@index",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "app-logs/{name?}",
+        "name": "logs",
+        "action": "SecureController@logs",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "app-logs/{name?}",
+        "name": "logs.action",
+        "action": "SecureController@logsSubmit",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "app-settings/ajax",
+        "name": "settings.ajax",
+        "action": "SettingsController@ajax",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "app-settings/{section?}",
+        "name": "settings",
+        "action": "SettingsController@view",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "app-settings/{section?}",
+        "name": "settings.save",
+        "action": "SettingsController@save",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "conversation/ajax",
+        "name": "conversations.ajax",
+        "action": "ConversationsController@ajax",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "conversation/ajax-html/{action}",
+        "name": "conversations.ajax_html",
+        "action": "ConversationsController@ajaxHtml",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "conversation/undo-reply/{thread_id}/{token}",
+        "name": "conversations.undo",
+        "action": "ConversationsController@undoReply",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "conversation/upload",
+        "name": "conversations.upload",
+        "action": "ConversationsController@upload",
+        "middleware": [
+            "web",
+            "throttle:100,1",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "conversation/{id}",
+        "name": "conversations.view",
+        "action": "ConversationsController@view",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "customers/ajax",
+        "name": "customers.ajax",
+        "action": "CustomersController@ajax",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "customers/ajax-search",
+        "name": "customers.ajax_search",
+        "action": "CustomersController@ajaxSearch",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "customers/{id}",
+        "name": "customers.conversations",
+        "action": "CustomersController@conversations",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "customers/{id}/edit",
+        "name": "customers.update",
+        "action": "CustomersController@update",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "customers/{id}/edit",
+        "name": null,
+        "action": "CustomersController@updateSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "customers/{id}/merge",
+        "name": "customers.merge",
+        "action": "CustomersController@merge",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "customers/{id}/merge",
+        "name": null,
+        "action": "CustomersController@mergeSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE",
+            "OPTIONS"
+        ],
+        "uri": "home",
+        "name": null,
+        "action": "\\Illuminate\\Routing\\RedirectController",
+        "middleware": [
+            "web"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "install",
+        "name": "LaravelInstaller::welcome",
+        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\WelcomeController@welcome",
+        "middleware": [
+            "web",
+            "install"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "install/database",
+        "name": "LaravelInstaller::database",
+        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\DatabaseController@database",
+        "middleware": [
+            "web",
+            "install"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "install/environment",
+        "name": "LaravelInstaller::environment",
+        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\EnvironmentController@environmentMenu",
+        "middleware": [
+            "web",
+            "install"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "install/environment/classic",
+        "name": "LaravelInstaller::environmentClassic",
+        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\EnvironmentController@environmentClassic",
+        "middleware": [
+            "web",
+            "install"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "install/environment/saveClassic",
+        "name": "LaravelInstaller::environmentSaveClassic",
+        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\EnvironmentController@saveClassic",
+        "middleware": [
+            "web",
+            "install"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "install/environment/saveWizard",
+        "name": "LaravelInstaller::environmentSaveWizard",
+        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\EnvironmentController@saveWizard",
+        "middleware": [
+            "web",
+            "install"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "install/environment/wizard",
+        "name": "LaravelInstaller::environmentWizard",
+        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\EnvironmentController@environmentWizard",
+        "middleware": [
+            "web",
+            "install"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "install/final",
+        "name": "LaravelInstaller::final",
+        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\FinalController@finish",
+        "middleware": [
+            "web",
+            "install"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "install/permissions",
+        "name": "LaravelInstaller::permissions",
+        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\PermissionsController@permissions",
+        "middleware": [
+            "web",
+            "install"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "install/requirements",
+        "name": "LaravelInstaller::requirements",
+        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\RequirementsController@requirements",
+        "middleware": [
+            "web",
+            "install"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "login",
+        "name": "login",
+        "action": "Auth\\LoginController@showLoginForm",
+        "middleware": [
+            "web",
+            "guest"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "login",
+        "name": null,
+        "action": "Auth\\LoginController@login",
+        "middleware": [
+            "web",
+            "guest"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "logout",
+        "name": "logout",
+        "action": "Auth\\LoginController@logout",
+        "middleware": [
+            "web"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/ajax",
+        "name": "mailboxes.ajax",
+        "action": "MailboxesController@ajax",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/connection-settings/{id}/incoming",
+        "name": "mailboxes.connection.incoming",
+        "action": "MailboxesController@connectionIncoming",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/connection-settings/{id}/incoming",
+        "name": "mailboxes.connection.incoming.save",
+        "action": "MailboxesController@connectionIncomingSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/connection-settings/{id}/outgoing",
+        "name": "mailboxes.connection",
+        "action": "MailboxesController@connectionOutgoing",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/connection-settings/{id}/outgoing",
+        "name": "mailboxes.connection.save",
+        "action": "MailboxesController@connectionOutgoingSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/new",
+        "name": "mailboxes.create",
+        "action": "MailboxesController@create",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/new",
+        "name": null,
+        "action": "MailboxesController@createSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/oauth",
+        "name": "mailboxes.oauth_callback",
+        "action": "MailboxesController@oauth",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/oauth-disconnect/{id}/{in_out}/{provider}",
+        "name": "mailboxes.oauth_disconnect",
+        "action": "MailboxesController@oauthDisconnect",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/oauth/{id}/{in_out}/{provider}",
+        "name": "mailboxes.oauth",
+        "action": "MailboxesController@oauth",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/permissions/{id}",
+        "name": "mailboxes.permissions",
+        "action": "MailboxesController@permissions",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/permissions/{id}",
+        "name": "mailboxes.permissions.save",
+        "action": "MailboxesController@permissionsSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/settings/{id}",
+        "name": "mailboxes.update",
+        "action": "MailboxesController@update",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/settings/{id}",
+        "name": "mailboxes.update.save",
+        "action": "MailboxesController@updateSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/settings/{id}/auto-reply",
+        "name": "mailboxes.auto_reply",
+        "action": "MailboxesController@autoReply",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/settings/{id}/auto-reply",
+        "name": "mailboxes.auto_reply.save",
+        "action": "MailboxesController@autoReplySave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}",
+        "name": "mailboxes.view",
+        "action": "MailboxesController@view",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/{folder_id}",
+        "name": "mailboxes.view.folder",
+        "action": "MailboxesController@view",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{mailbox_id}/chats",
+        "name": "conversations.chats",
+        "action": "ConversationsController@chats",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{mailbox_id}/clone-ticket/{from_thread_id}/{token}",
+        "name": "conversations.clone_conversation",
+        "action": "ConversationsController@cloneConversation",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{mailbox_id}/new-ticket",
+        "name": "conversations.create",
+        "action": "ConversationsController@create",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailboxes",
+        "name": "mailboxes",
+        "action": "MailboxesController@mailboxes",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "modules/ajax",
+        "name": "modules.ajax",
+        "action": "ModulesController@ajax",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "modules/list",
+        "name": "modules",
+        "action": "ModulesController@modules",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "password/email",
+        "name": "password.email",
+        "action": "Auth\\ForgotPasswordController@sendResetLinkEmail",
+        "middleware": [
+            "web",
+            "guest"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "password/reset",
+        "name": "password.request",
+        "action": "Auth\\ForgotPasswordController@showLinkRequestForm",
+        "middleware": [
+            "web",
+            "guest"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "password/reset",
+        "name": null,
+        "action": "Auth\\ResetPasswordController@reset",
+        "middleware": [
+            "web",
+            "guest"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "password/reset/{token}",
+        "name": "password.reset",
+        "action": "Auth\\ResetPasswordController@showResetForm",
+        "middleware": [
+            "web",
+            "guest"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "polycast/connect",
+        "name": null,
+        "action": "Closure",
+        "middleware": [
+            "web"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "polycast/receive",
+        "name": null,
+        "action": "Closure",
+        "middleware": [
+            "web"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "register",
+        "name": "register",
+        "action": "Auth\\RegisterController@showRegistrationForm",
+        "middleware": [
+            "web",
+            "guest"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "register",
+        "name": null,
+        "action": "Auth\\RegisterController@register",
+        "middleware": [
+            "web",
+            "guest"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "search",
+        "name": "conversations.search",
+        "action": "ConversationsController@search",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "storage/attachment/{dir_1}/{dir_2}/{dir_3}/{file_name}",
+        "name": "attachment.download",
+        "action": "OpenController@downloadAttachment",
+        "middleware": [
+            "open"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "system/action",
+        "name": "system.action",
+        "action": "SystemController@action",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "system/ajax",
+        "name": "system.ajax",
+        "action": "SystemController@ajax",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "system/ajax-html/{action}/{param?}",
+        "name": "system.ajax_html",
+        "action": "SystemController@ajaxHtml",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "system/cron/{hash}",
+        "name": "system.cron",
+        "action": "SystemController@cron",
+        "middleware": [
+            "open"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "system/status",
+        "name": "system",
+        "action": "SystemController@status",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "system/tools",
+        "name": "system.tools",
+        "action": "SystemController@tools",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "system/tools",
+        "name": "system.tools.action",
+        "action": "SystemController@toolsExecute",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "thread/read/{conversation_id}/{thread_id}/{hash}",
+        "name": "open_tracking.set_read",
+        "action": "OpenController@setThreadAsRead",
+        "middleware": [
+            "open"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "translations/add/{groupKey}",
+        "name": null,
+        "action": "Barryvdh\\TranslationManager\\Controller@postAdd",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "groupKey": ".*"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "translations/delete/{groupKey}/{translationKey}",
+        "name": null,
+        "action": "Barryvdh\\TranslationManager\\Controller@postDelete",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "groupKey": ".*"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "translations/download",
+        "name": "translations.download",
+        "action": "TranslateController@postDownload",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "translations/edit/{groupKey}",
+        "name": null,
+        "action": "Barryvdh\\TranslationManager\\Controller@postEdit",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "groupKey": ".*"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "translations/find",
+        "name": null,
+        "action": "Barryvdh\\TranslationManager\\Controller@postFind",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "translations/groups/add",
+        "name": null,
+        "action": "Barryvdh\\TranslationManager\\Controller@postAddGroup",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "translations/import",
+        "name": null,
+        "action": "Barryvdh\\TranslationManager\\Controller@postImport",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "translations/locales/add",
+        "name": null,
+        "action": "Barryvdh\\TranslationManager\\Controller@postAddLocale",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "translations/locales/remove",
+        "name": null,
+        "action": "Barryvdh\\TranslationManager\\Controller@postRemoveLocale",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "translations/publish/{groupKey}",
+        "name": null,
+        "action": "Barryvdh\\TranslationManager\\Controller@postPublish",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "groupKey": ".*"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "translations/removeUnpublished",
+        "name": "translations.remove_unpublished",
+        "action": "TranslateController@postRemoveUnpublished",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "translations/send",
+        "name": "translations.send",
+        "action": "TranslateController@postSend",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "translations/view/{groupKey?}",
+        "name": null,
+        "action": "Barryvdh\\TranslationManager\\Controller@getView",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "groupKey": ".*"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "translations/{groupKey?}",
+        "name": null,
+        "action": "Barryvdh\\TranslationManager\\Controller@getIndex",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "groupKey": ".*"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "uploads/upload",
+        "name": "uploads.upload",
+        "action": "SecureController@upload",
+        "middleware": [
+            "web",
+            "throttle:100,1",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "user-setup/{hash}/{invite_sent_at}",
+        "name": "user_setup",
+        "action": "OpenController@userSetup",
+        "middleware": [
+            "web"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "user-setup/{hash}/{invite_sent_at}",
+        "name": null,
+        "action": "OpenController@userSetupSave",
+        "middleware": [
+            "web"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "users",
+        "name": "users",
+        "action": "UsersController@users",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "users/ajax",
+        "name": "users.ajax",
+        "action": "UsersController@ajax",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "users/notifications/{id}",
+        "name": "users.notifications",
+        "action": "UsersController@notifications",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "users/notifications/{id}",
+        "name": "users.notifications.save",
+        "action": "UsersController@notificationsSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "users/password/{id}",
+        "name": "users.password",
+        "action": "UsersController@password",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "users/password/{id}",
+        "name": "users.password.save",
+        "action": "UsersController@passwordSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "users/permissions/{id}",
+        "name": "users.permissions",
+        "action": "UsersController@permissions",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "users/permissions/{id}",
+        "name": "users.permissions.save",
+        "action": "UsersController@permissionsSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "users/profile/{id}",
+        "name": "users.profile",
+        "action": "UsersController@profile",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "users/profile/{id}",
+        "name": "users.profile.save",
+        "action": "UsersController@profileSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "users/wizard",
+        "name": "users.create",
+        "action": "UsersController@create",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "users/wizard",
+        "name": null,
+        "action": "UsersController@createSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    }
+]

@@ -1,0 +1,245 @@
+{
+    "freescout:after-app-update": {
+        "class": "App\\Console\\Commands\\AfterAppUpdate",
+        "description": "Run commands after application has been updated",
+        "arguments": {},
+        "options": {}
+    },
+    "freescout:build": {
+        "class": "App\\Console\\Commands\\Build",
+        "description": "Run commands building application assets",
+        "arguments": {},
+        "options": {}
+    },
+    "freescout:check-conv-viewers": {
+        "class": "App\\Console\\Commands\\CheckConvViewers",
+        "description": "Check if user finished viewing conversation",
+        "arguments": {},
+        "options": {}
+    },
+    "freescout:check-requirements": {
+        "class": "App\\Console\\Commands\\CheckRequirements",
+        "description": "Check console version of PHP",
+        "arguments": {},
+        "options": {}
+    },
+    "freescout:clean-notifications-table": {
+        "class": "App\\Console\\Commands\\CleanNotificationsTable",
+        "description": "Delete old read records from notifications table.",
+        "arguments": {},
+        "options": {}
+    },
+    "freescout:clean-send-log": {
+        "class": "App\\Console\\Commands\\CleanSendLog",
+        "description": "Delete old records from send log.",
+        "arguments": {},
+        "options": {}
+    },
+    "freescout:clean-tmp": {
+        "class": "App\\Console\\Commands\\CleanTmp",
+        "description": "Remove from system temp folder old FreeScout tempt files to avoid \"No space left on device\"",
+        "arguments": {},
+        "options": {}
+    },
+    "freescout:clear-cache": {
+        "class": "App\\Console\\Commands\\ClearCache",
+        "description": "Clear application cache and cache config",
+        "arguments": {},
+        "options": {
+            "doNotCacheConfig": {
+                "value": "none"
+            },
+            "doNotGenerateVars": {
+                "value": "none"
+            }
+        }
+    },
+    "freescout:create-user": {
+        "class": "App\\Console\\Commands\\CreateUser",
+        "description": "Create a new user",
+        "arguments": {},
+        "options": {
+            "role": {
+                "value": "optional"
+            },
+            "firstName": {
+                "value": "optional"
+            },
+            "lastName": {
+                "value": "optional"
+            },
+            "email": {
+                "value": "optional"
+            },
+            "password": {
+                "value": "optional"
+            }
+        }
+    },
+    "freescout:fetch-emails": {
+        "class": "App\\Console\\Commands\\FetchEmails",
+        "description": "Fetch emails from mailboxes addresses",
+        "arguments": {},
+        "options": {
+            "days": {
+                "value": "optional",
+                "default": "3"
+            },
+            "unseen": {
+                "value": "optional",
+                "default": "1"
+            },
+            "debug": {
+                "value": "optional",
+                "default": "0"
+            },
+            "identifier": {
+                "value": "optional",
+                "default": "dummy"
+            },
+            "mailboxes": {
+                "value": "optional",
+                "default": "0"
+            }
+        }
+    },
+    "freescout:fetch-monitor": {
+        "class": "App\\Console\\Commands\\FetchMonitor",
+        "description": "Check emails fetching and send alert if fething is not working or recovered",
+        "arguments": {},
+        "options": {}
+    },
+    "freescout:generate-vars": {
+        "class": "App\\Console\\Commands\\GenerateVars",
+        "description": "Generates vars.js file with variables and translated string",
+        "arguments": {},
+        "options": {}
+    },
+    "freescout:logout-users": {
+        "class": "App\\Console\\Commands\\LogoutUsers",
+        "description": "Logout all users",
+        "arguments": {},
+        "options": {}
+    },
+    "freescout:logs-monitor": {
+        "class": "App\\Console\\Commands\\LogsMonitor",
+        "description": "Send new log records by email",
+        "arguments": {},
+        "options": {}
+    },
+    "freescout:module-build": {
+        "class": "App\\Console\\Commands\\ModuleBuild",
+        "description": "Build module or all modules (if module_alias is empty)",
+        "arguments": {
+            "module_alias": {
+                "required": false,
+                "array": false,
+                "default": null
+            }
+        },
+        "options": {}
+    },
+    "freescout:module-check-licenses": {
+        "class": "App\\Console\\Commands\\ModuleCheckLicenses",
+        "description": "Check licenses for modules",
+        "arguments": {},
+        "options": {}
+    },
+    "freescout:module-install": {
+        "class": "App\\Console\\Commands\\ModuleInstall",
+        "description": "Install module or all modules (if module_alias is empty): run migrations and create a symlink",
+        "arguments": {
+            "module_alias": {
+                "required": false,
+                "array": false,
+                "default": null
+            }
+        },
+        "options": {}
+    },
+    "freescout:module-laroute": {
+        "class": "App\\Console\\Commands\\ModuleLaroute",
+        "description": "Generate a laravel routes JS-file for a module or all modules (if module_alias is empty)",
+        "arguments": {
+            "module_alias": {
+                "required": false,
+                "array": false,
+                "default": null
+            }
+        },
+        "options": {}
+    },
+    "freescout:module-update": {
+        "class": "App\\Console\\Commands\\ModuleUpdate",
+        "description": "Update all modules or a single module (if module_alias is set)",
+        "arguments": {
+            "module_alias": {
+                "required": false,
+                "array": false,
+                "default": null
+            }
+        },
+        "options": {}
+    },
+    "freescout:parse-eml": {
+        "class": "App\\Console\\Commands\\ParseEml",
+        "description": "Parse EML file",
+        "arguments": {},
+        "options": {}
+    },
+    "freescout:send-monitor": {
+        "class": "App\\Console\\Commands\\SendMonitor",
+        "description": "Check if queue:work is processing emails queue and show an alert in the web interface if needed",
+        "arguments": {},
+        "options": {}
+    },
+    "freescout:update": {
+        "class": "App\\Console\\Commands\\Update",
+        "description": "Update application to the latest version from GitHub",
+        "arguments": {},
+        "options": {
+            "force": {
+                "value": "none"
+            }
+        }
+    },
+    "freescout:update-folder-counters": {
+        "class": "App\\Console\\Commands\\UpdateFolderCounters",
+        "description": "Update counters for all folders",
+        "arguments": {},
+        "options": {}
+    },
+    "module:migrate": {
+        "class": "App\\Console\\Commands\\ModuleMigrate",
+        "description": "Migrate the migrations from the specified module or from all modules.",
+        "arguments": {
+            "module": {
+                "required": false,
+                "array": false,
+                "default": null
+            }
+        },
+        "options": {
+            "direction": {
+                "shortcut": "d",
+                "value": "optional",
+                "default": "asc"
+            },
+            "database": {
+                "value": "optional"
+            },
+            "pretend": {
+                "value": "none"
+            },
+            "force": {
+                "value": "none"
+            },
+            "seed": {
+                "value": "none"
+            },
+            "subpath": {
+                "value": "optional"
+            }
+        }
+    }
+}

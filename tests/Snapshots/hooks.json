@@ -1,0 +1,2775 @@
+[
+    {
+        "type": "filter",
+        "name": "activity_log.available_logs",
+        "arguments": 1,
+        "files": [
+            "app/ActivityLog.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "app.is_trusted_host",
+        "arguments": 2,
+        "files": [
+            "app/Http/Middleware/TrustHosts.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "assignee_list.a_class",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/partials/bulk_actions.blade.php",
+            "resources/views/conversations/view.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "assignee_list.item_append",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/editor_bottom_toolbar.blade.php",
+            "resources/views/conversations/partials/bulk_actions.blade.php",
+            "resources/views/conversations/view.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "assignee_list.option_attrs",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/editor_bottom_toolbar.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "attachment.created",
+        "arguments": 1,
+        "files": [
+            "app/Observers/AttachmentObserver.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "attachment.deleted",
+        "arguments": 1,
+        "files": [
+            "app/Observers/AttachmentObserver.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "attachments.embedded.check_size",
+        "arguments": 1,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "auth.password_reset_available",
+        "arguments": 1,
+        "files": [
+            "resources/views/auth/login.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "autoreply.should_send",
+        "arguments": 2,
+        "files": [
+            "app/Listeners/SendAutoReply.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "backgound_action.dispatch_delay",
+        "arguments": 3,
+        "files": [
+            "app/Misc/Helper.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "body.class",
+        "arguments": 0,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "bulk_actions.before_delete",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/partials/bulk_actions.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "channel.name",
+        "arguments": 2,
+        "files": [
+            "app/Conversation.php",
+            "app/Customer.php",
+            "app/CustomerChannel.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "channels.list",
+        "arguments": 1,
+        "files": [
+            "app/CustomerChannel.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "command.after_app_update",
+        "arguments": 0,
+        "files": [
+            "app/Console/Commands/AfterAppUpdate.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conv_editor.editor_toolbar_prepend",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/editor_bottom_toolbar.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.action_buttons",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/view.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.after_customer_sidebar",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/view.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.after_prev_convs",
+        "arguments": 3,
+        "files": [
+            "resources/views/conversations/partials/customer_sidebar.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.after_subject",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/view.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.after_subject_block",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/view.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.after_threads",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/view.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.append_action_buttons",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/view.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.append_send_dropdown",
+        "arguments": 3,
+        "files": [
+            "resources/views/conversations/editor_bottom_toolbar.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.before_prev_convs",
+        "arguments": 3,
+        "files": [
+            "resources/views/conversations/partials/customer_sidebar.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.before_threads",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/view.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.convinfo.before_nav",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/view.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.convinfo.prepend",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/view.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.create_form.after_subject",
+        "arguments": 3,
+        "files": [
+            "resources/views/conversations/create.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.create_form.before_subject",
+        "arguments": 3,
+        "files": [
+            "resources/views/conversations/create.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.create_form.subject_append",
+        "arguments": 0,
+        "files": [
+            "resources/views/conversations/create.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.created_by_customer",
+        "arguments": 3,
+        "files": [
+            "app/Console/Commands/FetchEmails.php",
+            "app/Thread.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.created_by_customer",
+        "arguments": 3,
+        "files": [
+            "app/Console/Commands/FetchEmails.php",
+            "app/Thread.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.created_by_user_can_undo",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php",
+            "app/Thread.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.custom.identifier",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.custom.validation_rules",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.customer.menu",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/partials/customer_sidebar.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.customer_replied",
+        "arguments": 3,
+        "files": [
+            "app/Console/Commands/FetchEmails.php",
+            "app/Thread.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.customer_replied",
+        "arguments": 3,
+        "files": [
+            "app/Console/Commands/FetchEmails.php",
+            "app/Thread.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.deleted",
+        "arguments": 2,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.deleting",
+        "arguments": 1,
+        "files": [
+            "app/Observers/ConversationObserver.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.get_action_buttons",
+        "arguments": 4,
+        "files": [
+            "app/Misc/ConversationActionButtons.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.get_nearby_query",
+        "arguments": 4,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.get_nearby_status",
+        "arguments": 5,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.is_in_folder_allowed",
+        "arguments": 3,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.is_user_assignee",
+        "arguments": 3,
+        "files": [
+            "app/Conversation.php",
+            "app/Policies/ThreadPolicy.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.merged",
+        "arguments": 3,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.moved",
+        "arguments": 3,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.new.conv_switch_buttons",
+        "arguments": 0,
+        "files": [
+            "resources/views/conversations/create.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.new.customer_sidebar",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/create.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.note_added",
+        "arguments": 2,
+        "files": [
+            "app/Conversation.php",
+            "app/Http/Controllers/ConversationsController.php",
+            "app/Thread.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.note_button.enabled",
+        "arguments": 2,
+        "files": [
+            "app/Misc/ConversationActionButtons.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.prepend_action_buttons",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/view.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.prepend_send_dropdown",
+        "arguments": 3,
+        "files": [
+            "resources/views/conversations/editor_bottom_toolbar.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.reply_button.enabled",
+        "arguments": 2,
+        "files": [
+            "app/Misc/ConversationActionButtons.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.send_reply_save",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.send_reply_to_customer_delay",
+        "arguments": 3,
+        "files": [
+            "app/Listeners/SendReplyToCustomer.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.set_status",
+        "arguments": 2,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.signature_processed",
+        "arguments": 4,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.skip_send_reply_to_customer",
+        "arguments": 3,
+        "files": [
+            "app/Listeners/SendReplyToCustomer.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.state_changed",
+        "arguments": 3,
+        "files": [
+            "app/Conversation.php",
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.status_changed",
+        "arguments": 4,
+        "files": [
+            "app/Console/Commands/FetchEmails.php",
+            "app/Conversation.php",
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.status_changing",
+        "arguments": 2,
+        "files": [
+            "app/Console/Commands/FetchEmails.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.status_name",
+        "arguments": 2,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.subject_changed",
+        "arguments": 3,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.type_name",
+        "arguments": 1,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.updated",
+        "arguments": 1,
+        "files": [
+            "app/Observers/ConversationObserver.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.user_changed",
+        "arguments": 3,
+        "files": [
+            "app/Conversation.php",
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.user_forwarded",
+        "arguments": 4,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.user_forwarded_can_undo",
+        "arguments": 4,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.user_replied",
+        "arguments": 2,
+        "files": [
+            "app/Console/Commands/FetchEmails.php",
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.user_replied_can_undo",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php",
+            "app/Thread.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.view.finish",
+        "arguments": 3,
+        "files": [
+            "app/Console/Commands/CheckConvViewers.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.view.focus",
+        "arguments": 1,
+        "files": [
+            "app/Providers/PolycastServiceProvider.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversation.view.start",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversation.view.threads",
+        "arguments": 1,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversations.ajax_pagination_folder",
+        "arguments": 4,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversations.before_delete_forever",
+        "arguments": 1,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversations.empty_folder",
+        "arguments": 3,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversations.move_conv.mailboxes",
+        "arguments": 1,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversations.query_status_in",
+        "arguments": 4,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversations.table_sorting",
+        "arguments": 1,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversations_table.after_row",
+        "arguments": 3,
+        "files": [
+            "resources/views/conversations/conversations_table.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversations_table.after_subject",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/conversations_table.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversations_table.before_subject",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/conversations_table.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversations_table.col_before_conv_number",
+        "arguments": 0,
+        "files": [
+            "resources/views/conversations/conversations_table.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversations_table.column_title_date",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/conversations_table.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "conversations_table.preload_table_data",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/conversations_table.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversations_table.preview_prepend",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/conversations_table.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversations_table.row_class",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/conversations_table.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversations_table.td_before_conv_number",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/conversations_table.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "conversations_table.th_before_conv_number",
+        "arguments": 0,
+        "files": [
+            "resources/views/conversations/conversations_table.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "csp.custom",
+        "arguments": 1,
+        "files": [
+            "app/Misc/Helper.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "csp.form_action",
+        "arguments": 1,
+        "files": [
+            "app/Misc/Helper.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "csp.script_src",
+        "arguments": 1,
+        "files": [
+            "app/Misc/Helper.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "customer.card.link",
+        "arguments": 1,
+        "files": [
+            "resources/views/customers/partials/customers_table.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "customer.card.url",
+        "arguments": 2,
+        "files": [
+            "resources/views/customers/partials/customers_table.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "customer.created",
+        "arguments": 1,
+        "files": [
+            "app/Customer.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "customer.default_avatar",
+        "arguments": 2,
+        "files": [
+            "app/Customer.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "customer.deleting",
+        "arguments": 1,
+        "files": [
+            "app/Observers/CustomerObserver.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "customer.edit.after_fields",
+        "arguments": 2,
+        "files": [
+            "resources/views/customers/partials/edit_form.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "customer.edit.before_form",
+        "arguments": 1,
+        "files": [
+            "resources/views/customers/partials/edit_form.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "customer.merged",
+        "arguments": 3,
+        "files": [
+            "app/Customer.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "customer.profile.extra",
+        "arguments": 2,
+        "files": [
+            "resources/views/customers/profile_snippet.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "customer.profile_data",
+        "arguments": 2,
+        "files": [
+            "resources/views/customers/profile_snippet.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "customer.profile_menu",
+        "arguments": 2,
+        "files": [
+            "resources/views/customers/profile_menu.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "customer.save_photo",
+        "arguments": 4,
+        "files": [
+            "app/Customer.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "customer.set_data",
+        "arguments": 3,
+        "files": [
+            "app/Customer.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "customer.tags",
+        "arguments": 2,
+        "files": [
+            "resources/views/customers/profile_snippet.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "customer.updated",
+        "arguments": 1,
+        "files": [
+            "app/Http/Controllers/CustomersController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "customer_profile.menu",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/partials/customer_sidebar.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "customers.profile_tabs.append",
+        "arguments": 0,
+        "files": [
+            "resources/views/customers/profile_tabs.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "dash_card.before_mailbox_name",
+        "arguments": 1,
+        "files": [
+            "resources/views/secure/dashboard.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "dashboard.after",
+        "arguments": 1,
+        "files": [
+            "resources/views/secure/dashboard.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "dashboard.before",
+        "arguments": 1,
+        "files": [
+            "resources/views/secure/dashboard.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "dashboard.heading_append",
+        "arguments": 0,
+        "files": [
+            "resources/views/secure/dashboard.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "dashboard.mailboxes",
+        "arguments": 1,
+        "files": [
+            "app/Http/Controllers/SecureController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "email.auto_reply.subject",
+        "arguments": 2,
+        "files": [
+            "app/Mail/AutoReply.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "email.created",
+        "arguments": 1,
+        "files": [
+            "app/Observers/EmailObserver.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "email.reply_to_customer.attach",
+        "arguments": 4,
+        "files": [
+            "app/Mail/ReplyToCustomer.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "email.reply_to_customer.subject",
+        "arguments": 3,
+        "files": [
+            "app/Jobs/SendReplyToCustomer.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "email.reply_to_customer.swiftmessage",
+        "arguments": 4,
+        "files": [
+            "app/Mail/ReplyToCustomer.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "email.reply_to_customer.template_name_html",
+        "arguments": 1,
+        "files": [
+            "app/Mail/ReplyToCustomer.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "email.reply_to_customer.template_name_text",
+        "arguments": 1,
+        "files": [
+            "app/Mail/ReplyToCustomer.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "email.reply_to_customer.threads",
+        "arguments": 3,
+        "files": [
+            "app/Jobs/SendReplyToCustomer.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "email.user_notification.subject",
+        "arguments": 2,
+        "files": [
+            "app/Mail/UserNotification.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "email.user_notification.template_fields",
+        "arguments": 1,
+        "files": [
+            "app/Mail/UserNotification.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "email.user_notification.template_name_html",
+        "arguments": 1,
+        "files": [
+            "app/Mail/UserNotification.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "email.user_notification.template_name_text",
+        "arguments": 1,
+        "files": [
+            "app/Mail/UserNotification.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "email_notification.before_body",
+        "arguments": 3,
+        "files": [
+            "resources/views/emails/user/notification.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "email_notification.conv_url",
+        "arguments": 2,
+        "files": [
+            "resources/views/emails/user/notification.blade.php",
+            "resources/views/emails/user/notification_text.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "email_notification.footer_links",
+        "arguments": 3,
+        "files": [
+            "resources/views/emails/user/notification.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "email_notification.mailbox_url",
+        "arguments": 2,
+        "files": [
+            "resources/views/emails/user/notification.blade.php",
+            "resources/views/emails/user/notification_text.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "email_notification.settings_url",
+        "arguments": 2,
+        "files": [
+            "resources/views/emails/user/notification.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "email_notification_text.footer_links",
+        "arguments": 3,
+        "files": [
+            "resources/views/emails/user/notification_text.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "fetch_emails.after_set_seen",
+        "arguments": 3,
+        "files": [
+            "app/Console/Commands/FetchEmails.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "fetch_emails.data_to_save",
+        "arguments": 1,
+        "files": [
+            "app/Console/Commands/FetchEmails.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "fetch_emails.mailbox_to_save_message",
+        "arguments": 2,
+        "files": [
+            "app/Console/Commands/FetchEmails.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "fetch_emails.separate_reply.preprocess_body",
+        "arguments": 1,
+        "files": [
+            "app/Console/Commands/FetchEmails.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "fetch_emails.set_seen_flag",
+        "arguments": 3,
+        "files": [
+            "app/Console/Commands/FetchEmails.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "fetch_emails.should_save_thread",
+        "arguments": 2,
+        "files": [
+            "app/Console/Commands/FetchEmails.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "fetch_emails.unseen",
+        "arguments": 2,
+        "files": [
+            "app/Console/Commands/FetchEmails.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "flash_messages.flashes",
+        "arguments": 1,
+        "files": [
+            "resources/views/partials/flash_messages.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "folder.active_count_mine_folder",
+        "arguments": 3,
+        "files": [
+            "app/Folder.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "folder.conversations_order_by",
+        "arguments": 2,
+        "files": [
+            "app/Folder.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "folder.conversations_query",
+        "arguments": 3,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "folder.count",
+        "arguments": 4,
+        "files": [
+            "app/Folder.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "folder.counter",
+        "arguments": 3,
+        "files": [
+            "app/Folder.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "folder.only_assigned_condition",
+        "arguments": 3,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "folder.type_icon",
+        "arguments": 2,
+        "files": [
+            "app/Folder.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "folder.type_name",
+        "arguments": 2,
+        "files": [
+            "app/Folder.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "folder.update_counters",
+        "arguments": 2,
+        "files": [
+            "app/Folder.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "folder.url",
+        "arguments": 3,
+        "files": [
+            "app/Folder.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "folder.waiting_since_query",
+        "arguments": 2,
+        "files": [
+            "app/Folder.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "follower.created",
+        "arguments": 1,
+        "files": [
+            "app/Observers/FollowerObserver.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "follower.deleted",
+        "arguments": 1,
+        "files": [
+            "app/Observers/FollowerObserver.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "footer.text",
+        "arguments": 1,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "javascript",
+        "arguments": 1,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "javascripts",
+        "arguments": 1,
+        "files": [
+            "resources/views/layouts/app.blade.php",
+            "resources/views/vendor/translation-manager/index.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "jobs.send_reply_to_customer.headers",
+        "arguments": 6,
+        "files": [
+            "app/Jobs/SendNotificationToUsers.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "jobs.send_reply_to_customer.send_previous_messages",
+        "arguments": 5,
+        "files": [
+            "app/Jobs/SendReplyToCustomer.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "js.lang.messages",
+        "arguments": 0,
+        "files": [
+            "resources/views/js/vars.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "layout.body_bottom",
+        "arguments": 0,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "layout.favicon",
+        "arguments": 1,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "layout.head",
+        "arguments": 0,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "layout.header_logo",
+        "arguments": 1,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "layout.theme_color",
+        "arguments": 1,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "layout.title.name",
+        "arguments": 1,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "listeners.failed_login",
+        "arguments": 1,
+        "files": [
+            "app/Listeners/LogFailedLogin.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "locale",
+        "arguments": 1,
+        "files": [
+            "app/Http/Middleware/Localize.php",
+            "app/Misc/Helper.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "login.banner",
+        "arguments": 1,
+        "files": [
+            "resources/views/auth/banner.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "login.custom_check",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/Auth/LoginController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "login_form.after",
+        "arguments": 0,
+        "files": [
+            "resources/views/auth/login.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "login_form.before",
+        "arguments": 0,
+        "files": [
+            "resources/views/auth/login.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "login_form.before_submit",
+        "arguments": 0,
+        "files": [
+            "resources/views/auth/login.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "login_form.submit_attrs",
+        "arguments": 0,
+        "files": [
+            "resources/views/auth/login.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "login_form.submit_class",
+        "arguments": 0,
+        "files": [
+            "resources/views/auth/login.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mail.fetch_message.imap_folders",
+        "arguments": 2,
+        "files": [
+            "app/Misc/Mail.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mail.fetch_message.scan_limit",
+        "arguments": 2,
+        "files": [
+            "app/Misc/Mail.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mail.process_swift_message",
+        "arguments": 2,
+        "files": [
+            "app/Listeners/ProcessSwiftMessage.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mail.reapply_mail_config",
+        "arguments": 0,
+        "files": [
+            "app/Misc/Mail.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mail_vars.replace",
+        "arguments": 2,
+        "files": [
+            "app/Misc/Mail.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mail_vars.replace_after_fallback",
+        "arguments": 2,
+        "files": [
+            "app/Misc/Mail.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.access_permissions_list",
+        "arguments": 1,
+        "files": [
+            "app/Mailbox.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.access_permissions_route",
+        "arguments": 2,
+        "files": [
+            "app/Mailbox.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.accessible_settings_route",
+        "arguments": 3,
+        "files": [
+            "app/Http/Controllers/MailboxesController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailbox.after_sidebar_buttons",
+        "arguments": 0,
+        "files": [
+            "resources/views/mailboxes/sidebar_menu_view.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailbox.before_delete",
+        "arguments": 1,
+        "files": [
+            "app/Observers/MailboxObserver.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailbox.connection_incoming.after_default_settings",
+        "arguments": 1,
+        "files": [
+            "resources/views/mailboxes/connection_incoming.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailbox.deleted",
+        "arguments": 1,
+        "files": [
+            "app/Observers/MailboxObserver.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.fetch_test",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/MailboxesController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.fillable_fields",
+        "arguments": 1,
+        "files": [
+            "app/Mailbox.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.folders",
+        "arguments": 2,
+        "files": [
+            "app/Mailbox.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.folders.public_types",
+        "arguments": 1,
+        "files": [
+            "app/Mailbox.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.get_mail_from_address",
+        "arguments": 5,
+        "files": [
+            "app/Mailbox.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.get_mail_from_name",
+        "arguments": 5,
+        "files": [
+            "app/Mailbox.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.has_img",
+        "arguments": 2,
+        "files": [
+            "resources/views/mailboxes/mailboxes.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.in_active",
+        "arguments": 2,
+        "files": [
+            "app/Mailbox.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.in_protocols",
+        "arguments": 1,
+        "files": [
+            "app/Mailbox.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.in_protocols.display_names",
+        "arguments": 1,
+        "files": [
+            "app/Mailbox.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailbox.incoming_settings_before_save",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/MailboxesController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.main_folders",
+        "arguments": 2,
+        "files": [
+            "app/Mailbox.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.permission_users",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/MailboxesController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailbox.permissions.before_access_settings",
+        "arguments": 3,
+        "files": [
+            "resources/views/mailboxes/permissions.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailbox.settings_before_save",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/MailboxesController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.settings_validator",
+        "arguments": 3,
+        "files": [
+            "app/Http/Controllers/MailboxesController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.show_buttons",
+        "arguments": 2,
+        "files": [
+            "resources/views/mailboxes/sidebar_menu_view.blade.php",
+            "resources/views/secure/dashboard.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailbox.sidebar.buttons",
+        "arguments": 1,
+        "files": [
+            "resources/views/mailboxes/sidebar_menu_view.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailbox.update.after_signature",
+        "arguments": 1,
+        "files": [
+            "resources/views/mailboxes/update.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailbox.update.after_ticket_status",
+        "arguments": 1,
+        "files": [
+            "resources/views/mailboxes/update.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailbox.update.before_mailbox_name",
+        "arguments": 1,
+        "files": [
+            "resources/views/mailboxes/sidebar_menu.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailbox.update.before_name",
+        "arguments": 2,
+        "files": [
+            "resources/views/mailboxes/update.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailbox.update.dropdown.before_mailbox_name",
+        "arguments": 1,
+        "files": [
+            "resources/views/mailboxes/sidebar_menu.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.url",
+        "arguments": 2,
+        "files": [
+            "app/Mailbox.php",
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.user_has_access",
+        "arguments": 3,
+        "files": [
+            "app/Mailbox.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.users_assignable",
+        "arguments": 3,
+        "files": [
+            "app/Mailbox.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailbox.users_having_access",
+        "arguments": 5,
+        "files": [
+            "app/Mailbox.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailbox.view.before_name",
+        "arguments": 1,
+        "files": [
+            "resources/views/mailboxes/sidebar_menu_view.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailbox_card.before_name",
+        "arguments": 1,
+        "files": [
+            "resources/views/mailboxes/mailboxes.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "mailboxes.menu_current_route",
+        "arguments": 1,
+        "files": [
+            "resources/views/mailboxes/sidebar_menu.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "mailboxes.settings.menu",
+        "arguments": 1,
+        "files": [
+            "resources/views/mailboxes/settings_menu.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "menu.append",
+        "arguments": 0,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "menu.mailbox.after_name",
+        "arguments": 1,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "menu.mailbox.before_name",
+        "arguments": 1,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "menu.mailbox_single.after_name",
+        "arguments": 1,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "menu.mailbox_single.before_name",
+        "arguments": 1,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "menu.mailboxes",
+        "arguments": 1,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "menu.manage.after_mailboxes",
+        "arguments": 0,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "menu.manage.append",
+        "arguments": 0,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "menu.manage.can_view",
+        "arguments": 1,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "menu.selected",
+        "arguments": 1,
+        "files": [
+            "app/Misc/Helper.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "menu.user.name_append",
+        "arguments": 1,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "menu_right.user.after_profile",
+        "arguments": 0,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "middleware.web.custom_handle",
+        "arguments": 1,
+        "files": [
+            "app/Http/Middleware/CustomHandle.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "middleware.web.custom_handle.response",
+        "arguments": 3,
+        "files": [
+            "app/Http/Middleware/CustomHandle.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "modules.show_license",
+        "arguments": 1,
+        "files": [
+            "resources/views/modules/partials/module_card.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "new_conversation_form.after",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/create.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "notifications.mobile_available",
+        "arguments": 1,
+        "files": [
+            "app/Http/Controllers/SettingsController.php",
+            "app/Http/Controllers/UsersController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "notifications_table.general.append",
+        "arguments": 1,
+        "files": [
+            "resources/views/users/subscriptions_table.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "notifications_table.td",
+        "arguments": 3,
+        "files": [
+            "resources/views/users/subscriptions_table.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "notifications_table.th",
+        "arguments": 0,
+        "files": [
+            "resources/views/users/subscriptions_table.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "polycast.receive",
+        "arguments": 3,
+        "files": [
+            "app/Providers/PolycastServiceProvider.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "reply_email.after_signature",
+        "arguments": 6,
+        "files": [
+            "resources/views/emails/customer/reply_fancy.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "reply_email.before_signature",
+        "arguments": 6,
+        "files": [
+            "resources/views/emails/customer/reply_fancy.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "reply_email.css",
+        "arguments": 1,
+        "files": [
+            "resources/views/emails/customer/reply_fancy.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "reply_email.footer",
+        "arguments": 1,
+        "files": [
+            "resources/views/emails/customer/reply_fancy.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "reply_email.header",
+        "arguments": 1,
+        "files": [
+            "resources/views/emails/customer/reply_fancy.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "reply_email.include_signature",
+        "arguments": 2,
+        "files": [
+            "resources/views/emails/customer/reply_fancy.blade.php",
+            "resources/views/emails/customer/reply_fancy_text.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "reply_form.after",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/view.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "schedule",
+        "arguments": 1,
+        "files": [
+            "app/Console/Kernel.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "search.assignees",
+        "arguments": 3,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "search.conversations.apply_filters",
+        "arguments": 3,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "search.conversations.or_where",
+        "arguments": 3,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "search.conversations.perform",
+        "arguments": 4,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "search.conversations_tab_append",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/search.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "search.customers.apply_filters",
+        "arguments": 3,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "search.display_filters",
+        "arguments": 3,
+        "files": [
+            "resources/views/conversations/search.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "search.filters",
+        "arguments": 3,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "search.filters_list",
+        "arguments": 4,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "search.filters_list_customers",
+        "arguments": 4,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "search.is_needed",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "search.is_tab_visible",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/search.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "search.title",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/search.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "send_reply.before_save_forwarded_thread",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "settings.after_save",
+        "arguments": 4,
+        "files": [
+            "app/Http/Controllers/SettingsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "settings.alter_section_params",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/SettingsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "settings.alter_section_settings",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/SettingsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "settings.before_save",
+        "arguments": 3,
+        "files": [
+            "app/Http/Controllers/SettingsController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "settings.general.append",
+        "arguments": 2,
+        "files": [
+            "resources/views/settings/general.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "settings.section_params",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/SettingsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "settings.section_settings",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/SettingsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "settings.sections",
+        "arguments": 1,
+        "files": [
+            "app/Http/Controllers/SettingsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "settings.view",
+        "arguments": 2,
+        "files": [
+            "resources/views/settings/view.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "stylesheets",
+        "arguments": 1,
+        "files": [
+            "resources/views/layouts/app.blade.php",
+            "resources/views/vendor/translation-manager/index.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "subscription.events_by_type",
+        "arguments": 3,
+        "files": [
+            "app/Subscription.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "subscription.filter_out",
+        "arguments": 3,
+        "files": [
+            "app/Subscription.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "subscription.is_related_to_user",
+        "arguments": 3,
+        "files": [
+            "app/Subscription.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "subscription.is_user_assignee",
+        "arguments": 3,
+        "files": [
+            "app/Subscription.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "subscription.process_events",
+        "arguments": 1,
+        "files": [
+            "app/Subscription.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "subscription.subscriptions",
+        "arguments": 4,
+        "files": [
+            "app/Subscription.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "subscription.users_to_notify",
+        "arguments": 4,
+        "files": [
+            "app/Subscription.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.status.after_background_jobs",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/status.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.status.after_content",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/status.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.status.after_cron_commands",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/status.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.status.after_functions",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/status.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.status.after_info_table",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/status.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.status.after_permissions",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/status.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.status.after_php_extensions",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/status.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.status.before_info_table",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/status.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.tools.after_content",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/tools.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.tools.after_form",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/tools.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.tools.after_main_buttons",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/tools.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.tools.after_output",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/tools.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.tools.before_form",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/tools.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.tools.before_output",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/tools.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.tools.fetch_emails_append",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/tools.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.tools.form_append",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/tools.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.tools.form_start",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/tools.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "system.tools.main_buttons",
+        "arguments": 0,
+        "files": [
+            "resources/views/system/tools.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "thread.action_person",
+        "arguments": 3,
+        "files": [
+            "app/Thread.php",
+            "resources/views/emails/user/thread_by.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "thread.action_text",
+        "arguments": 5,
+        "files": [
+            "app/Thread.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "thread.action_types",
+        "arguments": 1,
+        "files": [
+            "app/Thread.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.after_header",
+        "arguments": 5,
+        "files": [
+            "resources/views/conversations/partials/thread.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.after_person_action",
+        "arguments": 5,
+        "files": [
+            "resources/views/conversations/partials/thread.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.after_recipients",
+        "arguments": 5,
+        "files": [
+            "resources/views/conversations/partials/thread.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.attachment_append",
+        "arguments": 4,
+        "files": [
+            "resources/views/conversations/partials/thread_attachments.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.attachments_list_append",
+        "arguments": 3,
+        "files": [
+            "resources/views/conversations/partials/thread_attachments.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.before_body",
+        "arguments": 5,
+        "files": [
+            "resources/views/conversations/partials/thread.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.before_recipients",
+        "arguments": 5,
+        "files": [
+            "resources/views/conversations/partials/thread.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.before_save_from_request",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "thread.body_output",
+        "arguments": 4,
+        "files": [
+            "resources/views/conversations/partials/thread.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.created",
+        "arguments": 1,
+        "files": [
+            "app/Observers/ThreadObserver.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.deleting",
+        "arguments": 1,
+        "files": [
+            "app/Observers/ThreadObserver.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.info.prepend",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/partials/thread.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.menu",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/partials/thread.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.menu.append",
+        "arguments": 1,
+        "files": [
+            "resources/views/conversations/partials/thread.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.meta",
+        "arguments": 5,
+        "files": [
+            "resources/views/conversations/partials/thread.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.opened",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/OpenController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "thread.updated",
+        "arguments": 1,
+        "files": [
+            "app/Observers/ThreadObserver.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "user.can_view_mailbox_menu",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/MailboxesController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "user.create.before_email",
+        "arguments": 0,
+        "files": [
+            "resources/views/users/create.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "user.create_save",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/UsersController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "user.deleted",
+        "arguments": 2,
+        "files": [
+            "app/Events/UserDeleted.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "user.edit.before_email",
+        "arguments": 1,
+        "files": [
+            "resources/views/users/profile.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "user.edit.before_first_name",
+        "arguments": 1,
+        "files": [
+            "resources/views/users/profile.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "user.edit.before_photo",
+        "arguments": 1,
+        "files": [
+            "resources/views/users/profile.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "user.edit.phone_append",
+        "arguments": 1,
+        "files": [
+            "resources/views/users/profile.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "user.full_name",
+        "arguments": 2,
+        "files": [
+            "app/User.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "user.non_deleted_condition",
+        "arguments": 2,
+        "files": [
+            "app/User.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "user.profile.menu.after_profile",
+        "arguments": 1,
+        "files": [
+            "resources/views/users/sidebar_menu.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "user.save_photo",
+        "arguments": 4,
+        "files": [
+            "app/User.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "user.save_profile",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/UsersController.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "user.set_data",
+        "arguments": 3,
+        "files": [
+            "app/User.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "user.setup.before_job_title",
+        "arguments": 1,
+        "files": [
+            "resources/views/open/user_setup.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "user.setup_save",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/OpenController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "user_permissions.list",
+        "arguments": 1,
+        "files": [
+            "app/User.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "user_permissions.name",
+        "arguments": 2,
+        "files": [
+            "app/User.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "users.ajax.response_default",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/UsersController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "users.email",
+        "arguments": 1,
+        "files": [
+            "resources/views/users/users.blade.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "web_notification.after_body",
+        "arguments": 1,
+        "files": [
+            "resources/views/users/partials/web_notifications.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "web_notification.header",
+        "arguments": 2,
+        "files": [
+            "resources/views/users/partials/web_notifications.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "web_notification.person",
+        "arguments": 2,
+        "files": [
+            "resources/views/users/partials/web_notifications.blade.php"
+        ]
+    }
+]

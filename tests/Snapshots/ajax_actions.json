@@ -1,0 +1,91 @@
+{
+    "ConversationsController@ajax": [
+        "bulk_conversation_change_status",
+        "bulk_conversation_change_user",
+        "bulk_delete_conversation",
+        "chats_load_more",
+        "conversation_change_customer",
+        "conversation_change_status",
+        "conversation_change_user",
+        "conversation_merge",
+        "conversation_move",
+        "conversations_pagination",
+        "delete_conversation",
+        "delete_conversation_forever",
+        "delete_thread",
+        "discard_draft",
+        "empty_folder",
+        "follow",
+        "load_attachments",
+        "load_customer_info",
+        "load_draft",
+        "load_edit_thread",
+        "merge_search",
+        "restore_conversation",
+        "retry_send",
+        "save_after_send",
+        "save_draft",
+        "save_edit_thread",
+        "send_reply",
+        "star_conversation",
+        "unfollow",
+        "update_subject"
+    ],
+    "ConversationsController@ajaxHtml": [
+        "assignee_filter",
+        "change_customer",
+        "default_redirect",
+        "merge_conv",
+        "move_conv",
+        "send_log",
+        "show_original"
+    ],
+    "CustomersController@ajax": [
+        "create",
+        "customers_pagination"
+    ],
+    "CustomersController@ajaxSearch": [
+        "email",
+        "name",
+        "phone"
+    ],
+    "MailboxesController@ajax": [
+        "delete_mailbox",
+        "fetch_test",
+        "imap_folders",
+        "mute",
+        "send_test"
+    ],
+    "ModulesController@ajax": [
+        "activate",
+        "activate_license",
+        "deactivate",
+        "deactivate_license",
+        "delete",
+        "disabled",
+        "expired",
+        "inactive",
+        "install",
+        "site_inactive",
+        "update",
+        "update_all"
+    ],
+    "SettingsController@ajax": [
+        "send_test"
+    ],
+    "SystemController@ajax": [
+        "check_updates",
+        "update"
+    ],
+    "SystemController@ajaxHtml": [
+        "job_details"
+    ],
+    "UsersController@ajax": [
+        "delete_photo",
+        "delete_user",
+        "mark_notifications_as_read",
+        "reset_password",
+        "send_invite",
+        "web_notifications"
+    ]
+}
