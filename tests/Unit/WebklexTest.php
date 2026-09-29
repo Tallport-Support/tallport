@@ -168,6 +168,12 @@ class WebklexTest extends FixtureWebklexMessage {
     }
 
     // https://github.com/freescout-help-desk/freescout/pull/5659
+    /**
+     * Expectations match the imap extension, as used in production. Without it
+     * Webklex falls back to its own header parser, which differs.
+     *
+     * @requires extension imap
+     */
     public function testFromToCc() {
         $message = $this->getFixture("message-7.eml");
 

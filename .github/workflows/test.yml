@@ -1,46 +1,55 @@
-name: Test App (MySQL)
+name: Tests
 
 on:
   push:
-    branches:
-      - master
+  pull_request:
   workflow_dispatch:
 
 jobs:
   test:
-    name: Test App (MySQL)
-    runs-on: ubuntu-latest
+    name: PHP ${{ matrix.php }}, MariaDB ${{ matrix.mariadb }}
+    runs-on: ubuntu-24.04
     strategy:
+      fail-fast: false
       matrix:
-        php: ['7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
-    steps:
-      - uses: actions/checkout@v3
+        # Production runs PHP 8.3 with the imap extension on MariaDB.
+        php: ['8.3']
+        mariadb: ['11.8']
 
-      - name: Setup PHP
+    services:
+      mariadb:
+        image: mariadb:${{ matrix.mariadb }}
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: freescout-test
+          MARIADB_USER: freescout-test
+          MARIADB_PASSWORD: freescout-test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: mysql, mbstring, xml, imap, zip, gd, curl, intl, json
+          coverage: none
+          tools: composer
 
-      - name: Start MySQL
-        run: |
-          sudo systemctl start mysql
+      - name: Cache test tools
+        uses: actions/cache@v4
+        with:
+          path: dev/vendor
+          key: dev-vendor-php${{ matrix.php }}-${{ hashFiles('dev/composer.lock') }}
 
-      - name: Setup database
-        run: |
-          mysql -uroot -proot -e 'CREATE DATABASE IF NOT EXISTS `freescout-test`;'
-          mysql -uroot -proot -e "CREATE USER 'freescout-test'@'localhost' IDENTIFIED WITH mysql_native_password BY 'freescout-test';"
-          mysql -uroot -proot -e "GRANT ALL ON \`freescout-test\`.* TO 'freescout-test'@'localhost';"
-          mysql -uroot -proot -e 'FLUSH PRIVILEGES;'
-
-      - name: Install composer dependencies
-        run: composer install --ignore-platform-reqs --no-interaction
-
-      - name: Migrate and seed the database
-        run: |
-          php${{ matrix.php }} artisan migrate --force -n --database=testing
-          php${{ matrix.php }} artisan db:seed --force -n --database=testing
-
-      - name: Run PHP tests
-        if: ${{ matrix.php < 8.4 }}
-        run: php${{ matrix.php }} ./vendor/bin/phpunit
+      - name: Run tests
+        env:
+          DB_TEST_HOST: 127.0.0.1
+        run: ./test.sh

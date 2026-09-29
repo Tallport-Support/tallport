@@ -1,0 +1,19 @@
+{
+    "name": "tallport/dev-tools",
+    "description": "Development and test tools for Tallport. Installed into dev/vendor, which is not committed, so none of this ships with releases.",
+    "type": "project",
+    "license": "AGPL-3.0-or-later",
+    "require": {
+        "php": ">=7.4",
+        "fzaninotto/faker": "1.9.2",
+        "mockery/mockery": "^1.6",
+        "nikic/php-parser": "^4.18",
+        "phpunit/phpunit": "^9.6"
+    },
+    "config": {
+        "platform": {
+            "php": "7.4.33"
+        },
+        "sort-packages": true
+    }
+}

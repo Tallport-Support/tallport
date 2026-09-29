@@ -26,6 +26,7 @@ Thumbs.db
 /public/.well-known
 /Modules
 /Modules/**/.git
+/dev/vendor
 /public/modules
 /public/docs
 /public/.dh-diag

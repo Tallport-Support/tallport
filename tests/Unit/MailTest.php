@@ -7,6 +7,12 @@ use Tests\TestCase;
 
 class MailTest extends TestCase
 {
+    /**
+     * Expectations match the imap extension, as used in production. Without it
+     * Webklex falls back to its own header parser, which differs.
+     *
+     * @requires extension imap
+     */
     public function testGetHeader(): void
     {
     	$message = file_get_contents(base_path('tests/Messages/message-6.eml'));

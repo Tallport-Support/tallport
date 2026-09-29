@@ -40,10 +40,23 @@ class SsrfProtectionsTest extends TestCase
 
             // Allowed.
             '2001:0db8:85a3:0000:0000:8a2e:0370:7334' => 'https://[2001:0db8:85a3:0000:0000:8a2e:0370:7334]',
-            'example.org' => 'https://example.org',
         ];
         foreach ($test_hosts as $host => $result) {
             $this->assertEquals($result, \Helper::checkUrlIpAndHost('https://'.$host), $host);
         }
+    }
+
+    public function testCheckUrlIpAndHostAllowsPublicHostname(): void
+    {
+        // Resolved through DNS, so only meaningful where example.org resolves to
+        // its public address; some sandboxes map it into a reserved range.
+        $ip = gethostbyname('example.org');
+        if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)
+            || strpos($ip, '198.18.') === 0 || strpos($ip, '198.19.') === 0
+        ) {
+            $this->markTestSkipped('example.org does not resolve to a public address here ('.$ip.').');
+        }
+
+        $this->assertEquals('https://example.org', \Helper::checkUrlIpAndHost('https://example.org'));
     }
 }
