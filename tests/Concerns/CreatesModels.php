@@ -35,6 +35,10 @@ trait CreatesModels
         $user->role = $attributes['role'] ?? User::ROLE_USER;
         $user->status = $attributes['status'] ?? User::STATUS_ACTIVE;
         $user->invite_state = User::INVITE_STATE_ACTIVATED;
+        if (isset($attributes['permissions'])) {
+            // e.g. [User::PERM_DELETE_CONVERSATIONS => true]
+            $user->permissions = $attributes['permissions'];
+        }
         $user->save();
 
         return $user;
