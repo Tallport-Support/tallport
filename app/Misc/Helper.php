@@ -982,7 +982,8 @@ class Helper
      */
     public static function checkAppVersion($version2, $operator = '>=')
     {
-        return version_compare(\Config::get('app.version'), $version2, $operator);
+        // Callers pass FreeScout versions (e.g. a module's requiredAppVersion).
+        return version_compare(\Config::get('app.compatibility_version'), $version2, $operator);
     }
 
     /**

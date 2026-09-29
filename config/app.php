@@ -22,6 +22,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | FreeScout Compatibility Version
+    |--------------------------------------------------------------------------
+    |
+    | The FreeScout version Tallport is compatible with. It is reported to the
+    | FreeScout modules API and checked against the app version modules require,
+    | so it stays at the FreeScout version Tallport is based on for as long as
+    | FreeScout modules are used. The 'version' above is Tallport's own.
+    |
+    */
+
+    'compatibility_version' => '1.8.243',
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Name
     |--------------------------------------------------------------------------
     |

@@ -36,14 +36,14 @@ class WpApi
             } else {
                 $url .= '?';
             }
-            $url .= 'v='.config('app.version');
+            $url .= 'v='.config('app.compatibility_version');
             return $client->request('POST', $url, \Helper::setGuzzleDefaultOptions([
                 'connect_timeout' => 10,
                 'form_params' => $params,
                 'allow_redirects' => ['strict' => true],
             ]));
         } else {
-            $params['v'] = config('app.version');
+            $params['v'] = config('app.compatibility_version');
             return $client->request('GET', $url, \Helper::setGuzzleDefaultOptions([
                 'connect_timeout' => 10,
                 'query' => $params,

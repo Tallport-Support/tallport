@@ -13,7 +13,7 @@ class EncryptMailboxPassword extends Migration
      */
     public function up()
     {
-        if (version_compare(config('app.version'), '1.0.6', '<')) {
+        if (version_compare(config('app.compatibility_version'), '1.0.6', '<')) {
             Schema::table('mailboxes', function (Blueprint $table) {
                 $table->string('in_password', 512)->nullable()->change();
             });
@@ -32,7 +32,7 @@ class EncryptMailboxPassword extends Migration
      */
     public function down()
     {
-        if (version_compare(config('app.version'), '1.0.6', '<')) {
+        if (version_compare(config('app.compatibility_version'), '1.0.6', '<')) {
             foreach (\App\Mailbox::whereNotNull('in_password')->get() as $Mailbox) {
                 $attributes = $Mailbox->getAttributes();
                 $attributes = array_merge($attributes, ['in_password' => $Mailbox->in_password]);
