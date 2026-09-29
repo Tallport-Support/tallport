@@ -85,14 +85,7 @@ class GithubRepositoryType extends AbstractRepositoryType implements SourceRepos
      */
     public function fetch($version = '')
     {
-        $response = $this->getRepositoryReleases();
-        $releaseCollection = collect(json_decode($response->getBody()));
-
-        if ($releaseCollection->isEmpty()) {
-            throw new \Exception('Cannot find a release to update. Please check the repository you\'re pulling from');
-        }
-
-        $release = $releaseCollection->first();
+        $release_name = self::normalizeVersion($version ?: $this->getVersionAvailable());
 
         $storagePath = $this->config['download_path'];
         
@@ -103,16 +96,6 @@ class GithubRepositoryType extends AbstractRepositoryType implements SourceRepos
             File::makeDirectory($storagePath, 493, true, true);
         }
 
-        if (!empty($version)) {
-            $release = $releaseCollection->where('name', $version)->first();
-        }
-
-        $release_name = preg_replace("#[^0-9\.]#", '', $version);
-
-        // Build Zipball URL instead of obtaining it from JSON ($release->zipball_url).
-        // https://api.github.com/repos/freescout-help-desk/freescout/zipball/refs/tags/1.8.230
-        $zipball_url = self::GITHUB_API_URL.'/repos/'.$this->config['repository_vendor'].'/'.$this->config['repository_name'].'/zipball/refs/tags/'.$release_name;
-
         $storageFilename = "{$release_name}.zip";
 
         //if (!$this->isSourceAlreadyFetched($release_name)) {
@@ -121,7 +104,8 @@ class GithubRepositoryType extends AbstractRepositoryType implements SourceRepos
         }
 
         $storageFile = $storagePath.DIRECTORY_SEPARATOR.$storageFilename;
-        $this->downloadRelease($this->client, $release->zipball_url, $storageFile);
+        // Download straight from GitHub by tag, never from a URL in an API response.
+        $this->downloadRelease($this->client, $this->getZipballUrl($release_name), $storageFile);
 
         $this->unzipArchive($storageFile, $storagePath);
 
@@ -281,45 +265,75 @@ class GithubRepositoryType extends AbstractRepositoryType implements SourceRepos
      */
     public function getVersionAvailable($prepend = '', $append = '')
     {
-        // No need to save version to file.
-        // if ($this->versionFileExists()) {
-        //     $version = $prepend.$this->getVersionFile().$append;
-        // } else {
-        $response = $this->getRepositoryReleases();
-        $releaseCollection = collect(json_decode($response->getBody()));
-        $version = $prepend.$releaseCollection->first()->name.$append;
-        //}
+        // The latest published GitHub release is the version to update to. Drafts
+        // and pre-releases are skipped by GitHub, so publishing a release is what
+        // ships it. With no release published yet, report the installed version.
+        try {
+            $response = $this->client->request('GET', $this->getRepositoryApiUrl().'/releases/latest', $this->getRequestOptions());
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            if ($e->getResponse() && $e->getResponse()->getStatusCode() == 404) {
+                return $prepend.$this->getVersionInstalled().$append;
+            }
+            throw $e;
+        }
+
+        $release = json_decode($response->getBody());
+        if (empty($release->tag_name)) {
+            throw new \Exception('Cannot find a release to update. Please check the repository you\'re pulling from');
+        }
+
+        return $prepend.self::normalizeVersion($release->tag_name).$append;
+    }
+
+    /**
+     * Strip an optional "v" prefix from a tag and make sure the rest is a plain
+     * version number, as it ends up in URLs and file paths.
+     *
+     * @throws \Exception
+     */
+    public static function normalizeVersion($tag)
+    {
+        $version = ltrim(trim((string)$tag), 'vV');
+
+        if (!preg_match('#^\d+(\.\d+)*$#', $version)) {
+            throw new \Exception('Invalid release version: '.$tag);
+        }
 
         return $version;
     }
 
     /**
-     * Get all releases for a specific repository.
-     *
+     * Get the zipball URL of a tagged version.
+     */
+    public function getZipballUrl($version)
+    {
+        return $this->getRepositoryApiUrl().'/zipball/refs/tags/'.$version;
+    }
+
+    /**
      * @throws \Exception
      *
-     * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @return string
      */
-    protected function getRepositoryReleases()
+    protected function getRepositoryApiUrl()
     {
         if (empty($this->config['repository_vendor']) || empty($this->config['repository_name'])) {
             throw new \Exception('No repository specified. Please enter a valid Github repository owner and name in your config.');
         }
 
-        if (!empty($this->config['github_api_url'])) {
-            $github_api_url = $this->config['github_api_url'];
-        } else {
-            $github_api_url = self::GITHUB_API_URL.'/repos/'.$this->config['repository_vendor'].'/'.$this->config['repository_name'];
-        }
+        return self::GITHUB_API_URL.'/repos/'.$this->config['repository_vendor'].'/'.$this->config['repository_name'];
+    }
 
-        return $this->client->request(
-            'GET',
-            $github_api_url.'/tags', [
-                'timeout' => config('app.curl_timeout'),
-                'connect_timeout' => config('app.curl_connect_timeout'),
-                'proxy' => config('app.proxy'),
-            ]
-        );
+    protected function getRequestOptions()
+    {
+        return [
+            'headers' => [
+                'Accept' => 'application/vnd.github+json',
+            ],
+            'timeout' => config('app.curl_timeout'),
+            'connect_timeout' => config('app.curl_connect_timeout'),
+            'proxy' => config('app.proxy'),
+        ];
     }
 
     /**
