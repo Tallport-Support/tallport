@@ -55,6 +55,15 @@ abstract class FeatureTestCase extends TestCase
         ]);
     }
 
+    /**
+     * Mark a test of intended behaviour as blocked by a bug in KNOWN_BUGS.md.
+     * Remove the call when fixing the bug.
+     */
+    protected function knownBug($id)
+    {
+        $this->markTestIncomplete("Known bug $id, see KNOWN_BUGS.md");
+    }
+
     protected function assertCommandCalled($name)
     {
         $this->assertContains($name, array_column(\Tests\Support\StubCommand::$calls, 'name'), "Command $name was not called.");

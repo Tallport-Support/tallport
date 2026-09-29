@@ -4,7 +4,9 @@ Bugs and oddities found while writing the test suite (September 2026), as
 the starting point for a bug-fixing pass. None are fixed yet. The tests
 cover the intended behaviour around them, but deliberately don't assert any
 of these, so fixing one shouldn't break a test; each fix should come with a
-test that fails first.
+test that fails first. Where a test for the intended behaviour already
+exists, it is marked incomplete with the bug's id (`$this->knownBug('C12')`):
+fixing the bug means removing that line and seeing the test pass.
 
 Line numbers refer to the code as of Tallport 1.8.244. Severity is a first
 guess: **security** (permission gaps), **high** (data loss or wrong data),
@@ -24,6 +26,9 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | C8 | low | `restore_conversation`, :1992 | No check that the conversation was deleted; restoring a published one adds a "restored" line item. |
 | C9 | low | `bulk_conversation_change_user` / `_status`, :2108 / :2136 | No "already set" check: line items are added even when nothing changes. |
 | C10 | low | `save_edit_thread`, :2058 | A missing thread reports "Conversation not found". |
+| C11 | medium | `send_reply`, :831 → `Thread::replaceBase64ImagesWithAttachments`, `app/Thread.php` :1566 | An empty `body` becomes null and is passed to `preg_replace_callback()` before validation → 500 instead of "The body field is required". |
+| C12 | high | `send_reply` with `multiple_conversations`, :1316–1375 | "Send separately to each recipient" is broken: the copied conversation is inserted with `has_attachments` NULL, which MariaDB's strict mode rejects → 500 after the first recipient's conversation was already created and emailed. |
+| C13 | low | `send_reply` with `is_create` and several `to` | The code puts extra recipients in the conversation's Cc ("first recipient becomes To"), but the email goes out with all of them in To. |
 
 ## Incoming email (`app/Console/Commands/FetchEmails.php`)
 
