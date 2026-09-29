@@ -34,7 +34,8 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 
 | # | Severity | Where | Bug |
 |---|---|---|---|
-| F1 | high | :747–755 | Agent replying by email to their own earlier emailed reply: `$user_id = $user->id` while `$user` is still null. The ErrorException is caught and logged, and the email is **dropped** without creating a thread. |
+| F1 | high | :747–755 | The branch meant for an agent following up by email on their own earlier emailed reply has `$user_id = $user->id` while `$user` is still null; if reached, the ErrorException is caught and the email **dropped**. In testing the branch wasn't reached: such follow-ups are saved as customer messages instead (F3). Test: `testAgentFollowingUpOnOwnEmailedReply`. |
+| F3 | medium | :707, :743 | An agent answering by email in a reply thread (their own UI reply, or their own emailed reply) is saved as a **customer** message from the agent's address rather than as the agent's reply. Only replies to notification emails are recognised as agent replies. Test: `testAgentAnsweringOwnUiReplyByEmail`. |
 | F2 | low | `app/Thread.php` :1233/:1235 vs :1258/:1274 | Hooks `conversation.created_by_customer` and `conversation.customer_replied` are fired with different numbers of arguments (see `tests/Snapshots/hooks.json`). |
 
 ## Users and login

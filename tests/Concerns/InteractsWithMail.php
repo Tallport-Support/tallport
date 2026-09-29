@@ -95,9 +95,12 @@ trait InteractsWithMail
      * Receive an email into a mailbox, as freescout:fetch-emails would after
      * fetching it, including sending the notifications it triggers.
      *
+     * Pass all mailboxes being fetched to have an email addressed to several
+     * of them imported into each, as the command does.
+     *
      * @return string The command's output.
      */
-    protected function receiveEmail(Mailbox $mailbox, $raw_message)
+    protected function receiveEmail(Mailbox $mailbox, $raw_message, array $all_mailboxes = [])
     {
         // Message::fromString() reads the Webklex options set up by the client manager.
         new ClientManager(config('imap'));
@@ -105,7 +108,10 @@ trait InteractsWithMail
 
         $command = new FetchEmailsForTests();
         $command->mailbox = $mailbox;
-        $command->processMessage($message, (string)$message->getMessageId(), $mailbox, []);
+        $command->processMessage($message, (string)$message->getMessageId(), $mailbox, $all_mailboxes);
+        foreach ($command->extra_import as $extra_import) {
+            $command->processMessage($extra_import['message'], $extra_import['message_id'], $extra_import['mailbox'], [], true);
+        }
 
         \App\Subscription::processEvents();
 
