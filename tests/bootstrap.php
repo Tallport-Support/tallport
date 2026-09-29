@@ -16,12 +16,27 @@ class_exists(\PHPUnit\Runner\PhptTestCase::class);
 class_exists(\PHPUnit\Util\PHP\AbstractPhpProcess::class);
 class_exists(\PHPUnit\Util\Xml\Loader::class);
 
+// Like artisan and public/index.php, replace Laravel 5.5's e() with one that
+// accepts null before the framework's helpers are loaded. Views echo nulls,
+// and since PHP 8.1 htmlspecialchars(null) is a deprecation, which the
+// framework's error handler turns into an exception.
+if (!function_exists('e')) {
+    function e($value, $doubleEncode = false)
+    {
+        if ($value instanceof \Illuminate\Contracts\Support\Htmlable) {
+            return $value->toHtml();
+        }
+
+        return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8', $doubleEncode);
+    }
+}
+
 $loader = require __DIR__.'/../vendor/autoload.php';
 
 // autoload-dev is not part of the committed autoloader.
 $loader->addPsr4('Tests\\', __DIR__.'/');
 
-// Laravel 5.5 testing classes patched for newer PHP versions. These are only
-// used by tests, so they live here rather than in overrides/, which would need
-// the committed autoloader to be regenerated.
+// Laravel 5.5 testing classes patched for PHP 8.4+ and PHPUnit 9 (string
+// assertions). These are only used by tests, so they live here rather than in
+// overrides/, which would need the committed autoloader to be regenerated.
 require_once __DIR__.'/Overrides/laravel/framework/src/Illuminate/Foundation/Testing/TestResponse.php';

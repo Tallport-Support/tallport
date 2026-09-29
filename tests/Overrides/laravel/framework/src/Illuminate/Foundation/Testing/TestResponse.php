@@ -248,7 +248,7 @@ class TestResponse
      */
     public function assertSee($value)
     {
-        PHPUnit::assertContains($value, $this->getContent());
+        PHPUnit::assertStringContainsString($value, $this->getContent());
 
         return $this;
     }
@@ -261,7 +261,7 @@ class TestResponse
      */
     public function assertSeeText($value)
     {
-        PHPUnit::assertContains($value, strip_tags($this->getContent()));
+        PHPUnit::assertStringContainsString($value, strip_tags($this->getContent()));
 
         return $this;
     }
@@ -274,7 +274,7 @@ class TestResponse
      */
     public function assertDontSee($value)
     {
-        PHPUnit::assertNotContains($value, $this->getContent());
+        PHPUnit::assertStringNotContainsString($value, $this->getContent());
 
         return $this;
     }
@@ -287,7 +287,7 @@ class TestResponse
      */
     public function assertDontSeeText($value)
     {
-        PHPUnit::assertNotContains($value, strip_tags($this->getContent()));
+        PHPUnit::assertStringNotContainsString($value, strip_tags($this->getContent()));
 
         return $this;
     }
@@ -449,7 +449,7 @@ class TestResponse
 
         foreach ($structure as $key => $value) {
             if (is_array($value) && $key === '*') {
-                PHPUnit::assertInternalType('array', $responseData);
+                PHPUnit::assertIsArray($responseData);
 
                 foreach ($responseData as $responseDataItem) {
                     $this->assertJsonStructure($structure['*'], $responseDataItem);

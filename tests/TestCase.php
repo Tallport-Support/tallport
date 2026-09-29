@@ -14,9 +14,14 @@ abstract class TestCase extends BaseTestCase
      */
     protected static $database_migrated = false;
 
-    protected function setUp(): void
+    /**
+     * Rebuild the database once per run, right after the application is
+     * created and before traits like DatabaseTransactions start a transaction
+     * (schema changes would commit it).
+     */
+    protected function refreshApplication()
     {
-        parent::setUp();
+        parent::refreshApplication();
 
         if (!static::$database_migrated) {
             $this->app[Kernel::class]->call('migrate:fresh', ['--force' => true]);
