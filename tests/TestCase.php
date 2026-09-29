@@ -23,7 +23,9 @@ abstract class TestCase extends BaseTestCase
     {
         parent::refreshApplication();
 
-        if (!static::$database_migrated) {
+        // Tests run in a separate process (@runInSeparateProcess) use the
+        // database the main process already rebuilt.
+        if (!static::$database_migrated && !$this->isInIsolation()) {
             $this->app[Kernel::class]->call('migrate:fresh', ['--force' => true]);
             static::$database_migrated = true;
         }

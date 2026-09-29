@@ -14,6 +14,8 @@
   <php>
     <env name="APP_ENV" value="testing"/>
     <env name="APP_URL" value="https://tallport.test"/>
+    <!-- No outbound HTTP from tests: requests go through a proxy on a closed local port and fail at once. -->
+    <env name="APP_PROXY" value="http://127.0.0.1:9"/>
     <env name="DB_CONNECTION" value="testing"/>
     <env name="CACHE_DRIVER" value="array"/>
     <env name="SESSION_DRIVER" value="array"/>

@@ -8,13 +8,13 @@ use App\Email;
 use App\Mailbox;
 use App\Thread;
 use App\User;
-//use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class ConversationChangeCustomerTest extends TestCase
 {
     // This cleans existing tables.
-    //use RefreshDatabase;
+    use DatabaseTransactions;
 
     private $admin;
     private $unprivUser;
