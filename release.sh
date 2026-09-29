@@ -12,6 +12,9 @@
 #
 # This bumps 'version' in config/app.php only; 'compatibility_version' is the
 # FreeScout version for FreeScout modules and is changed by hand.
+#
+# Only a commit that is pushed to origin/main and passed the "Tests" workflow
+# can be released; the script waits for a CI run that is still in progress.
 
 set -euo pipefail
 
@@ -60,9 +63,34 @@ if [ -n "$(git status --porcelain)" ]; then
     exit 1
 fi
 git fetch --quiet origin main
-if ! git merge-base --is-ancestor origin/main HEAD; then
-    echo "main is behind or has diverged from origin/main" >&2
+if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+    echo "main must match origin/main: push your commits and let CI test them first" >&2
     exit 1
+fi
+
+# Only release what CI tested: the latest "Tests" run for this commit must
+# have passed. SKIP_CI=1 ./release.sh overrides this in an emergency.
+if [ "${SKIP_CI:-}" = "1" ]; then
+    echo "WARNING: releasing without checking CI (SKIP_CI=1)" >&2
+else
+    sha=$(git rev-parse HEAD)
+    run=$(gh run list --repo "$repo" --workflow test.yml --commit "$sha" --limit 1 \
+        --json databaseId,status,conclusion,url --jq '.[0] | select(.) | [.databaseId, .status, .conclusion, .url] | join("|")')
+    if [ -z "$run" ]; then
+        echo "No CI run found for ${sha:0:7}; wait for GitHub Actions to pick up the push" >&2
+        exit 1
+    fi
+    IFS='|' read -r run_id run_status run_conclusion run_url <<< "$run"
+    if [ "$run_status" != "completed" ]; then
+        echo "Waiting for CI: $run_url"
+        gh run watch "$run_id" --repo "$repo" --exit-status >/dev/null 2>&1 || true
+        run_conclusion=$(gh run view "$run_id" --repo "$repo" --json conclusion --jq .conclusion)
+    fi
+    if [ "$run_conclusion" != "success" ]; then
+        echo "CI did not pass for ${sha:0:7} ($run_conclusion): $run_url" >&2
+        exit 1
+    fi
+    echo "CI passed for ${sha:0:7}"
 fi
 
 if [ "$version" = "$current" ]; then
