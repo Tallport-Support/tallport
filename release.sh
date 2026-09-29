@@ -23,6 +23,9 @@ if [ -z "$current" ]; then
     exit 1
 fi
 
+# Name the repository explicitly: with an upstream remote gh can't pick one.
+repo=$(git remote get-url origin | sed -E 's#^(git@github\.com:|ssh://git@github\.com/|https://github\.com/)##; s#\.git$##')
+
 version=""
 if [ $# -gt 0 ] && [ "${1#-}" = "$1" ]; then
     version="$1"
@@ -30,13 +33,20 @@ if [ $# -gt 0 ] && [ "${1#-}" = "$1" ]; then
 fi
 if [ -z "$version" ]; then
     version=$(echo "$current" | awk -F. -v OFS=. '{ $NF++; print }')
+
+    # A previous run committed "Release <current>" but didn't get to create the
+    # GitHub release: finish that one instead of bumping again.
+    if [ -n "$(git log --format=%H --grep="^Release $current\$" -1)" ] \
+        && ! gh release view "$current" --repo "$repo" >/dev/null 2>&1; then
+        version="$current"
+    fi
 fi
 
 if ! [[ "$version" =~ ^[0-9]+(\.[0-9]+)*$ ]]; then
     echo "Invalid version: $version" >&2
     exit 1
 fi
-if ! php -r 'exit(version_compare($argv[1], $argv[2], ">") ? 0 : 1);' "$version" "$current"; then
+if [ "$version" != "$current" ] && ! php -r 'exit(version_compare($argv[1], $argv[2], ">") ? 0 : 1);' "$version" "$current"; then
     echo "Version $version must be higher than the current version $current" >&2
     exit 1
 fi
@@ -55,9 +65,13 @@ if ! git merge-base --is-ancestor origin/main HEAD; then
     exit 1
 fi
 
-echo "Releasing $current -> $version"
+if [ "$version" = "$current" ]; then
+    echo "Finishing release $version"
+else
+    echo "Releasing $current -> $version"
+    sed -i "s/^\([[:space:]]*'version'[[:space:]]*=>[[:space:]]*'\)$current'/\1$version'/" config/app.php
+    git commit --quiet -m "Release $version" config/app.php
+fi
 
-sed -i "s/^\([[:space:]]*'version'[[:space:]]*=>[[:space:]]*'\)$current'/\1$version'/" config/app.php
-git commit --quiet -m "Release $version" config/app.php
 git push --quiet origin main
-gh release create "$version" --target main --title "Tallport $version" --generate-notes "$@"
+gh release create "$version" --repo "$repo" --target main --title "Tallport $version" --generate-notes "$@"
