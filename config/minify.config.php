@@ -26,6 +26,8 @@ return [
 
     'ignore_environments' => [
         'local',
+        // Tests render pages too, and must not write bundles into public/.
+        'testing',
     ],
 
     /*

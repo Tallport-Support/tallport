@@ -17,11 +17,47 @@ abstract class FeatureTestCase extends TestCase
     use CreatesModels;
     use InteractsWithMail;
 
+    /**
+     * Commands that write outside the database (bootstrap/cache, public/,
+     * sessions), change the schema (committing the test's transaction),
+     * connect to mail servers or start processes. They are replaced by
+     * StubCommand, which records calls for assertCommandCalled().
+     */
+    protected $stubbed_commands = [
+        'freescout:clear-cache', 'config:cache', 'config:clear', 'route:cache', 'clear-compiled',
+        'freescout:generate-vars', 'laroute:generate', 'freescout:module-laroute',
+        'freescout:module-install', 'module:migrate', 'module:seed', 'migrate',
+        'freescout:fetch-emails', 'freescout:logout-users', 'freescout:after-app-update',
+        'schedule:run', 'storage:link',
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->captureSentMail();
+
+        \Tests\Support\StubCommand::$calls = [];
+        foreach ($this->stubbed_commands as $name) {
+            $this->app[\Illuminate\Contracts\Console\Kernel::class]->registerCommand(new \Tests\Support\StubCommand($name));
+        }
+
+        // Helper::queueWorkerRestart() dispatches RestartQueueWorker, which
+        // calls exit(): with the sync queue that would end the test run
+        // silently. It isn't dispatched while one is already queued.
+        \DB::table('jobs')->insert([
+            'queue'        => 'default',
+            'payload'      => '{"displayName":"App\\\\Jobs\\\\RestartQueueWorker"}',
+            'attempts'     => 0,
+            'reserved_at'  => null,
+            'available_at' => time(),
+            'created_at'   => time(),
+        ]);
+    }
+
+    protected function assertCommandCalled($name)
+    {
+        $this->assertContains($name, array_column(\Tests\Support\StubCommand::$calls, 'name'), "Command $name was not called.");
     }
 
     /**
