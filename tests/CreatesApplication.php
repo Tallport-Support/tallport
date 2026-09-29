@@ -16,6 +16,10 @@ trait CreatesApplication
     {
         $app = require __DIR__.'/../bootstrap/app.php';
 
+        // Don't read the local .env, so tests see the same configuration
+        // everywhere (phpunit.xml, plus .env.testing when it exists).
+        $app->loadEnvironmentFrom('.env.testing');
+
         $app->make(Kernel::class)->bootstrap();
 
         // With a cached config (bootstrap/cache/config.php) Laravel ignores the
