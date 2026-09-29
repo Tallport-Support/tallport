@@ -1,0 +1,86 @@
+<?php
+/**
+ * Send notifications to users by email and in browser.
+ */
+namespace App\Listeners;
+
+use App\Conversation;
+use App\Subscription;
+
+class SendNotificationToUsers
+{
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Handle the event.
+     */
+    public function handle($event)
+    {
+        $event_type = null;
+        $caused_by_user_id = null;
+        $extra_data = [];
+
+        // Detect event type by event class
+        switch (get_class($event)) {
+            case 'App\Events\UserReplied':
+                $caused_by_user_id = $event->thread->created_by_user_id;
+                $event_type = Subscription::EVENT_TYPE_USER_REPLIED;
+                break;
+            case 'App\Events\UserAddedNote':
+                $caused_by_user_id = $event->thread->created_by_user_id;
+                // When conversation is forwarded only notification
+                // about child forward conversation is sent.
+                if (!$event->thread->isForward()) {
+                    $event_type = Subscription::EVENT_TYPE_USER_ADDED_NOTE;
+                }
+                break;
+            case 'App\Events\UserCreatedConversation':
+                $caused_by_user_id = $event->conversation->created_by_user_id;
+                $event_type = Subscription::EVENT_TYPE_NEW;
+                break;
+            case 'App\Events\CustomerCreatedConversation':
+                // Do not send notification if conversation is spam.
+                if (!$event->conversation->isSpam()) {
+                    $event_type = Subscription::EVENT_TYPE_NEW;
+                }
+                break;
+            case 'App\Events\ConversationUserChanged':
+                $caused_by_user_id = $event->user->id;
+                $event_type = Subscription::EVENT_TYPE_ASSIGNED;
+                break;
+            case 'App\Events\UserMovedConversation':
+                $caused_by_user_id = $event->caused_by_user_id;
+                $extra_data['from_mailbox'] = $event->from_mailbox;
+                $event_type = Subscription::EVENT_TYPE_USER_MOVED;
+                break;
+            case 'App\Events\CustomerReplied':
+                // Do not send notifications to users if customer sent a reply
+                // to the conversation marked as Spam.
+                if (!empty($event->conversation) && $event->conversation->isSpam()) {
+                    return;
+                }
+                $event_type = Subscription::EVENT_TYPE_CUSTOMER_REPLIED;
+                break;
+        }
+        if (empty($event->conversation) || !$event_type) {
+            return;
+        }
+
+        // Ignore imported threads.
+        if (!empty($event->thread) && $event->thread->imported) {
+            return;
+        }
+        $conversation = $event->conversation;
+
+        // Using the last argument you can make event to be processed immediately
+        Subscription::registerEvent($event_type, $conversation, $caused_by_user_id, $extra_data);
+    }
+}
