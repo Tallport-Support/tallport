@@ -27,7 +27,7 @@ abstract class FeatureTestCase extends TestCase
         'freescout:clear-cache', 'config:cache', 'config:clear', 'route:cache', 'clear-compiled',
         'freescout:generate-vars', 'laroute:generate', 'freescout:module-laroute',
         'freescout:module-install', 'module:migrate', 'module:seed', 'migrate',
-        'freescout:fetch-emails', 'freescout:logout-users', 'freescout:after-app-update',
+        'freescout:fetch-emails', 'freescout:logout-users',
         'schedule:run', 'storage:link',
     ];
 

@@ -79,6 +79,13 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | S6 | low | `ModulesController ajax activate`, :335 | Reports `status: success` even when activation failed (only the flash type says so). |
 | S7 | low | `SystemController::action retry_job` | `sleep(1)` inside the web request. |
 | S8 | low | `app/Option.php` | The static `Option::$cache` isn't updated by `Option::set()` / `remove()`: stale values within one process. |
+| S9 | medium | `app/Jobs/SendAlert.php` :101 | With no recipients (no activated admins, no alert recipients) `$exception` is undefined → ErrorException in the job. Test: `testAlertWithoutRecipientsIsHarmless`. |
+| S10 | medium | `app/Jobs/SendAlert.php` | `$exception` is reset per recipient, so only the last recipient's failure is rethrown; earlier failures are only logged. |
+| S11 | high | `app/Console/Commands/CleanTmp.php` :49 | Deletes **any** directory in the system temp dir (any depth) named 32 hex characters and older than a day, not only FreeScout's — other programs' temp dirs on the server included. |
+| S12 | medium | `app/Console/Commands/ModuleUpdate.php` :54 | Uses the undefined local `$lastError` instead of `\WpApi::$lastError` → ErrorException whenever the modules directory can't be fetched. |
+| S13 | low | `app/Console/Commands/ModuleBuild.php` :78 | With an alias given, calls `freescout:module-laroute` without it, so all modules' routes are rebuilt. |
+| S14 | low | `app/Console/Commands/CreateUser.php` | Declining the confirmation still prints "User created with id:" (without an id). |
+| S15 | low | `app/Console/Commands/Update.php` :47 | Lowers `memory_limit` to 128M for the rest of the process. |
 
 ## Environment and dependencies
 
@@ -90,3 +97,4 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | E4 | low | libxml2 2.14+ | `DOMDocument::loadHTML` no longer wraps bare text in `<p>`, changing reply separation output. Production has 2.9.14. |
 | E5 | low | `vendor/` | The committed vendor can't be reproduced by Composer (`rachidlaasri/laravel-installer` differs from its release, `rap2hpoutre/laravel-log-viewer` has files removed). Matters for the Laravel upgrade. |
 | E6 | low | `artisan`, `public/index.php` | Laravel 5.5's `e()` isn't null-safe; the entry points define a safe one first. Anything bootstrapping the app another way (scripts, tests) breaks on `{{ null }}`. |
+| E7 | low (tests) | `overrides/nesbot/carbon` (Carbon 1.35) | With `Carbon::setTestNow()` set, `Carbon::now()` passes null to `strtotime()`, a deprecation since PHP 8.1 that becomes an exception: tests can't freeze time until Carbon is upgraded with Laravel; use times relative to the real clock. |
