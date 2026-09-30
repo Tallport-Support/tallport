@@ -422,9 +422,9 @@
             'dev_requirement' => false,
         ),
         'laravel/tinker' => array(
-            'pretty_version' => 'v1.0.7',
-            'version' => '1.0.7.0',
-            'reference' => 'e3086ee8cb1f54a39ae8dcb72d1c37d10128997d',
+            'pretty_version' => 'v1.0.9',
+            'version' => '1.0.9.0',
+            'reference' => 'eb0075527fdeeb1cc1d68bd4ca7d50256b30a827',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laravel/tinker',
             'aliases' => array(),
