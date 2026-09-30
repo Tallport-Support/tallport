@@ -245,9 +245,26 @@ class ConversationActionsTest extends FeatureTestCase
         $this->assertEquals(Folder::TYPE_UNASSIGNED, $this->folderType($conversation));
         $this->assertEquals(Thread::ACTION_TYPE_RESTORE_TICKET, $this->lastLineItem($conversation)->action_type);
 
+        // Deleting forever only works from the Deleted folder.
+        $this->assertSuccess($this->ajax($deleter, ['action' => 'delete_conversation', 'conversation_id' => $conversation->id]));
         $this->assertSuccess($this->ajax($deleter, ['action' => 'delete_conversation_forever', 'conversation_id' => $conversation->id]));
         $this->assertNull(Conversation::find($conversation->id));
         $this->assertSame(0, Thread::whereIn('id', $thread_ids)->count());
+    }
+
+    /**
+     * "Delete forever" is offered in the Deleted folder only; a conversation
+     * elsewhere must be deleted (moved to Deleted) first (C2).
+     */
+    public function testDeleteForeverOnlyFromDeletedFolder()
+    {
+        $admin = $this->createAdmin();
+        $conversation = $this->receiveConversation();
+
+        $response = $this->ajax($admin, ['action' => 'delete_conversation_forever', 'conversation_id' => $conversation->id]);
+
+        $this->assertSame('error', $response['status']);
+        $this->assertNotNull(Conversation::find($conversation->id));
     }
 
     public function testEmptyDeletedFolder()

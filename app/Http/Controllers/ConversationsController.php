@@ -1969,6 +1969,9 @@ class ConversationsController extends Controller
                     $response['msg'] = __('Conversation not found');
                 } elseif (!$user->can('delete', $conversation)) {
                     $response['msg'] = __('Not enough permissions');
+                } elseif ($conversation->state != Conversation::STATE_DELETED) {
+                    // Like the UI, which offers "Delete Forever" in the Deleted folder only.
+                    $response['msg'] = __('Only deleted conversations can be deleted forever.');
                 }
 
                 if (!$response['msg']) {
