@@ -553,6 +553,37 @@ class ConversationActionsTest extends FeatureTestCase
         $this->assertEquals(Thread::ACTION_TYPE_CUSTOMER_CHANGED, $this->lastLineItem($conversation)->action_type);
     }
 
+    /**
+     * A missing conversation gets an error message, not a 500 (C3, C4).
+     */
+    public function testMissingConversationIsReported()
+    {
+        $this->assertSame('Conversation not found', $this->ajax($this->agent, [
+            'action' => 'conversation_change_status', 'conversation_id' => 999999, 'status' => 'not_spam',
+        ])['msg']);
+        $this->assertSame('Conversation not found', $this->ajax($this->agent, [
+            'action' => 'conversation_change_customer', 'conversation_id' => 999999, 'customer_email' => 'nobody-known@customer.example.org',
+        ])['msg']);
+    }
+
+    /**
+     * Unknown addresses are refused with a message (C4); the change customer
+     * dialog creates the customer first (see testChangeCustomer).
+     */
+    public function testChangeCustomerToUnknownEmail()
+    {
+        $conversation = $this->receiveConversation();
+
+        $response = $this->ajax($this->agent, [
+            'action'          => 'conversation_change_customer',
+            'conversation_id' => $conversation->id,
+            'customer_email'  => 'nobody-known@customer.example.org',
+        ]);
+
+        $this->assertSame('Customer not found', $response['msg']);
+        $this->assertSame('casey@customer.example.org', $conversation->fresh()->customer_email);
+    }
+
     // Lists and panels loaded by the frontend.
 
     public function testFolderPagination()

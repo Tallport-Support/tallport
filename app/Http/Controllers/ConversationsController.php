@@ -648,7 +648,7 @@ class ConversationsController extends Controller
 
                 if ($request->status == 'not_spam') {
                     // Find previous status in threads
-                    $new_status = $conversation
+                    $new_status = !$conversation ? null : $conversation
                         ->threads()
                         ->orderBy('created_at', 'desc')
                         ->where('status', '!=', Thread::STATUS_SPAM)
@@ -1891,6 +1891,9 @@ class ConversationsController extends Controller
 
                 if (!$conversation) {
                     $response['msg'] = __('Conversation not found');
+                } elseif (!$target_customer) {
+                    // The change customer dialog creates new customers first.
+                    $response['msg'] = __('Customer not found');
                 }
                 if (!$response['msg'] && !$user->can('update', $conversation)) {
                     $response['msg'] = __('Not enough permissions');
@@ -1902,7 +1905,7 @@ class ConversationsController extends Controller
                 // Allow to change customer when user creates a customer
                 // while changing conversation's customer
                 // and APP_LIMIT_USER_CUSTOMER_VISIBILITY is enabled.
-                if (session()->get('user_created_customer') == $target_customer->id) {
+                if ($target_customer && session()->get('user_created_customer') == $target_customer->id) {
                     session()->forget('user_created_customer');
                 } else {
                     if (!$response['msg'] && $target_customer && !$user->can('view', $target_customer)) {
