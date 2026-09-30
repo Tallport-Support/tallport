@@ -53,3 +53,20 @@ jobs:
         env:
           DB_TEST_HOST: 127.0.0.1
         run: ./test.sh
+
+  code-style:
+    name: Code style (PHP_CodeSniffer)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: phpcs:4
+
+      # Rules and checked paths are in phpcs.xml.
+      - name: Check code style
+        run: phpcs

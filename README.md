@@ -153,9 +153,11 @@ Then:
   the intended behaviour call `$this->knownBug('C12')` and show up as
   incomplete until the bug is fixed.
 
-CI runs the tests on every push and pull request with PHP 8.3 and MariaDB
-(`.github/workflows/test.yml`), and publishes a coverage report for every
-push to `main` (`coverage.yml`).
+CI runs the tests on every push and pull request with PHP 8.3 and MariaDB,
+and checks code style with PHP_CodeSniffer using the rules in `phpcs.xml`
+(`.github/workflows/test.yml`; run `phpcs` locally to check before
+pushing). It also publishes a coverage report for every push to `main`
+(`coverage.yml`).
 
 ### Releasing
 
