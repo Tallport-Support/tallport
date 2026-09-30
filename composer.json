@@ -3,6 +3,7 @@
     "description": "Free self-hosted helpdesk and shared mailbox (Zendesk / Help Scout alternative)",
     "keywords": ["helpdesk", "help desk", "shared mailbox"],
     "license": "AGPL-3.0",
+    "version": "dev-main",
     "authors": [
         {
             "name": "The FreeScout Team",
@@ -386,6 +387,7 @@
             "vendor/laravel/framework/src/Illuminate/Console/Command.php",
             "vendor/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LaravelLogViewer.php",
             "vendor/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LogViewerController.php",
+            "vendor/rap2hpoutre/laravel-log-viewer/src/controllers/LogViewerController.php",
             "vendor/symfony/console/Descriptor/TextDescriptor.php",
             "vendor/symfony/console/Input/ArgvInput.php",
             "vendor/symfony/console/Input/ArrayInput.php",
@@ -500,8 +502,9 @@
             "vendor/erusev/parsedown/Parsedown.php",
             "vendor/tijsverkoyen/css-to-inline-styles/src/CssToInlineStyles.php",
             "vendor/tijsverkoyen/css-to-inline-styles/src/Css/Property/Processor.php",
+            "vendor/tijsverkoyen/css-to-inline-styles/src/Css/Property/Property.php",
             "vendor/html2text/html2text/src/Html2Text.php",
-            "vendor/phpunit/phpunit/src/Runner/PhpTestCase.php",
+            "vendor/phpunit/phpunit/src/Runner/PhptTestCase.php",
             "vendor/phpunit/phpunit/src/Util/PHP/AbstractPhpProcess.php",
             "vendor/phpunit/phpunit/src/Util/Xml/Loader.php",
             "vendor/laravel/framework/src/Illuminate/Http/Exceptions/PostTooLargeException.php"
@@ -545,6 +548,7 @@
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "platform-check": false
     }
 }

@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'freescout-helpdesk/freescout',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => '63b008c6d23ab8d8a78ccf0a616c83901250ce8e',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => null,
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -173,9 +173,9 @@
             'dev_requirement' => false,
         ),
         'freescout-helpdesk/freescout' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => '63b008c6d23ab8d8a78ccf0a616c83901250ce8e',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => null,
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

@@ -165,6 +165,27 @@ and checks code style with PHP_CodeSniffer using the rules in `phpcs.xml`
 pushing). It also publishes a coverage report for every push to `main`
 (`coverage.yml`).
 
+### Dependencies
+
+`vendor/` is committed, because installations update from the release
+zip and never run Composer. It must be exactly what Composer produces from
+`composer.lock`, with Composer 2.9.7 (the version CI uses):
+
+```bash
+rm -rf vendor
+composer install --no-dev --ignore-platform-reqs
+```
+
+Commit the result as it is. CI reinstalls `vendor/` the same way and fails
+if anything differs.
+
+Some vendor classes are patched: the patched copies are in `overrides/`,
+`composer.json` maps their namespaces there (`autoload.psr-4`), and the
+original files are deleted after install (`autoload.exclude-from-classmap`,
+used by a `post-autoload-dump` script). To patch another file, copy it to
+the same path under `overrides/`, add its namespace to `autoload.psr-4` if
+it isn't there yet, and add the original to `exclude-from-classmap`.
+
 ### Releasing
 
 ```bash

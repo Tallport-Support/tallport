@@ -70,3 +70,32 @@ jobs:
       # Rules and checked paths are in phpcs.xml.
       - name: Check code style
         run: phpcs
+
+  vendor:
+    name: vendor/ matches composer install
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, xml, imap, zip, gd, curl, intl, json
+          coverage: none
+          # Composer writes its own files into vendor/composer/, and they
+          # vary between Composer versions. Keep in step with README.md.
+          tools: composer:2.9.7
+
+      - name: Reinstall vendor/ from composer.lock
+        run: |
+          rm -rf vendor
+          composer install --no-dev --ignore-platform-reqs --no-interaction --no-progress
+
+      - name: Compare with the committed vendor/
+        run: |
+          if [ -n "$(git status --porcelain -- vendor composer.lock)" ]; then
+            git status --short -- vendor composer.lock | head -50
+            echo "::error::vendor/ differs from what composer install produces. See README.md, Dependencies."
+            exit 1
+          fi
