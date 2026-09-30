@@ -29,8 +29,8 @@
                     "shasum": ""
                 },
                 "require": {
-                    "illuminate/support": "^5.5|^6.0|^7.0",
-                    "illuminate/translation": "^5.5|^6.0|^7.0",
+                    "illuminate/support": "^5.5|^6.0|^7.0|^8.0",
+                    "illuminate/translation": "^5.5|^6.0|^7.0|^8.0",
                     "php": ">=7",
                     "symfony/finder": "~3.0|~4.0|^5.0"
                 },
@@ -72,8 +72,8 @@
                     "shasum": ""
                 },
                 "require": {
-                    "illuminate/filesystem": "^5.0|^6.0|^7.0",
-                    "illuminate/support": "^5.0|^6.0|^7.0",
+                    "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0",
+                    "illuminate/support": "^5.0|^6.0|^7.0|^8.0",
                     "php": ">=5.6.0"
                 },
                 "autoload": {
@@ -116,7 +116,7 @@
                 "require": {
                     "ext-zip": "*",
                     "guzzlehttp/guzzle": "*",
-                    "illuminate/support": "^5.0|^6.0|^7.0",
+                    "illuminate/support": "^5.0|^6.0|^7.0|^8.0",
                     "php": ">=5.5"
                 },
                 "autoload": {
@@ -147,8 +147,8 @@
                     "shasum": ""
                 },
                 "require": {
-                    "illuminate/filesystem": "^5.0|^6.0|^7.0",
-                    "illuminate/support": "^5.0|^6.0|^7.0",
+                    "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0",
+                    "illuminate/support": "^5.0|^6.0|^7.0|^8.0",
                     "natxet/cssmin": "3.*",
                     "php": ">=5.4.0",
                     "tedivm/jshrink": "~1.0"
@@ -173,13 +173,13 @@
 
         "symfony/debug": "4.4.*",
         "devfactory/minify": "1.0.7",
-        "fideloper/proxy": "4.2.1",
+        "fideloper/proxy": "4.3.0",
         "laravel/framework": "v7.30.7",
-        "laravel/tinker": "v2.0.0",
+        "laravel/tinker": "v2.3.0",
         "laravel/ui": "2.5.*",
         "mews/purifier": "dev-customized",
         "spatie/laravel-activitylog": "3.17.0",
-        "lord/laroute": "2.5.3",
+        "lord/laroute": "2.5.4",
         "axn/laravel-laroute": "1.6.0",
         "html2text/html2text": "4.1.0",
         "watson/rememberable": "4.0.1",
@@ -194,13 +194,13 @@
         "egulias/email-validator": "2.1.10",
         "symfony/console": "5.4.*",
         "javoscript/laravel-macroable-models": "1.0.4",
-        "ramsey/uuid": "3.9.6",
+        "ramsey/uuid": "4.2.*",
         "symfony/polyfill-mbstring": "v1.24.0",
         "webklex/php-imap": "4.1.1",
         "enshrined/svg-sanitize": "0.22.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "v3.2.9",
+        "barryvdh/laravel-debugbar": "v3.5.0",
         "filp/whoops": "2.14.5",
         "fzaninotto/faker": "v1.9.2",
         "mockery/mockery": "1.1.0",
@@ -318,7 +318,6 @@
             "Barryvdh\\Debugbar\\": "overrides/barryvdh/laravel-debugbar/src/",
             "Barryvdh\\Debugbar\\DataFormatter\\": "overrides/barryvdh/laravel-debugbar/src/DataFormatter/",
             "Barryvdh\\Debugbar\\DataCollector\\": "overrides/barryvdh/laravel-debugbar/src/DataCollector/",
-            "Ramsey\\Uuid\\": "overrides/ramsey/uuid/src/",
             "Rap2hpoutre\\LaravelLogViewer\\": "overrides/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/",
             "Symfony\\Component\\Console\\Input\\": "overrides/symfony/console/Input/",
             "Symfony\\Component\\Console\\Formatter\\": "overrides/symfony/console/Formatter/",
@@ -331,11 +330,6 @@
             "Whoops\\Handler\\": "overrides/filp/whoops/src/Whoops/Handler/",
             "Whoops\\Util\\": "overrides/filp/whoops/src/Whoops/Util/",
             "Psy\\": "overrides/psy/psysh/src/",
-            "Psy\\Input\\": "overrides/psy/psysh/src/Input/",
-            "Psy\\Output\\": "overrides/psy/psysh/src/Output/",
-            "Psy\\Command\\": "overrides/psy/psysh/src/Command/",
-            "Psy\\Command\\ListCommand\\": "overrides/psy/psysh/src/Command/ListCommand/",
-            "Psy\\VarDumper\\": "overrides/psy/psysh/src/VarDumper/",
             "TijsVerkoyen\\CssToInlineStyles\\": "overrides/tijsverkoyen/css-to-inline-styles/src/",
             "TijsVerkoyen\\CssToInlineStyles\\Css\\Property\\": "overrides/tijsverkoyen/css-to-inline-styles/src/Css/Property/",
             "Html2Text\\": "overrides/html2text/html2text/src/",
@@ -439,8 +433,6 @@
             "vendor/barryvdh/laravel-debugbar/src/DataCollector/QueryCollector.php",
             "vendor/barryvdh/laravel-debugbar/src/DataCollector/ViewCollector.php",
             "vendor/barryvdh/laravel-debugbar/src/JavascriptRenderer.php",
-            "vendor/ramsey/uuid/src/Uuid.php",
-            "vendor/ramsey/uuid/src/UuidFactory.php",
             "vendor/laravel/framework/src/Illuminate/Routing/Router.php",
             "vendor/laravel/framework/src/Illuminate/Console/Application.php",
             "vendor/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LaravelLogViewer.php",
@@ -527,21 +519,6 @@
             "vendor/chumper/zipper/src/Chumper/Zipper/Zipper.php",
             "vendor/psy/psysh/src/Shell.php",
             "vendor/psy/psysh/src/Configuration.php",
-            "vendor/psy/psysh/src/CodeCleaner.php",
-            "vendor/psy/psysh/src/Input/FilterOptions.php",
-            "vendor/psy/psysh/src/Input/ShellInput.php",
-            "vendor/psy/psysh/src/Output/ShellOutput.php",
-            "vendor/psy/psysh/src/Command/Command.php",
-            "vendor/psy/psysh/src/Command/ListCommand.php",
-            "vendor/psy/psysh/src/Command/TimeitCommand/TimeitVisitor.php",
-            "vendor/psy/psysh/src/Command/ListCommand/ClassConstantEnumerator.php",
-            "vendor/psy/psysh/src/Command/ListCommand/Enumerator.php",
-            "vendor/psy/psysh/src/Command/ListCommand/ClassEnumerator.php",
-            "vendor/psy/psysh/src/Command/ListCommand/ConstantEnumerator.php",
-            "vendor/psy/psysh/src/Command/ListCommand/FunctionEnumerator.php",
-            "vendor/psy/psysh/src/Exception/ErrorException.php",
-            "vendor/psy/psysh/src/Exception/BreakException.php",
-            "vendor/psy/psysh/src/VarDumper/Dumper.php",
             "vendor/laravel/framework/src/Illuminate/Contracts/Container/Container.php",
             "vendor/tijsverkoyen/css-to-inline-styles/src/CssToInlineStyles.php",
             "vendor/tijsverkoyen/css-to-inline-styles/src/Css/Property/Processor.php",
@@ -575,7 +552,6 @@
             "@php -r \"@mkdir('vendor/natxet/cssmin/src', 775);\""
         ],
         "pre-autoload-dump": [
-            "@php -r \"file_put_contents('vendor/psy/psysh/src/functions.php', '<?php require_once __DIR__ . \\'/../../../../overrides/psy/psysh/src/functions.php\\';');\"",
             "@php -r \"file_put_contents('vendor/laravel/framework/src/Illuminate/Support/helpers.php', '<?php require_once __DIR__ . \\'/../../../../../../overrides/laravel/framework/src/Illuminate/Support/helpers.php\\';');\"",
             "@php -r \"file_put_contents('vendor/spatie/laravel-activitylog/src/helpers.php', '<?php require_once __DIR__ . \\'/../../../../overrides/spatie/laravel-activitylog/src/helpers.php\\';');\""
         ],
