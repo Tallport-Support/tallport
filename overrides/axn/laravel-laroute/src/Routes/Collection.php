@@ -6,6 +6,7 @@
 namespace Axn\Laroute\Routes;
 
 use Illuminate\Routing\Route;
+use Illuminate\Support\Arr;
 use Lord\Laroute\Routes\Collection as BaseCollection;
 
 class Collection extends BaseCollection
@@ -77,6 +78,6 @@ class Collection extends BaseCollection
             }
         }
 
-        return array_only($data, ['uri', 'name']);
+        return Arr::only($data, ['uri', 'name']);
     }
 }

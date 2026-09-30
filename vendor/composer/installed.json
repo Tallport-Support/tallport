@@ -2,24 +2,23 @@
     "packages": [
         {
             "name": "axn/laravel-laroute",
-            "version": "1.5.0",
-            "version_normalized": "1.5.0.0",
+            "version": "1.6.0",
+            "version_normalized": "1.6.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AXN-Informatique/laravel-laroute.git",
-                "reference": "5c7ef400d74c047432fd9e3b257bd66358a64842"
+                "reference": "4feb9abb6bd1a7d946f4300906893f444a4a410d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AXN-Informatique/laravel-laroute/zipball/5c7ef400d74c047432fd9e3b257bd66358a64842",
-                "reference": "5c7ef400d74c047432fd9e3b257bd66358a64842",
+                "url": "https://api.github.com/repos/AXN-Informatique/laravel-laroute/zipball/4feb9abb6bd1a7d946f4300906893f444a4a410d",
+                "reference": "4feb9abb6bd1a7d946f4300906893f444a4a410d",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "^5.4|^6.0",
                 "lord/laroute": "^2.4"
             },
-            "time": "2019-08-29T10:34:14+00:00",
+            "time": "2020-08-25T11:15:16+00:00",
             "type": "library",
             "extra": {
                 "laravel": {
@@ -48,7 +47,7 @@
             "homepage": "https://github.com/AXN-Informatique/laravel-laroute",
             "support": {
                 "issues": "https://github.com/AXN-Informatique/laravel-laroute/issues",
-                "source": "https://github.com/AXN-Informatique/laravel-laroute/tree/master"
+                "source": "https://github.com/AXN-Informatique/laravel-laroute/tree/1.6.0"
             },
             "install-path": "../axn/laravel-laroute"
         },
@@ -68,8 +67,8 @@
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "^5.5|^6.0",
-                "illuminate/translation": "^5.5|^6.0",
+                "illuminate/support": "^5.5|^6.0|^7.0",
+                "illuminate/translation": "^5.5|^6.0|^7.0",
                 "php": ">=7",
                 "symfony/finder": "~3.0|~4.0"
             },
@@ -183,8 +182,8 @@
                 "shasum": ""
             },
             "require": {
-                "illuminate/filesystem": "^5.0|^6.0",
-                "illuminate/support": "^5.0|^6.0",
+                "illuminate/filesystem": "^5.0|^6.0|^7.0",
+                "illuminate/support": "^5.0|^6.0|^7.0",
                 "php": ">=5.6.0"
             },
             "type": "library",
@@ -227,7 +226,7 @@
             "require": {
                 "ext-zip": "*",
                 "guzzlehttp/guzzle": "*",
-                "illuminate/support": "^5.0|^6.0",
+                "illuminate/support": "^5.0|^6.0|^7.0",
                 "php": ">=5.5"
             },
             "type": "library",
@@ -258,8 +257,8 @@
                 "shasum": ""
             },
             "require": {
-                "illuminate/filesystem": "^5.0|^6.0",
-                "illuminate/support": "^5.0|^6.0",
+                "illuminate/filesystem": "^5.0|^6.0|^7.0",
+                "illuminate/support": "^5.0|^6.0|^7.0",
                 "natxet/cssmin": "3.*",
                 "php": ">=5.4.0",
                 "tedivm/jshrink": "~1.0"
@@ -1059,29 +1058,29 @@
         },
         {
             "name": "fideloper/proxy",
-            "version": "4.2.0",
-            "version_normalized": "4.2.0.0",
+            "version": "4.2.1",
+            "version_normalized": "4.2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fideloper/TrustedProxy.git",
-                "reference": "39a4c2165e578bc771f5dc031c273210a3a9b6d2"
+                "reference": "03085e58ec7bee24773fa5a8850751a6e61a7e8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fideloper/TrustedProxy/zipball/39a4c2165e578bc771f5dc031c273210a3a9b6d2",
-                "reference": "39a4c2165e578bc771f5dc031c273210a3a9b6d2",
+                "url": "https://api.github.com/repos/fideloper/TrustedProxy/zipball/03085e58ec7bee24773fa5a8850751a6e61a7e8a",
+                "reference": "03085e58ec7bee24773fa5a8850751a6e61a7e8a",
                 "shasum": ""
             },
             "require": {
-                "illuminate/contracts": "~5.0|~6.0",
+                "illuminate/contracts": "^5.0|^6.0|^7.0",
                 "php": ">=5.4.0"
             },
             "require-dev": {
-                "illuminate/http": "~5.6|~6.0",
-                "mockery/mockery": "~1.0",
+                "illuminate/http": "^5.0|^6.0|^7.0",
+                "mockery/mockery": "^1.0",
                 "phpunit/phpunit": "^6.0"
             },
-            "time": "2019-07-29T16:49:45+00:00",
+            "time": "2019-09-03T16:45:42+00:00",
             "type": "library",
             "extra": {
                 "laravel": {
@@ -1815,34 +1814,34 @@
         },
         {
             "name": "laravel/tinker",
-            "version": "v1.0.9",
-            "version_normalized": "1.0.9.0",
+            "version": "v2.0.0",
+            "version_normalized": "2.0.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/tinker.git",
-                "reference": "eb0075527fdeeb1cc1d68bd4ca7d50256b30a827"
+                "reference": "6c2f1a1873180f3ecece0ba34ff9146847bf8dec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/tinker/zipball/eb0075527fdeeb1cc1d68bd4ca7d50256b30a827",
-                "reference": "eb0075527fdeeb1cc1d68bd4ca7d50256b30a827",
+                "url": "https://api.github.com/repos/laravel/tinker/zipball/6c2f1a1873180f3ecece0ba34ff9146847bf8dec",
+                "reference": "6c2f1a1873180f3ecece0ba34ff9146847bf8dec",
                 "shasum": ""
             },
             "require": {
-                "illuminate/console": "~5.1|^6.0",
-                "illuminate/contracts": "~5.1|^6.0",
-                "illuminate/support": "~5.1|^6.0",
-                "php": ">=5.5.9",
-                "psy/psysh": "0.7.*|0.8.*|0.9.*",
-                "symfony/var-dumper": "~3.0|~4.0"
+                "illuminate/console": "^6.0|^7.0",
+                "illuminate/contracts": "^6.0|^7.0",
+                "illuminate/support": "^6.0|^7.0",
+                "php": "^7.2",
+                "psy/psysh": "^0.9",
+                "symfony/var-dumper": "^4.0|^5.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0|~5.0"
+                "phpunit/phpunit": "^8.0"
             },
             "suggest": {
-                "illuminate/database": "The Illuminate Database package (~5.1)."
+                "illuminate/database": "The Illuminate Database package (^6.0|^7.0)."
             },
-            "time": "2019-07-29T18:09:25+00:00",
+            "time": "2019-11-26T17:57:28+00:00",
             "type": "library",
             "extra": {
                 "laravel": {
@@ -1851,7 +1850,7 @@
                     ]
                 },
                 "branch-alias": {
-                    "dev-master": "1.0-dev"
+                    "dev-master": "2.x-dev"
                 }
             },
             "installation-source": "dist",
@@ -1879,7 +1878,7 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/tinker/issues",
-                "source": "https://github.com/laravel/tinker/tree/master"
+                "source": "https://github.com/laravel/tinker/tree/2.x"
             },
             "install-path": "../laravel/tinker"
         },

@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'axn/laravel-laroute' => array(
-            'pretty_version' => '1.5.0',
-            'version' => '1.5.0.0',
-            'reference' => '5c7ef400d74c047432fd9e3b257bd66358a64842',
+            'pretty_version' => '1.6.0',
+            'version' => '1.6.0.0',
+            'reference' => '4feb9abb6bd1a7d946f4300906893f444a4a410d',
             'type' => 'library',
             'install_path' => __DIR__ . '/../axn/laravel-laroute',
             'aliases' => array(),
@@ -164,9 +164,9 @@
             'dev_requirement' => false,
         ),
         'fideloper/proxy' => array(
-            'pretty_version' => '4.2.0',
-            'version' => '4.2.0.0',
-            'reference' => '39a4c2165e578bc771f5dc031c273210a3a9b6d2',
+            'pretty_version' => '4.2.1',
+            'version' => '4.2.1.0',
+            'reference' => '03085e58ec7bee24773fa5a8850751a6e61a7e8a',
             'type' => 'library',
             'install_path' => __DIR__ . '/../fideloper/proxy',
             'aliases' => array(),
@@ -422,9 +422,9 @@
             'dev_requirement' => false,
         ),
         'laravel/tinker' => array(
-            'pretty_version' => 'v1.0.9',
-            'version' => '1.0.9.0',
-            'reference' => 'eb0075527fdeeb1cc1d68bd4ca7d50256b30a827',
+            'pretty_version' => 'v2.0.0',
+            'version' => '2.0.0.0',
+            'reference' => '6c2f1a1873180f3ecece0ba34ff9146847bf8dec',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laravel/tinker',
             'aliases' => array(),
