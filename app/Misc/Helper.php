@@ -3267,6 +3267,18 @@ class Helper
         array_set(self::$memory_cache, $key, $value);
     }
 
+    /**
+     * "Tallport, based on FreeScout" with links, for footers and email
+     * branding. Keeps crediting the project Tallport is forked from.
+     */
+    public static function productCreditHtml($link_style = '')
+    {
+        $style = $link_style ? ' style="'.e($link_style).'"' : '';
+
+        return '<a href="'.e(config('app.tallport_url')).'"'.$style.' target="_blank">'.e(config('app.name')).'</a>, '
+            .e(__('based on')).' <a href="'.e(config('app.freescout_url')).'"'.$style.' target="_blank">FreeScout</a>';
+    }
+
     public static function isLocalStorage($disk = '')
     {
         if ($disk) {

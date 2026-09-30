@@ -718,7 +718,7 @@
     "Hello :user_name": "您好，:user_name",
     "Hi :user, an account has been created for you at :app_url": "您好，:user，已在 :app_url 為您建立帳號",
     "Home": "首頁",
-    "How to :%link_start%connect Gmail:%link_end% to FreeScout.": "如何將 Gmail :%link_start%連結:%link_end% 至 FreeScout。",
+    "How to :%link_start%connect Gmail:%link_end% to Tallport.": "如何將 Gmail :%link_start%連結:%link_end% 至 Tallport。",
     "If you are sure, type :delete and click the red button.": "若您確定，請輸入 :delete 並點擊紅色按鈕。",
     "Image will be re-sized to :dimensions. JPG, GIF, PNG accepted.": "圖片將調整為 :dimensions。接受 JPG、GIF、PNG 格式。",
     "Incorrect recipients": "收件人不正確",

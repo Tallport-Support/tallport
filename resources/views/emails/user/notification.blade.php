@@ -291,7 +291,7 @@
 			<link itemprop="target" href="{{ $conversation->url() }}"/>
 			<meta itemprop="name" content="{{ __('Open Conversation') }}"/>
 		</div>
-		<meta itemprop="description" content="{{ __('Open this conversation in :app_name', ['app_name' => 'FreeScout']) }}"/>
+		<meta itemprop="description" content="{{ __('Open this conversation in :app_name', ['app_name' => config('app.name')]) }}"/>
 	</div>
 </body>
 </html>

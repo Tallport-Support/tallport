@@ -114,7 +114,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         foreach (['boss@example.org', 'oncall@example.org'] as $recipient) {
             $alerts = $this->sentEmailsTo($recipient);
             $this->assertCount(1, $alerts, "$recipient should be alerted.");
-            $this->assertSame('[FreeScout] Fetching Problems - tallport.test', $alerts[0]->getSubject());
+            $this->assertSame('[Tallport] Fetching Problems - tallport.test', $alerts[0]->getSubject());
         }
         $this->assertEquals(SendLog::MAIL_TYPE_ALERT, SendLog::where('email', 'oncall@example.org')->value('mail_type'));
 
@@ -126,7 +126,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         // Working again: one "recovered" message.
         $this->setOption('fetch_emails_last_successful_run', time() - 60);
         $this->assertStringContainsString('Fetching is working', $this->runCommand('freescout:fetch-monitor'));
-        $this->assertSame('[FreeScout] Fetching Recovered - tallport.test', $this->sentEmailsTo('boss@example.org')[0]->getSubject());
+        $this->assertSame('[Tallport] Fetching Recovered - tallport.test', $this->sentEmailsTo('boss@example.org')[0]->getSubject());
     }
 
     public function testFetchMonitorDoesNotAlertWhenAlertsAreOff()
@@ -156,7 +156,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->assertStringContainsString('Monitoring finished', $output);
         $alert = $this->sentEmailsTo('boss@example.org');
         $this->assertCount(1, $alert);
-        $this->assertSame('[FreeScout] Logs Monitoring - tallport.test', $alert[0]->getSubject());
+        $this->assertSame('[Tallport] Logs Monitoring - tallport.test', $alert[0]->getSubject());
         $this->assertStringContainsString('SMTP connection refused', $alert[0]->getBody());
         $this->assertStringNotContainsString('login', strip_tags($alert[0]->getBody()), 'Only the selected logs.');
     }

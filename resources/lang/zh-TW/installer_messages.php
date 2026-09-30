@@ -7,7 +7,7 @@ return [
      * Shared translations.
      *
      */
-    'title'  => 'FreeScout 安裝程式',
+    'title'  => 'Tallport 安裝程式',
     'next'   => '下一步',
     'back'   => '上一步',
     'finish' => '安裝',
@@ -22,7 +22,7 @@ return [
      */
     'welcome' => [
         'templateTitle' => '歡迎使用',
-        'title'          => 'FreeScout 安裝程式',
+        'title'          => 'Tallport 安裝程式',
         'message'        => '簡單的安裝與設定精靈。',
         'next'           => '檢查伺服器環境',
     ],
@@ -175,7 +175,7 @@ return [
      *
      */
     'installed' => [
-        'success_log_message' => 'FreeScout 安裝程式成功安裝於 ',
+        'success_log_message' => 'Tallport 安裝程式成功安裝於 ',
     ],
 
     /*
@@ -205,7 +205,7 @@ return [
          * Shared translations.
          *
          */
-        'title' => 'FreeScout 更新程式',
+        'title' => 'Tallport 更新程式',
 
         /*
          *
@@ -240,7 +240,7 @@ return [
         ],
 
         'log' => [
-            'success_message' => 'FreeScout 安裝程式成功更新於 ',
+            'success_message' => 'Tallport 安裝程式成功更新於 ',
         ],
     ],
 ];

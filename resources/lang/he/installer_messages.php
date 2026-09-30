@@ -8,7 +8,7 @@ return [
      * תרגומים משותפים.
      *
      */
-    'title'  => 'מתקין FreeScout',
+    'title'  => 'מתקין Tallport',
     'next'   => 'השלב הבא',
     'back'   => 'הקודם',
     'finish' => 'התקן',
@@ -24,7 +24,7 @@ return [
      */
     'welcome' => [
         'templateTitle' => 'ברוכים הבאים',
-        'title'         => 'מתקין FreeScout',
+        'title'         => 'מתקין Tallport',
         'message'       => 'אשף התקנה והגדרה קל ופשוט.',
         'next'          => 'בדיקת דרישות',
     ],
@@ -181,7 +181,7 @@ return [
      *
      */
     'installed' => [
-        'success_log_message' => 'מתקין FreeScout הותקן בהצלחה ב- ',
+        'success_log_message' => 'מתקין Tallport הותקן בהצלחה ב- ',
     ],
 
     /*
@@ -214,7 +214,7 @@ return [
          * תרגומים משותפים.
          *
          */
-        'title' => 'מעדכן FreeScout',
+        'title' => 'מעדכן Tallport',
 
         /*
          *
@@ -252,7 +252,7 @@ return [
         ],
 
         'log' => [
-            'success_message' => 'מתקין FreeScout עודכן בהצלחה ב- ',
+            'success_message' => 'מתקין Tallport עודכן בהצלחה ב- ',
         ],
     ],
 ];

@@ -7,7 +7,7 @@ return [
      * Shared translations.
      *
      */
-    'title'  => 'FreeScout Installer',
+    'title'  => 'Tallport Installer',
     'next'   => 'Nächster Schritt',
     'back'   => 'Vorheriger Schritt',
     'finish' => 'Installieren',
@@ -22,7 +22,7 @@ return [
      */
     'welcome' => [
         'templateTitle' => 'Willkommen',
-        'title'         => 'FreeScout Installer',
+        'title'         => 'Tallport Installer',
         'message'       => 'Einfache Installation und Setup Wizard.',
         'next'          => 'Prüfe Vorraussetzungen',
     ],
@@ -175,7 +175,7 @@ return [
      *
      */
     'installed' => [
-        'success_log_message' => 'FreeScout Installer erfolgreich installiert am ',
+        'success_log_message' => 'Tallport Installer erfolgreich installiert am ',
     ],
 
     /*
@@ -205,7 +205,7 @@ return [
          * Shared translations.
          *
          */
-        'title' => 'FreeScout Updater',
+        'title' => 'Tallport Updater',
 
         /*
          *
@@ -240,7 +240,7 @@ return [
         ],
 
         'log' => [
-            'success_message' => 'FreeScout Installer erfolgreich aktualisiert am ',
+            'success_message' => 'Tallport Installer erfolgreich aktualisiert am ',
         ],
     ],
 ];

@@ -9,7 +9,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {!! \Helper::cspMetaTag() !!}
-    @php $app_name = \Eventy::filter('layout.title.name', config('app.name', 'FreeScout')); @endphp
+    @php $app_name = \Eventy::filter('layout.title.name', config('app.name', 'Tallport')); @endphp
     <title>@if ($__env->yieldContent('title_full'))@yield('title_full') @elseif ($__env->yieldContent('title'))@yield('title') - {{ $app_name }} @else{{ $app_name }}@endif</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
@@ -254,7 +254,7 @@
             && empty(app('request')->x_embed) && empty($__env->yieldContent('no_footer')))
             <div class="footer">
                 @if (!\Eventy::filter('footer.text', ''))
-                    &copy; 2018-{{ date('Y') }} <a href="{{ config('app.freescout_url') }}" target="blank">{{ \Config::get('app.name') }}</a> — {{ __('Free open source help desk & shared mailbox') }}
+                    &copy; 2018-{{ date('Y') }} {!! \Helper::productCreditHtml() !!} — {{ __('Free open source help desk & shared mailbox') }}
                 @else
                     {!! \Eventy::filter('footer.text', '') !!}
                 @endif

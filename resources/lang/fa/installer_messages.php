@@ -7,7 +7,7 @@ return [
      * Shared translations.
      *
      */
-    'title'  => 'نصب کننده FreeScout',
+    'title'  => 'نصب کننده Tallport',
     'next'   => 'مرحله بعدی',
     'back'   => 'مرحله قبلی',
     'finish' => 'نصب',
@@ -22,7 +22,7 @@ return [
      */
     'welcome' => [
         'templateTitle' => 'خوش امدید',
-        'title'         => 'نصب کننده FreeScout',
+        'title'         => 'نصب کننده Tallport',
         'message'       => 'نصب و راه اندازی آسان',
         'next'          => 'بررسی الزامات',
     ],
@@ -175,7 +175,7 @@ return [
      *
      */
     'installed' => [
-        'success_log_message' => 'نصب کننده FreeScout با موفقیت نصب شد',
+        'success_log_message' => 'نصب کننده Tallport با موفقیت نصب شد',
     ],
 
     /*
@@ -205,7 +205,7 @@ return [
          * Shared translations.
          *
          */
-        'title' => 'به روز رسانی FreeScout',
+        'title' => 'به روز رسانی Tallport',
 
         /*
          *
@@ -240,7 +240,7 @@ return [
         ],
 
         'log' => [
-            'success_message' => 'نصب کننده FreeScout با موفقیت به روز شد',
+            'success_message' => 'نصب کننده Tallport با موفقیت به روز شد',
         ],
     ],
 ];
