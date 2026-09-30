@@ -3,12 +3,19 @@
 # Publish a Tallport release that installations pick up through the built-in
 # updater (System > Status > Update Now, or `php artisan freescout:update`).
 #
-#   ./release.sh [version] [extra gh release create options]
+#   ./release.sh ["release notes"] [extra gh release create options]
+#   ./release.sh version ["release notes"] [extra gh release create options]
+#   ./release.sh -m "release notes" ...
 #
 # Without a version, the last number of the current version is incremented
-# (1.8.243.4 -> 1.8.243.5). Extra options go to `gh release create`, e.g.
-# --draft to review the release on GitHub before publishing it: installations
-# only see published releases that are not marked as pre-release.
+# (1.8.243.4 -> 1.8.243.5); give one only for a significant change.
+# Release notes are optional: they go at the top of the GitHub release,
+# above the list of changes GitHub generates, and into the release commit.
+# Any argument that isn't a version number is taken as the notes.
+#
+# Extra options go to `gh release create`, e.g. --draft to review the release
+# on GitHub before publishing it: installations only see published releases
+# that are not marked as pre-release.
 #
 # This bumps 'version' in config/app.php only; 'compatibility_version' is the
 # FreeScout version for FreeScout modules and is changed by hand.
@@ -30,10 +37,37 @@ fi
 repo=$(git remote get-url origin | sed -E 's#^(git@github\.com:|ssh://git@github\.com/|https://github\.com/)##; s#\.git$##')
 
 version=""
-if [ $# -gt 0 ] && [ "${1#-}" = "$1" ]; then
-    version="$1"
-    shift
-fi
+notes=""
+gh_options=()
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -m|--message)
+            if [ $# -lt 2 ]; then
+                echo "$1 needs the release notes as its value" >&2
+                exit 1
+            fi
+            notes="$2"
+            shift 2
+            ;;
+        -*)
+            # Options for gh release create (with their values, if any).
+            gh_options+=("$@")
+            break
+            ;;
+        *)
+            if [ -z "$version" ] && [ -z "$notes" ] && [[ "$1" =~ ^[0-9]+(\.[0-9]+)*$ ]]; then
+                version="$1"
+            elif [ -z "$notes" ]; then
+                notes="$1"
+            else
+                echo "Unexpected argument: $1 (quote the release notes)" >&2
+                exit 1
+            fi
+            shift
+            ;;
+    esac
+done
+
 if [ -z "$version" ]; then
     version=$(echo "$current" | awk -F. -v OFS=. '{ $NF++; print }')
 
@@ -98,8 +132,16 @@ if [ "$version" = "$current" ]; then
 else
     echo "Releasing $current -> $version"
     sed -i "s/^\([[:space:]]*'version'[[:space:]]*=>[[:space:]]*'\)$current'/\1$version'/" config/app.php
-    git commit --quiet -m "Release $version" config/app.php
+    if [ -n "$notes" ]; then
+        git commit --quiet -m "Release $version" -m "$notes" config/app.php
+    else
+        git commit --quiet -m "Release $version" config/app.php
+    fi
+fi
+
+if [ -n "$notes" ]; then
+    gh_options=(--notes "$notes" "${gh_options[@]}")
 fi
 
 git push --quiet origin main
-gh release create "$version" --repo "$repo" --target main --title "Tallport $version" --generate-notes "$@"
+gh release create "$version" --repo "$repo" --target main --title "Tallport $version" --generate-notes "${gh_options[@]}"
