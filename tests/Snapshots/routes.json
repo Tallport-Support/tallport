@@ -881,7 +881,7 @@
             "POST"
         ],
         "uri": "password/reset",
-        "name": null,
+        "name": "password.update",
         "action": "Auth\\ResetPasswordController@reset",
         "middleware": [
             "web",

@@ -81,6 +81,18 @@ class PagesAndEndpointsTest extends FeatureTestCase
         $this->assertSame(0, \DB::table('activity_logs')->where('log_name', \App\ActivityLog::NAME_EMAILS_FETCHING)->count());
     }
 
+    public function testLogPagesUseBootstrapThreePagination()
+    {
+        for ($i = 0; $i < 21; $i++) {
+            activity()->useLog(\App\ActivityLog::NAME_EMAILS_FETCHING)->log('fetch failed '.$i);
+        }
+
+        $page = $this->actingAs($this->admin)->get('/app-logs/fetch_errors')->assertStatus(200)->getContent();
+
+        $this->assertStringContainsString('<ul class="pagination"', $page);
+        $this->assertStringNotContainsString('page-link', $page);
+    }
+
     // Web installer.
 
     public function testInstallerIsClosedOnceInstalled()

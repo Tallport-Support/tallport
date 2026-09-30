@@ -181,7 +181,7 @@ class PolycastServiceProvider extends ServiceProvider
                     't' => $now->toDateTimeString(),
                     'r' => (int)$request->data['replying']
                 ];
-                \Cache::put($cache_key, $cache_data, 1);
+                \Cache::put($cache_key, $cache_data, 60);
 
                 // Job could not detect when user finishes to view converrsation.
                 // We are using cron.
@@ -192,7 +192,7 @@ class PolycastServiceProvider extends ServiceProvider
                 $conv_key = 'conv_view';
                 $conv_data = \Cache::get($conv_key) ?? [];
                 $conv_data[$viewing_conversation_id][$user->id] = $cache_data;
-                \Cache::put($conv_key, $conv_data, 20 /*minutes*/);
+                \Cache::put($conv_key, $conv_data, 20 * 60);
                 
                 // \DB::table('polycast_events')->insert([
                 //     'channels'   => json_encode([['name' => 'conv.view']]),

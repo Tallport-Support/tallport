@@ -19,7 +19,7 @@ class Helper
     /**
      * Default query cache time in seconds for remember() function.
      */
-    const QUERY_CACHE_TIME = 1000;
+    const QUERY_CACHE_TIME = 60000; // seconds (1000 minutes)
 
     /**
      * Text preview max length.

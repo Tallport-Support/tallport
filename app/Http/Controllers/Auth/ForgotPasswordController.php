@@ -74,7 +74,7 @@ class ForgotPasswordController extends Controller
         // return $response == Password::RESET_LINK_SENT
         //             ? $this->sendResetLinkResponse($response)
         //             : $this->sendResetLinkFailedResponse($request, $response);
-        return $this->sendResetLinkResponse(__('If an account exists for this email, you will receive a password reset link.'));
+        return $this->sendResetLinkResponse($request, __('If an account exists for this email, you will receive a password reset link.'));
     }
 
     protected function hasTooManyResetEmailAttempts(Request $request)

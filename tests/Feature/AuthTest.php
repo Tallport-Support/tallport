@@ -241,6 +241,36 @@ class AuthTest extends FeatureTestCase
         $this->get($without_token)->assertStatus(403);
     }
 
+    /**
+     * Non-ASCII and "%" in a file name (#533; "\" and ":" are removed when
+     * saving): the download works and sends the full name as filename*
+     * (since Laravel 6, with an ASCII filename= fallback).
+     */
+    public function testAttachmentDownloadWithUnusualFileName()
+    {
+        Storage::fake('local_app');
+        $agent = $this->createUser();
+        $mailbox = $this->createMailbox([$agent]);
+        $boundary = 'b1';
+        $name = 'Überweisung 50% C:\\scan.zip';
+        $this->receiveEmail($mailbox, $this->makeEmail([
+            'from'    => 'casey@customer.example.org',
+            'to'      => $mailbox->email,
+            'headers' => ['Content-Type' => 'multipart/mixed; boundary="'.$boundary.'"'],
+            'body'    => "--$boundary\nContent-Type: text/plain\n\nSee attached.\n"
+                ."--$boundary\nContent-Type: application/zip\nContent-Disposition: attachment; filename*=utf-8''".rawurlencode($name)."\nContent-Transfer-Encoding: base64\n\n"
+                .base64_encode('PK zip')."\n--$boundary--",
+        ]));
+        $attachment = Attachment::where('file_name', 'like', '%scan.zip')->first();
+        $this->assertNotNull($attachment);
+
+        $download = $this->get($attachment->url());
+        $download->assertStatus(200);
+        $disposition = $download->headers->get('Content-Disposition');
+        $this->assertStringContainsString('attachment', $disposition);
+        $this->assertStringContainsString("filename*=utf-8''".rawurlencode($attachment->file_name), $disposition);
+    }
+
     protected function conversationWithReply()
     {
         $agent = $this->createUser();

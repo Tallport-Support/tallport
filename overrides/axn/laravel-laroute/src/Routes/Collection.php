@@ -12,8 +12,15 @@ class Collection extends BaseCollection
 {
     public $module = null;
 
-    public function __construct(\Illuminate\Routing\RouteCollection $routes, $filter, $namespace, $module = null)
+    public function __construct($routes = [], $filter = null, $namespace = null, $module = null)
     {
+        // Laravel 6 collections create new instances from plain arrays (map, toArray...).
+        if (!$routes instanceof \Illuminate\Routing\RouteCollection) {
+            parent::__construct($routes);
+
+            return;
+        }
+
         $this->module = $module;
         $this->items = $this->parseRoutes($routes, $filter, $namespace);
     }

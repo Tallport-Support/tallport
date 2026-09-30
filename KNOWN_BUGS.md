@@ -54,5 +54,3 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 |---|---|---|---|
 | E3 | medium | PHP 8.4+ | Without the PECL `imap` extension, Webklex's fallback header parser gets `Date` empty, miscounts headers and keeps quotes in names (tests marked `@requires extension imap`). Production (PHP 8.3) has imap. |
 | E4 | low | libxml2 2.14+ | `DOMDocument::loadHTML` no longer wraps bare text in `<p>`, changing reply separation output. Production has 2.9.14. |
-| E6 | low | `artisan`, `public/index.php` | Laravel 5.5's `e()` isn't null-safe; the entry points define a safe one first. Anything bootstrapping the app another way (scripts, tests) breaks on `{{ null }}`. |
-| E7 | low (tests) | `overrides/nesbot/carbon` (Carbon 1.35) | With `Carbon::setTestNow()` set, `Carbon::now()` passes null to `strtotime()`, a deprecation since PHP 8.1 that becomes an exception: tests can't freeze time until Carbon is upgraded with Laravel; use times relative to the real clock. |

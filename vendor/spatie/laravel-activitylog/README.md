@@ -1,12 +1,13 @@
+<p align="center"><img src="/art/socialcard.png" alt="Social Card of Laravel Activity Log"></p>
+
 # Log activity inside your Laravel app
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-activitylog.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-activitylog)
-[![Build Status](https://img.shields.io/travis/spatie/laravel-activitylog/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-activitylog)
-[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-activitylog.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-activitylog)
-[![StyleCI](https://styleci.io/repos/61802818/shield)](https://styleci.io/repos/61802818)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/spatie/laravel-activitylog/run-tests?label=tests)](https://github.com/spatie/laravel-activitylog/actions/workflows/run-tests.yml)
+[![Check & fix styling](https://github.com/spatie/laravel-activitylog/workflows/Check%20&%20fix%20styling/badge.svg)](https://github.com/spatie/laravel-activitylog/actions/workflows/php-cs-fixer.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-activitylog.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-activitylog)
 
-The `spatie/laravel-activitylog` package provides easy to use functions to log the activities of the users of your app. It can also automatically log model events. 
+The `spatie/laravel-activitylog` package provides easy to use functions to log the activities of the users of your app. It can also automatically log model events.
 The Package stores all activity in the `activity_log` table.
 
 Here's a demo of how you can use it:
@@ -28,7 +29,7 @@ activity()
    ->causedBy($user)
    ->withProperties(['customProperty' => 'customValue'])
    ->log('Look, I logged something');
-   
+
 $lastLoggedActivity = Activity::all()->last();
 
 $lastLoggedActivity->subject; //returns an instance of an eloquent model
@@ -38,7 +39,7 @@ $lastLoggedActivity->description; //returns 'Look, I logged something'
 ```
 
 
-Here's an example on [event logging](https://docs.spatie.be/laravel-activitylog/v2/advanced-usage/logging-model-events).
+Here's an example on [event logging](https://docs.spatie.be/laravel-activitylog/v3/advanced-usage/logging-model-events).
 
 ```php
 $newsItem->name = 'updated name';
@@ -48,7 +49,7 @@ $newsItem->save();
 $activity = Activity::all()->last();
 
 $activity->description; //returns 'updated'
-$activity->subject; //returns the instance of NewsItem that was created
+$activity->subject; //returns the instance of NewsItem that was saved
 ```
 
 Calling `$activity->changes()` will return this array:
@@ -66,14 +67,20 @@ Calling `$activity->changes()` will return this array:
 ];
 ```
 
+## Support us
+
+[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/laravel-activitylog.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/laravel-activitylog)
+
+We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
+
+We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
 
 ## Documentation
-You'll find the documentation on [https://docs.spatie.be/laravel-activitylog/v2](https://docs.spatie.be/laravel-activitylog/v2).
+You'll find the documentation on [https://docs.spatie.be/laravel-activitylog](https://docs.spatie.be/laravel-activitylog).
 
 Find yourself stuck using the package? Found a bug? Do you have general questions or suggestions for improving the activity log? Feel free to [create an issue on GitHub](https://github.com/spatie/laravel-activitylog/issues), we'll try to address it as soon as possible.
 
 If you've found a security issue please mail [freek@spatie.be](mailto:freek@spatie.be) instead of using the issue tracker.
-
 
 ## Installation
 
@@ -138,28 +145,39 @@ return [
     'subject_returns_soft_deleted_models' => false,
 
     /*
-     * This model will be used to log activity. The only requirement is that
-     * it should be or extend the Spatie\Activitylog\Models\Activity model.
+     * This model will be used to log activity.
+     * It should be implements the Spatie\Activitylog\Contracts\Activity interface
+     * and extend Illuminate\Database\Eloquent\Model.
      */
     'activity_model' => \Spatie\Activitylog\Models\Activity::class,
-    
+
     /*
      * This is the name of the table that will be created by the migration and
      * used by the Activity model shipped with this package.
      */
     'table_name' => 'activity_log',
-];
 
+     /*
+      * This is the database connection that will be used by the migration and
+      * the Activity model shipped with this package. In case it's not set
+      * Laravel database.default will be used instead.
+      */
+    'database_connection' => env('ACTIVITY_LOGGER_DB_CONNECTION'),
+];
 ```
 
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information about recent changes.
 
+## Upgrading
+
+Please see [UPGRADING](UPGRADING.md) for details.
+
 ## Testing
 
 ``` bash
-$ composer test
+composer test
 ```
 
 ## Contributing
@@ -170,26 +188,13 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 If you discover any security related issues, please email freek@spatie.be instead of using the issue tracker.
 
-## Postcardware
-
-You're free to use this package, but if it makes it to your production environment we highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using.
-
-Our address is: Spatie, Samberstraat 69D, 2060 Antwerp, Belgium.
-
-We publish all received postcards [on our company website](https://spatie.be/en/opensource/postcards).
-
 ## Credits
 
 - [Freek Van der Herten](https://github.com/freekmurze)
 - [Sebastian De Deyne](https://github.com/sebastiandedeyne)
 - [All Contributors](../../contributors)
 
-## Support us
-
-Spatie is a webdesign agency based in Antwerp, Belgium. You'll find an overview of all our open source projects [on our website](https://spatie.be/opensource).
-
-Does your business depend on our contributions? Reach out and support us on [Patreon](https://www.patreon.com/spatie). 
-All pledges will be dedicated to allocating workforce on maintenance and new awesome stuff.
+And a special thanks to [Caneco](https://twitter.com/caneco) for the logo ✨
 
 ## License
 

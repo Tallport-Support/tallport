@@ -2,6 +2,194 @@
 
 All notable changes to `spatie/laravel-activitylog` will be documented in this file
 
+## 3.17.0 - 2021-03-02
+
+- drop PHP 7.2 support - [#855](https://github.com/spatie/laravel-activitylog/pull/855)
+
+## 3.16.1 - 2020-11-03
+
+- add PHP 8.0 support - [#806](https://github.com/spatie/laravel-activitylog/pull/806)
+
+## 3.16.0 - 2020-09-16
+
+- use `nullableMorphs()` in default migration - [#707](https://github.com/spatie/laravel-activitylog/pull/707)
+- add support for snake and camel cased related model attribute logging - [#721](https://github.com/spatie/laravel-activitylog/pull/721)
+
+## 3.15.0 - 2020-09-14
+
+- Add multiple/chained relation attribute logging support - [#784](https://github.com/spatie/laravel-activitylog/pull/784)
+
+## 3.14.3 - 2020-09-09
+
+- Add support for Laravel 8
+
+## 3.14.2 - 2020-05-19
+
+- fix `retrieved` event logging
+
+## 3.14.1 - 2020-03-23
+
+- revert breaking changes in `v3.14.0`
+
+## 3.14.0 - 2020-03-23 - BC
+
+Please use `v3.14.1` instead - this release is breaking because of the new column. There is also a `v4.0.0-rc.1` release that equals to this one.
+
+- add `\Spatie\Activitylog\ActivityLogger::event()` method and column [#702](https://github.com/spatie/laravel-activitylog/pull/702)
+
+## 3.13.0 - 2020-03-13
+
+- add `\Spatie\Activitylog\ActivityLogger::withoutLogs()` method [#695](https://github.com/spatie/laravel-activitylog/pull/695)
+
+## 3.12.0 - 2020-03-13
+
+- respect custom date casts [#627](https://github.com/spatie/laravel-activitylog/pull/627)
+
+## 3.11.4 - 2020-03-11
+
+- remove `spatie/string` dependency [#690](https://github.com/spatie/laravel-activitylog/pull/690)
+
+## 3.11.3 - 2020-03-10
+
+- fix performance issue around global vs model log disabling [#682](https://github.com/spatie/laravel-activitylog/pull/682)
+
+## 3.11.2 - 2020-03-10
+
+- fix Laravel 7 array/json casted attributes [#680](https://github.com/spatie/laravel-activitylog/pull/680)
+
+## 3.11.1 - 2020-03-02
+
+- fix requirements
+
+## 3.11.0 - 2020-03-02
+
+- add support for Laravel 7
+
+## 3.10.0 - 2020-02-22
+
+- add ability to manually set created at date - [#622](https://github.com/spatie/laravel-activitylog/pull/622)
+
+## 3.9.2 - 2020-02-04
+
+- drop support for Laravel 5
+
+## 3.9.1 - 2019-10-15
+
+- fix default database connection - [#616](https://github.com/spatie/laravel-activitylog/pull/616)
+
+## 3.9.0 - 2019-10-06
+
+- add anonymous causer with `null` value - [#605](https://github.com/spatie/laravel-activitylog/pull/605)
+- fix relationships to allow snake case keys - [#602](https://github.com/spatie/laravel-activitylog/pull/602)
+- add JOSN sub-key attribute logging - [#601](https://github.com/spatie/laravel-activitylog/pull/601)
+
+## 3.8.0 - 2019-09-04
+
+- add support for Laravel 6
+- change fields with value `null` to be strictly compared when logging dirty fields [#453](https://github.com/spatie/laravel-activitylog/pull/453)
+- add composite indexes for subject and causer to migration
+
+## 3.7.2 - 2019-08-28
+
+- do not export docs folder
+
+## 3.7.1 - 2019-07-24
+
+- fix default database connection env var
+
+## 3.7.0 - 2019-07-23
+
+- add database connection to configuration `activitylog.database_connection` and `ACTIVITY_LOGGER_DB_CONNECTION` env var [#568](https://github.com/spatie/laravel-activitylog/pull/568)
+
+## 3.6.3 - 2019-07-23
+
+- fix deprecated `array_` helper [#569](https://github.com/spatie/laravel-activitylog/pull/569)
+
+## 3.6.2 - 2019-07-16
+
+- fix existing description [#563](https://github.com/spatie/laravel-activitylog/pull/563)
+
+## 3.6.1 - 2019-05-29
+
+- fix nullable date attributes [#546](https://github.com/spatie/laravel-activitylog/pull/546)
+
+## 3.6.0 - 2019-05-28
+
+- update `properties` column type from `text` to `json` [#525](https://github.com/spatie/laravel-activitylog/pull/525)
+- update `subject_id` and `causer_id` column type from `integer` to `big_integer` and `unsigned` [#527](https://github.com/spatie/laravel-activitylog/pull/527)
+- fix attribute getter support in `DetectsChanges` trait [#534](https://github.com/spatie/laravel-activitylog/pull/534)
+- fix old attributes retrieval in `DetectsChanges` trait [#537](https://github.com/spatie/laravel-activitylog/pull/537)
+- clean up old attributes in `DetectsChanges` trait [#538](https://github.com/spatie/laravel-activitylog/pull/538)
+
+## 3.5.0 - 2019-04-15
+
+- add days option to clean command [#497](https://github.com/spatie/laravel-activitylog/pull/497)
+- add `LogsActivity::$submitEmptyLogs` [#514](https://github.com/spatie/laravel-activitylog/pull/514)
+
+## 3.4.0 - 2019-04-09
+
+- use `Illuminate\Contracts\Config\Repository` instead of `Illuminate\Config\Repository` [#505](https://github.com/spatie/laravel-activitylog/pull/505)
+- fix `logChanges()` [#512](https://github.com/spatie/laravel-activitylog/pull/512)
+
+## 3.3.0 - 2019-04-08
+
+- drop support for Laravel 5.7 and lower
+- drop support for PHP 7.1 and lower
+
+## 3.2.2 - 2019-02-27
+
+- add support for Laravel 5.8
+- fix logging hidden attributes
+- fix logging for a causer model without a provider
+- add code coverage reporting for repository
+
+## 3.2.1 - 2019-02-01
+
+- use Str:: and Arr:: instead of helper methods
+
+## 3.2.0 - 2019-01-29
+
+- add `ActivityLogger::tap()` method
+- add `LogsActivity::tapActivity()` method
+- the `ActivityLogger` will work on an activity model instance instead of cache variables
+
+## 3.1.2 - 2018-10-18
+
+- add `shouldLogUnguarded()` method
+- fix typo in methodname `shouldLogOnlyDirty()`
+
+## 3.1.1 - 2018-10-17
+
+- fix `$logUnguarded`
+
+## 3.1.0 - 2018-10-17
+
+- add `$logUnguarded`
+
+## 3.0.0 - 2018-10-16 
+- the preferred way to get changes on an `Activity` model is through the `changes` property instead of the `changes()` function 
+- the `activity` relation of the `CausesActivity` trait has been renamed to `actions`
+- the `activity` relation of the `LogsActivity` trait has been renamed to `activities`
+- the deprecated `loggedActivity` relation has been removed
+- the `HasActivity` trait has been removed.
+- fix for setting a custom table name for the `Activity` model via the `$table` property
+- support for PHP 7.0 has been dropped
+
+## 2.8.4. - 2018-09-23
+- improve migration
+
+## 2.8.3 - 2018-09-01
+- add support for L5.7
+
+## 2.8.2 - 2018-07-28
+- allow `null` to be passed to `causedBy`
+
+## 2.8.1 - 2018-07-28
+- make sure a fresh instance of `ActivityLogger` is used
+
+## 2.8.0 - 2018-07-21
+- add `enableLogging()` and `disableLogging()`
+
 ## 2.7.0 - 2018-06-18
 - add ability to ignore changes to attributes specified in  `$logAttributesToIgnore`
 

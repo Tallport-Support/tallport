@@ -9,8 +9,15 @@ use Lord\Laroute\Routes\Exceptions\ZeroRoutesException;
 
 class Collection extends \Illuminate\Support\Collection
 {
-    public function __construct(RouteCollection $routes, $filter, $namespace)
+    public function __construct($routes = [], $filter = null, $namespace = null)
     {
+        // Laravel 6 collections create new instances from plain arrays (map, toArray...).
+        if (!$routes instanceof RouteCollection) {
+            parent::__construct($routes);
+
+            return;
+        }
+
         $this->items = $this->parseRoutes($routes, $filter, $namespace);
     }
 

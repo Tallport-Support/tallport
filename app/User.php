@@ -601,7 +601,15 @@ class User extends Authenticatable
             ]);
 
             // Remove dot from month name.
-            $formatted = $date->formatLocalized($format);
+            $formatter = new \IntlDateFormatter(
+                config('app.locale'),
+                \IntlDateFormatter::LONG,
+                \IntlDateFormatter::NONE,
+                config('app.timezone'),
+                \IntlDateFormatter::GREGORIAN,
+                $format
+            );
+            $formatted = datefmt_format($formatter, strtotime($date->toDateTimeString()));
             if (!strstr($format, '.')) {
                 $formatted = str_replace('.', '', $formatted);
             }

@@ -84,7 +84,7 @@ class CheckConvViewers extends Command
 
         if ($need_update) {
             // Update conversation cache data.
-            \Cache::put($cache_key, $cache_data, 20 /*minutes*/);
+            \Cache::put($cache_key, $cache_data, 20 * 60);
         }
         /*$cache_key = 'conv_view_'.$this->user_id.'_'.$this->conversation_id;
         $cache_data = \Cache::get($cache_key);
@@ -103,7 +103,7 @@ class CheckConvViewers extends Command
                 unset($cache_data[$this->conversation_id][$this->user_id]);
 
                 // Update conversation cache data.
-                \Cache::put($cache_key, $cache_data, 1);
+                \Cache::put($cache_key, $cache_data, 60);
             }
 
             // Create event to let other users know that user finished viewing conversation.

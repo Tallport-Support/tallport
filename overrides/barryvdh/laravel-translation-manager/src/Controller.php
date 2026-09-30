@@ -77,7 +77,8 @@ class Controller extends BaseController
             ->with('numTranslations', $numTranslations)
             ->with('numTodo', $numTodo)
             ->with('numChanged', $numChanged)
-            ->with('editUrl', action('\Barryvdh\TranslationManager\Controller@postEdit', [$group]))
+            // Laravel 6 refuses a null route parameter; the URL is only used once a group is selected.
+            ->with('editUrl', $group ? action('\Barryvdh\TranslationManager\Controller@postEdit', [$group]) : '')
             ->with('deleteEnabled', (bool) $this->manager->getConfig('delete_enabled'));
     }
 

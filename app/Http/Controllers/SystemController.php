@@ -198,7 +198,7 @@ class SystemController extends Controller
         // Check new version if enabled
         $new_version_available = false;
         if (!\Config::get('app.disable_updating')) {
-            $latest_version = \Cache::remember('latest_version', 15, function () {
+            $latest_version = \Cache::remember('latest_version', 15 * 60, function () {
                 try {
                     return \Updater::getVersionAvailable();
                 } catch (\Exception $e) {

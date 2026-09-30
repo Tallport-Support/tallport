@@ -22,7 +22,6 @@ use App\SendLog;
 use App\Thread;
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 use Validator;
 
 class ConversationsController extends Controller
@@ -2579,7 +2578,7 @@ class ConversationsController extends Controller
      */
     public function ajaxHtmlSendLog()
     {
-        $thread_id = Input::get('thread_id');
+        $thread_id = request()->input('thread_id');
         if (!$thread_id) {
             abort(404);
         }
@@ -2621,7 +2620,7 @@ class ConversationsController extends Controller
      */
     public function ajaxHtmlShowOriginal()
     {
-        $thread_id = Input::get('thread_id');
+        $thread_id = request()->input('thread_id');
         if (!$thread_id) {
             abort(404);
         }
@@ -2663,7 +2662,7 @@ class ConversationsController extends Controller
      */
     public function ajaxHtmlChangeCustomer()
     {
-        $conversation_id = Input::get('conversation_id');
+        $conversation_id = request()->input('conversation_id');
         if (!$conversation_id) {
             abort(404);
         }
@@ -2689,7 +2688,7 @@ class ConversationsController extends Controller
      */
     public function ajaxHtmlMoveConv()
     {
-        $conversation_id = Input::get('conversation_id');
+        $conversation_id = request()->input('conversation_id');
         if (!$conversation_id) {
             abort(404);
         }
@@ -2718,7 +2717,7 @@ class ConversationsController extends Controller
      */
     public function ajaxHtmlMergeConv()
     {
-        $conversation_id = Input::get('conversation_id');
+        $conversation_id = request()->input('conversation_id');
         if (!$conversation_id) {
             abort(404);
         }
@@ -2760,8 +2759,8 @@ class ConversationsController extends Controller
     {
         $users = collect([]);
 
-        $mailbox_id = Input::get('mailbox_id');
-        $user_id = Input::get('user_id');
+        $mailbox_id = request()->input('mailbox_id');
+        $user_id = request()->input('user_id');
 
         $user = auth()->user();
 
@@ -2802,7 +2801,7 @@ class ConversationsController extends Controller
      */
     public function ajaxHtmlDefaultRedirect()
     {
-        $mailbox_id = Input::get('mailbox_id');
+        $mailbox_id = request()->input('mailbox_id');
         if (!$mailbox_id) {
             abort(404);
         }
@@ -3044,10 +3043,10 @@ class ConversationsController extends Controller
             $filters_list = \Eventy::filter('search.filters_list_customers', Customer::$search_filters, $mode, $filters, $q);
         }
 
-        $mailboxes = \Cache::remember('search_filter_mailboxes_'.$user->id, 5, function () use ($user) {
+        $mailboxes = \Cache::remember('search_filter_mailboxes_'.$user->id, 5 * 60, function () use ($user) {
             return $user->mailboxesCanView();
         });
-        $users = \Cache::remember('search_filter_users_'.$user->id, 5, function () use ($user, $mailboxes) {
+        $users = \Cache::remember('search_filter_users_'.$user->id, 5 * 60, function () use ($user, $mailboxes) {
             return \Eventy::filter('search.assignees', $user->whichUsersCanView($mailboxes), $user, $mailboxes);
         });
         $search_mailbox = null;
