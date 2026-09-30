@@ -155,54 +155,92 @@ class IncomingEmailEdgeCasesTest extends FeatureTestCase
 
     /**
      * An agent who answered a notification by email and then emails again in
-     * that same thread (replying to their own email) should get a second
-     * reply saved.
+     * that same thread (replying to their own email) adds a note.
      */
-    public function testAgentFollowingUpOnOwnEmailedReply()
+    public function testAgentFollowingUpOnOwnEmailedReplyAddsNote()
     {
-        $this->knownBug('F1');
-
         [$conversation, $notification] = $this->notificationForAgent();
         $this->receiveEmail($this->mailbox, $this->makeEmail([
             'from' => $this->agent->email, 'to' => $this->mailbox->email, 'subject' => 'Re: '.$notification->getSubject(),
             'message_id' => 'agent-answer@agent.example.org', 'in_reply_to' => $notification->getId(),
             'body' => 'First emailed answer.',
         ]));
+        $this->captured_mail->flush();
 
         $this->receiveEmail($this->mailbox, $this->makeEmail([
             'from' => $this->agent->email, 'to' => $this->mailbox->email, 'subject' => 'Re: '.$notification->getSubject(),
             'in_reply_to' => 'agent-answer@agent.example.org', 'body' => 'Second emailed answer.',
         ]));
 
-        $thread = Thread::where('body', 'like', '%Second emailed answer.%')->first();
-        $this->assertNotNull($thread, 'The follow-up was dropped.');
-        $this->assertEquals($conversation->id, $thread->conversation_id);
-        $this->assertEquals($this->agent->id, $thread->created_by_user_id);
+        $this->assertNoteFromAgent($conversation, 'Second emailed answer.');
     }
 
     /**
      * An agent answering by email in the thread of their own UI reply (e.g.
-     * they were copied on it) should be saved as their reply.
+     * they were copied on it) adds a note; the customer stays the same.
      */
-    public function testAgentAnsweringOwnUiReplyByEmail()
+    public function testAgentAnsweringOwnUiReplyByEmailAddsNote()
     {
-        $this->knownBug('F3');
-
         $conversation = $this->receiveFromCustomer();
         $this->postAjax($this->agent, '/conversation/ajax', [
             'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>First answer</p>',
         ]);
         $reply_id = $this->sentEmailsTo('casey@customer.example.org')[0]->getId();
+        $this->captured_mail->flush();
 
         $this->receiveEmail($this->mailbox, $this->makeEmail([
             'from' => $this->agent->email, 'to' => $this->mailbox->email, 'subject' => 'Re: Question about my order',
             'in_reply_to' => $reply_id, 'body' => 'One more thing from the agent.',
         ]));
 
-        $thread = Thread::where('body', 'like', '%One more thing from the agent.%')->first();
+        $this->assertNoteFromAgent($conversation, 'One more thing from the agent.');
+    }
+
+    public function testAgentWhoIsTheConversationsCustomerRepliesAsCustomer()
+    {
+        $conversation = $this->receiveFromCustomer(['from' => $this->agent->email, 'message_id' => 'own@agent.example.org']);
+        $this->assertSame($this->agent->email, $conversation->customer_email);
+
+        $this->receiveEmail($this->mailbox, $this->makeEmail([
+            'from' => $this->agent->email, 'to' => $this->mailbox->email, 'subject' => 'Re: Question about my order',
+            'in_reply_to' => 'own@agent.example.org', 'body' => 'Adding to my own question.',
+        ]));
+
+        $thread = Thread::where('body', 'like', '%Adding to my own question.%')->first();
         $this->assertEquals($conversation->id, $thread->conversation_id);
-        $this->assertEquals(Thread::TYPE_MESSAGE, $thread->type);
+        $this->assertEquals(Thread::TYPE_CUSTOMER, $thread->type);
+    }
+
+    public function testEmailFromUserWithoutAccessStaysCustomerMessage()
+    {
+        $outsider = $this->createUser(['email' => 'outsider@example.org']);
+        $conversation = $this->receiveFromCustomer(['message_id' => 'first@customer.example.org']);
+
+        $this->receiveEmail($this->mailbox, $this->makeEmail([
+            'from' => $outsider->email, 'to' => $this->mailbox->email, 'subject' => 'Re: Question about my order',
+            'in_reply_to' => 'first@customer.example.org', 'body' => 'Outsider chiming in.',
+        ]));
+
+        $thread = Thread::where('body', 'like', '%Outsider chiming in.%')->first();
+        $this->assertEquals(Thread::TYPE_CUSTOMER, $thread->type);
+        $this->assertNull($thread->created_by_user_id);
+    }
+
+    protected function assertNoteFromAgent(Conversation $conversation, $body)
+    {
+        $thread = Thread::where('body', 'like', '%'.$body.'%')->first();
+        $this->assertNotNull($thread, 'The email was dropped.');
+        $this->assertEquals($conversation->id, $thread->conversation_id);
+        $this->assertEquals(Thread::TYPE_NOTE, $thread->type);
         $this->assertEquals($this->agent->id, $thread->created_by_user_id);
+
+        $customer_id = $conversation->customer_id;
+        $conversation->refresh();
+        $this->assertSame('casey@customer.example.org', $conversation->customer_email, 'The customer did not change.');
+        $this->assertEquals($customer_id, $conversation->customer_id);
+        $this->assertCount(0, $this->sentEmailsTo('casey@customer.example.org'), 'Nothing is sent to the customer.');
+
+        $this->actingAs($this->agent)->get('/conversation/'.$conversation->id.'?folder_id='.$conversation->folder_id)->assertStatus(200)->assertSee($body);
     }
 
     // Agents forwarding customer email in.

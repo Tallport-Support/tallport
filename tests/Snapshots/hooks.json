@@ -423,6 +423,7 @@
         "name": "conversation.note_added",
         "arguments": 2,
         "files": [
+            "app/Console/Commands/FetchEmails.php",
             "app/Conversation.php",
             "app/Http/Controllers/ConversationsController.php",
             "app/Thread.php"

@@ -9,6 +9,7 @@ use App\Email;
 use App\Events\ConversationCustomerChanged;
 use App\Events\CustomerCreatedConversation;
 use App\Events\CustomerReplied;
+use App\Events\UserAddedNote;
 use App\Events\UserReplied;
 use App\Jobs\SendEmailReplyError;
 use App\Mailbox;
@@ -742,17 +743,7 @@ class FetchEmails extends Command
                             // Customer replied to his own message
                             $prev_thread = Thread::where('message_id', $prev_message_id)->first();
                         }
-
-                        // Reply from user to his reply to the notification
-                        if (!$prev_thread
-                            && ($prev_thread = Thread::where('message_id', $prev_message_id)->first())
-                            && $prev_thread->created_by_user_id
-                            && $prev_thread->created_by_user->hasEmail($from)
-                        ) {
-                            $user_id = $user->id;
-                            $message_from_customer = false;
-                            $is_reply = true;
-                        }
+                        // An agent emailing into this thread is saved as their note further below.
                     }
                 }
 
@@ -1048,13 +1039,22 @@ class FetchEmails extends Command
                 }
                 //}
 
-                if (\Eventy::filter('fetch_emails.should_save_thread', true, $data) !== false) {
-                    // SendAutoReply listener will check bounce flag and will not send an auto reply if this is an auto responder.
-                    $new_thread = $this->saveCustomerThread($mailbox, $data['message_id'], $data['prev_thread'], $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['subject'], $data['body'], $data['attachments'], $data['message']->getHeader(), $data['date']);
-                } else {
+                // An agent emailing into a conversation's thread outside the notification
+                // flow (e.g. replying to a copy of their own reply) adds a note.
+                $note_user = null;
+                if ($data['prev_thread'] && !$is_bounce) {
+                    $note_user = $this->getUserEmailingIntoConversation($data['from'], $data['prev_thread']->conversation);
+                }
+
+                if (\Eventy::filter('fetch_emails.should_save_thread', true, $data) === false) {
                     $this->line('['.date('Y-m-d H:i:s').'] Hook fetch_emails.should_save_thread returned false. Skipping message.');
                     $this->setSeen($message, $mailbox);
                     return;
+                } elseif ($note_user) {
+                    $new_thread = $this->saveUserNote($data['message_id'], $data['prev_thread'], $note_user, $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['body'], $data['attachments'], $data['message']->getHeader(), $data['date']);
+                } else {
+                    // SendAutoReply listener will check bounce flag and will not send an auto reply if this is an auto responder.
+                    $new_thread = $this->saveCustomerThread($mailbox, $data['message_id'], $data['prev_thread'], $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['subject'], $data['body'], $data['attachments'], $data['message']->getHeader(), $data['date']);
                 }
             } else {
                 // SAVE SUPPORT AGENT MESSAGE.
@@ -1524,6 +1524,96 @@ class FetchEmails extends Command
 
         event(new UserReplied($conversation, $thread));
         \Eventy::action('conversation.user_replied', $conversation, $thread);
+
+        return $thread;
+    }
+
+    /**
+     * Active user who sent an email into a conversation they can view, unless
+     * they are that conversation's customer.
+     */
+    public function getUserEmailingIntoConversation($from, $conversation)
+    {
+        if (!$from || !$conversation) {
+            return null;
+        }
+
+        $user = User::nonDeleted()->where('email', $from)->first() ?: User::findByAlternateEmail($from);
+        if (!$user || $user->status != User::STATUS_ACTIVE || !$user->can('view', $conversation)) {
+            return null;
+        }
+
+        $customer = Customer::getByEmail($from);
+        if ($customer && $customer->id == $conversation->customer_id) {
+            return null;
+        }
+
+        return $user;
+    }
+
+    /**
+     * Save an email from a user as their note in the conversation.
+     * Nothing is sent to the customer.
+     */
+    public function saveUserNote($message_id, $prev_thread, $user, $from, $to, $cc, $bcc, $body, $attachments, $headers, $date)
+    {
+        $now = config('app.use_mail_date_on_fetching') ? $date : date('Y-m-d H:i:s');
+
+        $conversation = $prev_thread->conversation;
+
+        $prev_has_attachments = $conversation->has_attachments;
+        if (!$conversation->has_attachments && count($attachments)) {
+            $conversation->has_attachments = true;
+            $conversation->save();
+        }
+
+        $thread = new Thread();
+        $thread->conversation_id = $conversation->id;
+        $thread->user_id = $conversation->user_id;
+        $thread->type = Thread::TYPE_NOTE;
+        $thread->status = $conversation->status;
+        $thread->state = Thread::STATE_PUBLISHED;
+        $thread->message_id = $message_id;
+        $thread->headers = $this->headerToStr($headers);
+        $thread->body = $body;
+        $thread->from = $from;
+        $thread->setTo($to);
+        $thread->setCc($cc);
+        $thread->setBcc($bcc);
+        $thread->source_via = Thread::PERSON_USER;
+        $thread->source_type = Thread::SOURCE_TYPE_EMAIL;
+        $thread->customer_id = $conversation->customer_id;
+        $thread->created_by_user_id = $user->id;
+        $thread->created_at = $now;
+        $thread->updated_at = $now;
+        $thread->save();
+
+        $body_changed = false;
+        $saved_attachments = $this->saveAttachments($attachments, $thread->id);
+        if ($saved_attachments) {
+            $thread->body = $this->replaceCidsWithAttachmentUrls($thread->body, $saved_attachments, $conversation, $prev_has_attachments);
+            $body_changed = true;
+
+            foreach ($saved_attachments as $saved_attachment) {
+                if (!$saved_attachment['attachment']->embedded) {
+                    $thread->has_attachments = true;
+                    break;
+                }
+            }
+        }
+
+        $new_body = Thread::replaceBase64ImagesWithAttachments($thread->body);
+        if ($new_body != $thread->body) {
+            $thread->body = $new_body;
+            $body_changed = true;
+        }
+
+        if ($body_changed) {
+            $thread->save();
+        }
+
+        event(new UserAddedNote($conversation, $thread));
+        \Eventy::action('conversation.note_added', $conversation, $thread);
 
         return $thread;
     }
