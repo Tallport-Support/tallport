@@ -355,7 +355,9 @@ class EmailConversationLoopTest extends FeatureTestCase
 
     public function testFetchingTheSameEmailAgainDoesNothing()
     {
-        $options = ['message_id' => 'once@customer.example.org'];
+        // The exact same email: a rebuilt one could get a different Date
+        // header, which counts as a new email reusing the Message-ID.
+        $options = ['message_id' => 'once@customer.example.org', 'date' => 'Wed, 30 Sep 2026 10:00:00 +0000'];
         $this->receiveCustomerEmail($options);
         $this->receiveCustomerEmail($options);
 
