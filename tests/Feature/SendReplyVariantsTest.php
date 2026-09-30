@@ -112,10 +112,12 @@ class SendReplyVariantsTest extends FeatureTestCase
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
         $this->assertSame('first@customer.example.org', $conversation->customer_email);
 
-        // One email to all of them (see C13 in KNOWN_BUGS.md: all end up in To).
+        // One email: the first recipient in To, the others in Cc.
         $emails = $this->sentEmailsTo('first@customer.example.org');
         $this->assertCount(1, $emails);
-        $this->assertSame($emails, $this->sentEmailsTo('second@customer.example.org'));
+        $this->assertSame(['first@customer.example.org'], array_keys($emails[0]->getTo()));
+        $this->assertSame(['second@customer.example.org'], array_keys($emails[0]->getCc() ?: []));
+        $this->assertSame(['second@customer.example.org'], $conversation->getCcArray());
     }
 
     public function testNewConversationSentSeparatelyToEachRecipient()

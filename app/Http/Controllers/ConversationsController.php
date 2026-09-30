@@ -1119,13 +1119,15 @@ class ConversationsController extends Controller
                     $thread->edited_by_user_id = null;
                     $thread->edited_at = null;
                     $thread->body = $body;
-                    if ($is_create && !$is_multiple && count($to_array) > 1) {
-                        $thread->setTo($to_array);
-                    } else {
-                        $thread->setTo($to);
-                    }
+                    $thread->setTo($to);
                     // We save CC and BCC as is and filter emails when sending replies
-                    $thread->setCc($request->cc);
+                    if ($is_create && !$is_multiple && count($to_array) > 1) {
+                        // A new conversation to several recipients: the first one
+                        // in To, the others in Cc (like the conversation's Cc).
+                        $thread->setCc(array_merge(array_values(array_diff($to_array, [$to])), $request->cc ?: []));
+                    } else {
+                        $thread->setCc($request->cc);
+                    }
                     $thread->setBcc($request->bcc);
                     if ($attachments_info['has_attachments'] && !$is_forward) {
                         $thread->has_attachments = true;
