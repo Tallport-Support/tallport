@@ -232,6 +232,20 @@ class RemainingAjaxActionsTest extends FeatureTestCase
         $this->assertSame(403, $this->postAjax($this->agent, '/system/ajax', ['action' => 'update'])->status());
     }
 
+    /**
+     * APP_DISABLE_UPDATING must stop updates, not only hide the button (S3).
+     */
+    public function testUpdateRefusedWhenUpdatingIsDisabled()
+    {
+        config(['app.disable_updating' => true]);
+        \Updater::shouldReceive('update')->never();
+
+        $response = $this->postAjax($this->admin, '/system/ajax', ['action' => 'update'])->json();
+
+        $this->assertSame('error', $response['status']);
+        $this->assertStringContainsString('disabled', $response['msg']);
+    }
+
     public function testModuleActionsWithoutModule()
     {
         $ajax = function ($data) {

@@ -271,6 +271,17 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->assertStringContainsString('You have the latest version installed: '.config('app.version'), $output);
     }
 
+    public function testUpdateCommandRefusedWhenUpdatingIsDisabled()
+    {
+        config(['app.disable_updating' => true]);
+        \Updater::shouldReceive('isNewVersionAvailable')->never();
+        \Updater::shouldReceive('update')->never();
+
+        $output = $this->runCommand('freescout:update', ['--force' => true]);
+
+        $this->assertStringContainsString('Updating is disabled', $output);
+    }
+
     public function testModuleLicenseCheckWithoutNetwork()
     {
         $this->assertStringContainsString('Checking licenses finished', $this->runCommand('freescout:module-check-licenses'));

@@ -70,7 +70,6 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 |---|---|---|---|
 | S1 | medium | `SettingsController` :305 | Saving the emails section without `settings[mail_password]` → 500 (undefined index). |
 | S2 | high | `SettingsController::processSave` | Every `env` setting of a section is written to `.env`, as an empty value when absent from the request; a partial form post blanks those values. |
-| S3 | security | `SystemController::ajax update`, `freescout:update` | `APP_DISABLE_UPDATING` only hides the UI; the update action and the artisan command still run. |
 | S4 | low | `SystemController::ajax check_updates` | With updating disabled it returns `status: error` together with a `msg_success`. |
 | S5 | medium | `ModulesController ajax delete`, :595 | Recursively deletes `Modules/<Name>` without deactivating it; reports success even when the module doesn't exist. |
 | S6 | low | `ModulesController ajax activate`, :335 | Reports `status: success` even when activation failed (only the flash type says so). |

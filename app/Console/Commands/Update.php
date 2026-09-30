@@ -44,6 +44,12 @@ class Update extends Command
             return;
         }
 
+        if (config('app.disable_updating')) {
+            $this->error('Updating is disabled (APP_DISABLE_UPDATING).');
+
+            return;
+        }
+
         @ini_set('memory_limit', '128M');
 
         if (\Updater::isNewVersionAvailable(config('app.version'))) {
