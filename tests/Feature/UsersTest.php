@@ -426,6 +426,36 @@ class UsersTest extends FeatureTestCase
         $this->assertEquals(Thread::ACTION_TYPE_USER_CHANGED, $conversation->threads()->orderBy('id', 'desc')->first()->action_type);
     }
 
+    /**
+     * Conversations of a deleted user go to the chosen colleague, but only
+     * if that colleague can access the mailbox; otherwise they're unassigned (U4).
+     */
+    public function testDeleteUserReassignsOnlyToUsersWithAccess()
+    {
+        $leaving = $this->createUser();
+        $colleague = $this->createUser();
+        $outsider = $this->createUser();
+        $this->mailbox->users()->attach([$leaving->id, $colleague->id]);
+        $this->mailbox->syncPersonalFolders([$leaving->id, $colleague->id]);
+        $conversations = [];
+        foreach (['first', 'second'] as $n) {
+            $this->receiveEmail($this->mailbox, $this->makeEmail(['from' => $n.'@customer.example.org', 'to' => $this->mailbox->email, 'subject' => $n]));
+            $conversation = \App\Conversation::where('mailbox_id', $this->mailbox->id)->where('subject', $n)->first();
+            $this->postAjax($leaving, '/conversation/ajax', ['action' => 'conversation_change_user', 'conversation_id' => $conversation->id, 'user_id' => $leaving->id]);
+            $conversations[] = $conversation;
+        }
+
+        $this->postAjax($this->admin, '/users/ajax', ['action' => 'delete_user', 'user_id' => $leaving->id, 'assign_user' => [$this->mailbox->id => $outsider->id]]);
+        $this->assertNull($conversations[0]->fresh()->user_id, 'Someone without access to the mailbox must not get its conversations.');
+        $this->assertNull($conversations[1]->fresh()->user_id);
+
+        $staying = $this->createUser();
+        $this->mailbox->users()->attach($staying->id);
+        $this->postAjax($staying, '/conversation/ajax', ['action' => 'conversation_change_user', 'conversation_id' => $conversations[0]->id, 'user_id' => $staying->id]);
+        $this->postAjax($this->admin, '/users/ajax', ['action' => 'delete_user', 'user_id' => $staying->id, 'assign_user' => [$this->mailbox->id => $colleague->id]]);
+        $this->assertEquals($colleague->id, $conversations[0]->fresh()->user_id);
+    }
+
     public function testCannotDeleteYourselfAndOnlyAdminsDelete()
     {
         $agent = $this->createUser();

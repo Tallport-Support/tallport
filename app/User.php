@@ -1355,6 +1355,21 @@ class User extends Authenticatable
         return $this->hasManageMailboxPermission(0, Mailbox::ACCESS_PERM_ASSIGNED);
     }
 
+    /**
+     * Whether conversations of this (deleted) user can be assigned to the
+     * given user: an active user, other than this one, with access to the
+     * conversation's mailbox.
+     */
+    private function canTakeOverConversation($user_id, $conversation)
+    {
+        $assignee = self::find($user_id);
+
+        return $assignee
+            && $assignee->id != $this->id
+            && $assignee->isActive()
+            && $conversation->mailbox->userHasAccess($assignee->id);
+    }
+
     public function deleteUser($auth_user, $assign_user)
     {
         // We have to process conversations one by one to move them to Unassigned folder,
@@ -1364,9 +1379,10 @@ class User extends Authenticatable
 
         $this->conversations->each(function ($conversation) use ($auth_user, $assign_user) {
             // We don't fire ConversationUserChanged event to avoid sending notifications to users
-            if (!empty($assign_user) 
-                && !empty($assign_user[$conversation->mailbox_id]) 
+            if (!empty($assign_user)
+                && !empty($assign_user[$conversation->mailbox_id])
                 && (int) $assign_user[$conversation->mailbox_id] != -1
+                && $this->canTakeOverConversation((int) $assign_user[$conversation->mailbox_id], $conversation)
             ) {
                 // Set assignee.
                 // In this case conversation stays assigned, just assignee changes.
