@@ -69,7 +69,7 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | # | Severity | Where | Bug |
 |---|---|---|---|
 | S1 | medium | `SettingsController` :305 | Saving the emails section without `settings[mail_password]` → 500 (undefined index). |
-| S2 | high | `SettingsController::processSave` | Every `env` setting of a section is written to `.env`, as an empty value when absent from the request; a partial form post blanks those values. |
+| S2 | low | `SettingsController::processSave` | Every `env` setting of a section is written to `.env`, as an empty value when absent from the request. Intended for checkboxes (an unticked box isn't sent), and every such setting is in its section's form, so only hand-made requests that leave out a text or select field blank it. |
 | S4 | low | `SystemController::ajax check_updates` | With updating disabled it returns `status: error` together with a `msg_success`. |
 | S5 | medium | `ModulesController ajax delete`, :595 | Recursively deletes `Modules/<Name>` without deactivating it; reports success even when the module doesn't exist. |
 | S6 | low | `ModulesController ajax activate`, :335 | Reports `status: success` even when activation failed (only the flash type says so). |
