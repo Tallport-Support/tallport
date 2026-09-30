@@ -276,6 +276,60 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->assertStringContainsString('Checking licenses finished', $this->runCommand('freescout:module-check-licenses'));
     }
 
+    /**
+     * clean-tmp may only remove FreeScout's own temp files and SwiftMailer's
+     * cache directories, never other programs' files (S11).
+     */
+    public function testCleanTmpRemovesOnlyItsOwnFiles()
+    {
+        $dir = sys_get_temp_dir().'/tallport-tmp-'.uniqid();
+        mkdir($dir);
+        $old = time() - 8 * 86400;
+        $make = function ($path, $mtime = null, $is_dir = false) use ($dir) {
+            $full = $dir.'/'.$path;
+            if (!is_dir(dirname($full))) {
+                mkdir(dirname($full), 0777, true);
+            }
+            $is_dir ? mkdir($full) : file_put_contents($full, 'x');
+            touch($full, $mtime ?: time());
+        };
+        $hex = function ($n) {
+            return str_repeat(dechex($n), 32);
+        };
+        $prefix = \Helper::getTempFilePrefix();
+
+        $make($prefix.'old', $old);                        // FreeScout's, old: remove
+        $make($prefix.'new');                              // FreeScout's, new: keep
+        $make('other-program-file', $old);                 // not ours: keep
+        $make($hex(1).'/body', $old);                      // SwiftMailer cache, old: remove
+        touch($dir.'/'.$hex(1), $old);
+        $make($hex(2), $old, true);                        // empty SwiftMailer-like dir, old: remove
+        $make($hex(3).'/body');                            // SwiftMailer cache, recent: keep
+        $make($hex(4).'/database.sqlite', $old);           // other contents: keep
+        touch($dir.'/'.$hex(4), $old);
+        $make('project/'.$hex(5).'/body', $old);           // nested: keep
+        touch($dir.'/project/'.$hex(5), $old);
+
+        try {
+            (new \App\Console\Commands\CleanTmp())->cleanDirectory($dir);
+            $left = [];
+            foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::SELF_FIRST) as $file) {
+                $left[] = substr($file->getPathname(), strlen($dir) + 1);
+            }
+            sort($left);
+        } finally {
+            exec('rm -rf '.escapeshellarg($dir));
+        }
+
+        $this->assertSame([
+            $hex(3), $hex(3).'/body',
+            $hex(4), $hex(4).'/database.sqlite',
+            $prefix.'new',
+            'other-program-file',
+            'project', 'project/'.$hex(5), 'project/'.$hex(5).'/body',
+        ], $left);
+    }
+
     public function testCheckRequirements()
     {
         $output = $this->runCommand('freescout:check-requirements');

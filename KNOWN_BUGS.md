@@ -83,7 +83,6 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | S8 | low | `app/Option.php` | The static `Option::$cache` isn't updated by `Option::set()` / `remove()`: stale values within one process. |
 | S9 | medium | `app/Jobs/SendAlert.php` :101 | With no recipients (no activated admins, no alert recipients) `$exception` is undefined → ErrorException in the job. Test: `testAlertWithoutRecipientsIsHarmless`. |
 | S10 | medium | `app/Jobs/SendAlert.php` | `$exception` is reset per recipient, so only the last recipient's failure is rethrown; earlier failures are only logged. |
-| S11 | high | `app/Console/Commands/CleanTmp.php` :49 | Deletes **any** directory in the system temp dir (any depth) named 32 hex characters and older than a day, not only FreeScout's — other programs' temp dirs on the server included. |
 | S12 | medium | `app/Console/Commands/ModuleUpdate.php` :54 | Uses the undefined local `$lastError` instead of `\WpApi::$lastError` → ErrorException whenever the modules directory can't be fetched. |
 | S13 | low | `app/Console/Commands/ModuleBuild.php` :78 | With an alias given, calls `freescout:module-laroute` without it, so all modules' routes are rebuilt. |
 | S14 | low | `app/Console/Commands/CreateUser.php` | Declining the confirmation still prints "User created with id:" (without an id). |

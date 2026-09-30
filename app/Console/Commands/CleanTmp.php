@@ -39,15 +39,46 @@ class CleanTmp extends Command
      */
     public function handle()
     {
-        // General cleaning.
-        // Remove 1 week old FreeScout files.
-        \Helper::shellExec('find '.\Helper::getTempDir().' -mtime +7 -type f -name '.\Helper::getTempFilePrefix().'* -exec rm -r -f {} \;');
-
-        // Remove temporary 1 day old SwiftMailer files.
-        // Example: /tmp/a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6/body
-        // https://github.com/freescout-help-desk/freescout/issues/5558
-        \Helper::shellExec('find '.\Helper::getTempDir().' -mtime +1 -type d -regextype posix-extended -regex ".*/[a-f0-9]{32}" -exec rm -r -f {} \;');
+        $this->cleanDirectory(\Helper::getTempDir());
 
         $this->comment("Done");
+    }
+
+    /**
+     * Remove the application's old files from a temp directory: its own temp
+     * files after a week, and SwiftMailer's cache directories after a day.
+     * Only direct children are looked at, so other programs' files (also in
+     * subdirectories) are left alone.
+     */
+    public function cleanDirectory($dir)
+    {
+        $prefix = \Helper::getTempFilePrefix();
+        $week_ago = time() - 7 * 86400;
+        $day_ago = time() - 86400;
+
+        foreach (scandir($dir) ?: [] as $name) {
+            $path = $dir.DIRECTORY_SEPARATOR.$name;
+
+            if (strpos($name, $prefix) === 0 && is_file($path) && !is_link($path)) {
+                if (filemtime($path) < $week_ago) {
+                    @unlink($path);
+                }
+                continue;
+            }
+
+            // SwiftMailer's disk cache: /tmp/<32 hex>/body.
+            // https://github.com/freescout-help-desk/freescout/issues/5558
+            if (preg_match('/^[a-f0-9]{32}$/', $name) && is_dir($path) && !is_link($path)
+                && filemtime($path) < $day_ago
+            ) {
+                $contents = array_values(array_diff(scandir($path) ?: [], ['.', '..']));
+                if ($contents === [] || $contents === ['body'] && is_file($path.DIRECTORY_SEPARATOR.'body')) {
+                    if ($contents) {
+                        @unlink($path.DIRECTORY_SEPARATOR.'body');
+                    }
+                    @rmdir($path);
+                }
+            }
+        }
     }
 }
