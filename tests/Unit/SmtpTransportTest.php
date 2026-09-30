@@ -56,6 +56,22 @@ class SmtpTransportTest extends TestCase
         $this->assertGreaterThan(1, count($this->authenticators($this->transport(['port' => 587, 'encryption' => 'tls']))));
     }
 
+    public function testNoEncryptionAcceptsSelfSignedStarttls()
+    {
+        $options = $this->transport(['port' => 25, 'encryption' => ''])->getStream()->getStreamOptions();
+
+        $this->assertFalse($options['ssl']['verify_peer']);
+        $this->assertTrue($options['ssl']['allow_self_signed']);
+    }
+
+    public function testEncryptedConnectionsVerifyCertificates()
+    {
+        foreach ([['port' => 465, 'encryption' => 'ssl'], ['port' => 587, 'encryption' => 'tls']] as $config) {
+            $options = $this->transport($config)->getStream()->getStreamOptions();
+            $this->assertNotFalse($options['ssl']['verify_peer'] ?? true, json_encode($config));
+        }
+    }
+
     public function testSmtpTimeout()
     {
         config(['mail.smtp_timeout' => 17]);

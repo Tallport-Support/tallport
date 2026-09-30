@@ -200,6 +200,18 @@ class MailManager implements FactoryContract
             $transport->setAuthenticators([new XOAuth2Authenticator()]);
         }
 
+        // "No encryption" (approved 2026-09-30): SwiftMailer sent such mail in
+        // plain text; Symfony Mailer still switches to STARTTLS when offered,
+        // so a self-signed certificate must not stop sending. Never weaker
+        // than the plain text before; "ssl" and "tls" keep full verification.
+        if (empty($config['encryption']) && $transport->getStream() instanceof SocketStream) {
+            $transport->getStream()->setStreamOptions(['ssl' => [
+                'verify_peer'       => false,
+                'verify_peer_name'  => false,
+                'allow_self_signed' => true,
+            ]]);
+        }
+
         // SMTP Timeout.
         if (config('mail.smtp_timeout') && $transport->getStream() instanceof SocketStream) {
             $transport->getStream()->setTimeout((float) config('mail.smtp_timeout'));
