@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit64bffde1b7cac85fa3f8dda736859c94
+class ComposerStaticInit1c42f765d4d6a0e198a640b45d091d23
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -877,7 +877,7 @@ class ComposerStaticInit64bffde1b7cac85fa3f8dda736859c94
         ),
         'Doctrine\\Common\\Lexer\\' =>
         array (
-            0 => __DIR__ . '/..' . '/doctrine/lexer/lib/Doctrine/Common/Lexer',
+            0 => __DIR__ . '/..' . '/doctrine/lexer/src',
         ),
         'Doctrine\\Common\\Cache\\' =>
         array (
@@ -1186,6 +1186,7 @@ class ComposerStaticInit64bffde1b7cac85fa3f8dda736859c94
         'Brick\\Math\\Exception\\NumberFormatException' => __DIR__ . '/..' . '/brick/math/src/Exception/NumberFormatException.php',
         'Brick\\Math\\Exception\\RoundingNecessaryException' => __DIR__ . '/..' . '/brick/math/src/Exception/RoundingNecessaryException.php',
         'Brick\\Math\\Internal\\Calculator' => __DIR__ . '/..' . '/brick/math/src/Internal/Calculator.php',
+        'Brick\\Math\\Internal\\CalculatorRegistry' => __DIR__ . '/..' . '/brick/math/src/Internal/CalculatorRegistry.php',
         'Brick\\Math\\Internal\\Calculator\\BcMathCalculator' => __DIR__ . '/..' . '/brick/math/src/Internal/Calculator/BcMathCalculator.php',
         'Brick\\Math\\Internal\\Calculator\\GmpCalculator' => __DIR__ . '/..' . '/brick/math/src/Internal/Calculator/GmpCalculator.php',
         'Brick\\Math\\Internal\\Calculator\\NativeCalculator' => __DIR__ . '/..' . '/brick/math/src/Internal/Calculator/NativeCalculator.php',
@@ -1433,7 +1434,8 @@ class ComposerStaticInit64bffde1b7cac85fa3f8dda736859c94
         'Doctrine\\Common\\EventManagerInterface' => __DIR__ . '/..' . '/doctrine/event-manager/src/EventManagerInterface.php',
         'Doctrine\\Common\\EventSubscriber' => __DIR__ . '/..' . '/doctrine/event-manager/src/EventSubscriber.php',
         'Doctrine\\Common\\EventSubscriberRegistry' => __DIR__ . '/..' . '/doctrine/event-manager/src/EventSubscriberRegistry.php',
-        'Doctrine\\Common\\Lexer\\AbstractLexer' => __DIR__ . '/..' . '/doctrine/lexer/lib/Doctrine/Common/Lexer/AbstractLexer.php',
+        'Doctrine\\Common\\Lexer\\AbstractLexer' => __DIR__ . '/..' . '/doctrine/lexer/src/AbstractLexer.php',
+        'Doctrine\\Common\\Lexer\\Token' => __DIR__ . '/..' . '/doctrine/lexer/src/Token.php',
         'Doctrine\\DBAL\\ArrayParameterType' => __DIR__ . '/..' . '/doctrine/dbal/src/ArrayParameterType.php',
         'Doctrine\\DBAL\\ArrayParameters\\Exception' => __DIR__ . '/..' . '/doctrine/dbal/src/ArrayParameters/Exception.php',
         'Doctrine\\DBAL\\ArrayParameters\\Exception\\MissingNamedParameter' => __DIR__ . '/..' . '/doctrine/dbal/src/ArrayParameters/Exception/MissingNamedParameter.php',
@@ -5447,6 +5449,7 @@ class ComposerStaticInit64bffde1b7cac85fa3f8dda736859c94
         'Ramsey\\Uuid\\Guid\\GuidBuilder' => __DIR__ . '/..' . '/ramsey/uuid/src/Guid/GuidBuilder.php',
         'Ramsey\\Uuid\\Lazy\\LazyUuidFromString' => __DIR__ . '/..' . '/ramsey/uuid/src/Lazy/LazyUuidFromString.php',
         'Ramsey\\Uuid\\Math\\BrickMathCalculator' => __DIR__ . '/..' . '/ramsey/uuid/src/Math/BrickMathCalculator.php',
+        'Ramsey\\Uuid\\Math\\BrickMathRoundingMode' => __DIR__ . '/..' . '/ramsey/uuid/src/Math/BrickMathRoundingMode.php',
         'Ramsey\\Uuid\\Math\\CalculatorInterface' => __DIR__ . '/..' . '/ramsey/uuid/src/Math/CalculatorInterface.php',
         'Ramsey\\Uuid\\Math\\RoundingMode' => __DIR__ . '/..' . '/ramsey/uuid/src/Math/RoundingMode.php',
         'Ramsey\\Uuid\\Nonstandard\\Fields' => __DIR__ . '/..' . '/ramsey/uuid/src/Nonstandard/Fields.php',
@@ -6718,10 +6721,10 @@ class ComposerStaticInit64bffde1b7cac85fa3f8dda736859c94
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit64bffde1b7cac85fa3f8dda736859c94::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit64bffde1b7cac85fa3f8dda736859c94::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit64bffde1b7cac85fa3f8dda736859c94::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit64bffde1b7cac85fa3f8dda736859c94::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit1c42f765d4d6a0e198a640b45d091d23::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit1c42f765d4d6a0e198a640b45d091d23::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit1c42f765d4d6a0e198a640b45d091d23::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit1c42f765d4d6a0e198a640b45d091d23::$classMap;
 
         }, null, ClassLoader::class);
     }

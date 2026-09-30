@@ -151,7 +151,7 @@ return array(
     'Doctrine\\DBAL\\Platforms\\' => array($baseDir . '/overrides/doctrine/dbal/lib/Doctrine/DBAL/Platforms'),
     'Doctrine\\DBAL\\Driver\\' => array($baseDir . '/overrides/doctrine/dbal/lib/Doctrine/DBAL/Driver'),
     'Doctrine\\DBAL\\' => array($vendorDir . '/doctrine/dbal/src'),
-    'Doctrine\\Common\\Lexer\\' => array($vendorDir . '/doctrine/lexer/lib/Doctrine/Common/Lexer'),
+    'Doctrine\\Common\\Lexer\\' => array($vendorDir . '/doctrine/lexer/src'),
     'Doctrine\\Common\\Cache\\' => array($vendorDir . '/doctrine/cache/lib/Doctrine/Common/Cache'),
     'Doctrine\\Common\\' => array($vendorDir . '/doctrine/event-manager/src'),
     'Dflydev\\DotAccessData\\' => array($vendorDir . '/dflydev/dot-access-data/src'),
