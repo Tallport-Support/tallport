@@ -186,6 +186,12 @@ used by a `post-autoload-dump` script). To patch another file, copy it to
 the same path under `overrides/`, add its namespace to `autoload.psr-4` if
 it isn't there yet, and add the original to `exclude-from-classmap`.
 
+A few packages are defined in `composer.json` itself (`repositories`,
+type `package`): the same code as their locked version, with only the
+Laravel versions they accept widened, because no release of theirs accepts
+the next Laravel version without other changes (`chumper/zipper`,
+`devfactory/minify`, and FreeScout's `codedge/laravel-selfupdater` fork).
+
 ### Releasing
 
 ```bash

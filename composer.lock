@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b17153a8af84b06eeb23d32c1d822fb3",
+    "content-hash": "82107496baed14c4aa5cda1ef6f35589",
     "packages": [
         {
             "name": "anahkiasen/underscore-php",
@@ -183,13 +183,9 @@
                 "shasum": ""
             },
             "require": {
-                "illuminate/filesystem": "^5.0",
-                "illuminate/support": "^5.0",
+                "illuminate/filesystem": "^5.0|^6.0",
+                "illuminate/support": "^5.0|^6.0",
                 "php": ">=5.6.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "^0.9.4",
-                "phpunit/phpunit": "^5.7"
             },
             "type": "library",
             "extra": {
@@ -207,31 +203,9 @@
                     "Chumper\\Zipper\\": "src/Chumper/Zipper"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache2"
-            ],
-            "authors": [
-                {
-                    "name": "Nils Plaschke",
-                    "email": "github@nilsplaschke.de",
-                    "homepage": "http://nilsplaschke.de",
-                    "role": "Developer"
-                }
-            ],
-            "description": "This is a little neat helper for the ZipArchive methods with handy functions",
-            "homepage": "http://github.com/Chumper/zipper",
-            "keywords": [
-                "archive",
-                "laravel",
-                "zip"
-            ],
-            "support": {
-                "issues": "https://github.com/Chumper/Zipper/issues",
-                "source": "https://github.com/Chumper/Zipper/tree/master"
-            },
-            "abandoned": true,
-            "time": "2017-07-17T08:05:10+00:00"
+            ]
         },
         {
             "name": "codedge/laravel-selfupdater",
@@ -250,13 +224,8 @@
             "require": {
                 "ext-zip": "*",
                 "guzzlehttp/guzzle": "*",
-                "illuminate/support": "5.*",
+                "illuminate/support": "^5.0|^6.0",
                 "php": ">=5.5"
-            },
-            "require-dev": {
-                "mockery/mockery": "^0.9.5",
-                "orchestra/testbench": "3.2.*",
-                "phpunit/phpunit": "^4.8"
             },
             "type": "library",
             "autoload": {
@@ -264,38 +233,9 @@
                     "Codedge\\Updater\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Codedge\\Updater\\Tests\\": "tests/"
-                }
-            },
             "license": [
                 "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Holger Lösken",
-                    "email": "holger.loesken@codedge.de",
-                    "homepage": "http://codedge.de",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Providing an auto-updating functionality for your self-hosted Laravel application.",
-            "keywords": [
-                "auto update",
-                "auto-update",
-                "laravel",
-                "laravel application",
-                "self update",
-                "self-hosted laravel application",
-                "self-update",
-                "update"
-            ],
-            "support": {
-                "issues": "https://github.com/codedge/laravel-selfupdater/issues",
-                "source": "https://github.com/codedge/laravel-selfupdater"
-            },
-            "time": "2026-07-27T08:34:13+00:00"
+            ]
         },
         {
             "name": "devfactory/minify",
@@ -312,15 +252,11 @@
                 "shasum": ""
             },
             "require": {
-                "illuminate/filesystem": "~5.0",
-                "illuminate/support": "~5.0",
+                "illuminate/filesystem": "^5.0|^6.0",
+                "illuminate/support": "^5.0|^6.0",
                 "natxet/cssmin": "3.*",
                 "php": ">=5.4.0",
                 "tedivm/jshrink": "~1.0"
-            },
-            "require-dev": {
-                "mikey179/vfsstream": "1.2.*",
-                "phpspec/phpspec": "2.0.0"
             },
             "type": "library",
             "autoload": {
@@ -328,26 +264,9 @@
                     "Devfactory\\Minify\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Da Costa Alcindo",
-                    "email": "alcindo.dacosta@devfactory.ch"
-                }
-            ],
-            "description": "A package for minifying styles and javascript for laravel 5 ",
-            "keywords": [
-                "laravel5",
-                "minify"
-            ],
-            "support": {
-                "issues": "https://github.com/DevFactoryCH/minify/issues",
-                "source": "https://github.com/DevFactoryCH/minify/tree/master"
-            },
-            "time": "2016-01-04T12:36:52+00:00"
+            ]
         },
         {
             "name": "dnoegel/php-xdg-base-dir",

@@ -12,8 +12,113 @@
     ],
     "repositories": [
         {
-            "type": "vcs",
-            "url": "https://github.com/freescout-help-desk/laravel-selfupdater"
+            "type": "package",
+            "package": {
+                "name": "chumper/zipper",
+                "version": "v1.0.2",
+                "type": "library",
+                "source": {
+                    "type": "git",
+                    "url": "https://github.com/Chumper/Zipper.git",
+                    "reference": "6a1733c34d67c3952b8439afb36ad4ea5c3ceacb"
+                },
+                "dist": {
+                    "type": "zip",
+                    "url": "https://api.github.com/repos/Chumper/Zipper/zipball/6a1733c34d67c3952b8439afb36ad4ea5c3ceacb",
+                    "reference": "6a1733c34d67c3952b8439afb36ad4ea5c3ceacb",
+                    "shasum": ""
+                },
+                "require": {
+                    "illuminate/filesystem": "^5.0|^6.0",
+                    "illuminate/support": "^5.0|^6.0",
+                    "php": ">=5.6.0"
+                },
+                "autoload": {
+                    "psr-4": {
+                        "Chumper\\Zipper\\": "src/Chumper/Zipper"
+                    }
+                },
+                "extra": {
+                    "laravel": {
+                        "providers": [
+                            "Chumper\\Zipper\\ZipperServiceProvider"
+                        ],
+                        "aliases": {
+                            "Zipper": "Chumper\\Zipper\\Zipper"
+                        }
+                    }
+                },
+                "license": [
+                    "Apache2"
+                ]
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "codedge/laravel-selfupdater",
+                "version": "dev-customized",
+                "type": "library",
+                "source": {
+                    "type": "git",
+                    "url": "https://github.com/freescout-help-desk/laravel-selfupdater.git",
+                    "reference": "e80eefef4666d8882e510e55e1bbc5aa4844affb"
+                },
+                "dist": {
+                    "type": "zip",
+                    "url": "https://api.github.com/repos/freescout-help-desk/laravel-selfupdater/zipball/e80eefef4666d8882e510e55e1bbc5aa4844affb",
+                    "reference": "e80eefef4666d8882e510e55e1bbc5aa4844affb",
+                    "shasum": ""
+                },
+                "require": {
+                    "ext-zip": "*",
+                    "guzzlehttp/guzzle": "*",
+                    "illuminate/support": "^5.0|^6.0",
+                    "php": ">=5.5"
+                },
+                "autoload": {
+                    "psr-4": {
+                        "Codedge\\Updater\\": "src/"
+                    }
+                },
+                "license": [
+                    "MIT"
+                ]
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "devfactory/minify",
+                "version": "1.0.7",
+                "type": "library",
+                "source": {
+                    "type": "git",
+                    "url": "https://github.com/DevFactoryCH/minify.git",
+                    "reference": "95d518081aa29c91b8c89243c61a7b1fc726120e"
+                },
+                "dist": {
+                    "type": "zip",
+                    "url": "https://api.github.com/repos/DevFactoryCH/minify/zipball/95d518081aa29c91b8c89243c61a7b1fc726120e",
+                    "reference": "95d518081aa29c91b8c89243c61a7b1fc726120e",
+                    "shasum": ""
+                },
+                "require": {
+                    "illuminate/filesystem": "^5.0|^6.0",
+                    "illuminate/support": "^5.0|^6.0",
+                    "natxet/cssmin": "3.*",
+                    "php": ">=5.4.0",
+                    "tedivm/jshrink": "~1.0"
+                },
+                "autoload": {
+                    "psr-4": {
+                        "Devfactory\\Minify\\": "src/"
+                    }
+                },
+                "license": [
+                    "MIT"
+                ]
+            }
         },
         {
             "type": "vcs",
