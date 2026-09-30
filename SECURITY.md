@@ -1,17 +1,39 @@
 # Security Policy
 
-Read about **[FreeScout's Security](https://freescout.net/security/)**.
+## Reporting a vulnerability
 
-## Reporting a Vulnerability
+Please report vulnerabilities in Tallport privately through
+[GitHub security advisories](https://github.com/nielspeen/tallport/security/advisories/new),
+not in public issues.
 
-  * Report a security vulnerability in the **Application Core**: https://github.com/freescout-help-desk/freescout/security/advisories
-  * Report a security vulnerability in a **Module**: https://freescout.net/contact-us/
+* One issue per advisory, so each can be tracked and fixed on its own.
+* Include the Tallport version (Manage » System » Status), steps to
+  reproduce and what an attacker gains.
+* Fixes are released as a new Tallport version; the advisory is published
+  after that.
 
-## Guidelines
+Vulnerabilities in **modules** go to the module's author. For FreeScout's
+official modules that is the FreeScout team: https://freescout.net/contact-us/.
 
-  * One issue per Advisory — do not put several issues into one Advisory, as GitHub will not assign a CVE to such an Advisory.
-  * CVEs are requested after the fix for the vulnerability is released.
-  * If you found an issue related to the `APP_LIMIT_USER_CUSTOMER_VISIBILITY=true` mode, make sure to read the [FAQ](https://github.com/freescout-help-desk/freescout/wiki/FAQ#is-it-possible-to-have-separate-contactscustomers-per-mailbox).
-  * Support agents are allowed to move conversations to any mailbox, even to ones they don't have access to.
-  * Drafts are viewable/discardable by any member of the mailbox where they are created.
-  * FreeScout loads external images in received emails, and there is a Module allowing to disable loading external images: https://freescout.net/module/block-external-images/.
+Tallport is a fork of FreeScout. If a vulnerability also affects FreeScout,
+please report it to FreeScout as well:
+https://github.com/freescout-help-desk/freescout/security/advisories.
+
+## Supported versions
+
+Only the latest release is supported. Installations update to it through
+Manage » System » Status » Update Now.
+
+## Current behaviour that is not a vulnerability
+
+Tallport inherits these from FreeScout; some may change (see
+[KNOWN_BUGS.md](KNOWN_BUGS.md)):
+
+* Support agents can move conversations to any mailbox, even ones they
+  don't have access to.
+* Drafts can be viewed and discarded by any member of the mailbox where
+  they were created.
+* Images in received emails load from their original servers.
+* With `APP_LIMIT_USER_CUSTOMER_VISIBILITY=true`, see FreeScout's
+  [FAQ](https://github.com/freescout-help-desk/freescout/wiki/FAQ#is-it-possible-to-have-separate-contactscustomers-per-mailbox)
+  for what is and isn't separated per mailbox.
