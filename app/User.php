@@ -717,10 +717,6 @@ class User extends Authenticatable
      */
     public function sendInvite($throw_exceptions = false)
     {
-        function saveToSendLog($user, $status)
-        {
-            SendLog::log(null, null, $user->email, SendLog::MAIL_TYPE_INVITE, $status, null, $user->id);
-        }
 
         if ($this->invite_state == self::INVITE_STATE_ACTIVATED) {
             return false;
@@ -747,7 +743,7 @@ class User extends Authenticatable
                 ->useLog(\App\ActivityLog::NAME_EMAILS_SENDING)
                 ->log(\App\ActivityLog::DESCRIPTION_EMAILS_SENDING_ERROR_INVITE);
 
-            saveToSendLog($this, SendLog::STATUS_SEND_ERROR);
+            $this->saveToSendLog(SendLog::MAIL_TYPE_INVITE, SendLog::STATUS_SEND_ERROR);
 
             if ($throw_exceptions) {
                 throw $e;
@@ -757,7 +753,7 @@ class User extends Authenticatable
         }
 
         if (\Mail::failures()) {
-            saveToSendLog($this, SendLog::STATUS_SEND_ERROR);
+            $this->saveToSendLog(SendLog::MAIL_TYPE_INVITE, SendLog::STATUS_SEND_ERROR);
 
             if ($throw_exceptions) {
                 throw new \Exception(__('Error occurred sending email to :email. Please check logs for more details.', ['email' => $this->email]), 1);
@@ -771,7 +767,7 @@ class User extends Authenticatable
             $this->save();
         }
 
-        saveToSendLog($this, SendLog::STATUS_ACCEPTED);
+        $this->saveToSendLog(SendLog::MAIL_TYPE_INVITE, SendLog::STATUS_ACCEPTED);
 
         return true;
     }
@@ -800,10 +796,6 @@ class User extends Authenticatable
      */
     public function sendPasswordChanged()
     {
-        function saveToSendLog($user, $status)
-        {
-            SendLog::log(null, null, $user->email, SendLog::MAIL_TYPE_PASSWORD_CHANGED, $status, null, $user->id);
-        }
 
         try {
             \App\Misc\Mail::setSystemMailDriver();
@@ -821,20 +813,28 @@ class User extends Authenticatable
                 ->useLog(\App\ActivityLog::NAME_EMAILS_SENDING)
                 ->log(\App\ActivityLog::DESCRIPTION_EMAILS_SENDING_ERROR_PASSWORD_CHANGED);
 
-            saveToSendLog($this, SendLog::STATUS_SEND_ERROR);
+            $this->saveToSendLog(SendLog::MAIL_TYPE_PASSWORD_CHANGED, SendLog::STATUS_SEND_ERROR);
 
             return false;
         }
 
         if (\Mail::failures()) {
-            saveToSendLog($this, SendLog::STATUS_SEND_ERROR);
+            $this->saveToSendLog(SendLog::MAIL_TYPE_PASSWORD_CHANGED, SendLog::STATUS_SEND_ERROR);
 
             return false;
         }
 
-        saveToSendLog($this, SendLog::STATUS_ACCEPTED);
+        $this->saveToSendLog(SendLog::MAIL_TYPE_PASSWORD_CHANGED, SendLog::STATUS_ACCEPTED);
 
         return true;
+    }
+
+    /**
+     * Log an email sent to this user.
+     */
+    private function saveToSendLog($mail_type, $status)
+    {
+        SendLog::log(null, null, $this->email, $mail_type, $status, null, $this->id);
     }
 
     /**

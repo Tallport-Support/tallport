@@ -14,10 +14,6 @@ use Tests\FeatureTestCase;
  * Managing users: the list, creating users and inviting them, profiles,
  * roles, mailbox access and permissions, notification settings, passwords
  * and deleting users.
- *
- * User::sendInvite() and User::sendPasswordChanged() declare a global
- * function each time they run, so a second call in one process fails with
- * "Cannot redeclare". Tests that trigger them run in their own process.
  */
 class UsersTest extends FeatureTestCase
 {
@@ -110,10 +106,6 @@ class UsersTest extends FeatureTestCase
         $this->assertEquals(User::ROLE_USER, User::where('email', 'would-be-admin@example.org')->value('role'));
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testInviteNewUser()
     {
         $this->postForm($this->admin, '/users/wizard', [
@@ -341,10 +333,6 @@ class UsersTest extends FeatureTestCase
         );
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testChangeOwnPassword()
     {
         $agent = $this->createUser(['password' => \Hash::make('old-password')]);
@@ -362,6 +350,33 @@ class UsersTest extends FeatureTestCase
         $emails = $this->sentEmailsTo($agent->email);
         $this->assertCount(1, $emails);
         $this->assertSame('Password Changed', $emails[0]->getSubject());
+    }
+
+    /**
+     * These used to declare global functions, so a second call in the same
+     * process (e.g. a queue worker) failed with "Cannot redeclare" (U11).
+     */
+    public function testUserEmailsAndLogsPageWorkRepeatedly()
+    {
+        $first = $this->createUser();
+        $second = $this->createUser();
+        foreach ([$first, $second] as $user) {
+            // Invites go only to users who haven't set up their account.
+            $user->invite_state = User::INVITE_STATE_NOT_INVITED;
+            $user->save();
+        }
+
+        $first->sendInvite();
+        $second->sendInvite();
+        $first->sendPasswordChanged();
+        $second->sendPasswordChanged();
+
+        $this->assertEquals(
+            [\App\SendLog::MAIL_TYPE_INVITE, \App\SendLog::MAIL_TYPE_PASSWORD_CHANGED],
+            \App\SendLog::where('email', $first->email)->orderBy('id')->pluck('mail_type')->all()
+        );
+        $this->actingAs($this->admin)->get('/app-logs/out_emails')->assertStatus(200);
+        $this->actingAs($this->admin)->get('/app-logs/out_emails')->assertStatus(200);
     }
 
     public function testNobodyChangesAnotherUsersPassword()

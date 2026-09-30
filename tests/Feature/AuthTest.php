@@ -122,13 +122,6 @@ class AuthTest extends FeatureTestCase
         $this->assertCount(0, $this->sentEmailsTo('nobody@example.org'));
     }
 
-    /**
-     * Resetting sends the "password changed" email, which can only run once
-     * per process (see UsersTest).
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testResetPasswordWithToken()
     {
         $user = $this->createUser(['email' => 'agent@example.org']);

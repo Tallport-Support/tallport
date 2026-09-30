@@ -45,15 +45,6 @@ class SecureController extends Controller
      */
     public function logs(Request $request)
     {
-        function addCol($cols, $col)
-        {
-            if (!in_array($col, $cols)) {
-                $cols[] = $col;
-            }
-
-            return $cols;
-        }
-
         // No need to check permissions here, as they are checked in routing
 
         $names = ActivityLog::select('log_name')->distinct()->pluck('log_name')->toArray();
@@ -80,23 +71,23 @@ class SecureController extends Controller
                 $log['date'] = $activity->created_at;
                 if ($activity->causer) {
                     if ($activity->causer_type == 'App\User') {
-                        $cols = addCol($cols, 'user');
+                        $cols = self::addCol($cols, 'user');
                         $log['user'] = $activity->causer;
                     } else {
-                        $cols = addCol($cols, 'customer');
+                        $cols = self::addCol($cols, 'customer');
                         $log['customer'] = $activity->causer;
                     }
                 }
                 $log['event'] = $activity->getEventDescription();
 
-                $cols = addCol($cols, 'event');
+                $cols = self::addCol($cols, 'event');
 
                 foreach ($activity->properties as $property_name => $property_value) {
                     if (!is_string($property_value)) {
                         $property_value = json_encode($property_value);
                     }
                     $log[$property_name] = $property_value;
-                    $cols = addCol($cols, $property_name);
+                    $cols = self::addCol($cols, $property_name);
                 }
 
                 $logs[] = $log;
@@ -239,5 +230,14 @@ class SecureController extends Controller
         }
 
         return \Response::json($response);
+    }
+
+    private static function addCol($cols, $col)
+    {
+        if (!in_array($col, $cols)) {
+            $cols[] = $col;
+        }
+
+        return $cols;
     }
 }

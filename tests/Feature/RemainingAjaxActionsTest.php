@@ -172,12 +172,6 @@ class RemainingAjaxActionsTest extends FeatureTestCase
         Storage::assertMissing('users/photo.jpg');
     }
 
-    /**
-     * Sending an invite can only run once per process (see UsersTest).
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testResendInvite()
     {
         $invited = $this->createUser(['email' => 'invited@example.org']);

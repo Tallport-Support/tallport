@@ -45,7 +45,6 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | U8 | low | `ajax send_invite` / `reset_password` | Don't check whether the user is disabled or deleted. |
 | U9 | low | `UsersController` | `permissions` GET returns 404 for deleted users but POST doesn't; `notifications` GET authorizes before the deleted check. |
 | U10 | low | `OpenController::userSetupSave` | The email isn't sanitized/lowercased and isn't checked against mailbox addresses (createSave and profileSave do both). |
-| U11 | medium | `User::sendInvite()` :720, `User::sendPasswordChanged()` :803, `SecureController::logs` :48 | Declare global functions inside methods; a second call in the same process fatals with "Cannot redeclare" (e.g. any long-running process). Tests work around it with `@runInSeparateProcess`. |
 
 ## Mailboxes (`app/Http/Controllers/MailboxesController.php`)
 
