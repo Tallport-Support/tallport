@@ -213,6 +213,26 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->assertTrue(\Hash::check('cli-password', $user->password));
     }
 
+    /**
+     * Answering "no" creates nothing and says so (S14).
+     */
+    public function testCreateUserDeclined()
+    {
+        $command = $this->app->make(\App\Console\Commands\CreateUser::class);
+        $command->setLaravel($this->app);
+        $tester = new \Symfony\Component\Console\Tester\CommandTester($command);
+        $tester->setInputs(['no']);
+
+        $tester->execute([
+            '--role' => 'user', '--firstName' => 'Cli', '--lastName' => 'User',
+            '--email' => 'declined@example.org', '--password' => 'cli-password',
+        ]);
+
+        $this->assertStringContainsString('User not created', $tester->getDisplay());
+        $this->assertStringNotContainsString('User created', $tester->getDisplay());
+        $this->assertNull(User::where('email', 'declined@example.org')->first());
+    }
+
     public function testCreateUserValidation()
     {
         $options = ['--firstName' => 'Cli', '--lastName' => 'User', '--password' => 'cli-password', '--no-interaction' => true];

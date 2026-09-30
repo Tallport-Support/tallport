@@ -93,6 +93,10 @@ class CreateUser extends Command
                 $this->error('User already exists.');
                 return false;
             }
+        } else {
+            $this->line('User not created.');
+
+            return false;
         }
 
         $this->info('User created with id: '.$user->id);

@@ -40,8 +40,6 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | # | Severity | Where | Bug |
 |---|---|---|---|
 | M1 | low | `updateSave`, `resources/views/mailboxes/update.blade.php` :163 | The email template setting (fancy/plain) is hidden in the form, validated but never saved, and nothing reads it when sending: an unfinished FreeScout feature. Finish or remove. |
-| M4 | low | `updateSave` | An admin saving the form without `state` un-archives the mailbox. |
-| M6 | low | `createSave`, :65 | The "user with this email" check also matches deleted users. |
 | M7 | low | `update` GET, :111 | Viewing the settings attaches an admin to `mailbox_user` as a side effect. |
 | M8 | low | `permissionsSave`, :323 | Users whose access is removed keep their personal folders. |
 
@@ -53,7 +51,6 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | S6 | low | `ModulesController ajax activate`, :335 | Reports `status: success` even when activation failed (only the flash type says so). |
 | S7 | low | `SystemController::action retry_job` | `sleep(1)` inside the web request. |
 | S13 | low | `app/Console/Commands/ModuleBuild.php` :78 | With an alias given, calls `freescout:module-laroute` without it, so all modules' routes are rebuilt. |
-| S14 | low | `app/Console/Commands/CreateUser.php` | Declining the confirmation still prints "User created with id:" (without an id). |
 
 ## Environment and dependencies
 
@@ -64,4 +61,3 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | E5 | low | `vendor/` | The committed vendor can't be reproduced by Composer (`rachidlaasri/laravel-installer` differs from its release, `rap2hpoutre/laravel-log-viewer` has files removed). Matters for the Laravel upgrade. |
 | E6 | low | `artisan`, `public/index.php` | Laravel 5.5's `e()` isn't null-safe; the entry points define a safe one first. Anything bootstrapping the app another way (scripts, tests) breaks on `{{ null }}`. |
 | E7 | low (tests) | `overrides/nesbot/carbon` (Carbon 1.35) | With `Carbon::setTestNow()` set, `Carbon::now()` passes null to `strtotime()`, a deprecation since PHP 8.1 that becomes an exception: tests can't freeze time until Carbon is upgraded with Laravel; use times relative to the real clock. |
-| E8 | low | `Helper::linkify()`, `app/Misc/Helper.php` :1729 | Email addresses are linked together with the characters before them: `user=bob@example.com` becomes `mailto:user=bob@example.com`. Visible in `tests/Snapshots/body_rendering/pasted_log.html`; fixing it updates that snapshot. |
