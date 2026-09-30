@@ -38,6 +38,28 @@ class UserDateFormatTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider diffs
+     */
+    public function testDateDiffForHumans($seconds_ago, $expected)
+    {
+        config(['app.locale' => 'en', 'app.timezone' => 'UTC']);
+        $date = Carbon::now()->subSeconds($seconds_ago);
+
+        $this->assertSame($expected($date), User::dateDiffForHumans($date));
+    }
+
+    public function diffs()
+    {
+        return [
+            'seconds ago'          => [30, function () { return 'Just now'; }],
+            'a minute in future'   => [-30, function () { return 'Just now'; }],
+            'minutes ago'          => [5 * 60, function () { return '5 min ago'; }],
+            'seven and a half days' => [(7 * 24 + 12) * 3600, function () { return '1 week ago'; }],
+            'eight days ago'       => [8 * 24 * 3600, function ($date) { return $date->format('M j'); }],
+        ];
+    }
+
     public function testWithoutUserUsesTheFormatAsIs()
     {
         config(['app.locale' => 'en', 'app.timezone' => 'UTC']);

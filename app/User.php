@@ -648,9 +648,9 @@ class User extends Authenticatable
             $date->setTimezone($user->timezone);
         }
 
-        if ($date->diffInSeconds(Carbon::now()) <= 60) {
+        if ((int) $date->diffInSeconds(Carbon::now(), true) <= 60) {
             return __('Just now');
-        } elseif ($date->diffInDays(Carbon::now()) > 7) {
+        } elseif ((int) $date->diffInDays(Carbon::now(), true) > 7) {
             // Exact date
             if (Carbon::now()->year == $date->year) {
                 return self::dateFormat($date, 'M j');

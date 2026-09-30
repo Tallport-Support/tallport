@@ -3382,7 +3382,7 @@ class ConversationsController extends Controller
         }
 
         // Check undo timeout
-        if ($thread->created_at->diffInSeconds(now()) > Conversation::UNDO_TIMOUT) {
+        if ((int) $thread->created_at->diffInSeconds(now(), true) > Conversation::UNDO_TIMOUT) {
             \Session::flash('flash_error_floating', __('Sending can not be undone'));
             return redirect()->away($conversation->url($conversation->folder_id));
         }

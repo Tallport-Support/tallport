@@ -60,7 +60,7 @@ class CheckConvViewers extends Command
 
                 $view_date = Carbon::createFromFormat('Y-m-d H:i:s', $data['t']);
             
-                if ($view_date && $now->diffInSeconds($view_date) > 25) {
+                if ($view_date && (int) $now->diffInSeconds($view_date, true) > 25) {
                     // Remove user from viewers.
                     unset($cache_data[$conversation_id][$user_id]);
                     if (empty($cache_data[$conversation_id])) {
@@ -77,7 +77,7 @@ class CheckConvViewers extends Command
                     ];
                     event(new \App\Events\RealtimeConvViewFinish($notification_data));
 
-                    \Eventy::action('conversation.view.finish', $conversation_id, $user_id, $now->diffInSeconds($view_date));
+                    \Eventy::action('conversation.view.finish', $conversation_id, $user_id, (int) $now->diffInSeconds($view_date, true));
                 }
             }
         }
@@ -96,7 +96,7 @@ class CheckConvViewers extends Command
         $view_date = Carbon::createFromFormat('Y-m-d H:i:s', $cache_data['t']);
         $now = Carbon::now();
 
-        if ($view_date && $now->diffInSeconds($view_date) > 30) {
+        if ($view_date && (int) $now->diffInSeconds($view_date, true) > 30) {
             $cache_key = 'conv_view';
             if (!empty($cache_data[$this->conversation_id]) && !empty($cache_data[$this->conversation_id][$this->user_id])) {
                 // Remove user from viewers.

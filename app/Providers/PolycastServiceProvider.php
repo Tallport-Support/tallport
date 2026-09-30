@@ -107,7 +107,7 @@ class PolycastServiceProvider extends ServiceProvider
                         }
                     }
 
-                    $item->delay = $requested->diffInSeconds($created);
+                    $item->delay = (int) $requested->diffInSeconds($created, true);
                     $item->requested_at = $requested->toDateTimeString();
 
                     return $item;
@@ -174,7 +174,7 @@ class PolycastServiceProvider extends ServiceProvider
                 }
             }
             
-            if (!$cache_data || $replying_changed || ($view_date && $now->diffInSeconds($view_date) > 15)) {
+            if (!$cache_data || $replying_changed || ($view_date && (int) $now->diffInSeconds($view_date, true) > 15)) {
                 // Remember date of the last view in the cache.
                 // Store for 2 minutes.
                 $cache_data = [
