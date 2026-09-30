@@ -29,4 +29,15 @@ if [ -f bootstrap/cache/config.php ]; then
     php artisan config:clear >/dev/null
 fi
 
-exec php dev/vendor/bin/phpunit "$@"
+# A full run (no arguments) also checks that everything the application
+# exposes is exercised by some test (tests/inventory.php).
+if [ $# -gt 0 ]; then
+    exec php dev/vendor/bin/phpunit "$@"
+fi
+
+mkdir -p coverage
+export TALLPORT_EXERCISED_LOG="$PWD/coverage/exercised.log"
+: > "$TALLPORT_EXERCISED_LOG"
+
+php dev/vendor/bin/phpunit
+php tests/inventory.php "$TALLPORT_EXERCISED_LOG"

@@ -276,6 +276,136 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->assertStringContainsString('Checking licenses finished', $this->runCommand('freescout:module-check-licenses'));
     }
 
+    public function testCheckRequirements()
+    {
+        $output = $this->runCommand('freescout:check-requirements');
+
+        $this->assertStringContainsString('PHP Version', $output);
+        $this->assertStringContainsString('PHP Extensions', $output);
+    }
+
+    /**
+     * Replace a stubbed command by the real one for this test.
+     */
+    protected function useRealCommand($class)
+    {
+        $this->app[\Illuminate\Contracts\Console\Kernel::class]->registerCommand($this->app->make($class));
+    }
+
+    public function testFetchEmailsWithoutConfiguredMailboxes()
+    {
+        $this->useRealCommand(\App\Console\Commands\FetchEmails::class);
+        $this->createMailbox();
+
+        $output = $this->runCommand('freescout:fetch-emails');
+
+        $this->assertStringContainsString('Fetching finished', $output);
+        $this->assertNotEmpty(Option::where('name', 'fetch_emails_last_run')->value('value'));
+    }
+
+    public function testGenerateVars()
+    {
+        $this->useRealCommand(\App\Console\Commands\GenerateVars::class);
+        $public = sys_get_temp_dir().'/tallport-public-'.uniqid();
+        mkdir($public.'/js/builds', 0777, true);
+        $this->app->instance('path.public', $public);
+        \Storage::fake('local');
+
+        try {
+            $output = $this->runCommand('freescout:generate-vars');
+            $vars = file_get_contents($public.'/js/builds/vars.js');
+        } finally {
+            @unlink($public.'/js/builds/vars.js');
+            @rmdir($public.'/js/builds');
+            @rmdir($public.'/js');
+            @rmdir($public);
+        }
+
+        $this->assertStringContainsString('Created', $output);
+        $this->assertStringContainsString('Vars', $vars);
+    }
+
+    public function testLogoutUsersDeletesSessions()
+    {
+        $this->useRealCommand(\App\Console\Commands\LogoutUsers::class);
+        $storage = sys_get_temp_dir().'/tallport-storage-'.uniqid();
+        mkdir($storage.'/framework/sessions', 0777, true);
+        touch($storage.'/framework/sessions/session-one');
+        touch($storage.'/framework/sessions/session-two');
+        $this->app->useStoragePath($storage);
+
+        try {
+            $output = $this->runCommand('freescout:logout-users');
+            $left = glob($storage.'/framework/sessions/*');
+        } finally {
+            array_map('unlink', glob($storage.'/framework/sessions/*'));
+            @rmdir($storage.'/framework/sessions');
+            @rmdir($storage.'/framework');
+            @rmdir($storage);
+        }
+
+        $this->assertStringContainsString('Deleted sessions: 2', $output);
+        $this->assertSame([], $left);
+    }
+
+    public function testClearCacheRunsAllSteps()
+    {
+        $this->useRealCommand(\App\Console\Commands\ClearCache::class);
+        // Its own steps stay stubbed; view:clear would empty the dev app's compiled views.
+        $this->app[\Illuminate\Contracts\Console\Kernel::class]->registerCommand(new \Tests\Support\StubCommand('view:clear'));
+        // The build cleanup runs in a scratch public directory.
+        $public = sys_get_temp_dir().'/tallport-public-'.uniqid();
+        mkdir($public.'/js/builds', 0777, true);
+        mkdir($public.'/css/builds', 0777, true);
+        file_put_contents($public.'/js/builds/old.js', '');
+        file_put_contents($public.'/js/builds/vars.js', '');
+        file_put_contents($public.'/css/builds/old.css', '');
+        $this->app->instance('path.public', $public);
+        // It also deletes bootstrap/cache/services.php and packages.php. Laravel
+        // rebuilds them, but put them back as they were.
+        $cached = [];
+        foreach ([$this->app->getCachedServicesPath(), $this->app->getCachedPackagesPath()] as $file) {
+            if (file_exists($file)) {
+                $cached[$file] = file_get_contents($file);
+            }
+        }
+
+        try {
+            $output = $this->runCommand('freescout:clear-cache');
+            $left = array_map('basename', array_merge(glob($public.'/js/builds/*'), glob($public.'/css/builds/*')));
+        } finally {
+            foreach ($cached as $file => $contents) {
+                file_put_contents($file, $contents);
+            }
+            array_map('unlink', array_merge(glob($public.'/js/builds/*'), glob($public.'/css/builds/*')));
+            @rmdir($public.'/js/builds');
+            @rmdir($public.'/css/builds');
+            @rmdir($public.'/js');
+            @rmdir($public.'/css');
+            @rmdir($public);
+        }
+
+        $this->assertStringContainsString('Cleared: JS and CSS builds', $output);
+        $this->assertSame(['vars.js'], $left, 'Builds are removed, vars.js is kept.');
+        foreach (['clear-compiled', 'view:clear', 'config:cache', 'freescout:generate-vars'] as $step) {
+            $this->assertCommandCalled($step);
+        }
+    }
+
+    public function testFolderCountersInBackground()
+    {
+        config(['app.update_folder_counters_in_background' => true]);
+        $mailbox = $this->createMailbox();
+        $unassigned = Folder::where('mailbox_id', $mailbox->id)->where('type', Folder::TYPE_UNASSIGNED)->first();
+        $unassigned->active_count = 42;
+        $unassigned->save();
+
+        $this->runCommand('freescout:update-folder-counters');
+
+        $this->assertEquals(0, $unassigned->fresh()->active_count, 'The job ran (sync queue) and fixed the count.');
+        $this->assertFalse(\Cache::has('folder_update_lock_'.$unassigned->id), 'The lock is released.');
+    }
+
     // Jobs.
 
     public function testBackgroundActionFiresHook()

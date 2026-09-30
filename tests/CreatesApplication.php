@@ -32,6 +32,8 @@ trait CreatesApplication
 
         Hash::setRounds(4);
 
+        \Tests\Support\ExercisedRecorder::register($app);
+
         return $app;
     }
 }
