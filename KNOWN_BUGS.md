@@ -24,8 +24,8 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 
 | # | Severity | Where | Bug |
 |---|---|---|---|
-| F1 | high | :747–755 | The branch meant for an agent following up by email on their own earlier emailed reply has `$user_id = $user->id` while `$user` is still null; if reached, the ErrorException is caught and the email **dropped**. In testing the branch wasn't reached: such follow-ups are saved as customer messages instead (F3). Test: `testAgentFollowingUpOnOwnEmailedReply`. |
-| F3 | medium | :707, :743 | An agent answering by email in a reply thread (their own UI reply, or their own emailed reply) is saved as a **customer** message from the agent's address rather than as the agent's reply. Only replies to notification emails are recognised as agent replies. Test: `testAgentAnsweringOwnUiReplyByEmail`. |
+| F1 | low | :747–755 | Code for an agent following up by email on their own earlier emailed reply has `$user_id = $user->id` while `$user` is still null; if reached, the email would be dropped. Not reached in testing (such emails take the F3 path instead). Test: `testAgentFollowingUpOnOwnEmailedReply`. |
+| F3 | low | :707, :743 | Only when an agent emails into a conversation's thread outside the supported flow: they reply by email to a copy of their own outgoing reply (they Cc'd themselves, the mailbox auto-Bccs them, or they reply from their Sent folder). That email is saved as a **customer** message, a customer record is created for the agent's address and **the conversation's customer switches to the agent**. Answering a notification email (the supported way to reply by email) works correctly. Test: `testAgentAnsweringOwnUiReplyByEmail`. |
 | F2 | low | `app/Thread.php` :1233/:1235 vs :1258/:1274 | Hooks `conversation.created_by_customer` and `conversation.customer_replied` are fired with different numbers of arguments (see `tests/Snapshots/hooks.json`). |
 
 ## Users and login
