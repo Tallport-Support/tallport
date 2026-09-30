@@ -265,6 +265,30 @@ class UsersTest extends FeatureTestCase
         $this->actingAs($agent)->get('/users/permissions/'.$agent->id)->assertStatus(403);
     }
 
+    /**
+     * "Only assigned tickets" is set on the profile page; saving the
+     * permissions page must not clear it (U3).
+     */
+    public function testSavingPermissionsKeepsOnlyAssignedRestriction()
+    {
+        $agent = $this->createUser(['permissions' => [User::PERM_ONLY_ASSIGNED_TICKETS => 1]]);
+        $this->mailbox->users()->attach($agent->id);
+        $this->receiveEmail($this->mailbox, $this->makeEmail(['from' => 'casey@customer.example.org', 'to' => $this->mailbox->email]));
+        $unassigned = \App\Conversation::where('mailbox_id', $this->mailbox->id)->first();
+        $this->actingAs($agent)->get('/conversation/'.$unassigned->id.'?folder_id='.$unassigned->folder_id)->assertStatus(403);
+
+        $this->postForm($this->admin, '/users/permissions/'.$agent->id, [
+            'mailboxes'        => [$this->mailbox->id],
+            'user_permissions' => [User::PERM_DELETE_CONVERSATIONS],
+        ]);
+
+        $agent = $agent->fresh();
+        $this->assertTrue($agent->hasPermission(User::PERM_DELETE_CONVERSATIONS));
+        $this->assertTrue($agent->hasPermission(User::PERM_ONLY_ASSIGNED_TICKETS), 'The restriction was lost.');
+        \Cache::flush();
+        $this->actingAs($agent)->get('/conversation/'.$unassigned->id.'?folder_id='.$unassigned->folder_id)->assertStatus(403);
+    }
+
     public function testNotificationSettingsReplaceSubscriptions()
     {
         $agent = $this->createUser();

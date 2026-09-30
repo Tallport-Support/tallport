@@ -364,7 +364,9 @@ class UsersController extends Controller
 
         // Save permissions.
         $user_permissions = $request->user_permissions ?? [];
-        $permissions = [];
+        // Keep permissions this page doesn't show, e.g. "only assigned
+        // tickets", which is set on the profile page.
+        $permissions = array_diff_key($user->permissions ?: [], array_flip(User::getUserPermissionsList()));
 
         foreach (User::getUserPermissionsList() as $permission_id) {
             $new_has_permission = in_array($permission_id, $user_permissions);
