@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use Dotenv\Dotenv;
-use Dotenv\Loader\Parser;
+use Dotenv\Parser\Parser;
 use Dotenv\Repository\Adapter\ArrayAdapter;
 use Dotenv\Repository\RepositoryBuilder;
 use PHPUnit\Framework\TestCase;
@@ -20,10 +20,10 @@ class DotenvParsingTest extends TestCase
      */
     public function testValue($raw, $expected)
     {
-        [$name, $value] = Parser::parse('KEY='.$raw);
+        $entry = (new Parser())->parse('KEY='.$raw)[0];
 
-        $this->assertSame('KEY', $name);
-        $this->assertSame($expected, $value->getChars());
+        $this->assertSame('KEY', $entry->getName());
+        $this->assertSame($expected, $entry->getValue()->get()->getChars());
     }
 
     public function values()
@@ -50,8 +50,8 @@ class DotenvParsingTest extends TestCase
         $dir = sys_get_temp_dir().'/tallport-dotenv-'.uniqid();
         mkdir($dir);
         file_put_contents($dir.'/.env', 'BASE=https://example.org'."\n".'URL="${BASE}/help"'."\n".'RAW=${BASE}'."\n");
-        $adapter = new ArrayAdapter();
-        $repository = RepositoryBuilder::create()->withReaders([$adapter])->withWriters([$adapter])->make();
+        $adapter = ArrayAdapter::create()->get();
+        $repository = RepositoryBuilder::createWithNoAdapters()->addReader($adapter)->addWriter($adapter)->make();
 
         try {
             $values = Dotenv::create($repository, $dir)->load();
@@ -64,9 +64,21 @@ class DotenvParsingTest extends TestCase
         $this->assertSame('https://example.org', $values['RAW']);
     }
 
+    public function testEveryLineIsOneEntry()
+    {
+        $entries = (new Parser())->parse("A=\"ends with backslash\\\"\nB=2");
+
+        $values = [];
+        foreach ($entries as $entry) {
+            $values[$entry->getName()] = $entry->getValue()->get()->getChars();
+        }
+        $this->assertSame('ends with backslash\\', $values['A']);
+        $this->assertSame('2', $values['B']);
+    }
+
     public function testUnquotedSpacesAreRejected()
     {
         $this->expectException(\Dotenv\Exception\InvalidFileException::class);
-        Parser::parse('KEY=two words');
+        (new Parser())->parse('KEY=two words');
     }
 }

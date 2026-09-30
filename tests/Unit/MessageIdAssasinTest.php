@@ -41,13 +41,11 @@ class MessageIdAssasinTest extends TestCase
     // Reply to customer from user agent.
     public function testUserReplyMessageIdDoesNotMatchRegex()
     {
-        $mailbox = factory(Mailbox::class)->make([
-            'email' => 'test@example.org',
-        ]);
-        $thread = factory(Thread::class)->make([
-            'id' => $this->faker->unique()->randomDigit,
-            'type' => Thread::TYPE_MESSAGE,
-        ]);
+        $mailbox = new Mailbox();
+        $mailbox->email = 'test@example.org';
+        $thread = new Thread();
+        $thread->id = $this->faker->unique()->randomDigit;
+        $thread->type = Thread::TYPE_MESSAGE;
 
         $message_id = $thread->getMessageId($mailbox);
 

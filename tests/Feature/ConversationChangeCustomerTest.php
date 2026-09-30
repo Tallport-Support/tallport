@@ -8,14 +8,10 @@ use App\Email;
 use App\Mailbox;
 use App\Thread;
 use App\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class ConversationChangeCustomerTest extends TestCase
+class ConversationChangeCustomerTest extends FeatureTestCase
 {
-    // This cleans existing tables.
-    use DatabaseTransactions;
-
     private $admin;
     private $unprivUser;
     private $mailbox;
@@ -30,40 +26,40 @@ class ConversationChangeCustomerTest extends TestCase
         \Session::start();
 
         // Create admin user
-        $this->admin = factory(User::class)->create([
-            'role' => User::ROLE_ADMIN,
-        ]);
+        $this->admin = $this->createUser(['role' => User::ROLE_ADMIN]);
 
         // Create mailbox
-        $this->mailbox = factory(Mailbox::class)->create();
-        $this->mailbox->users()->sync([$this->admin->id]);
+        $this->mailbox = $this->createMailbox([$this->admin]);
 
         // Create unprivileged user with NO mailbox access
-        $this->unprivUser = factory(User::class)->create([
-            'role' => User::ROLE_USER,
-        ]);
+        $this->unprivUser = $this->createUser(['role' => User::ROLE_USER]);
 
         // Create customers
-        $this->originalCustomer = factory(Customer::class)->create([
+        $this->originalCustomer = $this->createCustomer('original.customer@example.org', [
             'first_name' => 'Original',
             'last_name'  => 'Customer',
         ]);
-        $this->originalCustomer->syncEmails(['original.customer@example.org']);
 
-        $this->attackerCustomer = factory(Customer::class)->create([
+        $this->attackerCustomer = $this->createCustomer('attacker@example.org', [
             'first_name' => 'Attacker',
             'last_name'  => 'Evil',
         ]);
-        $this->attackerCustomer->syncEmails(['attacker@example.org']);
 
         // Create conversation belonging to original customer.
-        $this->conversation = factory(Conversation::class)->create([
-            'mailbox_id'     => $this->mailbox->id,
-            'customer_id'    => $this->originalCustomer->id,
-            'customer_email' => 'original.customer@example.org',
-            'status'         => Conversation::STATUS_ACTIVE,
-            'state'          => Conversation::STATE_PUBLISHED,
-        ]);
+        $conversation = new Conversation();
+        $conversation->type = Conversation::TYPE_EMAIL;
+        $conversation->subject = 'Question';
+        $conversation->mailbox_id = $this->mailbox->id;
+        $conversation->customer_id = $this->originalCustomer->id;
+        $conversation->customer_email = 'original.customer@example.org';
+        $conversation->status = Conversation::STATUS_ACTIVE;
+        $conversation->state = Conversation::STATE_PUBLISHED;
+        $conversation->source_via = Conversation::PERSON_CUSTOMER;
+        $conversation->source_type = Conversation::SOURCE_TYPE_EMAIL;
+        $conversation->created_by_user_id = $this->admin->id;
+        $conversation->updateFolder();
+        $conversation->save();
+        $this->conversation = $conversation;
     }
 
     /**
