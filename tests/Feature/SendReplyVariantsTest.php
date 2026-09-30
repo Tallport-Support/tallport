@@ -72,8 +72,6 @@ class SendReplyVariantsTest extends FeatureTestCase
 
     public function testReplyValidation()
     {
-        $this->knownBug('C11');
-
         $conversation = $this->receiveConversation();
 
         $response = $this->send(['conversation_id' => $conversation->id, 'body' => '']);

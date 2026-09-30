@@ -1553,6 +1553,10 @@ class Thread extends Model
 
     public static function replaceBase64ImagesWithAttachments($body, $user_id = null)
     {
+        if ($body === null || $body === '') {
+            return $body;
+        }
+
         \Helper::setPcreBacktrackLimit();
 
         $body = preg_replace_callback(
