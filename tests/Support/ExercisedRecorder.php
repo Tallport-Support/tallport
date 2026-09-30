@@ -47,6 +47,13 @@ class ExercisedRecorder
             }
         });
 
+        // Since Laravel 10 artisan only fires CommandStarting outside unit
+        // tests, unless asked to.
+        $kernel = $app[\Illuminate\Contracts\Console\Kernel::class];
+        if (method_exists($kernel, 'rerouteSymfonyCommandEvents')) {
+            $kernel->rerouteSymfonyCommandEvents();
+        }
+
         $events->listen(CommandStarting::class, function (CommandStarting $event) use ($record, $app) {
             // A stubbed command (see FeatureTestCase) didn't really run.
             $commands = $app[\Illuminate\Contracts\Console\Kernel::class]->all();

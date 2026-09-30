@@ -40,7 +40,9 @@ class CreateCustomersTable extends Migration
             // Indexes
             // For ajax search
             if (DB::connection()->getPDO()->getAttribute(PDO::ATTR_DRIVER_NAME) == 'mysql') {
-                $table->index([DB::raw('first_name(80)'), DB::raw('last_name(80)')]);
+                // Named explicitly: Laravel 10 can't build a name from DB::raw() columns
+                // (this is the name older versions generated).
+                $table->index([DB::raw('first_name(80)'), DB::raw('last_name(80)')], 'customers_first_name(80)_last_name(80)_index');
             } else {
                 $table->index(['first_name', 'last_name']);
             }

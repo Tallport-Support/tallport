@@ -409,7 +409,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->useRealCommand(\App\Console\Commands\GenerateVars::class);
         $public = sys_get_temp_dir().'/tallport-public-'.uniqid();
         mkdir($public.'/js/builds', 0777, true);
-        $this->app->instance('path.public', $public);
+        $this->app->usePublicPath($public);
         \Storage::fake('local');
 
         try {
@@ -461,7 +461,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         file_put_contents($public.'/js/builds/old.js', '');
         file_put_contents($public.'/js/builds/vars.js', '');
         file_put_contents($public.'/css/builds/old.css', '');
-        $this->app->instance('path.public', $public);
+        $this->app->usePublicPath($public);
         // It also deletes bootstrap/cache/services.php and packages.php. Laravel
         // rebuilds them, but put them back as they were.
         $cached = [];
