@@ -25,7 +25,6 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | C9 | low | `bulk_conversation_change_user` / `_status`, :2108 / :2136 | No "already set" check: line items are added even when nothing changes. |
 | C10 | low | `save_edit_thread`, :2058 | A missing thread reports "Conversation not found". |
 | C13 | low | `send_reply` with `is_create` and several `to` | The code puts extra recipients in the conversation's Cc ("first recipient becomes To"), but the email goes out with all of them in To. |
-| C14 | medium | `undoReply`, :3342 | When the reply belongs to another user, the redirect uses `$conversation` before it is assigned → 500 instead of "Sending can not be undone". Test: `testOthersCannotUndoYourReply`. |
 
 ## Incoming email (`app/Console/Commands/FetchEmails.php`)
 

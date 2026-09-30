@@ -78,8 +78,6 @@ class ConversationExtrasTest extends FeatureTestCase
 
     public function testOthersCannotUndoYourReply()
     {
-        $this->knownBug('C14');
-
         $conversation = $this->receiveConversation();
         $reply = $this->reply($conversation);
         $colleague = $this->createUser();
