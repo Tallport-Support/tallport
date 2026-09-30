@@ -33,6 +33,15 @@ class ModuleCompatibilityTest extends TestCase
         $this->assertSame('fired again', $received);
     }
 
+    public function testModelDatesSerializeInDatabaseFormat()
+    {
+        $customer = new \App\Customer();
+        $customer->created_at = \Carbon\Carbon::create(2026, 3, 5, 14, 7, 9);
+
+        $this->assertSame('2026-03-05 14:07:09', $customer->toArray()['created_at']);
+        $this->assertStringContainsString('"created_at":"2026-03-05 14:07:09"', $customer->toJson());
+    }
+
     public function testOldHelpers()
     {
         $this->assertSame('b', array_get(['a' => 'b'], 'a'));

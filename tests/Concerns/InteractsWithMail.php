@@ -29,6 +29,17 @@ trait InteractsWithMail
      */
     protected $captured_mail;
 
+    protected static function captureAllMailDrivers($manager, $transport)
+    {
+        foreach (['smtp', 'sendmail', 'mail', 'array', 'log'] as $driver) {
+            $manager->extend($driver, function () use ($transport) {
+                return $transport;
+            });
+        }
+
+        return $manager;
+    }
+
     protected function captureSentMail()
     {
         \MailHelper::$last_mail_config_hash = '';
@@ -38,22 +49,19 @@ trait InteractsWithMail
         $transport = $this->captured_mail;
 
         // Container extenders survive re-registering the mail provider, so every
-        // transport manager FreeScout creates hands out the shared transport.
-        $this->app->extend('swift.transport', function ($manager) use ($transport) {
-            $manager->extend('array', function () use ($transport) {
-                return $transport;
-            });
-
-            return $manager;
+        // mail manager FreeScout creates hands out the shared transport, for
+        // whichever driver a mailbox sets (the manager builds one per driver).
+        $this->app->forgetInstance('mail.manager');
+        $this->app->extend('mail.manager', function ($manager) use ($transport) {
+            return static::captureAllMailDrivers($manager, $transport);
         });
 
         $use_array_transport = function () {
             \Config::set('mail.driver', 'array');
+            \App::forgetInstance('mail.manager');
             \App::forgetInstance('mailer');
-            \App::forgetInstance('swift.mailer');
-            \App::forgetInstance('swift.transport');
             (new \Illuminate\Mail\MailServiceProvider(app()))->register();
-            \Mail::swap(app('mailer'));
+            \Mail::swap(app('mail.manager'));
         };
         $use_array_transport();
         \Eventy::addAction('mail.reapply_mail_config', $use_array_transport);

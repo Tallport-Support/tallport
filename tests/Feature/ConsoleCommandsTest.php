@@ -542,11 +542,9 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->captured_mail = $failing;
         // Extenders of a service that's already built apply to that instance
         // only; forget it so this one also applies when FreeScout rebuilds it.
-        $this->app->forgetInstance('swift.transport');
-        $this->app->extend('swift.transport', function ($manager) use ($failing) {
-            return $manager->extend('array', function () use ($failing) {
-                return $failing;
-            });
+        $this->app->forgetInstance('mail.manager');
+        $this->app->extend('mail.manager', function ($manager) use ($failing) {
+            return static::captureAllMailDrivers($manager, $failing);
         });
         \MailHelper::$last_mail_config_hash = '';
 

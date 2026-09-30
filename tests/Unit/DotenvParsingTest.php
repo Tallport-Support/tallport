@@ -2,7 +2,10 @@
 
 namespace Tests\Unit;
 
-use Dotenv\Parser;
+use Dotenv\Dotenv;
+use Dotenv\Loader\Parser;
+use Dotenv\Repository\Adapter\ArrayAdapter;
+use Dotenv\Repository\RepositoryBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -17,7 +20,10 @@ class DotenvParsingTest extends TestCase
      */
     public function testValue($raw, $expected)
     {
-        $this->assertSame(['KEY', $expected], Parser::parse('KEY='.$raw));
+        [$name, $value] = Parser::parse('KEY='.$raw);
+
+        $this->assertSame('KEY', $name);
+        $this->assertSame($expected, $value->getChars());
     }
 
     public function values()
@@ -37,6 +43,25 @@ class DotenvParsingTest extends TestCase
             'comment only'              => ['# only comment', ''],
             'empty'                     => ['', ''],
         ];
+    }
+
+    public function testNestedVariablesAreResolved()
+    {
+        $dir = sys_get_temp_dir().'/tallport-dotenv-'.uniqid();
+        mkdir($dir);
+        file_put_contents($dir.'/.env', 'BASE=https://example.org'."\n".'URL="${BASE}/help"'."\n".'RAW=${BASE}'."\n");
+        $adapter = new ArrayAdapter();
+        $repository = RepositoryBuilder::create()->withReaders([$adapter])->withWriters([$adapter])->make();
+
+        try {
+            $values = Dotenv::create($repository, $dir)->load();
+        } finally {
+            unlink($dir.'/.env');
+            rmdir($dir);
+        }
+
+        $this->assertSame('https://example.org/help', $values['URL']);
+        $this->assertSame('https://example.org', $values['RAW']);
     }
 
     public function testUnquotedSpacesAreRejected()

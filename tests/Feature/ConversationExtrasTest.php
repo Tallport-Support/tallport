@@ -156,7 +156,7 @@ class ConversationExtrasTest extends FeatureTestCase
             $path = tempnam(sys_get_temp_dir(), 'upload');
             file_put_contents($path, $contents);
 
-            return new UploadedFile($path, $name, null, null, null, true);
+            return new UploadedFile($path, $name, null, null, true);
         };
         $upload = function ($name, $contents) use ($file) {
             return $this->actingAs($this->agent)->post('/uploads/upload', [

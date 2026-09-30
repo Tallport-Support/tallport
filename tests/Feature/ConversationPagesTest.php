@@ -54,7 +54,7 @@ class ConversationPagesTest extends FeatureTestCase
         $path = tempnam(sys_get_temp_dir(), 'upload');
         file_put_contents($path, $contents);
 
-        return new UploadedFile($path, $name, 'text/plain', null, null, true);
+        return new UploadedFile($path, $name, 'text/plain', null, true);
     }
 
     public function testMailboxFolderListsConversations()

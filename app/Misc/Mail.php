@@ -245,14 +245,13 @@ class Mail
 
         // Without doing this, Swift mailer uses old config values
         // if there were emails sent with previous config.
+        \App::forgetInstance('mail.manager');
         \App::forgetInstance('mailer');
-        \App::forgetInstance('swift.mailer');
-        \App::forgetInstance('swift.transport');
 
         (new \Illuminate\Mail\MailServiceProvider(app()))->register();
-        // We have to update Mailer facade manually, as it does not happen automatically
-        // and previous instance of app('mailer') is used.
-        \Mail::swap(app('mailer'));
+        // We have to update Mail facade manually, as it does not happen automatically
+        // and previous instance of app('mail.manager') is used.
+        \Mail::swap(app('mail.manager'));
 
         \Eventy::action('mail.reapply_mail_config');
     }

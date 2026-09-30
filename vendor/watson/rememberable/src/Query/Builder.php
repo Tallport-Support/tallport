@@ -42,7 +42,7 @@ class Builder extends \Illuminate\Database\Query\Builder
     protected $cachePrefix = 'rememberable';
 
     /**
-     * Execute the query as a "select" statement.
+     * Execute the get query statement.
      *
      * @param  array  $columns
      * @return array|static[]
@@ -57,7 +57,7 @@ class Builder extends \Illuminate\Database\Query\Builder
     }
 
     /**
-     * Execute the query as a cached "select" statement.
+     * Execute the cached get query statement.
      *
      * @param  array  $columns
      * @return array
@@ -71,7 +71,9 @@ class Builder extends \Illuminate\Database\Query\Builder
         // If the query is requested to be cached, we will cache it using a unique key
         // for this database connection and query statement, including the bindings
         // that are used on this query, providing great convenience when caching.
-        list($key, $seconds) = $this->getCacheInfo();
+        $key = $this->getCacheKey();
+
+        $seconds = $this->cacheSeconds;
 
         $cache = $this->getCache();
 
@@ -85,6 +87,46 @@ class Builder extends \Illuminate\Database\Query\Builder
         }
 
         return $cache->rememberForever($key, $callback);
+    }
+
+    /**
+     * Execute the pluck query statement.
+     *
+     * @param  string  $column
+     * @param  mixed  $key
+     * @return array|static[]
+     */
+    public function pluck($column, $key = null)
+    {
+        if ( ! is_null($this->cacheSeconds)) {
+            return $this->pluckCached($column, $key);
+        }
+
+        return parent::pluck($column, $key);
+    }
+
+    /**
+     * Execute the cached pluck query statement.
+     *
+     * @param  string  $column
+     * @param  mixed  $key
+     * @return array
+     */
+    public function pluckCached($column, $key = null)
+    {
+        $cacheKey = $this->getCacheKey($column.$key);
+
+        $seconds = $this->cacheSeconds;
+
+        $cache = $this->getCache();
+
+        $callback = $this->pluckCacheCallback($column, $key);
+
+        if ($seconds instanceof DateTime || $seconds > 0) {
+            return $cache->remember($cacheKey, $seconds, $callback);
+        }
+
+        return $cache->rememberForever($cacheKey, $callback);
     }
 
     /**
@@ -132,6 +174,19 @@ class Builder extends \Illuminate\Database\Query\Builder
     public function doNotRemember()
     {
         return $this->dontRemember();
+    }
+
+    /**
+     * Set the cache prefix.
+     *
+     * @param  string  $prefix
+     * @return $this
+     */
+    public function prefix($prefix)
+    {
+        $this->cachePrefix = $prefix;
+
+        return $this;
     }
 
     /**
@@ -183,35 +238,27 @@ class Builder extends \Illuminate\Database\Query\Builder
     }
 
     /**
-     * Get the cache key and cache seconds as an array.
-     *
-     * @return array
-     */
-    protected function getCacheInfo()
-    {
-        return [$this->getCacheKey(), $this->cacheSeconds];
-    }
-
-    /**
      * Get a unique cache key for the complete query.
      *
+     * @param  mixed  $appends
      * @return string
      */
-    public function getCacheKey()
+    public function getCacheKey($appends = null)
     {
-        return $this->cachePrefix.':'.($this->cacheKey ?: $this->generateCacheKey());
+        return $this->cachePrefix.':'.($this->cacheKey ?: $this->generateCacheKey($appends));
     }
 
     /**
      * Generate the unique cache key for the query.
      *
+     * @param  mixed  $appends
      * @return string
      */
-    public function generateCacheKey()
+    public function generateCacheKey($appends = null)
     {
         $name = $this->connection->getName();
 
-        return hash('sha256', $name.$this->toSql().serialize($this->getBindings()));
+        return hash('sha256', $name.$this->toSql().serialize($this->getBindings()).$appends);
     }
 
     /**
@@ -236,7 +283,7 @@ class Builder extends \Illuminate\Database\Query\Builder
     }
 
     /**
-     * Get the Closure callback used when caching queries.
+     * Get the callback for get queries.
      *
      * @param  array  $columns
      * @return \Closure
@@ -251,16 +298,18 @@ class Builder extends \Illuminate\Database\Query\Builder
     }
 
     /**
-     * Set the cache prefix.
+     * Get the callback for pluck queries.
      *
-     * @param string $prefix
-     *
-     * @return $this
+     * @param  string  $column
+     * @param  mixed  $key
+     * @return \Closure
      */
-    public function prefix($prefix)
+    protected function pluckCacheCallback($column, $key = null)
     {
-        $this->cachePrefix = $prefix;
+        return function () use ($column, $key) {
+            $this->cacheSeconds = null;
 
-        return $this;
+            return $this->pluck($column, $key);
+        };
     }
 }
