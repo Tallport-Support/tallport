@@ -40,7 +40,6 @@ class MailboxesTest extends FeatureTestCase
             'from_name'       => Mailbox::FROM_NAME_MAILBOX,
             'ticket_status'   => Conversation::STATUS_ACTIVE,
             'ticket_assignee' => Mailbox::TICKET_ASSIGNEE_ANYONE,
-            'template'        => Mailbox::TEMPLATE_FANCY,
         ], $changes);
     }
 

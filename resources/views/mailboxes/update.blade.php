@@ -159,21 +159,6 @@
 
                         @action('mailbox.update.after_ticket_status', $mailbox)
 
-                        {{-- Email Template option hidden until somebody needs it --}}
-                        <div class="form-group{{ $errors->has('template') ? ' has-error' : '' }}" style="display:none">
-                            <label for="template" class="col-sm-2 control-label">{{ __('Email Template') }} (todo)</label>
-
-                            <div class="col-sm-6">
-
-                                <div class="controls">
-                                    {{-- Afer implementing remove readonly--}}
-                                    <label for="template_plain" class="radio inline plain"><input type="radio" name="template" value="{{ App\Mailbox::TEMPLATE_PLAIN }}" disabled="disabled" class="disabled" id="template_plain" @if (old('template', $mailbox->template) == App\Mailbox::TEMPLATE_PLAIN || !$mailbox->template)checked="checked"@endif> {{ __('Plain Template') }}</label>
-                                    <label for="template_fancy" class="radio inline"><input type="radio" name="template" value="{{ App\Mailbox::TEMPLATE_FANCY }}" id="template_fancy" @if (old('template', $mailbox->template) == App\Mailbox::TEMPLATE_FANCY)checked="checked"@endif> {{ __('Fancy Template') }}</label>
-                                </div>
-                                @include('partials/field_error', ['field'=>'template'])
-                            </div>
-                        </div>
-
                         <div class="form-group{{ $errors->has('ticket_assignee') ? ' has-error' : '' }}">
                             <label for="ticket_assignee" class="col-sm-2 control-label">{{ __('Default Assignee') }}</label>
 

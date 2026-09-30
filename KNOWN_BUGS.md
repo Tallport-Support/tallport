@@ -38,7 +38,6 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 
 | # | Severity | Where | Bug |
 |---|---|---|---|
-| M1 | low | `updateSave`, `resources/views/mailboxes/update.blade.php` :163 | The email template setting (fancy/plain) is hidden in the form, validated but never saved, and nothing reads it when sending: an unfinished FreeScout feature. Finish or remove. |
 | M7 | low | `update` GET, :111 | Viewing the settings attaches an admin to `mailbox_user` as a side effect. |
 | M8 | low | `permissionsSave`, :323 | Users whose access is removed keep their personal folders. |
 

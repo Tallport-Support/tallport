@@ -200,7 +200,6 @@ class MailboxesController extends Controller
                 'from_name'        => 'required|integer',
                 'from_name_custom' => 'nullable|string|max:128',
                 'ticket_status'    => 'required|integer',
-                'template'         => 'required|integer',
                 'ticket_assignee'  => 'required|integer',
             ]);
 
