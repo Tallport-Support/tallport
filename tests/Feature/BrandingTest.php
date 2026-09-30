@@ -41,6 +41,18 @@ class BrandingTest extends FeatureTestCase
         $this->assertStringNotContainsString('landing.freescout.net', $body);
     }
 
+    public function testNewVersionLinksToTallportReleases()
+    {
+        // The status page caches the latest version under this key.
+        \Cache::put('latest_version', '99.0.0', 15);
+
+        $response = $this->actingAs($this->createAdmin())->get('/system/status');
+
+        $response->assertSee('A new version is available');
+        $response->assertSee('href="'.config('app.tallport_url').'/releases"', false);
+        $this->assertStringNotContainsString('freescout.net/github/releases', $response->getContent());
+    }
+
     public function testSystemEmailsAreFromTallport()
     {
         $admin = $this->createAdmin();
