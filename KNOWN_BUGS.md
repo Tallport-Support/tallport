@@ -10,13 +10,14 @@ fixing the bug means removing that line and seeing the test pass.
 
 Line numbers refer to the code as of Tallport 1.8.244. Severity is a first
 guess: **security** (permission gaps), **high** (data loss or wrong data),
-**medium** (500 errors, broken features), **low** (inconsistencies).
+**medium** (500 errors, broken features), **low** (inconsistencies),
+**decision** (intended upstream, but worth reconsidering).
 
 ## Conversations (`app/Http/Controllers/ConversationsController.php`)
 
 | # | Severity | Where | Bug |
 |---|---|---|---|
-| C1 | security | `conversation_move`, :2269 | No access check on the **target** mailbox: an agent can move a conversation into a mailbox they can't see. |
+| C1 | decision | `conversation_move`, :2269 | No access check on the **target** mailbox: an agent can move a conversation into a mailbox they can't see. FreeScout documents this as intended (its SECURITY.md: "Support agents are allowed to move conversations to any mailbox, even to ones they don't have access to"); decide whether Tallport keeps it. |
 | C2 | high | `delete_conversation_forever`, :1966 | Hard-deletes any conversation, not only ones already in Deleted. |
 | C3 | medium | `conversation_change_status`, :651 | `status=not_spam` with a non-existent `conversation_id` reads `$conversation->threads()` before the null check → 500. |
 | C4 | medium | `conversation_change_customer`, :1905 | An email not in the `emails` table (or a missing conversation) dereferences null → 500 instead of an error message. |

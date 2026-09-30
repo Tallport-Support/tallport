@@ -1,152 +1,187 @@
-# Free Self-Hosted Zendesk & Help Scout Alternative
-
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/freescout-help-desk/freescout/master/public/img/logo-300.png" width="180" height="180" />
+<img src="public/img/logo-300.png" width="180" height="180" alt="Tallport" />
 
 </div>
 
-**FreeScout** is the super lightweight and powerful free open source help desk and shared inbox built with PHP (Laravel framework). Now you can enjoy free Zendesk & Help Scout without giving up privacy or locking yourself into a service you don't control. FreeScout has been developed from scratch and does not use any copyrighted Help Scout or Zendesk materials.
+# Tallport
 
-If you want to support the project feel free to **star this repository**. It helps to increase the visibility of the project and let people know that it is valuable. Thanks for your support!
+Tallport is a self-hosted help desk and shared mailbox: customer email
+arrives in shared mailboxes, agents reply, assign, add notes and follow up,
+and customers just see email. It's a PHP (Laravel) application for MariaDB.
 
-![FreeScout](https://freescout-helpdesk.github.io/img/screenshots/screenshot.png)
+Tallport is a fork of [FreeScout](https://github.com/freescout-help-desk/freescout),
+starting from FreeScout 1.8.243 (September 2026). The fork exists to move
+faster on fixes and performance, and to bring the codebase to a current
+Laravel version; see [Changes from FreeScout](#changes-from-freescout).
+Credit for everything up to the fork goes to the FreeScout team.
 
-## Table of Contents
-   * [Demo](#demo)
-   * [Features](#features)
-   * [Mobile Apps](#mobile-apps)
-   * [Requirements](#requirements)
-   * [Installation](#installation)
-   * [Images & One-Click Installs](#images--one-click-installs)
-   * [Modules](#modules)
-   * [Tools & Integrations](#tools--integrations)
-   * [News & Updates](#news--updates)
-   * [Contributing](#contributing)
-   * [Screenshots](#screenshots)
+## Contents
 
-## Demo
+* [Changes from FreeScout](#changes-from-freescout)
+* [Requirements](#requirements)
+* [Installing](#installing)
+* [Switching from FreeScout](#switching-from-freescout)
+* [Updating](#updating)
+* [Modules](#modules)
+* [Development](#development)
+* [Security](#security)
+* [License](#license)
 
-**[Live Demo](https://demo.freescout.net)**
+## Changes from FreeScout
 
-## Features
+So far:
 
-  * Omnichannel — FreeScout centralizes in one place all customer conversations received by email, [WhatsApp](https://freescout.net/whatsapp/), Telegram, Facebook, Slack, Live Chat and more.
-  * [AI-powered](https://github.com/freescout-help-desk/AiIntegration) and super efficient.
-  * Unlimited support agents, tickets, mailboxes, etc.
-  * [Secure](https://freescout.net/security) by design.
-  * Mobile-friendly.
-  * Multilingual (translated into 33 languages).
-  * Seamless email integration (via SMTP, IMAP, POP3, etc).
-  * Modern OAuth authentication for Microsoft Office 365 and Google Workspace.
-  * Native [S3 storage](https://github.com/freescout-help-desk/S3Storage) support.
-  * Fully supports screen readers (for visually impaired).
-  * Web installer & updater.
-  * Starred conversations.
-  * Push notifications.
-  * Following conversations.
-  * Auto replies.
-  * Internal notes.
-  * Forwarding / Merging / Moving conversations.
-  * Phone conversations.
-  * Sending new conversations to multiple recipients at once.
-  * Collision detection – notice is shown when two agents open the same conversation.
-  * Automatic refreshing of the conversations list without the need to reload the page.
-  * Pasting screenshots from the clipboard into the reply area.
-  * Flexible notifications for user agents.
-  * Open tracking.
-  * Powerful search.
+* **Updates come from this repository.** The built-in updater installs the
+  latest published [Tallport release](https://github.com/nielspeen/tallport/releases)
+  instead of FreeScout releases.
+* **Branding.** The app says Tallport, with credit to FreeScout.
+* **A test suite.** About 320 tests (feature, unit and snapshot tests) run
+  on every push, covering the email conversation loop, every route, ajax
+  action, artisan command and queued job. See [Development](#development).
+* **Known bugs are listed** in [KNOWN_BUGS.md](KNOWN_BUGS.md): bugs found
+  while writing the tests, most of them present in FreeScout too.
 
-A full list of features is available [here](https://freescout.net/#custom_html-3).
-
-Need anything else? [Suggest features](https://freescout.net/request-feature/).
-
-## Mobile Apps
-
-Mobile apps support the same functionality and modules as the web version of your FreeScout installation. Both support agents and administrators can use mobile apps.
-
-<a href="https://freescout.net/android-app/" target="_blank" rel="nofollow"><img alt="Android App" src="https://freescout-helpdesk.github.io/img/apps/android.png" width="200px" /></a> <a href="https://freescout.net/ios-app/" target="_blank" rel="nofollow"><img alt="iOS App" src="https://freescout-helpdesk.github.io/img/apps/ios.png?v=1" width="200px" /></a>
-
-[MacOS Menu Bar App](https://github.com/jonalaniz/scouter)
+Planned next: faster rendering of conversations with large messages, fixing
+the known bugs, and upgrading Laravel from 5.5 to the current version.
 
 ## Requirements
 
-FreeScout is a pure PHP/MySQL application, so it can be easily deployed even on a [shared hosting](https://github.com/freescout-help-desk/freescout/wiki/Choosing-a-Server).
+* PHP 8.3 with the `imap`, `mbstring`, `xml`, `zip`, `gd`, `curl`, `intl`
+  and `mysql` extensions
+* MariaDB (tested with 11.8)
+* Nginx or Apache
+* A cron job running `php artisan schedule:run` every minute (fetches
+  mail and runs the queue)
 
-  * Nginx / Apache / IIS
-  * PHP 7.4 - 8.x
-  * MySQL 5.0+ / MariaDB 5.0+ / PostgreSQL
+Tallport is tested on PHP 8.3 and MariaDB. FreeScout also supports older
+PHP versions, MySQL and PostgreSQL; Tallport may still work there, but
+isn't tested on them.
 
-There are no minimum system requirements (CPU / RAM) – FreeScout will run on any system.
+## Installing
 
-## Installation
-
+Tallport installs like FreeScout, so FreeScout's
 [Installation Guide](https://github.com/freescout-help-desk/freescout/wiki/Installation-Guide)
+applies, using Tallport's code instead of FreeScout's:
 
-## Images & One-Click Installs
+1. Download the latest [release](https://github.com/nielspeen/tallport/releases)
+   (or `git clone https://github.com/nielspeen/tallport.git`) into your web
+   root. `vendor/` is included, so Composer isn't needed.
+2. Point the web server at `public/`, then open the site and follow the web
+   installer.
+3. Add the cron job from [Requirements](#requirements).
 
-* [Docker Image](https://freescout.net/docker/)
-* [Pikapods](https://freescout.net/pikapods/) — Open-source apps hosting (Fully managed)
-* [Zenith](https://freescout.net/zenith/) — Open-source apps hosting (Fully managed)
-* [Hostinger](https://freescout.net/hostinger/) — VPS with automatic backups included
-* [Softaculous](http://www.softaculous.com/apps/customersupport/FreeScout) — cPanel, Plesk, ISPmanager, H-Sphere, DirectAdmin, InterWorx
-* [Fantastico](http://ff3.netenberg.com/visitors/scripts/freescout/view) — cPanel, DirectAdmin, ISP Manager, ISP Config
-* [Cloudron](https://cloudron.io/store/net.freescout.cloudronapp.html)
-* [Ubuntu](https://github.com/freescout-help-desk/freescout/wiki/Installation-Guide#interactive-installation-bash-script-ubuntu) — Bash script
+## Switching from FreeScout
 
-[More one-click installs…](https://freescout.net/one-click-installs/)
+An existing FreeScout 1.8.243 installation can switch to Tallport through
+FreeScout's own updater, after pointing it at Tallport. Back up the
+database and files first.
+
+```bash
+cd /path/to/freescout
+RAW=https://raw.githubusercontent.com/nielspeen/tallport/main
+sudo -u www-data curl -fsSL $RAW/config/self-update.php -o config/self-update.php
+sudo -u www-data curl -fsSL $RAW/overrides/codedge/laravel-selfupdater/src/SourceRepositoryTypes/GithubRepositoryType.php \
+  -o overrides/codedge/laravel-selfupdater/src/SourceRepositoryTypes/GithubRepositoryType.php
+sudo -u www-data php artisan freescout:clear-cache
+sudo -u www-data php artisan freescout:update
+```
+
+Replace `www-data` with your web server's user. The update keeps `.env`,
+`storage/` and `Modules/`. If the installation is a git checkout of
+FreeScout, move `.git` away afterwards so a `git pull` doesn't bring
+FreeScout back.
+
+Only 1.8.243 is known to match Tallport's database; from other FreeScout
+versions, update FreeScout to 1.8.243 first.
+
+## Updating
+
+**Manage » System » Status » Update Now**, or on the server:
+
+```bash
+sudo -u www-data php artisan freescout:update
+```
+
+The updater installs the latest published release from this repository and
+runs database migrations. Draft and pre-release versions are skipped.
 
 ## Modules
 
-* [Official Modules](https://freescout.net/modules/)
-* [Community Modules](https://freescout.net/community-modules/)
+FreeScout modules keep working: Tallport reports itself to modules and to
+the FreeScout modules directory as FreeScout 1.8.243
+(`compatibility_version` in `config/app.php`), so modules that require up
+to that version install and run. Module licenses are still managed by
+freescout.net.
 
-## Tools & Integrations
-  
-  * [API](https://api-docs.freescout.net/)
-  * [Migrate to FreeScout](http://freescout.net/migrate/) (from any help desk)
-  * [Zapier](https://freescout.net/zapier/)
-  * [Make](https://freescout.net/make-integration/) (Integromat)
+## Development
 
-## News & Updates
+What you need: PHP 8.x with the extensions above, Composer, a MariaDB
+server, and the [GitHub CLI](https://cli.github.com/) (`gh`) for releases.
 
-Don't miss news, updates and new modules!
+### Tests
 
-[Email Newsletter](https://freescout.net/subscribe/) | [Facebook](https://freescout.net/facebook/) | [Twitter](https://freescout.net/twitter/) | [YouTube](https://freescout.net/youtube/) | [Telegram](https://freescout.net/telegram/) | [RSS](https://freescout.net/feed/)
+The tests use their own database. Create it once, as a MariaDB admin:
 
-## Contributing
+```sql
+CREATE DATABASE `freescout-test` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'freescout-test'@'localhost' IDENTIFIED BY 'freescout-test';
+GRANT ALL ON `freescout-test`.* TO 'freescout-test'@'localhost';
+```
 
-* [Support the project by leaving a feedback](https://github.com/freescout-help-desk/freescout/issues/288)
-* [Development Guide](https://github.com/freescout-help-desk/freescout/wiki/Development-Guide)
-* [Todo list](https://github.com/freescout-help-desk/freescout/labels/help%20wanted)
-* [Translate](https://github.com/freescout-help-desk/freescout/wiki/Translate)
+Then:
 
-## Screenshots
+```bash
+./test.sh                      # everything, plus the inventory check
+./test.sh --filter Branding    # just some tests
+```
 
-Dashboard:
+* Test tools (PHPUnit and friends) live in their own Composer project in
+  `dev/`, installed into the ignored `dev/vendor`, so they never ship with
+  releases. `./test.sh` installs them when needed.
+* Tests don't read your `.env`, send no real email, make no outside network
+  requests and don't touch your installation's files; see
+  `tests/FeatureTestCase.php` for how.
+* **Snapshots** in `tests/Snapshots/` record routes, the database schema,
+  commands, the scheduler, module hooks and how message bodies render. After
+  an intended change, run `UPDATE_SNAPSHOTS=1 ./test.sh`, review the diff
+  and commit it.
+* **Inventory:** a full run fails if any route, ajax action, command or job
+  isn't exercised by a test and isn't listed with a reason in
+  `tests/inventory-exclusions.php`. New endpoints need a test.
+* **Known bugs** have an entry in [KNOWN_BUGS.md](KNOWN_BUGS.md); tests of
+  the intended behaviour call `$this->knownBug('C12')` and show up as
+  incomplete until the bug is fixed.
 
-![Dashboard](https://freescout-helpdesk.github.io/img/screenshots/dashboard.png)
+CI runs the tests on every push and pull request with PHP 8.3 and MariaDB
+(`.github/workflows/test.yml`), and publishes a coverage report for every
+push to `main` (`coverage.yml`).
 
-Conversation:
+### Releasing
 
-![Conversation](https://freescout-helpdesk.github.io/img/screenshots/conversation.png)
+```bash
+./release.sh "What changed"            # bumps the last version number
+./release.sh 1.9.0 "What changed"      # for significant changes
+```
 
-Drafting reply with AI:
+It only releases a commit that is pushed to `main` and passed CI, then
+creates the GitHub release that installations update to. The notes go at
+the top of the release, above GitHub's list of changes.
 
-![Mailbox connection settings page](https://freescout-helpdesk.github.io/img/screenshots/draft-reply-with-ai.png)
+### Logo and icons
 
-Notifications:
+The logo is `public/img/logo-brand.svg`. After changing it, run
+`resources/brand/generate-icons.sh` to regenerate the favicons and other
+icons (needs Google Chrome and ImageMagick).
 
-![Notifications](https://freescout-helpdesk.github.io/img/screenshots/notifications.png)
+## Security
 
-Push notification:
+Please report vulnerabilities privately through
+[GitHub security advisories](https://github.com/nielspeen/tallport/security/advisories/new)
+for this repository, not in public issues.
 
-![Push notification](https://freescout-helpdesk.github.io/img/screenshots/push.png)
+## License
 
-Web installer:
-
-![Web installer](https://freescout-helpdesk.github.io/img/screenshots/installer.png)
-
-Login page:
-
-![Login page](https://freescout-helpdesk.github.io/img/screenshots/freescout-login.png)
+Tallport is licensed under the [GNU Affero General Public License v3.0](LICENSE),
+like FreeScout, which it is based on. FreeScout is © its authors; see the
+[FreeScout repository](https://github.com/freescout-help-desk/freescout).
