@@ -245,6 +245,42 @@ class UsersTest extends FeatureTestCase
         $this->assertEquals(User::ROLE_ADMIN, $this->admin->fresh()->role);
     }
 
+    /**
+     * Disabled or deleted admins don't count: the last active admin can be
+     * neither demoted nor disabled (U2).
+     */
+    public function testLastActiveAdminCannotBeDemotedOrDisabled()
+    {
+        $this->createAdmin(['status' => User::STATUS_DISABLED]);
+        $profile = [
+            'first_name' => $this->admin->first_name, 'email' => $this->admin->email,
+            'timezone'   => 'UTC', 'time_format' => User::TIME_FORMAT_24,
+        ];
+
+        $this->postForm($this->admin, '/users/profile/'.$this->admin->id, $profile + ['role' => User::ROLE_USER])
+            ->assertSessionHasErrors('role');
+        $this->postForm($this->admin, '/users/profile/'.$this->admin->id, $profile + ['role' => User::ROLE_ADMIN, 'disabled' => 1])
+            ->assertSessionHasErrors('disabled');
+
+        $admin = $this->admin->fresh();
+        $this->assertEquals(User::ROLE_ADMIN, $admin->role);
+        $this->assertEquals(User::STATUS_ACTIVE, $admin->status);
+    }
+
+    public function testAdminCanBeDisabledWhileAnotherIsActive()
+    {
+        $other = $this->createAdmin();
+
+        $this->postForm($this->admin, '/users/profile/'.$other->id, [
+            'first_name' => $other->first_name, 'email' => $other->email, 'timezone' => 'UTC',
+            'time_format' => User::TIME_FORMAT_24, 'role' => User::ROLE_ADMIN, 'disabled' => 1,
+        ]);
+
+        $this->assertNull(session('errors'));
+
+        $this->assertEquals(User::STATUS_DISABLED, $other->fresh()->status);
+    }
+
     // Access and settings.
 
     public function testAdminSetsMailboxAccessAndPermissions()

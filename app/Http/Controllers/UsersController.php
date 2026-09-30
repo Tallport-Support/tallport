@@ -219,12 +219,22 @@ class UsersController extends Controller
                 }
             }
 
-            // Do not allow to remove last administrator
-            if ($user->isAdmin() && isset($request->role) && $request->role != User::ROLE_ADMIN) {
-                $admins_count = User::where('role', User::ROLE_ADMIN)->count();
-                if ($admins_count < 2) {
-                    $invalid = true;
-                    $validator->errors()->add('role', __('Role of the only one administrator can not be changed.'));
+            // Do not allow to remove the last active administrator: disabled
+            // and deleted admins can't manage anything.
+            if ($user->isAdmin() && $user->isActive() && auth()->user()->isAdmin()) {
+                $other_active_admins = User::where('role', User::ROLE_ADMIN)
+                    ->where('status', User::STATUS_ACTIVE)
+                    ->where('id', '!=', $user->id)
+                    ->count();
+                if (!$other_active_admins) {
+                    if (isset($request->role) && $request->role != User::ROLE_ADMIN) {
+                        $invalid = true;
+                        $validator->errors()->add('role', __('Role of the only one administrator can not be changed.'));
+                    }
+                    if (!empty($request->disabled)) {
+                        $invalid = true;
+                        $validator->errors()->add('disabled', __('The only active administrator can not be disabled.'));
+                    }
                 }
             }
         });
