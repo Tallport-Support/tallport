@@ -373,6 +373,7 @@
             "vendor/nesbot/carbon/src/Carbon/Traits/Creator.php",
             "vendor/laravel/framework/src/Illuminate/Routing/RouteUrlGenerator.php",
             "vendor/laravel/framework/src/Illuminate/Mail/MailManager.php",
+            "vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php",
             "vendor/vlucas/phpdotenv/src/Parser/EntryParser.php",
             "vendor/vlucas/phpdotenv/src/Parser/Lines.php",
             "vendor/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/HasAttributes.php",

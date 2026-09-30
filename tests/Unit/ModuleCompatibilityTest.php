@@ -42,6 +42,14 @@ class ModuleCompatibilityTest extends TestCase
         $this->assertStringContainsString('"created_at":"2026-03-05 14:07:09"', $customer->toJson());
     }
 
+    public function testModelsWithoutReturnTypesLoad()
+    {
+        exec(escapeshellarg(PHP_BINARY).' '.escapeshellarg(__DIR__.'/../Support/module-compat/old-style-model.php').' 2>&1', $output, $code);
+
+        $this->assertSame(0, $code, implode("\n", $output));
+        $this->assertSame('{"serialized":true} value', end($output));
+    }
+
     public function testOldHelpers()
     {
         $this->assertSame('b', array_get(['a' => 'b'], 'a'));

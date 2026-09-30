@@ -1716,7 +1716,7 @@ return array(
     'Illuminate\\Database\\Eloquent\\MassAssignmentException' => $vendorDir . '/laravel/framework/src/Illuminate/Database/Eloquent/MassAssignmentException.php',
     'Illuminate\\Database\\Eloquent\\MassPrunable' => $vendorDir . '/laravel/framework/src/Illuminate/Database/Eloquent/MassPrunable.php',
     'Illuminate\\Database\\Eloquent\\MissingAttributeException' => $vendorDir . '/laravel/framework/src/Illuminate/Database/Eloquent/MissingAttributeException.php',
-    'Illuminate\\Database\\Eloquent\\Model' => $vendorDir . '/laravel/framework/src/Illuminate/Database/Eloquent/Model.php',
+    'Illuminate\\Database\\Eloquent\\Model' => $baseDir . '/overrides/laravel/framework/src/Illuminate/Database/Eloquent/Model.php',
     'Illuminate\\Database\\Eloquent\\ModelNotFoundException' => $vendorDir . '/laravel/framework/src/Illuminate/Database/Eloquent/ModelNotFoundException.php',
     'Illuminate\\Database\\Eloquent\\PendingHasThroughRelationship' => $vendorDir . '/laravel/framework/src/Illuminate/Database/Eloquent/PendingHasThroughRelationship.php',
     'Illuminate\\Database\\Eloquent\\Prunable' => $vendorDir . '/laravel/framework/src/Illuminate/Database/Eloquent/Prunable.php',
