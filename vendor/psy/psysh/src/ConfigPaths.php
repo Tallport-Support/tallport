@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2020 Justin Hileman
+ * (c) 2012-2023 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -31,10 +31,11 @@ class ConfigPaths
      * @param string[]     $overrides Directory overrides
      * @param EnvInterface $env
      */
-    public function __construct($overrides = [], $env = null)
+    public function __construct(array $overrides = [], EnvInterface $env = null)
     {
         $this->overrideDirs($overrides);
-        $this->env = $env ?: new SuperglobalsEnv();
+
+        $this->env = $env ?: (\PHP_SAPI === 'cli-server' ? new SystemEnv() : new SuperglobalsEnv());
     }
 
     /**
@@ -45,7 +46,7 @@ class ConfigPaths
      *
      * @param string[] $overrides Directory overrides
      */
-    public function overrideDirs($overrides)
+    public function overrideDirs(array $overrides)
     {
         if (\array_key_exists('configDir', $overrides)) {
             $this->configDir = $overrides['configDir'] ?: null;
@@ -108,7 +109,7 @@ class ConfigPaths
      *
      * @return string[]
      */
-    public function configDirs()
+    public function configDirs(): array
     {
         if ($this->configDir !== null) {
             return [$this->configDir];
@@ -122,7 +123,7 @@ class ConfigPaths
     /**
      * @deprecated
      */
-    public static function getConfigDirs()
+    public static function getConfigDirs(): array
     {
         return (new self())->configDirs();
     }
@@ -139,7 +140,7 @@ class ConfigPaths
      *
      * @return string[]
      */
-    public static function getHomeConfigDirs()
+    public static function getHomeConfigDirs(): array
     {
         // Not quite the same, but this is deprecated anyway /shrug
         return self::getConfigDirs();
@@ -154,10 +155,8 @@ class ConfigPaths
      * everywhere else).
      *
      * @see self::homeConfigDir
-     *
-     * @return string
      */
-    public function currentConfigDir()
+    public function currentConfigDir(): string
     {
         if ($this->configDir !== null) {
             return $this->configDir;
@@ -177,7 +176,7 @@ class ConfigPaths
     /**
      * @deprecated
      */
-    public static function getCurrentConfigDir()
+    public static function getCurrentConfigDir(): string
     {
         return (new self())->currentConfigDir();
     }
@@ -189,7 +188,7 @@ class ConfigPaths
      *
      * @return string[]
      */
-    public function configFiles(array $names)
+    public function configFiles(array $names): array
     {
         return $this->allRealFiles($this->configDirs(), $names);
     }
@@ -197,7 +196,7 @@ class ConfigPaths
     /**
      * @deprecated
      */
-    public static function getConfigFiles(array $names, $configDir = null)
+    public static function getConfigFiles(array $names, $configDir = null): array
     {
         return (new self(['configDir' => $configDir]))->configFiles($names);
     }
@@ -214,7 +213,7 @@ class ConfigPaths
      *
      * @return string[]
      */
-    public function dataDirs()
+    public function dataDirs(): array
     {
         if ($this->dataDir !== null) {
             return [$this->dataDir];
@@ -229,9 +228,72 @@ class ConfigPaths
     /**
      * @deprecated
      */
-    public static function getDataDirs()
+    public static function getDataDirs(): array
     {
         return (new self())->dataDirs();
+    }
+
+    /**
+     * Get the local config root directory (cwd only, no ancestor walking).
+     *
+     * Used for local `.psysh.php` config file detection. Returns the current
+     * working directory, or null if getcwd() fails.
+     */
+    public function localConfigRoot()
+    {
+        $cwd = \getcwd();
+        if ($cwd === false) {
+            return null;
+        }
+
+        return \strtr($cwd, '\\', '/');
+    }
+
+    /**
+     * Find a project root for trust decisions.
+     *
+     * Walks up ancestors to find the nearest composer.json or composer.lock.
+     * If none found, falls back to the nearest .psysh.php, then to the current
+     * working directory.
+     *
+     * Used for trust decisions on Composer autoload and project-level features.
+     */
+    public function projectRoot($cwd = null)
+    {
+        $cwd = $cwd ?? \getcwd();
+        if ($cwd === false) {
+            return null;
+        }
+
+        $dir = \strtr($cwd, '\\', '/');
+        $root = null;
+        $localConfigRoot = null;
+
+        $current = $dir;
+        $parent = \dirname($current);
+
+        while ($current !== $parent) {
+            if ($root === null && (@\is_file($current.'/composer.json') || @\is_file($current.'/composer.lock'))) {
+                $root = $current;
+            }
+
+            if ($localConfigRoot === null && @\is_file($current.'/.psysh.php')) {
+                $localConfigRoot = $current;
+            }
+
+            $current = $parent;
+            $parent = \dirname($current);
+        }
+
+        if ($root !== null) {
+            return $root;
+        }
+
+        if ($localConfigRoot !== null) {
+            return $localConfigRoot;
+        }
+
+        return $dir;
     }
 
     /**
@@ -241,7 +303,7 @@ class ConfigPaths
      *
      * @return string[]
      */
-    public function dataFiles(array $names)
+    public function dataFiles(array $names): array
     {
         return $this->allRealFiles($this->dataDirs(), $names);
     }
@@ -249,7 +311,7 @@ class ConfigPaths
     /**
      * @deprecated
      */
-    public static function getDataFiles(array $names, $dataDir = null)
+    public static function getDataFiles(array $names, $dataDir = null): array
     {
         return (new self(['dataDir' => $dataDir]))->dataFiles($names);
     }
@@ -258,10 +320,8 @@ class ConfigPaths
      * Get a runtime directory.
      *
      * Defaults to `/psysh` inside the system's temp dir.
-     *
-     * @return string
      */
-    public function runtimeDir()
+    public function runtimeDir(): string
     {
         if ($this->runtimeDir !== null) {
             return $this->runtimeDir;
@@ -276,9 +336,43 @@ class ConfigPaths
     /**
      * @deprecated
      */
-    public static function getRuntimeDir()
+    public static function getRuntimeDir(): string
     {
         return (new self())->runtimeDir();
+    }
+
+    /**
+     * Get a list of directories in PATH.
+     *
+     * If $PATH is unset/empty it defaults to '/usr/sbin:/usr/bin:/sbin:/bin'.
+     *
+     * @return string[]
+     */
+    public function pathDirs(): array
+    {
+        return $this->getEnvArray('PATH') ?: ['/usr/sbin', '/usr/bin', '/sbin', '/bin'];
+    }
+
+    /**
+     * Locate a command (an executable) in $PATH.
+     *
+     * Behaves like 'command -v COMMAND' or 'which COMMAND'.
+     * If $PATH is unset/empty it defaults to '/usr/sbin:/usr/bin:/sbin:/bin'.
+     *
+     * @param string $command the executable to locate
+     *
+     * @return string
+     */
+    public function which($command)
+    {
+        foreach ($this->pathDirs() as $path) {
+            $fullpath = $path.\DIRECTORY_SEPARATOR.$command;
+            if (@\is_file($fullpath) && @\is_executable($fullpath)) {
+                return $fullpath;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -292,7 +386,7 @@ class ConfigPaths
      *
      * @return string[]
      */
-    private function allDirNames(array $baseDirs)
+    private function allDirNames(array $baseDirs): array
     {
         $dirs = \array_map(function ($dir) {
             return \strtr($dir, '\\', '/').'/psysh';
@@ -327,7 +421,7 @@ class ConfigPaths
      *
      * @return string[]
      */
-    private function allRealFiles(array $dirNames, array $fileNames)
+    private function allRealFiles(array $dirNames, array $fileNames): array
     {
         $files = [];
         foreach ($dirNames as $dir) {
@@ -343,6 +437,44 @@ class ConfigPaths
     }
 
     /**
+     * Make a path prettier by replacing cwd with . or home directory with ~.
+     *
+     * @param string|mixed $path       Path to prettify
+     * @param string|null  $relativeTo Directory to make path relative to (defaults to cwd)
+     * @param string|null  $homeDir    Home directory to replace with ~ (defaults to actual home)
+     *
+     * @return string|mixed Pretty path, or original value if not a string
+     */
+    public static function prettyPath($path, $relativeTo = null, $homeDir = null)
+    {
+        if (!\is_string($path)) {
+            return $path;
+        }
+
+        $path = \strtr($path, '\\', '/');
+
+        // Try replacing relativeTo directory first (more specific)
+        $relativeTo = $relativeTo ?: \getcwd();
+        if ($relativeTo !== false) {
+            $relativeTo = \rtrim(\strtr($relativeTo, '\\', '/'), '/').'/';
+            if (\strpos($path, $relativeTo) === 0) {
+                return './'.\substr($path, \strlen($relativeTo));
+            }
+        }
+
+        // Fall back to replacing home directory
+        $homeDir = $homeDir ?: (new self())->homeDir();
+        if ($homeDir && $homeDir !== '/') {
+            $homeDir = \rtrim(\strtr($homeDir, '\\', '/'), '/').'/';
+            if (\strpos($path, $homeDir) === 0) {
+                return '~/'.\substr($path, \strlen($homeDir));
+            }
+        }
+
+        return $path;
+    }
+
+    /**
      * Ensure that $dir exists and is writable.
      *
      * Generates E_USER_NOTICE error if the directory is not writable or creatable.
@@ -351,7 +483,7 @@ class ConfigPaths
      *
      * @return bool False if directory exists but is not writeable, or cannot be created
      */
-    public static function ensureDir($dir)
+    public static function ensureDir(string $dir): bool
     {
         if (!\is_dir($dir)) {
             // Just try making it and see if it works
@@ -376,7 +508,7 @@ class ConfigPaths
      *
      * @return string|false Full path to $file, or false if file is not writable
      */
-    public static function touchFileWithMkdir($file)
+    public static function touchFileWithMkdir(string $file)
     {
         if (\file_exists($file)) {
             if (\is_writable($file)) {
@@ -405,7 +537,7 @@ class ConfigPaths
     private function getEnvArray($key)
     {
         if ($value = $this->getEnv($key)) {
-            return \explode(':', $value);
+            return \explode(\PATH_SEPARATOR, $value);
         }
 
         return null;

@@ -23,6 +23,7 @@ Activity::all();
 ```
 
 Here's a more advanced example:
+
 ```php
 activity()
    ->performedOn($anEloquentModel)
@@ -38,8 +39,7 @@ $lastLoggedActivity->getExtraProperty('customProperty'); //returns 'customValue'
 $lastLoggedActivity->description; //returns 'Look, I logged something'
 ```
 
-
-Here's an example on [event logging](https://docs.spatie.be/laravel-activitylog/v3/advanced-usage/logging-model-events).
+Here's an example on [event logging](https://spatie.be/docs/laravel-activitylog/advanced-usage/logging-model-events).
 
 ```php
 $newsItem->name = 'updated name';
@@ -76,94 +76,39 @@ We invest a lot of resources into creating [best in class open source packages](
 We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
 
 ## Documentation
-You'll find the documentation on [https://docs.spatie.be/laravel-activitylog](https://docs.spatie.be/laravel-activitylog).
+
+You'll find the documentation on [https://spatie.be/docs/laravel-activitylog/introduction](https://spatie.be/docs/laravel-activitylog/introduction).
 
 Find yourself stuck using the package? Found a bug? Do you have general questions or suggestions for improving the activity log? Feel free to [create an issue on GitHub](https://github.com/spatie/laravel-activitylog/issues), we'll try to address it as soon as possible.
-
-If you've found a security issue please mail [freek@spatie.be](mailto:freek@spatie.be) instead of using the issue tracker.
 
 ## Installation
 
 You can install the package via composer:
 
-``` bash
+```bash
 composer require spatie/laravel-activitylog
 ```
 
 The package will automatically register itself.
 
 You can publish the migration with:
+
 ```bash
-php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider" --tag="migrations"
+php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider" --tag="activitylog-migrations"
 ```
 
-*Note*: The default migration assumes you are using integers for your model IDs. If you are using UUIDs, or some other format, adjust the format of the subject_id and causer_id fields in the published migration before continuing.
+_Note_: The default migration assumes you are using integers for your model IDs. If you are using UUIDs, or some other format, adjust the format of the subject_id and causer_id fields in the published migration before continuing.
 
 After publishing the migration you can create the `activity_log` table by running the migrations:
-
 
 ```bash
 php artisan migrate
 ```
 
 You can optionally publish the config file with:
+
 ```bash
-php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider" --tag="config"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-
-    /*
-     * If set to false, no activities will be saved to the database.
-     */
-    'enabled' => env('ACTIVITY_LOGGER_ENABLED', true),
-
-    /*
-     * When the clean-command is executed, all recording activities older than
-     * the number of days specified here will be deleted.
-     */
-    'delete_records_older_than_days' => 365,
-
-    /*
-     * If no log name is passed to the activity() helper
-     * we use this default log name.
-     */
-    'default_log_name' => 'default',
-
-    /*
-     * You can specify an auth driver here that gets user models.
-     * If this is null we'll use the default Laravel auth driver.
-     */
-    'default_auth_driver' => null,
-
-    /*
-     * If set to true, the subject returns soft deleted models.
-     */
-    'subject_returns_soft_deleted_models' => false,
-
-    /*
-     * This model will be used to log activity.
-     * It should be implements the Spatie\Activitylog\Contracts\Activity interface
-     * and extend Illuminate\Database\Eloquent\Model.
-     */
-    'activity_model' => \Spatie\Activitylog\Models\Activity::class,
-
-    /*
-     * This is the name of the table that will be created by the migration and
-     * used by the Activity model shipped with this package.
-     */
-    'table_name' => 'activity_log',
-
-     /*
-      * This is the database connection that will be used by the migration and
-      * the Activity model shipped with this package. In case it's not set
-      * Laravel database.default will be used instead.
-      */
-    'database_connection' => env('ACTIVITY_LOGGER_DB_CONNECTION'),
-];
+php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider" --tag="activitylog-config"
 ```
 
 ## Changelog
@@ -176,13 +121,13 @@ Please see [UPGRADING](UPGRADING.md) for details.
 
 ## Testing
 
-``` bash
+```bash
 composer test
 ```
 
 ## Contributing
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
 ## Security
 
@@ -190,11 +135,12 @@ If you discover any security related issues, please email freek@spatie.be instea
 
 ## Credits
 
-- [Freek Van der Herten](https://github.com/freekmurze)
-- [Sebastian De Deyne](https://github.com/sebastiandedeyne)
-- [All Contributors](../../contributors)
+-   [Freek Van der Herten](https://github.com/freekmurze)
+-   [Sebastian De Deyne](https://github.com/sebastiandedeyne)
+-   [Tom Witkowski](https://github.com/Gummibeer)
+-   [All Contributors](../../contributors)
 
-And a special thanks to [Caneco](https://twitter.com/caneco) for the logo ✨
+And a special thanks to [Caneco](https://twitter.com/caneco) for the logo and [Ahmed Nagi](https://github.com/nagi1) for all the work he put in `v4`.
 
 ## License
 

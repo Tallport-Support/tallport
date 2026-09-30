@@ -2,6 +2,39 @@
 
 All notable changes to `spatie/laravel-activitylog` will be documented in this file
 
+## 4.3.1 - 2021-10-20
+
+- Fix hardcoded `deleted_at` column usage - [#965](https://github.com/spatie/laravel-activitylog/issues/965)
+
+## 4.3.0 - 2021-10-20
+
+- Add `\Spatie\Activitylog\LogOptions::useAttributeRawValues()` to log uncasted attributes - [#972](https://github.com/spatie/laravel-activitylog/issues/972)
+
+## 4.2.0 - 2021-10-06
+
+- Add `immutable_date` cast support - [#969](https://github.com/spatie/laravel-activitylog/issues/969)
+
+## 4.1.1 - 2021-07-23
+
+- Fix migration stub names - [#914](https://github.com/spatie/laravel-activitylog/issues/914)
+
+## 4.1.0 - 2021-07-23
+
+- Add `\Spatie\Activitylog\LogBatch::setBatch(string $uuid)` method to keep batches across requests or multiple jobs - [#918](https://github.com/spatie/laravel-activitylog/issues/918)
+
+## 4.0.0 - 2021-05-04
+
+PR: [#787](https://github.com/spatie/laravel-activitylog/pull/787)  
+Special thanks to [Ahmed Nagi](https://github.com/nagi1).
+
+- Drop Laravel 6 and 7 support.
+- Drop PHP 7.x support.
+- Add `LogOptions` configuration object to replace all configuration properties.
+- Add ability to batch activity logs [#560](https://github.com/spatie/laravel-activitylog/issues/560)
+- Add Pipeline to customize logged changes data.
+  - Deep diff array/JSON sub-keys and respect for only-dirty, no-empty ... [#692](https://github.com/spatie/laravel-activitylog/issues/692) using new pipeline. See implementation in the tests.
+- Implement a `CauserResolver` to define causer for current runtime [#582](https://github.com/spatie/laravel-activitylog/issues/582).
+
 ## 3.17.0 - 2021-03-02
 
 - drop PHP 7.2 support - [#855](https://github.com/spatie/laravel-activitylog/pull/855)
@@ -166,8 +199,8 @@ Please use `v3.14.1` instead - this release is breaking because of the new colum
 
 - add `$logUnguarded`
 
-## 3.0.0 - 2018-10-16 
-- the preferred way to get changes on an `Activity` model is through the `changes` property instead of the `changes()` function 
+## 3.0.0 - 2018-10-16
+- the preferred way to get changes on an `Activity` model is through the `changes` property instead of the `changes()` function
 - the `activity` relation of the `CausesActivity` trait has been renamed to `actions`
 - the `activity` relation of the `LogsActivity` trait has been renamed to `activities`
 - the deprecated `loggedActivity` relation has been removed
@@ -289,7 +322,7 @@ Please use `v3.14.1` instead - this release is breaking because of the new colum
 ## 1.10.0 - 2016-10-10
 - add support for `restored` event
 
-## 1.9.2 - 2016-09-27 
+## 1.9.2 - 2016-09-27
 - fixed a bug where the delete event would not be logged
 
 ## 1.9.1 - 2016-09-16

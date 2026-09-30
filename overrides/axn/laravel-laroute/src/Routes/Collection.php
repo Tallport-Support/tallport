@@ -16,7 +16,7 @@ class Collection extends BaseCollection
     public function __construct($routes = [], $filter = null, $namespace = null, $module = null)
     {
         // Laravel 6 collections create new instances from plain arrays (map, toArray...).
-        if (!$routes instanceof \Illuminate\Routing\RouteCollection) {
+        if (!$routes instanceof \Illuminate\Routing\RouteCollectionInterface) {
             parent::__construct($routes);
 
             return;
@@ -35,7 +35,7 @@ class Collection extends BaseCollection
     {
         $options = JSON_PRETTY_PRINT | $options;
 
-        return json_encode($this->toArray(), $options);
+        return json_encode($this->jsonSerialize(), $options);
     }
 
     /**

@@ -52,6 +52,7 @@ return array(
     'Symfony\\Component\\Console\\Formatter\\' => array($baseDir . '/overrides/symfony/console/Formatter'),
     'Symfony\\Component\\Console\\Command\\' => array($baseDir . '/overrides/symfony/console/Command'),
     'Symfony\\Component\\Console\\' => array($baseDir . '/overrides/symfony/console', $vendorDir . '/symfony/console'),
+    'Spatie\\LaravelPackageTools\\' => array($vendorDir . '/spatie/laravel-package-tools/src'),
     'Spatie\\Activitylog\\' => array($vendorDir . '/spatie/laravel-activitylog/src'),
     'Rap2hpoutre\\LaravelLogViewer\\' => array($baseDir . '/overrides/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer'),
     'Ramsey\\Uuid\\' => array($vendorDir . '/ramsey/uuid/src'),

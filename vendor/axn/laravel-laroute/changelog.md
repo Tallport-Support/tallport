@@ -1,6 +1,27 @@
 Changelog
 =========
 
+1.8.0 (2022-03-02)
+------------------
+
+- Allow lord/laroute 3.0
+
+1.7.2 (2020-09-22)
+------------------
+
+- Do not load when routes are cached
+
+1.7.1 (2020-08-29)
+------------------
+
+- Use jsonSerialize() instead of toArray() in toJson()
+
+1.7.0 (2020-08-25)
+------------------
+
+- Restore "illuminate/support" requirement to ">=5.4"
+- Add "illuminate/routing" requirement to ">=5.4"
+
 1.6.0 (2020-08-25)
 ------------------
 

@@ -29,10 +29,10 @@
                     "shasum": ""
                 },
                 "require": {
-                    "illuminate/support": "^5.5|^6.0|^7.0|^8.0",
-                    "illuminate/translation": "^5.5|^6.0|^7.0|^8.0",
+                    "illuminate/support": "^5.5|^6.0|^7.0|^8.0|^9.0",
+                    "illuminate/translation": "^5.5|^6.0|^7.0|^8.0|^9.0",
                     "php": ">=7",
-                    "symfony/finder": "~3.0|~4.0|^5.0"
+                    "symfony/finder": "~3.0|~4.0|^5.0|^6.0"
                 },
                 "autoload": {
                     "psr-4": {
@@ -72,8 +72,8 @@
                     "shasum": ""
                 },
                 "require": {
-                    "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0",
-                    "illuminate/support": "^5.0|^6.0|^7.0|^8.0",
+                    "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0|^9.0",
+                    "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0",
                     "php": ">=5.6.0"
                 },
                 "autoload": {
@@ -116,7 +116,7 @@
                 "require": {
                     "ext-zip": "*",
                     "guzzlehttp/guzzle": "*",
-                    "illuminate/support": "^5.0|^6.0|^7.0|^8.0",
+                    "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0",
                     "php": ">=5.5"
                 },
                 "autoload": {
@@ -147,8 +147,8 @@
                     "shasum": ""
                 },
                 "require": {
-                    "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0",
-                    "illuminate/support": "^5.0|^6.0|^7.0|^8.0",
+                    "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0|^9.0",
+                    "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0",
                     "natxet/cssmin": "3.*",
                     "php": ">=5.4.0",
                     "tedivm/jshrink": "~1.0"
@@ -175,20 +175,20 @@
         "devfactory/minify": "1.0.7",
         "fideloper/proxy": "4.3.0",
         "laravel/framework": "v8.83.29",
-        "laravel/tinker": "v2.3.0",
+        "laravel/tinker": "v2.7.0",
         "laravel/ui": "3.4.*",
         "mews/purifier": "dev-customized",
-        "spatie/laravel-activitylog": "3.17.0",
-        "lord/laroute": "2.5.4",
-        "axn/laravel-laroute": "1.6.0",
+        "spatie/laravel-activitylog": "4.4.0",
+        "lord/laroute": "3.1.0",
+        "axn/laravel-laroute": "1.8.0",
         "html2text/html2text": "4.1.0",
-        "watson/rememberable": "5.0.1",
+        "watson/rememberable": "6.0.0",
         "nwidart/laravel-modules": "2.7.0",
         "tormjens/eventy": "0.5.4",
         "barryvdh/laravel-translation-manager": "v0.5.0",
         "chumper/zipper": "v1.0.2",
         "rachidlaasri/laravel-installer": "4.0.2",
-        "rap2hpoutre/laravel-log-viewer": "v2.0.0",
+        "rap2hpoutre/laravel-log-viewer": "v2.1.0",
         "codedge/laravel-selfupdater": "dev-customized",
         "doctrine/dbal": "2.12.1",
         "egulias/email-validator": "2.1.10",
@@ -200,7 +200,7 @@
         "enshrined/svg-sanitize": "0.22.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "v3.5.0",
+        "barryvdh/laravel-debugbar": "v3.6.6",
         "filp/whoops": "2.14.5",
         "fzaninotto/faker": "v1.9.2",
         "mockery/mockery": "1.1.0",

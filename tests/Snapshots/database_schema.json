@@ -31,6 +31,13 @@
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
             },
+            "event": {
+                "type": "varchar(191)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
             "causer_id": {
                 "type": "int(10) unsigned",
                 "nullable": true,
@@ -45,6 +52,13 @@
             },
             "properties": {
                 "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "batch_uuid": {
+                "type": "char(36)",
                 "nullable": true,
                 "default": "NULL",
                 "charset": "utf8mb4",
