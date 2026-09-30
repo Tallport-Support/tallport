@@ -86,8 +86,6 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 
 | # | Severity | Where | Bug |
 |---|---|---|---|
-| E1 | high (perf) | `config/purifier.php` | `AutoFormat.AutoParagraph` makes HTML purification super-linear: a 1 MB message takes ~4 s to render, every time it's viewed. Output isn't cached. The original reason for the fork. |
-| E2 | medium | `Thread::getCleanBody`, :338 | mews/purifier builds its config once; `Config::set('purifier…EscapeNonASCIICharacters')` at runtime has no effect afterwards (long-running queue workers). |
 | E3 | medium | PHP 8.4+ | Without the PECL `imap` extension, Webklex's fallback header parser gets `Date` empty, miscounts headers and keeps quotes in names (tests marked `@requires extension imap`). Production (PHP 8.3) has imap. |
 | E4 | low | libxml2 2.14+ | `DOMDocument::loadHTML` no longer wraps bare text in `<p>`, changing reply separation output. Production has 2.9.14. |
 | E5 | low | `vendor/` | The committed vendor can't be reproduced by Composer (`rachidlaasri/laravel-installer` differs from its release, `rap2hpoutre/laravel-log-viewer` has files removed). Matters for the Laravel upgrade. |

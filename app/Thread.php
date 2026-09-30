@@ -333,17 +333,9 @@ class Thread extends Model
         // Remove <!--[if !mso]><!--> and <!--<![endif]--> comments, preserving the data inside
         //$body = preg_replace('/(<!\-\-\[if [^>]+\]>|<!\[endif\]\-\->)/', '', $body);
 
-        // This option causes issues on some instances:
+        // This option causes issues on some instances when always on:
         // https://github.com/freescout-help-desk/freescout/issues/5481#issuecomment-5113750894
-        if ($escape_non_ascii_characters) {
-            \Config::set('purifier.settings.default.Core.EscapeNonASCIICharacters', true);
-        }
-
-        $body = \Helper::purifyHtml($body);
-
-        if ($escape_non_ascii_characters) {
-            \Config::set('purifier.settings.default.Core.EscapeNonASCIICharacters', false);
-        }
+        $body = \Helper::purifyHtml($body, $escape_non_ascii_characters ? ['Core.EscapeNonASCIICharacters' => true] : []);
 
         return $body;
     }

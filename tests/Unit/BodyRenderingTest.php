@@ -77,6 +77,42 @@ class BodyRenderingTest extends TestCase
         $this->assertStringContainsString('background-color:', $html);
     }
 
+    /**
+     * AutoParagraph made purifying super-linear: a 1 MB pasted log took ~4 s
+     * on every view (E1). Large bodies skip it.
+     */
+    public function testLargeBodyRendersQuickly()
+    {
+        $lines = [];
+        for ($i = 0; $i < 8000; $i++) {
+            $lines[] = '2026-09-29 12:00:'.sprintf('%02d', $i % 60).' [error] worker#'.$i.' GET https://api.example.com/v1/items/'.$i.'?x=1 failed trace=0x'.dechex($i * 7919);
+        }
+        $thread = new Thread();
+        $thread->body = '<div>'.implode('<br>', $lines).'</div>';
+        $this->assertGreaterThan(800000, strlen($thread->body));
+
+        $start = microtime(true);
+        $html = $thread->getBodyWithFormatedLinks();
+        $seconds = microtime(true) - $start;
+
+        $this->assertLessThan(1.5, $seconds, 'Rendering a 1 MB body took '.round($seconds, 2).' s.');
+        $this->assertStringContainsString('worker#7999', $html);
+    }
+
+    /**
+     * Customer emails escape non-ASCII characters; the conversation view
+     * doesn't. Each call must get what it asked for (E2).
+     */
+    public function testNonAsciiEscapingPerCall()
+    {
+        $thread = new Thread();
+        $thread->body = '<p>Grüße</p>';
+
+        $this->assertStringContainsString('Grüße', $thread->getCleanBody());
+        $this->assertStringContainsString('Gr&#252;&#223;e', $thread->getCleanBody('', true));
+        $this->assertStringContainsString('Grüße', $thread->getCleanBody(), 'Escaping leaked into later calls.');
+    }
+
     public function testNonAsciiTextSurvives()
     {
         $html = $this->render('unicode');

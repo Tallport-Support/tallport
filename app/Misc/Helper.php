@@ -1638,13 +1638,35 @@ class Helper
         }
     }
 
-    public static function purifyHtml($html)
+    /**
+     * Bodies larger than this are purified without AutoFormat.AutoParagraph,
+     * whose cost grows super-linearly: a 1 MB pasted log took seconds.
+     */
+    const PURIFY_AUTOPARAGRAPH_MAX_SIZE = 51200;
+
+    /**
+     * Sanitize HTML with HTML Purifier.
+     *
+     * @param array $settings HTML Purifier settings for this call, on top of
+     *                        config purifier.settings.default.
+     */
+    public static function purifyHtml($html, $settings = [])
     {
         if (!$html) {
             return $html;
         }
 
-        $html = \Purifier::clean($html);
+        if (strlen($html) > self::PURIFY_AUTOPARAGRAPH_MAX_SIZE) {
+            $settings['AutoFormat.AutoParagraph'] = false;
+        }
+
+        if ($settings) {
+            // The purifier keeps the settings it was created with, so settings
+            // for one call are passed along (in full, as they replace the defaults).
+            $html = \Purifier::clean($html, array_merge(config('purifier.settings.default'), $settings));
+        } else {
+            $html = \Purifier::clean($html);
+        }
 
         // It's not clear why it was needed to remove spaces after tags.
         // 
