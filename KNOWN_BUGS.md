@@ -28,7 +28,6 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | C9 | low | `bulk_conversation_change_user` / `_status`, :2108 / :2136 | No "already set" check: line items are added even when nothing changes. |
 | C10 | low | `save_edit_thread`, :2058 | A missing thread reports "Conversation not found". |
 | C11 | medium | `send_reply`, :831 → `Thread::replaceBase64ImagesWithAttachments`, `app/Thread.php` :1566 | An empty `body` becomes null and is passed to `preg_replace_callback()` before validation → 500 instead of "The body field is required". |
-| C12 | high | `send_reply` with `multiple_conversations`, :1316–1375 | "Send separately to each recipient" is broken: the copied conversation is inserted with `has_attachments` NULL, which MariaDB's strict mode rejects → 500 after the first recipient's conversation was already created and emailed. |
 | C13 | low | `send_reply` with `is_create` and several `to` | The code puts extra recipients in the conversation's Cc ("first recipient becomes To"), but the email goes out with all of them in To. |
 | C14 | medium | `undoReply`, :3342 | When the reply belongs to another user, the redirect uses `$conversation` before it is assigned → 500 instead of "Sending can not be undone". Test: `testOthersCannotUndoYourReply`. |
 

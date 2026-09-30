@@ -1344,12 +1344,12 @@ class ConversationsController extends Controller
                             // Reload customer, otherwise all recipients will have the same name.
                             $conversation_copy->load('customer');
                             $conversation_copy->customer_email = $customer_email;
-                            $conversation_copy->has_attachments = $conversation->has_attachments;
+                            $conversation_copy->has_attachments = (bool)$conversation->has_attachments;
                             $conversation_copy->push();
 
                             $thread_copy->conversation_id = $conversation_copy->id;
                             $thread_copy->customer_id = $customer_tmp->id;
-                            $thread_copy->has_attachments = $conversation->has_attachments;
+                            $thread_copy->has_attachments = (bool)$conversation->has_attachments;
                             $thread_copy->setTo($customer_email);
                             // Reload the conversation, otherwise Thread observer will be 
                             // increasing threads_count for the first conversation.

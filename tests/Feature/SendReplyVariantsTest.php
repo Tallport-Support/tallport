@@ -122,8 +122,6 @@ class SendReplyVariantsTest extends FeatureTestCase
 
     public function testNewConversationSentSeparatelyToEachRecipient()
     {
-        $this->knownBug('C12');
-
         $this->assertSuccess($this->send([
             'conversation_id'        => '',
             'is_create'              => 1,
