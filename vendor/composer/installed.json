@@ -2199,7 +2199,7 @@
             "version_normalized": "dev-customized",
             "source": {
                 "type": "git",
-                "url": "git@github.com:freescout-help-desk/Purifier.git",
+                "url": "https://github.com/freescout-help-desk/Purifier.git",
                 "reference": "6ef282797274c62687aa31b5fc74665135bb8e7d"
             },
             "dist": {

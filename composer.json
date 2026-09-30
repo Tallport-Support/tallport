@@ -385,6 +385,7 @@
 
             "vendor/vlucas/phpdotenv/src/Parser.php",
             "vendor/nesbot/carbon/src/Carbon/Traits/Creator.php",
+            "vendor/laravel/framework/src/Illuminate/Routing/RouteUrlGenerator.php",
             "vendor/laravel/framework/src/Illuminate/Http/Request.php",
             "vendor/laravel/framework/src/Illuminate/Http/RedirectResponse.php",
             "vendor/symfony/http-foundation/FileBag.php",
