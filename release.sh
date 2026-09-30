@@ -72,10 +72,17 @@ if [ -z "$version" ]; then
     version=$(echo "$current" | awk -F. -v OFS=. '{ $NF++; print }')
 
     # A previous run committed "Release <current>" but didn't get to create the
-    # GitHub release: finish that one instead of bumping again.
-    if [ -n "$(git log --format=%H --grep="^Release $current\$" -1)" ] \
-        && ! gh release view "$current" --repo "$repo" >/dev/null 2>&1; then
-        version="$current"
+    # GitHub release: finish that one instead of bumping again. Only a clear
+    # "not found" counts; any other error (network, API) stops the script.
+    if [ -n "$(git log --format=%H --grep="^Release $current\$" -1)" ]; then
+        if ! view_output=$(gh release view "$current" --repo "$repo" 2>&1 >/dev/null); then
+            if [ "$view_output" = "release not found" ]; then
+                version="$current"
+            else
+                echo "Cannot check whether release $current exists on GitHub: $view_output" >&2
+                exit 1
+            fi
+        fi
     fi
 fi
 
