@@ -88,7 +88,8 @@ class ProviderRepository
             try {
                 $this->app->register($provider);
             } catch (\Throwable $e) {
-                preg_match("/Class '([^']+)' not found/", $e->getMessage(), $matches);
+                // PHP 8: Class "X" not found; PHP 7: Class 'X' not found.
+                preg_match("/Class [\"']([^\"']+)[\"'] not found/", $e->getMessage(), $matches);
 
                 if (empty($matches[1])) {
                     throw $e;
@@ -186,7 +187,8 @@ class ProviderRepository
             try {
                 $instance = $this->createProvider($provider);
             } catch (\Throwable $e) {
-                preg_match("/Class '([^']+)' not found/", $e->getMessage(), $matches);
+                // PHP 8: Class "X" not found; PHP 7: Class 'X' not found.
+                preg_match("/Class [\"']([^\"']+)[\"'] not found/", $e->getMessage(), $matches);
 
                 if (empty($matches[1])) {
                     throw $e;
