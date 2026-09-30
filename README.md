@@ -114,6 +114,12 @@ the FreeScout modules directory as FreeScout 1.8.243
 to that version install and run. Module licenses are still managed by
 freescout.net.
 
+Tallport fixes bugs that FreeScout still has (see [KNOWN_BUGS.md](KNOWN_BUGS.md)
+and the release notes). A module that happens to depend on the old, buggy
+behaviour may work differently after such a fix. If a module stops working
+properly after an update, please [open an issue](https://github.com/nielspeen/tallport/issues/new/choose)
+naming the module and the Tallport version.
+
 ## Development
 
 What you need: PHP 8.x with the extensions above, Composer, a MariaDB
