@@ -142,6 +142,18 @@ class AuthTest extends FeatureTestCase
         }, $this->sentEmailsTo('agent@example.org')));
     }
 
+    public function testResetPasswordNeedsEightCharacters()
+    {
+        $user = $this->createUser(['email' => 'agent@example.org']);
+        $token = \Password::broker()->createToken($user);
+
+        $this->postForm('/password/reset', [
+            'token' => $token, 'email' => 'agent@example.org', 'password' => 'seven77', 'password_confirmation' => 'seven77',
+        ])->assertSessionHasErrors('password');
+
+        $this->assertFalse(\Hash::check('seven77', $user->fresh()->password), 'Minimum password length is 8 everywhere (U5).');
+    }
+
     public function testResetPasswordWithInvalidToken()
     {
         $user = $this->createUser(['email' => 'agent@example.org']);

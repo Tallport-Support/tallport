@@ -157,6 +157,27 @@ class UsersTest extends FeatureTestCase
         $this->assertAuthenticatedAs($user);
     }
 
+    /**
+     * The email is normalised and can't be a mailbox address, as when an
+     * admin edits the profile (U10).
+     */
+    public function testInviteSetupNormalisesAndChecksEmail()
+    {
+        $user = $this->createUser(['email' => 'invited@example.org']);
+        $user->invite_state = User::INVITE_STATE_SENT;
+        $user->invite_hash = \Str::random(60);
+        $user->save();
+        $setup_url = $user->urlSetup();
+        $fields = ['password' => 'chosen-password', 'password_confirmation' => 'chosen-password', 'timezone' => 'UTC', 'time_format' => User::TIME_FORMAT_24];
+
+        \Session::start();
+        $this->post($setup_url, $fields + ['_token' => csrf_token(), 'email' => $this->mailbox->email])->assertSessionHasErrors('email');
+        $this->assertSame('invited@example.org', $user->fresh()->email);
+
+        $this->post($setup_url, $fields + ['_token' => csrf_token(), 'email' => 'Invited.Person@Example.org']);
+        $this->assertSame('invited.person@example.org', $user->fresh()->email);
+    }
+
     public function testExpiredOrInvalidInviteLinkIsRefused()
     {
         $user = $this->createUser();
@@ -173,6 +194,58 @@ class UsersTest extends FeatureTestCase
         $this->post($expired, $fields + ['_token' => csrf_token()])->assertStatus(403);
         $this->post('/user-setup/'.str_repeat('x', 60).'/whatever', $fields + ['_token' => csrf_token()])->assertStatus(404);
         $this->assertFalse(\Hash::check('chosen-password', $user->fresh()->password));
+    }
+
+    public function testNewUserPasswordNeedsEightCharacters()
+    {
+        $this->postForm($this->admin, '/users/wizard', [
+            'first_name' => 'Short', 'email' => 'short-password@example.org', 'role' => User::ROLE_USER, 'password' => 'seven77',
+        ])->assertSessionHasErrors('password');
+
+        $this->assertNull(User::where('email', 'short-password@example.org')->first(), 'Minimum password length is 8 everywhere (U5).');
+    }
+
+    /**
+     * A user manager only grants their own mailboxes; the new user's
+     * personal folders must match (U6).
+     */
+    public function testUserManagerCreatesFoldersOnlyForGrantedMailboxes()
+    {
+        $manager = $this->createUser(['permissions' => [User::PERM_EDIT_USERS => true]]);
+        $this->mailbox->users()->attach($manager->id);
+        $other_mailbox = $this->createMailbox([], ['name' => 'Not the manager\'s']);
+
+        $this->postForm($manager, '/users/wizard', [
+            'first_name' => 'Managed', 'email' => 'managed@example.org', 'password' => 'initial-password',
+            'mailboxes'  => [$this->mailbox->id, $other_mailbox->id],
+        ]);
+
+        $user = User::where('email', 'managed@example.org')->first();
+        $this->assertEquals([$this->mailbox->id], $user->mailboxes()->pluck('mailboxes.id')->all());
+        $this->assertSame(0, Folder::where('user_id', $user->id)->where('mailbox_id', $other_mailbox->id)->count());
+    }
+
+    public function testNoInvitesOrResetLinksForDisabledUsers()
+    {
+        $disabled = $this->createUser(['status' => User::STATUS_DISABLED]);
+        $disabled->invite_state = User::INVITE_STATE_SENT;
+        $disabled->save();
+
+        $this->assertSame('error', $this->postAjax($this->admin, '/users/ajax', ['action' => 'send_invite', 'user_id' => $disabled->id])->json()['status']);
+        $this->assertSame('error', $this->postAjax($this->admin, '/users/ajax', ['action' => 'reset_password', 'user_id' => $disabled->id])->json()['status']);
+        $this->assertCount(0, $this->sentEmailsTo($disabled->email), 'Disabled users get no invites or reset links (U8).');
+    }
+
+    public function testDeletedUsersPermissionsCannotBeSaved()
+    {
+        $agent = $this->createUser();
+        $this->postAjax($this->admin, '/users/ajax', ['action' => 'delete_user', 'user_id' => $agent->id]);
+
+        $this->postForm($this->admin, '/users/permissions/'.$agent->id, ['mailboxes' => [$this->mailbox->id]])->assertStatus(404);
+        $this->postForm($this->admin, '/users/profile/'.$agent->id, [
+            'first_name' => 'Revived', 'email' => 'revived@example.org', 'timezone' => 'UTC', 'time_format' => User::TIME_FORMAT_24,
+        ])->assertStatus(404);
+        $this->assertSame(0, $agent->fresh()->mailboxes()->count(), 'Like the permissions page, which is 404 for deleted users (U9).');
     }
 
     // Profiles and roles.

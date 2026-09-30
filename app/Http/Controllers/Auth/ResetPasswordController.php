@@ -143,4 +143,16 @@ class ResetPasswordController extends Controller
             'email' => [trans('auth.throttle', ['seconds' => self::THROTTLE_PERIOD*60])],
         ])->status(423);
     }
+
+    /**
+     * Same minimum length as everywhere else.
+     */
+    protected function rules()
+    {
+        return [
+            'token'    => 'required',
+            'email'    => 'required|email',
+            'password' => 'required|confirmed|min:8',
+        ];
+    }
 }

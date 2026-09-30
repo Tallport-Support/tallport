@@ -77,7 +77,7 @@ class UsersController extends Controller
             $rules['role'] = ['required', Rule::in(array_keys(User::$roles))];
         }
         if (empty($request->send_invite)) {
-            $rules['password'] = 'required|string|max:255';
+            $rules['password'] = 'required|string|min:8|max:255';
         }
         $validator = Validator::make($request->all(), $rules);
 
@@ -130,7 +130,7 @@ class UsersController extends Controller
         }
 
         $user->mailboxes()->sync($mailbox_ids);
-        $user->syncPersonalFolders($request->mailboxes);
+        $user->syncPersonalFolders($mailbox_ids);
 
         // Send invite
         if (!empty($request->send_invite)) {
@@ -185,6 +185,10 @@ class UsersController extends Controller
         $invalid = false;
 
         $user = User::findOrFail($id);
+        // Like the profile page.
+        if ($user->isDeleted()) {
+            abort(404);
+        }
         $this->authorize('update', $user);
 
         $auth_user = auth()->user();
@@ -368,6 +372,10 @@ class UsersController extends Controller
         }
 
         $user = User::findOrFail($id);
+        // Like the permissions page.
+        if ($user->isDeleted()) {
+            abort(404);
+        }
 
         $user->mailboxes()->sync($request->mailboxes ?: []);
         $user->syncPersonalFolders($request->mailboxes);
@@ -468,6 +476,8 @@ class UsersController extends Controller
                     $user = User::find($request->user_id);
                     if (!$user) {
                         $response['msg'] = __('User not found');
+                    } elseif (!$user->isActive()) {
+                        $response['msg'] = __('The user is disabled or deleted.');
                     } elseif ($user->invite_state == User::INVITE_STATE_ACTIVATED) {
                         $response['msg'] = __('User already accepted invitation');
                     }
@@ -497,6 +507,8 @@ class UsersController extends Controller
                     $user = User::find($request->user_id);
                     if (!$user) {
                         $response['msg'] = __('User not found');
+                    } elseif (!$user->isActive()) {
+                        $response['msg'] = __('The user is disabled or deleted.');
                     }
                 }
 

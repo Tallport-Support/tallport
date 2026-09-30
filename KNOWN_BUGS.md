@@ -33,12 +33,7 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 
 | # | Severity | Where | Bug |
 |---|---|---|---|
-| U5 | low | password forms | Minimum password length is 8 (change password, invite setup), 6 (reset form), none (admin creates user). |
-| U6 | low | `UsersController::createSave` | A user manager (perm 10) gets mailbox access filtered to their own mailboxes, but personal folders are created for the unfiltered list. |
-| U7 | low | `UsersController::profileSave` | The photo is written to disk during validation even if the save fails; deleted users can still be saved; an admin saving without `disabled` re-activates the user. |
-| U8 | low | `ajax send_invite` / `reset_password` | Don't check whether the user is disabled or deleted. |
-| U9 | low | `UsersController` | `permissions` GET returns 404 for deleted users but POST doesn't; `notifications` GET authorizes before the deleted check. |
-| U10 | low | `OpenController::userSetupSave` | The email isn't sanitized/lowercased and isn't checked against mailbox addresses (createSave and profileSave do both). |
+| U7 | low | `UsersController::profileSave`, `OpenController::userSetupSave` | An uploaded photo is saved to disk during validation, even when another field then fails validation (the file is left unused). |
 
 ## Mailboxes (`app/Http/Controllers/MailboxesController.php`)
 

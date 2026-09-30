@@ -90,8 +90,13 @@ class OpenController extends Controller
             'photo_url'   => __('Photo'),
         ]);
 
-        // Photo
         $validator->after(function ($validator) use ($user, $request) {
+            // Users and mailboxes can't share an address.
+            if (User::mailboxEmailExists($request->email)) {
+                $validator->errors()->add('email', __('There is a mailbox with such email. Users and mailboxes can not have the same email addresses.'));
+            }
+
+            // Photo
             if ($request->hasFile('photo_url')) {
                 $path_url = $user->savePhoto($request->file('photo_url'));
 
@@ -110,7 +115,7 @@ class OpenController extends Controller
         }
 
         $request_data = [
-            'email' => $request->email,
+            'email' => \App\Email::sanitizeEmail($request->email),
             'password' => $request->password,
             'job_title' => $request->job_title,
             'phone' => $request->phone,
