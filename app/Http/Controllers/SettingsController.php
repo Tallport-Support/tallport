@@ -299,11 +299,12 @@ class SettingsController extends Controller
         $cc_required = false;
         $settings_params = $this->getSectionParams($section, 'settings');
         foreach ($settings as $i => $option_name) {
-            // Do not save dummy passwords.
+            // Do not save dummy passwords, and keep the password when the
+            // field wasn't sent at all.
             if (!empty($settings_params[$option_name])
                 && !empty($settings_params[$option_name]['safe_password'])
-                && $request->settings[$option_name]
-                && preg_match("/^\*+$/", $request->settings[$option_name])
+                && (!isset($request->settings[$option_name])
+                    || preg_match("/^\*+$/", $request->settings[$option_name]))
             ) {
                 continue;
             }

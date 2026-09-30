@@ -109,6 +109,25 @@ class SettingsAndSystemTest extends FeatureTestCase
         $this->assertSame('smtp-secret', decrypt($stored_password));
     }
 
+    /**
+     * Leaving out the password keeps it, like the masked value the form
+     * sends; it used to give a 500 (S1).
+     */
+    public function testMailSettingsWithoutPasswordKeepIt()
+    {
+        $this->postForm($this->admin, '/app-settings/emails', ['settings' => [
+            'mail_from' => 'helpdesk@example.org', 'mail_driver' => 'smtp', 'mail_password' => 'smtp-secret',
+        ]]);
+        Option::$cache = [];
+
+        $this->postForm($this->admin, '/app-settings/emails', ['settings' => [
+            'mail_from' => 'support@example.org', 'mail_driver' => 'smtp',
+        ]])->assertRedirect(route('settings', ['section' => 'emails']));
+
+        $this->assertSame('support@example.org', Option::where('name', 'mail_from')->value('value'));
+        $this->assertSame('smtp-secret', decrypt(Option::where('name', 'mail_password')->value('value')));
+    }
+
     public function testSystemTestEmail()
     {
         $response = $this->postAjax($this->admin, '/app-settings/ajax', ['action' => 'send_test', 'to' => 'me@example.org']);
