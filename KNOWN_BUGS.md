@@ -51,11 +51,8 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 
 | # | Severity | Where | Bug |
 |---|---|---|---|
-| M1 | medium | `updateSave`, :165 | `template` is validated but never saved. |
-| M2 | medium | `updateSave` | A failed signature validation redirects to `mailboxes.email_signature`, which isn't a route → 500. `emailSignature()` (:701) has no route. |
-| M3 | medium | `updateSave` | `signature=''` becomes null (ConvertEmptyStringsToNull) and `strtr(null)` → 500. |
+| M1 | low | `updateSave`, `resources/views/mailboxes/update.blade.php` :163 | The email template setting (fancy/plain) is hidden in the form, validated but never saved, and nothing reads it when sending: an unfinished FreeScout feature. Finish or remove. |
 | M4 | low | `updateSave` | An admin saving the form without `state` un-archives the mailbox. |
-| M5 | medium | `autoReplySave`, :650 | Enabled with the message missing or empty → 500 (`strip_tags(null)`) before validation runs. |
 | M6 | low | `createSave`, :65 | The "user with this email" check also matches deleted users. |
 | M7 | low | `update` GET, :111 | Viewing the settings attaches an admin to `mailbox_user` as a side effect. |
 | M8 | low | `permissionsSave`, :323 | Users whose access is removed keep their personal folders. |

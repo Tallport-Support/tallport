@@ -238,7 +238,7 @@ class MailboxesController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return redirect()->route('mailboxes.email_signature', ['id' => $id])
+                return redirect()->route('mailboxes.update', ['id' => $id])
                     ->withErrors($validator)
                     ->withInput();
             }
@@ -660,7 +660,7 @@ class MailboxesController extends Controller
 
         if ($request->auto_reply_enabled) {
             $post = $request->all();
-            $post['auto_reply_message'] = strip_tags($post['auto_reply_message']);
+            $post['auto_reply_message'] = strip_tags($post['auto_reply_message'] ?? '');
             $validator = Validator::make($post, [
                 'auto_reply_subject' => 'required|string|max:128',
                 'auto_reply_message' => 'required|string',

@@ -116,6 +116,22 @@ class MailboxesTest extends FeatureTestCase
         $this->assertStringContainsString('Kind regards', $mailbox->signature);
     }
 
+    /**
+     * Signature errors and empty signatures give a page, not a 500 (M2, M3).
+     */
+    public function testSignatureEdgeCases()
+    {
+        $mailbox = $this->createMailbox([], ['signature' => '<p>Old</p>']);
+
+        $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox, ['signature' => ['not', 'a', 'string']]))
+            ->assertRedirect(route('mailboxes.update', ['id' => $mailbox->id]))
+            ->assertSessionHasErrors('signature');
+
+        $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox, ['signature' => '']))
+            ->assertRedirect(route('mailboxes.update', ['id' => $mailbox->id]));
+        $this->assertSame('', (string)$mailbox->fresh()->signature);
+    }
+
     public function testMemberWithoutManagePermissionCannotChangeSettings()
     {
         $agent = $this->createUser();
@@ -200,6 +216,12 @@ class MailboxesTest extends FeatureTestCase
             'auto_reply_message' => '<p>Thanks!</p>',
         ])->assertSessionHasErrors('auto_reply_subject');
         $this->assertFalse((bool)$mailbox->fresh()->auto_reply_enabled);
+
+        // Without a message: a validation error, not a 500 (M5).
+        $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id.'/auto-reply', [
+            'auto_reply_enabled' => 1,
+            'auto_reply_subject' => 'We got it',
+        ])->assertSessionHasErrors('auto_reply_message');
 
         $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id.'/auto-reply', [
             'auto_reply_enabled' => 1,

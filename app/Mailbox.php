@@ -1146,6 +1146,10 @@ class Mailbox extends Model
     // Purify signature HTML to avoid sending unsafe HTML to customers by email.
     public static function sanitizeSignature($signature)
     {
+        if ($signature === null || $signature === '') {
+            return '';
+        }
+
         $signature = \Helper::purifyHtml($signature);
         // Decode URL encoded variables back.
         // https://github.com/freescout-help-desk/freescout/issues/5565
