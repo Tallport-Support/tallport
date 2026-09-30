@@ -24,7 +24,7 @@ trait LogsActivity
 
     protected array $oldAttributes = [];
 
-    protected LogOptions $activitylogOptions;
+    protected ?LogOptions $activitylogOptions;
 
     public bool $enableLoggingModelsEvents = true;
 
@@ -70,9 +70,9 @@ trait LogsActivity
                 // each pipe receives the event carrier bag with changes and the model in
                 // question every pipe should manipulate new and old attributes.
                 $event = app(Pipeline::class)
-                ->send(new EventLogBag($eventName, $model, $changes, $model->activitylogOptions))
-                ->through(static::$changesPipes)
-                ->thenReturn();
+                    ->send(new EventLogBag($eventName, $model, $changes, $model->activitylogOptions))
+                    ->through(static::$changesPipes)
+                    ->thenReturn();
 
                 // Actual logging
                 $logger = app(ActivityLogger::class)
@@ -86,6 +86,9 @@ trait LogsActivity
                 }
 
                 $logger->log($description);
+
+                // Reset log options so the model can be serialized.
+                $model->activitylogOptions = null;
             });
         });
     }
@@ -128,7 +131,7 @@ trait LogsActivity
         return $eventName;
     }
 
-    public function getLogNameToUse(): string
+    public function getLogNameToUse(): ?string
     {
         if (! empty($this->activitylogOptions->logName)) {
             return $this->activitylogOptions->logName;
@@ -171,18 +174,25 @@ trait LogsActivity
             return true;
         }
 
-        $deletedAtColumn = method_exists($this, 'getDeletedAtColumn')
-            ? $this->getDeletedAtColumn()
-            : 'deleted_at';
-
-        if (Arr::has($this->getDirty(), $deletedAtColumn)) {
-            if ($this->getDirty()[$deletedAtColumn] === null) {
-                return false;
-            }
+        // Do not log update event if the model is restoring
+        if ($this->isRestoring()) {
+            return false;
         }
 
         // Do not log update event if only ignored attributes are changed.
         return (bool) count(Arr::except($this->getDirty(), $this->activitylogOptions->dontLogIfAttributesChangedOnly));
+    }
+
+    /**
+     * Determines if the model is restoring.
+     **/
+    protected function isRestoring(): bool
+    {
+        $deletedAtColumn = method_exists($this, 'getDeletedAtColumn')
+            ? $this->getDeletedAtColumn()
+            : 'deleted_at';
+
+        return $this->isDirty($deletedAtColumn) && count($this->getDirty()) === 1;
     }
 
     /**
@@ -292,7 +302,7 @@ trait LogsActivity
                         return $new === $old ? 0 : 1;
                     }
 
-                    // Handels Date intervels comparsons since php cannot use spaceship
+                    // Handles Date interval comparisons since php cannot use spaceship
                     // Operator to compare them and will throw ErrorException.
                     if ($old instanceof DateInterval) {
                         return CarbonInterval::make($old)->equalTo($new) ? 0 : 1;
@@ -355,6 +365,17 @@ trait LogsActivity
 
             if ($model->hasCast($attribute)) {
                 $cast = $model->getCasts()[$attribute];
+
+                if (function_exists('enum_exists') && enum_exists($cast)) {
+                    if (method_exists($model, 'getStorableEnumValue')) {
+                        $changes[$attribute] = $model->getStorableEnumValue($changes[$attribute]);
+                    } else {
+                        // ToDo: DEPRECATED - only here for Laravel 8 support
+                        $changes[$attribute] = $changes[$attribute] instanceof \BackedEnum
+                            ? $changes[$attribute]->value
+                            : $changes[$attribute]->name;
+                    }
+                }
 
                 if ($model->isCustomDateTimeCast($cast) || $model->isImmutableCustomDateTimeCast($cast)) {
                     $changes[$attribute] = $model->asDateTime($changes[$attribute])->format(explode(':', $cast, 2)[1]);

@@ -69,8 +69,8 @@
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "^5.5|^6.0|^7.0|^8.0|^9.0",
-                "illuminate/translation": "^5.5|^6.0|^7.0|^8.0|^9.0",
+                "illuminate/support": "^5.5|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/translation": "^5.5|^6.0|^7.0|^8.0|^9.0|^10.0",
                 "php": ">=7",
                 "symfony/finder": "~3.0|~4.0|^5.0|^6.0"
             },
@@ -242,8 +242,8 @@
                 "shasum": ""
             },
             "require": {
-                "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0|^9.0",
-                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0",
+                "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
                 "php": ">=5.6.0"
             },
             "type": "library",
@@ -286,7 +286,7 @@
             "require": {
                 "ext-zip": "*",
                 "guzzlehttp/guzzle": "*",
-                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0",
+                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
                 "php": ">=5.5"
             },
             "type": "library",
@@ -317,8 +317,8 @@
                 "shasum": ""
             },
             "require": {
-                "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0|^9.0",
-                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0",
+                "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
                 "natxet/cssmin": "3.*",
                 "php": ">=5.4.0",
                 "tedivm/jshrink": "~1.0"
@@ -2169,30 +2169,31 @@
         },
         {
             "name": "laravel/ui",
-            "version": "v3.4.6",
-            "version_normalized": "3.4.6.0",
+            "version": "v4.2.3",
+            "version_normalized": "4.2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/ui.git",
-                "reference": "65ec5c03f7fee2c8ecae785795b829a15be48c2c"
+                "reference": "eb532ea096ca1c0298c87c19233daf011fda743a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/ui/zipball/65ec5c03f7fee2c8ecae785795b829a15be48c2c",
-                "reference": "65ec5c03f7fee2c8ecae785795b829a15be48c2c",
+                "url": "https://api.github.com/repos/laravel/ui/zipball/eb532ea096ca1c0298c87c19233daf011fda743a",
+                "reference": "eb532ea096ca1c0298c87c19233daf011fda743a",
                 "shasum": ""
             },
             "require": {
-                "illuminate/console": "^8.42|^9.0",
-                "illuminate/filesystem": "^8.42|^9.0",
-                "illuminate/support": "^8.82|^9.0",
-                "illuminate/validation": "^8.42|^9.0",
-                "php": "^7.3|^8.0"
+                "illuminate/console": "^9.21|^10.0",
+                "illuminate/filesystem": "^9.21|^10.0",
+                "illuminate/support": "^9.21|^10.0",
+                "illuminate/validation": "^9.21|^10.0",
+                "php": "^8.0"
             },
             "require-dev": {
-                "orchestra/testbench": "^6.23|^7.0"
+                "orchestra/testbench": "^7.0|^8.0",
+                "phpunit/phpunit": "^9.3"
             },
-            "time": "2022-05-20T13:38:08+00:00",
+            "time": "2023-11-23T14:44:22+00:00",
             "type": "library",
             "extra": {
                 "laravel": {
@@ -2201,7 +2202,7 @@
                     ]
                 },
                 "branch-alias": {
-                    "dev-master": "3.x-dev"
+                    "dev-master": "4.x-dev"
                 }
             },
             "installation-source": "dist",
@@ -2227,7 +2228,7 @@
                 "ui"
             ],
             "support": {
-                "source": "https://github.com/laravel/ui/tree/v3.4.6"
+                "source": "https://github.com/laravel/ui/tree/v4.2.3"
             },
             "install-path": "../laravel/ui"
         },
@@ -2687,7 +2688,7 @@
             "version_normalized": "dev-customized",
             "source": {
                 "type": "git",
-                "url": "https://github.com/freescout-help-desk/Purifier.git",
+                "url": "git@github.com:freescout-help-desk/Purifier.git",
                 "reference": "6ef282797274c62687aa31b5fc74665135bb8e7d"
             },
             "dist": {
@@ -4236,28 +4237,28 @@
         },
         {
             "name": "rap2hpoutre/laravel-log-viewer",
-            "version": "v2.1.0",
-            "version_normalized": "2.1.0.0",
+            "version": "v2.3.0",
+            "version_normalized": "2.3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rap2hpoutre/laravel-log-viewer.git",
-                "reference": "199b4f21004c8f0c00fbc9222e0cedf1341b5e81"
+                "reference": "c4148ec364d78be13eb2ab81ce860946bfd91c4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rap2hpoutre/laravel-log-viewer/zipball/199b4f21004c8f0c00fbc9222e0cedf1341b5e81",
-                "reference": "199b4f21004c8f0c00fbc9222e0cedf1341b5e81",
+                "url": "https://api.github.com/repos/rap2hpoutre/laravel-log-viewer/zipball/c4148ec364d78be13eb2ab81ce860946bfd91c4c",
+                "reference": "c4148ec364d78be13eb2ab81ce860946bfd91c4c",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "4.2.*|5.*|^6.0|^7.0|^8.0|^9.0",
+                "illuminate/support": "4.2.*|5.*|^6.0|^7.0|^8.0|^9.0|^10.0",
                 "php": ">=5.4.0"
             },
             "require-dev": {
                 "orchestra/testbench": "3.7.*|^7.0",
                 "phpunit/phpunit": "^7|^9.5.10"
             },
-            "time": "2022-02-10T07:16:16+00:00",
+            "time": "2023-02-15T07:36:34+00:00",
             "type": "laravel-package",
             "extra": {
                 "laravel": {
@@ -4296,38 +4297,38 @@
             ],
             "support": {
                 "issues": "https://github.com/rap2hpoutre/laravel-log-viewer/issues",
-                "source": "https://github.com/rap2hpoutre/laravel-log-viewer/tree/v2.1.0"
+                "source": "https://github.com/rap2hpoutre/laravel-log-viewer/tree/v2.3.0"
             },
             "install-path": "../rap2hpoutre/laravel-log-viewer"
         },
         {
             "name": "spatie/laravel-activitylog",
-            "version": "4.4.0",
-            "version_normalized": "4.4.0.0",
+            "version": "4.7.3",
+            "version_normalized": "4.7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-activitylog.git",
-                "reference": "ba1b15d37f536d5525cdf84275a0414cd0d957d4"
+                "reference": "ec65a478a909b8df1b4f0c3c45de2592ca7639e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-activitylog/zipball/ba1b15d37f536d5525cdf84275a0414cd0d957d4",
-                "reference": "ba1b15d37f536d5525cdf84275a0414cd0d957d4",
+                "url": "https://api.github.com/repos/spatie/laravel-activitylog/zipball/ec65a478a909b8df1b4f0c3c45de2592ca7639e5",
+                "reference": "ec65a478a909b8df1b4f0c3c45de2592ca7639e5",
                 "shasum": ""
             },
             "require": {
-                "illuminate/config": "^8.0 || ^9.0",
-                "illuminate/database": "^8.53 || ^9.0",
-                "illuminate/support": "^8.0 || ^9.0",
+                "illuminate/config": "^8.0 || ^9.0 || ^10.0",
+                "illuminate/database": "^8.69 || ^9.27 || ^10.0",
+                "illuminate/support": "^8.0 || ^9.0 || ^10.0",
                 "php": "^8.0",
                 "spatie/laravel-package-tools": "^1.6.3"
             },
             "require-dev": {
                 "ext-json": "*",
-                "orchestra/testbench": "^6.23 || ^7.0",
-                "phpunit/phpunit": "^9.5"
+                "orchestra/testbench": "^6.23 || ^7.0 || ^8.0",
+                "pestphp/pest": "^1.20"
             },
-            "time": "2022-01-12T17:33:02+00:00",
+            "time": "2023-01-25T17:04:51+00:00",
             "type": "library",
             "extra": {
                 "laravel": {
@@ -4380,7 +4381,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-activitylog/issues",
-                "source": "https://github.com/spatie/laravel-activitylog/tree/4.4.0"
+                "source": "https://github.com/spatie/laravel-activitylog/tree/4.7.3"
             },
             "funding": [
                 {
@@ -7239,25 +7240,25 @@
         },
         {
             "name": "watson/rememberable",
-            "version": "6.0.0",
-            "version_normalized": "6.0.0.0",
+            "version": "6.1.0",
+            "version_normalized": "6.1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dwightwatson/rememberable.git",
-                "reference": "54de8c7d421050aabe70523538a2d8957382d4ca"
+                "reference": "7a26c75e65df663087e8589f4991e60e0483346d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dwightwatson/rememberable/zipball/54de8c7d421050aabe70523538a2d8957382d4ca",
-                "reference": "54de8c7d421050aabe70523538a2d8957382d4ca",
+                "url": "https://api.github.com/repos/dwightwatson/rememberable/zipball/7a26c75e65df663087e8589f4991e60e0483346d",
+                "reference": "7a26c75e65df663087e8589f4991e60e0483346d",
                 "shasum": ""
             },
             "require": {
-                "illuminate/database": "^8.0|^9.0",
-                "illuminate/support": "^8.0|^9.0",
+                "illuminate/database": "^8.0|^9.0|^10.0",
+                "illuminate/support": "^8.0|^9.0|^10.0",
                 "php": "^8.0"
             },
-            "time": "2022-02-04T00:49:55+00:00",
+            "time": "2023-02-02T23:40:42+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -7284,7 +7285,7 @@
             ],
             "support": {
                 "issues": "https://github.com/dwightwatson/rememberable/issues",
-                "source": "https://github.com/dwightwatson/rememberable/tree/6.0.0"
+                "source": "https://github.com/dwightwatson/rememberable/tree/6.1.0"
             },
             "install-path": "../watson/rememberable"
         },
