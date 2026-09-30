@@ -190,7 +190,13 @@ A few packages are defined in `composer.json` itself (`repositories`,
 type `package`): the same code as their locked version, with only the
 Laravel versions they accept widened, because no release of theirs accepts
 the next Laravel version without other changes (`chumper/zipper`,
-`devfactory/minify`, and FreeScout's `codedge/laravel-selfupdater` fork).
+`devfactory/minify`, `barryvdh/laravel-translation-manager`, and
+FreeScout's `codedge/laravel-selfupdater` fork).
+
+Until Laravel is current, `composer.json` sets `audit.block-insecure` to
+false: every Laravel version on the way has published advisories, and
+Composer would otherwise refuse to install them. `composer audit` still
+lists them.
 
 ### Releasing
 
