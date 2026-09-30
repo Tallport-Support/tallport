@@ -240,6 +240,37 @@ class RemainingAjaxActionsTest extends FeatureTestCase
         $this->assertStringContainsString('disabled', $response['msg']);
     }
 
+    /**
+     * Deleting a module deactivates it before removing its files (S5).
+     */
+    public function testDeleteModuleDeactivatesIt()
+    {
+        $dir = base_path('Modules/TallportTestFixture');
+        $this->assertDirectoryDoesNotExist($dir, 'Leftover fixture module from an earlier run.');
+        @mkdir(base_path('Modules'));
+        mkdir($dir);
+        file_put_contents($dir.'/module.json', json_encode([
+            'name' => 'TallportTestFixture', 'alias' => 'tallporttestfixture', 'description' => 'Test fixture',
+            'version' => '1.0.0', 'active' => 0, 'order' => 0, 'providers' => [], 'aliases' => new \stdClass(), 'files' => [], 'requires' => [],
+        ]));
+
+        try {
+            \App\Module::setActive('tallporttestfixture', true);
+            \Module::clearCache();
+            \App\Module::$modules = null;
+
+            $response = $this->postAjax($this->admin, '/modules/ajax', ['action' => 'delete', 'alias' => 'tallporttestfixture'])->json();
+        } finally {
+            if (is_dir($dir)) {
+                exec('rm -rf '.escapeshellarg($dir));
+            }
+        }
+
+        $this->assertSame('success', $response['status'], json_encode($response));
+        $this->assertDirectoryDoesNotExist($dir);
+        $this->assertFalse(\App\Module::isActive('tallporttestfixture'), 'Deleted modules must not stay active.');
+    }
+
     public function testModuleActionsWithoutModule()
     {
         $ajax = function ($data) {
@@ -248,7 +279,9 @@ class RemainingAjaxActionsTest extends FeatureTestCase
 
         $this->assertSame('Empty license key', $ajax(['action' => 'activate_license', 'alias' => 'nosuchmodule', 'license' => ''])['msg']);
         $this->assertSame('Empty license key', $ajax(['action' => 'deactivate_license', 'alias' => 'nosuchmodule', 'license' => ''])['msg']);
-        $this->assertSame('Module not found: nosuchmodule', $ajax(['action' => 'delete', 'alias' => 'nosuchmodule'])['msg']);
+        $delete_missing = $ajax(['action' => 'delete', 'alias' => 'nosuchmodule']);
+        $this->assertSame('Module not found: nosuchmodule', $delete_missing['msg']);
+        $this->assertSame('error', $delete_missing['status'], 'Deleting a missing module is not a success (S5).');
 
         $this->assertSame('success', $ajax(['action' => 'deactivate', 'alias' => 'nosuchmodule'])['status']);
         $this->assertCommandCalled('freescout:clear-cache');

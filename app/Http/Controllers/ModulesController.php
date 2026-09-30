@@ -601,13 +601,14 @@ class ModulesController extends Controller
 
                     //\App\Module::deactivateLicense($alias, $license);
 
+                    // Deactivate first: an active module without files breaks the app.
+                    \App\Module::deactiveModule($alias);
                     $module->delete();
                     \Session::flash('flash_success_floating', __('Module deleted'));
+                    $response['status'] = 'success';
                 } else {
                     $response['msg'] = __('Module not found').': '.$alias;
                 }
-
-                $response['status'] = 'success';
                 break;
 
             case 'update':
