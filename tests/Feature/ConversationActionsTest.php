@@ -482,6 +482,40 @@ class ConversationActionsTest extends FeatureTestCase
         $this->assertNull(Conversation::find($conversation->id));
     }
 
+    /**
+     * A new-conversation draft has no customer yet (the recipients are kept
+     * on the draft); sending it sets the customer and emails them.
+     */
+    public function testSendingNewConversationDraftSetsCustomer()
+    {
+        $saved = $this->ajax($this->agent, [
+            'action'     => 'save_draft',
+            'mailbox_id' => $this->mailbox->id,
+            'is_create'  => 1,
+            'status'     => Conversation::STATUS_ACTIVE,
+            'to'         => ['new.customer@customer.example.org'],
+            'subject'    => 'Draft subject',
+            'body'       => '<p>Almost done</p>',
+        ]);
+
+        $this->assertSuccess($this->ajax($this->agent, [
+            'action'          => 'send_reply',
+            'mailbox_id'      => $this->mailbox->id,
+            'conversation_id' => $saved['conversation_id'],
+            'thread_id'       => $saved['thread_id'],
+            'is_create'       => 1,
+            'to'              => ['new.customer@customer.example.org'],
+            'subject'         => 'Draft subject',
+            'body'            => '<p>Done now</p>',
+        ]));
+
+        $conversation = Conversation::find($saved['conversation_id']);
+        $this->assertEquals(Conversation::STATE_PUBLISHED, $conversation->state);
+        $this->assertSame('new.customer@customer.example.org', $conversation->customer_email);
+        $this->assertEquals(\App\Customer::getByEmail('new.customer@customer.example.org')->id, $conversation->customer_id);
+        $this->assertCount(1, $this->sentEmailsTo('new.customer@customer.example.org'));
+    }
+
     // Threads.
 
     public function testEditCustomerMessageKeepsOriginal()
