@@ -13,8 +13,24 @@ trait AssertsSnapshots
 {
     protected function assertMatchesSnapshot(string $name, $data): void
     {
-        $file = __DIR__.'/../Snapshots/'.$name.'.json';
-        $actual = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)."\n";
+        $this->assertMatchesSnapshotFile(
+            $name.'.json',
+            json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)."\n"
+        );
+    }
+
+    /**
+     * Snapshot of a text (e.g. HTML) kept as is, so diffs stay readable.
+     * $name includes the extension, e.g. 'body_rendering/outlook.html'.
+     */
+    protected function assertMatchesTextSnapshot(string $name, string $text): void
+    {
+        $this->assertMatchesSnapshotFile($name, $text."\n");
+    }
+
+    private function assertMatchesSnapshotFile(string $name, string $actual): void
+    {
+        $file = __DIR__.'/../Snapshots/'.$name;
 
         if (!file_exists($file) || getenv('UPDATE_SNAPSHOTS')) {
             $existed = file_exists($file);
@@ -23,7 +39,7 @@ trait AssertsSnapshots
             }
             file_put_contents($file, $actual);
             if (!$existed) {
-                $this->fail("Snapshot tests/Snapshots/{$name}.json did not exist and was created: review and commit it.");
+                $this->fail("Snapshot tests/Snapshots/{$name} did not exist and was created: review and commit it.");
             }
         }
 
