@@ -485,10 +485,49 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->assertSame(['first', 'second'], $received);
     }
 
+    /**
+     * A failure for one recipient must not be forgotten when a later one
+     * succeeds (S10): the job fails and the failure is logged.
+     */
+    public function testAlertFailureForOneRecipientFailsTheJob()
+    {
+        $this->setOption('alert_recipients', 'broken@example.org,ok@example.org');
+        // A transport that refuses one address and captures the rest.
+        $failing = new class extends \Illuminate\Mail\Transport\ArrayTransport {
+            public function send(\Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
+            {
+                if (array_key_exists('broken@example.org', $message->getTo())) {
+                    throw new \Exception('Mail server refused broken@example.org');
+                }
+
+                return parent::send($message, $failedRecipients);
+            }
+        };
+        $this->captured_mail = $failing;
+        // Extenders of a service that's already built apply to that instance
+        // only; forget it so this one also applies when FreeScout rebuilds it.
+        $this->app->forgetInstance('swift.transport');
+        $this->app->extend('swift.transport', function ($manager) use ($failing) {
+            return $manager->extend('array', function () use ($failing) {
+                return $failing;
+            });
+        });
+        \MailHelper::$last_mail_config_hash = '';
+
+        try {
+            (new \App\Jobs\SendAlert('Something happened', 'Test alert'))->handle();
+            $this->fail('The job should fail when a recipient could not be alerted.');
+        } catch (\Exception $e) {
+            $this->assertSame('Mail server refused broken@example.org', $e->getMessage());
+        }
+
+        $this->assertCount(1, $this->sentEmailsTo('ok@example.org'));
+        $this->assertEquals(SendLog::STATUS_SEND_ERROR, SendLog::where('email', 'broken@example.org')->value('status'));
+        $this->assertEquals(SendLog::STATUS_ACCEPTED, SendLog::where('email', 'ok@example.org')->value('status'));
+    }
+
     public function testAlertWithoutRecipientsIsHarmless()
     {
-        $this->knownBug('S9');
-
         \MailHelper::sendAlertMail('Something happened', 'Test alert');
 
         $this->assertCount(0, $this->sentEmails());

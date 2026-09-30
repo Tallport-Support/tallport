@@ -62,7 +62,10 @@ class SendAlert implements ShouldQueue
         if ($extra) {
             $recipients = array_unique(array_merge($recipients, $extra));
         }
-      
+
+        // The first failure, rethrown once everyone has been tried.
+        $failure = null;
+
         foreach ($recipients as $recipient) {
             $exception = null;
 
@@ -79,6 +82,7 @@ class SendAlert implements ShouldQueue
                     ->log(\App\ActivityLog::DESCRIPTION_EMAILS_SENDING_ERROR_ALERT);
 
                 $exception = $e;
+                $failure = $failure ?: $e;
             }
 
             $status_message = '';
@@ -98,8 +102,8 @@ class SendAlert implements ShouldQueue
             SendLog::log(null, null, $recipient, SendLog::MAIL_TYPE_ALERT, $status, null, null, $status_message);
         }
 
-        if ($exception) {
-            throw $exception;
+        if ($failure) {
+            throw $failure;
         }
     }
 }

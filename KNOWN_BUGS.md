@@ -67,8 +67,6 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | S6 | low | `ModulesController ajax activate`, :335 | Reports `status: success` even when activation failed (only the flash type says so). |
 | S7 | low | `SystemController::action retry_job` | `sleep(1)` inside the web request. |
 | S8 | low | `app/Option.php` | The static `Option::$cache` isn't updated by `Option::set()` / `remove()`: stale values within one process. |
-| S9 | medium | `app/Jobs/SendAlert.php` :101 | With no recipients (no activated admins, no alert recipients) `$exception` is undefined → ErrorException in the job. Test: `testAlertWithoutRecipientsIsHarmless`. |
-| S10 | medium | `app/Jobs/SendAlert.php` | `$exception` is reset per recipient, so only the last recipient's failure is rethrown; earlier failures are only logged. |
 | S12 | medium | `app/Console/Commands/ModuleUpdate.php` :54 | Uses the undefined local `$lastError` instead of `\WpApi::$lastError` → ErrorException whenever the modules directory can't be fetched. |
 | S13 | low | `app/Console/Commands/ModuleBuild.php` :78 | With an alias given, calls `freescout:module-laroute` without it, so all modules' routes are rebuilt. |
 | S14 | low | `app/Console/Commands/CreateUser.php` | Declining the confirmation still prints "User created with id:" (without an id). |
