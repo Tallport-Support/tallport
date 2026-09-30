@@ -50,6 +50,9 @@ class Option extends Model
 
         $serialized_value = self::maybeSerialize($value);
 
+        // Read it from the database next time.
+        unset(self::$cache[$name]);
+
         $option = self::firstOrCreate(
             ['name' => $name],
             ['value' => $serialized_value]
@@ -198,6 +201,7 @@ class Option extends Model
 
     public static function remove($name)
     {
+        unset(self::$cache[$name]);
         self::where('name', (string) $name)->delete();
     }
 

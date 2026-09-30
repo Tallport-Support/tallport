@@ -238,6 +238,11 @@ class RemainingAjaxActionsTest extends FeatureTestCase
 
         $this->assertSame('error', $response['status']);
         $this->assertStringContainsString('disabled', $response['msg']);
+
+        // Checking for updates answers plainly instead of an error (S4).
+        $check = $this->postAjax($this->admin, '/system/ajax', ['action' => 'check_updates'])->json();
+        $this->assertSame('success', $check['status'], json_encode($check));
+        $this->assertStringContainsString('disabled', $check['msg_success']);
     }
 
     /**

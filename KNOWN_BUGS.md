@@ -50,13 +50,10 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | # | Severity | Where | Bug |
 |---|---|---|---|
 | S2 | low | `SettingsController::processSave` | Every `env` setting of a section is written to `.env`, as an empty value when absent from the request. Intended for checkboxes (an unticked box isn't sent), and every such setting is in its section's form, so only hand-made requests that leave out a text or select field blank it. |
-| S4 | low | `SystemController::ajax check_updates` | With updating disabled it returns `status: error` together with a `msg_success`. |
 | S6 | low | `ModulesController ajax activate`, :335 | Reports `status: success` even when activation failed (only the flash type says so). |
 | S7 | low | `SystemController::action retry_job` | `sleep(1)` inside the web request. |
-| S8 | low | `app/Option.php` | The static `Option::$cache` isn't updated by `Option::set()` / `remove()`: stale values within one process. |
 | S13 | low | `app/Console/Commands/ModuleBuild.php` :78 | With an alias given, calls `freescout:module-laroute` without it, so all modules' routes are rebuilt. |
 | S14 | low | `app/Console/Commands/CreateUser.php` | Declining the confirmation still prints "User created with id:" (without an id). |
-| S15 | low | `app/Console/Commands/Update.php` :47 | Lowers `memory_limit` to 128M for the rest of the process. |
 
 ## Environment and dependencies
 

@@ -3301,6 +3301,27 @@ class Helper
             .e(__('based on')).' <a href="'.e(config('app.freescout_url')).'"'.$style.' target="_blank">FreeScout</a>';
     }
 
+    /**
+     * Convert a php.ini size such as "128M" or "1G" to bytes.
+     */
+    public static function phpIniSizeToBytes($size)
+    {
+        $size = trim((string)$size);
+        $bytes = (int)$size;
+        switch (strtolower(substr($size, -1))) {
+            case 'g':
+                $bytes *= 1024;
+                // no break
+            case 'm':
+                $bytes *= 1024;
+                // no break
+            case 'k':
+                $bytes *= 1024;
+        }
+
+        return $bytes;
+    }
+
     public static function isLocalStorage($disk = '')
     {
         if ($disk) {

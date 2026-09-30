@@ -375,7 +375,9 @@ class SystemController extends Controller
                         $response['msg_success'] = __('You have the latest version installed');
                     }
                 } else {
-                    $response['msg_success'] = __('You have the latest version installed');
+                    $response['new_version_available'] = false;
+                    $response['status'] = 'success';
+                    $response['msg_success'] = __('Updating is disabled (APP_DISABLE_UPDATING).');
                 }
                 break;
 

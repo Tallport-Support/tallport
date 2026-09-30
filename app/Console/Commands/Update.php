@@ -50,7 +50,11 @@ class Update extends Command
             return;
         }
 
-        @ini_set('memory_limit', '128M');
+        // Needs at least 128M, but never lower the limit.
+        $memory_limit = ini_get('memory_limit');
+        if ($memory_limit != -1 && \Helper::phpIniSizeToBytes($memory_limit) < 128 * 1024 * 1024) {
+            @ini_set('memory_limit', '128M');
+        }
 
         if (\Updater::isNewVersionAvailable(config('app.version'))) {
             $this->info('Updating... This may take several minutes');

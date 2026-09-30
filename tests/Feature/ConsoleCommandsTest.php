@@ -261,13 +261,16 @@ class ConsoleCommandsTest extends FeatureTestCase
     {
         $memory_limit = ini_get('memory_limit');
         \Updater::shouldReceive('isNewVersionAvailable')->andReturn(false);
+        ini_set('memory_limit', '512M');
 
         try {
             $output = $this->runCommand('freescout:update', ['--force' => true]);
+            $limit_after = ini_get('memory_limit');
         } finally {
             ini_set('memory_limit', $memory_limit);
         }
 
+        $this->assertSame('512M', $limit_after, 'The memory limit is only ever raised (S15).');
         $this->assertStringContainsString('You have the latest version installed: '.config('app.version'), $output);
     }
 
