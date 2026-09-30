@@ -207,7 +207,7 @@
         "php": ">=7.1.0",
 
         "devfactory/minify": "1.0.7",
-        "laravel/framework": "v12.69.3",
+        "laravel/framework": "v13.34.0",
         "laravel/tinker": "v3.0.0",
         "laravel/ui": "4.6.*",
         "mews/purifier": "dev-customized",
@@ -256,7 +256,7 @@
         "nesbot/carbon": "3.*",
         "league/flysystem": "^3.8",
         "doctrine/inflector": "^2.0.5",
-        "guzzlehttp/guzzle": "8.0.1 as 7.99.0",
+        "guzzlehttp/guzzle": "8.0.1",
         "tedivm/jshrink": "1.4.0",
         "nikic/php-parser": "^5.0",
         "doctrine/annotations": "^1.12",

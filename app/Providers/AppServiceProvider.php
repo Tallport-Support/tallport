@@ -21,6 +21,11 @@ class AppServiceProvider extends ServiceProvider
         // The UI uses Bootstrap 3 (the default pagination markup before Laravel 6).
         \Illuminate\Pagination\Paginator::useBootstrapThree();
 
+        // Guests are sent to the login page (Laravel 13 no longer falls back to it).
+        \Illuminate\Auth\Middleware\Authenticate::redirectUsing(function () {
+            return route('login');
+        });
+
         // Models observers
         \App\Mailbox::observe(\App\Observers\MailboxObserver::class);
         // Eloquent events for this table are not called automatically, so need to be called manually.

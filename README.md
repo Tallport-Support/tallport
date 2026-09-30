@@ -36,18 +36,24 @@ So far:
   latest published [Tallport release](https://github.com/nielspeen/tallport/releases)
   instead of FreeScout releases.
 * **Branding.** The app says Tallport, with credit to FreeScout.
-* **A test suite.** About 320 tests (feature, unit and snapshot tests) run
+* **Current Laravel.** Laravel 13 with Symfony 7.4 and Symfony Mailer,
+  instead of Laravel 5.5 with SwiftMailer. Laravel 5.5 behaviour that
+  FreeScout modules rely on is kept (e.g. `route()` parameters, the `Input`
+  facade, `Event::fire()`, the `str_*`/`array_*` helpers).
+* **Faster conversations with large messages** and many bug fixes (see
+  [KNOWN_BUGS.md](KNOWN_BUGS.md) for what's left).
+* **A test suite.** About 420 tests (feature, unit and snapshot tests) run
   on every push, covering the email conversation loop, every route, ajax
   action, artisan command and queued job. See [Development](#development).
 * **Known bugs are listed** in [KNOWN_BUGS.md](KNOWN_BUGS.md): bugs found
   while writing the tests, most of them present in FreeScout too.
 
-Planned next: faster rendering of conversations with large messages, fixing
-the known bugs, and upgrading Laravel from 5.5 to the current version.
+Planned next: replacing the FreeScout modules Tallport installations depend
+on with Tallport features.
 
 ## Requirements
 
-* PHP 8.3 with the `imap`, `mbstring`, `xml`, `zip`, `gd`, `curl`, `intl`
+* PHP 8.3 or newer with the `imap`, `mbstring`, `xml`, `zip`, `gd`, `curl`, `intl`
   and `mysql` extensions
 * MariaDB (tested with 11.8)
 * Nginx or Apache
@@ -198,14 +204,12 @@ production's version), so an update can't pull in a package that needs a
 newer PHP. When updating, ignore only missing extensions:
 `composer update ... --ignore-platform-req='ext-*'`.
 
-Guzzle is 8.0.1 (FreeScout's version), aliased as 7.99.0 for Laravel 11,
-which accepts Guzzle 7 only; Laravel uses Guzzle just for its `Http`
-client, which Tallport doesn't use.
-
-Until Laravel is current, `composer.json` sets `audit.block-insecure` to
-false: every Laravel version on the way has published advisories, and
-Composer would otherwise refuse to install them. `composer audit` still
-lists them.
+`composer.json` sets `audit.block-insecure` to false, as Composer refuses
+to install versions with published advisories and three remain in locked
+packages (`composer audit` lists them): webklex/php-imap's CVE-2023-35169
+is fixed in `overrides/webklex` (FreeScout #3592), and
+barryvdh/laravel-translation-manager 0.5.0 has two in the admin-only
+translation editor (newer versions pull in a Google Translate package).
 
 ### Releasing
 
