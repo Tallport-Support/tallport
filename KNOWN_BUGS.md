@@ -67,7 +67,6 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | S6 | low | `ModulesController ajax activate`, :335 | Reports `status: success` even when activation failed (only the flash type says so). |
 | S7 | low | `SystemController::action retry_job` | `sleep(1)` inside the web request. |
 | S8 | low | `app/Option.php` | The static `Option::$cache` isn't updated by `Option::set()` / `remove()`: stale values within one process. |
-| S12 | medium | `app/Console/Commands/ModuleUpdate.php` :54 | Uses the undefined local `$lastError` instead of `\WpApi::$lastError` → ErrorException whenever the modules directory can't be fetched. |
 | S13 | low | `app/Console/Commands/ModuleBuild.php` :78 | With an alias given, calls `freescout:module-laroute` without it, so all modules' routes are rebuilt. |
 | S14 | low | `app/Console/Commands/CreateUser.php` | Declining the confirmation still prints "User created with id:" (without an id). |
 | S15 | low | `app/Console/Commands/Update.php` :47 | Lowers `memory_limit` to 128M for the rest of the process. |

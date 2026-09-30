@@ -282,6 +282,19 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->assertStringContainsString('Updating is disabled', $output);
     }
 
+    /**
+     * Without the modules directory (no network here) it reports the error
+     * instead of crashing on an undefined variable (S12).
+     */
+    public function testModuleUpdateWithoutNetwork()
+    {
+        // It runs cache:clear itself, which replaces Artisan::output().
+        $output = new \Symfony\Component\Console\Output\BufferedOutput();
+        \Artisan::call('freescout:module-update', [], $output);
+
+        $this->assertStringContainsString('Error occurred', $output->fetch());
+    }
+
     public function testModuleLicenseCheckWithoutNetwork()
     {
         $this->assertStringContainsString('Checking licenses finished', $this->runCommand('freescout:module-check-licenses'));

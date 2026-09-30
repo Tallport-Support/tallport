@@ -51,7 +51,7 @@ class ModuleUpdate extends Command
         
         $modules_directory = \WpApi::getModules();
         if (\WpApi::$lastError) {
-            $this->error(__('Error occurred').': '.$lastError['message'].' ('.$lastError['code'].')');
+            $this->error(__('Error occurred').': '.\WpApi::$lastError['message'].' ('.\WpApi::$lastError['code'].')');
             return;
         }
 

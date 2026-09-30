@@ -23,7 +23,6 @@ return [
     'command freescout:module-build'   => $modules_on_disk,
     'command freescout:module-install' => $modules_on_disk,
     'command freescout:module-laroute' => $modules_on_disk,
-    'command freescout:module-update'  => $network.'; '.$modules_on_disk,
     'command module:migrate'           => $modules_on_disk,
     'command freescout:clean-tmp'      => 'cleans the real system temp dir; its logic (CleanTmp::cleanDirectory) is tested on a scratch dir',
 
