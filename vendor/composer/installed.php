@@ -164,9 +164,9 @@
             'dev_requirement' => false,
         ),
         'fideloper/proxy' => array(
-            'pretty_version' => '3.3.4',
-            'version' => '3.3.4.0',
-            'reference' => '9cdf6f118af58d89764249bbcc7bb260c132924f',
+            'pretty_version' => '4.2.0',
+            'version' => '4.2.0.0',
+            'reference' => '39a4c2165e578bc771f5dc031c273210a3a9b6d2',
             'type' => 'library',
             'install_path' => __DIR__ . '/../fideloper/proxy',
             'aliases' => array(),

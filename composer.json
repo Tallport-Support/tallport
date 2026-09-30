@@ -173,7 +173,7 @@
 
         "symfony/debug": "v3.4.18",
         "devfactory/minify": "1.0.7",
-        "fideloper/proxy": "3.3.4",
+        "fideloper/proxy": "4.2.0",
         "laravel/framework": "v5.5.40",
         "laravel/tinker": "v1.0.9",
         "mews/purifier": "dev-customized",

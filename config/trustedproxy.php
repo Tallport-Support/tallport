@@ -44,31 +44,19 @@ return [
     # 'proxies' => '**',
 
     /*
-     * Default Header Names
+     * Which headers to use to detect proxy related data (For, Host, Proto, Port)
      *
-     * Change these if the proxy does
-     * not send the default header names.
+     * Options include:
      *
-     * Note that headers such as X-Forwarded-For
-     * are transformed to HTTP_X_FORWARDED_FOR format.
+     * - Illuminate\Http\Request::HEADER_X_FORWARDED_ALL (use all x-forwarded-* headers to establish trust)
+     * - Illuminate\Http\Request::HEADER_FORWARDED (use the FORWARDED header to establish trust)
+     * - Illuminate\Http\Request::HEADER_X_FORWARDED_AWS_ELB (If you are using AWS Elastic Load Balancer)
      *
-     * The following are Symfony defaults, found in
-     * \Symfony\Component\HttpFoundation\Request::$trustedHeaders
+     * - 'HEADER_X_FORWARDED_ALL' (use all x-forwarded-* headers to establish trust)
+     * - 'HEADER_FORWARDED' (use the FORWARDED header to establish trust)
+     * - 'HEADER_X_FORWARDED_AWS_ELB' (If you are using AWS Elastic Load Balancer)
      *
-     * You may optionally set headers to 'null' here if you'd like
-     * for them to be considered untrusted instead. Ex:
-     *
-     * Illuminate\Http\Request::HEADER_CLIENT_HOST  => null,
-     * 
-     * WARNING: If you're using AWS Elastic Load Balancing or Heroku,
-     * the FORWARDED and X_FORWARDED_HOST headers should be set to null 
-     * as they are currently unsupported there.
+     * @link https://symfony.com/doc/current/deployment/proxies.html
      */
-    'headers' => [
-        (defined('Illuminate\Http\Request::HEADER_FORWARDED') ? Illuminate\Http\Request::HEADER_FORWARDED : 'forwarded') => 'FORWARDED',
-        Illuminate\Http\Request::HEADER_CLIENT_IP    => 'X_FORWARDED_FOR',
-        Illuminate\Http\Request::HEADER_CLIENT_HOST  => 'X_FORWARDED_HOST',
-        Illuminate\Http\Request::HEADER_CLIENT_PROTO => 'X_FORWARDED_PROTO',
-        Illuminate\Http\Request::HEADER_CLIENT_PORT  => 'X_FORWARDED_PORT',
-    ]
+    'headers' => Illuminate\Http\Request::HEADER_X_FORWARDED_ALL,
 ];
