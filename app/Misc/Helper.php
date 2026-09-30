@@ -3325,7 +3325,7 @@ class Helper
     public static function isLocalStorage($disk = '')
     {
         if ($disk) {
-            return \Storage::disk($disk)->getDriver()->getAdapter() instanceof \League\Flysystem\Adapter\Local;
+            return \Storage::disk($disk)->getAdapter() instanceof \League\Flysystem\Local\LocalFilesystemAdapter;
         } else {
             return config('filesystems.default') == 'local';
         }

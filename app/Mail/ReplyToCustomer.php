@@ -86,21 +86,11 @@ class ReplyToCustomer extends Mailable
         $new_headers = $this->headers;
         if (!empty($new_headers) || $from_alias) {
             $mailbox = $this->mailbox;
-            $this->withSwiftMessage(function ($swiftmessage) use ($new_headers, $from_alias, $mailbox, $thread) {
+            $this->withSymfonyMessage(function ($swiftmessage) use ($new_headers, $from_alias, $mailbox, $thread) {
                 \MailHelper::$smtp_mime_message = '';
 
-                $headers = null;
-
                 if (!empty($new_headers)) {
-                    if (!empty($new_headers['Message-ID'])) {
-                        $swiftmessage->setId($new_headers['Message-ID']);
-                    }
-                    $headers = $swiftmessage->getHeaders();
-                    foreach ($new_headers as $header => $value) {
-                        if ($header != 'Message-ID') {
-                            $headers->addTextHeader($header, $value);
-                        }
-                    }
+                    \MailHelper::setMessageHeaders($swiftmessage, $new_headers);
                 }
                 if (!empty($from_alias)) {
                     $aliases = $mailbox->getAliases();
@@ -121,21 +111,7 @@ class ReplyToCustomer extends Mailable
                             $from_alias_name = $mailbox_mail_from['name'];
                         }
 
-                        if (!$headers) {
-                            $headers = $swiftmessage->getHeaders();
-                        }
-
-                        $swift_from = $headers->get('From');
-
-                        if ($from_alias_name) {
-                            $swift_from->setNameAddresses([
-                                $from_alias => $from_alias_name,
-                            ]);
-                        } else {
-                            $swift_from->setAddresses([
-                                $from_alias,
-                            ]);
-                        }
+                        $swiftmessage->from(new \Symfony\Component\Mime\Address($from_alias, $from_alias_name ?: ''));
                     }
                 }
 

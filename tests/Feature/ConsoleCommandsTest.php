@@ -530,13 +530,13 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->setOption('alert_recipients', 'broken@example.org,ok@example.org');
         // A transport that refuses one address and captures the rest.
         $failing = new class extends \Illuminate\Mail\Transport\ArrayTransport {
-            public function send(\Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
+            public function send(\Symfony\Component\Mime\RawMessage $message, ?\Symfony\Component\Mailer\Envelope $envelope = null): ?\Symfony\Component\Mailer\SentMessage
             {
-                if (array_key_exists('broken@example.org', $message->getTo())) {
+                if (array_key_exists('broken@example.org', (new \Tests\Support\CapturedEmail($message))->getTo())) {
                     throw new \Exception('Mail server refused broken@example.org');
                 }
 
-                return parent::send($message, $failedRecipients);
+                return parent::send($message, $envelope);
             }
         };
         $this->captured_mail = $failing;

@@ -4,7 +4,6 @@ namespace Illuminate\Routing;
 
 use Illuminate\Routing\Exceptions\UrlGenerationException;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 
 class RouteUrlGenerator
 {
@@ -199,7 +198,7 @@ class RouteUrlGenerator
         // As in Laravel 5.5: remaining parameters, null included, fill the
         // placeholders in order (modules pass null for a required parameter).
         $path = preg_replace_callback('/\{.*?\}/', function ($match) use (&$parameters) {
-            return (empty($parameters) && ! Str::endsWith($match[0], '?}'))
+            return (empty($parameters) && ! str_ends_with($match[0], '?}'))
                         ? $match[0]
                         : array_shift($parameters);
         }, $path);

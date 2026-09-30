@@ -87,19 +87,9 @@ class AutoReply extends Mailable
         if (!empty($new_headers) || $from_alias) {
             $mailbox = $this->mailbox;
             $conversation = $this->conversation;
-            $this->withSwiftMessage(function ($swiftmessage) use ($new_headers, $from_alias, $mailbox, $conversation) {
-                $headers = null;
-
+            $this->withSymfonyMessage(function ($swiftmessage) use ($new_headers, $from_alias, $mailbox, $conversation) {
                 if (!empty($new_headers)) {
-                    if (!empty($new_headers['Message-ID'])) {
-                        $swiftmessage->setId($new_headers['Message-ID']);
-                    }
-                    $headers = $swiftmessage->getHeaders();
-                    foreach ($new_headers as $header => $value) {
-                        if ($header != 'Message-ID') {
-                            $headers->addTextHeader($header, $value);
-                        }
-                    }
+                    \MailHelper::setMessageHeaders($swiftmessage, $new_headers);
                 }
 
                 if (!empty($from_alias)) {
@@ -116,21 +106,7 @@ class AutoReply extends Mailable
                             $from_alias_name = $mailbox_mail_from['name'];
                         }
 
-                        if (!$headers) {
-                            $headers = $swiftmessage->getHeaders();
-                        }
-
-                        $swift_from = $headers->get('From');
-
-                        if ($from_alias_name) {
-                            $swift_from->setNameAddresses([
-                                $from_alias => $from_alias_name,
-                            ]);
-                        } else {
-                            $swift_from->setAddresses([
-                                $from_alias,
-                            ]);
-                        }
+                        $swiftmessage->from(new \Symfony\Component\Mime\Address($from_alias, $from_alias_name ?: ''));
                     }
                 }
 

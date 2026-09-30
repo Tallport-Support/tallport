@@ -16,7 +16,7 @@ use Webklex\PHPIMAP\Message;
  * Outgoing: FreeScout picks the mail driver per mailbox and rebuilds the
  * mailer when the mail config changes (MailHelper::reapplyMailConfig), which
  * replaces Mail::fake(). Instead, every rebuilt mailer is switched to
- * Laravel's array transport, which keeps the real Swift messages, headers
+ * Laravel's array transport, which keeps the real messages, headers
  * included.
  */
 trait InteractsWithMail
@@ -70,7 +70,7 @@ trait InteractsWithMail
     /**
      * Emails sent so far.
      *
-     * @return \Swift_Message[]
+     * @return \Tests\Support\CapturedEmail[]
      */
     protected function sentEmails()
     {
@@ -78,17 +78,19 @@ trait InteractsWithMail
             $this->fail('Sent mail is not being captured: call captureSentMail() in setUp().');
         }
 
-        return array_values($this->captured_mail->messages()->all());
+        return array_values(array_map(function ($sent) {
+            return new \Tests\Support\CapturedEmail($sent);
+        }, $this->captured_mail->messages()->all()));
     }
 
     /**
      * Emails sent to the given address (To, Cc or Bcc).
      *
-     * @return \Swift_Message[]
+     * @return \Tests\Support\CapturedEmail[]
      */
     protected function sentEmailsTo($email)
     {
-        return array_values(array_filter($this->sentEmails(), function (\Swift_Message $message) use ($email) {
+        return array_values(array_filter($this->sentEmails(), function (\Tests\Support\CapturedEmail $message) use ($email) {
             $recipients = array_merge(
                 array_keys($message->getTo() ?: []),
                 array_keys($message->getCc() ?: []),

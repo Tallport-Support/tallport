@@ -235,7 +235,7 @@ class SendNotificationToUsers implements ShouldQueue
      *
      * @return void
      */
-    public function failed(\Exception $e)
+    public function failed(\Throwable $e)
     {
         // Write to activity log
         activity()

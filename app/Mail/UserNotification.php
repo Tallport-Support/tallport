@@ -76,18 +76,10 @@ class UserNotification extends Mailable
         // Settings via $this->addCustomHeaders does not work
         $new_headers = $this->headers;
         if (!empty($new_headers)) {
-            $this->withSwiftMessage(function ($swiftmessage) use ($new_headers) {
-                if (!empty($new_headers['Message-ID'])) {
-                    $swiftmessage->setId($new_headers['Message-ID']);
-                }
-                $headers = $swiftmessage->getHeaders();
-                foreach ($new_headers as $header => $value) {
-                    if ($header != 'Message-ID') {
-                        $headers->addTextHeader($header, $value);
-                    }
-                }
+            $this->withSymfonyMessage(function ($message) use ($new_headers) {
+                \MailHelper::setMessageHeaders($message, $new_headers);
 
-                return $swiftmessage;
+                return $message;
             });
         }
 
@@ -101,8 +93,13 @@ class UserNotification extends Mailable
         $template_text = \Eventy::filter('email.user_notification.template_name_text', 'emails/user/notification_text');
         $template_fields = \Eventy::filter('email.user_notification.template_fields', ['customer' => $customer, 'thread' => $thread, 'mailbox' => $this->mailbox]);
 
+        // $this->from holds the sender passed to the constructor; from() adds
+        // it to the same property, which must be a list of senders.
+        $from = $this->from;
+        $this->from = [];
+
         return $this->subject($subject)
-            ->from($this->from['address'], $this->from['name'])
+            ->from($from['address'], $from['name'])
             ->view($template_html, $template_fields)
             ->text($template_text, $template_fields);
     }

@@ -413,12 +413,16 @@ class Mail
         return Option::get('mail_driver', 'mail');
     }
 
-    public static function registerSmtpLogger()
+    /**
+     * SMTP transcript of a failed send, with the login data masked.
+     */
+    public static function getSmtpLog($e)
     {
-        $logger = new \Swift_Plugins_Loggers_ArrayLogger();
-        \Mail::getSwiftMailer()->registerPlugin(new \Swift_Plugins_LoggerPlugin($logger));
-
-        return $logger;
+        if (!$e instanceof \Symfony\Component\Mailer\Exception\TransportExceptionInterface) {
+            return '';
+        }
+        // Lines sent in reply to "334" (AUTH challenges) are base64 credentials.
+        return preg_replace('#(< 334[^\n]*\n> )[^\n]*#', '$1***', $e->getDebug());
     }
 
     /**
@@ -435,22 +439,23 @@ class Mail
         if ($mailbox) {
             // Configure mail driver according to Mailbox settings
             \MailHelper::setMailDriver($mailbox);
-            $smtp_logger = self::registerSmtpLogger();
 
             $status_message = '';
+            $smtp_log = '';
 
             try {
                 \Mail::to([$to])->send(new \App\Mail\Test($mailbox));
             } catch (\Exception $e) {
                 // We come here in case SMTP server unavailable for example
                 $status_message = $e->getMessage();
+                $smtp_log = self::getSmtpLog($e);
             }
         } else {
             // System email
             \MailHelper::setSystemMailDriver();
-            $smtp_logger = self::registerSmtpLogger();
 
             $status_message = '';
+            $smtp_log = '';
 
             try {
                 \Mail::to([['name' => '', 'email' => $to]])
@@ -458,6 +463,7 @@ class Mail
             } catch (\Exception $e) {
                 // We come here in case SMTP server unavailable for example
                 $status_message = $e->getMessage();
+                $smtp_log = self::getSmtpLog($e);
             }
         }
 
@@ -467,7 +473,7 @@ class Mail
                 $result['msg'] = $status_message;
             }
             $result['status'] = 'error';
-            $result['log'] = $smtp_logger->dump();
+            $result['log'] = $smtp_log;
         } else {
             SendLog::log(null, null, $to, SendLog::MAIL_TYPE_TEST, SendLog::STATUS_ACCEPTED);
 
@@ -1287,8 +1293,8 @@ class Mail
 
         $custom_headers = explode(';', $custom_headers_str);
 
-        $mailable->withSwiftMessage(function ($swiftmessage) use ($custom_headers) {
-            $headers = $swiftmessage->getHeaders();
+        $mailable->withSymfonyMessage(function ($message) use ($custom_headers) {
+            $headers = $message->getHeaders();
 
             foreach ($custom_headers as $custom_header) {
                 $header_parts = explode(':', $custom_header);
@@ -1299,8 +1305,51 @@ class Mail
                     $headers->addTextHeader($header_name, $header_value);
                 }
             }
-            return $swiftmessage;
+            return $message;
         });
+    }
+
+    /**
+     * Add headers to an outgoing message. Message-ID, In-Reply-To and
+     * References are ID headers in Symfony Mime; IDs it rejects (malformed
+     * IDs from other mail clients) are left out rather than failing the send.
+     *
+     * @param \Symfony\Component\Mime\Email $message
+     * @param array                          $new_headers
+     */
+    public static function setMessageHeaders($message, $new_headers)
+    {
+        $headers = $message->getHeaders();
+
+        foreach ($new_headers as $name => $value) {
+            if (!in_array(strtolower($name), ['message-id', 'in-reply-to', 'references'])) {
+                $headers->addTextHeader($name, $value);
+                continue;
+            }
+            if (preg_match_all('/<([^>]+)>/', (string)$value, $m)) {
+                $ids = $m[1];
+            } else {
+                $ids = preg_split('/\s+/', trim((string)$value), -1, PREG_SPLIT_NO_EMPTY);
+            }
+            $valid_ids = [];
+            foreach ($ids as $id) {
+                try {
+                    new \Symfony\Component\Mime\Address($id);
+                    $valid_ids[] = $id;
+                } catch (\Exception $e) {
+                    // Skip.
+                }
+            }
+            if (!$valid_ids) {
+                continue;
+            }
+            $headers->remove($name);
+            if (strtolower($name) == 'message-id') {
+                $headers->addIdHeader($name, $valid_ids[0]);
+            } else {
+                $headers->addIdHeader($name, $valid_ids);
+            }
+        }
     }
 
     public static function getImapFolder($client, $folder_name)

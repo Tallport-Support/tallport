@@ -158,7 +158,7 @@ class ConversationPagesTest extends FeatureTestCase
 
         $email = $this->sentEmailsTo('casey@customer.example.org')[0];
         $attached = array_values(array_filter($email->getChildren(), function ($part) {
-            return $part instanceof \Swift_Attachment;
+            return $part instanceof \Tests\Support\CapturedAttachment;
         }));
         $this->assertCount(1, $attached);
         $this->assertSame('invoice.txt', $attached[0]->getFilename());

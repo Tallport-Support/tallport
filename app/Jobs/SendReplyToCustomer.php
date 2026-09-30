@@ -282,12 +282,6 @@ class SendReplyToCustomer implements ShouldQueue
         // Configure mail driver according to Mailbox settings
         \MailHelper::setMailDriver($mailbox, $this->last_thread->created_by_user, $this->conversation, $this->last_thread);
 
-        // https://github.com/freescout-helpdesk/freescout/issues/3330
-        if (!\MailHelper::$smtp_queue_id_plugin_registered) {
-            \Mail::getSwiftMailer()->registerPlugin(new SwiftGetSmtpQueueId());
-            \MailHelper::$smtp_queue_id_plugin_registered = true;
-        }
-
         $this->message_id = $this->last_thread->getMessageId($mailbox);
         $headers['Message-ID'] = $this->message_id;
 
@@ -365,7 +359,7 @@ class SendReplyToCustomer implements ShouldQueue
         $smtp_queue_id = null;
         
         try {
-            Mail::to($to)
+            $sent_message = Mail::to($to)
                 ->cc($cc_array)
                 ->bcc($bcc_array)
                 ->send($reply_mail);
@@ -373,7 +367,8 @@ class SendReplyToCustomer implements ShouldQueue
             $this->last_thread->send_status = SendLog::STATUS_ACCEPTED;
             $this->last_thread->save();
 
-            $smtp_queue_id = SwiftGetSmtpQueueId::$last_smtp_queue_id;
+            // https://github.com/freescout-helpdesk/freescout/issues/3330
+            $smtp_queue_id = SwiftGetSmtpQueueId::fromSentMessage($sent_message);
         } catch (\Exception $e) {
             // We come here in case SMTP server unavailable for example
             if ($this->attempts() == 1) {
@@ -635,7 +630,7 @@ class SendReplyToCustomer implements ShouldQueue
      *
      * @return void
      */
-    public function failed(\Exception $e)
+    public function failed(\Throwable $e)
     {
         // failed() is called by unserializing the original queue payload.
         if (!$this->last_thread && $this->threads && count($this->threads)) {
