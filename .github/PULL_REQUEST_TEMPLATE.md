@@ -1,3 +1,12 @@
-Keep in mind that pull requests should be sent to the `master` branch! See https://github.com/freescout-helpdesk/freescout/wiki/Development-Guide#github-workflow
+**What this changes and why**
 
-Now you can delete this text and type the description of your pull request...
+
+**Checklist**
+
+- [ ] Targets `main`
+- [ ] `./test.sh` passes (the full run, including the inventory check)
+- [ ] New or changed behaviour has tests; new routes, ajax actions,
+      commands and jobs are exercised by a test
+- [ ] Snapshot changes (`tests/Snapshots/`) are intended and reviewed
+- [ ] Fixes a bug in `KNOWN_BUGS.md`? Its entry is removed and the
+      `knownBug()` call in its test is gone
