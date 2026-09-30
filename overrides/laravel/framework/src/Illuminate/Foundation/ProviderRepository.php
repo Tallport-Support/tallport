@@ -39,11 +39,9 @@ class ProviderRepository
     /**
      * Create a new service repository instance.
      *
-     * @param \Illuminate\Contracts\Foundation\Application $app
-     * @param \Illuminate\Filesystem\Filesystem            $files
-     * @param string                                       $manifestPath
-     *
-     * @return void
+     * @param  \Illuminate\Contracts\Foundation\Application  $app
+     * @param  \Illuminate\Filesystem\Filesystem  $files
+     * @param  string  $manifestPath
      */
     public function __construct(ApplicationContract $app, Filesystem $files, $manifestPath)
     {
