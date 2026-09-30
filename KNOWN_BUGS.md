@@ -44,7 +44,6 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 
 | # | Severity | Where | Bug |
 |---|---|---|---|
-| U1 | security | `Auth/LoginController` | Disabled users can log in; they are only logged out on their next request (`LogoutIfDeleted`). |
 | U2 | security | `UsersController::profileSave`, `ajax delete_user` | The "only administrator" check counts disabled and deleted admins; `delete_user` has no last-admin check at all. Admins can demote or delete other admins. |
 | U4 | medium | `User::deleteUser`, `app/User.php` :1358 | `assign_user[mailbox] = user_id` isn't validated: conversations can be assigned to a missing user or one without mailbox access. |
 | U5 | low | password forms | Minimum password length is 8 (change password, invite setup), 6 (reset form), none (admin creates user). |

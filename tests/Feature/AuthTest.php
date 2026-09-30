@@ -59,13 +59,28 @@ class AuthTest extends FeatureTestCase
         $this->assertGuest();
     }
 
-    public function testDisabledUserIsLoggedOutAfterLogin()
+    /**
+     * Disabled users can't log in at all (U1), with the same message as a
+     * wrong password so the account's existence isn't revealed.
+     */
+    public function testDisabledUserCannotLogIn()
     {
         $this->createUser(['email' => 'agent@example.org', 'password' => \Hash::make('secret-password'), 'status' => User::STATUS_DISABLED]);
 
-        $this->postForm('/login', ['email' => 'agent@example.org', 'password' => 'secret-password']);
+        $response = $this->postForm('/login', ['email' => 'agent@example.org', 'password' => 'secret-password']);
 
-        $this->get('/')->assertRedirect(route('login'));
+        $response->assertSessionHasErrors('email');
+        $this->assertSame('These credentials do not match our records.', session('errors')->first('email'));
+        $this->assertGuest();
+    }
+
+    public function testDeletedUserCannotLogIn()
+    {
+        $user = $this->createUser(['email' => 'agent@example.org', 'password' => \Hash::make('secret-password')]);
+        $user->status = User::STATUS_DELETED;
+        $user->save();
+
+        $this->postForm('/login', ['email' => 'agent@example.org', 'password' => 'secret-password'])->assertSessionHasErrors('email');
         $this->assertGuest();
     }
 
