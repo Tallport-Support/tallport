@@ -193,6 +193,15 @@ the next Laravel version without other changes (`chumper/zipper`,
 `devfactory/minify`, `barryvdh/laravel-translation-manager`,
 `lord/laroute`, and FreeScout's `codedge/laravel-selfupdater` fork).
 
+`composer.json` resolves dependencies for PHP 8.3 (`config.platform.php`,
+production's version), so an update can't pull in a package that needs a
+newer PHP. When updating, ignore only missing extensions:
+`composer update ... --ignore-platform-req='ext-*'`.
+
+Guzzle is 8.0.1 (FreeScout's version), aliased as 7.99.0 for Laravel 11,
+which accepts Guzzle 7 only; Laravel uses Guzzle just for its `Http`
+client, which Tallport doesn't use.
+
 Until Laravel is current, `composer.json` sets `audit.block-insecure` to
 false: every Laravel version on the way has published advisories, and
 Composer would otherwise refuse to install them. `composer audit` still

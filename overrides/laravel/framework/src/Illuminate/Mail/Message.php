@@ -3,6 +3,7 @@
 namespace Illuminate\Mail;
 
 use Illuminate\Contracts\Mail\Attachable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\ForwardsCalls;
 use InvalidArgumentException;
@@ -226,7 +227,7 @@ class Message
         if (is_array($address)) {
             $type = lcfirst($type);
 
-            $addresses = collect($address)->map(function ($address, $key) {
+            $addresses = (new Collection($address))->map(function ($address, $key) {
                 if (is_string($key) && is_string($address)) {
                     return $this->createAddress($key, $address);
                 }
