@@ -873,9 +873,9 @@
             'dev_requirement' => false,
         ),
         'watson/rememberable' => array(
-            'pretty_version' => '2.0.4',
-            'version' => '2.0.4.0',
-            'reference' => '8718614835370f67f58d86387a26bfc315fa9a8b',
+            'pretty_version' => '3.1.0',
+            'version' => '3.1.0.0',
+            'reference' => 'e8fa80242eab6de2a6f418a98c727c80832c643a',
             'type' => 'library',
             'install_path' => __DIR__ . '/../watson/rememberable',
             'aliases' => array(),

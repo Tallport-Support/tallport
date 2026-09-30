@@ -138,7 +138,7 @@
         "lord/laroute": "2.5.3",
         "axn/laravel-laroute": "1.5.0",
         "html2text/html2text": "4.1.0",
-        "watson/rememberable": "2.0.4",
+        "watson/rememberable": "3.1.0",
         "nwidart/laravel-modules": "2.7.0",
         "tormjens/eventy": "0.5.4",
         "barryvdh/laravel-translation-manager": "v0.5.0",
