@@ -379,6 +379,55 @@ class ConversationActionsTest extends FeatureTestCase
         $this->assertSame(0, $absorbed->threads()->where('type', '!=', Thread::TYPE_LINEITEM)->count());
     }
 
+    /**
+     * Merging into itself is refused, and every failed merge is reported,
+     * not just the last one (C5).
+     */
+    public function testMergeProblemsAreReported()
+    {
+        $survivor = $this->receiveConversation(['subject' => 'Survivor']);
+        $mergeable = $this->receiveConversation(['subject' => 'Mergeable', 'from' => 'b@customer.example.org']);
+        $private = $this->receiveConversation([], $this->createMailbox([], ['name' => 'Private']));
+
+        $self = $this->ajax($this->agent, ['action' => 'conversation_merge', 'conversation_id' => $survivor->id, 'merge_conversation_id' => [$survivor->id]]);
+        $this->assertSame('error', $self['status']);
+        $this->assertEquals(Conversation::STATE_PUBLISHED, $survivor->fresh()->state);
+
+        $mixed = $this->ajax($this->agent, ['action' => 'conversation_merge', 'conversation_id' => $survivor->id, 'merge_conversation_id' => [$private->id, $mergeable->id]]);
+        $this->assertSame('success', $mixed['status'], 'One of them was merged.');
+        $this->assertStringContainsString('#'.$private->number, $mixed['msg'], 'The failure is reported although it wasn\'t the last.');
+        $this->assertEquals(Conversation::STATE_DELETED, $mergeable->fresh()->state);
+        $this->assertEquals(Conversation::STATE_PUBLISHED, $private->fresh()->state);
+    }
+
+    public function testRestoreOnlyDeletedConversations()
+    {
+        $admin = $this->createAdmin();
+        $conversation = $this->receiveConversation();
+        $threads = $conversation->threads()->count();
+
+        $response = $this->ajax($admin, ['action' => 'restore_conversation', 'conversation_id' => $conversation->id]);
+
+        $this->assertSame('error', $response['status'], 'Nothing to restore (C8).');
+        $this->assertSame($threads, $conversation->threads()->count(), 'No "restored" line item.');
+    }
+
+    public function testBulkActionsSkipUnchangedConversations()
+    {
+        $conversation = $this->receiveConversation();
+        $threads = $conversation->threads()->count();
+
+        $this->ajax($this->agent, ['action' => 'bulk_conversation_change_status', 'conversation_id' => [$conversation->id], 'status' => Conversation::STATUS_ACTIVE]);
+        $this->ajax($this->agent, ['action' => 'bulk_conversation_change_user', 'conversation_id' => [$conversation->id], 'user_id' => -1]);
+
+        $this->assertSame($threads, $conversation->threads()->count(), 'No line items for changes that didn\'t happen (C9).');
+    }
+
+    public function testEditingMissingThread()
+    {
+        $this->assertSame('Thread not found', $this->ajax($this->createAdmin(), ['action' => 'save_edit_thread', 'thread_id' => 999999, 'body' => '<p>x</p>'])['msg']);
+    }
+
     // Bulk actions from the folder list.
 
     public function testBulkStatusAndAssign()
@@ -638,6 +687,7 @@ class ConversationActionsTest extends FeatureTestCase
         $response = $this->ajax($this->createUser(), ['action' => 'conversations_pagination', 'folder_id' => $folder->id, 'page' => 1]);
 
         $this->assertSame('Not enough permissions', $response['msg']);
+        $this->assertSame('error', $response['status'], 'An error is not a success (C7).');
     }
 
     public function testCustomerSidebar()

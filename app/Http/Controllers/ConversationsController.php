@@ -2001,6 +2001,8 @@ class ConversationsController extends Controller
                     $response['msg'] = __('Conversation not found');
                 } elseif (!$user->can('delete', $conversation)) {
                     $response['msg'] = __('Not enough permissions');
+                } elseif ($conversation->state != Conversation::STATE_DELETED) {
+                    $response['msg'] = __('Only deleted conversations can be restored.');
                 }
 
                 if (!$response['msg']) {
@@ -2064,7 +2066,7 @@ class ConversationsController extends Controller
             case 'save_edit_thread':
                 $thread = Thread::find($request->thread_id);
                 if (!$thread) {
-                    $response['msg'] = __('Conversation not found');
+                    $response['msg'] = __('Thread not found');
                 } elseif (!$user->can('edit', $thread)) {
                     $response['msg'] = __('Not enough permissions');
                 }
@@ -2125,6 +2127,10 @@ class ConversationsController extends Controller
                         if ((int) $new_user_id != -1 && !$conversation->mailbox->userHasAccess($new_user_id)) {
                             continue;
                         }
+                        if ((int) $conversation->user_id == ($new_user_id == -1 ? 0 : $new_user_id)) {
+                            // Already assigned so.
+                            continue;
+                        }
 
                         $conversation->changeUser($new_user_id, $user);
                     }
@@ -2151,6 +2157,9 @@ class ConversationsController extends Controller
                 if (!$response['msg']) {
                     foreach ($conversations as $conversation) {
                         if (!$user->can('update', $conversation)) {
+                            continue;
+                        }
+                        if ($conversation->status == $new_status) {
                             continue;
                         }
 
@@ -2333,27 +2342,24 @@ class ConversationsController extends Controller
 
                 if (!$response['msg'] && !empty($request->merge_conversation_id) && is_array($request->merge_conversation_id)) {
                     
-                    $sigle_conv = count($request->merge_conversation_id) == 1;
+                    // Problems with any of the conversations are all reported.
+                    $errors = [];
 
                     foreach ($request->merge_conversation_id as $merge_conversation_id) {
                         $merge_conversation = Conversation::find($merge_conversation_id);
 
-                        $response['msg'] = '';
-
+                        $error = '';
                         if (!$merge_conversation) {
-                            $response['msg'] = __('Conversation not found');
-                            if ($sigle_conv) {
-                                break;
-                            }
-                        }
-                        if (!$response['msg'] && !$user->can('view', $merge_conversation)) {
-                            $response['msg'] = __('Not enough permissions').': #'.$merge_conversation->number;
-                            if ($sigle_conv) {
-                                break;
-                            }
+                            $error = __('Conversation not found');
+                        } elseif ($merge_conversation->id == $conversation->id) {
+                            $error = __('A conversation can not be merged with itself.');
+                        } elseif (!$user->can('view', $merge_conversation)) {
+                            $error = __('Not enough permissions').': #'.$merge_conversation->number;
                         }
 
-                        if (!$response['msg']) {
+                        if ($error) {
+                            $errors[] = $error;
+                        } else {
                             $conversation->mergeConversations($merge_conversation, $user);
 
                             if ($response['status'] != 'success') {
@@ -2362,6 +2368,8 @@ class ConversationsController extends Controller
                             $response['status'] = 'success';
                         }
                     }
+
+                    $response['msg'] = implode(' ', array_unique($errors));
                 }
 
                 break;
@@ -2942,6 +2950,10 @@ class ConversationsController extends Controller
             }
 
             $conversations = $folder->queryAddOrderBy($query_conversations)->paginate(Conversation::DEFAULT_LIST_SIZE, ['*'], 'page', $request->page);
+        }
+
+        if ($response['msg']) {
+            return $response;
         }
 
         $response['status'] = 'success';
