@@ -70,4 +70,17 @@ class LarouteRoutesTest extends TestCase
         $this->assertStringContainsString('absolute: true', $js);
         $this->assertStringNotContainsString('$ROUTES$', $js);
     }
+
+    public function testGenerateCommand()
+    {
+        $dir = sys_get_temp_dir().'/tallport-laroute-'.uniqid();
+        try {
+            \Artisan::call('laroute:generate', ['--path' => $dir]);
+            $this->assertStringContainsString('Created: '.$dir.'/laroute.js', \Artisan::output());
+            $this->assertStringContainsString('"name": "conversations.ajax"', file_get_contents($dir.'/laroute.js'));
+        } finally {
+            @unlink($dir.'/laroute.js');
+            @rmdir($dir);
+        }
+    }
 }
