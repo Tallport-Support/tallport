@@ -27,6 +27,7 @@ Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Lara
 ## Dependencies and vendor/
 
 - `vendor/` is committed and ships with every release. It must equal what `composer install --ignore-platform-reqs` produces, which a CI job checks. Never edit files in `vendor/`. The root composer.json must not have development-only packages, because they would end up in `vendor/`.
+- The committed `vendor/composer/autoload_*.php` classmap lists app classes too (optimized autoloader). After adding, moving or deleting a class, run `composer dump-autoload` and commit the result, or CI's vendor check fails.
 - Patched vendor files live in `overrides/`, mirroring the vendor path. composer.json maps them in `autoload.psr-4` and lists the originals in `exclude-from-classmap`.
 - Packages whose Laravel constraints were too narrow are redefined as `type: package` entries in composer.json `repositories`, with the same code.
 - To update dependencies, run `composer update <package> --ignore-platform-req='ext-*'`. Then reinstall cleanly so `vendor/` matches a fresh install.

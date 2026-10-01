@@ -138,6 +138,7 @@ return array(
     'App\\MailboxUser' => $baseDir . '/app/MailboxUser.php',
     'App\\Misc\\ConversationActionButtons' => $baseDir . '/app/Misc/ConversationActionButtons.php',
     'App\\Misc\\CspHtmlDumper' => $baseDir . '/app/Misc/CspHtmlDumper.php',
+    'App\\Misc\\EnvFile' => $baseDir . '/app/Misc/EnvFile.php',
     'App\\Misc\\Eventy\\Action' => $baseDir . '/app/Misc/Eventy/Action.php',
     'App\\Misc\\Eventy\\Events' => $baseDir . '/app/Misc/Eventy/Events.php',
     'App\\Misc\\Eventy\\Filter' => $baseDir . '/app/Misc/Eventy/Filter.php',

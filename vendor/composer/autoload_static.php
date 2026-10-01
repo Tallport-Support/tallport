@@ -863,6 +863,7 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         'App\\MailboxUser' => __DIR__ . '/../..' . '/app/MailboxUser.php',
         'App\\Misc\\ConversationActionButtons' => __DIR__ . '/../..' . '/app/Misc/ConversationActionButtons.php',
         'App\\Misc\\CspHtmlDumper' => __DIR__ . '/../..' . '/app/Misc/CspHtmlDumper.php',
+        'App\\Misc\\EnvFile' => __DIR__ . '/../..' . '/app/Misc/EnvFile.php',
         'App\\Misc\\Eventy\\Action' => __DIR__ . '/../..' . '/app/Misc/Eventy/Action.php',
         'App\\Misc\\Eventy\\Events' => __DIR__ . '/../..' . '/app/Misc/Eventy/Events.php',
         'App\\Misc\\Eventy\\Filter' => __DIR__ . '/../..' . '/app/Misc/Eventy/Filter.php',
