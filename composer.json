@@ -282,7 +282,6 @@
             "Codedge\\Updater\\SourceRepositoryTypes\\": "overrides/codedge/laravel-selfupdater/src/SourceRepositoryTypes/",
             "Barryvdh\\TranslationManager\\": "overrides/barryvdh/laravel-translation-manager/src/",
             "Lord\\Laroute\\Routes\\": "overrides/lord/laroute/src/Routes/",
-            "TorMorten\\Eventy\\": "overrides/tormjens/eventy/src/",
             "Chumper\\Zipper\\Repositories\\": "overrides/chumper/zipper/src/Chumper/Zipper/Repositories/",
             "Faker\\Provider\\": "overrides/fzaninotto/faker/src/Faker/Provider/",
             "Illuminate\\Database\\": "overrides/laravel/framework/src/Illuminate/Database/",
@@ -317,9 +316,6 @@
             "vendor/barryvdh/laravel-translation-manager/src/Controller.php",
             "vendor/rachidlaasri/laravel-installer/src/Providers/LaravelInstallerServiceProvider.php",
             "vendor/lord/laroute/src/Routes/Collection.php",
-            "vendor/tormjens/eventy/src/Filter.php",
-            "vendor/tormjens/eventy/src/Action.php",
-            "vendor/tormjens/eventy/src/Event.php",
             "vendor/chumper/zipper/src/Chumper/Zipper/Repositories/ZipRepository.php",
             "vendor/fzaninotto/faker/src/Faker/Provider/Base.php",
 

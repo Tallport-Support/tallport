@@ -69,6 +69,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        // Hooks (\Eventy) with listeners kept per hook. First, before anything
+        // adds a listener.
+        $this->app->singleton('eventy', function () {
+            return new \App\Misc\Eventy\Events();
+        });
+
         $this->registerDevBoost();
         $this->registerLegacyMethods();
         $this->registerAuthHooks();

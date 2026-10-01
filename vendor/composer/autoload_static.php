@@ -246,8 +246,7 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         ),
         'TorMorten\\Eventy\\' =>
         array (
-            0 => __DIR__ . '/../..' . '/overrides/tormjens/eventy/src',
-            1 => __DIR__ . '/..' . '/tormjens/eventy/src',
+            0 => __DIR__ . '/..' . '/tormjens/eventy/src',
         ),
         'TijsVerkoyen\\CssToInlineStyles\\' =>
         array (
@@ -864,6 +863,10 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         'App\\MailboxUser' => __DIR__ . '/../..' . '/app/MailboxUser.php',
         'App\\Misc\\ConversationActionButtons' => __DIR__ . '/../..' . '/app/Misc/ConversationActionButtons.php',
         'App\\Misc\\CspHtmlDumper' => __DIR__ . '/../..' . '/app/Misc/CspHtmlDumper.php',
+        'App\\Misc\\Eventy\\Action' => __DIR__ . '/../..' . '/app/Misc/Eventy/Action.php',
+        'App\\Misc\\Eventy\\Events' => __DIR__ . '/../..' . '/app/Misc/Eventy/Events.php',
+        'App\\Misc\\Eventy\\Filter' => __DIR__ . '/../..' . '/app/Misc/Eventy/Filter.php',
+        'App\\Misc\\Eventy\\ListenersByHook' => __DIR__ . '/../..' . '/app/Misc/Eventy/ListenersByHook.php',
         'App\\Misc\\Helper' => __DIR__ . '/../..' . '/app/Misc/Helper.php',
         'App\\Misc\\Html2Text' => __DIR__ . '/../..' . '/app/Misc/Html2Text.php',
         'App\\Misc\\Mail' => __DIR__ . '/../..' . '/app/Misc/Mail.php',
@@ -7000,13 +7003,13 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         'TijsVerkoyen\\CssToInlineStyles\\Css\\Property\\Property' => __DIR__ . '/..' . '/tijsverkoyen/css-to-inline-styles/src/Css/Property/Property.php',
         'TijsVerkoyen\\CssToInlineStyles\\Css\\Rule\\Processor' => __DIR__ . '/..' . '/tijsverkoyen/css-to-inline-styles/src/Css/Rule/Processor.php',
         'TijsVerkoyen\\CssToInlineStyles\\Css\\Rule\\Rule' => __DIR__ . '/..' . '/tijsverkoyen/css-to-inline-styles/src/Css/Rule/Rule.php',
-        'TorMorten\\Eventy\\Action' => __DIR__ . '/../..' . '/overrides/tormjens/eventy/src/Action.php',
-        'TorMorten\\Eventy\\Event' => __DIR__ . '/../..' . '/overrides/tormjens/eventy/src/Event.php',
+        'TorMorten\\Eventy\\Action' => __DIR__ . '/..' . '/tormjens/eventy/src/Action.php',
+        'TorMorten\\Eventy\\Event' => __DIR__ . '/..' . '/tormjens/eventy/src/Event.php',
         'TorMorten\\Eventy\\EventBladeServiceProvider' => __DIR__ . '/..' . '/tormjens/eventy/src/EventBladeServiceProvider.php',
         'TorMorten\\Eventy\\EventServiceProvider' => __DIR__ . '/..' . '/tormjens/eventy/src/EventServiceProvider.php',
         'TorMorten\\Eventy\\Events' => __DIR__ . '/..' . '/tormjens/eventy/src/Events.php',
         'TorMorten\\Eventy\\Facades\\Events' => __DIR__ . '/..' . '/tormjens/eventy/src/Facades/Events.php',
-        'TorMorten\\Eventy\\Filter' => __DIR__ . '/../..' . '/overrides/tormjens/eventy/src/Filter.php',
+        'TorMorten\\Eventy\\Filter' => __DIR__ . '/..' . '/tormjens/eventy/src/Filter.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'UsersTableSeeder' => __DIR__ . '/../..' . '/database/seeds/UsersTableSeeder.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',

@@ -10,7 +10,7 @@ return array(
     'enshrined\\svgSanitize\\' => array($vendorDir . '/enshrined/svg-sanitize/src'),
     'Webklex\\PHPIMAP\\' => array($baseDir . '/overrides/webklex/php-imap/src', $vendorDir . '/webklex/php-imap/src'),
     'Watson\\Rememberable\\' => array($vendorDir . '/watson/rememberable/src'),
-    'TorMorten\\Eventy\\' => array($baseDir . '/overrides/tormjens/eventy/src', $vendorDir . '/tormjens/eventy/src'),
+    'TorMorten\\Eventy\\' => array($vendorDir . '/tormjens/eventy/src'),
     'TijsVerkoyen\\CssToInlineStyles\\' => array($vendorDir . '/tijsverkoyen/css-to-inline-styles/src'),
     'Termwind\\' => array($vendorDir . '/nunomaduro/termwind/src'),
     'Symfony\\Polyfill\\Uuid\\' => array($vendorDir . '/symfony/polyfill-uuid'),
