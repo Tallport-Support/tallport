@@ -519,8 +519,8 @@ class Mail
 
         try {
             \Config::set('imap.options.debug', true);
-            \Webklex\PHPIMAP\Connection\Protocols\ImapProtocol::$output_debug_log = false;
-            \Webklex\PHPIMAP\Connection\Protocols\PopProtocol::$output_debug_log = false;
+            \App\LegacyImap\Connection\Protocols\ImapProtocol::$output_debug_log = false;
+            \App\LegacyImap\Connection\Protocols\PopProtocol::$output_debug_log = false;
 
             $client = \MailHelper::getMailboxClient($mailbox);
 
@@ -556,7 +556,7 @@ class Mail
         }
 
         if ($result['result'] == 'error') {
-            $result['log'] = \Webklex\PHPIMAP\Connection\Protocols\ImapProtocol::getDebugLog();
+            $result['log'] = \App\LegacyImap\Connection\Protocols\ImapProtocol::getDebugLog();
         }
 
         return $result;
@@ -761,8 +761,8 @@ class Mail
     {
         //try {
         //return imap_rfc822_parse_headers($headers_str);
-        //return (new \Webklex\PHPIMAP\Header(''))->rfc822_parse_headers($headers_str);
-        return \Webklex\PHPIMAP\Header::rfc822_parse_headers($headers_str);
+        //return (new \App\LegacyImap\Header(''))->rfc822_parse_headers($headers_str);
+        return \App\LegacyImap\Header::rfc822_parse_headers($headers_str);
         // } catch (\Exception $e) {
         //     return;
         // }
@@ -899,7 +899,7 @@ class Mail
             \Config::set('imap.options.debug', config('app.debug'));
         }
         
-        $cm = new \Webklex\PHPIMAP\ClientManager(config('imap'));
+        $cm = new \App\LegacyImap\ClientManager(config('imap'));
 
         // This makes it authenticate two times.
         //$cm->setTimeout(60);
@@ -1540,7 +1540,7 @@ class Mail
         $client = \MailHelper::getMailboxClient($mailbox);
         $client->openFolder("INBOX");
         
-        return \Webklex\PHPIMAP\Message::make(null, null, $client, $raw_header, $raw_body, [], \Webklex\PHPIMAP\IMAP::ST_UID);
+        return \App\LegacyImap\Message::make(null, null, $client, $raw_header, $raw_body, [], \App\LegacyImap\IMAP::ST_UID);
     }
 
     // Substitue encoding during mail body decoding.

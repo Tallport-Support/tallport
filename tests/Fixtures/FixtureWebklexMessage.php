@@ -2,18 +2,18 @@
 namespace Tests\Fixtures;
 
 use PHPUnit\Framework\TestCase;
-use Webklex\PHPIMAP\ClientManager;
-use Webklex\PHPIMAP\Config;
-use Webklex\PHPIMAP\Exceptions\AuthFailedException;
-use Webklex\PHPIMAP\Exceptions\ConnectionFailedException;
-use Webklex\PHPIMAP\Exceptions\ImapBadRequestException;
-use Webklex\PHPIMAP\Exceptions\ImapServerErrorException;
-use Webklex\PHPIMAP\Exceptions\InvalidMessageDateException;
-use Webklex\PHPIMAP\Exceptions\MaskNotFoundException;
-use Webklex\PHPIMAP\Exceptions\MessageContentFetchingException;
-use Webklex\PHPIMAP\Exceptions\ResponseException;
-use Webklex\PHPIMAP\Exceptions\RuntimeException;
-use Webklex\PHPIMAP\Message;
+use App\LegacyImap\ClientManager;
+use App\LegacyImap\Config;
+use App\LegacyImap\Exceptions\AuthFailedException;
+use App\LegacyImap\Exceptions\ConnectionFailedException;
+use App\LegacyImap\Exceptions\ImapBadRequestException;
+use App\LegacyImap\Exceptions\ImapServerErrorException;
+use App\LegacyImap\Exceptions\InvalidMessageDateException;
+use App\LegacyImap\Exceptions\MaskNotFoundException;
+use App\LegacyImap\Exceptions\MessageContentFetchingException;
+use App\LegacyImap\Exceptions\ResponseException;
+use App\LegacyImap\Exceptions\RuntimeException;
+use App\LegacyImap\Message;
 use \ReflectionException;
 
 /**

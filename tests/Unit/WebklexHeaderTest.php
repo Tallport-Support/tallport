@@ -3,11 +3,11 @@ namespace Tests\Unit;
 
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
-use Webklex\PHPIMAP\Address;
-use Webklex\PHPIMAP\Attribute;
-use Webklex\PHPIMAP\Exceptions\InvalidMessageDateException;
-use Webklex\PHPIMAP\Header;
-use Webklex\PHPIMAP\IMAP;
+use App\LegacyImap\Address;
+use App\LegacyImap\Attribute;
+use App\LegacyImap\Exceptions\InvalidMessageDateException;
+use App\LegacyImap\Header;
+use App\LegacyImap\IMAP;
 use Tests\Fixtures\FixtureWebklexMessage;
 
 class WebklexHeaderTest extends TestCase {

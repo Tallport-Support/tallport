@@ -8,7 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'voku\\' => array($vendorDir . '/voku/portable-ascii/src/voku'),
     'enshrined\\svgSanitize\\' => array($vendorDir . '/enshrined/svg-sanitize/src'),
-    'Webklex\\PHPIMAP\\' => array($baseDir . '/overrides/webklex/php-imap/src', $vendorDir . '/webklex/php-imap/src'),
+    'Webklex\\PHPIMAP\\' => array($vendorDir . '/webklex/php-imap/src'),
     'Watson\\Rememberable\\' => array($vendorDir . '/watson/rememberable/src'),
     'TorMorten\\Eventy\\' => array($vendorDir . '/tormjens/eventy/src'),
     'TijsVerkoyen\\CssToInlineStyles\\' => array($vendorDir . '/tijsverkoyen/css-to-inline-styles/src'),

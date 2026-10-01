@@ -7,12 +7,243 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ## [UNRELEASED]
 ### Fixed
 - NaN
-- 
+
 ### Added
 - NaN
 
 ### Breaking changes
 - NaN
+
+## [6.2.0] - 2025-04-25
+### Fixed
+- When using the chunk function, some messages do not have an element with index 0 #552 #553 (thanks @zeddmaster)
+- Get folders list in hierarchical order #560 #561 (thanks @rskrzypczak)
+- Fix remaining implicit marking of parameters as nullable (PHP 8.4) #566 (thanks @steffenweber)
+- Fix case sensitivity of folder attribute parsing (\NoSelect, \NoInferiors) #469 #571 (thanks @smajti1)
+- Fix error on getUid(null) with 0 results (#499) #573 (thanks @pierement)
+- Fix Date parsing on non-standard format from Aqua Mail #574 #575 (thanks @lm-cmxkonzepte)
+
+### Added
+- SSL stream context options added #238 #546 (thanks @llemoine)
+- Support copy/move Message with utf7 folder path #559 (thanks @loc4l)
+- Public `Query::search()` method #565 (Thanks @madbob)
+
+## [6.1.0] - 2025-01-19
+### Fixed
+- Filename sanitization is now optional (enabled via default)
+- Address parsing improved and extended to include more cases
+- Boundary parsing fixed and improved to support more formats #544
+- Decode partially encoded address names #511
+- Enforce RFC822 parsing if enabled #462
+
+### Added
+- Security configuration options added
+- Spoofing detection added #40
+- RFC4315 MOVE fallback added #123 (thanks @freescout-help-desk)
+- Content fetching RFC standard support added #510 (thanks @ybizeul)
+- Support unescaped dates inside the search conditions #542
+- `Client::clone()` looses account configuration #521 (thanks @netpok)
+
+## [6.0.0] - 2025-01-17
+### Fixed
+- Fixed date issue if timezone is UT and a 2 digit year #429 (thanks @ferrisbuellers)
+- Make the space optional after a comma separator #437 (thanks @marc0adam)
+- Fix bug when multipart message getHTMLBody() method returns null #455 (thanks @michalkortas)
+- Fix: Improve return type hints and return docblocks for query classes #470 (thanks @olliescase)
+- Fix - Query - Chunked - Resolved infinite loop when start chunk > 1 #477 (thanks @NeekTheNook)
+- Attachment with symbols in filename #436 (thanks @nuernbergerA)
+- Ignore possible untagged lines after IDLE and DONE commands #445 (thanks @gazben)
+- Fix Empty Child Folder Error #474 (thanks @bierpub)
+- Filename sanitization improved #501 (thanks @neolip)
+- `Client::getFolderPath()` return null if folder is not set #506 (thanks @arnolem)
+- Fix implicit marking of parameters as nullable, deprecated in PHP 8.4 #518 (thanks @campbell-m)
+
+### Added
+- IMAP STATUS command support added `Folder::status()` #424 (thanks @InterLinked1)
+- Add attributes and special flags #428 (thanks @sazanof)
+- Better connection check for IMAP #449 (thanks @thin-k-design)
+- Config handling moved into a new class `Config::class` to allow class serialization (sponsored by elb-BIT GmbH)
+- Support for Carbon 3 added #483
+- Custom decoder support added
+- Decoding filename with non-standard encoding #535 (thanks @grnsv)
+
+### Breaking changes
+- The decoder config has been moved from `options.decoder` to `decoding` and contains now the `decoder` class to used as well as their decoding fallbacks
+- `Folder::getStatus()` no longer returns the results of `EXAMINE` but `STATUS` instead. If you want to use `EXAMINE` you can use the `Folder::examine()` method instead.
+- `ClientManager::class` has now longer access to all configs. Config handling has been moved to its own class `Config::class`. If you want to access the config you can use the retriever method `::getConfig()` instead. Example: `$client->getConfig()` or `$message->getConfig()`, etc.
+- `ClientManager::get` isn't available anymore. Use the regular config accessor instead. Example: `$cm->getConfig()->get($key)`
+- `M̀essage::getConfig()` now returns the client configuration instead of the fetching options configuration. Please use `$message->getOptions()` instead.
+- `Attachment::getConfig()` now returns the client configuration instead of the fetching options configuration. Please use `$attachment->getOptions()` instead.
+- `Header::getConfig()` now returns the client configuration instead of the fetching options configuration. Please use `$header->getOptions()` instead.
+- `M̀essage::setConfig` now expects the client configuration instead of the fetching options configuration. Please use `$message->setOptions` instead.
+- `Attachment::setConfig` now expects the client configuration instead of the fetching options configuration. Please use `$attachment->setOptions` instead.
+- `Header::setConfig` now expects the client configuration instead of the fetching options configuration. Please use `$header->setOptions` instead.
+- All protocol constructors now require a `Config::class` instance
+- The `Client::class` constructor now require a `Config::class` instance
+- The `Part::class` constructor now require a `Config::class` instance
+- The `Header::class` constructor now require a `Config::class` instance
+- The `Message::fromFile` method now requires a `Config::class` instance
+- The `Message::fromString` method now requires a `Config::class` instance
+- The `Message::boot` method now requires a `Config::class` instance
+- The `Message::decode` method has been removed. Use `Message::getDecoder()->decode($str)` instead.
+- The `Message::getEncoding` method has been removed. Use `Message::getDecoder()->getEncoding($str)` instead.
+- The `Message::convertEncoding` method has been removed. Use `Message::getDecoder()->convertEncoding()` instead.
+- The `Header::decode` method has been removed. Use `Header::getDecoder()->decode($str)` instead.
+
+## [5.5.0] - 2023-06-28
+### Fixed
+- Error token length mismatch in `ImapProtocol::readResponse` #400
+- Attachment name parsing fixed #410 #421 (thanks @nuernbergerA)
+- Additional Attachment name fallback added to prevent missing attachments
+- Attachment id is now static (based on the raw part content) instead of random
+- Always parse the attachment description if it is available
+
+### Added
+- Attachment content hash added
+
+
+## [5.4.0] - 2023-06-24
+### Fixed
+- Legacy protocol support fixed (object to array conversion) #411
+- Header value decoding improved #410
+- Protocol exception handling improved (bad response message added) #408
+- Prevent fetching singular rfc partials from running indefinitely #407
+- Subject with colon ";" is truncated #401
+- Catching and handling iconv decoding exception #397
+
+### Added
+- Additional timestamp formats added #198 #392 (thanks @esk-ap)
+
+
+## [5.3.0] - Security patch - 2023-06-20
+### Fixed
+- Potential RCE through path traversal fixed #414 (special thanks @angelej)
+
+### Security Impact and Mitigation
+Impacted are all versions below v5.3.0.
+If possible, update to >= v5.3.0 as soon as possible. Impacted was the `Attachment::save`
+method which could be used to write files to the local filesystem. The path was not
+properly sanitized and could be used to write files to arbitrary locations.
+
+However, the `Attachment::save` method is not used by default and has to be called
+manually. If you are using this method without providing a sanitized path, you are
+affected by this vulnerability.
+If you are not using this method or are providing a sanitized path, you are not affected
+by this vulnerability and no immediate action is required.
+
+If you have any questions, please feel welcome to join this issue: https://github.com/Webklex/php-imap/issues/416
+#### Timeline
+- 17.06.23 21:30: Vulnerability reported
+- 18.06.23 19:14: Vulnerability confirmed
+- 19.06.23 18:41: Vulnerability fixed via PR #414
+- 20.06.23 13:45: Security patch released
+- 21.06.23 20:48: CVE-2023-35169 got assigned
+- 21.06.23 20:58: Advisory released https://github.com/Webklex/php-imap/security/advisories/GHSA-47p7-xfcc-4pv9
+
+
+## [5.2.0] - 2023-04-11
+### Fixed
+- Use all available methods to detect the attachment extension instead of just one
+- Allow the `LIST` command response to be empty #393
+- Initialize folder children attributes on class initialization
+
+### Added
+- Soft fail option added to all folder fetching methods. If soft fail is enabled, the method will return an empty collection instead of throwing an exception if the folder doesn't exist
+
+
+## [5.1.0] - 2023-03-16
+### Fixed
+- IMAP Quota root command fixed
+- Prevent line-breaks in folder path caused by special chars
+- Partial fix for #362 (allow overview response to be empty)
+- `Message::setConfig()` config parameter type set to array
+- Reset the protocol uid cache if the session gets expunged
+- Set the "seen" flag only if the flag isn't set and the fetch option isn't `IMAP::FT_PEEK`
+- `Message::is()` date comparison fixed
+- `Message::$client` could not be set to null
+- `in_reply_to` and `references` parsing fixed
+- Prevent message body parser from injecting empty lines
+- Don't parse regular inline message parts without name or filename as attachment
+- `Message::hasTextBody()` and `Message::hasHtmlBody()` should return `false` if the body is empty
+- Imap-Protocol "empty response" detection extended to catch an empty response caused by a broken resource stream
+- `iconv_mime_decode()` is now used with `ICONV_MIME_DECODE_CONTINUE_ON_ERROR` to prevent the decoding from failing
+- Date decoding rules extended to support more date formats
+- Unset the currently active folder if it gets deleted (prevent infinite loop)
+- Attachment name and filename parsing fixed and improved to support more formats
+- Check if the next uid is available (after copying or moving a message) before fetching it #381
+- Default pagination `$total` attribute value set to 0 #385 (thanks @hhniao)
+- Use attachment ID as fallback filename for saving an attachment
+- Address decoding error detection added #388
+
+### Added
+- Extended UTF-7 support added (RFC2060) #383
+- `Protocol::sizes()` support added (fetch the message byte size via RFC822.SIZE). Accessible through `Message::getSize()` #379 (thanks @didi1357)
+- `Message::hasFlag()` method added to check if a message has a specific flag
+- `Message::getConfig()` method added to get the current message configuration
+- `Folder::select()` method added to select a folder
+- `Message::getAvailableFlags()` method added to get all available flags
+- Live mailbox and fixture tests added
+- `Attribute::map()` method added to map all attribute values
+- `Header::has()` method added to check if a header attribute / value exist
+- All part attributes are now accessible via linked attribute
+- Restore a message from string `Message::fromString()`
+
+
+## [5.0.1] - 2023-03-01
+### Fixed
+- More unique ID generation to prevent multiple attachments with same ID #363 (thanks @Guite)
+- Not all attachments are pushed to the collection #372 (thanks @AdrianKuriata)
+- Partial fix for #362 (allow search response to be empty)
+- Unsafe usage of switch case. #354 #366 (thanks @shuergab)
+- Fix use of ST_MSGN as sequence method #356 (thanks @gioid)
+- Prevent infinite loop in ImapProtocol #316 (thanks @thin-k-design)
+
+
+## [5.0.0] - 2023-01-18
+### Fixed
+- The message uid and message number will only be fetched if accessed and wasn't previously set #326 #285 (thanks @szymekjanaczek)
+- Fix undefined attachment name when headers use "filename*=" format #301 (thanks @JulienChavee)
+- Fixed `ImapProtocol::logout` always throws 'not connected' Exception after upgraded to 4.1.2 #351
+- Protocol interface and methods unified
+- Strict attribute and return types introduced where ever possible
+- Parallel messages during idle #338
+- Idle timeout / stale resource stream issue fixed
+- Syntax updated to support php 8 features
+- Get the attachment file extension from the filename if no mimetype detection library is available
+- Prevent the structure parsing from parsing an empty part
+- Convert all header keys to their lower case representation
+- Restructure the decode function #355 (thanks @istid)
+
+### Added
+- Unit tests added #347 #242 (thanks @sergiy-petrov, @boekkooi-lengoo)
+- `Client::clone()` method added to clone a client instance
+- Save an entire message (including its headers) `Message::save()`
+- Restore a message from a local or remote file `Message::fromFile()`
+- Protocol resource stream accessor added `Protocol::getStream()`
+- Protocol resource stream meta data accessor added `Protocol::meta()`
+- ImapProtocol resource stream reset method added `ImapProtocol::reset()`
+- Protocol `Response::class` introduced to handle and unify all protocol requests
+- Static mask config accessor added `ClientManager::getMask()` added
+- An `Attribute::class`  instance can be treated as array
+- Get the current client account configuration via `Client::getConfig()`
+- Delete a folder via `Client::deleteFolder()`
+
+### Breaking changes
+- PHP ^8.0.2 required
+- `nesbot/carbon` version bumped to ^2.62.1
+- `phpunit/phpunit` version bumped to ^9.5.10
+- `Header::get()` always returns an `Attribute::class` instance
+- `Attribute::class` accessor methods renamed to shorten their names and improve the readability
+- All protocol methods that used to return `array|bool` will now always return a `Response::class` instance.
+- `ResponseException::class` gets thrown if a response is empty or contains errors
+- Message client is optional and can be null (e.g. if used in combination with `Message::fromFile()`)
+- The message text or html body is now "" if its empty and not `null`
+
+
+## [4.1.2] - 2022-12-14
+### Fixed
+- Attachment ID can return an empty value #318
+- Additional message date format added #345 (thanks @amorebietakoUdala)
 
 
 ## [4.1.1] - 2022-11-16
@@ -149,7 +380,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - Extend date parsing error message #173
 - Fixed 'Where' method replaces the content with uppercase #148
 - Don't surround numeric search values with quotes
-- Context added to `InvalidWhereQueryCriteriaException` 
+- Context added to `InvalidWhereQueryCriteriaException`
 - Redundant `stream_set_timeout()` removed
 
 ### Added
@@ -320,7 +551,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - Alias `Message::removeFlag()` for `Message::unsetFlag()` added
 - Alias `Message::flags()` for `Message::getFlags()` added
 - New Exception `MessageFlagException::class` added
-- New method `Message::setSequenceId($id)` added 
+- New method `Message::setSequenceId($id)` added
 - Optional Header attributizion option added
 
 ### Affected Classes
@@ -332,7 +563,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - [Attribute::class](src/Attribute.php)
 
 ### Breaking changes
-- Stringified message headers are now separated by ", " instead of " ". 
+- Stringified message headers are now separated by ", " instead of " ".
 - All message header values such as subject, message_id, from, to, etc now consists of an `Àttribute::class` instance (should behave the same way as before, but might cause some problem in certain edge cases)
 - The formal address object "from", "to", etc now consists of an `Address::class` instance  (should behave the same way as before, but might cause some problem in certain edge cases)
 - When fetching or manipulating message flags a `MessageFlagException::class` exception can be thrown if a runtime error occurs
@@ -342,12 +573,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [2.3.1] - 2020-12-30
 ### Fixed
-- Missing RFC attributes added 
+- Missing RFC attributes added
 - Set the message sequence when idling
 - Missing UID commands added #64
 
 ### Added
-- Get a message by its message number 
+- Get a message by its message number
 - Get a message by its uid #72 #66 #63
 
 ### Affected Classes
@@ -368,7 +599,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - `Message::getTextBody()` fallback value fixed
 
 ### Added
-- Proxy support added 
+- Proxy support added
 - Flexible disposition support added #58
 - New `options.message_key` option `uid` added
 - Protocol UID support added
@@ -702,7 +933,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - Imap client timeout can be modified and read #186
 - Decoder config options added #175
 - Message search criteria "NOT" added #181
-- Invalid message date exception added 
+- Invalid message date exception added
 - Blade examples
 
 ### Breaking changes

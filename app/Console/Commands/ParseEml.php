@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Mailbox;
-use Webklex\PHPIMAP\IMAP;
-use Webklex\PHPIMAP\Message;
+use App\LegacyImap\IMAP;
+use App\LegacyImap\Message;
 use Illuminate\Console\Command;
 
 
@@ -84,7 +84,7 @@ class ParseEml extends Command
 
         // $message = Message::make(/*$this->option('uid')*/null, null, $client, $raw_header, $raw_body, [/*0 => "\\Seen"*/], IMAP::ST_UID);
 
-        $manager = new \Webklex\PHPIMAP\ClientManager([
+        $manager = new \App\LegacyImap\ClientManager([
             // 'options' => [
             //     "debug" => $_ENV["LIVE_MAILBOX_DEBUG"] ?? false,
             // ],
@@ -100,7 +100,7 @@ class ParseEml extends Command
             //     ],
             // ],
         ]);
-        $message = \Webklex\PHPIMAP\Message::fromString($email);
+        $message = \App\LegacyImap\Message::fromString($email);
 
         $this->line('Headers: ');
         $this->info($message->getHeader()->raw);

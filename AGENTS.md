@@ -33,6 +33,11 @@ Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Lara
 - To update dependencies, run `composer update <package> --ignore-platform-req='ext-*'`. Then reinstall cleanly so `vendor/` matches a fresh install.
 - Development tools live in separate Composer projects that are not shipped: `dev/` (phpunit, mockery, faker) and `dev/boost/` (Laravel Boost, loaded by `AppServiceProvider::registerDevBoost()` when present). `composer install` in the root installs both (`dev/install.php`). Add new dev tools there, not to the root `require-dev`.
 
+## Incoming mail
+
+- `app/LegacyImap` (namespace `App\LegacyImap`) is FreeScout's patched webklex/php-imap 4.1.1, kept as is: fetching and parsing incoming mail still runs on it. It mixes library code with Tallport behaviour (charset fixes, subject decoding, Message-ID generation, error handling, a POP3 client).
+- It is being taken apart in small steps: move a piece of behaviour into Tallport's own incoming-mail code (with a test) or onto webklex/php-imap 6 (`Webklex\PHPIMAP`, installed normally), then delete it from `app/LegacyImap`. Don't add new code that depends on `App\LegacyImap`.
+
 ## FreeScout modules
 
 - `Modules/` holds FreeScout modules. It is not part of the repository, and production runs modules that are not available locally.

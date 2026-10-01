@@ -1841,7 +1841,7 @@ class FetchEmails extends Command
             // [content_type] => image/png
             // [id] => ii_l0krolw00
             // [name] => 2.png
-            // [disposition] => Webklex\PHPIMAP\Attribute Object
+            // [disposition] => App\LegacyImap\Attribute Object
             //     (
             //         [name:protected] => content_disposition
             //         [values:protected] => Array
@@ -1912,7 +1912,7 @@ class FetchEmails extends Command
             return [];
         }
 
-        if (is_object($attr) && get_class($attr) == 'Webklex\PHPIMAP\Attribute') {
+        if (is_object($attr) && get_class($attr) == 'App\LegacyImap\Attribute') {
             $attr = $attr->get();
         }
 
@@ -1925,7 +1925,7 @@ class FetchEmails extends Command
             return null;
         }
 
-        if (is_object($attr) && get_class($attr) == 'Webklex\PHPIMAP\Attribute') {
+        if (is_object($attr) && get_class($attr) == 'App\LegacyImap\Attribute') {
             $attr = $attr->toDate();
         }
 

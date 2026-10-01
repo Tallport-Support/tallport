@@ -232,10 +232,10 @@ the minimum Tallport supports), so an update can't pull in a package that
 needs a newer PHP. When updating, ignore only missing extensions:
 `composer update ... --ignore-platform-req='ext-*'`.
 
-`composer.json` sets `audit.block-insecure` to false, as Composer refuses
-to install versions with published advisories and one remains in locked
-packages (`composer audit` lists it): webklex/php-imap's CVE-2023-35169,
-which is fixed in `overrides/webklex` (FreeScout #3592).
+`app/LegacyImap` is FreeScout's patched webklex/php-imap 4.1.1 under its
+own namespace. Incoming mail still runs on it, while it is taken apart
+step by step into Tallport's own code and webklex/php-imap 6 (installed
+normally).
 
 ### Releasing
 

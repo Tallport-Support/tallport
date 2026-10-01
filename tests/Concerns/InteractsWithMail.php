@@ -4,8 +4,8 @@ namespace Tests\Concerns;
 
 use App\Mailbox;
 use Tests\Support\FetchEmailsForTests;
-use Webklex\PHPIMAP\ClientManager;
-use Webklex\PHPIMAP\Message;
+use App\LegacyImap\ClientManager;
+use App\LegacyImap\Message;
 
 /**
  * Email in and out without mail servers.

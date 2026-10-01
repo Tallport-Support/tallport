@@ -259,7 +259,7 @@ class ConsoleCommandsTest extends FeatureTestCase
             rmdir($storage.'/logs');
             rmdir($storage);
             // parse-eml resets Webklex's options; restore them for later tests.
-            new \Webklex\PHPIMAP\ClientManager(config('imap'));
+            new \App\LegacyImap\ClientManager(config('imap'));
         }
 
         $this->assertStringContainsString('Subject:', $output);
