@@ -102,11 +102,6 @@ Route::post('/customers/ajax', ['uses' => 'CustomersController@ajax', 'laroute' 
 Route::get('/customers/{id}/merge', 'CustomersController@merge')->name('customers.merge');
 Route::post('/customers/{id}/merge', 'CustomersController@mergeSave');
 
-// Translate
-Route::post('/translations/send', ['uses' => 'TranslateController@postSend', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('translations.send');
-Route::post('/translations/removeUnpublished', ['uses' => 'TranslateController@postRemoveUnpublished', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('translations.remove_unpublished');
-Route::post('/translations/download', ['uses' => 'TranslateController@postDownload', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('translations.download');
-
 // Modules
 // There is a /public/modules folder, so route must have a different name
 Route::get('/modules/list', ['uses' => 'ModulesController@modules', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('modules');

@@ -708,7 +708,7 @@
     "To an unassigned conversation": "Zu einem nicht zugewiesenen Gespräch",
     "To one of :person's conversations": "Zu einem Gespräch von :person",
     "To one of my conversations": "Zu einem von meinen Gesprächen",
-    "To send system emails via webmail providers (Gmail, Yahoo, etc) use only SMTP method and make sure that SMTP username is equal to the mailbox email address (:%mailbox_email%), otherwise webmail provider won't send emails.": "Um E-Mails über Webmail-Anbieter (Gmail, Yahoo usw.) zu senden nur SMTP benutzen und sicherstellen, dass der SMTP Benutzername dem der Postfachadresse entspricht, da ansonsten der Webmail-Anbieter keine E-Mails senden wird.",
+    "To send system emails via webmail providers (Gmail, Yahoo, etc) use only SMTP method and make sure that SMTP username is equal to the mailbox email address (:%mailbox_email%), otherwise webmail provider won't send emails.": "Um System-E-Mails über Webmail-Anbieter (Gmail, Yahoo usw.) zu senden, nur die SMTP-Methode verwenden und sicherstellen, dass der SMTP-Benutzername der E-Mail-Adresse des Postfachs (:%mailbox_email%) entspricht, da der Webmail-Anbieter sonst keine E-Mails versendet.",
     "To the First Message": "Zur ersten Nachricht",
     "Today": "Heute",
     "Toggle Navigation": "Schalte Navigation um",
@@ -813,5 +813,18 @@
     "read more": "mehr lesen",
     "via": "über",
     "you": "Sie",
-    "yourself": "Ihnen"
+    "yourself": "Ihnen",
+    "A conversation can not be merged with itself.": "Ein Gespräch kann nicht mit sich selbst zusammengeführt werden.",
+    "Autoplay is disabled in your browser. Click anywhere on this page to enable notification sounds, or allow Autoplay in your browser settings.": "Die automatische Wiedergabe ist in Ihrem Browser deaktiviert. Klicken Sie irgendwo auf diese Seite, um Benachrichtigungstöne zu aktivieren, oder erlauben Sie die automatische Wiedergabe in Ihren Browsereinstellungen.",
+    "Customer not found": "Kunde nicht gefunden",
+    "Marketplace": "Marktplatz",
+    "Only deleted conversations can be deleted forever.": "Nur gelöschte Gespräche können unwiderruflich gelöscht werden.",
+    "Only deleted conversations can be restored.": "Nur gelöschte Gespräche können wiederhergestellt werden.",
+    "Paste as Plain Text": "Als reinen Text einfügen",
+    "The conversation you replied to could not be found.": "Das Gespräch, auf das Sie geantwortet haben, wurde nicht gefunden.",
+    "The only active administrator can not be disabled.": "Der einzige aktive Administrator kann nicht deaktiviert werden.",
+    "The user is disabled or deleted.": "Der Benutzer ist deaktiviert oder gelöscht.",
+    "Updating is disabled (APP_DISABLE_UPDATING).": "Aktualisierungen sind deaktiviert (APP_DISABLE_UPDATING).",
+    "You no longer have access to the conversation you replied to. Please contact your administrator.": "Sie haben keinen Zugriff mehr auf das Gespräch, auf das Sie geantwortet haben. Bitte wenden Sie sich an Ihren Administrator.",
+    "based on": "basierend auf"
 }

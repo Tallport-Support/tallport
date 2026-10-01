@@ -31,6 +31,12 @@ Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Lara
 - Keep Eventy hooks (`\Eventy::filter`/`action` names and arguments) stable. Modules depend on them.
 - `config('app.compatibility_version')` is the FreeScout version reported to modules. `config('app.version')` is Tallport's own version.
 
+## Translations
+
+- Tallport supports the languages in `config('app.locales')`. Every user-facing string (`__()`, `@lang()`, `trans()`) needs a translation in each of them: in `resources/lang/<locale>.json`, keyed by the English text, and for Laravel's messages in `resources/lang/<locale>/{auth,passwords,validation}.php`.
+- When adding or changing text, add the translations in the same change, matching each language's existing terminology and form of address. Keep placeholders (`:name`, `%a_start%`, `{name}`) and HTML exactly as in English.
+- `tests/Unit/TranslationsTest.php` fails on a missing translation or a changed placeholder; there is no translation editor in the app.
+
 ## Testing
 
 - Run tests with `./test.sh`, never `php artisan test` or `vendor/bin/phpunit`. The script installs the dev tools and uses the `testing` database connection (MariaDB database `freescout-test`).

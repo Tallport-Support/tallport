@@ -1306,8 +1306,7 @@
         "name": "javascripts",
         "arguments": 1,
         "files": [
-            "resources/views/layouts/app.blade.php",
-            "resources/views/vendor/translation-manager/index.blade.php"
+            "resources/views/layouts/app.blade.php"
         ]
     },
     {
@@ -2248,8 +2247,7 @@
         "name": "stylesheets",
         "arguments": 1,
         "files": [
-            "resources/views/layouts/app.blade.php",
-            "resources/views/vendor/translation-manager/index.blade.php"
+            "resources/views/layouts/app.blade.php"
         ]
     },
     {

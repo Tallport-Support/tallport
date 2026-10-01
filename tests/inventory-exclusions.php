@@ -7,7 +7,6 @@
 
 $network = 'needs freescout.net (license server or module downloads)';
 $modules_on_disk = 'builds, installs or migrates modules in Modules/ and public/modules, which tests must not touch';
-$translations = 'translation manager: writes resources/lang files, or sends translations to freescout.net';
 $oauth = 'OAuth flow with Microsoft/Google servers';
 
 return [
@@ -32,18 +31,6 @@ return [
     'route GET mailbox/oauth/{id}/{in_out}/{provider}'            => $oauth,
     'route GET mailbox/oauth-disconnect/{id}/{in_out}/{provider}' => $oauth,
 
-    'route POST translations/add/{groupKey}'                       => $translations,
-    'route POST translations/delete/{groupKey}/{translationKey}'   => $translations,
-    'route POST translations/download'                             => $translations,
-    'route POST translations/edit/{groupKey}'                      => $translations,
-    'route POST translations/find'                                 => $translations,
-    'route POST translations/groups/add'                           => $translations,
-    'route POST translations/import'                               => $translations,
-    'route POST translations/locales/add'                          => $translations,
-    'route POST translations/locales/remove'                       => $translations,
-    'route POST translations/publish/{groupKey}'                   => $translations,
-    'route POST translations/removeUnpublished'                    => $translations,
-    'route POST translations/send'                                 => $translations,
 
     // Route::redirect('/home') registers every verb; GET is tested.
     'route POST home'    => 'redirect route registered for every verb; GET is tested',

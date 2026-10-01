@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "46b0bca330759fb2ff6e29bf441a3418",
+    "content-hash": "32657119ff3f1cac10cdac0c03b04001",
     "packages": [
         {
             "name": "axn/laravel-laroute",
@@ -55,46 +55,6 @@
                 "source": "https://github.com/AXN-Informatique/laravel-laroute/tree/1.8.0"
             },
             "time": "2022-03-02T18:07:03+00:00"
-        },
-        {
-            "name": "barryvdh/laravel-translation-manager",
-            "version": "v0.5.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/barryvdh/laravel-translation-manager.git",
-                "reference": "857334ea6ffa2511982442495460c9c3ff096160"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-translation-manager/zipball/857334ea6ffa2511982442495460c9c3ff096160",
-                "reference": "857334ea6ffa2511982442495460c9c3ff096160",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": "^5.5|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-                "illuminate/translation": "^5.5|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-                "php": ">=7",
-                "symfony/finder": "~3.0|~4.0|^5.0|^6.0|^7.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Barryvdh\\TranslationManager\\ManagerServiceProvider"
-                    ]
-                },
-                "branch-alias": {
-                    "dev-master": "0.4-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Barryvdh\\TranslationManager\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ]
         },
         {
             "name": "brick/math",

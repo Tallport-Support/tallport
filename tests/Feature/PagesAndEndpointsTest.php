@@ -57,17 +57,19 @@ class PagesAndEndpointsTest extends FeatureTestCase
 
     public function testAgentsCannotOpenAdminPages()
     {
-        foreach (['/users/wizard', '/system/tools', '/app-logs/app', '/translations'] as $page) {
+        foreach (['/users/wizard', '/system/tools', '/app-logs/app'] as $page) {
             $this->assertContains($this->actingAs($this->agent)->get($page)->status(), [403, 302], $page);
         }
         $this->actingAs($this->agent)->get('/users/notifications/'.$this->admin->id)->assertStatus(403);
     }
 
-    public function testTranslationManagerIsAdminOnly()
+    /**
+     * The translation manager was removed: translations ship complete with
+     * every release (TranslationsTest).
+     */
+    public function testTranslationManagerIsGone()
     {
-        $this->actingAs($this->admin)->get('/translations')->assertStatus(200);
-        $this->actingAs($this->admin)->get('/translations/view/messages')->assertStatus(200);
-        $this->actingAs($this->agent)->get('/translations')->assertStatus(403);
+        $this->actingAs($this->admin)->get('/translations')->assertStatus(404);
     }
 
     public function testClearLog()

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418
+class ComposerStaticInit32657119ff3f1cac10cdac0c03b04001
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -213,7 +213,6 @@ class ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418
         'B' =>
         array (
             'Brick\\Math\\' => 11,
-            'Barryvdh\\TranslationManager\\' => 28,
         ),
         'A' =>
         array (
@@ -670,11 +669,6 @@ class ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418
         array (
             0 => __DIR__ . '/..' . '/brick/math/src',
         ),
-        'Barryvdh\\TranslationManager\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/barryvdh/laravel-translation-manager/src',
-            1 => __DIR__ . '/..' . '/barryvdh/laravel-translation-manager/src',
-        ),
         'Axn\\Laroute\\Routes\\' =>
         array (
             0 => __DIR__ . '/../..' . '/overrides/axn/laravel-laroute/src/Routes',
@@ -787,7 +781,6 @@ class ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418
         'App\\Http\\Controllers\\SecureController' => __DIR__ . '/../..' . '/app/Http/Controllers/SecureController.php',
         'App\\Http\\Controllers\\SettingsController' => __DIR__ . '/../..' . '/app/Http/Controllers/SettingsController.php',
         'App\\Http\\Controllers\\SystemController' => __DIR__ . '/../..' . '/app/Http/Controllers/SystemController.php',
-        'App\\Http\\Controllers\\TranslateController' => __DIR__ . '/../..' . '/app/Http/Controllers/TranslateController.php',
         'App\\Http\\Controllers\\UsersController' => __DIR__ . '/../..' . '/app/Http/Controllers/UsersController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
@@ -897,18 +890,6 @@ class ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Axn\\Laroute\\Routes\\Collection' => __DIR__ . '/../..' . '/overrides/axn/laravel-laroute/src/Routes/Collection.php',
         'Axn\\Laroute\\ServiceProvider' => __DIR__ . '/..' . '/axn/laravel-laroute/src/ServiceProvider.php',
-        'Barryvdh\\TranslationManager\\Console\\CleanCommand' => __DIR__ . '/..' . '/barryvdh/laravel-translation-manager/src/Console/CleanCommand.php',
-        'Barryvdh\\TranslationManager\\Console\\ExportCommand' => __DIR__ . '/..' . '/barryvdh/laravel-translation-manager/src/Console/ExportCommand.php',
-        'Barryvdh\\TranslationManager\\Console\\FindCommand' => __DIR__ . '/..' . '/barryvdh/laravel-translation-manager/src/Console/FindCommand.php',
-        'Barryvdh\\TranslationManager\\Console\\ImportCommand' => __DIR__ . '/..' . '/barryvdh/laravel-translation-manager/src/Console/ImportCommand.php',
-        'Barryvdh\\TranslationManager\\Console\\ResetCommand' => __DIR__ . '/..' . '/barryvdh/laravel-translation-manager/src/Console/ResetCommand.php',
-        'Barryvdh\\TranslationManager\\Controller' => __DIR__ . '/../..' . '/overrides/barryvdh/laravel-translation-manager/src/Controller.php',
-        'Barryvdh\\TranslationManager\\Events\\TranslationsExportedEvent' => __DIR__ . '/..' . '/barryvdh/laravel-translation-manager/src/Events/TranslationsExportedEvent.php',
-        'Barryvdh\\TranslationManager\\Manager' => __DIR__ . '/../..' . '/overrides/barryvdh/laravel-translation-manager/src/Manager.php',
-        'Barryvdh\\TranslationManager\\ManagerServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-translation-manager/src/ManagerServiceProvider.php',
-        'Barryvdh\\TranslationManager\\Models\\Translation' => __DIR__ . '/..' . '/barryvdh/laravel-translation-manager/src/Models/Translation.php',
-        'Barryvdh\\TranslationManager\\TranslationServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-translation-manager/src/TranslationServiceProvider.php',
-        'Barryvdh\\TranslationManager\\Translator' => __DIR__ . '/..' . '/barryvdh/laravel-translation-manager/src/Translator.php',
         'Brick\\Math\\BigDecimal' => __DIR__ . '/..' . '/brick/math/src/BigDecimal.php',
         'Brick\\Math\\BigInteger' => __DIR__ . '/..' . '/brick/math/src/BigInteger.php',
         'Brick\\Math\\BigNumber' => __DIR__ . '/..' . '/brick/math/src/BigNumber.php',
@@ -7082,10 +7063,10 @@ class ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit32657119ff3f1cac10cdac0c03b04001::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit32657119ff3f1cac10cdac0c03b04001::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit32657119ff3f1cac10cdac0c03b04001::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit32657119ff3f1cac10cdac0c03b04001::$classMap;
 
         }, null, ClassLoader::class);
     }

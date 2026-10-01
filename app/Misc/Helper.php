@@ -1319,38 +1319,13 @@ class Helper
     }
 
     /**
-     * User may add an extra translation to the app on Translate page.
+     * The languages Tallport supports.
      *
-     * @return [type] [description]
-     */
-    public static function getCustomLocales()
-    {
-        return \Barryvdh\TranslationManager\Models\Translation::distinct()->pluck('locale')->toArray();
-    }
-
-    /**
-     * Get built in and custom locales.
-     *
-     * @return [type] [description]
+     * @return string[]
      */
     public static function getAllLocales()
     {
-        $app_locales = config('app.locales');
-
-        // User may add an extra translation to the app on Translate page,
-        // we should allow user to see his custom translations.
-        $custom_locales = [];
-        try {
-            $custom_locales = \Helper::getCustomLocales();
-        } catch (\Exception $e) {
-            // During installation it throws an error as there is no tables yet.
-        }
-
-        if (count($custom_locales)) {
-            $app_locales = array_unique(array_merge($app_locales, $custom_locales));
-        }
-
-        return $app_locales;
+        return config('app.locales');
     }
 
     public static function getAppLocale()

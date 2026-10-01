@@ -221,8 +221,7 @@ A few packages are defined in `composer.json` itself (`repositories`,
 type `package`): the same code as their locked version, with only the
 Laravel versions they accept widened, because no release of theirs accepts
 the next Laravel version without other changes (`devfactory/minify`,
-`barryvdh/laravel-translation-manager`, `lord/laroute`, and FreeScout's
-`codedge/laravel-selfupdater` fork).
+`lord/laroute`, and FreeScout's `codedge/laravel-selfupdater` fork).
 
 `composer.json` resolves dependencies for PHP 8.5 (`config.platform.php`,
 the minimum Tallport supports), so an update can't pull in a package that
@@ -230,11 +229,9 @@ needs a newer PHP. When updating, ignore only missing extensions:
 `composer update ... --ignore-platform-req='ext-*'`.
 
 `composer.json` sets `audit.block-insecure` to false, as Composer refuses
-to install versions with published advisories and three remain in locked
-packages (`composer audit` lists them): webklex/php-imap's CVE-2023-35169
-is fixed in `overrides/webklex` (FreeScout #3592), and
-barryvdh/laravel-translation-manager 0.5.0 has two in the admin-only
-translation editor (newer versions pull in a Google Translate package).
+to install versions with published advisories and one remains in locked
+packages (`composer audit` lists it): webklex/php-imap's CVE-2023-35169,
+which is fixed in `overrides/webklex` (FreeScout #3592).
 
 ### Releasing
 
