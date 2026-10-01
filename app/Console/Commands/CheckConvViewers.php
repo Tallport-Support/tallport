@@ -58,7 +58,7 @@ class CheckConvViewers extends Command
                     continue;
                 }
 
-                $view_date = Carbon::createFromFormat('Y-m-d H:i:s', $data['t']);
+                $view_date = Carbon::createFromFormat('Y-m-d H:i:s', substr($data['t'], 0, 19));
             
                 if ($view_date && (int) $now->diffInSeconds($view_date, true) > 25) {
                     // Remove user from viewers.
@@ -93,7 +93,7 @@ class CheckConvViewers extends Command
             return;
         }
 
-        $view_date = Carbon::createFromFormat('Y-m-d H:i:s', $cache_data['t']);
+        $view_date = Carbon::createFromFormat('Y-m-d H:i:s', substr($cache_data['t'], 0, 19));
         $now = Carbon::now();
 
         if ($view_date && (int) $now->diffInSeconds($view_date, true) > 30) {

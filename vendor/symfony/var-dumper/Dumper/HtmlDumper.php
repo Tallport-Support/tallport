@@ -147,7 +147,8 @@ class HtmlDumper extends CliDumper
             return $this->dumpHeader;
         }
 
-        $line = str_replace('{$options}', json_encode($this->displayOptions, \JSON_FORCE_OBJECT), '<script '.\Helper::cspNonceAttr().'>'.<<<'EOHTML'
+        $line = str_replace('{$options}', json_encode($this->displayOptions, \JSON_FORCE_OBJECT), <<<'EOHTML'
+            <script>
             Sfdump = window.Sfdump || (function (doc) {
             doc.documentElement.classList.add('sf-js-enabled');
 

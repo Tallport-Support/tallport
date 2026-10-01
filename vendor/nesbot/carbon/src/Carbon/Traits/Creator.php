@@ -644,15 +644,6 @@ trait Creator
     #[ReturnTypeWillChange]
     public static function createFromFormat($format, $time, $timezone = null): ?static
     {
-        // FreeScout fix for PostgreSQL timestamp fields.
-        if ($format == 'Y-m-d H:i:s' && strstr($time, '+')) {
-            $time = preg_replace("/\+.*/", '', $time);
-        }
-        // https://github.com/freescout-helpdesk/freescout/issues/3702
-        if ($format == 'Y-m-d H:i:s' && strlen($time) > 19) {
-            $time = substr($time, 0, 19);
-        }
-
         $function = static::$createFromFormatFunction;
 
         // format is a single numeric unit

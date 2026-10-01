@@ -74,6 +74,12 @@ class AppServiceProvider extends ServiceProvider
         $this->registerAuthHooks();
         \MailHelper::clearImapErrorsOnShutdown();
 
+        // dump() in the browser, with the CSP nonce (Laravel registers its
+        // HtmlDumper the same way, except in the console).
+        if (!in_array(PHP_SAPI, ['cli', 'phpdbg']) && empty($_SERVER['VAR_DUMPER_FORMAT'])) {
+            \App\Misc\CspHtmlDumper::register($this->app->basePath(), $this->app['config']->get('view.compiled'));
+        }
+
         // Forse HTTPS if using CloudFlare "Flexible SSL"
         // https://support.cloudflare.com/hc/en-us/articles/200170416-What-do-the-SSL-options-mean-
         if (\Helper::isHttps()) {

@@ -1346,7 +1346,7 @@ class Helper
             // Replace embedded images with their urls.
             $text = preg_replace('/<img\b[^>]*src=\"([^>"]+)\"[^>]*>/i', "<div>$1</div>", $text);
         }
-        return (new \Html2Text\Html2Text($text, $options))->getText();
+        return (new \App\Misc\Html2Text($text, $options))->getText();
     }
 
     /**
@@ -3220,6 +3220,10 @@ class Helper
     {
         if (empty($string)) {
             return null;
+        }
+        if ($format == 'Y-m-d H:i:s') {
+            // PostgreSQL adds fractions and a time zone to timestamps.
+            $string = substr($string, 0, 19);
         }
         try {
             return Carbon::createFromFormat($format, $string);

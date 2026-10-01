@@ -89,8 +89,9 @@ class PolycastServiceProvider extends ServiceProvider
                 $collection = collect($query->get());
 
                 $payload = $collection->map(function ($item, $key) use ($request) {
-                    $created = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $item->created_at);
-                    $requested = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $request->get('time'));
+                    // substr(): PostgreSQL adds fractions and a time zone to timestamps.
+                    $created = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', substr($item->created_at, 0, 19));
+                    $requested = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', substr((string) $request->get('time'), 0, 19));
                     $item->channels = json_decode($item->channels, false);
                     $item->payload = json_decode($item->payload, false);
                     // Add extra data to the payload - used in RealtimeBroadcastNotificationCreated.
@@ -157,7 +158,7 @@ class PolycastServiceProvider extends ServiceProvider
             // r - replying.
             if ($cache_data) {
                 if (isset($cache_data['t']) && isset($cache_data['r'])) {
-                    $view_date = Carbon::createFromFormat('Y-m-d H:i:s', $cache_data['t']);
+                    $view_date = Carbon::createFromFormat('Y-m-d H:i:s', substr($cache_data['t'], 0, 19));
 
                     // Let other users know that user started to reply.
                     if (!(int)$cache_data['r'] && (int)$request->data['replying']) {

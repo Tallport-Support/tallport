@@ -467,9 +467,9 @@
             ),
         ),
         'javoscript/laravel-macroable-models' => array(
-            'pretty_version' => '1.0.4',
-            'version' => '1.0.4.0',
-            'reference' => '2ade1984f33362c0a304da6352f95c407d5c761f',
+            'pretty_version' => '1.0.7',
+            'version' => '1.0.7.0',
+            'reference' => '95edd3ae7e567bd940f9fdbdacd262d162a443b2',
             'type' => 'library',
             'install_path' => __DIR__ . '/../javoscript/laravel-macroable-models',
             'aliases' => array(),

@@ -227,7 +227,7 @@
         "doctrine/dbal": "^3.5",
         "egulias/email-validator": "4.*",
         "symfony/console": "7.4.*",
-        "javoscript/laravel-macroable-models": "1.0.4",
+        "javoscript/laravel-macroable-models": "1.0.7",
         "ramsey/uuid": "^4.7",
         "symfony/polyfill-mbstring": "v1.24.0",
         "webklex/php-imap": "4.1.1",
@@ -287,7 +287,6 @@
             "Illuminate\\Mail\\": "overrides/laravel/framework/src/Illuminate/Mail/",
             "Lord\\Laroute\\Routes\\": "overrides/lord/laroute/src/Routes/",
             "TorMorten\\Eventy\\": "overrides/tormjens/eventy/src/",
-            "Symfony\\Component\\HttpFoundation\\": "overrides/symfony/http-foundation/",
             "Chumper\\Zipper\\Repositories\\": "overrides/chumper/zipper/src/Chumper/Zipper/Repositories/",
             "Faker\\Provider\\": "overrides/fzaninotto/faker/src/Faker/Provider/",
             "Illuminate\\Database\\": "overrides/laravel/framework/src/Illuminate/Database/",
@@ -296,13 +295,9 @@
             "Illuminate\\Support\\": "overrides/laravel/framework/src/Illuminate/Support/",
             "Illuminate\\Database\\Eloquent\\": "overrides/laravel/framework/src/Illuminate/Database/Eloquent/",
             "Illuminate\\Database\\Eloquent\\Concerns\\": "overrides/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/",
-            "Carbon\\": "overrides/nesbot/carbon/src/Carbon/",
             "Dotenv\\": "overrides/vlucas/phpdotenv/src/",
-            "Symfony\\Component\\VarDumper\\Dumper\\": "overrides/symfony/var-dumper/Dumper/",
             "Devfactory\\Minify\\Providers\\": "overrides/devfactory/minify/src/Providers/",
-            "Rap2hpoutre\\LaravelLogViewer\\": "overrides/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/",
-            "Javoscript\\MacroableModels\\": "overrides/javoscript/laravel-macroable-models/src/",
-            "Html2Text\\": "overrides/html2text/html2text/src/"
+            "Rap2hpoutre\\LaravelLogViewer\\": "overrides/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/"
         },
         "exclude-from-classmap": [
             "Modules/",
@@ -331,24 +326,19 @@
             "vendor/tormjens/eventy/src/Filter.php",
             "vendor/tormjens/eventy/src/Action.php",
             "vendor/tormjens/eventy/src/Event.php",
-            "vendor/symfony/http-foundation/Cookie.php",
             "vendor/chumper/zipper/src/Chumper/Zipper/Repositories/ZipRepository.php",
             "vendor/fzaninotto/faker/src/Faker/Provider/Base.php",
 
-            "vendor/nesbot/carbon/src/Carbon/Traits/Creator.php",
             "vendor/laravel/framework/src/Illuminate/Routing/RouteUrlGenerator.php",
             "vendor/laravel/framework/src/Illuminate/Mail/MailManager.php",
             "vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php",
             "vendor/vlucas/phpdotenv/src/Parser/EntryParser.php",
             "vendor/vlucas/phpdotenv/src/Parser/Lines.php",
             "vendor/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/HasAttributes.php",
-            "vendor/symfony/http-foundation/Request.php",
-            "vendor/symfony/var-dumper/Dumper/HtmlDumper.php",
             "vendor/devfactory/minify/src/Providers/BaseProvider.php",
             "vendor/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LaravelLogViewer.php",
             "vendor/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LogViewerController.php",
             "vendor/rap2hpoutre/laravel-log-viewer/src/controllers/LogViewerController.php",
-            "vendor/javoscript/laravel-macroable-models/src/MacroableModels.php",
             "vendor/natxet/cssmin/src/CssMin.php",
             "vendor/webklex/php-imap/src/Header.php",
             "vendor/webklex/php-imap/src/Structure.php",
@@ -362,8 +352,7 @@
             "vendor/webklex/php-imap/src/ClientManager.php",
             "vendor/webklex/php-imap/src/Folder.php",
             "vendor/webklex/php-imap/src/EncodingAliases.php",
-            "vendor/chumper/zipper/src/Chumper/Zipper/Zipper.php",
-            "vendor/html2text/html2text/src/Html2Text.php"
+            "vendor/chumper/zipper/src/Chumper/Zipper/Zipper.php"
         ]
     },
     "extra": {

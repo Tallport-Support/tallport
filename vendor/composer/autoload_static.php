@@ -84,7 +84,6 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
             'Symfony\\Contracts\\Translation\\' => 30,
             'Symfony\\Contracts\\Service\\' => 26,
             'Symfony\\Contracts\\EventDispatcher\\' => 34,
-            'Symfony\\Component\\VarDumper\\Dumper\\' => 35,
             'Symfony\\Component\\VarDumper\\' => 28,
             'Symfony\\Component\\Uid\\' => 22,
             'Symfony\\Component\\Translation\\' => 30,
@@ -322,10 +321,6 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         array (
             0 => __DIR__ . '/..' . '/symfony/event-dispatcher-contracts',
         ),
-        'Symfony\\Component\\VarDumper\\Dumper\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/symfony/var-dumper/Dumper',
-        ),
         'Symfony\\Component\\VarDumper\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/var-dumper',
@@ -364,8 +359,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         ),
         'Symfony\\Component\\HttpFoundation\\' =>
         array (
-            0 => __DIR__ . '/../..' . '/overrides/symfony/http-foundation',
-            1 => __DIR__ . '/..' . '/symfony/http-foundation',
+            0 => __DIR__ . '/..' . '/symfony/http-foundation',
         ),
         'Symfony\\Component\\Finder\\' =>
         array (
@@ -561,8 +555,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         ),
         'Javoscript\\MacroableModels\\' =>
         array (
-            0 => __DIR__ . '/../..' . '/overrides/javoscript/laravel-macroable-models/src',
-            1 => __DIR__ . '/..' . '/javoscript/laravel-macroable-models/src',
+            0 => __DIR__ . '/..' . '/javoscript/laravel-macroable-models/src',
         ),
         'Illuminate\\Support\\' =>
         array (
@@ -606,9 +599,8 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         ),
         'Html2Text\\' =>
         array (
-            0 => __DIR__ . '/../..' . '/overrides/html2text/html2text/src',
-            1 => __DIR__ . '/..' . '/html2text/html2text/src',
-            2 => __DIR__ . '/..' . '/html2text/html2text/test',
+            0 => __DIR__ . '/..' . '/html2text/html2text/src',
+            1 => __DIR__ . '/..' . '/html2text/html2text/test',
         ),
         'GuzzleHttp\\UriTemplate\\' =>
         array (
@@ -710,8 +702,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         ),
         'Carbon\\' =>
         array (
-            0 => __DIR__ . '/../..' . '/overrides/nesbot/carbon/src/Carbon',
-            1 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
+            0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
         ),
         'Brick\\Math\\' =>
         array (
@@ -842,6 +833,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'App\\Http\\Middleware\\CustomHandle' => __DIR__ . '/../..' . '/app/Http/Middleware/CustomHandle.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
         'App\\Http\\Middleware\\FrameGuard' => __DIR__ . '/../..' . '/app/Http/Middleware/FrameGuard.php',
+        'App\\Http\\Middleware\\HttpsAndCloudflareIp' => __DIR__ . '/../..' . '/app/Http/Middleware/HttpsAndCloudflareIp.php',
         'App\\Http\\Middleware\\HttpsRedirect' => __DIR__ . '/../..' . '/app/Http/Middleware/HttpsRedirect.php',
         'App\\Http\\Middleware\\Localize' => __DIR__ . '/../..' . '/app/Http/Middleware/Localize.php',
         'App\\Http\\Middleware\\LogoutIfDeleted' => __DIR__ . '/../..' . '/app/Http/Middleware/LogoutIfDeleted.php',
@@ -890,7 +882,9 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'App\\Mailbox' => __DIR__ . '/../..' . '/app/Mailbox.php',
         'App\\MailboxUser' => __DIR__ . '/../..' . '/app/MailboxUser.php',
         'App\\Misc\\ConversationActionButtons' => __DIR__ . '/../..' . '/app/Misc/ConversationActionButtons.php',
+        'App\\Misc\\CspHtmlDumper' => __DIR__ . '/../..' . '/app/Misc/CspHtmlDumper.php',
         'App\\Misc\\Helper' => __DIR__ . '/../..' . '/app/Misc/Helper.php',
+        'App\\Misc\\Html2Text' => __DIR__ . '/../..' . '/app/Misc/Html2Text.php',
         'App\\Misc\\Mail' => __DIR__ . '/../..' . '/app/Misc/Mail.php',
         'App\\Misc\\PhpMailTransport' => __DIR__ . '/../..' . '/app/Misc/PhpMailTransport.php',
         'App\\Misc\\SwiftGetSmtpQueueId' => __DIR__ . '/../..' . '/app/Misc/SwiftGetSmtpQueueId.php',
@@ -1023,7 +1017,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'Carbon\\Traits\\Cast' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Cast.php',
         'Carbon\\Traits\\Comparison' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Comparison.php',
         'Carbon\\Traits\\Converter' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Converter.php',
-        'Carbon\\Traits\\Creator' => __DIR__ . '/../..' . '/overrides/nesbot/carbon/src/Carbon/Traits/Creator.php',
+        'Carbon\\Traits\\Creator' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Creator.php',
         'Carbon\\Traits\\Date' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Date.php',
         'Carbon\\Traits\\DeprecatedPeriodProperties' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/DeprecatedPeriodProperties.php',
         'Carbon\\Traits\\Difference' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Difference.php',
@@ -2073,7 +2067,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'Html2Text\\BlockquoteTest' => __DIR__ . '/..' . '/html2text/html2text/test/BlockquoteTest.php',
         'Html2Text\\ConstructorTest' => __DIR__ . '/..' . '/html2text/html2text/test/ConstructorTest.php',
         'Html2Text\\DefinitionListTest' => __DIR__ . '/..' . '/html2text/html2text/test/DefinitionListTest.php',
-        'Html2Text\\Html2Text' => __DIR__ . '/../..' . '/overrides/html2text/html2text/src/Html2Text.php',
+        'Html2Text\\Html2Text' => __DIR__ . '/..' . '/html2text/html2text/src/Html2Text.php',
         'Html2Text\\HtmlCharsTest' => __DIR__ . '/..' . '/html2text/html2text/test/HtmlCharsTest.php',
         'Html2Text\\ImageTest' => __DIR__ . '/..' . '/html2text/html2text/test/ImageTest.php',
         'Html2Text\\LinkTest' => __DIR__ . '/..' . '/html2text/html2text/test/LinkTest.php',
@@ -3703,7 +3697,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'Illuminate\\View\\ViewServiceProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/ViewServiceProvider.php',
         'JShrink\\Minifier' => __DIR__ . '/..' . '/tedivm/jshrink/src/JShrink/Minifier.php',
         'Javoscript\\MacroableModels\\Facades\\MacroableModels' => __DIR__ . '/..' . '/javoscript/laravel-macroable-models/src/Facades/MacroableModels.php',
-        'Javoscript\\MacroableModels\\MacroableModels' => __DIR__ . '/../..' . '/overrides/javoscript/laravel-macroable-models/src/MacroableModels.php',
+        'Javoscript\\MacroableModels\\MacroableModels' => __DIR__ . '/..' . '/javoscript/laravel-macroable-models/src/MacroableModels.php',
         'Javoscript\\MacroableModels\\MacroableModelsServiceProvider' => __DIR__ . '/..' . '/javoscript/laravel-macroable-models/src/MacroableModelsServiceProvider.php',
         'Laravel\\Ai\\AgentUserInteraction\\AgentUserInteraction' => __DIR__ . '/..' . '/laravel/ai/src/AgentUserInteraction/AgentUserInteraction.php',
         'Laravel\\Ai\\AgentUserInteraction\\Chat' => __DIR__ . '/..' . '/laravel/ai/src/AgentUserInteraction/Chat.php',
@@ -6220,7 +6214,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'Symfony\\Component\\HttpFoundation\\AcceptHeaderItem' => __DIR__ . '/..' . '/symfony/http-foundation/AcceptHeaderItem.php',
         'Symfony\\Component\\HttpFoundation\\BinaryFileResponse' => __DIR__ . '/..' . '/symfony/http-foundation/BinaryFileResponse.php',
         'Symfony\\Component\\HttpFoundation\\ChainRequestMatcher' => __DIR__ . '/..' . '/symfony/http-foundation/ChainRequestMatcher.php',
-        'Symfony\\Component\\HttpFoundation\\Cookie' => __DIR__ . '/../..' . '/overrides/symfony/http-foundation/Cookie.php',
+        'Symfony\\Component\\HttpFoundation\\Cookie' => __DIR__ . '/..' . '/symfony/http-foundation/Cookie.php',
         'Symfony\\Component\\HttpFoundation\\EventStreamResponse' => __DIR__ . '/..' . '/symfony/http-foundation/EventStreamResponse.php',
         'Symfony\\Component\\HttpFoundation\\Exception\\BadRequestException' => __DIR__ . '/..' . '/symfony/http-foundation/Exception/BadRequestException.php',
         'Symfony\\Component\\HttpFoundation\\Exception\\ConflictingHeadersException' => __DIR__ . '/..' . '/symfony/http-foundation/Exception/ConflictingHeadersException.php',
@@ -6261,7 +6255,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'Symfony\\Component\\HttpFoundation\\RateLimiter\\PeekableRequestRateLimiterInterface' => __DIR__ . '/..' . '/symfony/http-foundation/RateLimiter/PeekableRequestRateLimiterInterface.php',
         'Symfony\\Component\\HttpFoundation\\RateLimiter\\RequestRateLimiterInterface' => __DIR__ . '/..' . '/symfony/http-foundation/RateLimiter/RequestRateLimiterInterface.php',
         'Symfony\\Component\\HttpFoundation\\RedirectResponse' => __DIR__ . '/..' . '/symfony/http-foundation/RedirectResponse.php',
-        'Symfony\\Component\\HttpFoundation\\Request' => __DIR__ . '/../..' . '/overrides/symfony/http-foundation/Request.php',
+        'Symfony\\Component\\HttpFoundation\\Request' => __DIR__ . '/..' . '/symfony/http-foundation/Request.php',
         'Symfony\\Component\\HttpFoundation\\RequestMatcherInterface' => __DIR__ . '/..' . '/symfony/http-foundation/RequestMatcherInterface.php',
         'Symfony\\Component\\HttpFoundation\\RequestMatcher\\AttributesRequestMatcher' => __DIR__ . '/..' . '/symfony/http-foundation/RequestMatcher/AttributesRequestMatcher.php',
         'Symfony\\Component\\HttpFoundation\\RequestMatcher\\ExpressionRequestMatcher' => __DIR__ . '/..' . '/symfony/http-foundation/RequestMatcher/ExpressionRequestMatcher.php',
@@ -6938,7 +6932,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'Symfony\\Component\\VarDumper\\Dumper\\ContextProvider\\SourceContextProvider' => __DIR__ . '/..' . '/symfony/var-dumper/Dumper/ContextProvider/SourceContextProvider.php',
         'Symfony\\Component\\VarDumper\\Dumper\\ContextualizedDumper' => __DIR__ . '/..' . '/symfony/var-dumper/Dumper/ContextualizedDumper.php',
         'Symfony\\Component\\VarDumper\\Dumper\\DataDumperInterface' => __DIR__ . '/..' . '/symfony/var-dumper/Dumper/DataDumperInterface.php',
-        'Symfony\\Component\\VarDumper\\Dumper\\HtmlDumper' => __DIR__ . '/../..' . '/overrides/symfony/var-dumper/Dumper/HtmlDumper.php',
+        'Symfony\\Component\\VarDumper\\Dumper\\HtmlDumper' => __DIR__ . '/..' . '/symfony/var-dumper/Dumper/HtmlDumper.php',
         'Symfony\\Component\\VarDumper\\Dumper\\ServerDumper' => __DIR__ . '/..' . '/symfony/var-dumper/Dumper/ServerDumper.php',
         'Symfony\\Component\\VarDumper\\Exception\\ThrowingCasterException' => __DIR__ . '/..' . '/symfony/var-dumper/Exception/ThrowingCasterException.php',
         'Symfony\\Component\\VarDumper\\Server\\Connection' => __DIR__ . '/..' . '/symfony/var-dumper/Server/Connection.php',

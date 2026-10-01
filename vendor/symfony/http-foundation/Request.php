@@ -860,17 +860,6 @@ class Request
      */
     public function getClientIps(): array
     {
-        // Fix for CloudFlare.
-        if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])
-            && $_SERVER['REMOTE_ADDR'] != $_SERVER["HTTP_CF_CONNECTING_IP"]
-            && config('app.cloudflare_is_used')
-            // https://github.com/freescout-help-desk/freescout/security/advisories/GHSA-9cm3-qvj2-8hg4
-            && \Helper::isValidIp($_SERVER["HTTP_CF_CONNECTING_IP"])
-        ) {
-            $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
-            $this->server->set('REMOTE_ADDR', $_SERVER["HTTP_CF_CONNECTING_IP"]);
-        }
-
         $ip = $this->server->get('REMOTE_ADDR');
 
         if (!$this->isFromTrustedProxy()) {
@@ -1188,11 +1177,9 @@ class Request
             return \in_array(strtolower($proto[0]), ['https', 'on', 'ssl', '1'], true);
         }
 
-        // FreeScout determines protocol using app.url parameter
-        //$https = $this->server->get('HTTPS');
+        $https = $this->server->get('HTTPS');
 
-        //return !empty($https) && 'off' !== strtolower($https);
-        return \Helper::isHttps();
+        return $https && (!\is_string($https) || 'off' !== strtolower($https));
     }
 
     /**

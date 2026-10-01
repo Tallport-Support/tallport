@@ -298,7 +298,7 @@ class Cookie
             $str .= '; domain='.$this->getDomain();
         }
 
-        if (true === $this->isSecure() || $this->getSameSite() == self::SAMESITE_NONE) {
+        if ($this->isSecure()) {
             $str .= '; secure';
         }
 

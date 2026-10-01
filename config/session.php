@@ -164,7 +164,8 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE', false),
+    // Browsers reject SameSite=None cookies that aren't secure.
+    'secure' => env('SESSION_SECURE_COOKIE', false) || strtolower((string) env('SESSION_SAME_SITE')) === 'none',
 
     /*
     |--------------------------------------------------------------------------

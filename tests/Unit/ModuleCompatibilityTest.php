@@ -33,6 +33,19 @@ class ModuleCompatibilityTest extends TestCase
         $this->assertSame('fired again', $received);
     }
 
+    public function testMacroableModels()
+    {
+        \MacroableModels::addMacro(\App\Customer::class, 'tallportCompat', function () {
+            return 'macro';
+        });
+
+        try {
+            $this->assertSame('macro', (new \App\Customer())->tallportCompat());
+        } finally {
+            \MacroableModels::removeMacro(\App\Customer::class, 'tallportCompat');
+        }
+    }
+
     public function testMailFailures()
     {
         $this->assertSame([], \Mail::failures());
