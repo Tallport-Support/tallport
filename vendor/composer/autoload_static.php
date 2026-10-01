@@ -44,6 +44,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'd7354eb4c8441fbf08eec280b61c7c73' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Helpers/functions.php',
         '72b1e3f4a2af9b30b3f137b3ec2057fc' => __DIR__ . '/..' . '/spatie/laravel-activitylog/src/helpers.php',
         'b3709fe79d9d3d527d2a936c35802426' => __DIR__ . '/../..' . '/app/Misc/Functions.php',
+        '26d7dac63c5a6be00af8895f2ad2fb79' => __DIR__ . '/../..' . '/app/Misc/LegacyHelpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -166,15 +167,11 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
             'Illuminate\\Support\\' => 19,
             'Illuminate\\Routing\\' => 19,
             'Illuminate\\Mail\\' => 16,
-            'Illuminate\\Foundation\\Bootstrap\\' => 32,
             'Illuminate\\Foundation\\Auth\\' => 27,
             'Illuminate\\Foundation\\' => 22,
-            'Illuminate\\Events\\' => 18,
             'Illuminate\\Database\\Eloquent\\Concerns\\' => 38,
             'Illuminate\\Database\\Eloquent\\' => 29,
             'Illuminate\\Database\\' => 20,
-            'Illuminate\\Auth\\Middleware\\' => 27,
-            'Illuminate\\Auth\\' => 16,
             'Illuminate\\' => 11,
         ),
         'H' =>
@@ -583,10 +580,6 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         array (
             0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Mail',
         ),
-        'Illuminate\\Foundation\\Bootstrap\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Foundation/Bootstrap',
-        ),
         'Illuminate\\Foundation\\Auth\\' =>
         array (
             0 => __DIR__ . '/..' . '/laravel/ui/auth-backend',
@@ -594,10 +587,6 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'Illuminate\\Foundation\\' =>
         array (
             0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Foundation',
-        ),
-        'Illuminate\\Events\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Events',
         ),
         'Illuminate\\Database\\Eloquent\\Concerns\\' =>
         array (
@@ -610,14 +599,6 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'Illuminate\\Database\\' =>
         array (
             0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Database',
-        ),
-        'Illuminate\\Auth\\Middleware\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Auth/Middleware',
-        ),
-        'Illuminate\\Auth\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Auth',
         ),
         'Illuminate\\' =>
         array (
@@ -783,6 +764,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'AllowDynamicProperties' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/AllowDynamicProperties.php',
         'App\\ActivityLog' => __DIR__ . '/../..' . '/app/ActivityLog.php',
         'App\\Attachment' => __DIR__ . '/../..' . '/app/Attachment.php',
+        'App\\Auth\\EloquentUserProvider' => __DIR__ . '/../..' . '/app/Auth/EloquentUserProvider.php',
         'App\\Broadcasting\\Broadcasters\\PolycastBroadcaster' => __DIR__ . '/../..' . '/app/Broadcasting/Broadcasters/PolycastBroadcaster.php',
         'App\\Channels\\RealtimeBroadcastChannel' => __DIR__ . '/../..' . '/app/Channels/RealtimeBroadcastChannel.php',
         'App\\Console\\Commands\\AfterAppUpdate' => __DIR__ . '/../..' . '/app/Console/Commands/AfterAppUpdate.php',
@@ -853,6 +835,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'App\\Http\\Controllers\\TranslateController' => __DIR__ . '/../..' . '/app/Http/Controllers/TranslateController.php',
         'App\\Http\\Controllers\\UsersController' => __DIR__ . '/../..' . '/app/Http/Controllers/UsersController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
+        'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\CheckBrowser' => __DIR__ . '/../..' . '/app/Http/Middleware/CheckBrowser.php',
         'App\\Http\\Middleware\\CheckRole' => __DIR__ . '/../..' . '/app/Http/Middleware/CheckRole.php',
         'App\\Http\\Middleware\\ContentSecurityPolicy' => __DIR__ . '/../..' . '/app/Http/Middleware/ContentSecurityPolicy.php',
@@ -2129,7 +2112,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'Illuminate\\Auth\\GenericUser' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/GenericUser.php',
         'Illuminate\\Auth\\GuardHelpers' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/GuardHelpers.php',
         'Illuminate\\Auth\\Listeners\\SendEmailVerificationNotification' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Listeners/SendEmailVerificationNotification.php',
-        'Illuminate\\Auth\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php',
+        'Illuminate\\Auth\\Middleware\\Authenticate' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php',
         'Illuminate\\Auth\\Middleware\\AuthenticateWithBasicAuth' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php',
         'Illuminate\\Auth\\Middleware\\Authorize' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Middleware/Authorize.php',
         'Illuminate\\Auth\\Middleware\\EnsureEmailIsVerified' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Middleware/EnsureEmailIsVerified.php',
@@ -2147,7 +2130,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'Illuminate\\Auth\\Passwords\\TokenRepositoryInterface' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Passwords/TokenRepositoryInterface.php',
         'Illuminate\\Auth\\Recaller' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Recaller.php',
         'Illuminate\\Auth\\RequestGuard' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/RequestGuard.php',
-        'Illuminate\\Auth\\SessionGuard' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Auth/SessionGuard.php',
+        'Illuminate\\Auth\\SessionGuard' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/SessionGuard.php',
         'Illuminate\\Auth\\TokenGuard' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/TokenGuard.php',
         'Illuminate\\Broadcasting\\AnonymousEvent' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Broadcasting/AnonymousEvent.php',
         'Illuminate\\Broadcasting\\BroadcastController' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php',
@@ -2793,7 +2776,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'Illuminate\\Encryption\\EncryptionServiceProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Encryption/EncryptionServiceProvider.php',
         'Illuminate\\Encryption\\MissingAppKeyException' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Encryption/MissingAppKeyException.php',
         'Illuminate\\Events\\CallQueuedListener' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Events/CallQueuedListener.php',
-        'Illuminate\\Events\\Dispatcher' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Events/Dispatcher.php',
+        'Illuminate\\Events\\Dispatcher' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Events/Dispatcher.php',
         'Illuminate\\Events\\EventServiceProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Events/EventServiceProvider.php',
         'Illuminate\\Events\\InvokeQueuedClosure' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Events/InvokeQueuedClosure.php',
         'Illuminate\\Events\\NullDispatcher' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Events/NullDispatcher.php',
@@ -2825,7 +2808,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'Illuminate\\Foundation\\Auth\\User' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Auth/User.php',
         'Illuminate\\Foundation\\Auth\\VerifiesEmails' => __DIR__ . '/..' . '/laravel/ui/auth-backend/VerifiesEmails.php',
         'Illuminate\\Foundation\\Bootstrap\\BootProviders' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Bootstrap/BootProviders.php',
-        'Illuminate\\Foundation\\Bootstrap\\HandleExceptions' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php',
+        'Illuminate\\Foundation\\Bootstrap\\HandleExceptions' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php',
         'Illuminate\\Foundation\\Bootstrap\\LoadConfiguration' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php',
         'Illuminate\\Foundation\\Bootstrap\\LoadEnvironmentVariables' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadEnvironmentVariables.php',
         'Illuminate\\Foundation\\Bootstrap\\RegisterFacades' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Bootstrap/RegisterFacades.php',
@@ -3160,7 +3143,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'Illuminate\\Mail\\Mailables\\Content' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Mailables/Content.php',
         'Illuminate\\Mail\\Mailables\\Envelope' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Mailables/Envelope.php',
         'Illuminate\\Mail\\Mailables\\Headers' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Mailables/Headers.php',
-        'Illuminate\\Mail\\Mailer' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Mail/Mailer.php',
+        'Illuminate\\Mail\\Mailer' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Mailer.php',
         'Illuminate\\Mail\\Markdown' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Markdown.php',
         'Illuminate\\Mail\\Message' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Message.php',
         'Illuminate\\Mail\\PendingMail' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/PendingMail.php',
@@ -3430,7 +3413,7 @@ class ComposerStaticInit5bcc553cd6d5e5e115fe972504194c68
         'Illuminate\\Routing\\RouteSignatureParameters' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RouteSignatureParameters.php',
         'Illuminate\\Routing\\RouteUri' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RouteUri.php',
         'Illuminate\\Routing\\RouteUrlGenerator' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Routing/RouteUrlGenerator.php',
-        'Illuminate\\Routing\\Router' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Routing/Router.php',
+        'Illuminate\\Routing\\Router' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Router.php',
         'Illuminate\\Routing\\RoutingServiceProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RoutingServiceProvider.php',
         'Illuminate\\Routing\\SortedMiddleware' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/SortedMiddleware.php',
         'Illuminate\\Routing\\UrlGenerator' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Routing/UrlGenerator.php',

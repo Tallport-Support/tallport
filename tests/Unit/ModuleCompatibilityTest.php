@@ -33,6 +33,12 @@ class ModuleCompatibilityTest extends TestCase
         $this->assertSame('fired again', $received);
     }
 
+    public function testMailFailures()
+    {
+        $this->assertSame([], \Mail::failures());
+        $this->assertSame([], $this->app['mail.manager']->mailer()->failures());
+    }
+
     public function testModelDatesSerializeInDatabaseFormat()
     {
         $customer = new \App\Customer();

@@ -264,7 +264,8 @@
             "overrides/natxet/cssmin/src/"
         ],
         "files": [
-            "app/Misc/Functions.php"
+            "app/Misc/Functions.php",
+            "app/Misc/LegacyHelpers.php"
         ],
         "fs-comment": "Above new lines are listed files containing custom updates. Below - only PHP compatibility updates.",
         "psr-4": {
@@ -282,11 +283,8 @@
             "Codedge\\Updater\\SourceRepositoryTypes\\": "overrides/codedge/laravel-selfupdater/src/SourceRepositoryTypes/",
             "Barryvdh\\TranslationManager\\": "overrides/barryvdh/laravel-translation-manager/src/",
             "Illuminate\\Foundation\\": "overrides/laravel/framework/src/Illuminate/Foundation/",
-            "Illuminate\\Foundation\\Bootstrap\\": "overrides/laravel/framework/src/Illuminate/Foundation/Bootstrap/",
             "Illuminate\\Routing\\": "overrides/laravel/framework/src/Illuminate/Routing/",
             "Illuminate\\Mail\\": "overrides/laravel/framework/src/Illuminate/Mail/",
-            "Illuminate\\Auth\\": "overrides/laravel/framework/src/Illuminate/Auth/",
-            "Illuminate\\Auth\\Middleware\\": "overrides/laravel/framework/src/Illuminate/Auth/Middleware/",
             "Lord\\Laroute\\Routes\\": "overrides/lord/laroute/src/Routes/",
             "TorMorten\\Eventy\\": "overrides/tormjens/eventy/src/",
             "Symfony\\Component\\HttpFoundation\\": "overrides/symfony/http-foundation/",
@@ -299,7 +297,6 @@
             "Illuminate\\Database\\Eloquent\\": "overrides/laravel/framework/src/Illuminate/Database/Eloquent/",
             "Illuminate\\Database\\Eloquent\\Concerns\\": "overrides/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/",
             "Carbon\\": "overrides/nesbot/carbon/src/Carbon/",
-            "Illuminate\\Events\\": "overrides/laravel/framework/src/Illuminate/Events/",
             "Dotenv\\": "overrides/vlucas/phpdotenv/src/",
             "Symfony\\Component\\VarDumper\\Dumper\\": "overrides/symfony/var-dumper/Dumper/",
             "Devfactory\\Minify\\Providers\\": "overrides/devfactory/minify/src/Providers/",
@@ -329,8 +326,6 @@
             "vendor/barryvdh/laravel-translation-manager/src/Controller.php",
             "vendor/laravel/framework/src/Illuminate/Foundation/ProviderRepository.php",
             "vendor/laravel/framework/src/Illuminate/Routing/UrlGenerator.php",
-            "vendor/laravel/framework/src/Illuminate/Auth/SessionGuard.php",
-            "vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php",
             "vendor/rachidlaasri/laravel-installer/src/Providers/LaravelInstallerServiceProvider.php",
             "vendor/lord/laroute/src/Routes/Collection.php",
             "vendor/tormjens/eventy/src/Filter.php",
@@ -350,7 +345,6 @@
             "vendor/symfony/http-foundation/Request.php",
             "vendor/symfony/var-dumper/Dumper/HtmlDumper.php",
             "vendor/devfactory/minify/src/Providers/BaseProvider.php",
-            "vendor/laravel/framework/src/Illuminate/Routing/Router.php",
             "vendor/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LaravelLogViewer.php",
             "vendor/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LogViewerController.php",
             "vendor/rap2hpoutre/laravel-log-viewer/src/controllers/LogViewerController.php",
@@ -368,9 +362,6 @@
             "vendor/webklex/php-imap/src/ClientManager.php",
             "vendor/webklex/php-imap/src/Folder.php",
             "vendor/webklex/php-imap/src/EncodingAliases.php",
-            "vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php",
-            "vendor/laravel/framework/src/Illuminate/Events/Dispatcher.php",
-            "vendor/laravel/framework/src/Illuminate/Mail/Mailer.php",
             "vendor/chumper/zipper/src/Chumper/Zipper/Zipper.php",
             "vendor/html2text/html2text/src/Html2Text.php"
         ]
@@ -390,9 +381,6 @@
         ],
         "pre-install-cmd": [
             "@php -r \"@mkdir('vendor/natxet/cssmin/src', 775);\""
-        ],
-        "pre-autoload-dump": [
-            "@php -r \"file_put_contents('vendor/laravel/framework/src/Illuminate/Support/helpers.php', '<?php require_once __DIR__ . \\'/../../../../../../overrides/laravel/framework/src/Illuminate/Support/helpers.php\\';');\""
         ],
         "post-autoload-dump": [
             "@php -r \"(error_reporting(0) || !error_reporting(0)) && array_map('unlink', json_decode(file_get_contents('composer.json'), true)['autoload']['exclude-from-classmap']);\"",

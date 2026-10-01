@@ -267,20 +267,6 @@ class Dispatcher implements DispatcherContract
     }
 
     /**
-     * Fire an event and call the listeners (removed in Laravel 5.8, kept
-     * for modules).
-     *
-     * @param  string|object  $event
-     * @param  mixed  $payload
-     * @param  bool  $halt
-     * @return array|null
-     */
-    public function fire($event, $payload = [], $halt = false)
-    {
-        return $this->dispatch($event, $payload, $halt);
-    }
-
-    /**
      * Fire an event and call the listeners.
      *
      * @param  string|object  $event

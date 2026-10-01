@@ -43,4 +43,5 @@ return array(
     'd7354eb4c8441fbf08eec280b61c7c73' => $vendorDir . '/rachidlaasri/laravel-installer/src/Helpers/functions.php',
     '72b1e3f4a2af9b30b3f137b3ec2057fc' => $vendorDir . '/spatie/laravel-activitylog/src/helpers.php',
     'b3709fe79d9d3d527d2a936c35802426' => $baseDir . '/app/Misc/Functions.php',
+    '26d7dac63c5a6be00af8895f2ad2fb79' => $baseDir . '/app/Misc/LegacyHelpers.php',
 );

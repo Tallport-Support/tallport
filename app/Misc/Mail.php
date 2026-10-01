@@ -157,6 +157,27 @@ class Mail
     public static $smtp_data_sent = false;
 
     /**
+     * The imap extension collects parse errors (e.g. "Invalid mailbox list:
+     * <>") and reports them as a notice when the request ends, which would add
+     * an error page to an otherwise good response. Collect them first:
+     * shutdown functions run before the extension reports.
+     */
+    public static function clearImapErrorsOnShutdown()
+    {
+        static $registered = false;
+
+        if ($registered || !function_exists('imap_errors')) {
+            return;
+        }
+        $registered = true;
+
+        register_shutdown_function(function () {
+            imap_errors();
+            imap_alerts();
+        });
+    }
+
+    /**
      * Configure mail sending parameters.
      *
      * @param App\Mailbox $mailbox

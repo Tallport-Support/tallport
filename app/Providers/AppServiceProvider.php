@@ -70,6 +70,9 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerDevBoost();
+        $this->registerLegacyMethods();
+        $this->registerAuthHooks();
+        \MailHelper::clearImapErrorsOnShutdown();
 
         // Forse HTTPS if using CloudFlare "Flexible SSL"
         // https://support.cloudflare.com/hc/en-us/articles/200170416-What-do-the-SSL-options-mean-
@@ -124,6 +127,34 @@ class AppServiceProvider extends ServiceProvider
 
             return $exception;
         }, 10, 2);
+    }
+
+    /**
+     * Users are loaded through App\Auth\EloquentUserProvider, which lets
+     * modules validate passwords (session_guard.validate_credentials).
+     */
+    protected function registerAuthHooks()
+    {
+        $this->app['auth']->provider('eloquent', function ($app, array $config) {
+            return new \App\Auth\EloquentUserProvider($app['hash'], $config['model']);
+        });
+    }
+
+    /**
+     * Methods that later Laravel versions removed but FreeScout modules call.
+     */
+    protected function registerLegacyMethods()
+    {
+        // Event::fire(), removed in Laravel 5.8.
+        \Illuminate\Events\Dispatcher::macro('fire', function ($event, $payload = [], $halt = false) {
+            return $this->dispatch($event, $payload, $halt);
+        });
+
+        // Mail::failures(), removed in Laravel 9. A failed send throws an
+        // exception instead, so there are never failed recipients.
+        \Illuminate\Mail\Mailer::macro('failures', function () {
+            return [];
+        });
     }
 
     /**

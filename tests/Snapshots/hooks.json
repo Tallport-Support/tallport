@@ -75,6 +75,14 @@
         ]
     },
     {
+        "type": "action",
+        "name": "auth_middleware.handle",
+        "arguments": 3,
+        "files": [
+            "app/Http/Middleware/Authenticate.php"
+        ]
+    },
+    {
         "type": "filter",
         "name": "autoreply.should_send",
         "arguments": 2,
@@ -2145,6 +2153,14 @@
         "arguments": 2,
         "files": [
             "app/Http/Controllers/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "session_guard.validate_credentials",
+        "arguments": 3,
+        "files": [
+            "app/Auth/EloquentUserProvider.php"
         ]
     },
     {

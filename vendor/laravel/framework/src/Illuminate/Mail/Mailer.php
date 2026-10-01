@@ -288,18 +288,6 @@ class Mailer implements MailerContract, MailQueueContract
     }
 
     /**
-     * Failed recipients of the last message (Laravel 5.5-8 API, kept for
-     * FreeScout code and modules). Since Laravel 9 (Symfony Mailer) a failed
-     * send throws an exception instead, so this is always empty.
-     *
-     * @return array
-     */
-    public function failures()
-    {
-        return [];
-    }
-
-    /**
      * Send a new message using a view.
      *
      * @param  \Illuminate\Contracts\Mail\Mailable|string|array  $view

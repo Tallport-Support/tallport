@@ -502,8 +502,7 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
      */
     protected function hasValidCredentials($user, #[\SensitiveParameter] $credentials)
     {
-        // https://github.com/laravel/framework/pull/31357
-        $validated = ! is_null($user) && \Eventy::filter('session_guard.validate_credentials', $this->provider->validateCredentials($user, $credentials), $user, $credentials);
+        $validated = ! is_null($user) && $this->provider->validateCredentials($user, $credentials);
 
         if ($validated) {
             $this->fireValidatedEvent($user);

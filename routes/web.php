@@ -13,7 +13,8 @@
 |     php artisan freescout:build
 */
 
-Auth::routes();
+// Login routes are below, at the configurable login path.
+Auth::routes(['login' => false]);
 
 Route::get(config('app.login_path'), 'Auth\LoginController@showLoginForm')->name('login');
 Route::post(config('app.login_path'), 'Auth\LoginController@login');

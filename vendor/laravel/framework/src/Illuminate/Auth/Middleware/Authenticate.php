@@ -58,8 +58,6 @@ class Authenticate implements AuthenticatesRequests
      */
     public function handle($request, Closure $next, ...$guards)
     {
-        \Eventy::action('auth_middleware.handle', $request, $guards, $next); 
-
         $this->authenticate($request, $guards);
 
         return $next($request);
