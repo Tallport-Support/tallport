@@ -245,8 +245,7 @@
             "Illuminate\\Support\\": "overrides/laravel/framework/src/Illuminate/Support/",
             "Illuminate\\Database\\Eloquent\\": "overrides/laravel/framework/src/Illuminate/Database/Eloquent/",
             "Illuminate\\Database\\Eloquent\\Concerns\\": "overrides/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/",
-            "Devfactory\\Minify\\Providers\\": "overrides/devfactory/minify/src/Providers/",
-            "Rap2hpoutre\\LaravelLogViewer\\": "overrides/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/"
+            "Devfactory\\Minify\\Providers\\": "overrides/devfactory/minify/src/Providers/"
         },
         "exclude-from-classmap": [
             "Modules/",
@@ -273,9 +272,6 @@
             "vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php",
             "vendor/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/HasAttributes.php",
             "vendor/devfactory/minify/src/Providers/BaseProvider.php",
-            "vendor/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LaravelLogViewer.php",
-            "vendor/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LogViewerController.php",
-            "vendor/rap2hpoutre/laravel-log-viewer/src/controllers/LogViewerController.php",
             "vendor/natxet/cssmin/src/CssMin.php",
             "vendor/webklex/php-imap/src/Header.php",
             "vendor/webklex/php-imap/src/Structure.php",

@@ -50,17 +50,11 @@ class LaravelLogViewer
      */
     public function setFolder($folder)
     {
-        // Sanitize folder.
-        // https://github.com/freescout-help-desk/freescout/security/advisories/GHSA-9ph7-f3hc-95gg
-        // order of '..' is important
-        $folder = str_replace(['\\', '/', chr(0), ':', '..'], '', $folder ?? '');
-
         if (app('files')->exists($folder)) {
 
             $this->folder = $folder;
-        /*
-        } else if(is_array($this->storage_path)) {
-           
+        } else if (is_array($this->storage_path)) {
+
             foreach ($this->storage_path as $value) {
 
                 $logsPath = $value . '/' . $folder;
@@ -69,7 +63,7 @@ class LaravelLogViewer
                     $this->folder = $folder;
                     break;
                 }
-            }*/
+            }
         } else {
 
             $logsPath = $this->storage_path . '/' . $folder;
@@ -100,25 +94,13 @@ class LaravelLogViewer
      */
     public function pathToLogFile($file)
     {
-        $logsPath = $this->storage_path;
-        $logsPath .= ($this->folder) ? '/' . $this->folder : '';
 
-        // Sanitize folder.
-        // https://github.com/freescout-help-desk/freescout/security/advisories/GHSA-9ph7-f3hc-95gg
-        // order of '..' is important
-        $file = str_replace(['\\', '/', chr(0), ':', '..'], '', $file ?? '');
+        if (app('files')->exists($file)) { // try the absolute path
 
-        // https://github.com/freescout-help-desk/freescout/security/advisories/GHSA-858x-8f77-9vc5
-        if (app('files')->exists($file)) {
-            // Absolute path.
-        } else {
-            // Relative path.
-            $file = $logsPath . '/' . $file;
+            return $file;
         }
+        if (is_array($this->storage_path)) {
 
-        // Comment for security reasons.
-        /*if (is_array($this->storage_path)) {
-     
             foreach ($this->storage_path as $folder) {
                 if (app('files')->exists($folder . '/' . $file)) { // try the absolute path
                     $file = $folder . '/' . $file;
@@ -126,8 +108,11 @@ class LaravelLogViewer
                 }
             }
             return $file;
-        }*/
+        }
 
+        $logsPath = $this->storage_path;
+        $logsPath .= ($this->folder) ? '/' . $this->folder : '';
+        $file = $logsPath . '/' . $file;
         // check if requested file is really in the logs directory
         if (dirname($file) !== $logsPath) {
             throw new \Exception('No such log file: ' . $file);
@@ -149,7 +134,7 @@ class LaravelLogViewer
      */
     public function getFileName()
     {
-        return basename($this->file ?? '');
+        return basename($this->file);
     }
 
     /**

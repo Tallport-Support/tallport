@@ -46,7 +46,6 @@ return array(
     'Symfony\\Component\\Clock\\' => array($vendorDir . '/symfony/clock'),
     'Spatie\\LaravelPackageTools\\' => array($vendorDir . '/spatie/laravel-package-tools/src'),
     'Spatie\\Activitylog\\' => array($vendorDir . '/spatie/laravel-activitylog/src'),
-    'Rap2hpoutre\\LaravelLogViewer\\' => array($baseDir . '/overrides/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer'),
     'Ramsey\\Uuid\\' => array($vendorDir . '/ramsey/uuid/src'),
     'Ramsey\\Collection\\' => array($vendorDir . '/ramsey/collection/src'),
     'RachidLaasri\\LaravelInstaller\\Providers\\' => array($baseDir . '/overrides/rachidlaasri/laravel-installer/src/Providers'),

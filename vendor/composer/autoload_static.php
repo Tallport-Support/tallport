@@ -105,7 +105,6 @@ class ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418
         ),
         'R' =>
         array (
-            'Rap2hpoutre\\LaravelLogViewer\\' => 29,
             'Ramsey\\Uuid\\' => 12,
             'Ramsey\\Collection\\' => 18,
             'RachidLaasri\\LaravelInstaller\\Providers\\' => 40,
@@ -385,10 +384,6 @@ class ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418
         'Spatie\\Activitylog\\' =>
         array (
             0 => __DIR__ . '/..' . '/spatie/laravel-activitylog/src',
-        ),
-        'Rap2hpoutre\\LaravelLogViewer\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer',
         ),
         'Ramsey\\Uuid\\' =>
         array (
@@ -778,6 +773,7 @@ class ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418
         'App\\Folder' => __DIR__ . '/../..' . '/app/Folder.php',
         'App\\Follower' => __DIR__ . '/../..' . '/app/Follower.php',
         'App\\Foundation\\Application' => __DIR__ . '/../..' . '/app/Foundation/Application.php',
+        'App\\Http\\Controllers\\AppLogsController' => __DIR__ . '/../..' . '/app/Http/Controllers/AppLogsController.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
         'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',
         'App\\Http\\Controllers\\Auth\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/RegisterController.php',
@@ -5871,10 +5867,11 @@ class ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418
         'Random\\Engine\\Secure' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/Engine/Secure.php',
         'Random\\RandomError' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/RandomError.php',
         'Random\\RandomException' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/RandomException.php',
-        'Rap2hpoutre\\LaravelLogViewer\\LaravelLogViewer' => __DIR__ . '/../..' . '/overrides/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LaravelLogViewer.php',
+        'Rap2hpoutre\\LaravelLogViewer\\BaseController' => __DIR__ . '/..' . '/rap2hpoutre/laravel-log-viewer/src/controllers/LogViewerController.php',
+        'Rap2hpoutre\\LaravelLogViewer\\LaravelLogViewer' => __DIR__ . '/..' . '/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LaravelLogViewer.php',
         'Rap2hpoutre\\LaravelLogViewer\\LaravelLogViewerServiceProvider' => __DIR__ . '/..' . '/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LaravelLogViewerServiceProvider.php',
         'Rap2hpoutre\\LaravelLogViewer\\Level' => __DIR__ . '/..' . '/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/Level.php',
-        'Rap2hpoutre\\LaravelLogViewer\\LogViewerController' => __DIR__ . '/../..' . '/overrides/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LogViewerController.php',
+        'Rap2hpoutre\\LaravelLogViewer\\LogViewerController' => __DIR__ . '/..' . '/rap2hpoutre/laravel-log-viewer/src/controllers/LogViewerController.php',
         'Rap2hpoutre\\LaravelLogViewer\\Pattern' => __DIR__ . '/..' . '/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/Pattern.php',
         'ReflectionConstant' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/ReflectionConstant.php',
         'RoundingMode' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/RoundingMode.php',

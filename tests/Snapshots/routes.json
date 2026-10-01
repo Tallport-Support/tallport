@@ -20,7 +20,7 @@
         ],
         "uri": "app-logs/app",
         "name": "logs.app",
-        "action": "\\Rap2hpoutre\\LaravelLogViewer\\LogViewerController@index",
+        "action": "AppLogsController@index",
         "middleware": [
             "web",
             "auth",
