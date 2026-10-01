@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Re: [Webklex/php-imap] Read all folders? (Issue #349)",
+            "type": 1,
+            "status": 1,
+            "customer_email": "reply+aibuo5joom2quaizuoyae0jeuk9queth@reply.github.com",
+            "cc": "[\"subscribed@noreply.github.com\",\"php-imap@noreply.github.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "reply+aibuo5joom2quaizuoyae0jeuk9queth@reply.github.com",
+                    "to": "[\"php-imap@noreply.github.com\"]",
+                    "cc": "[\"subscribed@noreply.github.com\"]",
+                    "bcc": null,
+                    "body": "<p></p>\n<p dir=\"auto\">Any updates?</p>\n\n<p style=\"font-size:small;-webkit-text-size-adjust:none;color:#666;\">—<br>Reply to this email directly, <a href=\"https://github.com/Webklex/php-imap/issues/349#issuecomment-1365266070\">view it on GitHub</a>, or <a href=\"https://github.com/notifications/unsubscribe-auth/AAWAEMH2ZLKHMNNNIBWTUT3WPG7DFANCNFSM6AAAAAATBM42CI\">unsubscribe</a>.<br>You are receiving this because you are subscribed to this thread.<img src=\"https://github.com/notifications/beacon/AAWAEMHVWSHRQDWETTTRYPTWPG7DFA5CNFSM6AAAAAATBM42CKWGG33NNVSW45C7OR4XAZNMJFZXG5LFINXW23LFNZ2KUY3PNVWWK3TUL5UWJTSRMBHJM.gif\" height=\"1\" width=\"1\" alt=\"\"><span style=\"color: transparent; font-size: 0; display: none; visibility: hidden; overflow: hidden; opacity: 0; width: 0; height: 0; max-width: 0; max-height: 0; mso-hide: all\">Message ID: <span>&lt;Webklex/php-imap/issues/349/1365266070</span><span>@</span><span>github</span><span>.</span><span>com&gt;</span></span></p>\n<script type=\"application/ld+json\">[\n{\n\"@context\": \"http://schema.org\",\n\"@type\": \"EmailMessage\",\n\"potentialAction\": {\n\"@type\": \"ViewAction\",\n\"target\": \"https://github.com/Webklex/php-imap/issues/349#issuecomment-1365266070\",\n\"url\": \"https://github.com/Webklex/php-imap/issues/349#issuecomment-1365266070\",\n\"name\": \"View Issue\"\n},\n\"description\": \"View this Issue on GitHub\",\n\"publisher\": {\n\"@type\": \"Organization\",\n\"name\": \"GitHub\",\n\"url\": \"https://github.com\"\n}\n}\n]</script>",
+                    "headers": "549fa759a8b4d4b8beb0270e9dd7eb73",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

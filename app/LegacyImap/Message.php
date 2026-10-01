@@ -1262,7 +1262,10 @@ class Message {
      */
     public function getRawBody() {
         if ($this->raw_body === null) {
-            $this->client->openFolder($this->folder_path);
+            // Tallport: messages parsed from a string have no client.
+            if ($this->client) {
+                $this->client->openFolder($this->folder_path);
+            }
 
             $this->raw_body = $this->structure->raw;
         }

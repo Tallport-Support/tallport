@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "ご注文商品を本日お届けします",
+            "type": 1,
+            "status": 1,
+            "customer_email": "noreply@example.org",
+            "cc": "[\"support@example.org\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "noreply@example.org",
+                    "to": "[\"support@example.org\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "※ アマゾン 配送部",
+                    "headers": "ff8af1641ec15d1e8ba0fae5fd541d4b",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

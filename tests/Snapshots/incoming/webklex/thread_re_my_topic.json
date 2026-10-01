@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Re: Nuu",
+            "type": 1,
+            "status": 1,
+            "customer_email": "from@there.com",
+            "cc": "[\"to@here.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "from@there.com",
+                    "to": "[\"to@here.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "Hi",
+                    "headers": "ec5b75755b1a9325615015bafbf76d49",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

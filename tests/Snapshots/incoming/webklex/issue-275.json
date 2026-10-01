@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Testing 123",
+            "type": 1,
+            "status": 1,
+            "customer_email": "****@unknown",
+            "cc": "[\"***@unknown\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "****@unknown",
+                    "to": "[\"***@unknown\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "Asdf testing123 this is a body",
+                    "headers": "66c05319d8528b252df2177384c68d31",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

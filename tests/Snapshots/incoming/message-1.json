@@ -1,0 +1,32 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "☆第132号　「ガーデン&エクステリア」専門店のためのＱ&Ａサロン　【月刊エクステリア・ワーク】",
+            "type": 1,
+            "status": 1,
+            "customer_email": "analisismadrid@xxx.org",
+            "cc": "[\"to@here.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "analisismadrid@xxx.org",
+                    "to": "[\"to@here.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "",
+                    "headers": "1902b249974c31109a61fe807497a792",
+                    "attachments": [
+                        {
+                            "file_name": "☆第132号　「ガーデン&エクステリア」専門店のためのＱ&Ａサロン　【月刊エクステリア・ワーク】",
+                            "mime_type": "text/plain",
+                            "size": 3,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

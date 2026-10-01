@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Test",
+            "type": 1,
+            "status": 1,
+            "customer_email": "test@example.org",
+            "cc": "[\"test@example.org\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "test@example.org",
+                    "to": "[\"test@example.org\"]",
+                    "cc": "[\"test@example.org\"]",
+                    "bcc": null,
+                    "body": "Hi",
+                    "headers": "8c27dabc566fa911e899e51e9a2d8a2f",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

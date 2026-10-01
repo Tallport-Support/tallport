@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Zly from",
+            "type": 1,
+            "status": 1,
+            "customer_email": "faked_sender@sender_domain.pl",
+            "cc": "[\"receipent@receipent_domain.pl\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "faked_sender@sender_domain.pl",
+                    "to": "[\"receipent@receipent_domain.pl\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "Test message",
+                    "headers": "b38313e42ad58c8de911e568f7d785cf",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

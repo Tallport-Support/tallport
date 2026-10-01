@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "RE: TEST MESSAGE",
+            "type": 1,
+            "status": 1,
+            "customer_email": "tonymarston@hotmail.com",
+            "cc": "[\"gmx@tonymarston.co.uk\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "tonymarston@hotmail.com",
+                    "to": "[\"gmx@tonymarston.co.uk\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "\n<div class=\"WordSection1\">\n<p class=\"MsoNormal\">Here is my reply to your reply.</p>\n<p class=\"MsoNormal\"><o:p> </o:p></p>\n<p class=\"MsoNormal\">Tony Marston<o:p></o:p></p>\n<p class=\"MsoNormal\"><o:p> </o:p></p>\n<div style=\"mso-element:para-border-div;border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm 0cm 0cm\">\n<p class=\"MsoNormal\" style=\"border:none;padding:0cm\"><b>From: </b><a href=\"mailto:gmx@tonymarston.co.uk\">gmx@tonymarston.co.uk</a><br>\n<b>Sent: </b>31 May 2023 17:46<br>\n<b>To: </b><a href=\"mailto:tonymarston@hotmail.com\">Tony Marston</a><br>\n<b>Subject: </b>Re: TEST MESSAGE</p>\n</div>\n<p class=\"MsoNormal\"><o:p> </o:p></p>\n<p class=\"MsoNormal\">On 2023-05-25 13:06, Tony Marston wrote:<br>\nHere is my reply to your message<br>\n&gt; Tony Marston<o:p></o:p></p>\n<p class=\"MsoNormal\"><o:p> </o:p></p>\n</div>\n",
+                    "headers": "c015c885d94d448ac5ac740fce67e767",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

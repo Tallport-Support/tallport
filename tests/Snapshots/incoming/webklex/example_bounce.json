@@ -1,0 +1,38 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Mail delivery failed",
+            "type": 1,
+            "status": 1,
+            "customer_email": "mailer-daemon@sslproxy01.your-server.de",
+            "cc": "[\"demo@foo.de\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "mailer-daemon@sslproxy01.your-server.de",
+                    "to": "[\"demo@foo.de\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "This message was created automatically by mail delivery software.<br />\r\n<br />\r\nA message sent by<br />\r\n<br />\r\n  &lt;info@foo.de&gt;<br />\r\n<br />\r\ncould not be delivered to one or more of its recipients. The following<br />\r\naddress(es) failed:<br />\r\n<br />\r\n  ding@ding.de<br />\r\n    host 36.143.65.153 [36.143.65.153]<br />\r\n    SMTP error from remote mail server after pipelined end of data:<br />\r\n    550-Verification failed for &lt;info@foo.de&gt;<br />\r\n    550-Unrouteable address<br />\r\n    550 Sender verify failed",
+                    "headers": "834890aae8f9776b507e4155634f5053",
+                    "attachments": [
+                        {
+                            "file_name": "229464af",
+                            "mime_type": "text/plain",
+                            "size": 267,
+                            "embedded": false
+                        },
+                        {
+                            "file_name": "RFC822.eml",
+                            "mime_type": "message/rfc822",
+                            "size": 776,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

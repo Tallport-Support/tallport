@@ -1,0 +1,38 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "multiple_html_parts_and_attachments",
+            "type": 1,
+            "status": 1,
+            "customer_email": "from@there.com",
+            "cc": "[\"to@there.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "from@there.com",
+                    "to": "[\"to@there.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "This is the <b>first</b> html <u>part</u><br><br><meta http-equiv=\"content-type\" content=\"text/html; charset=us-ascii\"><br><br>This is <strike>the</strike> second html <i>part</i><br><br><br><br><font size=\"2\"><i>This</i> is the last <b>html</b> part</font><div>https://www.there.com</div><div><br></div><br><br>\n<br>",
+                    "headers": "fc18ed2fc1e1c1f999655ad8b2992c86",
+                    "attachments": [
+                        {
+                            "file_name": "attachment1.pdf",
+                            "mime_type": "application/pdf",
+                            "size": 3517,
+                            "embedded": false
+                        },
+                        {
+                            "file_name": "attachment2.pdf",
+                            "mime_type": "application/pdf",
+                            "size": 3718,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

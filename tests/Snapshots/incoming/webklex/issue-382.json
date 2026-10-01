@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Test",
+            "type": 1,
+            "status": 1,
+            "customer_email": "mailer-daemon@mta-09.someserver.com",
+            "cc": "[\"to@here.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "mailer-daemon@mta-09.someserver.com",
+                    "to": "[\"to@here.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "Hi",
+                    "headers": "a9500d814f7b1f11084d07232589691a",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

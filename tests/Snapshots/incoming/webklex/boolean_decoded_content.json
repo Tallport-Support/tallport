@@ -1,0 +1,32 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Nuu",
+            "type": 1,
+            "status": 1,
+            "customer_email": "from@there.com",
+            "cc": "[\"to@here.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "from@there.com",
+                    "to": "[\"to@here.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "Here is the problem mail\n \nBody text",
+                    "headers": "0b5df62f58e5ead59f20236b14bd00de",
+                    "attachments": [
+                        {
+                            "file_name": "Example_Domain.pdf",
+                            "mime_type": "application/octet-stream",
+                            "size": 36,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

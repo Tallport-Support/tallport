@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "RE: [EXTERNAL] Re: Lorem Ipsum /40 one",
+            "type": 1,
+            "status": 1,
+            "customer_email": "sender@sender_domain.tld",
+            "cc": "[\"receipent@receipent_domain.tld\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "sender@sender_domain.tld",
+                    "to": "[\"receipent@receipent_domain.tld\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "Test message",
+                    "headers": "a142920879efef155ea39f69a4b2db8a",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

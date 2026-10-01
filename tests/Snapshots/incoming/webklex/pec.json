@@ -1,0 +1,44 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Certified",
+            "type": 1,
+            "status": 1,
+            "customer_email": "test@example.com",
+            "cc": "[\"test@example.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "test@example.com",
+                    "to": "[\"test@example.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "Signed",
+                    "headers": "3529ad6e64739f8b7caf114ebdbd49c9",
+                    "attachments": [
+                        {
+                            "file_name": "data.xml",
+                            "mime_type": "text/plain",
+                            "size": 6,
+                            "embedded": false
+                        },
+                        {
+                            "file_name": "postacert.eml",
+                            "mime_type": "message/rfc822",
+                            "size": 216,
+                            "embedded": false
+                        },
+                        {
+                            "file_name": "smime.p7s",
+                            "mime_type": "application/octet-stream",
+                            "size": 1,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

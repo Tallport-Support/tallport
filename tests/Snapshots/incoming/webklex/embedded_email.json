@@ -1,0 +1,32 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "embedded message",
+            "type": 1,
+            "status": 1,
+            "customer_email": "demo@cerstor.cz",
+            "cc": "[\"demo@cerstor.cz\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "demo@cerstor.cz",
+                    "to": "[\"demo@cerstor.cz\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "email that contains embedded message",
+                    "headers": "9dd811fc14b283deb846e50f83ad8a1d",
+                    "attachments": [
+                        {
+                            "file_name": "demo.eml",
+                            "mime_type": "message/rfc822",
+                            "size": 893,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

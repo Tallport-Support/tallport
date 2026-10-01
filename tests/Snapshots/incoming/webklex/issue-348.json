@@ -1,0 +1,32 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "2 - test with a strange attachement",
+            "type": 1,
+            "status": 1,
+            "customer_email": "sender@testaddres.com",
+            "cc": "[\"receiver@testaddres.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "sender@testaddres.com",
+                    "to": "[\"receiver@testaddres.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "-------- Original Message --------<br />\r\nSubject: 2 - test with a strange attachement<br />\r\nDate: 2022-11-09 08:36<br />\r\n From: anotherSender@testaddres.com&gt;<br />\r\nTo: &quot;receiver@testaddres.com&quot; &lt;receiver@testaddres.com&gt;<br />\r\n<br />\r\n--- First Text as body test 80 column new line linux style 0x0A ---<br />\r\n<br />\r\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor<br />\r\nincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis<br />\r\nnostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.<br />\r\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu<br />\r\nfugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in<br />\r\nculpa qui officia deserunt mollit anim id est laborum.<br />\r\n<br />\r\n---------------------------------------------------------<br />\r\n<br />\r\n<br />\r\n--- Second Text as body test no column limit (865 characters) one single line ending with 0x0A ---<br />\r\n<br />\r\nSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur<br />\r\n<br />\r\n<br />\r\n---------------------------------------------------------<br />\r\n<br />\r\nDa: From Test sender in another language (IT) &lt;anotherSender@testaddres.com&gt;<br />\r\nInviato: mercoledì 9 novembre 2022 03:17<br />\r\nA: To in another language (IT) &lt;anotherReceiver@testaddres.com&gt;<br />\r\nOggetto: Subject in another language<br />\r\n<br />\r\n--- Third Text as body test 80 column new line linux style 0x0A ---<br />\r\n<br />\r\nAt vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis<br />\r\npraesentium voluptatum deleniti atque corrupti quos dolores et quas molestias<br />\r\nexcepturi sint occaecati<br />\r\ncupiditate non provident, similique sunt in culpa qui officia deserunt mollitia<br />\r\nanimi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et<br />\r\nexpedita distinctio. Nam<br />\r\nlibero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo<br />\r\nminus id quod maxime placeat facere possimus, omnis voluptas assumenda est,<br />\r\nomnis dolor repellendus.<br />\r\nTemporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus<br />\r\nsaepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.<br />\r\nItaque earum rerum hic tenetur a<br />\r\nsapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut<br />\r\nperferendis doloribus asperiores repellat.",
+                    "headers": "79de14033e6a854531d0e8193f8a400a",
+                    "attachments": [
+                        {
+                            "file_name": "Kelvinsong—Font_test_page_bold.pdf",
+                            "mime_type": "application/pdf",
+                            "size": 67511,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

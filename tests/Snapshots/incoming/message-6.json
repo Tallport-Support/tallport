@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Test",
+            "type": 1,
+            "status": 1,
+            "customer_email": "costumer@example.com",
+            "cc": "[\"support@example.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "costumer@example.com",
+                    "to": "[\"support@example.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "<br />\nИлья,<br />\r\nспасибо за оперативный ответ.<br />\r\n<br />\r\n&gt; 2. Сможем исправить, но на доработку потребуется доп. оплачиваемое <br />\r\n&gt; время - 3600 руб. Сообщите, если согласны.<br />\r\n&gt; По доступу - сделаем отдельную ссылку для загрузки весов, а с самого <br />\r\n&gt; дашборда уберем.<br />\r\nДа, подтверждаю.<br />\r\n<br />\r\n&gt; 4. Да, можно будет сделать отдельную ссылку, где не учитываются <br />\r\n&gt; отказавшиеся. Стоимость составит 7200 руб.<br />\r\nДа, давайте сделаем.",
+                    "headers": "bdaf725acf9645b801b6953b5e6cd242",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}
