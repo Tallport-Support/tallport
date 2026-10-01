@@ -446,7 +446,7 @@ class ModulesController extends Controller
                     $user_locale = app()->getLocale();
 
                     $outputLog = new BufferedOutput();
-                    \Artisan::call('freescout:module-install', ['module_alias' => $alias], $outputLog);
+                    \Artisan::call('tallport:module-install', ['module_alias' => $alias], $outputLog);
                     $output = $outputLog->fetch();
 
                     // Get module name
@@ -472,7 +472,7 @@ class ModulesController extends Controller
                     } else {
                         // Deactivate the module.
                         \App\Module::setActive($alias, false);
-                        \Artisan::call('freescout:clear-cache');
+                        \Artisan::call('tallport:clear-cache');
                     }
 
                     // Check public folder.
@@ -482,7 +482,7 @@ class ModulesController extends Controller
                             $type = 'danger';
                             $msg = 'Error occurred creating a module symlink ('.$symlink_path.'). Please check folder permissions.';
                             \App\Module::setActive($alias, false);
-                            \Artisan::call('freescout:clear-cache');
+                            \Artisan::call('tallport:clear-cache');
                         }
                     }
 
@@ -510,7 +510,7 @@ class ModulesController extends Controller
                 $user_locale = app()->getLocale();
 
                 $outputLog = new BufferedOutput();
-                \Artisan::call('freescout:clear-cache', [], $outputLog);
+                \Artisan::call('tallport:clear-cache', [], $outputLog);
                 $output = $outputLog->fetch();
 
                 // Get module name
@@ -569,7 +569,7 @@ class ModulesController extends Controller
 
                                 // Deactivate module
                                 \App\Module::setActive($alias, false);
-                                \Artisan::call('freescout:clear-cache', []);
+                                \Artisan::call('tallport:clear-cache', []);
                             }
 
                             // Flash does not work here.

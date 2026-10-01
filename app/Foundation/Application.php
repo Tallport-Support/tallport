@@ -112,7 +112,7 @@ class Application extends BaseApplication
             if (in_array($provider, $configured)) {
                 return true;
             }
-            $this->make('log')->error('Service provider '.$provider.' not found and skipped; clear the cache (php artisan freescout:clear-cache).');
+            $this->make('log')->error('Service provider '.$provider.' not found and skipped; clear the cache (php artisan tallport:clear-cache).');
 
             return false;
         })->values()->toArray();

@@ -1961,7 +1961,7 @@ class Conversation extends Model
         $viewers_cache = \Cache::get('conv_view');
         $viewers = [];
         $user_ids = [];
-        // Skip stale records not yet removed by freescout:check-conv-viewers.
+        // Skip stale records not yet removed by tallport:check-conv-viewers.
         // Dates have 'Y-m-d H:i:s' format, so they can be compared as strings.
         // https://github.com/freescout-help-desk/freescout/pull/5670
         $min_date = \Carbon\Carbon::now()->subSeconds(30)->toDateTimeString();

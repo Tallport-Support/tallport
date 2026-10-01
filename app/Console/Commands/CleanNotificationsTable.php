@@ -13,7 +13,14 @@ class CleanNotificationsTable extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:clean-notifications-table';
+    protected $signature = 'tallport:clean-notifications-table';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:clean-notifications-table'];
 
     /**
      * The console command description.

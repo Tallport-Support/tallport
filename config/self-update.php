@@ -110,11 +110,13 @@ return [
             //]
         ],
         'post_update' => [
+            // The FreeScout name (an alias in Tallport): FreeScout runs this
+            // config too when an installation switches to Tallport.
             'freescout:after-app-update' => [
                 'class'  => \App\Console\Commands\AfterAppUpdate::class,
                 'params' => [],
             ],
-            // 'freescout:clear-cache' => [
+            // 'tallport:clear-cache' => [
             //     'class' => \App\Console\Commands\ClearCache::class,
             //     'params' => [],
             // ],

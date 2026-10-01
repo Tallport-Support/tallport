@@ -11,7 +11,7 @@ use Webklex\PHPIMAP\Message;
  * Email in and out without mail servers.
  *
  * Incoming: raw RFC 822 messages are parsed by Webklex and processed by the
- * same code freescout:fetch-emails runs for each fetched message.
+ * same code tallport:fetch-emails runs for each fetched message.
  *
  * Outgoing: FreeScout picks the mail driver per mailbox and rebuilds the
  * mailer when the mail config changes (MailHelper::reapplyMailConfig), which
@@ -102,7 +102,7 @@ trait InteractsWithMail
     }
 
     /**
-     * Receive an email into a mailbox, as freescout:fetch-emails would after
+     * Receive an email into a mailbox, as tallport:fetch-emails would after
      * fetching it, including sending the notifications it triggers.
      *
      * Pass all mailboxes being fetched to have an email addressed to several

@@ -14,7 +14,14 @@ class Update extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:update {--force : Force the operation to run when in production.}';
+    protected $signature = 'tallport:update {--force : Force the operation to run when in production.}';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:update'];
 
     /**
      * The console command description.
@@ -70,7 +77,7 @@ class Update extends Command
             }
 
             if ($this->afterAppUpdate() !== 0) {
-                $this->error('Updated, but freescout:after-app-update failed. Run it again: php artisan freescout:after-app-update');
+                $this->error('Updated, but tallport:after-app-update failed. Run it again: php artisan tallport:after-app-update');
             }
         } else {
             $this->info('You have the latest version installed: '.config('app.version'));
@@ -78,14 +85,14 @@ class Update extends Command
     }
 
     /**
-     * Run freescout:after-app-update in a new process: this one still runs
+     * Run tallport:after-app-update in a new process: this one still runs
      * the old code, whose autoloader may point to files the update removed.
      *
      * @return int Exit code.
      */
     protected function afterAppUpdate()
     {
-        passthru(escapeshellarg(PHP_BINARY).' '.escapeshellarg(base_path('artisan')).' freescout:after-app-update', $exit_code);
+        passthru(escapeshellarg(PHP_BINARY).' '.escapeshellarg(base_path('artisan')).' tallport:after-app-update', $exit_code);
 
         return $exit_code;
     }

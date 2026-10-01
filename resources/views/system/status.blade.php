@@ -247,7 +247,7 @@
                     <th>{{ $command['name'] }}</th>
                     <td class="table-main-col">
                         <strong class="text-@if ($command['status'] == "success"){{ 'success' }}@else{{ 'danger' }}@endif">{!! $command['status_text'] !!}</strong>
-                        @if ($command['name'] == 'freescout:fetch-emails' && $command['status'] != "success")
+                        @if ($command['name'] == 'tallport:fetch-emails' && $command['status'] != "success")
                             (<a href="{{ route('logs', ['name' => 'fetch_errors']) }}">{{ __('See logs') }}</a>)
                         @endif
                     </td>

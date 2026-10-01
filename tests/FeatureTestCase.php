@@ -24,10 +24,10 @@ abstract class FeatureTestCase extends TestCase
      * StubCommand, which records calls for assertCommandCalled().
      */
     protected $stubbed_commands = [
-        'freescout:clear-cache', 'config:cache', 'config:clear', 'route:cache', 'clear-compiled',
-        'freescout:generate-vars', 'laroute:generate', 'freescout:module-laroute',
-        'freescout:module-install', 'module:migrate', 'module:seed', 'migrate',
-        'freescout:fetch-emails', 'freescout:logout-users',
+        'tallport:clear-cache', 'config:cache', 'config:clear', 'route:cache', 'clear-compiled',
+        'tallport:generate-vars', 'laroute:generate', 'tallport:module-laroute',
+        'tallport:module-install', 'module:migrate', 'module:seed', 'migrate',
+        'tallport:fetch-emails', 'tallport:logout-users',
         'schedule:run', 'storage:link',
     ];
 

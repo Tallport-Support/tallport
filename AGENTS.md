@@ -69,8 +69,8 @@ Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Lara
 ## Releases and production
 
 - Releases are made with `./release.sh <version> -m "notes"` from a commit on origin/main that passed the Tests workflow. Installations pick them up through the built-in updater.
-- After an update, `php artisan freescout:after-app-update` must run from the command line.
-- After changing `.env` or config, run `php artisan freescout:clear-cache`.
+- After an update, `php artisan tallport:after-app-update` must run from the command line.
+- After changing `.env` or config, run `php artisan tallport:clear-cache`.
 
 === foundation rules ===
 
@@ -173,7 +173,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 # Deployment
 
-- Tallport isn't deployed with Laravel Cloud or Forge. Installations update themselves from GitHub releases through the built-in updater (System > Status > Update Now, or `php artisan freescout:update`).
+- Tallport isn't deployed with Laravel Cloud or Forge. Installations update themselves from GitHub releases through the built-in updater (System > Status > Update Now, or `php artisan tallport:update`).
 - A release is made with `./release.sh` (see the Tallport rules). Nothing else deploys code.
 
 === laravel/core rules ===

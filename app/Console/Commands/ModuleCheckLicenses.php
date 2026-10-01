@@ -12,7 +12,14 @@ class ModuleCheckLicenses extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:module-check-licenses';
+    protected $signature = 'tallport:module-check-licenses';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:module-check-licenses'];
 
     /**
      * The console command description.

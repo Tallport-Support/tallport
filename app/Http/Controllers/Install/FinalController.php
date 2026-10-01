@@ -29,7 +29,7 @@ class FinalController extends Controller
         $finalEnvFile = $environment->getEnvContent();
 
         // Now clear cache and cache config
-        \Artisan::call('freescout:clear-cache');
+        \Artisan::call('tallport:clear-cache');
 
 
         return view('vendor.installer.finished', compact('finalMessages', 'finalStatusMessage', 'finalEnvFile', 'dbMessage'));

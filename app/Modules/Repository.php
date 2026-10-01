@@ -52,7 +52,7 @@ class Repository extends \Nwidart\Modules\Laravel\Repository
                 $name = Json::make($manifest)->get('name');
 
                 $modules[$name] = $this->createModule($this->app, $name, dirname($manifest));
-                // The cached configuration is rebuilt by freescout:clear-cache.
+                // The cached configuration is rebuilt by tallport:clear-cache.
                 $alias = $modules[$name]->getAlias();
                 if ($alias) {
                     $modules[$name]->json()->set('active', (int) \App\Module::isActive($alias));

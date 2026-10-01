@@ -90,7 +90,7 @@ class SystemController extends Controller
 
         // Commands
         $commands_list = [
-            'freescout:fetch-emails' => 'freescout:fetch-emails',
+            'tallport:fetch-emails' => 'tallport:fetch-emails',
             \Helper::getWorkerIdentifier() => 'queue:work',
         ];
         foreach ($commands_list as $command_identifier => $command_name) {
@@ -185,7 +185,7 @@ class SystemController extends Controller
             if ($command_name == 'queue:work' && !$last_successful_run) {
                 $status_texts[] = __h('Try to :%a_start%clear cache:%a_end% to force command to start.', ['%a_start%' => '<a href="'.route('system.tools').'" target="_blank">', '%a_end%' => '</a>']);
                 // This sometimes makes Status page open as non logged in user.
-                //\Artisan::call('freescout:clear-cache', ['--doNotGenerateVars' => true]);
+                //\Artisan::call('tallport:clear-cache', ['--doNotGenerateVars' => true]);
             }
 
             $commands[] = [
@@ -297,7 +297,7 @@ class SystemController extends Controller
 
         switch ($request->action) {
             case 'clear_cache':
-                \Artisan::call('freescout:clear-cache', [], $outputLog);
+                \Artisan::call('tallport:clear-cache', [], $outputLog);
                 break;
 
             case 'fetch_emails':
@@ -305,7 +305,7 @@ class SystemController extends Controller
                 $params['--days'] = (int)$request->days;
                 $params['--unseen'] = (int)$request->unseen;
                 $params['--debug'] = (int)$request->debug;
-                \Artisan::call('freescout:fetch-emails', $params, $outputLog);
+                \Artisan::call('tallport:fetch-emails', $params, $outputLog);
                 break;
 
             case 'migrate_db':
@@ -313,7 +313,7 @@ class SystemController extends Controller
                 break;
 
             case 'logout_users':
-                \Artisan::call('freescout:logout-users', [], $outputLog);
+                \Artisan::call('tallport:logout-users', [], $outputLog);
                 break;
         }
 

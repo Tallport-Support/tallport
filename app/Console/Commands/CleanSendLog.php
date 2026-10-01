@@ -13,7 +13,14 @@ class CleanSendLog extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:clean-send-log';
+    protected $signature = 'tallport:clean-send-log';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:clean-send-log'];
 
     /**
      * The console command description.

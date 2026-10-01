@@ -286,7 +286,7 @@
             // To prevent 500 errors on update.
             // Also catches errors when activating a module and public symlink not created for module.
             if (strstr($e->getMessage(), 'vars.js')) {
-                \Artisan::call('freescout:generate-vars');
+                \Artisan::call('tallport:generate-vars');
             }
             \Helper::logException($e);
         }

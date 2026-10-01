@@ -12,7 +12,14 @@ class ModuleLaroute extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:module-laroute {module_alias?}';
+    protected $signature = 'tallport:module-laroute {module_alias?}';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:module-laroute'];
 
     /**
      * The console command description.
@@ -73,7 +80,7 @@ class ModuleLaroute extends Command
 
         $public_symlink = public_path('modules').DIRECTORY_SEPARATOR.$module->getAlias();
         if (!file_exists($public_symlink)) {
-            $this->error('Public symlink ['.$public_symlink.'] not found. Run module installation command first: php artisan freescout:module-install');
+            $this->error('Public symlink ['.$public_symlink.'] not found. Run module installation command first: php artisan tallport:module-install');
 
             return;
         }

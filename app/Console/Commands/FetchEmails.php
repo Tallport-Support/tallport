@@ -35,7 +35,14 @@ class FetchEmails extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:fetch-emails {--days=3} {--unseen=1} {--debug=0} {--identifier=dummy} {--mailboxes=0}';
+    protected $signature = 'tallport:fetch-emails {--days=3} {--unseen=1} {--debug=0} {--identifier=dummy} {--mailboxes=0}';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:fetch-emails'];
 
     /**
      * The console command description.

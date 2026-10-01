@@ -289,6 +289,6 @@ class RemainingAjaxActionsTest extends FeatureTestCase
         $this->assertSame('error', $delete_missing['status'], 'Deleting a missing module is not a success (S5).');
 
         $this->assertSame('success', $ajax(['action' => 'deactivate', 'alias' => 'nosuchmodule'])['status']);
-        $this->assertCommandCalled('freescout:clear-cache');
+        $this->assertCommandCalled('tallport:clear-cache');
     }
 }

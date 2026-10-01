@@ -43,37 +43,37 @@ class Kernel extends ConsoleKernel
         $schedule->command('queue:restart')
             ->hourly();
 
-        $schedule->command('freescout:fetch-monitor')
+        $schedule->command('tallport:fetch-monitor')
             ->everyMinute()
             ->withoutOverlapping();
 
-        $schedule->command('freescout:send-monitor')
+        $schedule->command('tallport:send-monitor')
             // Every 10 minutes.
             ->cron('*/10 * * * *')
             ->withoutOverlapping();
 
-        $schedule->command('freescout:update-folder-counters')
+        $schedule->command('tallport:update-folder-counters')
             ->hourly();
 
         $app_key = config('app.key');
         if ($app_key) {
             $crc = crc32($app_key);
-            $schedule->command('freescout:module-check-licenses')
+            $schedule->command('tallport:module-check-licenses')
                 ->cron((int)($crc % 59).' '.(int)($crc % 23).' * * *');
         }
 
         // Check if user finished viewing conversation.
-        $schedule->command('freescout:check-conv-viewers')
+        $schedule->command('tallport:check-conv-viewers')
             ->everyMinute()
             ->withoutOverlapping();
 
-        $schedule->command('freescout:clean-send-log')
+        $schedule->command('tallport:clean-send-log')
             ->monthly();
 
-        $schedule->command('freescout:clean-notifications-table')
+        $schedule->command('tallport:clean-notifications-table')
             ->weekly();
 
-        $schedule->command('freescout:clean-tmp')
+        $schedule->command('tallport:clean-tmp')
             ->daily();
 
         // Logs monitoring.
@@ -95,15 +95,17 @@ class Kernel extends ConsoleKernel
                     break;
             }
             if ($logs_cron) {
-                $schedule->command('freescout:logs-monitor')
+                $schedule->command('tallport:logs-monitor')
                     ->cron($logs_cron)
                     ->withoutOverlapping();
             }
         }
 
         $fetch_unseen = (int)config('app.fetch_unseen');
+        // The old command name stays the salt, so fetch processes started before
+        // the rename to tallport:fetch-emails are still recognised.
         $fetch_command_identifier = \Helper::getWorkerIdentifier('freescout:fetch-emails');
-        $fetch_command_name = 'freescout:fetch-emails'
+        $fetch_command_name = 'tallport:fetch-emails'
             . ' --identifier='.$fetch_command_identifier
             . ' --unseen='.$fetch_unseen;
 
@@ -128,14 +130,14 @@ class Kernel extends ConsoleKernel
             // it means the mutex had expired after 'fetch_max_execution_time'
             // and the existing command(s) is running longer than 'fetch_max_execution_time'.
             if (count($fetch_command_pids) > 0 && !\Cache::get($mutex_name)) {
-                // Kill freescout:fetch-emails commands running for too long
+                // Kill tallport:fetch-emails commands running for too long
                 shell_exec('kill '.implode(' | kill ', $fetch_command_pids));
             } elseif (count($fetch_command_pids) == 0) {
                 // Make sure 'ps' command actually works.
                 $ps_works = \Helper::getRunningProcesses('schedule:run');
 
                 if (count($ps_works)) {
-                    // Previous freescout:fetch-emails may have been killed or errored and did not remove the mutex.
+                    // Previous tallport:fetch-emails may have been killed or errored and did not remove the mutex.
                     // So here we are forcefully removing the mutex. Otherwise mutex will live for 24 hours.
                     if (\Cache::has($mutex_name)) {
                         \Cache::forget($mutex_name);

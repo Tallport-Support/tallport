@@ -11,7 +11,14 @@ class LogoutUsers extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:logout-users';
+    protected $signature = 'tallport:logout-users';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:logout-users'];
 
     /**
      * The console command description.

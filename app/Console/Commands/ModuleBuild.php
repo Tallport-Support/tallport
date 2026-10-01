@@ -12,7 +12,14 @@ class ModuleBuild extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:module-build {module_alias?}';
+    protected $signature = 'tallport:module-build {module_alias?}';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:module-build'];
 
     /**
      * The console command description.
@@ -65,7 +72,7 @@ class ModuleBuild extends Command
         if ($all) {
             foreach ($modules as $module) {
                 $this->buildModule($module);
-                $this->call('freescout:module-laroute', ['module_alias' => $module->getAlias()]);
+                $this->call('tallport:module-laroute', ['module_alias' => $module->getAlias()]);
             }
         } else {
             $module = \Module::findByAlias($module_alias);
@@ -75,7 +82,7 @@ class ModuleBuild extends Command
                 return;
             }
             $this->buildModule($module);
-            $this->call('freescout:module-laroute');
+            $this->call('tallport:module-laroute');
         }
     }
 
@@ -85,7 +92,7 @@ class ModuleBuild extends Command
 
         $public_symlink = public_path('modules').DIRECTORY_SEPARATOR.$module->alias;
         if (!file_exists($public_symlink)) {
-            $this->error('Public symlink ['.$public_symlink.'] not found. Run module installation command first: php artisan freescout:module-install');
+            $this->error('Public symlink ['.$public_symlink.'] not found. Run module installation command first: php artisan tallport:module-install');
 
             return;
         }

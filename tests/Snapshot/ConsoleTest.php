@@ -23,9 +23,14 @@ class ConsoleTest extends TestCase
             if (strpos(get_class($command), 'App\\') !== 0) {
                 continue;
             }
+            // Aliases (the old freescout:* names) are listed with the command.
+            if ($name !== $command->getName()) {
+                continue;
+            }
             $definition = $command->getDefinition();
-            $commands[$name] = [
+            $commands[$name] = array_filter([
                 'class'       => get_class($command),
+                'aliases'     => $command->getAliases() ?: null,
                 'description' => $command->getDescription(),
                 'arguments'   => array_map(function ($argument) {
                     return [
@@ -44,7 +49,9 @@ class ConsoleTest extends TestCase
                         return $value !== null;
                     });
                 }, $definition->getOptions()) ?: new \stdClass(),
-            ];
+            ], function ($value) {
+                return $value !== null;
+            });
         }
         ksort($commands);
 

@@ -85,7 +85,7 @@ class SettingsAndSystemTest extends FeatureTestCase
         $this->assertStringContainsString("APP_TIMEZONE=Europe/Amsterdam\n", $this->envFile());
         $this->assertStringContainsString('APP_LOCALE=nl', $this->envFile());
         $this->assertStringContainsString('APP_MAX_MESSAGE_SIZE=20', $this->envFile());
-        $this->assertCommandCalled('freescout:clear-cache');
+        $this->assertCommandCalled('tallport:clear-cache');
     }
 
     public function testSaveMailSettings()
@@ -184,7 +184,7 @@ class SettingsAndSystemTest extends FeatureTestCase
     {
         $this->postForm($this->admin, '/system/tools', ['action' => 'clear_cache'])->assertRedirect(route('system.tools'));
 
-        $this->assertCommandCalled('freescout:clear-cache');
+        $this->assertCommandCalled('tallport:clear-cache');
     }
 
     // Modules.

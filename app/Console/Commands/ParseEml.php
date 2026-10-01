@@ -15,7 +15,14 @@ class ParseEml extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:parse-eml';
+    protected $signature = 'tallport:parse-eml';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:parse-eml'];
 
     /**
      * The console command description.

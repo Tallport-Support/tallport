@@ -12,7 +12,14 @@ class CreateUser extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:create-user {--role=} {--firstName=} {--lastName=} {--email=} {--password=}';
+    protected $signature = 'tallport:create-user {--role=} {--firstName=} {--lastName=} {--email=} {--password=}';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:create-user'];
 
     /**
      * The console command description.

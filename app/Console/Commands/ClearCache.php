@@ -11,7 +11,14 @@ class ClearCache extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:clear-cache {--doNotCacheConfig} {--doNotGenerateVars}';
+    protected $signature = 'tallport:clear-cache {--doNotCacheConfig} {--doNotGenerateVars}';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:clear-cache'];
 
     /**
      * The console command description.
@@ -74,7 +81,7 @@ class ClearCache extends Command
 
         // Regenerate vars to get new data from .env
         if (!$this->option('doNotGenerateVars')) {
-            $this->call('freescout:generate-vars');
+            $this->call('tallport:generate-vars');
         }
 
         // This should not be done during installation.

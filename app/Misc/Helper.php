@@ -1305,7 +1305,7 @@ class Helper
      */
     public static function clearCache($options = [])
     {
-        \Artisan::call('freescout:clear-cache', $options);
+        \Artisan::call('tallport:clear-cache', $options);
     }
 
     /**

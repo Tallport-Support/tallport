@@ -110,14 +110,18 @@ FreeScout back.
 **Manage » System » Status » Update Now**, or on the server:
 
 ```bash
-sudo -u www-data php artisan freescout:update
+sudo -u www-data php artisan tallport:update
 ```
 
 The updater installs the latest published release from this repository.
-Draft and pre-release versions are skipped. `freescout:update` then runs
-`php artisan freescout:after-app-update` (cache, database migrations, queue
+Draft and pre-release versions are skipped. `tallport:update` then runs
+`php artisan tallport:after-app-update` (cache, database migrations, queue
 restart); after updating from the web interface, run that command on the
 server yourself.
+
+Tallport's artisan commands are named `tallport:*`. The FreeScout names
+(`freescout:update`, `freescout:clear-cache`, ...) still work, for modules,
+cron jobs and scripts.
 
 ## Modules
 

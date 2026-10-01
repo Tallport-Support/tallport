@@ -11,7 +11,14 @@ class AfterAppUpdate extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:after-app-update';
+    protected $signature = 'tallport:after-app-update';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:after-app-update'];
 
     /**
      * The console command description.
@@ -46,7 +53,7 @@ class AfterAppUpdate extends Command
             }
         }
 
-        $this->call('freescout:clear-cache');
+        $this->call('tallport:clear-cache');
         $this->call('migrate', ['--force' => true]);
         $this->call('queue:restart');
 

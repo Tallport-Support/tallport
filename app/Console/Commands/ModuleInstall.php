@@ -1,6 +1,6 @@
 <?php
 /**
- * php artisan freescout:module-install modulealias.
+ * php artisan tallport:module-install modulealias.
  */
 
 namespace App\Console\Commands;
@@ -14,7 +14,14 @@ class ModuleInstall extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:module-install {module_alias?}';
+    protected $signature = 'tallport:module-install {module_alias?}';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:module-install'];
 
     /**
      * The console command description.
@@ -83,7 +90,7 @@ class ModuleInstall extends Command
             $this->createModulePublicSymlink($module);
         }
         $this->line('Clearing cache...');
-        $this->call('freescout:clear-cache');
+        $this->call('tallport:clear-cache');
     }
 
     // There is similar function in \App\Module.

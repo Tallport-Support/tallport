@@ -19,11 +19,11 @@ return [
     'ajax ModulesController@ajax update'     => $network,
     'ajax ModulesController@ajax update_all' => $network,
 
-    'command freescout:module-build'   => $modules_on_disk,
-    'command freescout:module-install' => $modules_on_disk,
-    'command freescout:module-laroute' => $modules_on_disk,
+    'command tallport:module-build'   => $modules_on_disk,
+    'command tallport:module-install' => $modules_on_disk,
+    'command tallport:module-laroute' => $modules_on_disk,
     'command module:migrate'           => $modules_on_disk,
-    'command freescout:clean-tmp'      => 'cleans the real system temp dir; its logic (CleanTmp::cleanDirectory) is tested on a scratch dir',
+    'command tallport:clean-tmp'      => 'cleans the real system temp dir; its logic (CleanTmp::cleanDirectory) is tested on a scratch dir',
 
     'job App\Jobs\RestartQueueWorker' => 'calls exit() to stop the queue worker',
 

@@ -107,7 +107,7 @@ class EnvironmentManager
         // 'APP_DEBUG=' . $request->app_debug . "\n" .
         // 'APP_LOG_LEVEL=' . $request->app_log_level . "\n" .
         '# Every time you are making changes in .env file, in order changes to take an effect you need to run:'."\n".
-        '# php artisan freescout:clear-cache'."\n\n".
+        '# php artisan tallport:clear-cache'."\n\n".
         '# Application URL'."\n".
         'APP_URL='.EnvFile::formatValue($request->app_url)."\n\n".
         '# Improve security'."\n".
@@ -157,8 +157,8 @@ class EnvironmentManager
 
         // Clear and update cache
         // If we cache config here, it caches env data from memory
-        //\Artisan::call('freescout:clear-cache');
-        \Artisan::call('freescout:clear-cache', ['--doNotCacheConfig' => true]);
+        //\Artisan::call('tallport:clear-cache');
+        \Artisan::call('tallport:clear-cache', ['--doNotCacheConfig' => true]);
 
         return $results;
     }

@@ -11,7 +11,14 @@ class FetchMonitor extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:fetch-monitor';
+    protected $signature = 'tallport:fetch-monitor';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:fetch-monitor'];
 
     /**
      * The console command description.

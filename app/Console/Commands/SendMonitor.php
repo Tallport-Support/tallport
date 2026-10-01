@@ -14,7 +14,14 @@ class SendMonitor extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:send-monitor';
+    protected $signature = 'tallport:send-monitor';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:send-monitor'];
 
     /**
      * The console command description.

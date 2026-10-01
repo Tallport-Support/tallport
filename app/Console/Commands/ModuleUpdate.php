@@ -1,6 +1,6 @@
 <?php
 /**
- * php artisan freescout:module-install modulealias.
+ * php artisan tallport:module-install modulealias.
  */
 
 namespace App\Console\Commands;
@@ -14,7 +14,14 @@ class ModuleUpdate extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:module-update {module_alias?}';
+    protected $signature = 'tallport:module-update {module_alias?}';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:module-update'];
 
     /**
      * The console command description.
@@ -164,6 +171,6 @@ class ModuleUpdate extends Command
             $this->line('All modules are up-to-date');
         }
 
-        \Artisan::call('freescout:clear-cache');
+        \Artisan::call('tallport:clear-cache');
     }
 }

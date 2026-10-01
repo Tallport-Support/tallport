@@ -11,7 +11,14 @@ class LogsMonitor extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:logs-monitor';
+    protected $signature = 'tallport:logs-monitor';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:logs-monitor'];
 
     /**
      * The console command description.

@@ -13,7 +13,14 @@ class CleanTmp extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:clean-tmp';
+    protected $signature = 'tallport:clean-tmp';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:clean-tmp'];
 
     /**
      * The console command description.

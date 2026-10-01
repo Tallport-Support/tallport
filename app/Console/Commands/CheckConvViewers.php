@@ -12,7 +12,14 @@ class CheckConvViewers extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:check-conv-viewers';
+    protected $signature = 'tallport:check-conv-viewers';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:check-conv-viewers'];
 
     /**
      * The console command description.

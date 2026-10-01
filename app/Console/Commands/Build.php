@@ -11,7 +11,14 @@ class Build extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:build';
+    protected $signature = 'tallport:build';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:build'];
 
     /**
      * The console command description.
@@ -37,7 +44,7 @@ class Build extends Command
      */
     public function handle()
     {
-        $this->call('freescout:generate-vars');
+        $this->call('tallport:generate-vars');
         $this->call('laroute:generate');
     }
 }

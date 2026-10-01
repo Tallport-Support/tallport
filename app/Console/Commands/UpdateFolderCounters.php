@@ -11,7 +11,14 @@ class UpdateFolderCounters extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:update-folder-counters';
+    protected $signature = 'tallport:update-folder-counters';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:update-folder-counters'];
 
     /**
      * The console command description.

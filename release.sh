@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Publish a Tallport release that installations pick up through the built-in
-# updater (System > Status > Update Now, or `php artisan freescout:update`).
+# updater (System > Status > Update Now, or `php artisan tallport:update`).
 #
 #   ./release.sh ["release notes"] [extra gh release create options]
 #   ./release.sh version ["release notes"] [extra gh release create options]

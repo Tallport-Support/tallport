@@ -30,7 +30,7 @@
 		<p>
 			Please configure database access in <code>.env</code> file and run the following console commands:
 		</p>
-		<pre><code>php artisan freescout:clear-cache
+		<pre><code>php artisan tallport:clear-cache
 php artisan migrate</code></pre>
 	@endif
 

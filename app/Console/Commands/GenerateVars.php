@@ -15,7 +15,14 @@ class GenerateVars extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:generate-vars';
+    protected $signature = 'tallport:generate-vars';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:generate-vars'];
 
     /**
      * The console command description.

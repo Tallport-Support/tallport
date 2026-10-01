@@ -44,7 +44,7 @@ class FinalInstallManager
     private static function runCommands($outputLog)
     {
         try {
-            Artisan::call('freescout:clear-cache', [], $outputLog);
+            Artisan::call('tallport:clear-cache', [], $outputLog);
             Artisan::call('storage:link', [], $outputLog);
         } catch (Exception $e) {
             return static::response($e->getMessage(), $outputLog);

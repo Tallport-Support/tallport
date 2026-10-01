@@ -11,7 +11,14 @@ class CheckRequirements extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:check-requirements';
+    protected $signature = 'tallport:check-requirements';
+
+    /**
+     * The name FreeScout used, still accepted (modules, scripts, older updaters).
+     *
+     * @var array
+     */
+    protected $aliases = ['freescout:check-requirements'];
 
     /**
      * The console command description.

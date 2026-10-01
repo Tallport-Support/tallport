@@ -51,7 +51,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         \DB::table('send_logs')->where('email', 'old@example.org')->update(['created_at' => Carbon::now()->subMonths(7)]);
         \DB::table('send_logs')->where('email', 'new@example.org')->update(['created_at' => Carbon::now()->subMonths(5)]);
 
-        $output = $this->runCommand('freescout:clean-send-log');
+        $output = $this->runCommand('tallport:clean-send-log');
 
         $this->assertStringContainsString('Deleted send logs', $output);
         $this->assertSame(['new@example.org'], SendLog::whereIn('email', ['old@example.org', 'new@example.org'])->pluck('email')->all());
@@ -70,7 +70,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         $insert('00000000-0000-0000-0000-000000000002', null, Carbon::now()->subMonths(7));
         $insert('00000000-0000-0000-0000-000000000003', Carbon::now()->subMonth(), Carbon::now()->subMonth());
 
-        $this->runCommand('freescout:clean-notifications-table');
+        $this->runCommand('tallport:clean-notifications-table');
 
         $this->assertEquals(
             ['00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000003'],
@@ -92,11 +92,11 @@ class ConsoleCommandsTest extends FeatureTestCase
         ];
         $job_id = \DB::table('jobs')->insertGetId($job);
 
-        $this->assertStringContainsString('There are problems with emails queue processing', $this->runCommand('freescout:send-monitor'));
+        $this->assertStringContainsString('There are problems with emails queue processing', $this->runCommand('tallport:send-monitor'));
         $this->assertSame('1', Option::where('name', 'send_emails_problem')->value('value'));
 
         \DB::table('jobs')->where('id', $job_id)->delete();
-        $this->assertStringContainsString('Emails queue processing is working', $this->runCommand('freescout:send-monitor'));
+        $this->assertStringContainsString('Emails queue processing is working', $this->runCommand('tallport:send-monitor'));
         $this->assertNull(Option::where('name', 'send_emails_problem')->value('value'));
     }
 
@@ -106,11 +106,11 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->setOption('alert_fetch', true);
         $this->setOption('alert_recipients', 'oncall@example.org');
 
-        $this->assertStringContainsString('Fetching has not been configured yet', $this->runCommand('freescout:fetch-monitor'));
+        $this->assertStringContainsString('Fetching has not been configured yet', $this->runCommand('tallport:fetch-monitor'));
 
         // Last successful fetch an hour ago: over the 15 minute alert period.
         $this->setOption('fetch_emails_last_successful_run', time() - 3600);
-        $this->assertStringContainsString('There are some problems fetching emails', $this->runCommand('freescout:fetch-monitor'));
+        $this->assertStringContainsString('There are some problems fetching emails', $this->runCommand('tallport:fetch-monitor'));
         foreach (['boss@example.org', 'oncall@example.org'] as $recipient) {
             $alerts = $this->sentEmailsTo($recipient);
             $this->assertCount(1, $alerts, "$recipient should be alerted.");
@@ -120,12 +120,12 @@ class ConsoleCommandsTest extends FeatureTestCase
 
         // Still failing: no second alert.
         $this->captured_mail->flush();
-        $this->runCommand('freescout:fetch-monitor');
+        $this->runCommand('tallport:fetch-monitor');
         $this->assertCount(0, $this->sentEmails());
 
         // Working again: one "recovered" message.
         $this->setOption('fetch_emails_last_successful_run', time() - 60);
-        $this->assertStringContainsString('Fetching is working', $this->runCommand('freescout:fetch-monitor'));
+        $this->assertStringContainsString('Fetching is working', $this->runCommand('tallport:fetch-monitor'));
         $this->assertSame('[Tallport] Fetching Recovered - tallport.test', $this->sentEmailsTo('boss@example.org')[0]->getSubject());
     }
 
@@ -134,7 +134,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->createAdmin();
         $this->setOption('fetch_emails_last_successful_run', time() - 3600);
 
-        $this->assertStringContainsString('There are some problems fetching emails', $this->runCommand('freescout:fetch-monitor'));
+        $this->assertStringContainsString('There are some problems fetching emails', $this->runCommand('tallport:fetch-monitor'));
         $this->assertCount(0, $this->sentEmails());
     }
 
@@ -142,7 +142,7 @@ class ConsoleCommandsTest extends FeatureTestCase
     {
         $this->createAdmin(['email' => 'boss@example.org']);
 
-        $this->assertStringContainsString('No logs to monitor selected', $this->runCommand('freescout:logs-monitor'));
+        $this->assertStringContainsString('No logs to monitor selected', $this->runCommand('tallport:logs-monitor'));
 
         $this->setOption('alert_logs_names', [ActivityLog::NAME_EMAILS_SENDING]);
         $this->setOption('alert_logs_period', 'hour');
@@ -151,7 +151,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         // The monitor only reports records from before "now".
         \DB::table('activity_logs')->where('created_at', '>=', Carbon::now()->subMinute())->update(['created_at' => Carbon::now()->subMinute()]);
 
-        $output = $this->runCommand('freescout:logs-monitor');
+        $output = $this->runCommand('tallport:logs-monitor');
 
         $this->assertStringContainsString('Monitoring finished', $output);
         $alert = $this->sentEmailsTo('boss@example.org');
@@ -173,7 +173,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         $unassigned->total_count = 42;
         $unassigned->save();
 
-        $this->assertStringContainsString('Updating finished', $this->runCommand('freescout:update-folder-counters'));
+        $this->assertStringContainsString('Updating finished', $this->runCommand('tallport:update-folder-counters'));
 
         $unassigned->refresh();
         $this->assertEquals(1, $unassigned->active_count);
@@ -192,7 +192,7 @@ class ConsoleCommandsTest extends FeatureTestCase
             8 => [3 => ['t' => $ago(120), 'r' => 0]],
         ], 20);
 
-        $this->runCommand('freescout:check-conv-viewers');
+        $this->runCommand('tallport:check-conv-viewers');
 
         $this->assertEquals([7 => [2 => $fresh]], \Cache::get('conv_view'));
     }
@@ -201,7 +201,7 @@ class ConsoleCommandsTest extends FeatureTestCase
 
     public function testCreateUser()
     {
-        $output = $this->runCommand('freescout:create-user', [
+        $output = $this->runCommand('tallport:create-user', [
             '--role' => 'admin', '--firstName' => 'Cli', '--lastName' => 'Admin',
             '--email' => 'cli-admin@example.org', '--password' => 'cli-password', '--no-interaction' => true,
         ]);
@@ -237,11 +237,11 @@ class ConsoleCommandsTest extends FeatureTestCase
     {
         $options = ['--firstName' => 'Cli', '--lastName' => 'User', '--password' => 'cli-password', '--no-interaction' => true];
 
-        $this->assertStringContainsString('Invalid role', $this->runCommand('freescout:create-user', $options + ['--role' => 'owner', '--email' => 'a@example.org']));
-        $this->assertStringContainsString('Invalid email address', $this->runCommand('freescout:create-user', $options + ['--role' => 'user', '--email' => 'not-an-email']));
+        $this->assertStringContainsString('Invalid role', $this->runCommand('tallport:create-user', $options + ['--role' => 'owner', '--email' => 'a@example.org']));
+        $this->assertStringContainsString('Invalid email address', $this->runCommand('tallport:create-user', $options + ['--role' => 'user', '--email' => 'not-an-email']));
 
         $existing = $this->createUser();
-        $this->assertStringContainsString('User already exists', $this->runCommand('freescout:create-user', $options + ['--role' => 'user', '--email' => $existing->email]));
+        $this->assertStringContainsString('User already exists', $this->runCommand('tallport:create-user', $options + ['--role' => 'user', '--email' => $existing->email]));
         $this->assertSame(0, User::whereIn('email', ['a@example.org', 'not-an-email'])->count());
     }
 
@@ -253,7 +253,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->app->useStoragePath($storage);
 
         try {
-            $output = $this->runCommand('freescout:parse-eml');
+            $output = $this->runCommand('tallport:parse-eml');
         } finally {
             unlink($storage.'/logs/email.eml');
             rmdir($storage.'/logs');
@@ -268,12 +268,12 @@ class ConsoleCommandsTest extends FeatureTestCase
 
     public function testAfterAppUpdateAndBuildRunTheirSteps()
     {
-        $this->runCommand('freescout:after-app-update');
-        $this->assertCommandCalled('freescout:clear-cache');
+        $this->runCommand('tallport:after-app-update');
+        $this->assertCommandCalled('tallport:clear-cache');
         $this->assertCommandCalled('migrate');
 
-        $this->runCommand('freescout:build');
-        $this->assertCommandCalled('freescout:generate-vars');
+        $this->runCommand('tallport:build');
+        $this->assertCommandCalled('tallport:generate-vars');
         $this->assertCommandCalled('laroute:generate');
     }
 
@@ -284,7 +284,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         ini_set('memory_limit', '512M');
 
         try {
-            $output = $this->runCommand('freescout:update', ['--force' => true]);
+            $output = $this->runCommand('tallport:update', ['--force' => true]);
             $limit_after = ini_get('memory_limit');
         } finally {
             ini_set('memory_limit', $memory_limit);
@@ -295,7 +295,7 @@ class ConsoleCommandsTest extends FeatureTestCase
     }
 
     /**
-     * After updating, freescout:after-app-update runs in a new process (this
+     * After updating, tallport:after-app-update runs in a new process (this
      * one still has the old code's autoloader); not when updating failed.
      */
     public function testUpdateCommandRunsAfterAppUpdateSeparately()
@@ -314,11 +314,11 @@ class ConsoleCommandsTest extends FeatureTestCase
         \Updater::shouldReceive('isNewVersionAvailable')->andReturn(true);
         \Updater::shouldReceive('update')->once()->andReturn(true);
 
-        $this->runCommand('freescout:update', ['--force' => true]);
+        $this->runCommand('tallport:update', ['--force' => true]);
         $this->assertSame(1, $command::$runs);
 
         \Updater::shouldReceive('update')->andThrow(new \Exception('download failed'));
-        $output = $this->runCommand('freescout:update', ['--force' => true]);
+        $output = $this->runCommand('tallport:update', ['--force' => true]);
         $this->assertStringContainsString('Error occurred: download failed', $output);
         $this->assertSame(1, $command::$runs);
     }
@@ -329,7 +329,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         \Updater::shouldReceive('isNewVersionAvailable')->never();
         \Updater::shouldReceive('update')->never();
 
-        $output = $this->runCommand('freescout:update', ['--force' => true]);
+        $output = $this->runCommand('tallport:update', ['--force' => true]);
 
         $this->assertStringContainsString('Updating is disabled', $output);
     }
@@ -342,14 +342,14 @@ class ConsoleCommandsTest extends FeatureTestCase
     {
         // It runs cache:clear itself, which replaces Artisan::output().
         $output = new \Symfony\Component\Console\Output\BufferedOutput();
-        \Artisan::call('freescout:module-update', [], $output);
+        \Artisan::call('tallport:module-update', [], $output);
 
         $this->assertStringContainsString('Error occurred', $output->fetch());
     }
 
     public function testModuleLicenseCheckWithoutNetwork()
     {
-        $this->assertStringContainsString('Checking licenses finished', $this->runCommand('freescout:module-check-licenses'));
+        $this->assertStringContainsString('Checking licenses finished', $this->runCommand('tallport:module-check-licenses'));
     }
 
     /**
@@ -408,7 +408,7 @@ class ConsoleCommandsTest extends FeatureTestCase
 
     public function testCheckRequirements()
     {
-        $output = $this->runCommand('freescout:check-requirements');
+        $output = $this->runCommand('tallport:check-requirements');
 
         $this->assertStringContainsString('PHP Version', $output);
         $this->assertStringContainsString('PHP Extensions', $output);
@@ -427,7 +427,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->useRealCommand(\App\Console\Commands\FetchEmails::class);
         $this->createMailbox();
 
-        $output = $this->runCommand('freescout:fetch-emails');
+        $output = $this->runCommand('tallport:fetch-emails');
 
         $this->assertStringContainsString('Fetching finished', $output);
         $this->assertNotEmpty(Option::where('name', 'fetch_emails_last_run')->value('value'));
@@ -442,7 +442,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         \Storage::fake('local');
 
         try {
-            $output = $this->runCommand('freescout:generate-vars');
+            $output = $this->runCommand('tallport:generate-vars');
             $vars = file_get_contents($public.'/js/builds/vars.js');
         } finally {
             @unlink($public.'/js/builds/vars.js');
@@ -465,7 +465,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->app->useStoragePath($storage);
 
         try {
-            $output = $this->runCommand('freescout:logout-users');
+            $output = $this->runCommand('tallport:logout-users');
             $left = glob($storage.'/framework/sessions/*');
         } finally {
             array_map('unlink', glob($storage.'/framework/sessions/*'));
@@ -501,7 +501,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         }
 
         try {
-            $output = $this->runCommand('freescout:clear-cache');
+            $output = $this->runCommand('tallport:clear-cache');
             $left = array_map('basename', array_merge(glob($public.'/js/builds/*'), glob($public.'/css/builds/*')));
         } finally {
             foreach ($cached as $file => $contents) {
@@ -517,7 +517,7 @@ class ConsoleCommandsTest extends FeatureTestCase
 
         $this->assertStringContainsString('Cleared: JS and CSS builds', $output);
         $this->assertSame(['vars.js'], $left, 'Builds are removed, vars.js is kept.');
-        foreach (['clear-compiled', 'view:clear', 'config:cache', 'freescout:generate-vars'] as $step) {
+        foreach (['clear-compiled', 'view:clear', 'config:cache', 'tallport:generate-vars'] as $step) {
             $this->assertCommandCalled($step);
         }
     }
@@ -530,7 +530,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         $unassigned->active_count = 42;
         $unassigned->save();
 
-        $this->runCommand('freescout:update-folder-counters');
+        $this->runCommand('tallport:update-folder-counters');
 
         $this->assertEquals(0, $unassigned->fresh()->active_count, 'The job ran (sync queue) and fixed the count.');
         $this->assertFalse(\Cache::has('folder_update_lock_'.$unassigned->id), 'The lock is released.');

@@ -201,7 +201,7 @@ class Module extends Model
         // Update modules cache
         \Module::clearCache();
         if ($clear_app_cache) {
-            \Artisan::call('freescout:clear-cache');
+            \Artisan::call('tallport:clear-cache');
         }
     }
 
@@ -481,7 +481,7 @@ class Module extends Model
         // Run post-update instructions.
         if (!$result['msg'] && !$result['download_error']) {
             $output_log = new BufferedOutput();
-            \Artisan::call('freescout:module-install', ['module_alias' => $alias], $output_log);
+            \Artisan::call('tallport:module-install', ['module_alias' => $alias], $output_log);
             $result['output'] = $output_log->fetch() ?: ' ';
 
             $result['msg'] = __('Error occurred activating ":name" module', ['name' => $name]);
@@ -502,7 +502,7 @@ class Module extends Model
                 // Error.
                 // Deactivate module.
                 \App\Module::setActive($alias, false);
-                \Artisan::call('freescout:clear-cache');
+                \Artisan::call('tallport:clear-cache');
             }
         }
 

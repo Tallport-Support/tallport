@@ -8,7 +8,7 @@
 | Here is where you can register open routes for your application. These
 |
 | Every time you change routes, run the following command to make them available in JS:
-|     php artisan freescout:build
+|     php artisan tallport:build
 */
 
 // Download attachments
