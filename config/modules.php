@@ -24,7 +24,8 @@ return [
 
     'stubs' => [
         'enabled' => true,
-        'path'    => base_path().'/overrides/nwidart/laravel-modules/src/Commands/stubs',
+        // Only the stubs FreeScout changed; nwidart uses its own for the rest.
+        'path'    => base_path().'/resources/stubs/modules',
         'files'   => [
             'start'           => 'start.php',
             'routes'          => 'Http/routes.php',
