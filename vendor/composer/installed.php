@@ -46,15 +46,6 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'chumper/zipper' => array(
-            'pretty_version' => 'v1.0.2',
-            'version' => '1.0.2.0',
-            'reference' => '6a1733c34d67c3952b8439afb36ad4ea5c3ceacb',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../chumper/zipper',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'codedge/laravel-selfupdater' => array(
             'pretty_version' => 'dev-customized',
             'version' => 'dev-customized',

@@ -113,8 +113,6 @@ return array(
     'Cron\\' => array($vendorDir . '/dragonmantank/cron-expression/src/Cron'),
     'Codedge\\Updater\\SourceRepositoryTypes\\' => array($baseDir . '/overrides/codedge/laravel-selfupdater/src/SourceRepositoryTypes'),
     'Codedge\\Updater\\' => array($vendorDir . '/codedge/laravel-selfupdater/src'),
-    'Chumper\\Zipper\\Repositories\\' => array($baseDir . '/overrides/chumper/zipper/src/Chumper/Zipper/Repositories'),
-    'Chumper\\Zipper\\' => array($baseDir . '/overrides/chumper/zipper/src/Chumper/Zipper', $vendorDir . '/chumper/zipper/src/Chumper/Zipper'),
     'Carbon\\Doctrine\\' => array($vendorDir . '/carbonphp/carbon-doctrine-types/src/Carbon/Doctrine'),
     'Carbon\\' => array($vendorDir . '/nesbot/carbon/src/Carbon'),
     'Brick\\Math\\' => array($vendorDir . '/brick/math/src'),

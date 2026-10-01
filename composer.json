@@ -92,48 +92,6 @@
         {
             "type": "package",
             "package": {
-                "name": "chumper/zipper",
-                "version": "v1.0.2",
-                "type": "library",
-                "source": {
-                    "type": "git",
-                    "url": "https://github.com/Chumper/Zipper.git",
-                    "reference": "6a1733c34d67c3952b8439afb36ad4ea5c3ceacb"
-                },
-                "dist": {
-                    "type": "zip",
-                    "url": "https://api.github.com/repos/Chumper/Zipper/zipball/6a1733c34d67c3952b8439afb36ad4ea5c3ceacb",
-                    "reference": "6a1733c34d67c3952b8439afb36ad4ea5c3ceacb",
-                    "shasum": ""
-                },
-                "require": {
-                    "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-                    "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-                    "php": ">=5.6.0"
-                },
-                "autoload": {
-                    "psr-4": {
-                        "Chumper\\Zipper\\": "src/Chumper/Zipper"
-                    }
-                },
-                "extra": {
-                    "laravel": {
-                        "providers": [
-                            "Chumper\\Zipper\\ZipperServiceProvider"
-                        ],
-                        "aliases": {
-                            "Zipper": "Chumper\\Zipper\\Zipper"
-                        }
-                    }
-                },
-                "license": [
-                    "Apache2"
-                ]
-            }
-        },
-        {
-            "type": "package",
-            "package": {
                 "name": "codedge/laravel-selfupdater",
                 "version": "dev-customized",
                 "type": "library",
@@ -220,7 +178,6 @@
         "nwidart/laravel-modules": "2.7.0",
         "tormjens/eventy": "0.5.4",
         "barryvdh/laravel-translation-manager": "v0.5.0",
-        "chumper/zipper": "v1.0.2",
         "rachidlaasri/laravel-installer": "4.0.2",
         "rap2hpoutre/laravel-log-viewer": "v3.0.0",
         "codedge/laravel-selfupdater": "dev-customized",
@@ -282,11 +239,9 @@
             "Codedge\\Updater\\SourceRepositoryTypes\\": "overrides/codedge/laravel-selfupdater/src/SourceRepositoryTypes/",
             "Barryvdh\\TranslationManager\\": "overrides/barryvdh/laravel-translation-manager/src/",
             "Lord\\Laroute\\Routes\\": "overrides/lord/laroute/src/Routes/",
-            "Chumper\\Zipper\\Repositories\\": "overrides/chumper/zipper/src/Chumper/Zipper/Repositories/",
             "Faker\\Provider\\": "overrides/fzaninotto/faker/src/Faker/Provider/",
             "Illuminate\\Database\\": "overrides/laravel/framework/src/Illuminate/Database/",
 
-            "Chumper\\Zipper\\": "overrides/chumper/zipper/src/Chumper/Zipper/",
             "Illuminate\\Support\\": "overrides/laravel/framework/src/Illuminate/Support/",
             "Illuminate\\Database\\Eloquent\\": "overrides/laravel/framework/src/Illuminate/Database/Eloquent/",
             "Illuminate\\Database\\Eloquent\\Concerns\\": "overrides/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/",
@@ -313,7 +268,6 @@
             "vendor/barryvdh/laravel-translation-manager/src/Controller.php",
             "vendor/rachidlaasri/laravel-installer/src/Providers/LaravelInstallerServiceProvider.php",
             "vendor/lord/laroute/src/Routes/Collection.php",
-            "vendor/chumper/zipper/src/Chumper/Zipper/Repositories/ZipRepository.php",
             "vendor/fzaninotto/faker/src/Faker/Provider/Base.php",
 
             "vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php",
@@ -334,8 +288,7 @@
             "vendor/webklex/php-imap/src/Query/WhereQuery.php",
             "vendor/webklex/php-imap/src/ClientManager.php",
             "vendor/webklex/php-imap/src/Folder.php",
-            "vendor/webklex/php-imap/src/EncodingAliases.php",
-            "vendor/chumper/zipper/src/Chumper/Zipper/Zipper.php"
+            "vendor/webklex/php-imap/src/EncodingAliases.php"
         ]
     },
     "extra": {

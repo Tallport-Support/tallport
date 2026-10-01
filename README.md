@@ -220,9 +220,9 @@ it isn't there yet, and add the original to `exclude-from-classmap`.
 A few packages are defined in `composer.json` itself (`repositories`,
 type `package`): the same code as their locked version, with only the
 Laravel versions they accept widened, because no release of theirs accepts
-the next Laravel version without other changes (`chumper/zipper`,
-`devfactory/minify`, `barryvdh/laravel-translation-manager`,
-`lord/laroute`, and FreeScout's `codedge/laravel-selfupdater` fork).
+the next Laravel version without other changes (`devfactory/minify`,
+`barryvdh/laravel-translation-manager`, `lord/laroute`, and FreeScout's
+`codedge/laravel-selfupdater` fork).
 
 `composer.json` resolves dependencies for PHP 8.5 (`config.platform.php`,
 the minimum Tallport supports), so an update can't pull in a package that

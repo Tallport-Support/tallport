@@ -232,48 +232,6 @@
             "install-path": "../carbonphp/carbon-doctrine-types"
         },
         {
-            "name": "chumper/zipper",
-            "version": "v1.0.2",
-            "version_normalized": "1.0.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Chumper/Zipper.git",
-                "reference": "6a1733c34d67c3952b8439afb36ad4ea5c3ceacb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Chumper/Zipper/zipball/6a1733c34d67c3952b8439afb36ad4ea5c3ceacb",
-                "reference": "6a1733c34d67c3952b8439afb36ad4ea5c3ceacb",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-                "php": ">=5.6.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Chumper\\Zipper\\ZipperServiceProvider"
-                    ],
-                    "aliases": {
-                        "Zipper": "Chumper\\Zipper\\Zipper"
-                    }
-                }
-            },
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "Chumper\\Zipper\\": "src/Chumper/Zipper"
-                }
-            },
-            "license": [
-                "Apache2"
-            ],
-            "install-path": "../chumper/zipper"
-        },
-        {
             "name": "codedge/laravel-selfupdater",
             "version": "dev-customized",
             "version_normalized": "dev-customized",

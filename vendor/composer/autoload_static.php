@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
+class ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -208,8 +208,6 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
             'Cron\\' => 5,
             'Codedge\\Updater\\SourceRepositoryTypes\\' => 38,
             'Codedge\\Updater\\' => 16,
-            'Chumper\\Zipper\\Repositories\\' => 28,
-            'Chumper\\Zipper\\' => 15,
             'Carbon\\Doctrine\\' => 16,
             'Carbon\\' => 7,
         ),
@@ -665,15 +663,6 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         array (
             0 => __DIR__ . '/..' . '/codedge/laravel-selfupdater/src',
         ),
-        'Chumper\\Zipper\\Repositories\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/chumper/zipper/src/Chumper/Zipper/Repositories',
-        ),
-        'Chumper\\Zipper\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/chumper/zipper/src/Chumper/Zipper',
-            1 => __DIR__ . '/..' . '/chumper/zipper/src/Chumper/Zipper',
-        ),
         'Carbon\\Doctrine\\' =>
         array (
             0 => __DIR__ . '/..' . '/carbonphp/carbon-doctrine-types/src/Carbon/Doctrine',
@@ -1037,11 +1026,6 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         'Carbon\\Unit' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Unit.php',
         'Carbon\\WeekDay' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/WeekDay.php',
         'Carbon\\WrapperClock' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/WrapperClock.php',
-        'Chumper\\Zipper\\Facades\\Zipper' => __DIR__ . '/..' . '/chumper/zipper/src/Chumper/Zipper/Facades/Zipper.php',
-        'Chumper\\Zipper\\Repositories\\RepositoryInterface' => __DIR__ . '/..' . '/chumper/zipper/src/Chumper/Zipper/Repositories/RepositoryInterface.php',
-        'Chumper\\Zipper\\Repositories\\ZipRepository' => __DIR__ . '/../..' . '/overrides/chumper/zipper/src/Chumper/Zipper/Repositories/ZipRepository.php',
-        'Chumper\\Zipper\\Zipper' => __DIR__ . '/../..' . '/overrides/chumper/zipper/src/Chumper/Zipper/Zipper.php',
-        'Chumper\\Zipper\\ZipperServiceProvider' => __DIR__ . '/..' . '/chumper/zipper/src/Chumper/Zipper/ZipperServiceProvider.php',
         'Codedge\\Updater\\AbstractRepositoryType' => __DIR__ . '/..' . '/codedge/laravel-selfupdater/src/AbstractRepositoryType.php',
         'Codedge\\Updater\\Commands\\CheckForUpdate' => __DIR__ . '/..' . '/codedge/laravel-selfupdater/src/Commands/CheckForUpdate.php',
         'Codedge\\Updater\\Contracts\\SourceRepositoryTypeContract' => __DIR__ . '/..' . '/codedge/laravel-selfupdater/src/Contracts/SourceRepositoryTypeContract.php',
@@ -7101,10 +7085,10 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit5ccf6332f6d06c368153126fe98685aa::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit5ccf6332f6d06c368153126fe98685aa::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit5ccf6332f6d06c368153126fe98685aa::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit5ccf6332f6d06c368153126fe98685aa::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit46b0bca330759fb2ff6e29bf441a3418::$classMap;
 
         }, null, ClassLoader::class);
     }

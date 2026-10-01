@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5ccf6332f6d06c368153126fe98685aa",
+    "content-hash": "46b0bca330759fb2ff6e29bf441a3418",
     "packages": [
         {
             "name": "axn/laravel-laroute",
@@ -224,45 +224,6 @@
                 }
             ],
             "time": "2026-09-06T14:10:59+00:00"
-        },
-        {
-            "name": "chumper/zipper",
-            "version": "v1.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Chumper/Zipper.git",
-                "reference": "6a1733c34d67c3952b8439afb36ad4ea5c3ceacb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Chumper/Zipper/zipball/6a1733c34d67c3952b8439afb36ad4ea5c3ceacb",
-                "reference": "6a1733c34d67c3952b8439afb36ad4ea5c3ceacb",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-                "php": ">=5.6.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Chumper\\Zipper\\ZipperServiceProvider"
-                    ],
-                    "aliases": {
-                        "Zipper": "Chumper\\Zipper\\Zipper"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Chumper\\Zipper\\": "src/Chumper/Zipper"
-                }
-            },
-            "license": [
-                "Apache2"
-            ]
         },
         {
             "name": "codedge/laravel-selfupdater",

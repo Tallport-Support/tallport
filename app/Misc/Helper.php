@@ -921,28 +921,54 @@ class Helper
      * File name example: test.zip.
      * storage_path without app/
      */
+    /**
+     * Zip the files matching $source (folders recursively, without hidden
+     * files) into storage/app/$storage_file_path (default "zipper/$file_name"),
+     * under $folder in the archive.
+     *
+     * @return string|false Path of the archive.
+     */
     public static function createZipArchive($source, $file_name, $folder = '', $storage_file_path = '')
     {
         if (!$source || !$file_name) {
             return false;
         }
-        $files = glob($source);
 
         if (!$storage_file_path) {
             $storage_file_path = 'zipper'.DIRECTORY_SEPARATOR.$file_name;
-        } else {
-            // if (!self::getPrivateStorage()->exists($storage_path)) {
-            //     self::getPrivateStorage()->makeDirectory($storage_path);
-            // }
         }
         $dest_path = storage_path().DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.$storage_file_path;
-
-        // If file exists it has to be deleted, otherwise Zipper will add file to the existing archive
-        if (self::getPrivateStorage()->exists($storage_file_path)) {
-            self::getPrivateStorage()->delete($storage_file_path);
+        if (!is_dir(dirname($dest_path))) {
+            mkdir(dirname($dest_path), 0755, true);
         }
 
-        \Chumper\Zipper\Facades\Zipper::make($dest_path)->folder($folder)->add($files)->close();
+        $zip = new \ZipArchive();
+        if ($zip->open($dest_path, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            throw new \Exception('Could not create archive '.$dest_path);
+        }
+        $prefix = $folder !== '' ? trim($folder, '/').'/' : '';
+
+        foreach (glob($source) ?: [] as $path) {
+            if (is_file($path)) {
+                $zip->addFile($path, $prefix.basename($path));
+                continue;
+            }
+            $files = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS)
+            );
+            foreach ($files as $file) {
+                $relative = str_replace('\\', '/', substr($file->getPathname(), strlen($path) + 1));
+                // Hidden files and folders are left out.
+                if (!$file->isFile() || preg_match('#(^|/)\.#', $relative)) {
+                    continue;
+                }
+                $zip->addFile($file->getPathname(), $prefix.$relative);
+            }
+        }
+
+        if (!$zip->close()) {
+            throw new \Exception('Could not write archive '.$dest_path);
+        }
 
         return $dest_path;
     }
@@ -1021,9 +1047,67 @@ class Helper
      * Extract ZIP archive.
      * to: must be apsolute path, otherwise extracted into /public/$to.
      */
+    /**
+     * Extract an archive (e.g. a module) into $to. Entries that would end up
+     * outside $to (absolute paths, "..", symlinked folders) are refused.
+     */
     public static function unzip($archive, $to)
     {
-        \Chumper\Zipper\Facades\Zipper::make($archive)->extractTo($to);
+        $zip = new \ZipArchive();
+        if ($zip->open($archive) !== true) {
+            throw new \Exception('Could not open archive '.$archive);
+        }
+        $base = realpath($to);
+        if ($base === false) {
+            throw new \Exception('Folder not found: '.$to);
+        }
+
+        $inside = function ($path) use ($base) {
+            return $path === $base || str_starts_with($path, $base.DIRECTORY_SEPARATOR);
+        };
+
+        try {
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $name = str_replace('\\', '/', $zip->getNameIndex($i));
+                if ($name === '' || str_starts_with($name, '/') || str_contains($name, "\0")
+                    || preg_match('#(^|/)\.\.(/|$)#', $name) || preg_match('#^[A-Za-z]:#', $name)
+                ) {
+                    throw new \Exception('Unsafe file name in archive: '.$name);
+                }
+
+                $target = $base.'/'.rtrim($name, '/');
+                $dir = str_ends_with($name, '/') ? $target : dirname($target);
+
+                // The deepest existing folder must be inside $to (no symlink out).
+                $existing = $dir;
+                while (!file_exists($existing)) {
+                    $existing = dirname($existing);
+                }
+                if (!$inside(realpath($existing))) {
+                    throw new \Exception('Archive entry would be extracted outside '.$to.': '.$name);
+                }
+                if (!is_dir($dir) && !mkdir($dir, 0755, true)) {
+                    throw new \Exception('Could not create folder '.$dir);
+                }
+                if (str_ends_with($name, '/')) {
+                    continue;
+                }
+                if (is_link($target)) {
+                    throw new \Exception('Archive entry would be written through a symlink: '.$name);
+                }
+
+                $in = $zip->getStream($zip->getNameIndex($i));
+                $out = fopen($target, 'wb');
+                if (!$in || !$out) {
+                    throw new \Exception('Could not extract '.$name);
+                }
+                stream_copy_to_stream($in, $out);
+                fclose($in);
+                fclose($out);
+            }
+        } finally {
+            $zip->close();
+        }
     }
 
     public static function logException($e, $prefix = '')
