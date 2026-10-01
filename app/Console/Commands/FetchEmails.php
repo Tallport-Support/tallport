@@ -11,6 +11,8 @@ use App\Events\CustomerCreatedConversation;
 use App\Events\CustomerReplied;
 use App\Events\UserAddedNote;
 use App\Events\UserReplied;
+use App\Incoming\IncomingMessage;
+use App\Incoming\LegacyImapMessage;
 use App\Jobs\SendEmailReplyError;
 use App\Mailbox;
 use App\Misc\Mail;
@@ -396,10 +398,19 @@ class FetchEmails extends Command
 
     public function processMessage($message, $message_id, $mailbox, $mailboxes, $extra = false)
     {
+        // Everything about the email is read through IncomingMessage; $message
+        // stays the library's message (if any) for flags and modules.
+        if ($message instanceof IncomingMessage) {
+            $incoming = $message;
+            $message = $incoming instanceof LegacyImapMessage ? $incoming->legacyMessage() : null;
+        } else {
+            $incoming = new LegacyImapMessage($message);
+        }
+
         try {
 
             // From - $from is the plain text email.
-            $from = $message->getReplyTo();
+            $from = $incoming->replyTo();
 
             if (!$from 
                 // https://github.com/freescout-helpdesk/freescout/issues/3101
@@ -407,15 +418,15 @@ class FetchEmails extends Command
                 || empty($reply_to[0])
                 || preg_match('/^.+@unknown$/', $reply_to[0])
             ) {
-                $from = $message->getFrom();
+                $from = $incoming->from();
             }
             // https://github.com/freescout-helpdesk/freescout/issues/2833
             /*else {
                 // If this is an auto-responder do not use Reply-To as sender email.
                 // https://github.com/freescout-helpdesk/freescout/issues/2826
-                $headers = $this->headerToStr($message->getHeader());
+                $headers = $this->headerToStr($incoming->headers());
                 if (\MailHelper::isAutoResponder($headers)) {
-                    $from = $message->getFrom();
+                    $from = $incoming->from();
                 }
             }*/
 
@@ -436,7 +447,7 @@ class FetchEmails extends Command
             // https://stackoverflow.com/questions/8513165/php-imap-do-emails-have-to-have-a-messageid
             if (!$message_id) {
                 // Generate artificial Message-ID.
-                $message_id = \MailHelper::generateMessageId($from, $message->getRawBody());
+                $message_id = \MailHelper::generateMessageId($from, $incoming->rawBody());
                 $this->line('['.date('Y-m-d H:i:s').'] Message-ID is empty, generated artificial Message-ID: '.$message_id);
             }
 
@@ -466,8 +477,8 @@ class FetchEmails extends Command
             if (!$extra && $duplicate_message_id) {
 
                 $recipients = array_merge(
-                    $this->formatEmailList($message->getTo()),
-                    $this->formatEmailList($message->getCc())
+                    $this->formatEmailList($incoming->to()),
+                    $this->formatEmailList($incoming->cc())
                 );
 
                 // $is_outbound_from_fs is needed to fetch messages sent from one FreeScout mailbox to another.
@@ -489,7 +500,7 @@ class FetchEmails extends Command
             $new_email_with_same_message_id = false;
             if (!$extra && $duplicate_message_id) {
                 // Compare headers
-                if ($duplicate_message_id->headers != $this->headerToStr($message->getHeader())) {
+                if ($duplicate_message_id->headers != $this->headerToStr($incoming->headers())) {
                     $new_email_with_same_message_id = true;
                 }
             }
@@ -519,9 +530,9 @@ class FetchEmails extends Command
             $user_id = null;
             $user = null; // for user reply only
             $message_from_customer = true;
-            $in_reply_to = trim($message->getInReplyTo() ?? '', '<>');
-            $references = $message->getReferences();
-            $attachments = $message->getAttachments();
+            $in_reply_to = trim($incoming->inReplyTo(), '<>');
+            $references = $incoming->references();
+            $attachments = $incoming->attachments();
             $html_body = '';
 
             // Is it a bounce message
@@ -557,7 +568,7 @@ class FetchEmails extends Command
             // ];
 
             // Try to get previous message ID from marker in body.
-            $html_body = $message->getHTMLBody(false);
+            $html_body = $incoming->htmlBody();
             $marker_message_id = \MailHelper::fetchMessageMarkerValue($html_body);
             if ($marker_message_id) {
                 $prev_message_ids[] = $marker_message_id;
@@ -565,7 +576,7 @@ class FetchEmails extends Command
 
             // Bounce detection.
             $bounced_message_id = null;
-            if ($message->hasAttachments()) {
+            if ((bool) $incoming->attachments()) {
                 // Detect bounce by attachment.
                 // Check all attachments.
                 foreach ($attachments as $attachment) {
@@ -592,7 +603,7 @@ class FetchEmails extends Command
                     }
                 }
             }
-            $message_header = $this->headerToStr($message->getHeader());
+            $message_header = $this->headerToStr($incoming->headers());
 
             // Check Content-Type header.
             if (!$is_bounce && $message_header) {
@@ -602,8 +613,8 @@ class FetchEmails extends Command
             }
             // Check message's From field.
             if (!$is_bounce) {
-                if ($message->getFrom()) {
-                    $original_from = $this->formatEmailList($message->getFrom());
+                if ($incoming->from()) {
+                    $original_from = $this->formatEmailList($incoming->from());
                     $original_from = $original_from[0];
                     $is_bounce = preg_match('/^mailer\-daemon@/i', $original_from);
                     if ($is_bounce) {
@@ -634,7 +645,7 @@ class FetchEmails extends Command
             }
 
             // Webklex/php-imap returns object instead of a string.
-            $subject = $message->getSubject()."";
+            $subject = $incoming->subject();
 
             // Convert subject encoding
             if (preg_match('/=\?[a-z\d-]+\?[BQ]\?.*\?=/i', $subject)) {
@@ -886,7 +897,7 @@ class FetchEmails extends Command
             // Get body
             if (!$html_body) {
                 // Get body and do not replace :cid with images base64
-                $html_body = $message->getHTMLBody(false);
+                $html_body = $incoming->htmlBody();
             }
             
             $is_html = true;
@@ -895,7 +906,7 @@ class FetchEmails extends Command
                 $body = $html_body;
             } else {
                 $is_html = false;
-                $body = $message->getTextBody() ?? '';
+                $body = $incoming->textBody() ?? '';
                 $body = htmlspecialchars($body);
             }
             $body = \Helper::utf8Encode($body);
@@ -907,12 +918,12 @@ class FetchEmails extends Command
             //     continue;
             // }
 
-            $to = $this->formatEmailList($message->getTo());
+            $to = $this->formatEmailList($incoming->to());
 
-            $cc = $this->formatEmailList($message->getCc());
+            $cc = $this->formatEmailList($incoming->cc());
 
             // It will always return an empty value as it's Bcc.
-            $bcc = $this->formatEmailList($message->getBcc());
+            $bcc = $this->formatEmailList($incoming->bcc());
 
             // If existing user forwarded customer's email to the mailbox
             // we are creating a new conversation as if it was sent by the customer.
@@ -921,7 +932,7 @@ class FetchEmails extends Command
                 //$in_reply_to
                 // We should use body here, as entire HTML may contain
                 // email looking things.
-                //&& ($fwd_body = $html_body ?: $message->getTextBody())
+                //&& ($fwd_body = $html_body ?: $incoming->textBody())
                 $body
                 //&& preg_match("/^(".implode('|', \MailHelper::$fwd_prefixes)."):(.*)/i", $subject, $m) 
                 // F:, FW:, FWD:, WG:, De:
@@ -966,16 +977,16 @@ class FetchEmails extends Command
 
             // Create customers
             $emails = array_merge(
-                $this->attrToArray($message->getFrom()), 
-                $this->attrToArray($message->getReplyTo()),
-                $this->attrToArray($message->getTo()),
-                $this->attrToArray($message->getCc()),
+                $this->attrToArray($incoming->from()), 
+                $this->attrToArray($incoming->replyTo()),
+                $this->attrToArray($incoming->to()),
+                $this->attrToArray($incoming->cc()),
                 // It will always return an empty value as it's Bcc.
-                $this->attrToArray($message->getBcc())
+                $this->attrToArray($incoming->bcc())
             );
             $this->createCustomers($emails, $mailbox->getEmails());
 
-            $date = $this->attrToDate($message->getDate());
+            $date = $incoming->date();
 
             if ($date) {
                 $app_timezone = config('app.timezone');
@@ -1017,10 +1028,10 @@ class FetchEmails extends Command
                 // Maybe this email need to be imported also into other mailbox.
 
                 $recipient_emails = array_unique($this->formatEmailList(array_merge(
-                    $this->attrToArray($message->getTo()), 
-                    $this->attrToArray($message->getCc()), 
+                    $this->attrToArray($incoming->to()), 
+                    $this->attrToArray($incoming->cc()), 
                     // It will always return an empty value as it's Bcc.
-                    $this->attrToArray($message->getBcc())
+                    $this->attrToArray($incoming->bcc())
                 )));
                 
                 if (count($mailboxes) && count($recipient_emails) > 1) {
@@ -1993,6 +2004,11 @@ class FetchEmails extends Command
 
     public function setSeen($message, $mailbox)
     {
+        // Messages that didn't come from a mail server have no flags.
+        if (!$message) {
+            return;
+        }
+
         $flag = \Eventy::filter('fetch_emails.set_seen_flag', ['Seen'], $message, $mailbox);
         $message->setFlag($flag);
         \Eventy::action('fetch_emails.after_set_seen', $message, $mailbox, $this);
