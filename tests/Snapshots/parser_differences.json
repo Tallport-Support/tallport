@@ -1,0 +1,91 @@
+{
+    "attachments": [
+        "message-1",
+        "message-1b",
+        "message-2",
+        "webklex/attachment_encoded_filename",
+        "webklex/attachment_long_filename",
+        "webklex/attachment_no_disposition",
+        "webklex/boolean_decoded_content",
+        "webklex/embedded_email",
+        "webklex/embedded_email_without_content_disposition-embedded",
+        "webklex/embedded_email_without_content_disposition",
+        "webklex/example_attachment",
+        "webklex/example_bounce",
+        "webklex/four_nested_emails",
+        "webklex/inline_attachment",
+        "webklex/issue-348",
+        "webklex/issue-410",
+        "webklex/issue-410b",
+        "webklex/issue-414",
+        "webklex/issue-544",
+        "webklex/mail_that_is_attachment",
+        "webklex/mixed_filename",
+        "webklex/multiple_html_parts_and_attachments",
+        "webklex/multiple_nested_attachments",
+        "webklex/nestes_embedded_with_attachment",
+        "webklex/pec",
+        "webklex/plain_text_attachment",
+        "webklex/structured_with_attachment"
+    ],
+    "cc": [
+        "webklex/email_address",
+        "webklex/references"
+    ],
+    "error: none / Webklex\\PHPIMAP\\Exceptions\\InvalidMessageDateException": [
+        "webklex/date-template"
+    ],
+    "error: none / Webklex\\PHPIMAP\\Exceptions\\MessageContentFetchingException": [
+        "issue-4567"
+    ],
+    "from": [
+        "1366671050@github.com",
+        "message-5-iso-2022-jp",
+        "webklex/email_address",
+        "webklex/issue-275",
+        "webklex/issue-462",
+        "webklex/references"
+    ],
+    "html_body": [
+        "message-4-null-bytes",
+        "webklex/unknown_encoding",
+        "webklex/without_charset_simple_multipart"
+    ],
+    "reply_to": [
+        "message-5-iso-2022-jp",
+        "webklex/email_address",
+        "webklex/issue-275",
+        "webklex/issue-462",
+        "webklex/references"
+    ],
+    "subject": [
+        "message-5-iso-2022-jp",
+        "webklex/imap_mime_header_decode_returns_false",
+        "webklex/undefined_charset_header"
+    ],
+    "text_body": [
+        "message-2",
+        "message-3",
+        "message-4-null-bytes",
+        "message-6",
+        "webklex/boolean_decoded_content",
+        "webklex/embedded_email_without_content_disposition-embedded",
+        "webklex/embedded_email_without_content_disposition",
+        "webklex/example_attachment",
+        "webklex/four_nested_emails",
+        "webklex/issue-544",
+        "webklex/multiple_html_parts_and_attachments",
+        "webklex/multiple_nested_attachments",
+        "webklex/nestes_embedded_with_attachment",
+        "webklex/pec",
+        "webklex/plain_text_attachment",
+        "webklex/simple_multipart",
+        "webklex/structured_with_attachment",
+        "webklex/unknown_encoding",
+        "webklex/without_charset_simple_multipart"
+    ],
+    "to": [
+        "webklex/issue-275",
+        "webklex/undisclosed_recipients"
+    ]
+}

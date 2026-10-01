@@ -132,6 +132,17 @@
             }
         }
     },
+    "tallport:compare-parsers": {
+        "class": "App\\Console\\Commands\\CompareParsers",
+        "description": "Compare how the current and the new mail parser read the kept incoming emails (prints field names and thread IDs only)",
+        "arguments": {},
+        "options": {
+            "limit": {
+                "value": "optional",
+                "default": "0"
+            }
+        }
+    },
     "tallport:create-user": {
         "class": "App\\Console\\Commands\\CreateUser",
         "aliases": [
