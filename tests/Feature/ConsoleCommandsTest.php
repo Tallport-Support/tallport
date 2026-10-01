@@ -294,6 +294,35 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->assertStringContainsString('You have the latest version installed: '.config('app.version'), $output);
     }
 
+    /**
+     * After updating, freescout:after-app-update runs in a new process (this
+     * one still has the old code's autoloader); not when updating failed.
+     */
+    public function testUpdateCommandRunsAfterAppUpdateSeparately()
+    {
+        $command = new class extends \App\Console\Commands\Update {
+            public static $runs = 0;
+
+            protected function afterAppUpdate()
+            {
+                static::$runs++;
+
+                return 0;
+            }
+        };
+        $this->app[\Illuminate\Contracts\Console\Kernel::class]->registerCommand($command);
+        \Updater::shouldReceive('isNewVersionAvailable')->andReturn(true);
+        \Updater::shouldReceive('update')->once()->andReturn(true);
+
+        $this->runCommand('freescout:update', ['--force' => true]);
+        $this->assertSame(1, $command::$runs);
+
+        \Updater::shouldReceive('update')->andThrow(new \Exception('download failed'));
+        $output = $this->runCommand('freescout:update', ['--force' => true]);
+        $this->assertStringContainsString('Error occurred: download failed', $output);
+        $this->assertSame(1, $command::$runs);
+    }
+
     public function testUpdateCommandRefusedWhenUpdatingIsDisabled()
     {
         config(['app.disable_updating' => true]);

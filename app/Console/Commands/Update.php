@@ -63,12 +63,30 @@ class Update extends Command
                 // Script may fail here and stop with the error:
                 // PHP Fatal error:  Allowed memory size of 94371840 bytes exhausted
                 \Updater::update();
-                $this->call('freescout:after-app-update');
             } catch (\Exception $e) {
                 $this->error('Error occurred: '.$e->getMessage());
+
+                return;
+            }
+
+            if ($this->afterAppUpdate() !== 0) {
+                $this->error('Updated, but freescout:after-app-update failed. Run it again: php artisan freescout:after-app-update');
             }
         } else {
             $this->info('You have the latest version installed: '.config('app.version'));
         }
+    }
+
+    /**
+     * Run freescout:after-app-update in a new process: this one still runs
+     * the old code, whose autoloader may point to files the update removed.
+     *
+     * @return int Exit code.
+     */
+    protected function afterAppUpdate()
+    {
+        passthru(escapeshellarg(PHP_BINARY).' '.escapeshellarg(base_path('artisan')).' freescout:after-app-update', $exit_code);
+
+        return $exit_code;
     }
 }

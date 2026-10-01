@@ -113,8 +113,11 @@ FreeScout back.
 sudo -u www-data php artisan freescout:update
 ```
 
-The updater installs the latest published release from this repository and
-runs database migrations. Draft and pre-release versions are skipped.
+The updater installs the latest published release from this repository.
+Draft and pre-release versions are skipped. `freescout:update` then runs
+`php artisan freescout:after-app-update` (cache, database migrations, queue
+restart); after updating from the web interface, run that command on the
+server yourself.
 
 ## Modules
 
