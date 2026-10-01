@@ -176,7 +176,6 @@ class ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3
         'F' =>
         array (
             'Fruitcake\\Cors\\' => 15,
-            'Faker\\Provider\\' => 15,
         ),
         'E' =>
         array (
@@ -565,10 +564,6 @@ class ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3
         'Fruitcake\\Cors\\' =>
         array (
             0 => __DIR__ . '/..' . '/fruitcake/php-cors/src',
-        ),
-        'Faker\\Provider\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/fzaninotto/faker/src/Faker/Provider',
         ),
         'Egulias\\EmailValidator\\' =>
         array (
@@ -1627,7 +1622,6 @@ class ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3
         'Egulias\\EmailValidator\\Warning\\QuotedString' => __DIR__ . '/..' . '/egulias/email-validator/src/Warning/QuotedString.php',
         'Egulias\\EmailValidator\\Warning\\TLD' => __DIR__ . '/..' . '/egulias/email-validator/src/Warning/TLD.php',
         'Egulias\\EmailValidator\\Warning\\Warning' => __DIR__ . '/..' . '/egulias/email-validator/src/Warning/Warning.php',
-        'Faker\\Provider\\Base' => __DIR__ . '/../..' . '/overrides/fzaninotto/faker/src/Faker/Provider/Base.php',
         'Filter\\FilterException' => __DIR__ . '/..' . '/symfony/polyfill-php85/Resources/stubs/Filter/FilterException.php',
         'Filter\\FilterFailedException' => __DIR__ . '/..' . '/symfony/polyfill-php85/Resources/stubs/Filter/FilterFailedException.php',
         'Fruitcake\\Cors\\CorsService' => __DIR__ . '/..' . '/fruitcake/php-cors/src/CorsService.php',
