@@ -15,6 +15,8 @@ use Closure;
 class HttpsAndCloudflareIp
 {
     /**
+     * Correct HTTPS and the client IP before anything else runs.
+     *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
      * @return mixed

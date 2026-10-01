@@ -13,6 +13,8 @@ use Illuminate\Contracts\Auth\Authenticatable;
 class EloquentUserProvider extends BaseEloquentUserProvider
 {
     /**
+     * Check the password, then let modules overrule the result.
+     *
      * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
      * @param  array  $credentials
      * @return bool
