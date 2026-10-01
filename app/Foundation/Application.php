@@ -42,6 +42,38 @@ class Application extends BaseApplication
     }
 
     /**
+     * Run the given array of bootstrap classes, after converting an .env
+     * written with FreeScout's old rules (e.g. an installation switching from
+     * FreeScout) to the standard syntax, once, before it's read.
+     *
+     * @param  string[]  $bootstrappers
+     * @return void
+     */
+    public function bootstrapWith(array $bootstrappers)
+    {
+        $this->standardizeEnvFileOnce();
+
+        parent::bootstrapWith($bootstrappers);
+    }
+
+    /**
+     * Convert .env to the standard syntax unless done before (marker file).
+     */
+    protected function standardizeEnvFileOnce()
+    {
+        $marker = $this->storagePath('.env-standard');
+        if (($_ENV['APP_ENV'] ?? getenv('APP_ENV')) === 'testing' || file_exists($marker)) {
+            return;
+        }
+
+        $path = $this->environmentFilePath();
+        if (is_file($path) && is_writable($path)) {
+            \App\Misc\EnvFile::standardize($path);
+            @touch($marker);
+        }
+    }
+
+    /**
      * Register the configured providers, skipping ones whose class no longer
      * exists. After an update removes a package, cached config and package
      * lists in bootstrap/cache still name its provider until the cache is

@@ -100,7 +100,7 @@ return array(
     'Fruitcake\\Cors\\' => array($vendorDir . '/fruitcake/php-cors/src'),
     'Faker\\Provider\\' => array($baseDir . '/overrides/fzaninotto/faker/src/Faker/Provider'),
     'Egulias\\EmailValidator\\' => array($vendorDir . '/egulias/email-validator/src'),
-    'Dotenv\\' => array($baseDir . '/overrides/vlucas/phpdotenv/src', $vendorDir . '/vlucas/phpdotenv/src'),
+    'Dotenv\\' => array($vendorDir . '/vlucas/phpdotenv/src'),
     'Doctrine\\Inflector\\' => array($vendorDir . '/doctrine/inflector/src'),
     'Doctrine\\Deprecations\\' => array($vendorDir . '/doctrine/deprecations/src'),
     'Doctrine\\DBAL\\' => array($vendorDir . '/doctrine/dbal/src'),

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Misc\EnvFile;
 use Dotenv\Dotenv;
 use Dotenv\Parser\Parser;
 use Dotenv\Repository\Adapter\ArrayAdapter;
@@ -9,21 +10,20 @@ use Dotenv\Repository\RepositoryBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**
- * .env values read the same as with FreeScout's patched phpdotenv 2
- * (overrides/vlucas/phpdotenv): Helper::setEnvFileVar() writes values such
- * as "ab\cd" that stock phpdotenv 3 rejects, and passwords may contain "#".
+ * .env is read by standard phpdotenv. Files FreeScout wrote with its own
+ * rules (a patched phpdotenv 2) are converted once (App\Misc\EnvFile), which
+ * reads them with those rules.
  */
 class DotenvParsingTest extends TestCase
 {
     /**
+     * FreeScout's rules, as the conversion reads old files.
+     *
      * @dataProvider values
      */
-    public function testValue($raw, $expected)
+    public function testLegacyValue($raw, $expected)
     {
-        $entry = (new Parser())->parse('KEY='.$raw)[0];
-
-        $this->assertSame('KEY', $entry->getName());
-        $this->assertSame($expected, $entry->getValue()->get()->getChars());
+        $this->assertSame($expected, EnvFile::parseLegacyValue($raw));
     }
 
     public function values()
@@ -62,18 +62,6 @@ class DotenvParsingTest extends TestCase
 
         $this->assertSame('https://example.org/help', $values['URL']);
         $this->assertSame('https://example.org', $values['RAW']);
-    }
-
-    public function testEveryLineIsOneEntry()
-    {
-        $entries = (new Parser())->parse("A=\"ends with backslash\\\"\nB=2");
-
-        $values = [];
-        foreach ($entries as $entry) {
-            $values[$entry->getName()] = $entry->getValue()->get()->getChars();
-        }
-        $this->assertSame('ends with backslash\\', $values['A']);
-        $this->assertSame('2', $values['B']);
     }
 
     public function testUnquotedSpacesAreRejected()

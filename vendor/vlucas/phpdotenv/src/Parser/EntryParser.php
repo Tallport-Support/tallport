@@ -156,66 +156,29 @@ final class EntryParser
      */
     private static function parseValue(string $value)
     {
-        $parsed = self::parseLegacyValue($value);
-        if ($parsed === null) {
-            /** @var \GrahamCampbell\ResultType\Result<\Dotenv\Parser\Value, string> */
-            return Error::create('Dotenv values containing spaces must be surrounded by quotes.');
-        }
-
-        $result = Value::blank();
-        foreach (\str_split($parsed) as $char) {
-            // Any "${NAME}" is resolved, in quoted values too (as before phpdotenv 4).
-            $result = $result->append($char, $char === '$');
-        }
-
-        /** @var \GrahamCampbell\ResultType\Result<\Dotenv\Parser\Value, string> */
-        return Success::create($result);
-    }
-
-    /**
-     * FreeScout's parsing from its patched phpdotenv 2, kept so existing
-     * .env files read the same: a quoted value runs to the last quote
-     * (https://github.com/freescout-helpdesk/freescout/issues/2822),
-     * backslashes other than \" and \\ are kept, and in an unquoted value
-     * only " #" starts a comment.
-     *
-     * @param string $value
-     *
-     * @return string|null null for an unquoted value with spaces
-     */
-    private static function parseLegacyValue(string $value)
-    {
         if (\trim($value) === '') {
-            return '';
+            /** @var \GrahamCampbell\ResultType\Result<\Dotenv\Parser\Value, string> */
+            return Success::create(Value::blank());
         }
 
-        if ($value[0] === '"' || $value[0] === '\'') {
-            $quote = $value[0];
-            if (\preg_match(\sprintf('#\\\\%1$s$#mx', $quote), $value)) {
-                $value = \rtrim($value, $quote);
-            }
-            $value = \preg_replace(\sprintf('/(.*[^\\\\])%1$s[^%1$s]*/mx', $quote), '$1', $value);
-            $value = \substr($value, 1);
-
-            $value = \str_replace("\\$quote", $quote, $value);
-
-            return \str_replace('\\\\', '\\', $value);
-        }
-
-        $parts = \explode(' #', $value, 2);
-        $value = \trim($parts[0]);
-
-        // Unquoted values cannot contain whitespace
-        if (\preg_match('/\s+/', $value) > 0) {
-            // Check if value is a comment (usually triggered when empty value with comment)
-            if (\preg_match('/^#/', $value) > 0) {
-                return '';
+        return \array_reduce(\iterator_to_array(Lexer::lex($value)), static function (Result $data, string $token) {
+            return $data->flatMap(static function (array $data) use ($token) {
+                return self::processToken($data[1], $token)->map(static function (array $val) use ($data) {
+                    return [$data[0]->append($val[0], $val[1]), $val[2]];
+                });
+            });
+        }, Success::create([Value::blank(), self::INITIAL_STATE]))->flatMap(static function (array $result) {
+            /** @psalm-suppress DocblockTypeContradiction */
+            if (in_array($result[1], self::REJECT_STATES, true)) {
+                /** @var \GrahamCampbell\ResultType\Result<\Dotenv\Parser\Value, string> */
+                return Error::create('a missing closing quote');
             }
 
-            return null;
-        }
-
-        return $value;
+            /** @var \GrahamCampbell\ResultType\Result<\Dotenv\Parser\Value, string> */
+            return Success::create($result[0]);
+        })->mapError(static function (string $err) use ($value) {
+            return self::getErrorMessage($err, $value);
+        });
     }
 
     /**

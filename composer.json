@@ -290,7 +290,6 @@
             "Illuminate\\Support\\": "overrides/laravel/framework/src/Illuminate/Support/",
             "Illuminate\\Database\\Eloquent\\": "overrides/laravel/framework/src/Illuminate/Database/Eloquent/",
             "Illuminate\\Database\\Eloquent\\Concerns\\": "overrides/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/",
-            "Dotenv\\": "overrides/vlucas/phpdotenv/src/",
             "Devfactory\\Minify\\Providers\\": "overrides/devfactory/minify/src/Providers/",
             "Rap2hpoutre\\LaravelLogViewer\\": "overrides/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/"
         },
@@ -318,8 +317,6 @@
             "vendor/fzaninotto/faker/src/Faker/Provider/Base.php",
 
             "vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php",
-            "vendor/vlucas/phpdotenv/src/Parser/EntryParser.php",
-            "vendor/vlucas/phpdotenv/src/Parser/Lines.php",
             "vendor/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/HasAttributes.php",
             "vendor/devfactory/minify/src/Providers/BaseProvider.php",
             "vendor/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LaravelLogViewer.php",

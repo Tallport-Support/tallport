@@ -87,11 +87,9 @@ final class Lines
      */
     private static function looksLikeMultilineStart(string $line)
     {
-        // No multi-line values, as in FreeScout's phpdotenv 2: every line is
-        // one entry. Helper::setEnvFileVar() writes values on one line and
-        // doesn't escape a trailing backslash ("abc\"), which would otherwise
-        // start a multi-line value and swallow the following lines.
-        return false;
+        return Str::pos($line, '="')->map(static function () use ($line) {
+            return self::looksLikeMultilineStop($line, true) === false;
+        })->getOrElse(false);
     }
 
     /**

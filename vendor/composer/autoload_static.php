@@ -615,8 +615,7 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         ),
         'Dotenv\\' =>
         array (
-            0 => __DIR__ . '/../..' . '/overrides/vlucas/phpdotenv/src',
-            1 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
+            0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
         ),
         'Doctrine\\Inflector\\' =>
         array (
@@ -1567,9 +1566,9 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         'Dotenv\\Loader\\LoaderInterface' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Loader/LoaderInterface.php',
         'Dotenv\\Loader\\Resolver' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Loader/Resolver.php',
         'Dotenv\\Parser\\Entry' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Parser/Entry.php',
-        'Dotenv\\Parser\\EntryParser' => __DIR__ . '/../..' . '/overrides/vlucas/phpdotenv/src/Parser/EntryParser.php',
+        'Dotenv\\Parser\\EntryParser' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Parser/EntryParser.php',
         'Dotenv\\Parser\\Lexer' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Parser/Lexer.php',
-        'Dotenv\\Parser\\Lines' => __DIR__ . '/../..' . '/overrides/vlucas/phpdotenv/src/Parser/Lines.php',
+        'Dotenv\\Parser\\Lines' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Parser/Lines.php',
         'Dotenv\\Parser\\Parser' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Parser/Parser.php',
         'Dotenv\\Parser\\ParserInterface' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Parser/ParserInterface.php',
         'Dotenv\\Parser\\Value' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Parser/Value.php',
