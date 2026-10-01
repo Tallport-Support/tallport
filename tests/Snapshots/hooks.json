@@ -2607,6 +2607,14 @@
     },
     {
         "type": "filter",
+        "name": "url_generator.app_url",
+        "arguments": 1,
+        "files": [
+            "app/Routing/UrlGenerator.php"
+        ]
+    },
+    {
+        "type": "filter",
         "name": "user.can_view_mailbox_menu",
         "arguments": 2,
         "files": [

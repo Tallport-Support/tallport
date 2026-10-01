@@ -335,12 +335,13 @@ class RouteUrlGenerator
     {
         $path = $this->replaceNamedParameters($path, $parameters);
 
-        // As in Laravel 5.5: remaining parameters, null included, fill the
-        // placeholders in order (modules pass null for a required parameter).
         $path = preg_replace_callback('/\{.*?\}/', function ($match) use (&$parameters) {
-            return (empty($parameters) && ! str_ends_with($match[0], '?}'))
+            // Reset only the numeric keys...
+            $parameters = array_merge($parameters);
+
+            return (! isset($parameters[0]) && ! str_ends_with($match[0], '?}'))
                 ? $match[0]
-                : $this->encodeParameter(array_shift($parameters));
+                : $this->encodeParameter(Arr::pull($parameters, 0));
         }, $path);
 
         return trim(preg_replace('/\{.*?\?\}/', '', $path), '/');
@@ -356,10 +357,12 @@ class RouteUrlGenerator
     protected function replaceNamedParameters($path, &$parameters)
     {
         return preg_replace_callback('/\{(.*?)(\?)?\}/', function ($m) use (&$parameters) {
-            if (isset($parameters[$m[1]])) {
+            if (isset($parameters[$m[1]]) && $parameters[$m[1]] !== '') {
                 return $this->encodeParameter(Arr::pull($parameters, $m[1]));
             } elseif (isset($this->defaultParameters[$m[1]])) {
                 return $this->encodeParameter($this->defaultParameters[$m[1]]);
+            } elseif (isset($parameters[$m[1]])) {
+                Arr::pull($parameters, $m[1]);
             }
 
             return $m[0];

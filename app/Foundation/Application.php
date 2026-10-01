@@ -9,10 +9,38 @@ use Illuminate\Foundation\ProviderRepository;
 use Illuminate\Support\Collection;
 
 /**
- * Laravel's application, surviving stale provider caches after an update.
+ * Laravel's application with FreeScout's URL generator, surviving stale
+ * provider caches after an update.
  */
 class Application extends BaseApplication
 {
+    /**
+     * Laravel's base providers, then FreeScout's URL generator in place of
+     * Laravel's (App\Routing\UrlGenerator), before anything can resolve it.
+     * Laravel's extend('url') setup (session and key resolvers, route
+     * rebinding) still applies to it.
+     *
+     * @return void
+     */
+    protected function registerBaseServiceProviders()
+    {
+        parent::registerBaseServiceProviders();
+
+        $this->singleton('url', function ($app) {
+            $routes = $app['router']->getRoutes();
+
+            $app->instance('routes', $routes);
+
+            return new \App\Routing\UrlGenerator(
+                $routes,
+                $app->rebinding('request', function ($app, $request) {
+                    $app['url']->setRequest($request);
+                }),
+                $app['config']['app.asset_url']
+            );
+        });
+    }
+
     /**
      * Register the configured providers, skipping ones whose class no longer
      * exists. After an update removes a package, cached config and package

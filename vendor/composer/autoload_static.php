@@ -163,7 +163,6 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         'I' =>
         array (
             'Illuminate\\Support\\' => 19,
-            'Illuminate\\Routing\\' => 19,
             'Illuminate\\Foundation\\Auth\\' => 27,
             'Illuminate\\Database\\Eloquent\\Concerns\\' => 38,
             'Illuminate\\Database\\Eloquent\\' => 29,
@@ -558,10 +557,6 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
             3 => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Conditionable',
             4 => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Reflection',
         ),
-        'Illuminate\\Routing\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Routing',
-        ),
         'Illuminate\\Foundation\\Auth\\' =>
         array (
             0 => __DIR__ . '/..' . '/laravel/ui/auth-backend',
@@ -902,6 +897,8 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
         'App\\Providers\\PolycastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/PolycastServiceProvider.php',
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
+        'App\\Routing\\RouteUrlGenerator' => __DIR__ . '/../..' . '/app/Routing/RouteUrlGenerator.php',
+        'App\\Routing\\UrlGenerator' => __DIR__ . '/../..' . '/app/Routing/UrlGenerator.php',
         'App\\SendLog' => __DIR__ . '/../..' . '/app/SendLog.php',
         'App\\Sendmail' => __DIR__ . '/../..' . '/app/Sendmail.php',
         'App\\Subscription' => __DIR__ . '/../..' . '/app/Subscription.php',
@@ -3393,11 +3390,11 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         'Illuminate\\Routing\\RouteRegistrar' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RouteRegistrar.php',
         'Illuminate\\Routing\\RouteSignatureParameters' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RouteSignatureParameters.php',
         'Illuminate\\Routing\\RouteUri' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RouteUri.php',
-        'Illuminate\\Routing\\RouteUrlGenerator' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Routing/RouteUrlGenerator.php',
+        'Illuminate\\Routing\\RouteUrlGenerator' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RouteUrlGenerator.php',
         'Illuminate\\Routing\\Router' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Router.php',
         'Illuminate\\Routing\\RoutingServiceProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RoutingServiceProvider.php',
         'Illuminate\\Routing\\SortedMiddleware' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/SortedMiddleware.php',
-        'Illuminate\\Routing\\UrlGenerator' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Routing/UrlGenerator.php',
+        'Illuminate\\Routing\\UrlGenerator' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/UrlGenerator.php',
         'Illuminate\\Routing\\ViewController' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/ViewController.php',
         'Illuminate\\Session\\ArraySessionHandler' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Session/ArraySessionHandler.php',
         'Illuminate\\Session\\CacheBasedSessionHandler' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Session/CacheBasedSessionHandler.php',

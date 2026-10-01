@@ -86,7 +86,6 @@ return array(
     'Laravel\\Ai\\' => array($vendorDir . '/laravel/ai/src'),
     'Javoscript\\MacroableModels\\' => array($vendorDir . '/javoscript/laravel-macroable-models/src'),
     'Illuminate\\Support\\' => array($baseDir . '/overrides/laravel/framework/src/Illuminate/Support', $vendorDir . '/laravel/framework/src/Illuminate/Macroable', $vendorDir . '/laravel/framework/src/Illuminate/Collections', $vendorDir . '/laravel/framework/src/Illuminate/Conditionable', $vendorDir . '/laravel/framework/src/Illuminate/Reflection'),
-    'Illuminate\\Routing\\' => array($baseDir . '/overrides/laravel/framework/src/Illuminate/Routing'),
     'Illuminate\\Foundation\\Auth\\' => array($vendorDir . '/laravel/ui/auth-backend'),
     'Illuminate\\Database\\Eloquent\\Concerns\\' => array($baseDir . '/overrides/laravel/framework/src/Illuminate/Database/Eloquent/Concerns'),
     'Illuminate\\Database\\Eloquent\\' => array($baseDir . '/overrides/laravel/framework/src/Illuminate/Database/Eloquent'),

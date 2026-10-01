@@ -531,20 +531,6 @@ class UrlGenerator implements UrlGeneratorContract
         }
 
         if (! is_null($route = $this->routes->getByName($name))) {
-            // Pass x_ parameters globally.
-            foreach (request()->query() as $param => $value) {
-                if (preg_match("/^x_/", $param)) {
-                    $parameters[$param] = $value;
-                }
-            }
-            // Pass xs_ parameters only on the same page.
-            if ($name == \Route::currentRouteName()) {
-                foreach (request()->query() as $param => $value) {
-                    if (preg_match("/^xs_/", $param)) {
-                        $parameters[$param] = $value;
-                    }
-                }
-            }
             return $this->toRoute($route, $parameters, $absolute);
         }
 
@@ -659,15 +645,7 @@ class UrlGenerator implements UrlGeneratorContract
     {
         if (is_null($root)) {
             if (is_null($this->cachedRoot)) {
-                // $this->request->root() does not determine subdirectory properly.
-                $this->cachedRoot = \Eventy::filter('url_generator.app_url', $this->forcedRoot ?: config('app.url'));
-
-                if (!$this->cachedRoot || \Helper::isDefaultAppUrl($this->cachedRoot)) {
-                    $this->cachedRoot = $this->request->root();
-                }
-
-                // Remove the slash at the end as on some systems there is a slash at the end.
-                $this->cachedRoot = rtrim($this->cachedRoot, "/");
+                $this->cachedRoot = $this->forcedRoot ?: $this->request->root();
             }
 
             $root = $this->cachedRoot;
@@ -696,12 +674,6 @@ class UrlGenerator implements UrlGeneratorContract
 
         if ($this->formatPathUsing) {
             $path = call_user_func($this->formatPathUsing, $path, $route);
-        }
-
-        // Cut subdirectory from path.
-        $subdirectory = \Helper::getSubdirectory(false, true);
-        if ($subdirectory && preg_match("#".preg_quote($subdirectory)."$#", trim($root, '/'))) {
-            $path = preg_replace("#^".preg_quote($subdirectory)."#", '', $path);
         }
 
         return trim($root.$path, '/');
