@@ -852,5 +852,5 @@
     "Use date and time from mail headers": "Käytä viestin otsakkeiden päivämäärää ja aikaa",
     "User can see only assigned conversations": "Käyttäjä näkee vain hänelle määrätyt keskustelut",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Sinulla ei ole enää pääsyä keskusteluun, johon vastasit. Ota yhteyttä järjestelmänvalvojaan.",
-    "based on": "pohjana"
+    ":tallport, based on :freescout": ":tallport, pohjautuu ohjelmistoon :freescout"
 }

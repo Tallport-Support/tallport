@@ -833,5 +833,5 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "Güncelleme devre dışı (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "Kullanıcı yalnızca kendisine atanan konuşmaları görebilir",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Yanıtladığınız konuşmaya artık erişiminiz yok. Lütfen yöneticinizle iletişime geçin.",
-    "based on": "temeli:"
+    ":tallport, based on :freescout": ":tallport, :freescout tabanlı"
 }

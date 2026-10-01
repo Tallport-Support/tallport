@@ -833,5 +833,5 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "Ažuriranje je onemogućeno (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "Korisnik vidi samo dodijeljene razgovore",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Više nemate pristup razgovoru na koji ste odgovorili. Molimo kontaktirajte administratora.",
-    "based on": "temeljen na"
+    ":tallport, based on :freescout": ":tallport, temeljen na :freescout"
 }

@@ -833,5 +833,5 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "A atualização está desativada (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "O utilizador só pode ver as conversas que lhe estão atribuídas",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Já não tem acesso à conversa a que respondeu. Contacte o seu administrador.",
-    "based on": "baseado em"
+    ":tallport, based on :freescout": ":tallport, baseado no :freescout"
 }

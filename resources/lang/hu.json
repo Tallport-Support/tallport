@@ -833,5 +833,5 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "A frissítés le van tiltva (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "A felhasználó csak a hozzá rendelt beszélgetéseket látja",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Már nincs hozzáférésed ahhoz a beszélgetéshez, amelyre válaszoltál. Fordulj az adminisztrátorhoz.",
-    "based on": "alapja:"
+    ":tallport, based on :freescout": ":tallport, :freescout alapján"
 }

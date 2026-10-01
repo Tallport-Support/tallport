@@ -833,5 +833,5 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "Uppdatering är inaktiverad (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "Användaren kan bara se tilldelade konversationer",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Du har inte längre åtkomst till konversationen som du svarade på. Kontakta din administratör.",
-    "based on": "baserad på"
+    ":tallport, based on :freescout": ":tallport, baserad på :freescout"
 }

@@ -838,5 +838,5 @@
     "Use date and time from mail headers": "Bruk dato og tid fra e-posthodene",
     "User can see only assigned conversations": "Brukeren kan bare se tildelte samtaler",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Du har ikke lenger tilgang til samtalen du svarte på. Kontakt administratoren din.",
-    "based on": "basert på"
+    ":tallport, based on :freescout": ":tallport, basert på :freescout"
 }

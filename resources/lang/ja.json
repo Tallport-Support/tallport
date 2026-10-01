@@ -150,7 +150,6 @@
     "Close": "閉じる",
     "Closed": "完了",
     "Comma separated emails of extra recipients.": "追加の受信者のメールアドレスをカンマで区切ります。",
-    "Comma separated list off email addresses from which user can reply to email notifications in addition to user's main Email": "カンマで区切られた、ユーザーのメインの電子メールに加えて、ユーザーが電子メール通知に返信できる電子メールアドレスのリスト",
     "Company": "会社",
     "Company Name": "会社名",
     "Configure": "設定",
@@ -834,5 +833,5 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "アップデートは無効になっています（APP_DISABLE_UPDATING）。",
     "User can see only assigned conversations": "ユーザーは割り当てられた会話のみ表示できます",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "返信先の会話へのアクセス権がなくなりました。管理者にお問い合わせください。",
-    "based on": "ベース："
+    ":tallport, based on :freescout": ":tallport（:freescout ベース）"
 }

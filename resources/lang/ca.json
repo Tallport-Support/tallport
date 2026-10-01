@@ -950,5 +950,5 @@
     "The user is disabled or deleted.": "L'usuari està desactivat o eliminat.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "L'actualització està desactivada (APP_DISABLE_UPDATING).",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Ja no teniu accés a la conversa a la qual heu respost. Contacteu amb l'administrador.",
-    "based on": "basat en"
+    ":tallport, based on :freescout": ":tallport, basat en :freescout"
 }

@@ -832,5 +832,5 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "Actualizarea este dezactivată (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "Utilizatorul vede doar conversațiile care îi sunt atribuite",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Nu mai aveți acces la conversația la care ați răspuns. Vă rugăm să contactați administratorul.",
-    "based on": "bazat pe"
+    ":tallport, based on :freescout": ":tallport, bazat pe :freescout"
 }

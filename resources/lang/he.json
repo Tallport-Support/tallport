@@ -28,7 +28,7 @@
     ":person changed the customer to :customer": ":person שינה\/נתה את הלקוח ל:customer",
     ":person changed the customer to :customer in conversation #:conversation_number": ":person שינה\/נתה את הלקוח ל:customer בשיחה #:conversation_number",
     ":person created a draft": ":person יצר\/ה טיוטה",
-    ":person deleted": ":person נמחק\/ה",
+    ":person deleted": ":person מחק\/ה",
     ":person edited :creator's draft": ":person ערך\/ה את הטיוטה של :creator",
     ":person forwarded a conversation #:forward_parent_conversation_number": ":person העביר\/ה שיחה #:forward_parent_conversation_number",
     ":person forwarded a conversation :forward_parent_conversation_number": ":person העביר\/ה שיחה :forward_parent_conversation_number",
@@ -832,5 +832,5 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "העדכון מושבת (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "המשתמש יכול לראות רק שיחות שהוקצו לו",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "אין לך עוד גישה לשיחה שהגבת אליה. אנא פנה למנהל המערכת.",
-    "based on": "מבוסס על"
+    ":tallport, based on :freescout": ":tallport, מבוסס על :freescout"
 }

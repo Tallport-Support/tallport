@@ -833,5 +833,5 @@
     "User can see only assigned conversations": "Агент видит только назначенные ему тикеты",
     "View Details": "Подробнее",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "У вас больше нет доступа к тикету, на который вы ответили. Обратитесь к администратору.",
-    "based on": "на базе"
+    ":tallport, based on :freescout": ":tallport на базе :freescout"
 }

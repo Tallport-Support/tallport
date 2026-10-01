@@ -22,6 +22,19 @@ class BrandingTest extends FeatureTestCase
         $this->assertStringContainsString('img/logo-brand.svg', $html);
     }
 
+    /**
+     * Languages can put the names in their own order.
+     */
+    public function testCreditIsTranslatedAsOneSentence()
+    {
+        app()->setLocale('tr');
+
+        $this->assertSame(
+            '<a href="'.config('app.tallport_url').'" target="_blank">Tallport</a>, <a href="https://freescout.net" target="_blank">FreeScout</a> tabanlı',
+            \Helper::productCreditHtml()
+        );
+    }
+
     public function testCustomerEmailsCreditTallport()
     {
         Option::set('email_branding', true);

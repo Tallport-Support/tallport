@@ -832,5 +832,5 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "Aktualizace jsou zakázány (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "Uživatel vidí pouze přidělené konverzace",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Ke konverzaci, na kterou jste odpověděli, již nemáte přístup. Kontaktujte prosím svého správce.",
-    "based on": "postaveno na"
+    ":tallport, based on :freescout": ":tallport, postaveno na :freescout"
 }

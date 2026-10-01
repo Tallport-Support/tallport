@@ -3328,8 +3328,12 @@ class Helper
     {
         $style = $link_style ? ' style="'.e($link_style).'"' : '';
 
-        return '<a href="'.e(config('app.tallport_url')).'"'.$style.' target="_blank">'.e(config('app.name')).'</a>, '
-            .e(__('based on')).' <a href="'.e(config('app.freescout_url')).'"'.$style.' target="_blank">FreeScout</a>';
+        // One sentence, so each language can put the names where its grammar
+        // needs them; the links go in after escaping the text.
+        return strtr(e(__(':tallport, based on :freescout')), [
+            ':tallport'  => '<a href="'.e(config('app.tallport_url')).'"'.$style.' target="_blank">'.e(config('app.name')).'</a>',
+            ':freescout' => '<a href="'.e(config('app.freescout_url')).'"'.$style.' target="_blank">FreeScout</a>',
+        ]);
     }
 
     /**

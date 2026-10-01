@@ -1335,5 +1335,5 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "Жаңарту өшірілген (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "Агент тек өзіне тағайындалған тикеттерді көреді",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Сіз жауап берген тикетке енді қолжетімділігіңіз жоқ. Администраторға хабарласыңыз.",
-    "based on": "негізі:"
+    ":tallport, based on :freescout": ":tallport, :freescout негізінде"
 }

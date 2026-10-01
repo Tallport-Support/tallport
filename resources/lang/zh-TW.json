@@ -890,5 +890,5 @@
     "User can see only assigned conversations": "使用者只能檢視指派給自己的對話",
     "Users are allowed to edit own notes\/replies": "使用者可編輯自己的備註／回覆",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "您已無法存取您回覆的對話，請聯絡管理員。",
-    "based on": "基於"
+    ":tallport, based on :freescout": ":tallport，基於 :freescout"
 }
