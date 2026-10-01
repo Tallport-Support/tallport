@@ -283,7 +283,6 @@
             "Barryvdh\\TranslationManager\\": "overrides/barryvdh/laravel-translation-manager/src/",
             "Illuminate\\Foundation\\": "overrides/laravel/framework/src/Illuminate/Foundation/",
             "Illuminate\\Routing\\": "overrides/laravel/framework/src/Illuminate/Routing/",
-            "Illuminate\\Mail\\": "overrides/laravel/framework/src/Illuminate/Mail/",
             "Lord\\Laroute\\Routes\\": "overrides/lord/laroute/src/Routes/",
             "TorMorten\\Eventy\\": "overrides/tormjens/eventy/src/",
             "Chumper\\Zipper\\Repositories\\": "overrides/chumper/zipper/src/Chumper/Zipper/Repositories/",
@@ -329,7 +328,6 @@
             "vendor/fzaninotto/faker/src/Faker/Provider/Base.php",
 
             "vendor/laravel/framework/src/Illuminate/Routing/RouteUrlGenerator.php",
-            "vendor/laravel/framework/src/Illuminate/Mail/MailManager.php",
             "vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php",
             "vendor/vlucas/phpdotenv/src/Parser/EntryParser.php",
             "vendor/vlucas/phpdotenv/src/Parser/Lines.php",

@@ -164,7 +164,6 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         array (
             'Illuminate\\Support\\' => 19,
             'Illuminate\\Routing\\' => 19,
-            'Illuminate\\Mail\\' => 16,
             'Illuminate\\Foundation\\Auth\\' => 27,
             'Illuminate\\Foundation\\' => 22,
             'Illuminate\\Database\\Eloquent\\Concerns\\' => 38,
@@ -564,10 +563,6 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         array (
             0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Routing',
         ),
-        'Illuminate\\Mail\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Mail',
-        ),
         'Illuminate\\Foundation\\Auth\\' =>
         array (
             0 => __DIR__ . '/..' . '/laravel/ui/auth-backend',
@@ -881,6 +876,7 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         'App\\Misc\\Helper' => __DIR__ . '/../..' . '/app/Misc/Helper.php',
         'App\\Misc\\Html2Text' => __DIR__ . '/../..' . '/app/Misc/Html2Text.php',
         'App\\Misc\\Mail' => __DIR__ . '/../..' . '/app/Misc/Mail.php',
+        'App\\Misc\\MailManager' => __DIR__ . '/../..' . '/app/Misc/MailManager.php',
         'App\\Misc\\PhpMailTransport' => __DIR__ . '/../..' . '/app/Misc/PhpMailTransport.php',
         'App\\Misc\\SwiftGetSmtpQueueId' => __DIR__ . '/../..' . '/app/Misc/SwiftGetSmtpQueueId.php',
         'App\\Misc\\WpApi' => __DIR__ . '/../..' . '/app/Misc/WpApi.php',
@@ -3124,7 +3120,7 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         'Illuminate\\Mail\\Attachment' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Attachment.php',
         'Illuminate\\Mail\\Events\\MessageSending' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Events/MessageSending.php',
         'Illuminate\\Mail\\Events\\MessageSent' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Events/MessageSent.php',
-        'Illuminate\\Mail\\MailManager' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Mail/MailManager.php',
+        'Illuminate\\Mail\\MailManager' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/MailManager.php',
         'Illuminate\\Mail\\MailServiceProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/MailServiceProvider.php',
         'Illuminate\\Mail\\Mailable' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Mailable.php',
         'Illuminate\\Mail\\Mailables\\Address' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Mailables/Address.php',

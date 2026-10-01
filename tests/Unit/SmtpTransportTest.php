@@ -33,6 +33,16 @@ class SmtpTransportTest extends TestCase
         return $property->getValue($transport);
     }
 
+    public function testAppMailManagerSurvivesReconfiguration()
+    {
+        $this->assertInstanceOf(\App\Misc\MailManager::class, $this->app->make('mail.manager'));
+
+        // As MailHelper::reapplyMailConfig() does when mailbox settings change.
+        $this->app->forgetInstance('mail.manager');
+
+        $this->assertInstanceOf(\App\Misc\MailManager::class, $this->app->make('mail.manager'));
+    }
+
     public function testSslIsImplicitTls()
     {
         $this->assertTrue($this->transport(['port' => 465, 'encryption' => 'ssl'])->getStream()->isTLS());

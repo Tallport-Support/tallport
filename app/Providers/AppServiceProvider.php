@@ -72,6 +72,13 @@ class AppServiceProvider extends ServiceProvider
         $this->registerDevBoost();
         $this->registerLegacyMethods();
         $this->registerAuthHooks();
+
+        // FreeScout's SMTP settings and PHP mail() (App\Misc\MailManager).
+        // extend() rather than a binding: the mail manager is recreated when
+        // mailbox settings change, and extenders apply every time.
+        $this->app->extend('mail.manager', function ($manager, $app) {
+            return new \App\Misc\MailManager($app);
+        });
         \MailHelper::clearImapErrorsOnShutdown();
 
         // dump() in the browser, with the CSP nonce (Laravel registers its
