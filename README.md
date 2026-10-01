@@ -79,9 +79,15 @@ applies, using Tallport's code instead of FreeScout's:
 
 ## Switching from FreeScout
 
-An existing FreeScout 1.8.243 installation can switch to Tallport through
-FreeScout's own updater, after pointing it at Tallport. Back up the
-database and files first.
+NOTE: we've incrementially upgraded our FreeScout 1.8.243 installs to the 
+latest version of Tallport. Starting at a different version of FreeScout
+or skipping versions has not been tried or tested. YMMV. 
+
+I recommend you have your favorite AI take you through the upgrades, or 
+simply start fresh with the latest version of Tallport.
+
+Back up the database and files first. Then point your FreeScout updater at
+Tallport:
 
 ```bash
 cd /path/to/freescout
@@ -98,8 +104,6 @@ Replace `www-data` with your web server's user. The update keeps `.env`,
 FreeScout, move `.git` away afterwards so a `git pull` doesn't bring
 FreeScout back.
 
-Only 1.8.243 is known to match Tallport's database; from other FreeScout
-versions, update FreeScout to 1.8.243 first.
 
 ## Updating
 
