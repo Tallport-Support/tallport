@@ -48,6 +48,12 @@ class CleanTmp extends Command
     {
         $this->cleanDirectory(\Helper::getTempDir());
 
+        // Raw sources of incoming email older than the retention period.
+        $deleted = \App\Incoming\RawSources::clean();
+        if ($deleted) {
+            $this->line('Deleted '.$deleted.' old incoming email source(s)');
+        }
+
         $this->comment("Done");
     }
 

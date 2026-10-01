@@ -301,6 +301,22 @@
         "arguments": {},
         "options": {}
     },
+    "tallport:receive": {
+        "class": "App\\Console\\Commands\\Receive",
+        "description": "Receive an email as if it had been fetched (from a file, or piped in by a mail server)",
+        "arguments": {
+            "file": {
+                "required": false,
+                "array": false,
+                "default": null
+            }
+        },
+        "options": {
+            "mailbox": {
+                "value": "optional"
+            }
+        }
+    },
     "tallport:send-monitor": {
         "class": "App\\Console\\Commands\\SendMonitor",
         "aliases": [

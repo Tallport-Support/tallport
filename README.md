@@ -23,6 +23,7 @@ Credit for everything up to the fork goes to the FreeScout team.
 * [Installing](#installing)
 * [Switching from FreeScout](#switching-from-freescout)
 * [Updating](#updating)
+* [Incoming email sources and re-importing](#incoming-email-sources-and-re-importing)
 * [Modules](#modules)
 * [Development](#development)
 * [Security](#security)
@@ -122,6 +123,26 @@ server yourself.
 Tallport's artisan commands are named `tallport:*`. The FreeScout names
 (`freescout:update`, `freescout:clear-cache`, ...) still work, for modules,
 cron jobs and scripts.
+
+## Incoming email sources and re-importing
+
+Tallport keeps the raw source of each incoming email for 30 days, in
+`storage/app/incoming-mail/<thread id>.eml` (set
+`APP_INCOMING_MAIL_RETENTION_DAYS` in `.env`; 0 turns it off). The daily
+`tallport:clean-tmp` removes older ones.
+
+To import an email file, for example to re-import a message that was saved
+wrongly after deleting its conversation for good:
+
+```bash
+sudo -u www-data php artisan tallport:receive storage/app/incoming-mail/1234.eml
+```
+
+The mailbox is found from the recipients, or given with
+`--mailbox=<id or email address>`. An email that is already in Tallport (same
+Message-ID) is skipped. `tallport:receive` also reads an email from standard
+input, the basis for receiving mail straight from a mail server; that setup
+is not ready yet.
 
 ## Modules
 

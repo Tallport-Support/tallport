@@ -174,4 +174,9 @@ class LegacyImapMessage implements IncomingMessage
             return (string) $this->message->getRawBody();
         });
     }
+
+    public function rawSource(): string
+    {
+        return rtrim($this->headers(), "\r\n")."\r\n\r\n".$this->rawBody();
+    }
 }

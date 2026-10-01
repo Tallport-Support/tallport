@@ -11,18 +11,25 @@ use Tests\TestCase;
  */
 class CommandNamesTest extends TestCase
 {
+    /**
+     * The commands FreeScout had.
+     */
+    const FREESCOUT_COMMANDS = [
+        'after-app-update', 'build', 'check-conv-viewers', 'check-requirements', 'clean-notifications-table',
+        'clean-send-log', 'clean-tmp', 'clear-cache', 'create-user', 'fetch-emails', 'fetch-monitor',
+        'generate-vars', 'logout-users', 'logs-monitor', 'module-build', 'module-check-licenses',
+        'module-install', 'module-laroute', 'module-update', 'parse-eml', 'send-monitor', 'update',
+        'update-folder-counters',
+    ];
+
     public function testFreeScoutNamesAreAliases()
     {
         $commands = $this->app->make(Kernel::class)->all();
-        $tallport = array_filter(array_keys($commands), function ($name) {
-            return str_starts_with($name, 'tallport:');
-        });
 
-        $this->assertGreaterThan(20, count($tallport));
-        foreach ($tallport as $name) {
-            $old = 'freescout:'.substr($name, strlen('tallport:'));
-            $this->assertArrayHasKey($old, $commands, $name);
-            $this->assertSame($commands[$name], $commands[$old], $name);
+        foreach (self::FREESCOUT_COMMANDS as $name) {
+            $this->assertArrayHasKey('tallport:'.$name, $commands);
+            $this->assertArrayHasKey('freescout:'.$name, $commands);
+            $this->assertSame($commands['tallport:'.$name], $commands['freescout:'.$name], $name);
         }
     }
 }

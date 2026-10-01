@@ -20,6 +20,8 @@
     <env name="CACHE_DRIVER" value="array"/>
     <env name="SESSION_DRIVER" value="array"/>
     <env name="QUEUE_DRIVER" value="sync"/>
+    <!-- Tests that keep raw sources of incoming email use a temporary folder. -->
+    <env name="APP_INCOMING_MAIL_RETENTION_DAYS" value="0"/>
     <env name="APP_KEY" value="base64:dGFsbHBvcnQtdGVzdC1rZXktMzItYnl0ZXMtbG9uZyE="/>
   </php>
   <!-- Files never loaded by a test count as uncovered, so gaps show up. -->

@@ -85,4 +85,9 @@ interface IncomingMessage
      * The message body as in the message source (without headers).
      */
     public function rawBody(): string;
+
+    /**
+     * The whole message as received (headers and body, CRLF line endings).
+     */
+    public function rawSource(): string;
 }

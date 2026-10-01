@@ -1047,7 +1047,7 @@ class FetchEmails extends Command
                             if (\App\Email::sanitizeEmail($check_mailbox->email) == $recipient_email) {
                                 $this->extra_import[] = [
                                     'mailbox'    => $check_mailbox,
-                                    'message'    => $message,
+                                    'message'    => $message ?: $incoming,
                                     'message_id' => $message_id,
                                 ];
                                 break;
@@ -1069,10 +1069,10 @@ class FetchEmails extends Command
                     $this->setSeen($message, $mailbox);
                     return;
                 } elseif ($note_user) {
-                    $new_thread = $this->saveUserNote($data['message_id'], $data['prev_thread'], $note_user, $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['body'], $data['attachments'], $data['message']->getHeader(), $data['date']);
+                    $new_thread = $this->saveUserNote($data['message_id'], $data['prev_thread'], $note_user, $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['body'], $data['attachments'], ($data['message'] ? $data['message']->getHeader() : $incoming->headers()), $data['date']);
                 } else {
                     // SendAutoReply listener will check bounce flag and will not send an auto reply if this is an auto responder.
-                    $new_thread = $this->saveCustomerThread($mailbox, $data['message_id'], $data['prev_thread'], $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['subject'], $data['body'], $data['attachments'], $data['message']->getHeader(), $data['date']);
+                    $new_thread = $this->saveCustomerThread($mailbox, $data['message_id'], $data['prev_thread'], $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['subject'], $data['body'], $data['attachments'], ($data['message'] ? $data['message']->getHeader() : $incoming->headers()), $data['date']);
                 }
             } else {
                 // SAVE SUPPORT AGENT MESSAGE.
@@ -1107,7 +1107,7 @@ class FetchEmails extends Command
                 }
 
                 if (\Eventy::filter('fetch_emails.should_save_thread', true, $data) !== false) {
-                    $new_thread = $this->saveUserThread($data['mailbox'], $data['message_id'], $data['prev_thread'], $data['user'], $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['body'], $data['attachments'], $data['message']->getHeader(), $data['date']);
+                    $new_thread = $this->saveUserThread($data['mailbox'], $data['message_id'], $data['prev_thread'], $data['user'], $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['body'], $data['attachments'], ($data['message'] ? $data['message']->getHeader() : $incoming->headers()), $data['date']);
                 } else {
                     $this->line('['.date('Y-m-d H:i:s').'] Hook fetch_emails.should_save_thread returned false. Skipping message.');
                     $this->setSeen($message, $mailbox);
@@ -1118,6 +1118,7 @@ class FetchEmails extends Command
             if ($new_thread) {
                 $this->setSeen($message, $mailbox);
                 $this->line('['.date('Y-m-d H:i:s').'] Thread successfully created: '.$new_thread->id);
+                \App\Incoming\RawSources::store($new_thread, $incoming);
 
                 // If it was a bounce message, save bounce data.
                 if ($message_from_customer && $is_bounce) {
@@ -2005,7 +2006,7 @@ class FetchEmails extends Command
     public function setSeen($message, $mailbox)
     {
         // Messages that didn't come from a mail server have no flags.
-        if (!$message) {
+        if (!$message || !$message->getClient()) {
             return;
         }
 
