@@ -202,4 +202,15 @@ class WebklexHeaderTest extends TestCase {
         $this->assertArrayHasKey('attribute_test', $mock->getAttributes());
         $this->assertEquals('attribute_test_value', $mock->get('attribute_test'));
     }
+
+    /**
+     * Unparseable addresses are dropped without printing anything.
+     */
+    public function testSanitizeHeaderValueDropsInvalidAddressesSilently() {
+        $valid = (object) ['mailbox' => 'jane', 'host' => 'example.com'];
+        $invalid = (object) ['mailbox' => 'INVALID_ADDRESS', 'host' => '.SYNTAX-ERROR.'];
+
+        $this->expectOutputString('');
+        $this->assertSame([$valid], array_values(Header::sanitizeHeaderValue([$valid, $invalid])));
+    }
 }

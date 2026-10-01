@@ -9,13 +9,6 @@ if (!file_exists($dev_autoload)) {
 }
 require_once $dev_autoload;
 
-// The application's autoloader maps these PHPUnit classes to copies in overrides/
-// that were patched for PHPUnit 9.5. Load PHPUnit's own versions first so the
-// runner doesn't end up mixing versions.
-class_exists(\PHPUnit\Runner\PhptTestCase::class);
-class_exists(\PHPUnit\Util\PHP\AbstractPhpProcess::class);
-class_exists(\PHPUnit\Util\Xml\Loader::class);
-
 // Like artisan and public/index.php, replace Laravel 5.5's e() with one that
 // accepts null before the framework's helpers are loaded. Views echo nulls,
 // and since PHP 8.1 htmlspecialchars(null) is a deprecation, which the

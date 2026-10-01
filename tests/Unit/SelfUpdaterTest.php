@@ -104,12 +104,16 @@ class SelfUpdaterTest extends TestCase
             new Response(200, ['Content-Type' => 'application/zip'], $zip_body),
         ]);
 
+        config(['app.proxy' => 'http://proxy.example:3128']);
+
         $repository->fetch('1.8.243.1');
 
         $this->assertSame(
             'https://api.github.com/repos/nielspeen/tallport/zipball/refs/tags/1.8.243.1',
             (string)$this->history[0]['request']->getUri()
         );
+        // The download goes through the configured proxy, like the API calls.
+        $this->assertSame('http://proxy.example:3128', $this->history[0]['options']['proxy']);
         $this->assertFileExists($this->download_path.'/1.8.243.1/app/Marker.php');
         $this->assertFileExists($this->download_path.'/1.8.243.1/artisan');
     }

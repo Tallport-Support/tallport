@@ -324,6 +324,19 @@ class GithubRepositoryType extends AbstractRepositoryType implements SourceRepos
         return self::GITHUB_API_URL.'/repos/'.$this->config['repository_vendor'].'/'.$this->config['repository_name'];
     }
 
+    /**
+     * Download the release zip through the proxy. The total timeout for API
+     * calls is left out: the zip is large, and slow servers need longer.
+     */
+    protected function downloadRelease(Client $client, $source, $storagePath)
+    {
+        return $client->request('GET', $source, [
+            'sink'            => $storagePath,
+            'connect_timeout' => config('app.curl_connect_timeout'),
+            'proxy'           => config('app.proxy'),
+        ]);
+    }
+
     protected function getRequestOptions()
     {
         return [
