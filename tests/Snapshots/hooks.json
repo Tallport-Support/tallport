@@ -1923,6 +1923,14 @@
     },
     {
         "type": "filter",
+        "name": "modules.register_error",
+        "arguments": 2,
+        "files": [
+            "app/Modules/Module.php"
+        ]
+    },
+    {
+        "type": "filter",
         "name": "modules.show_license",
         "arguments": 1,
         "files": [

@@ -75,6 +75,12 @@ class AppServiceProvider extends ServiceProvider
             return new \App\Misc\Eventy\Events();
         });
 
+        // FreeScout's module system on top of nwidart's (App\Modules).
+        $this->app->singleton('modules', function ($app) {
+            return new \App\Modules\Repository($app, $app['config']->get('modules.paths.modules'));
+        });
+        $this->app->bind(\Nwidart\Modules\Contracts\RepositoryInterface::class, \App\Modules\Repository::class);
+
         $this->registerDevBoost();
         $this->registerLegacyMethods();
         $this->registerAuthHooks();

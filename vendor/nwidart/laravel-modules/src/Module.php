@@ -33,15 +33,6 @@ abstract class Module extends ServiceProvider
     protected $path;
 
     /**
-     * The module path as it has been scanned, before realpath() resolved it.
-     * When the Modules folder is a symlink leading outside of the application
-     * folder, this is the only path which is still relative to base_path().
-     *
-     * @var string
-     */
-    protected $scanned_path;
-
-    /**
      * @var array of cached Json objects, keyed by filename
      */
     protected $moduleJson = [];
@@ -58,7 +49,6 @@ abstract class Module extends ServiceProvider
         parent::__construct($app);
         $this->name = $name;
         $this->path = realpath($path);
-        $this->scanned_path = $path;
     }
 
     /**
@@ -162,16 +152,6 @@ abstract class Module extends ServiceProvider
     }
 
     /**
-     * Get the path the module has been scanned from, with symlinks not resolved.
-     *
-     * @return string
-     */
-    public function getScannedPath()
-    {
-        return $this->scanned_path ?: $this->path;
-    }
-
-    /**
      * Set path.
      *
      * @param string $path
@@ -195,14 +175,7 @@ abstract class Module extends ServiceProvider
         }
 
         if ($this->isLoadFilesOnBoot()) {
-            try {
-                $this->registerFiles();
-            } catch (\Exception $e) {
-                $e = \Eventy::filter('modules.register_error', $e, $this);
-                if ($e) {
-                    throw $e;
-                }
-            }
+            $this->registerFiles();
         }
 
         $this->fireEvent('boot');
@@ -217,7 +190,7 @@ abstract class Module extends ServiceProvider
     {
         $lowerName = $this->getLowerName();
 
-        $langPath = $this->getPath().'/Resources/lang';
+        $langPath = $this->getPath() . '/Resources/lang';
 
         if (is_dir($langPath)) {
             $this->loadTranslationsFrom($langPath, $lowerName);
@@ -238,27 +211,7 @@ abstract class Module extends ServiceProvider
         }
 
         return array_get($this->moduleJson, $file, function () use ($file) {
-            // In this Laravel-Modules package caching is not working, so we need to implement it.
-            // https://github.com/nWidart/laravel-modules/issues/659
-
-            // Cache stores module.json files as arrays
-            $cachedManifestsArray = $this->app['cache']->get($this->app['config']->get('modules.cache.key'));
-
-            if ($cachedManifestsArray && count($cachedManifestsArray)) {
-                foreach ($cachedManifestsArray as $manifest) {
-                    // We found manifest data in cache
-                    if (!empty($manifest['name']) && $manifest['name'] == $this->getName()) {
-                        return $this->moduleJson[$file] = new Json($this->getPath().'/'.$file, $this->app['files'], $manifest);
-                    }
-                }
-            }
-
-            // We have to set `active` flag from DB modules table.
-            $json = new Json($this->getPath().'/'.$file, $this->app['files']);
-            $json->set('active', (int) \App\Module::isActive($json->get('alias')));
-
-            return $this->moduleJson[$file] = $json;
-            //return $this->moduleJson[$file] = new Json($this->getPath() . '/' . $file, $this->app['files']);
+            return $this->moduleJson[$file] = new Json($this->getPath() . '/' . $file, $this->app['files']);
         });
     }
 
@@ -266,7 +219,7 @@ abstract class Module extends ServiceProvider
      * Get a specific data from json file by given the key.
      *
      * @param string $key
-     * @param null   $default
+     * @param null $default
      *
      * @return mixed
      */
@@ -295,14 +248,7 @@ abstract class Module extends ServiceProvider
     {
         $this->registerAliases();
 
-        try {
-            $this->registerProviders();
-        } catch (\Exception $e) {
-            $e = \Eventy::filter('modules.register_error', $e, $this);
-            if ($e) {
-                throw $e;
-            }
-        }
+        $this->registerProviders();
 
         if ($this->isLoadFilesOnBoot() === false) {
             $this->registerFiles();
@@ -318,9 +264,8 @@ abstract class Module extends ServiceProvider
      */
     protected function fireEvent($event)
     {
-        $this->app['events']->dispatch(sprintf('modules.%s.'.$event, $this->getLowerName()), [$this]);
+        $this->app['events']->fire(sprintf('modules.%s.' . $event, $this->getLowerName()), [$this]);
     }
-
     /**
      * Register the aliases from this module.
      */
@@ -343,15 +288,8 @@ abstract class Module extends ServiceProvider
      */
     protected function registerFiles()
     {
-        try {
-            foreach ($this->get('files', []) as $file) {
-                include $this->path.'/'.$file;
-            }
-        } catch (\Exception $e) {
-            $e = \Eventy::filter('modules.register_error', $e, $this);
-            if ($e) {
-                throw $e;
-            }
+        foreach ($this->get('files', []) as $file) {
+            include $this->path . '/' . $file;
         }
     }
 
@@ -374,10 +312,6 @@ abstract class Module extends ServiceProvider
      */
     public function isStatus($status) : bool
     {
-        // echo "<pre>";
-        // print_r($this->json());
-
-        //return (int)\App\Module::isActive($this->getAlias()) == $status;
         return $this->get('active', 0) === $status;
     }
 
@@ -395,7 +329,6 @@ abstract class Module extends ServiceProvider
      * Alternate for "enabled" method.
      *
      * @return bool
-     *
      * @deprecated
      */
     public function active()
@@ -407,7 +340,6 @@ abstract class Module extends ServiceProvider
      * Determine whether the current module not activated.
      *
      * @return bool
-     *
      * @deprecated
      */
     public function notActive()
@@ -434,8 +366,7 @@ abstract class Module extends ServiceProvider
      */
     public function setActive($active)
     {
-        \App\Module::setActive($this->getAlias(), $active);
-        //return $this->json()->set('active', $active)->save();
+        return $this->json()->set('active', $active)->save();
     }
 
     /**
@@ -481,7 +412,7 @@ abstract class Module extends ServiceProvider
      */
     public function getExtraPath(string $path) : string
     {
-        return $this->getPath().'/'.$path;
+        return $this->getPath() . '/' . $path;
     }
 
     /**
@@ -506,25 +437,5 @@ abstract class Module extends ServiceProvider
         return config('modules.register.files', 'register') === 'boot' &&
             // force register method if option == boot && app is AsgardCms
             !class_exists('\Modules\Core\Foundation\AsgardCms');
-    }
-
-    /**
-     * Check if module is official.
-     *
-     * @return bool [description]
-     */
-    public function isOfficial()
-    {
-        return \App\Module::isOfficial($this->get('authorUrl'));
-    }
-
-    /**
-     * Get module license from DB.
-     *
-     * @return [type] [description]
-     */
-    public function getLicense()
-    {
-        return \App\Module::getLicense($this->getAlias());
     }
 }
