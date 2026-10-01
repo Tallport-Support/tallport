@@ -64,8 +64,6 @@ return array(
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'Modules\\' => array($baseDir . '/Modules'),
     'Mews\\Purifier\\' => array($vendorDir . '/mews/purifier/src'),
-    'Lord\\Laroute\\Routes\\' => array($baseDir . '/overrides/lord/laroute/src/Routes'),
-    'Lord\\Laroute\\' => array($vendorDir . '/lord/laroute/src'),
     'League\\Uri\\' => array($vendorDir . '/league/uri', $vendorDir . '/league/uri-interfaces'),
     'League\\MimeTypeDetection\\' => array($vendorDir . '/league/mime-type-detection/src'),
     'League\\Flysystem\\Local\\' => array($vendorDir . '/league/flysystem-local'),
@@ -108,7 +106,5 @@ return array(
     'Carbon\\Doctrine\\' => array($vendorDir . '/carbonphp/carbon-doctrine-types/src/Carbon/Doctrine'),
     'Carbon\\' => array($vendorDir . '/nesbot/carbon/src/Carbon'),
     'Brick\\Math\\' => array($vendorDir . '/brick/math/src'),
-    'Axn\\Laroute\\Routes\\' => array($baseDir . '/overrides/axn/laravel-laroute/src/Routes'),
-    'Axn\\Laroute\\' => array($vendorDir . '/axn/laravel-laroute/src'),
     'App\\' => array($baseDir . '/app'),
 );

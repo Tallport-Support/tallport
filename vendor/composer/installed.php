@@ -10,15 +10,6 @@
         'dev' => true,
     ),
     'versions' => array(
-        'axn/laravel-laroute' => array(
-            'pretty_version' => '1.8.0',
-            'version' => '1.8.0.0',
-            'reference' => '532b0525ff6141bcbe6d85dcc072656805bdbec6',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../axn/laravel-laroute',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'brick/math' => array(
             'pretty_version' => '0.14.8',
             'version' => '0.14.8.0',
@@ -571,15 +562,6 @@
             'reference' => '85d5c77c5d6d3af6c54db4a78246364908f3c928',
             'type' => 'library',
             'install_path' => __DIR__ . '/../league/uri-interfaces',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-        'lord/laroute' => array(
-            'pretty_version' => '3.1.0',
-            'version' => '3.1.0.0',
-            'reference' => '2a743ddb2365eae1ce98e5daceb7b1b53c18ec7d',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../lord/laroute',
             'aliases' => array(),
             'dev_requirement' => false,
         ),

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3
+class ComposerStaticIniteb36a5b7060c292e009d29a06c40d7e2
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -134,8 +134,6 @@ class ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3
         ),
         'L' =>
         array (
-            'Lord\\Laroute\\Routes\\' => 20,
-            'Lord\\Laroute\\' => 13,
             'League\\Uri\\' => 11,
             'League\\MimeTypeDetection\\' => 25,
             'League\\Flysystem\\Local\\' => 23,
@@ -208,8 +206,6 @@ class ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3
         ),
         'A' =>
         array (
-            'Axn\\Laroute\\Routes\\' => 19,
-            'Axn\\Laroute\\' => 12,
             'App\\' => 4,
         ),
     );
@@ -451,14 +447,6 @@ class ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3
         array (
             0 => __DIR__ . '/..' . '/mews/purifier/src',
         ),
-        'Lord\\Laroute\\Routes\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/lord/laroute/src/Routes',
-        ),
-        'Lord\\Laroute\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/lord/laroute/src',
-        ),
         'League\\Uri\\' =>
         array (
             0 => __DIR__ . '/..' . '/league/uri',
@@ -633,14 +621,6 @@ class ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3
         array (
             0 => __DIR__ . '/..' . '/brick/math/src',
         ),
-        'Axn\\Laroute\\Routes\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/axn/laravel-laroute/src/Routes',
-        ),
-        'Axn\\Laroute\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/axn/laravel-laroute/src',
-        ),
         'App\\' =>
         array (
             0 => __DIR__ . '/../..' . '/app',
@@ -690,6 +670,7 @@ class ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3
         'App\\Console\\Commands\\FetchEmails' => __DIR__ . '/../..' . '/app/Console/Commands/FetchEmails.php',
         'App\\Console\\Commands\\FetchMonitor' => __DIR__ . '/../..' . '/app/Console/Commands/FetchMonitor.php',
         'App\\Console\\Commands\\GenerateVars' => __DIR__ . '/../..' . '/app/Console/Commands/GenerateVars.php',
+        'App\\Console\\Commands\\LarouteGenerate' => __DIR__ . '/../..' . '/app/Console/Commands/LarouteGenerate.php',
         'App\\Console\\Commands\\LogoutUsers' => __DIR__ . '/../..' . '/app/Console/Commands/LogoutUsers.php',
         'App\\Console\\Commands\\LogsMonitor' => __DIR__ . '/../..' . '/app/Console/Commands/LogsMonitor.php',
         'App\\Console\\Commands\\ModuleBuild' => __DIR__ . '/../..' . '/app/Console/Commands/ModuleBuild.php',
@@ -824,6 +805,7 @@ class ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3
         'App\\Misc\\Eventy\\ListenersByHook' => __DIR__ . '/../..' . '/app/Misc/Eventy/ListenersByHook.php',
         'App\\Misc\\Helper' => __DIR__ . '/../..' . '/app/Misc/Helper.php',
         'App\\Misc\\Html2Text' => __DIR__ . '/../..' . '/app/Misc/Html2Text.php',
+        'App\\Misc\\JsRoutes' => __DIR__ . '/../..' . '/app/Misc/JsRoutes.php',
         'App\\Misc\\Mail' => __DIR__ . '/../..' . '/app/Misc/Mail.php',
         'App\\Misc\\MailManager' => __DIR__ . '/../..' . '/app/Misc/MailManager.php',
         'App\\Misc\\PhpMailTransport' => __DIR__ . '/../..' . '/app/Misc/PhpMailTransport.php',
@@ -865,8 +847,6 @@ class ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3
         'App\\Thread' => __DIR__ . '/../..' . '/app/Thread.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
-        'Axn\\Laroute\\Routes\\Collection' => __DIR__ . '/../..' . '/overrides/axn/laravel-laroute/src/Routes/Collection.php',
-        'Axn\\Laroute\\ServiceProvider' => __DIR__ . '/..' . '/axn/laravel-laroute/src/ServiceProvider.php',
         'Brick\\Math\\BigDecimal' => __DIR__ . '/..' . '/brick/math/src/BigDecimal.php',
         'Brick\\Math\\BigInteger' => __DIR__ . '/..' . '/brick/math/src/BigInteger.php',
         'Brick\\Math\\BigNumber' => __DIR__ . '/..' . '/brick/math/src/BigNumber.php',
@@ -4666,14 +4646,6 @@ class ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3
         'League\\Uri\\UriTemplate\\VariableBag' => __DIR__ . '/..' . '/league/uri/UriTemplate/VariableBag.php',
         'League\\Uri\\Urn' => __DIR__ . '/..' . '/league/uri/Urn.php',
         'League\\Uri\\UrnComparisonMode' => __DIR__ . '/..' . '/league/uri-interfaces/UrnComparisonMode.php',
-        'Lord\\Laroute\\Compilers\\CompilerInterface' => __DIR__ . '/..' . '/lord/laroute/src/Compilers/CompilerInterface.php',
-        'Lord\\Laroute\\Compilers\\TemplateCompiler' => __DIR__ . '/..' . '/lord/laroute/src/Compilers/TemplateCompiler.php',
-        'Lord\\Laroute\\Console\\Commands\\LarouteGeneratorCommand' => __DIR__ . '/..' . '/lord/laroute/src/Console/Commands/LarouteGeneratorCommand.php',
-        'Lord\\Laroute\\Generators\\GeneratorInterface' => __DIR__ . '/..' . '/lord/laroute/src/Generators/GeneratorInterface.php',
-        'Lord\\Laroute\\Generators\\TemplateGenerator' => __DIR__ . '/..' . '/lord/laroute/src/Generators/TemplateGenerator.php',
-        'Lord\\Laroute\\LarouteServiceProvider' => __DIR__ . '/..' . '/lord/laroute/src/LarouteServiceProvider.php',
-        'Lord\\Laroute\\Routes\\Collection' => __DIR__ . '/../..' . '/overrides/lord/laroute/src/Routes/Collection.php',
-        'Lord\\Laroute\\Routes\\Exceptions\\ZeroRoutesException' => __DIR__ . '/..' . '/lord/laroute/src/Routes/Exceptions/ZeroRoutesException.php',
         'MailboxesTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MailboxesTableSeeder.php',
         'Mews\\Purifier\\Casts\\CleanHtml' => __DIR__ . '/..' . '/mews/purifier/src/Casts/CleanHtml.php',
         'Mews\\Purifier\\Casts\\CleanHtmlInput' => __DIR__ . '/..' . '/mews/purifier/src/Casts/CleanHtmlInput.php',
@@ -7020,10 +6992,10 @@ class ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticIniteb36a5b7060c292e009d29a06c40d7e2::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticIniteb36a5b7060c292e009d29a06c40d7e2::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticIniteb36a5b7060c292e009d29a06c40d7e2::$prefixesPsr0;
+            $loader->classMap = ComposerStaticIniteb36a5b7060c292e009d29a06c40d7e2::$classMap;
 
         }, null, ClassLoader::class);
     }

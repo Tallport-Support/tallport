@@ -4,58 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c4ca33ba2d54529cad0c28cda758c5f3",
+    "content-hash": "eb36a5b7060c292e009d29a06c40d7e2",
     "packages": [
-        {
-            "name": "axn/laravel-laroute",
-            "version": "1.8.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/AXN-Informatique/laravel-laroute.git",
-                "reference": "532b0525ff6141bcbe6d85dcc072656805bdbec6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/AXN-Informatique/laravel-laroute/zipball/532b0525ff6141bcbe6d85dcc072656805bdbec6",
-                "reference": "532b0525ff6141bcbe6d85dcc072656805bdbec6",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/routing": ">=5.4",
-                "illuminate/support": ">=5.4",
-                "lord/laroute": "^2.4 || ^3.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Axn\\Laroute\\ServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Axn\\Laroute\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "AXN Informatique",
-                    "email": "developpement@axn.fr"
-                }
-            ],
-            "description": "Extend aaronlord/laroute package.",
-            "homepage": "https://github.com/AXN-Informatique/laravel-laroute",
-            "support": {
-                "issues": "https://github.com/AXN-Informatique/laravel-laroute/issues",
-                "source": "https://github.com/AXN-Informatique/laravel-laroute/tree/1.8.0"
-            },
-            "time": "2022-03-02T18:07:03+00:00"
-        },
         {
             "name": "brick/math",
             "version": "0.14.8",
@@ -2833,38 +2783,6 @@
                 }
             ],
             "time": "2026-03-08T20:05:35+00:00"
-        },
-        {
-            "name": "lord/laroute",
-            "version": "3.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/aaronlord/laroute.git",
-                "reference": "2a743ddb2365eae1ce98e5daceb7b1b53c18ec7d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/aaronlord/laroute/zipball/2a743ddb2365eae1ce98e5daceb7b1b53c18ec7d",
-                "reference": "2a743ddb2365eae1ce98e5daceb7b1b53c18ec7d",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/config": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-                "illuminate/console": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-                "illuminate/filesystem": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-                "illuminate/routing": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-                "illuminate/support": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-                "php": ">=5.4.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Lord\\Laroute\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ]
         },
         {
             "name": "mews/purifier",

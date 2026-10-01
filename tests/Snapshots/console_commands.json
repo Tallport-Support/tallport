@@ -209,6 +209,27 @@
         "arguments": {},
         "options": {}
     },
+    "laroute:generate": {
+        "class": "App\\Console\\Commands\\LarouteGenerate",
+        "description": "Generate the routes file for JavaScript (public/js/laroute.js)",
+        "arguments": {},
+        "options": {
+            "path": {
+                "shortcut": "p",
+                "value": "optional"
+            },
+            "filename": {
+                "shortcut": "f",
+                "value": "optional"
+            },
+            "namespace": {
+                "value": "optional"
+            },
+            "prefix": {
+                "value": "optional"
+            }
+        }
+    },
     "module:migrate": {
         "class": "App\\Console\\Commands\\ModuleMigrate",
         "description": "Migrate the migrations from the specified module or from all modules.",
