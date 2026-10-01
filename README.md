@@ -131,6 +131,24 @@ naming the module and the Tallport version.
 What you need: PHP 8.x with the extensions above, Composer, a MariaDB
 server, and the [GitHub CLI](https://cli.github.com/) (`gh`) for releases.
 
+After cloning, run `composer install`. It leaves the committed `vendor/` as
+it is and installs the development tools into the ignored `dev/vendor` and
+`dev/boost/vendor`, so none of them ship with releases. Then install the
+application as usual and set `APP_DEBUG=true` in `.env`.
+
+### AI coding agents
+
+Tallport uses [Laravel Boost](https://laravel.com/docs/boost) to give coding
+agents project guidelines, skills and an MCP server. The generated files are
+committed for every agent Boost supports (`AGENTS.md`, `.mcp.json`,
+`.claude/`, `.cursor/`, `.junie/` and others). Boost runs only when
+`APP_DEBUG=true`. Junie's MCP config needs absolute paths, so it isn't
+committed: Junie users run `php artisan boost:install` once.
+
+Tallport's own rules are in `.ai/guidelines/`. After changing them, or the
+agent list in `boost.json`, run `php artisan boost:update` and commit the
+result.
+
 ### Tests
 
 The tests use their own database. Create it once, as a MariaDB admin:
@@ -150,7 +168,7 @@ Then:
 
 * Test tools (PHPUnit and friends) live in their own Composer project in
   `dev/`, installed into the ignored `dev/vendor`, so they never ship with
-  releases. `./test.sh` installs them when needed.
+  releases. `composer install` and `./test.sh` install them.
 * Tests don't read your `.env`, send no real email, make no outside network
   requests and don't touch your installation's files; see
   `tests/FeatureTestCase.php` for how.
@@ -179,7 +197,7 @@ zip and never run Composer. It must be exactly what Composer produces from
 
 ```bash
 rm -rf vendor
-composer install --no-dev --ignore-platform-reqs
+composer install --ignore-platform-reqs
 ```
 
 Commit the result as it is. CI reinstalls `vendor/` the same way and fails

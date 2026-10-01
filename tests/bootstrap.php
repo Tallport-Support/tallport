@@ -33,7 +33,7 @@ if (!function_exists('e')) {
 
 $loader = require __DIR__.'/../vendor/autoload.php';
 
-// autoload-dev is not part of the committed autoloader.
+// The Tests namespace is not part of the committed autoloader.
 $loader->addPsr4('Tests\\', __DIR__.'/');
 
 // Laravel 5.5 testing classes patched for PHP 8.4+ and PHPUnit 9 (string

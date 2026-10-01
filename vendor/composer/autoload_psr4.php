@@ -101,6 +101,7 @@ return array(
     'Laravel\\Tinker\\' => array($vendorDir . '/laravel/tinker/src'),
     'Laravel\\SerializableClosure\\' => array($vendorDir . '/laravel/serializable-closure/src'),
     'Laravel\\Prompts\\' => array($vendorDir . '/laravel/prompts/src'),
+    'Laravel\\Ai\\' => array($vendorDir . '/laravel/ai/src'),
     'Javoscript\\MacroableModels\\' => array($baseDir . '/overrides/javoscript/laravel-macroable-models/src', $vendorDir . '/javoscript/laravel-macroable-models/src'),
     'Illuminate\\View\\' => array($baseDir . '/overrides/laravel/framework/src/Illuminate/View'),
     'Illuminate\\Validation\\Concerns\\' => array($baseDir . '/overrides/laravel/framework/src/Illuminate/Validation/Concerns'),

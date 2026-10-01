@@ -1,0 +1,30 @@
+{
+    "name": "tallport/dev-boost",
+    "description": "Laravel Boost (AI agent guidelines and MCP server) for Tallport development. Installed into dev/boost/vendor, which is not committed, so none of this ships with releases. The app's own packages are listed under provide so they are not installed twice.",
+    "type": "project",
+    "license": "AGPL-3.0-or-later",
+    "require": {
+        "php": ">=8.3",
+        "laravel/boost": "^2.10"
+    },
+    "provide": {
+        "guzzlehttp/guzzle": "8.0.1",
+        "illuminate/console": "13.34.0",
+        "illuminate/container": "13.34.0",
+        "illuminate/contracts": "13.34.0",
+        "illuminate/http": "13.34.0",
+        "illuminate/json-schema": "13.34.0",
+        "illuminate/routing": "13.34.0",
+        "illuminate/support": "13.34.0",
+        "illuminate/validation": "13.34.0",
+        "laravel/prompts": "0.3.24",
+        "symfony/process": "7.4.19"
+    },
+    "config": {
+        "platform": {
+            "php": "8.3.0"
+        },
+        "prepend-autoloader": false,
+        "sort-packages": true
+    }
+}

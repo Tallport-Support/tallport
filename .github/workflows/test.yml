@@ -90,7 +90,7 @@ jobs:
       - name: Reinstall vendor/ from composer.lock
         run: |
           rm -rf vendor
-          composer install --no-dev --ignore-platform-reqs --no-interaction --no-progress
+          composer install --ignore-platform-reqs --no-interaction --no-progress
 
       - name: Compare with the committed vendor/
         run: |

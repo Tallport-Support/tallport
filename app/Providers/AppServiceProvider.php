@@ -69,6 +69,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerDevBoost();
+
         // Forse HTTPS if using CloudFlare "Flexible SSL"
         // https://support.cloudflare.com/hc/en-us/articles/200170416-What-do-the-SSL-options-mean-
         if (\Helper::isHttps()) {
@@ -122,5 +124,27 @@ class AppServiceProvider extends ServiceProvider
 
             return $exception;
         }, 10, 2);
+    }
+
+    /**
+     * Laravel Boost (AI agent guidelines and MCP server) is installed into
+     * dev/boost/vendor, outside the shipped vendor/, so it is loaded here when
+     * present. Boost itself only runs in the local environment or with debug on.
+     */
+    protected function registerDevBoost()
+    {
+        $vendor = base_path('dev/boost/vendor');
+        if (!file_exists($vendor.'/autoload.php') || $this->app->runningUnitTests()) {
+            return;
+        }
+
+        require_once $vendor.'/autoload.php';
+
+        $installed = json_decode(file_get_contents($vendor.'/composer/installed.json'), true);
+        foreach ($installed['packages'] ?? [] as $package) {
+            foreach ($package['extra']['laravel']['providers'] ?? [] as $provider) {
+                $this->app->register($provider);
+            }
+        }
     }
 }

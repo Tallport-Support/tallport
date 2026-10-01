@@ -7,7 +7,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'dev' => false,
+        'dev' => true,
     ),
     'versions' => array(
         'axn/laravel-laroute' => array(
@@ -472,6 +472,15 @@
             'reference' => '2ade1984f33362c0a304da6352f95c407d5c761f',
             'type' => 'library',
             'install_path' => __DIR__ . '/../javoscript/laravel-macroable-models',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'laravel/ai' => array(
+            'pretty_version' => 'v1.0.1',
+            'version' => '1.0.1.0',
+            'reference' => '127fce89bc620fcf942252837669c2fc0895f4b3',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laravel/ai',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
