@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit32657119ff3f1cac10cdac0c03b04001
+class ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -41,7 +41,6 @@ class ComposerStaticInit32657119ff3f1cac10cdac0c03b04001
         '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
         'cb61d74ad51d00867155534456b38b23' => __DIR__ . '/..' . '/mews/purifier/src/helpers.php',
         '9f394da3192a168c4633675768d80428' => __DIR__ . '/..' . '/nwidart/laravel-modules/src/helpers.php',
-        'd7354eb4c8441fbf08eec280b61c7c73' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Helpers/functions.php',
         '72b1e3f4a2af9b30b3f137b3ec2057fc' => __DIR__ . '/..' . '/spatie/laravel-activitylog/src/helpers.php',
         'b3709fe79d9d3d527d2a936c35802426' => __DIR__ . '/../..' . '/app/Misc/Functions.php',
         '26d7dac63c5a6be00af8895f2ad2fb79' => __DIR__ . '/../..' . '/app/Misc/LegacyHelpers.php',
@@ -107,12 +106,6 @@ class ComposerStaticInit32657119ff3f1cac10cdac0c03b04001
         array (
             'Ramsey\\Uuid\\' => 12,
             'Ramsey\\Collection\\' => 18,
-            'RachidLaasri\\LaravelInstaller\\Providers\\' => 40,
-            'RachidLaasri\\LaravelInstaller\\Middleware\\' => 41,
-            'RachidLaasri\\LaravelInstaller\\Helpers\\' => 38,
-            'RachidLaasri\\LaravelInstaller\\Events\\' => 37,
-            'RachidLaasri\\LaravelInstaller\\Controllers\\' => 42,
-            'RachidLaasri\\LaravelInstaller\\' => 30,
         ),
         'P' =>
         array (
@@ -391,30 +384,6 @@ class ComposerStaticInit32657119ff3f1cac10cdac0c03b04001
         'Ramsey\\Collection\\' =>
         array (
             0 => __DIR__ . '/..' . '/ramsey/collection/src',
-        ),
-        'RachidLaasri\\LaravelInstaller\\Providers\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Providers',
-        ),
-        'RachidLaasri\\LaravelInstaller\\Middleware\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Middleware',
-        ),
-        'RachidLaasri\\LaravelInstaller\\Helpers\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Helpers',
-        ),
-        'RachidLaasri\\LaravelInstaller\\Events\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Events',
-        ),
-        'RachidLaasri\\LaravelInstaller\\Controllers\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Controllers',
-        ),
-        'RachidLaasri\\LaravelInstaller\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src',
         ),
         'Psy\\' =>
         array (
@@ -775,6 +744,12 @@ class ComposerStaticInit32657119ff3f1cac10cdac0c03b04001
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\ConversationsController' => __DIR__ . '/../..' . '/app/Http/Controllers/ConversationsController.php',
         'App\\Http\\Controllers\\CustomersController' => __DIR__ . '/../..' . '/app/Http/Controllers/CustomersController.php',
+        'App\\Http\\Controllers\\Install\\DatabaseController' => __DIR__ . '/../..' . '/app/Http/Controllers/Install/DatabaseController.php',
+        'App\\Http\\Controllers\\Install\\EnvironmentController' => __DIR__ . '/../..' . '/app/Http/Controllers/Install/EnvironmentController.php',
+        'App\\Http\\Controllers\\Install\\FinalController' => __DIR__ . '/../..' . '/app/Http/Controllers/Install/FinalController.php',
+        'App\\Http\\Controllers\\Install\\PermissionsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Install/PermissionsController.php',
+        'App\\Http\\Controllers\\Install\\RequirementsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Install/RequirementsController.php',
+        'App\\Http\\Controllers\\Install\\WelcomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Install/WelcomeController.php',
         'App\\Http\\Controllers\\MailboxesController' => __DIR__ . '/../..' . '/app/Http/Controllers/MailboxesController.php',
         'App\\Http\\Controllers\\ModulesController' => __DIR__ . '/../..' . '/app/Http/Controllers/ModulesController.php',
         'App\\Http\\Controllers\\OpenController' => __DIR__ . '/../..' . '/app/Http/Controllers/OpenController.php',
@@ -784,6 +759,7 @@ class ComposerStaticInit32657119ff3f1cac10cdac0c03b04001
         'App\\Http\\Controllers\\UsersController' => __DIR__ . '/../..' . '/app/Http/Controllers/UsersController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
+        'App\\Http\\Middleware\\CanInstall' => __DIR__ . '/../..' . '/app/Http/Middleware/CanInstall.php',
         'App\\Http\\Middleware\\CheckBrowser' => __DIR__ . '/../..' . '/app/Http/Middleware/CheckBrowser.php',
         'App\\Http\\Middleware\\CheckRole' => __DIR__ . '/../..' . '/app/Http/Middleware/CheckRole.php',
         'App\\Http\\Middleware\\ContentSecurityPolicy' => __DIR__ . '/../..' . '/app/Http/Middleware/ContentSecurityPolicy.php',
@@ -802,6 +778,12 @@ class ComposerStaticInit32657119ff3f1cac10cdac0c03b04001
         'App\\Http\\Middleware\\TrustHosts' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustHosts.php',
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
+        'App\\Install\\DatabaseManager' => __DIR__ . '/../..' . '/app/Install/DatabaseManager.php',
+        'App\\Install\\EnvironmentManager' => __DIR__ . '/../..' . '/app/Install/EnvironmentManager.php',
+        'App\\Install\\FinalInstallManager' => __DIR__ . '/../..' . '/app/Install/FinalInstallManager.php',
+        'App\\Install\\InstalledFileManager' => __DIR__ . '/../..' . '/app/Install/InstalledFileManager.php',
+        'App\\Install\\PermissionsChecker' => __DIR__ . '/../..' . '/app/Install/PermissionsChecker.php',
+        'App\\Install\\RequirementsChecker' => __DIR__ . '/../..' . '/app/Install/RequirementsChecker.php',
         'App\\Job' => __DIR__ . '/../..' . '/app/Job.php',
         'App\\Jobs\\RestartQueueWorker' => __DIR__ . '/../..' . '/app/Jobs/RestartQueueWorker.php',
         'App\\Jobs\\SendAlert' => __DIR__ . '/../..' . '/app/Jobs/SendAlert.php',
@@ -5680,25 +5662,6 @@ class ComposerStaticInit32657119ff3f1cac10cdac0c03b04001
         'Psy\\VersionUpdater\\IntervalChecker' => __DIR__ . '/..' . '/psy/psysh/src/VersionUpdater/IntervalChecker.php',
         'Psy\\VersionUpdater\\NoopChecker' => __DIR__ . '/..' . '/psy/psysh/src/VersionUpdater/NoopChecker.php',
         'Psy\\VersionUpdater\\SelfUpdate' => __DIR__ . '/..' . '/psy/psysh/src/VersionUpdater/SelfUpdate.php',
-        'RachidLaasri\\LaravelInstaller\\Controllers\\DatabaseController' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Controllers/DatabaseController.php',
-        'RachidLaasri\\LaravelInstaller\\Controllers\\EnvironmentController' => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Controllers/EnvironmentController.php',
-        'RachidLaasri\\LaravelInstaller\\Controllers\\FinalController' => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Controllers/FinalController.php',
-        'RachidLaasri\\LaravelInstaller\\Controllers\\PermissionsController' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Controllers/PermissionsController.php',
-        'RachidLaasri\\LaravelInstaller\\Controllers\\RequirementsController' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Controllers/RequirementsController.php',
-        'RachidLaasri\\LaravelInstaller\\Controllers\\UpdateController' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Controllers/UpdateController.php',
-        'RachidLaasri\\LaravelInstaller\\Controllers\\WelcomeController' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Controllers/WelcomeController.php',
-        'RachidLaasri\\LaravelInstaller\\Events\\EnvironmentSaved' => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Events/EnvironmentSaved.php',
-        'RachidLaasri\\LaravelInstaller\\Events\\LaravelInstallerFinished' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Events/LaravelInstallerFinished.php',
-        'RachidLaasri\\LaravelInstaller\\Helpers\\DatabaseManager' => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Helpers/DatabaseManager.php',
-        'RachidLaasri\\LaravelInstaller\\Helpers\\EnvironmentManager' => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Helpers/EnvironmentManager.php',
-        'RachidLaasri\\LaravelInstaller\\Helpers\\FinalInstallManager' => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Helpers/FinalInstallManager.php',
-        'RachidLaasri\\LaravelInstaller\\Helpers\\InstalledFileManager' => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Helpers/InstalledFileManager.php',
-        'RachidLaasri\\LaravelInstaller\\Helpers\\MigrationsHelper' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Helpers/MigrationsHelper.php',
-        'RachidLaasri\\LaravelInstaller\\Helpers\\PermissionsChecker' => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Helpers/PermissionsChecker.php',
-        'RachidLaasri\\LaravelInstaller\\Helpers\\RequirementsChecker' => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Helpers/RequirementsChecker.php',
-        'RachidLaasri\\LaravelInstaller\\Middleware\\canInstall' => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Middleware/canInstall.php',
-        'RachidLaasri\\LaravelInstaller\\Middleware\\canUpdate' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Middleware/canUpdate.php',
-        'RachidLaasri\\LaravelInstaller\\Providers\\LaravelInstallerServiceProvider' => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Providers/LaravelInstallerServiceProvider.php',
         'Ramsey\\Collection\\AbstractArray' => __DIR__ . '/..' . '/ramsey/collection/src/AbstractArray.php',
         'Ramsey\\Collection\\AbstractCollection' => __DIR__ . '/..' . '/ramsey/collection/src/AbstractCollection.php',
         'Ramsey\\Collection\\AbstractSet' => __DIR__ . '/..' . '/ramsey/collection/src/AbstractSet.php',
@@ -7063,10 +7026,10 @@ class ComposerStaticInit32657119ff3f1cac10cdac0c03b04001
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit32657119ff3f1cac10cdac0c03b04001::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit32657119ff3f1cac10cdac0c03b04001::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit32657119ff3f1cac10cdac0c03b04001::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit32657119ff3f1cac10cdac0c03b04001::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitc4ca33ba2d54529cad0c28cda758c5f3::$classMap;
 
         }, null, ClassLoader::class);
     }

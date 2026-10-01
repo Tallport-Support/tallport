@@ -52,7 +52,7 @@ class TrustHosts
         $app_host = mb_strtolower(\Helper::getDomain());
 
         // Do not check during installation process.
-        if ($app_host == 'example.com' && preg_match("#^install/#", $request->path())) {
+        if ($app_host == 'example.com' && preg_match("#^install(/|$)#", $request->path())) {
             return $next($request);
         }
 

@@ -37,10 +37,26 @@ class RouteServiceProvider extends ServiceProvider
     {
         //$this->mapApiRoutes();
 
+        $this->mapInstallRoutes();
         $this->mapWebRoutes();
         $this->mapOpenRoutes();
 
         //
+    }
+
+    /**
+     * Define the web installer's routes (/install).
+     *
+     * @return void
+     */
+    protected function mapInstallRoutes()
+    {
+        $subdirectory = \Helper::getSubdirectory();
+
+        $route = $subdirectory ? Route::prefix($subdirectory)->middleware('web') : Route::middleware('web');
+
+        $route->namespace($this->namespace.'\Install')
+              ->group(base_path('routes/install.php'));
     }
 
     /**

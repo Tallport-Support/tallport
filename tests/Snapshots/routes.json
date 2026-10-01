@@ -316,12 +316,14 @@
         ],
         "uri": "install",
         "name": "LaravelInstaller::welcome",
-        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\WelcomeController@welcome",
+        "action": "Install\\WelcomeController@welcome",
         "middleware": [
             "web",
-            "install"
+            "App\\Http\\Middleware\\CanInstall"
         ],
-        "where": {}
+        "where": {
+            "id": "[0-9]+"
+        }
     },
     {
         "methods": [
@@ -329,12 +331,14 @@
         ],
         "uri": "install/database",
         "name": "LaravelInstaller::database",
-        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\DatabaseController@database",
+        "action": "Install\\DatabaseController@database",
         "middleware": [
             "web",
-            "install"
+            "App\\Http\\Middleware\\CanInstall"
         ],
-        "where": {}
+        "where": {
+            "id": "[0-9]+"
+        }
     },
     {
         "methods": [
@@ -342,12 +346,14 @@
         ],
         "uri": "install/environment",
         "name": "LaravelInstaller::environment",
-        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\EnvironmentController@environmentMenu",
+        "action": "Install\\EnvironmentController@environmentMenu",
         "middleware": [
             "web",
-            "install"
+            "App\\Http\\Middleware\\CanInstall"
         ],
-        "where": {}
+        "where": {
+            "id": "[0-9]+"
+        }
     },
     {
         "methods": [
@@ -355,12 +361,14 @@
         ],
         "uri": "install/environment/classic",
         "name": "LaravelInstaller::environmentClassic",
-        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\EnvironmentController@environmentClassic",
+        "action": "Install\\EnvironmentController@environmentClassic",
         "middleware": [
             "web",
-            "install"
+            "App\\Http\\Middleware\\CanInstall"
         ],
-        "where": {}
+        "where": {
+            "id": "[0-9]+"
+        }
     },
     {
         "methods": [
@@ -368,12 +376,14 @@
         ],
         "uri": "install/environment/saveClassic",
         "name": "LaravelInstaller::environmentSaveClassic",
-        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\EnvironmentController@saveClassic",
+        "action": "Install\\EnvironmentController@saveClassic",
         "middleware": [
             "web",
-            "install"
+            "App\\Http\\Middleware\\CanInstall"
         ],
-        "where": {}
+        "where": {
+            "id": "[0-9]+"
+        }
     },
     {
         "methods": [
@@ -381,12 +391,14 @@
         ],
         "uri": "install/environment/saveWizard",
         "name": "LaravelInstaller::environmentSaveWizard",
-        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\EnvironmentController@saveWizard",
+        "action": "Install\\EnvironmentController@saveWizard",
         "middleware": [
             "web",
-            "install"
+            "App\\Http\\Middleware\\CanInstall"
         ],
-        "where": {}
+        "where": {
+            "id": "[0-9]+"
+        }
     },
     {
         "methods": [
@@ -394,12 +406,14 @@
         ],
         "uri": "install/environment/wizard",
         "name": "LaravelInstaller::environmentWizard",
-        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\EnvironmentController@environmentWizard",
+        "action": "Install\\EnvironmentController@environmentWizard",
         "middleware": [
             "web",
-            "install"
+            "App\\Http\\Middleware\\CanInstall"
         ],
-        "where": {}
+        "where": {
+            "id": "[0-9]+"
+        }
     },
     {
         "methods": [
@@ -407,12 +421,14 @@
         ],
         "uri": "install/final",
         "name": "LaravelInstaller::final",
-        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\FinalController@finish",
+        "action": "Install\\FinalController@finish",
         "middleware": [
             "web",
-            "install"
+            "App\\Http\\Middleware\\CanInstall"
         ],
-        "where": {}
+        "where": {
+            "id": "[0-9]+"
+        }
     },
     {
         "methods": [
@@ -420,12 +436,14 @@
         ],
         "uri": "install/permissions",
         "name": "LaravelInstaller::permissions",
-        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\PermissionsController@permissions",
+        "action": "Install\\PermissionsController@permissions",
         "middleware": [
             "web",
-            "install"
+            "App\\Http\\Middleware\\CanInstall"
         ],
-        "where": {}
+        "where": {
+            "id": "[0-9]+"
+        }
     },
     {
         "methods": [
@@ -433,12 +451,14 @@
         ],
         "uri": "install/requirements",
         "name": "LaravelInstaller::requirements",
-        "action": "RachidLaasri\\LaravelInstaller\\Controllers\\RequirementsController@requirements",
+        "action": "Install\\RequirementsController@requirements",
         "middleware": [
             "web",
-            "install"
+            "App\\Http\\Middleware\\CanInstall"
         ],
-        "where": {}
+        "where": {
+            "id": "[0-9]+"
+        }
     },
     {
         "methods": [
