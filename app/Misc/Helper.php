@@ -1229,41 +1229,9 @@ class Helper
      */
     public static function setEnvFileVar($key, $value)
     {
-        $env_path = app()->environmentFilePath();
-        $contents = file_get_contents($env_path);
-
         $value = preg_replace("#[\r\n\t]#", '', $value);
 
-        if (strstr($value, '"')) {
-            // Escape quotes.
-            $value = '"'.str_replace('"', '\"', $value).'"';
-        } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', $value) && $value !== '') {
-            // Add quotes.
-            $value = '"'.$value.'"';
-        }
-
-        $old_value = '';
-        // Match the given key at the beginning of a line
-        preg_match("/^{$key}=[^\r\n]*/m", $contents, $matches);
-        if (count($matches)) {
-            $old_value = substr($matches[0], strlen($key) + 1);
-        }
-
-        if ($old_value) {
-            // Replace.
-            $contents = str_replace("{$key}={$old_value}", "{$key}={$value}", $contents);
-        } else {
-            // Add or empty value
-            preg_match("/^{$key}=[\r\n]/m", $contents, $matches);
-            if (count($matches)) {
-                // Replace empty value
-                $contents = str_replace("{$key}=", "{$key}={$value}", $contents);
-            } else {
-                // Add.
-                $contents = $contents."\n{$key}={$value}\n";
-            }
-        }
-        \File::put($env_path, $contents);
+        \App\Misc\EnvFile::setVar(app()->environmentFilePath(), $key, $value);
     }
 
     /**

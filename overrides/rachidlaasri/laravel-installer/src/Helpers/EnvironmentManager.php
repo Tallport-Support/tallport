@@ -2,6 +2,7 @@
 
 namespace RachidLaasri\LaravelInstaller\Helpers;
 
+use App\Misc\EnvFile;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -104,23 +105,23 @@ class EnvironmentManager
         '# Every time you are making changes in .env file, in order changes to take an effect you need to run:'."\n".
         '# php artisan freescout:clear-cache'."\n\n".
         '# Application URL'."\n".
-        'APP_URL='.$request->app_url."\n\n".
+        'APP_URL='.EnvFile::formatValue($request->app_url)."\n\n".
         '# Improve security'."\n".
         'SESSION_SECURE_COOKIE='.(\Helper::isHttps($request->app_url) ? 'true' : '')."\n\n".
         '# Timezones: https://github.com/freescout-helpdesk/freescout/wiki/PHP-Timezones'."\n".
         '# Comment it to use default timezone from php.ini'."\n".
-        'APP_TIMEZONE='.$request->app_timezone."\n\n".
+        'APP_TIMEZONE='.EnvFile::formatValue($request->app_timezone)."\n\n".
         '# Default language'."\n".
-        'APP_LOCALE='.$request->app_locale."\n\n".
+        'APP_LOCALE='.EnvFile::formatValue($request->app_locale)."\n\n".
         '# Database settings'."\n".
-        'DB_CONNECTION='.$request->database_connection."\n".
-        'DB_HOST='.$request->database_hostname."\n".
-        'DB_PORT='.$request->database_port."\n".
-        'DB_DATABASE='.$request->database_name."\n".
-        'DB_USERNAME='.$request->database_username."\n".
-        'DB_PASSWORD="'.str_replace('"', '\"\"', $request->database_password)."\"\n".
-        (!empty($request->database_charset) ? 'DB_CHARSET='.$request->database_charset."\n" : '').
-        (!empty($request->database_collation) ? 'DB_COLLATION='.$request->database_collation."\n" : '').
+        'DB_CONNECTION='.EnvFile::formatValue($request->database_connection)."\n".
+        'DB_HOST='.EnvFile::formatValue($request->database_hostname)."\n".
+        'DB_PORT='.EnvFile::formatValue($request->database_port)."\n".
+        'DB_DATABASE='.EnvFile::formatValue($request->database_name)."\n".
+        'DB_USERNAME='.EnvFile::formatValue($request->database_username)."\n".
+        'DB_PASSWORD='.EnvFile::formatValue($request->database_password)."\n".
+        (!empty($request->database_charset) ? 'DB_CHARSET='.EnvFile::formatValue($request->database_charset)."\n" : '').
+        (!empty($request->database_collation) ? 'DB_COLLATION='.EnvFile::formatValue($request->database_collation)."\n" : '').
         "\n".
         '# Run the following console command to generate the key: php artisan key:generate'."\n".
         '# Otherwise application will show the following error: "Whoops, looks like something went wrong"'."\n".

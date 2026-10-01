@@ -81,7 +81,8 @@ class SettingsAndSystemTest extends FeatureTestCase
 
         $response->assertRedirect(route('settings', ['section' => 'general']));
         $this->assertSame('Tallport Inc.', Option::where('name', 'company_name')->value('value'));
-        $this->assertStringContainsString('APP_TIMEZONE="Europe/Amsterdam"', $this->envFile(), 'Values with special characters are quoted.');
+        // Standard .env syntax: unquoted where that's unambiguous (App\Misc\EnvFile).
+        $this->assertStringContainsString("APP_TIMEZONE=Europe/Amsterdam\n", $this->envFile());
         $this->assertStringContainsString('APP_LOCALE=nl', $this->envFile());
         $this->assertStringContainsString('APP_MAX_MESSAGE_SIZE=20', $this->envFile());
         $this->assertCommandCalled('freescout:clear-cache');
