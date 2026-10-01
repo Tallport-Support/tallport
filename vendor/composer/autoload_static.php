@@ -165,7 +165,6 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
             'Illuminate\\Support\\' => 19,
             'Illuminate\\Routing\\' => 19,
             'Illuminate\\Foundation\\Auth\\' => 27,
-            'Illuminate\\Foundation\\' => 22,
             'Illuminate\\Database\\Eloquent\\Concerns\\' => 38,
             'Illuminate\\Database\\Eloquent\\' => 29,
             'Illuminate\\Database\\' => 20,
@@ -567,10 +566,6 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         array (
             0 => __DIR__ . '/..' . '/laravel/ui/auth-backend',
         ),
-        'Illuminate\\Foundation\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Foundation',
-        ),
         'Illuminate\\Database\\Eloquent\\Concerns\\' =>
         array (
             0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Database/Eloquent/Concerns',
@@ -800,6 +795,7 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         'App\\FailedJob' => __DIR__ . '/../..' . '/app/FailedJob.php',
         'App\\Folder' => __DIR__ . '/../..' . '/app/Folder.php',
         'App\\Follower' => __DIR__ . '/../..' . '/app/Follower.php',
+        'App\\Foundation\\Application' => __DIR__ . '/../..' . '/app/Foundation/Application.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
         'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',
         'App\\Http\\Controllers\\Auth\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/RegisterController.php',
@@ -2945,7 +2941,7 @@ class ComposerStaticInit5ccf6332f6d06c368153126fe98685aa
         'Illuminate\\Foundation\\MixManifestNotFoundException' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/MixManifestNotFoundException.php',
         'Illuminate\\Foundation\\PackageManifest' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/PackageManifest.php',
         'Illuminate\\Foundation\\Precognition' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Precognition.php',
-        'Illuminate\\Foundation\\ProviderRepository' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Foundation/ProviderRepository.php',
+        'Illuminate\\Foundation\\ProviderRepository' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/ProviderRepository.php',
         'Illuminate\\Foundation\\Providers\\ArtisanServiceProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Providers/ArtisanServiceProvider.php',
         'Illuminate\\Foundation\\Providers\\ComposerServiceProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Providers/ComposerServiceProvider.php',
         'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Providers/ConsoleSupportServiceProvider.php',

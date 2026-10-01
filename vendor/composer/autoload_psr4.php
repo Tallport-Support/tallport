@@ -88,7 +88,6 @@ return array(
     'Illuminate\\Support\\' => array($baseDir . '/overrides/laravel/framework/src/Illuminate/Support', $vendorDir . '/laravel/framework/src/Illuminate/Macroable', $vendorDir . '/laravel/framework/src/Illuminate/Collections', $vendorDir . '/laravel/framework/src/Illuminate/Conditionable', $vendorDir . '/laravel/framework/src/Illuminate/Reflection'),
     'Illuminate\\Routing\\' => array($baseDir . '/overrides/laravel/framework/src/Illuminate/Routing'),
     'Illuminate\\Foundation\\Auth\\' => array($vendorDir . '/laravel/ui/auth-backend'),
-    'Illuminate\\Foundation\\' => array($baseDir . '/overrides/laravel/framework/src/Illuminate/Foundation'),
     'Illuminate\\Database\\Eloquent\\Concerns\\' => array($baseDir . '/overrides/laravel/framework/src/Illuminate/Database/Eloquent/Concerns'),
     'Illuminate\\Database\\Eloquent\\' => array($baseDir . '/overrides/laravel/framework/src/Illuminate/Database/Eloquent'),
     'Illuminate\\Database\\' => array($baseDir . '/overrides/laravel/framework/src/Illuminate/Database'),

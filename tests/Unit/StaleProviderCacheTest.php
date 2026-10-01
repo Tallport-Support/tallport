@@ -2,58 +2,38 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Foundation\ProviderRepository;
+use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 /**
- * After an update removes a package, the cached provider lists in
+ * After an update removes a package, cached config and package lists in
  * bootstrap/cache still name its service provider. Those are skipped (and
- * logged) instead of stopping the app (patched ProviderRepository).
+ * logged) instead of stopping the app (App\Foundation\Application).
  */
 class StaleProviderCacheTest extends TestCase
 {
-    protected $manifest_path;
-
-    protected function setUp(): void
+    public function testAppUsesTallportApplication()
     {
-        parent::setUp();
-        $this->manifest_path = tempnam(sys_get_temp_dir(), 'tallport-services');
+        $this->assertInstanceOf(\App\Foundation\Application::class, $this->app);
     }
 
-    protected function tearDown(): void
-    {
-        @unlink($this->manifest_path);
-        parent::tearDown();
-    }
-
-    protected function repository()
-    {
-        return new ProviderRepository($this->app, new Filesystem(), $this->manifest_path);
-    }
-
-    public function testRemovedProviderInCachedManifestIsSkipped()
+    public function testRemovedProviderIsSkipped()
     {
         $gone = 'Fideloper\Proxy\TrustedProxyServiceProvider';
-        file_put_contents($this->manifest_path, '<?php return '.var_export([
-            'providers' => [$gone],
-            'eager'     => [$gone],
-            'deferred'  => [],
-            'when'      => [],
-        ], true).';');
+        config(['app.providers' => array_merge(config('app.providers'), [$gone])]);
+        Log::shouldReceive('error')->once()->withArgs(function ($message) use ($gone) {
+            return str_contains($message, $gone);
+        });
 
-        $this->repository()->load([$gone]);
+        $providers = $this->app->providersToRegister();
 
-        $this->assertFalse(class_exists($gone, false));
+        $this->assertNotContains($gone, $providers);
+        $this->assertContains(\App\Providers\AppServiceProvider::class, $providers);
     }
 
-    public function testRemovedProviderIsSkippedWhenCompiling()
+    public function testExistingProvidersAreAllKept()
     {
-        @unlink($this->manifest_path);
-
-        $this->repository()->load(['Gone\Package\GoneServiceProvider']);
-
-        $manifest = include $this->manifest_path;
-        $this->assertSame([], $manifest['eager']);
+        $this->assertContains(\Illuminate\Mail\MailServiceProvider::class, $this->app->providersToRegister());
+        $this->assertContains(\Nwidart\Modules\LaravelModulesServiceProvider::class, $this->app->providersToRegister());
     }
 }
