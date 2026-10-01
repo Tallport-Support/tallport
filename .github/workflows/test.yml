@@ -54,6 +54,22 @@ jobs:
           DB_TEST_HOST: 127.0.0.1
         run: ./test.sh
 
+      # Snapshots depend on the environment (e.g. libxml2): on failure, make
+      # this environment's snapshots available for review.
+      - name: Regenerate snapshots
+        if: failure()
+        env:
+          DB_TEST_HOST: 127.0.0.1
+          UPDATE_SNAPSHOTS: 1
+        run: php dev/vendor/bin/phpunit --filter Snapshot || true
+
+      - name: Upload snapshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapshots
+          path: tests/Snapshots
+
   code-style:
     name: Code style (PHP_CodeSniffer)
     runs-on: ubuntu-24.04

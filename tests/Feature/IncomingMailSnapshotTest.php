@@ -75,7 +75,12 @@ class IncomingMailSnapshotTest extends FeatureTestCase
             ];
         })->all();
 
-        $this->assertMatchesSnapshot('incoming/'.$name, ['error' => $error, 'conversations' => $conversations]);
+        // libxml2 2.14+ serialises HTML differently (line endings, Outlook's
+        // <o:p> tags), so each libxml2 version has its own snapshots.
+        // Production and CI use 2.9: CI uploads its snapshots as an artifact
+        // when they don't match.
+        $libxml = implode('.', array_slice(explode('.', LIBXML_DOTTED_VERSION), 0, 2));
+        $this->assertMatchesSnapshot('incoming/libxml'.$libxml.'/'.$name, ['error' => $error, 'conversations' => $conversations]);
     }
 
     /**
