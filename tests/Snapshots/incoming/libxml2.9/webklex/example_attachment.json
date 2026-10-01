@@ -1,0 +1,32 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "ogqMVHhz7swLaq2PfSWsZj0k99w8wtMbrb4RuHdNg53i76B7icIIM0zIWpwGFtnk",
+            "type": 1,
+            "status": 1,
+            "customer_email": "someone@domain.tld",
+            "cc": "[\"someone@domain.tld\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "someone@domain.tld",
+                    "to": "[\"someone@domain.tld\"]",
+                    "cc": "[\"someone@domain.tld\"]",
+                    "bcc": null,
+                    "body": "<br />\nn1IaXFkbeqKyg4lYToaJ3u1Ond2EDrN3UWuiLFNjOLJEAabSYagYQaOHtV5QDlZE<br />\n",
+                    "headers": "80158b746ecbdc14622e2744b8a10aa7",
+                    "attachments": [
+                        {
+                            "file_name": "6mfFxiU5Yhv9WYJx.txt",
+                            "mime_type": "text/plain",
+                            "size": 64,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

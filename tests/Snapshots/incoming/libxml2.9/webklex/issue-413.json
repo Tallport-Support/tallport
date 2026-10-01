@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Test Message",
+            "type": 1,
+            "status": 1,
+            "customer_email": "radicore@radicore.org",
+            "cc": "[\"gmx@tonymarston.net\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "radicore@radicore.org",
+                    "to": "[\"gmx@tonymarston.net\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "This is just a test, so ignore it (if you can!)<br />\r\n<br />\r\nTony Marston",
+                    "headers": "2317edddc58b9b404e92fe94b461735d",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

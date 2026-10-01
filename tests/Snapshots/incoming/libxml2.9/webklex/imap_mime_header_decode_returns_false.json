@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "?p?#]\u001bݰ?[??W̌\fN\u0017?\f?LL?̍L??NL˜\u0019\u0019",
+            "type": 1,
+            "status": 1,
+            "customer_email": "from@there.com",
+            "cc": "[\"to@here.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "from@there.com",
+                    "to": "[\"to@here.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "Hi",
+                    "headers": "8d7f94bec8b1451c46811dab694054bf",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

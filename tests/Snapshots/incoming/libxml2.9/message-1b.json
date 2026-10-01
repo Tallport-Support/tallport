@@ -1,0 +1,32 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "386 - 400021804 - 19., Heiligenstädter Straße 80 - 0819306 - Anfrage Vergabevorschlag",
+            "type": 1,
+            "status": 1,
+            "customer_email": "from@there.com",
+            "cc": "[\"to@here.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "from@there.com",
+                    "to": "[\"to@here.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "",
+                    "headers": "3e3c04773c0d863564d65ef5fb00e69b",
+                    "attachments": [
+                        {
+                            "file_name": "2021_Mängelliste_0819306.xlsx",
+                            "mime_type": "text/plain",
+                            "size": 3,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

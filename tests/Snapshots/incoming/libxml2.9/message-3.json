@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "1",
+            "type": 1,
+            "status": 1,
+            "customer_email": "analisismadrid@xxx.org",
+            "cc": "[\"to@here.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "analisismadrid@xxx.org",
+                    "to": "[\"to@here.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "<div dir=\"ltr\"><div>1</div></div>",
+                    "headers": "d4e1c963ccd36c97f2655575ff906040",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

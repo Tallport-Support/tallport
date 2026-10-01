@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "This mail will not contain a body",
+            "type": 1,
+            "status": 1,
+            "customer_email": "from@example.com",
+            "cc": "[\"someone@somewhere.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "from@example.com",
+                    "to": "[\"someone@somewhere.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\"><span lang=\"EN-US\">This mail will not contain a body<p></p></span></p>\r\n<p class=\"MsoNormal\"><p> </p></p>\r\n</div>\r\n",
+                    "headers": "6625db0149dbd5439a918280fc8bed85",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

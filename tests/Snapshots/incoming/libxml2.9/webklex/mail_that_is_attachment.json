@@ -1,0 +1,32 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Report domain: yyy.cz Submitter: google.com Report-ID: 2244696771454641389",
+            "type": 1,
+            "status": 1,
+            "customer_email": "noreply-dmarc-support@google.com",
+            "cc": "[\"xxx@yyy.cz\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "noreply-dmarc-support@google.com",
+                    "to": "[\"xxx@yyy.cz\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "",
+                    "headers": "6d47b7faad7fd63471801b8beba40022",
+                    "attachments": [
+                        {
+                            "file_name": "google.com!yyy.cz!1423872000!1423958399.zip",
+                            "mime_type": "application/zip",
+                            "size": 777,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

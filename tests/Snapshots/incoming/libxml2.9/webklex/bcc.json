@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "test",
+            "type": 1,
+            "status": 1,
+            "customer_email": "reply-to@here.com",
+            "cc": "[\"to@here.com\"]",
+            "bcc": "[\"bcc@here.com\"]",
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "reply-to@here.com",
+                    "to": "[\"to@here.com\"]",
+                    "cc": null,
+                    "bcc": "[\"bcc@here.com\"]",
+                    "body": "Hi!",
+                    "headers": "dbe3ed41fda8ef390ceb563de1e27894",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

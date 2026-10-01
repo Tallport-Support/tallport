@@ -1,0 +1,50 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Subject",
+            "type": 1,
+            "status": 1,
+            "customer_email": "demo@cerstor.cz",
+            "cc": "[\"demo@cerstor.cz\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "demo@cerstor.cz",
+                    "to": "[\"demo@cerstor.cz\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "<p>TexT</p>",
+                    "headers": "2f71a24235b2ad9aed8049c5ae3d48a6",
+                    "attachments": [
+                        {
+                            "file_name": "file.jpg",
+                            "mime_type": "image/png",
+                            "size": 70,
+                            "embedded": false
+                        },
+                        {
+                            "file_name": "RFC822.eml",
+                            "mime_type": "message/rfc822",
+                            "size": 2073,
+                            "embedded": false
+                        },
+                        {
+                            "file_name": "file3.xlsx",
+                            "mime_type": "text/plain",
+                            "size": 29,
+                            "embedded": false
+                        },
+                        {
+                            "file_name": "file4.zip",
+                            "mime_type": "text/plain",
+                            "size": 29,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

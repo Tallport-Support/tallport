@@ -1,0 +1,32 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Свежий прайс-лист",
+            "type": 1,
+            "status": 1,
+            "customer_email": "support@part-kom.ru",
+            "cc": "[\"foo@bar.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "support@part-kom.ru",
+                    "to": "[\"foo@bar.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "",
+                    "headers": "7122fedf076410be7796067e730666eb",
+                    "attachments": [
+                        {
+                            "file_name": "Price4VladDaKar.xlsx",
+                            "mime_type": "application/zip",
+                            "size": 68,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

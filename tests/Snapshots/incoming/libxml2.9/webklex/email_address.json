@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "",
+            "type": 1,
+            "status": 1,
+            "customer_email": "no_host@unknown",
+            "cc": "[\"ding@dong.com\",\"no-address@unknown\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "no_host@unknown",
+                    "to": null,
+                    "cc": "[\"ding@dong.com\",\"no-address@unknown\"]",
+                    "bcc": null,
+                    "body": "Hi<br />\r\nHow are you?",
+                    "headers": "41f6652acba9c8dcda21a920b0eca925",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

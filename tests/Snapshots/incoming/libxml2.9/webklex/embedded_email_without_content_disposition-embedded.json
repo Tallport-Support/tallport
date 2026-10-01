@@ -1,0 +1,38 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "embedded_message_subject",
+            "type": 1,
+            "status": 1,
+            "customer_email": "demo@cerstor.cz",
+            "cc": "[\"demo@cerstor.cz\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "demo@cerstor.cz",
+                    "to": "[\"demo@cerstor.cz\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "<p>some txt</p>\r\n",
+                    "headers": "a5a0deab2d0c33495abc3cdd0fed8197",
+                    "attachments": [
+                        {
+                            "file_name": "file1.xlsx",
+                            "mime_type": "text/plain",
+                            "size": 29,
+                            "embedded": false
+                        },
+                        {
+                            "file_name": "file2.xlsx",
+                            "mime_type": "text/plain",
+                            "size": 29,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

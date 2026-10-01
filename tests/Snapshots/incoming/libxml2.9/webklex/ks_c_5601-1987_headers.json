@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "RE: 회원님께 Ersi님이 메시지를 보냈습니다.",
+            "type": 1,
+            "status": 1,
+            "customer_email": "from@there.com",
+            "cc": "[\"to@here.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "from@there.com",
+                    "to": "[\"to@here.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "Content",
+                    "headers": "ffea82834f81d6a7fd25b5645457d601",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,32 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Test",
+            "type": 1,
+            "status": 1,
+            "customer_email": "from@there.com",
+            "cc": "[\"to@here.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "from@there.com",
+                    "to": "[\"to@here.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "<br />\nTest",
+                    "headers": "d67b6601a8f87fc912c9d386a61b8664",
+                    "attachments": [
+                        {
+                            "file_name": "MyFile.txt",
+                            "mime_type": "text/plain",
+                            "size": 13,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

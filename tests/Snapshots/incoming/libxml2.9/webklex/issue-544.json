@@ -1,0 +1,32 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Test bad boundary",
+            "type": 1,
+            "status": 1,
+            "customer_email": "test@mail.com",
+            "cc": "[\"test_1@mail.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "test@mail.com",
+                    "to": "[\"test_1@mail.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "<br />\nThis message may contain an attachment in a PDF format.<br />\r\n<br />\r\nSpecial Comments<br />\r\n-<br />\r\nSee attached document",
+                    "headers": "5fc45b99fb9172fc3951ee716b17694a",
+                    "attachments": [
+                        {
+                            "file_name": "file.pdf",
+                            "mime_type": "application/pdf",
+                            "size": 10915,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

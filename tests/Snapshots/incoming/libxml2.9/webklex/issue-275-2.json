@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Test 1017",
+            "type": 1,
+            "status": 1,
+            "customer_email": "xxxxx@feline.dk",
+            "cc": "[\"xxxxxxxxx@cofman.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "xxxxx@feline.dk",
+                    "to": "[\"xxxxxxxxx@cofman.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">Test<p></p></p>\r\n<p class=\"MsoNormal\"><p> </p></p>\r\n<p class=\"MsoNormal\"><span style=\"color:black;mso-fareast-language:DA\">Med venlig hilsen<p></p></span></p>\r\n<p class=\"MsoNormal\"><b><span style=\"color:red;mso-fareast-language:DA\">Martin Larsen<p></p></span></b></p>\r\n<p class=\"MsoNormal\"><span lang=\"EN-US\" style=\"color:black;mso-fareast-language:DA\">Feline Holidays A/S<p></p></span></p>\r\n<p class=\"MsoNormal\"><span lang=\"EN-US\" style=\"color:black;mso-fareast-language:DA\">Tlf 78 77 04 12<p></p></span></p>\r\n<p class=\"MsoNormal\"><span lang=\"EN-US\" style=\"mso-fareast-language:DA\"><p> </p></span></p>\r\n<p class=\"MsoNormal\"><span lang=\"EN-US\"><p> </p></span></p>\r\n</div>\r\n",
+                    "headers": "62f1b746ed87da2db9b93b5314e881cd",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

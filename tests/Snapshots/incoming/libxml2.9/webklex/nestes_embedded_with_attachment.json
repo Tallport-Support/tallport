@@ -1,0 +1,38 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Nuu",
+            "type": 1,
+            "status": 1,
+            "customer_email": "from@there.com",
+            "cc": "[\"to@here.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "from@there.com",
+                    "to": "[\"to@here.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "\r\n<div>Dear Sarah,</div>\r\n",
+                    "headers": "c8cbeae6e657c2163ea81cb1d1f3bf0e",
+                    "attachments": [
+                        {
+                            "file_name": "first.eml",
+                            "mime_type": "message/rfc822",
+                            "size": 2535,
+                            "embedded": false
+                        },
+                        {
+                            "file_name": "second.eml",
+                            "mime_type": "message/rfc822",
+                            "size": 631,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

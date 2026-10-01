@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Undeliverable: Some subject",
+            "type": 1,
+            "status": 1,
+            "customer_email": "sending_domain.tld@unknown",
+            "cc": "[\"receipent@receipent_domain.tld\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "sending_domain.tld@unknown",
+                    "to": "[\"receipent@receipent_domain.tld\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "Test message",
+                    "headers": "2657326b5f3dcb3e4f26e9622a46cc5c",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}
