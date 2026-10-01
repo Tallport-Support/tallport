@@ -4,7 +4,7 @@
     "type": "project",
     "license": "AGPL-3.0-or-later",
     "require": {
-        "php": ">=8.3",
+        "php": ">=8.5",
         "laravel/boost": "^2.10"
     },
     "provide": {
@@ -22,7 +22,7 @@
     },
     "config": {
         "platform": {
-            "php": "8.3.0"
+            "php": "8.5.0"
         },
         "prepend-autoloader": false,
         "sort-packages": true

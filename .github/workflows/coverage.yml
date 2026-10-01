@@ -35,7 +35,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.5'
           extensions: mysql, mbstring, xml, imap, zip, gd, curl, intl, json
           coverage: pcov
           tools: composer
@@ -44,7 +44,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: dev/vendor
-          key: dev-vendor-php8.3-${{ hashFiles('dev/composer.lock') }}
+          key: dev-vendor-php8.5-${{ hashFiles('dev/composer.lock') }}
 
       - name: Run tests with coverage
         env:

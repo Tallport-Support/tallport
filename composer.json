@@ -204,7 +204,7 @@
         }
     ],
     "require": {
-        "php": ">=7.1.0",
+        "php": ">=8.5",
 
         "devfactory/minify": "1.0.7",
         "laravel/framework": "v13.34.0",
@@ -527,7 +527,7 @@
         "sort-packages": true,
         "optimize-autoloader": true,
         "platform": {
-            "php": "8.3.0"
+            "php": "8.5.0"
         },
         "platform-check": false,
         "audit": {

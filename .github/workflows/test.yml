@@ -12,8 +12,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Production runs PHP 8.3 with the imap extension on MariaDB.
-        php: ['8.3']
+        # Production runs PHP 8.5 with the imap extension (PECL) on MariaDB.
+        php: ['8.5']
         mariadb: ['11.8']
 
     services:
@@ -63,7 +63,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.5'
           coverage: none
           tools: phpcs:4
 
@@ -80,7 +80,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.5'
           extensions: mbstring, xml, imap, zip, gd, curl, intl, json
           coverage: none
           # Composer writes its own files into vendor/composer/, and they

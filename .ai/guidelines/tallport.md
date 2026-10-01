@@ -1,6 +1,6 @@
 # Tallport
 
-Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Laravel 13. Production runs MariaDB. Dependencies are resolved for PHP 8.3 (`config.platform.php`) and the code also runs on PHP 8.5.
+Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Laravel 13. Production runs MariaDB. The minimum PHP version is 8.5 (`require.php` and `config.platform.php` in composer.json), so PHP 8.5 features may be used.
 
 ## Keep changes small
 

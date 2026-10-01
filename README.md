@@ -53,14 +53,14 @@ on with Tallport features.
 
 ## Requirements
 
-* PHP 8.3 or newer with the `imap`, `mbstring`, `xml`, `zip`, `gd`, `curl`, `intl`
-  and `mysql` extensions
+* PHP 8.5 or newer with the `imap` (from PECL since PHP 8.4), `mbstring`,
+  `xml`, `zip`, `gd`, `curl`, `intl` and `mysql` extensions
 * MariaDB (tested with 11.8)
 * Nginx or Apache
 * A cron job running `php artisan schedule:run` every minute (fetches
   mail and runs the queue)
 
-Tallport is tested on PHP 8.3 and MariaDB. FreeScout also supports older
+Tallport is tested on PHP 8.5 and MariaDB. FreeScout also supports older
 PHP versions, MySQL and PostgreSQL; Tallport may still work there, but
 isn't tested on them.
 
@@ -183,7 +183,7 @@ Then:
   the intended behaviour call `$this->knownBug('C12')` and show up as
   incomplete until the bug is fixed.
 
-CI runs the tests on every push and pull request with PHP 8.3 and MariaDB,
+CI runs the tests on every push and pull request with PHP 8.5 and MariaDB,
 and checks code style with PHP_CodeSniffer using the rules in `phpcs.xml`
 (`.github/workflows/test.yml`; run `phpcs` locally to check before
 pushing). It also publishes a coverage report for every push to `main`
@@ -217,9 +217,9 @@ the next Laravel version without other changes (`chumper/zipper`,
 `devfactory/minify`, `barryvdh/laravel-translation-manager`,
 `lord/laroute`, and FreeScout's `codedge/laravel-selfupdater` fork).
 
-`composer.json` resolves dependencies for PHP 8.3 (`config.platform.php`,
-production's version), so an update can't pull in a package that needs a
-newer PHP. When updating, ignore only missing extensions:
+`composer.json` resolves dependencies for PHP 8.5 (`config.platform.php`,
+the minimum Tallport supports), so an update can't pull in a package that
+needs a newer PHP. When updating, ignore only missing extensions:
 `composer update ... --ignore-platform-req='ext-*'`.
 
 `composer.json` sets `audit.block-insecure` to false, as Composer refuses
