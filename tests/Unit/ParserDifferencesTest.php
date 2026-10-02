@@ -10,7 +10,8 @@ use Tests\TestCase;
  * Where webklex/php-imap 6 reads the test emails differently from
  * FreeScout's patched 4.1.1 (App\LegacyImap): each field shows which of
  * FreeScout's changes still make a difference. Untangling App\LegacyImap
- * should make this list shorter, never longer.
+ * should make this list shorter; what remains should be differences where
+ * the new code is intentionally better (see HeaderTextTest, AddressListTest).
  */
 class ParserDifferencesTest extends TestCase
 {

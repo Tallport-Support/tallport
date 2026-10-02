@@ -112,6 +112,7 @@ return array(
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
     'App\\Incoming\\Address' => $baseDir . '/app/Incoming/Address.php',
     'App\\Incoming\\Attachment' => $baseDir . '/app/Incoming/Attachment.php',
+    'App\\Incoming\\HeaderText' => $baseDir . '/app/Incoming/HeaderText.php',
     'App\\Incoming\\IncomingMessage' => $baseDir . '/app/Incoming/IncomingMessage.php',
     'App\\Incoming\\LegacyImapMessage' => $baseDir . '/app/Incoming/LegacyImapMessage.php',
     'App\\Incoming\\ParserComparison' => $baseDir . '/app/Incoming/ParserComparison.php',

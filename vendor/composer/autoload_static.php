@@ -757,6 +757,7 @@ class ComposerStaticInit6b7055a3645147f56baffb010ada38cd
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Incoming\\Address' => __DIR__ . '/../..' . '/app/Incoming/Address.php',
         'App\\Incoming\\Attachment' => __DIR__ . '/../..' . '/app/Incoming/Attachment.php',
+        'App\\Incoming\\HeaderText' => __DIR__ . '/../..' . '/app/Incoming/HeaderText.php',
         'App\\Incoming\\IncomingMessage' => __DIR__ . '/../..' . '/app/Incoming/IncomingMessage.php',
         'App\\Incoming\\LegacyImapMessage' => __DIR__ . '/../..' . '/app/Incoming/LegacyImapMessage.php',
         'App\\Incoming\\ParserComparison' => __DIR__ . '/../..' . '/app/Incoming/ParserComparison.php',

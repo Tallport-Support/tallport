@@ -7,9 +7,9 @@ use Webklex\PHPIMAP\Message;
 
 /**
  * An IncomingMessage parsed from a raw email by webklex/php-imap 6
- * (unpatched). Not used for fetching yet: tallport:compare-parsers and the
- * tests compare it with LegacyImapMessage, to find which of FreeScout's
- * changes to the library still make a difference.
+ * (unpatched), with the subject and addresses read by Tallport's own code
+ * (HeaderText, Address::parseList()). Not used for fetching yet:
+ * tallport:compare-parsers and the tests compare it with LegacyImapMessage.
  */
 class Webklex6Message implements IncomingMessage
 {
@@ -47,14 +47,7 @@ class Webklex6Message implements IncomingMessage
     protected function addresses($header)
     {
         return $this->cached($header, function () use ($header) {
-            $addresses = [];
-            foreach ($this->message->get($header)->toArray() as $address) {
-                if (is_object($address)) {
-                    $addresses[] = new Address($address->mail ?? '', $address->personal ?? '');
-                }
-            }
-
-            return $addresses;
+            return Address::parseList(HeaderText::value($this->headers(), $header));
         });
     }
 
@@ -74,32 +67,35 @@ class Webklex6Message implements IncomingMessage
 
     public function from(): array
     {
-        return $this->addresses('from');
+        return $this->addresses('From');
     }
 
     public function replyTo(): array
     {
-        return $this->addresses('reply_to');
+        // As imap (and so App\LegacyImap): From if there's no Reply-To.
+        return $this->addresses('Reply-To') ?: $this->from();
     }
 
     public function to(): array
     {
-        return $this->addresses('to');
+        return $this->addresses('To');
     }
 
     public function cc(): array
     {
-        return $this->addresses('cc');
+        return $this->addresses('Cc');
     }
 
     public function bcc(): array
     {
-        return $this->addresses('bcc');
+        return $this->addresses('Bcc');
     }
 
     public function subject(): string
     {
-        return $this->headerValue('subject');
+        return $this->cached('subject', function () {
+            return HeaderText::decode(HeaderText::value($this->headers(), 'Subject'));
+        });
     }
 
     public function date(): ?\Carbon\Carbon

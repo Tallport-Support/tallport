@@ -71,10 +71,17 @@ class ParserComparison
      */
     public static function values(IncomingMessage $message)
     {
+        // Addresses FetchEmails would use (it skips invalid ones).
         $addresses = function (array $list) {
-            return array_map(function (Address $address) {
-                return [\App\Email::sanitizeEmail($address->mail), trim($address->personal)];
-            }, $list);
+            $values = [];
+            foreach ($list as $address) {
+                $mail = \App\Email::sanitizeEmail($address->mail);
+                if ($mail) {
+                    $values[] = [$mail, trim($address->personal)];
+                }
+            }
+
+            return $values;
         };
         $ids = function ($value) {
             return array_values(array_filter(preg_split('/[, <>]/', (string) $value)));

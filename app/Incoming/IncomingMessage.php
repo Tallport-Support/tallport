@@ -21,7 +21,7 @@ interface IncomingMessage
     public function from(): array;
 
     /**
-     * Addresses from the Reply-To header.
+     * Addresses from the Reply-To header, or from From if there is none.
      *
      * @return Address[]
      */

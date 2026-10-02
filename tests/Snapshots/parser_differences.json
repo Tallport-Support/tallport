@@ -1,8 +1,4 @@
 {
-    "cc": [
-        "webklex/email_address",
-        "webklex/references"
-    ],
     "error: none / Webklex\\PHPIMAP\\Exceptions\\InvalidMessageDateException": [
         "webklex/date-template"
     ],
@@ -10,12 +6,8 @@
         "issue-4567"
     ],
     "from": [
-        "1366671050@github.com",
         "message-5-iso-2022-jp",
-        "webklex/email_address",
-        "webklex/issue-275",
-        "webklex/issue-462",
-        "webklex/references"
+        "webklex/issue-462"
     ],
     "html_body": [
         "message-4-null-bytes",
@@ -24,10 +16,7 @@
     ],
     "reply_to": [
         "message-5-iso-2022-jp",
-        "webklex/email_address",
-        "webklex/issue-275",
-        "webklex/issue-462",
-        "webklex/references"
+        "webklex/issue-462"
     ],
     "subject": [
         "message-5-iso-2022-jp",
@@ -39,7 +28,7 @@
         "webklex/without_charset_simple_multipart"
     ],
     "to": [
-        "webklex/issue-275",
+        "message-7",
         "webklex/undisclosed_recipients"
     ]
 }
