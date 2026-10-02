@@ -15,6 +15,7 @@ use App\Thread;
  * versions in other languages. A conversation gets the version in the
  * customer's language: Chinese, Japanese and Korean are recognised from the
  * writing system, other languages by the AI Assistant when it is set up.
+ * A customer's language is remembered for a few hours.
  */
 class AutoReplies
 {
@@ -24,6 +25,12 @@ class AutoReplies
      * The most text of a message looked at.
      */
     const MAX_TEXT = 3000;
+
+    /**
+     * Hours a customer's language is remembered: people who send several
+     * emails in a row get the same auto reply, recognised once.
+     */
+    const REMEMBER_HOURS = 4;
 
     /**
      * Chosen languages, by conversation ID: the subject and the HTML and
@@ -68,7 +75,20 @@ class AutoReplies
             return self::$chosen[$conversation->id];
         }
         $languages = self::versions($mailbox, true)->keys()->all();
-        $language = $languages ? self::recognize(self::text($conversation), $languages, $mailbox) : null;
+        $language = null;
+        if ($languages) {
+            $key = 'auto_reply_language.'.$mailbox->id.'.'.$conversation->customer_id;
+            $remembered = $conversation->customer_id ? \Cache::get($key) : null;
+            if ($remembered !== null && ($remembered === '' || in_array($remembered, $languages))) {
+                $language = $remembered ?: null;
+            } else {
+                [$language, $sure] = self::recognizeLanguage(self::text($conversation), $languages, $mailbox);
+                if ($sure && $conversation->customer_id) {
+                    // '': the default.
+                    \Cache::put($key, (string) $language, now()->addHours(self::REMEMBER_HOURS));
+                }
+            }
+        }
 
         if (count(self::$chosen) > 100) {
             self::$chosen = [];
@@ -82,10 +102,22 @@ class AutoReplies
      */
     public static function recognize($text, array $languages, ?Mailbox $mailbox = null)
     {
+        return self::recognizeLanguage($text, $languages, $mailbox)[0];
+    }
+
+    /**
+     * [language or null, whether that is sure]: not when the AI failed or
+     * there is no text to go by.
+     */
+    protected static function recognizeLanguage($text, array $languages, ?Mailbox $mailbox = null)
+    {
         $detector = new LanguageDetector();
+        if (!preg_match('/\p{L}/u', $detector->prepareText($text))) {
+            return [null, false];
+        }
         $script = $detector->detect($text);
         if (in_array($script, [LanguageDetector::LANG_JAPANESE, LanguageDetector::LANG_KOREAN])) {
-            return in_array($script, $languages) ? $script : null;
+            return [in_array($script, $languages) ? $script : null, true];
         }
         if ($script == LanguageDetector::LANG_CHINESE) {
             // Else the other Chinese: closer than the default.
@@ -93,16 +125,16 @@ class AutoReplies
             $other = $variant == LanguageDetector::LANG_CHINESE_SIMPLIFIED ? LanguageDetector::LANG_CHINESE_TRADITIONAL : LanguageDetector::LANG_CHINESE_SIMPLIFIED;
             foreach ([$variant, $other] as $code) {
                 if (in_array($code, $languages)) {
-                    return $code;
+                    return [$code, true];
                 }
             }
 
-            return null;
+            return [null, true];
         }
 
         $others = array_values(array_diff($languages, self::CJK));
-        if (!$others || !AiSettings::isConfigured() || trim($text) === '') {
-            return null;
+        if (!$others || !AiSettings::isConfigured()) {
+            return [null, true];
         }
         try {
             $response = (new LanguageRecognizer($others))->prompt(TallportAgent::data('message', mb_substr($detector->prepareText($text), 0, self::MAX_TEXT)));
@@ -110,10 +142,10 @@ class AutoReplies
         } catch (\Throwable $e) {
             \Helper::logException($e, '[Auto Reply] Language not recognised'.($mailbox ? ' (mailbox '.$mailbox->id.')' : '').':');
 
-            return null;
+            return [null, false];
         }
 
-        return in_array($code, $others) ? $code : null;
+        return [in_array($code, $others) ? $code : null, true];
     }
 
     /**

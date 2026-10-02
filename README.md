@@ -297,7 +297,9 @@ A mailbox's auto reply (mailbox settings » Auto Reply) can have versions in
 other languages: customers get the one in their language, everyone else the
 default. Chinese, Japanese and Korean are recognised from the characters used
 (Simplified and Traditional Chinese apart, with PHP's intl extension); other
-languages by the [AI Assistant](#ai-assistant), when it is set up. To see what
+languages by the [AI Assistant](#ai-assistant), when it is set up. A
+customer's language is remembered for 4 hours, so several emails in a row get
+the same auto reply. To see what
 a conversation was recognised as: `php artisan tallport:auto-reply-language
 <conversation ID>`. The Telegram `/start` auto reply has versions too, chosen
 by the language of the customer's Telegram app.

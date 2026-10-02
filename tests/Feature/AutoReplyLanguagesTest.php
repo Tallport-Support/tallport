@@ -47,10 +47,10 @@ class AutoReplyLanguagesTest extends FeatureTestCase
         return $version;
     }
 
-    protected function autoReplySubjectFor($body, $subject = 'Help')
+    protected function autoReplySubjectFor($body, $subject = 'Help', $email = null)
     {
         AutoReplies::forget();
-        $email = 'customer'.uniqid().'@customer.example.org';
+        $email = $email ?: 'customer'.uniqid().'@customer.example.org';
         $this->receiveEmail($this->mailbox, $this->makeEmail(['from' => $email, 'to' => $this->mailbox->email, 'subject' => $subject, 'body' => $body]));
         $emails = $this->sentEmailsTo($email);
 
@@ -122,6 +122,46 @@ class AutoReplyLanguagesTest extends FeatureTestCase
             throw new \RuntimeException('Provider down');
         });
         $this->assertSame('We got your message', $this->autoReplySubjectFor('Meine App startet nicht, bitte helfen Sie mir.'));
+    }
+
+    public function testCustomersLanguageIsRememberedForAFewHours()
+    {
+        $this->version('de', 'Danke für Ihre Nachricht');
+        Option::set('aiassistant.api_key', encrypt('sk-test'));
+        LanguageRecognizer::fake([['language' => 'de'], ['language' => 'other']]);
+        $customer = 'rapid@customer.example.org';
+        $subjects = function () use ($customer) {
+            return array_map(function ($email) {
+                return $email->getSubject();
+            }, $this->sentEmailsTo($customer));
+        };
+
+        $this->autoReplySubjectFor('Meine App startet nicht, bitte helfen Sie mir.', 'Hilfe', $customer);
+        // A second email in a row (another subject: a new conversation).
+        $this->autoReplySubjectFor('See screenshot', 'Screenshot', $customer);
+        LanguageRecognizer::assertPromptedTimes(1);
+        $this->assertSame(['Danke für Ihre Nachricht', 'Danke für Ihre Nachricht'], $subjects());
+
+        // Hours later: recognised again.
+        $this->travel(AutoReplies::REMEMBER_HOURS + 1)->hours();
+        $this->autoReplySubjectFor('My app does not start, please help.', 'Help again', $customer);
+        LanguageRecognizer::assertPromptedTimes(2);
+        $this->assertSame('We got your message', $subjects()[2]);
+    }
+
+    public function testFailedRecognitionIsNotRemembered()
+    {
+        $this->version('de', 'Danke für Ihre Nachricht');
+        Option::set('aiassistant.api_key', encrypt('sk-test'));
+        $customer = 'rapid@customer.example.org';
+        LanguageRecognizer::fake(function () {
+            throw new \RuntimeException('Provider down');
+        });
+        $this->assertSame('We got your message', $this->autoReplySubjectFor('Meine App startet nicht, bitte helfen Sie mir.', 'Hilfe', $customer));
+
+        LanguageRecognizer::fake([['language' => 'de']]);
+        $this->autoReplySubjectFor('Meine App startet immer noch nicht.', 'Hilfe 2', $customer);
+        $this->assertSame('Danke für Ihre Nachricht', $this->sentEmailsTo($customer)[1]->getSubject());
     }
 
     public function testQuotedTextIsLeftOut()
