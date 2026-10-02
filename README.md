@@ -185,8 +185,11 @@ To try it without Postfix:
 sudo -u www-data php artisan tallport:receive --mailbox=support@example.com < test.eml; echo $?
 ```
 
-Clear the fetching settings of a mailbox that receives this way: an email
-fetched as well arrives with other headers, and would be saved twice.
+Postfix delivers an address in `transport_maps` only to Tallport, so the
+mailbox's fetching settings can stay as a fallback (for mail that still ends
+up in its IMAP inbox). Just don't deliver the same email both ways (for
+example through an alias to the IMAP inbox as well): the two copies arrive
+with different headers and would be saved twice.
 
 ## Modules
 
