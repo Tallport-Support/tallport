@@ -525,7 +525,7 @@ class Mail
             \App\LegacyImap\Connection\Protocols\ImapProtocol::$output_debug_log = false;
             \App\LegacyImap\Connection\Protocols\PopProtocol::$output_debug_log = false;
 
-            $client = \MailHelper::getMailboxClient($mailbox);
+            $client = \MailHelper::getMailboxClient($mailbox, true);
 
             // Connect to the Server
             $client->connect();
@@ -558,10 +558,21 @@ class Mail
             $result['msg'] = $e->getMessage();
         }
 
+        $is_webklex6 = $client instanceof \App\Incoming\ImapClient;
+        // Log out while the debug output is still captured: the webklex 6
+        // client would print it when destroyed, into the ajax response.
+        try {
+            if ($client) {
+                $client->disconnect();
+            }
+        } catch (\Throwable $e) {
+            // Not connected.
+        }
+        $client = null;
         $debug_output = ob_get_clean();
 
         if ($result['result'] == 'error') {
-            $result['log'] = $client instanceof \App\Incoming\ImapClient
+            $result['log'] = $is_webklex6
                 ? $debug_output
                 : \App\LegacyImap\Connection\Protocols\ImapProtocol::getDebugLog();
         }
@@ -832,8 +843,11 @@ class Mail
 
     /**
      * Get client for fetching emails.
+     *
+     * @param  bool  $debug  The webklex 6 client prints the IMAP conversation
+     *                       (with the emails): only for the connection test.
      */
-    public static function getMailboxClient($mailbox)
+    public static function getMailboxClient($mailbox, $debug = false)
     {
         $oauth = $mailbox->oauthEnabled();
 
@@ -900,9 +914,7 @@ class Mail
                 'default'  => 'default',
                 'accounts' => ['default' => config('imap.accounts.default')],
                 'options'  => [
-                    // Prints the IMAP conversation (with the emails): only for
-                    // the connection test (fetchTest()), which captures it.
-                    'debug'         => !app()->runningInConsole() && config('imap.options.debug'),
+                    'debug'         => (bool) $debug,
                     'message_key'   => 'id',
                     'fetch_order'   => 'asc',
                     'fallback_date' => 'now',

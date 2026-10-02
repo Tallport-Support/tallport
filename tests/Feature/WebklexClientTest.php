@@ -58,6 +58,32 @@ class WebklexClientTest extends FeatureTestCase
         $this->assertSame($level, ob_get_level(), 'Output buffering is ended.');
     }
 
+    /**
+     * Against tests/Support/fake-imap-server.php.
+     */
+    public function testConnectionTestAgainstAServer()
+    {
+        $server = proc_open([PHP_BINARY, base_path('tests/Support/fake-imap-server.php')], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+        $port = (int) fgets($pipes[1]);
+        $mailbox = $this->imapMailbox();
+        $mailbox->in_port = $port;
+        $mailbox->save();
+        config(['app.fetch_client' => 'webklex6']);
+
+        try {
+            ob_start();
+            $result = \MailHelper::fetchTest($mailbox);
+            gc_collect_cycles();
+            $output = ob_get_clean();
+        } finally {
+            proc_terminate($server);
+            proc_close($server);
+        }
+
+        $this->assertSame('success', $result['result'], $result['msg']);
+        $this->assertSame('', $output, 'Nothing printed into the ajax response.');
+    }
+
     public function testProtocolResults()
     {
         $this->assertSame([3, 5], \MailHelper::protocolResult(Response::empty()->setResult([3, 5])));
