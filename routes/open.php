@@ -15,5 +15,7 @@
 Route::get('/storage/attachment/{dir_1}/{dir_2}/{dir_3}/{file_name}', 'OpenController@downloadAttachment')->name('attachment.download');
 // Open tracking
 Route::get('/thread/read/{conversation_id}/{thread_id}/{hash}', 'OpenController@setThreadAsRead')->name('open_tracking.set_read');
+// AI Assistant documentation pushed by websites (key per mailbox)
+Route::post('/ai-assistant/api/documents', 'AiDocumentsController@api')->middleware('throttle:60,1')->name('ai.documents.api');
 // Web Cron
 Route::get('/system/cron/{hash}', ['uses' => 'SystemController@cron'])->name('system.cron');

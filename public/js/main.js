@@ -2518,6 +2518,18 @@ function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
 	});
 }
 
+// Buttons with data-confirm ask before submitting their form.
+function confirmButtonsInit()
+{
+	$(document).ready(function() {
+		$('button[data-confirm]').click(function(e) {
+			if (!confirm($(this).attr('data-confirm'))) {
+				e.preventDefault();
+			}
+		});
+	});
+}
+
 // Settings » AI Assistant: show the chosen provider's base URL as the placeholder.
 function aiSettingsInit()
 {

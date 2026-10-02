@@ -41,6 +41,12 @@
 
     <h3 class="subheader">{{ __('Documentation') }}</h3>
 
+    <div class="form-group">
+        <div class="col-sm-6 col-sm-offset-2">
+            <a href="{{ route('ai.documents') }}" class="btn btn-default">{{ __('Manage Documentation') }}</a>
+        </div>
+    </div>
+
     @if (!App\Ai\Settings::embeddingsAvailable())
         <div class="form-group">
             <div class="col-sm-8 col-sm-offset-2">

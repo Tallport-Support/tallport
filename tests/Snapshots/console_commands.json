@@ -62,6 +62,22 @@
         "arguments": {},
         "options": {}
     },
+    "tallport:ai-index-documents": {
+        "class": "App\\Console\\Commands\\AiIndexDocuments",
+        "description": "Index the AI Assistant documentation that is new or has changed",
+        "arguments": {},
+        "options": {
+            "fetch": {
+                "value": "none"
+            },
+            "force": {
+                "value": "none"
+            },
+            "document": {
+                "value": "optional"
+            }
+        }
+    },
     "tallport:build": {
         "class": "App\\Console\\Commands\\Build",
         "aliases": [

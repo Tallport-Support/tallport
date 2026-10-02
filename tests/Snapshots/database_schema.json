@@ -92,6 +92,352 @@
             }
         }
     },
+    "aiassistant_document_chunks": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "document_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "chunk_index": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "content": {
+                "type": "longtext",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "content_hash": {
+                "type": "varchar(64)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "token_count": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "embedding": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "embedding_model": {
+                "type": "varchar(191)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "metadata": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "aiassistant_document_chunks_content_hash_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "content_hash"
+                ]
+            },
+            "aiassistant_document_chunks_document_id_chunk_index_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "document_id",
+                    "chunk_index"
+                ]
+            },
+            "aiassistant_document_chunks_document_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "document_id"
+                ]
+            },
+            "aiassistant_document_chunks_embedding_model_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "embedding_model"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "aiassistant_documents": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "title": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "source_type": {
+                "type": "varchar(50)",
+                "nullable": false,
+                "default": "'url'",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "source_url": {
+                "type": "varchar(2048)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "source_identifier": {
+                "type": "varchar(191)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "canonical_locale": {
+                "type": "varchar(10)",
+                "nullable": false,
+                "default": "'en'",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "localized_urls": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "content": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "content_hash": {
+                "type": "varchar(64)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "status": {
+                "type": "varchar(50)",
+                "nullable": false,
+                "default": "'pending'",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "enabled": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "1"
+            },
+            "last_indexed_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "last_error": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "metadata": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "aiassistant_documents_content_hash_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "content_hash"
+                ]
+            },
+            "aiassistant_documents_enabled_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "enabled"
+                ]
+            },
+            "aiassistant_documents_last_indexed_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "last_indexed_at"
+                ]
+            },
+            "aiassistant_documents_mailbox_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id"
+                ]
+            },
+            "aiassistant_documents_source_identifier_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "source_identifier"
+                ]
+            },
+            "aiassistant_documents_source_type_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "source_type"
+                ]
+            },
+            "aiassistant_documents_status_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "status"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "aiassistant_mailbox_api_keys": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "key_hash": {
+                "type": "varchar(64)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "key_preview": {
+                "type": "varchar(32)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "enabled": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "1"
+            },
+            "last_used_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "aiassistant_mailbox_api_keys_enabled_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "enabled"
+                ]
+            },
+            "aiassistant_mailbox_api_keys_key_hash_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "key_hash"
+                ]
+            },
+            "aiassistant_mailbox_api_keys_mailbox_id_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
     "attachments": {
         "columns": {
             "id": {

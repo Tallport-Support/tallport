@@ -60,6 +60,11 @@ class Kernel extends ConsoleKernel
         $schedule->command('tallport:update-folder-counters')
             ->hourly();
 
+        // AI Assistant documentation: pick up changes to documented pages.
+        $schedule->command('tallport:ai-index-documents', ['--fetch'])
+            ->dailyAt('03:40')
+            ->withoutOverlapping();
+
         $app_key = config('app.key');
         if ($app_key) {
             $crc = crc32($app_key);

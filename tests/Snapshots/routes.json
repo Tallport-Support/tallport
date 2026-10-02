@@ -16,6 +16,53 @@
     },
     {
         "methods": [
+            "POST"
+        ],
+        "uri": "ai-assistant/api/documents",
+        "name": "ai.documents.api",
+        "action": "AiDocumentsController@api",
+        "middleware": [
+            "open",
+            "throttle:60,1"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "ai-assistant/documents",
+        "name": "ai.documents",
+        "action": "AiDocumentsController@index",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "ai-assistant/documents",
+        "name": "ai.documents.action",
+        "action": "AiDocumentsController@action",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
             "GET"
         ],
         "uri": "app-logs/app",

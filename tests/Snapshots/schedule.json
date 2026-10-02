@@ -33,6 +33,12 @@
         "timezone": "UTC"
     },
     {
+        "command": "artisan tallport:ai-index-documents --fetch",
+        "expression": "40 3 * * *",
+        "timezone": "UTC",
+        "without_overlapping": true
+    },
+    {
         "command": "artisan tallport:module-check-licenses",
         "expression": "57 9 * * *",
         "timezone": "UTC"
