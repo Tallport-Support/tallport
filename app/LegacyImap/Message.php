@@ -669,8 +669,12 @@ class Message {
             $subtype = strtolower($part->subtype ?? '');
             $subtype = $subtype == "plain" || $subtype == "" ? "text" : $subtype;
 
-            if (isset($this->bodies[$subtype])) {
-                $this->bodies[$subtype] .= "\n".$content;
+            // As in webklex/php-imap 6: only separate from a non-empty body,
+            // and skip empty parts (both added stray blank lines).
+            if (isset($this->bodies[$subtype]) && $this->bodies[$subtype] !== null && $this->bodies[$subtype] !== "") {
+                if ($content !== "") {
+                    $this->bodies[$subtype] .= "\n".$content;
+                }
             }else{
                 $this->bodies[$subtype] = $content;
             }

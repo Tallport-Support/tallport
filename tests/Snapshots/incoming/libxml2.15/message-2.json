@@ -15,7 +15,7 @@
                     "to": "[\"test_1@mail.com\"]",
                     "cc": null,
                     "bcc": null,
-                    "body": "<br />\nThis message may contain an attachment in a PDF format.<br />\r\n<br />\r\nSpecial Comments<br />\r\n-<br />\r\nSee attached document",
+                    "body": "This message may contain an attachment in a PDF format.<br />\r\n<br />\r\nSpecial Comments<br />\r\n-<br />\r\nSee attached document",
                     "headers": "5fc45b99fb9172fc3951ee716b17694a",
                     "attachments": [
                         {

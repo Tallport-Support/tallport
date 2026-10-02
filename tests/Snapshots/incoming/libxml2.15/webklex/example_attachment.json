@@ -15,7 +15,7 @@
                     "to": "[\"someone@domain.tld\"]",
                     "cc": "[\"someone@domain.tld\"]",
                     "bcc": null,
-                    "body": "<br />\nn1IaXFkbeqKyg4lYToaJ3u1Ond2EDrN3UWuiLFNjOLJEAabSYagYQaOHtV5QDlZE<br />\n",
+                    "body": "n1IaXFkbeqKyg4lYToaJ3u1Ond2EDrN3UWuiLFNjOLJEAabSYagYQaOHtV5QDlZE",
                     "headers": "80158b746ecbdc14622e2744b8a10aa7",
                     "attachments": [
                         {

@@ -64,23 +64,6 @@
         "webklex/undefined_charset_header"
     ],
     "text_body": [
-        "message-2",
-        "message-3",
-        "message-4-null-bytes",
-        "message-6",
-        "webklex/boolean_decoded_content",
-        "webklex/embedded_email_without_content_disposition-embedded",
-        "webklex/embedded_email_without_content_disposition",
-        "webklex/example_attachment",
-        "webklex/four_nested_emails",
-        "webklex/issue-544",
-        "webklex/multiple_html_parts_and_attachments",
-        "webklex/multiple_nested_attachments",
-        "webklex/nestes_embedded_with_attachment",
-        "webklex/pec",
-        "webklex/plain_text_attachment",
-        "webklex/simple_multipart",
-        "webklex/structured_with_attachment",
         "webklex/unknown_encoding",
         "webklex/without_charset_simple_multipart"
     ],
