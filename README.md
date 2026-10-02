@@ -306,7 +306,10 @@ needs a newer PHP. When updating, ignore only missing extensions:
 `app/LegacyImap` is FreeScout's patched webklex/php-imap 4.1.1 under its
 own namespace. It still connects to the IMAP/POP3 servers, and reads an
 email only if webklex/php-imap 6 (installed normally) and Tallport's own
-code (`app/Incoming`) can't. It is being taken apart step by step.
+code (`app/Incoming`) can't. It is being taken apart step by step: with
+`APP_FETCH_CLIENT=webklex6` in `.env` (then `php artisan tallport:clear-cache`)
+mailboxes are fetched with webklex/php-imap 6 instead; remove the line to go
+back.
 
 ### Releasing
 

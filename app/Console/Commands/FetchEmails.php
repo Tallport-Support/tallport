@@ -353,7 +353,7 @@ class FetchEmails extends Command
                     }
                     $messages_query->limit($page_size, $page);
 
-                    $messages = $messages_query->get();
+                    $messages = $this->withFailedMessages($client, $messages_query, $folder, $messages_query->get());
 
                     $last_error = $client->getLastError();
                 } catch (\Exception $e) {
@@ -368,7 +368,7 @@ class FetchEmails extends Command
                     if ($unseen) {
                         $messages_query->unseen();
                     }
-                    $messages = $messages_query->get();
+                    $messages = $this->withFailedMessages($client, $messages_query, $folder, $messages_query->get());
 
                     $no_charset = true;
                     $last_error = $client->getLastError();
@@ -403,6 +403,25 @@ class FetchEmails extends Command
         $client->disconnect();
     }
 
+    /**
+     * With the webklex 6 client: add the messages webklex couldn't make,
+     * fetched raw (Tallport reads them).
+     */
+    protected function withFailedMessages($client, $query, $folder, $messages)
+    {
+        if (!$client instanceof \App\Incoming\ImapClient || !$query->hasErrors()) {
+            return $messages;
+        }
+
+        try {
+            return $messages->merge(\App\Incoming\FetchedMessage::fetchFailed($query, $folder));
+        } catch (\Exception $e) {
+            $this->logError('Folder: '.$folder->name.'; Error fetching messages: '.$e->getMessage());
+
+            return $messages;
+        }
+    }
+
     public function processMessage($message, $message_id, $mailbox, $mailboxes, $extra = false)
     {
         $this->last_message_failed = false;
@@ -412,6 +431,11 @@ class FetchEmails extends Command
         if ($message instanceof IncomingMessage) {
             $incoming = $message;
             $message = $incoming instanceof LegacyImapMessage ? $incoming->legacyMessage() : null;
+        } elseif ($message instanceof \App\Incoming\FetchedMessage) {
+            $incoming = \App\Incoming\Parser::parse($message->rawSource());
+        } elseif ($message instanceof \Webklex\PHPIMAP\Message) {
+            // Fetched with APP_FETCH_CLIENT=webklex6.
+            $incoming = \App\Incoming\Parser::parse(rtrim($message->getHeader()->raw, "\r\n")."\r\n\r\n".$message->getRawBody());
         } else {
             $legacy = new LegacyImapMessage($message);
             $incoming = \App\Incoming\Parser::parse($legacy->rawSource(), $legacy);
@@ -1951,7 +1975,7 @@ class FetchEmails extends Command
             return null;
         }
 
-        if (is_object($attr) && get_class($attr) == 'App\LegacyImap\Attribute') {
+        if ($attr instanceof \App\LegacyImap\Attribute || $attr instanceof \Webklex\PHPIMAP\Attribute) {
             $attr = $attr->toDate();
         }
 

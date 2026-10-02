@@ -517,6 +517,9 @@ class Mail
 
         $client = null;
 
+        // The webklex 6 client prints its debug log.
+        ob_start();
+
         try {
             \Config::set('imap.options.debug', true);
             \App\LegacyImap\Connection\Protocols\ImapProtocol::$output_debug_log = false;
@@ -550,13 +553,17 @@ class Mail
                 $result['result'] = 'error';
                 $result['msg'] = $last_error;
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $result['result'] = 'error';
             $result['msg'] = $e->getMessage();
         }
 
+        $debug_output = ob_get_clean();
+
         if ($result['result'] == 'error') {
-            $result['log'] = \App\LegacyImap\Connection\Protocols\ImapProtocol::getDebugLog();
+            $result['log'] = $client instanceof \App\Incoming\ImapClient
+                ? $debug_output
+                : \App\LegacyImap\Connection\Protocols\ImapProtocol::getDebugLog();
         }
 
         return $result;
@@ -888,6 +895,26 @@ class Mail
             ]);
         }
 
+        if (config('app.fetch_client') == 'webklex6') {
+            $cm = new \Webklex\PHPIMAP\ClientManager([
+                'default'  => 'default',
+                'accounts' => ['default' => config('imap.accounts.default')],
+                'options'  => [
+                    // Prints the IMAP conversation (with the emails): only for
+                    // the connection test (fetchTest()), which captures it.
+                    'debug'         => !app()->runningInConsole() && config('imap.options.debug'),
+                    'message_key'   => 'id',
+                    'fetch_order'   => 'asc',
+                    'fallback_date' => 'now',
+                    // A message webklex can't make is fetched raw instead
+                    // (App\Incoming\FetchedMessage), not failing the others.
+                    'soft_fail'     => true,
+                ],
+            ]);
+
+            return new \App\Incoming\ImapClient($cm->account('default'));
+        }
+
         // To enable debug: /vendor/webklex/php-imap/src/Connection/Protocols
         // Debug in console
         if (app()->runningInConsole()) {
@@ -1046,10 +1073,10 @@ class Mail
                 foreach ($date_ranges as $date_range) {
                     $client->openFolder($folder->path);
 
-                    $uids = array_values($connection->search([
+                    $uids = array_values(self::protocolResult($connection->search([
                         'SINCE "'.$date_range[0]->format('d-M-Y').'"'
                         .' BEFORE "'.$date_range[1]->format('d-M-Y').'"'
-                    ]));
+                    ])));
 
                     // Calling the protocol directly here, so the server response
                     // has to be checked here as well.
@@ -1070,7 +1097,7 @@ class Mail
                     // the message is found. Note that fetching RFC822.HEADER does
                     // not set the \Seen flag.
                     foreach (array_chunk($uids, self::SCAN_CHUNK_SIZE) as $uids_chunk) {
-                        $headers = $connection->headers($uids_chunk);
+                        $headers = self::protocolResult($connection->headers($uids_chunk));
 
                         foreach ($headers as $uid => $header) {
                             if (self::getHeader($header, 'Message-ID') != $message_id) {
@@ -1092,6 +1119,18 @@ class Mail
         }
 
         return null;
+    }
+
+    /**
+     * The data of an IMAP command's result: webklex 6 wraps it in a Response.
+     */
+    public static function protocolResult($result)
+    {
+        if ($result instanceof \Webklex\PHPIMAP\Connection\Protocols\Response) {
+            return $result->validatedData();
+        }
+
+        return $result;
     }
 
     public static function oauthGetAuthorizationUrl($provider_code, $params)

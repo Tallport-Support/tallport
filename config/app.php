@@ -243,6 +243,10 @@ return [
     'fetch_unseen'      => env('APP_FETCH_UNSEEN', 1),
     'fetch_max_execution_time' => env('APP_FETCH_MAX_EXECUTION_TIME', 30), // minutes
 
+    // Client for IMAP/POP3 mailboxes: 'legacy' (App\LegacyImap) or 'webklex6'
+    // (webklex/php-imap 6, App\Incoming\ImapClient). Switch back if needed.
+    'fetch_client' => env('APP_FETCH_CLIENT', 'legacy'),
+
     // Days the raw source of each incoming email is kept, in
     // storage/app/incoming-mail (0 = don't keep). See App\Incoming\RawSources.
     'incoming_mail_retention_days' => env('APP_INCOMING_MAIL_RETENTION_DAYS', 30),
