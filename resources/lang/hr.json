@@ -1150,5 +1150,6 @@
     "served by this installation": "poslužuje ova instalacija",
     "since": "uspostavljeno",
     "subscribed": "pretplaćen",
-    "waiting for the relay": "čeka se relej"
+    "waiting for the relay": "čeka se relej",
+    "No modules are installed.": "Nema instaliranih modula."
 }

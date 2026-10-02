@@ -1149,5 +1149,6 @@
     "served by this installation": "udostępniany przez tę instalację",
     "since": "nawiązano",
     "subscribed": "subskrybowano",
-    "waiting for the relay": "oczekiwanie na relay"
+    "waiting for the relay": "oczekiwanie na relay",
+    "No modules are installed.": "Nie zainstalowano żadnych modułów."
 }

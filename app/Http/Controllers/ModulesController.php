@@ -28,7 +28,6 @@ class ModulesController extends Controller
     {
         $installed_modules = [];
         $modules_directory = [];
-        $third_party_modules = [];
         $all_modules = [];
         $flashes = [];
         $updates_available = false;
@@ -92,58 +91,23 @@ class ModulesController extends Controller
         //     $this->clearCache();
         // }
 
-        // Prepare directory modules
-        if (is_array($modules_directory)) {
-            foreach ($modules_directory as $i_dir => $dir_module) {
-
-                $dir_module = \App\Module::formatModuleData($dir_module);
-                $modules_directory[$i_dir] = $dir_module;
-
-                // Remove modules without aliases
-                if (empty($dir_module['alias'])) {
-                    unset($modules_directory[$i_dir]);
-                }
-
-                $all_modules[$dir_module['alias']] = $dir_module['name'];
-
-                foreach ($installed_modules as $i_installed => $module) {
-
-                    if ($dir_module['alias'] == $module['alias']) {
-                        // Set image from director
-                        $installed_modules[$i_installed]['img'] = $dir_module['img'];
-
-                        $installed_modules[$i_installed] = \App\Module::formatModuleData($installed_modules[$i_installed]);
-
-                        // Remove installed modules from modules directory.
-                        unset($modules_directory[$i_dir]);
-
-                        // Detect if new version is available
-                        if (!empty($dir_module['version']) && version_compare($dir_module['version'], $module['version'], '>')) {
-                            $installed_modules[$i_installed]['new_version'] = $dir_module['version'];
-                            $updates_available = true;
-                        }
-
-                        continue 2;
+        // Installed modules from the directory: their images and new versions.
+        // The directory itself isn't shown (Tallport is not FreeScout).
+        foreach (is_array($modules_directory) ? $modules_directory : [] as $dir_module) {
+            $dir_module = \App\Module::formatModuleData($dir_module);
+            foreach ($installed_modules as $i_installed => $module) {
+                if (!empty($dir_module['alias']) && $dir_module['alias'] == $module['alias']) {
+                    $installed_modules[$i_installed]['img'] = $dir_module['img'];
+                    $installed_modules[$i_installed] = \App\Module::formatModuleData($installed_modules[$i_installed]);
+                    if (!empty($dir_module['version']) && version_compare($dir_module['version'], $module['version'], '>')) {
+                        $installed_modules[$i_installed]['new_version'] = $dir_module['version'];
+                        $updates_available = true;
                     }
                 }
-
-                if (!empty($dir_module['requiredPhpExtensions'])) {
-                    $modules_directory[$i_dir]['requiredPhpExtensionsMissing'] = \App\Module::getMissingExtensions($dir_module['requiredPhpExtensions']);
-                }
-                $modules_directory[$i_dir]['active'] = \App\Module::isActive($dir_module['alias']);
-                $modules_directory[$i_dir]['activated'] = false;
-
-                // Do not show third-party modules in Modules Directory.
-                if (\App\Module::isThirdParty($dir_module)) {
-                    $third_party_modules[] = $modules_directory[$i_dir];
-                    unset($modules_directory[$i_dir]);
-                } elseif (empty($dir_module['authorUrl']) || !\App\Module::isOfficial($dir_module['authorUrl'])) {
-                    unset($modules_directory[$i_dir]);
-                    continue;
-                }
             }
-        } else {
-            $modules_directory = [];
+        }
+        foreach ($installed_modules as $module) {
+            $all_modules[$module['alias']] = $module['name'];
         }
 
         // Loop through each installed module
@@ -203,14 +167,8 @@ class ModulesController extends Controller
         // Sort all modules.
         asort($all_modules);
 
-        usort($third_party_modules, function ($a, $b) {
-            return strcasecmp($a['name'], $b['name']);
-        });
-
         return view('modules/modules', [
             'installed_modules' => $installed_modules,
-            'modules_directory' => $modules_directory,
-            'third_party_modules' => $third_party_modules,
             'flashes'           => $flashes,
             'updates_available' => $updates_available,
             'all_modules'       => $all_modules,

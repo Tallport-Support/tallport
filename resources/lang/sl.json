@@ -1149,5 +1149,6 @@
     "served by this installation": "streže ta namestitev",
     "since": "vzpostavljeno",
     "subscribed": "naročeno",
-    "waiting for the relay": "čakanje na rele"
+    "waiting for the relay": "čakanje na rele",
+    "No modules are installed.": "Ni nameščenih modulov."
 }

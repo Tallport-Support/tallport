@@ -92,4 +92,28 @@ class ModuleSystemTest extends FeatureTestCase
         $this->assertSame($this->dir.'/TpModule', $module->getScannedPath());
         $this->app['cache']->forget('tallport-test-modules');
     }
+
+    /**
+     * The Modules page lists the installed modules (with updates from the
+     * directory), not FreeScout's directory or marketplace.
+     */
+    public function testModulesPageShowsInstalledModulesOnly()
+    {
+        config(['modules.cache.enabled' => false]);
+        $this->app->instance('modules', $this->makeModule());
+        \Cache::put('modules_directory', [
+            ['alias' => 'tpmodule', 'name' => 'TpModule', 'version' => '2.0.0', 'authorUrl' => 'https://freescout.net', 'detailsUrl' => '', 'img' => ''],
+            ['alias' => 'othermodule', 'name' => 'Other Official Module', 'version' => '1.0.0', 'authorUrl' => 'https://freescout.net', 'detailsUrl' => '', 'img' => ''],
+            ['alias' => 'shopmodule', 'name' => 'Shop Module', 'version' => '1.0.0', 'authorUrl' => 'https://example.org', 'detailsUrl' => '', 'img' => ''],
+        ], now()->addMinutes(5));
+
+        $this->actingAs($this->createAdmin())->get('/modules/list')
+            ->assertStatus(200)
+            ->assertSee('TpModule')
+            ->assertSee('There are updates available')
+            ->assertDontSee('Modules Directory')
+            ->assertDontSee('Marketplace')
+            ->assertDontSee('Other Official Module')
+            ->assertDontSee('Shop Module');
+    }
 }

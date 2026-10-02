@@ -1150,5 +1150,6 @@
     "served by this installation": "bu quraşdırma tərəfindən təqdim olunur",
     "since": "qoşulma vaxtı",
     "subscribed": "abunə olunub",
-    "waiting for the relay": "rele gözlənilir"
+    "waiting for the relay": "rele gözlənilir",
+    "No modules are installed.": "Quraşdırılmış modul yoxdur."
 }

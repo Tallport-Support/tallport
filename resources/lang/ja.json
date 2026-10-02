@@ -1150,5 +1150,6 @@
     "served by this installation": "このインストールで配信中",
     "since": "接続開始",
     "subscribed": "購読中",
-    "waiting for the relay": "リレーを待機中"
+    "waiting for the relay": "リレーを待機中",
+    "No modules are installed.": "インストールされているモジュールはありません。"
 }

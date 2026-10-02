@@ -1150,5 +1150,6 @@
     "served by this installation": "ez a telepítés szolgálja ki",
     "since": "létrejött",
     "subscribed": "feliratkozva",
-    "waiting for the relay": "várakozás a relére"
+    "waiting for the relay": "várakozás a relére",
+    "No modules are installed.": "Nincs telepített modul."
 }

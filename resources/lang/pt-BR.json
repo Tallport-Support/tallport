@@ -1153,5 +1153,6 @@
     "served by this installation": "servido por esta instalação",
     "since": "desde",
     "subscribed": "inscrito",
-    "waiting for the relay": "aguardando o relay"
+    "waiting for the relay": "aguardando o relay",
+    "No modules are installed.": "Nenhum módulo instalado."
 }

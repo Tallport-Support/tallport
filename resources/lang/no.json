@@ -1155,5 +1155,6 @@
     "served by this installation": "levert av denne installasjonen",
     "since": "opprettet",
     "subscribed": "abonnerer",
-    "waiting for the relay": "venter på reléet"
+    "waiting for the relay": "venter på reléet",
+    "No modules are installed.": "Ingen moduler er installert."
 }

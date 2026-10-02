@@ -1149,5 +1149,6 @@
     "served by this installation": "מוגש על ידי ההתקנה הזו",
     "since": "מאז",
     "subscribed": "רשום",
-    "waiting for the relay": "ממתין לממסר"
+    "waiting for the relay": "ממתין לממסר",
+    "No modules are installed.": "אין מודולים מותקנים."
 }

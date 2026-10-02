@@ -1150,5 +1150,6 @@
     "served by this installation": "tillhandahålls av den här installationen",
     "since": "upprättad",
     "subscribed": "prenumererar",
-    "waiting for the relay": "väntar på reläet"
+    "waiting for the relay": "väntar på reläet",
+    "No modules are installed.": "Inga moduler är installerade."
 }

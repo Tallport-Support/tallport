@@ -1150,5 +1150,6 @@
     "served by this installation": "віддається цією інсталяцією",
     "since": "встановлено",
     "subscribed": "підписано",
-    "waiting for the relay": "очікування реле"
+    "waiting for the relay": "очікування реле",
+    "No modules are installed.": "Модулі не встановлено."
 }

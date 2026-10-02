@@ -1155,5 +1155,6 @@
     "served by this installation": "aangeboden door deze installatie",
     "since": "sinds",
     "subscribed": "geabonneerd",
-    "waiting for the relay": "wacht op de relay"
+    "waiting for the relay": "wacht op de relay",
+    "No modules are installed.": "Er zijn geen modules geïnstalleerd."
 }

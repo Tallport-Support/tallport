@@ -1152,5 +1152,6 @@
     "served by this installation": "由此安装提供",
     "since": "连接于",
     "subscribed": "已订阅",
-    "waiting for the relay": "等待中继"
+    "waiting for the relay": "等待中继",
+    "No modules are installed.": "未安装任何模块。"
 }

@@ -1261,5 +1261,6 @@
     "served by this installation": "servit per aquesta instal·lació",
     "since": "des de",
     "subscribed": "subscrit",
-    "waiting for the relay": "esperant el relay"
+    "waiting for the relay": "esperant el relay",
+    "No modules are installed.": "No hi ha cap mòdul instal·lat."
 }

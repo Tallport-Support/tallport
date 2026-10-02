@@ -1149,5 +1149,6 @@
     "served by this installation": "servit de această instalare",
     "since": "din",
     "subscribed": "abonat",
-    "waiting for the relay": "așteaptă relay-ul"
+    "waiting for the relay": "așteaptă relay-ul",
+    "No modules are installed.": "Nu este instalat niciun modul."
 }

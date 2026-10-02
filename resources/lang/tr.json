@@ -1150,5 +1150,6 @@
     "served by this installation": "bu kurulum tarafından sunuluyor",
     "since": "bağlandı",
     "subscribed": "abone olundu",
-    "waiting for the relay": "röle bekleniyor"
+    "waiting for the relay": "röle bekleniyor",
+    "No modules are installed.": "Yüklü modül yok."
 }

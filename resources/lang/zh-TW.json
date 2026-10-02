@@ -1205,5 +1205,6 @@
     "served by this installation": "由此安裝提供",
     "since": "連線於",
     "subscribed": "已訂閱",
-    "waiting for the relay": "等待中繼"
+    "waiting for the relay": "等待中繼",
+    "No modules are installed.": "未安裝任何模組。"
 }

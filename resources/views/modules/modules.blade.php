@@ -11,7 +11,12 @@
 
     @include('partials/flash_messages')
 
-    @if (count($installed_modules))
+    @if (!count($installed_modules))
+        <div class="section-heading" id="installed">{{ __('Installed Modules') }}</div>
+        <div class="row-container margin-top">
+            <p class="text-help">{{ __('No modules are installed.') }}</p>
+        </div>
+    @else
         <div class="section-heading" id="installed">
             {{ __('Installed Modules') }}@if (count($installed_modules)) <small>({{ count($installed_modules) }})</small>@endif
 
@@ -57,40 +62,6 @@
         <div class="clearfix"></div>
     @endif
     
-    <div class="section-heading" id="directory">
-        <i class="glyphicon glyphicon-briefcase"></i> {{ __('Modules Directory') }}@if (count($modules_directory)) <small>({{ count($modules_directory) }})</small>@endif
-        @if (!count($installed_modules))
-            <a href="#" data-trigger="modal" data-modal-body="#deactivate_license_modal" data-modal-size="sm" data-modal-no-footer="true" data-modal-title="{{ __('Deactivate License') }}" data-modal-on-show="deactivateLicenseModal" class="small pull-right">{{ __('Deactivate License') }}</a>
-        @endif
-    </div>
-
-    <div class="row-container margin-top">
-        <p class="text-help margin-bottom col-xs-12 padding-0">
-            {{ __('Want to be notified by email when new modules are released?') }} <a href="{{ \Config::get('app.freescout_url') }}/subscribe/" target="_blank">{{ __('Subscribe') }}</a>
-        </p>
-        @foreach ($modules_directory as $module)
-            @include('modules/partials/module_card')
-        @endforeach
-    </div>
-
-    <div class="clearfix margin-bottom"></div>
-
-    @if (count($third_party_modules))
-        <div class="section-heading" id="third-party">
-            <i class="glyphicon glyphicon-shopping-cart"></i> {{ __('Marketplace') }}@if (count($third_party_modules)) <small>({{ count($third_party_modules) }})</small>@endif
-        </div>
-
-        <div class="row-container margin-top">
-            <a href="#third-party-container" data-toggle="collapse" class="btn-link">{{ __('Show') }} ({{ count($third_party_modules) }}) »</a>
-        </div>
-
-        <div class="row-container margin-top collapse" id="third-party-container">
-            @foreach ($third_party_modules as $module)
-                @include('modules/partials/module_card', ['third_party' => true])
-            @endforeach
-        </div>
-    @endif
-
     <div class="clearfix margin-bottom-30"></div>
 
     <div id="deactivate_license_modal" class="hidden">

@@ -1149,5 +1149,6 @@
     "served by this installation": "poskytuje táto inštalácia",
     "since": "nadviazané",
     "subscribed": "prihlásené na odber",
-    "waiting for the relay": "čaká sa na relay"
+    "waiting for the relay": "čaká sa na relay",
+    "No modules are installed.": "Nie sú nainštalované žiadne moduly."
 }

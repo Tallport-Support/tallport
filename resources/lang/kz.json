@@ -1647,5 +1647,6 @@
     "served by this installation": "осы орнату береді",
     "since": "қосылды",
     "subscribed": "жазылған",
-    "waiting for the relay": "релені күтуде"
+    "waiting for the relay": "релені күтуде",
+    "No modules are installed.": "Модульдер орнатылмаған."
 }

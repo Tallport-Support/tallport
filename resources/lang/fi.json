@@ -1169,5 +1169,6 @@
     "served by this installation": "tämän asennuksen tarjoama",
     "since": "muodostettu",
     "subscribed": "tilattu",
-    "waiting for the relay": "odotetaan relettä"
+    "waiting for the relay": "odotetaan relettä",
+    "No modules are installed.": "Moduuleja ei ole asennettu."
 }
