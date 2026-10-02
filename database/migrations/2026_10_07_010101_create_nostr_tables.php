@@ -2,14 +2,13 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
  * Nostr: each mailbox's identity (nostr_mailboxes, with retired keys in
  * nostr_mailbox_keys), customers' public keys and every message wrap
  * received or sent (nostr_events). Tables that exist already (the nostr
- * module's) are kept; the module is switched off.
+ * module's) are kept.
  */
 class CreateNostrTables extends Migration
 {
@@ -110,9 +109,6 @@ class CreateNostrTables extends Migration
             });
         }
 
-        if (Schema::hasTable('modules')) {
-            DB::table('modules')->where('alias', 'nostr')->update(['active' => false]);
-        }
     }
 
     public function down()
