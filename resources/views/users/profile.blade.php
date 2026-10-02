@@ -160,6 +160,22 @@
                         </div>
                     </div>
 
+                    <div class="form-group{{ $errors->has('ai_language') ? ' has-error' : '' }}">
+                        <label for="ai_language" class="col-sm-2 control-label">{{ __('AI Language') }}</label>
+
+                        <div class="col-sm-6">
+                            <select id="ai_language" class="form-control input-sized" name="ai_language">
+                                <option value="">{{ __('Default') }}</option>
+                                @foreach (App\Ai\Settings::LANGUAGES as $code => $name)
+                                    <option value="{{ $code }}" @if (old('ai_language', $user->ai_language) == $code) selected @endif>{{ $name }}</option>
+                                @endforeach
+                            </select>
+                            <div class="form-help">{{ __('The language of AI summaries and translations.') }}</div>
+
+                            @include('partials/field_error', ['field'=>'ai_language'])
+                        </div>
+                    </div>
+
                     <div class="form-group{{ $errors->has('timezone') ? ' has-error' : '' }}">
                         <label for="timezone" class="col-sm-2 control-label">{{ __('Timezone') }}</label>
 
@@ -196,6 +212,19 @@
                                         <input type="checkbox" name="only_assigned_tickets" value="1" id="only_assigned_tickets" @if (old('only_assigned_tickets', $user->hasPermission(\App\User::PERM_ONLY_ASSIGNED_TICKETS)))checked="checked"@endif> <span class="text-help">{{ $user->getUserPermissionName(\App\User::PERM_ONLY_ASSIGNED_TICKETS) }}</span>
                                     </label>
                                 </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if (Auth::user()->isAdmin())
+                        <div class="form-group{{ $errors->has('ai_drafts_per_day') ? ' has-error' : '' }}">
+                            <label for="ai_drafts_per_day" class="col-sm-2 control-label">{{ __('AI Drafts Per Day') }}</label>
+
+                            <div class="col-sm-6">
+                                <input id="ai_drafts_per_day" type="number" class="form-control input-sized" name="ai_drafts_per_day" value="{{ old('ai_drafts_per_day', $user->ai_drafts_per_day) }}" min="0" max="10000" placeholder="{{ App\Ai\Settings::draftsPerDay(null) }}">
+                                <div class="form-help">{{ __('Leave blank to use the limit in the AI Assistant settings. 0 turns drafting off.') }}</div>
+
+                                @include('partials/field_error', ['field'=>'ai_drafts_per_day'])
                             </div>
                         </div>
                     @endif

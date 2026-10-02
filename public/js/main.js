@@ -2518,6 +2518,16 @@ function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
 	});
 }
 
+// Settings » AI Assistant: show the chosen provider's base URL as the placeholder.
+function aiSettingsInit()
+{
+	$(document).ready(function() {
+		$('.ai-provider').change(function() {
+			$($(this).attr('data-base-url')).attr('placeholder', $(this).find('option:selected').attr('data-base-url'));
+		});
+	});
+}
+
 function notificationsInit()
 {
 	$(document).ready(function() {

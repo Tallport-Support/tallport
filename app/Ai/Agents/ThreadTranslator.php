@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Ai\Agents;
+
+use App\Ai\Settings;
+use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Laravel\Ai\Contracts\HasStructuredOutput;
+
+/**
+ * A customer's message translated for the support team.
+ */
+class ThreadTranslator extends TallportAgent implements HasStructuredOutput
+{
+    public $language;
+
+    public function __construct($language)
+    {
+        $this->language = $language;
+    }
+
+    public function instructions(): string
+    {
+        return implode("\n", [
+            'You translate customer support emails for the support team.',
+            self::dataRules(),
+            'Translate the message to: '.Settings::languageName($this->language).' ('.$this->language.').',
+            'Do not change the content, do not add information, keep the paragraphs.',
+            'translation: only the translated text, not JSON.',
+            'If the message is already entirely in the target language, set same_language to true and leave translation empty.',
+            'detected_language: the language of the message, as an ISO 639-1 code.',
+        ]);
+    }
+
+    public function schema(JsonSchema $schema): array
+    {
+        return [
+            'translation'       => $schema->string()->description('The translated message.')->required(),
+            'same_language'     => $schema->boolean()->description('Whether the message is already in the target language.')->required(),
+            'detected_language' => $schema->string()->description('The language of the message (ISO 639-1).')->required(),
+        ];
+    }
+}

@@ -73,26 +73,33 @@ class EventServiceProvider extends ServiceProvider
              'App\Listeners\SendReplyToCustomer',
              'App\Listeners\SendNotificationToUsers',
              'App\Listeners\RefreshConversations',
+            'App\Listeners\AiUpdateSummary',
         ],
 
         'App\Events\CustomerReplied' => [
             'App\Listeners\SendNotificationToUsers',
+            'App\Listeners\AiUpdateSummary',
+            'App\Listeners\AiTranslateMessage',
         ],
 
         'App\Events\UserCreatedConversation' => [
             'App\Listeners\SendReplyToCustomer',
             'App\Listeners\SendNotificationToUsers',
             'App\Listeners\RefreshConversations',
+            'App\Listeners\AiUpdateSummary',
         ],
 
         'App\Events\CustomerCreatedConversation' => [
             'App\Listeners\SendAutoReply',
             'App\Listeners\SendNotificationToUsers',
+            'App\Listeners\AiUpdateSummary',
+            'App\Listeners\AiTranslateMessage',
         ],
 
         'App\Events\UserAddedNote' => [
             'App\Listeners\SendNotificationToUsers',
             'App\Listeners\RefreshConversations',
+            'App\Listeners\AiUpdateSummary',
         ],
 
         'App\Events\UserMovedConversation' => [

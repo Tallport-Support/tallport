@@ -291,6 +291,7 @@
                     </div>
                 @endif
 
+                @include('conversations/partials/ai_translation')
                 @action('thread.before_body', $thread, $loop, $threads, $conversation, $mailbox)
 
                 <div class="thread-content" dir="auto">

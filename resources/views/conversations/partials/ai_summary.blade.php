@@ -1,0 +1,41 @@
+{{-- AI Assistant: the conversation's summary (App\Ai\Summaries). --}}
+@php
+    $ai_language = App\Ai\Settings::language($conversation->mailbox, Auth::user());
+    $ai_summary = App\Ai\Summaries::get($conversation, $ai_language) ?: App\Ai\Summaries::getAny($conversation, $ai_language);
+    if (App\Ai\Summaries::isWanted($conversation) && App\Ai\Summaries::isStale($conversation, $ai_language)) {
+        App\Jobs\AiSummarizeConversation::request($conversation, $ai_language);
+    }
+    $ai_summary_items = [];
+    foreach (preg_split('/\r\n|\r|\n/', trim($ai_summary['summary'] ?? '')) as $ai_line) {
+        $ai_line = trim(preg_replace('/^[-*]\s+/', '', trim($ai_line)));
+        if ($ai_line !== '') {
+            $ai_summary_items[] = $ai_line;
+        }
+    }
+@endphp
+@if ($ai_summary_items)
+    <div class="thread thread-type-ai-summary" id="thread-ai-summary">
+        <div class="thread-photo">
+            <img class="person-photo" src="{{ asset('img/ai-assistant.png') }}" alt="">
+        </div>
+        <div class="thread-message">
+            <div class="thread-header">
+                <div class="thread-title">
+                    <div class="thread-person"><strong>{{ __('Summary') }}</strong></div>
+                </div>
+                <div class="thread-info">
+                    <span class="thread-date" data-toggle="tooltip" title="{{ App\User::dateFormat($ai_summary['at']) }}">{{ App\User::dateDiffForHumans($ai_summary['at']) }}</span>
+                </div>
+            </div>
+            <div class="thread-body">
+                <div class="thread-content" dir="auto">
+                    <ul class="ai-assistant-summary-list">
+                        @foreach ($ai_summary_items as $ai_item)
+                            <li>{{ $ai_item }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif

@@ -4632,3 +4632,34 @@ a.disabled:focus {
 .panel-group .panel {
     border-radius: 5px;
 }
+/* AI Assistant: summaries, translations, drafts */
+.thread-type-ai-summary {
+    background-color: #ebf3fb;
+    -webkit-box-shadow: inset 5px 0 0 0 rgb(106, 193, 255);
+    box-shadow: inset 5px 0 0 0 rgb(106, 193, 255);
+}
+.ai-assistant-summary-list {
+    margin: 0;
+    padding-left: 18px;
+}
+.ai-assistant-summary-list li {
+    margin: 0 0 6px;
+}
+.ai-assistant-summary-list li:last-child {
+    margin-bottom: 0;
+}
+.alert-ai-translation {
+    background-color: #ebf3fb;
+}
+.alert-ai-translation-title {
+    color: #a5b2bd;
+    font-weight: 600;
+    padding-bottom: 10px;
+}
+.ai-assistant-badge {
+    font-size: 11px;
+    background-color: #ebf3fb;
+    font-weight: 500;
+    padding: 1px 5px;
+    border-radius: 5px;
+}

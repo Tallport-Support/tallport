@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Jobs;
+
+use App\Ai\Settings;
+use App\Ai\Summaries;
+use App\Conversation;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+
+/**
+ * Make or update a conversation's AI summary in a language.
+ */
+class AiSummarizeConversation implements ShouldQueue, ShouldBeUnique
+{
+    use Dispatchable, InteractsWithQueue, Queueable;
+
+    public $conversation_id;
+
+    public $language;
+
+    public $tries = 1;
+
+    public $timeout = 240;
+
+    public $uniqueFor = 600;
+
+    public function __construct($conversation_id, $language)
+    {
+        $this->conversation_id = $conversation_id;
+        $this->language = $language;
+    }
+
+    public function uniqueId()
+    {
+        return $this->conversation_id.'-'.$this->language;
+    }
+
+    public function handle()
+    {
+        $conversation = Conversation::find($this->conversation_id);
+        if (!$conversation || !Summaries::isWanted($conversation) || !Summaries::isStale($conversation, $this->language)) {
+            return;
+        }
+
+        try {
+            Summaries::summarize($conversation, $this->language);
+        } catch (\Throwable $e) {
+            \Helper::logException($e, '[AI Assistant] Summary of conversation #'.$conversation->number.':');
+        }
+    }
+
+    /**
+     * Queue a summary, a minute later so that it covers quick follow-ups.
+     */
+    public static function request(Conversation $conversation, $language)
+    {
+        // handle() checks the rest: the conversation of an event may not
+        // have its new thread counted yet.
+        if (Settings::isConfigured() && Settings::enabled('summaries', $conversation->mailbox)) {
+            self::dispatch($conversation->id, $language)->delay(now()->addMinute())->onQueue('default');
+        }
+    }
+}

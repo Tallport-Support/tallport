@@ -172,6 +172,29 @@ class SettingsController extends Controller
                 }
 
                 break;
+            case 'ai':
+                $params = [
+                    'template_vars' => [
+                        'ai_languages' => \App\Ai\Settings::LANGUAGES,
+                        'ai_mailboxes' => \App\Mailbox::orderBy('name')->get(),
+                    ],
+                    'validator_rules' => [
+                        'settings.aiassistant\.base_url'                => 'nullable|url:http,https',
+                        'settings.aiassistant\.documentation\.embedding_base_url' => 'nullable|url:http,https',
+                        'settings.aiassistant\.drafts_per_day'          => 'nullable|integer|min:0|max:10000',
+                    ],
+                    'settings' => [
+                        'aiassistant.api_key' => [
+                            'safe_password' => true,
+                            'encrypt'       => true,
+                        ],
+                        'aiassistant.documentation.embedding_api_key' => [
+                            'safe_password' => true,
+                            'encrypt'       => true,
+                        ],
+                    ],
+                ];
+                break;
             default:
                 $params = \Eventy::filter('settings.section_params', $params, $section);
                 break;
@@ -242,6 +265,26 @@ class SettingsController extends Controller
                     'alert_logs_fetch_min_occurrences' => \App\Console\Commands\LogsMonitor::FETCH_ERRORS_MIN_OCCURRENCES_DEFAULT,
                 ]);
                 break;
+            case 'ai':
+                $settings = [
+                    'aiassistant.provider'                        => \App\Ai\Settings::provider(),
+                    'aiassistant.api_key'                         => \App\Ai\Settings::apiKey(),
+                    'aiassistant.base_url'                        => \App\Ai\Settings::baseUrl(),
+                    'aiassistant.model'                           => Option::get('aiassistant.model', ''),
+                    'aiassistant.documentation.embedding_provider' => \App\Ai\Settings::embeddingProviderIsSame() ? 'same' : \App\Ai\Settings::embeddingProvider(),
+                    'aiassistant.documentation.embedding_api_key' => \Helper::decrypt(Option::get('aiassistant.documentation.embedding_api_key', '')),
+                    'aiassistant.documentation.embedding_base_url' => Option::get('aiassistant.documentation.embedding_base_url', ''),
+                    'aiassistant.documentation.embedding_model'   => Option::get('aiassistant.documentation.embedding_model', ''),
+                    'aiassistant.documentation.chunk_size'        => \App\Ai\Settings::chunkSize(),
+                    'aiassistant.documentation.chunk_overlap'     => \App\Ai\Settings::chunkOverlap(),
+                    'aiassistant.documentation.retrieval_limit'   => \App\Ai\Settings::retrievalLimit(),
+                    'aiassistant.summary_conversation_threshold'  => \App\Ai\Settings::summaryThreshold(),
+                    'aiassistant.translation_language'            => \App\Ai\Settings::defaultLanguage(),
+                    'aiassistant.drafts_per_day'                  => \App\Ai\Settings::draftsPerDay(null),
+                    'aiassistant.mailbox_language'                => (array) Option::get('aiassistant.mailbox_language', []),
+                    'aiassistant.mailbox_features_off'            => (array) Option::get('aiassistant.mailbox_features_off', []),
+                ];
+                break;
             default:
                 $settings = \Eventy::filter('settings.section_settings', $settings, $section);
                 break;
@@ -259,6 +302,7 @@ class SettingsController extends Controller
             'general' => ['title' => __('General'), 'icon' => 'cog', 'order' => 100],
             'emails'  => ['title' => __('Mail Settings'), 'icon' => 'transfer', 'order' => 200],
             'alerts'  => ['title' => __('Alerts'), 'icon' => 'bell', 'order' => 300],
+            'ai'      => ['title' => __('AI Assistant'), 'icon' => 'flash', 'order' => 400],
         ];
         $sections = \Eventy::filter('settings.sections', $sections);
 
@@ -278,7 +322,60 @@ class SettingsController extends Controller
             abort(404);
         }
 
+        if ($section == 'ai') {
+            $this->normalizeAiSettings(request());
+        }
+
         return $this->processSave($section, array_keys($settings));
+    }
+
+    /**
+     * AI Assistant settings as stored: trimmed, within bounds, and the
+     * per-mailbox feature checkboxes as the features turned off.
+     */
+    protected function normalizeAiSettings(Request $request)
+    {
+        $input = (array) $request->settings;
+        foreach (['aiassistant.base_url', 'aiassistant.documentation.embedding_base_url'] as $name) {
+            if (isset($input[$name])) {
+                $input[$name] = rtrim(trim($input[$name]), '/');
+            }
+        }
+        foreach (['aiassistant.model', 'aiassistant.documentation.embedding_model'] as $name) {
+            if (isset($input[$name])) {
+                $input[$name] = trim($input[$name]);
+            }
+        }
+        if (isset($input['aiassistant.provider'])) {
+            $input['aiassistant.provider'] = \App\Ai\Providers::normalize($input['aiassistant.provider']);
+        }
+        if (isset($input['aiassistant.documentation.embedding_provider']) && $input['aiassistant.documentation.embedding_provider'] != 'same') {
+            $input['aiassistant.documentation.embedding_provider'] = \App\Ai\Providers::normalize($input['aiassistant.documentation.embedding_provider']);
+        }
+        foreach ([
+            'aiassistant.documentation.chunk_size'       => [500, 20000],
+            'aiassistant.documentation.chunk_overlap'    => [0, 5000],
+            'aiassistant.documentation.retrieval_limit'  => [1, 20],
+            'aiassistant.summary_conversation_threshold' => [0, 10],
+        ] as $name => $bounds) {
+            if (isset($input[$name])) {
+                $input[$name] = max($bounds[0], min($bounds[1], (int) $input[$name]));
+            }
+        }
+        $input['aiassistant.mailbox_language'] = array_filter((array) ($input['aiassistant.mailbox_language'] ?? []), [\App\Ai\Settings::class, 'isLanguage']);
+
+        $on = (array) ($input['aiassistant.mailbox_features_on'] ?? []);
+        $off = [];
+        foreach (\App\Mailbox::pluck('id') as $mailbox_id) {
+            $mailbox_off = array_values(array_diff(\App\Ai\Settings::FEATURES, array_keys((array) ($on[$mailbox_id] ?? []))));
+            if ($mailbox_off) {
+                $off[$mailbox_id] = $mailbox_off;
+            }
+        }
+        unset($input['aiassistant.mailbox_features_on']);
+        $input['aiassistant.mailbox_features_off'] = $off;
+
+        $request->merge(['settings' => $input]);
     }
 
     public function processSave($section, $settings)

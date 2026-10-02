@@ -366,9 +366,28 @@
                 "default": "NULL",
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
+            },
+            "ai_assistant": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "ai_assistant_updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
             }
         },
         "indexes": {
+            "conversations_ai_assistant_updated_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "ai_assistant_updated_at"
+                ]
+            },
             "conversations_customer_email_status_created_at_index": {
                 "unique": false,
                 "type": "BTREE",
@@ -1908,6 +1927,18 @@
                 "type": "tinyint(1)",
                 "nullable": false,
                 "default": "0"
+            },
+            "ai_assistant": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "ai_assistant_updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
             }
         },
         "indexes": {
@@ -1916,6 +1947,13 @@
                 "type": "BTREE",
                 "columns": [
                     "id"
+                ]
+            },
+            "threads_ai_assistant_updated_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "ai_assistant_updated_at"
                 ]
             },
             "threads_conversation_id_created_at_index": {
@@ -2202,6 +2240,18 @@
                 "default": "NULL",
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
+            },
+            "ai_language": {
+                "type": "varchar(20)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "ai_drafts_per_day": {
+                "type": "smallint(5) unsigned",
+                "nullable": true,
+                "default": "NULL"
             }
         },
         "indexes": {

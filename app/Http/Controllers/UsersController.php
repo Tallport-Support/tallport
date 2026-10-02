@@ -205,6 +205,8 @@ class UsersController extends Controller
             'time_format' => 'required',
             'role'        => ['nullable', Rule::in(array_keys(User::$roles))],
             'photo_url'   => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'ai_language' => ['nullable', Rule::in(array_keys(\App\Ai\Settings::LANGUAGES))],
+            'ai_drafts_per_day' => 'nullable|integer|min:0|max:10000',
         ]);
         $validator->setAttributeNames([
             'photo_url'   => __('Photo'),
@@ -312,6 +314,13 @@ class UsersController extends Controller
         }
 
         $user->setData($request_data);
+
+        if ($request->exists('ai_language')) {
+            $user->ai_language = $request->ai_language ?: null;
+        }
+        if ($auth_user->isAdmin() && $request->exists('ai_drafts_per_day')) {
+            $user->ai_drafts_per_day = is_numeric($request->ai_drafts_per_day) ? (int) $request->ai_drafts_per_day : null;
+        }
 
         if ($auth_user->isAdmin() && !$user->isAdmin()) {
             if (!empty($request_data['only_assigned_tickets'])) {
