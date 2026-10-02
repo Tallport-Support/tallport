@@ -13,6 +13,9 @@
 <ul class="sidebar-menu">
     <li @if (Route::currentRouteName() == 'users.profile')class="active"@endif><a href="{{ route('users.profile', ['id'=>$user->id]) }}"><i class="glyphicon glyphicon-user"></i> {{ __('Profile') }}</a></li>
     @action('user.profile.menu.after_profile', $user)
+    @if (Auth::user()->id == $user->id || Auth::user()->isAdmin())
+        <li @if (Route::currentRouteName() == 'users.security')class="active"@endif><a href="{{ route('users.security', ['id'=>$user->id]) }}"><i class="glyphicon glyphicon-lock"></i> {{ __('Security') }}</a></li>
+    @endif
     @if (Auth::user()->isAdmin())
         <li @if (Route::currentRouteName() == 'users.permissions')class="active"@endif><a href="{{ route('users.permissions', ['id'=>$user->id]) }}"><i class="glyphicon glyphicon-ok"></i> {{ __('Permissions') }}</a></li>
     @endif

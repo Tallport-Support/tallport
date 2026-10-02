@@ -25,6 +25,7 @@ Credit for everything up to the fork goes to the FreeScout team.
 * [Updating](#updating)
 * [Incoming email sources and re-importing](#incoming-email-sources-and-re-importing)
 * [Receiving email from a mail server](#receiving-email-from-a-mail-server)
+* [Two-factor authentication and passkeys](#two-factor-authentication-and-passkeys)
 * [Modules](#modules)
 * [Development](#development)
 * [Security](#security)
@@ -197,6 +198,26 @@ mailbox's fetching settings can stay as a fallback (for mail that still ends
 up in its IMAP inbox). Just don't deliver the same email both ways (for
 example through an alias to the IMAP inbox as well): the two copies arrive
 with different headers and would be saved twice.
+
+## Two-factor authentication and passkeys
+
+Logging in uses [Laravel Fortify](https://laravel.com/docs/fortify): after
+the password, users enter a code from an authenticator app (Google
+Authenticator, 1Password, ...), or a recovery code if they lost their phone.
+They set it up under their profile » Security, where they can also add
+passkeys (sign in with a fingerprint, face or device PIN instead of the
+password and code). "Remember this device" skips the code on that device for
+14 days (at most 3 devices per user).
+
+Two-factor authentication is required: users who haven't turned it on are
+sent to set it up after logging in. To leave it to each user, set
+`APP_TWO_FACTOR_REQUIRED=false` in `.env` (then
+`php artisan tallport:clear-cache`). An admin can reset a user's two-factor
+authentication and passkeys on that user's Security page, for someone who
+lost their phone.
+
+Passkeys belong to the address in `APP_URL`: they only work on that address,
+over HTTPS.
 
 ## Modules
 

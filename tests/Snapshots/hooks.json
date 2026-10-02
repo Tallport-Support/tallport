@@ -1411,7 +1411,8 @@
         "name": "login.custom_check",
         "arguments": 2,
         "files": [
-            "app/Http/Controllers/Auth/LoginController.php"
+            "app/Auth/Login/RunCustomLoginChecks.php",
+            "app/Providers/FortifyServiceProvider.php"
         ]
     },
     {

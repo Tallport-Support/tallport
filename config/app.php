@@ -433,6 +433,11 @@ return [
     */
     'login_path'    => env('APP_LOGIN_PATH', 'login'),
 
+    // Every user has to turn on two-factor authentication (a code from an
+    // authenticator app after the password). APP_TWO_FACTOR_REQUIRED=false
+    // leaves it to each user.
+    'two_factor_required' => env('APP_TWO_FACTOR_REQUIRED', true),
+
     /*
     |--------------------------------------------------------------------------
     | Home page controller.
@@ -657,6 +662,7 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
+        App\Providers\FortifyServiceProvider::class,
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,

@@ -59,6 +59,7 @@
         "html2text/html2text": "4.1.0",
         "javoscript/laravel-macroable-models": "1.0.7",
         "laravel/ai": "^1.0",
+        "laravel/fortify": "^1.40",
         "laravel/framework": "v13.34.0",
         "laravel/tinker": "v3.0.0",
         "laravel/ui": "4.6.*",

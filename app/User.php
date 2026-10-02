@@ -21,10 +21,13 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Watson\Rememberable\Rememberable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements \Laravel\Passkeys\Contracts\PasskeyUser
 {
     use Notifiable;
     use Rememberable;
+    // Two-factor authentication and passkeys (App\Providers\FortifyServiceProvider).
+    use \Laravel\Fortify\TwoFactorAuthenticatable;
+    use \Laravel\Fortify\PasskeyAuthenticatable;
 
     public $rememberCacheDriver = 'array';
 
@@ -119,7 +122,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'two_factor_secret', 'two_factor_recovery_codes',
     ];
 
     /**
@@ -130,7 +133,8 @@ class User extends Authenticatable
     protected $fillable = ['status', 'first_name', 'last_name', 'email', 'password', 'timezone', 'photo_url', 'type', 'emails', 'job_title', 'phone', 'time_format', 'locale'];
 
     protected $casts = [
-        'permissions' => 'array',
+        'permissions'             => 'array',
+        'two_factor_confirmed_at' => 'datetime',
     ];
     
     public function __construct(array $attributes = array())

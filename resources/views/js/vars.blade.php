@@ -76,6 +76,8 @@ var LangMessages = {
             "paste_as_plain_text": "{{ __("Paste as Plain Text") }}",
             "list": "{{ __("List") }}",
             "add_lower": "{{ __("add") }}",
+            "passkey_failed": "{{ __("The passkey could not be used. Please try again.") }}",
+            "passkeys_unsupported": "{{ __("This browser does not support passkeys.") }}",
             "user_viewing": "{{ __(":user is viewing") }}",
             "user_replying": "{{ __(":user is replying") }}",
             "new_message": "{{ __("New message") }}",
