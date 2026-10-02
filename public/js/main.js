@@ -2650,6 +2650,12 @@ function aiDraftsInit()
 
 		$(document).on('click', '.ai-draft-action', function(e) {
 			e.preventDefault();
+			// The draft is shown below the editor: open it, as Reply does.
+			if ($('.conv-reply-block:first').hasClass('hidden')) {
+				prepareReplyForm();
+				showReplyForm();
+				fsDoAction('conversation.show_reply_form');
+			}
 			reset(panel.attr('data-text-queued'));
 			fsAjax({}, panel.attr('data-draft-url'), function(response) {
 				if (response.status == 'success') {
