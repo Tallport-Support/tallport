@@ -69,6 +69,10 @@ Route::post('/app-settings/{section?}', ['uses' => 'SettingsController@save', 'm
 // AI Assistant documentation
 Route::get('/ai-assistant/documents', ['uses' => 'AiDocumentsController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('ai.documents');
 Route::post('/ai-assistant/documents', ['uses' => 'AiDocumentsController@action', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('ai.documents.action');
+Route::post('/ai-assistant/customer-context/test', ['uses' => 'AiDraftsController@testCustomerContext', 'middleware' => ['auth', 'roles'], 'roles' => ['admin'], 'laroute' => true])->name('ai.customer_context.test');
+// AI Assistant reply drafts
+Route::post('/ai-assistant/conversations/{id}/draft-reply', 'AiDraftsController@store')->middleware(['auth', 'throttle:30,1'])->name('ai.drafts.store');
+Route::get('/ai-assistant/draft-jobs/{id}', 'AiDraftsController@show')->middleware('auth')->name('ai.drafts.show');
 
 // Users
 Route::get('/users', ['uses' => 'UsersController@users', 'laroute' => true])->name('users');

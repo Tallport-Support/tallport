@@ -78,6 +78,10 @@
                         @endif
                     @endforeach
 
+                    @if (App\Ai\Drafts::allowed(Auth::user(), $conversation))
+                        <span class="conv-action glyphicon glyphicon-flash ai-draft-action" data-toggle="tooltip" title="{{ __('Draft with AI') }}" aria-label="{{ __('Draft with AI') }}" role="button" tabindex="0"></span>
+                    @endif
+
                     @action('conversation.action_buttons', $conversation, $mailbox)
 
                     {{-- More Actions Dropdown --}}
@@ -339,6 +343,9 @@
                         </div>
                         <div class="clearfix"></div>
                         @include('conversations/editor_bottom_toolbar')
+                        @if (App\Ai\Drafts::allowed(Auth::user(), $conversation))
+                            @include('conversations/partials/ai_draft_panel')
+                        @endif
                         @action('reply_form.after', $conversation)
                     </div>
                 </div>
@@ -369,4 +376,5 @@
     @parent
     initReplyForm();
     initConversation();
+    aiDraftsInit();
 @endsection

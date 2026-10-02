@@ -362,6 +362,127 @@
             }
         }
     },
+    "aiassistant_draft_jobs": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "conversation_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "status": {
+                "type": "varchar(50)",
+                "nullable": false,
+                "default": "'pending'",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "locale": {
+                "type": "varchar(10)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "document_limit": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "0"
+            },
+            "result": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "error_type": {
+                "type": "varchar(100)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "error_message": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "error_detail": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "started_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "completed_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "aiassistant_draft_jobs_conversation_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "conversation_id"
+                ]
+            },
+            "aiassistant_draft_jobs_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "created_at"
+                ]
+            },
+            "aiassistant_draft_jobs_status_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "status"
+                ]
+            },
+            "aiassistant_draft_jobs_user_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "user_id"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
     "aiassistant_mailbox_api_keys": {
         "columns": {
             "id": {

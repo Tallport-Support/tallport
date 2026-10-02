@@ -2530,12 +2530,187 @@ function confirmButtonsInit()
 	});
 }
 
+// AI Assistant reply drafts in a conversation.
+function aiDraftsInit()
+{
+	$(document).ready(function() {
+		var panel = $('.ai-draft-panel:first');
+		if (!panel.length) {
+			return;
+		}
+
+		// Simple Markdown (paragraphs, lists, bold, italic) as HTML.
+		function markdownToHtml(text)
+		{
+			var html = '';
+			var paragraph = [];
+			var list = '';
+			var inline = function(line) {
+				return htmlEscape(line).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/\*([^*]+)\*/g, '<em>$1</em>');
+			};
+			var closeParagraph = function() {
+				if (paragraph.length) {
+					html += '<p>'+paragraph.map(inline).join('<br>')+'</p>';
+					paragraph = [];
+				}
+			};
+			var closeList = function() {
+				if (list) {
+					html += '</'+list+'>';
+					list = '';
+				}
+			};
+			$.each(String(text || '').replace(/\r\n?/g, '\n').split('\n'), function(i, line) {
+				line = $.trim(line);
+				var item = line.match(/^[-*]\s+(.+)$/) || line.match(/^\d+[.)]\s+(.+)$/);
+				if (!line) {
+					closeParagraph();
+					closeList();
+				} else if (item) {
+					var type = /^[-*]/.test(line) ? 'ul' : 'ol';
+					closeParagraph();
+					if (list != type) {
+						closeList();
+						list = type;
+						html += '<'+type+'>';
+					}
+					html += '<li>'+inline(item[1])+'</li>';
+				} else {
+					closeList();
+					paragraph.push(line);
+				}
+			});
+			closeParagraph();
+			closeList();
+
+			return html;
+		}
+
+		function reset(status)
+		{
+			window.clearTimeout(panel.data('timer'));
+			panel.removeClass('hidden');
+			panel.find('.ai-draft-meta').text('');
+			panel.find('.ai-draft-status').removeClass('text-danger').text(status || '');
+			panel.find('.ai-draft-body, .ai-draft-translation, .ai-draft-actions, .ai-draft-notes, .ai-draft-docs').addClass('hidden');
+			panel.find('ul').empty();
+		}
+
+		function showError(message, detail)
+		{
+			reset(message || panel.attr('data-text-failed'));
+			panel.find('.ai-draft-status').addClass('text-danger');
+			if (detail) {
+				panel.find('.ai-draft-body').removeClass('hidden').text(detail);
+			}
+			panel.find('.ai-draft-actions').removeClass('hidden').find('.ai-draft-insert').addClass('hidden');
+		}
+
+		function show(draft)
+		{
+			reset('');
+			panel.data('draft', draft);
+			panel.find('.ai-draft-meta').text(draft.language+' · '+draft.confidence);
+			panel.find('.ai-draft-body').removeClass('hidden').html(markdownToHtml(draft.draft));
+			panel.find('.ai-draft-actions').removeClass('hidden').find('.ai-draft-insert').removeClass('hidden');
+			if (draft.translation) {
+				panel.find('.ai-draft-translation').removeClass('hidden').find('.ai-draft-translation-body').text(draft.translation);
+			}
+			$.each(draft.staff_notes || [], function(i, note) {
+				panel.find('.ai-draft-notes').removeClass('hidden').find('ul').append($('<li>').text(note));
+			});
+			$.each(draft.retrieved_documents || [], function(i, doc) {
+				var item = $('<li>').text(doc.title+' ');
+				if (/^https?:\/\//i.test(doc.url || '')) {
+					item.append($('<a target="_blank" rel="noopener noreferrer">').attr('href', doc.url).text(doc.url));
+				}
+				panel.find('.ai-draft-docs').removeClass('hidden').find('ul').append(item);
+			});
+		}
+
+		function poll(url, attempt)
+		{
+			$.get(url, function(response) {
+				if (response.status != 'success') {
+					showError(response.msg, response.detail);
+				} else if (response.draft_status == 'completed') {
+					show(response);
+				} else if (attempt >= 180) {
+					showError(panel.attr('data-text-slow'));
+				} else {
+					panel.data('timer', window.setTimeout(function() {
+						poll(url, attempt + 1);
+					}, 2000));
+				}
+			}).fail(function(xhr) {
+				showError(xhr.responseJSON && xhr.responseJSON.msg ? xhr.responseJSON.msg : '');
+			});
+		}
+
+		$(document).on('click', '.ai-draft-action', function(e) {
+			e.preventDefault();
+			reset(panel.attr('data-text-drafting'));
+			fsAjax({}, panel.attr('data-draft-url'), function(response) {
+				if (response.status == 'success') {
+					poll(response.poll_url, 1);
+				} else {
+					showError(response.msg);
+				}
+			}, true, function(xhr) {
+				showError(xhr.responseJSON && xhr.responseJSON.msg ? xhr.responseJSON.msg : '');
+			});
+		});
+
+		$(document).on('click', '.ai-draft-insert', function(e) {
+			e.preventDefault();
+			var draft = panel.data('draft');
+			if (!draft) {
+				return;
+			}
+			if ($('.conv-reply-block:first').hasClass('hidden') || $('.conv-reply-block:first').hasClass('conv-note-block') || $('.conv-reply-block:first').hasClass('conv-forward-block')) {
+				prepareReplyForm();
+				showReplyForm();
+			}
+			setReplyBody(markdownToHtml(draft.draft));
+			var form = $('.form-reply:first');
+			form.find('input[name^="ai_draft_translation"]').remove();
+			if (draft.translation) {
+				form.append($('<input type="hidden" name="ai_draft_translation">').val(draft.translation));
+				form.append($('<input type="hidden" name="ai_draft_translation_language">').val(panel.attr('data-translation-language')));
+			}
+		});
+	});
+}
+
 // Settings » AI Assistant: show the chosen provider's base URL as the placeholder.
 function aiSettingsInit()
 {
 	$(document).ready(function() {
 		$('.ai-provider').change(function() {
 			$($(this).attr('data-base-url')).attr('placeholder', $(this).find('option:selected').attr('data-base-url'));
+		});
+
+		// Send a test request with the customer context settings shown.
+		$('.ai-context-test').click(function() {
+			var button = $(this);
+			var block = button.parents('.ai-customer-context:first');
+			var result = block.find('.ai-context-test-result');
+			button.button('loading');
+			fsAjax({
+				mailbox_id: block.attr('data-mailbox-id'),
+				email: block.find('.ai-context-test-email').val(),
+				url: block.find('.ai-context-url').val(),
+				secret_key: block.find('.ai-context-secret').val(),
+				signature_header: block.find('.ai-context-header').val()
+			}, laroute.route('ai.customer_context.test'), function(response) {
+				button.button('reset');
+				result.removeClass('hidden').text(response.status == 'success'
+					? 'HTTP '+response.http_status+'\n'+response.signature_header+': '+response.signature+'\n\n'+response.body
+					: response.msg);
+			}, true, function() {
+				button.button('reset');
+				result.removeClass('hidden').text(Lang.get("messages.ajax_error"));
+			});
 		});
 	});
 }

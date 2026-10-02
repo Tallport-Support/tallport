@@ -4663,3 +4663,46 @@ a.disabled:focus {
     padding: 1px 5px;
     border-radius: 5px;
 }
+.ai-draft-action {
+    color: #3197d6;
+}
+.ai-draft-panel {
+    margin: 12px 15px 0;
+    padding: 12px 14px;
+    border-left: 4px solid #6ac1ff;
+    background: #ebf3fb;
+}
+.ai-draft-meta {
+    color: #6f7f8f;
+    font-size: 12px;
+    margin-left: 8px;
+}
+.ai-draft-status {
+    margin: 8px 0;
+}
+.ai-draft-body,
+.ai-draft-translation {
+    font-size: 13px;
+    line-height: 1.45;
+    background: #fff;
+    border: 1px solid #dce8f2;
+    padding: 10px;
+    margin: 8px 0;
+}
+.ai-draft-translation-body {
+    margin-top: 6px;
+    white-space: pre-wrap;
+}
+.ai-draft-body p {
+    margin: 0 0 8px;
+}
+.ai-draft-body p:last-child {
+    margin-bottom: 0;
+}
+.ai-draft-body ul,
+.ai-draft-body ol,
+.ai-draft-notes ul,
+.ai-draft-docs ul {
+    margin: 0 0 8px;
+    padding-left: 20px;
+}

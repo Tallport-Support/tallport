@@ -1197,6 +1197,7 @@ class ConversationsController extends Controller
                         $thread->from = $request->from_alias;
                     }
 
+                    \App\Ai\Drafts::keepTranslation($thread, $request);
                     \Eventy::action('thread.before_save_from_request', $thread, $request);
                     $thread->save();
 

@@ -182,6 +182,8 @@ class SettingsController extends Controller
                         'settings.aiassistant\.base_url'                => 'nullable|url:http,https',
                         'settings.aiassistant\.documentation\.embedding_base_url' => 'nullable|url:http,https',
                         'settings.aiassistant\.drafts_per_day'          => 'nullable|integer|min:0|max:10000',
+                        'settings.aiassistant\.customer_context_url.*'  => 'nullable|url:http,https|max:2048',
+                        'settings.aiassistant\.customer_context_guidance.*' => 'nullable|string|max:6000',
                     ],
                     'settings' => [
                         'aiassistant.api_key' => [
@@ -283,6 +285,10 @@ class SettingsController extends Controller
                     'aiassistant.drafts_per_day'                  => \App\Ai\Settings::draftsPerDay(null),
                     'aiassistant.mailbox_language'                => (array) Option::get('aiassistant.mailbox_language', []),
                     'aiassistant.mailbox_features_off'            => (array) Option::get('aiassistant.mailbox_features_off', []),
+                    'aiassistant.customer_context_url'            => (array) Option::get('aiassistant.customer_context_url', []),
+                    'aiassistant.customer_context_secret_key'     => (array) Option::get('aiassistant.customer_context_secret_key', []),
+                    'aiassistant.customer_context_signature_header' => (array) Option::get('aiassistant.customer_context_signature_header', []),
+                    'aiassistant.customer_context_guidance'       => (array) Option::get('aiassistant.customer_context_guidance', []),
                 ];
                 break;
             default:
@@ -362,7 +368,13 @@ class SettingsController extends Controller
                 $input[$name] = max($bounds[0], min($bounds[1], (int) $input[$name]));
             }
         }
-        $input['aiassistant.mailbox_language'] = array_filter((array) ($input['aiassistant.mailbox_language'] ?? []), [\App\Ai\Settings::class, 'isLanguage']);
+        // The mailbox settings (sent when there are mailboxes).
+        if (!isset($input['aiassistant.mailbox_language'])) {
+            $request->merge(['settings' => $input]);
+
+            return;
+        }
+        $input['aiassistant.mailbox_language'] = array_filter((array) $input['aiassistant.mailbox_language'], [\App\Ai\Settings::class, 'isLanguage']);
 
         $on = (array) ($input['aiassistant.mailbox_features_on'] ?? []);
         $off = [];
@@ -374,6 +386,20 @@ class SettingsController extends Controller
         }
         unset($input['aiassistant.mailbox_features_on']);
         $input['aiassistant.mailbox_features_off'] = $off;
+
+        // Customer context secrets are stored encrypted; a masked one is kept.
+        $secrets = (array) Option::get('aiassistant.customer_context_secret_key', []);
+        foreach ((array) ($input['aiassistant.customer_context_secret_key'] ?? []) as $mailbox_id => $secret) {
+            if (!preg_match('/^\*+$/', (string) $secret)) {
+                $secrets[$mailbox_id] = (string) $secret === '' ? '' : encrypt((string) $secret);
+            }
+        }
+        $input['aiassistant.customer_context_secret_key'] = $secrets;
+        foreach (['url', 'signature_header', 'guidance'] as $name) {
+            $input['aiassistant.customer_context_'.$name] = array_map(function ($value) {
+                return trim((string) $value);
+            }, (array) ($input['aiassistant.customer_context_'.$name] ?? []));
+        }
 
         $request->merge(['settings' => $input]);
     }

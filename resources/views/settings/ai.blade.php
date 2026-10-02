@@ -181,6 +181,75 @@
                 </table>
             </div>
         </div>
+
+        <h3 class="subheader">{{ __('Customer Context') }}</h3>
+
+        <div class="form-group">
+            <div class="col-sm-8 col-sm-offset-2">
+                <p class="text-help">{{ __('Optional, per mailbox: a URL that is sent the customer\'s email addresses when a reply is drafted, and returns JSON about the customer. Requests are signed with the secret key.') }}</p>
+            </div>
+        </div>
+
+        @foreach ($ai_mailboxes as $mailbox)
+            @php
+                $ai_context = App\Ai\CustomerContext::settings($mailbox);
+            @endphp
+            <div class="ai-customer-context" data-mailbox-id="{{ $mailbox->id }}">
+                <div class="form-group">
+                    <div class="col-sm-8 col-sm-offset-2">
+                        <a href="#ai_context_{{ $mailbox->id }}" data-toggle="collapse"><strong>{{ $mailbox->name }}</strong></a>
+                        @if ($ai_context['url'])
+                            <span class="text-help">· {{ $ai_context['url'] }}</span>
+                        @endif
+                    </div>
+                </div>
+                <div class="collapse @if ($errors->has('settings.aiassistant.customer_context_url.'.$mailbox->id) || $errors->has('settings.aiassistant.customer_context_guidance.'.$mailbox->id)) in @endif" id="ai_context_{{ $mailbox->id }}">
+                    <div class="form-group{{ $errors->has('settings.aiassistant.customer_context_url.'.$mailbox->id) ? ' has-error' : '' }}">
+                        <label for="ai_context_url_{{ $mailbox->id }}" class="col-sm-2 control-label">{{ __('URL') }}</label>
+                        <div class="col-sm-6">
+                            <input id="ai_context_url_{{ $mailbox->id }}" type="url" class="form-control input-sized-lg ai-context-url" name="settings[aiassistant.customer_context_url][{{ $mailbox->id }}]" value="{{ old('settings.aiassistant.customer_context_url.'.$mailbox->id, $ai_context['url']) }}" maxlength="2048" placeholder="https://example.com/customer-context">
+                            @include('partials/field_error', ['field' => 'settings.aiassistant.customer_context_url.'.$mailbox->id])
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ai_context_secret_{{ $mailbox->id }}" class="col-sm-2 control-label">{{ __('Secret Key') }}</label>
+                        <div class="col-sm-6">
+                            <input id="ai_context_secret_{{ $mailbox->id }}" type="password" class="form-control input-sized-lg ai-context-secret" name="settings[aiassistant.customer_context_secret_key][{{ $mailbox->id }}]" value="{{ \Helper::safePassword($ai_context['secret_key']) }}" maxlength="255" autocomplete="new-password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ai_context_header_{{ $mailbox->id }}" class="col-sm-2 control-label">{{ __('Signature Header') }}</label>
+                        <div class="col-sm-6">
+                            <select id="ai_context_header_{{ $mailbox->id }}" class="form-control input-sized ai-context-header" name="settings[aiassistant.customer_context_signature_header][{{ $mailbox->id }}]">
+                                @foreach (App\Ai\CustomerContext::HEADERS as $header)
+                                    <option value="{{ $header }}" @if ($ai_context['signature_header'] == $header) selected @endif>{{ $header }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group{{ $errors->has('settings.aiassistant.customer_context_guidance.'.$mailbox->id) ? ' has-error' : '' }}">
+                        <label for="ai_context_guidance_{{ $mailbox->id }}" class="col-sm-2 control-label">{{ __('Reply Guidance') }}</label>
+                        <div class="col-sm-6">
+                            <textarea id="ai_context_guidance_{{ $mailbox->id }}" class="form-control input-sized-lg" name="settings[aiassistant.customer_context_guidance][{{ $mailbox->id }}]" rows="5" maxlength="6000">{{ old('settings.aiassistant.customer_context_guidance.'.$mailbox->id, $ai_context['guidance']) }}</textarea>
+                            <div class="form-help">{{ __('Optional background for drafting replies: who you are, what customers buy, terminology, what fields in the customer context mean, and the reply style.') }}</div>
+                            @include('partials/field_error', ['field' => 'settings.aiassistant.customer_context_guidance.'.$mailbox->id])
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ai_context_test_{{ $mailbox->id }}" class="col-sm-2 control-label">{{ __('Test') }}</label>
+                        <div class="col-sm-6">
+                            <div class="input-group input-sized-lg">
+                                <input id="ai_context_test_{{ $mailbox->id }}" type="email" class="form-control ai-context-test-email" placeholder="{{ __('Customer email address') }}">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default ai-context-test" data-loading-text="{{ __('Test') }}…">{{ __('Test') }}</button>
+                                </span>
+                            </div>
+                            <pre class="hidden margin-top-10 ai-context-test-result"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     @endif
 
     <div class="form-group margin-top-0 margin-bottom-0">
