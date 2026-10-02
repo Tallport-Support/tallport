@@ -29,7 +29,9 @@ class Webklex6Message implements IncomingMessage
         $this->raw = preg_replace("/\r?\n/", "\r\n", $raw);
         // An invalid Date header: the time of receiving (as App\LegacyImap).
         $config = array_replace_recursive(['options' => ['fallback_date' => 'now']], $config);
-        $this->message = Message::fromString(self::joinBoundaryContinuations($this->raw), Config::make($config));
+        // Null bytes (sent by some mail programs) make charset conversion stop
+        // there: https://github.com/freescout-help-desk/freescout/issues/5292
+        $this->message = Message::fromString(self::joinBoundaryContinuations(str_replace("\0", '', $this->raw)), Config::make($config));
     }
 
     /**
@@ -153,7 +155,7 @@ class Webklex6Message implements IncomingMessage
     {
         $end = strpos($this->raw, "\r\n\r\n");
 
-        return $end === false ? $this->raw : substr($this->raw, 0, $end);
+        return str_replace("\0", '', $end === false ? $this->raw : substr($this->raw, 0, $end));
     }
 
     public function htmlBody(): string

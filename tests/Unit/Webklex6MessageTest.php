@@ -6,10 +6,11 @@ use App\Incoming\Webklex6Message;
 use Tests\TestCase;
 
 /**
- * Multipart boundaries split into RFC 2231 continuations, which webklex
- * doesn't read (FreeScout issue 4567).
+ * What Tallport does around webklex/php-imap 6 so it reads what
+ * App\LegacyImap reads: boundaries split into RFC 2231 continuations
+ * (FreeScout issue 4567), invalid dates, null bytes.
  */
-class BoundaryContinuationsTest extends TestCase
+class Webklex6MessageTest extends TestCase
 {
     public function testExtendedContinuationsAreJoined()
     {
@@ -42,6 +43,29 @@ class BoundaryContinuationsTest extends TestCase
         $this->assertSame(['Hi!'], array_map(function ($attachment) {
             return $attachment->getContent();
         }, $message->attachments()));
+    }
+
+    public function testNullBytesAreIgnored()
+    {
+        $html = quoted_printable_encode(mb_convert_encoding('<p>Привет, мир</p>', 'KOI8-R', 'UTF-8'));
+        $raw = "From: a@example.org\r\nSubject: Hi\r\nContent-Type: text/html; charset=\"koi8-r\"\r\nContent-Transfer-Encoding: quoted-printable\r\n\r\n"
+            .substr($html, 0, 5)."\0\0".substr($html, 5);
+
+        $message = new Webklex6Message($raw);
+
+        $this->assertSame('<p>Привет, мир</p>', $message->htmlBody());
+        $this->assertStringContainsString("\0", $message->rawSource(), 'The source is kept as received.');
+    }
+
+    /**
+     * App\LegacyImap adds such an HTML part to the plain text instead.
+     */
+    public function testHtmlPartWithEmptyCharsetIsHtml()
+    {
+        $message = new Webklex6Message(file_get_contents(__DIR__.'/../Messages/webklex/without_charset_simple_multipart.eml'));
+
+        $this->assertSame('MyHtml', $message->htmlBody());
+        $this->assertSame('MyPlain', $message->textBody());
     }
 
     public function testInvalidDateIsTheTimeOfReceiving()

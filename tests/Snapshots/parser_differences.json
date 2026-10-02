@@ -4,7 +4,6 @@
         "webklex/issue-462"
     ],
     "html_body": [
-        "message-4-null-bytes",
         "webklex/unknown_encoding",
         "webklex/without_charset_simple_multipart"
     ],
