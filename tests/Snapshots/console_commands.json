@@ -82,12 +82,15 @@
     },
     "tallport:check-outgoing": {
         "class": "App\\Console\\Commands\\CheckOutgoing",
-        "description": "List replies to customers that are not in the outgoing emails log, and why (IDs and statuses only)",
+        "description": "List replies to customers that have not been sent, and why (IDs and statuses only)",
         "arguments": {},
         "options": {
             "days": {
                 "value": "optional",
                 "default": "30"
+            },
+            "fix": {
+                "value": "none"
             }
         }
     },

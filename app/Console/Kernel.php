@@ -52,6 +52,11 @@ class Kernel extends ConsoleKernel
             ->cron('*/10 * * * *')
             ->withoutOverlapping();
 
+        // Replies that no job will send: show them as not sent and reopen.
+        $schedule->command('tallport:check-outgoing', ['--days=7', '--fix'])
+            ->everyFiveMinutes()
+            ->withoutOverlapping();
+
         $schedule->command('tallport:update-folder-counters')
             ->hourly();
 

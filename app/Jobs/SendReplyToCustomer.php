@@ -419,7 +419,7 @@ class SendReplyToCustomer implements ShouldQueue
                     $this->last_thread->send_status = SendLog::STATUS_SEND_INTERMEDIATE_ERROR;
                     $this->last_thread->updateSendStatusData(['msg' => $error_message]);
                     $this->last_thread->save();
-                    $this->reopenConversation();
+                    self::reopenConversation($this->conversation);
                 }
 
                 throw $e;
@@ -427,7 +427,7 @@ class SendReplyToCustomer implements ShouldQueue
                 $this->last_thread->send_status = SendLog::STATUS_SEND_ERROR;
                 $this->last_thread->updateSendStatusData(['msg' => $error_message]);
                 $this->last_thread->save();
-                $this->reopenConversation();
+                self::reopenConversation($this->conversation);
 
                 // This executes $this->failed().
                 $this->fail($e);
@@ -451,6 +451,20 @@ class SendReplyToCustomer implements ShouldQueue
             $this->last_thread->save();
         }
 
+        $this->saveToImapSentFolder($mailbox);
+
+        // In message_id we are storing Message-ID of the incoming email which created the thread
+        // Outcoming message_id can be generated for each thread by thread->id
+        // $this->last_thread->message_id = $message_id;
+        // $this->last_thread->save();
+    }
+
+    /**
+     * Save the sent reply to the mailbox's "IMAP Folder To Save Outgoing
+     * Replies", if set.
+     */
+    public function saveToImapSentFolder($mailbox)
+    {
         $imap_sent_folder = $mailbox->imap_sent_folder;
 
         if ($imap_sent_folder && \MailHelper::$smtp_mime_message) {
@@ -584,12 +598,6 @@ class SendReplyToCustomer implements ShouldQueue
                 \Helper::logException($e, $this->getImapSaveErrorPrefix($mailbox).'Could not save outgoing reply to the IMAP folder: '.$imap_sent_folder.' - ');
             }
         }
-
-        // In message_id we are storing Message-ID of the incoming email which created the thread
-        // Outcoming message_id can be generated for each thread by thread->id
-        // $this->last_thread->message_id = $message_id;
-        // $this->last_thread->save();
-
     }
 
     public function getImapSaveErrorPrefix($mailbox)
@@ -668,7 +676,7 @@ class SendReplyToCustomer implements ShouldQueue
             $this->last_thread->updateSendStatusData(['msg' => $e->getMessage()]);
             $this->last_thread->save();
         }
-        $this->reopenConversation();
+        self::reopenConversation($this->conversation);
 
         $this->saveToSendLog($e->getMessage());
     }
@@ -677,9 +685,9 @@ class SendReplyToCustomer implements ShouldQueue
      * Sending failed: make the conversation active again, so the reply
      * (which shows the error) isn't forgotten in a closed conversation.
      */
-    protected function reopenConversation()
+    public static function reopenConversation($conversation)
     {
-        $conversation = $this->conversation ? $this->conversation->fresh() : null;
+        $conversation = $conversation ? $conversation->fresh() : null;
         if (!$conversation || $conversation->isActive() || $conversation->isSpam()
             || $conversation->state != \App\Conversation::STATE_PUBLISHED
         ) {

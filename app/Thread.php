@@ -1644,12 +1644,9 @@ class Thread extends Model
         if ($this->isSendStatusSuccess()) {
             return false;
         }
-        // Check if failed_job still exists.
-        if (!$this->getFailedJobId()) {
-            return false;
-        }
-
-        return true;
+        // A failed job is retried. Without one (never queued, or cleaned up
+        // by queue:flush) a new one is queued, but not while one is waiting.
+        return !$this->getQueuedJobId();
     }
 
     public function isSendStatusSuccess()
@@ -1668,9 +1665,34 @@ class Thread extends Model
 
     public function getFailedJobId()
     {
-        return \App\FailedJob::where('queue', 'emails')
-            ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToCustomer"%{i:0;i:'.$this->id.';%')
-            ->value('id');
+        return $this->findSendJobId(\App\FailedJob::class);
+    }
+
+    /**
+     * ID of the SendReplyToCustomer job waiting in the queue for this reply.
+     */
+    public function getQueuedJobId()
+    {
+        return $this->findSendJobId(\App\Job::class);
+    }
+
+    /**
+     * This reply's SendReplyToCustomer job: the reply is the job's latest
+     * thread, wherever it is in the job's list of threads.
+     */
+    protected function findSendJobId($model)
+    {
+        $jobs = $model::where('queue', 'emails')
+            ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToCustomer"%;i:'.$this->id.';%')
+            ->get();
+        foreach ($jobs as $job) {
+            $command = \App\Job::getPayloadCommand($job->getPayloadDecoded());
+            if ($command && !empty($command->threads) && self::getLastThread($command->threads)->id == $this->id) {
+                return $job->id;
+            }
+        }
+
+        return null;
     }
 
     // https://github.com/freescout-help-desk/freescout/security/advisories/GHSA-qjr9-6v9q-3r72

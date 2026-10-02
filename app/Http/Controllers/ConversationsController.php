@@ -2481,12 +2481,18 @@ class ConversationsController extends Controller
                 if (!$response['msg']) {
                     $job_id = $thread->getFailedJobId();
 
-                    if ($job_id) {
-                        \App\FailedJob::retry($job_id);
+                    if ($job_id || $thread->canRetrySend()) {
                         // Not sent yet: the job skips replies already accepted.
                         $thread->send_status = null;
                         $thread->updateSendStatusData(['msg' => '']);
                         $thread->save();
+
+                        if ($job_id) {
+                            \App\FailedJob::retry($job_id);
+                        } else {
+                            // Never queued, or its failed job has been cleaned up.
+                            (new \App\Listeners\SendReplyToCustomer())->handle(new \App\Events\UserReplied($thread->conversation, $thread));
+                        }
 
                         $response['status'] = 'success';
                     }

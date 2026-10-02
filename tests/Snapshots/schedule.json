@@ -22,6 +22,12 @@
         "without_overlapping": true
     },
     {
+        "command": "artisan tallport:check-outgoing --days=7 --fix",
+        "expression": "*/5 * * * *",
+        "timezone": "UTC",
+        "without_overlapping": true
+    },
+    {
         "command": "artisan tallport:update-folder-counters",
         "expression": "0 * * * *",
         "timezone": "UTC"

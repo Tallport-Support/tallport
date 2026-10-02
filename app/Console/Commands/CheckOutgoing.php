@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Conversation;
+use App\Jobs\SendReplyToCustomer;
 use App\SendLog;
 use App\Thread;
 use Illuminate\Console\Command;
@@ -14,14 +15,16 @@ class CheckOutgoing extends Command
      *
      * @var string
      */
-    protected $signature = 'tallport:check-outgoing {--days=30 : How far back to look}';
+    protected $signature = 'tallport:check-outgoing
+        {--days=30 : How far back to look}
+        {--fix : Mark replies that no job will send as not sent, and reopen their conversations}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'List replies to customers that are not in the outgoing emails log, and why (IDs and statuses only)';
+    protected $description = 'List replies to customers that have not been sent, and why (IDs and statuses only)';
 
     /**
      * Execute the console command.
@@ -43,19 +46,28 @@ class CheckOutgoing extends Command
                 $query->select(\DB::raw(1))
                     ->from('send_logs')
                     ->whereColumn('send_logs.thread_id', 'threads.id')
-                    ->where('send_logs.mail_type', SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER);
+                    ->where('send_logs.mail_type', SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER)
+                    ->whereNotIn('send_logs.status', SendLog::$status_errors);
             })
             ->orderBy('threads.id')
             ->get();
 
-        $this->line('Replies without an outgoing log entry: '.count($threads));
+        $this->line('Replies not sent: '.count($threads));
         foreach ($threads as $thread) {
+            $reason = $this->reason($thread);
+            $fixed = false;
+            // A failed job without a send status failed before Tallport 1.17.11.
+            if ($this->option('fix') && $reason != 'job waiting in queue' && !$thread->send_status) {
+                $this->markNotSent($thread);
+                $fixed = true;
+            }
             $this->line(implode("\t", [
                 'thread '.$thread->id,
                 'conversation '.$thread->conversation_id,
                 $thread->created_at,
-                'send_status '.($thread->send_status ?? 'none'),
-                $this->reason($thread),
+                'via '.(Thread::$source_types[$thread->source_type] ?? 'unknown'),
+                'send_status '.($thread->send_status ?: 'none'),
+                $reason.($fixed ? ': marked not sent, conversation reopened' : ''),
             ]));
         }
 
@@ -64,8 +76,7 @@ class CheckOutgoing extends Command
 
     protected function reason(Thread $thread)
     {
-        $pattern = '%"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToCustomer"%{i:0;i:'.$thread->id.';%';
-        if (\App\Job::where('payload', 'like', $pattern)->exists()) {
+        if ($thread->getQueuedJobId()) {
             return 'job waiting in queue';
         }
         if ($thread->getFailedJobId()) {
@@ -73,5 +84,23 @@ class CheckOutgoing extends Command
         }
 
         return 'no job';
+    }
+
+    /**
+     * Nothing will send this reply (without Retry): show it as not sent and
+     * put the conversation back in the agents' active list.
+     */
+    protected function markNotSent(Thread $thread)
+    {
+        $conversation = $thread->conversation;
+        $email = $thread->getToArray()[0] ?? $conversation->customer_email;
+        $message = 'Not sent: no job is sending this reply (found by tallport:check-outgoing).';
+        SendLog::log($thread->id, null, $email, SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER, SendLog::STATUS_SEND_ERROR, $conversation->customer_id, null, $message);
+
+        $thread->send_status = SendLog::STATUS_SEND_ERROR;
+        $thread->save();
+        SendReplyToCustomer::reopenConversation($conversation);
+
+        \Log::warning('[tallport:check-outgoing] Reply '.$thread->id.' in conversation '.$conversation->id.' was not sent; marked as not sent and reopened.');
     }
 }
