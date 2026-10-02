@@ -33,6 +33,19 @@
         "timezone": "UTC"
     },
     {
+        "command": "artisan tallport:nostr-listen",
+        "expression": "* * * * *",
+        "timezone": "UTC",
+        "without_overlapping": true,
+        "run_in_background": true
+    },
+    {
+        "command": "artisan tallport:nostr-announce",
+        "expression": "30 4 * * *",
+        "timezone": "UTC",
+        "without_overlapping": true
+    },
+    {
         "command": "artisan tallport:ai-index-documents --fetch",
         "expression": "40 3 * * *",
         "timezone": "UTC",

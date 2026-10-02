@@ -28,6 +28,7 @@ Credit for everything up to the fork goes to the FreeScout team.
 * [Two-factor authentication and passkeys](#two-factor-authentication-and-passkeys)
 * [AI Assistant](#ai-assistant)
 * [Telegram](#telegram)
+* [Nostr](#nostr)
 * [Auto replies in languages](#auto-replies-in-languages)
 * [Modules](#modules)
 * [Development](#development)
@@ -290,6 +291,45 @@ bot and whether it is receiving messages.
 
 Telegram delivers messages to Tallport's address in `APP_URL`, which must be
 reachable from the internet over HTTPS.
+
+## Nostr
+
+Customers can write to a mailbox from any [Nostr](https://nostr.com) client
+that supports private direct messages (NIP-17). Their messages become chat
+conversations, and replies go back end-to-end encrypted. Set it up under the
+mailbox's settings » Nostr: generate a keypair (or import an `nsec`), check
+the relays, fill in the public profile and turn it on. Share the mailbox's
+`npub` or its NIP-05 address with customers.
+
+* **Keys** are hard to lose: the private key is stored encrypted and shown
+  once after your password; replacing it needs your password and the word
+  `REPLACE`, and the old key is retired, not deleted: it still receives
+  messages, and its conversations are answered from it.
+* **Relays**: inbox relays are where customers deliver messages and where
+  Tallport listens (published as the mailbox's DM relay list); announce
+  relays are where the profile is published and customers' profiles are
+  looked up. Defaults for new mailboxes are in Settings » Nostr.
+* **Customers** are created from their key (name and picture from their
+  profile). A customer can have several keys, with labels; they are listed on
+  the customer's Nostr tab and follow a customer merge.
+* A message reopens the customer's latest Nostr conversation if it was active
+  within the reopen window (default 30 days); otherwise a new one starts.
+* **Replies** are sent right away and can't be undone. A reply no relay
+  accepts is shown as not sent, with Retry, and the conversation is reopened.
+  Replies with files are refused unless a module carries files for your
+  customers' app.
+* **NIP-05**: the address can be on any domain; the settings page shows the
+  file to host, and serves it when the domain is Tallport's own.
+
+The relay listener (`tallport:nostr-listen`) is started by the scheduler, like
+the queue workers, when a mailbox uses Nostr; System » Status shows it, and the
+mailbox's Nostr page shows each relay's connection. `tallport:nostr-diagnose`
+(or "Check relays") asks the relays what they hold for a mailbox. The `gmp`
+PHP extension makes encryption faster; without it `bcmath` is used.
+
+Modules can extend the channel with the `nostr.incoming_message`,
+`nostr.rumor_tags`, `nostr.reply_attachment_tags`, `nostr.header_tags` and
+`nostr.message_source` filters.
 
 ## Auto replies in languages
 

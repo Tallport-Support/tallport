@@ -1853,6 +1853,466 @@
             }
         }
     },
+    "nostr_customer_keys": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "customer_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "pubkey": {
+                "type": "varchar(64)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "label": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "source": {
+                "type": "varchar(16)",
+                "nullable": false,
+                "default": "'auto'",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "profile": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "dm_relays": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "dm_relays_fetched_at": {
+                "type": "datetime",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "first_seen_at": {
+                "type": "datetime",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "last_seen_at": {
+                "type": "datetime",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "nostr_customer_keys_customer_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "customer_id"
+                ]
+            },
+            "nostr_customer_keys_pubkey_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "pubkey"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "nostr_events": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "direction": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false
+            },
+            "wrap_id": {
+                "type": "varchar(64)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "rumor_id": {
+                "type": "varchar(64)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "pubkey": {
+                "type": "varchar(64)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "kind": {
+                "type": "smallint(5) unsigned",
+                "nullable": false,
+                "default": "14"
+            },
+            "conversation_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "thread_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "relay": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "relays": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "status": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "error": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "event_created_at": {
+                "type": "datetime",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "mailbox_pubkey": {
+                "type": "varchar(64)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            }
+        },
+        "indexes": {
+            "nostr_events_conversation_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "conversation_id"
+                ]
+            },
+            "nostr_events_mailbox_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id"
+                ]
+            },
+            "nostr_events_mailbox_pubkey_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_pubkey"
+                ]
+            },
+            "nostr_events_pubkey_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "pubkey"
+                ]
+            },
+            "nostr_events_rumor_id_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "rumor_id"
+                ]
+            },
+            "nostr_events_thread_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "thread_id"
+                ]
+            },
+            "nostr_events_wrap_id_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "wrap_id"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "nostr_mailbox_keys": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "pubkey": {
+                "type": "varchar(64)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "private_key": {
+                "type": "text",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "key_created_at": {
+                "type": "datetime",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "retired_at": {
+                "type": "datetime",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "nostr_mailbox_keys_mailbox_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id"
+                ]
+            },
+            "nostr_mailbox_keys_pubkey_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "pubkey"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "nostr_mailboxes": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "enabled": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "pubkey": {
+                "type": "varchar(64)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "private_key": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "inbox_relays": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "announce_relays": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "profile_name": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "profile_about": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "profile_picture": {
+                "type": "varchar(1024)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "auto_reply_enabled": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "auto_reply_text": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "reopen_days": {
+                "type": "smallint(5) unsigned",
+                "nullable": false,
+                "default": "30"
+            },
+            "last_announced_at": {
+                "type": "datetime",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "last_event_at": {
+                "type": "datetime",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "key_created_at": {
+                "type": "datetime",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "nip05": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            }
+        },
+        "indexes": {
+            "nostr_mailboxes_mailbox_id_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id"
+                ]
+            },
+            "nostr_mailboxes_pubkey_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "pubkey"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
     "notifications": {
         "columns": {
             "id": {

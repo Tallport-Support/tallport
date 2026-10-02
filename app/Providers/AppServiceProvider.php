@@ -41,10 +41,15 @@ class AppServiceProvider extends ServiceProvider
 
         // Channels Tallport has (modules add theirs the same way).
         \Eventy::addFilter('channel.name', function ($name, $channel) {
+            if ($channel == \App\Nostr\Nostr::channel()) {
+                return 'Nostr';
+            }
+
             return $channel == \App\Telegram\Telegram::CHANNEL ? \App\Telegram\Telegram::CHANNEL_NAME : $name;
         }, 10, 2);
         \Eventy::addFilter('channels.list', function ($channels) {
             $channels[\App\Telegram\Telegram::CHANNEL] = \App\Telegram\Telegram::CHANNEL_NAME;
+            $channels[\App\Nostr\Nostr::channel()] = 'Nostr';
 
             return $channels;
         });

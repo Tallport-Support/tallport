@@ -61,6 +61,7 @@
 					<i>{{ $customer->notes }}</i>
 				</div>
 			@endif
+			@include('nostr/partials/customer_keys_snippet', ['keys' => App\Nostr\CustomerKey::forCustomer($customer->id)])
 			@action('customer.profile.extra', $customer, $conversation ?? '')
 		</div>
 		@action('customer.profile_data', $customer, $conversation ?? '')

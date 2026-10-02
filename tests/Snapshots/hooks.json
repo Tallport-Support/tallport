@@ -1947,6 +1947,46 @@
     },
     {
         "type": "filter",
+        "name": "nostr.header_tags",
+        "arguments": 1,
+        "files": [
+            "app/Nostr/IncomingMessageHandler.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "nostr.incoming_message",
+        "arguments": 3,
+        "files": [
+            "app/Nostr/IncomingMessageHandler.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "nostr.message_source",
+        "arguments": 2,
+        "files": [
+            "resources/views/nostr/partials/thread_sender.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "nostr.reply_attachment_tags",
+        "arguments": 2,
+        "files": [
+            "app/Nostr/OutgoingMessageSender.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "nostr.rumor_tags",
+        "arguments": 2,
+        "files": [
+            "app/Nostr/OutgoingMessageSender.php"
+        ]
+    },
+    {
+        "type": "filter",
         "name": "notifications.mobile_available",
         "arguments": 1,
         "files": [

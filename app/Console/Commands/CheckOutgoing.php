@@ -52,10 +52,10 @@ class CheckOutgoing extends Command
                                 ->whereNotIn('send_logs.status', SendLog::$status_errors);
                         });
                 })
-                // Telegram replies: accepted by Telegram.
+                // Telegram and Nostr replies: accepted by Telegram, or a relay.
                 ->orWhere(function ($query) {
                     $query->where('conversations.type', Conversation::TYPE_CHAT)
-                        ->where('conversations.channel', \App\Telegram\Telegram::CHANNEL)
+                        ->whereIn('conversations.channel', [\App\Telegram\Telegram::CHANNEL, \App\Nostr\Nostr::channel()])
                         ->where(function ($query) {
                             $query->whereNull('threads.send_status')
                                 ->orWhere('threads.send_status', '!=', SendLog::STATUS_ACCEPTED);

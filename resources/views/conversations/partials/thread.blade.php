@@ -103,6 +103,9 @@
                     </div>
                     @if ($thread->type != App\Thread::TYPE_NOTE || $thread->isForward())
                         <div class="thread-recipients">
+                            @if ($thread->isCustomerMessage() && App\Nostr\Nostr::isNostr($conversation))
+                                @include('nostr/partials/thread_sender', ['sender' => App\Nostr\NostrEvent::sender($conversation, $threads, $thread)])
+                            @endif
                             @action('thread.before_recipients', $thread, $loop, $threads, $conversation, $mailbox)
                             @php
                                 // Highlight "From" field if "From" header is different from "Reply-To".
@@ -110,7 +113,7 @@
                                 // The thread's actual author may differ from the customer the conversation is currently attributed to.
                                 $owner_mismatch = $thread->isCustomerMessage() && isset($conversation) && $thread->customer_id != $conversation->customer_id;
                             @endphp
-                            @if (($thread->isUserMessage() && $thread->from && array_key_exists($thread->from, $mailbox->getAliases()))
+                            @if (!App\Nostr\Nostr::isNostr($conversation) && (($thread->isUserMessage() && $thread->from && array_key_exists($thread->from, $mailbox->getAliases()))
                                 || ($thread->isCustomerMessage() && isset($customer) && count($customer->emails) > 1)
                                 || !empty($from_header)
                                 || $owner_mismatch

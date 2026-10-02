@@ -96,6 +96,13 @@ class SystemController extends Controller
         if (\App\Ai\Settings::isConfigured()) {
             $commands_list[\Helper::getWorkerIdentifier(\App\Console\Kernel::AI_WORKER)] = 'queue:work (AI)';
         }
+        try {
+            if (\App\Nostr\NostrMailbox::anyActive()) {
+                $commands_list['tallport:nostr-listen'] = 'tallport:nostr-listen';
+            }
+        } catch (\Throwable $e) {
+            // No Nostr tables yet.
+        }
         foreach ($commands_list as $command_identifier => $command_name) {
             $status_texts = [];
 

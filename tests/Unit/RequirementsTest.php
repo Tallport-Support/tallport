@@ -6,7 +6,8 @@ use Tests\TestCase;
 
 /**
  * The PHP extensions the installer and System » Status check
- * (config/installer.php) cover what Tallport's dependencies require.
+ * (config/installer.php, required or optional) cover what Tallport's
+ * dependencies require.
  */
 class RequirementsTest extends TestCase
 {
@@ -17,7 +18,8 @@ class RequirementsTest extends TestCase
 
     public function testRequiredExtensionsAreChecked()
     {
-        $checked = array_map('strtolower', config('installer.requirements.php'));
+        // Required, or optional with what it is for (shown on both pages).
+        $checked = array_map('strtolower', array_merge(config('installer.requirements.php'), array_keys(config('installer.optional'))));
 
         $installed = json_decode(file_get_contents(base_path('vendor/composer/installed.json')), true);
         $missing = [];

@@ -127,6 +127,8 @@ class Thread extends Model
     const ACTION_TYPE_DELETED_TICKET = 10;
     // The ticket was restored
     const ACTION_TYPE_RESTORE_TICKET = 11;
+    // The Nostr auto reply was sent (the Nostr module's number)
+    const ACTION_TYPE_NOSTR_AUTO_REPLY = 90;
 
     // Describes an optional action associated with the line item
     public static $action_types = [
@@ -141,6 +143,7 @@ class Thread extends Model
         self::ACTION_TYPE_CUSTOMER_CHANGED        => 'changed-ticket-customer',
         self::ACTION_TYPE_DELETED_TICKET          => 'deleted-ticket',
         self::ACTION_TYPE_RESTORE_TICKET          => 'restore-ticket',
+        self::ACTION_TYPE_NOSTR_AUTO_REPLY        => 'nostr_auto_reply',
     ];
 
     /**
@@ -676,6 +679,8 @@ class Thread extends Model
                     }
                     $did_this = __(":person changed the customer to :customer", ['customer' => '<a href="'.($this->customer_cached ? $this->customer_cached->url() : '').'" title="'.$this->action_data.'" class="link-black">'.$customer_name.'</a>']);
                 }
+            } elseif ($this->action_type == self::ACTION_TYPE_NOSTR_AUTO_REPLY) {
+                $did_this = __(':person sent the Nostr auto reply').': "'.e(\Helper::textPreview($this->body, 200)).'"';
             } elseif ($this->action_type == self::ACTION_TYPE_DELETED_TICKET) {
                 $did_this = __(":person deleted");
             } elseif ($this->action_type == self::ACTION_TYPE_RESTORE_TICKET) {
@@ -1693,14 +1698,16 @@ class Thread extends Model
             }
         }
 
-        // A reply to Telegram.
-        $jobs = $model::where('queue', 'emails')
-            ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToTelegram"%;i:'.$this->id.';%')
-            ->get();
-        foreach ($jobs as $job) {
-            $command = \App\Job::getPayloadCommand($job->getPayloadDecoded());
-            if ($command && ($command->thread_id ?? null) == $this->id) {
-                return $job->id;
+        // A reply to Telegram or Nostr.
+        foreach (['SendReplyToTelegram', 'SendReplyToNostr'] as $class) {
+            $jobs = $model::where('queue', 'emails')
+                ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\'.$class.'"%;i:'.$this->id.';%')
+                ->get();
+            foreach ($jobs as $job) {
+                $command = \App\Job::getPayloadCommand($job->getPayloadDecoded());
+                if ($command && ($command->thread_id ?? null) == $this->id) {
+                    return $job->id;
+                }
             }
         }
 

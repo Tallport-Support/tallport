@@ -338,6 +338,39 @@
         },
         "options": {}
     },
+    "tallport:nostr-announce": {
+        "class": "App\\Console\\Commands\\NostrAnnounce",
+        "description": "Publish the profile, DM relay list and relay list of the Nostr enabled mailboxes",
+        "arguments": {},
+        "options": {
+            "mailbox": {
+                "value": "optional"
+            }
+        }
+    },
+    "tallport:nostr-diagnose": {
+        "class": "App\\Console\\Commands\\NostrDiagnose",
+        "description": "Ask the relays what they hold for the Nostr mailboxes (pending messages, announcements)",
+        "arguments": {},
+        "options": {
+            "mailbox": {
+                "value": "optional"
+            }
+        }
+    },
+    "tallport:nostr-listen": {
+        "class": "App\\Console\\Commands\\NostrListen",
+        "description": "Listen on the configured relays for Nostr messages addressed to the mailboxes",
+        "arguments": {},
+        "options": {
+            "once": {
+                "value": "none"
+            },
+            "lifetime": {
+                "value": "optional"
+            }
+        }
+    },
     "tallport:parse-eml": {
         "class": "App\\Console\\Commands\\ParseEml",
         "aliases": [

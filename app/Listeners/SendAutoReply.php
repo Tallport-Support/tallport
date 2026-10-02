@@ -48,6 +48,11 @@ class SendAutoReply
                 return;
             }
 
+            // Telegram and Nostr have their own auto reply, not by email.
+            if ($conversation->isChat() && in_array((int) $conversation->channel, [\App\Telegram\Telegram::CHANNEL, \App\Nostr\Nostr::channel()])) {
+                return;
+            }
+
             if (!\Eventy::filter('autoreply.should_send', true, $conversation)) {
                 return;
             }

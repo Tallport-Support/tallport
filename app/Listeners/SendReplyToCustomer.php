@@ -93,6 +93,12 @@ class SendReplyToCustomer
             return;
         }
 
+        // Nostr: sent right away (it can't be undone).
+        if (\App\Nostr\Nostr::isNostr($conversation)) {
+            \App\Jobs\SendReplyToNostr::dispatch($thread->id);
+            return;
+        }
+
         // Chat conversation.
         if ($conversation->isChat()) {
             \Helper::backgroundAction('chat_conversation.send_reply', [$conversation, $replies, $conversation->customer], now()->addSeconds(Conversation::UNDO_TIMOUT));

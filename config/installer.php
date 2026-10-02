@@ -53,7 +53,9 @@ return [
 
     // Optional PHP extensions, and what for (English, translated when shown).
     'optional' => [
-        'intl' => 'Dates in the users\' languages; Simplified and Traditional Chinese auto replies',
+        'intl'   => 'Dates in the users\' languages; Simplified and Traditional Chinese auto replies',
+        'gmp'    => 'Faster Nostr encryption (bcmath is used without it)',
+        'bcmath' => 'Nostr, when gmp is missing',
     ],
 
     /*

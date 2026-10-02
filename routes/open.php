@@ -19,5 +19,7 @@ Route::get('/thread/read/{conversation_id}/{thread_id}/{hash}', 'OpenController@
 Route::post('/ai-assistant/api/documents', 'AiDocumentsController@api')->middleware('throttle:60,1')->name('ai.documents.api');
 // Telegram bots' updates (per mailbox)
 Route::post('/telegram/webhook/{mailbox_id}', 'TelegramController@webhook')->name('telegram.webhook');
+// Nostr addresses (NIP-05), fetched by Nostr clients
+Route::get('/.well-known/nostr.json', 'NostrController@nip05')->name('nostr.nip05');
 // Web Cron
 Route::get('/system/cron/{hash}', ['uses' => 'SystemController@cron'])->name('system.cron');

@@ -172,6 +172,7 @@ class Helper
                 'mailboxes.permissions',
                 'mailboxes.auto_reply',
                 'mailboxes.telegram',
+                'mailboxes.nostr',
             ],
             'users' => [
                 'users',

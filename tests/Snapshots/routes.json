@@ -3,6 +3,20 @@
         "methods": [
             "GET"
         ],
+        "uri": ".well-known/nostr.json",
+        "name": "nostr.nip05",
+        "action": "NostrController@nip05",
+        "middleware": [
+            "open"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "/",
         "name": "dashboard",
         "action": "SecureController@dashboard",
@@ -377,6 +391,36 @@
         "uri": "customers/{id}/merge",
         "name": null,
         "action": "CustomersController@mergeSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "customers/{id}/nostr",
+        "name": "customers.nostr",
+        "action": "NostrController@customerKeys",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "customers/{id}/nostr",
+        "name": "customers.nostr.save",
+        "action": "NostrController@customerKeysSave",
         "middleware": [
             "web",
             "auth"
@@ -830,6 +874,36 @@
         "uri": "mailbox/settings/{id}/auto-reply",
         "name": "mailboxes.auto_reply.save",
         "action": "MailboxesController@autoReplySave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/settings/{id}/nostr",
+        "name": "mailboxes.nostr",
+        "action": "NostrController@mailboxSettings",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/settings/{id}/nostr",
+        "name": "mailboxes.nostr.save",
+        "action": "NostrController@mailboxSettingsSave",
         "middleware": [
             "web",
             "auth"

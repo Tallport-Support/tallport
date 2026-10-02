@@ -1282,6 +1282,11 @@ class ConversationsController extends Controller
                     if ($conversation->isChat() && \Helper::isChatMode()) {
                         $can_undo = false;
                     }
+                    // Nostr replies are sent right away.
+                    $sent_right_away = !$is_note && \App\Nostr\Nostr::isNostr($conversation);
+                    if ($sent_right_away) {
+                        $can_undo = false;
+                    }
 
                     // When user creates a new conversation it may be saved as draft first.
                     if ($is_create) {
@@ -1419,6 +1424,8 @@ class ConversationsController extends Controller
 
                     if ($can_undo) {
                         \Session::flash('flash_'.$flash_type.'_floating', $flash_text);
+                    } elseif ($sent_right_away) {
+                        \Session::flash('flash_success_floating', '<strong>'.__('Message sent').'</strong>'.($show_view_link ? ' &nbsp;<a href="'.$conversation->url().'">'.__('View').'</a>' : ''));
                     }
                 }
                 break;
@@ -3389,8 +3396,10 @@ class ConversationsController extends Controller
             return redirect()->away($conversation->url($conversation->folder_id));
         }
 
-        // Check undo timeout
-        if ((int) $thread->created_at->diffInSeconds(now(), true) > Conversation::UNDO_TIMOUT) {
+        // Check undo timeout; Nostr replies are sent right away.
+        if ((int) $thread->created_at->diffInSeconds(now(), true) > Conversation::UNDO_TIMOUT
+            || ($thread->type == Thread::TYPE_MESSAGE && \App\Nostr\Nostr::isNostr($conversation))
+        ) {
             \Session::flash('flash_error_floating', __('Sending can not be undone'));
             return redirect()->away($conversation->url($conversation->folder_id));
         }

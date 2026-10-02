@@ -65,6 +65,33 @@ class Kernel extends ConsoleKernel
         $schedule->command('tallport:update-folder-counters')
             ->hourly();
 
+        // Nostr: the relay listener, a new process every listener_lifetime
+        // seconds (relays keep messages meanwhile), when a mailbox uses Nostr.
+        $nostr_listen = $schedule->command('tallport:nostr-listen')
+            ->everyMinute()
+            ->withoutOverlapping((int) ceil((int) config('nostr.listener_lifetime', 1200) / 60) + 5)
+            ->runInBackground()
+            ->when(function () {
+                try {
+                    return \App\Nostr\NostrMailbox::anyActive();
+                } catch (\Throwable $e) {
+                    return false;
+                }
+            })
+            ->sendOutputTo(storage_path('logs/nostr-listen.log'));
+        // A listener that died left its mutex: let a new one start.
+        if (function_exists('shell_exec')) {
+            try {
+                if (\Cache::has($nostr_listen->mutexName()) && !count(\Helper::getRunningProcesses('tallport:nostr-listen'))) {
+                    \Cache::forget($nostr_listen->mutexName());
+                }
+            } catch (\Throwable $e) {
+                // Best effort.
+            }
+        }
+        // The mailboxes' Nostr profiles and relay lists.
+        $schedule->command('tallport:nostr-announce')->dailyAt('04:30')->withoutOverlapping();
+
         // AI Assistant documentation: pick up changes to documented pages.
         $schedule->command('tallport:ai-index-documents', ['--fetch'])
             ->dailyAt('03:40')

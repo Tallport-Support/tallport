@@ -51,6 +51,7 @@ class Job extends Model
             $allowed_classes = [
                 'App\Jobs\SendReplyToCustomer',
                 'App\Jobs\SendReplyToTelegram',
+                'App\Jobs\SendReplyToNostr',
                 'App\Jobs\SendNotificationToUsers',
                 'App\Jobs\SendAutoReply',
                 'App\Jobs\SendAlert',

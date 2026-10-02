@@ -70,6 +70,12 @@ Route::post('/app-settings/{section?}', ['uses' => 'SettingsController@save', 'm
 Route::get('/mailbox/{id}/telegram', ['uses' => 'TelegramController@settings', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.telegram');
 Route::post('/mailbox/{id}/telegram', ['uses' => 'TelegramController@settingsSave', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.telegram.save');
 
+// Nostr
+Route::get('/mailbox/settings/{id}/nostr', ['uses' => 'NostrController@mailboxSettings', 'middleware' => ['auth']])->name('mailboxes.nostr');
+Route::post('/mailbox/settings/{id}/nostr', ['uses' => 'NostrController@mailboxSettingsSave', 'middleware' => ['auth']])->name('mailboxes.nostr.save');
+Route::get('/customers/{id}/nostr', ['uses' => 'NostrController@customerKeys', 'middleware' => ['auth']])->name('customers.nostr');
+Route::post('/customers/{id}/nostr', ['uses' => 'NostrController@customerKeysSave', 'middleware' => ['auth']])->name('customers.nostr.save');
+
 // AI Assistant documentation
 Route::get('/ai-assistant/documents', ['uses' => 'AiDocumentsController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('ai.documents');
 Route::post('/ai-assistant/documents', ['uses' => 'AiDocumentsController@action', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('ai.documents.action');

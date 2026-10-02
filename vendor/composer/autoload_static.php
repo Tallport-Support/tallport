@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit66b69150bad82b62ddc8297addcbd510
+class ComposerStaticInitb9e9d2fe72fcbf4dcb2b058097b80a60
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -197,6 +197,7 @@ class ComposerStaticInit66b69150bad82b62ddc8297addcbd510
         ),
         'E' =>
         array (
+            'Elliptic\\' => 9,
             'Egulias\\EmailValidator\\' => 23,
         ),
         'D' =>
@@ -225,6 +226,8 @@ class ComposerStaticInit66b69150bad82b62ddc8297addcbd510
         array (
             'Brick\\Math\\' => 11,
             'BaconQrCode\\' => 12,
+            'BN\\' => 3,
+            'BI\\' => 3,
         ),
         'A' =>
         array (
@@ -639,6 +642,10 @@ class ComposerStaticInit66b69150bad82b62ddc8297addcbd510
         array (
             0 => __DIR__ . '/..' . '/fruitcake/php-cors/src',
         ),
+        'Elliptic\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/simplito/elliptic-php/lib',
+        ),
         'Egulias\\EmailValidator\\' =>
         array (
             0 => __DIR__ . '/..' . '/egulias/email-validator/src',
@@ -714,6 +721,14 @@ class ComposerStaticInit66b69150bad82b62ddc8297addcbd510
         'BaconQrCode\\' =>
         array (
             0 => __DIR__ . '/..' . '/bacon/bacon-qr-code/src',
+        ),
+        'BN\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/simplito/bn-php/lib',
+        ),
+        'BI\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/simplito/bigint-wrapper-php/lib',
         ),
         'App\\' =>
         array (
@@ -799,6 +814,9 @@ class ComposerStaticInit66b69150bad82b62ddc8297addcbd510
         'App\\Console\\Commands\\ModuleLaroute' => __DIR__ . '/../..' . '/app/Console/Commands/ModuleLaroute.php',
         'App\\Console\\Commands\\ModuleMigrate' => __DIR__ . '/../..' . '/app/Console/Commands/ModuleMigrate.php',
         'App\\Console\\Commands\\ModuleUpdate' => __DIR__ . '/../..' . '/app/Console/Commands/ModuleUpdate.php',
+        'App\\Console\\Commands\\NostrAnnounce' => __DIR__ . '/../..' . '/app/Console/Commands/NostrAnnounce.php',
+        'App\\Console\\Commands\\NostrDiagnose' => __DIR__ . '/../..' . '/app/Console/Commands/NostrDiagnose.php',
+        'App\\Console\\Commands\\NostrListen' => __DIR__ . '/../..' . '/app/Console/Commands/NostrListen.php',
         'App\\Console\\Commands\\ParseEml' => __DIR__ . '/../..' . '/app/Console/Commands/ParseEml.php',
         'App\\Console\\Commands\\Receive' => __DIR__ . '/../..' . '/app/Console/Commands/Receive.php',
         'App\\Console\\Commands\\SendMonitor' => __DIR__ . '/../..' . '/app/Console/Commands/SendMonitor.php',
@@ -851,6 +869,7 @@ class ComposerStaticInit66b69150bad82b62ddc8297addcbd510
         'App\\Http\\Controllers\\Install\\WelcomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Install/WelcomeController.php',
         'App\\Http\\Controllers\\MailboxesController' => __DIR__ . '/../..' . '/app/Http/Controllers/MailboxesController.php',
         'App\\Http\\Controllers\\ModulesController' => __DIR__ . '/../..' . '/app/Http/Controllers/ModulesController.php',
+        'App\\Http\\Controllers\\NostrController' => __DIR__ . '/../..' . '/app/Http/Controllers/NostrController.php',
         'App\\Http\\Controllers\\OpenController' => __DIR__ . '/../..' . '/app/Http/Controllers/OpenController.php',
         'App\\Http\\Controllers\\SecureController' => __DIR__ . '/../..' . '/app/Http/Controllers/SecureController.php',
         'App\\Http\\Controllers\\SettingsController' => __DIR__ . '/../..' . '/app/Http/Controllers/SettingsController.php',
@@ -901,12 +920,14 @@ class ComposerStaticInit66b69150bad82b62ddc8297addcbd510
         'App\\Jobs\\AiIndexDocument' => __DIR__ . '/../..' . '/app/Jobs/AiIndexDocument.php',
         'App\\Jobs\\AiSummarizeConversation' => __DIR__ . '/../..' . '/app/Jobs/AiSummarizeConversation.php',
         'App\\Jobs\\AiTranslateThread' => __DIR__ . '/../..' . '/app/Jobs/AiTranslateThread.php',
+        'App\\Jobs\\NostrTask' => __DIR__ . '/../..' . '/app/Jobs/NostrTask.php',
         'App\\Jobs\\RestartQueueWorker' => __DIR__ . '/../..' . '/app/Jobs/RestartQueueWorker.php',
         'App\\Jobs\\SendAlert' => __DIR__ . '/../..' . '/app/Jobs/SendAlert.php',
         'App\\Jobs\\SendAutoReply' => __DIR__ . '/../..' . '/app/Jobs/SendAutoReply.php',
         'App\\Jobs\\SendEmailReplyError' => __DIR__ . '/../..' . '/app/Jobs/SendEmailReplyError.php',
         'App\\Jobs\\SendNotificationToUsers' => __DIR__ . '/../..' . '/app/Jobs/SendNotificationToUsers.php',
         'App\\Jobs\\SendReplyToCustomer' => __DIR__ . '/../..' . '/app/Jobs/SendReplyToCustomer.php',
+        'App\\Jobs\\SendReplyToNostr' => __DIR__ . '/../..' . '/app/Jobs/SendReplyToNostr.php',
         'App\\Jobs\\SendReplyToTelegram' => __DIR__ . '/../..' . '/app/Jobs/SendReplyToTelegram.php',
         'App\\Jobs\\TriggerAction' => __DIR__ . '/../..' . '/app/Jobs/TriggerAction.php',
         'App\\Jobs\\UpdateFolderCounters' => __DIR__ . '/../..' . '/app/Jobs/UpdateFolderCounters.php',
@@ -961,6 +982,29 @@ class ComposerStaticInit66b69150bad82b62ddc8297addcbd510
         'App\\Modules\\Json' => __DIR__ . '/../..' . '/app/Modules/Json.php',
         'App\\Modules\\Module' => __DIR__ . '/../..' . '/app/Modules/Module.php',
         'App\\Modules\\Repository' => __DIR__ . '/../..' . '/app/Modules/Repository.php',
+        'App\\Nostr\\Announcer' => __DIR__ . '/../..' . '/app/Nostr/Announcer.php',
+        'App\\Nostr\\Crypto\\Bech32' => __DIR__ . '/../..' . '/app/Nostr/Crypto/Bech32.php',
+        'App\\Nostr\\Crypto\\ChaCha20' => __DIR__ . '/../..' . '/app/Nostr/Crypto/ChaCha20.php',
+        'App\\Nostr\\Crypto\\Nip44' => __DIR__ . '/../..' . '/app/Nostr/Crypto/Nip44.php',
+        'App\\Nostr\\Crypto\\Schnorr' => __DIR__ . '/../..' . '/app/Nostr/Crypto/Schnorr.php',
+        'App\\Nostr\\CustomerKey' => __DIR__ . '/../..' . '/app/Nostr/CustomerKey.php',
+        'App\\Nostr\\Diagnostics' => __DIR__ . '/../..' . '/app/Nostr/Diagnostics.php',
+        'App\\Nostr\\EventBuilder' => __DIR__ . '/../..' . '/app/Nostr/EventBuilder.php',
+        'App\\Nostr\\GiftWrap' => __DIR__ . '/../..' . '/app/Nostr/GiftWrap.php',
+        'App\\Nostr\\HtmlToText' => __DIR__ . '/../..' . '/app/Nostr/HtmlToText.php',
+        'App\\Nostr\\IncomingMessageHandler' => __DIR__ . '/../..' . '/app/Nostr/IncomingMessageHandler.php',
+        'App\\Nostr\\Keys' => __DIR__ . '/../..' . '/app/Nostr/Keys.php',
+        'App\\Nostr\\Listener' => __DIR__ . '/../..' . '/app/Nostr/Listener.php',
+        'App\\Nostr\\ListenerStatus' => __DIR__ . '/../..' . '/app/Nostr/ListenerStatus.php',
+        'App\\Nostr\\MailboxKey' => __DIR__ . '/../..' . '/app/Nostr/MailboxKey.php',
+        'App\\Nostr\\Nostr' => __DIR__ . '/../..' . '/app/Nostr/Nostr.php',
+        'App\\Nostr\\NostrEvent' => __DIR__ . '/../..' . '/app/Nostr/NostrEvent.php',
+        'App\\Nostr\\NostrMailbox' => __DIR__ . '/../..' . '/app/Nostr/NostrMailbox.php',
+        'App\\Nostr\\OutgoingMessageSender' => __DIR__ . '/../..' . '/app/Nostr/OutgoingMessageSender.php',
+        'App\\Nostr\\RelayClient' => __DIR__ . '/../..' . '/app/Nostr/RelayClient.php',
+        'App\\Nostr\\RelayDiscovery' => __DIR__ . '/../..' . '/app/Nostr/RelayDiscovery.php',
+        'App\\Nostr\\RelayLimits' => __DIR__ . '/../..' . '/app/Nostr/RelayLimits.php',
+        'App\\Nostr\\Websocket\\Client' => __DIR__ . '/../..' . '/app/Nostr/Websocket/Client.php',
         'App\\Notifications\\BroadcastNotification' => __DIR__ . '/../..' . '/app/Notifications/BroadcastNotification.php',
         'App\\Notifications\\WebsiteNotification' => __DIR__ . '/../..' . '/app/Notifications/WebsiteNotification.php',
         'App\\Observers\\AttachmentObserver' => __DIR__ . '/../..' . '/app/Observers/AttachmentObserver.php',
@@ -1000,6 +1044,9 @@ class ComposerStaticInit66b69150bad82b62ddc8297addcbd510
         'App\\Thread' => __DIR__ . '/../..' . '/app/Thread.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
+        'BI\\BigInteger' => __DIR__ . '/..' . '/simplito/bigint-wrapper-php/lib/BigInteger.php',
+        'BN\\BN' => __DIR__ . '/..' . '/simplito/bn-php/lib/BN.php',
+        'BN\\Red' => __DIR__ . '/..' . '/simplito/bn-php/lib/Red.php',
         'BaconQrCode\\Common\\BitArray' => __DIR__ . '/..' . '/bacon/bacon-qr-code/src/Common/BitArray.php',
         'BaconQrCode\\Common\\BitMatrix' => __DIR__ . '/..' . '/bacon/bacon-qr-code/src/Common/BitMatrix.php',
         'BaconQrCode\\Common\\BitUtils' => __DIR__ . '/..' . '/bacon/bacon-qr-code/src/Common/BitUtils.php',
@@ -1953,6 +2000,25 @@ class ComposerStaticInit66b69150bad82b62ddc8297addcbd510
         'Egulias\\EmailValidator\\Warning\\QuotedString' => __DIR__ . '/..' . '/egulias/email-validator/src/Warning/QuotedString.php',
         'Egulias\\EmailValidator\\Warning\\TLD' => __DIR__ . '/..' . '/egulias/email-validator/src/Warning/TLD.php',
         'Egulias\\EmailValidator\\Warning\\Warning' => __DIR__ . '/..' . '/egulias/email-validator/src/Warning/Warning.php',
+        'Elliptic\\Curve\\BaseCurve' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/Curve/BaseCurve.php',
+        'Elliptic\\Curve\\BaseCurve\\Point' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/Curve/BaseCurve/Point.php',
+        'Elliptic\\Curve\\EdwardsCurve' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/Curve/EdwardsCurve.php',
+        'Elliptic\\Curve\\EdwardsCurve\\Point' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/Curve/EdwardsCurve/Point.php',
+        'Elliptic\\Curve\\MontCurve' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/Curve/MontCurve.php',
+        'Elliptic\\Curve\\MontCurve\\Point' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/Curve/MontCurve/Point.php',
+        'Elliptic\\Curve\\PresetCurve' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/Curve/PresetCurve.php',
+        'Elliptic\\Curve\\ShortCurve' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/Curve/ShortCurve.php',
+        'Elliptic\\Curve\\ShortCurve\\JPoint' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/Curve/ShortCurve/JPoint.php',
+        'Elliptic\\Curve\\ShortCurve\\Point' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/Curve/ShortCurve/Point.php',
+        'Elliptic\\Curves' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/Curves.php',
+        'Elliptic\\EC' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/EC.php',
+        'Elliptic\\EC\\KeyPair' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/EC/KeyPair.php',
+        'Elliptic\\EC\\Signature' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/EC/Signature.php',
+        'Elliptic\\EdDSA' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/EdDSA.php',
+        'Elliptic\\EdDSA\\KeyPair' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/EdDSA/KeyPair.php',
+        'Elliptic\\EdDSA\\Signature' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/EdDSA/Signature.php',
+        'Elliptic\\HmacDRBG' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/HmacDRBG.php',
+        'Elliptic\\Utils' => __DIR__ . '/..' . '/simplito/elliptic-php/lib/Utils.php',
         'Filter\\FilterException' => __DIR__ . '/..' . '/symfony/polyfill-php85/Resources/stubs/Filter/FilterException.php',
         'Filter\\FilterFailedException' => __DIR__ . '/..' . '/symfony/polyfill-php85/Resources/stubs/Filter/FilterFailedException.php',
         'Fruitcake\\Cors\\CorsService' => __DIR__ . '/..' . '/fruitcake/php-cors/src/CorsService.php',
@@ -8462,10 +8528,10 @@ class ComposerStaticInit66b69150bad82b62ddc8297addcbd510
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit66b69150bad82b62ddc8297addcbd510::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit66b69150bad82b62ddc8297addcbd510::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit66b69150bad82b62ddc8297addcbd510::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit66b69150bad82b62ddc8297addcbd510::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitb9e9d2fe72fcbf4dcb2b058097b80a60::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitb9e9d2fe72fcbf4dcb2b058097b80a60::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitb9e9d2fe72fcbf4dcb2b058097b80a60::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitb9e9d2fe72fcbf4dcb2b058097b80a60::$classMap;
 
         }, null, ClassLoader::class);
     }

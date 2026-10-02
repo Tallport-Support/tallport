@@ -14,6 +14,7 @@
     @if (Auth::user()->isAdmin())
         <li @if (Route::currentRouteName() == 'mailboxes.telegram')class="active"@endif><a href="{{ route('mailboxes.telegram', ['id'=>$mailbox->id]) }}"><i class="glyphicon glyphicon-send"></i> {{ __('Telegram') }}</a></li>
     @endif
+    <li @if (Route::currentRouteName() == 'mailboxes.nostr')class="active"@endif><a href="{{ route('mailboxes.nostr', ['id'=>$mailbox->id]) }}"><i class="glyphicon glyphicon-flash"></i> Nostr</a></li>
 @endif
 @action('mailboxes.settings.menu', $mailbox)
 @if (!empty($is_dropdown))

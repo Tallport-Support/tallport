@@ -1362,6 +1362,11 @@ class Customer extends Model
 
         $this->save();
 
+        // Nostr keys go with the customer.
+        \App\Nostr\CustomerKey::where('customer_id', $customer2->id)->update(['customer_id' => $this->id]);
+        CustomerChannel::where('customer_id', $customer2->id)->where('channel', \App\Nostr\Nostr::channel())->delete();
+        \App\Nostr\CustomerKey::syncPrimary($this);
+
         \Eventy::action('customer.merged', $this, $customer2, $user);
 
         $customer2->delete();
