@@ -146,7 +146,6 @@
         "psr-4": {
             "App\\": "app/",
             "Modules\\": "Modules/",
-            "Nwidart\\Modules\\": "overrides/nwidart/laravel-modules/src/",
             "Codedge\\Updater\\SourceRepositoryTypes\\": "overrides/codedge/laravel-selfupdater/src/SourceRepositoryTypes/",
             "Illuminate\\Database\\": "overrides/laravel/framework/src/Illuminate/Database/",
 
@@ -157,8 +156,6 @@
         },
         "exclude-from-classmap": [
             "Modules/",
-            "vendor/nwidart/laravel-modules/src/Json.php",
-            "vendor/nwidart/laravel-modules/src/Generators/ModuleGenerator.php",
             "vendor/codedge/laravel-selfupdater/src/SourceRepositoryTypes/GithubRepositoryType.php",
 
             "vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php",

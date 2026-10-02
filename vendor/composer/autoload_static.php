@@ -426,8 +426,7 @@ class ComposerStaticInit6b7055a3645147f56baffb010ada38cd
         ),
         'Nwidart\\Modules\\' =>
         array (
-            0 => __DIR__ . '/../..' . '/overrides/nwidart/laravel-modules/src',
-            1 => __DIR__ . '/..' . '/nwidart/laravel-modules/src',
+            0 => __DIR__ . '/..' . '/nwidart/laravel-modules/src',
         ),
         'Nette\\' =>
         array (
@@ -823,6 +822,7 @@ class ComposerStaticInit6b7055a3645147f56baffb010ada38cd
         'App\\Misc\\SwiftGetSmtpQueueId' => __DIR__ . '/../..' . '/app/Misc/SwiftGetSmtpQueueId.php',
         'App\\Misc\\WpApi' => __DIR__ . '/../..' . '/app/Misc/WpApi.php',
         'App\\Module' => __DIR__ . '/../..' . '/app/Module.php',
+        'App\\Modules\\Json' => __DIR__ . '/../..' . '/app/Modules/Json.php',
         'App\\Modules\\Module' => __DIR__ . '/../..' . '/app/Modules/Module.php',
         'App\\Modules\\Repository' => __DIR__ . '/../..' . '/app/Modules/Repository.php',
         'App\\Notifications\\BroadcastNotification' => __DIR__ . '/../..' . '/app/Notifications/BroadcastNotification.php',
@@ -4909,8 +4909,8 @@ class ComposerStaticInit6b7055a3645147f56baffb010ada38cd
         'Nwidart\\Modules\\Facades\\Module' => __DIR__ . '/..' . '/nwidart/laravel-modules/src/Facades/Module.php',
         'Nwidart\\Modules\\Generators\\FileGenerator' => __DIR__ . '/..' . '/nwidart/laravel-modules/src/Generators/FileGenerator.php',
         'Nwidart\\Modules\\Generators\\Generator' => __DIR__ . '/..' . '/nwidart/laravel-modules/src/Generators/Generator.php',
-        'Nwidart\\Modules\\Generators\\ModuleGenerator' => __DIR__ . '/../..' . '/overrides/nwidart/laravel-modules/src/Generators/ModuleGenerator.php',
-        'Nwidart\\Modules\\Json' => __DIR__ . '/../..' . '/overrides/nwidart/laravel-modules/src/Json.php',
+        'Nwidart\\Modules\\Generators\\ModuleGenerator' => __DIR__ . '/..' . '/nwidart/laravel-modules/src/Generators/ModuleGenerator.php',
+        'Nwidart\\Modules\\Json' => __DIR__ . '/..' . '/nwidart/laravel-modules/src/Json.php',
         'Nwidart\\Modules\\LaravelModulesServiceProvider' => __DIR__ . '/..' . '/nwidart/laravel-modules/src/LaravelModulesServiceProvider.php',
         'Nwidart\\Modules\\Laravel\\Module' => __DIR__ . '/..' . '/nwidart/laravel-modules/src/Laravel/Module.php',
         'Nwidart\\Modules\\Laravel\\Repository' => __DIR__ . '/..' . '/nwidart/laravel-modules/src/Laravel/Repository.php',

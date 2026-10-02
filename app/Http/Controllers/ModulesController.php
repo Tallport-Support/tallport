@@ -404,7 +404,7 @@ class ModulesController extends Controller
                                 // Determine correct module folder name from providers in module.json.
                                 // Each module must have at least on "provider" specified.
                                 foreach ($manifests as $manifest) {
-                                    $manifest_json = \Nwidart\Modules\Json::make($manifest);
+                                    $manifest_json = \App\Modules\Json::make($manifest);
                                     if ($manifest_json->get('alias') != $alias) {
                                         continue;
                                     }

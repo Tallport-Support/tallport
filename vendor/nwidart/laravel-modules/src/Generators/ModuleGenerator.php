@@ -72,10 +72,10 @@ class ModuleGenerator extends Generator
      */
     public function __construct(
         $name,
-        ?Repository $module = null,
-        ?Config $config = null,
-        ?Filesystem $filesystem = null,
-        ?Console $console = null
+        Repository $module = null,
+        Config $config = null,
+        Filesystem $filesystem = null,
+        Console $console = null
     ) {
         $this->name = $name;
         $this->config = $config;

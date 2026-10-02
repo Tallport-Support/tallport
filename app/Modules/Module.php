@@ -68,12 +68,12 @@ class Module extends \Nwidart\Modules\Laravel\Module
             if ($cachedManifestsArray && count($cachedManifestsArray)) {
                 foreach ($cachedManifestsArray as $manifest) {
                     if (!empty($manifest['name']) && $manifest['name'] == $this->getName()) {
-                        return $this->moduleJson[$file] = new Json($this->getPath().'/'.$file, $this->app['files'], $manifest);
+                        return $this->moduleJson[$file] = new \App\Modules\Json($this->getPath().'/'.$file, $this->app['files'], $manifest);
                     }
                 }
             }
 
-            $json = new Json($this->getPath().'/'.$file, $this->app['files']);
+            $json = new \App\Modules\Json($this->getPath().'/'.$file, $this->app['files']);
             $json->set('active', (int) \App\Module::isActive($json->get('alias')));
 
             return $this->moduleJson[$file] = $json;

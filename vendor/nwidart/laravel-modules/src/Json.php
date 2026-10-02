@@ -34,17 +34,11 @@ class Json
      * @param mixed                             $path
      * @param \Illuminate\Filesystem\Filesystem $filesystem
      */
-    public function __construct($path, ?Filesystem $filesystem = null, array $data = [])
+    public function __construct($path, Filesystem $filesystem = null)
     {
         $this->path = (string) $path;
         $this->filesystem = $filesystem ?: new Filesystem();
-
-        // Here we allow to pass json data as array to avoid reading the file
-        if ($data) {
-            $this->attributes = new Collection($data);
-        } else {
-            $this->attributes = Collection::make($this->getAttributes());
-        }
+        $this->attributes = Collection::make($this->getAttributes());
     }
 
     /**
@@ -103,7 +97,7 @@ class Json
      *
      * @return static
      */
-    public static function make($path, ?Filesystem $filesystem = null)
+    public static function make($path, Filesystem $filesystem = null)
     {
         return new static($path, $filesystem);
     }
@@ -120,35 +114,25 @@ class Json
 
     /**
      * Get file contents as array.
-     *
-     * @throws \Exception
-     *
      * @return array
+     * @throws \Exception
      */
     public function getAttributes()
     {
-        // Do not read file every time
-        if ($this->attributes && $this->attributes->toArray()) {
-            return $this->attributes->toArray();
-        } else {
-            $attributes = json_decode($this->getContents(), 1);
+        $attributes = json_decode($this->getContents(), 1);
 
-            // any JSON parsing errors should throw an exception
-            if (json_last_error() > 0) {
-                throw new InvalidJsonException('Error processing file: '.$this->getPath().'. Error: '.json_last_error_msg());
-            }
+        // any JSON parsing errors should throw an exception
+        if (json_last_error() > 0) {
+            throw new InvalidJsonException('Error processing file: ' . $this->getPath() . '. Error: ' . json_last_error_msg());
         }
 
-        // Do not cache individual module.json files, only alltogether
-        return $attributes;
+        if (config('modules.cache.enabled') === false) {
+            return $attributes;
+        }
 
-        // if (config('modules.cache.enabled') === false) {
-        //     return $attributes;
-        // }
-
-        // return app('cache')->remember($this->getPath(), config('modules.cache.lifetime'), function () use ($attributes) {
-        //     return $attributes;
-        // });
+        return app('cache')->remember($this->getPath(), config('modules.cache.lifetime'), function () use ($attributes) {
+            return $attributes;
+        });
     }
 
     /**
@@ -158,7 +142,7 @@ class Json
      *
      * @return string
      */
-    public function toJsonPretty(?array $data = null)
+    public function toJsonPretty(array $data = null)
     {
         return json_encode($data ?: $this->attributes, JSON_PRETTY_PRINT);
     }

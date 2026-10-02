@@ -3,7 +3,7 @@
 namespace App\Modules;
 
 use Nwidart\Modules\Collection;
-use Nwidart\Modules\Json;
+use App\Modules\Json;
 
 /**
  * nwidart's module repository with FreeScout's additions: active flags from
