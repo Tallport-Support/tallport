@@ -116,6 +116,7 @@ return array(
     'App\\Incoming\\HeaderText' => $baseDir . '/app/Incoming/HeaderText.php',
     'App\\Incoming\\IncomingMessage' => $baseDir . '/app/Incoming/IncomingMessage.php',
     'App\\Incoming\\LegacyImapMessage' => $baseDir . '/app/Incoming/LegacyImapMessage.php',
+    'App\\Incoming\\Parser' => $baseDir . '/app/Incoming/Parser.php',
     'App\\Incoming\\ParserComparison' => $baseDir . '/app/Incoming/ParserComparison.php',
     'App\\Incoming\\RawSources' => $baseDir . '/app/Incoming/RawSources.php',
     'App\\Incoming\\Webklex6Message' => $baseDir . '/app/Incoming/Webklex6Message.php',

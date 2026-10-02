@@ -2,7 +2,7 @@
     "error": null,
     "conversations": [
         {
-            "subject": "ご注文商品を本日お届けします",
+            "subject": "ご注文商品を本日お届けします",
             "type": 1,
             "status": 1,
             "customer_email": "noreply@example.org",

@@ -5,13 +5,13 @@
             "subject": "Undeliverable: Some subject",
             "type": 1,
             "status": 1,
-            "customer_email": "sending_domain.tld@unknown",
+            "customer_email": "postmaster@sending_domain.tld",
             "cc": "[\"receipent@receipent_domain.tld\"]",
             "bcc": null,
             "threads": [
                 {
                     "type": 1,
-                    "from": "sending_domain.tld@unknown",
+                    "from": "postmaster@sending_domain.tld",
                     "to": "[\"receipent@receipent_domain.tld\"]",
                     "cc": null,
                     "bcc": null,

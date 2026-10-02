@@ -254,9 +254,9 @@ needs a newer PHP. When updating, ignore only missing extensions:
 `composer update ... --ignore-platform-req='ext-*'`.
 
 `app/LegacyImap` is FreeScout's patched webklex/php-imap 4.1.1 under its
-own namespace. Incoming mail still runs on it, while it is taken apart
-step by step into Tallport's own code and webklex/php-imap 6 (installed
-normally).
+own namespace. It still connects to the IMAP/POP3 servers, and reads an
+email only if webklex/php-imap 6 (installed normally) and Tallport's own
+code (`app/Incoming`) can't. It is being taken apart step by step.
 
 ### Releasing
 

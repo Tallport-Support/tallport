@@ -19,7 +19,8 @@ Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Lara
 
 ## Incoming mail
 
-- `app/LegacyImap` (namespace `App\LegacyImap`) is FreeScout's patched webklex/php-imap 4.1.1, kept as is: fetching and parsing incoming mail still runs on it. It mixes library code with Tallport behaviour (charset fixes, subject decoding, Message-ID generation, error handling, a POP3 client).
+- Incoming email is read by `App\Incoming\Parser`: webklex/php-imap 6 (`Webklex\PHPIMAP`) plus Tallport's own code in `app/Incoming` (`Webklex6Message`, `HeaderText`, `Address::parseList()`), falling back to the legacy parser if that fails.
+- `app/LegacyImap` (namespace `App\LegacyImap`) is FreeScout's patched webklex/php-imap 4.1.1, kept as is: fetching (IMAP/POP3 connections) still runs on it, and it is the parsing fallback. It mixes library code with Tallport behaviour (charset fixes, subject decoding, Message-ID generation, error handling, a POP3 client).
 - It is being taken apart in small steps: move a piece of behaviour into Tallport's own incoming-mail code (with a test) or onto webklex/php-imap 6 (`Webklex\PHPIMAP`, installed normally), then delete it from `app/LegacyImap`. Don't add new code that depends on `App\LegacyImap`.
 
 ## FreeScout modules

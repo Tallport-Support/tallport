@@ -8,8 +8,9 @@ use Webklex\PHPIMAP\Message;
 /**
  * An IncomingMessage parsed from a raw email by webklex/php-imap 6
  * (unpatched), with the subject and addresses read by Tallport's own code
- * (HeaderText, Address::parseList()). Not used for fetching yet:
- * tallport:compare-parsers and the tests compare it with LegacyImapMessage.
+ * (HeaderText, Address::parseList()). Fetching and tallport:receive read
+ * email with it (through Parser); tallport:compare-parsers compares it with
+ * LegacyImapMessage.
  */
 class Webklex6Message implements IncomingMessage
 {

@@ -404,7 +404,8 @@ class FetchEmails extends Command
             $incoming = $message;
             $message = $incoming instanceof LegacyImapMessage ? $incoming->legacyMessage() : null;
         } else {
-            $incoming = new LegacyImapMessage($message);
+            $legacy = new LegacyImapMessage($message);
+            $incoming = \App\Incoming\Parser::parse($legacy->rawSource(), $legacy);
         }
 
         try {

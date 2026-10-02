@@ -3,7 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Email;
-use App\Incoming\LegacyImapMessage;
+use App\Incoming\IncomingMessage;
+use App\Incoming\Parser;
 use App\Mailbox;
 use App\Subscription;
 use Illuminate\Console\Command;
@@ -44,9 +45,7 @@ class Receive extends Command
             $raw = str_replace("\n", "\r\n", $raw);
         }
 
-        // Message::fromString() reads the options set up by the client manager.
-        new \App\LegacyImap\ClientManager(config('imap'));
-        $message = new LegacyImapMessage(\App\LegacyImap\Message::fromString($raw));
+        $message = Parser::parse($raw);
 
         $mailboxes = Mailbox::get();
         $mailbox = $this->findMailbox($message, $mailboxes);
@@ -81,7 +80,7 @@ class Receive extends Command
     /**
      * The mailbox from --mailbox, or the first mailbox among the recipients.
      */
-    protected function findMailbox(LegacyImapMessage $message, $mailboxes)
+    protected function findMailbox(IncomingMessage $message, $mailboxes)
     {
         $option = $this->option('mailbox');
         if ($option) {
