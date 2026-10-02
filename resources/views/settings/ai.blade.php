@@ -123,7 +123,7 @@
         <div class="col-sm-6">
             <select name="settings[aiassistant.translation_language]" class="form-control input-sized" id="ai_language">
                 @foreach ($ai_languages as $code => $name)
-                    <option value="{{ $code }}" @if ($settings['aiassistant.translation_language'] == $code) selected @endif>{{ $name }}</option>
+                    <option value="{{ $code }}" @if ($settings['aiassistant.translation_language'] == $code) selected @endif>{{ App\Ai\Settings::optionName($code) }}</option>
                 @endforeach
             </select>
             <div class="form-help">{{ __('Summaries and translations are in this language, unless a mailbox or user has its own.') }}</div>
@@ -167,7 +167,7 @@
                                 <select name="settings[aiassistant.mailbox_language][{{ $mailbox->id }}]" class="form-control input-sm" aria-label="{{ __('Language') }}">
                                     <option value="">{{ __('Default') }}</option>
                                     @foreach ($ai_languages as $code => $name)
-                                        <option value="{{ $code }}" @if (($settings['aiassistant.mailbox_language'][$mailbox->id] ?? '') == $code) selected @endif>{{ $name }}</option>
+                                        <option value="{{ $code }}" @if (($settings['aiassistant.mailbox_language'][$mailbox->id] ?? '') == $code) selected @endif>{{ App\Ai\Settings::optionName($code) }}</option>
                                     @endforeach
                                 </select>
                             </td>

@@ -201,6 +201,27 @@ class AutoReplyLanguagesTest extends FeatureTestCase
         $this->assertSame(0, MailboxAutoReply::where('mailbox_id', $this->mailbox->id)->count());
     }
 
+    public function testLanguagesAreNamedInTheViewersLanguage()
+    {
+        $this->version('ko', '문의해 주셔서 감사합니다');
+        $this->version('zh-Hant', '感謝您的來信');
+
+        $this->actingAs($this->admin)->get('/mailbox/settings/'.$this->mailbox->id.'/auto-reply')
+            ->assertSee('data-toggle="tab">Korean', false)
+            ->assertSee('data-toggle="tab">Chinese (Traditional)', false)
+            ->assertSee('Japanese (日本語)');
+
+        $dutch = $this->createAdmin(['locale' => 'nl']);
+        $this->actingAs($dutch)->withSession(['user_locale' => 'nl'])->get('/mailbox/settings/'.$this->mailbox->id.'/auto-reply')
+            ->assertSee('data-toggle="tab">Koreaans', false)
+            ->assertSee('Japans (日本語)');
+
+        // Korean can be edited.
+        $this->postForm($this->admin, '/mailbox/settings/'.$this->mailbox->id.'/auto-reply', $this->form(['ko' => ['enabled' => 1, 'subject' => '감사합니다', 'message' => '<p>곧 답변드리겠습니다.</p>']]))
+            ->assertSessionHasNoErrors();
+        $this->assertSame('감사합니다', AutoReplies::versions($this->mailbox)['ko']->subject);
+    }
+
     // Telegram.
 
     public function testTelegramAutoReplyInTheAppsLanguage()

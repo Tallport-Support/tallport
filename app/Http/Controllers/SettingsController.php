@@ -175,7 +175,7 @@ class SettingsController extends Controller
             case 'ai':
                 $params = [
                     'template_vars' => [
-                        'ai_languages' => \App\Ai\Settings::LANGUAGES,
+                        'ai_languages' => \App\Ai\Settings::displayNames(),
                         'ai_mailboxes' => \App\Mailbox::orderBy('name')->get(),
                     ],
                     'validator_rules' => [

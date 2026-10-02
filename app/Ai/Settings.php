@@ -44,6 +44,7 @@ class Settings
         'vi'         => 'Tiếng Việt',
         'ru'         => 'Русский',
         'ja'         => '日本語',
+        'ko'         => '한국어',
         'zh-Hans'    => '简体中文',
         'zh-Hant'    => '繁體中文',
     ];
@@ -176,6 +177,52 @@ class Settings
     public static function languageName($code)
     {
         return self::LANGUAGES[$code] ?? $code;
+    }
+
+    /**
+     * A language's name in the viewer's language (with PHP's intl; else its
+     * own name).
+     */
+    public static function displayName($code, $locale = null)
+    {
+        if (class_exists('Locale')) {
+            $name = \Locale::getDisplayName($code, str_replace('-', '_', $locale ?: app()->getLocale()));
+            if ($name && $name != $code) {
+                return mb_strtoupper(mb_substr($name, 0, 1)).mb_substr($name, 1);
+            }
+        }
+
+        return self::languageName($code);
+    }
+
+    /**
+     * For a list to choose from: the name in the viewer's language, and its
+     * own name if that is different.
+     */
+    public static function optionName($code)
+    {
+        $name = self::displayName($code);
+
+        return $name == self::languageName($code) ? $name : $name.' ('.self::languageName($code).')';
+    }
+
+    /**
+     * The languages, code => name in the viewer's language, in alphabetical
+     * order.
+     */
+    public static function displayNames()
+    {
+        $names = [];
+        foreach (array_keys(self::LANGUAGES) as $code) {
+            $names[$code] = self::displayName($code);
+        }
+        if (class_exists('Collator')) {
+            (new \Collator(app()->getLocale()))->asort($names);
+        } else {
+            asort($names);
+        }
+
+        return $names;
     }
 
     /**

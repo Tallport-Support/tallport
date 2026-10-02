@@ -166,8 +166,8 @@
                         <div class="col-sm-6">
                             <select id="ai_language" class="form-control input-sized" name="ai_language">
                                 <option value="">{{ __('Default') }}</option>
-                                @foreach (App\Ai\Settings::LANGUAGES as $code => $name)
-                                    <option value="{{ $code }}" @if (old('ai_language', $user->ai_language) == $code) selected @endif>{{ $name }}</option>
+                                @foreach (App\Ai\Settings::displayNames() as $code => $name)
+                                    <option value="{{ $code }}" @if (old('ai_language', $user->ai_language) == $code) selected @endif>{{ App\Ai\Settings::optionName($code) }}</option>
                                 @endforeach
                             </select>
                             <div class="form-help">{{ __('The language of AI summaries and translations.') }}</div>

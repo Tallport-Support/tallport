@@ -101,7 +101,7 @@
                                     <select name="add_language_code" class="form-control input-sm" aria-label="{{ __('Language') }}">
                                         @foreach ($languages as $code => $name)
                                             @if (!array_key_exists($code, $settings['auto_replies']))
-                                                <option value="{{ $code }}">{{ $name }}</option>
+                                                <option value="{{ $code }}">{{ App\Ai\Settings::optionName($code) }}</option>
                                             @endif
                                         @endforeach
                                     </select>

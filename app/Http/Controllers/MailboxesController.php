@@ -641,7 +641,7 @@ class MailboxesController extends Controller
         return view('mailboxes/auto_reply', [
             'mailbox'         => $mailbox,
             'versions'        => \App\AutoReply\AutoReplies::versions($mailbox),
-            'languages'       => \App\Ai\Settings::LANGUAGES,
+            'languages'       => \App\Ai\Settings::displayNames(),
             'active_language' => session('auto_reply_language'),
         ]);
     }

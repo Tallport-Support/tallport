@@ -87,7 +87,7 @@ class TelegramController extends Controller
             'webhook'         => $webhook,
             'webhook_ok'      => $webhook && ($webhook['url'] ?? '') == Telegram::webhookUrl($mailbox),
             'telegram_error'  => $error,
-            'languages'       => \App\Ai\Settings::LANGUAGES,
+            'languages'       => \App\Ai\Settings::displayNames(),
             'active_language' => session('telegram_language'),
         ]);
     }
