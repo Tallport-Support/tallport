@@ -12,7 +12,8 @@ namespace App\Incoming;
 class Attachment
 {
     /**
-     * Content-ID (for inline images referenced as cid:...), or null.
+     * Content-ID (for inline images referenced as cid:...), or null if the
+     * part has none.
      *
      * @var string|null
      */
@@ -50,7 +51,7 @@ class Attachment
      */
     public function __construct($name, $type, $content_type, $content, $id = null, $source = null)
     {
-        $this->name = $name;
+        $this->name = ($name === null || $name === '') ? self::fallbackName($content) : $name;
         $this->type = $type;
         $this->content_type = $content_type;
         $this->content = $content;
@@ -61,6 +62,24 @@ class Attachment
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * A name for an attachment that has none: attached emails and calendars
+     * get a usable file name, anything else a short hash of the content.
+     */
+    public static function fallbackName($content)
+    {
+        $mime_type = (new \finfo())->buffer((string) $content, FILEINFO_MIME_TYPE);
+        // https://github.com/freescout-helpdesk/freescout/issues/4738
+        if ($mime_type == 'message/rfc822') {
+            return 'RFC822.eml';
+        }
+        if ($mime_type == 'text/calendar') {
+            return 'calendar.ics';
+        }
+
+        return substr(md5((string) $content), 0, 8);
     }
 
     public function getType()

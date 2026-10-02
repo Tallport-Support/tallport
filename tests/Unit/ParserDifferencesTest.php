@@ -42,7 +42,7 @@ class ParserDifferencesTest extends TestCase
         $storage = sys_get_temp_dir().'/tallport-compare-'.uniqid();
         mkdir($storage.'/app/incoming-mail', 0777, true);
         copy(__DIR__.'/../Messages/webklex/plain.eml', $storage.'/app/incoming-mail/101.eml');
-        copy(__DIR__.'/../Messages/message-2.eml', $storage.'/app/incoming-mail/102.eml');
+        copy(__DIR__.'/../Messages/message-5-iso-2022-jp.eml', $storage.'/app/incoming-mail/102.eml');
         $this->app->useStoragePath($storage);
 
         try {

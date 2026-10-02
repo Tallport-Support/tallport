@@ -154,12 +154,15 @@ class LegacyImapMessage implements IncomingMessage
         return $this->cached('attachments', function () {
             $attachments = [];
             foreach ($this->message->getAttachments() as $attachment) {
+                // Without a name or Content-ID the library uses its own hash;
+                // Tallport names such attachments (Attachment::fallbackName()).
+                $hash = $attachment->getHash();
                 $attachments[] = new Attachment(
-                    $attachment->getName(),
+                    $attachment->getName() !== $hash ? $attachment->getName() : null,
                     $attachment->getType(),
                     $attachment->content_type,
                     $attachment->getContent(),
-                    $attachment->id,
+                    $attachment->id !== $hash ? $attachment->id : null,
                     $attachment
                 );
             }
