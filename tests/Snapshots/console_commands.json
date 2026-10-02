@@ -322,8 +322,14 @@
         "aliases": [
             "freescout:parse-eml"
         ],
-        "description": "Parse EML file",
-        "arguments": {},
+        "description": "Show how Tallport reads an email file",
+        "arguments": {
+            "file": {
+                "required": false,
+                "array": false,
+                "default": null
+            }
+        },
         "options": {}
     },
     "tallport:receive": {

@@ -759,13 +759,8 @@ class Mail
      */
     public static function parseHeaders($headers_str)
     {
-        //try {
-        //return imap_rfc822_parse_headers($headers_str);
-        //return (new \App\LegacyImap\Header(''))->rfc822_parse_headers($headers_str);
-        return \App\LegacyImap\Header::rfc822_parse_headers($headers_str);
-        // } catch (\Exception $e) {
-        //     return;
-        // }
+        // Raw values by name ("message_id"), as Tallport keeps headers.
+        return (object) \App\Incoming\HeaderText::all($headers_str);
     }
 
     // Replacement for https://www.php.net/manual/en/function.imap-utf8.php

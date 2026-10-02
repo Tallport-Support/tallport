@@ -258,12 +258,13 @@ class ConsoleCommandsTest extends FeatureTestCase
             unlink($storage.'/logs/email.eml');
             rmdir($storage.'/logs');
             rmdir($storage);
-            // parse-eml resets Webklex's options; restore them for later tests.
-            new \App\LegacyImap\ClientManager(config('imap'));
         }
 
         $this->assertStringContainsString('Subject:', $output);
         $this->assertStringContainsString('7f9b1a39-536b-47de-a7c3-22aab4aa0964@example.com', $output);
+
+        $output = $this->runCommand('tallport:parse-eml', ['file' => base_path('tests/Messages/webklex/plain.eml')]);
+        $this->assertStringContainsString('"mail":"from@someone.com"', $output);
     }
 
     public function testAfterAppUpdateAndBuildRunTheirSteps()

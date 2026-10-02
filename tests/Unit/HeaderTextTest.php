@@ -47,6 +47,19 @@ class HeaderTextTest extends TestCase
         ];
     }
 
+    public function testAll()
+    {
+        $headers = "Message-ID: <a@example.org>\r\nThread-Index: AQHZ\r\n abc\r\nX-Empty:\r\nmessage-id: <second@example.org>";
+
+        $this->assertSame([
+            'message_id'   => '<a@example.org>',
+            'thread_index' => 'AQHZ abc',
+            'x_empty'      => '',
+        ], HeaderText::all($headers));
+        $this->assertSame('a@example.org', \MailHelper::getHeader($headers, 'Message-ID'));
+        $this->assertSame('AQHZ abc', \MailHelper::getHeader($headers, 'thread_index'));
+    }
+
     public function testValue()
     {
         $headers = "From: a@example.org\r\nsubject: Hello\r\n world\r\nX-Subject: other\r\nSubject: second";

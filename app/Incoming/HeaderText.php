@@ -37,6 +37,26 @@ class HeaderText
     }
 
     /**
+     * All headers, unfolded and not decoded: [name => value], names in lower
+     * case with "_" for "-" (message_id); the first one of each name.
+     *
+     * @param  string  $headers  The raw header section.
+     */
+    public static function all($headers)
+    {
+        $all = [];
+        preg_match_all('/^([^\s:]+)[ \t]*:(.*(?:\r?\n[ \t].*)*)/m', (string) $headers, $m, PREG_SET_ORDER);
+        foreach ($m as $header) {
+            $name = str_replace('-', '_', strtolower($header[1]));
+            if (!array_key_exists($name, $all)) {
+                $all[$name] = trim(preg_replace('/\r?\n(?=[ \t])/', '', $header[2]));
+            }
+        }
+
+        return $all;
+    }
+
+    /**
      * Decode a header value to UTF-8 text.
      */
     public static function decode($value)

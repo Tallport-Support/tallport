@@ -2,11 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Mailbox;
-use App\LegacyImap\IMAP;
-use App\LegacyImap\Message;
+use App\Incoming\Parser;
 use Illuminate\Console\Command;
-
 
 class ParseEml extends Command
 {
@@ -15,7 +12,7 @@ class ParseEml extends Command
      *
      * @var string
      */
-    protected $signature = 'tallport:parse-eml';
+    protected $signature = 'tallport:parse-eml {file? : An email (.eml) file; storage/logs/email.eml if omitted}';
 
     /**
      * The name FreeScout used, still accepted (modules, scripts, older updaters).
@@ -29,105 +26,54 @@ class ParseEml extends Command
      *
      * @var string
      */
-    protected $description = 'Parse EML file';
-
-    /**
-     * Current mailbox.
-     *
-     * Used to process emails sent to multiple mailboxes.
-     */
-    public $mailbox;
-
-    /**
-     * Used to process emails sent to multiple mailboxes.
-     */
-    public $mailboxes;
-
-    public $extra_import = [];
-
-    /**
-     * Page size when requesting emails from mail server.
-     */
-    const PAGE_SIZE = 300;
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    protected $description = 'Show how Tallport reads an email file';
 
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return int
      */
     public function handle()
     {
-        $email = file_get_contents(storage_path('logs/email.eml'));
+        $email = (string) @file_get_contents($this->argument('file') ?: storage_path('logs/email.eml'));
 
         if (!str_contains($email, "\r\n")) {
             $email = str_replace("\n", "\r\n", $email);
         }
 
-        // $raw_header = substr($email, 0, strpos($email, "\r\n\r\n"));
-        // $raw_body = substr($email, strlen($raw_header)+4);
-
-        // $mailbox = Mailbox::find($this->option('mailbox'));
-
-        // //\Config::set('app.new_fetching_library', 'true');
-        // $client = \MailHelper::getMailboxClient($mailbox);
-        // $client->openFolder("INBOX");
-
-        // $message = Message::make(/*$this->option('uid')*/null, null, $client, $raw_header, $raw_body, [/*0 => "\\Seen"*/], IMAP::ST_UID);
-
-        $manager = new \App\LegacyImap\ClientManager([
-            // 'options' => [
-            //     "debug" => $_ENV["LIVE_MAILBOX_DEBUG"] ?? false,
-            // ],
-            // 'accounts' => [
-            //     'default' => [
-            //         'host'          => getenv("LIVE_MAILBOX_HOST"),
-            //         'port'          => getenv("LIVE_MAILBOX_PORT"),
-            //         'encryption'    => getenv("LIVE_MAILBOX_ENCRYPTION"),
-            //         'validate_cert' => getenv("LIVE_MAILBOX_VALIDATE_CERT"),
-            //         'username'      => getenv("LIVE_MAILBOX_USERNAME"),
-            //         'password'      => getenv("LIVE_MAILBOX_PASSWORD"),
-            //         'protocol'      => 'imap', //might also use imap, [pop3 or nntp (untested)]
-            //     ],
-            // ],
-        ]);
-        $message = \App\LegacyImap\Message::fromString($email);
+        $message = Parser::parse($email);
+        $address = function ($addresses) {
+            return json_encode($addresses[0] ?? [], JSON_UNESCAPED_UNICODE);
+        };
 
         $this->line('Headers: ');
-        $this->info($message->getHeader()->raw);
+        $this->info($message->headers());
         $this->line('From: ');
-        $this->info(json_encode($message->getFrom()[0] ?? [], JSON_UNESCAPED_UNICODE));
+        $this->info($address($message->from()));
         $this->line('Reply-To: ');
-        $this->info(json_encode($message->getReplyTo()[0] ?? [], JSON_UNESCAPED_UNICODE));
+        $this->info($address($message->replyTo()));
         $this->line('In-Reply-To: ');
-        $this->info($message->getInReplyTo());
+        $this->info($message->inReplyTo());
         $this->line('References: ');
-        $this->info(json_encode(array_values(array_filter(preg_split('/[, <>]/', $message->getReferences() ?? ''))), JSON_UNESCAPED_UNICODE));
+        $this->info(json_encode(array_values(array_filter(preg_split('/[, <>]/', $message->references()))), JSON_UNESCAPED_UNICODE));
         $this->line('Date: ');
-        $this->info($message->getDate());
+        $this->info((string) $message->date());
         $this->line('Subject: ');
-        $this->info($message->getSubject());
+        $this->info($message->subject());
         $this->line('Text Body: ');
-        $this->info($message->getTextBody());
+        $this->info((string) $message->textBody());
         $this->line('HTML Body: ');
-        $html_body = $message->getHTMLBody(false) ?? '';
+        $html_body = $message->htmlBody();
         $this->info($html_body);
 
-        $attachments = $message->getAttachments();
+        $attachments = $message->attachments();
         if (count($attachments)) {
             $this->line('Attachments: ');
             foreach ($attachments as $attachment) {
-                $this->info('— '.$attachment->getName().(strstr($html_body, 'cid:'.$attachment->id) ? ' (embedded)' : ''));
+                $this->info('— '.$attachment->getName().($attachment->id && strstr($html_body, 'cid:'.$attachment->id) ? ' (embedded)' : ''));
             }
         }
+
+        return 0;
     }
 }
