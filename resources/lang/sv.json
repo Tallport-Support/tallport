@@ -963,5 +963,22 @@
     "Translation": "Översättning",
     "URL": "Webbadress",
     "You have made the most drafts allowed for today.": "Du har skapat det högsta antalet utkast som tillåts i dag.",
-    "Waiting in the queue…": "Väntar i kön…"
+    "Waiting in the queue…": "Väntar i kön…",
+    "A file could not be downloaded from Telegram": "En fil kunde inte laddas ned från Telegram",
+    "Bot": "Bot",
+    "Bot Token": "Bot-token",
+    "Contact": "Kontakt",
+    "Don't add the /start message to conversations": "Lägg inte till meddelandet \/start i konversationer",
+    "Edited message": "Redigerat meddelande",
+    "Enabled": "Aktiverad",
+    "Enter the bot token from @BotFather.": "Ange bot-token från @BotFather.",
+    "Last error": "Senaste fel",
+    "Location": "Plats",
+    "Messages customers send to your Telegram bot become conversations in this mailbox, and your replies are sent back to them on Telegram. Create a bot with @BotFather and enter its token here.": "Meddelanden som kunder skickar till din Telegram-bot blir konversationer i den här brevlådan, och dina svar skickas tillbaka till dem på Telegram. Skapa en bot med @BotFather och ange dess token här.",
+    "Messages waiting to be received": "Meddelanden som väntar på att tas emot",
+    "Not receiving messages: save the settings to connect the bot.": "Tar inte emot meddelanden: spara inställningarna för att ansluta boten.",
+    "Receiving messages": "Tar emot meddelanden",
+    "Sent when a customer starts the bot (/start).": "Skickas när en kund startar boten (\/start).",
+    "Telegram": "Telegram",
+    "The token @BotFather gives you for the bot.": "Token som @BotFather ger dig för boten."
 }

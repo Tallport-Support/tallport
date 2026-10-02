@@ -171,6 +171,7 @@ class Helper
                 'mailboxes.connection.incoming',
                 'mailboxes.permissions',
                 'mailboxes.auto_reply',
+                'mailboxes.telegram',
             ],
             'users' => [
                 'users',

@@ -1678,7 +1678,8 @@ class Thread extends Model
 
     /**
      * This reply's SendReplyToCustomer job: the reply is the job's latest
-     * thread, wherever it is in the job's list of threads.
+     * thread, wherever it is in the job's list of threads. Or its
+     * SendReplyToTelegram job.
      */
     protected function findSendJobId($model)
     {
@@ -1688,6 +1689,17 @@ class Thread extends Model
         foreach ($jobs as $job) {
             $command = \App\Job::getPayloadCommand($job->getPayloadDecoded());
             if ($command && !empty($command->threads) && self::getLastThread($command->threads)->id == $this->id) {
+                return $job->id;
+            }
+        }
+
+        // A reply to Telegram.
+        $jobs = $model::where('queue', 'emails')
+            ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToTelegram"%;i:'.$this->id.';%')
+            ->get();
+        foreach ($jobs as $job) {
+            $command = \App\Job::getPayloadCommand($job->getPayloadDecoded());
+            if ($command && ($command->thread_id ?? null) == $this->id) {
                 return $job->id;
             }
         }

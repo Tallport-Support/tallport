@@ -857,6 +857,38 @@
         "methods": [
             "GET"
         ],
+        "uri": "mailbox/{id}/telegram",
+        "name": "mailboxes.telegram",
+        "action": "TelegramController@settings",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{id}/telegram",
+        "name": "mailboxes.telegram.save",
+        "action": "TelegramController@settingsSave",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "mailbox/{id}/{folder_id}",
         "name": "mailboxes.view.folder",
         "action": "MailboxesController@view",
@@ -1244,6 +1276,20 @@
             "web",
             "auth",
             "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "telegram/webhook/{mailbox_id}",
+        "name": "telegram.webhook",
+        "action": "TelegramController@webhook",
+        "middleware": [
+            "open"
         ],
         "where": {
             "id": "[0-9]+"

@@ -38,16 +38,29 @@ class CheckOutgoing extends Command
             ->where('threads.type', Thread::TYPE_MESSAGE)
             ->where('threads.state', Thread::STATE_PUBLISHED)
             ->where('threads.imported', false)
-            ->where('conversations.type', Conversation::TYPE_EMAIL)
             ->where('threads.created_at', '>=', now()->subDays((int) $this->option('days')))
             // Replies are sent after the undo delay.
             ->where('threads.created_at', '<', now()->subMinutes(15))
-            ->whereNotExists(function ($query) {
-                $query->select(\DB::raw(1))
-                    ->from('send_logs')
-                    ->whereColumn('send_logs.thread_id', 'threads.id')
-                    ->where('send_logs.mail_type', SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER)
-                    ->whereNotIn('send_logs.status', SendLog::$status_errors);
+            ->where(function ($query) {
+                $query->where(function ($query) {
+                    $query->where('conversations.type', Conversation::TYPE_EMAIL)
+                        ->whereNotExists(function ($query) {
+                            $query->select(\DB::raw(1))
+                                ->from('send_logs')
+                                ->whereColumn('send_logs.thread_id', 'threads.id')
+                                ->where('send_logs.mail_type', SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER)
+                                ->whereNotIn('send_logs.status', SendLog::$status_errors);
+                        });
+                })
+                // Telegram replies: accepted by Telegram.
+                ->orWhere(function ($query) {
+                    $query->where('conversations.type', Conversation::TYPE_CHAT)
+                        ->where('conversations.channel', \App\Telegram\Telegram::CHANNEL)
+                        ->where(function ($query) {
+                            $query->whereNull('threads.send_status')
+                                ->orWhere('threads.send_status', '!=', SendLog::STATUS_ACCEPTED);
+                        });
+                });
             })
             ->orderBy('threads.id')
             ->get();
@@ -93,9 +106,13 @@ class CheckOutgoing extends Command
     protected function markNotSent(Thread $thread)
     {
         $conversation = $thread->conversation;
-        $email = $thread->getToArray()[0] ?? $conversation->customer_email;
         $message = 'Not sent: no job is sending this reply (found by tallport:check-outgoing).';
-        SendLog::log($thread->id, null, $email, SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER, SendLog::STATUS_SEND_ERROR, $conversation->customer_id, null, $message);
+        if (!$conversation->isChat()) {
+            $email = $thread->getToArray()[0] ?? $conversation->customer_email;
+            SendLog::log($thread->id, null, $email, SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER, SendLog::STATUS_SEND_ERROR, $conversation->customer_id, null, $message);
+        } else {
+            $thread->updateSendStatusData(['msg' => $message]);
+        }
 
         $thread->send_status = SendLog::STATUS_SEND_ERROR;
         $thread->save();

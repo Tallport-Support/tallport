@@ -963,5 +963,22 @@
     "Translation": "Переклад",
     "URL": "URL",
     "You have made the most drafts allowed for today.": "Ви склали максимальну кількість чернеток на сьогодні.",
-    "Waiting in the queue…": "Очікує в черзі…"
+    "Waiting in the queue…": "Очікує в черзі…",
+    "A file could not be downloaded from Telegram": "Не вдалося завантажити файл із Telegram",
+    "Bot": "Бот",
+    "Bot Token": "Токен бота",
+    "Contact": "Контакт",
+    "Don't add the /start message to conversations": "Не додавати повідомлення \/start до розмов",
+    "Edited message": "Змінене повідомлення",
+    "Enabled": "Увімкнено",
+    "Enter the bot token from @BotFather.": "Введіть токен бота від @BotFather.",
+    "Last error": "Остання помилка",
+    "Location": "Місцезнаходження",
+    "Messages customers send to your Telegram bot become conversations in this mailbox, and your replies are sent back to them on Telegram. Create a bot with @BotFather and enter its token here.": "Повідомлення, які клієнти надсилають вашому Telegram-боту, стають розмовами в цій поштовій скриньці, а ваші відповіді надсилаються їм назад у Telegram. Створіть бота через @BotFather і введіть тут його токен.",
+    "Messages waiting to be received": "Повідомлення, що очікують отримання",
+    "Not receiving messages: save the settings to connect the bot.": "Повідомлення не надходять: збережіть налаштування, щоб підключити бота.",
+    "Receiving messages": "Отримує повідомлення",
+    "Sent when a customer starts the bot (/start).": "Надсилається, коли клієнт запускає бота (\/start).",
+    "Telegram": "Telegram",
+    "The token @BotFather gives you for the bot.": "Токен, який @BotFather видає для бота."
 }

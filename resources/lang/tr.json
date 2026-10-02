@@ -963,5 +963,22 @@
     "Translation": "Çeviri",
     "URL": "URL",
     "You have made the most drafts allowed for today.": "Bugün için izin verilen en fazla taslak sayısına ulaştınız.",
-    "Waiting in the queue…": "Kuyrukta bekliyor…"
+    "Waiting in the queue…": "Kuyrukta bekliyor…",
+    "A file could not be downloaded from Telegram": "Telegram'dan bir dosya indirilemedi",
+    "Bot": "Bot",
+    "Bot Token": "Bot Jetonu",
+    "Contact": "Kişi",
+    "Don't add the /start message to conversations": "\/start mesajını konuşmalara ekleme",
+    "Edited message": "Düzenlenmiş mesaj",
+    "Enabled": "Etkin",
+    "Enter the bot token from @BotFather.": "@BotFather'dan aldığınız bot jetonunu girin.",
+    "Last error": "Son hata",
+    "Location": "Konum",
+    "Messages customers send to your Telegram bot become conversations in this mailbox, and your replies are sent back to them on Telegram. Create a bot with @BotFather and enter its token here.": "Müşterilerin Telegram botunuza gönderdiği mesajlar bu posta kutusunda konuşmalara dönüşür ve yanıtlarınız onlara Telegram üzerinden gönderilir. @BotFather ile bir bot oluşturun ve jetonunu buraya girin.",
+    "Messages waiting to be received": "Alınmayı bekleyen mesajlar",
+    "Not receiving messages: save the settings to connect the bot.": "Mesaj alınmıyor: botu bağlamak için ayarları kaydedin.",
+    "Receiving messages": "Mesaj alınıyor",
+    "Sent when a customer starts the bot (/start).": "Bir müşteri botu başlattığında gönderilir (\/start).",
+    "Telegram": "Telegram",
+    "The token @BotFather gives you for the bot.": "@BotFather'ın bot için verdiği jeton."
 }

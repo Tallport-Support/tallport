@@ -39,6 +39,16 @@ class AppServiceProvider extends ServiceProvider
         \App\Follower::observe(\App\Observers\FollowerObserver::class);
         \Illuminate\Notifications\DatabaseNotification::observe(\App\Observers\DatabaseNotificationObserver::class);
 
+        // Channels Tallport has (modules add theirs the same way).
+        \Eventy::addFilter('channel.name', function ($name, $channel) {
+            return $channel == \App\Telegram\Telegram::CHANNEL ? \App\Telegram\Telegram::CHANNEL_NAME : $name;
+        }, 10, 2);
+        \Eventy::addFilter('channels.list', function ($channels) {
+            $channels[\App\Telegram\Telegram::CHANNEL] = \App\Telegram\Telegram::CHANNEL_NAME;
+
+            return $channels;
+        });
+
         \Validator::extend('safehost', function ($attribute, $value, $parameters, $validator) {
             if (!$value) {
                 return true;

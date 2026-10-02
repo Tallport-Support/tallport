@@ -27,6 +27,7 @@ Credit for everything up to the fork goes to the FreeScout team.
 * [Receiving email from a mail server](#receiving-email-from-a-mail-server)
 * [Two-factor authentication and passkeys](#two-factor-authentication-and-passkeys)
 * [AI Assistant](#ai-assistant)
+* [Telegram](#telegram)
 * [Modules](#modules)
 * [Development](#development)
 * [Security](#security)
@@ -264,6 +265,28 @@ The scheduler starts it next to the main worker once a provider is set up,
 so the cron job from [Requirements](#requirements) is all it needs; System
 » Status shows it as "queue:work (AI)". If you run queue workers yourself
 instead, have one process the `ai-drafts,ai` queues.
+
+## Telegram
+
+A mailbox can have a Telegram bot: messages customers send the bot become
+chat conversations in the mailbox, and agents' replies are sent back on
+Telegram, with their formatting (bold, italic, links, lists) and files.
+Create a bot with [@BotFather](https://t.me/BotFather), then enter its token
+under the mailbox's settings » Telegram and turn it on. The page shows the
+bot and whether it is receiving messages.
+
+* Customers are recognised by their Telegram account. A customer whose
+  profile has their Telegram username is linked on their first message.
+* Photos, files, voice messages, locations and contacts are added to the
+  conversation; an edited message is added again, marked as edited.
+* A reply that can't be delivered (for example when the customer blocked the
+  bot) is retried, then shown as not sent with Retry, and the conversation is
+  reopened, as with email.
+* Optionally, an auto reply to customers who start the bot (`/start`), and
+  leaving `/start` itself out of the conversation.
+
+Telegram delivers messages to Tallport's address in `APP_URL`, which must be
+reachable from the internet over HTTPS.
 
 ## Modules
 

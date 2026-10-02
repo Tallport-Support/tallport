@@ -66,6 +66,10 @@ Route::post('/app-settings/ajax', ['uses' => 'SettingsController@ajax', 'middlew
 Route::get('/app-settings/{section?}', ['uses' => 'SettingsController@view', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('settings');
 Route::post('/app-settings/{section?}', ['uses' => 'SettingsController@save', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('settings.save');
 
+// Telegram
+Route::get('/mailbox/{id}/telegram', ['uses' => 'TelegramController@settings', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.telegram');
+Route::post('/mailbox/{id}/telegram', ['uses' => 'TelegramController@settingsSave', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.telegram.save');
+
 // AI Assistant documentation
 Route::get('/ai-assistant/documents', ['uses' => 'AiDocumentsController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('ai.documents');
 Route::post('/ai-assistant/documents', ['uses' => 'AiDocumentsController@action', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('ai.documents.action');

@@ -963,5 +963,22 @@
     "Translation": "翻訳",
     "URL": "URL",
     "You have made the most drafts allowed for today.": "本日作成できる下書きの上限に達しました。",
-    "Waiting in the queue…": "キューで待機中…"
+    "Waiting in the queue…": "キューで待機中…",
+    "A file could not be downloaded from Telegram": "Telegramからファイルをダウンロードできませんでした",
+    "Bot": "ボット",
+    "Bot Token": "ボットのトークン",
+    "Contact": "連絡先",
+    "Don't add the /start message to conversations": "\/start メッセージを会話に追加しない",
+    "Edited message": "編集されたメッセージ",
+    "Enabled": "有効",
+    "Enter the bot token from @BotFather.": "@BotFather から取得したボットのトークンを入力してください。",
+    "Last error": "最後のエラー",
+    "Location": "位置情報",
+    "Messages customers send to your Telegram bot become conversations in this mailbox, and your replies are sent back to them on Telegram. Create a bot with @BotFather and enter its token here.": "顧客がTelegramボットに送ったメッセージはこのメールボックスの会話になり、返信はTelegramで顧客に送られます。@BotFather でボットを作成し、そのトークンをここに入力してください。",
+    "Messages waiting to be received": "受信待ちのメッセージ",
+    "Not receiving messages: save the settings to connect the bot.": "メッセージを受信していません：設定を保存してボットを接続してください。",
+    "Receiving messages": "メッセージを受信中",
+    "Sent when a customer starts the bot (/start).": "顧客がボットを開始したとき（\/start）に送信されます。",
+    "Telegram": "Telegram",
+    "The token @BotFather gives you for the bot.": "@BotFather がボット用に発行するトークンです。"
 }

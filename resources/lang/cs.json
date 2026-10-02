@@ -962,5 +962,22 @@
     "Translation": "Překlad",
     "URL": "URL",
     "You have made the most drafts allowed for today.": "Dnes jste vytvořili maximální povolený počet konceptů.",
-    "Waiting in the queue…": "Čeká ve frontě…"
+    "Waiting in the queue…": "Čeká ve frontě…",
+    "A file could not be downloaded from Telegram": "Soubor se nepodařilo stáhnout z Telegramu",
+    "Bot": "Bot",
+    "Bot Token": "Token bota",
+    "Contact": "Kontakt",
+    "Don't add the /start message to conversations": "Nepřidávat zprávu \/start do konverzací",
+    "Edited message": "Upravená zpráva",
+    "Enabled": "Zapnuto",
+    "Enter the bot token from @BotFather.": "Zadejte token bota od @BotFather.",
+    "Last error": "Poslední chyba",
+    "Location": "Poloha",
+    "Messages customers send to your Telegram bot become conversations in this mailbox, and your replies are sent back to them on Telegram. Create a bot with @BotFather and enter its token here.": "Zprávy, které zákazníci pošlou vašemu botovi v Telegramu, se stanou konverzacemi v této schránce a vaše odpovědi se jim pošlou zpět přes Telegram. Vytvořte bota pomocí @BotFather a zadejte sem jeho token.",
+    "Messages waiting to be received": "Zprávy čekající na přijetí",
+    "Not receiving messages: save the settings to connect the bot.": "Nepřijímá zprávy: uložte nastavení a připojte tak bota.",
+    "Receiving messages": "Přijímá zprávy",
+    "Sent when a customer starts the bot (/start).": "Odešle se, když zákazník spustí bota (\/start).",
+    "Telegram": "Telegram",
+    "The token @BotFather gives you for the bot.": "Token, který vám pro bota dá @BotFather."
 }

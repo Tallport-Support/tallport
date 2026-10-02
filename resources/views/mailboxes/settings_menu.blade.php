@@ -11,6 +11,9 @@
     @if (Auth::user()->isAdmin() || Auth::user()->hasManageMailboxPermission($mailbox->id, App\Mailbox::ACCESS_PERM_AUTO_REPLIES))
         <li @if (Route::currentRouteName() == 'mailboxes.auto_reply')class="active"@endif><a href="{{ route('mailboxes.auto_reply', ['id'=>$mailbox->id]) }}"><i class="glyphicon glyphicon-share"></i> {{ __('Auto Reply') }}</a></li>
     @endif
+    @if (Auth::user()->isAdmin())
+        <li @if (Route::currentRouteName() == 'mailboxes.telegram')class="active"@endif><a href="{{ route('mailboxes.telegram', ['id'=>$mailbox->id]) }}"><i class="glyphicon glyphicon-send"></i> {{ __('Telegram') }}</a></li>
+    @endif
 @endif
 @action('mailboxes.settings.menu', $mailbox)
 @if (!empty($is_dropdown))

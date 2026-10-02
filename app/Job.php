@@ -50,6 +50,7 @@ class Job extends Model
         if (!$allowed_classes) {
             $allowed_classes = [
                 'App\Jobs\SendReplyToCustomer',
+                'App\Jobs\SendReplyToTelegram',
                 'App\Jobs\SendNotificationToUsers',
                 'App\Jobs\SendAutoReply',
                 'App\Jobs\SendAlert',

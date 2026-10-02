@@ -1462,5 +1462,20 @@
     "Translation": "Аударма",
     "URL": "URL",
     "You have made the most drafts allowed for today.": "Бүгінге рұқсат етілген жобалардың ең көп санын жасадыңыз.",
-    "Waiting in the queue…": "Кезекте күтуде…"
+    "Waiting in the queue…": "Кезекте күтуде…",
+    "A file could not be downloaded from Telegram": "Telegram-нан файлды жүктеп алу мүмкін болмады",
+    "Bot": "Бот",
+    "Bot Token": "Бот токені",
+    "Contact": "Байланыс",
+    "Don't add the /start message to conversations": "\/start хабарламасын тикеттерге қоспау",
+    "Edited message": "Өңделген хабарлама",
+    "Enter the bot token from @BotFather.": "@BotFather берген бот токенін енгізіңіз.",
+    "Last error": "Соңғы қате",
+    "Location": "Орналасқан жері",
+    "Messages customers send to your Telegram bot become conversations in this mailbox, and your replies are sent back to them on Telegram. Create a bot with @BotFather and enter its token here.": "Клиенттер сіздің Telegram ботыңызға жіберген хабарламалар осы пошталық жәшіктегі тикеттерге айналады, ал сіздің жауаптарыңыз оларға Telegram арқылы жіберіледі. @BotFather арқылы бот жасап, оның токенін осында енгізіңіз.",
+    "Messages waiting to be received": "Қабылдануды күтіп тұрған хабарламалар",
+    "Not receiving messages: save the settings to connect the bot.": "Хабарламалар қабылданбайды: ботты қосу үшін баптауларды сақтаңыз.",
+    "Receiving messages": "Хабарламаларды қабылдап жатыр",
+    "Sent when a customer starts the bot (/start).": "Клиент ботты іске қосқанда жіберіледі (\/start).",
+    "The token @BotFather gives you for the bot.": "@BotFather бот үшін беретін токен."
 }

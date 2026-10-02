@@ -963,5 +963,22 @@
     "Translation": "Prijevod",
     "URL": "URL",
     "You have made the most drafts allowed for today.": "Danas ste izradili najveći dopušteni broj nacrta.",
-    "Waiting in the queue…": "Čeka u redu čekanja…"
+    "Waiting in the queue…": "Čeka u redu čekanja…",
+    "A file could not be downloaded from Telegram": "Datoteku nije bilo moguće preuzeti s Telegrama",
+    "Bot": "Bot",
+    "Bot Token": "Token bota",
+    "Contact": "Kontakt",
+    "Don't add the /start message to conversations": "Ne dodaji poruku \/start u razgovore",
+    "Edited message": "Uređena poruka",
+    "Enabled": "Uključeno",
+    "Enter the bot token from @BotFather.": "Unesite token bota od @BotFather.",
+    "Last error": "Zadnja pogreška",
+    "Location": "Lokacija",
+    "Messages customers send to your Telegram bot become conversations in this mailbox, and your replies are sent back to them on Telegram. Create a bot with @BotFather and enter its token here.": "Poruke koje kupci šalju vašem Telegram botu postaju razgovori u ovom poštanskom sandučiću, a vaši se odgovori šalju natrag putem Telegrama. Izradite bota pomoću @BotFather i ovdje unesite njegov token.",
+    "Messages waiting to be received": "Poruke koje čekaju primitak",
+    "Not receiving messages: save the settings to connect the bot.": "Ne prima poruke: spremite postavke kako biste povezali bota.",
+    "Receiving messages": "Prima poruke",
+    "Sent when a customer starts the bot (/start).": "Šalje se kad kupac pokrene bota (\/start).",
+    "Telegram": "Telegram",
+    "The token @BotFather gives you for the bot.": "Token koji vam @BotFather daje za bota."
 }

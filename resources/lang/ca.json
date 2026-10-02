@@ -1077,5 +1077,21 @@
     "Translation": "Traducció",
     "URL": "URL",
     "You have made the most drafts allowed for today.": "Heu arribat al màxim d'esborranys permesos per avui.",
-    "Waiting in the queue…": "Esperant a la cua…"
+    "Waiting in the queue…": "Esperant a la cua…",
+    "A file could not be downloaded from Telegram": "No s'ha pogut baixar un fitxer de Telegram",
+    "Bot": "Bot",
+    "Bot Token": "Testimoni del bot",
+    "Contact": "Contacte",
+    "Don't add the /start message to conversations": "No afegeixis el missatge \/start a les converses",
+    "Edited message": "Missatge editat",
+    "Enter the bot token from @BotFather.": "Introduïu el testimoni del bot de @BotFather.",
+    "Last error": "Darrer error",
+    "Location": "Ubicació",
+    "Messages customers send to your Telegram bot become conversations in this mailbox, and your replies are sent back to them on Telegram. Create a bot with @BotFather and enter its token here.": "Els missatges que els clients envien al vostre bot de Telegram es converteixen en converses en aquesta bústia, i les vostres respostes se'ls envien per Telegram. Creeu un bot amb @BotFather i introduïu-hi aquí el testimoni.",
+    "Messages waiting to be received": "Missatges pendents de rebre",
+    "Not receiving messages: save the settings to connect the bot.": "No rep missatges: deseu la configuració per connectar el bot.",
+    "Receiving messages": "Rep missatges",
+    "Sent when a customer starts the bot (/start).": "Enviat quan un client inicia el bot (\/start).",
+    "Telegram": "Telegram",
+    "The token @BotFather gives you for the bot.": "El testimoni que @BotFather us dona per al bot."
 }

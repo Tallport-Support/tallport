@@ -2205,6 +2205,40 @@
             }
         }
     },
+    "telegram_updates": {
+        "columns": {
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "update_id": {
+                "type": "bigint(20) unsigned",
+                "nullable": false
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id",
+                    "update_id"
+                ]
+            },
+            "telegram_updates_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "created_at"
+                ]
+            }
+        }
+    },
     "threads": {
         "columns": {
             "id": {

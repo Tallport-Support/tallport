@@ -963,5 +963,22 @@
     "Translation": "Tradução",
     "URL": "URL",
     "You have made the most drafts allowed for today.": "Atingiu o número máximo de rascunhos permitidos para hoje.",
-    "Waiting in the queue…": "A aguardar na fila…"
+    "Waiting in the queue…": "A aguardar na fila…",
+    "A file could not be downloaded from Telegram": "Não foi possível transferir um ficheiro do Telegram",
+    "Bot": "Bot",
+    "Bot Token": "Token do bot",
+    "Contact": "Contacto",
+    "Don't add the /start message to conversations": "Não adicionar a mensagem \/start às conversas",
+    "Edited message": "Mensagem editada",
+    "Enabled": "Ativado",
+    "Enter the bot token from @BotFather.": "Introduza o token do bot do @BotFather.",
+    "Last error": "Último erro",
+    "Location": "Localização",
+    "Messages customers send to your Telegram bot become conversations in this mailbox, and your replies are sent back to them on Telegram. Create a bot with @BotFather and enter its token here.": "As mensagens que os clientes enviam para o seu bot do Telegram tornam-se conversas nesta caixa de correio, e as suas respostas são-lhes enviadas pelo Telegram. Crie um bot com o @BotFather e introduza aqui o respetivo token.",
+    "Messages waiting to be received": "Mensagens a aguardar receção",
+    "Not receiving messages: save the settings to connect the bot.": "Não está a receber mensagens: guarde as definições para ligar o bot.",
+    "Receiving messages": "A receber mensagens",
+    "Sent when a customer starts the bot (/start).": "Enviado quando um cliente inicia o bot (\/start).",
+    "Telegram": "Telegram",
+    "The token @BotFather gives you for the bot.": "O token que o @BotFather lhe dá para o bot."
 }

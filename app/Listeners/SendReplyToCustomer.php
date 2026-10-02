@@ -86,6 +86,12 @@ class SendReplyToCustomer
             return;
         }
 
+        // Telegram: the reply is sent by Tallport's Telegram bot.
+        if ($conversation->isChat() && $conversation->channel == \App\Telegram\Telegram::CHANNEL) {
+            \App\Jobs\SendReplyToTelegram::dispatch($thread->id)->delay(now()->addSeconds(Conversation::UNDO_TIMOUT));
+            return;
+        }
+
         // Chat conversation.
         if ($conversation->isChat()) {
             \Helper::backgroundAction('chat_conversation.send_reply', [$conversation, $replies, $conversation->customer], now()->addSeconds(Conversation::UNDO_TIMOUT));
