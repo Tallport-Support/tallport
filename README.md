@@ -28,6 +28,7 @@ Credit for everything up to the fork goes to the FreeScout team.
 * [Two-factor authentication and passkeys](#two-factor-authentication-and-passkeys)
 * [AI Assistant](#ai-assistant)
 * [Telegram](#telegram)
+* [Auto replies in languages](#auto-replies-in-languages)
 * [Modules](#modules)
 * [Development](#development)
 * [Security](#security)
@@ -289,6 +290,17 @@ bot and whether it is receiving messages.
 
 Telegram delivers messages to Tallport's address in `APP_URL`, which must be
 reachable from the internet over HTTPS.
+
+## Auto replies in languages
+
+A mailbox's auto reply (mailbox settings » Auto Reply) can have versions in
+other languages: customers get the one in their language, everyone else the
+default. Chinese, Japanese and Korean are recognised from the characters used
+(Simplified and Traditional Chinese apart, with PHP's intl extension); other
+languages by the [AI Assistant](#ai-assistant), when it is set up. To see what
+a conversation was recognised as: `php artisan tallport:auto-reply-language
+<conversation ID>`. The Telegram `/start` auto reply has versions too, chosen
+by the language of the customer's Telegram app.
 
 ## Modules
 

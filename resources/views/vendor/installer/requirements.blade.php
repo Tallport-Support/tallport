@@ -18,8 +18,7 @@
                 @if($type == 'php')
                     <strong>
                         <small>
-                            <?php /*(version {{ $phpSupportInfo['minimum'] }} required)*/ ?>
-                            (7.1 - 8.x)
+                            ({{ $phpSupportInfo['minimum'] }}+)
                         </small>
                     </strong>
                     <span class="float-right">
@@ -38,6 +37,18 @@
             @endforeach
         </ul>
     @endforeach
+
+    @if (!empty($optional))
+        <ul class="list">
+            <li class="list__item list__title success"><strong>{{ __('Optional') }}</strong></li>
+            @foreach ($optional as $extension => $info)
+                <li class="list__item {{ $info['enabled'] ? 'success' : '' }}">
+                    {{ $extension }} <small>({{ __($info['purpose']) }})</small>
+                    <i class="fa fa-fw fa-{{ $info['enabled'] ? 'check-circle-o' : 'minus-circle' }} row-icon" aria-hidden="true"></i>
+                </li>
+            @endforeach
+        </ul>
+    @endif
 
     @if ( ! isset($requirements['errors']) && $phpSupportInfo['supported'] )
         <div class="buttons">

@@ -982,5 +982,14 @@
     "Receiving messages": "正在接收消息",
     "Sent when a customer starts the bot (/start).": "客户启动机器人（\/start）时发送。",
     "Telegram": "Telegram",
-    "The token @BotFather gives you for the bot.": "@BotFather 为机器人提供的令牌。"
+    "The token @BotFather gives you for the bot.": "@BotFather 为机器人提供的令牌。",
+    "Add Language": "添加语言",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "如果在此添加了客户的语言，客户会收到该语言的自动回复；否则收到默认回复。中文、日语和韩语根据所用字符识别，其他语言由 AI 助手识别（如已设置）。",
+    "Needed for": "用于",
+    "Optional": "可选",
+    "Remove :language": "删除 :language",
+    "Remove the :language auto reply?": "要删除 :language 自动回复吗？",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "客户启动机器人（\/start）时发送；如果在此添加了其 Telegram 应用的语言，则使用该语言。",
+    "off": "已关闭",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "按用户语言显示日期；简体和繁体中文自动回复"
 }

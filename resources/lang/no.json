@@ -985,5 +985,14 @@
     "Receiving messages": "Mottar meldinger",
     "Sent when a customer starts the bot (/start).": "Sendes når en kunde starter boten (\/start).",
     "Telegram": "Telegram",
-    "The token @BotFather gives you for the bot.": "Tokenet @BotFather gir deg for boten."
+    "The token @BotFather gives you for the bot.": "Tokenet @BotFather gir deg for boten.",
+    "Add Language": "Legg til språk",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "Kunder får det automatiske svaret på sitt språk hvis du legger det til her; ellers standardsvaret. Kinesisk, japansk og koreansk gjenkjennes på tegnene som brukes, andre språk av AI-assistenten (hvis den er satt opp).",
+    "Needed for": "Trengs for",
+    "Optional": "Valgfritt",
+    "Remove :language": "Fjern :language",
+    "Remove the :language auto reply?": "Fjerne det automatiske svaret på :language?",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "Sendes når en kunde starter boten (\/start), på språket i Telegram-appen deres hvis du legger det til her.",
+    "off": "av",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "Datoer på brukernes språk; automatiske svar på forenklet og tradisjonell kinesisk"
 }

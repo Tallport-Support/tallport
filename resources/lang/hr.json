@@ -980,5 +980,14 @@
     "Receiving messages": "Prima poruke",
     "Sent when a customer starts the bot (/start).": "Šalje se kad kupac pokrene bota (\/start).",
     "Telegram": "Telegram",
-    "The token @BotFather gives you for the bot.": "Token koji vam @BotFather daje za bota."
+    "The token @BotFather gives you for the bot.": "Token koji vam @BotFather daje za bota.",
+    "Add Language": "Dodaj jezik",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "Kupci dobivaju automatski odgovor na svom jeziku ako ga ovdje dodate; inače zadani. Kineski, japanski i korejski prepoznaju se po korištenim znakovima, ostali jezici pomoću AI asistenta (ako je postavljen).",
+    "Needed for": "Potrebno za",
+    "Optional": "Neobavezno",
+    "Remove :language": "Ukloni :language",
+    "Remove the :language auto reply?": "Ukloniti automatski odgovor (:language)?",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "Šalje se kad kupac pokrene bota (\/start), na jeziku njegove Telegram aplikacije ako ga ovdje dodate.",
+    "off": "isključeno",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "Datumi na jeziku korisnika; automatski odgovori na pojednostavljenom i tradicionalnom kineskom"
 }

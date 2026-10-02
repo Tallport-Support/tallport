@@ -8,7 +8,8 @@ use App\Mailbox;
  * Telegram bots as a channel: a mailbox's bot receives customers' messages
  * (conversations of the chat type), and agents' replies are sent back.
  * Settings are in the mailbox's "telegram" meta: enabled, token (encrypted),
- * auto_reply, ignore_start, webhook_secret (encrypted).
+ * auto_reply, auto_replies (in other languages: language => text),
+ * ignore_start, webhook_secret (encrypted).
  */
 class Telegram
 {
@@ -31,6 +32,7 @@ class Telegram
             'enabled'      => !empty($settings['enabled']),
             'token'        => isset($settings['token']) ? (string) \Helper::decryptSoft($settings['token']) : '',
             'auto_reply'   => (string) ($settings['auto_reply'] ?? ''),
+            'auto_replies' => array_filter((array) ($settings['auto_replies'] ?? []), 'is_string'),
             'ignore_start' => !empty($settings['ignore_start']),
         ];
     }
@@ -41,7 +43,7 @@ class Telegram
     public static function saveSettings(Mailbox $mailbox, array $settings)
     {
         $meta = (array) ($mailbox->meta[self::META] ?? []);
-        foreach (['enabled', 'auto_reply', 'ignore_start'] as $name) {
+        foreach (['enabled', 'auto_reply', 'auto_replies', 'ignore_start'] as $name) {
             if (array_key_exists($name, $settings)) {
                 $meta[$name] = $settings[$name];
             }
@@ -50,6 +52,20 @@ class Telegram
             $meta['token'] = $settings['token'] !== '' ? \Helper::encrypt($settings['token']) : '';
         }
         $mailbox->setMetaParam(self::META, $meta, true);
+    }
+
+    /**
+     * The /start auto reply in the language of the customer's Telegram app
+     * (an IETF language tag), else the default one.
+     */
+    public static function autoReply(array $settings, $language_tag)
+    {
+        $versions = array_filter($settings['auto_replies'], function ($text) {
+            return trim($text) !== '';
+        });
+        $language = \App\AutoReply\AutoReplies::fromLanguageTag($language_tag, array_keys($versions));
+
+        return $language ? $versions[$language] : $settings['auto_reply'];
     }
 
     public static function isEnabled(Mailbox $mailbox)

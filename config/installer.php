@@ -51,6 +51,11 @@ return [
         // ],
     ],
 
+    // Optional PHP extensions, and what for (English, translated when shown).
+    'optional' => [
+        'intl' => 'Dates in the users\' languages; Simplified and Traditional Chinese auto replies',
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Folders Permissions

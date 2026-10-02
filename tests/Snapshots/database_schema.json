@@ -1403,6 +1403,71 @@
             }
         }
     },
+    "mailbox_auto_replies": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "language": {
+                "type": "varchar(16)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "enabled": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "subject": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "message": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "mailbox_auto_replies_mailbox_id_language_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id",
+                    "language"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
     "mailbox_user": {
         "columns": {
             "id": {

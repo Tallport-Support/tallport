@@ -1035,5 +1035,14 @@
     "Receiving messages": "正在接收訊息",
     "Sent when a customer starts the bot (/start).": "客戶啟動機器人（\/start）時傳送。",
     "Telegram": "Telegram",
-    "The token @BotFather gives you for the bot.": "@BotFather 為機器人提供的權杖。"
+    "The token @BotFather gives you for the bot.": "@BotFather 為機器人提供的權杖。",
+    "Add Language": "新增語言",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "如果在此新增了客戶的語言，客戶會收到該語言的自動回覆；否則收到預設回覆。中文、日文和韓文依所用字元識別，其他語言由 AI 助理識別（如已設定）。",
+    "Needed for": "用於",
+    "Optional": "選用",
+    "Remove :language": "移除 :language",
+    "Remove the :language auto reply?": "要移除 :language 自動回覆嗎？",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "客戶啟動機器人（\/start）時傳送；如果在此新增了其 Telegram 應用程式的語言，則使用該語言。",
+    "off": "已關閉",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "依使用者語言顯示日期；簡體與繁體中文自動回覆"
 }

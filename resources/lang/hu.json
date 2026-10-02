@@ -980,5 +980,14 @@
     "Receiving messages": "Fogadja az üzeneteket",
     "Sent when a customer starts the bot (/start).": "Akkor küldjük, amikor egy ügyfél elindítja a botot (\/start).",
     "Telegram": "Telegram",
-    "The token @BotFather gives you for the bot.": "A token, amelyet a @BotFather ad a bothoz."
+    "The token @BotFather gives you for the bot.": "A token, amelyet a @BotFather ad a bothoz.",
+    "Add Language": "Nyelv hozzáadása",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "Az ügyfelek a saját nyelvükön kapják az automatikus választ, ha itt hozzáadod; különben az alapértelmezettet. A kínait, japánt és koreait a használt írásjelekből ismerjük fel, a többi nyelvet az MI-asszisztens (ha be van állítva).",
+    "Needed for": "Szükséges ehhez",
+    "Optional": "Nem kötelező",
+    "Remove :language": ":language eltávolítása",
+    "Remove the :language auto reply?": "Eltávolítod a(z) :language automatikus választ?",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "Akkor küldjük, amikor egy ügyfél elindítja a botot (\/start), a Telegram-alkalmazása nyelvén, ha itt hozzáadod.",
+    "off": "ki",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "Dátumok a felhasználók nyelvén; automatikus válaszok egyszerűsített és hagyományos kínaiul"
 }

@@ -985,5 +985,14 @@
     "Receiving messages": "Ontvangt berichten",
     "Sent when a customer starts the bot (/start).": "Verstuurd wanneer een klant de bot start (\/start).",
     "Telegram": "Telegram",
-    "The token @BotFather gives you for the bot.": "Het token dat @BotFather u voor de bot geeft."
+    "The token @BotFather gives you for the bot.": "Het token dat @BotFather u voor de bot geeft.",
+    "Add Language": "Taal toevoegen",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "Klanten krijgen het automatische antwoord in hun taal als u die hier toevoegt; anders het standaardantwoord. Chinees, Japans en Koreaans worden herkend aan de gebruikte tekens, andere talen door de AI-assistent (als die is ingesteld).",
+    "Needed for": "Nodig voor",
+    "Optional": "Optioneel",
+    "Remove :language": ":language verwijderen",
+    "Remove the :language auto reply?": "Automatisch antwoord (:language) verwijderen?",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "Verstuurd wanneer een klant de bot start (\/start), in de taal van hun Telegram-app als u die hier toevoegt.",
+    "off": "uit",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "Datums in de taal van gebruikers; automatische antwoorden in vereenvoudigd en traditioneel Chinees"
 }

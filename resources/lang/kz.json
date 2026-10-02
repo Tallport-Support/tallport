@@ -1477,5 +1477,14 @@
     "Not receiving messages: save the settings to connect the bot.": "Хабарламалар қабылданбайды: ботты қосу үшін баптауларды сақтаңыз.",
     "Receiving messages": "Хабарламаларды қабылдап жатыр",
     "Sent when a customer starts the bot (/start).": "Клиент ботты іске қосқанда жіберіледі (\/start).",
-    "The token @BotFather gives you for the bot.": "@BotFather бот үшін беретін токен."
+    "The token @BotFather gives you for the bot.": "@BotFather бот үшін беретін токен.",
+    "Add Language": "Тіл қосу",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "Тілді осында қоссаңыз, клиенттер автожауапты өз тілінде алады; әйтпесе әдепкі жауапты. Қытай, жапон және корей тілдері қолданылған таңбалар бойынша, басқа тілдер ЖИ көмекшісі арқылы (егер ол бапталса) танылады.",
+    "Needed for": "Қажет",
+    "Optional": "Міндетті емес",
+    "Remove :language": ":language жою",
+    "Remove the :language auto reply?": "Автожауапты (:language) жою керек пе?",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "Клиент ботты іске қосқанда (\/start) жіберіледі, тілді осында қоссаңыз, оның Telegram қолданбасының тілінде.",
+    "off": "өшірулі",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "Агенттердің тіліндегі күндер; жеңілдетілген және дәстүрлі қытай тіліндегі автожауаптар"
 }

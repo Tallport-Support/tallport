@@ -979,5 +979,14 @@
     "Receiving messages": "Odbiera wiadomości",
     "Sent when a customer starts the bot (/start).": "Wysyłana, gdy klient uruchomi bota (\/start).",
     "Telegram": "Telegram",
-    "The token @BotFather gives you for the bot.": "Token, który @BotFather podaje dla bota."
+    "The token @BotFather gives you for the bot.": "Token, który @BotFather podaje dla bota.",
+    "Add Language": "Dodaj język",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "Klienci dostają automatyczną odpowiedź w swoim języku, jeśli go tu dodasz; w przeciwnym razie domyślną. Chiński, japoński i koreański są rozpoznawane po użytych znakach, inne języki przez asystenta AI (jeśli jest skonfigurowany).",
+    "Needed for": "Potrzebne do",
+    "Optional": "Opcjonalne",
+    "Remove :language": "Usuń :language",
+    "Remove the :language auto reply?": "Usunąć automatyczną odpowiedź (:language)?",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "Wysyłana, gdy klient uruchomi bota (\/start), w języku jego aplikacji Telegram, jeśli go tu dodasz.",
+    "off": "wył.",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "Daty w języku użytkowników; automatyczne odpowiedzi po chińsku uproszczonym i tradycyjnym"
 }

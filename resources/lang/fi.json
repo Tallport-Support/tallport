@@ -999,5 +999,14 @@
     "Receiving messages": "Vastaanottaa viestejä",
     "Sent when a customer starts the bot (/start).": "Lähetetään, kun asiakas käynnistää botin (\/start).",
     "Telegram": "Telegram",
-    "The token @BotFather gives you for the bot.": "Tunnus, jonka @BotFather antaa botille."
+    "The token @BotFather gives you for the bot.": "Tunnus, jonka @BotFather antaa botille.",
+    "Add Language": "Lisää kieli",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "Asiakkaat saavat automaattisen vastauksen omalla kielellään, jos lisäät sen tähän; muuten oletusvastauksen. Kiina, japani ja korea tunnistetaan käytetyistä merkeistä, muut kielet tekoälyavustajalla (jos se on otettu käyttöön).",
+    "Needed for": "Tarvitaan",
+    "Optional": "Valinnainen",
+    "Remove :language": "Poista :language",
+    "Remove the :language auto reply?": "Poistetaanko automaattinen vastaus (:language)?",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "Lähetetään, kun asiakas käynnistää botin (\/start), hänen Telegram-sovelluksensa kielellä, jos lisäät sen tähän.",
+    "off": "pois",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "Päivämäärät käyttäjien kielellä; automaattiset vastaukset yksinkertaistetulla ja perinteisellä kiinalla"
 }

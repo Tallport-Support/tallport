@@ -78,6 +78,22 @@
             }
         }
     },
+    "tallport:auto-reply-language": {
+        "class": "App\\Console\\Commands\\AutoReplyLanguage",
+        "description": "Show which language a conversation (or text) is recognised as, and which auto reply it gets",
+        "arguments": {
+            "conversation": {
+                "required": false,
+                "array": false,
+                "default": null
+            }
+        },
+        "options": {
+            "text": {
+                "value": "optional"
+            }
+        }
+    },
     "tallport:build": {
         "class": "App\\Console\\Commands\\Build",
         "aliases": [

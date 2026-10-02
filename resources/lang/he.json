@@ -979,5 +979,14 @@
     "Receiving messages": "מקבל הודעות",
     "Sent when a customer starts the bot (/start).": "נשלחת כאשר לקוח מפעיל את הבוט (\/start).",
     "Telegram": "Telegram",
-    "The token @BotFather gives you for the bot.": "האסימון ש-@BotFather נותן לך עבור הבוט."
+    "The token @BotFather gives you for the bot.": "האסימון ש-@BotFather נותן לך עבור הבוט.",
+    "Add Language": "הוסף שפה",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "לקוחות מקבלים את המענה האוטומטי בשפתם אם תוסיף אותה כאן; אחרת את ברירת המחדל. סינית, יפנית וקוריאנית מזוהות לפי התווים, ושפות אחרות על ידי עוזר ה-AI (אם הוגדר).",
+    "Needed for": "נדרש עבור",
+    "Optional": "אופציונלי",
+    "Remove :language": "הסר :language",
+    "Remove the :language auto reply?": "להסיר את המענה האוטומטי (:language)?",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "נשלח כאשר לקוח מפעיל את הבוט (\/start), בשפת אפליקציית הטלגרם שלו אם תוסיף אותה כאן.",
+    "off": "כבוי",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "תאריכים בשפת המשתמשים; מענים אוטומטיים בסינית מפושטת ומסורתית"
 }

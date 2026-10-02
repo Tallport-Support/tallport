@@ -123,10 +123,15 @@
         <tbody>
             @foreach ($php_extensions as $extension_name => $extension_status)
                 <tr>
-                    <th>{{ $extension_name }}@if (!$extension_status && in_array(strtolower($extension_name), ['intl', 'imap'])) {{ __('(optional)') }}@endif</th>
+                    @php
+                        $optional_purpose = config('installer.optional.'.strtolower($extension_name));
+                    @endphp
+                    <th>{{ $extension_name }}@if (!$extension_status && $optional_purpose) {{ __('(optional)') }}@endif</th>
                     <td class="table-main-col">
                         @if ($extension_status)
                             <strong class="text-success">OK</strong>
+                        @elseif ($optional_purpose)
+                            <strong class="text-warning">{{ __('Not found') }}</strong> <span class="text-help">{{ __('Needed for') }}: {{ __($optional_purpose) }}</span>
                         @else
                             <strong class="text-danger">{{ __('Not found') }}</strong>
                         @endif

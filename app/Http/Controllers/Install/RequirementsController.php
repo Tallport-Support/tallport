@@ -38,6 +38,11 @@ class RequirementsController extends Controller
             config('installer.requirements')
         );
 
-        return view('vendor.installer.requirements', compact('requirements', 'phpSupportInfo'));
+        $optional = [];
+        foreach (config('installer.optional', []) as $extension => $purpose) {
+            $optional[$extension] = ['enabled' => extension_loaded($extension), 'purpose' => $purpose];
+        }
+
+        return view('vendor.installer.requirements', compact('requirements', 'phpSupportInfo', 'optional'));
     }
 }

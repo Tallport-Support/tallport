@@ -979,5 +979,14 @@
     "Receiving messages": "Prijíma správy",
     "Sent when a customer starts the bot (/start).": "Odošle sa, keď zákazník spustí bota (\/start).",
     "Telegram": "Telegram",
-    "The token @BotFather gives you for the bot.": "Token, ktorý vám pre bota dá @BotFather."
+    "The token @BotFather gives you for the bot.": "Token, ktorý vám pre bota dá @BotFather.",
+    "Add Language": "Pridať jazyk",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "Zákazníci dostanú automatickú odpoveď vo svojom jazyku, ak ho sem pridáte; inak predvolenú. Čínština, japončina a kórejčina sa rozpoznajú podľa použitých znakov, ostatné jazyky pomocou AI asistenta (ak je nastavený).",
+    "Needed for": "Potrebné pre",
+    "Optional": "Voliteľné",
+    "Remove :language": "Odstrániť :language",
+    "Remove the :language auto reply?": "Odstrániť automatickú odpoveď (:language)?",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "Odošle sa, keď zákazník spustí bota (\/start), v jazyku jeho aplikácie Telegram, ak ho sem pridáte.",
+    "off": "vypnuté",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "Dátumy v jazyku používateľov; automatické odpovede v zjednodušenej a tradičnej čínštine"
 }

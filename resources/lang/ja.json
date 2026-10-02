@@ -980,5 +980,14 @@
     "Receiving messages": "メッセージを受信中",
     "Sent when a customer starts the bot (/start).": "顧客がボットを開始したとき（\/start）に送信されます。",
     "Telegram": "Telegram",
-    "The token @BotFather gives you for the bot.": "@BotFather がボット用に発行するトークンです。"
+    "The token @BotFather gives you for the bot.": "@BotFather がボット用に発行するトークンです。",
+    "Add Language": "言語を追加",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "ここで言語を追加すると、顧客はその言語の自動返信を受け取ります。それ以外はデフォルトの自動返信です。中国語・日本語・韓国語は使われている文字から、その他の言語はAIアシスタント（設定済みの場合）で判別します。",
+    "Needed for": "用途",
+    "Optional": "任意",
+    "Remove :language": ":language を削除",
+    "Remove the :language auto reply?": ":language の自動返信を削除しますか？",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "顧客がボットを開始したとき（\/start）に送信されます。ここで言語を追加すると、顧客のTelegramアプリの言語で送信します。",
+    "off": "オフ",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "ユーザーの言語での日付表示、簡体字・繁体字中国語の自動返信"
 }

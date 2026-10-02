@@ -1093,5 +1093,14 @@
     "Receiving messages": "Rep missatges",
     "Sent when a customer starts the bot (/start).": "Enviat quan un client inicia el bot (\/start).",
     "Telegram": "Telegram",
-    "The token @BotFather gives you for the bot.": "El testimoni que @BotFather us dona per al bot."
+    "The token @BotFather gives you for the bot.": "El testimoni que @BotFather us dona per al bot.",
+    "Add Language": "Afegeix un idioma",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "Els clients reben la resposta automàtica en el seu idioma si l'afegiu aquí; si no, la predeterminada. El xinès, el japonès i el coreà es reconeixen pels caràcters usats; els altres idiomes, per l'assistent d'IA (si està configurat).",
+    "Needed for": "Necessari per a",
+    "Optional": "Opcional",
+    "Remove :language": "Suprimeix :language",
+    "Remove the :language auto reply?": "Voleu suprimir la resposta automàtica en :language?",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "S'envia quan un client inicia el bot (\/start), en l'idioma de la seva aplicació de Telegram si l'afegiu aquí.",
+    "off": "desactivada",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "Dates en l'idioma dels usuaris; respostes automàtiques en xinès simplificat i tradicional"
 }

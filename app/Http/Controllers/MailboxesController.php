@@ -639,7 +639,10 @@ class MailboxesController extends Controller
         }
 
         return view('mailboxes/auto_reply', [
-            'mailbox' => $mailbox,
+            'mailbox'         => $mailbox,
+            'versions'        => \App\AutoReply\AutoReplies::versions($mailbox),
+            'languages'       => \App\Ai\Settings::LANGUAGES,
+            'active_language' => session('auto_reply_language'),
         ]);
     }
 
@@ -657,23 +660,72 @@ class MailboxesController extends Controller
             'auto_reply_enabled'     => ($request->filled('auto_reply_enabled') ?? false),
         ]);
 
-        if ($request->auto_reply_enabled) {
+        $versions = (array) $request->input('versions', []);
+        $languages = \App\Ai\Settings::LANGUAGES;
+        $adding = $request->filled('add_language') || $request->filled('remove_language');
+
+        // Adding or removing a language keeps what was typed, unchecked.
+        if ($request->auto_reply_enabled && !$adding) {
             $post = $request->all();
             $post['auto_reply_message'] = strip_tags($post['auto_reply_message'] ?? '');
-            $validator = Validator::make($post, [
+            $rules = [
                 'auto_reply_subject' => 'required|string|max:128',
                 'auto_reply_message' => 'required|string',
-            ]);
-            $validator->setAttributeNames([
+            ];
+            $names = [
                 'auto_reply_subject' => __('Subject'),
                 'auto_reply_message' => __('Message'),
-            ]);
+            ];
+            foreach ($versions as $language => $version) {
+                $post['versions'][$language]['message'] = strip_tags($version['message'] ?? '');
+                if (!empty($version['enabled'])) {
+                    $rules['versions.'.$language.'.subject'] = 'required|string|max:255';
+                    $rules['versions.'.$language.'.message'] = 'required|string';
+                    $names['versions.'.$language.'.subject'] = __('Subject');
+                    $names['versions.'.$language.'.message'] = __('Message');
+                }
+            }
+            $validator = Validator::make($post, $rules);
+            $validator->setAttributeNames($names);
 
             if ($validator->fails()) {
+                $failed_language = null;
+                foreach (array_keys($validator->errors()->messages()) as $field) {
+                    if (preg_match('/^versions\.([^.]+)\./', $field, $m)) {
+                        $failed_language = $m[1];
+                        break;
+                    }
+                }
+
                 return redirect()->route('mailboxes.auto_reply', ['id' => $id])
                             ->withErrors($validator)
-                            ->withInput();
+                            ->withInput()
+                            ->with('auto_reply_language', $failed_language);
             }
+        }
+
+        // Versions in other languages.
+        foreach ($versions as $language => $values) {
+            if (!isset($languages[$language])) {
+                continue;
+            }
+            $version = \App\MailboxAutoReply::firstOrNew(['mailbox_id' => $mailbox->id, 'language' => $language]);
+            $version->enabled = !empty($values['enabled']);
+            $version->subject = mb_substr((string) ($values['subject'] ?? ''), 0, 255);
+            $version->message = \Helper::stripDangerousTags(\Helper::purifyHtml((string) ($values['message'] ?? '')));
+            $version->save();
+        }
+        $active_language = null;
+        if ($request->filled('remove_language')) {
+            \App\MailboxAutoReply::where('mailbox_id', $mailbox->id)->where('language', $request->remove_language)->delete();
+        } elseif ($request->filled('add_language') && isset($languages[$request->add_language_code])) {
+            $version = \App\MailboxAutoReply::firstOrNew(['mailbox_id' => $mailbox->id, 'language' => $request->add_language_code]);
+            if (!$version->exists) {
+                $version->enabled = false;
+                $version->subject = $mailbox->auto_reply_subject;
+                $version->save();
+            }
+            $active_language = $version->language;
         }
 
         $data = [
@@ -691,7 +743,7 @@ class MailboxesController extends Controller
 
         \Session::flash('flash_success_floating', __('Auto Reply status saved'));
 
-        return redirect()->route('mailboxes.auto_reply', ['id' => $id]);
+        return redirect()->route('mailboxes.auto_reply', ['id' => $id])->with('auto_reply_language', $active_language);
     }
 
     /**

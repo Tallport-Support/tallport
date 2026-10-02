@@ -7,6 +7,11 @@
     @include('mailboxes/sidebar_menu')
 @endsection
 
+@section('javascript')
+    @parent
+    confirmButtonsInit();
+@endsection
+
 @section('content')
 
     <div class="section-heading">
@@ -71,10 +76,38 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="telegram_auto_reply" class="col-sm-2 control-label">{{ __('Auto Reply') }}</label>
+                        <label class="col-sm-2 control-label">{{ __('Auto Reply') }}</label>
                         <div class="col-sm-6">
-                            <textarea id="telegram_auto_reply" class="form-control input-sized-lg" rows="3" name="auto_reply">{{ old('auto_reply', $settings['auto_reply']) }}</textarea>
-                            <div class="form-help">{{ __('Sent when a customer starts the bot (/start).') }}</div>
+                            <ul class="nav nav-tabs">
+                                <li class="@if (!$active_language) active @endif"><a href="#telegram_auto_reply_default" data-toggle="tab">{{ __('Default') }}</a></li>
+                                @foreach ($settings['auto_replies'] as $language => $text)
+                                    <li class="@if ($active_language == $language) active @endif"><a href="#telegram_auto_reply_{{ $language }}" data-toggle="tab">{{ $languages[$language] ?? $language }}</a></li>
+                                @endforeach
+                            </ul>
+                            <div class="tab-content margin-top-10">
+                                <div class="tab-pane @if (!$active_language) active @endif" id="telegram_auto_reply_default">
+                                    <textarea id="telegram_auto_reply" class="form-control input-sized-lg" rows="3" name="auto_reply" aria-label="{{ __('Auto Reply') }}">{{ old('auto_reply', $settings['auto_reply']) }}</textarea>
+                                </div>
+                                @foreach ($settings['auto_replies'] as $language => $text)
+                                    <div class="tab-pane @if ($active_language == $language) active @endif" id="telegram_auto_reply_{{ $language }}">
+                                        <textarea class="form-control input-sized-lg" rows="3" name="auto_replies[{{ $language }}]" aria-label="{{ $languages[$language] ?? $language }}">{{ old('auto_replies.'.$language, $text) }}</textarea>
+                                        <button type="submit" class="btn btn-link btn-sm text-danger" name="remove_language" value="{{ $language }}" data-confirm="{{ __('Remove the :language auto reply?', ['language' => $languages[$language] ?? $language]) }}">{{ __('Remove :language', ['language' => $languages[$language] ?? $language]) }}</button>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="form-help">{{ __('Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.') }}</div>
+                            @if (count($languages) > count($settings['auto_replies']))
+                                <div class="form-inline margin-top-10">
+                                    <select name="add_language_code" class="form-control input-sm" aria-label="{{ __('Language') }}">
+                                        @foreach ($languages as $code => $name)
+                                            @if (!array_key_exists($code, $settings['auto_replies']))
+                                                <option value="{{ $code }}">{{ $name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    <button type="submit" class="btn btn-default btn-sm" name="add_language" value="1">{{ __('Add Language') }}</button>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -96,4 +129,9 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('javascript')
+    @parent
+    confirmButtonsInit();
 @endsection

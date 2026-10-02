@@ -980,5 +980,14 @@
     "Receiving messages": "Mesajlar qəbul edilir",
     "Sent when a customer starts the bot (/start).": "Müştəri botu başladanda göndərilir (\/start).",
     "Telegram": "Telegram",
-    "The token @BotFather gives you for the bot.": "@BotFather-in bot üçün verdiyi token."
+    "The token @BotFather gives you for the bot.": "@BotFather-in bot üçün verdiyi token.",
+    "Add Language": "Dil əlavə et",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "Bura əlavə etsəniz, müştərilər avtomatik cavabı öz dillərində alır; əks halda standart cavabı. Çin, yapon və koreya dilləri istifadə olunan simvollardan, digər dillər isə Sİ köməkçisi ilə (qurulubsa) tanınır.",
+    "Needed for": "Lazımdır",
+    "Optional": "İstəyə bağlı",
+    "Remove :language": ":language sil",
+    "Remove the :language auto reply?": "Avtomatik cavab (:language) silinsin?",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "Müştəri botu başladanda (\/start), bura əlavə etsəniz, onun Telegram tətbiqinin dilində göndərilir.",
+    "off": "söndürülüb",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "İstifadəçilərin dilində tarixlər; sadələşdirilmiş və ənənəvi Çin dilində avtomatik cavablar"
 }

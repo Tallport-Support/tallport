@@ -87,6 +87,8 @@ class TelegramController extends Controller
             'webhook'         => $webhook,
             'webhook_ok'      => $webhook && ($webhook['url'] ?? '') == Telegram::webhookUrl($mailbox),
             'telegram_error'  => $error,
+            'languages'       => \App\Ai\Settings::LANGUAGES,
+            'active_language' => session('telegram_language'),
         ]);
     }
 
@@ -99,10 +101,22 @@ class TelegramController extends Controller
         if (\Helper::isSafePassword($token)) {
             $token = $before['token'];
         }
+        $languages = \App\Ai\Settings::LANGUAGES;
+        $auto_replies = [];
+        foreach ((array) $request->input('auto_replies', []) as $language => $text) {
+            if (isset($languages[$language]) && $language != $request->remove_language) {
+                $auto_replies[$language] = trim((string) $text);
+            }
+        }
+        if ($request->filled('add_language') && isset($languages[$request->add_language_code])) {
+            $auto_replies += [$request->add_language_code => ''];
+            \Session::flash('telegram_language', $request->add_language_code);
+        }
         $settings = [
             'enabled'      => (bool) $request->input('enabled'),
             'token'        => $token,
             'auto_reply'   => trim((string) $request->input('auto_reply')),
+            'auto_replies' => $auto_replies,
             'ignore_start' => (bool) $request->input('ignore_start'),
         ];
         if ($settings['enabled'] && $token === '') {

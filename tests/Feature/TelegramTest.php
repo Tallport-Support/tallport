@@ -154,7 +154,7 @@ class TelegramTest extends FeatureTestCase
         ])->assertRedirect(route('mailboxes.telegram', ['id' => $this->mailbox->id]));
 
         $mailbox = $this->mailbox->fresh();
-        $this->assertSame(['enabled' => true, 'token' => self::TOKEN, 'auto_reply' => 'Welcome!', 'ignore_start' => true], Telegram::settings($mailbox));
+        $this->assertSame(['enabled' => true, 'token' => self::TOKEN, 'auto_reply' => 'Welcome!', 'auto_replies' => [], 'ignore_start' => true], Telegram::settings($mailbox));
         $this->assertStringNotContainsString(self::TOKEN, json_encode($mailbox->meta));
         $set = $this->sentTo('setWebhook')->last();
         $this->assertSame(route('telegram.webhook', ['mailbox_id' => $mailbox->id]), $set['url']);

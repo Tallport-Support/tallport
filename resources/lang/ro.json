@@ -979,5 +979,14 @@
     "Receiving messages": "Primește mesaje",
     "Sent when a customer starts the bot (/start).": "Trimis când un client pornește botul (\/start).",
     "Telegram": "Telegram",
-    "The token @BotFather gives you for the bot.": "Tokenul pe care ți-l dă @BotFather pentru bot."
+    "The token @BotFather gives you for the bot.": "Tokenul pe care ți-l dă @BotFather pentru bot.",
+    "Add Language": "Adaugă limbă",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "Clienții primesc răspunsul automat în limba lor dacă o adaugi aici; altfel pe cel implicit. Chineza, japoneza și coreeana sunt recunoscute după caracterele folosite, celelalte limbi de asistentul AI (dacă este configurat).",
+    "Needed for": "Necesar pentru",
+    "Optional": "Opțional",
+    "Remove :language": "Elimină :language",
+    "Remove the :language auto reply?": "Elimini răspunsul automat în :language?",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "Trimis când un client pornește botul (\/start), în limba aplicației sale Telegram dacă o adaugi aici.",
+    "off": "oprit",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "Date în limba utilizatorilor; răspunsuri automate în chineză simplificată și tradițională"
 }

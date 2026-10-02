@@ -980,5 +980,14 @@
     "Receiving messages": "Tar emot meddelanden",
     "Sent when a customer starts the bot (/start).": "Skickas när en kund startar boten (\/start).",
     "Telegram": "Telegram",
-    "The token @BotFather gives you for the bot.": "Token som @BotFather ger dig för boten."
+    "The token @BotFather gives you for the bot.": "Token som @BotFather ger dig för boten.",
+    "Add Language": "Lägg till språk",
+    "Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).": "Kunder får det automatiska svaret på sitt språk om du lägger till det här; annars standardsvaret. Kinesiska, japanska och koreanska känns igen på tecknen som används, andra språk av AI-assistenten (om den är inställd).",
+    "Needed for": "Behövs för",
+    "Optional": "Valfritt",
+    "Remove :language": "Ta bort :language",
+    "Remove the :language auto reply?": "Ta bort det automatiska svaret på :language?",
+    "Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.": "Skickas när en kund startar boten (\/start), på språket i kundens Telegram-app om du lägger till det här.",
+    "off": "av",
+    "Dates in the users' languages; Simplified and Traditional Chinese auto replies": "Datum på användarnas språk; automatiska svar på förenklad och traditionell kinesiska"
 }

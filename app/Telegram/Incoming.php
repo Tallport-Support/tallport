@@ -37,7 +37,7 @@ class Incoming
 
         $is_start = !$edited && preg_match('#^/start(\s|$)#', $text);
         if ($is_start && $settings['ignore_start']) {
-            self::autoReply($client, $chat_id, $settings, $mailbox);
+            self::autoReply($client, $chat_id, Telegram::autoReply($settings, $message['from']['language_code'] ?? ''), $mailbox);
 
             return;
         }
@@ -96,7 +96,7 @@ class Incoming
         }
 
         if ($is_start) {
-            self::autoReply($client, $chat_id, $settings, $mailbox);
+            self::autoReply($client, $chat_id, Telegram::autoReply($settings, $message['from']['language_code'] ?? ''), $mailbox);
         }
     }
 
@@ -226,13 +226,13 @@ class Incoming
         }
     }
 
-    protected static function autoReply(Client $client, $chat_id, array $settings, Mailbox $mailbox)
+    protected static function autoReply(Client $client, $chat_id, $text, Mailbox $mailbox)
     {
-        if (trim($settings['auto_reply']) === '') {
+        if (trim($text) === '') {
             return;
         }
         try {
-            $client->sendMessage($chat_id, $settings['auto_reply']);
+            $client->sendMessage($chat_id, $text);
         } catch (TelegramException $e) {
             Telegram::log('Auto reply to /start not sent: '.$e->getMessage(), $mailbox);
         }
