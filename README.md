@@ -26,6 +26,7 @@ Credit for everything up to the fork goes to the FreeScout team.
 * [Incoming email sources and re-importing](#incoming-email-sources-and-re-importing)
 * [Receiving email from a mail server](#receiving-email-from-a-mail-server)
 * [Two-factor authentication and passkeys](#two-factor-authentication-and-passkeys)
+* [AI Assistant](#ai-assistant)
 * [Modules](#modules)
 * [Development](#development)
 * [Security](#security)
@@ -218,6 +219,47 @@ lost their phone.
 
 Passkeys belong to the address in `APP_URL`: they only work on that address,
 over HTTPS.
+
+## AI Assistant
+
+Set up under Manage » Settings » AI Assistant: choose a provider (OpenAI,
+Anthropic, Gemini, OpenRouter, Mistral, a local Ollama or LM Studio, any
+OpenAI-compatible service, ...), enter its API key and a model. Until a
+provider is set up, nothing is sent to one. Requests go through
+[Laravel AI](https://github.com/laravel/ai).
+
+* **Summaries.** Conversations with more messages than the "Summary Start"
+  setting get a summary above the threads and a one-line summary in the
+  conversation list, updated after new messages.
+* **Translations.** Customers' messages that aren't in your language are
+  translated below the message.
+* **Reply drafts.** The lightning button in a conversation drafts a reply in
+  the customer's language, with a translation for you. The draft uses the
+  conversation (not internal notes), the mailbox's documentation and its
+  customer context. Each user can make a limited number of drafts per day
+  (in the settings, and per user on their profile; 0 turns drafting off).
+
+Summaries and translations are in the installation's language, unless a
+mailbox (in the AI Assistant settings) or a user (on their profile) has its
+own. Each feature can be turned off per mailbox.
+
+**Documentation** (Manage Documentation, on the settings page) is what drafts
+are based on: pages added by URL are fetched as Markdown (the URL plus `.md`)
+and fetched again daily, or websites push Markdown with the mailbox's API
+key (an example request is on the page). Documentation needs a provider
+with embeddings (OpenAI, Gemini, Mistral, Ollama, ...); with another
+provider, choose a separate embedding provider. Pages on your own network
+are only fetched once their host is in `APP_REMOTE_HOST_WHITE_LIST`.
+
+**Customer context** (per mailbox) is an optional URL of yours that receives
+the customer's email addresses when a reply is drafted and returns JSON
+about the customer, such as their plan or orders. Requests are signed with
+the secret key: the `X-FREESCOUT-SIGNATURE` header (or
+`X-HELPSCOUT-SIGNATURE`) is the Base64 HMAC-SHA1 of the request body.
+"Reply Guidance" tells the drafts about your business and style.
+
+Summaries, translations, drafts and indexing run in the queue, so they need
+the cron job that runs the scheduler (see [Requirements](#requirements)).
 
 ## Modules
 
