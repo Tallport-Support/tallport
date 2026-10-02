@@ -107,6 +107,11 @@ class Client
         return $this->call('sendMessage', $params);
     }
 
+    public function deleteMessage($chat_id, $message_id)
+    {
+        return $this->call('deleteMessage', ['chat_id' => $chat_id, 'message_id' => $message_id]);
+    }
+
     /**
      * Upload a file: as a photo (images Telegram can show) or a document.
      */

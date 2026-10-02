@@ -351,6 +351,36 @@ class TelegramTest extends FeatureTestCase
         $this->assertNotNull($file);
     }
 
+    public function testUndoDeletesTheReplyFromTheChat()
+    {
+        $this->fakeTelegram(['sendMessage' => $this->ok(['message_id' => 71]), 'sendDocument' => $this->ok(['message_id' => 72])]);
+        $reply = $this->reply();
+        \App\Attachment::create('steps.pdf', 'application/pdf', null, 'PDF-DATA', null, false, $reply->id);
+        $this->runQueue();
+        $this->assertTrue($reply->fresh()->isSendStatusSuccess());
+
+        \Session::start();
+        $this->actingAs($this->agent)->get(route('conversations.undo', ['thread_id' => $reply->id, 'token' => csrf_token()]))->assertRedirect();
+
+        $this->assertEquals([71, 72], $this->sentTo('deleteMessage')->pluck('message_id')->all());
+        $this->assertSame('555', (string) $this->sentTo('deleteMessage')->first()['chat_id']);
+        $reply = $reply->fresh();
+        $this->assertSame(Thread::STATE_DRAFT, (int) $reply->state);
+        $this->assertFalse($reply->isSendStatusSuccess());
+    }
+
+    public function testUndoBeforeSendingSendsNothing()
+    {
+        $reply = $this->reply();
+        \Session::start();
+        $this->actingAs($this->agent)->get(route('conversations.undo', ['thread_id' => $reply->id, 'token' => csrf_token()]));
+
+        $this->runQueue();
+
+        $this->assertCount(0, $this->sentTo('sendMessage'));
+        $this->assertCount(0, $this->sentTo('deleteMessage'));
+    }
+
     public function testFormattingTelegramRefusesIsSentAsPlainText()
     {
         $this->fakeTelegram(['sendMessage' => function (HttpRequest $request) {

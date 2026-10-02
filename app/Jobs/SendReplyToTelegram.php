@@ -69,6 +69,9 @@ class SendReplyToTelegram implements ShouldQueue
 
             return;
         }
+        if ($thread->fresh()->state != Thread::STATE_PUBLISHED) {
+            return;
+        }
 
         $thread->send_status = SendLog::STATUS_ACCEPTED;
         $thread->updateSendStatusData(['msg' => '']);
@@ -77,33 +80,49 @@ class SendReplyToTelegram implements ShouldQueue
 
     protected function send(Thread $thread, $client, $chat_id)
     {
-        $sent = (array) ($thread->getSendStatusData()['telegram_sent'] ?? []);
-        $done = function ($part) use ($thread, &$sent) {
+        $data = $thread->getSendStatusData();
+        $sent = (array) ($data['telegram_sent'] ?? []);
+        // Message IDs, for Undo.
+        $message_ids = (array) ($data['telegram_messages'] ?? []);
+        $done = function ($part, $message) use ($thread, &$sent, &$message_ids) {
             $sent[] = $part;
-            $thread->updateSendStatusData(['telegram_sent' => $sent]);
+            if (!empty($message['message_id'])) {
+                $message_ids[] = $message['message_id'];
+            }
+            $thread->updateSendStatusData(['telegram_sent' => $sent, 'telegram_messages' => $message_ids]);
             $thread->save();
+        };
+        // Undone while sending: no more parts.
+        $undone = function () use ($thread) {
+            return Thread::where('id', $thread->id)->value('state') != Thread::STATE_PUBLISHED;
         };
 
         foreach (Formatter::messages($thread->body) as $i => $message) {
             if (in_array('text'.$i, $sent)) {
                 continue;
             }
+            if ($undone()) {
+                return;
+            }
             [$text, $is_html] = $message;
             try {
-                $client->sendMessage($chat_id, $text, $is_html);
+                $result = $client->sendMessage($chat_id, $text, $is_html);
             } catch (TelegramException $e) {
                 // Formatting Telegram doesn't take: send it as plain text.
                 if (!$is_html || stripos($e->getMessage(), 'parse entities') === false) {
                     throw $e;
                 }
-                $client->sendMessage($chat_id, Formatter::plain($text));
+                $result = $client->sendMessage($chat_id, Formatter::plain($text));
             }
-            $done('text'.$i);
+            $done('text'.$i, $result);
         }
 
         foreach ($thread->attachments as $attachment) {
             if (in_array('file'.$attachment->id, $sent)) {
                 continue;
+            }
+            if ($undone()) {
+                return;
             }
             $contents = $attachment->getFileContents();
             if ((string) $contents === '') {
@@ -112,9 +131,33 @@ class SendReplyToTelegram implements ShouldQueue
             $as_photo = $attachment->type == Attachment::TYPE_IMAGE
                 && in_array(strtolower($attachment->mime_type), ['image/jpeg', 'image/png', 'image/webp'])
                 && strlen($contents) <= self::MAX_PHOTO_BYTES;
-            $client->sendFile($chat_id, $contents, $attachment->file_name, $as_photo);
-            $done('file'.$attachment->id);
+            $done('file'.$attachment->id, $client->sendFile($chat_id, $contents, $attachment->file_name, $as_photo));
         }
+    }
+
+    /**
+     * Undo: delete what has been sent of the reply from the customer's chat
+     * (bots can delete their messages for 48 hours), so that it can be sent
+     * again as a new reply.
+     */
+    public static function undo(Thread $thread)
+    {
+        $data = $thread->getSendStatusData();
+        $conversation = $thread->conversation;
+        $chat_id = $conversation->customer ? $conversation->customer->getChannelId(Telegram::CHANNEL) : null;
+        if ($chat_id && Telegram::isEnabled($conversation->mailbox)) {
+            foreach ((array) ($data['telegram_messages'] ?? []) as $message_id) {
+                try {
+                    Telegram::client($conversation->mailbox)->deleteMessage($chat_id, $message_id);
+                } catch (TelegramException $e) {
+                    Telegram::log('Undo: message '.$message_id.' of reply '.$thread->id.' not deleted: '.$e->getMessage(), $conversation->mailbox);
+                }
+            }
+        }
+
+        $thread->send_status = null;
+        $thread->updateSendStatusData(['msg' => '', 'telegram_sent' => [], 'telegram_messages' => []]);
+        $thread->save();
     }
 
     protected function failedTry(Thread $thread, TelegramException $e)

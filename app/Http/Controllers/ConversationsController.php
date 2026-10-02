@@ -3411,6 +3411,10 @@ class ConversationsController extends Controller
                 $job->delete();
             }
         }
+        // A Telegram reply is sent right away: delete it from the chat.
+        if ($conversation->isChat() && $conversation->channel == \App\Telegram\Telegram::CHANNEL) {
+            \App\Jobs\SendReplyToTelegram::undo($thread);
+        }
 
         // Get penultimate reply
         $last_thread = $conversation->threads()

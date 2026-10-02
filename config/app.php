@@ -215,7 +215,7 @@ return [
     | Number of retries is set in each job class.
     |-------------------------------------------------------------------------
     */
-    'queue_work_params' => ['--queue' => 'emails,default', '--sleep' => '5', '--tries' => '1', '--timeout' => '1800'],
+    'queue_work_params' => ['--queue' => 'emails,default', '--sleep' => '1', '--tries' => '1', '--timeout' => '1800'],
     // The AI Assistant's worker (runs once a provider is set up): drafts first.
     'queue_work_ai_params' => ['--queue' => 'ai-drafts,ai', '--sleep' => '3', '--tries' => '1', '--timeout' => '900'],
 

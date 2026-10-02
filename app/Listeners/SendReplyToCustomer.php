@@ -86,9 +86,10 @@ class SendReplyToCustomer
             return;
         }
 
-        // Telegram: the reply is sent by Tallport's Telegram bot.
+        // Telegram: the reply is sent by Tallport's Telegram bot, right away
+        // (Undo deletes it from the chat).
         if ($conversation->isChat() && $conversation->channel == \App\Telegram\Telegram::CHANNEL) {
-            \App\Jobs\SendReplyToTelegram::dispatch($thread->id)->delay(now()->addSeconds(Conversation::UNDO_TIMOUT));
+            \App\Jobs\SendReplyToTelegram::dispatch($thread->id);
             return;
         }
 

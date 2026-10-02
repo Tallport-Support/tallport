@@ -41,6 +41,7 @@ return [
             'cURL',
             'DOM',
             'libxml',
+            'ctype',
             //'pcntl',
             // We keep it as optional, as it's only used to translate dates.
             //'intl',

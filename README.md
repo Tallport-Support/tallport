@@ -279,6 +279,8 @@ bot and whether it is receiving messages.
   profile has their Telegram username is linked on their first message.
 * Photos, files, voice messages, locations and contacts are added to the
   conversation; an edited message is added again, marked as edited.
+* Replies are sent right away. Undo deletes the reply from the customer's
+  chat (they may have seen a notification already).
 * A reply that can't be delivered (for example when the customer blocked the
   bot) is retried, then shown as not sent with Retry, and the conversation is
   reopened, as with email.
