@@ -27,7 +27,39 @@ class Webklex6Message implements IncomingMessage
     public function __construct($raw, array $config = [])
     {
         $this->raw = preg_replace("/\r?\n/", "\r\n", $raw);
-        $this->message = Message::fromString($this->raw, Config::make($config));
+        // An invalid Date header: the time of receiving (as App\LegacyImap).
+        $config = array_replace_recursive(['options' => ['fallback_date' => 'now']], $config);
+        $this->message = Message::fromString(self::joinBoundaryContinuations($this->raw), Config::make($config));
+    }
+
+    /**
+     * A multipart boundary split into RFC 2231 continuations
+     * (boundary*0*=us-ascii''...; boundary*1*=...) as one boundary="..."
+     * parameter, the only form webklex reads.
+     */
+    public static function joinBoundaryContinuations($raw)
+    {
+        return preg_replace_callback('/^Content-Type:[^\r\n]*(?:\r\n[ \t][^\r\n]*)*/mi', function ($m) {
+            $pattern = '/\s*\bboundary\*(\d+)(\*?)=("[^"]*"|[^;\s]*)\s*;?/i';
+            if (!preg_match_all($pattern, $m[0], $params, PREG_SET_ORDER)) {
+                return $m[0];
+            }
+            $sections = [];
+            foreach ($params as $param) {
+                $value = trim($param[3], '"');
+                if ($param[2] === '*') {
+                    // The first section starts with charset'language'.
+                    if ((int) $param[1] === 0 && substr_count($value, "'") >= 2) {
+                        $value = explode("'", $value, 3)[2];
+                    }
+                    $value = rawurldecode($value);
+                }
+                $sections[(int) $param[1]] = $value;
+            }
+            ksort($sections);
+
+            return rtrim(preg_replace($pattern, '', $m[0]), " \t;").'; boundary="'.implode('', $sections).'"';
+        }, $raw);
     }
 
     protected function cached($key, \Closure $value)
@@ -119,7 +151,9 @@ class Webklex6Message implements IncomingMessage
 
     public function headers(): string
     {
-        return (string) ($this->message->getHeader()->raw ?? '');
+        $end = strpos($this->raw, "\r\n\r\n");
+
+        return $end === false ? $this->raw : substr($this->raw, 0, $end);
     }
 
     public function htmlBody(): string

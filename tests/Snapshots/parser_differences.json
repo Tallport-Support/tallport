@@ -1,10 +1,4 @@
 {
-    "error: none / Webklex\\PHPIMAP\\Exceptions\\InvalidMessageDateException": [
-        "webklex/date-template"
-    ],
-    "error: none / Webklex\\PHPIMAP\\Exceptions\\MessageContentFetchingException": [
-        "issue-4567"
-    ],
     "from": [
         "message-5-iso-2022-jp",
         "webklex/issue-462"
