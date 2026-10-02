@@ -47,7 +47,7 @@ abstract class FeatureTestCase extends TestCase
         // silently. It isn't dispatched while one is already queued.
         \DB::table('jobs')->insert([
             'queue'        => 'default',
-            'payload'      => '{"displayName":"App\\\\Jobs\\\\RestartQueueWorker"}',
+            'payload'      => '{"uuid":"6f1c0d2e-0000-4000-8000-000000000001","displayName":"App\\\\Jobs\\\\RestartQueueWorker"}',
             'attempts'     => 0,
             'reserved_at'  => null,
             'available_at' => time(),

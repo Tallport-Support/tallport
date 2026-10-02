@@ -84,7 +84,7 @@ class ConsoleCommandsTest extends FeatureTestCase
     {
         $job = [
             'queue'        => 'emails',
-            'payload'      => json_encode(['displayName' => 'App\\Jobs\\SendReplyToCustomer']),
+            'payload'      => json_encode(['uuid' => '6f1c0d2e-0000-4000-8000-000000000000', 'displayName' => 'App\\Jobs\\SendReplyToCustomer']),
             'attempts'     => 0,
             'reserved_at'  => null,
             'available_at' => time() - 13 * 3600,

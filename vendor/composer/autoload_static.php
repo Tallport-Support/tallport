@@ -660,6 +660,7 @@ class ComposerStaticInit6b7055a3645147f56baffb010ada38cd
         'App\\Console\\Commands\\AfterAppUpdate' => __DIR__ . '/../..' . '/app/Console/Commands/AfterAppUpdate.php',
         'App\\Console\\Commands\\Build' => __DIR__ . '/../..' . '/app/Console/Commands/Build.php',
         'App\\Console\\Commands\\CheckConvViewers' => __DIR__ . '/../..' . '/app/Console/Commands/CheckConvViewers.php',
+        'App\\Console\\Commands\\CheckOutgoing' => __DIR__ . '/../..' . '/app/Console/Commands/CheckOutgoing.php',
         'App\\Console\\Commands\\CheckRequirements' => __DIR__ . '/../..' . '/app/Console/Commands/CheckRequirements.php',
         'App\\Console\\Commands\\CleanNotificationsTable' => __DIR__ . '/../..' . '/app/Console/Commands/CleanNotificationsTable.php',
         'App\\Console\\Commands\\CleanSendLog' => __DIR__ . '/../..' . '/app/Console/Commands/CleanSendLog.php',

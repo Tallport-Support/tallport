@@ -142,7 +142,8 @@ class SendReplyToCustomer implements ShouldQueue
         // This process may stuck or make SendReplyToCustomer job die with
         // "Allowed memory size of NNN bytes exhausted" error.
         // https://github.com/freescout-helpdesk/freescout/issues/3632
-        if ($this->attempts() >= 1 && 
+        // A job retried from failed_jobs starts again at attempt 1.
+        if ($this->attempts() > 1 && 
             ($this->last_thread->send_status == SendLog::STATUS_ACCEPTED
                 || $this->last_thread->isSendStatusSuccess())
         ) {
@@ -369,7 +370,7 @@ class SendReplyToCustomer implements ShouldQueue
 
             // https://github.com/freescout-helpdesk/freescout/issues/3330
             $smtp_queue_id = SwiftGetSmtpQueueId::fromSentMessage($sent_message);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // We come here in case SMTP server unavailable for example
             if ($this->attempts() == 1) {
                 activity()
@@ -418,6 +419,7 @@ class SendReplyToCustomer implements ShouldQueue
                     $this->last_thread->send_status = SendLog::STATUS_SEND_INTERMEDIATE_ERROR;
                     $this->last_thread->updateSendStatusData(['msg' => $error_message]);
                     $this->last_thread->save();
+                    $this->reopenConversation();
                 }
 
                 throw $e;
@@ -425,6 +427,7 @@ class SendReplyToCustomer implements ShouldQueue
                 $this->last_thread->send_status = SendLog::STATUS_SEND_ERROR;
                 $this->last_thread->updateSendStatusData(['msg' => $error_message]);
                 $this->last_thread->save();
+                $this->reopenConversation();
 
                 // This executes $this->failed().
                 $this->fail($e);
@@ -434,6 +437,12 @@ class SendReplyToCustomer implements ShouldQueue
         }
 
         SwiftGetSmtpQueueId::$last_smtp_queue_id = null;
+
+        // Save to send log now: saving to the IMAP folder below may take
+        // long enough for the worker to be killed.
+        // Laravel tells us exactly what email addresses failed
+        $this->failures = Mail::failures();
+        $this->saveToSendLog('', $smtp_queue_id);
 
         // Clean error message if email finally has been sent.
         if ($this->last_thread->send_status == SendLog::STATUS_SEND_ERROR) {
@@ -581,11 +590,6 @@ class SendReplyToCustomer implements ShouldQueue
         // $this->last_thread->message_id = $message_id;
         // $this->last_thread->save();
 
-        // Laravel tells us exactly what email addresses failed
-        $this->failures = Mail::failures();
-
-        // Save to send log
-        $this->saveToSendLog('', $smtp_queue_id);
     }
 
     public function getImapSaveErrorPrefix($mailbox)
@@ -648,7 +652,43 @@ class SendReplyToCustomer implements ShouldQueue
            ->useLog(\App\ActivityLog::NAME_EMAILS_SENDING)
            ->log(\App\ActivityLog::DESCRIPTION_EMAILS_SENDING_ERROR_TO_CUSTOMER);
 
-        $this->saveToSendLog();
+        if (!$this->last_thread) {
+            return;
+        }
+
+        // When the worker gives up (e.g. the job timed out every time), this
+        // is a fresh instance: nothing has been recorded yet.
+        if (!$this->recipients) {
+            $this->customer_email = $this->last_thread->getToArray()[0] ?? $this->conversation->customer_email;
+            $this->recipients = [$this->customer_email];
+            $this->failures = $this->recipients;
+        }
+        if (!$this->last_thread->isSendStatusSuccess() && $this->last_thread->send_status != SendLog::STATUS_SEND_ERROR) {
+            $this->last_thread->send_status = SendLog::STATUS_SEND_ERROR;
+            $this->last_thread->updateSendStatusData(['msg' => $e->getMessage()]);
+            $this->last_thread->save();
+        }
+        $this->reopenConversation();
+
+        $this->saveToSendLog($e->getMessage());
+    }
+
+    /**
+     * Sending failed: make the conversation active again, so the reply
+     * (which shows the error) isn't forgotten in a closed conversation.
+     */
+    protected function reopenConversation()
+    {
+        $conversation = $this->conversation ? $this->conversation->fresh() : null;
+        if (!$conversation || $conversation->isActive() || $conversation->isSpam()
+            || $conversation->state != \App\Conversation::STATE_PUBLISHED
+        ) {
+            return;
+        }
+
+        $conversation->setStatus(\App\Conversation::STATUS_ACTIVE);
+        $conversation->save();
+        $conversation->mailbox->updateFoldersCounters();
     }
 
     /**

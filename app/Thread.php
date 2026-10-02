@@ -1669,7 +1669,7 @@ class Thread extends Model
     public function getFailedJobId()
     {
         return \App\FailedJob::where('queue', 'emails')
-            ->where('payload', 'like', '{"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToCustomer"%{i:0;i:'.$this->id.';%')
+            ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToCustomer"%{i:0;i:'.$this->id.';%')
             ->value('id');
     }
 

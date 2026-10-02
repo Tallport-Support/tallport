@@ -15,6 +15,7 @@ return array(
     'App\\Console\\Commands\\AfterAppUpdate' => $baseDir . '/app/Console/Commands/AfterAppUpdate.php',
     'App\\Console\\Commands\\Build' => $baseDir . '/app/Console/Commands/Build.php',
     'App\\Console\\Commands\\CheckConvViewers' => $baseDir . '/app/Console/Commands/CheckConvViewers.php',
+    'App\\Console\\Commands\\CheckOutgoing' => $baseDir . '/app/Console/Commands/CheckOutgoing.php',
     'App\\Console\\Commands\\CheckRequirements' => $baseDir . '/app/Console/Commands/CheckRequirements.php',
     'App\\Console\\Commands\\CleanNotificationsTable' => $baseDir . '/app/Console/Commands/CleanNotificationsTable.php',
     'App\\Console\\Commands\\CleanSendLog' => $baseDir . '/app/Console/Commands/CleanSendLog.php',

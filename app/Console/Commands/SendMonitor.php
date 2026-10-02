@@ -49,7 +49,7 @@ class SendMonitor extends Command
     {
         // Get SendReplyToCustomer jobs.
         $pending_jobs = \App\Job::where('queue', 'emails')
-            ->where('payload', 'like', '{"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToCustomer"%')
+            ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToCustomer"%')
             ->where('available_at', '<', time() - self::CHECK_PERIOD)
             ->exists();
 
@@ -57,7 +57,7 @@ class SendMonitor extends Command
         // No need - it can be done via Manage > Alerts > Logs Monitoring
         // if (!$pending_jobs) {
         //     $pending_jobs = \App\FailedJob::where('queue', 'emails')
-        //         ->where('payload', 'like', '{"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToCustomer"%')
+        //         ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToCustomer"%')
         //         ->where('created_at', '<', time() - self::CHECK_PERIOD)
         //         ->exists();
         // }

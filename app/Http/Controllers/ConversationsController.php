@@ -2483,7 +2483,8 @@ class ConversationsController extends Controller
 
                     if ($job_id) {
                         \App\FailedJob::retry($job_id);
-                        $thread->send_status = SendLog::STATUS_ACCEPTED;
+                        // Not sent yet: the job skips replies already accepted.
+                        $thread->send_status = null;
                         $thread->updateSendStatusData(['msg' => '']);
                         $thread->save();
 
@@ -3394,7 +3395,7 @@ class ConversationsController extends Controller
         // https://github.com/freescout-helpdesk/freescout/issues/3300
         // Cancel all SendReplyToCustomer jobs for this thread.
         $jobs_to_cancel = \App\Job::where('queue', 'emails')
-            ->where('payload', 'like', '{"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToCustomer"%')
+            ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToCustomer"%')
             ->get();
 
         foreach ($jobs_to_cancel as $job) {
