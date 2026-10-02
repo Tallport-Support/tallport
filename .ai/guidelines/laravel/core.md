@@ -9,5 +9,5 @@
 - Pass `--no-interaction` to Artisan commands.
 - Many app actions go through `ajax()` controller methods switched on an `action` parameter, not one route per action. Follow that pattern where it is used.
 - Prefer named routes and `route()` when generating links.
-- Frontend assets are plain jQuery and Bootstrap 3, built with Laravel Mix (`webpack.mix.js`) and minified by devfactory/minify at runtime. There is no Vite.
+- Frontend assets are plain jQuery and Bootstrap 3, built with Laravel Mix (`webpack.mix.js`) and joined into minified build files at runtime by `\Minify` (`App\Misc\Minify`; modules add files through the `javascripts`/`stylesheets` filters). There is no Vite.
 - Tests don't use model factories or Faker for new code. See the Tallport testing rules.
