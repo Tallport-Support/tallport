@@ -1419,6 +1419,80 @@
             }
         }
     },
+    "passkeys": {
+        "columns": {
+            "id": {
+                "type": "bigint(20) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "name": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "credential_id": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "credential": {
+                "type": "longtext",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_bin"
+            },
+            "last_used_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "passkeys_credential_id_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "credential_id"
+                ]
+            },
+            "passkeys_user_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "user_id"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        },
+        "foreign_keys": {
+            "passkeys_user_id_foreign": [
+                "user_id -> users.id"
+            ]
+        }
+    },
     "password_resets": {
         "columns": {
             "email": {
@@ -1895,6 +1969,82 @@
             }
         }
     },
+    "two_factor_trusted_devices": {
+        "columns": {
+            "id": {
+                "type": "bigint(20) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "token": {
+                "type": "varchar(64)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "ip": {
+                "type": "varchar(45)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "user_agent": {
+                "type": "varchar(191)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "last_used_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "expires_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            },
+            "two_factor_trusted_devices_token_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "token"
+                ]
+            },
+            "two_factor_trusted_devices_user_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "user_id"
+                ]
+            }
+        },
+        "foreign_keys": {
+            "two_factor_trusted_devices_user_id_foreign": [
+                "user_id -> users.id"
+            ]
+        }
+    },
     "users": {
         "columns": {
             "id": {
@@ -1925,6 +2075,25 @@
                 "nullable": false,
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
+            },
+            "two_factor_secret": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "two_factor_recovery_codes": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "two_factor_confirmed_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
             },
             "role": {
                 "type": "tinyint(3) unsigned",

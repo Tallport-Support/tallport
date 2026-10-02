@@ -6115,3 +6115,161 @@ function initMergeCustomers()
 		});
 	});
 }
+// Passkeys (WebAuthn): adding one on the security page and signing in with
+// one on the login page. The server (laravel/passkeys) sends and expects the
+// standard WebAuthn JSON, binary values in base64url.
+function passkeysSupported()
+{
+	return !!(window.PublicKeyCredential && navigator.credentials);
+}
+
+function passkeysB64ToBuffer(value)
+{
+	var base64 = value.replace(/-/g, '+').replace(/_/g, '/');
+	while (base64.length % 4) {
+		base64 += '=';
+	}
+	var binary = atob(base64);
+	var bytes = new Uint8Array(binary.length);
+	for (var i = 0; i < binary.length; i++) {
+		bytes[i] = binary.charCodeAt(i);
+	}
+	return bytes.buffer;
+}
+
+function passkeysBufferToB64(buffer)
+{
+	var bytes = new Uint8Array(buffer);
+	var binary = '';
+	for (var i = 0; i < bytes.length; i++) {
+		binary += String.fromCharCode(bytes[i]);
+	}
+	return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+// Browsers without PublicKeyCredential.parse*OptionsFromJSON().
+function passkeysDecodeOptions(options)
+{
+	options = JSON.parse(JSON.stringify(options));
+	options.challenge = passkeysB64ToBuffer(options.challenge);
+	if (options.user && options.user.id) {
+		options.user.id = passkeysB64ToBuffer(options.user.id);
+	}
+	$.each(['excludeCredentials', 'allowCredentials'], function(i, key) {
+		$.each(options[key] || [], function(j, credential) {
+			credential.id = passkeysB64ToBuffer(credential.id);
+		});
+	});
+	return options;
+}
+
+// Browsers without credential.toJSON().
+function passkeysEncodeCredential(credential)
+{
+	if (typeof credential.toJSON == 'function') {
+		return credential.toJSON();
+	}
+	var response = {};
+	$.each(['clientDataJSON', 'attestationObject', 'authenticatorData', 'signature', 'userHandle'], function(i, key) {
+		if (credential.response[key]) {
+			response[key] = passkeysBufferToB64(credential.response[key]);
+		}
+	});
+	if (typeof credential.response.getTransports == 'function') {
+		response.transports = credential.response.getTransports();
+	}
+	return {
+		id: credential.id,
+		rawId: passkeysBufferToB64(credential.rawId),
+		type: credential.type,
+		response: response,
+		authenticatorAttachment: credential.authenticatorAttachment || null,
+		clientExtensionResults: credential.getClientExtensionResults ? credential.getClientExtensionResults() : {}
+	};
+}
+
+function passkeysRequest(method, url, data)
+{
+	return $.ajax({
+		url: url,
+		method: method,
+		data: data ? JSON.stringify(data) : null,
+		contentType: 'application/json',
+		dataType: 'json',
+		headers: {'X-CSRF-TOKEN': getCsrfToken(), 'Accept': 'application/json'}
+	});
+}
+
+function passkeysError()
+{
+	showFloatingAlert('error', Lang.get("messages.passkey_failed"));
+}
+
+function passkeysInitAdd(options_url, store_url)
+{
+	$('#passkey-add-form').on('submit', function(e) {
+		e.preventDefault();
+		if (!passkeysSupported()) {
+			showFloatingAlert('error', Lang.get("messages.passkeys_unsupported"));
+			return;
+		}
+		var button = $(this).children('button:first');
+		var name = $('#passkey-name').val();
+		button.button('loading');
+
+		passkeysRequest('GET', options_url).done(function(response) {
+			var options = PublicKeyCredential.parseCreationOptionsFromJSON
+				? PublicKeyCredential.parseCreationOptionsFromJSON(response.options)
+				: passkeysDecodeOptions(response.options);
+			navigator.credentials.create({publicKey: options}).then(function(credential) {
+				passkeysRequest('POST', store_url, {name: name, credential: passkeysEncodeCredential(credential)}).done(function() {
+					window.location.reload();
+				}).fail(function(xhr) {
+					passkeysError(xhr);
+					button.button('reset');
+				});
+			}).catch(function() {
+				// Cancelled in the browser.
+				button.button('reset');
+			});
+		}).fail(function(xhr) {
+			passkeysError(xhr);
+			button.button('reset');
+		});
+	});
+}
+
+function passkeysInitLogin(options_url, login_url)
+{
+	if (!passkeysSupported()) {
+		$('#passkey-login').addClass('hidden');
+		return;
+	}
+	$('#passkey-login').on('click', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		button.button('loading');
+
+		passkeysRequest('GET', options_url).done(function(response) {
+			var options = PublicKeyCredential.parseRequestOptionsFromJSON
+				? PublicKeyCredential.parseRequestOptionsFromJSON(response.options)
+				: passkeysDecodeOptions(response.options);
+			navigator.credentials.get({publicKey: options}).then(function(credential) {
+				passkeysRequest('POST', login_url, {
+					credential: passkeysEncodeCredential(credential),
+					remember: $('input[name="remember"]').is(':checked')
+				}).done(function(result) {
+					window.location.href = result.redirect;
+				}).fail(function(xhr) {
+					passkeysError(xhr);
+					button.button('reset');
+				});
+			}).catch(function() {
+				button.button('reset');
+			});
+		}).fail(function(xhr) {
+			passkeysError(xhr);
+			button.button('reset');
+		});
+	});
+}

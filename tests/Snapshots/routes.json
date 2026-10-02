@@ -466,7 +466,7 @@
         ],
         "uri": "login",
         "name": "login",
-        "action": "Auth\\LoginController@showLoginForm",
+        "action": "Laravel\\Fortify\\Http\\Controllers\\AuthenticatedSessionController@create",
         "middleware": [
             "web",
             "guest"
@@ -480,8 +480,8 @@
             "POST"
         ],
         "uri": "login",
-        "name": null,
-        "action": "Auth\\LoginController@login",
+        "name": "login.store",
+        "action": "Laravel\\Fortify\\Http\\Controllers\\AuthenticatedSessionController@store",
         "middleware": [
             "web",
             "guest"
@@ -870,6 +870,38 @@
         "methods": [
             "POST"
         ],
+        "uri": "passkeys/login",
+        "name": "passkey.login",
+        "action": "Laravel\\Passkeys\\Http\\Controllers\\PasskeyLoginController@store",
+        "middleware": [
+            "web",
+            "guest",
+            "throttle:passkeys"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "passkeys/login/options",
+        "name": "passkey.login-options",
+        "action": "Laravel\\Passkeys\\Http\\Controllers\\PasskeyLoginController@index",
+        "middleware": [
+            "web",
+            "guest",
+            "throttle:passkeys"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
         "uri": "password/email",
         "name": "password.email",
         "action": "Auth\\ForgotPasswordController@sendResetLinkEmail",
@@ -1139,6 +1171,37 @@
     },
     {
         "methods": [
+            "GET"
+        ],
+        "uri": "two-factor-challenge",
+        "name": "two-factor.login",
+        "action": "Laravel\\Fortify\\Http\\Controllers\\TwoFactorAuthenticatedSessionController@create",
+        "middleware": [
+            "web",
+            "guest"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "two-factor-challenge",
+        "name": "two-factor.login.store",
+        "action": "Laravel\\Fortify\\Http\\Controllers\\TwoFactorAuthenticatedSessionController@store",
+        "middleware": [
+            "web",
+            "guest",
+            "throttle:two-factor"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
             "POST"
         ],
         "uri": "uploads/upload",
@@ -1176,6 +1239,150 @@
         "action": "OpenController@userSetupSave",
         "middleware": [
             "web"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "user/confirm-password",
+        "name": "password.confirm",
+        "action": "Laravel\\Fortify\\Http\\Controllers\\ConfirmablePasswordController@show",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "user/confirm-password",
+        "name": "password.confirm.store",
+        "action": "Laravel\\Fortify\\Http\\Controllers\\ConfirmablePasswordController@store",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "user/confirmed-two-factor-authentication",
+        "name": "two-factor.confirm",
+        "action": "Laravel\\Fortify\\Http\\Controllers\\ConfirmedTwoFactorAuthenticationController@store",
+        "middleware": [
+            "web",
+            "auth",
+            "password.confirm"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "user/passkeys",
+        "name": "passkey.store",
+        "action": "Laravel\\Passkeys\\Http\\Controllers\\PasskeyRegistrationController@store",
+        "middleware": [
+            "web",
+            "auth",
+            "password.confirm",
+            "throttle:passkeys"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "user/passkeys/options",
+        "name": "passkey.registration-options",
+        "action": "Laravel\\Passkeys\\Http\\Controllers\\PasskeyRegistrationController@index",
+        "middleware": [
+            "web",
+            "auth",
+            "password.confirm",
+            "throttle:passkeys"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "DELETE"
+        ],
+        "uri": "user/passkeys/{passkey}",
+        "name": "passkey.destroy",
+        "action": "Laravel\\Passkeys\\Http\\Controllers\\PasskeyRegistrationController@destroy",
+        "middleware": [
+            "web",
+            "auth",
+            "password.confirm"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "DELETE"
+        ],
+        "uri": "user/two-factor-authentication",
+        "name": "two-factor.disable",
+        "action": "Laravel\\Fortify\\Http\\Controllers\\TwoFactorAuthenticationController@destroy",
+        "middleware": [
+            "web",
+            "auth",
+            "password.confirm"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "user/two-factor-authentication",
+        "name": "two-factor.enable",
+        "action": "Laravel\\Fortify\\Http\\Controllers\\TwoFactorAuthenticationController@store",
+        "middleware": [
+            "web",
+            "auth",
+            "password.confirm"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "user/two-factor-recovery-codes",
+        "name": "two-factor.recovery-codes.store",
+        "action": "Laravel\\Fortify\\Http\\Controllers\\RecoveryCodeController@store",
+        "middleware": [
+            "web",
+            "auth",
+            "password.confirm"
         ],
         "where": {
             "id": "[0-9]+"
@@ -1325,6 +1532,53 @@
         "action": "UsersController@profileSave",
         "middleware": [
             "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "users/security/{id}",
+        "name": "users.security",
+        "action": "UserSecurityController@show",
+        "middleware": [
+            "web",
+            "password.confirm",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "users/security/{id}/forget-devices",
+        "name": "users.security.forget_devices",
+        "action": "UserSecurityController@forgetDevices",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "users/security/{id}/reset",
+        "name": "users.security.reset",
+        "action": "UserSecurityController@reset",
+        "middleware": [
+            "web",
+            "password.confirm",
             "auth"
         ],
         "where": {

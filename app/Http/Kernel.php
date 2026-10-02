@@ -44,6 +44,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\CheckBrowser::class,
             \App\Http\Middleware\Localize::class,
             \App\Http\Middleware\LogoutIfDeleted::class,
+            \App\Http\Middleware\RequireTwoFactor::class,
             \App\Http\Middleware\FrameGuard::class,
             \App\Http\Middleware\CustomHandle::class,
             \App\Http\Middleware\ContentSecurityPolicy::class,
@@ -75,6 +76,8 @@ class Kernel extends HttpKernel
         'bindings'   => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'can'        => \Illuminate\Auth\Middleware\Authorize::class,
         'guest'      => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        // Asks for the password again before changing two-factor login or passkeys.
+        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'roles'      => \App\Http\Middleware\CheckRole::class,
     ];

@@ -67,6 +67,12 @@
                                 @endif
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <div class="col-md-8 col-md-offset-4">
+                                <a href="#" class="btn btn-default" id="passkey-login" data-loading-text="{{ __('Sign in with a passkey') }}…"><i class="glyphicon glyphicon-lock"></i> {{ __('Sign in with a passkey') }}</a>
+                            </div>
+                        </div>
                     </form>
 
                     @action('login_form.after')
@@ -75,4 +81,9 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('javascript')
+    @parent
+    passkeysInitLogin('{{ route('passkey.login-options') }}', '{{ route('passkey.login') }}');
 @endsection

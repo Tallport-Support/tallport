@@ -16,8 +16,29 @@
 // Login routes are below, at the configurable login path.
 Auth::routes(['login' => false]);
 
-Route::get(config('app.login_path'), 'Auth\LoginController@showLoginForm')->name('login');
-Route::post(config('app.login_path'), 'Auth\LoginController@login');
+// Logging in (Laravel Fortify, App\Providers\FortifyServiceProvider): a
+// password, then a two-factor code if the user has it on; or a passkey.
+Route::group(['middleware' => 'guest'], function () {
+	Route::get(config('app.login_path'), [\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class, 'create'])->name('login');
+	Route::post(config('app.login_path'), [\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class, 'store'])->name('login.store');
+	Route::get('/two-factor-challenge', [\Laravel\Fortify\Http\Controllers\TwoFactorAuthenticatedSessionController::class, 'create'])->name('two-factor.login');
+	Route::post('/two-factor-challenge', [\Laravel\Fortify\Http\Controllers\TwoFactorAuthenticatedSessionController::class, 'store'])->middleware('throttle:two-factor')->name('two-factor.login.store');
+	Route::get('/passkeys/login/options', [\Laravel\Passkeys\Http\Controllers\PasskeyLoginController::class, 'index'])->middleware('throttle:passkeys')->name('passkey.login-options');
+	Route::post('/passkeys/login', [\Laravel\Passkeys\Http\Controllers\PasskeyLoginController::class, 'store'])->middleware('throttle:passkeys')->name('passkey.login');
+});
+Route::group(['middleware' => 'auth'], function () {
+	Route::get('/user/confirm-password', [\Laravel\Fortify\Http\Controllers\ConfirmablePasswordController::class, 'show'])->name('password.confirm');
+	Route::post('/user/confirm-password', [\Laravel\Fortify\Http\Controllers\ConfirmablePasswordController::class, 'store'])->name('password.confirm.store');
+	Route::group(['middleware' => 'password.confirm'], function () {
+		Route::post('/user/two-factor-authentication', [\Laravel\Fortify\Http\Controllers\TwoFactorAuthenticationController::class, 'store'])->name('two-factor.enable');
+		Route::post('/user/confirmed-two-factor-authentication', [\Laravel\Fortify\Http\Controllers\ConfirmedTwoFactorAuthenticationController::class, 'store'])->name('two-factor.confirm');
+		Route::delete('/user/two-factor-authentication', [\Laravel\Fortify\Http\Controllers\TwoFactorAuthenticationController::class, 'destroy'])->name('two-factor.disable');
+		Route::post('/user/two-factor-recovery-codes', [\Laravel\Fortify\Http\Controllers\RecoveryCodeController::class, 'store'])->name('two-factor.recovery-codes.store');
+		Route::get('/user/passkeys/options', [\Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::class, 'index'])->middleware('throttle:passkeys')->name('passkey.registration-options');
+		Route::post('/user/passkeys', [\Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::class, 'store'])->middleware('throttle:passkeys')->name('passkey.store');
+		Route::delete('/user/passkeys/{passkey}', [\Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::class, 'destroy'])->name('passkey.destroy');
+	});
+});
 
 // Authentication redirects to /home
 // if APP_DASHBOARD_PATH is empty APP_URL will be used
@@ -56,6 +77,9 @@ Route::get('/users/permissions/{id}', 'UsersController@permissions')->name('user
 Route::post('/users/permissions/{id}', 'UsersController@permissionsSave')->name('users.permissions.save');
 Route::get('/users/notifications/{id}', 'UsersController@notifications')->name('users.notifications');
 Route::post('/users/notifications/{id}', 'UsersController@notificationsSave')->name('users.notifications.save');
+Route::get('/users/security/{id}', 'UserSecurityController@show')->middleware('password.confirm')->name('users.security');
+Route::post('/users/security/{id}/reset', 'UserSecurityController@reset')->middleware('password.confirm')->name('users.security.reset');
+Route::post('/users/security/{id}/forget-devices', 'UserSecurityController@forgetDevices')->name('users.security.forget_devices');
 Route::get('/users/password/{id}', 'UsersController@password')->name('users.password');
 Route::post('/users/password/{id}', 'UsersController@passwordSave')->name('users.password.save');
 Route::post('/users/ajax', ['uses' => 'UsersController@ajax', 'laroute' => true])->name('users.ajax');
