@@ -4,8 +4,6 @@ namespace Tests\Concerns;
 
 use App\Mailbox;
 use Tests\Support\FetchEmailsForTests;
-use App\LegacyImap\ClientManager;
-use App\LegacyImap\Message;
 
 /**
  * Email in and out without mail servers.
@@ -103,8 +101,7 @@ trait InteractsWithMail
 
     /**
      * Receive an email into a mailbox, as tallport:fetch-emails would after
-     * fetching it, including sending the notifications it triggers. The message
- * is the fetch client's (APP_FETCH_CLIENT).
+     * fetching it, including sending the notifications it triggers.
      *
      * Pass all mailboxes being fetched to have an email addressed to several
      * of them imported into each, as the command does.
@@ -113,17 +110,11 @@ trait InteractsWithMail
      */
     protected function receiveEmail(Mailbox $mailbox, $raw_message, array $all_mailboxes = [])
     {
-        if (config('app.fetch_client') == 'webklex6') {
-            try {
-                $message = \Webklex\PHPIMAP\Message::fromString(preg_replace("/\r?\n/", "\r\n", $raw_message), \Webklex\PHPIMAP\Config::make(['options' => ['fallback_date' => 'now']]));
-            } catch (\Exception $e) {
-                // As the fetch loop does for a message webklex can't make.
-                $message = new \App\Incoming\FetchedMessage($raw_message);
-            }
-        } else {
-            // Message::fromString() reads the Webklex options set up by the client manager.
-            new ClientManager(config('imap'));
-            $message = Message::fromString($raw_message);
+        try {
+            $message = \Webklex\PHPIMAP\Message::fromString(preg_replace("/\r?\n/", "\r\n", $raw_message), \Webklex\PHPIMAP\Config::make(['options' => ['fallback_date' => 'now']]));
+        } catch (\Exception $e) {
+            // As the fetch loop does for a message webklex can't make.
+            $message = new \App\Incoming\FetchedMessage($raw_message);
         }
 
         $command = new FetchEmailsForTests();

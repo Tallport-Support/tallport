@@ -42,6 +42,9 @@ So far:
   instead of Laravel 5.5 with SwiftMailer. Laravel 5.5 behaviour that
   FreeScout modules rely on is kept (e.g. `route()` parameters, the `Input`
   facade, `Event::fire()`, the `str_*`/`array_*` helpers).
+* **Incoming email** is fetched and read with webklex/php-imap 6 and
+  Tallport's own code instead of FreeScout's patched copy of an old version,
+  and can also be [received straight from the mail server](#receiving-email-from-a-mail-server).
 * **Faster conversations with large messages** and many bug fixes (see
   [KNOWN_BUGS.md](KNOWN_BUGS.md) for what's left).
 * **A test suite.** About 420 tests (feature, unit and snapshot tests) run
@@ -55,8 +58,9 @@ on with Tallport features.
 
 ## Requirements
 
-* PHP 8.5 or newer with the `imap` (from PECL since PHP 8.4), `mbstring`,
-  `xml`, `zip`, `gd`, `curl`, `intl` and `mysql` extensions
+* PHP 8.5 or newer with the `mbstring`, `xml`, `zip`, `gd`, `curl`, `intl`
+  and `mysql` extensions, and `imap` (from PECL since PHP 8.4) for POP3
+  mailboxes
 * MariaDB (tested with 11.8)
 * Nginx or Apache
 * A cron job running `php artisan schedule:run` every minute (fetches
@@ -303,13 +307,9 @@ the minimum Tallport supports), so an update can't pull in a package that
 needs a newer PHP. When updating, ignore only missing extensions:
 `composer update ... --ignore-platform-req='ext-*'`.
 
-`app/LegacyImap` is FreeScout's patched webklex/php-imap 4.1.1 under its
-own namespace. It still connects to the IMAP/POP3 servers, and reads an
-email only if webklex/php-imap 6 (installed normally) and Tallport's own
-code (`app/Incoming`) can't. It is being taken apart step by step: with
-`APP_FETCH_CLIENT=webklex6` in `.env` (then `php artisan tallport:clear-cache`)
-mailboxes are fetched with webklex/php-imap 6 instead; remove the line to go
-back.
+Incoming email is fetched and read with webklex/php-imap 6, installed
+normally, plus Tallport's own code in `app/Incoming` (FreeScout shipped a
+patched copy of webklex/php-imap 4.1.1 instead).
 
 ### Releasing
 

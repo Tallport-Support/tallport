@@ -12,7 +12,6 @@ use App\Events\CustomerReplied;
 use App\Events\UserAddedNote;
 use App\Events\UserReplied;
 use App\Incoming\IncomingMessage;
-use App\Incoming\LegacyImapMessage;
 use App\Jobs\SendEmailReplyError;
 use App\Mailbox;
 use App\Misc\Mail;
@@ -428,20 +427,16 @@ class FetchEmails extends Command
 
         // Everything about the email is read through IncomingMessage; $message
         // stays the library's message (if any) for flags and modules.
-        if ($message instanceof IncomingMessage) {
-            $incoming = $message;
-            $message = $incoming instanceof LegacyImapMessage ? $incoming->legacyMessage() : null;
-        } elseif ($message instanceof \App\Incoming\FetchedMessage) {
-            $incoming = \App\Incoming\Parser::parse($message->rawSource());
-        } elseif ($message instanceof \Webklex\PHPIMAP\Message) {
-            // Fetched with APP_FETCH_CLIENT=webklex6.
-            $incoming = \App\Incoming\Parser::parse(rtrim($message->getHeader()->raw, "\r\n")."\r\n\r\n".$message->getRawBody());
-        } else {
-            $legacy = new LegacyImapMessage($message);
-            $incoming = \App\Incoming\Parser::parse($legacy->rawSource(), $legacy);
-        }
-
         try {
+            if ($message instanceof IncomingMessage) {
+                $incoming = $message;
+                $message = null;
+            } elseif ($message instanceof \App\Incoming\FetchedMessage) {
+                $incoming = \App\Incoming\Parser::parse($message->rawSource());
+            } else {
+                $incoming = \App\Incoming\Parser::parse(rtrim($message->getHeader()->raw, "\r\n")."\r\n\r\n".$message->getRawBody());
+            }
+
 
             // From - $from is the plain text email.
             $from = $incoming->replyTo();
@@ -1962,7 +1957,7 @@ class FetchEmails extends Command
             return [];
         }
 
-        if (is_object($attr) && get_class($attr) == 'App\LegacyImap\Attribute') {
+        if ($attr instanceof \Webklex\PHPIMAP\Attribute) {
             $attr = $attr->get();
         }
 
@@ -1975,7 +1970,7 @@ class FetchEmails extends Command
             return null;
         }
 
-        if ($attr instanceof \App\LegacyImap\Attribute || $attr instanceof \Webklex\PHPIMAP\Attribute) {
+        if ($attr instanceof \Webklex\PHPIMAP\Attribute) {
             $attr = $attr->toDate();
         }
 

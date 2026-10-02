@@ -6,7 +6,7 @@ namespace App\Incoming;
  * An attachment of an incoming message.
  *
  * Modules receive attachments in the fetch_emails.data_to_save hook. While
- * messages come from App\LegacyImap, anything this class doesn't have is
+ * messages come from webklex/php-imap, anything this class doesn't have is
  * passed on to the original webklex attachment, so modules keep working.
  */
 class Attachment

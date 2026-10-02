@@ -3,33 +3,27 @@
 namespace Tests\Unit;
 
 use App\Incoming\Parser;
-use App\Incoming\ParserComparison;
 use App\Incoming\Webklex6Message;
 use Tests\TestCase;
 
 /**
- * Incoming email is read with webklex 6, falling back to App\LegacyImap.
+ * Incoming email is read with webklex 6 and Tallport's own code.
  */
 class IncomingParserTest extends TestCase
 {
-    public function testEmailIsReadWithWebklex6()
+    public function testEmailIsRead()
     {
         $message = Parser::parse(file_get_contents(__DIR__.'/../Messages/webklex/plain.eml'));
 
         $this->assertInstanceOf(Webklex6Message::class, $message);
+        $this->assertSame('Example', $message->subject());
     }
 
-    public function testFetchedMessageIsTheFallback()
+    public function testUnreadableEmailFailsRightAway()
     {
-        $legacy = ParserComparison::legacy(file_get_contents(__DIR__.'/../Messages/webklex/plain.eml'));
-        \Log::spy();
+        $this->expectException(\Exception::class);
 
-        // A source webklex 6 can't read.
-        $message = Parser::parse("Subject: Broken\r\nContent-Type: multipart/mixed\r\n\r\nHello", $legacy);
-
-        $this->assertSame($legacy, $message);
-        \Log::shouldHaveReceived('error')->withArgs(function ($message) {
-            return str_contains($message, 'used the legacy parser');
-        })->once();
+        // A multipart email without a boundary.
+        Parser::parse("Subject: Broken\r\nContent-Type: multipart/mixed\r\n\r\nHello");
     }
 }

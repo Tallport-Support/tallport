@@ -9,8 +9,7 @@ use Webklex\PHPIMAP\Message;
  * An IncomingMessage parsed from a raw email by webklex/php-imap 6
  * (unpatched), with the subject and addresses read by Tallport's own code
  * (HeaderText, Address::parseList()). Fetching and tallport:receive read
- * email with it (through Parser); tallport:compare-parsers compares it with
- * LegacyImapMessage.
+ * email with it (through Parser).
  */
 class Webklex6Message implements IncomingMessage
 {
@@ -28,7 +27,7 @@ class Webklex6Message implements IncomingMessage
     public function __construct($raw, array $config = [])
     {
         $this->raw = preg_replace("/\r?\n/", "\r\n", $raw);
-        // An invalid Date header: the time of receiving (as App\LegacyImap).
+        // An invalid Date header: the time of receiving (as FreeScout did).
         $config = array_replace_recursive(['options' => ['fallback_date' => 'now']], $config);
         // Null bytes (sent by some mail programs) make charset conversion stop
         // there: https://github.com/freescout-help-desk/freescout/issues/5292
@@ -107,7 +106,7 @@ class Webklex6Message implements IncomingMessage
 
     public function replyTo(): array
     {
-        // As imap (and so App\LegacyImap): From if there's no Reply-To.
+        // As imap (and FreeScout): From if there's no Reply-To.
         return $this->addresses('Reply-To') ?: $this->from();
     }
 

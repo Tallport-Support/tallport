@@ -9,8 +9,8 @@ use Tests\FeatureTestCase;
 use Webklex\PHPIMAP\Connection\Protocols\Response;
 
 /**
- * Fetching with webklex/php-imap 6 (APP_FETCH_CLIENT=webklex6). Saving the
- * fetched emails is covered by IncomingMailSnapshotWebklex6ClientTest.
+ * Mailboxes are fetched with webklex/php-imap 6 (App\Incoming\ImapClient).
+ * Saving fetched emails is covered by IncomingMailSnapshotTest.
  */
 class WebklexClientTest extends FeatureTestCase
 {
@@ -22,14 +22,9 @@ class WebklexClientTest extends FeatureTestCase
         return $mailbox;
     }
 
-    public function testSwitch()
+    public function testClient()
     {
-        $mailbox = $this->imapMailbox();
-
-        $this->assertInstanceOf(\App\LegacyImap\Client::class, \MailHelper::getMailboxClient($mailbox));
-
-        config(['app.fetch_client' => 'webklex6']);
-        $client = \MailHelper::getMailboxClient($mailbox);
+        $client = \MailHelper::getMailboxClient($this->imapMailbox());
 
         $this->assertInstanceOf(ImapClient::class, $client);
         $this->assertSame('127.0.0.1', $client->client()->host);
@@ -48,7 +43,6 @@ class WebklexClientTest extends FeatureTestCase
 
     public function testConnectionTestReportsTheError()
     {
-        config(['app.fetch_client' => 'webklex6']);
         $level = ob_get_level();
 
         $result = \MailHelper::fetchTest($this->imapMailbox());
@@ -68,7 +62,6 @@ class WebklexClientTest extends FeatureTestCase
         $mailbox = $this->imapMailbox();
         $mailbox->in_port = $port;
         $mailbox->save();
-        config(['app.fetch_client' => 'webklex6']);
 
         try {
             ob_start();

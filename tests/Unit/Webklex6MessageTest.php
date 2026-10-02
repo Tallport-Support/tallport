@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 /**
  * What Tallport does around webklex/php-imap 6 so it reads what
- * App\LegacyImap reads: boundaries split into RFC 2231 continuations
+ * FreeScout's patched webklex read: boundaries split into RFC 2231 continuations
  * (FreeScout issue 4567), invalid dates, null bytes.
  */
 class Webklex6MessageTest extends TestCase
@@ -58,7 +58,7 @@ class Webklex6MessageTest extends TestCase
     }
 
     /**
-     * App\LegacyImap adds such an HTML part to the plain text instead.
+     * FreeScout's patched webklex added such an HTML part to the plain text.
      */
     public function testHtmlPartWithEmptyCharsetIsHtml()
     {

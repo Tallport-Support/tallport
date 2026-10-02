@@ -517,14 +517,10 @@ class Mail
 
         $client = null;
 
-        // The webklex 6 client prints its debug log.
+        // The client prints its debug log.
         ob_start();
 
         try {
-            \Config::set('imap.options.debug', true);
-            \App\LegacyImap\Connection\Protocols\ImapProtocol::$output_debug_log = false;
-            \App\LegacyImap\Connection\Protocols\PopProtocol::$output_debug_log = false;
-
             $client = \MailHelper::getMailboxClient($mailbox, true);
 
             // Connect to the Server
@@ -558,9 +554,8 @@ class Mail
             $result['msg'] = $e->getMessage();
         }
 
-        $is_webklex6 = $client instanceof \App\Incoming\ImapClient;
-        // Log out while the debug output is still captured: the webklex 6
-        // client would print it when destroyed, into the ajax response.
+        // Log out while the debug output is still captured: the client would
+        // print it when destroyed, into the ajax response.
         try {
             if ($client) {
                 $client->disconnect();
@@ -572,9 +567,7 @@ class Mail
         $debug_output = ob_get_clean();
 
         if ($result['result'] == 'error') {
-            $result['log'] = $is_webklex6
-                ? $debug_output
-                : \App\LegacyImap\Connection\Protocols\ImapProtocol::getDebugLog();
+            $result['log'] = $debug_output;
         }
 
         return $result;
@@ -881,65 +874,37 @@ class Mail
             }
         }
 
-        // Set config.
+        $account = [
+            'host'          => $mailbox->in_server,
+            'port'          => $mailbox->in_port,
+            'encryption'    => $mailbox->getInEncryptionName(),
+            'validate_cert' => $mailbox->in_validate_cert,
+            'username'      => $mailbox->in_username,
+            'password'      => $mailbox->in_password,
+            'protocol'      => $mailbox->getInProtocolName(),
+        ];
         if ($oauth) {
-            \Config::set('imap.accounts.default', [
-                'host'          => $mailbox->in_server,
-                'port'          => $mailbox->in_port,
-                'encryption'    => $mailbox->getInEncryptionName(),
-                'validate_cert' => $mailbox->in_validate_cert,
-                'username'      => $mailbox->getInOauthUsername(),
-                'password'      => $mailbox->oauthGetParam('a_token'),
-                'protocol'      => $mailbox->getInProtocolName(),
-                'authentication' => 'oauth',
-            ]);
-        } else {
-            \Config::set('imap.accounts.default', [
-                'host'          => $mailbox->in_server,
-                'port'          => $mailbox->in_port,
-                'encryption'    => $mailbox->getInEncryptionName(),
-                'validate_cert' => $mailbox->in_validate_cert,
-                // 'username'      => $mailbox->email,
-                // 'password'      => $mailbox->oauthGetParam('a_token'),
-                // 'protocol'      => $mailbox->getInProtocolName(),
-                // 'authentication' => 'oauth',
-                'username'      => $mailbox->in_username,
-                'password'      => $mailbox->in_password,
-                'protocol'      => $mailbox->getInProtocolName(),
-            ]);
+            $account['username'] = $mailbox->getInOauthUsername();
+            $account['password'] = $mailbox->oauthGetParam('a_token');
+            $account['authentication'] = 'oauth';
         }
 
-        if (config('app.fetch_client') == 'webklex6') {
-            $cm = new \Webklex\PHPIMAP\ClientManager([
-                'default'  => 'default',
-                'accounts' => ['default' => config('imap.accounts.default')],
-                'options'  => [
-                    'debug'         => (bool) $debug,
-                    'message_key'   => 'id',
-                    'fetch_order'   => 'asc',
-                    'fallback_date' => 'now',
-                    // A message webklex can't make is fetched raw instead
-                    // (App\Incoming\FetchedMessage), not failing the others.
-                    'soft_fail'     => true,
-                ],
-            ]);
+        $cm = new \Webklex\PHPIMAP\ClientManager([
+            'default'  => 'default',
+            'accounts' => ['default' => $account],
+            'options'  => [
+                'debug'         => (bool) $debug,
+                'message_key'   => 'id',
+                'fetch_order'   => 'asc',
+                // An invalid Date header: the time of receiving.
+                'fallback_date' => 'now',
+                // A message webklex can't make is fetched raw instead
+                // (App\Incoming\FetchedMessage), not failing the others.
+                'soft_fail'     => true,
+            ],
+        ]);
 
-            return new \App\Incoming\ImapClient($cm->account('default'));
-        }
-
-        // To enable debug: /vendor/webklex/php-imap/src/Connection/Protocols
-        // Debug in console
-        if (app()->runningInConsole()) {
-            \Config::set('imap.options.debug', config('app.debug'));
-        }
-        
-        $cm = new \App\LegacyImap\ClientManager(config('imap'));
-
-        // This makes it authenticate two times.
-        //$cm->setTimeout(60);
-
-        return $cm->account('default');
-        //}
+        return new \App\Incoming\ImapClient($cm->account('default'));
     }
 
     /**
@@ -1572,21 +1537,16 @@ class Mail
         return $status_message;
     }
 
-    public static function parseEml($content, $mailbox)
+    /**
+     * An email file as a webklex/php-imap 6 message (for modules; Tallport
+     * reads email with App\Incoming\Parser). $mailbox is no longer needed.
+     */
+    public static function parseEml($content, $mailbox = null)
     {
-        if (!str_contains($content, "\r\n")){
-            $content = str_replace("\n", "\r\n", $content);
-        }
-
-        $raw_header = substr($content, 0, strpos($content, "\r\n\r\n"));
-        $raw_body = substr($content, strlen($raw_header)+8);
-
-        //\Config::set('app.new_fetching_library', 'true');
-
-        $client = \MailHelper::getMailboxClient($mailbox);
-        $client->openFolder("INBOX");
-        
-        return \App\LegacyImap\Message::make(null, null, $client, $raw_header, $raw_body, [], \App\LegacyImap\IMAP::ST_UID);
+        return \Webklex\PHPIMAP\Message::fromString(
+            preg_replace("/\r?\n/", "\r\n", $content),
+            \Webklex\PHPIMAP\Config::make(['options' => ['fallback_date' => 'now']])
+        );
     }
 
     // Substitue encoding during mail body decoding.

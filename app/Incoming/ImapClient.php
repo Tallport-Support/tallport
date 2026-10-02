@@ -5,9 +5,9 @@ namespace App\Incoming;
 use Webklex\PHPIMAP\Client;
 
 /**
- * A webklex/php-imap 6 client with what Tallport uses from App\LegacyImap's
- * client (APP_FETCH_CLIENT=webklex6). Webklex 6 throws exceptions where the
- * legacy client collected errors, so there are none to report here.
+ * A webklex/php-imap 6 client with what Tallport uses from the client
+ * FreeScout had (its patched webklex 4.1). Webklex 6 throws exceptions where
+ * that one collected errors, so there are none to report here.
  */
 class ImapClient
 {
