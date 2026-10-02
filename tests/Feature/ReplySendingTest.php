@@ -374,6 +374,44 @@ class ReplySendingTest extends FeatureTestCase
         $this->assertSame(1, \DB::table('jobs')->where('payload', 'like', '%RestartQueueWorker%')->count());
     }
 
+    public function testReplySkippedByModuleIsLoggedWithTheModuleFile()
+    {
+        // As a module would.
+        \Eventy::addFilter('conversation.skip_send_reply_to_customer', function ($skip) {
+            return true;
+        }, 20, 1);
+        $this->receiveEmail($this->mailbox, $this->makeEmail([
+            'from' => 'Casey Customer <casey@customer.example.org>', 'to' => $this->mailbox->email, 'subject' => 'Question',
+        ]));
+        $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
+        \Log::spy();
+
+        $this->postAjax($this->agent, '/conversation/ajax', [
+            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Our answer</p>',
+        ]);
+        $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
+
+        $this->assertCount(0, $this->sentEmailsTo('casey@customer.example.org'));
+        \Log::shouldHaveReceived('warning')->withArgs(function ($message) use ($reply) {
+            return str_contains($message, 'Reply '.$reply->id.' not queued')
+                && str_contains($message, 'filter in tests/Feature/ReplySendingTest.php');
+        })->once();
+    }
+
+    public function testReplyNotSentByTheJobIsLogged()
+    {
+        [$conversation, $reply] = $this->queuedReplyInClosedConversation();
+        \DB::table('threads')->where('id', $reply->id)->update(['state' => Thread::STATE_DRAFT]);
+        \Log::spy();
+
+        $this->runQueue();
+
+        $this->assertCount(0, $this->sentEmailsTo('casey@customer.example.org'));
+        \Log::shouldHaveReceived('warning')->withArgs(function ($message) use ($reply, $conversation) {
+            return $message == '[SendReplyToCustomer] Reply '.$reply->id.' in conversation '.$conversation->id.' not sent: it is a draft (sending was undone).';
+        })->once();
+    }
+
     public function testRetryAfterFailureSendsTheReply()
     {
         [$conversation, $reply] = $this->conversationWithReply();

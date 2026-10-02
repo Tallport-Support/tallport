@@ -78,6 +78,7 @@ class SendReplyToCustomer implements ShouldQueue
 
         // Mailbox may be deleted.
         if (!$mailbox) {
+            $this->logNotSent('the mailbox no longer exists');
             return;
         }
 
@@ -129,12 +130,14 @@ class SendReplyToCustomer implements ShouldQueue
         $this->last_thread = $this->threads->first();
 
         if ($this->last_thread === null) {
+            $this->logNotSent('the reply no longer exists');
             return;
         }
         $last_customer_thread = null;
 
         // If thread is draft, it means it has been undone
         if ($this->last_thread->isDraft()) {
+            $this->logNotSent('it is a draft (sending was undone)');
             return;
         }
 
@@ -298,6 +301,7 @@ class SendReplyToCustomer implements ShouldQueue
         if (!$this->customer_email && $this->conversation->isPhone()) {            
             $this->customer_email = $this->conversation->customer->getMainEmail();
             if (!$this->customer_email) {
+                $this->logNotSent('the customer has no email address');
                 return;
             }
         }
@@ -306,6 +310,7 @@ class SendReplyToCustomer implements ShouldQueue
         if (!$this->customer) {
             $this->customer = Customer::getByEmail($this->customer_email);
             if (!$this->customer) {
+                $this->logNotSent('no customer with the recipient\'s email address');
                 return;
             }
         }
@@ -598,6 +603,15 @@ class SendReplyToCustomer implements ShouldQueue
                 \Helper::logException($e, $this->getImapSaveErrorPrefix($mailbox).'Could not save outgoing reply to the IMAP folder: '.$imap_sent_folder.' - ');
             }
         }
+    }
+
+    /**
+     * Why a reply is not sent: tallport:check-outgoing reports it as unsent.
+     */
+    protected function logNotSent($reason)
+    {
+        $thread = $this->last_thread ?: ($this->threads && count($this->threads) ? $this->threads->first() : null);
+        \Log::warning('[SendReplyToCustomer] Reply '.($thread ? $thread->id : '?').' in conversation '.$this->conversation->id.' not sent: '.$reason.'.');
     }
 
     public function getImapSaveErrorPrefix($mailbox)

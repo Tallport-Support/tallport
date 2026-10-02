@@ -81,7 +81,9 @@ class SendReplyToCustomer
         // Allow to cancel mail sending if needed.
         $skip_send = \Eventy::filter('conversation.skip_send_reply_to_customer', false, $conversation, $replies);
         if ($skip_send) {
-             return;
+            \Log::warning('[SendReplyToCustomer] Reply '.$thread->id.' not queued: skipped by the conversation.skip_send_reply_to_customer filter in '.self::filterFiles('conversation.skip_send_reply_to_customer'));
+
+            return;
         }
 
         // Chat conversation.
@@ -114,5 +116,27 @@ class SendReplyToCustomer
         \App\Jobs\SendReplyToCustomer::dispatch($conversation, $replies, $recipient_customer)
             ->delay($delay)
             ->onQueue('emails');
+    }
+
+    /**
+     * The files with a filter's callbacks: which modules use it.
+     */
+    public static function filterFiles($hook)
+    {
+        $files = [];
+        foreach (\Eventy::getFilter()->getListeners($hook) as $listener) {
+            $callback = $listener['callback'];
+            try {
+                if (is_string($callback) && str_contains($callback, '@')) {
+                    $callback = explode('@', $callback, 2);
+                }
+                $reflection = is_array($callback) ? new \ReflectionMethod($callback[0], $callback[1]) : new \ReflectionFunction($callback);
+                $files[] = str_replace(base_path().'/', '', $reflection->getFileName());
+            } catch (\Throwable $e) {
+                $files[] = 'unknown';
+            }
+        }
+
+        return implode(', ', array_unique($files)) ?: 'unknown';
     }
 }
