@@ -1666,10 +1666,18 @@ trait HasAttributes
      */
     public function getDates()
     {
-        return $this->usesTimestamps() ? [
+        $dates = $this->usesTimestamps() ? [
             $this->getCreatedAtColumn(),
             $this->getUpdatedAtColumn(),
         ] : [];
+
+        // As in Laravel 5.5-9: the attributes in $dates are dates too. FreeScout
+        // and its modules list them there (Conversation::$last_reply_at, ...).
+        if (isset($this->dates) && is_array($this->dates)) {
+            $dates = array_values(array_unique(array_merge($dates, $this->dates)));
+        }
+
+        return $dates;
     }
 
     /**

@@ -32,7 +32,7 @@ Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Lara
   - the `str_*`/`array_*` helpers;
   - Laravel 8 Model method signatures;
   - `Mail::failures()`;
-  - the "Y-m-d H:i:s" model date serialization.
+  - model `$dates` (cast to Carbon) and the "Y-m-d H:i:s" date serialization.
 - Keep Eventy hooks (`\Eventy::filter`/`action` names and arguments) stable. Modules depend on them.
 - `config('app.compatibility_version')` is the FreeScout version reported to modules. `config('app.version')` is Tallport's own version.
 

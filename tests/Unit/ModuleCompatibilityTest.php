@@ -61,6 +61,28 @@ class ModuleCompatibilityTest extends TestCase
         $this->assertStringContainsString('"created_at":"2026-03-05 14:07:09"', $customer->toJson());
     }
 
+    /**
+     * Laravel 10 dropped $dates; FreeScout and modules (AiAssistant's
+     * Document::$last_indexed_at, ...) call Carbon methods on them.
+     */
+    public function testDatesPropertyStillMakesDates()
+    {
+        $conversation = new \App\Conversation();
+        $conversation->setRawAttributes(['last_reply_at' => '2026-03-05 14:07:09', 'closed_at' => null]);
+
+        $this->assertInstanceOf(\Carbon\Carbon::class, $conversation->last_reply_at);
+        $this->assertSame('2026-03-05 14:07:09', $conversation->last_reply_at->toDateTimeString());
+        $this->assertNull($conversation->closed_at);
+        $this->assertSame('2026-03-05 14:07:09', $conversation->toArray()['last_reply_at']);
+
+        $module_model = new class extends \Illuminate\Database\Eloquent\Model {
+            protected $dates = ['last_indexed_at'];
+        };
+        $module_model->last_indexed_at = \Carbon\Carbon::create(2026, 3, 5, 14, 7, 9);
+        $this->assertSame('2026-03-05 14:07:09', $module_model->getAttributes()['last_indexed_at'], 'Stored in the database format.');
+        $this->assertSame('2026-03-05 14:07:09', $module_model->last_indexed_at->toDateTimeString());
+    }
+
     public function testModelsWithoutReturnTypesLoad()
     {
         exec(escapeshellarg(PHP_BINARY).' '.escapeshellarg(__DIR__.'/../Support/module-compat/old-style-model.php').' 2>&1', $output, $code);
