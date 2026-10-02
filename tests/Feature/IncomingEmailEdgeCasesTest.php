@@ -284,6 +284,30 @@ class IncomingEmailEdgeCasesTest extends FeatureTestCase
         $this->assertSame('Question for support and sales', Conversation::where('mailbox_id', $sales->id)->value('subject'));
     }
 
+    public function testMailboxInBccFetchingLaterGetsOneCopyAndAddsNone()
+    {
+        $incoming = ['in_protocol' => 1, 'in_server' => 'imap.example.org', 'in_port' => 993, 'in_username' => 'u', 'in_password' => 'p'];
+        $this->mailbox->fill($incoming)->save();
+        $sales = $this->createMailbox([$this->agent], ['name' => 'Sales'] + $incoming);
+        $other = $this->createMailbox([$this->agent], ['name' => 'Other'] + $incoming);
+        $email = $this->makeEmail([
+            'from'       => 'casey@customer.example.org',
+            'to'         => $this->mailbox->email,
+            'cc'         => $sales->email,
+            'subject'    => 'Other is in Bcc',
+            'message_id' => 'bcc@customer.example.org',
+        ]);
+
+        // Each mailbox fetches its copy from its own server.
+        foreach ([$this->mailbox, $sales, $other] as $mailbox) {
+            $this->receiveEmail($mailbox, $email, [$this->mailbox, $sales, $other]);
+        }
+
+        foreach ([$this->mailbox, $sales, $other] as $mailbox) {
+            $this->assertSame(1, Conversation::where('mailbox_id', $mailbox->id)->count(), $mailbox->name);
+        }
+    }
+
     // Auto-responders.
 
     public function testNoAutoReplyToAutoResponder()

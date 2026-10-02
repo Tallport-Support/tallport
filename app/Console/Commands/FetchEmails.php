@@ -68,6 +68,13 @@ class FetchEmails extends Command
     public $extra_import = [];
 
     /**
+     * Whether the last processMessage() failed (as opposed to saving the
+     * email, or skipping it on purpose): tallport:receive tells the mail
+     * server to try again.
+     */
+    public $last_message_failed = false;
+
+    /**
      * Page size when requesting emails from mail server.
      */
     const PAGE_SIZE = 300;
@@ -398,6 +405,8 @@ class FetchEmails extends Command
 
     public function processMessage($message, $message_id, $mailbox, $mailboxes, $extra = false)
     {
+        $this->last_message_failed = false;
+
         // Everything about the email is read through IncomingMessage; $message
         // stays the library's message (if any) for flags and modules.
         if ($message instanceof IncomingMessage) {
@@ -1035,7 +1044,9 @@ class FetchEmails extends Command
                     $this->attrToArray($incoming->bcc())
                 )));
                 
-                if (count($mailboxes) && count($recipient_emails) > 1) {
+                // Not from a copy for a mailbox in Bcc ($extra): the mailboxes
+                // in To and Cc got theirs from the first import.
+                if (!$extra && count($mailboxes) && count($recipient_emails) > 1) {
                     foreach ($mailboxes as $check_mailbox) {
                         if ($check_mailbox->id == $mailbox->id) {
                             continue;
@@ -1126,9 +1137,11 @@ class FetchEmails extends Command
                     $this->saveBounceData($new_thread, $bounced_message_id, $from);
                 }
             } else {
+                $this->last_message_failed = true;
                 $this->logError('Error occurred processing message');
             }
         } catch (\Exception $e) {
+            $this->last_message_failed = true;
             $this->setSeen($message, $mailbox);
             $this->logError(\Helper::formatException($e));
         }

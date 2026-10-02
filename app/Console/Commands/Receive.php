@@ -12,6 +12,14 @@ use Illuminate\Console\Command;
 class Receive extends Command
 {
     /**
+     * Exit codes for mail servers (sysexits.h): 75 makes them try again
+     * later, the others bounce the email.
+     */
+    const EX_NOINPUT = 66;
+    const EX_NOUSER = 67;
+    const EX_TEMPFAIL = 75;
+
+    /**
      * The name and signature of the console command.
      *
      * @var string
@@ -39,12 +47,29 @@ class Receive extends Command
         if (!$raw) {
             $this->error($file ? 'Could not read '.$file : 'No email on standard input');
 
-            return 1;
+            return self::EX_NOINPUT;
         }
         if (!str_contains($raw, "\r\n")) {
             $raw = str_replace("\n", "\r\n", $raw);
         }
 
+        try {
+            return $this->saveEmail($raw);
+        } catch (\Throwable $e) {
+            \Helper::logException($e, '[tallport:receive]');
+            $this->error('Could not receive the email: '.$e->getMessage());
+
+            return self::EX_TEMPFAIL;
+        }
+    }
+
+    /**
+     * Save the email into its mailbox (and other mailboxes among the recipients).
+     *
+     * @return int
+     */
+    protected function saveEmail($raw)
+    {
         $message = Parser::parse($raw);
 
         $mailboxes = Mailbox::get();
@@ -54,8 +79,15 @@ class Receive extends Command
                 ? 'Mailbox not found: '.$this->option('mailbox')
                 : 'No mailbox among the recipients; pass --mailbox');
 
-            return 1;
+            return self::EX_NOUSER;
         }
+
+        // FetchEmails imports an email sent to several mailboxes into the
+        // others only if they receive email, which it knows from their IMAP
+        // settings: mailboxes receiving through a pipe may have none.
+        \Eventy::addFilter('mailbox.in_active', function ($in_active) {
+            return true;
+        }, 20, 1);
 
         $fetch = new FetchEmails();
         $fetch->setLaravel($this->laravel);
@@ -65,6 +97,11 @@ class Receive extends Command
 
         $this->line('['.date('Y-m-d H:i:s').'] Mailbox: '.$mailbox->name.'; '.$message->subject());
         $fetch->processMessage($message, $message->messageId(), $mailbox, $mailboxes);
+        if ($fetch->last_message_failed) {
+            // Already logged. Receiving it again is safe: an email received
+            // before is recognised by its Message-ID.
+            return self::EX_TEMPFAIL;
+        }
 
         // Also into other mailboxes among the recipients.
         foreach ($fetch->extra_import as $extra_import) {
@@ -78,25 +115,21 @@ class Receive extends Command
     }
 
     /**
-     * The mailbox from --mailbox, or the first mailbox among the recipients.
+     * The mailbox from --mailbox, or the first mailbox among the recipients
+     * (by its address or one of its aliases).
      */
     protected function findMailbox(IncomingMessage $message, $mailboxes)
     {
         $option = $this->option('mailbox');
         if ($option) {
             return $mailboxes->first(function ($mailbox) use ($option) {
-                return (string) $mailbox->id === $option || Email::sanitizeEmail($mailbox->email) === Email::sanitizeEmail($option);
+                return (string) $mailbox->id === $option || self::hasAddress($mailbox, $option);
             });
         }
 
-        $recipients = [];
         foreach (array_merge($message->to(), $message->cc(), $message->bcc()) as $address) {
-            $recipients[] = Email::sanitizeEmail($address->mail);
-        }
-
-        foreach ($recipients as $recipient) {
-            $mailbox = $mailboxes->first(function ($mailbox) use ($recipient) {
-                return Email::sanitizeEmail($mailbox->email) === $recipient;
+            $mailbox = $mailboxes->first(function ($mailbox) use ($address) {
+                return self::hasAddress($mailbox, $address->mail);
             });
             if ($mailbox) {
                 return $mailbox;
@@ -104,5 +137,12 @@ class Receive extends Command
         }
 
         return null;
+    }
+
+    protected static function hasAddress(Mailbox $mailbox, $email)
+    {
+        $email = Email::sanitizeEmail($email);
+
+        return $email && in_array($email, array_map([Email::class, 'sanitizeEmail'], $mailbox->getEmails()), true);
     }
 }

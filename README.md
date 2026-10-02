@@ -24,6 +24,7 @@ Credit for everything up to the fork goes to the FreeScout team.
 * [Switching from FreeScout](#switching-from-freescout)
 * [Updating](#updating)
 * [Incoming email sources and re-importing](#incoming-email-sources-and-re-importing)
+* [Receiving email from a mail server](#receiving-email-from-a-mail-server)
 * [Modules](#modules)
 * [Development](#development)
 * [Security](#security)
@@ -141,8 +142,51 @@ sudo -u www-data php artisan tallport:receive storage/app/incoming-mail/1234.eml
 The mailbox is found from the recipients, or given with
 `--mailbox=<id or email address>`. An email that is already in Tallport (same
 Message-ID) is skipped. `tallport:receive` also reads an email from standard
-input, the basis for receiving mail straight from a mail server; that setup
-is not ready yet.
+input, for receiving mail straight from a mail server.
+
+## Receiving email from a mail server
+
+Instead of fetching from an IMAP or POP3 server, the mail server can hand
+each email to Tallport as it arrives. With Postfix, add a transport to
+`/etc/postfix/master.cf` (adjust the paths and the web server's user):
+
+```
+tallport  unix  -       n       n       -       -       pipe
+  flags=R user=www-data argv=/usr/bin/php /var/www/html/artisan tallport:receive --mailbox=${recipient}
+```
+
+and in `/etc/postfix/main.cf` deliver one recipient at a time and send the
+mailboxes' addresses (or their whole domain) to it:
+
+```
+tallport_destination_recipient_limit = 1
+transport_maps = hash:/etc/postfix/transport
+```
+
+```
+# /etc/postfix/transport, then: postmap /etc/postfix/transport && postfix reload
+support@example.com    tallport:
+sales@example.com      tallport:
+```
+
+Postfix must accept mail for the domain (for example in `relay_domains`).
+`--mailbox` takes a mailbox's address or one of its aliases, so a mailbox in
+Bcc gets the email too. The exit code tells Postfix what happened:
+
+* 0: saved, or skipped on purpose (for example already received, by
+  Message-ID). Delivering an email again is safe.
+* 75: saving failed (logged). Postfix keeps the email and tries again later
+  (for up to `maximal_queue_lifetime`, 5 days by default).
+* 67: no such mailbox. Postfix bounces the email.
+
+To try it without Postfix:
+
+```bash
+sudo -u www-data php artisan tallport:receive --mailbox=support@example.com < test.eml; echo $?
+```
+
+Clear the fetching settings of a mailbox that receives this way: an email
+fetched as well arrives with other headers, and would be saved twice.
 
 ## Modules
 

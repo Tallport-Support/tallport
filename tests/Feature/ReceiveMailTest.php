@@ -65,9 +65,75 @@ class ReceiveMailTest extends FeatureTestCase
     {
         $this->artisan('tallport:receive', ['file' => $this->eml('someone@else.example')])
             ->expectsOutputToContain('No mailbox among the recipients')
-            ->assertExitCode(1);
+            ->assertExitCode(67);
 
-        $this->artisan('tallport:receive', ['file' => $this->storage.'/missing.eml'])->assertExitCode(1);
+        $this->artisan('tallport:receive', ['file' => $this->storage.'/missing.eml'])->assertExitCode(66);
+    }
+
+    public function testMailboxOptionAcceptsAnAlias()
+    {
+        $this->mailbox->aliases = 'help@receive.example';
+        $this->mailbox->save();
+
+        $this->artisan('tallport:receive', ['file' => $this->eml('someone@else.example'), '--mailbox' => 'Help@receive.example'])
+            ->assertExitCode(0);
+
+        $this->assertSame(1, Conversation::where('mailbox_id', $this->mailbox->id)->count());
+    }
+
+    /**
+     * A mail server pipes an email once per recipient (--mailbox=${recipient}).
+     */
+    public function testDeliveryPerRecipient()
+    {
+        $sales = $this->createMailbox([$this->createUser()], ['email' => 'sales@receive.example']);
+        $other = $this->createMailbox([$this->createUser()], ['email' => 'other@receive.example']);
+        // To support and sales; other is in Bcc (only in the envelope).
+        $file = $this->eml('support@receive.example, sales@receive.example');
+
+        foreach (['support@receive.example', 'sales@receive.example', 'other@receive.example'] as $recipient) {
+            $this->artisan('tallport:receive', ['file' => $file, '--mailbox' => $recipient])->assertExitCode(0);
+        }
+
+        foreach ([$this->mailbox, $sales, $other] as $mailbox) {
+            $this->assertSame(1, Conversation::where('mailbox_id', $mailbox->id)->count(), $mailbox->email);
+        }
+    }
+
+    public function testFailureAsksTheMailServerToTryAgain()
+    {
+        $fail = function ($data) {
+            throw new \Exception('Database went away');
+        };
+        \Eventy::addFilter('fetch_emails.data_to_save', $fail, 20, 1);
+        $file = $this->eml();
+
+        $this->artisan('tallport:receive', ['file' => $file])->assertExitCode(75);
+        $this->assertSame(0, Conversation::where('mailbox_id', $this->mailbox->id)->count());
+
+        // The mail server delivers it again.
+        \Eventy::removeFilter('fetch_emails.data_to_save', $fail, 20);
+        $this->artisan('tallport:receive', ['file' => $file])->assertExitCode(0);
+        $this->assertSame(1, Conversation::where('mailbox_id', $this->mailbox->id)->count());
+    }
+
+    public function testReceivingTwiceSavesOnce()
+    {
+        $file = $this->eml();
+
+        $this->artisan('tallport:receive', ['file' => $file])->assertExitCode(0);
+        $this->artisan('tallport:receive', ['file' => $file])->assertExitCode(0);
+
+        $this->assertSame(1, Thread::where('message_id', 'receive-1@customer.example')->count());
+    }
+
+    public function testUnreadableEmailAsksTheMailServerToTryAgain()
+    {
+        $file = $this->storage.'/broken.eml';
+        // Neither parser reads a multipart email without a boundary.
+        file_put_contents($file, "From: casey@customer.example\r\nTo: support@receive.example\r\nSubject: Broken\r\nContent-Type: multipart/mixed\r\n\r\nHello");
+
+        $this->artisan('tallport:receive', ['file' => $file])->assertExitCode(75);
     }
 
     public function testRawSourceIsKeptAndCleanedUp()
