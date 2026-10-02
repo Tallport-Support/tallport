@@ -289,6 +289,17 @@ class AiAssistantTest extends FeatureTestCase
 
     // The earlier assistant's data.
 
+    public function testConvertedSummaryWithoutDateIsShown()
+    {
+        $conversation = $this->receiveCustomerEmail();
+        \DB::table('conversations')->where('id', $conversation->id)->update([
+            'ai_assistant' => '{"summaries":{"en":{"one_liner":"Old one-liner","summary":"- Old summary"}}}',
+        ]);
+
+        $this->getConversationPage($this->agent, $conversation)->assertStatus(200)->assertSee('Old summary');
+        $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id)->assertSee('Old one-liner');
+    }
+
     public function testEarlierDataIsConvertedByLanguage()
     {
         if (!class_exists('AddAiAssistantColumns')) {

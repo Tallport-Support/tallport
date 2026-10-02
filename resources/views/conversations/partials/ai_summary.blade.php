@@ -23,9 +23,11 @@
                 <div class="thread-title">
                     <div class="thread-person"><strong>{{ __('Summary') }}</strong></div>
                 </div>
-                <div class="thread-info">
-                    <span class="thread-date" data-toggle="tooltip" title="{{ App\User::dateFormat($ai_summary['at']) }}">{{ App\User::dateDiffForHumans($ai_summary['at']) }}</span>
-                </div>
+                @if (!empty($ai_summary['at']))
+                    <div class="thread-info">
+                        <span class="thread-date" data-toggle="tooltip" title="{{ App\User::dateFormat($ai_summary['at']) }}">{{ App\User::dateDiffForHumans($ai_summary['at']) }}</span>
+                    </div>
+                @endif
             </div>
             <div class="thread-body">
                 <div class="thread-content" dir="auto">
