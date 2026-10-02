@@ -10,8 +10,8 @@ use ParagonIE\ConstantTime\Base32;
  * Imports two-factor data already in the database (a
  * two_factor_authentications table) into Tallport's: each user's secret, so
  * authenticator apps keep working, and the unused recovery codes. The
- * twofactorauth module, which used that table, is switched off; the table
- * stays.
+ * twofactorauth module, which used that table, is switched off. The table
+ * is dropped afterwards (2026_10_03_010101).
  */
 class ImportExistingTwoFactorData extends Migration
 {
@@ -33,7 +33,7 @@ class ImportExistingTwoFactorData extends Migration
 
     public function down()
     {
-        // The two_factor_authentications table is untouched.
+        // The two_factor_authentications table is dropped by a later migration.
     }
 
     /**
