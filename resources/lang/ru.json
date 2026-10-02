@@ -962,5 +962,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "Черновик составляется долго. Проверьте, что очередь работает, или попробуйте снова.",
     "Translation": "Перевод",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Вы составили максимальное число черновиков на сегодня."
+    "You have made the most drafts allowed for today.": "Вы составили максимальное число черновиков на сегодня.",
+    "Waiting in the queue…": "Ожидает в очереди…"
 }

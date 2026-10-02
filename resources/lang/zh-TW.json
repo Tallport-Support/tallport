@@ -1018,5 +1018,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "草稿耗時較久。請確認佇列正在執行，或再試一次。",
     "Translation": "翻譯",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "你今天的草稿數量已達上限。"
+    "You have made the most drafts allowed for today.": "你今天的草稿數量已達上限。",
+    "Waiting in the queue…": "正在佇列中等待…"
 }

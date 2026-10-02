@@ -961,5 +961,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "Osnutek traja dolgo. Preverite, ali čakalna vrsta deluje, ali poskusite znova.",
     "Translation": "Prevod",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Danes ste ustvarili največje dovoljeno število osnutkov."
+    "You have made the most drafts allowed for today.": "Danes ste ustvarili največje dovoljeno število osnutkov.",
+    "Waiting in the queue…": "Čaka v čakalni vrsti…"
 }

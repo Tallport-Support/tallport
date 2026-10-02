@@ -89,7 +89,7 @@ class AiDraftsTest extends FeatureTestCase
 
     public function testButtonOnlyWhereDraftingIsAllowed()
     {
-        $this->getConversationPage($this->agent)->assertSee('ai-draft-action')->assertSee('data-draft-url', false);
+        $this->getConversationPage($this->agent)->assertSee('ai-draft-action')->assertSee('data-draft-url', false)->assertSee('Waiting in the queue…');
 
         Option::set('aiassistant.drafts_per_day', 0);
         $this->getConversationPage($this->agent)->assertDontSee('ai-draft-action');

@@ -961,5 +961,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "הטיוטה לוקחת זמן רב. בדוק שהתור פועל או נסה שוב.",
     "Translation": "תרגום",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "יצרת היום את המספר המרבי של טיוטות."
+    "You have made the most drafts allowed for today.": "יצרת היום את המספר המרבי של טיוטות.",
+    "Waiting in the queue…": "ממתין בתור…"
 }

@@ -962,5 +962,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "A piszkozat sokáig tart. Ellenőrizd, hogy fut-e a sor, vagy próbáld újra.",
     "Translation": "Fordítás",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Elérted a mai napra engedélyezett piszkozatok számát."
+    "You have made the most drafts allowed for today.": "Elérted a mai napra engedélyezett piszkozatok számát.",
+    "Waiting in the queue…": "Várakozás a sorban…"
 }

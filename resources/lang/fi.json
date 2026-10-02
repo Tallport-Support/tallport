@@ -981,5 +981,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "Luonnos kestää kauan. Tarkista, että jono on käynnissä, tai yritä uudelleen.",
     "Translation": "Käännös",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Olet tehnyt tänään sallitun enimmäismäärän luonnoksia."
+    "You have made the most drafts allowed for today.": "Olet tehnyt tänään sallitun enimmäismäärän luonnoksia.",
+    "Waiting in the queue…": "Odottaa jonossa…"
 }

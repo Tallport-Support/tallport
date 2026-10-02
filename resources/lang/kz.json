@@ -1461,5 +1461,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "Жоба ұзақ жасалуда. Кезектің жұмыс істеп тұрғанын тексеріңіз немесе қайталап көріңіз.",
     "Translation": "Аударма",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Бүгінге рұқсат етілген жобалардың ең көп санын жасадыңыз."
+    "You have made the most drafts allowed for today.": "Бүгінге рұқсат етілген жобалардың ең көп санын жасадыңыз.",
+    "Waiting in the queue…": "Кезекте күтуде…"
 }

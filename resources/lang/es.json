@@ -963,5 +963,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "El borrador está tardando. Compruebe que la cola esté en marcha o inténtelo de nuevo.",
     "Translation": "Traducción",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Ha alcanzado el máximo de borradores permitidos para hoy."
+    "You have made the most drafts allowed for today.": "Ha alcanzado el máximo de borradores permitidos para hoy.",
+    "Waiting in the queue…": "Esperando en la cola…"
 }

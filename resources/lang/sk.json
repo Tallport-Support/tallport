@@ -961,5 +961,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "Návrh trvá dlho. Skontrolujte, či beží front, alebo to skúste znova.",
     "Translation": "Preklad",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Dnes ste vytvorili maximálny povolený počet návrhov."
+    "You have made the most drafts allowed for today.": "Dnes ste vytvorili maximálny povolený počet návrhov.",
+    "Waiting in the queue…": "Čaká vo fronte…"
 }

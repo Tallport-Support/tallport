@@ -964,5 +964,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "草稿耗时较长。请检查队列是否在运行，或重试。",
     "Translation": "翻译",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "你今天的草稿数量已达上限。"
+    "You have made the most drafts allowed for today.": "你今天的草稿数量已达上限。",
+    "Waiting in the queue…": "正在队列中等待…"
 }

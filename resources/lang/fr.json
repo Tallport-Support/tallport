@@ -972,5 +972,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "Le brouillon prend du temps. Vérifiez que la file d'attente fonctionne, ou réessayez.",
     "Translation": "Traduction",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Vous avez atteint le nombre maximal de brouillons pour aujourd'hui."
+    "You have made the most drafts allowed for today.": "Vous avez atteint le nombre maximal de brouillons pour aujourd'hui.",
+    "Waiting in the queue…": "En attente dans la file…"
 }

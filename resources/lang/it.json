@@ -961,5 +961,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "La bozza richiede molto tempo. Verifica che la coda sia attiva o riprova.",
     "Translation": "Traduzione",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Hai raggiunto il numero massimo di bozze per oggi."
+    "You have made the most drafts allowed for today.": "Hai raggiunto il numero massimo di bozze per oggi.",
+    "Waiting in the queue…": "In attesa nella coda…"
 }

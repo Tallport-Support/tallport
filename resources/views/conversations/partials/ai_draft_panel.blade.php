@@ -1,6 +1,7 @@
 {{-- AI Assistant: a reply draft (App\Ai\Drafts), filled in by aiDraftsInit(). --}}
 <div class="ai-draft-panel hidden"
      data-draft-url="{{ route('ai.drafts.store', ['id' => $conversation->id]) }}"
+     data-text-queued="{{ __('Waiting in the queue…') }}"
      data-text-drafting="{{ __('Drafting…') }}"
      data-text-failed="{{ __('Could not draft a reply.') }}"
      data-text-slow="{{ __('The draft is taking long. Check that the queue is running, or try again.') }}"

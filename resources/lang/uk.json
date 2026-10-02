@@ -962,5 +962,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "Чернетка складається довго. Перевірте, чи працює черга, або спробуйте знову.",
     "Translation": "Переклад",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Ви склали максимальну кількість чернеток на сьогодні."
+    "You have made the most drafts allowed for today.": "Ви склали максимальну кількість чернеток на сьогодні.",
+    "Waiting in the queue…": "Очікує в черзі…"
 }

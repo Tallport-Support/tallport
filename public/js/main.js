@@ -2638,6 +2638,7 @@ function aiDraftsInit()
 				} else if (attempt >= 180) {
 					showError(panel.attr('data-text-slow'));
 				} else {
+					panel.find('.ai-draft-status').text(panel.attr(response.draft_status == 'running' ? 'data-text-drafting' : 'data-text-queued'));
 					panel.data('timer', window.setTimeout(function() {
 						poll(url, attempt + 1);
 					}, 2000));
@@ -2649,7 +2650,7 @@ function aiDraftsInit()
 
 		$(document).on('click', '.ai-draft-action', function(e) {
 			e.preventDefault();
-			reset(panel.attr('data-text-drafting'));
+			reset(panel.attr('data-text-queued'));
 			fsAjax({}, panel.attr('data-draft-url'), function(response) {
 				if (response.status == 'success') {
 					poll(response.poll_url, 1);

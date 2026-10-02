@@ -962,5 +962,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "Qaralama uzun çəkir. Növbənin işlədiyini yoxlayın və ya yenidən cəhd edin.",
     "Translation": "Tərcümə",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Bu gün üçün icazə verilən maksimum qaralama sayına çatdınız."
+    "You have made the most drafts allowed for today.": "Bu gün üçün icazə verilən maksimum qaralama sayına çatdınız.",
+    "Waiting in the queue…": "Növbədə gözləyir…"
 }

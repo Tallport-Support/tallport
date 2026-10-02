@@ -962,5 +962,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "Nacrt traje dugo. Provjerite radi li red čekanja ili pokušajte ponovno.",
     "Translation": "Prijevod",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Danas ste izradili najveći dopušteni broj nacrta."
+    "You have made the most drafts allowed for today.": "Danas ste izradili najveći dopušteni broj nacrta.",
+    "Waiting in the queue…": "Čeka u redu čekanja…"
 }

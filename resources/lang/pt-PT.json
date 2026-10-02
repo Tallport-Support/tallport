@@ -962,5 +962,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "O rascunho está a demorar. Verifique se a fila está a funcionar ou tente novamente.",
     "Translation": "Tradução",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Atingiu o número máximo de rascunhos permitidos para hoje."
+    "You have made the most drafts allowed for today.": "Atingiu o número máximo de rascunhos permitidos para hoje.",
+    "Waiting in the queue…": "A aguardar na fila…"
 }

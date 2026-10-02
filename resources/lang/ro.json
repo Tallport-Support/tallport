@@ -961,5 +961,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "Schița durează mult. Verifică dacă rulează coada sau încearcă din nou.",
     "Translation": "Traducere",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Ai atins numărul maxim de schițe permise pentru azi."
+    "You have made the most drafts allowed for today.": "Ai atins numărul maxim de schițe permise pentru azi.",
+    "Waiting in the queue…": "Se așteaptă în coadă…"
 }

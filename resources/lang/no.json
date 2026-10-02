@@ -967,5 +967,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "Utkastet tar lang tid. Sjekk at køen kjører, eller prøv igjen.",
     "Translation": "Oversettelse",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Du har laget det høyeste antallet utkast som er tillatt i dag."
+    "You have made the most drafts allowed for today.": "Du har laget det høyeste antallet utkast som er tillatt i dag.",
+    "Waiting in the queue…": "Venter i køen…"
 }

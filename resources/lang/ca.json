@@ -1076,5 +1076,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "L'esborrany triga. Comproveu que la cua funciona o torneu-ho a provar.",
     "Translation": "Traducció",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Heu arribat al màxim d'esborranys permesos per avui."
+    "You have made the most drafts allowed for today.": "Heu arribat al màxim d'esborranys permesos per avui.",
+    "Waiting in the queue…": "Esperant a la cua…"
 }

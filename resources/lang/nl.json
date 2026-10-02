@@ -967,5 +967,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "Het concept duurt lang. Controleer of de wachtrij draait, of probeer het opnieuw.",
     "Translation": "Vertaling",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "U heeft het maximale aantal concepten voor vandaag gemaakt."
+    "You have made the most drafts allowed for today.": "U heeft het maximale aantal concepten voor vandaag gemaakt.",
+    "Waiting in the queue…": "Wacht in de wachtrij…"
 }

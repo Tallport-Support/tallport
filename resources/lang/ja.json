@@ -962,5 +962,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "下書きに時間がかかっています。キューが動作しているか確認するか、もう一度お試しください。",
     "Translation": "翻訳",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "本日作成できる下書きの上限に達しました。"
+    "You have made the most drafts allowed for today.": "本日作成できる下書きの上限に達しました。",
+    "Waiting in the queue…": "キューで待機中…"
 }

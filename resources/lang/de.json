@@ -955,5 +955,6 @@
     "The draft is taking long. Check that the queue is running, or try again.": "Der Entwurf dauert lange. Prüfen Sie, ob die Warteschlange läuft, oder versuchen Sie es erneut.",
     "Translation": "Übersetzung",
     "URL": "URL",
-    "You have made the most drafts allowed for today.": "Sie haben für heute die maximale Anzahl an Entwürfen erstellt."
+    "You have made the most drafts allowed for today.": "Sie haben für heute die maximale Anzahl an Entwürfen erstellt.",
+    "Waiting in the queue…": "Wartet in der Warteschlange…"
 }
