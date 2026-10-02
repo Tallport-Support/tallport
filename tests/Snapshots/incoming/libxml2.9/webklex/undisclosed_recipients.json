@@ -6,13 +6,13 @@
             "type": 1,
             "status": 1,
             "customer_email": "from@there.com",
-            "cc": "[\"undisclosedrecipients@unknown\",\"unexpected_data_after_address@.syntax-error\"]",
+            "cc": null,
             "bcc": null,
             "threads": [
                 {
                     "type": 1,
                     "from": "from@there.com",
-                    "to": "[\"undisclosedrecipients@unknown\",\"unexpected_data_after_address@.syntax-error\"]",
+                    "to": null,
                     "cc": null,
                     "bcc": null,
                     "body": "Hi!",
