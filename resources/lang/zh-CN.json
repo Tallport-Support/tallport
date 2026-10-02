@@ -835,5 +835,6 @@
     "Use date and time from mail headers": "使用邮件头中的日期和时间",
     "User can see only assigned conversations": "用户只能查看分配给自己的对话",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "您已无权访问您回复的对话。请联系您的管理员。",
-    ":tallport, based on :freescout": ":tallport，基于 :freescout"
+    ":tallport, based on :freescout": ":tallport，基于 :freescout",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "无法保存收到的邮件，邮件服务器正在重试 — 管理员应检查:%a_begin%获取错误:%a_end%"
 }

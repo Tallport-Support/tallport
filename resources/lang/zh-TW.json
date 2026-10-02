@@ -890,5 +890,6 @@
     "User can see only assigned conversations": "使用者只能檢視指派給自己的對話",
     "Users are allowed to edit own notes\/replies": "使用者可編輯自己的備註／回覆",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "您已無法存取您回覆的對話，請聯絡管理員。",
-    ":tallport, based on :freescout": ":tallport，基於 :freescout"
+    ":tallport, based on :freescout": ":tallport，基於 :freescout",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "無法儲存收到的郵件，郵件伺服器正在重試 — 管理員應檢查 :%a_begin%收信錯誤:%a_end%"
 }

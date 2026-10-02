@@ -833,5 +833,6 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "アップデートは無効になっています（APP_DISABLE_UPDATING）。",
     "User can see only assigned conversations": "ユーザーは割り当てられた会話のみ表示できます",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "返信先の会話へのアクセス権がなくなりました。管理者にお問い合わせください。",
-    ":tallport, based on :freescout": ":tallport（:freescout ベース）"
+    ":tallport, based on :freescout": ":tallport（:freescout ベース）",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "受信メールを保存できなかったため、メールサーバーが再試行しています。管理者は :%a_begin%取得エラー:%a_end% を確認する必要があります。"
 }

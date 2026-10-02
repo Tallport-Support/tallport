@@ -833,5 +833,6 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "A frissítés le van tiltva (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "A felhasználó csak a hozzá rendelt beszélgetéseket látja",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Már nincs hozzáférésed ahhoz a beszélgetéshez, amelyre válaszoltál. Fordulj az adminisztrátorhoz.",
-    ":tallport, based on :freescout": ":tallport, :freescout alapján"
+    ":tallport, based on :freescout": ":tallport, :freescout alapján",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "A bejövő levelet nem sikerült menteni, a levelezőszerver újrapróbálja — egy adminisztrátornak ellenőriznie kell a :%a_begin%Lekérési hibák:%a_end% oldalt"
 }

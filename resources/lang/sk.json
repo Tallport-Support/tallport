@@ -832,5 +832,6 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "Aktualizácie sú vypnuté (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "Používateľ vidí iba priradené konverzácie",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Ku konverzácii, na ktorú ste odpovedali, už nemáte prístup. Kontaktujte svojho administrátora.",
-    ":tallport, based on :freescout": ":tallport, postavené na :freescout"
+    ":tallport, based on :freescout": ":tallport, postavené na :freescout",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "Prichádzajúcu poštu sa nepodarilo uložiť a poštový server to skúša znova — administrátor by mal skontrolovať :%a_begin%Chyby načítavania:%a_end%"
 }

@@ -832,5 +832,6 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "Posodabljanje je onemogočeno (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "Uporabnik vidi samo dodeljene pogovore",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Do pogovora, na katerega si odgovoril\/-a, nimaš več dostopa. Obrni se na administratorja.",
-    ":tallport, based on :freescout": ":tallport, ki temelji na :freescout"
+    ":tallport, based on :freescout": ":tallport, ki temelji na :freescout",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "Dohodne pošte ni bilo mogoče shraniti, poštni strežnik poskuša znova — administrator naj preveri :%a_begin%Napake pri pridobivanju:%a_end%"
 }

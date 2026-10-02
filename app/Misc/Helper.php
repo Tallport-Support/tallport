@@ -2880,7 +2880,8 @@ class Helper
 
     /**
      * Show a warning when background jobs sending emails
-     * are not processed for some time.
+     * are not processed for some time, or incoming email from the mail
+     * server could not be saved (tallport:receive).
      * https://github.com/freescout-helpdesk/freescout/issues/2808
      */
     public static function maybeShowSendingProblemsAlert()
@@ -2891,6 +2892,14 @@ class Helper
             $flashes[] = [
                 'type'      => 'warning',
                 'text'      => __('There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%', ['%a_begin%' => '<a href="'.route('system').'#cron" target="_blank">', '%a_end%' => '</a>', /*'%a_begin_logs%' => '<a href="'.route('logs', ['name' => 'send_errors']).'#cron" target="_blank">',*/ '%a_begin_recommendations%' => '<a href="'.config('app.freescout_repo').'/wiki/Background-Jobs" target="_blank">']),
+                'unescaped' => true,
+            ];
+        }
+
+        if (\App\Incoming\ReceiveFailures::all()) {
+            $flashes[] = [
+                'type'      => 'warning',
+                'text'      => __('Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%', ['%a_begin%' => '<a href="'.route('logs', ['name' => 'fetch_errors']).'" target="_blank">', '%a_end%' => '</a>']),
                 'unescaped' => true,
             ];
         }

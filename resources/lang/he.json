@@ -832,5 +832,6 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "העדכון מושבת (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "המשתמש יכול לראות רק שיחות שהוקצו לו",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "אין לך עוד גישה לשיחה שהגבת אליה. אנא פנה למנהל המערכת.",
-    ":tallport, based on :freescout": ":tallport, מבוסס על :freescout"
+    ":tallport, based on :freescout": ":tallport, מבוסס על :freescout",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "לא ניתן היה לשמור דואר נכנס, ושרת הדואר מנסה שוב — על מנהל לבדוק את :%a_begin%שגיאות אחזור:%a_end%"
 }

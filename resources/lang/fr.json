@@ -843,5 +843,6 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "La mise à jour est désactivée (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "L'utilisateur ne voit que les conversations qui lui sont assignées",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Vous n'avez plus accès à la conversation à laquelle vous avez répondu. Veuillez contacter votre administrateur.",
-    ":tallport, based on :freescout": ":tallport, basé sur :freescout"
+    ":tallport, based on :freescout": ":tallport, basé sur :freescout",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "Un e-mail entrant n'a pas pu être enregistré et le serveur de messagerie réessaie — un administrateur doit vérifier :%a_begin%Erreurs de récupération:%a_end%"
 }

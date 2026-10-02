@@ -852,5 +852,6 @@
     "Use date and time from mail headers": "Käytä viestin otsakkeiden päivämäärää ja aikaa",
     "User can see only assigned conversations": "Käyttäjä näkee vain hänelle määrätyt keskustelut",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Sinulla ei ole enää pääsyä keskusteluun, johon vastasit. Ota yhteyttä järjestelmänvalvojaan.",
-    ":tallport, based on :freescout": ":tallport, pohjautuu ohjelmistoon :freescout"
+    ":tallport, based on :freescout": ":tallport, pohjautuu ohjelmistoon :freescout",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "Saapuvaa sähköpostia ei voitu tallentaa, ja postipalvelin yrittää uudelleen — järjestelmänvalvojan tulee tarkistaa :%a_begin%Hae Virheet:%a_end%"
 }

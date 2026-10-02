@@ -833,5 +833,6 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "Uppdatering är inaktiverad (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "Användaren kan bara se tilldelade konversationer",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Du har inte längre åtkomst till konversationen som du svarade på. Kontakta din administratör.",
-    ":tallport, based on :freescout": ":tallport, baserad på :freescout"
+    ":tallport, based on :freescout": ":tallport, baserad på :freescout",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "Inkommande mejl kunde inte sparas och e-postservern försöker igen – en administratör bör kontrollera :%a_begin%Hämta fel:%a_end%"
 }

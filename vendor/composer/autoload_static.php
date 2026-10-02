@@ -764,6 +764,7 @@ class ComposerStaticInit6b7055a3645147f56baffb010ada38cd
         'App\\Incoming\\Parser' => __DIR__ . '/../..' . '/app/Incoming/Parser.php',
         'App\\Incoming\\ParserComparison' => __DIR__ . '/../..' . '/app/Incoming/ParserComparison.php',
         'App\\Incoming\\RawSources' => __DIR__ . '/../..' . '/app/Incoming/RawSources.php',
+        'App\\Incoming\\ReceiveFailures' => __DIR__ . '/../..' . '/app/Incoming/ReceiveFailures.php',
         'App\\Incoming\\Webklex6Message' => __DIR__ . '/../..' . '/app/Incoming/Webklex6Message.php',
         'App\\Install\\DatabaseManager' => __DIR__ . '/../..' . '/app/Install/DatabaseManager.php',
         'App\\Install\\EnvironmentManager' => __DIR__ . '/../..' . '/app/Install/EnvironmentManager.php',

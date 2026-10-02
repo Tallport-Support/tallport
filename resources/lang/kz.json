@@ -1335,5 +1335,6 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "Жаңарту өшірілген (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "Агент тек өзіне тағайындалған тикеттерді көреді",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Сіз жауап берген тикетке енді қолжетімділігіңіз жоқ. Администраторға хабарласыңыз.",
-    ":tallport, based on :freescout": ":tallport, :freescout негізінде"
+    ":tallport, based on :freescout": ":tallport, :freescout негізінде",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "Кіріс поштаны сақтау мүмкін болмады, пошта сервері қайта әрекет етуде — әкімші :%a_begin%Хаттарды алу қателері:%a_end% тексеруі тиіс."
 }

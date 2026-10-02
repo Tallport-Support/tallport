@@ -832,5 +832,6 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "Aktualizacje są wyłączone (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "Użytkownik widzi tylko przypisane rozmowy",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Nie masz już dostępu do rozmowy, na którą została wysłana odpowiedź. Skontaktuj się z administratorem.",
-    ":tallport, based on :freescout": ":tallport, oparty na :freescout"
+    ":tallport, based on :freescout": ":tallport, oparty na :freescout",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "Nie udało się zapisać poczty przychodzącej, serwer pocztowy ponawia próbę — administrator powinien sprawdzić :%a_begin%Błędy pobierania:%a_end%"
 }

@@ -175,8 +175,11 @@ Bcc gets the email too. The exit code tells Postfix what happened:
 
 * 0: saved, or skipped on purpose (for example already received, by
   Message-ID). Delivering an email again is safe.
-* 75: saving failed (logged). Postfix keeps the email and tries again later
-  (for up to `maximal_queue_lifetime`, 5 days by default).
+* 75: saving failed (logged in Manage » Logs » Fetch Errors). Postfix keeps
+  the email and tries again later (for up to `maximal_queue_lifetime`, 5 days
+  by default). Until it is saved, Tallport shows a warning above the
+  conversation list and, with the fetching problems alert on (Manage »
+  Alerts), emails an alert, and another when it has been received.
 * 67: no such mailbox. Postfix bounces the email.
 
 To try it without Postfix:

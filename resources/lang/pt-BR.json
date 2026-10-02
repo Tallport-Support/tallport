@@ -836,5 +836,6 @@
     "Use date and time from mail headers": "Usar a data e a hora dos cabeçalhos do e-mail",
     "User can see only assigned conversations": "O usuário só pode ver as conversas atribuídas a ele",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Você não tem mais acesso à conversa à qual respondeu. Entre em contato com o administrador.",
-    ":tallport, based on :freescout": ":tallport, baseado no :freescout"
+    ":tallport, based on :freescout": ":tallport, baseado no :freescout",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "Não foi possível salvar o e-mail recebido e o servidor de e-mail está tentando novamente – um administrador deve verificar :%a_begin%Erros de busca:%a_end%"
 }

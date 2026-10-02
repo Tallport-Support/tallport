@@ -833,5 +833,6 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "Güncelleme devre dışı (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "Kullanıcı yalnızca kendisine atanan konuşmaları görebilir",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Yanıtladığınız konuşmaya artık erişiminiz yok. Lütfen yöneticinizle iletişime geçin.",
-    ":tallport, based on :freescout": ":tallport, :freescout tabanlı"
+    ":tallport, based on :freescout": ":tallport, :freescout tabanlı",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "Gelen e-posta kaydedilemedi ve posta sunucusu yeniden deniyor — bir yönetici :%a_begin%Getirme Hataları:%a_end% sayfasını kontrol etmelidir"
 }

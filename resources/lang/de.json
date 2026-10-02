@@ -826,5 +826,6 @@
     "The user is disabled or deleted.": "Der Benutzer ist deaktiviert oder gelöscht.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Aktualisierungen sind deaktiviert (APP_DISABLE_UPDATING).",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Sie haben keinen Zugriff mehr auf das Gespräch, auf das Sie geantwortet haben. Bitte wenden Sie sich an Ihren Administrator.",
-    ":tallport, based on :freescout": ":tallport, basierend auf :freescout"
+    ":tallport, based on :freescout": ":tallport, basierend auf :freescout",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "Eingehende E-Mails konnten nicht gespeichert werden, der Mailserver versucht es erneut. — Ein Administrator sollte :%a_begin%Fehler sammeln:%a_end% prüfen."
 }

@@ -833,5 +833,6 @@
     "User Setup Problem": "Проблема з налаштуванням користувача",
     "User can see only assigned conversations": "Користувач бачить лише призначені йому розмови",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Ви більше не маєте доступу до розмови, на яку відповіли. Зверніться до адміністратора.",
-    ":tallport, based on :freescout": ":tallport на основі :freescout"
+    ":tallport, based on :freescout": ":tallport на основі :freescout",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "Не вдалося зберегти вхідний лист, поштовий сервер пробує знову — адміністратор повинен перевірити :%a_begin%Помилки отримання:%a_end%"
 }

@@ -119,6 +119,7 @@ return array(
     'App\\Incoming\\Parser' => $baseDir . '/app/Incoming/Parser.php',
     'App\\Incoming\\ParserComparison' => $baseDir . '/app/Incoming/ParserComparison.php',
     'App\\Incoming\\RawSources' => $baseDir . '/app/Incoming/RawSources.php',
+    'App\\Incoming\\ReceiveFailures' => $baseDir . '/app/Incoming/ReceiveFailures.php',
     'App\\Incoming\\Webklex6Message' => $baseDir . '/app/Incoming/Webklex6Message.php',
     'App\\Install\\DatabaseManager' => $baseDir . '/app/Install/DatabaseManager.php',
     'App\\Install\\EnvironmentManager' => $baseDir . '/app/Install/EnvironmentManager.php',

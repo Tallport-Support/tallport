@@ -833,5 +833,6 @@
     "Updating is disabled (APP_DISABLE_UPDATING).": "Yeniləmə deaktivdir (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "İstifadəçi yalnız ona təyin edilmiş söhbətləri görür",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Cavab verdiyiniz söhbətə artıq girişiniz yoxdur. Zəhmət olmasa administratorunuzla əlaqə saxlayın.",
-    ":tallport, based on :freescout": ":tallport, :freescout əsasında"
+    ":tallport, based on :freescout": ":tallport, :freescout əsasında",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "Daxil olan e-poçt saxlanıla bilmədi və poçt serveri yenidən cəhd edir — administrator :%a_begin%Əldə etmə xətaları:%a_end% bölməsini yoxlamalıdır"
 }

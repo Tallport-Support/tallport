@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Email;
 use App\Incoming\IncomingMessage;
 use App\Incoming\Parser;
+use App\Incoming\ReceiveFailures;
 use App\Mailbox;
 use App\Subscription;
 use Illuminate\Console\Command;
@@ -54,13 +55,33 @@ class Receive extends Command
         }
 
         try {
-            return $this->saveEmail($raw);
+            $status = $this->saveEmail($raw);
         } catch (\Throwable $e) {
             \Helper::logException($e, '[tallport:receive]');
             $this->error('Could not receive the email: '.$e->getMessage());
-
-            return self::EX_TEMPFAIL;
+            // Also in Manage » Logs » Fetch Errors (if the database is up).
+            try {
+                activity()
+                    ->withProperties(['error' => 'tallport:receive: '.$e->getMessage(), 'mailbox' => ''])
+                    ->useLog(\App\ActivityLog::NAME_EMAILS_FETCHING)
+                    ->log(\App\ActivityLog::DESCRIPTION_EMAILS_FETCHING_ERROR);
+            } catch (\Throwable $e) {
+                // The exit code still tells the mail server to try again.
+            }
+            $status = self::EX_TEMPFAIL;
         }
+
+        try {
+            if ($status == self::EX_TEMPFAIL) {
+                ReceiveFailures::failed($raw);
+            } else {
+                ReceiveFailures::received($raw);
+            }
+        } catch (\Throwable $e) {
+            \Helper::logException($e, '[tallport:receive]');
+        }
+
+        return $status;
     }
 
     /**

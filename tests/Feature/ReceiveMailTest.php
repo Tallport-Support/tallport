@@ -117,6 +117,43 @@ class ReceiveMailTest extends FeatureTestCase
         $this->assertSame(1, Conversation::where('mailbox_id', $this->mailbox->id)->count());
     }
 
+    public function testFailedEmailShowsWarningAndAlertsUntilReceived()
+    {
+        $admin = $this->createAdmin(['email' => 'boss@example.org']);
+        \Option::set('alert_fetch', true);
+        $fail = function ($data) {
+            throw new \Exception('Database went away');
+        };
+        \Eventy::addFilter('fetch_emails.data_to_save', $fail, 20, 1);
+        $file = $this->eml();
+        $warning = 'Incoming email could not be saved and the mail server is trying again';
+
+        $this->artisan('tallport:receive', ['file' => $file])->assertExitCode(75);
+        $this->artisan('tallport:receive', ['file' => $file])->assertExitCode(75);
+
+        $this->assertCount(1, \App\Incoming\ReceiveFailures::all());
+        $alerts = $this->sentEmailsTo('boss@example.org');
+        $this->assertCount(1, $alerts, 'One alert, not one per attempt.');
+        $this->assertStringContainsString('Receiving Problems', $alerts[0]->getSubject());
+        $this->actingAs($admin)->get('/mailbox/'.$this->mailbox->id)->assertSee($warning);
+
+        // The mail server delivers it again, and now it is saved.
+        \Eventy::removeFilter('fetch_emails.data_to_save', $fail, 20);
+        $this->captured_mail->flush();
+        $this->artisan('tallport:receive', ['file' => $file])->assertExitCode(0);
+
+        $this->assertSame([], \App\Incoming\ReceiveFailures::all());
+        $this->assertStringContainsString('Receiving Recovered', $this->sentEmailsTo('boss@example.org')[0]->getSubject());
+        $this->actingAs($admin)->get('/mailbox/'.$this->mailbox->id)->assertDontSee($warning);
+    }
+
+    public function testOldFailuresExpire()
+    {
+        \Option::set(\App\Incoming\ReceiveFailures::OPTION, ['old' => time() - 8 * 86400, 'new' => time() - 3600]);
+
+        $this->assertSame(['new'], array_keys(\App\Incoming\ReceiveFailures::all()));
+    }
+
     public function testReceivingTwiceSavesOnce()
     {
         $file = $this->eml();

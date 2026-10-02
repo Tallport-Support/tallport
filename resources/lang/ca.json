@@ -950,5 +950,6 @@
     "The user is disabled or deleted.": "L'usuari està desactivat o eliminat.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "L'actualització està desactivada (APP_DISABLE_UPDATING).",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Ja no teniu accés a la conversa a la qual heu respost. Contacteu amb l'administrador.",
-    ":tallport, based on :freescout": ":tallport, basat en :freescout"
+    ":tallport, based on :freescout": ":tallport, basat en :freescout",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "No s'ha pogut desar un correu entrant i el servidor de correu ho torna a intentar — un administrador hauria de comprovar :%a_begin%Errors d'obtenció:%a_end%"
 }

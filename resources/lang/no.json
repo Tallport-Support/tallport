@@ -838,5 +838,6 @@
     "Use date and time from mail headers": "Bruk dato og tid fra e-posthodene",
     "User can see only assigned conversations": "Brukeren kan bare se tildelte samtaler",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Du har ikke lenger tilgang til samtalen du svarte på. Kontakt administratoren din.",
-    ":tallport, based on :freescout": ":tallport, basert på :freescout"
+    ":tallport, based on :freescout": ":tallport, basert på :freescout",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "Innkommende e-post kunne ikke lagres, og e-postserveren prøver igjen - en administrator bør sjekke :%a_begin%Hentefeil:%a_end%"
 }

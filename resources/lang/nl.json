@@ -838,5 +838,6 @@
     "Use date and time from mail headers": "Datum en tijd uit de e-mailheaders gebruiken",
     "User can see only assigned conversations": "Gebruiker ziet alleen toegewezen gesprekken",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "U hebt geen toegang meer tot het gesprek waarop u hebt geantwoord. Neem contact op met uw beheerder.",
-    ":tallport, based on :freescout": ":tallport, gebaseerd op :freescout"
+    ":tallport, based on :freescout": ":tallport, gebaseerd op :freescout",
+    "Incoming email could not be saved and the mail server is trying again — an admin should check :%a_begin%Fetch Errors:%a_end%": "Inkomende e-mail kon niet worden opgeslagen en de mailserver probeert het opnieuw — een beheerder moet :%a_begin%Errors ophalen:%a_end% controleren."
 }
