@@ -140,7 +140,8 @@ class WebklexTest extends FixtureWebklexMessage {
         $message = $this->getFixture("message-3.eml");
 
         self::assertSame("1", (string)$message->getSubject());
-        self::assertSame("1\n", $message->getTextBody());
+        // No stray "\n" from an empty part (as webklex/php-imap 6).
+        self::assertSame("1", $message->getTextBody());
         self::assertSame('<div dir="ltr"><div>1</div></div>', $message->getHtmlBody());
     }
 

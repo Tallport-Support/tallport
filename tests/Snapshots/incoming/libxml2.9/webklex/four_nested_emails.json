@@ -15,7 +15,7 @@
                     "to": "[\"test@example.com\"]",
                     "cc": null,
                     "bcc": null,
-                    "body": "<br />\n3-third-content",
+                    "body": "3-third-content",
                     "headers": "c781ca327023ca3c5022f581889a9c7c",
                     "attachments": [
                         {

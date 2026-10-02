@@ -15,7 +15,7 @@
                     "to": "[\"to@here.com\"]",
                     "cc": null,
                     "bcc": null,
-                    "body": "<br />\nTest",
+                    "body": "Test",
                     "headers": "d67b6601a8f87fc912c9d386a61b8664",
                     "attachments": [
                         {
