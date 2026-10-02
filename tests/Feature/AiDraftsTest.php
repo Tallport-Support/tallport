@@ -135,6 +135,22 @@ class AiDraftsTest extends FeatureTestCase
         $this->actingAs($this->createAdmin())->getJson($poll_url)->assertStatus(403);
     }
 
+    public function testAiJobsHaveTheirOwnQueues()
+    {
+        \Queue::fake();
+        Option::set('aiassistant.mailbox_features_off', []);
+
+        $this->requestDraft($this->agent);
+        \Queue::assertPushedOn('ai-drafts', \App\Jobs\AiDraftReply::class);
+
+        \App\Jobs\AiSummarizeConversation::request($this->conversation, 'en');
+        \Queue::assertPushedOn('ai', \App\Jobs\AiSummarizeConversation::class);
+        \App\Jobs\AiTranslateThread::request($this->conversation->threads()->first(), 'de');
+        \Queue::assertPushedOn('ai', \App\Jobs\AiTranslateThread::class);
+        \App\Jobs\AiIndexDocument::dispatch(1);
+        \Queue::assertPushedOn('ai', \App\Jobs\AiIndexDocument::class);
+    }
+
     public function testDailyLimit()
     {
         $this->agent->ai_drafts_per_day = 1;

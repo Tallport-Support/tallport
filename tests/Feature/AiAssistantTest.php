@@ -287,6 +287,27 @@ class AiAssistantTest extends FeatureTestCase
         $this->assertNotNull(Translations::get($conversation->threads()->first(), 'en'));
     }
 
+    public function testAiWorkerRunsOnceConfigured()
+    {
+        $workers = function () {
+            $schedule = new \Illuminate\Console\Scheduling\Schedule();
+            $method = new \ReflectionMethod(\App\Console\Kernel::class, 'schedule');
+            $method->invoke($this->app->make(\Illuminate\Contracts\Console\Kernel::class), $schedule);
+
+            return collect($schedule->events())->pluck('command')->filter(function ($command) {
+                return str_contains((string) $command, 'queue:work');
+            })->values();
+        };
+
+        $this->assertCount(1, $workers());
+        $this->actingAs($this->admin)->get('/system/status')->assertDontSee('queue:work (AI)');
+
+        $this->configureAi();
+        $this->assertCount(2, $workers());
+        $this->assertStringContainsString("--queue='ai-drafts,ai,".\Helper::getWorkerIdentifier(\App\Console\Kernel::AI_WORKER)."'", $workers()[1]);
+        $this->actingAs($this->admin)->get('/system/status')->assertSee('queue:work (AI)');
+    }
+
     // The earlier assistant's data.
 
     public function testConvertedSummaryWithoutDateIsShown()

@@ -27,6 +27,7 @@ class AiDraftReply implements ShouldQueue
 
     public function __construct($draft_job_id, $language)
     {
+        $this->onQueue('ai-drafts');
         $this->draft_job_id = $draft_job_id;
         $this->language = $language;
     }

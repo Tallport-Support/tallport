@@ -93,6 +93,9 @@ class SystemController extends Controller
             'tallport:fetch-emails' => 'tallport:fetch-emails',
             \Helper::getWorkerIdentifier() => 'queue:work',
         ];
+        if (\App\Ai\Settings::isConfigured()) {
+            $commands_list[\Helper::getWorkerIdentifier(\App\Console\Kernel::AI_WORKER)] = 'queue:work (AI)';
+        }
         foreach ($commands_list as $command_identifier => $command_name) {
             $status_texts = [];
 
@@ -138,7 +141,7 @@ class SystemController extends Controller
                     continue;
                 } elseif ($running_commands > 1) {
                     // queue:work command is stopped by settings a cache key
-                    if ($command_name == 'queue:work') {
+                    if (str_starts_with($command_name, 'queue:work')) {
                         \Helper::queueWorkerRestart();
                         $commands[] = [
                             'name'        => $command_name,
@@ -182,7 +185,7 @@ class SystemController extends Controller
             }
 
             // If queue:work is not running, clear cache to let it start if something is wrong with the mutex
-            if ($command_name == 'queue:work' && !$last_successful_run) {
+            if (str_starts_with($command_name, 'queue:work') && !$last_successful_run) {
                 $status_texts[] = __h('Try to :%a_start%clear cache:%a_end% to force command to start.', ['%a_start%' => '<a href="'.route('system.tools').'" target="_blank">', '%a_end%' => '</a>']);
                 // This sometimes makes Status page open as non logged in user.
                 //\Artisan::call('tallport:clear-cache', ['--doNotGenerateVars' => true]);

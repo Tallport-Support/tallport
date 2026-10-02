@@ -11,6 +11,11 @@ use App\Option;
 class Kernel extends ConsoleKernel
 {
     /**
+     * Salt of the AI Assistant queue worker's identifier.
+     */
+    const AI_WORKER = 'ai-worker';
+
+    /**
      * The Artisan commands provided by your application.
      *
      * @var array
@@ -215,7 +220,24 @@ class Kernel extends ConsoleKernel
         $queue_work_params = Config('app.queue_work_params');
         // Add identifier to avoid conflicts with other FreeScout instances on the same server.
         $queue_work_params['--queue'] .= ','.\Helper::getWorkerIdentifier();
+        $this->scheduleQueueWorker($schedule, $queue_work_params, \Helper::getWorkerIdentifier(), 'queue-jobs.log');
 
+        // A second worker for the AI Assistant's jobs (drafts first), so
+        // that slow AI requests don't hold up emails, nor drafts the rest.
+        if (\App\Ai\Settings::isConfigured()) {
+            $ai_identifier = \Helper::getWorkerIdentifier(self::AI_WORKER);
+            $ai_work_params = Config('app.queue_work_ai_params');
+            $ai_work_params['--queue'] .= ','.$ai_identifier;
+            $this->scheduleQueueWorker($schedule, $ai_work_params, $ai_identifier, 'queue-ai-jobs.log');
+        }
+    }
+
+    /**
+     * Keep one queue:work running with these parameters: the processes are
+     * found by the identifier in their --queue parameter.
+     */
+    protected function scheduleQueueWorker(Schedule $schedule, $queue_work_params, $identifier, $log)
+    {
         // $schedule->command('queue:work') command below has withoutOverlapping() option,
         // which works via special mutex stored in the cache preventing several 'queue:work' to work at the same time.
         // So when the cache is cleared the mutex indicating that the 'queue:work' is running is removed,
@@ -223,7 +245,7 @@ class Kernel extends ConsoleKernel
         // that there are two 'queue:work' processes running and kills them.
         // After one minute 'queue:work' is executed by cron via `artisan schedule:run` and works in the background.
         if (function_exists('shell_exec')) {
-            $running_commands = \Helper::getRunningProcesses();
+            $running_commands = \Helper::getRunningProcesses($identifier);
 
             if (count($running_commands) > 1) {
                 // Stop all queue:work processes.
@@ -233,7 +255,7 @@ class Kernel extends ConsoleKernel
                 // Sleep to let processes stop.
                 sleep(1);
                 // Check processes again.
-                $worker_pids = \Helper::getRunningProcesses();
+                $worker_pids = \Helper::getRunningProcesses($identifier);
 
                 if (count($worker_pids) > 1) {
                     // Current process also has to be killed, as otherwise it "stucks"
@@ -274,7 +296,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('queue:work', $queue_work_params)
             ->everyMinute()
             ->withoutOverlapping()
-            ->sendOutputTo(storage_path().'/logs/queue-jobs.log');
+            ->sendOutputTo(storage_path().'/logs/'.$log);
     }
 
     /**

@@ -258,8 +258,12 @@ the secret key: the `X-FREESCOUT-SIGNATURE` header (or
 `X-HELPSCOUT-SIGNATURE`) is the Base64 HMAC-SHA1 of the request body.
 "Reply Guidance" tells the drafts about your business and style.
 
-Summaries, translations, drafts and indexing run in the queue, so they need
-the cron job that runs the scheduler (see [Requirements](#requirements)).
+Summaries, translations, drafts and indexing run in the queue, in a worker
+of their own (drafts first), so that slow AI requests don't hold up email.
+The scheduler starts it next to the main worker once a provider is set up,
+so the cron job from [Requirements](#requirements) is all it needs; System
+» Status shows it as "queue:work (AI)". If you run queue workers yourself
+instead, have one process the `ai-drafts,ai` queues.
 
 ## Modules
 

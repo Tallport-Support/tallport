@@ -30,6 +30,7 @@ class AiSummarizeConversation implements ShouldQueue, ShouldBeUnique
 
     public function __construct($conversation_id, $language)
     {
+        $this->onQueue('ai');
         $this->conversation_id = $conversation_id;
         $this->language = $language;
     }
@@ -61,7 +62,7 @@ class AiSummarizeConversation implements ShouldQueue, ShouldBeUnique
         // handle() checks the rest: the conversation of an event may not
         // have its new thread counted yet.
         if (Settings::isConfigured() && Settings::enabled('summaries', $conversation->mailbox)) {
-            self::dispatch($conversation->id, $language)->delay(now()->addMinute())->onQueue('default');
+            self::dispatch($conversation->id, $language)->delay(now()->addMinute());
         }
     }
 }

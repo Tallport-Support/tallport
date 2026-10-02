@@ -29,6 +29,7 @@ class AiTranslateThread implements ShouldQueue, ShouldBeUnique
 
     public function __construct($thread_id, $language)
     {
+        $this->onQueue('ai');
         $this->thread_id = $thread_id;
         $this->language = $language;
     }
@@ -55,7 +56,7 @@ class AiTranslateThread implements ShouldQueue, ShouldBeUnique
     public static function request(Thread $thread, $language)
     {
         if (Translations::isWanted($thread) && Translations::isMissing($thread, $language)) {
-            self::dispatch($thread->id, $language)->onQueue('default');
+            self::dispatch($thread->id, $language);
         }
     }
 }
