@@ -649,7 +649,6 @@ return [
         /*
          * Package Service Providers...
          */
-        Devfactory\Minify\MinifyServiceProvider::class,
         // Debugbar is enabled only if APP_DEBUG=true
         //Barryvdh\Debugbar\ServiceProvider::class,
 
@@ -720,7 +719,7 @@ return [
         'URL'          => Illuminate\Support\Facades\URL::class,
         'Validator'    => Illuminate\Support\Facades\Validator::class,
         'View'         => Illuminate\Support\Facades\View::class,
-        'Minify'       => Devfactory\Minify\Facades\MinifyFacade::class,
+        'Minify'       => App\Misc\MinifyFacade::class,
 
         // Custom
         'Helper'       => App\Misc\Helper::class,

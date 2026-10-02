@@ -37,15 +37,6 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'devfactory/minify' => array(
-            'pretty_version' => '1.0.7',
-            'version' => '1.0.7.0',
-            'reference' => '95d518081aa29c91b8c89243c61a7b1fc726120e',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../devfactory/minify',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'dflydev/dot-access-data' => array(
             'pretty_version' => 'v3.0.3',
             'version' => '3.0.3.0',
@@ -565,6 +556,24 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'matthiasmullie/minify' => array(
+            'pretty_version' => '1.3.75',
+            'version' => '1.3.75.0',
+            'reference' => '76ba4a5f555fd7bf4aa408af608e991569076671',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../matthiasmullie/minify',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'matthiasmullie/path-converter' => array(
+            'pretty_version' => '1.1.3',
+            'version' => '1.1.3.0',
+            'reference' => 'e7d13b2c7e2f2268e1424aaed02085518afa02d9',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../matthiasmullie/path-converter',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'mews/purifier' => array(
             'pretty_version' => 'dev-customized',
             'version' => 'dev-customized',
@@ -588,15 +597,6 @@
             'replaced' => array(
                 0 => '^1.0',
             ),
-        ),
-        'natxet/cssmin' => array(
-            'pretty_version' => 'v3.0.6',
-            'version' => '3.0.6.0',
-            'reference' => 'd5d9f4c3e5cedb1ae96a95a21731f8790e38f1dd',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../natxet/cssmin',
-            'aliases' => array(),
-            'dev_requirement' => false,
         ),
         'nesbot/carbon' => array(
             'pretty_version' => '3.14.1',
@@ -1165,7 +1165,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../tedivm/jshrink',
             'aliases' => array(),
-            'dev_requirement' => false,
+            'dev_requirement' => true,
         ),
         'tijsverkoyen/css-to-inline-styles' => array(
             'pretty_version' => 'v2.4.0',

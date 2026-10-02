@@ -75,6 +75,11 @@ class AppServiceProvider extends ServiceProvider
             return new \App\Misc\Eventy\Events();
         });
 
+        // JS/CSS build files (\Minify, config/minify.config.php).
+        $this->app->singleton('minify', function ($app) {
+            return new \App\Misc\Minify((array) config('minify.config'), $app->environment());
+        });
+
         // FreeScout's module system on top of nwidart's (App\Modules).
         $this->app->singleton('modules', function ($app) {
             return new \App\Modules\Repository($app, $app['config']->get('modules.paths.modules'));
