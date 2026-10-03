@@ -1336,5 +1336,7 @@
     "Send & Pending": "Trimite și în așteptare",
     "From the time zone of their latest email": "Pe baza fusului orar al ultimului email",
     "Local time :time (GMT:offset)": "Ora locală :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "Trimis la :time, ora expeditorului (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "Trimis la :time, ora expeditorului (GMT:offset)",
+    "Customer Photos": "Pozele clienților",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "De la Gravatar, pentru clienții fără poză. Gravatar primește un hash al adresei lor de email."
 }

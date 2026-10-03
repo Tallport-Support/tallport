@@ -1389,5 +1389,7 @@
     "Send & Pending": "傳送並設為待處理",
     "From the time zone of their latest email": "根據其最新郵件的時區",
     "Local time :time (GMT:offset)": "當地時間 :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "於對方時間 :time 傳送 (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "於對方時間 :time 傳送 (GMT:offset)",
+    "Customer Photos": "客戶照片",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "來自 Gravatar，用於沒有照片的客戶。Gravatar 會收到其電子郵件地址的雜湊值。"
 }

@@ -1342,5 +1342,7 @@
     "Send & Pending": "Verstuur & in afwachting",
     "From the time zone of their latest email": "Op basis van de tijdzone van de laatste e-mail",
     "Local time :time (GMT:offset)": "Lokale tijd :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "Verzonden om :time lokale tijd van de afzender (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "Verzonden om :time lokale tijd van de afzender (GMT:offset)",
+    "Customer Photos": "Klantfoto's",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "Van Gravatar, voor klanten zonder foto. Gravatar ontvangt een hash van hun e-mailadres."
 }

@@ -1337,5 +1337,7 @@
     "Send & Pending": "Küldés és függőben",
     "From the time zone of their latest email": "A legutóbbi e-mailjének időzónája alapján",
     "Local time :time (GMT:offset)": "Helyi idő: :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "Elküldve: :time, a feladó ideje szerint (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "Elküldve: :time, a feladó ideje szerint (GMT:offset)",
+    "Customer Photos": "Ügyfélfényképek",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "A Gravatarról, a fénykép nélküli ügyfelek számára. A Gravatar az e-mail címük hash értékét kapja meg."
 }

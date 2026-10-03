@@ -1803,5 +1803,7 @@
     "Send & Pending": "Жіберу және күту",
     "From the time zone of their latest email": "Соңғы хатының уақыт белдеуі бойынша",
     "Local time :time (GMT:offset)": "Жергілікті уақыт :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "Жіберушінің уақытымен :time жіберілді (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "Жіберушінің уақытымен :time жіберілді (GMT:offset)",
+    "Customer Photos": "Клиенттердің фотолары",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "Gravatar-дан, фотосы жоқ клиенттер үшін. Gravatar олардың эл. пошта мекен-жайының хэшін алады."
 }

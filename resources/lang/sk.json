@@ -1336,5 +1336,7 @@
     "Send & Pending": "Odoslať a čaká na zákazníka",
     "From the time zone of their latest email": "Podľa časového pásma posledného emailu",
     "Local time :time (GMT:offset)": "Miestny čas :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "Odoslané o :time času odosielateľa (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "Odoslané o :time času odosielateľa (GMT:offset)",
+    "Customer Photos": "Fotografie zákazníkov",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "Z Gravataru, pre zákazníkov bez fotografie. Gravatar dostane hash ich emailovej adresy."
 }

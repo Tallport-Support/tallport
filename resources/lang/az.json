@@ -1337,5 +1337,7 @@
     "Send & Pending": "Göndər və gözləmədə",
     "From the time zone of their latest email": "Son e-poçtunun saat qurşağına əsasən",
     "Local time :time (GMT:offset)": "Yerli vaxt :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "Onun vaxtı ilə göndərilib: :time (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "Onun vaxtı ilə göndərilib: :time (GMT:offset)",
+    "Customer Photos": "Müştəri şəkilləri",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "Gravatar-dan, şəkli olmayan müştərilər üçün. Gravatar onların e-poçt ünvanının heşini alır."
 }

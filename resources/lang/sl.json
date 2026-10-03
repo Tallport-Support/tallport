@@ -1336,5 +1336,7 @@
     "Send & Pending": "Pošlji in v čakanju",
     "From the time zone of their latest email": "Glede na časovni pas zadnje e-pošte",
     "Local time :time (GMT:offset)": "Lokalni čas :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "Poslano ob :time po času pošiljatelja (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "Poslano ob :time po času pošiljatelja (GMT:offset)",
+    "Customer Photos": "Fotografije strank",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "Iz Gravatarja, za stranke brez fotografije. Gravatar prejme zgoščeno vrednost njihovega e-poštnega naslova."
 }

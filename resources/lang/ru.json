@@ -1337,5 +1337,7 @@
     "Send & Pending": "Отправить и отвечен",
     "From the time zone of their latest email": "По часовому поясу последнего письма",
     "Local time :time (GMT:offset)": "Местное время :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "Отправлено в :time по времени отправителя (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "Отправлено в :time по времени отправителя (GMT:offset)",
+    "Customer Photos": "Фото клиентов",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "Из Gravatar, для клиентов без фото. Gravatar получает хеш их адреса эл. почты."
 }

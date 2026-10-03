@@ -1336,5 +1336,7 @@
     "Send & Pending": "Wyślij i oczekuje",
     "From the time zone of their latest email": "Na podstawie strefy czasowej ostatniego e-maila",
     "Local time :time (GMT:offset)": "Czas lokalny :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "Wysłano o :time czasu nadawcy (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "Wysłano o :time czasu nadawcy (GMT:offset)",
+    "Customer Photos": "Zdjęcia klientów",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "Z Gravatara, dla klientów bez zdjęcia. Gravatar otrzymuje skrót (hash) ich adresu e-mail."
 }

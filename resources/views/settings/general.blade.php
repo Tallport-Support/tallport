@@ -131,6 +131,22 @@
         </div>
     </div>
 
+    <div class="form-group">
+        <label for="customer_gravatar" class="col-sm-2 control-label">{{ __('Customer Photos') }}</label>
+
+        <div class="col-sm-6">
+            <div class="controls">
+                <div class="onoffswitch-wrap">
+                    <div class="onoffswitch">
+                        <input type="checkbox" name="settings[customer_gravatar]" value="1" id="customer_gravatar" class="onoffswitch-checkbox" @if (old('settings[customer_gravatar]', $settings['customer_gravatar']))checked="checked"@endif >
+                        <label class="onoffswitch-label" for="customer_gravatar"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-help">{{ __('From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.') }}</div>
+        </div>
+    </div>
+
     <div class="form-group{{ $errors->has('settings[email_branding]') ? ' has-error' : '' }}">
         <label for="email_branding" class="col-sm-2 control-label">{{ __('Spread the Word', ['app_name' => \Config::get('app.name')]) }}</label>
 

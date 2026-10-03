@@ -1337,5 +1337,7 @@
     "Send & Pending": "Надіслати й очікує",
     "From the time zone of their latest email": "За часовим поясом останнього листа",
     "Local time :time (GMT:offset)": "Місцевий час :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "Надіслано о :time за часом відправника (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "Надіслано о :time за часом відправника (GMT:offset)",
+    "Customer Photos": "Фото клієнтів",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "З Gravatar, для клієнтів без фото. Gravatar отримує хеш їхньої електронної адреси."
 }

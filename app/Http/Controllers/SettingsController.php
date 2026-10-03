@@ -251,7 +251,7 @@ class SettingsController extends Controller
                     'email_conv_history'   => config('app.email_conv_history'),
                     'max_message_size'     => config('app.max_message_size'),
                     'email_user_history'   => config('app.email_user_history'),
-                    'enrich_customer_data' => Option::get('enrich_customer_data'),
+                    \App\Misc\Gravatar::OPTION => Option::get(\App\Misc\Gravatar::OPTION, false),
                     'time_format'          => Option::get('time_format', User::TIME_FORMAT_24),
                     'locale'               => \Helper::getRealAppLocale(),
                     'timezone'             => config('app.timezone'),

@@ -1356,5 +1356,7 @@
     "Send & Pending": "Lähetä ja odottaa",
     "From the time zone of their latest email": "Viimeisimmän sähköpostin aikavyöhykkeen mukaan",
     "Local time :time (GMT:offset)": "Paikallinen aika :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "Lähetetty klo :time lähettäjän aikaa (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "Lähetetty klo :time lähettäjän aikaa (GMT:offset)",
+    "Customer Photos": "Asiakkaiden kuvat",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "Gravatarista asiakkaille, joilla ei ole kuvaa. Gravatar saa tiivisteen heidän sähköpostiosoitteestaan."
 }

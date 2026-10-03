@@ -1336,5 +1336,7 @@
     "Send & Pending": "שלח וממתין",
     "From the time zone of their latest email": "לפי אזור הזמן של האימייל האחרון",
     "Local time :time (GMT:offset)": "שעה מקומית :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "נשלח ב-:time לפי שעון השולח (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "נשלח ב-:time לפי שעון השולח (GMT:offset)",
+    "Customer Photos": "תמונות לקוחות",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "מ-Gravatar, עבור לקוחות ללא תמונה. Gravatar מקבל גיבוב (hash) של כתובת האימייל שלהם."
 }

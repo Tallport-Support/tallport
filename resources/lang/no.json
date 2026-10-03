@@ -1342,5 +1342,7 @@
     "Send & Pending": "Send og avventer",
     "From the time zone of their latest email": "Fra tidssonen i den siste e-posten",
     "Local time :time (GMT:offset)": "Lokal tid :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "Sendt kl. :time avsenderens tid (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "Sendt kl. :time avsenderens tid (GMT:offset)",
+    "Customer Photos": "Kundebilder",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "Fra Gravatar, for kunder uten bilde. Gravatar mottar en hash av e-postadressen deres."
 }

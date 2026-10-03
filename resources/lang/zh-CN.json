@@ -1339,5 +1339,7 @@
     "Send & Pending": "发送并设为待处理",
     "From the time zone of their latest email": "根据其最新邮件的时区",
     "Local time :time (GMT:offset)": "当地时间 :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "于对方时间 :time 发送 (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "于对方时间 :time 发送 (GMT:offset)",
+    "Customer Photos": "客户照片",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "来自 Gravatar，用于没有照片的客户。Gravatar 会收到其电子邮件地址的哈希值。"
 }

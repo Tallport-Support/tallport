@@ -1337,5 +1337,7 @@
     "Send & Pending": "送信して保留中にする",
     "From the time zone of their latest email": "最新のメールのタイムゾーンから",
     "Local time :time (GMT:offset)": "現地時刻 :time (GMT:offset)",
-    "Sent at :time their time (GMT:offset)": "先方の時刻 :time に送信 (GMT:offset)"
+    "Sent at :time their time (GMT:offset)": "先方の時刻 :time に送信 (GMT:offset)",
+    "Customer Photos": "顧客の写真",
+    "From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.": "写真のない顧客のために Gravatar から取得します。Gravatar にはメールアドレスのハッシュが送信されます。"
 }
