@@ -117,7 +117,7 @@
                                 || ($thread->isCustomerMessage() && isset($customer) && count($customer->emails) > 1)
                                 || !empty($from_header)
                                 || $owner_mismatch
-                            )
+                            ))
                                 <div @if (!empty($from_header) || $owner_mismatch) class="text-warning" @endif>
                                     <strong>
                                         {{ __("From") }}:

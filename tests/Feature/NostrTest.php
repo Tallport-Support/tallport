@@ -169,7 +169,8 @@ class NostrTest extends FeatureTestCase
         $this->assertStringContainsString('Nostr-Wrap-Id: ', $thread->fresh()->headers);
 
         $this->followingRedirects()->actingAs($this->agent)->get('/conversation/'.$conversation->id)
-            ->assertStatus(200)->assertSee('Nostr')->assertSee(Keys::shortNpub($this->customer_pubkey));
+            ->assertStatus(200)->assertSee('Nostr')->assertSee(Keys::shortNpub($this->customer_pubkey))
+            ->assertDontSee('@endif', false);
     }
 
     public function testDuplicatesNextMessagesAndReopenWindow()

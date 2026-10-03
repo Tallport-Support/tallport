@@ -83,7 +83,8 @@ class ConversationPagesTest extends FeatureTestCase
         $admin = $this->createAdmin();
 
         $this->getPage($admin, '/mailbox/'.$this->mailbox->id)->assertStatus(200)->assertSee('Question about my order');
-        $this->getPage($admin, '/conversation/'.$conversation->id)->assertStatus(200)->assertSee('Question about my order');
+        $this->getPage($admin, '/conversation/'.$conversation->id)->assertStatus(200)->assertSee('Question about my order')
+            ->assertDontSee('@endif', false);
     }
 
     public function testGuestIsSentToLogin()
