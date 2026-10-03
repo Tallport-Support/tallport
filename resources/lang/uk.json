@@ -1334,5 +1334,8 @@
     "Forward & Pending": "Переслати й очікує",
     "More send options": "Інші варіанти надсилання",
     "Send & Active": "Надіслати й активно",
-    "Send & Pending": "Надіслати й очікує"
+    "Send & Pending": "Надіслати й очікує",
+    "From the time zone of their latest email": "За часовим поясом останнього листа",
+    "Local time :time (GMT:offset)": "Місцевий час :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "Надіслано о :time за часом відправника (GMT:offset)"
 }

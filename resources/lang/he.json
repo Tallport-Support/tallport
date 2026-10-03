@@ -1333,5 +1333,8 @@
     "Forward & Pending": "העבר וממתין",
     "More send options": "אפשרויות שליחה נוספות",
     "Send & Active": "שלח ופעיל",
-    "Send & Pending": "שלח וממתין"
+    "Send & Pending": "שלח וממתין",
+    "From the time zone of their latest email": "לפי אזור הזמן של האימייל האחרון",
+    "Local time :time (GMT:offset)": "שעה מקומית :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "נשלח ב-:time לפי שעון השולח (GMT:offset)"
 }

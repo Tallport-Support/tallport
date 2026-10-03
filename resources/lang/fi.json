@@ -1353,5 +1353,8 @@
     "Forward & Pending": "Välitä ja odottaa",
     "More send options": "Lisää lähetysvaihtoehtoja",
     "Send & Active": "Lähetä ja aktiivinen",
-    "Send & Pending": "Lähetä ja odottaa"
+    "Send & Pending": "Lähetä ja odottaa",
+    "From the time zone of their latest email": "Viimeisimmän sähköpostin aikavyöhykkeen mukaan",
+    "Local time :time (GMT:offset)": "Paikallinen aika :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "Lähetetty klo :time lähettäjän aikaa (GMT:offset)"
 }

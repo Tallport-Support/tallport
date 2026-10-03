@@ -1333,5 +1333,8 @@
     "Forward & Pending": "Přeposlat a čeká",
     "More send options": "Další možnosti odeslání",
     "Send & Active": "Odeslat a aktivní",
-    "Send & Pending": "Odeslat a čeká"
+    "Send & Pending": "Odeslat a čeká",
+    "From the time zone of their latest email": "Podle časového pásma posledního e-mailu",
+    "Local time :time (GMT:offset)": "Místní čas :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "Odesláno v :time času odesílatele (GMT:offset)"
 }

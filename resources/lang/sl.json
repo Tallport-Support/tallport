@@ -1333,5 +1333,8 @@
     "Forward & Pending": "Posreduj in v čakanju",
     "More send options": "Več možnosti pošiljanja",
     "Send & Active": "Pošlji in aktivno",
-    "Send & Pending": "Pošlji in v čakanju"
+    "Send & Pending": "Pošlji in v čakanju",
+    "From the time zone of their latest email": "Glede na časovni pas zadnje e-pošte",
+    "Local time :time (GMT:offset)": "Lokalni čas :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "Poslano ob :time po času pošiljatelja (GMT:offset)"
 }

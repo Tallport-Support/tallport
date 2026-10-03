@@ -1339,5 +1339,8 @@
     "Forward & Pending": "Doorsturen & in afwachting",
     "More send options": "Meer verzendopties",
     "Send & Active": "Verstuur & actief",
-    "Send & Pending": "Verstuur & in afwachting"
+    "Send & Pending": "Verstuur & in afwachting",
+    "From the time zone of their latest email": "Op basis van de tijdzone van de laatste e-mail",
+    "Local time :time (GMT:offset)": "Lokale tijd :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "Verzonden om :time lokale tijd van de afzender (GMT:offset)"
 }

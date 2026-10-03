@@ -1333,5 +1333,8 @@
     "Forward & Pending": "Przekaż i oczekuje",
     "More send options": "Więcej opcji wysyłania",
     "Send & Active": "Wyślij i aktywna",
-    "Send & Pending": "Wyślij i oczekuje"
+    "Send & Pending": "Wyślij i oczekuje",
+    "From the time zone of their latest email": "Na podstawie strefy czasowej ostatniego e-maila",
+    "Local time :time (GMT:offset)": "Czas lokalny :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "Wysłano o :time czasu nadawcy (GMT:offset)"
 }

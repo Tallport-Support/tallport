@@ -1339,5 +1339,8 @@
     "Forward & Pending": "Videresend og avventer",
     "More send options": "Flere sendealternativer",
     "Send & Active": "Send og aktiv",
-    "Send & Pending": "Send og avventer"
+    "Send & Pending": "Send og avventer",
+    "From the time zone of their latest email": "Fra tidssonen i den siste e-posten",
+    "Local time :time (GMT:offset)": "Lokal tid :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "Sendt kl. :time avsenderens tid (GMT:offset)"
 }

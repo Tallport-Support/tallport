@@ -1336,5 +1336,8 @@
     "Forward & Pending": "转发并设为待处理",
     "More send options": "更多发送选项",
     "Send & Active": "发送并设为活跃",
-    "Send & Pending": "发送并设为待处理"
+    "Send & Pending": "发送并设为待处理",
+    "From the time zone of their latest email": "根据其最新邮件的时区",
+    "Local time :time (GMT:offset)": "当地时间 :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "于对方时间 :time 发送 (GMT:offset)"
 }

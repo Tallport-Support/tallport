@@ -1440,5 +1440,8 @@
     "Forward & Pending": "Reenvia i pendent",
     "More send options": "Més opcions d'enviament",
     "Send & Active": "Envia i actiu",
-    "Send & Pending": "Envia i pendent"
+    "Send & Pending": "Envia i pendent",
+    "From the time zone of their latest email": "Segons la zona horària del seu darrer correu",
+    "Local time :time (GMT:offset)": "Hora local :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "Enviat a les :time, hora del remitent (GMT:offset)"
 }

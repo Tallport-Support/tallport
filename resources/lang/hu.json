@@ -1334,5 +1334,8 @@
     "Forward & Pending": "Továbbítás és függőben",
     "More send options": "További küldési lehetőségek",
     "Send & Active": "Küldés és aktív",
-    "Send & Pending": "Küldés és függőben"
+    "Send & Pending": "Küldés és függőben",
+    "From the time zone of their latest email": "A legutóbbi e-mailjének időzónája alapján",
+    "Local time :time (GMT:offset)": "Helyi idő: :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "Elküldve: :time, a feladó ideje szerint (GMT:offset)"
 }

@@ -1800,5 +1800,8 @@
     "Forward & Pending": "Алға және күту",
     "More send options": "Жіберудің қосымша параметрлері",
     "Send & Active": "Жіберу және белсенді",
-    "Send & Pending": "Жіберу және күту"
+    "Send & Pending": "Жіберу және күту",
+    "From the time zone of their latest email": "Соңғы хатының уақыт белдеуі бойынша",
+    "Local time :time (GMT:offset)": "Жергілікті уақыт :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "Жіберушінің уақытымен :time жіберілді (GMT:offset)"
 }

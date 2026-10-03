@@ -1333,5 +1333,8 @@
     "Forward & Pending": "Inoltra e in attesa",
     "More send options": "Altre opzioni di invio",
     "Send & Active": "Invia e attivo",
-    "Send & Pending": "Invia e in attesa"
+    "Send & Pending": "Invia e in attesa",
+    "From the time zone of their latest email": "In base al fuso orario della sua ultima email",
+    "Local time :time (GMT:offset)": "Ora locale :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "Inviato alle :time, ora del mittente (GMT:offset)"
 }

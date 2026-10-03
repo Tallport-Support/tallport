@@ -1335,5 +1335,8 @@
     "Forward & Pending": "Reenviar y pendiente",
     "More send options": "Más opciones de envío",
     "Send & Active": "Enviar y activo",
-    "Send & Pending": "Enviar y pendiente"
+    "Send & Pending": "Enviar y pendiente",
+    "From the time zone of their latest email": "Según la zona horaria de su último correo",
+    "Local time :time (GMT:offset)": "Hora local :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "Enviado a las :time, hora del remitente (GMT:offset)"
 }

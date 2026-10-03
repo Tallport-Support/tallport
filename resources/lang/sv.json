@@ -1334,5 +1334,8 @@
     "Forward & Pending": "Vidarebefordra och väntar",
     "More send options": "Fler sändningsalternativ",
     "Send & Active": "Skicka och aktiv",
-    "Send & Pending": "Skicka och väntar"
+    "Send & Pending": "Skicka och väntar",
+    "From the time zone of their latest email": "Från tidszonen i det senaste e-postmeddelandet",
+    "Local time :time (GMT:offset)": "Lokal tid :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "Skickat kl. :time avsändarens tid (GMT:offset)"
 }

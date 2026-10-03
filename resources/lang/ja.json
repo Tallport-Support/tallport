@@ -1334,5 +1334,8 @@
     "Forward & Pending": "転送して保留中にする",
     "More send options": "その他の送信オプション",
     "Send & Active": "送信して対応中にする",
-    "Send & Pending": "送信して保留中にする"
+    "Send & Pending": "送信して保留中にする",
+    "From the time zone of their latest email": "最新のメールのタイムゾーンから",
+    "Local time :time (GMT:offset)": "現地時刻 :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "先方の時刻 :time に送信 (GMT:offset)"
 }

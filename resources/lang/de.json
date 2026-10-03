@@ -1327,5 +1327,8 @@
     "Forward & Pending": "Weiterleiten & Ausstehend",
     "More send options": "Weitere Sendeoptionen",
     "Send & Active": "Senden & Aktiv",
-    "Send & Pending": "Senden & Ausstehend"
+    "Send & Pending": "Senden & Ausstehend",
+    "From the time zone of their latest email": "Aus der Zeitzone der letzten E-Mail",
+    "Local time :time (GMT:offset)": "Ortszeit :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "Gesendet um :time Ortszeit des Absenders (GMT:offset)"
 }

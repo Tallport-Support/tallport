@@ -47,7 +47,11 @@
 			@endif
 			@php
 				$location = array_filter([$customer->city, $customer->state, $customer->getCountryName()]);
+				$sender_offset = !empty($conversation) ? App\Misc\SenderTime::offset($conversation) : null;
 			@endphp
+			@if ($sender_offset)
+				<div class="customer-section customer-local-time text-help" title="{{ __('From the time zone of their latest email') }}" data-toggle="tooltip"><i class="glyphicon glyphicon-time"></i> {{ __('Local time :time (GMT:offset)', ['time' => App\Misc\SenderTime::format(now(), $sender_offset), 'offset' => $sender_offset]) }}</div>
+			@endif
 			@if ($customer->company || $customer->job_title || $location || $customer->address || $customer->zip)
 				<div class="customer-section">
 					@if ($customer->company)<div>{{ $customer->company }}</div>@endif

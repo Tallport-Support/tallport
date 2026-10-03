@@ -1334,5 +1334,8 @@
     "Forward & Pending": "Yönlendir ve beklemede",
     "More send options": "Diğer gönderme seçenekleri",
     "Send & Active": "Gönder ve etkin",
-    "Send & Pending": "Gönder ve beklemede"
+    "Send & Pending": "Gönder ve beklemede",
+    "From the time zone of their latest email": "Son e-postasının saat dilimine göre",
+    "Local time :time (GMT:offset)": "Yerel saat :time (GMT:offset)",
+    "Sent at :time their time (GMT:offset)": "Gönderenin saatiyle :time gönderildi (GMT:offset)"
 }
