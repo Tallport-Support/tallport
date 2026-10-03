@@ -1204,5 +1204,7 @@
     "Trigger Webhook": "Déclencher un webhook",
     "All Mailboxes": "Toutes les boîtes de réception",
     "Show folders": "Afficher les dossiers",
-    "Sent": "Envoyés"
+    "Sent": "Envoyés",
+    "Send & Close": "Envoyer et fermer",
+    "Add Note & Close": "Ajouter une note et fermer"
 }

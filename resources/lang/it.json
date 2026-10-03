@@ -1193,5 +1193,7 @@
     "Trigger Webhook": "Attiva webhook",
     "All Mailboxes": "Tutte le caselle postali",
     "Show folders": "Mostra cartelle",
-    "Sent": "Inviati"
+    "Sent": "Inviati",
+    "Send & Close": "Invia e chiudi",
+    "Add Note & Close": "Aggiungi nota e chiudi"
 }

@@ -2392,6 +2392,18 @@ function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
 		});
 
 		// Send reply, new conversation or note
+	    // Send & Close: the status Closed, then send. Back to the previous
+	    // status when the form doesn't validate.
+	    $(".btn-send-close").click(function(e) {
+	    	var status = $(this).closest('.note-statusbar, #editor_bottom_toolbar').find('select[name="status"]:first');
+	    	var previous = status.val();
+	    	status.val($(this).attr('data-status'));
+	    	$(this).closest('.btn-group-send').find('.btn-reply-submit:visible:first').click();
+	    	if (!fs_processing_send_reply) {
+	    		status.val(previous);
+	    	}
+	    });
+
 	    $(".btn-reply-submit").click(function(e) {
 
 			// Wait till all files uploaded.

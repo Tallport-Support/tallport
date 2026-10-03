@@ -1303,5 +1303,7 @@
     "API & Webhooks": "API & webhooks",
     "Trigger Webhook": "Activa un webhook",
     "All Mailboxes": "Totes les bústies",
-    "Show folders": "Mostra les carpetes"
+    "Show folders": "Mostra les carpetes",
+    "Send & Close": "Envia i tanca",
+    "Add Note & Close": "Afegeix nota i tanca"
 }

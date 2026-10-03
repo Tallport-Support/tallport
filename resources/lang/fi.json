@@ -1213,5 +1213,7 @@
     "Trigger Webhook": "Käynnistä webhook",
     "All Mailboxes": "Kaikki postilaatikot",
     "Show folders": "Näytä kansiot",
-    "Sent": "Lähetetyt"
+    "Sent": "Lähetetyt",
+    "Send & Close": "Lähetä ja sulje",
+    "Add Note & Close": "Lisää huomautus ja sulje"
 }

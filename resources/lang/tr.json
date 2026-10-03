@@ -1194,5 +1194,7 @@
     "Trigger Webhook": "Webhook Tetikle",
     "All Mailboxes": "Tüm Posta Kutuları",
     "Show folders": "Klasörleri göster",
-    "Sent": "Gönderilenler"
+    "Sent": "Gönderilenler",
+    "Send & Close": "Gönder ve kapat",
+    "Add Note & Close": "Not ekle ve kapat"
 }

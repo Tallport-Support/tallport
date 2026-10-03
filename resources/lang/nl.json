@@ -1199,5 +1199,7 @@
     "Trigger Webhook": "Webhook activeren",
     "All Mailboxes": "Alle mailboxen",
     "Show folders": "Mappen tonen",
-    "Sent": "Verzonden"
+    "Sent": "Verzonden",
+    "Send & Close": "Verstuur & sluit",
+    "Add Note & Close": "Notitie toevoegen & sluiten"
 }

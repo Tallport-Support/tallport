@@ -1194,5 +1194,7 @@
     "Trigger Webhook": "Webhookを実行",
     "All Mailboxes": "すべてのメールボックス",
     "Show folders": "フォルダを表示",
-    "Sent": "送信済み"
+    "Sent": "送信済み",
+    "Send & Close": "送信して閉じる",
+    "Add Note & Close": "ノートを追加して閉じる"
 }

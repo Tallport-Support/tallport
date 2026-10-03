@@ -1194,5 +1194,7 @@
     "Trigger Webhook": "Utlös webhook",
     "All Mailboxes": "Alla inkorgar",
     "Show folders": "Visa mappar",
-    "Sent": "Skickat"
+    "Sent": "Skickat",
+    "Send & Close": "Skicka och stäng",
+    "Add Note & Close": "Lägg till anteckning och stäng"
 }

@@ -1193,5 +1193,7 @@
     "Trigger Webhook": "הפעל Webhook",
     "All Mailboxes": "כל תיבות הדואר",
     "Show folders": "הצג תיקיות",
-    "Sent": "נשלחו"
+    "Sent": "נשלחו",
+    "Send & Close": "שלח וסגור",
+    "Add Note & Close": "הוסף פתק וסגור"
 }

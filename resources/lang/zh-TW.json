@@ -1248,5 +1248,7 @@
     "Trigger Webhook": "觸發 Webhook",
     "All Mailboxes": "所有信箱",
     "Show folders": "顯示資料夾",
-    "Sent": "已傳送"
+    "Sent": "已傳送",
+    "Send & Close": "傳送並關閉",
+    "Add Note & Close": "新增備註並關閉"
 }

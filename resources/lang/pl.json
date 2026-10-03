@@ -1193,5 +1193,7 @@
     "Trigger Webhook": "Uruchom webhook",
     "All Mailboxes": "Wszystkie skrzynki pocztowe",
     "Show folders": "Pokaż foldery",
-    "Sent": "Wysłane"
+    "Sent": "Wysłane",
+    "Send & Close": "Wyślij i zamknij",
+    "Add Note & Close": "Dodaj notkę i zamknij"
 }

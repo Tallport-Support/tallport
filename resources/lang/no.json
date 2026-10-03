@@ -1199,5 +1199,7 @@
     "Trigger Webhook": "Utløs webhook",
     "All Mailboxes": "Alle postkasser",
     "Show folders": "Vis mapper",
-    "Sent": "Sendt"
+    "Sent": "Sendt",
+    "Send & Close": "Send og lukk",
+    "Add Note & Close": "Legg til notat og lukk"
 }

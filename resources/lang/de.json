@@ -1187,5 +1187,7 @@
     "Trigger Webhook": "Webhook auslösen",
     "All Mailboxes": "Alle Postfächer",
     "Show folders": "Ordner anzeigen",
-    "Sent": "Gesendet"
+    "Sent": "Gesendet",
+    "Send & Close": "Senden & Schließen",
+    "Add Note & Close": "Notiz hinzufügen & Schließen"
 }

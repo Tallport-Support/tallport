@@ -1193,5 +1193,7 @@
     "Trigger Webhook": "Spustiť webhook",
     "All Mailboxes": "Všetky mailboxy",
     "Show folders": "Zobraziť priečinky",
-    "Sent": "Odoslané"
+    "Sent": "Odoslané",
+    "Send & Close": "Odoslať a zatvoriť",
+    "Add Note & Close": "Pridať poznámku a zatvoriť"
 }

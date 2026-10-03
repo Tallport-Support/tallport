@@ -1193,5 +1193,7 @@
     "Trigger Webhook": "Declanșează webhook",
     "All Mailboxes": "Toate cutiile poștale",
     "Show folders": "Arată dosarele",
-    "Sent": "Trimise"
+    "Sent": "Trimise",
+    "Send & Close": "Trimite și închide",
+    "Add Note & Close": "Adaugă notă și închide"
 }

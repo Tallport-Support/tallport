@@ -1194,5 +1194,7 @@
     "Trigger Webhook": "Webhook indítása",
     "All Mailboxes": "Összes postafiók",
     "Show folders": "Mappák mutatása",
-    "Sent": "Elküldött"
+    "Sent": "Elküldött",
+    "Send & Close": "Küldés és lezárás",
+    "Add Note & Close": "Megjegyzés és lezárás"
 }

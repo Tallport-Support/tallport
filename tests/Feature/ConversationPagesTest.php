@@ -87,6 +87,16 @@ class ConversationPagesTest extends FeatureTestCase
             ->assertDontSee('@endif', false);
     }
 
+    public function testSendAndCloseButtons()
+    {
+        $conversation = $this->receiveCustomerEmail(['subject' => 'Question about my order']);
+
+        $this->getPage($this->agent, '/conversation/'.$conversation->id)
+            ->assertSee('btn-send-close btn-send-close-reply" data-status="'.\App\Conversation::STATUS_CLOSED.'">Send &amp; Close', false)
+            ->assertSee('Add Note &amp; Close', false);
+        $this->getPage($this->agent, '/mailbox/'.$this->mailbox->id.'/new-ticket')->assertSee('Send &amp; Close', false);
+    }
+
     public function testGuestIsSentToLogin()
     {
         $response = $this->get('/mailbox/'.$this->mailbox->id);

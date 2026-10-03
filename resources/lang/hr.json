@@ -1194,5 +1194,7 @@
     "Trigger Webhook": "Pokreni webhook",
     "All Mailboxes": "Svi poštanski sandučići",
     "Show folders": "Prikaži mape",
-    "Sent": "Poslano"
+    "Sent": "Poslano",
+    "Send & Close": "Pošalji i zatvori",
+    "Add Note & Close": "Dodaj bilješku i zatvori"
 }

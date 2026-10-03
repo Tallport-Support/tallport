@@ -38,6 +38,9 @@
         <button type="button" class="btn btn-primary btn-reply-submit btn-send-forward" data-loading-text="{{ __('Sending') }}…">{{ __('Forward') }}</button>
         <button type="button" class="btn btn-primary btn-reply-submit btn-add-note-text" data-loading-text="{{ __('Saving') }}…">{{ __('Add Note') }}</button>
         <button type="button" class="btn btn-primary btn-reply-submit btn-create-conv" data-loading-text="{{ __('Creating') }}…">{{ __('Create') }}</button>
+        {{-- Send (or add the note) and close the conversation. --}}
+        <button type="button" class="btn btn-default btn-send-close btn-send-close-reply" data-status="{{ App\Conversation::STATUS_CLOSED }}">{{ __('Send & Close') }}</button>
+        <button type="button" class="btn btn-default btn-send-close btn-send-close-note" data-status="{{ App\Conversation::STATUS_CLOSED }}">{{ __('Add Note & Close') }}</button>
         <button type="button" class="btn btn-primary btn-send-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><small class="glyphicon glyphicon-chevron-down"></small></button>
         <ul class="dropdown-menu dropdown-menu-right dropdown-after-send">
             @action('conversation.prepend_send_dropdown', $conversation, $mailbox, $new_converstion ?? false)

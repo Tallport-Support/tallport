@@ -1193,5 +1193,7 @@
     "Trigger Webhook": "Sproži webhook",
     "All Mailboxes": "Vsi poštni predali",
     "Show folders": "Prikaži mape",
-    "Sent": "Poslano"
+    "Sent": "Poslano",
+    "Send & Close": "Pošlji in zapri",
+    "Add Note & Close": "Dodaj opombo in zapri"
 }
