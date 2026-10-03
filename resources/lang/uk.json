@@ -1318,5 +1318,13 @@
     "Not translated: the message has no text.": "Не перекладено: у повідомленні немає тексту.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Не перекладено: помилка ШІ-асистента (:error). Він спробує знову, коли розмову буде відкрито.",
     "Waiting for the AI Assistant to translate this message.": "Очікування перекладу цього повідомлення ШІ-асистентом.",
-    "Only the first :count characters were translated.": "Перекладено лише перші :count символів."
+    "Only the first :count characters were translated.": "Перекладено лише перші :count символів.",
+    "After Fetching": "Після отримання",
+    "Choose a folder that is not fetched.": "Виберіть папку, з якої листи не отримуються.",
+    "Enter the IMAP folder to move fetched emails to.": "Вкажіть папку IMAP, до якої переміщувати отримані листи.",
+    "IMAP Folder": "Папка IMAP",
+    "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Лише IMAP. Не дає поштовому серверу переповнитися: Tallport зберігає кожен отриманий лист разом з його вихідним кодом.",
+    "Mark email as read": "Позначити лист як прочитаний",
+    "Move to IMAP folder": "Перемістити до папки IMAP",
+    "Remove from the mail server": "Видалити з поштового сервера"
 }

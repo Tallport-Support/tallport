@@ -924,6 +924,7 @@ class ComposerStaticInitb9e9d2fe72fcbf4dcb2b058097b80a60
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Incoming\\Address' => __DIR__ . '/../..' . '/app/Incoming/Address.php',
+        'App\\Incoming\\AfterFetch' => __DIR__ . '/../..' . '/app/Incoming/AfterFetch.php',
         'App\\Incoming\\Attachment' => __DIR__ . '/../..' . '/app/Incoming/Attachment.php',
         'App\\Incoming\\FetchedMessage' => __DIR__ . '/../..' . '/app/Incoming/FetchedMessage.php',
         'App\\Incoming\\HeaderText' => __DIR__ . '/../..' . '/app/Incoming/HeaderText.php',

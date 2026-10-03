@@ -2046,5 +2046,11 @@ class FetchEmails extends Command
         $flag = \Eventy::filter('fetch_emails.set_seen_flag', ['Seen'], $message, $mailbox);
         $message->setFlag($flag);
         \Eventy::action('fetch_emails.after_set_seen', $message, $mailbox, $this);
+
+        // Removed or moved on the server, if the mailbox says so.
+        $error = \App\Incoming\AfterFetch::apply($message, $mailbox);
+        if ($error) {
+            $this->logError('After fetching ('.\App\Incoming\AfterFetch::settings($mailbox)['action'].'): '.$error);
+        }
     }
 }

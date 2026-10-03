@@ -1318,5 +1318,13 @@
     "Not translated: the message has no text.": "Çevrilmedi: mesajda metin yok.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Çevrilmedi: Yapay zekâ asistanı başarısız oldu (:error). Konuşma açıldığında yeniden dener.",
     "Waiting for the AI Assistant to translate this message.": "Yapay zekâ asistanının bu mesajı çevirmesi bekleniyor.",
-    "Only the first :count characters were translated.": "Yalnızca ilk :count karakter çevrildi."
+    "Only the first :count characters were translated.": "Yalnızca ilk :count karakter çevrildi.",
+    "After Fetching": "Getirdikten Sonra",
+    "Choose a folder that is not fetched.": "Getirilmeyen bir klasör seçin.",
+    "Enter the IMAP folder to move fetched emails to.": "Getirilen e-postaların taşınacağı IMAP klasörünü girin.",
+    "IMAP Folder": "IMAP Klasörü",
+    "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Yalnızca IMAP. Posta sunucusunun dolmasını önler: Tallport getirdiği her e-postayı orijinal kaynağıyla birlikte saklar.",
+    "Mark email as read": "E-postayı okundu olarak işaretle",
+    "Move to IMAP folder": "IMAP klasörüne taşı",
+    "Remove from the mail server": "Posta sunucusundan kaldır"
 }

@@ -1318,5 +1318,13 @@
     "Not translated: the message has no text.": "未翻訳：メッセージにテキストがありません。",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "未翻訳：AIアシスタントでエラーが発生しました（:error）。会話を開くと再試行します。",
     "Waiting for the AI Assistant to translate this message.": "AIアシスタントによるこのメッセージの翻訳を待っています。",
-    "Only the first :count characters were translated.": "最初の:count文字のみ翻訳されました。"
+    "Only the first :count characters were translated.": "最初の:count文字のみ翻訳されました。",
+    "After Fetching": "取得後",
+    "Choose a folder that is not fetched.": "取得対象ではないフォルダーを選択してください。",
+    "Enter the IMAP folder to move fetched emails to.": "取得したメールの移動先IMAPフォルダーを入力してください。",
+    "IMAP Folder": "IMAPフォルダー",
+    "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "IMAPのみ。メールサーバーの容量が一杯になるのを防ぎます。Tallportは取得したすべてのメールを元のソースとともに保持します。",
+    "Mark email as read": "メールを既読にする",
+    "Move to IMAP folder": "IMAPフォルダーに移動",
+    "Remove from the mail server": "メールサーバーから削除"
 }

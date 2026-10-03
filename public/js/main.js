@@ -822,6 +822,10 @@ function mailboxConnectionIncomingInit()
             changeProtocol();
         });
 
+        $('#after_fetch_action').on('change', function() {
+            $('#after_fetch_folder').toggleClass('hidden', $(this).val() != 'move');
+        });
+
         changeProtocol();
 
 	    $('#check-connection').click(function(event) {

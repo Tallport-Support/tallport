@@ -1424,5 +1424,13 @@
     "Not translated: the message has no text.": "No traduït: el missatge no té text.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "No traduït: l'assistent d'IA ha fallat (:error). Ho torna a provar quan s'obre la conversa.",
     "Waiting for the AI Assistant to translate this message.": "S'està esperant que l'assistent d'IA tradueixi aquest missatge.",
-    "Only the first :count characters were translated.": "Només s'han traduït els primers :count caràcters."
+    "Only the first :count characters were translated.": "Només s'han traduït els primers :count caràcters.",
+    "After Fetching": "Després d'obtenir",
+    "Choose a folder that is not fetched.": "Tria una carpeta que no s'obtingui.",
+    "Enter the IMAP folder to move fetched emails to.": "Introdueix la carpeta IMAP on moure els correus obtinguts.",
+    "IMAP Folder": "Carpeta IMAP",
+    "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Només IMAP. Evita que el servidor de correu s'ompli: Tallport conserva cada correu que ha obtingut, amb el seu codi font original.",
+    "Mark email as read": "Marca el correu com a llegit",
+    "Move to IMAP folder": "Mou a una carpeta IMAP",
+    "Remove from the mail server": "Elimina del servidor de correu"
 }

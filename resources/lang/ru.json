@@ -1318,5 +1318,13 @@
     "Not translated: the message has no text.": "Не переведено: в сообщении нет текста.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Не переведено: ошибка ИИ-ассистента (:error). Он попробует снова, когда тикет будет открыт.",
     "Waiting for the AI Assistant to translate this message.": "Ожидание перевода этого сообщения ИИ-ассистентом.",
-    "Only the first :count characters were translated.": "Переведены только первые :count символов."
+    "Only the first :count characters were translated.": "Переведены только первые :count символов.",
+    "After Fetching": "После получения",
+    "Choose a folder that is not fetched.": "Выберите папку, из которой не получаются письма.",
+    "Enter the IMAP folder to move fetched emails to.": "Укажите папку IMAP, в которую перемещать полученные письма.",
+    "IMAP Folder": "Папка IMAP",
+    "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Только IMAP. Не даёт почтовому серверу переполниться: Tallport хранит каждое полученное письмо вместе с его исходным текстом.",
+    "Mark email as read": "Отметить письмо как прочитанное",
+    "Move to IMAP folder": "Переместить в папку IMAP",
+    "Remove from the mail server": "Удалить с почтового сервера"
 }

@@ -1317,5 +1317,13 @@
     "Not translated: the message has no text.": "Netradus: mesajul nu are text.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Netradus: asistentul AI a eșuat (:error). Încearcă din nou când conversația este deschisă.",
     "Waiting for the AI Assistant to translate this message.": "Se așteaptă ca asistentul AI să traducă acest mesaj.",
-    "Only the first :count characters were translated.": "Au fost traduse doar primele :count caractere."
+    "Only the first :count characters were translated.": "Au fost traduse doar primele :count caractere.",
+    "After Fetching": "După preluare",
+    "Choose a folder that is not fetched.": "Alegeți un folder care nu este preluat.",
+    "Enter the IMAP folder to move fetched emails to.": "Introduceți folderul IMAP în care să fie mutate email-urile preluate.",
+    "IMAP Folder": "Folder IMAP",
+    "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Doar IMAP. Împiedică umplerea serverului de email: Tallport păstrează fiecare email preluat, cu sursa sa originală.",
+    "Mark email as read": "Marchează email-ul ca citit",
+    "Move to IMAP folder": "Mută într-un folder IMAP",
+    "Remove from the mail server": "Elimină de pe serverul de email"
 }

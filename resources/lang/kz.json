@@ -1788,5 +1788,9 @@
     "Not translated: the message has no text.": "Аударылмады: хабарламада мәтін жоқ.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Аударылмады: ЖИ көмекшісінде қате орын алды (:error). Тикет ашылғанда қайта әрекет етеді.",
     "Waiting for the AI Assistant to translate this message.": "ЖИ көмекшісінің бұл хабарламаны аударуы күтілуде.",
-    "Only the first :count characters were translated.": "Тек алғашқы :count таңба аударылды."
+    "Only the first :count characters were translated.": "Тек алғашқы :count таңба аударылды.",
+    "Choose a folder that is not fetched.": "Жүктелмейтін қалтаны таңдаңыз.",
+    "Enter the IMAP folder to move fetched emails to.": "Жүктелген хаттар көшірілетін IMAP қалтасын енгізіңіз.",
+    "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Тек IMAP. Пошта серверінің толып кетуіне жол бермейді: Tallport жүктеген әр хатты бастапқы көзімен бірге сақтайды.",
+    "Remove from the mail server": "Пошта серверінен жою"
 }

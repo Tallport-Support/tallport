@@ -944,7 +944,7 @@ class Mail
             return null;
         }
 
-        $imap_folders = \Eventy::filter('mail.fetch_message.imap_folders', $mailbox->getInImapFolders(), $mailbox);
+        $imap_folders = \Eventy::filter('mail.fetch_message.imap_folders', \App\Incoming\AfterFetch::searchFolders($mailbox), $mailbox);
 
         foreach ($imap_folders as $folder_name) {
             try {

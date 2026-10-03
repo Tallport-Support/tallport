@@ -1318,5 +1318,13 @@
     "Not translated: the message has no text.": "Tərcümə edilmədi: mesajda mətn yoxdur.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Tərcümə edilmədi: Sİ köməkçisində xəta baş verdi (:error). Söhbət açılanda yenidən cəhd edir.",
     "Waiting for the AI Assistant to translate this message.": "Sİ köməkçisinin bu mesajı tərcümə etməsi gözlənilir.",
-    "Only the first :count characters were translated.": "Yalnız ilk :count simvol tərcümə edildi."
+    "Only the first :count characters were translated.": "Yalnız ilk :count simvol tərcümə edildi.",
+    "After Fetching": "Əldə etdikdən sonra",
+    "Choose a folder that is not fetched.": "Əldə edilməyən qovluq seçin.",
+    "Enter the IMAP folder to move fetched emails to.": "Əldə edilmiş e-poçtların köçürüləcəyi IMAP qovluğunu daxil edin.",
+    "IMAP Folder": "IMAP qovluğu",
+    "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Yalnız IMAP. Poçt serverinin dolmasının qarşısını alır: Tallport əldə etdiyi hər e-poçtu orijinal mənbəyi ilə saxlayır.",
+    "Mark email as read": "E-poçtu oxunmuş kimi işarələ",
+    "Move to IMAP folder": "IMAP qovluğuna köçür",
+    "Remove from the mail server": "Poçt serverindən sil"
 }

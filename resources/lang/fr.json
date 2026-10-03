@@ -1328,5 +1328,13 @@
     "Not translated: the message has no text.": "Non traduit : le message ne contient pas de texte.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Non traduit : l'assistant IA a échoué (:error). Il réessaie à l'ouverture de la conversation.",
     "Waiting for the AI Assistant to translate this message.": "En attente de la traduction de ce message par l'assistant IA.",
-    "Only the first :count characters were translated.": "Seuls les :count premiers caractères ont été traduits."
+    "Only the first :count characters were translated.": "Seuls les :count premiers caractères ont été traduits.",
+    "After Fetching": "Après la récupération",
+    "Choose a folder that is not fetched.": "Choisissez un dossier qui n'est pas récupéré.",
+    "Enter the IMAP folder to move fetched emails to.": "Saisissez le dossier IMAP vers lequel déplacer les e-mails récupérés.",
+    "IMAP Folder": "Dossier IMAP",
+    "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "IMAP uniquement. Évite que le serveur de messagerie se remplisse : Tallport conserve chaque e-mail récupéré, avec sa source originale.",
+    "Mark email as read": "Marquer l'e-mail comme lu",
+    "Move to IMAP folder": "Déplacer vers un dossier IMAP",
+    "Remove from the mail server": "Supprimer du serveur de messagerie"
 }

@@ -1337,5 +1337,13 @@
     "Not translated: the message has no text.": "Ei käännetty: viestissä ei ole tekstiä.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Ei käännetty: tekoälyavustaja epäonnistui (:error). Se yrittää uudelleen, kun keskustelu avataan.",
     "Waiting for the AI Assistant to translate this message.": "Odotetaan, että tekoälyavustaja kääntää tämän viestin.",
-    "Only the first :count characters were translated.": "Vain ensimmäiset :count merkkiä käännettiin."
+    "Only the first :count characters were translated.": "Vain ensimmäiset :count merkkiä käännettiin.",
+    "After Fetching": "Hakemisen jälkeen",
+    "Choose a folder that is not fetched.": "Valitse kansio, josta ei haeta.",
+    "Enter the IMAP folder to move fetched emails to.": "Anna IMAP-kansio, johon haetut sähköpostit siirretään.",
+    "IMAP Folder": "IMAP-kansio",
+    "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Vain IMAP. Estää postipalvelinta täyttymästä: Tallport säilyttää jokaisen hakemansa sähköpostin alkuperäisine lähteineen.",
+    "Mark email as read": "Merkitse sähköposti luetuksi",
+    "Move to IMAP folder": "Siirrä IMAP-kansioon",
+    "Remove from the mail server": "Poista postipalvelimelta"
 }

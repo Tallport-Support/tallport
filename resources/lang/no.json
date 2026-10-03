@@ -1323,5 +1323,13 @@
     "Not translated: the message has no text.": "Ikke oversatt: meldingen har ingen tekst.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Ikke oversatt: AI-assistenten mislyktes (:error). Den prøver igjen når samtalen åpnes.",
     "Waiting for the AI Assistant to translate this message.": "Venter på at AI-assistenten skal oversette denne meldingen.",
-    "Only the first :count characters were translated.": "Bare de første :count tegnene ble oversatt."
+    "Only the first :count characters were translated.": "Bare de første :count tegnene ble oversatt.",
+    "After Fetching": "Etter henting",
+    "Choose a folder that is not fetched.": "Velg en mappe som ikke hentes.",
+    "Enter the IMAP folder to move fetched emails to.": "Skriv inn IMAP-mappen som hentede e-poster skal flyttes til.",
+    "IMAP Folder": "IMAP-mappe",
+    "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Bare IMAP. Hindrer at e-postserveren fylles opp: Tallport beholder hver e-post den har hentet, med den opprinnelige kilden.",
+    "Mark email as read": "Merk e-posten som lest",
+    "Move to IMAP folder": "Flytt til IMAP-mappe",
+    "Remove from the mail server": "Fjern fra e-postserveren"
 }

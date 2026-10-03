@@ -169,6 +169,7 @@ return array(
     'App\\Http\\Middleware\\TrustProxies' => $baseDir . '/app/Http/Middleware/TrustProxies.php',
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
     'App\\Incoming\\Address' => $baseDir . '/app/Incoming/Address.php',
+    'App\\Incoming\\AfterFetch' => $baseDir . '/app/Incoming/AfterFetch.php',
     'App\\Incoming\\Attachment' => $baseDir . '/app/Incoming/Attachment.php',
     'App\\Incoming\\FetchedMessage' => $baseDir . '/app/Incoming/FetchedMessage.php',
     'App\\Incoming\\HeaderText' => $baseDir . '/app/Incoming/HeaderText.php',

@@ -510,6 +510,18 @@ class MailboxesController extends Controller
             'in_password' => 'required|string|max:255',
         ]);
 
+        // Moving fetched emails into a folder that is fetched would fetch them again.
+        $validator->after(function ($validator) use ($request) {
+            if ($request->after_fetch_action == \App\Incoming\AfterFetch::MOVE) {
+                $folder = trim((string) $request->after_fetch_folder);
+                if ($folder === '') {
+                    $validator->errors()->add('after_fetch_folder', __('Enter the IMAP folder to move fetched emails to.'));
+                } elseif (in_array($folder, array_filter((array) $request->in_imap_folders) ?: ['INBOX'])) {
+                    $validator->errors()->add('after_fetch_folder', __('Choose a folder that is not fetched.'));
+                }
+            }
+        });
+
         if ($validator->fails()) {
             return redirect()->route('mailboxes.connection.incoming', ['id' => $id])
                         ->withErrors($validator)
@@ -520,6 +532,7 @@ class MailboxesController extends Controller
         $request->merge([
             'in_validate_cert' => ($request->filled('in_validate_cert') ?? false),
         ]);
+        \App\Incoming\AfterFetch::save($mailbox, $request->after_fetch_action, $request->after_fetch_folder);
 
         // Do not save dummy password.
         if (preg_match("/^\*+$/", $request->in_password ?? '')) {

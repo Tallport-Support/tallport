@@ -1317,5 +1317,13 @@
     "Not translated: the message has no text.": "Nepreložené: správa neobsahuje žiadny text.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Nepreložené: AI asistent zlyhal (:error). Skúsi to znova pri otvorení konverzácie.",
     "Waiting for the AI Assistant to translate this message.": "Čaká sa, kým AI asistent preloží túto správu.",
-    "Only the first :count characters were translated.": "Preložených bolo len prvých :count znakov."
+    "Only the first :count characters were translated.": "Preložených bolo len prvých :count znakov.",
+    "After Fetching": "Po načítaní",
+    "Choose a folder that is not fetched.": "Vyberte priečinok, ktorý sa nenačítava.",
+    "Enter the IMAP folder to move fetched emails to.": "Zadajte IMAP priečinok, do ktorého sa majú načítané emaily presunúť.",
+    "IMAP Folder": "IMAP priečinok",
+    "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Iba IMAP. Zabraňuje zaplneniu poštového servera: Tallport uchováva každý načítaný email aj s jeho pôvodným zdrojom.",
+    "Mark email as read": "Označiť email ako prečítaný",
+    "Move to IMAP folder": "Presunúť do IMAP priečinka",
+    "Remove from the mail server": "Odstrániť z poštového servera"
 }

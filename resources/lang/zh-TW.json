@@ -1370,5 +1370,13 @@
     "Not translated: the message has no text.": "未翻譯：訊息沒有文字。",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "未翻譯：AI 助理發生錯誤（:error）。開啟對話時會再試一次。",
     "Waiting for the AI Assistant to translate this message.": "正在等待 AI 助理翻譯此訊息。",
-    "Only the first :count characters were translated.": "僅翻譯了前 :count 個字元。"
+    "Only the first :count characters were translated.": "僅翻譯了前 :count 個字元。",
+    "After Fetching": "收取後",
+    "Choose a folder that is not fetched.": "請選擇一個不會被收取的資料夾。",
+    "Enter the IMAP folder to move fetched emails to.": "請輸入用於存放已收取郵件的 IMAP 資料夾。",
+    "IMAP Folder": "IMAP 資料夾",
+    "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "僅限 IMAP。防止郵件伺服器被塞滿：Tallport 會保留其收取的每封郵件及其原始碼。",
+    "Mark email as read": "將郵件標示為已讀",
+    "Move to IMAP folder": "移至 IMAP 資料夾",
+    "Remove from the mail server": "從郵件伺服器移除"
 }

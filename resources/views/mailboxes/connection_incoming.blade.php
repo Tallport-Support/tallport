@@ -221,6 +221,25 @@
                                     <div class="form-help">{{ __("Enter IMAP folder name to save outgoing replies if your mail service provider does not do it automatically (Gmail does it), otherwise leave it blank.") }}</div>
                                 </div>
                             </div>
+
+                            @php
+                                $after_fetch = App\Incoming\AfterFetch::settings($mailbox);
+                                $after_fetch_action = old('after_fetch_action', $after_fetch['action']);
+                            @endphp
+                            <div class="form-group{{ $errors->has('after_fetch_folder') ? ' has-error' : '' }}">
+                                <label for="after_fetch_action" class="col-sm-2 control-label">{{ __('After Fetching') }}</label>
+
+                                <div class="col-sm-6">
+                                    <select id="after_fetch_action" class="form-control input-sized" name="after_fetch_action">
+                                        <option value="{{ App\Incoming\AfterFetch::LEAVE }}" @if ($after_fetch_action == App\Incoming\AfterFetch::LEAVE) selected @endif>{{ __('Mark email as read') }}</option>
+                                        <option value="{{ App\Incoming\AfterFetch::MOVE }}" @if ($after_fetch_action == App\Incoming\AfterFetch::MOVE) selected @endif>{{ __('Move to IMAP folder') }}</option>
+                                        <option value="{{ App\Incoming\AfterFetch::REMOVE }}" @if ($after_fetch_action == App\Incoming\AfterFetch::REMOVE) selected @endif>{{ __('Remove from the mail server') }}</option>
+                                    </select>
+                                    <input type="text" class="form-control input-sized margin-top-10 @if ($after_fetch_action != App\Incoming\AfterFetch::MOVE) hidden @endif" id="after_fetch_folder" name="after_fetch_folder" value="{{ old('after_fetch_folder', $after_fetch['folder']) }}" maxlength="255" placeholder="{{ __('IMAP Folder') }}" aria-label="{{ __('IMAP Folder') }}">
+                                    @include('partials/field_error', ['field' => 'after_fetch_folder'])
+                                    <div class="form-help">{{ __('IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.') }}</div>
+                                </div>
+                            </div>
                             <hr/>
                         </div>
                     </div>

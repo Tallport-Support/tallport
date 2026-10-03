@@ -1318,5 +1318,13 @@
     "Not translated: the message has no text.": "Nije prevedeno: poruka nema teksta.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Nije prevedeno: AI asistent nije uspio (:error). Pokušat će ponovno kad se razgovor otvori.",
     "Waiting for the AI Assistant to translate this message.": "Čeka se da AI asistent prevede ovu poruku.",
-    "Only the first :count characters were translated.": "Prevedeno je samo prvih :count znakova."
+    "Only the first :count characters were translated.": "Prevedeno je samo prvih :count znakova.",
+    "After Fetching": "Nakon dohvaćanja",
+    "Choose a folder that is not fetched.": "Odaberite mapu koja se ne dohvaća.",
+    "Enter the IMAP folder to move fetched emails to.": "Unesite IMAP mapu u koju će se premjestiti dohvaćeni e-mailovi.",
+    "IMAP Folder": "IMAP mapa",
+    "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Samo IMAP. Sprječava da se poslužitelj pošte napuni: Tallport čuva svaki dohvaćeni e-mail s njegovim izvornim kodom.",
+    "Mark email as read": "Označi e-mail kao pročitan",
+    "Move to IMAP folder": "Premjesti u IMAP mapu",
+    "Remove from the mail server": "Ukloni s poslužitelja pošte"
 }

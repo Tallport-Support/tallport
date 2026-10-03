@@ -91,6 +91,16 @@ class FetchedMessage
         return $this->client;
     }
 
+    public function getFolderPath()
+    {
+        return $this->folder_path;
+    }
+
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
     /**
      * Set a flag on the server, e.g. ['Seen'].
      *

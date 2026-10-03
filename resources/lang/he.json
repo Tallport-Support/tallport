@@ -1317,5 +1317,13 @@
     "Not translated: the message has no text.": "לא תורגם: אין בהודעה טקסט.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "לא תורגם: עוזר ה-AI נכשל (:error). הוא ינסה שוב כשהשיחה תיפתח.",
     "Waiting for the AI Assistant to translate this message.": "ממתין לתרגום ההודעה על ידי עוזר ה-AI.",
-    "Only the first :count characters were translated.": "רק :count התווים הראשונים תורגמו."
+    "Only the first :count characters were translated.": "רק :count התווים הראשונים תורגמו.",
+    "After Fetching": "לאחר האחזור",
+    "Choose a folder that is not fetched.": "בחר תיקייה שאינה מאוחזרת.",
+    "Enter the IMAP folder to move fetched emails to.": "הזן את תיקיית ה-IMAP שאליה יועברו האימיילים שאוחזרו.",
+    "IMAP Folder": "תיקיית IMAP",
+    "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "IMAP בלבד. מונע משרת הדואר להתמלא: Tallport שומר כל אימייל שאחזר, יחד עם המקור המקורי שלו.",
+    "Mark email as read": "סמן אימייל כנקרא",
+    "Move to IMAP folder": "העבר לתיקיית IMAP",
+    "Remove from the mail server": "הסר משרת הדואר"
 }
