@@ -2,77 +2,76 @@
 
 @section('title', __('Documentation'))
 
+{{-- Converted to FruitUI: the whole main area is in its scope. --}}
+@section('main_class', 'fruit-ui')
+
+@section('sidebar')
+    <x-page-nav>
+        <x-slot:title>
+            <x-fruit::back-link href="{{ route('settings', ['section' => 'ai']) }}">{{ __('AI Assistant') }}</x-fruit::back-link>
+            <h1>{{ __('Documentation') }}</h1>
+        </x-slot:title>
+    </x-page-nav>
+@endsection
+
 @section('content')
-<div class="section-heading">
-    {{ __('Documentation') }}
-</div>
+<div class="fruit-ui page-content ai-documents">
+    <div class="settings-form">
+        @include('partials/flash_messages')
 
-<div class="container ai-documents">
+        @if (session('ai_new_key'))
+            <x-fruit::alert tone="success">
+                {{ __('New API key for :mailbox. Copy it now: it is not shown again.', ['mailbox' => session('ai_new_key')['mailbox']]) }}
+                <br><code>{{ session('ai_new_key')['key'] }}</code>
+            </x-fruit::alert>
+        @endif
 
-    @include('partials/flash_messages')
+        @if (!App\Ai\Documents::available())
+            <x-fruit::alert tone="warning">
+                {{ __('The selected embedding provider does not support embeddings, so drafts are made without documentation. Summaries and translations are not affected.') }}
+            </x-fruit::alert>
+        @endif
 
-    @if (session('ai_new_key'))
-        <div class="alert alert-success">
-            {{ __('New API key for :mailbox. Copy it now: it is not shown again.', ['mailbox' => session('ai_new_key')['mailbox']]) }}
-            <br><code>{{ session('ai_new_key')['key'] }}</code>
-        </div>
-    @endif
+        <p class="f-help">
+            {{ __('Drafted replies use the documentation of the conversation\'s mailbox. Pages added by URL are fetched as Markdown (the URL plus .md) and fetched again daily.') }}
+        </p>
 
-    @if (!App\Ai\Documents::available())
-        <div class="alert alert-warning">
-            {{ __('The selected embedding provider does not support embeddings, so drafts are made without documentation. Summaries and translations are not affected.') }}
-        </div>
-    @endif
+        <h2 class="settings-form__heading">{{ __('Add Pages') }}</h2>
 
-    <p class="text-help">
-        {{ __('Drafted replies use the documentation of the conversation\'s mailbox. Pages added by URL are fetched as Markdown (the URL plus .md) and fetched again daily.') }}
-    </p>
+        <form class="settings-form" method="POST" action="{{ route('ai.documents.action') }}">
+            {{ csrf_field() }}
+            <input type="hidden" name="action" value="add">
 
-    <h3 class="subheader">{{ __('Add Pages') }}</h3>
-
-    <form class="form-horizontal" method="POST" action="{{ route('ai.documents.action') }}">
-        {{ csrf_field() }}
-        <input type="hidden" name="action" value="add">
-
-        <div class="form-group">
-            <label for="ai_documents_mailbox" class="col-sm-2 control-label">{{ __('Mailbox') }}</label>
-            <div class="col-sm-6">
-                <select id="ai_documents_mailbox" name="mailbox_id" class="form-control input-sized" required>
+            <x-fruit::field :label="__('Mailbox')">
+                <x-fruit::select id="ai_documents_mailbox" name="mailbox_id" required>
                     @foreach ($mailboxes as $mailbox)
-                        <option value="{{ $mailbox->id }}" @if (old('mailbox_id') == $mailbox->id) selected @endif>{{ $mailbox->name }}</option>
+                        <option value="{{ $mailbox->id }}" @selected(old('mailbox_id') == $mailbox->id)>{{ $mailbox->name }}</option>
                     @endforeach
-                </select>
-            </div>
-        </div>
+                </x-fruit::select>
+            </x-fruit::field>
 
-        <div class="form-group{{ $errors->has('urls') ? ' has-error' : '' }}">
-            <label for="ai_documents_urls" class="col-sm-2 control-label">{{ __('URLs') }}</label>
-            <div class="col-sm-8">
-                <textarea id="ai_documents_urls" name="urls" class="form-control" rows="4" required placeholder="https://docs.example.com/en/setup">{{ old('urls') }}</textarea>
-                <div class="form-help">{{ __('One URL per line. Pages already added are fetched again.') }}</div>
-                @include('partials/field_error', ['field' => 'urls'])
-            </div>
-        </div>
+            <x-fruit::field :label="__('URLs')" :description="__('One URL per line. Pages already added are fetched again.')">
+                <x-fruit::textarea id="ai_documents_urls" name="urls" rows="4" required placeholder="https://docs.example.com/en/setup">{{ old('urls') }}</x-fruit::textarea>
+            </x-fruit::field>
 
-        <div class="form-group">
-            <div class="col-sm-8 col-sm-offset-2">
-                <button type="submit" class="btn btn-primary">{{ __('Add') }}</button>
+            <div class="settings-form__actions">
+                <x-fruit::button type="submit" variant="primary">{{ __('Add') }}</x-fruit::button>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 
-    <h3 class="subheader">{{ __('Pages') }}</h3>
+    <h2 class="settings-form__heading">{{ __('Pages') }}</h2>
 
     @if (count($documents))
-        <form method="POST" action="{{ route('ai.documents.action') }}" class="margin-bottom">
+        <form method="POST" action="{{ route('ai.documents.action') }}" class="f-row ai-documents__actions">
             {{ csrf_field() }}
             <input type="hidden" name="action" value="index">
-            <button type="submit" class="btn btn-default">{{ __('Fetch and Index Changes') }}</button>
-            <button type="submit" class="btn btn-link" name="force" value="1" data-confirm="{{ __('Index all documentation again? This makes new embeddings for every page.') }}">{{ __('Index All Again') }}</button>
+            <x-fruit::button type="submit">{{ __('Fetch and Index Changes') }}</x-fruit::button>
+            <x-fruit::button type="submit" variant="ghost" name="force" value="1" data-confirm="{{ __('Index all documentation again? This makes new embeddings for every page.') }}">{{ __('Index All Again') }}</x-fruit::button>
         </form>
 
-        <div class="table-responsive">
-            <table class="table table-condensed table-striped">
+        <x-fruit::table>
+            <thead>
                 <tr>
                     <th>{{ __('Title') }}</th>
                     <th>{{ __('Mailbox') }}</th>
@@ -81,16 +80,18 @@
                     <th>{{ __('Indexed') }}</th>
                     <th></th>
                 </tr>
+            </thead>
+            <tbody>
                 @foreach ($documents as $document)
                     <tr>
                         <td>
                             <strong>{{ $document->title }}</strong>
                             @if (!$document->enabled)
-                                <span class="label label-default">{{ __('Disabled') }}</span>
+                                <x-fruit::badge>{{ __('Disabled') }}</x-fruit::badge>
                             @endif
                             <br>
                             @if ($document->isPrivate())
-                                <span class="text-help">API: {{ $document->metadata['api_identifier'] ?? $document->source_url }}</span>
+                                <span class="f-muted">API: {{ $document->metadata['api_identifier'] ?? $document->source_url }}</span>
                             @elseif (App\Ai\Document::isHttpUrl($document->source_url))
                                 <a href="{{ $document->source_url }}" target="_blank" rel="noopener noreferrer">{{ $document->source_url }}</a>
                             @else
@@ -100,71 +101,73 @@
                         <td>{{ $document->mailbox ? $document->mailbox->name : '#'.$document->mailbox_id }}</td>
                         <td>
                             @if ($document->status == App\Ai\Document::STATUS_INDEXED)
-                                <span class="label label-success">{{ __('Indexed') }}</span>
+                                <x-fruit::badge tone="success">{{ __('Indexed') }}</x-fruit::badge>
                             @elseif ($document->status == App\Ai\Document::STATUS_FAILED)
-                                <span class="label label-danger">{{ __('Failed') }}</span>
-                                <div class="text-danger">{{ $document->last_error }}</div>
+                                <x-fruit::badge tone="danger">{{ __('Failed') }}</x-fruit::badge>
+                                <div class="f-error">{{ $document->last_error }}</div>
                             @else
-                                <span class="label label-default">{{ __('Pending') }}</span>
+                                <x-fruit::badge>{{ __('Pending') }}</x-fruit::badge>
                             @endif
                         </td>
                         <td>{{ $document->chunks_count }}</td>
                         <td>{{ $document->last_indexed_at ? App\User::dateFormat($document->last_indexed_at) : '–' }}</td>
-                        <td class="text-right">
-                            <form method="POST" action="{{ route('ai.documents.action') }}" class="form-inline">
+                        <td>
+                            <form method="POST" action="{{ route('ai.documents.action') }}" class="f-row">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="document_id" value="{{ $document->id }}">
                                 @if ($document->enabled)
-                                    <button type="submit" class="btn btn-xs btn-default" name="action" value="index">{{ __('Index') }}</button>
+                                    <x-fruit::button type="submit" size="small" name="action" value="index">{{ __('Index') }}</x-fruit::button>
                                 @endif
-                                <button type="submit" class="btn btn-xs btn-default" name="action" value="toggle">{{ $document->enabled ? __('Disable') : __('Enable') }}</button>
-                                <button type="submit" class="btn btn-xs btn-link text-danger" name="action" value="delete" data-confirm="{{ __('Delete this page from the documentation?') }}">{{ __('Delete') }}</button>
+                                <x-fruit::button type="submit" size="small" name="action" value="toggle">{{ $document->enabled ? __('Disable') : __('Enable') }}</x-fruit::button>
+                                <x-fruit::button type="submit" size="small" variant="danger" name="action" value="delete" data-confirm="{{ __('Delete this page from the documentation?') }}">{{ __('Delete') }}</x-fruit::button>
                             </form>
                         </td>
                     </tr>
                 @endforeach
-            </table>
-        </div>
+            </tbody>
+        </x-fruit::table>
     @else
-        <p class="text-help">{{ __('No documentation has been added yet.') }}</p>
+        <p class="f-muted">{{ __('No documentation has been added yet.') }}</p>
     @endif
 
-    <h3 class="subheader">{{ __('Documentation API') }}</h3>
+    <h2 class="settings-form__heading">{{ __('Documentation API') }}</h2>
 
-    <p class="text-help">{{ __('Websites and build jobs can push Markdown pages into a mailbox\'s documentation with the mailbox\'s API key.') }}</p>
+    <p class="f-help">{{ __('Websites and build jobs can push Markdown pages into a mailbox\'s documentation with the mailbox\'s API key.') }}</p>
 
-    <div class="table-responsive">
-        <table class="table table-condensed">
+    <x-fruit::table>
+        <thead>
             <tr>
                 <th>{{ __('Mailbox') }}</th>
                 <th>{{ __('API Key') }}</th>
                 <th>{{ __('Last Used') }}</th>
                 <th></th>
             </tr>
+        </thead>
+        <tbody>
             @foreach ($mailboxes as $mailbox)
                 @php
                     $api_key = $api_keys->get($mailbox->id);
                 @endphp
                 <tr>
                     <td>{{ $mailbox->name }}</td>
-                    <td>@if ($api_key)<code>{{ $api_key->key_preview }}</code>@else<span class="text-help">–</span>@endif</td>
+                    <td>@if ($api_key)<code>{{ $api_key->key_preview }}</code>@else<span class="f-muted">–</span>@endif</td>
                     <td>{{ $api_key && $api_key->last_used_at ? App\User::dateFormat($api_key->last_used_at) : '–' }}</td>
-                    <td class="text-right">
-                        <form method="POST" action="{{ route('ai.documents.action') }}" class="form-inline">
+                    <td>
+                        <form method="POST" action="{{ route('ai.documents.action') }}" class="f-row">
                             {{ csrf_field() }}
                             <input type="hidden" name="mailbox_id" value="{{ $mailbox->id }}">
                             @if ($api_key)
-                                <button type="submit" class="btn btn-xs btn-default" name="action" value="issue_key" data-confirm="{{ __('Make a new API key? Websites using the current key stop working.') }}">{{ __('New Key') }}</button>
-                                <button type="submit" class="btn btn-xs btn-link text-danger" name="action" value="revoke_key" data-confirm="{{ __('Revoke this API key? Websites using it stop working.') }}">{{ __('Revoke') }}</button>
+                                <x-fruit::button type="submit" size="small" name="action" value="issue_key" data-confirm="{{ __('Make a new API key? Websites using the current key stop working.') }}">{{ __('New Key') }}</x-fruit::button>
+                                <x-fruit::button type="submit" size="small" variant="danger" name="action" value="revoke_key" data-confirm="{{ __('Revoke this API key? Websites using it stop working.') }}">{{ __('Revoke') }}</x-fruit::button>
                             @else
-                                <button type="submit" class="btn btn-xs btn-default" name="action" value="issue_key">{{ __('Make Key') }}</button>
+                                <x-fruit::button type="submit" size="small" name="action" value="issue_key">{{ __('Make Key') }}</x-fruit::button>
                             @endif
                         </form>
                     </td>
                 </tr>
             @endforeach
-        </table>
-    </div>
+        </tbody>
+    </x-fruit::table>
 
     <pre>curl -X POST "{{ route('ai.documents.api') }}" \
   -H "Authorization: Bearer YOUR_MAILBOX_KEY" \
@@ -174,8 +177,6 @@
     "content": "# Android setup\n\nMarkdown...",
     "public_url": "https://docs.example.com/en/setup/android"
   }'</pre>
-
-    <p><a href="{{ route('settings', ['section' => 'ai']) }}">&larr; {{ __('AI Assistant') }}</a></p>
 </div>
 @endsection
 

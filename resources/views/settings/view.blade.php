@@ -11,19 +11,12 @@
     </x-page-nav>
 @endsection
 
+{{-- Converted to FruitUI: the whole main area is in its scope. --}}
+@section('main_class', 'fruit-ui')
+
 @section('content')
-    <div class="section-heading">
-        {{ $section_name }}
+    <div class="fruit-ui page-content">
+        @include('partials/flash_messages')
+        @include(\Eventy::filter('settings.view', 'settings/'.$section, $section))
     </div>
-
-    @include('partials/flash_messages')
-
-    <div class="row-container form-container">
-        <div class="row">
-            <div class="col-xs-12">
-                @include(\Eventy::filter('settings.view', 'settings/'.$section, $section))
-            </div>
-        </div>
-    </div>
-
 @endsection

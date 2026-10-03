@@ -5278,3 +5278,28 @@ a.disabled:focus {
         padding: 8px 12px;
     }
 }
+.page-content {
+    padding: 20px;
+}
+/* Settings: one column of fields, groups under headings. */
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 640px;
+}
+.settings-form__heading {
+    font-size: var(--f-text-xl);
+    margin: 18px 0 0;
+}
+.settings-form__actions {
+    padding-top: 8px;
+}
+.settings-form > input[type="hidden"]:first-child + .settings-form__heading,
+.settings-form > .settings-form__heading:first-child {
+    margin-top: 0;
+}
+/* A converted page: the page nav already spaces the content. */
+.app-main.fruit-ui > .content {
+    margin-top: 0;
+}

@@ -906,19 +906,6 @@ function mailboxConnectionIncomingInit()
 function mailSettingsInit()
 {
 	$(document).ready(function(){
-	    $(':input[name="settings[mail_driver]"]').on('change', function(event) {
-	    	var method = $(':input[name="settings[mail_driver]"]').val();
-
-			$('.mail_driver_options').addClass('hidden');
-			$('#mail_driver_options_'+method).removeClass('hidden');
-
-			if (parseInt(method) == 'smtp') {
-				$('#mail_driver_options_smtp :input').attr('required', 'required');
-			} else {
-				$('#mail_driver_options_smtp :input').removeAttr('required');
-			}
-		});
-
 	    // Test Email
 		$('#send-test-trigger').click(function(event) {
 	    	var button = $(this);
@@ -6579,7 +6566,7 @@ function brandingSettingsInit()
 	});
 	$('.branding-color-reset').click(function(e) {
 		e.preventDefault();
-		$('.branding-color').val($(this).attr('data-color'));
+		$('.branding-color').val($(this).attr('data-color')).trigger('input').trigger('change');
 	});
 }
 

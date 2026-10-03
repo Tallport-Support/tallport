@@ -52,7 +52,7 @@
             {{-- The sidebar, then the page: its tabs (sidebar section), side column (aside section) and content. --}}
             <div class="app-shell">
                 @include('partials/app_sidebar')
-                <div class="app-main">
+                <div class="app-main @yield('main_class')">
                     <div class="fruit-ui app-main__bar">
                         <button type="button" class="f-button f-button--ghost f-button--icon app-sidebar-toggle" aria-controls="app-sidebar" aria-expanded="false" aria-label="{{ __('Toggle Navigation') }}"><x-heroicon-o-bars-3 class="f-icon" aria-hidden="true" /></button>
                     </div>

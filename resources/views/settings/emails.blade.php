@@ -1,163 +1,82 @@
-<form class="form-horizontal margin-top" method="POST" action="">
+<form class="settings-form" method="POST" action="" x-data="{ driver: @js(old('settings.mail_driver', $settings['mail_driver'])) }">
     {{ csrf_field() }}
 
-    <h3 class="subheader">{{ __('System Emails') }}</h3>
-    <div class="descr-block">
-        <p>{{ __("These settings are used to send system emails (alerts to admin and invitation emails to users).") }}</p>
+    <h2 class="settings-form__heading">{{ __('System Emails') }}</h2>
+    <p class="f-help">{{ __("These settings are used to send system emails (alerts to admin and invitation emails to users).") }}</p>
+    <p class="f-help">{{ __("If you want to send system emails via webmail providers (Gmail, Yahoo, etc), use only SMTP method and make sure that SMTP username is equal to 'Mail From', otherwise webmail provider won't send emails.") }}</p>
 
-        <p>
-            {{ __("If you want to send system emails via webmail providers (Gmail, Yahoo, etc), use only SMTP method and make sure that SMTP username is equal to 'Mail From', otherwise webmail provider won't send emails.") }}
-        </p>
-    </div>
+    <x-fruit::field :label="__('Mail From')">
+        <x-fruit::input type="email" name="settings[mail_from]" :value="old('settings.mail_from', $settings['mail_from'])" required autofocus />
+    </x-fruit::field>
 
-    <div class="form-group{{ $errors->has('settings.mail_from') ? ' has-error' : '' }}">
-        <label for="mail_from" class="col-sm-2 control-label">{{ __('Mail From') }}</label>
+    <x-fruit::field :label="__('Send Method')">
+        <x-fruit::select name="settings[mail_driver]" x-model="driver">
+            @foreach ($mail_drivers as $mail_driver => $mail_driver_title)
+                <option value="{{ $mail_driver }}" @selected($settings['mail_driver'] == $mail_driver)>{{ $mail_driver_title }}</option>
+            @endforeach
+        </x-fruit::select>
+    </x-fruit::field>
+    <p class="f-help" x-show="driver == 'sendmail'"><strong>{{ __("PHP sendmail path:") }}</strong> {{ $sendmail_path }}</p>
 
-        <div class="col-sm-6">
-            <input id="mail_from" type="email" class="form-control input-sized" name="settings[mail_from]" value="{{ old('settings.mail_from', $settings['mail_from']) }}" required autofocus>
-
-            @include('partials/field_error', ['field'=>'settings.mail_from'])
-        </div>
-    </div>
-
-    <div class="form-group margin-top">
-        <label for="email" class="col-sm-2 control-label">{{ __('Send Method') }}</label>
-
-        <div class="col-sm-6">
-            <select name="settings[mail_driver]" class="form-control input-sized">
-                @foreach ($mail_drivers as $mail_driver => $mail_driver_title)
-                    <option value="{{ $mail_driver }}" @if ($settings['mail_driver'] == $mail_driver) selected="selected" @endif>{{ $mail_driver_title }}</option>
+    <x-fruit::fieldset x-show="driver == 'smtp'">
+        <legend>SMTP</legend>
+        <x-fruit::field :label="__('SMTP Server')">
+            <x-fruit::input name="settings[mail_host]" :value="old('settings.mail_host', $settings['mail_host'])" maxlength="255" x-bind:required="driver == 'smtp'" />
+        </x-fruit::field>
+        @if (strstr($settings['mail_host'] ?? '', '.gmail.'))
+            <p class="f-help">{!! __h("Make sure to :%link_start%enable less secure apps:%link_end% in your Google account to send emails from Gmail.", ['%link_start%' => '<a href="https://myaccount.google.com/lesssecureapps?pli=1" target="_blank">', '%link_end%' => '</a>']) !!}</p>
+        @endif
+        <x-fruit::field :label="__('Port')">
+            <x-fruit::number name="settings[mail_port]" :value="old('settings.mail_port', $settings['mail_port'])" x-bind:required="driver == 'smtp'" />
+        </x-fruit::field>
+        <x-fruit::field :label="__('Username')">
+            {{-- new-password: no autocomplete in Chrome. --}}
+            <x-fruit::input name="settings[mail_username]" :value="old('settings.mail_username', $settings['mail_username'])" maxlength="100" autocomplete="new-password" />
+        </x-fruit::field>
+        <x-fruit::field :label="__('Password')">
+            <x-fruit::input type="password" name="settings[mail_password]" :value="old('settings.mail_password', \Helper::safePassword($settings['mail_password']))" maxlength="255" autocomplete="new-password" />
+        </x-fruit::field>
+        <x-fruit::field :label="__('Encryption')">
+            <x-fruit::select name="settings[mail_encryption]">
+                @foreach ([\MailHelper::MAIL_ENCRYPTION_NONE => __('None'), \MailHelper::MAIL_ENCRYPTION_SSL => 'SSL', \MailHelper::MAIL_ENCRYPTION_TLS => 'TLS'] as $encryption => $encryption_name)
+                    <option value="{{ $encryption }}" @selected(old('settings.mail_encryption', $settings['mail_encryption']) == $encryption)>{{ $encryption_name }}</option>
                 @endforeach
-            </select>
-           <div id="mail_driver_options_sendmail" class="mail_driver_options text-help padding-top-0 @if ($settings['mail_driver'] != 'sendmail') hidden @endif">
-                <strong>{{ __("PHP sendmail path:") }}</strong> {{ $sendmail_path }}
-            </div>
-           
+            </x-fruit::select>
+        </x-fruit::field>
+    </x-fruit::fieldset>
+
+    <x-fruit::field :label="__('Send Test To')" :description="__('Make sure to save settings before testing.')" control-id="send_test">
+        <div class="f-input-group">
+            <input id="send_test" type="email" class="f-input" aria-describedby="send_test-description" value="{{ old('email', \App\Option::get('send_test_to')) }}" maxlength="128">
+            <button id="send-test-trigger" class="f-button" type="button" data-loading-text="{{ __('Sending') }}…">{{ __('Send Test') }}</button>
         </div>
-    </div>
+    </x-fruit::field>
+    <pre class="hidden" id="send_test_log"></pre>
 
-    <div id="mail_driver_options_smtp" class="mail_driver_options @if ($settings['mail_driver'] != \MailHelper::MAIL_DRIVER_SMTP) hidden @endif margin-top">
-        <hr/>
-        <div class="form-group{{ $errors->has('settings.mail_host') ? ' has-error' : '' }}">
-            <label for="mail_host" class="col-sm-2 control-label">{{ __('SMTP Server') }}</label>
+    <h2 class="settings-form__heading">{{ __('Fetching Emails') }}</h2>
 
-            <div class="col-sm-6">
-                <input id="mail_host" type="text" class="form-control input-sized" name="settings[mail_host]" value="{{ old('settings.mail_host', $settings['mail_host']) }}" maxlength="255"  @if ($settings['mail_driver'] == \MailHelper::MAIL_DRIVER_SMTP) required @endif autofocus>
-                @if (strstr($settings['mail_host'] ?? '', '.gmail.'))
-                    <div class="form-help">
-                        {!! __h("Make sure to :%link_start%enable less secure apps:%link_end% in your Google account to send emails from Gmail.", ['%link_start%' => '<a href="https://myaccount.google.com/lesssecureapps?pli=1" target="_blank">', '%link_end%' => '</a>']) !!}
-                    </div>
-                @endif
-                @include('partials/field_error', ['field'=>'settings.mail_host'])
-            </div>
-        </div>
-        <div class="form-group{{ $errors->has('settings.mail_port') ? ' has-error' : '' }}">
-            <label for="mail_port" class="col-sm-2 control-label">{{ __('Port') }}</label>
+    <x-fruit::field :label="__('Fetching Interval')">
+        <x-fruit::select name="settings[fetch_schedule]">
+            <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_MINUTE }}" @selected(old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_MINUTE)>{{ __('Every minute') }}</option>
+            @foreach ([\MailHelper::FETCH_SCHEDULE_EVERY_TWO_MINUTES, \MailHelper::FETCH_SCHEDULE_EVERY_THREE_MINUTES, \MailHelper::FETCH_SCHEDULE_EVERY_FIVE_MINUTES, \MailHelper::FETCH_SCHEDULE_EVERY_TEN_MINUTES, \MailHelper::FETCH_SCHEDULE_EVERY_FIFTEEN_MINUTES, \MailHelper::FETCH_SCHEDULE_EVERY_THIRTY_MINUTES] as $schedule)
+                <option value="{{ $schedule }}" @selected(old('settings.fetch_schedule', $settings['fetch_schedule']) == $schedule)>{{ __('Every :number minutes', ['number' => $schedule]) }}</option>
+            @endforeach
+            <option value="{{ \MailHelper::FETCH_SCHEDULE_HOURLY }}" @selected(old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_HOURLY)>{{ __('Hourly') }}</option>
+        </x-fruit::select>
+    </x-fruit::field>
 
-            <div class="col-sm-6">
-                <input id="mail_port" type="number" class="form-control input-sized" name="settings[mail_port]" value="{{ old('settings.mail_port', $settings['mail_port']) }}" maxlength="5" @if ($settings['mail_driver'] == \MailHelper::MAIL_DRIVER_SMTP) required @endif autofocus>
+    <h2 class="settings-form__heading">{{ __('No-reply addresses') }}</h2>
 
-                @include('partials/field_error', ['field'=>'settings.mail_port'])
-            </div>
-        </div>
-        <div class="form-group{{ $errors->has('settings.mail_username') ? ' has-error' : '' }}">
-            <label for="mail_username" class="col-sm-2 control-label">{{ __('Username') }}</label>
+    <x-fruit::field :label="__('Addresses')">
+        <x-fruit::textarea name="settings[noreply_emails]" rows="5" placeholder="notifications@example.com&#10;mailer-daemon">{{ old('settings.noreply_emails', $settings['noreply_emails']) }}</x-fruit::textarea>
+    </x-fruit::field>
+    <p class="f-help">
+        {{ __('Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.') }}
+        {{ __('Always included') }}: <code>{{ implode(', ', App\Misc\Noreply::DEFAULT_PATTERNS) }}</code>
+    </p>
 
-            <div class="col-sm-6">
-                <input id="mail_username" type="text" class="form-control input-sized" name="settings[mail_username]" value="{{ old('settings.mail_username', $settings['mail_username']) }}" maxlength="100" autofocus {{-- This added to prevent autocomplete in Chrome --}}autocomplete="new-password">
-                @include('partials/field_error', ['field'=>'settings.mail_username'])
-            </div>
-        </div>
-        <div class="form-group{{ $errors->has('settings.mail_password') ? ' has-error' : '' }}">
-            <label for="mail_password" class="col-sm-2 control-label">{{ __('Password') }}</label>
-
-            <div class="col-sm-6">
-                <input id="mail_password" type="password" class="form-control input-sized" name="settings[mail_password]" value="{{ old('settings.mail_password', \Helper::safePassword($settings['mail_password'])) }}" maxlength="255" autofocus {{-- This added to prevent autocomplete in Chrome --}}autocomplete="new-password">
-
-                @include('partials/field_error', ['field'=>'settings.mail_password'])
-            </div>
-        </div>
-        <div class="form-group{{ $errors->has('settings.mail_encryption') ? ' has-error' : '' }}">
-            <label for="mail_encryption" class="col-sm-2 control-label">{{ __('Encryption') }}</label>
-
-            <div class="col-sm-6">
-                <select id="mail_encryption" class="form-control input-sized" name="settings[mail_encryption]">
-                    <option value="{{ \MailHelper::MAIL_ENCRYPTION_NONE }}" @if (old('settings.mail_encryption', $settings['mail_encryption']) == \MailHelper::MAIL_ENCRYPTION_NONE)selected="selected"@endif>{{ __('None') }}</option>
-                    <option value="{{ \MailHelper::MAIL_ENCRYPTION_SSL }}" @if (old('settings.mail_encryption', $settings['mail_encryption']) ==  \MailHelper::MAIL_ENCRYPTION_SSL)selected="selected"@endif>SSL</option>
-                    <option value="{{ \MailHelper::MAIL_ENCRYPTION_TLS }}" @if (old('settings.mail_encryption', $settings['mail_encryption']) == \MailHelper::MAIL_ENCRYPTION_TLS)selected="selected"@endif>TLS</option>
-                </select>
-
-                @include('partials/field_error', ['field'=>'settings.mail_encryption'])
-            </div>
-        </div>
-        <hr/>
-    </div>
-
-    <div class="form-group">
-        <label for="send_test" class="col-sm-2 control-label">{{ __('Send Test To') }}</label>
-
-        <div class="col-sm-6">
-            <div class="input-group input-sized">
-                <input id="send_test" type="email" class="form-control" value="{{ old('email', \App\Option::get('send_test_to')) }}" maxlength="128">
-                <span class="input-group-btn">
-                    <button id="send-test-trigger" class="btn btn-default" type="button" data-loading-text="{{ __('Sending') }}…">{{ __('Send Test') }}</button>
-                </span>
-            </div>
-            <div class="form-help">{{ __("Make sure to save settings before testing.") }}</div>
-            <pre class="alert alert-warning hidden" id="send_test_log"></pre>
-        </div>
-    </div>
-
-    <h3 class="subheader">{{ __('Fetching Emails') }}</h3>
-    <div class="form-group{{ $errors->has('settings.fetch_schedule') ? ' has-error' : '' }}">
-        <label for="fetch_schedule" class="col-sm-2 control-label">{{ __('Fetching Interval') }}</label>
-
-        <div class="col-sm-6">
-            <select id="fetch_schedule" class="form-control input-sized" name="settings[fetch_schedule]">
-                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_MINUTE }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_MINUTE)selected="selected"@endif>{{ __('Every minute') }}</option>
-                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_TWO_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_TWO_MINUTES)selected="selected"@endif>{{ __('Every :number minutes', ['number' => \MailHelper::FETCH_SCHEDULE_EVERY_TWO_MINUTES]) }}</option>
-                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_THREE_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_THREE_MINUTES)selected="selected"@endif>{{ __('Every :number minutes', ['number' => \MailHelper::FETCH_SCHEDULE_EVERY_THREE_MINUTES]) }}</option>
-                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_FIVE_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_FIVE_MINUTES)selected="selected"@endif>{{ __('Every :number minutes', ['number' => \MailHelper::FETCH_SCHEDULE_EVERY_FIVE_MINUTES]) }}</option>
-                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_TEN_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_TEN_MINUTES)selected="selected"@endif>{{ __('Every :number minutes', ['number' => \MailHelper::FETCH_SCHEDULE_EVERY_TEN_MINUTES]) }}</option>
-                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_FIFTEEN_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_FIFTEEN_MINUTES)selected="selected"@endif>{{ __('Every :number minutes', ['number' => \MailHelper::FETCH_SCHEDULE_EVERY_FIFTEEN_MINUTES]) }}</option>
-                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_THIRTY_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_THIRTY_MINUTES)selected="selected"@endif>{{ __('Every :number minutes', ['number' => \MailHelper::FETCH_SCHEDULE_EVERY_THIRTY_MINUTES]) }}</option>
-                <option value="{{ \MailHelper::FETCH_SCHEDULE_HOURLY }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_HOURLY)selected="selected"@endif>{{ __('Hourly') }}</option>
-            </select>
-        </div>
-    </div>
-
-    {{--<div class="form-group{{ $errors->has('settings[use_mail_date_on_fetching]') ? ' has-error' : '' }}">
-        <label for="use_mail_date_on_fetching" class="col-sm-2 control-label">{{ __('Mail Date & Time') }}</label>
-
-        <div class="col-sm-6">
-            <div class="control-group">
-                <label for="use_mail_date_on_fetching_0" class="radio"><input type="radio" name="settings[use_mail_date_on_fetching]" value="false" id="use_mail_date_on_fetching_0" @if (!$settings['use_mail_date_on_fetching'])checked="checked"@endif> {{ __('Use actual fetching date and time') }}</label>
-
-                <label for="use_mail_date_on_fetching_1" class="radio"><input type="radio" name="settings[use_mail_date_on_fetching]" value="true" id="use_mail_date_on_fetching_1" @if ($settings['use_mail_date_on_fetching'])checked="checked"@endif> {{ __('Use date and time from mail headers') }}</label>
-            </div>
-
-            @include('partials/field_error', ['field'=>'settings.use_mail_date_on_fetching'])
-        </div>
-    </div>--}}
-
-    <h3 class="subheader">{{ __('No-reply addresses') }}</h3>
-    <div class="form-group">
-        <label for="noreply_emails" class="col-sm-2 control-label">{{ __('Addresses') }}</label>
-        <div class="col-sm-6">
-            <textarea id="noreply_emails" class="form-control" name="settings[noreply_emails]" rows="5" placeholder="notifications@example.com&#10;mailer-daemon">{{ old('settings.noreply_emails', $settings['noreply_emails']) }}</textarea>
-            <div class="form-help">
-                {{ __('Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.') }}
-                {{ __('Always included') }}: <code>{{ implode(', ', App\Misc\Noreply::DEFAULT_PATTERNS) }}</code>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-group margin-top">
-        <div class="col-sm-6 col-sm-offset-2">
-            <button type="submit" class="btn btn-primary">
-                {{ __('Save') }}
-            </button>
-        </div>
+    <div class="settings-form__actions">
+        <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
     </div>
 </form>
 
