@@ -1446,5 +1446,21 @@
     "Workflow :workflow has run": "A(z) :workflow munkafolyamat lefutott",
     "Workflow :workflow was triggered": "A(z) :workflow munkafolyamat elindult",
     "Workflow :workflow was triggered for conversation #:conversation_number": "A(z) :workflow munkafolyamat elindult a #:conversation_number beszélgetésen",
-    "Write the text of the emails and notes.": "Írd meg az e-mailek és megjegyzések szövegét."
+    "Write the text of the emails and notes.": "Írd meg az e-mailek és megjegyzések szövegét.",
+    "All Articles": "Összes cikk",
+    "Article": "Cikk",
+    "Article deleted": "Cikk törölve",
+    "Article not found": "A cikk nem található",
+    "Article saved": "Cikk mentve",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "Cikkek a csapatodnak: hogyan működnek a dolgok, válaszok a gyakori kérdésekre. A szerkesztőből illesztheted be őket a válaszokba; az MI-asszisztens ezek alapján készít válaszpiszkozatokat.",
+    "Choose a mailbox you have access to.": "Válassz egy postafiókot, amelyhez hozzáférésed van.",
+    "Delete this article?": "Törölni szeretnéd ezt a cikket?",
+    "Knowledge Base": "Tudásbázis",
+    "New Article": "Új cikk",
+    "No articles found.": "Nem található cikk.",
+    "No articles yet.": "Még nincsenek cikkek.",
+    "No category": "Nincs kategória",
+    "Pick one or type a new one.": "Válassz egyet, vagy írj be egy újat.",
+    "Updated :date by :person": "Frissítette :person, :date",
+    "Users are allowed to manage the knowledge base": "A felhasználók kezelhetik a tudásbázist"
 }

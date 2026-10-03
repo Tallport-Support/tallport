@@ -1547,5 +1547,21 @@
     "Workflow :workflow has run": "S'ha executat el flux de treball :workflow",
     "Workflow :workflow was triggered": "S'ha activat el flux de treball :workflow",
     "Workflow :workflow was triggered for conversation #:conversation_number": "S'ha activat el flux de treball :workflow per a la conversa #:conversation_number",
-    "Write the text of the emails and notes.": "Escriviu el text dels correus i de les notes."
+    "Write the text of the emails and notes.": "Escriviu el text dels correus i de les notes.",
+    "All Articles": "Tots els articles",
+    "Article": "Article",
+    "Article deleted": "Article eliminat",
+    "Article not found": "No s'ha trobat l'article",
+    "Article saved": "Article desat",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "Articles per al vostre equip: com funcionen les coses, respostes a preguntes freqüents. Inseriu-los a les respostes des de l'editor; l'assistent d'IA els fa servir per redactar respostes.",
+    "Choose a mailbox you have access to.": "Trieu una bústia a la qual tingueu accés.",
+    "Delete this article?": "Voleu eliminar aquest article?",
+    "Knowledge Base": "Base de coneixement",
+    "New Article": "Article nou",
+    "No articles found.": "No s'han trobat articles.",
+    "No articles yet.": "Encara no hi ha articles.",
+    "No category": "Sense categoria",
+    "Pick one or type a new one.": "Trieu-ne una o escriviu-ne una de nova.",
+    "Updated :date by :person": "Actualitzat el :date per :person",
+    "Users are allowed to manage the knowledge base": "Els usuaris poden gestionar la base de coneixement"
 }

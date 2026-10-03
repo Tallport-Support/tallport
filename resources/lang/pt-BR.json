@@ -1448,5 +1448,21 @@
     "Workflow :workflow has run": "O fluxo de trabalho :workflow foi executado",
     "Workflow :workflow was triggered": "O fluxo de trabalho :workflow foi acionado",
     "Workflow :workflow was triggered for conversation #:conversation_number": "O fluxo de trabalho :workflow foi acionado para a conversa #:conversation_number",
-    "Write the text of the emails and notes.": "Escreva o texto dos e-mails e das notas."
+    "Write the text of the emails and notes.": "Escreva o texto dos e-mails e das notas.",
+    "All Articles": "Todos os artigos",
+    "Article": "Artigo",
+    "Article deleted": "Artigo excluído",
+    "Article not found": "Artigo não encontrado",
+    "Article saved": "Artigo salvo",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "Artigos para a sua equipe: como as coisas funcionam, respostas a perguntas frequentes. Insira-os nas respostas pelo editor; o assistente de IA redige respostas com eles.",
+    "Choose a mailbox you have access to.": "Escolha uma caixa de correio à qual você tem acesso.",
+    "Delete this article?": "Excluir este artigo?",
+    "Knowledge Base": "Base de conhecimento",
+    "New Article": "Novo artigo",
+    "No articles found.": "Nenhum artigo encontrado.",
+    "No articles yet.": "Ainda não há artigos.",
+    "No category": "Sem categoria",
+    "Pick one or type a new one.": "Escolha uma ou digite uma nova.",
+    "Updated :date by :person": "Atualizado em :date por :person",
+    "Users are allowed to manage the knowledge base": "Os usuários têm permissão para gerenciar a base de conhecimento"
 }

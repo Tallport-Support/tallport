@@ -1084,6 +1084,111 @@
         "methods": [
             "GET"
         ],
+        "uri": "kb",
+        "name": "kb",
+        "action": "KnowledgeBaseController@index",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "kb/ajax",
+        "name": "kb.ajax",
+        "action": "KnowledgeBaseController@ajax",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "kb/new",
+        "name": "kb.create",
+        "action": "KnowledgeBaseController@edit",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "kb/save",
+        "name": "kb.save",
+        "action": "KnowledgeBaseController@save",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "kb/{id}",
+        "name": "kb.article",
+        "action": "KnowledgeBaseController@show",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "kb/{id}/delete",
+        "name": "kb.delete",
+        "action": "KnowledgeBaseController@delete",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "kb/{id}/edit",
+        "name": "kb.edit",
+        "action": "KnowledgeBaseController@edit",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "login",
         "name": "login",
         "action": "Laravel\\Fortify\\Http\\Controllers\\AuthenticatedSessionController@create",

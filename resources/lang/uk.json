@@ -1446,5 +1446,21 @@
     "Workflow :workflow has run": "Робочий процес :workflow виконано",
     "Workflow :workflow was triggered": "Спрацював робочий процес :workflow",
     "Workflow :workflow was triggered for conversation #:conversation_number": "Спрацював робочий процес :workflow для розмови #:conversation_number",
-    "Write the text of the emails and notes.": "Введіть текст листів і нотаток."
+    "Write the text of the emails and notes.": "Введіть текст листів і нотаток.",
+    "All Articles": "Усі статті",
+    "Article": "Стаття",
+    "Article deleted": "Статтю видалено",
+    "Article not found": "Статтю не знайдено",
+    "Article saved": "Статтю збережено",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "Статті для вашої команди: як усе влаштовано, відповіді на поширені запитання. Вставляйте їх у відповіді з редактора; ШІ-асистент готує на їх основі чернетки відповідей.",
+    "Choose a mailbox you have access to.": "Виберіть поштову скриньку, до якої маєте доступ.",
+    "Delete this article?": "Видалити цю статтю?",
+    "Knowledge Base": "База знань",
+    "New Article": "Нова стаття",
+    "No articles found.": "Статей не знайдено.",
+    "No articles yet.": "Статей ще немає.",
+    "No category": "Без категорії",
+    "Pick one or type a new one.": "Виберіть одну або введіть нову.",
+    "Updated :date by :person": "Оновлено :date, :person",
+    "Users are allowed to manage the knowledge base": "Користувачам дозволено керувати базою знань"
 }

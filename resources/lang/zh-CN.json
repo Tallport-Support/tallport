@@ -1447,5 +1447,21 @@
     "Workflow :workflow has run": "工作流程 :workflow 已运行",
     "Workflow :workflow was triggered": "工作流程 :workflow 已触发",
     "Workflow :workflow was triggered for conversation #:conversation_number": "工作流程 :workflow 已为对话 #:conversation_number 触发",
-    "Write the text of the emails and notes.": "请填写电子邮件和备注的内容。"
+    "Write the text of the emails and notes.": "请填写电子邮件和备注的内容。",
+    "All Articles": "全部文章",
+    "Article": "文章",
+    "Article deleted": "文章已删除",
+    "Article not found": "未找到文章",
+    "Article saved": "文章已保存",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "供团队使用的文章：工作方式说明、常见问题解答。可在编辑器中将其插入回复；AI 助手会据此起草回复。",
+    "Choose a mailbox you have access to.": "请选择您有权访问的邮箱。",
+    "Delete this article?": "删除此文章？",
+    "Knowledge Base": "知识库",
+    "New Article": "新建文章",
+    "No articles found.": "没有找到文章。",
+    "No articles yet.": "还没有文章。",
+    "No category": "无类别",
+    "Pick one or type a new one.": "选择一个或输入新的类别。",
+    "Updated :date by :person": ":person 于 :date 更新",
+    "Users are allowed to manage the knowledge base": "被允许管理知识库的用户"
 }

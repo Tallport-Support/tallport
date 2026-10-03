@@ -1445,5 +1445,21 @@
     "Workflow :workflow has run": "Fluxul de lucru :workflow a rulat",
     "Workflow :workflow was triggered": "Fluxul de lucru :workflow a fost declanșat",
     "Workflow :workflow was triggered for conversation #:conversation_number": "Fluxul de lucru :workflow a fost declanșat pentru conversația #:conversation_number",
-    "Write the text of the emails and notes.": "Scrie textul emailurilor și al notelor."
+    "Write the text of the emails and notes.": "Scrie textul emailurilor și al notelor.",
+    "All Articles": "Toate articolele",
+    "Article": "Articol",
+    "Article deleted": "Articol șters",
+    "Article not found": "Articolul nu a fost găsit",
+    "Article saved": "Articol salvat",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "Articole pentru echipa ta: cum funcționează lucrurile, răspunsuri la întrebări frecvente. Inserează-le în răspunsuri din editor; asistentul AI redactează răspunsuri cu ajutorul lor.",
+    "Choose a mailbox you have access to.": "Alege o cutie poștală la care ai acces.",
+    "Delete this article?": "Ștergi acest articol?",
+    "Knowledge Base": "Bază de cunoștințe",
+    "New Article": "Articol nou",
+    "No articles found.": "Nu s-au găsit articole.",
+    "No articles yet.": "Încă nu există articole.",
+    "No category": "Fără categorie",
+    "Pick one or type a new one.": "Alege una sau introdu una nouă.",
+    "Updated :date by :person": "Actualizat pe :date de :person",
+    "Users are allowed to manage the knowledge base": "Utilizatorii pot gestiona baza de cunoștințe"
 }

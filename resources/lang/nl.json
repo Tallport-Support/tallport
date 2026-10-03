@@ -1450,5 +1450,21 @@
     "Workflow :workflow has run": "Workflow :workflow is uitgevoerd",
     "Workflow :workflow was triggered": "Workflow :workflow is gestart",
     "Workflow :workflow was triggered for conversation #:conversation_number": "Workflow :workflow is gestart voor gesprek #:conversation_number",
-    "Write the text of the emails and notes.": "Schrijf de tekst van de e-mails en notities."
+    "Write the text of the emails and notes.": "Schrijf de tekst van de e-mails en notities.",
+    "All Articles": "Alle artikelen",
+    "Article": "Artikel",
+    "Article deleted": "Artikel verwijderd",
+    "Article not found": "Artikel niet gevonden",
+    "Article saved": "Artikel opgeslagen",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "Artikelen voor uw team: hoe dingen werken, antwoorden op veelgestelde vragen. Voeg ze vanuit de editor in reacties in; de AI-assistent gebruikt ze voor conceptreacties.",
+    "Choose a mailbox you have access to.": "Kies een mailbox waartoe u toegang hebt.",
+    "Delete this article?": "Dit artikel verwijderen?",
+    "Knowledge Base": "Kennisbank",
+    "New Article": "Nieuw artikel",
+    "No articles found.": "Geen artikelen gevonden.",
+    "No articles yet.": "Nog geen artikelen.",
+    "No category": "Geen categorie",
+    "Pick one or type a new one.": "Kies er een of typ een nieuwe.",
+    "Updated :date by :person": "Bijgewerkt op :date door :person",
+    "Users are allowed to manage the knowledge base": "Gebruikers mogen de kennisbank beheren"
 }

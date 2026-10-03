@@ -5085,3 +5085,31 @@ a.disabled:focus {
 .wf-add-group {
     margin-bottom: 10px;
 }
+.kb-search {
+    max-width: 500px;
+}
+.kb-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+}
+.kb-list-category {
+    font-weight: bold;
+    margin: 15px 0 5px;
+}
+.kb-list-item {
+    padding: 4px 0;
+}
+.kb-list-item small {
+    margin-left: 6px;
+}
+.kb-article-body {
+    max-width: 800px;
+    margin-top: 15px;
+}
+.kb-menu-category {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #93a1af;
+    padding: 6px 10px 2px;
+}

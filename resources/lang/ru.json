@@ -1446,5 +1446,21 @@
     "Workflow :workflow has run": "Рабочий процесс :workflow выполнен",
     "Workflow :workflow was triggered": "Сработал рабочий процесс :workflow",
     "Workflow :workflow was triggered for conversation #:conversation_number": "Сработал рабочий процесс :workflow для тикета #:conversation_number",
-    "Write the text of the emails and notes.": "Введите текст писем и примечаний."
+    "Write the text of the emails and notes.": "Введите текст писем и примечаний.",
+    "All Articles": "Все статьи",
+    "Article": "Статья",
+    "Article deleted": "Статья удалена",
+    "Article not found": "Статья не найдена",
+    "Article saved": "Статья сохранена",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "Статьи для вашей команды: как всё устроено, ответы на частые вопросы. Вставляйте их в ответы из редактора; ИИ-ассистент составляет с их помощью черновики ответов.",
+    "Choose a mailbox you have access to.": "Выберите ящик, к которому у вас есть доступ.",
+    "Delete this article?": "Удалить статью?",
+    "Knowledge Base": "База знаний",
+    "New Article": "Новая статья",
+    "No articles found.": "Статьи не найдены.",
+    "No articles yet.": "Статей пока нет.",
+    "No category": "Без категории",
+    "Pick one or type a new one.": "Выберите или введите новую.",
+    "Updated :date by :person": "Обновлено :date, :person",
+    "Users are allowed to manage the knowledge base": "Агенты могут управлять базой знаний"
 }

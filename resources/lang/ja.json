@@ -1446,5 +1446,21 @@
     "Workflow :workflow has run": "ワークフロー :workflow が実行されました",
     "Workflow :workflow was triggered": "ワークフロー :workflow が起動されました",
     "Workflow :workflow was triggered for conversation #:conversation_number": "会話 #:conversation_number でワークフロー :workflow が起動されました",
-    "Write the text of the emails and notes.": "メールとノートの本文を入力してください。"
+    "Write the text of the emails and notes.": "メールとノートの本文を入力してください。",
+    "All Articles": "すべての記事",
+    "Article": "記事",
+    "Article deleted": "記事を削除しました",
+    "Article not found": "記事が見つかりません",
+    "Article saved": "記事を保存しました",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "チーム向けの記事です：仕組みの説明やよくある質問への回答など。エディターから返信に挿入でき、AIアシスタントはこれらを使って返信を下書きします。",
+    "Choose a mailbox you have access to.": "アクセス権のあるメールボックスを選択してください。",
+    "Delete this article?": "この記事を削除しますか？",
+    "Knowledge Base": "ナレッジベース",
+    "New Article": "新しい記事",
+    "No articles found.": "記事が見つかりませんでした。",
+    "No articles yet.": "記事はまだありません。",
+    "No category": "カテゴリなし",
+    "Pick one or type a new one.": "選択するか、新しいカテゴリを入力してください。",
+    "Updated :date by :person": ":date に :person が更新",
+    "Users are allowed to manage the knowledge base": "ユーザーはナレッジベースを管理することができます"
 }

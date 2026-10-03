@@ -1446,5 +1446,21 @@
     "Workflow :workflow has run": "Arbetsflödet :workflow har körts",
     "Workflow :workflow was triggered": "Arbetsflödet :workflow utlöstes",
     "Workflow :workflow was triggered for conversation #:conversation_number": "Arbetsflödet :workflow utlöstes för konversation #:conversation_number",
-    "Write the text of the emails and notes.": "Skriv texten i e-postmeddelandena och anteckningarna."
+    "Write the text of the emails and notes.": "Skriv texten i e-postmeddelandena och anteckningarna.",
+    "All Articles": "Alla artiklar",
+    "Article": "Artikel",
+    "Article deleted": "Artikel raderad",
+    "Article not found": "Artikeln hittades inte",
+    "Article saved": "Artikel sparad",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "Artiklar för ditt team: hur saker fungerar, svar på vanliga frågor. Infoga dem i svar från redigeraren; AI-assistenten skriver utkast till svar med dem.",
+    "Choose a mailbox you have access to.": "Välj en brevlåda som du har åtkomst till.",
+    "Delete this article?": "Radera denna artikel?",
+    "Knowledge Base": "Kunskapsbas",
+    "New Article": "Ny artikel",
+    "No articles found.": "Inga artiklar hittades.",
+    "No articles yet.": "Inga artiklar ännu.",
+    "No category": "Ingen kategori",
+    "Pick one or type a new one.": "Välj en eller skriv en ny.",
+    "Updated :date by :person": "Uppdaterad :date av :person",
+    "Users are allowed to manage the knowledge base": "Användare har tillåtelse att hantera kunskapsbasen"
 }

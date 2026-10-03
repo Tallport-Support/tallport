@@ -129,6 +129,15 @@ Route::get('/mailbox/settings/{id}', 'MailboxesController@update')->name('mailbo
 Route::post('/mailbox/settings/{id}', 'MailboxesController@updateSave')->name('mailboxes.update.save');
 Route::get('/mailbox/permissions/{id}', 'MailboxesController@permissions')->name('mailboxes.permissions');
 Route::post('/mailbox/permissions/{id}', 'MailboxesController@permissionsSave')->name('mailboxes.permissions.save');
+// Knowledge base
+Route::get('/kb', 'KnowledgeBaseController@index')->name('kb');
+Route::get('/kb/new', 'KnowledgeBaseController@edit')->name('kb.create');
+Route::get('/kb/{id}', 'KnowledgeBaseController@show')->name('kb.article');
+Route::get('/kb/{id}/edit', 'KnowledgeBaseController@edit')->name('kb.edit');
+Route::post('/kb/save', 'KnowledgeBaseController@save')->name('kb.save');
+Route::post('/kb/{id}/delete', 'KnowledgeBaseController@delete')->name('kb.delete');
+Route::post('/kb/ajax', ['uses' => 'KnowledgeBaseController@ajax', 'laroute' => true])->name('kb.ajax');
+
 // Workflows: of a mailbox, and of all mailboxes.
 Route::get('/mailbox/workflows/{mailbox_id}', 'WorkflowsController@index')->name('mailboxes.workflows');
 Route::get('/mailbox/workflows/{mailbox_id}/new', 'WorkflowsController@edit')->name('mailboxes.workflows.create');

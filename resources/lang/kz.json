@@ -1852,5 +1852,18 @@
     "Workflow saved: it runs on existing conversations in the background.": "Жұмыс үрдісі сақталды: ол бар сөйлесулерде фондық режимде орындалады.",
     "Workflows run in this order. Drag to change it.": "Жұмыс үрдістері осы ретпен орындалады. Өзгерту үшін сүйреңіз.",
     "Workflow-user name": "«Workflow» пайдаланушысының аты",
-    "Write the text of the emails and notes.": "Хаттар мен ескертпелердің мәтінін жазыңыз."
+    "Write the text of the emails and notes.": "Хаттар мен ескертпелердің мәтінін жазыңыз.",
+    "All Articles": "Барлық мақалалар",
+    "Article": "Мақала",
+    "Article deleted": "Мақала жойылды",
+    "Article not found": "Мақала табылмады",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "Командаңызға арналған мақалалар: жұмыс қалай жүреді, жиі қойылатын сұрақтарға жауаптар. Оларды редактордан жауаптарға кірістіріңіз; ЖИ көмекшісі солардың көмегімен жауап жобаларын жасайды.",
+    "Choose a mailbox you have access to.": "Қолжетімділігіңіз бар пошталық жәшікті таңдаңыз.",
+    "Delete this article?": "Бұл мақаланы жою керек пе?",
+    "No articles found.": "Мақалалар табылмады.",
+    "No articles yet.": "Әзірге мақалалар жоқ.",
+    "No category": "Санатсыз",
+    "Pick one or type a new one.": "Біреуін таңдаңыз немесе жаңасын жазыңыз.",
+    "Updated :date by :person": "Жаңартылды: :date, :person",
+    "Users are allowed to manage the knowledge base": "Агенттер білім базасын басқара алады"
 }

@@ -44,6 +44,11 @@
         data-save="{{ __('Save as saved reply') }}"
         data-name="{{ __('Name') }}"
         data-save-button="{{ __('Save') }}"></span>
+    <span id="kb-data" class="hidden"
+        data-items="{{ json_encode(App\Http\Controllers\KnowledgeBaseController::forEditor($mailbox->id)) }}"
+        data-title="{{ __('Knowledge Base') }}"
+        data-search="{{ __('Search') }}…"
+        data-empty="{{ __('No articles yet.') }}"></span>
     <span id="attachment-reminder" class="hidden" data-phrases="{{ json_encode(App\Http\Controllers\AttachmentsController::reminderPhrases()) }}" data-message="{{ __('You mentioned :phrase but there is no attachment. Send anyway?') }}" data-send="{{ __('Send Anyway') }}"></span>
     <span id="noreply-patterns" class="hidden" data-regexes="{{ json_encode(App\Misc\Noreply::regexes()) }}" data-message="{{ __(':email looks like an address that does not read replies.') }}"></span>
     {{-- One Send button: it sends with the status chosen above (its label says

@@ -1446,5 +1446,21 @@
     "Workflow :workflow has run": "Tijek rada :workflow je izvršen",
     "Workflow :workflow was triggered": "Tijek rada :workflow je pokrenut",
     "Workflow :workflow was triggered for conversation #:conversation_number": "Tijek rada :workflow je pokrenut za razgovor #:conversation_number",
-    "Write the text of the emails and notes.": "Napišite tekst e-mailova i bilješki."
+    "Write the text of the emails and notes.": "Napišite tekst e-mailova i bilješki.",
+    "All Articles": "Svi članci",
+    "Article": "Članak",
+    "Article deleted": "Članak izbrisan",
+    "Article not found": "Članak nije pronađen",
+    "Article saved": "Članak spremljen",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "Članci za vaš tim: kako stvari funkcioniraju, odgovori na česta pitanja. Umetnite ih u odgovore iz uređivača; AI asistent pomoću njih sastavlja nacrte odgovora.",
+    "Choose a mailbox you have access to.": "Odaberite poštanski sandučić kojem imate pristup.",
+    "Delete this article?": "Izbrisati ovaj članak?",
+    "Knowledge Base": "Baza znanja",
+    "New Article": "Novi članak",
+    "No articles found.": "Nije pronađen nijedan članak.",
+    "No articles yet.": "Još nema članaka.",
+    "No category": "Bez kategorije",
+    "Pick one or type a new one.": "Odaberite jednu ili upišite novu.",
+    "Updated :date by :person": "Ažurirao/la :person :date",
+    "Users are allowed to manage the knowledge base": "Korisnici smiju upravljati bazom znanja"
 }

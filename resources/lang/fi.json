@@ -1464,5 +1464,21 @@
     "Workflow :workflow has run": "Työnkulku :workflow suoritettiin",
     "Workflow :workflow was triggered": "Työnkulku :workflow käynnistyi",
     "Workflow :workflow was triggered for conversation #:conversation_number": "Työnkulku :workflow käynnistyi keskustelulle #:conversation_number",
-    "Write the text of the emails and notes.": "Kirjoita sähköpostien ja huomautusten teksti."
+    "Write the text of the emails and notes.": "Kirjoita sähköpostien ja huomautusten teksti.",
+    "All Articles": "Kaikki artikkelit",
+    "Article": "Artikkeli",
+    "Article deleted": "Artikkeli poistettu",
+    "Article not found": "Artikkelia ei löydy",
+    "Article saved": "Artikkeli tallennettu",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "Artikkeleita tiimillesi: miten asiat toimivat, vastauksia yleisiin kysymyksiin. Lisää niitä vastauksiin editorista; tekoälyavustaja laatii niiden avulla vastausluonnoksia.",
+    "Choose a mailbox you have access to.": "Valitse postilaatikko, johon sinulla on pääsy.",
+    "Delete this article?": "Poistetaanko tämä artikkeli?",
+    "Knowledge Base": "Tietopankki",
+    "New Article": "Uusi artikkeli",
+    "No articles found.": "Artikkeleita ei löytynyt.",
+    "No articles yet.": "Ei vielä artikkeleita.",
+    "No category": "Ei kategoriaa",
+    "Pick one or type a new one.": "Valitse yksi tai kirjoita uusi.",
+    "Updated :date by :person": "Päivittänyt :person :date",
+    "Users are allowed to manage the knowledge base": "Käyttäjät voivat hallita tietopankkia"
 }

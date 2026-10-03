@@ -168,6 +168,12 @@ class Helper
             'conversations.draft',
             //'conversations.search',
         ],
+        'kb' => [
+            'kb',
+            'kb.create',
+            'kb.article',
+            'kb.edit',
+        ],
         'reports' => [
             'reports.conversations',
             'reports.productivity',

@@ -1446,5 +1446,21 @@
     "Workflow :workflow has run": ":workflow iş akışı çalıştı",
     "Workflow :workflow was triggered": ":workflow iş akışı tetiklendi",
     "Workflow :workflow was triggered for conversation #:conversation_number": ":workflow iş akışı #:conversation_number konuşması için tetiklendi",
-    "Write the text of the emails and notes.": "E-postaların ve notların metnini yazın."
+    "Write the text of the emails and notes.": "E-postaların ve notların metnini yazın.",
+    "All Articles": "Tüm Makaleler",
+    "Article": "Makale",
+    "Article deleted": "Makale silindi",
+    "Article not found": "Makale bulunamadı",
+    "Article saved": "Makale kaydedildi",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "Ekibiniz için makaleler: işlerin nasıl yürüdüğü, sık sorulan soruların yanıtları. Bunları düzenleyiciden yanıtlara ekleyin; Yapay Zekâ Asistanı bunlarla yanıt taslakları hazırlar.",
+    "Choose a mailbox you have access to.": "Erişiminiz olan bir posta kutusu seçin.",
+    "Delete this article?": "Bu makale silinsin mi?",
+    "Knowledge Base": "Bilgi Bankası",
+    "New Article": "Yeni Makale",
+    "No articles found.": "Hiç makale bulunamadı.",
+    "No articles yet.": "Henüz makale yok.",
+    "No category": "Kategori yok",
+    "Pick one or type a new one.": "Birini seçin veya yenisini yazın.",
+    "Updated :date by :person": ":date tarihinde :person tarafından güncellendi",
+    "Users are allowed to manage the knowledge base": "Kullanıcıların bilgi bankasını yönetmesine izin verilir"
 }

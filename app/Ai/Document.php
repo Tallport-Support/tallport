@@ -48,7 +48,7 @@ class Document extends Model
 
     public function isPrivate()
     {
-        return str_starts_with((string) $this->source_url, 'api://');
+        return str_starts_with((string) $this->source_url, 'api://') || str_starts_with((string) $this->source_url, 'kb://');
     }
 
     /**

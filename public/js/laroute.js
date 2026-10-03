@@ -52,6 +52,10 @@
         "name": "mailboxes"
     },
     {
+        "uri": "kb\/ajax",
+        "name": "kb.ajax"
+    },
+    {
         "uri": "workflows\/ajax",
         "name": "workflows.ajax"
     },

@@ -1445,5 +1445,21 @@
     "Workflow :workflow has run": "תהליך העבודה :workflow הורץ",
     "Workflow :workflow was triggered": "תהליך העבודה :workflow הופעל",
     "Workflow :workflow was triggered for conversation #:conversation_number": "תהליך העבודה :workflow הופעל עבור שיחה #:conversation_number",
-    "Write the text of the emails and notes.": "כתוב את הטקסט של האימיילים והפתקים."
+    "Write the text of the emails and notes.": "כתוב את הטקסט של האימיילים והפתקים.",
+    "All Articles": "כל המאמרים",
+    "Article": "מאמר",
+    "Article deleted": "המאמר נמחק",
+    "Article not found": "המאמר לא נמצא",
+    "Article saved": "המאמר נשמר",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "מאמרים לצוות שלך: איך דברים עובדים, תשובות לשאלות נפוצות. הוסף אותם לתשובות מתוך העורך; עוזר ה-AI מנסח בעזרתם טיוטות תשובות.",
+    "Choose a mailbox you have access to.": "בחר תיבת דואר שיש לך גישה אליה.",
+    "Delete this article?": "למחוק את המאמר הזה?",
+    "Knowledge Base": "מאגר ידע",
+    "New Article": "מאמר חדש",
+    "No articles found.": "לא נמצאו מאמרים.",
+    "No articles yet.": "אין עדיין מאמרים.",
+    "No category": "ללא קטגוריה",
+    "Pick one or type a new one.": "בחר אחת או הקלד חדשה.",
+    "Updated :date by :person": "עודכן :date על ידי :person",
+    "Users are allowed to manage the knowledge base": "משתמשים רשאים לנהל את מאגר הידע"
 }

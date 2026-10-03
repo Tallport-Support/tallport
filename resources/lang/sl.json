@@ -1445,5 +1445,21 @@
     "Workflow :workflow has run": "Potek dela :workflow se je izvedel",
     "Workflow :workflow was triggered": "Potek dela :workflow se je sprožil",
     "Workflow :workflow was triggered for conversation #:conversation_number": "Potek dela :workflow se je sprožil za pogovor #:conversation_number",
-    "Write the text of the emails and notes.": "Napišite besedilo e-poštnih sporočil in opomb."
+    "Write the text of the emails and notes.": "Napišite besedilo e-poštnih sporočil in opomb.",
+    "All Articles": "Vsi članki",
+    "Article": "Članek",
+    "Article deleted": "Članek izbrisan",
+    "Article not found": "Članka ni mogoče najti",
+    "Article saved": "Članek shranjen",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "Članki za vašo ekipo: kako stvari delujejo, odgovori na pogosta vprašanja. Vstavite jih v odgovore iz urejevalnika; pomočnik AI z njimi pripravlja osnutke odgovorov.",
+    "Choose a mailbox you have access to.": "Izberite poštni predal, do katerega imate dostop.",
+    "Delete this article?": "Želite izbrisati ta članek?",
+    "Knowledge Base": "Baza znanja",
+    "New Article": "Nov članek",
+    "No articles found.": "Ni najdenih člankov.",
+    "No articles yet.": "Člankov še ni.",
+    "No category": "Brez kategorije",
+    "Pick one or type a new one.": "Izberite eno ali vpišite novo.",
+    "Updated :date by :person": "Posodobil/-a :person, :date",
+    "Users are allowed to manage the knowledge base": "Uporabnikom je dovoljeno upravljati bazo znanja"
 }

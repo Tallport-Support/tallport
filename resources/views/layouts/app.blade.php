@@ -122,6 +122,7 @@
                                     </ul>
                                 </li>
                             @endif
+                            <li class="{{ \App\Misc\Helper::menuSelectedHtml('kb') }}"><a href="{{ route('kb') }}">{{ __('Knowledge Base') }}</a></li>
                             @if (App\Http\Controllers\ReportsController::canAccess(Auth::user()))
                                 <li class="dropdown {{ \App\Misc\Helper::menuSelectedHtml('reports') }}">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
@@ -299,7 +300,7 @@
     @php
         try {
     @endphp
-    {!! Minify::javascript(\Eventy::filter('javascripts', array('/js/jquery.js', '/js/bootstrap.js', '/js/lang.js', '/js/builds/vars.js', '/js/laroute.js', '/js/parsley/parsley.min.js', '/js/parsley/i18n/'.strtolower(Config::get('app.locale')).'.js', '/js/select2/select2.full.min.js', '/js/polycast/polycast.js', '/js/push/push.min.js', '/js/featherlight/featherlight.min.js', '/js/featherlight/featherlight.gallery.min.js', '/js/taphold.js', '/js/jquery.titlealert.js', '/js/main.js', '/js/shortcuts.js', '/js/saved_replies.js', '/js/attachments.js', '/js/workflows.js'))) !!}
+    {!! Minify::javascript(\Eventy::filter('javascripts', array('/js/jquery.js', '/js/bootstrap.js', '/js/lang.js', '/js/builds/vars.js', '/js/laroute.js', '/js/parsley/parsley.min.js', '/js/parsley/i18n/'.strtolower(Config::get('app.locale')).'.js', '/js/select2/select2.full.min.js', '/js/polycast/polycast.js', '/js/push/push.min.js', '/js/featherlight/featherlight.min.js', '/js/featherlight/featherlight.gallery.min.js', '/js/taphold.js', '/js/jquery.titlealert.js', '/js/main.js', '/js/shortcuts.js', '/js/saved_replies.js', '/js/attachments.js', '/js/workflows.js', '/js/kb.js'))) !!}
     @php
         } catch (\Exception $e) {
             // To prevent 500 errors on update.

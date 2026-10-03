@@ -1445,5 +1445,21 @@
     "Workflow :workflow has run": "Pracovní postup :workflow byl spuštěn",
     "Workflow :workflow was triggered": "Pracovní postup :workflow byl aktivován",
     "Workflow :workflow was triggered for conversation #:conversation_number": "Pracovní postup :workflow byl aktivován pro konverzaci #:conversation_number",
-    "Write the text of the emails and notes.": "Napište text e-mailů a poznámek."
+    "Write the text of the emails and notes.": "Napište text e-mailů a poznámek.",
+    "All Articles": "Všechny články",
+    "Article": "Článek",
+    "Article deleted": "Článek smazán",
+    "Article not found": "Článek nenalezen",
+    "Article saved": "Článek uložen",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "Články pro váš tým: jak věci fungují, odpovědi na časté otázky. Vkládejte je do odpovědí z editoru; AI asistent podle nich připravuje koncepty odpovědí.",
+    "Choose a mailbox you have access to.": "Vyberte schránku, ke které máte přístup.",
+    "Delete this article?": "Smazat tento článek?",
+    "Knowledge Base": "Znalostní báze",
+    "New Article": "Nový článek",
+    "No articles found.": "Nebyly nalezeny žádné články.",
+    "No articles yet.": "Zatím žádné články.",
+    "No category": "Bez kategorie",
+    "Pick one or type a new one.": "Vyberte jednu, nebo napište novou.",
+    "Updated :date by :person": "Aktualizováno :date uživatelem :person",
+    "Users are allowed to manage the knowledge base": "Uživatelé mohou spravovat znalostní bázi"
 }

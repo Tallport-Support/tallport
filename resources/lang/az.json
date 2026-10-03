@@ -1446,5 +1446,21 @@
     "Workflow :workflow has run": ":workflow iş axını işlədi",
     "Workflow :workflow was triggered": ":workflow iş axını işə düşdü",
     "Workflow :workflow was triggered for conversation #:conversation_number": "#:conversation_number söhbəti üçün :workflow iş axını işə düşdü",
-    "Write the text of the emails and notes.": "E-poçtların və qeydlərin mətnini yazın."
+    "Write the text of the emails and notes.": "E-poçtların və qeydlərin mətnini yazın.",
+    "All Articles": "Bütün məqalələr",
+    "Article": "Məqalə",
+    "Article deleted": "Məqalə silindi",
+    "Article not found": "Məqalə tapılmadı",
+    "Article saved": "Məqalə yadda saxlanıldı",
+    "Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.": "Komandanız üçün məqalələr: işlərin necə getdiyi, tez-tez verilən suallara cavablar. Onları redaktordan cavablara əlavə edin; Sİ köməkçisi onlarla cavab qaralamaları hazırlayır.",
+    "Choose a mailbox you have access to.": "Girişiniz olan poçt qutusunu seçin.",
+    "Delete this article?": "Bu məqalə silinsin?",
+    "Knowledge Base": "Bilik bazası",
+    "New Article": "Yeni məqalə",
+    "No articles found.": "Heç bir məqalə tapılmadı.",
+    "No articles yet.": "Hələ məqalə yoxdur.",
+    "No category": "Kateqoriyasız",
+    "Pick one or type a new one.": "Birini seçin və ya yenisini yazın.",
+    "Updated :date by :person": ":person tərəfindən :date tarixində yeniləndi",
+    "Users are allowed to manage the knowledge base": "İstifadəçilərə bilik bazasını idarə etməyə icazə verilir"
 }

@@ -1618,6 +1618,83 @@
             }
         }
     },
+    "kb_articles": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "category": {
+                "type": "varchar(100)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "title": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "body": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_by_user_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_by_user_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "kb_articles_category_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "category"
+                ]
+            },
+            "kb_articles_mailbox_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
     "mailbox_auto_replies": {
         "columns": {
             "id": {

@@ -54,6 +54,9 @@
         "display",
         "display_customer"
     ],
+    "KnowledgeBaseController@ajax": [
+        "get"
+    ],
     "MailboxesController@ajax": [
         "delete_mailbox",
         "fetch_test",
