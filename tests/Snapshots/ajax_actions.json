@@ -70,6 +70,12 @@
         "update",
         "update_all"
     ],
+    "SavedRepliesController@ajax": [
+        "get",
+        "save_from_reply",
+        "sort",
+        "template"
+    ],
     "SettingsController@ajax": [
         "send_test"
     ],

@@ -2751,6 +2751,107 @@
             }
         }
     },
+    "saved_replies": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(11)",
+                "nullable": false
+            },
+            "name": {
+                "type": "varchar(75)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "text": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "user_id": {
+                "type": "int(11)",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "sort_order": {
+                "type": "int(11)",
+                "nullable": false,
+                "default": "1"
+            },
+            "parent_saved_reply_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "attachments": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "global": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "auto_load": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            },
+            "saved_replies_auto_load_mailbox_id_global_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "auto_load",
+                    "mailbox_id",
+                    "global"
+                ]
+            },
+            "saved_replies_global_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "global"
+                ]
+            },
+            "saved_replies_mailbox_id_sort_order_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id",
+                    "sort_order"
+                ]
+            }
+        }
+    },
     "send_logs": {
         "columns": {
             "id": {

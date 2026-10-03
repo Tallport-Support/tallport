@@ -132,6 +132,12 @@ Route::get('/mailbox/connection-settings/{id}/outgoing', 'MailboxesController@co
 Route::post('/mailbox/connection-settings/{id}/outgoing', 'MailboxesController@connectionOutgoingSave')->name('mailboxes.connection.save');
 Route::get('/mailbox/connection-settings/{id}/incoming', 'MailboxesController@connectionIncoming')->name('mailboxes.connection.incoming');
 Route::post('/mailbox/connection-settings/{id}/incoming', 'MailboxesController@connectionIncomingSave')->name('mailboxes.connection.incoming.save');
+Route::get('/mailbox/saved-replies/{id}', 'SavedRepliesController@index')->name('mailboxes.saved_replies');
+Route::get('/mailbox/saved-replies/{id}/new', 'SavedRepliesController@edit')->name('mailboxes.saved_replies.create');
+Route::get('/mailbox/saved-replies/{id}/{saved_reply_id}/edit', 'SavedRepliesController@edit')->name('mailboxes.saved_replies.edit');
+Route::post('/mailbox/saved-replies/{id}/save', 'SavedRepliesController@save')->name('mailboxes.saved_replies.save');
+Route::post('/mailbox/saved-replies/{id}/{saved_reply_id}/delete', 'SavedRepliesController@delete')->name('mailboxes.saved_replies.delete');
+Route::post('/saved-replies/ajax', ['uses' => 'SavedRepliesController@ajax', 'laroute' => true])->name('saved_replies.ajax');
 Route::get('/mailbox/settings/{id}/auto-reply', 'MailboxesController@autoReply')->name('mailboxes.auto_reply');
 Route::post('/mailbox/settings/{id}/auto-reply', 'MailboxesController@autoReplySave')->name('mailboxes.auto_reply.save');
 Route::post('/mailbox/ajax', ['uses' => 'MailboxesController@ajax', 'laroute' => true])->name('mailboxes.ajax');

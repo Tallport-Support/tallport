@@ -43,6 +43,9 @@ class MailboxObserver
 
     public function deleted(Mailbox $mailbox)
     {
+        foreach (\App\SavedReply::where('mailbox_id', $mailbox->id)->get() as $saved_reply) {
+            $saved_reply->deleteWithAttachments();
+        }
         \Eventy::action('mailbox.deleted', $mailbox);
     }
 }

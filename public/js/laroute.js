@@ -8,12 +8,12 @@
             rootUrl: Vars.public_url,
             routes : [
     {
-        "uri": "ai-assistant\/customer-context\/test",
-        "name": "ai.customer_context.test"
-    },
-    {
         "uri": "app-settings\/ajax",
         "name": "settings.ajax"
+    },
+    {
+        "uri": "ai-assistant\/customer-context\/test",
+        "name": "ai.customer_context.test"
     },
     {
         "uri": "users",
@@ -42,6 +42,10 @@
     {
         "uri": "mailboxes",
         "name": "mailboxes"
+    },
+    {
+        "uri": "saved-replies\/ajax",
+        "name": "saved_replies.ajax"
     },
     {
         "uri": "mailbox\/ajax",

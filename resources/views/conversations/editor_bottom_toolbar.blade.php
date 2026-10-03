@@ -32,6 +32,18 @@
     </select> 
 
     <input type="hidden" name="after_send" id="after_send" value="{{ $after_send }}" class="parsley-exclude"/>
+    <span id="saved-replies-data" class="hidden"
+        data-items="{{ json_encode(App\SavedReply::forEditor($mailbox, Auth::user())) }}"
+        data-mailbox_id="{{ $mailbox->id }}"
+        data-can-save="{{ (int) App\SavedReply::canManage(Auth::user(), $mailbox) }}"
+        data-template="{{ (int) (bool) App\SavedReply::template($mailbox->id) }}"
+        data-new="{{ (int) !empty($new_converstion) }}"
+        data-title="{{ __('Saved Replies') }}"
+        data-search="{{ __('Search') }}…"
+        data-empty="{{ __('No saved replies yet.') }}"
+        data-save="{{ __('Save as saved reply') }}"
+        data-name="{{ __('Name') }}"
+        data-save-button="{{ __('Save') }}"></span>
     <span id="noreply-patterns" class="hidden" data-regexes="{{ json_encode(App\Misc\Noreply::regexes()) }}" data-message="{{ __(':email looks like an address that does not read replies.') }}"></span>
     <div class="btn-group btn-group-send">
     	<button class="hidden"></button>

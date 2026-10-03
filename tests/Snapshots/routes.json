@@ -1279,6 +1279,81 @@
         "methods": [
             "GET"
         ],
+        "uri": "mailbox/saved-replies/{id}",
+        "name": "mailboxes.saved_replies",
+        "action": "SavedRepliesController@index",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/saved-replies/{id}/new",
+        "name": "mailboxes.saved_replies.create",
+        "action": "SavedRepliesController@edit",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/saved-replies/{id}/save",
+        "name": "mailboxes.saved_replies.save",
+        "action": "SavedRepliesController@save",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/saved-replies/{id}/{saved_reply_id}/delete",
+        "name": "mailboxes.saved_replies.delete",
+        "action": "SavedRepliesController@delete",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/saved-replies/{id}/{saved_reply_id}/edit",
+        "name": "mailboxes.saved_replies.edit",
+        "action": "SavedRepliesController@edit",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "mailbox/settings/{id}",
         "name": "mailboxes.update",
         "action": "MailboxesController@update",
@@ -1664,6 +1739,21 @@
         "middleware": [
             "web",
             "guest"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "saved-replies/ajax",
+        "name": "saved_replies.ajax",
+        "action": "SavedRepliesController@ajax",
+        "middleware": [
+            "web",
+            "auth"
         ],
         "where": {
             "id": "[0-9]+"
