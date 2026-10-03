@@ -2,33 +2,31 @@
 
 @section('title', __('Modules'))
 
+@section('main_class', 'fruit-ui')
+
 @section('sidebar')
-    @include('partials/sidebar_menu_toggle')
     @include('modules/sidebar_menu')
 @endsection
 
 @section('content')
+<div class="page-content">
 
     @include('partials/flash_messages')
 
     @if (!count($installed_modules))
-        <div class="section-heading" id="installed">{{ __('Installed Modules') }}</div>
-        <div class="row-container margin-top">
-            <p class="text-help">{{ __('No modules are installed.') }}</p>
-        </div>
+        <p class="f-muted" id="installed">{{ __('No modules are installed.') }}</p>
     @else
-        <div class="section-heading" id="installed">
-            {{ __('Installed Modules') }}@if (count($installed_modules)) <small>({{ count($installed_modules) }})</small>@endif
-
-            <span class="section-heading-right">
-                <a href="#" data-trigger="modal" data-modal-body="#deactivate_license_modal" data-modal-size="sm" data-modal-no-footer="true" data-modal-title="{{ __('Deactivate License') }}" data-modal-on-show="deactivateLicenseModal" class="small">{{ __('Deactivate License') }}</a> | 
-                <a href="https://freescout.net/remind-license-keys/" target="_blank" class="small">{{ __('Remind License Keys') }}</a>
-            </span>
+        <div class="page-toolbar f-row" id="installed">
+            <h2 class="f-title-3">{{ __('Installed Modules') }} <span class="f-muted">({{ count($installed_modules) }})</span></h2>
+            <div class="f-row">
+                <a href="#" data-trigger="modal" data-modal-body="#deactivate_license_modal" data-modal-size="sm" data-modal-no-footer="true" data-modal-title="{{ __('Deactivate License') }}" data-modal-on-show="deactivateLicenseModal" class="f-button f-button--ghost f-button--small">{{ __('Deactivate License') }}</a>
+                <a href="https://freescout.net/remind-license-keys/" target="_blank" class="f-button f-button--ghost f-button--small">{{ __('Remind License Keys') }}</a>
+            </div>
         </div>
 
         @if ($updates_available)
-            <div class="row-container margin-top">
-                <div class="alert alert-warning">
+            <div class="f-alert f-alert--warning modules-updates">
+                <div class="f-alert__body">
                     {{ __('There are updates available') }}:
                     <ul id="new_versions_list">
                         @php
@@ -41,28 +39,24 @@
                             @endif
                         @endforeach
                     </ul>
-                    @if ($new_v_counter)
-                        <a href="" class="btn btn-default btn-sm update-all-trigger margin-top" data-loading-text="{{ __('Update Now') }} ({{ $new_v_counter }})…">{{ __('Update Now') }} ({{ $new_v_counter }})</a>
-                    @endif
                 </div>
+                @if ($new_v_counter)
+                    <div class="f-alert__actions"><a href="" class="f-button f-button--small update-all-trigger" data-loading-text="{{ __('Update Now') }} ({{ $new_v_counter }})…">{{ __('Update Now') }} ({{ $new_v_counter }})</a></div>
+                @endif
             </div>
         @endif
 
         @if ($invalid_symlinks)
-            <div class="row-container margin-top">
-                @include('modules/partials/invalid_symlinks')
-            </div>
+            @include('modules/partials/invalid_symlinks')
         @endif
 
-        <div class="row-container margin-top">
+        <div class="modules-list">
             @foreach ($installed_modules as $module)
                 @include('modules/partials/module_card')
             @endforeach
         </div>
-        <div class="clearfix"></div>
     @endif
-    
-    <div class="clearfix margin-bottom-30"></div>
+</div>
 
     <div id="deactivate_license_modal" class="hidden">
 
