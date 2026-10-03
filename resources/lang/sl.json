@@ -1146,5 +1146,14 @@
     "subscribed": "naročeno",
     "waiting for the relay": "čakanje na rele",
     "No modules are installed.": "Ni nameščenih modulov.",
-    "Faster text processing": "Hitrejša obdelava besedila"
+    "Faster text processing": "Hitrejša obdelava besedila",
+    "Search index": "Iskalni indeks",
+    "Building: :indexed of :total conversations": "Gradnja: :indexed od :total pogovorov",
+    "Search tips": "Nasveti za iskanje",
+    "all words, anywhere in the conversation": "vse besede, kjer koli v pogovoru",
+    "words in this order": "besede v tem vrstnem redu",
+    "without this word": "brez te besede",
+    "sender": "pošiljatelj",
+    "recipient": "prejemnik",
+    "conversation number": "številka pogovora"
 }

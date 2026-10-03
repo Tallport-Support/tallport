@@ -1147,5 +1147,14 @@
     "subscribed": "feliratkozva",
     "waiting for the relay": "várakozás a relére",
     "No modules are installed.": "Nincs telepített modul.",
-    "Faster text processing": "Gyorsabb szövegfeldolgozás"
+    "Faster text processing": "Gyorsabb szövegfeldolgozás",
+    "Search index": "Keresési index",
+    "Building: :indexed of :total conversations": "Felépítés: :indexed / :total beszélgetés",
+    "Search tips": "Keresési tippek",
+    "all words, anywhere in the conversation": "minden szó, bárhol a beszélgetésben",
+    "words in this order": "szavak ebben a sorrendben",
+    "without this word": "e szó nélkül",
+    "sender": "feladó",
+    "recipient": "címzett",
+    "conversation number": "beszélgetés száma"
 }

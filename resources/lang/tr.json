@@ -1147,5 +1147,14 @@
     "subscribed": "abone olundu",
     "waiting for the relay": "röle bekleniyor",
     "No modules are installed.": "Yüklü modül yok.",
-    "Faster text processing": "Daha hızlı metin işleme"
+    "Faster text processing": "Daha hızlı metin işleme",
+    "Search index": "Arama dizini",
+    "Building: :indexed of :total conversations": "Oluşturuluyor: :total konuşmadan :indexed",
+    "Search tips": "Arama ipuçları",
+    "all words, anywhere in the conversation": "tüm kelimeler, konuşmanın herhangi bir yerinde",
+    "words in this order": "bu sırayla kelimeler",
+    "without this word": "bu kelime olmadan",
+    "sender": "gönderen",
+    "recipient": "alıcı",
+    "conversation number": "konuşma numarası"
 }

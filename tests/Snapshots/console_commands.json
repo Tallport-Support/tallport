@@ -402,6 +402,23 @@
             }
         }
     },
+    "tallport:search-index": {
+        "class": "App\\Console\\Commands\\SearchIndex",
+        "description": "Index conversations for search: new and changed ones, and existing ones after installing",
+        "arguments": {},
+        "options": {
+            "seconds": {
+                "value": "optional",
+                "default": "50"
+            },
+            "rebuild": {
+                "value": "none"
+            },
+            "prune": {
+                "value": "none"
+            }
+        }
+    },
     "tallport:send-monitor": {
         "class": "App\\Console\\Commands\\SendMonitor",
         "aliases": [

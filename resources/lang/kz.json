@@ -1644,5 +1644,14 @@
     "subscribed": "жазылған",
     "waiting for the relay": "релені күтуде",
     "No modules are installed.": "Модульдер орнатылмаған.",
-    "Faster text processing": "Мәтінді жылдамырақ өңдеу"
+    "Faster text processing": "Мәтінді жылдамырақ өңдеу",
+    "Search index": "Іздеу индексі",
+    "Building: :indexed of :total conversations": "Құрылуда: :total тикеттің :indexed",
+    "Search tips": "Іздеу кеңестері",
+    "all words, anywhere in the conversation": "барлық сөздер, тикеттің кез келген жерінде",
+    "words in this order": "осы ретпен сөздер",
+    "without this word": "бұл сөзсіз",
+    "sender": "жіберуші",
+    "recipient": "алушы",
+    "conversation number": "тикет номері"
 }

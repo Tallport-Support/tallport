@@ -1149,5 +1149,14 @@
     "subscribed": "已订阅",
     "waiting for the relay": "等待中继",
     "No modules are installed.": "未安装任何模块。",
-    "Faster text processing": "更快的文本处理"
+    "Faster text processing": "更快的文本处理",
+    "Search index": "搜索索引",
+    "Building: :indexed of :total conversations": "构建中：:indexed / :total 个对话",
+    "Search tips": "搜索技巧",
+    "all words, anywhere in the conversation": "所有词语，可出现在对话中的任意位置",
+    "words in this order": "按此顺序的词语",
+    "without this word": "不包含此词",
+    "sender": "发件人",
+    "recipient": "收件人",
+    "conversation number": "对话编号"
 }

@@ -1147,5 +1147,14 @@
     "subscribed": "abunə olunub",
     "waiting for the relay": "rele gözlənilir",
     "No modules are installed.": "Quraşdırılmış modul yoxdur.",
-    "Faster text processing": "Mətnin daha sürətli emalı"
+    "Faster text processing": "Mətnin daha sürətli emalı",
+    "Search index": "Axtarış indeksi",
+    "Building: :indexed of :total conversations": "Qurulur: :total söhbətdən :indexed",
+    "Search tips": "Axtarış məsləhətləri",
+    "all words, anywhere in the conversation": "bütün sözlər, söhbətin istənilən yerində",
+    "words in this order": "sözlər bu ardıcıllıqla",
+    "without this word": "bu söz olmadan",
+    "sender": "göndərən",
+    "recipient": "alıcı",
+    "conversation number": "söhbət nömrəsi"
 }

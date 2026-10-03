@@ -101,6 +101,18 @@
                     @endif
                 </td>
             </tr>
+            @if ($search_index)
+                <tr>
+                    <th>{{ __('Search index') }}</th>
+                    <td class="table-main-col">
+                        @if ($search_index[0] >= $search_index[1] && \App\Search\Indexer::isReady())
+                            <strong class="text-success">OK</strong> ({{ $search_index[1] }})
+                        @else
+                            <strong class="text-warning">{{ __('Building: :indexed of :total conversations', ['indexed' => $search_index[0], 'total' => $search_index[1]]) }}</strong>
+                        @endif
+                    </td>
+                </tr>
+            @endif
             @if ($redis_uses)
                 <tr>
                     <th>Redis</th>

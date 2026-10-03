@@ -1146,5 +1146,14 @@
     "subscribed": "abonat",
     "waiting for the relay": "așteaptă relay-ul",
     "No modules are installed.": "Nu este instalat niciun modul.",
-    "Faster text processing": "Procesare mai rapidă a textului"
+    "Faster text processing": "Procesare mai rapidă a textului",
+    "Search index": "Index de căutare",
+    "Building: :indexed of :total conversations": "Se construiește: :indexed din :total conversații",
+    "Search tips": "Sfaturi de căutare",
+    "all words, anywhere in the conversation": "toate cuvintele, oriunde în conversație",
+    "words in this order": "cuvinte în această ordine",
+    "without this word": "fără acest cuvânt",
+    "sender": "expeditor",
+    "recipient": "destinatar",
+    "conversation number": "numărul conversației"
 }

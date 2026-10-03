@@ -1147,5 +1147,14 @@
     "subscribed": "購読中",
     "waiting for the relay": "リレーを待機中",
     "No modules are installed.": "インストールされているモジュールはありません。",
-    "Faster text processing": "テキスト処理の高速化"
+    "Faster text processing": "テキスト処理の高速化",
+    "Search index": "検索インデックス",
+    "Building: :indexed of :total conversations": "作成中: :total 件中 :indexed 件の会話",
+    "Search tips": "検索のヒント",
+    "all words, anywhere in the conversation": "すべての単語（会話内のどこにあってもよい）",
+    "words in this order": "この順序の単語",
+    "without this word": "この単語を除外",
+    "sender": "送信者",
+    "recipient": "受信者",
+    "conversation number": "会話の番号"
 }

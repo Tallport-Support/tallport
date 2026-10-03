@@ -38,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
         \App\Attachment::observe(\App\Observers\AttachmentObserver::class);
         \App\Follower::observe(\App\Observers\FollowerObserver::class);
         \Illuminate\Notifications\DatabaseNotification::observe(\App\Observers\DatabaseNotificationObserver::class);
+        \App\Search\Indexer::listen();
 
         // Channels Tallport has (modules add theirs the same way).
         \Eventy::addFilter('channel.name', function ($name, $channel) {

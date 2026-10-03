@@ -1147,5 +1147,14 @@
     "subscribed": "prenumererar",
     "waiting for the relay": "väntar på reläet",
     "No modules are installed.": "Inga moduler är installerade.",
-    "Faster text processing": "Snabbare textbehandling"
+    "Faster text processing": "Snabbare textbehandling",
+    "Search index": "Sökindex",
+    "Building: :indexed of :total conversations": "Byggs: :indexed av :total konversationer",
+    "Search tips": "Söktips",
+    "all words, anywhere in the conversation": "alla ord, var som helst i konversationen",
+    "words in this order": "ord i denna ordning",
+    "without this word": "utan detta ord",
+    "sender": "avsändare",
+    "recipient": "mottagare",
+    "conversation number": "konversationsnummer"
 }

@@ -1258,5 +1258,14 @@
     "subscribed": "subscrit",
     "waiting for the relay": "esperant el relay",
     "No modules are installed.": "No hi ha cap mòdul instal·lat.",
-    "Faster text processing": "Processament de text més ràpid"
+    "Faster text processing": "Processament de text més ràpid",
+    "Search index": "Índex de cerca",
+    "Building: :indexed of :total conversations": "Construint: :indexed de :total converses",
+    "Search tips": "Consells de cerca",
+    "all words, anywhere in the conversation": "totes les paraules, a qualsevol lloc de la conversa",
+    "words in this order": "paraules en aquest ordre",
+    "without this word": "sense aquesta paraula",
+    "sender": "remitent",
+    "recipient": "destinatari",
+    "conversation number": "número de conversa"
 }

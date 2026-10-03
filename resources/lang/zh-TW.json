@@ -1202,5 +1202,14 @@
     "subscribed": "已訂閱",
     "waiting for the relay": "等待中繼",
     "No modules are installed.": "未安裝任何模組。",
-    "Faster text processing": "更快的文字處理"
+    "Faster text processing": "更快的文字處理",
+    "Search index": "搜尋索引",
+    "Building: :indexed of :total conversations": "建立中：:indexed / :total 個對話",
+    "Search tips": "搜尋技巧",
+    "all words, anywhere in the conversation": "所有字詞，可出現在對話中的任何位置",
+    "words in this order": "依此順序的字詞",
+    "without this word": "不含此字詞",
+    "sender": "寄件者",
+    "recipient": "收件者",
+    "conversation number": "對話編號"
 }

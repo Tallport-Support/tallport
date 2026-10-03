@@ -1147,5 +1147,14 @@
     "subscribed": "підписано",
     "waiting for the relay": "очікування реле",
     "No modules are installed.": "Модулі не встановлено.",
-    "Faster text processing": "Швидша обробка тексту"
+    "Faster text processing": "Швидша обробка тексту",
+    "Search index": "Пошуковий індекс",
+    "Building: :indexed of :total conversations": "Побудова: :indexed з :total розмов",
+    "Search tips": "Поради щодо пошуку",
+    "all words, anywhere in the conversation": "усі слова, будь-де в розмові",
+    "words in this order": "слова в цьому порядку",
+    "without this word": "без цього слова",
+    "sender": "відправник",
+    "recipient": "одержувач",
+    "conversation number": "номер розмови"
 }

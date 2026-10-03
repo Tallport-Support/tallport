@@ -25,6 +25,11 @@ class Conversation extends Model
     public $rememberCacheDriver = 'array';
 
     /**
+     * Search results: HTML excerpt around the words found (App\Search\ConversationSearch).
+     */
+    public $search_snippet = null;
+
+    /**
      * Max length of the preview.
      */
     const PREVIEW_MAXLENGTH = 255;
@@ -2194,6 +2199,13 @@ class Conversation extends Model
             // Delete followers.
             Follower::whereIn('conversation_id', $ids)->delete();
 
+            // Out of the search index.
+            try {
+                \DB::table(\App\Search\Indexer::TABLE)->whereIn('conversation_id', $ids)->delete();
+            } catch (\Throwable $e) {
+                // Before the migration.
+            }
+
             // Delete conversations.
             Conversation::whereIn('id', $ids)->delete();
 
@@ -2527,7 +2539,7 @@ class Conversation extends Model
         $result = \Eventy::filter('conversations.table_sorting', $result);
 
         if (!empty($request->sorting['sort_by']) && !empty($request->sorting['order']) &&
-            in_array($request->sorting['sort_by'], ['subject', 'number', 'date']) &&
+            in_array($request->sorting['sort_by'], ['subject', 'number', 'date', 'relevance']) &&
             in_array($request->sorting['order'], ['asc', 'desc'])
         ) {
             $result['sort_by'] = $request->sorting['sort_by'];
@@ -2671,7 +2683,7 @@ class Conversation extends Model
         $query_conversations = \Eventy::filter('search.conversations.apply_filters', $query_conversations, $filters, $q);
 
         $sorting = Conversation::getConvTableSorting();
-        if ($sorting['sort_by'] == 'date') {
+        if (in_array($sorting['sort_by'], ['date', 'relevance'])) {
             $sorting['sort_by'] = 'last_reply_at';
         }
         $query_conversations->orderBy($sorting['sort_by'], $sorting['order']);

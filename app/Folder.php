@@ -177,7 +177,7 @@ class Folder extends Model
 
         // Process columns sorting.
         $sorting = Conversation::getConvTableSorting();
-        if ($sorting['sort_by'] == 'date') {
+        if (in_array($sorting['sort_by'], ['date', 'relevance'])) {
             if ($sorting['order'] != 'desc') {
                 foreach ($order_by as $block_i => $block) {
                     foreach ($block as $field => $order) {

@@ -1140,5 +1140,14 @@
     "subscribed": "abonniert",
     "waiting for the relay": "wartet auf das Relay",
     "No modules are installed.": "Es sind keine Module installiert.",
-    "Faster text processing": "Schnellere Textverarbeitung"
+    "Faster text processing": "Schnellere Textverarbeitung",
+    "Search index": "Suchindex",
+    "Building: :indexed of :total conversations": "Aufbau: :indexed von :total Gesprächen",
+    "Search tips": "Suchtipps",
+    "all words, anywhere in the conversation": "alle Wörter, irgendwo im Gespräch",
+    "words in this order": "Wörter in dieser Reihenfolge",
+    "without this word": "ohne dieses Wort",
+    "sender": "Absender",
+    "recipient": "Empfänger",
+    "conversation number": "Gesprächsnummer"
 }

@@ -1166,5 +1166,14 @@
     "subscribed": "tilattu",
     "waiting for the relay": "odotetaan relettä",
     "No modules are installed.": "Moduuleja ei ole asennettu.",
-    "Faster text processing": "Nopeampi tekstinkäsittely"
+    "Faster text processing": "Nopeampi tekstinkäsittely",
+    "Search index": "Hakuhakemisto",
+    "Building: :indexed of :total conversations": "Rakennetaan: :indexed / :total keskustelua",
+    "Search tips": "Hakuvinkit",
+    "all words, anywhere in the conversation": "kaikki sanat, missä tahansa keskustelussa",
+    "words in this order": "sanat tässä järjestyksessä",
+    "without this word": "ilman tätä sanaa",
+    "sender": "lähettäjä",
+    "recipient": "vastaanottaja",
+    "conversation number": "keskustelun numero"
 }

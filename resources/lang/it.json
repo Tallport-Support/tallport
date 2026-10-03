@@ -1146,5 +1146,14 @@
     "subscribed": "iscritto",
     "waiting for the relay": "in attesa del relay",
     "No modules are installed.": "Nessun modulo installato.",
-    "Faster text processing": "Elaborazione del testo più veloce"
+    "Faster text processing": "Elaborazione del testo più veloce",
+    "Search index": "Indice di ricerca",
+    "Building: :indexed of :total conversations": "Creazione: :indexed di :total ticket",
+    "Search tips": "Suggerimenti di ricerca",
+    "all words, anywhere in the conversation": "tutte le parole, in qualsiasi punto del ticket",
+    "words in this order": "parole in questo ordine",
+    "without this word": "senza questa parola",
+    "sender": "mittente",
+    "recipient": "destinatario",
+    "conversation number": "numero del ticket"
 }

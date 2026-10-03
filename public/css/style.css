@@ -3617,6 +3617,18 @@ ul.sidebar-block-list {
 .search-results .table.table-conversations th {
     padding-top: 7px;
 }
+.search-tips-toggle {
+    margin-top: 5px;
+}
+.search-tips {
+    margin-top: 5px;
+    line-height: 2;
+}
+.table-conversations .search-snippet mark {
+    padding: 0;
+    background-color: #fff3a6;
+    color: inherit;
+}
 #search-filters .form-group {
     display: none;
 }

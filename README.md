@@ -156,6 +156,28 @@ applications, give Tallport a `REDIS_CACHE_DB` of its own. The older names
 `php artisan tallport:clear-cache`; System » Status shows the Redis server in
 use.
 
+## Search
+
+Conversation search uses a MariaDB full-text index (`conversation_search`):
+every word must be somewhere in the conversation (in any message, note,
+subject, name or address), best matches come first, and each result shows
+the text around the words found. The search box understands:
+
+* `refund jacket`: all words; the start of a word is enough (`refun`).
+* `"winter jacket"`: words in this order. `-invoice`: without this word.
+* `from:robin`, `to:sales@example.com`, `subject:zipper`, `mailbox:sales`.
+* `is:open`, `is:pending`, `is:closed`, `is:spam`, `is:mine`,
+  `is:unassigned`, `is:following`, `has:attachment`, `after:2026-01-31`,
+  `before:2026-03-01`.
+* `#123` opens conversation 123.
+
+Words shorter than three letters and Chinese, Japanese or Thai text are
+matched in the indexed text too, more slowly. After installing or updating,
+`tallport:search-index` (run by the scheduler every minute) indexes the
+existing conversations; until it is done, search works as before and System
+» Status shows the progress. `php artisan tallport:search-index --rebuild`
+indexes everything again.
+
 ## Incoming email sources and re-importing
 
 Tallport keeps the raw source of each incoming email for 30 days, in

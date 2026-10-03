@@ -136,6 +136,16 @@ class Kernel extends ConsoleKernel
         $schedule->command('tallport:clean-tmp')
             ->daily();
 
+        // Search: index what the requests and jobs didn't (new installations,
+        // missed changes), and forget conversations deleted around Tallport.
+        $schedule->command('tallport:search-index')
+            ->everyMinute()
+            ->withoutOverlapping()
+            ->runInBackground();
+        $schedule->command('tallport:search-index', ['--prune', '--seconds=0'])
+            ->daily()
+            ->withoutOverlapping();
+
         // Logs monitoring.
         $alert_logs_period = config('app.alert_logs_period');
         if (config('app.alert_logs') && $alert_logs_period) {

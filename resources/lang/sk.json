@@ -1146,5 +1146,14 @@
     "subscribed": "prihlásené na odber",
     "waiting for the relay": "čaká sa na relay",
     "No modules are installed.": "Nie sú nainštalované žiadne moduly.",
-    "Faster text processing": "Rýchlejšie spracovanie textu"
+    "Faster text processing": "Rýchlejšie spracovanie textu",
+    "Search index": "Vyhľadávací index",
+    "Building: :indexed of :total conversations": "Vytváranie: :indexed z :total konverzácií",
+    "Search tips": "Tipy na vyhľadávanie",
+    "all words, anywhere in the conversation": "všetky slová, kdekoľvek v konverzácii",
+    "words in this order": "slová v tomto poradí",
+    "without this word": "bez tohto slova",
+    "sender": "odosielateľ",
+    "recipient": "príjemca",
+    "conversation number": "číslo konverzácie"
 }

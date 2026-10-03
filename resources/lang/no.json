@@ -1152,5 +1152,14 @@
     "subscribed": "abonnerer",
     "waiting for the relay": "venter på reléet",
     "No modules are installed.": "Ingen moduler er installert.",
-    "Faster text processing": "Raskere tekstbehandling"
+    "Faster text processing": "Raskere tekstbehandling",
+    "Search index": "Søkeindeks",
+    "Building: :indexed of :total conversations": "Bygger: :indexed av :total samtaler",
+    "Search tips": "Søketips",
+    "all words, anywhere in the conversation": "alle ord, hvor som helst i samtalen",
+    "words in this order": "ord i denne rekkefølgen",
+    "without this word": "uten dette ordet",
+    "sender": "avsender",
+    "recipient": "mottaker",
+    "conversation number": "samtalenummer"
 }

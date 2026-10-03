@@ -149,6 +149,16 @@
 	                <button class="btn btn-default" type="submit">{{ __('Search') }}</button>
 	            </span>
 	        </div>
+	        @if ($mode == App\Conversation::SEARCH_MODE_CONV && App\Search\ConversationSearch::available())
+	            <div class="search-tips-toggle"><a href="#search-tips" data-toggle="collapse" class="small">{{ __('Search tips') }}</a></div>
+	            <div id="search-tips" class="collapse small text-help search-tips">
+	                <code>refund jacket</code> {{ __('all words, anywhere in the conversation') }}<br>
+	                <code>"exact phrase"</code> {{ __('words in this order') }} · <code>-word</code> {{ __('without this word') }}<br>
+	                <code>from:</code> {{ __('sender') }} · <code>to:</code> {{ __('recipient') }} · <code>subject:</code> · <code>mailbox:</code><br>
+	                <code>is:open</code> <code>is:pending</code> <code>is:closed</code> <code>is:spam</code> <code>is:mine</code> <code>is:unassigned</code> <code>is:following</code><br>
+	                <code>has:attachment</code> · <code>after:2026-01-31</code> · <code>before:2026-03-01</code> · <code>#123</code> {{ __('conversation number') }}
+	            </div>
+	        @endif
 	    </form>
 	</div>
 

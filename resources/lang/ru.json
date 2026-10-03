@@ -1147,5 +1147,14 @@
     "subscribed": "подписано",
     "waiting for the relay": "ожидание реле",
     "No modules are installed.": "Модули не установлены.",
-    "Faster text processing": "Более быстрая обработка текста"
+    "Faster text processing": "Более быстрая обработка текста",
+    "Search index": "Поисковый индекс",
+    "Building: :indexed of :total conversations": "Построение: :indexed из :total тикетов",
+    "Search tips": "Советы по поиску",
+    "all words, anywhere in the conversation": "все слова, в любом месте тикета",
+    "words in this order": "слова в этом порядке",
+    "without this word": "без этого слова",
+    "sender": "отправитель",
+    "recipient": "получатель",
+    "conversation number": "номер тикета"
 }

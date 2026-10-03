@@ -100,6 +100,16 @@ class SystemController extends Controller
             }
         }
 
+        // Search index (MariaDB / MySQL).
+        $search_index = null;
+        if (in_array(\DB::getDriverName(), ['mysql', 'mariadb'])) {
+            try {
+                $search_index = \App\Search\Indexer::progress();
+            } catch (\Throwable $e) {
+                // Before the migration.
+            }
+        }
+
         try {
             $queued_jobs = \App\Job::pending(null, null, null, 100);
         } catch (\Throwable $e) {
@@ -254,6 +264,7 @@ class SystemController extends Controller
             'queued_jobs'           => $queued_jobs,
             'failed_jobs'           => $failed_jobs,
             'redis_uses'            => $redis_uses,
+            'search_index'          => $search_index,
             'redis_version'         => $redis_version,
             'redis_error'           => $redis_error,
             'failed_queues'         => $failed_queues,

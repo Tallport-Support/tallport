@@ -667,6 +667,94 @@
             }
         }
     },
+    "conversation_search": {
+        "columns": {
+            "conversation_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "subject": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "people": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "recipients": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "content": {
+                "type": "mediumtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "indexed_at": {
+                "type": "datetime",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "conversation_search_all": {
+                "unique": false,
+                "type": "FULLTEXT",
+                "columns": [
+                    "subject",
+                    "people",
+                    "recipients",
+                    "content"
+                ]
+            },
+            "conversation_search_indexed_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "indexed_at"
+                ]
+            },
+            "conversation_search_people": {
+                "unique": false,
+                "type": "FULLTEXT",
+                "columns": [
+                    "people"
+                ]
+            },
+            "conversation_search_recipients": {
+                "unique": false,
+                "type": "FULLTEXT",
+                "columns": [
+                    "recipients"
+                ]
+            },
+            "conversation_search_subject": {
+                "unique": false,
+                "type": "FULLTEXT",
+                "columns": [
+                    "subject"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "conversation_id"
+                ]
+            }
+        }
+    },
     "conversations": {
         "columns": {
             "id": {

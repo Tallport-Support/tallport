@@ -1146,5 +1146,14 @@
     "subscribed": "רשום",
     "waiting for the relay": "ממתין לממסר",
     "No modules are installed.": "אין מודולים מותקנים.",
-    "Faster text processing": "עיבוד טקסט מהיר יותר"
+    "Faster text processing": "עיבוד טקסט מהיר יותר",
+    "Search index": "אינדקס חיפוש",
+    "Building: :indexed of :total conversations": "בבנייה: :indexed מתוך :total שיחות",
+    "Search tips": "טיפים לחיפוש",
+    "all words, anywhere in the conversation": "כל המילים, בכל מקום בשיחה",
+    "words in this order": "מילים בסדר הזה",
+    "without this word": "ללא המילה הזו",
+    "sender": "שולח",
+    "recipient": "נמען",
+    "conversation number": "מספר שיחה"
 }

@@ -3122,6 +3122,15 @@ class ConversationsController extends Controller
             $filters['assigned'] = $user->id;
         }
 
+        if (\App\Search\ConversationSearch::available()) {
+            // Best matches first, unless sorted in the list.
+            if (empty(request()->sorting) && \App\Search\SearchQuery::parse($q)->hasTerms()) {
+                request()->merge(['sorting' => ['sort_by' => 'relevance', 'order' => 'desc']]);
+            }
+
+            return \App\Search\ConversationSearch::paginate($q, $filters, $user);
+        }
+
         $query_conversations = Conversation::search($q, $filters, $user);
         return $query_conversations->paginate(Conversation::DEFAULT_LIST_SIZE);
     }
@@ -3192,16 +3201,16 @@ class ConversationsController extends Controller
         // Search query
         $q = $this->getSearchQuery($request);
 
-        // Like is case insensitive.
-        $like = '%'.mb_strtolower($q).'%';
-
         // We need to use aggregate function for email to avoid "Grouping error" error in PostgreSQL.
         $query_customers = Customer::select(['customers.*', \DB::raw('MAX('.\DB::getTablePrefix().'emails.email)')])
             ->groupby('customers.id')
             ->leftJoin('emails', function ($join) {
                 $join->on('customers.id', '=', 'emails.customer_id');
-            })
-            ->where(function ($query) use ($like, $q) {
+            });
+        // Every word somewhere (like is case insensitive).
+        foreach (preg_split('/\s+/u', $q) ?: [''] as $word) {
+            $like = '%'.mb_strtolower($word).'%';
+            $query_customers->where(function ($query) use ($like, $word) {
                 $like_op = 'like';
                 if (\Helper::isPgSql()) {
                     $like_op = 'ilike';
@@ -3220,12 +3229,18 @@ class ConversationsController extends Controller
                     ->orWhere('customers.zip', $like_op, $like)
                     ->orWhere('emails.email', $like_op, $like);
 
-                $phone_numeric = \Helper::phoneToNumeric($q);
+                $phone_numeric = \Helper::phoneToNumeric($word);
 
                 if ($phone_numeric) {
                     $query->orWhere('customers.phones', $like_op, '%"'.$phone_numeric.'"%');
                 }
+
+                // A Nostr key (npub).
+                if (str_starts_with(strtolower($word), 'npub1') && ($pubkey = \App\Nostr\Keys::toHex($word))) {
+                    $query->orWhereIn('customers.id', \App\Nostr\CustomerKey::where('pubkey', $pubkey)->select('customer_id'));
+                }
             });
+        }
 
         if (!empty($filters['mailbox']) && in_array($filters['mailbox'], $mailbox_ids)) {
             $query_customers->join('conversations', function ($join) use ($filters) {

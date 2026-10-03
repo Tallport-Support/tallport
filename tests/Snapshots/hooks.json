@@ -2104,7 +2104,8 @@
         "name": "search.conversations.apply_filters",
         "arguments": 3,
         "files": [
-            "app/Conversation.php"
+            "app/Conversation.php",
+            "app/Search/ConversationSearch.php"
         ]
     },
     {
@@ -2112,7 +2113,8 @@
         "name": "search.conversations.or_where",
         "arguments": 3,
         "files": [
-            "app/Conversation.php"
+            "app/Conversation.php",
+            "app/Search/ConversationSearch.php"
         ]
     },
     {

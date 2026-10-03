@@ -1152,5 +1152,14 @@
     "subscribed": "geabonneerd",
     "waiting for the relay": "wacht op de relay",
     "No modules are installed.": "Er zijn geen modules geïnstalleerd.",
-    "Faster text processing": "Snellere tekstverwerking"
+    "Faster text processing": "Snellere tekstverwerking",
+    "Search index": "Zoekindex",
+    "Building: :indexed of :total conversations": "Opbouwen: :indexed van :total gesprekken",
+    "Search tips": "Zoektips",
+    "all words, anywhere in the conversation": "alle woorden, overal in het gesprek",
+    "words in this order": "woorden in deze volgorde",
+    "without this word": "zonder dit woord",
+    "sender": "afzender",
+    "recipient": "ontvanger",
+    "conversation number": "gespreksnummer"
 }
