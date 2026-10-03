@@ -1165,5 +1165,6 @@
     "since": "muodostettu",
     "subscribed": "tilattu",
     "waiting for the relay": "odotetaan relettä",
-    "No modules are installed.": "Moduuleja ei ole asennettu."
+    "No modules are installed.": "Moduuleja ei ole asennettu.",
+    "Faster text processing": "Nopeampi tekstinkäsittely"
 }

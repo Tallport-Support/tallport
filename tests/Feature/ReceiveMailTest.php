@@ -217,4 +217,28 @@ class ReceiveMailTest extends FeatureTestCase
         $this->assertSame(1, Thread::where('message_id', 'receive-1@customer.example')->count());
         $this->assertSame(1, Conversation::where('mailbox_id', $this->mailbox->id)->count());
     }
+
+    public function testFailureBeforeTheCommandAsksTheMailServerToTryAgain()
+    {
+        $kernel = $this->app->make(\Illuminate\Contracts\Console\Kernel::class);
+        $output = new \Symfony\Component\Console\Output\BufferedOutput();
+
+        $status = $kernel->handle(new \Symfony\Component\Console\Input\ArgvInput(['artisan', 'tallport:receive', '--no-such-option']), $output);
+
+        $this->assertSame(75, $status, 'Not 1, which bounces the email.');
+        $this->assertSame(1, $kernel->handle(new \Symfony\Component\Console\Input\ArgvInput(['artisan', 'tallport:no-such-command']), $output));
+    }
+
+    public function testStatusShowsWhereThePcreJitIsOff()
+    {
+        $admin = $this->createAdmin();
+        $this->actingAs($admin)->get(route('system'))->assertSee('PCRE JIT');
+
+        \App\Misc\Helper::$pcre_jit_available = false;
+        $this->artisan('tallport:receive', ['file' => $this->eml()])->assertExitCode(0);
+        \App\Misc\Helper::$pcre_jit_available = true;
+
+        $this->assertSame('1', (string) \Option::get('receive_pcre_jit_off'));
+        $this->actingAs($admin)->get(route('system'))->assertSee('tallport:receive')->assertSee('Faster text processing');
+    }
 }

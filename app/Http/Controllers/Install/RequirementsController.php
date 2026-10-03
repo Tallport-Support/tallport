@@ -42,6 +42,7 @@ class RequirementsController extends Controller
         foreach (config('installer.optional', []) as $extension => $purpose) {
             $optional[$extension] = ['enabled' => extension_loaded($extension), 'purpose' => $purpose];
         }
+        $optional['PCRE JIT'] = ['enabled' => \Helper::pcreJitAvailable(), 'purpose' => 'Faster text processing'];
 
         return view('vendor.installer.requirements', compact('requirements', 'phpSupportInfo', 'optional'));
     }

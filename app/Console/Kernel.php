@@ -26,6 +26,24 @@ class Kernel extends ConsoleKernel
     ];
 
     /**
+     * Mail servers bounce an email when tallport:receive exits with anything
+     * but 75 (try again later): a failure outside the command, while
+     * booting, must not bounce it.
+     */
+    public function handle($input, $output = null)
+    {
+        $status = parent::handle($input, $output);
+
+        if ($status && $input->getFirstArgument() === 'tallport:receive'
+            && !in_array($status, [Commands\Receive::EX_NOINPUT, Commands\Receive::EX_NOUSER, Commands\Receive::EX_TEMPFAIL])
+        ) {
+            return Commands\Receive::EX_TEMPFAIL;
+        }
+
+        return $status;
+    }
+
+    /**
      * Define the application's command schedule.
      * If --no-interaction flag is set the script will not run 'queue:work' daemon.
      *

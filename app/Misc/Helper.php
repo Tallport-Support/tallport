@@ -17,6 +17,12 @@ use Symfony\Component\Console\Output\BufferedOutput;
 class Helper
 {
     /**
+     * False where PHP may not allocate executable memory for PCRE's JIT
+     * (found in bootstrap/app.php).
+     */
+    public static $pcre_jit_available = true;
+
+    /**
      * Default query cache time in seconds for remember() function.
      */
     const QUERY_CACHE_TIME = 60000; // seconds (1000 minutes)
@@ -2793,6 +2799,14 @@ class Helper
     {
         $phone = preg_replace("/[^0-9]/", '', $phone);
         return (string)$phone;
+    }
+
+    /**
+     * Whether regular expressions use PCRE's JIT in this process.
+     */
+    public static function pcreJitAvailable()
+    {
+        return self::$pcre_jit_available && (bool) ini_get('pcre.jit');
     }
 
     public static function checkRequiredExtensions()

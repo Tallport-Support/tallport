@@ -151,6 +151,23 @@
                     </td>
                 </tr>
             @endforeach
+            @php
+                $pcre_jit_off = array_filter([
+                    __('Web Server') => !\Helper::pcreJitAvailable(),
+                    'tallport:receive' => (bool) \Option::get('receive_pcre_jit_off'),
+                ]);
+            @endphp
+            <tr>
+                <th>PCRE JIT</th>
+                <td class="table-main-col">
+                    @if (!$pcre_jit_off)
+                        <strong class="text-success">OK</strong>
+                    @else
+                        <strong class="text-warning">{{ __('Off') }}</strong> ({{ implode(', ', array_keys($pcre_jit_off)) }})
+                        <span class="text-help">{{ __('Needed for') }}: {{ __('Faster text processing') }}</span>
+                    @endif
+                </td>
+            </tr>
         </tbody>
     </table>
 

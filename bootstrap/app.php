@@ -2,6 +2,24 @@
 
 /*
 |--------------------------------------------------------------------------
+| PCRE JIT
+|--------------------------------------------------------------------------
+|
+| Where PHP may not allocate executable memory (SELinux, systemd's
+| MemoryDenyWriteExecute, a mail server's sandbox), the first regular
+| expression turns PCRE's JIT off with a warning, which Laravel's error
+| handler makes fatal. Let it happen here, quietly.
+|
+*/
+
+error_clear_last();
+@preg_match('/^(?:a|b)+$/', 'ab');
+if (str_contains(error_get_last()['message'] ?? '', 'JIT')) {
+    App\Misc\Helper::$pcre_jit_available = false;
+}
+
+/*
+|--------------------------------------------------------------------------
 | Create The Application
 |--------------------------------------------------------------------------
 |

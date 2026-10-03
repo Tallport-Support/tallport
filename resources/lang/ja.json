@@ -1146,5 +1146,6 @@
     "since": "接続開始",
     "subscribed": "購読中",
     "waiting for the relay": "リレーを待機中",
-    "No modules are installed.": "インストールされているモジュールはありません。"
+    "No modules are installed.": "インストールされているモジュールはありません。",
+    "Faster text processing": "テキスト処理の高速化"
 }
