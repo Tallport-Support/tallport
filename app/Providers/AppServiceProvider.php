@@ -41,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
         \App\Search\Indexer::listen();
         \App\Api\Webhooks::listen();
         \App\Misc\AllMailboxes::listen();
+        \App\Misc\Noreply::listen();
 
         // Channels Tallport has (modules add theirs the same way).
         \Eventy::addFilter('channel.name', function ($name, $channel) {

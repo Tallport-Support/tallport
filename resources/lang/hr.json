@@ -1196,5 +1196,10 @@
     "Show folders": "Prikaži mape",
     "Sent": "Poslano",
     "Send & Close": "Pošalji i zatvori",
-    "Add Note & Close": "Dodaj bilješku i zatvori"
+    "Add Note & Close": "Dodaj bilješku i zatvori",
+    "No-reply addresses": "No-reply adrese",
+    "Addresses": "Adrese",
+    "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Korisnici dobivaju upozorenje kada pišu na ove adrese, a automatski odgovori im se ne šalju. Jedna po retku: ime prije @ (dovoljan je dio) ili cijela adresa; * odgovara bilo čemu, crtica odgovara i podvlaci ili ničemu.",
+    "Always included": "Uvijek uključeno",
+    ":email looks like an address that does not read replies.": ":email izgleda kao adresa koja ne čita odgovore."
 }

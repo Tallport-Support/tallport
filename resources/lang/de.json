@@ -1189,5 +1189,10 @@
     "Show folders": "Ordner anzeigen",
     "Sent": "Gesendet",
     "Send & Close": "Senden & Schließen",
-    "Add Note & Close": "Notiz hinzufügen & Schließen"
+    "Add Note & Close": "Notiz hinzufügen & Schließen",
+    "No-reply addresses": "No-Reply-Adressen",
+    "Addresses": "Adressen",
+    "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Benutzer werden gewarnt, wenn sie an diese Adressen schreiben, und automatische Antworten werden nicht an sie gesendet. Eine pro Zeile: ein Name vor dem @ (ein Teil davon genügt) oder eine vollständige Adresse; * passt auf alles, ein Bindestrich passt auch auf einen Unterstrich oder auf nichts.",
+    "Always included": "Immer enthalten",
+    ":email looks like an address that does not read replies.": ":email scheint eine Adresse zu sein, die Antworten nicht liest."
 }

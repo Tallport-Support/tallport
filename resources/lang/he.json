@@ -1195,5 +1195,10 @@
     "Show folders": "הצג תיקיות",
     "Sent": "נשלחו",
     "Send & Close": "שלח וסגור",
-    "Add Note & Close": "הוסף פתק וסגור"
+    "Add Note & Close": "הוסף פתק וסגור",
+    "No-reply addresses": "כתובות no-reply",
+    "Addresses": "כתובות",
+    "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "המשתמשים מקבלים אזהרה כשהם כותבים לכתובות אלה, ותשובות אוטומטיות לא נשלחות אליהן. אחת בכל שורה: שם לפני ה-@ (מספיק חלק ממנו) או כתובת מלאה; * מתאים לכל דבר, מקף מתאים גם לקו תחתון או לכלום.",
+    "Always included": "כלולות תמיד",
+    ":email looks like an address that does not read replies.": ":email נראית ככתובת שלא קוראת תשובות."
 }

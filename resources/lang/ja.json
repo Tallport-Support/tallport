@@ -1196,5 +1196,10 @@
     "Show folders": "フォルダを表示",
     "Sent": "送信済み",
     "Send & Close": "送信して閉じる",
-    "Add Note & Close": "ノートを追加して閉じる"
+    "Add Note & Close": "ノートを追加して閉じる",
+    "No-reply addresses": "no-replyアドレス",
+    "Addresses": "アドレス",
+    "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "これらのアドレスに書くとユーザーに警告が表示され、自動返信は送信されません。1行に1つ。@の前の名前（一部でも可）またはアドレス全体。* は何にでも一致し、ハイフンはアンダースコアにも一致するほか、省略されていても一致します。",
+    "Always included": "常に含まれるもの",
+    ":email looks like an address that does not read replies.": ":email は返信を読まないアドレスのようです。"
 }

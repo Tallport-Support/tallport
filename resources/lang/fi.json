@@ -1215,5 +1215,10 @@
     "Show folders": "Näytä kansiot",
     "Sent": "Lähetetyt",
     "Send & Close": "Lähetä ja sulje",
-    "Add Note & Close": "Lisää huomautus ja sulje"
+    "Add Note & Close": "Lisää huomautus ja sulje",
+    "No-reply addresses": "No-reply-osoitteet",
+    "Addresses": "Osoitteet",
+    "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Käyttäjiä varoitetaan, kun he kirjoittavat näihin osoitteisiin, eikä niihin lähetetä automaattisia vastauksia. Yksi per rivi: nimi ennen @-merkkiä (osa siitä riittää) tai koko osoite; * vastaa mitä tahansa, väliviiva vastaa myös alaviivaa tai ei mitään.",
+    "Always included": "Aina mukana",
+    ":email looks like an address that does not read replies.": ":email näyttää osoitteelta, joka ei lue vastauksia."
 }

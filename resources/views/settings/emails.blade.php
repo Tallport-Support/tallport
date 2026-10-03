@@ -140,6 +140,18 @@
         </div>
     </div>--}}
 
+    <h3 class="subheader">{{ __('No-reply addresses') }}</h3>
+    <div class="form-group">
+        <label for="noreply_emails" class="col-sm-2 control-label">{{ __('Addresses') }}</label>
+        <div class="col-sm-6">
+            <textarea id="noreply_emails" class="form-control" name="settings[noreply_emails]" rows="5" placeholder="notifications@example.com&#10;mailer-daemon">{{ old('settings.noreply_emails', $settings['noreply_emails']) }}</textarea>
+            <div class="form-help">
+                {{ __('Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.') }}
+                {{ __('Always included') }}: <code>{{ implode(', ', App\Misc\Noreply::DEFAULT_PATTERNS) }}</code>
+            </div>
+        </div>
+    </div>
+
     <div class="form-group margin-top">
         <div class="col-sm-6 col-sm-offset-2">
             <button type="submit" class="btn btn-primary">

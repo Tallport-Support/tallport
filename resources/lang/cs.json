@@ -1195,5 +1195,10 @@
     "Show folders": "Zobrazit složky",
     "Sent": "Odeslané",
     "Send & Close": "Odeslat a zavřít",
-    "Add Note & Close": "Přidat poznámku a zavřít"
+    "Add Note & Close": "Přidat poznámku a zavřít",
+    "No-reply addresses": "Adresy no-reply",
+    "Addresses": "Adresy",
+    "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Uživatelé jsou upozorněni, když píší na tyto adresy, a automatické odpovědi se na ně neposílají. Jedna na řádek: jméno před @ (stačí jeho část) nebo celá adresa; * odpovídá čemukoli, pomlčka odpovídá také podtržítku nebo ničemu.",
+    "Always included": "Vždy zahrnuto",
+    ":email looks like an address that does not read replies.": ":email vypadá jako adresa, která nečte odpovědi."
 }

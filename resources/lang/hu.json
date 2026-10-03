@@ -1196,5 +1196,10 @@
     "Show folders": "Mappák mutatása",
     "Sent": "Elküldött",
     "Send & Close": "Küldés és lezárás",
-    "Add Note & Close": "Megjegyzés és lezárás"
+    "Add Note & Close": "Megjegyzés és lezárás",
+    "No-reply addresses": "No-reply címek",
+    "Addresses": "Címek",
+    "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "A felhasználók figyelmeztetést kapnak, amikor ezekre a címekre írnak, és ezekre a címekre nem mennek automatikus válaszok. Soronként egy: egy név a @ előtt (elég egy része) vagy egy teljes cím; a * bármire illeszkedik, a kötőjel aláhúzásra vagy semmire is illeszkedik.",
+    "Always included": "Mindig szerepel",
+    ":email looks like an address that does not read replies.": ":email olyan címnek tűnik, amely nem olvassa a válaszokat."
 }

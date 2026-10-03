@@ -374,6 +374,7 @@ $(document).ready(function(){
 
 	triggersInit();
 	initSidebarMailboxes();
+	initNoreplyWarnings();
 
     // Submenu
     $('.sidebar-menu-toggle').click(function(event) {
@@ -2375,7 +2376,7 @@ function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
 		// separate handler is needed for regular reply/note forms.
 		// https://github.com/freescout-help-desk/freescout/issues/4425
 		$(document).on('keydown.cmd-enter-send', function(e) {
-			if (!e.metaKey || e.which != 13 || e.altKey || e.shiftKey) {
+			if (!(e.metaKey || e.ctrlKey) || e.which != 13 || e.altKey || e.shiftKey) {
 				return;
 			}
 			if (isChatMode() || $('.modal:visible').length) {
@@ -6554,3 +6555,45 @@ function sidebarMailboxShow(tree, mailbox_id, show)
 	tree.children('li[data-mailbox_group="'+mailbox_id+'"]').toggleClass('hidden', !show);
 	tree.children('.sidebar-mailbox-heading[data-mailbox_id="'+mailbox_id+'"]').toggleClass('expanded', show);
 }
+
+/**
+ * Recipients that look like no-reply addresses get a warning below the field.
+ */
+function initNoreplyWarnings()
+{
+	var info = $('#noreply-patterns');
+	if (!info.length) {
+		return;
+	}
+	var regexes = [];
+	$.each(JSON.parse(info.attr('data-regexes') || '[]'), function(i, source) {
+		try {
+			regexes.push(new RegExp(source, 'i'));
+		} catch (e) {}
+	});
+	var check = function(select) {
+		var values = select.val() || [];
+		if (!$.isArray(values)) {
+			values = [values];
+		}
+		var container = select.parent();
+		container.children('.noreply-alert').remove();
+		$.each(values, function(i, email) {
+			for (var j = 0; j < regexes.length; j++) {
+				if (email && regexes[j].test(email)) {
+					container.append($('<div class="alert alert-warning alert-narrow margin-bottom-0 noreply-alert"></div>')
+						.html(htmlEscape(info.attr('data-message')).replace(':email', '<strong>'+htmlEscape(email)+'</strong>')));
+					break;
+				}
+			}
+		});
+	};
+	var selects = 'select[name="to"], select[name="to[]"], select[name="to_email[]"], select[name="cc[]"], select[name="bcc[]"], input[name="to_email"]';
+	$(document).on('change', selects, function() {
+		check($(this));
+	});
+	$(selects).each(function() {
+		check($(this));
+	});
+}
+

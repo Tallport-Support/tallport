@@ -1196,5 +1196,10 @@
     "Show folders": "Visa mappar",
     "Sent": "Skickat",
     "Send & Close": "Skicka och stäng",
-    "Add Note & Close": "Lägg till anteckning och stäng"
+    "Add Note & Close": "Lägg till anteckning och stäng",
+    "No-reply addresses": "No-reply-adresser",
+    "Addresses": "Adresser",
+    "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Användare varnas när de skriver till dessa adresser, och automatiska svar skickas inte till dem. En per rad: ett namn före @ (en del av det räcker) eller en hel adress; * matchar vad som helst, ett bindestreck matchar även ett understreck eller ingenting.",
+    "Always included": "Alltid inkluderade",
+    ":email looks like an address that does not read replies.": ":email ser ut som en adress som inte läser svar."
 }

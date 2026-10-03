@@ -1250,5 +1250,10 @@
     "Show folders": "顯示資料夾",
     "Sent": "已傳送",
     "Send & Close": "傳送並關閉",
-    "Add Note & Close": "新增備註並關閉"
+    "Add Note & Close": "新增備註並關閉",
+    "No-reply addresses": "no-reply 地址",
+    "Addresses": "地址",
+    "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "使用者寫信給這些地址時會收到警告，且不會向這些地址傳送自動回覆。每行一個：@ 前面的名稱（部分即可）或完整地址；* 符合任何內容，連字號也可符合底線或省略。",
+    "Always included": "一律包含",
+    ":email looks like an address that does not read replies.": ":email 看起來是不讀取回覆的地址。"
 }
