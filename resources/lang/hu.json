@@ -1313,5 +1313,10 @@
     "Week": "Hét",
     "Yesterday": "Tegnap",
     "This Period": "Ez az időszak",
-    "Previous Period": "Előző időszak"
+    "Previous Period": "Előző időszak",
+    "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "Nincs lefordítva: az MI-asszisztens úgy ítélte, hogy az üzenet már :language nyelvű, bár :detected nyelvet észlelt.",
+    "Not translated: the message has no text.": "Nincs lefordítva: az üzenetben nincs szöveg.",
+    "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Nincs lefordítva: az MI-asszisztens hibát adott (:error). Újra megpróbálja, amikor megnyitják a beszélgetést.",
+    "Waiting for the AI Assistant to translate this message.": "Várakozás arra, hogy az MI-asszisztens lefordítsa ezt az üzenetet.",
+    "Only the first :count characters were translated.": "Csak az első :count karakter lett lefordítva."
 }

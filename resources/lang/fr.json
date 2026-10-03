@@ -1323,5 +1323,10 @@
     "Week": "Semaine",
     "Yesterday": "Hier",
     "This Period": "Cette période",
-    "Previous Period": "Période précédente"
+    "Previous Period": "Période précédente",
+    "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "Non traduit : l'assistant IA a considéré que ce message était déjà en :language, bien qu'il ait détecté :detected.",
+    "Not translated: the message has no text.": "Non traduit : le message ne contient pas de texte.",
+    "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Non traduit : l'assistant IA a échoué (:error). Il réessaie à l'ouverture de la conversation.",
+    "Waiting for the AI Assistant to translate this message.": "En attente de la traduction de ce message par l'assistant IA.",
+    "Only the first :count characters were translated.": "Seuls les :count premiers caractères ont été traduits."
 }

@@ -50,6 +50,7 @@ class AiTranslateThread implements ShouldQueue, ShouldBeUnique
             Translations::translate($thread, $this->language);
         } catch (\Throwable $e) {
             \Helper::logException($e, '[AI Assistant] Translation of thread '.$thread->id.':');
+            Translations::failed($thread, $this->language, $e);
         }
     }
 

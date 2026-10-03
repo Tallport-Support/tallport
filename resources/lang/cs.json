@@ -1312,5 +1312,10 @@
     "Week": "Týden",
     "Yesterday": "Včera",
     "This Period": "Toto období",
-    "Previous Period": "Předchozí období"
+    "Previous Period": "Předchozí období",
+    "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "Nepřeloženo: AI asistent usoudil, že tato zpráva už je v jazyce :language, přestože rozpoznal :detected.",
+    "Not translated: the message has no text.": "Nepřeloženo: zpráva neobsahuje žádný text.",
+    "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Nepřeloženo: AI asistent selhal (:error). Zkusí to znovu při otevření konverzace.",
+    "Waiting for the AI Assistant to translate this message.": "Čeká se, až AI asistent tuto zprávu přeloží.",
+    "Only the first :count characters were translated.": "Přeloženo bylo jen prvních :count znaků."
 }

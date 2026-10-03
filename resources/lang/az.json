@@ -1313,5 +1313,10 @@
     "Week": "Həftə",
     "Yesterday": "Dünən",
     "This Period": "Bu dövr",
-    "Previous Period": "Əvvəlki dövr"
+    "Previous Period": "Əvvəlki dövr",
+    "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "Tərcümə edilmədi: Sİ köməkçisi :detected dilini aşkar etsə də, bu mesajın artıq :language dilində olduğunu qəbul etdi.",
+    "Not translated: the message has no text.": "Tərcümə edilmədi: mesajda mətn yoxdur.",
+    "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Tərcümə edilmədi: Sİ köməkçisində xəta baş verdi (:error). Söhbət açılanda yenidən cəhd edir.",
+    "Waiting for the AI Assistant to translate this message.": "Sİ köməkçisinin bu mesajı tərcümə etməsi gözlənilir.",
+    "Only the first :count characters were translated.": "Yalnız ilk :count simvol tərcümə edildi."
 }

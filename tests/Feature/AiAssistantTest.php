@@ -221,8 +221,53 @@ class AiAssistantTest extends FeatureTestCase
 
         $this->assertNull(Translations::get($thread, 'nl'));
         $this->assertFalse(Translations::isMissing($thread->fresh(), 'nl'));
-        $this->getConversationPage($this->agent, $conversation)->assertDontSee('AI Translation');
+        $this->getConversationPage($this->agent, $conversation)->assertDontSee('AI Translation')->assertDontSee('Not translated');
         ThreadTranslator::assertPromptedTimes(1);
+    }
+
+    /**
+     * A message without a translation says why.
+     */
+    public function testWhyAMessageIsNotTranslated()
+    {
+        $this->configureAi();
+        $this->fakeAi();
+
+        // Taken to be in the language already, in another one.
+        ThreadTranslator::fake([['translation' => '', 'same_language' => true, 'detected_language' => 'nl']]);
+        $conversation = $this->receiveCustomerEmail();
+        $this->getConversationPage($this->agent, $conversation)
+            ->assertSee('Not translated: the AI Assistant took this message to be in English already, though it detected Dutch.');
+
+        // Failed: tried again when opened.
+        ThreadTranslator::fake(function () {
+            throw new \RuntimeException('Rate limit reached');
+        });
+        $conversation = $this->receiveCustomerEmail("Hallo,\n\nEen andere vraag.");
+        $thread = $conversation->threads()->first();
+        $this->assertSame(['error', 'Rate limit reached'], Translations::reason($thread->fresh(), 'en'));
+        $this->getConversationPage($this->agent, $conversation)
+            ->assertSee('Not translated: the AI Assistant failed (Rate limit reached). It tries again when the conversation is opened.');
+        ThreadTranslator::fake([['translation' => 'Another question.', 'same_language' => false, 'detected_language' => 'nl']]);
+        $this->getConversationPage($this->agent, $conversation);
+        $this->getConversationPage($this->agent, $conversation)->assertSee('Another question.')->assertDontSee('Not translated');
+        $this->assertArrayNotHasKey('errors', \App\Ai\Summaries::data($thread->fresh()));
+
+        // Only the start of a long message.
+        ThreadTranslator::fake([['translation' => 'Long', 'same_language' => false, 'detected_language' => 'nl']]);
+        $conversation = $this->receiveCustomerEmail(str_repeat('Waar blijft mijn bestelling? ', 200));
+        $this->getConversationPage($this->agent, $conversation)->assertSee('Only the first 4000 characters were translated.');
+
+        // Nothing to translate.
+        $thread = $conversation->threads()->first();
+        \DB::table('threads')->where('id', $thread->id)->update(['body' => '<p> </p>', 'ai_assistant' => null]);
+        Translations::translate($thread->fresh(), 'en');
+        $this->assertSame(['no_text'], Translations::reason($thread->fresh(), 'en'));
+        $this->assertFalse(Translations::isMissing($thread->fresh(), 'en'));
+
+        // Not sent yet.
+        \DB::table('threads')->where('id', $thread->id)->update(['ai_assistant' => null]);
+        $this->assertSame(['waiting'], Translations::reason($thread->fresh(), 'en'));
     }
 
     public function testViewerGetsTheirOwnLanguage()

@@ -1315,5 +1315,10 @@
     "Week": "周",
     "Yesterday": "昨天",
     "This Period": "此期间",
-    "Previous Period": "上一期间"
+    "Previous Period": "上一期间",
+    "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "未翻译：AI 助手检测到 :detected，但认为此消息已经是 :language。",
+    "Not translated: the message has no text.": "未翻译：消息没有文本。",
+    "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "未翻译：AI 助手出错（:error）。打开对话时会重试。",
+    "Waiting for the AI Assistant to translate this message.": "正在等待 AI 助手翻译此消息。",
+    "Only the first :count characters were translated.": "仅翻译了前 :count 个字符。"
 }

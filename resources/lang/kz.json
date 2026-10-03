@@ -1783,5 +1783,10 @@
     "This Year": "Осы жыл",
     "Times are medians: half of the conversations took less.": "Уақыттар медиана бойынша: тикеттердің жартысы азырақ уақыт алды.",
     "This Period": "Осы кезең",
-    "Previous Period": "Алдыңғы кезең"
+    "Previous Period": "Алдыңғы кезең",
+    "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "Аударылмады: ЖИ көмекшісі :detected тілін анықтаса да, бұл хабарлама онсыз да :language тілінде деп санады.",
+    "Not translated: the message has no text.": "Аударылмады: хабарламада мәтін жоқ.",
+    "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Аударылмады: ЖИ көмекшісінде қате орын алды (:error). Тикет ашылғанда қайта әрекет етеді.",
+    "Waiting for the AI Assistant to translate this message.": "ЖИ көмекшісінің бұл хабарламаны аударуы күтілуде.",
+    "Only the first :count characters were translated.": "Тек алғашқы :count таңба аударылды."
 }

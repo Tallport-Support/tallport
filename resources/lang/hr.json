@@ -1313,5 +1313,10 @@
     "Week": "Tjedan",
     "Yesterday": "Jučer",
     "This Period": "Ovo razdoblje",
-    "Previous Period": "Prethodno razdoblje"
+    "Previous Period": "Prethodno razdoblje",
+    "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "Nije prevedeno: AI asistent smatrao je da je ova poruka već na jeziku :language, iako je prepoznao :detected.",
+    "Not translated: the message has no text.": "Nije prevedeno: poruka nema teksta.",
+    "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Nije prevedeno: AI asistent nije uspio (:error). Pokušat će ponovno kad se razgovor otvori.",
+    "Waiting for the AI Assistant to translate this message.": "Čeka se da AI asistent prevede ovu poruku.",
+    "Only the first :count characters were translated.": "Prevedeno je samo prvih :count znakova."
 }

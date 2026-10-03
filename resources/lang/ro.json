@@ -1312,5 +1312,10 @@
     "Week": "Săptămână",
     "Yesterday": "Ieri",
     "This Period": "Perioada aceasta",
-    "Previous Period": "Perioada anterioară"
+    "Previous Period": "Perioada anterioară",
+    "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "Netradus: asistentul AI a considerat că acest mesaj este deja în :language, deși a detectat :detected.",
+    "Not translated: the message has no text.": "Netradus: mesajul nu are text.",
+    "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Netradus: asistentul AI a eșuat (:error). Încearcă din nou când conversația este deschisă.",
+    "Waiting for the AI Assistant to translate this message.": "Se așteaptă ca asistentul AI să traducă acest mesaj.",
+    "Only the first :count characters were translated.": "Au fost traduse doar primele :count caractere."
 }
