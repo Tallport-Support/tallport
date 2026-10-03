@@ -197,6 +197,26 @@ class SettingsController extends Controller
                     ],
                 ];
                 break;
+            case 'api':
+                $params = [
+                    'template_vars' => [
+                        'api_key'        => \App\Api\ApiKey::globalKey(),
+                        'api_keys'       => \App\Api\ApiKey::with('user')->orderBy('user_id')->orderBy('id')->get(),
+                        'webhooks'       => \App\Api\Webhook::orderBy('id')->get(),
+                        'webhook_secret' => \App\Api\Webhook::secret(),
+                        'webhook_events' => \App\Api\Webhook::allEvents(),
+                        'mailboxes'      => \App\Mailbox::orderBy('name')->get(),
+                    ],
+                    'validator_rules' => [
+                        'settings.api\.cors_hosts' => 'nullable|string|max:1000',
+                    ],
+                    'settings' => [
+                        'api.cors_hosts' => [
+                            'env' => 'APIWEBHOOKS_CORS_HOSTS',
+                        ],
+                    ],
+                ];
+                break;
             default:
                 $params = \Eventy::filter('settings.section_params', $params, $section);
                 break;
@@ -291,6 +311,11 @@ class SettingsController extends Controller
                     'aiassistant.customer_context_guidance'       => (array) Option::get('aiassistant.customer_context_guidance', []),
                 ];
                 break;
+            case 'api':
+                $settings = [
+                    'api.cors_hosts' => config('api.cors_hosts'),
+                ];
+                break;
             default:
                 $settings = \Eventy::filter('settings.section_settings', $settings, $section);
                 break;
@@ -309,6 +334,7 @@ class SettingsController extends Controller
             'emails'  => ['title' => __('Mail Settings'), 'icon' => 'transfer', 'order' => 200],
             'alerts'  => ['title' => __('Alerts'), 'icon' => 'bell', 'order' => 300],
             'ai'      => ['title' => __('AI Assistant'), 'icon' => 'flash', 'order' => 400],
+            'api'     => ['title' => __('API & Webhooks'), 'icon' => 'transfer', 'order' => 600],
         ];
         $sections = \Eventy::filter('settings.sections', $sections);
 

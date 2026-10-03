@@ -559,6 +559,87 @@
             }
         }
     },
+    "api_keys": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "name": {
+                "type": "varchar(255)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "key_hash": {
+                "type": "varchar(64)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "token_preview": {
+                "type": "varchar(8)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "ability": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "mailboxes": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "last_used_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "api_keys_key_hash_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "key_hash"
+                ]
+            },
+            "api_keys_user_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "user_id"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
     "attachments": {
         "columns": {
             "id": {
@@ -3395,6 +3476,135 @@
                 "type": "BTREE",
                 "columns": [
                     "status"
+                ]
+            }
+        }
+    },
+    "webhook_logs": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "webhook_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "status_code": {
+                "type": "int(11)",
+                "nullable": false
+            },
+            "error": {
+                "type": "text",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "event": {
+                "type": "varchar(255)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "data": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "attempts": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "finished": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            },
+            "webhook_logs_finished_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "finished"
+                ]
+            },
+            "webhook_logs_webhook_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "webhook_id"
+                ]
+            }
+        }
+    },
+    "webhooks": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "url": {
+                "type": "varchar(255)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "events": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "last_run_time": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "last_run_error": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "mailboxes": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
                 ]
             }
         }

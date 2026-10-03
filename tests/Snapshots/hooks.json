@@ -9,6 +9,104 @@
     },
     {
         "type": "filter",
+        "name": "api.auth.allowed",
+        "arguments": 2,
+        "files": [
+            "app/Http/Middleware/ApiAuthenticate.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "api.conversation.find",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/Api/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "api.conversations.query",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/Api/ConversationsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "api.customer.find",
+        "arguments": 2,
+        "files": [
+            "app/Api/Writer.php",
+            "app/Http/Controllers/Api/CustomersController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "api.customers.query",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/Api/CustomersController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "api.mailbox.find",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/Api/ConversationsController.php",
+            "app/Http/Controllers/Api/MailboxesController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "api.mailboxes.query",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/Api/MailboxesController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "api.user.find",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/Api/UsersController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "api.users.query",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/Api/UsersController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "api.webhook.find",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/Api/WebhooksController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "api.webhooks.query",
+        "arguments": 2,
+        "files": [
+            "app/Http/Controllers/Api/WebhooksController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "apiwebhooks.webhook.before_run",
+        "arguments": 3,
+        "files": [
+            "app/Api/Webhooks.php"
+        ]
+    },
+    {
+        "type": "filter",
         "name": "app.is_trusted_host",
         "arguments": 2,
         "files": [
@@ -523,6 +621,7 @@
         "name": "conversation.status_changed",
         "arguments": 4,
         "files": [
+            "app/Api/Writer.php",
             "app/Console/Commands/FetchEmails.php",
             "app/Conversation.php",
             "app/Http/Controllers/ConversationsController.php"
@@ -816,6 +915,7 @@
         "name": "customer.created",
         "arguments": 1,
         "files": [
+            "app/Api/Writer.php",
             "app/Customer.php"
         ]
     },
@@ -2736,6 +2836,14 @@
     },
     {
         "type": "filter",
+        "name": "user.is_user_available",
+        "arguments": 2,
+        "files": [
+            "app/Api/Format.php"
+        ]
+    },
+    {
+        "type": "filter",
         "name": "user.non_deleted_condition",
         "arguments": 2,
         "files": [
@@ -2844,6 +2952,14 @@
         "arguments": 2,
         "files": [
             "resources/views/users/partials/web_notifications.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "webhooks.events",
+        "arguments": 1,
+        "files": [
+            "app/Api/Webhook.php"
         ]
     }
 ]

@@ -17,6 +17,8 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\HttpsAndCloudflareIp::class,
         // defer(): after the response.
         \Illuminate\Foundation\Http\Middleware\InvokeDeferredCallbacks::class,
+        // CORS for the REST API (config/cors.php).
+        \Illuminate\Http\Middleware\HandleCors::class,
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
@@ -59,10 +61,11 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\CustomHandle::class,
         ],
 
-        // 'api' => [
-        //     'throttle:60,1',
-        //     'bindings',
-        // ],
+        // REST API (routes/api.php): stateless, with an API key.
+        'api' => [
+            \App\Http\Middleware\ApiAuthenticate::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
     ];
 
     /**

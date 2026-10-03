@@ -91,6 +91,11 @@
         "without_overlapping": true
     },
     {
+        "command": "artisan model:prune --model='App\\Api\\WebhookLog'",
+        "expression": "0 0 * * *",
+        "timezone": "UTC"
+    },
+    {
         "command": "artisan tallport:fetch-emails --identifier=c50515c7945d983619ff431603863c21 --unseen=1",
         "expression": "* * * * *",
         "timezone": "UTC",

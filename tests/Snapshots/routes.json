@@ -126,6 +126,427 @@
         "methods": [
             "GET"
         ],
+        "uri": "api/conversations",
+        "name": "api.conversations.index",
+        "action": "Api\\ConversationsController@index",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "api/conversations",
+        "name": "api.conversations.store",
+        "action": "Api\\ConversationsController@store",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "DELETE"
+        ],
+        "uri": "api/conversations/{id}",
+        "name": "api.conversations.destroy",
+        "action": "Api\\ConversationsController@destroy",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "api/conversations/{id}",
+        "name": "api.conversations.show",
+        "action": "Api\\ConversationsController@show",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "api/conversations/{id}",
+        "name": "api.conversations.update",
+        "action": "Api\\ConversationsController@update",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "api/conversations/{id}/custom_fields",
+        "name": "api.conversations.custom_fields",
+        "action": "Api\\ConversationsController@moduleMissing",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "api/conversations/{id}/tags",
+        "name": "api.conversations.tags",
+        "action": "Api\\ConversationsController@moduleMissing",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "api/conversations/{id}/threads",
+        "name": "api.threads.store",
+        "action": "Api\\ConversationsController@storeThread",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "api/conversations/{id}/timelogs",
+        "name": "api.conversations.timelogs",
+        "action": "Api\\ConversationsController@moduleMissing",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "api/conversations/{id}/timelogs",
+        "name": "api.conversations.timelogs.store",
+        "action": "Api\\ConversationsController@moduleMissing",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "api/customers",
+        "name": "api.customers.index",
+        "action": "Api\\CustomersController@index",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "api/customers",
+        "name": "api.customers.store",
+        "action": "Api\\CustomersController@store",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "api/customers/{id}",
+        "name": "api.customers.show",
+        "action": "Api\\CustomersController@show",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "api/customers/{id}",
+        "name": "api.customers.update",
+        "action": "Api\\CustomersController@update",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "api/customers/{id}/customer_fields",
+        "name": "api.customers.customer_fields",
+        "action": "Api\\ConversationsController@moduleMissing",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "api/mailboxes",
+        "name": "api.mailboxes.index",
+        "action": "Api\\MailboxesController@index",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "api/mailboxes/{id}/custom_fields",
+        "name": "api.mailboxes.custom_fields",
+        "action": "Api\\ConversationsController@moduleMissing",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "api/mailboxes/{id}/folders",
+        "name": "api.mailboxes.folders",
+        "action": "Api\\MailboxesController@folders",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "api/reports/{name}",
+        "name": "api.reports.show",
+        "action": "Api\\ReportsController@show",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "api/tags",
+        "name": "api.tags.index",
+        "action": "Api\\ConversationsController@moduleMissing",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "api/timelogs",
+        "name": "api.timelogs.index",
+        "action": "Api\\ConversationsController@moduleMissing",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "api/users",
+        "name": "api.users.index",
+        "action": "Api\\UsersController@index",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "api/users",
+        "name": "api.users.store",
+        "action": "Api\\UsersController@store",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "api/users/me",
+        "name": "api.users.me",
+        "action": "Api\\UsersController@me",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "DELETE"
+        ],
+        "uri": "api/users/{id}",
+        "name": "api.users.destroy",
+        "action": "Api\\UsersController@destroy",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "api/users/{id}",
+        "name": "api.users.show",
+        "action": "Api\\UsersController@show",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "api/webhooks",
+        "name": "api.webhooks.index",
+        "action": "Api\\WebhooksController@index",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "api/webhooks",
+        "name": "api.webhooks.store",
+        "action": "Api\\WebhooksController@store",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "DELETE"
+        ],
+        "uri": "api/webhooks/{id}",
+        "name": "api.webhooks.destroy",
+        "action": "Api\\WebhooksController@destroy",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "OPTIONS"
+        ],
+        "uri": "api/{any}",
+        "name": "api.options",
+        "action": "Closure",
+        "middleware": [
+            "api"
+        ],
+        "where": {
+            "id": "[0-9]+",
+            "any": ".*"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "app-logs/app",
         "name": "logs.app",
         "action": "AppLogsController@index",
@@ -177,6 +598,22 @@
         "uri": "app-settings/ajax",
         "name": "settings.ajax",
         "action": "SettingsController@ajax",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "app-settings/api/action",
+        "name": "settings.api.action",
+        "action": "ApiSettingsController@action",
         "middleware": [
             "web",
             "auth",
@@ -1626,6 +2063,38 @@
         "action": "UsersController@ajax",
         "middleware": [
             "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "users/api-keys/{id}",
+        "name": "users.api_keys",
+        "action": "ApiKeysController@index",
+        "middleware": [
+            "web",
+            "password.confirm",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "users/api-keys/{id}",
+        "name": "users.api_keys.action",
+        "action": "ApiKeysController@action",
+        "middleware": [
+            "web",
+            "password.confirm",
             "auth"
         ],
         "where": {

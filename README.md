@@ -178,6 +178,36 @@ existing conversations; until it is done, search works as before and System
 » Status shows the progress. `php artisan tallport:search-index --rebuild`
 indexes everything again.
 
+## REST API and webhooks
+
+Settings » API & Webhooks shows the global API key (it may do everything)
+and the webhooks. Users make their own keys in their profile (API Keys): a
+key acts as its user, read only or read and write, in the mailboxes chosen.
+Send the key in the `X-FreeScout-API-Key` header (or as `api_key`, a Bearer
+token, or the Basic user name).
+
+* `GET/POST /api/conversations`, `GET/PUT/DELETE /api/conversations/{id}`,
+  `POST /api/conversations/{id}/threads` (customer replies, agent replies,
+  notes, with attachments)
+* `GET/POST /api/customers`, `GET/PUT /api/customers/{id}`
+* `GET/POST /api/users`, `GET /api/users/me`, `GET/DELETE /api/users/{id}`
+* `GET /api/mailboxes`, `GET /api/mailboxes/{id}/folders`
+* `GET/POST /api/webhooks`, `DELETE /api/webhooks/{id}`
+* `GET /api/reports/{conversations|productivity|satisfaction|time}` (with
+  the Reports module)
+
+Lists take `page` and `pageSize` (50, at most 1000) and return
+`{"_embedded": {...}, "page": {...}}`; dates are UTC
+(`2026-10-03T09:15:00Z`). Webhooks POST the conversation or customer as the
+API returns it, with the event in `X-FreeScout-Event` and the base64
+HMAC-SHA1 of the body (keyed with the secret shown in the settings) in
+`X-FreeScout-Signature`. Events: `convo.created`, `convo.assigned`,
+`convo.status`, `convo.moved`, `convo.customer.reply.created`,
+`convo.agent.reply.created`, `convo.note.created`, `convo.deleted`,
+`convo.deleted_forever`, `convo.restored`, `customer.created`,
+`customer.updated`, and events of Workflows' "Trigger Webhook" action. Failed
+deliveries are tried again up to 10 times.
+
 ## Incoming email sources and re-importing
 
 Tallport keeps the raw source of each incoming email for 30 days, in

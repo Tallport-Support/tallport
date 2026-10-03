@@ -146,6 +146,10 @@ class Kernel extends ConsoleKernel
             ->daily()
             ->withoutOverlapping();
 
+        // Webhook deliveries finished more than 3 days ago.
+        $schedule->command('model:prune', ['--model' => [\App\Api\WebhookLog::class]])
+            ->daily();
+
         // Logs monitoring.
         $alert_logs_period = config('app.alert_logs_period');
         if (config('app.alert_logs') && $alert_logs_period) {

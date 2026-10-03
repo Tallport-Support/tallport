@@ -62,6 +62,7 @@ Route::get('/app-logs/{name?}', ['uses' => 'SecureController@logs', 'middleware'
 Route::post('/app-logs/{name?}', ['uses' => 'SecureController@logsSubmit', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.action');
 
 // Settings
+Route::post('/app-settings/api/action', ['uses' => 'ApiSettingsController@action', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('settings.api.action');
 Route::post('/app-settings/ajax', ['uses' => 'SettingsController@ajax', 'middleware' => ['auth', 'roles'], 'roles' => ['admin'], 'laroute' => true])->name('settings.ajax');
 Route::get('/app-settings/{section?}', ['uses' => 'SettingsController@view', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('settings');
 Route::post('/app-settings/{section?}', ['uses' => 'SettingsController@save', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('settings.save');
@@ -95,6 +96,8 @@ Route::get('/users/permissions/{id}', 'UsersController@permissions')->name('user
 Route::post('/users/permissions/{id}', 'UsersController@permissionsSave')->name('users.permissions.save');
 Route::get('/users/notifications/{id}', 'UsersController@notifications')->name('users.notifications');
 Route::post('/users/notifications/{id}', 'UsersController@notificationsSave')->name('users.notifications.save');
+Route::get('/users/api-keys/{id}', 'ApiKeysController@index')->middleware('password.confirm')->name('users.api_keys');
+Route::post('/users/api-keys/{id}', 'ApiKeysController@action')->middleware('password.confirm')->name('users.api_keys.action');
 Route::get('/users/security/{id}', 'UserSecurityController@show')->middleware('password.confirm')->name('users.security');
 Route::post('/users/security/{id}/reset', 'UserSecurityController@reset')->middleware('password.confirm')->name('users.security.reset');
 Route::post('/users/security/{id}/forget-devices', 'UserSecurityController@forgetDevices')->name('users.security.forget_devices');
