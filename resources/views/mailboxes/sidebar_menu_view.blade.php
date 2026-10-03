@@ -54,7 +54,7 @@
                         </span>
                     @endif
                     @action('mailbox.sidebar.buttons', $sidebar_mailbox)
-                    <a href="{{ route('conversations.create', ['mailbox_id' => $sidebar_mailbox->id]) }}" title="{{ __('New Conversation') }}" aria-label="{{ __('New Conversation') }}"><i class="glyphicon glyphicon-envelope"></i></a>
+                    <a href="{{ route('conversations.create', ['mailbox_id' => $sidebar_mailbox->id]) }}" class="new-conversation-link" title="{{ __('New Conversation') }}" aria-label="{{ __('New Conversation') }}"><i class="glyphicon glyphicon-envelope"></i></a>
                 </span>
             </li>
             @include('mailboxes/partials/folders', [
@@ -90,7 +90,7 @@
                 </div>
             @endif
             @action('mailbox.sidebar.buttons', $mailbox)
-            <a class="btn btn-trans" href="{{ route('conversations.create', ['mailbox_id' => $mailbox->id]) }}" aria-label="{{ __("New Conversation") }}" data-toggle="tooltip" title="{{ __("New Conversation") }}" role="button"><i class="glyphicon glyphicon-envelope"></i></a>
+            <a class="btn btn-trans new-conversation-link" href="{{ route('conversations.create', ['mailbox_id' => $mailbox->id]) }}" aria-label="{{ __("New Conversation") }}" data-toggle="tooltip" title="{{ __("New Conversation") }}" role="button"><i class="glyphicon glyphicon-envelope"></i></a>
         </div>
     @endif
     @action('mailbox.after_sidebar_buttons')

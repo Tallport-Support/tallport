@@ -1201,5 +1201,11 @@
     "Addresses": "Адреса",
     "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Агенты получают предупреждение, когда пишут на эти адреса, и автоответы на них не отправляются. По одному на строку: имя перед @ (достаточно его части) или полный адрес; * соответствует чему угодно, дефис также соответствует подчёркиванию или ничему.",
     "Always included": "Всегда включены",
-    ":email looks like an address that does not read replies.": ":email похож на адрес, который не читает ответы."
+    ":email looks like an address that does not read replies.": ":email похож на адрес, который не читает ответы.",
+    "Assign": "Назначить",
+    "Edit Draft": "Редактировать черновик",
+    "Everywhere": "Везде",
+    "Keyboard Shortcuts": "Горячие клавиши",
+    "Turn them off in your profile.": "Их можно отключить в вашем профиле.",
+    "On (press ? to see them)": "Включены (нажмите ?, чтобы увидеть их)"
 }

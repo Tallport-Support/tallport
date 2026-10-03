@@ -1203,5 +1203,11 @@
     "Addresses": "地址",
     "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "用户向这些地址写信时会收到警告，且不会向这些地址发送自动回复。每行一个：@ 前面的名称（部分即可）或完整地址；* 匹配任意内容，连字符也可匹配下划线或省略。",
     "Always included": "始终包含",
-    ":email looks like an address that does not read replies.": ":email 看起来是一个不读回复的地址。"
+    ":email looks like an address that does not read replies.": ":email 看起来是一个不读回复的地址。",
+    "Assign": "分配",
+    "Edit Draft": "编辑草稿",
+    "Everywhere": "任何页面",
+    "Keyboard Shortcuts": "键盘快捷键",
+    "Turn them off in your profile.": "可以在个人资料中关闭。",
+    "On (press ? to see them)": "开启（按 ? 查看）"
 }

@@ -1698,5 +1698,11 @@
     "Addresses": "Мекен-жайлар",
     "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Агенттер осы мекен-жайларға жазғанда ескерту алады, ал оларға автоматты жауаптар жіберілмейді. Әр жолға біреуден: @ алдындағы атау (оның бір бөлігі жеткілікті) немесе толық мекен-жай; * кез келген нәрсеге сәйкес келеді, сызықша астын сызу белгісіне немесе ештеңеге де сәйкес келеді.",
     "Always included": "Әрқашан қосылған",
-    ":email looks like an address that does not read replies.": ":email жауаптарды оқымайтын мекен-жайға ұқсайды."
+    ":email looks like an address that does not read replies.": ":email жауаптарды оқымайтын мекен-жайға ұқсайды.",
+    "Assign": "Тағайындау",
+    "Edit Draft": "Жобаны өзгерту",
+    "Everywhere": "Барлық жерде",
+    "Keyboard Shortcuts": "Пернетақта тіркесімдері",
+    "Turn them off in your profile.": "Оларды профиліңізде өшіре аласыз.",
+    "On (press ? to see them)": "Қосулы (көру үшін ? басыңыз)"
 }

@@ -1362,6 +1362,14 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
         $this->attributes['job_title'] = mb_substr($job_title ?? '', 0, 100);
     }
 
+    /**
+     * Keyboard shortcuts are on unless the user turned them off.
+     */
+    public function hasKeyboardShortcuts()
+    {
+        return $this->keyboard_shortcuts === null || (bool) $this->keyboard_shortcuts;
+    }
+
     public function canSeeOnlyAssignedConversations()
     {
         return $this->hasManageMailboxPermission(0, Mailbox::ACCESS_PERM_ASSIGNED);

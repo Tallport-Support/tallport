@@ -1211,5 +1211,11 @@
     "Addresses": "Adresses",
     "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Les utilisateurs sont avertis lorsqu'ils écrivent à ces adresses, et aucune réponse automatique ne leur est envoyée. Une par ligne : un nom avant le @ (une partie suffit) ou une adresse complète ; * correspond à n'importe quoi, un tiret correspond aussi à un tiret bas ou à rien.",
     "Always included": "Toujours incluses",
-    ":email looks like an address that does not read replies.": ":email semble être une adresse qui ne lit pas les réponses."
+    ":email looks like an address that does not read replies.": ":email semble être une adresse qui ne lit pas les réponses.",
+    "Assign": "Assigner",
+    "Edit Draft": "Modifier le brouillon",
+    "Everywhere": "Partout",
+    "Keyboard Shortcuts": "Raccourcis clavier",
+    "Turn them off in your profile.": "Vous pouvez les désactiver dans votre profil.",
+    "On (press ? to see them)": "Activés (appuyez sur ? pour les voir)"
 }

@@ -1201,5 +1201,11 @@
     "Addresses": "Címek",
     "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "A felhasználók figyelmeztetést kapnak, amikor ezekre a címekre írnak, és ezekre a címekre nem mennek automatikus válaszok. Soronként egy: egy név a @ előtt (elég egy része) vagy egy teljes cím; a * bármire illeszkedik, a kötőjel aláhúzásra vagy semmire is illeszkedik.",
     "Always included": "Mindig szerepel",
-    ":email looks like an address that does not read replies.": ":email olyan címnek tűnik, amely nem olvassa a válaszokat."
+    ":email looks like an address that does not read replies.": ":email olyan címnek tűnik, amely nem olvassa a válaszokat.",
+    "Assign": "Hozzárendelés",
+    "Edit Draft": "Piszkozat szerkesztése",
+    "Everywhere": "Mindenhol",
+    "Keyboard Shortcuts": "Billentyűparancsok",
+    "Turn them off in your profile.": "A profilodban kikapcsolhatod őket.",
+    "On (press ? to see them)": "Bekapcsolva (a ? megmutatja őket)"
 }

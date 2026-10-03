@@ -1201,5 +1201,11 @@
     "Addresses": "Adresler",
     "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Kullanıcılar bu adreslere yazarken uyarılır ve bu adreslere oto yanıt gönderilmez. Her satıra bir tane: @ işaretinden önceki ad (bir kısmı yeterlidir) veya tam adres; * her şeyle eşleşir, tire alt çizgiyle veya hiçbir şeyle de eşleşir.",
     "Always included": "Her zaman dahil",
-    ":email looks like an address that does not read replies.": ":email yanıtları okumayan bir adrese benziyor."
+    ":email looks like an address that does not read replies.": ":email yanıtları okumayan bir adrese benziyor.",
+    "Assign": "Görevlendir",
+    "Edit Draft": "Taslağı düzenle",
+    "Everywhere": "Her yerde",
+    "Keyboard Shortcuts": "Klavye kısayolları",
+    "Turn them off in your profile.": "Bunları profilinizden kapatabilirsiniz.",
+    "On (press ? to see them)": "Açık (görmek için ? tuşuna basın)"
 }

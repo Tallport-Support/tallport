@@ -1201,5 +1201,11 @@
     "Addresses": "Адреси",
     "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Користувачі отримують попередження, коли пишуть на ці адреси, і автовідповіді на них не надсилаються. По одній на рядок: ім'я перед @ (достатньо його частини) або повна адреса; * відповідає будь-чому, дефіс також відповідає підкресленню або нічому.",
     "Always included": "Завжди включені",
-    ":email looks like an address that does not read replies.": ":email схожа на адресу, яка не читає відповіді."
+    ":email looks like an address that does not read replies.": ":email схожа на адресу, яка не читає відповіді.",
+    "Assign": "Призначити",
+    "Edit Draft": "Редагувати чернетку",
+    "Everywhere": "Скрізь",
+    "Keyboard Shortcuts": "Гарячі клавіші",
+    "Turn them off in your profile.": "Їх можна вимкнути у вашому профілі.",
+    "On (press ? to see them)": "Увімкнено (натисніть ?, щоб побачити їх)"
 }

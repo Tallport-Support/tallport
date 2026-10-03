@@ -3447,6 +3447,11 @@
                 "type": "smallint(5) unsigned",
                 "nullable": true,
                 "default": "NULL"
+            },
+            "keyboard_shortcuts": {
+                "type": "tinyint(1)",
+                "nullable": true,
+                "default": "NULL"
             }
         },
         "indexes": {

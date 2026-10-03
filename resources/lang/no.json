@@ -1206,5 +1206,11 @@
     "Addresses": "Adresser",
     "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Brukere får en advarsel når de skriver til disse adressene, og automatiske svar sendes ikke til dem. Én per linje: et navn før @ (en del av det er nok) eller en hel adresse; * samsvarer med hva som helst, en bindestrek samsvarer også med en understrek eller ingenting.",
     "Always included": "Alltid inkludert",
-    ":email looks like an address that does not read replies.": ":email ser ut som en adresse som ikke leser svar."
+    ":email looks like an address that does not read replies.": ":email ser ut som en adresse som ikke leser svar.",
+    "Assign": "Tildel",
+    "Edit Draft": "Rediger utkast",
+    "Everywhere": "Overalt",
+    "Keyboard Shortcuts": "Hurtigtaster",
+    "Turn them off in your profile.": "Du kan slå dem av i profilen din.",
+    "On (press ? to see them)": "På (trykk ? for å se dem)"
 }

@@ -1200,5 +1200,11 @@
     "Addresses": "Adrese",
     "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Utilizatorii sunt avertizați când scriu la aceste adrese, iar răspunsurile automate nu le sunt trimise. Una pe linie: un nume înainte de @ (o parte din el este suficientă) sau o adresă completă; * se potrivește cu orice, o cratimă se potrivește și cu o liniuță de subliniere sau cu nimic.",
     "Always included": "Incluse mereu",
-    ":email looks like an address that does not read replies.": ":email pare o adresă care nu citește răspunsurile."
+    ":email looks like an address that does not read replies.": ":email pare o adresă care nu citește răspunsurile.",
+    "Assign": "Atribuie",
+    "Edit Draft": "Editează schița",
+    "Everywhere": "Peste tot",
+    "Keyboard Shortcuts": "Comenzi rapide de la tastatură",
+    "Turn them off in your profile.": "Le poți dezactiva din profilul tău.",
+    "On (press ? to see them)": "Activate (apasă ? pentru a le vedea)"
 }

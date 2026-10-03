@@ -201,6 +201,16 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="keyboard_shortcuts" class="col-sm-2 control-label">{{ __('Keyboard Shortcuts') }}</label>
+                        <div class="col-sm-6">
+                            <input type="hidden" name="keyboard_shortcuts_shown" value="1">
+                            <div class="controls">
+                                <label class="checkbox inline plain"><input type="checkbox" name="keyboard_shortcuts" id="keyboard_shortcuts" value="1" @if ($user->hasKeyboardShortcuts()) checked @endif> {{ __('On (press ? to see them)') }}</label>
+                            </div>
+                        </div>
+                    </div>
+
                     @if (!$user->isAdmin() && Auth::user()->isAdmin())
                         <div class="form-group">
                             <label for="only_assigned_tickets" class="col-sm-2 control-label">{{ __('Conversations') }}</label>

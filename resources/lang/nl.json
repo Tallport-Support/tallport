@@ -1206,5 +1206,11 @@
     "Addresses": "Adressen",
     "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Gebruikers krijgen een waarschuwing als ze naar deze adressen schrijven, en automatische antwoorden worden er niet naartoe gestuurd. Eén per regel: een naam vóór de @ (een deel ervan is genoeg) of een volledig adres; * komt overeen met alles, een streepje komt ook overeen met een liggend streepje of met niets.",
     "Always included": "Altijd inbegrepen",
-    ":email looks like an address that does not read replies.": ":email lijkt een adres dat geen antwoorden leest."
+    ":email looks like an address that does not read replies.": ":email lijkt een adres dat geen antwoorden leest.",
+    "Assign": "Toewijzen",
+    "Edit Draft": "Concept wijzigen",
+    "Everywhere": "Overal",
+    "Keyboard Shortcuts": "Sneltoetsen",
+    "Turn them off in your profile.": "U kunt ze uitzetten in uw profiel.",
+    "On (press ? to see them)": "Aan (druk op ? om ze te zien)"
 }

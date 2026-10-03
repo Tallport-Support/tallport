@@ -1200,5 +1200,11 @@
     "Addresses": "Naslovi",
     "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Uporabniki so opozorjeni, ko pišejo na te naslove, samodejni odgovori pa se nanje ne pošiljajo. Eden na vrstico: ime pred @ (dovolj je del) ali celoten naslov; * se ujema s čimer koli, vezaj se ujema tudi s podčrtajem ali z ničemer.",
     "Always included": "Vedno vključeni",
-    ":email looks like an address that does not read replies.": ":email je videti kot naslov, ki ne bere odgovorov."
+    ":email looks like an address that does not read replies.": ":email je videti kot naslov, ki ne bere odgovorov.",
+    "Assign": "Dodeli",
+    "Edit Draft": "Uredi osnutek",
+    "Everywhere": "Povsod",
+    "Keyboard Shortcuts": "Bližnjice na tipkovnici",
+    "Turn them off in your profile.": "Izklopite jih lahko v svojem profilu.",
+    "On (press ? to see them)": "Vklopljeno (pritisnite ? za prikaz)"
 }

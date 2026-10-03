@@ -1200,5 +1200,11 @@
     "Addresses": "Adresy",
     "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Používatelia sú upozornení, keď píšu na tieto adresy, a automatické odpovede sa na ne neposielajú. Jedna na riadok: meno pred @ (stačí jeho časť) alebo celá adresa; * zodpovedá čomukoľvek, pomlčka zodpovedá aj podčiarkovníku alebo ničomu.",
     "Always included": "Vždy zahrnuté",
-    ":email looks like an address that does not read replies.": ":email vyzerá ako adresa, ktorá nečíta odpovede."
+    ":email looks like an address that does not read replies.": ":email vyzerá ako adresa, ktorá nečíta odpovede.",
+    "Assign": "Priradiť",
+    "Edit Draft": "Upraviť návrh",
+    "Everywhere": "Všade",
+    "Keyboard Shortcuts": "Klávesové skratky",
+    "Turn them off in your profile.": "Vypnúť ich môžete vo svojom profile.",
+    "On (press ? to see them)": "Zapnuté (zobrazíte ich klávesom ?)"
 }

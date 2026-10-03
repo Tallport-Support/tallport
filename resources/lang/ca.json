@@ -1310,5 +1310,10 @@
     "Addresses": "Adreces",
     "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "Els usuaris reben un avís quan escriuen a aquestes adreces, i no s'hi envien respostes automàtiques. Una per línia: un nom abans de l'@ (n'hi ha prou amb una part) o una adreça sencera; * coincideix amb qualsevol cosa, un guió també coincideix amb un guió baix o amb res.",
     "Always included": "Sempre incloses",
-    ":email looks like an address that does not read replies.": ":email sembla una adreça que no llegeix les respostes."
+    ":email looks like an address that does not read replies.": ":email sembla una adreça que no llegeix les respostes.",
+    "Edit Draft": "Edita l'esborrany",
+    "Everywhere": "Arreu",
+    "Keyboard Shortcuts": "Dreceres de teclat",
+    "Turn them off in your profile.": "Les podeu desactivar al vostre perfil.",
+    "On (press ? to see them)": "Activades (premeu ? per veure-les)"
 }

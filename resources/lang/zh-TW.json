@@ -1255,5 +1255,10 @@
     "Addresses": "地址",
     "Agents are warned when writing to these addresses, and auto replies are not sent to them. One per line: a name before the @ (part of it is enough) or a whole address; * matches anything, a dash also matches an underscore or nothing.": "使用者寫信給這些地址時會收到警告，且不會向這些地址傳送自動回覆。每行一個：@ 前面的名稱（部分即可）或完整地址；* 符合任何內容，連字號也可符合底線或省略。",
     "Always included": "一律包含",
-    ":email looks like an address that does not read replies.": ":email 看起來是不讀取回覆的地址。"
+    ":email looks like an address that does not read replies.": ":email 看起來是不讀取回覆的地址。",
+    "Edit Draft": "編輯草稿",
+    "Everywhere": "任何頁面",
+    "Keyboard Shortcuts": "鍵盤快速鍵",
+    "Turn them off in your profile.": "可以在個人資料中關閉。",
+    "On (press ? to see them)": "開啟（按 ? 查看）"
 }

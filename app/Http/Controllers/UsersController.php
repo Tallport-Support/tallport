@@ -318,6 +318,9 @@ class UsersController extends Controller
         if ($request->exists('ai_language')) {
             $user->ai_language = $request->ai_language ?: null;
         }
+        if ($request->exists('keyboard_shortcuts_shown')) {
+            $user->keyboard_shortcuts = (bool) $request->keyboard_shortcuts;
+        }
         if ($auth_user->isAdmin() && $request->exists('ai_drafts_per_day')) {
             $user->ai_drafts_per_day = is_numeric($request->ai_drafts_per_day) ? (int) $request->ai_drafts_per_day : null;
         }
