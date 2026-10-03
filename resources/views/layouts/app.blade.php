@@ -61,7 +61,7 @@
                                 <i class="glyphicon glyphicon-arrow-left"></i>
                             </a>
                         @else
-                            <a class="navbar-brand" href="{{ route('dashboard') }}" title="{{ __('Dashboard') }}">
+                            <a class="navbar-brand" href="{{ route('dashboard', ['dashboard' => 1]) }}" title="{{ __('Dashboard') }}">
                                 <img src="@filter('layout.header_logo', asset('img/logo-brand.svg'))" height="100%" alt="" />
                             </a>
                         @endif
@@ -73,7 +73,10 @@
                                 $mailboxes = Auth::user()->mailboxesCanView(true);
                                 $mailboxes = \Eventy::filter('menu.mailboxes', $mailboxes);
                             @endphp
-                            @if (count($mailboxes) == 1)
+                            @if (App\Misc\AllMailboxes::isAvailable())
+                                {{-- The mailboxes are in the sidebar of All Mailboxes. --}}
+                                <li class="{{ \App\Misc\Helper::menuSelectedHtml('mailbox') }}"><a href="{{ route('mailboxes.all') }}">{{ __('Mailbox') }}</a></li>
+                            @elseif (count($mailboxes) == 1)
                                 <li class="{{ \App\Misc\Helper::menuSelectedHtml('mailbox') }}"><a href="{{ \Eventy::filter('mailbox.url', route('mailboxes.view', ['id'=>$mailboxes[0]->id]), $mailboxes[0]) }}">@action('menu.mailbox_single.before_name', $mailboxes[0]){{ __('Mailbox') }}@action('menu.mailbox_single.after_name', $mailboxes[0])</a></li>
                             @elseif (count($mailboxes) > 1)
                                 <li class="dropdown {{ \App\Misc\Helper::menuSelectedHtml('mailbox') }}">
@@ -84,10 +87,6 @@
                                         @foreach ($mailboxes as $mailbox_item)
                                             <li class="@if ($mailbox_item->id == app('request')->id) active @endif"><a href="{{ \Eventy::filter('mailbox.url', route('mailboxes.view', ['id' => $mailbox_item->id]), $mailbox_item) }}">@action('menu.mailbox.before_name', $mailbox_item)@if ($mailbox_item->isArchived())<small class="glyphicon glyphicon-lock"></small> @endif{{ $mailbox_item->name }}@action('menu.mailbox.after_name', $mailbox_item)</a></li>
                                         @endforeach
-                                        @if (App\Misc\AllMailboxes::isAvailable())
-                                            <li class="divider"></li>
-                                            <li><a href="{{ route('dashboard', ['dashboard' => 1]) }}">{{ __('Dashboard') }}</a></li>
-                                        @endif
                                     </ul>
                                 </li>
                             @endif

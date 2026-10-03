@@ -242,13 +242,5 @@ class AllMailboxes
             return $query;
         }, 20, 3);
 
-        // First in the Mailbox menu.
-        \Eventy::addFilter('menu.mailboxes', function ($mailboxes) {
-            if (count($mailboxes) > 1) {
-                $mailboxes = collect($mailboxes)->prepend(self::mailbox())->values();
-            }
-
-            return $mailboxes;
-        }, 20, 1);
     }
 }

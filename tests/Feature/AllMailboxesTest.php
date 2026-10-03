@@ -164,7 +164,8 @@ class AllMailboxesTest extends FeatureTestCase
     public function testMailboxMenu()
     {
         $this->actingAs($this->agent)->get(route('mailboxes.view', ['id' => $this->support->id]))
-            ->assertSee('href="'.route('mailboxes.all').'"', false)
-            ->assertSee('href="'.route('dashboard', ['dashboard' => 1]).'"', false);
+            ->assertSee('<a href="'.route('mailboxes.all').'">Mailbox</a>', false)
+            ->assertDontSee('dm-scrollable', false)
+            ->assertSee('class="navbar-brand" href="'.route('dashboard', ['dashboard' => 1]).'"', false);
     }
 }

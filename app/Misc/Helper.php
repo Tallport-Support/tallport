@@ -160,6 +160,7 @@ class Helper
     public static $menu = [
         'dashboard' => 'dashboard',
         'mailbox'   => [
+            'mailboxes.all',
             'mailboxes.view',
             'mailboxes.view.folder',
             'conversations.view',
