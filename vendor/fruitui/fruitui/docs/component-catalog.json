@@ -59,7 +59,7 @@
         "element": "`input type=checkbox`, switch role inside its label.",
         "state": "Native checked state and submitted value; checked/required/disabled attributes.",
         "keyboard": "Tab focuses; Space toggles.",
-        "options": "Fixed type and role. Slot: setting label; attributes go to the input. Inside Field, inherits its id, description and error."
+        "options": "Fixed type and role. Slot: setting label; attributes go to the input. Inside Field, inherits its id, description and error. `description` (string or named slot): help text under the label, linked with `aria-describedby`, outside the label so it does not join the accessible name; the choice is then wrapped in `div.f-choice`."
       }
     }
   },
@@ -75,7 +75,7 @@
         "element": "`input type=checkbox`, checkbox role inside its label.",
         "state": "Native checked state and submitted value; checked/required/disabled attributes.",
         "keyboard": "Tab focuses; Space toggles.",
-        "options": "Fixed type and role. Slot: label; attributes go to the input. Inside Field, inherits its id, description and error."
+        "options": "Fixed type and role. Slot: label; attributes go to the input. Inside Field, inherits its id, description and error. `description` (string or named slot): help text under the label, linked with `aria-describedby`, outside the label so it does not join the accessible name; the choice is then wrapped in `div.f-choice`."
       }
     }
   },
@@ -91,7 +91,7 @@
         "element": "`input type=radio`, radio role inside its label.",
         "state": "Native checked state and selected group value; name/value/required/disabled attributes.",
         "keyboard": "Tab enters group; arrow keys select; Space checks.",
-        "options": "Fixed type and role. Slot: label; attributes go to the input. Group using the same name and a fieldset/legend; a single radio may sit in Field."
+        "options": "Fixed type and role. Slot: label; attributes go to the input. Group using the same name and a fieldset/legend; a single radio may sit in Field. `description` (string or named slot): help text under the label, linked with `aria-describedby`, outside the label so it does not join the accessible name; the choice is then wrapped in `div.f-choice`."
       }
     }
   },
@@ -114,7 +114,7 @@
   {
     "id": "fieldset",
     "kind": "primitive",
-    "classes": ["f-fieldset"],
+    "classes": ["f-fieldset", "f-choice"],
     "blade": ["fieldset"],
     "uses": ["admin.html", "support.html"],
     "contracts": {
@@ -123,7 +123,7 @@
         "element": "`fieldset` with native legend; group role.",
         "state": "Native disabled state propagates to fields except the first legend's descendants.",
         "keyboard": "Children retain their own keyboard behavior.",
-        "options": "Native fieldset attributes. Slot: legend followed by independent controls."
+        "options": "Native fieldset attributes. Slot: legend followed by independent controls. Checkboxes, radios and switches placed directly inside stack one per row."
       }
     }
   },
@@ -1227,5 +1227,21 @@
         "options": "`title` (default Actions). Slot: Menu Items, Checkboxes, Radios, Links, Separators and Groups. Offer the same commands elsewhere, since context menus are hidden."
       }
     }
+  },
+  {
+    "id": "text-styles",
+    "kind": "composition",
+    "classes": [
+      "f-large-title",
+      "f-title-1",
+      "f-title-2",
+      "f-title-3",
+      "f-headline",
+      "f-subheadline",
+      "f-footnote",
+      "f-caption"
+    ],
+    "blade": [],
+    "uses": []
   }
 ]

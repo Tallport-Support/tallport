@@ -94,7 +94,10 @@
   }
 
   /* data-theme="class" follows a Tailwind-style .dark class (Flux and Laravel's starter kits). */
-  :where(.fruit-ui[data-theme='dark'], .fruit-ui.dark[data-theme='class'], .dark .fruit-ui[data-theme='class']) {
+  /* One :where() per selector, so the compat build can unwrap each into its own specificity. */
+  :where(.fruit-ui[data-theme='dark']),
+  :where(.fruit-ui.dark[data-theme='class']),
+  :where(.dark .fruit-ui[data-theme='class']) {
     color-scheme: dark;
   }
 }
@@ -138,8 +141,30 @@
     color: var(--f-accent);
     text-underline-offset: 3px;
   }
-  :where(.fruit-ui) :where(h1, h2, h3, p) {
+  :where(.fruit-ui) :where(h1, h2, h3, h4, h5, h6, p) {
     margin: 0;
+  }
+  /* Headings take the scope's text color, so a host's own heading color cannot leave them
+     unreadable in dark mode, and the title scale below. Component and application classes win. */
+  :where(.fruit-ui) :where(h1, h2, h3, h4, h5, h6) {
+    color: var(--f-text);
+    font-weight: 700;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+  :where(.fruit-ui) :where(h1) {
+    font-size: var(--f-text-3xl);
+  }
+  :where(.fruit-ui) :where(h2) {
+    font-size: var(--f-text-2xl);
+  }
+  :where(.fruit-ui) :where(h3) {
+    font-size: var(--f-text-xl);
+    font-weight: 600;
+  }
+  :where(.fruit-ui) :where(h4, h5, h6) {
+    font-size: var(--f-text-md);
+    font-weight: 600;
   }
   :where(.fruit-ui) :where(label) {
     font-weight: inherit;
@@ -866,6 +891,32 @@
     font-size: var(--f-text-base);
     font-weight: 600;
   }
+  /* A group's choices stack, as macOS lists checkbox and radio groups. Zero specificity, so
+     application row layouts (a switch at the end of a settings row) still apply. */
+  :where(.f-fieldset) > :where(label.f-check, label.f-switch) {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+  }
+  :where(.f-fieldset)
+    > :where(label.f-check, label.f-switch, .f-choice)
+    + :where(label.f-check, label.f-switch, .f-choice) {
+    margin-block-start: var(--f-space-2);
+  }
+  /* A choice with a description: the explanation sits under the label text, aligned with it. */
+  .f-choice {
+    display: grid;
+    gap: 2px;
+    width: fit-content;
+    max-width: 100%;
+  }
+  .f-choice__description {
+    margin: 0;
+    padding-inline-start: calc(var(--f-check-size, 16px) + 8px);
+  }
+  .f-choice:has(> .f-switch) > .f-choice__description {
+    padding-inline-start: calc(34px + 10px);
+  }
 
   .f-file {
     padding: 4px;
@@ -1486,6 +1537,50 @@
 }
 
 @layer fruit.components {
+  /* Apple's text styles on FruitUI's reading scale. Color is inherited; pair with f-muted for
+     secondary text. Headings default to Title 1–3 and Headline; these classes restyle any element. */
+  .f-large-title {
+    font-size: var(--f-text-4xl);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  .f-title-1 {
+    font-size: var(--f-text-3xl);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .f-title-2 {
+    font-size: var(--f-text-2xl);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .f-title-3 {
+    font-size: var(--f-text-xl);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .f-headline {
+    font-size: var(--f-text-md);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .f-subheadline {
+    font-size: var(--f-text-sm);
+    font-weight: 400;
+    line-height: 1.45;
+  }
+  .f-footnote {
+    font-size: var(--f-text-xs);
+    font-weight: 400;
+    line-height: 1.45;
+  }
+  .f-caption {
+    font-size: var(--f-text-2xs);
+    font-weight: 400;
+    line-height: 1.35;
+  }
+
   .f-prose {
     line-height: 1.65;
     overflow-wrap: anywhere;

@@ -24,7 +24,7 @@
         @include('reports/partials/chart')
 
         @if ($data['table_mailboxes'])
-            <h2 class="rpt-section-title">{{ __('Mailboxes') }}</h2>
+            <h2 class="f-title-3 rpt-section-title">{{ __('Mailboxes') }}</h2>
             <div class="f-table__scroll">
                 <x-fruit::table class="rpt-table">
                     <thead>
@@ -57,7 +57,7 @@
         @endif
 
         <section class="rpt-customers">
-            <h2 class="rpt-section-title">{{ __('Most Active Customers') }}</h2>
+            <h2 class="f-title-3 rpt-section-title">{{ __('Most Active Customers') }}</h2>
             @if ($data['table_customers'])
                 <x-fruit::table class="rpt-table">
                     <tbody>

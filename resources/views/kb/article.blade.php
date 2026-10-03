@@ -13,7 +13,7 @@
         @include('partials/flash_messages')
 
         <article class="kb-article">
-            <h2 class="kb-article__title">{{ $article->title }}</h2>
+            <h2 class="f-title-1 kb-article__title">{{ $article->title }}</h2>
             <p class="f-muted">
                 {{ $article->mailbox ? $article->mailbox->name : __('All Mailboxes') }} ·
                 {{ __('Updated :date by :person', ['date' => App\User::dateFormat($article->updated_at, 'M j, Y'), 'person' => $article->updatedBy ? $article->updatedBy->getFullName() : '—']) }}

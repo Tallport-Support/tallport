@@ -570,6 +570,17 @@ Keep islands outside elements whose `wire:key` changes, such as a pane keyed per
 
 `x-fruit::field` composes one native control with its `label`, an optional `description` and its error. Child form adapters, including Checkbox, Radio and Switch, inherit the id and merged ARIA descriptions. The id is `control-id` when given, otherwise the child's own `id`, otherwise one derived from its `wire:model` or `name` (`form.email` becomes `field-form-email`). Plain HTML children need `control-id` and their own associations. Field associates exactly one control and owns no value, rule or model; use Fieldset for choice groups.
 
+**Choice groups and descriptions.** Put checkboxes, radios and switches directly inside a Fieldset and they stack one per row, as macOS lists them. A choice's `description` adds help text under its label, linked with `aria-describedby` and kept out of the label so the control's name stays short; use the named slot for rich text such as a link. Application row layouts, such as a switch at the end of a settings row, still apply because the stacking rule has zero specificity.
+
+```blade
+<x-fruit::fieldset>
+    <legend>Customers</legend>
+    <x-fruit::switch wire:model="settings.photos" description="From Gravatar, for customers without a photo.">Customer photos</x-fruit::switch>
+    <x-fruit::checkbox wire:model="settings.manageTags">Users can manage tags</x-fruit::checkbox>
+    <x-fruit::checkbox wire:model="settings.manageFolders">Users can manage custom folders</x-fruit::checkbox>
+</x-fruit::fieldset>
+```
+
 The error comes from Laravel's shared `$errors` bag, the same one `@error` reads: Field shows the first message for its control's `wire:model` key, or its `name` (`items[0][title]` becomes `items.0.title`; a trailing `[]` is dropped). That covers controller validation after a redirect and Livewire `validate()` alike. `bag` reads a named bag, as with `validateWithBag()`. An explicit `error` string takes precedence, and `error=""` shows no error.
 
 ```blade
@@ -644,3 +655,16 @@ Livewire 4 marks the element that started a request with `data-loading`. Busy bu
 ## Text size
 
 Text uses a web reading scale of `--f-text-*` tokens in rem: at the default browser size, body text (`--f-text-md`) is 16px, controls (`--f-text-base`) 15px, secondary text (`--f-text-sm`, `--f-text-xs`) 14px and 13px, and the smallest labels (`--f-text-2xs`) 12px. Headings use `--f-text-lg` to `--f-text-5xl` (17px to 40px). Sizes follow the reader's browser text setting. Buttons and fields are 36px tall (44px on touch screens). An html scope sizes its body rather than html, which would redefine rem. A host that fixes a pixel font size on html (Bootstrap 3 uses 10px) pins the scale with `--f-text-root: 16px` on its `.fruit-ui` scope. Spacing and control heights remain in pixels.
+
+## Headings and text styles
+
+Headings inside a `.fruit-ui` scope take the scope's text color and a title size: `h1` is Title 1, `h2` Title 2, `h3` Title 3 and `h4`–`h6` Headline. In the compat build these rules have class specificity, so a host stylesheet's bare `h1 { color }` cannot make them unreadable in dark mode; an application's own heading classes, loaded after FruitUI, still win. In the layered build they sit in the lowest layer.
+
+For other text, use Apple's text styles on the reading scale: `f-large-title`, `f-title-1`, `f-title-2`, `f-title-3`, `f-headline`, `f-subheadline`, `f-footnote` and `f-caption`. They set size, weight and line height and inherit the color; add `f-muted` for secondary text. Choose the element for meaning and the class for appearance:
+
+```blade
+<h1 class="f-large-title">Settings</h1>
+<h2>Customers</h2>
+<p class="f-footnote f-muted">Last changed by {{ $user->name }}</p>
+```
+

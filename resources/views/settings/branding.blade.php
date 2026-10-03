@@ -55,8 +55,10 @@
     <h2 class="settings-form__heading">{{ __('Widgets') }}</h2>
 
     <x-fruit::switch name="settings[branding.widget_powered_by]" value="1" :checked="(bool) $settings['branding.widget_powered_by']">
-        <strong>{{ __('Powered by') }}</strong>
-        <small>{{ __('Show "Powered by" in widgets for customers (such as the knowledge base widget)') }}</small>
+        {{ __('Powered by') }}
+        <x-slot:description>
+            {{ __('Show "Powered by" in widgets for customers (such as the knowledge base widget)') }}
+        </x-slot:description>
     </x-fruit::switch>
 
     <div class="settings-form__actions">

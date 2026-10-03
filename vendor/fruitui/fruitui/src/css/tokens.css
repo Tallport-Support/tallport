@@ -93,7 +93,10 @@
   }
 
   /* data-theme="class" follows a Tailwind-style .dark class (Flux and Laravel's starter kits). */
-  :where(.fruit-ui[data-theme='dark'], .fruit-ui.dark[data-theme='class'], .dark .fruit-ui[data-theme='class']) {
+  /* One :where() per selector, so the compat build can unwrap each into its own specificity. */
+  :where(.fruit-ui[data-theme='dark']),
+  :where(.fruit-ui.dark[data-theme='class']),
+  :where(.dark .fruit-ui[data-theme='class']) {
     color-scheme: dark;
   }
 }

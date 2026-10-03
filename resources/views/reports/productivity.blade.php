@@ -30,7 +30,7 @@
         </div>
         <p class="f-help">{{ __('Response times count every hour, from the customer\'s first message waiting for a reply. Median: half took less.') }}</p>
 
-        <h2 class="rpt-section-title">{{ __('Users') }}</h2>
+        <h2 class="f-title-3 rpt-section-title">{{ __('Users') }}</h2>
         @if ($data['table_users'])
             <div class="f-table__scroll">
                 <x-fruit::table class="rpt-table">

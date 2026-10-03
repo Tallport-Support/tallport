@@ -8,19 +8,13 @@
 
     <h2 class="settings-form__heading">{{ __('Email Alerts For Administrators') }}</h2>
 
-    <x-fruit::switch name="settings[alert_fetch]" value="1" :checked="$alert_fetch" x-model="alertFetch">
-        <strong>{{ __('Fetching Problems') }}</strong>
-        <small>{{ __('Send alert if application could not fetch emails for a period of time.') }}</small>
-    </x-fruit::switch>
+    <x-fruit::switch name="settings[alert_fetch]" value="1" :checked="$alert_fetch" x-model="alertFetch" :description="__('Send alert if application could not fetch emails for a period of time.')">{{ __('Fetching Problems') }}</x-fruit::switch>
 
     <x-fruit::field :label="__('Check Interval (minutes)')" x-show="alertFetch">
         <x-fruit::number name="settings[alert_fetch_period]" min="5" :value="old('settings.alert_fetch_period', $settings['alert_fetch_period'])" x-bind:required="alertFetch" />
     </x-fruit::field>
 
-    <x-fruit::switch name="settings[alert_logs]" value="1" :checked="$alert_logs" x-model="alertLogs">
-        <strong>{{ __('Logs Monitoring') }}</strong>
-        <small>{{ __('Send new log records by email.') }}</small>
-    </x-fruit::switch>
+    <x-fruit::switch name="settings[alert_logs]" value="1" :checked="$alert_logs" x-model="alertLogs" :description="__('Send new log records by email.')">{{ __('Logs Monitoring') }}</x-fruit::switch>
 
     <div class="settings-form" x-show="alertLogs">
         <x-fruit::fieldset>

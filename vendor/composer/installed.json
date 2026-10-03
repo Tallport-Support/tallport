@@ -1374,13 +1374,13 @@
             "version_normalized": "dev-main",
             "source": {
                 "type": "git",
-                "url": "git@github.com:nielspeen/fruitui.git",
-                "reference": "7780c78d7c30a8ddbdab3bb6da967d257cf86639"
+                "url": "https://github.com/nielspeen/fruitui.git",
+                "reference": "67cc693ac55d0a3126dd15955fe250b354de224c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nielspeen/fruitui/zipball/7780c78d7c30a8ddbdab3bb6da967d257cf86639",
-                "reference": "7780c78d7c30a8ddbdab3bb6da967d257cf86639",
+                "url": "https://api.github.com/repos/nielspeen/fruitui/zipball/67cc693ac55d0a3126dd15955fe250b354de224c",
+                "reference": "67cc693ac55d0a3126dd15955fe250b354de224c",
                 "shasum": ""
             },
             "require": {
@@ -1400,7 +1400,7 @@
             "suggest": {
                 "livewire/livewire": "^4.0 for optional single-file components and server interactions."
             },
-            "time": "2026-10-03T13:09:34+00:00",
+            "time": "2026-10-03T13:41:24+00:00",
             "default-branch": true,
             "type": "library",
             "extra": {
@@ -1440,6 +1440,10 @@
                 "MIT"
             ],
             "description": "CSS-first, Apple-inspired UI components for Laravel.",
+            "support": {
+                "source": "https://github.com/nielspeen/fruitui/tree/main",
+                "issues": "https://github.com/nielspeen/fruitui/issues"
+            },
             "install-path": "../fruitui/fruitui"
         },
         {

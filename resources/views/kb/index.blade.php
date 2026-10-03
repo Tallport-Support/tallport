@@ -30,7 +30,7 @@
             @foreach ($articles->groupBy(fn ($article) => (string) $article->category) as $kb_category => $kb_articles)
                 <section class="kb-group">
                     @if ($category === '')
-                        <h2 class="kb-group__title">{{ $kb_category !== '' ? $kb_category : __('No category') }}</h2>
+                        <h2 class="f-title-3 kb-group__title">{{ $kb_category !== '' ? $kb_category : __('No category') }}</h2>
                     @endif
                     <x-fruit::item-list>
                         @foreach ($kb_articles as $article)

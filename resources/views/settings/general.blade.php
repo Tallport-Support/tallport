@@ -59,14 +59,13 @@
 
     <x-fruit::switch name="settings[open_tracking]" value="1" :checked="(bool) old('settings.open_tracking', $settings['open_tracking'])">{{ __('Open Tracking') }}</x-fruit::switch>
 
-    <x-fruit::switch name="settings[customer_gravatar]" value="1" :checked="(bool) old('settings.customer_gravatar', $settings['customer_gravatar'])">
-        <strong>{{ __('Customer Photos') }}</strong>
-        <small>{{ __('From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.') }}</small>
-    </x-fruit::switch>
+    <x-fruit::switch name="settings[customer_gravatar]" value="1" :checked="(bool) old('settings.customer_gravatar', $settings['customer_gravatar'])" :description="__('From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.')">{{ __('Customer Photos') }}</x-fruit::switch>
 
     <x-fruit::switch name="settings[email_branding]" value="1" :checked="(bool) old('settings.email_branding', $settings['email_branding'])">
-        <strong>{{ __('Spread the Word', ['app_name' => \Config::get('app.name')]) }}</strong>
-        <small>{{ __('Add "Powered by :app_name" footer text to the outgoing emails to invite more developers to the project and make the application better.', ['app_name' => \Config::get('app.name')]) }}</small>
+        {{ __('Spread the Word', ['app_name' => \Config::get('app.name')]) }}
+        <x-slot:description>
+            {{ __('Add "Powered by :app_name" footer text to the outgoing emails to invite more developers to the project and make the application better.', ['app_name' => \Config::get('app.name')]) }}
+        </x-slot:description>
     </x-fruit::switch>
 
     <h2 class="settings-form__heading">{{ __('Notification Emails to Users') }}</h2>

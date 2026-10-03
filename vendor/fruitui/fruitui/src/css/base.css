@@ -37,8 +37,30 @@
     color: var(--f-accent);
     text-underline-offset: 3px;
   }
-  :where(.fruit-ui) :where(h1, h2, h3, p) {
+  :where(.fruit-ui) :where(h1, h2, h3, h4, h5, h6, p) {
     margin: 0;
+  }
+  /* Headings take the scope's text color, so a host's own heading color cannot leave them
+     unreadable in dark mode, and the title scale below. Component and application classes win. */
+  :where(.fruit-ui) :where(h1, h2, h3, h4, h5, h6) {
+    color: var(--f-text);
+    font-weight: 700;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+  :where(.fruit-ui) :where(h1) {
+    font-size: var(--f-text-3xl);
+  }
+  :where(.fruit-ui) :where(h2) {
+    font-size: var(--f-text-2xl);
+  }
+  :where(.fruit-ui) :where(h3) {
+    font-size: var(--f-text-xl);
+    font-weight: 600;
+  }
+  :where(.fruit-ui) :where(h4, h5, h6) {
+    font-size: var(--f-text-md);
+    font-weight: 600;
   }
   :where(.fruit-ui) :where(label) {
     font-weight: inherit;

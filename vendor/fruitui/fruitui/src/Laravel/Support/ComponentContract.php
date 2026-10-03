@@ -2,6 +2,7 @@
 
 namespace FruitUI\Support;
 
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\View\ComponentAttributeBag;
 use InvalidArgumentException;
 
@@ -329,6 +330,28 @@ final class ComponentContract
                 }
             }
         }
+    }
+
+    /**
+     * Link a checkbox, radio or switch to its description. The id follows the control's id, or a
+     * hash of its name, value and model, so it stays stable across Livewire renders.
+     *
+     * @return array{0: ComponentAttributeBag, 1: ?string}
+     */
+    public static function choiceDescription(ComponentAttributeBag $attributes, mixed $description): array
+    {
+        $text = $description instanceof Htmlable ? $description->toHtml() : (string) $description;
+        if (trim(strip_tags($text)) === '') {
+            return [$attributes, null];
+        }
+        $base = $attributes->get('id') ?? 'f-choice-'.substr(md5(implode('|', [
+            $attributes->get('name'), $attributes->get('value'), $attributes->get('wire:model'), $attributes->get('x-model'), $text,
+        ])), 0, 10);
+        // Distinct from a Field's own {id}-description.
+        $id = "{$base}-choice-description";
+        $describedBy = trim($attributes->get('aria-describedby', '').' '.$id);
+
+        return [$attributes->except('aria-describedby')->merge(['aria-describedby' => $describedBy]), $id];
     }
 
     public static function wrapper(mixed $attributes): ComponentAttributeBag

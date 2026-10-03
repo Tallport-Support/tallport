@@ -1,6 +1,6 @@
 {{-- $table from Report::timeTable() or ProductivityReport::countTable(). --}}
 <section>
-    <h2 class="rpt-section-title">{{ $title }}</h2>
+    <h2 class="f-title-3 rpt-section-title">{{ $title }}</h2>
     @if ($table['count'])
         <x-fruit::table class="rpt-table">
             <tbody>

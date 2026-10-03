@@ -143,6 +143,32 @@
     font-size: var(--f-text-base);
     font-weight: 600;
   }
+  /* A group's choices stack, as macOS lists checkbox and radio groups. Zero specificity, so
+     application row layouts (a switch at the end of a settings row) still apply. */
+  :where(.f-fieldset) > :where(label.f-check, label.f-switch) {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+  }
+  :where(.f-fieldset)
+    > :where(label.f-check, label.f-switch, .f-choice)
+    + :where(label.f-check, label.f-switch, .f-choice) {
+    margin-block-start: var(--f-space-2);
+  }
+  /* A choice with a description: the explanation sits under the label text, aligned with it. */
+  .f-choice {
+    display: grid;
+    gap: 2px;
+    width: fit-content;
+    max-width: 100%;
+  }
+  .f-choice__description {
+    margin: 0;
+    padding-inline-start: calc(var(--f-check-size, 16px) + 8px);
+  }
+  .f-choice:has(> .f-switch) > .f-choice__description {
+    padding-inline-start: calc(34px + 10px);
+  }
 
   .f-file {
     padding: 4px;

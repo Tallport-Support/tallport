@@ -51,10 +51,7 @@
                     <x-fruit::number id="max_executions" name="max_executions" :value="old('max_executions', $workflow->max_executions ?: 1)" min="1" max="1000000" />
                 </x-fruit::field>
 
-                <x-fruit::checkbox id="apply_to_prev" name="apply_to_prev" value="1" :checked="(bool) old('apply_to_prev', $workflow->apply_to_prev)">
-                    <strong>{{ __('Existing Conversations') }}</strong>
-                    <small>{{ __('Also run on conversations from before the workflow') }}</small>
-                </x-fruit::checkbox>
+                <x-fruit::checkbox id="apply_to_prev" name="apply_to_prev" value="1" :checked="(bool) old('apply_to_prev', $workflow->apply_to_prev)" :description="__('Also run on conversations from before the workflow')">{{ __('Existing Conversations') }}</x-fruit::checkbox>
                 <x-fruit::alert tone="warning">{{ __('On saving, it runs on every existing conversation that meets the conditions. This can\'t be undone.') }}</x-fruit::alert>
 
                 <section class="wf-editor-section">

@@ -5041,7 +5041,6 @@ a.disabled:focus {
     gap: 8px 24px;
 }
 .rpt-section-title {
-    font-size: var(--f-text-lg);
     margin: 20px 0 8px;
 }
 .rpt-table td,
@@ -5102,7 +5101,6 @@ a.disabled:focus {
     margin-bottom: 16px;
 }
 .workflow-section-title {
-    font-size: var(--f-text-lg);
     margin: 0 0 4px;
 }
 .wf-editor-section {
@@ -5160,14 +5158,10 @@ a.disabled:focus {
     margin-bottom: 24px;
 }
 .kb-group__title {
-    font-size: var(--f-text-lg);
     margin: 0 0 6px 12px;
 }
 .kb-article {
     max-width: 800px;
-}
-.kb-article__title {
-    font-size: var(--f-text-2xl);
 }
 .kb-article-body {
     margin-top: 20px;
@@ -5319,10 +5313,6 @@ a.disabled:focus {
     flex: 1;
     min-width: 0;
 }
-.page-nav__title h1 {
-    font-size: var(--f-text-2xl);
-    margin: 0;
-}
 .page-nav__actions {
     display: flex;
     gap: 6px;
@@ -5360,7 +5350,6 @@ a.disabled:focus {
     max-width: 640px;
 }
 .settings-form__heading {
-    font-size: var(--f-text-xl);
     margin: 18px 0 0;
 }
 .settings-form__actions {

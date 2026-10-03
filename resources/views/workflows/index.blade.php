@@ -17,7 +17,7 @@
         @include('partials/flash_messages')
 
         <div class="page-toolbar f-row">
-            <h2 class="workflow-section-title">{{ $mailbox ? $mailbox->name : __('All Mailboxes') }}</h2>
+            <h2 class="f-title-3 workflow-section-title">{{ $mailbox ? $mailbox->name : __('All Mailboxes') }}</h2>
             <a href="{{ $mailbox ? route('mailboxes.workflows.create', ['mailbox_id' => $mailbox->id]) : route('workflows.create') }}" class="f-button">{{ __('New Workflow') }}</a>
         </div>
 
@@ -32,7 +32,7 @@
         @else
             @foreach ([__('Automatic') => $automatic, __('Manual') => $manual] as $list_title => $list)
                 @if (count($list))
-                    <h3 class="workflow-section-title">{{ $list_title }}</h3>
+                    <h3 class="f-title-3 workflow-section-title">{{ $list_title }}</h3>
                     <ul class="workflows-list" data-mailbox_id="{{ $mailbox ? $mailbox->id : '' }}">
                         @foreach ($list as $workflow)
                             <li class="workflow-item" data-workflow-id="{{ $workflow->id }}">
