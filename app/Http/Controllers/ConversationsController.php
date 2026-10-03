@@ -2231,6 +2231,17 @@ class ConversationsController extends Controller
                     return \Response::json($response);
                 }
 
+                // All Mailboxes: the folder of every mailbox of the user.
+                if (\App\Misc\AllMailboxes::isAllMailboxes($request->mailbox_id)) {
+                    if (\App\Misc\AllMailboxes::emptyFolder($user, $request->folder_id)) {
+                        $response['status'] = 'success';
+                    } else {
+                        $response['msg'] = __('Folder not found');
+                    }
+
+                    return \Response::json($response);
+                }
+
                 // Check access to the mailbox.
                 $folder = Folder::find($request->folder_id ?? '');
 

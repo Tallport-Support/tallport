@@ -1201,5 +1201,8 @@
     "Webhook saved": "Webhook enregistré",
     "Webhook deleted": "Webhook supprimé",
     "API & Webhooks": "API & webhooks",
-    "Trigger Webhook": "Déclencher un webhook"
+    "Trigger Webhook": "Déclencher un webhook",
+    "All Mailboxes": "Toutes les boîtes de réception",
+    "Show folders": "Afficher les dossiers",
+    "Sent": "Envoyés"
 }

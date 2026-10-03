@@ -1,0 +1,152 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Conversation;
+use App\Folder;
+use App\Misc\AllMailboxes;
+use App\Thread;
+use App\User;
+use Tests\FeatureTestCase;
+
+/**
+ * All Mailboxes: the folders of every mailbox of a user together, first in
+ * the sidebar, with each mailbox below it.
+ */
+class AllMailboxesTest extends FeatureTestCase
+{
+    protected $agent;
+    protected $support;
+    protected $sales;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->agent = $this->createUser();
+        $this->support = $this->createMailbox([$this->agent], ['name' => 'Support']);
+        $this->sales = $this->createMailbox([$this->agent], ['name' => 'Sales']);
+    }
+
+    protected function conversation($mailbox, $subject)
+    {
+        $this->receiveEmail($mailbox, $this->makeEmail([
+            'from' => 'Casey Customer <casey@customer.example.org>', 'to' => $mailbox->email, 'subject' => $subject,
+        ]));
+
+        return Conversation::where('mailbox_id', $mailbox->id)->orderBy('id', 'desc')->first();
+    }
+
+    public function testUnassignedOfEveryMailbox()
+    {
+        $support = $this->conversation($this->support, 'Support question');
+        $sales = $this->conversation($this->sales, 'Sales question');
+        $hidden_mailbox = $this->createMailbox([], ['name' => 'Hidden']);
+        $this->conversation($hidden_mailbox, 'Hidden question');
+
+        $this->actingAs($this->agent)->get('/')->assertRedirect(route('mailboxes.all'));
+        $this->get('/?dashboard=1')->assertOk()->assertSee('Dashboard');
+
+        $response = $this->get(route('mailboxes.all'))->assertOk()
+            ->assertSee('Support question')->assertSee('Sales question')->assertDontSee('Hidden question')
+            ->assertSee('data-mailbox-tree="1"', false)
+            ->assertSee('All Mailboxes');
+        // Each mailbox below All Mailboxes, folded.
+        $html = $response->getContent();
+        $this->assertLessThan(strpos($html, 'data-mailbox_id="'.$this->support->id.'"'), strpos($html, 'data-mailbox_id="-1"'));
+        $this->assertMatchesRegularExpression('#data-folder_id="-1"[^>]*>\s*<a[^>]*>.*?<strong class="active-count[^>]*>2</strong>#s', $html, 'Unassigned counts both mailboxes.');
+        $this->assertMatchesRegularExpression('#class="[^"]*hidden[^"]*" data-folder_id="\d+"[^>]*data-mailbox_group="'.$this->sales->id.'"#', $html);
+
+        // Next pages.
+        $page = $this->postAjax($this->agent, '/conversation/ajax', [
+            'action' => 'conversations_pagination', 'mailbox_id' => AllMailboxes::MAILBOX_ID, 'folder_id' => -Folder::TYPE_UNASSIGNED, 'page' => 1,
+            'params' => ['show_mailbox' => 1],
+        ]);
+        $this->assertStringContainsString('Sales question', $page->json('html'));
+        $this->assertStringContainsString('Support question', $page->json('html'));
+
+        // In a mailbox, the tree has it open.
+        $this->get(route('mailboxes.view', ['id' => $this->sales->id]))->assertOk()
+            ->assertSeeInOrder(['current expanded', 'data-mailbox_id="'.$this->sales->id.'"'], false);
+    }
+
+    public function testMineAssignedStarredSent()
+    {
+        $colleague = $this->createUser();
+        $this->support->users()->attach($colleague->id);
+        $mine = $this->conversation($this->support, 'Mine');
+        $theirs = $this->conversation($this->sales, 'Theirs');
+        $mine->changeUser($this->agent->id, $this->agent);
+        $theirs->changeUser($colleague->id, $this->agent);
+        $this->postAjax($this->agent, '/conversation/ajax', [
+            'action' => 'send_reply', 'mailbox_id' => $this->sales->id, 'conversation_id' => $theirs->id, 'body' => '<p>Answer</p>',
+        ]);
+        Conversation::find($mine->id)->star($this->agent);
+        $this->assertSame(1, Thread::where('conversation_id', $theirs->id)->where('type', Thread::TYPE_MESSAGE)->count(), 'The reply was sent.');
+
+        $ids = function ($type) {
+            return AllMailboxes::query(AllMailboxes::folder($this->agent, -$type), $this->agent)->pluck('conversations.id')->all();
+        };
+        $this->actingAs($this->agent);
+        $this->assertSame([$mine->id], $ids(Folder::TYPE_MINE));
+        $this->assertSame([$theirs->id], $ids(Folder::TYPE_ASSIGNED));
+        $this->assertSame([$mine->id], $ids(Folder::TYPE_STARRED));
+        $this->assertSame([$theirs->id], $ids(AllMailboxes::TYPE_SENT));
+
+        $this->get(route('mailboxes.all', ['folder_id' => -AllMailboxes::TYPE_SENT]))->assertOk()->assertSee('data-conversation_id="'.$theirs->id.'"', false)->assertDontSee('data-conversation_id="'.$mine->id.'"', false);
+        $this->get(route('mailboxes.all', ['folder_id' => -999]))->assertNotFound();
+    }
+
+    public function testEmptyTrashOfEveryMailbox()
+    {
+        $admin = $this->createAdmin();
+        $first = $this->conversation($this->support, 'First');
+        $second = $this->conversation($this->sales, 'Second');
+        $first->deleteToFolder($admin);
+        $second->deleteToFolder($admin);
+
+        $this->postAjax($admin, '/conversation/ajax', [
+            'action' => 'empty_folder', 'mailbox_id' => AllMailboxes::MAILBOX_ID, 'folder_id' => -Folder::TYPE_DELETED,
+        ])->assertJsonPath('status', 'success');
+
+        $this->assertNull(Conversation::find($first->id));
+        $this->assertNull(Conversation::find($second->id));
+        $this->postAjax($admin, '/conversation/ajax', [
+            'action' => 'empty_folder', 'mailbox_id' => AllMailboxes::MAILBOX_ID, 'folder_id' => -Folder::TYPE_CLOSED,
+        ])->assertJsonPath('status', 'error');
+    }
+
+    public function testUsersWhoSeeOnlyTheirConversations()
+    {
+        $restricted = $this->createUser();
+        $this->support->users()->attach($restricted->id);
+        $this->sales->users()->attach($restricted->id);
+        $restricted->permissions = [User::PERM_ONLY_ASSIGNED_TICKETS => true];
+        $restricted->save();
+
+        $mine = $this->conversation($this->support, 'Assigned to me');
+        $this->conversation($this->sales, 'Not mine');
+        $mine->changeUser($restricted->id, $restricted);
+
+        $this->assertTrue($restricted->fresh()->canSeeOnlyAssignedConversations());
+        $this->actingAs($restricted->fresh())->get(route('mailboxes.all'))->assertDontSee('Not mine');
+        $this->get(route('mailboxes.all', ['folder_id' => -Folder::TYPE_MINE]))->assertSee('Assigned to me');
+    }
+
+    public function testOneMailboxNoTree()
+    {
+        $single = $this->createUser();
+        $this->support->users()->attach($single->id);
+
+        $this->actingAs($single)->get('/')->assertOk();
+        $this->get(route('mailboxes.all'))->assertRedirect();
+        $this->get(route('mailboxes.view', ['id' => $this->support->id]))->assertOk()->assertDontSee('data-mailbox-tree', false);
+    }
+
+    public function testMailboxMenu()
+    {
+        $this->actingAs($this->agent)->get(route('mailboxes.view', ['id' => $this->support->id]))
+            ->assertSee('href="'.route('mailboxes.all').'"', false)
+            ->assertSee('href="'.route('dashboard', ['dashboard' => 1]).'"', false);
+    }
+}

@@ -1191,5 +1191,8 @@
     "Webhook saved": "Webhook sparad",
     "Webhook deleted": "Webhook raderad",
     "API & Webhooks": "API & webhooks",
-    "Trigger Webhook": "Utlös webhook"
+    "Trigger Webhook": "Utlös webhook",
+    "All Mailboxes": "Alla inkorgar",
+    "Show folders": "Visa mappar",
+    "Sent": "Skickat"
 }

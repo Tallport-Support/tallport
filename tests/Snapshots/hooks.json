@@ -1688,7 +1688,8 @@
         "name": "mailbox.folders.public_types",
         "arguments": 1,
         "files": [
-            "app/Mailbox.php"
+            "app/Mailbox.php",
+            "app/Misc/AllMailboxes.php"
         ]
     },
     {

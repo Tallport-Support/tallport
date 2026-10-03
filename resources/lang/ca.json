@@ -1301,5 +1301,7 @@
     "Webhook saved": "Webhook desat",
     "Webhook deleted": "Webhook eliminat",
     "API & Webhooks": "API & webhooks",
-    "Trigger Webhook": "Activa un webhook"
+    "Trigger Webhook": "Activa un webhook",
+    "All Mailboxes": "Totes les bústies",
+    "Show folders": "Mostra les carpetes"
 }

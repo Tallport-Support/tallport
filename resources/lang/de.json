@@ -1184,5 +1184,8 @@
     "Webhook saved": "Webhook gespeichert",
     "Webhook deleted": "Webhook gelöscht",
     "API & Webhooks": "API & Webhooks",
-    "Trigger Webhook": "Webhook auslösen"
+    "Trigger Webhook": "Webhook auslösen",
+    "All Mailboxes": "Alle Postfächer",
+    "Show folders": "Ordner anzeigen",
+    "Sent": "Gesendet"
 }

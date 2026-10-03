@@ -1191,5 +1191,8 @@
     "Webhook saved": "Вебхук збережено",
     "Webhook deleted": "Вебхук видалено",
     "API & Webhooks": "API і вебхуки",
-    "Trigger Webhook": "Викликати вебхук"
+    "Trigger Webhook": "Викликати вебхук",
+    "All Mailboxes": "Усі поштові скриньки",
+    "Show folders": "Показати папки",
+    "Sent": "Надіслані"
 }

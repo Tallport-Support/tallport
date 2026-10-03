@@ -1,5 +1,5 @@
 @if (\Helper::isChatModeAvailable() && $mailbox->id >= 0)
-    <li>
+    <li data-mailbox_group="{{ $mailbox->id }}" @if (!empty($folders_hidden)) class="hidden" @endif>
         <a href="{{ route('conversations.chats', ['mailbox_id' => $mailbox->id, 'chat_mode' => '1']) }}" class="no-active"><i class="glyphicon glyphicon-phone"></i> <span class="folder-name">{{ __('Chats') }}</span></a>
     </li>
 @endif
@@ -17,7 +17,7 @@
                 $active_count = $folder_item->getCount($folders);
             }
         @endphp
-        <li class="{{ $folder_item->getTypeIcon() }}@if ($folder_item->id == $folder->id) active @endif" data-folder_id="{{ $folder_item->id }}" data-active-count="{{ $folder_item->active_count }}">
+        <li class="{{ $folder_item->getTypeIcon() }}@if ($folder_item->id == $folder->id) active @endif @if (!empty($folders_hidden)) hidden @endif" data-folder_id="{{ $folder_item->id }}" data-active-count="{{ $folder_item->active_count }}" data-mailbox_group="{{ $mailbox->id }}">
             <a href="{{ $folder_item->url($mailbox->id) }}" @if (!$folder_item->active_count) class="no-active" @endif><i class="glyphicon glyphicon-{{ $folder_item->getTypeIcon() }}"></i> <span class="folder-name">{{ $folder_item->getTypeName() }}</span>
                 
                 @if ($active_count)

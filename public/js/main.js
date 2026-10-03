@@ -373,6 +373,7 @@ var EditorListsButton = function (context) {
 $(document).ready(function(){
 
 	triggersInit();
+	initSidebarMailboxes();
 
     // Submenu
     $('.sidebar-menu-toggle').click(function(event) {
@@ -4236,7 +4237,20 @@ function polycastInit()
 	// Refresh folders and conversations list
     var mailbox_id = getGlobalAttr('mailbox_id');
     var el_folders = $('#folders');
-    if (mailbox_id && el_folders.length && !isChatMode()) {
+    // All Mailboxes: a new message in any mailbox refreshes the list.
+    if (parseInt(mailbox_id) < 0 && el_folders.attr('data-mailbox-tree') && !isChatMode()) {
+    	el_folders.children('.sidebar-mailbox-heading').each(function() {
+    		var tree_mailbox_id = $(this).attr('data-mailbox_id');
+    		if (parseInt(tree_mailbox_id) > 0) {
+    			poly.subscribe('mailbox.'+tree_mailbox_id).on('App\\Events\\RealtimeMailboxNewThread', function(data, event) {
+    				if (data && data.mailbox_id == tree_mailbox_id && $(".table-conversations:first").length && !getSelectedConversations().length) {
+    					loadConversations('', '', true);
+    				}
+    			});
+    		}
+    	});
+    }
+    if (parseInt(mailbox_id) > 0 && el_folders.length && !isChatMode()) {
 	    var channel = poly.subscribe('mailbox.'+mailbox_id);
 
 	    channel.on('App\\Events\\RealtimeMailboxNewThread', function(data, event){
@@ -4246,7 +4260,14 @@ function polycastInit()
 
 		    if (typeof(data.folders_html) != "undefined" && data.folders_html) {
 		    	var folder_id = el_folders.children('li.active:first').attr('data-folder_id');
-		    	el_folders.html(data.folders_html);
+		    	if (el_folders.attr('data-mailbox-tree')) {
+		    		// Only this mailbox's folders in the tree.
+		    		var group = el_folders.children('li[data-mailbox_group="'+mailbox_id+'"]');
+		    		group.first().before($.parseHTML(data.folders_html));
+		    		group.remove();
+		    	} else {
+		    		el_folders.html(data.folders_html);
+		    	}
 		    	var active_folder = el_folders.children('li[data-folder_id="'+folder_id+'"]');
 		    	active_folder.addClass('active');
 
@@ -6476,4 +6497,48 @@ function passkeysInitLogin(options_url, login_url)
 			button.button('reset');
 		});
 	});
+}
+
+/**
+ * The mailboxes in the sidebar: show or hide a mailbox's folders
+ * (remembered in this browser).
+ */
+function initSidebarMailboxes()
+{
+	var tree = $('#folders[data-mailbox-tree]');
+	if (!tree.length) {
+		return;
+	}
+	var open = [];
+	try {
+		open = JSON.parse(localStorage.getItem('sidebar_mailboxes_open') || '[]') || [];
+	} catch (e) {}
+
+	$.each(open, function(i, mailbox_id) {
+		sidebarMailboxShow(tree, mailbox_id, true);
+	});
+
+	tree.on('click', '.sidebar-mailbox-toggle', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var mailbox_id = $(this).closest('li').attr('data-mailbox_id');
+		var show = !$(this).closest('li').hasClass('expanded');
+		sidebarMailboxShow(tree, mailbox_id, show);
+
+		open = $.grep(open, function(id) {
+			return id != mailbox_id;
+		});
+		if (show) {
+			open.push(mailbox_id);
+		}
+		try {
+			localStorage.setItem('sidebar_mailboxes_open', JSON.stringify(open));
+		} catch (e) {}
+	});
+}
+
+function sidebarMailboxShow(tree, mailbox_id, show)
+{
+	tree.children('li[data-mailbox_group="'+mailbox_id+'"]').toggleClass('hidden', !show);
+	tree.children('.sidebar-mailbox-heading[data-mailbox_id="'+mailbox_id+'"]').toggleClass('expanded', show);
 }

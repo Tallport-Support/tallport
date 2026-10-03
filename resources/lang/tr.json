@@ -1191,5 +1191,8 @@
     "Webhook saved": "Webhook kaydedildi",
     "Webhook deleted": "Webhook silindi",
     "API & Webhooks": "API & Webhook'lar",
-    "Trigger Webhook": "Webhook Tetikle"
+    "Trigger Webhook": "Webhook Tetikle",
+    "All Mailboxes": "Tüm Posta Kutuları",
+    "Show folders": "Klasörleri göster",
+    "Sent": "Gönderilenler"
 }

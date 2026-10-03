@@ -30,6 +30,12 @@ class SecureController extends Controller
     {
         $user = auth()->user();
 
+        // With several mailboxes, the start is All Mailboxes (the dashboard
+        // stays at ?dashboard=1).
+        if (!request()->has('dashboard') && \App\Misc\AllMailboxes::isAvailable($user)) {
+            return redirect()->route('mailboxes.all');
+        }
+
         $mailboxes = $user->mailboxesCanViewWithSettings();
 
         // Sort by name.

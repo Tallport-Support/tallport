@@ -1190,5 +1190,8 @@
     "Webhook saved": "ה-Webhook נשמר",
     "Webhook deleted": "ה-Webhook נמחק",
     "API & Webhooks": "API ו-Webhooks",
-    "Trigger Webhook": "הפעל Webhook"
+    "Trigger Webhook": "הפעל Webhook",
+    "All Mailboxes": "כל תיבות הדואר",
+    "Show folders": "הצג תיקיות",
+    "Sent": "נשלחו"
 }

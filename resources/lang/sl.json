@@ -1190,5 +1190,8 @@
     "Webhook saved": "Webhook je shranjen",
     "Webhook deleted": "Webhook je izbrisan",
     "API & Webhooks": "API & webhooki",
-    "Trigger Webhook": "Sproži webhook"
+    "Trigger Webhook": "Sproži webhook",
+    "All Mailboxes": "Vsi poštni predali",
+    "Show folders": "Prikaži mape",
+    "Sent": "Poslano"
 }

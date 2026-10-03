@@ -1191,5 +1191,8 @@
     "Webhook saved": "Вебхук сохранён",
     "Webhook deleted": "Вебхук удалён",
     "API & Webhooks": "API и вебхуки",
-    "Trigger Webhook": "Вызвать вебхук"
+    "Trigger Webhook": "Вызвать вебхук",
+    "All Mailboxes": "Все ящики",
+    "Show folders": "Показать папки",
+    "Sent": "Отправленные"
 }

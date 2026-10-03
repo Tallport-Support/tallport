@@ -1190,5 +1190,8 @@
     "Webhook saved": "Webhook salvat",
     "Webhook deleted": "Webhook șters",
     "API & Webhooks": "API & webhook-uri",
-    "Trigger Webhook": "Declanșează webhook"
+    "Trigger Webhook": "Declanșează webhook",
+    "All Mailboxes": "Toate cutiile poștale",
+    "Show folders": "Arată dosarele",
+    "Sent": "Trimise"
 }

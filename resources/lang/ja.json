@@ -1191,5 +1191,8 @@
     "Webhook saved": "Webhookを保存しました",
     "Webhook deleted": "Webhookを削除しました",
     "API & Webhooks": "API & Webhook",
-    "Trigger Webhook": "Webhookを実行"
+    "Trigger Webhook": "Webhookを実行",
+    "All Mailboxes": "すべてのメールボックス",
+    "Show folders": "フォルダを表示",
+    "Sent": "送信済み"
 }

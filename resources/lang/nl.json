@@ -1196,5 +1196,8 @@
     "Webhook saved": "Webhook opgeslagen",
     "Webhook deleted": "Webhook verwijderd",
     "API & Webhooks": "API & Webhooks",
-    "Trigger Webhook": "Webhook activeren"
+    "Trigger Webhook": "Webhook activeren",
+    "All Mailboxes": "Alle mailboxen",
+    "Show folders": "Mappen tonen",
+    "Sent": "Verzonden"
 }

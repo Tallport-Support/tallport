@@ -1210,5 +1210,8 @@
     "Webhook saved": "Webhook tallennettu",
     "Webhook deleted": "Webhook poistettu",
     "API & Webhooks": "API & webhookit",
-    "Trigger Webhook": "Käynnistä webhook"
+    "Trigger Webhook": "Käynnistä webhook",
+    "All Mailboxes": "Kaikki postilaatikot",
+    "Show folders": "Näytä kansiot",
+    "Sent": "Lähetetyt"
 }

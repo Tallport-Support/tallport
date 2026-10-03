@@ -1190,5 +1190,8 @@
     "Webhook saved": "Webhook uložený",
     "Webhook deleted": "Webhook vymazaný",
     "API & Webhooks": "API & webhooky",
-    "Trigger Webhook": "Spustiť webhook"
+    "Trigger Webhook": "Spustiť webhook",
+    "All Mailboxes": "Všetky mailboxy",
+    "Show folders": "Zobraziť priečinky",
+    "Sent": "Odoslané"
 }

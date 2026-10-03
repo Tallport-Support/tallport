@@ -1196,5 +1196,8 @@
     "Webhook saved": "Webhook lagret",
     "Webhook deleted": "Webhook slettet",
     "API & Webhooks": "API & webhooks",
-    "Trigger Webhook": "Utløs webhook"
+    "Trigger Webhook": "Utløs webhook",
+    "All Mailboxes": "Alle postkasser",
+    "Show folders": "Vis mapper",
+    "Sent": "Sendt"
 }

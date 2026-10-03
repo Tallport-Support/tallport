@@ -1193,5 +1193,8 @@
     "Webhook saved": "Webhook 已保存",
     "Webhook deleted": "Webhook 已删除",
     "API & Webhooks": "API 和 Webhook",
-    "Trigger Webhook": "触发 Webhook"
+    "Trigger Webhook": "触发 Webhook",
+    "All Mailboxes": "所有邮箱",
+    "Show folders": "显示文件夹",
+    "Sent": "已发送"
 }

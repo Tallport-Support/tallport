@@ -1191,5 +1191,8 @@
     "Webhook saved": "Webhook mentve",
     "Webhook deleted": "Webhook törölve",
     "API & Webhooks": "API & webhookok",
-    "Trigger Webhook": "Webhook indítása"
+    "Trigger Webhook": "Webhook indítása",
+    "All Mailboxes": "Összes postafiók",
+    "Show folders": "Mappák mutatása",
+    "Sent": "Elküldött"
 }

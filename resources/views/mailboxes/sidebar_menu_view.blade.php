@@ -7,6 +7,42 @@
 @php
     $is_in_chat_mode = $is_in_chat_mode ?? (isset($conversation) && $conversation->isInChatMode());
 @endphp
+@if (!$is_in_chat_mode && App\Misc\AllMailboxes::isAvailable())
+    {{-- All Mailboxes first, then each mailbox (collapsible). --}}
+    @php
+        $sidebar_folder = $folder ?? new App\Folder();
+        $sidebar_in_all = App\Misc\AllMailboxes::isAllMailboxes($mailbox->id);
+    @endphp
+    <ul class="sidebar-menu sidebar-mailboxes" id="folders" data-mailbox-tree="1">
+        <li class="sidebar-mailbox-heading @if ($sidebar_in_all) current @endif" data-mailbox_id="{{ App\Misc\AllMailboxes::MAILBOX_ID }}">
+            <a href="{{ route('mailboxes.all') }}"><i class="glyphicon glyphicon-inbox"></i> <span class="folder-name">{{ __('All Mailboxes') }}</span></a>
+        </li>
+        @include('mailboxes/partials/folders', [
+            'mailbox' => App\Misc\AllMailboxes::mailbox(),
+            'folders' => $sidebar_in_all ? $folders : App\Misc\AllMailboxes::folders(Auth::user()),
+            'folder'  => $sidebar_in_all ? $sidebar_folder : new App\Folder(),
+            'folders_hidden' => false,
+        ])
+        @foreach (Auth::user()->mailboxesCanView(true) as $sidebar_mailbox)
+            @php
+                $sidebar_current = $sidebar_mailbox->id == $mailbox->id;
+                $sidebar_folders = $sidebar_current ? $folders : $sidebar_mailbox->getAssesibleFolders();
+                $sidebar_count = $sidebar_folders->whereIn('type', [App\Folder::TYPE_UNASSIGNED, App\Folder::TYPE_MINE])->sum(function ($item) use ($sidebar_folders) {
+                    return $item->getCount($sidebar_folders);
+                });
+            @endphp
+            <li class="sidebar-mailbox-heading @if ($sidebar_current) current expanded @endif" data-mailbox_id="{{ $sidebar_mailbox->id }}">
+                <a href="{{ $sidebar_mailbox->url() }}"><i class="glyphicon glyphicon-triangle-right sidebar-mailbox-toggle" title="{{ __('Show folders') }}"></i> <span class="folder-name">@if ($sidebar_mailbox->isArchived())<small class="glyphicon glyphicon-lock"></small> @endif{{ $sidebar_mailbox->name }}</span>@if ($sidebar_count)<span class="active-count pull-right">{{ $sidebar_count }}</span>@endif</a>
+            </li>
+            @include('mailboxes/partials/folders', [
+                'mailbox' => $sidebar_mailbox,
+                'folders' => $sidebar_folders,
+                'folder'  => $sidebar_current ? $sidebar_folder : new App\Folder(),
+                'folders_hidden' => !$sidebar_current,
+            ])
+        @endforeach
+    </ul>
+@else
 <ul class="sidebar-menu @if ($is_in_chat_mode) chats @endif" id="folders">
     @if ($is_in_chat_mode)
         @include('mailboxes/partials/chat_list')
@@ -14,6 +50,7 @@
         @include('mailboxes/partials/folders')
     @endif
 </ul>
+@endif
 @if (!$is_in_chat_mode)
     @php
         $show_settings_btn = Auth::user()->can('viewMailboxMenu', Auth::user());

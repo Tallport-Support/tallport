@@ -577,6 +577,9 @@ class Mailbox extends Model
                 $user = User::find($user_id);
             }
         }
+        if (!$user) {
+            return false;
+        }
         if (!$user->isAdmin() && !$this->isActive()) {
             return false;
         }

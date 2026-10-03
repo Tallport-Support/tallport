@@ -1191,5 +1191,8 @@
     "Webhook saved": "Webhook spremljen",
     "Webhook deleted": "Webhook izbrisan",
     "API & Webhooks": "API & webhookovi",
-    "Trigger Webhook": "Pokreni webhook"
+    "Trigger Webhook": "Pokreni webhook",
+    "All Mailboxes": "Svi poštanski sandučići",
+    "Show folders": "Prikaži mape",
+    "Sent": "Poslano"
 }

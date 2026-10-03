@@ -180,7 +180,9 @@ class AuthTest extends FeatureTestCase
         $response->assertSee('Visible mailbox');
         $response->assertDontSee('Hidden mailbox');
 
-        $this->actingAs($this->createAdmin())->get('/')->assertSee('Hidden mailbox');
+        // With several mailboxes, the start is All Mailboxes; the dashboard is still there.
+        $this->actingAs($this->createAdmin())->get('/')->assertRedirect(route('mailboxes.all'));
+        $this->get('/?dashboard=1')->assertSee('Hidden mailbox');
     }
 
     public function testGuestIsSentToLogin()

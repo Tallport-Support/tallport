@@ -1245,5 +1245,8 @@
     "Webhook saved": "Webhook 已儲存",
     "Webhook deleted": "Webhook 已刪除",
     "API & Webhooks": "API 與 Webhooks",
-    "Trigger Webhook": "觸發 Webhook"
+    "Trigger Webhook": "觸發 Webhook",
+    "All Mailboxes": "所有信箱",
+    "Show folders": "顯示資料夾",
+    "Sent": "已傳送"
 }

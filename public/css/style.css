@@ -193,6 +193,28 @@ body.user-is-guest {
     top: 10px;
     z-index: 9;
 }
+.sidebar-mailboxes > li.sidebar-mailbox-heading > a {
+    font-weight: bold;
+    padding-left: 20px;
+}
+.sidebar-mailboxes > li.sidebar-mailbox-heading > a .glyphicon {
+    position: static;
+    margin-right: 6px;
+}
+.sidebar-mailboxes > li.sidebar-mailbox-heading:not(:first-child) {
+    margin-top: 6px;
+}
+.sidebar-mailboxes .sidebar-mailbox-toggle {
+    cursor: pointer;
+    font-size: 10px;
+    transition: transform .15s ease-in-out;
+}
+.sidebar-mailboxes .sidebar-mailbox-heading.expanded .sidebar-mailbox-toggle {
+    transform: rotate(90deg);
+}
+.sidebar-mailboxes .sidebar-mailbox-heading .active-count {
+    font-weight: normal;
+}
 .sidebar-menu-toggle {
     background: #fff;
     border: 1px solid #d3dae0;

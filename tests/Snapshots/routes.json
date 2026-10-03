@@ -1098,6 +1098,22 @@
         "methods": [
             "GET"
         ],
+        "uri": "mailbox/all/{folder_id?}",
+        "name": "mailboxes.all",
+        "action": "AllMailboxesController@view",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+",
+            "folder_id": "-?\\d+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "mailbox/connection-settings/{id}/incoming",
         "name": "mailboxes.connection.incoming",
         "action": "MailboxesController@connectionIncoming",

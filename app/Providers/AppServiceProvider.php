@@ -40,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
         \Illuminate\Notifications\DatabaseNotification::observe(\App\Observers\DatabaseNotificationObserver::class);
         \App\Search\Indexer::listen();
         \App\Api\Webhooks::listen();
+        \App\Misc\AllMailboxes::listen();
 
         // Channels Tallport has (modules add theirs the same way).
         \Eventy::addFilter('channel.name', function ($name, $channel) {

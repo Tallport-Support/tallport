@@ -1688,5 +1688,8 @@
     "Webhook saved": "Вебхук сақталды",
     "Webhook deleted": "Вебхук жойылды",
     "API & Webhooks": "API және вебхуктар",
-    "Trigger Webhook": "Вебхукты іске қосу"
+    "Trigger Webhook": "Вебхукты іске қосу",
+    "All Mailboxes": "Барлық пошталық жәшіктер",
+    "Show folders": "Қалталарды көрсету",
+    "Sent": "Жіберілгендер"
 }
