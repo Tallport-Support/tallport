@@ -44,8 +44,8 @@
 
             <x-fruit::field :label="__('Mailbox')">
                 <x-fruit::select id="ai_documents_mailbox" name="mailbox_id" required>
-                    @foreach ($mailboxes as $mailbox)
-                        <option value="{{ $mailbox->id }}" @selected(old('mailbox_id') == $mailbox->id)>{{ $mailbox->name }}</option>
+                    @foreach ($mailboxes as $mailbox_option)
+                        <option value="{{ $mailbox_option->id }}" @selected(old('mailbox_id') == $mailbox_option->id)>{{ $mailbox_option->name }}</option>
                     @endforeach
                 </x-fruit::select>
             </x-fruit::field>
@@ -144,18 +144,18 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($mailboxes as $mailbox)
+            @foreach ($mailboxes as $mailbox_option)
                 @php
-                    $api_key = $api_keys->get($mailbox->id);
+                    $api_key = $api_keys->get($mailbox_option->id);
                 @endphp
                 <tr>
-                    <td>{{ $mailbox->name }}</td>
+                    <td>{{ $mailbox_option->name }}</td>
                     <td>@if ($api_key)<code>{{ $api_key->key_preview }}</code>@else<span class="f-muted">–</span>@endif</td>
                     <td>{{ $api_key && $api_key->last_used_at ? App\User::dateFormat($api_key->last_used_at) : '–' }}</td>
                     <td>
                         <form method="POST" action="{{ route('ai.documents.action') }}" class="f-row">
                             {{ csrf_field() }}
-                            <input type="hidden" name="mailbox_id" value="{{ $mailbox->id }}">
+                            <input type="hidden" name="mailbox_id" value="{{ $mailbox_option->id }}">
                             @if ($api_key)
                                 <x-fruit::button type="submit" size="small" name="action" value="issue_key" data-confirm="{{ __('Make a new API key? Websites using the current key stop working.') }}">{{ __('New Key') }}</x-fruit::button>
                                 <x-fruit::button type="submit" size="small" variant="danger" name="action" value="revoke_key" data-confirm="{{ __('Revoke this API key? Websites using it stop working.') }}">{{ __('Revoke') }}</x-fruit::button>

@@ -2,25 +2,23 @@
 
 @section('title', $article->title)
 
+@section('main_class', 'fruit-ui')
+
 @section('sidebar')
-    @include('partials/sidebar_menu_toggle')
-    @include('kb/sidebar_menu', ['category' => (string) $article->category])
+    @include('kb/sidebar_menu', ['category' => (string) $article->category, 'kb_action' => $article->canBeEditedBy(Auth::user()) ? ['url' => route('kb.edit', ['id' => $article->id]), 'label' => __('Edit')] : null])
 @endsection
 
 @section('content')
-    <div class="section-heading">
-        <a href="{{ route('kb') }}">{{ __('Knowledge Base') }}</a>@if ($article->category) » <a href="{{ route('kb', ['category' => $article->category]) }}">{{ $article->category }}</a>@endif
-        @if ($article->canBeEditedBy(Auth::user()))<a href="{{ route('kb.edit', ['id' => $article->id]) }}" class="btn btn-bordered margin-left-10">{{ __('Edit') }}</a>@endif
-    </div>
+    <div class="page-content kb">
+        @include('partials/flash_messages')
 
-    @include('partials/flash_messages')
-
-    <div class="row-container kb-article">
-        <h2>{{ $article->title }}</h2>
-        <p class="text-help">
-            {{ $article->mailbox ? $article->mailbox->name : __('All Mailboxes') }} ·
-            {{ __('Updated :date by :person', ['date' => App\User::dateFormat($article->updated_at, 'M j, Y'), 'person' => $article->updatedBy ? $article->updatedBy->getFullName() : '—']) }}
-        </p>
-        <div class="kb-article-body">{!! \Helper::stripDangerousTags((string) $article->body) !!}</div>
+        <article class="kb-article">
+            <h2 class="kb-article__title">{{ $article->title }}</h2>
+            <p class="f-muted">
+                {{ $article->mailbox ? $article->mailbox->name : __('All Mailboxes') }} ·
+                {{ __('Updated :date by :person', ['date' => App\User::dateFormat($article->updated_at, 'M j, Y'), 'person' => $article->updatedBy ? $article->updatedBy->getFullName() : '—']) }}
+            </p>
+            <div class="f-prose kb-article-body">{!! \Helper::stripDangerousTags((string) $article->body) !!}</div>
+        </article>
     </div>
 @endsection
