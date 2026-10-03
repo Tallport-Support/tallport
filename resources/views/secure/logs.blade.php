@@ -2,6 +2,8 @@
 
 @section('title_full', __('Logs').' - '.App\ActivityLog::getLogTitle($current_name))
 
+@section('main_class', 'fruit-ui')
+
 @section('sidebar')
     <x-page-nav :label="__('Logs')">
         <x-slot:title><h1>{{ __('Logs') }}</h1></x-slot:title>
@@ -12,19 +14,21 @@
 @endsection
 
 @section('content')
-<form method="post">
-    {{ csrf_field() }}
-    <div class="section-heading margin-bottom">
-        {{ __('Log Records') }} @if ($current_name != App\ActivityLog::NAME_OUT_EMAILS)&nbsp;&nbsp;<button type="submit" name="action" value="clean" class="btn btn-default btn-xs" data-toggle="tooltip">{{ __('Clear Log') }}</button>@endif
-
-        <div class="small text-help pull-right">{{ App\User::dateFormat(new Illuminate\Support\Carbon()) }}</div>
-    </div>
-</form>
-
-<div class="container">
+<div class="page-content">
+    <form method="post" class="page-toolbar f-row">
+        {{ csrf_field() }}
+        <h2 class="f-title-3">{{ App\ActivityLog::getLogTitle($current_name) }}</h2>
+        <div class="f-row">
+            <span class="f-muted">{{ App\User::dateFormat(new Illuminate\Support\Carbon()) }}</span>
+            @if ($current_name != App\ActivityLog::NAME_OUT_EMAILS)
+                <x-fruit::button type="submit" size="small" name="action" value="clean">{{ __('Clear Log') }}</x-fruit::button>
+            @endif
+        </div>
+    </form>
 
     @if (count($logs))
-        <table id="table-logs" class="stripe hover order-column row-border" style="width:100%">
+        <div class="f-table__scroll">
+        <x-fruit::table id="table-logs" class="logs-table">
             <thead>
                 <tr>
                     @foreach ($cols as $col)
@@ -66,25 +70,16 @@
                     </tr>
                 @endforeach
             </tbody>
-        </table>
+        </x-fruit::table>
+        </div>
 
-        {{ $activities->links() }}
+        {{ $activities->links('fruit::pagination.default') }}
 
     @else
-        @include('partials/empty', ['empty_text' => __('Log is empty')])
+        <x-fruit::empty-state>
+            <x-slot:icon><x-heroicon-o-document-text /></x-slot:icon>
+            {{ __('Log is empty') }}
+        </x-fruit::empty-state>
     @endif
 </div>
-@endsection
-
-@section('stylesheets')
-    <link href="{{ asset('js/datatables/datatables.min.css') }}" rel="stylesheet">
-@endsection
-
-@section('javascripts')
-    <script src="{{ asset('js/datatables/datatables.min.js') }}" {!! \Helper::cspNonceAttr() !!}></script>
-@endsection
-
-@section('javascript')
-    @parent
-    logsInit();
 @endsection
