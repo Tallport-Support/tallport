@@ -1855,7 +1855,8 @@ class Helper
         $pids = [];
 
         try {
-            $processes = preg_split("/[\r\n]/", \Helper::shellExec("ps aux | grep '".$search."'"));
+            // ww: whole command lines, whatever the terminal width (COLUMNS).
+            $processes = preg_split("/[\r\n]/", \Helper::shellExec("ps auxww | grep '".$search."'"));
             foreach ($processes as $process) {
                 $process = trim($process);
                 preg_match("/^[\S]+\s+([\d]+)\s+/", $process, $m);
