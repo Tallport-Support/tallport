@@ -65,6 +65,12 @@
   :where(.fruit-ui) :where(label) {
     font-weight: inherit;
   }
+  /* Legends read like the surrounding text, without a host's legend color, rule line or width. */
+  :where(.fruit-ui) :where(legend) {
+    width: auto;
+    border: 0;
+    color: inherit;
+  }
   :where(.f-menu, .f-floating-disclosure, .f-sidebar__group) > summary {
     list-style: none;
   }

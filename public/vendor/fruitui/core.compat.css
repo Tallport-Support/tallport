@@ -186,6 +186,14 @@ html.fruit-ui > body {
     font-weight: inherit;
   }
 
+/* Legends read like the surrounding text, without a host's legend color, rule line or width. */
+
+.fruit-ui :where(legend) {
+    width: auto;
+    border: 0;
+    color: inherit;
+  }
+
 :where(.f-menu, .f-floating-disclosure, .f-sidebar__group) > summary {
     list-style: none;
   }
@@ -425,6 +433,7 @@ textarea.f-input {
     display: inline-flex;
     align-items: center;
     gap: 10px;
+    margin: 0;
     cursor: pointer;
   }
 
@@ -915,10 +924,14 @@ select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) {
     opacity: 1;
   }
 
-:where(label.f-check) {
+/* Class specificity, so a host's bare label rule (Bootstrap's inline-block and margin) cannot
+     undo the layout; application classes loaded later still win. */
+
+.f-check:where(label) {
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    margin: 0;
     cursor: pointer;
   }
 
@@ -1000,24 +1013,26 @@ select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) {
   }
 
 .f-fieldset > legend:not(.f-sr-only) {
+    width: auto;
     padding: 0;
+    border: 0;
     margin-block-end: var(--f-space-2);
     font-size: var(--f-text-base);
     font-weight: 600;
   }
 
-/* A group's choices stack, as macOS lists checkbox and radio groups. Zero specificity, so
-     application row layouts (a switch at the end of a settings row) still apply. */
+/* A group's choices stack, as macOS lists checkbox and radio groups. Class specificity beats a
+     host's bare label rules; application row layouts (a switch at the end of a settings row)
+     loaded after FruitUI still apply. */
 
-:where(.f-fieldset) > :where(label.f-check, label.f-switch) {
+.f-fieldset > :where(label.f-check, label.f-switch) {
     display: flex;
     width: fit-content;
     max-width: 100%;
+    margin: 0;
   }
 
-:where(.f-fieldset)
-    > :where(label.f-check, label.f-switch, .f-choice)
-    + :where(label.f-check, label.f-switch, .f-choice) {
+.f-fieldset > :where(label.f-check, label.f-switch, .f-choice) + :where(label.f-check, label.f-switch, .f-choice) {
     margin-block-start: var(--f-space-2);
   }
 
