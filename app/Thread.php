@@ -131,6 +131,9 @@ class Thread extends Model
     const ACTION_TYPE_NOSTR_AUTO_REPLY = 90;
     // An attachment deleted (action_data: its file name).
     const ACTION_TYPE_ATTACHMENT_DELETED = 91;
+    // A workflow ran (meta workflow_id): automatic, or run by a user.
+    const ACTION_TYPE_WORKFLOW_AUTOMATIC = 201;
+    const ACTION_TYPE_WORKFLOW_MANUAL = 202;
 
     // Describes an optional action associated with the line item
     public static $action_types = [

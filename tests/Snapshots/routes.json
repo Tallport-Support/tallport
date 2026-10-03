@@ -1489,6 +1489,66 @@
         "methods": [
             "GET"
         ],
+        "uri": "mailbox/workflows/{mailbox_id}",
+        "name": "mailboxes.workflows",
+        "action": "WorkflowsController@index",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/workflows/{mailbox_id}/new",
+        "name": "mailboxes.workflows.create",
+        "action": "WorkflowsController@edit",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/workflows/{mailbox_id}/save",
+        "name": "mailboxes.workflows.save",
+        "action": "WorkflowsController@save",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/workflows/{mailbox_id}/{id}",
+        "name": "mailboxes.workflows.update",
+        "action": "WorkflowsController@edit",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "mailbox/{id}",
         "name": "mailboxes.view",
         "action": "MailboxesController@view",
@@ -2486,6 +2546,81 @@
         "uri": "users/wizard",
         "name": null,
         "action": "UsersController@createSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "workflows",
+        "name": "workflows",
+        "action": "WorkflowsController@globalIndex",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "workflows/ajax",
+        "name": "workflows.ajax",
+        "action": "WorkflowsController@ajax",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "workflows/new",
+        "name": "workflows.create",
+        "action": "WorkflowsController@globalEdit",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "workflows/save",
+        "name": "workflows.save",
+        "action": "WorkflowsController@globalSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "workflows/{id}",
+        "name": "workflows.update",
+        "action": "WorkflowsController@globalEdit",
         "middleware": [
             "web",
             "auth"

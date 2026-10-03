@@ -129,6 +129,17 @@ Route::get('/mailbox/settings/{id}', 'MailboxesController@update')->name('mailbo
 Route::post('/mailbox/settings/{id}', 'MailboxesController@updateSave')->name('mailboxes.update.save');
 Route::get('/mailbox/permissions/{id}', 'MailboxesController@permissions')->name('mailboxes.permissions');
 Route::post('/mailbox/permissions/{id}', 'MailboxesController@permissionsSave')->name('mailboxes.permissions.save');
+// Workflows: of a mailbox, and of all mailboxes.
+Route::get('/mailbox/workflows/{mailbox_id}', 'WorkflowsController@index')->name('mailboxes.workflows');
+Route::get('/mailbox/workflows/{mailbox_id}/new', 'WorkflowsController@edit')->name('mailboxes.workflows.create');
+Route::get('/mailbox/workflows/{mailbox_id}/{id}', 'WorkflowsController@edit')->name('mailboxes.workflows.update');
+Route::post('/mailbox/workflows/{mailbox_id}/save', 'WorkflowsController@save')->name('mailboxes.workflows.save');
+Route::get('/workflows', 'WorkflowsController@globalIndex')->name('workflows');
+Route::get('/workflows/new', 'WorkflowsController@globalEdit')->name('workflows.create');
+Route::get('/workflows/{id}', 'WorkflowsController@globalEdit')->name('workflows.update');
+Route::post('/workflows/save', 'WorkflowsController@globalSave')->name('workflows.save');
+Route::post('/workflows/ajax', ['uses' => 'WorkflowsController@ajax', 'laroute' => true])->name('workflows.ajax');
+
 // Reports
 Route::get('/reports/conversations', 'ReportsController@conversations')->name('reports.conversations');
 Route::get('/reports/productivity', 'ReportsController@productivity')->name('reports.productivity');

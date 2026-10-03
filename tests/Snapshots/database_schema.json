@@ -836,6 +836,52 @@
             }
         }
     },
+    "conversation_workflow": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "conversation_id": {
+                "type": "int(11)",
+                "nullable": false
+            },
+            "workflow_id": {
+                "type": "int(11)",
+                "nullable": false
+            },
+            "counter": {
+                "type": "int(11)",
+                "nullable": false,
+                "default": "1"
+            }
+        },
+        "indexes": {
+            "conversation_workflow_conversation_id_workflow_id_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "conversation_id",
+                    "workflow_id"
+                ]
+            },
+            "conversation_workflow_workflow_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "workflow_id"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
     "conversations": {
         "columns": {
             "id": {
@@ -3765,6 +3811,99 @@
                 "type": "BTREE",
                 "columns": [
                     "id"
+                ]
+            }
+        }
+    },
+    "workflows": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(11)",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "name": {
+                "type": "varchar(75)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "type": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "apply_to_prev": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "complete": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "active": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "conditions": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "actions": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "sort_order": {
+                "type": "int(11)",
+                "nullable": false,
+                "default": "1"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "max_executions": {
+                "type": "int(11)",
+                "nullable": false,
+                "default": "1"
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            },
+            "workflows_mailbox_id_active_type_sort_order_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id",
+                    "active",
+                    "type",
+                    "sort_order"
                 ]
             }
         }

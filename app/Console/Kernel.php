@@ -152,6 +152,12 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping()
             ->runInBackground();
 
+        // Workflows whose conditions depend on time.
+        $schedule->command('tallport:workflows')
+            ->everyFiveMinutes()
+            ->withoutOverlapping()
+            ->runInBackground();
+
         // Webhook deliveries finished more than 3 days ago.
         $schedule->command('model:prune', ['--model' => [\App\Api\WebhookLog::class]])
             ->daily();

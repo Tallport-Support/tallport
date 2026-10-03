@@ -197,6 +197,11 @@ class Helper
                 'logs',
                 'logs.app',
             ],
+            'workflows' => [
+                'workflows',
+                'workflows.create',
+                'workflows.update',
+            ],
             'system' => [
                 'system',
                 'system.tools',

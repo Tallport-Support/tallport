@@ -251,7 +251,8 @@
         "name": "channels.list",
         "arguments": 1,
         "files": [
-            "app/CustomerChannel.php"
+            "app/CustomerChannel.php",
+            "app/Workflows/Conditions.php"
         ]
     },
     {
@@ -2873,7 +2874,8 @@
         "name": "user.is_user_available",
         "arguments": 2,
         "files": [
-            "app/Api/Format.php"
+            "app/Api/Format.php",
+            "app/Workflows/Actions.php"
         ]
     },
     {
@@ -2965,6 +2967,14 @@
         ]
     },
     {
+        "type": "filter",
+        "name": "users.unpack",
+        "arguments": 1,
+        "files": [
+            "app/Workflows/Actions.php"
+        ]
+    },
+    {
         "type": "action",
         "name": "web_notification.after_body",
         "arguments": 1,
@@ -2994,6 +3004,54 @@
         "arguments": 1,
         "files": [
             "app/Api/Webhook.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "workflow.check_condition",
+        "arguments": 6,
+        "files": [
+            "app/Workflows/Conditions.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "workflow.perform_action",
+        "arguments": 6,
+        "files": [
+            "app/Workflows/Actions.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "workflow.validate_action",
+        "arguments": 3,
+        "files": [
+            "app/Http/Controllers/WorkflowsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "workflow.validate_condition",
+        "arguments": 3,
+        "files": [
+            "app/Http/Controllers/WorkflowsController.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "workflows.actions_config",
+        "arguments": 2,
+        "files": [
+            "app/Workflows/Actions.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "workflows.conditions_config",
+        "arguments": 2,
+        "files": [
+            "app/Workflows/Conditions.php"
         ]
     }
 ]

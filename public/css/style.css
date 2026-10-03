@@ -5026,3 +5026,62 @@ a.disabled:focus {
     font-size: 0.85em;
     letter-spacing: -0.03em;
 }
+.workflows-list {
+    list-style: none;
+    padding: 0;
+}
+.workflow-item {
+    padding: 6px 0;
+    border-bottom: 1px solid #eef2f5;
+}
+.workflow-handle {
+    cursor: move;
+    color: #a5b2bd;
+    margin-right: 6px;
+}
+.wf-group {
+    margin-bottom: 4px;
+}
+.wf-row {
+    margin: 4px 0;
+}
+.wf-row .form-control {
+    margin-right: 4px;
+}
+.wf-row .wf-number {
+    width: 80px;
+}
+.wf-and,
+.wf-or {
+    font-size: 11px;
+    text-transform: uppercase;
+    margin: 2px 0 2px 4px;
+}
+.wf-remove {
+    font-size: 18px;
+    margin-left: 4px;
+}
+.wf-email {
+    margin: 6px 0 10px;
+    max-width: 700px;
+}
+.wf-email-field {
+    margin-bottom: 6px;
+}
+.wf-email-field label {
+    display: block;
+    font-weight: normal;
+    margin-bottom: 2px;
+}
+.wf-row .wf-email .form-control {
+    display: block;
+    width: 100%;
+    max-width: 450px;
+}
+.wf-row .wf-email .checkbox {
+    display: block;
+    margin: 6px 0;
+}
+.wf-add-group {
+    margin-bottom: 10px;
+}

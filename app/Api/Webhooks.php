@@ -107,19 +107,14 @@ class Webhooks
         \Eventy::addFilter('workflows.actions_config', function ($config) {
             if (isset($config['dummy']['items'])) {
                 $config['dummy']['items']['webhook'] = [
-                    'title'         => __('Trigger Webhook'),
-                    'values_custom' => true,
+                    'title'       => __('Trigger Webhook'),
+                    'values_type' => 'text',
+                    'placeholder' => 'custom.webhook.event',
                 ];
             }
 
             return $config;
         }, 20, 1);
-
-        \Eventy::addAction('workflows.values_custom', function ($key, $value, $mode, $and_i, $row_i) {
-            if ($key == 'webhook') {
-                echo '<input type="text" class="form-control" name="'.e($mode).'['.(int) $and_i.']['.(int) $row_i.'][value]" value="'.e(is_string($value) ? $value : '').'" placeholder="custom.webhook.event" disabled>';
-            }
-        }, 20, 5);
 
         \Eventy::addFilter('workflow.perform_action', function ($performed, $type, $operator, $value, $conversation) {
             if ($type == 'webhook' && is_string($value) && trim($value) !== '') {
@@ -133,7 +128,7 @@ class Webhooks
 
         // Events workflows trigger can be chosen for webhooks.
         \Eventy::addFilter('webhooks.events', function ($events) {
-            if (!\App\Module::isActive('workflows') || !\Schema::hasTable('workflows')) {
+            if (!\Schema::hasTable('workflows')) {
                 return $events;
             }
             foreach (\DB::table('workflows')->where('actions', 'like', '%"type":"webhook"%')->pluck('actions') as $actions) {

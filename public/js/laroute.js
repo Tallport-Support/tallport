@@ -52,6 +52,10 @@
         "name": "mailboxes"
     },
     {
+        "uri": "workflows\/ajax",
+        "name": "workflows.ajax"
+    },
+    {
         "uri": "saved-replies\/ajax",
         "name": "saved_replies.ajax"
     },

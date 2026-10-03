@@ -201,14 +201,18 @@ class WebhooksTest extends FeatureTestCase
         $this->webhook(['custom.vip']);
         $conversation = $this->conversation();
 
-        $config = \Eventy::filter('workflows.actions_config', ['dummy' => ['items' => []]], $this->mailbox->id);
-        $this->assertTrue($config['dummy']['items']['webhook']['values_custom']);
-        ob_start();
-        \Eventy::action('workflows.values_custom', 'webhook', 'custom.vip', 'actions', 0, 1, []);
-        $this->assertStringContainsString('name="actions[0][1][value]" value="custom.vip"', ob_get_clean());
+        $this->assertSame('Trigger Webhook', \App\Workflows\Actions::item('webhook', $this->mailbox->id)['title']);
 
-        $this->assertTrue(\Eventy::filter('workflow.perform_action', false, 'webhook', '', 'custom.vip', $conversation, null));
-        $this->assertFalse(\Eventy::filter('workflow.perform_action', false, 'assign', '', '1', $conversation, null));
+        $workflow = new \App\Workflow();
+        $workflow->mailbox_id = $this->mailbox->id;
+        $workflow->name = 'VIP';
+        $workflow->type = \App\Workflow::TYPE_MANUAL;
+        $workflow->active = true;
+        $workflow->setActions([[['type' => 'webhook', 'value' => 'custom.vip']]]);
+        $workflow->save();
+        $this->assertContains('custom.vip', \App\Api\Webhook::allEvents());
+
+        \App\Workflows\Runner::runManual($workflow, [$conversation], $this->agent);
         $this->assertSame($conversation->id, $this->sent()['custom.vip']['id']);
     }
 }

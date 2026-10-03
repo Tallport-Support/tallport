@@ -16,6 +16,9 @@
     @endif
     <li @if (Route::currentRouteName() == 'mailboxes.nostr')class="active"@endif><a href="{{ route('mailboxes.nostr', ['id'=>$mailbox->id]) }}"><i class="glyphicon glyphicon-flash"></i> Nostr</a></li>
 @endif
+@if (App\Workflow::canEdit(Auth::user(), $mailbox))
+    <li @if (Str::startsWith(Route::currentRouteName(), 'mailboxes.workflows'))class="active"@endif><a href="{{ route('mailboxes.workflows', ['mailbox_id' => $mailbox->id]) }}"><i class="glyphicon glyphicon-random"></i> {{ __('Workflows') }}</a></li>
+@endif
 @if (App\SavedReply::canManage(Auth::user(), $mailbox))
     <li @if (Str::startsWith(Route::currentRouteName(), 'mailboxes.saved_replies'))class="active"@endif><a href="{{ route('mailboxes.saved_replies', ['id'=>$mailbox->id]) }}"><i class="glyphicon glyphicon-comment"></i> {{ __('Saved Replies') }}</a></li>
 @endif

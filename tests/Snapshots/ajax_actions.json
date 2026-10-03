@@ -98,5 +98,10 @@
         "reset_password",
         "send_invite",
         "web_notifications"
+    ],
+    "WorkflowsController@ajax": [
+        "delete",
+        "run",
+        "sort"
     ]
 }

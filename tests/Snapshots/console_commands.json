@@ -463,5 +463,16 @@
         "description": "Update counters for all folders",
         "arguments": {},
         "options": {}
+    },
+    "tallport:workflows": {
+        "class": "App\\Console\\Commands\\Workflows",
+        "description": "Run automatic workflows whose conditions depend on time (waiting since, last reply, created)",
+        "arguments": {},
+        "options": {
+            "seconds": {
+                "value": "optional",
+                "default": "240"
+            }
+        }
     }
 }

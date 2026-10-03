@@ -47,6 +47,7 @@ class AppServiceProvider extends ServiceProvider
         \App\Misc\Branding::listen();
         \App\Reports\Replies::listen();
         \App\Misc\Gravatar::listen();
+        \App\Workflows\Runner::listen();
 
         // Channels Tallport has (modules add theirs the same way).
         \Eventy::addFilter('channel.name', function ($name, $channel) {
