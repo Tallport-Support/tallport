@@ -84,7 +84,7 @@
                     @endforeach
 
                     @if (App\Ai\Drafts::allowed(Auth::user(), $conversation))
-                        <span class="conv-action glyphicon glyphicon-flash ai-draft-action" data-toggle="tooltip" title="{{ __('Draft with AI') }}" aria-label="{{ __('Draft with AI') }}" role="button" tabindex="0"></span>
+                        <span class="conv-action glyphicon glyphicon-ai ai-draft-action" data-toggle="tooltip" title="{{ __('Draft with AI') }}" aria-label="{{ __('Draft with AI') }}" role="button" tabindex="0"></span>
                     @endif
 
                     @action('conversation.action_buttons', $conversation, $mailbox)

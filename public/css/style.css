@@ -5015,3 +5015,11 @@ a.disabled:focus {
 .rpt-table-summary td {
     font-style: italic;
 }
+/* AI Assistant: "AI" in place of a glyph. */
+.glyphicon-ai:before {
+    content: "AI";
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 0.85em;
+    letter-spacing: -0.03em;
+}

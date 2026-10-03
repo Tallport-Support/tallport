@@ -19,7 +19,7 @@
         </div>
     @elseif ($thread->type == App\Thread::TYPE_CUSTOMER && ($ai_reason = App\Ai\Translations::reason($thread, $ai_language)))
         {{-- Why there is no translation. --}}
-        <div class="margin-bottom text-help ai-translation-note"><small><i class="glyphicon glyphicon-flash"></i>
+        <div class="margin-bottom text-help ai-translation-note"><small><i class="glyphicon glyphicon-ai"></i>
             @if ($ai_reason[0] == 'same')
                 {{ __('Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.', ['language' => App\Ai\Settings::displayName($ai_language), 'detected' => App\Ai\Settings::displayName($ai_reason[1])]) }}
             @elseif ($ai_reason[0] == 'no_text')
