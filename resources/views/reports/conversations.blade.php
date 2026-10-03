@@ -2,17 +2,14 @@
 
 @section('title', __('Conversations Report'))
 
+@section('main_class', 'fruit-ui')
+
 @section('sidebar')
-    @include('partials/sidebar_menu_toggle')
     @include('reports/sidebar_menu')
 @endsection
 
 @section('content')
-    <div class="section-heading">
-        {{ __('Conversations Report') }}
-    </div>
-
-    <div class="container rpt-report">
+    <div class="page-content rpt-report">
         @include('reports/partials/filters')
 
         @include('reports/partials/metrics', ['metrics' => [
@@ -26,53 +23,56 @@
 
         @include('reports/partials/chart')
 
-        <div class="row">
-            @if ($data['table_mailboxes'])
-                <div class="col-xs-12">
-                    <h4>{{ __('Mailboxes') }}</h4>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-condensed rpt-table">
+        @if ($data['table_mailboxes'])
+            <h2 class="rpt-section-title">{{ __('Mailboxes') }}</h2>
+            <div class="f-table__scroll">
+                <x-fruit::table class="rpt-table">
+                    <thead>
+                        <tr>
+                            <th>{{ __('Mailbox') }}</th>
+                            <th class="rpt-num">{{ __('New Conversations') }}</th>
+                            <th class="rpt-num">{{ __('Messages Received') }}</th>
+                            <th class="rpt-num">{{ __('Replies Sent') }}</th>
+                            <th class="rpt-num">{{ __('Closed') }}</th>
+                            <th class="rpt-num">{{ __('First Response Time') }}</th>
+                            <th class="rpt-num">{{ __('Resolution Time') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($data['table_mailboxes'] as $row)
                             <tr>
-                                <th>{{ __('Mailbox') }}</th>
-                                <th class="text-right">{{ __('New Conversations') }}</th>
-                                <th class="text-right">{{ __('Messages Received') }}</th>
-                                <th class="text-right">{{ __('Replies Sent') }}</th>
-                                <th class="text-right">{{ __('Closed') }}</th>
-                                <th class="text-right">{{ __('First Response Time') }}</th>
-                                <th class="text-right">{{ __('Resolution Time') }}</th>
+                                <td><a href="{{ request()->fullUrlWithQuery(['mailbox' => $row['mailbox_id']]) }}">{{ $row['name'] }}</a></td>
+                                <td class="rpt-num">{{ $row['new'] }}</td>
+                                <td class="rpt-num">{{ $row['messages'] }}</td>
+                                <td class="rpt-num">{{ $row['replies'] }}</td>
+                                <td class="rpt-num">{{ $row['closed'] }}</td>
+                                <td class="rpt-num">{{ App\Reports\Report::duration($row['first_response_time']) }}</td>
+                                <td class="rpt-num">{{ App\Reports\Report::duration($row['resolution_time']) }}</td>
                             </tr>
-                            @foreach ($data['table_mailboxes'] as $row)
-                                <tr>
-                                    <td><a href="{{ request()->fullUrlWithQuery(['mailbox' => $row['mailbox_id']]) }}">{{ $row['name'] }}</a></td>
-                                    <td class="text-right">{{ $row['new'] }}</td>
-                                    <td class="text-right">{{ $row['messages'] }}</td>
-                                    <td class="text-right">{{ $row['replies'] }}</td>
-                                    <td class="text-right">{{ $row['closed'] }}</td>
-                                    <td class="text-right">{{ App\Reports\Report::duration($row['first_response_time']) }}</td>
-                                    <td class="text-right">{{ App\Reports\Report::duration($row['resolution_time']) }}</td>
-                                </tr>
-                            @endforeach
-                        </table>
-                    </div>
-                    <p class="text-help">{{ __('Times are medians: half of the conversations took less.') }}</p>
-                </div>
-            @endif
-            <div class="col-xs-12 col-md-8">
-                <h4>{{ __('Most Active Customers') }}</h4>
-                @if ($data['table_customers'])
-                    <table class="table table-striped table-condensed rpt-table">
+                        @endforeach
+                    </tbody>
+                </x-fruit::table>
+            </div>
+            <p class="f-help">{{ __('Times are medians: half of the conversations took less.') }}</p>
+        @endif
+
+        <section class="rpt-customers">
+            <h2 class="rpt-section-title">{{ __('Most Active Customers') }}</h2>
+            @if ($data['table_customers'])
+                <x-fruit::table class="rpt-table">
+                    <tbody>
                         @foreach ($data['table_customers'] as $row)
                             <tr>
                                 <td><a href="{{ route('customers.update', ['id' => $row['customer_id']]) }}">{{ $row['name'] }}</a></td>
-                                <td class="text-right">{{ $row['messages'] }}</td>
+                                <td class="rpt-num">{{ $row['messages'] }}</td>
                             </tr>
                         @endforeach
-                    </table>
-                @else
-                    <p class="text-help">{{ __('Nothing in this period.') }}</p>
-                @endif
-            </div>
-        </div>
+                    </tbody>
+                </x-fruit::table>
+            @else
+                <p class="f-muted">{{ __('Nothing in this period.') }}</p>
+            @endif
+        </section>
     </div>
 @endsection
 

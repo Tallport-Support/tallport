@@ -1,35 +1,37 @@
-<form class="rpt-filters form-inline" method="GET" action="{{ url()->current() }}">
-    <select name="period" class="form-control input-sm" aria-label="{{ __('Period') }}">
+<form id="rpt_filters" class="rpt-filters f-row" method="GET" action="{{ url()->current() }}">
+    <x-fruit::select name="period" :aria-label="__('Period')">
         @foreach (App\Reports\Report::periodNames() as $period => $period_name)
-            <option value="{{ $period }}" @if ($report->filters['period'] == $period) selected @endif>{{ $period_name }}</option>
+            <option value="{{ $period }}" @selected($report->filters['period'] == $period)>{{ $period_name }}</option>
         @endforeach
-    </select>
-    <input type="date" name="from" class="form-control input-sm" value="{{ $report->filters['from'] }}" aria-label="{{ __('From') }}">
-    <span class="text-help">–</span>
-    <input type="date" name="to" class="form-control input-sm" value="{{ $report->filters['to'] }}" aria-label="{{ __('To') }}">
+    </x-fruit::select>
+    <x-fruit::date name="from" :value="$report->filters['from']" :aria-label="__('From')" />
+    <span class="f-muted">–</span>
+    <x-fruit::date name="to" :value="$report->filters['to']" :aria-label="__('To')" />
     @if (count($report->mailboxes()) > 1)
-        <select name="mailbox" class="form-control input-sm" aria-label="{{ __('Mailbox') }}">
+        <x-fruit::select name="mailbox" :aria-label="__('Mailbox')">
             <option value="">{{ __('All Mailboxes') }}</option>
             @foreach ($report->mailboxes() as $mailbox)
-                <option value="{{ $mailbox->id }}" @if ($report->filters['mailbox'] == $mailbox->id) selected @endif>{{ $mailbox->name }}</option>
+                <option value="{{ $mailbox->id }}" @selected($report->filters['mailbox'] == $mailbox->id)>{{ $mailbox->name }}</option>
             @endforeach
-        </select>
+        </x-fruit::select>
     @endif
-    <select name="type" class="form-control input-sm" aria-label="{{ __('Type') }}">
+    <x-fruit::select name="type" :aria-label="__('Type')">
         <option value="">{{ __('All Types') }}</option>
         @foreach (App\Reports\Report::types() as $type => $type_name)
-            <option value="{{ $type }}" @if ($report->filters['type'] == $type) selected @endif>{{ $type_name }}</option>
+            <option value="{{ $type }}" @selected($report->filters['type'] == $type)>{{ $type_name }}</option>
         @endforeach
-    </select>
+    </x-fruit::select>
     @if ($report->hasUserFilter())
-        <select name="user" class="form-control input-sm" aria-label="{{ __('User') }}">
+        <x-fruit::select name="user" :aria-label="__('User')">
             <option value="">{{ __('All Users') }}</option>
             @foreach ($report->users() as $user)
-                <option value="{{ $user->id }}" @if ($report->filters['user'] == $user->id) selected @endif>{{ $user->getFullName() }}</option>
+                <option value="{{ $user->id }}" @selected($report->filters['user'] == $user->id)>{{ $user->getFullName() }}</option>
             @endforeach
-        </select>
+        </x-fruit::select>
     @endif
     <input type="hidden" name="chart" value="{{ $data['chart']['type'] }}">
-    <input type="hidden" name="group_by" value="{{ $data['chart']['group_by'] }}">
-    <noscript><button type="submit" class="btn btn-default btn-sm">{{ __('Refresh') }}</button></noscript>
+    @if (count($data['chart']['group_bys']) <= 1)
+        <input type="hidden" name="group_by" value="{{ $data['chart']['group_by'] }}">
+    @endif
+    <noscript><x-fruit::button type="submit" size="small">{{ __('Refresh') }}</x-fruit::button></noscript>
 </form>

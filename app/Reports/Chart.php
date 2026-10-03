@@ -34,15 +34,15 @@ class Chart
         // Grid and scale.
         foreach ([0, 0.25, 0.5, 0.75, 1] as $part) {
             $value = $max * $part;
-            $svg .= '<line stroke="#e3e9ee" x1="'.self::LEFT.'" x2="'.(self::WIDTH - 10).'" y1="'.$y($value).'" y2="'.$y($value).'"/>'
-                .'<text fill="#93a1af" font-size="11" x="'.(self::LEFT - 6).'" y="'.($y($value) + 4).'" text-anchor="end">'.e(self::number($value)).'</text>';
+            $svg .= '<line class="rpt-chart__grid" x1="'.self::LEFT.'" x2="'.(self::WIDTH - 10).'" y1="'.$y($value).'" y2="'.$y($value).'"/>'
+                .'<text class="rpt-chart__label" x="'.(self::LEFT - 6).'" y="'.($y($value) + 4).'" text-anchor="end">'.e(self::number($value)).'</text>';
         }
 
         // Labels, thinned out to fit.
         $step = max(1, (int) ceil($count / 12));
         foreach ($labels as $i => $label) {
             if ($i % $step == 0) {
-                $svg .= '<text fill="#93a1af" font-size="11" x="'.$x($i).'" y="'.(self::HEIGHT - 6).'" text-anchor="middle">'.e($label).'</text>';
+                $svg .= '<text class="rpt-chart__label" x="'.$x($i).'" y="'.(self::HEIGHT - 6).'" text-anchor="middle">'.e($label).'</text>';
             }
         }
 
@@ -51,13 +51,13 @@ class Chart
                 return $x($i).','.$y($value);
             }, array_keys($data), $data));
         };
-        $svg .= '<polyline fill="none" stroke="#8996a3" stroke-width="1.5" stroke-dasharray="4 3" points="'.$points($previous).'"/>';
-        $svg .= '<polygon fill="#7cb5ec" fill-opacity="0.3" points="'.$x(0).','.$y(0).' '.$points($current).' '.$x($count - 1).','.$y(0).'"/>';
-        $svg .= '<polyline fill="none" stroke="#7cb5ec" stroke-width="2" points="'.$points($current).'"/>';
+        $svg .= '<polyline class="rpt-chart__previous" points="'.$points($previous).'"/>';
+        $svg .= '<polygon class="rpt-chart__area" points="'.$x(0).','.$y(0).' '.$points($current).' '.$x($count - 1).','.$y(0).'"/>';
+        $svg .= '<polyline class="rpt-chart__current" points="'.$points($current).'"/>';
 
         // Points with the numbers on hover.
         foreach ($current as $i => $value) {
-            $svg .= '<circle fill="#7cb5ec" cx="'.$x($i).'" cy="'.$y($value).'" r="3"><title>'
+            $svg .= '<circle class="rpt-chart__point" cx="'.$x($i).'" cy="'.$y($value).'" r="3"><title>'
                 .e($labels[$i].': '.$value.' ('.$chart['datasets'][1]['label'].': '.($previous[$i] ?? 0).')').'</title></circle>';
         }
 
