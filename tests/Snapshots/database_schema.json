@@ -2751,6 +2751,60 @@
             }
         }
     },
+    "report_replies": {
+        "columns": {
+            "thread_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "conversation_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "replied_at": {
+                "type": "datetime",
+                "nullable": false
+            },
+            "response_time": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "first": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "thread_id"
+                ]
+            },
+            "report_replies_conversation_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "conversation_id"
+                ]
+            },
+            "report_replies_replied_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "replied_at"
+                ]
+            }
+        }
+    },
     "saved_replies": {
         "columns": {
             "id": {

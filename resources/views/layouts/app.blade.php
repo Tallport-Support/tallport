@@ -121,6 +121,17 @@
                                     </ul>
                                 </li>
                             @endif
+                            @if (App\Http\Controllers\ReportsController::canAccess(Auth::user()))
+                                <li class="dropdown {{ \App\Misc\Helper::menuSelectedHtml('reports') }}">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
+                                        {{ __('Reports') }} <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li class="{{ \App\Misc\Helper::menuSelectedHtml('reports.conversations') }}"><a href="{{ route('reports.conversations') }}">{{ __('Conversations') }}</a></li>
+                                        <li class="{{ \App\Misc\Helper::menuSelectedHtml('reports.productivity') }}"><a href="{{ route('reports.productivity') }}">{{ __('Productivity') }}</a></li>
+                                    </ul>
+                                </li>
+                            @endif
                             @action('menu.append')
                         </ul>
 

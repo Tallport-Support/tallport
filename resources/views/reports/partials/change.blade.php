@@ -1,0 +1,1 @@
+@if ($change !== null)<small class="rpt-change @if ($change > 0) rpt-up @elseif ($change < 0) rpt-down @endif" title="{{ __('Compared with the previous period') }}">{{ $change > 0 ? '+' : '' }}{{ $change }}%</small>@endif

@@ -193,8 +193,9 @@ token, or the Basic user name).
 * `GET/POST /api/users`, `GET /api/users/me`, `GET/DELETE /api/users/{id}`
 * `GET /api/mailboxes`, `GET /api/mailboxes/{id}/folders`
 * `GET/POST /api/webhooks`, `DELETE /api/webhooks/{id}`
-* `GET /api/reports/{conversations|productivity|satisfaction|time}` (with
-  the Reports module)
+* `GET /api/reports/{conversations|productivity}` (administrators;
+  `filters[from]`, `filters[to]` as `YYYY-MM-DD`, `filters[mailbox]`,
+  `filters[type]`, `filters[user]`)
 
 Lists take `page` and `pageSize` (50, at most 1000) and return
 `{"_embedded": {...}, "page": {...}}`; dates are UTC

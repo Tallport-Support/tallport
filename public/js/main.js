@@ -6644,3 +6644,24 @@ function brandingSettingsInit()
 	});
 }
 
+
+// Reports: the filters apply when changed; the chart's type and grouping too.
+function reportsInit()
+{
+	var form = $('.rpt-filters:first');
+	form.find('select').change(function() {
+		form.submit();
+	});
+	form.find('input[type="date"]').change(function() {
+		form.find('select[name="period"]').val('custom');
+		form.submit();
+	});
+	$('.rpt-chart-type').change(function() {
+		form.find('input[name="chart"]').val($(this).val());
+		form.submit();
+	});
+	$('.rpt-group-by').click(function() {
+		form.find('input[name="group_by"]').val($(this).attr('data-group-by'));
+		form.submit();
+	});
+}

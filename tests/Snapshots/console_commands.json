@@ -402,6 +402,20 @@
             }
         }
     },
+    "tallport:report-replies": {
+        "class": "App\\Console\\Commands\\ReportReplies",
+        "description": "Record agents' replies and response times for reports: new conversations, and existing ones after installing",
+        "arguments": {},
+        "options": {
+            "seconds": {
+                "value": "optional",
+                "default": "50"
+            },
+            "rebuild": {
+                "value": "none"
+            }
+        }
+    },
     "tallport:search-index": {
         "class": "App\\Console\\Commands\\SearchIndex",
         "description": "Index conversations for search: new and changed ones, and existing ones after installing",

@@ -1791,6 +1791,36 @@
     },
     {
         "methods": [
+            "GET"
+        ],
+        "uri": "reports/conversations",
+        "name": "reports.conversations",
+        "action": "ReportsController@conversations",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "reports/productivity",
+        "name": "reports.productivity",
+        "action": "ReportsController@productivity",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
             "POST"
         ],
         "uri": "saved-replies/ajax",

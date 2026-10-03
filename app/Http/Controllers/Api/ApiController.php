@@ -130,7 +130,6 @@ abstract class ApiController extends Controller
             'custom_fields'   => 'Custom Fields',
             'customer_fields' => 'Customer Fields',
             'timelogs'        => 'Time Tracking',
-            'reports'         => 'Reports',
         ];
         $module = 'Tags';
         foreach ($modules as $segment => $name) {

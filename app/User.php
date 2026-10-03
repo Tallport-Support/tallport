@@ -94,6 +94,7 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
     const PERM_EDIT_SAVED_REPLIES   = 3;
     const PERM_EDIT_TAGS            = 4;
     const PERM_EDIT_CUSTOM_FOLDERS  = 5;
+    const PERM_ACCESS_REPORTS       = 8;
     const PERM_EDIT_USERS           = 10;
     const PERM_ONLY_ASSIGNED_TICKETS = 11;
 
@@ -103,6 +104,7 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
         self::PERM_EDIT_SAVED_REPLIES,
         self::PERM_EDIT_TAGS,
         self::PERM_EDIT_CUSTOM_FOLDERS,
+        self::PERM_ACCESS_REPORTS,
         self::PERM_EDIT_USERS,
     ];
 
@@ -699,6 +701,7 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
             self::PERM_EDIT_SAVED_REPLIES   => __('Users are allowed to edit/delete saved replies'),
             self::PERM_EDIT_TAGS            => __('Users are allowed to manage tags'),
             self::PERM_EDIT_CUSTOM_FOLDERS  => __('Users are allowed to manage custom folders'),
+            self::PERM_ACCESS_REPORTS       => __('Users are allowed to access reports'),
             self::PERM_EDIT_USERS           => __('Users are allowed to manage users'),
             self::PERM_ONLY_ASSIGNED_TICKETS => __('User can see only assigned conversations'),
         ];

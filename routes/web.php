@@ -129,6 +129,10 @@ Route::get('/mailbox/settings/{id}', 'MailboxesController@update')->name('mailbo
 Route::post('/mailbox/settings/{id}', 'MailboxesController@updateSave')->name('mailboxes.update.save');
 Route::get('/mailbox/permissions/{id}', 'MailboxesController@permissions')->name('mailboxes.permissions');
 Route::post('/mailbox/permissions/{id}', 'MailboxesController@permissionsSave')->name('mailboxes.permissions.save');
+// Reports
+Route::get('/reports/conversations', 'ReportsController@conversations')->name('reports.conversations');
+Route::get('/reports/productivity', 'ReportsController@productivity')->name('reports.productivity');
+
 Route::get('/mailbox/all/{folder_id?}', 'AllMailboxesController@view')->where('folder_id', '-?\d+')->name('mailboxes.all');
 Route::get('/mailbox/{id}', 'MailboxesController@view')->name('mailboxes.view');
 Route::get('/mailbox/{id}/{folder_id}', 'MailboxesController@view')->name('mailboxes.view.folder');

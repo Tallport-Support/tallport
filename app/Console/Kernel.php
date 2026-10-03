@@ -146,6 +146,12 @@ class Kernel extends ConsoleKernel
             ->daily()
             ->withoutOverlapping();
 
+        // Reports: replies of new conversations, and existing ones after installing.
+        $schedule->command('tallport:report-replies')
+            ->everyMinute()
+            ->withoutOverlapping()
+            ->runInBackground();
+
         // Webhook deliveries finished more than 3 days ago.
         $schedule->command('model:prune', ['--model' => [\App\Api\WebhookLog::class]])
             ->daily();

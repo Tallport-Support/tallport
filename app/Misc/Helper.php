@@ -168,6 +168,10 @@ class Helper
             'conversations.draft',
             //'conversations.search',
         ],
+        'reports' => [
+            'reports.conversations',
+            'reports.productivity',
+        ],
         'manage' => [
             'settings'  => 'settings',
             'mailboxes' => [

@@ -91,6 +91,13 @@
         "without_overlapping": true
     },
     {
+        "command": "artisan tallport:report-replies",
+        "expression": "* * * * *",
+        "timezone": "UTC",
+        "without_overlapping": true,
+        "run_in_background": true
+    },
+    {
         "command": "artisan model:prune --model='App\\Api\\WebhookLog'",
         "expression": "0 0 * * *",
         "timezone": "UTC"

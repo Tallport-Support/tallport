@@ -268,7 +268,6 @@ class ApiTest extends FeatureTestCase
             ['PUT', '/conversations/1/custom_fields', 'Custom Fields'], ['GET', '/mailboxes/1/custom_fields', 'Custom Fields'],
             ['PUT', '/customers/1/customer_fields', 'Customer Fields'],
             ['GET', '/conversations/1/timelogs', 'Time Tracking'], ['POST', '/conversations/1/timelogs', 'Time Tracking'], ['GET', '/timelogs', 'Time Tracking'],
-            ['GET', '/reports/conversations', 'Reports'],
         ] as [$method, $uri, $module]) {
             $this->api($method, $uri)->assertStatus(400)->assertJsonPath('_embedded.errors.0.message', $module.' module is not installed or not activated');
         }
