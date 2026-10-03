@@ -3598,80 +3598,51 @@ ul.sidebar-block-list {
 /**
  * Modules
  */
+.modules-updates {
+    margin-bottom: 14px;
+}
+.modules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 820px;
+}
 .module-card {
-    background-color: #ffffff;
-    border: 1px solid #dedede;
-    box-sizing: border-box;
-    display: block;
-    position: relative;
-    margin: 0 18px 18px 0;
-    padding: 18px;
-    -webkit-box-shadow:0 0 5px rgba(0,0,0,.2);
-    box-shadow:0 0 5px rgba(0,0,0,.2);
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 18px;
 }
-.module-card.active {
-    background-color: #deffde;
+.module-card > img {
+    width: 96px;
+    height: 96px;
+    border-radius: var(--f-radius);
 }
-.module-card.not-installed {
-    background-color: #f4f5f5;
-}
-.module-card img {
-    width: 128px;
-    height: 128px;
-    float: left;
-    border-radius: 5px;
-}
-.module-card h4 {
-    font-size: 18px;
-    font-weight: 400;
-    margin-top: 2px;
+.module-card__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
 }
 .module-details {
-    color: #93a1af;
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+    margin-top: 6px;
 }
-.module-wrap {
-    margin-left: 144px;
+.module-details .f-error {
+    display: inline;
 }
 .module-actions {
-    margin-top: 13px;
+    margin-top: 12px;
 }
-.module-actions .input-group {
-    max-width: 378px;
-}
-.module-card .label {
-    float: right;
-    font-size: 13.4px;
-    font-weight: normal;
-    padding-top: 2px;
-}
-.label-lightgrey {
-    background-color: #8b98a6;
-}
-.label-grey {
-    background-color: #6b6b6b;
+.module-actions .f-input-group {
+    max-width: 380px;
 }
 .alert-module-update {
-    margin: 15px 0 0;
-    padding: 10px 15px;
+    margin-top: 12px;
 }
-@media (max-width:582px) {
-    .module-card img {
-        float: none;
-        width: 128px;
-        margin: 0 auto;
-        display: block;
-    }
-    .module-wrap {
-        margin-left: 0;
-    }
-    .module-card h4 {
-        margin-top: 10px;
-        text-align: center;
-    }
-    .module-card .label {
-        display: block;
-        margin-top: 3px;
-        float: none;
+@media (max-width: 582px) {
+    .module-card {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -5362,4 +5333,37 @@ a.disabled:focus {
 /* A converted page: the page nav already spaces the content. */
 .app-main.fruit-ui > .content {
     margin-top: 0;
+}
+.system-tools__days {
+    width: 80px;
+}
+.system-tools__output {
+    margin-top: 20px;
+    white-space: pre-wrap;
+}
+.system-status > h3 {
+    margin: 28px 0 10px;
+}
+.system-status__table {
+    --f-table-cell-padding: 8px 10px;
+    margin-bottom: 12px;
+}
+.system-status__table > tbody > tr > th {
+    width: 30%;
+    font-weight: 600;
+}
+.system-status__table--narrow {
+    max-width: 640px;
+}
+.system-status__alert {
+    margin-top: 10px;
+}
+.system-status__job-actions {
+    justify-content: flex-end;
+}
+.system-status__queue {
+    width: auto;
+}
+.logs-table {
+    --f-table-cell-padding: 8px 10px;
 }
