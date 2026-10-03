@@ -90,7 +90,7 @@ class Replies
 
         $rows = [];
         foreach ($threads as $conversation_threads) {
-            $rows = array_merge($rows, self::replies($conversation_threads, $robots));
+            $rows = array_merge($rows, self::conversationReplies($conversation_threads, $robots));
         }
         \DB::transaction(function () use ($conversation_ids, $rows) {
             \DB::table(self::TABLE)->whereIn('conversation_id', $conversation_ids)->delete();
@@ -104,7 +104,7 @@ class Replies
      * A conversation's replies: each answers the customer's messages since
      * the previous reply, and the wait is counted from the first of them.
      */
-    public static function replies($threads, $robots = [])
+    public static function conversationReplies($threads, $robots = [])
     {
         $rows = [];
         $waiting_since = null;
