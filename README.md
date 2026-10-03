@@ -183,8 +183,13 @@ each email to Tallport as it arrives. With Postfix, add a transport to
 
 ```
 tallport  unix  -       n       n       -       -       pipe
-  flags=R user=www-data argv=/usr/bin/php /var/www/html/artisan tallport:receive --mailbox=${recipient}
+  flags=R user=www-data argv=/usr/bin/php -d pcre.jit=0 /var/www/html/artisan tallport:receive --mailbox=${recipient}
 ```
+
+`-d pcre.jit=0`: Postfix may run the command where PHP can't use PCRE's JIT
+(it may not allocate executable memory there). Tallport copes without it, but
+turning it off avoids PHP's warning. System » Status shows whether
+`tallport:receive` ran without the JIT.
 
 and in `/etc/postfix/main.cf` deliver one recipient at a time and send the
 mailboxes' addresses (or their whole domain) to it:
@@ -206,7 +211,8 @@ Bcc gets the email too. The exit code tells Postfix what happened:
 
 * 0: saved, or skipped on purpose (for example already received, by
   Message-ID). Delivering an email again is safe.
-* 75: saving failed (logged in Manage » Logs » Fetch Errors). Postfix keeps
+* 75: saving failed (logged in Manage » Logs » Fetch Errors), or the command
+  could not start (logged in storage/logs). Postfix keeps
   the email and tries again later (for up to `maximal_queue_lifetime`, 5 days
   by default). Until it is saved, Tallport shows a warning above the
   conversation list and, with the fetching problems alert on (Manage »
