@@ -76,7 +76,11 @@ class ConversationsController extends Controller
 
         // Detect folder and redirect if needed
         $folder = null;
-        if (Conversation::getFolderParam()) {
+        // Opened from All Mailboxes: it stays there.
+        if ((int) Conversation::getFolderParam() < 0 && \App\Misc\AllMailboxes::isAvailable($user)) {
+            $folder = \App\Misc\AllMailboxes::folder($user, Conversation::getFolderParam());
+        }
+        if (!$folder && Conversation::getFolderParam()) {
             $folder = $conversation->mailbox->folders()->where('folders.id', Conversation::getFolderParam())->first();
 
             // Pass some params when redirecting.

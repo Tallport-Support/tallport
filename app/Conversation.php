@@ -881,14 +881,25 @@ class Conversation extends Model
     {
         $conversation = null;
 
-        if ($folder_id) {
-            $folder = Folder::find($folder_id);
+        $user = \Auth::user();
+        if ((int) $folder_id < 0 && $user && ($folder = \App\Misc\AllMailboxes::folder($user, $folder_id))) {
+            // All Mailboxes. Sent is in the order of the user's replies, which
+            // conversations don't have: back to the list.
+            if ($folder->type == \App\Misc\AllMailboxes::TYPE_SENT) {
+                return null;
+            }
+            $query = self::whereIn('id', \App\Misc\AllMailboxes::query($folder, $user)->select('conversations.id'))
+                ->where('id', '<>', $this->id);
         } else {
-            $folder = $this->folder;
+            if ($folder_id) {
+                $folder = Folder::find($folder_id);
+            } else {
+                $folder = $this->folder;
+            }
+            //$query = self::where('folder_id', $folder->id)->where('id', '<>', $this->id);
+            $query = self::getQueryByFolder($folder, \Auth::id())
+                ->where('id', '<>', $this->id);
         }
-        //$query = self::where('folder_id', $folder->id)->where('id', '<>', $this->id);
-        $query = self::getQueryByFolder($folder, \Auth::id())
-            ->where('id', '<>', $this->id);
 
         $query = \Eventy::filter('conversation.get_nearby_query', $query, $this, $mode, $folder);
 

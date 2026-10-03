@@ -16,7 +16,12 @@
 
 @section('sidebar')
     @include('partials/sidebar_menu_toggle')
-    @include('mailboxes/sidebar_menu_view')
+    @if ($folder->id < 0 && !$is_in_chat_mode)
+        {{-- Opened from All Mailboxes. --}}
+        @include('mailboxes/sidebar_menu_view', ['mailbox' => App\Misc\AllMailboxes::mailbox(), 'folders' => App\Misc\AllMailboxes::folders(Auth::user())])
+    @else
+        @include('mailboxes/sidebar_menu_view')
+    @endif
 @endsection
 
 @section('content')

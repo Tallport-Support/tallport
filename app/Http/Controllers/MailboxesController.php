@@ -569,6 +569,11 @@ class MailboxesController extends Controller
     {
         $user = auth()->user();
 
+        // A folder of All Mailboxes (back from a conversation opened there).
+        if (in_array(-(int) $folder_id, \App\Misc\AllMailboxes::TYPES) && \App\Misc\AllMailboxes::isAvailable($user)) {
+            return redirect()->route('mailboxes.all', ['folder_id' => $folder_id]);
+        }
+
         $mailbox = Mailbox::findOrFailWithSettings($id, $user->id);
         $this->authorize('viewCached', $mailbox);
 

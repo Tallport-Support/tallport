@@ -70,6 +70,29 @@ class AllMailboxesTest extends FeatureTestCase
             ->assertSeeInOrder(['current expanded', 'data-mailbox_id="'.$this->sales->id.'"'], false);
     }
 
+    /**
+     * Like a mail app: a conversation opened in All Mailboxes stays there.
+     */
+    public function testConversationOpenedInAllMailboxes()
+    {
+        $older = $this->conversation($this->support, 'Support question');
+        $newer = $this->conversation($this->sales, 'Sales question');
+        Conversation::where('id', $older->id)->update(['last_reply_at' => now()->subHour()]);
+        $folder_id = -Folder::TYPE_UNASSIGNED;
+
+        $page = $this->actingAs($this->agent)->get($newer->url($folder_id))->assertOk();
+        $html = $page->getContent();
+        $this->assertMatchesRegularExpression('#class="sidebar-mailbox-heading\s+current\s*" data-mailbox_id="-1"#', $html);
+        $this->assertDoesNotMatchRegularExpression('#current expanded\s*" data-mailbox_id="'.$this->sales->id.'"#', $html);
+        // Older and newer across the mailboxes, still in All Mailboxes.
+        $page->assertSee('href="'.$older->url($folder_id).'" class="glyphicon glyphicon-menu-right"', false);
+        $this->get($older->url($folder_id))->assertOk()->assertSee('href="'.$newer->url($folder_id).'" class="glyphicon glyphicon-menu-left"', false);
+
+        // Back to the list after an action.
+        $this->get(route('mailboxes.view.folder', ['id' => $this->sales->id, 'folder_id' => $folder_id]))
+            ->assertRedirect(route('mailboxes.all', ['folder_id' => $folder_id]));
+    }
+
     public function testMineAssignedStarredSent()
     {
         $colleague = $this->createUser();
