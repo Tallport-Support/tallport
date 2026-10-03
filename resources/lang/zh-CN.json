@@ -1328,5 +1328,13 @@
     "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "仅限 IMAP。防止邮件服务器被占满：Tallport 会保留其获取的每封电子邮件及其原始源码。",
     "Mark email as read": "将电子邮件标记为已读",
     "Move to IMAP folder": "移动到 IMAP 文件夹",
-    "Remove from the mail server": "从邮件服务器删除"
+    "Remove from the mail server": "从邮件服务器删除",
+    "Add Note & Active": "添加注释并设为活跃",
+    "Add Note & Pending": "添加注释并设为待处理",
+    "Forward & Active": "转发并设为活跃",
+    "Forward & Close": "转发并关闭",
+    "Forward & Pending": "转发并设为待处理",
+    "More send options": "更多发送选项",
+    "Send & Active": "发送并设为活跃",
+    "Send & Pending": "发送并设为待处理"
 }

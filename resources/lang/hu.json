@@ -1326,5 +1326,13 @@
     "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Csak IMAP. Megakadályozza, hogy a levelezőszerver megteljen: a Tallport minden lekért e-mailt megőriz az eredeti forrásával együtt.",
     "Mark email as read": "E-mail megjelölése olvasottként",
     "Move to IMAP folder": "Áthelyezés IMAP mappába",
-    "Remove from the mail server": "Eltávolítás a levelezőszerverről"
+    "Remove from the mail server": "Eltávolítás a levelezőszerverről",
+    "Add Note & Active": "Megjegyzés és aktív",
+    "Add Note & Pending": "Megjegyzés és függőben",
+    "Forward & Active": "Továbbítás és aktív",
+    "Forward & Close": "Továbbítás és lezárás",
+    "Forward & Pending": "Továbbítás és függőben",
+    "More send options": "További küldési lehetőségek",
+    "Send & Active": "Küldés és aktív",
+    "Send & Pending": "Küldés és függőben"
 }

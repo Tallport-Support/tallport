@@ -1326,5 +1326,13 @@
     "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Yalnız IMAP. Poçt serverinin dolmasının qarşısını alır: Tallport əldə etdiyi hər e-poçtu orijinal mənbəyi ilə saxlayır.",
     "Mark email as read": "E-poçtu oxunmuş kimi işarələ",
     "Move to IMAP folder": "IMAP qovluğuna köçür",
-    "Remove from the mail server": "Poçt serverindən sil"
+    "Remove from the mail server": "Poçt serverindən sil",
+    "Add Note & Active": "Qeyd əlavə et və aktiv",
+    "Add Note & Pending": "Qeyd əlavə et və gözləmədə",
+    "Forward & Active": "Yönləndir və aktiv",
+    "Forward & Close": "Yönləndir və bağla",
+    "Forward & Pending": "Yönləndir və gözləmədə",
+    "More send options": "Digər göndərmə seçimləri",
+    "Send & Active": "Göndər və aktiv",
+    "Send & Pending": "Göndər və gözləmədə"
 }

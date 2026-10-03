@@ -1698,6 +1698,7 @@ function showNoteForm()
 		// Show default status
 		var input_status = reply_block.children().find(":input[name='status']:first");
 		input_status.val(input_status.attr('data-note-status'));
+		updateSendButtonLabel();
 
 		$(".attachments-upload:first :input, .attachments-upload:first li").remove();
 
@@ -1728,6 +1729,7 @@ function prepareReplyForm()
 	// Show default status
 	var input_status = $(".conv-reply-block").children().find(":input[name='status']:first");
 	input_status.val(input_status.attr('data-reply-status'));
+	updateSendButtonLabel();
 
 	// Clean attachments
 	$(".attachments-upload:first :input, .attachments-upload:first li").remove();
@@ -2360,21 +2362,6 @@ function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
 			e.preventDefault();
 		});
 
-		// After send
-		$('.dropdown-after-send a:lt(3)').click(function(e) {
-			if (!$(this).parent().hasClass('active')) {
-				$("#after_send").val($(this).attr('data-after-send'));
-				$('.dropdown-after-send li').removeClass('active');
-				$(this).parent().addClass('active');
-			}
-			e.preventDefault();
-		});
-
-		// After send
-		$('.after-send-change').click(function(e) {
-			triggerModal($(this));
-		});
-
 		// CMD+Enter (Mac) sends the reply — mirrors Ctrl+Enter on non-Mac.
 		// metaKey is explicitly skipped in the chat-mode Enter handler, so this
 		// separate handler is needed for regular reply/note forms.
@@ -2397,17 +2384,17 @@ function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
 		});
 
 		// Send reply, new conversation or note
-	    // Send & Close: the status Closed, then send. Back to the previous
-	    // status when the form doesn't validate.
-	    $(".btn-send-close").click(function(e) {
-	    	var status = $(this).closest('.note-statusbar, #editor_bottom_toolbar').find('select[name="status"]:first');
-	    	var previous = status.val();
-	    	status.val($(this).attr('data-status'));
+	    // Send with a status from the menu: that status, then send.
+	    $(".dropdown-send-status a[data-send-status]").click(function(e) {
+	    	e.preventDefault();
+	    	$(this).closest('.note-statusbar, #editor_bottom_toolbar').find('select[name="status"]:first').val($(this).attr('data-send-status'));
+	    	updateSendButtonLabel();
 	    	$(this).closest('.btn-group-send').find('.btn-reply-submit:visible:first').click();
-	    	if (!fs_processing_send_reply) {
-	    		status.val(previous);
-	    	}
 	    });
+	    $('.note-statusbar select[name="status"]').change(function(e) {
+	    	updateSendButtonLabel();
+	    });
+	    updateSendButtonLabel();
 
 	    $(".btn-reply-submit").click(function(e) {
 
@@ -3098,7 +3085,7 @@ function saveAfterSend(el)
 	fsAjax(data, laroute.route('conversations.ajax'), function(response) {
 		if (typeof(response.status) != "undefined" && response.status == 'success') {
 			// Show selected option in the dropdown
-			$('.dropdown-after-send [data-after-send='+value+']:first').click();
+			$('input[name="after_send"]').val(value);
 			showFloatingAlert('success', Lang.get("messages.settings_saved"));
 			$('.modal').modal('hide');
 		} else {
@@ -6667,5 +6654,17 @@ function reportsInit()
 	$('.rpt-group-by').click(function() {
 		form.find('input[name="group_by"]').val($(this).attr('data-group-by'));
 		form.submit();
+	});
+}
+
+// The Send button says which status it sends with: "Send & Close".
+function updateSendButtonLabel()
+{
+	$('.note-statusbar .btn-send-text').each(function() {
+		var toolbar = $(this).closest('.note-statusbar');
+		var link = toolbar.find('.dropdown-send-status a[data-send-status="'+toolbar.find('select[name="status"]:first').val()+'"]:first');
+		if (link.length) {
+			$(this).text(link.attr('data-label'));
+		}
 	});
 }

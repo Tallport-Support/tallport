@@ -1331,5 +1331,13 @@
     "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Alleen IMAP. Voorkomt dat de mailserver volloopt: Tallport bewaart elke opgehaalde e-mail, met de originele bron.",
     "Mark email as read": "E-mail als gelezen markeren",
     "Move to IMAP folder": "Verplaatsen naar IMAP-map",
-    "Remove from the mail server": "Verwijderen van de mailserver"
+    "Remove from the mail server": "Verwijderen van de mailserver",
+    "Add Note & Active": "Notitie toevoegen & actief",
+    "Add Note & Pending": "Notitie toevoegen & in afwachting",
+    "Forward & Active": "Doorsturen & actief",
+    "Forward & Close": "Doorsturen & sluiten",
+    "Forward & Pending": "Doorsturen & in afwachting",
+    "More send options": "Meer verzendopties",
+    "Send & Active": "Verstuur & actief",
+    "Send & Pending": "Verstuur & in afwachting"
 }

@@ -1325,5 +1325,13 @@
     "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Doar IMAP. Împiedică umplerea serverului de email: Tallport păstrează fiecare email preluat, cu sursa sa originală.",
     "Mark email as read": "Marchează email-ul ca citit",
     "Move to IMAP folder": "Mută într-un folder IMAP",
-    "Remove from the mail server": "Elimină de pe serverul de email"
+    "Remove from the mail server": "Elimină de pe serverul de email",
+    "Add Note & Active": "Adaugă notă și activ",
+    "Add Note & Pending": "Adaugă notă și în așteptare",
+    "Forward & Active": "Redirecționează și activ",
+    "Forward & Close": "Redirecționează și închide",
+    "Forward & Pending": "Redirecționează și în așteptare",
+    "More send options": "Mai multe opțiuni de trimitere",
+    "Send & Active": "Trimite și activ",
+    "Send & Pending": "Trimite și în așteptare"
 }

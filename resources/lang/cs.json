@@ -1325,5 +1325,13 @@
     "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Pouze IMAP. Zabraňuje zaplnění poštovního serveru: Tallport uchovává každý načtený e-mail i s jeho původním zdrojem.",
     "Mark email as read": "Označit e-mail jako přečtený",
     "Move to IMAP folder": "Přesunout do složky IMAP",
-    "Remove from the mail server": "Odstranit z poštovního serveru"
+    "Remove from the mail server": "Odstranit z poštovního serveru",
+    "Add Note & Active": "Přidat poznámku a aktivní",
+    "Add Note & Pending": "Přidat poznámku a čeká",
+    "Forward & Active": "Přeposlat a aktivní",
+    "Forward & Close": "Přeposlat a zavřít",
+    "Forward & Pending": "Přeposlat a čeká",
+    "More send options": "Další možnosti odeslání",
+    "Send & Active": "Odeslat a aktivní",
+    "Send & Pending": "Odeslat a čeká"
 }

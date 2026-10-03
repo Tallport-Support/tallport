@@ -1792,5 +1792,13 @@
     "Choose a folder that is not fetched.": "Жүктелмейтін қалтаны таңдаңыз.",
     "Enter the IMAP folder to move fetched emails to.": "Жүктелген хаттар көшірілетін IMAP қалтасын енгізіңіз.",
     "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Тек IMAP. Пошта серверінің толып кетуіне жол бермейді: Tallport жүктеген әр хатты бастапқы көзімен бірге сақтайды.",
-    "Remove from the mail server": "Пошта серверінен жою"
+    "Remove from the mail server": "Пошта серверінен жою",
+    "Add Note & Active": "Жазба қосу және белсенді",
+    "Add Note & Pending": "Жазба қосу және күту",
+    "Forward & Active": "Алға және белсенді",
+    "Forward & Close": "Алға және жабу",
+    "Forward & Pending": "Алға және күту",
+    "More send options": "Жіберудің қосымша параметрлері",
+    "Send & Active": "Жіберу және белсенді",
+    "Send & Pending": "Жіберу және күту"
 }

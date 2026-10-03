@@ -1345,5 +1345,13 @@
     "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Vain IMAP. Estää postipalvelinta täyttymästä: Tallport säilyttää jokaisen hakemansa sähköpostin alkuperäisine lähteineen.",
     "Mark email as read": "Merkitse sähköposti luetuksi",
     "Move to IMAP folder": "Siirrä IMAP-kansioon",
-    "Remove from the mail server": "Poista postipalvelimelta"
+    "Remove from the mail server": "Poista postipalvelimelta",
+    "Add Note & Active": "Lisää huomautus ja aktiivinen",
+    "Add Note & Pending": "Lisää huomautus ja odottaa",
+    "Forward & Active": "Välitä ja aktiivinen",
+    "Forward & Close": "Välitä ja sulje",
+    "Forward & Pending": "Välitä ja odottaa",
+    "More send options": "Lisää lähetysvaihtoehtoja",
+    "Send & Active": "Lähetä ja aktiivinen",
+    "Send & Pending": "Lähetä ja odottaa"
 }

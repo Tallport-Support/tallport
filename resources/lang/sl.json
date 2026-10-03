@@ -1325,5 +1325,13 @@
     "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Samo IMAP. Preprečuje, da bi se poštni strežnik napolnil: Tallport hrani vsako pridobljeno e-poštno sporočilo z izvirnim virom.",
     "Mark email as read": "Označi e-pošto kot prebrano",
     "Move to IMAP folder": "Premakni v mapo IMAP",
-    "Remove from the mail server": "Odstrani s poštnega strežnika"
+    "Remove from the mail server": "Odstrani s poštnega strežnika",
+    "Add Note & Active": "Dodaj opombo in aktivno",
+    "Add Note & Pending": "Dodaj opombo in v čakanju",
+    "Forward & Active": "Posreduj in aktivno",
+    "Forward & Close": "Posreduj in zapri",
+    "Forward & Pending": "Posreduj in v čakanju",
+    "More send options": "Več možnosti pošiljanja",
+    "Send & Active": "Pošlji in aktivno",
+    "Send & Pending": "Pošlji in v čakanju"
 }

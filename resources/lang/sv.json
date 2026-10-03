@@ -1326,5 +1326,13 @@
     "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Endast IMAP. Förhindrar att e-postservern blir full: Tallport behåller all e-post som hämtats, med originalkällan.",
     "Mark email as read": "Markera e-post som läst",
     "Move to IMAP folder": "Flytta till IMAP-mapp",
-    "Remove from the mail server": "Ta bort från e-postservern"
+    "Remove from the mail server": "Ta bort från e-postservern",
+    "Add Note & Active": "Lägg till anteckning och aktiv",
+    "Add Note & Pending": "Lägg till anteckning och väntar",
+    "Forward & Active": "Vidarebefordra och aktiv",
+    "Forward & Close": "Vidarebefordra och stäng",
+    "Forward & Pending": "Vidarebefordra och väntar",
+    "More send options": "Fler sändningsalternativ",
+    "Send & Active": "Skicka och aktiv",
+    "Send & Pending": "Skicka och väntar"
 }

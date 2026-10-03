@@ -46,63 +46,25 @@
         data-save-button="{{ __('Save') }}"></span>
     <span id="attachment-reminder" class="hidden" data-phrases="{{ json_encode(App\Http\Controllers\AttachmentsController::reminderPhrases()) }}" data-message="{{ __('You mentioned :phrase but there is no attachment. Send anyway?') }}" data-send="{{ __('Send Anyway') }}"></span>
     <span id="noreply-patterns" class="hidden" data-regexes="{{ json_encode(App\Misc\Noreply::regexes()) }}" data-message="{{ __(':email looks like an address that does not read replies.') }}"></span>
+    {{-- One Send button: it sends with the status chosen above (its label says
+         which); the menu sends with another status right away. --}}
     <div class="btn-group btn-group-send">
     	<button class="hidden"></button>
         <button type="button" class="btn btn-primary btn-reply-submit btn-send-text" data-loading-text="{{ __('Sending') }}…">@if (empty($new_converstion)){{ __('Send Reply') }}@else{{ __('Send') }}@endif</button>
         <button type="button" class="btn btn-primary btn-reply-submit btn-send-forward" data-loading-text="{{ __('Sending') }}…">{{ __('Forward') }}</button>
         <button type="button" class="btn btn-primary btn-reply-submit btn-add-note-text" data-loading-text="{{ __('Saving') }}…">{{ __('Add Note') }}</button>
         <button type="button" class="btn btn-primary btn-reply-submit btn-create-conv" data-loading-text="{{ __('Creating') }}…">{{ __('Create') }}</button>
-        {{-- Send (or add the note) and close the conversation. --}}
-        <button type="button" class="btn btn-default btn-send-close btn-send-close-reply" data-status="{{ App\Conversation::STATUS_CLOSED }}">{{ __('Send & Close') }}</button>
-        <button type="button" class="btn btn-default btn-send-close btn-send-close-note" data-status="{{ App\Conversation::STATUS_CLOSED }}">{{ __('Add Note & Close') }}</button>
-        <button type="button" class="btn btn-primary btn-send-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><small class="glyphicon glyphicon-chevron-down"></small></button>
-        <ul class="dropdown-menu dropdown-menu-right dropdown-after-send">
+        <button type="button" class="btn btn-primary btn-send-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="{{ __('More send options') }}"><small class="glyphicon glyphicon-chevron-down"></small></button>
+        <ul class="dropdown-menu dropdown-menu-right dropdown-send-status">
             @action('conversation.prepend_send_dropdown', $conversation, $mailbox, $new_converstion ?? false)
-            <li @if ($after_send == App\MailboxUser::AFTER_SEND_STAY) class="active" @endif><a href="#" data-after-send="{{ App\MailboxUser::AFTER_SEND_STAY }}">{{ __('Send and stay on page') }}</a></li>
-            <li @if ($after_send == App\MailboxUser::AFTER_SEND_NEXT) class="active" @endif><a href="#" data-after-send="{{ App\MailboxUser::AFTER_SEND_NEXT }}">{{ __('Send and next active') }}</a></li>
-            <li @if ($after_send == App\MailboxUser::AFTER_SEND_FOLDER) class="active" @endif><a href="#" data-after-send="{{ App\MailboxUser::AFTER_SEND_FOLDER }}">{{ __('Send and back to folder') }}</a></li>
-            @if (empty($new_converstion))
-                <li class="divider"></li>
-                <li><a href="#" class="after-send-change" data-modal-body="#after-send-change-body" data-modal-title="{{ __('Default Redirect') }}" data-no-close-btn="true" data-modal-no-footer="true" data-modal-on-show="initAfterSendModal">{{ __('Change default redirect') }}…</a></li>
-            @endif
-            @if (empty($new_converstion))
-            	<li class="divider"></li>
-            	<li><a href="#" data-toggle="modal" data-target="#conv-settings-modal">{{ ucfirst(mb_strtolower(__('Conversation History'))) }}…</a></li>
-            @endif
+            @foreach ([
+                App\Conversation::STATUS_CLOSED  => [__('Send & Close'), __('Add Note & Close'), __('Forward & Close')],
+                App\Conversation::STATUS_ACTIVE  => [__('Send & Active'), __('Add Note & Active'), __('Forward & Active')],
+                App\Conversation::STATUS_PENDING => [__('Send & Pending'), __('Add Note & Pending'), __('Forward & Pending')],
+            ] as $send_status => [$send_label, $note_label, $forward_label])
+                <li><a href="#" data-send-status="{{ $send_status }}" data-label="{{ $send_label }}"><span class="send-status-reply">{{ $send_label }}</span><span class="send-status-note">{{ $note_label }}</span><span class="send-status-forward">{{ $forward_label }}</span></a></li>
+            @endforeach
             @action('conversation.append_send_dropdown', $conversation, $mailbox, $new_converstion ?? false)
         </ul>
-    </div>
-    <div id="after-send-change-body" class="hidden">
-        <div class="row-container">
-            <div class="row">
-                <div class="form-horizontal">
-                    <div class="form-group{{ $errors->has('after_send') ? ' has-error' : '' }}">
-                        <label for="after_send" class="col-sm-3 control-label">{{ __('After Sending') }}</label>
-
-                        <div class="col-sm-9">
-                            <select class="form-control input-sized" name="after_send_default" required autofocus>
-                                <option value="{{ App\MailboxUser::AFTER_SEND_STAY }}" @if ($after_send == App\MailboxUser::AFTER_SEND_STAY)selected="selected"@endif>{{ __('Stay on the same page') }}</option>
-                                <option value="{{ App\MailboxUser::AFTER_SEND_NEXT }}" @if ($after_send == App\MailboxUser::AFTER_SEND_NEXT)selected="selected"@endif>{{ __('Next active conversation') }}</option>
-                                <option value="{{ App\MailboxUser::AFTER_SEND_FOLDER }}" @if ($after_send == App\MailboxUser::AFTER_SEND_FOLDER)selected="selected"@endif>{{ __('Back to folder') }}</option>
-                            </select>
-
-                            <p class="block-help">
-                                {{ __('This setting gives you control over what page loads after you perform an action (send a reply, add a note, change conversation status or assignee).') }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-sm-9 col-sm-offset-3">
-                            <button type="button" class="btn btn-primary after-send-save" data-loading-text="{{ __('Saving') }}…">
-                                {{ __('Save') }}
-                            </button>
-
-                            <a href="#" class="btn btn-link" data-dismiss="modal">{{ __('Cancel') }}</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>

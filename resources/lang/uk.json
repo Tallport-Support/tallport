@@ -1326,5 +1326,13 @@
     "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Лише IMAP. Не дає поштовому серверу переповнитися: Tallport зберігає кожен отриманий лист разом з його вихідним кодом.",
     "Mark email as read": "Позначити лист як прочитаний",
     "Move to IMAP folder": "Перемістити до папки IMAP",
-    "Remove from the mail server": "Видалити з поштового сервера"
+    "Remove from the mail server": "Видалити з поштового сервера",
+    "Add Note & Active": "Додати нотатку й активно",
+    "Add Note & Pending": "Додати нотатку й очікує",
+    "Forward & Active": "Переслати й активно",
+    "Forward & Close": "Переслати й закрити",
+    "Forward & Pending": "Переслати й очікує",
+    "More send options": "Інші варіанти надсилання",
+    "Send & Active": "Надіслати й активно",
+    "Send & Pending": "Надіслати й очікує"
 }

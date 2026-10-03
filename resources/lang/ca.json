@@ -1432,5 +1432,13 @@
     "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "Només IMAP. Evita que el servidor de correu s'ompli: Tallport conserva cada correu que ha obtingut, amb el seu codi font original.",
     "Mark email as read": "Marca el correu com a llegit",
     "Move to IMAP folder": "Mou a una carpeta IMAP",
-    "Remove from the mail server": "Elimina del servidor de correu"
+    "Remove from the mail server": "Elimina del servidor de correu",
+    "Add Note & Active": "Afegeix nota i actiu",
+    "Add Note & Pending": "Afegeix nota i pendent",
+    "Forward & Active": "Reenvia i actiu",
+    "Forward & Close": "Reenvia i tanca",
+    "Forward & Pending": "Reenvia i pendent",
+    "More send options": "Més opcions d'enviament",
+    "Send & Active": "Envia i actiu",
+    "Send & Pending": "Envia i pendent"
 }

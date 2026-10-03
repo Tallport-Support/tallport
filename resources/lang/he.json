@@ -1325,5 +1325,13 @@
     "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "IMAP בלבד. מונע משרת הדואר להתמלא: Tallport שומר כל אימייל שאחזר, יחד עם המקור המקורי שלו.",
     "Mark email as read": "סמן אימייל כנקרא",
     "Move to IMAP folder": "העבר לתיקיית IMAP",
-    "Remove from the mail server": "הסר משרת הדואר"
+    "Remove from the mail server": "הסר משרת הדואר",
+    "Add Note & Active": "הוסף פתק ופעיל",
+    "Add Note & Pending": "הוסף פתק וממתין",
+    "Forward & Active": "העבר ופעיל",
+    "Forward & Close": "העבר וסגור",
+    "Forward & Pending": "העבר וממתין",
+    "More send options": "אפשרויות שליחה נוספות",
+    "Send & Active": "שלח ופעיל",
+    "Send & Pending": "שלח וממתין"
 }

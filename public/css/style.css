@@ -2623,19 +2623,22 @@ button.conv-checkbox-clear {
 .btn-add-note-text,
 .btn-send-forward,
 .btn-create-conv,
-.btn-send-close-note,
-.conv-note-block .btn-send-close-reply,
-.conv-forward-block .btn-send-close,
-.conv-phone-block .btn-send-close,
+.dropdown-send-status .send-status-note,
+.dropdown-send-status .send-status-forward,
+.conv-note-block .dropdown-send-status .send-status-reply,
+.conv-forward-block .dropdown-send-status .send-status-reply,
 .conv-forward-block .btn-send-text,
 .conv-note-block .btn-send-text,
 .conv-note-block .conv-recipient,
 .conv-note-block .conv-from-alias {
     display: none;
 }
-.conv-note-block .btn-add-note-text,
-.conv-note-block .btn-send-close-note {
+.conv-note-block .btn-add-note-text {
     display: block;
+}
+.conv-note-block .dropdown-send-status .send-status-note,
+.conv-forward-block .dropdown-send-status .send-status-forward {
+    display: inline;
 }
 .conv-forward-block .btn-send-forward {
     display: block;

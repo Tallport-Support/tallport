@@ -1326,5 +1326,13 @@
     "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "IMAPのみ。メールサーバーの容量が一杯になるのを防ぎます。Tallportは取得したすべてのメールを元のソースとともに保持します。",
     "Mark email as read": "メールを既読にする",
     "Move to IMAP folder": "IMAPフォルダーに移動",
-    "Remove from the mail server": "メールサーバーから削除"
+    "Remove from the mail server": "メールサーバーから削除",
+    "Add Note & Active": "ノートを追加して対応中にする",
+    "Add Note & Pending": "ノートを追加して保留中にする",
+    "Forward & Active": "転送して対応中にする",
+    "Forward & Close": "転送して閉じる",
+    "Forward & Pending": "転送して保留中にする",
+    "More send options": "その他の送信オプション",
+    "Send & Active": "送信して対応中にする",
+    "Send & Pending": "送信して保留中にする"
 }

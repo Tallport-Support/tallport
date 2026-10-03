@@ -1336,5 +1336,13 @@
     "IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.": "IMAP uniquement. Évite que le serveur de messagerie se remplisse : Tallport conserve chaque e-mail récupéré, avec sa source originale.",
     "Mark email as read": "Marquer l'e-mail comme lu",
     "Move to IMAP folder": "Déplacer vers un dossier IMAP",
-    "Remove from the mail server": "Supprimer du serveur de messagerie"
+    "Remove from the mail server": "Supprimer du serveur de messagerie",
+    "Add Note & Active": "Ajouter une note et en cours",
+    "Add Note & Pending": "Ajouter une note et en attente",
+    "Forward & Active": "Transférer et en cours",
+    "Forward & Close": "Transférer et fermer",
+    "Forward & Pending": "Transférer et en attente",
+    "More send options": "Plus d'options d'envoi",
+    "Send & Active": "Envoyer et en cours",
+    "Send & Pending": "Envoyer et en attente"
 }
