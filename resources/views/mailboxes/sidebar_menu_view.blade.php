@@ -12,10 +12,21 @@
     @php
         $sidebar_folder = $folder ?? new App\Folder();
         $sidebar_in_all = App\Misc\AllMailboxes::isAllMailboxes($mailbox->id);
+        $sidebar_mailboxes = Auth::user()->mailboxesCanView(true);
+        $sidebar_settings = Auth::user()->can('viewMailboxMenu', Auth::user());
     @endphp
     <ul class="sidebar-menu sidebar-mailboxes" id="folders" data-mailbox-tree="1">
         <li class="sidebar-mailbox-heading @if ($sidebar_in_all) current @endif" data-mailbox_id="{{ App\Misc\AllMailboxes::MAILBOX_ID }}">
             <a href="{{ route('mailboxes.all') }}"><i class="glyphicon glyphicon-inbox"></i> <span class="folder-name">{{ __('All Mailboxes') }}</span></a>
+            <span class="sidebar-mailbox-actions dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="{{ __('New Conversation') }}" aria-label="{{ __('New Conversation') }}"><i class="glyphicon glyphicon-envelope"></i></a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li class="dropdown-header">{{ __('New Conversation') }}</li>
+                    @foreach ($sidebar_mailboxes as $sidebar_mailbox)
+                        <li><a href="{{ route('conversations.create', ['mailbox_id' => $sidebar_mailbox->id]) }}">{{ $sidebar_mailbox->name }}</a></li>
+                    @endforeach
+                </ul>
+            </span>
         </li>
         @include('mailboxes/partials/folders', [
             'mailbox' => App\Misc\AllMailboxes::mailbox(),
@@ -23,7 +34,7 @@
             'folder'  => $sidebar_in_all ? $sidebar_folder : new App\Folder(),
             'folders_hidden' => false,
         ])
-        @foreach (Auth::user()->mailboxesCanView(true) as $sidebar_mailbox)
+        @foreach ($sidebar_mailboxes as $sidebar_mailbox)
             @php
                 $sidebar_current = $sidebar_mailbox->id == $mailbox->id;
                 $sidebar_folders = $sidebar_current ? $folders : $sidebar_mailbox->getAssesibleFolders();
@@ -33,6 +44,18 @@
             @endphp
             <li class="sidebar-mailbox-heading @if ($sidebar_current) current expanded @endif" data-mailbox_id="{{ $sidebar_mailbox->id }}">
                 <a href="{{ $sidebar_mailbox->url() }}"><i class="glyphicon glyphicon-triangle-right sidebar-mailbox-toggle" title="{{ __('Show folders') }}"></i> <span class="folder-name">@if ($sidebar_mailbox->isArchived())<small class="glyphicon glyphicon-lock"></small> @endif{{ $sidebar_mailbox->name }}</span>@if ($sidebar_count)<span class="active-count pull-right">{{ $sidebar_count }}</span>@endif</a>
+                <span class="sidebar-mailbox-actions">
+                    @if ($sidebar_settings)
+                        <span class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="{{ __('Mailbox Settings') }}" aria-label="{{ __('Mailbox Settings') }}"><i class="glyphicon glyphicon-cog"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                @include('mailboxes/settings_menu', ['mailbox' => $sidebar_mailbox, 'is_dropdown' => true])
+                            </ul>
+                        </span>
+                    @endif
+                    @action('mailbox.sidebar.buttons', $sidebar_mailbox)
+                    <a href="{{ route('conversations.create', ['mailbox_id' => $sidebar_mailbox->id]) }}" title="{{ __('New Conversation') }}" aria-label="{{ __('New Conversation') }}"><i class="glyphicon glyphicon-envelope"></i></a>
+                </span>
             </li>
             @include('mailboxes/partials/folders', [
                 'mailbox' => $sidebar_mailbox,
@@ -55,7 +78,8 @@
     @php
         $show_settings_btn = Auth::user()->can('viewMailboxMenu', Auth::user());
     @endphp
-    @if (\Eventy::filter('mailbox.show_buttons', true, $mailbox))
+    {{-- With the mailboxes in the sidebar, their buttons are on their headings. --}}
+    @if (\Eventy::filter('mailbox.show_buttons', true, $mailbox) && !isset($sidebar_mailboxes))
         <div class="sidebar-buttons btn-group btn-group-justified @if ($show_settings_btn) has-settings @endif">
             @if ($show_settings_btn)
                 <div class="btn-group dropdown" data-toggle="tooltip" title="{{ __("Mailbox Settings") }}">

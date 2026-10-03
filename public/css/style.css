@@ -212,6 +212,50 @@ body.user-is-guest {
 .sidebar-mailboxes .sidebar-mailbox-heading.expanded .sidebar-mailbox-toggle {
     transform: rotate(90deg);
 }
+.sidebar-mailboxes .sidebar-mailbox-actions {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    display: none;
+    z-index: 10;
+}
+.sidebar-mailboxes .sidebar-mailbox-heading:hover .sidebar-mailbox-actions,
+.sidebar-mailboxes .sidebar-mailbox-heading.current .sidebar-mailbox-actions,
+.sidebar-mailboxes .sidebar-mailbox-actions.open,
+.sidebar-mailboxes .sidebar-mailbox-actions .open {
+    display: block;
+}
+.sidebar-mailboxes .sidebar-mailbox-actions > a,
+.sidebar-mailboxes .sidebar-mailbox-actions > .dropdown > a {
+    display: inline-block;
+    padding: 2px 4px;
+}
+.sidebar-mailboxes .sidebar-mailbox-actions > .dropdown {
+    display: inline-block;
+}
+.sidebar-mailboxes .sidebar-mailbox-actions .glyphicon {
+    position: static;
+    font-size: 13px;
+    margin: 0;
+}
+.sidebar-mailboxes .sidebar-mailbox-actions .dropdown-menu .glyphicon {
+    position: static;
+    font-size: 12px;
+    margin-right: 6px;
+}
+/* The count makes room for the buttons when they show. */
+.sidebar-mailboxes .sidebar-mailbox-heading:hover > a .active-count,
+.sidebar-mailboxes .sidebar-mailbox-heading.current > a .active-count {
+    margin-right: 48px;
+}
+@media (max-width:991px) {
+    .sidebar-mailboxes .sidebar-mailbox-actions {
+        display: block;
+    }
+    .sidebar-mailboxes .sidebar-mailbox-heading > a .active-count {
+        margin-right: 48px;
+    }
+}
 .sidebar-mailboxes .sidebar-mailbox-heading .active-count {
     font-weight: normal;
 }

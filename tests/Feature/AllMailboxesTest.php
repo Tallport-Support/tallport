@@ -133,6 +133,24 @@ class AllMailboxesTest extends FeatureTestCase
         $this->get(route('mailboxes.all', ['folder_id' => -Folder::TYPE_MINE]))->assertSee('Assigned to me');
     }
 
+    public function testMailboxButtonsAreOnTheHeadings()
+    {
+        $admin = $this->createAdmin();
+        $html = $this->actingAs($admin)->get(route('mailboxes.view', ['id' => $this->support->id]))->assertOk()->getContent();
+
+        $this->assertStringNotContainsString('sidebar-buttons', $html, 'No toolbar for one mailbox among several.');
+        foreach ([$this->support, $this->sales] as $mailbox) {
+            $this->assertStringContainsString(route('conversations.create', ['mailbox_id' => $mailbox->id]), $html);
+            $this->assertStringContainsString(route('mailboxes.update', ['id' => $mailbox->id]), $html);
+        }
+        // All Mailboxes: New Conversation asks which mailbox.
+        $this->assertMatchesRegularExpression('#data-mailbox_id="-1".*?dropdown-header">New Conversation</li>.*?Support.*?</ul>#s', $html);
+
+        $single = $this->createUser();
+        $this->support->users()->attach($single->id);
+        $this->actingAs($single)->get(route('mailboxes.view', ['id' => $this->support->id]))->assertSee('sidebar-buttons', false);
+    }
+
     public function testOneMailboxNoTree()
     {
         $single = $this->createUser();
