@@ -39,6 +39,7 @@
     @endphp
 
     @yield('stylesheets')
+    @action('layout.after_stylesheets')
 </head>
 <body class="locale-{{ app()->getLocale() }} @if (Helper::isLocaleRtl()) rtl @endif @if (!Auth::user()) user-is-guest @endif @if (Auth::user() && Auth::user()->isAdmin()) user-is-admin @endif @yield('body_class') @action('body.class')" @yield('body_attrs') @if (Auth::user()) data-auth_user_id="{{ Auth::user()->id }}" @endif @if (Auth::user() && Auth::user()->hasKeyboardShortcuts()) data-keyboard-shortcuts="1" @endif>
 <div id="app">

@@ -134,8 +134,8 @@ class Branding
             return self::html('branding.footer') ?: $text;
         }, 20, 1);
 
-        // Header colour and custom CSS.
-        \Eventy::addAction('layout.head', function () {
+        // Header colour and custom CSS, after the stylesheets they override.
+        \Eventy::addAction('layout.after_stylesheets', function () {
             $css = '';
             if ($color = self::headerColor()) {
                 $css .= '.navbar-static-top{background-color:'.$color.';border-color:'.$color.';}'

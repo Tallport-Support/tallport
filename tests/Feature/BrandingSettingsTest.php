@@ -76,6 +76,9 @@ class BrandingSettingsTest extends FeatureTestCase
             ->assertSee('.navbar-static-top{background-color:#aa3300', false)
             ->assertSee('<meta name="theme-color" content="#aa3300">', false)
             ->assertSee('Acme Inc.');
+        // After the stylesheets, so it overrides them.
+        $this->assertMatchesRegularExpression('#<link[^>]+\.css[^>]*>.*<style>\.navbar-static-top\{#s', $page->getContent());
+        $this->assertDoesNotMatchRegularExpression('#<style>\.navbar-static-top\{.*<link[^>]+\.css#s', $page->getContent());
 
         // Removed: the standard logo again, the file gone.
         $this->post(route('settings.save', ['section' => 'branding']), ['_token' => csrf_token(), 'branding_logo_remove' => 1, 'settings' => ['branding.widget_powered_by' => 1]]);

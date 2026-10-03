@@ -1459,6 +1459,14 @@
     },
     {
         "type": "action",
+        "name": "layout.after_stylesheets",
+        "arguments": 0,
+        "files": [
+            "resources/views/layouts/app.blade.php"
+        ]
+    },
+    {
+        "type": "action",
         "name": "layout.body_bottom",
         "arguments": 0,
         "files": [
