@@ -182,6 +182,30 @@
     },
     {
         "type": "filter",
+        "name": "auto_reply_email.css",
+        "arguments": 1,
+        "files": [
+            "resources/views/emails/customer/auto_reply.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "auto_reply_email.footer",
+        "arguments": 1,
+        "files": [
+            "resources/views/emails/customer/auto_reply.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "auto_reply_email.header",
+        "arguments": 1,
+        "files": [
+            "resources/views/emails/customer/auto_reply.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
         "name": "autoreply.should_send",
         "arguments": 2,
         "files": [

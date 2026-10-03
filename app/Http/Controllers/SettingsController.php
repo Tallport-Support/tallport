@@ -318,6 +318,12 @@ class SettingsController extends Controller
                     'api.cors_hosts' => config('api.cors_hosts'),
                 ];
                 break;
+            case 'branding':
+                $settings = [];
+                foreach (\App\Misc\Branding::SETTINGS as $name) {
+                    $settings[$name] = \App\Misc\Branding::get($name, $name == 'branding.widget_powered_by' ? true : '');
+                }
+                break;
             default:
                 $settings = \Eventy::filter('settings.section_settings', $settings, $section);
                 break;
@@ -337,6 +343,7 @@ class SettingsController extends Controller
             'alerts'  => ['title' => __('Alerts'), 'icon' => 'bell', 'order' => 300],
             'ai'      => ['title' => __('AI Assistant'), 'icon' => 'flash', 'order' => 400],
             'api'     => ['title' => __('API & Webhooks'), 'icon' => 'transfer', 'order' => 600],
+            'branding' => ['title' => __('Branding'), 'icon' => 'adjust', 'order' => 650],
         ];
         $sections = \Eventy::filter('settings.sections', $sections);
 
@@ -359,8 +366,43 @@ class SettingsController extends Controller
         if ($section == 'ai') {
             $this->normalizeAiSettings(request());
         }
+        if ($section == 'branding') {
+            $error = $this->prepareBrandingSettings(request());
+            if ($error) {
+                return redirect()->route('settings', ['section' => $section])->withErrors($error)->withInput();
+            }
+        }
 
         return $this->processSave($section, array_keys($settings));
+    }
+
+    /**
+     * Branding settings as stored: images saved (or removed), HTML and CSS
+     * made safe. Returns errors by field, or null.
+     */
+    protected function prepareBrandingSettings(Request $request)
+    {
+        $values = (array) $request->settings;
+        foreach (array_keys(\App\Misc\Branding::IMAGES) as $name) {
+            $field = str_replace('.', '_', $name);
+            try {
+                $values[$name] = \App\Misc\Branding::saveImage($name, $request->file($field), $request->input($field.'_remove'));
+            } catch (\Throwable $e) {
+                return [$field => $e->getMessage()];
+            }
+        }
+        foreach (['branding.footer', 'branding.email_header', 'branding.email_footer'] as $name) {
+            $values[$name] = \Helper::stripDangerousTags((string) ($values[$name] ?? ''));
+        }
+        foreach (['branding.css', 'branding.email_css'] as $name) {
+            $values[$name] = \App\Misc\Branding::sanitizeCss($values[$name] ?? '');
+        }
+        $color = strtolower(ltrim(trim((string) ($values['branding.header_color'] ?? '')), '#'));
+        $values['branding.header_color'] = preg_match('/^[0-9a-f]{6}$/', $color) ? $color : '';
+        $values['branding.widget_powered_by'] = !empty($values['branding.widget_powered_by']);
+        $request->merge(['settings' => $values]);
+
+        return null;
     }
 
     /**

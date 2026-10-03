@@ -1241,5 +1241,20 @@
     "Show images": "Képek megjelenítése",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Ha egy válasz tartalmazza ezek egyikét (soronként egy), de nincs csatolmánya, a Tallport küldés előtt rákérdez. Üres: soha.",
     "Words": "Szavak",
-    "You mentioned :phrase but there is no attachment. Send anyway?": "Említetted ezt: :phrase, de nincs csatolmány. Mégis elküldöd?"
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Említetted ezt: :phrase, de nincs csatolmány. Mégis elküldöd?",
+    "Above replies and auto replies.": "A válaszok és automatikus válaszok felett.",
+    "Branding": "Arculat",
+    "Custom CSS": "Egyéni CSS",
+    "Favicon": "Favicon",
+    "Footer": "Lábléc",
+    "Header": "Fejléc",
+    "Header Color": "Fejléc színe",
+    "Header Logo": "Fejléc logója",
+    "In browser tabs.": "A böngészőlapokon.",
+    "Instead of the copyright line at the bottom of the pages.": "Az oldalak alján lévő szerzői jogi sor helyett.",
+    "Login Page Banner": "Bejelentkezési oldal bannere",
+    "Powered by": "Powered by",
+    "Reset": "Visszaállítás",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "„Powered by” megjelenítése az ügyfeleknek szóló widgetekben (például a tudásbázis widgetben)",
+    "Widgets": "Widgetek"
 }

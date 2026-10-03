@@ -1243,5 +1243,20 @@
     "Show images": "显示图片",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "当回复中包含以下任一词语（每行一个）但没有附件时，Tallport 会在发送前询问。留空：从不。",
     "Words": "词语",
-    "You mentioned :phrase but there is no attachment. Send anyway?": "您提到了 :phrase，但没有附件。仍然发送吗？"
+    "You mentioned :phrase but there is no attachment. Send anyway?": "您提到了 :phrase，但没有附件。仍然发送吗？",
+    "Above replies and auto replies.": "显示在回复和自动回复上方。",
+    "Branding": "品牌",
+    "Custom CSS": "自定义 CSS",
+    "Favicon": "网站图标",
+    "Footer": "页脚",
+    "Header": "页眉",
+    "Header Color": "顶栏颜色",
+    "Header Logo": "顶栏徽标",
+    "In browser tabs.": "显示在浏览器标签页中。",
+    "Instead of the copyright line at the bottom of the pages.": "替代页面底部的版权信息。",
+    "Login Page Banner": "登录页横幅",
+    "Powered by": "Powered by",
+    "Reset": "重置",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "在面向客户的小部件中显示“Powered by”（例如知识库小部件）",
+    "Widgets": "小部件"
 }

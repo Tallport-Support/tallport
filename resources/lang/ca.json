@@ -1348,5 +1348,19 @@
     "Show images": "Mostra les imatges",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Quan una resposta conté una d'aquestes paraules (una per línia) però no té cap adjunt, Tallport ho pregunta abans d'enviar-la. Buit: mai.",
     "Words": "Paraules",
-    "You mentioned :phrase but there is no attachment. Send anyway?": "Heu esmentat :phrase però no hi ha cap adjunt. Voleu enviar-ho igualment?"
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Heu esmentat :phrase però no hi ha cap adjunt. Voleu enviar-ho igualment?",
+    "Above replies and auto replies.": "Damunt de les respostes i les respostes automàtiques.",
+    "Branding": "Marca",
+    "Custom CSS": "CSS personalitzat",
+    "Favicon": "Favicon",
+    "Footer": "Peu",
+    "Header": "Capçalera",
+    "Header Color": "Color de la capçalera",
+    "Header Logo": "Logotip de la capçalera",
+    "In browser tabs.": "A les pestanyes del navegador.",
+    "Instead of the copyright line at the bottom of the pages.": "En lloc de la línia de copyright a la part inferior de les pàgines.",
+    "Login Page Banner": "Bàner de la pàgina d'inici de sessió",
+    "Powered by": "Impulsat per",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "Mostra «Impulsat per» als ginys per als clients (com el giny de la base de coneixement)",
+    "Widgets": "Ginys"
 }

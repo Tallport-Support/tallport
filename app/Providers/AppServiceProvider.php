@@ -44,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
         \App\Misc\Noreply::listen();
         \App\Misc\EmbedImages::listen();
         \App\Misc\ExternalImages::listen();
+        \App\Misc\Branding::listen();
 
         // Channels Tallport has (modules add theirs the same way).
         \Eventy::addFilter('channel.name', function ($name, $channel) {

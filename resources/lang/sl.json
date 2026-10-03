@@ -1240,5 +1240,20 @@
     "Show images": "Prikaži slike",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Ko odgovor vsebuje eno od teh besed (eno na vrstico), nima pa priponke, Tallport pred pošiljanjem vpraša. Prazno: nikoli.",
     "Words": "Besede",
-    "You mentioned :phrase but there is no attachment. Send anyway?": "Omenili ste :phrase, vendar ni priponke. Vseeno pošljem?"
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Omenili ste :phrase, vendar ni priponke. Vseeno pošljem?",
+    "Above replies and auto replies.": "Nad odgovori in samodejnimi odgovori.",
+    "Branding": "Celostna podoba",
+    "Custom CSS": "CSS po meri",
+    "Favicon": "Favicon",
+    "Footer": "Noga",
+    "Header": "Glava",
+    "Header Color": "Barva glave",
+    "Header Logo": "Logotip v glavi",
+    "In browser tabs.": "V zavihkih brskalnika.",
+    "Instead of the copyright line at the bottom of the pages.": "Namesto vrstice o avtorskih pravicah na dnu strani.",
+    "Login Page Banner": "Pasica na strani za prijavo",
+    "Powered by": "Powered by",
+    "Reset": "Ponastavi",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "Prikaži „Powered by“ v gradnikih za stranke (na primer v gradniku baze znanja)",
+    "Widgets": "Gradniki"
 }

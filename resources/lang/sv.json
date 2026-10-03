@@ -1241,5 +1241,20 @@
     "Show images": "Visa bilder",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "När ett svar innehåller något av dessa ord (ett per rad) men saknar bifogad fil frågar Tallport innan det skickas. Tomt: aldrig.",
     "Words": "Ord",
-    "You mentioned :phrase but there is no attachment. Send anyway?": "Du nämnde :phrase men det finns ingen bifogad fil. Skicka ändå?"
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Du nämnde :phrase men det finns ingen bifogad fil. Skicka ändå?",
+    "Above replies and auto replies.": "Ovanför svar och automatiska svar.",
+    "Branding": "Varumärke",
+    "Custom CSS": "Anpassad CSS",
+    "Favicon": "Favicon",
+    "Footer": "Sidfot",
+    "Header": "Sidhuvud",
+    "Header Color": "Färg på sidhuvudet",
+    "Header Logo": "Logotyp i sidhuvudet",
+    "In browser tabs.": "I webbläsarflikar.",
+    "Instead of the copyright line at the bottom of the pages.": "I stället för upphovsrättsraden längst ned på sidorna.",
+    "Login Page Banner": "Banner på inloggningssidan",
+    "Powered by": "Powered by",
+    "Reset": "Återställ",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "Visa ”Powered by” i widgetar för kunder (till exempel kunskapsbaswidgeten)",
+    "Widgets": "Widgetar"
 }

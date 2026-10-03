@@ -1241,5 +1241,20 @@
     "Show images": "Şəkilləri göstər",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Cavabda bunlardan biri olsa (hər sətirdə bir), lakin qoşma olmasa, Tallport göndərməzdən əvvəl soruşur. Boş: heç vaxt.",
     "Words": "Sözlər",
-    "You mentioned :phrase but there is no attachment. Send anyway?": "Siz :phrase qeyd etdiniz, lakin qoşma yoxdur. Yenə də göndərilsin?"
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Siz :phrase qeyd etdiniz, lakin qoşma yoxdur. Yenə də göndərilsin?",
+    "Above replies and auto replies.": "Cavabların və avtomatik cavabların üstündə.",
+    "Branding": "Brendinq",
+    "Custom CSS": "Xüsusi CSS",
+    "Favicon": "Favikon",
+    "Footer": "Alt hissə",
+    "Header": "Başlıq",
+    "Header Color": "Başlıq rəngi",
+    "Header Logo": "Başlıq loqosu",
+    "In browser tabs.": "Brauzer vərəqlərində.",
+    "Instead of the copyright line at the bottom of the pages.": "Səhifələrin aşağısındakı müəllif hüququ sətrinin əvəzinə.",
+    "Login Page Banner": "Giriş səhifəsi banneri",
+    "Powered by": "Powered by",
+    "Reset": "Sıfırla",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "Müştərilər üçün vidjetlərdə “Powered by” göstər (məsələn, bilik bazası vidjetində)",
+    "Widgets": "Vidjetlər"
 }

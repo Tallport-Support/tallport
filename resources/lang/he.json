@@ -1240,5 +1240,20 @@
     "Show images": "הצג תמונות",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "כאשר תשובה מכילה אחת מהמילים האלה (אחת בכל שורה) אך אין בה קובץ מצורף, Tallport שואל לפני השליחה. ריק: אף פעם.",
     "Words": "מילים",
-    "You mentioned :phrase but there is no attachment. Send anyway?": "הזכרת את :phrase אך אין קובץ מצורף. לשלוח בכל זאת?"
+    "You mentioned :phrase but there is no attachment. Send anyway?": "הזכרת את :phrase אך אין קובץ מצורף. לשלוח בכל זאת?",
+    "Above replies and auto replies.": "מעל תשובות ותשובות אוטומטיות.",
+    "Branding": "מיתוג",
+    "Custom CSS": "CSS מותאם אישית",
+    "Favicon": "Favicon",
+    "Footer": "כותרת תחתונה",
+    "Header": "כותרת עליונה",
+    "Header Color": "צבע הכותרת העליונה",
+    "Header Logo": "לוגו בכותרת העליונה",
+    "In browser tabs.": "בלשוניות הדפדפן.",
+    "Instead of the copyright line at the bottom of the pages.": "במקום שורת זכויות היוצרים בתחתית העמודים.",
+    "Login Page Banner": "באנר בדף ההתחברות",
+    "Powered by": "מופעל על ידי",
+    "Reset": "איפוס",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "הצג \"מופעל על ידי\" בווידג'טים ללקוחות (כגון הווידג'ט של מאגר הידע)",
+    "Widgets": "ווידג'טים"
 }

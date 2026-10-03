@@ -1241,5 +1241,20 @@
     "Show images": "Показать изображения",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Если ответ содержит одно из этих слов (по одному в строке), но в нём нет вложения, Tallport спросит перед отправкой. Пусто: никогда.",
     "Words": "Слова",
-    "You mentioned :phrase but there is no attachment. Send anyway?": "Вы упомянули :phrase, но вложения нет. Всё равно отправить?"
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Вы упомянули :phrase, но вложения нет. Всё равно отправить?",
+    "Above replies and auto replies.": "Над ответами и автоответами.",
+    "Branding": "Брендинг",
+    "Custom CSS": "Свой CSS",
+    "Favicon": "Favicon",
+    "Footer": "Подвал",
+    "Header": "Шапка",
+    "Header Color": "Цвет верхней панели",
+    "Header Logo": "Логотип в верхней панели",
+    "In browser tabs.": "Во вкладках браузера.",
+    "Instead of the copyright line at the bottom of the pages.": "Вместо строки об авторских правах внизу страниц.",
+    "Login Page Banner": "Баннер страницы входа",
+    "Powered by": "Powered by",
+    "Reset": "Сбросить",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "Показывать «Powered by» в виджетах для клиентов (например, в виджете базы знаний)",
+    "Widgets": "Виджеты"
 }

@@ -1246,5 +1246,20 @@
     "Show images": "Vis bilder",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Når et svar inneholder ett av disse ordene (ett per linje), men ikke har vedlegg, spør Tallport før sending. Tomt: aldri.",
     "Words": "Ord",
-    "You mentioned :phrase but there is no attachment. Send anyway?": "Du nevnte :phrase, men det er ikke noe vedlegg. Sende likevel?"
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Du nevnte :phrase, men det er ikke noe vedlegg. Sende likevel?",
+    "Above replies and auto replies.": "Over svar og automatiske svar.",
+    "Branding": "Merkevare",
+    "Custom CSS": "Egendefinert CSS",
+    "Favicon": "Favikon",
+    "Footer": "Bunntekst",
+    "Header": "Topptekst",
+    "Header Color": "Farge på toppfeltet",
+    "Header Logo": "Logo i toppfeltet",
+    "In browser tabs.": "I nettleserfaner.",
+    "Instead of the copyright line at the bottom of the pages.": "I stedet for opphavsrettslinjen nederst på sidene.",
+    "Login Page Banner": "Banner på innloggingssiden",
+    "Powered by": "Drevet av",
+    "Reset": "Tilbakestill",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "Vis «Drevet av» i widgeter for kunder (som kunnskapsbase-widgeten)",
+    "Widgets": "Widgeter"
 }

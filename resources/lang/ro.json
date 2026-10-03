@@ -1240,5 +1240,20 @@
     "Show images": "Arată imaginile",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Când un răspuns conține unul dintre aceste cuvinte (unul pe linie), dar nu are atașament, Tallport întreabă înainte de trimitere. Gol: niciodată.",
     "Words": "Cuvinte",
-    "You mentioned :phrase but there is no attachment. Send anyway?": "Ai menționat :phrase, dar nu există niciun atașament. Trimiți oricum?"
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Ai menționat :phrase, dar nu există niciun atașament. Trimiți oricum?",
+    "Above replies and auto replies.": "Deasupra răspunsurilor și răspunsurilor automate.",
+    "Branding": "Branding",
+    "Custom CSS": "CSS personalizat",
+    "Favicon": "Favicon",
+    "Footer": "Subsol",
+    "Header": "Antet",
+    "Header Color": "Culoarea antetului",
+    "Header Logo": "Logo antet",
+    "In browser tabs.": "În filele browserului.",
+    "Instead of the copyright line at the bottom of the pages.": "În locul rândului cu drepturile de autor din partea de jos a paginilor.",
+    "Login Page Banner": "Banner pagină de autentificare",
+    "Powered by": "Powered by",
+    "Reset": "Resetează",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "Afișează „Powered by” în widgeturile pentru clienți (cum ar fi widgetul bazei de cunoștințe)",
+    "Widgets": "Widgeturi"
 }

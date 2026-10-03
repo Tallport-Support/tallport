@@ -1737,5 +1737,18 @@
     "Show images": "Суреттерді көрсету",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Жауапта осылардың бірі болса (әр жолда біреу), бірақ тіркеме болмаса, Tallport жібермес бұрын сұрайды. Бос: ешқашан.",
     "Words": "Сөздер",
-    "You mentioned :phrase but there is no attachment. Send anyway?": "Сіз :phrase деп атадыңыз, бірақ тіркеме жоқ. Бәрібір жіберу керек пе?"
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Сіз :phrase деп атадыңыз, бірақ тіркеме жоқ. Бәрібір жіберу керек пе?",
+    "Above replies and auto replies.": "Жауаптар мен автоматты жауаптардың үстінде.",
+    "Branding": "Брендинг",
+    "Custom CSS": "Жеке CSS",
+    "Favicon": "Favicon",
+    "Header Color": "Жоғарғы панель түсі",
+    "Header Logo": "Жоғарғы панель логотипі",
+    "In browser tabs.": "Браузер қойындыларында.",
+    "Instead of the copyright line at the bottom of the pages.": "Беттердің төменгі жағындағы авторлық құқық жолының орнына.",
+    "Login Page Banner": "Кіру бетінің баннері",
+    "Powered by": "Powered by",
+    "Reset": "Қалпына келтіру",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "Клиенттерге арналған виджеттерде «Powered by» көрсету (мысалы, білім базасы виджетінде)",
+    "Widgets": "Виджеттер"
 }

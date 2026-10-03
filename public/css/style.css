@@ -3688,6 +3688,20 @@ ul.sidebar-block-list {
 .search-results .table.table-conversations th {
     padding-top: 7px;
 }
+.branding-image {
+    display: inline-block;
+    padding: 6px;
+    margin-bottom: 6px;
+    background: repeating-conic-gradient(#eee 0% 25%, #fff 0% 50%) 50% / 12px 12px;
+    border: 1px solid #ddd;
+}
+.branding-image img {
+    max-height: 40px;
+    max-width: 220px;
+}
+.branding-image .branding-default {
+    opacity: .5;
+}
 /* Attachment viewer. */
 #attachment-viewer {
     display: none;

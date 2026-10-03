@@ -1241,5 +1241,20 @@
     "Show images": "Показати зображення",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Якщо відповідь містить одне з цих слів (по одному в рядку), але не має вкладення, Tallport запитає перед надсиланням. Порожньо: ніколи.",
     "Words": "Слова",
-    "You mentioned :phrase but there is no attachment. Send anyway?": "Ви згадали :phrase, але вкладення немає. Все одно надіслати?"
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Ви згадали :phrase, але вкладення немає. Все одно надіслати?",
+    "Above replies and auto replies.": "Над відповідями та автовідповідями.",
+    "Branding": "Брендинг",
+    "Custom CSS": "Власний CSS",
+    "Favicon": "Favicon",
+    "Footer": "Нижній колонтитул",
+    "Header": "Заголовок",
+    "Header Color": "Колір верхньої панелі",
+    "Header Logo": "Логотип у верхній панелі",
+    "In browser tabs.": "У вкладках браузера.",
+    "Instead of the copyright line at the bottom of the pages.": "Замість рядка про авторські права внизу сторінок.",
+    "Login Page Banner": "Банер сторінки входу",
+    "Powered by": "Powered by",
+    "Reset": "Скинути",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "Показувати «Powered by» у віджетах для клієнтів (наприклад, у віджеті бази знань)",
+    "Widgets": "Віджети"
 }

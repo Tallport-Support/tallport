@@ -1241,5 +1241,20 @@
     "Show images": "画像を表示",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "返信にこれらの語句（1行に1つ）が含まれているのに添付ファイルがない場合、Tallport は送信前に確認します。空欄: 確認しない。",
     "Words": "語句",
-    "You mentioned :phrase but there is no attachment. Send anyway?": ":phrase と書かれていますが、添付ファイルがありません。このまま送信しますか？"
+    "You mentioned :phrase but there is no attachment. Send anyway?": ":phrase と書かれていますが、添付ファイルがありません。このまま送信しますか？",
+    "Above replies and auto replies.": "返信および自動返信の上部に表示されます。",
+    "Branding": "ブランディング",
+    "Custom CSS": "カスタムCSS",
+    "Favicon": "ファビコン",
+    "Footer": "フッター",
+    "Header": "ヘッダー",
+    "Header Color": "ヘッダーの色",
+    "Header Logo": "ヘッダーのロゴ",
+    "In browser tabs.": "ブラウザのタブに表示されます。",
+    "Instead of the copyright line at the bottom of the pages.": "ページ下部の著作権表示の代わりに表示されます。",
+    "Login Page Banner": "ログインページのバナー",
+    "Powered by": "Powered by",
+    "Reset": "リセット",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "顧客向けウィジェット（ナレッジベースウィジェットなど）に「Powered by」を表示する",
+    "Widgets": "ウィジェット"
 }

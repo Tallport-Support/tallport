@@ -1241,5 +1241,20 @@
     "Show images": "Resimleri göster",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Bir yanıt bunlardan birini içeriyor (her satıra bir tane) ancak eki yoksa, Tallport göndermeden önce sorar. Boş: asla.",
     "Words": "Kelimeler",
-    "You mentioned :phrase but there is no attachment. Send anyway?": ":phrase ifadesinden bahsettiniz ancak ek yok. Yine de gönderilsin mi?"
+    "You mentioned :phrase but there is no attachment. Send anyway?": ":phrase ifadesinden bahsettiniz ancak ek yok. Yine de gönderilsin mi?",
+    "Above replies and auto replies.": "Yanıtların ve otomatik yanıtların üstünde.",
+    "Branding": "Marka",
+    "Custom CSS": "Özel CSS",
+    "Favicon": "Favicon",
+    "Footer": "Altbilgi",
+    "Header": "Üstbilgi",
+    "Header Color": "Üst Çubuk Rengi",
+    "Header Logo": "Üst Çubuk Logosu",
+    "In browser tabs.": "Tarayıcı sekmelerinde.",
+    "Instead of the copyright line at the bottom of the pages.": "Sayfaların altındaki telif hakkı satırının yerine.",
+    "Login Page Banner": "Giriş Sayfası Banner'ı",
+    "Powered by": "Powered by",
+    "Reset": "Sıfırla",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "Müşterilere yönelik widget'larda “Powered by” göster (örneğin bilgi bankası widget'ı)",
+    "Widgets": "Widget'lar"
 }

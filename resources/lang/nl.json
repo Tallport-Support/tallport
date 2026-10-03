@@ -1246,5 +1246,20 @@
     "Show images": "Afbeeldingen tonen",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Als een antwoord een van deze woorden bevat (één per regel) maar geen bijlage heeft, vraagt Tallport dit vóór het verzenden. Leeg: nooit.",
     "Words": "Woorden",
-    "You mentioned :phrase but there is no attachment. Send anyway?": "U noemt :phrase maar er is geen bijlage. Toch verzenden?"
+    "You mentioned :phrase but there is no attachment. Send anyway?": "U noemt :phrase maar er is geen bijlage. Toch verzenden?",
+    "Above replies and auto replies.": "Boven antwoorden en automatische antwoorden.",
+    "Branding": "Huisstijl",
+    "Custom CSS": "Eigen CSS",
+    "Favicon": "Favicon",
+    "Footer": "Voettekst",
+    "Header": "Koptekst",
+    "Header Color": "Kleur van de kopbalk",
+    "Header Logo": "Logo in de kopbalk",
+    "In browser tabs.": "In browsertabbladen.",
+    "Instead of the copyright line at the bottom of the pages.": "In plaats van de copyrightregel onderaan de pagina's.",
+    "Login Page Banner": "Banner op de inlogpagina",
+    "Powered by": "Powered by",
+    "Reset": "Herstellen",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "“Powered by” tonen in widgets voor klanten (zoals de kennisbankwidget)",
+    "Widgets": "Widgets"
 }

@@ -1240,5 +1240,20 @@
     "Show images": "Zobraziť obrázky",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Ak odpoveď obsahuje niektoré z týchto slov (jedno na riadok), ale nemá prílohu, Tallport sa pred odoslaním opýta. Prázdne: nikdy.",
     "Words": "Slová",
-    "You mentioned :phrase but there is no attachment. Send anyway?": "Spomenuli ste :phrase, ale nie je priložená žiadna príloha. Napriek tomu odoslať?"
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Spomenuli ste :phrase, ale nie je priložená žiadna príloha. Napriek tomu odoslať?",
+    "Above replies and auto replies.": "Nad odpoveďami a automatickými odpoveďami.",
+    "Branding": "Branding",
+    "Custom CSS": "Vlastné CSS",
+    "Favicon": "Favicon",
+    "Footer": "Päta",
+    "Header": "Hlavička",
+    "Header Color": "Farba hlavičky",
+    "Header Logo": "Logo v hlavičke",
+    "In browser tabs.": "Na kartách prehliadača.",
+    "Instead of the copyright line at the bottom of the pages.": "Namiesto riadku s autorskými právami v dolnej časti stránok.",
+    "Login Page Banner": "Banner prihlasovacej stránky",
+    "Powered by": "Powered by",
+    "Reset": "Obnoviť",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "Zobraziť „Powered by“ vo widgetoch pre zákazníkov (napríklad vo widgete databázy znalostí)",
+    "Widgets": "Widgety"
 }

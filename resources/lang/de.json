@@ -1234,5 +1234,20 @@
     "Show images": "Bilder anzeigen",
     "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Wenn eine Antwort eines dieser Wörter enthält (eines pro Zeile), aber keinen Anhang hat, fragt Tallport vor dem Senden nach. Leer: nie.",
     "Words": "Wörter",
-    "You mentioned :phrase but there is no attachment. Send anyway?": "Sie haben :phrase erwähnt, aber es gibt keinen Anhang. Trotzdem senden?"
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Sie haben :phrase erwähnt, aber es gibt keinen Anhang. Trotzdem senden?",
+    "Above replies and auto replies.": "Oberhalb von Antworten und automatischen Antworten.",
+    "Branding": "Branding",
+    "Custom CSS": "Eigenes CSS",
+    "Favicon": "Favicon",
+    "Footer": "Fußzeile",
+    "Header": "Kopfzeile",
+    "Header Color": "Farbe der Kopfleiste",
+    "Header Logo": "Logo in der Kopfleiste",
+    "In browser tabs.": "In Browser-Tabs.",
+    "Instead of the copyright line at the bottom of the pages.": "Anstelle der Copyright-Zeile unten auf den Seiten.",
+    "Login Page Banner": "Banner der Anmeldeseite",
+    "Powered by": "Powered by",
+    "Reset": "Zurücksetzen",
+    "Show \"Powered by\" in widgets for customers (such as the knowledge base widget)": "„Powered by“ in Widgets für Kunden anzeigen (z. B. im Wissensdatenbank-Widget)",
+    "Widgets": "Widgets"
 }
