@@ -1415,7 +1415,7 @@
         "name": "footer.text",
         "arguments": 1,
         "files": [
-            "resources/views/layouts/app.blade.php"
+            "resources/views/partials/app_footer.blade.php"
         ]
     },
     {
@@ -1495,7 +1495,7 @@
         "name": "layout.header_logo",
         "arguments": 1,
         "files": [
-            "resources/views/layouts/app.blade.php"
+            "resources/views/partials/app_sidebar.blade.php"
         ]
     },
     {
@@ -1665,7 +1665,7 @@
         "name": "mailbox.after_sidebar_buttons",
         "arguments": 0,
         "files": [
-            "resources/views/mailboxes/sidebar_menu_view.blade.php"
+            "resources/views/partials/app_sidebar.blade.php"
         ]
     },
     {
@@ -1826,7 +1826,6 @@
         "name": "mailbox.show_buttons",
         "arguments": 2,
         "files": [
-            "resources/views/mailboxes/sidebar_menu_view.blade.php",
             "resources/views/secure/dashboard.blade.php"
         ]
     },
@@ -1835,7 +1834,7 @@
         "name": "mailbox.sidebar.buttons",
         "arguments": 1,
         "files": [
-            "resources/views/mailboxes/sidebar_menu_view.blade.php"
+            "resources/views/partials/app_sidebar.blade.php"
         ]
     },
     {
@@ -1883,8 +1882,7 @@
         "name": "mailbox.url",
         "arguments": 2,
         "files": [
-            "app/Mailbox.php",
-            "resources/views/layouts/app.blade.php"
+            "app/Mailbox.php"
         ]
     },
     {
@@ -1948,7 +1946,7 @@
         "name": "menu.append",
         "arguments": 0,
         "files": [
-            "resources/views/layouts/app.blade.php"
+            "resources/views/partials/app_sidebar.blade.php"
         ]
     },
     {
@@ -1956,7 +1954,7 @@
         "name": "menu.mailbox.after_name",
         "arguments": 1,
         "files": [
-            "resources/views/layouts/app.blade.php"
+            "resources/views/partials/app_sidebar.blade.php"
         ]
     },
     {
@@ -1964,7 +1962,7 @@
         "name": "menu.mailbox.before_name",
         "arguments": 1,
         "files": [
-            "resources/views/layouts/app.blade.php"
+            "resources/views/partials/app_sidebar.blade.php"
         ]
     },
     {
@@ -1972,7 +1970,7 @@
         "name": "menu.mailbox_single.after_name",
         "arguments": 1,
         "files": [
-            "resources/views/layouts/app.blade.php"
+            "resources/views/partials/app_sidebar.blade.php"
         ]
     },
     {
@@ -1980,7 +1978,7 @@
         "name": "menu.mailbox_single.before_name",
         "arguments": 1,
         "files": [
-            "resources/views/layouts/app.blade.php"
+            "resources/views/partials/app_sidebar.blade.php"
         ]
     },
     {
@@ -1988,7 +1986,7 @@
         "name": "menu.mailboxes",
         "arguments": 1,
         "files": [
-            "resources/views/layouts/app.blade.php"
+            "app/Misc/Sidebar.php"
         ]
     },
     {
@@ -1996,7 +1994,7 @@
         "name": "menu.manage.after_mailboxes",
         "arguments": 0,
         "files": [
-            "resources/views/layouts/app.blade.php"
+            "resources/views/partials/app_sidebar.blade.php"
         ]
     },
     {
@@ -2004,7 +2002,7 @@
         "name": "menu.manage.append",
         "arguments": 0,
         "files": [
-            "resources/views/layouts/app.blade.php"
+            "resources/views/partials/app_sidebar.blade.php"
         ]
     },
     {
@@ -2012,7 +2010,7 @@
         "name": "menu.manage.can_view",
         "arguments": 1,
         "files": [
-            "resources/views/layouts/app.blade.php"
+            "resources/views/partials/app_sidebar.blade.php"
         ]
     },
     {
@@ -2028,7 +2026,7 @@
         "name": "menu.user.name_append",
         "arguments": 1,
         "files": [
-            "resources/views/layouts/app.blade.php"
+            "resources/views/partials/app_sidebar_account.blade.php"
         ]
     },
     {
@@ -2036,7 +2034,7 @@
         "name": "menu_right.user.after_profile",
         "arguments": 0,
         "files": [
-            "resources/views/layouts/app.blade.php"
+            "resources/views/partials/app_sidebar_account.blade.php"
         ]
     },
     {

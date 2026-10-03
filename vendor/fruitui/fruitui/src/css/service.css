@@ -1,0 +1,800 @@
+@layer fruit.components {
+  .f-alert {
+    --f-internal-alert-color: var(--f-accent);
+    display: flex;
+    align-items: start;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--f-border);
+    border-inline-start: 3px solid var(--f-alert-color, var(--f-internal-alert-color));
+    border-radius: var(--f-radius-sm);
+    background: var(--f-surface-secondary);
+    color: var(--f-text);
+    font-size: var(--f-text-base);
+    line-height: 1.5;
+  }
+  .f-alert--success {
+    --f-internal-alert-color: var(--f-success);
+  }
+  .f-alert--warning {
+    --f-internal-alert-color: var(--f-warning);
+  }
+  .f-alert--danger {
+    --f-internal-alert-color: var(--f-danger);
+  }
+  .f-alert__icon {
+    flex-shrink: 0;
+    color: var(--f-alert-color, var(--f-internal-alert-color));
+  }
+  .f-alert__body {
+    min-width: 0;
+    flex: 1;
+    overflow-wrap: anywhere;
+  }
+  .f-alert__body > :first-child {
+    margin-top: 0;
+  }
+  .f-alert__body > :last-child {
+    margin-bottom: 0;
+  }
+  .f-alert__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .f-menu {
+    position: relative;
+    display: inline-block;
+  }
+  .f-menu__items {
+    position: absolute;
+    z-index: 20;
+    inset-inline-end: 0;
+    top: calc(100% + 4px);
+    width: max-content;
+    min-width: 180px;
+    max-width: calc(100vw - 32px);
+    padding: 5px;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius);
+    background: var(--f-material-popup);
+    backdrop-filter: blur(24px) saturate(1.8);
+    box-shadow: var(--f-shadow);
+  }
+  .f-menu--above > .f-menu__items {
+    top: auto;
+    bottom: calc(100% + 4px);
+  }
+  /* A pull-down button's chevron: text triggers show it; icon-only "more" triggers do not. */
+  .f-menu__chevron {
+    flex: none;
+    width: 12px;
+    height: 12px;
+    margin-inline-end: -3px;
+    background: currentColor;
+    opacity: 0.7;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m3 4.5 3 3 3-3' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m3 4.5 3 3 3-3' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+  .f-button--icon > .f-menu__chevron {
+    margin: 0;
+  }
+  /* A context menu floats at the pointer; an outline marks the item it acts on, as in macOS. */
+  .f-context-menu {
+    position: fixed;
+  }
+  [data-fruit-context-open] {
+    outline: 2px solid var(--f-accent);
+    outline-offset: -2px;
+  }
+  .f-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 36px;
+    padding: 7px 12px;
+    border: 0;
+    border-radius: calc(var(--f-radius) - 5px);
+    background: transparent;
+    color: var(--f-text);
+    text-align: start;
+    font-size: var(--f-text-base);
+  }
+  .f-menu-item:is(:hover, :focus-visible):not(:disabled) {
+    background: var(--f-accent-fill);
+    color: var(--f-on-accent);
+    outline: none;
+  }
+  .f-menu-item--danger {
+    color: var(--f-danger);
+  }
+  a.f-menu-item {
+    text-decoration: none;
+  }
+  /* Checkbox and radio items reserve a leading column for their checkmark. */
+  .f-menu-item[aria-checked] {
+    position: relative;
+    padding-inline-start: 28px;
+  }
+  .f-menu-item[aria-checked='true']::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 10px;
+    width: 12px;
+    height: 12px;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m2 6.5 2.5 2.5L10 3' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m2 6.5 2.5 2.5L10 3' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+  .f-menu-item__shortcut {
+    margin-inline-start: auto;
+    padding: 0;
+    padding-inline-start: 20px;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    color: var(--f-secondary);
+    font: inherit;
+    font-size: var(--f-text-sm);
+    letter-spacing: 0.04em;
+  }
+  .f-menu-item:is(:hover, :focus-visible):not(:disabled) .f-menu-item__shortcut {
+    color: inherit;
+  }
+  .f-menu__separator {
+    height: 1px;
+    margin: 5px 10px;
+    background: var(--f-border);
+  }
+  .f-menu__group-label {
+    padding: 6px 10px 3px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+    font-weight: 600;
+  }
+
+  .f-tooltip {
+    position: relative;
+    display: inline-flex;
+  }
+  .f-tooltip__text {
+    position: absolute;
+    z-index: 25;
+    top: 100%;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: min(240px, calc(100vw - 32px));
+    padding: 7px 10px;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-sm);
+    background: var(--f-surface-elevated);
+    color: var(--f-text);
+    box-shadow: var(--f-shadow);
+    font-size: var(--f-text-sm);
+    line-height: 1.4;
+    visibility: hidden;
+    transition: visibility 0s;
+  }
+  .f-tooltip:is(:hover, :focus-within):not([data-dismissed]) > .f-tooltip__text {
+    visibility: visible;
+  }
+  /* Like help tags, hover waits before showing; keyboard focus shows it at once. */
+  .f-tooltip:hover:not(:focus-within) > .f-tooltip__text {
+    transition-delay: 0.6s;
+  }
+
+  .f-combobox {
+    position: relative;
+    min-width: 0;
+  }
+  .f-combobox [data-fruit-ui] > input.f-input {
+    padding-inline-end: 30px;
+  }
+  .f-combobox::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    inset-inline-end: 13px;
+    /* Centered, lifted slightly so the rotated chevron looks optically centered at any control height. */
+    inset-block: 0 3px;
+    margin-block: auto;
+    width: 7px;
+    height: 7px;
+    border-inline-end: 1.5px solid var(--f-secondary);
+    border-block-end: 1.5px solid var(--f-secondary);
+    transform: rotate(45deg);
+  }
+  .f-combobox:has(select:not([hidden]))::after {
+    display: none;
+  }
+  .f-combobox:dir(rtl)::after {
+    transform: rotate(-45deg);
+  }
+  .f-tooltip:dir(rtl) .f-tooltip__text {
+    transform: translateX(50%);
+  }
+  .f-autocomplete {
+    position: relative;
+    min-width: 0;
+  }
+  :is(.f-combobox__options, .f-autocomplete__options) {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 4px);
+    inset-inline: 0;
+    max-height: 240px;
+    overflow: auto;
+    padding: 4px;
+    margin: 0;
+    list-style: none;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius);
+    background: var(--f-material-popup);
+    backdrop-filter: blur(24px) saturate(1.8);
+    box-shadow: var(--f-shadow);
+  }
+  :is(.f-combobox__option, .f-autocomplete__option) {
+    padding: 7px 10px;
+    border-radius: var(--f-radius-xs);
+    font-size: var(--f-text-base);
+    cursor: pointer;
+    overflow-wrap: anywhere;
+  }
+  :is(.f-combobox__option, .f-autocomplete__option)[aria-selected='true'] {
+    background: var(--f-accent-fill);
+    color: var(--f-on-accent);
+  }
+  .f-autocomplete__option {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+  }
+  .f-autocomplete__detail {
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+  }
+  .f-autocomplete__option[aria-selected='true'] .f-autocomplete__detail {
+    color: inherit;
+  }
+  .f-combobox__empty {
+    padding: 7px 10px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-base);
+  }
+  .f-token-field {
+    min-width: 0;
+  }
+  .f-token-field__entry {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-sm);
+    background: var(--f-control);
+  }
+  .f-token-field__entry:focus-within {
+    outline: var(--f-focus-ring-width) solid var(--f-focus-ring-color);
+    outline-offset: var(--f-focus-ring-offset);
+  }
+  .f-token-field__entry input {
+    flex: 1;
+    min-width: 100px;
+    width: 100px;
+    padding: 4px;
+    border: 0;
+    background: transparent;
+    color: var(--f-text);
+    font: inherit;
+  }
+  .f-token-field__entry input:focus-visible {
+    outline: none;
+  }
+  .f-token-field__entry:has(input:disabled) {
+    opacity: 0.45;
+  }
+  .f-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    max-width: 100%;
+    padding: 3px 7px;
+    border-radius: var(--f-radius-sm);
+    background: var(--f-selection);
+    color: var(--f-selection-text);
+    font-size: var(--f-text-sm);
+    overflow-wrap: anywhere;
+  }
+  .f-chip__remove {
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--f-radius-xs);
+    background: transparent;
+    color: inherit;
+    font-size: var(--f-text-xl);
+  }
+  .f-chip__remove:hover {
+    background: var(--f-hover);
+  }
+
+  .f-spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    border: 2px solid currentColor;
+    border-inline-end-color: transparent;
+    border-radius: 50%;
+    animation: fruit-spin 0.8s linear infinite;
+  }
+  .f-button:is([aria-busy='true'], [data-loading]) {
+    cursor: progress;
+  }
+  @keyframes fruit-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* Activity stays visible, more slowly. */
+    .f-spinner {
+      animation-duration: 2.4s;
+    }
+  }
+  @media (pointer: coarse) {
+    .f-menu-item {
+      min-height: 44px;
+    }
+    .f-chip__remove {
+      width: 30px;
+      height: 30px;
+    }
+  }
+}
+
+@layer fruit.patterns {
+  .f-button-group {
+    display: inline-flex;
+    align-items: stretch;
+    max-width: 100%;
+  }
+  .f-button-group > .f-button,
+  .f-button-group > .f-menu > summary {
+    border-radius: 0;
+  }
+  /* A menu's trigger fills the group's height, matching the buttons beside it. */
+  .f-button-group > .f-menu {
+    display: flex;
+  }
+  .f-button-group > :first-child,
+  .f-button-group > :first-child > summary {
+    border-start-start-radius: var(--f-radius-sm);
+    border-end-start-radius: var(--f-radius-sm);
+  }
+  .f-button-group > :last-child,
+  .f-button-group > :last-child > summary {
+    border-start-end-radius: var(--f-radius-sm);
+    border-end-end-radius: var(--f-radius-sm);
+  }
+  .f-button-group > :not(:first-child) {
+    margin-inline-start: -1px;
+  }
+  .f-button-group > :focus-within {
+    position: relative;
+    z-index: 1;
+  }
+  .f-input-group {
+    display: flex;
+    align-items: stretch;
+    min-width: 0;
+  }
+  .f-input-group > .f-input {
+    flex: 1;
+    width: 0;
+    min-width: 0;
+  }
+  .f-input-group > * {
+    border-radius: 0;
+  }
+  .f-input-group > :not(:first-child) {
+    margin-inline-start: -1px;
+  }
+  .f-input-group > :first-child {
+    border-start-start-radius: var(--f-radius-sm);
+    border-end-start-radius: var(--f-radius-sm);
+  }
+  .f-input-group > :last-child {
+    border-start-end-radius: var(--f-radius-sm);
+    border-end-end-radius: var(--f-radius-sm);
+  }
+  .f-input-group > :focus {
+    position: relative;
+    z-index: 1;
+  }
+  .f-input-group__addon {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border: 1px solid var(--f-border);
+    background: var(--f-surface-secondary);
+    color: var(--f-secondary);
+    font-size: var(--f-text-base);
+  }
+  .f-tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--f-border);
+    overflow-x: auto;
+  }
+  .f-tab {
+    position: relative;
+    flex-shrink: 0;
+    min-height: 42px;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: var(--f-radius-sm) var(--f-radius-sm) 0 0;
+    background: transparent;
+    color: var(--f-secondary);
+    font-size: var(--f-text-base);
+  }
+  .f-tab:hover {
+    background: var(--f-hover);
+  }
+  .f-tab[aria-selected='true'] {
+    color: var(--f-selection-text);
+  }
+  .f-tab[aria-selected='true']::after {
+    content: '';
+    position: absolute;
+    inset-inline: 10px;
+    bottom: 0;
+    height: 2px;
+    background: var(--f-accent);
+  }
+  .f-tab:focus-visible {
+    outline-offset: calc(var(--f-focus-ring-width) * -1);
+  }
+  .f-section-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    border-bottom: 1px solid var(--f-border);
+  }
+  .f-section-nav a {
+    display: block;
+    padding: 10px 12px;
+    border-radius: var(--f-radius-sm) var(--f-radius-sm) 0 0;
+    color: var(--f-secondary);
+    text-decoration: none;
+    font-size: var(--f-text-base);
+  }
+  .f-section-nav a:hover {
+    background: var(--f-hover);
+  }
+  .f-section-nav a:is([aria-current='page'], [data-current]) {
+    background: var(--f-selection);
+    color: var(--f-selection-text);
+  }
+  .f-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: var(--f-pagination-padding, 12px 0);
+    font-size: var(--f-text-sm);
+    color: var(--f-secondary);
+  }
+  .f-pagination__controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .f-pagination__controls > .f-input {
+    width: auto;
+    min-width: max-content;
+  }
+  .f-pagination a {
+    color: var(--f-text);
+    text-decoration: none;
+  }
+  .f-pagination [aria-current='page'] {
+    background: var(--f-selection);
+    color: var(--f-selection-text);
+  }
+  .f-upload {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .f-upload__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-md);
+    background: var(--f-surface-secondary);
+  }
+  .f-upload__body {
+    flex: 1;
+    min-width: 120px;
+    overflow-wrap: anywhere;
+    font-size: var(--f-text-base);
+  }
+  .f-upload__body .f-progress {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+  }
+  .f-upload__actions {
+    display: flex;
+    gap: 6px;
+  }
+  .f-upload__row[data-state='error'] {
+    border-color: var(--f-danger);
+  }
+  .f-avatar > img,
+  img.f-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+  }
+  img.f-avatar {
+    width: var(--f-avatar-size, 34px);
+    height: var(--f-avatar-size, 34px);
+  }
+  .f-avatar-group {
+    display: flex;
+    align-items: center;
+    padding-inline-start: 6px;
+  }
+  .f-avatar-group > .f-avatar {
+    margin-inline-start: -6px;
+    border: 2px solid var(--f-surface);
+  }
+  .f-presence {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 9px;
+    height: 9px;
+    border: 2px solid var(--f-surface);
+    border-radius: 50%;
+    background: var(--f-tertiary);
+  }
+  .f-presence[data-available='true'] {
+    background: var(--f-success);
+  }
+  .f-notifications {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .f-notifications__heading {
+    margin: 10px 8px 4px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+  }
+  .f-notifications__item {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--f-border);
+  }
+  .f-notifications__item > a {
+    flex: 1;
+    min-width: 0;
+    color: var(--f-text);
+    text-decoration: none;
+    font-size: var(--f-text-base);
+    overflow-wrap: anywhere;
+  }
+  .f-notifications__item > a:hover {
+    color: var(--f-accent);
+  }
+  .f-notifications__item small {
+    display: block;
+    color: var(--f-secondary);
+  }
+  @media (pointer: coarse) {
+    .f-tab {
+      min-height: 44px;
+    }
+  }
+}
+
+@layer fruit.components {
+  @media (forced-colors: active) {
+    .f-menu-item[aria-checked='true']::before {
+      background: CanvasText;
+    }
+    .f-menu__separator {
+      background: CanvasText;
+    }
+  }
+  @media (forced-colors: active) {
+    .f-tab[aria-selected='true']::after {
+      background: Highlight;
+    }
+    .f-chip,
+    .f-alert {
+      border: 1px solid ButtonText;
+    }
+    .f-combobox__option[aria-selected='true'] {
+      background: Highlight;
+      color: HighlightText;
+    }
+  }
+}
+
+@layer fruit.components {
+  /* Someone is writing; the text names who. Reduced motion holds the dots still. */
+  .f-typing {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 1.5em;
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+  }
+  .f-typing:empty {
+    visibility: hidden;
+  }
+  .f-typing__dots {
+    display: inline-flex;
+    gap: 3px;
+  }
+  .f-typing__dots > span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: fruit-typing 1.2s ease-in-out infinite;
+  }
+  .f-typing__dots > span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .f-typing__dots > span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  @keyframes fruit-typing {
+    0%,
+    60%,
+    100% {
+      opacity: 0.35;
+      transform: none;
+    }
+    30% {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+  }
+}
+
+@layer fruit.components {
+  /* A modal search over commands and destinations. */
+  .f-command-palette {
+    width: min(560px, calc(100vw - 32px));
+    max-width: none;
+    margin-top: 12vh;
+    padding: 0;
+    overflow: hidden;
+  }
+  .f-command-palette__search {
+    position: relative;
+    border-bottom: 1px solid var(--f-border);
+  }
+  .f-command-palette__search > .f-icon {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 16px;
+    margin-block: auto;
+    color: var(--f-secondary);
+    pointer-events: none;
+    --f-icon-size: 16px;
+  }
+  .f-command-palette__search > .f-input {
+    min-height: 50px;
+    padding-inline-start: 42px;
+    border: 0;
+    /* The field is the dialog's top edge; its inset focus ring follows the dialog's inner corners. */
+    border-radius: calc(var(--f-radius-lg) - 1px) calc(var(--f-radius-lg) - 1px) 0 0;
+    background: transparent;
+    box-shadow: none;
+    font-size: var(--f-text-lg);
+  }
+  .f-command-palette__search > .f-input:focus-visible {
+    outline-offset: calc(var(--f-focus-ring-width) * -1);
+  }
+  .f-command-palette__list {
+    max-height: min(360px, 50vh);
+    overflow: auto;
+    padding: 6px;
+  }
+  .f-command-palette__group-label {
+    padding: 8px 10px 4px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+    font-weight: 600;
+  }
+  .f-command {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 40px;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: var(--f-radius-sm);
+    background: transparent;
+    color: var(--f-text);
+    font-size: var(--f-text-base);
+    text-align: start;
+    text-decoration: none;
+    cursor: default;
+  }
+  .f-command[aria-selected='true'] {
+    background: var(--f-accent-fill);
+    color: var(--f-on-accent);
+  }
+  .f-command__icon {
+    display: inline-flex;
+    color: var(--f-secondary);
+    --f-icon-size: 16px;
+  }
+  /* Shortcuts read as text, as in macOS menus, so they follow the row's selected color. */
+  .f-command__shortcut {
+    margin-inline-start: auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    color: var(--f-secondary);
+    font: inherit;
+    font-size: var(--f-text-sm);
+    letter-spacing: 0.04em;
+  }
+  .f-command[aria-selected='true'] :is(.f-command__icon, .f-command__shortcut) {
+    color: inherit;
+  }
+  .f-command-palette__empty {
+    padding: 18px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+    text-align: center;
+  }
+  @media (forced-colors: active) {
+    .f-command[aria-selected='true'] {
+      background: Highlight;
+      color: HighlightText;
+    }
+  }
+}
+
+@layer fruit.components {
+  @media (prefers-reduced-transparency: reduce) {
+    :is(.f-menu__items, .f-combobox__options, .f-autocomplete__options) {
+      background: var(--f-surface-elevated);
+      backdrop-filter: none;
+    }
+  }
+}

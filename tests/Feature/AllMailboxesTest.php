@@ -49,13 +49,12 @@ class AllMailboxesTest extends FeatureTestCase
 
         $response = $this->get(route('mailboxes.all'))->assertOk()
             ->assertSee('Support question')->assertSee('Sales question')->assertDontSee('Hidden question')
-            ->assertSee('data-mailbox-tree="1"', false)
             ->assertSee('All Mailboxes');
         // Each mailbox below All Mailboxes, folded.
         $html = $response->getContent();
         $this->assertLessThan(strpos($html, 'data-mailbox_id="'.$this->support->id.'"'), strpos($html, 'data-mailbox_id="-1"'));
-        $this->assertMatchesRegularExpression('#data-folder_id="-1"[^>]*>\s*<a[^>]*>.*?<strong class="active-count[^>]*>2</strong>#s', $html, 'Unassigned counts both mailboxes.');
-        $this->assertMatchesRegularExpression('#class="[^"]*hidden[^"]*" data-folder_id="\d+"[^>]*data-mailbox_group="'.$this->sales->id.'"#', $html);
+        $this->assertMatchesRegularExpression('#data-folder_id="-1" data-mailbox_id="-1">.*?<span class="f-badge active-count">2</span>#s', $html, 'Unassigned counts both mailboxes.');
+        $this->assertMatchesRegularExpression('#<details class="f-sidebar__group app-sidebar__mailbox" data-mailbox_id="'.$this->sales->id.'"\s*>#', $html);
 
         // Next pages.
         $page = $this->postAjax($this->agent, '/conversation/ajax', [
@@ -66,8 +65,7 @@ class AllMailboxesTest extends FeatureTestCase
         $this->assertStringContainsString('Support question', $page->json('html'));
 
         // In a mailbox, the tree has it open.
-        $this->get(route('mailboxes.view', ['id' => $this->sales->id]))->assertOk()
-            ->assertSeeInOrder(['current expanded', 'data-mailbox_id="'.$this->sales->id.'"'], false);
+        $this->assertMatchesRegularExpression('#data-mailbox_id="'.$this->sales->id.'"\s+open\s*>#', $this->get(route('mailboxes.view', ['id' => $this->sales->id]))->assertOk()->getContent());
     }
 
     /**
@@ -82,8 +80,8 @@ class AllMailboxesTest extends FeatureTestCase
 
         $page = $this->actingAs($this->agent)->get($newer->url($folder_id))->assertOk();
         $html = $page->getContent();
-        $this->assertMatchesRegularExpression('#class="sidebar-mailbox-heading\s+current\s*" data-mailbox_id="-1"#', $html);
-        $this->assertDoesNotMatchRegularExpression('#current expanded\s*" data-mailbox_id="'.$this->sales->id.'"#', $html);
+        $this->assertMatchesRegularExpression('#aria-current="page"\s+data-folder_id="'.$folder_id.'" data-mailbox_id="-1"#', $html);
+        $this->assertDoesNotMatchRegularExpression('#data-mailbox_id="'.$this->sales->id.'"\s+open#', $html);
         // Older and newer across the mailboxes, still in All Mailboxes.
         $page->assertSee('href="'.$older->url($folder_id).'" class="glyphicon glyphicon-menu-right"', false);
         $this->get($older->url($folder_id))->assertOk()->assertSee('href="'.$newer->url($folder_id).'" class="glyphicon glyphicon-menu-left"', false);
@@ -161,17 +159,13 @@ class AllMailboxesTest extends FeatureTestCase
         $admin = $this->createAdmin();
         $html = $this->actingAs($admin)->get(route('mailboxes.view', ['id' => $this->support->id]))->assertOk()->getContent();
 
-        $this->assertStringNotContainsString('sidebar-buttons', $html, 'No toolbar for one mailbox among several.');
         foreach ([$this->support, $this->sales] as $mailbox) {
             $this->assertStringContainsString(route('conversations.create', ['mailbox_id' => $mailbox->id]), $html);
             $this->assertStringContainsString(route('mailboxes.update', ['id' => $mailbox->id]), $html);
         }
-        // All Mailboxes: New Conversation asks which mailbox.
-        $this->assertMatchesRegularExpression('#data-mailbox_id="-1".*?dropdown-header">New Conversation</li>.*?Support.*?</ul>#s', $html);
-
-        $single = $this->createUser();
-        $this->support->users()->attach($single->id);
-        $this->actingAs($single)->get(route('mailboxes.view', ['id' => $this->support->id]))->assertSee('sidebar-buttons', false);
+        // The keyboard shortcut's New Conversation: the open mailbox's.
+        $this->assertMatchesRegularExpression('#href="'.preg_quote(route('conversations.create', ['mailbox_id' => $this->support->id]), '#').'" class="[^"]*new-conversation-link#', $html);
+        $this->assertSame(1, substr_count($html, 'new-conversation-link'));
     }
 
     public function testOneMailboxNoTree()
@@ -181,14 +175,13 @@ class AllMailboxesTest extends FeatureTestCase
 
         $this->actingAs($single)->get('/')->assertOk();
         $this->get(route('mailboxes.all'))->assertRedirect();
-        $this->get(route('mailboxes.view', ['id' => $this->support->id]))->assertOk()->assertDontSee('data-mailbox-tree', false);
+        $this->get(route('mailboxes.view', ['id' => $this->support->id]))->assertOk()->assertDontSee('All Mailboxes');
     }
 
     public function testMailboxMenu()
     {
         $this->actingAs($this->agent)->get(route('mailboxes.view', ['id' => $this->support->id]))
-            ->assertSee('<a href="'.route('mailboxes.all').'">Mailbox</a>', false)
-            ->assertDontSee('dm-scrollable', false)
-            ->assertSee('class="navbar-brand" href="'.route('dashboard', ['dashboard' => 1]).'"', false);
+            ->assertSee('class="app-sidebar__brand" href="'.route('dashboard', ['dashboard' => 1]).'"', false)
+            ->assertSee('id="app-sidebar"', false);
     }
 }

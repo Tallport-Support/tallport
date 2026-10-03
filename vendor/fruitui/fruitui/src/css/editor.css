@@ -1,0 +1,42 @@
+@layer fruit.components {
+  .f-editor {
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-md);
+    background: var(--f-control);
+  }
+  .f-editor__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 6px;
+    border-bottom: 1px solid var(--f-border);
+  }
+  .f-editor__surface .tiptap {
+    min-height: var(--f-editor-min-height, 120px);
+    max-height: var(--f-editor-max-height, 360px);
+    overflow-y: auto;
+    padding: 12px;
+    font-size: var(--f-text-base);
+  }
+  .f-editor__surface [contenteditable='false'] {
+    background: var(--f-surface-secondary);
+    color: var(--f-secondary);
+  }
+  .f-editor:has([aria-disabled='true']) {
+    opacity: 0.45;
+  }
+  .f-editor:focus-within {
+    outline: var(--f-focus-ring-width) solid var(--f-focus-ring-color);
+    outline-offset: var(--f-focus-ring-offset);
+  }
+  .f-editor__surface .tiptap:focus-visible {
+    outline: none;
+  }
+  .f-editor [hidden] {
+    display: none !important;
+  }
+  .f-editor > textarea {
+    border: 0;
+    border-radius: inherit;
+  }
+}

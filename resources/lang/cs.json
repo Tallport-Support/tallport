@@ -1461,5 +1461,8 @@
     "No category": "Bez kategorie",
     "Pick one or type a new one.": "Vyberte jednu, nebo napište novou.",
     "Updated :date by :person": "Aktualizováno :date uživatelem :person",
-    "Users are allowed to manage the knowledge base": "Uživatelé mohou spravovat znalostní bázi"
+    "Users are allowed to manage the knowledge base": "Uživatelé mohou spravovat znalostní bázi",
+    "Navigation": "Navigace",
+    "Sections": "Sekce",
+    "More": "Další"
 }

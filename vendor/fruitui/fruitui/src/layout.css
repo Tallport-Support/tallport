@@ -1,0 +1,3 @@
+/* Optional workspace chrome and pane/resizing presentation; load after core.css. */
+@import './css/layout.css';
+@import './css/workspace.css';

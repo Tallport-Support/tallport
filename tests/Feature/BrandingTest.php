@@ -19,7 +19,7 @@ class BrandingTest extends FeatureTestCase
         $html = $response->getContent();
         $this->assertMatchesRegularExpression('#<title>[^<]*Tallport\s*</title>#', $html);
         $this->assertStringContainsString('<a href="'.config('app.tallport_url').'" target="_blank">Tallport</a>, based on <a href="https://freescout.net" target="_blank">FreeScout</a>', $html);
-        $this->assertStringContainsString('img/logo-brand.svg', $html);
+        $this->assertStringContainsString('class="app-sidebar__logo"', $html);
     }
 
     /**

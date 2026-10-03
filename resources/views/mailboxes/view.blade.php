@@ -9,9 +9,12 @@
     @section('title', $folder->getTypeName().' - '.$mailbox->name)
 @endif
 
+
 @section('sidebar')
-    @include('partials/sidebar_menu_toggle')
-    @include('mailboxes/sidebar_menu_view')
+    {{-- The folder and its mailbox. --}}
+    <x-page-nav>
+        <x-slot:title><h1>{{ $folder->getTypeName() }}</h1><small class="f-muted">@include('mailboxes/partials/mute_icon', ['mailbox' => $mailbox]){{ $mailbox->name }}</small></x-slot:title>
+    </x-page-nav>
 @endsection
 
 @section('content')

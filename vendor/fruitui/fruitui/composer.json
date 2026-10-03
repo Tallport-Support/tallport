@@ -1,0 +1,50 @@
+{
+    "name": "fruitui/fruitui",
+    "description": "CSS-first, Apple-inspired UI components for Laravel.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.3",
+        "illuminate/support": "^13.0",
+        "illuminate/view": "^13.0"
+    },
+    "suggest": {
+        "livewire/livewire": "^4.0 for optional single-file components and server interactions."
+    },
+    "conflict": {
+        "livewire/livewire": "<4.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.32",
+        "livewire/livewire": "^4.0",
+        "orchestra/testbench": "^11.0",
+        "phpunit/phpunit": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "FruitUI\\": "src/Laravel/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FruitUI\\Tests\\": "tests/php/",
+            "FruitUI\\Gallery\\": "gallery/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "FruitUI\\FruitUIServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "gallery": "php scripts/render-gallery.php",
+        "lint": "pint --test",
+        "format": "pint"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

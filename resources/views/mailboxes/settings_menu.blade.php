@@ -1,33 +1,26 @@
+{{-- A mailbox's settings pages (tabs in mailboxes/sidebar_menu). Modules add theirs with mailboxes.settings.menu. --}}
 @if (Auth::user()->can('update', $mailbox))
     @if (Auth::user()->isAdmin() || Auth::user()->hasManageMailboxPermission($mailbox->id, App\Mailbox::ACCESS_PERM_EDIT) || Auth::user()->hasManageMailboxPermission($mailbox->id, App\Mailbox::ACCESS_PERM_SIGNATURE))
-    	<li @if (Route::currentRouteName() == 'mailboxes.update')class="active"@endif><a href="{{ route('mailboxes.update', ['id'=>$mailbox->id]) }}"><i class="glyphicon glyphicon-pencil"></i> {{ __('Edit Mailbox') }}</a></li>
+        <a href="{{ route('mailboxes.update', ['id'=>$mailbox->id]) }}" @if (Route::currentRouteName() == 'mailboxes.update') aria-current="page" @endif>{{ __('Edit Mailbox') }}</a>
     @endif
     @if (Auth::user()->isAdmin())
-        <li @if (Route::currentRouteName() == 'mailboxes.connection' || Route::currentRouteName() == 'mailboxes.connection.incoming')class="active"@endif><a href="{{ route('mailboxes.connection', ['id'=>$mailbox->id]) }}"><i class="glyphicon glyphicon-transfer"></i> {{ __('Connection Settings') }}</a></li>
+        <a href="{{ route('mailboxes.connection', ['id'=>$mailbox->id]) }}" @if (Route::currentRouteName() == 'mailboxes.connection' || Route::currentRouteName() == 'mailboxes.connection.incoming') aria-current="page" @endif>{{ __('Connection Settings') }}</a>
     @endif
     @if (Auth::user()->isAdmin() || Auth::user()->hasManageMailboxPermission($mailbox->id, App\Mailbox::ACCESS_PERM_PERMISSIONS))
-        <li @if (Route::currentRouteName() == 'mailboxes.permissions')class="active"@endif><a href="{{ route('mailboxes.permissions', ['id'=>$mailbox->id]) }}"><i class="glyphicon glyphicon-ok"></i> {{ __('Permissions') }}</a></li>
+        <a href="{{ route('mailboxes.permissions', ['id'=>$mailbox->id]) }}" @if (Route::currentRouteName() == 'mailboxes.permissions') aria-current="page" @endif>{{ __('Permissions') }}</a>
     @endif
     @if (Auth::user()->isAdmin() || Auth::user()->hasManageMailboxPermission($mailbox->id, App\Mailbox::ACCESS_PERM_AUTO_REPLIES))
-        <li @if (Route::currentRouteName() == 'mailboxes.auto_reply')class="active"@endif><a href="{{ route('mailboxes.auto_reply', ['id'=>$mailbox->id]) }}"><i class="glyphicon glyphicon-share"></i> {{ __('Auto Reply') }}</a></li>
+        <a href="{{ route('mailboxes.auto_reply', ['id'=>$mailbox->id]) }}" @if (Route::currentRouteName() == 'mailboxes.auto_reply') aria-current="page" @endif>{{ __('Auto Reply') }}</a>
     @endif
     @if (Auth::user()->isAdmin())
-        <li @if (Route::currentRouteName() == 'mailboxes.telegram')class="active"@endif><a href="{{ route('mailboxes.telegram', ['id'=>$mailbox->id]) }}"><i class="glyphicon glyphicon-send"></i> {{ __('Telegram') }}</a></li>
+        <a href="{{ route('mailboxes.telegram', ['id'=>$mailbox->id]) }}" @if (Route::currentRouteName() == 'mailboxes.telegram') aria-current="page" @endif>{{ __('Telegram') }}</a>
     @endif
-    <li @if (Route::currentRouteName() == 'mailboxes.nostr')class="active"@endif><a href="{{ route('mailboxes.nostr', ['id'=>$mailbox->id]) }}"><i class="glyphicon glyphicon-flash"></i> Nostr</a></li>
+    <a href="{{ route('mailboxes.nostr', ['id'=>$mailbox->id]) }}" @if (Route::currentRouteName() == 'mailboxes.nostr') aria-current="page" @endif>Nostr</a>
 @endif
 @if (App\Workflow::canEdit(Auth::user(), $mailbox))
-    <li @if (Str::startsWith(Route::currentRouteName(), 'mailboxes.workflows'))class="active"@endif><a href="{{ route('mailboxes.workflows', ['mailbox_id' => $mailbox->id]) }}"><i class="glyphicon glyphicon-random"></i> {{ __('Workflows') }}</a></li>
+    <a href="{{ route('mailboxes.workflows', ['mailbox_id' => $mailbox->id]) }}" @if (Str::startsWith(Route::currentRouteName(), 'mailboxes.workflows')) aria-current="page" @endif>{{ __('Workflows') }}</a>
 @endif
 @if (App\SavedReply::canManage(Auth::user(), $mailbox))
-    <li @if (Str::startsWith(Route::currentRouteName(), 'mailboxes.saved_replies'))class="active"@endif><a href="{{ route('mailboxes.saved_replies', ['id'=>$mailbox->id]) }}"><i class="glyphicon glyphicon-comment"></i> {{ __('Saved Replies') }}</a></li>
+    <a href="{{ route('mailboxes.saved_replies', ['id'=>$mailbox->id]) }}" @if (Str::startsWith(Route::currentRouteName(), 'mailboxes.saved_replies')) aria-current="page" @endif>{{ __('Saved Replies') }}</a>
 @endif
 @action('mailboxes.settings.menu', $mailbox)
-@if (!empty($is_dropdown))
-    <li class="divider"></li>
-    <li><a href="{{ route('conversations.ajax_html', ['action' => 'default_redirect']) }}?mailbox_id={{ $mailbox->id }}" data-trigger="modal" data-modal-title="{{ __("Default Redirect") }}" data-modal-no-footer="true" data-modal-on-show="initAfterSendModal" role="button"><i class="glyphicon glyphicon-share-alt"></i> {{ __('Default Redirect') }}…</span></a></li>
-@endif
-@if (!empty($is_dropdown))
-	<li class="divider"></li>
-	<li><a href="#" class="mailbox-mute-trigger" @if ($mailbox->mute) data-mute="0" @else data-mute="1" @endif data-mailbox-id="{{ $mailbox->id }}" data-loading-text="{{ __('Processing') }}…"><i class="glyphicon glyphicon-volume-off"></i> <span class="mute-text-1 @if ($mailbox->mute) hidden @endif">{{ __('Mute Notifications') }}</span><span class="mute-text-0 @if (!$mailbox->mute) hidden @endif">{{ __('Unmute Notifications') }}</span></a></li>
-@endif

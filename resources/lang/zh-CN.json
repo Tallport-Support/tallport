@@ -1463,5 +1463,8 @@
     "No category": "无类别",
     "Pick one or type a new one.": "选择一个或输入新的类别。",
     "Updated :date by :person": ":person 于 :date 更新",
-    "Users are allowed to manage the knowledge base": "被允许管理知识库的用户"
+    "Users are allowed to manage the knowledge base": "被允许管理知识库的用户",
+    "Navigation": "导航",
+    "Sections": "分区",
+    "More": "更多"
 }

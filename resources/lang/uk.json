@@ -1462,5 +1462,8 @@
     "No category": "Без категорії",
     "Pick one or type a new one.": "Виберіть одну або введіть нову.",
     "Updated :date by :person": "Оновлено :date, :person",
-    "Users are allowed to manage the knowledge base": "Користувачам дозволено керувати базою знань"
+    "Users are allowed to manage the knowledge base": "Користувачам дозволено керувати базою знань",
+    "Navigation": "Навігація",
+    "Sections": "Розділи",
+    "More": "Більше"
 }

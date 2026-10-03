@@ -1462,5 +1462,8 @@
     "No category": "Без категории",
     "Pick one or type a new one.": "Выберите или введите новую.",
     "Updated :date by :person": "Обновлено :date, :person",
-    "Users are allowed to manage the knowledge base": "Агенты могут управлять базой знаний"
+    "Users are allowed to manage the knowledge base": "Агенты могут управлять базой знаний",
+    "Navigation": "Навигация",
+    "Sections": "Разделы",
+    "More": "Ещё"
 }

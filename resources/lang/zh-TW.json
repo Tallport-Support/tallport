@@ -1514,5 +1514,8 @@
     "No category": "無類別",
     "Pick one or type a new one.": "選擇一個或輸入新的類別。",
     "Updated :date by :person": ":person 於 :date 更新",
-    "Users are allowed to manage the knowledge base": "允許使用者管理知識庫"
+    "Users are allowed to manage the knowledge base": "允許使用者管理知識庫",
+    "Navigation": "導覽",
+    "Sections": "區段",
+    "More": "更多"
 }

@@ -6,10 +6,6 @@
     @section('body_attrs')@parent data-conversation_id="{{ $conversation->id }}"@endsection
 @endif
 
-@section('sidebar')
-    @include('partials/sidebar_menu_toggle')
-    @include('mailboxes/sidebar_menu_view')
-@endsection
 
 @section('content')
     @include('partials/flash_messages')

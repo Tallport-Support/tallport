@@ -1,6 +1,4 @@
-<div class="sidebar-title">
-    {{ __('Modules') }}
-</div>
-<ul class="sidebar-menu">
-    <li><a href="#installed"><i class="glyphicon glyphicon-saved"></i> {{ __('Installed Modules') }}@if (count($installed_modules)) <small>({{ count($installed_modules) }})</small>@endif</a></li>
-</ul>
+<x-page-nav :label="__('Modules')">
+    <x-slot:title><h1>{{ __('Modules') }}</h1></x-slot:title>
+    <a href="#installed">{{ __('Installed Modules') }}@if (count($installed_modules)) <small>({{ count($installed_modules) }})</small>@endif</a>
+</x-page-nav>

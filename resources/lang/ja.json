@@ -1462,5 +1462,8 @@
     "No category": "カテゴリなし",
     "Pick one or type a new one.": "選択するか、新しいカテゴリを入力してください。",
     "Updated :date by :person": ":date に :person が更新",
-    "Users are allowed to manage the knowledge base": "ユーザーはナレッジベースを管理することができます"
+    "Users are allowed to manage the knowledge base": "ユーザーはナレッジベースを管理することができます",
+    "Navigation": "ナビゲーション",
+    "Sections": "セクション",
+    "More": "その他"
 }

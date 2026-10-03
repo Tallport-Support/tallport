@@ -1,0 +1,630 @@
+@layer fruit.patterns {
+  /* Native forms compose their own labels, textarea, help/error text and actions. */
+  .f-composer {
+    flex-shrink: 0;
+    padding: var(--f-composer-padding, 14px 24px 18px);
+    border-top: 1px solid var(--f-border);
+    background: var(--f-composer-background, var(--f-surface));
+  }
+  .f-composer__input {
+    display: block;
+    min-height: var(--f-composer-input-min-height, 82px);
+    max-height: var(--f-composer-input-max-height, 160px);
+    font-size: var(--f-composer-input-size, var(--f-text-sm));
+    line-height: 1.6;
+  }
+  .f-composer__header,
+  .f-composer__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--f-composer-action-gap, 12px);
+  }
+  .f-composer__header {
+    margin-bottom: 10px;
+  }
+  .f-composer__footer {
+    margin-top: var(--f-composer-footer-margin, 9px);
+  }
+
+  /* Native name/value facts, with one or more presentation columns. */
+  .f-description-list {
+    display: grid;
+    grid-template-columns: var(--f-description-columns, minmax(0, 1fr));
+    gap: var(--f-description-gap, 13px);
+    margin: var(--f-description-margin, 0);
+  }
+  .f-description-list > div {
+    min-width: 0;
+  }
+  .f-description-list dt {
+    color: var(--f-secondary);
+    font-size: var(--f-description-term-size, var(--f-text-xs));
+  }
+  .f-description-list dd {
+    margin: var(--f-description-value-margin, 3px 0 0);
+    font-size: var(--f-description-value-size, var(--f-text-base));
+    line-height: var(--f-description-value-line-height, 1.6);
+    overflow-wrap: anywhere;
+  }
+
+  /* A native disclosure containing independent controls; no menu role implied. */
+  .f-floating-disclosure {
+    position: relative;
+  }
+  .f-floating-disclosure > summary {
+    cursor: pointer;
+  }
+  .f-floating-disclosure__content {
+    position: absolute;
+    inset-inline-end: 0;
+    top: calc(100% + var(--f-floating-gap, 4px));
+    z-index: 6;
+    width: var(--f-floating-width, max-content);
+    max-width: calc(100vw - 32px);
+    padding: var(--f-floating-padding, 5px);
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-floating-radius, var(--f-radius));
+    background: var(--f-floating-background, var(--f-surface-elevated));
+    backdrop-filter: var(--f-floating-backdrop, none);
+    box-shadow: var(--f-floating-shadow, var(--f-shadow));
+  }
+  .f-floating-disclosure--above > .f-floating-disclosure__content {
+    top: auto;
+    bottom: calc(100% + var(--f-floating-gap, 4px));
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .f-floating-disclosure__content {
+      background: var(--f-surface-secondary);
+      backdrop-filter: none;
+    }
+  }
+  /* Native lists of independent conversation-opening buttons. Application data
+     and optional arrow-key navigation belong to the caller. */
+  .f-item-list {
+    min-height: 0;
+    margin: 0;
+    padding: var(--f-item-list-padding, 0 8px 8px);
+    overflow: auto;
+    list-style: none;
+  }
+  .f-item-list > li {
+    min-width: 0;
+  }
+  .f-item-row {
+    --f-internal-item-current-background: var(--f-selection);
+    --f-internal-item-current-hover: var(--f-item-current-background, var(--f-internal-item-current-background));
+    --f-internal-item-current-color: var(--f-text);
+    --f-internal-item-current-secondary: var(--f-secondary);
+    --f-internal-item-current-unread: var(--f-accent);
+    --f-internal-item-current-border: transparent;
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: var(--f-item-row-padding, 14px 12px);
+    border: 0;
+    border-radius: var(--f-item-row-radius, var(--f-radius-md));
+    background: transparent;
+    color: var(--f-text);
+    text-align: start;
+  }
+  .f-item-row:has(> .f-item-row__leading) {
+    padding-inline-start: var(--f-item-row-leading-inset, 62px);
+  }
+  .f-item-row::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    inset-inline-start: var(--f-item-row-leading-inset, 12px);
+    inset-inline-end: var(--f-item-separator-end, 12px);
+    border-bottom: 1px solid var(--f-border);
+  }
+  .f-item-row:has(> .f-item-row__leading)::after {
+    inset-inline-start: var(--f-item-row-leading-inset, 62px);
+  }
+  .f-item-row:hover {
+    background: var(--f-hover);
+  }
+  .f-item-row[aria-current='true'] {
+    background: var(--f-item-current-background, var(--f-internal-item-current-background));
+    color: var(--f-item-current-color, var(--f-internal-item-current-color));
+  }
+  .f-item-row[aria-current='true']:hover {
+    background: var(--f-item-current-hover, var(--f-internal-item-current-hover));
+  }
+  .f-item-row[aria-current='true']::after {
+    border-color: var(--f-item-current-border, var(--f-internal-item-current-border));
+  }
+  .f-item-row[aria-current='true'] :is(.f-item-row__time, .f-item-row__preview, .f-item-row__meta) {
+    color: var(--f-item-current-secondary, var(--f-internal-item-current-secondary));
+  }
+  .f-item-row[aria-current='true'] .f-item-row__unread {
+    background: var(--f-item-current-unread, var(--f-internal-item-current-unread));
+  }
+  .f-item-row--filled {
+    --f-internal-item-current-background: var(--f-accent-fill);
+    --f-internal-item-current-color: var(--f-on-accent);
+    --f-internal-item-current-secondary: var(--f-on-accent);
+    --f-internal-item-current-unread: var(--f-on-accent);
+  }
+  /* A filled current row is emphasized while its list has focus and unemphasized otherwise. */
+  :where(.f-item-list:not(:focus-within)) .f-item-row--filled {
+    --f-internal-item-current-background: var(--f-selection-inactive);
+    --f-internal-item-current-color: var(--f-text);
+    --f-internal-item-current-secondary: var(--f-secondary);
+    --f-internal-item-current-unread: var(--f-accent);
+  }
+  .f-item-row:focus-visible {
+    outline-offset: calc(var(--f-focus-ring-width) * -1);
+  }
+  .f-item-row:disabled:hover {
+    background: transparent;
+  }
+  .f-item-row__leading {
+    position: absolute;
+    inset-inline-start: 14px;
+    top: 17px;
+  }
+  .f-item-row__top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .f-item-row__title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--f-text-base);
+    font-weight: 650;
+  }
+  .f-item-row__time {
+    flex-shrink: 0;
+    margin-inline-start: auto;
+    color: var(--f-secondary);
+    font-size: var(--f-text-2xs);
+  }
+  .f-item-row__subtitle {
+    display: block;
+    margin-top: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--f-text-sm);
+    font-weight: 500;
+  }
+  .f-item-row__preview {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    margin-top: 3px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+    line-height: 1.5;
+  }
+  .f-item-row__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 7px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-2xs);
+  }
+  .f-item-row__unread {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--f-accent);
+  }
+
+  /* A native link: it owns its URL; supplied icons and text are presentation. */
+  .f-attachment {
+    display: flex;
+    align-items: center;
+    gap: var(--f-attachment-gap, 12px);
+    padding: var(--f-attachment-padding, 14px);
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius);
+    background: var(--f-surface-secondary);
+    color: var(--f-text);
+    text-decoration: none;
+    font-size: var(--f-text-sm);
+  }
+  .f-attachment:hover {
+    background: var(--f-hover);
+  }
+  .f-attachment__body {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .f-attachment__detail {
+    display: block;
+    color: var(--f-secondary);
+    font-size: var(--f-text-2xs);
+  }
+  .f-attachment__leading {
+    flex-shrink: 0;
+  }
+  .f-attachment__trailing {
+    flex-shrink: 0;
+    margin-inline-start: auto;
+    color: var(--f-secondary);
+  }
+
+  /* An informational arrangement; optional action controls retain their state. */
+  .f-empty-state {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: var(--f-empty-gap, 10px);
+    min-height: var(--f-empty-min-height, 200px);
+    padding: var(--f-empty-padding, 24px);
+    text-align: center;
+    color: var(--f-secondary);
+  }
+  .f-empty-state__icon,
+  .f-empty-state__icon > .f-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--f-tertiary);
+  }
+  .f-empty-state__title {
+    margin: 0;
+    color: var(--f-text);
+    font-size: var(--f-empty-title-size, var(--f-text-2xl));
+    font-weight: 600;
+  }
+  .f-empty-state__title > :is(h2, h3, h4, p) {
+    margin: 0;
+    font: inherit;
+  }
+  .f-empty-state__description {
+    margin: 0;
+    font-size: var(--f-empty-description-size, var(--f-text-sm));
+  }
+  .f-empty-state__actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  @media (forced-colors: active) {
+    .f-item-row[aria-current='true'] {
+      outline: 1px solid Highlight;
+      outline-offset: -2px;
+    }
+    .f-attachment {
+      border-color: ButtonText;
+    }
+  }
+}
+
+@layer fruit.patterns {
+  /* Placeholder content while data loads. The loading container sets aria-busy="true". */
+  .f-skeleton {
+    display: grid;
+    gap: var(--f-skeleton-gap, 9px);
+  }
+  .f-skeleton__line,
+  .f-skeleton__block {
+    border-radius: var(--f-radius-xs);
+    background: linear-gradient(90deg, var(--f-hover) 30%, var(--f-pressed) 50%, var(--f-hover) 70%) 0 0 / 300% 100%;
+    animation: fruit-shimmer 1.6s ease-in-out infinite;
+  }
+  .f-skeleton__line {
+    height: 0.8em;
+  }
+  .f-skeleton__line:last-child:not(:only-child) {
+    width: 60%;
+  }
+  @keyframes fruit-shimmer {
+    from {
+      background-position: 100% 0;
+    }
+    to {
+      background-position: 0 0;
+    }
+  }
+
+  /* A labeled separator, such as a day or "New messages" in a message list. */
+  .f-divider {
+    display: flex;
+    align-items: center;
+    gap: var(--f-divider-gap, 12px);
+    margin: var(--f-divider-margin, 12px 0);
+    color: var(--f-secondary);
+    font-size: var(--f-text-2xs);
+    white-space: nowrap;
+  }
+  .f-divider::before,
+  .f-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--f-divider-color, var(--f-border));
+  }
+  .f-divider:empty::after {
+    display: none;
+  }
+  .f-divider--start::before {
+    display: none;
+  }
+  .f-divider--accent {
+    --f-divider-color: var(--f-accent);
+    color: var(--f-accent);
+  }
+
+  /* Bulk selection: a list item can hold a checkbox beside its row button. */
+  .f-item-list > li:has(> .f-check) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+  }
+  .f-item-list > li > .f-check {
+    padding-inline: var(--f-item-select-padding, 10px 2px);
+  }
+  /* The count of selected items with independent actions for them. */
+  .f-selection-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: var(--f-selection-bar-padding, 10px 16px);
+    border-top: 1px solid var(--f-border);
+    background: var(--f-selection);
+    color: var(--f-selection-text);
+    font-size: var(--f-text-xs);
+  }
+  .f-selection-bar__count {
+    margin-inline-end: auto;
+  }
+  .f-selection-bar .f-button--ghost {
+    color: inherit;
+  }
+
+  /* One message in a conversation: identity and time, the body, then attachments or actions.
+     Inline puts the avatar beside everything; stacked puts the identity above a full-width body. */
+  .f-message {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--f-message-gap, 10px);
+    align-items: start;
+  }
+  .f-message > :not(.f-message__avatar) {
+    grid-column: -2;
+  }
+  .f-message__avatar {
+    grid-row: span 4;
+    --f-avatar-size: var(--f-message-avatar-size, 32px);
+    --f-avatar-font-size: var(--f-text-2xs);
+  }
+  .f-message__header {
+    display: flex;
+    align-items: baseline;
+    gap: 4px 8px;
+    min-width: 0;
+  }
+  .f-message__identity {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 8px;
+    min-width: 0;
+  }
+  .f-message__author {
+    font-size: var(--f-text-sm);
+    font-weight: 600;
+  }
+  .f-message__meta,
+  .f-message__time {
+    color: var(--f-secondary);
+    font-size: var(--f-text-2xs);
+    white-space: nowrap;
+  }
+  .f-message__body {
+    margin-top: var(--f-message-body-gap, 4px);
+    font-size: var(--f-text-sm);
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+  .f-message__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  /* Quick actions appear at the message's top corner on hover or keyboard focus, as in Slack; they
+     rise above the edge so they never cover the text. Padded messages can set the offset inside.
+     Touch screens, which cannot hover, keep them visible after the content. */
+  .f-message__actions {
+    position: absolute;
+    inset-block-start: var(--f-message-actions-top, -14px);
+    inset-inline-end: var(--f-message-actions-end, 4px);
+    z-index: 1;
+    display: flex;
+    gap: 2px;
+    padding: 2px;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-sm);
+    background: var(--f-surface-elevated);
+    box-shadow: var(--f-control-shadow);
+    /* Hidden, not inert: the bar is inside the message, so pointing at it already shows it. */
+    opacity: 0;
+    transition: opacity var(--f-motion) ease;
+  }
+  .f-message:is(:hover, :focus-within) > .f-message__actions,
+  .f-message__actions:has([open]) {
+    opacity: 1;
+  }
+  .f-message__actions .f-button {
+    min-width: 28px;
+    min-height: 28px;
+    padding: 4px;
+  }
+  @media (hover: none) {
+    .f-message__actions {
+      position: static;
+      justify-self: end;
+      margin-top: 6px;
+      opacity: 1;
+    }
+  }
+  .f-message--stacked {
+    align-items: center;
+  }
+  .f-message--stacked > .f-message__avatar {
+    grid-row: auto;
+  }
+  .f-message--stacked > :not(.f-message__avatar, .f-message__header, .f-message__actions) {
+    grid-column: 1 / -1;
+  }
+  /* Stacked messages show their time at the end of the header: the actions take their own column
+     beside it instead of covering it. */
+  .f-message--stacked:has(> .f-message__actions) {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  .f-message--stacked:has(> .f-message__actions) > .f-message__header {
+    grid-column: 2;
+  }
+  .f-message--stacked > .f-message__actions {
+    position: static;
+    grid-row: 1;
+    grid-column: 3;
+    align-self: start;
+    margin-inline-start: 8px;
+  }
+  .f-message--stacked .f-message__header {
+    align-items: flex-start;
+  }
+  .f-message--stacked .f-message__identity {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+  }
+  .f-message--stacked .f-message__time {
+    margin-inline-start: auto;
+  }
+  .f-message--note {
+    padding: var(--f-message-note-padding, 14px);
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius);
+    background: var(--f-surface-secondary);
+  }
+
+  /* A chronological list of events, such as conversation history or an audit log. */
+  .f-timeline {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .f-timeline__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: var(--f-timeline-padding, 14px 0);
+    border-bottom: 1px solid var(--f-border);
+  }
+  .f-timeline__item:last-child {
+    border-bottom: 0;
+  }
+  .f-timeline__icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--f-radius-sm);
+    background: var(--f-surface-secondary);
+    color: var(--f-secondary);
+    --f-icon-size: 16px;
+  }
+  .f-timeline__body {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .f-timeline__body > strong {
+    font-size: var(--f-text-sm);
+    font-weight: 600;
+  }
+  .f-timeline__body > p {
+    margin-top: 2px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+  }
+  .f-timeline__time {
+    flex-shrink: 0;
+    color: var(--f-secondary);
+    font-size: var(--f-text-2xs);
+    white-space: nowrap;
+  }
+
+  /* The path to the current page. */
+  .f-breadcrumbs > ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+  }
+  .f-breadcrumbs li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  .f-breadcrumbs li + li::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-block-start: 1.5px solid currentColor;
+    border-inline-end: 1.5px solid currentColor;
+    transform: rotate(45deg);
+  }
+  .f-breadcrumbs li + li:dir(rtl)::before {
+    transform: rotate(-45deg);
+  }
+  .f-breadcrumbs a {
+    min-width: 0;
+    color: var(--f-selection-text);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+  .f-breadcrumbs a:hover {
+    text-decoration: underline;
+  }
+  .f-breadcrumbs [aria-current='page'] {
+    color: var(--f-text);
+  }
+
+  @media (forced-colors: active) {
+    .f-skeleton__line,
+    .f-skeleton__block,
+    .f-divider::before,
+    .f-divider::after {
+      background: GrayText;
+    }
+  }
+
+  /* Print the content: interactive overlays and placeholders stay off paper. */
+  @media print {
+    :where(.fruit-ui) {
+      background: none;
+    }
+    :is(.f-toast, .f-pagination, .f-menu, .f-floating-disclosure, .f-skeleton, .f-composer) {
+      display: none !important;
+    }
+  }
+}

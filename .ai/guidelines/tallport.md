@@ -37,6 +37,13 @@ Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Lara
 - Keep Eventy hooks (`\Eventy::filter`/`action` names and arguments) stable. Modules depend on them.
 - `config('app.compatibility_version')` is the FreeScout version reported to modules. `config('app.version')` is Tallport's own version.
 
+## User interface
+
+- Tallport follows Apple's Human Interface Guidelines (https://developer.apple.com/design/human-interface-guidelines/), as FruitUI does.
+- New and reworked screens use FruitUI (`fruitui/fruitui`, from GitHub): its `x-fruit::` Blade components and `f-*` classes inside a `.fruit-ui` scope, and Livewire 4 where server interaction helps. Bootstrap 3 and jQuery stay loaded for screens and modules not converted yet.
+- Change FruitUI itself (in its own repository) when a component is missing or wrong, rather than working around it in Tallport. Its strings and their translations belong to FruitUI.
+- Light and dark appearances follow the system; don't force one.
+
 ## Translations
 
 - Tallport supports the languages in `config('app.locales')`. Every user-facing string (`__()`, `@lang()`, `trans()`) needs a translation in each of them: in `resources/lang/<locale>.json`, keyed by the English text, and for Laravel's messages in `resources/lang/<locale>/{auth,passwords,validation}.php`.

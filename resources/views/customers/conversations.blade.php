@@ -5,7 +5,7 @@
 
 @section('body_attrs')@parent data-customer_id="{{ $customer->id }}"@endsection
 
-@section('sidebar')
+@section('aside')
     <div class="profile-preview">
     	@include('customers/profile_menu')
         @include('customers/profile_snippet')

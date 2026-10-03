@@ -1,0 +1,130 @@
+@layer fruit.components {
+  /* Native pickers honor different subsets of these rules across platforms. */
+  /* A single-line select shows its chosen option on one line. */
+  select.f-input:not([multiple], [size]) {
+    white-space: nowrap;
+  }
+  select.f-input :where(option, optgroup) {
+    font: inherit;
+    color: var(--f-text);
+    background: var(--f-control);
+  }
+  select.f-input option {
+    padding: var(--f-space-2) var(--f-space-3);
+    border-radius: var(--f-radius-sm);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  select.f-input optgroup {
+    font-weight: 600;
+    color: var(--f-secondary);
+  }
+  select.f-input option:disabled {
+    color: var(--f-tertiary);
+    cursor: not-allowed;
+  }
+  select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) {
+    padding: var(--f-space-1);
+  }
+
+  @supports (appearance: base-select) and selector(select::picker(select)) {
+    /* Keep the operating system's familiar picker on touch devices. */
+    @media (hover: hover) and (pointer: fine) {
+      select.f-input,
+      select.f-input::picker(select) {
+        appearance: base-select;
+      }
+      select.f-input {
+        align-items: center;
+        gap: var(--f-space-2);
+        cursor: pointer;
+      }
+      select.f-input::picker(select) {
+        padding: var(--f-space-1);
+        margin-block: var(--f-space-1);
+        border: 1px solid var(--f-border);
+        border-radius: var(--f-radius);
+        color: var(--f-text);
+        background: var(--f-control);
+        box-shadow: var(--f-shadow);
+        max-inline-size: calc(100dvi - 16px);
+        max-block-size: min(320px, calc(100dvb - 16px));
+        overflow: auto;
+      }
+      select.f-input::picker-icon {
+        content: '';
+        width: 7px;
+        height: 7px;
+        margin-inline-start: auto;
+        margin-inline-end: var(--f-space-1);
+        color: var(--f-secondary);
+        border-inline-end: 1.5px solid currentColor;
+        border-block-end: 1.5px solid currentColor;
+        rotate: 45deg;
+        flex-shrink: 0;
+      }
+      select.f-input:open::picker-icon {
+        rotate: 225deg;
+      }
+      select.f-input:dir(rtl)::picker-icon {
+        rotate: -45deg;
+      }
+      select.f-input:dir(rtl):open::picker-icon {
+        rotate: 135deg;
+      }
+      select.f-input optgroup {
+        padding-block: var(--f-space-1);
+      }
+      select.f-input option {
+        position: relative;
+        padding-inline-start: calc(var(--f-space-3) + 1em);
+        white-space: normal;
+        overflow-wrap: anywhere;
+        outline: none;
+      }
+      select.f-input option::checkmark {
+        position: absolute;
+        inset-inline-start: var(--f-space-1);
+        top: 50%;
+        transform: translateY(-50%);
+        color: currentColor;
+      }
+      select.f-input option:checked {
+        color: var(--f-selection-text);
+        background: var(--f-selection);
+      }
+      select.f-input option:enabled:is(:hover, :focus-visible) {
+        color: var(--f-on-accent);
+        background: var(--f-accent-fill);
+      }
+      select.f-input option:disabled {
+        color: var(--f-tertiary);
+      }
+
+      /* Keep listboxes native: base-select support alone does not guarantee
+         complete multiple/size keyboard behavior. Let size own the row count. */
+      select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) {
+        appearance: auto;
+        cursor: default;
+      }
+      select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) option {
+        white-space: nowrap;
+        padding-inline-start: var(--f-space-3);
+      }
+
+      @media (forced-colors: active) {
+        /* Explicit system colors also avoid automatic text backplates obscuring
+           text against the system highlight. */
+        select.f-input option:checked,
+        select.f-input option:enabled:is(:hover, :focus-visible) {
+          forced-color-adjust: none;
+          color: HighlightText;
+          background: Highlight;
+        }
+        select.f-input option:disabled {
+          color: GrayText;
+        }
+      }
+    }
+  }
+}

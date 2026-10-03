@@ -3,7 +3,7 @@
 @section('title', ($q ? $q.' - ' : '').strip_tags(Eventy::filter('search.title', __('Search'))))
 @section('body_class', 'body-search')
 
-@section('sidebar')
+@section('aside')
     @include('partials/sidebar_menu_toggle')
     <div class="sidebar-title">
 		{!! safe_raw_html(Eventy::filter('search.title', __('Search')), ['iframe']) !!}

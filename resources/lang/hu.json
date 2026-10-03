@@ -1462,5 +1462,8 @@
     "No category": "Nincs kategória",
     "Pick one or type a new one.": "Válassz egyet, vagy írj be egy újat.",
     "Updated :date by :person": "Frissítette :person, :date",
-    "Users are allowed to manage the knowledge base": "A felhasználók kezelhetik a tudásbázist"
+    "Users are allowed to manage the knowledge base": "A felhasználók kezelhetik a tudásbázist",
+    "Navigation": "Navigáció",
+    "Sections": "Szakaszok",
+    "More": "Továbbiak"
 }

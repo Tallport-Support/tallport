@@ -1,0 +1,1231 @@
+[
+  {
+    "id": "button",
+    "kind": "primitive",
+    "classes": ["f-button"],
+    "blade": ["button"],
+    "uses": [],
+    "contracts": {
+      "button": {
+        "purpose": "Invoke an action.",
+        "element": "`button`, button role; native `aria-pressed` can describe a toggle action.",
+        "state": "Native disabled state; explicit form button type.",
+        "keyboard": "Tab focuses; Enter/Space invokes.",
+        "options": "`variant`: default, primary, ghost, danger. `size`: small (30px), regular (36px, default), large (44px). `type`: button (default), submit, reset. Slot: action label and optional decorative icon."
+      }
+    }
+  },
+  {
+    "id": "input",
+    "kind": "primitive",
+    "classes": ["f-input"],
+    "blade": ["input"],
+    "uses": [],
+    "contracts": {
+      "input": {
+        "purpose": "Enter a single line of text.",
+        "element": "`input`; native role follows text-like type and native attributes.",
+        "state": "Native string value, validation, disabled/readonly state.",
+        "keyboard": "Native text editing and focus behavior.",
+        "options": "`type`: text (default), email, password, search, tel, url. A password input may bind `x-bind:type` for a show/hide toggle; other types are fixed. No content slot; provide a label or accessible name."
+      }
+    }
+  },
+  {
+    "id": "field",
+    "kind": "composition",
+    "classes": ["f-field", "f-label", "f-help", "f-error"],
+    "blade": ["field"],
+    "uses": [],
+    "contracts": {
+      "field": {
+        "purpose": "Associate one independent form control with label, help and error.",
+        "element": "Native div with label and described text.",
+        "state": "Child retains its value and bindings; the field settles one control id.",
+        "keyboard": "Native label focuses the control or enhanced query.",
+        "options": "`label`: required. `control-id`: optional; otherwise the child id or one derived from its wire:model/name. `description`, `error` strings; `bag`: named error bag. The error defaults to the shared $errors message for the control. One control slot, including Checkbox/Radio/Switch; plain HTML children need control-id and their own ARIA."
+      }
+    }
+  },
+  {
+    "id": "switch",
+    "kind": "primitive",
+    "classes": ["f-switch"],
+    "blade": ["switch"],
+    "uses": [],
+    "contracts": {
+      "switch": {
+        "purpose": "Turn a boolean setting on or off.",
+        "element": "`input type=checkbox`, switch role inside its label.",
+        "state": "Native checked state and submitted value; checked/required/disabled attributes.",
+        "keyboard": "Tab focuses; Space toggles.",
+        "options": "Fixed type and role. Slot: setting label; attributes go to the input. Inside Field, inherits its id, description and error."
+      }
+    }
+  },
+  {
+    "id": "checkbox",
+    "kind": "primitive",
+    "classes": ["f-check"],
+    "blade": ["checkbox"],
+    "uses": [],
+    "contracts": {
+      "checkbox": {
+        "purpose": "Include or exclude an independent option.",
+        "element": "`input type=checkbox`, checkbox role inside its label.",
+        "state": "Native checked state and submitted value; checked/required/disabled attributes.",
+        "keyboard": "Tab focuses; Space toggles.",
+        "options": "Fixed type and role. Slot: label; attributes go to the input. Inside Field, inherits its id, description and error."
+      }
+    }
+  },
+  {
+    "id": "radio",
+    "kind": "primitive",
+    "classes": ["f-check"],
+    "blade": ["radio"],
+    "uses": [],
+    "contracts": {
+      "radio": {
+        "purpose": "Select one value in a named group.",
+        "element": "`input type=radio`, radio role inside its label.",
+        "state": "Native checked state and selected group value; name/value/required/disabled attributes.",
+        "keyboard": "Tab enters group; arrow keys select; Space checks.",
+        "options": "Fixed type and role. Slot: label; attributes go to the input. Group using the same name and a fieldset/legend; a single radio may sit in Field."
+      }
+    }
+  },
+  {
+    "id": "select",
+    "kind": "primitive",
+    "classes": ["f-input"],
+    "blade": ["select"],
+    "uses": [],
+    "contracts": {
+      "select": {
+        "purpose": "Choose from native options.",
+        "element": "`select`; native combobox or listbox role.",
+        "state": "Native scalar or multiple selection and validation.",
+        "keyboard": "Native browser selection keyboard behavior; CSS adds no handlers.",
+        "options": "Native select attributes, including multiple/size. Slot: option/optgroup elements. CSS enhances supporting desktop pickers; touch/unsupported browsers retain system rendering."
+      }
+    }
+  },
+  {
+    "id": "fieldset",
+    "kind": "primitive",
+    "classes": ["f-fieldset"],
+    "blade": ["fieldset"],
+    "uses": ["admin.html", "support.html"],
+    "contracts": {
+      "fieldset": {
+        "purpose": "Name a group of related independent fields.",
+        "element": "`fieldset` with native legend; group role.",
+        "state": "Native disabled state propagates to fields except the first legend's descendants.",
+        "keyboard": "Children retain their own keyboard behavior.",
+        "options": "Native fieldset attributes. Slot: legend followed by independent controls."
+      }
+    }
+  },
+  {
+    "id": "file",
+    "kind": "primitive",
+    "classes": ["f-input", "f-file"],
+    "blade": ["file"],
+    "uses": [],
+    "contracts": {
+      "file": {
+        "purpose": "Choose files for upload.",
+        "element": "`input type=file`; native file-picker semantics.",
+        "state": "Native FileList, accept/multiple/required/disabled; no programmatic filename value.",
+        "keyboard": "Tab focuses; native activation opens the system file picker.",
+        "options": "Fixed type. Native input attributes, change actions, and Livewire upload bindings; no content slot or x-model filename binding. Application owns uploading."
+      }
+    }
+  },
+  {
+    "id": "number",
+    "kind": "primitive",
+    "classes": ["f-input"],
+    "blade": ["number"],
+    "uses": [],
+    "contracts": {
+      "number": {
+        "purpose": "Enter a numeric quantity.",
+        "element": "`input type=number`, native spinbutton.",
+        "state": "Native numeric value, min/max/step and validation; disabled/readonly.",
+        "keyboard": "Native text editing and Up/Down stepping.",
+        "options": "Fixed type. Native input attributes and value bindings; no content slot."
+      }
+    }
+  },
+  {
+    "id": "date",
+    "kind": "primitive",
+    "classes": ["f-input", "f-calendar", "f-date-picker"],
+    "blade": ["date"],
+    "uses": [],
+    "contracts": {
+      "date": {
+        "purpose": "Enter a calendar date or period.",
+        "element": "Native `input` of the date type. Date and datetime-local sit in a `div.f-date-picker` with a generated calendar popover; month and week stay plain.",
+        "state": "Native serialized calendar value, min/max/step and validation; disabled/readonly. The calendar writes the native value (keeping a date-time's time) and disables days outside min/max.",
+        "keyboard": "Native segment typing. A click or Alt+Down opens the calendar (Alt+Down focuses it); arrows move by day and week, Home/End to the week's ends, PageUp/PageDown by month (Shift: year); Enter chooses; Escape closes and returns focus.",
+        "options": "`type`: date (default), datetime-local, month, week. `wrapper`: presentation and data attributes, including `data-fruit-label`, `data-fruit-previous-label` and `data-fruit-next-label`. Native input attributes and value bindings; no content slot."
+      }
+    }
+  },
+  {
+    "id": "time",
+    "kind": "primitive",
+    "classes": ["f-input"],
+    "blade": ["time"],
+    "uses": [],
+    "contracts": {
+      "time": {
+        "purpose": "Enter a time of day.",
+        "element": "`input type=time`; native time-editor semantics.",
+        "state": "Native time string, min/max/step and validation; disabled/readonly.",
+        "keyboard": "Native time editing and picker interaction.",
+        "options": "Fixed type. Native input attributes and value bindings; no content slot."
+      }
+    }
+  },
+  {
+    "id": "color",
+    "kind": "primitive",
+    "classes": ["f-color", "f-color-palette", "f-color-picker", "f-input", "f-swatch", "f-color-editor"],
+    "blade": ["color"],
+    "uses": [],
+    "contracts": {
+      "color": {
+        "purpose": "Choose a color value.",
+        "element": "Native `input type=color` in a `div.f-color-picker` with a generated swatch palette.",
+        "state": "Native color value and disabled state. A swatch writes the native value; Other… expands a custom editor (saturation/brightness area, hue slider, hex field) in the same popover.",
+        "keyboard": "Tab focuses; activation opens the palette on the current swatch; arrows move; Enter or Space chooses; Escape closes and returns focus. In the editor, arrows change saturation and brightness (Shift for larger steps).",
+        "options": "Fixed type. Swatches come from the input's `list` datalist (option labels name them); without one, Blade renders Apple's system colors. `wrapper` for presentation. Native input attributes and value bindings; no content slot."
+      }
+    }
+  },
+  {
+    "id": "range",
+    "kind": "primitive",
+    "classes": ["f-range"],
+    "blade": ["range"],
+    "uses": [],
+    "contracts": {
+      "range": {
+        "purpose": "Adjust a bounded numeric value.",
+        "element": "`input type=range`, native slider.",
+        "state": "Native numeric value, min/max/step and disabled state.",
+        "keyboard": "Arrows step; Home/End reach bounds.",
+        "options": "Fixed type. Native input attributes and value bindings; no content slot."
+      }
+    }
+  },
+  {
+    "id": "progress",
+    "kind": "primitive",
+    "classes": ["f-progress"],
+    "blade": ["progress"],
+    "uses": [],
+    "contracts": {
+      "progress": {
+        "purpose": "Display task completion or ongoing activity.",
+        "element": "`progress`, native progressbar.",
+        "state": "Native value/max; omitting value means indeterminate.",
+        "keyboard": "No added focus or interaction.",
+        "options": "Native progress attributes; label or accessible name required. Slot: fallback text, which does not provide an accessible name."
+      }
+    }
+  },
+  {
+    "id": "meter",
+    "kind": "primitive",
+    "classes": ["f-meter"],
+    "blade": ["meter"],
+    "uses": [],
+    "contracts": {
+      "meter": {
+        "purpose": "Display a measurement within a known range.",
+        "element": "`meter`, native meter.",
+        "state": "Native value/min/max, low/high/optimum thresholds determine state.",
+        "keyboard": "No added focus or interaction.",
+        "options": "Native meter attributes; label or accessible name required. Slot: fallback text."
+      }
+    }
+  },
+  {
+    "id": "typography",
+    "kind": "composition",
+    "classes": [],
+    "blade": [],
+    "uses": []
+  },
+  {
+    "id": "textarea",
+    "kind": "primitive",
+    "classes": ["f-input"],
+    "blade": ["textarea"],
+    "uses": [],
+    "contracts": {
+      "textarea": {
+        "purpose": "Enter multiple lines of text.",
+        "element": "`textarea`, textbox role.",
+        "state": "Native string value, validation, disabled/readonly state.",
+        "keyboard": "Native text editing; Enter inserts a line break.",
+        "options": "Native textarea attributes. Slot: initial text; Alpine/Livewire can own the value."
+      }
+    }
+  },
+  {
+    "id": "search",
+    "kind": "composition",
+    "classes": ["f-search"],
+    "blade": ["search"],
+    "uses": [],
+    "contracts": {
+      "search": {
+        "purpose": "Enter a search query.",
+        "element": "`input type=search` inside `div.f-search` with a decorative icon.",
+        "state": "Native string value; the application owns results.",
+        "keyboard": "Native text editing; Escape clears in supporting browsers.",
+        "options": "`label`: accessible name (or aria-label, aria-labelledby or a Field). `wrapper`: presentation attributes. Native input attributes and models go to the input."
+      }
+    }
+  },
+  {
+    "id": "segmented",
+    "kind": "composition",
+    "classes": ["f-segmented"],
+    "blade": ["segmented", "segment"],
+    "uses": [],
+    "contracts": {
+      "segmented": {
+        "purpose": "Choose one of a few related options shown side by side.",
+        "element": "`fieldset` with a legend containing native radios.",
+        "state": "Native checked value of the radio group.",
+        "keyboard": "Tab enters the group; arrows select; Space checks.",
+        "options": "`legend`: required group name. Slot: Segments."
+      },
+      "segment": {
+        "purpose": "One option of a segmented control.",
+        "element": "`input type=radio` inside its label.",
+        "state": "Native checked state and value.",
+        "keyboard": "Arrows move between segments.",
+        "options": "Fixed type and role. Native radio attributes and models (name, value, wire:model) go to the input. Slot: label."
+      }
+    }
+  },
+  {
+    "id": "disclosure",
+    "kind": "primitive",
+    "classes": ["f-disclosure"],
+    "blade": ["disclosure"],
+    "uses": [],
+    "contracts": {
+      "disclosure": {
+        "purpose": "Reveal optional supporting content.",
+        "element": "`details` with a native summary button.",
+        "state": "Native open state.",
+        "keyboard": "Tab focuses summary; Enter/Space toggles.",
+        "options": "`title`: summary text. Native details attributes. Slot: supporting content."
+      }
+    }
+  },
+  {
+    "id": "dialog",
+    "kind": "primitive",
+    "classes": ["f-dialog"],
+    "blade": ["dialog"],
+    "uses": [],
+    "contracts": {
+      "dialog": {
+        "purpose": "Present a focused task in a modal or nonmodal dialog.",
+        "element": "`dialog`, dialog role; optional alertdialog role.",
+        "state": "Native open/modal state; optional wire:model/x-model open state that Escape and form method=dialog update.",
+        "keyboard": "showModal manages focus; Tab stays within a modal; Escape dismisses.",
+        "options": "Native dialog attributes and an accessible name. Slot: composed content/actions. Bind open state with wire:model or x-model, or give a `name` for `fruit-dialog-open`/`fruit-dialog-close` events (Fruit::openDialog/closeDialog). Otherwise use native showModal()/close() and `<form method=\"dialog\">`. Livewire morphs keep it open."
+      }
+    }
+  },
+  {
+    "id": "avatar",
+    "kind": "pattern",
+    "classes": ["f-avatar"],
+    "blade": ["avatar"],
+    "uses": ["index.html", "support.html", "chat.html", "admin.html"],
+    "contracts": {
+      "avatar": {
+        "purpose": "Present an identity cue with initials or a photo.",
+        "element": "`span`; decorative (`aria-hidden`) unless `label` makes it `role=img` or the photo's alt text.",
+        "state": "No interaction or selection state.",
+        "keyboard": "No added focus or keyboard behavior.",
+        "options": "`label`: accessible identity when no adjacent name supplies it. `src`: photo URL. Slot: initials. Size, radius and colors use scoped `--f-avatar-*` tokens."
+      }
+    }
+  },
+  {
+    "id": "sidebar",
+    "kind": "pattern",
+    "classes": ["f-sidebar"],
+    "blade": ["sidebar", "sidebar-group", "sidebar-item"],
+    "uses": ["index.html", "support.html", "chat.html", "admin.html"],
+    "contracts": {
+      "sidebar": {
+        "purpose": "Contain application navigation links and groups.",
+        "element": "`nav`, navigation role.",
+        "state": "Links own `aria-current=page`; groups own native open state.",
+        "keyboard": "Native Tab and link activation.",
+        "options": "Accessible label. `header` slot: workspace identity; `footer` slot: account identity, pinned to the bottom. Default slot: headings (`p.f-sidebar__heading`), Sidebar Items and Sidebar Groups."
+      },
+      "sidebar-group": {
+        "purpose": "Reveal related navigation links under a heading.",
+        "element": "`details` with a native `summary`; group role.",
+        "state": "Native open state.",
+        "keyboard": "Tab focuses the summary; Enter/Space toggles.",
+        "options": "`title`: required summary text; `subtitle`: optional secondary text. `icon` slot: decorative artwork. Default slot: Sidebar Items, indented automatically. Native details attributes such as `open`."
+      },
+      "sidebar-item": {
+        "purpose": "Link to one application page.",
+        "element": "`a`, native link role with required href or client href binding.",
+        "state": "`current` adds `aria-current=page`.",
+        "keyboard": "Tab focuses; Enter follows the link.",
+        "options": "`current`: boolean. Native link attributes, including `wire:navigate`. Default slot: label; `icon`: decorative artwork; `badge`: trailing count."
+      }
+    }
+  },
+  {
+    "id": "toolbar",
+    "kind": "composition",
+    "classes": ["f-toolbar"],
+    "blade": ["toolbar"],
+    "uses": [],
+    "contracts": {
+      "toolbar": {
+        "purpose": "Arrange a title and independent actions in a bar.",
+        "element": "`div`; optional group or region role. No toolbar role or arrow-key model.",
+        "state": "No state; children own theirs.",
+        "keyboard": "Children keep their own keyboard behavior.",
+        "options": "Default slot: title and leading content. `actions` slot: trailing independent controls in a group."
+      }
+    }
+  },
+  {
+    "id": "card",
+    "kind": "primitive",
+    "classes": ["f-card"],
+    "blade": ["card"],
+    "uses": [],
+    "contracts": {
+      "card": {
+        "purpose": "Group related content visually.",
+        "element": "`section`; native container semantics, or an explicit group/region role.",
+        "state": "No interaction or selection state.",
+        "keyboard": "No added keyboard behavior; children own their interaction.",
+        "options": "Native section attributes; explicit role may be group or region. Slot: composed content and controls."
+      }
+    }
+  },
+  {
+    "id": "badge",
+    "kind": "composition",
+    "classes": ["f-badge"],
+    "blade": ["badge"],
+    "uses": [],
+    "contracts": {
+      "badge": {
+        "purpose": "Present a count or short label.",
+        "element": "`span`; optional status role for a live count.",
+        "state": "No value or interaction.",
+        "keyboard": "No added keyboard behavior.",
+        "options": "`tone`: neutral (default), accent, success, warning, danger. `variant`: filled (default), outline. `dot` slot: a leading status dot. Slot: text; meaning never depends on color alone."
+      }
+    }
+  },
+  {
+    "id": "toast",
+    "kind": "composition",
+    "classes": ["f-toast"],
+    "blade": ["toaster"],
+    "uses": [],
+    "contracts": {
+      "toaster": {
+        "purpose": "Announce short results sent by the application.",
+        "element": "`div role=status`, `f-toast` presentation.",
+        "state": "fruitToast owns the message and its timing; hidden while empty.",
+        "keyboard": "No focus transfer; hover or focus within pauses dismissal.",
+        "options": "`duration`: milliseconds (default 4000, 0 keeps it until replaced). `message`: initial text; defaults to the flashed `fruit-toast` session value. Receives `fruit-toast` window events, including Fruit::toast(). No slot."
+      }
+    }
+  },
+  {
+    "id": "row",
+    "kind": "utility",
+    "classes": ["f-row"],
+    "blade": [],
+    "uses": []
+  },
+  {
+    "id": "stack",
+    "kind": "utility",
+    "classes": ["f-stack"],
+    "blade": [],
+    "uses": []
+  },
+  {
+    "id": "muted",
+    "kind": "utility",
+    "classes": ["f-muted"],
+    "blade": [],
+    "uses": []
+  },
+  {
+    "id": "screen-reader",
+    "kind": "utility",
+    "classes": ["f-sr-only"],
+    "blade": [],
+    "uses": []
+  },
+  {
+    "id": "icon",
+    "kind": "utility",
+    "classes": ["f-icon"],
+    "blade": [],
+    "uses": []
+  },
+  {
+    "id": "item-list",
+    "kind": "pattern",
+    "classes": ["f-item-list"],
+    "blade": ["item-list"],
+    "uses": ["index.html", "support.html"],
+    "contracts": {
+      "item-list": {
+        "purpose": "Arrange independent item-opening rows, such as conversations or tickets, in a scrollable list.",
+        "element": "`ul`, fixed list role; callers supply native li children.",
+        "state": "No owned selection or application state.",
+        "keyboard": "Tab reaches child buttons; no added listbox keyboard model.",
+        "options": "Native list attributes. Slot: li elements containing composed content."
+      }
+    }
+  },
+  {
+    "id": "item-row",
+    "kind": "pattern",
+    "classes": ["f-item-row"],
+    "blade": ["item-row"],
+    "uses": ["index.html", "support.html"],
+    "contracts": {
+      "item-row": {
+        "purpose": "Open one item, such as a conversation or ticket.",
+        "element": "`button type=button`, fixed button role.",
+        "state": "Native disabled state; caller-owned aria-current=true identifies the open conversation.",
+        "keyboard": "Tab focuses; Enter/Space invokes. Optional arrow-key navigation belongs to the application.",
+        "options": "`variant`: quiet (default), filled. Default/title slot: identity; leading: optional decorative identity cue; trailing: time; subtitle, preview, meta: noninteractive content. Attributes and action bindings go to the button."
+      }
+    }
+  },
+  {
+    "id": "attachment",
+    "kind": "pattern",
+    "classes": ["f-attachment"],
+    "blade": ["attachment"],
+    "uses": ["index.html", "chat.html"],
+    "contracts": {
+      "attachment": {
+        "purpose": "Open or download an attached file.",
+        "element": "`a`, native link role with required href or client href binding.",
+        "state": "Native URL and optional download attribute; no owned application state.",
+        "keyboard": "Tab focuses; Enter follows the link.",
+        "options": "Native link attributes. Default slot: file label; leading/trailing: decorative icons; detail: file description."
+      }
+    }
+  },
+  {
+    "id": "empty-state",
+    "kind": "pattern",
+    "classes": ["f-empty-state"],
+    "blade": ["empty-state"],
+    "uses": ["index.html", "support.html", "chat.html", "admin.html"],
+    "contracts": {
+      "empty-state": {
+        "purpose": "Explain an empty result and arrange optional recovery actions.",
+        "element": "`div`, native container semantics; optional group/region role.",
+        "state": "No interaction or selection state.",
+        "keyboard": "No added keyboard behavior; child actions own their interaction.",
+        "options": "Native container attributes. Default slot: description; icon: decorative artwork; title: text or a heading appropriate to the page; actions: independent controls."
+      }
+    }
+  },
+  {
+    "id": "workspace",
+    "kind": "pattern",
+    "classes": ["f-workspace"],
+    "blade": ["workspace"],
+    "uses": ["index.html", "support.html", "chat.html", "admin.html"],
+    "contracts": {
+      "workspace": {
+        "purpose": "Frame a workspace with application-defined columns.",
+        "element": "`section`; native container, optional group/region.",
+        "state": "No application or selection state.",
+        "keyboard": "Children own keyboard behavior.",
+        "options": "Native section attributes and layout tokens. Default slot: panes/toolbars/optional splitters."
+      }
+    }
+  },
+  {
+    "id": "pane",
+    "kind": "pattern",
+    "classes": ["f-pane"],
+    "blade": ["pane"],
+    "uses": ["index.html", "support.html", "chat.html", "admin.html"],
+    "contracts": {
+      "pane": {
+        "purpose": "Contain one workspace area and compose optional scrolling.",
+        "element": "`div`; native container, optional group/region.",
+        "state": "No application or selection state.",
+        "keyboard": "Children own interaction; named scroll regions may be focusable.",
+        "options": "Native container attributes. Default slot: content. CSS column/scroll/border modifiers affect only presentation."
+      }
+    }
+  },
+  {
+    "id": "splitter",
+    "kind": "primitive",
+    "classes": ["f-splitter"],
+    "blade": ["splitter"],
+    "uses": ["index.html", "support.html", "chat.html", "admin.html"],
+    "contracts": {
+      "splitter": {
+        "purpose": "Adjust the width of one pane while reserving space for content.",
+        "element": "`div role=separator`, fixed vertical orientation and tabindex=0; optional Alpine required for interaction.",
+        "state": "Width in pixels, bounded aria-valuemin/max/now/text; controls the pane ID.",
+        "keyboard": "Left/Right adjust 8px; Shift adjusts 32px; Home/End reach bounds; Escape cancels a drag; double-click restores initial width. No pane collapse.",
+        "options": "`pane`, `flexible`: distinct IDs in the same workspace. `variable`: --f- width token; `min` 160, `max` 420, `reserve` 280: positive pixel bounds. `edge`: end (default), start. Accessible name required. Helper owns x-data, orientation, focus and controlled pane. No content slot or persistence."
+      }
+    }
+  },
+  {
+    "id": "composer",
+    "kind": "pattern",
+    "classes": ["f-composer"],
+    "blade": ["composer"],
+    "uses": ["support.html", "chat.html"],
+    "contracts": {
+      "composer": {
+        "purpose": "Arrange a message-entry form and its independent controls.",
+        "element": "`form`, native form semantics.",
+        "state": "Native form submission; draft, errors, sending and shortcuts belong to the caller.",
+        "keyboard": "Native controls; textarea Enter inserts a line break unless caller implements a shortcut.",
+        "options": "Native form attributes and submit bindings. Default slot: labels, textarea, help/error, optional header/footer."
+      }
+    }
+  },
+  {
+    "id": "description-list",
+    "kind": "pattern",
+    "classes": ["f-description-list"],
+    "blade": ["description-list"],
+    "uses": ["support.html", "admin.html"],
+    "contracts": {
+      "description-list": {
+        "purpose": "Present labeled record facts.",
+        "element": "`dl`, native description-list semantics.",
+        "state": "No interaction state.",
+        "keyboard": "Child controls own interaction.",
+        "options": "Native dl attributes; CSS columns/spacing/type tokens. Default slot: native div groups containing dt/dd."
+      }
+    }
+  },
+  {
+    "id": "floating-disclosure",
+    "kind": "pattern",
+    "classes": ["f-floating-disclosure"],
+    "blade": ["floating-disclosure"],
+    "uses": ["index.html", "chat.html"],
+    "contracts": {
+      "floating-disclosure": {
+        "purpose": "Reveal supporting content in a floating panel.",
+        "element": "`details` with native summary.",
+        "state": "Native open state; optional fruitFloatingDisclosure dismissal.",
+        "keyboard": "Enter/Space toggles summary; optional Escape closes and returns focus; outside pointer closes without moving focus.",
+        "options": "`placement`: below (default), above. `title`: fallback summary text; trigger slot: summary content/attributes; content slot or default: supporting content and independent actions. Native details attrs; caller opts into helper. No menu/listbox role or focus trap."
+      }
+    }
+  },
+  {
+    "id": "table",
+    "kind": "primitive",
+    "classes": ["f-table"],
+    "blade": ["table"],
+    "uses": ["admin.html"],
+    "contracts": {
+      "table": {
+        "purpose": "Present tabular records.",
+        "element": "`table`, fixed native table role.",
+        "state": "No owned sorting/selection; caller sets aria-sort on th and checkbox values.",
+        "keyboard": "Tab reaches independent actions; native table reading.",
+        "options": "Native table attrs; default slot: caption, colgroup, thead, tbody, tfoot. Width, cell spacing, type tokens; caller composes a named scroll wrapper."
+      }
+    }
+  },
+  {
+    "id": "mail",
+    "kind": "reference",
+    "classes": ["f-mail", "f-mail-container"],
+    "blade": [],
+    "uses": ["index.html"]
+  },
+  {
+    "id": "alert",
+    "kind": "primitive",
+    "classes": ["f-alert"],
+    "blade": ["alert"],
+    "uses": [],
+    "contracts": {
+      "alert": {
+        "purpose": "Present persistent contextual feedback.",
+        "element": "`div`; optional status, alert or group role chosen by caller.",
+        "state": "Message presence owned by application.",
+        "keyboard": "Independent actions retain native behavior.",
+        "options": "Tone: info, success, warning, danger; content, icon, actions slots."
+      }
+    }
+  },
+  {
+    "id": "menu",
+    "kind": "primitive",
+    "classes": ["f-menu"],
+    "blade": ["menu"],
+    "uses": [],
+    "contracts": {
+      "menu": {
+        "purpose": "Disclose action commands.",
+        "element": "`details`/`summary` with child menu.",
+        "state": "Native open state; helper owns focus and dismissal.",
+        "keyboard": "Enter/Space/Down/Up opens; arrows, Home/End, typeahead; Escape closes; Tab leaves.",
+        "options": "Title; trigger and menu-item content slots. A title trigger shows a pull-down chevron; a custom trigger adds `<span class=\"f-menu__chevron\" aria-hidden=\"true\">` when it shows text, and omits it for an icon-only button. Fixed fruitMenu helper; application state on parent."
+      }
+    }
+  },
+  {
+    "id": "menu-item",
+    "kind": "primitive",
+    "classes": ["f-menu-item"],
+    "blade": ["menu-item", "menu-checkbox", "menu-radio", "menu-link", "menu-separator", "menu-group"],
+    "uses": [],
+    "contracts": {
+      "menu-item": {
+        "purpose": "Invoke a menu command.",
+        "element": "Fixed button type=button, role=menuitem.",
+        "state": "Native disabled state; caller action binding.",
+        "keyboard": "Menu helper moves focus; Enter/Space invokes.",
+        "options": "Variant default/danger; content slot; `shortcut`: displayed key equivalent (set aria-keyshortcuts for assistive technology). No toggle-value modes; use Menu Checkbox or Menu Radio."
+      },
+      "menu-checkbox": {
+        "purpose": "Toggle an option from a menu.",
+        "element": "Fixed button type=button, role=menuitemcheckbox.",
+        "state": "`checked` renders aria-checked; or bind x-bind:aria-checked for client state. The caller toggles it.",
+        "keyboard": "Menu helper moves focus; Enter/Space invokes and closes the menu.",
+        "options": "`checked`: boolean. `shortcut`: displayed key equivalent. Label slot; action bindings on the button."
+      },
+      "menu-radio": {
+        "purpose": "Choose one option from a group in a menu.",
+        "element": "Fixed button type=button, role=menuitemradio.",
+        "state": "`checked` renders aria-checked; or bind x-bind:aria-checked. The caller owns the chosen value.",
+        "keyboard": "Menu helper moves focus; Enter/Space invokes and closes the menu.",
+        "options": "`checked`: boolean. `shortcut`: displayed key equivalent. Group radios in Menu Group."
+      },
+      "menu-link": {
+        "purpose": "Navigate to a page from a menu.",
+        "element": "`a` with role=menuitem and a required href.",
+        "state": "Native link; no owned state.",
+        "keyboard": "Menu helper moves focus; Enter follows the link.",
+        "options": "Native link attributes, including wire:navigate. `shortcut`: displayed key equivalent. Label slot."
+      },
+      "menu-separator": {
+        "purpose": "Separate groups of menu commands.",
+        "element": "`div` role=separator.",
+        "state": "No state.",
+        "keyboard": "Not focusable.",
+        "options": "No options or slot."
+      },
+      "menu-group": {
+        "purpose": "Label a related set of menu items.",
+        "element": "`div` role=group with an aria-label; the visible label is presentational.",
+        "state": "Items own their state.",
+        "keyboard": "Items keep the menu keyboard model.",
+        "options": "`label`: required group name. Slot: menu items."
+      }
+    }
+  },
+  {
+    "id": "tooltip",
+    "kind": "primitive",
+    "classes": ["f-tooltip"],
+    "blade": ["tooltip"],
+    "uses": [],
+    "contracts": {
+      "tooltip": {
+        "purpose": "Describe a control with supplementary, noninteractive text.",
+        "element": "`span` wrapper with a `role=tooltip` text span; the trigger stays the slotted control.",
+        "state": "Visible on hover or focus within; Escape dismisses until pointer/focus leaves.",
+        "keyboard": "The trigger keeps its own keyboard behavior; Escape hides the text.",
+        "options": "`text`, `text-id`: required; reference `text-id` from the trigger's `aria-describedby`. Slot: one trigger control. Fixed fruitTooltip helper."
+      }
+    }
+  },
+  {
+    "id": "combobox",
+    "kind": "primitive",
+    "classes": ["f-combobox"],
+    "blade": ["combobox"],
+    "uses": ["support.html"],
+    "contracts": {
+      "combobox": {
+        "purpose": "Search and choose one existing option.",
+        "element": "Native single select; enhanced query combobox and listbox.",
+        "state": "Native scalar string, required/disabled; name and models remain on select.",
+        "keyboard": "Text search, Up/Down, Enter selects; Escape cancels, Tab leaves.",
+        "options": "Native attributes; option/optgroup slot. No multiple/size mode. Requires fruitCombobox for enhancement."
+      }
+    }
+  },
+  {
+    "id": "token-field",
+    "kind": "primitive",
+    "classes": ["f-token-field"],
+    "blade": ["token-field"],
+    "uses": ["index.html"],
+    "contracts": {
+      "token-field": {
+        "purpose": "Enter removable independent text values.",
+        "element": "Native textarea; enhanced textbox and chip remove buttons.",
+        "state": "Newline-delimited string; native required/disabled/readonly.",
+        "keyboard": "Enter/comma/paste add; empty Backspace focuses removal; chip Left/Right and Escape.",
+        "options": "Native textarea attributes; initial string slot; cancellable fruit-token-add validation; fruit-token-reset clears pending entry."
+      }
+    }
+  },
+  {
+    "id": "chip",
+    "kind": "pattern",
+    "classes": ["f-chip"],
+    "blade": ["chip"],
+    "uses": ["support.html", "chat.html"],
+    "contracts": {
+      "chip": {
+        "purpose": "Present a compact value with an optional remove action.",
+        "element": "`span` with an independent remove `button`.",
+        "state": "The application owns the value.",
+        "keyboard": "The remove button is a native button.",
+        "options": "Default slot: value text. `remove` slot: accessible label of the remove button; its attributes (actions) go to the button."
+      }
+    }
+  },
+  {
+    "id": "button-group",
+    "kind": "composition",
+    "classes": ["f-button-group"],
+    "blade": [],
+    "uses": []
+  },
+  {
+    "id": "input-group",
+    "kind": "pattern",
+    "classes": ["f-input-group"],
+    "blade": [],
+    "uses": ["support.html", "admin.html"]
+  },
+  {
+    "id": "tabs",
+    "kind": "primitive",
+    "classes": ["f-tabs", "f-tab"],
+    "blade": ["tabs", "tab"],
+    "uses": ["admin.html"],
+    "contracts": {
+      "tabs": {
+        "purpose": "Group related in-page panel selectors.",
+        "element": "Div role=tablist.",
+        "state": "Independent Tab controls and linked panels own selection.",
+        "keyboard": "Optional fruitTabs manages arrows, Home/End and roving focus.",
+        "options": "Tab children slot and native ARIA label. Application routing stays external."
+      },
+      "tab": {
+        "purpose": "Select one in-page panel.",
+        "element": "Fixed button type=button, role=tab.",
+        "state": "aria-selected, tabindex and aria-controls, owned by caller/helper.",
+        "keyboard": "Enter/Space activates; tabs helper adds directional focus.",
+        "options": "Native button/ARIA/action attributes and label slot."
+      }
+    }
+  },
+  {
+    "id": "section-nav",
+    "kind": "primitive",
+    "classes": ["f-section-nav"],
+    "blade": ["section-nav"],
+    "uses": [],
+    "contracts": {
+      "section-nav": {
+        "purpose": "Link related application pages.",
+        "element": "Native nav, navigation role.",
+        "state": "Child links own href and aria-current=page.",
+        "keyboard": "Native link keyboard behavior.",
+        "options": "Accessible label; independent link content slot."
+      }
+    }
+  },
+  {
+    "id": "pagination",
+    "kind": "primitive",
+    "classes": ["f-pagination"],
+    "blade": ["pagination"],
+    "uses": ["admin.html", "support.html"],
+    "contracts": {
+      "pagination": {
+        "purpose": "Arrange page navigation.",
+        "element": "Native nav, navigation role.",
+        "state": "Child links/buttons own page current and disabled states.",
+        "keyboard": "Native Tab and activation; no arrow-key mode.",
+        "options": "Accessible label (default Pagination); independent controls/content slot."
+      }
+    }
+  },
+  {
+    "id": "spinner",
+    "kind": "composition",
+    "classes": ["f-spinner"],
+    "blade": ["spinner"],
+    "uses": [],
+    "contracts": {
+      "spinner": {
+        "purpose": "Show that work is in progress.",
+        "element": "Decorative `span` (aria-hidden).",
+        "state": "No state; the busy element sets aria-busy.",
+        "keyboard": "Not focusable.",
+        "options": "No options or slot. Keep a readable action label beside it."
+      }
+    }
+  },
+  {
+    "id": "upload",
+    "kind": "pattern",
+    "classes": ["f-upload"],
+    "blade": ["upload-list", "upload-row"],
+    "uses": ["index.html", "support.html"],
+    "contracts": {
+      "upload-list": {
+        "purpose": "List files being uploaded or attached.",
+        "element": "`ul` with list semantics (default label Attachments).",
+        "state": "No state; rows describe each file.",
+        "keyboard": "Row actions keep their native behavior.",
+        "options": "Accessible label. Slot: Upload Rows."
+      },
+      "upload-row": {
+        "purpose": "Show one file, its upload state and its actions.",
+        "element": "`li` with a status text and, while uploading, a native progress.",
+        "state": "`state`: uploading, complete, error, cancelled; `progress`: 0 to 100. The application owns transport.",
+        "keyboard": "Actions are independent native buttons or links.",
+        "options": "`name`: file name (required). `state`, `progress`. Default slot: links such as Download; `detail` slot replaces the status text; `actions` slot: independent buttons."
+      }
+    }
+  },
+  {
+    "id": "avatar-group",
+    "kind": "composition",
+    "classes": ["f-avatar-group"],
+    "blade": [],
+    "uses": []
+  },
+  {
+    "id": "presence",
+    "kind": "pattern",
+    "classes": ["f-presence"],
+    "blade": ["presence"],
+    "uses": ["chat.html", "support.html"],
+    "contracts": {
+      "presence": {
+        "purpose": "Show availability beside a person.",
+        "element": "Decorative `span` (aria-hidden) with an optional visually hidden label.",
+        "state": "`available` renders data-available.",
+        "keyboard": "Not focusable.",
+        "options": "`available`: boolean. `label`: hidden text when no visible status is adjacent."
+      }
+    }
+  },
+  {
+    "id": "notifications",
+    "kind": "pattern",
+    "classes": ["f-notifications"],
+    "blade": ["notification-group", "notification"],
+    "uses": ["admin.html", "chat.html"],
+    "contracts": {
+      "notification-group": {
+        "purpose": "Group notifications under a heading such as Today.",
+        "element": "An `h3` heading and an `ol` labeled by it.",
+        "state": "No state; the application owns read state.",
+        "keyboard": "Notification links keep their behavior.",
+        "options": "`heading`: required. Slot: Notifications."
+      },
+      "notification": {
+        "purpose": "Link to the subject of one notification.",
+        "element": "`li` containing a native link.",
+        "state": "Read state belongs to the application; show it with the badge slot.",
+        "keyboard": "Tab focuses the link; Enter follows it.",
+        "options": "`href` (required) and link attributes such as wire:navigate. Default slot: text; `avatar`, `meta` and `badge` slots."
+      }
+    }
+  },
+  {
+    "id": "prose",
+    "kind": "pattern",
+    "classes": ["f-prose"],
+    "blade": [],
+    "uses": ["index.html", "support.html"]
+  },
+  {
+    "id": "editor",
+    "kind": "primitive",
+    "classes": ["f-editor"],
+    "blade": ["editor"],
+    "uses": ["admin.html"],
+    "contracts": {
+      "editor": {
+        "purpose": "Edit a formatted HTML document.",
+        "element": "Native textarea; optional Tiptap multiline textbox with command buttons.",
+        "state": "HTML string, native required/disabled/readonly; actual textarea owns names and models.",
+        "keyboard": "Native editing without JS; Tiptap editing/shortcuts when registered; toolbar buttons use Tab.",
+        "options": "Native textarea attributes, initial escaped HTML slot. Optional fruitui/editor module."
+      }
+    }
+  },
+  {
+    "id": "skeleton",
+    "kind": "composition",
+    "classes": ["f-skeleton"],
+    "blade": ["skeleton"],
+    "uses": [],
+    "contracts": {
+      "skeleton": {
+        "purpose": "Hold the place of content that is loading.",
+        "element": "Decorative `div` (aria-hidden) of placeholder lines.",
+        "state": "No state; the loading container sets aria-busy=\"true\".",
+        "keyboard": "Not focusable.",
+        "options": "`lines`: 1 to 20 (default 3). Compose `f-skeleton__block` in HTML for other shapes."
+      }
+    }
+  },
+  {
+    "id": "divider",
+    "kind": "pattern",
+    "classes": ["f-divider"],
+    "blade": ["divider"],
+    "uses": ["chat.html", "support.html"],
+    "contracts": {
+      "divider": {
+        "purpose": "Separate groups of content, optionally with a label.",
+        "element": "`div` role=separator; a label becomes its accessible name.",
+        "state": "No state.",
+        "keyboard": "Not focusable.",
+        "options": "`tone`: neutral (default), accent. `align`: center (default), start. Slot: optional label text."
+      }
+    }
+  },
+  {
+    "id": "timeline",
+    "kind": "composition",
+    "classes": ["f-timeline"],
+    "blade": ["timeline", "timeline-item"],
+    "uses": ["admin.html"],
+    "contracts": {
+      "timeline": {
+        "purpose": "List events in time order.",
+        "element": "`ol` with list semantics.",
+        "state": "No state; the application owns events.",
+        "keyboard": "No added keyboard behavior.",
+        "options": "Native list attributes and an accessible name. Slot: Timeline Items."
+      },
+      "timeline-item": {
+        "purpose": "Describe one event and when it happened.",
+        "element": "`li` with a native `time` element.",
+        "state": "No state.",
+        "keyboard": "Not focusable; child links keep their behavior.",
+        "options": "`datetime`: machine-readable time. Default slot: event; `icon`: decorative; `detail`: supporting text; `time`: displayed time."
+      }
+    }
+  },
+  {
+    "id": "breadcrumbs",
+    "kind": "primitive",
+    "classes": ["f-breadcrumbs"],
+    "blade": ["breadcrumbs", "crumb"],
+    "uses": ["admin.html"],
+    "contracts": {
+      "breadcrumbs": {
+        "purpose": "Show the path to the current page.",
+        "element": "`nav` (default label Breadcrumb) containing an `ol`.",
+        "state": "The current crumb carries aria-current=page.",
+        "keyboard": "Native link keyboard behavior.",
+        "options": "Accessible label (default `Breadcrumb`). Slot: Crumbs."
+      },
+      "crumb": {
+        "purpose": "Link to one ancestor page, or name the current page.",
+        "element": "`li` containing an `a`, or a `span` with aria-current=page.",
+        "state": "`current` marks the current page.",
+        "keyboard": "Links follow with Enter.",
+        "options": "`href` (or a client binding) for ancestors; `current` for the page itself, without href. Link attributes such as wire:navigate pass through."
+      }
+    }
+  },
+  {
+    "id": "message",
+    "kind": "pattern",
+    "classes": ["f-message"],
+    "blade": ["message"],
+    "uses": ["support.html", "chat.html"],
+    "contracts": {
+      "message": {
+        "purpose": "Present one message in a conversation.",
+        "element": "`article` (or a listitem role) with a header, body, attachments and footer.",
+        "state": "No state; the application owns message data and actions.",
+        "keyboard": "Child links and buttons keep their behavior. The actions bar appears on hover and whenever focus is inside the message, so its buttons are reachable by Tab.",
+        "options": "`layout`: inline (default), stacked. `variant`: default, note. `datetime`: machine-readable time. Slots: `avatar`, `author`, `meta`, `time`, default body, `attachments`, `footer` (independent actions such as reactions or reply counts), `actions` (quick actions shown in the corner on hover or focus, and always on touch screens; a labelled group). Give it an accessible name. `--f-message-actions-top` and `--f-message-actions-end` place the actions (above the top edge by default)."
+      }
+    }
+  },
+  {
+    "id": "selection-bar",
+    "kind": "pattern",
+    "classes": ["f-selection-bar"],
+    "blade": ["selection-bar"],
+    "uses": ["admin.html", "examples/laravel/support-desk.blade.php"],
+    "contracts": {
+      "selection-bar": {
+        "purpose": "Count selected items and offer actions for them.",
+        "element": "`div` region with a status count and independent buttons.",
+        "state": "`count` renders the count; nothing renders at zero. The application owns the selection.",
+        "keyboard": "Buttons keep their native behavior.",
+        "options": "`count`: number of selected items. Accessible label (default `Selection`). Slot: independent actions. Select items with Checkboxes beside Item Rows."
+      }
+    }
+  },
+  {
+    "id": "autocomplete",
+    "kind": "primitive",
+    "classes": ["f-autocomplete"],
+    "blade": ["autocomplete"],
+    "uses": ["examples/laravel/support-desk.blade.php"],
+    "contracts": {
+      "autocomplete": {
+        "purpose": "Suggest completions for the word being typed in a text field.",
+        "element": "`div` around a native input or textarea; a generated listbox in a wire:ignore mount.",
+        "state": "The native control owns its value; options come from a datalist the application keeps current.",
+        "keyboard": "Typing filters; Up/Down choose; Enter or Tab inserts; Escape closes.",
+        "options": "`trigger`: one or two punctuation characters (such as @ or :); without it the current word completes. Default slot: one Input or Textarea. `options` slot: option elements whose value is inserted and whose label is shown."
+      }
+    }
+  },
+  {
+    "id": "command-palette",
+    "kind": "primitive",
+    "classes": ["f-command-palette", "f-command"],
+    "blade": ["command-palette", "command", "command-link", "command-group"],
+    "uses": ["examples/laravel/support-desk.blade.php"],
+    "contracts": {
+      "command-palette": {
+        "purpose": "Search for a destination or command and activate it.",
+        "element": "Modal `dialog` with a combobox input and a listbox of options.",
+        "state": "Native open state; opens by name like a named Dialog. The query filters options.",
+        "keyboard": "Cmd/Ctrl + shortcut toggles; typing filters; Up/Down choose; Enter activates; Escape closes.",
+        "options": "`name`: required, for events and Fruit::openDialog. `shortcut`: one letter or digit. `label` (default Commands), `placeholder`. Slot: Commands, Command Links and Command Groups."
+      },
+      "command": {
+        "purpose": "Run an action from the command palette.",
+        "element": "Fixed button type=button with role=option.",
+        "state": "aria-selected follows the palette highlight.",
+        "keyboard": "Enter activates the highlighted command.",
+        "options": "Action bindings (wire:click, @click) on the button. `shortcut`: displayed key equivalent; `icon` slot: decorative."
+      },
+      "command-link": {
+        "purpose": "Go to a destination from the command palette.",
+        "element": "`a` with role=option and a required href.",
+        "state": "aria-selected follows the palette highlight.",
+        "keyboard": "Enter follows the highlighted link.",
+        "options": "Link attributes, including wire:navigate. `shortcut`, `icon` slot."
+      },
+      "command-group": {
+        "purpose": "Label related commands in the palette.",
+        "element": "`div` role=group with an aria-label; the visible label is presentational.",
+        "state": "Hidden while none of its commands match.",
+        "keyboard": "Commands keep the palette keyboard model.",
+        "options": "`label`: required. Slot: Commands and Command Links."
+      }
+    }
+  },
+  {
+    "id": "dropzone",
+    "kind": "pattern",
+    "classes": ["f-dropzone"],
+    "blade": ["dropzone"],
+    "uses": ["index.html", "support.html"],
+    "contracts": {
+      "dropzone": {
+        "purpose": "Choose files by dropping them or with the system picker.",
+        "element": "`label` around a visually hidden native `input type=file`.",
+        "state": "Native FileList; a drop assigns files the input accepts and sends input and change.",
+        "keyboard": "Tab focuses the input; Space or Enter opens the picker.",
+        "options": "Native file input attributes and models (name, accept, multiple, wire:model) go to the input. Default slot: label text (default \"Drop files here or choose files\"); `hint` slot; `wrapper`: presentation attributes."
+      }
+    }
+  },
+  {
+    "id": "typing",
+    "kind": "composition",
+    "classes": ["f-typing"],
+    "blade": ["typing"],
+    "uses": ["chat.html"],
+    "contracts": {
+      "typing": {
+        "purpose": "Tell people that someone is writing.",
+        "element": "`p` role=status with decorative animated dots.",
+        "state": "The application provides the text; empty renders a quiet, persistent status region.",
+        "keyboard": "Not focusable.",
+        "options": "Default slot: who is typing. Nothing renders visibly when empty."
+      }
+    }
+  },
+  {
+    "id": "back",
+    "kind": "pattern",
+    "classes": ["f-back"],
+    "blade": ["back-link"],
+    "uses": ["index.html", "support.html", "admin.html"],
+    "contracts": {
+      "back-link": {
+        "purpose": "Go back to the parent screen.",
+        "element": "`a` with a required href, styled as a quiet button with a chevron.",
+        "state": "No state.",
+        "keyboard": "Tab focuses; Enter follows the link.",
+        "options": "`href` and link attributes such as wire:navigate. Slot: the parent screen’s title, truncated to `--f-back-max-width`. Buttons that switch views in place can use the `f-back` class."
+      }
+    }
+  },
+  {
+    "id": "context-menu",
+    "kind": "primitive",
+    "classes": ["f-context-menu"],
+    "blade": ["context-menu"],
+    "uses": ["examples/laravel/support-desk.blade.php"],
+    "contracts": {
+      "context-menu": {
+        "purpose": "Offer commands for the element it belongs to, on a secondary click or from the keyboard.",
+        "element": "`div` role=menu inside its target element; it floats in the top layer at the pointer.",
+        "state": "Hidden until opened. The target carries `data-fruit-context-open` while it shows; the helper owns focus and dismissal.",
+        "keyboard": "Secondary click, Shift+F10 or the context-menu key opens it on the first item; arrows, Home/End, typeahead; Enter/Space activates; Escape or Tab closes and returns focus.",
+        "options": "`title` (default Actions). Slot: Menu Items, Checkboxes, Radios, Links, Separators and Groups. Offer the same commands elsewhere, since context menus are hidden."
+      }
+    }
+  }
+]

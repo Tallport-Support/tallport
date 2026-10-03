@@ -8,6 +8,7 @@
 $network = 'needs freescout.net (license server or module downloads)';
 $modules_on_disk = 'builds, installs or migrates modules in Modules/ and public/modules, which tests must not touch';
 $oauth = 'OAuth flow with Microsoft/Google servers';
+$livewire = "Livewire's own route (its prefix comes from the app key); not used by a Tallport page yet";
 
 return [
     // Not actions: license statuses in a switch inside ModulesController::ajax().
@@ -26,6 +27,16 @@ return [
     'command tallport:clean-tmp'      => 'cleans the real system temp dir; its logic (CleanTmp::cleanDirectory) is tested on a scratch dir',
 
     'job App\Jobs\RestartQueueWorker' => 'calls exit() to stop the queue worker',
+
+    'route GET livewire-0607dabf/css/{component}.css' => $livewire,
+    'route GET livewire-0607dabf/css/{component}.global.css' => $livewire,
+    'route GET livewire-0607dabf/js/{component}.js' => $livewire,
+    'route GET livewire-0607dabf/livewire.csp.min.js.map' => $livewire,
+    'route GET livewire-0607dabf/livewire.min.js' => $livewire,
+    'route GET livewire-0607dabf/livewire.min.js.map' => $livewire,
+    'route GET livewire-0607dabf/preview-file/{filename}' => $livewire,
+    'route POST livewire-0607dabf/update' => $livewire,
+    'route POST livewire-0607dabf/upload-file' => $livewire,
 
     'route GET mailbox/oauth'                                     => $oauth,
     'route GET mailbox/oauth/{id}/{in_out}/{provider}'            => $oauth,

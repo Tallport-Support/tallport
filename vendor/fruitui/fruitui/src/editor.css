@@ -1,0 +1,2 @@
+/* Optional rich editor presentation; load after core.css. */
+@import './css/editor.css';

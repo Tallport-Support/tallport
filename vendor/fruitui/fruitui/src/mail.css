@@ -1,0 +1,2 @@
+/* Optional Mail reference layout; load after core.css. */
+@import './css/mail.css';

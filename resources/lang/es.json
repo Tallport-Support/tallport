@@ -1463,5 +1463,8 @@
     "No category": "Sin categoría",
     "Pick one or type a new one.": "Elija una o escriba una nueva.",
     "Updated :date by :person": "Actualizado el :date por :person",
-    "Users are allowed to manage the knowledge base": "Los usuarios tienen permiso para administrar la base de conocimiento"
+    "Users are allowed to manage the knowledge base": "Los usuarios tienen permiso para administrar la base de conocimiento",
+    "Navigation": "Navegación",
+    "Sections": "Secciones",
+    "More": "Más"
 }

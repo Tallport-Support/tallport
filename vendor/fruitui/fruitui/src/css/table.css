@@ -1,0 +1,68 @@
+@layer fruit.components {
+  .f-table__scroll {
+    position: relative;
+    min-width: 0;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+  .f-table__scroll:focus-visible {
+    outline-offset: calc(var(--f-focus-ring-width) * -1);
+  }
+  .f-table {
+    width: 100%;
+    min-width: var(--f-table-min-width, 0);
+    border-collapse: collapse;
+    font-size: var(--f-table-font-size, var(--f-text-base));
+  }
+  .f-table th,
+  .f-table td {
+    padding: var(--f-table-cell-padding, 13px 10px);
+    text-align: start;
+    border-top: 1px solid var(--f-border);
+    font-weight: 400;
+  }
+  .f-table thead {
+    background: var(--f-surface-secondary);
+    color: var(--f-secondary);
+    font-size: var(--f-table-heading-size, var(--f-text-sm));
+  }
+  .f-table thead th {
+    padding-block: var(--f-table-heading-padding, 10px);
+  }
+  .f-table thead th > button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+  }
+  .f-table thead .f-icon {
+    --f-icon-size: 10px;
+    opacity: 0;
+  }
+  .f-table th[aria-sort='ascending'] .f-icon,
+  .f-table th[aria-sort='descending'] .f-icon,
+  .f-table thead th > button:hover .f-icon,
+  .f-table thead th > button:focus-visible .f-icon {
+    opacity: 1;
+  }
+  .f-table tbody tr:hover {
+    background: var(--f-hover);
+  }
+  .f-table tbody tr[data-selected='true'] {
+    background: var(--f-selection-inactive);
+  }
+  .f-table:focus-within tbody tr[data-selected='true'] {
+    background: var(--f-selection);
+  }
+  @media (forced-colors: active) {
+    .f-table tbody tr[data-selected='true'] {
+      outline: 1px solid Highlight;
+      outline-offset: -1px;
+    }
+  }
+}

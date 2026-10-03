@@ -1,0 +1,708 @@
+@layer fruit.components {
+  /* Native controls retain their value, focus, validation and form behavior. */
+  .f-input:is(input, textarea)[readonly] {
+    background: var(--f-input-background, var(--f-surface-secondary));
+    color: var(--f-input-color, var(--f-secondary));
+    box-shadow: none;
+  }
+  .f-input:is(:autofill, :-webkit-autofill) {
+    --f-autofill-shadow: inset 0 0 0 1000px var(--f-input-background, var(--f-control));
+    box-shadow: var(--f-autofill-shadow);
+    -webkit-text-fill-color: var(--f-input-color, var(--f-text));
+    caret-color: var(--f-input-color, var(--f-text));
+  }
+  .f-input[type='search']::-webkit-search-cancel-button {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    margin-inline-start: 6px;
+    cursor: pointer;
+    background: var(--f-secondary);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='black'/%3E%3Cpath d='m5 5 6 6m0-6-6 6' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E")
+      center / contain;
+  }
+  .f-input[type='search']:disabled::-webkit-search-cancel-button {
+    cursor: not-allowed;
+  }
+  /* WebKit keeps a native macOS frame for these types unless appearance is none, ignoring the
+     shared radius and padding; its inner field wrapper also adds vertical padding. */
+  .f-input:is([type='date'], [type='datetime-local'], [type='month'], [type='week'], [type='time'], [type='color']) {
+    appearance: none;
+  }
+  /* Their inner editors add engine-specific vertical spacing; hold them to the text field's height. */
+  .f-input:is([type='date'], [type='datetime-local'], [type='month'], [type='week'], [type='time']) {
+    height: calc(var(--f-control-line-height, 1.5) * 1em + 2 * var(--f-control-padding-block, 6px) + 2px);
+  }
+  .f-input::-webkit-datetime-edit,
+  .f-input::-webkit-datetime-edit-fields-wrapper {
+    padding-block: 0;
+  }
+  .f-input::-webkit-date-and-time-value {
+    text-align: start;
+  }
+  .f-input:is(
+      [type='date'],
+      [type='datetime-local'],
+      [type='month'],
+      [type='week'],
+      [type='time']
+    )::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    padding: 2px;
+    border-radius: var(--f-radius-xs);
+  }
+  .f-input:is(
+      [type='date'],
+      [type='datetime-local'],
+      [type='month'],
+      [type='week'],
+      [type='time']
+    ):disabled::-webkit-calendar-picker-indicator {
+    cursor: not-allowed;
+  }
+  .f-input[type='number']::-webkit-inner-spin-button {
+    opacity: 1;
+  }
+
+  :where(label.f-check) {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  :is(.f-check > input, input.f-check):is([type='checkbox'], [type='radio']) {
+    appearance: none;
+    display: inline-grid;
+    place-content: center;
+    vertical-align: middle;
+    flex-shrink: 0;
+    width: var(--f-check-size, 16px);
+    height: var(--f-check-size, 16px);
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--f-tertiary);
+    border-radius: var(--f-radius-xs);
+    background: var(--f-control);
+    color: var(--f-on-accent);
+    box-shadow: var(--f-control-shadow);
+    cursor: pointer;
+  }
+  :is(.f-check > input, input.f-check)[type='radio'] {
+    border-radius: 50%;
+  }
+  :is(.f-check > input, input.f-check):enabled:hover {
+    border-color: var(--f-accent);
+  }
+  :is(.f-check > input, input.f-check):is(:checked, :indeterminate) {
+    border-color: var(--f-accent-fill);
+    background: var(--f-accent-fill);
+  }
+  :is(.f-check > input, input.f-check)::before {
+    content: '';
+    visibility: hidden;
+  }
+  :is(.f-check > input, input.f-check)[type='checkbox']:checked::before {
+    visibility: visible;
+    width: calc(var(--f-check-size, 16px) * 0.3);
+    height: calc(var(--f-check-size, 16px) * 0.55);
+    border: solid currentColor;
+    border-width: 0 2px 2px 0;
+    transform: translateY(-1px) rotate(45deg);
+  }
+  :is(.f-check > input, input.f-check)[type='checkbox']:indeterminate::before {
+    visibility: visible;
+    width: calc(var(--f-check-size, 16px) * 0.55);
+    height: 2px;
+    background: currentColor;
+    border: 0;
+    transform: none;
+  }
+  :is(.f-check > input, input.f-check)[type='radio']:checked::before {
+    visibility: visible;
+    width: calc(var(--f-check-size, 16px) * 0.4);
+    height: calc(var(--f-check-size, 16px) * 0.4);
+    border-radius: 50%;
+    background: currentColor;
+  }
+  :is(.f-check > input, input.f-check)[aria-invalid='true'] {
+    border-color: var(--f-danger);
+  }
+  :is(.f-check > input, input.f-check):disabled {
+    cursor: not-allowed;
+  }
+
+  .f-fieldset {
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .f-fieldset > legend:not(.f-sr-only) {
+    padding: 0;
+    margin-block-end: var(--f-space-2);
+    font-size: var(--f-text-base);
+    font-weight: 600;
+  }
+
+  .f-file {
+    padding: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .f-file::file-selector-button {
+    min-height: 26px;
+    margin-inline-end: 10px;
+    padding: 3px 10px;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-xs);
+    background: var(--f-surface-secondary);
+    color: var(--f-text);
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .f-file:enabled:hover::file-selector-button {
+    background: var(--f-hover);
+  }
+  .f-file:disabled::file-selector-button {
+    cursor: not-allowed;
+  }
+
+  /* Time stays typed and stepped with arrows, as on macOS; no browser popup. */
+  .f-input[type='time']::-webkit-calendar-picker-indicator {
+    display: none;
+  }
+
+  /* FruitUI pickers: the native input keeps the value; these popups replace the browser's. */
+  .f-date-picker {
+    position: relative;
+  }
+  .f-color-picker {
+    position: relative;
+    display: inline-block;
+  }
+  :is(.f-calendar, .f-color-palette) {
+    width: max-content;
+    padding: 8px;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius);
+    background: var(--f-material-popup);
+    backdrop-filter: blur(24px) saturate(1.8);
+    box-shadow: var(--f-shadow);
+    color: var(--f-text);
+  }
+  .f-calendar__header {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 0 6px;
+  }
+  .f-calendar__title {
+    flex: 1;
+    padding-inline: 6px;
+    font-size: var(--f-text-base);
+    font-weight: 600;
+  }
+  .f-calendar__nav {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: var(--f-radius-sm);
+    background: transparent;
+    color: var(--f-accent);
+  }
+  .f-calendar__nav::before {
+    content: '';
+    width: 14px;
+    height: 14px;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m7.5 3-3 3 3 3' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m7.5 3-3 3 3 3' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+  .f-calendar__nav[data-direction='next']::before,
+  .f-calendar__nav[data-direction='previous']:dir(rtl)::before {
+    transform: scaleX(-1);
+  }
+  .f-calendar__nav[data-direction='next']:dir(rtl)::before {
+    transform: none;
+  }
+  .f-calendar__nav:hover {
+    background: var(--f-hover);
+  }
+  .f-calendar__grid {
+    border-collapse: separate;
+    border-spacing: 2px;
+  }
+  .f-calendar__grid th {
+    padding: 2px 0 4px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+    font-weight: 600;
+    text-align: center;
+  }
+  .f-calendar__grid td {
+    padding: 0;
+  }
+  .f-calendar__day {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--f-text);
+    font: inherit;
+    font-size: var(--f-text-sm);
+    font-variant-numeric: tabular-nums;
+  }
+  .f-calendar__day:hover {
+    background: var(--f-hover);
+  }
+  .f-calendar__day[data-outside] {
+    color: var(--f-secondary);
+  }
+  .f-calendar__day[aria-current='date'] {
+    color: var(--f-accent);
+    font-weight: 600;
+  }
+  [aria-selected='true'] > .f-calendar__day {
+    background: var(--f-accent-fill);
+    color: var(--f-on-accent);
+    font-weight: 600;
+  }
+  .f-calendar__day[aria-disabled='true'] {
+    color: var(--f-tertiary);
+    text-decoration: line-through;
+    cursor: not-allowed;
+  }
+  .f-color-palette__swatches {
+    display: grid;
+    grid-template-columns: repeat(var(--f-swatch-columns, 7), 24px);
+    gap: 8px;
+    padding: 4px;
+  }
+  .f-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--f-swatch-color);
+    box-shadow: inset 0 0 0 1px var(--f-border);
+  }
+  .f-swatch[aria-selected='true'] {
+    box-shadow:
+      inset 0 0 0 2px var(--f-surface-elevated),
+      0 0 0 2px var(--f-accent);
+  }
+  /* The custom editor sits under the swatches and takes the palette's width. */
+  .f-color-editor {
+    display: grid;
+    gap: 10px;
+    width: 0;
+    min-width: 100%;
+    margin-top: 6px;
+    padding: 4px;
+  }
+  .f-color-editor[hidden] {
+    display: none;
+  }
+  .f-color-editor__area {
+    position: relative;
+    height: 140px;
+    border-radius: var(--f-radius-sm);
+    /* The spectrum colors are data, set by the picker, not appearance tokens. */
+    background:
+      linear-gradient(0deg, var(--f-picker-black), transparent),
+      linear-gradient(90deg, var(--f-picker-white), var(--f-picker-hue));
+    box-shadow: inset 0 0 0 1px var(--f-border);
+    cursor: crosshair;
+    touch-action: none;
+  }
+  .f-color-editor__thumb {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid var(--f-switch-thumb);
+    border-radius: 50%;
+    box-shadow: var(--f-switch-shadow);
+    pointer-events: none;
+  }
+  .f-range.f-color-editor__hue {
+    height: 20px;
+  }
+  .f-range.f-color-editor__hue::-webkit-slider-runnable-track {
+    height: 10px;
+    border: 0;
+    border-radius: var(--f-radius-full);
+    background: var(--f-picker-spectrum);
+  }
+  .f-range.f-color-editor__hue::-webkit-slider-thumb {
+    margin-top: -5px;
+  }
+  .f-range.f-color-editor__hue::-moz-range-track {
+    height: 10px;
+    border: 0;
+    border-radius: var(--f-radius-full);
+    background: var(--f-picker-spectrum);
+  }
+  .f-range.f-color-editor__hue::-moz-range-progress {
+    background: transparent;
+  }
+  .f-color-editor__hex {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 8px;
+  }
+  .f-color-editor__hex > .f-input {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    text-transform: uppercase;
+  }
+  .f-color-palette__other {
+    width: 100%;
+    margin-top: 6px;
+    justify-content: flex-start;
+  }
+  @media (forced-colors: active) {
+    [aria-selected='true'] > .f-calendar__day {
+      background: Highlight;
+      color: HighlightText;
+    }
+    .f-swatch {
+      forced-color-adjust: none;
+      border: 1px solid CanvasText;
+    }
+    .f-swatch[aria-selected='true'] {
+      outline: 2px solid Highlight;
+    }
+  }
+
+  .f-color {
+    width: var(--f-color-width, 48px);
+    height: var(--f-control-height, 36px);
+    padding: 4px;
+    cursor: pointer;
+  }
+  .f-color:disabled,
+  .f-range:disabled {
+    cursor: not-allowed;
+  }
+  .f-color::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  .f-color::-webkit-color-swatch {
+    border: 1px solid var(--f-border);
+    border-radius: calc(var(--f-radius-sm) - 2px);
+  }
+  .f-color::-moz-color-swatch {
+    border: 1px solid var(--f-border);
+    border-radius: calc(var(--f-radius-sm) - 2px);
+  }
+
+  .f-range {
+    appearance: none;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    height: var(--f-control-height, 36px);
+    margin: 0;
+    padding: 0;
+    border-radius: var(--f-radius-sm);
+    background: transparent;
+    accent-color: var(--f-accent-fill);
+    cursor: pointer;
+  }
+  .f-range::-webkit-slider-runnable-track {
+    height: 6px;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-sm);
+    background: var(--f-surface-secondary);
+  }
+  .f-range::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    margin-top: -8px;
+    border: 1px solid var(--f-tertiary);
+    border-radius: 50%;
+    background: var(--f-switch-thumb);
+    box-shadow: var(--f-switch-shadow);
+  }
+  .f-range::-moz-range-track {
+    height: 4px;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-sm);
+    background: var(--f-surface-secondary);
+  }
+  .f-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border: 1px solid var(--f-tertiary);
+    border-radius: 50%;
+    background: var(--f-switch-thumb);
+    box-shadow: var(--f-switch-shadow);
+  }
+  .f-range::-moz-range-progress {
+    height: 6px;
+    border-radius: var(--f-radius-sm);
+    background: var(--f-accent-fill);
+  }
+  .f-range[aria-invalid='true']::-webkit-slider-runnable-track {
+    border-color: var(--f-danger);
+  }
+  .f-range[aria-invalid='true']::-moz-range-track {
+    border-color: var(--f-danger);
+  }
+
+  .f-progress,
+  .f-meter {
+    appearance: none;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    height: var(--f-indicator-height, 8px);
+    overflow: hidden;
+    border: 0;
+    border-radius: var(--f-radius-full);
+    background: var(--f-surface-secondary);
+  }
+  .f-progress::-webkit-progress-bar {
+    border-radius: var(--f-radius-full);
+    background: var(--f-surface-secondary);
+  }
+  .f-progress::-webkit-progress-value {
+    border-radius: var(--f-radius-full);
+    background: var(--f-accent-fill);
+  }
+  .f-progress::-moz-progress-bar {
+    border-radius: var(--f-radius-full);
+    background: var(--f-accent-fill);
+  }
+  .f-progress:indeterminate {
+    --f-progress-pulse: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--f-accent-fill) 40%,
+      var(--f-accent-fill) 60%,
+      transparent 100%
+    );
+    background-image: var(--f-progress-pulse);
+    background-size: 40% 100%;
+    background-repeat: no-repeat;
+    animation: f-progress-pulse 1.6s ease-in-out infinite alternate;
+  }
+  .f-progress:indeterminate::-webkit-progress-bar {
+    background: transparent;
+  }
+  .f-progress:indeterminate::-moz-progress-bar {
+    background: transparent;
+  }
+  @keyframes f-progress-pulse {
+    from {
+      background-position: 0% 0;
+    }
+    to {
+      background-position: 100% 0;
+    }
+  }
+  .f-meter::-webkit-meter-bar {
+    height: 100%;
+    border: 0;
+    border-radius: var(--f-radius-full);
+    background: var(--f-surface-secondary);
+    box-shadow: none;
+  }
+  .f-meter::-webkit-meter-optimum-value {
+    border-radius: var(--f-radius-full);
+    background: var(--f-success);
+  }
+  .f-meter::-webkit-meter-suboptimum-value {
+    border-radius: var(--f-radius-full);
+    background: var(--f-warning);
+  }
+  .f-meter::-webkit-meter-even-less-good-value {
+    border-radius: var(--f-radius-full);
+    background: var(--f-danger);
+  }
+  .f-meter::-moz-meter-bar {
+    border-radius: var(--f-radius-full);
+    background: var(--f-success);
+  }
+  .f-meter:-moz-meter-sub-optimum::-moz-meter-bar {
+    background: var(--f-warning);
+  }
+  .f-meter:-moz-meter-sub-sub-optimum::-moz-meter-bar {
+    background: var(--f-danger);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .f-progress:indeterminate {
+      animation: none;
+      background-position: 50% 0;
+    }
+  }
+  @media (forced-colors: active) {
+    .f-input:is(:autofill, :-webkit-autofill) {
+      box-shadow: none;
+      -webkit-text-fill-color: CanvasText;
+    }
+    .f-input[type='search']::-webkit-search-cancel-button {
+      background: ButtonText;
+    }
+    :is(.f-check > input, input.f-check):is([type='checkbox'], [type='radio']) {
+      appearance: auto;
+      box-shadow: none;
+    }
+    :is(.f-check > input, input.f-check)::before {
+      display: none;
+    }
+    .f-range::-webkit-slider-runnable-track {
+      background: Canvas;
+      border-color: CanvasText;
+    }
+    .f-range::-webkit-slider-thumb {
+      background: ButtonText;
+      border-color: ButtonText;
+      box-shadow: none;
+    }
+    .f-range::-moz-range-track {
+      background: Canvas;
+      border-color: CanvasText;
+    }
+    .f-range::-moz-range-thumb {
+      background: ButtonText;
+      border-color: ButtonText;
+      box-shadow: none;
+    }
+    .f-range::-moz-range-progress {
+      background: Highlight;
+    }
+    .f-progress,
+    .f-meter {
+      forced-color-adjust: none;
+      background: Canvas;
+      outline: 1px solid CanvasText;
+    }
+    .f-progress:indeterminate {
+      --f-progress-pulse: linear-gradient(90deg, transparent 0%, Highlight 40%, Highlight 60%, transparent 100%);
+    }
+    .f-progress::-webkit-progress-bar {
+      background: Canvas;
+    }
+    .f-progress:indeterminate::-webkit-progress-bar {
+      background: transparent;
+    }
+    .f-progress::-webkit-progress-value {
+      background: Highlight;
+    }
+    .f-progress::-moz-progress-bar {
+      background: Highlight;
+    }
+    .f-progress:indeterminate::-moz-progress-bar {
+      background: transparent;
+    }
+    .f-meter::-webkit-meter-bar {
+      background: Canvas;
+    }
+    .f-meter::-webkit-meter-optimum-value {
+      background: Highlight;
+    }
+    .f-meter::-webkit-meter-suboptimum-value {
+      background: Highlight;
+    }
+    .f-meter::-webkit-meter-even-less-good-value {
+      background: Highlight;
+    }
+    .f-meter::-moz-meter-bar {
+      background: Highlight;
+    }
+    .f-meter:-moz-meter-sub-optimum::-moz-meter-bar {
+      background: Highlight;
+    }
+    .f-meter:-moz-meter-sub-sub-optimum::-moz-meter-bar {
+      background: Highlight;
+    }
+  }
+
+  /* A drop target around a native file input; clicking or Space/Enter still opens the picker. */
+  .f-dropzone {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+    padding: var(--f-dropzone-padding, 22px 16px);
+    border: 1.5px dashed color-mix(in srgb, var(--f-text) 30%, transparent);
+    border-radius: var(--f-radius);
+    background: var(--f-surface-secondary);
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+    text-align: center;
+    cursor: pointer;
+  }
+  .f-dropzone:focus-within {
+    outline: var(--f-focus-ring-width) solid var(--f-focus-ring-color);
+    outline-offset: var(--f-focus-ring-offset);
+  }
+  .f-dropzone[data-dragging] {
+    border-color: var(--f-accent);
+    background: color-mix(in srgb, var(--f-accent) 8%, var(--f-surface-secondary));
+    color: var(--f-text);
+  }
+  .f-dropzone:has(:disabled) {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .f-dropzone__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .f-dropzone__action {
+    color: var(--f-accent);
+    font-weight: 500;
+  }
+  .f-dropzone__hint {
+    font-size: var(--f-text-xs);
+  }
+  @media (forced-colors: active) {
+    .f-dropzone {
+      border-color: ButtonText;
+    }
+    .f-dropzone[data-dragging] {
+      border-color: Highlight;
+    }
+  }
+
+  /* Pressed controls darken (or lighten in dark mode) over whatever surface they use. */
+  :is(
+      .f-button,
+      .f-sidebar__item,
+      .f-menu-item,
+      .f-item-row,
+      .f-tab,
+      .f-chip__remove,
+      .f-segmented > label > span
+    ):active:not(:disabled, [aria-disabled='true']) {
+    background-image: linear-gradient(var(--f-pressed), var(--f-pressed));
+  }
+
+  /* Livewire 4 disables or locks every control in a form while wire:submit is in flight and marks the
+     submitter (or the form) with data-loading. Keep the controls' appearance stable and show progress. */
+  :where(form[data-loading], form:has([type='submit'][data-loading]))
+    :is(button, input, select, textarea):is(:disabled, [readonly]) {
+    opacity: 1;
+    cursor: progress;
+  }
+  :where(form[data-loading], form:has([type='submit'][data-loading])) .f-input:is(input, textarea)[readonly] {
+    background: var(--f-input-background, var(--f-control));
+    color: var(--f-input-color, var(--f-text));
+    box-shadow: var(--f-input-shadow);
+  }
+}

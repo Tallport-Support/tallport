@@ -1,0 +1,104 @@
+@layer fruit.base {
+  :where(.fruit-ui) :where(code, kbd, pre) {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  }
+  :where(.fruit-ui) :where(code) {
+    padding: 2px 5px;
+    border-radius: var(--f-radius-xs);
+    background: var(--f-surface-secondary);
+    font-size: 0.9em;
+    overflow-wrap: anywhere;
+  }
+  :where(.fruit-ui) :where(kbd) {
+    padding: 2px 5px;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-xs);
+    background: var(--f-control);
+    box-shadow: var(--f-control-shadow);
+    font-size: 0.85em;
+    white-space: nowrap;
+  }
+  :where(.fruit-ui) :where(pre) {
+    max-width: 100%;
+    margin: 0;
+    padding: var(--f-space-4);
+    overflow: auto;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-sm);
+    background: var(--f-surface-secondary);
+    color: var(--f-text);
+    font-size: var(--f-text-sm);
+    line-height: 1.7;
+    tab-size: 2;
+  }
+  :where(.fruit-ui) :where(pre code) {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    font-size: inherit;
+    overflow-wrap: normal;
+  }
+  :where(.fruit-ui) :where(blockquote) {
+    margin: var(--f-space-4) 0;
+    padding-inline-start: var(--f-space-4);
+    border-inline-start: 3px solid var(--f-border);
+    color: var(--f-secondary);
+  }
+  :where(.fruit-ui) :where(hr) {
+    width: 100%;
+    margin-block: var(--f-space-4);
+    border: 0;
+    border-block-start: 1px solid var(--f-border);
+  }
+}
+
+@layer fruit.components {
+  .f-prose {
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+  }
+  .f-prose :is(p, ul, ol, blockquote, pre, figure, table) {
+    margin-block: 0 1em;
+  }
+  .f-prose :is(h1, h2, h3, h4) {
+    margin-block: 1.3em 0.5em;
+    line-height: 1.25;
+  }
+  .f-prose > :first-child {
+    margin-top: 0;
+  }
+  .f-prose > :last-child {
+    margin-bottom: 0;
+  }
+  .f-prose :is(ul, ol) {
+    padding-inline-start: 1.5em;
+  }
+  .f-prose li + li {
+    margin-top: 0.25em;
+  }
+  .f-prose :is(img, video) {
+    max-width: 100%;
+    height: auto;
+  }
+  .f-prose a {
+    color: var(--f-selection-text);
+    text-underline-offset: 2px;
+  }
+  .f-prose table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .f-prose :is(th, td) {
+    padding: 8px 10px;
+    border: 1px solid var(--f-border);
+    text-align: start;
+  }
+  .f-prose th {
+    background: var(--f-surface-secondary);
+  }
+  .f-prose__scroll {
+    max-width: 100%;
+    overflow: auto;
+  }
+}

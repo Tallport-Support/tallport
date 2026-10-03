@@ -1480,5 +1480,8 @@
     "No category": "Ei kategoriaa",
     "Pick one or type a new one.": "Valitse yksi tai kirjoita uusi.",
     "Updated :date by :person": "Päivittänyt :person :date",
-    "Users are allowed to manage the knowledge base": "Käyttäjät voivat hallita tietopankkia"
+    "Users are allowed to manage the knowledge base": "Käyttäjät voivat hallita tietopankkia",
+    "Navigation": "Navigointi",
+    "Sections": "Osiot",
+    "More": "Lisää"
 }

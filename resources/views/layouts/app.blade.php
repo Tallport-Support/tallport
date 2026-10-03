@@ -24,7 +24,7 @@
     {{-- style.css must be the last to able to redefine styles --}}
     @php
         try {
-            $styles= array('/css/fonts.css', '/css/bootstrap.css', '/css/select2/select2.min.css', '/js/featherlight/featherlight.min.css', '/js/featherlight/featherlight.gallery.min.css', '/css/magic-check.css', '/css/style.css' );
+            $styles= array('/css/fonts.css', '/css/bootstrap.css', '/css/select2/select2.min.css', '/js/featherlight/featherlight.min.css', '/js/featherlight/featherlight.gallery.min.css', '/css/magic-check.css', '/vendor/fruitui/core.compat.css', '/vendor/fruitui/layout.compat.css', '/css/style.css' );
             if (Helper::isLocaleRtl()) {
                 $styles[] = '/css/bootstrap-rtl.css';
                 $styles[] = '/css/style-rtl.css';
@@ -39,253 +39,52 @@
     @endphp
 
     @yield('stylesheets')
+    @livewireStyles
     @action('layout.after_stylesheets')
 </head>
 <body class="locale-{{ app()->getLocale() }} @if (Helper::isLocaleRtl()) rtl @endif @if (!Auth::user()) user-is-guest @endif @if (Auth::user() && Auth::user()->isAdmin()) user-is-admin @endif @yield('body_class') @action('body.class')" @yield('body_attrs') @if (Auth::user()) data-auth_user_id="{{ Auth::user()->id }}" @endif @if (Auth::user() && Auth::user()->hasKeyboardShortcuts()) data-keyboard-shortcuts="1" @endif>
 <div id="app">
 
-        @if (Auth::user() && empty(app('request')->x_embed) && empty($__env->yieldContent('guest_mode')))
-
-            <nav class="navbar navbar-default navbar-static-top">
-                <div class="container">
-                    <div class="navbar-header">
-
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse" aria-expanded="false">
-                            <span class="sr-only">{{ __('Toggle Navigation') }}</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-
-                        @if (\Helper::isInApp() && \Helper::isRoute('conversations.view'))
-                            <a class="navbar-brand" id="navbar-back" href="#" title="{{ __('Back') }}">
-                                <i class="glyphicon glyphicon-arrow-left"></i>
-                            </a>
-                        @else
-                            <a class="navbar-brand" href="{{ route('dashboard', ['dashboard' => 1]) }}" title="{{ __('Dashboard') }}">
-                                <img src="@filter('layout.header_logo', asset('img/logo-brand.svg'))" height="100%" alt="" />
-                            </a>
-                        @endif
+        @php
+            $app_shell = Auth::user() && empty(app('request')->x_embed) && empty($__env->yieldContent('guest_mode'));
+        @endphp
+        @if ($app_shell)
+            {{-- The sidebar, then the page: its tabs (sidebar section), side column (aside section) and content. --}}
+            <div class="app-shell">
+                @include('partials/app_sidebar')
+                <div class="app-main">
+                    <div class="fruit-ui app-main__bar">
+                        <button type="button" class="f-button f-button--ghost f-button--icon app-sidebar-toggle" aria-controls="app-sidebar" aria-expanded="false" aria-label="{{ __('Toggle Navigation') }}"><x-heroicon-o-bars-3 class="f-icon" aria-hidden="true" /></button>
                     </div>
-
-                    <div class="collapse navbar-collapse" id="app-navbar-collapse">
-                        <ul class="nav navbar-nav">
-                            @php
-                                $mailboxes = Auth::user()->mailboxesCanView(true);
-                                $mailboxes = \Eventy::filter('menu.mailboxes', $mailboxes);
-                            @endphp
-                            @if (App\Misc\AllMailboxes::isAvailable())
-                                {{-- The mailboxes are in the sidebar of All Mailboxes. --}}
-                                <li class="{{ \App\Misc\Helper::menuSelectedHtml('mailbox') }}"><a href="{{ route('mailboxes.all') }}">{{ __('Mailbox') }}</a></li>
-                            @elseif (count($mailboxes) == 1)
-                                <li class="{{ \App\Misc\Helper::menuSelectedHtml('mailbox') }}"><a href="{{ \Eventy::filter('mailbox.url', route('mailboxes.view', ['id'=>$mailboxes[0]->id]), $mailboxes[0]) }}">@action('menu.mailbox_single.before_name', $mailboxes[0]){{ __('Mailbox') }}@action('menu.mailbox_single.after_name', $mailboxes[0])</a></li>
-                            @elseif (count($mailboxes) > 1)
-                                <li class="dropdown {{ \App\Misc\Helper::menuSelectedHtml('mailbox') }}">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
-                                        {{ __('Mailbox') }} <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu dm-scrollable">
-                                        @foreach ($mailboxes as $mailbox_item)
-                                            <li class="@if ($mailbox_item->id == app('request')->id) active @endif"><a href="{{ \Eventy::filter('mailbox.url', route('mailboxes.view', ['id' => $mailbox_item->id]), $mailbox_item) }}">@action('menu.mailbox.before_name', $mailbox_item)@if ($mailbox_item->isArchived())<small class="glyphicon glyphicon-lock"></small> @endif{{ $mailbox_item->name }}@action('menu.mailbox.after_name', $mailbox_item)</a></li>
-                                        @endforeach
-                                    </ul>
-                                </li>
-                            @endif
-                            @if (Auth::user()->isAdmin()
-                                || Auth::user()->hasPermission(App\User::PERM_EDIT_USERS)
-                                || Auth::user()->can('viewMailboxMenu', Auth::user())
-                                || Eventy::filter('menu.manage.can_view', false)
-                            )
-                                <li class="dropdown {{ \App\Misc\Helper::menuSelectedHtml('manage') }}">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
-                                        {{ __('Manage') }} <span class="caret"></span>
-                                    </a>
-
-                                    <ul class="dropdown-menu">
-                                        @if (Auth::user()->isAdmin())
-                                            <li class="{{ \App\Misc\Helper::menuSelectedHtml('settings') }}"><a href="{{ route('settings') }}">{{ __('Settings') }}</a></li>
-                                        @endif
-                                        @if (Auth::user()->can('viewMailboxMenu', Auth::user()))
-                                            <li class="{{ \App\Misc\Helper::menuSelectedHtml('mailboxes') }}"><a href="{{ route('mailboxes') }}">{{ __('Mailboxes') }}</a></li>
-                                        @endif
-                                        @action('menu.manage.after_mailboxes')
-                                        @if (Auth::user()->isAdmin() || Auth::user()->hasPermission(App\User::PERM_EDIT_USERS))
-                                            <li class="{{ \App\Misc\Helper::menuSelectedHtml('users') }}"><a href="{{ route('users') }}">{{ __('Users') }}</a></li>
-                                        @endif
-                                        @if (Auth::user()->isAdmin())
-                                            <li class="{{ \App\Misc\Helper::menuSelectedHtml('workflows') }}"><a href="{{ route('workflows') }}">{{ __('Workflows') }}</a></li>
-                                            <li class="{{ \App\Misc\Helper::menuSelectedHtml('modules') }}"><a href="{{ route('modules') }}">{{ __('Modules') }}</a></li>
-                                            <li class="{{ \App\Misc\Helper::menuSelectedHtml('logs') }}"><a href="{{ route('logs') }}">{{ __('Logs') }}</a></li>
-                                            <li class="{{ \App\Misc\Helper::menuSelectedHtml('system') }}"><a href="{{ route('system') }}">{{ __('System') }}</a></li>
-                                        @endif
-                                        @action('menu.manage.append')
-                                    </ul>
-                                </li>
-                            @endif
-                            <li class="{{ \App\Misc\Helper::menuSelectedHtml('kb') }}"><a href="{{ route('kb') }}">{{ __('Knowledge Base') }}</a></li>
-                            @if (App\Http\Controllers\ReportsController::canAccess(Auth::user()))
-                                <li class="dropdown {{ \App\Misc\Helper::menuSelectedHtml('reports') }}">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
-                                        {{ __('Reports') }} <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li class="{{ \App\Misc\Helper::menuSelectedHtml('reports.conversations') }}"><a href="{{ route('reports.conversations') }}">{{ __('Conversations') }}</a></li>
-                                        <li class="{{ \App\Misc\Helper::menuSelectedHtml('reports.productivity') }}"><a href="{{ route('reports.productivity') }}">{{ __('Productivity') }}</a></li>
-                                    </ul>
-                                </li>
-                            @endif
-                            @action('menu.append')
-                        </ul>
-
-                        <!-- Right Side Of Navbar -->
-                        <ul class="nav navbar-nav navbar-right">
-                            <!-- Authentication Links -->
-                            @guest
-                                &nbsp;
-                            @else
-                                <li class="dropdown web-notifications">
-                                    @php
-                                        $web_notifications_info = Auth::user()->getWebsiteNotificationsInfo();
-                                    @endphp
-                                    <a href="#" class="dropdown-toggle dropdown-toggle-icon @if ($web_notifications_info['unread_count']) @if ($web_notifications_info['unread_count']) has-unread @endif @endif" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" aria-label="{{ __('Notifications') }}" v-pre title="{{ __('Notifications') }}">
-                                        <i class="glyphicon glyphicon-bell"></i>
-                                    </a>
-
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <div class="web-notifications-header">
-                                                <h1>
-                                                    {{ __('Notifications') }}
-                                                    <small class="web-notifications-count  @if (!(int)$web_notifications_info['unread_count']) hidden @endif" title="{{ __('Unread Notifications') }}" data-toggle="tooltip">@if ($web_notifications_info['unread_count']){{ $web_notifications_info['unread_count'] }}@endif</small>
-                                                </h1>
-                                                <a href="#" class="web-notifications-mark-read @if (!(int)$web_notifications_info['unread_count']) hidden @endif" data-loading-text="{{ __('Processing') }}…">
-                                                    {{ __('Mark all as read') }}
-                                                </a>
-                                            </div>
-                                            <ul class="web-notifications-list">
-                                                @if (count($web_notifications_info['data']))
-                                                    @if (!empty($web_notifications_info['html']))
-                                                        {!! $web_notifications_info['html'] !!}
-                                                    @else
-                                                        @include('users/partials/web_notifications', ['web_notifications_info_data' => $web_notifications_info['data']])
-                                                    @endif
-
-                                                    @if ($web_notifications_info['notifications']->hasMorePages())
-                                                        <li class="web-notification-more">
-                                                            <button class="btn btn-link btn-block link-dark" data-loading-text="{{ __('Loading') }}…">
-                                                                {{ __('Load more') }}
-                                                            </button>
-                                                        </li>
-                                                    @endif
-                                                @else
-                                                    <div class="text-center margin-top-40 margin-bottom-40">
-                                                        <i class="glyphicon glyphicon-bullhorn icon-large"></i>
-                                                        <p class="block-help text-large">
-                                                            {{ __('Notifications will start showing up here soon') }}
-                                                        </p>
-                                                        <a href="{{ route('users.notifications', ['id' => Auth::user()->id]) }}">{{ __('Update your notification settings') }}</a>
-                                                    </div>
-                                                @endif
-                                            </ul>
-                                        </li>
-
-                                    </ul>
-                                </li>
-
-
-                                <li class="dropdown">
-
-                                    <a href="#" class="dropdown-toggle dropdown-toggle-icon dropdown-toggle-account" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre title="{{ __('Account') }}" aria-label="{{ __('Account') }}">
-                                        <span class="photo-sm">@include('partials/person_photo', ['person' => Auth::user()])</span>&nbsp;<span class="nav-user">{{ Auth::user()->first_name }}@action('menu.user.name_append', Auth::user())</span> <span class="caret"></span>
-                                    </a>
-
-                                    <ul class="dropdown-menu">
-                                        <li><a href="{{ route('users.profile', ['id'=>Auth::user()->id]) }}">{{ __('Your Profile') }}</a></li>
-                                        @if (Auth::user()->hasKeyboardShortcuts())
-                                            <li><a href="#" data-toggle="modal" data-target="#keyboard-shortcuts-modal">{{ __('Keyboard Shortcuts') }} <small class="text-help">?</small></a></li>
-                                        @endif
-                                        @action('menu_right.user.after_profile')
-                                        <li class="divider"></li>
-                                        <li>
-                                            <a href="#" id="logout-link">
-                                                {{ __('Log Out') }}
-                                            </a>
-
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                                {{ csrf_field() }}
-                                            </form>
-                                        </li>
-                                        <li class="divider hidden in-app-switcher"></li>
-                                        <li>
-                                            <a href="#" class="hidden in-app-switcher">{{ __('Switch Helpdesk URL') }}</a>
-                                        </li>
-                                    </ul>
-                                </li>
-
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle dropdown-toggle-icon" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre title="{{ __('Search') }}" aria-label="{{ __('Search') }}" id="search-dt">
-                                        <i class="glyphicon glyphicon-search"></i>
-                                    </a>
-
-                                    <ul class="dropdown-menu dropdown-with-icons">
-                                        <li>
-                                            <form class="form-inline form-nav-search" role="form" action="{{ route('conversations.search') }}" target="_blank">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" name="q">
-                                                    <span class="input-group-btn">
-                                                        <button class="btn btn-default" type="submit">{{ __('Search') }}</button>
-                                                    </span>
-                                                </div>
-                                            </form>
-                                        </li>
-                                        <li><a href="{{ route('conversations.search', ['f' => ['following' => 'yes']]) }}"><i class="glyphicon glyphicon-chevron-right"></i> {{ __("Conversations I'm following") }}</a></li>
-                                        <li><a href="{{ route('conversations.search', ['f' => ['assigned' => Auth::user()->id, 'status' => [App\Conversation::STATUS_ACTIVE, App\Conversation::STATUS_PENDING]]]) }}"><i class="glyphicon glyphicon-chevron-right"></i> {{ __('My open conversations') }}</a></li>
-                                        @if (in_array(Route::currentRouteName(), ['mailboxes.view', 'mailboxes.view.folder']))
-                                            <li><a href="{{ route('conversations.search', ['f' => ['mailbox' => app('request')->id]]) }}"><i class="glyphicon glyphicon-chevron-right"></i> {{ __("All from current mailbox") }}</a></li>
-                                        @endif
-                                    </ul>
-                                </li>
-                            @endguest
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        @endif
-        @if (($browser_check = \Helper::checkBrowser()) && $browser_check['msg'])
-            <div class="alert alert-danger">{{ $browser_check['msg'] }}</div>
-        @endif
-        @if ($__env->yieldContent('sidebar'))
-            <div class="layout-2col">
-                <div class="sidebar-2col">
+                    @if (($browser_check = \Helper::checkBrowser()) && $browser_check['msg'])
+                        <div class="alert alert-danger">{{ $browser_check['msg'] }}</div>
+                    @endif
                     @yield('sidebar')
-                </div>
-                <div class="content-2col">
-                    @yield('content')
+                    @if ($__env->yieldContent('aside'))
+                        <div class="layout-2col">
+                            <div class="sidebar-2col">
+                                @yield('aside')
+                            </div>
+                            <div class="content-2col">
+                                @yield('content')
+                            </div>
+                        </div>
+                    @else
+                        <div class="content @yield('content_class')">
+                            @yield('content')
+                        </div>
+                    @endif
+                @include('partials/app_footer')
                 </div>
             </div>
         @else
+            @if (($browser_check = \Helper::checkBrowser()) && $browser_check['msg'])
+                <div class="alert alert-danger">{{ $browser_check['msg'] }}</div>
+            @endif
             <div class="content @yield('content_class')">
                 @yield('content')
             </div>
-        @endif
-
-        @if (!in_array(Route::currentRouteName(), array('mailboxes.view'))
-            && empty(app('request')->x_embed) && empty($__env->yieldContent('no_footer')))
-            <div class="footer">
-                @if (!\Eventy::filter('footer.text', ''))
-                    &copy; 2018-{{ date('Y') }} {!! \Helper::productCreditHtml() !!} — {{ __('Free open source help desk & shared mailbox') }}
-                @else
-                    {!! \Eventy::filter('footer.text', '') !!}
-                @endif
-                @if (!Auth::user())
-                    <a href="#" class="hidden in-app-switcher"><br/>{{ __('Switch Helpdesk URL') }}</a>
-                @endif
-                {{-- Show version to admin only --}}
-                @if (Auth::user() && Auth::user()->isAdmin())
-                    <br/>
-                    <a href="{{ route('system') }}">{{ config('app.version') }}</a>
-                @endif
-            </div>
+        @include('partials/app_footer')
         @endif
     </div>
 
@@ -300,7 +99,7 @@
     @php
         try {
     @endphp
-    {!! Minify::javascript(\Eventy::filter('javascripts', array('/js/jquery.js', '/js/bootstrap.js', '/js/lang.js', '/js/builds/vars.js', '/js/laroute.js', '/js/parsley/parsley.min.js', '/js/parsley/i18n/'.strtolower(Config::get('app.locale')).'.js', '/js/select2/select2.full.min.js', '/js/polycast/polycast.js', '/js/push/push.min.js', '/js/featherlight/featherlight.min.js', '/js/featherlight/featherlight.gallery.min.js', '/js/taphold.js', '/js/jquery.titlealert.js', '/js/main.js', '/js/shortcuts.js', '/js/saved_replies.js', '/js/attachments.js', '/js/workflows.js', '/js/kb.js'))) !!}
+    {!! Minify::javascript(\Eventy::filter('javascripts', array('/js/jquery.js', '/js/bootstrap.js', '/js/lang.js', '/js/builds/vars.js', '/js/laroute.js', '/js/parsley/parsley.min.js', '/js/parsley/i18n/'.strtolower(Config::get('app.locale')).'.js', '/js/select2/select2.full.min.js', '/js/polycast/polycast.js', '/js/push/push.min.js', '/js/featherlight/featherlight.min.js', '/js/featherlight/featherlight.gallery.min.js', '/js/taphold.js', '/js/jquery.titlealert.js', '/vendor/fruitui/livewire.global.js', '/js/main.js', '/js/shortcuts.js', '/js/saved_replies.js', '/js/attachments.js', '/js/workflows.js', '/js/kb.js'))) !!}
     @php
         } catch (\Exception $e) {
             // To prevent 500 errors on update.
@@ -326,5 +125,6 @@
     @if (Auth::user() && Auth::user()->hasKeyboardShortcuts())
         @include('partials/keyboard_shortcuts')
     @endif
+    @livewireScripts(['nonce' => \Helper::cspNonce()])
 </body>
 </html>

@@ -1,10 +1,8 @@
 {{-- Workflows of all mailboxes and of each mailbox (admins). --}}
-<div class="sidebar-title">
-    {{ __('Workflows') }}
-</div>
-<ul class="sidebar-menu">
-    <li @if (!$mailbox)class="active"@endif><a href="{{ route('workflows') }}"><i class="glyphicon glyphicon-inbox"></i> {{ __('All Mailboxes') }}</a></li>
+<x-page-nav :label="__('Workflows')">
+    <x-slot:title><h1>{{ __('Workflows') }}</h1></x-slot:title>
+    <a href="{{ route('workflows') }}" @if (!$mailbox) aria-current="page" @endif>{{ __('All Mailboxes') }}</a>
     @foreach (Auth::user()->mailboxesCanView() as $sidebar_mailbox)
-        <li @if ($mailbox && $mailbox->id == $sidebar_mailbox->id)class="active"@endif><a href="{{ route('mailboxes.workflows', ['mailbox_id' => $sidebar_mailbox->id]) }}"><i class="glyphicon glyphicon-envelope"></i> {{ $sidebar_mailbox->name }}</a></li>
+        <a href="{{ route('mailboxes.workflows', ['mailbox_id' => $sidebar_mailbox->id]) }}" @if ($mailbox && $mailbox->id == $sidebar_mailbox->id) aria-current="page" @endif>{{ $sidebar_mailbox->name }}</a>
     @endforeach
-</ul>
+</x-page-nav>

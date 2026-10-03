@@ -22,7 +22,9 @@
     "skills": [
         "infer-conventions",
         "ai-sdk-development",
+        "fortify-development",
         "laravel-best-practices",
-        "testing-best-practices"
+        "testing-best-practices",
+        "livewire-development"
     ]
 }

@@ -1189,6 +1189,104 @@
         "methods": [
             "GET"
         ],
+        "uri": "livewire-0607dabf/css/{component}.css",
+        "name": null,
+        "action": "Closure",
+        "middleware": [],
+        "where": {}
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "livewire-0607dabf/css/{component}.global.css",
+        "name": null,
+        "action": "Closure",
+        "middleware": [],
+        "where": {}
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "livewire-0607dabf/js/{component}.js",
+        "name": null,
+        "action": "Closure",
+        "middleware": [],
+        "where": {}
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "livewire-0607dabf/livewire.csp.min.js.map",
+        "name": null,
+        "action": "Livewire\\Mechanisms\\FrontendAssets\\FrontendAssets@cspMaps",
+        "middleware": [],
+        "where": {}
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "livewire-0607dabf/livewire.min.js",
+        "name": null,
+        "action": "Livewire\\Mechanisms\\FrontendAssets\\FrontendAssets@returnJavaScriptAsFile",
+        "middleware": [],
+        "where": {}
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "livewire-0607dabf/livewire.min.js.map",
+        "name": null,
+        "action": "Livewire\\Mechanisms\\FrontendAssets\\FrontendAssets@maps",
+        "middleware": [],
+        "where": {}
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "livewire-0607dabf/preview-file/{filename}",
+        "name": "livewire.preview-file",
+        "action": "Livewire\\Features\\SupportFileUploads\\FilePreviewController@handle",
+        "middleware": [
+            "web"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "livewire-0607dabf/update",
+        "name": "default-livewire.update",
+        "action": "Livewire\\Mechanisms\\HandleRequests\\HandleRequests@handleUpdate",
+        "middleware": [
+            "web",
+            "Livewire\\Mechanisms\\HandleRequests\\RequireLivewireHeaders"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "livewire-0607dabf/upload-file",
+        "name": "livewire.upload-file",
+        "action": "Livewire\\Features\\SupportFileUploads\\FileUploadController@handle",
+        "middleware": [
+            "web",
+            "throttle:60,1"
+        ],
+        "where": {}
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "login",
         "name": "login",
         "action": "Laravel\\Fortify\\Http\\Controllers\\AuthenticatedSessionController@create",

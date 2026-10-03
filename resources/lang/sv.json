@@ -1462,5 +1462,8 @@
     "No category": "Ingen kategori",
     "Pick one or type a new one.": "Välj en eller skriv en ny.",
     "Updated :date by :person": "Uppdaterad :date av :person",
-    "Users are allowed to manage the knowledge base": "Användare har tillåtelse att hantera kunskapsbasen"
+    "Users are allowed to manage the knowledge base": "Användare har tillåtelse att hantera kunskapsbasen",
+    "Navigation": "Navigering",
+    "Sections": "Avsnitt",
+    "More": "Mer"
 }

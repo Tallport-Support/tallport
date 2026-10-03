@@ -105,7 +105,11 @@ class RealtimeMailboxNewThread implements ShouldBroadcastNow
             'mailbox' => $mailbox,
         ];
 
-        $payload->folders_html = \View::make('mailboxes/partials/folders')->with($template_data)->render();
+        $payload->folders_html = \View::make('partials/app_sidebar_folders')->with([
+            'sidebar_mailbox'           => $mailbox,
+            'sidebar_folders'           => $template_data['folders'],
+            'sidebar_current_folder_id' => $folder->mailbox_id == $mailbox->id ? $folder->id : null,
+        ])->render();
 
         // Audio notification for chats.
         if ((int)$payload->is_chat && $payload->thread_id) {

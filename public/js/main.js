@@ -410,12 +410,11 @@ $(document).ready(function(){
 	initAccordionHeading();
 	initMuteMailbox();
 
-	// Search button
-	$('#search-dt').click(function() {
-		var dt = $(this);
-		setTimeout(function() { 
-			dt.next().children().find('.form-control:first').focus();
-		}, 100);
+	// The sidebar on small screens.
+	$('.app-sidebar-toggle').click(function() {
+		var open = !$('body').hasClass('app-sidebar-open');
+		$('body').toggleClass('app-sidebar-open', open);
+		$(this).attr('aria-expanded', open ? 'true' : 'false');
 	});
 
 	$('#logout-link').click(function(e) {
@@ -4238,64 +4237,37 @@ function polycastInit()
 	    });
 	}
 
-	// Refresh folders and conversations list
+	// New messages: the sidebar's folders (of every mailbox) and the conversations list.
     var mailbox_id = getGlobalAttr('mailbox_id');
-    var el_folders = $('#folders');
-    // All Mailboxes: a new message in any mailbox refreshes the list.
-    if (parseInt(mailbox_id) < 0 && el_folders.attr('data-mailbox-tree') && !isChatMode()) {
-    	el_folders.children('.sidebar-mailbox-heading').each(function() {
-    		var tree_mailbox_id = $(this).attr('data-mailbox_id');
-    		if (parseInt(tree_mailbox_id) > 0) {
-    			poly.subscribe('mailbox.'+tree_mailbox_id).on('App\\Events\\RealtimeMailboxNewThread', function(data, event) {
-    				if (data && data.mailbox_id == tree_mailbox_id && $(".table-conversations:first").length && !getSelectedConversations().length) {
-    					loadConversations('', '', true);
+    if (!isChatMode()) {
+    	$('.app-sidebar__folders[data-mailbox_id]').each(function() {
+    		var folders = $(this);
+    		var folders_mailbox_id = folders.attr('data-mailbox_id');
+    		poly.subscribe('mailbox.'+folders_mailbox_id).on('App\\Events\\RealtimeMailboxNewThread', function(data, event) {
+    			if (!data || typeof(data.mailbox_id) == "undefined" || data.mailbox_id != folders_mailbox_id) {
+    				return;
+    			}
+    			if (typeof(data.folders_html) != "undefined" && data.folders_html) {
+    				folders.html(data.folders_html);
+    				// The open folder's number of active conversations in the page title.
+    				var current = folders.children('[aria-current="page"]:first');
+    				if (current.length && !getGlobalAttr('conversation_id')) {
+    					var new_count = parseInt(current.attr('data-active-count'));
+    					new_count = (!isNaN(new_count) && new_count > 0) ? '('+new_count+') ' : '';
+    					document.title = new_count+document.title.replace(/^\(\d+\) /, "");
     				}
-    			});
-    		}
+    			}
+    			// The list of this mailbox, or of All Mailboxes.
+    			if ((mailbox_id == folders_mailbox_id || parseInt(mailbox_id) < 0)
+    				&& $(".table-conversations:first").length && !getSelectedConversations().length
+    			) {
+    				loadConversations('', '', true);
+    			}
+    			// Play audio notification for chat conversations.
+    			playAudioNotification(data);
+    		});
     	});
     }
-    if (parseInt(mailbox_id) > 0 && el_folders.length && !isChatMode()) {
-	    var channel = poly.subscribe('mailbox.'+mailbox_id);
-
-	    channel.on('App\\Events\\RealtimeMailboxNewThread', function(data, event){
-	        if (!data || typeof(data.mailbox_id) == "undefined" || data.mailbox_id != mailbox_id) {
-	        	return;
-		    }
-
-		    if (typeof(data.folders_html) != "undefined" && data.folders_html) {
-		    	var folder_id = el_folders.children('li.active:first').attr('data-folder_id');
-		    	if (el_folders.attr('data-mailbox-tree')) {
-		    		// Only this mailbox's folders in the tree.
-		    		var group = el_folders.children('li[data-mailbox_group="'+mailbox_id+'"]');
-		    		group.first().before($.parseHTML(data.folders_html));
-		    		group.remove();
-		    	} else {
-		    		el_folders.html(data.folders_html);
-		    	}
-		    	var active_folder = el_folders.children('li[data-folder_id="'+folder_id+'"]');
-		    	active_folder.addClass('active');
-
-		    	// Update number of active conversations in the page title
-		    	if (!getGlobalAttr('conversation_id')) {
-			    	var new_count = parseInt(active_folder.attr('data-active-count'));
-			    	if (!isNaN(new_count) && new_count > 0) {
-			    		new_count = '('+new_count+') ';
-			    	} else {
-			    		new_count = '';
-			    	}
-			    	document.title = new_count+document.title.replace(/^\(\d+\) /, "");
-			    }
-		    }
-
-		    // If there are no conversations selected refresh conversations table
-		    if ($(".table-conversations:first").length && !getSelectedConversations().length) {
-		    	loadConversations('', '', true);
-		    }
-
-			// Play audio notification for chat conversations.
-	        playAudioNotification(data);
-	    });
-	}
 
 	// Refresh chats list and also play audio notificaion
     var chats = $('#folders.chats:first');
@@ -4475,7 +4447,7 @@ function showMenuNotification(html)
 	// Remove double TODAY
 	var first_date = $('.web-notification-date:first');
 	$('.web-notification-date[data-date="'+first_date.attr('data-date')+'"]:gt(0)').remove();
-	$('.web-notifications .dropdown-toggle:first').addClass('has-unread');
+	$('.web-notifications-trigger:first').addClass('has-unread');
 }
 
 // Show browser push-notification
@@ -4500,33 +4472,9 @@ function showBrowserNotification(text, url)
 	});
 }
 
-// Take notifications bell out of the dropdown menu
-function takeNotificationsOut()
-{
-	if ($(window).width() >= 768) {
-		// Move to the menu
-		var container = $('.navbar-header .web-notifications:first');
-		if (container) {
-			container.prependTo(".navbar-right:first");
-		}
-	} else {
-		// Move to the header
-		var container = $('.navbar-right .web-notifications:first');
-		if (container) {
-			container.prependTo(".navbar-header:first");
-		}
-	}
-}
-
 // Display notification in the menu
 function webNotificationsInit()
 {
-	// Take notifications bell out of the dropdown menu
-	takeNotificationsOut();
-	$(window).on('resize', function(){
-		takeNotificationsOut();
-	});
-
 	// Load more
 	var button = $('.web-notification-more:first .btn:first');
 
@@ -4582,7 +4530,7 @@ function webNotificationsInit()
 					mark_button.remove();
 					$('.web-notifications-count:first').addClass('hidden');
 					$('.web-notification.is-unread').removeClass('is-unread');
-					$('.web-notifications .dropdown-toggle.has-unread:first').removeClass('has-unread');
+					$('.web-notifications-trigger.has-unread:first').removeClass('has-unread');
 				} else {
 					showAjaxError(response);
 				}

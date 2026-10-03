@@ -14,15 +14,12 @@
 
 @section('body_attrs')@parent data-conversation_id="{{ $conversation->id }}"@endsection
 
-@section('sidebar')
-    @include('partials/sidebar_menu_toggle')
-    @if ($folder->id < 0 && !$is_in_chat_mode)
-        {{-- Opened from All Mailboxes. --}}
-        @include('mailboxes/sidebar_menu_view', ['mailbox' => App\Misc\AllMailboxes::mailbox(), 'folders' => App\Misc\AllMailboxes::folders(Auth::user())])
-    @else
+@if ($is_in_chat_mode)
+    {{-- The chats beside the conversation. --}}
+    @section('aside')
         @include('mailboxes/sidebar_menu_view')
-    @endif
-@endsection
+    @endsection
+@endif
 
 @section('content')
     @include('partials/flash_messages')

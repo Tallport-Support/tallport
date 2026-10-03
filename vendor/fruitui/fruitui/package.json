@@ -1,0 +1,72 @@
+{
+  "name": "fruitui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "An Apple-inspired, CSS-first interface framework for HTML and Laravel.",
+  "type": "module",
+  "exports": {
+    "./css": "./src/fruitui.css",
+    "./alpine": "./src/js/alpine.js",
+    "./livewire": "./src/js/livewire.js",
+    "./editor": "./src/js/editor.js",
+    "./core.css": "./src/core.css",
+    "./mail.css": "./src/mail.css",
+    "./editor.css": "./src/editor.css",
+    "./dist/*": "./build/*",
+    "./layout.css": "./src/layout.css"
+  },
+  "files": [
+    "src/css",
+    "src/*.css",
+    "src/js",
+    "build",
+    "docs",
+    "CHANGELOG.md",
+    "LICENSE",
+    "AGENTS.md"
+  ],
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build && npm run build:package",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "playwright test",
+    "build:package": "node scripts/build-package.mjs",
+    "prepack": "npm run build:package",
+    "test:package": "node scripts/test-package.mjs",
+    "pretest": "npm run build:package",
+    "build:docs": "node scripts/build-docs.mjs",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write . && eslint --fix ."
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
+    "@tiptap/core": "^3.31.4",
+    "@tiptap/pm": "^3.31.4",
+    "@tiptap/starter-kit": "^3.31.4",
+    "alpinejs": "^3.17.4",
+    "eslint": "^10.12.0",
+    "globals": "^17.13.0",
+    "postcss": "^8.5.8",
+    "prettier": "^3.9.9",
+    "vite": "^8.3.2"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "@tiptap/core": "^3.31.4",
+    "@tiptap/pm": "^3.31.4",
+    "@tiptap/starter-kit": "^3.31.4"
+  },
+  "peerDependenciesMeta": {
+    "@tiptap/core": {
+      "optional": true
+    },
+    "@tiptap/pm": {
+      "optional": true
+    },
+    "@tiptap/starter-kit": {
+      "optional": true
+    }
+  }
+}

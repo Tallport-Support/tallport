@@ -53,6 +53,13 @@ Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Lara
 - Keep Eventy hooks (`\Eventy::filter`/`action` names and arguments) stable. Modules depend on them.
 - `config('app.compatibility_version')` is the FreeScout version reported to modules. `config('app.version')` is Tallport's own version.
 
+## User interface
+
+- Tallport follows Apple's Human Interface Guidelines (https://developer.apple.com/design/human-interface-guidelines/), as FruitUI does.
+- New and reworked screens use FruitUI (`fruitui/fruitui`, from GitHub): its `x-fruit::` Blade components and `f-*` classes inside a `.fruit-ui` scope, and Livewire 4 where server interaction helps. Bootstrap 3 and jQuery stay loaded for screens and modules not converted yet.
+- Change FruitUI itself (in its own repository) when a component is missing or wrong, rather than working around it in Tallport. Its strings and their translations belong to FruitUI.
+- Light and dark appearances follow the system; don't force one.
+
 ## Translations
 
 - Tallport supports the languages in `config('app.locales')`. Every user-facing string (`__()`, `@lang()`, `trans()`) needs a translation in each of them: in `resources/lang/<locale>.json`, keyed by the English text, and for Laravel's messages in `resources/lang/<locale>/{auth,passwords,validation}.php`.
@@ -195,7 +202,15 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Pass `--no-interaction` to Artisan commands.
 - Many app actions go through `ajax()` controller methods switched on an `action` parameter, not one route per action. Follow that pattern where it is used.
 - Prefer named routes and `route()` when generating links.
-- Frontend assets are plain jQuery and Bootstrap 3, built with Laravel Mix (`webpack.mix.js`) and joined into minified build files at runtime by `\Minify` (`App\Misc\Minify`; modules add files through the `javascripts`/`stylesheets` filters). There is no Vite.
+- Frontend assets are joined into minified build files at runtime by `\Minify` (`App\Misc\Minify`; modules add files through the `javascripts`/`stylesheets` filters), built with Laravel Mix (`webpack.mix.js`). There is no Vite. FruitUI's compiled assets are published to `public/vendor/fruitui`; Livewire's scripts come from `@livewireScripts`. Screens not converted to FruitUI are still jQuery and Bootstrap 3.
 - Tests don't use model factories or Faker for new code. See the Tallport testing rules.
+
+=== livewire/core rules ===
+
+# Livewire
+
+- Livewire allows you to build dynamic, reactive interfaces in PHP without writing JavaScript.
+- You can use Alpine.js for client-side interactions instead of JavaScript frameworks.
+- Keep state server-side so the UI reflects it. Validate and authorize in actions as you would in HTTP requests.
 
 </laravel-boost-guidelines>

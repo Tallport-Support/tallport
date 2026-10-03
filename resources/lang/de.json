@@ -1455,5 +1455,8 @@
     "No category": "Keine Kategorie",
     "Pick one or type a new one.": "Wählen Sie eine aus oder geben Sie eine neue ein.",
     "Updated :date by :person": "Aktualisiert am :date von :person",
-    "Users are allowed to manage the knowledge base": "Benutzer sind dazu berechtigt die Wissensdatenbank zu verwalten"
+    "Users are allowed to manage the knowledge base": "Benutzer sind dazu berechtigt die Wissensdatenbank zu verwalten",
+    "Navigation": "Navigation",
+    "Sections": "Abschnitte",
+    "More": "Mehr"
 }

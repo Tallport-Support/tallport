@@ -1,0 +1,377 @@
+@layer fruit.components {
+  .f-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: var(--f-button-height, 36px);
+    padding: var(--f-button-padding-block, 6px) var(--f-button-padding-inline, 16px);
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-sm);
+    background: var(--f-control);
+    box-shadow: var(--f-control-shadow);
+    font-family: var(--f-font);
+    line-height: var(--f-control-line-height, 1.5);
+    font-size: var(--f-control-font-size, var(--f-text-base));
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .f-button:hover {
+    background: var(--f-surface-secondary);
+  }
+  .f-button--primary {
+    color: var(--f-on-accent);
+    border-color: transparent;
+    background: var(--f-accent-fill);
+  }
+  .f-button--primary:hover {
+    background: var(--f-accent-fill-hover);
+  }
+  .f-button--danger {
+    color: var(--f-danger);
+  }
+  .f-button--ghost {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+  .f-button--ghost:hover {
+    background: var(--f-hover);
+  }
+  .f-button--icon {
+    padding: 7px;
+    min-width: var(--f-button-height, 36px);
+    min-height: var(--f-button-height, 36px);
+  }
+  /* Back to the parent screen in compact layouts: a chevron and the parent's title. */
+  .f-back {
+    gap: 3px;
+    max-width: var(--f-back-max-width, 160px);
+    padding-inline: 4px 8px;
+    /* The selection text blue keeps 4.5:1 on the ghost button's hover surface. */
+    color: var(--f-selection-text);
+  }
+  .f-back > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .f-back:dir(rtl) > .f-icon {
+    scale: -1 1;
+  }
+  .f-button--small {
+    --f-button-height: 30px;
+    --f-button-padding-block: 3px;
+    --f-button-padding-inline: 12px;
+    --f-control-font-size: var(--f-text-sm);
+  }
+  .f-button--large {
+    --f-button-height: 44px;
+    --f-button-padding-block: 9px;
+    --f-button-padding-inline: 20px;
+    --f-control-font-size: var(--f-text-md);
+  }
+  .f-button[aria-pressed='true'] {
+    background: var(--f-selection);
+    color: var(--f-selection-text);
+  }
+  .f-field {
+    display: grid;
+    gap: var(--f-field-gap, 7px);
+  }
+  .f-label {
+    font-size: var(--f-text-base);
+    font-weight: 500;
+  }
+  .f-input {
+    width: 100%;
+    min-width: 0;
+    min-height: var(--f-control-height, 36px);
+    padding: var(--f-control-padding-block, 6px) var(--f-control-padding-inline, 12px);
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-sm);
+    background: var(--f-input-background, var(--f-control));
+    color: var(--f-input-color, var(--f-text));
+    box-shadow: var(--f-input-shadow);
+    font-family: var(--f-font);
+    line-height: var(--f-control-line-height, 1.5);
+    font-size: var(--f-control-font-size, var(--f-text-base));
+  }
+  .f-input::placeholder {
+    color: var(--f-tertiary);
+  }
+  .f-input[aria-invalid='true'] {
+    border-color: var(--f-danger);
+  }
+  textarea.f-input {
+    resize: vertical;
+  }
+  .f-help {
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+  }
+  .f-error {
+    color: var(--f-danger);
+    font-size: var(--f-text-sm);
+  }
+  .f-search {
+    position: relative;
+  }
+  .f-search > .f-icon {
+    position: absolute;
+    inset-block: 0;
+    margin-block: auto;
+    inset-inline-start: 10px;
+    --f-icon-size: 16px;
+    color: var(--f-secondary);
+    pointer-events: none;
+  }
+  .f-search > .f-input {
+    background: var(--f-input-background, var(--f-hover));
+    padding-inline-start: 33px;
+    box-shadow: none;
+  }
+  .f-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .f-switch > input {
+    appearance: none;
+    width: 34px;
+    height: 20px;
+    margin: 0;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-full);
+    background: var(--f-switch-off);
+    box-shadow: inset 0 0 0 1px var(--f-switch-off-border);
+    position: relative;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background var(--f-motion);
+  }
+  .f-switch > input::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 1px;
+    inset-inline-start: 1px;
+    border-radius: 50%;
+    background: var(--f-switch-thumb);
+    box-shadow: var(--f-switch-shadow);
+    transition: transform var(--f-motion);
+  }
+  .f-switch > input:checked {
+    background: var(--f-accent);
+    box-shadow: none;
+    border-color: var(--f-accent);
+  }
+  .f-switch > input:checked::before {
+    transform: translateX(14px);
+  }
+  .f-switch:dir(rtl) > input:checked::before {
+    transform: translateX(-14px);
+  }
+  .f-segmented {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border-radius: var(--f-radius-md);
+    background: var(--f-hover);
+    border: 1px solid var(--f-border);
+  }
+  .f-segmented > label {
+    position: relative;
+    cursor: pointer;
+  }
+  /* The transparent radio covers its segment, so pointers hit the real control. */
+  .f-segmented > label > input {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: inherit;
+  }
+  .f-segmented > label > span {
+    display: block;
+    border-radius: calc(var(--f-radius-md) - 3px);
+    padding: 4px 13px;
+    font-size: var(--f-text-sm);
+  }
+  .f-segmented > label > input:checked + span {
+    background: var(--f-control);
+    box-shadow: var(--f-segmented-shadow);
+  }
+  .f-segmented > label > input:focus-visible + span {
+    outline: var(--f-focus-ring-width) solid var(--f-focus-ring-color);
+    outline-offset: var(--f-focus-ring-offset);
+  }
+  .f-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    padding: 1px 6px;
+    border-radius: var(--f-radius-sm);
+    background: var(--f-hover);
+    /* Darker than secondary text, so it stays legible on stacked hover and selection tints. */
+    color: color-mix(in srgb, var(--f-secondary), var(--f-text) 30%);
+    font-size: var(--f-text-xs);
+    font-variant-numeric: tabular-nums;
+  }
+  /* Tones tint the badge with a semantic color; outline keeps it on the surface. */
+  .f-badge--accent {
+    --f-internal-badge-tone: var(--f-accent);
+  }
+  .f-badge--success {
+    --f-internal-badge-tone: var(--f-success);
+  }
+  .f-badge--warning {
+    --f-internal-badge-tone: var(--f-warning);
+  }
+  .f-badge--danger {
+    --f-internal-badge-tone: var(--f-danger);
+  }
+  .f-badge:is(.f-badge--accent, .f-badge--success, .f-badge--warning, .f-badge--danger) {
+    /* Mixing in the text color keeps small tinted text above 4.5:1 in both appearances. */
+    color: color-mix(in srgb, var(--f-internal-badge-tone) 65%, var(--f-text));
+    background: color-mix(in srgb, var(--f-internal-badge-tone) 14%, transparent);
+  }
+  .f-badge.f-badge--outline {
+    border: 1px solid color-mix(in srgb, currentColor 40%, transparent);
+    background: transparent;
+  }
+  .f-badge__dot {
+    flex-shrink: 0;
+    width: 5px;
+    height: 5px;
+    margin-inline-end: 4px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .f-card {
+    padding: var(--f-space-6);
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius);
+    background: var(--f-surface);
+  }
+  .f-avatar {
+    display: grid;
+    place-items: center;
+    width: var(--f-avatar-size, 34px);
+    height: var(--f-avatar-size, 34px);
+    flex-shrink: 0;
+    border-radius: var(--f-avatar-radius, 50%);
+    color: var(--f-avatar-color, var(--f-selection-text));
+    background: var(--f-avatar-background, var(--f-selection));
+    border: var(--f-avatar-border, 0);
+    font-size: var(--f-avatar-font-size, var(--f-text-sm));
+    font-weight: var(--f-avatar-font-weight, 600);
+  }
+  .f-disclosure {
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius);
+    background: var(--f-surface);
+  }
+  .f-disclosure > summary {
+    padding: 14px 16px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .f-disclosure > :not(summary) {
+    padding: 0 16px 16px;
+  }
+  .f-dialog {
+    width: min(480px, calc(100% - 32px));
+    padding: 0;
+    color: var(--f-text);
+    background: var(--f-surface-elevated);
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-lg);
+    box-shadow: var(--f-shadow);
+  }
+  .f-dialog::backdrop {
+    background: var(--f-backdrop);
+  }
+  .f-dialog__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--f-border);
+  }
+  .f-dialog__header h2 {
+    font-size: var(--f-text-xl);
+    font-weight: 600;
+  }
+  .f-dialog__body {
+    display: grid;
+    gap: 18px;
+    padding: 22px;
+  }
+  .f-dialog__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px 22px;
+    border-top: 1px solid var(--f-border);
+  }
+  .f-toast {
+    /* Also a manual popover in the top layer; these override the browser's popover defaults. */
+    position: fixed;
+    inset: auto auto 24px 50%;
+    margin: 0;
+    overflow: visible;
+    color: var(--f-text);
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: calc(100% - 32px);
+    padding: 11px 18px;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius);
+    background: var(--f-surface-elevated);
+    box-shadow: var(--f-shadow);
+    z-index: 10;
+  }
+  @media (pointer: coarse) {
+    .f-button,
+    .f-input:not([multiple]):not([size]) {
+      min-height: max(44px, var(--f-control-height, 36px));
+    }
+    .f-input {
+      font-size: max(16px, var(--f-control-font-size, var(--f-text-base)));
+    }
+  }
+  .f-stack {
+    display: grid;
+    gap: var(--f-space-4);
+  }
+  .f-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--f-space-3);
+  }
+  @media (forced-colors: active) {
+    .f-button,
+    .f-input,
+    .f-switch > input,
+    .f-segmented,
+    .f-card,
+    .f-dialog {
+      border: 1px solid ButtonText;
+    }
+    .f-switch > input:checked {
+      background: Highlight;
+    }
+    .f-switch > input::before {
+      background: ButtonText;
+    }
+  }
+}

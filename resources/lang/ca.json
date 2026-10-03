@@ -1563,5 +1563,8 @@
     "No category": "Sense categoria",
     "Pick one or type a new one.": "Trieu-ne una o escriviu-ne una de nova.",
     "Updated :date by :person": "Actualitzat el :date per :person",
-    "Users are allowed to manage the knowledge base": "Els usuaris poden gestionar la base de coneixement"
+    "Users are allowed to manage the knowledge base": "Els usuaris poden gestionar la base de coneixement",
+    "Navigation": "Navegació",
+    "Sections": "Seccions",
+    "More": "Més"
 }

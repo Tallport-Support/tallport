@@ -3,15 +3,12 @@
 @section('title_full', __('Settings').' - '.$section_name)
 
 @section('sidebar')
-    @include('partials/sidebar_menu_toggle')
-    <div class="sidebar-title">
-        {{ __('Settings') }}
-    </div>
-    <ul class="sidebar-menu">
+    <x-page-nav :label="__('Settings')">
+        <x-slot:title><h1>{{ __('Settings') }}</h1></x-slot:title>
         @foreach ($sections as $item_name => $item_info)
-            <li @if ($item_name == $section)class="active"@endif><i class="glyphicon glyphicon-{{ $item_info['icon'] }}"></i> <a href="{{ route('settings', ['section' => $item_name]) }}">{{ $item_info['title'] }}</a></li>
+            <a href="{{ route('settings', ['section' => $item_name]) }}" @if ($item_name == $section) aria-current="page" @endif>{{ $item_info['title'] }}</a>
         @endforeach
-    </ul>
+    </x-page-nav>
 @endsection
 
 @section('content')

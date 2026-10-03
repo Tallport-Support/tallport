@@ -1,0 +1,4 @@
+/* All shared presentation. The Mail reference layout is opt-in: also import fruitui/mail.css. */
+@import './core.css';
+@import './layout.css';
+@import './editor.css';

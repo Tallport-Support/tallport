@@ -1462,5 +1462,8 @@
     "No category": "Kategori yok",
     "Pick one or type a new one.": "Birini seçin veya yenisini yazın.",
     "Updated :date by :person": ":date tarihinde :person tarafından güncellendi",
-    "Users are allowed to manage the knowledge base": "Kullanıcıların bilgi bankasını yönetmesine izin verilir"
+    "Users are allowed to manage the knowledge base": "Kullanıcıların bilgi bankasını yönetmesine izin verilir",
+    "Navigation": "Gezinme",
+    "Sections": "Bölümler",
+    "More": "Daha fazla"
 }

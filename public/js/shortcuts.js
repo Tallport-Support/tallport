@@ -130,8 +130,10 @@ $(document).ready(function() {
 		}
 
 		if (!done && key == '/') {
-			if ($('#search-dt').attr('aria-expanded') != 'true') {
-				done = click('#search-dt');
+			var search = $('#search-dt');
+			if (search.length) {
+				search.focus();
+				done = true;
 			}
 		}
 

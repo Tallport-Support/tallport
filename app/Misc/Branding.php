@@ -134,13 +134,12 @@ class Branding
             return self::html('branding.footer') ?: $text;
         }, 20, 1);
 
-        // Header colour and custom CSS, after the stylesheets they override.
+        // The brand colour and custom CSS, after the stylesheets they override.
         \Eventy::addAction('layout.after_stylesheets', function () {
             $css = '';
             if ($color = self::headerColor()) {
-                $css .= '.navbar-static-top{background-color:'.$color.';border-color:'.$color.';}'
-                    .'.navbar-default .navbar-nav>.active>a,.navbar-default .navbar-nav>li.active>a:hover,.navbar-default .navbar-nav>li.active>a:focus,.navbar-default .navbar-nav>li>a:hover'
-                    .'{background-color:'.$color.';filter:brightness(80%);}';
+                // FruitUI's brand colour: accents in both appearances derive from it.
+                $css .= '.fruit-ui{--f-tint:'.$color.';}';
             }
             $css .= self::sanitizeCss(self::get('branding.css'));
             if ($css !== '') {

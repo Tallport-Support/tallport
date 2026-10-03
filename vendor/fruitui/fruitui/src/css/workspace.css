@@ -1,0 +1,105 @@
+@layer fruit.components {
+  /* A foundation surface must not replace a composed Card or Sidebar material. */
+  :where(.f-pane) {
+    background: var(--f-pane-background, transparent);
+  }
+}
+@layer fruit.layout {
+  /* Geometry belongs to the application; the frame and pane treatment are shared. */
+  .f-workspace {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--f-workspace-columns, 220px minmax(0, 1fr));
+    grid-template-rows: var(--f-workspace-rows, minmax(0, 1fr));
+    height: var(--f-workspace-height, auto);
+    min-height: var(--f-workspace-min-height, 0);
+    overflow: hidden;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-workspace-radius, var(--f-radius-lg));
+    background: var(--f-workspace-background, var(--f-surface));
+    box-shadow: var(--f-shadow);
+  }
+  .f-workspace > .f-toolbar {
+    min-width: 0;
+    border-bottom: 1px solid var(--f-border);
+  }
+  .f-pane {
+    min-width: 0;
+    min-height: 0;
+  }
+  .f-pane--column {
+    display: flex;
+    flex-direction: column;
+  }
+  .f-pane--border-end {
+    border-inline-end: 1px solid var(--f-border);
+  }
+  .f-pane--border-start {
+    border-inline-start: 1px solid var(--f-border);
+  }
+  .f-pane--scroll,
+  .f-pane__scroll {
+    min-width: 0;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  .f-pane__scroll {
+    flex: 1;
+    padding: var(--f-pane-scroll-padding, 0);
+  }
+  .f-pane--scroll:focus-visible,
+  .f-pane__scroll:focus-visible {
+    outline-offset: calc(var(--f-focus-ring-width) * -1);
+  }
+  /* Overlay the existing divider, so adding resizing never consumes a grid track.
+     Inert without the optional helper; applications hide handles in compact views. */
+  .f-splitter {
+    display: none;
+    position: absolute;
+    grid-column: var(--f-splitter-column, 1) / span 1;
+    grid-row: 1 / -1;
+    inset-block: 0;
+    align-self: stretch;
+    justify-self: end;
+    width: 10px;
+    margin-inline-end: -5px;
+    z-index: 5;
+    cursor: col-resize;
+    touch-action: none;
+  }
+  .f-splitter[data-ready] {
+    display: block;
+  }
+  .f-splitter[data-edge='start'] {
+    justify-self: start;
+    margin-inline: -5px 0;
+  }
+  .f-splitter::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 4px;
+    width: 2px;
+    background: transparent;
+  }
+  .f-splitter:hover::after,
+  .f-splitter:focus-visible::after,
+  .f-splitter[data-resizing]::after {
+    background: var(--f-accent);
+  }
+  .f-splitter:focus-visible {
+    outline-offset: calc(var(--f-focus-ring-width) * -1);
+  }
+  .f-workspace[data-resizing] {
+    cursor: col-resize;
+    user-select: none;
+  }
+  @media (forced-colors: active) {
+    .f-splitter:hover::after,
+    .f-splitter:focus-visible::after,
+    .f-splitter[data-resizing]::after {
+      background: Highlight;
+    }
+  }
+}

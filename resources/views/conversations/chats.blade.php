@@ -6,7 +6,7 @@
 
 @section('body_class', 'chat-mode')
 
-@section('sidebar')
+@section('aside')
     @include('partials/sidebar_menu_toggle')
     @include('mailboxes/sidebar_menu_view')
 @endsection

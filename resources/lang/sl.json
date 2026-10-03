@@ -1461,5 +1461,8 @@
     "No category": "Brez kategorije",
     "Pick one or type a new one.": "Izberite eno ali vpišite novo.",
     "Updated :date by :person": "Posodobil/-a :person, :date",
-    "Users are allowed to manage the knowledge base": "Uporabnikom je dovoljeno upravljati bazo znanja"
+    "Users are allowed to manage the knowledge base": "Uporabnikom je dovoljeno upravljati bazo znanja",
+    "Navigation": "Navigacija",
+    "Sections": "Razdelki",
+    "More": "Več"
 }

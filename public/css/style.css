@@ -5113,3 +5113,168 @@ a.disabled:focus {
     color: #93a1af;
     padding: 6px 10px 2px;
 }
+
+/**
+ * App shell: the sidebar (FruitUI) and the page.
+ */
+.fruit-ui {
+    /* Bootstrap 3 sets the html font size to 10px. */
+    --f-text-root: 16px;
+}
+.app-shell {
+    display: flex;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+.app-sidebar {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 var(--app-sidebar-width, 260px);
+    width: var(--app-sidebar-width, 260px);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-inline-end: 1px solid var(--f-border);
+}
+.app-sidebar__header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 4px;
+}
+.app-sidebar__header #navbar-back {
+    align-self: flex-start;
+}
+.app-sidebar__brand img,
+.app-sidebar__logo {
+    height: 28px;
+}
+.app-sidebar__logo {
+    width: 28px;
+    color: var(--f-accent);
+}
+.app-sidebar__separator {
+    border: 0;
+    border-top: 1px solid var(--f-border);
+    margin: 12px 4px;
+}
+.app-sidebar__mailbox-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px 0 6px;
+}
+.app-sidebar__module-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.app-sidebar__module-items:empty {
+    display: none;
+}
+.app-sidebar__footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.app-sidebar__account {
+    flex: 1;
+    min-width: 0;
+}
+.app-sidebar__account-trigger {
+    width: 100%;
+    justify-content: flex-start;
+}
+.app-sidebar__account-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.app-sidebar .photo-sm img,
+.app-sidebar .photo-sm .person-photo {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+.web-notifications-panel {
+    width: 360px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+.web-notifications-panel h2 {
+    font-size: var(--f-text-lg);
+    margin: 0;
+}
+.web-notifications-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+.web-notifications-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.web-notifications-trigger.has-unread {
+    color: var(--f-accent);
+}
+.app-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.app-main__bar {
+    display: none;
+}
+.page-nav {
+    padding: 16px 20px 0;
+}
+.page-nav__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+.page-nav__title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
+.page-nav__title h1 {
+    font-size: var(--f-text-2xl);
+    margin: 0;
+}
+.page-nav__actions {
+    display: flex;
+    gap: 6px;
+}
+@media (max-width: 767px) {
+    .app-sidebar {
+        position: fixed;
+        z-index: 1040;
+        inset-block: 0;
+        inset-inline-start: 0;
+        height: auto;
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+    }
+    [dir="rtl"] .app-sidebar {
+        transform: translateX(100%);
+    }
+    .app-sidebar-open .app-sidebar {
+        transform: none;
+        box-shadow: var(--f-shadow-lg, 0 10px 40px rgba(0, 0, 0, 0.25));
+    }
+    .app-main__bar {
+        display: flex;
+        padding: 8px 12px;
+    }
+}

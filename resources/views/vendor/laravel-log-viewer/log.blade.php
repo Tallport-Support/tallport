@@ -3,21 +3,18 @@
 @section('title_full', __('Logs').' - '.__('App Logs'))
 
 @section('sidebar')
-    @include('partials/sidebar_menu_toggle')
-    <div class="sidebar-title">
-        {{ __('Logs') }}
-    </div>
     @php
-      $names = App\ActivityLog::select('log_name')->distinct()->pluck('log_name')->toArray();
-      array_unshift($names, App\ActivityLog::NAME_OUT_EMAILS);
-      array_push($names, App\ActivityLog::NAME_APP_LOGS);
-      $current_name = 'app';
-    @endphp
-    <ul class="sidebar-menu">
+          $names = App\ActivityLog::select('log_name')->distinct()->pluck('log_name')->toArray();
+          array_unshift($names, App\ActivityLog::NAME_OUT_EMAILS);
+          array_push($names, App\ActivityLog::NAME_APP_LOGS);
+          $current_name = 'app';
+        @endphp
+    <x-page-nav :label="__('Logs')">
+        <x-slot:title><h1>{{ __('Logs') }}</h1></x-slot:title>
         @foreach ($names as $name)
-            <li @if ($current_name == $name)class="active"@endif><i class="glyphicon glyphicon-list-alt"></i> <a href="{{ route('logs', ['name'=>$name]) }}">{{ App\ActivityLog::getLogTitle($name) }}</a></li>
+            <a href="{{ route('logs', ['name' => $name]) }}" @if ($current_name == $name) aria-current="page" @endif>{{ App\ActivityLog::getLogTitle($name) }}</a>
         @endforeach
-    </ul>
+    </x-page-nav>
 @endsection
 
 @section('content')
