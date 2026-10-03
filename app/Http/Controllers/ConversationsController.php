@@ -3410,14 +3410,12 @@ class ConversationsController extends Controller
 
         // https://github.com/freescout-helpdesk/freescout/issues/3300
         // Cancel all SendReplyToCustomer jobs for this thread.
-        $jobs_to_cancel = \App\Job::where('queue', 'emails')
-            ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToCustomer"%')
-            ->get();
+        $jobs_to_cancel = \App\Job::pending('emails', 'App\Jobs\SendReplyToCustomer');
 
         foreach ($jobs_to_cancel as $job) {
             $job_thread = $job->getCommandLastThread();
             if ($job_thread && $job_thread->id == $thread->id) {
-                $job->delete();
+                $job->cancel();
             }
         }
         // A Telegram reply is sent right away: delete it from the chat.

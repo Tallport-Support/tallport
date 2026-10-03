@@ -84,7 +84,27 @@ class SystemController extends Controller
         $env_is_writable = is_writable(base_path('.env'));
 
         // Jobs
-        $queued_jobs = \App\Job::orderBy('created_at', 'desc')->limit(100)->get();
+        // Redis, when the cache, sessions or queue use it.
+        $redis_uses = array_keys(array_filter([
+            'cache'   => config('cache.stores.'.config('cache.default').'.driver') == 'redis',
+            'session' => config('session.driver') == 'redis',
+            'queue'   => config('queue.connections.'.config('queue.default').'.driver') == 'redis',
+        ]));
+        $redis_version = '';
+        $redis_error = '';
+        if ($redis_uses) {
+            try {
+                $redis_version = app('redis')->connection()->info('server')['redis_version'] ?? '?';
+            } catch (\Throwable $e) {
+                $redis_error = $e->getMessage();
+            }
+        }
+
+        try {
+            $queued_jobs = \App\Job::pending(null, null, null, 100);
+        } catch (\Throwable $e) {
+            $queued_jobs = collect();
+        }
         $failed_jobs = \App\FailedJob::orderBy('failed_at', 'desc')->limit(100)->get();
         $failed_queues = $failed_jobs->pluck('queue')->unique();
 
@@ -233,6 +253,9 @@ class SystemController extends Controller
             'commands'              => $commands,
             'queued_jobs'           => $queued_jobs,
             'failed_jobs'           => $failed_jobs,
+            'redis_uses'            => $redis_uses,
+            'redis_version'         => $redis_version,
+            'redis_error'           => $redis_error,
             'failed_queues'         => $failed_queues,
             'php_extensions'        => $php_extensions,
             'functions'             => $functions,
@@ -252,12 +275,12 @@ class SystemController extends Controller
     {
         switch ($request->action) {
             case 'cancel_job':
-                \App\Job::where('id', $request->job_id)->delete();
+                \App\Job::findPending($request->job_id)?->cancel();
                 \Session::flash('flash_success_floating', __('Done'));
                 break;
 
             case 'retry_job':
-                \App\Job::where('id', $request->job_id)->update(['available_at' => time()]);
+                \App\Job::findPending($request->job_id)?->runNow();
                 sleep(1);
                 \Session::flash('flash_success_floating', __('Done'));
                 break;

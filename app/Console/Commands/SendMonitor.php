@@ -48,10 +48,9 @@ class SendMonitor extends Command
     public function handle()
     {
         // Get SendReplyToCustomer jobs.
-        $pending_jobs = \App\Job::where('queue', 'emails')
-            ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToCustomer"%')
-            ->where('available_at', '<', time() - self::CHECK_PERIOD)
-            ->exists();
+        $pending_jobs = \App\Job::pending('emails', 'App\Jobs\SendReplyToCustomer')->contains(function ($job) {
+            return $job->available_at->getTimestamp() < time() - self::CHECK_PERIOD;
+        });
 
         // Check failed_jobs.
         // No need - it can be done via Manage > Alerts > Logs Monitoring

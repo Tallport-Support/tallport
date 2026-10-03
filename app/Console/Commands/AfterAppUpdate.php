@@ -55,6 +55,9 @@ class AfterAppUpdate extends Command
 
         $this->call('tallport:clear-cache');
         $this->call('migrate', ['--force' => true]);
+        if (\App\Job::moveUnprefixedRedisJobs()) {
+            $this->info('Redis: queued jobs moved to the prefixed keys');
+        }
         $this->call('queue:restart');
 
         \Eventy::action('command.after_app_update');

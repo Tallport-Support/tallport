@@ -134,6 +134,28 @@ Tallport's artisan commands are named `tallport:*`. The FreeScout names
 (`freescout:update`, `freescout:clear-cache`, ...) still work, for modules,
 cron jobs and scripts.
 
+## Redis
+
+With the PHP `redis` extension, the cache, sessions and queue can use Redis,
+configured as in any Laravel application. In `.env`:
+
+```
+CACHE_STORE=redis
+SESSION_DRIVER=redis
+QUEUE_CONNECTION=redis
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=
+```
+
+The cache uses Redis database 1 (`REDIS_CACHE_DB`), so clearing the cache
+leaves sessions and queued jobs (database 0, `REDIS_DB`) alone. Keys are
+prefixed (`REDIS_PREFIX`, by default `tallport-database-`), but clearing the
+cache empties its whole database: on a Redis server shared with other
+applications, give Tallport a `REDIS_CACHE_DB` of its own. The older names
+`CACHE_DRIVER` and `QUEUE_DRIVER` still work. Then run
+`php artisan tallport:clear-cache`; System » Status shows the Redis server in
+use.
+
 ## Incoming email sources and re-importing
 
 Tallport keeps the raw source of each incoming email for 30 days, in

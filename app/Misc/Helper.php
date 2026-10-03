@@ -1510,9 +1510,7 @@ class Helper
         \Cache::forever('illuminate:queue:restart', Carbon::now()->getTimestamp());
         // In some systems queue:work runs on a separate file system,
         // so those queue:work processes may not get illuminate:queue:restart.
-        $job_exists = \App\Job::where('queue', 'default')
-            ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\RestartQueueWorker"%')
-            ->exists();
+        $job_exists = \App\Job::pending('default', 'App\Jobs\RestartQueueWorker')->isNotEmpty();
         if (!$job_exists) {
             \App\Jobs\RestartQueueWorker::dispatch()->onQueue('default');
         }

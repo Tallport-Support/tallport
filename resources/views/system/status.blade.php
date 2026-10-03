@@ -101,6 +101,19 @@
                     @endif
                 </td>
             </tr>
+            @if ($redis_uses)
+                <tr>
+                    <th>Redis</th>
+                    <td class="table-main-col">
+                        @if ($redis_error)
+                            <strong class="text-danger">{{ $redis_error }}</strong>
+                        @else
+                            Redis {{ $redis_version }}
+                        @endif
+                        ({{ implode(', ', $redis_uses) }})
+                    </td>
+                </tr>
+            @endif
             <tr>
                 <th>{{ __('Web Server') }}</th>
                 <td class="table-main-col">@if (!empty($_SERVER['SERVER_SOFTWARE'])){{ $_SERVER['SERVER_SOFTWARE'] }}@else ? @endif</td>

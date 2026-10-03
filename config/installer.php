@@ -56,6 +56,7 @@ return [
         'intl'   => 'Dates in the users\' languages; Simplified and Traditional Chinese auto replies',
         'gmp'    => 'Faster Nostr encryption (bcmath is used without it)',
         'bcmath' => 'Nostr, when gmp is missing',
+        'redis'  => 'Redis for the cache, sessions or queue',
     ],
 
     /*

@@ -1688,9 +1688,7 @@ class Thread extends Model
      */
     protected function findSendJobId($model)
     {
-        $jobs = $model::where('queue', 'emails')
-            ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\SendReplyToCustomer"%;i:'.$this->id.';%')
-            ->get();
+        $jobs = $this->findSendJobs($model, 'SendReplyToCustomer');
         foreach ($jobs as $job) {
             $command = \App\Job::getPayloadCommand($job->getPayloadDecoded());
             if ($command && !empty($command->threads) && self::getLastThread($command->threads)->id == $this->id) {
@@ -1700,9 +1698,7 @@ class Thread extends Model
 
         // A reply to Telegram or Nostr.
         foreach (['SendReplyToTelegram', 'SendReplyToNostr'] as $class) {
-            $jobs = $model::where('queue', 'emails')
-                ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\'.$class.'"%;i:'.$this->id.';%')
-                ->get();
+            $jobs = $this->findSendJobs($model, $class);
             foreach ($jobs as $job) {
                 $command = \App\Job::getPayloadCommand($job->getPayloadDecoded());
                 if ($command && ($command->thread_id ?? null) == $this->id) {
@@ -1712,6 +1708,20 @@ class Thread extends Model
         }
 
         return null;
+    }
+
+    /**
+     * Failed or waiting jobs of a class that mention this reply.
+     */
+    protected function findSendJobs($model, $class)
+    {
+        if ($model == \App\Job::class) {
+            return \App\Job::pending('emails', 'App\\Jobs\\'.$class, ';i:'.$this->id.';');
+        }
+
+        return $model::where('queue', 'emails')
+            ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\'.$class.'"%;i:'.$this->id.';%')
+            ->get();
     }
 
     // https://github.com/freescout-help-desk/freescout/security/advisories/GHSA-qjr9-6v9q-3r72

@@ -13,9 +13,11 @@ return [
     |
     | Supported: "sync", "database", "beanstalkd", "sqs", "redis", "null"
     |
+    | QUEUE_DRIVER is the name used before Laravel 5.7.
+    |
     */
 
-    'default' => env('QUEUE_DRIVER', 'database'),
+    'default' => env('QUEUE_CONNECTION', env('QUEUE_DRIVER', 'database')),
 
     /*
     |--------------------------------------------------------------------------
@@ -59,10 +61,12 @@ return [
         ],
 
         'redis' => [
-            'driver'      => 'redis',
-            'connection'  => 'default',
-            'queue'       => 'default',
-            'retry_after' => 90,
+            'driver'       => 'redis',
+            'connection'   => env('REDIS_QUEUE_CONNECTION', 'default'),
+            'queue'        => env('REDIS_QUEUE', 'default'),
+            'retry_after'  => (int) env('REDIS_QUEUE_RETRY_AFTER', 90),
+            'block_for'    => null,
+            'after_commit' => false,
         ],
 
     ],

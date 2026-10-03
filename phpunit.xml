@@ -17,9 +17,13 @@
     <!-- No outbound HTTP from tests: requests go through a proxy on a closed local port and fail at once. -->
     <env name="APP_PROXY" value="http://127.0.0.1:9"/>
     <env name="DB_CONNECTION" value="testing"/>
-    <env name="CACHE_DRIVER" value="array"/>
+    <env name="CACHE_STORE" value="array"/>
     <env name="SESSION_DRIVER" value="array"/>
-    <env name="QUEUE_DRIVER" value="sync"/>
+    <env name="QUEUE_CONNECTION" value="sync"/>
+    <!-- Redis tests (skipped without a Redis server) use databases of their own. -->
+    <env name="REDIS_DB" value="15"/>
+    <env name="REDIS_CACHE_DB" value="14"/>
+    <env name="REDIS_PREFIX" value="tallport-test-"/>
     <!-- Tests that keep raw sources of incoming email use a temporary folder. -->
     <env name="APP_INCOMING_MAIL_RETENTION_DAYS" value="0"/>
     <env name="APP_TWO_FACTOR_REQUIRED" value="false"/>

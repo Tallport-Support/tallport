@@ -13,9 +13,11 @@ return [
     |
     | Supported: "apc", "array", "database", "file", "memcached", "redis"
     |
+    | CACHE_DRIVER is the name used before Laravel 11.
+    |
     */
 
-    'default' => env('CACHE_DRIVER', 'file'),
+    'default' => env('CACHE_STORE', env('CACHE_DRIVER', 'file')),
 
     /*
     |--------------------------------------------------------------------------
@@ -69,8 +71,9 @@ return [
         ],
 
         'redis' => [
-            'driver'     => 'redis',
-            'connection' => 'default',
+            'driver'          => 'redis',
+            'connection'      => env('REDIS_CACHE_CONNECTION', 'cache'),
+            'lock_connection' => env('REDIS_CACHE_LOCK_CONNECTION', 'default'),
         ],
 
     ],
