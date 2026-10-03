@@ -1370,17 +1370,17 @@
         },
         {
             "name": "fruitui/fruitui",
-            "version": "dev-laravel-livewire-maturity",
-            "version_normalized": "dev-laravel-livewire-maturity",
+            "version": "dev-main",
+            "version_normalized": "dev-main",
             "source": {
                 "type": "git",
                 "url": "git@github.com:nielspeen/fruitui.git",
-                "reference": "9131dae196d09b69d07865aff9eff1c4d4b8d720"
+                "reference": "7780c78d7c30a8ddbdab3bb6da967d257cf86639"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nielspeen/fruitui/zipball/9131dae196d09b69d07865aff9eff1c4d4b8d720",
-                "reference": "9131dae196d09b69d07865aff9eff1c4d4b8d720",
+                "url": "https://api.github.com/repos/nielspeen/fruitui/zipball/7780c78d7c30a8ddbdab3bb6da967d257cf86639",
+                "reference": "7780c78d7c30a8ddbdab3bb6da967d257cf86639",
                 "shasum": ""
             },
             "require": {
@@ -1400,7 +1400,8 @@
             "suggest": {
                 "livewire/livewire": "^4.0 for optional single-file components and server interactions."
             },
-            "time": "2026-10-03T12:57:35+00:00",
+            "time": "2026-10-03T13:09:34+00:00",
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {

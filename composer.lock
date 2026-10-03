@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "75fe40d044e9db5fff7ef780bc090b34",
+    "content-hash": "3c73e184b44e38eaac73543de84411a5",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1319,16 +1319,16 @@
         },
         {
             "name": "fruitui/fruitui",
-            "version": "dev-laravel-livewire-maturity",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "git@github.com:nielspeen/fruitui.git",
-                "reference": "9131dae196d09b69d07865aff9eff1c4d4b8d720"
+                "reference": "7780c78d7c30a8ddbdab3bb6da967d257cf86639"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nielspeen/fruitui/zipball/9131dae196d09b69d07865aff9eff1c4d4b8d720",
-                "reference": "9131dae196d09b69d07865aff9eff1c4d4b8d720",
+                "url": "https://api.github.com/repos/nielspeen/fruitui/zipball/7780c78d7c30a8ddbdab3bb6da967d257cf86639",
+                "reference": "7780c78d7c30a8ddbdab3bb6da967d257cf86639",
                 "shasum": ""
             },
             "require": {
@@ -1348,6 +1348,7 @@
             "suggest": {
                 "livewire/livewire": "^4.0 for optional single-file components and server interactions."
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -1385,7 +1386,7 @@
                 "MIT"
             ],
             "description": "CSS-first, Apple-inspired UI components for Laravel.",
-            "time": "2026-10-03T12:57:35+00:00"
+            "time": "2026-10-03T13:09:34+00:00"
         },
         {
             "name": "graham-campbell/result-type",

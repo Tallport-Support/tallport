@@ -191,12 +191,14 @@
             'dev_requirement' => false,
         ),
         'fruitui/fruitui' => array(
-            'pretty_version' => 'dev-laravel-livewire-maturity',
-            'version' => 'dev-laravel-livewire-maturity',
-            'reference' => '9131dae196d09b69d07865aff9eff1c4d4b8d720',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '7780c78d7c30a8ddbdab3bb6da967d257cf86639',
             'type' => 'library',
             'install_path' => __DIR__ . '/../fruitui/fruitui',
-            'aliases' => array(),
+            'aliases' => array(
+                0 => '9999999-dev',
+            ),
             'dev_requirement' => false,
         ),
         'graham-campbell/result-type' => array(

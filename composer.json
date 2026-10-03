@@ -62,7 +62,7 @@
         "doctrine/dbal": "^3.5",
         "egulias/email-validator": "4.*",
         "enshrined/svg-sanitize": "0.22.0",
-        "fruitui/fruitui": "dev-laravel-livewire-maturity",
+        "fruitui/fruitui": "dev-main",
         "html2text/html2text": "4.1.0",
         "javoscript/laravel-macroable-models": "1.0.7",
         "laravel/ai": "^1.0",
