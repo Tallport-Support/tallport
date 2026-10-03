@@ -2,8 +2,9 @@
 
 @section('title_full', __('Workflows').' - '.($mailbox ? $mailbox->name : __('All Mailboxes')))
 
+@section('main_class', 'fruit-ui')
+
 @section('sidebar')
-    @include('partials/sidebar_menu_toggle')
     @if ($mailbox && !Auth::user()->isAdmin())
         @include('mailboxes/sidebar_menu')
     @else
@@ -12,36 +13,39 @@
 @endsection
 
 @section('content')
-    <div class="section-heading">
-        {{ __('Workflows') }}@if ($mailbox) <small>{{ $mailbox->name }}</small>@else <small>{{ __('All Mailboxes') }}</small>@endif
-        <a href="{{ $mailbox ? route('mailboxes.workflows.create', ['mailbox_id' => $mailbox->id]) : route('workflows.create') }}" class="btn btn-bordered margin-left-10">{{ __('New Workflow') }}</a>
-    </div>
+    <div class="page-content">
+        @include('partials/flash_messages')
 
-    @include('partials/flash_messages')
+        <div class="page-toolbar f-row">
+            <h2 class="workflow-section-title">{{ $mailbox ? $mailbox->name : __('All Mailboxes') }}</h2>
+            <a href="{{ $mailbox ? route('mailboxes.workflows.create', ['mailbox_id' => $mailbox->id]) : route('workflows.create') }}" class="f-button">{{ __('New Workflow') }}</a>
+        </div>
 
-    <div class="row-container">
         @if ($mailbox && $global)
-            <p class="text-help margin-top">{{ __(':count workflows of all mailboxes run first.', ['count' => $global]) }}@if (Auth::user()->isAdmin()) <a href="{{ route('workflows') }}">{{ __('All Mailboxes') }}</a>@endif</p>
+            <p class="f-help">{{ __(':count workflows of all mailboxes run first.', ['count' => $global]) }}@if (Auth::user()->isAdmin()) <a href="{{ route('workflows') }}">{{ __('All Mailboxes') }}</a>@endif</p>
         @endif
         @if (!count($automatic) && !count($manual))
-            @include('partials/empty', ['icon' => 'random', 'empty_text' => __('Workflows act on conversations by themselves: when a new one comes in, someone replies, or a customer has waited too long. Manual workflows run from a conversation\'s menu.')])
+            <x-fruit::empty-state>
+                <x-slot:icon><x-heroicon-o-arrows-right-left /></x-slot:icon>
+                {{ __('Workflows act on conversations by themselves: when a new one comes in, someone replies, or a customer has waited too long. Manual workflows run from a conversation\'s menu.') }}
+            </x-fruit::empty-state>
         @else
             @foreach ([__('Automatic') => $automatic, __('Manual') => $manual] as $list_title => $list)
                 @if (count($list))
-                    <h4 class="margin-top">{{ $list_title }}</h4>
+                    <h3 class="workflow-section-title">{{ $list_title }}</h3>
                     <ul class="workflows-list" data-mailbox_id="{{ $mailbox ? $mailbox->id : '' }}">
                         @foreach ($list as $workflow)
                             <li class="workflow-item" data-workflow-id="{{ $workflow->id }}">
-                                <i class="glyphicon glyphicon-menu-hamburger workflow-handle" title="{{ __('Drag to change the order') }}"></i>
+                                <x-heroicon-o-bars-3 class="f-icon workflow-handle" aria-hidden="true" title="{{ __('Drag to change the order') }}" />
                                 <a href="{{ $workflow->url() }}">{{ $workflow->name }}</a>
-                                @if (!$workflow->complete)<span class="label label-warning">{{ __('Incomplete') }}</span>@elseif (!$workflow->active)<span class="label label-default">{{ __('Inactive') }}</span>@endif
-                                @if ($workflow->isAutomatic())<small class="text-help">{{ __('Ran on :count conversations', ['count' => $workflow->conversationsCount()]) }}</small>@endif
+                                @if (!$workflow->complete)<x-fruit::badge tone="warning">{{ __('Incomplete') }}</x-fruit::badge>@elseif (!$workflow->active)<x-fruit::badge>{{ __('Inactive') }}</x-fruit::badge>@endif
+                                @if ($workflow->isAutomatic())<small class="f-muted workflow-item__meta">{{ __('Ran on :count conversations', ['count' => $workflow->conversationsCount()]) }}</small>@endif
                             </li>
                         @endforeach
                     </ul>
                 @endif
             @endforeach
-            <p class="text-help">{{ __('Workflows run in this order. Drag to change it.') }}</p>
+            <p class="f-help">{{ __('Workflows run in this order. Drag to change it.') }}</p>
         @endif
     </div>
 @endsection

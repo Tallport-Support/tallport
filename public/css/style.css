@@ -4933,77 +4933,124 @@ a.disabled:focus {
     padding-left: 20px;
 }
 .rpt-filters {
-    margin: 15px 0;
+    margin-bottom: 20px;
 }
-.rpt-filters .form-control {
-    margin: 0 4px 6px 0;
+.rpt-filters .f-input,
+.rpt-chart-header .f-input {
+    width: auto;
 }
 .rpt-metrics {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
 }
 .rpt-metric {
-    flex: 1 1 140px;
-    border: 1px solid #dce8f2;
-    border-radius: 4px;
-    padding: 10px 12px;
+    padding: 12px 14px;
 }
 .rpt-metric-title {
-    color: #93a1af;
-    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+}
+.rpt-metric-title .f-button {
+    --f-icon-size: 16px;
+    min-height: 0;
+    padding: 0;
+    color: inherit;
 }
 .rpt-metric-value {
-    font-size: 24px;
+    font-size: var(--f-text-2xl);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
     line-height: 1.3;
 }
 .rpt-change {
-    font-size: 12px;
-    margin-left: 6px;
-    color: #93a1af;
+    font-size: var(--f-text-sm);
+    font-weight: 400;
+    margin-inline-start: 6px;
+    color: var(--f-secondary);
 }
 .rpt-change.rpt-up {
-    color: #3c9d4b;
+    color: var(--f-success);
 }
 .rpt-change.rpt-down {
-    color: #d43f3a;
+    color: var(--f-danger);
 }
 .rpt-chart-box {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 .rpt-chart-header {
     margin-bottom: 8px;
 }
-.rpt-chart-header .rpt-chart-type {
-    display: inline-block;
-    width: auto;
+.rpt-chart-header .f-segmented {
+    margin-inline-start: auto;
 }
 .rpt-chart-legend {
-    margin-left: 10px;
-    color: #93a1af;
-    font-size: 12px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
 }
 .rpt-chart-legend i {
     display: inline-block;
     width: 14px;
     height: 3px;
     vertical-align: middle;
-    margin-left: 8px;
+    margin-inline-start: 8px;
 }
 .rpt-legend-current {
-    background: #7cb5ec;
+    background: var(--f-accent);
 }
 .rpt-legend-previous {
-    background: #8996a3;
+    background: var(--f-secondary);
 }
 .rpt-chart {
     display: block;
     width: 100%;
     height: auto;
 }
-.rpt-table td {
-    vertical-align: middle !important;
+.rpt-chart__grid {
+    stroke: var(--f-border);
+}
+.rpt-chart__label {
+    fill: var(--f-secondary);
+    font-size: 11px;
+}
+.rpt-chart__previous {
+    fill: none;
+    stroke: var(--f-secondary);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+}
+.rpt-chart__area {
+    fill: var(--f-accent);
+    fill-opacity: 0.2;
+}
+.rpt-chart__current {
+    fill: none;
+    stroke: var(--f-accent);
+    stroke-width: 2;
+}
+.rpt-chart__point {
+    fill: var(--f-accent);
+}
+.rpt-tables {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 8px 24px;
+}
+.rpt-section-title {
+    font-size: var(--f-text-lg);
+    margin: 20px 0 8px;
+}
+.rpt-table td,
+.rpt-table th {
+    vertical-align: middle;
+}
+.rpt-table .rpt-num {
+    text-align: end;
+    font-variant-numeric: tabular-nums;
 }
 .rpt-bar-col {
     width: 40%;
@@ -5012,11 +5059,14 @@ a.disabled:focus {
     display: block;
     height: 8px;
     min-width: 2px;
-    background: #7cb5ec;
-    border-radius: 2px;
+    background: var(--f-accent);
+    border-radius: 4px;
 }
 .rpt-table-summary td {
-    font-style: italic;
+    font-weight: 600;
+}
+.rpt-customers {
+    max-width: 640px;
 }
 /* AI Assistant: "AI" in place of a glyph. */
 .glyphicon-ai:before {
@@ -5029,83 +5079,104 @@ a.disabled:focus {
 .workflows-list {
     list-style: none;
     padding: 0;
+    margin: 0 0 20px;
 }
 .workflow-item {
-    padding: 6px 0;
-    border-bottom: 1px solid #eef2f5;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 4px;
+    border-bottom: 1px solid var(--f-border);
 }
 .workflow-handle {
+    --f-icon-size: 18px;
     cursor: move;
-    color: #a5b2bd;
-    margin-right: 6px;
+    color: var(--f-tertiary);
+}
+.workflow-item__meta {
+    margin-inline-start: auto;
+}
+.page-toolbar {
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+.workflow-section-title {
+    font-size: var(--f-text-lg);
+    margin: 0 0 4px;
+}
+.wf-editor-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 900px;
 }
 .wf-group {
-    margin-bottom: 4px;
+    padding: 12px;
 }
 .wf-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
     margin: 4px 0;
 }
-.wf-row .form-control {
-    margin-right: 4px;
+.wf-row .f-input {
+    width: auto;
+    max-width: 100%;
 }
 .wf-row .wf-number {
-    width: 80px;
+    width: 90px;
 }
 .wf-and,
 .wf-or {
-    font-size: 11px;
+    font-size: var(--f-text-xs);
     text-transform: uppercase;
     margin: 2px 0 2px 4px;
 }
 .wf-remove {
     font-size: 18px;
-    margin-left: 4px;
 }
 .wf-email {
+    flex-basis: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     margin: 6px 0 10px;
     max-width: 700px;
 }
-.wf-email-field {
-    margin-bottom: 6px;
-}
-.wf-email-field label {
-    display: block;
-    font-weight: normal;
-    margin-bottom: 2px;
-}
-.wf-row .wf-email .form-control {
-    display: block;
+.wf-row .wf-email .f-input {
     width: 100%;
     max-width: 450px;
 }
-.wf-row .wf-email .checkbox {
-    display: block;
-    margin: 6px 0;
-}
 .wf-add-group {
-    margin-bottom: 10px;
+    align-self: flex-start;
 }
 .kb-search {
     max-width: 500px;
+    margin-bottom: 20px;
 }
-.kb-list {
-    list-style: none;
-    padding: 0;
-    margin-top: 15px;
+.kb-group {
+    margin-bottom: 24px;
 }
-.kb-list-category {
-    font-weight: bold;
-    margin: 15px 0 5px;
+.kb-group__title {
+    font-size: var(--f-text-lg);
+    margin: 0 0 6px 12px;
 }
-.kb-list-item {
-    padding: 4px 0;
+.kb-article {
+    max-width: 800px;
 }
-.kb-list-item small {
-    margin-left: 6px;
+.kb-article__title {
+    font-size: var(--f-text-2xl);
 }
 .kb-article-body {
-    max-width: 800px;
-    margin-top: 15px;
+    margin-top: 20px;
+}
+.settings-form.kb-edit {
+    max-width: 900px;
+}
+.kb-edit__delete {
+    margin-inline-start: auto;
 }
 .kb-menu-category {
     font-size: 11px;

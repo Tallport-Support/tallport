@@ -6586,8 +6586,7 @@ function reportsInit()
 		form.find('input[name="chart"]').val($(this).val());
 		form.submit();
 	});
-	$('.rpt-group-by').click(function() {
-		form.find('input[name="group_by"]').val($(this).attr('data-group-by'));
+	$('.rpt-group-by').change(function() {
 		form.submit();
 	});
 }

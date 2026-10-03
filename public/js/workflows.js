@@ -22,7 +22,7 @@ function workflowEditorInit()
 		$.each(groups, function(i, rows) {
 			wfAddGroup(editor, mode, rows);
 		});
-		$('<button type="button" class="btn btn-default btn-sm wf-add-group"></button>')
+		$('<button type="button" class="f-button f-button--small wf-add-group"></button>')
 			.text(mode == 'conditions' ? wf_lang.add_condition : wf_lang.add_action)
 			.click(function() {
 				wfAddGroup(editor, mode, [{}]);
@@ -74,28 +74,28 @@ function wfItems(mode)
 
 function wfAddGroup(editor, mode, rows)
 {
-	var group = $('<div class="panel panel-default wf-group"><div class="panel-body"></div></div>');
+	var group = $('<div class="f-card wf-group"><div class="wf-group__body"></div></div>');
 	if (editor.children('.wf-group').length) {
-		$('<div class="wf-and text-help"></div>').text(wf_lang.and).appendTo(editor);
+		$('<div class="wf-and f-muted"></div>').text(wf_lang.and).appendTo(editor);
 	}
 	group.appendTo(editor);
 	$.each(rows.length ? rows : [{}], function(i, row) {
 		wfAddRow(group, mode, row);
 	});
 	if (mode == 'conditions') {
-		$('<button type="button" class="btn btn-link btn-xs wf-add-or"></button>').text(wf_lang.add_or).click(function() {
+		$('<button type="button" class="f-button f-button--ghost f-button--small wf-add-or"></button>').text(wf_lang.add_or).click(function() {
 			wfAddRow(group, mode, {}, $(this));
-		}).appendTo(group.children('.panel-body'));
+		}).appendTo(group.children('.wf-group__body'));
 	}
 	return group;
 }
 
 function wfAddRow(group, mode, data, before)
 {
-	var body = group.children('.panel-body');
-	var row = $('<div class="wf-row form-inline"></div>');
+	var body = group.children('.wf-group__body');
+	var row = $('<div class="wf-row"></div>');
 	if (body.children('.wf-row').length) {
-		$('<div class="wf-or text-help"></div>').text(wf_lang.or).insertBefore(before || body.children('.wf-add-or'));
+		$('<div class="wf-or f-muted"></div>').text(wf_lang.or).insertBefore(before || body.children('.wf-add-or'));
 	}
 	if (before) {
 		row.insertBefore(before);
@@ -105,7 +105,7 @@ function wfAddRow(group, mode, data, before)
 		row.appendTo(body);
 	}
 
-	var type = $('<select class="form-control input-sm wf-type"></select>');
+	var type = $('<select class="f-input wf-type"></select>');
 	type.append($('<option value=""></option>').text('-- '+(mode == 'conditions' ? wf_lang.select_condition : wf_lang.select_action)+' --'));
 	$.each(wf_config[mode], function(group_key, config_group) {
 		var parent = type;
@@ -118,7 +118,7 @@ function wfAddRow(group, mode, data, before)
 	});
 	type.val(data.type || '');
 	row.append(type, '<span class="wf-operator"></span>', '<span class="wf-value"></span>');
-	$('<a href="#" class="wf-remove text-help">&times;</a>').attr('title', wf_lang.remove).click(function(e) {
+	$('<button type="button" class="f-button f-button--ghost f-button--icon wf-remove">&times;</button>').attr('title', wf_lang.remove).attr('aria-label', wf_lang.remove).click(function(e) {
 		e.preventDefault();
 		var group_body = row.parent();
 		row.prev('.wf-or').remove();
@@ -148,7 +148,7 @@ function wfRenderValue(row, mode, data)
 	}
 
 	if (item.operators) {
-		var select = $('<select class="form-control input-sm wf-operator-select"></select>');
+		var select = $('<select class="f-input wf-operator-select"></select>');
 		$.each(item.operators, function(key, title) {
 			select.append($('<option></option>').attr('value', key).text(title));
 		});
@@ -159,8 +159,8 @@ function wfRenderValue(row, mode, data)
 	}
 
 	if (item.values_type == 'date') {
-		var number = $('<input type="number" min="1" class="form-control input-sm wf-number">').val(data.value ? data.value.number : '');
-		var metric = $('<select class="form-control input-sm wf-metric"></select>');
+		var number = $('<input type="number" min="1" class="f-input wf-number">').val(data.value ? data.value.number : '');
+		var metric = $('<select class="f-input wf-metric"></select>');
 		$.each({i: wf_lang.minutes, h: wf_lang.hours, d: wf_lang.days}, function(key, title) {
 			metric.append($('<option></option>').attr('value', key).text(title));
 		});
@@ -169,7 +169,7 @@ function wfRenderValue(row, mode, data)
 	} else if (item.values_type == 'email') {
 		wfEmailEditor(row, data.type, data.value);
 	} else if (item.values && item.values.length) {
-		var choice = $('<select class="form-control input-sm wf-value-select"></select>');
+		var choice = $('<select class="f-input wf-value-select"></select>');
 		if (item.multiple) {
 			choice.attr('multiple', 'multiple');
 		}
@@ -184,7 +184,7 @@ function wfRenderValue(row, mode, data)
 			choice.select2({width: '300px'});
 		}
 	} else if (!item.values) {
-		$('<input type="text" class="form-control input-sm wf-text">')
+		$('<input type="text" class="f-input wf-text">')
 			.attr('placeholder', item.placeholder || '')
 			.val(typeof(data.value) == "string" ? data.value : '')
 			.appendTo(value);
@@ -202,9 +202,9 @@ function wfEmailEditor(row, type, value)
 	}
 	var box = $('<div class="wf-email"></div>').appendTo(row);
 	var field = function(name, label) {
-		$('<div class="form-group-sm wf-email-field"></div>')
-			.append($('<label></label>').text(label))
-			.append($('<input type="text" class="form-control input-sm">').attr('data-field', name).val(email[name] || ''))
+		$('<div class="f-field wf-email-field"></div>')
+			.append($('<label class="f-label"></label>').text(label))
+			.append($('<input type="text" class="f-input">').attr('data-field', name).val(email[name] || ''))
 			.appendTo(box);
 	};
 	if (type == 'forward') {
@@ -218,17 +218,17 @@ function wfEmailEditor(row, type, value)
 		field('subject', wf_lang.subject);
 	}
 	wf_editor_i++;
-	var textarea = $('<textarea class="form-control" data-field="body"></textarea>').attr('id', 'wf-body-'+wf_editor_i).val(email.body || '');
+	var textarea = $('<textarea class="f-input" data-field="body"></textarea>').attr('id', 'wf-body-'+wf_editor_i).val(email.body || '');
 	box.append(textarea);
 	summernoteInit('#wf-body-'+wf_editor_i, {disableDragAndDrop: true});
 
 	if (type == 'reply' || type == 'email_customer') {
-		$('<label class="checkbox inline plain"></label>')
+		$('<label class="f-check"></label>')
 			.append($('<input type="checkbox" data-field="no_signature" value="1">').prop('checked', !!email.no_signature), ' ', document.createTextNode(wf_lang.no_signature))
 			.appendTo(box);
 	}
 	if (type != 'note') {
-		var history = $('<select class="form-control input-sm" data-field="conv_history"></select>');
+		var history = $('<select class="f-input" data-field="conv_history"></select>');
 		if (type != 'forward') {
 			history.append($('<option value=""></option>').text(wf_lang.history_default));
 		}
@@ -238,7 +238,7 @@ function wfEmailEditor(row, type, value)
 			}
 		});
 		history.val(email.conv_history || (type == 'email_customer' ? 'none' : (type == 'forward' ? 'full' : '')));
-		var sender = $('<select class="form-control input-sm" data-field="sender_name"></select>');
+		var sender = $('<select class="f-input" data-field="sender_name"></select>');
 		$.each(wf_lang.senders, function(key, title) {
 			if (key != '1' || type == 'reply') {
 				sender.append($('<option></option>').attr('value', key).text(title));
@@ -246,8 +246,8 @@ function wfEmailEditor(row, type, value)
 		});
 		sender.val(email.sender_name || (type == 'reply' ? '1' : '2'));
 		box.append(
-			$('<div class="form-group-sm wf-email-field"></div>').append($('<label></label>').text(wf_lang.conv_history), history),
-			$('<div class="form-group-sm wf-email-field"></div>').append($('<label></label>').text(wf_lang.sender_name), sender)
+			$('<div class="f-field wf-email-field"></div>').append($('<label class="f-label"></label>').text(wf_lang.conv_history), history),
+			$('<div class="f-field wf-email-field"></div>').append($('<label class="f-label"></label>').text(wf_lang.sender_name), sender)
 		);
 	}
 }

@@ -2,8 +2,9 @@
 
 @section('title_full', ($workflow->exists ? $workflow->name : __('New Workflow')).' - '.($mailbox ? $mailbox->name : __('All Mailboxes')))
 
+@section('main_class', 'fruit-ui')
+
 @section('sidebar')
-    @include('partials/sidebar_menu_toggle')
     @if ($mailbox && !Auth::user()->isAdmin())
         @include('mailboxes/sidebar_menu')
     @else
@@ -18,89 +19,65 @@
         $conditions = old('conditions') ? App\Workflow::groups(old('conditions')) : $workflow->getConditions();
         $actions = old('actions') ? App\Workflow::groups(old('actions')) : $workflow->getActions();
     @endphp
-    <div class="section-heading">
-        <a href="{{ $index_url }}">{{ __('Workflows') }}</a> » @if ($workflow->exists){{ $workflow->name }}@else{{ __('New Workflow') }}@endif
-        <small>{{ $mailbox ? $mailbox->name : __('All Mailboxes') }}</small>
-    </div>
+    <div class="page-content">
+        @include('partials/flash_messages')
 
-    @include('partials/flash_messages')
-
-    <div class="row-container">
-        <form class="form-horizontal margin-top workflow-form" method="POST" action="{{ $mailbox ? route('mailboxes.workflows.save', ['mailbox_id' => $mailbox->id]) : route('workflows.save') }}">
+        <form class="settings-form workflow-form" method="POST" action="{{ $mailbox ? route('mailboxes.workflows.save', ['mailbox_id' => $mailbox->id]) : route('workflows.save') }}">
             {{ csrf_field() }}
             <input type="hidden" name="workflow_id" value="{{ $workflow->id }}">
             <input type="hidden" name="conditions" value="">
             <input type="hidden" name="actions" value="">
 
-            <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                <label for="name" class="col-sm-2 control-label">{{ __('Name') }}</label>
-                <div class="col-sm-6">
-                    <input id="name" type="text" class="form-control input-sized" name="name" value="{{ old('name', $workflow->name) }}" maxlength="75" required autofocus>
-                    @include('partials/field_error', ['field' => 'name'])
-                </div>
+            <h2 class="settings-form__heading">@if ($workflow->exists){{ $workflow->name }}@else{{ __('New Workflow') }}@endif <small class="f-muted">{{ $mailbox ? $mailbox->name : __('All Mailboxes') }}</small></h2>
+
+            <x-fruit::field :label="__('Name')">
+                <x-fruit::input id="name" name="name" :value="old('name', $workflow->name)" maxlength="75" required autofocus />
+            </x-fruit::field>
+
+            <div class="f-field">
+                <label class="f-label" for="workflow_type">{{ __('Type') }}</label>
+                <x-fruit::select id="workflow_type" name="type">
+                    <option value="{{ App\Workflow::TYPE_AUTOMATIC }}" @selected($type == App\Workflow::TYPE_AUTOMATIC)>{{ __('Automatic') }}</option>
+                    <option value="{{ App\Workflow::TYPE_MANUAL }}" @selected($type == App\Workflow::TYPE_MANUAL)>{{ __('Manual') }}</option>
+                </x-fruit::select>
+                <p class="f-help workflow-automatic-only">{{ __('Runs by itself on conversations that meet the conditions: when something happens to them, and as time passes (every 5 minutes).') }}</p>
+                <p class="f-help workflow-manual-only">{{ __('Users run it from a conversation\'s menu.') }}</p>
             </div>
 
-            <div class="form-group">
-                <label for="workflow_type" class="col-sm-2 control-label">{{ __('Type') }}</label>
-                <div class="col-sm-6">
-                    <select id="workflow_type" class="form-control input-sized" name="type">
-                        <option value="{{ App\Workflow::TYPE_AUTOMATIC }}" @if ($type == App\Workflow::TYPE_AUTOMATIC) selected @endif>{{ __('Automatic') }}</option>
-                        <option value="{{ App\Workflow::TYPE_MANUAL }}" @if ($type == App\Workflow::TYPE_MANUAL) selected @endif>{{ __('Manual') }}</option>
-                    </select>
-                    <div class="form-help workflow-automatic-only">{{ __('Runs by itself on conversations that meet the conditions: when something happens to them, and as time passes (every 5 minutes).') }}</div>
-                    <div class="form-help workflow-manual-only">{{ __('Users run it from a conversation\'s menu.') }}</div>
-                </div>
+            <x-fruit::switch id="workflow_active" name="active" value="1" :checked="(bool) old('active', $workflow->exists ? $workflow->active : true)">{{ __('Active') }}</x-fruit::switch>
+
+            <div class="settings-form workflow-automatic-only">
+                <x-fruit::field :label="__('Max Executions')" :description="__('How often it can run on the same conversation.')">
+                    <x-fruit::number id="max_executions" name="max_executions" :value="old('max_executions', $workflow->max_executions ?: 1)" min="1" max="1000000" />
+                </x-fruit::field>
+
+                <x-fruit::checkbox id="apply_to_prev" name="apply_to_prev" value="1" :checked="(bool) old('apply_to_prev', $workflow->apply_to_prev)">
+                    <strong>{{ __('Existing Conversations') }}</strong>
+                    <small>{{ __('Also run on conversations from before the workflow') }}</small>
+                </x-fruit::checkbox>
+                <x-fruit::alert tone="warning">{{ __('On saving, it runs on every existing conversation that meets the conditions. This can\'t be undone.') }}</x-fruit::alert>
+
+                <section class="wf-editor-section">
+                    <h2 class="settings-form__heading">{{ __('Conditions') }}</h2>
+                    <p class="f-help">{{ __('All of the groups must be met; within a group, one of its conditions.') }}</p>
+                    @error('conditions')<p class="f-error">{{ $message }}</p>@enderror
+                    <div class="workflow-editor" data-mode="conditions"></div>
+                </section>
             </div>
 
-            <div class="form-group">
-                <label for="workflow_active" class="col-sm-2 control-label">{{ __('Active') }}</label>
-                <div class="col-sm-6">
-                    <div class="onoffswitch-wrap">
-                        <div class="onoffswitch">
-                            <input type="checkbox" name="active" value="1" id="workflow_active" class="onoffswitch-checkbox" @if (old('active', $workflow->exists ? $workflow->active : true)) checked @endif>
-                            <label class="onoffswitch-label" for="workflow_active"></label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <section class="wf-editor-section">
+                <h2 class="settings-form__heading">{{ __('Actions') }}</h2>
+                <p class="f-help">{{ __('Done in this order.') }}</p>
+                @error('actions')<p class="f-error">{{ $message }}</p>@enderror
+                <div class="workflow-editor" data-mode="actions"></div>
+            </section>
 
-            <div class="workflow-automatic-only">
-                <div class="form-group{{ $errors->has('max_executions') ? ' has-error' : '' }}">
-                    <label for="max_executions" class="col-sm-2 control-label">{{ __('Max Executions') }}</label>
-                    <div class="col-sm-6">
-                        <input id="max_executions" type="number" class="form-control input-sized" name="max_executions" value="{{ old('max_executions', $workflow->max_executions ?: 1) }}" min="1" max="1000000">
-                        <div class="form-help">{{ __('How often it can run on the same conversation.') }}</div>
-                        @include('partials/field_error', ['field' => 'max_executions'])
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="apply_to_prev" class="col-sm-2 control-label">{{ __('Existing Conversations') }}</label>
-                    <div class="col-sm-6">
-                        <label class="checkbox inline plain"><input type="checkbox" name="apply_to_prev" value="1" id="apply_to_prev" @if (old('apply_to_prev', $workflow->apply_to_prev)) checked @endif> {{ __('Also run on conversations from before the workflow') }}</label>
-                        <div class="form-help text-warning">{{ __('On saving, it runs on every existing conversation that meets the conditions. This can\'t be undone.') }}</div>
-                    </div>
-                </div>
-
-                <h4 class="margin-top-10">{{ __('Conditions') }}</h4>
-                <p class="text-help">{{ __('All of the groups must be met; within a group, one of its conditions.') }}</p>
-                @include('partials/field_error', ['field' => 'conditions'])
-                <div class="workflow-editor" data-mode="conditions"></div>
-            </div>
-
-            <h4 class="margin-top-10">{{ __('Actions') }}</h4>
-            <p class="text-help">{{ __('Done in this order.') }}</p>
-            @include('partials/field_error', ['field' => 'actions'])
-            <div class="workflow-editor" data-mode="actions"></div>
-
-            <div class="form-group margin-top">
-                <div class="col-sm-6">
-                    <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
-                    @if ($workflow->exists)
-                        <a href="#" class="btn btn-link text-danger workflow-delete" data-workflow-id="{{ $workflow->id }}" data-redirect="{{ $index_url }}" data-confirm="{{ __('Delete this workflow?') }}">{{ __('Delete') }}</a>
-                        @if ($workflow->isAutomatic())<span class="text-help margin-left-10">{{ __('Ran on :count conversations', ['count' => $workflow->conversationsCount()]) }}</span>@endif
-                    @endif
-                </div>
+            <div class="settings-form__actions f-row">
+                <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
+                @if ($workflow->exists)
+                    <x-fruit::button variant="danger" class="workflow-delete" data-workflow-id="{{ $workflow->id }}" data-redirect="{{ $index_url }}" data-confirm="{{ __('Delete this workflow?') }}">{{ __('Delete') }}</x-fruit::button>
+                    @if ($workflow->isAutomatic())<span class="f-muted">{{ __('Ran on :count conversations', ['count' => $workflow->conversationsCount()]) }}</span>@endif
+                @endif
             </div>
         </form>
 
