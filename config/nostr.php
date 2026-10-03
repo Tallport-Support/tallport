@@ -7,7 +7,7 @@ return [
     // Kept high to avoid clashing with the commercial channel modules.
     'channel' => 90,
 
-    // Prefilled when a mailbox is set up. Can be changed in Settings » Nostr.
+    // Prefilled when a mailbox is set up; each mailbox has its own lists.
     // Inbox relays must accept kind 1059 from anyone and serve "#p" queries for it.
     // (relay.damus.io requires AUTH for that and its AUTH was broken when tested.)
     'default_inbox_relays' => [

@@ -367,15 +367,14 @@ class NostrTest extends FeatureTestCase
 
     // Settings and commands.
 
-    public function testDefaultRelays()
+    public function testNewMailboxStartsWithTheDefaultRelays()
     {
-        $this->actingAs($this->admin)->get('/app-settings/nostr')->assertStatus(200)->assertSee('Default inbox relays');
-        $this->postForm($this->admin, '/app-settings/nostr', ['settings' => ['nostr.default_inbox_relays' => "wss://a.example\nb.example", 'nostr.default_announce_relays' => 'wss://c.example']]);
-        \Option::$cache = [];
-
         $cfg = NostrMailbox::forMailbox(999999);
-        $this->assertSame(['wss://a.example', 'wss://b.example'], $cfg->getInboxRelays());
-        $this->assertSame(['wss://c.example'], $cfg->getAnnounceRelays());
+        $this->assertSame(config('nostr.default_inbox_relays'), $cfg->getInboxRelays());
+        $this->assertSame(config('nostr.default_announce_relays'), $cfg->getAnnounceRelays());
+
+        // Relays are set per mailbox only.
+        $this->actingAs($this->admin)->get('/app-settings/nostr')->assertStatus(404);
     }
 
     public function testCommands()

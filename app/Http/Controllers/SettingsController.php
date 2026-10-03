@@ -291,12 +291,6 @@ class SettingsController extends Controller
                     'aiassistant.customer_context_guidance'       => (array) Option::get('aiassistant.customer_context_guidance', []),
                 ];
                 break;
-            case 'nostr':
-                $settings = [
-                    'nostr.default_inbox_relays'    => Option::get('nostr.default_inbox_relays') ?: config('nostr.default_inbox_relays', []),
-                    'nostr.default_announce_relays' => Option::get('nostr.default_announce_relays') ?: config('nostr.default_announce_relays', []),
-                ];
-                break;
             default:
                 $settings = \Eventy::filter('settings.section_settings', $settings, $section);
                 break;
@@ -315,7 +309,6 @@ class SettingsController extends Controller
             'emails'  => ['title' => __('Mail Settings'), 'icon' => 'transfer', 'order' => 200],
             'alerts'  => ['title' => __('Alerts'), 'icon' => 'bell', 'order' => 300],
             'ai'      => ['title' => __('AI Assistant'), 'icon' => 'flash', 'order' => 400],
-            'nostr'   => ['title' => 'Nostr', 'icon' => 'flash', 'order' => 650],
         ];
         $sections = \Eventy::filter('settings.sections', $sections);
 
@@ -337,15 +330,6 @@ class SettingsController extends Controller
 
         if ($section == 'ai') {
             $this->normalizeAiSettings(request());
-        }
-        if ($section == 'nostr') {
-            $values = (array) request()->settings;
-            foreach (['nostr.default_inbox_relays', 'nostr.default_announce_relays'] as $name) {
-                if (array_key_exists($name, $values)) {
-                    $values[$name] = \App\Nostr\NostrMailbox::normalizeRelays($values[$name]);
-                }
-            }
-            request()->merge(['settings' => $values]);
         }
 
         return $this->processSave($section, array_keys($settings));

@@ -38,8 +38,8 @@ class NostrMailbox extends Model
         if (!$row && $create) {
             $row = new self();
             $row->mailbox_id = $mailbox_id;
-            $row->setInboxRelays(\Option::get('nostr.default_inbox_relays') ?: config('nostr.default_inbox_relays', []));
-            $row->setAnnounceRelays(\Option::get('nostr.default_announce_relays') ?: config('nostr.default_announce_relays', []));
+            $row->setInboxRelays(config('nostr.default_inbox_relays', []));
+            $row->setAnnounceRelays(config('nostr.default_announce_relays', []));
             $row->reopen_days = config('nostr.reopen_days', 30);
         }
 

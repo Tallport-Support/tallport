@@ -330,7 +330,8 @@ the relays, fill in the public profile and turn it on. Share the mailbox's
 * **Relays**: inbox relays are where customers deliver messages and where
   Tallport listens (published as the mailbox's DM relay list); announce
   relays are where the profile is published and customers' profiles are
-  looked up. Defaults for new mailboxes are in Settings » Nostr.
+  looked up. Each mailbox has its own; a new one starts with the lists in
+  `config/nostr.php`.
 * **Customers** are created from their key (name and picture from their
   profile). A customer can have several keys, with labels; they are listed on
   the customer's Nostr tab and follow a customer merge.
