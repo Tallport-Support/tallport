@@ -166,6 +166,15 @@
         </div>
     </div>
 
+    <h3 class="subheader">{{ __('Attachment Reminder') }}</h3>
+    <div class="form-group">
+        <label for="attachment_reminder_phrases" class="col-sm-2 control-label">{{ __('Words') }}</label>
+        <div class="col-sm-6">
+            <textarea id="attachment_reminder_phrases" class="form-control" name="settings[attachment_reminder_phrases]" rows="4">{{ old('settings.attachment_reminder_phrases', $settings['attachment_reminder_phrases']) }}</textarea>
+            <div class="form-help">{{ __('When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.') }}</div>
+        </div>
+    </div>
+
     @action('settings.general.append', $settings, $errors)
 
     <div class="form-group margin-top">

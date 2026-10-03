@@ -1227,5 +1227,19 @@
     "Saved reply not found": "Збережену відповідь не знайдено",
     "Under another saved reply, which becomes a category.": "Під іншою збереженою відповіддю, яка стає категорією.",
     "Unknown error occurred": "Виникла невідома помилка",
-    "Variables (Insert variable) are filled in for the conversation.": "Змінні (Вставити змінну) заповнюються для розмови."
+    "Variables (Insert variable) are filled in for the conversation.": "Змінні (Вставити змінну) заповнюються для розмови.",
+    ":person deleted the attachment :file_name": ":person видалив(ла) вкладення :file_name",
+    "Always show images from :customer": "Завжди показувати зображення від :customer",
+    "Attachment Name": "Назва вкладення",
+    "Attachment Reminder": "Нагадування про вкладення",
+    "Attachment not found": "Вкладення не знайдено",
+    "Delete :file_name?": "Видалити :file_name?",
+    "Download all": "Завантажити все",
+    "Hide images from other servers": "Приховувати зображення з інших серверів",
+    "Images from other servers are not shown.": "Зображення з інших серверів не показано.",
+    "Send Anyway": "Все одно надіслати",
+    "Show images": "Показати зображення",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Якщо відповідь містить одне з цих слів (по одному в рядку), але не має вкладення, Tallport запитає перед надсиланням. Порожньо: ніколи.",
+    "Words": "Слова",
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Ви згадали :phrase, але вкладення немає. Все одно надіслати?"
 }

@@ -1227,5 +1227,19 @@
     "Saved reply not found": "Sparat svar hittades inte",
     "Under another saved reply, which becomes a category.": "Under ett annat sparat svar, som då blir en kategori.",
     "Unknown error occurred": "Ett okänt fel uppstod",
-    "Variables (Insert variable) are filled in for the conversation.": "Variabler (Infoga variabel) fylls i för konversationen."
+    "Variables (Insert variable) are filled in for the conversation.": "Variabler (Infoga variabel) fylls i för konversationen.",
+    ":person deleted the attachment :file_name": ":person raderade den bifogade filen :file_name",
+    "Always show images from :customer": "Visa alltid bilder från :customer",
+    "Attachment Name": "Namn på bifogad fil",
+    "Attachment Reminder": "Påminnelse om bifogade filer",
+    "Attachment not found": "Den bifogade filen hittades inte",
+    "Delete :file_name?": "Radera :file_name?",
+    "Download all": "Ladda ner alla",
+    "Hide images from other servers": "Dölj bilder från andra servrar",
+    "Images from other servers are not shown.": "Bilder från andra servrar visas inte.",
+    "Send Anyway": "Skicka ändå",
+    "Show images": "Visa bilder",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "När ett svar innehåller något av dessa ord (ett per rad) men saknar bifogad fil frågar Tallport innan det skickas. Tomt: aldrig.",
+    "Words": "Ord",
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Du nämnde :phrase men det finns ingen bifogad fil. Skicka ändå?"
 }

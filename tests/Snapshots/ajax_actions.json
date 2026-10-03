@@ -49,6 +49,11 @@
         "name",
         "phone"
     ],
+    "ExternalImagesController@ajax": [
+        "block_customer",
+        "display",
+        "display_customer"
+    ],
     "MailboxesController@ajax": [
         "delete_mailbox",
         "fetch_test",

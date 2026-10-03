@@ -234,6 +234,10 @@ class ConversationSearch
                         }
                         break;
 
+                    case 'attachment':
+                        $query->whereIn('conversations.id', self::withAttachmentNamed($value));
+                        break;
+
                     case 'has':
                         if (in_array($value, ['attachment', 'attachments', 'file', 'files'])) {
                             $query->where('conversations.has_attachments', true);
@@ -283,6 +287,9 @@ class ConversationSearch
         }
         if (!empty($filters['type'])) {
             $query->where('conversations.type', $filters['type']);
+        }
+        if (!empty($filters['attachment name'])) {
+            $query->whereIn('conversations.id', self::withAttachmentNamed($filters['attachment name']));
         }
         if (!empty($filters['body'])) {
             $query->where(Indexer::TABLE.'.content', 'like', '%'.addcslashes(mb_strtolower($filters['body']), '%_\\').'%');
@@ -378,6 +385,16 @@ class ConversationSearch
         });
 
         return '/('.implode('|', $parts).')/iu';
+    }
+
+    /**
+     * Conversation IDs with an attachment whose name contains $name.
+     */
+    public static function withAttachmentNamed($name)
+    {
+        return Thread::join('attachments', 'attachments.thread_id', '=', 'threads.id')
+            ->where('attachments.file_name', 'like', '%'.addcslashes(trim((string) $name), '%_\\').'%')
+            ->select('threads.conversation_id');
     }
 
     /**

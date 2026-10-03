@@ -21,7 +21,7 @@ class SearchQuery
     /**
      * Operators that are conditions.
      */
-    const CONDITIONS = ['mailbox', 'is', 'has', 'before', 'after'];
+    const CONDITIONS = ['mailbox', 'is', 'has', 'attachment', 'before', 'after'];
 
     /**
      * Scripts written without spaces between words.

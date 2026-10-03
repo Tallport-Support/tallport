@@ -1232,5 +1232,19 @@
     "Saved reply not found": "Opgeslagen reactie niet gevonden",
     "Under another saved reply, which becomes a category.": "Onder een andere opgeslagen reactie, die daarmee een categorie wordt.",
     "Unknown error occurred": "Er is een onbekende fout opgetreden",
-    "Variables (Insert variable) are filled in for the conversation.": "Variabelen (Variabele invoegen) worden ingevuld voor het gesprek."
+    "Variables (Insert variable) are filled in for the conversation.": "Variabelen (Variabele invoegen) worden ingevuld voor het gesprek.",
+    ":person deleted the attachment :file_name": ":person heeft de bijlage :file_name verwijderd",
+    "Always show images from :customer": "Afbeeldingen van :customer altijd tonen",
+    "Attachment Name": "Naam bijlage",
+    "Attachment Reminder": "Bijlageherinnering",
+    "Attachment not found": "Bijlage niet gevonden",
+    "Delete :file_name?": ":file_name verwijderen?",
+    "Download all": "Alles downloaden",
+    "Hide images from other servers": "Afbeeldingen van andere servers verbergen",
+    "Images from other servers are not shown.": "Afbeeldingen van andere servers worden niet getoond.",
+    "Send Anyway": "Toch verzenden",
+    "Show images": "Afbeeldingen tonen",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Als een antwoord een van deze woorden bevat (één per regel) maar geen bijlage heeft, vraagt Tallport dit vóór het verzenden. Leeg: nooit.",
+    "Words": "Woorden",
+    "You mentioned :phrase but there is no attachment. Send anyway?": "U noemt :phrase maar er is geen bijlage. Toch verzenden?"
 }

@@ -129,6 +129,8 @@ class Thread extends Model
     const ACTION_TYPE_RESTORE_TICKET = 11;
     // The Nostr auto reply was sent (the Nostr module's number)
     const ACTION_TYPE_NOSTR_AUTO_REPLY = 90;
+    // An attachment deleted (action_data: its file name).
+    const ACTION_TYPE_ATTACHMENT_DELETED = 91;
 
     // Describes an optional action associated with the line item
     public static $action_types = [
@@ -144,6 +146,7 @@ class Thread extends Model
         self::ACTION_TYPE_DELETED_TICKET          => 'deleted-ticket',
         self::ACTION_TYPE_RESTORE_TICKET          => 'restore-ticket',
         self::ACTION_TYPE_NOSTR_AUTO_REPLY        => 'nostr_auto_reply',
+        self::ACTION_TYPE_ATTACHMENT_DELETED      => 'deleted-attachment',
     ];
 
     /**
@@ -681,6 +684,8 @@ class Thread extends Model
                 }
             } elseif ($this->action_type == self::ACTION_TYPE_NOSTR_AUTO_REPLY) {
                 $did_this = __(':person sent the Nostr auto reply').': "'.e(\Helper::textPreview($this->body, 200)).'"';
+            } elseif ($this->action_type == self::ACTION_TYPE_ATTACHMENT_DELETED) {
+                $did_this = __(':person deleted the attachment :file_name', ['file_name' => e((string) $this->action_data)]);
             } elseif ($this->action_type == self::ACTION_TYPE_DELETED_TICKET) {
                 $did_this = __(":person deleted");
             } elseif ($this->action_type == self::ACTION_TYPE_RESTORE_TICKET) {

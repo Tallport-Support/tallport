@@ -1226,5 +1226,19 @@
     "Saved reply not found": "Nie znaleziono zapisanej odpowiedzi",
     "Under another saved reply, which becomes a category.": "Pod inną zapisaną odpowiedzią, która staje się kategorią.",
     "Unknown error occurred": "Wystąpił nieznany błąd",
-    "Variables (Insert variable) are filled in for the conversation.": "Zmienne (Wstaw zmienną) są uzupełniane dla rozmowy."
+    "Variables (Insert variable) are filled in for the conversation.": "Zmienne (Wstaw zmienną) są uzupełniane dla rozmowy.",
+    ":person deleted the attachment :file_name": ":person usunął(-ęła) załącznik :file_name",
+    "Always show images from :customer": "Zawsze pokazuj obrazy od :customer",
+    "Attachment Name": "Nazwa załącznika",
+    "Attachment Reminder": "Przypomnienie o załączniku",
+    "Attachment not found": "Nie znaleziono załącznika",
+    "Delete :file_name?": "Usunąć :file_name?",
+    "Download all": "Pobierz wszystkie",
+    "Hide images from other servers": "Ukryj obrazy z innych serwerów",
+    "Images from other servers are not shown.": "Obrazy z innych serwerów nie są wyświetlane.",
+    "Send Anyway": "Wyślij mimo to",
+    "Show images": "Pokaż obrazy",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Gdy odpowiedź zawiera jedno z tych słów (jedno w wierszu), ale nie ma załącznika, Tallport pyta przed wysłaniem. Puste: nigdy.",
+    "Words": "Słowa",
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Wspomniano :phrase, ale nie ma załącznika. Wysłać mimo to?"
 }

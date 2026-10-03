@@ -14,6 +14,9 @@
 	                @if (count($prev_conversations))
 	                    <li role="presentation" class="col3-hidden"><a data-toggle="collapse" href=".collapse-conv-prev" tabindex="-1" role="menuitem">{{ __("Previous Conversations") }}</a></li>
 	                @endif
+	                @if ($customer->getMeta(App\Misc\ExternalImages::META_KEY))
+	                    <li role="presentation"><a href="#" class="external-images-block" data-customer-id="{{ $customer->id }}" tabindex="-1" role="menuitem">{{ __('Hide images from other servers') }}</a></li>
+	                @endif
 	                {{ \Eventy::action('conversation.customer.menu', $customer, $conversation) }}
 	                {{-- No need to use this --}}
 	                {{ \Eventy::action('customer_profile.menu', $customer, $conversation) }}
@@ -31,6 +34,7 @@
         @include('conversations/partials/prev_convs_short')
     @endif
     @if (isset($conversation) && isset($mailbox))
+        @include('conversations/partials/attachments_sidebar')
     	@action('conversation.after_prev_convs', $customer, $conversation, $mailbox)
     @endif
 @endif

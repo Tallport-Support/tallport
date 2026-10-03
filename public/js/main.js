@@ -6597,3 +6597,30 @@ function initNoreplyWarnings()
 	});
 }
 
+/**
+ * Images from other servers: shown for a message (in place) or always for a
+ * customer; hidden again for a customer.
+ */
+$(document).on('click', '.external-images-show, .external-images-block', function(e) {
+	e.preventDefault();
+	var link = $(this);
+	var notice = link.closest('.external-images-notice');
+	fsAjax({
+			action: link.hasClass('external-images-block') ? 'block_customer' : link.attr('data-action'),
+			thread_id: notice.attr('data-thread-id'),
+			customer_id: link.attr('data-customer-id')
+		},
+		laroute.route('conversations.external_images'),
+		function(response) {
+			if (!isAjaxSuccess(response)) {
+				showAjaxError(response);
+			} else if (response.reload) {
+				window.location.reload();
+			} else {
+				$('#thread-'+notice.attr('data-thread-id')+' .thread-content:first').html(response.html);
+				notice.remove();
+			}
+		}
+	);
+});
+

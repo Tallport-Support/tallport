@@ -1226,5 +1226,19 @@
     "Saved reply not found": "Uložená odpověď nenalezena",
     "Under another saved reply, which becomes a category.": "Pod jinou uloženou odpovědí, která se tím stane kategorií.",
     "Unknown error occurred": "Došlo k neznámé chybě",
-    "Variables (Insert variable) are filled in for the conversation.": "Proměnné (Vložení proměnné) se vyplní pro konverzaci."
+    "Variables (Insert variable) are filled in for the conversation.": "Proměnné (Vložení proměnné) se vyplní pro konverzaci.",
+    ":person deleted the attachment :file_name": ":person odstranil(a) přílohu :file_name",
+    "Always show images from :customer": "Vždy zobrazovat obrázky od :customer",
+    "Attachment Name": "Název přílohy",
+    "Attachment Reminder": "Připomenutí přílohy",
+    "Attachment not found": "Příloha nebyla nalezena",
+    "Delete :file_name?": "Odstranit :file_name?",
+    "Download all": "Stáhnout vše",
+    "Hide images from other servers": "Skrýt obrázky z jiných serverů",
+    "Images from other servers are not shown.": "Obrázky z jiných serverů se nezobrazují.",
+    "Send Anyway": "Přesto odeslat",
+    "Show images": "Zobrazit obrázky",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Pokud odpověď obsahuje některé z těchto slov (jedno na řádek), ale nemá přílohu, Tallport se před odesláním zeptá. Prázdné: nikdy.",
+    "Words": "Slova",
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Zmínili jste :phrase, ale není připojena žádná příloha. Přesto odeslat?"
 }

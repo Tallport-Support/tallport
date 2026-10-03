@@ -1229,5 +1229,19 @@
     "Saved reply not found": "未找到已保存的回复",
     "Under another saved reply, which becomes a category.": "放在另一个已保存的回复下，该回复随之成为类别。",
     "Unknown error occurred": "发生未知错误",
-    "Variables (Insert variable) are filled in for the conversation.": "变量（插入变量）会根据对话填入。"
+    "Variables (Insert variable) are filled in for the conversation.": "变量（插入变量）会根据对话填入。",
+    ":person deleted the attachment :file_name": ":person 删除了附件 :file_name",
+    "Always show images from :customer": "始终显示来自 :customer 的图片",
+    "Attachment Name": "附件名称",
+    "Attachment Reminder": "附件提醒",
+    "Attachment not found": "未找到附件",
+    "Delete :file_name?": "删除 :file_name 吗？",
+    "Download all": "全部下载",
+    "Hide images from other servers": "隐藏来自其他服务器的图片",
+    "Images from other servers are not shown.": "未显示来自其他服务器的图片。",
+    "Send Anyway": "仍然发送",
+    "Show images": "显示图片",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "当回复中包含以下任一词语（每行一个）但没有附件时，Tallport 会在发送前询问。留空：从不。",
+    "Words": "词语",
+    "You mentioned :phrase but there is no attachment. Send anyway?": "您提到了 :phrase，但没有附件。仍然发送吗？"
 }

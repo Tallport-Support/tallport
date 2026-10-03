@@ -1237,5 +1237,19 @@
     "Saved reply not found": "Réponse enregistrée introuvable",
     "Under another saved reply, which becomes a category.": "Sous une autre réponse enregistrée, qui devient une catégorie.",
     "Unknown error occurred": "Une erreur inconnue s'est produite",
-    "Variables (Insert variable) are filled in for the conversation.": "Les variables (Insérer une variable) sont remplies pour la conversation."
+    "Variables (Insert variable) are filled in for the conversation.": "Les variables (Insérer une variable) sont remplies pour la conversation.",
+    ":person deleted the attachment :file_name": ":person a supprimé la pièce jointe :file_name",
+    "Always show images from :customer": "Toujours afficher les images de :customer",
+    "Attachment Name": "Nom de la pièce jointe",
+    "Attachment Reminder": "Rappel de pièce jointe",
+    "Attachment not found": "Pièce jointe introuvable",
+    "Delete :file_name?": "Supprimer :file_name ?",
+    "Download all": "Tout télécharger",
+    "Hide images from other servers": "Masquer les images d'autres serveurs",
+    "Images from other servers are not shown.": "Les images provenant d'autres serveurs ne sont pas affichées.",
+    "Send Anyway": "Envoyer quand même",
+    "Show images": "Afficher les images",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Lorsqu'une réponse contient l'un de ces mots (un par ligne) mais n'a pas de pièce jointe, Tallport demande confirmation avant l'envoi. Vide : jamais.",
+    "Words": "Mots",
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Vous avez mentionné :phrase mais il n'y a pas de pièce jointe. Envoyer quand même ?"
 }

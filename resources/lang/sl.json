@@ -1226,5 +1226,19 @@
     "Saved reply not found": "Shranjenega odgovora ni mogoče najti",
     "Under another saved reply, which becomes a category.": "Pod drugim shranjenim odgovorom, ki tako postane kategorija.",
     "Unknown error occurred": "Prišlo je do neznane napake",
-    "Variables (Insert variable) are filled in for the conversation.": "Spremenljivke (Vstavi spremenljivko) se izpolnijo za pogovor."
+    "Variables (Insert variable) are filled in for the conversation.": "Spremenljivke (Vstavi spremenljivko) se izpolnijo za pogovor.",
+    ":person deleted the attachment :file_name": ":person je izbrisal/-a priponko :file_name",
+    "Always show images from :customer": "Vedno prikaži slike od :customer",
+    "Attachment Name": "Ime priponke",
+    "Attachment Reminder": "Opomnik za priponke",
+    "Attachment not found": "Priponke ni mogoče najti",
+    "Delete :file_name?": "Izbrišem :file_name?",
+    "Download all": "Prenesi vse",
+    "Hide images from other servers": "Skrij slike z drugih strežnikov",
+    "Images from other servers are not shown.": "Slike z drugih strežnikov niso prikazane.",
+    "Send Anyway": "Vseeno pošlji",
+    "Show images": "Prikaži slike",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Ko odgovor vsebuje eno od teh besed (eno na vrstico), nima pa priponke, Tallport pred pošiljanjem vpraša. Prazno: nikoli.",
+    "Words": "Besede",
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Omenili ste :phrase, vendar ni priponke. Vseeno pošljem?"
 }

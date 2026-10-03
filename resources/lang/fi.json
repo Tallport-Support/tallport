@@ -1246,5 +1246,19 @@
     "Saved reply not found": "Tallennettua vastausta ei löydy",
     "Under another saved reply, which becomes a category.": "Toisen tallennetun vastauksen alla, josta tulee kategoria.",
     "Unknown error occurred": "Tapahtui tuntematon virhe",
-    "Variables (Insert variable) are filled in for the conversation.": "Muuttujat (Lisää muuttuja) täytetään keskustelun tiedoilla."
+    "Variables (Insert variable) are filled in for the conversation.": "Muuttujat (Lisää muuttuja) täytetään keskustelun tiedoilla.",
+    ":person deleted the attachment :file_name": ":person poisti liitteen :file_name",
+    "Always show images from :customer": "Näytä aina kuvat lähettäjältä :customer",
+    "Attachment Name": "Liitteen nimi",
+    "Attachment Reminder": "Liitemuistutus",
+    "Attachment not found": "Liitettä ei löytynyt",
+    "Delete :file_name?": "Poista :file_name?",
+    "Download all": "Lataa kaikki",
+    "Hide images from other servers": "Piilota kuvat muilta palvelimilta",
+    "Images from other servers are not shown.": "Muilta palvelimilta tulevia kuvia ei näytetä.",
+    "Send Anyway": "Lähetä silti",
+    "Show images": "Näytä kuvat",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Jos vastaus sisältää jonkin näistä (yksi per rivi) mutta siinä ei ole liitettä, Tallport kysyy ennen lähettämistä. Tyhjä: ei koskaan.",
+    "Words": "Sanat",
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Mainitsit :phrase, mutta liitettä ei ole. Lähetetäänkö silti?"
 }

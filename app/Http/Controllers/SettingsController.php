@@ -255,6 +255,7 @@ class SettingsController extends Controller
                     'time_format'          => Option::get('time_format', User::TIME_FORMAT_24),
                     'locale'               => \Helper::getRealAppLocale(),
                     'timezone'             => config('app.timezone'),
+                    'attachment_reminder_phrases' => Option::get(\App\Http\Controllers\AttachmentsController::REMINDER_OPTION, \App\Http\Controllers\AttachmentsController::REMINDER_DEFAULT),
                 ];
                 break;
             case 'emails':

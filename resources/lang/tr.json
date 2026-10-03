@@ -1227,5 +1227,19 @@
     "Saved reply not found": "Kayıtlı yanıt bulunamadı",
     "Under another saved reply, which becomes a category.": "Başka bir kayıtlı yanıtın altında; o yanıt böylece bir kategori olur.",
     "Unknown error occurred": "Bilinmeyen bir hata oluştu",
-    "Variables (Insert variable) are filled in for the conversation.": "Değişkenler (Değişken ekle) konuşma için doldurulur."
+    "Variables (Insert variable) are filled in for the conversation.": "Değişkenler (Değişken ekle) konuşma için doldurulur.",
+    ":person deleted the attachment :file_name": ":person :file_name ekini sildi",
+    "Always show images from :customer": ":customer kişisinden gelen resimleri her zaman göster",
+    "Attachment Name": "Ek Adı",
+    "Attachment Reminder": "Ek Hatırlatıcısı",
+    "Attachment not found": "Ek bulunamadı",
+    "Delete :file_name?": ":file_name silinsin mi?",
+    "Download all": "Tümünü indir",
+    "Hide images from other servers": "Diğer sunuculardan gelen resimleri gizle",
+    "Images from other servers are not shown.": "Diğer sunuculardan gelen resimler gösterilmiyor.",
+    "Send Anyway": "Yine de Gönder",
+    "Show images": "Resimleri göster",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Bir yanıt bunlardan birini içeriyor (her satıra bir tane) ancak eki yoksa, Tallport göndermeden önce sorar. Boş: asla.",
+    "Words": "Kelimeler",
+    "You mentioned :phrase but there is no attachment. Send anyway?": ":phrase ifadesinden bahsettiniz ancak ek yok. Yine de gönderilsin mi?"
 }

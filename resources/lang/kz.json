@@ -1723,5 +1723,19 @@
     "Saved reply not found": "Сақталған жауап табылмады",
     "Under another saved reply, which becomes a category.": "Басқа сақталған жауаптың астында, ол санатқа айналады.",
     "Unknown error occurred": "Белгісіз қате орын алды",
-    "Variables (Insert variable) are filled in for the conversation.": "Өзгермелілер (Өзгермеліні кірістіру) тикет үшін толтырылады."
+    "Variables (Insert variable) are filled in for the conversation.": "Өзгермелілер (Өзгермеліні кірістіру) тикет үшін толтырылады.",
+    ":person deleted the attachment :file_name": ":person :file_name тіркемесін жойды",
+    "Always show images from :customer": ":customer суреттерін әрқашан көрсету",
+    "Attachment Name": "Тіркеме атауы",
+    "Attachment Reminder": "Тіркеме туралы еске салу",
+    "Attachment not found": "Тіркеме табылмады",
+    "Delete :file_name?": ":file_name жою керек пе?",
+    "Download all": "Барлығын жүктеу",
+    "Hide images from other servers": "Басқа серверлердегі суреттерді жасыру",
+    "Images from other servers are not shown.": "Басқа серверлердегі суреттер көрсетілмейді.",
+    "Send Anyway": "Бәрібір жіберу",
+    "Show images": "Суреттерді көрсету",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Жауапта осылардың бірі болса (әр жолда біреу), бірақ тіркеме болмаса, Tallport жібермес бұрын сұрайды. Бос: ешқашан.",
+    "Words": "Сөздер",
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Сіз :phrase деп атадыңыз, бірақ тіркеме жоқ. Бәрібір жіберу керек пе?"
 }

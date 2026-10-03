@@ -659,6 +659,36 @@
         "methods": [
             "POST"
         ],
+        "uri": "attachments/{id}/delete",
+        "name": "attachments.delete",
+        "action": "AttachmentsController@delete",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "attachments/{id}/email",
+        "name": "attachments.email",
+        "action": "AttachmentsController@email",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
         "uri": "conversation/ajax",
         "name": "conversations.ajax",
         "action": "ConversationsController@ajax",
@@ -677,6 +707,21 @@
         "uri": "conversation/ajax-html/{action}",
         "name": "conversations.ajax_html",
         "action": "ConversationsController@ajaxHtml",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "conversation/external-images",
+        "name": "conversations.external_images",
+        "action": "ExternalImagesController@ajax",
         "middleware": [
             "web",
             "auth"
@@ -1921,6 +1966,21 @@
         "action": "OpenController@setThreadAsRead",
         "middleware": [
             "open"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "thread/{thread_id}/attachments.zip",
+        "name": "attachments.download_all",
+        "action": "AttachmentsController@download",
+        "middleware": [
+            "web",
+            "auth"
         ],
         "where": {
             "id": "[0-9]+"

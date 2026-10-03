@@ -1227,5 +1227,19 @@
     "Saved reply not found": "A mentett válasz nem található",
     "Under another saved reply, which becomes a category.": "Egy másik mentett válasz alatt, amely így kategóriává válik.",
     "Unknown error occurred": "Ismeretlen hiba történt",
-    "Variables (Insert variable) are filled in for the conversation.": "A változók (Változó beszúrása) a beszélgetés adataival töltődnek ki."
+    "Variables (Insert variable) are filled in for the conversation.": "A változók (Változó beszúrása) a beszélgetés adataival töltődnek ki.",
+    ":person deleted the attachment :file_name": ":person törölte a(z) :file_name csatolmányt",
+    "Always show images from :customer": "Mindig mutasd :customer képeit",
+    "Attachment Name": "Csatolmány neve",
+    "Attachment Reminder": "Csatolmány-emlékeztető",
+    "Attachment not found": "A csatolmány nem található",
+    "Delete :file_name?": "Törölni szeretnéd: :file_name?",
+    "Download all": "Összes letöltése",
+    "Hide images from other servers": "Más szerverekről származó képek elrejtése",
+    "Images from other servers are not shown.": "A más szerverekről származó képek nem jelennek meg.",
+    "Send Anyway": "Küldés mégis",
+    "Show images": "Képek megjelenítése",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Ha egy válasz tartalmazza ezek egyikét (soronként egy), de nincs csatolmánya, a Tallport küldés előtt rákérdez. Üres: soha.",
+    "Words": "Szavak",
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Említetted ezt: :phrase, de nincs csatolmány. Mégis elküldöd?"
 }

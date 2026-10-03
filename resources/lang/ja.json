@@ -1227,5 +1227,19 @@
     "Saved reply not found": "保存された返信が見つかりません",
     "Under another saved reply, which becomes a category.": "別の保存された返信の下に置きます。その返信はカテゴリになります。",
     "Unknown error occurred": "不明なエラーが発生しました",
-    "Variables (Insert variable) are filled in for the conversation.": "変数（変数を挿入）は会話に合わせて入力されます。"
+    "Variables (Insert variable) are filled in for the conversation.": "変数（変数を挿入）は会話に合わせて入力されます。",
+    ":person deleted the attachment :file_name": ":person が添付ファイル :file_name を削除しました",
+    "Always show images from :customer": ":customer からの画像を常に表示",
+    "Attachment Name": "添付ファイル名",
+    "Attachment Reminder": "添付忘れ防止",
+    "Attachment not found": "添付ファイルが見つかりません",
+    "Delete :file_name?": ":file_name を削除しますか？",
+    "Download all": "すべてダウンロード",
+    "Hide images from other servers": "他のサーバーからの画像を非表示",
+    "Images from other servers are not shown.": "他のサーバーからの画像は表示されていません。",
+    "Send Anyway": "このまま送信",
+    "Show images": "画像を表示",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "返信にこれらの語句（1行に1つ）が含まれているのに添付ファイルがない場合、Tallport は送信前に確認します。空欄: 確認しない。",
+    "Words": "語句",
+    "You mentioned :phrase but there is no attachment. Send anyway?": ":phrase と書かれていますが、添付ファイルがありません。このまま送信しますか？"
 }

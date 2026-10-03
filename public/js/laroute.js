@@ -32,6 +32,14 @@
         "name": "conversations.ajax"
     },
     {
+        "uri": "attachments\/{id}\/delete",
+        "name": "attachments.delete"
+    },
+    {
+        "uri": "conversation\/external-images",
+        "name": "conversations.external_images"
+    },
+    {
         "uri": "conversation\/upload",
         "name": "conversations.upload"
     },

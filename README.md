@@ -167,8 +167,8 @@ the text around the words found. The search box understands:
 * `"winter jacket"`: words in this order. `-invoice`: without this word.
 * `from:robin`, `to:sales@example.com`, `subject:zipper`, `mailbox:sales`.
 * `is:open`, `is:pending`, `is:closed`, `is:spam`, `is:mine`,
-  `is:unassigned`, `is:following`, `has:attachment`, `after:2026-01-31`,
-  `before:2026-03-01`.
+  `is:unassigned`, `is:following`, `has:attachment`, `attachment:invoice`
+  (a file name), `after:2026-01-31`, `before:2026-03-01`.
 * `#123` opens conversation 123.
 
 Words shorter than three letters and Chinese, Japanese or Thai text are

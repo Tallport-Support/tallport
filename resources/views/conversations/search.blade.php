@@ -104,6 +104,10 @@
                         <option value="no" @if (!empty($filters['attachments']) && $filters['attachments'] == 'no')selected="selected"@endif>{{ __('No') }}</option>
                     </select>
 		        </div>
+				<div class="col-sm-6 form-group @if (isset($filters['attachment name'])) active @endif" data-filter="attachment name">
+		            <label>{{ __('Attachment Name') }} <b class="remove" data-toggle="tooltip" title="{{ __('Remove filter') }}">×</b></label>
+		            <input type="text" name="f[attachment name]" value="{{ $filters['attachment name'] ?? '' }}" class="form-control" @if (empty($filters['attachment name'])) disabled @endif>
+		        </div>
 				<div class="col-sm-6 form-group @if (isset($filters['type'])) active @endif" data-filter="type">
 		            <label>{{ __('Type') }} <b class="remove" data-toggle="tooltip" title="{{ __('Remove filter') }}">×</b></label>
 		            <select name="f[type]" class="form-control" @if (empty($filters['type'])) disabled @endif>
@@ -156,7 +160,7 @@
 	                <code>"exact phrase"</code> {{ __('words in this order') }} · <code>-word</code> {{ __('without this word') }}<br>
 	                <code>from:</code> {{ __('sender') }} · <code>to:</code> {{ __('recipient') }} · <code>subject:</code> · <code>mailbox:</code><br>
 	                <code>is:open</code> <code>is:pending</code> <code>is:closed</code> <code>is:spam</code> <code>is:mine</code> <code>is:unassigned</code> <code>is:following</code><br>
-	                <code>has:attachment</code> · <code>after:2026-01-31</code> · <code>before:2026-03-01</code> · <code>#123</code> {{ __('conversation number') }}
+	                <code>has:attachment</code> · <code>attachment:invoice</code> · <code>after:2026-01-31</code> · <code>before:2026-03-01</code> · <code>#123</code> {{ __('conversation number') }}
 	            </div>
 	        @endif
 	    </form>

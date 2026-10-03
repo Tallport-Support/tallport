@@ -1232,5 +1232,19 @@
     "Saved reply not found": "Fant ikke lagret svar",
     "Under another saved reply, which becomes a category.": "Under et annet lagret svar, som da blir en kategori.",
     "Unknown error occurred": "En ukjent feil oppstod",
-    "Variables (Insert variable) are filled in for the conversation.": "Variabler (Sett inn variabel) fylles ut for samtalen."
+    "Variables (Insert variable) are filled in for the conversation.": "Variabler (Sett inn variabel) fylles ut for samtalen.",
+    ":person deleted the attachment :file_name": ":person slettet vedlegget :file_name",
+    "Always show images from :customer": "Vis alltid bilder fra :customer",
+    "Attachment Name": "Vedleggsnavn",
+    "Attachment Reminder": "Vedleggspåminnelse",
+    "Attachment not found": "Fant ikke vedlegget",
+    "Delete :file_name?": "Slette :file_name?",
+    "Download all": "Last ned alle",
+    "Hide images from other servers": "Skjul bilder fra andre servere",
+    "Images from other servers are not shown.": "Bilder fra andre servere vises ikke.",
+    "Send Anyway": "Send likevel",
+    "Show images": "Vis bilder",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Når et svar inneholder ett av disse ordene (ett per linje), men ikke har vedlegg, spør Tallport før sending. Tomt: aldri.",
+    "Words": "Ord",
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Du nevnte :phrase, men det er ikke noe vedlegg. Sende likevel?"
 }

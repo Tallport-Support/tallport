@@ -2688,6 +2688,7 @@
         "name": "thread.body_output",
         "arguments": 4,
         "files": [
+            "app/Http/Controllers/ExternalImagesController.php",
             "resources/views/conversations/partials/thread.blade.php"
         ]
     },

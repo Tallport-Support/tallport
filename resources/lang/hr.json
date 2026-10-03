@@ -1227,5 +1227,19 @@
     "Saved reply not found": "Spremljeni odgovor nije pronađen",
     "Under another saved reply, which becomes a category.": "Ispod drugog spremljenog odgovora, koji time postaje kategorija.",
     "Unknown error occurred": "Došlo je do nepoznate greške",
-    "Variables (Insert variable) are filled in for the conversation.": "Varijable (Umetni varijablu) popunjavaju se za razgovor."
+    "Variables (Insert variable) are filled in for the conversation.": "Varijable (Umetni varijablu) popunjavaju se za razgovor.",
+    ":person deleted the attachment :file_name": ":person je izbrisao/la prilog :file_name",
+    "Always show images from :customer": "Uvijek prikaži slike od :customer",
+    "Attachment Name": "Naziv priloga",
+    "Attachment Reminder": "Podsjetnik za priloge",
+    "Attachment not found": "Prilog nije pronađen",
+    "Delete :file_name?": "Izbrisati :file_name?",
+    "Download all": "Preuzmi sve",
+    "Hide images from other servers": "Sakrij slike s drugih poslužitelja",
+    "Images from other servers are not shown.": "Slike s drugih poslužitelja nisu prikazane.",
+    "Send Anyway": "Svejedno pošalji",
+    "Show images": "Prikaži slike",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Kada odgovor sadrži jednu od ovih riječi (jednu po retku), ali nema priloga, Tallport pita prije slanja. Prazno: nikad.",
+    "Words": "Riječi",
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Spomenuli ste :phrase, ali nema priloga. Svejedno poslati?"
 }

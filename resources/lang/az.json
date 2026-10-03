@@ -1227,5 +1227,19 @@
     "Saved reply not found": "Yadda saxlanılmış cavab tapılmadı",
     "Under another saved reply, which becomes a category.": "Başqa yadda saxlanılmış cavabın altında, o cavab beləliklə kateqoriyaya çevrilir.",
     "Unknown error occurred": "Naməlum xəta baş verdi",
-    "Variables (Insert variable) are filled in for the conversation.": "Dəyişənlər (Dəyişən əlavə et) söhbət üçün doldurulur."
+    "Variables (Insert variable) are filled in for the conversation.": "Dəyişənlər (Dəyişən əlavə et) söhbət üçün doldurulur.",
+    ":person deleted the attachment :file_name": ":person :file_name qoşmasını sildi",
+    "Always show images from :customer": ":customer üçün şəkilləri həmişə göstər",
+    "Attachment Name": "Qoşma adı",
+    "Attachment Reminder": "Qoşma xatırlatması",
+    "Attachment not found": "Qoşma tapılmadı",
+    "Delete :file_name?": ":file_name silinsin?",
+    "Download all": "Hamısını yüklə",
+    "Hide images from other servers": "Digər serverlərdən olan şəkilləri gizlət",
+    "Images from other servers are not shown.": "Digər serverlərdən olan şəkillər göstərilmir.",
+    "Send Anyway": "Yenə də göndər",
+    "Show images": "Şəkilləri göstər",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Cavabda bunlardan biri olsa (hər sətirdə bir), lakin qoşma olmasa, Tallport göndərməzdən əvvəl soruşur. Boş: heç vaxt.",
+    "Words": "Sözlər",
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Siz :phrase qeyd etdiniz, lakin qoşma yoxdur. Yenə də göndərilsin?"
 }

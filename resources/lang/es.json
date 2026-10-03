@@ -1228,5 +1228,19 @@
     "Saved reply not found": "Respuesta guardada no encontrada",
     "Under another saved reply, which becomes a category.": "Debajo de otra respuesta guardada, que pasa a ser una categoría.",
     "Unknown error occurred": "Ocurrió un error desconocido",
-    "Variables (Insert variable) are filled in for the conversation.": "Las variables (Insertar variable) se rellenan para la conversación."
+    "Variables (Insert variable) are filled in for the conversation.": "Las variables (Insertar variable) se rellenan para la conversación.",
+    ":person deleted the attachment :file_name": ":person borró el adjunto :file_name",
+    "Always show images from :customer": "Mostrar siempre las imágenes de :customer",
+    "Attachment Name": "Nombre del adjunto",
+    "Attachment Reminder": "Recordatorio de adjuntos",
+    "Attachment not found": "Adjunto no encontrado",
+    "Delete :file_name?": "¿Borrar :file_name?",
+    "Download all": "Descargar todo",
+    "Hide images from other servers": "Ocultar imágenes de otros servidores",
+    "Images from other servers are not shown.": "No se muestran las imágenes de otros servidores.",
+    "Send Anyway": "Enviar de todos modos",
+    "Show images": "Mostrar imágenes",
+    "When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.": "Si una respuesta contiene una de estas palabras (una por línea) pero no tiene adjunto, Tallport pregunta antes de enviarla. Vacío: nunca.",
+    "Words": "Palabras",
+    "You mentioned :phrase but there is no attachment. Send anyway?": "Ha mencionado :phrase pero no hay ningún adjunto. ¿Enviar de todos modos?"
 }

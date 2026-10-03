@@ -185,6 +185,7 @@ class Conversation extends Model
         'state',
         'subject',
         'attachments',
+        'attachment name',
         'type',
         'body',
         'number',
@@ -2643,6 +2644,9 @@ class Conversation extends Model
         }
         if (!empty($filters['type'])) {
             $query_conversations->where('conversations.type', '=', $filters['type']);
+        }
+        if (!empty($filters['attachment name'])) {
+            $query_conversations->whereIn('conversations.id', \App\Search\ConversationSearch::withAttachmentNamed($filters['attachment name']));
         }
         if (!empty($filters['body'])) {
             $query_conversations->where('threads.body', $like_op, '%'.mb_strtolower($filters['body']).'%');
