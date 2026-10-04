@@ -93,6 +93,66 @@ class Module extends Model
         }
     }
 
+    /**
+     * The FreeScout module directory (images and versions), kept for 15 minutes.
+     * It's fetched only when $fetch: the Modules page checks it lazily.
+     */
+    public static function directory($fetch = true)
+    {
+        $directory = \Cache::get('modules_directory');
+        if (!$directory && $fetch) {
+            $directory = WpApi::getModules();
+            if ($directory && is_array($directory) && count($directory)) {
+                \Cache::put('modules_directory', $directory, now()->addMinutes(15));
+            }
+        }
+
+        return is_array($directory) ? $directory : [];
+    }
+
+    /**
+     * New versions of the installed modules, by alias: from the module directory, and for
+     * third-party modules from their latestVersionUrl (each kept for 15 minutes).
+     */
+    public static function availableUpdates()
+    {
+        $updates = [];
+        $modules = \Module::all();
+        $directory = collect(self::directory())->keyBy('alias');
+
+        foreach ($modules as $module) {
+            $alias = $module->getAlias();
+            $version = (string) $module->get('version');
+            $latest_version = $directory[$alias]['version'] ?? '';
+
+            $url = $module->get('latestVersionUrl');
+            if (!self::isOfficial($module->get('authorUrl')) && $url) {
+                $url_version = \Cache::remember('module_latest_version.'.md5($url), now()->addMinutes(15), function () use ($url) {
+                    try {
+                        $body = trim((string) (new \GuzzleHttp\Client())->request('GET', $url, \Helper::setGuzzleDefaultOptions())->getBody());
+                    } catch (\Exception $e) {
+                        return '';
+                    }
+                    // It may be the module.json file.
+                    if (preg_match('#"version":[^"]*"([\d\.]+)"#', $body, $m)) {
+                        return $m[1];
+                    }
+
+                    return $body;
+                });
+                if ($url_version && (!$latest_version || version_compare($url_version, $latest_version, '>'))) {
+                    $latest_version = $url_version;
+                }
+            }
+
+            if ($latest_version && version_compare($latest_version, $version, '>')) {
+                $updates[$alias] = ['name' => self::formatName($module->getName()), 'version' => $latest_version];
+            }
+        }
+
+        return $updates;
+    }
+
     public static function isOfficial($author_url)
     {
         return parse_url($author_url ?? '', PHP_URL_HOST) == parse_url(\Config::get('app.freescout_url') ?? '', PHP_URL_HOST);

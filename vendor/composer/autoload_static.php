@@ -997,6 +997,7 @@ class ComposerStaticInit2902b8515f6672bf67bcf119cdb6b034
         'App\\Livewire\\ConversationSubject' => __DIR__ . '/../..' . '/app/Livewire/ConversationSubject.php',
         'App\\Livewire\\ConversationThread' => __DIR__ . '/../..' . '/app/Livewire/ConversationThread.php',
         'App\\Livewire\\ConversationToolbar' => __DIR__ . '/../..' . '/app/Livewire/ConversationToolbar.php',
+        'App\\Livewire\\ModuleUpdates' => __DIR__ . '/../..' . '/app/Livewire/ModuleUpdates.php',
         'App\\Livewire\\NewConversation' => __DIR__ . '/../..' . '/app/Livewire/NewConversation.php',
         'App\\Mail\\Alert' => __DIR__ . '/../..' . '/app/Mail/Alert.php',
         'App\\Mail\\AutoReply' => __DIR__ . '/../..' . '/app/Mail/AutoReply.php',

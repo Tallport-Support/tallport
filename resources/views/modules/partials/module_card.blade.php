@@ -58,11 +58,10 @@
 				<button type="button" class="f-button f-button--danger delete-module-trigger" x-on:click="remove">{{ __('Delete') }}</button>
 			@endif
 		</div>
-		@if (!empty($module['new_version']))
-			<div class="f-alert f-alert--warning alert-module-update">
-				<div class="f-alert__body">{{ __('A new version is available') }}: <strong>{{ $module['new_version'] }}</strong> (<a href="{{ $module['detailsUrl'] }}?changelog=1" target="_blank">{{ __('View details') }}</a>)</div>
-				<div class="f-alert__actions"><button type="button" class="f-button f-button--small update-module-trigger" x-on:click="action($event, 'update')">{{ __('Update Now') }}</button></div>
-			</div>
-		@endif
+		{{-- Its new version, once App\Livewire\ModuleUpdates has checked. --}}
+		<div class="f-alert f-alert--warning alert-module-update" x-data="{ new_version: '' }" x-on:module-updates.window="new_version = $event.detail.versions[@js($module['alias'])] || ''" x-show="new_version" x-cloak>
+			<div class="f-alert__body">{{ __('A new version is available') }}: <strong x-text="new_version"></strong> (<a href="{{ $module['detailsUrl'] }}?changelog=1" target="_blank">{{ __('View details') }}</a>)</div>
+			<div class="f-alert__actions"><button type="button" class="f-button f-button--small update-module-trigger" x-on:click="action($event, 'update')">{{ __('Update Now') }}</button></div>
+		</div>
 	</div>
 </x-fruit::card>

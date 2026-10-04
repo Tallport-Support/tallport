@@ -24,27 +24,8 @@
             </div>
         </div>
 
-        @if ($updates_available)
-            <div class="f-alert f-alert--warning modules-updates">
-                <div class="f-alert__body">
-                    {{ __('There are updates available') }}:
-                    <ul id="new_versions_list">
-                        @php
-                            $new_v_counter = 0;
-                        @endphp
-                        @foreach ($installed_modules as $module)
-                            @if (!empty($module['new_version']))
-                                @php $new_v_counter++; @endphp
-                                <li><a href="#module-{{ $module['alias'] }}" data-module-alias="{{ $module['alias'] }}">{{ $module['name']}} ({{ $module['new_version'] }})</a></li>
-                            @endif
-                        @endforeach
-                    </ul>
-                </div>
-                @if ($new_v_counter)
-                    <div class="f-alert__actions"><button type="button" class="f-button f-button--small update-all-trigger" x-on:click="updateAll">{{ __('Update Now') }} ({{ $new_v_counter }})</button></div>
-                @endif
-            </div>
-        @endif
+        {{-- New versions are checked once the page is open. --}}
+        <livewire:module-updates lazy />
 
         @if ($invalid_symlinks)
             @include('modules/partials/invalid_symlinks')

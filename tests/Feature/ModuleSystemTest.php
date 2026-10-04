@@ -94,8 +94,8 @@ class ModuleSystemTest extends FeatureTestCase
     }
 
     /**
-     * The Modules page lists the installed modules (with updates from the
-     * directory), not FreeScout's directory or marketplace.
+     * The Modules page lists the installed modules, not FreeScout's directory or
+     * marketplace; their updates from the directory are checked once it's open.
      */
     public function testModulesPageShowsInstalledModulesOnly()
     {
@@ -107,13 +107,20 @@ class ModuleSystemTest extends FeatureTestCase
             ['alias' => 'shopmodule', 'name' => 'Shop Module', 'version' => '1.0.0', 'authorUrl' => 'https://example.org', 'detailsUrl' => '', 'img' => ''],
         ], now()->addMinutes(5));
 
-        $this->actingAs($this->createAdmin())->get('/modules/list')
+        $admin = $this->createAdmin();
+        $this->actingAs($admin)->get('/modules/list')
             ->assertStatus(200)
             ->assertSee('TpModule')
-            ->assertSee('There are updates available')
+            ->assertSee('module-updates')
+            ->assertDontSee('There are updates available')
             ->assertDontSee('Modules Directory')
             ->assertDontSee('Marketplace')
             ->assertDontSee('Other Official Module')
             ->assertDontSee('Shop Module');
+
+        \Livewire\Livewire::actingAs($admin)->withoutLazyLoading()->test(\App\Livewire\ModuleUpdates::class)
+            ->assertSee('There are updates available')->assertSee('TpModule (2.0.0)')->assertDontSee('Shop Module')
+            ->assertDispatched('module-updates', versions: ['tpmodule' => '2.0.0']);
+        \Livewire\Livewire::actingAs($this->createUser())->withoutLazyLoading()->test(\App\Livewire\ModuleUpdates::class)->assertForbidden();
     }
 }
