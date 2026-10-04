@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'narrow')
+
 @section('title_full', __('Preferences').' - '.$user->getFullName())
 
 @section('main_class', 'fruit-ui')
@@ -10,7 +12,7 @@
 
 @section('content')
     <div class="page-content">
-        <form class="settings-form" method="POST" action="{{ route('users.preferences.save', ['id' => $user->id]) }}">
+        <form id="page-form" class="settings-form" method="POST" action="{{ route('users.preferences.save', ['id' => $user->id]) }}">
             {{ csrf_field() }}
 
             {{-- Unset: Pending after a reply, then the next active conversation. --}}
@@ -31,9 +33,10 @@
                 </x-fruit::field>
             </x-fruit::form-section>
 
-            <footer class="f-form-row settings-form__actions">
-                <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
-            </footer>
         </form>
     </div>
+@endsection
+
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
 @endsection

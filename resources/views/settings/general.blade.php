@@ -1,7 +1,7 @@
 @php
     $custom_number = old('settings.custom_number', $settings['custom_number'] ? 'true' : 'false') === 'true';
 @endphp
-<form class="settings-form" method="POST" action="" x-data="{ customNumber: @js($custom_number) }">
+<form id="page-form" class="settings-form" method="POST" action="" x-data="{ customNumber: @js($custom_number) }">
     {{ csrf_field() }}
 
     <x-fruit::form-section :title="__('General')">
@@ -91,7 +91,8 @@
 
     @action('settings.general.append', $settings, $errors)
 
-    <footer class="f-form-row settings-form__actions">
-        <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
-    </footer>
 </form>
+
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
+@endsection

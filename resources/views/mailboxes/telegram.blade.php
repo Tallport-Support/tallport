@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'narrow')
+
 @section('title_full', __('Telegram').' - '.$mailbox->name)
 
 @section('main_class', 'fruit-ui')
@@ -39,7 +41,7 @@
                 </x-fruit::alert>
             @endif
 
-            <form class="settings-form" method="POST" action="{{ route('mailboxes.telegram.save', ['id' => $mailbox->id]) }}">
+            <form id="page-form" class="settings-form" method="POST" action="{{ route('mailboxes.telegram.save', ['id' => $mailbox->id]) }}">
                 {{ csrf_field() }}
 
                 <x-fruit::form-section :title="__('Bot')">
@@ -87,11 +89,11 @@
                     @endif
                 </x-fruit::form-section>
 
-                <footer class="f-form-row settings-form__actions">
-                    <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
-                </footer>
             </form>
         </div>
     </div>
 @endsection
 
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
+@endsection

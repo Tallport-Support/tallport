@@ -3,7 +3,7 @@
     $alert_logs = (bool) old('settings.alert_logs', $settings['alert_logs']);
     $alert_logs_names = old('settings.alert_logs_names', $settings['alert_logs_names']);
 @endphp
-<form class="settings-form" method="POST" action="" x-data="{ alertFetch: @js($alert_fetch), alertLogs: @js($alert_logs) }">
+<form id="page-form" class="settings-form" method="POST" action="" x-data="{ alertFetch: @js($alert_fetch), alertLogs: @js($alert_logs) }">
     {{ csrf_field() }}
 
     <x-fruit::form-section :title="__('Email Alerts For Administrators')">
@@ -49,7 +49,8 @@
         </div>
     </x-fruit::form-section>
 
-    <footer class="f-form-row settings-form__actions">
-        <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
-    </footer>
 </form>
+
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
+@endsection

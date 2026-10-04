@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'narrow')
+
 @section('title_full', __('Auto Reply').' - '.$mailbox->name)
 
 @section('main_class', 'fruit-ui')
@@ -12,7 +14,7 @@
     <div class="page-content">
         @include('partials/flash_messages')
 
-        <form class="settings-form" method="POST" action="">
+        <form id="page-form" class="settings-form" method="POST" action="">
             {{ csrf_field() }}
 
             <x-fruit::form-section :title="__('Auto Reply')" :footer="__('Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).').' '.__('Auto replies don\'t include your mailbox signature, so be sure to add your contact information if necessary.')">
@@ -74,10 +76,11 @@
                 @endif
             </x-fruit::form-section>
 
-            <footer class="f-form-row settings-form__actions">
-                <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
-            </footer>
         </form>
     </div>
 
+@endsection
+
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
 @endsection

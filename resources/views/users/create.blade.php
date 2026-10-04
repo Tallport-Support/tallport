@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'narrow')
+
 @section('title', __('New User'))
 
 @section('main_class', 'fruit-ui')
@@ -17,7 +19,7 @@
     @php
         $send_invite = !empty(old('send_invite')) || empty(old('role'));
     @endphp
-    <form class="settings-form" method="POST" action="" x-data="{ sendInvite: @js($send_invite) }">
+    <form id="page-form" class="settings-form" method="POST" action="" x-data="{ sendInvite: @js($send_invite) }">
         {{ csrf_field() }}
 
         @if (Auth::user()->isAdmin())
@@ -76,10 +78,11 @@
             </x-fruit::field>
         </x-fruit::form-section>
 
-        <footer class="f-form-row settings-form__actions">
-            <a href="{{ route('users') }}" class="f-button f-button--ghost">{{ __('Cancel') }}</a>
-            <x-fruit::button type="submit" variant="primary">{{ __('Create User') }}</x-fruit::button>
-        </footer>
     </form>
 </div>
+@endsection
+
+@section('page_footer')
+    <a href="{{ route('users') }}" class="f-button f-button--ghost">{{ __('Cancel') }}</a>
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Create User') }}</x-fruit::button>
 @endsection

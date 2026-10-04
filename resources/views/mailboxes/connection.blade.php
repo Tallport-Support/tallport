@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'narrow')
+
 @section('title_full', __('Connection Settings').' - '.$mailbox->name)
 
 @section('body_attrs')@parent data-mailbox_id="{{ $mailbox->id }}"@endsection
@@ -16,7 +18,7 @@
 
         @include('partials/flash_messages')
 
-        <form class="settings-form" method="POST" action="" x-data="tallportMailboxConnection({{ $mailbox->id }}, {{ App\Mailbox::OUT_METHOD_SMTP }})" x-on:change="methodChanged">
+        <form id="page-form" class="settings-form" method="POST" action="" x-data="tallportMailboxConnection({{ $mailbox->id }}, {{ App\Mailbox::OUT_METHOD_SMTP }})" x-on:change="methodChanged">
             {{ csrf_field() }}
 
             <p class="f-help">
@@ -124,9 +126,10 @@
                 <pre class="hidden" id="send_test_log"></pre>
             </x-fruit::form-section>
 
-            <footer class="f-form-row settings-form__actions">
-                <x-fruit::button type="submit" variant="primary">{{ __('Save Settings') }}</x-fruit::button>
-            </footer>
         </form>
     </div>
+@endsection
+
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save Settings') }}</x-fruit::button>
 @endsection

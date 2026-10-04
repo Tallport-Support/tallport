@@ -55,6 +55,7 @@ final class ComponentContract
         'remote-dialog' => [],
         'generated' => ['roles' => ['note']],
         'suggestion' => ['roles' => ['region']],
+        'page' => ['options' => ['width' => ['narrow', 'medium', 'wide']]],
         'disclosure' => ['roles' => ['group']],
         'editor' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract', 'options' => ['paste' => ['rich', 'plain']]],
         'empty-state' => ['roles' => ['group', 'region']],
@@ -391,6 +392,17 @@ final class ComponentContract
         }
 
         return $tone;
+    }
+
+    /** A page's width and its title's heading level (1 to 3). */
+    public static function page(mixed $width, mixed $level, ComponentAttributeBag $attributes): int
+    {
+        self::validate('page', $attributes, ['width' => $width]);
+        if (! in_array((string) $level, ['1', '2', '3'], true)) {
+            throw new InvalidArgumentException('FruitUI page level must be 1, 2 or 3.');
+        }
+
+        return (int) $level;
     }
 
     /** A Field's label prop or label slot, which must have visible text. */

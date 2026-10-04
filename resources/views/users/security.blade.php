@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'narrow')
+
 @section('title_full', __('Security').' - '.$user->getFullName())
 
 @section('main_class', 'fruit-ui')

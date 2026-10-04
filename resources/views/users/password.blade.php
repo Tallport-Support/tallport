@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'narrow')
+
 @section('title_full', __('Change your password').' - '.$user->getFullName())
 
 @section('main_class', 'fruit-ui')
@@ -10,7 +12,7 @@
 
 @section('content')
     <div class="page-content">
-        <form class="settings-form" method="POST" action="">
+        <form id="page-form" class="settings-form" method="POST" action="">
             {{ csrf_field() }}
 
             <x-fruit::form-section :title="__('Change your password')">
@@ -27,10 +29,11 @@
                 </x-fruit::field>
             </x-fruit::form-section>
 
-            <footer class="f-form-row settings-form__actions">
-                <a href="{{ route('users.profile', ['id' => $user->id]) }}" class="f-button f-button--ghost">{{ __('Cancel') }}</a>
-                <x-fruit::button type="submit" variant="primary">{{ __('Save Password') }}</x-fruit::button>
-            </footer>
         </form>
     </div>
+@endsection
+
+@section('page_footer')
+    <a href="{{ route('users.profile', ['id' => $user->id]) }}" class="f-button f-button--ghost">{{ __('Cancel') }}</a>
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save Password') }}</x-fruit::button>
 @endsection

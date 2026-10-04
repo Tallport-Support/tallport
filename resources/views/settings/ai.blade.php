@@ -159,7 +159,8 @@
         </x-fruit::form-section>
     @endif
 
-    <footer class="f-form-row settings-form__actions">
-        <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
-    </footer>
 </form>
+
+@section('page_footer')
+    <x-fruit::button type="submit" form="ai_settings_form" variant="primary">{{ __('Save') }}</x-fruit::button>
+@endsection

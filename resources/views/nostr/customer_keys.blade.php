@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'medium')
+
 @section('title_full', $customer->getFullName(true).' - '.__('Nostr'))
 @section('body_class', 'sidebar-no-height')
 @section('main_class', 'fruit-ui')

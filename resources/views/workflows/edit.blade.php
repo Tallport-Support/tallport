@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'medium')
+
 @section('title_full', ($workflow->exists ? $workflow->name : __('New Workflow')).' - '.($mailbox ? $mailbox->name : __('All Mailboxes')))
 
 @section('main_class', 'fruit-ui')
@@ -22,7 +24,7 @@
     <div class="page-content">
         @include('partials/flash_messages')
 
-        <form class="settings-form workflow-form" method="POST" action="{{ $mailbox ? route('mailboxes.workflows.save', ['mailbox_id' => $mailbox->id]) : route('workflows.save') }}" x-data="tallportWorkflowEditor('{{ $type }}')" x-on:submit="serialize">
+        <form id="page-form" class="settings-form workflow-form" method="POST" action="{{ $mailbox ? route('mailboxes.workflows.save', ['mailbox_id' => $mailbox->id]) : route('workflows.save') }}" x-data="tallportWorkflowEditor('{{ $type }}')" x-on:submit="serialize">
             {{ csrf_field() }}
             <input type="hidden" name="workflow_id" value="{{ $workflow->id }}">
             <input type="hidden" name="conditions" value="">
@@ -69,12 +71,11 @@
                 @include('workflows/partials/editor', ['mode' => 'actions'])
             </section>
 
-            <div class="settings-form__actions f-row">
-                <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
-                @if ($workflow->exists)
-                    <x-fruit::button variant="danger" class="workflow-delete" data-workflow-id="{{ $workflow->id }}" data-redirect="{{ $index_url }}" data-confirm="{{ __('Delete this workflow?') }}" x-on:click="remove">{{ __('Delete') }}</x-fruit::button>
-                    @if ($workflow->isAutomatic())<span class="f-muted">{{ __('Ran on :count conversations', ['count' => $workflow->conversationsCount()]) }}</span>@endif
-                @endif
+            <div class="f-row workflow-form__more">
+            @if ($workflow->exists)
+                <x-fruit::button variant="danger" class="workflow-delete" data-workflow-id="{{ $workflow->id }}" data-redirect="{{ $index_url }}" data-confirm="{{ __('Delete this workflow?') }}" x-on:click="remove">{{ __('Delete') }}</x-fruit::button>
+                @if ($workflow->isAutomatic())<span class="f-muted">{{ __('Ran on :count conversations', ['count' => $workflow->conversationsCount()]) }}</span>@endif
+            @endif
             </div>
         </form>
 
@@ -90,3 +91,7 @@
     {{-- The email actions' body editor, cloned by tallportWorkflowEditor (public/js/workflows.js). --}}
     <template id="wf-editor-template"><x-editor data-field="body" rows="6" :aria-label="__('Message')" vars></x-editor></template>
 @append
+
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
+@endsection

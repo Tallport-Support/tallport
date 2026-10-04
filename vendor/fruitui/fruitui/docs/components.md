@@ -299,6 +299,25 @@ Without Alpine, handles stay hidden and the CSS layout remains usable. **Applica
 
 The Support example (`support.html`, `examples/support/support.css`) goes further at narrower widths, showing one pane at a time with back buttons, as phones do.
 
+## Page column
+
+Pages that are read or filled in (settings, account and profile pages, a customer's details, reports) keep their content in one column centered in the pane, instead of stretching across a wide window where labels drift away from their fields. `x-fruit::page` gives the header, the content and the save bar the same width, so the title and Save line up with what they belong to. `width="narrow"` (640px) suits forms and settings, `medium` (880px, the default) reading and detail pages, `wide` (1200px) tables and dashboards. The `footer` slot is a save bar that stays at the bottom of the scrolling pane or window; set `--f-page-background` to the background behind the page so it covers content scrolling under it.
+
+```blade
+<form wire:submit="save">
+    <x-fruit::page width="narrow" title="Support mailbox" description="How this mailbox sends and receives.">
+        <x-fruit::form-section title="Mailbox">…</x-fruit::form-section>
+        <x-slot:footer>
+            <p class="f-help" role="status"><span wire:dirty>You have unsaved changes.</span></p>
+            <x-fruit::button wire:click="revert">Revert</x-fruit::button>
+            <x-fruit::button type="submit" variant="primary">Save</x-fruit::button>
+        </x-slot:footer>
+    </x-fruit::page>
+</form>
+```
+
+Settings work best inside the app rather than as a separate full-width page: keep the app's frame, show the settings sections in the sidebar with a way back, and put each settings page in a narrow column. Settings for one thing (a mailbox, a view) open in place, in a dialog or an inspector.
+
 ## Message composers
 
 A reply composer with recipients and options keeps them in the form's header and footer: token fields for To, Cc and Bcc and a From select in `f-composer__header`, and Status and Assignee selects with a split Send button (`f-button-group` with a Menu of "Send & Close" variants) in `f-composer__footer`. Every control keeps its own label and value.

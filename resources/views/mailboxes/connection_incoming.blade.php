@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'narrow')
+
 @section('title_full', __('Connection Settings').' - '.$mailbox->name)
 
 @section('body_attrs')@parent data-mailbox_id="{{ $mailbox->id }}"@endsection
@@ -171,10 +173,10 @@
                 <pre class="hidden" id="fetch_test_log"></pre>
             </x-fruit::form-section>
 
-            <footer class="f-form-row settings-form__actions">
-                <x-fruit::button type="submit" variant="primary">{{ __('Save Settings') }}</x-fruit::button>
-            </footer>
         </form>
     </div>
 @endsection
 
+@section('page_footer')
+    <x-fruit::button type="submit" form="form-fetching" variant="primary">{{ __('Save Settings') }}</x-fruit::button>
+@endsection

@@ -3,7 +3,7 @@
 @action('customer.edit.before_form', $customer)
 
 <div class="page-content">
-    <form class="settings-form" method="POST" action="" enctype="multipart/form-data" x-data="tallportMultiInput" @click="click($event)">
+    <form id="page-form" class="settings-form" method="POST" action="" enctype="multipart/form-data" x-data="tallportMultiInput" @click="click($event)">
         {{ csrf_field() }}
 
         <x-fruit::form-section :title="__('Profile')">
@@ -147,15 +147,16 @@
 
         @action('customer.edit.after_fields', $customer, $errors)
 
-        <footer class="f-form-row settings-form__actions">
-            <a href="{{ route('customers.merge', ['id' => $customer->id]) }}" class="f-button f-button--ghost">{{ __('Merge') }}</a>
-            <x-fruit::button type="submit" variant="primary">
-                @if (!empty($save_button_title))
-                    {{ $save_button_title }}
-                @else
-                    {{ __('Save Profile') }}
-                @endif
-            </x-fruit::button>
-        </footer>
     </form>
 </div>
+
+@section('page_footer')
+    <a href="{{ route('customers.merge', ['id' => $customer->id]) }}" class="f-button f-button--ghost">{{ __('Merge') }}</a>
+    <x-fruit::button type="submit" form="page-form" variant="primary">
+        @if (!empty($save_button_title))
+            {{ $save_button_title }}
+        @else
+            {{ __('Save Profile') }}
+        @endif
+    </x-fruit::button>
+@endsection

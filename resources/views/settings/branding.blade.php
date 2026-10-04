@@ -1,4 +1,4 @@
-<form class="settings-form" method="POST" action="" enctype="multipart/form-data">
+<form id="page-form" class="settings-form" method="POST" action="" enctype="multipart/form-data">
     {{ csrf_field() }}
 
     <x-fruit::form-section :title="__('Branding')">
@@ -61,8 +61,8 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <footer class="f-form-row settings-form__actions">
-        <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
-    </footer>
 </form>
 
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
+@endsection

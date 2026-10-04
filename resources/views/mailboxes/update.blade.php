@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'narrow')
+
 @section('title_full', __('Edit Mailbox').' - '.$mailbox->name)
 
 @section('body_attrs')@parent data-mailbox_id="{{ $mailbox->id }}"@endsection
@@ -14,7 +16,7 @@
     <div class="page-content">
         @include('partials/flash_messages')
 
-        <form class="settings-form" method="POST" action="" enctype="multipart/form-data" x-data="tallportMailboxUpdate(@js((string) App\Mailbox::FROM_NAME_CUSTOM))">
+        <form id="page-form" class="settings-form" method="POST" action="" enctype="multipart/form-data" x-data="tallportMailboxUpdate(@js((string) App\Mailbox::FROM_NAME_CUSTOM))">
             {{ csrf_field() }}
 
             @action('mailbox.update.before_name', $mailbox, $errors)
@@ -115,9 +117,6 @@
                 </x-fruit::form-section>
             @endif
 
-            <footer class="f-form-row settings-form__actions">
-                <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
-            </footer>
         </form>
 
         @if (auth()->user()->isAdmin())
@@ -145,4 +144,6 @@
 
 @endsection
 
-
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
+@endsection

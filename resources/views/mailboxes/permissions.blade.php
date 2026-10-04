@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'wide')
+
 @section('title_full', __('Mailbox Permissions').' - '.$mailbox->name)
 
 @section('main_class', 'fruit-ui')
@@ -12,7 +14,7 @@
     <div class="page-content">
         @include('partials/flash_messages')
 
-        <form method="POST" action="" class="settings-form settings-form--wide">
+        <form id="page-form" method="POST" action="" class="settings-form settings-form--wide">
             {{ csrf_field() }}
 
             <x-fruit::form-section :title="__('Users')" :footer="__('Administrators have access to all mailboxes and are not listed here.')">
@@ -68,10 +70,10 @@
                 </div>
             </x-fruit::form-section>
 
-            <footer class="f-form-row settings-form__actions">
-                <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
-            </footer>
         </form>
     </div>
 @endsection
 
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
+@endsection

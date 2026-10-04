@@ -1,4 +1,4 @@
-<form class="settings-form" method="POST" action="" x-data="{ driver: @js(old('settings.mail_driver', $settings['mail_driver'])) }">
+<form id="page-form" class="settings-form" method="POST" action="" x-data="{ driver: @js(old('settings.mail_driver', $settings['mail_driver'])) }">
     {{ csrf_field() }}
 
     <x-fruit::form-section :title="__('System Emails')" :footer="__('These settings are used to send system emails (alerts to admin and invitation emails to users).').' '.__('If you want to send system emails via webmail providers (Gmail, Yahoo, etc), use only SMTP method and make sure that SMTP username is equal to \'Mail From\', otherwise webmail provider won\'t send emails.')">
@@ -75,7 +75,8 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <footer class="f-form-row settings-form__actions">
-        <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
-    </footer>
 </form>
+
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
+@endsection

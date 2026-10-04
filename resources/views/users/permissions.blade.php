@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'narrow')
+
 @section('title_full', __('User Permissions').' - '.$user->first_name.' '.$user->last_name)
 
 @section('main_class', 'fruit-ui')
@@ -12,7 +14,7 @@
     <div class="page-content">
         @include('partials/flash_messages')
 
-        <form class="settings-form" method="POST" action="">
+        <form id="page-form" class="settings-form" method="POST" action="">
             {{ csrf_field() }}
 
             @if (count($mailboxes))
@@ -41,10 +43,11 @@
             @endif
 
             @if (count($mailboxes) || !$user->isAdmin())
-                <footer class="f-form-row settings-form__actions">
-                    <x-fruit::button type="submit" variant="primary">{{ __('Save Permissions') }}</x-fruit::button>
-                </footer>
             @endif
         </form>
     </div>
+@endsection
+
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save Permissions') }}</x-fruit::button>
 @endsection

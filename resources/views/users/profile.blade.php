@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'narrow')
+
 @section('title_full', __('Edit User').' - '.$user->getFullName())
 
 @section('body_attrs')@parent data-user_id="{{ $user->id }}"@endsection
@@ -14,7 +16,7 @@
     <div class="page-content" x-data="tallportUserProfile">
         @include('partials/flash_messages')
 
-        <form class="settings-form" method="POST" action="" enctype="multipart/form-data">
+        <form id="page-form" class="settings-form" method="POST" action="" enctype="multipart/form-data">
             {{ csrf_field() }}
 
             @if (auth()->user()->isAdmin() || $user->invite_state == App\User::INVITE_STATE_SENT || $user->invite_state == App\User::INVITE_STATE_NOT_INVITED)
@@ -148,20 +150,19 @@
                 </x-fruit::form-section>
             @endif
 
-            <footer class="f-form-row settings-form__actions">
-                @if (Auth::user()->isAdmin())
-                    @if ($user->invite_state == App\User::INVITE_STATE_ACTIVATED)
-                        @if ($user->id != Auth::user()->id)
-                            <button type="button" class="f-button f-button--ghost reset-password-trigger" @click="resetPassword($el)">{{ __('Reset password') }}</button>
-                        @endif
-                    @elseif ($user->invite_state == App\User::INVITE_STATE_SENT)
-                        <button type="button" class="f-button f-button--ghost resend-invite-trigger" @click="sendInvite($el, true)">{{ __('Re-send invite email') }}</button>
-                    @elseif ($user->invite_state == App\User::INVITE_STATE_NOT_INVITED)
-                        <button type="button" class="f-button f-button--ghost send-invite-trigger" @click="sendInvite($el, false)">{{ __('Send invite email') }}</button>
+            <div class="f-row">
+            @if (Auth::user()->isAdmin())
+                @if ($user->invite_state == App\User::INVITE_STATE_ACTIVATED)
+                    @if ($user->id != Auth::user()->id)
+                        <button type="button" class="f-button f-button--ghost reset-password-trigger" @click="resetPassword($el)">{{ __('Reset password') }}</button>
                     @endif
+                @elseif ($user->invite_state == App\User::INVITE_STATE_SENT)
+                    <button type="button" class="f-button f-button--ghost resend-invite-trigger" @click="sendInvite($el, true)">{{ __('Re-send invite email') }}</button>
+                @elseif ($user->invite_state == App\User::INVITE_STATE_NOT_INVITED)
+                    <button type="button" class="f-button f-button--ghost send-invite-trigger" @click="sendInvite($el, false)">{{ __('Send invite email') }}</button>
                 @endif
-                <x-fruit::button type="submit" variant="primary">{{ __('Save Profile') }}</x-fruit::button>
-            </footer>
+            @endif
+            </div>
         </form>
 
         @if (Auth::user()->can('delete', $user))
@@ -193,4 +194,8 @@
             </x-fruit::dialog>
         @endif
     </div>
+@endsection
+
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save Profile') }}</x-fruit::button>
 @endsection

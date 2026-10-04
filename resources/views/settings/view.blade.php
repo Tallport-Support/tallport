@@ -2,6 +2,8 @@
 
 @section('title_full', __('Settings').' - '.$section_name)
 
+@section('page_width', $section == 'api' ? 'medium' : 'narrow')
+
 @section('sidebar')
     <x-page-nav :label="__('Settings')">
         <x-slot:title><h1>{{ __('Settings') }}</h1></x-slot:title>

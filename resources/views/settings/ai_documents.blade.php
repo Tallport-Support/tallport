@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'medium')
+
 @section('title', __('Documentation'))
 
 {{-- Converted to FruitUI: the whole main area is in its scope. --}}

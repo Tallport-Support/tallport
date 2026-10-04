@@ -2023,7 +2023,6 @@ a.disabled:focus {
     display: flex;
     flex-direction: column;
     gap: 18px;
-    max-width: 640px;
 }
 .settings-form__heading {
     margin: 18px 0 0;
@@ -2098,9 +2097,6 @@ a.disabled:focus {
 }
 .settings-form__note {
     margin-top: -10px;
-}
-.settings-form.settings-form--wide {
-    max-width: 900px;
 }
 .passkey-name {
     width: auto;
@@ -2322,6 +2318,12 @@ a.disabled:focus {
 }
 .conv-new-form .conv-block {
     margin-top: 16px;
+}
+/* A page column (layouts/app's page_width): its own padding, not the old wrappers'. */
+.app-page .page-content,
+.app-page > .f-page__body > .content {
+    padding: 0;
+    margin: 0;
 }
 /* Settings pages: grouped sections on the grouped background, as in FruitUI's
    settings example. */

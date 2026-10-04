@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'narrow')
+
 @section('title', __('New Mailbox'))
 
 @section('main_class', 'fruit-ui')
@@ -14,7 +16,7 @@
 <div class="page-content">
     @include('partials/flash_messages')
 
-    <form class="settings-form" method="POST" action="">
+    <form id="page-form" class="settings-form" method="POST" action="">
         {{ csrf_field() }}
 
         <x-fruit::form-section :title="__('Mailbox')" :footer="__('Customers email this address for help (e.g. support@domain.com)')">
@@ -50,10 +52,11 @@
             @error('users')<p class="f-error">{{ $message }}</p>@enderror
         </x-fruit::form-section>
 
-        <footer class="f-form-row settings-form__actions">
-            <a href="{{ route('mailboxes') }}" class="f-button f-button--ghost">{{ __('Cancel') }}</a>
-            <x-fruit::button type="submit" variant="primary">{{ __('Create Mailbox') }}</x-fruit::button>
-        </footer>
     </form>
 </div>
+@endsection
+
+@section('page_footer')
+    <a href="{{ route('mailboxes') }}" class="f-button f-button--ghost">{{ __('Cancel') }}</a>
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Create Mailbox') }}</x-fruit::button>
 @endsection

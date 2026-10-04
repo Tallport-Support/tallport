@@ -16,6 +16,77 @@
   .f-toolbar__spacer {
     flex: 1;
   }
+  /* A page's content column, centered in its pane: the header, content and an optional save bar
+     share one width, so a title and its Save button line up with the content. Narrow suits forms
+     and settings, medium reading and detail pages, wide tables. */
+  .f-page {
+    --f-page-width: 880px;
+    --f-page-inline: var(--f-page-padding-inline, 24px);
+    display: grid;
+    gap: var(--f-page-gap, 24px);
+    align-content: start;
+    width: 100%;
+    max-width: calc(var(--f-page-width) + 2 * var(--f-page-inline));
+    margin-inline: auto;
+    padding: var(--f-page-padding-block, 28px) var(--f-page-inline);
+  }
+  .f-page--narrow {
+    --f-page-width: 640px;
+  }
+  .f-page--wide {
+    --f-page-width: 1200px;
+  }
+  .f-page:has(> .f-page__footer) {
+    padding-bottom: 0;
+  }
+  .f-page__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 8px 16px;
+  }
+  .f-page__title {
+    font-size: var(--f-text-2xl);
+    font-weight: 700;
+  }
+  .f-page__description {
+    margin-top: 4px;
+    color: var(--f-secondary);
+  }
+  .f-page__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .f-page__body {
+    display: grid;
+    gap: var(--f-page-gap, 24px);
+    min-width: 0;
+  }
+  /* The save bar stays at the bottom of the scrolling pane or window: status first, actions last.
+     It spans the column on the page's background (--f-page-background), so only its line shows. */
+  .f-page__footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-block: 12px var(--f-page-padding-block, 28px);
+    border-top: 1px solid var(--f-border);
+    background: var(--f-page-background, var(--f-bg));
+  }
+  .f-page__footer > :is(p, .f-help):first-child {
+    margin-inline-end: auto;
+  }
+  @media (max-width: 600px) {
+    .f-page {
+      --f-page-inline: var(--f-page-padding-inline, 16px);
+    }
+  }
   .f-sidebar {
     padding: 14px 12px;
     background: var(--f-material);

@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'narrow')
+
 @section('title_full', $customer->getFullName(true).' - '.__('Customer Profile'))
 @section('body_class', 'sidebar-no-height')
 

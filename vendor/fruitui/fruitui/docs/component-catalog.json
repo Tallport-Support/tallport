@@ -1401,5 +1401,21 @@
         "options": "`title` (required), `meta` (for example language and confidence; a prop or a slot, for markup bound from script). Slots: default (the suggestion, rich text), `dismiss` (a close button), `status` (`tone`: neutral, working with a spinner, warning, danger; bindable `data-tone`), `translation` (with `lang`; announced as Translation), `actions` (Insert, Draft Again), `details` (sections with an `h4` and a list; `ul.f-suggestion__sources` for sources: the linked title, then a muted site, both shortened)."
       }
     }
+  },
+  {
+    "id": "page-column",
+    "kind": "pattern",
+    "classes": ["f-page"],
+    "blade": ["page"],
+    "uses": ["settings.html", "examples/laravel/settings.blade.php"],
+    "contracts": {
+      "page": {
+        "purpose": "Give a page one content column, centered in its pane, that its header, content and save bar share.",
+        "element": "`div.f-page` with an optional `header` (title heading, description, actions), the content, and an optional `footer` that sticks to the bottom of the scrolling pane or window.",
+        "state": "No state.",
+        "keyboard": "No keyboard behavior of its own.",
+        "options": "`width`: narrow (640px, forms and settings), medium (default, 880px, reading and detail pages), wide (1200px, tables). `title`, `description`, `level` (1 to 3, default 1). Slots: default (content), `actions` (beside the title), `footer` (a save bar: status first, actions last). Set `--f-page-background` to the background the page sits on, so the save bar covers what scrolls beneath it; `--f-page-gap`, `--f-page-padding-block` and `--f-page-padding-inline` adjust spacing."
+      }
+    }
   }
 ]

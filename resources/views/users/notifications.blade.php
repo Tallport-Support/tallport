@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'medium')
+
 @section('title_full', __('Notifications').' - '.$user->first_name.' '.$user->last_name)
 
 @if ($user->id == Auth::user()->id)
@@ -16,14 +18,11 @@
     <div class="page-content">
         @include('partials/flash_messages')
 
-        <form method="POST" action="" class="user-subscriptions">
+        <form id="page-form" method="POST" action="" class="user-subscriptions">
             {{ csrf_field() }}
             <div class="f-table__scroll">
                 @include('users/subscriptions_table')
             </div>
-            <footer class="f-form-row settings-form__actions">
-                <x-fruit::button type="submit" variant="primary">{{ __('Save Notifications') }}</x-fruit::button>
-            </footer>
         </form>
 
         @if ($user->id == Auth::user()->id)
@@ -33,4 +32,8 @@
             </x-fruit::dialog>
         @endif
     </div>
+@endsection
+
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save Notifications') }}</x-fruit::button>
 @endsection

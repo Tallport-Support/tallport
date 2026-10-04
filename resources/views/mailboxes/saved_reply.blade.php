@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'narrow')
+
 @section('title_full', ($saved_reply->exists ? $saved_reply->name : __('New Saved Reply')).' - '.$mailbox->name)
 
 @section('main_class', 'fruit-ui')
@@ -12,7 +14,7 @@
     <div class="page-content">
         @include('partials/flash_messages')
 
-        <form class="settings-form" method="POST" action="{{ route('mailboxes.saved_replies.save', ['id' => $mailbox->id]) }}" enctype="multipart/form-data">
+        <form id="page-form" class="settings-form" method="POST" action="{{ route('mailboxes.saved_replies.save', ['id' => $mailbox->id]) }}" enctype="multipart/form-data">
             {{ csrf_field() }}
             <input type="hidden" name="saved_reply_id" value="{{ $saved_reply->id }}">
 
@@ -59,10 +61,6 @@
                 </x-fruit::form-section>
             @endif
 
-            <footer class="f-form-row settings-form__actions">
-                <a href="{{ route('mailboxes.saved_replies', ['id' => $mailbox->id]) }}" class="f-button f-button--ghost">{{ __('Cancel') }}</a>
-                <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
-            </footer>
         </form>
 
         @if ($saved_reply->exists)
@@ -73,3 +71,7 @@
     </div>
 @endsection
 
+@section('page_footer')
+    <a href="{{ route('mailboxes.saved_replies', ['id' => $mailbox->id]) }}" class="f-button f-button--ghost">{{ __('Cancel') }}</a>
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
+@endsection

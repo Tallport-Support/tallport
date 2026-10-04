@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'medium')
+
 @section('title', $article->exists ? $article->title : __('New Article'))
 
 @section('main_class', 'fruit-ui')
@@ -12,7 +14,7 @@
     <div class="page-content kb">
         @include('partials/flash_messages')
 
-        <form class="settings-form kb-edit" method="POST" action="{{ route('kb.save') }}">
+        <form id="page-form" class="settings-form kb-edit" method="POST" action="{{ route('kb.save') }}">
             {{ csrf_field() }}
             <input type="hidden" name="article_id" value="{{ $article->id }}">
 
@@ -46,13 +48,6 @@
                 <x-editor id="kb_body" name="body" rows="14">{{ old('body', $article->body) }}</x-editor>
             </x-fruit::field>
 
-            <div class="settings-form__actions f-row">
-                <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
-                <a href="{{ $article->exists ? route('kb.article', ['id' => $article->id]) : route('kb') }}" class="f-button f-button--ghost">{{ __('Cancel') }}</a>
-                @if ($article->exists)
-                    <x-fruit::button type="submit" variant="danger" form="kb_delete_form" class="kb-edit__delete">{{ __('Delete') }}</x-fruit::button>
-                @endif
-            </div>
         </form>
 
         @if ($article->exists)
@@ -61,4 +56,12 @@
             </form>
         @endif
     </div>
+@endsection
+
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
+    <a href="{{ $article->exists ? route('kb.article', ['id' => $article->id]) : route('kb') }}" class="f-button f-button--ghost">{{ __('Cancel') }}</a>
+    @if ($article->exists)
+        <x-fruit::button type="submit" variant="danger" form="kb_delete_form" class="kb-edit__delete">{{ __('Delete') }}</x-fruit::button>
+    @endif
 @endsection

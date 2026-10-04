@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_width', 'narrow')
+
 @section('title_full', __('Nostr').' - '.$mailbox->name)
 
 @section('main_class', 'fruit-ui')
@@ -308,7 +310,7 @@
                 </x-fruit::disclosure>
             @endif
 
-            <form class="settings-form" method="POST" action="{{ route('mailboxes.nostr.save', ['id' => $mailbox->id]) }}">
+            <form id="page-form" class="settings-form" method="POST" action="{{ route('mailboxes.nostr.save', ['id' => $mailbox->id]) }}">
                 {{ csrf_field() }}
 
                 <x-fruit::switch name="enabled" value="1" id="nostr_enabled" :checked="(bool) old('enabled', $cfg->enabled)">{{ __('Enable Nostr') }}</x-fruit::switch>
@@ -367,12 +369,6 @@
                     <x-fruit::textarea id="nostr_auto_reply_text" name="auto_reply_text" rows="4">{{ old('auto_reply_text', $cfg->auto_reply_text ?? '') }}</x-fruit::textarea>
                 </x-fruit::field>
 
-                <div class="settings-form__actions f-row">
-                    <x-fruit::button type="submit" name="action" value="save" variant="primary">{{ __('Save') }}</x-fruit::button>
-                    @if ($cfg->pubkey)
-                        <x-fruit::button type="submit" name="action" value="announce" title="{{ __('Publish the profile and relay lists to the relays now') }}">{{ __('Publish profile now') }}</x-fruit::button>
-                    @endif
-                </div>
             </form>
 
             <h2 class="settings-form__heading">{{ __('How it works') }}</h2>
@@ -383,4 +379,11 @@
             </ul>
         </div>
     </div>
+@endsection
+
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" name="action" value="save" variant="primary">{{ __('Save') }}</x-fruit::button>
+    @if ($cfg->pubkey)
+        <x-fruit::button type="submit" form="page-form" name="action" value="announce" title="{{ __('Publish the profile and relay lists to the relays now') }}">{{ __('Publish profile now') }}</x-fruit::button>
+    @endif
 @endsection

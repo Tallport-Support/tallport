@@ -82,6 +82,22 @@
                         @if (($browser_check = \Helper::checkBrowser()) && $browser_check['msg'])
                             <x-fruit::alert tone="danger">{{ $browser_check["msg"] }}</x-fruit::alert>
                         @endif
+                        @hasSection('page_width')
+                            {{-- A settings or detail page: one column (FruitUI's page) for its tabs and
+                                 content, with its save bar (page_footer) kept in view. --}}
+                            <x-fruit::page :width="$__env->yieldContent('page_width')" class="app-page" style="--f-page-background: var(--f-grouped-background)" x-data="{ dirty: false }" x-on:input="dirty = true" x-on:change="dirty = true">
+                                @yield('sidebar')
+                                <div class="content @yield('content_class')">
+                                    @yield('content')
+                                </div>
+                                @hasSection('page_footer')
+                                    <x-slot:footer>
+                                        <p class="f-help" role="status"><span x-show="dirty" x-cloak>{{ __('You have unsaved changes.') }}</span></p>
+                                        @yield('page_footer')
+                                    </x-slot:footer>
+                                @endif
+                            </x-fruit::page>
+                        @else
                         @yield('sidebar')
                         @if ($__env->yieldContent('aside'))
                             <div class="layout-2col">
@@ -96,6 +112,7 @@
                             <div class="content @yield('content_class')">
                                 @yield('content')
                             </div>
+                        @endif
                         @endif
                         @unless ($has_list)
                             @include('partials/app_footer')
