@@ -1693,6 +1693,13 @@ select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) {
     font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   }
 
+/* Code, keyboard keys and code blocks read in the text color, so a host's own colors (Bootstrap 3
+     paints code red and kbd white on black) cannot clash with these chips in either appearance. */
+
+.fruit-ui :where(code, kbd) {
+    color: inherit;
+  }
+
 .fruit-ui :where(code) {
     padding: 2px 5px;
     border-radius: var(--f-radius-xs);
@@ -1722,6 +1729,9 @@ select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) {
     color: var(--f-text);
     font-size: var(--f-text-sm);
     line-height: 1.7;
+    white-space: pre;
+    word-break: normal;
+    overflow-wrap: normal;
     tab-size: 2;
   }
 
