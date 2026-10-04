@@ -18,7 +18,7 @@
                 <x-fruit::menu :title="__('More Actions')" class="thread-options">
                     <x-slot:trigger class="f-button--ghost f-button--icon" :aria-label="__('More Actions')"><x-heroicon-o-ellipsis-horizontal class="f-icon" aria-hidden="true" /></x-slot:trigger>
                     <ul class="menu-module-items">@action('thread.menu', $thread)</ul>
-                    <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" data-trigger="modal" :data-modal-title="__('Outgoing Emails')" data-modal-size="lg">{{ __("Outgoing Emails") }}</x-fruit::menu-link>
+                    <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" data-fruit-dialog-url="" :data-fruit-dialog-title="__('Outgoing Emails')" data-fruit-dialog-size="large">{{ __("Outgoing Emails") }}</x-fruit::menu-link>
                     <ul class="menu-module-items">@action('thread.menu.append', $thread)</ul>
                 </x-fruit::menu>
             </x-slot:actions>
@@ -125,7 +125,7 @@
             @if ($thread->isSendStatusError())
                 <x-fruit::alert tone="danger">
                     <strong>{{ __('Message not sent to customer') }}</strong>
-                    (<a href="{{ route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id])) }}" data-trigger="modal" data-modal-title="{{ __("Outgoing Emails") }}" data-modal-size="lg">{{ __('View log') }}</a>)
+                    (<a href="{{ route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id])) }}" data-fruit-dialog-url="" data-fruit-dialog-title="{{ __("Outgoing Emails") }}" data-fruit-dialog-size="large">{{ __('View log') }}</a>)
                     @if (!empty($send_status_data['bounced_by_thread']) && !empty($send_status_data['bounced_by_conversation']) && ($bounced_by_conversation = App\Conversation::find($send_status_data['bounced_by_conversation'])))
                         <br><small>{!! __safe_raw_html('Message bounced (:link)', [
                         'link' => '<a href="'.route('conversations.view', ['id' => $send_status_data['bounced_by_conversation']]).'#thread-id='.$send_status_data['bounced_by_thread'].'">#'.$bounced_by_conversation->number.'</a>'
@@ -213,10 +213,10 @@
                         @endif
                         <ul class="menu-module-items">@action('thread.menu', $thread)</ul>
                         @if (Auth::user()->isAdmin())
-                            <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" data-trigger="modal" :data-modal-title="__('Outgoing Emails')" data-modal-size="lg">{{ __("Outgoing Emails") }}</x-fruit::menu-link>
+                            <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" data-fruit-dialog-url="" :data-fruit-dialog-title="__('Outgoing Emails')" data-fruit-dialog-size="large">{{ __("Outgoing Emails") }}</x-fruit::menu-link>
                         @endif
                         @if ($thread->isReply())
-                            <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'show_original'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" data-trigger="modal" :data-modal-title="__('Original Message')" data-modal-fit="true" data-modal-size="lg">{{ __("Show Original") }}</x-fruit::menu-link>
+                            <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'show_original'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" data-fruit-dialog-url="" :data-fruit-dialog-title="__('Original Message')" data-fruit-dialog-size="large">{{ __("Show Original") }}</x-fruit::menu-link>
                         @endif
                         @if ($thread->isReply() || $thread->isNote())
                             <x-fruit::menu-link :href="($page_uri ?? \Request::getRequestUri()).'&print_thread_id='.$thread->id.'&print=1'" target="_blank">{{ __("Print") }}</x-fruit::menu-link>

@@ -1,19 +1,18 @@
-<div class="f-stack modal-form">
-    <div class="f-field">
-        <label class="f-label" for="move-conv-mailbox-id">{{ __('Select Mailbox') }}</label>
-        <select class="f-input move-conv-mailbox-id" id="move-conv-mailbox-id">
+{{-- Move the conversation to another mailbox (a FruitUI remote dialog; tallportMove in public/js/conversations.js). --}}
+<div class="f-stack modal-form" x-data="tallportMove({{ $conversation->id }})">
+    <x-fruit::field :label="__('Select Mailbox')" control-id="move-conv-mailbox-id">
+        <x-fruit::select id="move-conv-mailbox-id" x-model="mailbox_id" x-bind:disabled="email !== ''">
             @foreach ($mailboxes as $mailbox)
                 @if ($mailbox->id != $conversation->mailbox_id)
-                    <option value="{{ $mailbox->id }}">{{ $mailbox->name }} &nbsp;({{ $mailbox->email }})</option>
+                    <option value="{{ $mailbox->id }}">{{ $mailbox->name }} ({{ $mailbox->email }})</option>
                 @endif
             @endforeach
-        </select>
-    </div>
-    <div class="f-field">
-        <label class="f-label" for="move-conv-mailbox-email">{{ __('or Enter Mailbox Email') }}</label>
-        <input type="text" class="f-input move-conv-mailbox-email" id="move-conv-mailbox-email" />
-    </div>
+        </x-fruit::select>
+    </x-fruit::field>
+    <x-fruit::field :label="__('or Enter Mailbox Email')" control-id="move-conv-mailbox-email">
+        <x-fruit::input type="email" id="move-conv-mailbox-email" x-model.trim="email" />
+    </x-fruit::field>
     <div class="modal-form__actions">
-        <button class="f-button f-button--primary btn-move-conv" data-loading-text="{{ __('Moving') }}…" type="submit">{{ __('Move') }}</button>
+        <button class="f-button f-button--primary btn-move-conv" type="button" x-on:click="move($el)">{{ __('Move') }}</button>
     </div>
 </div>

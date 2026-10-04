@@ -74,10 +74,10 @@ $(document).ready(function() {
 					done = click('.conv-forward');
 					break;
 				case 'm':
-					done = click('[data-modal-on-show="initMergeConv"]');
+					done = click('[data-fruit-dialog-url][href*="merge_conv"]');
 					break;
 				case 'v':
-					done = click('[data-modal-on-show="initMoveConv"]');
+					done = click('[data-fruit-dialog-url][href*="move_conv"]');
 					break;
 				case 'w':
 					done = click('[data-modal-on-show="initRunWorkflow"]');

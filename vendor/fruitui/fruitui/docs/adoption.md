@@ -50,7 +50,7 @@ fruitUI(Alpine);
 Alpine.start();
 ```
 
-Without a bundler, `build/livewire.global.js` self-registers like the Livewire entry and exposes `FruitUI.confirm` and `FruitUI.toast` for code outside Alpine (`FruitUI.confirm({ title, confirm: 'Delete', tone: 'danger' }).then(…)`), and `alpine.global.js` exposes `FruitUI.default(Alpine)`, `FruitUI.toast` and `FruitUI.confirm`; load either before Alpine starts. The helpers never include or start Alpine.
+Without a bundler, `build/livewire.global.js` self-registers like the Livewire entry and exposes `FruitUI.confirm`, `FruitUI.dialog` and `FruitUI.toast` for code outside Alpine (`FruitUI.confirm({ title, confirm: 'Delete', tone: 'danger' }).then(…)`), and `alpine.global.js` exposes `FruitUI.default(Alpine)`, `FruitUI.toast`, `FruitUI.confirm` and `FruitUI.dialog`; load either before Alpine starts. The helpers never include or start Alpine.
 
 Core installs no editor packages. To import the source `fruitui/editor` module, install its optional peers (`@tiptap/core`, `@tiptap/pm`, `@tiptap/starter-kit`, compatible 3.x) in the host. Alternatively, `fruitui/dist/editor.js` bundles those dependencies; `editor.global.js` exposes `FruitEditor(Alpine)`. Register fruitUI first, then fruitEditor on that same instance (in `alpine:init` with injected Livewire scripts), and load Editor CSS. Core registers a quiet native Editor fallback; the optional plugin replaces it before Alpine starts. Without it, Editor remains a native textarea; Token Field and Combobox also preserve editable native fallbacks without Alpine.
 

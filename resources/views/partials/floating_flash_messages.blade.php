@@ -26,3 +26,4 @@
 @endphp
 <x-fruit::toaster :message="$toast_message" :tone="$toast_message ? $toast_tone : null" />
 <x-fruit::confirmer />
+<x-fruit::remote-dialog />

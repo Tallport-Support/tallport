@@ -51,7 +51,8 @@ final class ComponentContract
         'composer' => ['roles' => ['form']],
         'date' => ['options' => ['type' => self::DATE_TYPES], 'owns' => self::PICKER, 'message' => 'owns its picker popup association'],
         'description-list' => [],
-        'dialog' => ['roles' => ['dialog', 'alertdialog']],
+        'dialog' => ['roles' => ['dialog', 'alertdialog'], 'options' => ['size' => ['medium', 'large']]],
+        'remote-dialog' => [],
         'disclosure' => ['roles' => ['group']],
         'editor' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract', 'options' => ['paste' => ['rich', 'plain']]],
         'empty-state' => ['roles' => ['group', 'region']],
@@ -275,9 +276,9 @@ final class ComponentContract
     }
 
     /** Returns whether the dialog's open state is bound with wire:model or x-model. */
-    public static function dialog(mixed $name, ComponentAttributeBag $attributes): bool
+    public static function dialog(mixed $name, ComponentAttributeBag $attributes, mixed $size = 'medium'): bool
     {
-        self::validate('dialog', $attributes);
+        self::validate('dialog', $attributes, ['size' => $size]);
         if ($name !== null && (! is_string($name) || ! preg_match('/^[\w.:-]+$/', $name))) {
             throw new InvalidArgumentException('FruitUI dialog name must be letters, digits, dashes, dots, colons or underscores.');
         }

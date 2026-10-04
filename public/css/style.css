@@ -2977,19 +2977,6 @@ a.disabled:focus {
 .alert .glyphicon {
     vertical-align: text-top;
 }
-.conv-merge-list {
-    max-height: 200px;
-    overflow-y: auto;
-}
-.conv-merge-list .checkbox,
-.conv-merge-search-result .checkbox,
-.conv-merge-selected .checkbox {
-    margin-top: 0;
-    margin-bottom: 0;
-}
-.conv-merge-selected .alert {
-    margin-bottom: 10px;
-}
 .conv-tags {
     float: left;
     overflow: hidden;
@@ -4091,18 +4078,6 @@ a.disabled:focus {
     justify-content: flex-end;
     gap: 8px;
 }
-.conv-merge-table td {
-    padding: 6px 8px;
-}
-.conv-merge-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.conv-merge-item a {
-    color: var(--f-text);
-    text-decoration: none;
-}
 .send-log-heading {
     margin: 12px 0 6px;
 }
@@ -4435,6 +4410,15 @@ a.disabled:focus {
     color: var(--f-secondary);
     font-size: var(--f-text-xs);
     font-weight: normal;
+}
+/* Merge and Change Customer dialogs: plain lists of choices. */
+.conv-merge-list,
+.change-customer-results {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 /* The composer's files: attached, and uploading. */
 .conv-composer__attachments,

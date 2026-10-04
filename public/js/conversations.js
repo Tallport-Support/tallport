@@ -1,5 +1,6 @@
 /**
- * The conversation page: the composer, and chat mode's Accept Chat and End Chat.
+ * The conversation page: the composer, chat mode's Accept Chat and End Chat,
+ * and the Merge, Move and Change Customer dialogs (FruitUI remote dialogs).
  */
 document.addEventListener('alpine:init', function () {
 	// Accept Chat (assign to me) and End Chat (close), then the chat again.
@@ -230,6 +231,124 @@ document.addEventListener('alpine:init', function () {
 					event.preventDefault();
 					this.submit();
 				}
+			}
+		};
+	});
+
+	// After a dialog's action: where the server says, or this conversation again.
+	var reloadAfter = function (response) {
+		if (Tallport.isSuccess(response)) {
+			window.location.href = response.redirect_url || window.location.href;
+			return true;
+		}
+		Tallport.result(response);
+		return false;
+	};
+
+	// Merge: conversations found by number, or previous ones, into this one.
+	window.Alpine.data('tallportMerge', function (conversation_id) {
+		return {
+			number: '',
+			found: [],
+			selected: [],
+			search: function (button) {
+				var self = this;
+				Tallport.busy(button, true);
+				Tallport.post(laroute.route('conversations.ajax'), {action: 'merge_search', number: this.number, cur_conv_id: conversation_id}).then(function (response) {
+					Tallport.busy(button, false);
+					if (!Tallport.isSuccess(response) || !response.conversation) {
+						Tallport.result(response);
+						return;
+					}
+					var item = response.conversation;
+					item.id = String(item.id);
+					if (!self.found.some(function (found) { return found.id == item.id; })) {
+						self.found.push(item);
+					}
+					if (self.selected.indexOf(item.id) == -1) {
+						self.selected.push(item.id);
+					}
+				});
+			},
+			merge: function (button) {
+				Tallport.busy(button, true);
+				Tallport.post(laroute.route('conversations.ajax'), {action: 'conversation_merge', merge_conversation_id: this.selected, conversation_id: conversation_id}).then(function (response) {
+					if (!reloadAfter(response)) {
+						Tallport.busy(button, false);
+					}
+				});
+			}
+		};
+	});
+
+	// Move: to one of the user's mailboxes, or one given by its address.
+	window.Alpine.data('tallportMove', function (conversation_id) {
+		return {
+			mailbox_id: '',
+			email: '',
+			init: function () {
+				var select = this.$root.querySelector('select');
+				this.mailbox_id = select ? select.value : '';
+			},
+			move: function (button) {
+				Tallport.busy(button, true);
+				Tallport.post(laroute.route('conversations.ajax'), {
+					action: 'conversation_move',
+					mailbox_id: this.email ? '' : this.mailbox_id,
+					mailbox_email: this.email,
+					conversation_id: conversation_id,
+					folder_id: new URLSearchParams(window.location.search).get('folder_id') || ''
+				}).then(function (response) {
+					if (!reloadAfter(response)) {
+						Tallport.busy(button, false);
+					}
+				});
+			}
+		};
+	});
+
+	// Change Customer: a customer found by name or email, or a new one.
+	window.Alpine.data('tallportChangeCustomer', function (conversation_id, customer_email) {
+		return {
+			query: '',
+			results: [],
+			searched: false,
+			creating: false,
+			search: function () {
+				var self = this;
+				if (this.query.trim().length < 2) {
+					this.results = [];
+					this.searched = false;
+					return;
+				}
+				var url = new URL(laroute.route('customers.ajax_search'), window.location.href);
+				url.searchParams.set('q', this.query.trim());
+				url.searchParams.set('exclude_email', customer_email || '');
+				url.searchParams.set('search_by', 'all');
+				fetch(url, {credentials: 'same-origin', headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'}})
+					.then(function (response) { return response.json(); })
+					.then(function (data) {
+						self.results = data.results || [];
+						self.searched = true;
+					});
+			},
+			choose: function (email) {
+				Tallport.confirm({message: Lang.get('messages.confirm_change_customer', {customer_email: email})}).then(function (ok) {
+					if (ok) {
+						Tallport.post(laroute.route('conversations.ajax'), {action: 'conversation_change_customer', customer_email: email, conversation_id: conversation_id}).then(reloadAfter);
+					}
+				});
+			},
+			create: function (button) {
+				var data = new FormData(button.form);
+				data.append('action', 'create');
+				Tallport.busy(button, true);
+				Tallport.post(laroute.route('customers.ajax'), data).then(function (response) {
+					Tallport.busy(button, false);
+					if (Tallport.result(response) && response.email) {
+						Tallport.post(laroute.route('conversations.ajax'), {action: 'conversation_change_customer', customer_email: response.email, conversation_id: conversation_id}).then(reloadAfter);
+					}
+				});
 			}
 		};
 	});

@@ -179,9 +179,26 @@ function initModals(html_tag)
 		html_tag = 'a';
 	}
 	$(html_tag+'[data-trigger="modal"][data-modal-applied!="1"],.fs-trigger-modal[data-modal-applied!="1"]').attr('data-modal-applied', '1').click(function(e) {
-    	triggerModal($(this));
+    	legacyModalDialog($(this));
     	e.preventDefault();
 	});
+}
+
+// Links that open their content in a dialog the FreeScout way (modules):
+// FruitUI's remote dialog, then the link's data-modal-on-show function.
+function legacyModalDialog(link)
+{
+	var dialog = FruitUI.dialog({
+		title: link.attr('data-modal-title') || link.text(),
+		url: link.attr('data-remote') || link.attr('href'),
+		size: link.attr('data-modal-size') == 'lg' ? 'large' : 'medium'
+	});
+	var on_show = link.attr('data-modal-on-show');
+	if (on_show && typeof(window[on_show]) == 'function') {
+		dialog.loaded.then(function(body) {
+			window[on_show]($(body));
+		});
+	}
 }
 
 function fsAjax(data, url, success_callback, no_loader, error_callback, custom_options)
@@ -1580,46 +1597,6 @@ function showAjaxError(response, no_autohide)
 	}
 }
 
-function initAfterSendModal(modal)
-{
-	$(document).ready(function() {
-		modal.children().find(".after-send-save:first").click(function(e) {
-			saveAfterSend(e.target);
-		});
-	});
-}
-
-// Save default redirect
-function saveAfterSend(el)
-{
-	var button = $(el);
-	button.button('loading');
-
-	var value = $(el).parents('.modal-body:first').children().find('[name="after_send_default"]:first').val();
-
-	var mailbox_id = getGlobalAttr('mailbox_id');
-	if (!mailbox_id) {
-		mailbox_id = $(el).parents('.modal-body:first').children().find('[name="default_redirect_mailbox_id"]:first').val()
-	}
-	data = {
-		value: value,
-		mailbox_id: mailbox_id,
-		action: 'save_after_send'
-	};
-
-	fsAjax(data, laroute.route('conversations.ajax'), function(response) {
-		if (typeof(response.status) != "undefined" && response.status == 'success') {
-			// Show selected option in the dropdown
-			$('input[name="after_send"]').val(value);
-			showFloatingAlert('success', Lang.get("messages.settings_saved"));
-			$('.modal').modal('hide');
-		} else {
-			showAjaxError(response);
-		}
-		button.button('reset');
-	}, true);
-}
-
 function searchInit()
 {
 	$(document).ready(function() {
@@ -1665,279 +1642,6 @@ function searchInit()
 			// Causes JS error on clear
 			//allowClear: true
 		});
-	});
-}
-
-// Change customer modal
-function changeCustomerInit()
-{
-	$(document).ready(function() {
-		var input = $(".change-customer-input");
-		initCustomerSelector(input, {
-			dropdownParent: $('.modal-dialog:visible:first'),
-			multiple: true,
-			placeholder: input.attr('placeholder'),
-			maximumSelectionLength: 1,
-			ajax: {
-				url: laroute.route('customers.ajax_search'),
-				dataType: 'json',
-				delay: 250,
-				cache: true,
-				data: function (params) {
-					return {
-						q: params.term,
-						exclude_email: input.attr('data-customer_email'),
-						search_by: 'all',
-						page: params.page
-						//use_id: true
-					};
-				}
-			}
-		});
-
-		// Show confirmation dialog on customer select
-		input.on('select2:selecting', function (e) {
-			if (typeof(e.params) == "undefined" || typeof(e.params.args.data) == "undefined") {
-				console.log(e);
-				return;
-			}
-			var data = e.params.args.data;
-			//el.select2('close');
-
-			var confirm_html = '<div>'+
-				'<div class="text-center">'+
-				'<div class="text-larger margin-top-10">'+Lang.get("messages.confirm_change_customer", {customer_email: data.id})+'</div>'+
-				'<div class="form-group margin-top">'+
-        		'<button class="f-button f-button--primary change-customer-ok" data-customer_email='+data.id+'>OK</button>'+
-        		'<button class="f-button f-button--ghost" data-dismiss="modal">'+Lang.get("messages.cancel")+'</button>'+
-        		'</div>'+
-        		'</div>'+
-        		'</div>';
-
-			triggerModal(null, {
-				body: confirm_html,
-				width_auto: 'true',
-				no_header: 'true',
-				no_footer: 'true',
-				no_fade: 'true',
-				size: 'sm',
-				on_show: function(modal) {
-					modal.children().find('.change-customer-ok:first').click(function(e) {
-						conversationChangeCustomer($(this).attr('data-customer_email'));
-					});
-				}
-			});
-		    e.preventDefault();
-		});
-
-		$("#change-customer-create-trigger a:first").click(function(e){
-			$('#change-customer-create').removeClass('hidden');
-			$(this).hide();
-			e.preventDefault();
-		});
-
-		$("#change-customer-create form:first").submit(function(e){
-			e.preventDefault();
-		});
-
-		$("#change-customer-create button:first").click(function(e){
-			var button = $(this);
-
-			button.button('loading');
-
-			var data = button.parents('form:first').serialize();
-			data += '&action=create';
-
-			fsAjax(data,
-				laroute.route('customers.ajax'),
-				function(response) {
-					showAjaxResult(response);
-
-					if (typeof(response.status) != "undefined" && response.status == 'success') {
-						conversationChangeCustomer(response.email);
-					}
-					
-					ajaxFinish();
-				}
-			);
-		});
-	});
-}
-
-function conversationChangeCustomer(email)
-{
-	fsAjax({
-			action: 'conversation_change_customer',
-			customer_email: email,
-			conversation_id: getGlobalAttr('conversation_id')
-		},
-		laroute.route('conversations.ajax'),
-		function(response) {
-			if (typeof(response.status) != "undefined" && response.status == 'success') {
-				if (typeof(response.redirect_url) != "undefined") {
-					window.location.href = response.redirect_url;
-				} else {
-					window.location.href = '';
-				}
-			} else {
-				showAjaxError(response);
-				loaderHide();
-			}
-		}
-	);
-}
-
-// Move conversation modal
-function initMoveConv()
-{
-	$(document).ready(function() {
-		$(".btn-move-conv:visible:first").click(function(e){
-			var button = $(this);
-
-			button.button('loading');
-
-			fsAjax({
-					action: 'conversation_move',
-					mailbox_id: $('.move-conv-mailbox-id:visible:first').val(),
-					mailbox_email: $('.move-conv-mailbox-email:visible:first').val(),
-					conversation_id: getGlobalAttr('conversation_id'),
-					folder_id: getQueryParam('folder_id')
-				},
-				laroute.route('conversations.ajax'),
-				function(response) {
-					showAjaxResult(response);
-					if (isAjaxSuccess(response)) {
-						if (typeof(response.redirect_url) != "undefined" && response.redirect_url) {
-							window.location.href = response.redirect_url;
-						} else {
-							window.location.href = '';
-						}
-					}
-					ajaxFinish();
-				}
-			);
-		});
-
-		$(".move-conv-mailbox-email:first").on('keyup keypress', function(e){
-			if ($(this).val()) {
-				$(".move-conv-mailbox-id:first").attr('disabled', 'disabled');
-			} else {
-				$(".move-conv-mailbox-id:first").removeAttr('disabled');
-			}
-		});
-	});
-}
-
-// Move conversation modal
-function initMergeConv()
-{
-	$(document).ready(function() {
-		initTooltips();
-
-		initMergeConvSelect();
-
-		$(".btn-merge-conv:visible:first").click(function(e){
-			var button = $(this);
-
-			button.button('loading');
-
-			var conv_ids = [];
-			$('.conv-merge-selected:visible:first .conv-merge-id:checked').each(function() {
-				conv_ids.push($(this).val());
-			});
-
-			if (!conv_ids.length) {
-				return;
-			}
-
-			fsAjax({
-					action: 'conversation_merge',
-					merge_conversation_id: conv_ids,
-					conversation_id: getGlobalAttr('conversation_id')
-				},
-				laroute.route('conversations.ajax'),
-				function(response) {
-					showAjaxResult(response);
-					if (isAjaxSuccess(response)) {
-						window.location.href = '';
-					}
-					ajaxFinish();
-				}
-			);
-
-			e.preventDefault();
-		});
-
-		$(".btn-merge-search:visible:first").click(function(e){
-			var button = $(this);
-
-			button.button('loading');
-
-			fsAjax({
-					action: 'merge_search',
-					number: $('.merge-conv-number:visible:first').val(),
-					cur_conv_id: getGlobalAttr('conversation_id')
-				},
-				laroute.route('conversations.ajax'),
-				function(response) {
-					showAjaxResult(response);
-					if (isAjaxSuccess(response) && response.html) {
-						$('.conv-merge-search-result:first td:first').html(response.html);
-						$('.conv-merge-search-result:first').removeClass('hidden');
-						initTooltips();
-						initMergeConvSelect();
-					} else {
-						if ($('.conv-merge-search-result:first .conv-merge-id').is(':checked')) {
-							$('.btn-merge-conv:visible:first').attr('disabled', 'disabled');
-						}
-						$('.conv-merge-search-result:first td:first').html(response.html);
-						$('.conv-merge-search-result:first').addClass('hidden');
-					}
-					ajaxFinish();
-				}
-			);
-		});
-	});
-}
-
-function initMergeConvSelect()
-{
-	$('.conv-merge-id').click(function() {
-		$('.btn-merge-conv:visible:first').removeAttr('disabled');
-
-		var checkbox_container = $(this).parent();
-		var selected_list = $('.conv-merge-selected:visible:first');
-		var clicked_conv_id = parseInt($(this).val());
-
-		// Do not add same conversation twice
-		if (!isNaN(clicked_conv_id) && !selected_list.children().find('.conv-merge-id[value="'+parseInt($(this).val())+'"]').length) {
-
-			var html = '<div class="f-alert conv-merge-selected-item">'
-				+checkbox_container[0].outerHTML
-				+'</div>';
-
-			selected_list.append(html);
-
-			// Remove conv from selected list
-			selected_list.children().find('.conv-merge-id:last').attr('checked', 'checked').click(function(e){
-				$('.conv-merge-list:visible:first').children()
-					.find('.conv-merge-id[value="'+parseInt($(this).val())+'"]:first')
-					.parents('tr:first').show();
-				$(this).parent().parent().remove();
-
-				if (!selected_list.children().find('.conv-merge-id').length) {
-					$('.btn-merge-conv:visible:first').attr('disabled', 'disabled');
-				}
-			});
-		}
-
-		if ($(this).hasClass('conv-merge-searched')) {
-			$('.conv-merge-search-result:first').addClass('hidden');
-		} else {
-			checkbox_container.parents('tr:first').hide();
-		}
-
-		$(this).prop("checked", false);
 	});
 }
 

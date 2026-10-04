@@ -1127,6 +1127,12 @@ class ConversationsController extends Controller
                     $response['html'] = \View::make('conversations/partials/merge_search_result')->with([
                             'conversation' => $conversation,
                         ])->render();
+                    $response['conversation'] = [
+                        'id'      => $conversation->id,
+                        'number'  => $conversation->number,
+                        'subject' => $conversation->getSubject(),
+                        'url'     => $conversation->url(),
+                    ];
                     $response['status'] = 'success';
                 }
 

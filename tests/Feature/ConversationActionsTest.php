@@ -713,6 +713,7 @@ class ConversationActionsTest extends FeatureTestCase
         $found = $this->ajax($this->agent, ['action' => 'merge_search', 'number' => $other->id, 'cur_conv_id' => $current->id]);
         $this->assertSuccess($found);
         $this->assertStringContainsString('Find me', $found['html']);
+        $this->assertSame($other->id, $found['conversation']['id']);
 
         $self = $this->ajax($this->agent, ['action' => 'merge_search', 'number' => $current->id, 'cur_conv_id' => $current->id]);
         $this->assertSame('Conversation not found', $self['msg']);

@@ -1,16 +1,15 @@
-<div class="f-stack modal-form">
-    <input type="hidden" name="default_redirect_mailbox_id" value="{{ $mailbox_id }}" />
-
+{{-- Where the user goes after an action (a FruitUI remote dialog). --}}
+<div class="f-stack modal-form" x-data="{ after_send: @js((string) $after_send) }">
     <p>{{ __('This setting gives you control over what page loads after you perform an action (send a reply, add a note, change conversation status or assignee).') }}</p>
 
-    <select class="f-input" name="after_send_default" required autofocus aria-label="{{ __('Default Redirect') }}">
-        <option value="{{ App\MailboxUser::AFTER_SEND_STAY }}" @if ($after_send == App\MailboxUser::AFTER_SEND_STAY)selected="selected"@endif>{{ __('Stay on the same page') }}</option>
-        <option value="{{ App\MailboxUser::AFTER_SEND_NEXT }}" @if ($after_send == App\MailboxUser::AFTER_SEND_NEXT)selected="selected"@endif>{{ __('Next active conversation') }}</option>
-        <option value="{{ App\MailboxUser::AFTER_SEND_FOLDER }}" @if ($after_send == App\MailboxUser::AFTER_SEND_FOLDER)selected="selected"@endif>{{ __('Back to folder') }}</option>
-    </select>
+    <x-fruit::select name="after_send_default" x-model="after_send" required :aria-label="__('Default Redirect')">
+        <option value="{{ App\MailboxUser::AFTER_SEND_STAY }}">{{ __('Stay on the same page') }}</option>
+        <option value="{{ App\MailboxUser::AFTER_SEND_NEXT }}">{{ __('Next active conversation') }}</option>
+        <option value="{{ App\MailboxUser::AFTER_SEND_FOLDER }}">{{ __('Back to folder') }}</option>
+    </x-fruit::select>
 
     <div class="modal-form__actions">
-        <a href="#" class="f-button f-button--ghost" data-dismiss="modal">{{ __('Cancel') }}</a>
-        <button type="submit" class="f-button f-button--primary after-send-save" data-loading-text="{{ __('Saving') }}…">{{ __('Save') }}</button>
+        <button type="button" class="f-button f-button--ghost" x-on:click="$el.closest('dialog').close()">{{ __('Cancel') }}</button>
+        <button type="button" class="f-button f-button--primary after-send-save" x-on:click="Tallport.busy($el, true); Tallport.post(laroute.route('conversations.ajax'), {action: 'save_after_send', value: after_send, mailbox_id: {{ (int) $mailbox_id }}}).then(r => { Tallport.busy($el, false); if (Tallport.result(r)) { $el.closest('dialog').close(); } })">{{ __('Save') }}</button>
     </div>
 </div>

@@ -345,7 +345,7 @@
         "element": "`dialog`, dialog role; optional alertdialog role.",
         "state": "Native open/modal state; optional wire:model/x-model open state that Escape and form method=dialog update.",
         "keyboard": "showModal manages focus; Tab stays within a modal; Escape dismisses.",
-        "options": "Native dialog attributes and an accessible name. Slot: composed content/actions. Bind open state with wire:model or x-model, or give a `name` for `fruit-dialog-open`/`fruit-dialog-close` events (Fruit::openDialog/closeDialog). Otherwise use native showModal()/close() and `<form method=\"dialog\">`. Livewire morphs keep it open."
+        "options": "Native dialog attributes and an accessible name. Slot: composed content/actions. Bind open state with wire:model or x-model, or give a `name` for `fruit-dialog-open`/`fruit-dialog-close` events (Fruit::openDialog/closeDialog). Otherwise use native showModal()/close() and `<form method=\"dialog\">`. Livewire morphs keep it open. `size`: medium (default), large (`f-dialog--large`). Add `f-dialog--scroll` to keep the header and footer in view while a long body scrolls."
       }
     }
   },
@@ -472,6 +472,22 @@
         "state": "fruitConfirmer owns the question and open state; requests wait their turn. confirm() and $confirm() resolve true for the action and false for Cancel or Escape.",
         "keyboard": "Opens modally. A danger question focuses Cancel; any other focuses the action. Tab stays inside; Escape cancels.",
         "options": "Render once per layout. Ask with confirm({ title, message, confirm, cancel, tone }) or $confirm({ … }): `title` is required; `confirm` and `cancel` label the buttons (default OK and Cancel, translated); `tone`: default or danger. Without a confirmer, the browser's confirm() asks. Use `.then(confirmed => confirmed && $wire.action())` in Livewire. No slot."
+      }
+    }
+  },
+  {
+    "id": "remote-dialog",
+    "kind": "composition",
+    "classes": ["f-dialog--scroll"],
+    "blade": ["remote-dialog"],
+    "uses": ["support.html"],
+    "contracts": {
+      "remote-dialog": {
+        "purpose": "Open content the application supplies, or loads from a URL, in a modal dialog from script or a link.",
+        "element": "Native `dialog.f-dialog.f-dialog--scroll` named by its header title, with a close button and a body that scrolls between header and footer; the Blade adapter renders only a `template` of translated labels.",
+        "state": "The dialog exists while open and is removed on close. While loading, the body is busy with a skeleton and a polite Loading status; a failed load shows an alert with Try again.",
+        "keyboard": "Opens modally with focus inside; Tab stays inside; Escape and the close button close it, and focus returns to the opener.",
+        "options": "Render `<x-fruit::remote-dialog />` once per layout for translated labels. `dialog({ title, html | url, size })` (also `$dialog`, and `FruitUI.dialog` in the global builds) returns `{ element, body, loaded, closed, close(value) }`. `size`: medium (default), large. A link or button with `data-fruit-dialog-url` (empty on a link: its href), `data-fruit-dialog-title` (default: its text) and `data-fruit-dialog-size` opens one; modifier clicks keep the link's own behavior. Loaded content gets Alpine automatically; a trailing `.f-dialog__footer` becomes the dialog's footer; `<form method=dialog>` buttons close it with their value. Bubbling `fruit-dialog-loaded` (`detail`: dialog, body, url, trigger) and `fruit-dialog-error` events follow. Scripts in loaded HTML do not run; wire controls up from `loaded` or the event."
       }
     }
   },

@@ -3,6 +3,8 @@ export { fruitToast, toast } from './toast.js';
 import { confirm, fruitConfirmer } from './confirm.js';
 import { fruitCopy } from './copy.js';
 import { fruitListSelection } from './list-selection.js';
+import { dialog, listenForRemoteDialogs } from './remote-dialog.js';
+export { dialog } from './remote-dialog.js';
 export { confirm, fruitConfirmer } from './confirm.js';
 import { fruitDialogModel, listenForNamedDialogs } from './dialog.js';
 import { fruitSplitter } from './splitter.js';
@@ -26,6 +28,7 @@ export default function fruitUI(Alpine) {
   Alpine.magic('confirm', () => confirm);
   Alpine.data('fruitCopy', fruitCopy);
   Alpine.data('fruitListSelection', fruitListSelection);
+  Alpine.magic('dialog', () => dialog);
   Alpine.data('fruitCombobox', fruitCombobox);
   Alpine.data('fruitTokenField', fruitTokenField);
   Alpine.data('fruitSelectionBar', fruitSelectionBar);
@@ -43,6 +46,7 @@ export default function fruitUI(Alpine) {
   Alpine.data('fruitDialogModel', fruitDialogModel);
   if (typeof window !== 'undefined' && !listening) {
     listenForNamedDialogs(window);
+    listenForRemoteDialogs(document);
     listening = true;
   }
 }

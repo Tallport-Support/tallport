@@ -346,6 +346,20 @@
     border-radius: var(--f-radius-lg);
     box-shadow: var(--f-shadow);
   }
+  .f-dialog--large {
+    width: min(760px, calc(100% - 32px));
+  }
+  /* Long or loaded content scrolls between a fixed header and footer. */
+  .f-dialog--scroll[open] {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100dvh - 48px);
+  }
+  .f-dialog--scroll > .f-dialog__body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
   .f-dialog::backdrop {
     background: var(--f-backdrop);
   }

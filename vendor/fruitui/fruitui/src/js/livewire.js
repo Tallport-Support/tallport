@@ -1,7 +1,7 @@
 import fruitUI from './alpine.js';
 
 // Code outside Alpine asks and announces through these (window.FruitUI in livewire.global.js).
-export { confirm, toast } from './alpine.js';
+export { confirm, dialog, toast } from './alpine.js';
 
 /**
  * Registers FruitUI on the Alpine instance that Livewire injects. Import it from the app's Vite

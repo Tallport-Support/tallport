@@ -812,6 +812,24 @@ Livewire::test(Inbox::class)
 Livewire::test(Inbox::class)->call('confirm')->assertDialogOpened('confirm-archive')->assertNotToasted();
 ```
 
+### Dialogs with loaded content
+
+For content the server renders on demand (outgoing emails, the original message, a merge or move form), put one `<x-fruit::remote-dialog />` in the layout for translated labels, then open dialogs from links or script. A link or button with `data-fruit-dialog-url` loads that URL (empty on a link: its `href`) with the title from `data-fruit-dialog-title` (default: its text) and `data-fruit-dialog-size` (medium or large); Cmd/Ctrl/Shift-clicks keep the link's own behavior, so it can still open in a new tab.
+
+```blade
+<a href="{{ route('conversations.merge', $conversation) }}" data-fruit-dialog-url data-fruit-dialog-title="Merge conversation">Merge…</a>
+```
+
+From script, `FruitUI.dialog({ title, url | html, size })` (`$dialog(…)` in Alpine, `dialog` from `fruitui/alpine`) returns `{ element, body, loaded, closed, close(value) }`. The request asks for HTML with `X-Requested-With: XMLHttpRequest`, so a Laravel route can return a partial view. A skeleton and a polite Loading status show meanwhile; a failed request shows an alert with Try again. Alpine starts on the inserted content by itself, and a trailing `.f-dialog__footer` becomes the dialog's footer, kept in view while the body scrolls. `<form method="dialog">` buttons close it with their value, and the dialog is removed on close, with focus back on the opener. Scripts in loaded HTML do not run: wire up the content from `loaded`, or from the bubbling `fruit-dialog-loaded` event (`detail.body`, `url`, `trigger`) for links.
+
+```js
+const { loaded, closed } = FruitUI.dialog({ title: 'Outgoing emails', url: `/conversations/${id}/emails`, size: 'large' });
+loaded.then(body => initEmailList(body));
+closed.then(value => value === 'resent' && FruitUI.toast('Email sent again.', { tone: 'success' }));
+```
+
+`x-fruit::dialog` takes the same `size` (medium or large), and `f-dialog--scroll` keeps any dialog's header and footer in view while a long body scrolls.
+
 ## Pagination
 
 `fruit::pagination.default` renders a Laravel paginator with `x-fruit::pagination`: a range summary, Previous/Next and page links. Use it with `$items->links('fruit::pagination.default')`, or make it the default with `Paginator::defaultView()` in a service provider.

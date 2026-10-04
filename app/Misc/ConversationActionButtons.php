@@ -97,10 +97,8 @@ class ConversationActionButtons
                                     return route('conversations.ajax_html', array_merge([ 'action' => 'merge_conv' ], \Request::all(), [ 'conversation_id' => $conversation->id ]));
                             },
                             'attrs'          => [
-                                    'data-trigger'         => 'modal',
-                                    'data-modal-title'     => __('Merge Conversations'),
-                                    'data-modal-no-footer' => 'true',
-                                    'data-modal-on-show'   => 'initMergeConv',
+                                    'data-fruit-dialog-url'   => '',
+                                    'data-fruit-dialog-title' => __('Merge Conversations'),
                             ],
                             'fixed_location' => true,
                     ],
@@ -116,10 +114,8 @@ class ConversationActionButtons
                                     return route('conversations.ajax_html', array_merge([ 'action' => 'move_conv' ], \Request::all(), [ 'conversation_id' => $conversation->id ]));
                             },
                             'attrs'          => [
-                                    'data-trigger'         => 'modal',
-                                    'data-modal-title'     => __('Move Conversation'),
-                                    'data-modal-no-footer' => 'true',
-                                    'data-modal-on-show'   => 'initMoveConv',
+                                    'data-fruit-dialog-url'   => '',
+                                    'data-fruit-dialog-title' => __('Move Conversation'),
                             ],
                             'fixed_location' => true,
                     ],
