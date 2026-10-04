@@ -120,7 +120,9 @@ export function listenForRemoteDialogs(target = document) {
     // Modifier clicks keep a link's own behavior, such as opening a new tab.
     if (!trigger || event.defaultPrevented || event.button !== 0) return;
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    const url = trigger.dataset.fruitDialogUrl || trigger.getAttribute('href');
+    // Blade renders a valueless attribute on a component as its own name; both mean "use href".
+    const named = trigger.dataset.fruitDialogUrl;
+    const url = (named && named !== 'data-fruit-dialog-url' ? named : '') || trigger.getAttribute('href');
     if (!url) return;
     event.preventDefault();
     dialog({

@@ -367,9 +367,9 @@ function b(e = document) {
 	let t = (e) => {
 		let t = e.target.closest?.("[data-fruit-dialog-url]");
 		if (!t || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-		let n = t.dataset.fruitDialogUrl || t.getAttribute("href");
-		n && (e.preventDefault(), y({
-			url: n,
+		let n = t.dataset.fruitDialogUrl, r = (n && n !== "data-fruit-dialog-url" ? n : "") || t.getAttribute("href");
+		r && (e.preventDefault(), y({
+			url: r,
 			title: t.dataset.fruitDialogTitle || t.textContent.trim(),
 			size: t.dataset.fruitDialogSize || "medium",
 			trigger: t

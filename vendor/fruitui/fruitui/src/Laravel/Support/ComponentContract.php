@@ -48,7 +48,7 @@ final class ComponentContract
         'checkbox' => ['roles' => ['checkbox'], 'type' => 'checkbox', 'emits' => ['type', 'role']],
         'color' => ['type' => 'color', 'emits' => ['type'], 'owns' => self::PICKER, 'message' => 'owns its picker popup association'],
         'combobox' => ['owns' => [...self::ENHANCED, 'multiple', 'size'], 'message' => 'owns enhancement visibility and its single value contract', 'options' => ['search' => ['local', 'server']]],
-        'composer' => ['roles' => ['form']],
+        'composer' => ['roles' => ['form'], 'options' => ['placement' => ['bottom', 'top']]],
         'date' => ['options' => ['type' => self::DATE_TYPES], 'owns' => self::PICKER, 'message' => 'owns its picker popup association'],
         'description-list' => [],
         'dialog' => ['roles' => ['dialog', 'alertdialog'], 'options' => ['size' => ['medium', 'large']]],

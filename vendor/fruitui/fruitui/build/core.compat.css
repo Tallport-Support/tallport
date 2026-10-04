@@ -3063,6 +3063,13 @@ img.f-avatar {
     background: var(--f-composer-background, var(--f-surface));
   }
 
+/* Above a newest-first thread, the composer separates itself from the messages below. */
+
+.f-composer--top {
+    border-top: 0;
+    border-bottom: 1px solid var(--f-border);
+  }
+
 .f-composer__input {
     display: block;
     min-height: var(--f-composer-input-min-height, 82px);
@@ -3743,13 +3750,13 @@ img.f-avatar {
     overflow-wrap: anywhere;
   }
 
-/* A machine translation of the message, kept with it: an outlined card with a translate icon,
-     announced as a translation. Give it the translation's lang. */
+/* A machine translation of the message, kept with it and read first: an outlined card with a
+     translate icon above the original, announced as a translation. Give it the translation's lang. */
 
 .f-message__translation {
     display: flex;
     gap: 10px;
-    margin-top: var(--f-message-translation-gap, 10px);
+    margin-top: var(--f-message-body-gap, 4px);
     padding: 10px 12px;
     border: 1px solid var(--f-generated-border);
     border-radius: var(--f-radius-md);
@@ -3767,6 +3774,10 @@ img.f-avatar {
 
 .f-message__translation-text {
     min-width: 0;
+  }
+
+.f-message__translation + .f-message__body {
+    margin-top: var(--f-message-translation-gap, 12px);
   }
 
 .f-message__footer {

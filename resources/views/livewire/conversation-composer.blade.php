@@ -11,7 +11,7 @@
 <div class="conv-action-wrapper" x-data="tallportComposer({{ $conversation->id }}, @js($mode))" x-on:input="changed($event)" x-on:change="blurred($event)" x-on:fruit-editor-upload.stop="embed($event)" x-on:keydown.enter="enter($event)">
     @if ($mode)
         <div class="conv-block conv-reply-block conv-action-block @if ($mode == 'note') conv-note-block @elseif ($mode == 'forward') conv-forward-block @endif">
-            <x-fruit::composer class="form-reply conv-composer" :aria-label="$mode == 'note' ? __('Note') : ($mode == 'forward' ? __('Forward') : __('Reply'))" x-on:submit.prevent="submit()">
+            <x-fruit::composer placement="top" class="form-reply conv-composer" :aria-label="$mode == 'note' ? __('Note') : ($mode == 'forward' ? __('Forward') : __('Reply'))" x-on:submit.prevent="submit()">
                 @if ($mode != 'note')
                     <div class="f-stack conv-composer__recipients">
                         @if (count($from_aliases))

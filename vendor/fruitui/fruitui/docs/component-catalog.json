@@ -478,7 +478,7 @@
   {
     "id": "remote-dialog",
     "kind": "composition",
-    "classes": ["f-dialog--scroll"],
+    "classes": ["f-dialog"],
     "blade": ["remote-dialog"],
     "uses": ["support.html"],
     "contracts": {
@@ -487,7 +487,7 @@
         "element": "Native `dialog.f-dialog.f-dialog--scroll` named by its header title, with a close button and a body that scrolls between header and footer; the Blade adapter renders only a `template` of translated labels.",
         "state": "The dialog exists while open and is removed on close. While loading, the body is busy with a skeleton and a polite Loading status; a failed load shows an alert with Try again.",
         "keyboard": "Opens modally with focus inside; Tab stays inside; Escape and the close button close it, and focus returns to the opener.",
-        "options": "Render `<x-fruit::remote-dialog />` once per layout for translated labels. `dialog({ title, html | url, size })` (also `$dialog`, and `FruitUI.dialog` in the global builds) returns `{ element, body, loaded, closed, close(value) }`. `size`: medium (default), large. A link or button with `data-fruit-dialog-url` (empty on a link: its href), `data-fruit-dialog-title` (default: its text) and `data-fruit-dialog-size` opens one; modifier clicks keep the link's own behavior. Loaded content gets Alpine automatically; a trailing `.f-dialog__footer` becomes the dialog's footer; `<form method=dialog>` buttons close it with their value. Bubbling `fruit-dialog-loaded` (`detail`: dialog, body, url, trigger) and `fruit-dialog-error` events follow. Scripts in loaded HTML do not run; wire controls up from `loaded` or the event."
+        "options": "Render `<x-fruit::remote-dialog />` once per layout for translated labels. `dialog({ title, html | url, size })` (also `$dialog`, and `FruitUI.dialog` in the global builds) returns `{ element, body, loaded, closed, close(value) }`. `size`: medium (default), large. A link or button with `data-fruit-dialog-url` (empty or valueless on a link, including on Blade components: its href), `data-fruit-dialog-title` (default: its text) and `data-fruit-dialog-size` opens one; modifier clicks keep the link's own behavior. Loaded content gets Alpine automatically; a trailing `.f-dialog__footer` becomes the dialog's footer; `<form method=dialog>` buttons close it with their value. Bubbling `fruit-dialog-loaded` (`detail`: dialog, body, url, trigger) and `fruit-dialog-error` events follow. Scripts in loaded HTML do not run; wire controls up from `loaded` or the event."
       }
     }
   },
@@ -657,7 +657,7 @@
         "element": "`form`, native form semantics.",
         "state": "Native form submission; draft, errors, sending and shortcuts belong to the caller.",
         "keyboard": "Native controls; textarea Enter inserts a line break unless caller implements a shortcut.",
-        "options": "Native form attributes and submit bindings. Default slot: labels, textarea, help/error, optional header/footer."
+        "options": "Native form attributes and submit bindings. Default slot: labels, textarea, help/error, optional header/footer. `placement`: bottom (default, below a thread) or top (`f-composer--top`, above a newest-first thread; the dividing line moves below it)."
       }
     }
   },
@@ -1146,7 +1146,7 @@
         "element": "`article` (or a listitem role) with a header, body, attachments and footer.",
         "state": "No state; the application owns message data and actions.",
         "keyboard": "Child links and buttons keep their behavior. The actions bar appears on hover and whenever focus is inside the message, so its buttons are reachable by Tab.",
-        "options": "`layout`: inline (default), stacked. `variant`: default, note (a yellow card for internal notes), generated (an indigo card for generated text that stands on its own, such as a summary). `direction`: incoming (default), outgoing (`f-message--outgoing`, a bar on the leading edge for sent messages: neutral for a teammate's). `mine`: the viewer wrote this sent message (`f-message--mine`, the bar takes the accent); only with direction outgoing. Name the kind in `meta` too (Customer, Reply to customer, Internal note, Generated), so color is never the only cue. `datetime`: machine-readable time. Slots: `avatar`, `author`, `meta` (inline, may hold state badges), `headers` (further lines such as From, To, Cc or an assignment), `time`, default body, `translation` (a machine translation kept with the message: an outlined card with a translate icon, announced as Translation; give the slot and the message their `lang`), `attachments`, `footer` (independent actions such as reactions or reply counts), `actions` (quick actions shown in the corner on hover or focus, and always on touch screens; a labelled group). Give it an accessible name. `--f-message-actions-top` and `--f-message-actions-end` place the actions (above the top edge by default)."
+        "options": "`layout`: inline (default), stacked. `variant`: default, note (a yellow card for internal notes), generated (an indigo card for generated text that stands on its own, such as a summary). `direction`: incoming (default), outgoing (`f-message--outgoing`, a bar on the leading edge for sent messages: neutral for a teammate's). `mine`: the viewer wrote this sent message (`f-message--mine`, the bar takes the accent); only with direction outgoing. Name the kind in `meta` too (Customer, Reply to customer, Internal note, Generated), so color is never the only cue. `datetime`: machine-readable time. Slots: `avatar`, `author`, `meta` (inline, may hold state badges), `headers` (further lines such as From, To, Cc or an assignment), `time`, default body, `translation` (a machine translation kept with the message and shown above its text: an outlined card with a translate icon, announced as Translation; give the slot and the message their `lang`), `attachments`, `footer` (independent actions such as reactions or reply counts), `actions` (quick actions shown in the corner on hover or focus, and always on touch screens; a labelled group). Give it an accessible name. `--f-message-actions-top` and `--f-message-actions-end` place the actions (above the top edge by default)."
       }
     }
   },
