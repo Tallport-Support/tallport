@@ -95,17 +95,18 @@ class ModuleSystemTest extends FeatureTestCase
 
     /**
      * The Modules page lists the installed modules, not FreeScout's directory or
-     * marketplace; their updates from the directory are checked once it's open.
+     * marketplace; their updates (from their own latestVersionUrl) are checked once
+     * it's open, without asking FreeScout's directory.
      */
     public function testModulesPageShowsInstalledModulesOnly()
     {
         config(['modules.cache.enabled' => false]);
-        $this->app->instance('modules', $this->makeModule());
-        \Cache::put('modules_directory', [
-            ['alias' => 'tpmodule', 'name' => 'TpModule', 'version' => '2.0.0', 'authorUrl' => 'https://freescout.net', 'detailsUrl' => '', 'img' => ''],
-            ['alias' => 'othermodule', 'name' => 'Other Official Module', 'version' => '1.0.0', 'authorUrl' => 'https://freescout.net', 'detailsUrl' => '', 'img' => ''],
-            ['alias' => 'shopmodule', 'name' => 'Shop Module', 'version' => '1.0.0', 'authorUrl' => 'https://example.org', 'detailsUrl' => '', 'img' => ''],
-        ], now()->addMinutes(5));
+        $modules = $this->makeModule();
+        $json = json_decode(file_get_contents($this->dir.'/TpModule/module.json'), true);
+        file_put_contents($this->dir.'/TpModule/module.json', json_encode($json + ['authorUrl' => 'https://example.org', 'latestVersionUrl' => 'https://example.org/tpmodule/version']));
+        $this->app->instance('modules', new Repository($this->app, $this->dir));
+        \Cache::put('module_latest_version.'.md5('https://example.org/tpmodule/version'), '2.0.0', now()->addMinutes(5));
+        \Cache::put('modules_directory', [['alias' => 'othermodule', 'name' => 'Other Official Module', 'version' => '1.0.0']], now()->addMinutes(5));
 
         $admin = $this->createAdmin();
         $this->actingAs($admin)->get('/modules/list')
@@ -115,11 +116,10 @@ class ModuleSystemTest extends FeatureTestCase
             ->assertDontSee('There are updates available')
             ->assertDontSee('Modules Directory')
             ->assertDontSee('Marketplace')
-            ->assertDontSee('Other Official Module')
-            ->assertDontSee('Shop Module');
+            ->assertDontSee('Other Official Module');
 
         \Livewire\Livewire::actingAs($admin)->withoutLazyLoading()->test(\App\Livewire\ModuleUpdates::class)
-            ->assertSee('There are updates available')->assertSee('TpModule (2.0.0)')->assertDontSee('Shop Module')
+            ->assertSee('There are updates available')->assertSee('TpModule (2.0.0)')->assertDontSee('Other Official Module')
             ->assertDispatched('module-updates', versions: ['tpmodule' => '2.0.0']);
         \Livewire\Livewire::actingAs($this->createUser())->withoutLazyLoading()->test(\App\Livewire\ModuleUpdates::class)->assertForbidden();
     }

@@ -40,9 +40,6 @@ class ModulesController extends Controller
             \Cache::forget('modules_flash');
         }
 
-        // The directory's images, if it's at hand (ModuleUpdates fetches it).
-        $modules_directory = \App\Module::directory(false);
-
         // Get installed modules
         \Module::clearCache();
         $modules = \Module::all();
@@ -80,17 +77,7 @@ class ModulesController extends Controller
         //     $this->clearCache();
         // }
 
-        // Installed modules from the directory: their images. New versions are
-        // checked by App\Livewire\ModuleUpdates, after the page has opened.
-        foreach ($modules_directory as $dir_module) {
-            $dir_module = \App\Module::formatModuleData($dir_module);
-            foreach ($installed_modules as $i_installed => $module) {
-                if (!empty($dir_module['alias']) && $dir_module['alias'] == $module['alias']) {
-                    $installed_modules[$i_installed]['img'] = $dir_module['img'];
-                    $installed_modules[$i_installed] = \App\Module::formatModuleData($installed_modules[$i_installed]);
-                }
-            }
-        }
+        // New versions are checked by App\Livewire\ModuleUpdates, after the page has opened.
         foreach ($installed_modules as $module) {
             $all_modules[$module['alias']] = $module['name'];
         }

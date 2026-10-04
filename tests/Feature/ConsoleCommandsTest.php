@@ -336,16 +336,23 @@ class ConsoleCommandsTest extends FeatureTestCase
     }
 
     /**
-     * Without the modules directory (no network here) it reports the error
-     * instead of crashing on an undefined variable (S12).
+     * module-update asks only the modules' own latestVersionUrl, never FreeScout's
+     * directory: with none to ask, all modules are up to date.
      */
-    public function testModuleUpdateWithoutNetwork()
+    public function testModuleUpdateAsksOnlyTheModules()
     {
+        $dir = sys_get_temp_dir().'/tallport-modules-'.uniqid();
+        mkdir($dir);
+        $this->app->instance('modules', new \App\Modules\Repository($this->app, $dir));
+
         // It runs cache:clear itself, which replaces Artisan::output().
         $output = new \Symfony\Component\Console\Output\BufferedOutput();
         \Artisan::call('tallport:module-update', [], $output);
+        $this->assertStringContainsString('All modules are up-to-date', $output->fetch());
 
-        $this->assertStringContainsString('Error occurred', $output->fetch());
+        \Artisan::call('tallport:module-update', ['module_alias' => 'nosuchmodule'], $output);
+        $this->assertStringContainsString('Module with the following alias not found: nosuchmodule', $output->fetch());
+        rmdir($dir);
     }
 
     public function testModuleLicenseCheckWithoutNetwork()
