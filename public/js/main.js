@@ -116,8 +116,6 @@ $(document).ready(function(){
 		}
 	});
 
-	// Floating alerts
-	fsFloatingAlertsInit();
 
 	polycastInit();
 	webNotificationsInit();
@@ -661,64 +659,11 @@ function loaderHide()
 	clearTimeout(fs_loader_timeout);
 }
 
-// Display floating alerts
-function fsFloatingAlertsInit()
-{
-	var alerts = $(".alert-floating:hidden");
 
-	alerts.each(function(i, el) {
-		// Stack alerts
-		var top = 0;
-		$(".alert-floating:visible").each(function(sub_i, sub_el) {
-			top = top + $(sub_el).position().top + $(sub_el).outerHeight(true);
-		});
-
-		if (top) {
-			$(el).css('top', top+'px');
-		}
-		$(el).css('display', 'flex');
-
-		if (!$(el).hasClass('alert-noautohide')) {
-			var close_after = 7000;
-			if (!$(el).hasClass('alert-danger')) {
-				// This has to be less than Conversation::UNDO_TIMOUT
-				close_after = 10000;
-			}
-			setTimeout(function(){
-			    el.remove();
-			}, close_after);
-		}
-	});
-
-	if (alerts.length) {
-		setTimeout(function(){
-		    $('body').click(function() {
-				alerts.remove();
-			});
-		}, 2000);
-	}
-}
-
+// A toast (FruitUI's toaster); type is success or error. Kept for modules.
 function showFloatingAlert(type, msg, no_autohide)
 {
-	// Heroicons check-circle and exclamation-circle.
-	var icon = 'M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z';
-	var alert_class = 'success';
-
-	if (type == 'error') {
-		icon = 'M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z';
-		alert_class = 'danger';
-	}
-
-	if (typeof(no_autohide) != "undefined") {
-		alert_class += ' alert-noautohide ';
-	}
-
-	var html = '<div class="alert alert-'+alert_class+' alert-floating">'+
-        '<svg class="f-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="'+icon+'"/></svg><div>'+htmlEscape(msg)+'</div>'+
-        '</div>';
-    $('body:first').append(html);
-    fsFloatingAlertsInit();
+	Tallport.toast(msg, type == 'error' ? 'danger' : 'success');
 }
 
 function initConversation()

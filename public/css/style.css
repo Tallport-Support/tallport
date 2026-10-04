@@ -1485,49 +1485,7 @@ a h4 {
     padding-top: 5px;
     padding-bottom: 5px;
 }
-/* Floating alerts: a toast at the top of the window. */
-.alert-floating {
-    position: fixed;
-    top: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1099;
-    display: none;
-    align-items: center;
-    gap: 8px;
-    max-width: min(360px, calc(100vw - 32px));
-    margin: 0;
-    padding: 10px 16px;
-    border: 1px solid var(--f-border);
-    border-radius: var(--f-radius-md);
-    background: var(--f-material-popup);
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-    box-shadow: var(--f-shadow);
-    color: var(--f-text);
-    font-size: var(--f-text-sm);
-    text-align: center;
-    overflow-wrap: anywhere;
-    cursor: default;
-}
-.alert-floating .f-icon {
-    flex: none;
-}
-.alert-floating a,
-.alert-floating a:hover,
-.alert-floating a:focus {
-    color: inherit;
-    text-decoration: underline;
-}
-.alert-floating.alert-success .f-icon {
-    color: var(--f-success);
-}
-.alert-floating.alert-danger .f-icon {
-    color: var(--f-danger);
-}
-.alert-floating.alert-warning .f-icon {
-    color: var(--f-warning);
-}
+
 .alert-info.alert-striped {
     -webkit-box-shadow:inset 4px 0 0 0 #3197d6;
     box-shadow:inset 4px 0 0 0 #3197d6;
