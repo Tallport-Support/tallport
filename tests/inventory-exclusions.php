@@ -35,7 +35,6 @@ return [
     'route GET livewire-0607dabf/livewire.min.js' => $livewire,
     'route GET livewire-0607dabf/livewire.min.js.map' => $livewire,
     'route GET livewire-0607dabf/preview-file/{filename}' => $livewire,
-    'route POST livewire-0607dabf/update' => $livewire,
     'route POST livewire-0607dabf/upload-file' => $livewire,
 
     'route GET mailbox/oauth'                                     => $oauth,
