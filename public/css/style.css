@@ -993,7 +993,7 @@ a h4 {
 }
 
 /**
- * Editor
+ * Editor: Summernote (Bootstrap 3 flavour) in FruitUI's look.
  */
 .summernote-inservar {
     max-width: 200px;
@@ -1004,196 +1004,178 @@ https://github.com/freescout-help-desk/freescout/issues/4354
 */
 .note-editor .note-editable span,
 .note-editor .note-editable div {
-    /*background-color: inherit;*/
     font-size: inherit;
-    /* https://github.com/freescout-help-desk/freescout/issues/4367 */
-    /*font-weight: inherit;*/
 }
 .note-editor.note-frame {
-    border-color: #dee4e9 !important;
-}
-.note-editor .btn-default {
-    color: #86929e;
-    background-color: #f9fafa;
-    border-color: #f9fafa;
-}
-.note-editor .btn-default.active,
-.note-editor .btn-default:hover {
-    background-color: #e6e6e6;
-    border-color: #e6e6e6;
-    color: #72808e;
-}
-.note-editor .note-actions .btn-default.active,
-.note-editor .note-actions .btn-default:hover {
-    background-color: transparent;
-    border-color: transparent;
-}
-.note-editor.panel {
     margin: 0;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-md);
+    background: var(--f-surface);
+    color: var(--f-text);
 }
-.note-btn,
-.note-btn.btn.active,
-.note-btn:focus {
-    outline: none!important;
-    -webkit-box-shadow: none;
-    box-shadow: none;
+/* summernote.css loads after this file. */
+.fruit-ui .note-editor.note-frame .note-editing-area .note-editable {
+    background: transparent;
+    color: var(--f-text);
 }
-.note-btn i.glyphicon {
+.note-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 8px;
     position: relative;
-    top: 2px;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--f-border);
+    background: transparent;
 }
-.note-btn.btn-sm {
-    font-size: 14px;
-    line-height: 18px;
+.note-btn-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    position: relative;
+    gap: 2px;
+}
+.note-toolbar > .note-style {
+    flex: 1 1 0;
+    min-width: 0;
+}
+.note-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-width: 30px;
     height: 30px;
+    padding: 0 6px;
+    border: 0;
+    border-radius: var(--f-radius-sm);
+    background: transparent;
+    color: var(--f-secondary);
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
 }
+.note-btn:hover,
+.note-btn-group.open > .note-btn {
+    background: var(--f-hover);
+    color: var(--f-text);
+}
+.note-btn.active {
+    background: var(--f-pressed);
+    color: var(--f-text);
+}
+.note-btn:focus-visible {
+    outline: 2px solid var(--f-accent);
+    outline-offset: 1px;
+}
+.note-btn.disabled,
+.note-btn[disabled] {
+    opacity: 0.45;
+    pointer-events: none;
+}
+.note-btn.text-success {
+    color: var(--f-success);
+}
+.note-btn .caret {
+    margin-inline-start: 2px;
+}
+.note-toolbar .dropdown-menu {
+    min-width: 83px;
+}
+/* Save draft and discard: the toolbar's end. */
 .note-actions {
-    float: right;
+    margin-inline-start: auto;
 }
 .note-actions .note-btn-save-draft {
     font-size: 16px;
 }
 .note-actions-select {
-    margin-top: 3px!important;
-    float: right;
+    margin-inline-start: auto;
 }
 .note-actions-select select {
-    color: #2a3b47;
-    border-color: #c1cbd4;
-    height: 24px;
-    line-height: 24px;
-    padding-top: 2px;
+    width: auto;
+    min-height: 26px;
+    padding: 0 6px;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-sm);
+    background: var(--f-control);
+    color: var(--f-text);
 }
 .note-actions-select .note-btn,
 .note-actions-select .note-btn:hover {
-    background-color: transparent;
-    border-color: transparent;
-    padding-top: 3px;
+    background: transparent;
     cursor: default;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    outline: none;
-}
-.note-editor.note-frame .note-statusbar.note-statusbar-toolbar {
-    /*border-top: 1px solid #ddd;*/
-    background-color: #f9fafa;
-    text-align: right;
-    color: #72808e;
-}
-.note-bottom-div {
-    margin: 0 4px;
-    color: #c1cbd4;
-    font-size: 9px;
-}
-.btn-group-send {
-    margin-left: 12px;
-    margin-top: -1px;
-    margin-bottom: -1px;
-}
-.btn-group-send .btn {
-    height: 38px;
-}
-.btn-send-menu {
-    padding-left: 8px;
-    padding-right: 8px;
-    font-size: 9px;
-    border-left-color: #659ac8;
-}
-.btn-send-text {
-    min-width: 94px;
-}
-.btn-reply-submit {
-    font-size: 13.4px;
-}
-.note-statusbar-toolbar select.form-control {
-    height: 24px;
-    line-height: 24px;
-    width: auto;
-    display: inline-block;
-    padding-top: 2px;
-    padding-bottom: 1px;
-}
-.note-editor .btn-default.text-success {
-    color: #53b961;
 }
 .draft-saved {
-    color: #a5b2bd;
-    font-size: 12.4px;
-    float: left;
-    position: relative;
-    top: 2px;
+    color: var(--f-tertiary);
+    font-size: var(--f-text-xs);
+}
+/* The status bar holds the signature, status, assignee and Send. */
+.note-editor.note-frame .note-statusbar.note-statusbar-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 8px;
+    border-top: 1px solid var(--f-border);
+    border-radius: 0 0 var(--f-radius-md) var(--f-radius-md);
+    background: var(--f-surface-secondary);
+    color: var(--f-secondary);
+}
+.note-statusbar-toolbar #editor_signature {
+    flex: 0 0 calc(100% + 16px);
+}
+.note-statusbar-toolbar select.f-input {
+    width: auto;
+    min-height: 30px;
+    padding-block: 2px;
+    font-size: var(--f-text-sm);
+}
+.note-bottom-div:empty {
+    display: none;
+}
+.note-bottom-div {
+    color: var(--f-tertiary);
+    font-size: var(--f-text-xs);
 }
 #editor_signature {
-    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid var(--f-border);
+    background: var(--f-surface);
+    color: var(--f-text);
     font-size: 14px;
     line-height: 20px;
-    background-color: #fff;
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-    color: #394956;
+    text-align: start;
 }
-.note-toolbar .note-btn-group .note-btn {
-    border-radius: 0;
+.note-statusbar-toolbar #editor_signature {
+    margin: -8px -8px 0;
 }
-.note-toolbar .note-btn-group.open .note-btn {
-    border-color: #e6e6e6;
+/* One Send button with a menu of other statuses beside it. */
+.btn-group-send {
+    display: inline-flex;
+    position: relative;
+    margin-inline-start: 4px;
 }
-.note-toolbar.panel-heading {
-    background-color: #f9fafa;
+.btn-group-send > .btn-reply-submit {
+    min-width: 94px;
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
 }
-.panel-heading.note-toolbar .note-btn-group .dropdown-menu {
-    min-width: 83px;
-    padding-left: 5px;
+.btn-group-send > .btn-send-menu {
+    margin-inline-start: 1px;
+    padding-inline: 8px;
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
 }
-.panel-heading.note-toolbar .note-remove-format-btn {
-    padding-right: 7px;
-}
-.panel-heading.note-toolbar .note-remove-format .dropdown-toggle {
-    width: 20px;
-    padding-left: 5px;
-}
-.note-remove-format .dropdown-menu {
-    padding-right: 5px;
-}
-@media (max-width:390px) {
-    .note-bottom-div {
-        display: none;
-    }
-    .note-statusbar-toolbar select.form-control {
-        width: 85px;
-    }
+.dropdown-send-status {
+    top: auto;
+    bottom: 100%;
+    margin: 0 0 4px;
 }
 @media (max-width:582px) {
-    .draft-saved {
-        display: none!important;
-    }
-    .note-actions,
-    .note-actions-select {
-        float: none;
-    }
-    .note-btn .glyphicon-paperclip {
-        font-size: 13px;
-    }
-    .btn-sm, .btn-group-sm > .btn {
-        padding: 5px 9px!important;
-    }
-    .panel-heading.note-toolbar>.btn-group {
-        margin-right: 1px!important;
-    }
-    .panel-heading.note-toolbar {
-        padding: 0 0 4px 1px!important;
-    }
+    .draft-saved,
     .editor-btm-text {
-        display: none;
-    }
-}
-@media (min-width:583px) {
-    .conv-reply-body .note-style {
-        margin-right: 110px!important;
-    }
-    .conv-reply-body .note-actions {
-        position: absolute;
-        right: 0;
+        display: none !important;
     }
 }
 
@@ -2476,30 +2458,27 @@ button.conv-checkbox-clear {
     -ms-transform: scaleX(-1);
 }
 .conv-reply-block .form-group {
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
-.conv-reply-label,
-.conv-reply-block .form-group label {
-    width: 33px;
-    padding-right: 0;
-    padding-left: 0px;
-}
-.conv-reply-block .form-group input {
-    max-width: 600px;
-    min-width: 150px;
+/* Reply form rows: a label column, then the field. */
+.conv-reply-block .form-group:has(> .control-label) {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
 }
 .conv-reply-label,
 .conv-reply-block .control-label {
-    float: left;
-    text-align: right;
+    margin: 0;
+    color: var(--f-secondary);
+    font-weight: normal;
+    text-align: end;
 }
 .conv-reply-body {
     margin-top: 13px;
 }
 .conv-reply-field {
-    padding-left: 10px;
-    float: left;
-    width: 68%;
+    min-width: 0;
 }
 .conv-forward-block .alert-switch-to-note {
     display: none;
@@ -2603,23 +2582,12 @@ button.conv-checkbox-clear {
     display: block;
 }
 .alert-switch-to-note {
-    -webkit-box-shadow: inset 5px 0 0 0 #ffc646;
-    box-shadow: inset 5px 0 0 0 #ffc646;
-    margin: 8px -15px -9px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-}
-.alert-switch-to-note .glyphicon {
-    font-size: 15px;
-    position: relative;
-    top: 2px;
-    margin-left: 3px;
-    margin-right: 5px;
+    margin: 8px 0;
 }
 .alert-switch-to-note a,
 .alert-switch-to-note a:hover,
 .alert-switch-to-note a:focus {
-    color: #b37100;
+    color: inherit;
     text-decoration: underline;
 }
 ul.sidebar-block-list {
@@ -2778,9 +2746,6 @@ ul.sidebar-block-list {
     }
     .conv-block {
         margin: 0 13px;
-    }
-    .conv-reply-field {
-        width: 80%;
     }
 }
 /**
@@ -4399,11 +4364,11 @@ a.disabled:focus {
 .conv-reply-block:not(.conv-forward-block) .form-group.cc-shifted {
     margin-bottom: -8px;
 }
+.conv-reply-block:not(.conv-forward-block) .cc-shifted {
+    grid-template-columns: minmax(0, 1fr);
+}
 .conv-reply-block:not(.conv-forward-block) .cc-shifted .control-label {
     display: none;
-}
-.conv-reply-block:not(.conv-forward-block) .cc-shifted .conv-reply-field {
-    padding-left: 0;
 }
 .conv-note-block .cc-toggler {
     display: none;

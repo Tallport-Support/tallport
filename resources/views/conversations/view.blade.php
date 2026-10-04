@@ -184,7 +184,7 @@
                 @endif
                 <div class="conv-action-wrapper">
                     <div class="conv-block conv-reply-block conv-action-block hidden">
-                        <div class="col-xs-12">
+                        <div>
                             <form class="form-horizontal form-reply" method="POST" action="">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="conversation_id" value="{{ $conversation->id }}"/>
@@ -201,7 +201,7 @@
                                         <label class="control-label">{{ __('From') }}</label>
 
                                         <div class="conv-reply-field">
-                                            <select name="from_alias" class="form-control">
+                                            <select name="from_alias" class="f-input">
                                                 @foreach ($from_aliases as $from_alias_email => $from_alias_name)
                                                     <option value="@if ($from_alias_email != $mailbox->email){{ $from_alias_email }}@endif" @if (!empty($from_alias) && $from_alias == $from_alias_email)selected="selected"@endif>@if ($from_alias_name){{ $from_alias_email }} ({{ $from_alias_name }})@else{{ $from_alias_email }}@endif</option>
                                                 @endforeach
@@ -215,13 +215,13 @@
 
                                     <div class="conv-reply-field">
                                         @if (!empty($to_customers))
-                                            <select name="to" id="to" class="form-control">
+                                            <select name="to" id="to" class="f-input">
                                                 @foreach ($to_customers as $to_customer)
                                                     <option value="{{ $to_customer['email'] }}" @if ($to_customer['email'] == $conversation->customer_email)selected="selected"@endif>{{ $to_customer['customer']->getFullName(true) }} &lt;{{ $to_customer['email'] }}&gt;</option>
                                                 @endforeach
                                             </select>
                                         @endif
-                                        <select class="form-control hidden parsley-exclude draft-changer" name="to_email[]" id="to_email" multiple required autofocus>
+                                        <select class="f-input hidden parsley-exclude draft-changer" name="to_email[]" id="to_email" multiple required autofocus>
                                         </select>
                                         @include('partials/field_error', ['field'=>'to'])
                                     </div>
@@ -232,7 +232,7 @@
 
                                     <div class="conv-reply-field">
 
-                                        <select class="form-control recipient-select" name="cc[]" id="cc" multiple>
+                                        <select class="f-input recipient-select" name="cc[]" id="cc" multiple>
                                             @if ($cc)
                                                 @foreach ($cc as $cc_email)
                                                     <option value="{{ $cc_email }}" selected="selected">{{ $cc_email }}</option>
@@ -248,7 +248,7 @@
                                     <label for="bcc" class="control-label">{{ __('Bcc') }}</label>
 
                                     <div class="conv-reply-field">
-                                         <select class="form-control recipient-select" name="bcc[]" id="bcc" multiple>
+                                         <select class="f-input recipient-select" name="bcc[]" id="bcc" multiple>
                                             @if ($bcc)
                                                 @foreach ($bcc as $bcc_email)
                                                     <option value="{{ $bcc_email }}" selected="selected">{{ $bcc_email }}</option>
@@ -268,8 +268,7 @@
                                 </div>
 
                                 @if (!empty($threads[0]) && $threads[0]->type == App\Thread::TYPE_NOTE && $threads[0]->created_by_user_id != Auth::user()->id && $threads[0]->created_by_user)
-                                    <div class="alert alert-warning alert-switch-to-note">
-                                        <i class="glyphicon glyphicon-exclamation-sign"></i>
+                                    <div class="f-alert f-alert--warning alert-switch-to-note">
                                         {!! __safe_raw_html('This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.', ['%switch_start%' => '<a href="#" class="switch-to-note">', '%switch_end%' => '</a>', 'user_name' => htmlspecialchars($threads[0]->created_by_user->getFullName()) ]) !!}
                                     </div>
                                 @endif
@@ -279,7 +278,7 @@
                                 </div>
 
                                 <div class="form-group{{ $errors->has('body') ? ' has-error' : '' }} conv-reply-body">
-                                    <textarea id="body" class="form-control" name="body" rows="13" data-parsley-required="true" data-parsley-required-message="{{ __('Please enter a message') }}" @if ($conversation->isInChatMode()) placeholder="{{ __('Use ENTER to send the message and SHIFT+ENTER for a new line') }}" @endif>{{ old('body', $conversation->body) }}</textarea>
+                                    <textarea id="body" class="f-input" name="body" rows="13" data-parsley-required="true" data-parsley-required-message="{{ __('Please enter a message') }}" @if ($conversation->isInChatMode()) placeholder="{{ __('Use ENTER to send the message and SHIFT+ENTER for a new line') }}" @endif>{{ old('body', $conversation->body) }}</textarea>
                                     <div class="help-block has-error">
                                         @include('partials/field_error', ['field'=>'body'])
                                     </div>
