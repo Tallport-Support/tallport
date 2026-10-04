@@ -5250,6 +5250,14 @@ a.disabled:focus {
 .app-main.fruit-ui > .content {
     margin-top: 0;
 }
+/* A converted page is the app's content surface, as in FruitUI's app examples;
+   scopes nested in it don't repaint the page background. */
+.app-main.fruit-ui {
+    background: var(--f-surface);
+}
+.app-main.fruit-ui .fruit-ui {
+    background: transparent;
+}
 .system-tools__days {
     width: 80px;
 }

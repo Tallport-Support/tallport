@@ -20,7 +20,7 @@
     <x-fruit::item-list class="entity-list" :aria-label="__('Mailboxes')">
         @foreach ($mailboxes as $mailbox_item)
             <li>
-                <a href="{{ route('mailboxes.update', ['id' => $mailbox_item->id]) }}" class="f-item-row @if (!$mailbox_item->isConnected() || $mailbox_item->isArchived()) entity-list__inactive @endif">
+                <a href="{{ route('mailboxes.update', ['id' => $mailbox_item->id]) }}" class="f-item-row @if (!Eventy::filter('mailbox.has_img', false, $mailbox_item)) no-img @endif @if (!$mailbox_item->isConnected() || $mailbox_item->isArchived()) entity-list__inactive @endif">
                     <span class="f-item-row__top">
                         <span class="f-item-row__title">@action('mailbox_card.before_name', $mailbox_item){{ $mailbox_item->name }}</span>
                         @if ($mailbox_item->isArchived())
