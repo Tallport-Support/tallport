@@ -13,7 +13,7 @@ function frame(title, size) {
   // Outside a .fruit-ui scope (the compat build), the dialog carries its own.
   if (!document.body.closest('.fruit-ui')) element.classList.add('fruit-ui');
   element.setAttribute('aria-labelledby', `${id}-title`);
-  element.innerHTML = `<header class="f-dialog__header"><h2 id="${id}-title"></h2><button class="f-button f-button--ghost f-button--icon" type="button" data-fruit-dialog-close><svg class="f-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg></button></header><div class="f-dialog__body"></div>`;
+  element.innerHTML = `<header class="f-dialog__header"><h2 id="${id}-title"></h2><button class="f-button f-button--ghost f-button--icon" type="button" data-fruit-dialog-close><svg class="f-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header><div class="f-dialog__body"></div>`;
   element.querySelector('h2').textContent = title;
   element.querySelector('[data-fruit-dialog-close]').setAttribute('aria-label', label('close-label', 'Close'));
   return element;

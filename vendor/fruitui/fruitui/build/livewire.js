@@ -295,7 +295,7 @@ function m(e, t, n, r, { presentation: i = n, focusRoot: a = n } = {}) {
 var h = ["medium", "large"], g = (e, t) => document.querySelector("template[data-fruit-remote-dialog]")?.getAttribute(`data-fruit-${e}`) ?? t;
 function _(e, t) {
 	let n = d("fruit-dialog"), r = document.createElement("dialog");
-	return r.className = `f-dialog f-dialog--scroll${t === "large" ? " f-dialog--large" : ""}`, document.body.closest(".fruit-ui") || r.classList.add("fruit-ui"), r.setAttribute("aria-labelledby", `${n}-title`), r.innerHTML = `<header class="f-dialog__header"><h2 id="${n}-title"></h2><button class="f-button f-button--ghost f-button--icon" type="button" data-fruit-dialog-close><svg class="f-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg></button></header><div class="f-dialog__body"></div>`, r.querySelector("h2").textContent = e, r.querySelector("[data-fruit-dialog-close]").setAttribute("aria-label", g("close-label", "Close")), r;
+	return r.className = `f-dialog f-dialog--scroll${t === "large" ? " f-dialog--large" : ""}`, document.body.closest(".fruit-ui") || r.classList.add("fruit-ui"), r.setAttribute("aria-labelledby", `${n}-title`), r.innerHTML = `<header class="f-dialog__header"><h2 id="${n}-title"></h2><button class="f-button f-button--ghost f-button--icon" type="button" data-fruit-dialog-close><svg class="f-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header><div class="f-dialog__body"></div>`, r.querySelector("h2").textContent = e, r.querySelector("[data-fruit-dialog-close]").setAttribute("aria-label", g("close-label", "Close")), r;
 }
 function v() {
 	let e = document.createElement("p");

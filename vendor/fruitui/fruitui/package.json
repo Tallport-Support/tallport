@@ -23,6 +23,7 @@
     "docs",
     "CHANGELOG.md",
     "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
     "AGENTS.md"
   ],
   "scripts": {

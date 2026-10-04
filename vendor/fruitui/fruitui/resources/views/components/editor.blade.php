@@ -13,16 +13,16 @@
         @isset($toolbar)
             {{ $toolbar }}
         @else
-        {{-- Compact icon buttons in groups; each name is its accessible label and tooltip. --}}
+        {{-- Compact icon buttons in groups (Lucide icons); each name is its accessible label and tooltip. --}}
         @foreach ([
-            ['bold' => [__('Bold'), 'M7 5h6a3.5 3.5 0 0 1 0 7H7zM7 12h7a3.5 3.5 0 0 1 0 7H7z'], 'italic' => [__('Italic'), 'M19 5h-8M13 19H5M15 5 9 19']],
-            ['bulletList' => [__('Bullets'), 'M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01'], 'orderedList' => [__('Numbered list'), 'M10 6h10M10 12h10M10 18h10M4 4.5l1-.5v4M3.5 14.5c.4-.6 2-.8 2 .3 0 .8-2 1.6-2 2.7h2'], 'blockquote' => [__('Quote'), 'M10 7c-2.5 1-4 3-4 6v4h4v-4H7M18 7c-2.5 1-4 3-4 6v4h4v-4h-3']],
-            ['link' => [__('Link'), 'M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1'], 'image' => [__('Image'), 'M4 5h16v14H4zM4 16l5-5 4 4 2-2 5 5M15.5 9h.01'], 'clear' => [__('Remove formatting'), 'M6 5h12M12 5l-3 14M4 4l16 16']],
-            ['undo' => [__('Undo'), 'M9 7 4 12l5 5M4 12h11a5 5 0 0 1 0 10h-2'], 'redo' => [__('Redo'), 'm15 7 5 5-5 5M20 12H9a5 5 0 0 0 0 10h2']],
+            ['bold' => [__('Bold'), '<path d="M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8"/>'], 'italic' => [__('Italic'), '<line x1="19" x2="10" y1="4" y2="4"/><line x1="14" x2="5" y1="20" y2="20"/><line x1="15" x2="9" y1="4" y2="20"/>']],
+            ['bulletList' => [__('Bullets'), '<path d="M3 5h.01"/><path d="M3 12h.01"/><path d="M3 19h.01"/><path d="M8 5h13"/><path d="M8 12h13"/><path d="M8 19h13"/>'], 'orderedList' => [__('Numbered list'), '<path d="M11 5h10"/><path d="M11 12h10"/><path d="M11 19h10"/><path d="M4 4h1v5"/><path d="M4 9h2"/><path d="M6.5 20H3.4c0-1 2.6-1.925 2.6-3.5a1.5 1.5 0 0 0-2.6-1.02"/>'], 'blockquote' => [__('Quote'), '<path d="M17 5H3"/><path d="M21 12H8"/><path d="M21 19H8"/><path d="M3 12v7"/>']],
+            ['link' => [__('Link'), '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>'], 'image' => [__('Image'), '<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>'], 'clear' => [__('Remove formatting'), '<path d="M4 7V4h16v3"/><path d="M5 20h6"/><path d="M13 4 8 20"/><path d="m15 15 5 5"/><path d="m20 15-5 5"/>']],
+            ['undo' => [__('Undo'), '<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/>'], 'redo' => [__('Redo'), '<path d="m15 14 5-5-5-5"/><path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13"/>']],
         ] as $group => $commands)
             @if ($group > 0)<span class="f-editor__separator" role="separator" aria-orientation="vertical"></span>@endif
             @foreach ($commands as $command => [$label, $icon])
-                <button class="f-button f-button--ghost f-button--icon" type="button" data-fruit-command="{{ $command }}" aria-label="{{ $label }}" title="{{ $label }}"><svg class="f-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="{{ $icon }}" /></svg></button>
+                <button class="f-button f-button--ghost f-button--icon" type="button" data-fruit-command="{{ $command }}" aria-label="{{ $label }}" title="{{ $label }}"><svg class="f-icon" viewBox="0 0 24 24" aria-hidden="true">{!! $icon !!}</svg></button>
             @endforeach
         @endforeach
         @endisset

@@ -714,7 +714,7 @@ These cover the core screens of helpdesks, mail and chat. Contracts are in the [
 @endpersist
 ```
 
-**Icons.** FruitUI ships no icon set. Any SVG set works; `.f-icon` sizes it (20px, or `--f-icon-size`), draws strokes in `currentColor` and leaves fills off, which suits outline sets such as Heroicons through blade-icons: `<x-heroicon-o-archive-box class="f-icon" aria-hidden="true" />`. Put icons in the `icon`, `leading` or `avatar` slots, or inside buttons beside a text or `aria-label` name.
+**Icons.** FruitUI's own icons (chevrons, checkmarks, the editor toolbar, copy, translate and sparkles) are [Lucide](https://lucide.dev) icons, and applications should use Lucide for theirs so the two match. FruitUI ships no icon set beyond the few it draws. `.f-icon` sizes an icon (20px, or `--f-icon-size`), draws strokes in `currentColor` at a 1.75 stroke and leaves fills off, which suits Lucide's 24px outline icons. With blade-icons, use the Lucide set: `<x-lucide-archive class="f-icon" aria-hidden="true" />`; with plain SVG, copy the icon's elements into `<svg class="f-icon" viewBox="0 0 24 24" aria-hidden="true">…</svg>`. Put icons in the `icon`, `leading` or `avatar` slots, or inside buttons beside a text or `aria-label` name.
 
 **Infinite scroll.** End the list with a sentinel that loads more when it scrolls into view, and show placeholders while it loads:
 

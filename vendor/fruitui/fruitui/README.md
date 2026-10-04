@@ -112,4 +112,4 @@ The Support interface and a Mail preferences form also exist as Livewire 4 singl
 
 ## License
 
-FruitUI is open-source software licensed under the [MIT license](LICENSE).
+FruitUI is open-source software licensed under the [MIT license](LICENSE). Its icons are from [Lucide](https://lucide.dev) (ISC license); see [third-party notices](THIRD_PARTY_NOTICES.md). Use Lucide for your application's own icons too, at the same stroke, so they match.
