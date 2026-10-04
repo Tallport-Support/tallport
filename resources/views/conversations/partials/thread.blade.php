@@ -12,7 +12,7 @@
             @action('thread.after_header', $thread, $loop, $threads, $conversation, $mailbox)
         </div>
         <div class="dropdown thread-options">
-            <span class="dropdown-toggle {{--glyphicon glyphicon-option-vertical--}}" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true"><b class="caret"></b></span>
+            <button type="button" class="f-button f-button--ghost f-button--icon f-button--small dropdown-toggle" data-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="{{ __('More Actions') }}" title="{{ __('More Actions') }}"><x-heroicon-o-ellipsis-horizontal class="f-icon" aria-hidden="true" /></button>
             @if (Auth::user()->isAdmin())
                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                     @action('thread.menu', $thread)
@@ -37,9 +37,9 @@
                         @endif
                         [{{ __('Draft') }}]
                     </div>
-                    <div class="btn-group btn-group-xs draft-actions">
-                        <a class="btn btn-default edit-draft-trigger" href="#">{{ __('Edit') }}</a>
-                        <a class="btn btn-default discard-draft-trigger" href="#">{{ __('Discard') }}</a>
+                    <div class="draft-actions">
+                        <a class="f-button f-button--small edit-draft-trigger" href="#">{{ __('Edit') }}</a>
+                        <a class="f-button f-button--small f-button--ghost discard-draft-trigger" href="#">{{ __('Discard') }}</a>
                     </div>
                 </div>
                 <div class="thread-info">
@@ -231,7 +231,7 @@
                 @endphp
                 @if ($send_status_data)
                     @if (!empty($send_status_data['is_bounce']))
-                        <div class="alert alert-warning">
+                        <div class="f-alert f-alert--warning">
                             @if (empty($send_status_data['bounce_for_thread']) || empty($send_status_data['bounce_for_conversation']))
                                 {{ __('This is a bounce message.') }}
                             @else
@@ -248,13 +248,13 @@
                     @endif
                 @endif
                 @if ($thread->isSendStatusError())
-                        <div class="alert alert-danger alert-light">
+                        <div class="f-alert f-alert--danger">
                             <div>
                                 <strong>{{ __('Message not sent to customer') }}</strong> (<a href="{{ route('conversations.ajax_html', array_merge(['action' =>
                         'send_log'], \Request::all(), ['thread_id' => $thread->id]) ) }}" data-trigger="modal" data-modal-title="{{ __("Outgoing Emails") }}" data-modal-size="lg">{{ __('View log') }}</a>)
 
                                 @if ($thread->canRetrySend())
-                                    &nbsp;<button class="btn btn-default btn-xs btn-thread-retry" data-loading-text="{{ __('Retry') }}…">{{ __('Retry') }}</button>
+                                    &nbsp;<button type="button" class="f-button f-button--small btn-thread-retry" data-loading-text="{{ __('Retry') }}…">{{ __('Retry') }}</button>
                                 @endif
                             </div>
 
@@ -278,7 +278,7 @@
                         </div>
                 @endif
                 @if ($thread->isForwarded())
-                    <div class="alert alert-info">
+                    <div class="f-alert">
                         {{ __('This is a forwarded conversation.') }}
                         {!! __safe_raw_html('Original conversation: :forward_parent_conversation_number', [
                         'forward_parent_conversation_number' => '<a href="'.route('conversations.view', ['id' => $thread->getMetaFw(App\Thread::META_FORWARD_PARENT_CONVERSATION_ID)]).'#thread-'.$thread->getMetaFw(App\Thread::META_FORWARD_PARENT_THREAD_ID).'">#'.$thread->getMetaFw(App\Thread::META_FORWARD_PARENT_CONVERSATION_NUMBER).'</a>'
@@ -286,7 +286,7 @@
                     </div>
                 @endif
                 @if ($thread->isForward())
-                    <div class="alert alert-note">
+                    <div class="f-alert f-alert--warning">
                         {!! __safe_raw_html(':person forwarded this conversation. Forwarded conversation: :forward_child_conversation_number', [
                         'person' => ucfirst($thread->getForwardByFullName()),
                         'forward_child_conversation_number' => '<a href="'.route('conversations.view', ['id' => $thread->getMetaFw(App\Thread::META_FORWARD_CHILD_CONVERSATION_ID)]).'">#'.$thread->getMetaFw(App\Thread::META_FORWARD_CHILD_CONVERSATION_NUMBER).'</a>'
@@ -317,7 +317,7 @@
             </div>
         </div>
         <div class="dropdown thread-options">
-            <span class="dropdown-toggle {{--glyphicon glyphicon-option-vertical--}}" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true"><b class="caret"></b></span>
+            <button type="button" class="f-button f-button--ghost f-button--icon f-button--small dropdown-toggle" data-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="{{ __('More Actions') }}" title="{{ __('More Actions') }}"><x-heroicon-o-ellipsis-horizontal class="f-icon" aria-hidden="true" /></button>
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 @if ($sender_sent_at = App\Misc\SenderTime::sentAt($thread))
                     {{-- When the customer sent it, their time. --}}

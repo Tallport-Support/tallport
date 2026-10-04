@@ -3,8 +3,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                    <a data-toggle="collapse" href=".collapse-conv-prev">{{ __("Previous Conversations") }} 
-                        <b class="caret"></b>
+                    <a data-toggle="collapse" href=".collapse-conv-prev">{{ __("Previous Conversations") }} <x-heroicon-o-chevron-down class="f-icon" aria-hidden="true" />
                     </a>
                 </h4>
             </div>

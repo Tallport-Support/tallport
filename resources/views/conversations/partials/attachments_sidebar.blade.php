@@ -15,7 +15,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <a data-toggle="collapse" href=".collapse-attachments">{{ __('Attachments') }} <b class="caret"></b></a>
+                        <a data-toggle="collapse" href=".collapse-attachments">{{ __('Attachments') }} <x-heroicon-o-chevron-down class="f-icon" aria-hidden="true" /></a>
                     </h4>
                 </div>
                 <div class="collapse-attachments panel-collapse collapse in">

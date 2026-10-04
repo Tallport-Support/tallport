@@ -4,7 +4,7 @@
         @include('customers/profile_snippet', ['customer' => $customer, 'main_email' => $conversation->customer_email ?? '', 'conversation' => $conversation ?? null])
         @if (isset($conversation))
 	        <div class="dropdown customer-trigger" data-toggle="tooltip" title="{{ __("Settings") }}">
-	            <a href="#" class="dropdown-toggle glyphicon glyphicon-cog" data-toggle="dropdown" ></a>
+	            <button type="button" class="f-button f-button--ghost f-button--icon f-button--small dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="{{ __("Settings") }}"><x-heroicon-o-cog-6-tooth class="f-icon" aria-hidden="true" /></button>
 	            <ul class="dropdown-menu dropdown-menu-right" role="menu">
 	                <li role="presentation"><a href="{{ route('customers.update', ['id' => $customer->id]) }}" tabindex="-1" role="menuitem">{{ __("Edit Profile") }}</a></li>
 	                @if (!$conversation->isChat())

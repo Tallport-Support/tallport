@@ -1190,7 +1190,7 @@ https://github.com/freescout-help-desk/freescout/issues/4354
     font-size: 16px;
 }
 .customer-profile-menu a {
-    color: #394956;
+    color: var(--f-text);
 }
 .customer-photo-container {
     margin: 8px 0 0 12px;
@@ -1203,26 +1203,26 @@ https://github.com/freescout-help-desk/freescout/issues/4354
     margin-top: -53px;
 }
 .customer-photo {
-    border: 3px solid #fff;
+    border: 3px solid var(--f-surface);
     border-radius: 50%;
-    box-shadow:0 1px 6px rgba(147,161,175,.5);
+    box-shadow: 0 0 0 1px var(--f-border);
     display: block;
     max-height: 70px;
     max-width: 70px;
 }
-.customer-name {
-    color: #2a3b47;
-    font-size: 17px;
-    line-height: 21px;
-}
+.customer-name,
 .customer-name:hover,
 .customer-name:focus {
-    color: #2a3b47;
+    color: var(--f-text);
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 21px;
+    text-decoration: none;
 }
 .customer-snippet h3 {
     text-align: center;
     word-wrap: break-word;
-    color: #253540;
+    color: var(--f-text);
     font-size: 1.6em;
     font-weight: 400;
     line-height: 1.2em;
@@ -1238,11 +1238,11 @@ https://github.com/freescout-help-desk/freescout/issues/4354
 }
 .customer-social-profiles a {
     font-size: 17px;
-    color: #b6bec6;
+    color: var(--f-tertiary);
+    text-decoration: none;
 }
 .customer-social-profiles a:hover {
-    color: #72808e;
-    text-decoration: none;
+    color: var(--f-secondary);
 }
 .profile-preview {
     position: relative;
@@ -1274,14 +1274,15 @@ https://github.com/freescout-help-desk/freescout/issues/4354
     /*white-space: nowrap;*/
     display: block;
     margin-top: 2px;
-    color: #93a1af;
-    line-height: 16px;
+    color: var(--f-secondary);
+    line-height: 18px;
+    text-decoration: none;
 }
 .customer-contacts li a:hover {
-    color: #93a1af;
+    color: var(--f-text);
 }
 .customer-contacts li i {
-    color: #b5c1cc;
+    color: var(--f-tertiary);
     font-size: 14px;
     margin-right: 3px;
     vertical-align: top;
@@ -1289,20 +1290,20 @@ https://github.com/freescout-help-desk/freescout/issues/4354
 }
 .customer-contacts .contact-main,
 .customer-contacts .contact-main:hover {
-    color: #3197d6;
+    color: var(--f-accent);
 }
 .customer-extra {
     clip: both;
 }
 .customer-section {
     margin-top: 9px;
-    color: #93a1af;
+    color: var(--f-secondary);
     word-wrap: break-word;
 }
 .customer-divider {
     display: block;
     text-align: center;
-    color: #93a1af;
+    color: var(--f-tertiary);
     font-size: 1.5em;
     margin: 12px 0 18px;
     line-height: 6px;
@@ -1839,12 +1840,10 @@ button.conv-checkbox-clear {
     padding-right: 280px;
 }
 #conv-layout-customer {
-    box-shadow: -1px 0 0 #d6dde3, 1px 0 0 #d6dde3, 0 1px 0 #d6dde3;
+    box-shadow: -1px 0 0 var(--f-border);
     position: absolute;
     right: 0;
-    /*background-color: #f4f5f5;*/
-    /*background-color: #eff6fc;*/
-    background-color: #fff;
+    background-color: var(--f-surface);
     width: 280px;
     height: 100%;
     z-index: 9;
@@ -2006,25 +2005,38 @@ button.conv-checkbox-clear {
 }
 .conv-sidebar-block .panel {
     border: 0;
-    -webkit-box-shadow: none;
     box-shadow: none;
-    background-color: #f8f9f9;
+    background: transparent;
 }
 .conv-sidebar-block .panel-heading {
-    background-color: #f1f3f5 !important;
+    padding: 6px 8px;
+    border-top: 1px solid var(--f-border);
+    background: transparent !important;
 }
 .conv-customer-block {
     position: relative;
     margin-top: 7px;
 }
 .conv-customer-header {
-    background-color: #f1f3f5;
     height: 53px;
 }
+.conv-sidebar-block .accordion .panel-title {
+    margin: 0;
+}
 .conv-sidebar-block .accordion .panel-title a {
-    color: #2a3b47;
-    font-size: 13.4px;
-    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+    font-weight: 600;
+    text-decoration: none;
+}
+.conv-sidebar-block .accordion .panel-title a .f-icon {
+    transition: transform 0.15s;
+}
+.conv-sidebar-block .accordion .panel-title a.collapsed .f-icon {
+    transform: rotate(-90deg);
 }
 .conv-sidebar-block .accordion .panel-default > .panel-heading:hover {
     background-color: transparent;
@@ -2045,124 +2057,119 @@ button.conv-checkbox-clear {
     top: -43px;
     height: 22px;
 }
-.customer-trigger a {
-    color: #93a1af;
+.customer-trigger .dropdown-toggle {
+    color: var(--f-tertiary);
 }
-.customer-trigger a:hover,
-.customer-trigger a:focus {
-    color: #0078D7;
-    text-decoration: none;
-}
+/* Threads: messages, replies, notes and line items, in FruitUI tokens. */
 .thread {
     position: relative;
-    /*border-bottom: 1px solid #ebeff1;*/
-    border-bottom: 1px solid #e3e8eb;
+    border-bottom: 1px solid var(--f-border);
 }
 .thread:last-child {
     border-bottom: 0;
 }
+.thread a {
+    text-decoration: none;
+}
+.thread-content a,
+.thread-original a,
+.thread-body .f-alert a {
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+}
 .thread-header {
-    overflow: hidden;
+    display: flow-root;
     min-height: 42px;
-    padding-left: 72px;
+    padding-inline-start: 72px;
 }
 .thread-message {
-    margin: 0 24px 0 0;
-    padding: 25px 13px 20px 12px;
+    margin-inline-end: 24px;
+    padding: 22px 13px 20px 12px;
 }
 .thread-photo {
-    /*padding: 16px 18px 25px 20px;*/
-    padding: 21px 18px 25px 20px;
     position: absolute;
+    padding: 18px 18px 25px 20px;
 }
 .thread-photo .person-photo {
-    border-radius: 50%;
-    /*box-shadow: 0 1px 2px rgba(0,0,0,.2);*/
-    -webkit-box-shadow: 0 1px 6px rgba(147,161,175,.5);
-    box-shadow: 0 1px 6px rgba(147,161,175,.5);
     width: 45px;
     height: 45px;
+    padding: 2px;
+    border-radius: 50%;
+    background-color: var(--f-surface);
+    box-shadow: 0 0 0 1px var(--f-border);
     /* for automatic photo */
     line-height: 41px;
-    padding: 2px;
-    background-color: #fff;
 }
 .thread-title {
     float: left;
     max-width: 68%;
 }
 .thread-person {
-    color: #8494a4;
-    font-size: 18px;
-    line-height: 1.2em;
     display: inline-block;
-    margin-bottom: 12px;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
+    margin-bottom: 10px;
+    color: var(--f-secondary);
+    font-size: 17px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
 }
-.thread-person strong {
-    font-weight: bold;
-    color: #253540;
-    font-size: 18px;
-}
-.thread-person strong a,
-.thread-person strong a:hover,
-.thread-person strong a:focus {
-    color: #253540;
+.thread-person strong,
+.thread-person strong a {
+    color: var(--f-text);
+    font-size: 17px;
+    font-weight: 600;
 }
 .draft-actions {
-    display: inline-block;
+    display: inline-flex;
+    gap: 4px;
     margin-bottom: 5px;
 }
 .thread-info {
-    color: #a5b2bd;
     float: right;
-    text-align: right;
-    font-size: 12px;
+    color: var(--f-tertiary);
+    font-size: var(--f-text-xs);
+    text-align: end;
 }
 .thread-date {
-    color: #a5b2bd;
+    color: inherit;
 }
 .thread-date:hover {
-    color: #2a3b47;
+    color: var(--f-text);
 }
+/* Forwarded and phone threads: a folded corner. */
 .thread-badge {
-    color: #ffe19d;
-    border-top: 0 solid transparent;
-    border-bottom: 39px solid transparent;
-    border-left: 39px solid;
-    left: 0;
-    top: 0;
     position: absolute;
+    top: 0;
+    left: 0;
     width: 0;
     height: 0;
+    border-top: 0 solid transparent;
+    border-bottom: 39px solid transparent;
+    border-left: 39px solid color-mix(in srgb, var(--f-warning) 35%, transparent);
 }
 .thread-badge .glyphicon {
     position: relative;
-    left: -34px;
     top: 3px;
-    color: #c1861e;
+    left: -34px;
+    color: var(--f-warning);
 }
 .thread-info-icon,
 .thread-to-first {
-    margin-right: 1px;
-    color: #a5b2bd;
+    margin-inline-end: 1px;
+    color: var(--f-tertiary);
 }
 .thread-to-first .glyphicon {
     top: 2px;
 }
-.thread-to-first:hover {
-    text-decoration: none;
-}
 .thread-recipients {
     clear: both;
-    margin: -8px 0 14px;
-    color: #a5b2bd;
-    font-size: 12px;
-    line-height: 14px;
+    margin: -6px 0 14px;
+    color: var(--f-tertiary);
+    font-size: var(--f-text-xs);
+    line-height: 1.3;
 }
 .thread-recipients strong {
-    color: #72808e;
+    color: var(--f-secondary);
+    font-weight: 600;
 }
 .thread-recipients .text-warning strong {
     color: inherit;
@@ -2171,226 +2178,145 @@ button.conv-checkbox-clear {
     margin-top: 2px;
 }
 .thread-body {
-    color: #253540;
-    font-size: 14px;
-    line-height: 1.45em;
-    overflow-y: hidden;
-
     margin: 0 -18px 0 50px;
     padding: 0 18px 0 22px;
-    /*border-radius: 10px;*/
-
-    /*margin-top: 5px;*/
-    /*padding-top: 12px;*/
-    /*padding-bottom: 10px;*/
+    overflow-y: hidden;
+    color: var(--f-text);
+    font-size: 15px;
+    line-height: 1.5;
 }
-.thread-body .alert .glyphicon {
-    top: 2px;
+.thread-body .f-alert {
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
 }
 .thread-meta {
-    font-size: 12.5px;
-    margin: 15px 0 0 0;
-    color: #a5b2bd;
     display: block;
+    margin: 15px 0 0;
+    color: var(--f-tertiary);
+    font-size: var(--f-text-xs);
 }
 .thread-meta .glyphicon {
-    font-size: 12px;
-    color: #b8c7d4;
-    margin-right: 5px;
+    margin-inline-end: 5px;
 }
 .thread-options {
     position: absolute;
-    top: 22px;
-    cursor: pointer;
-    /*right: 5px;*/
+    top: 16px;
     right: 7px;
-    color: #a5b2bd;
 }
 .thread-options .dropdown-toggle {
-    /*padding: 4px 8px;*/
-    padding: 0px 11px 4px 8px;
-    display: block;
+    color: var(--f-tertiary);
 }
 .thread-type-new {
-    background-color: #d1ecff;
     height: 40px;
+    background: color-mix(in srgb, var(--f-accent) 12%, transparent);
     text-align: center;
 }
 .thread-type-new .view-new-trigger {
-    line-height: 40px;
     display: block;
-}
-.thread-type-new .view-new-trigger:hover,
-.thread-type-new .view-new-trigger:focus {
-    text-decoration: none;
+    line-height: 40px;
 }
 .thread-type-new .thread {
     display: none;
 }
 .thread-type-lineitem {
-    background: #f9fafa;
-    /*overflow: auto;*/
-    /*-webkit-box-shadow:inset 5px 0 0 0 #bcc4cc;
-    box-shadow:inset 5px 0 0 0 #bcc4cc;*/
+    background: var(--f-surface-secondary);
 }
 .thread-type-lineitem .thread-options {
-    top: 8px;
+    top: 4px;
 }
 .thread-type-lineitem .thread-message {
     padding-top: 12px;
     padding-bottom: 9px;
-    color: #a5b2bd;
-    font-size: 12px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
 }
 .thread-type-lineitem .thread-header {
     min-height: auto;
 }
 .thread-type-lineitem .thread-title a,
 .thread-meta a {
-    color: #7d878f;
-    font-weight: bold;
+    color: inherit;
+    font-weight: 600;
 }
-.thread-attachments {
-    position: relative;
-}
-/*.thread-type-customer .thread-body {
-    border: 1px solid #d9dee3;
-    -webkit-box-shadow:inset 3px 0 0 0 #d9dee3;
-    box-shadow:inset 3px 0 0 0 #d9dee3;
-}*/
-/*.thread-type-message .thread-body {
-    background-color: #f1f7fc;
-    /*border: 1px solid #2b8fdd;
-    -webkit-box-shadow:inset 3px 0 0 0 #2b8fdd;
-    box-shadow:inset 3px 0 0 0 #2b8fdd;* /
-    border: 1px solid #abd2f1;
-    -webkit-box-shadow:inset 3px 0 0 0 #abd2f1;
-    box-shadow:inset 3px 0 0 0 #abd2f1;
-}*/
 .thread-type-message {
-    background-color: #f4f8fd;
+    background: color-mix(in srgb, var(--f-accent) 5%, transparent);
 }
-/*.thread-type-draft .thread-body {
-    border: 1px solid #6db2e8;
-    -webkit-box-shadow:inset 3px 0 0 0 #6db2e8;
-    box-shadow:inset 3px 0 0 0 #6db2e8;
-}*/
 .thread-type-draft {
-    -webkit-box-shadow:inset 5px 0 0 0 #abd2f1;
-    box-shadow:inset 5px 0 0 0 #abd2f1;
+    box-shadow: inset 4px 0 0 0 color-mix(in srgb, var(--f-accent) 45%, transparent);
 }
-/*.thread-type-note .thread-body {
-    background-color: #fffbf1;
-    /*border: 1px solid #ffc646;
-    -webkit-box-shadow:inset 3px 0 0 0 #ffc646;
-    box-shadow:inset 3px 0 0 0 #ffc646;* /
-    border: 1px solid #ffe19d;
-    -webkit-box-shadow:inset 3px 0 0 0 #ffe19d;
-    box-shadow:inset 3px 0 0 0 #ffe19d;
-}*/
 .thread-type-note {
-    background-color: #fffbf1;
-    -webkit-box-shadow:inset 5px 0 0 0 #ffe19d;
-    box-shadow:inset 5px 0 0 0 #ffe19d;
+    background: color-mix(in srgb, var(--f-warning) 10%, transparent);
+    box-shadow: inset 4px 0 0 0 color-mix(in srgb, var(--f-warning) 60%, transparent);
 }
-/*.thread-type-message .thread-message,
-.thread-type-note .thread-message {
-    padding-bottom: 17px;
-}*/
 .thread-type-note .thread-person {
-    color: #f7b126;
+    color: var(--f-warning);
 }
-.thread-type-message .thread-person {
-    /*color: #8494a4;*/
-    color: #3197d6;
-}
-/*.thread-type-draft {
-    background-color: #e9f2fb;
-    /*-webkit-box-shadow:inset 5px 0 0 0 #3197d6;
-    box-shadow:inset 5px 0 0 0 #3197d6* /
-}*/
+.thread-type-message .thread-person,
 .thread-type-draft .thread-person {
-    color: #3197d6;
-    margin-right: 10px;
+    color: var(--f-accent);
+}
+.thread-type-draft .thread-person {
+    margin-inline-end: 10px;
 }
 .thread-type-draft .thread-header {
     padding-top: 2px;
 }
-.thread-attachments ul {
-    list-style: none;
-    padding-left: 23px;
-}
-.thread-attachments li {
-    border-radius: 2px;
-    /*border: 1px solid #dadada;*/
-    display: inline-block;
-    line-height: 1;
-    background-color: #f1f3f4;
-    margin: 8px 4px 8px 0;
-    padding: 4px 10px;
+.thread-attachments {
     position: relative;
 }
+.thread-attachments ul {
+    padding-inline-start: 23px;
+    list-style: none;
+}
+.thread-attachments li {
+    display: inline-block;
+    position: relative;
+    margin: 8px 4px 8px 0;
+    padding: 4px 10px;
+    border-radius: var(--f-radius-xs);
+    background: var(--f-surface-secondary);
+    line-height: 1;
+}
 .thread-attachments i.glyphicon-paperclip {
-    color: #a5b2bd;
-    font-size: 14px;
     position: absolute;
     top: 12px;
+    color: var(--f-tertiary);
+    font-size: 14px;
 }
 .thread-attachments a {
     display: inline-block;
-    color: #337ab7;
-    font-size: 13.4px;
+    color: var(--f-accent);
+    font-size: var(--f-text-sm);
 }
 .thread-attachments a.disabled,
 .thread-attachments a.disabled:hover,
 .thread-attachments a.disabled:focus {
-    color: #93a1af;
-    text-decoration: none;
+    color: var(--f-tertiary);
     cursor: default;
 }
 .thread-editor-container {
     padding: 20px;
 }
 .thread-editor-statusbar {
-    text-align: right;
-    background-color: #f9fafa;
-    border: 1px solid #dee4e9;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid var(--f-border);
     border-top: none;
-}
-.thread-editor-statusbar button,
-.thread-editor-statusbar a {
-    display: inline-block;
-}
-.thread-editor-statusbar .btn-primary {
-    height: 38px;
-    padding-left: 20px;
-    padding-right: 20px;
-}
-.conv-note-block .thread-editor-statusbar {
-    background-color: #fff7dd;
-    border: 1px solid #ffe39d;
-}
-.note-editor.note-frame.panel {
-    box-shadow: none;
+    background: var(--f-surface-secondary);
 }
 .thread-original {
     margin-top: 10px;
-    border-left: 5px solid #dbe1e9;
-    padding-left: 13px;
+    padding-inline-start: 13px;
+    border-inline-start: 3px solid var(--f-border);
 }
 .thread-text {
-    color: #253540;
-    font-size: 14px;
-    line-height: 1.45em;
+    color: var(--f-text);
+    font-size: 15px;
+    line-height: 1.5;
 }
-/*.thread-num {
-    position: absolute;
-    left: 20px;
-    padding: 1px 5px;
-    color: #a5b2bd;
-    text-align: center;
-    top: 75px;
-}*/
 .thread-content	img {
     max-width: 100%;
 }
@@ -2600,19 +2526,24 @@ ul.sidebar-block-list {
     padding-top: 2px;
     padding-bottom: 2px;
     display: inline-block;
+    color: var(--f-text);
+    text-decoration: none;
+}
+.sidebar-block-list li a:hover {
+    color: var(--f-accent);
 }
 /*.prev-convs li:first-child {
     margin-top: 0;
 }*/
 .sidebar-block-list .glyphicon {
+    color: var(--f-tertiary);
     margin-right: 4px;
     position: relative;
     top: 2px;
 }
 .conv-sidebar-block .panel-body {
     border-top: 0!important;
-    padding-top: 0;
-    padding-bottom: 6px;
+    padding: 0 8px 6px;
 }
 .sidebar-block-link {
     margin-bottom: 4px;
@@ -4686,9 +4617,8 @@ a.disabled:focus {
 }
 /* AI Assistant: summaries, translations, drafts */
 .thread-type-ai-summary {
-    background-color: #ebf3fb;
-    -webkit-box-shadow: inset 5px 0 0 0 rgb(106, 193, 255);
-    box-shadow: inset 5px 0 0 0 rgb(106, 193, 255);
+    background: color-mix(in srgb, var(--f-accent) 8%, transparent);
+    box-shadow: inset 4px 0 0 0 color-mix(in srgb, var(--f-accent) 55%, transparent);
 }
 .ai-assistant-summary-list {
     margin: 0;
@@ -4701,31 +4631,33 @@ a.disabled:focus {
     margin-bottom: 0;
 }
 .alert-ai-translation {
-    background-color: #ebf3fb;
+    background: color-mix(in srgb, var(--f-accent) 8%, transparent);
 }
 .alert-ai-translation-title {
-    color: #a5b2bd;
+    color: var(--f-secondary);
     font-weight: 600;
     padding-bottom: 10px;
 }
 .ai-assistant-badge {
     font-size: 11px;
-    background-color: #ebf3fb;
+    background: color-mix(in srgb, var(--f-accent) 12%, transparent);
+    color: var(--f-accent);
     font-weight: 500;
     padding: 1px 5px;
     border-radius: 5px;
 }
 .ai-draft-action {
-    color: #3197d6;
+    color: var(--f-accent);
 }
 .ai-draft-panel {
     margin: 12px 15px 0;
     padding: 12px 14px;
-    border-left: 4px solid #6ac1ff;
-    background: #ebf3fb;
+    border-inline-start: 4px solid color-mix(in srgb, var(--f-accent) 55%, transparent);
+    border-radius: var(--f-radius-sm);
+    background: color-mix(in srgb, var(--f-accent) 8%, transparent);
 }
 .ai-draft-meta {
-    color: #6f7f8f;
+    color: var(--f-secondary);
     font-size: 12px;
     margin-left: 8px;
 }
@@ -4736,8 +4668,9 @@ a.disabled:focus {
 .ai-draft-translation {
     font-size: 13px;
     line-height: 1.45;
-    background: #fff;
-    border: 1px solid #dce8f2;
+    background: var(--f-surface);
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-sm);
     padding: 10px;
     margin: 8px 0;
 }
@@ -5185,12 +5118,12 @@ a.disabled:focus {
 .app-main.fruit-ui > .content {
     margin-top: 0;
 }
-/* A converted page is the app's content surface, as in FruitUI's app examples;
+/* The page is the app's content surface, as in FruitUI's app examples;
    scopes nested in it don't repaint the page background. */
-.app-main.fruit-ui {
+.app-main {
     background: var(--f-surface);
 }
-.app-main.fruit-ui .fruit-ui {
+.app-main .fruit-ui {
     background: transparent;
 }
 .system-tools__days {

@@ -12,6 +12,18 @@ body {
 img {
   vertical-align: middle;
 }
+.text-muted {
+  color: var(--f-secondary);
+}
+.text-success {
+  color: var(--f-success);
+}
+.text-warning {
+  color: var(--f-warning);
+}
+.text-danger {
+  color: var(--f-danger);
+}
 input,
 button,
 select,
