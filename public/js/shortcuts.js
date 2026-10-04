@@ -48,7 +48,7 @@ $(document).ready(function() {
 			return;
 		}
 
-		var status_open = $('#conv-status').hasClass('open');
+		var status_open = $('#conv-status').prop('open') || $('#conv-status').hasClass('open');
 		if (!status_open && (e.shiftKey || typing || $('.modal:visible').length || fsApplyFilter('shortcuts.ignore_target', false, {target: target}))) {
 			return;
 		}
@@ -60,7 +60,7 @@ $(document).ready(function() {
 		if (status_open) {
 			// s, then a (active), p (pending), c (closed), s (spam) or n (not spam).
 			if (typeof(statuses[key]) != "undefined") {
-				done = click('#conv-status .dropdown-menu a[data-status="'+statuses[key]+'"]');
+				done = click('#conv-status a[data-status="'+statuses[key]+'"]');
 			}
 		} else if (conversation) {
 			switch (key) {
@@ -90,10 +90,10 @@ $(document).ready(function() {
 					done = !$('#conv-layout').hasClass('conv-following') && click('.conv-follow');
 					break;
 				case 'a':
-					done = click('#conv-assignee .btn:first');
+					done = click('#conv-assignee > summary');
 					break;
 				case 's':
-					done = click('#conv-status .btn:first');
+					done = click('#conv-status > summary');
 					break;
 			}
 			if (!done && !formOpen()) {

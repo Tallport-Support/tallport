@@ -1867,38 +1867,40 @@ button.conv-checkbox-clear {
     height: 100%;
     z-index: 9;
 }
+/* The conversation's toolbar and subject: FruitUI bars on the page. */
+.conv-header-bar {
+    background: var(--f-surface);
+}
 #conv-toolbar {
-    background-color: #deecf9;
-    /*border-bottom: 1px solid #e3e8eb;*/
-    padding-left: 9px;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--f-border);
 }
-.conv-actions .conv-action {
-    display: inline-block;
-    padding: 16px 16px 9px;
-    /*color: #4f5d69;*/
-    color: #005a9e;
-    font-size: 19px;
-    cursor: pointer;
-}
-.conv-actions .conv-action:hover {
-    /*color: #394956;*/
-    color: #0078d7;
+.conv-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
 }
 .conv-action.inactive {
-    color: #aeb6c0;
+    opacity: 0.45;
 }
-.conv-action.dropdown {
-    padding: 0!important;
-}
-.conv-action .dropdown-toggle {
+.conv-actions .glyphicon {
     font-size: 17px;
-    padding-left: 13px;
+}
+.menu-module-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.menu-module-items:empty {
+    display: none;
 }
 #conv-subject {
-    border-bottom: 1px solid #e3e8eb;
+    border-bottom: 1px solid var(--f-border, #e3e8eb);
 }
 .conv-subj-block {
-    padding: 16px 9px 18px 20px;
+    padding: 14px 20px;
 }
 .conv-following .conv-subjtext > span:before {
     content: "🔔 ";
@@ -1927,10 +1929,6 @@ button.conv-checkbox-clear {
 .conv-subjtext {
     float: left;
     display: inline-block;
-    color: #2a3b47;
-    font-weight: 400;
-    font-size: 23px;
-    line-height: 30px;
     word-wrap: break-word;
     margin-right: 8px;
     width: 100%;
@@ -1941,27 +1939,18 @@ button.conv-checkbox-clear {
     display: none;
 }
 .conv-subj-editing .conv-subj-editor {
-    display: table;
+    display: flex;
 }
 .conv-numnav {
     margin: 0;
     position: absolute;
-    color: #93a1af;
     right: 0;
-    top: 5px;
+    top: 0;
+    gap: 2px;
 }
 .conv-numnav strong {
-    color: #2a3b47;
+    color: var(--f-text);
     font-size: 18px;
-    font-weight: bold;
-    padding-right: 8px;
-}
-.conv-numnav i {
-    cursor: pointer;
-    font-size: 15px;
-}
-.conv-numnav i:hover {
-    color: #364a5a;
 }
 #conv-viewers {
     height: 20px;
@@ -1990,47 +1979,41 @@ button.conv-checkbox-clear {
     color: #f4b400!important;
 }
 .conv-info {
-    overflow: visible;
-    float: right;
-    text-align: right;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     list-style: none;
-    margin: 11px 11px 12px 0;
+    margin: 0;
     padding: 0;
     white-space: nowrap;
 }
-.conv-info .btn {
-    height: 30px;
-}
-.conv-info > li {
+.conv-info .conv-info-val {
     display: inline-block;
-    margin: 0 4px;
-}
-/*.conv-info .btn-group button.btn-default.conv-info-val {
-    color: #727d87!important;
-}*/
-.conv-info .btn-group button.conv-info-icon {
-    padding: 0 7px;
-}
-.conv-info .btn-group button.conv-info-val {
-    max-width: 100px;
-    text-overflow: ellipsis;
+    max-width: 140px;
     overflow: hidden;
-    padding-right: 22px;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
 }
-.conv-info .btn-group button.conv-info-val .caret {
-    position: absolute;
-    top: 12px;
-    right: 8px;
-}
-.conv-info .btn-group button i {
-    position: relative;
-    top: 2px;
-}
-.conv-info .btn-group button .caret {
-    margin-left: 3px;
-}
-.conv-actions {
+.conv-status-dot {
     display: inline-block;
+    width: 8px;
+    height: 8px;
+    min-width: 0;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--f-tertiary);
+}
+.conv-status-dot.f-badge--success {
+    background: var(--f-success);
+}
+.conv-status-dot.f-badge--accent {
+    background: var(--f-accent);
+}
+.conv-status-dot.f-badge--warning {
+    background: var(--f-warning);
+}
+.conv-status-dot.f-badge--danger {
+    background: var(--f-danger);
 }
 .conv-sidebar-block {
     margin: 20px 10px 5px 10px;
@@ -2070,20 +2053,7 @@ button.conv-checkbox-clear {
     position: relative;
 }
 .conv-next-prev {
-    vertical-align: middle;
-    margin-right: 0!important;
-}
-.conv-next-prev a {
-    font-size: 16px;
-    color: #a5b2bd;
-    position: relative;
-    top: 3px;
-    text-decoration: none;
-}
-.conv-next-prev a:hover,
-.conv-next-prev a:focus {
-    cursor: pointer;
-    color: #4f5d69;
+    display: flex;
 }
 .customer-trigger {
     display: inline-block;

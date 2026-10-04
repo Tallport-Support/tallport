@@ -83,8 +83,8 @@ class AllMailboxesTest extends FeatureTestCase
         $this->assertMatchesRegularExpression('#aria-current="page"\s+data-folder_id="'.$folder_id.'" data-mailbox_id="-1"#', $html);
         $this->assertDoesNotMatchRegularExpression('#data-mailbox_id="'.$this->sales->id.'"\s+open#', $html);
         // Older and newer across the mailboxes, still in All Mailboxes.
-        $page->assertSee('href="'.$older->url($folder_id).'" class="glyphicon glyphicon-menu-right"', false);
-        $this->get($older->url($folder_id))->assertOk()->assertSee('href="'.$newer->url($folder_id).'" class="glyphicon glyphicon-menu-left"', false);
+        $page->assertSee('href="'.$older->url($folder_id).'" class="f-button f-button--ghost f-button--icon" title="Older"', false);
+        $this->get($older->url($folder_id))->assertOk()->assertSee('href="'.$newer->url($folder_id).'" class="f-button f-button--ghost f-button--icon" title="Newer"', false);
 
         // Back to the list after an action.
         $this->get(route('mailboxes.view.folder', ['id' => $this->sales->id, 'folder_id' => $folder_id]))

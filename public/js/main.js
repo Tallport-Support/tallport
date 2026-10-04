@@ -1140,7 +1140,7 @@ function initConversation()
 	$(document).ready(function(){
 
 		// Change conversation assignee
-	    jQuery(".conv-user li > a").click(function(e){
+	    jQuery("#conv-assignee [data-user_id]").click(function(e){
 			if (!$(this).hasClass('active') && !$(this).hasClass('disabled')) {
 				if (fsApplyFilter('conversation.can_change_user', true, {trigger: $(this)})) {
 					$(this).trigger('fs-conv-user-change');
@@ -1149,7 +1149,7 @@ function initConversation()
 			e.preventDefault();
 		});
 
-	    jQuery(".conv-user li > a").bind('fs-conv-user-change', function(e){
+	    jQuery("#conv-assignee [data-user_id]").bind('fs-conv-user-change', function(e){
 			//if (!$(this).hasClass('active')) {
 				fsAjax({
 					action: 'conversation_change_user',
@@ -1177,7 +1177,7 @@ function initConversation()
 		});
 
 		// Change conversation status
-	    jQuery(".conv-status li > a").click(function(e){
+	    jQuery("#conv-status .f-menu-item").click(function(e){
 			if (!$(this).hasClass('active')) {
 				if (fsApplyFilter('conversation.can_change_status', true, {trigger: $(this)})) {
 					$(this).trigger('fs-conv-status-change');
@@ -1185,7 +1185,7 @@ function initConversation()
 			}
 			e.preventDefault();
 		});
-	    jQuery(".conv-status li > a").bind('fs-conv-status-change', function(e){
+	    jQuery("#conv-status .f-menu-item").bind('fs-conv-status-change', function(e){
 			//if (!$(this).hasClass('active')) {
 				var status = $(this).attr('data-status');
 				// Restore conversation button does not have a status
@@ -1218,7 +1218,7 @@ function initConversation()
 		});
 
 		// Restore conversation
-		jQuery(".conv-status li > a.conv-restore-trigger").click(function(e) {
+		jQuery("#conv-status .conv-restore-trigger").click(function(e) {
 			if (!$(this).hasClass('active')) {
 				fsAjax({
 					action: 'restore_conversation',
@@ -1658,7 +1658,7 @@ function processLinks()
 function getConvData(field)
 {
 	if (field == 'user_id') {
-		return $('.conv-user:first li.active a:first').attr('data-user_id');
+		return $('#conv-assignee [data-user_id].active:first').attr('data-user_id');
 	}
 	return null;
 }
@@ -4184,9 +4184,9 @@ function polycastInit()
 		    if (typeof(data.conversation_user_id) != "undefined" && data.conversation_user_id 
 		    	&& parseInt(data.conversation_user_id) != convGetUserId()
 		    ) {
-		    	$('#conv-assignee .conv-user li.active').removeClass('active');
-		    	var a = $("#conv-assignee .conv-user li a[data-user_id='"+data.conversation_user_id+"']");
-		    	a.parent().addClass('active');
+		    	$('#conv-assignee [data-user_id].active').removeClass('active').removeAttr('aria-current');
+		    	var a = $("#conv-assignee [data-user_id='"+data.conversation_user_id+"']");
+		    	a.addClass('active').attr('aria-current', 'true');
 		    	$('#conv-assignee .conv-info-val span:first').text(a.text());
 		    	flashElement($('#conv-assignee'));
 		    }
@@ -4195,26 +4195,14 @@ function polycastInit()
 		    if (typeof(data.conversation_status) != "undefined" && data.conversation_status 
 		    	&& parseInt(data.conversation_status) != convGetStatus()
 		    ) {
-		    	$('#conv-status .conv-status li.active').removeClass('active');
-		    	var a = $("#conv-status .conv-status li a[data-status='"+data.conversation_status+"']");
-		    	a.parent().addClass('active');
+		    	$('#conv-status [data-status].active').removeClass('active').removeAttr('aria-current');
+		    	var a = $("#conv-status [data-status='"+data.conversation_status+"']");
+		    	a.addClass('active').attr('aria-current', 'true');
 		    	$('#conv-status .conv-info-val span:first').text(a.text());
-		    	// Update class
+		    	// Update the status colour
 		    	if (data.conversation_status_class) {
-					$.each($('#conv-status .btn'), function(index, btn) {
-						var classes = $(btn).attr('class').split(/\s+/); 
-						$.each(classes, function(index, item_class) {
-							if (item_class.indexOf('btn-') != -1 && item_class != 'btn-light') {
-								$(btn).removeClass(item_class);
-							}
-						});   
-					});
-		    	
-		    		$('#conv-status .btn').addClass('btn-'+data.conversation_status_class);
-		    	}
-		    	// Update icon
-		    	if (data.conversation_status_icon) {
-		    		$('#conv-status .btn:first .glyphicon').attr('class', 'glyphicon').addClass('glyphicon-'+data.conversation_status_icon);
+		    		var tones = {success: 'success', info: 'accent', warning: 'warning', danger: 'danger'};
+		    		$('#conv-status .conv-status-dot').attr('class', 'f-badge conv-status-dot f-badge--'+(tones[data.conversation_status_class] || 'neutral'));
 		    	}
 		    	flashElement($('#conv-status'));
 		    }
@@ -4402,12 +4390,12 @@ function convIsChat()
 
 function convGetUserId()
 {
-	return parseInt($('#conv-assignee .conv-user li.active a:first').attr('data-user_id'));
+	return parseInt($('#conv-assignee [data-user_id].active:first').attr('data-user_id'));
 }
 
 function convGetStatus()
 {
-	return parseInt($('#conv-status .conv-status li.active a:first').attr('data-status'));
+	return parseInt($('#conv-status [data-status].active:first').attr('data-status'));
 }
 
 function flashElement(el)

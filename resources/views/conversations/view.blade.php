@@ -34,193 +34,129 @@
 
     <div id="conv-layout" class="conv-type-{{ strtolower($conversation->getTypeName()) }} @if ($is_following) conv-following @endif">
         <div id="conv-layout-header">
-            <div id="conv-toolbar">
-
-                <div class="conv-actions">
-                    @php
-                        $actions = \App\Misc\ConversationActionButtons::getActions($conversation, Auth::user(), $mailbox);
-                        $toolbar_actions = \App\Misc\ConversationActionButtons::getActionsByLocation($actions, \App\Misc\ConversationActionButtons::LOCATION_TOOLBAR);
-                        $dropdown_actions = \App\Misc\ConversationActionButtons::getActionsByLocation($actions, \App\Misc\ConversationActionButtons::LOCATION_DROPDOWN);
-                    @endphp
-
-                    {{-- There should be no spaces between buttons --}}
+            <div id="conv-toolbar" class="fruit-ui f-toolbar conv-header-bar">
+                @php
+                    $actions = \App\Misc\ConversationActionButtons::getActions($conversation, Auth::user(), $mailbox);
+                    $toolbar_actions = \App\Misc\ConversationActionButtons::getActionsByLocation($actions, \App\Misc\ConversationActionButtons::LOCATION_TOOLBAR);
+                    $dropdown_actions = \App\Misc\ConversationActionButtons::getActionsByLocation($actions, \App\Misc\ConversationActionButtons::LOCATION_DROPDOWN);
+                @endphp
+                <div class="conv-actions f-toolbar__group">
                     @foreach ($toolbar_actions as $action_key => $action)
-                        @if ($action_key === 'delete')
-                            {{-- Special handling for delete button --}}
-                            <span class="hidden-xs {{ $action['class'] }} conv-action glyphicon {{ $action['icon'] }}"
-                                  data-toggle="tooltip"
-                                  data-placement="bottom"
-                                  title="{{ $action['label'] }}"
-                                  aria-label="{{ $action['label'] }}"
-                                  role="button"></span>
-                        @elseif (!empty($action['url']))
-                            {{-- Action with URL (like move, merge) --}}
-                            <a href="{{ $action['url']($conversation) }}"
-                               class="{{ $action['class'] }} conv-action"
-                               role="button"
-                               @if (!empty($action['mobile_only']))class="hidden-xs"
-                        @endif
-                        @if (!empty($action['attrs']))
-                            @foreach ($action['attrs'] as $attr_key => $attr_value)
-                                {{ $attr_key }}="{{ $attr_value }}"
-                            @endforeach
-                        @endif
-                        data-toggle="tooltip"
-                        data-placement="bottom"
-                        title="{{ $action['label'] }}"
-                        aria-label="{{ $action['label'] }}">
-                        <i class="glyphicon {{ $action['icon'] }}"></i>
-                        </a>
+                        @if (!empty($action['url']))
+                            <a href="{{ $action['url']($conversation) }}" class="f-button f-button--ghost f-button--icon {{ $action['class'] }} conv-action @if (!empty($action['mobile_only'])) hidden-xs @endif"
+                                @if (!empty($action['attrs']))
+                                    @foreach ($action['attrs'] as $attr_key => $attr_value)
+                                        {{ $attr_key }}="{{ $attr_value }}"
+                                    @endforeach
+                                @endif
+                                title="{{ $action['label'] }}" aria-label="{{ $action['label'] }}">@include('conversations/partials/action_icon', ['icon' => $action['icon']])</a>
                         @else
-                            {{-- Simple button action --}}
-                            <span class="@if (!empty($action['mobile_only']))hidden-xs @endif {{ $action['class'] }} conv-action glyphicon {{ $action['icon'] }}"
-                                  data-toggle="tooltip"
-                                  data-placement="bottom"
-                                  title="{{ $action['label'] }}"
-                                  aria-label="{{ $action['label'] }}"
-                                  role="button"
-                            @if (!empty($action['attrs']))
-                                @foreach ($action['attrs'] as $attr_key => $attr_value)
-                                    {{ $attr_key }}="{{ $attr_value }}"
-                                @endforeach
-                            @endif
-                            ></span>
+                            <button type="button" class="f-button f-button--ghost f-button--icon {{ $action['class'] }} conv-action @if ($action_key === 'delete' || !empty($action['mobile_only'])) hidden-xs @endif"
+                                @if (!empty($action['attrs']))
+                                    @foreach ($action['attrs'] as $attr_key => $attr_value)
+                                        {{ $attr_key }}="{{ $attr_value }}"
+                                    @endforeach
+                                @endif
+                                title="{{ $action['label'] }}" aria-label="{{ $action['label'] }}">@include('conversations/partials/action_icon', ['icon' => $action['icon']])</button>
                         @endif
                     @endforeach
 
                     @if (App\Ai\Drafts::allowed(Auth::user(), $conversation))
-                        <span class="conv-action glyphicon glyphicon-ai ai-draft-action" data-toggle="tooltip" title="{{ __('Draft with AI') }}" aria-label="{{ __('Draft with AI') }}" role="button" tabindex="0"></span>
+                        <button type="button" class="f-button f-button--ghost f-button--icon conv-action ai-draft-action" title="{{ __('Draft with AI') }}" aria-label="{{ __('Draft with AI') }}"><i class="glyphicon glyphicon-ai" aria-hidden="true"></i></button>
                     @endif
 
                     @action('conversation.action_buttons', $conversation, $mailbox)
 
-                    {{-- More Actions Dropdown --}}
-                    <div class="dropdown conv-action" data-toggle="tooltip" title="{{ __('More Actions') }}">
-        <span class="conv-action glyphicon glyphicon-option-horizontal dropdown-toggle"
-              data-toggle="dropdown"
-              role="button"
-              aria-haspopup="true"
-              aria-expanded="false"
-              aria-label="{{ __('More Actions') }}"></span>
-                        <ul class="dropdown-menu dropdown-with-icons">
-                            @action('conversation.prepend_action_buttons', $conversation, $mailbox)
-                            @foreach ($dropdown_actions as $action_key => $action)
-                                @if ($action_key === 'delete_mobile')
-                                    <li class="hidden-lg hidden-md hidden-sm">
-                                        <a href="#" class="{{ $action['class'] }}" role="button">
-                                            <i class="glyphicon {{ $action['icon'] }}"></i> {{ $action['label'] }}
-                                        </a>
-                                    </li>
-                                @else
-                                    <li>
-                                        @if (!empty($action['has_opposite']))
-                                            <a href="#" class="{{ $action['class'] }} @if ($is_following) hidden @endif" data-follow-action="follow" role="button">
-                                                <i class="glyphicon {{ $action['icon'] }}"></i> {{ $action['label'] }}
-                                            </a>
-                                            <a href="#" class="{{ $action['opposite']['class'] }} @if (!$is_following) hidden @endif" data-follow-action="unfollow" role="button">
-                                                <i class="glyphicon {{ $action['icon'] }}"></i> {{ $action['opposite']['label'] }}
-                                            </a>
-                                        @else
-                                            <a href="{{ !empty($action['url']) ? $action['url']($conversation) : '#' }}"
-                                               class="{{ $action['class'] }}"
-                                               role="button"
-                                            @if (!empty($action['attrs']))
-                                                @foreach ($action['attrs'] as $attr_key => $attr_value)
-                                                    {{ $attr_key }}="{{ $attr_value }}"
-                                                @endforeach
-                                            @endif
-                                            >
-                                            <i class="glyphicon {{ $action['icon'] }}"></i> {{ $action['label'] }}
-                                            </a>
-                                        @endif
-                                    </li>
-                                @endif
-                            @endforeach
-                            @action('conversation.append_action_buttons', $conversation, $mailbox)
-                        </ul>
-                    </div>
+                    <x-fruit::menu :title="__('More Actions')" class="conv-action conv-more-actions">
+                        <x-slot:trigger class="f-button--ghost f-button--icon" :aria-label="__('More Actions')" :title="__('More Actions')"><x-heroicon-o-ellipsis-horizontal class="f-icon" aria-hidden="true" /></x-slot:trigger>
+                        <ul class="menu-module-items">@action('conversation.prepend_action_buttons', $conversation, $mailbox)</ul>
+                        @foreach ($dropdown_actions as $action_key => $action)
+                            @if ($action_key === 'delete_mobile')
+                                <x-fruit::menu-link href="#" :class="$action['class'].' hidden-lg hidden-md hidden-sm'">@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['label'] }}</x-fruit::menu-link>
+                            @elseif (!empty($action['has_opposite']))
+                                <x-fruit::menu-link href="#" :class="$action['class'].($is_following ? ' hidden' : '')" data-follow-action="follow">@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['label'] }}</x-fruit::menu-link>
+                                <x-fruit::menu-link href="#" :class="$action['opposite']['class'].(!$is_following ? ' hidden' : '')" data-follow-action="unfollow">@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['opposite']['label'] }}</x-fruit::menu-link>
+                            @else
+                                <a role="menuitem" href="{{ !empty($action['url']) ? $action['url']($conversation) : '#' }}" class="f-menu-item {{ $action['class'] }}"
+                                    @if (!empty($action['attrs']))
+                                        @foreach ($action['attrs'] as $attr_key => $attr_value)
+                                            {{ $attr_key }}="{{ $attr_value }}"
+                                        @endforeach
+                                    @endif
+                                    >@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['label'] }}</a>
+                            @endif
+                        @endforeach
+                        <ul class="menu-module-items">@action('conversation.append_action_buttons', $conversation, $mailbox)</ul>
+                    </x-fruit::menu>
                 </div>
+
+                <span class="f-toolbar__spacer"></span>
 
                 <ul class="conv-info">
                     @action('conversation.convinfo.prepend', $conversation, $mailbox)
                     @if ($conversation->state != App\Conversation::STATE_DELETED)
                         <li>
-                            <div class="btn-group" id="conv-assignee" data-toggle="tooltip" title="{{ __("Assignee") }}: {{ $conversation->getAssigneeName(true) }}">
-                                <button type="button" class="btn btn-default conv-info-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-title="{{ __("Assignee") }}" aria-hidden="true"><i class="glyphicon glyphicon-user"></i></button>
-                                <button type="button" class="btn btn-default dropdown-toggle conv-info-val" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-title="{{ __("Assignee") }}" aria-label="{{ __("Assignee") }}: {{ $conversation->getAssigneeName(true) }}">
-                                    <span>{{ $conversation->getAssigneeName(true) }}</span>
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu conv-user dm-scrollable">
-                                    <li @if (!$conversation->user_id) class="active" @endif><a href="#" data-user_id="-1">{{ __("Anyone") }}</a></li>
-                                    <li @if ($conversation->user_id == Auth::user()->id) class="active" @endif><a href="#" data-user_id="{{ Auth::user()->id }}">{{ __("Me") }}</a></li>
-                                    @foreach ($mailbox->usersAssignable() as $user)
-                                        @if ($user->id != Auth::user()->id)
-                                            @php
-                                                $a_class = \Eventy::filter('assignee_list.a_class', '', $user);
-                                            @endphp
-                                            <li @if ($conversation->user_id == $user->id) class="active" @endif><a href="#" data-user_id="{{ $user->id }}" @if ($a_class) class="{{ $a_class }}"@endif>{{ $user->getFullName() }}@action('assignee_list.item_append', $user)</a></li>
-                                        @endif
-                                    @endforeach
-                                </ul>
-                            </div>
+                            <x-fruit::menu :title="__('Assignee')" id="conv-assignee" class="conv-user">
+                                <x-slot:trigger class="f-button--small" :title="__('Assignee').': '.$conversation->getAssigneeName(true)"><x-heroicon-o-user class="f-icon" aria-hidden="true" /> <span class="conv-info-val"><span>{{ $conversation->getAssigneeName(true) }}</span></span></x-slot:trigger>
+                                <x-fruit::menu-link href="#" data-user_id="-1" :class="!$conversation->user_id ? 'active' : ''" :aria-current="!$conversation->user_id ? 'true' : null">{{ __("Anyone") }}</x-fruit::menu-link>
+                                <x-fruit::menu-link href="#" :data-user_id="Auth::user()->id" :class="$conversation->user_id == Auth::user()->id ? 'active' : ''" :aria-current="$conversation->user_id == Auth::user()->id ? 'true' : null">{{ __("Me") }}</x-fruit::menu-link>
+                                @foreach ($mailbox->usersAssignable() as $assignable_user)
+                                    @if ($assignable_user->id != Auth::user()->id)
+                                        @php
+                                            $a_class = \Eventy::filter('assignee_list.a_class', '', $assignable_user);
+                                        @endphp
+                                        <x-fruit::menu-link href="#" :data-user_id="$assignable_user->id" :class="trim($a_class.($conversation->user_id == $assignable_user->id ? ' active' : ''))" :aria-current="$conversation->user_id == $assignable_user->id ? 'true' : null">{{ $assignable_user->getFullName() }}@action('assignee_list.item_append', $assignable_user)</x-fruit::menu-link>
+                                    @endif
+                                @endforeach
+                            </x-fruit::menu>
                         </li>
                     @endif
                     <li>
-                        <div class="btn-group" id="conv-status" data-toggle="tooltip" title="{{ __("Status") }}: {{ $conversation->getStatusName() }}">
+                        @php
+                            $status_tones = ['success' => 'success', 'info' => 'accent', 'warning' => 'warning', 'danger' => 'danger'];
+                        @endphp
+                        <x-fruit::menu :title="__('Status')" id="conv-status" class="conv-status">
                             @if ($conversation->state != App\Conversation::STATE_DELETED)
-                                <button type="button" class="btn btn-{{ $conversation->getStatusClass() }} btn-light conv-info-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="{{ __("Status") }}: {{ $conversation->getStatusName() }}"><i class="glyphicon glyphicon-{{ $conversation->getStatusIcon() }}"></i></button>
-                                <button type="button" class="btn btn-{{ $conversation->getStatusClass() }} btn-light dropdown-toggle conv-info-val" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="{{ __("Status") }}">
-                                    <span>{{ $conversation->getStatusName() }}</span> <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu conv-status">
-                                    @if (!$conversation->isSpam())
-                                        @foreach (App\Conversation::$statuses as $status => $dummy)
-                                            <li @if ($conversation->status == $status) class="active" @endif><a href="#" data-status="{{ $status }}">{{ App\Conversation::statusCodeToName($status) }}</a></li>
-                                        @endforeach
-                                    @else
-                                        <li><a href="#" data-status="not_spam">{{ __('Not Spam') }}</a></li>
-                                    @endif
-                                </ul>
+                                <x-slot:trigger class="f-button--small" :title="__('Status').': '.$conversation->getStatusName()"><span class="f-badge f-badge--{{ $status_tones[$conversation->getStatusClass()] ?? 'neutral' }} conv-status-dot" aria-hidden="true"></span> <span class="conv-info-val"><span>{{ $conversation->getStatusName() }}</span></span></x-slot:trigger>
+                                @if (!$conversation->isSpam())
+                                    @foreach (App\Conversation::$statuses as $status => $dummy)
+                                        <x-fruit::menu-link href="#" :data-status="$status" :class="$conversation->status == $status ? 'active' : ''" :aria-current="$conversation->status == $status ? 'true' : null">{{ App\Conversation::statusCodeToName($status) }}</x-fruit::menu-link>
+                                    @endforeach
+                                @else
+                                    <x-fruit::menu-link href="#" data-status="not_spam">{{ __('Not Spam') }}</x-fruit::menu-link>
+                                @endif
                             @else
-                                <button type="button" class="btn btn-grey btn-light conv-info-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-trash"></i></button>
-                                <button type="button" class="btn btn-grey btn-light dropdown-toggle conv-info-val" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span>{{ __('Deleted') }}</span> <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu conv-status">
-                                    <li><a href="#" class="conv-restore-trigger">{{ __('Restore') }}</a></li>
-                                </ul>
+                                <x-slot:trigger class="f-button--small"><x-heroicon-o-trash class="f-icon" aria-hidden="true" /> <span class="conv-info-val"><span>{{ __('Deleted') }}</span></span></x-slot:trigger>
+                                <x-fruit::menu-link href="#" class="conv-restore-trigger">{{ __('Restore') }}</x-fruit::menu-link>
                             @endif
-                        </div>
+                        </x-fruit::menu>
                     </li>@action('conversation.convinfo.before_nav', $conversation, $mailbox)<li class="conv-next-prev">
-                        <a href="{{ $conversation->urlPrev(App\Conversation::getFolderParam()) }}" class="glyphicon glyphicon-menu-left" data-toggle="tooltip" title="{{ __("Newer") }}"></a>
-                        <a href="{{ $conversation->urlNext(App\Conversation::getFolderParam()) }}" class="glyphicon glyphicon-menu-right" data-toggle="tooltip" title="{{ __("Older") }}"></a>
+                        <a href="{{ $conversation->urlPrev(App\Conversation::getFolderParam()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Newer") }}" aria-label="{{ __("Newer") }}"><x-heroicon-o-chevron-up class="f-icon" aria-hidden="true" /></a>
+                        <a href="{{ $conversation->urlNext(App\Conversation::getFolderParam()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Older") }}" aria-label="{{ __("Older") }}"><x-heroicon-o-chevron-down class="f-icon" aria-hidden="true" /></a>
                     </li>
                 </ul>
-
-                <div class="clearfix"></div>
-
             </div>
             <div id="conv-subject">
-                <div class="conv-subj-block">
+                <div class="fruit-ui conv-subj-block conv-header-bar">
                     <div class="conv-subjwrap">
                         <div class="conv-subjtext">
-                            <span>{{ $conversation->getSubject() }}</span>
-                            <div class="input-group input-group-lg conv-subj-editor">
-                                <input type="text" id="conv-subj-value" class="form-control" value="{{ $conversation->getSubject() }}" />
-                                <span class="input-group-btn">
-                                    <button class="btn btn-primary" type="button" data-loading-text="…"><i class="glyphicon glyphicon-ok"></i></button>
-                                </span>
+                            <span class="f-title-2">{{ $conversation->getSubject() }}</span>
+                            <div class="f-input-group conv-subj-editor">
+                                <input type="text" id="conv-subj-value" class="f-input" value="{{ $conversation->getSubject() }}" aria-label="{{ __('Subject') }}" />
+                                <button class="f-button f-button--primary" type="button" data-loading-text="…" aria-label="{{ __('Save') }}"><x-heroicon-o-check class="f-icon" aria-hidden="true" /></button>
                             </div>
                         </div>
                         @if ($conversation->isChat() && $conversation->getChannelName())
-                            <span class="conv-tags">
-                                @if (\Helper::isChatMode())<a class="btn btn-default fs-tag-btn" href="{{ request()->fullUrlWithQuery(['chat_mode' => '0']) }}" title="{{ __('Exit') }}" data-toggle="tooltip"><small class="glyphicon glyphicon-stop"></small> {{ __('Chat Mode') }}</a>@else<a class="btn btn-primary fs-tag-btn" href="{{ request()->fullUrlWithQuery(['chat_mode' => '1']) }}"><small class="glyphicon glyphicon-play"></small> {{ __('Chat Mode') }}</a>@endif<span class="fs-tag fs-tag-md"><a class="fs-tag-name" href="#"><small class="glyphicon glyphicon-phone"></small> {{ $conversation->getChannelName() }}</a></span>
+                            <span class="conv-tags f-row">
+                                @if (\Helper::isChatMode())<a class="f-button f-button--small" href="{{ request()->fullUrlWithQuery(['chat_mode' => '0']) }}" title="{{ __('Exit') }}"><x-heroicon-s-stop class="f-icon" aria-hidden="true" /> {{ __('Chat Mode') }}</a>@else<a class="f-button f-button--small f-button--primary" href="{{ request()->fullUrlWithQuery(['chat_mode' => '1']) }}"><x-heroicon-s-play class="f-icon" aria-hidden="true" /> {{ __('Chat Mode') }}</a>@endif
+                                <x-fruit::badge>{{ $conversation->getChannelName() }}</x-fruit::badge>
                             </span>
                         @endif
                         @action('conversation.after_subject', $conversation, $mailbox)
-                        <div class="conv-numnav">
-                            <i class="glyphicon conv-star @if ($conversation->isStarredByUser()) glyphicon-star @else glyphicon-star-empty @endif" title="@if ($conversation->isStarredByUser()){{ __("Unstar Conversation") }}@else{{ __("Star Conversation") }}@endif"></i>&nbsp; # <strong>{{ $conversation->number }}</strong>
+                        <div class="conv-numnav f-row">
+                            @php $conv_starred = $conversation->isStarredByUser(); @endphp
+                            <button type="button" class="f-button f-button--ghost f-button--icon conv-star" aria-pressed="{{ $conv_starred ? 'true' : 'false' }}" aria-label="{{ __('Star Conversation') }}" title="@if ($conv_starred){{ __("Unstar Conversation") }}@else{{ __("Star Conversation") }}@endif"><x-heroicon-o-star class="f-icon conv-star__off" aria-hidden="true" /><x-heroicon-s-star class="f-icon conv-star__on" aria-hidden="true" /></button>
+                            <span class="f-muted">#&nbsp;<strong>{{ $conversation->number }}</strong></span>
                         </div>
                         <div id="conv-viewers">
                             @foreach ($viewers as $viewer)
