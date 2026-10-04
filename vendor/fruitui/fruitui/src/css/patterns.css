@@ -265,6 +265,62 @@
     color: var(--f-secondary);
   }
 
+  /* An attachment with its own actions (remove, preview): one card around the link and the
+     actions, which appear on hover or focus, and always on touch screens. */
+  .f-attachment__frame {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius);
+    background: var(--f-surface-secondary);
+  }
+  .f-attachment__frame > .f-attachment {
+    min-width: 0;
+    border-color: transparent;
+    background: transparent;
+  }
+  .f-attachment__frame:hover {
+    background: var(--f-hover);
+  }
+  .f-attachment__actions {
+    display: flex;
+    flex: none;
+    gap: 2px;
+    padding-inline-end: 6px;
+    opacity: 0;
+    transition: opacity var(--f-motion) ease;
+  }
+  .f-attachment__frame:is(:hover, :focus-within) > .f-attachment__actions {
+    opacity: 1;
+  }
+  .f-attachment__actions .f-button {
+    min-width: 28px;
+    min-height: 28px;
+    padding: 4px;
+  }
+  @media (hover: none) {
+    .f-attachment__actions {
+      opacity: 1;
+    }
+  }
+  /* In a message, attachments are compact cards that fit their name, side by side. */
+  .f-message__attachments {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: var(--f-message-attachments-gap, 12px);
+  }
+  .f-message__attachments :is(.f-attachment, .f-attachment__frame) {
+    --f-attachment-padding: 8px 12px;
+    --f-attachment-gap: 10px;
+    max-width: 100%;
+  }
+  .f-message__attachments .f-attachment__leading {
+    --f-icon-size: 18px;
+  }
+
   /* An informational arrangement; optional action controls retain their state. */
   .f-empty-state {
     display: grid;
@@ -585,6 +641,41 @@
     font-size: var(--f-text-sm);
     line-height: 1.6;
     overflow-wrap: anywhere;
+  }
+  /* One quiet line about the message's delivery or state, under its header: an icon, a short text
+     and small actions such as Retry or View log. No box, so a failure never outweighs the message. */
+  .f-message__status {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-top: var(--f-message-body-gap, 4px);
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+  }
+  .f-message__status[data-tone='danger'] {
+    color: var(--f-danger);
+  }
+  .f-message__status[data-tone='warning'] {
+    color: var(--f-warning);
+  }
+  .f-message__status-icon {
+    flex: none;
+    align-self: center;
+    --f-icon-size: 14px;
+  }
+  .f-message__status-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .f-message__status .f-button {
+    min-height: 24px;
+    margin-block: -3px;
+    margin-inline-start: 4px;
+    padding: 1px 8px;
+    font-size: var(--f-text-xs);
+  }
+  .f-message__status + .f-message__body {
+    margin-top: var(--f-message-status-gap, 10px);
   }
   /* A machine translation of the message, kept with it and read first: an outlined card with a
      translate icon above the original, announced as a translation. Give it the translation's lang. */

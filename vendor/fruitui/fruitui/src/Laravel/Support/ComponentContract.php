@@ -364,6 +364,16 @@ final class ComponentContract
         }
     }
 
+    /** A message status line's tone: neutral (default), warning or danger. */
+    public static function messageStatus(mixed $tone): string
+    {
+        if (! in_array($tone, ['neutral', 'warning', 'danger'], true)) {
+            throw new InvalidArgumentException('FruitUI message status tone must be one of: neutral, warning, danger.');
+        }
+
+        return $tone;
+    }
+
     /** A Field's label prop or label slot, which must have visible text. */
     public static function fieldLabel(mixed $label): mixed
     {

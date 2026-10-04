@@ -34,6 +34,15 @@
         }
         $send_status_data = $thread_is_draft ? null : $thread->getSendStatusData();
 
+        $show_status = $loop->last || ($thread->status != App\Thread::STATUS_NOCHANGE && $thread->status != $threads[$loop->index+1]->status);
+        $show_user = $loop->last || $thread->user_id != $threads[$loop->index+1]->user_id || $threads[$loop->index+1]->action_type == App\Thread::ACTION_TYPE_USER_CHANGED;
+        // Next to the author: "You" for the viewer's own, then the status and the assignee the thread left.
+        $thread_meta_line = array_filter([
+            $thread->type != App\Thread::TYPE_CUSTOMER && $thread->created_by_user_id == Auth::user()->id ? \Illuminate\Support\Str::ucfirst(__('you')) : '',
+            !$thread_is_draft && $show_status && in_array($thread->type, [App\Thread::TYPE_CUSTOMER, App\Thread::TYPE_MESSAGE, App\Thread::TYPE_NOTE]) ? $thread->getStatusName() : '',
+            !$thread_is_draft && $show_user && in_array($thread->type, [App\Thread::TYPE_CUSTOMER, App\Thread::TYPE_MESSAGE, App\Thread::TYPE_NOTE]) ? ($thread->user_id ? ($thread->user_cached ? __('Assigned to').' '.$thread->user_cached->getFullName() : '') : __('Unassigned')) : '',
+        ]);
+
         // AI Assistant: the message's translation.
         ['wanted' => $ai_translation_wanted, 'language' => $ai_language, 'translation' => $ai_translation] = App\Ai\Translations::forThread($thread, Auth::user());
     @endphp
@@ -58,7 +67,7 @@
                     @if (\Helper::isPrint()){{ $thread->customer_cached->getFullName(true) }}@else<a href="{{ $thread->customer_cached->url() }}">{{ $thread->customer_cached->getFullName(true) }}</a>@endif
                 @endif
             @else
-                @if (\Helper::isPrint()){{ $thread->created_by_user_cached->getFullName() }}@else @include('conversations/thread_by', ['as_link' => true]) @endif
+                @if (\Helper::isPrint() || !$thread->created_by_user_cached){{ $thread->created_by_user_cached ? $thread->created_by_user_cached->getFullName() : '' }}@else<a href="{{ $thread->created_by_user_cached->url() }}">{{ $thread->created_by_user_cached->getFullName() }}</a>@endif
             @endif
         </x-slot:author>
         <x-slot:meta>
@@ -66,7 +75,7 @@
             @if ($thread->isNote())<x-fruit::badge tone="warning">{{ __('Note') }}</x-fruit::badge>@endif
             @if (!$thread_is_draft && $thread->isForward())<x-fruit::badge tone="accent">{{ __('Forward') }}</x-fruit::badge>@endif
             @if ($conversation->isPhone() && $thread->first)<x-fruit::badge>{{ __('Phone') }}</x-fruit::badge>@endif
-            @if ($thread->isSendStatusError())<x-fruit::badge tone="danger">{{ __('Message not sent to customer') }}</x-fruit::badge>@endif
+            @if ($thread_meta_line){{ implode(' · ', $thread_meta_line) }}@endif
             {{-- Lines below must be spaceless --}}
             {{ \Eventy::action('thread.after_person_action', $thread, $loop, $threads, $conversation, $mailbox) }}
         </x-slot:meta>
@@ -87,12 +96,6 @@
                     || ($thread->type == App\Thread::TYPE_MESSAGE && isset($customer) && count($customer->emails) > 1)
                     || \Helper::isPrint())
                     && $thread->getToArray();
-                $show_status = $loop->last || ($thread->status != App\Thread::STATUS_NOCHANGE && $thread->status != $threads[$loop->index+1]->status);
-                $show_user = $loop->last || $thread->user_id != $threads[$loop->index+1]->user_id || $threads[$loop->index+1]->action_type == App\Thread::ACTION_TYPE_USER_CHANGED;
-                $status_line = in_array($thread->type, [App\Thread::TYPE_CUSTOMER, App\Thread::TYPE_MESSAGE, App\Thread::TYPE_NOTE]) ? array_filter([
-                    $show_user ? ($thread->user_id ? ($thread->user_cached ? $thread->user_cached->getFullName() : '') : __('Anyone')) : '',
-                    $show_status ? $thread->getStatusName() : '',
-                ]) : [];
             @endphp
             <x-slot:headers class="thread-recipients">
                 @if ($thread->isCustomerMessage() && App\Nostr\Nostr::isNostr($conversation))
@@ -111,11 +114,23 @@
                 @if ($thread->getBccArray())
                     <span>{{ __("Bcc") }}: {{ implode(', ', $thread->getBccArray()) }}</span>
                 @endif
-                @if ($status_line)
-                    <span class="thread-status">{{ implode(', ', $status_line) }}</span>
-                @endif
                 @action('thread.after_recipients', $thread, $loop, $threads, $conversation, $mailbox)
             </x-slot:headers>
+        @endif
+        @if ($thread->isSendStatusError())
+            {{-- Not delivered: one line under the header; the details are in the log. --}}
+            <x-slot:status tone="danger" class="thread-send-error">
+                {{ __('Message not sent to customer') }}
+                @if (!empty($send_status_data['bounced_by_thread']) && !empty($send_status_data['bounced_by_conversation']) && ($bounced_by_conversation = App\Conversation::find($send_status_data['bounced_by_conversation'])))
+                    ({!! __safe_raw_html('Message bounced (:link)', [
+                    'link' => '<a href="'.route('conversations.view', ['id' => $send_status_data['bounced_by_conversation']]).'#thread-id='.$send_status_data['bounced_by_thread'].'">#'.$bounced_by_conversation->number.'</a>'
+                    ]) !!})
+                @endif
+                @if ($thread->canRetrySend())
+                    <x-fruit::button variant="ghost" class="btn-thread-retry" wire:click="retry({{ $thread->id }})">{{ __('Retry') }}</x-fruit::button>
+                @endif
+                <x-fruit::button variant="ghost" :data-fruit-dialog-url="route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" :data-fruit-dialog-title="__('Outgoing Emails')" data-fruit-dialog-size="large">{{ __('View log') }}</x-fruit::button>
+            </x-slot:status>
         @endif
         <x-slot:time>@action('thread.info.prepend', $thread)<a href="#thread-{{ $thread->id }}" class="thread-date" title="{{ $thread_date_title }}">{{ $thread_date }}</a></x-slot:time>
 
@@ -129,23 +144,6 @@
                         {!! __safe_raw_html('This is a bounce message for :link', [
                         'link' => '<a href="'.route('conversations.view', ['id' => $send_status_data['bounce_for_conversation']]).'#thread-id='.$send_status_data['bounce_for_thread'].'">#'.$bounce_for_conversation->number.'</a>'
                         ]) !!}
-                    @endif
-                </x-fruit::alert>
-            @endif
-            @if ($thread->isSendStatusError())
-                <x-fruit::alert tone="danger">
-                    <strong>{{ __('Message not sent to customer') }}</strong>
-                    (<a href="{{ route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id])) }}" data-fruit-dialog-url="" data-fruit-dialog-title="{{ __("Outgoing Emails") }}" data-fruit-dialog-size="large">{{ __('View log') }}</a>)
-                    @if (!empty($send_status_data['bounced_by_thread']) && !empty($send_status_data['bounced_by_conversation']) && ($bounced_by_conversation = App\Conversation::find($send_status_data['bounced_by_conversation'])))
-                        <br><small>{!! __safe_raw_html('Message bounced (:link)', [
-                        'link' => '<a href="'.route('conversations.view', ['id' => $send_status_data['bounced_by_conversation']]).'#thread-id='.$send_status_data['bounced_by_thread'].'">#'.$bounced_by_conversation->number.'</a>'
-                        ]) !!}</small>
-                    @endif
-                    @if (!empty($send_status_data['msg']))
-                        <br><small>{{ $send_status_data['msg'] }}</small>
-                    @endif
-                    @if ($thread->canRetrySend())
-                        <x-slot:actions><button type="button" class="f-button f-button--small btn-thread-retry" wire:click="retry({{ $thread->id }})">{{ __('Retry') }}</button></x-slot:actions>
                     @endif
                 </x-fruit::alert>
             @endif

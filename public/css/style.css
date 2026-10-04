@@ -972,11 +972,9 @@ a h4 {
 .attachment-viewer audio {
     width: 100%;
 }
-/* A message's file: its FruitUI attachment, then Delete. */
+/* A message's file: only holds the viewer's data for its FruitUI attachment. */
 .conv-attachment {
-    display: inline-flex;
-    align-items: center;
-    gap: 2px;
+    display: contents;
 }
 
 .saved-replies-list {
