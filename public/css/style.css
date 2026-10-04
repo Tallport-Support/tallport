@@ -2310,36 +2310,11 @@ button.conv-checkbox-clear {
     max-width: 100%;
 }
 .conv-new #conv-toolbar {
+    padding: 12px 20px;
     border-bottom: 1px solid var(--f-border);
-    padding: 6px 0 7px 0;
-}
-.conv-new #conv-toolbar h2 {
-    color: var(--f-text);
-    float: left;
-    font-size: 20px;
-    font-weight: normal;
-    line-height: 39px;
-    margin: 0;
-    padding: 0 0 0 20px;
-}
-.conv-new #conv-toolbar .btn-group {
-    margin: 5px 0 0 20px;
-    color: var(--f-secondary);
-}
-.conv-new #conv-toolbar .btn-group i {
-    color: var(--f-secondary);
-    position: relative;
-    top: 3px;
-}
-.conv-new .conv-info {
-    font-size: 14px;
-    color: var(--f-text);
-    margin: 0px 20px 0px 0;
 }
 .conv-new .conv-info strong {
-    font-size: 20px;
-    line-height: 39px;
-    font-weight: normal;
+    font-weight: 600;
 }
 .conv-new-form {
     padding-top: 15px;
@@ -2375,19 +2350,36 @@ button.conv-checkbox-clear {
 .conv-reply-block .form-group {
     margin-bottom: 8px;
 }
-/* Reply form rows: a label column, then the field. */
-.conv-reply-block .form-group:has(> .control-label) {
-    display: grid;
-    grid-template-columns: 40px minmax(0, 1fr);
-    align-items: center;
-    gap: 10px;
+/* Reply and new conversation form rows: a label column, then the field.
+   Floats, not a grid: the scripts show and hide rows with display: block. */
+.conv-reply-block .form-group::after,
+.conv-new-form .form-group::after {
+    content: "";
+    display: table;
+    clear: both;
 }
 .conv-reply-label,
+.conv-new-form .control-label,
 .conv-reply-block .control-label {
+    float: left;
+    width: 40px;
     margin: 0;
+    padding-top: 7px;
     color: var(--f-secondary);
     font-weight: normal;
     text-align: end;
+}
+.conv-new-form .control-label {
+    width: 110px;
+}
+.conv-reply-block .control-label + .conv-reply-field {
+    margin-inline-start: 50px;
+}
+.conv-new-form .form-group > .control-label + div {
+    margin-inline-start: 120px;
+}
+.conv-new-form .toggle-field {
+    margin: -4px 0 8px 120px;
 }
 .conv-reply-body {
     margin-top: 13px;
@@ -2446,16 +2438,13 @@ button.conv-checkbox-clear {
     border-color: color-mix(in srgb, var(--f-warning) 50%, transparent);
     color: var(--f-warning);
 }
-.conv-note-block .btn-primary,
-.conv-note-block .btn-primary:focus {
-    background-color: #f5b126;
-    border-color: #f5b126;
+.conv-note-block .btn-group-send .f-button--primary {
+    border-color: var(--f-warning);
+    background: var(--f-warning);
     color: #fff;
 }
-.conv-note-block .btn-primary:hover {
-    background-color: #de980a;
-    border-color: #de980a;
-    color: #fff;
+.conv-note-block .btn-group-send .f-button--primary:hover {
+    background: color-mix(in srgb, var(--f-warning) 85%, black);
 }
 .conv-note-block .btn-send-menu {
     border-left-color: color-mix(in srgb, var(--f-warning) 50%, transparent);
@@ -2477,10 +2466,8 @@ button.conv-checkbox-clear {
     color: var(--f-warning);
     display: block;
 }
-.conv-note-block .note-editor .btn-default {
+.conv-note-block .note-btn {
     color: var(--f-warning);
-    background-color: color-mix(in srgb, var(--f-warning) 12%, transparent);
-    border-color: #fff7dd;
 }
 .conv-note-block .alert-switch-to-note {
     display: none;
@@ -2648,21 +2635,8 @@ ul.sidebar-block-list {
         top: -1px;
         font-size: 10px;
     }
-    .conv-new #conv-toolbar h2 {
-        padding-left: 13px;
-        font-size: 17px;
-    }
-    .conv-new .conv-info {
-        margin-right: 13px;
-    }
-    .conv-new .conv-info strong {
-        font-size: 17px;
-    }
     .conv-new-form {
         padding-top: 0;
-    }
-    .conv-new #conv-toolbar .btn-group {
-        margin-left: 13px;
     }
     .conv-block {
         margin: 0 13px;
@@ -3132,9 +3106,33 @@ ul.sidebar-block-list {
 /**
  * Select2
  */
+/* select2 in FruitUI's control colours, light and dark. */
+.select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple {
-    border-radius: 3px;
     border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-sm);
+    background: var(--f-control);
+    color: var(--f-text);
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: var(--f-text);
+}
+.select2-container--default .select2-search--inline .select2-search__field,
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    background: transparent;
+    color: var(--f-text);
+    border-color: var(--f-border);
+}
+.select2-dropdown {
+    background: var(--f-surface-elevated);
+    color: var(--f-text);
+}
+.select2-container--default .select2-results__option[aria-selected=true] {
+    background: var(--f-selection-inactive);
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background: var(--f-accent);
+    color: var(--f-on-accent, #fff);
 }
 .select2-container--default.select2-container--focus .select2-selection--multiple {
     border: 1px solid var(--f-border);
@@ -3164,12 +3162,8 @@ ul.sidebar-block-list {
 .select2-multi-dropdown .select2-results__option:last-child {
     border-bottom: 1px solid var(--f-border);
 }
-.select2-container--default .select2-selection--single {
-    border-color: rgb(193, 203, 212);
-}
 .select2-selection--single .select2-selection__rendered {
     font-size: 13px;
-    color: #555;
 }
 .select2-recipient .select2-selection__arrow {
     display: none;
@@ -4298,11 +4292,11 @@ a.disabled:focus {
 .conv-reply-block:not(.conv-forward-block) .form-group.cc-shifted {
     margin-bottom: -8px;
 }
-.conv-reply-block:not(.conv-forward-block) .cc-shifted {
-    grid-template-columns: minmax(0, 1fr);
-}
 .conv-reply-block:not(.conv-forward-block) .cc-shifted .control-label {
     display: none;
+}
+.conv-reply-block:not(.conv-forward-block) .cc-shifted .conv-reply-field {
+    margin-inline-start: 0;
 }
 .conv-note-block .cc-toggler {
     display: none;
@@ -5487,4 +5481,27 @@ a.disabled:focus {
 .multi-container > .block-help {
     margin: 0;
     font-size: var(--f-text-sm);
+}
+/* New conversation: the title, the email/phone switch and the number. */
+.conv-new-header h1 {
+    margin: 0;
+}
+.conv-switch {
+    display: inline-flex;
+    gap: 2px;
+    padding: 2px;
+    border-radius: var(--f-radius-sm);
+    background: var(--f-surface-secondary);
+}
+.conv-switch .conv-switch-button {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+}
+.conv-switch .conv-switch-button.active {
+    background: var(--f-surface);
+    box-shadow: var(--f-control-shadow, 0 1px 2px rgb(0 0 0 / 10%));
+}
+.conv-new-form .conv-block {
+    margin-top: 16px;
 }

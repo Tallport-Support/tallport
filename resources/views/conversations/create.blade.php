@@ -21,24 +21,17 @@
 
     <div id="conv-layout" class="conv-new">
         <div id="conv-layout-header">
-            <div id="conv-toolbar">
-                
-                <div class="conv-actions">
-                    <h2>{{ __("New Conversation") }}</h2>
-
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default active conv-switch-button" id="email-conv-switch"><i class="glyphicon glyphicon-envelope"></i></button>
-                        <button type="button" class="btn btn-default conv-switch-button" id="phone-conv-switch"><i class="glyphicon glyphicon-earphone"></i></button>
-                        @action('conversation.new.conv_switch_buttons')
-                    </div>
+            <div id="conv-toolbar" class="fruit-ui f-toolbar conv-header-bar conv-new-header">
+                <h1 class="f-title-2">{{ __("New Conversation") }}</h1>
+                <div class="conv-switch" role="group" aria-label="{{ __('Type') }}">
+                    <button type="button" class="f-button f-button--small f-button--icon active conv-switch-button" id="email-conv-switch" aria-label="{{ __('Email') }}" title="{{ __('Email') }}"><x-heroicon-o-envelope class="f-icon" aria-hidden="true" /></button>
+                    <button type="button" class="f-button f-button--small f-button--icon conv-switch-button" id="phone-conv-switch" aria-label="{{ __('Phone') }}" title="{{ __('Phone') }}"><x-heroicon-o-phone class="f-icon" aria-hidden="true" /></button>
+                    @action('conversation.new.conv_switch_buttons')
                 </div>
-
-                <div class="conv-info">
-                    #@if ($conversation->number)<strong>{{ $conversation->number }}</strong>@else<strong class="conv-new-number">{{ __("Pending") }}@endif</strong>
-                </div>
-
-                <div class="clearfix"></div>
-
+                <span class="f-toolbar__spacer"></span>
+                <span class="conv-info f-muted">
+                    #@if ($conversation->number)<strong>{{ $conversation->number }}</strong>@else<strong class="conv-new-number">{{ __("Pending") }}</strong>@endif
+                </span>
             </div>
         </div>
         <div id="conv-layout-customer">
@@ -47,9 +40,9 @@
         </div>
         <div id="conv-layout-main" class="conv-new-form">
             <div class="conv-block">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <form class="form-horizontal margin-top form-reply" method="POST" action="" id="form-create">
+                <div>
+                    <div>
+                        <form class="form-reply" method="POST" action="" id="form-create">
                             {{ csrf_field() }}
                             <input type="hidden" name="conversation_id" value="{{ $conversation->id }}"/>
                             <input type="hidden" name="mailbox_id" value="{{ $mailbox->id }}"/>
@@ -68,9 +61,7 @@
                                     <label class="col-sm-2 control-label">{{ __('Author') }}</label>
 
                                     <div class="col-sm-9">
-                                        <label class="control-label text-help">
-                                            <i class="glyphicon glyphicon-user"></i> {{ $conversation->created_by_user->getFullName() }}
-                                        </label>
+                                        <span class="f-muted">{{ $conversation->created_by_user->getFullName() }}</span>
                                     </div>
                                 </div>
                             @endif
@@ -80,7 +71,7 @@
 
                                 <div class="col-sm-9">
 
-                                    <select class="form-control parsley-exclude draft-changer" name="name" id="name" multiple required autofocus/>
+                                    <select class="f-input parsley-exclude draft-changer" name="name" id="name" multiple required autofocus/>
                                         @if (!empty($name))
                                             {{-- We use customer ID here because customer may have no emails --}}
                                             @foreach ($name as $name_customer_id => $name_customer_name)
@@ -98,7 +89,7 @@
 
                                 <div class="col-sm-9">
 
-                                    <select class="form-control draft-changer" name="phone" id="phone" placeholder="{{ __('(optional)') }}" multiple/>
+                                    <select class="f-input draft-changer" name="phone" id="phone" placeholder="{{ __('(optional)') }}" multiple/>
                                         @if (!empty($phone))
                                             <option value="{{ $phone }}" selected="selected">{{ $phone }}</option>
                                         @endif
@@ -114,7 +105,7 @@
 
                                     <div class="col-sm-9">
 
-                                        <select class="form-control draft-changer" name="to_email" id="to_email" placeholder="{{ __('(optional)') }}" multiple/>
+                                        <select class="f-input draft-changer" name="to_email" id="to_email" placeholder="{{ __('(optional)') }}" multiple/>
                                             @if (!empty($to_email))
                                                 @foreach ($to_email as $email => $name)
                                                     <option value="{{ $email }}" selected="selected">{{ $name }}</option>
@@ -136,7 +127,7 @@
                                     <label class="col-sm-2 control-label">{{ __('From') }}</label>
 
                                     <div class="col-sm-9">
-                                        <select name="from_alias" class="form-control">
+                                        <select name="from_alias" class="f-input">
                                             @foreach ($from_aliases as $from_alias_email => $from_alias_name)
                                                 <option value="@if ($from_alias_email != $mailbox->email){{ $from_alias_email }}@endif" @if (!empty($from_alias) && $from_alias == $from_alias_email)selected="selected"@endif>@if ($from_alias_name){{ $from_alias_email }} ({{ $from_alias_name }})@else{{ $from_alias_email }}@endif</option>
                                             @endforeach
@@ -150,7 +141,7 @@
 
                                 <div class="col-sm-9">
 
-                                    <select class="form-control recipient-select" name="to[]" id="to" multiple required autofocus/>
+                                    <select class="f-input recipient-select" name="to[]" id="to" multiple required autofocus/>
                                         @if ($to)
                                             @foreach ($to as $email => $name)
                                                 <option value="{{ $email }}" selected="selected">{{ $name }}</option>
@@ -158,7 +149,7 @@
                                         @endif
                                     </select>
 
-                                    <label class="checkbox @if (count($to) <= 1) hidden @endif" for="multiple_conversations" id="multiple-conversations-wrap">
+                                    <label class="f-check @if (count($to) <= 1) hidden @endif" for="multiple_conversations" id="multiple-conversations-wrap">
                                         <input type="checkbox" name="multiple_conversations" value="1" id="multiple_conversations"> {{ __('Send emails separately to each recipient') }}
                                     </label>
 
@@ -170,7 +161,7 @@
                                 <label for="cc" class="col-sm-2 control-label">{{ __('Cc') }}</label>
 
                                 <div class="col-sm-9">
-                                    <select class="form-control recipient-select" name="cc[]" id="cc" multiple/>
+                                    <select class="f-input recipient-select" name="cc[]" id="cc" multiple/>
                                         @if ($conversation->getCcArray())
                                             @foreach ($conversation->getCcArray() as $cc)
                                                 <option value="{{ $cc }}" selected="selected">{{ $cc }}</option>
@@ -187,7 +178,7 @@
 
                                 <div class="col-sm-9">
 
-                                    <select class="form-control recipient-select" name="bcc[]" id="bcc" multiple/>
+                                    <select class="f-input recipient-select" name="bcc[]" id="bcc" multiple/>
                                         @if ($conversation->getBccArray())
                                             @foreach ($conversation->getBccArray() as $bcc)
                                                 <option value="{{ $bcc }}" selected="selected">{{ $bcc }}</option>
@@ -208,7 +199,7 @@
                                 <label for="subject" class="col-sm-2 control-label">{{ __('Subject') }}</label>
 
                                 <div class="col-sm-9">
-                                    <input id="subject" type="text" class="form-control" name="subject" value="{{ old('subject', $conversation->subject) }}" maxlength="998" required autofocus>@action('conversation.create_form.subject_append')
+                                    <input id="subject" type="text" class="f-input" name="subject" value="{{ old('subject', $conversation->subject) }}" maxlength="998" required autofocus>@action('conversation.create_form.subject_append')
                                     @include('partials/field_error', ['field'=>'subject'])
                                 </div>
                             </div>
@@ -237,7 +228,7 @@
 
                             <div class="form-group{{ $errors->has('body') ? ' has-error' : '' }} conv-reply-body">
                                 <div class="col-sm-12">
-                                    <textarea id="body" class="form-control" name="body" rows="13" data-parsley-required="true" data-parsley-required-message="{{ __('Please enter a message') }}">{{ old('body', $thread->body) }}</textarea>
+                                    <textarea id="body" class="f-input" name="body" rows="13" data-parsley-required="true" data-parsley-required-message="{{ __('Please enter a message') }}">{{ old('body', $thread->body) }}</textarea>
                                     <div class="help-block">
                                         @include('partials/field_error', ['field'=>'body'])
                                     </div>
