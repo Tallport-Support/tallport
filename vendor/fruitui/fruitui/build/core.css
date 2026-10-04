@@ -3169,6 +3169,29 @@
     font-size: var(--f-text-2xs);
     white-space: nowrap;
   }
+  /* Actions after the time, such as a "…" menu: shown on hover, focus or while open, and always
+     on touch screens. Compact controls keep the line its own height. */
+  .f-message-event__actions {
+    display: flex;
+    align-self: center;
+    margin-block: -6px;
+    opacity: 0;
+    transition: opacity var(--f-motion) ease;
+  }
+  .f-message-event:is(:hover, :focus-within) > .f-message-event__actions,
+  .f-message-event__actions:has([open]) {
+    opacity: 1;
+  }
+  .f-message-event__actions .f-button {
+    min-width: 26px;
+    min-height: 26px;
+    padding: 3px;
+  }
+  @media (hover: none) {
+    .f-message-event__actions {
+      opacity: 1;
+    }
+  }
   .f-message--note {
     padding: var(--f-message-note-padding, 14px);
     border: 1px solid var(--f-border);

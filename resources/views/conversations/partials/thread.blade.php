@@ -8,6 +8,16 @@
         {!! safe_raw_html($thread->getActionText('', true, false, null, view('conversations/thread_by', ['thread' => $thread])->render())) !!}
         @action('thread.after_header', $thread, $loop, $threads, $conversation, $mailbox)
         <x-slot:time><a href="#thread-{{ $thread->id }}" class="thread-date" title="{{ $thread_date_title }}">{{ $thread_date }}</a></x-slot:time>
+        @if (Auth::user()->isAdmin() && !\Helper::isPrint())
+            <x-slot:actions>
+                <x-fruit::menu :title="__('More Actions')" class="thread-options">
+                    <x-slot:trigger class="f-button--ghost f-button--icon" :aria-label="__('More Actions')"><x-heroicon-o-ellipsis-horizontal class="f-icon" aria-hidden="true" /></x-slot:trigger>
+                    <ul class="menu-module-items">@action('thread.menu', $thread)</ul>
+                    <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'send_log'], \Request::all(), ['thread_id' => $thread->id]))" data-trigger="modal" :data-modal-title="__('Outgoing Emails')" data-modal-size="lg">{{ __("Outgoing Emails") }}</x-fruit::menu-link>
+                    <ul class="menu-module-items">@action('thread.menu.append', $thread)</ul>
+                </x-fruit::menu>
+            </x-slot:actions>
+        @endif
     </x-fruit::message-event>
 @else
     @php

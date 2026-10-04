@@ -1283,10 +1283,10 @@
     "contracts": {
       "message-event": {
         "purpose": "Record a thread event between messages, such as an assignment or a status change.",
-        "element": "`p` with optional icon and `time`.",
+        "element": "`div` with optional icon, `time` and actions group.",
         "state": "No state; the application owns the history.",
-        "keyboard": "No interactive content; no keyboard model.",
-        "options": "Default slot: the event text. `icon` slot: decorative. `time` slot with `datetime` for the machine-readable time. Place it in the thread's list between messages."
+        "keyboard": "Actions keep their own keyboard behavior; they show while focus is inside the event.",
+        "options": "Default slot: the event text. `icon` slot: decorative. `time` slot with `datetime` for the machine-readable time. `actions` slot: controls such as a \"…\" Menu after the time, shown on hover, focus or while open, and always on touch screens. Place it in the thread's list between messages."
       }
     }
   }

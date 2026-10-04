@@ -106,7 +106,7 @@ final class ComponentContract
         'skeleton' => [],
         'divider' => ['roles' => ['separator'], 'options' => ['tone' => ['neutral', 'accent'], 'align' => ['center', 'start']]],
         'message' => ['roles' => ['article', 'listitem'], 'options' => ['layout' => ['inline', 'stacked'], 'variant' => ['default', 'note']]],
-        'message-event' => ['roles' => ['note']],
+        'message-event' => ['roles' => ['note', 'listitem']],
         'timeline' => ['roles' => ['list']],
         'timeline-item' => [],
         'breadcrumbs' => ['roles' => ['navigation']],
