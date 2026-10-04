@@ -165,7 +165,6 @@ return array(
     'App\\Http\\Middleware\\RequireTwoFactor' => $baseDir . '/app/Http/Middleware/RequireTwoFactor.php',
     'App\\Http\\Middleware\\ResponseHeaders' => $baseDir . '/app/Http/Middleware/ResponseHeaders.php',
     'App\\Http\\Middleware\\TerminateHandler' => $baseDir . '/app/Http/Middleware/TerminateHandler.php',
-    'App\\Http\\Middleware\\TokenAuth' => $baseDir . '/app/Http/Middleware/TokenAuth.php',
     'App\\Http\\Middleware\\TrimStrings' => $baseDir . '/app/Http/Middleware/TrimStrings.php',
     'App\\Http\\Middleware\\TrustHosts' => $baseDir . '/app/Http/Middleware/TrustHosts.php',
     'App\\Http\\Middleware\\TrustProxies' => $baseDir . '/app/Http/Middleware/TrustProxies.php',

@@ -931,7 +931,6 @@ class ComposerStaticInit2902b8515f6672bf67bcf119cdb6b034
         'App\\Http\\Middleware\\RequireTwoFactor' => __DIR__ . '/../..' . '/app/Http/Middleware/RequireTwoFactor.php',
         'App\\Http\\Middleware\\ResponseHeaders' => __DIR__ . '/../..' . '/app/Http/Middleware/ResponseHeaders.php',
         'App\\Http\\Middleware\\TerminateHandler' => __DIR__ . '/../..' . '/app/Http/Middleware/TerminateHandler.php',
-        'App\\Http\\Middleware\\TokenAuth' => __DIR__ . '/../..' . '/app/Http/Middleware/TokenAuth.php',
         'App\\Http\\Middleware\\TrimStrings' => __DIR__ . '/../..' . '/app/Http/Middleware/TrimStrings.php',
         'App\\Http\\Middleware\\TrustHosts' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustHosts.php',
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',

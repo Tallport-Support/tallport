@@ -788,7 +788,6 @@
     "Successfully delivered": "Entregat correctament",
     "Support powered by :app_name — Free open source help desk & shared mailbox": "Suport impulsat per :app_name — Servei d'assistència de codi obert i bústia compartida",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Omet els errors d'obtenció transitoris (per exemple, talls breus de connexió IMAP) tret que el mateix error es produeixi com a mínim aquest nombre de vegades dins la finestra de freqüència de comprovació. Poseu-hi 1 per desactivar el filtratge.",
-    "Switch Helpdesk URL": "Canvia URL del servei d'assistència",
     "System Alert": "Alerta del sistema",
     "System Emails": "Correus del sistema",
     "System Status": "Estat del sistema",

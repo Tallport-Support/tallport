@@ -1270,14 +1270,6 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
         }
     }
 
-    public function getAuthToken()
-    {
-        $expiry = time()+2592000;
-        $hash = hash_hmac('sha256', $this->id.':'.$expiry, config('app.key').$this->password);
-
-        return urlencode(base64_encode($this->id.':'.$expiry.':'.$hash));
-    }
-
     public static function findNonDeleted($id, $extended = false)
     {
         return User::nonDeleted($extended)->where('id', $id)->first();

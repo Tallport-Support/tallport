@@ -170,13 +170,6 @@
     @endphp
     @yield('javascripts')
     <script type="text/javascript" {!! \Helper::cspNonceAttr() !!}>
-        @if (\Helper::isInApp())
-            @if (Auth::user())
-                fs_in_app_data['token'] = '{{ Auth::user()->getAuthToken() }}';
-            @else
-                fs_in_app_data['token'] = '';
-            @endif
-        @endif
         @yield('javascript')
         @action('javascript', $__env->yieldContent('javascripts'))
     </script>

@@ -1858,17 +1858,6 @@ class Helper
     }
 
     /**
-     * Are we in the mobile app.
-     */
-    public static function isInApp($request = null)
-    {
-        if (!$request) {
-            $request = app('request');
-        }
-        return (int)$request->cookie('in_app');
-    }
-
-    /**
      * Get identifier for queue:work
      */
     public static function getWorkerIdentifier($salt = '')

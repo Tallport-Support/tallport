@@ -1917,9 +1917,6 @@ a.disabled:focus {
     gap: 10px;
     padding-bottom: 4px;
 }
-.app-sidebar__header #navbar-back {
-    align-self: flex-start;
-}
 .app-sidebar__brand img,
 .app-sidebar__logo {
     height: 28px;

@@ -666,7 +666,6 @@
     "Suggestions": "Vorschläge",
     "Support powered by :app_name — Free open source help desk & shared mailbox": "Support unterstützt durch :app_name - Kostenloser quelloffener Helpdesk & geteiltes Postfach",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Unterdrückt vorübergehende Abruffehler (z. B. kurzzeitige Unterbrechungen der IMAP-Verbindung), es sei denn, derselbe Fehler tritt innerhalb des Prüfintervalls mindestens so oft auf. Setzen Sie den Wert auf 1, um die Filterung zu deaktivieren.",
-    "Switch Helpdesk URL": "Helpdesk URL wechseln",
     "System": "System",
     "System Alert": "System Benachrichtigungen",
     "System Emails": "System E-Mails",

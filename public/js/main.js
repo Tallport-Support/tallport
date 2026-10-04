@@ -9,7 +9,6 @@
 // For how long to remember unsent notes (the composer).
 var fs_keep_conversation_notes = 30; // days
 var fs_draft_autosave_period = 12; // seconds
-var fs_in_app_data = {};
 var fs_actions = {};
 var fs_filters = {};
 
@@ -293,64 +292,6 @@ function getCookie(name)
 function deleteCookie(name)
 {
 	document.cookie = name+'=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-}
-
-// The mobile app (the helpdesk in an in-app browser).
-function inAppPostMessage(data)
-{
-	if (typeof(webkit) != "undefined" && typeof(webkit.messageHandlers) != "undefined"
-		&& typeof(webkit.messageHandlers.cordova_iab) != "undefined"
-		&& typeof(webkit.messageHandlers.cordova_iab.postMessage) != "undefined"
-	) {
-		webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify(data));
-	} else {
-		// Wait
-		setTimeout(function() {
-			inAppPostMessage(data);
-		}, 100);
-	}
-}
-
-function inApp(topic, token)
-{
-	var start = function() {
-		document.querySelectorAll('.in-app-switcher').forEach(function(element) {
-			element.classList.remove('hidden');
-		});
-		if (Object.keys(fs_in_app_data).length) {
-			fs_in_app_data['action'] = 'data';
-			inAppPostMessage(fs_in_app_data);
-		}
-		if (!getCookie('in_app')) {
-			setCookie('in_app', '1');
-		}
-		document.addEventListener('click', function(e) {
-			if (e.target.closest('#navbar-back')) {
-				goBack();
-				e.preventDefault();
-			} else if (e.target.closest('a.in-app-switcher')) {
-				switchHelpdeskUrl();
-				e.preventDefault();
-			}
-		});
-	};
-	if (document.readyState == 'loading') {
-		document.addEventListener('DOMContentLoaded', start);
-	} else {
-		start();
-	}
-}
-
-function switchHelpdeskUrl()
-{
-	var url = window.location.href.replace(/#.*/, '');
-	url += (url.indexOf('?') == -1 ? '?' : '&') + 'nc='+Date.now()+"#in-app-close";
-	window.location.href = url;
-}
-
-function goBack()
-{
-	window.history.go(-1);
 }
 
 // Hooks for modules' scripts.

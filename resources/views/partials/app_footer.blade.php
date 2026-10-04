@@ -6,9 +6,6 @@
         @else
             {!! \Eventy::filter('footer.text', '') !!}
         @endif
-        @if (!Auth::user())
-            <a href="#" class="hidden in-app-switcher"><br/>{{ __('Switch Helpdesk URL') }}</a>
-        @endif
         {{-- Show version to admin only --}}
         @if (Auth::user() && Auth::user()->isAdmin())
             <br/>
