@@ -16,8 +16,3 @@
     @include('customers/profile_tabs')
     @include('customers/partials/edit_form')
 @endsection
-
-@section('javascript')
-    @parent
-    multiInputInit();
-@endsection

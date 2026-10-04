@@ -3,7 +3,7 @@
 @action('customer.edit.before_form', $customer)
 
 <div class="page-content">
-    <form class="settings-form" method="POST" action="" enctype="multipart/form-data">
+    <form class="settings-form" method="POST" action="" enctype="multipart/form-data" x-data="tallportMultiInput" @click="click($event)">
         {{ csrf_field() }}
 
         <x-fruit::form-section :title="__('Profile')">

@@ -67,7 +67,7 @@
             {{ csrf_field() }}
             <input type="hidden" name="action" value="index">
             <x-fruit::button type="submit">{{ __('Fetch and Index Changes') }}</x-fruit::button>
-            <x-fruit::button type="submit" variant="ghost" name="force" value="1" data-confirm="{{ __('Index all documentation again? This makes new embeddings for every page.') }}">{{ __('Index All Again') }}</x-fruit::button>
+            <x-fruit::button type="submit" variant="ghost" name="force" value="1" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim()}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Index all documentation again? This makes new embeddings for every page.') }}">{{ __('Index All Again') }}</x-fruit::button>
         </form>
 
         <x-fruit::table>
@@ -119,7 +119,7 @@
                                     <x-fruit::button type="submit" size="small" name="action" value="index">{{ __('Index') }}</x-fruit::button>
                                 @endif
                                 <x-fruit::button type="submit" size="small" name="action" value="toggle">{{ $document->enabled ? __('Disable') : __('Enable') }}</x-fruit::button>
-                                <x-fruit::button type="submit" size="small" variant="danger" name="action" value="delete" data-confirm="{{ __('Delete this page from the documentation?') }}">{{ __('Delete') }}</x-fruit::button>
+                                <x-fruit::button type="submit" size="small" variant="danger" name="action" value="delete" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Delete this page from the documentation?') }}">{{ __('Delete') }}</x-fruit::button>
                             </form>
                         </td>
                     </tr>
@@ -157,8 +157,8 @@
                             {{ csrf_field() }}
                             <input type="hidden" name="mailbox_id" value="{{ $mailbox_option->id }}">
                             @if ($api_key)
-                                <x-fruit::button type="submit" size="small" name="action" value="issue_key" data-confirm="{{ __('Make a new API key? Websites using the current key stop working.') }}">{{ __('New Key') }}</x-fruit::button>
-                                <x-fruit::button type="submit" size="small" variant="danger" name="action" value="revoke_key" data-confirm="{{ __('Revoke this API key? Websites using it stop working.') }}">{{ __('Revoke') }}</x-fruit::button>
+                                <x-fruit::button type="submit" size="small" name="action" value="issue_key" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Make a new API key? Websites using the current key stop working.') }}">{{ __('New Key') }}</x-fruit::button>
+                                <x-fruit::button type="submit" size="small" variant="danger" name="action" value="revoke_key" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Revoke this API key? Websites using it stop working.') }}">{{ __('Revoke') }}</x-fruit::button>
                             @else
                                 <x-fruit::button type="submit" size="small" name="action" value="issue_key">{{ __('Make Key') }}</x-fruit::button>
                             @endif
@@ -178,9 +178,4 @@
     "public_url": "https://docs.example.com/en/setup/android"
   }'</pre>
 </div>
-@endsection
-
-@section('javascript')
-    @parent
-    confirmButtonsInit();
 @endsection

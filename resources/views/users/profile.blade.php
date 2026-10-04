@@ -11,7 +11,7 @@
 @endsection
 
 @section('content')
-    <div class="page-content">
+    <div class="page-content" x-data="tallportUserProfile">
         @include('partials/flash_messages')
 
         <form class="settings-form" method="POST" action="" enctype="multipart/form-data">
@@ -90,7 +90,7 @@
                 @if ($user->photo_url)
                     <div id="user-profile-photo" class="f-form-row">
                         <x-fruit::avatar :src="$user->getPhotoUrl()" :label="__('Photo')" />
-                        <a href="#" id="user-photo-delete" data-loading-text="{{ __('Deleting') }}…">{{ __('Delete Photo') }}</a>
+                        <button type="button" id="user-photo-delete" class="f-button f-button--ghost f-button--small" @click="deletePhoto($el)">{{ __('Delete Photo') }}</button>
                     </div>
                 @endif
                 <x-fruit::field :label="__('Photo')" :description="__('Image will be re-sized to :dimensions. JPG, GIF, PNG accepted.', ['dimensions' => config('app.user_photo_size').'x'.config('app.user_photo_size')])" layout="row">
@@ -143,7 +143,7 @@
             @if (Auth::user()->can('delete', $user))
                 <x-fruit::form-section :title="__('Danger Zone')">
                     <div class="f-form-row">
-                        <a href="#" id="delete-user-trigger" class="f-button f-button--danger">{{ __('Delete user') }}</a>
+                        <button type="button" id="delete-user-trigger" class="f-button f-button--danger" @click="$dispatch('fruit-dialog-open', { name: 'delete-user' })">{{ __('Delete user') }}</button>
                     </div>
                 </x-fruit::form-section>
             @endif
@@ -152,58 +152,45 @@
                 @if (Auth::user()->isAdmin())
                     @if ($user->invite_state == App\User::INVITE_STATE_ACTIVATED)
                         @if ($user->id != Auth::user()->id)
-                            <a href="#" class="f-button f-button--ghost reset-password-trigger" data-loading-text="{{ __('Resetting password') }}…">{{ __('Reset password') }}</a>
+                            <button type="button" class="f-button f-button--ghost reset-password-trigger" @click="resetPassword($el)">{{ __('Reset password') }}</button>
                         @endif
                     @elseif ($user->invite_state == App\User::INVITE_STATE_SENT)
-                        <a href="#" class="f-button f-button--ghost resend-invite-trigger" data-loading-text="{{ __('Resending') }}…">{{ __('Re-send invite email') }}</a>
+                        <button type="button" class="f-button f-button--ghost resend-invite-trigger" @click="sendInvite($el, true)">{{ __('Re-send invite email') }}</button>
                     @elseif ($user->invite_state == App\User::INVITE_STATE_NOT_INVITED)
-                        <a href="#" class="f-button f-button--ghost send-invite-trigger" data-loading-text="{{ __('Sending') }}…">{{ __('Send invite email') }}</a>
+                        <button type="button" class="f-button f-button--ghost send-invite-trigger" @click="sendInvite($el, false)">{{ __('Send invite email') }}</button>
                     @endif
                 @endif
                 <x-fruit::button type="submit" variant="primary">{{ __('Save Profile') }}</x-fruit::button>
             </footer>
         </form>
-    </div>
 
-    <div id="delete_user_modal" class="hidden">
-        <div>
-        <div class="text-center">
-            <div class="col-sm-10 col-sm-offset-1 text-large margin-top-10 margin-bottom">{!! __h("Deleting :name will deactivate workflows they are tied to and assign their conversations to:", ['name' => '<strong>'.htmlspecialchars($user->getFullName()).'</strong>']) !!}</div>
-            <form class="assign_form form-horizontal">
-                @foreach (App\Mailbox::all() as $assign_mailbox)
-                    <div class="col-sm-9 col-sm-offset-1">
-                        <div class="form-group">
-                            <label class="col-sm-5 control-label">{{ $assign_mailbox->name }}</label>
-                            <div class="col-sm-7">
-                                <select name="assign_user[{{ $assign_mailbox->id }}]" class="form-control input-sized">
+        @if (Auth::user()->can('delete', $user))
+            <x-fruit::dialog name="delete-user" aria-labelledby="delete-user-title">
+                <form x-data="{ typed: '' }" @submit.prevent="deleteUser($el)">
+                    <header class="f-dialog__header"><h2 id="delete-user-title">{{ __('Delete user') }}</h2></header>
+                    <div class="f-dialog__body f-stack">
+                        <p>{!! __h("Deleting :name will deactivate workflows they are tied to and assign their conversations to:", ['name' => '<strong>'.htmlspecialchars($user->getFullName()).'</strong>']) !!}</p>
+                        @foreach (App\Mailbox::all() as $assign_mailbox)
+                            <x-fruit::field :label="$assign_mailbox->name" layout="row">
+                                <x-fruit::select name="assign_user[{{ $assign_mailbox->id }}]">
                                     <option value="-1">{{ __("Anyone") }}</option>
                                     @foreach ($assign_mailbox->usersHavingAccess() as $assign_user)
                                         @if ($assign_user->id != $user->id)
                                             <option value="{{ $assign_user->id }}">{{ $assign_user->getFullName() }}</option>
                                         @endif
                                     @endforeach
-                                </select>
-                            </div>
-                        </div>
+                                </x-fruit::select>
+                            </x-fruit::field>
+                        @endforeach
+                        <p>{!! __h("If you are sure, type :delete and click the red button.", ['delete' => '<strong>DELETE</strong>']) !!}</p>
+                        <x-fruit::input x-model="typed" autocomplete="off" placeholder="{!! __h('Type :delete', ['delete' => '&quot;DELETE&quot;']) !!}" aria-label="{!! __h('Type :delete', ['delete' => '&quot;DELETE&quot;']) !!}" />
                     </div>
-                @endforeach
-            </form>
-            <div class="col-sm-12 text-large margin-top">{!! __h("If you are sure, type :delete and click the red button.", ['delete' => '<span class="text-danger">DELETE</span>']) !!}</div>
-            <div class="col-sm-6 col-sm-offset-3 margin-top-10 margin-bottom">
-                <div class="input-group">
-                    <input type="text" class="form-control input-delete-user" placeholder="{!! __h("Type :delete", ['delete' => '&quot;DELETE&quot;']) !!}">
-                    <span class="input-group-btn">
-                        <button class="btn btn-danger button-delete-user" disabled="disabled"><i class="glyphicon glyphicon-ok"></i></button>
-                    </span>
-                </div>
-            </div>
-            <div class="clearfix"></div>
-        </div>
-        </div>
+                    <footer class="f-dialog__footer">
+                        <x-fruit::button type="button" @click="$dispatch('fruit-dialog-close', { name: 'delete-user' })">{{ __('Cancel') }}</x-fruit::button>
+                        <x-fruit::button type="submit" variant="danger" x-bind:disabled="typed != 'DELETE'">{{ __('Delete user') }}</x-fruit::button>
+                    </footer>
+                </form>
+            </x-fruit::dialog>
+        @endif
     </div>
-@endsection
-
-@section('javascript')
-    @parent
-    userProfileInit();
 @endsection

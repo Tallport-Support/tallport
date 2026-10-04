@@ -23,8 +23,8 @@
                     @endforeach
                 </x-fruit::fieldset>
                 <div class="f-row">
-                    <a href="#" class="f-button f-button--ghost f-button--small sel-all">{{ __('all') }}</a>
-                    <a href="#" class="f-button f-button--ghost f-button--small sel-none">{{ __('none') }}</a>
+                    <button type="button" class="f-button f-button--ghost f-button--small" x-data x-on:click="document.querySelectorAll('#permissions-fields input').forEach(input => input.checked = true)">{{ __('all') }}</button>
+                    <button type="button" class="f-button f-button--ghost f-button--small" x-data x-on:click="document.querySelectorAll('#permissions-fields input').forEach(input => input.checked = false)">{{ __('none') }}</button>
                 </div>
             </x-fruit::form-section>
 
@@ -75,7 +75,3 @@
     </div>
 @endsection
 
-@section('javascript')
-    @parent
-    permissionsInit();
-@endsection

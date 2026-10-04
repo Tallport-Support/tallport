@@ -87,34 +87,35 @@ $(document).ready(function() {
 });
 
 // Settings » Saved Replies: drag to change the order of a level.
-function savedRepliesListInit()
-{
-	var list = document.querySelector('.saved-replies-list');
-	if (!list || typeof(sortable) == "undefined") {
-		return;
-	}
-	sortable(list, {
-		items: 'li',
-		handle: '.saved-reply-handle',
-		forcePlaceholderSize: true
+document.addEventListener('alpine:init', function() {
+	window.Alpine.data('tallportSavedRepliesOrder', function(mailbox_id) {
+		return {
+			init: function() {
+				var list = this.$el;
+				if (typeof(sortable) == "undefined") {
+					return;
+				}
+				sortable(list, {
+					items: 'li',
+					handle: '.saved-reply-handle',
+					forcePlaceholderSize: true
+				});
+				list.addEventListener('sortupdate', function(e) {
+					var parent_id = e.detail.item.getAttribute('data-parent-id');
+					var ids = [];
+					list.querySelectorAll('.saved-reply-item[data-parent-id="'+parent_id+'"]').forEach(function(item) {
+						ids.push(item.getAttribute('data-saved-reply-id'));
+					});
+					Tallport.post(laroute.route('saved_replies.ajax'), {
+						action: 'sort',
+						mailbox_id: mailbox_id,
+						saved_replies: ids
+					}).then(function() {
+						// Children follow their category.
+						window.location.reload();
+					});
+				});
+			}
+		};
 	});
-	list.addEventListener('sortupdate', function(e) {
-		var parent_id = $(e.detail.item).attr('data-parent-id');
-		var ids = [];
-		$('.saved-reply-item[data-parent-id="'+parent_id+'"]').each(function() {
-			ids.push($(this).attr('data-saved-reply-id'));
-		});
-		fsAjax({
-				action: 'sort',
-				mailbox_id: $(list).attr('data-mailbox_id'),
-				saved_replies: ids
-			},
-			laroute.route('saved_replies.ajax'),
-			function(response) {
-				// Children follow their category.
-				window.location.reload();
-			}, true
-		);
-	});
-}
-
+});

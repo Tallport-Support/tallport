@@ -54,7 +54,7 @@
                             </x-fruit::field>
 
                             <div>
-                                <x-fruit::button type="submit" variant="danger" size="small" name="remove_language" :value="$language" data-confirm="{{ __('Remove the :language auto reply?', ['language' => $languages[$language] ?? $language]) }}">{{ __('Remove :language', ['language' => $languages[$language] ?? $language]) }}</x-fruit::button>
+                                <x-fruit::button type="submit" variant="danger" size="small" name="remove_language" :value="$language" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Remove the :language auto reply?', ['language' => $languages[$language] ?? $language]) }}">{{ __('Remove :language', ['language' => $languages[$language] ?? $language]) }}</x-fruit::button>
                             </div>
                         </div>
                     @endforeach
@@ -80,9 +80,4 @@
         </form>
     </div>
 
-@endsection
-
-@section('javascript')
-    @parent
-    confirmButtonsInit();
 @endsection

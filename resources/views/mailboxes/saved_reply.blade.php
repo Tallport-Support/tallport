@@ -66,7 +66,7 @@
         </form>
 
         @if ($saved_reply->exists)
-            <form id="saved_reply_delete" method="POST" action="{{ route('mailboxes.saved_replies.delete', ['id' => $mailbox->id, 'saved_reply_id' => $saved_reply->id]) }}" onsubmit="return confirm({{ json_encode(__('Delete this saved reply?')) }});">
+            <form id="saved_reply_delete" method="POST" action="{{ route('mailboxes.saved_replies.delete', ['id' => $mailbox->id, 'saved_reply_id' => $saved_reply->id]) }}" x-data x-on:submit.prevent="Tallport.confirm({message: @js(__('Delete this saved reply?')), confirm: @js(__('Delete')), tone: 'danger'}).then(ok => ok && $el.submit())">
                 {{ csrf_field() }}
             </form>
         @endif

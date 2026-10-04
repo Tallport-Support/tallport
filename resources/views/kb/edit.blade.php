@@ -56,15 +56,9 @@
         </form>
 
         @if ($article->exists)
-            <form id="kb_delete_form" method="POST" action="{{ route('kb.delete', ['id' => $article->id]) }}" class="kb-delete-form" data-confirm="{{ __('Delete this article?') }}">
+            <form id="kb_delete_form" method="POST" action="{{ route('kb.delete', ['id' => $article->id]) }}" class="kb-delete-form" data-confirm="{{ __('Delete this article?') }}" x-data x-on:submit.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: @js(__('Delete')), tone: 'danger'}).then(ok => ok && $el.submit())">
                 {{ csrf_field() }}
             </form>
         @endif
     </div>
-@endsection
-
-
-@section('javascript')
-    @parent
-    kbEditorInit();
 @endsection

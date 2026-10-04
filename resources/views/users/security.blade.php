@@ -36,7 +36,7 @@
                         <form method="POST" action="{{ route('users.security.reset', ['id' => $user->id]) }}" class="f-form-row">
                             {{ csrf_field() }}
                             <p class="f-help">{{ __('For a user who lost their phone: they log in with their password only, and then set it up again.') }}</p>
-                            <x-fruit::button type="submit" variant="danger" data-loading-text="{{ __('Reset two-factor authentication and passkeys') }}…">{{ __('Reset two-factor authentication and passkeys') }}</x-fruit::button>
+                            <x-fruit::button type="submit" variant="danger">{{ __('Reset two-factor authentication and passkeys') }}</x-fruit::button>
                         </form>
                     @endif
                 @elseif ($user->hasEnabledTwoFactorAuthentication())
@@ -133,9 +133,9 @@
                 @endif
 
                 @if ($own)
-                    <form class="f-form-row" id="passkey-add-form">
+                    <form class="f-form-row" id="passkey-add-form" x-data="tallportPasskeyAdd(@js(route('passkey.registration-options')), @js(route('passkey.store')))" @submit.prevent="add($el)">
                         <input type="text" class="f-input passkey-name" id="passkey-name" maxlength="255" placeholder="{{ __('Name, e.g. Laptop') }}" aria-label="{{ __('Name') }}" required>
-                        <button type="submit" class="f-button" data-loading-text="{{ __('Add a passkey') }}…">{{ __('Add a passkey') }}</button>
+                        <button type="submit" class="f-button">{{ __('Add a passkey') }}</button>
                     </form>
                 @endif
             </x-fruit::form-section>
@@ -147,11 +147,4 @@
             </form>
         @endif
     </div>
-@endsection
-
-@section('javascript')
-    @parent
-    @if ($own)
-        passkeysInitAdd('{{ route('passkey.registration-options') }}', '{{ route('passkey.store') }}');
-    @endif
 @endsection

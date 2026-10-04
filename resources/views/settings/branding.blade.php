@@ -23,7 +23,7 @@
         <x-fruit::field :label="__('Header Color')" layout="row">
             <div class="f-row">
                 <x-fruit::color id="branding_header_color" name="settings[branding.header_color]" :value="'#'.$color" class="branding-color" />
-                <x-fruit::button variant="ghost" size="small" class="branding-color-reset" data-color="#{{ App\Misc\Branding::DEFAULT_HEADER_COLOR }}">{{ __('Reset') }}</x-fruit::button>
+                <x-fruit::button variant="ghost" size="small" class="branding-color-reset" data-color="#{{ App\Misc\Branding::DEFAULT_HEADER_COLOR }}" x-data x-on:click="const color = document.getElementById('branding_header_color'); color.value = $el.dataset.color; color.dispatchEvent(new Event('input', {bubbles: true})); color.dispatchEvent(new Event('change', {bubbles: true}))">{{ __('Reset') }}</x-fruit::button>
             </div>
         </x-fruit::field>
 
@@ -66,8 +66,3 @@
     </footer>
 </form>
 
-
-@section('javascript')
-    @parent
-    brandingSettingsInit();
-@endsection

@@ -18,7 +18,7 @@
             @if ($new_key)
                 <x-fruit::alert tone="success">
                     {{ __('Your new API key. Copy it now: it is not shown again.') }}
-                    <input type="text" class="f-input" value="{{ $new_key }}" readonly onclick="this.select()" aria-label="{{ __('API Key') }}">
+                    <input type="text" class="f-input" value="{{ $new_key }}" readonly x-data @click="$el.select()" aria-label="{{ __('API Key') }}">
                 </x-fruit::alert>
             @endif
 
@@ -44,7 +44,7 @@
                                     <td>@if ($key->mailboxes){{ $mailboxes->whereIn('id', $key->mailboxes)->pluck('name')->implode(' | ') }}@else{{ __('All') }}@endif</td>
                                     <td>@if ($key->last_used_at){{ App\User::dateFormat($key->last_used_at) }}@else{{ __('Never') }}@endif</td>
                                     <td>
-                                        <form method="POST" action="{{ route('users.api_keys.action', ['id' => $user->id]) }}" onsubmit="return confirm({{ json_encode(__('Revoke this API key?')) }});">
+                                        <form method="POST" action="{{ route('users.api_keys.action', ['id' => $user->id]) }}" x-data @submit.prevent="Tallport.confirm({ message: @js(__('Revoke this API key?')), confirm: @js(__('Revoke')), tone: 'danger' }).then(ok => ok && $el.submit())">
                                             {{ csrf_field() }}
                                             <input type="hidden" name="action" value="revoke">
                                             <input type="hidden" name="key_id" value="{{ $key->id }}">

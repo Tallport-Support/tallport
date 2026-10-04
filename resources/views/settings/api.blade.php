@@ -43,7 +43,7 @@
                                 <td>@if ($key->mailboxes){{ $mailboxes->whereIn('id', $key->mailboxes)->pluck('name')->implode(' | ') }}@else{{ __('All') }}@endif</td>
                                 <td>@if ($key->last_used_at){{ App\User::dateFormat($key->last_used_at) }}@else{{ __('Never') }}@endif</td>
                                 <td>
-                                    <form method="POST" action="{{ route('settings.api.action') }}" onsubmit="return confirm({{ json_encode(__('Revoke this API key?')) }});">
+                                    <form method="POST" action="{{ route('settings.api.action') }}" x-data x-on:submit.prevent="Tallport.confirm({message: @js(__('Revoke this API key?')), confirm: @js(__('Revoke')), tone: 'danger'}).then(ok => ok && $el.submit())">
                                         {{ csrf_field() }}
                                         <input type="hidden" name="action" value="revoke_key">
                                         <input type="hidden" name="key_id" value="{{ $key->id }}">
@@ -147,14 +147,14 @@
 
     {{-- Forms that buttons above submit with their form attribute. --}}
     <div hidden>
-        <form id="api_regenerate_form" method="POST" action="{{ route('settings.api.action') }}" onsubmit="return confirm({{ json_encode(__('Integrations using the current API key will stop working. Continue?')) }});">
+        <form id="api_regenerate_form" method="POST" action="{{ route('settings.api.action') }}" x-data x-on:submit.prevent="Tallport.confirm({message: @js(__('Integrations using the current API key will stop working. Continue?')), confirm: @js(__('Generate a new API key')), tone: 'danger'}).then(ok => ok && $el.submit())">
             {{ csrf_field() }}
             <input type="hidden" name="action" value="regenerate_key">
         </form>
 
         @foreach ($webhooks as $webhook)
             @if ($webhook->exists)
-                <form id="webhook_delete_{{ $webhook->id }}" method="POST" action="{{ route('settings.api.action') }}" onsubmit="return confirm({{ json_encode(__('Delete this webhook?')) }});">
+                <form id="webhook_delete_{{ $webhook->id }}" method="POST" action="{{ route('settings.api.action') }}" x-data x-on:submit.prevent="Tallport.confirm({message: @js(__('Delete this webhook?')), confirm: @js(__('Delete')), tone: 'danger'}).then(ok => ok && $el.submit())">
                     {{ csrf_field() }}
                     <input type="hidden" name="action" value="delete_webhook">
                     <input type="hidden" name="webhook_id" value="{{ $webhook->id }}">

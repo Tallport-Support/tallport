@@ -1,4 +1,5 @@
-<form id="rpt_filters" class="rpt-filters f-row" method="GET" action="{{ url()->current() }}">
+{{-- The filters apply when changed; a chosen date makes the period custom. --}}
+<form id="rpt_filters" class="rpt-filters f-row" method="GET" action="{{ url()->current() }}" x-data x-on:change="if ($event.target.matches('select, input[type=date]')) { if ($event.target.type == 'date') { $el.elements['period'].value = 'custom' } $el.submit() }">
     <x-fruit::select name="period" :aria-label="__('Period')">
         @foreach (App\Reports\Report::periodNames() as $period => $period_name)
             <option value="{{ $period }}" @selected($report->filters['period'] == $period)>{{ $period_name }}</option>

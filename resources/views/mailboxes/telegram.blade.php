@@ -68,7 +68,7 @@
                         @foreach ($settings['auto_replies'] as $language => $text)
                             <div role="tabpanel" id="telegram_auto_reply_{{ $language }}" aria-labelledby="telegram_auto_reply_{{ $language }}_tab" class="auto-reply-panel f-stack" @if ($active_language != $language) hidden @endif>
                                 <x-fruit::textarea rows="3" name="auto_replies[{{ $language }}]" :aria-label="$languages[$language] ?? $language">{{ old('auto_replies.'.$language, $text) }}</x-fruit::textarea>
-                                <div><x-fruit::button type="submit" variant="danger" size="small" name="remove_language" :value="$language" data-confirm="{{ __('Remove the :language auto reply?', ['language' => $languages[$language] ?? $language]) }}">{{ __('Remove :language', ['language' => $languages[$language] ?? $language]) }}</x-fruit::button></div>
+                                <div><x-fruit::button type="submit" variant="danger" size="small" name="remove_language" :value="$language" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Remove the :language auto reply?', ['language' => $languages[$language] ?? $language]) }}">{{ __('Remove :language', ['language' => $languages[$language] ?? $language]) }}</x-fruit::button></div>
                             </div>
                         @endforeach
                     </div>
@@ -95,7 +95,3 @@
     </div>
 @endsection
 
-@section('javascript')
-    @parent
-    confirmButtonsInit();
-@endsection

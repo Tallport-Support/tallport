@@ -3,7 +3,7 @@
 
     <x-fruit::form-section :title="__('Provider')">
         <x-fruit::field :label="__('Provider')" layout="row">
-            <x-fruit::select name="settings[aiassistant.provider]" class="ai-provider" id="ai_provider" data-base-url="#ai_base_url">
+            <x-fruit::select name="settings[aiassistant.provider]" class="ai-provider" id="ai_provider" data-base-url="#ai_base_url" x-data x-on:change="document.querySelector($el.dataset.baseUrl).placeholder = $el.selectedOptions[0].dataset.baseUrl">
                 @foreach (App\Ai\Providers::PRESETS as $provider => $preset)
                     <option value="{{ $provider }}" data-base-url="{{ $preset['base_url'] }}" @selected($settings['aiassistant.provider'] == $provider)>{{ $preset['name'] }}</option>
                 @endforeach
@@ -33,7 +33,7 @@
         @endif
 
         <x-fruit::field :label="__('Embedding Provider')" layout="row">
-            <x-fruit::select name="settings[aiassistant.documentation.embedding_provider]" class="ai-provider" id="ai_embedding_provider" data-base-url="#ai_embedding_base_url">
+            <x-fruit::select name="settings[aiassistant.documentation.embedding_provider]" class="ai-provider" id="ai_embedding_provider" data-base-url="#ai_embedding_base_url" x-data x-on:change="document.querySelector($el.dataset.baseUrl).placeholder = $el.selectedOptions[0].dataset.baseUrl">
                 <option value="same" data-base-url="" @selected($settings['aiassistant.documentation.embedding_provider'] == 'same')>{{ __('Same as AI Provider') }}</option>
                 @foreach (App\Ai\Providers::PRESETS as $provider => $preset)
                     @if ($preset['embedding_model'])
@@ -128,7 +128,7 @@
                 @php
                     $ai_context = App\Ai\CustomerContext::settings($mailbox);
                 @endphp
-                <x-fruit::disclosure class="ai-customer-context" data-mailbox-id="{{ $mailbox->id }}" :title="$mailbox->name.($ai_context['url'] ? ' · '.$ai_context['url'] : '')" :open="$errors->has('settings.aiassistant.customer_context_url.'.$mailbox->id) || $errors->has('settings.aiassistant.customer_context_guidance.'.$mailbox->id)">
+                <x-fruit::disclosure class="ai-customer-context" data-mailbox-id="{{ $mailbox->id }}" x-data="tallportAiContextTest({{ $mailbox->id }})" :title="$mailbox->name.($ai_context['url'] ? ' · '.$ai_context['url'] : '')" :open="$errors->has('settings.aiassistant.customer_context_url.'.$mailbox->id) || $errors->has('settings.aiassistant.customer_context_guidance.'.$mailbox->id)">
                     <div class="settings-form">
                         <x-fruit::field :label="__('URL')">
                             <x-fruit::input type="url" id="ai_context_url_{{ $mailbox->id }}" class="ai-context-url" name="settings[aiassistant.customer_context_url][{{ $mailbox->id }}]" :value="old('settings.aiassistant.customer_context_url.'.$mailbox->id, $ai_context['url'])" maxlength="2048" placeholder="https://example.com/customer-context" />
@@ -149,10 +149,10 @@
                         <x-fruit::field :label="__('Test')" control-id="ai_context_test_{{ $mailbox->id }}">
                             <div class="f-input-group">
                                 <input id="ai_context_test_{{ $mailbox->id }}" type="email" class="f-input ai-context-test-email" placeholder="{{ __('Customer email address') }}">
-                                <button type="button" class="f-button ai-context-test" data-loading-text="{{ __('Test') }}…">{{ __('Test') }}</button>
+                                <button type="button" class="f-button ai-context-test" x-on:click="test">{{ __('Test') }}</button>
                             </div>
                         </x-fruit::field>
-                        <pre class="hidden ai-context-test-result"></pre>
+                        <pre class="ai-context-test-result" x-show="result" x-text="result" x-cloak></pre>
                     </div>
                 </x-fruit::disclosure>
             @endforeach
@@ -163,8 +163,3 @@
         <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
     </footer>
 </form>
-
-@section('javascript')
-    @parent
-    aiSettingsInit();
-@endsection

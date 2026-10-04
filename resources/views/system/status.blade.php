@@ -10,7 +10,7 @@
 
 @section('content')
 
-<div class="page-content system-status">
+<div class="page-content system-status" x-data="tallportSystemStatus">
 
     @action('system.status.before_info_table')
 
@@ -26,12 +26,12 @@
                             <strong>{{ \Config::get('app.version') }}</strong>
                             <div class="f-alert f-alert--danger system-status__alert">
                                 {{ __('A new version is available') }}: <strong>{{ $latest_version }}</strong> <a href="{{ config('app.tallport_url') }}/releases" target="_blank">({{ __('View details') }})</a>
-                                <button class="f-button f-button--small update-trigger" data-loading-text="{{ __('Updating') }}…{{ __('This may take several minutes') }}">{{ __('Update Now') }}</button>
+                                <button class="f-button f-button--small update-trigger" x-on:click="update">{{ __('Update Now') }}</button>
                             </div>
                         @else
                             <x-fruit::badge tone="success">{{ \Config::get('app.version') }}</x-fruit::badge>
                             
-                            <a href="#" class="f-button f-button--small check-updates-trigger" data-loading-text="{{ __('Checking') }}…">{{ __('Check for updates') }}</a>
+                            <button type="button" class="f-button f-button--small check-updates-trigger" x-on:click="checkUpdates">{{ __('Check for updates') }}</button>
                             @if ($latest_version_error)
                                 <p class="f-error">{{ $latest_version_error }}</p>
                             @endif
@@ -52,11 +52,13 @@
             <tr>
                 <th>{{ __('Protocol') }}</th>
                 <td>
-                    <div id="system-app-protocol"></div>
-                    <div id="session_secure_cookie" data-session-secure="{{ (int)\Config::get('session.secure') }}" class="f-alert f-alert--danger system-status__alert hidden">
-                        .env &gt;&gt; SESSION_SECURE_COOKIE=true
-                    </div>
-                    <div id="protocol_push_notifications" class="f-alert f-alert--danger system-status__alert hidden">
+                    <div id="system-app-protocol" x-text="https ? 'HTTPS' : 'HTTP'"></div>
+                    @if (!\Config::get('session.secure'))
+                        <div id="session_secure_cookie" class="f-alert f-alert--danger system-status__alert" x-show="https" x-cloak>
+                            .env &gt;&gt; SESSION_SECURE_COOKIE=true
+                        </div>
+                    @endif
+                    <div id="protocol_push_notifications" class="f-alert f-alert--danger system-status__alert" x-show="!https" x-cloak>
                         {{ __("HTTPS protocol is required for the browser push notifications to work.") }}
                     </div>
                 </td>
@@ -428,7 +430,7 @@
                                             @if ($payload['displayName'] == 'App\Jobs\TriggerAction' && !empty($payload['data']['command']))
                                                 ({{ App\Job::getTriggerActionName($payload) }})
                                             @endif
-                                         – <small><a href="{{ route('system.ajax_html', ['action' => 'job_details', 'param' => $job->id]) }}" data-trigger="modal" data-modal-title="{{ $loop->index+1 }}. {{ json_decode($job->payload, true)['displayName'] }}" data-modal-no-footer="true">{{ __('View Details') }}</a></small></th>
+                                         – <small><a href="{{ route('system.ajax_html', ['action' => 'job_details', 'param' => $job->id]) }}" data-title="{{ $loop->index+1 }}. {{ json_decode($job->payload, true)['displayName'] }}" x-on:click.prevent="jobDetails">{{ __('View Details') }}</a></small></th>
                                     </tr>
                                     <tr>
                                         <td>{{ __('Queue') }}</td>
@@ -473,13 +475,13 @@
 
     @action('system.status.after_background_jobs')
 
+    <x-fruit::dialog name="job-details" aria-labelledby="job-details-title">
+        <header class="f-dialog__header"><h2 id="job-details-title" x-text="job.title"></h2></header>
+        <div class="f-dialog__body" x-html="job.html"></div>
+        <form class="f-dialog__footer" method="dialog"><x-fruit::button type="submit" variant="primary" autofocus>{{ __('Close') }}</x-fruit::button></form>
+    </x-fruit::dialog>
 </div>
 
 @action('system.status.after_content')
 
-@endsection
-
-@section('javascript')
-    @parent
-    initSystemStatus();
 @endsection

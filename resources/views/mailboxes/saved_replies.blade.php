@@ -24,7 +24,7 @@
             </x-fruit::empty-state>
         @else
             <p class="f-help">{{ __('Drag to change the order. A saved reply with others under it is a category.') }}</p>
-            <ul class="saved-replies-list" data-mailbox_id="{{ $mailbox->id }}">
+            <ul class="saved-replies-list" x-data="tallportSavedRepliesOrder({{ $mailbox->id }})">
                 @foreach ($tree as [$saved_reply, $depth, $has_children])
                     <li class="saved-reply-item" data-saved-reply-id="{{ $saved_reply->id }}" data-parent-id="{{ (int) $saved_reply->parent_saved_reply_id }}" style="margin-inline-start: {{ $depth * 24 }}px">
                         <x-heroicon-o-bars-3 class="f-icon saved-reply-handle" aria-hidden="true" title="{{ __('Drag to change the order') }}" />
@@ -43,9 +43,4 @@
 @section('javascripts')
     @parent
     <script src="{{ asset('js/html5sortable.js') }}" {!! \Helper::cspNonceAttr() !!}></script>
-@endsection
-
-@section('javascript')
-    @parent
-    savedRepliesListInit();
 @endsection

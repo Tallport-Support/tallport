@@ -15,7 +15,7 @@
                 <h1 class="f-title-3 auth-card__title">{{ __('Welcome to :company_name, :first_name!', ['company_name' => App\Option::getCompanyName(), 'first_name' => $user->first_name]) }}</h1>
                 <p class="f-muted">{{ __("Let's setup your profile.") }}</p>
 
-                <form class="f-stack" method="POST" action="" enctype="multipart/form-data">
+                <form class="f-stack" method="POST" action="" enctype="multipart/form-data" x-data="tallportUserProfile">
                     {{ csrf_field() }}
 
                     <x-fruit::field :label="__('Your Email')">
@@ -55,7 +55,7 @@
                     @if ($user->photo_url)
                         <div id="user-profile-photo" class="f-row">
                             <x-fruit::avatar :src="$user->getPhotoUrl()" :label="__('Profile Image')" />
-                            <a href="#" id="user-photo-delete" data-loading-text="{{ __('Deleting') }}…">{{ __('Delete Photo') }}</a>
+                            <button type="button" id="user-photo-delete" class="f-button f-button--ghost f-button--small" @click="deletePhoto($el)">{{ __('Delete Photo') }}</button>
                         </div>
                     @endif
                     <x-fruit::field :label="__('Photo')" :description="__('Only visible in :app_name.', ['app_name' => \Config::get('app.name')]).' '.__('Image will be re-sized to 200x200. JPG, GIF, PNG accepted.')">
@@ -69,9 +69,4 @@
             @endif
         </x-fruit::card>
     </div>
-@endsection
-
-@section('javascript')
-    @parent
-    userProfileInit();
 @endsection

@@ -53,7 +53,7 @@
                                     <td>{{ $key->source }}</td>
                                     <td>{{ $key->last_seen_at ? App\User::dateFormat($key->last_seen_at) : '' }}</td>
                                     <td>
-                                        <form method="POST" action="{{ route('customers.nostr.save', ['id' => $customer->id]) }}" onsubmit="return confirm('{{ __('Remove this key from the customer?') }}');">
+                                        <form method="POST" action="{{ route('customers.nostr.save', ['id' => $customer->id]) }}" x-data @submit.prevent="Tallport.confirm({ message: @js(__('Remove this key from the customer?')), confirm: @js(__('Remove')), tone: 'danger' }).then(ok => ok && $el.submit())">
                                             {{ csrf_field() }}
                                             <input type="hidden" name="action" value="remove">
                                             <input type="hidden" name="key_id" value="{{ $key->id }}">

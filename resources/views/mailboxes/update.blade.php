@@ -14,7 +14,7 @@
     <div class="page-content">
         @include('partials/flash_messages')
 
-        <form class="settings-form" method="POST" action="" enctype="multipart/form-data">
+        <form class="settings-form" method="POST" action="" enctype="multipart/form-data" x-data="tallportMailboxUpdate(@js((string) App\Mailbox::FROM_NAME_CUSTOM))">
             {{ csrf_field() }}
 
             @action('mailbox.update.before_name', $mailbox, $errors)
@@ -81,7 +81,7 @@
                 <x-fruit::form-section :title="__('Emails to Customers')">
                     @if (Auth::user()->can('updateSettings', $mailbox))
                         <x-fruit::field :label="__('From Name')" :description="strip_tags(__('Name that will appear in the <strong>From</strong> field when a customer views your email.'))" layout="row">
-                            <x-fruit::select id="from_name" name="from_name" required>
+                            <x-fruit::select id="from_name" name="from_name" required x-on:change="fromNameChanged">
                                 <option value="{{ App\Mailbox::FROM_NAME_MAILBOX }}" @selected(old('from_name', $mailbox->from_name) == App\Mailbox::FROM_NAME_MAILBOX)>{{ __('Mailbox Name') }}</option>
                                 <option value="{{ App\Mailbox::FROM_NAME_USER }}" @selected(old('from_name', $mailbox->from_name) == App\Mailbox::FROM_NAME_USER)>{{ __("User's Name") }}</option>
                                 <option value="{{ App\Mailbox::FROM_NAME_CUSTOM }}" @selected(old('from_name', $mailbox->from_name) == App\Mailbox::FROM_NAME_CUSTOM)>{{ __('Custom Name') }}</option>
@@ -98,7 +98,7 @@
 
                         <x-fruit::field :label="__('Email Header')" :description="__('This text will be added to the beginning of each email reply sent to a customer.')" control-id="before_reply" layout="row">
                             <div class="f-input-group">
-                                <span class="f-input-group__addon"><input type="checkbox" class="f-check" @if ($mailbox->before_reply) checked="checked" @endif id="before-reply-toggle" aria-label="{{ __('Email Header') }}"></span>
+                                <span class="f-input-group__addon"><input type="checkbox" class="f-check" @if ($mailbox->before_reply) checked="checked" @endif id="before-reply-toggle" x-on:change="beforeReplyToggled" aria-label="{{ __('Email Header') }}"></span>
                                 <input id="before_reply" type="text" class="f-input" @if (!$mailbox->before_reply) readonly @endif name="before_reply" value="{{ old('before_reply', $mailbox->before_reply) }}" data-default="-- {{ __('Please reply above this line') }} --" placeholder="-- {{ __('Please reply above this line') }} --" aria-describedby="before_reply-description">
                             </div>
                         </x-fruit::field>
@@ -119,7 +119,7 @@
                             <strong class="f-headline">{{ __('Delete Mailbox') }}</strong>
                             <p class="f-help">{{ __('Deleting this mailbox will remove all historical data and deactivate related workflows and reports.') }}</p>
                         </div>
-                        <a href="#" data-trigger="modal" data-modal-body="#delete_mailbox_modal" data-modal-no-footer="true" data-modal-title="{{ __('Delete the :mailbox_name mailbox?', ['mailbox_name' => $mailbox->name]) }}" data-modal-on-show="deleteMailboxModal" class="f-button f-button--danger">{{ __('Delete mailbox') }}</a>
+                        <x-fruit::button variant="danger" x-on:click="$dispatch('fruit-dialog-open', { name: 'delete-mailbox' })">{{ __('Delete mailbox') }}</x-fruit::button>
                     </div>
                 </x-fruit::form-section>
             @endif
@@ -128,28 +128,30 @@
                 <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
             </footer>
         </form>
-    </div>
 
-    <div id="delete_mailbox_modal" class="hidden">
-        <div class="text-large">{{ __('Deleting this mailbox will remove all historical data and deactivate related workflows and reports.') }}</div>
-
-        @if (!Auth::user()->isDummyPassword())
-            <div class="text-large margin-top margin-bottom-5">{{ __('Please confirm your password:') }}</div>
-            <div class="row">
-                <div class="col-xs-7">
-                    <input type="password" class="form-control delete-mailbox-pass" />
-                </div>
-            </div>
+        @if (auth()->user()->isAdmin())
+            <x-fruit::dialog name="delete-mailbox" aria-labelledby="delete-mailbox-title">
+                <form x-data="tallportDeleteMailbox({{ $mailbox->id }})" x-on:submit.prevent="remove">
+                    <header class="f-dialog__header">
+                        <h2 id="delete-mailbox-title">{{ __('Delete the :mailbox_name mailbox?', ['mailbox_name' => $mailbox->name]) }}</h2>
+                    </header>
+                    <div class="f-dialog__body f-stack">
+                        <p>{{ __('Deleting this mailbox will remove all historical data and deactivate related workflows and reports.') }}</p>
+                        @if (!Auth::user()->isDummyPassword())
+                            <x-fruit::field :label="__('Please confirm your password:')">
+                                <x-fruit::input type="password" id="delete_mailbox_password" autocomplete="current-password" />
+                            </x-fruit::field>
+                        @endif
+                    </div>
+                    <footer class="f-dialog__footer">
+                        <x-fruit::button type="button" x-on:click="$el.closest('dialog').close()">{{ __('Cancel') }}</x-fruit::button>
+                        <x-fruit::button type="submit" variant="danger">{{ __('Delete Mailbox') }}</x-fruit::button>
+                    </footer>
+                </form>
+            </x-fruit::dialog>
         @endif
-        <div class="margin-top margin-bottom-5">
-            <button class="btn btn-danger button-delete-mailbox" data-loading-text="{{ __('Processing') }}…">{{ __('Delete Mailbox') }}</button>
-            <button class="btn btn-link" data-dismiss="modal">{{ __('Cancel') }}</button>
-        </div>
     </div>
+
 @endsection
 
 
-@section('javascript')
-    @parent
-    mailboxUpdateInit('{{ App\Mailbox::FROM_NAME_CUSTOM }}');
-@endsection

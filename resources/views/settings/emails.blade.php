@@ -43,14 +43,14 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Send Test')">
+    <x-fruit::form-section :title="__('Send Test')" x-data="tallportMailSettings">
         <x-fruit::field :label="__('Send Test To')" :description="__('Make sure to save settings before testing.')" control-id="send_test" layout="row">
             <div class="f-input-group">
                 <input id="send_test" type="email" class="f-input" aria-describedby="send_test-description" value="{{ old('email', \App\Option::get('send_test_to')) }}" maxlength="128">
-                <button id="send-test-trigger" class="f-button" type="button" data-loading-text="{{ __('Sending') }}…">{{ __('Send Test') }}</button>
+                <button id="send-test-trigger" class="f-button" type="button" x-on:click="sendTest">{{ __('Send Test') }}</button>
             </div>
         </x-fruit::field>
-        <pre class="hidden" id="send_test_log"></pre>
+        <pre id="send_test_log" x-show="log" x-text="log" x-cloak></pre>
     </x-fruit::form-section>
 
     <x-fruit::form-section :title="__('Fetching Emails')">
@@ -79,8 +79,3 @@
         <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
     </footer>
 </form>
-
-@section('javascript')
-    @parent
-    mailSettingsInit();
-@endsection

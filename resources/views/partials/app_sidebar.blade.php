@@ -63,7 +63,7 @@
                         <x-fruit::menu-link :href="route('mailboxes.update', ['id' => $sidebar_mailbox->id])">{{ __('Mailbox Settings') }}</x-fruit::menu-link>
                     @endif
                     <x-fruit::menu-link :href="route('conversations.ajax_html', ['action' => 'default_redirect']).'?mailbox_id='.$sidebar_mailbox->id" data-trigger="modal" :data-modal-title="__('Default Redirect')" data-modal-no-footer="true" data-modal-on-show="initAfterSendModal">{{ __('Default Redirect') }}…</x-fruit::menu-link>
-                    <x-fruit::menu-link href="#" class="mailbox-mute-trigger" :data-mute="$sidebar_muted ? '0' : '1'" :data-mailbox-id="$sidebar_mailbox->id" :data-loading-text="__('Processing').'…'"><span class="mute-text-1 @if ($sidebar_muted) hidden @endif">{{ __('Mute Notifications') }}</span><span class="mute-text-0 @if (!$sidebar_muted) hidden @endif">{{ __('Unmute Notifications') }}</span></x-fruit::menu-link>
+                    <x-fruit::menu-item x-data="tallportMuteMailbox({{ $sidebar_mailbox->id }}, {{ $sidebar_muted ? 'true' : 'false' }})" x-on:click="toggle"><span x-text="muted ? @js(__('Unmute Notifications')) : @js(__('Mute Notifications'))">{{ $sidebar_muted ? __('Unmute Notifications') : __('Mute Notifications') }}</span></x-fruit::menu-item>
                     <ul class="app-sidebar__module-items">@action('mailbox.sidebar.buttons', $sidebar_mailbox)</ul>
                 </x-fruit::menu>
             </div>

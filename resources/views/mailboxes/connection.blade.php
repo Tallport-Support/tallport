@@ -16,7 +16,7 @@
 
         @include('partials/flash_messages')
 
-        <form class="settings-form" method="POST" action="">
+        <form class="settings-form" method="POST" action="" x-data="tallportMailboxConnection({{ $mailbox->id }}, {{ App\Mailbox::OUT_METHOD_SMTP }})" x-on:change="methodChanged">
             {{ csrf_field() }}
 
             <p class="f-help">
@@ -118,7 +118,7 @@
                 <x-fruit::field :label="__('Send Test To')" :description="__('Make sure to save settings before testing.')" control-id="send_test" layout="row">
                     <div class="f-input-group">
                         <input id="send_test" type="email" class="f-input" name="send_test_to" value="{{ old('email', \App\Option::get('send_test_to', $mailbox->email)) }}" maxlength="128" aria-describedby="send_test-description" @if (!$mailbox->isOutActive()) disabled="disabled" @endif>
-                        <button id="send-test-trigger" class="f-button" type="button" data-loading-text="{{ __('Sending') }}…" @if (!$mailbox->isOutActive()) disabled="disabled" @endif>{{ __('Send Test') }}</button>
+                        <button id="send-test-trigger" class="f-button" type="button" x-on:click="sendTest" @if (!$mailbox->isOutActive()) disabled="disabled" @endif>{{ __('Send Test') }}</button>
                     </div>
                 </x-fruit::field>
                 <pre class="hidden" id="send_test_log"></pre>
@@ -129,9 +129,4 @@
             </footer>
         </form>
     </div>
-@endsection
-
-@section('javascript')
-    @parent
-    mailboxConnectionInit('{{ App\Mailbox::OUT_METHOD_SMTP }}');
 @endsection

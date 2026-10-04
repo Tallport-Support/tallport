@@ -34,8 +34,3 @@
         </form>
     </div>
 @endsection
-
-@section('javascript')
-    @parent
-    userProfileInit();
-@endsection

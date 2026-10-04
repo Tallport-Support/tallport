@@ -53,8 +53,3 @@
         <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
     </footer>
 </form>
-
-@section('javascript')
-    @parent
-    notificationsInit();
-@endsection

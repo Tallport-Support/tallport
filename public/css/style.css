@@ -3454,6 +3454,9 @@ a.disabled:focus {
     gap: 6px;
     margin: 4px 0;
 }
+.wf-row__fields {
+    display: contents;
+}
 .wf-row .f-input {
     width: auto;
     max-width: 100%;

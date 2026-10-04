@@ -25,10 +25,12 @@
                 <x-fruit::button type="submit" variant="primary">{{ __('Save Notifications') }}</x-fruit::button>
             </footer>
         </form>
-    </div>
-@endsection
 
-@section('javascript')
-    @parent
-    notificationsInit();
+        @if ($user->id == Auth::user()->id)
+            <x-fruit::dialog name="enable-push" aria-label="{{ __('Browser') }}">
+                <div class="f-dialog__body"><img src="{{ asset('img/enable-push.png') }}" alt=""></div>
+                <form class="f-dialog__footer" method="dialog"><x-fruit::button type="submit" variant="primary" autofocus>{{ __('Close') }}</x-fruit::button></form>
+            </x-fruit::dialog>
+        @endif
+    </div>
 @endsection

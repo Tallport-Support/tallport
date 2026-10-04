@@ -16,7 +16,7 @@
 
         @include('partials/flash_messages')
 
-        <form class="settings-form" method="POST" action="" id="form-fetching">
+        <form class="settings-form" method="POST" action="" id="form-fetching" x-data="tallportMailboxIncoming({{ $mailbox->id }})" x-on:change="changed" x-on:keyup="changed">
             {{ csrf_field() }}
 
             <p class="f-help">
@@ -134,7 +134,7 @@
                                 <option value="{{ $imap_folder }}" selected="selected">{{ $imap_folder }}</option>
                             @endforeach
                         </select>
-                        <a href="#" class="f-button f-button--ghost f-button--small" title="{{ __('Retrieve a list of available IMAP folders from the server') }}" id="retrieve-imap-folders" data-loading-text="{{ __('Retrieving') }}…">{{ __('Get folders') }}</a>
+                        <button type="button" class="f-button f-button--ghost f-button--small" title="{{ __('Retrieve a list of available IMAP folders from the server') }}" id="retrieve-imap-folders" x-on:click="retrieveFolders">{{ __('Get folders') }}</button>
                     </div>
                 </x-fruit::field>
 
@@ -169,7 +169,7 @@
             <x-fruit::form-section :title="__('Test')">
                 <div class="f-form-row">
                     <p class="f-help">{{ __("Make sure to save settings before checking connection.") }}</p>
-                    <button type="button" class="f-button" id="check-connection" data-loading-text="{{ __('Connecting') }}…" @if (!$mailbox->isOutActive()) disabled="disabled" @endif>{{ __('Check Connection') }}</button>
+                    <button type="button" class="f-button" id="check-connection" x-ref="check" x-on:click="checkConnection" @if (!$mailbox->isOutActive()) disabled="disabled" @endif>{{ __('Check Connection') }}</button>
                 </div>
                 <pre class="hidden" id="fetch_test_log"></pre>
             </x-fruit::form-section>
@@ -183,6 +183,8 @@
 
 @section('javascript')
     @parent
-    mailboxConnectionInit('{{ App\Mailbox::OUT_METHOD_SMTP }}');
-    mailboxConnectionIncomingInit();
+    {{-- The IMAP folders stay on select2 (jQuery) until FruitUI's token field can submit a list. --}}
+    $('#in_imap_folders').select2(fs_select2_config).on('select2:select select2:unselect', function() {
+        document.getElementById('check-connection').disabled = true;
+    });
 @endsection

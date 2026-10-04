@@ -10,28 +10,36 @@
 
 @section('javascript')
     @parent
-    // Copy buttons. Inline onclick handlers are blocked by the content security policy,
-    // so the handler lives here, in the page script block.
-    $('.nostr-copy').on('click', function (e) {
-        e.preventDefault();
-        var button = $(this);
-        var text = String(button.data('copy'));
-        var done = function () {
-            var label = button.text();
-            button.text('{{ __('Copied') }}');
-            setTimeout(function () { button.text(label); }, 1500);
-        };
-        var fallback = function () {
-            var area = $('<textarea readonly>').val(text).css({position: 'fixed', top: 0, left: 0, opacity: 0}).appendTo('body');
-            area[0].select();
-            try { if (document.execCommand('copy')) { done(); } } catch (err) {}
-            area.remove();
-        };
-        if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(text).then(done, fallback);
-        } else {
-            fallback();
-        }
+    // Copy buttons: the text in data-copy, and "Copied" for a moment.
+    document.addEventListener('alpine:init', function () {
+        Alpine.data('nostrCopy', function () {
+            return {
+                copied: false,
+                copy: function () {
+                    var self = this;
+                    var text = this.$el.getAttribute('data-copy');
+                    var done = function () {
+                        self.copied = true;
+                        setTimeout(function () { self.copied = false; }, 1500);
+                    };
+                    var fallback = function () {
+                        var area = document.createElement('textarea');
+                        area.readOnly = true;
+                        area.value = text;
+                        area.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+                        document.body.appendChild(area);
+                        area.select();
+                        try { if (document.execCommand('copy')) { done(); } } catch (err) {}
+                        area.remove();
+                    };
+                    if (navigator.clipboard && window.isSecureContext) {
+                        navigator.clipboard.writeText(text).then(done, fallback);
+                    } else {
+                        fallback();
+                    }
+                }
+            };
+        });
     });
 @endsection
 
@@ -49,9 +57,9 @@
                     <h2 class="f-title-3">{{ __('Identity of this mailbox') }}</h2>
                     <dl class="nostr-facts">
                         <dt>{{ __('Public key') }}</dt>
-                        <dd><code>{{ $cfg->getNpub() }}</code> <a href="#" class="f-button f-button--small nostr-copy" data-copy="{{ $cfg->getNpub() }}">{{ __('Copy') }}</a></dd>
+                        <dd><code>{{ $cfg->getNpub() }}</code> <button type="button" class="f-button f-button--small nostr-copy" data-copy="{{ $cfg->getNpub() }}" x-data="nostrCopy" @click="copy()" x-text="copied ? @js(__('Copied')) : @js(__('Copy'))">{{ __('Copy') }}</button></dd>
                         <dt>{{ __('Hex') }}</dt>
-                        <dd><small class="f-muted">{{ $cfg->pubkey }}</small> <a href="#" class="f-button f-button--small nostr-copy" data-copy="{{ $cfg->pubkey }}">{{ __('Copy') }}</a></dd>
+                        <dd><small class="f-muted">{{ $cfg->pubkey }}</small> <button type="button" class="f-button f-button--small nostr-copy" data-copy="{{ $cfg->pubkey }}" x-data="nostrCopy" @click="copy()" x-text="copied ? @js(__('Copied')) : @js(__('Copy'))">{{ __('Copy') }}</button></dd>
                         <dt>{{ __('Key since') }}</dt>
                         <dd>{{ $cfg->key_created_at ? App\User::dateFormat($cfg->key_created_at) : '' }}</dd>
                         @if ($cfg->getNip05())

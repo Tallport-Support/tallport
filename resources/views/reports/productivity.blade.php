@@ -63,8 +63,3 @@
         @endif
     </div>
 @endsection
-
-@section('javascript')
-    @parent
-    reportsInit();
-@endsection

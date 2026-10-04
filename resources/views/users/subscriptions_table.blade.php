@@ -1,7 +1,7 @@
 <?php
     if (!isset($subscriptions_formname, $subscriptions)) $subscriptions_formname = "subscriptions";
 ?>
-<table class="f-table subscriptions-table">
+<table class="f-table subscriptions-table" x-data="tallportSubscriptions">
     <tr class="table-header">
         <th>
             @if ($person)

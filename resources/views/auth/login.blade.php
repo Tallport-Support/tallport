@@ -29,7 +29,7 @@
                     {{ __('Login') }}
                 </button>
 
-                <a href="#" class="f-button" id="passkey-login" data-loading-text="{{ __('Sign in with a passkey') }}…"><x-heroicon-o-finger-print class="f-icon" aria-hidden="true" /> {{ __('Sign in with a passkey') }}</a>
+                <button type="button" class="f-button" id="passkey-login" x-data="tallportPasskeyLogin(@js(route('passkey.login-options')), @js(route('passkey.login')))" x-show="supported" @click="login($el)"><x-heroicon-o-finger-print class="f-icon" aria-hidden="true" /> {{ __('Sign in with a passkey') }}</button>
 
                 @if (Eventy::filter('auth.password_reset_available', true))
                     <a class="f-button f-button--ghost" href="{{ route('password.request') }}">
@@ -42,9 +42,4 @@
         @action('login_form.after')
     </x-fruit::card>
 </div>
-@endsection
-
-@section('javascript')
-    @parent
-    passkeysInitLogin('{{ route('passkey.login-options') }}', '{{ route('passkey.login') }}');
 @endsection

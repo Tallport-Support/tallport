@@ -36,7 +36,7 @@
                 @endforeach
             </x-fruit::menu>
             @if ($levels)
-                <select name="level" class="f-input app-logs__level" aria-label="{{ __('Level') }}">
+                <select name="level" class="f-input app-logs__level" aria-label="{{ __('Level') }}" x-data x-on:change="$el.form.submit()">
                     <option value="">{{ __('All') }}</option>
                     @foreach ($levels as $level)
                         <option value="{{ $level }}" @selected(request('level') === $level)>{{ ucfirst($level) }}</option>
@@ -99,16 +99,11 @@
             <div class="f-row app-logs__actions">
                 <a class="f-button f-button--small" href="?dl={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}"><x-heroicon-o-arrow-down-tray class="f-icon" aria-hidden="true" /> {{ __('Download') }}</a>
                 <span class="f-toolbar__spacer"></span>
-                <a class="f-button f-button--small f-button--ghost" id="delete-log" href="?del={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}" data-confirm="{{ __('Delete this log file?') }}">{{ __('Delete') }}</a>
+                <a class="f-button f-button--small f-button--ghost" id="delete-log" href="?del={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && (window.location.href = $el.href))" data-confirm="{{ __('Delete this log file?') }}">{{ __('Delete') }}</a>
                 @if (count($files) > 1)
-                    <a class="f-button f-button--small f-button--danger" id="delete-all-log" href="?delall=true&amp;_token={{ csrf_token() }}" data-confirm="{{ __('Delete all log files?') }}">{{ __('Delete All') }}</a>
+                    <a class="f-button f-button--small f-button--danger" id="delete-all-log" href="?delall=true&amp;_token={{ csrf_token() }}" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && (window.location.href = $el.href))" data-confirm="{{ __('Delete all log files?') }}">{{ __('Delete All') }}</a>
                 @endif
             </div>
         @endif
     </div>
-@endsection
-
-@section('javascript')
-    @parent
-    initLogsTable();
 @endsection
