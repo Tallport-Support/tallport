@@ -3,144 +3,71 @@
 @section('title', __('User Setup Wizard'))
 
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3">
+    <div class="auth-page auth-page--wide">
 
-                @include('auth/banner')
+        @include('auth/banner')
 
-                <div class="panel panel-default panel-shaded">
-                
-                    <div class="panel-body">
+        <x-fruit::card class="auth-card">
+            @if (!$user)
+                <h1 class="f-title-3 auth-card__title">{{ __('User Setup Problem') }}</h1>
+                <p>{{ __('No invite was found. Please contact your administrator to have a new invite email sent.') }}</p>
+            @else
+                <h1 class="f-title-3 auth-card__title">{{ __('Welcome to :company_name, :first_name!', ['company_name' => App\Option::getCompanyName(), 'first_name' => $user->first_name]) }}</h1>
+                <p class="f-muted">{{ __("Let's setup your profile.") }}</p>
 
-                    @if (!$user)
-                        <div class="wizard-header wizard-header-small">
-                            <h1><i class="glyphicon glyphicon-info-sign text-warning-light"></i> {{ __('User Setup Problem') }}</h1>
-                            <p>
-                               {{ __('No invite was found. Please contact your administrator to have a new invite email sent.') }}
-                            </p>
+                <form class="f-stack" method="POST" action="" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+
+                    <x-fruit::field :label="__('Your Email')">
+                        <x-fruit::input id="email" type="email" name="email" :value="old('email', $user->email)" maxlength="100" required autofocus />
+                    </x-fruit::field>
+
+                    <x-fruit::field :label="__('Create a Password')" :description="__('Your password must be at least 8 characters')">
+                        <x-fruit::input id="password" type="password" name="password" :value="old('password')" minlength="8" required />
+                    </x-fruit::field>
+
+                    <x-fruit::field :label="__('Confirm Password')">
+                        <x-fruit::input id="password_confirmation" type="password" name="password_confirmation" :value="old('password_confirmation')" minlength="8" required />
+                    </x-fruit::field>
+
+                    @action('user.setup.before_job_title', $user)
+
+                    <x-fruit::field :label="__('Job Title')">
+                        <x-fruit::input id="job_title" name="job_title" :value="old('job_title', $user->job_title)" :placeholder="__('(optional)')" maxlength="100" />
+                    </x-fruit::field>
+
+                    <x-fruit::field :label="__('Phone Number')">
+                        <x-fruit::input id="phone" name="phone" :value="old('phone', $user->phone)" :placeholder="__('(optional)')" maxlength="60" />
+                    </x-fruit::field>
+
+                    <x-fruit::field :label="__('Timezone')">
+                        <x-fruit::select id="timezone" name="timezone" required>
+                            @include('partials/timezone_options', ['current_timezone' => old('timezone', $user->timezone)])
+                        </x-fruit::select>
+                    </x-fruit::field>
+
+                    <x-fruit::fieldset>
+                        <legend>{{ __('Time Format') }}</legend>
+                        <x-fruit::radio name="time_format" :value="App\User::TIME_FORMAT_12" :checked="old('time_format', $user->time_format) == App\User::TIME_FORMAT_12">{{ __('12-hour clock (e.g. 2:13pm)') }}</x-fruit::radio>
+                        <x-fruit::radio name="time_format" :value="App\User::TIME_FORMAT_24" :checked="old('time_format', $user->time_format) == App\User::TIME_FORMAT_24 || !$user->time_format">{{ __('24-hour clock (e.g. 14:13)') }}</x-fruit::radio>
+                    </x-fruit::fieldset>
+
+                    @if ($user->photo_url)
+                        <div id="user-profile-photo" class="f-row">
+                            <x-fruit::avatar :src="$user->getPhotoUrl()" :label="__('Profile Image')" />
+                            <a href="#" id="user-photo-delete" data-loading-text="{{ __('Deleting') }}…">{{ __('Delete Photo') }}</a>
                         </div>
-                        <div class="wizard-footer"></div>
-                    @else
-                        <div class="wizard-header wizard-header-small">
-                            <h1>{{ __('Welcome to :company_name, :first_name!', ['company_name' => App\Option::getCompanyName(), 'first_name' => $user->first_name]) }}</h1>
-                            <p>
-                               {{ __("Let's setup your profile.") }}
-                            </p>
-                        </div>
-                        <form class="form-horizontal margin-top" method="POST" action="" enctype="multipart/form-data">
-                            {{ csrf_field() }}
-
-                            <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                                <label for="email" class="col-sm-4 control-label">{{ __('Your Email') }}</label>
-
-                                <div class="col-sm-7">
-                                    <input id="email" type="email" class="form-control input-sized" name="email" value="{{ old('email', $user->email) }}" maxlength="100" required autofocus>
-
-                                    @include('partials/field_error', ['field'=>'email'])
-                                </div>
-                            </div>
-
-                            <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                                <label for="password" class="col-sm-4 control-label">{{ __('Create a Password') }}</label>
-
-                                <div class="col-sm-7">
-                                    <input id="password" type="password" class="form-control input-sized" name="password" value="{{ old('password') }}" minlength="8" required autofocus>
-                                    <div class="text-help">
-                                        {{ __('Your password must be at least 8 characters') }}
-                                    </div>
-
-                                    @include('partials/field_error', ['field'=>'password'])
-                                </div>
-                            </div>
-
-                            <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-                                <label for="password_confirmation" class="col-sm-4 control-label">{{ __('Confirm Password') }}</label>
-
-                                <div class="col-sm-7">
-                                    <input id="password_confirmation" type="password" class="form-control input-sized" name="password_confirmation" value="{{ old('password_confirmation') }}" minlength="8" required autofocus>
-
-                                    @include('partials/field_error', ['field'=>'password_confirmation'])
-                                </div>
-                            </div>
-
-                            @action('user.setup.before_job_title', $user)
-
-                            <div class="form-group{{ $errors->has('job_title') ? ' has-error' : '' }}">
-                                <label for="job_title" class="col-sm-4 control-label">{{ __('Job Title') }}</label>
-
-                                <div class="col-sm-7">
-                                    <input id="job_title" type="text" class="form-control input-sized" name="job_title" value="{{ old('job_title', $user->job_title) }}" placeholder="{{ __('(optional)') }}" maxlength="100">
-
-                                    @include('partials/field_error', ['field'=>'job_title'])
-                                </div>
-                            </div>
-
-                            <div class="form-group{{ $errors->has('phone') ? ' has-error' : '' }}">
-                                <label for="phone" class="col-sm-4 control-label">{{ __('Phone Number') }}</label>
-
-                                <div class="col-sm-7">
-                                    <input id="phone" type="text" class="form-control input-sized" name="phone" value="{{ old('phone', $user->phone) }}" placeholder="{{ __('(optional)') }}" maxlength="60">
-
-                                    @include('partials/field_error', ['field'=>'phone'])
-                                </div>
-                            </div>
-
-                            <div class="form-group{{ $errors->has('timezone') ? ' has-error' : '' }}">
-                                <label for="timezone" class="col-sm-4 control-label">{{ __('Timezone') }}</label>
-
-                                <div class="col-sm-7">
-                                    <select id="timezone" class="form-control input-sized" name="timezone" required autofocus>
-                                        @include('partials/timezone_options', ['current_timezone' => old('timezone', $user->timezone)])
-                                    </select>
-
-                                    @include('partials/field_error', ['field'=>'timezone'])
-                                </div>
-                            </div>
-
-                            <div class="form-group{{ $errors->has('time_format') ? ' has-error' : '' }}">
-                                <label for="time_format" class="col-sm-4 control-label">{{ __('Time Format') }}</label>
-
-                                <div class="col-sm-7">
-             
-                                    <div class="controls">
-                                        <label for="12hour" class="radio inline plain"><input type="radio" name="time_format" value="{{ App\User::TIME_FORMAT_12 }}" id="12hour" @if (old('time_format', $user->time_format) == App\User::TIME_FORMAT_12)checked="checked"@endif> {{ __('12-hour clock (e.g. 2:13pm)') }}</label>
-                                        <label for="24hour" class="radio inline"><input type="radio" name="time_format" value="{{ App\User::TIME_FORMAT_24 }}" id="24hour" @if (old('time_format', $user->time_format) == App\User::TIME_FORMAT_24 || !$user->time_format)checked="checked"@endif> {{ __('24-hour clock (e.g. 14:13)') }}</label>
-                                    </div>
-                                    @include('partials/field_error', ['field'=>'time_format'])
-                                </div>
-                            </div>
-
-                            <div class="form-group{{ $errors->has('photo_url') ? ' has-error' : '' }}">
-                                <label for="photo_url" class="col-sm-4 control-label">{{ __('Photo') }}</label>
-
-                                <div class="col-sm-7">
-                                    <div class="controls">
-                                        @if ($user->photo_url)
-                                            <div id="user-profile-photo">
-                                                <img src="{{ $user->getPhotoUrl() }}" alt="{{ __('Profile Image') }}" width="50" height="50"><br/>
-                                                <a href="#" id="user-photo-delete" data-loading-text="{{ __('Deleting') }}…">{{ __('Delete Photo') }}</a>
-                                            </div>
-                                        @endif
-                                        <input type="file" name="photo_url">
-                                        <p class="block-help">{{ __('Only visible in :app_name.', ['app_name' => \Config::get('app.name')]) }} {{ __('Image will be re-sized to 200x200. JPG, GIF, PNG accepted.') }}</p>
-                                    </div>
-                                    @include('partials/field_error', ['field'=>'photo_url'])
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="col-md-6 col-sm-offset-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        {{ __('Save Profile') }}
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
                     @endif
-                </div>
-            </div>
-        </div>
+                    <x-fruit::field :label="__('Photo')" :description="__('Only visible in :app_name.', ['app_name' => \Config::get('app.name')]).' '.__('Image will be re-sized to 200x200. JPG, GIF, PNG accepted.')">
+                        <x-fruit::file id="photo_url" name="photo_url" />
+                    </x-fruit::field>
+
+                    <div class="auth-card__actions">
+                        <x-fruit::button type="submit" variant="primary">{{ __('Save Profile') }}</x-fruit::button>
+                    </div>
+                </form>
+            @endif
+        </x-fruit::card>
     </div>
 @endsection
 

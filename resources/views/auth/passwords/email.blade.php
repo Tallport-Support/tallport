@@ -1,50 +1,28 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+<div class="auth-page">
 
-            @include('auth/banner')
+    @include('auth/banner')
 
-            <div class="panel panel-default panel-shaded">
-                <div class="panel-heading">{{ __('Reset Password') }}</div>
+    <x-fruit::card class="auth-card">
+        <h1 class="f-title-3 auth-card__title">{{ __('Reset Password') }}</h1>
 
-                <div class="panel-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+        @if (session('status'))
+            <x-fruit::alert tone="success">{{ session('status') }}</x-fruit::alert>
+        @endif
 
-                    <form class="form-horizontal" method="POST" action="{{ route('password.email') }}">
-                        {{ csrf_field() }}
+        <form class="f-stack" method="POST" action="{{ route('password.email') }}">
+            {{ csrf_field() }}
 
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">{{ __('Email Address') }}</label>
+            <x-fruit::field :label="__('Email Address')">
+                <x-fruit::input id="email" type="email" name="email" autocomplete="email" :value="old('email')" required />
+            </x-fruit::field>
 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" autocomplete="email" value="{{ old('email') }}" required>
-
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Send Password Reset Link') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+            <div class="auth-card__actions">
+                <x-fruit::button type="submit" variant="primary">{{ __('Send Password Reset Link') }}</x-fruit::button>
             </div>
-        </div>
-    </div>
+        </form>
+    </x-fruit::card>
 </div>
 @endsection

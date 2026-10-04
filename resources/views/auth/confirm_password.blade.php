@@ -1,39 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default panel-shaded">
-                <div class="panel-body">
-                    <p class="margin-top">{{ __('Please confirm your password to continue.') }}</p>
+<div class="auth-page">
+    <x-fruit::card class="auth-card">
+        <form class="f-stack" method="POST" action="{{ route('password.confirm.store') }}">
+            {{ csrf_field() }}
 
-                    <form class="form-horizontal margin-top" method="POST" action="{{ route('password.confirm.store') }}">
-                        {{ csrf_field() }}
+            <p>{{ __('Please confirm your password to continue.') }}</p>
 
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">{{ __('Password') }}</label>
+            <x-fruit::field :label="__('Password')">
+                <x-fruit::input id="password" type="password" name="password" autocomplete="current-password" required autofocus />
+            </x-fruit::field>
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" autocomplete="current-password" required autofocus>
-
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-8 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">{{ __('Confirm') }}</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+            <div class="auth-card__actions">
+                <x-fruit::button type="submit" variant="primary">{{ __('Confirm') }}</x-fruit::button>
             </div>
-        </div>
-    </div>
+        </form>
+    </x-fruit::card>
 </div>
 @endsection

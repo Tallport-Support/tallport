@@ -11,7 +11,7 @@ a:focus:not(:focus-visible) {
  * Layout
  */
 body.user-is-guest {
-    background-color: #f8f9f9;
+    background: var(--f-grouped-background);
 }
 #app {
     min-height: 100%;
@@ -5518,4 +5518,22 @@ a.disabled:focus {
     .split-view:not(.split-view--open) .split-view__list {
         flex: 1;
     }
+}
+/* Sign-in and the other guest pages: one card in the middle. */
+.auth-page {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+.auth-card__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+.auth-page--wide {
+    max-width: 520px;
+}
+.auth-card__title {
+    margin: 0 0 8px;
 }

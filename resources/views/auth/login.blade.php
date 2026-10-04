@@ -1,85 +1,46 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+<div class="auth-page">
 
-            @include('auth/banner')
+    @include('auth/banner')
 
-            <div class="panel panel-default panel-shaded">
-                
-                <div class="panel-body">
+    <x-fruit::card class="auth-card">
 
-                    @action('login_form.before')
+        @action('login_form.before')
 
-                    <form class="form-horizontal margin-top" method="POST" action="{{ route('login') }}">
-                        {{ csrf_field() }}
+        <form class="f-stack" method="POST" action="{{ route('login') }}">
+            {{ csrf_field() }}
 
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">{{ __('Email Address') }}</label>
+            <x-fruit::field :label="__('Email Address')">
+                <x-fruit::input id="email" type="email" name="email" autocomplete="email" :value="old('email')" required autofocus />
+            </x-fruit::field>
 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" autocomplete="email" value="{{ old('email') }}" required autofocus>
+            <x-fruit::field :label="__('Password')">
+                <x-fruit::input id="password" type="password" name="password" autocomplete="current-password" required />
+            </x-fruit::field>
 
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
+            <x-fruit::checkbox name="remember" :checked="(bool) old('remember')">{{ __('Remember Me') }}</x-fruit::checkbox>
 
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">{{ __('Password') }}</label>
+            @action('login_form.before_submit')
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" autocomplete="current-password" required>
+            <div class="auth-card__actions">
+                <button type="submit" class="f-button f-button--primary @action('login_form.submit_class')" @action('login_form.submit_attrs')>
+                    {{ __('Login') }}
+                </button>
 
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
+                <a href="#" class="f-button" id="passkey-login" data-loading-text="{{ __('Sign in with a passkey') }}…"><x-heroicon-o-finger-print class="f-icon" aria-hidden="true" /> {{ __('Sign in with a passkey') }}</a>
 
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <label class="checkbox">
-                                    <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> {{ __('Remember Me') }}
-                                </label>
-                            </div>
-                        </div>
-                        
-                        @action('login_form.before_submit')
-
-                        <div class="form-group">
-                            <div class="col-md-8 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary @action('login_form.submit_class')" @action('login_form.submit_attrs')>
-                                    {{ __('Login') }}
-                                </button>
-
-                                @if (Eventy::filter('auth.password_reset_available', true))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-8 col-md-offset-4">
-                                <a href="#" class="btn btn-default" id="passkey-login" data-loading-text="{{ __('Sign in with a passkey') }}…"><i class="glyphicon glyphicon-lock"></i> {{ __('Sign in with a passkey') }}</a>
-                            </div>
-                        </div>
-                    </form>
-
-                    @action('login_form.after')
-                </div>
+                @if (Eventy::filter('auth.password_reset_available', true))
+                    <a class="f-button f-button--ghost" href="{{ route('password.request') }}">
+                        {{ __('Forgot Your Password?') }}
+                    </a>
+                @endif
             </div>
-        </div>
-    </div>
+        </form>
+
+        @action('login_form.after')
+    </x-fruit::card>
 </div>
 @endsection
 

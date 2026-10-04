@@ -1,73 +1,34 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+<div class="auth-page">
 
-            @include('auth/banner')
-            
-            <div class="panel panel-default panel-shaded">
-                <div class="panel-heading">{{ __('Reset Password') }}</div>
+    @include('auth/banner')
 
-                <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('password.request') }}">
-                        {{ csrf_field() }}
+    <x-fruit::card class="auth-card">
+        <h1 class="f-title-3 auth-card__title">{{ __('Reset Password') }}</h1>
 
-                        <input type="hidden" name="token" value="{{ $token }}">
+        <form class="f-stack" method="POST" action="{{ route('password.request') }}">
+            {{ csrf_field() }}
 
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">{{ __('Email Address') }}</label>
+            <input type="hidden" name="token" value="{{ $token }}">
 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" autocomplete="email" value="{{ $email or old('email') }}" required autofocus>
+            <x-fruit::field :label="__('Email Address')">
+                <x-fruit::input id="email" type="email" name="email" autocomplete="email" :value="$email ?? old('email')" required autofocus />
+            </x-fruit::field>
 
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
+            <x-fruit::field :label="__('Password')">
+                <x-fruit::input id="password" type="password" name="password" autocomplete="new-password" required />
+            </x-fruit::field>
 
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">{{ __('Password') }}</label>
+            <x-fruit::field :label="__('Confirm Password')">
+                <x-fruit::input id="password-confirm" type="password" name="password_confirmation" autocomplete="new-password" required />
+            </x-fruit::field>
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" autocomplete="new-password" required>
-
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-                            <label for="password-confirm" class="col-md-4 control-label">{{ __('Confirm Password') }}</label>
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" autocomplete="new-password" required>
-
-                                @if ($errors->has('password_confirmation'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password_confirmation') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Reset Password') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+            <div class="auth-card__actions">
+                <x-fruit::button type="submit" variant="primary">{{ __('Reset Password') }}</x-fruit::button>
             </div>
-        </div>
-    </div>
+        </form>
+    </x-fruit::card>
 </div>
 @endsection
