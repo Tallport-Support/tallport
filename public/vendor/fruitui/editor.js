@@ -14460,7 +14460,13 @@ function Y_(e) {
 			}), i.append(d), f = K_(d, n, { start: !0 }), f.show(), n.setAttribute("aria-expanded", "true"), p = (e) => {
 				f?.destroy(), d?.remove(), d = f = p = null, n.setAttribute("aria-expanded", "false"), e && n.focus();
 			}, c.focus();
-		}, _ = (t, r) => {
+		}, _ = (n) => {
+			if (t.dataset.fruitPaste !== "plain") return !1;
+			let r = n.clipboardData?.getData("text/plain");
+			if (!r) return !1;
+			let i = (e) => e.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"), a = r.replace(/\r\n?/g, "\n").split(/\n{2,}/).map((e) => `<p>${i(e).replace(/\n/g, "<br>")}</p>`).join("");
+			return e.chain().focus().insertContent(a, { parseOptions: { preserveWhitespace: !1 } }).run(), !0;
+		}, ee = (t, r) => {
 			let i = [...t ?? []].filter((e) => e.type.startsWith("image/"));
 			if (!i.length) return !1;
 			let a = new CustomEvent("fruit-editor-upload", {
@@ -14481,7 +14487,7 @@ function Y_(e) {
 				}
 			});
 			return n.dispatchEvent(a), !0;
-		}, ee = () => {
+		}, v = () => {
 			let t = n.matches(":disabled") || n.readOnly;
 			e.setEditable(!t, !1), e.view.dom.tabIndex = n.matches(":disabled") ? -1 : n.tabIndex, e.view.dom.setAttribute("aria-disabled", String(n.matches(":disabled"))), e.view.dom.setAttribute("aria-readonly", String(n.readOnly));
 			for (let n of i.querySelectorAll("[data-fruit-command]")) {
@@ -14505,8 +14511,8 @@ function Y_(e) {
 							role: "textbox",
 							"aria-multiline": "true"
 						},
-						handlePaste: (e, t) => _(t.clipboardData?.files, e.state.selection.from),
-						handleDrop: (e, t) => _(t.dataTransfer?.files, e.posAtCoords({
+						handlePaste: (e, t) => ee(t.clipboardData?.files, e.state.selection.from) || _(t),
+						handleDrop: (e, t) => ee(t.dataTransfer?.files, e.posAtCoords({
 							left: t.clientX,
 							top: t.clientY
 						})?.pos)
@@ -14515,10 +14521,10 @@ function Y_(e) {
 						l = e.isEmpty ? "" : e.getHTML(), V_(n, l, { commit: !1 }), e.view.dom.removeAttribute("aria-invalid");
 					},
 					onTransaction: () => {
-						e && ee();
+						e && v();
 					}
 				}), a = H_(this, n, e.view.dom, (t) => {
-					n.value !== l && (e.commands.setContent(n.value, { emitUpdate: !1 }), l = u = n.value), t === "reset" && (u = n.value), ee();
+					n.value !== l && (e.commands.setContent(n.value, { emitUpdate: !1 }), l = u = n.value), t === "reset" && (u = n.value), v();
 				}, {
 					presentation: r,
 					focusRoot: this.$el
@@ -14533,7 +14539,7 @@ function Y_(e) {
 					if (!n || n.disabled || !m[n.dataset.fruitCommand]) return;
 					let r = n.dataset.fruitCommand;
 					r === "link" || r === "image" ? g(n, r) : m[r](e.chain().focus()).run();
-				}, i.addEventListener("click", o), i.hidden = !1, r.hidden = !1, n.hidden = !0, ee());
+				}, i.addEventListener("click", o), i.hidden = !1, r.hidden = !1, n.hidden = !0, v());
 			},
 			destroy() {
 				a?.(), c?.(), p?.(), this.$el.removeEventListener("focusout", s), i?.removeEventListener("click", o), e?.destroy(), n && (n.hidden = !1), i && (i.hidden = !0), r && (r.hidden = !0);

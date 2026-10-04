@@ -32,6 +32,13 @@
   .f-editor__surface .tiptap:focus-visible {
     outline: none;
   }
+  /* Compact toolbar buttons, as in mail and document apps. */
+  .f-editor__toolbar .f-button--icon {
+    --f-icon-size: 18px;
+    min-width: 30px;
+    min-height: 30px;
+    padding: 5px;
+  }
   .f-editor__separator {
     align-self: stretch;
     width: 1px;

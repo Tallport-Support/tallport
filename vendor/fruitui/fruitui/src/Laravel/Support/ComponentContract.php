@@ -50,7 +50,7 @@ final class ComponentContract
         'description-list' => [],
         'dialog' => ['roles' => ['dialog', 'alertdialog']],
         'disclosure' => ['roles' => ['group']],
-        'editor' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract'],
+        'editor' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract', 'options' => ['paste' => ['rich', 'plain']]],
         'empty-state' => ['roles' => ['group', 'region']],
         'field' => ['roles' => ['group']],
         'form-section' => ['roles' => ['region', 'group']],

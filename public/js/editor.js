@@ -39,3 +39,39 @@ document.addEventListener('fruit-editor-upload', function (event) {
 		});
 	});
 });
+
+/**
+ * The reply editor's "Paste as Plain Text" toggle: remembered per user in
+ * this browser, it switches FruitUI's data-fruit-paste on the editor.
+ */
+document.addEventListener('alpine:init', function () {
+	window.Alpine.data('editorPlainPaste', function () {
+		return {
+			plain: false,
+			key: 'editor_plain_text_paste_' + (document.body.getAttribute('data-auth_user_id') || ''),
+			init: function () {
+				try {
+					this.plain = window.localStorage.getItem(this.key) == '1';
+				} catch (e) {}
+				this.apply();
+			},
+			apply: function () {
+				var editor = this.$el.closest('.f-editor');
+				if (editor) {
+					editor.setAttribute('data-fruit-paste', this.plain ? 'plain' : 'rich');
+				}
+			},
+			toggle: function () {
+				this.plain = !this.plain;
+				try {
+					if (this.plain) {
+						window.localStorage.setItem(this.key, '1');
+					} else {
+						window.localStorage.removeItem(this.key);
+					}
+				} catch (e) {}
+				this.apply();
+			}
+		};
+	});
+});

@@ -306,7 +306,7 @@
                                 </div>
 
                                 <div class="form-group{{ $errors->has('body') ? ' has-error' : '' }} conv-reply-body">
-                                    <x-editor id="body" name="body" rows="8" :upload-url="route('conversations.upload')" :aria-label="__('Message')" data-parsley-required="true" :data-parsley-required-message="__('Please enter a message')" :placeholder="$conversation->isInChatMode() ? __('Use ENTER to send the message and SHIFT+ENTER for a new line') : null">
+                                    <x-editor id="body" name="body" rows="8" :paste="$conversation->isChat() ? 'plain' : 'rich'" :upload-url="route('conversations.upload')" :aria-label="__('Message')" data-parsley-required="true" :data-parsley-required-message="__('Please enter a message')" :placeholder="$conversation->isInChatMode() ? __('Use ENTER to send the message and SHIFT+ENTER for a new line') : null">
                                         {{ old('body', $conversation->body) }}
                                         <x-slot:extras>
                                             @include('conversations/partials/editor_extras')

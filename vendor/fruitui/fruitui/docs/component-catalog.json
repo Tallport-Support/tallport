@@ -1004,7 +1004,7 @@
         "element": "Native textarea; optional Tiptap multiline textbox with command buttons.",
         "state": "HTML string, native required/disabled/readonly; actual textarea owns names and models.",
         "keyboard": "Native editing without JS; Tiptap editing/shortcuts when registered; toolbar buttons use Tab.",
-        "options": "Native textarea attributes, initial escaped HTML slot. Optional fruitui/editor module. Toolbar commands: bold, italic, bulletList, orderedList, blockquote, link and image (an address popover), clear (remove formatting), undo, redo. Events: `fruit-editor-insert` and `fruit-editor-set` add content; `fruit-editor-upload` hands pasted or dropped image files to the application, which inserts the uploaded address. `extras` slot: application buttons or Menus after the default toolbar, behind a separator."
+        "options": "Native textarea attributes, initial escaped HTML slot. Optional fruitui/editor module. Toolbar commands: bold, italic, bulletList, orderedList, blockquote, link and image (an address popover), clear (remove formatting), undo, redo. Events: `fruit-editor-insert` and `fruit-editor-set` add content; `fruit-editor-upload` hands pasted or dropped image files to the application, which inserts the uploaded address. `extras` slot: application buttons or Menus after the default toolbar, behind a separator. `paste`: rich (default), plain; rendered as `data-fruit-paste`, read on every paste so it can change at runtime. Typed and pasted addresses become links; readonly and disabled on the textarea lock the surface whenever they change."
       }
     }
   },

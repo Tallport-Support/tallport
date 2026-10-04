@@ -4,6 +4,9 @@
     <input type="file" multiple hidden x-ref="files" x-on:change="editorAttachFiles($el.files); $el.value = ''">
 </span>
 @include('conversations/partials/editor_pickers')
+@if (empty($conversation) || !$conversation->isChat())
+    <button type="button" class="f-button f-button--ghost f-button--icon" x-data="editorPlainPaste" x-on:click="toggle()" x-bind:aria-pressed="plain ? 'true' : 'false'" aria-pressed="false" aria-label="{{ __('Paste as Plain Text') }}" title="{{ __('Paste as Plain Text') }}"><x-heroicon-o-clipboard-document class="f-icon" aria-hidden="true" /></button>
+@endif
 @action('conversation.editor_extras', $conversation ?? null, $mailbox)
 <span class="f-toolbar__spacer"></span>
 <span class="draft-saved"></span>

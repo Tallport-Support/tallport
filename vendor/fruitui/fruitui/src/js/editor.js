@@ -123,6 +123,24 @@ export default function fruitEditor(Alpine) {
       };
       field.focus();
     };
+    /** With data-fruit-paste="plain" (read on every paste), pasted formatting is dropped: text only. */
+    const pastePlain = event => {
+      if (root.dataset.fruitPaste !== 'plain') return false;
+      const text = event.clipboardData?.getData('text/plain');
+      if (!text) return false;
+      const escape = value => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const html = text
+        .replace(/\r\n?/g, '\n')
+        .split(/\n{2,}/)
+        .map(paragraph => `<p>${escape(paragraph).replace(/\n/g, '<br>')}</p>`)
+        .join('');
+      editor
+        .chain()
+        .focus()
+        .insertContent(html, { parseOptions: { preserveWhitespace: false } })
+        .run();
+      return true;
+    };
     /** Pasted or dropped image files go to the application, which uploads them and inserts the address. */
     const upload = (files, position) => {
       const images = [...(files ?? [])].filter(file => file.type.startsWith('image/'));
@@ -171,7 +189,8 @@ export default function fruitEditor(Alpine) {
           content: control.value,
           editorProps: {
             attributes: { class: 'f-prose', role: 'textbox', 'aria-multiline': 'true' },
-            handlePaste: (view, event) => upload(event.clipboardData?.files, view.state.selection.from),
+            handlePaste: (view, event) =>
+              upload(event.clipboardData?.files, view.state.selection.from) || pastePlain(event),
             handleDrop: (view, event) =>
               upload(event.dataTransfer?.files, view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos),
           },
