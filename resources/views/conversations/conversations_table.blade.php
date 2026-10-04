@@ -77,30 +77,28 @@
             @endif
         </div>
 
-        <ul class="f-item-list conv-list__items" role="list">
+        <x-fruit::item-list class="conv-list__items" :aria-label="__('Conversations')">
             @foreach ($conversations as $conversation)
                 @php
                     $conv_target = (!empty(request()->x_embed) || !empty($params['target_blank']));
                     $conv_waiting_since = $conversation->getWaitingSince($folder);
-                    $conv_date_title = !in_array($folder->type, [App\Folder::TYPE_CLOSED, App\Folder::TYPE_DRAFTS, App\Folder::TYPE_DELETED]) ? $conversation->getDateTitle() : '';
+                    $conv_date_title = !in_array($folder->type, [App\Folder::TYPE_CLOSED, App\Folder::TYPE_DRAFTS, App\Folder::TYPE_DELETED]) ? strip_tags(str_replace('<br/>', ' ', $conversation->getDateTitle())) : '';
                     $conv_customer_name = ($conversation->customer_id && $conversation->customer) ? $conversation->customer->getFullName(true) : $conversation->customer_email;
                     $ai_one_liner = $conversation->search_snippet === null ? (App\Ai\Summaries::getAny($conversation, App\Ai\Settings::language($conversation->mailbox_cached, Auth::user()))['one_liner'] ?? '') : '';
                     $conv_starred = $conversation->isStarredByUser();
                 @endphp
                 <li class="conv-row @action('conversations_table.row_class', $conversation) @if ($conversation->isActive()) conv-active @endif @if ($conversation->isSpam()) conv-spam @endif" data-conversation_id="{{ $conversation->id }}">
                     @if (empty($no_checkboxes))
-                        <input type="checkbox" class="f-check conv-checkbox" id="cb-{{ $conversation->id }}" name="cb_{{ $conversation->id }}" value="{{ $conversation->id }}" aria-label="{{ __('Select Conversation') }}: {{ $conversation->getSubject() }}">
+                        <x-fruit::checkbox class="conv-checkbox" :id="'cb-'.$conversation->id" :name="'cb_'.$conversation->id" :value="$conversation->id"><span class="f-sr-only">{{ __('Select Conversation') }}: {{ $conversation->getSubject() }}</span></x-fruit::checkbox>
                     @endif
-                    <a href="{{ $conversation->url(null, null, $list_params) }}" class="f-item-row conv-row__link" @if ($conv_target) target="_blank" @endif @if ($current_conversation_id == $conversation->id) aria-current="true" @endif>
-                        <span class="f-item-row__top">
-                            <strong class="f-item-row__title" title="{{ $conversation->customer_email }}">@if (empty($no_customer)){{ $conv_customer_name }}@else{{ $conversation->getSubject() }}@endif</strong>
-                            <span class="f-item-row__time" @if ($conv_date_title) title="{{ strip_tags(str_replace('<br/>', ' ', $conv_date_title)) }}" @endif>{{ $conv_waiting_since }}</span>
-                        </span>
+                    <x-fruit::item-link :href="$conversation->url(null, null, $list_params)" :current="$current_conversation_id == $conversation->id" :target="$conv_target ? '_blank' : null" class="conv-row__link">
+                        <x-slot:title :title="$conversation->customer_email">@if (empty($no_customer)){{ $conv_customer_name }}@else{{ $conversation->getSubject() }}@endif</x-slot:title>
+                        <x-slot:trailing :title="$conv_date_title ?: null">{{ $conv_waiting_since }}</x-slot:trailing>
                         @if (empty($no_customer))
-                            <span class="f-item-row__subtitle">@include('conversations/partials/badges'){{ '' }}@if ($conversation->isChat() && $conversation->getChannelName())<span class="f-badge conv-channel">{{ $conversation->getChannelName() }}</span> @endif{{ '' }}@action('conversations_table.before_subject', $conversation){{ $conversation->getSubject() }}@action('conversations_table.after_subject', $conversation)</span>
+                            <x-slot:subtitle>@include('conversations/partials/badges'){{ '' }}@if ($conversation->isChat() && $conversation->getChannelName())<span class="f-badge conv-channel">{{ $conversation->getChannelName() }}</span> @endif{{ '' }}@action('conversations_table.before_subject', $conversation){{ $conversation->getSubject() }}@action('conversations_table.after_subject', $conversation)</x-slot:subtitle>
                         @endif
-                        <span class="f-item-row__preview">@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner)<span class="ai-assistant-badge">AI</span> {{ $ai_one_liner }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</span>
-                        <span class="f-item-row__meta conv-row__meta">
+                        <x-slot:preview>@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner)<span class="f-badge f-badge--accent ai-assistant-badge">AI</span> {{ $ai_one_liner }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</x-slot:preview>
+                        <x-slot:meta class="conv-row__meta">
                             <span class="conv-number">#{{ $conversation->number }}</span>
                             @if ($conversation->threads_count > 1)<span class="conv-counter" title="{{ __('Messages') }}"><x-heroicon-o-chat-bubble-left-right class="f-icon" aria-hidden="true" /> {{ $conversation->threads_count }}</span>@endif
                             @if (!empty($params['show_mailbox']))<span>{{ $conversation->mailbox_cached->name }}</span>@endif
@@ -110,14 +108,14 @@
                             @if (!empty($viewers[$conversation->id]))
                                 <span class="viewer-badge @if (!empty($viewers[$conversation->id]['replying'])) viewer-replying @endif"><x-heroicon-o-eye class="f-icon" aria-hidden="true" /> {{ implode(', ', array_map(function ($viewer) { return __($viewer['replying'] ? ':user is replying' : ':user is viewing', ['user' => $viewer['user']->getFullName()]); }, $viewers[$conversation->id]['users'])) }}</span>
                             @endif
-                        </span>
-                    </a>
+                        </x-slot:meta>
+                    </x-fruit::item-link>
                     @if (empty($no_checkboxes))
-                        <button type="button" class="f-button f-button--ghost f-button--icon conv-star" aria-pressed="{{ $conv_starred ? 'true' : 'false' }}" aria-label="{{ __('Star Conversation') }}" title="@if ($conv_starred){{ __("Unstar Conversation") }}@else{{ __("Star Conversation") }}@endif"><x-heroicon-o-star class="f-icon conv-star__off" aria-hidden="true" /><x-heroicon-s-star class="f-icon conv-star__on" aria-hidden="true" /></button>
+                        <x-fruit::button variant="ghost" size="small" class="f-button--icon conv-star" :aria-pressed="$conv_starred ? 'true' : 'false'" :aria-label="__('Star Conversation')" :title="$conv_starred ? __('Unstar Conversation') : __('Star Conversation')"><x-heroicon-o-star class="f-icon conv-star__off" aria-hidden="true" /><x-heroicon-s-star class="f-icon conv-star__on" aria-hidden="true" /></x-fruit::button>
                     @endif
                 </li>
             @endforeach
-        </ul>
+        </x-fruit::item-list>
 
         @if (count($conversations))
             <x-fruit::pagination class="conv-list__footer" :aria-label="__('Conversations')">

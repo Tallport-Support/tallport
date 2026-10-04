@@ -79,9 +79,10 @@ class ConversationPagesTest extends FeatureTestCase
         $response->assertSee('split-view__list', false);
         $response->assertSee('Second question');
         $response->assertSee('data-param_current_conversation_id="'.$first->id.'"', false);
-        preg_match_all('/<a href="([^"]+)" class="f-item-row conv-row__link"[^>]*aria-current="true"/', $response->getContent(), $current);
-        $this->assertCount(1, $current[1]);
-        $this->assertStringContainsString('/conversation/'.$first->id, $current[1][0]);
+        preg_match_all('/<a [^>]*conv-row__link[^>]*>/', $response->getContent(), $rows);
+        $current = array_values(array_filter($rows[0], fn ($row) => str_contains($row, 'aria-current="page"')));
+        $this->assertCount(1, $current);
+        $this->assertStringContainsString('/conversation/'.$first->id.'?', $current[0]);
     }
 
     public function testUserWithoutAccessCannotSeeMailboxOrConversation()

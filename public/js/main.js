@@ -5269,8 +5269,8 @@ function converstationBulkActionsInit()
 
 		checkboxes.change(function(event) {
 			var count = checkboxes.filter(':checked').length;
-			$(bulk_buttons).prop('hidden', !count);
-			$('.f-selection-bar__count', bulk_buttons).text(count == 1 ? bulk_buttons.attr('data-count-one') : String(bulk_buttons.attr('data-count-other')).replace('__count__', count));
+			// FruitUI's selection bar shows the count and hides itself at zero.
+			bulk_buttons.attr('data-count', count);
 			$(this).parents('.conv-row:first').toggleClass('selected', $(this).prop('checked'));
 		});
 

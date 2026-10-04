@@ -17,6 +17,9 @@
 @if (!empty($list))
     {{-- The folder's conversations beside the conversation. --}}
     @section('split_class', 'split-view--open')
+    @section('list_toolbar')
+        @include('mailboxes/partials/list_toolbar', ['folder' => $folder, 'mailbox' => $list['mailbox'], 'conversations' => $list['conversations']])
+    @endsection
     @section('list')
         @include('conversations/conversations_table', ['conversations' => $list['conversations'], 'mailbox' => $list['mailbox'], 'params' => $list['params'] + ['current_conversation_id' => $conversation->id]])
     @endsection

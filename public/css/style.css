@@ -1300,514 +1300,6 @@ https://github.com/freescout-help-desk/freescout/issues/4354
 }
 
 /**
- * Conversations list
- */
-.mailbox-toolbar {
-    border-bottom: 1px solid var(--f-border);
-}
-.table.table-conversations {
-    margin: 0;
-    table-layout: fixed;
-    width: 100%;
-}
-.table-conversations thead {
-    background-color: color-mix(in srgb, var(--f-accent) 12%, transparent);
-}
-.table-conversations .conv-fader {
-    background: linear-gradient(to right,rgba(255,255,255,0), var(--f-surface));
-    position: absolute;
-    width: 18px;
-    bottom: 1px;
-    right: 0;
-    z-index: 2;
-    height: 100%;
-}
-.table-conversations .conv-active .conv-fader {
-    background: linear-gradient(to right,rgba(255,255,255,0), color-mix(in srgb, var(--f-accent) 6%, transparent));
-}
-.table-conversations .conv-fader::after {
-    content: "";
-    position: absolute;
-    width: 18px;
-    bottom: 0;
-    height: 100%;
-}
-.table.table-conversations th {
-    padding: 4px 13px 1px 13px;
-    white-space: nowrap;
-    border-bottom: 1px solid var(--f-border);
-}
-.table.table-conversations th.conv-customer {
-    padding-left: 0;
-}
-.table.table-conversations th.conv-subject {
-    padding-left: 3px;
-}
-.table-conversations .conv-cb {
-    padding: 4px 0;
-    text-align: center;
-    vertical-align: middle;
-}
-.conv-email {
-    color: var(--f-tertiary);
-    font-weight: normal;
-    font-size: 13.4px;
-    display: block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-size: 12px;
-}
-.conv-customer a {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.conv-cb label {
-    position: relative;
-    top: -8px;
-    left: 9px;
-}
-thead .conv-cb label {
-    top: -9px;
-    left: -3px;
-}
-.table-conversations td input {
-    margin: 0;
-}
-.table-conversations th a,
-.table-conversations th a:hover,
-.table-conversations th a:focus,
-.table-conversations th span {
-    color: #005a9e;
-    text-decoration: none;
-    cursor: default;
-    line-height: 26px;
-    display: block;
-    font-weight: bold;
-}
-.table-conversations th .conv-col-sort,
-.table-conversations th.conv-owner span {
-    cursor: pointer;
-}
-.table.table-conversations tbody td {
-    line-height: 1em;
-    padding: 0;
-    vertical-align: middle;
-    border-bottom: 1px solid var(--f-border);
-}
-.table.table-conversations tbody .conv-row-extended td {
-    border-bottom: 0!important;
-}
-.table-conversations td a {
-    color: var(--f-text);
-    display: block;
-    font-size: 14px;
-    padding: 14px;
-}
-.table-conversations td a:hover,
-.table-conversations td a:focus {
-    text-decoration: none;
-}
-.table-conversations .conv-active td {
-    font-weight: bold;
-    line-height: 1.2em;
-}
-.table.table-conversations tbody .conv-active {
-    /*background-color: color-mix(in srgb, var(--f-accent) 6%, transparent);*/
-    /*background-color: #f2f7fd;*/
-    background-color: color-mix(in srgb, var(--f-accent) 5%, transparent);
-}
-/*.conv-row:hover {
-    filter: brightness(98%);
-    -webkit-filter: brightness(98%);
-    -moz-filter: brightness(98%);
-    -o-filter: brightness(98%);
-    -ms-filter: brightness(98%);
-}
-.conv-row:hover {
-    background-color: #fbfcfd;
-}*/
-.conv-active .conv-date a {
-    /*background-color: color-mix(in srgb, var(--f-accent) 12%, transparent);*/
-    background-color: color-mix(in srgb, var(--f-accent) 10%, transparent);
-}
-.conv-sort {
-    position: relative;
-    left: 1px;
-    top: -1px;
-}
-.table-conversations td.conv-customer a {
-    line-height: 1.2em;
-    padding-left: 0;
-    word-wrap: break-word;
-}
-table.table-conversations td.conv-subject {
-    overflow: hidden;
-    white-space: nowrap;
-    vertical-align: top;
-    /* Probably not needed */
-    /*padding-bottom: 6px;*/
-}
-table.table-conversations td.conv-attachment {
-    color: var(--f-tertiary);
-    vertical-align: top;
-    padding: 7px 0 0 0;
-    text-align: center;
-}
-.table-conversations td.conv-attachment i {
-    top: 4px;
-    font-size: 12px;
-}
-.table-conversations td.conv-subject a {
-    overflow: hidden;
-    margin-top: 8.4px;
-    padding: 0 4px 7px 4px;
-    position: relative;
-    white-space: nowrap;
-}
-.table-conversations td p {
-    color: var(--f-text);
-    font-size: 13.4px;
-}
-.table-conversations .conv-spam td p {
-    color: var(--f-tertiary);
-}
-.table-conversations td .conv-preview {
-    color: var(--f-tertiary);
-    font-weight: normal;
-}
-.table-conversations td.conv-subject p {
-    line-height: 1.5em;
-    margin: 0;
-}
-.table-conversations .conv-current {
-    width: 2px;
-    position: relative;
-}
-.table-conversations .conv-cb {
-    width: 40px;
-}
-.table-conversations .conv-customer {
-    width: 150px;
-}
-.table-conversations .conv-spam .conv-customer a {
-    color: var(--f-tertiary);
-}
-.table-conversations .conv-attachment {
-    width: 20px;
-}
-.table-conversations .conv-attachment .conv-star {
-    font-size: 15px;
-    margin-bottom: 6px;
-}
-.table-conversations .conv-attachment .glyphicon-star-empty {
-    color: #d6dbe0;
-}
-
-.table-conversations .conv-attachment-mobile
-{
-    font-size: 12px;
-    color: var(--f-tertiary);
-    margin-right: 3px;
-    display:none;
-}
-
-.table-conversations .conv-thread-count {
-    /*width: 42px;*/
-    width: 1px;
-    text-align: right;
-}
-.table-conversations .conv-thread-count span {
-    background: var(--f-surface-secondary);
-    border: 1px solid var(--f-border);
-    color: var(--f-tertiary);
-    font-size: 11px;
-    font-weight: 400;
-    padding: .1em .4em;
-    border-radius: 4px;
-}
-.conv-counter {
-    background: #97a3ad;
-    color: #fff;
-    line-height: 17px;
-    position: relative;
-    padding: 1px 5px;
-    margin-left: 2px;
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 9999px;
-}
-.table-conversations .conv-thread-count a {
-    padding: 0;
-}
-.table-conversations .conv-thread-count .conv-star {
-    font-size: 14px;
-    margin-top: 2px;
-    padding-bottom: 8px;
-}
-.table-conversations .conv-number {
-    width: 86px;
-}
-.table-conversations .conv-number i {
-    font-size: 10px;
-    margin-right: 2px;
-    color: var(--f-tertiary);
-}
-.table-conversations .conv-date {
-    width: 138px;
-}
-.table.table-conversations tfoot td {
-    border: 0;
-    color: var(--f-secondary);
-    font-size: 13px;
-    height: 28px;
-    padding: 0 17px;
-    vertical-align: middle;
-}
-.table-conversations tfoot strong {
-    color: #676d7a;
-}
-.table-conversations .glyphicon-earphone {
-    color: var(--f-tertiary);
-}
-.table-conversations .glyphicon-comment {
-    color: var(--f-tertiary);
-}
-.table-pager {
-    float: right;
-}
-.table-pager a.pager-nav {
-    display: inline-block;
-    color: var(--f-tertiary);
-    padding: 4px 0;
-    width: 25px;
-    line-height: 24px;
-    font-size: 16px;
-}
-.table-pager a.pager-nav.disabled {
-    color: var(--f-tertiary);
-    opacity: 0.3;
-}
-.table-pager a.pager-nav.disabled:hover {
-    color: var(--f-tertiary);
-}
-.table-pager a.pager-nav:hover {
-    color: var(--f-text);
-}
-/*.conv-subject-number {
-    display: none;
-}*/
-.conv-owner .glyphicon {
-    margin-left: 3px;
-    display: none;
-}
-.conv-owner:hover .glyphicon,
-.conv-owner.filtered .glyphicon {
-    display: inline-block;
-}
-.conv-owner-mobile {
-    display: none;
-    font-weight: normal;
-}
-.conv-date a {
-    /*background-color: var(--f-surface-secondary);*/
-    border-radius: 17px 0 0 17px;
-    padding-top: 11px!important;
-    padding-bottom: 11px!important;
-}
-button.conv-checkbox-clear {
-    display: none;
-}
-.viewer-badge {
-    color: #fecb5a;
-    border-top: 0 solid transparent;
-    border-bottom: 12px solid transparent;
-    border-left: 12px solid;
-    left: 0;
-    top: 0;
-    position: absolute;
-    width: 0;
-    height: 0;
-}
-.viewer-badge.viewer-replying {
-    color: #d85552;
-}
-@media (max-width:1000px) {
-    /**
-     * Make conversations table responsive
-     */
-    .table-conversations {
-        display: block;
-    }
-    .table-conversations thead {
-        border: none;
-        clip: rect(0 0 0 0);
-        height: 1px;
-        margin: -1px;
-        overflow: hidden;
-        padding: 0;
-        position: absolute;
-        width: 1px;
-    }
-    .table.table-conversations td,
-    .table.table-conversations tr,
-    .table.table-conversations tbody,
-    .table.table-conversations tfoot {
-        display: block;
-        width: 100%;
-        border: 0;
-
-        -webkit-touch-callout:none;
-        -webkit-user-select:none;
-        -khtml-user-select:none;
-        -moz-user-select:none;
-        -ms-user-select:none;
-        user-select:none;
-    }
-
-    .table.table-conversations tr.selected {
-        background-color: color-mix(in srgb, var(--f-accent) 10%, transparent);
-    }
-    .table-conversations tr.selected .conv-fader {
-        background: linear-gradient(to right,rgba(255,255,255,0), color-mix(in srgb, var(--f-accent) 10%, transparent));
-    }
-
-    .table.table-conversations tbody td {
-        border: 0;
-    }
-    .table.table-conversations tbody tr {
-        position: relative;
-        height: 80px;
-        border-bottom: 1px solid var(--f-border);
-    }
-    .table.table-conversations.show-mailbox tbody tr {
-        height: 97px;
-    }
-
-    .table-conversations .conv-attachment-mobile
-    {
-        display: inline;
-    }
-
-    .conv-cb {
-        display: none !important;
-    }
-    .conv-attachment {
-        display: none !important;
-    }
-    .conv-subject {
-        position: absolute !important;
-        top: 24px;
-        padding-left: 2px!important;
-        padding-right: 20px!important;
-    }
-    .table-conversations .conv-fader {
-        width: 80px;
-    }
-    .conv-owner {
-        display: none!important;
-    }
-    .conv-owner-mobile {
-        display: inline!important;
-    }
-    .conv-owner-mobile .glyphicon {
-        top: 0;
-    }
-    .conv-customer {
-        position: absolute;
-        top: 0;
-        margin-left: 10px!important;
-    }
-    .conv-customer a {
-        width: 350px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    .conv-customer a,
-    .conv-date a {
-        padding: 11px 8px 0 0 !important;
-        line-height: 1.2em;
-    }
-    .table-conversations td.conv-subject a {
-        padding-left: 8px;
-    }
-    .conv-date a {
-        padding-top: 13px!important;
-        font-size: 12px!important;
-        background-color: transparent!important;
-        font-weight: normal;
-    }
-    .conv-counter {
-        top: -1px;
-        font-size: 10px;
-        padding: 1px 5px;
-    }
-    /*.conv-subject-number {
-        display: inline;
-    }*/
-    .conv-number {
-        display: none!important;
-    }
-    .conv-attachment {
-        position: absolute;
-        left: 7px;
-        top: 24px;
-        text-align: center;
-        width: 25px!important;
-    }
-    .conv-date {
-        width: 50%;
-        position: absolute;
-        top: 0;
-        right: 0;
-        text-align: right;
-    }
-    .conv-email {
-        display: none;
-    }
-    .conv-thread-count {
-        position: absolute;
-        right: 0;
-        top: 30px;
-        z-index: 999;
-        text-align: right;
-        width: auto !important;
-    }
-    .conv-thread-count a,
-    .conv-thread-count .conv-star {
-        padding-right: 6px!important;
-    }
-    .table.table-conversations tfoot tr {
-        display: block;
-        position: relative;
-        height: 32px;
-    }
-    .conv-totals {
-        line-height: 31px!important;
-    }
-    .conv-totals {
-        position: absolute;
-        left: 0;
-        text-align: left;
-    }
-    .conv-nav {
-        position: absolute;
-        right: 0;
-    }
-
-    button.conv-checkbox-clear {
-        display: block;
-    }
-}
-@media (max-width:700px) {
-    .conv-customer a {
-        width: 250px;
-    }
-}
-
-/**
  * Conversation
  */
 .body-conv .content-2col {
@@ -3493,11 +2985,7 @@ html.av-open {
 .search-tips .f-help {
     line-height: 2;
 }
-.table-conversations .search-snippet mark {
-    padding: 0;
-    background: color-mix(in srgb, var(--f-warning) 30%, transparent);
-    color: inherit;
-}
+
 #search-filters .form-group {
     display: none;
 }
@@ -5274,33 +4762,6 @@ a.disabled:focus {
 .conv-list__toolbar .conv-owner.filtered {
     color: var(--f-accent);
 }
-.conv-list__items {
-    --f-item-list-padding: 0;
-    --f-item-row-radius: 0;
-    margin: 0;
-}
-/* FruitUI's checkbox + row grid, with a third column for the star. */
-.conv-list .conv-list__items > li.conv-row {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: start;
-    gap: 4px;
-    padding-inline-start: 12px;
-}
-.conv-list .conv-list__items > li.conv-row > .conv-checkbox {
-    margin-top: 16px;
-    padding: 0;
-}
-.conv-list .conv-list__items > li.conv-row > .conv-star {
-    margin-top: 8px;
-}
-/* Rows without a checkbox (customer history): the link spans. */
-.conv-list .conv-list__items > li.conv-row:not(:has(> .conv-checkbox)) {
-    grid-template-columns: minmax(0, 1fr) auto;
-}
-.conv-list .conv-row.selected {
-    background: var(--f-selection-inactive);
-}
 .conv-list .conv-active .f-item-row__title {
     font-weight: 700;
 }
@@ -5313,19 +4774,10 @@ a.disabled:focus {
     align-items: center;
     gap: 4px 12px;
 }
-.conv-list .conv-row__meta > span {
+.conv-row__meta > span {
     display: inline-flex;
     align-items: center;
     gap: 3px;
-    width: auto;
-}
-.conv-list .conv-counter {
-    background: none;
-    color: inherit;
-    font: inherit;
-    padding: 0;
-    margin: 0;
-    border-radius: 0;
 }
 .conv-row__meta .f-icon,
 .conv-list .conv-badge {
@@ -5333,10 +4785,6 @@ a.disabled:focus {
     vertical-align: -2px;
 }
 .conv-list .viewer-badge {
-    position: static;
-    width: auto;
-    height: auto;
-    border: 0;
     color: var(--f-warning);
 }
 .conv-list .viewer-badge.viewer-replying {
@@ -5360,12 +4808,6 @@ a.disabled:focus {
     position: sticky;
     top: 0;
     z-index: 5;
-}
-.conv-bulk-actions[hidden] {
-    display: none;
-}
-.conv-bulk-actions .conv-checkbox-clear {
-    display: inline-flex;
 }
 .conv-list__footer {
     padding-inline: 12px;
@@ -5572,4 +5014,34 @@ a.disabled:focus {
 }
 .app-logs__actions {
     margin-top: 16px;
+}
+/* The list pane's toolbar title, as in FruitUI's Support example. */
+.app-list-title {
+    min-width: 0;
+}
+.app-list-title h1 {
+    margin: 0;
+    font-size: var(--f-text-xl);
+    font-weight: 650;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.app-list-title p {
+    margin: 2px 0 0;
+    color: var(--f-secondary);
+    font-size: var(--f-text-2xs, 11px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* A list with nothing open: the empty state in the middle of the page pane. */
+.app-workspace[data-list]:not(.split-view--open) #app-content-scroll {
+    display: grid;
+}
+.app-workspace[data-list]:not(.split-view--open) #app-content-scroll > .content {
+    display: grid;
+    place-items: center;
+    margin: 0;
 }

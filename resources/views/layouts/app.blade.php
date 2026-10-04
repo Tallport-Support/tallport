@@ -100,7 +100,9 @@
                                 @yield('content')
                             </div>
                         @endif
-                        @include('partials/app_footer')
+                        @unless ($has_list)
+                            @include('partials/app_footer')
+                        @endunless
                     </div>
                 </main>
 
