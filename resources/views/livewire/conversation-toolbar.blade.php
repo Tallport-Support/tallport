@@ -21,6 +21,7 @@
                         @endforeach
                     @endif
                     @if (in_array($action_key, ['delete', 'delete_mobile'])) x-on:click="{{ $delete_confirm }}" @endif
+                    @if (in_array($action_key, ['reply', 'note', 'forward'])) x-on:click="Livewire.dispatch('composer-open', {mode: '{{ $action_key }}'})" @endif
                     title="{{ $action['label'] }}" aria-label="{{ $action['label'] }}">@include('conversations/partials/action_icon', ['icon' => $action['icon']])</button>
             @endif
         @endforeach
@@ -42,6 +43,7 @@
                     <x-fruit::menu-link href="#" :class="$action['opposite']['class']" data-follow-action="unfollow" x-show="following" x-on:click.prevent="$wire.follow(false).then(ok => ok && (following = false))">@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['opposite']['label'] }}</x-fruit::menu-link>
                 @else
                     <a role="menuitem" href="{{ !empty($action['url']) ? $action['url']($conversation) : '#' }}" class="f-menu-item {{ $action['class'] }}"
+                        @if (in_array($action_key, ['reply', 'note', 'forward'])) x-on:click.prevent="Livewire.dispatch('composer-open', {mode: '{{ $action_key }}'})" @endif
                         @if (!empty($action['attrs']))
                             @foreach ($action['attrs'] as $attr_key => $attr_value)
                                 {{ $attr_key }}="{{ $attr_value }}"

@@ -103,23 +103,6 @@ class ConversationPagesTest extends FeatureTestCase
             ->assertDontSee('@endif', false);
     }
 
-    /**
-     * One Send button; its menu sends with a status (no redirect choices).
-     */
-    public function testSendButtonMenu()
-    {
-        $conversation = $this->receiveCustomerEmail(['subject' => 'Question about my order']);
-
-        $page = $this->getPage($this->agent, '/conversation/'.$conversation->id)
-            ->assertSee('data-send-status="'.\App\Conversation::STATUS_ACTIVE.'" data-label="Send &amp; Active"', false)
-            ->assertSee('Add Note &amp; Close', false)->assertSee('Forward &amp; Pending', false)
-            ->assertDontSee('btn-send-close', false)->assertDontSee('Send and stay on page')->assertDontSee('Change default redirect');
-        $this->assertSame(1, substr_count($page->getContent(), 'btn-reply-submit'));
-        $page->assertSee('<span class="btn-send-text">Send Reply</span>', false);
-        $page->assertSee('data-target="#conv-settings-modal"', false);
-        $this->getPage($this->agent, '/mailbox/'.$this->mailbox->id.'/new-ticket')->assertSee('Send &amp; Close', false);
-    }
-
     public function testGuestIsSentToLogin()
     {
         $response = $this->get('/mailbox/'.$this->mailbox->id);

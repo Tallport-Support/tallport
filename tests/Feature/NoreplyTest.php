@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Conversation;
 use App\Misc\Noreply;
+use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
@@ -52,7 +53,10 @@ class NoreplyTest extends FeatureTestCase
         $this->receiveEmail($mailbox, $this->makeEmail(['from' => 'Shop <no-reply@shop.example>', 'to' => $mailbox->email, 'subject' => 'Your order']));
         $conversation = Conversation::where('mailbox_id', $mailbox->id)->first();
 
-        $this->actingAs($agent)->followingRedirects()->get('/conversation/'.$conversation->id)->assertOk()
+        // The reply composer warns about the address.
+        Livewire::actingAs($agent)->test(\App\Livewire\ConversationComposer::class, ['conversation' => $conversation])->call('open', 'reply')
+            ->assertSee('<strong>no-reply@shop.example</strong> looks like an address that does not read replies.', false);
+        $this->actingAs($agent)->get('/mailbox/'.$mailbox->id.'/new-ticket')
             ->assertSee('id="noreply-patterns"', false)
             ->assertSee(e(json_encode(Noreply::regexes())), false);
 

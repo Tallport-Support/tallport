@@ -39,8 +39,7 @@ function savedReplyInsert(saved_reply_id)
 		function(response) {
 			if (isAjaxSuccess(response)) {
 				editorInsert('body', response.text || '');
-				showAttachments(response);
-				$('.form-reply:first input[name="saved_reply_id"]').val(response.id);
+				savedReplyFiles(response, response.id);
 			} else {
 				showAjaxError(response);
 			}
@@ -68,16 +67,39 @@ function savedReplyTemplateLoad()
 		function(response) {
 			if (isAjaxSuccess(response) && response.text) {
 				setReplyBody(response.text);
-				showAttachments(response);
+				savedReplyFiles(response);
 			}
 		}, true, function() {}
 	);
 }
 
+// A saved reply's files (and which saved reply it was) for the reply: the
+// conversation's composer (App\Livewire\ConversationComposer), or the new
+// conversation's form.
+function savedReplyFiles(response, saved_reply_id)
+{
+	if (document.querySelector('[wire\\:name="conversation-composer"]')) {
+		if (saved_reply_id) {
+			Livewire.dispatch('composer-saved-reply', {id: saved_reply_id, attachments: response.attachments || []});
+		} else {
+			Livewire.dispatch('composer-attach', {attachments: response.attachments || []});
+		}
+		return;
+	}
+	showAttachments(response);
+	if (saved_reply_id) {
+		$('.form-reply:first input[name="saved_reply_id"]').val(saved_reply_id);
+	}
+}
+
 // The default reply template: in a reply when it opens, in a new
 // conversation when the page opens.
-fsAddAction('conversation.show_reply_form', function() {
-	savedReplyTemplateLoad();
+document.addEventListener('livewire:init', function() {
+	Livewire.on('composer-opened', function(event) {
+		if (event.mode == 'reply') {
+			setTimeout(savedReplyTemplateLoad, 0);
+		}
+	});
 });
 $(document).ready(function() {
 	if ($('#saved-replies-data').attr('data-new') == '1') {

@@ -4436,6 +4436,23 @@ a.disabled:focus {
     font-size: var(--f-text-xs);
     font-weight: normal;
 }
+/* The composer's files: attached, and uploading. */
+.conv-composer__attachments,
+.conv-composer__uploading {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    margin: 0 0 8px;
+    padding: 0;
+    list-style: none;
+    font-size: var(--f-text-xs);
+}
+.conv-composer__attachments li,
+.conv-composer__uploading li {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
 .conv-composer__field .f-input {
     width: auto;
     min-height: 30px;

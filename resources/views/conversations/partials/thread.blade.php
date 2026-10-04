@@ -191,8 +191,8 @@
         @unless (\Helper::isPrint())
             <x-slot:actions>
                 @if ($thread_is_draft)
-                    <a class="f-button f-button--small edit-draft-trigger" href="#">{{ __('Edit') }}</a>
-                    <a class="f-button f-button--small f-button--ghost discard-draft-trigger" href="#">{{ __('Discard') }}</a>
+                    <button type="button" class="f-button f-button--small edit-draft-trigger" x-data x-on:click="Livewire.dispatch('composer-edit-draft', {thread_id: {{ $thread->id }}})">{{ __('Edit') }}</button>
+                    <button type="button" class="f-button f-button--small f-button--ghost discard-draft-trigger" x-data x-on:click="Tallport.confirm({message: Lang.get('messages.confirm_discard_draft'), confirm: Lang.get('messages.discard'), tone: 'danger'}).then(ok => ok && Livewire.dispatch('composer-discard-draft', {thread_id: {{ $thread->id }}}))">{{ __('Discard') }}</button>
                 @else
                     <x-fruit::menu :title="__('More Actions')" class="thread-options">
                         <x-slot:trigger class="f-button--ghost f-button--icon f-button--small" :aria-label="__('More Actions')"><x-heroicon-o-ellipsis-horizontal class="f-icon" aria-hidden="true" /></x-slot:trigger>

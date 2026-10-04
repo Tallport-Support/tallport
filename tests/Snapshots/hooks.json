@@ -129,6 +129,7 @@
         "files": [
             "resources/views/conversations/editor_bottom_toolbar.blade.php",
             "resources/views/conversations/partials/bulk_actions.blade.php",
+            "resources/views/livewire/conversation-composer.blade.php",
             "resources/views/livewire/conversation-toolbar.blade.php"
         ]
     },
@@ -137,7 +138,8 @@
         "name": "assignee_list.option_attrs",
         "arguments": 1,
         "files": [
-            "resources/views/conversations/editor_bottom_toolbar.blade.php"
+            "resources/views/conversations/editor_bottom_toolbar.blade.php",
+            "resources/views/livewire/conversation-composer.blade.php"
         ]
     },
     {
@@ -268,7 +270,8 @@
         "name": "conv_editor.editor_toolbar_prepend",
         "arguments": 2,
         "files": [
-            "resources/views/conversations/editor_bottom_toolbar.blade.php"
+            "resources/views/conversations/editor_bottom_toolbar.blade.php",
+            "resources/views/livewire/conversation-composer.blade.php"
         ]
     },
     {
@@ -332,7 +335,8 @@
         "name": "conversation.append_send_dropdown",
         "arguments": 3,
         "files": [
-            "resources/views/conversations/editor_bottom_toolbar.blade.php"
+            "resources/views/conversations/editor_bottom_toolbar.blade.php",
+            "resources/views/livewire/conversation-composer.blade.php"
         ]
     },
     {
@@ -481,7 +485,8 @@
         "name": "conversation.editor_extras",
         "arguments": 2,
         "files": [
-            "resources/views/conversations/partials/editor_extras.blade.php"
+            "resources/views/conversations/partials/editor_extras.blade.php",
+            "resources/views/livewire/conversation-composer.blade.php"
         ]
     },
     {
@@ -589,7 +594,8 @@
         "name": "conversation.prepend_send_dropdown",
         "arguments": 3,
         "files": [
-            "resources/views/conversations/editor_bottom_toolbar.blade.php"
+            "resources/views/conversations/editor_bottom_toolbar.blade.php",
+            "resources/views/livewire/conversation-composer.blade.php"
         ]
     },
     {
@@ -2198,7 +2204,7 @@
         "name": "reply_form.after",
         "arguments": 1,
         "files": [
-            "resources/views/conversations/view.blade.php"
+            "resources/views/livewire/conversation-composer.blade.php"
         ]
     },
     {

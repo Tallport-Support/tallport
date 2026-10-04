@@ -6,6 +6,7 @@ use App\Ai\Document;
 use App\Conversation;
 use App\KbArticle;
 use App\User;
+use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
@@ -76,8 +77,9 @@ class KnowledgeBaseTest extends FeatureTestCase
         $this->receiveEmail($this->support, $this->makeEmail(['from' => 'casey@customer.example.org', 'to' => $this->support->email]));
         $conversation = Conversation::where('mailbox_id', $this->support->id)->first();
 
-        $page = $this->actingAs($this->agent)->followingRedirects()->get('/conversation/'.$conversation->id)->assertOk();
-        $page->assertSee('id="kb-data"', false)->assertSee('Refunds')->assertDontSee('Sales prices');
+        // The reply composer's Knowledge Base menu.
+        Livewire::actingAs($this->agent)->test(\App\Livewire\ConversationComposer::class, ['conversation' => $conversation])->call('open', 'reply')
+            ->assertSee('id="kb-data"', false)->assertSee('Refunds')->assertDontSee('Sales prices');
 
         $refunds = KbArticle::where('title', 'Refunds')->first();
         $this->postAjax($this->agent, route('kb.ajax'), ['action' => 'get', 'article_id' => $refunds->id])

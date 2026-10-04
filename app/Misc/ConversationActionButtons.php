@@ -139,21 +139,6 @@ class ConversationActionButtons
                             ],
                             'fixed_location' => true,
                     ],
-                    // How much of the conversation the next reply quotes.
-                    'history'       => [
-                            'icon'           => 'glyphicon-time',
-                            'location'       => self::LOCATION_DROPDOWN,
-                            'label'          => ucfirst(mb_strtolower(__('Conversation History'))).'…',
-                            'class'          => '',
-                            'permission'     => function ($conversation) {
-                                    return ! $conversation->isChat();
-                            },
-                            'attrs'          => [
-                                    'data-toggle' => 'modal',
-                                    'data-target' => '#conv-settings-modal',
-                            ],
-                            'fixed_location' => true,
-                    ],
             ];
 
             // Allow overriding default actions while preserving backwards compatibility

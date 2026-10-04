@@ -7,6 +7,7 @@ use App\Conversation;
 use App\SavedReply;
 use App\User;
 use Illuminate\Http\UploadedFile;
+use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
@@ -123,7 +124,8 @@ class SavedRepliesTest extends FeatureTestCase
 
         $this->receiveEmail($this->mailbox, $this->makeEmail(['from' => 'Casey Customer <casey@customer.example.org>', 'to' => $this->mailbox->email, 'subject' => 'Order']));
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
-        $this->actingAs($this->agent)->followingRedirects()->get('/conversation/'.$conversation->id)
+        // The reply composer's Saved Replies menu.
+        Livewire::actingAs($this->agent)->test(\App\Livewire\ConversationComposer::class, ['conversation' => $conversation])->call('open', 'reply')
             ->assertSee('id="saved-replies-data"', false)->assertSee('Under global')->assertDontSee('Private elsewhere');
 
         // Under a global category: usable everywhere. Others' private: not.

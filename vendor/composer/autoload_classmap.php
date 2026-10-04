@@ -226,6 +226,7 @@ return array(
     'App\\Listeners\\SendPasswordChanged' => $baseDir . '/app/Listeners/SendPasswordChanged.php',
     'App\\Listeners\\SendReplyToCustomer' => $baseDir . '/app/Listeners/SendReplyToCustomer.php',
     'App\\Listeners\\UpdateMailboxCounters' => $baseDir . '/app/Listeners/UpdateMailboxCounters.php',
+    'App\\Livewire\\ConversationComposer' => $baseDir . '/app/Livewire/ConversationComposer.php',
     'App\\Livewire\\ConversationList' => $baseDir . '/app/Livewire/ConversationList.php',
     'App\\Livewire\\ConversationSubject' => $baseDir . '/app/Livewire/ConversationSubject.php',
     'App\\Livewire\\ConversationThread' => $baseDir . '/app/Livewire/ConversationThread.php',

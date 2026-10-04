@@ -272,75 +272,10 @@ function showFloatingAlert(type, msg, no_autohide)
 function initConversation()
 {
 	$(document).ready(function(){
-
-	    // Reply
-	    jQuery(".conv-reply").click(function(e){
-	    	// We don't allow to switch between reply and note, as it creates multiple drafts
-	    	if ($(".conv-reply-block").hasClass('hidden') /* || $(this).hasClass('inactive')*/) {
-	    		// Show
-	    		prepareReplyForm();
-				showReplyForm();
-				fsDoAction('conversation.show_reply_form');
-			} /*else {
-				// Hide
-				$(".conv-action-block").addClass('hidden');
-				$(".conv-action").removeClass('inactive');
-			}*/
-			e.preventDefault();
-		});
-
-		// Add note
-	    jQuery(".conv-add-note").click(function(e) {
-	    	var reply_block = $(".conv-reply-block");
-	    	if (reply_block.hasClass('hidden')  /*|| $(this).hasClass('inactive')*/) {
-    			// To prevent browser autocomplete, clean body
-				// We have to insert this code to allow proper UL/OL
-				setReplyBody('<div><br></div>');
-				showNoteForm();
-			} /*else {
-				// Hide
-				$(".conv-action-block").addClass('hidden');
-				$(".conv-action").removeClass('inactive');
-			}*/
-			e.preventDefault();
-		});
-
-		// Forward
-	    jQuery(".conv-forward").click(function(e){
-	    	forwardConversation(e);
-			e.preventDefault();
-		});
-
-		// View Send Log
-	    /*jQuery(".thread-send-log-trigger").click(function(e){
-	    	var thread_id = $(this).parents('.thread:first').attr('data-thread_id');
-	    	if (!thread_id) {
-	    		return;
-	    	}
-			e.preventDefault();
-		});*/
-
-		// Edit draft
-		jQuery(".edit-draft-trigger").click(function(e){
-			editDraft($(this));
-			e.preventDefault();
-		});
-
-		// Discard draft
-		jQuery(".discard-draft-trigger").click(function(e){
-			discardDraft($(this).parents('.thread:first').attr('data-thread_id'));
-			e.preventDefault();
-		});
-
-		// Chat mode
-		// Show details in chat mode
+		// Chat mode: no Show Details without details.
 		var conv_top_blocks = $('#conv-top-blocks');
-		var is_chat_mode = false;
-		if (conv_top_blocks.length) {
-			if (!conv_top_blocks.children('.conv-top-block:first').length) {
-				conv_top_blocks.prev().hide();
-			}
-			is_chat_mode = true;
+		if (conv_top_blocks.length && !conv_top_blocks.children('.conv-top-block:first').length) {
+			conv_top_blocks.prev().hide();
 		}
 
 		// Print
@@ -348,62 +283,7 @@ function initConversation()
 			window.print();
 		}
 
-		maybeShowStoredNote();
-		maybeShowDraft();
 		processLinks();
-		initConvSettings();
-
-		// Show reply form in chat mode
-		if (is_chat_mode && !$('.conv-action.inactive:first').length) {
-			$(".conv-reply").click();
-		}
-		// Send reply on ENTER press in chat mode
-		if (is_chat_mode) {
-
-			// Automatically refresh chat list
-			$(document).on('keydown', function(e) {
-				// Skip inputs and editable areas.
-				if (!e.target
-					|| e.which != 13
-					|| $(e.target).is(':input')
-					|| e.altKey
-					|| e.shiftKey
-					|| e.metaKey
-					|| $('.modal:visible').length
-					//|| $('#conv-status.open:first').length
-				) {
-					return;
-				}
-				
-				if (e.which == 13
-					&& !e.shiftKey
-					&& $(e.target).attr('contentEditable') == 'true'
-
-				) {
-					if (!$(':focus').closest('.f-editor').length) {
-						return;
-					}
-					var body = $('#body').val();
-					if (!body || body == '<div><br></div>') {
-						return;
-					}
-					var button = $('div.conv-block:not(.conv-note-block) .form-reply:visible .btn-reply-submit:first');
-					if (button.length) {
-						button.click();
-						// Does not work
-						e.preventDefault();
-						e.stopPropagation();
-
-						// If .conv-top-blocks contain invalid forms, exand it
-						$('#conv-top-blocks form').each(function() {
-							if (!$(this)[0].checkValidity()) {
-								$('#conv-top-blocks').collapse('show');
-							}
-						});
-					}
-				}
-			});
-		}
 	});
 }
 
@@ -1392,11 +1272,7 @@ function aiDraftsInit()
 		$(document).on('click', '.ai-draft-action', function(e) {
 			e.preventDefault();
 			// The draft is shown below the editor: open it, as Reply does.
-			if ($('.conv-reply-block:first').hasClass('hidden')) {
-				prepareReplyForm();
-				showReplyForm();
-				fsDoAction('conversation.show_reply_form');
-			}
+			Livewire.dispatch('composer-open', {mode: 'reply'});
 			reset(panel.attr('data-text-queued'));
 			fsAjax({}, panel.attr('data-draft-url'), function(response) {
 				if (response.status == 'success') {
@@ -1415,17 +1291,12 @@ function aiDraftsInit()
 			if (!draft) {
 				return;
 			}
-			if ($('.conv-reply-block:first').hasClass('hidden') || $('.conv-reply-block:first').hasClass('conv-note-block') || $('.conv-reply-block:first').hasClass('conv-forward-block')) {
-				prepareReplyForm();
-				showReplyForm();
-			}
-			setReplyBody(markdownToHtml(draft.draft));
-			var form = $('.form-reply:first');
-			form.find('input[name^="ai_draft_translation"]').remove();
-			if (draft.translation) {
-				form.append($('<input type="hidden" name="ai_draft_translation">').val(draft.translation));
-				form.append($('<input type="hidden" name="ai_draft_translation_language">').val(panel.attr('data-translation-language')));
-			}
+			// The composer opens a reply with it (App\Livewire\ConversationComposer).
+			Livewire.dispatch('composer-ai-draft', {
+				html: markdownToHtml(draft.draft),
+				translation: draft.translation || '',
+				language: draft.translation ? panel.attr('data-translation-language') : ''
+			});
 		});
 	});
 }
@@ -3715,66 +3586,6 @@ function maybeScrollToReplyBlock(offset)
 		}
 		scrollToElement(reply_block, '', null, offset);
 	}
-}
-
-function initConvSettings()
-{
-	var settings_modal = jQuery('#conv-settings-modal');
-    var history_select = jQuery('#email_history', settings_modal);
-
-	$('#conv-settings-modal').on('show.bs.modal', function (e) {
-		var is_forward = $(".conv-reply-block.conv-forward-block").length;
-
-		if (is_forward) {
-			$('#email_history option[value="global"]').hide();
-			$('#email_history option[value="none"]').hide();
-			if ($('#email_history').val() == 'global') {
-				$('#email_history').val('full');
-			}
-		} else {
-			$('#email_history option[value="global"]').show();
-			$('#email_history option[value="none"]').show();
-		}
-	})
-
-    $('.button-save-settings:first', settings_modal).on('click', function(e) {
-        e.preventDefault();
-        settings_modal.modal('hide');
-
-        $(".conv-reply-block").children().find(":input[name='conv_history']:first").val(history_select.val());
-
-        /*fsAjax(
-            {
-                action: 'save_settings',
-                conversation_id: getGlobalAttr('conversation_id'),
-                email_history: history_select.val(),
-            },
-            laroute.route('conversations.ajax'),
-            function(response) {
-                if (typeof(response.status) != "undefined" && response.status !== 'success') {
-                    if (typeof (response.msg) != "undefined") {
-                        showFloatingAlert('error', response.msg);
-                    } else {
-                        showFloatingAlert('error', Lang.get("messages.error_occurred"));
-                    }
-                    loaderHide();
-                }
-            },
-            true
-        );*/
-    });
-
-
-    $('.button-cancel-settings:first', settings_modal).on('click', function(e) {
-        e.preventDefault();
-        settings_modal.modal('hide');
-
-	   	var value = $(".conv-reply-block").children().find(":input[name='conv_history']:first").val();
-	   	if (!value) {
-	   		value = 'global';
-	   	}
-		jQuery('#email_history', jQuery('#conv-settings-modal')).val(value);
-    });
 }
 
 function copyToClipboard(text) {
