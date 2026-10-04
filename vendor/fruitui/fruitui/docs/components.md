@@ -305,6 +305,26 @@ Support replies/notes and Chat conversations/threads use the same `.f-composer` 
 </x-fruit::composer>
 ```
 
+**Recipient rows.** For From, To, Cc, Bcc and Subject, use `x-fruit::field layout="inline"`: a short label starts a full-width row, the control fills the rest without a box of its own, and hairlines separate the rows, as in mail apps. Stack the rows in a plain `div` so they sit without gaps. Token Field suggestions keep the row's width. Show Cc and Bcc on demand: a small ghost "Cc/Bcc" button after the To control, with `aria-controls` naming the rows, reveals them, moves focus to Cc and disappears; show them from the start when they already hold addresses or errors.
+
+```blade
+<div x-data="{ copies: @js($cc !== '' || $bcc !== '') }">
+    <x-fruit::field label="To" layout="inline">
+        <x-fruit::token-field name="to" wire:model="to" placeholder="Add a recipient">{{ $to }}</x-fruit::token-field>
+        <x-fruit::button variant="ghost" size="small" x-show="!copies" aria-controls="cc-row bcc-row" aria-expanded="false"
+            x-on:click="copies = true; $nextTick(() => $root.querySelector('#cc-row input')?.focus())">Cc/Bcc</x-fruit::button>
+    </x-fruit::field>
+    <x-fruit::field label="Cc" layout="inline" id="cc-row" x-show="copies">
+        <x-fruit::token-field name="cc" wire:model="cc" placeholder="Add a recipient">{{ $cc }}</x-fruit::token-field>
+    </x-fruit::field>
+    <x-fruit::field label="Bcc" layout="inline" id="bcc-row" x-show="copies">
+        <x-fruit::token-field name="bcc" wire:model="bcc" placeholder="Add a recipient">{{ $bcc }}</x-fruit::token-field>
+    </x-fruit::field>
+</div>
+```
+
+The Mail example's compose dialog and the Livewire support desk's composer use these rows.
+
 Help desks that list a conversation newest first put the composer above the thread: `placement="top"` (`f-composer--top`) moves its dividing line below it, and Menus inside it open downward. The Support examples work this way. Chat keeps the composer at the bottom, below the newest message.
 
 Use `--f-composer-padding`, `--f-composer-background`, `--f-composer-action-gap`, `--f-composer-footer-margin`, `--f-composer-input-min-height`, `--f-composer-input-max-height`, and `--f-composer-input-size`. Native Enter inserts a line break; Chat's send shortcut is example behavior, including Shift+Enter and composition input handling.

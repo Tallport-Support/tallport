@@ -75,8 +75,6 @@ class ConversationComposer extends Component
 
     public $bcc = '';
 
-    public $show_cc = false;
-
     public $body = '';
 
     public $status;
@@ -194,7 +192,6 @@ class ConversationComposer extends Component
         }
         $this->cc = implode("\n", $thread->getCcArray());
         $this->bcc = implode("\n", $thread->getBccArray());
-        $this->show_cc = $this->cc !== '' || $this->bcc !== '';
         $this->body = (string) $thread->body;
         $this->attachments = [];
         foreach ($thread->attachments as $attachment) {
@@ -435,7 +432,6 @@ class ConversationComposer extends Component
         $this->to_email = '';
         $this->cc = implode("\n", $this->default_cc);
         $this->bcc = '';
-        $this->show_cc = (bool) $this->default_cc;
         $this->conv_history = '';
 
         $this->status = $mailbox->ticket_status == Mailbox::TICKET_STATUS_KEEP_CURRENT ? $conversation->status : $mailbox->ticket_status;

@@ -70,8 +70,6 @@ class NewConversation extends Component
 
     public $bcc = '';
 
-    public $show_cc = false;
-
     public $multiple_conversations = false;
 
     /**
@@ -83,8 +81,6 @@ class NewConversation extends Component
     public $phone = '';
 
     public $to_email = '';
-
-    public $show_email = false;
 
     public $subject = '';
 
@@ -127,7 +123,6 @@ class NewConversation extends Component
         }
         $this->cc = implode("\n", $conversation->getCcArray());
         $this->bcc = implode("\n", $conversation->getBccArray());
-        $this->show_cc = $this->cc !== '' || $this->bcc !== '';
         $this->multiple_conversations = false;
 
         // A phone conversation's customer, by ID.
@@ -135,7 +130,6 @@ class NewConversation extends Component
         $this->name_query = (string) (reset($name) ?: '');
         $this->phone = (string) $phone;
         $this->to_email = (string) (reset($toEmail) ?: '');
-        $this->show_email = $this->to_email !== '';
 
         foreach ($attachments as $attachment) {
             $this->attachments[] = [
@@ -177,7 +171,6 @@ class NewConversation extends Component
         }
         if (!$this->to_email && $customer->getMainEmail()) {
             $this->to_email = $customer->getMainEmail();
-            $this->show_email = true;
         }
     }
 

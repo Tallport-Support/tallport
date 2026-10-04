@@ -388,6 +388,51 @@
     grid-column: 1;
     grid-row: auto;
   }
+  /* Inline layout: mail-style recipient rows. A short label starts the row, the control fills
+     the rest without a box of its own, and a hairline separates the rows. Buttons after the
+     control (Cc/Bcc) sit at the end; help and errors go beneath the control. */
+  .f-field--inline {
+    --f-input-background: transparent;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: var(--f-space-3);
+    row-gap: 2px;
+    min-height: var(--f-field-inline-height, 40px);
+    padding-block: 3px;
+    border-bottom: 1px solid var(--f-border);
+  }
+  .f-field--inline > .f-label {
+    grid-column: 1;
+    color: var(--f-secondary);
+    font-weight: 400;
+  }
+  .f-field--inline > :not(.f-label) {
+    grid-column: 2;
+  }
+  .f-field--inline > :is(.f-help, .f-error) {
+    grid-column: 2 / -1;
+  }
+  .f-field--inline > :is(.f-button, .f-menu, .f-button-group) {
+    grid-column: 3;
+  }
+  .f-field--inline:not(:has(> :is(.f-button, .f-menu, .f-button-group))) > :not(.f-label, .f-help, .f-error) {
+    grid-column: 2 / -1;
+  }
+  /* The text lines up after the label; the focus ring draws inside the padding, clear of it. */
+  .f-field--inline > .f-input,
+  .f-field--inline > * > .f-input,
+  .f-field--inline .f-token-field__entry {
+    margin-inline: -6px;
+    padding-inline: 6px;
+    border-color: transparent;
+    background-color: transparent;
+    box-shadow: none;
+  }
+  .f-field--inline > .f-input:focus-visible,
+  .f-field--inline > * > .f-input:focus-visible,
+  .f-field--inline .f-token-field__entry:focus-within {
+    outline-offset: calc(var(--f-focus-ring-width) * -1);
+  }
   /* A switch labelled by its Field has no text of its own. */
   .f-switch > span:empty {
     display: none;

@@ -9,8 +9,11 @@ use InvalidArgumentException;
 /** A scoped association for one control, independent of application props/state. */
 class Field extends Component
 {
-    /** Stacked puts the label above the control; row puts it beside, as in grouped settings. */
-    public const LAYOUTS = ['stacked', 'row'];
+    /**
+     * Stacked puts the label above the control; row puts it beside, as in grouped settings; inline
+     * starts a mail-style recipient row with it, the control filling the rest.
+     */
+    public const LAYOUTS = ['stacked', 'row', 'inline'];
 
     public FieldContext $fruitField;
 

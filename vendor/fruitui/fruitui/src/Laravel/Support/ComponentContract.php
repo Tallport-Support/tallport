@@ -346,6 +346,14 @@ final class ComponentContract
         }
     }
 
+    public static function segmented(mixed $legendHidden, ComponentAttributeBag $attributes): void
+    {
+        self::validate('segmented', $attributes);
+        if (! is_bool($legendHidden)) {
+            throw new InvalidArgumentException('FruitUI segmented legend-hidden must be a boolean.');
+        }
+    }
+
     /** A Field's label prop or label slot, which must have visible text. */
     public static function fieldLabel(mixed $label): mixed
     {

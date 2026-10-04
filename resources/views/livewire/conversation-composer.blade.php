@@ -13,9 +13,10 @@
         <div class="conv-block conv-reply-block conv-action-block @if ($mode == 'note') conv-note-block @elseif ($mode == 'forward') conv-forward-block @endif">
             <x-fruit::composer placement="top" class="form-reply conv-composer" :aria-label="$mode == 'note' ? __('Note') : ($mode == 'forward' ? __('Forward') : __('Reply'))" x-on:submit.prevent="submit()">
                 @if ($mode != 'note')
-                    <div class="f-stack conv-composer__recipients">
+                    {{-- Mail-style recipient rows (FruitUI inline fields); Cc and Bcc on demand. --}}
+                    <div class="conv-composer__recipients" x-data="{ copies: @js($cc !== '' || $bcc !== '') }">
                         @if (count($from_aliases))
-                            <x-fruit::field :label="__('From')" class="conv-from-alias">
+                            <x-fruit::field :label="__('From')" layout="inline" class="conv-from-alias">
                                 <x-fruit::select name="from_alias" wire:model="from_alias">
                                     @foreach ($from_aliases as $from_alias_email => $from_alias_name)
                                         <option value="@if ($from_alias_email != $mailbox->email){{ $from_alias_email }}@endif">@if ($from_alias_name){{ $from_alias_email }} ({{ $from_alias_name }})@else{{ $from_alias_email }}@endif</option>
@@ -24,30 +25,31 @@
                             </x-fruit::field>
                         @endif
 
-                        @if ($mode == 'forward')
-                            <x-fruit::field :label="__('To')" class="conv-recipient conv-recipient-to">
+                        <x-fruit::field :label="__('To')" layout="inline" class="conv-recipient conv-recipient-to">
+                            @if ($mode == 'forward')
                                 <x-fruit::token-field name="to_email" id="to_email" wire:model.live="to_email" :placeholder="__('Email Address')" search="server" x-on:fruit-suggest.debounce.200ms="$wire.set('recipient_query', $event.detail.query)">{{ $to_email }}<x-slot:options>@foreach ($this->recipientMatches as $match_email => $match_label)<option value="{{ $match_email }}">{{ $match_label }}</option>@endforeach</x-slot:options></x-fruit::token-field>
-                            </x-fruit::field>
-                        @elseif (count($to_customers) > 1)
-                            <x-fruit::field :label="__('To')" class="conv-recipient conv-recipient-to">
+                            @elseif (count($to_customers) > 1)
                                 <x-fruit::select name="to" id="to" wire:model.live="to">
                                     @foreach ($to_customers as $to_customer_email => $to_customer_label)
                                         <option value="{{ $to_customer_email }}">{{ $to_customer_label }}</option>
                                     @endforeach
                                 </x-fruit::select>
-                            </x-fruit::field>
-                        @endif
+                            @else
+                                <x-fruit::input id="to" readonly :value="$to_customers[$to] ?? ($conversation->customer ? $conversation->customer->getFullName(true).' <'.$conversation->customer_email.'>' : $conversation->customer_email)" />
+                            @endif
+                            @unless ($is_chat)
+                                <x-fruit::button variant="ghost" size="small" id="toggle-cc" x-show="!copies" aria-controls="cc-row bcc-row" aria-expanded="false" x-on:click="copies = true; $nextTick(() => $root.querySelector('#cc-row input')?.focus())">{{ __('Cc') }}/{{ __('Bcc') }}</x-fruit::button>
+                            @endunless
+                        </x-fruit::field>
 
-                        @if ($show_cc && !$is_chat)
-                            <x-fruit::field :label="__('Cc')" class="conv-recipient field-cc">
+                        @unless ($is_chat)
+                            <x-fruit::field :label="__('Cc')" layout="inline" class="conv-recipient field-cc" id="cc-row" x-show="copies" x-cloak>
                                 <x-fruit::token-field name="cc" id="cc" wire:model.live="cc" :placeholder="__('Email Address')" search="server" x-on:fruit-suggest.debounce.200ms="$wire.set('recipient_query', $event.detail.query)">{{ $cc }}<x-slot:options>@foreach ($this->recipientMatches as $match_email => $match_label)<option value="{{ $match_email }}">{{ $match_label }}</option>@endforeach</x-slot:options></x-fruit::token-field>
                             </x-fruit::field>
-                            <x-fruit::field :label="__('Bcc')" class="conv-recipient field-cc">
+                            <x-fruit::field :label="__('Bcc')" layout="inline" class="conv-recipient field-cc" id="bcc-row" x-show="copies" x-cloak>
                                 <x-fruit::token-field name="bcc" id="bcc" wire:model.live="bcc" :placeholder="__('Email Address')" search="server" x-on:fruit-suggest.debounce.200ms="$wire.set('recipient_query', $event.detail.query)">{{ $bcc }}<x-slot:options>@foreach ($this->recipientMatches as $match_email => $match_label)<option value="{{ $match_email }}">{{ $match_label }}</option>@endforeach</x-slot:options></x-fruit::token-field>
                             </x-fruit::field>
-                        @elseif (!$is_chat)
-                            <div class="cc-toggler"><button type="button" class="f-button f-button--ghost f-button--small" id="toggle-cc" wire:click="$set('show_cc', true)">{{ __('Cc') }}/{{ __('Bcc') }}</button></div>
-                        @endif
+                        @endunless
 
                         @foreach ($noreply as $noreply_email)
                             <x-fruit::alert tone="warning" class="noreply-alert">{!! __safe_raw_html(':email looks like an address that does not read replies.', ['email' => '<strong>'.e($noreply_email).'</strong>']) !!}</x-fruit::alert>
