@@ -114,6 +114,39 @@ class MailboxesTest extends FeatureTestCase
     }
 
     /**
+     * The sidebar's Mailbox Settings: name and signature in a dialog. An agent with the
+     * signature permission changes only the signature; others may not open it.
+     */
+    public function testQuickSettings()
+    {
+        $mailbox = $this->createMailbox([], ['name' => 'Support']);
+        $agent = $this->createUser();
+        $mailbox->users()->attach($agent->id);
+
+        $this->actingAs($this->admin)->get(route('mailboxes.view', ['id' => $mailbox->id]))->assertSee(route('mailboxes.quick_settings', ['id' => $mailbox->id]), false);
+        $this->actingAs($this->admin)->get(route('mailboxes.quick_settings', ['id' => $mailbox->id]))->assertOk()
+            ->assertSee('name="name"', false)->assertSee('All Settings');
+        \Session::start();
+        $this->actingAs($this->admin)->post(route('mailboxes.quick_settings.save', ['id' => $mailbox->id]), ['_token' => csrf_token(), 'name' => 'Help Desk', 'signature' => '<p>Kind regards</p><script>x</script>'])
+            ->assertJson(['status' => 'success']);
+        $mailbox->refresh();
+        $this->assertSame('Help Desk', $mailbox->name);
+        $this->assertStringContainsString('Kind regards', $mailbox->signature);
+        $this->assertStringNotContainsString('<script', $mailbox->signature);
+        $this->actingAs($this->admin)->post(route('mailboxes.quick_settings.save', ['id' => $mailbox->id]), ['_token' => csrf_token(), 'name' => ''])
+            ->assertJson(['status' => 'error']);
+
+        $this->actingAs($agent)->get(route('mailboxes.quick_settings', ['id' => $mailbox->id]))->assertForbidden();
+        $signer = $this->createUser();
+        $mailbox->users()->attach($signer->id, ['access' => json_encode([Mailbox::ACCESS_PERM_SIGNATURE])]);
+        $this->actingAs($signer)->get(route('mailboxes.quick_settings', ['id' => $mailbox->id]))->assertOk()->assertDontSee('name="name"', false);
+        $this->actingAs($signer)->post(route('mailboxes.quick_settings.save', ['id' => $mailbox->id]), ['_token' => csrf_token(), 'name' => 'Hijacked', 'signature' => '<p>Agent</p>'])
+            ->assertJson(['status' => 'success']);
+        $this->assertSame('Help Desk', $mailbox->fresh()->name);
+        $this->assertStringContainsString('Agent', $mailbox->fresh()->signature);
+    }
+
+    /**
      * Signature errors and empty signatures give a page, not a 500 (M2, M3).
      */
     public function testSignatureEdgeCases()

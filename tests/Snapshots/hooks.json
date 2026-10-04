@@ -1980,7 +1980,6 @@
         "name": "menu.manage.after_mailboxes",
         "arguments": 0,
         "files": [
-            "resources/views/partials/app_sidebar.blade.php",
             "resources/views/partials/app_sidebar_settings.blade.php"
         ]
     },
@@ -1989,7 +1988,6 @@
         "name": "menu.manage.append",
         "arguments": 0,
         "files": [
-            "resources/views/partials/app_sidebar.blade.php",
             "resources/views/partials/app_sidebar_settings.blade.php"
         ]
     },
@@ -1998,7 +1996,6 @@
         "name": "menu.manage.can_view",
         "arguments": 1,
         "files": [
-            "resources/views/partials/app_sidebar.blade.php",
             "resources/views/partials/app_sidebar_settings.blade.php"
         ]
     },

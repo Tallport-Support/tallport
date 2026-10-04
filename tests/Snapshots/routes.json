@@ -1692,6 +1692,36 @@
         "methods": [
             "GET"
         ],
+        "uri": "mailbox/settings/{id}/quick",
+        "name": "mailboxes.quick_settings",
+        "action": "MailboxesController@quickSettings",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/settings/{id}/quick",
+        "name": "mailboxes.quick_settings.save",
+        "action": "MailboxesController@quickSettingsSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "mailbox/workflows/{mailbox_id}",
         "name": "mailboxes.workflows",
         "action": "WorkflowsController@index",

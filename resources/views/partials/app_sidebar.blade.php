@@ -62,7 +62,10 @@
                 <a href="{{ route('conversations.create', ['mailbox_id' => $sidebar_mailbox->id]) }}" class="f-button f-button--ghost f-button--small @if ($sidebar_mailbox->id == $sidebar_new_mailbox_id) new-conversation-link @endif"><x-icon.square-pen class="f-icon" aria-hidden="true" /> {{ __('New Conversation') }}</a>
                 <x-fruit::menu :title="__('Mailbox')" class="app-sidebar__mailbox-menu">
                     <x-slot:trigger class="f-button--ghost f-button--icon f-button--small" :aria-label="__('More')"><x-icon.ellipsis class="f-icon" aria-hidden="true" /></x-slot:trigger>
-                    @if ($sidebar_user->can('update', $sidebar_mailbox))
+                    @if ($sidebar_user->can('updateSettings', $sidebar_mailbox) || $sidebar_user->can('updateEmailSignature', $sidebar_mailbox))
+                        {{-- Name and signature in a dialog (mailboxes/quick_settings), with a way to all of them. --}}
+                        <x-fruit::menu-link :href="route('mailboxes.quick_settings', ['id' => $sidebar_mailbox->id])" data-fruit-dialog-url :data-fruit-dialog-title="$sidebar_mailbox->name">{{ __('Mailbox Settings') }}</x-fruit::menu-link>
+                    @elseif ($sidebar_user->can('update', $sidebar_mailbox))
                         <x-fruit::menu-link :href="route('mailboxes.update', ['id' => $sidebar_mailbox->id])">{{ __('Mailbox Settings') }}</x-fruit::menu-link>
                     @endif
                     <x-fruit::menu-item x-data="tallportMuteMailbox({{ $sidebar_mailbox->id }}, {{ $sidebar_muted ? 'true' : 'false' }})" x-on:click="toggle"><span x-text="muted ? @js(__('Unmute Notifications')) : @js(__('Mute Notifications'))">{{ $sidebar_muted ? __('Unmute Notifications') : __('Mute Notifications') }}</span></x-fruit::menu-item>
@@ -84,36 +87,17 @@
             {{ __('Reports') }}
         </x-fruit::sidebar-item>
     @endif
-    @if ($sidebar_user->isAdmin()
-        || $sidebar_user->hasPermission(App\User::PERM_EDIT_USERS)
-        || $sidebar_user->can('viewMailboxMenu', $sidebar_user)
-        || Eventy::filter('menu.manage.can_view', false)
-    )
-        <details class="f-sidebar__group" @if (\App\Misc\Helper::isMenuSelected('manage')) open @endif>
-            <summary class="f-sidebar__item">
-                <x-icon.wrench class="f-icon" aria-hidden="true" />
-                <span class="f-sidebar__identity">{{ __('Manage') }}</span>
-                <svg class="f-icon f-sidebar__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>
-            </summary>
-            @if ($sidebar_user->isAdmin())
-                <x-fruit::sidebar-item :href="route('settings')" :current="\App\Misc\Helper::isMenuSelected('settings')">{{ __('Settings') }}</x-fruit::sidebar-item>
-            @endif
-            @if ($sidebar_user->can('viewMailboxMenu', $sidebar_user))
-                <x-fruit::sidebar-item :href="route('mailboxes')" :current="\App\Misc\Helper::isMenuSelected('mailboxes')">{{ __('Mailboxes') }}</x-fruit::sidebar-item>
-            @endif
-            <ul class="app-sidebar__module-items">@action('menu.manage.after_mailboxes')</ul>
-            @if ($sidebar_user->isAdmin() || $sidebar_user->hasPermission(App\User::PERM_EDIT_USERS))
-                <x-fruit::sidebar-item :href="route('users')" :current="\App\Misc\Helper::isMenuSelected('users')">{{ __('Users') }}</x-fruit::sidebar-item>
-            @endif
-            @if ($sidebar_user->isAdmin())
-                <x-fruit::sidebar-item :href="route('workflows')" :current="\App\Misc\Helper::isMenuSelected('workflows')">{{ __('Workflows') }}</x-fruit::sidebar-item>
-                <x-fruit::sidebar-item :href="route('modules')" :current="\App\Misc\Helper::isMenuSelected('modules')">{{ __('Modules') }}</x-fruit::sidebar-item>
-                <x-fruit::sidebar-item :href="route('logs')" :current="\App\Misc\Helper::isMenuSelected('logs')">{{ __('Logs') }}</x-fruit::sidebar-item>
-                <x-fruit::sidebar-item :href="route('system')" :current="\App\Misc\Helper::isMenuSelected('system')">{{ __('System') }}</x-fruit::sidebar-item>
-            @endif
-            <ul class="app-sidebar__module-items">@action('menu.manage.append')</ul>
-        </details>
-    @endif
+    {{-- Settings: the sidebar then lists them (partials/app_sidebar_settings). --}}
+    @php
+        $sidebar_settings_url = $sidebar_user->isAdmin() ? route('settings')
+            : ($sidebar_user->hasPermission(App\User::PERM_EDIT_USERS) ? route('users')
+            : ($sidebar_user->can('viewMailboxMenu', $sidebar_user) ? route('mailboxes')
+            : route('users.profile', ['id' => $sidebar_user->id])));
+    @endphp
+    <x-fruit::sidebar-item :href="$sidebar_settings_url" class="app-sidebar__settings">
+        <x-slot:icon><x-icon.settings class="f-icon" aria-hidden="true" /></x-slot:icon>
+        {{ __('Settings') }}
+    </x-fruit::sidebar-item>
     <ul class="app-sidebar__module-items">@action('menu.append')</ul>
     @endif
 
