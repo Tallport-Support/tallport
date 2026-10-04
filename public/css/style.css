@@ -19,7 +19,7 @@ body.user-is-guest {
 }
 .footer {
     text-align: center;
-    font-size: 12px;
+    font-size: 0.75rem;
     /*position: absolute;
     bottom: 0;*/
     color: #b4c0ca;
@@ -144,7 +144,7 @@ label.radio {
     margin-bottom: 0;
     padding-top: 5px;
     vertical-align: middle;
-    font-size: 13.4px;
+    font-size: 0.8375rem;
 }
 .checkbox,
 .radio {
@@ -182,7 +182,7 @@ a h4 {
     color: var(--f-text);
 }
 .card > h4 {
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: 400;
     margin: 2px 0 4px 66px;
     overflow: hidden;
@@ -191,7 +191,7 @@ a h4 {
 }
 .card > p {
     color: var(--f-tertiary);
-    font-size: 14px;
+    font-size: 0.875rem;
     margin: 0 0 0 66px;
 }
 .card > img {
@@ -206,7 +206,7 @@ a h4 {
     float: left;
     line-height: 11px;
     text-align: center;
-    font-size: 18px;
+    font-size: 1.125rem;
 }
 .person-photo-auto:before {
     background: #c1cbd4;
@@ -214,7 +214,7 @@ a h4 {
     content: attr(data-initial);
     border-radius: 50%;
     display: block;
-    /*font-size: 18px;*/
+    /*font-size: 1.125rem;*/
     font-size: inherit;
     font-style: normal;
     font-weight: 300;
@@ -310,7 +310,7 @@ a h4 {
     right: 20px;
     top: 15px;
     z-index: 10;
-    font-size: 16px;
+    font-size: 1rem;
 }
 .customer-profile-menu a {
     color: var(--f-text);
@@ -585,7 +585,7 @@ a h4 {
         padding-left: 6px;
     }
     .conv-actions .conv-action {
-        font-size: 17px;
+        font-size: 1.0625rem;
     }
 
     .thread-to-first,
@@ -658,7 +658,7 @@ a h4 {
 }
 
 .table-header {
-    font-size: 14px;
+    font-size: 0.875rem;
 }
 
 .modal .close {
@@ -743,7 +743,7 @@ a h4 {
     border-top-right-radius: 3px;
 }
 .web-notifications-header h1 {
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: normal;
     display: inline-block;
     margin: 0;
@@ -772,7 +772,7 @@ a h4 {
     background-color: var(--f-surface-secondary);
     border-bottom: 1px solid var(--f-border);
     color: var(--f-tertiary);
-    font-size: 11px;
+    font-size: 0.6875rem;
     font-weight: bold;
     letter-spacing: .5px;
     line-height: 1;
@@ -823,7 +823,7 @@ a h4 {
     line-height: 32px;
     border: 2px solid #fff;
     border-radius: 50%;
-    font-size: 13px;
+    font-size: 0.8125rem;
 }
 .web-notification-msg-preview {
     color: var(--f-tertiary);
@@ -1010,7 +1010,7 @@ a h4 {
 .customers-pager {
     margin: 0 13px 20px 13px;
     padding: 4px 0 0 10px;
-    font-size: 20px;
+    font-size: 1.25rem;
     background-color: var(--f-surface-secondary);
 }
 .customers-pager a.disabled {
@@ -1110,7 +1110,7 @@ body.print {
  * Misc
  */
 .label {
-    font-size: 13.4px;
+    font-size: 0.8375rem;
     font-weight: normal;
     padding-top: 2px;
 }
@@ -1133,7 +1133,7 @@ body.print {
 }
 .heading {
     color: var(--f-text);
-    font-size: 20px;
+    font-size: 1.25rem;
     font-weight: 400;
 }
 .section-heading {
@@ -1141,7 +1141,7 @@ body.print {
     /*border-bottom: 1px solid var(--f-border);*/
     padding: 12px 18px;
     color: var(--f-text);
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 400;
     line-height: 30px;
 }
@@ -1152,7 +1152,7 @@ body.print {
     color: var(--f-tertiary);
     cursor: pointer;
     display: inline-block;
-    font-size: 15px;
+    font-size: 0.9375rem;
     top: 3px;
 }
 a.help-icon:focus,
@@ -1162,13 +1162,13 @@ a.help-icon:hover {
 }
 .popover {
     color:var(--f-secondary);
-    font-size:13.4px;
+    font-size: 0.8375rem;
     z-index: 1040;
 }
 .block-help {
     color: var(--f-tertiary);
     display: block;
-    font-size: 13.4px;
+    font-size: 0.8375rem;
     margin: 4px 0 9px;
 }
 .block-help a {
@@ -1211,7 +1211,7 @@ a.help-icon:hover {
 .multi-remove,
 .multi-remove:focus {
     color: var(--f-tertiary);
-    font-size: 13px;
+    font-size: 0.8125rem;
     position: relative;
     top: 5px;
     margin-left: 5px;
@@ -1327,7 +1327,7 @@ a.disabled:focus {
     height: 21px;
     line-height: 22px;
     background-color: var(--f-surface);
-    font-size: 9px;
+    font-size: 0.5625rem;
 }
 .preview-iframe {
     width: 100%;
@@ -1387,7 +1387,7 @@ a.disabled:focus {
     border-radius: 2px;
     color: #fff;
     display: inline-block;
-    font-size: 13px;
+    font-size: 0.8125rem;
     font-weight: normal;
     padding: 2px 4px 1px 4px;
     line-height: 14px;
@@ -1407,7 +1407,7 @@ a.disabled:focus {
 }
 .fs-tag-md {
     padding: 5px 7px 5px 7px;
-    font-size: 15px;
+    font-size: 0.9375rem;
     border-radius: 3px;
     background-color: #97a4b0;
 }
@@ -1423,7 +1423,7 @@ a.disabled:focus {
     margin-top: 8px;
     margin-right: 8px;
     line-height: 14px;
-    font-size: 15px;
+    font-size: 0.9375rem;
     padding: 4px 6px 4px 6px;
     vertical-align: inherit;
 }
@@ -1477,7 +1477,7 @@ a.disabled:focus {
     line-height: 35px !important;
 }
 .chats-load-more i {
-    font-size: 18px !important;
+    font-size: 1.125rem !important;
     position: static !important;
     top: 0 !important;
 }
@@ -1525,7 +1525,7 @@ a.disabled:focus {
 }
 .ai-draft-meta {
     color: var(--f-secondary);
-    font-size: 12px;
+    font-size: 0.75rem;
     margin-left: 8px;
 }
 .ai-draft-status {
@@ -1640,7 +1640,7 @@ a.disabled:focus {
 }
 .rpt-chart__label {
     fill: var(--f-secondary);
-    font-size: 11px;
+    font-size: 0.6875rem;
 }
 .rpt-chart__previous {
     fill: none;
@@ -1753,7 +1753,7 @@ a.disabled:focus {
     margin: 2px 0 2px 4px;
 }
 .wf-remove {
-    font-size: 18px;
+    font-size: 1.125rem;
 }
 .wf-email {
     flex-basis: 100%;
