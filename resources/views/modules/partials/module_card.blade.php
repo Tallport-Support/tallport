@@ -22,7 +22,7 @@
 		    	· <a href="{{ $module['detailsUrl'] }}" target="_blank">{{ __('View details') }}</a>
 		    @endif
 			@if (!empty($module['license']) && Eventy::filter('modules.show_license', true))
-		    	<span>· {{ __('License') }}: <span class="license-key-text">{{ $module['license'] }}</span> <button type="button" class="f-button f-button--ghost f-button--small deactivate-license-trigger" x-on:click="deactivateLicense" title="{{ __('Deactivate the license for this domain (to use on another domain)') }}" aria-label="{{ __('Deactivate the license for this domain (to use on another domain)') }}"><x-heroicon-o-trash class="f-icon" aria-hidden="true" /></button></span>
+		    	<span>· {{ __('License') }}: <span class="license-key-text">{{ $module['license'] }}</span> <button type="button" class="f-button f-button--ghost f-button--small deactivate-license-trigger" x-on:click="deactivateLicense" title="{{ __('Deactivate the license for this domain (to use on another domain)') }}" aria-label="{{ __('Deactivate the license for this domain (to use on another domain)') }}"><x-icon.trash-2 class="f-icon" aria-hidden="true" /></button></span>
 		    @endif
 		    @if (!empty($module['requiredAppVersion']) && !\Helper::checkAppVersion($module['requiredAppVersion']))
 		    	@php

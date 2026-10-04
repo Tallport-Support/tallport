@@ -3,7 +3,7 @@
     <ul class="sidebar-block-list">
         @foreach ($prev_conversations as $prev_conversation)
             <li>
-                <a href="{{ $prev_conversation->url() }}" target="_blank">@if ($prev_conversation->isPhone())<x-heroicon-o-phone class="f-icon" aria-hidden="true" />@else<x-heroicon-o-envelope class="f-icon" aria-hidden="true" />@endif<span>{{ $prev_conversation->getSubject() }}</span></a>
+                <a href="{{ $prev_conversation->url() }}" target="_blank">@if ($prev_conversation->isPhone())<x-icon.phone class="f-icon" aria-hidden="true" />@else<x-icon.mail class="f-icon" aria-hidden="true" />@endif<span>{{ $prev_conversation->getSubject() }}</span></a>
             </li>
         @endforeach
     </ul>

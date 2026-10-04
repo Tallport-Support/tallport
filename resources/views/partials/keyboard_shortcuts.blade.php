@@ -2,7 +2,7 @@
 <x-fruit::dialog name="keyboard-shortcuts" size="large" aria-labelledby="keyboard-shortcuts-title">
     <header class="f-dialog__header">
         <h2 id="keyboard-shortcuts-title">{{ __('Keyboard Shortcuts') }}</h2>
-        <x-fruit::button variant="ghost" size="small" class="f-button--icon" x-on:click="$el.closest('dialog').close()" :aria-label="__('Close')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+        <x-fruit::button variant="ghost" size="small" class="f-button--icon" x-on:click="$el.closest('dialog').close()" :aria-label="__('Close')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
     </header>
     <div class="f-dialog__body keyboard-shortcuts">
         <div class="keyboard-shortcuts__columns">

@@ -9,7 +9,7 @@
                 {{ $title }}
                 @if ($help)
                     <x-fruit::tooltip :text="$help" text-id="rpt-help-{{ $key }}">
-                        <button type="button" class="f-button f-button--ghost f-button--icon" aria-label="{{ $title }}" aria-describedby="rpt-help-{{ $key }}"><x-heroicon-o-information-circle class="f-icon" aria-hidden="true" /></button>
+                        <button type="button" class="f-button f-button--ghost f-button--icon" aria-label="{{ $title }}" aria-describedby="rpt-help-{{ $key }}"><x-icon.info class="f-icon" aria-hidden="true" /></button>
                     </x-fruit::tooltip>
                 @endif
             </div>

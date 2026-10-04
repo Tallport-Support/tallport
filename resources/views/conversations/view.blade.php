@@ -42,7 +42,7 @@
 
 @section('inspector_label', __('Customer'))
 @section('inspector_toolbar')
-    <button type="button" class="f-button f-button--ghost f-button--icon app-inspector-back" x-data x-on:click="$el.closest('.app-workspace').dataset.view = ''" aria-label="{{ __('Back') }}" title="{{ __('Back') }}"><x-heroicon-o-chevron-left class="f-icon" aria-hidden="true" /></button>
+    <button type="button" class="f-button f-button--ghost f-button--icon app-inspector-back" x-data x-on:click="$el.closest('.app-workspace').dataset.view = ''" aria-label="{{ __('Back') }}" title="{{ __('Back') }}"><x-icon.chevron-left class="f-icon" aria-hidden="true" /></button>
     <h2 class="app-inspector-title">{{ __('Customer') }}</h2>
 @endsection
 
@@ -64,10 +64,10 @@
                     @if ($customer)
                         <p>{{ $customer->getFullName(true) }}@if ($conversation->customer_email && $conversation->customer_email != $customer->getFullName(true)) · {{ $conversation->customer_email }}@endif</p>
                     @endif
-                    <p class="conv-heading__mailbox"><x-heroicon-o-envelope class="f-icon" aria-hidden="true" /><span>{{ $mailbox->name }}@if ($mailbox->email) · {{ $mailbox->email }}@endif</span></p>
+                    <p class="conv-heading__mailbox"><x-icon.mail class="f-icon" aria-hidden="true" /><span>{{ $mailbox->name }}@if ($mailbox->email) · {{ $mailbox->email }}@endif</span></p>
                     @if ($conversation->isChat() && $conversation->getChannelName())
                             <span class="conv-tags f-row">
-                                @if (\Helper::isChatMode())<a class="f-button f-button--small" href="{{ request()->fullUrlWithQuery(['chat_mode' => '0']) }}" title="{{ __('Exit') }}"><x-heroicon-s-stop class="f-icon" aria-hidden="true" /> {{ __('Chat Mode') }}</a>@else<a class="f-button f-button--small f-button--primary" href="{{ request()->fullUrlWithQuery(['chat_mode' => '1']) }}"><x-heroicon-s-play class="f-icon" aria-hidden="true" /> {{ __('Chat Mode') }}</a>@endif
+                                @if (\Helper::isChatMode())<a class="f-button f-button--small" href="{{ request()->fullUrlWithQuery(['chat_mode' => '0']) }}" title="{{ __('Exit') }}"><x-icon.square fill="currentColor" class="f-icon" aria-hidden="true" /> {{ __('Chat Mode') }}</a>@else<a class="f-button f-button--small f-button--primary" href="{{ request()->fullUrlWithQuery(['chat_mode' => '1']) }}"><x-icon.play fill="currentColor" class="f-icon" aria-hidden="true" /> {{ __('Chat Mode') }}</a>@endif
                                 <x-fruit::badge>{{ $conversation->getChannelName() }}</x-fruit::badge>
                             </span>
                         @endif

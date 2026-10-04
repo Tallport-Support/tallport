@@ -57,7 +57,6 @@
     ],
     "require": {
         "php": ">=8.5",
-        "blade-ui-kit/blade-heroicons": "^2.7",
         "codedge/laravel-selfupdater": "dev-customized",
         "doctrine/dbal": "^3.5",
         "egulias/email-validator": "4.*",

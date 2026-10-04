@@ -1,6 +1,6 @@
 {{-- The workspace's first toolbar: back (in the mobile app) and the brand. --}}
 @if (\Helper::isInApp() && \Helper::isRoute('conversations.view'))
-    <a class="f-button f-button--ghost f-button--icon" id="navbar-back" href="#" title="{{ __('Back') }}" aria-label="{{ __('Back') }}"><x-heroicon-o-arrow-left class="f-icon" /></a>
+    <a class="f-button f-button--ghost f-button--icon" id="navbar-back" href="#" title="{{ __('Back') }}" aria-label="{{ __('Back') }}"><x-icon.arrow-left class="f-icon" /></a>
 @endif
 <a class="app-sidebar__brand" href="{{ route('dashboard', ['dashboard' => 1]) }}" title="{{ __('Dashboard') }}">
     @if (($sidebar_logo = \Eventy::filter('layout.header_logo', '')) !== '')

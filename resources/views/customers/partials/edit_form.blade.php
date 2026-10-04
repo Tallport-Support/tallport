@@ -40,7 +40,7 @@
                         <div class="multi-item">
                             <div class="f-row">
                                 <input type="email" class="f-input" name="emails[]" value="{{ $email }}" maxlength="191" aria-label="{{ __('Email') }}">
-                                <a href="#" class="f-button f-button--ghost f-button--icon multi-remove" tabindex="-1" aria-label="{{ __('Delete') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></a>
+                                <a href="#" class="f-button f-button--ghost f-button--icon multi-remove" tabindex="-1" aria-label="{{ __('Delete') }}"><x-icon.x class="f-icon" aria-hidden="true" /></a>
                             </div>
                             @if ($errors->has('emails.'.$i))<p class="f-error">{{ $errors->first('emails.'.$i) }}</p>@endif
                         </div>
@@ -65,7 +65,7 @@
                                         </select>
                                         <input type="tel" class="f-input" name="phones[{{ $i }}][value]" value="{{ $phone['value'] }}" aria-label="{{ __('Phone') }}">
                                     </div>
-                                    <a href="#" class="f-button f-button--ghost f-button--icon multi-remove" tabindex="-1" aria-label="{{ __('Delete') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></a>
+                                    <a href="#" class="f-button f-button--ghost f-button--icon multi-remove" tabindex="-1" aria-label="{{ __('Delete') }}"><x-icon.x class="f-icon" aria-hidden="true" /></a>
                                 </div>
                             </div>
                         @endif
@@ -82,7 +82,7 @@
                         <div class="multi-item">
                             <div class="f-row">
                                 <input type="url" class="f-input" name="websites[]" value="{{ $website }}" maxlength="100" aria-label="{{ __('Website') }}">
-                                <a href="#" class="f-button f-button--ghost f-button--icon multi-remove" tabindex="-1" aria-label="{{ __('Delete') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></a>
+                                <a href="#" class="f-button f-button--ghost f-button--icon multi-remove" tabindex="-1" aria-label="{{ __('Delete') }}"><x-icon.x class="f-icon" aria-hidden="true" /></a>
                             </div>
                         </div>
                     @endforeach
@@ -107,7 +107,7 @@
                                         </select>
                                         <input type="text" class="f-input" name="social_profiles[{{ $i }}][value]" value="{{ $social_profile['value'] }}" aria-label="{{ __('Social Profiles') }}">
                                     </div>
-                                    <a href="#" class="f-button f-button--ghost f-button--icon multi-remove" tabindex="-1" aria-label="{{ __('Delete') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></a>
+                                    <a href="#" class="f-button f-button--ghost f-button--icon multi-remove" tabindex="-1" aria-label="{{ __('Delete') }}"><x-icon.x class="f-icon" aria-hidden="true" /></a>
                                 </div>
                             </div>
                         @endif

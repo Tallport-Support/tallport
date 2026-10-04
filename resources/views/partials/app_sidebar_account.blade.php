@@ -5,7 +5,7 @@
 <div class="web-notifications-host" x-data="tallportNotifications({{ (int) $web_notifications_info['unread_count'] }})">
 <x-fruit::floating-disclosure placement="above" class="web-notifications">
     <x-slot:trigger class="f-button f-button--ghost f-button--icon web-notifications-trigger" x-bind:class="{ 'has-unread': unread > 0 }" :aria-label="__('Notifications')" :title="__('Notifications')">
-        <x-heroicon-o-bell class="f-icon" aria-hidden="true" />
+        <x-icon.bell class="f-icon" aria-hidden="true" />
     </x-slot:trigger>
     <x-slot:content class="web-notifications-panel">
         <div class="web-notifications-header">

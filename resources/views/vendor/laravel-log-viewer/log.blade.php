@@ -30,7 +30,7 @@
                 <input type="hidden" name="l" value="{{ $file_query['l'] }}">
             @endif
             <x-fruit::menu :title="__('File')" class="app-logs__files">
-                <x-slot:trigger class="f-button--small"><x-heroicon-o-document-text class="f-icon" aria-hidden="true" /> {{ $current_file ?: __('File') }}</x-slot:trigger>
+                <x-slot:trigger class="f-button--small"><x-icon.file-text class="f-icon" aria-hidden="true" /> {{ $current_file ?: __('File') }}</x-slot:trigger>
                 @foreach ($files as $file)
                     <x-fruit::menu-link :href="'?l='.\Illuminate\Support\Facades\Crypt::encrypt($file)" :aria-current="$current_file == $file ? 'true' : null">{{ $file }}</x-fruit::menu-link>
                 @endforeach
@@ -52,7 +52,7 @@
             <x-fruit::alert tone="warning">{{ __('This log file is larger than 50 MB. Download it to read it.') }}</x-fruit::alert>
         @elseif (!$logs->total())
             <x-fruit::empty-state>
-                <x-slot:icon><x-heroicon-o-document-text /></x-slot:icon>
+                <x-slot:icon><x-icon.file-text /></x-slot:icon>
                 {{ __('No log records.') }}
             </x-fruit::empty-state>
         @else
@@ -97,7 +97,7 @@
 
         @if ($current_file)
             <div class="f-row app-logs__actions">
-                <a class="f-button f-button--small" href="?dl={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}"><x-heroicon-o-arrow-down-tray class="f-icon" aria-hidden="true" /> {{ __('Download') }}</a>
+                <a class="f-button f-button--small" href="?dl={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}"><x-icon.download class="f-icon" aria-hidden="true" /> {{ __('Download') }}</a>
                 <span class="f-toolbar__spacer"></span>
                 <a class="f-button f-button--small f-button--ghost" id="delete-log" href="?del={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && (window.location.href = $el.href))" data-confirm="{{ __('Delete this log file?') }}">{{ __('Delete') }}</a>
                 @if (count($files) > 1)

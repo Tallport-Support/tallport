@@ -24,7 +24,7 @@
     <x-fruit::alert :tone="in_array($flash_alert['type'], ['success', 'warning', 'danger']) ? $flash_alert['type'] : 'info'" class="flash-alert" x-data>
         {!! $flash_alert['html'] !!}
         <x-slot:actions>
-            <button type="button" class="f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Close') }}" x-on:click="$root.remove()"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button>
+            <button type="button" class="f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Close') }}" x-on:click="$root.remove()"><x-icon.x class="f-icon" aria-hidden="true" /></button>
         </x-slot:actions>
     </x-fruit::alert>
 @endforeach

@@ -20,16 +20,16 @@ class Sidebar
         Folder::TYPE_MINE       => 'user',
         Folder::TYPE_ASSIGNED   => 'users',
         Folder::TYPE_STARRED    => 'star',
-        Folder::TYPE_DRAFTS     => 'document-text',
-        Folder::TYPE_CLOSED     => 'check-circle',
-        Folder::TYPE_SPAM       => 'no-symbol',
-        Folder::TYPE_DELETED    => 'trash',
-        AllMailboxes::TYPE_SENT => 'paper-airplane',
+        Folder::TYPE_DRAFTS     => 'file-text',
+        Folder::TYPE_CLOSED     => 'circle-check',
+        Folder::TYPE_SPAM       => 'ban',
+        Folder::TYPE_DELETED    => 'trash-2',
+        AllMailboxes::TYPE_SENT => 'send',
     ];
 
     public static function folderIcon(Folder $folder)
     {
-        return 'heroicon-o-'.(self::FOLDER_ICONS[$folder->type] ?? 'folder');
+        return 'icon.'.(self::FOLDER_ICONS[$folder->type] ?? 'folder');
     }
 
     /**

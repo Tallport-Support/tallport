@@ -55,7 +55,7 @@
                             <a href="{{ route('conversations.create', ['mailbox_id' => $dash_mailbox->id]) }}" class="f-button f-button--small f-button--ghost">{{ __('New Conversation') }}</a>
                         @endif
                         @if (\Eventy::filter('mailbox.show_buttons', true, $dash_mailbox) && Auth::user()->can('viewMailboxMenu', Auth::user()) && Auth::user()->can('update', $dash_mailbox))
-                            <a href="{{ route('mailboxes.update', ['id' => $dash_mailbox->id]) }}" class="f-button f-button--small f-button--ghost f-button--icon dash-card__settings" title="{{ __('Mailbox Settings') }}" aria-label="{{ __('Mailbox Settings') }}"><x-heroicon-o-cog-6-tooth class="f-icon" aria-hidden="true" /></a>
+                            <a href="{{ route('mailboxes.update', ['id' => $dash_mailbox->id]) }}" class="f-button f-button--small f-button--ghost f-button--icon dash-card__settings" title="{{ __('Mailbox Settings') }}" aria-label="{{ __('Mailbox Settings') }}"><x-icon.settings class="f-icon" aria-hidden="true" /></a>
                         @endif
                     </div>
                 </x-fruit::card>
@@ -65,7 +65,7 @@
         <a href="{{ route('mailboxes') }}" class="f-button f-button--primary">{{ __("Manage Mailboxes") }}</a>
     @else
         <x-fruit::empty-state>
-            <x-slot:icon><x-heroicon-o-home /></x-slot:icon>
+            <x-slot:icon><x-icon.house /></x-slot:icon>
             {{ __("Welcome home!") }}
         </x-fruit::empty-state>
     @endif

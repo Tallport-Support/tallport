@@ -31,7 +31,7 @@
 
 @section('content')
     <x-fruit::empty-state class="split-view__empty">
-        <x-slot:icon><x-heroicon-o-envelope-open /></x-slot:icon>
+        <x-slot:icon><x-icon.mail-open /></x-slot:icon>
         <x-slot:title>{{ __('No conversation selected') }}</x-slot:title>
         {{ __('Choose a conversation from the list.') }}
     </x-fruit::empty-state>

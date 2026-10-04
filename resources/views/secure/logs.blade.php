@@ -77,7 +77,7 @@
 
     @else
         <x-fruit::empty-state>
-            <x-slot:icon><x-heroicon-o-document-text /></x-slot:icon>
+            <x-slot:icon><x-icon.file-text /></x-slot:icon>
             {{ __('Log is empty') }}
         </x-fruit::empty-state>
     @endif

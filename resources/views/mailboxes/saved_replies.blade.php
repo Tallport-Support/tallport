@@ -19,7 +19,7 @@
 
         @if (!count($tree))
             <x-fruit::empty-state>
-                <x-slot:icon><x-heroicon-o-chat-bubble-left-ellipsis /></x-slot:icon>
+                <x-slot:icon><x-icon.message-square-more /></x-slot:icon>
                 {{ __('Saved replies are texts (with files) that agents put in a reply in a click. Variables like the customer\'s name are filled in.') }}
             </x-fruit::empty-state>
         @else
@@ -27,12 +27,12 @@
             <ul class="saved-replies-list" x-data="tallportSavedRepliesOrder({{ $mailbox->id }})">
                 @foreach ($tree as [$saved_reply, $depth, $has_children])
                     <li class="saved-reply-item" data-saved-reply-id="{{ $saved_reply->id }}" data-parent-id="{{ (int) $saved_reply->parent_saved_reply_id }}" style="margin-inline-start: {{ $depth * 24 }}px">
-                        <x-heroicon-o-bars-3 class="f-icon saved-reply-handle" aria-hidden="true" title="{{ __('Drag to change the order') }}" />
-                        @if ($has_children)<x-heroicon-o-folder-open class="f-icon" aria-hidden="true" />@endif
+                        <x-icon.menu class="f-icon saved-reply-handle" aria-hidden="true" title="{{ __('Drag to change the order') }}" />
+                        @if ($has_children)<x-icon.folder-open class="f-icon" aria-hidden="true" />@endif
                         <a href="{{ route('mailboxes.saved_replies.edit', ['id' => $mailbox->id, 'saved_reply_id' => $saved_reply->id]) }}">{{ $saved_reply->name }}</a>
                         @if ($saved_reply->global)<x-fruit::badge title="{{ __('Available in every mailbox') }}">{{ __('Global') }}</x-fruit::badge>@endif
                         @if ($saved_reply->auto_load)<x-fruit::badge tone="accent">{{ __('Default reply') }}</x-fruit::badge>@endif
-                        @if ($saved_reply->attachments)<x-heroicon-o-paper-clip class="f-icon" aria-hidden="true" />@endif
+                        @if ($saved_reply->attachments)<x-icon.paperclip class="f-icon" aria-hidden="true" />@endif
                     </li>
                 @endforeach
             </ul>

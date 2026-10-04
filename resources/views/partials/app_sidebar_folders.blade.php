@@ -1,7 +1,7 @@
 {{-- A mailbox's folders in the sidebar (also sent when new messages come in: App\Events\RealtimeMailboxNewThread). --}}
 @if (\Helper::isChatModeAvailable())
     <x-fruit::sidebar-item :href="route('conversations.chats', ['mailbox_id' => $sidebar_mailbox->id, 'chat_mode' => '1'])" :current="request()->routeIs('conversations.chats') && request()->mailbox_id == $sidebar_mailbox->id">
-        <x-slot:icon><x-heroicon-o-chat-bubble-left-right class="f-icon" aria-hidden="true" /></x-slot:icon>
+        <x-slot:icon><x-icon.messages-square class="f-icon" aria-hidden="true" /></x-slot:icon>
         {{ __('Chats') }}
     </x-fruit::sidebar-item>
 @endif

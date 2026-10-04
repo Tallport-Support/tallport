@@ -35,7 +35,7 @@
         @endphp
         <details class="f-sidebar__group app-sidebar__mailbox" data-mailbox_id="{{ $sidebar_mailbox->id }}" @if ($sidebar_is_current || (!$sidebar_all && count($sidebar_mailboxes) == 1)) open @endif>
             <summary class="f-sidebar__item">
-                @if ($sidebar_mailbox->isArchived())<x-heroicon-o-lock-closed class="f-icon" aria-hidden="true" />@else<x-heroicon-o-envelope class="f-icon" aria-hidden="true" />@endif
+                @if ($sidebar_mailbox->isArchived())<x-icon.lock class="f-icon" aria-hidden="true" />@else<x-icon.mail class="f-icon" aria-hidden="true" />@endif
                 <span class="f-sidebar__identity mailbox-name">
                     @if (count($sidebar_mailboxes) == 1)
                         @action('menu.mailbox_single.before_name', $sidebar_mailbox)
@@ -56,9 +56,9 @@
                 @include('partials/app_sidebar_folders', ['sidebar_mailbox' => $sidebar_mailbox, 'sidebar_folders' => $sidebar_folders, 'sidebar_current_folder_id' => $sidebar_is_current ? $sidebar_folder_id : null])
             </div>
             <div class="app-sidebar__mailbox-actions">
-                <a href="{{ route('conversations.create', ['mailbox_id' => $sidebar_mailbox->id]) }}" class="f-button f-button--ghost f-button--small @if ($sidebar_mailbox->id == $sidebar_new_mailbox_id) new-conversation-link @endif"><x-heroicon-o-pencil-square class="f-icon" aria-hidden="true" /> {{ __('New Conversation') }}</a>
+                <a href="{{ route('conversations.create', ['mailbox_id' => $sidebar_mailbox->id]) }}" class="f-button f-button--ghost f-button--small @if ($sidebar_mailbox->id == $sidebar_new_mailbox_id) new-conversation-link @endif"><x-icon.square-pen class="f-icon" aria-hidden="true" /> {{ __('New Conversation') }}</a>
                 <x-fruit::menu :title="__('Mailbox')" class="app-sidebar__mailbox-menu">
-                    <x-slot:trigger class="f-button--ghost f-button--icon f-button--small" :aria-label="__('More')"><x-heroicon-o-ellipsis-horizontal class="f-icon" aria-hidden="true" /></x-slot:trigger>
+                    <x-slot:trigger class="f-button--ghost f-button--icon f-button--small" :aria-label="__('More')"><x-icon.ellipsis class="f-icon" aria-hidden="true" /></x-slot:trigger>
                     @if ($sidebar_user->can('update', $sidebar_mailbox))
                         <x-fruit::menu-link :href="route('mailboxes.update', ['id' => $sidebar_mailbox->id])">{{ __('Mailbox Settings') }}</x-fruit::menu-link>
                     @endif
@@ -72,12 +72,12 @@
 
     <hr class="app-sidebar__separator">
     <x-fruit::sidebar-item :href="route('kb')" :current="\App\Misc\Helper::isMenuSelected('kb')">
-        <x-slot:icon><x-heroicon-o-book-open class="f-icon" aria-hidden="true" /></x-slot:icon>
+        <x-slot:icon><x-icon.book-open class="f-icon" aria-hidden="true" /></x-slot:icon>
         {{ __('Knowledge Base') }}
     </x-fruit::sidebar-item>
     @if (App\Http\Controllers\ReportsController::canAccess($sidebar_user))
         <x-fruit::sidebar-item :href="route('reports.conversations')" :current="\App\Misc\Helper::isMenuSelected('reports')">
-            <x-slot:icon><x-heroicon-o-chart-bar class="f-icon" aria-hidden="true" /></x-slot:icon>
+            <x-slot:icon><x-icon.chart-column class="f-icon" aria-hidden="true" /></x-slot:icon>
             {{ __('Reports') }}
         </x-fruit::sidebar-item>
     @endif
@@ -88,7 +88,7 @@
     )
         <details class="f-sidebar__group" @if (\App\Misc\Helper::isMenuSelected('manage')) open @endif>
             <summary class="f-sidebar__item">
-                <x-heroicon-o-wrench-screwdriver class="f-icon" aria-hidden="true" />
+                <x-icon.wrench class="f-icon" aria-hidden="true" />
                 <span class="f-sidebar__identity">{{ __('Manage') }}</span>
                 <svg class="f-icon f-sidebar__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>
             </summary>

@@ -13,7 +13,7 @@
     $picker_articles = App\Http\Controllers\KnowledgeBaseController::forEditor($mailbox->id);
 @endphp
 <x-fruit::floating-disclosure class="editor-picker saved-replies-picker" x-data="{ q: '' }" x-on:toggle="if ($el.open) { q = ''; $nextTick(() => $el.querySelector('input[type=search]').focus()) }">
-    <x-slot:trigger class="f-button f-button--ghost f-button--icon" :aria-label="__('Saved Replies')" :title="__('Saved Replies')"><x-heroicon-o-chat-bubble-bottom-center-text class="f-icon" aria-hidden="true" /></x-slot:trigger>
+    <x-slot:trigger class="f-button f-button--ghost f-button--icon" :aria-label="__('Saved Replies')" :title="__('Saved Replies')"><x-icon.message-square-text class="f-icon" aria-hidden="true" /></x-slot:trigger>
     <x-fruit::search x-model="q" :label="__('Search')" :placeholder="__('Search').'…'" />
     <ul class="editor-picker__list">
         @foreach ($picker_replies as $picker_item)
@@ -42,7 +42,7 @@
 
 @if (count($picker_articles))
     <x-fruit::floating-disclosure class="editor-picker kb-picker" x-data="{ q: '' }" x-on:toggle="if ($el.open) { q = ''; $nextTick(() => $el.querySelector('input[type=search]').focus()) }">
-        <x-slot:trigger class="f-button f-button--ghost f-button--icon" :aria-label="__('Knowledge Base')" :title="__('Knowledge Base')"><x-heroicon-o-book-open class="f-icon" aria-hidden="true" /></x-slot:trigger>
+        <x-slot:trigger class="f-button f-button--ghost f-button--icon" :aria-label="__('Knowledge Base')" :title="__('Knowledge Base')"><x-icon.book-open class="f-icon" aria-hidden="true" /></x-slot:trigger>
         <x-fruit::search x-model="q" :label="__('Search')" :placeholder="__('Search').'…'" />
         <ul class="editor-picker__list">
             @php $picker_category = false; @endphp

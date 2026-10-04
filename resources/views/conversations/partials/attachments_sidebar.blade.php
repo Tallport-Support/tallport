@@ -15,7 +15,7 @@
         <ul class="sidebar-block-list attachments-list">
             @foreach ($sidebar_attachments as $attachment)
                 <li data-attachment-id="{{ $attachment->id }}" data-mime="{{ $attachment->mime_type }}" @if (App\Http\Controllers\AttachmentsController::isEmail($attachment)) data-email-url="{{ route('attachments.email', ['id' => $attachment->id]) }}" @endif>
-                    <a href="{{ $attachment->url() }}" target="_blank" class="attachment-link"><x-heroicon-o-paper-clip class="f-icon" aria-hidden="true" /><span>{{ $attachment->file_name }} <span class="f-muted">({{ $attachment->getSizeName() }})</span></span></a>
+                    <a href="{{ $attachment->url() }}" target="_blank" class="attachment-link"><x-icon.paperclip class="f-icon" aria-hidden="true" /><span>{{ $attachment->file_name }} <span class="f-muted">({{ $attachment->getSizeName() }})</span></span></a>
                 </li>
             @endforeach
         </ul>

@@ -26,7 +26,7 @@
         @endif
         @if (!count($automatic) && !count($manual))
             <x-fruit::empty-state>
-                <x-slot:icon><x-heroicon-o-arrows-right-left /></x-slot:icon>
+                <x-slot:icon><x-icon.arrow-left-right /></x-slot:icon>
                 {{ __('Workflows act on conversations by themselves: when a new one comes in, someone replies, or a customer has waited too long. Manual workflows run from a conversation\'s menu.') }}
             </x-fruit::empty-state>
         @else
@@ -36,7 +36,7 @@
                     <ul class="workflows-list" data-mailbox_id="{{ $mailbox ? $mailbox->id : '' }}">
                         @foreach ($list as $workflow)
                             <li class="workflow-item" data-workflow-id="{{ $workflow->id }}">
-                                <x-heroicon-o-bars-3 class="f-icon workflow-handle" aria-hidden="true" title="{{ __('Drag to change the order') }}" />
+                                <x-icon.menu class="f-icon workflow-handle" aria-hidden="true" title="{{ __('Drag to change the order') }}" />
                                 <a href="{{ $workflow->url() }}">{{ $workflow->name }}</a>
                                 @if (!$workflow->complete)<x-fruit::badge tone="warning">{{ __('Incomplete') }}</x-fruit::badge>@elseif (!$workflow->active)<x-fruit::badge>{{ __('Inactive') }}</x-fruit::badge>@endif
                                 @if ($workflow->isAutomatic())<small class="f-muted workflow-item__meta">{{ __('Ran on :count conversations', ['count' => $workflow->conversationsCount()]) }}</small>@endif

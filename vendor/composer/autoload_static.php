@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3c73e184b44e38eaac73543de84411a5
+class ComposerStaticInit2902b8515f6672bf67bcf119cdb6b034
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -24,7 +24,6 @@ class ComposerStaticInit3c73e184b44e38eaac73543de84411a5
         '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
         '47e1160838b5e5a10346ac4084b58c23' => __DIR__ . '/..' . '/laravel/prompts/src/helpers.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
-        '29ffe97919493792170d47eb03a68da9' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/helpers.php',
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         '35a6ad97d21e794e7e22a17d806652e4' => __DIR__ . '/..' . '/nunomaduro/termwind/src/Functions.php',
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
@@ -229,8 +228,6 @@ class ComposerStaticInit3c73e184b44e38eaac73543de84411a5
         'B' =>
         array (
             'Brick\\Math\\' => 11,
-            'BladeUI\\Icons\\' => 14,
-            'BladeUI\\Heroicons\\' => 18,
             'BaconQrCode\\' => 12,
             'BN\\' => 3,
             'BI\\' => 3,
@@ -732,14 +729,6 @@ class ComposerStaticInit3c73e184b44e38eaac73543de84411a5
         array (
             0 => __DIR__ . '/..' . '/brick/math/src',
         ),
-        'BladeUI\\Icons\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src',
-        ),
-        'BladeUI\\Heroicons\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/blade-ui-kit/blade-heroicons/src',
-        ),
         'BaconQrCode\\' =>
         array (
             0 => __DIR__ . '/..' . '/bacon/bacon-qr-code/src',
@@ -1190,19 +1179,6 @@ class ComposerStaticInit3c73e184b44e38eaac73543de84411a5
         'BaconQrCode\\Renderer\\RendererStyle\\GradientType' => __DIR__ . '/..' . '/bacon/bacon-qr-code/src/Renderer/RendererStyle/GradientType.php',
         'BaconQrCode\\Renderer\\RendererStyle\\RendererStyle' => __DIR__ . '/..' . '/bacon/bacon-qr-code/src/Renderer/RendererStyle/RendererStyle.php',
         'BaconQrCode\\Writer' => __DIR__ . '/..' . '/bacon/bacon-qr-code/src/Writer.php',
-        'BladeUI\\Heroicons\\BladeHeroiconsServiceProvider' => __DIR__ . '/..' . '/blade-ui-kit/blade-heroicons/src/BladeHeroiconsServiceProvider.php',
-        'BladeUI\\Icons\\BladeIconsServiceProvider' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php',
-        'BladeUI\\Icons\\Components\\Icon' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Components/Icon.php',
-        'BladeUI\\Icons\\Components\\Svg' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Components/Svg.php',
-        'BladeUI\\Icons\\Concerns\\RendersAttributes' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Concerns/RendersAttributes.php',
-        'BladeUI\\Icons\\Console\\CacheCommand' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Console/CacheCommand.php',
-        'BladeUI\\Icons\\Console\\ClearCommand' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Console/ClearCommand.php',
-        'BladeUI\\Icons\\Exceptions\\CannotRegisterIconSet' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Exceptions/CannotRegisterIconSet.php',
-        'BladeUI\\Icons\\Exceptions\\SvgNotFound' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Exceptions/SvgNotFound.php',
-        'BladeUI\\Icons\\Factory' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Factory.php',
-        'BladeUI\\Icons\\Generation\\IconGenerator' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Generation/IconGenerator.php',
-        'BladeUI\\Icons\\IconsManifest' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/IconsManifest.php',
-        'BladeUI\\Icons\\Svg' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Svg.php',
         'Brick\\Math\\BigDecimal' => __DIR__ . '/..' . '/brick/math/src/BigDecimal.php',
         'Brick\\Math\\BigInteger' => __DIR__ . '/..' . '/brick/math/src/BigInteger.php',
         'Brick\\Math\\BigNumber' => __DIR__ . '/..' . '/brick/math/src/BigNumber.php',
@@ -8883,10 +8859,10 @@ class ComposerStaticInit3c73e184b44e38eaac73543de84411a5
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit3c73e184b44e38eaac73543de84411a5::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit3c73e184b44e38eaac73543de84411a5::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit3c73e184b44e38eaac73543de84411a5::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit3c73e184b44e38eaac73543de84411a5::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit2902b8515f6672bf67bcf119cdb6b034::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit2902b8515f6672bf67bcf119cdb6b034::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit2902b8515f6672bf67bcf119cdb6b034::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit2902b8515f6672bf67bcf119cdb6b034::$classMap;
 
         }, null, ClassLoader::class);
     }

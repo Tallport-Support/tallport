@@ -15,7 +15,7 @@
 	    </li>
 	@else
 		<li class="chat-list__more">
-	        <a href="#" class="f-button f-button--ghost chats-load-more" data-loading-text="···" aria-label="{{ __('Load more') }}"><x-heroicon-o-chevron-down class="f-icon" aria-hidden="true" /></a>
+	        <a href="#" class="f-button f-button--ghost chats-load-more" data-loading-text="···" aria-label="{{ __('Load more') }}"><x-icon.chevron-down class="f-icon" aria-hidden="true" /></a>
 	    </li>
 	@endif
 @endforeach

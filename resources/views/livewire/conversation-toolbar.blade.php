@@ -27,13 +27,13 @@
         @endforeach
 
         @if (App\Ai\Drafts::allowed(Auth::user(), $conversation))
-            <button type="button" class="f-button f-button--ghost f-button--icon conv-action ai-draft-action" x-on:click="$dispatch('ai-draft-request')" title="{{ __('Draft with AI') }}" aria-label="{{ __('Draft with AI') }}"><x-heroicon-o-sparkles class="f-icon" aria-hidden="true" /></button>
+            <button type="button" class="f-button f-button--ghost f-button--icon conv-action ai-draft-action" x-on:click="$dispatch('ai-draft-request')" title="{{ __('Draft with AI') }}" aria-label="{{ __('Draft with AI') }}"><x-icon.sparkles class="f-icon" aria-hidden="true" /></button>
         @endif
 
         @action('conversation.action_buttons', $conversation, $mailbox)
 
         <x-fruit::menu :title="__('More Actions')" class="conv-action conv-more-actions">
-            <x-slot:trigger class="f-button--ghost f-button--icon" :aria-label="__('More Actions')" :title="__('More Actions')"><x-heroicon-o-ellipsis-horizontal class="f-icon" aria-hidden="true" /></x-slot:trigger>
+            <x-slot:trigger class="f-button--ghost f-button--icon" :aria-label="__('More Actions')" :title="__('More Actions')"><x-icon.ellipsis class="f-icon" aria-hidden="true" /></x-slot:trigger>
             <ul class="menu-module-items">@action('conversation.prepend_action_buttons', $conversation, $mailbox)</ul>
             @foreach ($dropdown_actions as $action_key => $action)
                 @if ($action_key === 'delete_mobile')
@@ -63,7 +63,7 @@
         @if ($conversation->state != App\Conversation::STATE_DELETED)
             <li>
                 <x-fruit::menu :title="__('Assignee')" id="conv-assignee" class="conv-user">
-                    <x-slot:trigger class="f-button--small" :title="__('Assignee').': '.$conversation->getAssigneeName(true)"><x-heroicon-o-user class="f-icon" aria-hidden="true" /> <span class="conv-info-val"><span>{{ $conversation->getAssigneeName(true) }}</span></span></x-slot:trigger>
+                    <x-slot:trigger class="f-button--small" :title="__('Assignee').': '.$conversation->getAssigneeName(true)"><x-icon.user class="f-icon" aria-hidden="true" /> <span class="conv-info-val"><span>{{ $conversation->getAssigneeName(true) }}</span></span></x-slot:trigger>
                     <x-fruit::menu-link href="#" data-user_id="-1" wire:click.prevent="assign(-1)" :class="!$conversation->user_id ? 'active' : ''" :aria-current="!$conversation->user_id ? 'true' : null">{{ __("Anyone") }}</x-fruit::menu-link>
                     <x-fruit::menu-link href="#" :data-user_id="Auth::user()->id" wire:click.prevent="assign({{ Auth::user()->id }})" :class="$conversation->user_id == Auth::user()->id ? 'active' : ''" :aria-current="$conversation->user_id == Auth::user()->id ? 'true' : null">{{ __("Me") }}</x-fruit::menu-link>
                     @foreach ($mailbox->usersAssignable() as $assignable_user)
@@ -92,15 +92,15 @@
                         <x-fruit::menu-link href="#" data-status="not_spam" wire:click.prevent="changeStatus('not_spam')">{{ __('Not Spam') }}</x-fruit::menu-link>
                     @endif
                 @else
-                    <x-slot:trigger class="f-button--small"><x-heroicon-o-trash class="f-icon" aria-hidden="true" /> <span class="conv-info-val"><span>{{ __('Deleted') }}</span></span></x-slot:trigger>
+                    <x-slot:trigger class="f-button--small"><x-icon.trash-2 class="f-icon" aria-hidden="true" /> <span class="conv-info-val"><span>{{ __('Deleted') }}</span></span></x-slot:trigger>
                     <x-fruit::menu-link href="#" class="conv-restore-trigger" wire:click.prevent="restore">{{ __('Restore') }}</x-fruit::menu-link>
                 @endif
             </x-fruit::menu>
         </li>@action('conversation.convinfo.before_nav', $conversation, $mailbox)<li class="conv-next-prev">
-            <a href="{{ $conversation->urlPrev(App\Conversation::getFolderParam()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Newer") }}" aria-label="{{ __("Newer") }}"><x-heroicon-o-chevron-up class="f-icon" aria-hidden="true" /></a>
-            <a href="{{ $conversation->urlNext(App\Conversation::getFolderParam()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Older") }}" aria-label="{{ __("Older") }}"><x-heroicon-o-chevron-down class="f-icon" aria-hidden="true" /></a>
+            <a href="{{ $conversation->urlPrev(App\Conversation::getFolderParam()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Newer") }}" aria-label="{{ __("Newer") }}"><x-icon.chevron-up class="f-icon" aria-hidden="true" /></a>
+            <a href="{{ $conversation->urlNext(App\Conversation::getFolderParam()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Older") }}" aria-label="{{ __("Older") }}"><x-icon.chevron-down class="f-icon" aria-hidden="true" /></a>
         </li><li class="conv-customer-toggle">
-            <button type="button" class="f-button f-button--ghost f-button--icon app-inspector-toggle" x-data x-on:click="let ws = $el.closest('.app-workspace'); ws.dataset.view = ws.dataset.view === 'inspector' ? '' : 'inspector'; $el.setAttribute('aria-expanded', ws.dataset.view === 'inspector')" aria-expanded="false" aria-controls="app-inspector" aria-label="{{ __('Customer') }}" title="{{ __('Customer') }}"><x-heroicon-o-user-circle class="f-icon" aria-hidden="true" /></button>
+            <button type="button" class="f-button f-button--ghost f-button--icon app-inspector-toggle" x-data x-on:click="let ws = $el.closest('.app-workspace'); ws.dataset.view = ws.dataset.view === 'inspector' ? '' : 'inspector'; $el.setAttribute('aria-expanded', ws.dataset.view === 'inspector')" aria-expanded="false" aria-controls="app-inspector" aria-label="{{ __('Customer') }}" title="{{ __('Customer') }}"><x-icon.circle-user class="f-icon" aria-hidden="true" /></button>
         </li>
     </ul>
 </div>

@@ -22,7 +22,7 @@
                 <p class="f-muted">{{ __('No articles found.') }}</p>
             @else
                 <x-fruit::empty-state>
-                    <x-slot:icon><x-heroicon-o-book-open /></x-slot:icon>
+                    <x-slot:icon><x-icon.book-open /></x-slot:icon>
                     {{ __('Articles for your team: how things work, answers to common questions. Insert them in replies from the editor; the AI Assistant drafts replies with them.') }}
                 </x-fruit::empty-state>
             @endif

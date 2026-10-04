@@ -16,7 +16,7 @@
         @if (Auth::user()->isAdmin() && !\Helper::isPrint())
             <x-slot:actions>
                 <x-fruit::menu :title="__('More Actions')" class="thread-options">
-                    <x-slot:trigger class="f-button--ghost f-button--icon" :aria-label="__('More Actions')"><x-heroicon-o-ellipsis-horizontal class="f-icon" aria-hidden="true" /></x-slot:trigger>
+                    <x-slot:trigger class="f-button--ghost f-button--icon" :aria-label="__('More Actions')"><x-icon.ellipsis class="f-icon" aria-hidden="true" /></x-slot:trigger>
                     <ul class="menu-module-items">@action('thread.menu', $thread)</ul>
                     <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" data-fruit-dialog-url :data-fruit-dialog-title="__('Outgoing Emails')" data-fruit-dialog-size="large">{{ __("Outgoing Emails") }}</x-fruit::menu-link>
                     <ul class="menu-module-items">@action('thread.menu.append', $thread)</ul>
@@ -202,7 +202,7 @@
                     <button type="button" class="f-button f-button--small f-button--ghost discard-draft-trigger" x-data x-on:click="Tallport.confirm({message: Lang.get('messages.confirm_discard_draft'), confirm: Lang.get('messages.discard'), tone: 'danger'}).then(ok => ok && Livewire.dispatch('composer-discard-draft', {thread_id: {{ $thread->id }}}))">{{ __('Discard') }}</button>
                 @else
                     <x-fruit::menu :title="__('More Actions')" class="thread-options">
-                        <x-slot:trigger class="f-button--ghost f-button--icon f-button--small" :aria-label="__('More Actions')"><x-heroicon-o-ellipsis-horizontal class="f-icon" aria-hidden="true" /></x-slot:trigger>
+                        <x-slot:trigger class="f-button--ghost f-button--icon f-button--small" :aria-label="__('More Actions')"><x-icon.ellipsis class="f-icon" aria-hidden="true" /></x-slot:trigger>
                         @if ($sender_sent_at = App\Misc\SenderTime::sentAt($thread))
                             {{-- When the customer sent it, their time. --}}
                             <x-fruit::menu-group :label="__('Sent at :time their time (GMT:offset)', ['time' => App\Misc\SenderTime::format($sender_sent_at, $sender_sent_at->getOffsetString()), 'offset' => $sender_sent_at->getOffsetString()])"></x-fruit::menu-group>

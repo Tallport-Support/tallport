@@ -72,7 +72,7 @@
                     $filter_assignee = !empty($params['user_id']) ? $assignees->firstWhere('id', (int) $params['user_id']) : null;
                 @endphp
                 <x-fruit::menu :title="__('Assigned To')" class="conv-owner @if (!empty($params['user_id'])) filtered @endif">
-                    <x-slot:trigger class="f-button--ghost f-button--small"><x-heroicon-o-funnel class="f-icon" aria-hidden="true" /> {{ $filter_assignee ? $filter_assignee->getFullName() : __('Assigned To') }}</x-slot:trigger>
+                    <x-slot:trigger class="f-button--ghost f-button--small"><x-icon.funnel class="f-icon" aria-hidden="true" /> {{ $filter_assignee ? $filter_assignee->getFullName() : __('Assigned To') }}</x-slot:trigger>
                     <x-fruit::menu-link href="#" wire:click.prevent="filterAssignee" :aria-current="empty($params['user_id']) ? 'true' : null">{{ __('Anyone') }}</x-fruit::menu-link>
                     <x-fruit::menu-separator />
                     @foreach ($assignees as $assignee)
@@ -110,21 +110,21 @@
                         @if (empty($no_customer))
                             <x-slot:subtitle>@include('conversations/partials/badges'){{ '' }}@if ($conversation->isChat() && $conversation->getChannelName())<span class="f-badge conv-channel">{{ $conversation->getChannelName() }}</span> @endif{{ '' }}@action('conversations_table.before_subject', $conversation){{ $conversation->getSubject() }}@action('conversations_table.after_subject', $conversation)</x-slot:subtitle>
                         @endif
-                        <x-slot:preview>@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner)<x-heroicon-o-sparkles class="f-icon ai-assistant-icon" role="img" :aria-label="__('AI Assistant')" /> {{ $ai_one_liner }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</x-slot:preview>
+                        <x-slot:preview>@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner)<x-icon.sparkles class="f-icon ai-assistant-icon" role="img" :aria-label="__('AI Assistant')" /> {{ $ai_one_liner }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</x-slot:preview>
                         <x-slot:meta class="conv-row__meta">
                             <span class="conv-number">#{{ $conversation->number }}</span>
-                            @if ($conversation->threads_count > 1)<span class="conv-counter" title="{{ __('Messages') }}"><x-heroicon-o-chat-bubble-left-right class="f-icon" aria-hidden="true" /> {{ $conversation->threads_count }}</span>@endif
+                            @if ($conversation->threads_count > 1)<span class="conv-counter" title="{{ __('Messages') }}"><x-icon.messages-square class="f-icon" aria-hidden="true" /> {{ $conversation->threads_count }}</span>@endif
                             @if (!empty($params['show_mailbox']))<span>{{ $conversation->mailbox_cached->name }}</span>@endif
-                            @if ($conversation->user_id && ($assignee = $conversation->user))<span class="conv-owner-name"><x-heroicon-o-user class="f-icon" aria-hidden="true" /> {{ $assignee->getFullName() }}</span>@endif
-                            @if ($conversation->has_attachments)<x-heroicon-o-paper-clip class="f-icon" :aria-label="__('Attachments')" role="img" />@endif
-                            @if ($conversation->isPhone())<x-heroicon-o-phone class="f-icon" aria-hidden="true" />@endif
+                            @if ($conversation->user_id && ($assignee = $conversation->user))<span class="conv-owner-name"><x-icon.user class="f-icon" aria-hidden="true" /> {{ $assignee->getFullName() }}</span>@endif
+                            @if ($conversation->has_attachments)<x-icon.paperclip class="f-icon" :aria-label="__('Attachments')" role="img" />@endif
+                            @if ($conversation->isPhone())<x-icon.phone class="f-icon" aria-hidden="true" />@endif
                             @if (!empty($viewers[$conversation->id]))
-                                <span class="viewer-badge @if (!empty($viewers[$conversation->id]['replying'])) viewer-replying @endif"><x-heroicon-o-eye class="f-icon" aria-hidden="true" /> {{ implode(', ', array_map(function ($viewer) { return __($viewer['replying'] ? ':user is replying' : ':user is viewing', ['user' => $viewer['user']->getFullName()]); }, $viewers[$conversation->id]['users'])) }}</span>
+                                <span class="viewer-badge @if (!empty($viewers[$conversation->id]['replying'])) viewer-replying @endif"><x-icon.eye class="f-icon" aria-hidden="true" /> {{ implode(', ', array_map(function ($viewer) { return __($viewer['replying'] ? ':user is replying' : ':user is viewing', ['user' => $viewer['user']->getFullName()]); }, $viewers[$conversation->id]['users'])) }}</span>
                             @endif
                         </x-slot:meta>
                     </x-fruit::item-link>
                     @if (empty($no_checkboxes))
-                        <x-fruit::button variant="ghost" size="small" class="f-button--icon conv-star" wire:click="star({{ $conversation->id }})" :aria-pressed="$conv_starred ? 'true' : 'false'" :aria-label="__('Star Conversation')" :title="$conv_starred ? __('Unstar Conversation') : __('Star Conversation')"><x-heroicon-o-star class="f-icon conv-star__off" aria-hidden="true" /><x-heroicon-s-star class="f-icon conv-star__on" aria-hidden="true" /></x-fruit::button>
+                        <x-fruit::button variant="ghost" size="small" class="f-button--icon conv-star" wire:click="star({{ $conversation->id }})" :aria-pressed="$conv_starred ? 'true' : 'false'" :aria-label="__('Star Conversation')" :title="$conv_starred ? __('Unstar Conversation') : __('Star Conversation')"><x-icon.star class="f-icon conv-star__off" aria-hidden="true" /><x-icon.star fill="currentColor" class="f-icon conv-star__on" aria-hidden="true" /></x-fruit::button>
                     @endif
                 </li>
             @endforeach
@@ -148,7 +148,7 @@
     </section>
 @else
     <x-fruit::empty-state>
-        <x-slot:icon><x-heroicon-o-inbox /></x-slot:icon>
+        <x-slot:icon><x-icon.inbox /></x-slot:icon>
         {{ __('There are no conversations here') }}
     </x-fruit::empty-state>
 @endif
