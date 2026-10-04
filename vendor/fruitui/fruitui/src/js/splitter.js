@@ -1,7 +1,12 @@
 import { isRtl } from './popup.js';
 import { fruitMessage } from './messages.js';
 
-/** A bounded, vertical window splitter. No application navigation or persistence. */
+/**
+ * A bounded, vertical window splitter. It starts from the pane's rendered width, so a width the
+ * server renders (style="--f-list-width: 412px" on the workspace) holds. Each committed resize (a
+ * drag's end, keyboard steps after a pause, a double-click reset to the default) sends a bubbling
+ * fruit-resize event with { pane, variable, value } in pixels; persistence belongs to the app.
+ */
 export function fruitSplitter({ pane, variable, min = 160, max = 420, reserve = 280, flexible, edge = 'end' }) {
   if (
     !pane ||
@@ -18,7 +23,7 @@ export function fruitSplitter({ pane, variable, min = 160, max = 420, reserve = 
       'FruitUI splitter requires pane/flexible IDs, a --f- variable, positive bounds and start/end edge.',
     );
   }
-  let handle, frame, primary, remaining, observer, mutation, animation, drag, initial, handlers;
+  let handle, frame, primary, remaining, observer, mutation, animation, drag, handlers, pending;
   const visible = element => !!element?.getClientRects().length && getComputedStyle(element).display !== 'none';
   return {
     init() {
@@ -27,7 +32,6 @@ export function fruitSplitter({ pane, variable, min = 160, max = 420, reserve = 
       primary = frame?.querySelector(`[id="${CSS.escape(pane)}"]`);
       remaining = frame?.querySelector(`[id="${CSS.escape(flexible)}"]`);
       if (!primary || !remaining) throw new Error('FruitUI splitter panes must belong to its workspace.');
-      initial = visible(primary) ? primary.getBoundingClientRect().width : undefined;
       handle.setAttribute('data-ready', '');
       handle.setAttribute('data-edge', edge);
       handle.setAttribute('aria-controls', pane);
@@ -73,7 +77,6 @@ export function fruitSplitter({ pane, variable, min = 160, max = 420, reserve = 
         return;
       }
       const { width, upper } = this.bounds();
-      initial ??= width;
       if (width > upper + 1 || width < min - 1) this.set(width);
       this.describe();
     },
@@ -115,20 +118,34 @@ export function fruitSplitter({ pane, variable, min = 160, max = 420, reserve = 
       const direction = (isRtl(frame) ? -1 : 1) * (edge === 'start' ? -1 : 1);
       this.set(drag.width + (event.clientX - drag.x) * direction);
     },
-    end() {
+    end(commit = true) {
       if (!drag) return;
-      const id = drag.id;
+      const { id, width } = drag;
       drag = undefined;
       handle.removeAttribute('data-resizing');
       frame.removeAttribute('data-resizing');
       if (handle.hasPointerCapture(id)) handle.releasePointerCapture(id);
+      if (commit && Math.abs(primary.getBoundingClientRect().width - width) >= 1) this.commit();
     },
     cancel() {
       if (!drag) return;
       if (drag.previous) frame.style.setProperty(variable, drag.previous);
       else frame.style.removeProperty(variable);
-      this.end();
+      this.end(false);
       this.schedule();
+    },
+    /** Report the committed width, at once or after keyboard steps pause. */
+    commit(delay = 0) {
+      clearTimeout(pending);
+      pending = setTimeout(() => {
+        if (!visible(primary)) return;
+        handle.dispatchEvent(
+          new CustomEvent('fruit-resize', {
+            bubbles: true,
+            detail: { pane, variable, value: Math.round(primary.getBoundingClientRect().width) },
+          }),
+        );
+      }, delay);
     },
     key(event) {
       if (event.key === 'Escape' && drag) {
@@ -150,12 +167,17 @@ export function fruitSplitter({ pane, variable, min = 160, max = 420, reserve = 
       event.preventDefault();
       event.stopPropagation();
       this.set(values[event.key]);
+      this.commit(400);
     },
+    /** Back to the stylesheet's width: drop the custom value, then report the result. */
     reset() {
-      this.set(initial);
+      frame.style.removeProperty(variable);
+      this.schedule();
+      requestAnimationFrame(() => this.commit());
     },
     destroy() {
-      this.end();
+      clearTimeout(pending);
+      this.end(false);
       observer?.disconnect();
       mutation?.disconnect();
       cancelAnimationFrame(animation);

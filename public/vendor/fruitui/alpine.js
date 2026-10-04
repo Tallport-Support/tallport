@@ -462,7 +462,7 @@ function E({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280,
 	return {
 		init() {
 			if (c = this.$el, l = c.closest(".f-workspace"), u = l?.querySelector(`[id="${CSS.escape(e)}"]`), d = l?.querySelector(`[id="${CSS.escape(a)}"]`), !u || !d) throw Error("FruitUI splitter panes must belong to its workspace.");
-			g = v(u) ? u.getBoundingClientRect().width : void 0, c.setAttribute("data-ready", ""), c.setAttribute("data-edge", s), c.setAttribute("aria-controls", e), _ = Object.fromEntries(Object.entries({
+			c.setAttribute("data-ready", ""), c.setAttribute("data-edge", s), c.setAttribute("aria-controls", e), g = Object.fromEntries(Object.entries({
 				pointerdown: this.start,
 				pointermove: this.move,
 				pointerup: this.end,
@@ -471,7 +471,7 @@ function E({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280,
 				keydown: this.key,
 				dblclick: this.reset
 			}).map(([e, t]) => [e, t.bind(this)]));
-			for (let [e, t] of Object.entries(_)) c.addEventListener(e, t);
+			for (let [e, t] of Object.entries(g)) c.addEventListener(e, t);
 			f = new ResizeObserver(() => {
 				this.describe(), this.schedule();
 			}), f.observe(l), f.observe(u), f.observe(d), p = new MutationObserver(() => this.schedule()), p.observe(l, { attributes: !0 }), this.describe(), this.schedule();
@@ -492,7 +492,7 @@ function E({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280,
 				return;
 			}
 			let { width: e, upper: t } = this.bounds();
-			g ??= e, (e > t + 1 || e < n - 1) && this.set(e), this.describe();
+			(e > t + 1 || e < n - 1) && this.set(e), this.describe();
 		},
 		describe() {
 			if (!v(u) || !v(d)) return;
@@ -516,13 +516,25 @@ function E({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280,
 			let t = (C(l) ? -1 : 1) * (s === "start" ? -1 : 1);
 			this.set(h.width + (e.clientX - h.x) * t);
 		},
-		end() {
+		end(e = !0) {
 			if (!h) return;
-			let e = h.id;
-			h = void 0, c.removeAttribute("data-resizing"), l.removeAttribute("data-resizing"), c.hasPointerCapture(e) && c.releasePointerCapture(e);
+			let { id: t, width: n } = h;
+			h = void 0, c.removeAttribute("data-resizing"), l.removeAttribute("data-resizing"), c.hasPointerCapture(t) && c.releasePointerCapture(t), e && Math.abs(u.getBoundingClientRect().width - n) >= 1 && this.commit();
 		},
 		cancel() {
-			h && (h.previous ? l.style.setProperty(t, h.previous) : l.style.removeProperty(t), this.end(), this.schedule());
+			h && (h.previous ? l.style.setProperty(t, h.previous) : l.style.removeProperty(t), this.end(!1), this.schedule());
+		},
+		commit(n = 0) {
+			clearTimeout(_), _ = setTimeout(() => {
+				v(u) && c.dispatchEvent(new CustomEvent("fruit-resize", {
+					bubbles: !0,
+					detail: {
+						pane: e,
+						variable: t,
+						value: Math.round(u.getBoundingClientRect().width)
+					}
+				}));
+			}, n);
 		},
 		key(e) {
 			if (e.key === "Escape" && h) {
@@ -535,14 +547,14 @@ function E({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280,
 				Home: n,
 				End: r
 			};
-			e.key in o && (e.preventDefault(), e.stopPropagation(), this.set(o[e.key]));
+			e.key in o && (e.preventDefault(), e.stopPropagation(), this.set(o[e.key]), this.commit(400));
 		},
 		reset() {
-			this.set(g);
+			l.style.removeProperty(t), this.schedule(), requestAnimationFrame(() => this.commit());
 		},
 		destroy() {
-			this.end(), f?.disconnect(), p?.disconnect(), cancelAnimationFrame(m);
-			for (let [e, t] of Object.entries(_)) c.removeEventListener(e, t);
+			clearTimeout(_), this.end(!1), f?.disconnect(), p?.disconnect(), cancelAnimationFrame(m);
+			for (let [e, t] of Object.entries(g)) c.removeEventListener(e, t);
 		}
 	};
 }

@@ -4153,7 +4153,7 @@ img.f-avatar {
     min-width: 0;
   }
 
-/* A generated suggestion to review and use, such as an AI reply draft: an indigo-outlined card
+/* A generated suggestion to review and use, such as an AI reply draft: an indigo card
      with a title row, an optional status line, the suggestion as readable prose, an optional
      translation, its actions, and quieter details (notes, sources) at the end. */
 
@@ -4163,7 +4163,7 @@ img.f-avatar {
     padding: var(--f-suggestion-padding, 14px 16px 16px);
     border: 1px solid var(--f-generated-border);
     border-radius: var(--f-radius);
-    background: var(--f-surface);
+    background: var(--f-generated-background);
     font-size: var(--f-text-base);
   }
 
@@ -4243,6 +4243,12 @@ img.f-avatar {
 .f-suggestion__body {
     line-height: 1.6;
     overflow-wrap: anywhere;
+  }
+
+/* Links keep 4.5:1 on the tint: the darker selection blue rather than the accent. */
+
+.f-suggestion a:not(.f-button) {
+    color: var(--f-selection-text);
   }
 
 .f-suggestion__translation {
@@ -4329,7 +4335,7 @@ img.f-avatar {
     flex: none;
     max-width: 40%;
     overflow: hidden;
-    color: var(--f-tertiary);
+    color: var(--f-secondary);
     font-size: var(--f-text-xs);
     text-overflow: ellipsis;
     white-space: nowrap;

@@ -85,6 +85,16 @@ class ConversationListTest extends FeatureTestCase
         $this->get(route('mailboxes.all', ['folder_id' => -Folder::TYPE_UNASSIGNED]))->assertRedirect();
     }
 
+    public function testColumnsOpenAtTheirResizedWidths()
+    {
+        $url = route('mailboxes.view.folder', ['id' => $this->mailbox->id, 'folder_id' => $this->folder(Folder::TYPE_UNASSIGNED)->id]);
+
+        $this->withUnencryptedCookie('tallport_columns', json_encode(['--f-list-width' => 412, '--f-sidebar-width' => 5000, 'color' => 'red']));
+        $this->actingAs($this->agent)->get($url)->assertOk()
+            ->assertSee('style="--f-sidebar-width: 1000px; --f-list-width: 412px;"', false)
+            ->assertDontSee('color: red', false);
+    }
+
     public function testStarsAConversation()
     {
         $conversation = $this->conversation('Starry question');

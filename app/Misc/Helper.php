@@ -806,6 +806,23 @@ class Helper
      * Check if menu item is selected.
      * Each menu item has a mnemonic name.
      */
+    /**
+     * The workspace's column widths as the user last left them (the tallport_columns
+     * cookie, public/js/tallport.js), so the page opens with them.
+     */
+    public static function columnWidthsStyle()
+    {
+        $widths = json_decode((string) request()->cookie('tallport_columns'), true);
+        $style = '';
+        foreach (['--f-sidebar-width', '--f-list-width', '--f-inspector-width'] as $variable) {
+            if (isset($widths[$variable]) && is_numeric($widths[$variable])) {
+                $style .= $variable.': '.max(100, min(1000, (int) $widths[$variable])).'px; ';
+            }
+        }
+
+        return trim($style) ?: null;
+    }
+
     public static function isMenuSelected($menu_item_name)
     {
         $current_route = \Request::route()->getName();

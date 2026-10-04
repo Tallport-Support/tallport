@@ -5,11 +5,8 @@
         'failed'   => __('Could not draft a reply.'),
         'slow'     => __('The draft is taking long. Check that the queue is running, or try again.'),
      ]))" x-show="active" x-cloak x-on:ai-draft-request.window="request()">
-    @php
-        // The language and confidence, once drafted.
-        $ai_draft_meta = new Illuminate\Support\HtmlString('<span x-text="meta"></span>');
-    @endphp
-    <x-fruit::suggestion :title="__('AI Draft')" :meta="$ai_draft_meta" x-bind:aria-busy="busy() ? 'true' : 'false'">
+    <x-fruit::suggestion :title="__('AI Draft')" x-bind:aria-busy="busy() ? 'true' : 'false'">
+        <x-slot:meta><span x-text="meta"></span></x-slot:meta>
         <x-slot:dismiss><x-fruit::button variant="ghost" class="f-button--icon" :aria-label="__('Close')" :title="__('Close')" x-on:click="close()"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button></x-slot:dismiss>
         <x-slot:status class="ai-draft-status" x-show="status" x-bind:data-tone="tone()" role="status"><span x-text="status"></span></x-slot:status>
         <div class="ai-draft-body" x-show="html" x-html="html"></div>

@@ -58,7 +58,7 @@
                 $has_toolbar = trim($__env->yieldContent('toolbar')) !== '';
                 $has_inspector = trim($__env->yieldContent('inspector')) !== '';
             @endphp
-            <x-fruit::workspace frame="fill" class="app-workspace {{ $__env->yieldContent('split_class') }}" :aria-label="\Config::get('app.name')" :data-list="$has_list ? '' : null" :data-inspector="$has_inspector ? '' : null">
+            <x-fruit::workspace frame="fill" :style="\App\Misc\Helper::columnWidthsStyle()" class="app-workspace {{ $__env->yieldContent('split_class') }}" :aria-label="\Config::get('app.name')" :data-list="$has_list ? '' : null" :data-inspector="$has_inspector ? '' : null">
                 <header class="f-toolbar app-workspace__brand">
                     <button type="button" class="f-button f-button--ghost f-button--icon app-sidebar-toggle" aria-controls="app-sidebar" aria-expanded="false" x-data x-on:click="$el.setAttribute('aria-expanded', document.body.classList.toggle('app-sidebar-open'))" aria-label="{{ __('Toggle Navigation') }}"><x-icon.menu class="f-icon" aria-hidden="true" /></button>
                     @include('partials/app_sidebar_brand')

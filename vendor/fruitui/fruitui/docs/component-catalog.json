@@ -641,7 +641,7 @@
         "element": "`div role=separator`, fixed vertical orientation and tabindex=0; optional Alpine required for interaction.",
         "state": "Width in pixels, bounded aria-valuemin/max/now/text; controls the pane ID.",
         "keyboard": "Left/Right adjust 8px; Shift adjusts 32px; Home/End reach bounds; Escape cancels a drag; double-click restores initial width. No pane collapse.",
-        "options": "`pane`, `flexible`: distinct IDs in the same workspace. `variable`: --f- width token; `min` 160, `max` 420, `reserve` 280: positive pixel bounds. `edge`: end (default), start. Accessible name required. Helper owns x-data, orientation, focus and controlled pane. No content slot or persistence."
+        "options": "`pane`, `flexible`: distinct IDs in the same workspace. `variable`: --f- width token; `min` 160, `max` 420, `reserve` 280: positive pixel bounds. `edge`: end (default), start. Accessible name required. Helper owns x-data, orientation, focus and controlled pane. No content slot or persistence. It starts from the pane's rendered width, so a width the server renders on the workspace (`style=\"--f-list-width: 412px\"`) holds. Each committed resize (a drag's end, keyboard steps after a pause, a double-click reset to the stylesheet width) sends a bubbling `fruit-resize` event with `{ pane, variable, value }` in pixels; store it to remember the width (FruitUI keeps no state)."
       }
     }
   },
@@ -1398,7 +1398,7 @@
         "element": "`section` named by its title (`aria-label`), with a sparkles icon, the title and meta, an optional status line, the suggestion as prose, an optional translation, an actions group and quieter details.",
         "state": "The application owns the content and state. `aria-busy=\"true\"` (bindable) shows a skeleton in place of the suggestion, its translation, actions and details.",
         "keyboard": "No keyboard behavior of its own; actions, links and the dismiss button keep theirs.",
-        "options": "`title` (required), `meta` (for example language and confidence). Slots: default (the suggestion, rich text), `dismiss` (a close button), `status` (`tone`: neutral, working with a spinner, warning, danger; bindable `data-tone`), `translation` (with `lang`; announced as Translation), `actions` (Insert, Draft Again), `details` (sections with an `h4` and a list; `ul.f-suggestion__sources` for sources: the linked title, then a muted site, both shortened)."
+        "options": "`title` (required), `meta` (for example language and confidence; a prop or a slot, for markup bound from script). Slots: default (the suggestion, rich text), `dismiss` (a close button), `status` (`tone`: neutral, working with a spinner, warning, danger; bindable `data-tone`), `translation` (with `lang`; announced as Translation), `actions` (Insert, Draft Again), `details` (sections with an `h4` and a list; `ul.f-suggestion__sources` for sources: the linked title, then a muted site, both shortened)."
       }
     }
   }

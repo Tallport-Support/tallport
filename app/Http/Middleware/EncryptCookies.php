@@ -14,5 +14,6 @@ class EncryptCookies extends Middleware
     protected $except = [
         'in_app',
         'tallport_narrow',
+        'tallport_columns',
     ];
 }

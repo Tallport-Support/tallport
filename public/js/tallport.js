@@ -152,3 +152,16 @@ window.Tallport = (function () {
 	remember();
 	narrow.addEventListener('change', remember);
 })();
+
+// The columns' widths, as the user resizes them (FruitUI's splitters), for the
+// server to open every page with them (Helper::columnWidthsStyle()).
+document.addEventListener('fruit-resize', function (event) {
+	var widths = {};
+	try {
+		widths = JSON.parse(decodeURIComponent((document.cookie.match(/(?:^|; )tallport_columns=([^;]*)/) || [])[1] || '{}')) || {};
+	} catch (e) {
+		widths = {};
+	}
+	widths[event.detail.variable] = Math.round(event.detail.value);
+	document.cookie = 'tallport_columns=' + encodeURIComponent(JSON.stringify(widths)) + '; path=/; max-age=31536000; SameSite=Lax';
+});
