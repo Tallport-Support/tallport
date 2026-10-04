@@ -272,6 +272,23 @@ class UsersTest extends FeatureTestCase
         $this->assertEquals(User::ROLE_USER, $agent->role, 'Users cannot make themselves admin.');
     }
 
+    public function testOwnPagesAreInTheAccountMenuNotTabs()
+    {
+        $agent = $this->createUser();
+
+        // Your own pages: each on its own, titled by the page, reached from the account menu.
+        $this->actingAs($this->admin)->get(route('users.preferences', ['id' => $this->admin->id]))->assertOk()
+            ->assertSee('<h1>Preferences</h1>', false)
+            ->assertSee(route('users.security', ['id' => $this->admin->id]), false)
+            ->assertDontSee(route('users.permissions', ['id' => $this->admin->id]), false)
+            ->assertDontSee('New User');
+
+        // Someone else's: their name, the tabs, and Manage > Users.
+        $this->actingAs($this->admin)->get(route('users.profile', ['id' => $agent->id]))->assertOk()
+            ->assertSee(route('users.permissions', ['id' => $agent->id]), false)
+            ->assertSee('New User');
+    }
+
     public function testUserCannotEditSomeoneElse()
     {
         $agent = $this->createUser();

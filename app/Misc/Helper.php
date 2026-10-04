@@ -810,6 +810,11 @@ class Helper
     {
         $current_route = \Request::route()->getName();
 
+        // The user's own pages are in the account menu, not under Manage.
+        if (str_starts_with((string) $current_route, 'users.') && \Auth::check() && \Request::route('id') == \Auth::id()) {
+            return false;
+        }
+
         $menu = \Eventy::filter('menu.selected', self::$menu);
 
         foreach ($menu as $primary_name => $primary_items) {

@@ -1,4 +1,18 @@
-{{-- A user's pages: the user (to switch), the pages, and a new user. --}}
+{{-- A user's pages: the user (to switch), the pages, and a new user. The user's own pages are
+     each on their own (the account menu leads to them), titled by the page. --}}
+@if ($user->id == Auth::user()->id)
+<x-page-nav :label="__('User')">
+    <x-slot:title><h1>{{ [
+        'users.profile' => __('Profile'),
+        'users.security' => __('Security'),
+        'users.preferences' => __('Preferences'),
+        'users.api_keys' => __('API Keys'),
+        'users.permissions' => __('Permissions'),
+        'users.notifications' => __('Notifications'),
+        'users.password' => __('Change your password'),
+    ][Route::currentRouteName()] ?? $user->getFullName() }}</h1></x-slot:title>
+</x-page-nav>
+@else
 <x-page-nav :label="__('User')">
     <x-slot:title>
         @if (isset($users) && count($users))
@@ -34,3 +48,4 @@
         <a href="{{ route('users.notifications', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.notifications') aria-current="page" @endif>{{ __('Notifications') }}</a>
     @endif
 </x-page-nav>
+@endif
