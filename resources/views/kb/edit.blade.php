@@ -43,7 +43,7 @@
             </x-fruit::field>
 
             <x-fruit::field :label="__('Article')">
-                <x-fruit::textarea id="kb_body" name="body" rows="14">{{ old('body', $article->body) }}</x-fruit::textarea>
+                <x-editor id="kb_body" name="body" rows="14">{{ old('body', $article->body) }}</x-editor>
             </x-fruit::field>
 
             <div class="settings-form__actions f-row">
@@ -63,7 +63,6 @@
     </div>
 @endsection
 
-@include('partials/editor')
 
 @section('javascript')
     @parent

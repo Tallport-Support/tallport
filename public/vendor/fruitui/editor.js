@@ -10903,7 +10903,7 @@ function Pf(e) {
 		undoable: e.undoable
 	});
 }
-var Ff = class e extends of {
+var Y = class e extends of {
 	constructor(...e) {
 		super(...e), this.type = "node";
 	}
@@ -10919,7 +10919,7 @@ var Ff = class e extends of {
 		return super.extend(t);
 	}
 };
-function If(e) {
+function Ff(e) {
 	return new cf({
 		find: e.find,
 		handler: ({ state: t, range: n, match: r, pasteEvent: i }) => {
@@ -10936,46 +10936,46 @@ function If(e) {
 }
 //#endregion
 //#region node_modules/@tiptap/core/dist/jsx-runtime/jsx-runtime.js
-var Lf = /* @__PURE__ */ new WeakSet(), Rf = /* @__PURE__ */ new WeakSet();
-function zf(e) {
+var If = /* @__PURE__ */ new WeakSet(), Lf = /* @__PURE__ */ new WeakSet();
+function Rf(e) {
 	let t = e;
-	return Lf.add(t), t;
+	return If.add(t), t;
+}
+function zf(e) {
+	return Array.isArray(e) && If.has(e);
 }
 function Bf(e) {
-	return Array.isArray(e) && Lf.has(e);
+	return e.flatMap((e) => e == null ? [] : Array.isArray(e) && Lf.has(e) && !zf(e) ? Bf(e) : [e]);
 }
-function Vf(e) {
-	return e.flatMap((e) => e == null ? [] : Array.isArray(e) && Rf.has(e) && !Bf(e) ? Vf(e) : [e]);
-}
-function Hf(e, t) {
+function Vf(e, t) {
 	if (e === "slot") return 0;
 	if (e instanceof Function) {
 		let n = e(t);
-		return Array.isArray(n) && !Bf(n) && !Rf.has(n) ? zf(n) : n;
+		return Array.isArray(n) && !zf(n) && !Lf.has(n) ? Rf(n) : n;
 	}
 	let { children: n, ...r } = t ?? {};
 	if (e === "svg") throw Error("SVG elements are not supported in the JSX syntax, use the array syntax instead");
 	if (Array.isArray(n)) {
-		if (Bf(n)) return zf([
+		if (zf(n)) return Rf([
 			e,
 			r,
 			n
 		]);
-		if (n.length === 0) return zf([e, r]);
-		let t = Vf(n);
-		return t.length === 0 ? zf([e, r]) : zf([
+		if (n.length === 0) return Rf([e, r]);
+		let t = Bf(n);
+		return t.length === 0 ? Rf([e, r]) : Rf([
 			e,
 			r,
 			...t
 		]);
 	}
-	return zf(n == null ? [e, r] : [
+	return Rf(n == null ? [e, r] : [
 		e,
 		r,
 		n
 	]);
 }
-var Uf = (e, t) => Hf(e, t), Wf = (e, t) => {
+var Hf = (e, t) => Vf(e, t), Uf = (e, t) => {
 	let { state: n } = e, { selection: r } = n;
 	if (!r.empty) return !1;
 	let { $from: i } = r;
@@ -10993,7 +10993,7 @@ var Uf = (e, t) => Hf(e, t), Wf = (e, t) => {
 		let n = i.parent.content, r = new p(n, 0, 0);
 		return e.replace(l, i.after(), r), e.setSelection(D.create(e.doc, l + n.size)), e.scrollIntoView(), t(e), !0;
 	});
-}, Gf = /^\s*>\s$/, Kf = Ff.create({
+}, Wf = /^\s*>\s$/, Gf = Y.create({
 	name: "blockquote",
 	addOptions() {
 		return { HTMLAttributes: {} };
@@ -11005,9 +11005,9 @@ var Uf = (e, t) => Hf(e, t), Wf = (e, t) => {
 		return [{ tag: "blockquote" }];
 	},
 	renderHTML({ HTMLAttributes: e }) {
-		return /* @__PURE__ */ Uf("blockquote", {
+		return /* @__PURE__ */ Hf("blockquote", {
 			...q(this.options.HTMLAttributes, e),
-			children: /* @__PURE__ */ Uf("slot", {})
+			children: /* @__PURE__ */ Hf("slot", {})
 		});
 	},
 	parseMarkdown: (e, t) => {
@@ -11032,16 +11032,16 @@ var Uf = (e, t) => Hf(e, t), Wf = (e, t) => {
 	addKeyboardShortcuts() {
 		return {
 			"Mod-Shift-b": () => this.editor.commands.toggleBlockquote(),
-			Backspace: () => Wf(this.editor, this.type)
+			Backspace: () => Uf(this.editor, this.type)
 		};
 	},
 	addInputRules() {
 		return [Pf({
-			find: Gf,
+			find: Wf,
 			type: this.type
 		})];
 	}
-}), qf = /(?:^|\s)(\*\*(?!\s+\*\*)((?:[^*]+))\*\*(?!\s+\*\*))$/, Jf = /(?:^|\s)(\*\*(?!\s+\*\*)((?:[^*]+))\*\*(?!\s+\*\*))/g, Yf = /(?:^|\s)(__(?!\s+__)((?:[^_]+))__(?!\s+__))$/, Xf = /(?:^|\s)(__(?!\s+__)((?:[^_]+))__(?!\s+__))/g, Zf = sf.create({
+}), Kf = /(?:^|\s)(\*\*(?!\s+\*\*)((?:[^*]+))\*\*(?!\s+\*\*))$/, qf = /(?:^|\s)(\*\*(?!\s+\*\*)((?:[^*]+))\*\*(?!\s+\*\*))/g, Jf = /(?:^|\s)(__(?!\s+__)((?:[^_]+))__(?!\s+__))$/, Yf = /(?:^|\s)(__(?!\s+__)((?:[^_]+))__(?!\s+__))/g, Xf = sf.create({
 	name: "bold",
 	addOptions() {
 		return { HTMLAttributes: {} };
@@ -11064,9 +11064,9 @@ var Uf = (e, t) => Hf(e, t), Wf = (e, t) => {
 		];
 	},
 	renderHTML({ HTMLAttributes: e }) {
-		return /* @__PURE__ */ Uf("strong", {
+		return /* @__PURE__ */ Hf("strong", {
 			...q(this.options.HTMLAttributes, e),
-			children: /* @__PURE__ */ Uf("slot", {})
+			children: /* @__PURE__ */ Hf("slot", {})
 		});
 	},
 	markdownTokenName: "strong",
@@ -11091,30 +11091,30 @@ var Uf = (e, t) => Hf(e, t), Wf = (e, t) => {
 	},
 	addInputRules() {
 		return [jf({
-			find: qf,
+			find: Kf,
 			type: this.type
 		}), jf({
-			find: Yf,
+			find: Jf,
 			type: this.type
 		})];
 	},
 	addPasteRules() {
-		return [If({
-			find: Jf,
+		return [Ff({
+			find: qf,
 			type: this.type
-		}), If({
-			find: Xf,
+		}), Ff({
+			find: Yf,
 			type: this.type
 		})];
 	}
-}), Qf = (e) => {
+}), Zf = (e) => {
 	let t = /`([^`]+)`(?!`)$/.exec(e);
 	return !t || t.index > 0 && e[t.index - 1] === "`" ? null : {
 		index: t.index,
 		text: t[0],
 		replaceWith: t[1]
 	};
-}, $f = (e) => {
+}, Qf = (e) => {
 	let t = /`([^`]+)`(?!`)/g, n = [], r;
 	for (; (r = t.exec(e)) !== null;) r.index > 0 && e[r.index - 1] === "`" || n.push({
 		index: r.index,
@@ -11123,12 +11123,12 @@ var Uf = (e, t) => Hf(e, t), Wf = (e, t) => {
 	});
 	return n;
 };
-function ep(e) {
+function $f(e) {
 	let t = new Set((e.match(/`+/g) || []).map((e) => e.length)), n = 1;
 	for (; t.has(n);) n += 1;
 	return n;
 }
-var tp = sf.create({
+var ep = sf.create({
 	name: "code",
 	addOptions() {
 		return { HTMLAttributes: {} };
@@ -11154,7 +11154,7 @@ var tp = sf.create({
 	renderMarkdown: (e, t, n) => {
 		var r;
 		if (!e.content) return "";
-		let i = typeof (n == null || (r = n.meta) == null ? void 0 : r.markText) == "string" ? n.meta.markText : "", a = "`".repeat(ep(i)), o = i.startsWith("`") || i.endsWith("`") ? " " : "";
+		let i = typeof (n == null || (r = n.meta) == null ? void 0 : r.markText) == "string" ? n.meta.markText : "", a = "`".repeat($f(i)), o = i.startsWith("`") || i.endsWith("`") ? " " : "";
 		return `${a}${o}${t.renderChildren(e.content)}${o}${a}`;
 	},
 	addCommands() {
@@ -11169,17 +11169,17 @@ var tp = sf.create({
 	},
 	addInputRules() {
 		return [jf({
-			find: Qf,
+			find: Zf,
 			type: this.type
 		})];
 	},
 	addPasteRules() {
-		return [If({
-			find: $f,
+		return [Ff({
+			find: Qf,
 			type: this.type
 		})];
 	}
-}), np = 4, rp = /^```([a-z]+)?[\s\n]$/, ip = /^~~~([a-z]+)?[\s\n]$/, ap = Ff.create({
+}), tp = 4, np = /^```([a-z]+)?[\s\n]$/, rp = /^~~~([a-z]+)?[\s\n]$/, ip = Y.create({
 	name: "codeBlock",
 	addOptions() {
 		return {
@@ -11189,7 +11189,7 @@ var tp = sf.create({
 			exitOnArrowUp: !0,
 			defaultLanguage: null,
 			enableTabIndentation: !1,
-			tabSize: np,
+			tabSize: tp,
 			HTMLAttributes: {}
 		};
 	},
@@ -11250,7 +11250,7 @@ var tp = sf.create({
 			},
 			Tab: ({ editor: e }) => {
 				if (!this.options.enableTabIndentation) return !1;
-				let t = this.options.tabSize ?? np, { state: n } = e, { selection: r } = n, { $from: i, empty: a } = r;
+				let t = this.options.tabSize ?? tp, { state: n } = e, { selection: r } = n, { $from: i, empty: a } = r;
 				if (i.parent.type !== this.type) return !1;
 				let o = " ".repeat(t);
 				return a ? e.commands.insertContent(o) : e.commands.command(({ tr: e }) => {
@@ -11260,7 +11260,7 @@ var tp = sf.create({
 			},
 			"Shift-Tab": ({ editor: e }) => {
 				if (!this.options.enableTabIndentation) return !1;
-				let t = this.options.tabSize ?? np, { state: n } = e, { selection: r } = n, { $from: i, empty: a } = r;
+				let t = this.options.tabSize ?? tp, { state: n } = e, { selection: r } = n, { $from: i, empty: a } = r;
 				return i.parent.type === this.type ? a ? e.commands.command(({ tr: e }) => {
 					let { pos: r } = i, a = i.start(), o = i.end(), s = n.doc.textBetween(a, o, "\n", "\n").split("\n"), c = 0, l = 0, u = r - a;
 					for (let e = 0; e < s.length; e += 1) {
@@ -11308,11 +11308,11 @@ var tp = sf.create({
 	},
 	addInputRules() {
 		return [Nf({
-			find: rp,
+			find: np,
 			type: this.type,
 			getAttributes: (e) => ({ language: e[1] })
 		}), Nf({
-			find: ip,
+			find: rp,
 			type: this.type,
 			getAttributes: (e) => ({ language: e[1] })
 		})];
@@ -11329,12 +11329,12 @@ var tp = sf.create({
 			} }
 		})];
 	}
-}), op = Ff.create({
+}), ap = Y.create({
 	name: "doc",
 	topNode: !0,
 	content: "block+",
 	renderMarkdown: (e, t) => e.content ? t.renderChildren(e.content, "\n\n") : ""
-}), sp = Ff.create({
+}), op = Y.create({
 	name: "hardBreak",
 	markdownTokenName: "br",
 	addOptions() {
@@ -11378,7 +11378,7 @@ var tp = sf.create({
 			"Shift-Enter": () => this.editor.commands.setHardBreak()
 		};
 	}
-}), cp = Ff.create({
+}), sp = Y.create({
 	name: "heading",
 	addOptions() {
 		return {
@@ -11439,7 +11439,7 @@ var tp = sf.create({
 			getAttributes: { level: e }
 		}));
 	}
-}), lp = Ff.create({
+}), cp = Y.create({
 	name: "horizontalRule",
 	addOptions() {
 		return {
@@ -11481,7 +11481,7 @@ var tp = sf.create({
 			type: this.type
 		})];
 	}
-}), up = /(?:^|\s)(\*(?!\s+\*)((?:[^*]+))\*(?!\s+\*))$/, dp = /(?:^|\s)(\*(?!\s+\*)((?:[^*]+))\*(?!\s+\*))/g, fp = /(?:^|\s)(_(?!\s+_)((?:[^_]+))_(?!\s+_))$/, pp = /(?:^|\s)(_(?!\s+_)((?:[^_]+))_(?!\s+_))/g, mp = sf.create({
+}), lp = /(?:^|\s)(\*(?!\s+\*)((?:[^*]+))\*(?!\s+\*))$/, up = /(?:^|\s)(\*(?!\s+\*)((?:[^*]+))\*(?!\s+\*))/g, dp = /(?:^|\s)(_(?!\s+_)((?:[^_]+))_(?!\s+_))$/, fp = /(?:^|\s)(_(?!\s+_)((?:[^_]+))_(?!\s+_))/g, pp = sf.create({
 	name: "italic",
 	addOptions() {
 		return { HTMLAttributes: {} };
@@ -11529,42 +11529,42 @@ var tp = sf.create({
 	},
 	addInputRules() {
 		return [jf({
-			find: up,
+			find: lp,
 			type: this.type
 		}), jf({
-			find: fp,
+			find: dp,
 			type: this.type
 		})];
 	},
 	addPasteRules() {
-		return [If({
-			find: dp,
+		return [Ff({
+			find: up,
 			type: this.type
-		}), If({
-			find: pp,
+		}), Ff({
+			find: fp,
 			type: this.type
 		})];
 	}
-}), hp = "aaa1rp3bb0ott3vie4c1le2ogado5udhabi7c0ademy5centure6ountant0s9o1tor4d0s1ult4e0g1ro2tna4f0l1rica5g0akhan5ency5i0g1rbus3force5tel5kdn3l0ibaba4pay4lfinanz6state5y2sace3tom5m0azon4ericanexpress7family11x2fam3ica3sterdam8nalytics7droid5quan4z2o0l2partments8p0le4q0uarelle8r0ab1mco4chi3my2pa2t0e3s0da2ia2sociates9t0hleta5torney7u0ction5di0ble3o3spost5thor3o0s4w0s2x0a2z0ure5ba0by2idu3namex4d1k2r0celona5laycard4s5efoot5gains6seball5ketball8uhaus5yern5b0c1t1va3cg1n2d1e0ats2uty4er2rlin4st0buy5t2f1g1h0arti5i0ble3d1ke2ng0o3o1z2j1lack0friday9ockbuster8g1omberg7ue3m0s1w2n0pparibas9o0ats3ehringer8fa2m1nd2o0k0ing5sch2tik2on4t1utique6x2r0adesco6idgestone9oadway5ker3ther5ussels7s1t1uild0ers6siness6y1zz3v1w1y1z0h3ca0b1fe2l0l1vinklein9m0era3p2non3petown5ital0one8r0avan4ds2e0er0s4s2sa1e1h1ino4t0ering5holic7ba1n1re3c1d1enter4o1rn3f0a1d2g1h0anel2nel4rity4se2t2eap3intai5ristmas6ome4urch5i0priani6rcle4sco3tadel4i0c2y3k1l0aims4eaning6ick2nic1que6othing5ud3ub0med6m1n1o0ach3des3ffee4llege4ogne5m0mbank4unity6pany2re3uter5sec4ndos3struction8ulting7tact3ractors9oking4l1p2rsica5untry4pon0s4rses6pa2r0edit0card4union9icket5own3s1uise0s6u0isinella9v1w1x1y0mru3ou3z2dad1nce3ta1e1ing3sun4y2clk3ds2e0al0er2s3gree4livery5l1oitte5ta3mocrat6ntal2ist5si0gn4v2hl2iamonds6et2gital5rect0ory7scount3ver5h2y2j1k1m1np2o0cs1tor4g1mains5t1wnload7rive4tv2ubai3pont4rban5vag2r2z2earth3t2c0o2deka3u0cation8e1g1mail3erck5nergy4gineer0ing9terprises10pson4quipment8r0icsson6ni3s0q1tate5t1u0rovision8s2vents5xchange6pert3osed4ress5traspace10fage2il1rwinds6th3mily4n0s2rm0ers5shion4t3edex3edback6rrari3ero6i0delity5o2lm2nal1nce1ial7re0stone6mdale6sh0ing5t0ness6j1k1lickr3ghts4r2orist4wers5y2m1o0o0d1tball6rd1ex2sale4um3undation8x2r0ee1senius7l1ogans4ntier7tr2ujitsu5n0d2rniture7tbol5yi3ga0l0lery3o1up4me0s3p1rden4y2b0iz3d0n2e0a1nt0ing5orge5f1g0ee3h1i0ft0s3ves2ing5l0ass3e1obal2o4m0ail3bh2o1x2n1odaddy5ld0point6f2odyear5g0le4p1t1v2p1q1r0ainger5phics5tis4een3ipe3ocery4up4s1t1u0cci3ge2ide2tars5ru3w1y2hair2mburg5ngout5us3bo2dfc0bank7ealth0care8lp1sinki6re1mes5iphop4samitsu7tachi5v2k0t2m1n1ockey4ldings5iday5medepot5goods5s0ense7nda3rse3spital5t0ing5t0els3mail5use3w2r1sbc3t1u0ghes5yatt3undai7ibm2cbc2e1u2d1e0ee3fm2kano4l1m0amat4db2mo0bilien9n0c1dustries8finiti5o2g1k1stitute6urance4e4t0ernational10uit4vestments10o1piranga7q1r0ish4s0maili5t0anbul7t0au2v3jaguar4va3cb2e0ep2tzt3welry6io2ll2m0p2nj2o0bs1urg4t1y2p0morgan6rs3uegos4niper7kaufen5ddi3e0rryhotels6properties14fh2g1h1i0a1ds2m1ndle4tchen5wi3m1n1oeln3matsu5sher5p0mg2n2r0d1ed3uokgroup8w1y0oto4z2la0caixa5mborghini8er3nd0rover6xess5salle5t0ino3robe5w0yer5b1c1ds2ease3clerc5frak4gal2o2xus4gbt3i0dl2fe0insurance9style7ghting6ke2lly3mited4o2ncoln4k2ve1ing5k1lc1p2oan0s3cker3us3l1ndon4tte1o3ve3pl0financial11r1s1t0d0a3u0ndbeck6xe1ury5v1y2ma0drid4if1son4keup4n0agement7go3p1rket0ing3s4riott5shalls7ttel5ba2c0kinsey7d1e0d0ia3et2lbourne7me1orial6n0u2rck0msd7g1h1iami3crosoft7l1ni1t2t0subishi9k1l0b1s2m0a2n1o0bi0le4da2e1i1m1nash3ey2ster5rmon3tgage6scow4to0rcycles9v0ie4p1q1r1s0d2t0n1r2u0seum3ic4v1w1x1y1z2na0b1goya4me2vy3ba2c1e0c1t0bank4flix4work5ustar5w0s2xt0direct7us4f0l2g0o2hk2i0co2ke1on3nja3ssan1y5l1o0kia3rton4w0ruz3tv4p1r0a1w2tt2u1yc2z2obi1server7ffice5kinawa6layan0group9lo3m0ega4ne1g1l0ine5oo2pen3racle3nge4g0anic5igins6saka4tsuka4t2vh3pa0ge2nasonic7ris2s1tners4s1y3y2ccw3e0t2f0izer5g1h0armacy6d1ilips5one2to0graphy6s4ysio5ics1tet2ures6d1n0g1k2oneer5zza4k1l0ace2y0station9umbing5s3m1n0c2ohl2ker3litie5rn2st3r0axi3ess3ime3o0d0uctions8f1gressive8mo2perties3y5tection8u0dential9s1t1ub2w0c2y2qa1pon3uebec3st5racing4dio4e0ad1lestate6tor2y4cipes5d0umbrella9hab3ise0n3t2liance6n0t0als5pair3ort3ublican8st0aurant8view0s5xroth6ich0ardli6oh3l1o1p2o0cks3deo3gers4om3s0vp3u0gby3hr2n2w0e2yukyu6sa0arland6fe0ty4kura4le1on3msclub4ung5ndvik0coromant12ofi4p1rl2s1ve2xo3b0i1s2c0b1haeffler7midt4olarships8ol3ule3warz5ience5ot3d1e0arch3t2cure1ity6ek2lect4ner3rvices6ven3w1x0y3fr2g1h0angrila6rp3ell3ia1ksha5oes2p0ping5uji3w3i0lk2na1gles5te3j1k0i0n2y0pe4l0ing4m0art3ile4n0cf3o0ccer3ial4ftbank4ware6hu2lar2utions7ng1y2y2pa0ce3ort2t3r0l2s1t0ada2ples4r1tebank4farm7c0group6ockholm6rage3e3ream4udio2y3yle4u0cks3pplies3y2ort5rf1gery5zuki5v1watch4iss4x1y0dney4stems6z2tab1ipei4lk2obao4rget4tamotors6r2too4x0i3c0i2d0k2eam2ch0nology8l1masek5nnis4va3f1g1h0d1eater2re6iaa2ckets5enda4ps2res2ol4j0maxx4x2k0maxx5l1m0all4n1o0day3kyo3ols3p1ray3shiba5tal3urs3wn2yota3s3r0ade1ing4ining5vel0ers0insurance16ust3v2t1ube2i1nes3shu4v0s2w1z2ua1bank3s2g1k1nicom3versity8o2ol2ps2s1y1z2va0cations7na1guard7c1e0gas3ntures6risign5mögensberater2ung14sicherung10t2g1i0ajes4deo3g1king4llas4n1p1rgin4sa1ion4va1o3laanderen9n1odka3lvo3te1ing3o2yage5u2wales2mart4ter4ng0gou5tch0es6eather0channel12bcam3er2site5d0ding5ibo2r3f1hoswho6ien2ki2lliamhill9n0dows4e1ners6me2oodside6rk0s2ld3w2s1tc1f3xbox3erox4ihuan4n2xx2yz3yachts4hoo3maxun5ndex5e1odobashi7ga2kohama6u0tube6t1un3za0ppos4ra3ero3ip2m1one3uerich6w2", gp = "ελ1υ2бг1ел3дети4ею2католик6ом3мкд2он1сква6онлайн5рг3рус2ф2сайт3рб3укр3қаз3հայ3ישראל5קום3ابوظبي5رامكو5لاردن4بحرين5جزائر5سعودية6عليان5مغرب5مارات5یران5بارت2زار4يتك3ھارت5تونس4سودان3رية5شبكة4عراق2ب2مان4فلسطين6قطر3كاثوليك6وم3مصر2ليسيا5وريتانيا7قع4همراه5پاکستان7ڀارت4कॉम3नेट3भारत0म्3ोत5संगठन5বাংলা5ভারত2ৰত4ਭਾਰਤ4ભારત4ଭାରତ4இந்தியா6லங்கை6சிங்கப்பூர்11భారత్5ಭಾರತ4ഭാരതം5ලංකා4คอม3ไทย3ລາວ3გე2みんな3アマゾン4クラウド4グーグル4コム2ストア3セール3ファッション6ポイント4世界2中信1国1國1文网3亚马逊3企业2佛山2信息2健康2八卦2公司1益2台湾1灣2商城1店1标2嘉里0大酒店5在线2大拿2天主教3娱乐2家電2广东2微博2慈善2我爱你3手机2招聘2政务1府2新加坡2闻2时尚2書籍2机构2淡马锡3游戏2澳門2点看2移动2组织机构4网址1店1站1络2联通2谷歌2购物2通販2集团2電訊盈科4飞利浦3食品2餐厅2香格里拉3港2닷넷1컴2삼성2한국2", _p = "numeric", vp = "ascii", yp = "alpha", bp = "asciinumeric", xp = "alphanumeric", Sp = "domain", Cp = "emoji", wp = "scheme", Tp = "slashscheme", Ep = "whitespace";
-function Dp(e, t) {
+}), mp = "aaa1rp3bb0ott3vie4c1le2ogado5udhabi7c0ademy5centure6ountant0s9o1tor4d0s1ult4e0g1ro2tna4f0l1rica5g0akhan5ency5i0g1rbus3force5tel5kdn3l0ibaba4pay4lfinanz6state5y2sace3tom5m0azon4ericanexpress7family11x2fam3ica3sterdam8nalytics7droid5quan4z2o0l2partments8p0le4q0uarelle8r0ab1mco4chi3my2pa2t0e3s0da2ia2sociates9t0hleta5torney7u0ction5di0ble3o3spost5thor3o0s4w0s2x0a2z0ure5ba0by2idu3namex4d1k2r0celona5laycard4s5efoot5gains6seball5ketball8uhaus5yern5b0c1t1va3cg1n2d1e0ats2uty4er2rlin4st0buy5t2f1g1h0arti5i0ble3d1ke2ng0o3o1z2j1lack0friday9ockbuster8g1omberg7ue3m0s1w2n0pparibas9o0ats3ehringer8fa2m1nd2o0k0ing5sch2tik2on4t1utique6x2r0adesco6idgestone9oadway5ker3ther5ussels7s1t1uild0ers6siness6y1zz3v1w1y1z0h3ca0b1fe2l0l1vinklein9m0era3p2non3petown5ital0one8r0avan4ds2e0er0s4s2sa1e1h1ino4t0ering5holic7ba1n1re3c1d1enter4o1rn3f0a1d2g1h0anel2nel4rity4se2t2eap3intai5ristmas6ome4urch5i0priani6rcle4sco3tadel4i0c2y3k1l0aims4eaning6ick2nic1que6othing5ud3ub0med6m1n1o0ach3des3ffee4llege4ogne5m0mbank4unity6pany2re3uter5sec4ndos3struction8ulting7tact3ractors9oking4l1p2rsica5untry4pon0s4rses6pa2r0edit0card4union9icket5own3s1uise0s6u0isinella9v1w1x1y0mru3ou3z2dad1nce3ta1e1ing3sun4y2clk3ds2e0al0er2s3gree4livery5l1oitte5ta3mocrat6ntal2ist5si0gn4v2hl2iamonds6et2gital5rect0ory7scount3ver5h2y2j1k1m1np2o0cs1tor4g1mains5t1wnload7rive4tv2ubai3pont4rban5vag2r2z2earth3t2c0o2deka3u0cation8e1g1mail3erck5nergy4gineer0ing9terprises10pson4quipment8r0icsson6ni3s0q1tate5t1u0rovision8s2vents5xchange6pert3osed4ress5traspace10fage2il1rwinds6th3mily4n0s2rm0ers5shion4t3edex3edback6rrari3ero6i0delity5o2lm2nal1nce1ial7re0stone6mdale6sh0ing5t0ness6j1k1lickr3ghts4r2orist4wers5y2m1o0o0d1tball6rd1ex2sale4um3undation8x2r0ee1senius7l1ogans4ntier7tr2ujitsu5n0d2rniture7tbol5yi3ga0l0lery3o1up4me0s3p1rden4y2b0iz3d0n2e0a1nt0ing5orge5f1g0ee3h1i0ft0s3ves2ing5l0ass3e1obal2o4m0ail3bh2o1x2n1odaddy5ld0point6f2odyear5g0le4p1t1v2p1q1r0ainger5phics5tis4een3ipe3ocery4up4s1t1u0cci3ge2ide2tars5ru3w1y2hair2mburg5ngout5us3bo2dfc0bank7ealth0care8lp1sinki6re1mes5iphop4samitsu7tachi5v2k0t2m1n1ockey4ldings5iday5medepot5goods5s0ense7nda3rse3spital5t0ing5t0els3mail5use3w2r1sbc3t1u0ghes5yatt3undai7ibm2cbc2e1u2d1e0ee3fm2kano4l1m0amat4db2mo0bilien9n0c1dustries8finiti5o2g1k1stitute6urance4e4t0ernational10uit4vestments10o1piranga7q1r0ish4s0maili5t0anbul7t0au2v3jaguar4va3cb2e0ep2tzt3welry6io2ll2m0p2nj2o0bs1urg4t1y2p0morgan6rs3uegos4niper7kaufen5ddi3e0rryhotels6properties14fh2g1h1i0a1ds2m1ndle4tchen5wi3m1n1oeln3matsu5sher5p0mg2n2r0d1ed3uokgroup8w1y0oto4z2la0caixa5mborghini8er3nd0rover6xess5salle5t0ino3robe5w0yer5b1c1ds2ease3clerc5frak4gal2o2xus4gbt3i0dl2fe0insurance9style7ghting6ke2lly3mited4o2ncoln4k2ve1ing5k1lc1p2oan0s3cker3us3l1ndon4tte1o3ve3pl0financial11r1s1t0d0a3u0ndbeck6xe1ury5v1y2ma0drid4if1son4keup4n0agement7go3p1rket0ing3s4riott5shalls7ttel5ba2c0kinsey7d1e0d0ia3et2lbourne7me1orial6n0u2rck0msd7g1h1iami3crosoft7l1ni1t2t0subishi9k1l0b1s2m0a2n1o0bi0le4da2e1i1m1nash3ey2ster5rmon3tgage6scow4to0rcycles9v0ie4p1q1r1s0d2t0n1r2u0seum3ic4v1w1x1y1z2na0b1goya4me2vy3ba2c1e0c1t0bank4flix4work5ustar5w0s2xt0direct7us4f0l2g0o2hk2i0co2ke1on3nja3ssan1y5l1o0kia3rton4w0ruz3tv4p1r0a1w2tt2u1yc2z2obi1server7ffice5kinawa6layan0group9lo3m0ega4ne1g1l0ine5oo2pen3racle3nge4g0anic5igins6saka4tsuka4t2vh3pa0ge2nasonic7ris2s1tners4s1y3y2ccw3e0t2f0izer5g1h0armacy6d1ilips5one2to0graphy6s4ysio5ics1tet2ures6d1n0g1k2oneer5zza4k1l0ace2y0station9umbing5s3m1n0c2ohl2ker3litie5rn2st3r0axi3ess3ime3o0d0uctions8f1gressive8mo2perties3y5tection8u0dential9s1t1ub2w0c2y2qa1pon3uebec3st5racing4dio4e0ad1lestate6tor2y4cipes5d0umbrella9hab3ise0n3t2liance6n0t0als5pair3ort3ublican8st0aurant8view0s5xroth6ich0ardli6oh3l1o1p2o0cks3deo3gers4om3s0vp3u0gby3hr2n2w0e2yukyu6sa0arland6fe0ty4kura4le1on3msclub4ung5ndvik0coromant12ofi4p1rl2s1ve2xo3b0i1s2c0b1haeffler7midt4olarships8ol3ule3warz5ience5ot3d1e0arch3t2cure1ity6ek2lect4ner3rvices6ven3w1x0y3fr2g1h0angrila6rp3ell3ia1ksha5oes2p0ping5uji3w3i0lk2na1gles5te3j1k0i0n2y0pe4l0ing4m0art3ile4n0cf3o0ccer3ial4ftbank4ware6hu2lar2utions7ng1y2y2pa0ce3ort2t3r0l2s1t0ada2ples4r1tebank4farm7c0group6ockholm6rage3e3ream4udio2y3yle4u0cks3pplies3y2ort5rf1gery5zuki5v1watch4iss4x1y0dney4stems6z2tab1ipei4lk2obao4rget4tamotors6r2too4x0i3c0i2d0k2eam2ch0nology8l1masek5nnis4va3f1g1h0d1eater2re6iaa2ckets5enda4ps2res2ol4j0maxx4x2k0maxx5l1m0all4n1o0day3kyo3ols3p1ray3shiba5tal3urs3wn2yota3s3r0ade1ing4ining5vel0ers0insurance16ust3v2t1ube2i1nes3shu4v0s2w1z2ua1bank3s2g1k1nicom3versity8o2ol2ps2s1y1z2va0cations7na1guard7c1e0gas3ntures6risign5mögensberater2ung14sicherung10t2g1i0ajes4deo3g1king4llas4n1p1rgin4sa1ion4va1o3laanderen9n1odka3lvo3te1ing3o2yage5u2wales2mart4ter4ng0gou5tch0es6eather0channel12bcam3er2site5d0ding5ibo2r3f1hoswho6ien2ki2lliamhill9n0dows4e1ners6me2oodside6rk0s2ld3w2s1tc1f3xbox3erox4ihuan4n2xx2yz3yachts4hoo3maxun5ndex5e1odobashi7ga2kohama6u0tube6t1un3za0ppos4ra3ero3ip2m1one3uerich6w2", hp = "ελ1υ2бг1ел3дети4ею2католик6ом3мкд2он1сква6онлайн5рг3рус2ф2сайт3рб3укр3қаз3հայ3ישראל5קום3ابوظبي5رامكو5لاردن4بحرين5جزائر5سعودية6عليان5مغرب5مارات5یران5بارت2زار4يتك3ھارت5تونس4سودان3رية5شبكة4عراق2ب2مان4فلسطين6قطر3كاثوليك6وم3مصر2ليسيا5وريتانيا7قع4همراه5پاکستان7ڀارت4कॉम3नेट3भारत0म्3ोत5संगठन5বাংলা5ভারত2ৰত4ਭਾਰਤ4ભારત4ଭାରତ4இந்தியா6லங்கை6சிங்கப்பூர்11భారత్5ಭಾರತ4ഭാരതം5ලංකා4คอม3ไทย3ລາວ3გე2みんな3アマゾン4クラウド4グーグル4コム2ストア3セール3ファッション6ポイント4世界2中信1国1國1文网3亚马逊3企业2佛山2信息2健康2八卦2公司1益2台湾1灣2商城1店1标2嘉里0大酒店5在线2大拿2天主教3娱乐2家電2广东2微博2慈善2我爱你3手机2招聘2政务1府2新加坡2闻2时尚2書籍2机构2淡马锡3游戏2澳門2点看2移动2组织机构4网址1店1站1络2联通2谷歌2购物2通販2集团2電訊盈科4飞利浦3食品2餐厅2香格里拉3港2닷넷1컴2삼성2한국2", gp = "numeric", _p = "ascii", vp = "alpha", yp = "asciinumeric", bp = "alphanumeric", xp = "domain", Sp = "emoji", Cp = "scheme", wp = "slashscheme", Tp = "whitespace";
+function Ep(e, t) {
 	return e in t || (t[e] = []), t[e];
 }
-function Op(e, t, n) {
-	t[_p] && (t[bp] = !0, t[xp] = !0), t[vp] && (t[bp] = !0, t[yp] = !0), t[bp] && (t[xp] = !0), t[yp] && (t[xp] = !0), t[xp] && (t[Sp] = !0), t[Cp] && (t[Sp] = !0);
+function Dp(e, t, n) {
+	t[gp] && (t[yp] = !0, t[bp] = !0), t[_p] && (t[yp] = !0, t[vp] = !0), t[yp] && (t[bp] = !0), t[vp] && (t[bp] = !0), t[bp] && (t[xp] = !0), t[Sp] && (t[xp] = !0);
 	for (let r in t) {
-		let t = Dp(r, n);
+		let t = Ep(r, n);
 		t.indexOf(e) < 0 && t.push(e);
 	}
 }
-function kp(e, t) {
+function Op(e, t) {
 	let n = {};
 	for (let r in t) t[r].indexOf(e) >= 0 && (n[r] = !0);
 	return n;
 }
-function Y(e = null) {
+function kp(e = null) {
 	this.j = {}, this.jr = [], this.jd = null, this.t = e;
 }
-Y.groups = {}, Y.prototype = {
+kp.groups = {}, kp.prototype = {
 	accepts() {
 		return !!this.t;
 	},
@@ -11584,9 +11584,9 @@ Y.groups = {}, Y.prototype = {
 		for (let i = 0; i < e.length; i++) this.tt(e[i], t, n, r);
 	},
 	tr(e, t, n, r) {
-		r ||= Y.groups;
+		r ||= kp.groups;
 		let i;
-		return t && t.j ? i = t : (i = new Y(t), n && r && Op(t, n, r)), this.jr.push([e, i]), i;
+		return t && t.j ? i = t : (i = new kp(t), n && r && Dp(t, n, r)), this.jr.push([e, i]), i;
 	},
 	ts(e, t, n, r) {
 		let i = this, a = e.length;
@@ -11595,11 +11595,11 @@ Y.groups = {}, Y.prototype = {
 		return i.tt(e[a - 1], t, n, r);
 	},
 	tt(e, t, n, r) {
-		r ||= Y.groups;
+		r ||= kp.groups;
 		let i = this;
 		if (t && t.j) return i.j[e] = t, t;
 		let a = t, o, s = i.go(e);
-		return s ? (o = new Y(), Object.assign(o.j, s.j), o.jr.push.apply(o.jr, s.jr), o.jd = s.jd, o.t = s.t) : o = new Y(), a && (r && (o.t && typeof o.t == "string" ? Op(a, Object.assign(kp(o.t, r), n), r) : n && Op(a, n, r)), o.t = a), i.j[e] = o, o;
+		return s ? (o = new kp(), Object.assign(o.j, s.j), o.jr.push.apply(o.jr, s.jr), o.jd = s.jd, o.t = s.t) : o = new kp(), a && (r && (o.t && typeof o.t == "string" ? Dp(a, Object.assign(Op(o.t, r), n), r) : n && Dp(a, n, r)), o.t = a), i.j[e] = o, o;
 	}
 };
 var X = (e, t, n, r, i) => e.ta(t, n, r, i), Z = (e, t, n, r, i) => e.tr(t, n, r, i), Ap = (e, t, n, r, i) => e.ts(t, n, r, i), Q = (e, t, n, r, i) => e.tt(t, n, r, i), jp = "WORD", Mp = "UWORD", Np = "ASCIINUMERICAL", Pp = "ALPHANUMERICAL", Fp = "LOCALHOST", Ip = "TLD", Lp = "UTLD", Rp = "SCHEME", zp = "SLASH_SCHEME", Bp = "NUM", Vp = "WS", Hp = "NL", Up = "OPENBRACE", Wp = "CLOSEBRACE", Gp = "OPENBRACKET", Kp = "CLOSEBRACKET", qp = "OPENPAREN", Jp = "CLOSEPAREN", Yp = "OPENANGLEBRACKET", Xp = "CLOSEANGLEBRACKET", Zp = "FULLWIDTHLEFTPAREN", Qp = "FULLWIDTHRIGHTPAREN", $p = "LEFTCORNERBRACKET", em = "RIGHTCORNERBRACKET", tm = "LEFTWHITECORNERBRACKET", nm = "RIGHTWHITECORNERBRACKET", rm = "FULLWIDTHLESSTHAN", im = "FULLWIDTHGREATERTHAN", am = "AMPERSAND", om = "APOSTROPHE", sm = "ASTERISK", cm = "AT", lm = "BACKSLASH", um = "BACKTICK", dm = "CARET", fm = "COLON", pm = "COMMA", mm = "DOLLAR", hm = "DOT", gm = "EQUALS", _m = "EXCLAMATION", vm = "HYPHEN", ym = "PERCENT", bm = "PIPE", xm = "PLUS", Sm = "POUND", Cm = "QUERY", wm = "QUOTE", Tm = "FULLWIDTHMIDDLEDOT", Em = "SEMI", Dm = "SLASH", Om = "TILDE", km = "UNDERSCORE", Am = "EMOJI", jm = "SYM", Mm = /*#__PURE__*/ Object.freeze({
@@ -11662,18 +11662,18 @@ var X = (e, t, n, r, i) => e.ta(t, n, r, i), Z = (e, t, n, r, i) => e.tr(t, n, r
 }), Nm = /[a-z]/, Pm = /\p{L}/u, Fm = /\p{Emoji}/u, Im = /\d/, Lm = /\s/, Rm = "\r", zm = "\n", Bm = "️", Vm = "‍", Hm = "￼", Um = null, Wm = null;
 function Gm(e = []) {
 	let t = {};
-	Y.groups = t;
-	let n = new Y();
-	Um ??= Ym(hp), Wm ??= Ym(gp), Q(n, "'", om), Q(n, "{", Up), Q(n, "}", Wp), Q(n, "[", Gp), Q(n, "]", Kp), Q(n, "(", qp), Q(n, ")", Jp), Q(n, "<", Yp), Q(n, ">", Xp), Q(n, "（", Zp), Q(n, "）", Qp), Q(n, "「", $p), Q(n, "」", em), Q(n, "『", tm), Q(n, "』", nm), Q(n, "＜", rm), Q(n, "＞", im), Q(n, "&", am), Q(n, "*", sm), Q(n, "@", cm), Q(n, "`", um), Q(n, "^", dm), Q(n, ":", fm), Q(n, ",", pm), Q(n, "$", mm), Q(n, ".", hm), Q(n, "=", gm), Q(n, "!", _m), Q(n, "-", vm), Q(n, "%", ym), Q(n, "|", bm), Q(n, "+", xm), Q(n, "#", Sm), Q(n, "?", Cm), Q(n, "\"", wm), Q(n, "/", Dm), Q(n, ";", Em), Q(n, "~", Om), Q(n, "_", km), Q(n, "\\", lm), Q(n, "・", Tm);
-	let r = Z(n, Im, Bp, { [_p]: !0 });
+	kp.groups = t;
+	let n = new kp();
+	Um ??= Ym(mp), Wm ??= Ym(hp), Q(n, "'", om), Q(n, "{", Up), Q(n, "}", Wp), Q(n, "[", Gp), Q(n, "]", Kp), Q(n, "(", qp), Q(n, ")", Jp), Q(n, "<", Yp), Q(n, ">", Xp), Q(n, "（", Zp), Q(n, "）", Qp), Q(n, "「", $p), Q(n, "」", em), Q(n, "『", tm), Q(n, "』", nm), Q(n, "＜", rm), Q(n, "＞", im), Q(n, "&", am), Q(n, "*", sm), Q(n, "@", cm), Q(n, "`", um), Q(n, "^", dm), Q(n, ":", fm), Q(n, ",", pm), Q(n, "$", mm), Q(n, ".", hm), Q(n, "=", gm), Q(n, "!", _m), Q(n, "-", vm), Q(n, "%", ym), Q(n, "|", bm), Q(n, "+", xm), Q(n, "#", Sm), Q(n, "?", Cm), Q(n, "\"", wm), Q(n, "/", Dm), Q(n, ";", Em), Q(n, "~", Om), Q(n, "_", km), Q(n, "\\", lm), Q(n, "・", Tm);
+	let r = Z(n, Im, Bp, { [gp]: !0 });
 	Z(r, Im, r);
-	let i = Z(r, Nm, Np, { [bp]: !0 }), a = Z(r, Pm, Pp, { [xp]: !0 }), o = Z(n, Nm, jp, { [vp]: !0 });
+	let i = Z(r, Nm, Np, { [yp]: !0 }), a = Z(r, Pm, Pp, { [bp]: !0 }), o = Z(n, Nm, jp, { [_p]: !0 });
 	Z(o, Im, i), Z(o, Nm, o), Z(i, Im, i), Z(i, Nm, i);
-	let s = Z(n, Pm, Mp, { [yp]: !0 });
+	let s = Z(n, Pm, Mp, { [vp]: !0 });
 	Z(s, Nm), Z(s, Im, a), Z(s, Pm, s), Z(a, Im, a), Z(a, Nm), Z(a, Pm, a);
-	let c = Q(n, zm, Hp, { [Ep]: !0 }), l = Q(n, Rm, Vp, { [Ep]: !0 }), u = Z(n, Lm, Vp, { [Ep]: !0 });
+	let c = Q(n, zm, Hp, { [Tp]: !0 }), l = Q(n, Rm, Vp, { [Tp]: !0 }), u = Z(n, Lm, Vp, { [Tp]: !0 });
 	Q(n, Hm, u), Q(l, zm, c), Q(l, Hm, u), Z(l, Lm, u), Q(u, Rm), Q(u, zm), Z(u, Lm, u), Q(u, Hm, u);
-	let d = Z(n, Fm, Am, { [Cp]: !0 });
+	let d = Z(n, Fm, Am, { [Sp]: !0 });
 	Q(d, "#"), Z(d, Fm, d), Q(d, Bm, d);
 	let f = Q(d, Vm);
 	Q(f, "#"), Z(f, Fm, d);
@@ -11684,24 +11684,24 @@ function Gm(e = []) {
 	];
 	for (let e = 0; e < Um.length; e++) Jm(n, Um[e], Ip, jp, p);
 	for (let e = 0; e < Wm.length; e++) Jm(n, Wm[e], Lp, Mp, m);
-	Op(Ip, {
+	Dp(Ip, {
 		tld: !0,
 		ascii: !0
-	}, t), Op(Lp, {
+	}, t), Dp(Lp, {
 		utld: !0,
 		alpha: !0
-	}, t), Jm(n, "file", Rp, jp, p), Jm(n, "mailto", Rp, jp, p), Jm(n, "http", zp, jp, p), Jm(n, "https", zp, jp, p), Jm(n, "ftp", zp, jp, p), Jm(n, "ftps", zp, jp, p), Op(Rp, {
+	}, t), Jm(n, "file", Rp, jp, p), Jm(n, "mailto", Rp, jp, p), Jm(n, "http", zp, jp, p), Jm(n, "https", zp, jp, p), Jm(n, "ftp", zp, jp, p), Jm(n, "ftps", zp, jp, p), Dp(Rp, {
 		scheme: !0,
 		ascii: !0
-	}, t), Op(zp, {
+	}, t), Dp(zp, {
 		slashscheme: !0,
 		ascii: !0
 	}, t), e = e.sort((e, t) => e[0] > t[0] ? 1 : -1);
 	for (let t = 0; t < e.length; t++) {
-		let r = e[t][0], i = e[t][1] ? { [wp]: !0 } : { [Tp]: !0 };
-		r.indexOf("-") >= 0 ? i[Sp] = !0 : Nm.test(r) ? Im.test(r) ? i[bp] = !0 : i[vp] = !0 : i[_p] = !0, Ap(n, r, r, i);
+		let r = e[t][0], i = e[t][1] ? { [Cp]: !0 } : { [wp]: !0 };
+		r.indexOf("-") >= 0 ? i[xp] = !0 : Nm.test(r) ? Im.test(r) ? i[yp] = !0 : i[_p] = !0 : i[gp] = !0, Ap(n, r, r, i);
 	}
-	return Ap(n, "localhost", Fp, { ascii: !0 }), n.jd = new Y(jm), {
+	return Ap(n, "localhost", Fp, { ascii: !0 }), n.jd = new kp(jm), {
 		start: n,
 		tokens: Object.assign({ groups: t }, Mm)
 	};
@@ -11732,9 +11732,9 @@ function Jm(e, t, n, r, i) {
 	let a, o = t.length;
 	for (let n = 0; n < o - 1; n++) {
 		let o = t[n];
-		e.j[o] ? a = e.j[o] : (a = new Y(r), a.jr = i.slice(), e.j[o] = a), e = a;
+		e.j[o] ? a = e.j[o] : (a = new kp(r), a.jr = i.slice(), e.j[o] = a), e = a;
 	}
-	return a = new Y(n), a.jr = i.slice(), e.j[t[o - 1]] = a, a;
+	return a = new kp(n), a.jr = i.slice(), e.j[t[o - 1]] = a, a;
 }
 function Ym(e) {
 	let t = [], n = [], r = 0;
@@ -11877,7 +11877,7 @@ var th = eh("email", {
 		let e = this.tk;
 		return e.length >= 2 && e[0].t !== Fp && e[1].t === fm;
 	}
-}), ah = (e) => new Y(e);
+}), ah = (e) => new kp(e);
 function oh({ groups: e }) {
 	let t = e.domain.concat([
 		am,
@@ -12022,7 +12022,7 @@ var lh = typeof console < "u" && console && console.warn || (() => {}), uh = "un
 	initialized: !1
 };
 function dh() {
-	return Y.groups = {}, $.scanner = null, $.parser = null, $.tokenQueue = [], $.pluginQueue = [], $.customSchemes = [], $.initialized = !1, $;
+	return kp.groups = {}, $.scanner = null, $.parser = null, $.tokenQueue = [], $.pluginQueue = [], $.customSchemes = [], $.initialized = !1, $;
 }
 function fh(e, t = !1) {
 	if ($.initialized && lh(`linkifyjs: already initialized - will not register custom scheme "${e}" ${uh}`), !/^[0-9a-z]+(-[0-9a-z]+)*$/.test(e)) throw Error("linkifyjs: incorrect scheme format.\n1. Must only contain digits, lowercase ASCII letters or \"-\"\n2. Cannot start or end with \"-\"\n3. \"-\" cannot repeat");
@@ -12207,7 +12207,7 @@ function Nh(e) {
 	});
 }
 function Ph(e) {
-	let t = If({
+	let t = Ff({
 		find: (t) => {
 			let n = [];
 			for (let r of t.matchAll(Eh)) kh(t, r, e.isAllowedHref) && n.push(Ah(r));
@@ -12414,7 +12414,7 @@ var Lh = sf.create({
 				defaultProtocol: this.options.defaultProtocol
 			}),
 			findPlainUrls: e
-		})] : [If({
+		})] : [Ff({
 			find: e,
 			type: this.type,
 			getAttributes: (e) => ({ href: e.data?.href })
@@ -12443,7 +12443,7 @@ var Lh = sf.create({
 			shouldAutoLink: this.options.shouldAutoLink
 		})), e;
 	}
-}), Rh = "listItem", zh = "textStyle", Bh = /^\s*([-+*])\s$/, Vh = Ff.create({
+}), Rh = "listItem", zh = "textStyle", Bh = /^\s*([-+*])\s$/, Vh = Y.create({
 	name: "bulletList",
 	addOptions() {
 		return {
@@ -12666,7 +12666,7 @@ function lg(e, t) {
 		text: e
 	}]);
 }
-var ug = Ff.create({
+var ug = Y.create({
 	name: "listItem",
 	addOptions() {
 		return {
@@ -13037,7 +13037,7 @@ function Rg(e) {
 		default: return null;
 	}
 }
-var zg = Ff.create({
+var zg = Y.create({
 	name: "orderedList",
 	addOptions() {
 		return {
@@ -13168,7 +13168,7 @@ var zg = Ff.create({
 }), Bg = /^\s*(\[([( |x])?\])\s$/, Vg = "position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0", Hg = (e, t, n) => {
 	var r;
 	return (n == null || (r = n.checkboxLabel) == null ? void 0 : r.call(n, e, t)) || `Task item checkbox for ${e.textContent || "empty task item"}`;
-}, Ug = Ff.create({
+}, Ug = Y.create({
 	name: "taskItem",
 	addOptions() {
 		return {
@@ -13289,7 +13289,7 @@ var zg = Ff.create({
 			getAttributes: (e) => ({ checked: e[e.length - 1] === "x" })
 		})];
 	}
-}), Wg = Ff.create({
+}), Wg = Y.create({
 	name: "taskList",
 	addOptions() {
 		return {
@@ -13396,7 +13396,7 @@ J.create({
 });
 //#endregion
 //#region node_modules/@tiptap/extension-paragraph/dist/index.js
-var Gg = "&nbsp;", Kg = "\xA0", qg = Ff.create({
+var Gg = "&nbsp;", Kg = "\xA0", qg = Y.create({
 	name: "paragraph",
 	priority: 1e3,
 	addOptions() {
@@ -13480,12 +13480,12 @@ var Gg = "&nbsp;", Kg = "\xA0", qg = Ff.create({
 		})];
 	},
 	addPasteRules() {
-		return [If({
+		return [Ff({
 			find: Yg,
 			type: this.type
 		})];
 	}
-}), Zg = Ff.create({
+}), Zg = Y.create({
 	name: "text",
 	group: "inline",
 	parseMarkdown: (e) => ({
@@ -14271,7 +14271,7 @@ var I_ = J.create({
 	name: "starterKit",
 	addExtensions() {
 		let e = [];
-		return this.options.bold !== !1 && e.push(Zf.configure(this.options.bold)), this.options.blockquote !== !1 && e.push(Kf.configure(this.options.blockquote)), this.options.bulletList !== !1 && e.push(Vh.configure(this.options.bulletList)), this.options.code !== !1 && e.push(tp.configure(this.options.code)), this.options.codeBlock !== !1 && e.push(ap.configure(this.options.codeBlock)), this.options.document !== !1 && e.push(op.configure(this.options.document)), this.options.dropcursor !== !1 && e.push(f_.configure(this.options.dropcursor)), this.options.gapcursor !== !1 && e.push(p_.configure(this.options.gapcursor)), this.options.hardBreak !== !1 && e.push(sp.configure(this.options.hardBreak)), this.options.heading !== !1 && e.push(cp.configure(this.options.heading)), this.options.undoRedo !== !1 && e.push(L_.configure(this.options.undoRedo)), this.options.horizontalRule !== !1 && e.push(lp.configure(this.options.horizontalRule)), this.options.italic !== !1 && e.push(mp.configure(this.options.italic)), this.options.listItem !== !1 && e.push(ug.configure(this.options.listItem)), this.options.listKeymap !== !1 && e.push(yg.configure(this.options?.listKeymap)), this.options.link !== !1 && e.push(Lh.configure(this.options?.link)), this.options.orderedList !== !1 && e.push(zg.configure(this.options.orderedList)), this.options.paragraph !== !1 && e.push(qg.configure(this.options.paragraph)), this.options.strike !== !1 && e.push(Xg.configure(this.options.strike)), this.options.text !== !1 && e.push(Zg.configure(this.options.text)), this.options.underline !== !1 && e.push(Qg.configure(this.options?.underline)), this.options.trailingNode !== !1 && e.push(I_.configure(this.options?.trailingNode)), e;
+		return this.options.bold !== !1 && e.push(Xf.configure(this.options.bold)), this.options.blockquote !== !1 && e.push(Gf.configure(this.options.blockquote)), this.options.bulletList !== !1 && e.push(Vh.configure(this.options.bulletList)), this.options.code !== !1 && e.push(ep.configure(this.options.code)), this.options.codeBlock !== !1 && e.push(ip.configure(this.options.codeBlock)), this.options.document !== !1 && e.push(ap.configure(this.options.document)), this.options.dropcursor !== !1 && e.push(f_.configure(this.options.dropcursor)), this.options.gapcursor !== !1 && e.push(p_.configure(this.options.gapcursor)), this.options.hardBreak !== !1 && e.push(op.configure(this.options.hardBreak)), this.options.heading !== !1 && e.push(sp.configure(this.options.heading)), this.options.undoRedo !== !1 && e.push(L_.configure(this.options.undoRedo)), this.options.horizontalRule !== !1 && e.push(cp.configure(this.options.horizontalRule)), this.options.italic !== !1 && e.push(pp.configure(this.options.italic)), this.options.listItem !== !1 && e.push(ug.configure(this.options.listItem)), this.options.listKeymap !== !1 && e.push(yg.configure(this.options?.listKeymap)), this.options.link !== !1 && e.push(Lh.configure(this.options?.link)), this.options.orderedList !== !1 && e.push(zg.configure(this.options.orderedList)), this.options.paragraph !== !1 && e.push(qg.configure(this.options.paragraph)), this.options.strike !== !1 && e.push(Xg.configure(this.options.strike)), this.options.text !== !1 && e.push(Zg.configure(this.options.text)), this.options.underline !== !1 && e.push(Qg.configure(this.options?.underline)), this.options.trailingNode !== !1 && e.push(I_.configure(this.options?.trailingNode)), e;
 	}
 }), z_ = 0, B_ = (e) => `${e}-${++z_}`;
 function V_(e, t, { commit: n = !0 } = {}) {
@@ -14352,65 +14352,194 @@ function W_(e, t, { insert: n, set: r, commit: i }) {
 	return () => a.abort();
 }
 //#endregion
+//#region src/js/popup.js
+var G_ = (e) => getComputedStyle(e).direction === "rtl";
+function K_(e, t, { stretch: n = !1, above: r = !1, point: i = null, start: a = !1 } = {}) {
+	let o = typeof e.showPopover == "function", s = e.getAttribute("style"), c = !1;
+	o && (e.popover = "manual");
+	let l = () => {
+		if (!c || !o) return;
+		let s = t.getBoundingClientRect(), l = window.visualViewport, u = l?.offsetLeft || 0, d = l?.offsetTop || 0, f = l?.width || window.innerWidth, p = l?.height || window.innerHeight;
+		e.style.position = "fixed", e.style.inset = "auto", e.style.margin = "0", e.style.transform = "none", e.style.maxWidth = `${Math.max(0, f - 16)}px`, e.style.maxHeight = `${Math.max(40, p - 16)}px`, e.style.overflowY = "auto", n && (e.style.width = `${Math.min(s.width, f - 16)}px`);
+		let m = e.getBoundingClientRect(), h = i ? G_(i) ? s.left - m.width : s.left : n || G_(t) !== a ? s.left : s.right - m.width, g = d + p - s.bottom - 8, _ = s.top - d - 8, ee = r && _ >= m.height || g < m.height && _ > g, v = ee ? _ : g;
+		e.style.maxHeight = `${Math.max(40, v)}px`;
+		let y = e.getBoundingClientRect().height;
+		e.style.left = `${Math.max(u + 8, Math.min(h, u + f - m.width - 8))}px`, e.style.top = `${Math.max(d + 8, Math.min(ee ? s.top - y - 4 : s.bottom + 4, d + p - y - 8))}px`;
+	}, u = () => {
+		c = !0, o && (e.popover = "manual"), o && !e.matches(":popover-open") && e.showPopover(), l();
+	}, d = () => {
+		c = !1, o && e.matches(":popover-open") && e.hidePopover();
+	};
+	return window.addEventListener("resize", l), document.addEventListener("scroll", l, !0), window.visualViewport?.addEventListener("resize", l), window.visualViewport?.addEventListener("scroll", l), {
+		show: u,
+		hide: d,
+		destroy() {
+			d(), window.removeEventListener("resize", l), document.removeEventListener("scroll", l, !0), window.visualViewport?.removeEventListener("resize", l), window.visualViewport?.removeEventListener("scroll", l), o && e.removeAttribute("popover"), s === null ? e.removeAttribute("style") : e.setAttribute("style", s);
+		}
+	};
+}
+//#endregion
+//#region src/js/messages.js
+function q_(e, t, n, r = {}) {
+	return (e.getAttribute(`data-fruit-${t}`) ?? n).replace(/\{(\w+)\}/g, (e, t) => String(r[t] ?? e));
+}
+//#endregion
 //#region src/js/editor.js
-function G_(e) {
+var J_ = Y.create({
+	name: "image",
+	group: "inline",
+	inline: !0,
+	draggable: !0,
+	addAttributes() {
+		return {
+			src: { default: null },
+			alt: { default: null },
+			title: { default: null }
+		};
+	},
+	parseHTML() {
+		return [{ tag: "img[src]:not([src^=\"data:\"])" }];
+	},
+	renderHTML({ HTMLAttributes: e }) {
+		return ["img", q(e)];
+	}
+});
+function Y_(e) {
 	e[U_] = !0, e.data("fruitEditor", () => {
-		let e, t, n, r, i, a, o, s, c, l, u = {
+		let e, t, n, r, i, a, o, s, c, l, u, d, f, p, m = {
 			bold: (e) => e.toggleBold(),
 			italic: (e) => e.toggleItalic(),
 			bulletList: (e) => e.toggleBulletList(),
 			orderedList: (e) => e.toggleOrderedList(),
 			blockquote: (e) => e.toggleBlockquote(),
 			undo: (e) => e.undo(),
-			redo: (e) => e.redo()
-		}, d = () => {
-			let n = t.matches(":disabled") || t.readOnly;
-			e.setEditable(!n, !1), e.view.dom.tabIndex = t.matches(":disabled") ? -1 : t.tabIndex, e.view.dom.setAttribute("aria-disabled", String(t.matches(":disabled"))), e.view.dom.setAttribute("aria-readonly", String(t.readOnly));
-			for (let t of r.querySelectorAll("[data-fruit-command]")) {
-				let r = t.dataset.fruitCommand;
-				t.disabled = n || !u[r] || !u[r](e.can().chain()).run(), ["undo", "redo"].includes(r) || t.setAttribute("aria-pressed", String(e.isActive(r)));
+			redo: (e) => e.redo(),
+			clear: (e) => e.unsetAllMarks().clearNodes(),
+			link: (e) => e.setLink({ href: "https://example.com" }),
+			image: (e) => e.insertContent({
+				type: "image",
+				attrs: { src: "https://example.com/i.png" }
+			})
+		}, h = () => {
+			u = n.value, n.dispatchEvent(new Event("change", { bubbles: !0 }));
+		}, g = (n, r) => {
+			p?.();
+			let a = r === "link", o = a && e.getAttributes("link").href || "";
+			d = document.createElement("form"), d.className = "f-editor__popover", d.setAttribute("role", "dialog"), d.id = B_("fruit-editor-popover");
+			let s = q_(t, a ? "link-label" : "image-label", a ? "Link address" : "Image address");
+			d.setAttribute("aria-label", s);
+			let c = document.createElement("input");
+			c.className = "f-input", c.type = "url", c.required = !a || !o, c.value = o, c.placeholder = "https://", c.setAttribute("aria-label", s);
+			let l = document.createElement("button");
+			if (l.className = "f-button f-button--primary f-button--small", l.type = "submit", l.textContent = q_(t, a ? "apply-label" : "insert-label", a ? "Apply" : "Insert"), d.append(c, l), a && o) {
+				let n = document.createElement("button");
+				n.className = "f-button f-button--ghost f-button--small", n.type = "button", n.textContent = q_(t, "remove-link-label", "Remove link"), n.addEventListener("click", () => {
+					e.chain().focus().extendMarkRange("link").unsetLink().run(), h(), p(!1);
+				}), d.append(n);
+			}
+			d.addEventListener("submit", (t) => {
+				t.preventDefault();
+				let n = c.value.trim();
+				if (a) {
+					let t = e.chain().focus().extendMarkRange("link");
+					n ? e.state.selection.empty && !o ? e.chain().focus().insertContent({
+						type: "text",
+						text: n,
+						marks: [{
+							type: "link",
+							attrs: { href: n }
+						}]
+					}).run() : t.setLink({ href: n }).run() : t.unsetLink().run();
+				} else n && e.chain().focus().insertContent({
+					type: "image",
+					attrs: { src: n }
+				}).run();
+				h(), p(!1);
+			}), d.addEventListener("keydown", (e) => {
+				e.key === "Escape" && (e.preventDefault(), e.stopPropagation(), p(!0));
+			}), i.append(d), f = K_(d, n, { start: !0 }), f.show(), n.setAttribute("aria-expanded", "true"), p = (e) => {
+				f?.destroy(), d?.remove(), d = f = p = null, n.setAttribute("aria-expanded", "false"), e && n.focus();
+			}, c.focus();
+		}, _ = (t, r) => {
+			let i = [...t ?? []].filter((e) => e.type.startsWith("image/"));
+			if (!i.length) return !1;
+			let a = new CustomEvent("fruit-editor-upload", {
+				bubbles: !0,
+				cancelable: !0,
+				detail: {
+					files: i,
+					insert: (t, n = "") => {
+						let i = Math.min(r ?? e.state.selection.from, e.state.doc.content.size);
+						e.chain().focus().insertContentAt(i, {
+							type: "image",
+							attrs: {
+								src: t,
+								alt: n
+							}
+						}).run(), h();
+					}
+				}
+			});
+			return n.dispatchEvent(a), !0;
+		}, ee = () => {
+			let t = n.matches(":disabled") || n.readOnly;
+			e.setEditable(!t, !1), e.view.dom.tabIndex = n.matches(":disabled") ? -1 : n.tabIndex, e.view.dom.setAttribute("aria-disabled", String(n.matches(":disabled"))), e.view.dom.setAttribute("aria-readonly", String(n.readOnly));
+			for (let n of i.querySelectorAll("[data-fruit-command]")) {
+				let r = n.dataset.fruitCommand;
+				n.disabled = t || !m[r] || !m[r](e.can().chain()).run(), ["link", "image"].includes(r) ? n.setAttribute("aria-haspopup", "dialog") : [
+					"undo",
+					"redo",
+					"clear"
+				].includes(r) || n.setAttribute("aria-pressed", String(e.isActive(r)));
 			}
 		};
 		return {
 			init() {
-				t = this.$el.querySelector("textarea[data-fruit-control]"), n = this.$el.querySelector(".f-editor__surface"), r = this.$el.querySelector(".f-editor__toolbar"), t && n && r && (c = l = t.value, e = new Af({
-					element: n,
-					extensions: [R_.configure({ link: { openOnClick: !1 } })],
-					content: t.value,
-					editorProps: { attributes: {
-						class: "f-prose",
-						role: "textbox",
-						"aria-multiline": "true"
-					} },
+				t = this.$el, n = this.$el.querySelector("textarea[data-fruit-control]"), r = this.$el.querySelector(".f-editor__surface"), i = this.$el.querySelector(".f-editor__toolbar"), n && r && i && (l = u = n.value, e = new Af({
+					element: r,
+					extensions: [R_.configure({ link: { openOnClick: !1 } }), J_],
+					content: n.value,
+					editorProps: {
+						attributes: {
+							class: "f-prose",
+							role: "textbox",
+							"aria-multiline": "true"
+						},
+						handlePaste: (e, t) => _(t.clipboardData?.files, e.state.selection.from),
+						handleDrop: (e, t) => _(t.dataTransfer?.files, e.posAtCoords({
+							left: t.clientX,
+							top: t.clientY
+						})?.pos)
+					},
 					onUpdate: () => {
-						c = e.isEmpty ? "" : e.getHTML(), V_(t, c, { commit: !1 }), e.view.dom.removeAttribute("aria-invalid");
+						l = e.isEmpty ? "" : e.getHTML(), V_(n, l, { commit: !1 }), e.view.dom.removeAttribute("aria-invalid");
 					},
 					onTransaction: () => {
-						e && d();
+						e && ee();
 					}
-				}), i = H_(this, t, e.view.dom, (n) => {
-					t.value !== c && (e.commands.setContent(t.value, { emitUpdate: !1 }), c = l = t.value), n === "reset" && (l = t.value), d();
+				}), a = H_(this, n, e.view.dom, (t) => {
+					n.value !== l && (e.commands.setContent(n.value, { emitUpdate: !1 }), l = u = n.value), t === "reset" && (u = n.value), ee();
 				}, {
-					presentation: n,
+					presentation: r,
 					focusRoot: this.$el
-				}), o = (e) => {
-					!this.$el.contains(e.relatedTarget) && t.value !== l && (l = t.value, t.dispatchEvent(new Event("change", { bubbles: !0 })));
-				}, this.$el.addEventListener("focusout", o), s = W_(this.$el, t, {
+				}), s = (e) => {
+					!this.$el.contains(e.relatedTarget) && n.value !== u && (u = n.value, n.dispatchEvent(new Event("change", { bubbles: !0 })));
+				}, this.$el.addEventListener("focusout", s), c = W_(this.$el, n, {
 					insert: (t) => e.chain().focus().insertContent(t).run(),
 					set: (t) => e.commands.setContent(t, { emitUpdate: !0 }),
-					commit: () => {
-						l = t.value, t.dispatchEvent(new Event("change", { bubbles: !0 }));
-					}
-				}), a = (t) => {
+					commit: h
+				}), o = (t) => {
 					let n = t.target.closest("[data-fruit-command]");
-					n && !n.disabled && u[n.dataset.fruitCommand] && u[n.dataset.fruitCommand](e.chain().focus()).run();
-				}, r.addEventListener("click", a), r.hidden = !1, n.hidden = !1, t.hidden = !0, d());
+					if (!n || n.disabled || !m[n.dataset.fruitCommand]) return;
+					let r = n.dataset.fruitCommand;
+					r === "link" || r === "image" ? g(n, r) : m[r](e.chain().focus()).run();
+				}, i.addEventListener("click", o), i.hidden = !1, r.hidden = !1, n.hidden = !0, ee());
 			},
 			destroy() {
-				i?.(), s?.(), this.$el.removeEventListener("focusout", o), r?.removeEventListener("click", a), e?.destroy(), t && (t.hidden = !1), r && (r.hidden = !0), n && (n.hidden = !0);
+				a?.(), c?.(), p?.(), this.$el.removeEventListener("focusout", s), i?.removeEventListener("click", o), e?.destroy(), n && (n.hidden = !1), i && (i.hidden = !0), r && (r.hidden = !0);
 			}
 		};
 	});
 }
 //#endregion
-export { G_ as default };
+export { Y_ as default };

@@ -35,7 +35,7 @@
                         </x-fruit::field>
 
                         <x-fruit::field :label="__('Message')" class="auto_reply_message-editor">
-                            <x-fruit::textarea id="auto_reply_message" class="auto-reply-editor" name="auto_reply_message" rows="8">{{ old('auto_reply_message', $mailbox->auto_reply_message) }}</x-fruit::textarea>
+                            <x-editor id="auto_reply_message" name="auto_reply_message" rows="8" vars :exclude-vars="['user.']">{{ old('auto_reply_message', $mailbox->auto_reply_message) }}</x-editor>
                         </x-fruit::field>
                     </div>
 
@@ -50,7 +50,7 @@
                             </x-fruit::field>
 
                             <x-fruit::field :label="__('Message')" class="auto_reply_message-editor">
-                                <x-fruit::textarea id="auto_reply_{{ $language }}_message" class="auto-reply-editor" name="versions[{{ $language }}][message]" rows="8">{{ old('versions.'.$language.'.message', $version->message) }}</x-fruit::textarea>
+                                <x-editor id="auto_reply_{{ $language }}_message" name="versions[{{ $language }}][message]" rows="8" vars :exclude-vars="['user.']">{{ old('versions.'.$language.'.message', $version->message) }}</x-editor>
                             </x-fruit::field>
 
                             <div>
@@ -82,12 +82,7 @@
 
 @endsection
 
-@include('partials/editor')
-
 @section('javascript')
     @parent
-    $('.auto-reply-editor').each(function() {
-        summernoteInit('#'+$(this).attr('id'), {insertVar: true, excludeVars: ['%user.']});
-    });
     confirmButtonsInit();
 @endsection

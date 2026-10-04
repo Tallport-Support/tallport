@@ -218,9 +218,12 @@ function wfEmailEditor(row, type, value)
 		field('subject', wf_lang.subject);
 	}
 	wf_editor_i++;
-	var textarea = $('<textarea class="f-input" data-field="body"></textarea>').attr('id', 'wf-body-'+wf_editor_i).val(email.body || '');
-	box.append(textarea);
-	summernoteInit('#wf-body-'+wf_editor_i, {disableDragAndDrop: true});
+	// FruitUI's editor from the page's template; Alpine starts it once inserted.
+	var editor = document.getElementById('wf-editor-template').content.cloneNode(true);
+	var textarea = editor.querySelector('textarea');
+	textarea.id = 'wf-body-'+wf_editor_i;
+	textarea.value = email.body || '';
+	box.append(editor);
 
 	if (type == 'reply' || type == 'email_customer') {
 		$('<label class="f-check"></label>')
@@ -280,7 +283,7 @@ function wfSerialize(editor)
 					var input = $(this);
 					var name = input.attr('data-field');
 					if (name == 'body') {
-						email.body = input.summernote('code');
+						email.body = input.val();
 					} else if (input.is(':checkbox')) {
 						if (input.is(':checked')) {
 							email[name] = '1';

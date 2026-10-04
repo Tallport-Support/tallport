@@ -3497,6 +3497,18 @@ img.f-avatar {
     white-space: nowrap;
   }
 
+/* Links in an author or time (a profile, a message's own anchor) read as the text they replace,
+     underlined only on hover or focus, as mail apps style a sender. */
+
+:is(.f-message__author, .f-message__time, .f-message-event__time) a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+:is(.f-message__author, .f-message__time, .f-message-event__time) a:is(:hover, :focus-visible) {
+    text-decoration: underline;
+  }
+
 /* Further header lines under the identity: From, To and Cc, or an assignment and status. */
 
 .f-message__headers {
@@ -4218,6 +4230,27 @@ img.f-avatar {
   }
 .f-editor__surface .tiptap:focus-visible {
     outline: none;
+  }
+/* The address popover for links and images, beside its toolbar button. */
+.f-editor__popover {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    width: min(26rem, calc(100vw - 32px));
+    padding: 8px;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius);
+    background: var(--f-material-popup);
+    backdrop-filter: blur(24px) saturate(1.8);
+    box-shadow: var(--f-shadow);
+  }
+.f-editor__popover > .f-input {
+    flex: 1 1 12rem;
+  }
+.f-editor__surface img {
+    max-width: 100%;
+    height: auto;
   }
 .f-editor [hidden] {
     display: none !important;

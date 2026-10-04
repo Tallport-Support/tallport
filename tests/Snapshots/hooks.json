@@ -1066,6 +1066,14 @@
     },
     {
         "type": "filter",
+        "name": "editor.vars",
+        "arguments": 1,
+        "files": [
+            "resources/views/components/editor.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
         "name": "email.auto_reply.subject",
         "arguments": 2,
         "files": [

@@ -539,28 +539,7 @@ function editorProcessInsertVar(editor)
 
 function mailboxUpdateInit(from_name_custom)
 {
-	var selector = '#signature';
-
 	$(document).ready(function(){
-
-		summernoteInit(selector, {
-			insertVar: true,
-			disableDragAndDrop: false,
-			callbacks: {
-				onInit: function() {
-					$(selector).parent().children().find('.note-statusbar').remove();
-					editorProcessInsertVar($(selector));
-				},
-				onImageUpload: function(files) {
-					if (!files) {
-						return;
-					}
-					for (var i = 0; i < files.length; i++) {
-						editorSendFile(files[i], undefined, false);
-					}
-				}
-			}
-		});
 
 	    $('#from_name').change(function(event) {
 			if ($(this).val() == from_name_custom) {
@@ -6491,17 +6470,6 @@ $(document).on('click', '.external-images-show, .external-images-block', functio
 // Settings » Branding: editors for the HTML, the colour's reset.
 function brandingSettingsInit()
 {
-	$('.branding-editor').each(function() {
-		summernoteInit('#'+$(this).attr('id'), {
-			insertVar: false,
-			disableDragAndDrop: true,
-			callbacks: {
-				onInit: function() {
-					$(this).parent().children().find('.note-statusbar').remove();
-				}
-			}
-		});
-	});
 	$('.branding-color-reset').click(function(e) {
 		e.preventDefault();
 		$('.branding-color').val($(this).attr('data-color')).trigger('input').trigger('change');

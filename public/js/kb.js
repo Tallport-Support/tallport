@@ -5,7 +5,6 @@
 
 function kbEditorInit()
 {
-	summernoteInit('#kb_body', {insertVar: false, disableDragAndDrop: true});
 	$('.kb-delete-form').submit(function() {
 		return confirm($(this).attr('data-confirm'));
 	});

@@ -105,7 +105,7 @@
                     @endif
 
                     <x-fruit::field :label="__('Email Signature')" class="signature-editor">
-                        <x-fruit::textarea id="signature" name="signature" rows="8">{{ old('signature', $mailbox->signature) }}</x-fruit::textarea>
+                        <x-editor id="signature" name="signature" rows="8" vars>{{ old('signature', $mailbox->signature) }}</x-editor>
                     </x-fruit::field>
                 </x-fruit::form-section>
             @endif
@@ -148,7 +148,6 @@
     </div>
 @endsection
 
-@include('partials/editor')
 
 @section('javascript')
     @parent

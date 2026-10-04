@@ -22,7 +22,7 @@
                 </x-fruit::field>
 
                 <x-fruit::field :label="__('Reply')" :description="__('Variables (Insert variable) are filled in for the conversation.')">
-                    <x-fruit::textarea id="saved_reply_text" name="text" rows="8">{{ old('text', $saved_reply->text) }}</x-fruit::textarea>
+                    <x-editor id="saved_reply_text" name="text" rows="8" vars>{{ old('text', $saved_reply->text) }}</x-editor>
                 </x-fruit::field>
 
                 <div class="f-field">
@@ -73,9 +73,3 @@
     </div>
 @endsection
 
-@include('partials/editor')
-
-@section('javascript')
-    @parent
-    savedReplyFormInit();
-@endsection

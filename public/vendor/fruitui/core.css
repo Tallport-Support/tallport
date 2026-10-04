@@ -3050,6 +3050,15 @@
     font-size: var(--f-text-2xs);
     white-space: nowrap;
   }
+  /* Links in an author or time (a profile, a message's own anchor) read as the text they replace,
+     underlined only on hover or focus, as mail apps style a sender. */
+  :is(.f-message__author, .f-message__time, .f-message-event__time) a {
+    color: inherit;
+    text-decoration: none;
+  }
+  :is(.f-message__author, .f-message__time, .f-message-event__time) a:is(:hover, :focus-visible) {
+    text-decoration: underline;
+  }
   /* Further header lines under the identity: From, To and Cc, or an assignment and status. */
   .f-message__headers {
     display: grid;

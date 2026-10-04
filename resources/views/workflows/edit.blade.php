@@ -113,7 +113,11 @@
     </div>
 @endsection
 
-@include('partials/editor')
+@section('body_bottom')
+    @parent
+    {{-- The email actions' body editor, cloned by public/js/workflows.js. --}}
+    <template id="wf-editor-template"><x-editor data-field="body" rows="6" :aria-label="__('Message')" vars></x-editor></template>
+@append
 
 @section('javascript')
     @parent

@@ -274,23 +274,3 @@ function savedRepliesListInit()
 	});
 }
 
-// Settings » Saved Replies » a saved reply: the editor with variables.
-function savedReplyFormInit()
-{
-	var selector = '#saved_reply_text';
-	summernoteInit(selector, {
-		insertVar: true,
-		disableDragAndDrop: false,
-		callbacks: {
-			onInit: function() {
-				$(selector).parent().children().find('.note-statusbar').remove();
-				editorProcessInsertVar($(selector));
-			},
-			onImageUpload: function(files) {
-				for (var i = 0; files && i < files.length; i++) {
-					editorSendFile(files[i], undefined, false, selector);
-				}
-			}
-		}
-	});
-}

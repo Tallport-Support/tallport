@@ -482,6 +482,23 @@ fruitEditor(Alpine); // before this same Alpine instance starts
 
 Without a bundler, link the prebuilt `editor.global.js` (published with the other assets); it registers itself on the page's Alpine, including the one Livewire injects, whether it loads before or after `livewire.global.js`.
 
+**Links, images and formatting.** The default toolbar adds Link, Image and Remove formatting (`data-fruit-command` `link`, `image` and `clear` in a custom toolbar). Link opens a small popover for the address: it links the selected text, edits the link the cursor is in, or removes it. Image inserts a picture by address. Images are accepted only by address; pasted `data:` images are refused, so files go through the upload hook below.
+
+**Pasted and dropped images.** When someone pastes or drops image files, the textarea dispatches a bubbling `fruit-editor-upload` event whose `detail` holds the `files` and an `insert(url, alt)` function. Upload the files, then call `insert` with each address; the image goes where it was pasted or dropped.
+
+```blade
+<x-fruit::editor wire:model="body"
+    x-on:fruit-editor-upload="
+        const body = new FormData();
+        body.append('file', $event.detail.files[0]);
+        fetch('{{ route('uploads.store') }}', { method: 'POST', body, headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+            .then(response => response.json())
+            .then(({ url }) => $event.detail.insert(url))
+    " />
+```
+
+With Livewire, `$wire.upload('image', file, () => $wire.storeImage().then(url => insert(url)))` uploads through the component instead.
+
 **Inserting and replacing content.** Saved replies, drafts and signatures go through two events. `fruit-editor-insert` puts `{ html }` at the cursor and `fruit-editor-set` replaces the content with `{ html }`. Dispatch them from a button inside the editor (`$dispatch('fruit-editor-insert', { html })` in an app toolbar button), on the `.f-editor` element, or on `window` with `target` naming the editor's textarea `id` or `name`, as Livewire's `$this->dispatch('fruit-editor-set', target: 'reply', html: $draft)` does. Each request updates the native textarea with `input` and `change`, so `wire:model`, autosave listeners and form posts see it. Without the editor plugin the plain textarea answers the same requests.
 
 ```blade
@@ -520,6 +537,7 @@ These cover the core screens of helpdesks, mail and chat. Contracts are in the [
 - **Message** (`x-fruit::message`): one message's avatar, author, meta, time, body, attachments and footer. `layout="inline"` suits chat (Chat's channel); `layout="stacked"` suits email and helpdesk threads (Support, Chat threads); `variant="note"` marks internal notes. Reactions and reply counts are independent controls in the footer. The `actions` slot holds quick actions (react, reply in thread, quote) in a labelled group that appears at the message's top corner on hover or whenever focus is inside it, and stays visible on touch screens; stacked messages give it a column beside the header so the time stays readable. Offer the same commands elsewhere when they matter, since hover is not discoverable.
 - **Long histories**: render a window of recent messages and load older ones as the reader scrolls up, rather than the whole history: a `wire:intersect="loadOlder"` sentinel before the first message, with a Skeleton while it loads (see [infinite scroll](#app-shells-icons-and-infinite-scroll)). Chat apps usually add a "Jump to latest" button once the reader scrolls back; the Chat example shows one.
 - **Header lines and state**: Message's `headers` slot holds further lines under the identity (From, To, Cc, or "Assigned to Mia · Pending"); badges such as Draft, Forwarded or Not sent go in `meta`. A "…" Menu in the `actions` slot keeps the actions visible while it is open.
+- **Links in the header**: a link in the author (a profile) or the time (the message's own anchor, titled with the full date) keeps the header's text color and shows an underline only on hover or focus; the same holds for a thread event's time.
 - **Thread events** (`x-fruit::message-event`): one quiet line between messages for assignments and status changes, with an optional icon, a `time`, and an `actions` slot (a "…" Menu after the time, shown on hover, focus or while open).
 - **Divider** (`x-fruit::divider`): days, "New messages" (`tone="accent"`) or reply counts (`align="start"`).
 - **Timeline** (`x-fruit::timeline`, `timeline-item`): conversation history and audit logs, with a native `time`.

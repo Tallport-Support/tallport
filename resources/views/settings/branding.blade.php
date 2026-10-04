@@ -32,7 +32,7 @@
         </x-fruit::field>
 
         <x-fruit::field :label="__('Footer')" :description="__('Instead of the copyright line at the bottom of the pages.')">
-            <x-fruit::textarea id="branding_footer" class="branding-editor" name="settings[branding.footer]" rows="3">{{ old('settings.branding.footer', $settings['branding.footer']) }}</x-fruit::textarea>
+            <x-editor id="branding_footer" name="settings[branding.footer]" rows="3">{{ old('settings.branding.footer', $settings['branding.footer']) }}</x-editor>
         </x-fruit::field>
 
         <x-fruit::field :label="__('Custom CSS')">
@@ -42,11 +42,11 @@
 
     <x-fruit::form-section :title="__('Emails to Customers')">
         <x-fruit::field :label="__('Header')" :description="__('Above replies and auto replies.')">
-            <x-fruit::textarea id="branding_email_header" class="branding-editor" name="settings[branding.email_header]" rows="3">{{ old('settings.branding.email_header', $settings['branding.email_header']) }}</x-fruit::textarea>
+            <x-editor id="branding_email_header" name="settings[branding.email_header]" rows="3">{{ old('settings.branding.email_header', $settings['branding.email_header']) }}</x-editor>
         </x-fruit::field>
 
         <x-fruit::field :label="__('Footer')">
-            <x-fruit::textarea id="branding_email_footer" class="branding-editor" name="settings[branding.email_footer]" rows="3">{{ old('settings.branding.email_footer', $settings['branding.email_footer']) }}</x-fruit::textarea>
+            <x-editor id="branding_email_footer" name="settings[branding.email_footer]" rows="3">{{ old('settings.branding.email_footer', $settings['branding.email_footer']) }}</x-editor>
         </x-fruit::field>
 
         <x-fruit::field :label="__('Custom CSS')">
@@ -66,7 +66,6 @@
     </footer>
 </form>
 
-@include('partials/editor')
 
 @section('javascript')
     @parent
