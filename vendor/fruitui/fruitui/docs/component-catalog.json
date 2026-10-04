@@ -514,7 +514,7 @@
     "id": "item-row",
     "kind": "pattern",
     "classes": ["f-item-row"],
-    "blade": ["item-row"],
+    "blade": ["item-row", "item-link"],
     "uses": ["index.html", "support.html"],
     "contracts": {
       "item-row": {
@@ -523,6 +523,13 @@
         "state": "Native disabled state; caller-owned aria-current=true identifies the open conversation.",
         "keyboard": "Tab focuses; Enter/Space invokes. Optional arrow-key navigation belongs to the application.",
         "options": "`variant`: quiet (default), filled. Default/title slot: identity; leading: optional decorative identity cue; trailing: time; subtitle, preview, meta: noninteractive content. Attributes and action bindings go to the button."
+      },
+      "item-link": {
+        "purpose": "Go to one item, such as a conversation or ticket, as a real link.",
+        "element": "`a` with a required href; same classes, slots and states as Item Row.",
+        "state": "`current` marks the open item with aria-current=page; the current row styling applies.",
+        "keyboard": "Tab focuses; Enter follows the link. New tabs, middle clicks and no-JavaScript navigation work natively.",
+        "options": "`variant`: quiet (default), filled. `current`: boolean. `href`, `target` and other link attributes, including wire:navigate. Slots as Item Row."
       }
     }
   },
@@ -570,7 +577,7 @@
         "element": "`section`; native container, optional group/region.",
         "state": "No application or selection state.",
         "keyboard": "Children own keyboard behavior.",
-        "options": "Native section attributes and layout tokens. Default slot: panes/toolbars/optional splitters."
+        "options": "`frame`: card (default, a framed window within a page), fill (the whole application window: the viewport's full height without border, radius or shadow). Native section attributes and layout tokens. Default slot: panes/toolbars/optional splitters."
       }
     }
   },

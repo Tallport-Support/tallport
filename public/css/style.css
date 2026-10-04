@@ -4836,24 +4836,166 @@ a.disabled:focus {
 }
 
 /**
- * App shell: the sidebar (FruitUI) and the page.
+ * App shell: one FruitUI workspace, composed as in FruitUI's Support example
+ * (examples/support/support.css): the sidebar, an optional list, the page and
+ * an optional inspector, a toolbar row across the top, each pane scrolling by
+ * itself.
  */
-.app-shell {
-    display: flex;
-    align-items: flex-start;
-    min-height: 100vh;
+#app {
+    container: app / inline-size;
+}
+.app-workspace {
+    --f-workspace-columns: var(--f-sidebar-width, 240px) minmax(0, 1fr);
+    --f-workspace-rows: 64px minmax(0, 1fr);
+}
+.app-workspace[data-list] {
+    --f-workspace-columns: var(--f-sidebar-width, 240px) var(--f-list-width, 360px) minmax(0, 1fr);
+}
+.app-workspace[data-inspector] {
+    --f-workspace-columns: var(--f-sidebar-width, 240px) minmax(0, 1fr) var(--f-inspector-width, 280px);
+}
+.app-workspace[data-list][data-inspector] {
+    --f-workspace-columns: var(--f-sidebar-width, 240px) var(--f-list-width, 360px) minmax(0, 1fr) var(--f-inspector-width, 280px);
+}
+.app-workspace > .f-toolbar {
+    min-height: 0;
+    padding: 12px 16px;
+}
+.app-workspace__brand {
+    grid-column: 1;
+    grid-row: 1;
+    border-inline-end: 1px solid var(--f-border);
 }
 .app-sidebar {
-    display: flex;
-    flex-direction: column;
-    flex: 0 0 var(--app-sidebar-width, 260px);
-    width: var(--app-sidebar-width, 260px);
-    position: sticky;
-    top: 0;
-    height: 100vh;
+    grid-column: 1;
+    grid-row: 2;
+    padding: 12px 9px 14px;
     overflow-x: hidden;
-    overflow-y: auto;
+}
+.app-workspace__list-toolbar,
+.app-workspace__list {
+    grid-column: 2;
+}
+.app-workspace__list-toolbar {
+    grid-row: 1;
     border-inline-end: 1px solid var(--f-border);
+}
+.app-workspace__toolbar,
+.app-workspace__content {
+    grid-column: 2;
+}
+.app-workspace[data-list] .app-workspace__toolbar,
+.app-workspace[data-list] .app-workspace__content {
+    grid-column: 3;
+}
+.app-workspace__toolbar {
+    grid-row: 1;
+}
+.app-workspace__list,
+.app-workspace__content {
+    grid-row: 2;
+}
+.app-workspace__pane--full {
+    grid-row: 1 / span 2;
+}
+.app-workspace__inspector-toolbar,
+.app-workspace__inspector {
+    grid-column: -2;
+}
+.app-workspace__inspector-toolbar {
+    grid-row: 1;
+    border-inline-start: 1px solid var(--f-border);
+}
+.app-workspace__inspector {
+    grid-row: 2;
+}
+.app-workspace .f-pane__scroll,
+.app-workspace .f-pane--scroll {
+    flex: 1;
+    scrollbar-width: thin;
+}
+.app-workspace__splitter--inspector {
+    --f-splitter-column: -2;
+}
+.app-sidebar-toggle {
+    display: none;
+}
+/* Narrow windows: the inspector goes first, then the sidebar slides in over
+   the page and the list and the open page take turns. */
+@container app (max-width: 1200px) {
+    .app-workspace[data-inspector] {
+        --f-workspace-columns: var(--f-sidebar-width, 240px) minmax(0, 1fr);
+    }
+    .app-workspace[data-list][data-inspector] {
+        --f-workspace-columns: var(--f-sidebar-width, 240px) var(--f-list-width, 360px) minmax(0, 1fr);
+    }
+    .app-workspace__inspector-toolbar,
+    .app-workspace__inspector,
+    .app-workspace__splitter--inspector {
+        display: none;
+    }
+}
+@container app (max-width: 900px) {
+    .app-workspace,
+    .app-workspace[data-list],
+    .app-workspace[data-inspector],
+    .app-workspace[data-list][data-inspector] {
+        --f-workspace-columns: minmax(0, 1fr);
+    }
+    .app-workspace__splitter {
+        display: none !important;
+    }
+    .app-workspace__brand {
+        border: 0;
+    }
+    .app-sidebar-toggle {
+        display: inline-flex;
+    }
+    .app-sidebar {
+        position: fixed;
+        z-index: 1040;
+        inset-block: 56px 0;
+        inset-inline-start: 0;
+        width: min(300px, 85vw);
+        background: var(--f-surface-secondary);
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+    }
+    [dir="rtl"] .app-sidebar {
+        transform: translateX(100%);
+    }
+    .app-sidebar-open .app-sidebar {
+        transform: none;
+        box-shadow: var(--f-shadow);
+    }
+    .app-workspace__list-toolbar,
+    .app-workspace__list,
+    .app-workspace__toolbar,
+    .app-workspace__content,
+    .app-workspace[data-list] .app-workspace__toolbar,
+    .app-workspace[data-list] .app-workspace__content {
+        grid-column: 1;
+    }
+    .app-workspace {
+        --f-workspace-rows: 56px auto minmax(0, 1fr);
+    }
+    .app-workspace__list-toolbar,
+    .app-workspace__toolbar {
+        grid-row: 2;
+    }
+    .app-workspace__list,
+    .app-workspace__content {
+        grid-row: 3;
+    }
+    .app-workspace__pane--full {
+        grid-row: 2 / span 2;
+    }
+    .app-workspace[data-list].split-view--open .app-workspace__list-toolbar,
+    .app-workspace[data-list].split-view--open .app-workspace__list,
+    .app-workspace[data-list]:not(.split-view--open) .app-workspace__toolbar,
+    .app-workspace[data-list]:not(.split-view--open) .app-workspace__content {
+        display: none;
+    }
 }
 .app-sidebar__header {
     display: flex;
@@ -4939,16 +5081,6 @@ a.disabled:focus {
 .web-notifications-trigger.has-unread {
     color: var(--f-accent);
 }
-.app-main {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-.app-main__bar {
-    display: none;
-}
 .page-nav {
     padding: 16px 20px 0;
 }
@@ -4968,28 +5100,6 @@ a.disabled:focus {
 .page-nav__actions {
     display: flex;
     gap: 6px;
-}
-@media (max-width: 767px) {
-    .app-sidebar {
-        position: fixed;
-        z-index: 1040;
-        inset-block: 0;
-        inset-inline-start: 0;
-        height: auto;
-        transform: translateX(-100%);
-        transition: transform 0.2s ease;
-    }
-    [dir="rtl"] .app-sidebar {
-        transform: translateX(100%);
-    }
-    .app-sidebar-open .app-sidebar {
-        transform: none;
-        box-shadow: var(--f-shadow-lg, 0 10px 40px rgba(0, 0, 0, 0.25));
-    }
-    .app-main__bar {
-        display: flex;
-        padding: 8px 12px;
-    }
 }
 .page-content {
     padding: 20px;
@@ -5263,60 +5373,6 @@ a.disabled:focus {
 .conv-list__footer .pager-nav.disabled {
     pointer-events: none;
     opacity: 0.45;
-}
-/* Split view: the conversation list beside the open conversation. The page
-   scrolls as before (the conversation's scripts rely on it); the list stays. */
-.split-view {
-    display: flex;
-    align-items: flex-start;
-}
-.split-view__list {
-    position: sticky;
-    top: 0;
-    flex: 0 0 var(--split-view-list-width, 380px);
-    height: 100vh;
-    min-width: 0;
-    overflow-y: auto;
-    border-inline-end: 1px solid var(--f-border);
-    background: var(--f-surface);
-}
-.split-view__detail {
-    flex: 1;
-    min-width: 0;
-}
-.split-view__detail > .content {
-    margin-top: 0;
-}
-.split-view__header {
-    padding-bottom: 8px;
-}
-/* Nothing open: the empty state in the middle of the pane, the footer left out. */
-.split-view:not(.split-view--open) .split-view__detail > .content {
-    display: grid;
-    min-height: 100vh;
-}
-.app-main:has(> .split-view:not(.split-view--open)) > .footer {
-    display: none;
-}
-.split-view__list,
-.app-sidebar {
-    scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--f-text) 25%, transparent) transparent;
-}
-.split-view__list .conv-list__toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 4;
-    background: var(--f-surface);
-}
-@media (max-width: 1100px) {
-    .split-view--open .split-view__list,
-    .split-view:not(.split-view--open) .split-view__detail {
-        display: none;
-    }
-    .split-view:not(.split-view--open) .split-view__list {
-        flex: 1;
-    }
 }
 /* Sign-in and the other guest pages: one card in the middle. */
 .auth-page {

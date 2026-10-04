@@ -239,6 +239,41 @@ Left/Right move the divider by 8px; Shift uses 32px. Home/End select the bounds.
 
 Without Alpine, handles stay hidden and the CSS layout remains usable. **Applications must hide handles in compact container queries when panes stack, disappear, or are replaced by another screen.** Keep enough width for the declared minimums before enabling resizing. The four examples demonstrate this with their existing navigation attributes and breakpoints; narrowing the workspace removes inspectors first, then switches to one visible phone pane.
 
+### The whole application window
+
+`x-fruit::workspace frame="fill"` (`f-workspace--fill`) makes the workspace the application window: the viewport's full height (`100dvh`, or `--f-workspace-height`) without the framed border, radius and shadow. Each pane scrolls on its own through `f-pane--scroll` or an `f-pane__scroll` region, so the page itself never scrolls.
+
+```blade
+<body class="fruit-ui">
+    <x-fruit::workspace frame="fill" aria-label="Help desk"
+        style="--f-workspace-columns: 220px 320px minmax(0, 1fr) 260px; --f-workspace-rows: minmax(0, 1fr)">
+        <x-fruit::sidebar class="f-pane f-pane--column f-pane--scroll f-pane--border-end">…</x-fruit::sidebar>
+        <x-fruit::pane class="f-pane--column f-pane--border-end" role="region" aria-label="Conversations">…</x-fruit::pane>
+        <x-fruit::pane class="f-pane--column app-conversation" role="region" aria-label="Conversation">
+            <header class="f-toolbar">…<button class="f-button f-button--ghost app-inspector-toggle" type="button" aria-controls="inspector">Customer</button></header>
+            <div class="f-pane__scroll">…</div>
+        </x-fruit::pane>
+        <aside id="inspector" class="f-pane f-pane--scroll f-pane--border-start app-inspector" aria-label="Customer">…</aside>
+    </x-fruit::workspace>
+</body>
+```
+
+**An inspector at compact widths** (the Support example's recipe). Panes adapt to the workspace's width, not the viewport's, so the same layout works in a preview frame or a split screen. Give the workspace's parent a container, drop the inspector column below a width, and show a toolbar toggle that switches the content column between the conversation and the inspector through a `data-view` attribute (Alpine, Livewire or plain script can set it). The toggle reports its state with `aria-expanded`, and the inspector gets a way back.
+
+```css
+.app-shell { container: app / inline-size; }
+.app-inspector-toggle { display: none; }
+@container app (max-width: 1100px) {
+  .app-workspace { --f-workspace-columns: 220px 320px minmax(0, 1fr); }
+  .app-inspector { display: none; }
+  .app-inspector-toggle { display: inline-flex; }
+  .app-workspace[data-view='inspector'] .app-conversation { display: none; }
+  .app-workspace[data-view='inspector'] .app-inspector { display: block; grid-column: 3; }
+}
+```
+
+The Support example (`support.html`, `examples/support/support.css`) goes further at narrower widths, showing one pane at a time with back buttons, as phones do.
+
 ## Message composers
 
 Support replies/notes and Chat conversations/threads use the same `.f-composer` native form arrangement. Compose labels and `.f-input.f-composer__input` textareas, `.f-help`/`.f-error`, optional `f-composer__header`, and `f-composer__footer`. The Blade adapter has a default content slot and forwards native form and submit attributes to the form. Labels, `x-model`, `wire:model`, validation and keyboard shortcuts remain on their real controls. It never owns drafts, reply/note modes or sending behavior.
@@ -480,7 +515,9 @@ These cover the core screens of helpdesks, mail and chat. Contracts are in the [
 - **Long histories**: render a window of recent messages and load older ones as the reader scrolls up, rather than the whole history: a `wire:intersect="loadOlder"` sentinel before the first message, with a Skeleton while it loads (see [infinite scroll](#app-shells-icons-and-infinite-scroll)). Chat apps usually add a "Jump to latest" button once the reader scrolls back; the Chat example shows one.
 - **Divider** (`x-fruit::divider`): days, "New messages" (`tone="accent"`) or reply counts (`align="start"`).
 - **Timeline** (`x-fruit::timeline`, `timeline-item`): conversation history and audit logs, with a native `time`.
-- **Bulk selection**: put a Checkbox beside each Item Row in its list item; the list gets a checkbox column. `x-fruit::selection-bar :count="count($selected)"` shows the count and independent actions, and renders nothing at zero.
+- **Rows as links**: `x-fruit::item-link href="…"` is the same row as a real link, for rows that are destinations: they open in a new tab, follow `target` and work without JavaScript. `current` marks the open row (`aria-current="page"`). Use Item Row (a button) for rows that act in place.
+- **Leading and trailing controls**: a list item can hold a Checkbox before its row and controls after it, such as a star or follow toggle (`x-fruit::button variant="ghost" size="small" class="f-button--icon"` with `aria-pressed`). The list item then draws the row's rounded hover and current backgrounds across all of them; trailing controls sit on the title line and never wrap (`--f-item-accessory-offset` adjusts for other control heights).
+- **Bulk selection**: `x-fruit::selection-bar :count="count($selected)"` shows the count and independent actions, and is hidden at zero. Client-side selection updates its `data-count` attribute instead: `x-bind:data-count="selected.length"` with Alpine, or `bar.dataset.count = n` from any script; the bar updates its translated text and hides at zero.
 - **Loading**: `x-fruit::skeleton :lines="3"` inside a container with `aria-busy="true"`, for example a Livewire lazy component's `placeholder()`. Busy buttons (Livewire `data-loading`, or `aria-busy`) show a progress cursor; compose `x-fruit::spinner` beside a readable label.
 - **Files**: `x-fruit::dropzone` wraps a native file input. Dropped files are filtered by `accept` and `multiple`, then assigned to the input with `input` and `change`, so `wire:model` uploads and change handlers work unchanged. Use Livewire's `temporaryUrl()` with Avatar or Attachment for previews.
 - **Uploads**: `x-fruit::upload-list` with `upload-row` (`name`, `state`: uploading, complete, error, cancelled, and `progress`). With Livewire uploads, read progress from the input's `livewire-upload-progress` event, as below.

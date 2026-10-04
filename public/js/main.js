@@ -3144,7 +3144,7 @@ function searchInit()
 					.find(':input:first').attr('disabled', 'disabled');
 				trigger.parent().removeClass('active');
 			}
-			$('html, body').animate({scrollTop: 0}, 600, 'swing');
+			appScroller().animate({scrollTop: 0}, 600, 'swing');
 			e.preventDefault();
 		});
 
@@ -5808,7 +5808,19 @@ function scrollTo(el, selector, speed, offset)
     } else {
         eljq = $(selector);
     }
-    $('html, body').animate({scrollTop: (eljq.offset().top+offset)}, speed);
+    var scroller = appScroller();
+    var top = eljq.offset().top + offset;
+    if (scroller.is('#app-content-scroll')) {
+        top += scroller.scrollTop() - scroller.offset().top;
+    }
+    scroller.animate({scrollTop: top}, speed);
+}
+
+// The element the page scrolls in: the workspace's content pane, or the window.
+function appScroller()
+{
+    var pane = $('#app-content-scroll');
+    return pane.length ? pane : $('html, body');
 }
 
 // Is user replying to the conversation
@@ -6023,7 +6035,7 @@ function maybeScrollToReplyBlock(offset)
 	var reply_block = $('.conv-reply-block:visible:first');
 	var block_top = reply_block.position().top;
 	if (block_top > $(window).height() / 2
-		|| block_top < $(window).scrollTop()
+		|| block_top < appScroller().scrollTop()
 	) {
 		if (typeof(offset) == "undefined") {
 			offset = -20;

@@ -30,6 +30,9 @@ Added:
 - Date, date-time, month, week, time and color fields use the shared rounded field frame in WebKit browsers, which kept a native square frame; date and time fields also match the text field height.
 - Pull-down chevrons (`f-menu__chevron`): a Menu with a text title shows one automatically; custom triggers add it, alone in an `f-button--icon` trigger for split buttons.
 - **Grouped settings.** `x-fruit::form-section` (`f-form-section`, `f-form-row`) groups settings in rounded sections, on new `--f-grouped-background` and `--f-grouped-surface` tokens, and Field takes `layout="row"` (label beside the control). A new Settings example (`settings.html`, plus a Livewire version) shows groups, row fields, choices, sub-pages, a destructive action and a save bar; Admin's workspace settings use the same groups. The site navigation wraps on phones.
+- `x-fruit::item-link`: an Item Row that is a real link, with `current` for the open row. List items can hold a leading checkbox and trailing controls, and then draw the row's hover and current backgrounds across all of them.
+- **Selection bar always renders**, hidden at zero, and follows a script-set `data-count`. Markup that expected no element at zero now gets a hidden one.
+- `x-fruit::workspace frame="fill"` (`f-workspace--fill`) makes the workspace the whole application window; the docs add a recipe for an inspector that collapses to a toolbar toggle.
 - Form-section rows always span the group (a described choice row drew a short separator), and a Disclosure row has no box of its own.
 - Components that may render as links (Item Row and Tab were missing) need no host link reset, and plain links use a soft underline that firms up on hover. The gallery adds a sign-in composition.
 - Buttons use the text color by default, so links styled as buttons no longer take the link color.

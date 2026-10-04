@@ -60,6 +60,7 @@ final class ComponentContract
         'input' => ['options' => ['type' => self::INPUT_TYPES]],
         'item-list' => ['roles' => ['list']],
         'item-row' => ['roles' => ['button'], 'type' => 'button', 'options' => ['variant' => self::ITEM_ROW_VARIANTS]],
+        'item-link' => ['roles' => ['link'], 'requires' => 'href', 'options' => ['variant' => self::ITEM_ROW_VARIANTS]],
         'menu' => ['roles' => ['group'], 'options' => ['placement' => ['below', 'above']], 'owns' => ['x-data'], 'message' => 'owns its Alpine keyboard helper. Put application state on a parent'],
         'menu-item' => ['roles' => ['menuitem'], 'type' => 'button', 'options' => ['variant' => ['default', 'danger']]],
         'menu-checkbox' => ['roles' => ['menuitemcheckbox'], 'type' => 'button'],
@@ -101,7 +102,7 @@ final class ComponentContract
         'command-link' => ['roles' => ['option'], 'requires' => 'href'],
         'command-group' => ['roles' => ['group']],
         'autocomplete' => ['owns' => ['x-data'], 'message' => 'owns its fruitAutocomplete helper. Put application state on a parent'],
-        'selection-bar' => ['roles' => ['region']],
+        'selection-bar' => ['roles' => ['region'], 'owns' => ['x-data'], 'message' => 'owns its fruitSelectionBar helper; bind data-count (for example x-bind:data-count) to update it from script'],
         'skeleton' => [],
         'divider' => ['roles' => ['separator'], 'options' => ['tone' => ['neutral', 'accent'], 'align' => ['center', 'start']]],
         'message' => ['roles' => ['article', 'listitem'], 'options' => ['layout' => ['inline', 'stacked'], 'variant' => ['default', 'note']]],
@@ -118,7 +119,7 @@ final class ComponentContract
         'toaster' => ['roles' => ['status'], 'owns' => ['x-data', 'x-show', 'x-text'], 'message' => 'owns its fruitToast helper and message. Dispatch fruit-toast events instead'],
         'token-field' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract'],
         'tooltip' => ['owns' => ['x-data'], 'message' => 'owns its fruitTooltip helper. Put application state on a parent'],
-        'workspace' => ['roles' => ['group', 'region']],
+        'workspace' => ['roles' => ['group', 'region'], 'options' => ['frame' => ['card', 'fill']]],
     ];
 
     /** Validate documented options and reject attributes that would change the component's semantics. */

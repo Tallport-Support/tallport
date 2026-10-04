@@ -181,6 +181,14 @@
     background: var(--f-workspace-background, var(--f-surface));
     box-shadow: var(--f-shadow);
   }
+/* The whole application window: the viewport's height, without the frame's border, radius or
+     shadow. Panes inside scroll on their own. */
+.f-workspace--fill {
+    height: var(--f-workspace-height, 100dvh);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
 .f-workspace > .f-toolbar {
     min-width: 0;
     border-bottom: 1px solid var(--f-border);

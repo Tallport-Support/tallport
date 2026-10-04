@@ -128,20 +128,21 @@
   .f-item-row:hover {
     background: var(--f-hover);
   }
-  .f-item-row[aria-current='true'] {
+  .f-item-row:is([aria-current='true'], [aria-current='page']) {
     background: var(--f-item-current-background, var(--f-internal-item-current-background));
     color: var(--f-item-current-color, var(--f-internal-item-current-color));
   }
-  .f-item-row[aria-current='true']:hover {
+  .f-item-row:is([aria-current='true'], [aria-current='page']):hover {
     background: var(--f-item-current-hover, var(--f-internal-item-current-hover));
   }
-  .f-item-row[aria-current='true']::after {
+  .f-item-row:is([aria-current='true'], [aria-current='page'])::after {
     border-color: var(--f-item-current-border, var(--f-internal-item-current-border));
   }
-  .f-item-row[aria-current='true'] :is(.f-item-row__time, .f-item-row__preview, .f-item-row__meta) {
+  .f-item-row:is([aria-current='true'], [aria-current='page'])
+    :is(.f-item-row__time, .f-item-row__preview, .f-item-row__meta) {
     color: var(--f-item-current-secondary, var(--f-internal-item-current-secondary));
   }
-  .f-item-row[aria-current='true'] .f-item-row__unread {
+  .f-item-row:is([aria-current='true'], [aria-current='page']) .f-item-row__unread {
     background: var(--f-item-current-unread, var(--f-internal-item-current-unread));
   }
   .f-item-row--filled {
@@ -297,7 +298,7 @@
     gap: 8px;
   }
   @media (forced-colors: active) {
-    .f-item-row[aria-current='true'] {
+    .f-item-row:is([aria-current='true'], [aria-current='page']) {
       outline: 1px solid Highlight;
       outline-offset: -2px;
     }
@@ -362,16 +363,53 @@
     color: var(--f-accent);
   }
 
-  /* Bulk selection: a list item can hold a checkbox beside its row button. */
-  .f-item-list > li:has(> .f-check) {
+  /* A list item can hold a leading selection checkbox and trailing controls (a star or follow
+     toggle) beside its row. The item then draws the row's rounded hover and current backgrounds,
+     so they span all three; each control keeps its own value and keyboard behavior. */
+  .f-item-list > li:has(> .f-item-row):has(> :not(.f-item-row)) {
+    --f-internal-item-current-background: var(--f-selection);
+    --f-internal-item-current-hover: var(--f-item-current-background, var(--f-internal-item-current-background));
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: center;
+    grid-template-columns: [lead] auto [row] minmax(0, 1fr) [trail] auto;
+    align-items: start;
+    border-radius: var(--f-item-row-radius, var(--f-radius-md));
+  }
+  .f-item-list > li:has(> .f-item-row--filled):has(> :not(.f-item-row)) {
+    --f-internal-item-current-background: var(--f-accent-fill);
+  }
+  :where(.f-item-list:not(:focus-within)) > li:has(> .f-item-row--filled):has(> :not(.f-item-row)) {
+    --f-internal-item-current-background: var(--f-selection-inactive);
+  }
+  .f-item-list > li:has(> .f-item-row):has(> :not(.f-item-row)):hover {
+    background: var(--f-hover);
+  }
+  .f-item-list > li:has(> .f-item-row:is([aria-current='true'], [aria-current='page'])):has(> :not(.f-item-row)) {
+    background: var(--f-item-current-background, var(--f-internal-item-current-background));
+  }
+  .f-item-list > li:has(> .f-item-row:is([aria-current='true'], [aria-current='page'])):has(> :not(.f-item-row)):hover {
+    background: var(--f-item-current-hover, var(--f-internal-item-current-hover));
+  }
+  .f-item-list > li:has(> :not(.f-item-row)) > .f-item-row {
+    grid-column: row;
+    background: transparent;
   }
   .f-item-list > li > .f-check {
+    grid-column: lead;
+    align-self: center;
     padding-inline: var(--f-item-select-padding, 10px 2px);
   }
+  /* Trailing controls sit on the title line and never wrap. */
+  .f-item-list > li > .f-item-row ~ * {
+    grid-column: trail;
+    align-self: start;
+    margin-block-start: var(--f-item-accessory-offset, 7px);
+    margin-inline-end: var(--f-item-accessory-inset, 6px);
+    white-space: nowrap;
+  }
   /* The count of selected items with independent actions for them. */
+  .f-selection-bar[hidden] {
+    display: none;
+  }
   .f-selection-bar {
     display: flex;
     flex-wrap: wrap;

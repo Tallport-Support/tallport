@@ -1463,7 +1463,7 @@
         "name": "layout.header_logo",
         "arguments": 1,
         "files": [
-            "resources/views/partials/app_sidebar.blade.php"
+            "resources/views/partials/app_sidebar_brand.blade.php"
         ]
     },
     {

@@ -323,3 +323,32 @@ export function fruitTokenField() {
     },
   };
 }
+
+/**
+ * A selection bar that follows its data-count attribute, so any script (Alpine, jQuery, plain DOM)
+ * updates the count by setting it. Zero hides the bar. The template is Laravel's translated
+ * ":count selected", with an optional "one|other" plural form chosen by the page language.
+ */
+export function fruitSelectionBar() {
+  let bar, observer;
+  const render = () => {
+    const count = Math.max(0, Number.parseInt(bar.dataset.count ?? '0', 10) || 0);
+    const forms = (bar.dataset.fruitTemplate || ':count selected').split('|');
+    const language = bar.closest('[lang]')?.lang || navigator.language || 'en';
+    const form = forms.length > 1 && new Intl.PluralRules(language).select(count) !== 'one' ? forms[1] : forms[0];
+    const status = bar.querySelector('.f-selection-bar__count');
+    if (status) status.textContent = form.trim().replace(':count', String(count));
+    bar.hidden = count === 0;
+  };
+  return {
+    init() {
+      bar = this.$el;
+      observer = new MutationObserver(render);
+      observer.observe(bar, { attributes: true, attributeFilter: ['data-count'] });
+      render();
+    },
+    destroy() {
+      observer?.disconnect();
+    },
+  };
+}

@@ -874,27 +874,44 @@ function P() {
 		}
 	};
 }
+function F() {
+	let e, t, n = () => {
+		let t = Math.max(0, Number.parseInt(e.dataset.count ?? "0", 10) || 0), n = (e.dataset.fruitTemplate || ":count selected").split("|"), r = e.closest("[lang]")?.lang || navigator.language || "en", i = n.length > 1 && new Intl.PluralRules(r).select(t) !== "one" ? n[1] : n[0], a = e.querySelector(".f-selection-bar__count");
+		a && (a.textContent = i.trim().replace(":count", String(t))), e.hidden = t === 0;
+	};
+	return {
+		init() {
+			e = this.$el, t = new MutationObserver(n), t.observe(e, {
+				attributes: !0,
+				attributeFilter: ["data-count"]
+			}), n();
+		},
+		destroy() {
+			t?.disconnect();
+		}
+	};
+}
 //#endregion
 //#region src/js/navigation.js
-var F = "[role=\"menuitem\"], [role=\"menuitemcheckbox\"], [role=\"menuitemradio\"]", I = (e, t) => [...e.querySelectorAll(F)].filter((e) => t(e) && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true" && e.getClientRects().length), L = (e, t) => {
+var I = "[role=\"menuitem\"], [role=\"menuitemcheckbox\"], [role=\"menuitemradio\"]", L = (e, t) => [...e.querySelectorAll(I)].filter((e) => t(e) && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true" && e.getClientRects().length), R = (e, t) => {
 	e.length && e[(t + e.length) % e.length].focus();
-}, R = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
-function z(e, t, n) {
+}, z = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
+function B(e, t, n) {
 	let r = t.indexOf(document.activeElement);
 	return [
 		"ArrowDown",
 		"ArrowUp",
 		"Home",
 		"End"
-	].includes(e.key) ? (e.preventDefault(), L(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => R(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
+	].includes(e.key) ? (e.preventDefault(), R(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => z(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
 		n.search = "";
 	}, 600), !0);
 }
-function B() {
+function V() {
 	let e, t, n, r, i, a, s, c = {
 		search: "",
 		timer: null
-	}, l = (t) => t?.closest("[data-fruit-menu], [x-data^=\"fruitMenu\"]") === e, d = () => I(n, l), f = (e) => L(d(), e);
+	}, l = (t) => t?.closest("[data-fruit-menu], [x-data^=\"fruitMenu\"]") === e, d = () => L(n, l), f = (e) => R(d(), e);
 	return {
 		init() {
 			e = this.$el, e.setAttribute("data-fruit-menu", ""), t = e.querySelector("summary"), n = e.querySelector("[role=\"menu\"]"), t && n && (r = o(e, n, {
@@ -903,14 +920,14 @@ function B() {
 				onToggle: (e) => {
 					t.setAttribute("aria-expanded", String(e)), e && document.activeElement === t && f(0);
 				}
-			}), n.id ||= u("fruit-menu"), t.setAttribute("aria-haspopup", "menu"), t.setAttribute("aria-controls", n.id), t.setAttribute("aria-expanded", String(e.open)), n.querySelectorAll(F).forEach((e) => {
+			}), n.id ||= u("fruit-menu"), t.setAttribute("aria-haspopup", "menu"), t.setAttribute("aria-controls", n.id), t.setAttribute("aria-expanded", String(e.open)), n.querySelectorAll(I).forEach((e) => {
 				l(e) && (e.tabIndex = -1);
 			}), i = (n) => {
 				if (!l(n.target)) return;
 				let i = d();
-				n.target === t && ["ArrowDown", "ArrowUp"].includes(n.key) ? (n.preventDefault(), e.open = !0, r.show(), f(n.key === "ArrowDown" ? 0 : i.length - 1)) : e.open && n.key === "Tab" ? s = setTimeout(() => r.close(!1), 0) : e.open && z(n, i, c);
+				n.target === t && ["ArrowDown", "ArrowUp"].includes(n.key) ? (n.preventDefault(), e.open = !0, r.show(), f(n.key === "ArrowDown" ? 0 : i.length - 1)) : e.open && n.key === "Tab" ? s = setTimeout(() => r.close(!1), 0) : e.open && B(n, i, c);
 			}, a = (e) => {
-				let t = e.target.closest(F);
+				let t = e.target.closest(I);
 				l(t) && !t.matches(":disabled") && t.getAttribute("aria-disabled") !== "true" && r.close(!0);
 			}, e.addEventListener("keydown", i), n.addEventListener("click", a));
 		},
@@ -919,7 +936,7 @@ function B() {
 		}
 	};
 }
-function V() {
+function H() {
 	let e, t, n, r, o, s, c = {
 		x: 0,
 		y: 0
@@ -932,12 +949,12 @@ function V() {
 		o = a, c = {
 			x: r,
 			y: i
-		}, e.hidden = !1, t.setAttribute("data-fruit-context-open", ""), n.show(), L(I(e, d), 0);
+		}, e.hidden = !1, t.setAttribute("data-fruit-context-open", ""), n.show(), R(L(e, d), 0);
 	};
 	return {
 		init() {
 			if (e = this.$el, t = e.parentElement, !t) return;
-			e.setAttribute("data-fruit-menu", ""), e.id ||= u("fruit-context-menu"), e.hidden = !0, e.querySelectorAll(F).forEach((e) => {
+			e.setAttribute("data-fruit-menu", ""), e.id ||= u("fruit-context-menu"), e.hidden = !0, e.querySelectorAll(I).forEach((e) => {
 				d(e) && (e.tabIndex = -1);
 			}), n = a(e, { getBoundingClientRect: () => new DOMRect(c.x, c.y, 0, 0) }, { point: t }), r = new AbortController();
 			let o = (e, t, n) => e.addEventListener(t, n, { signal: r.signal }), h = !1;
@@ -949,9 +966,9 @@ function V() {
 				let r = n.target.getBoundingClientRect();
 				m(i(t) ? r.right : r.left, r.bottom, n.target);
 			}), o(e, "keydown", (t) => {
-				d(t.target) && (t.key === "Escape" ? (t.preventDefault(), t.stopPropagation(), p(!0)) : t.key === "Tab" ? (t.preventDefault(), p(!0)) : z(t, I(e, d), l));
+				d(t.target) && (t.key === "Escape" ? (t.preventDefault(), t.stopPropagation(), p(!0)) : t.key === "Tab" ? (t.preventDefault(), p(!0)) : B(t, L(e, d), l));
 			}), o(e, "click", (e) => {
-				let t = e.target.closest(F);
+				let t = e.target.closest(I);
 				d(t) && !t.matches(":disabled") && t.getAttribute("aria-disabled") !== "true" && p(!0);
 			}), o(document, "pointerdown", (t) => {
 				f() && !e.contains(t.target) && p(!1);
@@ -962,7 +979,7 @@ function V() {
 		}
 	};
 }
-function H() {
+function U() {
 	let e, t, n, r, i, o, s;
 	return {
 		init() {
@@ -987,7 +1004,7 @@ function H() {
 		}
 	};
 }
-function U() {
+function W() {
 	let e, t, n, r, a = (t) => t?.closest("[data-fruit-tabs], [x-data^=\"fruitTabs\"]") === e, o = () => [...e.querySelectorAll("[role=\"tab\"]")].filter(a), s = () => o().filter((e) => !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true"), c = (t) => {
 		for (let n of o()) {
 			let r = n === t;
@@ -1024,7 +1041,7 @@ function U() {
 		}
 	};
 }
-function W() {
+function G() {
 	let e;
 	return {
 		init() {
@@ -1044,9 +1061,9 @@ function W() {
 }
 //#endregion
 //#region src/js/alpine.js
-var G = !1;
-function K(i) {
-	i.data("fruitEditor", () => ({})), i.data("fruitToast", t), i.magic("toast", () => e), i.data("fruitCombobox", N), i.data("fruitTokenField", P), i.data("fruitAutocomplete", p), i.data("fruitCommandPalette", m), i.data("fruitDropzone", g), i.data("fruitMenu", B), i.data("fruitDatePicker", E), i.data("fruitColorPicker", M), i.data("fruitContextMenu", V), i.data("fruitTooltip", H), i.data("fruitTabs", U), i.data("fruitSplitter", c), i.data("fruitFloatingDisclosure", W), i.data("fruitDialogModel", r), typeof window < "u" && !G && (n(window), G = !0);
+var K = !1;
+function q(i) {
+	i.data("fruitEditor", () => ({})), i.data("fruitToast", t), i.magic("toast", () => e), i.data("fruitCombobox", N), i.data("fruitTokenField", P), i.data("fruitSelectionBar", F), i.data("fruitAutocomplete", p), i.data("fruitCommandPalette", m), i.data("fruitDropzone", g), i.data("fruitMenu", V), i.data("fruitDatePicker", E), i.data("fruitColorPicker", M), i.data("fruitContextMenu", H), i.data("fruitTooltip", U), i.data("fruitTabs", W), i.data("fruitSplitter", c), i.data("fruitFloatingDisclosure", G), i.data("fruitDialogModel", r), typeof window < "u" && !K && (n(window), K = !0);
 }
 //#endregion
-export { K as default, t as fruitToast, e as toast };
+export { q as default, t as fruitToast, e as toast };

@@ -49,46 +49,76 @@
             $app_shell = Auth::user() && empty(app('request')->x_embed) && empty($__env->yieldContent('guest_mode'));
         @endphp
         @if ($app_shell)
-            {{-- The sidebar, then the page: its tabs (sidebar section), side column (aside section) and content. --}}
-            <div class="app-shell">
+            {{-- One FruitUI workspace, composed as in FruitUI's Support example: the
+                 app sidebar, the list (list section), the page (toolbar and content
+                 sections) and an inspector (inspector section). Each pane scrolls
+                 by itself; a toolbar row runs across the top. --}}
+            @php
+                $has_list = trim($__env->yieldContent('list')) !== '';
+                $has_list_toolbar = trim($__env->yieldContent('list_toolbar')) !== '';
+                $has_toolbar = trim($__env->yieldContent('toolbar')) !== '';
+                $has_inspector = trim($__env->yieldContent('inspector')) !== '';
+            @endphp
+            <x-fruit::workspace frame="fill" class="app-workspace {{ $__env->yieldContent('split_class') }}" :aria-label="\Config::get('app.name')" :data-list="$has_list ? '' : null" :data-inspector="$has_inspector ? '' : null">
+                <header class="f-toolbar app-workspace__brand">
+                    <button type="button" class="f-button f-button--ghost f-button--icon app-sidebar-toggle" aria-controls="app-sidebar" aria-expanded="false" aria-label="{{ __('Toggle Navigation') }}"><x-heroicon-o-bars-3 class="f-icon" aria-hidden="true" /></button>
+                    @include('partials/app_sidebar_brand')
+                </header>
                 @include('partials/app_sidebar')
-                <div class="app-main @yield('main_class')">
-                    <div class="fruit-ui app-main__bar">
-                        <button type="button" class="f-button f-button--ghost f-button--icon app-sidebar-toggle" aria-controls="app-sidebar" aria-expanded="false" aria-label="{{ __('Toggle Navigation') }}"><x-heroicon-o-bars-3 class="f-icon" aria-hidden="true" /></button>
-                    </div>
-                    @if (($browser_check = \Helper::checkBrowser()) && $browser_check['msg'])
-                        <x-fruit::alert tone="danger">{{ $browser_check["msg"] }}</x-fruit::alert>
+
+                @if ($has_list)
+                    @if ($has_list_toolbar)
+                        <header class="f-toolbar app-workspace__list-toolbar">@yield('list_toolbar')</header>
                     @endif
-                    @yield('sidebar')
-                    @if ($__env->yieldContent('list'))
-                        {{-- Split view: a conversation list beside the open conversation (or an empty state). --}}
-                        <div class="split-view @yield('split_class')">
-                            <div class="fruit-ui split-view__list">
-                                @yield('list')
-                            </div>
-                            <div class="split-view__detail">
-                                <div class="content @yield('content_class')">
+                    <section id="app-list" class="f-pane f-pane--column f-pane--border-end app-workspace__list @if (!$has_list_toolbar) app-workspace__pane--full @endif" aria-label="{{ __('Conversations') }}">
+                        <div class="f-pane__scroll fruit-ui split-view__list">
+                            @yield('list')
+                        </div>
+                    </section>
+                @endif
+
+                @if ($has_toolbar)
+                    <header class="f-toolbar app-workspace__toolbar">@yield('toolbar')</header>
+                @endif
+                <main id="app-content" class="f-pane f-pane--column app-workspace__content app-main @yield('main_class') @if (!$has_toolbar) app-workspace__pane--full @endif">
+                    <div class="f-pane__scroll" id="app-content-scroll">
+                        @if (($browser_check = \Helper::checkBrowser()) && $browser_check['msg'])
+                            <x-fruit::alert tone="danger">{{ $browser_check["msg"] }}</x-fruit::alert>
+                        @endif
+                        @yield('sidebar')
+                        @if ($__env->yieldContent('aside'))
+                            <div class="layout-2col">
+                                <div class="sidebar-2col">
+                                    @yield('aside')
+                                </div>
+                                <div class="content-2col">
                                     @yield('content')
                                 </div>
                             </div>
-                        </div>
-                    @elseif ($__env->yieldContent('aside'))
-                        <div class="layout-2col">
-                            <div class="sidebar-2col">
-                                @yield('aside')
-                            </div>
-                            <div class="content-2col">
+                        @else
+                            <div class="content @yield('content_class')">
                                 @yield('content')
                             </div>
-                        </div>
-                    @else
-                        <div class="content @yield('content_class')">
-                            @yield('content')
-                        </div>
-                    @endif
-                @include('partials/app_footer')
-                </div>
-            </div>
+                        @endif
+                        @include('partials/app_footer')
+                    </div>
+                </main>
+
+                @if ($has_inspector)
+                    <header class="f-toolbar app-workspace__inspector-toolbar">@yield('inspector_toolbar')</header>
+                    <aside id="app-inspector" class="f-pane f-pane--scroll f-pane--border-start app-workspace__inspector" aria-label="@yield('inspector_label', __('Details'))">
+                        @yield('inspector')
+                    </aside>
+                @endif
+
+                <x-fruit::splitter pane="app-sidebar" flexible="app-content" variable="--f-sidebar-width" :min="200" :max="320" :reserve="360" :aria-label="__('Navigation')" class="app-workspace__splitter" style="--f-splitter-column: 1" />
+                @if ($has_list)
+                    <x-fruit::splitter pane="app-list" flexible="app-content" variable="--f-list-width" :min="280" :max="520" :reserve="360" :aria-label="__('Conversations')" class="app-workspace__splitter" style="--f-splitter-column: 2" />
+                @endif
+                @if ($has_inspector)
+                    <x-fruit::splitter pane="app-inspector" flexible="app-content" variable="--f-inspector-width" :min="220" :max="380" :reserve="360" edge="start" :aria-label="__('Details')" class="app-workspace__splitter app-workspace__splitter--inspector" />
+                @endif
+            </x-fruit::workspace>
         @else
             @if (($browser_check = \Helper::checkBrowser()) && $browser_check['msg'])
                 <x-fruit::alert tone="danger">{{ $browser_check["msg"] }}</x-fruit::alert>
