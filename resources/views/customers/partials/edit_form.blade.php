@@ -2,277 +2,158 @@
 
 @action('customer.edit.before_form', $customer)
 
-<div class="container form-container">
-    <div class="row">
-        <div class="col-xs-12">
-            <form class="form-horizontal margin-top" method="POST" action="" enctype="multipart/form-data">
-                {{ csrf_field() }}
+<div class="page-content">
+    <form class="settings-form" method="POST" action="" enctype="multipart/form-data">
+        {{ csrf_field() }}
 
-                <div class="form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
-                    <label for="first_name" class="col-sm-2 control-label">{{ __('First Name') }}</label>
+        <x-fruit::field :label="__('First Name')">
+            <x-fruit::input id="first_name" name="first_name" :value="old('first_name', $customer->first_name)" maxlength="255" />
+        </x-fruit::field>
 
-                    <div class="col-sm-6">
-                        <input id="first_name" type="text" class="form-control input-sized-lg" name="first_name" value="{{ old('first_name', $customer->first_name) }}" maxlength="255">
+        <x-fruit::field :label="__('Last Name')">
+            <x-fruit::input id="last_name" name="last_name" :value="old('last_name', $customer->last_name)" maxlength="255" />
+        </x-fruit::field>
 
-                        @include('partials/field_error', ['field'=>'first_name'])
-                    </div>
-                </div>
-
-                <div class="form-group{{ $errors->has('last_name') ? ' has-error' : '' }}">
-                    <label for="last_name" class="col-sm-2 control-label">{{ __('Last Name') }}</label>
-
-                    <div class="col-sm-6">
-                        <input id="last_name" type="text" class="form-control input-sized-lg" name="last_name" value="{{ old('last_name', $customer->last_name) }}" maxlength="255">
-
-                        @include('partials/field_error', ['field'=>'last_name'])
-                    </div>
-                </div>
-
-                <div class="form-group margin-bottom-0">
-                    <label for="emails" class="col-sm-2 control-label">{{ __('Email') }}</label>
-
-                    <div class="col-sm-6">
-                        <div class="multi-container">
-                            @foreach (old('emails', $emails) as $i => $email)
-                                <div class="multi-item {{ $errors->has('emails.'.$i) ? ' has-error' : '' }}">
-                                    <div>
-                                        <input type="email" class="form-control input-sized-lg" name="emails[]" value="{{ $email }}" maxlength="191">
-                                        <a href="#" class="multi-remove" tabindex="-1"><i class="glyphicon glyphicon-remove"></i></a>
-                                    </div>
-
-                                    @include('partials/field_error', ['field'=>'emails.'.$i])
-                                </div>
-                            @endforeach
-                            <p class="block-help"><a href="#" class="multi-add " tabindex="-1">{{ __('Add an email address') }}</a></p>
+        <div class="f-field">
+            <span class="f-label">{{ __('Email') }}</span>
+            <div class="multi-container">
+                @foreach (old('emails', $emails) as $i => $email)
+                    <div class="multi-item">
+                        <div class="f-row">
+                            <input type="email" class="f-input" name="emails[]" value="{{ $email }}" maxlength="191" aria-label="{{ __('Email') }}">
+                            <a href="#" class="f-button f-button--ghost f-button--icon multi-remove" tabindex="-1" aria-label="{{ __('Delete') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></a>
                         </div>
-
-                        @include('partials/field_error', ['field'=>'email'])
+                        @if ($errors->has('emails.'.$i))<p class="f-error">{{ $errors->first('emails.'.$i) }}</p>@endif
                     </div>
-                </div>
-
-                <div class="form-group{{ $errors->has('phones') ? ' has-error' : '' }} margin-bottom-0">
-                    <label for="phones" class="col-sm-2 control-label">{{ __('Phone') }}</label>
-
-                    <div class="col-sm-6">
-                        <div class="multi-container">
-                            @foreach ($customer->getPhones(true) as $i => $phone)
-                                @if (!empty($phone['type']) && isset($phone['value']))
-                                    <div class="multi-item">
-                                        <div>
-                                            <div class="input-group input-group-flex input-sized-lg">
-                                                <select class="form-control" name="phones[{{ $i }}][type]">
-                                                    @foreach(\App\Customer::$phone_types as $phone_type => $name)
-                                                        <option value="{{$phone_type}}" {{ $phone_type == $phone['type'] ? 'selected="selected' : '' }}>{{ \App\Customer::getPhoneTypeName($phone_type) }}</option>
-                                                    @endforeach
-                                                </select>
-                                                <input type="tel" class="form-control " name="phones[{{ $i }}][value]" value="{{ $phone['value'] }}">
-                                            </div>
-                                            <a href="#" class="multi-remove" tabindex="-1"><i class="glyphicon glyphicon-remove"></i></a>
-                                        </div>
-                                    </div>
-                                @endif
-                            @endforeach
-                            <p class="block-help" data-max-i="{{ $i }}"><a href="#" class="multi-add" tabindex="-1">{{ __('Add a phone number') }}</a></p>
-                        </div>
-
-                        @include('partials/field_error', ['field'=>'phones'])
-                    </div>
-                </div>
-
-                <div class="form-group{{ $errors->has('company') ? ' has-error' : '' }}">
-                    <label for="company" class="col-sm-2 control-label">{{ __('Company') }}</label>
-
-                    <div class="col-sm-6">
-                        <input id="company" type="text" class="form-control input-sized-lg" name="company" value="{{ old('company', $customer->company) }}" placeholder="{{ __('(optional)') }}" maxlength="255">
-
-                        @include('partials/field_error', ['field'=>'company'])
-                    </div>
-                </div>
-
-                <div class="form-group{{ $errors->has('job_title') ? ' has-error' : '' }}">
-                    <label for="job_title" class="col-sm-2 control-label">{{ __('Job Title') }}</label>
-
-                    <div class="col-sm-6">
-                        <input id="job_title" type="text" class="form-control input-sized-lg" name="job_title" value="{{ old('job_title', $customer->job_title) }}" placeholder="{{ __('(optional)') }}" maxlength="100">
-
-                        @include('partials/field_error', ['field'=>'job_title'])
-                    </div>
-                </div>
-
-                <div class="form-group{{ $errors->has('websites') ? ' has-error' : '' }} margin-bottom-0">
-                    <label for="websites" class="col-sm-2 control-label">{{ __('Website') }}</label>
-
-                    <div class="col-sm-6">
-                        <div class="multi-container">
-                            @foreach ($customer->getWebsites(true) as $website)
-                                <div class="multi-item">
-                                    <div>
-                                        <input type="url" class="form-control input-sized-lg" name="websites[]" value="{{ $website }}" maxlength="100">
-                                        <a href="#" class="multi-remove" tabindex="-1"><i class="glyphicon glyphicon-remove"></i></a>
-                                    </div>
-                                </div>
-                            @endforeach
-                            <p class="block-help"><a href="#" class="multi-add" tabindex="-1">{{ __('Add a website') }}</a></p>
-                        </div>
-
-                        @include('partials/field_error', ['field'=>'websites'])
-                    </div>
-                </div>
-
-                <div class="form-group{{ $errors->has('social') ? ' has-error' : '' }} margin-bottom-0">
-                    <label for="social_profiles" class="col-sm-2 control-label">{{ __('Social Profiles') }}</label>
-
-                    <div class="col-sm-6">
-                        <div class="multi-container">
-                            @foreach ($customer->getSocialProfiles(true) as $i => $social_profile)
-                                @if (isset($social_profile['type']) && isset($social_profile['value']))
-                                    <div class="multi-item">
-                                        <div>
-                                            <div class="input-group input-group-flex input-sized-lg">
-                                                <select class="form-control" name="social_profiles[{{ $i }}][type]">
-                                                    <option value=""></option>
-                                                    @foreach (App\Customer::$social_types as $social_type_id => $social_type_code)
-                                                        <option value="{{ $social_type_id }}" @if ((int)$social_profile['type'] == $social_type_id) selected @endif>{{ __(App\Customer::$social_type_names[$social_type_id]) }}</option>
-                                                    @endforeach
-                                                </select>
-                                                <span class="input-group-btn" style="width:0px;"></span>
-                                                <input type="text" class="form-control" name="social_profiles[{{ $i }}][value]" value="{{ $social_profile['value'] }}">
-                                            </div>
-                                            <a href="#" class="multi-remove" tabindex="-1"><i class="glyphicon glyphicon-remove"></i></a>
-                                        </div>
-                                    </div>
-                                @endif
-                            @endforeach
-                            <p class="block-help" data-max-i="{{ $i }}"><a href="#" class="multi-add" tabindex="-1">{{ __('Add a social profile') }}</a></p>
-                        </div>
-
-                        @include('partials/field_error', ['field'=>'social_profiles'])
-                    </div>
-                </div>
-
-                {{--
-                <div class="form-group{{ $errors->has('age') ? ' has-error' : '' }}">
-                    <label for="age" class="col-sm-2 control-label">{{ __('Age') }}</label>
-
-                    <div class="col-sm-6">
-                        <input id="age" type="text" class="form-control input-sized-lg" name="age" value="{{ old('age', $customer->age) }}" placeholder="{{ __('(optional)') }}" maxlength="7">
-
-                        @include('partials/field_error', ['field'=>'age'])
-                    </div>
-                </div>
-
-                <div class="form-group{{ $errors->has('gender') ? ' has-error' : '' }}">
-                    <label for="gender" class="col-sm-2 control-label">{{ __('Gender') }}</label>
-
-                    <div class="col-sm-6">
-                        <select class="form-control input-sized-lg" name="gender">
-                            <option value=""></option>
-                            <option value="{{ App\Customer::GENDER_MALE }}" @if (old('gender', $customer->gender) == App\Customer::GENDER_MALE ) selected @endif>{{ __('Male') }}</option>
-                            <option value="{{ App\Customer::GENDER_FEMALE }}" @if (old('gender', $customer->gender) == App\Customer::GENDER_FEMALE ) selected @endif>{{ __('Female') }}</option>
-                        </select>
-
-                        @include('partials/field_error', ['field'=>'gender'])
-                    </div>
-                </div>
-                --}}
-                <div class="form-group{{ $errors->has('gender') ? ' has-error' : '' }}">
-                    <label for="country" class="col-sm-2 control-label">{{ __('Country') }}</label>
-
-                    <div class="col-sm-6">
-                        <select class="form-control input-sized-lg" name="country">
-                            <option value=""></option>
-                            @foreach (App\Customer::$countries as $country_code => $country_name)
-                                <option value="{{ $country_code }}" @if (old('country', $customer->country) == $country_code) selected @endif>{{ __($country_name) }}</option>
-                            @endforeach
-                        </select>
-
-                        <div class="block-help small margin-bottom-0">
-                            <a href="#address-collapse" data-toggle="collapse">{{ __('Address') }} <span class="caret"></span></a>
-                        </div>
-
-                        @include('partials/field_error', ['field'=>'country'])
-                    </div>
-                </div>
-
-                <div id="address-collapse" @if (empty(old('state', $customer->state)) && empty(old('city', $customer->city)) && empty(old('address', $customer->address)) && empty(old('zip', $customer->zip)))@else class="collapse in" @endif>
-
-                    <div class="form-group{{ $errors->has('state') ? ' has-error' : '' }}">
-                        <label for="state" class="col-sm-2 control-label">{{ __('State') }}</label>
-
-                        <div class="col-sm-6">
-                            <input id="state" type="text" class="form-control input-sized-lg" name="state" value="{{ old('state', $customer->state) }}" placeholder="{{ __('(optional)') }}" maxlength="255">
-
-                            @include('partials/field_error', ['field'=>'state'])
-                        </div>
-                    </div>
-
-                    <div class="form-group{{ $errors->has('city') ? ' has-error' : '' }}">
-                        <label for="city" class="col-sm-2 control-label">{{ __('City') }}</label>
-
-                        <div class="col-sm-6">
-                            <input id="city" type="text" class="form-control input-sized-lg" name="city" value="{{ old('city', $customer->city) }}" placeholder="{{ __('(optional)') }}" maxlength="255">
-
-                            @include('partials/field_error', ['field'=>'city'])
-                        </div>
-                    </div>
-
-                    <div class="form-group{{ $errors->has('address') ? ' has-error' : '' }}">
-                        <label for="address" class="col-sm-2 control-label">{{ __('Address') }}</label>
-
-                        <div class="col-sm-6">
-                            <input id="address" type="text" class="form-control input-sized-lg" name="address" value="{{ old('address', $customer->address) }}" placeholder="{{ __('(optional)') }}" maxlength="255">
-
-                            @include('partials/field_error', ['field'=>'address'])
-                        </div>
-                    </div>
-
-                    <div class="form-group{{ $errors->has('zip') ? ' has-error' : '' }}">
-                        <label for="zip" class="col-sm-2 control-label">{{ __('ZIP') }}</label>
-
-                        <div class="col-sm-6">
-                            <input id="zip" type="text" class="form-control input-sized-lg" name="zip" value="{{ old('zip', $customer->zip) }}" placeholder="{{ __('(optional)') }}" maxlength="12">
-
-                            @include('partials/field_error', ['field'=>'zip'])
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group{{ $errors->has('photo_url') ? ' has-error' : '' }} margin-bottom-0">
-                    <label for="photo_url" class="col-sm-2 control-label">{{ __('Photo') }}</label>
-
-                    <div class="col-sm-6">
-                        <input type="file" name="photo_url">
-                        <p class="block-help">(JPG, GIF, PNG)</p>
-
-                        @include('partials/field_error', ['field'=>'photo_url'])
-                    </div>
-                </div>
-
-                <div class="form-group{{ $errors->has('notes') ? ' has-error' : '' }}">
-                    <label for="notes" class="col-sm-2 control-label">{{ __('Notes') }}</label>
-
-                    <div class="col-sm-6">
-                        <textarea id="notes" class="form-control input-sized-lg" name="notes" rows="2">{{ old('notes', $customer->notes) }}</textarea>
-
-                        @include('partials/field_error', ['field'=>'notes'])
-                    </div>
-                </div>
-
-                @action('customer.edit.after_fields', $customer, $errors)
-
-                <div class="form-group">
-                    <div class="col-sm-6 col-sm-offset-2">
-                        <button type="submit" class="btn btn-primary">
-                            @if (!empty($save_button_title))
-                                {{ $save_button_title }}
-                            @else
-                                {{ __('Save Profile') }}
-                            @endif
-                        </button> 
-                        <a href="{{ route('customers.merge', ['id' => $customer->id]) }}" class="btn btn-link">{{ __('Merge') }}</a>
-                    </div>
-                </div>
-            </form>
+                @endforeach
+                <p class="block-help"><a href="#" class="multi-add" tabindex="-1">{{ __('Add an email address') }}</a></p>
+            </div>
+            @if ($errors->has('email'))<p class="f-error">{{ $errors->first('email') }}</p>@endif
         </div>
-    </div>
+
+        <div class="f-field">
+            <span class="f-label">{{ __('Phone') }}</span>
+            <div class="multi-container">
+                @foreach ($customer->getPhones(true) as $i => $phone)
+                    @if (!empty($phone['type']) && isset($phone['value']))
+                        <div class="multi-item">
+                            <div class="f-row">
+                                <div class="f-input-group">
+                                    <select class="f-input" name="phones[{{ $i }}][type]" aria-label="{{ __('Type') }}">
+                                        @foreach(\App\Customer::$phone_types as $phone_type => $name)
+                                            <option value="{{$phone_type}}" @selected($phone_type == $phone['type'])>{{ \App\Customer::getPhoneTypeName($phone_type) }}</option>
+                                        @endforeach
+                                    </select>
+                                    <input type="tel" class="f-input" name="phones[{{ $i }}][value]" value="{{ $phone['value'] }}" aria-label="{{ __('Phone') }}">
+                                </div>
+                                <a href="#" class="f-button f-button--ghost f-button--icon multi-remove" tabindex="-1" aria-label="{{ __('Delete') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></a>
+                            </div>
+                        </div>
+                    @endif
+                @endforeach
+                <p class="block-help" data-max-i="{{ $i }}"><a href="#" class="multi-add" tabindex="-1">{{ __('Add a phone number') }}</a></p>
+            </div>
+            @if ($errors->has('phones'))<p class="f-error">{{ $errors->first('phones') }}</p>@endif
+        </div>
+
+        <x-fruit::field :label="__('Company')">
+            <x-fruit::input id="company" name="company" :value="old('company', $customer->company)" :placeholder="__('(optional)')" maxlength="255" />
+        </x-fruit::field>
+
+        <x-fruit::field :label="__('Job Title')">
+            <x-fruit::input id="job_title" name="job_title" :value="old('job_title', $customer->job_title)" :placeholder="__('(optional)')" maxlength="100" />
+        </x-fruit::field>
+
+        <div class="f-field">
+            <span class="f-label">{{ __('Website') }}</span>
+            <div class="multi-container">
+                @foreach ($customer->getWebsites(true) as $website)
+                    <div class="multi-item">
+                        <div class="f-row">
+                            <input type="url" class="f-input" name="websites[]" value="{{ $website }}" maxlength="100" aria-label="{{ __('Website') }}">
+                            <a href="#" class="f-button f-button--ghost f-button--icon multi-remove" tabindex="-1" aria-label="{{ __('Delete') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></a>
+                        </div>
+                    </div>
+                @endforeach
+                <p class="block-help"><a href="#" class="multi-add" tabindex="-1">{{ __('Add a website') }}</a></p>
+            </div>
+            @if ($errors->has('websites'))<p class="f-error">{{ $errors->first('websites') }}</p>@endif
+        </div>
+
+        <div class="f-field">
+            <span class="f-label">{{ __('Social Profiles') }}</span>
+            <div class="multi-container">
+                @foreach ($customer->getSocialProfiles(true) as $i => $social_profile)
+                    @if (isset($social_profile['type']) && isset($social_profile['value']))
+                        <div class="multi-item">
+                            <div class="f-row">
+                                <div class="f-input-group">
+                                    <select class="f-input" name="social_profiles[{{ $i }}][type]" aria-label="{{ __('Type') }}">
+                                        <option value=""></option>
+                                        @foreach (App\Customer::$social_types as $social_type_id => $social_type_code)
+                                            <option value="{{ $social_type_id }}" @selected((int)$social_profile['type'] == $social_type_id)>{{ __(App\Customer::$social_type_names[$social_type_id]) }}</option>
+                                        @endforeach
+                                    </select>
+                                    <input type="text" class="f-input" name="social_profiles[{{ $i }}][value]" value="{{ $social_profile['value'] }}" aria-label="{{ __('Social Profiles') }}">
+                                </div>
+                                <a href="#" class="f-button f-button--ghost f-button--icon multi-remove" tabindex="-1" aria-label="{{ __('Delete') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></a>
+                            </div>
+                        </div>
+                    @endif
+                @endforeach
+                <p class="block-help" data-max-i="{{ $i }}"><a href="#" class="multi-add" tabindex="-1">{{ __('Add a social profile') }}</a></p>
+            </div>
+            @if ($errors->has('social_profiles'))<p class="f-error">{{ $errors->first('social_profiles') }}</p>@endif
+        </div>
+
+        <x-fruit::field :label="__('Country')">
+            <x-fruit::select id="country" name="country">
+                <option value=""></option>
+                @foreach (App\Customer::$countries as $country_code => $country_name)
+                    <option value="{{ $country_code }}" @selected(old('country', $customer->country) == $country_code)>{{ __($country_name) }}</option>
+                @endforeach
+            </x-fruit::select>
+        </x-fruit::field>
+
+        <x-fruit::disclosure :title="__('Address')" :open="!(empty(old('state', $customer->state)) && empty(old('city', $customer->city)) && empty(old('address', $customer->address)) && empty(old('zip', $customer->zip)))">
+            <div class="f-stack">
+                <x-fruit::field :label="__('State')">
+                    <x-fruit::input id="state" name="state" :value="old('state', $customer->state)" :placeholder="__('(optional)')" maxlength="255" />
+                </x-fruit::field>
+
+                <x-fruit::field :label="__('City')">
+                    <x-fruit::input id="city" name="city" :value="old('city', $customer->city)" :placeholder="__('(optional)')" maxlength="255" />
+                </x-fruit::field>
+
+                <x-fruit::field :label="__('Address')">
+                    <x-fruit::input id="address" name="address" :value="old('address', $customer->address)" :placeholder="__('(optional)')" maxlength="255" />
+                </x-fruit::field>
+
+                <x-fruit::field :label="__('ZIP')">
+                    <x-fruit::input id="zip" name="zip" :value="old('zip', $customer->zip)" :placeholder="__('(optional)')" maxlength="12" />
+                </x-fruit::field>
+            </div>
+        </x-fruit::disclosure>
+
+        <x-fruit::field :label="__('Photo')" description="(JPG, GIF, PNG)">
+            <x-fruit::file id="photo_url" name="photo_url" />
+        </x-fruit::field>
+
+        <x-fruit::field :label="__('Notes')">
+            <x-fruit::textarea id="notes" name="notes" rows="2">{{ old('notes', $customer->notes) }}</x-fruit::textarea>
+        </x-fruit::field>
+
+        @action('customer.edit.after_fields', $customer, $errors)
+
+        <div class="settings-form__actions f-row">
+            <x-fruit::button type="submit" variant="primary">
+                @if (!empty($save_button_title))
+                    {{ $save_button_title }}
+                @else
+                    {{ __('Save Profile') }}
+                @endif
+            </x-fruit::button>
+            <a href="{{ route('customers.merge', ['id' => $customer->id]) }}" class="f-button f-button--ghost">{{ __('Merge') }}</a>
+        </div>
+    </form>
 </div>

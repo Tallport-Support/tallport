@@ -1,1 +1,1 @@
-<li @if (Route::currentRouteName() == 'customers.nostr')class="active"@endif><a href="{{ route('customers.nostr', ['id' => $customer_id]) }}">{{ __('Nostr') }}@if ($count) <span class="badge">{{ $count }}</span>@endif</a></li>
+<a href="{{ route('customers.nostr', ['id' => $customer_id]) }}" @if (Route::currentRouteName() == 'customers.nostr') aria-current="page" @endif>{{ __('Nostr') }}@if ($count) <span class="f-badge">{{ $count }}</span>@endif</a>

@@ -17,27 +17,17 @@
 
     @include('partials/flash_messages')
 
-    <div class="container form-container">
-        <div class="row">
-            <div class="col-xs-12">
-            <form action="" method="POST" class="form-horizontal margin-top">
-                {{ csrf_field() }}
-                <div class="form-group{{ $errors->has('customer2_id') ? ' has-error' : '' }}">
-                    <label class="col-sm-2 control-label">{{ __('Merge With') }}</label>
-                    <div class="col-sm-6">
-                        <select type="text" name="customer2_id" class="form-control" id="merge_customer2_id" placeholder="{{ __('Search for a customer by name or email') }}…" autocomplete="off" required></select>
-                        @include('partials/field_error', ['field'=>'customer2_id'])
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-6 col-sm-offset-2">
-                        <button type="submit" class="btn btn-primary">{{ __('Merge') }}</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+    <div class="page-content">
+        <form action="" method="POST" class="settings-form">
+            {{ csrf_field() }}
+            <x-fruit::field :label="__('Merge With')" control-id="merge_customer2_id">
+                <select name="customer2_id" class="f-input" id="merge_customer2_id" placeholder="{{ __('Search for a customer by name or email') }}…" autocomplete="off" required></select>
+            </x-fruit::field>
+            <div class="settings-form__actions f-row">
+                <x-fruit::button type="submit" variant="primary">{{ __('Merge') }}</x-fruit::button>
+            </div>
+        </form>
     </div>
-</div>
 @endsection
 
 @section('javascript')

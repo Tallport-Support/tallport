@@ -1,6 +1,7 @@
-<ul class="nav nav-tabs nav-tabs-main margin-top">
-    <li @if (Route::currentRouteName() == 'customers.update')class="active"@endif><a href="{{ route('customers.update', ['id'=>$customer->id]) }}">{{ __('Edit Profile') }}</a></li>
-    <li @if (Route::currentRouteName() == 'customers.conversations')class="active"@endif><a href="{{ route('customers.conversations', ['id'=>$customer->id]) }}">{{ __('Conversations') }}</a></li>
+{{-- A customer's pages. Modules add theirs with customers.profile_tabs.append. --}}
+<x-page-nav :label="__('Customer Profile')">
+    <a href="{{ route('customers.update', ['id'=>$customer->id]) }}" @if (Route::currentRouteName() == 'customers.update') aria-current="page" @endif>{{ __('Edit Profile') }}</a>
+    <a href="{{ route('customers.conversations', ['id'=>$customer->id]) }}" @if (Route::currentRouteName() == 'customers.conversations') aria-current="page" @endif>{{ __('Conversations') }}</a>
     @php
         $nostr_keys_count = App\Nostr\CustomerKey::where('customer_id', $customer->id)->count();
     @endphp
@@ -8,7 +9,7 @@
         @include('nostr/partials/profile_tab', ['customer_id' => $customer->id, 'count' => $nostr_keys_count])
     @endif
     @if (!empty($extra_tab))
-    	<li class="active"><a href="#">{{ $extra_tab }}</a></li>
+        <a href="#" aria-current="page">{{ $extra_tab }}</a>
     @endif
     @action('customers.profile_tabs.append')
-</ul>
+</x-page-nav>
