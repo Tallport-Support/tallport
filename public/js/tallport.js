@@ -101,5 +101,14 @@ window.Tallport = (function () {
 		}
 	}
 
-	return {csrf: csrf, post: post, isSuccess: isSuccess, toast: toast, result: result, busy: busy};
+	/**
+	 * Ask before an action: resolves true to go ahead.
+	 * options: {message, confirm (button label), tone ('danger' for destructive)}.
+	 * The browser's own dialog until FruitUI's confirm dialog is in.
+	 */
+	function confirm(options) {
+		return Promise.resolve(window.confirm(options.message));
+	}
+
+	return {csrf: csrf, post: post, isSuccess: isSuccess, toast: toast, result: result, busy: busy, confirm: confirm};
 })();
