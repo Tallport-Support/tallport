@@ -119,7 +119,7 @@ final class ComponentContract
         'tabs' => ['roles' => ['tablist']],
         'textarea' => ['roles' => ['textbox']],
         'time' => ['type' => 'time', 'emits' => ['type']],
-        'toaster' => ['roles' => ['status'], 'owns' => ['x-data', 'x-show', 'x-text', 'aria-live', 'data-tone'], 'message' => 'owns its fruitToast helper, message and tone. Dispatch fruit-toast events instead'],
+        'toaster' => ['roles' => ['status'], 'owns' => ['x-data', 'x-show', 'x-text', 'aria-live', 'data-tone'], 'message' => 'owns its fruitToast helper, message and tone. Use the tone prop for the initial tone, and dispatch fruit-toast events for later messages'],
         'confirmer' => ['roles' => ['alertdialog'], 'owns' => ['x-data', 'open'], 'message' => 'owns its fruitConfirmer helper and open state. Call confirm() or $confirm() instead'],
         'token-field' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract'],
         'tooltip' => ['owns' => ['x-data'], 'message' => 'owns its fruitTooltip helper. Put application state on a parent'],

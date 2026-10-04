@@ -75,7 +75,7 @@ window.Tallport = (function () {
 		if (!message) {
 			return;
 		}
-		window.dispatchEvent(new CustomEvent('fruit-toast', {detail: {message: message, tone: tone || 'success'}}));
+		window.FruitUI.toast(message, {tone: tone || 'success'});
 	}
 
 	// An endpoint's answer as a toast: its success message, or its error.
@@ -106,10 +106,7 @@ window.Tallport = (function () {
 	 * options: {message, confirm (button label), tone ('danger' for destructive)}.
 	 */
 	function confirm(options) {
-		if (window.FruitUI && window.FruitUI.confirm) {
-			return window.FruitUI.confirm({title: options.message, confirm: options.confirm, tone: options.tone});
-		}
-		return Promise.resolve(window.confirm(options.message));
+		return window.FruitUI.confirm({title: options.message, confirm: options.confirm, tone: options.tone});
 	}
 
 	return {csrf: csrf, post: post, isSuccess: isSuccess, toast: toast, result: result, busy: busy, confirm: confirm};
