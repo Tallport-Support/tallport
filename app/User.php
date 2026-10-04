@@ -326,6 +326,31 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
         }
     }
 
+    /**
+     * Where the user goes after replying or changing a conversation: the
+     * user's preference (MailboxUser::AFTER_SEND_*), the next active one unless set.
+     */
+    public function afterSend()
+    {
+        return $this->after_send ?: MailboxUser::AFTER_SEND_NEXT;
+    }
+
+    /**
+     * The status a reply leaves a conversation in: the user's preference, or
+     * the mailbox's (keep the current status, or a status).
+     */
+    public function replyStatus($mailbox, $conversation = null)
+    {
+        if ($this->reply_status && array_key_exists((int) $this->reply_status, Conversation::$statuses)) {
+            return (int) $this->reply_status;
+        }
+        if ($mailbox->ticket_status == Mailbox::TICKET_STATUS_KEEP_CURRENT) {
+            return $conversation && $conversation->status && $conversation->status != Conversation::STATUS_SPAM ? $conversation->status : Conversation::STATUS_ACTIVE;
+        }
+
+        return $mailbox->ticket_status;
+    }
+
     public function mailboxSettings($mailbox_id)
     {
         $settings = $this->mailboxesSettings()->where('mailbox_id', $mailbox_id)->first();

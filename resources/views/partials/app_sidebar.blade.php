@@ -62,7 +62,6 @@
                     @if ($sidebar_user->can('update', $sidebar_mailbox))
                         <x-fruit::menu-link :href="route('mailboxes.update', ['id' => $sidebar_mailbox->id])">{{ __('Mailbox Settings') }}</x-fruit::menu-link>
                     @endif
-                    <x-fruit::menu-link :href="route('conversations.ajax_html', ['action' => 'default_redirect']).'?mailbox_id='.$sidebar_mailbox->id" data-fruit-dialog-url :data-fruit-dialog-title="__('Default Redirect')">{{ __('Default Redirect') }}…</x-fruit::menu-link>
                     <x-fruit::menu-item x-data="tallportMuteMailbox({{ $sidebar_mailbox->id }}, {{ $sidebar_muted ? 'true' : 'false' }})" x-on:click="toggle"><span x-text="muted ? @js(__('Unmute Notifications')) : @js(__('Mute Notifications'))">{{ $sidebar_muted ? __('Unmute Notifications') : __('Mute Notifications') }}</span></x-fruit::menu-item>
                     <ul class="app-sidebar__module-items">@action('mailbox.sidebar.buttons', $sidebar_mailbox)</ul>
                 </x-fruit::menu>

@@ -141,7 +141,8 @@ class NewConversation extends Component
             ];
         }
 
-        $this->status = $mailbox->ticket_status == Mailbox::TICKET_STATUS_KEEP_CURRENT ? Conversation::STATUS_ACTIVE : $mailbox->ticket_status;
+        // The user's preference, or the mailbox's.
+        $this->status = auth()->user()->replyStatus($mailbox);
         if (in_array($mailbox->ticket_assignee, [Mailbox::TICKET_ASSIGNEE_REPLYING, Mailbox::TICKET_ASSIGNEE_REPLYING_UNASSIGNED])) {
             $this->user_id = auth()->id();
         } else {

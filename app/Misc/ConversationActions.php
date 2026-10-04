@@ -319,15 +319,15 @@ class ConversationActions
     /**
      * Where the user goes after replying or changing a conversation: the
      * conversation, its folder or the next active conversation (the user's
-     * mailbox setting, or after_send in the request).
+     * preference, or after_send in the request).
      */
     public static function redirectUrl($request, $conversation, $user)
     {
         if (!empty($request->after_send)) {
             $after_send = $request->after_send;
         } else {
-            // todo: use $user->mailboxSettings()
-            $after_send = $conversation->mailbox->getUserSettings($user->id)->after_send;
+            // The user's preference (users/preferences).
+            $after_send = $user->afterSend();
         }
 
         // When creating a new conversation.

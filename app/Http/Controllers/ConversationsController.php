@@ -132,7 +132,7 @@ class ConversationsController extends Controller
         }
 
         //$after_send = $conversation->mailbox->getUserSettings($user->id)->after_send;
-        $after_send = $user->mailboxSettings($conversation->mailbox_id)->after_send;
+        $after_send = $user->afterSend();
 
         // Detect customers and emails to which user can reply
         $to_customers = [];
@@ -439,7 +439,7 @@ class ConversationsController extends Controller
         $folder = $mailbox->folders()->where('type', Folder::TYPE_DRAFTS)->first();
 
         // todo: use $user->mailboxSettings()
-        $after_send = $mailbox->getUserSettings(auth()->user()->id)->after_send;
+        $after_send = auth()->user()->afterSend();
 
         // Create conversation from thread
         $thread = null;
@@ -739,30 +739,6 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Save default redirect
-            case 'save_after_send':
-                $mailbox = Mailbox::find($request->mailbox_id);
-                if (!$mailbox) {
-                    $response['msg'] .= __('Mailbox not found');
-                } elseif (!$mailbox->userHasAccess($user->id)) {
-                    $response['msg'] .= __('Action not authorized');
-                }
-                if (!$response['msg']) {
-                    $mailbox_user = $user->mailboxesWithSettings()->where('mailbox_id', $request->mailbox_id)->first();
-                    if (!$mailbox_user) {
-                        // Admin may not be connected to the mailbox yet
-                        $user->mailboxes()->attach($request->mailbox_id);
-                        // $mailbox_user = new MailboxUser();
-                        // $mailbox_user->mailbox_id = $mailbox->id;
-                        // $mailbox_user->user_id = $user->id;
-                        $mailbox_user = $user->mailboxesWithSettings()->where('mailbox_id', $request->mailbox_id)->first();
-                    }
-                    $mailbox_user->settings->after_send = $request->value;
-                    $mailbox_user->settings->save();
-
-                    $response['status'] = 'success';
-                }
-                break;
 
             // Conversations navigation
             case 'conversations_pagination':
@@ -1231,8 +1207,6 @@ class ConversationsController extends Controller
                 return $this->ajaxHtmlMoveConv();
             case 'merge_conv':
                 return $this->ajaxHtmlMergeConv();
-            case 'default_redirect':
-                return $this->ajaxHtmlDefaultRedirect();
         }
 
         abort(404);
@@ -1414,33 +1388,6 @@ class ConversationsController extends Controller
             'conversation' => $conversation,
             'prev_conversations' => $prev_conversations,
 
-        ]);
-    }
-
-    /**
-     * Change default redirect for the mailbox.
-     */
-    public function ajaxHtmlDefaultRedirect()
-    {
-        $mailbox_id = request()->input('mailbox_id');
-        if (!$mailbox_id) {
-            abort(404);
-        }
-
-        $mailbox = Mailbox::find($mailbox_id);
-        if (!$mailbox) {
-            abort(404);
-        }
-
-        $user = auth()->user();
-
-        if (!$user->can('view', $mailbox)) {
-            abort(403);
-        }
-
-        return view('conversations/ajax_html/default_redirect', [
-            'after_send' => $user->mailboxSettings($mailbox_id)->after_send,
-            'mailbox_id' => $mailbox_id,
         ]);
     }
 

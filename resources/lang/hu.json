@@ -1485,5 +1485,10 @@
     "Selected conversations": "Kijelölt beszélgetések",
     "Generated, not sent": "Generált, nincs elküldve",
     "Previous": "Előző",
-    "Next": "Következő"
+    "Next": "Következő",
+    "Preferences": "Beállítások",
+    "Replies": "Válaszok",
+    "Status after a reply": "Állapot válasz után",
+    "As the mailbox is set": "A postafiók beállítása szerint",
+    "After sending": "Küldés után"
 }

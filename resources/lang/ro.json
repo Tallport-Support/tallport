@@ -1484,5 +1484,10 @@
     "Selected conversations": "Conversații selectate",
     "Generated, not sent": "Generat, netrimis",
     "Previous": "Anterior",
-    "Next": "Următor"
+    "Next": "Următor",
+    "Preferences": "Preferințe",
+    "Replies": "Răspunsuri",
+    "Status after a reply": "Starea după un răspuns",
+    "As the mailbox is set": "Conform setării căsuței",
+    "After sending": "După trimitere"
 }

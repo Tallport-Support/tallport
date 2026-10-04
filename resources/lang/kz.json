@@ -1887,5 +1887,10 @@
     "Clear selection": "Таңдауды тазалау",
     "Selected conversations": "Таңдалған тикеттер",
     "Generated, not sent": "Жасалған, жіберілмеген",
-    "Next": "Келесі"
+    "Next": "Келесі",
+    "Preferences": "Баптаулар",
+    "Replies": "Жауаптар",
+    "Status after a reply": "Жауаптан кейінгі күй",
+    "As the mailbox is set": "Пошта жәшігінің баптауы бойынша",
+    "After sending": "Жібергеннен кейін"
 }

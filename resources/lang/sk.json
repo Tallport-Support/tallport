@@ -1484,5 +1484,10 @@
     "Selected conversations": "Vybrané konverzácie",
     "Generated, not sent": "Vygenerované, neodoslané",
     "Previous": "Predchádzajúce",
-    "Next": "Ďalšie"
+    "Next": "Ďalšie",
+    "Preferences": "Predvoľby",
+    "Replies": "Odpovede",
+    "Status after a reply": "Stav po odpovedi",
+    "As the mailbox is set": "Podľa nastavenia schránky",
+    "After sending": "Po odoslaní"
 }

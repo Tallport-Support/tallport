@@ -1485,5 +1485,10 @@
     "Selected conversations": "Odabrani razgovori",
     "Generated, not sent": "Generirano, nije poslano",
     "Previous": "Prethodno",
-    "Next": "Sljedeće"
+    "Next": "Sljedeće",
+    "Preferences": "Postavke",
+    "Replies": "Odgovori",
+    "Status after a reply": "Status nakon odgovora",
+    "As the mailbox is set": "Kako je postavljen pretinac",
+    "After sending": "Nakon slanja"
 }

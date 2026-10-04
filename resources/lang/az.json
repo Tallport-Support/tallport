@@ -1485,5 +1485,10 @@
     "Selected conversations": "Seçilmiş söhbətlər",
     "Generated, not sent": "Yaradılıb, göndərilməyib",
     "Previous": "Əvvəlki",
-    "Next": "Növbəti"
+    "Next": "Növbəti",
+    "Preferences": "Seçimlər",
+    "Replies": "Cavablar",
+    "Status after a reply": "Cavabdan sonra status",
+    "As the mailbox is set": "Poçt qutusunun ayarı kimi",
+    "After sending": "Göndərdikdən sonra"
 }

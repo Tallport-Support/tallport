@@ -1504,5 +1504,10 @@
     "Selected conversations": "Valitut keskustelut",
     "Generated, not sent": "Luotu, ei lähetetty",
     "Previous": "Edellinen",
-    "Next": "Seuraava"
+    "Next": "Seuraava",
+    "Preferences": "Asetukset",
+    "Replies": "Vastaukset",
+    "Status after a reply": "Tila vastauksen jälkeen",
+    "As the mailbox is set": "Postilaatikon asetuksen mukaan",
+    "After sending": "Lähettämisen jälkeen"
 }

@@ -1484,5 +1484,10 @@
     "Selected conversations": "שיחות שנבחרו",
     "Generated, not sent": "נוצר אוטומטית, לא נשלח",
     "Previous": "הקודם",
-    "Next": "הבא"
+    "Next": "הבא",
+    "Preferences": "העדפות",
+    "Replies": "תשובות",
+    "Status after a reply": "סטטוס אחרי תשובה",
+    "As the mailbox is set": "לפי הגדרת תיבת הדואר",
+    "After sending": "אחרי השליחה"
 }

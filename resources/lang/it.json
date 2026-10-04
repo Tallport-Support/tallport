@@ -1484,5 +1484,10 @@
     "Selected conversations": "Ticket selezionati",
     "Generated, not sent": "Generato, non inviato",
     "Previous": "Precedente",
-    "Next": "Successivo"
+    "Next": "Successivo",
+    "Preferences": "Preferenze",
+    "Replies": "Risposte",
+    "Status after a reply": "Stato dopo una risposta",
+    "As the mailbox is set": "Come impostato nella casella",
+    "After sending": "Dopo l'invio"
 }

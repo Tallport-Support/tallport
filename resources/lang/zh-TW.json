@@ -1533,5 +1533,10 @@
     "Select": "選取",
     "Clear selection": "清除選取",
     "Selected conversations": "已選取的對話",
-    "Generated, not sent": "已產生，未傳送"
+    "Generated, not sent": "已產生，未傳送",
+    "Preferences": "偏好設定",
+    "Replies": "回覆",
+    "Status after a reply": "回覆後的狀態",
+    "As the mailbox is set": "依信箱的設定",
+    "After sending": "傳送後"
 }

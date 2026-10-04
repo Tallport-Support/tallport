@@ -434,10 +434,8 @@ class ConversationComposer extends Component
         $this->bcc = '';
         $this->conv_history = '';
 
-        $this->status = $mailbox->ticket_status == Mailbox::TICKET_STATUS_KEEP_CURRENT ? $conversation->status : $mailbox->ticket_status;
-        if ($this->status == Conversation::STATUS_SPAM) {
-            $this->status = Conversation::STATUS_ACTIVE;
-        }
+        // The user's preference, or the mailbox's.
+        $this->status = $user->replyStatus($mailbox, $conversation);
 
         // The assignee, as the mailbox's setting says.
         if ($mailbox->ticket_assignee == Mailbox::TICKET_ASSIGNEE_ANYONE

@@ -631,6 +631,39 @@ class UsersController extends Controller
     }
 
     /**
+     * The user's own preferences: the status of a reply and where to go after sending.
+     */
+    public function preferences($id)
+    {
+        $user = auth()->user();
+        if ($user->id != $id) {
+            abort(403);
+        }
+
+        return view('users/preferences', ['user' => $user]);
+    }
+
+    public function preferencesSave($id, Request $request)
+    {
+        $user = auth()->user();
+        if ($user->id != $id) {
+            abort(403);
+        }
+
+        $request->validate([
+            'reply_status' => 'nullable|in:'.implode(',', array_keys(\App\Conversation::$statuses)),
+            'after_send'   => 'nullable|in:'.implode(',', [\App\MailboxUser::AFTER_SEND_STAY, \App\MailboxUser::AFTER_SEND_NEXT, \App\MailboxUser::AFTER_SEND_FOLDER]),
+        ]);
+        $user->reply_status = $request->reply_status ?: null;
+        $user->after_send = $request->after_send ?: null;
+        $user->save();
+
+        \Session::flash('flash_success_floating', __('Settings updated'));
+
+        return redirect()->route('users.preferences', ['id' => $id]);
+    }
+
+    /**
      * Change user password.
      */
     public function password($id)

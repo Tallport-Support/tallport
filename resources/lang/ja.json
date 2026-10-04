@@ -1485,5 +1485,10 @@
     "Selected conversations": "選択した会話",
     "Generated, not sent": "生成済み、未送信",
     "Previous": "前へ",
-    "Next": "次へ"
+    "Next": "次へ",
+    "Preferences": "環境設定",
+    "Replies": "返信",
+    "Status after a reply": "返信後のステータス",
+    "As the mailbox is set": "メールボックスの設定どおり",
+    "After sending": "送信後"
 }

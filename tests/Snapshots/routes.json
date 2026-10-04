@@ -2624,6 +2624,36 @@
         "methods": [
             "GET"
         ],
+        "uri": "users/preferences/{id}",
+        "name": "users.preferences",
+        "action": "UsersController@preferences",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "users/preferences/{id}",
+        "name": "users.preferences.save",
+        "action": "UsersController@preferencesSave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "users/profile/{id}",
         "name": "users.profile",
         "action": "UsersController@profile",

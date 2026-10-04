@@ -1484,5 +1484,10 @@
     "Selected conversations": "Izbrani pogovori",
     "Generated, not sent": "Ustvarjeno, ni poslano",
     "Previous": "Prejšnje",
-    "Next": "Naslednje"
+    "Next": "Naslednje",
+    "Preferences": "Nastavitve",
+    "Replies": "Odgovori",
+    "Status after a reply": "Stanje po odgovoru",
+    "As the mailbox is set": "Kot je nastavljen nabiralnik",
+    "After sending": "Po pošiljanju"
 }

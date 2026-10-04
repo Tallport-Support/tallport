@@ -1485,5 +1485,10 @@
     "Selected conversations": "Markerade konversationer",
     "Generated, not sent": "Genererad, inte skickad",
     "Previous": "Föregående",
-    "Next": "Nästa"
+    "Next": "Nästa",
+    "Preferences": "Inställningar",
+    "Replies": "Svar",
+    "Status after a reply": "Status efter ett svar",
+    "As the mailbox is set": "Som brevlådan är inställd",
+    "After sending": "Efter att ha skickat"
 }

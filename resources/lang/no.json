@@ -1489,5 +1489,10 @@
     "Selected conversations": "Valgte samtaler",
     "Generated, not sent": "Generert, ikke sendt",
     "Previous": "Forrige",
-    "Next": "Neste"
+    "Next": "Neste",
+    "Preferences": "Innstillinger",
+    "Replies": "Svar",
+    "Status after a reply": "Status etter et svar",
+    "As the mailbox is set": "Slik postkassen er satt opp",
+    "After sending": "Etter sending"
 }

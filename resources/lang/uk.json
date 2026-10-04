@@ -1485,5 +1485,10 @@
     "Selected conversations": "Вибрані розмови",
     "Generated, not sent": "Згенеровано, не надіслано",
     "Previous": "Попереднє",
-    "Next": "Наступне"
+    "Next": "Наступне",
+    "Preferences": "Налаштування",
+    "Replies": "Відповіді",
+    "Status after a reply": "Статус після відповіді",
+    "As the mailbox is set": "Як налаштовано в скриньці",
+    "After sending": "Після надсилання"
 }

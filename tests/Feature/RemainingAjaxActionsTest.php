@@ -100,14 +100,6 @@ class RemainingAjaxActionsTest extends FeatureTestCase
         $this->assertSame('Not enough permissions', $this->conversationAjax($this->createUser(), ['action' => 'retry_send', 'thread_id' => $reply->id])['msg']);
     }
 
-    public function testSaveAfterSendPreference()
-    {
-        $this->assertSame('success', $this->conversationAjax($this->agent, ['action' => 'save_after_send', 'mailbox_id' => $this->mailbox->id, 'value' => \App\MailboxUser::AFTER_SEND_STAY])['status']);
-
-        $this->assertEquals(\App\MailboxUser::AFTER_SEND_STAY, \DB::table('mailbox_user')->where(['mailbox_id' => $this->mailbox->id, 'user_id' => $this->agent->id])->value('after_send'));
-        $this->assertStringContainsString('Action not authorized', $this->conversationAjax($this->createUser(), ['action' => 'save_after_send', 'mailbox_id' => $this->mailbox->id, 'value' => 1])['msg']);
-    }
-
     public function testChatsLoadMore()
     {
         $response = $this->conversationAjax($this->agent, ['action' => 'chats_load_more', 'mailbox_id' => $this->mailbox->id, 'offset' => 0]);
@@ -123,7 +115,6 @@ class RemainingAjaxActionsTest extends FeatureTestCase
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $base = '/conversation/ajax-html/';
 
-        $this->actingAs($this->agent)->get($base.'default_redirect?mailbox_id='.$this->mailbox->id)->assertStatus(200);
         $this->actingAs($this->agent)->get($base.'show_original?thread_id='.$reply->id)->assertStatus(200)->assertSee('Visible reply');
 
         $outsider = $this->createUser();

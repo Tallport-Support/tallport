@@ -3730,6 +3730,16 @@
                 "type": "tinyint(1)",
                 "nullable": true,
                 "default": "NULL"
+            },
+            "reply_status": {
+                "type": "tinyint(3) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "after_send": {
+                "type": "tinyint(3) unsigned",
+                "nullable": true,
+                "default": "NULL"
             }
         },
         "indexes": {

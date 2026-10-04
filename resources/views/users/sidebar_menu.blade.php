@@ -22,6 +22,9 @@
         <a href="{{ route('users.security', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.security') aria-current="page" @endif>{{ __('Security') }}</a>
     @endif
     @if (Auth::user()->id == $user->id)
+        <a href="{{ route('users.preferences', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.preferences') aria-current="page" @endif>{{ __('Preferences') }}</a>
+    @endif
+    @if (Auth::user()->id == $user->id)
         <a href="{{ route('users.api_keys', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.api_keys') aria-current="page" @endif>{{ __('API Keys') }}</a>
     @endif
     @if (Auth::user()->isAdmin())

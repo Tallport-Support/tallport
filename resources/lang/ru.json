@@ -1485,5 +1485,10 @@
     "Selected conversations": "Выбранные тикеты",
     "Generated, not sent": "Сгенерировано, не отправлено",
     "Previous": "Назад",
-    "Next": "Далее"
+    "Next": "Далее",
+    "Preferences": "Настройки",
+    "Replies": "Ответы",
+    "Status after a reply": "Статус после ответа",
+    "As the mailbox is set": "Как настроено в ящике",
+    "After sending": "После отправки"
 }

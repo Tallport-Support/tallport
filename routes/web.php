@@ -101,6 +101,8 @@ Route::post('/users/api-keys/{id}', 'ApiKeysController@action')->middleware('pas
 Route::get('/users/security/{id}', 'UserSecurityController@show')->middleware('password.confirm')->name('users.security');
 Route::post('/users/security/{id}/reset', 'UserSecurityController@reset')->middleware('password.confirm')->name('users.security.reset');
 Route::post('/users/security/{id}/forget-devices', 'UserSecurityController@forgetDevices')->name('users.security.forget_devices');
+Route::get('/users/preferences/{id}', 'UsersController@preferences')->name('users.preferences');
+Route::post('/users/preferences/{id}', 'UsersController@preferencesSave')->name('users.preferences.save');
 Route::get('/users/password/{id}', 'UsersController@password')->name('users.password');
 Route::post('/users/password/{id}', 'UsersController@passwordSave')->name('users.password.save');
 Route::post('/users/ajax', ['uses' => 'UsersController@ajax', 'laroute' => true])->name('users.ajax');

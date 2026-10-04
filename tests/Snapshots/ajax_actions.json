@@ -23,7 +23,6 @@
         "merge_search",
         "restore_conversation",
         "retry_send",
-        "save_after_send",
         "save_draft",
         "save_edit_thread",
         "send_reply",
@@ -33,7 +32,6 @@
     ],
     "ConversationsController@ajaxHtml": [
         "change_customer",
-        "default_redirect",
         "merge_conv",
         "move_conv",
         "send_log",

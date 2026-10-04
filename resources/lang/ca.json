@@ -1583,5 +1583,10 @@
     "Selected conversations": "Converses seleccionades",
     "Generated, not sent": "Generat, no enviat",
     "Previous": "Anterior",
-    "Next": "Següent"
+    "Next": "Següent",
+    "Preferences": "Preferències",
+    "Replies": "Respostes",
+    "Status after a reply": "Estat després d'una resposta",
+    "As the mailbox is set": "Com estigui configurada la bústia",
+    "After sending": "Després d'enviar"
 }

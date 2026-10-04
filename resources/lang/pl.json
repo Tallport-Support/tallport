@@ -1484,5 +1484,10 @@
     "Selected conversations": "Zaznaczone rozmowy",
     "Generated, not sent": "Wygenerowano, nie wysłano",
     "Previous": "Poprzedni",
-    "Next": "Następny"
+    "Next": "Następny",
+    "Preferences": "Preferencje",
+    "Replies": "Odpowiedzi",
+    "Status after a reply": "Status po odpowiedzi",
+    "As the mailbox is set": "Zgodnie z ustawieniem skrzynki",
+    "After sending": "Po wysłaniu"
 }

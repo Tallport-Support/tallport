@@ -1485,5 +1485,10 @@
     "Selected conversations": "Seçili konuşmalar",
     "Generated, not sent": "Oluşturuldu, gönderilmedi",
     "Previous": "Önceki",
-    "Next": "Sonraki"
+    "Next": "Sonraki",
+    "Preferences": "Tercihler",
+    "Replies": "Yanıtlar",
+    "Status after a reply": "Yanıttan sonraki durum",
+    "As the mailbox is set": "Posta kutusunun ayarına göre",
+    "After sending": "Gönderdikten sonra"
 }
