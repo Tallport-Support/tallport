@@ -36,27 +36,27 @@
             {{ __('Drafted replies use the documentation of the conversation\'s mailbox. Pages added by URL are fetched as Markdown (the URL plus .md) and fetched again daily.') }}
         </p>
 
-        <h2 class="settings-form__heading">{{ __('Add Pages') }}</h2>
-
         <form class="settings-form" method="POST" action="{{ route('ai.documents.action') }}">
             {{ csrf_field() }}
             <input type="hidden" name="action" value="add">
 
-            <x-fruit::field :label="__('Mailbox')">
-                <x-fruit::select id="ai_documents_mailbox" name="mailbox_id" required>
-                    @foreach ($mailboxes as $mailbox_option)
-                        <option value="{{ $mailbox_option->id }}" @selected(old('mailbox_id') == $mailbox_option->id)>{{ $mailbox_option->name }}</option>
-                    @endforeach
-                </x-fruit::select>
-            </x-fruit::field>
+            <x-fruit::form-section :title="__('Add Pages')">
+                <x-fruit::field :label="__('Mailbox')" layout="row">
+                    <x-fruit::select id="ai_documents_mailbox" name="mailbox_id" required>
+                        @foreach ($mailboxes as $mailbox_option)
+                            <option value="{{ $mailbox_option->id }}" @selected(old('mailbox_id') == $mailbox_option->id)>{{ $mailbox_option->name }}</option>
+                        @endforeach
+                    </x-fruit::select>
+                </x-fruit::field>
 
-            <x-fruit::field :label="__('URLs')" :description="__('One URL per line. Pages already added are fetched again.')">
-                <x-fruit::textarea id="ai_documents_urls" name="urls" rows="4" required placeholder="https://docs.example.com/en/setup">{{ old('urls') }}</x-fruit::textarea>
-            </x-fruit::field>
+                <x-fruit::field :label="__('URLs')" :description="__('One URL per line. Pages already added are fetched again.')">
+                    <x-fruit::textarea id="ai_documents_urls" name="urls" rows="4" required placeholder="https://docs.example.com/en/setup">{{ old('urls') }}</x-fruit::textarea>
+                </x-fruit::field>
+            </x-fruit::form-section>
 
-            <div class="settings-form__actions">
+            <footer class="f-form-row settings-form__actions">
                 <x-fruit::button type="submit" variant="primary">{{ __('Add') }}</x-fruit::button>
-            </div>
+            </footer>
         </form>
     </div>
 
