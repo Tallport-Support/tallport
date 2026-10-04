@@ -3704,13 +3704,20 @@ html.av-open {
     margin-top: 10px;
 }
 .saved-replies-list .saved-reply-item {
-    padding: 6px 0;
-    border-bottom: 1px solid #eef0f2;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 4px;
+    border-bottom: 1px solid var(--f-border);
 }
 .saved-replies-list .saved-reply-handle {
+    --f-icon-size: 18px;
     cursor: move;
-    color: #b5c1cc;
-    margin-right: 6px;
+    color: var(--f-tertiary);
+}
+.saved-reply-item .f-icon {
+    --f-icon-size: 16px;
+    color: var(--f-secondary);
 }
 .search-tips-toggle {
     margin-top: 5px;
@@ -5321,4 +5328,54 @@ a.disabled:focus {
 .connection-imap-folders > .select2 {
     flex: 1;
     min-width: 0;
+}
+.mailbox-access-table {
+    --f-table-cell-padding: 8px 10px;
+}
+.mailbox-access-table td:not(:first-child),
+.mailbox-access-table th:not(:first-child) {
+    text-align: center;
+}
+.auto-reply-panel {
+    padding-top: 16px;
+}
+.auto-reply-add-language {
+    width: auto;
+}
+.nostr-facts {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 6px 16px;
+    margin: 0;
+}
+.nostr-facts dt {
+    font-weight: 600;
+}
+.nostr-facts dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+.nostr-inline {
+    display: inline;
+}
+.nostr-table {
+    --f-table-cell-padding: 8px 10px;
+}
+.nostr-log {
+    max-height: 300px;
+}
+.nostr-password {
+    width: auto;
+    flex: 1;
+    max-width: 320px;
+}
+.nostr-days {
+    max-width: 220px;
+}
+.nostr-delete-key > summary {
+    list-style: none;
+}
+.nostr-delete-key[open] > form {
+    margin-top: 8px;
+    min-width: 260px;
 }

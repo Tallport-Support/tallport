@@ -207,13 +207,13 @@ class AutoReplyLanguagesTest extends FeatureTestCase
         $this->version('zh-Hant', '感謝您的來信');
 
         $this->actingAs($this->admin)->get('/mailbox/settings/'.$this->mailbox->id.'/auto-reply')
-            ->assertSee('data-toggle="tab">Korean', false)
-            ->assertSee('data-toggle="tab">Chinese (Traditional)', false)
+            ->assertSee('aria-selected="false">Korean', false)
+            ->assertSee('aria-selected="false">Chinese (Traditional)', false)
             ->assertSee('Japanese (日本語)');
 
         $dutch = $this->createAdmin(['locale' => 'nl']);
         $this->actingAs($dutch)->withSession(['user_locale' => 'nl'])->get('/mailbox/settings/'.$this->mailbox->id.'/auto-reply')
-            ->assertSee('data-toggle="tab">Koreaans', false)
+            ->assertSee('aria-selected="false">Koreaans', false)
             ->assertSee('Japans (日本語)');
 
         // Korean can be edited.
