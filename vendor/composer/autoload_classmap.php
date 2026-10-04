@@ -231,6 +231,7 @@ return array(
     'App\\Livewire\\ConversationSubject' => $baseDir . '/app/Livewire/ConversationSubject.php',
     'App\\Livewire\\ConversationThread' => $baseDir . '/app/Livewire/ConversationThread.php',
     'App\\Livewire\\ConversationToolbar' => $baseDir . '/app/Livewire/ConversationToolbar.php',
+    'App\\Livewire\\NewConversation' => $baseDir . '/app/Livewire/NewConversation.php',
     'App\\Mail\\Alert' => $baseDir . '/app/Mail/Alert.php',
     'App\\Mail\\AutoReply' => $baseDir . '/app/Mail/AutoReply.php',
     'App\\Mail\\PasswordChanged' => $baseDir . '/app/Mail/PasswordChanged.php',

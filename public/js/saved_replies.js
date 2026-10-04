@@ -73,22 +73,14 @@ function savedReplyTemplateLoad()
 	);
 }
 
-// A saved reply's files (and which saved reply it was) for the reply: the
-// conversation's composer (App\Livewire\ConversationComposer), or the new
-// conversation's form.
+// A saved reply's files (and which saved reply it was) for the composer
+// (App\Livewire\ConversationComposer, App\Livewire\NewConversation).
 function savedReplyFiles(response, saved_reply_id)
 {
-	if (document.querySelector('[wire\\:name="conversation-composer"]')) {
-		if (saved_reply_id) {
-			Livewire.dispatch('composer-saved-reply', {id: saved_reply_id, attachments: response.attachments || []});
-		} else {
-			Livewire.dispatch('composer-attach', {attachments: response.attachments || []});
-		}
-		return;
-	}
-	showAttachments(response);
 	if (saved_reply_id) {
-		$('.form-reply:first input[name="saved_reply_id"]').val(saved_reply_id);
+		Livewire.dispatch('composer-saved-reply', {id: saved_reply_id, attachments: response.attachments || []});
+	} else {
+		Livewire.dispatch('composer-attach', {attachments: response.attachments || []});
 	}
 }
 

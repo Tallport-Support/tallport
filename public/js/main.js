@@ -108,7 +108,6 @@ $(document).ready(function(){
 // wire:navigate swaps the body; the scripts themselves load once.
 function shellInit()
 {
-	initNoreplyWarnings();
 	webNotificationsInit();
 	initAccordionHeading();
 }
@@ -304,91 +303,6 @@ function initConversation()
 	});
 }
 
-// Create new email conversation
-function switchToNewEmailConversation()
-{
-    $('.conv-switch-button').removeClass('active');
-	$('#email-conv-switch').addClass('active');
-	$('.email-conv-fields').show();
-	$('.phone-conv-fields').hide();
-    $('.custom-conv-fields').hide();
-	$('#field-to').show();
-	$('#name').addClass('parsley-exclude');
-	$('#to').removeClass('parsley-exclude');
-
-	$('.conv-block:first').removeClass('conv-note-block').removeClass('conv-phone-block');
-	$('#form-create :input[name="is_note"]:first').val(0);
-	$('#form-create :input[name="is_phone"]:first').val(0);
-	$('#form-create :input[name="type"]:first').val(1);
-}
-
-// Create new phone conversation
-function switchToNewPhoneConversation()
-{
-    $('.conv-switch-button').removeClass('active');
-	$('#phone-conv-switch').addClass('active');
-    $('.custom-conv-fields').hide();
-	$('.email-conv-fields').hide();
-	$('.phone-conv-fields').show();
-
-	if ($('#to_email').val().length) {
-		// Show Email
-		$('#field-to_email').show();
-		$('#toggle-email').hide();
-		$('#field-to').hide();
-	} else {
-		// Hide Email
-		$('#field-to_email').hide();
-		$('#toggle-email').show();
-		$('#field-to').show();
-	}
-	$('#field-to').hide();
-	$('#name').removeClass('parsley-exclude');
-	$('#to').addClass('parsley-exclude');
-
-	$('.conv-block:first').addClass('conv-note-block').addClass('conv-phone-block');
-
-	$('#form-create :input[name="is_note"]:first').val(1);
-	$('#form-create :input[name="is_phone"]:first').val(1);
-	$('#form-create :input[name="type"]:first').val(Vars.conv_type_phone);
-
-	// Customer name
-	initRecipientSelector({
-		maximumSelectionLength: 1,
-		allow_non_emails: true,
-		use_id: true
-	}, $('#name:not(.select2-hidden-accessible)')).on('select2:select select2:unselect', function(e) {
-		// If customer selects a customer with email, hide Email field.
-		var data = e.params.data;
-		if (typeof(data.newOption) == "undefined" && data.selected) {
-			// User added custom name, so hide Email
-			$('#conv-to-email-group').hide();
-		} else {
-			// User selected existing customer or unselected, so show Email
-			$('#conv-to-email-group').show();
-
-			// Reset customer_id on unselect
-			if (!data.selected) {
-				$('#form-create :input[name="customer_id"]:first').val('');
-			}
-		}
-	});
-
-	// Email
-	initRecipientSelector({
-		maximumSelectionLength: 1,
-		search_by: 'email'
-	}, $('#to_email:not(.select2-hidden-accessible)'));
-
-	// Phone
-	initRecipientSelector({
-		maximumSelectionLength: 1,
-		allow_non_emails: true,
-		search_by: 'phone',
-		show_fields: 'phone',
-	}, $('#phone:not(.select2-hidden-accessible)'));
-}
-
 // Add target blank to all links in threads.
 function processLinks()
 {
@@ -404,184 +318,6 @@ function getConvData(field)
 	return null;
 }
 
-function showNoteForm()
-{
-	var reply_block = $(".conv-reply-block");
-	if (reply_block.hasClass('hidden')  /*|| $(this).hasClass('inactive')*/) {
-		// Show
-		hideActionBlocks();
-		reply_block.removeClass('hidden')
-			.addClass('conv-note-block')
-			.removeClass('conv-forward-block')
-			.children().find(":input[name='is_note']:first").val(1);
-		$('#conv-subject').addClass('action-visible');
-		reply_block.children().find(":input[name='thread_id']:first").val('');
-		reply_block.children().find(":input[name='subtype']:first").val('');
-		//$(".conv-reply-block").children().find(":input[name='body']:first").val('');
-
-		// Note never changes Assignee by default
-		reply_block.children().find(":input[name='user_id']:first").val(getConvData('user_id'));
-
-		// Show default status
-		var input_status = reply_block.children().find(":input[name='status']:first");
-		input_status.val(input_status.attr('data-note-status'));
-		updateSendButtonLabel();
-
-		$(".attachments-upload:first :input, .attachments-upload:first li").remove();
-
-		$(".conv-action").addClass('inactive');
-		$(this).removeClass('inactive');
-		editorFocus('body');
-
-		maybeScrollToReplyBlock();
-	}
-}
-
-// Prepare reply/forward form for display
-function prepareReplyForm()
-{
-	// To prevent browser autocomplete, clean body
-	if (!$('.conv-action.inactive:first').length) {
-		// We have to insert this code to allow proper UL/OL
-		setReplyBody('<div><br></div>');
-	}
-
-	// Set assignee in case it has been changed in the Note editor
-	var default_assignee = $(".conv-reply-block").children().find(":input[name='user_id']:first option[data-default='true']").attr('value');
-	if (default_assignee) {
-		$(".conv-reply-block").children().find(":input[name='user_id']:first").val(default_assignee);
-	}
-
-	// Show default status
-	var input_status = $(".conv-reply-block").children().find(":input[name='status']:first");
-	input_status.val(input_status.attr('data-reply-status'));
-	updateSendButtonLabel();
-
-	// Clean attachments
-	$(".attachments-upload:first :input, .attachments-upload:first li").remove();
-}
-
-function showReplyForm(data, scroll_offset)
-{
-	hideActionBlocks();
-	$(".conv-reply-block").removeClass('hidden')
-		.removeClass('conv-note-block')
-		.removeClass('conv-forward-block')
-		.children().find(":input[name='is_note']:first").val('');
-	$('#conv-subject').addClass('action-visible');
-	$(".conv-reply-block :input[name='thread_id']:first").val('');
-	$(".conv-reply-block :input[name='subtype']:first").val('');
-
-	// When switching from note to reply, body has to be preserved
-	//$(".conv-reply-block").children().find(":input[name='body']:first").val(body_val);
-	$(".conv-action").addClass('inactive');
-	$(".conv-reply:first").removeClass('inactive');
-
-	if (typeof(data) != "undefined" && data) {
-		for (field in data) {
-			$(".conv-reply-block form:first :input[name='"+field+"']").val(data[field]);
-			if (field == 'body') {
-				// Display body value in editor
-				editorSetContent('body', data[field]);
-			}
-			// Happens when opening draft or after Undo
-			if (field == 'to_email' || field == 'cc' || field == 'bcc') {
-				if (data && typeof(data.to) != "undefined") {
-					// Clean previous values.
-					// Also allows to avoid duplicating emails - for example
-					// when restoring  a draft in a conversation with CC.
-					cleanSelect2($("#"+field));
-					for (var i in data[field]) {
-						var email = data[field][i];
-						addSelect2Option($("#"+field), {
-							id: email, text: email
-						});
-					}
-				} else {
-					// It's not clear when this is supposed to happen.
-					$("#"+field).children('option:first').removeAttr('selected');
-				}
-			}
-		}
-
-		// Show attachments
-		showAttachments(data);
-
-		// Show Cc/Bcc
-		if (data.cc || data.bcc ) {
-	    	$('#toggle-cc').click();
-		}
-	}
-	$("#to").removeClass('hidden');
-	$("#to_email").addClass('hidden').addClass('parsley-exclude').next('.select2:first').hide();
-
-	// Focus reply area. Do not focus when creating a new conversation.
-	//if (!$('#to').length) {
-	if (!$('#subject').length) {
-		editorFocus('body');
-	}
-
-	if (!isChatMode()) {
-		// Select2 for CC/BCC
-		initRecipientSelector();
-	} else {
-		$('form.form-reply:first .field-cc').addClass('hidden');
-	}
-
-	if (typeof(scroll_offset) == "undefined") {
-		scroll_offset = 0;
-	}
-	maybeScrollToReplyBlock(scroll_offset);
-}
-
-function cleanSelect2(select)
-{
-	select.children('option').remove();
-	select.val('').trigger('change');
-}
-
-// Add an option to select2
-// 	var data = {
-//	    id: 1,
-//	    text: 'Barn owl'
-//	};
-function addSelect2Option(select, data)
-{
-	if (!data.id || !data.text) {
-		return;
-	}
-
-	var new_option = new Option(data.text, data.id, true, true);
-	select.append(new_option).trigger('change');
-}
-
-// Show attachments after loading via ajax.
-function showAttachments(data)
-{
-	if (data && data.attachments && data.attachments.length) {
-		var attachments_container = $(".attachments-upload:first");
-		for (var i = 0; i < data.attachments.length; i++) {
-			var attachment = data.attachments[i];
-
-			// Inputs
-			var input_html = '<input type="hidden" name="attachments_all[]" value="'+attachment.id+'" />';
-			input_html += '<input type="hidden" name="attachments[]" value="'+attachment.id+'" class="atachment-upload-'+attachment.id+'" />';
-			attachments_container.prepend(input_html);
-
-			// Links
-			var attachment_html = '<li class="atachment-upload-'+attachment.id+' attachment-loaded"><a href="'+attachment.url+'" class="break-words" target="_blank">'+attachment.name+'<span class="ellipsis">…</span> </a> <span class="text-help">('+formatBytes(attachment.size)+')</span> <i class="glyphicon glyphicon-remove" data-attachment-id="'+attachment.id+'"></i></li>';
-			attachments_container.find('ul:first').append(attachment_html);
-
-			// Delete attachment
-			$('li.attachment-loaded .glyphicon-remove').click(function(e) {
-				removeAttachment($(this).attr('data-attachment-id'));
-			});
-
-			attachments_container.show();
-        }
-	}
-}
-
 function getGlobalAttr(attr)
 {
 	return $("body:first").attr('data-'+attr);
@@ -590,90 +326,6 @@ function getGlobalAttr(attr)
 function setGlobalAttr(attr, value)
 {
 	return $("body:first").attr('data-'+attr, value);
-}
-
-// Initialize conversation body editor
-function convEditorInit()
-{
-	// The reply editor (FruitUI's x-fruit::editor on #body) mirrors its HTML
-	// to the textarea: input while typing, change on blur.
-	$('#body').on('input', function() {
-		// Not when the reply is empty and never changed
-		if (!$(this).val() && !fs_reply_changed) {
-			return;
-		}
-		onReplyChange();
-	}).on('change', function() {
-		onReplyBlur();
-	});
-
-	// Images pasted or dropped are embedded in the reply (FruitUI's upload hook).
-	$('#body').on('fruit-editor-upload', function(e) {
-		var detail = e.originalEvent.detail;
-		e.stopPropagation();
-		for (var i = 0; i < detail.files.length; i++) {
-			editorSendFile(detail.files[i], false, true, '#body', undefined, detail.insert);
-		}
-	});
-
-	// Track changes to save draft
-	$("#to, #to_email, #cc, #bcc, #subject, #name, #phone").on('keyup keypress', function(event) {
-		onReplyChange();
-	}).blur(function(event) {
-	    onReplyBlur();
-	});
-
-	// New conversation: load customer info
-	$("#to").on('change', function(event) {
-		// Autosave to be able to populate customer placeholders in the body
-		autosaveDraft();
-
-		var to = $('#to').val();
-		//var clean_customer = true;
-		// Do not clean customer info if customer has not changed
-		/*if (Array.isArray(to) && to.length == 1 && typeof(to[0]) != "undefined") {
-			if (to[0] == $('#conv-layout-customer li.customer-email:first').text()) {
-				clean_customer = false;
-			}
-		}
-		if (clean_customer) {*/
-		$('#conv-layout-customer').html('');
-		// Load customer info
-		if (Array.isArray(to) && to.length == 1 && typeof(to[0]) != "undefined") {
-			fsAjax({
-				action: 'load_customer_info',
-				customer_email: to[0],
-				mailbox_id: getGlobalAttr('mailbox_id'),
-				conversation_id: getGlobalAttr('conversation_id')
-			}, laroute.route('conversations.ajax'), function(response) {
-				if (isAjaxSuccess(response) && typeof(response.html) != "undefined") {
-					$('#conv-layout-customer').html(response.html);
-				}
-			}, true, function() {
-				// Do nothing
-			});
-		}
-	});
-	
-	// select2 does not react on keyup or keypress
-	$(".recipient-select, .draft-changer").on('change', function(event) {
-		onReplyChange();
-		onReplyBlur();
-	});
-
-	fsDoAction('conv_editor_init');
-
-	// Autosave draft periodically
-	autosaveDraft();
-}
-
-// Automatically save draft
-function autosaveDraft()
-{
-	if (!isNote() || isPhone()) {
-		saveDraft(false, true, true);
-	}
-	setTimeout(function(){ autosaveDraft() }, fs_draft_autosave_period*1000);
 }
 
 function ajaxSetup()
@@ -685,60 +337,6 @@ function ajaxSetup()
 	});
 }
 
-function onReplyChange()
-{
-	// Mark draft as unsaved
-	if (fs_editor_change_timeout && fs_editor_change_timeout != -1) {
-		return;
-	}
-
-	fs_editor_change_timeout = setTimeout(function(){
-		// Do not save note
-		/*if ($(".form-reply:first :input[name='is_note']:first").val()) {
-			return;
-		}*/
-
-		$('.form-reply:first .note-btn-save-draft:first').removeClass('text-success');
-		fs_editor_change_timeout = null;
-		fs_reply_changed = true;
-	}, 100);
-}
-
-// Save reply draft or note on form focus out
-function onReplyBlur()
-{
-	// If start saving draft immediately, then when Send Reply is clicked
-	// two ajax requests will be sent at the same time.
-	setTimeout(function() {
-		// Do not save if user clicked Send Reply button
-		if (fs_processing_send_reply) {
-			return;
-		}
-
-		// Save only after changing
-		//if (!fs_editor_change_timeout || fs_editor_change_timeout == null) {
-		if (isNote()) {
-			// Save note
-			rememberNote();
-		} else {
-  			saveDraft(false, true, true);
-  		}
-	  	//}
-	  }, 500);
-}
-
-// Are we editing a note
-function isNote()
-{
-	return $(".form-reply:first :input[name='is_note']:first").val();
-}
-
-// Is it a new phone conversation draft
-function isPhone()
-{
-	return $("#form-create :input[name='is_phone']:first").val();
-}
-
 // Generate random unique ID
 function generateDummyId()
 {
@@ -747,140 +345,6 @@ function generateDummyId()
 	// after the decimal.
 	return '_' + Math.random().toString(36).substr(2, 9);
 }
-
-// Save file uploaded in editor
-function editorSendFile(file, attach, is_conv, editor_id, container, insert)
-{
-	if (!file || typeof(file.type) == "undefined") {
-		return false;
-	}
-	if (typeof(container) == "undefined") {
-		container = $(".attachments-upload:first");
-	}
-
-	var attachments_container = container;
-	var attachment_dummy_id = generateDummyId();
-	var route = '';
-
-	if (is_conv) {
-		route = 'conversations.upload';
-		editor_id = '#body';
-	} else {
-		route = 'uploads.upload';
-		if (typeof(editor_id) == "undefined" || !editor_id) {
-			editor_id = '#signature';
-		}
-	}
-
-	ajaxSetup();
-
- 	if (typeof(attach) == "undefined") {
-		attach = false;
-	}
-
-	// Images are embedded by default, other files attached
-	if (file.type.indexOf('image/') == -1) {
-		attach = true;
-	}
-
-	// Show loader
-	if (attach) {
-		var attachment_html = '<li class="atachment-upload-'+attachment_dummy_id+'"><img src="'+Vars.public_url+'/img/loader-tiny.gif" width="16" height="16"/> <a href="#" class="break-words disabled" target="_blank">'+file.name+'<span class="ellipsis">…</span> </a> <span class="text-help">('+formatBytes(file.size)+')</span> <i class="glyphicon glyphicon-remove" data-attachment-id="'+attachment_dummy_id+'"></i></li>';
-		attachments_container.children('ul:first').append(attachment_html);
-
-		// Delete attachment
-		$('li.atachment-upload-'+attachment_dummy_id+' .glyphicon-remove:first').click(function(e) {
-			removeAttachment($(this).attr('data-attachment-id'));
-		});
-
-		attachments_container.show();
-	} else {
-		loaderShow();
-	}
-
-	data = new FormData();
-	data.append("file", file);
-	if (attach) {
-		data.append("attach", 1);
-	} else {
-		data.append("attach", 0);
-	}
-	upload_in_progress = true;
-	$.ajax({
-		url: laroute.route(route),
-		data: data,
-		cache: false,
-		contentType: false,
-		processData: false,
-		type: 'POST',
-		success: function(response){
-			if (typeof(response.url) == "undefined" || !response.url) {
-				msg = Lang.get("messages.error_occurred");
-				if (typeof(response.msg) != "undefined" && response.msg) {
-					msg = response.msg;
-				}
-				showFloatingAlert('error', msg);
-				loaderHide();
-				removeAttachment(attachment_dummy_id);
-				upload_in_progress = false;
-				return;
-			}
-			// Finish loading
-			if (attach) {
-				$('li.atachment-upload-'+attachment_dummy_id+':first').addClass('attachment-loaded');
-				$('li.atachment-upload-'+attachment_dummy_id+':first a').removeClass('disabled').attr('href', response.url);
-			} else {
-				loaderHide();
-			}
-			if (typeof(response.status) == "undefined" || response.status != "success") {
-				showAjaxError(response);
-				removeAttachment(attachment_dummy_id);
-				upload_in_progress = false;
-				return;
-			}
-			if (attach) {
-				fs_reply_changed = true;
-
-				if (typeof(response.attachment_id) == "undefined" && typeof(response.url) != "undefined" && response.url) {
-					// Insert link to uploaded file into the editor
-					editorInsert(editor_id, '<a href="'+response.url+'">'+htmlEscape(file.name)+'</a>');
-				}
-			} else {
-				// Embed image
-				if (typeof(insert) == "function") {
-					insert(response.url, file.name);
-				} else {
-					editorInsert(editor_id, '<img src="'+response.url+'" alt="'+htmlEscape(file.name)+'">');
-				}
-			}
-			if (typeof(response.attachment_id) != "undefined" || response.attachment_id) {
-				var input_html = '<input type="hidden" name="attachments_all[]" value="'+response.attachment_id+'" />';
-				input_html += '<input type="hidden" name="attachments[]" value="'+response.attachment_id+'" class="atachment-upload-'+attachment_dummy_id+'" />';
-				if (!attach) {
-					input_html += '<input type="hidden" name="embeds[]" value="'+response.attachment_id+'" class="atachment-upload-'+attachment_dummy_id+'" />';
-				}
-				attachments_container.prepend(input_html);
-			}
-			upload_in_progress = false;
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-			if (attach) {
-				removeAttachment(attachment_dummy_id);
-			} else {
-				loaderHide();
-			}
-			showFloatingAlert('error', Lang.get("messages.error_occurred")+' Error '+jqXHR.status+'. '+errorThrown);
-			upload_in_progress = false;
-		}
-	});
-}
-
-function removeAttachment(attachment_id)
-{
-	$('.atachment-upload-'+$.escapeSelector(attachment_id)).remove();
-	//attachment.parent().parent().children(":input[value='"+attachment_id+"']");
-}
-
 
 function formatBytes(size)
 {
@@ -894,278 +358,6 @@ function formatBytes(size)
     } else {
         return size;
     }
-}
-
-// New conversation page
-function initNewConversation(is_phone)
-{
-    $(document).ready(function() {
-    	if (typeof(is_phone) != "undefined") {
-        	switchToNewPhoneConversation();
-        }
-	    $('#toggle-email').click(function(e) {
-			$('#field-to_email').show();
-			$(this).hide();
-			e.preventDefault();
-		});
-		$('#email-conv-switch').click(function() {
-			switchToNewEmailConversation();
-		});
-		$('#phone-conv-switch').click(function() {
-			switchToNewPhoneConversation();
-		});
-		// Delete attachments
-		$('li.attachment-loaded .glyphicon-remove').click(function(e) {
-			removeAttachment($(this).attr('data-attachment-id'));
-		});
-    });
-}
-
-// To, Cc, Bcc selector
-function initRecipientSelector(custom_options, selector)
-{
-	var options = {
-		editable: true,
-		use_id: false,
-		containerCssClass: 'select2-recipient',
-		//selectOnClose: true,
-		// For hidden inputs
-		width: '100%'
-	};
-
-	if (typeof(custom_options) == "undefined") {
-		custom_options = {};
-	}
-
-	$.extend(options, custom_options);
-
-	if (typeof(selector) == "undefined") {
-		selector = $('.recipient-select:visible:not(.select2-hidden-accessible)');
-	}
-
-	var result = initCustomerSelector(selector, options);
-
-	result = fsApplyFilter('conversation.recipient_selector', result, {selector:selector});
-
-	if (options.editable) {
-		result.on('select2:closing', function(e) {
-			var params = e.params;
-			var select = $(e.target);
-
-			var value = select.next('.select2:first').children().find('.select2-search__field:first').val();
-			value = value.trim();
-			if (!value) {
-				return;
-			}
-
-			// Don't allow to create a tag if there is no @ symbol
-			if (typeof(custom_options.allow_non_emails) == "undefined") {
-			    if (!/^.+@.+$/.test(value)) {
-					// Return null to disable tag creation
-					return null;
-			    }
-			}
-
-			// Don't select an item if the close event was triggered from a select or
-			// unselect event
-		    if (params && params.args && params.args.originalSelect2Event != null) {
-				var event = params.args.originalSelect2Event;
-
-				if (event._type === 'select' || event._type === 'unselect') {
-					return;
-				}
-		    }
-
-			var data = select.select2('data');
-
-			// Check if select already has such option
-		    for (i in data) {
-		    	if (data[i].id == value) {
-		    		return;
-		    	}
-		    }
-
-		    addSelect2Option(select, {
-		        id: value,
-		        text: value,
-		        selected: true
-		    });
-		});
-	}
-
-	fsDoAction('conversation.recipient_selector_initialized', {selector:selector});
-
-	return result;
-}
-
-function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
-{
-	$(document).ready(function() {
-
-		convEditorInit();
-		if (typeof(load_attachments) != "undefined") {
-			loadAttachments();
-		}
-
-		// Customer selector
-		if (typeof(init_customer_selector) != "undefined") {
-			initRecipientSelector();
-		}
-
-		// New conversation
-		if (typeof(is_new_conv) != "undefined") {
-			$('#to').on('select2:closing', function(e) {
-				var select = $(e.target);
-				if (select.val().length > 1) {
-					$('#multiple-conversations-wrap').removeClass('hidden');
-				} else {
-					$('#multiple-conversations-wrap').addClass('hidden');
-				}
-			});
-		}
-
-		// Show CC
-	    $('#toggle-cc').click(function(e) {
-			$('.field-cc').removeClass('hidden');
-			$(this).parent().remove();
-			initRecipientSelector();
-			e.preventDefault();
-		});
-
-		// CMD+Enter (Mac) sends the reply — mirrors Ctrl+Enter on non-Mac.
-		// metaKey is explicitly skipped in the chat-mode Enter handler, so this
-		// separate handler is needed for regular reply/note forms.
-		// https://github.com/freescout-help-desk/freescout/issues/4425
-		$(document).on('keydown.cmd-enter-send', function(e) {
-			if (!(e.metaKey || e.ctrlKey) || e.which != 13 || e.altKey || e.shiftKey) {
-				return;
-			}
-			if (isChatMode() || $('.modal:visible').length) {
-				return;
-			}
-			if (!$(':focus').closest('.f-editor').length) {
-				return;
-			}
-			var button = $('.form-reply:visible .btn-reply-submit:first');
-			if (button.length) {
-				e.preventDefault();
-				button.click();
-			}
-		});
-
-		// Send reply, new conversation or note
-	    // Send with a status from the menu: that status, then send.
-	    $(".dropdown-send-status [data-send-status]").click(function(e) {
-	    	e.preventDefault();
-	    	$(this).closest('#editor_bottom_toolbar').find('select[name="status"]:first').val($(this).attr('data-send-status'));
-	    	updateSendButtonLabel();
-	    	$(this).closest('.btn-group-send').find('.btn-reply-submit:visible:first').click();
-	    });
-	    $('#editor_bottom_toolbar select[name="status"]').change(function(e) {
-	    	updateSendButtonLabel();
-	    });
-	    updateSendButtonLabel();
-
-	    $(".btn-reply-submit").click(function(e) {
-
-			// Wait till all files uploaded.
-			if (upload_in_progress) {
-				return;
-			}
-
-	    	// This is extra protection from double click on Send button
-	    	// DOM operation are slow sometimes
-	    	if (fs_processing_send_reply) {
-	    		return;
-	    	}
-
-	    	fs_processing_send_reply = true;
-
-	    	var button = $(this);
-			var editor = $('#body');
-
-	    	// Validate before sending
-	    	form = $(".form-reply:first");
-
-			// Visually empty content (e.g. <p></p>) counts as empty (issue #4590).
-			if (editor.length && !$.trim(editor.val().replace(/<(?!img\b)[^>]+>/gi, '').replace(/&nbsp;/gi, ''))) {
-				editor.val('');
-			}
-
-	    	if (!form.parsley().validate()) {
-	    		fs_processing_send_reply = false;
-	    		return;
-	    	}
-
-	    	// If draft is being sent, we need to wait and send reply after draft has been saved.
-	    	if (fs_processing_save_draft) {
-	    		fs_send_reply_after_draft = true;
-	    		return;
-	    	}
-
-	    	if (!fsApplyFilter('conversation.can_submit', true, {trigger: button, form: form})) {
-	    		fs_processing_send_reply = false;
-	    		return;
-	    	}
-
-	    	// For previous filter
-	    	if (!fs_send_reply_allowed) {
-	    		fs_processing_send_reply = false;
-	    		return;
-	    	}
-
-			data = form.serialize();
-	    	data += '&action=send_reply';
-
-	    	button.button('loading');
-	    	var is_note = isNote();
-	    	var is_chat = isChatMode();
-	    	var disable_editor = isChatMode() && !is_note;
-	    	if (disable_editor) {
-	    		editor.prop('readonly', true);
-	    	}
-
-			fsAjax(data, laroute.route('conversations.ajax'), function(response) {
-					if (typeof(response.status) != "undefined" && response.status == 'success') {
-						// Forget note
-						if (is_note) {
-							fs_autosave_note = false;
-							forgetNote(getGlobalAttr('conversation_id'));
-						}
-						if (typeof(response.redirect_url) != "undefined" && !is_chat) {
-							window.location.href = response.redirect_url;
-						} else {
-							window.location.href = '';
-						}
-					} else {
-						showAjaxError(response);
-						button.button('reset');
-						if (disable_editor) {
-							editor.prop('readonly', false);
-						}
-					}
-					loaderHide();
-					fs_processing_send_reply = false;
-				},
-				true,
-				function() {
-					showFloatingAlert('error', Lang.get("messages.ajax_error"));
-					loaderHide();
-					button.button('reset');
-					if (disable_editor) {
-						$('#body').prop('readonly', false);
-					}
-					fs_processing_send_reply = false;
-				});
-
-			e.preventDefault();
-		});
-
-	    $('#conv-subject .switch-to-note').click(function(e) {
-			switchToNote();
-			e.preventDefault();
-		});
-	});
 }
 
 // AI Assistant reply drafts in a conversation.
@@ -1653,116 +845,6 @@ function isAjaxSuccess(response)
 	} else {
 		return false;
 	}
-}
-
-// Initialize customer select2
-function initCustomerSelector(input, custom_options)
-{
-	var use_id = true;
-
-	if (typeof(custom_options.use_id) != "undefined") {
-		use_id = custom_options.use_id;
-		if (!use_id) {
-			use_id = null;
-		}
-	}
-
-	var search_by = 'all';
-	if (typeof(custom_options.search_by) != "undefined") {
-		search_by = custom_options.search_by;
-	}
-
-	var show_fields = 'all';
-	if (typeof(custom_options.show_fields) != "undefined") {
-		show_fields = custom_options.show_fields;
-	}
-
-	var allow_non_emails = null;
-	if (typeof(custom_options.allow_non_emails) != "undefined") {
-		allow_non_emails = true;
-	}
-
-	var options = {
-		ajax: {
-			url: laroute.route('customers.ajax_search'),
-			dataType: 'json',
-			delay: 250,
-			cache: true,
-			data: function (params) {
-				return {
-					q: params.term,
-					exclude_email: input.attr('data-customer_email'),
-					use_id: use_id,
-					search_by: search_by,
-					show_fields: show_fields,
-					allow_non_emails: allow_non_emails,
-					page: params.page
-				};
-			}/*,
-			beforeSend: function(){
-		    	showSelect2Loader(input);
-		    },
-		    complete: function(){
-		    	hideSelect2Loader(input);
-		    }*/
-		},
-		containerCssClass: "select2-multi-container", // select2-with-loader
- 		dropdownCssClass: "select2-multi-dropdown",
-		minimumInputLength: 2
-	};
-	// When placeholder is set on invisible input, it breaks input
-	// todo: fix this
-	if (input.length == 1 && input.is(':visible')) {
-		options.placeholder = input.attr('placeholder');
-	}
-	if (typeof(custom_options.editable) != "undefined" && custom_options.editable) {
-		var token_separators = [",", ", ", " "];
-		if (typeof(custom_options.maximumSelectionLength) != "undefined" && custom_options.maximumSelectionLength == 1) {
-			token_separators = [];
-		}
-		$.extend(options, {
-			multiple: true,
-			tags: true,
-			tokenSeparators: token_separators,
-			createTag: function (params) {
-				// Don't allow to create a tag if there is no @ symbol
-				if (typeof(custom_options.allow_non_emails) == "undefined") {
-				    if (!/^.+@.+$/.test(params.term)) {
-						// Return null to disable tag creation
-						return null;
-				    }
-				}
-			    // Check if select already has such option
-			    var data = this.select2('data');
-			    for (i in data) {
-			    	if (data[i].id == params.term) {
-			    		return null;
-			    	}
-			    }
-			    return {
-					id: params.term,
-					text: params.term,
-					newOption: true
-			    }
-			}.bind(input),
-			templateResult: function (data) {
-			    var $result = $("<span></span>");
-
-			    $result.text(data.text);
-
-			    if (data.newOption) {
-			     	$result.append(" <em>("+Lang.get("messages.add_lower")+")</em>");
-			    }
-
-			    return $result;
-			}
-		});
-	}
-	if (typeof(custom_options) != 'undefined') {
-		$.extend(options, custom_options);
-	}
-
-	return input.select2(options);
 }
 
 // Show confirmation dialog
@@ -2401,134 +1483,12 @@ function maybeShowConnectionRestored()
 	fs_connection_errors = 0;
 }
 
-function isNewConversation()
-{
-	if ($('#conv-layout-main .thread:first').length == 0) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
 /**
  * Save draft automatically, on reply change or on click.
  * Validation is not needed.
  */
-function saveDraft(reload_page, no_loader, do_not_save_empty)
-{
-	if (!reload_page && fs_processing_save_draft) {
-		return;
-	}
-	// User clicked Send Reply button
-	if (fs_processing_send_reply) {
-		return;
-	}
-
-	fs_processing_save_draft = true;
-
-	// Do not autosave draft if reply form has been closed
-	var form = $(".form-reply:visible:first");
-	if (!form || !form.length) {
-		finishSaveDraft();
-		return;
-	}
-
-	// Do not auto-save draft is there is no thread_id, body and attachments.
-	if (typeof(do_not_save_empty) != "undefined") {
-		if (!$('.form-reply:visible:first :input[name="thread_id"]:first').val() 
-			&& !$('#body').val()
-			&& !$('.form-reply:visible:first .thread-attachments li.attachment-loaded:first').length
-			&& !$('#to').val()
-		) {
-			fs_processing_save_draft = false;
-			return;
-		}
-	}
-
-	var button = form.find('.note-btn-save-draft:first');
-	// Are we saving a draft of a new conversation
-	var new_conversation = isNewConversation();
-
-	if (typeof(no_loader) == "undefined") {
-		no_loader = false;
-	}
-
-	// Do not save unchanged draft
-	// When replying click on Save draft always reloads conversation
-	if ((new_conversation || !reload_page) && !fs_reply_changed) {
-		fs_processing_save_draft = false;
-		return;
-	}
-
-	// Make save draft button green when user clicks on it.
-	if (reload_page) {
-		button.addClass('text-success');
-	}
-
-	data = form.serialize();
-	data += '&action=save_draft';
-
-	fsAjax(data, laroute.route('conversations.ajax'), function(response) {
-		if (typeof(response.status) != "undefined" && response.status == 'success') {
-			if (reload_page && !new_conversation) {
-				// Reload the conversation
-				window.location.href = '';
-			} else {
-				button.addClass('text-success');
-				fs_reply_changed = false;
-				// Show Saved
-				var saved_text = form.find('.draft-saved:first');
-				if (!saved_text.length || !saved_text.is(':visible')) {
-					if (!saved_text.length) {
-						saved_text = $('<span class="draft-saved">'+Lang.get("messages.saved")+'</span>');
-						saved_text.insertBefore(button);
-					} else {
-						saved_text.show();
-					}
-
-					setTimeout(function() {
-						saved_text.fadeOut(1000);
-				    }, 4000);
-				}
-				// If conversation returned, set conversation info
-				if (typeof(response.conversation_id) != "undefined" && response.conversation_id) {
-					form.children(':input[name="conversation_id"][value=""]').val(response.conversation_id);
-					form.children(':input[name="thread_id"]').val(response.thread_id);
-					form.children(':input[name="customer_id"]').val(response.customer_id);
-					$('.conv-new-number:first').text(response.number);
-					$('body:first').attr('data-conversation_id', response.conversation_id);
-
-					// Set URL if this is a new conversation
-					if (new_conversation) {
-						setUrl(laroute.route('conversations.view', {id: response.conversation_id}));
-					}
-				}
-			}
-		} else {
-			showAjaxError(response);
-		}
-		loaderHide();
-		finishSaveDraft();
-	},
-	no_loader,
-	function() {
-		showFloatingAlert('error', Lang.get("messages.ajax_error"));
-		loaderHide();
-		finishSaveDraft();
-	});
-}
-
 // If draft is being sent and user clicks Send reply,
 // we need to wait and send reply after draft has been saved.
-function finishSaveDraft()
-{
-	fs_processing_save_draft = false;
-	if (fs_send_reply_after_draft) {
-		fs_processing_send_reply = false;
-		$(".btn-reply-submit:first").button('reset').click();
-	}
-}
-
 function setUrl(url)
 {
 	if (window.history && typeof(window.history.replaceState) != "undefined") {
@@ -2544,218 +1504,6 @@ function setUrl(url)
 function goBack()
 {
 	window.history.go(-1);
-}
-
-// Show forward conversation form
-function forwardConversation(e)
-{
-	var reply_block = $(".conv-reply-block");
-
-	// We don't allow to switch, as it creates multiple drafts
-	if (!reply_block.hasClass('hidden')) {
-		return false;
-	}
-
-	prepareReplyForm();
-	showReplyForm();
-	showForwardForm({}, reply_block);
-
-	// Load attachments
-	loadAttachments(true);
-}
-
-// Load attachments for the draft of a new conversation or draft of the forward
-function loadAttachments(is_forwarding)
-{
-	var attachments_container = $(".attachments-upload:first");
-	var conversation_id = getGlobalAttr('conversation_id');
-
-	if (typeof(is_forwarding) == "undefined") {
-		is_forwarding = false;
-	}
-
-	if (!attachments_container.hasClass('forward-attachments-loaded') && conversation_id) {
-		fsAjax({
-				action: 'load_attachments',
-				conversation_id: conversation_id,
-				is_forwarding: is_forwarding
-			},
-			laroute.route('conversations.ajax'),
-			function(response) {
-				if (typeof(response.status) != "undefined" && response.status == 'success'
-					&& typeof(response.data) != "undefined"
-				) {
-					attachments_container.addClass('forward-attachments-loaded');
-					showAttachments(response.data);
-					// Auto save draft to avoid multiplying attachments
-					if (is_forwarding) {
-						saveDraft(false, true);
-					}
-				} else {
-					// Do nothing
-					//showAjaxError(response);
-				}
-			}, true
-		);
-	}
-}
-
-// Turn reply form into forward form.
-function showForwardForm(data, reply_block)
-{
-	if (typeof(reply_block) == "undefined" || !reply_block) {
-		reply_block = $(".conv-reply-block:first");
-	}
-	reply_block.children().find(":input[name='subtype']:first").val(Vars.subtype_forward);
-	reply_block.children().find(":input[name='to']:first").addClass('hidden');
-	reply_block.children().find("#cc").val('').trigger('change');
-	reply_block.children().find("#bcc").val('').trigger('change');
-	reply_block.children().find(":input[name='to_email[]']:first").removeClass('hidden').removeClass('parsley-exclude').next('.select2:first').show();
-	reply_block.addClass('inactive');
-	reply_block.addClass('conv-forward-block');
-	$(".conv-actions .conv-reply:first").addClass('inactive');
-
-	if (data && typeof(data.to) != "undefined") {
-		addSelect2Option($("#to_email"), {
-			id: data.to, text: data.to
-		});
-	} else {
-		$("#to_email").children('option:first').removeAttr('selected');
-	}
-
-	// Show recipient selector
-	initRecipientSelector({
-		//maximumSelectionLength: 1
-	}, $('#to_email:not(.select2-hidden-accessible)'));
-}
-
-// Edit draft
-function editDraft(button)
-{
-	var thread_container = button.parents('.thread:first');
-
-	fsAjax({
-			action: 'load_draft',
-			thread_id: thread_container.attr('data-thread_id')
-		},
-		laroute.route('conversations.ajax'),
-		function(response) {
-			loaderHide();
-			if (typeof(response.status) != "undefined" && response.status == 'success') {
-				//response.data.is_note = '';
-				showReplyForm(response.data, -50);
-				if (response.data.is_forward == '1') {
-					showForwardForm(response.data);
-				}
-				// Show all drafts
-				$('.thread.thread-type-draft').show();
-				// Hide current draft
-				thread_container.hide();
-				//$("html, body").animate({ scrollTop: $('.navbar:first').height() }, "slow");
-			} else {
-				showAjaxError(response);
-			}
-		}
-	);
-}
-
-// Discards:
-// - draft of an old reply
-// - current reply
-// - current note
-//
-// If thread_id is passed, it means we are discarding an old reply draft
-function discardDraft(thread_id)
-{
-	var confirm_html = '<div>'+
-		'<div class="text-center">'+
-		'<div class="text-larger margin-top-10">'+Lang.get("messages.confirm_discard_draft")+'</div>'+
-		'<div class="form-group margin-top">'+
-		'<button class="f-button f-button--primary discard-draft-confirm">'+Lang.get("messages.yes")+'</button>'+
-		'<button class="f-button f-button--ghost" data-dismiss="modal">'+Lang.get("messages.cancel")+'</button>'+
-		'</div>'+
-		'</div>'+
-		'</div>';
-
-	// Discard note
-	if (typeof(thread_id) == "undefined" && isNote() && !isNewConversation()) {
-		showModalDialog(confirm_html, {
-			on_show: function(modal) {
-				modal.children().find('.discard-draft-confirm:first').click(function(e) {
-					hideReplyEditor();
-					setReplyBody('');
-					forgetNote();
-					modal.modal('hide');
-					$('#conv-subject').removeClass('action-visible');
-				});
-			}
-		});
-		return;
-	}
-
-	if (typeof(thread_id) == "undefined" || !thread_id) {
-		thread_id = $('.form-reply :input[name="thread_id"]').val();
-	}
-
-	// We are creating a conversation from thread
-	var from_thread_id = '';
-	if (!thread_id && getQueryParam('from_thread_id')) {
-		from_thread_id = getQueryParam('from_thread_id');
-	}
-
-	showModalDialog(confirm_html, {
-		on_show: function(modal) {
-			modal.children().find('.discard-draft-confirm:first').click(function(e) {
-				fsAjax(
-					{
-						action: 'discard_draft',
-						thread_id: thread_id,
-						from_thread_id: from_thread_id
-					},
-					laroute.route('conversations.ajax'),
-					function(response) {
-						modal.modal('hide');
-						if (isAjaxSuccess(response)) {
-							if (typeof(response.redirect_url) != "undefined" && response.redirect_url) {
-								window.location.href = response.redirect_url;
-								return;
-							}
-							var thread_container = $('#thread-'+thread_id+':visible');
-							if (thread_container.length) {
-								// Remove draft from conversation
-								thread_container.remove();
-							} else {
-								// Hide editor
-								hideReplyEditor();
-								$("#to").val(
-									$("#to option:first").val()
-								);
-								$(".conv-reply-block :input[name='cc']:first").val('');
-								$(".conv-reply-block :input[name='bcc']:first").val('');
-								setReplyBody('');
-								$('#conv-subject').removeClass('action-visible');
-							}
-						} else {
-							showAjaxError(response);
-						}
-						loaderHide();
-					}
-				);
-			});
-		}
-	});
-}
-
-function hideReplyEditor()
-{
-	$(".conv-action-block").addClass('hidden');
-	$(".conv-action").removeClass('inactive');
-}
-
-function hideActionBlocks()
-{
-	$(".conv-action-block").addClass('hidden');
-	$("#conv-subject").removeClass('action-visible');
 }
 
 function getReplyBody()
@@ -2786,21 +1534,9 @@ function editorFocus(id)
 	}
 }
 
-// Files chosen with the reply editor's Attach button.
-function editorAttachFiles(files)
-{
-	for (var i = 0; i < files.length; i++) {
-		editorSendFile(files[i], true, true);
-	}
-}
-
 function setReplyBody(text)
 {
 	editorSetContent('body', text);
-	if (text == fs_body_default) {
-		text = '';
-	}
-	$(".conv-reply-block :input[name='body']:first").val(text);
 }
 
 
@@ -2837,110 +1573,6 @@ function getBrowser(){
         browser ="MSIE 8.0";
     }
     return browser;
-}
-
-function switchToNote()
-{
-	$(".conv-reply-block").addClass('hidden');
-	$('.conv-add-note:first').click();
-}
-
-function rememberNote()
-{
-	if (!fs_autosave_note) {
-		return;
-	}
-	
-	var conversation_id = getGlobalAttr('conversation_id');
-	if (!conversation_id) {
-		return;
-	}
-
-	var note = $('#body').val();
-	var note_plain = stripTags(note);
-
-	var conversation_notes = loadNotesFromStorage(conversation_id);
-
-	// Remove old items from browser storage
-	for (var i in conversation_notes) {
-		if (conversation_notes[i].time) {
-			if (conversation_notes[i].time < (new Date()).getTime() - fs_keep_conversation_notes*24*60*60*1000) {
-				delete conversation_notes[i];
-			}
-		}
-	}
-
-	if (!note || !note_plain.trim()) {
-		delete conversation_notes[conversation_id];
-	} else {
-		// Remember current note
-		conversation_notes[conversation_id] = {
-			note: note,
-			time: (new Date()).getTime()
-		};
-	}
-
-	saveNoteToStorage(conversation_notes);
-}
-
-function maybeShowStoredNote()
-{
-	var conversation_id = getGlobalAttr('conversation_id');
-	if (!conversation_id) {
-		return;
-	}
-	// Get stored note fom browser storage
-	var conversation_notes = loadNotesFromStorage(conversation_id);
-
-	if (conversation_notes) {
-		if (typeof(conversation_notes[conversation_id]) != 'undefined' &&
-			typeof(conversation_notes[conversation_id].note) != 'undefined' &&
-			conversation_notes[conversation_id].note.trim()
-		) {
-			setReplyBody(conversation_notes[conversation_id].note);
-			showNoteForm();
-		}
-	}
-}
-
-// Happens after Undo
-function maybeShowDraft()
-{
-	var thread_id = getQueryParam('show_draft');
-
-	if (!thread_id) {
-		return;
-	}
-
-	fsAjax({
-			action: 'load_draft',
-			thread_id: thread_id
-		},
-		laroute.route('conversations.ajax'),
-		function(response) {
-			loaderHide();
-			if (typeof(response.status) != "undefined" && response.status == 'success') {
-				//response.data.is_note = '';
-				showReplyForm(response.data);
-				if (response.data.is_forward == '1') {
-					showForwardForm(response.data);
-				}
-				$('#thread-'+thread_id).hide();
-			} else {
-				showAjaxError(response);
-			}
-		}
-	);
-}
-
-function forgetNote(conversation_id)
-{
-	var conversation_id = getGlobalAttr('conversation_id');
-	var conversation_notes = loadNotesFromStorage(conversation_id);
-	if (conversation_notes && typeof(conversation_notes[conversation_id]) != 'undefined') {
-		delete conversation_notes[conversation_id];
-		saveNoteToStorage(conversation_notes);
-	}
 }
 
 function saveNoteToStorage(conversation_notes)
@@ -3074,16 +1706,9 @@ function appScroller()
 // Is user replying to the conversation
 function getReplyFormMode()
 {
-	var block = $(".conv-reply-block");
-	if (block.hasClass('hidden')) {
-		return '';
-	} else if (block.hasClass('conv-forward-block')) {
-		return 'forward';
-	} else if (block.hasClass('conv-note-block')) {
-		return 'note';
-	} else {
-		return 'reply';
-	}
+	// The composer's (App\Livewire\ConversationComposer): reply, note, forward or nothing.
+	var composer = window.Livewire ? Livewire.getByName('conversation-composer')[0] : null;
+	return composer ? composer.mode : '';
 }
 
 // Get HTML of the person avatar
@@ -3278,20 +1903,6 @@ function fsApplyFilter(filter, value, params)
 	return value;
 }
 
-function maybeScrollToReplyBlock(offset)
-{
-	var reply_block = $('.conv-reply-block:visible:first');
-	var block_top = reply_block.position().top;
-	if (block_top > $(window).height() / 2
-		|| block_top < appScroller().scrollTop()
-	) {
-		if (typeof(offset) == "undefined") {
-			offset = -20;
-		}
-		scrollToElement(reply_block, '', null, offset);
-	}
-}
-
 function copyToClipboard(text) {
     var $temp = $("<input>");
     $("body").append($temp);
@@ -3334,73 +1945,6 @@ function getLocale()
 	return $('html:first').attr('lang');
 }
 
-function initMergeCustomers()
-{
-	$(document).ready(function(){
-		var input = $('#merge_customer2_id');
-		initCustomerSelector(input, {
-			placeholder: input.attr('placeholder'),
-			multiple: true,
-			maximumSelectionLength: 1,
-			ajax: {
-				url: laroute.route('customers.ajax_search'),
-				dataType: 'json',
-				delay: 250,
-				cache: true,
-				data: function (params) {
-					return {
-						q: params.term,
-						exclude_id: getGlobalAttr('customer_id'),
-						search_by: 'all',
-						use_id: true,
-						page: params.page
-					};
-				}
-			}
-		});
-	});
-}
-/**
- * Recipients that look like no-reply addresses get a warning below the field.
- */
-function initNoreplyWarnings()
-{
-	var info = $('#noreply-patterns');
-	if (!info.length) {
-		return;
-	}
-	var regexes = [];
-	$.each(JSON.parse(info.attr('data-regexes') || '[]'), function(i, source) {
-		try {
-			regexes.push(new RegExp(source, 'i'));
-		} catch (e) {}
-	});
-	var check = function(select) {
-		var values = select.val() || [];
-		if (!$.isArray(values)) {
-			values = [values];
-		}
-		var container = select.parent();
-		container.children('.noreply-alert').remove();
-		$.each(values, function(i, email) {
-			for (var j = 0; j < regexes.length; j++) {
-				if (email && regexes[j].test(email)) {
-					container.append($('<div class="alert alert-warning alert-narrow margin-bottom-0 noreply-alert"></div>')
-						.html(htmlEscape(info.attr('data-message')).replace(':email', '<strong>'+htmlEscape(email)+'</strong>')));
-					break;
-				}
-			}
-		});
-	};
-	var selects = 'select[name="to"], select[name="to[]"], select[name="to_email[]"], select[name="cc[]"], select[name="bcc[]"], input[name="to_email"]';
-	$(document).on('change', selects, function() {
-		check($(this));
-	});
-	$(selects).each(function() {
-		check($(this));
-	});
-}
-
 /**
  * Images from other servers: shown for a message (in place) or always for a
  * customer; hidden again for a customer.
@@ -3428,14 +1972,139 @@ $(document).on('click', '.external-images-show, .external-images-block', functio
 	);
 });
 
-// The Send button says which status it sends with: "Send & Close".
-function updateSendButtonLabel()
+// A customer search field (select2): the search filter, merging customers.
+function initCustomerSelector(input, custom_options)
 {
-	$('#editor_bottom_toolbar .btn-send-text').each(function() {
-		var toolbar = $(this).closest('#editor_bottom_toolbar');
-		var link = toolbar.find('.dropdown-send-status a[data-send-status="'+toolbar.find('select[name="status"]:first').val()+'"]:first');
-		if (link.length) {
-			$(this).text(link.attr('data-label'));
+	var use_id = true;
+
+	if (typeof(custom_options.use_id) != "undefined") {
+		use_id = custom_options.use_id;
+		if (!use_id) {
+			use_id = null;
 		}
+	}
+
+	var search_by = 'all';
+	if (typeof(custom_options.search_by) != "undefined") {
+		search_by = custom_options.search_by;
+	}
+
+	var show_fields = 'all';
+	if (typeof(custom_options.show_fields) != "undefined") {
+		show_fields = custom_options.show_fields;
+	}
+
+	var allow_non_emails = null;
+	if (typeof(custom_options.allow_non_emails) != "undefined") {
+		allow_non_emails = true;
+	}
+
+	var options = {
+		ajax: {
+			url: laroute.route('customers.ajax_search'),
+			dataType: 'json',
+			delay: 250,
+			cache: true,
+			data: function (params) {
+				return {
+					q: params.term,
+					exclude_email: input.attr('data-customer_email'),
+					use_id: use_id,
+					search_by: search_by,
+					show_fields: show_fields,
+					allow_non_emails: allow_non_emails,
+					page: params.page
+				};
+			}/*,
+			beforeSend: function(){
+		    	showSelect2Loader(input);
+		    },
+		    complete: function(){
+		    	hideSelect2Loader(input);
+		    }*/
+		},
+		containerCssClass: "select2-multi-container", // select2-with-loader
+ 		dropdownCssClass: "select2-multi-dropdown",
+		minimumInputLength: 2
+	};
+	// When placeholder is set on invisible input, it breaks input
+	// todo: fix this
+	if (input.length == 1 && input.is(':visible')) {
+		options.placeholder = input.attr('placeholder');
+	}
+	if (typeof(custom_options.editable) != "undefined" && custom_options.editable) {
+		var token_separators = [",", ", ", " "];
+		if (typeof(custom_options.maximumSelectionLength) != "undefined" && custom_options.maximumSelectionLength == 1) {
+			token_separators = [];
+		}
+		$.extend(options, {
+			multiple: true,
+			tags: true,
+			tokenSeparators: token_separators,
+			createTag: function (params) {
+				// Don't allow to create a tag if there is no @ symbol
+				if (typeof(custom_options.allow_non_emails) == "undefined") {
+				    if (!/^.+@.+$/.test(params.term)) {
+						// Return null to disable tag creation
+						return null;
+				    }
+				}
+			    // Check if select already has such option
+			    var data = this.select2('data');
+			    for (i in data) {
+			    	if (data[i].id == params.term) {
+			    		return null;
+			    	}
+			    }
+			    return {
+					id: params.term,
+					text: params.term,
+					newOption: true
+			    }
+			}.bind(input),
+			templateResult: function (data) {
+			    var $result = $("<span></span>");
+
+			    $result.text(data.text);
+
+			    if (data.newOption) {
+			     	$result.append(" <em>("+Lang.get("messages.add_lower")+")</em>");
+			    }
+
+			    return $result;
+			}
+		});
+	}
+	if (typeof(custom_options) != 'undefined') {
+		$.extend(options, custom_options);
+	}
+
+	return input.select2(options);
+}
+
+function initMergeCustomers()
+{
+	$(document).ready(function(){
+		var input = $('#merge_customer2_id');
+		initCustomerSelector(input, {
+			placeholder: input.attr('placeholder'),
+			multiple: true,
+			maximumSelectionLength: 1,
+			ajax: {
+				url: laroute.route('customers.ajax_search'),
+				dataType: 'json',
+				delay: 250,
+				cache: true,
+				data: function (params) {
+					return {
+						q: params.term,
+						exclude_id: getGlobalAttr('customer_id'),
+						search_by: 'all',
+						use_id: true,
+						page: params.page
+					};
+				}
+			}
+		});
 	});
 }

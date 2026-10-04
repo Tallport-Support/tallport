@@ -127,9 +127,8 @@
         "name": "assignee_list.item_append",
         "arguments": 1,
         "files": [
-            "resources/views/conversations/editor_bottom_toolbar.blade.php",
             "resources/views/conversations/partials/bulk_actions.blade.php",
-            "resources/views/livewire/conversation-composer.blade.php",
+            "resources/views/conversations/partials/composer_footer.blade.php",
             "resources/views/livewire/conversation-toolbar.blade.php"
         ]
     },
@@ -138,8 +137,7 @@
         "name": "assignee_list.option_attrs",
         "arguments": 1,
         "files": [
-            "resources/views/conversations/editor_bottom_toolbar.blade.php",
-            "resources/views/livewire/conversation-composer.blade.php"
+            "resources/views/conversations/partials/composer_footer.blade.php"
         ]
     },
     {
@@ -270,8 +268,7 @@
         "name": "conv_editor.editor_toolbar_prepend",
         "arguments": 2,
         "files": [
-            "resources/views/conversations/editor_bottom_toolbar.blade.php",
-            "resources/views/livewire/conversation-composer.blade.php"
+            "resources/views/conversations/partials/composer_footer.blade.php"
         ]
     },
     {
@@ -335,8 +332,7 @@
         "name": "conversation.append_send_dropdown",
         "arguments": 3,
         "files": [
-            "resources/views/conversations/editor_bottom_toolbar.blade.php",
-            "resources/views/livewire/conversation-composer.blade.php"
+            "resources/views/conversations/partials/composer_footer.blade.php"
         ]
     },
     {
@@ -376,7 +372,7 @@
         "name": "conversation.create_form.after_subject",
         "arguments": 3,
         "files": [
-            "resources/views/conversations/create.blade.php"
+            "resources/views/livewire/new-conversation.blade.php"
         ]
     },
     {
@@ -384,7 +380,7 @@
         "name": "conversation.create_form.before_subject",
         "arguments": 3,
         "files": [
-            "resources/views/conversations/create.blade.php"
+            "resources/views/livewire/new-conversation.blade.php"
         ]
     },
     {
@@ -392,7 +388,7 @@
         "name": "conversation.create_form.subject_append",
         "arguments": 0,
         "files": [
-            "resources/views/conversations/create.blade.php"
+            "resources/views/livewire/new-conversation.blade.php"
         ]
     },
     {
@@ -485,8 +481,7 @@
         "name": "conversation.editor_extras",
         "arguments": 2,
         "files": [
-            "resources/views/conversations/partials/editor_extras.blade.php",
-            "resources/views/livewire/conversation-composer.blade.php"
+            "resources/views/conversations/partials/composer_editor.blade.php"
         ]
     },
     {
@@ -551,7 +546,7 @@
         "name": "conversation.new.conv_switch_buttons",
         "arguments": 0,
         "files": [
-            "resources/views/conversations/create.blade.php"
+            "resources/views/livewire/new-conversation.blade.php"
         ]
     },
     {
@@ -559,7 +554,7 @@
         "name": "conversation.new.customer_sidebar",
         "arguments": 2,
         "files": [
-            "resources/views/conversations/create.blade.php"
+            "resources/views/livewire/new-conversation.blade.php"
         ]
     },
     {
@@ -594,8 +589,7 @@
         "name": "conversation.prepend_send_dropdown",
         "arguments": 3,
         "files": [
-            "resources/views/conversations/editor_bottom_toolbar.blade.php",
-            "resources/views/livewire/conversation-composer.blade.php"
+            "resources/views/conversations/partials/composer_footer.blade.php"
         ]
     },
     {

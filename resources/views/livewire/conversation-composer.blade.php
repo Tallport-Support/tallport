@@ -61,113 +61,18 @@
                     </x-fruit::alert>
                 @endif
 
-                @if (collect($attachments)->where('embed', false)->count())
-                    <ul class="conv-composer__attachments">
-                        @foreach ($attachments as $attachment)
-                            @if (empty($attachment['embed']))
-                                <li class="attachment-loaded" wire:key="attachment-{{ md5($attachment['id']) }}">
-                                    <a href="{{ $attachment['url'] }}" target="_blank">{{ $attachment['name'] }}</a>
-                                    <span class="f-muted">({{ \Helper::humanFileSize($attachment['size']) }})</span>
-                                    <button type="button" class="f-button f-button--ghost f-button--icon f-button--small" wire:click="removeAttachment(@js($attachment['id']))" aria-label="{{ __('Remove') }}: {{ $attachment['name'] }}" title="{{ __('Remove') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button>
-                                </li>
-                            @endif
-                        @endforeach
-                    </ul>
-                @endif
-                <ul class="conv-composer__uploading" x-show="uploading.length" x-cloak>
-                    <template x-for="name in uploading"><li><x-fruit::spinner /> <span x-text="name"></span></li></template>
-                </ul>
-
-                <div class="conv-reply-body" wire:ignore>
-                    <x-editor id="body" rows="8" :paste="$conversation->isChat() ? 'plain' : 'rich'" :upload-url="route('conversations.upload')" :aria-label="__('Message')" :placeholder="$is_chat ? __('Use ENTER to send the message and SHIFT+ENTER for a new line') : null">
-                        {{ $body }}
-                        <x-slot:extras>
-                            <span class="editor-attach">
-                                <button type="button" class="f-button f-button--ghost f-button--icon" aria-label="{{ __('Upload Attachments') }}" title="{{ __('Upload Attachments') }}" x-on:click="$refs.files.click()"><x-heroicon-o-paper-clip class="f-icon" aria-hidden="true" /></button>
-                                <input type="file" multiple hidden x-ref="files" x-on:change="upload($el.files); $el.value = ''">
-                            </span>
-                            @include('conversations/partials/editor_pickers')
-                            @if (!$conversation->isChat())
-                                <button type="button" class="f-button f-button--ghost f-button--icon" x-data="editorPlainPaste" x-on:click="toggle()" x-bind:aria-pressed="plain ? 'true' : 'false'" aria-pressed="false" aria-label="{{ __('Paste as Plain Text') }}" title="{{ __('Paste as Plain Text') }}"><x-heroicon-o-clipboard-document class="f-icon" aria-hidden="true" /></button>
-                            @endif
-                            @action('conversation.editor_extras', $conversation, $mailbox)
-                            <span class="f-toolbar__spacer"></span>
-                            <span class="draft-saved f-footnote f-muted" x-show="saved" x-transition.opacity x-cloak role="status">{{ __('Saved') }}</span>
-                            @if ($mode != 'note')
-                                <button type="button" class="f-button f-button--ghost f-button--icon note-btn-save-draft" aria-label="{{ __('Save Draft') }}" title="{{ __('Save Draft') }}" x-on:click="save(true)"><x-heroicon-o-check class="f-icon" aria-hidden="true" /></button>
-                            @endif
-                            <button type="button" class="f-button f-button--ghost f-button--icon note-btn-discard" aria-label="{{ __('Discard') }}" title="{{ __('Discard') }}" x-on:click="discard()"><x-heroicon-o-trash class="f-icon" aria-hidden="true" /></button>
-                        </x-slot:extras>
-                    </x-editor>
-                </div>
+                @include('conversations/partials/composer_editor', ['plain' => $conversation->isChat(), 'placeholder' => $is_chat ? __('Use ENTER to send the message and SHIFT+ENTER for a new line') : null, 'draft_button' => $mode != 'note'])
 
                 @if ($mode != 'note' && $mailbox->signature && !$is_chat)
                     <div id="editor_signature" class="conv-composer__signature f-prose">{!! safe_raw_html($conversation->getSignatureProcessed([], true)) !!}</div>
                 @endif
 
-                <div id="editor_bottom_toolbar" class="f-composer__footer conv-composer__footer">
-                    @action('conv_editor.editor_toolbar_prepend', $mailbox, $conversation)
-                    <label class="conv-composer__field"><span class="editor-btm-text">{{ __('Status') }}</span>
-                        <select name="status" class="f-input" wire:model.live="status">
-                            @foreach (App\Conversation::getStatusesWithNames([App\Conversation::STATUS_SPAM]) as $status_id => $status_name)
-                                <option value="{{ $status_id }}">{{ $status_name }}</option>
-                            @endforeach
-                        </select>
-                    </label>
-                    <label class="conv-composer__field"><span class="editor-btm-text">{{ __('Assign to') }}</span>
-                        <select name="user_id" class="f-input" wire:model="user_id">
-                            <option value="-1">{{ __('Anyone') }}</option>
-                            <option value="{{ Auth::user()->id }}">{{ __('Me') }}</option>
-                            @foreach ($mailbox->usersAssignable() as $user)
-                                @if ($user->id != Auth::user()->id)
-                                    <option value="{{ $user->id }}" @action('assignee_list.option_attrs', $user)>{{ $user->getFullName() }}@action('assignee_list.item_append', $user)</option>
-                                @endif
-                            @endforeach
-                        </select>
-                    </label>
-
-                    <span id="saved-replies-data" class="hidden"
-                        data-items="{{ json_encode(App\SavedReply::forEditor($mailbox, Auth::user())) }}"
-                        data-mailbox_id="{{ $mailbox->id }}"
-                        data-can-save="{{ (int) App\SavedReply::canManage(Auth::user(), $mailbox) }}"
-                        data-template="{{ (int) (bool) App\SavedReply::template($mailbox->id) }}"
-                        data-new="0"
-                        data-title="{{ __('Saved Replies') }}"
-                        data-search="{{ __('Search') }}…"
-                        data-empty="{{ __('No saved replies yet.') }}"
-                        data-save="{{ __('Save as saved reply') }}"
-                        data-name="{{ __('Name') }}"
-                        data-save-button="{{ __('Save') }}"></span>
-                    <span id="kb-data" class="hidden"
-                        data-items="{{ json_encode(App\Http\Controllers\KnowledgeBaseController::forEditor($mailbox->id)) }}"
-                        data-title="{{ __('Knowledge Base') }}"
-                        data-search="{{ __('Search') }}…"
-                        data-empty="{{ __('No articles yet.') }}"></span>
-
-                    <span class="f-toolbar__spacer"></span>
-                    <div class="f-button-group btn-group-send">
-                        <button type="submit" class="f-button f-button--primary btn-reply-submit" wire:loading.attr="disabled" wire:target="send">@if ($mode == 'note'){{ __('Add Note') }}@elseif ($mode == 'forward'){{ __('Forward') }}@else{{ $send_labels[$status][0] ?? __('Send Reply') }}@endif</button>
-                        <x-fruit::menu :title="__('More send options')" class="dropdown-send-status">
-                            <x-slot:trigger class="f-button--primary f-button--icon" :aria-label="__('More send options')"><span class="f-menu__chevron" aria-hidden="true"></span></x-slot:trigger>
-                            <ul class="menu-module-items">@action('conversation.prepend_send_dropdown', $conversation, $mailbox, false)</ul>
-                            @foreach ($send_labels as $send_status => $labels)
-                                <x-fruit::menu-link href="#" :data-send-status="$send_status" x-on:click.prevent="submit({{ $send_status }})">{{ $labels[$label_index] }}</x-fruit::menu-link>
-                            @endforeach
-                            <ul class="menu-module-items">@action('conversation.append_send_dropdown', $conversation, $mailbox, false)</ul>
-                            @if (!$conversation->isChat() && $mode != 'note')
-                                {{-- How much of the conversation the email quotes. --}}
-                                <x-fruit::menu-separator />
-                                <x-fruit::menu-group :label="__('Conversation History')" class="conv-history">
-                                    @foreach (App\Conversation::$email_history_codes as $history_code)
-                                        @if ($mode != 'forward' || !in_array($history_code, ['global', 'none']))
-                                            <x-fruit::menu-radio :checked="($conv_history ?: 'global') == $history_code" wire:click="$set('conv_history', '{{ $history_code }}')">{{ App\Conversation::getEmailHistoryName($history_code) }}</x-fruit::menu-radio>
-                                        @endif
-                                    @endforeach
-                                </x-fruit::menu-group>
-                            @endif
-                        </x-fruit::menu>
-                    </div>
-                </div>
+                @include('conversations/partials/composer_footer', [
+                    'send_label'      => $mode == 'note' ? __('Add Note') : ($mode == 'forward' ? __('Forward') : ($send_labels[$status][0] ?? __('Send Reply'))),
+                    'send_menu'       => array_map(fn ($labels) => $labels[$label_index], $send_labels),
+                    'history'         => !$conversation->isChat() && $mode != 'note',
+                    'history_exclude' => $mode == 'forward' ? ['global', 'none'] : [],
+                ])
             </x-fruit::composer>
         </div>
     @endif

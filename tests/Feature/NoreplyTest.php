@@ -56,9 +56,11 @@ class NoreplyTest extends FeatureTestCase
         // The reply composer warns about the address.
         Livewire::actingAs($agent)->test(\App\Livewire\ConversationComposer::class, ['conversation' => $conversation])->call('open', 'reply')
             ->assertSee('<strong>no-reply@shop.example</strong> looks like an address that does not read replies.', false);
-        $this->actingAs($agent)->get('/mailbox/'.$mailbox->id.'/new-ticket')
-            ->assertSee('id="noreply-patterns"', false)
-            ->assertSee(e(json_encode(Noreply::regexes())), false);
+        $new = new Conversation();
+        $new->mailbox = $mailbox;
+        Livewire::actingAs($agent)->test(\App\Livewire\NewConversation::class, ['conversation' => $new, 'mailbox' => $mailbox])
+            ->set('to', 'no-reply@shop.example')
+            ->assertSee('<strong>no-reply@shop.example</strong> looks like an address that does not read replies.', false);
 
         // Mail Settings also write the environment file: a temporary one.
         $env_dir = sys_get_temp_dir().'/tallport-env-'.uniqid();
