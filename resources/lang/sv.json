@@ -1467,5 +1467,7 @@
     "Sections": "Avsnitt",
     "More": "Mer",
     "Group by": "Gruppera efter",
-    "Sort by": "Sortera efter"
+    "Sort by": "Sortera efter",
+    "No conversation selected": "Ingen konversation vald",
+    "Choose a conversation from the list.": "Välj en konversation i listan."
 }

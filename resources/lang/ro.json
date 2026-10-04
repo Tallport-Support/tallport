@@ -1466,5 +1466,7 @@
     "Sections": "Secțiuni",
     "More": "Mai multe",
     "Group by": "Grupează după",
-    "Sort by": "Sortează după"
+    "Sort by": "Sortează după",
+    "No conversation selected": "Nicio conversație selectată",
+    "Choose a conversation from the list.": "Alegeți o conversație din listă."
 }

@@ -1467,5 +1467,7 @@
     "Sections": "Разделы",
     "More": "Ещё",
     "Group by": "Группировать по",
-    "Sort by": "Сортировать по"
+    "Sort by": "Сортировать по",
+    "No conversation selected": "Разговор не выбран",
+    "Choose a conversation from the list.": "Выберите разговор из списка."
 }

@@ -1467,5 +1467,7 @@
     "Sections": "Bölmələr",
     "More": "Daha çox",
     "Group by": "Qruplaşdır",
-    "Sort by": "Sırala"
+    "Sort by": "Sırala",
+    "No conversation selected": "Söhbət seçilməyib",
+    "Choose a conversation from the list.": "Siyahıdan söhbət seçin."
 }

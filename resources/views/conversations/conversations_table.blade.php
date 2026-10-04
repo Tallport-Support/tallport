@@ -51,8 +51,12 @@
         $sort_titles = ['date' => $column_title_date, 'number' => __("Number"), 'subject' => __("Conversation")];
         $sort_by = array_key_exists($sorting['sort_by'], $sort_titles) ? $sorting['sort_by'] : 'date';
         $sort_order = $sorting['order'] ?: 'asc';
+        // Rows open conversations on the list's page (split view).
+        $list_params = (method_exists($conversations, 'currentPage') && $conversations->currentPage() > 1) ? ['list_page' => $conversations->currentPage()] : [];
+        $list_mailbox_id = $folder->id < 0 ? $folder->id : $folder->mailbox_id;
+        $current_conversation_id = $params['current_conversation_id'] ?? null;
     @endphp
-    <section class="table-conversations conv-list @if (!empty($params['show_mailbox']))show-mailbox @endif" aria-label="{{ __('Conversations') }}" data-page="{{ (int)request()->get('page', 1) }}" @foreach ($params as $param_name => $param_value) data-param_{{ $param_name }}="{{ $param_value }}" @endforeach @if (!empty($conversations_filter)) @foreach ($conversations_filter as $filter_field => $filter_value) data-filter_{{ $filter_field }}="{{ $filter_value }}" @endforeach @endif @foreach ($sorting as $sorting_name => $sorting_value) data-sorting_{{ $sorting_name }}="{{ $sorting_value }}" @endforeach >
+    <section class="table-conversations conv-list @if (!empty($params['show_mailbox']))show-mailbox @endif" aria-label="{{ __('Conversations') }}" data-page="{{ method_exists($conversations, 'currentPage') ? $conversations->currentPage() : (int) request()->get('page', 1) }}" @if ($folder->id) data-folder_id="{{ $folder->id }}" data-mailbox_id="{{ $list_mailbox_id }}" @endif @foreach ($params as $param_name => $param_value) data-param_{{ $param_name }}="{{ $param_value }}" @endforeach @if (!empty($conversations_filter)) @foreach ($conversations_filter as $filter_field => $filter_value) data-filter_{{ $filter_field }}="{{ $filter_value }}" @endforeach @endif @foreach ($sorting as $sorting_name => $sorting_value) data-sorting_{{ $sorting_name }}="{{ $sorting_value }}" @endforeach >
         @if (empty($no_checkboxes))
             @include('/conversations/partials/bulk_actions')
         @endif
@@ -87,7 +91,7 @@
                     @if (empty($no_checkboxes))
                         <input type="checkbox" class="f-check conv-checkbox" id="cb-{{ $conversation->id }}" name="cb_{{ $conversation->id }}" value="{{ $conversation->id }}" aria-label="{{ __('Select Conversation') }}: {{ $conversation->getSubject() }}">
                     @endif
-                    <a href="{{ $conversation->url() }}" class="f-item-row conv-row__link" @if ($conv_target) target="_blank" @endif>
+                    <a href="{{ $conversation->url(null, null, $list_params) }}" class="f-item-row conv-row__link" @if ($conv_target) target="_blank" @endif @if ($current_conversation_id == $conversation->id) aria-current="true" @endif>
                         <span class="f-item-row__top">
                             <strong class="f-item-row__title" title="{{ $conversation->customer_email }}">@if (empty($no_customer)){{ $conv_customer_name }}@else{{ $conversation->getSubject() }}@endif</strong>
                             <span class="f-item-row__time" @if ($conv_date_title) title="{{ strip_tags(str_replace('<br/>', ' ', $conv_date_title)) }}" @endif>{{ $conv_waiting_since }}</span>

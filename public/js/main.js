@@ -3232,8 +3232,8 @@ function loadConversations(page, table, no_loader)
 	fsAjax(
 		{
 			action: 'conversations_pagination',
-			mailbox_id: getGlobalAttr('mailbox_id'),
-			folder_id: getGlobalAttr('folder_id'),
+			mailbox_id: table.attr('data-mailbox_id') || getGlobalAttr('mailbox_id'),
+			folder_id: table.attr('data-folder_id') || getGlobalAttr('folder_id'),
 			filter: filter,
 			params: params,
 			page: page,
@@ -4245,7 +4245,8 @@ function polycastInit()
     				}
     			}
     			// The list of this mailbox, or of All Mailboxes.
-    			if ((mailbox_id == folders_mailbox_id || parseInt(mailbox_id) < 0)
+    			var list_mailbox_id = $(".table-conversations:first").attr('data-mailbox_id') || mailbox_id;
+    			if ((list_mailbox_id == folders_mailbox_id || parseInt(list_mailbox_id) < 0)
     				&& $(".table-conversations:first").length && !getSelectedConversations().length
     			) {
     				loadConversations('', '', true);
@@ -5194,12 +5195,8 @@ function starConversationInit()
 {
 	$('.conv-star').click(function(event) {
 		var trigger = $(this);
-		var conversation_id = getGlobalAttr('conversation_id');
-
-		if (!conversation_id) {
-			// In the list
-			conversation_id = trigger.parents('.conv-row:first').attr('data-conversation_id');
-		}
+		// In the list, or the open conversation.
+		var conversation_id = trigger.parents('.conv-row:first').attr('data-conversation_id') || getGlobalAttr('conversation_id');
 		if (!conversation_id) {
 			// Something went wrong
 			return false;

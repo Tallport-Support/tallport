@@ -370,7 +370,14 @@ class ConversationsController extends Controller
             }
         }
 
+        // The folder's conversations beside the conversation (split view).
+        $list = null;
+        if ($template == 'conversations/view' && !$request->input('print') && !$conversation->isInChatMode()) {
+            $list = $this->folderList($folder, $user, $request->input('list_page'));
+        }
+
         return view($template, [
+            'list'               => $list,
             'conversation'       => $conversation,
             'mailbox'            => $conversation->mailbox,
             'customer'           => $customer,
@@ -392,6 +399,28 @@ class ConversationsController extends Controller
             'from_aliases'       => $from_aliases,
             'from_alias'         => $from_alias,
         ]);
+    }
+
+    /**
+     * A folder's conversations, for the list beside an open conversation.
+     */
+    private function folderList($folder, $user, $page)
+    {
+        if ($folder->id < 0) {
+            $query = \App\Misc\AllMailboxes::query($folder, $user);
+            $mailbox = \App\Misc\AllMailboxes::mailbox();
+            $params = ['show_mailbox' => true];
+        } else {
+            $query = Conversation::getQueryByFolder($folder, $user->id);
+            $mailbox = $folder->mailbox;
+            $params = [];
+        }
+
+        return [
+            'conversations' => $folder->queryAddOrderBy($query)->paginate(Conversation::DEFAULT_LIST_SIZE, ['*'], 'page', $page),
+            'mailbox'       => $mailbox,
+            'params'        => $params,
+        ];
     }
 
     /**

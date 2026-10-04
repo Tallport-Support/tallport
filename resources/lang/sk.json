@@ -1466,5 +1466,7 @@
     "Sections": "Sekcie",
     "More": "Viac",
     "Group by": "Zoskupiť podľa",
-    "Sort by": "Zoradiť podľa"
+    "Sort by": "Zoradiť podľa",
+    "No conversation selected": "Nie je vybraná žiadna konverzácia",
+    "Choose a conversation from the list.": "Vyberte konverzáciu zo zoznamu."
 }

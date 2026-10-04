@@ -1467,5 +1467,7 @@
     "Sections": "Odjeljci",
     "More": "Više",
     "Group by": "Grupiraj po",
-    "Sort by": "Poredaj po"
+    "Sort by": "Poredaj po",
+    "No conversation selected": "Nije odabran razgovor",
+    "Choose a conversation from the list.": "Odaberite razgovor s popisa."
 }

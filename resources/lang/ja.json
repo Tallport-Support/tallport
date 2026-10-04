@@ -1467,5 +1467,7 @@
     "Sections": "セクション",
     "More": "その他",
     "Group by": "グループ化",
-    "Sort by": "並べ替え"
+    "Sort by": "並べ替え",
+    "No conversation selected": "会話が選択されていません",
+    "Choose a conversation from the list.": "一覧から会話を選択してください。"
 }

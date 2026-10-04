@@ -1468,5 +1468,7 @@
     "Sections": "Secciones",
     "More": "Más",
     "Group by": "Agrupar por",
-    "Sort by": "Ordenar por"
+    "Sort by": "Ordenar por",
+    "No conversation selected": "Ninguna conversación seleccionada",
+    "Choose a conversation from the list.": "Elija una conversación de la lista."
 }

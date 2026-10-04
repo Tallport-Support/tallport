@@ -1485,5 +1485,7 @@
     "Sections": "Osiot",
     "More": "Lisää",
     "Group by": "Ryhmittely",
-    "Sort by": "Lajitteluperuste"
+    "Sort by": "Lajitteluperuste",
+    "No conversation selected": "Keskustelua ei ole valittu",
+    "Choose a conversation from the list.": "Valitse keskustelu luettelosta."
 }

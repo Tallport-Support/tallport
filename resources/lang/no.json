@@ -1471,5 +1471,7 @@
     "Sections": "Seksjoner",
     "More": "Mer",
     "Group by": "Grupper etter",
-    "Sort by": "Sorter etter"
+    "Sort by": "Sorter etter",
+    "No conversation selected": "Ingen samtale valgt",
+    "Choose a conversation from the list.": "Velg en samtale fra listen."
 }

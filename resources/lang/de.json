@@ -1460,5 +1460,7 @@
     "Sections": "Abschnitte",
     "More": "Mehr",
     "Group by": "Gruppieren nach",
-    "Sort by": "Sortieren nach"
+    "Sort by": "Sortieren nach",
+    "No conversation selected": "Keine Konversation ausgewählt",
+    "Choose a conversation from the list.": "Wählen Sie eine Konversation aus der Liste."
 }

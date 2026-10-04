@@ -1466,5 +1466,7 @@
     "Sections": "Razdelki",
     "More": "Več",
     "Group by": "Združi po",
-    "Sort by": "Razvrsti po"
+    "Sort by": "Razvrsti po",
+    "No conversation selected": "Ni izbranega pogovora",
+    "Choose a conversation from the list.": "Izberite pogovor s seznama."
 }

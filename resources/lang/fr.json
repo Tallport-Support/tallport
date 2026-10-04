@@ -1476,5 +1476,7 @@
     "Sections": "Sections",
     "More": "Plus",
     "Group by": "Regrouper par",
-    "Sort by": "Trier par"
+    "Sort by": "Trier par",
+    "No conversation selected": "Aucune conversation sélectionnée",
+    "Choose a conversation from the list.": "Choisissez une conversation dans la liste."
 }

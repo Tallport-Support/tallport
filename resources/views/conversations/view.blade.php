@@ -14,6 +14,14 @@
 
 @section('body_attrs')@parent data-conversation_id="{{ $conversation->id }}"@endsection
 
+@if (!empty($list))
+    {{-- The folder's conversations beside the conversation. --}}
+    @section('split_class', 'split-view--open')
+    @section('list')
+        @include('conversations/conversations_table', ['conversations' => $list['conversations'], 'mailbox' => $list['mailbox'], 'params' => $list['params'] + ['current_conversation_id' => $conversation->id]])
+    @endsection
+@endif
+
 @if ($is_in_chat_mode)
     {{-- The chats beside the conversation. --}}
     @section('aside')

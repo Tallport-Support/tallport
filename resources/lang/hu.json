@@ -1467,5 +1467,7 @@
     "Sections": "Szakaszok",
     "More": "Továbbiak",
     "Group by": "Csoportosítás",
-    "Sort by": "Rendezés"
+    "Sort by": "Rendezés",
+    "No conversation selected": "Nincs kiválasztott beszélgetés",
+    "Choose a conversation from the list.": "Válasszon egy beszélgetést a listából."
 }

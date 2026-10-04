@@ -1568,5 +1568,7 @@
     "Sections": "Seccions",
     "More": "Més",
     "Group by": "Agrupa per",
-    "Sort by": "Ordena per"
+    "Sort by": "Ordena per",
+    "No conversation selected": "Cap conversa seleccionada",
+    "Choose a conversation from the list.": "Tria una conversa de la llista."
 }

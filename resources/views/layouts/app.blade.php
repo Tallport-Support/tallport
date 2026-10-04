@@ -60,7 +60,19 @@
                         <div class="alert alert-danger">{{ $browser_check['msg'] }}</div>
                     @endif
                     @yield('sidebar')
-                    @if ($__env->yieldContent('aside'))
+                    @if ($__env->yieldContent('list'))
+                        {{-- Split view: a conversation list beside the open conversation (or an empty state). --}}
+                        <div class="split-view @yield('split_class')">
+                            <div class="fruit-ui split-view__list">
+                                @yield('list')
+                            </div>
+                            <div class="split-view__detail">
+                                <div class="content @yield('content_class')">
+                                    @yield('content')
+                                </div>
+                            </div>
+                        </div>
+                    @elseif ($__env->yieldContent('aside'))
                         <div class="layout-2col">
                             <div class="sidebar-2col">
                                 @yield('aside')

@@ -1468,5 +1468,7 @@
     "Sections": "分区",
     "More": "更多",
     "Group by": "分组方式",
-    "Sort by": "排序方式"
+    "Sort by": "排序方式",
+    "No conversation selected": "未选择对话",
+    "Choose a conversation from the list.": "从列表中选择一个对话。"
 }

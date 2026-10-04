@@ -5483,3 +5483,47 @@ a.disabled:focus {
     pointer-events: none;
     opacity: 0.45;
 }
+/* Split view: the conversation list beside the open conversation. The page
+   scrolls as before (the conversation's scripts rely on it); the list stays. */
+.split-view {
+    display: flex;
+    align-items: flex-start;
+}
+.split-view__list {
+    position: sticky;
+    top: 0;
+    flex: 0 0 var(--split-view-list-width, 380px);
+    height: 100vh;
+    min-width: 0;
+    overflow-y: auto;
+    border-inline-end: 1px solid var(--f-border);
+    background: var(--f-surface);
+}
+.split-view__detail {
+    flex: 1;
+    min-width: 0;
+}
+.split-view__detail > .content {
+    margin-top: 0;
+}
+.split-view__header {
+    padding-bottom: 8px;
+}
+.split-view__empty {
+    margin-top: 20vh;
+}
+.split-view__list .conv-list__toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    background: var(--f-surface);
+}
+@media (max-width: 1100px) {
+    .split-view--open .split-view__list,
+    .split-view:not(.split-view--open) .split-view__detail {
+        display: none;
+    }
+    .split-view:not(.split-view--open) .split-view__list {
+        flex: 1;
+    }
+}

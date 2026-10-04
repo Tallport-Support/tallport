@@ -1467,5 +1467,7 @@
     "Sections": "Bölümler",
     "More": "Daha fazla",
     "Group by": "Grupla",
-    "Sort by": "Sırala"
+    "Sort by": "Sırala",
+    "No conversation selected": "Konuşma seçilmedi",
+    "Choose a conversation from the list.": "Listeden bir konuşma seçin."
 }

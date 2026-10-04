@@ -10,31 +10,33 @@
 @endif
 
 
-@section('sidebar')
-    {{-- The folder and its mailbox. --}}
-    <x-page-nav>
-        <x-slot:title><h1>{{ $folder->getTypeName() }}</h1><small class="f-muted">@include('mailboxes/partials/mute_icon', ['mailbox' => $mailbox]){{ $mailbox->name }}</small></x-slot:title>
-    </x-page-nav>
-@endsection
+@section('main_class', 'fruit-ui')
 
-@section('content')
+@section('list')
+    {{-- The folder and its mailbox. --}}
+    <x-page-nav class="split-view__header">
+        <x-slot:title><h1>{{ $folder->getTypeName() }}</h1><small class="f-muted">@include('mailboxes/partials/mute_icon', ['mailbox' => $mailbox]){{ $mailbox->name }}</small></x-slot:title>
+        <x-slot:actions>
+            @if (($folder->type == App\Folder::TYPE_DELETED || $folder->type == App\Folder::TYPE_SPAM) && $folder->total_count)
+                <a href="#" class="f-button f-button--small f-button--danger mailbox-empty-folder">@if ($folder->type == App\Folder::TYPE_DELETED){{ __('Empty Trash') }}@else{{ __('Delete All') }}@endif</a>
+            @endif
+        </x-slot:actions>
+    </x-page-nav>
     <div class="alerts">
         @php
             $flashes = \Helper::maybeShowSendingProblemsAlert();
         @endphp
         @include('partials/flash_messages')
     </div>
-    @if ($folder->type == App\Folder::TYPE_DELETED && $folder->total_count)
-        <div class="section-heading mailbox-toolbar">
-	        <a href="#" class="btn btn-primary mailbox-empty-folder">{{ __('Empty Trash') }}</a>
-	    </div>
-    @endif
-    @if ($folder->type == App\Folder::TYPE_SPAM && $folder->total_count)
-        <div class="section-heading mailbox-toolbar">
-            <a href="#" class="btn btn-primary mailbox-empty-folder">{{ __('Delete All') }}</a>
-        </div>
-    @endif
     @include('conversations/conversations_table')
+@endsection
+
+@section('content')
+    <x-fruit::empty-state class="split-view__empty">
+        <x-slot:icon><x-heroicon-o-envelope-open /></x-slot:icon>
+        <x-slot:title>{{ __('No conversation selected') }}</x-slot:title>
+        {{ __('Choose a conversation from the list.') }}
+    </x-fruit::empty-state>
 @endsection
 
 @section('javascript')

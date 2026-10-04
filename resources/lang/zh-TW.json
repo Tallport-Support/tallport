@@ -1518,5 +1518,7 @@
     "Navigation": "導覽",
     "Sections": "區段",
     "More": "更多",
-    "Group by": "分組方式"
+    "Group by": "分組方式",
+    "No conversation selected": "未選擇對話",
+    "Choose a conversation from the list.": "從清單中選擇一個對話。"
 }
