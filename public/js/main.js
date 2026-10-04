@@ -1324,8 +1324,8 @@ function initConversation()
 			'<div class="text-center">'+
 			'<div class="text-larger margin-top-10">'+Lang.get("messages.confirm_delete_conversation")+'</div>'+
 			'<div class="form-group margin-top">'+
-    		'<button class="btn btn-primary delete-conversation-ok">'+Lang.get("messages.delete")+'</button>'+
-    		'<button class="btn btn-link" data-dismiss="modal">'+Lang.get("messages.cancel")+'</button>'+
+    		'<button class="f-button f-button--danger delete-conversation-ok">'+Lang.get("messages.delete")+'</button>'+
+    		'<button class="f-button f-button--ghost" data-dismiss="modal">'+Lang.get("messages.cancel")+'</button>'+
     		'</div>'+
     		'</div>'+
     		'</div>';
@@ -2740,7 +2740,7 @@ function notificationsInit()
 							'<div class="text-center">'+
 							'<div class="text-larger margin-top-10">'+Lang.get("messages.push_protocol_alert")+'</div>'+
 							'<div class="form-group margin-top">'+
-				    		'<button class="btn btn-primary reset-password-ok" data-dismiss="modal">OK</button>'+
+				    		'<button class="f-button f-button--primary reset-password-ok" data-dismiss="modal">OK</button>'+
 			        		'</div>'+
 			        		'</div>'+
 			        		'</div>';
@@ -2965,12 +2965,12 @@ function triggerModal(a, params)
         '<div class="modal-dialog '+modal_class+'">',
             '<div class="modal-content">',
                 '<div class="modal-header '+(params.no_header == 'true' ? 'hidden' : '')+'">',
-                    '<button type="button" class="close" data-dismiss="modal" aria-label="'+Lang.get("messages.close")+'"><span>&times;</span></button>',
+                    '<button type="button" class="f-button f-button--ghost f-button--icon f-button--small modal-close" data-dismiss="modal" aria-label="'+Lang.get("messages.close")+'"><svg class="f-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg></button>',
                     '<h3 class="modal-title" id="jsmodal-label">'+htmlEscape(title)+'</h3>',
                 '</div>',
                 '<div class="modal-body '+(fit == 'true' ? 'modal-body-fit' : '')+'"><div class="text-center modal-loader"><img src="'+Vars.public_url+loader+'" width="31" height="31"/></div></div>',
                 '<div class="modal-footer '+(params.no_footer == 'true' ? 'hidden' : '')+'">',
-                    (params.no_close_btn == 'true' ? '': '<button type="button" class="btn btn-default" data-dismiss="modal">'+Lang.get("messages.close")+'</button>'),
+                    (params.no_close_btn == 'true' ? '': '<button type="button" class="f-button" data-dismiss="modal">'+Lang.get("messages.close")+'</button>'),
                     footer,
                 '</div>',
             '</div>',
@@ -3363,8 +3363,8 @@ function changeCustomerInit()
 				'<div class="text-center">'+
 				'<div class="text-larger margin-top-10">'+Lang.get("messages.confirm_change_customer", {customer_email: data.id})+'</div>'+
 				'<div class="form-group margin-top">'+
-        		'<button class="btn btn-primary change-customer-ok" data-customer_email='+data.id+'>OK</button>'+
-        		'<button class="btn btn-link" data-dismiss="modal">'+Lang.get("messages.cancel")+'</button>'+
+        		'<button class="f-button f-button--primary change-customer-ok" data-customer_email='+data.id+'>OK</button>'+
+        		'<button class="f-button f-button--ghost" data-dismiss="modal">'+Lang.get("messages.cancel")+'</button>'+
         		'</div>'+
         		'</div>'+
         		'</div>';
@@ -3752,8 +3752,8 @@ function showModalConfirm(text, ok_class, options, ok_text)
 		'<div class="text-center">'+
 		'<div class="text-larger margin-top-10">'+text+'</div>'+
 		'<div class="form-group margin-top">'+
-		'<button class="btn btn-primary '+ok_class+'">'+ok_text+'</button>'+
-		'<button class="btn btn-link" data-dismiss="modal">'+Lang.get("messages.cancel")+'</button>'+
+		'<button class="f-button f-button--primary '+ok_class+'">'+ok_text+'</button>'+
+		'<button class="f-button f-button--ghost" data-dismiss="modal">'+Lang.get("messages.cancel")+'</button>'+
 		'</div>'+
 		'</div>'+
 		'</div>';
@@ -3836,8 +3836,8 @@ function userProfileInit()
 			'<div class="text-center">'+
 			'<div class="text-larger margin-top-10">'+Lang.get("messages.confirm_reset_password")+'</div>'+
 			'<div class="form-group margin-top">'+
-    		'<button class="btn btn-primary reset-password-ok">OK</button>'+
-    		'<button class="btn btn-link" data-dismiss="modal">'+Lang.get("messages.cancel")+'</button>'+
+    		'<button class="f-button f-button--primary reset-password-ok">OK</button>'+
+    		'<button class="f-button f-button--ghost" data-dismiss="modal">'+Lang.get("messages.cancel")+'</button>'+
     		'</div>'+
     		'</div>'+
     		'</div>';
@@ -3873,8 +3873,8 @@ function userProfileInit()
 			'<div class="text-center">'+
 			'<div class="text-larger margin-top-10">'+Lang.get("messages.confirm_delete_photo")+'</div>'+
 			'<div class="form-group margin-top">'+
-    		'<button class="btn btn-primary reset-password-ok">'+Lang.get("messages.delete")+'</button>'+
-    		'<button class="btn btn-link" data-dismiss="modal">'+Lang.get("messages.cancel")+'</button>'+
+    		'<button class="f-button f-button--danger reset-password-ok">'+Lang.get("messages.delete")+'</button>'+
+    		'<button class="f-button f-button--ghost" data-dismiss="modal">'+Lang.get("messages.cancel")+'</button>'+
     		'</div>'+
     		'</div>'+
     		'</div>';
@@ -4932,8 +4932,8 @@ function discardDraft(thread_id)
 		'<div class="text-center">'+
 		'<div class="text-larger margin-top-10">'+Lang.get("messages.confirm_discard_draft")+'</div>'+
 		'<div class="form-group margin-top">'+
-		'<button class="btn btn-primary discard-draft-confirm">'+Lang.get("messages.yes")+'</button>'+
-		'<button class="btn btn-link" data-dismiss="modal">'+Lang.get("messages.cancel")+'</button>'+
+		'<button class="f-button f-button--primary discard-draft-confirm">'+Lang.get("messages.yes")+'</button>'+
+		'<button class="f-button f-button--ghost" data-dismiss="modal">'+Lang.get("messages.cancel")+'</button>'+
 		'</div>'+
 		'</div>'+
 		'</div>';

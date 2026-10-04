@@ -3073,14 +3073,45 @@ ul.sidebar-block-list {
 /**
  * Modal
  */
+/* Bootstrap modals (bootstrap.js) drawn as FruitUI sheets. */
+.modal-content {
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-lg);
+    box-shadow: var(--f-shadow);
+}
 .modal-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 20px 8px;
+    border-bottom: 0;
     cursor: default;
+}
+.modal-title {
+    order: -1;
+    flex: 1;
+    font-size: var(--f-text-lg);
+    font-weight: 600;
+}
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 20px 16px;
+    border-top: 0;
+}
+.modal-backdrop {
+    background: var(--f-backdrop);
+}
+.modal-backdrop.in {
+    opacity: 1;
 }
 .modal .close {
     opacity: 0.7;
 }
 .modal-body {
     min-height: 115px;
+    padding: 8px 20px 16px;
 }
 .modal-loader img {
     position: absolute;
@@ -5516,4 +5547,12 @@ a.disabled:focus {
 }
 .split-view__list .flash-alert {
     margin: 0 12px 12px;
+}
+/* Confirmation dialogs (showModalConfirm and alike): Cancel, then the action. */
+.modal .text-center > .form-group {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 0;
 }

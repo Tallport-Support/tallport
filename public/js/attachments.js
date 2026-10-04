@@ -36,7 +36,7 @@ function attachmentViewerShow(li)
 	var viewer = $('#attachment-viewer');
 	if (!viewer.length) {
 		viewer = $('<div id="attachment-viewer"><div class="av-header"><span class="av-name"></span>'
-			+'<a class="btn btn-default btn-sm av-download" download><i class="glyphicon glyphicon-download-alt"></i></a>'
+			+'<a class="f-button f-button--small av-download" download><i class="glyphicon glyphicon-download-alt"></i></a>'
 			+'<a href="#" class="av-close">&times;</a></div>'
 			+'<a href="#" class="av-nav av-prev"><i class="glyphicon glyphicon-chevron-left"></i></a>'
 			+'<div class="av-content"></div>'

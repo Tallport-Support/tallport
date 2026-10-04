@@ -22,7 +22,7 @@ var SavedRepliesButton = function (context) {
 	if (data.attr('data-can-save') == '1') {
 		html += '<div class="sr-divider"></div><a href="#" class="sr-save-toggle">'+htmlEscape(data.attr('data-save'))+'…</a>'
 			+'<div class="sr-save-form hidden"><input type="text" class="form-control input-sm" maxlength="75" placeholder="'+htmlEscape(data.attr('data-name'))+'" />'
-			+'<button type="button" class="btn btn-primary btn-xs">'+htmlEscape(data.attr('data-save-button'))+'</button></div>';
+			+'<button type="button" class="f-button f-button--primary f-button--small">'+htmlEscape(data.attr('data-save-button'))+'</button></div>';
 	}
 
 	var button = ui.buttonGroup([
