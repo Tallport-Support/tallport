@@ -1254,18 +1254,7 @@ https://github.com/freescout-help-desk/freescout/issues/4354
 .menu-module-items:empty {
     display: none;
 }
-#conv-subject {
-    border-bottom: 1px solid var(--f-border, var(--f-border));
-}
-.conv-subj-block {
-    padding: 14px 20px;
-}
-.conv-following .conv-subjtext > span:before {
-    content: "🔔 ";
-    font-size: 15px;
-    position: relative;
-    top: -3px;
-}
+
 .conv-top-block {
     border-top: 1px solid var(--f-border);
     padding: 10px 20px;
@@ -1277,50 +1266,15 @@ https://github.com/freescout-help-desk/freescout/issues/4354
 .action-visible .conv-top-block + .conv-action-wrapper {
     border-top: 1px solid var(--f-border);
 }
-.conv-subjwrap {
-    padding-right: 145px;
-    position: relative;
-    /*overflow: hidden;*/
-    display: inline-block;
-    width: 100%;
-}
-.conv-subjtext {
-    float: left;
-    display: inline-block;
-    word-wrap: break-word;
-    margin-right: 8px;
-    width: 100%;
-    max-width: 100%;
-}
+
 .conv-subj-editor,
-.conv-subj-editing > span {
+.conv-subj-editing > h2 {
     display: none;
 }
 .conv-subj-editing .conv-subj-editor {
     display: flex;
 }
-.conv-numnav {
-    margin: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    gap: 2px;
-}
-.conv-numnav strong {
-    color: var(--f-text);
-    font-size: 18px;
-}
-#conv-viewers {
-    height: 20px;
-    margin: 0;
-    position: absolute;
-    right: 7px;
-    top: 31px;
-    max-width: 140px;
-    text-align: right;
-    line-height: 18px;
-    overflow: hidden;
-}
+
 /*#conv-viewers > span {
     display: inline-block;
 }*/
@@ -1378,153 +1332,6 @@ https://github.com/freescout-help-desk/freescout/issues/4354
     display: flex;
 }
 
-/* Threads: messages, replies, notes and line items, in FruitUI tokens. */
-.thread {
-    position: relative;
-    border-bottom: 1px solid var(--f-border);
-}
-.thread:last-child {
-    border-bottom: 0;
-}
-.thread a {
-    text-decoration: none;
-}
-.thread-content a,
-.thread-original a,
-.thread-body .f-alert a {
-    text-decoration: underline;
-    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
-}
-.thread-header {
-    display: flow-root;
-    min-height: 42px;
-    padding-inline-start: 72px;
-}
-.thread-message {
-    margin-inline-end: 24px;
-    padding: 22px 13px 20px 12px;
-}
-.thread-photo {
-    position: absolute;
-    padding: 18px 18px 25px 20px;
-}
-.thread-photo .person-photo {
-    width: 45px;
-    height: 45px;
-    padding: 2px;
-    border-radius: 50%;
-    background-color: var(--f-surface);
-    box-shadow: 0 0 0 1px var(--f-border);
-    /* for automatic photo */
-    line-height: 41px;
-}
-.thread-title {
-    float: left;
-    max-width: 68%;
-}
-.thread-person {
-    display: inline-block;
-    margin-bottom: 10px;
-    color: var(--f-secondary);
-    font-size: 17px;
-    line-height: 1.25;
-    overflow-wrap: anywhere;
-}
-.thread-person strong,
-.thread-person strong a {
-    color: var(--f-text);
-    font-size: 17px;
-    font-weight: 600;
-}
-.draft-actions {
-    display: inline-flex;
-    gap: 4px;
-    margin-bottom: 5px;
-}
-.thread-info {
-    float: right;
-    color: var(--f-tertiary);
-    font-size: var(--f-text-xs);
-    text-align: end;
-}
-.thread-date {
-    color: inherit;
-}
-.thread-date:hover {
-    color: var(--f-text);
-}
-/* Forwarded and phone threads: a folded corner. */
-.thread-badge {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 0;
-    border-top: 0 solid transparent;
-    border-bottom: 39px solid transparent;
-    border-left: 39px solid color-mix(in srgb, var(--f-warning) 35%, transparent);
-}
-.thread-badge .glyphicon {
-    position: relative;
-    top: 3px;
-    left: -34px;
-    color: var(--f-warning);
-}
-.thread-info-icon,
-.thread-to-first {
-    margin-inline-end: 1px;
-    color: var(--f-tertiary);
-}
-.thread-to-first .glyphicon {
-    top: 2px;
-}
-.thread-recipients {
-    clear: both;
-    margin: -6px 0 14px;
-    color: var(--f-tertiary);
-    font-size: var(--f-text-xs);
-    line-height: 1.3;
-}
-.thread-recipients strong {
-    color: var(--f-secondary);
-    font-weight: 600;
-}
-.thread-recipients .text-warning strong {
-    color: inherit;
-}
-.thread-recipients div {
-    margin-top: 2px;
-}
-.thread-body {
-    margin: 0 -18px 0 50px;
-    padding: 0 18px 0 22px;
-    overflow-y: hidden;
-    color: var(--f-text);
-    font-size: 15px;
-    line-height: 1.5;
-}
-.thread-body .f-alert {
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: 12px;
-}
-.thread-meta {
-    display: block;
-    margin: 15px 0 0;
-    color: var(--f-tertiary);
-    font-size: var(--f-text-xs);
-}
-.thread-meta .glyphicon {
-    margin-inline-end: 5px;
-}
-.thread-options {
-    position: absolute;
-    top: 16px;
-    right: 7px;
-}
-.thread-options .dropdown-toggle {
-    color: var(--f-tertiary);
-}
 .thread-type-new {
     height: 40px;
     background: color-mix(in srgb, var(--f-accent) 12%, transparent);
@@ -1537,49 +1344,7 @@ https://github.com/freescout-help-desk/freescout/issues/4354
 .thread-type-new .thread {
     display: none;
 }
-.thread-type-lineitem {
-    background: var(--f-surface-secondary);
-}
-.thread-type-lineitem .thread-options {
-    top: 4px;
-}
-.thread-type-lineitem .thread-message {
-    padding-top: 12px;
-    padding-bottom: 9px;
-    color: var(--f-secondary);
-    font-size: var(--f-text-xs);
-}
-.thread-type-lineitem .thread-header {
-    min-height: auto;
-}
-.thread-type-lineitem .thread-title a,
-.thread-meta a {
-    color: inherit;
-    font-weight: 600;
-}
-.thread-type-message {
-    background: color-mix(in srgb, var(--f-accent) 5%, transparent);
-}
-.thread-type-draft {
-    box-shadow: inset 4px 0 0 0 color-mix(in srgb, var(--f-accent) 45%, transparent);
-}
-.thread-type-note {
-    background: color-mix(in srgb, var(--f-warning) 10%, transparent);
-    box-shadow: inset 4px 0 0 0 color-mix(in srgb, var(--f-warning) 60%, transparent);
-}
-.thread-type-note .thread-person {
-    color: var(--f-warning);
-}
-.thread-type-message .thread-person,
-.thread-type-draft .thread-person {
-    color: var(--f-accent);
-}
-.thread-type-draft .thread-person {
-    margin-inline-end: 10px;
-}
-.thread-type-draft .thread-header {
-    padding-top: 2px;
-}
+
 .thread-attachments {
     position: relative;
 }
@@ -1832,16 +1597,12 @@ https://github.com/freescout-help-desk/freescout/issues/4354
     top: 2px;
 }
 
-
 .conv-star {
     cursor: pointer;
 }
 @media (max-width:700px) {
     
-    #conv-viewers {
-        max-width: 81px;
-        top: 26px;
-    }
+    
     .conv-info .btn-group button.conv-info-val span:first-child {
         display: none!important;
     }
@@ -1852,23 +1613,15 @@ https://github.com/freescout-help-desk/freescout/issues/4354
     .conv-actions .conv-action {
         padding: 18px 10px 9px;
     }
-    .conv-subjtext {
-        font-size: 20px;
-    }
-    .conv-subjwrap {
-        padding-right: 90px;
-    }
-    .conv-subj-block {
-        padding: 16px 2px 12px 13px;
-    }
+    
+    
+    
     .conv-top-block {
         padding: 10px 13px;
     }
     
     
-    .conv-numnav {
-        top: 0;
-    }
+    
     .conv-info .btn-group button.conv-info-val {
         padding-right: 17px;
     }
@@ -1884,26 +1637,12 @@ https://github.com/freescout-help-desk/freescout/issues/4354
     .conv-actions .conv-action {
         font-size: 17px;
     }
-    .thread-photo {
-        padding: 13px 15px 25px 12px;
-    }
     
-    .thread-message {
-        margin-right: 15px;
-        margin-left: 0;
-        padding-top: 17px;
-    }
-    .thread-header {
-        padding-left: 55px;
-        min-height: 53px;
-    }
-    .thread-type-draft .thread-header {
-        padding-left: 3px;
-    }
-    .thread-body {
-        margin-left: 0;
-        padding-left: 12px;
-    }
+    
+    
+    
+    
+    
     .thread-to-first,
     .thread-type {
         display: none;
@@ -1917,20 +1656,9 @@ https://github.com/freescout-help-desk/freescout/issues/4354
     .thread-info {
         max-width: 32%;
     }
-    .thread-options {
-        /*right: 0;*/
-        right: 2px;
-        top: 15px;
-    }
-    .thread-badge {
-        border-bottom: 31px solid transparent;
-        border-left: 31px solid;
-    }
-    .thread-badge .glyphicon {
-        left: -27px;
-        top: -1px;
-        font-size: 10px;
-    }
+    
+    
+    
     .conv-new-form {
         padding-top: 0;
     }
@@ -3764,11 +3492,7 @@ a.disabled:focus {
 .panel-group .panel {
     border-radius: 5px;
 }
-/* AI Assistant: summaries, translations, drafts */
-.thread-type-ai-summary {
-    background: color-mix(in srgb, var(--f-accent) 8%, transparent);
-    box-shadow: inset 4px 0 0 0 color-mix(in srgb, var(--f-accent) 55%, transparent);
-}
+
 .ai-assistant-summary-list {
     margin: 0;
     padding-left: 18px;
@@ -4902,4 +4626,99 @@ a.disabled:focus {
     display: inline-block;
     margin-bottom: 12px;
     font-size: var(--f-text-xs);
+}
+/* The thread, as in FruitUI's Support example (support-thread, support-entry,
+   support-message): FruitUI messages and events with the example's rhythm. */
+.conv-thread {
+    padding: 22px 26px 16px;
+}
+.conv-thread > .thread + .thread {
+    margin-top: 25px;
+}
+.conv-thread > .f-message-event + .thread,
+.conv-thread > .thread + .f-message-event {
+    margin-top: 14px;
+}
+.conv-thread .f-message-event {
+    --f-message-event-inset: 38px 0;
+}
+.conv-thread .f-message {
+    --f-message-gap: 9px;
+    --f-message-avatar-size: 29px;
+    --f-message-body-gap: 13px;
+}
+.conv-thread .f-message__author {
+    font-size: var(--f-text-xs);
+}
+.conv-thread :is(.f-message__meta, .f-message__time) {
+    font-size: var(--f-text-2xs);
+}
+.conv-thread .f-message__time {
+    padding-top: 3px;
+}
+.conv-thread .thread-content {
+    font-size: var(--f-text-sm);
+    line-height: 1.7;
+}
+/* The conversation's heading, as in FruitUI's Support example
+   (support-conversation-heading). */
+.conv-heading {
+    padding: 21px 26px 18px;
+    border-bottom: 1px solid var(--f-border);
+}
+.conv-heading__overline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-2xs);
+}
+.conv-heading__tools {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.conv-heading h2 {
+    margin: 0;
+    font-size: var(--f-text-3xl);
+    font-weight: 650;
+    letter-spacing: -0.5px;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+    cursor: text;
+}
+.conv-following .conv-subjtext > h2::before {
+    content: "🔔 ";
+    font-size: 0.6em;
+    vertical-align: middle;
+}
+.conv-heading p {
+    margin: 8px 0 0;
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+    overflow-wrap: anywhere;
+}
+.conv-heading__mailbox {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.conv-heading__mailbox .f-icon {
+    --f-icon-size: 14px;
+}
+#conv-viewers {
+    display: flex;
+    gap: 2px;
+}
+#conv-viewers .person-photo {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+/* Inside the workspace the panes space their content themselves. */
+.app-workspace .content {
+    margin-top: 0;
+    min-height: 0;
 }

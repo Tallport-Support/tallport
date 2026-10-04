@@ -765,8 +765,38 @@ function M() {
 	};
 }
 //#endregion
+//#region src/js/editor-content.js
+var N = Symbol.for("fruitui.editor");
+function P(e, t, { insert: n, set: r, commit: i }) {
+	let a = new AbortController(), o = (e) => {
+		let { html: a = "", target: o } = e.detail ?? {};
+		(e.currentTarget !== window || o === t.id || o === t.name) && (t.matches(":disabled") || t.readOnly || ((e.type === "fruit-editor-set" ? r : n)(String(a)), i()));
+	};
+	for (let t of ["fruit-editor-insert", "fruit-editor-set"]) e.addEventListener(t, o, { signal: a.signal }), window.addEventListener(t, o, { signal: a.signal });
+	return () => a.abort();
+}
+function F() {
+	let e;
+	return {
+		init() {
+			let t = this.$el.querySelector("textarea[data-fruit-control]");
+			t && (e = P(this.$el, t, {
+				insert: (e) => {
+					let n = t.selectionStart ?? t.value.length, r = t.selectionEnd ?? n;
+					d(t, t.value.slice(0, n) + e + t.value.slice(r), { commit: !1 }), t.setSelectionRange?.(n + e.length, n + e.length);
+				},
+				set: (e) => d(t, e, { commit: !1 }),
+				commit: () => t.dispatchEvent(new Event("change", { bubbles: !0 }))
+			}));
+		},
+		destroy() {
+			e?.();
+		}
+	};
+}
+//#endregion
 //#region src/js/selection.js
-function N() {
+function I() {
 	let e, t, n, r, i, o, c, l, p, m = [], h = -1, g = !1, _ = () => t.selectedOptions[0]?.label || "", v = () => {
 		g = !1, p.hide(), r.hidden = !0, n.setAttribute("aria-expanded", "false"), n.removeAttribute("aria-activedescendant");
 	}, y = (e) => {
@@ -809,7 +839,7 @@ function N() {
 		}
 	};
 }
-function P() {
+function L() {
 	let e, t, n, r, a, o, c, l, u, p = [], m = () => t.value.split(/\r?\n/).map((e) => e.trim()).filter(Boolean), h = (e) => {
 		a.textContent = e;
 	}, g = () => {
@@ -874,7 +904,7 @@ function P() {
 		}
 	};
 }
-function F() {
+function R() {
 	let e, t, n = () => {
 		let t = Math.max(0, Number.parseInt(e.dataset.count ?? "0", 10) || 0), n = (e.dataset.fruitTemplate || ":count selected").split("|"), r = e.closest("[lang]")?.lang || navigator.language || "en", i = n.length > 1 && new Intl.PluralRules(r).select(t) !== "one" ? n[1] : n[0], a = e.querySelector(".f-selection-bar__count");
 		a && (a.textContent = i.trim().replace(":count", String(t))), e.hidden = t === 0;
@@ -893,25 +923,25 @@ function F() {
 }
 //#endregion
 //#region src/js/navigation.js
-var I = "[role=\"menuitem\"], [role=\"menuitemcheckbox\"], [role=\"menuitemradio\"]", L = (e, t) => [...e.querySelectorAll(I)].filter((e) => t(e) && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true" && e.getClientRects().length), R = (e, t) => {
+var z = "[role=\"menuitem\"], [role=\"menuitemcheckbox\"], [role=\"menuitemradio\"]", B = (e, t) => [...e.querySelectorAll(z)].filter((e) => t(e) && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true" && e.getClientRects().length), V = (e, t) => {
 	e.length && e[(t + e.length) % e.length].focus();
-}, z = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
-function B(e, t, n) {
+}, H = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
+function U(e, t, n) {
 	let r = t.indexOf(document.activeElement);
 	return [
 		"ArrowDown",
 		"ArrowUp",
 		"Home",
 		"End"
-	].includes(e.key) ? (e.preventDefault(), R(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => z(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
+	].includes(e.key) ? (e.preventDefault(), V(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => H(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
 		n.search = "";
 	}, 600), !0);
 }
-function V() {
+function W() {
 	let e, t, n, r, i, a, s, c = {
 		search: "",
 		timer: null
-	}, l = (t) => t?.closest("[data-fruit-menu], [x-data^=\"fruitMenu\"]") === e, d = () => L(n, l), f = (e) => R(d(), e);
+	}, l = (t) => t?.closest("[data-fruit-menu], [x-data^=\"fruitMenu\"]") === e, d = () => B(n, l), f = (e) => V(d(), e);
 	return {
 		init() {
 			e = this.$el, e.setAttribute("data-fruit-menu", ""), t = e.querySelector("summary"), n = e.querySelector("[role=\"menu\"]"), t && n && (r = o(e, n, {
@@ -920,14 +950,14 @@ function V() {
 				onToggle: (e) => {
 					t.setAttribute("aria-expanded", String(e)), e && document.activeElement === t && f(0);
 				}
-			}), n.id ||= u("fruit-menu"), t.setAttribute("aria-haspopup", "menu"), t.setAttribute("aria-controls", n.id), t.setAttribute("aria-expanded", String(e.open)), n.querySelectorAll(I).forEach((e) => {
+			}), n.id ||= u("fruit-menu"), t.setAttribute("aria-haspopup", "menu"), t.setAttribute("aria-controls", n.id), t.setAttribute("aria-expanded", String(e.open)), n.querySelectorAll(z).forEach((e) => {
 				l(e) && (e.tabIndex = -1);
 			}), i = (n) => {
 				if (!l(n.target)) return;
 				let i = d();
-				n.target === t && ["ArrowDown", "ArrowUp"].includes(n.key) ? (n.preventDefault(), e.open = !0, r.show(), f(n.key === "ArrowDown" ? 0 : i.length - 1)) : e.open && n.key === "Tab" ? s = setTimeout(() => r.close(!1), 0) : e.open && B(n, i, c);
+				n.target === t && ["ArrowDown", "ArrowUp"].includes(n.key) ? (n.preventDefault(), e.open = !0, r.show(), f(n.key === "ArrowDown" ? 0 : i.length - 1)) : e.open && n.key === "Tab" ? s = setTimeout(() => r.close(!1), 0) : e.open && U(n, i, c);
 			}, a = (e) => {
-				let t = e.target.closest(I);
+				let t = e.target.closest(z);
 				l(t) && !t.matches(":disabled") && t.getAttribute("aria-disabled") !== "true" && r.close(!0);
 			}, e.addEventListener("keydown", i), n.addEventListener("click", a));
 		},
@@ -936,7 +966,7 @@ function V() {
 		}
 	};
 }
-function H() {
+function G() {
 	let e, t, n, r, o, s, c = {
 		x: 0,
 		y: 0
@@ -949,12 +979,12 @@ function H() {
 		o = a, c = {
 			x: r,
 			y: i
-		}, e.hidden = !1, t.setAttribute("data-fruit-context-open", ""), n.show(), R(L(e, d), 0);
+		}, e.hidden = !1, t.setAttribute("data-fruit-context-open", ""), n.show(), V(B(e, d), 0);
 	};
 	return {
 		init() {
 			if (e = this.$el, t = e.parentElement, !t) return;
-			e.setAttribute("data-fruit-menu", ""), e.id ||= u("fruit-context-menu"), e.hidden = !0, e.querySelectorAll(I).forEach((e) => {
+			e.setAttribute("data-fruit-menu", ""), e.id ||= u("fruit-context-menu"), e.hidden = !0, e.querySelectorAll(z).forEach((e) => {
 				d(e) && (e.tabIndex = -1);
 			}), n = a(e, { getBoundingClientRect: () => new DOMRect(c.x, c.y, 0, 0) }, { point: t }), r = new AbortController();
 			let o = (e, t, n) => e.addEventListener(t, n, { signal: r.signal }), h = !1;
@@ -966,9 +996,9 @@ function H() {
 				let r = n.target.getBoundingClientRect();
 				m(i(t) ? r.right : r.left, r.bottom, n.target);
 			}), o(e, "keydown", (t) => {
-				d(t.target) && (t.key === "Escape" ? (t.preventDefault(), t.stopPropagation(), p(!0)) : t.key === "Tab" ? (t.preventDefault(), p(!0)) : B(t, L(e, d), l));
+				d(t.target) && (t.key === "Escape" ? (t.preventDefault(), t.stopPropagation(), p(!0)) : t.key === "Tab" ? (t.preventDefault(), p(!0)) : U(t, B(e, d), l));
 			}), o(e, "click", (e) => {
-				let t = e.target.closest(I);
+				let t = e.target.closest(z);
 				d(t) && !t.matches(":disabled") && t.getAttribute("aria-disabled") !== "true" && p(!0);
 			}), o(document, "pointerdown", (t) => {
 				f() && !e.contains(t.target) && p(!1);
@@ -979,7 +1009,7 @@ function H() {
 		}
 	};
 }
-function U() {
+function K() {
 	let e, t, n, r, i, o, s;
 	return {
 		init() {
@@ -1004,7 +1034,7 @@ function U() {
 		}
 	};
 }
-function W() {
+function q() {
 	let e, t, n, r, a = (t) => t?.closest("[data-fruit-tabs], [x-data^=\"fruitTabs\"]") === e, o = () => [...e.querySelectorAll("[role=\"tab\"]")].filter(a), s = () => o().filter((e) => !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true"), c = (t) => {
 		for (let n of o()) {
 			let r = n === t;
@@ -1041,7 +1071,7 @@ function W() {
 		}
 	};
 }
-function G() {
+function J() {
 	let e;
 	return {
 		init() {
@@ -1061,9 +1091,9 @@ function G() {
 }
 //#endregion
 //#region src/js/alpine.js
-var K = !1;
-function q(i) {
-	i.data("fruitEditor", () => ({})), i.data("fruitToast", t), i.magic("toast", () => e), i.data("fruitCombobox", N), i.data("fruitTokenField", P), i.data("fruitSelectionBar", F), i.data("fruitAutocomplete", p), i.data("fruitCommandPalette", m), i.data("fruitDropzone", g), i.data("fruitMenu", V), i.data("fruitDatePicker", E), i.data("fruitColorPicker", M), i.data("fruitContextMenu", H), i.data("fruitTooltip", U), i.data("fruitTabs", W), i.data("fruitSplitter", c), i.data("fruitFloatingDisclosure", G), i.data("fruitDialogModel", r), typeof window < "u" && !K && (n(window), K = !0);
+var Y = !1;
+function X(i) {
+	i[N] || i.data("fruitEditor", F), i.data("fruitToast", t), i.magic("toast", () => e), i.data("fruitCombobox", I), i.data("fruitTokenField", L), i.data("fruitSelectionBar", R), i.data("fruitAutocomplete", p), i.data("fruitCommandPalette", m), i.data("fruitDropzone", g), i.data("fruitMenu", W), i.data("fruitDatePicker", E), i.data("fruitColorPicker", M), i.data("fruitContextMenu", G), i.data("fruitTooltip", K), i.data("fruitTabs", q), i.data("fruitSplitter", c), i.data("fruitFloatingDisclosure", J), i.data("fruitDialogModel", r), typeof window < "u" && !Y && (n(window), Y = !0);
 }
 //#endregion
-export { q as default, t as fruitToast, e as toast };
+export { X as default, t as fruitToast, e as toast };

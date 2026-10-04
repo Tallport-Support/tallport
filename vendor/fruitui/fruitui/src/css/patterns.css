@@ -468,6 +468,15 @@
     font-size: var(--f-text-2xs);
     white-space: nowrap;
   }
+  /* Further header lines under the identity: From, To and Cc, or an assignment and status. */
+  .f-message__headers {
+    display: grid;
+    flex-basis: 100%;
+    gap: 1px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-2xs);
+    overflow-wrap: anywhere;
+  }
   .f-message__body {
     margin-top: var(--f-message-body-gap, 4px);
     font-size: var(--f-text-sm);
@@ -523,6 +532,10 @@
   .f-message--stacked > .f-message__avatar {
     grid-row: auto;
   }
+  /* With header lines below the identity, the avatar stays beside its first line. */
+  .f-message--stacked:has(.f-message__headers) > .f-message__avatar {
+    align-self: start;
+  }
   .f-message--stacked > :not(.f-message__avatar, .f-message__header, .f-message__actions) {
     grid-column: 1 / -1;
   }
@@ -551,6 +564,28 @@
   }
   .f-message--stacked .f-message__time {
     margin-inline-start: auto;
+  }
+  /* A thread event between messages: who changed what, and when, on one quiet line. */
+  .f-message-event {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 6px;
+    margin: 0;
+    padding-inline: var(--f-message-event-inset, 0);
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+  }
+  .f-message-event__icon {
+    display: inline-flex;
+    flex: none;
+    align-self: center;
+    --f-icon-size: 14px;
+  }
+  .f-message-event__time {
+    margin-inline-start: auto;
+    font-size: var(--f-text-2xs);
+    white-space: nowrap;
   }
   .f-message--note {
     padding: var(--f-message-note-padding, 14px);

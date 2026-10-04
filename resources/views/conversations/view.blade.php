@@ -159,36 +159,40 @@
     <div id="conv-layout" class="conv-type-{{ strtolower($conversation->getTypeName()) }} @if ($is_following) conv-following @endif">
         <div id="conv-layout-header">
             <div id="conv-subject">
-                <div class="fruit-ui conv-subj-block conv-header-bar">
-                    <div class="conv-subjwrap">
-                        <div class="conv-subjtext">
-                            <span class="f-title-2">{{ $conversation->getSubject() }}</span>
-                            <div class="f-input-group conv-subj-editor">
-                                <input type="text" id="conv-subj-value" class="f-input" value="{{ $conversation->getSubject() }}" aria-label="{{ __('Subject') }}" />
-                                <button class="f-button f-button--primary" type="button" data-loading-text="…" aria-label="{{ __('Save') }}"><x-heroicon-o-check class="f-icon" aria-hidden="true" /></button>
-                            </div>
+                <header class="conv-heading">
+                    @php $conv_starred = $conversation->isStarredByUser(); @endphp
+                    <div class="conv-heading__overline">
+                        <span>{{ $conversation->getStatusName() }} · #{{ $conversation->number }}</span>
+                        <span class="conv-heading__tools">
+                            <span id="conv-viewers">
+                                @foreach ($viewers as $viewer)
+                                    <span class="viewer-{{ $viewer['user']->id }} @if ($viewer['replying']) viewer-replying @endif" title="@if ($viewer['replying']){{ __(':user is replying', ['user' => $viewer['user']->getFullName()]) }}@else{{ __(':user is viewing', ['user' => $viewer['user']->getFullName()]) }}@endif">
+                                        @include('partials/person_photo', ['person' => $viewer['user']])
+                                    </span>
+                                @endforeach
+                            </span>
+                            <button type="button" class="f-button f-button--ghost f-button--icon f-button--small conv-star" aria-pressed="{{ $conv_starred ? 'true' : 'false' }}" aria-label="{{ __('Star Conversation') }}" title="@if ($conv_starred){{ __("Unstar Conversation") }}@else{{ __("Star Conversation") }}@endif"><x-heroicon-o-star class="f-icon conv-star__off" aria-hidden="true" /><x-heroicon-s-star class="f-icon conv-star__on" aria-hidden="true" /></button>
+                        </span>
+                    </div>
+                    <div class="conv-subjtext">
+                        <h2>{{ $conversation->getSubject() }}</h2>
+                        <div class="f-input-group conv-subj-editor">
+                            <input type="text" id="conv-subj-value" class="f-input" value="{{ $conversation->getSubject() }}" aria-label="{{ __('Subject') }}" />
+                            <button class="f-button f-button--primary" type="button" data-loading-text="…" aria-label="{{ __('Save') }}"><x-heroicon-o-check class="f-icon" aria-hidden="true" /></button>
                         </div>
-                        @if ($conversation->isChat() && $conversation->getChannelName())
+                    </div>
+                    @if ($customer)
+                        <p>{{ $customer->getFullName(true) }}@if ($conversation->customer_email && $conversation->customer_email != $customer->getFullName(true)) · {{ $conversation->customer_email }}@endif</p>
+                    @endif
+                    <p class="conv-heading__mailbox"><x-heroicon-o-envelope class="f-icon" aria-hidden="true" /><span>{{ $mailbox->name }}@if ($mailbox->email) · {{ $mailbox->email }}@endif</span></p>
+                    @if ($conversation->isChat() && $conversation->getChannelName())
                             <span class="conv-tags f-row">
                                 @if (\Helper::isChatMode())<a class="f-button f-button--small" href="{{ request()->fullUrlWithQuery(['chat_mode' => '0']) }}" title="{{ __('Exit') }}"><x-heroicon-s-stop class="f-icon" aria-hidden="true" /> {{ __('Chat Mode') }}</a>@else<a class="f-button f-button--small f-button--primary" href="{{ request()->fullUrlWithQuery(['chat_mode' => '1']) }}"><x-heroicon-s-play class="f-icon" aria-hidden="true" /> {{ __('Chat Mode') }}</a>@endif
                                 <x-fruit::badge>{{ $conversation->getChannelName() }}</x-fruit::badge>
                             </span>
                         @endif
-                        @action('conversation.after_subject', $conversation, $mailbox)
-                        <div class="conv-numnav f-row">
-                            @php $conv_starred = $conversation->isStarredByUser(); @endphp
-                            <button type="button" class="f-button f-button--ghost f-button--icon conv-star" aria-pressed="{{ $conv_starred ? 'true' : 'false' }}" aria-label="{{ __('Star Conversation') }}" title="@if ($conv_starred){{ __("Unstar Conversation") }}@else{{ __("Star Conversation") }}@endif"><x-heroicon-o-star class="f-icon conv-star__off" aria-hidden="true" /><x-heroicon-s-star class="f-icon conv-star__on" aria-hidden="true" /></button>
-                            <span class="f-muted">#&nbsp;<strong>{{ $conversation->number }}</strong></span>
-                        </div>
-                        <div id="conv-viewers">
-                            @foreach ($viewers as $viewer)
-                                <span class="photo-xs viewer-{{ $viewer['user']->id }} @if ($viewer['replying']) viewer-replying @endif" data-toggle="tooltip" title="@if ($viewer['replying']){{ __(':user is replying', ['user' => $viewer['user']->getFullName()]) }}@else{{ __(':user is viewing', ['user' => $viewer['user']->getFullName()]) }}@endif">
-                                    @include('partials/person_photo', ['person' => $viewer['user']])
-                                </span>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
+                    @action('conversation.after_subject', $conversation, $mailbox)
+                </header>
                 @if ($is_in_chat_mode)
                     <div class="conv-top-block conv-top-chat clearfix">
                         @if ($conversation->user_id != Auth::user()->id)
@@ -319,7 +323,7 @@
             </div>
         </div>
 
-        <div id="conv-layout-main">
+        <div id="conv-layout-main" class="conv-thread">
             @include('conversations/partials/ai_summary')
             @action('conversation.before_threads', $conversation)
             @include('conversations/partials/threads')

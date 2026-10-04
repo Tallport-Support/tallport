@@ -1098,7 +1098,7 @@
         "element": "`article` (or a listitem role) with a header, body, attachments and footer.",
         "state": "No state; the application owns message data and actions.",
         "keyboard": "Child links and buttons keep their behavior. The actions bar appears on hover and whenever focus is inside the message, so its buttons are reachable by Tab.",
-        "options": "`layout`: inline (default), stacked. `variant`: default, note. `datetime`: machine-readable time. Slots: `avatar`, `author`, `meta`, `time`, default body, `attachments`, `footer` (independent actions such as reactions or reply counts), `actions` (quick actions shown in the corner on hover or focus, and always on touch screens; a labelled group). Give it an accessible name. `--f-message-actions-top` and `--f-message-actions-end` place the actions (above the top edge by default)."
+        "options": "`layout`: inline (default), stacked. `variant`: default, note. `datetime`: machine-readable time. Slots: `avatar`, `author`, `meta` (inline, may hold state badges), `headers` (further lines such as From, To, Cc or an assignment), `time`, default body, `attachments`, `footer` (independent actions such as reactions or reply counts), `actions` (quick actions shown in the corner on hover or focus, and always on touch screens; a labelled group). Give it an accessible name. `--f-message-actions-top` and `--f-message-actions-end` place the actions (above the top edge by default)."
       }
     }
   },
@@ -1273,5 +1273,21 @@
     "classes": [],
     "blade": [],
     "uses": []
+  },
+  {
+    "id": "message-event",
+    "kind": "pattern",
+    "classes": ["f-message-event"],
+    "blade": ["message-event"],
+    "uses": ["support.html", "examples/laravel/support-desk.blade.php"],
+    "contracts": {
+      "message-event": {
+        "purpose": "Record a thread event between messages, such as an assignment or a status change.",
+        "element": "`p` with optional icon and `time`.",
+        "state": "No state; the application owns the history.",
+        "keyboard": "No interactive content; no keyboard model.",
+        "options": "Default slot: the event text. `icon` slot: decorative. `time` slot with `datetime` for the machine-readable time. Place it in the thread's list between messages."
+      }
+    }
   }
 ]

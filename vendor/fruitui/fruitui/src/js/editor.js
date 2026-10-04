@@ -1,12 +1,15 @@
 import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import { bridgeControl, publishValue } from './control-bridge.js';
+import { listenForEditorContent, EDITOR_PLUGIN } from './editor-content.js';
 
 /** Optional integration: import fruitui/editor explicitly on your existing Alpine. */
 export default function fruitEditor(Alpine) {
+  // FruitUI's plain-textarea fallback steps aside, whichever script registers first.
+  Alpine[EDITOR_PLUGIN] = true;
   Alpine.data('fruitEditor', () => {
     // Keep ProseMirror outside Alpine's reactive proxy.
-    let editor, control, surface, toolbar, dispose, click, blur, lastValue, committedValue;
+    let editor, control, surface, toolbar, dispose, click, blur, stopContent, lastValue, committedValue;
     const commands = {
       bold: chain => chain.toggleBold(),
       italic: chain => chain.toggleItalic(),
@@ -70,6 +73,15 @@ export default function fruitEditor(Alpine) {
           }
         };
         this.$el.addEventListener('focusout', blur);
+        // Saved replies, drafts and signatures: insert at the cursor or replace, then commit.
+        stopContent = listenForEditorContent(this.$el, control, {
+          insert: html => editor.chain().focus().insertContent(html).run(),
+          set: html => editor.commands.setContent(html, { emitUpdate: true }),
+          commit: () => {
+            committedValue = control.value;
+            control.dispatchEvent(new Event('change', { bubbles: true }));
+          },
+        });
         click = event => {
           const button = event.target.closest('[data-fruit-command]');
           if (button && !button.disabled && commands[button.dataset.fruitCommand])
@@ -83,6 +95,7 @@ export default function fruitEditor(Alpine) {
       },
       destroy() {
         dispose?.();
+        stopContent?.();
         this.$el.removeEventListener('focusout', blur);
         toolbar?.removeEventListener('click', click);
         editor?.destroy();

@@ -6,6 +6,7 @@ import { fruitAutocomplete } from './autocomplete.js';
 import { fruitCommandPalette } from './command-palette.js';
 import { fruitDropzone } from './dropzone.js';
 import { fruitDatePicker, fruitColorPicker } from './pickers.js';
+import { fruitEditorFallback, EDITOR_PLUGIN } from './editor-content.js';
 import { fruitCombobox, fruitTokenField, fruitSelectionBar } from './selection.js';
 import { fruitMenu, fruitContextMenu, fruitTooltip, fruitTabs, fruitFloatingDisclosure } from './navigation.js';
 
@@ -13,8 +14,8 @@ let listening = false;
 
 /** Register on your existing Alpine instance before it starts (including Livewire's instance). */
 export default function fruitUI(Alpine) {
-  // The separate editor plugin replaces this native fallback before Alpine starts.
-  Alpine.data('fruitEditor', () => ({}));
+  // Without the separate rich editor plugin, the native textarea still answers content requests.
+  if (!Alpine[EDITOR_PLUGIN]) Alpine.data('fruitEditor', fruitEditorFallback);
   Alpine.data('fruitToast', fruitToast);
   Alpine.magic('toast', () => toast);
   Alpine.data('fruitCombobox', fruitCombobox);

@@ -276,6 +276,8 @@ The Support example (`support.html`, `examples/support/support.css`) goes furthe
 
 ## Message composers
 
+A reply composer with recipients and options keeps them in the form's header and footer: token fields for To, Cc and Bcc and a From select in `f-composer__header`, and Status and Assignee selects with a split Send button (`f-button-group` with a Menu of "Send & Close" variants) in `f-composer__footer`. Every control keeps its own label and value.
+
 Support replies/notes and Chat conversations/threads use the same `.f-composer` native form arrangement. Compose labels and `.f-input.f-composer__input` textareas, `.f-help`/`.f-error`, optional `f-composer__header`, and `f-composer__footer`. The Blade adapter has a default content slot and forwards native form and submit attributes to the form. Labels, `x-model`, `wire:model`, validation and keyboard shortcuts remain on their real controls. It never owns drafts, reply/note modes or sending behavior.
 
 ```blade
@@ -478,6 +480,10 @@ import fruitEditor from 'fruitui/editor';
 fruitEditor(Alpine); // before this same Alpine instance starts
 ```
 
+Without a bundler, link the prebuilt `editor.global.js` (published with the other assets); it registers itself on the page's Alpine, including the one Livewire injects, whether it loads before or after `livewire.global.js`.
+
+**Inserting and replacing content.** Saved replies, drafts and signatures go through two events. `fruit-editor-insert` puts `{ html }` at the cursor and `fruit-editor-set` replaces the content with `{ html }`. Dispatch them from a button inside the editor (`$dispatch('fruit-editor-insert', { html })` in an app toolbar button), on the `.f-editor` element, or on `window` with `target` naming the editor's textarea `id` or `name`, as Livewire's `$this->dispatch('fruit-editor-set', target: 'reply', html: $draft)` does. Each request updates the native textarea with `input` and `change`, so `wire:model`, autosave listeners and form posts see it. Without the editor plugin the plain textarea answers the same requests.
+
 ```blade
 <label for="signature">Reply signature</label>
 <x-fruit::editor id="signature" name="signature" wire:model="signature">
@@ -513,6 +519,8 @@ These cover the core screens of helpdesks, mail and chat. Contracts are in the [
 
 - **Message** (`x-fruit::message`): one message's avatar, author, meta, time, body, attachments and footer. `layout="inline"` suits chat (Chat's channel); `layout="stacked"` suits email and helpdesk threads (Support, Chat threads); `variant="note"` marks internal notes. Reactions and reply counts are independent controls in the footer. The `actions` slot holds quick actions (react, reply in thread, quote) in a labelled group that appears at the message's top corner on hover or whenever focus is inside it, and stays visible on touch screens; stacked messages give it a column beside the header so the time stays readable. Offer the same commands elsewhere when they matter, since hover is not discoverable.
 - **Long histories**: render a window of recent messages and load older ones as the reader scrolls up, rather than the whole history: a `wire:intersect="loadOlder"` sentinel before the first message, with a Skeleton while it loads (see [infinite scroll](#app-shells-icons-and-infinite-scroll)). Chat apps usually add a "Jump to latest" button once the reader scrolls back; the Chat example shows one.
+- **Header lines and state**: Message's `headers` slot holds further lines under the identity (From, To, Cc, or "Assigned to Mia · Pending"); badges such as Draft, Forwarded or Not sent go in `meta`. A "…" Menu in the `actions` slot keeps the actions visible while it is open.
+- **Thread events** (`x-fruit::message-event`): one quiet line between messages for assignments and status changes, with an optional icon and a `time`.
 - **Divider** (`x-fruit::divider`): days, "New messages" (`tone="accent"`) or reply counts (`align="start"`).
 - **Timeline** (`x-fruit::timeline`, `timeline-item`): conversation history and audit logs, with a native `time`.
 - **Rows as links**: `x-fruit::item-link href="…"` is the same row as a real link, for rows that are destinations: they open in a new tab, follow `target` and work without JavaScript. `current` marks the open row (`aria-current="page"`). Use Item Row (a button) for rows that act in place.

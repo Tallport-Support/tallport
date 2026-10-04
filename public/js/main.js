@@ -1409,7 +1409,7 @@ function initConversation()
 				laroute.route('conversations.ajax'),
 				function(response) {
 					if (isAjaxSuccess(response)) {
-						$('.conv-subjtext > span:first').text(value);
+						$('.conv-subjtext > h2:first').text(value);
 					} else {
 						showAjaxError(response);
 					}

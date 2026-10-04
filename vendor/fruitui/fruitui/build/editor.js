@@ -14341,10 +14341,21 @@ function H_(e, t, n, r, { presentation: i = n, focusRoot: a = n } = {}) {
 	};
 }
 //#endregion
+//#region src/js/editor-content.js
+var U_ = Symbol.for("fruitui.editor");
+function W_(e, t, { insert: n, set: r, commit: i }) {
+	let a = new AbortController(), o = (e) => {
+		let { html: a = "", target: o } = e.detail ?? {};
+		(e.currentTarget !== window || o === t.id || o === t.name) && (t.matches(":disabled") || t.readOnly || ((e.type === "fruit-editor-set" ? r : n)(String(a)), i()));
+	};
+	for (let t of ["fruit-editor-insert", "fruit-editor-set"]) e.addEventListener(t, o, { signal: a.signal }), window.addEventListener(t, o, { signal: a.signal });
+	return () => a.abort();
+}
+//#endregion
 //#region src/js/editor.js
-function U_(e) {
-	e.data("fruitEditor", () => {
-		let e, t, n, r, i, a, o, s, c, l = {
+function G_(e) {
+	e[U_] = !0, e.data("fruitEditor", () => {
+		let e, t, n, r, i, a, o, s, c, l, u = {
 			bold: (e) => e.toggleBold(),
 			italic: (e) => e.toggleItalic(),
 			bulletList: (e) => e.toggleBulletList(),
@@ -14352,17 +14363,17 @@ function U_(e) {
 			blockquote: (e) => e.toggleBlockquote(),
 			undo: (e) => e.undo(),
 			redo: (e) => e.redo()
-		}, u = () => {
+		}, d = () => {
 			let n = t.matches(":disabled") || t.readOnly;
 			e.setEditable(!n, !1), e.view.dom.tabIndex = t.matches(":disabled") ? -1 : t.tabIndex, e.view.dom.setAttribute("aria-disabled", String(t.matches(":disabled"))), e.view.dom.setAttribute("aria-readonly", String(t.readOnly));
 			for (let t of r.querySelectorAll("[data-fruit-command]")) {
 				let r = t.dataset.fruitCommand;
-				t.disabled = n || !l[r] || !l[r](e.can().chain()).run(), ["undo", "redo"].includes(r) || t.setAttribute("aria-pressed", String(e.isActive(r)));
+				t.disabled = n || !u[r] || !u[r](e.can().chain()).run(), ["undo", "redo"].includes(r) || t.setAttribute("aria-pressed", String(e.isActive(r)));
 			}
 		};
 		return {
 			init() {
-				t = this.$el.querySelector("textarea[data-fruit-control]"), n = this.$el.querySelector(".f-editor__surface"), r = this.$el.querySelector(".f-editor__toolbar"), t && n && r && (s = c = t.value, e = new Af({
+				t = this.$el.querySelector("textarea[data-fruit-control]"), n = this.$el.querySelector(".f-editor__surface"), r = this.$el.querySelector(".f-editor__toolbar"), t && n && r && (c = l = t.value, e = new Af({
 					element: n,
 					extensions: [R_.configure({ link: { openOnClick: !1 } })],
 					content: t.value,
@@ -14372,28 +14383,34 @@ function U_(e) {
 						"aria-multiline": "true"
 					} },
 					onUpdate: () => {
-						s = e.isEmpty ? "" : e.getHTML(), V_(t, s, { commit: !1 }), e.view.dom.removeAttribute("aria-invalid");
+						c = e.isEmpty ? "" : e.getHTML(), V_(t, c, { commit: !1 }), e.view.dom.removeAttribute("aria-invalid");
 					},
 					onTransaction: () => {
-						e && u();
+						e && d();
 					}
 				}), i = H_(this, t, e.view.dom, (n) => {
-					t.value !== s && (e.commands.setContent(t.value, { emitUpdate: !1 }), s = c = t.value), n === "reset" && (c = t.value), u();
+					t.value !== c && (e.commands.setContent(t.value, { emitUpdate: !1 }), c = l = t.value), n === "reset" && (l = t.value), d();
 				}, {
 					presentation: n,
 					focusRoot: this.$el
 				}), o = (e) => {
-					!this.$el.contains(e.relatedTarget) && t.value !== c && (c = t.value, t.dispatchEvent(new Event("change", { bubbles: !0 })));
-				}, this.$el.addEventListener("focusout", o), a = (t) => {
+					!this.$el.contains(e.relatedTarget) && t.value !== l && (l = t.value, t.dispatchEvent(new Event("change", { bubbles: !0 })));
+				}, this.$el.addEventListener("focusout", o), s = W_(this.$el, t, {
+					insert: (t) => e.chain().focus().insertContent(t).run(),
+					set: (t) => e.commands.setContent(t, { emitUpdate: !0 }),
+					commit: () => {
+						l = t.value, t.dispatchEvent(new Event("change", { bubbles: !0 }));
+					}
+				}), a = (t) => {
 					let n = t.target.closest("[data-fruit-command]");
-					n && !n.disabled && l[n.dataset.fruitCommand] && l[n.dataset.fruitCommand](e.chain().focus()).run();
-				}, r.addEventListener("click", a), r.hidden = !1, n.hidden = !1, t.hidden = !0, u());
+					n && !n.disabled && u[n.dataset.fruitCommand] && u[n.dataset.fruitCommand](e.chain().focus()).run();
+				}, r.addEventListener("click", a), r.hidden = !1, n.hidden = !1, t.hidden = !0, d());
 			},
 			destroy() {
-				i?.(), this.$el.removeEventListener("focusout", o), r?.removeEventListener("click", a), e?.destroy(), t && (t.hidden = !1), r && (r.hidden = !0), n && (n.hidden = !0);
+				i?.(), s?.(), this.$el.removeEventListener("focusout", o), r?.removeEventListener("click", a), e?.destroy(), t && (t.hidden = !1), r && (r.hidden = !0), n && (n.hidden = !0);
 			}
 		};
 	});
 }
 //#endregion
-export { U_ as default };
+export { G_ as default };

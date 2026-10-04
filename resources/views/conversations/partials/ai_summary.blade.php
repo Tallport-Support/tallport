@@ -14,30 +14,17 @@
     }
 @endphp
 @if ($ai_summary_items)
-    <div class="thread thread-type-ai-summary" id="thread-ai-summary">
-        <div class="thread-photo">
-            <img class="person-photo" src="{{ asset('img/ai-assistant.png') }}" alt="">
-        </div>
-        <div class="thread-message">
-            <div class="thread-header">
-                <div class="thread-title">
-                    <div class="thread-person"><strong>{{ __('Summary') }}</strong></div>
-                </div>
-                @if (!empty($ai_summary['at']))
-                    <div class="thread-info">
-                        <span class="thread-date" data-toggle="tooltip" title="{{ App\User::dateFormat($ai_summary['at']) }}">{{ App\User::dateDiffForHumans($ai_summary['at']) }}</span>
-                    </div>
-                @endif
-            </div>
-            <div class="thread-body">
-                <div class="thread-content" dir="auto">
-                    <ul class="ai-assistant-summary-list">
-                        @foreach ($ai_summary_items as $ai_item)
-                            <li>{{ $ai_item }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+    <x-fruit::message layout="stacked" class="thread thread-type-ai-summary" id="thread-ai-summary" :datetime="!empty($ai_summary['at']) ? \Illuminate\Support\Carbon::parse($ai_summary['at'])->toIso8601String() : null">
+        <x-slot:avatar><x-fruit::avatar :src="asset('img/ai-assistant.png')" /></x-slot:avatar>
+        <x-slot:author>{{ __('Summary') }}</x-slot:author>
+        <x-slot:meta><x-fruit::badge tone="accent">AI</x-fruit::badge></x-slot:meta>
+        @if (!empty($ai_summary['at']))
+            <x-slot:time title="{{ App\User::dateFormat($ai_summary['at']) }}">{{ App\User::dateDiffForHumans($ai_summary['at']) }}</x-slot:time>
+        @endif
+        <ul class="ai-assistant-summary-list">
+            @foreach ($ai_summary_items as $ai_item)
+                <li>{{ $ai_item }}</li>
+            @endforeach
+        </ul>
+    </x-fruit::message>
 @endif
