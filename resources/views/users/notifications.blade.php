@@ -21,9 +21,9 @@
             <div class="f-table__scroll">
                 @include('users/subscriptions_table')
             </div>
-            <div class="settings-form__actions">
+            <footer class="f-form-row settings-form__actions">
                 <x-fruit::button type="submit" variant="primary">{{ __('Save Notifications') }}</x-fruit::button>
-            </div>
+            </footer>
         </form>
     </div>
 @endsection

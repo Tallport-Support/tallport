@@ -59,21 +59,17 @@
 </div>
 
     <div id="deactivate_license_modal" class="hidden">
-
-        <div class="form-group">
-            <select class="form-control deactivate-license-module">
+        <div class="f-stack modal-form">
+            <select class="f-input deactivate-license-module" aria-label="{{ __('Modules') }}">
                 @foreach ($all_modules as $module_alias => $module_name)
                     <option value="{{ $module_alias }}">{{ App\Module::formatName($module_name) }}</option>
                 @endforeach
             </select>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control deactivate-license-key" placeholder="{{ __('License Key') }}" />
-        </div>
-
-        <div class="margin-top margin-bottom-5">
-            <button class="btn btn-primary button-deactivate-license" data-loading-text="{{ __('Deactivate') }}…">{{ __('Deactivate') }}</button>
-            <button class="btn btn-link" data-dismiss="modal">{{ __('Cancel') }}</button>
+            <input type="text" class="f-input deactivate-license-key" placeholder="{{ __('License Key') }}" aria-label="{{ __('License Key') }}" />
+            <div class="modal-form__actions">
+                <button class="f-button f-button--ghost" data-dismiss="modal">{{ __('Cancel') }}</button>
+                <button class="f-button f-button--primary button-deactivate-license" data-loading-text="{{ __('Deactivate') }}…">{{ __('Deactivate') }}</button>
+            </div>
         </div>
     </div>
 @endsection

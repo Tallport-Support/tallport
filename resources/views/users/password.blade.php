@@ -13,24 +13,24 @@
         <form class="settings-form" method="POST" action="">
             {{ csrf_field() }}
 
-            <h2 class="settings-form__heading">{{ __('Change your password') }}</h2>
+            <x-fruit::form-section :title="__('Change your password')">
+                <x-fruit::field :label="__('Current Password')" layout="row">
+                    <x-fruit::input type="password" id="password_current" name="password_current" :value="old('password_current')" required autofocus />
+                </x-fruit::field>
 
-            <x-fruit::field :label="__('Current Password')">
-                <x-fruit::input type="password" id="password_current" name="password_current" :value="old('password_current')" required autofocus />
-            </x-fruit::field>
+                <x-fruit::field :label="__('New Password')" layout="row">
+                    <x-fruit::input type="password" id="password" name="password" :value="old('password')" minlength="8" required />
+                </x-fruit::field>
 
-            <x-fruit::field :label="__('New Password')">
-                <x-fruit::input type="password" id="password" name="password" :value="old('password')" minlength="8" required />
-            </x-fruit::field>
+                <x-fruit::field :label="__('Confirm Password')" layout="row">
+                    <x-fruit::input type="password" id="password_confirmation" name="password_confirmation" :value="old('password_confirmation')" minlength="8" required />
+                </x-fruit::field>
+            </x-fruit::form-section>
 
-            <x-fruit::field :label="__('Confirm Password')">
-                <x-fruit::input type="password" id="password_confirmation" name="password_confirmation" :value="old('password_confirmation')" minlength="8" required />
-            </x-fruit::field>
-
-            <div class="settings-form__actions f-row">
-                <x-fruit::button type="submit" variant="primary">{{ __('Save Password') }}</x-fruit::button>
+            <footer class="f-form-row settings-form__actions">
                 <a href="{{ route('users.profile', ['id' => $user->id]) }}" class="f-button f-button--ghost">{{ __('Cancel') }}</a>
-            </div>
+                <x-fruit::button type="submit" variant="primary">{{ __('Save Password') }}</x-fruit::button>
+            </footer>
         </form>
     </div>
 @endsection

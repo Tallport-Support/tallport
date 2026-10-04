@@ -21,55 +21,65 @@
         {{ csrf_field() }}
 
         @if (Auth::user()->isAdmin())
-            <x-fruit::field :label="__('Role')">
-                <x-fruit::select id="role" name="role" required autofocus>
-                    <option value="{{ App\User::ROLE_USER }}" @selected(old('role') == App\User::ROLE_USER)>{{ __('User') }}</option>
-                    <option value="{{ App\User::ROLE_ADMIN }}" @selected(old('role') == App\User::ROLE_ADMIN)>{{ __('Administrator') }}</option>
-                </x-fruit::select>
-            </x-fruit::field>
-            <p class="f-help settings-form__note">{!! __('<strong>Administrators</strong> can create new users and have access to all mailboxes and settings') !!}<br>{!! __('<strong>Users</strong> have access to the mailbox(es) specified in their permissions') !!}</p>
+            <x-fruit::form-section :title="__('Account')">
+                <x-fruit::field :label="__('Role')" layout="row">
+                    <x-fruit::select id="role" name="role" required autofocus>
+                        <option value="{{ App\User::ROLE_USER }}" @selected(old('role') == App\User::ROLE_USER)>{{ __('User') }}</option>
+                        <option value="{{ App\User::ROLE_ADMIN }}" @selected(old('role') == App\User::ROLE_ADMIN)>{{ __('Administrator') }}</option>
+                    </x-fruit::select>
+                    <x-slot:description>{!! __('<strong>Administrators</strong> can create new users and have access to all mailboxes and settings') !!}<br>{!! __('<strong>Users</strong> have access to the mailbox(es) specified in their permissions') !!}</x-slot:description>
+                </x-fruit::field>
+            </x-fruit::form-section>
         @endif
 
-        <x-fruit::field :label="__('First Name')">
-            <x-fruit::input id="first_name" name="first_name" :value="old('first_name')" maxlength="20" required autofocus />
-        </x-fruit::field>
+        <x-fruit::form-section :title="__('Profile')">
+            <x-fruit::field :label="__('First Name')" layout="row">
+                <x-fruit::input id="first_name" name="first_name" :value="old('first_name')" maxlength="20" required autofocus />
+            </x-fruit::field>
 
-        <x-fruit::field :label="__('Last Name')">
-            <x-fruit::input id="last_name" name="last_name" :value="old('last_name')" maxlength="30" />
-        </x-fruit::field>
+            <x-fruit::field :label="__('Last Name')" layout="row">
+                <x-fruit::input id="last_name" name="last_name" :value="old('last_name')" maxlength="30" />
+            </x-fruit::field>
 
-        @action('user.create.before_email')
+            @action('user.create.before_email')
 
-        <x-fruit::field :label="__('Email')">
-            <x-fruit::input type="email" id="email" name="email" :value="old('email')" maxlength="100" required />
-        </x-fruit::field>
+            <x-fruit::field :label="__('Email')" layout="row">
+                <x-fruit::input type="email" id="email" name="email" :value="old('email')" maxlength="100" required />
+            </x-fruit::field>
+        </x-fruit::form-section>
 
         @if (count($mailboxes))
-            <x-fruit::fieldset id="permissions-fields">
-                <legend>{{ __('Which mailboxes will user use?') }}</legend>
-                @foreach ($mailboxes as $mailbox_option)
-                    <x-fruit::checkbox name="mailboxes[]" id="mailbox-{{ $mailbox_option->id }}" :value="$mailbox_option->id" :checked="is_array(old('mailboxes')) && in_array($mailbox_option->id, old('mailboxes'))">{{ $mailbox_option->name }}</x-fruit::checkbox>
-                @endforeach
-            </x-fruit::fieldset>
-            <div class="f-row settings-form__note">
-                <a href="#" class="f-button f-button--ghost f-button--small sel-all">{{ __('all') }}</a>
-                <a href="#" class="f-button f-button--ghost f-button--small sel-none">{{ __('none') }}</a>
-            </div>
-            @error('mailboxes')<p class="f-error">{{ $message }}</p>@enderror
+            <x-fruit::form-section :title="__('Mailboxes')">
+                <x-fruit::fieldset id="permissions-fields">
+                    <legend>{{ __('Which mailboxes will user use?') }}</legend>
+                    @foreach ($mailboxes as $mailbox_option)
+                        <x-fruit::checkbox name="mailboxes[]" id="mailbox-{{ $mailbox_option->id }}" :value="$mailbox_option->id" :checked="is_array(old('mailboxes')) && in_array($mailbox_option->id, old('mailboxes'))">{{ $mailbox_option->name }}</x-fruit::checkbox>
+                    @endforeach
+                </x-fruit::fieldset>
+                <div class="f-form-row">
+                    <div class="f-row">
+                        <a href="#" class="f-button f-button--ghost f-button--small sel-all">{{ __('all') }}</a>
+                        <a href="#" class="f-button f-button--ghost f-button--small sel-none">{{ __('none') }}</a>
+                    </div>
+                    @error('mailboxes')<p class="f-error">{{ $message }}</p>@enderror
+                </div>
+            </x-fruit::form-section>
         @endif
 
-        <hr>
+        <x-fruit::form-section :title="__('Password')">
+            <x-fruit::field :label="__('Send an invite email')" :description="__('An invite can be sent later if you aren\'t ready')" layout="row">
+                <x-fruit::switch id="send_invite" name="send_invite" value="1" :checked="$send_invite" x-model="sendInvite" />
+            </x-fruit::field>
 
-        <x-fruit::switch id="send_invite" name="send_invite" value="1" :checked="$send_invite" x-model="sendInvite" :description="__('An invite can be sent later if you aren\'t ready')">{{ __('Send an invite email') }}</x-fruit::switch>
+            <x-fruit::field :label="__('Password')" layout="row" x-show="!sendInvite">
+                <x-fruit::input type="password" id="password" name="password" :value="old('password')" maxlength="255" x-bind:required="!sendInvite" />
+            </x-fruit::field>
+        </x-fruit::form-section>
 
-        <x-fruit::field :label="__('Password')" x-show="!sendInvite">
-            <x-fruit::input type="password" id="password" name="password" :value="old('password')" maxlength="255" x-bind:required="!sendInvite" />
-        </x-fruit::field>
-
-        <div class="settings-form__actions f-row">
-            <x-fruit::button type="submit" variant="primary">{{ __('Create User') }}</x-fruit::button>
+        <footer class="f-form-row settings-form__actions">
             <a href="{{ route('users') }}" class="f-button f-button--ghost">{{ __('Cancel') }}</a>
-        </div>
+            <x-fruit::button type="submit" variant="primary">{{ __('Create User') }}</x-fruit::button>
+        </footer>
     </form>
 </div>
 @endsection
