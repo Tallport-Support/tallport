@@ -27,7 +27,7 @@
         @endforeach
 
         @if (App\Ai\Drafts::allowed(Auth::user(), $conversation))
-            <button type="button" class="f-button f-button--ghost f-button--icon conv-action ai-draft-action" title="{{ __('Draft with AI') }}" aria-label="{{ __('Draft with AI') }}"><i class="glyphicon glyphicon-ai" aria-hidden="true"></i></button>
+            <button type="button" class="f-button f-button--ghost f-button--icon conv-action ai-draft-action" x-on:click="$dispatch('ai-draft-request')" title="{{ __('Draft with AI') }}" aria-label="{{ __('Draft with AI') }}"><i class="glyphicon glyphicon-ai" aria-hidden="true"></i></button>
         @endif
 
         @action('conversation.action_buttons', $conversation, $mailbox)

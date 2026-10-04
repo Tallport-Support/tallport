@@ -105,5 +105,4 @@
 @section('javascript')
     @parent
     initConversation();
-    aiDraftsInit();
 @endsection

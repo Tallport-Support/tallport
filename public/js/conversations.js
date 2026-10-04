@@ -352,4 +352,142 @@ document.addEventListener('alpine:init', function () {
 			}
 		};
 	});
+
+	// Simple Markdown (paragraphs, lists, bold, italic) as HTML, escaped.
+	var markdownToHtml = function (text) {
+		var html = '';
+		var paragraph = [];
+		var list = '';
+		var escape = function (value) {
+			var div = document.createElement('div');
+			div.textContent = value;
+			return div.innerHTML;
+		};
+		var inline = function (line) {
+			return escape(line).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/\*([^*]+)\*/g, '<em>$1</em>');
+		};
+		var closeParagraph = function () {
+			if (paragraph.length) {
+				html += '<p>'+paragraph.map(inline).join('<br>')+'</p>';
+				paragraph = [];
+			}
+		};
+		var closeList = function () {
+			if (list) {
+				html += '</'+list+'>';
+				list = '';
+			}
+		};
+		String(text || '').replace(/\r\n?/g, '\n').split('\n').forEach(function (line) {
+			line = line.trim();
+			var item = line.match(/^[-*]\s+(.+)$/) || line.match(/^\d+[.)]\s+(.+)$/);
+			if (!line) {
+				closeParagraph();
+				closeList();
+			} else if (item) {
+				var type = /^[-*]/.test(line) ? 'ul' : 'ol';
+				closeParagraph();
+				if (list != type) {
+					closeList();
+					list = type;
+					html += '<'+type+'>';
+				}
+				html += '<li>'+inline(item[1])+'</li>';
+			} else {
+				closeList();
+				paragraph.push(line);
+			}
+		});
+		closeParagraph();
+		closeList();
+
+		return html;
+	};
+
+	/**
+	 * AI Assistant reply drafts (App\Ai\Drafts): asked for by the toolbar's Draft
+	 * with AI, polled until ready, then put into the reply (the composer).
+	 */
+	window.Alpine.data('tallportAiDraft', function (draft_url, translation_language, texts) {
+		return {
+			active: false,
+			status: '',
+			failed: false,
+			detail: '',
+			meta: '',
+			html: '',
+			draft: null,
+			timer: null,
+
+			reset: function (status) {
+				clearTimeout(this.timer);
+				this.status = status || '';
+				this.failed = false;
+				this.detail = '';
+				this.meta = '';
+				this.html = '';
+				this.draft = null;
+			},
+
+			fail: function (message, detail) {
+				this.reset(message || texts.failed);
+				this.failed = true;
+				this.detail = detail || '';
+			},
+
+			request: function () {
+				var self = this;
+				this.active = true;
+				// The draft is shown below the editor: open it, as Reply does.
+				Livewire.dispatch('composer-open', {mode: 'reply'});
+				this.reset(texts.queued);
+				Tallport.post(draft_url, {}).then(function (response) {
+					if (Tallport.isSuccess(response) && response.poll_url) {
+						self.poll(response.poll_url, 1);
+					} else {
+						self.fail(response && response.msg);
+					}
+				});
+			},
+
+			poll: function (url, attempt) {
+				var self = this;
+				fetch(url, {credentials: 'same-origin', headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'}})
+					.then(function (response) {
+						return response.json();
+					})
+					.then(function (response) {
+						if (response.status != 'success') {
+							self.fail(response.msg, response.detail);
+						} else if (response.draft_status == 'completed') {
+							self.reset('');
+							self.draft = response;
+							self.meta = response.language+' · '+response.confidence;
+							self.html = markdownToHtml(response.draft);
+						} else if (attempt >= 180) {
+							self.fail(texts.slow);
+						} else {
+							self.status = response.draft_status == 'running' ? texts.drafting : texts.queued;
+							self.timer = setTimeout(function () {
+								self.poll(url, attempt + 1);
+							}, 2000);
+						}
+					})
+					.catch(function () {
+						self.fail();
+					});
+			},
+
+			insert: function () {
+				if (!this.draft) {
+					return;
+				}
+				Livewire.dispatch('composer-ai-draft', {
+					html: markdownToHtml(this.draft.draft),
+					translation: this.draft.translation || '',
+					language: this.draft.translation ? translation_language : ''
+				});
+			}
+		};
+	});
 });
