@@ -64,7 +64,7 @@
                 </div>
                 <div class="search-filter" data-filter="customer" @unless (isset($filters['customer'])) hidden @endunless>
                     <x-fruit::field :label="__('Customer')" control-id="search-filter-customer">
-                        <x-fruit::combobox id="search-filter-customer" name="f[customer]" search="server" x-on:fruit-suggest.debounce.250ms="customers($event)">
+                        <x-fruit::combobox id="search-filter-customer" name="f[customer]" search="server" x-on:fruit-suggest.debounce.250ms="customerSuggest($event)">
                             <option value="" hidden></option>
                             @if (!empty($filters_data['customer']))
                                 <option value="{{ $filters_data['customer']->id }}" selected>{{ $filters_data['customer']->getEmailAndName() }}</option>

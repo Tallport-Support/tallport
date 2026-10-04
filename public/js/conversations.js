@@ -550,32 +550,6 @@ document.addEventListener('alpine:init', function () {
 						control.focus();
 					}
 				}
-			},
-			// The Customer filter's options: customers found on the server (FruitUI combobox).
-			customers: function (event) {
-				var select = event.target.closest('.f-combobox').querySelector('select');
-				var query = (event.detail.query || '').trim();
-				if (query.length < 2) {
-					return;
-				}
-				var url = new URL(laroute.route('customers.ajax_search'), window.location.href);
-				url.searchParams.set('q', query);
-				url.searchParams.set('search_by', 'all');
-				url.searchParams.set('use_id', '1');
-				fetch(url, {credentials: 'same-origin', headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'}})
-					.then(function (response) { return response.json(); })
-					.then(function (data) {
-						Array.prototype.slice.call(select.options).forEach(function (option) {
-							if (option.value && !option.selected) {
-								option.remove();
-							}
-						});
-						(data.results || []).forEach(function (result) {
-							if (!select.querySelector('option[value="'+result.id+'"]')) {
-								select.add(new Option(result.text, result.id));
-							}
-						});
-					});
 			}
 		};
 	});

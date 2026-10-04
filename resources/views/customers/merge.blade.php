@@ -21,16 +21,13 @@
         <form action="" method="POST" class="settings-form">
             {{ csrf_field() }}
             <x-fruit::field :label="__('Merge With')" control-id="merge_customer2_id">
-                <select name="customer2_id" class="f-input" id="merge_customer2_id" placeholder="{{ __('Search for a customer by name or email') }}…" autocomplete="off" required></select>
+                <x-fruit::combobox name="customer2_id" id="merge_customer2_id" search="server" :placeholder="__('Search for a customer by name or email').'…'" required x-data x-on:fruit-suggest.debounce.250ms="customerSuggest($event, {exclude_id: {{ $customer->id }}})">
+                    <option value="" hidden></option>
+                </x-fruit::combobox>
             </x-fruit::field>
             <div class="settings-form__actions f-row">
                 <x-fruit::button type="submit" variant="primary">{{ __('Merge') }}</x-fruit::button>
             </div>
         </form>
     </div>
-@endsection
-
-@section('javascript')
-    @parent
-    initMergeCustomers();
 @endsection

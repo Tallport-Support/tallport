@@ -1,6 +1,7 @@
 /**
  * Customers: the edit form's lists of emails, phones, websites and social
- * profiles, and the customer list's pages in search.
+ * profiles, the customer list's pages in search, and choosing a customer
+ * searched on the server (customerSuggest).
  */
 document.addEventListener('alpine:init', function () {
 	/**
@@ -105,3 +106,40 @@ document.addEventListener('alpine:init', function () {
 		};
 	});
 });
+
+/**
+ * A FruitUI combobox of customers searched on the server (search="server"):
+ * x-on:fruit-suggest.debounce.250ms="customerSuggest($event)". The options become
+ * the customers found (value: their ID); the chosen one stays. params: more
+ * query parameters for customers.ajax_search, such as exclude_id.
+ */
+function customerSuggest(event, params)
+{
+	var select = event.target.closest('.f-combobox').querySelector('select');
+	var query = (event.detail.query || '').trim();
+	if (query.length < 2) {
+		return;
+	}
+	var url = new URL(laroute.route('customers.ajax_search'), window.location.href);
+	url.searchParams.set('q', query);
+	url.searchParams.set('search_by', 'all');
+	url.searchParams.set('use_id', '1');
+	Object.keys(params || {}).forEach(function (key) {
+		url.searchParams.set(key, params[key]);
+	});
+	fetch(url, {credentials: 'same-origin', headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'}})
+		.then(function (response) { return response.json(); })
+		.then(function (data) {
+			Array.prototype.slice.call(select.options).forEach(function (option) {
+				if (option.value && !option.selected) {
+					option.remove();
+				}
+			});
+			(data.results || []).forEach(function (result) {
+				if (!select.querySelector('option[value="'+result.id+'"]')) {
+					select.add(new Option(result.text, result.id));
+				}
+			});
+		});
+}
+
