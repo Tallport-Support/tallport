@@ -1476,5 +1476,6 @@
     "Delete this log file?": "Eliminar este ficheiro de registo?",
     "Delete all log files?": "Eliminar todos os ficheiros de registo?",
     "No log records.": "Sem entradas de registo.",
-    "This log file is larger than 50 MB. Download it to read it.": "Este ficheiro de registo tem mais de 50 MB. Transfira-o para o ler."
+    "This log file is larger than 50 MB. Download it to read it.": "Este ficheiro de registo tem mais de 50 MB. Transfira-o para o ler.",
+    "Danger Zone": "Zona de perigo"
 }

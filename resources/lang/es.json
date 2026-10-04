@@ -1477,5 +1477,6 @@
     "Delete this log file?": "¿Eliminar este archivo de registro?",
     "Delete all log files?": "¿Eliminar todos los archivos de registro?",
     "No log records.": "No hay registros.",
-    "This log file is larger than 50 MB. Download it to read it.": "Este archivo de registro supera los 50 MB. Descárguelo para leerlo."
+    "This log file is larger than 50 MB. Download it to read it.": "Este archivo de registro supera los 50 MB. Descárguelo para leerlo.",
+    "Danger Zone": "Zona de peligro"
 }

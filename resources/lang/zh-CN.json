@@ -1477,5 +1477,6 @@
     "Delete this log file?": "删除此日志文件？",
     "Delete all log files?": "删除所有日志文件？",
     "No log records.": "没有日志记录。",
-    "This log file is larger than 50 MB. Download it to read it.": "此日志文件大于 50 MB。请下载后阅读。"
+    "This log file is larger than 50 MB. Download it to read it.": "此日志文件大于 50 MB。请下载后阅读。",
+    "Danger Zone": "危险操作"
 }

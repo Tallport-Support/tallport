@@ -1476,5 +1476,6 @@
     "Delete this log file?": "Bu jurnal faylı silinsin?",
     "Delete all log files?": "Bütün jurnal faylları silinsin?",
     "No log records.": "Jurnal qeydi yoxdur.",
-    "This log file is larger than 50 MB. Download it to read it.": "Bu jurnal faylı 50 MB-dan böyükdür. Oxumaq üçün onu endirin."
+    "This log file is larger than 50 MB. Download it to read it.": "Bu jurnal faylı 50 MB-dan böyükdür. Oxumaq üçün onu endirin.",
+    "Danger Zone": "Təhlükəli zona"
 }

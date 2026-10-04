@@ -1476,5 +1476,6 @@
     "Delete this log file?": "Видалити цей файл журналу?",
     "Delete all log files?": "Видалити всі файли журналу?",
     "No log records.": "Записів у журналі немає.",
-    "This log file is larger than 50 MB. Download it to read it.": "Цей файл журналу більший за 50 МБ. Завантажте його, щоб прочитати."
+    "This log file is larger than 50 MB. Download it to read it.": "Цей файл журналу більший за 50 МБ. Завантажте його, щоб прочитати.",
+    "Danger Zone": "Небезпечна зона"
 }

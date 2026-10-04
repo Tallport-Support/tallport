@@ -141,7 +141,7 @@
             </x-fruit::form-section>
 
             @if (Auth::user()->can('delete', $user))
-                <x-fruit::form-section>
+                <x-fruit::form-section :title="__('Danger Zone')">
                     <div class="f-form-row">
                         <a href="#" id="delete-user-trigger" class="f-button f-button--danger">{{ __('Delete user') }}</a>
                     </div>

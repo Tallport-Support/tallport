@@ -1476,5 +1476,6 @@
     "Delete this log file?": "Izbrisati ovu datoteku zapisa?",
     "Delete all log files?": "Izbrisati sve datoteke zapisa?",
     "No log records.": "Nema zapisa.",
-    "This log file is larger than 50 MB. Download it to read it.": "Ova datoteka zapisa veća je od 50 MB. Preuzmite je da biste je pročitali."
+    "This log file is larger than 50 MB. Download it to read it.": "Ova datoteka zapisa veća je od 50 MB. Preuzmite je da biste je pročitali.",
+    "Danger Zone": "Opasna zona"
 }

@@ -1879,5 +1879,6 @@
     "Delete this log file?": "Осы журнал файлын жою керек пе?",
     "Delete all log files?": "Барлық журнал файлдарын жою керек пе?",
     "No log records.": "Журнал жазбалары жоқ.",
-    "This log file is larger than 50 MB. Download it to read it.": "Бұл журнал файлы 50 МБ-тан үлкен. Оқу үшін оны жүктеп алыңыз."
+    "This log file is larger than 50 MB. Download it to read it.": "Бұл журнал файлы 50 МБ-тан үлкен. Оқу үшін оны жүктеп алыңыз.",
+    "Danger Zone": "Қауіпті аймақ"
 }

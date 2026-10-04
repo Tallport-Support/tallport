@@ -1476,5 +1476,6 @@
     "Delete this log file?": "Bu günlük dosyası silinsin mi?",
     "Delete all log files?": "Tüm günlük dosyaları silinsin mi?",
     "No log records.": "Günlük kaydı yok.",
-    "This log file is larger than 50 MB. Download it to read it.": "Bu günlük dosyası 50 MB'tan büyük. Okumak için indirin."
+    "This log file is larger than 50 MB. Download it to read it.": "Bu günlük dosyası 50 MB'tan büyük. Okumak için indirin.",
+    "Danger Zone": "Tehlikeli bölge"
 }

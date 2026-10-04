@@ -1485,5 +1485,6 @@
     "Delete this log file?": "Supprimer ce fichier journal ?",
     "Delete all log files?": "Supprimer tous les fichiers journaux ?",
     "No log records.": "Aucune entrée de journal.",
-    "This log file is larger than 50 MB. Download it to read it.": "Ce fichier journal dépasse 50 Mo. Téléchargez-le pour le lire."
+    "This log file is larger than 50 MB. Download it to read it.": "Ce fichier journal dépasse 50 Mo. Téléchargez-le pour le lire.",
+    "Danger Zone": "Zone de danger"
 }

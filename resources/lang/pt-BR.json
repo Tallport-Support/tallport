@@ -1478,5 +1478,6 @@
     "Delete this log file?": "Excluir este arquivo de log?",
     "Delete all log files?": "Excluir todos os arquivos de log?",
     "No log records.": "Nenhum registro de log.",
-    "This log file is larger than 50 MB. Download it to read it.": "Este arquivo de log tem mais de 50 MB. Baixe-o para lê-lo."
+    "This log file is larger than 50 MB. Download it to read it.": "Este arquivo de log tem mais de 50 MB. Baixe-o para lê-lo.",
+    "Danger Zone": "Zona de perigo"
 }

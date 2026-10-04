@@ -51,7 +51,7 @@
             </x-fruit::form-section>
 
             @if ($saved_reply->exists)
-                <x-fruit::form-section>
+                <x-fruit::form-section :title="__('Danger Zone')">
                     <div class="f-form-row">
                         <p class="f-help">{{ __('Delete this saved reply?') }}</p>
                         <x-fruit::button type="submit" variant="danger" form="saved_reply_delete">{{ __('Delete') }}</x-fruit::button>

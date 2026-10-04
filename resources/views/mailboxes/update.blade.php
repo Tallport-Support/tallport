@@ -113,7 +113,7 @@
             @action('mailbox.update.after_signature', $mailbox)
 
             @if (auth()->user()->isAdmin())
-                <x-fruit::form-section>
+                <x-fruit::form-section :title="__('Danger Zone')">
                     <div class="f-form-row">
                         <div>
                             <strong class="f-headline">{{ __('Delete Mailbox') }}</strong>

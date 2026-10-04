@@ -1475,5 +1475,6 @@
     "Delete this log file?": "Usunąć ten plik dziennika?",
     "Delete all log files?": "Usunąć wszystkie pliki dziennika?",
     "No log records.": "Brak wpisów w dzienniku.",
-    "This log file is larger than 50 MB. Download it to read it.": "Ten plik dziennika jest większy niż 50 MB. Pobierz go, aby go przeczytać."
+    "This log file is larger than 50 MB. Download it to read it.": "Ten plik dziennika jest większy niż 50 MB. Pobierz go, aby go przeczytać.",
+    "Danger Zone": "Strefa zagrożenia"
 }
