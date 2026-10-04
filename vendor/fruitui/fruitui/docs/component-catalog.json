@@ -1146,7 +1146,7 @@
         "element": "`article` (or a listitem role) with a header, body, attachments and footer.",
         "state": "No state; the application owns message data and actions.",
         "keyboard": "Child links and buttons keep their behavior. The actions bar appears on hover and whenever focus is inside the message, so its buttons are reachable by Tab.",
-        "options": "`layout`: inline (default), stacked. `variant`: default, note (a yellow card for internal notes), generated (an indigo card for generated text that stands on its own, such as a summary). `direction`: incoming (default), outgoing (`f-message--outgoing`, a bar on the leading edge for sent messages: neutral for a teammate's). `mine`: the viewer wrote this sent message (`f-message--mine`, the bar takes the accent); only with direction outgoing. Name the kind in `meta` too (Customer, Reply to customer, Internal note, Generated), so color is never the only cue. `datetime`: machine-readable time. Slots: `avatar`, `author`, `meta` (inline, may hold state badges), `headers` (further lines such as From, To, Cc or an assignment), `time`, default body, `translation` (a machine translation kept with the message and shown above its text: an outlined card with a translate icon, announced as Translation; give the slot and the message their `lang`), `attachments`, `footer` (independent actions such as reactions or reply counts), `actions` (quick actions shown in the corner on hover or focus, and always on touch screens; a labelled group). Give it an accessible name. `--f-message-actions-top` and `--f-message-actions-end` place the actions (above the top edge by default)."
+        "options": "`layout`: inline (default), stacked. `variant`: default, note (a yellow card for internal notes), generated (an indigo card for generated text shown as a message, with a header; for a compact summary use `x-fruit::generated`). `direction`: incoming (default), outgoing (`f-message--outgoing`, a bar on the leading edge for sent messages: neutral for a teammate's). `mine`: the viewer wrote this sent message (`f-message--mine`, the bar takes the accent); only with direction outgoing. Name the kind in `meta` too (Customer, Reply to customer, Internal note, Generated), so color is never the only cue. `datetime`: machine-readable time. Slots: `avatar`, `author`, `meta` (inline, may hold state badges), `headers` (further lines such as From, To, Cc or an assignment), `time`, default body, `translation` (a machine translation kept with the message and shown above its text: an outlined card with a translate icon, announced as Translation; give the slot and the message their `lang`), `attachments`, `footer` (independent actions such as reactions or reply counts), `actions` (quick actions shown in the corner on hover or focus, and always on touch screens; a labelled group). Give it an accessible name. `--f-message-actions-top` and `--f-message-actions-end` place the actions (above the top edge by default)."
       }
     }
   },
@@ -1367,6 +1367,22 @@
         "state": "No state; the application owns the history and its order.",
         "keyboard": "No keyboard behavior of its own; entries keep theirs.",
         "options": "Default slot: `li` entries. Messages are separated by a hairline; events sit closer without lines, and note and generated cards keep their box. `--f-thread-gap` sets the space on each side of the line and `--f-thread-event-gap` the space around events. Give it an accessible name when the page has more than one list."
+      }
+    }
+  },
+  {
+    "id": "generated",
+    "kind": "primitive",
+    "classes": ["f-generated"],
+    "blade": ["generated"],
+    "uses": ["support.html"],
+    "contracts": {
+      "generated": {
+        "purpose": "Show generated text that stands on its own in a thread, such as a conversation summary.",
+        "element": "`div.f-generated`: a decorative sparkles icon, a visually hidden label, and the text.",
+        "state": "No state; the application supplies the text.",
+        "keyboard": "No keyboard behavior of its own; links in the text keep theirs.",
+        "options": "`label`: what it is, for assistive technology (default: Generated; for example Summary). Default slot: the text. In a Thread it sits without hairlines, like the cards. For a machine translation use Message's `translation` slot; for generated text with an author and time, Message `variant=\"generated\"`."
       }
     }
   }

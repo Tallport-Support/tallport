@@ -53,6 +53,7 @@ final class ComponentContract
         'description-list' => [],
         'dialog' => ['roles' => ['dialog', 'alertdialog'], 'options' => ['size' => ['medium', 'large']]],
         'remote-dialog' => [],
+        'generated' => ['roles' => ['note']],
         'disclosure' => ['roles' => ['group']],
         'editor' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract', 'options' => ['paste' => ['rich', 'plain']]],
         'empty-state' => ['roles' => ['group', 'region']],
@@ -351,6 +352,15 @@ final class ComponentContract
         self::validate('segmented', $attributes);
         if (! is_bool($legendHidden)) {
             throw new InvalidArgumentException('FruitUI segmented legend-hidden must be a boolean.');
+        }
+    }
+
+    /** Generated text needs a label that names what it is, such as "Summary". */
+    public static function generated(mixed $label, ComponentAttributeBag $attributes): void
+    {
+        self::validate('generated', $attributes);
+        if (! is_string($label) || trim($label) === '') {
+            throw new InvalidArgumentException('FruitUI generated needs a nonempty label, such as "Summary".');
         }
     }
 

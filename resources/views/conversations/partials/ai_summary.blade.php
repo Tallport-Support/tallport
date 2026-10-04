@@ -15,18 +15,12 @@
 @endphp
 @if ($ai_summary_items)
     <li>
-    <x-fruit::message layout="stacked" variant="generated" class="thread thread-type-ai-summary" id="thread-ai-summary" :datetime="!empty($ai_summary['at']) ? \Illuminate\Support\Carbon::parse($ai_summary['at'])->toIso8601String() : null">
-        <x-slot:avatar><x-fruit::avatar :src="asset('img/ai-assistant.png')" /></x-slot:avatar>
-        <x-slot:author>{{ __('Summary') }}</x-slot:author>
-        <x-slot:meta>{{ __('Generated, not sent') }}</x-slot:meta>
-        @if (!empty($ai_summary['at']))
-            <x-slot:time title="{{ App\User::dateFormat($ai_summary['at']) }}">{{ App\User::dateDiffForHumans($ai_summary['at']) }}</x-slot:time>
-        @endif
-        <ul class="ai-assistant-summary-list">
-            @foreach ($ai_summary_items as $ai_item)
-                <li>{{ $ai_item }}</li>
-            @endforeach
-        </ul>
-    </x-fruit::message>
+        <x-fruit::generated :label="__('Summary')" class="thread thread-type-ai-summary" id="thread-ai-summary" :title="!empty($ai_summary['at']) ? App\User::dateFormat($ai_summary['at']) : null">
+            <ul class="ai-assistant-summary-list">
+                @foreach ($ai_summary_items as $ai_item)
+                    <li>{{ $ai_item }}</li>
+                @endforeach
+            </ul>
+        </x-fruit::generated>
     </li>
 @endif

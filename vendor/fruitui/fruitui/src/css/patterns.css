@@ -757,6 +757,28 @@
     --f-avatar-color: var(--f-generated);
     --f-avatar-background: color-mix(in srgb, var(--f-generated) 14%, var(--f-surface));
   }
+  /* Generated text standing on its own in a thread (a summary): compact like a translation, with
+     a sparkles icon instead of a header, on the generated tint. */
+  .f-generated {
+    display: flex;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--f-generated-border);
+    border-radius: var(--f-radius-md);
+    background: var(--f-generated-background);
+    font-size: var(--f-text-sm);
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+  .f-generated__icon {
+    flex: none;
+    margin-top: 3px;
+    color: var(--f-generated);
+    --f-icon-size: 16px;
+  }
+  .f-generated__text {
+    min-width: 0;
+  }
   /* Sent messages carry a bar on the leading edge: the accent for the viewer's own (mine), a
      neutral one for a teammate's. Incoming messages stay plain. */
   .f-message--outgoing:not(.f-message--note, .f-message--generated) {
@@ -790,8 +812,20 @@
   }
   .f-thread
     > :not(template)
-    + :is(.f-message--note, .f-message--generated, :has(> :is(.f-message--note, .f-message--generated))),
-  .f-thread > :is(.f-message--note, .f-message--generated, :has(> :is(.f-message--note, .f-message--generated))) + * {
+    + :is(
+      .f-message--note,
+      .f-message--generated,
+      .f-generated,
+      :has(> :is(.f-message--note, .f-message--generated, .f-generated))
+    ),
+  .f-thread
+    > :is(
+      .f-message--note,
+      .f-message--generated,
+      .f-generated,
+      :has(> :is(.f-message--note, .f-message--generated, .f-generated))
+    )
+    + * {
     padding-top: 0;
     border-top: 0;
   }
