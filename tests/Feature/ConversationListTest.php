@@ -63,6 +63,28 @@ class ConversationListTest extends FeatureTestCase
         $list->call('filterAssignee')->assertSee('Apple question');
     }
 
+    public function testFolderOpensAtAConversationInAWideWindow()
+    {
+        $older = $this->conversation('Older question');
+        $newer = $this->conversation('Newer question');
+        $folder = $this->folder(Folder::TYPE_UNASSIGNED);
+        $url = route('mailboxes.view.folder', ['id' => $this->mailbox->id, 'folder_id' => $folder->id]);
+
+        // Narrow: the list goes first.
+        $this->actingAs($this->agent)->get($url)->assertOk()->assertSee('Newer question');
+
+        // Wide: the first conversation, then the one last opened from the folder.
+        $this->withUnencryptedCookie('tallport_narrow', '0');
+        $first = $this->get($url)->headers->get('Location');
+        $this->assertContains((int) basename(parse_url($first, PHP_URL_PATH)), [$older->id, $newer->id]);
+        $this->get($older->url($folder->id))->assertOk();
+        $this->get($url)->assertRedirect(route('conversations.view', ['id' => $older->id, 'folder_id' => $folder->id]));
+
+        // An empty folder, and the All Mailboxes one.
+        $this->get(route('mailboxes.view.folder', ['id' => $this->mailbox->id, 'folder_id' => $this->folder(Folder::TYPE_CLOSED)->id]))->assertOk();
+        $this->get(route('mailboxes.all', ['folder_id' => -Folder::TYPE_UNASSIGNED]))->assertRedirect();
+    }
+
     public function testStarsAConversation()
     {
         $conversation = $this->conversation('Starry question');

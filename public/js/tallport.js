@@ -140,3 +140,15 @@ window.Tallport = (function () {
 		sidebar_scroll = 0;
 	});
 })();
+
+// Whether the window is narrow (the list and a conversation take turns), for the
+// server: a folder opens at a conversation only beside its list
+// (ConversationsController::openFolder()).
+(function () {
+	var narrow = window.matchMedia('(max-width: 900px)');
+	function remember() {
+		document.cookie = 'tallport_narrow=' + (narrow.matches ? 1 : 0) + '; path=/; SameSite=Lax';
+	}
+	remember();
+	narrow.addEventListener('change', remember);
+})();

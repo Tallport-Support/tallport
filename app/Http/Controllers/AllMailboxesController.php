@@ -32,6 +32,9 @@ class AllMailboxesController extends Controller
 
         $query = AllMailboxes::query($folder, $user);
         $conversations = $folder->queryAddOrderBy($query)->paginate(Conversation::DEFAULT_LIST_SIZE, ['*'], 'page', $request->get('page'));
+        if ($open = ConversationsController::openFolder($request, $folder, $query, $conversations)) {
+            return $open;
+        }
 
         return view('mailboxes/view', [
             'mailbox'       => AllMailboxes::mailbox(),

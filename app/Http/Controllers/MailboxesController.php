@@ -609,6 +609,9 @@ class MailboxesController extends Controller
         $conversations = $folder->queryAddOrderBy($query_conversations)->paginate(
             Conversation::DEFAULT_LIST_SIZE, ['*'], 'page', $request->get('page')
         );
+        if ($open = ConversationsController::openFolder($request, $folder, $query_conversations, $conversations)) {
+            return $open;
+        }
 
         return view('mailboxes/view', [
             'mailbox'       => $mailbox,

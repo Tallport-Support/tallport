@@ -131,6 +131,9 @@ class ConversationsController extends Controller
             return redirect()->away($conversation->url($folder ? $folder->id : $conversation->folder_id));
         }
 
+        // Opening the folder again comes back here (openFolder()).
+        $request->session()->put('folder_conversation.'.$folder->id, $conversation->id);
+
         //$after_send = $conversation->mailbox->getUserSettings($user->id)->after_send;
         $after_send = $user->afterSend();
 
@@ -403,6 +406,24 @@ class ConversationsController extends Controller
     /**
      * A folder's conversations, for the list beside an open conversation.
      */
+    /**
+     * A folder opens at a conversation beside its list: the one last opened from it in
+     * this session, or its first. Null for an empty folder, a later page, or a narrow
+     * window, where the list goes first (the tallport_narrow cookie, public/js/tallport.js).
+     */
+    public static function openFolder(Request $request, $folder, $query, $conversations)
+    {
+        if (!count($conversations) || $request->filled('page') || $request->cookie('tallport_narrow')) {
+            return null;
+        }
+        $conversation_id = $request->session()->get('folder_conversation.'.$folder->id);
+        if (!$conversation_id || !(clone $query)->where('conversations.id', $conversation_id)->exists()) {
+            $conversation_id = $conversations->first()->id;
+        }
+
+        return redirect()->route('conversations.view', ['id' => $conversation_id, 'folder_id' => $folder->id]);
+    }
+
     private function folderList($folder, $user, $page)
     {
         if ($folder->id < 0) {

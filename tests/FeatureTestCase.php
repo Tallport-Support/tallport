@@ -37,6 +37,10 @@ abstract class FeatureTestCase extends TestCase
 
         $this->captureSentMail();
 
+        // A narrow window: a folder shows its list, rather than opening at a
+        // conversation (ConversationsController::openFolder()).
+        $this->withUnencryptedCookie('tallport_narrow', '1');
+
         \Tests\Support\StubCommand::$calls = [];
         foreach ($this->stubbed_commands as $name) {
             $this->app[\Illuminate\Contracts\Console\Kernel::class]->registerCommand(new \Tests\Support\StubCommand($name));
