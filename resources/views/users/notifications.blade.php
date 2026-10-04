@@ -6,32 +6,25 @@
     @section('body_attrs')@parent data-own_profile="true" @endsection
 @endif
 
+@section('main_class', 'fruit-ui')
+
 @section('sidebar')
-    @include('partials/sidebar_menu_toggle')
     @include('users/sidebar_menu')
 @endsection
 
 @section('content')
-    <div class="section-heading">
-        {{ __('Notifications') }}
-    </div>
+    <div class="page-content">
+        @include('partials/flash_messages')
 
-    @include('partials/flash_messages')
-
-    <div class="row-container">
-        <div class="row">
-            <div class="col-md-11 col-lg-9">
-                <form method="POST" action="" class="user-subscriptions">
-                    {{ csrf_field() }}
-                    @include('users/subscriptions_table')
-                    <div class="form-group margin-top">    
-                        <button type="submit" class="btn btn-primary">
-                            {{ __('Save Notifications') }}
-                        </button>
-                    </div>
-                </form>
+        <form method="POST" action="" class="user-subscriptions">
+            {{ csrf_field() }}
+            <div class="f-table__scroll">
+                @include('users/subscriptions_table')
             </div>
-        </div>
+            <div class="settings-form__actions">
+                <x-fruit::button type="submit" variant="primary">{{ __('Save Notifications') }}</x-fruit::button>
+            </div>
+        </form>
     </div>
 @endsection
 

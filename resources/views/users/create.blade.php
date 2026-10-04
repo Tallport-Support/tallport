@@ -2,155 +2,79 @@
 
 @section('title', __('New User'))
 
+@section('main_class', 'fruit-ui')
+
+@section('sidebar')
+    <x-page-nav>
+        <x-slot:title><h1>{{ __('Create a New User') }}</h1></x-slot:title>
+    </x-page-nav>
+@endsection
+
 @section('content')
-<div class="container">
-	<div class="row">
-	    <div class="col-md-8 col-md-offset-2">
-	        <div class="panel panel-default panel-wizard">
-	            <div class="panel-body">
-	            	<div class="wizard-header">
-		            	<h1>{{ __('Create a New User') }}</h1>
-		            </div>
-		            <div class="wizard-body">
-					 	@include('partials/flash_messages')
+<div class="page-content">
+    @include('partials/flash_messages')
 
-				        <div class="row">
-				            <div class="col-xs-12">
-				                <form class="form-horizontal margin-top" method="POST" action="">
-				                    {{ csrf_field() }}
+    @php
+        $send_invite = !empty(old('send_invite')) || empty(old('role'));
+    @endphp
+    <form class="settings-form" method="POST" action="" x-data="{ sendInvite: @js($send_invite) }">
+        {{ csrf_field() }}
 
-				                    @if (Auth::user()->isAdmin())
-					                    <div class="form-group{{ $errors->has('role') ? ' has-error' : '' }}">
-					                        <label for="role" class="col-sm-4 control-label">{{ __('Role') }}</label>
+        @if (Auth::user()->isAdmin())
+            <x-fruit::field :label="__('Role')">
+                <x-fruit::select id="role" name="role" required autofocus>
+                    <option value="{{ App\User::ROLE_USER }}" @selected(old('role') == App\User::ROLE_USER)>{{ __('User') }}</option>
+                    <option value="{{ App\User::ROLE_ADMIN }}" @selected(old('role') == App\User::ROLE_ADMIN)>{{ __('Administrator') }}</option>
+                </x-fruit::select>
+            </x-fruit::field>
+            <p class="f-help settings-form__note">{!! __('<strong>Administrators</strong> can create new users and have access to all mailboxes and settings') !!}<br>{!! __('<strong>Users</strong> have access to the mailbox(es) specified in their permissions') !!}</p>
+        @endif
 
-					                        <div class="col-sm-6">
-					                        	<div class="flexy">
-						                            <select id="role" type="text" class="form-control input-sized" name="role" required autofocus>
-						                                <option value="{{ App\User::ROLE_USER }}" @if (old('role') == App\User::ROLE_USER)selected="selected"@endif>{{ __('User') }}</option>
-						                                <option value="{{ App\User::ROLE_ADMIN }}" @if (old('role') == App\User::ROLE_ADMIN)selected="selected"@endif>{{ __('Administrator') }}</option>
-						                            </select>
+        <x-fruit::field :label="__('First Name')">
+            <x-fruit::input id="first_name" name="first_name" :value="old('first_name')" maxlength="20" required autofocus />
+        </x-fruit::field>
 
-						                            <i class="glyphicon glyphicon-info-sign icon-info" data-toggle="popover" data-trigger="hover" data-html="true" data-placement="left" data-title="{{ __('Roles') }}" data-content="{{ __('<strong>Administrators</strong> can create new users and have access to all mailboxes and settings') }} <br><br>{{ __('<strong>Users</strong> have access to the mailbox(es) specified in their permissions') }}"></i>
-						                        </div>
+        <x-fruit::field :label="__('Last Name')">
+            <x-fruit::input id="last_name" name="last_name" :value="old('last_name')" maxlength="30" />
+        </x-fruit::field>
 
-					                            @include('partials/field_error', ['field'=>'role'])
-					                        </div>
-					                    </div>
-					                @endif
+        @action('user.create.before_email')
 
-									<div class="form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
-				                        <label for="first_name" class="col-sm-4 control-label">{{ __('First Name') }}</label>
+        <x-fruit::field :label="__('Email')">
+            <x-fruit::input type="email" id="email" name="email" :value="old('email')" maxlength="100" required />
+        </x-fruit::field>
 
-				                        <div class="col-sm-6">
-				                            <input id="first_name" type="text" class="form-control input-sized" name="first_name" value="{{ old('first_name') }}" maxlength="20" required autofocus>
+        @if (count($mailboxes))
+            <x-fruit::fieldset id="permissions-fields">
+                <legend>{{ __('Which mailboxes will user use?') }}</legend>
+                @foreach ($mailboxes as $mailbox_option)
+                    <x-fruit::checkbox name="mailboxes[]" id="mailbox-{{ $mailbox_option->id }}" :value="$mailbox_option->id" :checked="is_array(old('mailboxes')) && in_array($mailbox_option->id, old('mailboxes'))">{{ $mailbox_option->name }}</x-fruit::checkbox>
+                @endforeach
+            </x-fruit::fieldset>
+            <div class="f-row settings-form__note">
+                <a href="#" class="f-button f-button--ghost f-button--small sel-all">{{ __('all') }}</a>
+                <a href="#" class="f-button f-button--ghost f-button--small sel-none">{{ __('none') }}</a>
+            </div>
+            @error('mailboxes')<p class="f-error">{{ $message }}</p>@enderror
+        @endif
 
-				                            @include('partials/field_error', ['field'=>'first_name'])
-				                        </div>
-				                    </div>
+        <hr>
 
-				                    <div class="form-group{{ $errors->has('last_name') ? ' has-error' : '' }}">
-				                        <label for="last_name" class="col-sm-4 control-label">{{ __('Last Name') }}</label>
+        <x-fruit::switch id="send_invite" name="send_invite" value="1" :checked="$send_invite" x-model="sendInvite" :description="__('An invite can be sent later if you aren\'t ready')">{{ __('Send an invite email') }}</x-fruit::switch>
 
-				                        <div class="col-sm-6">
-				                            <input id="last_name" type="text" class="form-control input-sized" name="last_name" value="{{ old('last_name') }}" maxlength="30">
+        <x-fruit::field :label="__('Password')" x-show="!sendInvite">
+            <x-fruit::input type="password" id="password" name="password" :value="old('password')" maxlength="255" x-bind:required="!sendInvite" />
+        </x-fruit::field>
 
-				                            @include('partials/field_error', ['field'=>'last_name'])
-				                        </div>
-				                    </div>
-                                    
-                                    @action('user.create.before_email')
-
-				                    <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-				                        <label for="email" class="col-sm-4 control-label">{{ __('Email') }}</label>
-
-				                        <div class="col-sm-6">
-				                            <input id="email" type="email" class="form-control input-sized" name="email" value="{{ old('email') }}" maxlength="100" required autofocus>
-
-				                            @include('partials/field_error', ['field'=>'email'])
-				                        </div>
-				                    </div>
-
-				                    <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}  @if (!empty(old('send_invite')) || empty(old('role'))) hidden @endif no-send-invite">
-				                        <label for="password" class="col-sm-4 control-label">{{ __('Password') }}</label>
-
-				                        <div class="col-sm-6">
-				                            <input id="password" type="password" class="form-control input-sized" name="password" value="{{ old('password') }}" maxlength="255" @if (!old('send_invite') && old('role')) required @endif autofocus>
-
-				                            @include('partials/field_error', ['field'=>'password'])
-				                        </div>
-				                    </div>
-
-				                    @if (count($mailboxes))
-					                    <div class="form-group{{ $errors->has('users') ? ' has-error' : '' }} margin-bottom-0">
-					                        <label for="users" class="col-sm-4 control-label">{{ __('Which mailboxes will user use?') }}</label>
-
-					                        <div class="col-sm-6 control-padded">
-					                            <div><a href="#" class="sel-all">{{ __('all') }}</a> / <a href="#" class="sel-none">{{ __('none') }}</a></div>
-
-					                            <fieldset id="permissions-fields">
-							                        @foreach ($mailboxes as $mailbox)
-							                            <div class="control-group">
-							                                <div class="controls">
-							                                    <label class="control-label checkbox" for="mailbox-{{ $mailbox->id }}">
-							                                        <input type="checkbox" name="mailboxes[]" id="mailbox-{{ $mailbox->id }}" value="{{ $mailbox->id }}" @if (is_array(old('mailboxes')) && in_array($mailbox->id, old('mailboxes'))) checked="checked" @endif> {{ $mailbox->name }}
-							                                    </label>
-							                                </div>
-							                            </div>
-							                        @endforeach
-							                    </fieldset>
-
-					                            @include('partials/field_error', ['field'=>'mailboxes'])
-					                        </div>
-					                    </div>
-				                    @endif
-
-									<div class="col-sm-6 col-sm-offset-4">
-										<div class="input-sized">
-											<hr class="form-divider">
-										</div>
-									</div>
-
-									<div class="form-group">
-										<div class="controls send-email">
-											<div class="col-sm-8 col-sm-offset-4">
-												<label class="checkbox">
-													{{-- Mark as checked if it has been checked before or if form has not been submitted yet --}}
-													<input type="checkbox" name="send_invite" id="send_invite" value="1" @if (!empty(old('send_invite')) || empty(old('role'))) checked="checked" @endif>
-													{{ __('Send an invite email') }}
-												</label>
-
-												<span class="text-help">{{ __("An invite can be sent later if you aren't ready") }}</span>
-											</div>
-										</div>
-							        </div>
-
-				                    <div class="form-group">
-				                        <div class="col-sm-6 col-sm-offset-4">
-				                            <button type="submit" class="btn btn-primary">
-				                                {{ __('Create User') }}
-				                            </button>
-
-				                            <a href="{{ route('users') }}" class="btn btn-link">{{ __('Cancel') }}</a>
-				                        </div>
-				                    </div>
-
-				                </form>
-				            </div>
-				        </div>
-					    
-	                </div>
-	                <div class="wizard-footer">
-	                	
-	                </div>
-	            </div>
-	        </div>
-	    </div>
-	</div>
+        <div class="settings-form__actions f-row">
+            <x-fruit::button type="submit" variant="primary">{{ __('Create User') }}</x-fruit::button>
+            <a href="{{ route('users') }}" class="f-button f-button--ghost">{{ __('Cancel') }}</a>
+        </div>
+    </form>
 </div>
 @endsection
 
 @section('javascript')
     @parent
     permissionsInit();
-    userCreateInit();
 @endsection

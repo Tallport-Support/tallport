@@ -3078,19 +3078,15 @@ ul.sidebar-block-list {
 .user-subscriptions {
     margin-bottom: 30px;
 }
-.user-subscriptions .table-header th,
-.user-subscriptions .table-header td {
-    border-top: none;
-    font-size: 14px;
-    padding-top: 20px;
+.subscriptions-table {
+    --f-table-cell-padding: 8px 10px;
+}
+.subscriptions-table .table-header > * {
+    background: var(--f-surface-secondary);
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+    font-weight: 600;
     vertical-align: bottom;
-    line-height: 18px;
-}
-.user-subscriptions .table-header td {
-    padding-bottom: 4px;
-}
-.user-subscriptions .table-header input {
-    margin-top: 6px;
 }
 
 /**
@@ -5366,4 +5362,34 @@ a.disabled:focus {
 }
 .logs-table {
     --f-table-cell-padding: 8px 10px;
+}
+.list-search {
+    max-width: 500px;
+    margin-bottom: 16px;
+}
+.entity-list {
+    --f-item-list-padding: 0;
+    max-width: 820px;
+}
+.entity-list__inactive .f-item-row__title,
+.entity-list__inactive .f-item-row__subtitle {
+    color: var(--f-secondary);
+}
+.entity-list__badges {
+    display: flex;
+    gap: 4px;
+}
+.settings-form__note {
+    margin-top: -10px;
+}
+.settings-form__end {
+    margin-inline-start: auto;
+}
+.settings-form.settings-form--wide {
+    max-width: 900px;
+}
+.passkey-name {
+    width: auto;
+    flex: 1;
+    max-width: 320px;
 }
