@@ -16,6 +16,11 @@
             <button class="f-button f-button--ghost" type="button" data-fruit-command="{{ $command }}">{{ $label }}</button>
         @endforeach
         @endisset
+        @isset($extras)
+            {{-- Application buttons after the defaults: saved replies, variables, attachments. --}}
+            <span class="f-editor__separator" role="separator" aria-orientation="vertical"></span>
+            {{ $extras }}
+        @endisset
     </div>
     <textarea data-fruit-control {{ $attributes->class(['f-input']) }}>{{ $slot }}</textarea>
     <div class="f-editor__surface" wire:ignore hidden></div>

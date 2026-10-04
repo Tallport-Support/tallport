@@ -484,6 +484,19 @@ Without a bundler, link the prebuilt `editor.global.js` (published with the othe
 
 **Links, images and formatting.** The default toolbar adds Link, Image and Remove formatting (`data-fruit-command` `link`, `image` and `clear` in a custom toolbar). Link opens a small popover for the address: it links the selected text, edits the link the cursor is in, or removes it. Image inserts a picture by address. Images are accepted only by address; pasted `data:` images are refused, so files go through the upload hook below.
 
+**Application buttons.** The `extras` slot adds buttons or Menus after the default toolbar, behind a separator, without replacing it: Insert variable, Attach file, Saved replies. They act through `$dispatch('fruit-editor-insert', { html })`; a Menu's popup opens in the top layer.
+
+```blade
+<x-fruit::editor wire:model="body">
+    <x-slot:extras>
+        <x-fruit::menu title="Insert variable">
+            <x-slot:trigger class="f-button--ghost">Insert variable<span class="f-menu__chevron" aria-hidden="true"></span></x-slot:trigger>
+            <x-fruit::menu-item x-on:click="$dispatch('fruit-editor-insert', { html: '{%customer.firstName%}' })">Customer first name</x-fruit::menu-item>
+        </x-fruit::menu>
+    </x-slot:extras>
+</x-fruit::editor>
+```
+
 **Pasted and dropped images.** When someone pastes or drops image files, the textarea dispatches a bubbling `fruit-editor-upload` event whose `detail` holds the `files` and an `insert(url, alt)` function. Upload the files, then call `insert` with each address; the image goes where it was pasted or dropped.
 
 ```blade

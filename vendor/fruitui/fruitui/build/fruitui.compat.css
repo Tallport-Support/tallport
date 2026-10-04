@@ -4231,6 +4231,12 @@ img.f-avatar {
 .f-editor__surface .tiptap:focus-visible {
     outline: none;
   }
+.f-editor__separator {
+    align-self: stretch;
+    width: 1px;
+    margin: 4px 2px;
+    background: var(--f-border);
+  }
 /* The address popover for links and images, beside its toolbar button. */
 .f-editor__popover {
     display: flex;
