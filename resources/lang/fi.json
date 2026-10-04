@@ -1510,5 +1510,11 @@
     "Stay on the conversation": "Pysy keskustelussa",
     "You have unsaved changes.": "Sinulla on tallentamattomia muutoksia.",
     "Inbox": "Saapuneet",
-    "All Settings": "Kaikki asetukset"
+    "All Settings": "Kaikki asetukset",
+    "Everything is working": "Kaikki toimii",
+    "Needs attention": "Vaatii huomiota",
+    "All :count extensions are installed": "Kaikki :count laajennusta on asennettu",
+    "All :count functions are available": "Kaikki :count funktiota ovat käytettävissä",
+    "All :count folders are writable": "Kaikkiin :count kansioon voi kirjoittaa",
+    "Can't use cron?": "Etkö voi käyttää cronia?"
 }

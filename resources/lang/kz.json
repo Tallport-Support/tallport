@@ -1893,5 +1893,11 @@
     "Stay on the conversation": "Тикетте қалу",
     "You have unsaved changes.": "Сізде сақталмаған өзгерістер бар.",
     "Inbox": "Кіріс жәшігі",
-    "All Settings": "Барлық баптаулар"
+    "All Settings": "Барлық баптаулар",
+    "Everything is working": "Барлығы жұмыс істеп тұр",
+    "Needs attention": "Назар аударуды қажет етеді",
+    "All :count extensions are installed": "Барлық :count кеңейтім орнатылған",
+    "All :count functions are available": "Барлық :count функция қолжетімді",
+    "All :count folders are writable": "Барлық :count қалтаға жазуға болады",
+    "Can't use cron?": "Cron қолдана алмайсыз ба?"
 }

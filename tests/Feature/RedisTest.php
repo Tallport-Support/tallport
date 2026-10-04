@@ -100,7 +100,7 @@ class RedisTest extends FeatureTestCase
 
         $this->actingAs($admin)->get(route('system'))
             ->assertOk()
-            ->assertSee('App\Jobs\SendReplyToCustomer')
+            ->assertSee('SendReplyToCustomer')
             ->assertSee('#'.$conversation->number)
             ->assertSee('(queue)');
 

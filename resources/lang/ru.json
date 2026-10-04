@@ -1491,5 +1491,11 @@
     "Stay on the conversation": "Остаться в тикете",
     "You have unsaved changes.": "У вас есть несохранённые изменения.",
     "Inbox": "Входящие",
-    "All Settings": "Все настройки"
+    "All Settings": "Все настройки",
+    "Everything is working": "Всё работает",
+    "Needs attention": "Требует внимания",
+    "All :count extensions are installed": "Все расширения (:count) установлены",
+    "All :count functions are available": "Все функции (:count) доступны",
+    "All :count folders are writable": "Все папки (:count) доступны для записи",
+    "Can't use cron?": "Не можете использовать cron?"
 }

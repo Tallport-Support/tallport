@@ -1490,5 +1490,11 @@
     "Stay on the conversation": "להישאר בשיחה",
     "You have unsaved changes.": "יש לך שינויים שלא נשמרו.",
     "Inbox": "דואר נכנס",
-    "All Settings": "כל ההגדרות"
+    "All Settings": "כל ההגדרות",
+    "Everything is working": "הכול עובד",
+    "Needs attention": "דורש תשומת לב",
+    "All :count extensions are installed": "כל :count ההרחבות מותקנות",
+    "All :count functions are available": "כל :count הפונקציות זמינות",
+    "All :count folders are writable": "לכל :count התיקיות יש הרשאת כתיבה",
+    "Can't use cron?": "לא ניתן להשתמש ב-cron?"
 }

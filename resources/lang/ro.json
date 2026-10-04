@@ -1490,5 +1490,11 @@
     "Stay on the conversation": "Rămâi la conversație",
     "You have unsaved changes.": "Aveți modificări nesalvate.",
     "Inbox": "Inbox",
-    "All Settings": "Toate setările"
+    "All Settings": "Toate setările",
+    "Everything is working": "Totul funcționează",
+    "Needs attention": "Necesită atenție",
+    "All :count extensions are installed": "Toate cele :count extensii sunt instalate",
+    "All :count functions are available": "Toate cele :count funcții sunt disponibile",
+    "All :count folders are writable": "Toate cele :count foldere pot fi scrise",
+    "Can't use cron?": "Nu puteți folosi cron?"
 }

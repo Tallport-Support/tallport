@@ -1495,5 +1495,11 @@
     "Stay on the conversation": "Bli i samtalen",
     "You have unsaved changes.": "Du har endringer som ikke er lagret.",
     "Inbox": "Innboks",
-    "All Settings": "Alle innstillinger"
+    "All Settings": "Alle innstillinger",
+    "Everything is working": "Alt fungerer",
+    "Needs attention": "Krever oppmerksomhet",
+    "All :count extensions are installed": "Alle :count utvidelser er installert",
+    "All :count functions are available": "Alle :count funksjoner er tilgjengelige",
+    "All :count folders are writable": "Alle :count mapper er skrivbare",
+    "Can't use cron?": "Kan du ikke bruke cron?"
 }

@@ -1495,5 +1495,11 @@
     "Stay on the conversation": "Bij het gesprek blijven",
     "You have unsaved changes.": "U hebt niet-opgeslagen wijzigingen.",
     "Inbox": "Inbox",
-    "All Settings": "Alle instellingen"
+    "All Settings": "Alle instellingen",
+    "Everything is working": "Alles werkt",
+    "Needs attention": "Vraagt aandacht",
+    "All :count extensions are installed": "Alle :count extensies zijn geïnstalleerd",
+    "All :count functions are available": "Alle :count functies zijn beschikbaar",
+    "All :count folders are writable": "Alle :count mappen zijn beschrijfbaar",
+    "Can't use cron?": "Kunt u cron niet gebruiken?"
 }

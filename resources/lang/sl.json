@@ -1490,5 +1490,11 @@
     "Stay on the conversation": "Ostani pri pogovoru",
     "You have unsaved changes.": "Imate neshranjene spremembe.",
     "Inbox": "Prejeto",
-    "All Settings": "Vse nastavitve"
+    "All Settings": "Vse nastavitve",
+    "Everything is working": "Vse deluje",
+    "Needs attention": "Zahteva pozornost",
+    "All :count extensions are installed": "Vseh :count razširitev je nameščenih",
+    "All :count functions are available": "Vseh :count funkcij je na voljo",
+    "All :count folders are writable": "V vseh :count map je mogoče pisati",
+    "Can't use cron?": "Ne morete uporabiti crona?"
 }

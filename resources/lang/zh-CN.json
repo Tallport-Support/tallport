@@ -1492,5 +1492,11 @@
     "Stay on the conversation": "留在此对话",
     "You have unsaved changes.": "您有未保存的更改。",
     "Inbox": "收件箱",
-    "All Settings": "所有设置"
+    "All Settings": "所有设置",
+    "Everything is working": "一切正常",
+    "Needs attention": "需要注意",
+    "All :count extensions are installed": "全部 :count 个扩展已安装",
+    "All :count functions are available": "全部 :count 个函数可用",
+    "All :count folders are writable": "全部 :count 个文件夹可写",
+    "Can't use cron?": "无法使用 cron？"
 }

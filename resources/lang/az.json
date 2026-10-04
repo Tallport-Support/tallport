@@ -1491,5 +1491,11 @@
     "Stay on the conversation": "Söhbətdə qal",
     "You have unsaved changes.": "Saxlanılmamış dəyişiklikləriniz var.",
     "Inbox": "Gələnlər",
-    "All Settings": "Bütün parametrlər"
+    "All Settings": "Bütün parametrlər",
+    "Everything is working": "Hər şey işləyir",
+    "Needs attention": "Diqqət tələb edir",
+    "All :count extensions are installed": "Bütün :count genişləndirmə quraşdırılıb",
+    "All :count functions are available": "Bütün :count funksiya mövcuddur",
+    "All :count folders are writable": "Bütün :count qovluq yazıla biləndir",
+    "Can't use cron?": "Cron istifadə edə bilmirsiniz?"
 }

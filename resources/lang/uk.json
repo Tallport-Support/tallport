@@ -1491,5 +1491,11 @@
     "Stay on the conversation": "Залишитися в розмові",
     "You have unsaved changes.": "У вас є незбережені зміни.",
     "Inbox": "Вхідні",
-    "All Settings": "Усі налаштування"
+    "All Settings": "Усі налаштування",
+    "Everything is working": "Усе працює",
+    "Needs attention": "Потребує уваги",
+    "All :count extensions are installed": "Усі розширення (:count) встановлено",
+    "All :count functions are available": "Усі функції (:count) доступні",
+    "All :count folders are writable": "Усі папки (:count) доступні для запису",
+    "Can't use cron?": "Не можете використовувати cron?"
 }

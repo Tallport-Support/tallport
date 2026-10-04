@@ -1491,5 +1491,11 @@
     "Stay on the conversation": "Maradj a beszélgetésnél",
     "You have unsaved changes.": "Nem mentett módosításai vannak.",
     "Inbox": "Beérkezett",
-    "All Settings": "Minden beállítás"
+    "All Settings": "Minden beállítás",
+    "Everything is working": "Minden működik",
+    "Needs attention": "Figyelmet igényel",
+    "All :count extensions are installed": "Mind a(z) :count bővítmény telepítve van",
+    "All :count functions are available": "Mind a(z) :count függvény elérhető",
+    "All :count folders are writable": "Mind a(z) :count mappa írható",
+    "Can't use cron?": "Nem tudja használni a cront?"
 }

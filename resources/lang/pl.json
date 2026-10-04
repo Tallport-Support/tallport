@@ -1490,5 +1490,11 @@
     "Stay on the conversation": "Zostań przy rozmowie",
     "You have unsaved changes.": "Masz niezapisane zmiany.",
     "Inbox": "Skrzynka odbiorcza",
-    "All Settings": "Wszystkie ustawienia"
+    "All Settings": "Wszystkie ustawienia",
+    "Everything is working": "Wszystko działa",
+    "Needs attention": "Wymaga uwagi",
+    "All :count extensions are installed": "Wszystkie rozszerzenia (:count) są zainstalowane",
+    "All :count functions are available": "Wszystkie funkcje (:count) są dostępne",
+    "All :count folders are writable": "Wszystkie foldery (:count) są zapisywalne",
+    "Can't use cron?": "Nie możesz użyć crona?"
 }

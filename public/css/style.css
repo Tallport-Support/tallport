@@ -2050,22 +2050,24 @@ a.disabled:focus {
     margin-top: 20px;
     white-space: pre-wrap;
 }
-.system-status > h3 {
-    margin: 28px 0 10px;
+.system-status__ok {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
-.system-status__table {
-    --f-table-cell-padding: 8px 10px;
-    margin-bottom: 12px;
+.system-status__ok .f-icon {
+    color: var(--f-success);
 }
-.system-status__table > tbody > tr > th {
-    width: 30%;
-    font-weight: 600;
+.system-status__problems ul {
+    margin: 4px 0 0;
+    padding-inline-start: 20px;
 }
-.system-status__table--narrow {
-    max-width: 640px;
+.system-status__command {
+    margin-top: 6px;
 }
-.system-status__alert {
-    margin-top: 10px;
+.system-status__wide {
+    flex: 1;
+    min-width: 0;
 }
 .system-status__job-actions {
     justify-content: flex-end;
@@ -2324,7 +2326,8 @@ a.disabled:focus {
 }
 /* Settings pages: grouped sections on the grouped background, as in FruitUI's
    settings example. */
-.app-main:has(.settings-form) {
+.app-main:has(.settings-form),
+.app-main:has(.app-page) {
     background: var(--f-grouped-background);
 }
 .settings-form > .f-form-section + .f-form-section {

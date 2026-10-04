@@ -172,6 +172,12 @@ class SettingsAndSystemTest extends FeatureTestCase
             'failed_at'  => now(),
         ]);
 
+        // The status page calls it out at the top; its details open in a dialog.
+        $this->actingAs($this->admin)->get(route('system'))->assertOk()
+            ->assertSeeInOrder(['Needs attention', 'Failed Jobs: 1', 'Background Jobs'])
+            ->assertSee('data-fruit-dialog-url', false)
+            ->assertSee(route('system.ajax_html', ['action' => 'job_details', 'param' => $job_id]), false);
+
         $this->actingAs($this->admin)->get('/system/ajax-html/job_details/'.$job_id)
             ->assertStatus(200)->assertSee('Connection refused');
 

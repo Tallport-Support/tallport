@@ -1491,5 +1491,11 @@
     "Stay on the conversation": "会話にとどまる",
     "You have unsaved changes.": "保存されていない変更があります。",
     "Inbox": "受信トレイ",
-    "All Settings": "すべての設定"
+    "All Settings": "すべての設定",
+    "Everything is working": "すべて正常に動作しています",
+    "Needs attention": "確認が必要です",
+    "All :count extensions are installed": ":count 個の拡張機能がすべてインストールされています",
+    "All :count functions are available": ":count 個の関数がすべて利用可能です",
+    "All :count folders are writable": ":count 個のフォルダーすべてに書き込みできます",
+    "Can't use cron?": "cron を使用できませんか？"
 }

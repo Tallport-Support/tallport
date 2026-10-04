@@ -1491,5 +1491,11 @@
     "Stay on the conversation": "Konuşmada kal",
     "You have unsaved changes.": "Kaydedilmemiş değişiklikleriniz var.",
     "Inbox": "Gelen kutusu",
-    "All Settings": "Tüm ayarlar"
+    "All Settings": "Tüm ayarlar",
+    "Everything is working": "Her şey çalışıyor",
+    "Needs attention": "İlgilenilmesi gerekiyor",
+    "All :count extensions are installed": ":count eklentinin tümü kurulu",
+    "All :count functions are available": ":count fonksiyonun tümü kullanılabilir",
+    "All :count folders are writable": ":count klasörün tümü yazılabilir",
+    "Can't use cron?": "Cron kullanamıyor musunuz?"
 }

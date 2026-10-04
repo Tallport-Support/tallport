@@ -1490,5 +1490,11 @@
     "Stay on the conversation": "Zůstat u konverzace",
     "You have unsaved changes.": "Máte neuložené změny.",
     "Inbox": "Doručená pošta",
-    "All Settings": "Všechna nastavení"
+    "All Settings": "Všechna nastavení",
+    "Everything is working": "Vše funguje",
+    "Needs attention": "Vyžaduje pozornost",
+    "All :count extensions are installed": "Všech :count rozšíření je nainstalováno",
+    "All :count functions are available": "Všech :count funkcí je k dispozici",
+    "All :count folders are writable": "Do všech :count složek lze zapisovat",
+    "Can't use cron?": "Nemůžete použít cron?"
 }

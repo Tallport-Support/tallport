@@ -1588,5 +1588,11 @@
     "After sending": "Després d'enviar",
     "Stay on the conversation": "Queda't a la conversa",
     "You have unsaved changes.": "Teniu canvis sense desar.",
-    "All Settings": "Tots els paràmetres"
+    "All Settings": "Tots els paràmetres",
+    "Everything is working": "Tot funciona",
+    "Needs attention": "Requereix atenció",
+    "All :count extensions are installed": "Les :count extensions estan instal·lades",
+    "All :count functions are available": "Les :count funcions estan disponibles",
+    "All :count folders are writable": "Les :count carpetes tenen permís d'escriptura",
+    "Can't use cron?": "No podeu fer servir cron?"
 }

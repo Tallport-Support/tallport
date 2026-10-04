@@ -59,7 +59,6 @@ document.addEventListener('alpine:init', function () {
 	window.Alpine.data('tallportSystemStatus', function () {
 		return {
 			https: location.protocol == 'https:',
-			job: {title: '', html: ''},
 			update: function (event) {
 				var button = event.currentTarget;
 				Tallport.confirm({message: Lang.get('messages.confirm_update'), confirm: Lang.get('messages.update'), tone: 'danger'}).then(function (ok) {
@@ -92,20 +91,6 @@ document.addEventListener('alpine:init', function () {
 					}
 					Tallport.result(response);
 					Tallport.busy(button, false);
-				});
-			},
-			jobDetails: function (event) {
-				var self = this;
-				var link = event.currentTarget;
-				this.job = {title: link.getAttribute('data-title'), html: ''};
-				this.$dispatch('fruit-dialog-open', {name: 'job-details'});
-				fetch(link.href, {credentials: 'same-origin', headers: {'X-Requested-With': 'XMLHttpRequest'}}).then(function (response) {
-					return response.ok ? response.text() : Promise.reject();
-				}).then(function (html) {
-					self.job.html = html;
-				}).catch(function () {
-					self.$dispatch('fruit-dialog-close', {name: 'job-details'});
-					Tallport.toast(Lang.get('messages.ajax_error'), 'danger');
 				});
 			}
 		};

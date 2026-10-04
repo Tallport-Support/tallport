@@ -1490,5 +1490,11 @@
     "Stay on the conversation": "Resta sul ticket",
     "You have unsaved changes.": "Hai modifiche non salvate.",
     "Inbox": "Posta in arrivo",
-    "All Settings": "Tutte le impostazioni"
+    "All Settings": "Tutte le impostazioni",
+    "Everything is working": "Tutto funziona",
+    "Needs attention": "Richiede attenzione",
+    "All :count extensions are installed": "Tutte le :count estensioni sono installate",
+    "All :count functions are available": "Tutte le :count funzioni sono disponibili",
+    "All :count folders are writable": "Tutte le :count cartelle sono scrivibili",
+    "Can't use cron?": "Non puoi usare cron?"
 }

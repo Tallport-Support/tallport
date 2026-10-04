@@ -1491,5 +1491,11 @@
     "Stay on the conversation": "Stanna kvar i konversationen",
     "You have unsaved changes.": "Du har osparade ändringar.",
     "Inbox": "Inkorg",
-    "All Settings": "Alla inställningar"
+    "All Settings": "Alla inställningar",
+    "Everything is working": "Allt fungerar",
+    "Needs attention": "Kräver uppmärksamhet",
+    "All :count extensions are installed": "Alla :count tillägg är installerade",
+    "All :count functions are available": "Alla :count funktioner är tillgängliga",
+    "All :count folders are writable": "Alla :count mappar är skrivbara",
+    "Can't use cron?": "Kan du inte använda cron?"
 }
