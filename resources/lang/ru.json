@@ -1483,5 +1483,7 @@
     "Select": "Выбрать",
     "Clear selection": "Снять выделение",
     "Selected conversations": "Выбранные тикеты",
-    "Generated, not sent": "Сгенерировано, не отправлено"
+    "Generated, not sent": "Сгенерировано, не отправлено",
+    "Previous": "Назад",
+    "Next": "Далее"
 }

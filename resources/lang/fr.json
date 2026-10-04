@@ -1492,5 +1492,7 @@
     "Select": "Sélectionner",
     "Clear selection": "Effacer la sélection",
     "Selected conversations": "Conversations sélectionnées",
-    "Generated, not sent": "Généré, non envoyé"
+    "Generated, not sent": "Généré, non envoyé",
+    "Previous": "Précédent",
+    "Next": "Suivant"
 }

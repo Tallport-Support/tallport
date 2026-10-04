@@ -1483,5 +1483,7 @@
     "Select": "Seç",
     "Clear selection": "Seçimi temizle",
     "Selected conversations": "Seçili konuşmalar",
-    "Generated, not sent": "Oluşturuldu, gönderilmedi"
+    "Generated, not sent": "Oluşturuldu, gönderilmedi",
+    "Previous": "Önceki",
+    "Next": "Sonraki"
 }

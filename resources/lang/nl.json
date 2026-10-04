@@ -1487,5 +1487,7 @@
     "Select": "Selecteren",
     "Clear selection": "Selectie wissen",
     "Selected conversations": "Geselecteerde gesprekken",
-    "Generated, not sent": "Gegenereerd, niet verzonden"
+    "Generated, not sent": "Gegenereerd, niet verzonden",
+    "Previous": "Vorige",
+    "Next": "Volgende"
 }

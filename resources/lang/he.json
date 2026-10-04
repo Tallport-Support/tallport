@@ -1482,5 +1482,7 @@
     "Select": "בחירה",
     "Clear selection": "ניקוי הבחירה",
     "Selected conversations": "שיחות שנבחרו",
-    "Generated, not sent": "נוצר אוטומטית, לא נשלח"
+    "Generated, not sent": "נוצר אוטומטית, לא נשלח",
+    "Previous": "הקודם",
+    "Next": "הבא"
 }

@@ -1482,5 +1482,7 @@
     "Select": "Vybrať",
     "Clear selection": "Zrušiť výber",
     "Selected conversations": "Vybrané konverzácie",
-    "Generated, not sent": "Vygenerované, neodoslané"
+    "Generated, not sent": "Vygenerované, neodoslané",
+    "Previous": "Predchádzajúce",
+    "Next": "Ďalšie"
 }

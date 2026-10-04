@@ -42,6 +42,9 @@
             {{-- The translation below the message, in the user's language. --}}
             <x-slot:translation :lang="$ai_language">@include('conversations/partials/ai_translation')</x-slot:translation>
         @endif
+        @if ($thread->has_attachments)
+            <x-slot:attachments>@include('conversations/partials/thread_attachments')</x-slot:attachments>
+        @endif
         <x-slot:avatar>
             @if ($thread_person && $thread_person->photo_url)
                 <x-fruit::avatar :src="$thread_person->getPhotoUrl()" />
@@ -184,7 +187,6 @@
             @if (!$thread_is_draft)
                 @action('thread.meta', $thread, $loop, $threads, $conversation, $mailbox)
             @endif
-            @include('conversations/partials/thread_attachments')
         </div>
 
         @if ($thread->opened_at)

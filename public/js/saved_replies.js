@@ -8,69 +8,54 @@
 // The current reply as a new saved reply.
 function savedReplySaveFromReply(name, done)
 {
-	fsAjax({
-			action: 'save_from_reply',
-			mailbox_id: $('#saved-replies-data').attr('data-mailbox_id'),
-			name: name,
-			text: getReplyBody()
-		},
-		laroute.route('saved_replies.ajax'),
-		function(response) {
-			if (isAjaxSuccess(response)) {
-				showFloatingAlert('success', response.msg_success);
-				done();
-			} else {
-				showAjaxError(response);
-			}
-		}, true
-	);
+	Tallport.post(laroute.route('saved_replies.ajax'), {
+		action: 'save_from_reply',
+		mailbox_id: document.getElementById('saved-replies-data').getAttribute('data-mailbox_id'),
+		name: name,
+		text: getReplyBody()
+	}).then(function (response) {
+		if (Tallport.result(response)) {
+			done();
+		}
+	});
 }
 
 // Put a saved reply (variables filled in, its files) where the cursor was.
 function savedReplyInsert(saved_reply_id)
 {
-	fsAjax({
-			action: 'get',
-			saved_reply_id: saved_reply_id,
-			mailbox_id: $('#saved-replies-data').attr('data-mailbox_id'),
-			conversation_id: getGlobalAttr('conversation_id')
-		},
-		laroute.route('saved_replies.ajax'),
-		function(response) {
-			if (isAjaxSuccess(response)) {
-				editorInsert('body', response.text || '');
-				savedReplyFiles(response, response.id);
-			} else {
-				showAjaxError(response);
-			}
-		}, true
-	);
+	Tallport.post(laroute.route('saved_replies.ajax'), {
+		action: 'get',
+		saved_reply_id: saved_reply_id,
+		mailbox_id: document.getElementById('saved-replies-data').getAttribute('data-mailbox_id'),
+		conversation_id: getGlobalAttr('conversation_id')
+	}).then(function (response) {
+		if (Tallport.result(response)) {
+			editorInsert('body', response.text || '');
+			savedReplyFiles(response, response.id);
+		}
+	});
 }
 
 // The default reply template goes in an empty reply.
 function savedReplyTemplateLoad()
 {
-	var data = $('#saved-replies-data');
-	if (!data.length || data.attr('data-template') != '1') {
+	var data = document.getElementById('saved-replies-data');
+	if (!data || data.getAttribute('data-template') != '1') {
 		return;
 	}
-	var body = getReplyBody();
-	if (body && body != fs_body_default && $.trim($('<div>'+body+'</div>').text())) {
+	if (stripTags(getReplyBody() || '').trim()) {
 		return;
 	}
-	fsAjax({
-			action: 'template',
-			mailbox_id: data.attr('data-mailbox_id'),
-			conversation_id: getGlobalAttr('conversation_id')
-		},
-		laroute.route('saved_replies.ajax'),
-		function(response) {
-			if (isAjaxSuccess(response) && response.text) {
-				setReplyBody(response.text);
-				savedReplyFiles(response);
-			}
-		}, true, function() {}
-	);
+	Tallport.post(laroute.route('saved_replies.ajax'), {
+		action: 'template',
+		mailbox_id: data.getAttribute('data-mailbox_id'),
+		conversation_id: getGlobalAttr('conversation_id')
+	}).then(function (response) {
+		if (Tallport.isSuccess(response) && response.text) {
+			setReplyBody(response.text);
+			savedReplyFiles(response);
+		}
+	});
 }
 
 // A saved reply's files (and which saved reply it was) for the composer
@@ -93,8 +78,9 @@ document.addEventListener('livewire:init', function() {
 		}
 	});
 });
-$(document).ready(function() {
-	if ($('#saved-replies-data').attr('data-new') == '1') {
+document.addEventListener('DOMContentLoaded', function() {
+	var data = document.getElementById('saved-replies-data');
+	if (data && data.getAttribute('data-new') == '1') {
 		// After the editor is there.
 		setTimeout(savedReplyTemplateLoad, 0);
 	}

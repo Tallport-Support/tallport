@@ -1358,7 +1358,8 @@ function goBack()
 
 function getReplyBody()
 {
-	return $("#body").val();
+	var body = document.getElementById('body');
+	return body ? body.value : '';
 }
 
 // FruitUI's editor: replace the content, insert at the cursor, focus.

@@ -1502,5 +1502,7 @@
     "Select": "Valitse",
     "Clear selection": "Tyhjennä valinta",
     "Selected conversations": "Valitut keskustelut",
-    "Generated, not sent": "Luotu, ei lähetetty"
+    "Generated, not sent": "Luotu, ei lähetetty",
+    "Previous": "Edellinen",
+    "Next": "Seuraava"
 }

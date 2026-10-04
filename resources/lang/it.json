@@ -1482,5 +1482,7 @@
     "Select": "Seleziona",
     "Clear selection": "Annulla selezione",
     "Selected conversations": "Ticket selezionati",
-    "Generated, not sent": "Generato, non inviato"
+    "Generated, not sent": "Generato, non inviato",
+    "Previous": "Precedente",
+    "Next": "Successivo"
 }
