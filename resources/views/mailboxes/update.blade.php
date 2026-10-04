@@ -4,236 +4,111 @@
 
 @section('body_attrs')@parent data-mailbox_id="{{ $mailbox->id }}"@endsection
 
+@section('main_class', 'fruit-ui')
+
 @section('sidebar')
-    @include('partials/sidebar_menu_toggle')
     @include('mailboxes/sidebar_menu')
 @endsection
 
 @section('content')
-    <div class="section-heading">
-        {{ __('Edit Mailbox') }}
-    </div>
+    <div class="page-content">
+        @include('partials/flash_messages')
 
-    @include('partials/flash_messages')
+        <form class="settings-form settings-form--wide" method="POST" action="" enctype="multipart/form-data">
+            {{ csrf_field() }}
 
-    <div class="row-container form-container">
-        <div class="row">
-            <div class="col-xs-12">
-                <form class="form-horizontal margin-top" method="POST" action="" enctype="multipart/form-data">
-                    {{ csrf_field() }}
-                    
-	                @action('mailbox.update.before_name', $mailbox, $errors)
+            @action('mailbox.update.before_name', $mailbox, $errors)
 
-                    @if (Auth::user()->isAdmin())
-                        <div class="form-group{{ $errors->has('state') ? ' has-error' : '' }}">
-                            <label class="col-sm-2 control-label">{{ __('Archived') }}</label>
+            @if (Auth::user()->isAdmin())
+                <x-fruit::switch id="mailbox_state" name="state" :value="App\Mailbox::STATE_ARCHIVED" :checked="old('state', $mailbox->state) == App\Mailbox::STATE_ARCHIVED">{{ __('Archived') }}</x-fruit::switch>
+            @endif
 
-                            <div class="col-sm-6">
-                                {{--<div class="btn-group" data-toggle="buttons">
-                                    <label class="btn btn-default @if (old('state', $mailbox->state) == App\Mailbox::STATE_ACTIVE) active @endif">
-                                        <input type="radio" name="state" value="{{ App\Mailbox::STATE_ACTIVE }}" autocomplete="off" @if (old('state', $mailbox->state) == App\Mailbox::STATE_ACTIVE)checked="checked"@endif>
-                                        <i class="glyphicon glyphicon-ok text-success"></i> {{ __('Active') }}
-                                    </label>
+            @if (Auth::user()->isAdmin())
+                <x-fruit::field :label="__('Mailbox Name')">
+                    <x-fruit::input id="name" name="name" :value="old('name', $mailbox->name)" maxlength="40" required autofocus />
+                </x-fruit::field>
 
-                                    <label class="btn btn-default">
-                                        <input type="radio" name="state" value="{{ App\Mailbox::STATE_ARCHIVED }}" autocomplete="off">
-                                        <i class="glyphicon glyphicon-lock"></i> {{ __('Archived') }}
-                                    </label>
-                                </div>--}}
-                                <div class="controls">
-                                    <div class="onoffswitch-wrap">
-                                        <div class="onoffswitch">
-                                            <input type="checkbox" name="state" value="{{ App\Mailbox::STATE_ARCHIVED }}" id="mailbox_state" class="onoffswitch-checkbox"  @if (old('state', $mailbox->state) == App\Mailbox::STATE_ARCHIVED) checked="checked" @endif>
-                                            <label class="onoffswitch-label" for="mailbox_state"></label>
-                                        </div>
-                                    </div>
-                                </div>
+                <x-fruit::field :label="__('Email Address')">
+                    <x-fruit::input type="email" id="email" name="email" :value="old('email', $mailbox->email)" maxlength="128" required />
+                </x-fruit::field>
+            @else
+                <div class="f-field">
+                    <span class="f-label">{{ __('Mailbox Name') }}</span>
+                    <span>{{ old('name', $mailbox->name) }}</span>
+                </div>
+                <div class="f-field">
+                    <span class="f-label">{{ __('Email Address') }}</span>
+                    <span>{{ old('email', $mailbox->email) }}</span>
+                </div>
+            @endif
 
-                                @include('partials/field_error', ['field'=>'name'])
-                            </div>
-                        </div>
-                    @endif
+            @if (Auth::user()->can('updateSettings', $mailbox))
+                <x-fruit::field :label="__('Aliases')" :description="__('Aliases are other email addresses that also forward to your mailbox address. Separate each email with a comma.')">
+                    <x-fruit::input id="aliases" name="aliases" :value="old('aliases', $mailbox->aliases)" :placeholder="'alias1@example.org, alias2@example.org('.__('Mailbox Name').')'" />
+                </x-fruit::field>
+                <x-fruit::checkbox id="aliases_reply" name="aliases_reply" value="1" :checked="(bool) old('aliases_reply', $mailbox->aliases_reply)">{{ __('Allow to reply from aliases') }}</x-fruit::checkbox>
 
-                    <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                        <label for="name" class="col-sm-2 control-label">{{ __('Mailbox Name') }}</label>
+                <x-fruit::field :label="__('Auto Bcc')" :description="__('Send a copy of all outgoing replies to specific external addresses.').' '.__('Separate each email with a comma.')">
+                    <x-fruit::input id="auto_bcc" name="auto_bcc" :value="old('auto_bcc', $mailbox->auto_bcc)" maxlength="255" />
+                </x-fruit::field>
 
-                        <div class="col-sm-6">
-                            @if (Auth::user()->isAdmin())
-                                <input id="name" type="text" class="form-control input-sized" name="name" value="{{ old('name', $mailbox->name) }}" maxlength="40" required autofocus>
-                            @else
-                                <label class="control-label">{{ old('name', $mailbox->name) }}</label>
-                            @endif
-                            @include('partials/field_error', ['field'=>'name'])
-                        </div>
+                <x-fruit::field :label="__('From Name')" :description="strip_tags(__('Name that will appear in the <strong>From</strong> field when a customer views your email.'))">
+                    <x-fruit::select id="from_name" name="from_name" required>
+                        <option value="{{ App\Mailbox::FROM_NAME_MAILBOX }}" @selected(old('from_name', $mailbox->from_name) == App\Mailbox::FROM_NAME_MAILBOX)>{{ __('Mailbox Name') }}</option>
+                        <option value="{{ App\Mailbox::FROM_NAME_USER }}" @selected(old('from_name', $mailbox->from_name) == App\Mailbox::FROM_NAME_USER)>{{ __("User's Name") }}</option>
+                        <option value="{{ App\Mailbox::FROM_NAME_CUSTOM }}" @selected(old('from_name', $mailbox->from_name) == App\Mailbox::FROM_NAME_CUSTOM)>{{ __('Custom Name') }}</option>
+                    </x-fruit::select>
+                </x-fruit::field>
+
+                <x-fruit::field :label="__('Custom From Name')" id="from_name_custom_container" :class="old('from_name', $mailbox->from_name) != App\Mailbox::FROM_NAME_CUSTOM ? 'hidden' : ''">
+                    <x-fruit::input id="from_name_custom" name="from_name_custom" :value="old('from_name_custom', $mailbox->from_name_custom)" maxlength="128" />
+                </x-fruit::field>
+
+                <x-fruit::field :label="__('Status After Replying')">
+                    <x-fruit::select id="ticket_status" name="ticket_status" required>
+                        <option value="{{ App\Mailbox::TICKET_STATUS_KEEP_CURRENT }}" @selected(old('ticket_status', $mailbox->ticket_status) == App\Mailbox::TICKET_STATUS_KEEP_CURRENT)>{{ __('Keep Current') }}</option>
+                        @foreach (App\Conversation::getStatusesWithNames([App\Conversation::STATUS_SPAM]) as $status_id => $status_name)
+                            <option value="{{ $status_id }}" @selected(old('ticket_status', $mailbox->ticket_status) == $status_id)>{{ $status_name }}</option>
+                        @endforeach
+                    </x-fruit::select>
+                </x-fruit::field>
+
+                @action('mailbox.update.after_ticket_status', $mailbox)
+
+                <x-fruit::field :label="__('Default Assignee')">
+                    <x-fruit::select id="ticket_assignee" name="ticket_assignee" required>
+                        <option value="{{ App\Mailbox::TICKET_ASSIGNEE_KEEP_CURRENT }}" @selected(old('ticket_assignee', $mailbox->ticket_assignee) == App\Mailbox::TICKET_ASSIGNEE_KEEP_CURRENT)>{{ __('Keep Current') }}</option>
+                        <option value="{{ App\Mailbox::TICKET_ASSIGNEE_ANYONE }}" @selected(old('ticket_assignee', $mailbox->ticket_assignee) == App\Mailbox::TICKET_ASSIGNEE_ANYONE)>{{ __('Anyone') }}</option>
+                        <option value="{{ App\Mailbox::TICKET_ASSIGNEE_REPLYING_UNASSIGNED }}" @selected(old('ticket_assignee', $mailbox->ticket_assignee) == App\Mailbox::TICKET_ASSIGNEE_REPLYING_UNASSIGNED)>{{ __('Person Replying (if Unassigned)') }}</option>
+                        <option value="{{ App\Mailbox::TICKET_ASSIGNEE_REPLYING }}" @selected(old('ticket_assignee', $mailbox->ticket_assignee) == App\Mailbox::TICKET_ASSIGNEE_REPLYING)>{{ __('Person Replying') }}</option>
+                    </x-fruit::select>
+                </x-fruit::field>
+
+                <x-fruit::checkbox id="chat_start_new" name="chat_start_new" value="1" :checked="(bool) old('chat_start_new', $mailbox->getMeta('chat_start_new'))">{{ __('Start a new conversation when receiving a reply to the closed / deleted Chat conversation') }}</x-fruit::checkbox>
+
+                <x-fruit::field :label="__('Email Header')" :description="__('This text will be added to the beginning of each email reply sent to a customer.')" control-id="before_reply">
+                    <div class="f-input-group">
+                        <span class="f-input-group__addon"><input type="checkbox" class="f-check" @if ($mailbox->before_reply) checked="checked" @endif id="before-reply-toggle" aria-label="{{ __('Email Header') }}"></span>
+                        <input id="before_reply" type="text" class="f-input" @if (!$mailbox->before_reply) readonly @endif name="before_reply" value="{{ old('before_reply', $mailbox->before_reply) }}" data-default="-- {{ __('Please reply above this line') }} --" placeholder="-- {{ __('Please reply above this line') }} --" aria-describedby="before_reply-description">
                     </div>
+                </x-fruit::field>
+            @endif
 
-                    <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                        <label for="email" class="col-sm-2 control-label">{{ __('Email Address') }}</label>
+            @if (Auth::user()->can('updateSettings', $mailbox) || Auth::user()->can('updateEmailSignature', $mailbox))
+                <x-fruit::field :label="__('Email Signature')" class="signature-editor">
+                    <x-fruit::textarea id="signature" name="signature" rows="8">{{ old('signature', $mailbox->signature) }}</x-fruit::textarea>
+                </x-fruit::field>
+            @endif
 
-                        <div class="col-sm-6">
-                            @if (Auth::user()->isAdmin())
-                            <input id="email" type="email" class="form-control input-sized" name="email" value="{{ old('email', $mailbox->email) }}" maxlength="128" required autofocus>
-                            @else
-                                <label class="control-label">{{ old('email', $mailbox->email) }}</label>
-                            @endif
-                            @include('partials/field_error', ['field'=>'email'])
-                        </div>
-                    </div>
+            @action('mailbox.update.after_signature', $mailbox)
 
-                    @if (Auth::user()->can('updateSettings', $mailbox))
-                        <div class="form-group{{ $errors->has('aliases') ? ' has-error' : '' }} margin-bottom-5">
-                            <label for="aliases" class="col-sm-2 control-label">{{ __('Aliases') }}</label>
-
-                            <div class="col-sm-6">
-                                <div class="flexy">
-                                    <input id="aliases" type="text" class="form-control input-sized" name="aliases" value="{{ old('aliases', $mailbox->aliases) }}">
-
-                                    <i class="glyphicon glyphicon-info-sign icon-info" data-toggle="popover" data-trigger="hover" data-html="true" data-placement="left"  data-content="{{ __('Aliases are other email addresses that also forward to your mailbox address. Separate each email with a comma.') }}&lt;br&gt;&lt;br&gt;alias1@example.org, alias2@example.org({{ __('Mailbox Name') }}), alias3@exampl.org"></i>
-                                </div>
-
-                                <div class="controls">
-                                    <label for="aliases_reply" class="checkbox inline plain">
-                                        <input type="checkbox" name="aliases_reply" value="1" id="aliases_reply" @if (old('aliases_reply', $mailbox->aliases_reply))checked="checked"@endif> <span class="text-help">{{ __('Allow to reply from aliases') }}</span>
-                                    </label>
-                                </div>
-
-                                @include('partials/field_error', ['field'=>'aliases'])
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('auto_bcc') ? ' has-error' : '' }}">
-                            <label for="auto_bcc" class="col-sm-2 control-label">{{ __('Auto Bcc') }}</label>
-
-                            <div class="col-sm-6">
-                                <div class="flexy">
-                                    <input id="auto_bcc" type="text" class="form-control input-sized" name="auto_bcc" value="{{ old('auto_bcc', $mailbox->auto_bcc) }}" maxlength="255">
-
-                                    <i class="glyphicon glyphicon-info-sign icon-info" data-toggle="popover" data-trigger="hover" data-html="true" data-placement="left"  data-content="{{ __('Send a copy of all outgoing replies to specific external addresses.') }} {{ __('Separate each email with a comma.') }}"></i>
-                                </div>
-
-                                @include('partials/field_error', ['field'=>'auto_bcc'])
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('from_name') ? ' has-error' : '' }}">
-                            <label for="from_name" class="col-sm-2 control-label">{{ __('From Name') }}</label>
-
-                            <div class="col-sm-6">
-                                <div class="flexy">
-                                    <select id="from_name" class="form-control input-sized" name="from_name" required autofocus>
-                                        <option value="{{ App\Mailbox::FROM_NAME_MAILBOX }}" @if (old('from_name', $mailbox->from_name) == App\Mailbox::FROM_NAME_MAILBOX)selected="selected"@endif>{{ __('Mailbox Name') }}</option>
-                                        <option value="{{ App\Mailbox::FROM_NAME_USER }}" @if (old('from_name', $mailbox->from_name) == App\Mailbox::FROM_NAME_USER)selected="selected"@endif>{{ __("User's Name") }}</option>
-                                        <option value="{{ App\Mailbox::FROM_NAME_CUSTOM }}" @if (old('from_name', $mailbox->from_name) == App\Mailbox::FROM_NAME_CUSTOM)selected="selected"@endif>{{ __('Custom Name') }}</option>
-                                    </select>
-
-                                    <i class="glyphicon glyphicon-info-sign icon-info" data-toggle="popover" data-trigger="hover" data-html="true" data-placement="left"  data-content="{{ __('Name that will appear in the <strong>From</strong> field when a customer views your email.') }}"></i>
-                                </div>
-
-                                @include('partials/field_error', ['field'=>'from_name'])
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('from_name_custom') ? ' has-error' : '' }}{{ old('from_name', $mailbox->from_name) != App\Mailbox::FROM_NAME_CUSTOM ? ' hidden' : '' }}" id="from_name_custom_container">
-                            <label for="from_name_custom" class="col-sm-2 control-label">{{ __('Custom From Name') }}</label>
-
-                            <div class="col-sm-6">
-                                <input id="from_name_custom" type="text" class="form-control input-sized" name="from_name_custom" value="{{ old('from_name_custom', $mailbox->from_name_custom) }}" maxlength="128">
-                                @include('partials/field_error', ['field'=>'from_name_custom'])
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('ticket_status') ? ' has-error' : '' }}">
-                            <label for="ticket_status" class="col-sm-2 control-label">{{ __('Status After Replying') }}</label>
-
-                            <div class="col-sm-6">
-                                <select id="ticket_status" class="form-control input-sized" name="ticket_status" required autofocus>
-                                    <option value="{{ App\Mailbox::TICKET_STATUS_KEEP_CURRENT }}" @if (old('ticket_status', $mailbox->ticket_status) == App\Mailbox::TICKET_STATUS_KEEP_CURRENT)selected="selected"@endif>{{ __('Keep Current') }}</option>
-                                    @foreach (App\Conversation::getStatusesWithNames([App\Conversation::STATUS_SPAM]) as $status_id => $status_name)
-                                        <option value="{{ $status_id }}" @if (old('ticket_status', $mailbox->ticket_status) == $status_id)selected="selected"@endif>{{ $status_name }}</option>
-                                    @endforeach
-                                </select>
-
-                                @include('partials/field_error', ['field'=>'ticket_status'])
-                            </div>
-                        </div>
-
-                        @action('mailbox.update.after_ticket_status', $mailbox)
-
-                        <div class="form-group{{ $errors->has('ticket_assignee') ? ' has-error' : '' }}">
-                            <label for="ticket_assignee" class="col-sm-2 control-label">{{ __('Default Assignee') }}</label>
-
-                            <div class="col-sm-6">
-                                <select id="ticket_assignee" class="form-control input-sized" name="ticket_assignee" required autofocus>
-                                    <option value="{{ App\Mailbox::TICKET_ASSIGNEE_KEEP_CURRENT }}" @if (old('ticket_assignee', $mailbox->ticket_assignee) == App\Mailbox::TICKET_ASSIGNEE_KEEP_CURRENT)selected="selected"@endif>{{ __('Keep Current') }}</option>
-                                    <option value="{{ App\Mailbox::TICKET_ASSIGNEE_ANYONE }}" @if (old('ticket_assignee', $mailbox->ticket_assignee) == App\Mailbox::TICKET_ASSIGNEE_ANYONE)selected="selected"@endif>{{ __('Anyone') }}</option>
-                                    <option value="{{ App\Mailbox::TICKET_ASSIGNEE_REPLYING_UNASSIGNED }}" @if (old('ticket_assignee', $mailbox->ticket_assignee) == App\Mailbox::TICKET_ASSIGNEE_REPLYING_UNASSIGNED)selected="selected"@endif>{{ __('Person Replying (if Unassigned)') }}</option>
-                                    <option value="{{ App\Mailbox::TICKET_ASSIGNEE_REPLYING }}" @if (old('ticket_assignee', $mailbox->ticket_assignee) == App\Mailbox::TICKET_ASSIGNEE_REPLYING)selected="selected"@endif>{{ __('Person Replying') }}</option>
-                                </select>
-
-                                @include('partials/field_error', ['field'=>'ticket_assignee'])
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('chat_start_new') ? ' has-error' : '' }}">
-                            <label for="chat_start_new" class="col-sm-2 control-label">{{ __('Chat') }}</label>
-
-                            <div class="col-sm-6">
-                                <div class="controls">
-                                    <label for="chat_start_new" class="checkbox inline plain">
-                                        <input type="checkbox" name="chat_start_new" value="1" id="chat_start_new" @if (old('chat_start_new', $mailbox->getMeta('chat_start_new')))checked="checked"@endif> <span>{{ __('Start a new conversation when receiving a reply to the closed / deleted Chat conversation') }}</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('before_reply') ? ' has-error' : '' }}">
-                            <label for="before_reply" class="col-sm-2 control-label">{{ __('Email Header') }}</label>
-
-                            <div class="col-sm-6">
-                                <div class="flexy">
-                                    <div class="input-group input-sized">
-                                        <span class="input-group-addon">
-                                            <input type="checkbox" @if ($mailbox->before_reply) checked="checked"@endif id="before-reply-toggle">
-                                        </span>
-                                        <input id="before_reply" type="text" class="form-control" @if (!$mailbox->before_reply) readonly @endif name="before_reply" value="{{ old('before_reply', $mailbox->before_reply) }}" data-default="-- {{ __('Please reply above this line') }} --" placeholder="-- {{ __('Please reply above this line') }} --">
-                                    </div>
-
-                                    <i class="glyphicon glyphicon-info-sign icon-info" data-toggle="popover" data-trigger="hover" data-html="true" data-placement="left"  data-content="{{ __('This text will be added to the beginning of each email reply sent to a customer.') }}"></i>
-                                </div>
-
-                                @include('partials/field_error', ['field'=>'before_reply'])
-                            </div>
-                        </div>
-                    @endif
-
-                    @if (Auth::user()->can('updateSettings', $mailbox) || Auth::user()->can('updateEmailSignature', $mailbox))
-                        <div class="form-group{{ $errors->has('signature') ? ' has-error' : '' }}">
-                            <label for="signature" class="col-sm-2 control-label">{{ __('Email Signature') }}</label>
-
-                            <div class="col-md-9 signature-editor">
-                                <textarea id="signature" class="form-control" name="signature" rows="8">{{ old('signature', $mailbox->signature) }}</textarea>
-                                @include('partials/field_error', ['field'=>'signature'])
-                            </div>
-                        </div>
-                    @endif
-                    
-                    @action('mailbox.update.after_signature', $mailbox)
-
-                    <div class="form-group">
-                        <div class="col-sm-6 col-sm-offset-2">
-                            <button type="submit" class="btn btn-primary">
-                                {{ __('Save') }}
-                            </button>
-
-                            @if (auth()->user()->isAdmin())
-                            <a href="#" data-trigger="modal" data-modal-body="#delete_mailbox_modal" data-modal-no-footer="true" data-modal-title="{{ __('Delete the :mailbox_name mailbox?', ['mailbox_name' => $mailbox->name]) }}" data-modal-on-show="deleteMailboxModal" class="btn btn-link text-danger">{{ __('Delete mailbox') }}</a>
-                            @endif
-                        </div>
-                    </div>
-
-                </form>
+            <div class="settings-form__actions f-row">
+                <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
+                @if (auth()->user()->isAdmin())
+                    <a href="#" data-trigger="modal" data-modal-body="#delete_mailbox_modal" data-modal-no-footer="true" data-modal-title="{{ __('Delete the :mailbox_name mailbox?', ['mailbox_name' => $mailbox->name]) }}" data-modal-on-show="deleteMailboxModal" class="f-button f-button--danger settings-form__end">{{ __('Delete mailbox') }}</a>
+                @endif
             </div>
-        </div>
+        </form>
     </div>
 
     <div id="delete_mailbox_modal" class="hidden">

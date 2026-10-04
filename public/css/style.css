@@ -5306,3 +5306,19 @@ a.disabled:focus {
     flex: 1;
     max-width: 320px;
 }
+.connection-nav {
+    margin-bottom: 20px;
+}
+.connection-nav__warning {
+    --f-icon-size: 16px;
+    color: var(--f-warning);
+}
+.connection-fetch-from {
+    width: auto;
+    flex: 1;
+}
+.connection-imap-folders > select,
+.connection-imap-folders > .select2 {
+    flex: 1;
+    min-width: 0;
+}
