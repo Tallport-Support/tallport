@@ -1963,7 +1963,7 @@ a h4 {
 /**
  * Search
  */
-/* Search: the query, the filters chosen in the sidebar, the result tabs. */
+/* Search: the query, the filters chosen from the Filters menu, the result tabs. */
 .section-heading.section-search {
     padding: 20px 20px 8px;
     background: transparent;
@@ -1974,19 +1974,28 @@ a h4 {
     flex: 1;
     min-width: 0;
 }
+.search-title {
+    margin: 0 0 12px;
+    font-size: var(--f-text-2xl);
+}
 #search-filters {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 12px 16px;
 }
-#search-filters:has(.form-group.active) {
-    margin-bottom: 16px;
+#search-filters:has(.search-filter:not([hidden]), .form-group.active) {
+    margin-top: 16px;
 }
-#search-filters .form-group > .f-label {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 4px;
+.search-filter {
+    position: relative;
+}
+.search-filter__remove {
+    position: absolute;
+    top: -4px;
+    inset-inline-end: 0;
+}
+.search-recent {
+    padding: 16px 12px;
 }
 .search-tabs {
     margin: 0 20px 8px;
@@ -2105,9 +2114,6 @@ a h4 {
 }
 #search-filters .form-group.active {
     display: block;
-}
-#search-filters .select2-container {
-    width: 100% !important;
 }
 .customers-pager {
     margin: 0 13px 20px 13px;

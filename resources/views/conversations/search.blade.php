@@ -3,34 +3,28 @@
 @section('title', ($q ? $q.' - ' : '').strip_tags(Eventy::filter('search.title', __('Search'))))
 @section('body_class', 'body-search')
 
-@section('aside')
-    @include('partials/sidebar_menu_toggle')
-    <div class="sidebar-title">
-		{!! safe_raw_html(Eventy::filter('search.title', __('Search')), ['iframe']) !!}
-	</div>
-    <ul class="sidebar-menu sidebar-menu-noicons">
-    	@if (!$recent || (count($recent) == 1 && $recent[0] == $q))
-    	@else
-	        <li class="no-link"><span class="text-help">{{ __('Recent') }}</span></li>
-			@foreach ($recent as $recent_query)
-				@if ($recent_query != $q)
-	            	<li class="menu-link menu-padded"><a href="{{ route('conversations.search', ['q' => $recent_query, 'mode' => $mode])}}">{{ $recent_query }}</a></li>
-	            @endif
-	        @endforeach
-	    @endif
-        <li class="no-link"><span class="text-help">{{ __('Filters') }}</span></li>
-		@foreach ($filters_list as $filter)
-            <li class="menu-link menu-padded">
-            	<a href="#" data-filter="{{ $filter }}" @if (isset($filters[$filter]))class="active"@endif>{{ mb_strtolower(__(ucwords($filter))) }}:</a>
-            </li>
-        @endforeach
-    </ul>
-@endsection
+@php
+    $recent_queries = array_values(array_filter((array) $recent, fn ($recent_query) => $recent_query != $q));
+@endphp
+@if (count($recent_queries))
+    @section('aside')
+        <nav class="search-recent" aria-label="{{ __('Recent') }}">
+            <h2 class="f-headline">{{ __('Recent') }}</h2>
+            <x-fruit::item-list>
+                @foreach ($recent_queries as $recent_query)
+                    <li><x-fruit::item-link :href="route('conversations.search', ['q' => $recent_query, 'mode' => $mode])"><x-slot:title>{{ $recent_query }}</x-slot:title></x-fruit::item-link></li>
+                @endforeach
+            </x-fruit::item-list>
+        </nav>
+    @endsection
+@endif
 
 @section('content')
 
 	<div class="section-heading section-search">
-		<form action="{{ route('conversations.search') }}">
+		<h1 class="search-title">{!! safe_raw_html(Eventy::filter('search.title', __('Search')), ['iframe']) !!}</h1>
+		{{-- Filters show and hide in the browser (tallportSearchFilters in public/js/conversations.js); hidden ones are not sent. --}}
+		<form action="{{ route('conversations.search') }}" x-data="tallportSearchFilters">
 
 			@if (request()->x_embed)
 				<input type="hidden" name="x_embed" value="{{ request()->x_embed }}" />
@@ -44,113 +38,145 @@
 				<input type="hidden" name="mode" value="{{ $mode }}" />
 			@endif
 
+	        <div class="search-field f-row">
+	            <x-fruit::search name="q" :value="$q" :label="__('Search')" :wrapper="['class' => 'search-field__input']" />
+	            <x-fruit::menu :title="__('Filters')" class="search-filters-menu">
+	                <x-slot:trigger class="f-button--ghost"><x-heroicon-o-funnel class="f-icon" aria-hidden="true" /> {{ __('Filters') }}</x-slot:trigger>
+	                @foreach ($filters_list as $filter)
+	                    <x-fruit::menu-checkbox x-bind:aria-checked="active[{{ \Illuminate\Support\Js::from($filter) }}] ? 'true' : 'false'" x-on:click="toggle({{ \Illuminate\Support\Js::from($filter) }})">{{ __(ucwords($filter)) }}</x-fruit::menu-checkbox>
+	                @endforeach
+	            </x-fruit::menu>
+	            <x-fruit::button type="submit" variant="primary">{{ __('Search') }}</x-fruit::button>
+	        </div>
+
 			<div id="search-filters">
-				<div class="form-group @if (isset($filters['assigned'])) active @endif" data-filter="assigned">
-		            <label class="f-label">{{ __('Assigned') }} <button type="button" class="remove f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Remove filter') }}" title="{{ __('Remove filter') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button></label>
-		            <select name="f[assigned]" class="f-input" @if (empty($filters['assigned'])) disabled @endif>
-		            	<option value=""></option>
-						<option value="{{ App\Conversation::USER_UNASSIGNED }}" @if (!empty($filters['assigned']) && $filters['assigned'] == App\Conversation::USER_UNASSIGNED)selected="selected"@endif>{{ __('Unassigned') }}</option>
-                        @foreach ($users as $user)
-                            <option value="{{ $user->id }}" @if (!empty($filters['assigned']) && $filters['assigned'] == $user->id)selected="selected"@endif>{{ $user->getFullName() }}</option>
+                <div class="search-filter" data-filter="assigned" @unless (isset($filters['assigned'])) hidden @endunless>
+                    <x-fruit::field :label="__('Assigned')" control-id="search-filter-assigned">
+                        <x-fruit::select id="search-filter-assigned" name="f[assigned]">
+                            <option value=""></option>
+                            <option value="{{ App\Conversation::USER_UNASSIGNED }}" @if (($filters['assigned'] ?? '') == App\Conversation::USER_UNASSIGNED) selected @endif>{{ __('Unassigned') }}</option>
+                            @foreach ($users as $user)
+                                <option value="{{ $user->id }}" @if (($filters['assigned'] ?? '') == $user->id) selected @endif>{{ $user->getFullName() }}</option>
+                            @endforeach
+                        </x-fruit::select>
+                    </x-fruit::field>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('assigned')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+                </div>
+                <div class="search-filter" data-filter="customer" @unless (isset($filters['customer'])) hidden @endunless>
+                    <x-fruit::field :label="__('Customer')" control-id="search-filter-customer">
+                        <x-fruit::combobox id="search-filter-customer" name="f[customer]" search="server" x-on:fruit-suggest.debounce.250ms="customers($event)">
+                            <option value="" hidden></option>
+                            @if (!empty($filters_data['customer']))
+                                <option value="{{ $filters_data['customer']->id }}" selected>{{ $filters_data['customer']->getEmailAndName() }}</option>
+                            @endif
+                        </x-fruit::combobox>
+                    </x-fruit::field>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('customer')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+                </div>
+                <div class="search-filter" data-filter="mailbox" @unless (isset($filters['mailbox'])) hidden @endunless>
+                    <x-fruit::field :label="__('Mailbox')" control-id="search-filter-mailbox">
+                        <x-fruit::select id="search-filter-mailbox" name="f[mailbox]">
+                            <option value=""></option>
+                            @foreach ($mailboxes as $mailbox_item)
+                                <option value="{{ $mailbox_item->id }}" @if (($filters['mailbox'] ?? '') == $mailbox_item->id) selected @endif>{{ $mailbox_item->name }}</option>
+                            @endforeach
+                        </x-fruit::select>
+                    </x-fruit::field>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('mailbox')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+                </div>
+                <div class="search-filter" data-filter="status" @unless (isset($filters['status'])) hidden @endunless>
+                    <x-fruit::fieldset>
+                        <legend>{{ __('Status') }}</legend>
+                        @foreach (App\Conversation::$statuses as $option_id => $dummy)
+                            <x-fruit::checkbox name="f[status][]" :value="$option_id" :checked="in_array($option_id, (array) ($filters['status'] ?? []))">{{ App\Conversation::statusCodeToName($option_id) }}</x-fruit::checkbox>
                         @endforeach
-                    </select>
-		        </div>
-				<div class="form-group @if (isset($filters['customer'])) active @endif" data-filter="customer">
-		            <label class="f-label">{{ __('Customer') }} <button type="button" class="remove f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Remove filter') }}" title="{{ __('Remove filter') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button></label>
-		            <div class="controls">
-		            	<select class="f-input" name="f[customer]" id="search-filter-customer" @if (empty($filters['customer'])) disabled @endif/>
-		            	 	@if (!empty($filters['customer']) && !empty($filters_data['customer']))
-		            			<option value="{{ $filters_data['customer']->id }}" selected="selected">{{ $filters_data['customer']->getEmailAndName() }}</option>
-		            		@endif
-		            	</select>
-		            </div>
-		        </div>
-				<div class="form-group @if (isset($filters['mailbox'])) active @endif" data-filter="mailbox">
-		            <label class="f-label">{{ __('Mailbox') }} <button type="button" class="remove f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Remove filter') }}" title="{{ __('Remove filter') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button></label>
-		            <select name="f[mailbox]" class="f-input" @if (empty($filters['mailbox'])) disabled @endif>
-		            	<option value=""></option>
-                        @foreach ($mailboxes as $mailbox_item)
-                            <option value="{{ $mailbox_item->id }}" @if (!empty($filters['mailbox']) && $filters['mailbox'] == $mailbox_item->id)selected="selected"@endif>{{ $mailbox_item->name }}</option>
+                    </x-fruit::fieldset>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('status')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+                </div>
+                <div class="search-filter" data-filter="state" @unless (isset($filters['state'])) hidden @endunless>
+                    <x-fruit::fieldset>
+                        <legend>{{ __('State') }}</legend>
+                        @foreach (App\Conversation::$states as $option_id => $dummy)
+                            <x-fruit::checkbox name="f[state][]" :value="$option_id" :checked="in_array($option_id, (array) ($filters['state'] ?? []))">{{ App\Conversation::stateCodeToName($option_id) }}</x-fruit::checkbox>
                         @endforeach
-                    </select>
-		        </div>
-				<div class="form-group @if (isset($filters['status'])) active @endif" data-filter="status">
-		            <label class="f-label">{{ __('Status') }} <button type="button" class="remove f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Remove filter') }}" title="{{ __('Remove filter') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button></label>
-		            <select name="f[status][]" class="f-input filter-multiple" multiple @if (empty($filters['status'])) disabled @endif>
-		            	{{--<option value=""></option>--}}
-                        @foreach (App\Conversation::$statuses as $status_id => $dummy)
-                            <option value="{{ $status_id }}" @if (!empty($filters['status']) && in_array($status_id, $filters['status']))selected="selected"@endif>{{ App\Conversation::statusCodeToName($status_id) }}</option>
-                        @endforeach
-                    </select>
-		        </div>
-				<div class="form-group @if (isset($filters['state'])) active @endif" data-filter="state">
-		            <label class="f-label">{{ __('State') }} <button type="button" class="remove f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Remove filter') }}" title="{{ __('Remove filter') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button></label>
-		            <select name="f[state][]" class="f-input filter-multiple" multiple @if (empty($filters['state'])) disabled @endif>
-		            	{{--<option value=""></option>--}}
-                        @foreach (App\Conversation::$states as $state_id => $dummy)
-                            <option value="{{ $state_id }}" @if (!empty($filters['state']) && in_array($state_id, $filters['state']))selected="selected"@endif>{{ App\Conversation::stateCodeToName($state_id) }}</option>
-                        @endforeach
-                    </select>
-		        </div>
-				<div class="form-group @if (isset($filters['subject'])) active @endif" data-filter="subject">
-		            <label class="f-label">{{ __('Subject') }} <button type="button" class="remove f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Remove filter') }}" title="{{ __('Remove filter') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button></label>
-		            <input type="text" name="f[subject]" value="{{ $filters['subject'] ?? ''}}" class="f-input" @if (empty($filters['subject'])) disabled @endif>
-		        </div>
-				<div class="form-group @if (isset($filters['attachments'])) active @endif" data-filter="attachments">
-		            <label class="f-label">{{ __('Attachments') }} <button type="button" class="remove f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Remove filter') }}" title="{{ __('Remove filter') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button></label>
-		            <select name="f[attachments]" class="f-input" @if (empty($filters['attachments'])) disabled @endif>
-		            	<option value=""></option>
-                        <option value="yes" @if (!empty($filters['attachments']) && $filters['attachments'] == 'yes')selected="selected"@endif>{{ __('Yes') }}</option>
-                        <option value="no" @if (!empty($filters['attachments']) && $filters['attachments'] == 'no')selected="selected"@endif>{{ __('No') }}</option>
-                    </select>
-		        </div>
-				<div class="form-group @if (isset($filters['attachment name'])) active @endif" data-filter="attachment name">
-		            <label class="f-label">{{ __('Attachment Name') }} <button type="button" class="remove f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Remove filter') }}" title="{{ __('Remove filter') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button></label>
-		            <input type="text" name="f[attachment name]" value="{{ $filters['attachment name'] ?? '' }}" class="f-input" @if (empty($filters['attachment name'])) disabled @endif>
-		        </div>
-				<div class="form-group @if (isset($filters['type'])) active @endif" data-filter="type">
-		            <label class="f-label">{{ __('Type') }} <button type="button" class="remove f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Remove filter') }}" title="{{ __('Remove filter') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button></label>
-		            <select name="f[type]" class="f-input" @if (empty($filters['type'])) disabled @endif>
-		            	<option value=""></option>
-                        @foreach (App\Conversation::$types as $type_id => $dummy)
-                            <option value="{{ $type_id }}" @if (!empty($filters['type']) && $filters['type'] == $type_id)selected="selected"@endif>{{ App\Conversation::typeToName($type_id) }}</option>
-                        @endforeach
-                    </select>
-		        </div>
-				<div class="form-group @if (isset($filters['body'])) active @endif" data-filter="body">
-		            <label class="f-label">{{ __('Body') }} <button type="button" class="remove f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Remove filter') }}" title="{{ __('Remove filter') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button></label>
-		            <input type="text" name="f[body]" value="{{ $filters['body'] ?? ''}}" class="f-input" @if (empty($filters['body'])) disabled @endif>
-		        </div>
-				<div class="form-group @if (isset($filters['number'])) active @endif" data-filter="number">
-		            <label class="f-label">{{ __('Number') }} <button type="button" class="remove f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Remove filter') }}" title="{{ __('Remove filter') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button></label>
-		            <input type="text" name="f[number]" value="{{ $filters['number'] ?? ''}}" class="f-input" @if (empty($filters['number'])) disabled @endif>
-		        </div>
-				<div class="form-group @if (isset($filters['following'])) active @endif" data-filter="following">
-		            <label class="f-label">{{ __('Following') }} <button type="button" class="remove f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Remove filter') }}" title="{{ __('Remove filter') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button></label>
-		            <select name="f[following]" class="f-input" @if (empty($filters['following'])) disabled @endif>
-		            	<option value=""></option>
-                        <option value="yes" @if (!empty($filters['following']) && $filters['following'] == 'yes')selected="selected"@endif>{{ __('Yes') }}</option>
-                    </select>
-		        </div>
-				<div class="form-group @if (isset($filters['id'])) active @endif" data-filter="id">
-		            <label class="f-label">{{ __('ID') }} <button type="button" class="remove f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Remove filter') }}" title="{{ __('Remove filter') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button></label>
-		            <input type="text" name="f[id]" value="{{ $filters['id'] ?? ''}}" class="f-input" @if (empty($filters['id'])) disabled @endif>
-		        </div>
-				<div class="form-group @if (isset($filters['after'])) active @endif" data-filter="after">
-		            <label class="f-label">{{ __('After') }} <button type="button" class="remove f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Remove filter') }}" title="{{ __('Remove filter') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button></label>
-		            <input type="text" name="f[after]" value="{{ $filters['after'] ?? ''}}" class="f-input input-date" @if (empty($filters['after'])) disabled @endif>
-		        </div>
-				<div class="form-group @if (isset($filters['before'])) active @endif" data-filter="before">
-		            <label class="f-label">{{ __('Before') }} <button type="button" class="remove f-button f-button--ghost f-button--icon f-button--small" aria-label="{{ __('Remove filter') }}" title="{{ __('Remove filter') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button></label>
-		            <input type="text" name="f[before]" value="{{ $filters['before'] ?? ''}}" class="f-input input-date" @if (empty($filters['before'])) disabled @endif>
-		        </div>
+                    </x-fruit::fieldset>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('state')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+                </div>
+                <div class="search-filter" data-filter="subject" @unless (isset($filters['subject'])) hidden @endunless>
+                    <x-fruit::field :label="__('Subject')" control-id="search-filter-subject">
+                        <x-fruit::input id="search-filter-subject" name="f[subject]" :value="$filters['subject'] ?? ''" />
+                    </x-fruit::field>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('subject')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+                </div>
+                <div class="search-filter" data-filter="attachments" @unless (isset($filters['attachments'])) hidden @endunless>
+                    <x-fruit::field :label="__('Attachments')" control-id="search-filter-attachments">
+                        <x-fruit::select id="search-filter-attachments" name="f[attachments]">
+                            <option value=""></option>
+                            <option value="yes" @if (($filters['attachments'] ?? '') == 'yes') selected @endif>{{ __('Yes') }}</option>
+                            <option value="no" @if (($filters['attachments'] ?? '') == 'no') selected @endif>{{ __('No') }}</option>
+                        </x-fruit::select>
+                    </x-fruit::field>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('attachments')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+                </div>
+                <div class="search-filter" data-filter="attachment name" @unless (isset($filters['attachment name'])) hidden @endunless>
+                    <x-fruit::field :label="__('Attachment Name')" control-id="search-filter-attachment-name">
+                        <x-fruit::input id="search-filter-attachment-name" name="f[attachment name]" :value="$filters['attachment name'] ?? ''" />
+                    </x-fruit::field>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('attachment name')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+                </div>
+                <div class="search-filter" data-filter="type" @unless (isset($filters['type'])) hidden @endunless>
+                    <x-fruit::field :label="__('Type')" control-id="search-filter-type">
+                        <x-fruit::select id="search-filter-type" name="f[type]">
+                            <option value=""></option>
+                            @foreach (App\Conversation::$types as $type_id => $dummy)
+                                <option value="{{ $type_id }}" @if (($filters['type'] ?? '') == $type_id) selected @endif>{{ App\Conversation::typeToName($type_id) }}</option>
+                            @endforeach
+                        </x-fruit::select>
+                    </x-fruit::field>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('type')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+                </div>
+                <div class="search-filter" data-filter="body" @unless (isset($filters['body'])) hidden @endunless>
+                    <x-fruit::field :label="__('Body')" control-id="search-filter-body">
+                        <x-fruit::input id="search-filter-body" name="f[body]" :value="$filters['body'] ?? ''" />
+                    </x-fruit::field>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('body')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+                </div>
+                <div class="search-filter" data-filter="number" @unless (isset($filters['number'])) hidden @endunless>
+                    <x-fruit::field :label="__('Number')" control-id="search-filter-number">
+                        <x-fruit::input id="search-filter-number" name="f[number]" :value="$filters['number'] ?? ''" />
+                    </x-fruit::field>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('number')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+                </div>
+                <div class="search-filter" data-filter="following" @unless (isset($filters['following'])) hidden @endunless>
+                    <x-fruit::field :label="__('Following')" control-id="search-filter-following">
+                        <x-fruit::select id="search-filter-following" name="f[following]">
+                            <option value=""></option>
+                            <option value="yes" @if (($filters['following'] ?? '') == 'yes') selected @endif>{{ __('Yes') }}</option>
+                        </x-fruit::select>
+                    </x-fruit::field>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('following')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+                </div>
+                <div class="search-filter" data-filter="id" @unless (isset($filters['id'])) hidden @endunless>
+                    <x-fruit::field :label="__('ID')" control-id="search-filter-id">
+                        <x-fruit::input id="search-filter-id" name="f[id]" :value="$filters['id'] ?? ''" />
+                    </x-fruit::field>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('id')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+                </div>
+                <div class="search-filter" data-filter="after" @unless (isset($filters['after'])) hidden @endunless>
+                    <x-fruit::field :label="__('After')" control-id="search-filter-after">
+                        <x-fruit::date id="search-filter-after" name="f[after]" :value="!empty($filters['after']) ? date('Y-m-d', strtotime($filters['after'])) : ''" />
+                    </x-fruit::field>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('after')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+                </div>
+                <div class="search-filter" data-filter="before" @unless (isset($filters['before'])) hidden @endunless>
+                    <x-fruit::field :label="__('Before')" control-id="search-filter-before">
+                        <x-fruit::date id="search-filter-before" name="f[before]" :value="!empty($filters['before']) ? date('Y-m-d', strtotime($filters['before'])) : ''" />
+                    </x-fruit::field>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('before')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+                </div>
 		        @action('search.display_filters', $filters, $filters_data, $mode)
 		    </div>
 
-	        <div class="search-field f-row">
-	            <x-fruit::search name="q" :value="$q" :label="__('Search')" :wrapper="['class' => 'search-field__input']" />
-	            <x-fruit::button type="submit" variant="primary">{{ __('Search') }}</x-fruit::button>
-	        </div>
 	        @if ($mode == App\Conversation::SEARCH_MODE_CONV && App\Search\ConversationSearch::available())
 	            <x-fruit::disclosure :title="__('Search tips')" class="search-tips">
 	                <p class="f-help">
@@ -180,9 +206,3 @@
 	</div>
 @endsection
 
-@include('partials/include_datepicker')
-
-@section('javascript')
-    @parent
-    searchInit();
-@endsection

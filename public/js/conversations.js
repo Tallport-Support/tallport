@@ -1,7 +1,30 @@
 /**
  * The conversation page: the composer, chat mode's Accept Chat and End Chat,
- * and the Merge, Move and Change Customer dialogs (FruitUI remote dialogs).
+ * the Merge, Move and Change Customer dialogs (FruitUI remote dialogs), links
+ * in messages, and printing. And the search page's filters.
  */
+
+// Links in messages open in a new tab.
+document.addEventListener('click', function (e) {
+	var link = e.target.closest && e.target.closest('.thread-content a[href]');
+	if (link) {
+		link.target = '_blank';
+	}
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+	if (!document.body.getAttribute('data-conversation_id')) {
+		return;
+	}
+	// Chat mode: no Show Details without details.
+	var details = document.getElementById('conv-top-blocks');
+	if (details && !details.querySelector('.conv-top-block')) {
+		details.hidden = true;
+	}
+	if (new URLSearchParams(window.location.search).get('print')) {
+		window.print();
+	}
+});
 document.addEventListener('alpine:init', function () {
 	// Accept Chat (assign to me) and End Chat (close), then the chat again.
 	window.Alpine.data('tallportChatAction', function (data) {
@@ -487,6 +510,72 @@ document.addEventListener('alpine:init', function () {
 					translation: this.draft.translation || '',
 					language: this.draft.translation ? translation_language : ''
 				});
+			}
+		};
+	});
+
+	/**
+	 * Search: filters shown from the Filters menu, hidden ones disabled (not sent).
+	 * Any [data-filter] in #search-filters, modules' too (an .active .form-group).
+	 */
+	window.Alpine.data('tallportSearchFilters', function () {
+		return {
+			active: {},
+			form: null,
+			init: function () {
+				var self = this;
+				// The form: $root is a menu's in the Filters menu.
+				this.form = this.$root;
+				this.form.querySelectorAll('#search-filters [data-filter]').forEach(function (filter) {
+					self.set(filter, !filter.hidden && (!filter.classList.contains('form-group') || filter.classList.contains('active')));
+				});
+			},
+			set: function (filter, on) {
+				filter.hidden = !on;
+				filter.classList.toggle('active', on);
+				filter.querySelectorAll('input, select, textarea').forEach(function (control) {
+					control.disabled = !on;
+				});
+				this.active[filter.getAttribute('data-filter')] = on;
+			},
+			toggle: function (name) {
+				var filter = this.form.querySelector('#search-filters [data-filter="'+name+'"]');
+				if (!filter) {
+					return;
+				}
+				this.set(filter, !this.active[name]);
+				if (this.active[name]) {
+					var control = filter.querySelector('input:not([type=hidden]), select');
+					if (control) {
+						control.focus();
+					}
+				}
+			},
+			// The Customer filter's options: customers found on the server (FruitUI combobox).
+			customers: function (event) {
+				var select = event.target.closest('.f-combobox').querySelector('select');
+				var query = (event.detail.query || '').trim();
+				if (query.length < 2) {
+					return;
+				}
+				var url = new URL(laroute.route('customers.ajax_search'), window.location.href);
+				url.searchParams.set('q', query);
+				url.searchParams.set('search_by', 'all');
+				url.searchParams.set('use_id', '1');
+				fetch(url, {credentials: 'same-origin', headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'}})
+					.then(function (response) { return response.json(); })
+					.then(function (data) {
+						Array.prototype.slice.call(select.options).forEach(function (option) {
+							if (option.value && !option.selected) {
+								option.remove();
+							}
+						});
+						(data.results || []).forEach(function (result) {
+							if (!select.querySelector('option[value="'+result.id+'"]')) {
+								select.add(new Option(result.text, result.id));
+							}
+						});
+					});
 			}
 		};
 	});

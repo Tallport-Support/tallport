@@ -80,13 +80,14 @@
                         @elseif (!$conversation->isClosed())
                             <button type="button" class="f-button f-button--small chat-end" x-data="tallportChatAction({action: 'conversation_change_status', status: {{ App\Conversation::STATUS_CLOSED }}, conversation_id: {{ $conversation->id }}})" x-on:click="run($el)">{{ __('End Chat') }}</button>
                         @endif
-                        <a href="#conv-top-blocks" data-toggle="collapse">{{ __('Show Details') }} <b class="caret"></b></a>
                     </div>
-                    <div class="collapse" id="conv-top-blocks">
+                    {{-- Modules' blocks (conversation.after_subject_block), folded in chat mode. --}}
+                    <details class="conv-top-details" id="conv-top-blocks">
+                        <summary>{{ __('Show Details') }}</summary>
                 @endif
                     @action('conversation.after_subject_block', $conversation, $mailbox)
                 @if ($conversation->isInChatMode())
-                    </div>
+                    </details>
                 @endif
                 <livewire:conversation-composer :conversation="$conversation" :to-customers="$to_customers" :cc="$cc" :from-aliases="$from_aliases" :from-alias="$from_alias" :after-send="$after_send" />
             </div>
@@ -102,7 +103,4 @@
 
 
 
-@section('javascript')
-    @parent
-    initConversation();
-@endsection
+

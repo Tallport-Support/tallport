@@ -32,10 +32,10 @@ document.addEventListener('fruit-editor-upload', function (event) {
 			if (response.status == 'success' && response.url) {
 				event.detail.insert(response.url, file.name);
 			} else {
-				showFloatingAlert('error', response.msg || Lang.get('messages.error_occurred'));
+				Tallport.toast(response.msg || Lang.get('messages.error_occurred'), 'danger');
 			}
 		}).catch(function () {
-			showFloatingAlert('error', Lang.get('messages.error_occurred'));
+			Tallport.toast(Lang.get('messages.error_occurred'), 'danger');
 		});
 	});
 });

@@ -278,30 +278,6 @@ function showFloatingAlert(type, msg, no_autohide)
 	Tallport.toast(msg, type == 'error' ? 'danger' : 'success');
 }
 
-function initConversation()
-{
-	$(document).ready(function(){
-		// Chat mode: no Show Details without details.
-		var conv_top_blocks = $('#conv-top-blocks');
-		if (conv_top_blocks.length && !conv_top_blocks.children('.conv-top-block:first').length) {
-			conv_top_blocks.prev().hide();
-		}
-
-		// Print
-		if (getQueryParam('print')) {
-			window.print();
-		}
-
-		processLinks();
-	});
-}
-
-// Add target blank to all links in threads.
-function processLinks()
-{
-	$('.thread-content a').attr('target', '_blank');
-}
-
 // Get current conversation assignee
 function getConvData(field)
 {
@@ -630,54 +606,6 @@ function showAjaxError(response, no_autohide)
 	} else {
 		showFloatingAlert('error', Lang.get("messages.error_occurred"), no_autohide);
 	}
-}
-
-function searchInit()
-{
-	$(document).ready(function() {
-		// Open all links in new window
-		//$(".conv-row a").attr('target', '_blank');
-		$(".sidebar-menu .menu-link a").filter('[data-filter]').click(function(e){
-			var trigger = $(this);
-			var filter = trigger.attr('data-filter');
-			if (!trigger.parent().hasClass('active')) {
-				// Show
-				$('#search-filters div[data-filter="'+filter+'"]:first').addClass('active')
-					.find(':input:first').removeAttr('disabled');
-				trigger.parent().addClass('active');
-			} else {
-				// Hide
-				$('#search-filters div[data-filter="'+filter+'"]:first').removeClass('active')
-					.find(':input:first').attr('disabled', 'disabled');
-				trigger.parent().removeClass('active');
-			}
-			appScroller().animate({scrollTop: 0}, 600, 'swing');
-			e.preventDefault();
-		});
-
-		$("#search-filters .remove").click(function(e){
-			var container = $(this).parents('.form-group:first');
-			var filter = container.attr('data-filter');
-			// Hide
-			$('#search-filters div[data-filter="'+filter+'"]:first').removeClass('active')
-				.find(':input:first').attr('disabled', 'disabled');
-			$('.sidebar-menu a[data-filter="'+filter+'"]:first').parent().removeClass('active');
-
-			e.preventDefault();
-		});
-
-		initCustomerSelector($('#search-filter-customer'), {width: '100%'});
-
-		// Dates
-		$('#search-filters .input-date').flatpickr({allowInput: true});
-
-		$('#search-filters .filter-multiple').select2({
-			multiple: true,
-			tags: true
-			// Causes JS error on clear
-			//allowClear: true
-		});
-	});
 }
 
 // Check if ajax request was successfull
