@@ -440,6 +440,7 @@ document.addEventListener('alpine:init', function () {
 			meta: '',
 			html: '',
 			draft: null,
+			slow: false,
 			timer: null,
 
 			reset: function (status) {
@@ -450,6 +451,29 @@ document.addEventListener('alpine:init', function () {
 				this.meta = '';
 				this.html = '';
 				this.draft = null;
+				this.slow = false;
+			},
+
+			// Waiting for the draft: the card shows a placeholder.
+			busy: function () {
+				return !this.draft && !this.failed;
+			},
+
+			tone: function () {
+				return this.slow ? 'warning' : (this.failed ? 'danger' : 'working');
+			},
+
+			host: function (url) {
+				try {
+					return new URL(url).host;
+				} catch (e) {
+					return '';
+				}
+			},
+
+			close: function () {
+				this.reset('');
+				this.active = false;
 			},
 
 			fail: function (message, detail) {
@@ -489,6 +513,7 @@ document.addEventListener('alpine:init', function () {
 							self.html = markdownToHtml(response.draft);
 						} else if (attempt >= 180) {
 							self.fail(texts.slow);
+							self.slow = true;
 						} else {
 							self.status = response.draft_status == 'running' ? texts.drafting : texts.queued;
 							self.timer = setTimeout(function () {

@@ -4157,6 +4157,188 @@ img.f-avatar {
     min-width: 0;
   }
 
+/* A generated suggestion to review and use, such as an AI reply draft: an indigo-outlined card
+     with a title row, an optional status line, the suggestion as readable prose, an optional
+     translation, its actions, and quieter details (notes, sources) at the end. */
+
+.f-suggestion {
+    display: grid;
+    gap: var(--f-suggestion-gap, 12px);
+    padding: var(--f-suggestion-padding, 14px 16px 16px);
+    border: 1px solid var(--f-generated-border);
+    border-radius: var(--f-radius);
+    background: var(--f-surface);
+    font-size: var(--f-text-base);
+  }
+
+.f-suggestion__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 8px;
+    row-gap: 2px;
+  }
+
+.f-suggestion__icon {
+    flex: none;
+    align-self: center;
+    color: var(--f-generated);
+    --f-icon-size: 16px;
+  }
+
+.f-suggestion__title {
+    font-weight: 600;
+  }
+
+.f-suggestion__meta {
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+  }
+
+.f-suggestion__dismiss {
+    align-self: center;
+    margin-block: -6px;
+    margin-inline-start: auto;
+  }
+
+.f-suggestion__dismiss .f-button {
+    min-width: 28px;
+    min-height: 28px;
+    padding: 4px;
+  }
+
+.f-suggestion__status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+  }
+
+.f-suggestion__status[data-tone='warning'] {
+    color: var(--f-warning);
+  }
+
+.f-suggestion__status[data-tone='danger'] {
+    color: var(--f-danger);
+  }
+
+.f-suggestion__status-icon {
+    flex: none;
+    --f-icon-size: 15px;
+  }
+
+.f-suggestion__status:not([data-tone='working']) > .f-suggestion__status-spinner,
+  .f-suggestion__status:not([data-tone='neutral']) > .f-suggestion__status-icon--neutral,
+  .f-suggestion__status[data-tone='working'] > .f-suggestion__status-icon,
+  .f-suggestion__status:not([data-tone='warning']) > .f-suggestion__status-icon--warning,
+  .f-suggestion__status:not([data-tone='danger']) > .f-suggestion__status-icon--danger {
+    display: none;
+  }
+
+/* While busy, a skeleton stands in for the suggestion, its translation, actions and details. */
+
+.f-suggestion:not([aria-busy='true']) > .f-suggestion__placeholder,
+  .f-suggestion[aria-busy='true']
+    > :is(.f-suggestion__body, .f-suggestion__translation, .f-suggestion__actions, .f-suggestion__details) {
+    display: none;
+  }
+
+.f-suggestion__body {
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+
+.f-suggestion__translation {
+    display: flex;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--f-border);
+    color: var(--f-secondary);
+    line-height: 1.6;
+  }
+
+.f-suggestion__translation-icon {
+    flex: none;
+    margin-top: 3px;
+    color: var(--f-generated);
+    --f-icon-size: 16px;
+  }
+
+.f-suggestion__translation-text {
+    min-width: 0;
+  }
+
+.f-suggestion__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+/* Details for the reader, quieter than the suggestion: short notes and the sources used. */
+
+.f-suggestion__details {
+    display: grid;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--f-border);
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+  }
+
+.f-suggestion__details :is(h3, h4) {
+    margin: 0 0 4px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+    font-weight: 600;
+  }
+
+.f-suggestion__details ul {
+    margin: 0;
+    padding-inline-start: 18px;
+  }
+
+.f-suggestion__details li + li {
+    margin-top: 2px;
+  }
+
+/* Sources: the linked title, then the site, muted and shortened. */
+
+.f-suggestion__sources {
+    display: grid;
+    gap: 4px;
+    padding: 0;
+    list-style: none;
+  }
+
+.f-suggestion__details .f-suggestion__sources {
+    padding-inline-start: 0;
+  }
+
+.f-suggestion__sources > li {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+  }
+
+.f-suggestion__sources a {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+.f-suggestion__sources small {
+    flex: none;
+    max-width: 40%;
+    overflow: hidden;
+    color: var(--f-tertiary);
+    font-size: var(--f-text-xs);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
 /* Sent messages carry a bar on the leading edge: the accent for the viewer's own (mine), a
      neutral one for a teammate's. Incoming messages stay plain. */
 

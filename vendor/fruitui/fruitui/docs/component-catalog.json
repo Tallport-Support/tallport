@@ -1385,5 +1385,21 @@
         "options": "`label`: what it is, for assistive technology (default: Generated; for example Summary). Default slot: the text. In a Thread it sits without hairlines, like the cards. For a machine translation use Message's `translation` slot; for generated text with an author and time, Message `variant=\"generated\"`."
       }
     }
+  },
+  {
+    "id": "suggestion",
+    "kind": "primitive",
+    "classes": ["f-suggestion"],
+    "blade": ["suggestion"],
+    "uses": [],
+    "contracts": {
+      "suggestion": {
+        "purpose": "Offer a generated suggestion for the reader to review and use, such as an AI reply draft.",
+        "element": "`section` named by its title (`aria-label`), with a sparkles icon, the title and meta, an optional status line, the suggestion as prose, an optional translation, an actions group and quieter details.",
+        "state": "The application owns the content and state. `aria-busy=\"true\"` (bindable) shows a skeleton in place of the suggestion, its translation, actions and details.",
+        "keyboard": "No keyboard behavior of its own; actions, links and the dismiss button keep theirs.",
+        "options": "`title` (required), `meta` (for example language and confidence). Slots: default (the suggestion, rich text), `dismiss` (a close button), `status` (`tone`: neutral, working with a spinner, warning, danger; bindable `data-tone`), `translation` (with `lang`; announced as Translation), `actions` (Insert, Draft Again), `details` (sections with an `h4` and a list; `ul.f-suggestion__sources` for sources: the linked title, then a muted site, both shortened)."
+      }
+    }
   }
 ]

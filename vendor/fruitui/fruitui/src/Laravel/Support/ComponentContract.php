@@ -54,6 +54,7 @@ final class ComponentContract
         'dialog' => ['roles' => ['dialog', 'alertdialog'], 'options' => ['size' => ['medium', 'large']]],
         'remote-dialog' => [],
         'generated' => ['roles' => ['note']],
+        'suggestion' => ['roles' => ['region']],
         'disclosure' => ['roles' => ['group']],
         'editor' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract', 'options' => ['paste' => ['rich', 'plain']]],
         'empty-state' => ['roles' => ['group', 'region']],
@@ -369,6 +370,24 @@ final class ComponentContract
     {
         if (! in_array($tone, ['neutral', 'warning', 'danger'], true)) {
             throw new InvalidArgumentException('FruitUI message status tone must be one of: neutral, warning, danger.');
+        }
+
+        return $tone;
+    }
+
+    public static function suggestion(mixed $title, ComponentAttributeBag $attributes): void
+    {
+        self::validate('suggestion', $attributes);
+        if (! is_string($title) || trim($title) === '') {
+            throw new InvalidArgumentException('FruitUI suggestion needs a nonempty title.');
+        }
+    }
+
+    /** A suggestion status line's tone: neutral (default), working (a spinner), warning or danger. */
+    public static function suggestionStatus(mixed $tone): string
+    {
+        if (! in_array($tone, ['neutral', 'working', 'warning', 'danger'], true)) {
+            throw new InvalidArgumentException('FruitUI suggestion status tone must be one of: neutral, working, warning, danger.');
         }
 
         return $tone;

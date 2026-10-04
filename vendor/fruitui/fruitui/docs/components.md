@@ -845,6 +845,29 @@ Livewire::test(Inbox::class)
 Livewire::test(Inbox::class)->call('confirm')->assertDialogOpened('confirm-archive')->assertNotToasted();
 ```
 
+### Suggestions
+
+An AI reply draft, or any generated suggestion the reader reviews and uses, is `x-fruit::suggestion`: an indigo-outlined card with a sparkles icon, a `title` and `meta` (language, confidence), the suggestion as readable prose rather than a boxed field, and its actions. While it is being made, set `aria-busy="true"` (bind it with Alpine or Livewire) and a skeleton stands in for the draft; the `status` slot says what is happening with `tone="working"` (a spinner), `warning` for a slow request or `danger` for a failure. A `translation` slot shows the draft in the agent's language, and `details` holds quieter sections such as notes and the sources used (`ul.f-suggestion__sources`: the linked title, then a muted site).
+
+```blade
+<x-fruit::suggestion title="AI draft" meta="English · High confidence" x-bind:aria-busy="drafting">
+    <x-slot:dismiss><x-fruit::button variant="ghost" class="f-button--icon" aria-label="Dismiss draft">…</x-fruit::button></x-slot:dismiss>
+    <x-slot:status tone="working" x-show="drafting" role="status">Drafting…</x-slot:status>
+    {!! $draftHtml !!}
+    <x-slot:translation lang="nl">{!! $translatedHtml !!}</x-slot:translation>
+    <x-slot:actions>
+        <x-fruit::button variant="primary" wire:click="insertDraft">Insert into Reply</x-fruit::button>
+        <x-fruit::button wire:click="draftAgain">Draft Again</x-fruit::button>
+    </x-slot:actions>
+    <x-slot:details>
+        <section><h4>Notes</h4><ul><li>Guest invites expire after seven days.</li></ul></section>
+        <section><h4>Documentation used</h4>
+            <ul class="f-suggestion__sources"><li><a href="{{ $url }}">Inviting guests</a><small>forma.example/help</small></li></ul>
+        </section>
+    </x-slot:details>
+</x-fruit::suggestion>
+```
+
 ### Dialogs with loaded content
 
 For content the server renders on demand (outgoing emails, the original message, a merge or move form), put one `<x-fruit::remote-dialog />` in the layout for translated labels, then open dialogs from links or script. A link or button with `data-fruit-dialog-url` loads that URL (empty on a link: its `href`) with the title from `data-fruit-dialog-title` (default: its text) and `data-fruit-dialog-size` (medium or large); Cmd/Ctrl/Shift-clicks keep the link's own behavior, so it can still open in a new tab.

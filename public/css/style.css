@@ -1513,50 +1513,6 @@ a.disabled:focus {
     color: var(--f-generated, var(--f-accent));
     vertical-align: -3px;
 }
-.ai-draft-action {
-    color: var(--f-accent);
-}
-.ai-draft-panel {
-    margin: 12px 15px 0;
-    padding: 12px 14px;
-    border-inline-start: 4px solid color-mix(in srgb, var(--f-accent) 55%, transparent);
-    border-radius: var(--f-radius-sm);
-    background: color-mix(in srgb, var(--f-accent) 8%, transparent);
-}
-.ai-draft-meta {
-    color: var(--f-secondary);
-    font-size: 0.75rem;
-    margin-left: 8px;
-}
-.ai-draft-status {
-    margin: 8px 0;
-}
-.ai-draft-body,
-.ai-draft-translation {
-    line-height: 1.45;
-    background: var(--f-surface);
-    border: 1px solid var(--f-border);
-    border-radius: var(--f-radius-sm);
-    padding: 10px;
-    margin: 8px 0;
-}
-.ai-draft-translation-body {
-    margin-top: 6px;
-    white-space: pre-wrap;
-}
-.ai-draft-body p {
-    margin: 0 0 8px;
-}
-.ai-draft-body p:last-child {
-    margin-bottom: 0;
-}
-.ai-draft-body ul,
-.ai-draft-body ol,
-.ai-draft-notes ul,
-.ai-draft-docs ul {
-    margin: 0 0 8px;
-    padding-left: 20px;
-}
 .rpt-filters {
     margin-bottom: 20px;
 }
@@ -2411,9 +2367,16 @@ a.disabled:focus {
 .keyboard-shortcuts .f-headline {
     margin: 8px 0 4px;
 }
-.ai-draft-actions {
-    display: flex;
-    gap: 8px;
+/* Draft with AI, in the toolbar. */
+.conv-actions .ai-draft-action {
+    color: var(--f-accent);
+}
+/* The AI draft, below the composer. */
+.ai-draft-panel .f-suggestion {
+    margin: 16px var(--conv-gutter, 26px) 0;
+}
+.ai-draft-translation-body {
+    white-space: pre-wrap;
 }
 .keyboard-shortcuts__table td:first-child {
     white-space: nowrap;
