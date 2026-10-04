@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     const CUSTOMERS = 12;
     const FOLDER_SAMPLES = 4;
     const PERSONAL_SAMPLES = 2;
+    const LONG_SAMPLES = 2;
 
     protected $customers;
     protected $sequence = 0;
@@ -147,12 +148,27 @@ class DatabaseSeeder extends Seeder
                 $this->conversation($mailbox, $folder, $agent);
             }
         }
+        $long_count = $mailbox->conversations()
+            ->where('type', Conversation::TYPE_EMAIL)
+            ->where('state', Conversation::STATE_PUBLISHED)
+            ->whereIn('status', [Conversation::STATUS_ACTIVE, Conversation::STATUS_PENDING])
+            ->whereHas('threads', function ($query) {
+                $query->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
+                    ->where('state', Thread::STATE_PUBLISHED);
+            }, '>=', 20)
+            ->whereHas('threads', function ($query) {
+                $query->where('state', Thread::STATE_PUBLISHED)->whereRaw('CHAR_LENGTH(body) >= 1000');
+            })->count();
+        $folder = $mailbox->folders()->where('type', Folder::TYPE_ASSIGNED)->first();
+        for ($i = $long_count; $i < self::LONG_SAMPLES; $i++) {
+            $this->conversation($mailbox, $folder, $users->first(), true);
+        }
         foreach ($mailbox->folders as $folder) {
             $folder->updateCountersNow();
         }
     }
 
-    protected function conversation($mailbox, $folder, $agent)
+    protected function conversation($mailbox, $folder, $agent, $long = false)
     {
         $customer = $this->customers[$this->sequence % $this->customers->count()];
         $topics = [
@@ -164,6 +180,10 @@ class DatabaseSeeder extends Seeder
             ['Following up on yesterday’s request', 'Thank you for looking into this yesterday. Is there anything else you need from me to move this forward?', 'We have the details we need and are checking the final result. I will follow up here as soon as the review is complete.'],
         ];
         [$subject, $question, $answer] = $topics[$this->sequence % count($topics)];
+        if ($long) {
+            [$subject, $question, $answer] = $topics[0];
+            $subject .= ' — extended troubleshooting';
+        }
         $started = now()->subDays(1 + ($this->sequence % 14))->subMinutes($this->sequence * 7);
         $conversation = new Conversation();
         $conversation->number = ++$this->number;
@@ -204,7 +224,20 @@ class DatabaseSeeder extends Seeder
             [Thread::TYPE_CUSTOMER, $followup],
             [Thread::TYPE_NOTE, 'Context for the team: review the earlier exchange before following up.'],
         ];
+        if ($long) {
+            foreach ($this->longExchange() as $index => $body) {
+                $messages[] = [$index % 2 == 0 ? Thread::TYPE_MESSAGE : Thread::TYPE_CUSTOMER, $body];
+            }
+            $conversation->threads_count = count($messages) - 1;
+            $conversation->updated_at = $started->copy()->addMinutes((count($messages) - 1) * 40);
+            $conversation->last_reply_at = $conversation->updated_at;
+            $conversation->user_updated_at = $conversation->updated_at->copy()->subMinutes(40);
+            $conversation->setPreview(end($messages)[1]);
+            $conversation->save();
+        }
+        $draft_index = null;
         if ($folder->type == Folder::TYPE_DRAFTS) {
+            $draft_index = count($messages);
             $messages[] = [Thread::TYPE_MESSAGE, 'I have reviewed the details and am preparing the next steps for you.'];
         }
         foreach ($messages as $index => [$type, $body]) {
@@ -214,8 +247,8 @@ class DatabaseSeeder extends Seeder
             $thread->customer_id = $customer->id;
             $thread->type = $type;
             $thread->status = $conversation->status;
-            $thread->state = $index == 4 ? Thread::STATE_DRAFT : Thread::STATE_PUBLISHED;
-            $thread->body = '<p>'.e($body).'</p>';
+            $thread->state = $index === $draft_index ? Thread::STATE_DRAFT : Thread::STATE_PUBLISHED;
+            $thread->body = '<p>'.implode('</p><p>', array_map('e', explode("\n\n", $body))).'</p>';
             $thread->first = $index == 0;
             $thread->source_via = $incoming ? Thread::PERSON_CUSTOMER : Thread::PERSON_USER;
             $thread->source_type = $incoming ? Thread::SOURCE_TYPE_EMAIL : Thread::SOURCE_TYPE_WEB;
@@ -236,5 +269,31 @@ class DatabaseSeeder extends Seeder
             }
         }
         $this->sequence++;
+    }
+
+    protected function longExchange()
+    {
+        return [
+            "Let's work through the connection step by step. First, disconnect the client, restart the laptop, and reconnect using the nearest location. Please note whether the connection fails immediately or only after the laptop has been asleep. Those two cases help us distinguish a setup problem from a connection that is not recovering correctly.\n\nNext, check whether ordinary websites load before you connect. If possible, repeat the same test on a phone hotspot as well as your usual Wi-Fi. Keep the client settings the same for both tests so we are comparing just the network. Please include the approximate time of each attempt and the location selected in the client.\n\nFinally, send the connection log from the client after one failed attempt. You do not need to share your password or any private account information. A short description of what you clicked, the message on screen, and whether reconnecting helped will give us enough context to compare the log with your observations. We will keep the findings in this conversation so you do not have to repeat the details to another member of the team.",
+            "I followed those steps this morning. Websites load normally before I connect, and the first connection after a restart works. The problem returns after I close the laptop lid for about ten minutes.\n\nOn the phone hotspot, reconnecting works straight away. On the office Wi-Fi, the client says it is connected but pages keep loading. Disconnecting and connecting again fixes it until the next time the laptop sleeps.",
+            'That is helpful. Can you repeat the sleep test once with the client connected and once with it disconnected, then tell us whether both cases behave the same?',
+            'Only the first case fails. If I disconnect before closing the lid, it reconnects normally when I open it again.',
+            "We have narrowed this down to recovery after sleep on the office network. I have shared your results with the engineering team.\n\nFor now, disconnecting before sleep is a useful workaround. You do not need to reinstall the application or reset your account. Please keep the current settings while we compare the two connection logs.",
+            'Understood. Two colleagues have the same laptop model. Would it help if they checked the same sequence?',
+            "Yes, a small comparison would be useful. Ask one colleague to test on the office Wi-Fi and the other to use a hotspot. They should start with a fresh connection, open a normal website, close the lid for ten minutes, and then try that website again.\n\nPlease record the application version, operating system version, network, selected location, and approximate wake time for each laptop. If there is a difference, we can check whether it follows the network or the device. There is no need to change power settings or disable any security software for this test.\n\nOnce you have the results, send a short summary here. A successful test is just as useful as a failed one because it gives us a reference to compare against. We will use these observations to validate a targeted fix, then ask you to repeat the original sequence. Our goal is for the connection to recover automatically after sleep without requiring your team to remember a special workaround every time they move between meetings.",
+            "Both colleagues completed the test. The office Wi-Fi laptop had the same problem; the hotspot laptop recovered successfully. All three of us are using the same application version.\n\nThe failure happened around 14:20. I have kept the log from that attempt for the team.",
+            'Thank you. That matches our reproduction. We are checking a change to how the client restores the connection after the network becomes available again.',
+            'Will that change affect our saved locations or account settings?',
+            'Your saved locations and account settings will stay in place. The change is limited to restoring an existing connection after the laptop wakes up.',
+            'Good. We can try the update on one laptop before rolling it out to everyone.',
+            "The test build is ready for that first laptop. Please repeat your original office Wi-Fi test before trying any additional scenarios.\n\nAfter that, try waking the laptop on a different network from the one it used before sleep. Please check both a short sleep of a few minutes and a longer break. We are interested in whether pages start loading automatically, how long recovery takes, and whether the displayed connection state matches what you observe.",
+            "The original test now passes. I also moved from the office Wi-Fi to my hotspot while the laptop was asleep, and pages loaded shortly after it woke up.\n\nI will leave it asleep during lunch and try the longer test afterward.",
+            'Excellent. We will wait for the longer test before considering the investigation complete.',
+            'The lunch test passed too. I did not need to disconnect manually this time.',
+            "Thanks for checking all of those cases. Here is the summary for your team: the failure occurred after sleep on the office network, a manual reconnect restored traffic, and the updated client recovered automatically in both the original test and the network-change test.\n\nYou can now try the same update on the other two laptops. Keep the workaround available until they have completed their normal working day. If either laptop behaves differently, reply here with the time and network so we can continue from the existing findings.",
+            'Both colleagues have installed it. We will monitor it through tomorrow morning and send one final update.',
+            'That sounds good. I will keep this conversation open while you finish the checks. The details above are saved here for whoever handles the next update.',
+            "Final update: all three laptops have been working normally since yesterday. We tested sleep, office Wi-Fi, and hotspots during our usual meetings.\n\nThank you for staying with this and explaining the steps clearly. We are ready to roll the update out to the rest of the team.",
+        ];
     }
 }

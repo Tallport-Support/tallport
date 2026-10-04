@@ -29,7 +29,8 @@ class DatabaseSeederTest extends FeatureTestCase
                 foreach ($conversations as $conversation) {
                     $this->assertNotNull($conversation->customer);
                     $this->assertNotEmpty($conversation->customer->emails);
-                    $this->assertSame(3, $conversation->threads_count);
+                    $this->assertSame($conversation->threads()->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
+                        ->where('state', Thread::STATE_PUBLISHED)->count(), $conversation->threads_count);
                     $this->assertTrue($conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->exists());
                     $this->assertTrue($conversation->threads()->where('type', Thread::TYPE_MESSAGE)->where('state', Thread::STATE_PUBLISHED)->exists());
                     if ($folder->type == Folder::TYPE_DRAFTS) {
@@ -101,6 +102,39 @@ class DatabaseSeederTest extends FeatureTestCase
         $this->assertFalse($conversation->threads()->where('type', Thread::TYPE_MESSAGE)->exists());
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
         $this->assertSame($before + 1, Conversation::count());
+    }
+
+    public function testSeederAddsLongExchangesToAlreadyPopulatedMailboxes()
+    {
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        foreach (Conversation::where('threads_count', '>=', 20)->get() as $conversation) {
+            $conversation->threads()->delete();
+            $conversation->delete();
+        }
+        $existing = Conversation::orderBy('id')->get()->toArray();
+        $before = Conversation::count();
+
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+
+        $this->assertSame($before + 6, Conversation::count());
+        $this->assertSame($existing, Conversation::whereIn('id', array_column($existing, 'id'))->orderBy('id')->get()->toArray());
+        foreach (Mailbox::all() as $mailbox) {
+            $long = $mailbox->conversations()->where('threads_count', '>=', 20)->get();
+            $this->assertCount(2, $long);
+            foreach ($long as $conversation) {
+                $threads = $conversation->threads()->orderBy('created_at')->get();
+                $this->assertCount(24, $threads);
+                $this->assertSame(23, $conversation->threads_count);
+                $this->assertTrue($threads->every(fn ($thread) => $thread->state == Thread::STATE_PUBLISHED));
+                $this->assertGreaterThanOrEqual(2, $threads->filter(fn ($thread) => strlen($thread->body) >= 1000)->count());
+                $this->assertStringContainsString('</p><p>', $threads[4]->body);
+                $this->assertTrue($conversation->last_reply_at->eq($threads->last()->created_at));
+                $this->assertSame(Thread::TYPE_CUSTOMER, $threads->last()->type);
+            }
+        }
+        $before = $this->snapshot();
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $this->assertSame($before, $this->snapshot());
     }
 
     private function snapshot()
