@@ -936,146 +936,60 @@ a h4 {
     padding-left: 5px;
 }
 .dash-cards {
-    box-sizing:border-box;
-    display:flex;
-    flex-wrap:wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
 }
 .dash-card {
-    float: left;
-    position: relative;
-    border: 1px solid #dedede;
-    border-radius: 15px;
-    /*border-left: 4px solid #5cb85c;*/
-    /*-webkit-box-shadow: 0 1px 7px 0 rgba(0,0,0,.08);
-    box-shadow: 0 1px 7px 0 rgba(0,0,0,.08);*/
-    -webkit-box-shadow:0 0 5px rgba(0,0,0,.2);
-    box-shadow:0 0 5px rgba(0,0,0,.2);
-    box-sizing: border-box;
-    min-height: 256px;
-    margin: 0 20px 20px 0;
-    width: 268px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
-.dash-card-content {
-    padding-bottom: 60px;
-    padding-top: 15px;
-    border-radius: 15px;
-    overflow:hidden;
+.dash-card__title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-wrap: anywhere;
 }
-.dash-card-content h3 a,
-.dash-card-content h3 a:hover,
-.dash-card-content h3 a:focus {
-    color: #194c6e;
+.dash-card__title a {
+    color: inherit;
 }
-.dash-card-footer {
-    bottom: 19px;
-    left: 0;
-    padding: 0 18px;
-    position: absolute;
-    right: 0;
-    text-align: right;
+.dash-card__email {
+    margin-top: -6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-.dash-card .btn-trans {
-    background-color: #f9f9f9;
-}
-.dash-card h3 {
-    padding-left: 20px;
-    padding-right: 20px;
-    margin-bottom: 8px;
-    margin-top: -15px;
-    padding-top: 13px;
-    margin-bottom: 0;
-    background-color: #eff1f4;
-}
-.dash-card a.dash-card-list-item {
-    color: #93a1af;
-}
-.dash-card a.dash-card-list-item:hover {
-    text-decoration: underline;
-}
-.dash-card-link {
-    padding-left: 20px;
-    padding-right: 20px;
-    margin-bottom: 10px;
-    padding-right: 20px;
-    padding-bottom: 7px;
-    background-color: #eff1f4;
-    border-bottom: 1px solid #d9e1e7;
-    min-height: 30px;
+.dash-card-list {
+    display: flex;
+    flex-direction: column;
 }
 .dash-card-list-item {
-    font-size: 14px;
-    text-decoration: none!important;
-    padding-bottom: 5px;
-    padding-top: 5px;
-    padding-left: 20px;
-    padding-right: 20px;
-    margin: 0;
-    display: block;
-    overflow: hidden;
-}
-.dash-card .waiting-since {
-    color: #93a1af;
-    font-size: 12.4px;
-    margin-left: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 0;
+    border-top: 1px solid var(--f-border);
+    color: inherit;
 }
 .dash-card-list-item:hover {
-    background-color: #f4f5f5;
+    text-decoration: none;
 }
-.dash-card-list-item strong {
-    display: block;
-    float: right;
+.dash-card-list-item .waiting-since {
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
 }
-.dash-card-list a:nth-of-type(-n+2),
-.dash-card-list a:nth-of-type(-n+2) strong {
-    color: #2a3b47;
+.dash-card-list-item .f-badge {
+    margin-inline-start: auto;
 }
-.dash-card-list a:nth-of-type(n+3) strong {
-    font-weight: normal;
+.dash-card-item-empty {
+    color: var(--f-secondary);
 }
-.dash-card-list a:nth-of-type(1) strong.has-value {
-    background-color: #85919e;
-    color: #fff;
-    padding: 0px 7px 0 7px !important;
-    border-radius: 18px;
-    text-align: center;
-    height: 20px;
-    margin-right: -7px !important;
+.dash-card__footer {
+    margin-top: auto;
 }
-.dash-card-inactive-content {
-    display: none;
-    padding: 8px 20px;
-}
-.dash-card-inactive-content .block-help {
-    font-size: 14px;
-}
-.dash-card-inactive-content .btn-link {
-    padding-left: 0;
-}
-.dash-card-inactive .dash-card-inactive-content {
-    display: block;
-}
-.dash-card-inactive .dash-card-list {
-    display: none;
-}
-.dash-card.dash-card-inactive {
-    /*border-left-color: #93a1af;*/
-    background: #f4f5f5;
-}
-.dash-card-item-empty strong {
-    display: none;
-}
-.dash-card a.dash-card-item-empty,
-.dash-card a.dash-card-item-empty:hover,
-.dash-card a.dash-card-item-empty:focus {
-    color: #93a1af;
-}
-
-@media (max-width:582px) {
-    .card,
-    .dash-card {
-        width: 100%;
-        margin: 0 0 20px 0;
-    }
+.dash-card__footer .dash-card__settings {
+    margin-inline-start: auto;
 }
 
 /**
@@ -4480,7 +4394,6 @@ a.disabled:focus {
     box-shadow:0 0 10px rgba(0,0,0,.2);
 }
 .dropdown-menu.with-icons .glyphicon,
-.dash-card-footer .dropdown-menu .glyphicon,
 .sidebar-buttons .dropdown-menu .glyphicon {
     position: relative;
     color: #0078D7;

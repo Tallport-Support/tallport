@@ -2,68 +2,72 @@
 
 @section('title', __('Dashboard'))
 
+@section('main_class', 'fruit-ui')
+
+@section('sidebar')
+    <x-page-nav>
+        <x-slot:title><h1>{{ App\Option::getCompanyName() }} {{ __('Dashboard') }}@action('dashboard.heading_append')</h1></x-slot:title>
+    </x-page-nav>
+@endsection
+
 @section('content')
-<div class="container">
-    <div class="heading">{{ App\Option::getCompanyName() }} {{ __('Dashboard') }}@action('dashboard.heading_append')</div>
+<div class="page-content">
     @filter('dashboard.before', '')
     @if (count($mailboxes))
-        <div class="dash-cards margin-top">
-            @foreach ($mailboxes as $mailbox)
-                <div class="dash-card @if (!$mailbox->isConnected() || $mailbox->isArchived()) dash-card-inactive @endif" data-mailbox-id="{{ $mailbox->id }}">
-                    <div class="dash-card-content">
-                        @action('dash_card.before_mailbox_name', $mailbox)
-                        <h3 class="text-wrap-break "><a href="{{ $mailbox->url() }}" class="mailbox-name">@include('mailboxes/partials/mute_icon', ['mailbox' => $mailbox])@if ($mailbox->isArchived())<i class="glyphicon glyphicon-lock"></i> @endif{{ $mailbox->name }}</a></h3>
-                        <div class="dash-card-link text-truncate">
-                            <a href="{{ $mailbox->url() }}" class="text-truncate help-link">{{ $mailbox->email }}</a>
-                        </div>
+        <div class="dash-cards">
+            @foreach ($mailboxes as $dash_mailbox)
+                <x-fruit::card class="dash-card {{ (!$dash_mailbox->isConnected() || $dash_mailbox->isArchived()) ? 'dash-card-inactive' : '' }}" data-mailbox-id="{{ $dash_mailbox->id }}">
+                    @action('dash_card.before_mailbox_name', $dash_mailbox)
+                    <h2 class="f-title-3 dash-card__title"><a href="{{ $dash_mailbox->url() }}" class="mailbox-name">@include('mailboxes/partials/mute_icon', ['mailbox' => $dash_mailbox]){{ $dash_mailbox->name }}</a>@if ($dash_mailbox->isArchived()) <x-fruit::badge>{{ __('Archived') }}</x-fruit::badge>@endif</h2>
+                    <div class="f-muted dash-card__email">{{ $dash_mailbox->email }}</div>
+
+                    @if ($dash_mailbox->isConnected())
                         <div class="dash-card-list">
                             @php
-                                $main_folders = $mailbox->getMainFolders();
+                                $main_folders = $dash_mailbox->getMainFolders();
                             @endphp
                             @foreach ($main_folders as $folder)
                                 @php
                                     $active_count = $folder->getCount($main_folders);
+                                    $waiting_since = (!$folder->isIndirect() && $active_count) ? $folder->getWaitingSince() : null;
                                 @endphp
-                                <a href="{{ $folder->url($mailbox->id) }}" class="dash-card-list-item @if (!$active_count) dash-card-item-empty @endif" title="@if ($active_count){{  __('Waiting Since') }}@else{{  __('View conversations') }}@endif">{{ $folder->getTypeName() }}@if (!$folder->isIndirect() && $active_count)<span class="waiting-since">@php $waiting_since = $folder->getWaitingSince(); @endphp@if ($waiting_since)/ {{ $waiting_since }}@endif</span>@endif<strong @if ((int)$active_count) class="has-value" @endif>{{ $active_count }}</strong></a>
+                                <a href="{{ $folder->url($dash_mailbox->id) }}" class="dash-card-list-item @if (!$active_count) dash-card-item-empty @endif" title="@if ($active_count){{ __('Waiting Since') }}@else{{ __('View conversations') }}@endif">
+                                    {{ $folder->getTypeName() }}
+                                    @if ($waiting_since)<span class="waiting-since">{{ $waiting_since }}</span>@endif
+                                    <x-fruit::badge :tone="$active_count && $loop->index < 2 ? 'accent' : 'neutral'">{{ $active_count }}</x-fruit::badge>
+                                </a>
                             @endforeach
                         </div>
-                        <div class="dash-card-inactive-content">
-                            <div class="block-help">
-                                {{ __('Administrator has not configured mailbox connection settings yet.') }}
-                            </div>
-                            @if (Auth::user()->can('update', $mailbox))
-                                @if (!$mailbox->isOutActive())
-                                    <a href="{{ route('mailboxes.connection', ['id' => $mailbox->id]) }}" class="btn btn-link">{{ __('Configure') }}</a>
-                                @elseif (!$mailbox->isInActive())
-                                    <a href="{{ route('mailboxes.connection.incoming', ['id' => $mailbox->id]) }}" class="btn btn-link">{{ __('Configure') }}</a>
-                                @endif
+                    @else
+                        <p class="f-help">{{ __('Administrator has not configured mailbox connection settings yet.') }}</p>
+                        @if (Auth::user()->can('update', $dash_mailbox))
+                            @if (!$dash_mailbox->isOutActive())
+                                <div><a href="{{ route('mailboxes.connection', ['id' => $dash_mailbox->id]) }}" class="f-button f-button--small">{{ __('Configure') }}</a></div>
+                            @elseif (!$dash_mailbox->isInActive())
+                                <div><a href="{{ route('mailboxes.connection.incoming', ['id' => $dash_mailbox->id]) }}" class="f-button f-button--small">{{ __('Configure') }}</a></div>
                             @endif
-                        </div>
+                        @endif
+                    @endif
+
+                    <div class="dash-card__footer f-row">
+                        <a href="{{ $dash_mailbox->url() }}" class="f-button f-button--small">{{ __('Open Mailbox') }}</a>
+                        @if (\Eventy::filter('mailbox.show_buttons', true, $dash_mailbox) && $dash_mailbox->isConnected())
+                            <a href="{{ route('conversations.create', ['mailbox_id' => $dash_mailbox->id]) }}" class="f-button f-button--small f-button--ghost">{{ __('New Conversation') }}</a>
+                        @endif
+                        @if (\Eventy::filter('mailbox.show_buttons', true, $dash_mailbox) && Auth::user()->can('viewMailboxMenu', Auth::user()) && Auth::user()->can('update', $dash_mailbox))
+                            <a href="{{ route('mailboxes.update', ['id' => $dash_mailbox->id]) }}" class="f-button f-button--small f-button--ghost f-button--icon dash-card__settings" title="{{ __('Mailbox Settings') }}" aria-label="{{ __('Mailbox Settings') }}"><x-heroicon-o-cog-6-tooth class="f-icon" aria-hidden="true" /></a>
+                        @endif
                     </div>
-                    
-                    <div class="dash-card-footer">
-                        <div class="btn-group btn-group-justified btn-group-rounded">
-                            @if (\Eventy::filter('mailbox.show_buttons', true, $mailbox) && Auth::user()->can('viewMailboxMenu', Auth::user()))
-                                <div class="btn-group dropdown dropup" data-toggle="tooltip" title="{{ __("Mailbox Settings") }}">
-                                    <a data-toggle="dropdown" href="#" class="btn btn-trans"><i class="glyphicon glyphicon-cog dropdown-toggle"></i></a>
-                                    <ul class="dropdown-menu" role="menu">
-                                        @include("mailboxes/settings_menu", ['is_dropdown' => true])
-                                    </ul>
-                                </div>
-                            @endif
-                            @if (\Eventy::filter('mailbox.show_buttons', true, $mailbox) && $mailbox->isConnected())
-                                <a href="{{ route('conversations.create', ['mailbox_id' => $mailbox->id]) }}" class="btn btn-trans" data-toggle="tooltip" title="{{ __("New Conversation") }}" aria-label="{{ __("New Conversation") }}" role="button"><i class="glyphicon glyphicon-envelope"></i></a>
-                            @endif
-                            <a href="{{ $mailbox->url() }}" class="btn btn-trans" data-toggle="tooltip" title="{{ __("Open Mailbox") }}"><i class="glyphicon glyphicon-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
+                </x-fruit::card>
             @endforeach
         </div>
     @elseif (Auth::user()->isAdmin())
-        <a href="{{ route('mailboxes') }}" class="btn btn-primary margin-top">{{ __("Manage Mailboxes") }}</a>
+        <a href="{{ route('mailboxes') }}" class="f-button f-button--primary">{{ __("Manage Mailboxes") }}</a>
     @else
-        @include('partials/empty', ['icon' => 'home', 'empty_text' => __("Welcome home!")])
+        <x-fruit::empty-state>
+            <x-slot:icon><x-heroicon-o-home /></x-slot:icon>
+            {{ __("Welcome home!") }}
+        </x-fruit::empty-state>
     @endif
     @filter('dashboard.after', '')
 </div>
