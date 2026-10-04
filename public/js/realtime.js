@@ -6,6 +6,25 @@
 var poly;
 var poly_data_closures = [];
 
+// Polycast's requests: after three failures in a row, a toast; another when they work again.
+var fs_connection_errors = 0;
+
+function maybeShowConnectionError()
+{
+	fs_connection_errors++;
+	if (fs_connection_errors == 3) {
+		Tallport.toast(Lang.get('messages.lost_connection'), 'danger');
+	}
+}
+
+function maybeShowConnectionRestored()
+{
+	if (fs_connection_errors >= 3) {
+		Tallport.toast(Lang.get('messages.connection_restored'));
+	}
+	fs_connection_errors = 0;
+}
+
 (function () {
 	var attr = function (name) {
 		return document.body.getAttribute('data-'+name);

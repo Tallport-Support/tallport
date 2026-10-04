@@ -24,7 +24,7 @@
     {{-- style.css must be the last to able to redefine styles --}}
     @php
         try {
-            $styles= array('/css/fonts.css', '/css/legacy.css', '/css/select2/select2.min.css', '/js/featherlight/featherlight.min.css', '/js/featherlight/featherlight.gallery.min.css', '/css/magic-check.css', '/vendor/fruitui/core.compat.css', '/vendor/fruitui/layout.compat.css', '/vendor/fruitui/editor.compat.css', '/css/style.css' );
+            $styles= array('/css/fonts.css', '/css/legacy.css', '/vendor/fruitui/core.compat.css', '/vendor/fruitui/layout.compat.css', '/vendor/fruitui/editor.compat.css', '/css/style.css' );
             if (Helper::isLocaleRtl()) {
                 $styles[] = '/css/legacy-rtl.css';
                 $styles[] = '/css/style-rtl.css';
@@ -141,7 +141,7 @@
     @php
         try {
     @endphp
-    {!! Minify::javascript(\Eventy::filter('javascripts', array('/js/jquery.js', '/js/bootstrap.js', '/js/lang.js', '/js/builds/vars.js', '/js/laroute.js', '/js/parsley/parsley.min.js', '/js/parsley/i18n/'.strtolower(Config::get('app.locale')).'.js', '/js/select2/select2.full.min.js', '/js/polycast/polycast.js', '/js/push/push.min.js', '/js/featherlight/featherlight.min.js', '/js/featherlight/featherlight.gallery.min.js', '/js/taphold.js', '/js/jquery.titlealert.js', '/vendor/fruitui/livewire.global.js', '/vendor/fruitui/editor.global.js', '/js/tallport.js', '/js/mailboxes.js', '/js/users.js', '/js/customers.js', '/js/conversations.js', '/js/admin.js', '/js/editor.js', '/js/main.js', '/js/realtime.js', '/js/shortcuts.js', '/js/saved_replies.js', '/js/attachments.js', '/js/workflows.js', '/js/kb.js')), ['data-navigate-once' => true]) !!}
+    {!! Minify::javascript(\Eventy::filter('javascripts', array('/js/lang.js', '/js/builds/vars.js', '/js/laroute.js', '/js/polycast/polycast.js', '/js/push/push.min.js', '/vendor/fruitui/livewire.global.js', '/vendor/fruitui/editor.global.js', '/js/tallport.js', '/js/mailboxes.js', '/js/users.js', '/js/customers.js', '/js/conversations.js', '/js/admin.js', '/js/editor.js', '/js/main.js', '/js/realtime.js', '/js/shortcuts.js', '/js/saved_replies.js', '/js/attachments.js', '/js/workflows.js', '/js/kb.js')), ['data-navigate-once' => true]) !!}
     @php
         } catch (\Exception $e) {
             // To prevent 500 errors on update.
