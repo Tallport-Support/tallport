@@ -420,6 +420,10 @@
     border-start-end-radius: var(--f-radius-sm);
     border-end-end-radius: var(--f-radius-sm);
   }
+  /* A copy button's wrapper takes the group's corners; its button follows them. */
+  .f-input-group > .f-copy > .f-button {
+    border-radius: inherit;
+  }
   .f-input-group > :focus {
     position: relative;
     z-index: 1;

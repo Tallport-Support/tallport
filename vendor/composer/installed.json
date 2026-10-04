@@ -1375,12 +1375,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nielspeen/fruitui.git",
-                "reference": "d64fecb104c3ba4c5d3c26373f92c0061366be98"
+                "reference": "4590892f6a581b54c5530c94d3b27ec28c3b172b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nielspeen/fruitui/zipball/d64fecb104c3ba4c5d3c26373f92c0061366be98",
-                "reference": "d64fecb104c3ba4c5d3c26373f92c0061366be98",
+                "url": "https://api.github.com/repos/nielspeen/fruitui/zipball/4590892f6a581b54c5530c94d3b27ec28c3b172b",
+                "reference": "4590892f6a581b54c5530c94d3b27ec28c3b172b",
                 "shasum": ""
             },
             "require": {
@@ -1400,7 +1400,7 @@
             "suggest": {
                 "livewire/livewire": "^4.0 for optional single-file components and server interactions."
             },
-            "time": "2026-10-04T05:36:27+00:00",
+            "time": "2026-10-04T06:12:58+00:00",
             "default-branch": true,
             "type": "library",
             "extra": {

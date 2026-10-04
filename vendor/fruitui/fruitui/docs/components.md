@@ -351,7 +351,7 @@ Menus, Combobox, Token Field, Editor, Alert, Tabs, Section Nav, Pagination, Uplo
 | Commands for one item, on right-click | `f-context-menu` / `x-fruit::context-menu` | `fruitContextMenu` owns opening, focus and dismissal; the same commands must also be reachable elsewhere. |
 | Independent popup controls | Floating Disclosure | Ordinary controls retain their own keyboard contracts. |
 | One searchable existing option | `f-combobox` / `x-fruit::combobox` | The native single select owns its scalar value. |
-| Recipients or tags | `f-token-field` / `x-fruit::token-field` | The native textarea owns a newline-delimited string. |
+| Recipients or tags | `f-token-field` / `x-fruit::token-field` | The native textarea owns a newline-delimited string; `submit="list"` posts `name[]` values, and an `options` slot suggests entries (`search="server"` for server search). |
 | Rich formatted text | `f-editor` / `x-fruit::editor` | The native textarea owns HTML; an optional Tiptap module supplies editing. |
 | Related panels in one page | `f-tabs`, `f-tab` | Linked tabs/panels; optional `fruitTabs`, or existing route-aware callbacks. |
 | Related pages | `f-section-nav` | Ordinary links and `aria-current="page"`. |
@@ -414,7 +414,7 @@ Blade includes stable `wire:ignore` containers for generated UI. The named nativ
 
 Token entry adds on Enter, comma, or a multiline/comma paste. Values are trimmed and exact duplicates are ignored. Empty Backspace/Left focuses the last remove button; arrows navigate remove buttons, Escape returns to entry. Adding is atomic for a paste: if application validation rejects any value, the native value is unchanged. Applications can cancel the bubbling `fruit-token-add` event and set `event.detail.error`, or normalize `event.detail.value`. Existing server-provided values are not validated by this event; validate the entire submitted string on the server.
 
-On the server, `FruitUI\Fruit::tokens()` splits the value the way the field shows it: trimmed, without blank lines or exact duplicates. The `FruitUI\Rules\Tokens` rule applies ordinary Laravel rules to every token and reports a failure under the field's own key, so `x-fruit::field` shows it. Bind an existing array back with `implode("\n", $tags)`.
+On the server, `FruitUI\Fruit::tokens()` splits the value the way the field shows it: trimmed, without blank lines or exact duplicates. It also accepts the array that `submit="list"` posts. The `FruitUI\Rules\Tokens` rule applies ordinary Laravel rules to every token and reports a failure under the field's own key, so `x-fruit::field` shows it. Bind an existing array back with `implode("\n", $tags)`.
 
 ```php
 use FruitUI\Fruit;
@@ -430,6 +430,24 @@ public function send(): void
 }
 ```
 
+**Posting a list.** Controllers that expect an array take `submit="list"` (`data-fruit-submit="list"` on the wrapper in HTML). Once enhanced, the textarea's name moves to one hidden `name[]` input per token, kept in sync, so a form posts `cc[]=ann@example.com&cc[]=bob@example.com`. Without JavaScript the textarea still posts the text, so read it with `Fruit::tokens($request->input('cc'))` or validate with `new Tokens('email')`, which accept either form. With no tokens nothing posts under the name, as with unchecked checkboxes. `wire:model` and `x-model` keep binding the newline-delimited text.
+
+**Suggestions.** An `options` slot (a `<datalist>` inside the wrapper in HTML) offers entries while typing, label first and value after; tokens already added are left out. Up/Down choose, Enter or Tab adds the highlighted suggestion, a comma adds the text as typed, and Escape closes the list. Every keystroke sends a bubbling `fruit-suggest` event with `detail.query`. For server search, set `search="server"` (`data-fruit-search="server"`) and answer the event with new options; the list shows them as supplied, without matching them again, and refreshes while the field has focus:
+
+```blade
+<x-fruit::token-field name="cc" wire:model="cc" search="server"
+    x-on:fruit-suggest.debounce.200ms="$wire.set('contactSearch', $event.detail.query)">
+    {{ $cc }}
+    <x-slot:options>
+        @foreach ($this->contactMatches as $email => $name)
+            <option value="{{ $email }}">{{ $name }}</option>
+        @endforeach
+    </x-slot:options>
+</x-fruit::token-field>
+```
+
+The Livewire support desk's Cc field works this way. Without Livewire, replace the datalist's options from the event handler (for example after a `fetch`).
+
 Dispatch `fruit-token-reset` on the native textarea to discard pending entry and validation feedback without changing committed tokens. Mail uses it when starting another draft, including when the serialized model was already empty. Ordinary form resets also clear pending entry.
 
 ```html
@@ -439,6 +457,20 @@ Dispatch `fruit-token-reset` on the native textarea to discard pending entry and
     $event.preventDefault();
   }"></textarea>
 ```
+
+**Searching on the server.** For long lists such as customers, set `search="server"` on Combobox (`data-fruit-search="server"` on the wrapper in HTML). Typing sends a bubbling `fruit-suggest` event with `detail.query`; answer it by replacing the select's options. The open list follows the new options as supplied, without matching them again. Keep the current choice among the options (marked `selected`) so the native value survives each search, and use an empty hidden option with a `placeholder` for no choice:
+
+```blade
+<x-fruit::combobox name="customer" wire:model="customer" search="server" placeholder="Search customers"
+    x-on:fruit-suggest.debounce.200ms="$wire.set('customerSearch', $event.detail.query)">
+    <option value="" hidden></option>
+    @foreach ($this->customerMatches as $id => $name) {{-- includes the current choice --}}
+        <option value="{{ $id }}" @selected((string) $id === $customer)>{{ $name }}</option>
+    @endforeach
+</x-fruit::combobox>
+```
+
+The Livewire support desk's Merge into field works this way. Without Livewire, replace the options from the event handler after a `fetch`.
 
 Choice queries keep focus while `aria-activedescendant` identifies the highlighted option. Up/Down navigate, Enter commits, Escape restores the selected label, and Tab leaves without changing the selection. Disabled options/optgroups are skipped. The enhanced controls preserve form resets, native required/disabled/readonly behavior, label focus, external Alpine model updates, and helper cleanup. Combobox does not support multiple/size modes; use Select for native multiple selection or Token Field for free text tokens.
 
@@ -531,6 +563,17 @@ Use `f-prose` around sanitized message content to scope paragraph, list, quote, 
 ### Composing the remaining pieces
 
 `f-button-group` joins independent Buttons and Menus for split actions. `f-input-group` joins native inputs, `f-input-group__addon` units, and action buttons; use `aria-describedby` for a meaningful unit. `f-chip` holds a value and an independent `f-chip__remove` button. None owns the surrounding form's value.
+
+**Copy button** (`x-fruit::copy-button value="…"`) copies its value to the clipboard: API keys, webhook secrets, forwarding addresses, invite links. For a moment its icon becomes a check and its label reads Copied; a polite status announces Copied, or Could not copy when the browser refuses. Without a label it is an icon button named Copy, so give it a specific `aria-label` ("Copy webhook secret"). It takes Button's `variant` (default, primary, ghost) and `size`, joins an `f-input-group` beside a read-only input, and sends a bubbling `fruit-copied` event with `detail.value`. In HTML, bind `data-fruit-copy` on the button inside `span.f-copy[x-data="fruitCopy"]` (see the gallery); pages without HTTPS fall back to the selection copy command.
+
+```blade
+<x-fruit::field label="Webhook secret">
+    <div class="f-input-group">
+        <x-fruit::input id="webhook-secret" value="{{ $secret }}" readonly />
+        <x-fruit::copy-button value="{{ $secret }}" aria-label="Copy webhook secret" />
+    </div>
+</x-fruit::field>
+```
 
 `f-upload` rows combine File, Progress, text/links, and independent cancel/retry/remove buttons. The application owns FileList handling and transport. The Mail and Support examples simulate upload progress locally and provide downloadable browser blobs; they send no files to a server. `f-spinner` is decorative activity: keep a readable action name, set `aria-busy`, and use native disabled when repeated activation must be blocked. Reduced motion stops spinning.
 
@@ -648,7 +691,7 @@ Keep islands outside elements whose `wire:key` changes, such as a pane keyed per
 
 ## Field associations and validation errors
 
-`x-fruit::field` composes one native control with its `label`, an optional `description` and its error. Child form adapters, including Checkbox, Radio and Switch, inherit the id and merged ARIA descriptions. The id is `control-id` when given, otherwise the child's own `id`, otherwise one derived from its `wire:model` or `name` (`form.email` becomes `field-form-email`). Plain HTML children need `control-id` and their own associations. Field associates exactly one control and owns no value, rule or model; use Fieldset for choice groups.
+`x-fruit::field` composes one native control with its `label`, an optional `description` and its error. Child form adapters, including Checkbox, Radio and Switch, inherit the id and merged ARIA descriptions. The id is `control-id` when given, otherwise the child's own `id`, otherwise one derived from its `wire:model` or `name` (`form.email` becomes `field-form-email`). Plain HTML children need `control-id` and their own associations. Field associates exactly one control and owns no value, rule or model; use Fieldset for choice groups. When the label needs markup, give a `label` slot instead of the prop: `<x-slot:label>Type <strong>DELETE</strong> to confirm</x-slot:label>`. It still names the control, so keep it short and readable as plain text.
 
 **Choice groups and descriptions.** Put checkboxes, radios and switches directly inside a Fieldset and they stack one per row. A choice's `description` adds help text under its label, linked with `aria-describedby` and kept out of the label so the control's name stays short; use the named slot for rich text such as a link. Application row layouts, such as a switch at the end of a settings row, still apply because the stacking rule has zero specificity.
 

@@ -1,7 +1,7 @@
 @php(\FruitUI\Support\ComponentContract::validate('field', $attributes))
 @php($fieldError = $fruitField->error())
 <div {{ $attributes->class(['f-field', 'f-field--row' => $layout === 'row']) }}>
-    <label class="f-label" for="{{ $fruitField->id() }}">{{ $label }}</label>
+    <label class="f-label" for="{{ $fruitField->id() }}">{{ \FruitUI\Support\ComponentContract::fieldLabel($label) }}</label>
     {{ $slot }}
     @if($description !== null && $description !== '')
         <p class="f-help" id="{{ $fruitField->descriptionId() }}">{{ $description }}</p>

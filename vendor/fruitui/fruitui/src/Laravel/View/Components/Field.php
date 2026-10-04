@@ -31,7 +31,8 @@ class Field extends Component
         if (! is_string($bag) || $bag === '') {
             throw new InvalidArgumentException('FruitUI Field bag must name an error bag.');
         }
-        if (! is_string($label) || trim($label) === '') {
+        // A label slot replaces the prop; the view checks that one of them has text.
+        if ($label !== null && (! is_string($label) || trim($label) === '')) {
             throw new InvalidArgumentException('FruitUI Field requires a nonempty label.');
         }
         if (($description !== null && ! is_string($description)) || ($error !== null && ! is_string($error))) {

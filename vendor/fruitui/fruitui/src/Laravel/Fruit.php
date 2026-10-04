@@ -47,14 +47,19 @@ final class Fruit
     }
 
     /**
-     * The tokens in a Token Field's newline-delimited value, as the browser shows them:
-     * trimmed, without blank lines or exact duplicates. Join with "\n" to bind an array back.
+     * The tokens in a Token Field's value, as the browser shows them: trimmed, without blank
+     * entries or exact duplicates. Accepts the newline-delimited text or, from submit="list",
+     * the posted array. Join with "\n" to bind an array back.
      *
+     * @param  string|array<int, mixed>|null  $value
      * @return list<string>
      */
-    public static function tokens(?string $value): array
+    public static function tokens(string|array|null $value): array
     {
-        $tokens = array_filter(array_map(trim(...), preg_split('/\r?\n/', $value ?? '')), fn (string $token) => $token !== '');
+        $lines = is_array($value)
+            ? array_filter($value, is_string(...))
+            : preg_split('/\r?\n/', $value ?? '');
+        $tokens = array_filter(array_map(trim(...), $lines), fn (string $token) => $token !== '');
 
         return array_values(array_unique($tokens));
     }

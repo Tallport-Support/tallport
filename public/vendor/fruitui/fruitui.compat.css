@@ -725,6 +725,22 @@ textarea.f-input {
     border-top: 1px solid var(--f-border);
   }
 
+/* Copy to the clipboard: for a moment the icon becomes a check and the label reads "Copied". */
+
+.f-copy {
+    display: inline-flex;
+  }
+
+.f-copy__done-icon,
+  .f-copy__done,
+  .f-copy[data-copied] :is(.f-copy__icon, .f-copy__label) {
+    display: none;
+  }
+
+.f-copy[data-copied] :is(.f-copy__done-icon, .f-copy__done) {
+    display: revert;
+  }
+
 /* A short question before an action: a title, an optional message, then Cancel and the action. */
 
 .f-confirm {
@@ -2493,6 +2509,12 @@ a.f-menu-item {
 .f-input-group > :last-child {
     border-start-end-radius: var(--f-radius-sm);
     border-end-end-radius: var(--f-radius-sm);
+  }
+
+/* A copy button's wrapper takes the group's corners; its button follows them. */
+
+.f-input-group > .f-copy > .f-button {
+    border-radius: inherit;
   }
 
 .f-input-group > :focus {

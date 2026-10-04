@@ -9,9 +9,10 @@ use Illuminate\Support\Facades\Validator;
 
 /**
  * Validate every token in a Token Field's value with ordinary Laravel rules.
- * The error belongs to the field itself, so <x-fruit::field> shows it.
+ * The error belongs to the field itself, so <x-fruit::field> shows it. The value is the
+ * newline-delimited text, or the posted list from submit="list".
  *
- *     'cc' => ['nullable', 'string', new Tokens('email')]
+ *     'cc' => ['nullable', new Tokens('email')]
  */
 final class Tokens implements ValidationRule
 {
@@ -20,7 +21,7 @@ final class Tokens implements ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (! is_string($value)) {
+        if (! is_string($value) && ! (is_array($value) && array_is_list($value) && array_filter($value, is_string(...)) === $value)) {
             $fail('validation.string')->translate();
 
             return;

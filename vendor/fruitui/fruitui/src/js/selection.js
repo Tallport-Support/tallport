@@ -1,3 +1,4 @@
+import { suggestionList } from './suggestions.js';
 import { bridgeControl, fruitId, publishValue } from './control-bridge.js';
 import { fruitPopup, isRtl } from './popup.js';
 import { fruitMessage } from './messages.js';
@@ -31,13 +32,16 @@ export function fruitCombobox() {
       list.children[active].scrollIntoView({ block: 'nearest' });
     } else query.removeAttribute('aria-activedescendant');
   };
+  // With data-fruit-search="server" the application replaces the options in answer to
+  // fruit-suggest events, so they are shown as supplied rather than matched again here.
   const show = (filter = '') => {
     if (query.disabled) return;
+    const server = root.dataset.fruitSearch === 'server';
     options = [...control.options].filter(
       option =>
         !option.matches(':disabled') &&
         !option.hidden &&
-        option.label.toLocaleLowerCase().includes(filter.toLocaleLowerCase()),
+        (server || option.label.toLocaleLowerCase().includes(filter.toLocaleLowerCase())),
     );
     list.replaceChildren();
     options.forEach((option, index) => {
@@ -101,7 +105,13 @@ export function fruitCombobox() {
       control.hidden = true;
       overlay = fruitPopup(list, query, { stretch: true });
       query.value = label();
-      query.addEventListener('input', () => show(query.value));
+      query.addEventListener('input', event => {
+        if (!event.isComposing)
+          control.dispatchEvent(
+            new CustomEvent('fruit-suggest', { bubbles: true, detail: { query: query.value.trim() } }),
+          );
+        show(query.value);
+      });
       query.addEventListener('click', () => show());
       query.addEventListener('blur', () => {
         hide();
@@ -164,7 +174,31 @@ export function fruitTokenField() {
     ownedMount,
     dispose,
     resetPending,
+    suggestions,
+    listName,
+    list,
     tokens = [];
+  // With data-fruit-submit="list", one hidden name[] input per token posts the value instead of
+  // the newline-delimited text, for controllers that expect an array.
+  const syncList = () => {
+    if (!list) return;
+    // A Livewire morph restores the textarea's name; it moves back to the list.
+    if (control.hasAttribute('name')) {
+      listName = control.name.replace(/\[\]$/, '');
+      control.removeAttribute('name');
+    }
+    list.replaceChildren(
+      ...tokens.map(token => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = `${listName}[]`;
+        input.value = token;
+        input.disabled = control.matches(':disabled');
+        if (control.hasAttribute('form')) input.setAttribute('form', control.getAttribute('form'));
+        return input;
+      }),
+    );
+  };
   const parse = () =>
     control.value
       .split(/\r?\n/)
@@ -206,6 +240,7 @@ export function fruitTokenField() {
       chip.append(text, remove);
       entry.insertBefore(chip, query);
     }
+    syncList();
   };
   const add = text => {
     if (query.disabled || query.readOnly) return false;
@@ -264,6 +299,27 @@ export function fruitTokenField() {
       entry.append(query);
       mount.append(entry, status);
       control.hidden = true;
+      if (root.dataset.fruitSubmit === 'list' && control.name) {
+        listName = control.name.replace(/\[\]$/, '');
+        control.removeAttribute('name');
+        list = document.createElement('div');
+        list.hidden = true;
+        mount.append(list);
+      }
+      // Suggestions from a <datalist> in the root; with data-fruit-search="server" the application
+      // supplies matching options in answer to fruit-suggest events, shown as they are.
+      if (root.querySelector('datalist'))
+        suggestions = suggestionList(root, query, {
+          query: () => query.value.trim() || null,
+          pick: option => {
+            add(option.value);
+            query.focus();
+          },
+          filter: root.dataset.fruitSearch !== 'server',
+          exclude: option => tokens.includes(option.value),
+          anchor: entry,
+          messages: { label: 'suggestions-label', count: 'suggestions-count-message' },
+        });
       resetPending = () => {
         query.value = '';
         query.setCustomValidity('');
@@ -285,9 +341,13 @@ export function fruitTokenField() {
           query.removeAttribute('aria-invalid');
         } else if (event.key === 'Tab' && query.value.trim()) add(query.value);
       });
-      query.addEventListener('input', () => {
+      query.addEventListener('input', event => {
         query.setCustomValidity('');
         query.removeAttribute('aria-invalid');
+        if (!event.isComposing)
+          control.dispatchEvent(
+            new CustomEvent('fruit-suggest', { bubbles: true, detail: { query: query.value.trim() } }),
+          );
       });
       query.addEventListener('change', () => {
         if (query.value.trim()) add(query.value);
@@ -315,6 +375,11 @@ export function fruitTokenField() {
     },
     destroy() {
       dispose?.();
+      suggestions?.destroy();
+      if (list) {
+        list.remove();
+        control.name = listName;
+      }
       control?.removeEventListener('fruit-token-reset', resetPending);
       entry?.remove();
       status?.remove();

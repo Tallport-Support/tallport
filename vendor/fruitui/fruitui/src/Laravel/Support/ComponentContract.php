@@ -6,6 +6,7 @@ use FruitUI\Fruit;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Str;
 use Illuminate\View\ComponentAttributeBag;
+use Illuminate\View\ComponentSlot;
 use InvalidArgumentException;
 
 /** Small, explicit contracts for the native controls exposed by Blade. */
@@ -42,10 +43,11 @@ final class ComponentContract
         'avatar' => [],
         'badge' => ['roles' => ['status'], 'options' => ['tone' => ['neutral', 'accent', 'success', 'warning', 'danger'], 'variant' => ['filled', 'outline']]],
         'button' => ['roles' => ['button'], 'options' => ['variant' => self::BUTTON_VARIANTS, 'type' => self::BUTTON_TYPES, 'size' => self::BUTTON_SIZES]],
+        'copy-button' => ['roles' => ['button'], 'type' => 'button', 'options' => ['variant' => ['default', 'primary', 'ghost'], 'size' => self::BUTTON_SIZES]],
         'card' => ['roles' => ['group', 'region']],
         'checkbox' => ['roles' => ['checkbox'], 'type' => 'checkbox', 'emits' => ['type', 'role']],
         'color' => ['type' => 'color', 'emits' => ['type'], 'owns' => self::PICKER, 'message' => 'owns its picker popup association'],
-        'combobox' => ['owns' => [...self::ENHANCED, 'multiple', 'size'], 'message' => 'owns enhancement visibility and its single value contract'],
+        'combobox' => ['owns' => [...self::ENHANCED, 'multiple', 'size'], 'message' => 'owns enhancement visibility and its single value contract', 'options' => ['search' => ['local', 'server']]],
         'composer' => ['roles' => ['form']],
         'date' => ['options' => ['type' => self::DATE_TYPES], 'owns' => self::PICKER, 'message' => 'owns its picker popup association'],
         'description-list' => [],
@@ -121,7 +123,7 @@ final class ComponentContract
         'time' => ['type' => 'time', 'emits' => ['type']],
         'toaster' => ['roles' => ['status'], 'owns' => ['x-data', 'x-show', 'x-text', 'aria-live', 'data-tone'], 'message' => 'owns its fruitToast helper, message and tone. Use the tone prop for the initial tone, and dispatch fruit-toast events for later messages'],
         'confirmer' => ['roles' => ['alertdialog'], 'owns' => ['x-data', 'open'], 'message' => 'owns its fruitConfirmer helper and open state. Call confirm() or $confirm() instead'],
-        'token-field' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract'],
+        'token-field' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract', 'options' => ['submit' => ['text', 'list'], 'search' => ['local', 'server']]],
         'tooltip' => ['owns' => ['x-data'], 'message' => 'owns its fruitTooltip helper. Put application state on a parent'],
         'workspace' => ['roles' => ['group', 'region'], 'options' => ['frame' => ['card', 'fill']]],
     ];
@@ -327,6 +329,17 @@ final class ComponentContract
         }
 
         return [$message === '' ? null : $message, $tone];
+    }
+
+    /** A Field's label prop or label slot, which must have visible text. */
+    public static function fieldLabel(mixed $label): mixed
+    {
+        $text = $label instanceof ComponentSlot ? trim(strip_tags($label->toHtml())) : (is_string($label) ? trim($label) : '');
+        if ($text === '') {
+            throw new InvalidArgumentException('FruitUI Field requires a nonempty label: a label prop or a label slot.');
+        }
+
+        return $label;
     }
 
     public static function splitter(mixed $pane, mixed $flexible, mixed $variable, mixed $min, mixed $max, mixed $reserve, mixed $edge, ComponentAttributeBag $attributes): void

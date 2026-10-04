@@ -1,6 +1,7 @@
 import { fruitToast, toast } from './toast.js';
 export { fruitToast, toast } from './toast.js';
 import { confirm, fruitConfirmer } from './confirm.js';
+import { fruitCopy } from './copy.js';
 export { confirm, fruitConfirmer } from './confirm.js';
 import { fruitDialogModel, listenForNamedDialogs } from './dialog.js';
 import { fruitSplitter } from './splitter.js';
@@ -22,6 +23,7 @@ export default function fruitUI(Alpine) {
   Alpine.magic('toast', () => toast);
   Alpine.data('fruitConfirmer', fruitConfirmer);
   Alpine.magic('confirm', () => confirm);
+  Alpine.data('fruitCopy', fruitCopy);
   Alpine.data('fruitCombobox', fruitCombobox);
   Alpine.data('fruitTokenField', fruitTokenField);
   Alpine.data('fruitSelectionBar', fruitSelectionBar);

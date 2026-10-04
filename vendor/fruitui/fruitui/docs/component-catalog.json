@@ -43,7 +43,7 @@
         "element": "Native div with label and described text.",
         "state": "Child retains its value and bindings; the field settles one control id.",
         "keyboard": "Native label focuses the control or enhanced query.",
-        "options": "`label`: required. `control-id`: optional; otherwise the child id or one derived from its wire:model/name. `description`, `error` strings; `bag`: named error bag. The error defaults to the shared $errors message for the control. One control slot, including Checkbox/Radio/Switch; plain HTML children need control-id and their own ARIA. `layout`: stacked (default), row: the label and description beside the control, as in grouped settings; textareas, editors and token fields take the full row, and narrow form sections stack text rows."
+        "options": "`label`: required, as a prop or a `label` slot for markup such as Type <strong>DELETE</strong> to confirm (it still names the control). `control-id`: optional; otherwise the child id or one derived from its wire:model/name. `description`, `error` strings; `bag`: named error bag. The error defaults to the shared $errors message for the control. One control slot, including Checkbox/Radio/Switch; plain HTML children need control-id and their own ARIA. `layout`: stacked (default), row: the label and description beside the control, as in grouped settings; textareas, editors and token fields take the full row, and narrow form sections stack text rows."
       }
     }
   },
@@ -811,7 +811,7 @@
         "element": "Native single select; enhanced query combobox and listbox.",
         "state": "Native scalar string, required/disabled; name and models remain on select.",
         "keyboard": "Text search, Up/Down, Enter selects; Escape cancels, Tab leaves.",
-        "options": "Native attributes; option/optgroup slot. No multiple/size mode. Requires fruitCombobox for enhancement."
+        "options": "Native attributes; option/optgroup slot. No multiple/size mode. Requires fruitCombobox for enhancement. Typing sends a bubbling `fruit-suggest` event with `detail.query`. `search`: local (default, matches option labels) or server (shows the options as the application replaces them in answer, keeping the list open; keep the current choice among the options so the value survives, and an empty hidden option for no choice)."
       }
     }
   },
@@ -825,9 +825,9 @@
       "token-field": {
         "purpose": "Enter removable independent text values.",
         "element": "Native textarea; enhanced textbox and chip remove buttons.",
-        "state": "Newline-delimited string; native required/disabled/readonly.",
-        "keyboard": "Enter/comma/paste add; empty Backspace focuses removal; chip Left/Right and Escape.",
-        "options": "Native textarea attributes; initial string slot; cancellable fruit-token-add validation; fruit-token-reset clears pending entry."
+        "state": "Newline-delimited string in the textarea; native required/disabled/readonly.",
+        "keyboard": "Enter/comma/paste add; empty Backspace focuses removal; chip Left/Right and Escape. With suggestions: Up/Down choose, Enter or Tab adds the highlighted suggestion, Escape closes the list.",
+        "options": "Native textarea attributes; initial string slot; cancellable fruit-token-add validation; fruit-token-reset clears pending entry. `submit`: text (default, the newline-delimited value under its name) or list (one hidden `name[]` input per token once enhanced; without JavaScript the text posts; Fruit::tokens() and the Tokens rule accept both). `options` slot: `<option value label>` suggestions, excluding tokens already added. Typing sends a bubbling `fruit-suggest` event with `detail.query`; `search`: local (default, matches the options by word prefix) or server (shows the options as the application supplies them in answer, refreshing while the field has focus)."
       }
     }
   },
@@ -860,6 +860,22 @@
     "classes": ["f-input-group"],
     "blade": [],
     "uses": ["support.html", "admin.html"]
+  },
+  {
+    "id": "copy-button",
+    "kind": "primitive",
+    "classes": ["f-copy"],
+    "blade": ["copy-button"],
+    "uses": [],
+    "contracts": {
+      "copy-button": {
+        "purpose": "Copy a value to the clipboard and confirm it in place.",
+        "element": "`button type=button` with `data-fruit-copy` inside `span.f-copy`, beside a polite status.",
+        "state": "fruitCopy marks `data-copied` for two seconds after a copy; the status announces Copied, or Could not copy.",
+        "keyboard": "Native button: Enter and Space copy.",
+        "options": "`value`: the text to copy (or bind `data-fruit-copy` from script). `variant`: default, primary, ghost. `size`: small, regular, large. Slot: the label; without one, an icon button labelled Copy (give it a specific `aria-label`). A bubbling `fruit-copied` event with `detail.value` follows a copy. Pages without HTTPS fall back to the selection copy command. In an Input Group it joins the field."
+      }
+    }
   },
   {
     "id": "tabs",

@@ -372,6 +372,18 @@
     padding: 16px 22px;
     border-top: 1px solid var(--f-border);
   }
+  /* Copy to the clipboard: for a moment the icon becomes a check and the label reads "Copied". */
+  .f-copy {
+    display: inline-flex;
+  }
+  .f-copy__done-icon,
+  .f-copy__done,
+  .f-copy[data-copied] :is(.f-copy__icon, .f-copy__label) {
+    display: none;
+  }
+  .f-copy[data-copied] :is(.f-copy__done-icon, .f-copy__done) {
+    display: revert;
+  }
   /* A short question before an action: a title, an optional message, then Cancel and the action. */
   .f-confirm {
     width: min(380px, calc(100% - 32px));
