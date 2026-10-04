@@ -646,7 +646,8 @@
         "arguments": 3,
         "files": [
             "app/Conversation.php",
-            "app/Http/Controllers/ConversationsController.php"
+            "app/Http/Controllers/ConversationsController.php",
+            "app/Misc/ConversationActions.php"
         ]
     },
     {

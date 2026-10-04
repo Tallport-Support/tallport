@@ -1018,6 +1018,7 @@ class ComposerStaticInit3c73e184b44e38eaac73543de84411a5
         'App\\Misc\\AllMailboxes' => __DIR__ . '/../..' . '/app/Misc/AllMailboxes.php',
         'App\\Misc\\Branding' => __DIR__ . '/../..' . '/app/Misc/Branding.php',
         'App\\Misc\\ConversationActionButtons' => __DIR__ . '/../..' . '/app/Misc/ConversationActionButtons.php',
+        'App\\Misc\\ConversationActions' => __DIR__ . '/../..' . '/app/Misc/ConversationActions.php',
         'App\\Misc\\CspHtmlDumper' => __DIR__ . '/../..' . '/app/Misc/CspHtmlDumper.php',
         'App\\Misc\\EmbedImages' => __DIR__ . '/../..' . '/app/Misc/EmbedImages.php',
         'App\\Misc\\EnvFile' => __DIR__ . '/../..' . '/app/Misc/EnvFile.php',

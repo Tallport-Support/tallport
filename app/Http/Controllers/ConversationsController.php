@@ -14,7 +14,6 @@ use App\Events\UserCreatedConversationDraft;
 use App\Events\UserCreatedThreadDraft;
 use App\Events\UserReplied;
 use App\Folder;
-use App\Follower;
 use App\Job;
 use App\Mailbox;
 use App\MailboxUser;
@@ -631,105 +630,12 @@ class ConversationsController extends Controller
 
             // Change conversation user
             case 'conversation_change_user':
-                $conversation = Conversation::find($request->conversation_id);
-
-                $new_user_id = (int) $request->user_id;
-
-                if (!$conversation) {
-                    $response['msg'] = __('Conversation not found');
-                }
-                if (!$response['msg'] && $conversation->user_id == $new_user_id) {
-                    $response['msg'] = __('Assignee already set');
-                }
-                if (!$response['msg'] && !$user->can('update', $conversation)) {
-                    $response['msg'] = __('Not enough permissions');
-                }
-                if (!$response['msg'] && (int) $new_user_id != -1 && !$conversation->mailbox->userHasAccess($new_user_id)) {
-                    $response['msg'] = __('Not enough permissions');
-                }
-                if (!$response['msg']) {
-                    // Determine redirect
-                    // Must be done before updating current conversation's status or assignee.
-                    $redirect_same_page = false;
-                    if ($new_user_id == $user->id || $request->x_embed == 1) {
-                        // If user assigned conversation to himself, stay on the current page
-                        $response['redirect_url'] = $conversation->url();
-                        $redirect_same_page = true;
-                    } else {
-                        $response['redirect_url'] = $this->getRedirectUrl($request, $conversation, $user);
-                    }
-
-                    $conversation->changeUser($new_user_id, $user);
-
-                    $response['status'] = 'success';
-
-                    // Flash
-                    $flash_message = __('Assignee updated');
-                    if (!$redirect_same_page || $response['redirect_url'] != $conversation->url()) {
-                        $flash_message .= ' &nbsp;<a href="'.$conversation->url().'">'.__('View').'</a>';
-                    }
-                    \Session::flash('flash_success_floating', $flash_message);
-
-                    $response['msg'] = __('Assignee updated');
-                }
+                $response = array_merge($response, \App\Misc\ConversationActions::changeUser(Conversation::find($request->conversation_id), $request->user_id, $user, $request));
                 break;
 
             // Change conversation status
             case 'conversation_change_status':
-                $conversation = Conversation::find($request->conversation_id);
-
-                if ($request->status == 'not_spam') {
-                    // Find previous status in threads
-                    $new_status = !$conversation ? null : $conversation
-                        ->threads()
-                        ->orderBy('created_at', 'desc')
-                        ->where('status', '!=', Thread::STATUS_SPAM)
-                        ->where('type', Thread::TYPE_LINEITEM)
-                        ->where('action_type', Thread::ACTION_TYPE_STATUS_CHANGED)
-                        ->value('status');
-                    if (!$new_status) {
-                        $new_status = Thread::STATUS_ACTIVE;
-                    }
-                } else {
-                    $new_status = (int) $request->status;
-                }
-
-                if (!$conversation) {
-                    $response['msg'] = __('Conversation not found');
-                }
-                if (!$response['msg'] && $conversation->status == $new_status) {
-                    $response['msg'] = __('Status already set');
-                }
-                if (!$response['msg'] && !$user->can('update', $conversation)) {
-                    $response['msg'] = __('Not enough permissions');
-                }
-                if (!$response['msg'] && !in_array((int) $new_status, array_keys(Conversation::$statuses))) {
-                    $response['msg'] = __('Incorrect status');
-                }
-                if (!$response['msg']) {
-                    // Determine redirect
-                    // Must be done before updating current conversation's status or assignee.
-                    $redirect_same_page = false;
-                    if ($request->status == 'not_spam' || $request->x_embed == 1) {
-                        // Stay on the current page
-                        $response['redirect_url'] = $conversation->url();
-                        $redirect_same_page = true;
-                    } else {
-                        $response['redirect_url'] = $this->getRedirectUrl($request, $conversation, $user);
-                    }
-
-                    $conversation->changeStatus($new_status, $user);
-
-                    $response['status'] = 'success';
-                    // Flash
-                    $flash_message = __('Status updated');
-                    if (!$redirect_same_page || $response['redirect_url'] != $conversation->url()) {
-                        $flash_message .= ' &nbsp;<a href="'.$conversation->url().'">'.__('View').'</a>';
-                    }
-                    \Session::flash('flash_success_floating', $flash_message);
-
-                    $response['msg'] = __('Status updated');
-                }
+                $response = array_merge($response, \App\Misc\ConversationActions::changeStatus(Conversation::find($request->conversation_id), $request->status, $user, $request));
                 break;
 
             // Send reply, new conversation, add note or forward
@@ -1988,100 +1894,17 @@ class ConversationsController extends Controller
 
             // Delete conversation (move to DELETED folder)
             case 'delete_conversation':
-                $conversation = Conversation::find($request->conversation_id);
-                if (!$conversation) {
-                    $response['msg'] = __('Conversation not found');
-                } elseif (!$user->can('delete', $conversation)) {
-                    $response['msg'] = __('Not enough permissions');
-                }
-
-                if (!$response['msg']) {
-                    $folder_id = $conversation->getCurrentFolder();
-
-                    $conversation->deleteToFolder($user);
-
-                    $response['redirect_url'] = route('mailboxes.view.folder', ['id' => $conversation->mailbox_id, 'folder_id' => $folder_id]);
-
-                    $response['status'] = 'success';
-
-                    \Session::flash('flash_success_floating', __('Conversation deleted'));
-                }
+                $response = array_merge($response, \App\Misc\ConversationActions::delete(Conversation::find($request->conversation_id), $user));
                 break;
 
             // Delete conversation forever
             case 'delete_conversation_forever':
-                $conversation = Conversation::find($request->conversation_id);
-                if (!$conversation) {
-                    $response['msg'] = __('Conversation not found');
-                } elseif (!$user->can('delete', $conversation)) {
-                    $response['msg'] = __('Not enough permissions');
-                } elseif ($conversation->state != Conversation::STATE_DELETED) {
-                    // Like the UI, which offers "Delete Forever" in the Deleted folder only.
-                    $response['msg'] = __('Only deleted conversations can be deleted forever.');
-                }
-
-                if (!$response['msg']) {
-                    $folder_id = $conversation->getCurrentFolder();
-                    $mailbox = $conversation->mailbox;
-
-                    $conversation->deleteForever();
-
-                    // Recalculate only old and new folders
-                    $mailbox->updateFoldersCounters();
-
-                    $response['redirect_url'] = route('mailboxes.view.folder', ['id' => $conversation->mailbox_id, 'folder_id' => $folder_id]);
-
-                    $response['status'] = 'success';
-
-                    \Session::flash('flash_success_floating', __('Conversation deleted'));
-                }
+                $response = array_merge($response, \App\Misc\ConversationActions::delete(Conversation::find($request->conversation_id), $user, true));
                 break;
 
             // Restore conversation
             case 'restore_conversation':
-                $conversation = Conversation::find($request->conversation_id);
-                if (!$conversation) {
-                    $response['msg'] = __('Conversation not found');
-                } elseif (!$user->can('delete', $conversation)) {
-                    $response['msg'] = __('Not enough permissions');
-                } elseif ($conversation->state != Conversation::STATE_DELETED) {
-                    $response['msg'] = __('Only deleted conversations can be restored.');
-                }
-
-                if (!$response['msg']) {
-                    $folder_id = $conversation->folder_id;
-                    $prev_state = $conversation->state;
-                    $conversation->state = Conversation::STATE_PUBLISHED;
-                    $conversation->user_updated_at = date('Y-m-d H:i:s');
-                    $conversation->updateFolder();
-                    $conversation->save();
-
-                    // Create lineitem thread
-                    $thread = new Thread();
-                    $thread->conversation_id = $conversation->id;
-                    $thread->user_id = $conversation->user_id;
-                    $thread->type = Thread::TYPE_LINEITEM;
-                    $thread->state = Thread::STATE_PUBLISHED;
-                    $thread->status = Thread::STATUS_NOCHANGE;
-                    $thread->action_type = Thread::ACTION_TYPE_RESTORE_TICKET;
-                    $thread->source_via = Thread::PERSON_USER;
-                    // todo: this need to be changed for API
-                    $thread->source_type = Thread::SOURCE_TYPE_WEB;
-                    $thread->customer_id = $conversation->customer_id;
-                    $thread->created_by_user_id = $user->id;
-                    $thread->save();
-
-                    // Recalculate only old and new folders
-                    $conversation->mailbox->updateFoldersCounters();
-
-                    if ($prev_state != $conversation->state) {
-                        \Eventy::action('conversation.state_changed', $conversation, $user, $prev_state);
-                    }
-
-                    $response['status'] = 'success';
-
-                    \Session::flash('flash_success_floating', __('Conversation restored'));
-                }
+                $response = array_merge($response, \App\Misc\ConversationActions::restore(Conversation::find($request->conversation_id), $user));
                 break;
 
             // Load data to edit thread.
@@ -2373,58 +2196,11 @@ class ConversationsController extends Controller
             // Follow conversation
             case 'follow':
             case 'unfollow':
-                $conversation = Conversation::find($request->conversation_id);
-
-                if (!$conversation) {
-                    $response['msg'] = __('Conversation not found');
-                }
-                if (!$response['msg'] && !$user->can('view', $conversation)) {
-                    $response['msg'] = __('Not enough permissions');
-                }
-
-                if (!$response['msg']) {
-                    if ($request->action == 'follow') {
-                        $user->followConversation($request->conversation_id);
-                    } else {
-                        $follower = Follower::where('conversation_id', $request->conversation_id)
-                            ->where('user_id', $user->id)
-                            ->first();
-                        if ($follower) {
-                            $follower->delete();
-                        }
-                    }
-                }
-
-                if (!$response['msg']) {
-                    $response['status'] = 'success';
-                    if ($request->action == 'follow') {
-                        $response['msg_success'] = __('Following');
-                    } else {
-                        $response['msg_success'] = __('Unfollowed');
-                    }
-                }
-
+                $response = array_merge($response, \App\Misc\ConversationActions::follow(Conversation::find($request->conversation_id), $user, $request->action == 'follow'));
                 break;
 
             case 'update_subject':
-                $conversation = Conversation::find($request->conversation_id);
-
-                if (!$conversation) {
-                    $response['msg'] = __('Conversation not found');
-                }
-                if (!$response['msg'] && !$user->can('update', $conversation)) {
-                    $response['msg'] = __('Not enough permissions');
-                }
-
-                $subject = $request->value ?? '';
-                $subject = trim($subject);
-
-                if (!$response['msg'] && $subject) {
-                    $conversation->changeSubject($subject, $user);
-
-                    $response['status'] = 'success';
-                }
-
+                $response = array_merge($response, \App\Misc\ConversationActions::changeSubject(Conversation::find($request->conversation_id), $request->value, $user));
                 break;
 
             case 'merge_search':
@@ -2784,45 +2560,7 @@ class ConversationsController extends Controller
      */
     public function getRedirectUrl($request, $conversation, $user)
     {
-        if (!empty($request->after_send)) {
-            $after_send = $request->after_send;
-        } else {
-            // todo: use $user->mailboxSettings()
-            $after_send = $conversation->mailbox->getUserSettings($user->id)->after_send;
-        }
-
-        // When creating a new conversation. 
-        if (!empty($request->is_create) && $after_send != MailboxUser::AFTER_SEND_STAY) {
-            return route('mailboxes.view.folder', ['id' => $conversation->mailbox_id, 'folder_id' => $conversation->folder_id]);
-        }
-        // if ($conversation->state == Conversation::STATE_DRAFT) {
-        //     return route('mailboxes.view.folder', ['id' => $conversation->mailbox_id, 'folder_id' => $conversation->folder_id]);
-        // }
-
-        if (!empty($after_send)) {
-            switch ($after_send) {
-                case MailboxUser::AFTER_SEND_STAY:
-                default:
-                    $redirect_url = $conversation->url();
-                    break;
-                case MailboxUser::AFTER_SEND_FOLDER:
-                    $folder_id = Conversation::getFolderParam();
-                    if (!$folder_id) {
-                        $folder_id = $conversation->folder_id;
-                    }
-                    $redirect_url = route('mailboxes.view.folder', ['id' => $conversation->mailbox_id, 'folder_id' => $folder_id]);
-                    break;
-                case MailboxUser::AFTER_SEND_NEXT:
-                    // We need to get not any next conversation, but ACTIVE next conversation.
-                    $redirect_url = $conversation->urlNext(Conversation::getFolderParam(), Conversation::STATUS_ACTIVE, true);
-                    break;
-            }
-        } else {
-            // If something went wrong and after_send not set, just show the reply
-            $redirect_url = $conversation->url();
-        }
-
-        return $redirect_url;
+        return \App\Misc\ConversationActions::redirectUrl($request, $conversation, $user);
     }
 
     /**
