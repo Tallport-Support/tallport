@@ -1910,19 +1910,20 @@ class ConversationsController extends Controller
 
             // Conversations navigation
             case 'conversations_pagination':
-                if (!empty($request->filter)) {
-                    // Filter conversations by Assigned To column in Search.
-                    if (!empty($request->params['user_id']) && !empty($request->filter['f'])) {
-                        $filter = $request->filter ?? [];
-                        $filter['f']['assigned'] = (int)$request->params['user_id'];
+                $list = $this->listConversations($request, $user);
 
-                        $request->merge(['filter' => $filter]);
-                    }
-
-                    $response = $this->ajaxConversationsFilter($request, $response, $user);
-                } else {
-                    $response = $this->ajaxConversationsPagination($request, $response, $user);
+                if (!empty($list['msg'])) {
+                    $response['msg'] = $list['msg'];
+                    break;
                 }
+
+                $response['status'] = 'success';
+                $response['html'] = view('conversations/conversations_table', [
+                    'folder'               => $list['folder'],
+                    'conversations'        => $list['conversations'],
+                    'params'               => $request->params ?? [],
+                    'conversations_filter' => $list['conversations_filter'],
+                ])->render();
                 break;
 
             // Change conversation customer
@@ -2156,62 +2157,27 @@ class ConversationsController extends Controller
 
             // Change conversations user
             case 'bulk_conversation_change_user':
+                Conversation::bulkChangeUser($request->conversation_id, $request->user_id, $user);
 
-                $conversations = Conversation::findMany($request->conversation_id);
+                $response['status'] = 'success';
+                // Flash
+                \Session::flash('flash_success_floating', __('Assignee updated'));
 
-                $new_user_id = (int) $request->user_id;
-
-                if (!$response['msg']) {
-                    foreach ($conversations as $conversation) {
-                        if (!$user->can('update', $conversation)) {
-                            continue;
-                        }
-                        if ((int) $new_user_id != -1 && !$conversation->mailbox->userHasAccess($new_user_id)) {
-                            continue;
-                        }
-                        if ((int) $conversation->user_id == ($new_user_id == -1 ? 0 : $new_user_id)) {
-                            // Already assigned so.
-                            continue;
-                        }
-
-                        $conversation->changeUser($new_user_id, $user);
-                    }
-
-                    $response['status'] = 'success';
-                    // Flash
-                    $flash_message = __('Assignee updated');
-                    \Session::flash('flash_success_floating', $flash_message);
-
-                    $response['msg'] = __('Assignee updated');
-                }
+                $response['msg'] = __('Assignee updated');
                 break;
 
             // Change conversations status
             case 'bulk_conversation_change_status':
-                $conversations = Conversation::findMany($request->conversation_id);
-
-                $new_status = (int) $request->status;
-
                 if (!in_array((int) $request->status, array_keys(Conversation::$statuses))) {
                     $response['msg'] = __('Incorrect status');
                 }
 
                 if (!$response['msg']) {
-                    foreach ($conversations as $conversation) {
-                        if (!$user->can('update', $conversation)) {
-                            continue;
-                        }
-                        if ($conversation->status == $new_status) {
-                            continue;
-                        }
-
-                        $conversation->changeStatus($new_status, $user);
-                    }
+                    Conversation::bulkChangeStatus($request->conversation_id, $request->status, $user);
 
                     $response['status'] = 'success';
                     // Flash
-                    $flash_message = __('Status updated');
-                    \Session::flash('flash_success_floating', $flash_message);
+                    \Session::flash('flash_success_floating', __('Status updated'));
 
                     $response['msg'] = __('Status updated');
                 }
@@ -2227,30 +2193,7 @@ class ConversationsController extends Controller
                     return \Response::json($response);
                 }
 
-                $conversations = Conversation::findMany($request->conversation_id);
-                $mailboxes_to_recalculate = [];
-
-                foreach ($conversations as $conversation) {
-                    if (!$user->can('delete', $conversation)) {
-                        continue;
-                    }
-
-                    if ($conversation->state != Conversation::STATE_DELETED) {
-                        // Move to Deleted folder.
-                        $conversation->deleteToFolder($user, false);
-                    } else {
-                        // Delete forever
-                        $conversation->deleteForever();
-                    }
-
-                    if (!array_key_exists($conversation->mailbox_id, $mailboxes_to_recalculate)) {
-                        $mailboxes_to_recalculate[$conversation->mailbox_id] = $conversation->mailbox;
-                    }
-                }
-                // Recalculate folders counters for mailboxes.
-                foreach ($mailboxes_to_recalculate as $mailbox) {
-                    $mailbox->updateFoldersCounters();
-                }
+                Conversation::bulkDelete($request->conversation_id, $user);
 
                 $response['status'] = 'success';
                 \Session::flash('flash_success_floating', __('Conversations deleted'));
@@ -2623,8 +2566,6 @@ class ConversationsController extends Controller
                 return $this->ajaxHtmlMoveConv();
             case 'merge_conv':
                 return $this->ajaxHtmlMergeConv();
-            case 'assignee_filter':
-                return $this->ajaxAssigneeFilter();
             case 'default_redirect':
                 return $this->ajaxHtmlDefaultRedirect();
         }
@@ -2812,50 +2753,6 @@ class ConversationsController extends Controller
     }
 
     /**
-     * Filter conversations by assignee.
-     */
-    public function ajaxAssigneeFilter()
-    {
-        $users = collect([]);
-
-        $mailbox_id = request()->input('mailbox_id');
-        $user_id = request()->input('user_id');
-
-        $user = auth()->user();
-
-        if ($mailbox_id) {
-
-            $mailbox = Mailbox::find($mailbox_id);
-            if (!$mailbox) {
-                abort(404);
-            }
-            if (!$user->can('view', $mailbox)) {
-                \Helper::denyAccess();
-            }
-            // Show users having access to the mailbox.
-            $users = $mailbox->usersAssignable();
-        } else {
-            // Show users from all accessible mailboxes.
-            $mailboxes = $user->mailboxesCanView();
-            foreach ($mailboxes as $mailbox) {
-                $users = $users->merge($mailbox->usersAssignable())->unique('id');
-            }
-        }
-
-        if (!$users->contains('id', $user->id)) {
-            $users[] = $user;
-        }
-
-        // Sort by full name.
-        $users = User::sortUsers($users);
-
-        return view('conversations/ajax_html/assignee_filter', [
-            'users' => $users,
-            'user_id' => $user_id,
-        ]);
-    }
-
-    /**
      * Change default redirect for the mailbox.
      */
     public function ajaxHtmlDefaultRedirect()
@@ -2979,52 +2876,56 @@ class ConversationsController extends Controller
     }
 
     /**
-     * Ajax conversation navigation.
+     * The conversations of a list: a folder's, or those the filter finds
+     * (search results, a customer's conversations). Returns the folder,
+     * the conversations and the filter, or an error message.
      */
-    public function ajaxConversationsPagination(Request $request, $response, $user)
+    public function listConversations(Request $request, $user)
     {
-        //$mailbox = Mailbox::find($request->mailbox_id);
-        $folder = null;
-        $conversations = [];
+        if (!empty($request->filter)) {
+            // Filter conversations by Assigned To column in Search.
+            if (!empty($request->params['user_id']) && !empty($request->filter['f'])) {
+                $filter = $request->filter ?? [];
+                $filter['f']['assigned'] = (int)$request->params['user_id'];
 
-        if (!$response['msg']) {
-            $folder = \Eventy::filter('conversations.ajax_pagination_folder', Folder::find($request->folder_id), $request, $response, $user);
-            if (!$folder) {
-                $response['msg'] = __('Folder not found');
+                $request->merge(['filter' => $filter]);
             }
-        }
-        if (!$response['msg'] && !$user->can('view', $folder)) {
-            $response['msg'] = __('Not enough permissions');
+
+            if (array_key_exists('q', $request->filter)) {
+                // Search.
+                $conversations = $this->searchQuery($user, $this->getSearchQuery($request), $this->getSearchFilters($request));
+            } else {
+                // Filters in the mailbox or customer profile.
+                $conversations = $this->conversationsFilterQuery($request, $user);
+            }
+
+            return [
+                'folder'               => null,
+                'conversations'        => $conversations,
+                'conversations_filter' => $request->filter['f'] ?? $request->filter ?? [],
+            ];
         }
 
+        $folder = \Eventy::filter('conversations.ajax_pagination_folder', Folder::find($request->folder_id), $request, ['status' => 'error', 'msg' => ''], $user);
+        if (!$folder) {
+            return ['msg' => __('Folder not found')];
+        }
         // We should not use mailbox_id from the request, as it can be changed.
-        if (!$response['msg'] && !$user->can('view', $folder->mailbox)) {
-            $response['msg'] = __('Not enough permissions');
+        if (!$user->can('view', $folder) || !$user->can('view', $folder->mailbox)) {
+            return ['msg' => __('Not enough permissions')];
         }
 
-        if (!$response['msg']) {
-            $query_conversations = Conversation::getQueryByFolder($folder, $user->id);
+        $query_conversations = Conversation::getQueryByFolder($folder, $user->id);
 
-            if (!empty($request->params['user_id'])) {
-                $query_conversations->where('conversations.user_id', (int)$request->params['user_id']);
-            }
-
-            $conversations = $folder->queryAddOrderBy($query_conversations)->paginate(Conversation::DEFAULT_LIST_SIZE, ['*'], 'page', $request->page);
+        if (!empty($request->params['user_id'])) {
+            $query_conversations->where('conversations.user_id', (int)$request->params['user_id']);
         }
 
-        if ($response['msg']) {
-            return $response;
-        }
-
-        $response['status'] = 'success';
-
-        $response['html'] = view('conversations/conversations_table', [
-            'folder'        => $folder,
-            'conversations' => $conversations,
-            'params'        => $request->params ?? [],
-        ])->render();
-
-        return $response;
+        return [
+            'folder'               => $folder,
+            'conversations'        => $folder->queryAddOrderBy($query_conversations)->paginate(Conversation::DEFAULT_LIST_SIZE, ['*'], 'page', $request->page),
+            'conversations_filter' => [],
+        ];
     }
 
     /**
@@ -3316,30 +3217,6 @@ class ConversationsController extends Controller
         //$folder->total_count = $conversations->count();
 
         return $folder;
-    }
-
-    /**
-     * Ajax conversations search.
-     */
-    public function ajaxConversationsFilter(Request $request, $response, $user)
-    {
-        if (array_key_exists('q', $request->filter)) {
-            // Search.
-            $conversations = $this->searchQuery($user, $this->getSearchQuery($request), $this->getSearchFilters($request));
-        } else {
-            // Filters in the mailbox or customer profile.
-            $conversations = $this->conversationsFilterQuery($request, $user);
-        }
-
-        $response['status'] = 'success';
-
-        $response['html'] = view('conversations/conversations_table', [
-            'conversations' => $conversations,
-            'params' => $request->params ?? [],
-            'conversations_filter' => $request->filter['f'] ?? $request->filter ?? [],
-        ])->render();
-
-        return $response;
     }
 
     /**

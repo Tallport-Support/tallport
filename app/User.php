@@ -1262,6 +1262,28 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
     }
 
     /**
+     * The users a list of conversations can be filtered by: those assignable in
+     * the mailbox, or in every mailbox the user can view, and the user.
+     */
+    public static function assigneeFilterUsers($user, $mailbox = null)
+    {
+        if ($mailbox) {
+            $users = $mailbox->usersAssignable();
+        } else {
+            $users = collect([]);
+            foreach ($user->mailboxesCanView() as $mailbox_item) {
+                $users = $users->merge($mailbox_item->usersAssignable())->unique('id');
+            }
+        }
+
+        if (!$users->contains('id', $user->id)) {
+            $users[] = $user;
+        }
+
+        return self::sortUsers($users);
+    }
+
+    /**
      * Sorting users alphabetically.
      * It has to be done in PHP.
      */

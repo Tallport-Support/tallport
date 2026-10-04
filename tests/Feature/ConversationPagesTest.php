@@ -78,7 +78,6 @@ class ConversationPagesTest extends FeatureTestCase
         $response->assertStatus(200);
         $response->assertSee('split-view__list', false);
         $response->assertSee('Second question');
-        $response->assertSee('data-param_current_conversation_id="'.$first->id.'"', false);
         preg_match_all('/<a [^>]*conv-row__link[^>]*>/', $response->getContent(), $rows);
         $current = array_values(array_filter($rows[0], fn ($row) => str_contains($row, 'aria-current="page"')));
         $this->assertCount(1, $current);

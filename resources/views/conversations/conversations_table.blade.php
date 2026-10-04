@@ -56,24 +56,34 @@
         $list_mailbox_id = $folder->id < 0 ? $folder->id : $folder->mailbox_id;
         $current_conversation_id = $params['current_conversation_id'] ?? null;
     @endphp
-    <section class="table-conversations conv-list @if (!empty($params['show_mailbox']))show-mailbox @endif" aria-label="{{ __('Conversations') }}" data-page="{{ method_exists($conversations, 'currentPage') ? $conversations->currentPage() : (int) request()->get('page', 1) }}" @if ($folder->id) data-folder_id="{{ $folder->id }}" data-mailbox_id="{{ $list_mailbox_id }}" @endif @foreach ($params as $param_name => $param_value) data-param_{{ $param_name }}="{{ $param_value }}" @endforeach @if (!empty($conversations_filter)) @foreach ($conversations_filter as $filter_field => $filter_value) data-filter_{{ $filter_field }}="{{ $filter_value }}" @endforeach @endif @foreach ($sorting as $sorting_name => $sorting_value) data-sorting_{{ $sorting_name }}="{{ $sorting_value }}" @endforeach >
+    <section class="table-conversations conv-list @if (!empty($params['show_mailbox']))show-mailbox @endif" aria-label="{{ __('Conversations') }}" data-page="{{ method_exists($conversations, 'currentPage') ? $conversations->currentPage() : (int) request()->get('page', 1) }}" @if ($folder->id) data-folder_id="{{ $folder->id }}" data-mailbox_id="{{ $list_mailbox_id }}" @endif>
         @if (empty($no_checkboxes))
             @include('/conversations/partials/bulk_actions')
         @endif
 
         <div class="conv-list__toolbar f-row">
             @if (empty($no_checkboxes))
-                <input type="checkbox" class="f-check toggle-all" id="toggle-all" aria-label="{{ __('Select All Conversations') }}" title="{{ __('Select All Conversations') }}">
+                <input type="checkbox" class="f-check toggle-all" id="toggle-all" aria-label="{{ __('Select All Conversations') }}" title="{{ __('Select All Conversations') }}" x-data="{ ids: @js($conversations->pluck('id')->map(fn ($id) => (string) $id)->values()) }" :checked="ids.length && ids.every(id => selected.includes(id))" @change="selected = $event.target.checked ? ids : []">
             @endif
             <x-fruit::menu :title="__('Sort by')" class="conv-list__sort">
                 <x-slot:trigger class="f-button--ghost f-button--small">{{ $sort_titles[$sort_by] }} {{ $sort_order == 'desc' ? '↑' : '↓' }}</x-slot:trigger>
                 @foreach ($sort_titles as $sort_field => $sort_title)
-                    <x-fruit::menu-link href="#" class="conv-col-sort" :data-sort-by="$sort_field" :data-order="$sort_by == $sort_field ? $sort_order : 'desc'" :aria-current="$sort_by == $sort_field ? 'true' : null">{{ $sort_title }}@if ($sort_by == $sort_field) {{ $sort_order == 'desc' ? '↑' : '↓' }}@endif</x-fruit::menu-link>
+                    <x-fruit::menu-link href="#" class="conv-col-sort" wire:click.prevent="sort('{{ $sort_field }}')" x-on:click="selected = []" :aria-current="$sort_by == $sort_field ? 'true' : null">{{ $sort_title }}@if ($sort_by == $sort_field) {{ $sort_order == 'desc' ? '↑' : '↓' }}@endif</x-fruit::menu-link>
                 @endforeach
             </x-fruit::menu>
             @if ($show_assigned)
-                <button type="button" class="f-button f-button--ghost f-button--small conv-owner fs-trigger-modal @if (!empty($params['user_id'])) filtered @endif" data-remote="{{ route('conversations.ajax_html', ['action' =>
-                        'assignee_filter', 'mailbox_id' => (\Helper::isRoute('mailboxes.view.folder') ? $folder->mailbox_id : ''), 'user_id' => ($params['user_id'] ?? '')]) }}" data-trigger="modal" data-modal-title="{{ __("Assigned To") }}" data-modal-no-footer="true" data-modal-on-show="initConvAssigneeFilter" @if (!empty($params['user_id'])) aria-pressed="true" @endif><x-heroicon-o-funnel class="f-icon" aria-hidden="true" /> {{ __("Assigned To") }}</button>
+                @php
+                    $assignees = App\User::assigneeFilterUsers(Auth::user(), $folder->id > 0 ? $folder->mailbox : null);
+                    $filter_assignee = !empty($params['user_id']) ? $assignees->firstWhere('id', (int) $params['user_id']) : null;
+                @endphp
+                <x-fruit::menu :title="__('Assigned To')" class="conv-owner @if (!empty($params['user_id'])) filtered @endif">
+                    <x-slot:trigger class="f-button--ghost f-button--small"><x-heroicon-o-funnel class="f-icon" aria-hidden="true" /> {{ $filter_assignee ? $filter_assignee->getFullName() : __('Assigned To') }}</x-slot:trigger>
+                    <x-fruit::menu-link href="#" wire:click.prevent="filterAssignee" :aria-current="empty($params['user_id']) ? 'true' : null">{{ __('Anyone') }}</x-fruit::menu-link>
+                    <x-fruit::menu-separator />
+                    @foreach ($assignees as $assignee)
+                        <x-fruit::menu-link href="#" wire:click.prevent="filterAssignee({{ $assignee->id }})" :aria-current="($params['user_id'] ?? null) == $assignee->id ? 'true' : null">{{ $assignee->getFullName() }}</x-fruit::menu-link>
+                    @endforeach
+                </x-fruit::menu>
             @endif
         </div>
 
@@ -87,9 +97,9 @@
                     $ai_one_liner = $conversation->search_snippet === null ? (App\Ai\Summaries::getAny($conversation, App\Ai\Settings::language($conversation->mailbox_cached, Auth::user()))['one_liner'] ?? '') : '';
                     $conv_starred = $conversation->isStarredByUser();
                 @endphp
-                <li class="conv-row @action('conversations_table.row_class', $conversation) @if ($conversation->isActive()) conv-active @endif @if ($conversation->isSpam()) conv-spam @endif" data-conversation_id="{{ $conversation->id }}">
+                <li class="conv-row @action('conversations_table.row_class', $conversation) @if ($conversation->isActive()) conv-active @endif @if ($conversation->isSpam()) conv-spam @endif" data-conversation_id="{{ $conversation->id }}" wire:key="conv-{{ $conversation->id }}" :class="{ selected: selected.includes('{{ $conversation->id }}') }">
                     @if (empty($no_checkboxes))
-                        <x-fruit::checkbox class="conv-checkbox" :id="'cb-'.$conversation->id" :name="'cb_'.$conversation->id" :value="$conversation->id"><span class="f-sr-only">{{ __('Select Conversation') }}: {{ $conversation->getSubject() }}</span></x-fruit::checkbox>
+                        <x-fruit::checkbox class="conv-checkbox" :id="'cb-'.$conversation->id" :name="'cb_'.$conversation->id" :value="$conversation->id" x-model="selected" x-on:click="checked($event)"><span class="f-sr-only">{{ __('Select Conversation') }}: {{ $conversation->getSubject() }}</span></x-fruit::checkbox>
                     @endif
                     <x-fruit::item-link :href="$conversation->url(null, null, $list_params)" :current="$current_conversation_id == $conversation->id" :target="$conv_target ? '_blank' : null" class="conv-row__link">
                         <x-slot:title :title="$conversation->customer_email">@if (empty($no_customer)){{ $conv_customer_name }}@else{{ $conversation->getSubject() }}@endif</x-slot:title>
@@ -111,7 +121,7 @@
                         </x-slot:meta>
                     </x-fruit::item-link>
                     @if (empty($no_checkboxes))
-                        <x-fruit::button variant="ghost" size="small" class="f-button--icon conv-star" :aria-pressed="$conv_starred ? 'true' : 'false'" :aria-label="__('Star Conversation')" :title="$conv_starred ? __('Unstar Conversation') : __('Star Conversation')"><x-heroicon-o-star class="f-icon conv-star__off" aria-hidden="true" /><x-heroicon-s-star class="f-icon conv-star__on" aria-hidden="true" /></x-fruit::button>
+                        <x-fruit::button variant="ghost" size="small" class="f-button--icon conv-star" wire:click="star({{ $conversation->id }})" :aria-pressed="$conv_starred ? 'true' : 'false'" :aria-label="__('Star Conversation')" :title="$conv_starred ? __('Unstar Conversation') : __('Star Conversation')"><x-heroicon-o-star class="f-icon conv-star__off" aria-hidden="true" /><x-heroicon-s-star class="f-icon conv-star__on" aria-hidden="true" /></x-fruit::button>
                     @endif
                 </li>
             @endforeach
@@ -128,7 +138,7 @@
                     @endif
                     <strong>{{ $conversations->firstItem() }}</strong>–<strong>{{ $conversations->lastItem() }}</strong>
                 </span>
-                {{ $conversations->links('conversations/conversations_pagination') }}
+                {{ $conversations->links('conversations/conversations_pagination', ['wire' => true]) }}
             </x-fruit::pagination>
         @endif
     </section>
@@ -138,8 +148,3 @@
         {{ __('There are no conversations here') }}
     </x-fruit::empty-state>
 @endif
-
-@section('javascript')
-    @parent
-    conversationsTableInit();
-@endsection

@@ -24,7 +24,7 @@
         @endphp
         @include('partials/flash_messages')
     </div>
-    @include('conversations/conversations_table')
+    <livewire:conversation-list :conversations="$conversations" :folder="$folder" :mailbox="$mailbox" :params="$params ?? []" page-param="page" />
 @endsection
 
 @section('content')
@@ -33,9 +33,4 @@
         <x-slot:title>{{ __('No conversation selected') }}</x-slot:title>
         {{ __('Choose a conversation from the list.') }}
     </x-fruit::empty-state>
-@endsection
-
-@section('javascript')
-    @parent
-    viewMailboxInit();
 @endsection

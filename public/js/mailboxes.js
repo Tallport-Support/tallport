@@ -1,7 +1,8 @@
 /**
  * Mailbox settings: the settings form, deleting a mailbox, the connection
- * pages (sending method, test email, protocol, IMAP folders, test connection)
- * and muting a mailbox from the sidebar.
+ * pages (sending method, test email, protocol, IMAP folders, test connection),
+ * muting a mailbox from the sidebar and
+ * emptying its Deleted or Spam folder.
  */
 document.addEventListener('alpine:init', function () {
 	/**
@@ -183,6 +184,28 @@ document.addEventListener('alpine:init', function () {
 					}
 					Tallport.result(response);
 					Tallport.busy(button, false);
+				});
+			}
+		};
+	});
+
+	// Empty Trash / Delete All in the Deleted and Spam folders.
+	window.Alpine.data('tallportEmptyFolder', function (folder_id, mailbox_id, message, confirm) {
+		return {
+			empty: function (button) {
+				Tallport.confirm({message: message, confirm: confirm, tone: 'danger'}).then(function (ok) {
+					if (!ok) {
+						return;
+					}
+					Tallport.busy(button, true);
+					Tallport.post(laroute.route('conversations.ajax'), {action: 'empty_folder', folder_id: folder_id, mailbox_id: mailbox_id}).then(function (response) {
+						if (Tallport.isSuccess(response)) {
+							window.location.reload();
+						} else {
+							Tallport.busy(button, false);
+							Tallport.result(response);
+						}
+					});
 				});
 			}
 		};

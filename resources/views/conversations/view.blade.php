@@ -22,7 +22,7 @@
     @endsection
     @section('list')
         @include('mailboxes/partials/list_search', ['mailbox' => $list['mailbox']])
-        @include('conversations/conversations_table', ['conversations' => $list['conversations'], 'mailbox' => $list['mailbox'], 'params' => $list['params'] + ['current_conversation_id' => $conversation->id]])
+        <livewire:conversation-list :conversations="$list['conversations']" :folder="$folder" :mailbox="$list['mailbox']" :params="$list['params'] + ['current_conversation_id' => $conversation->id]" page-param="list_page" />
     @endsection
 @endif
 

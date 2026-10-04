@@ -5,5 +5,5 @@
 </div>
 <span class="f-toolbar__spacer"></span>
 @if (($folder->type == App\Folder::TYPE_DELETED || $folder->type == App\Folder::TYPE_SPAM) && $folder->total_count)
-    <a href="#" class="f-button f-button--small f-button--danger mailbox-empty-folder">@if ($folder->type == App\Folder::TYPE_DELETED){{ __('Empty Trash') }}@else{{ __('Delete All') }}@endif</a>
+    <x-fruit::button variant="danger" size="small" class="mailbox-empty-folder" x-data="tallportEmptyFolder({{ $folder->id }}, {{ $mailbox->id }}, {{ \Illuminate\Support\Js::from(__('Delete the conversations?')) }}, {{ \Illuminate\Support\Js::from(__('Delete')) }})" x-on:click="empty($el)">@if ($folder->type == App\Folder::TYPE_DELETED){{ __('Empty Trash') }}@else{{ __('Delete All') }}@endif</x-fruit::button>
 @endif

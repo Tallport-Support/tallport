@@ -14,10 +14,5 @@
 
 @section('content')
     @include('customers/profile_tabs')
-    @include('conversations/conversations_table', ['params' => ['no_checkboxes' => 1, 'no_customer' => 1], 'conversations_filter' => ['customer_id' => $customer->id] ])
-@endsection
-
-@section('javascript')
-    @parent
-    conversationPagination();
+    <livewire:conversation-list :conversations="$conversations" :params="['no_checkboxes' => 1, 'no_customer' => 1]" :filter="['customer_id' => $customer->id]" />
 @endsection

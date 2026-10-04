@@ -16,7 +16,6 @@ var fs_actions = {};
 var fs_filters = {};
 var fs_body_default = '<div><br></div>';
 var fs_prev_focus = true;
-var fs_checkbox_shift_last_checked = null;
 var upload_in_progress = false;
 var audio_chat;
 var autoplay_msg_shown = false;
@@ -2046,57 +2045,11 @@ function saveAfterSend(el)
 	}, true);
 }
 
-function viewMailboxInit()
-{
-	conversationPagination();
-	starConversationInit();
-	initMailboxToolbar();
-}
-
-function initMailboxToolbar()
-{
-	$(document).ready(function() {
-		// Empty trash
-		$(".mailbox-empty-folder").click(function(e) {
-			showModalDialog('#conversations-bulk-actions-delete-modal', {
-				on_show: function(modal) {
-					modal.children().find('.delete-conversation-ok:first').click(function(e) {
-						var button = $(this);
-						button.button('loading');
-
-						fsAjax(
-							{
-								action: 'empty_folder',
-								folder_id: getGlobalAttr('folder_id'),
-								mailbox_id: getGlobalAttr('mailbox_id')
-							},
-							laroute.route('conversations.ajax'),
-							function(response) {
-								if (isAjaxSuccess(response)) {
-									location.reload();
-								} else {
-									modal.modal('hide');
-									showAjaxError(response);
-								}
-							}, true
-						);
-						e.preventDefault();
-					});
-				}
-			});
-			e.preventDefault();
-		});
-	});
-}
-
 function searchInit()
 {
 	$(document).ready(function() {
 		// Open all links in new window
 		//$(".conv-row a").attr('target', '_blank');
-		conversationPagination();
-		starConversationInit();
-
 		$(".sidebar-menu .menu-link a").filter('[data-filter]').click(function(e){
 			var trigger = $(this);
 			var filter = trigger.attr('data-filter');
@@ -2137,96 +2090,6 @@ function searchInit()
 			// Causes JS error on clear
 			//allowClear: true
 		});
-	});
-}
-
-function loadConversations(page, table, no_loader)
-{
-	var filter = null;
-	var params = {};
-	var sorting = {};
-
-	if ($('body:first').hasClass('body-search')) {
-		filter = {
-			q: getQueryParam('q'), // For search
-			f: getQueryParam('f') // For search
-		};
-	}
-	//var table = $(this).parents('.table-conversations:first');
-	if (typeof(table) == "undefined" || table === '') {
-		table = $(".table-conversations:first");
-	}
-	if (typeof(page) == "undefined" || page === '') {
-		page = table.attr('data-page');
-	}
-	if (typeof(no_loader) == "undefined") {
-		no_loader = false;
-	}
-	var datas = table.data();
-	for (data_name in datas) {
-		if (/^filter_/.test(data_name)) {
-			if (filter == null) {
-				filter = {};
-			}
-			filter[data_name.replace(/^filter_/, '')] = datas[data_name];
-		}
-	}
-
-	// Params
-	for (data_name in datas) {
-		if (/^param_/.test(data_name)) {
-			params[data_name.replace(/^param_/, '')] = datas[data_name];
-		}
-	}
-
-	// Sorting
-	for (data_name in datas) {
-		if (/^sorting_/.test(data_name)) {
-			sorting[data_name.replace(/^sorting_/, '')] = datas[data_name];
-		}
-	}
-
-	if (typeof(URL) != "undefined" && getGlobalAttr('folder_id')) {
-		const url = new URL(window.location);
-		url.searchParams.set('page', page);
-		window.history.replaceState({}, '', url);
-	}
-
-	fsAjax(
-		{
-			action: 'conversations_pagination',
-			mailbox_id: table.attr('data-mailbox_id') || getGlobalAttr('mailbox_id'),
-			folder_id: table.attr('data-folder_id') || getGlobalAttr('folder_id'),
-			filter: filter,
-			params: params,
-			page: page,
-			sorting: sorting
-		},
-		laroute.route('conversations.ajax'),
-		function(response) {
-			if (typeof(response.status) != "undefined" && response.status == 'success') {
-				if (typeof(response.html) != "undefined") {
-					$(".table-conversations:first").replaceWith(response.html);
-					conversationPagination();
-					starConversationInit();
-					converstationBulkActionsInit();
-					convListSortingInit();
-					triggersInit();
-				}
-			} else {
-				showAjaxError(response);
-			}
-			loaderHide();
-		},
-		no_loader
-	);
-}
-
-function conversationPagination()
-{
-	$(".table-conversations .pager-nav").click(function(e){
-		loadConversations($(this).attr('data-page'), $(this).parents('.table-conversations:first'));
-		e.preventDefault();
 	});
 }
 
@@ -2458,32 +2321,6 @@ function initMergeConv()
 					ajaxFinish();
 				}
 			);
-		});
-	});
-}
-
-// Filter conversations by Assignee
-function initConvAssigneeFilter()
-{
-	$(document).ready(function() {
-
-		$(".conv-assignee-filter:visible:first").change(function(e){
-			var user_id = $(this).val();
-			var table = $('.table-conversations:first');
-			table.attr('data-param_user_id', user_id);
-
-			if (user_id) {
-				table.children().find('.conv-owner:first').addClass('filtered');
-			} else {
-				table.children().find('.conv-owner:first').removeClass('filtered');
-			}
-
-			loadConversations();
-			closeAllModals();
-		});
-
-		$(".conv-assignee-filter-reset:visible:first").click(function(e){
-			$(".conv-assignee-filter:visible:first").val('').change();
 		});
 	});
 }
@@ -2987,7 +2824,7 @@ function polycastInit()
     			if ((list_mailbox_id == folders_mailbox_id || parseInt(list_mailbox_id) < 0)
     				&& $(".table-conversations:first").length && !getSelectedConversations().length
     			) {
-    				loadConversations('', '', true);
+    				Livewire.dispatch('conversations-changed');
     			}
     			// Play audio notification for chat conversations.
     			playAudioNotification(data);
@@ -3853,28 +3690,11 @@ function setReplyBody(text)
 }
 
 
-function convListSortingInit()
-{
-	$('.conv-col-sort').click(function(event) {
-		event.preventDefault();
-		var table = $(this).parents('.table-conversations:first');
-		table.attr('data-sorting_sort_by', $(this).attr('data-sort-by'));
-		var order = $(this).attr('data-order');
-		if (order == 'asc') {
-			order = 'desc';
-		} else {
-			order = 'asc';
-		}
-		table.attr('data-sorting_order', order);
-
-		loadConversations('', '', true);
-	});
-}
-
 // Star/unstar processing from the list or conversation
 function starConversationInit()
 {
-	$('.conv-star').click(function(event) {
+	// The list's stars are the list's own (App\Livewire\ConversationList).
+	$('.conv-star').not('.conv-row .conv-star').click(function(event) {
 		var trigger = $(this);
 		// In the list, or the open conversation.
 		var conversation_id = trigger.parents('.conv-row:first').attr('data-conversation_id') || getGlobalAttr('conversation_id');
@@ -3916,31 +3736,6 @@ function starConversationInit()
 	});
 }
 
-function conversationsTableInit()
-{
-	converstationBulkActionsInit();
-	convListSortingInit();
-
-	// When checking "ontouchstart" it does not work in the mobile app
-	// if ("ontouchstart" in window)
-	// {
-	$(document).ready(function() {
-		$('.conv-row').on('contextmenu', function(event) {
-			event.preventDefault();
-			event.stopPropagation();
-		});
-
-		$('.conv-row').on('taphold', {duration: 700}, function(event) {
-			var row = $(event.target).parents('.conv-row');
-			var checkbox = $(row).find('input.conv-checkbox');
-			$(checkbox).prop('checked', !checkbox.prop('checked'));
-			$(checkbox).trigger('change');
-			$(row).toggleClass('selected');
-		});
-	});
-	//}
-}
-
 // Get ids of the selected conversations
 function getSelectedConversations(checkboxes)
 {
@@ -3956,143 +3751,6 @@ function getSelectedConversations(checkboxes)
 	});
 
 	return conv_ids;
-}
-
-function converstationBulkActionsInit()
-{
-	$(document).ready(function() {
-		var checkboxes = $('.conv-checkbox');
-		var bulk_buttons = $('#conversations-bulk-actions');
-
-		checkboxes.change(function(event) {
-			var count = checkboxes.filter(':checked').length;
-			// FruitUI's selection bar shows the count and hides itself at zero.
-			bulk_buttons.attr('data-count', count);
-			$(this).parents('.conv-row:first').toggleClass('selected', $(this).prop('checked'));
-		});
-
-		if (!bulk_buttons.attr('data-initialized')) {
-			// Change conversation assignee
-			$(".conv-user [data-user_id]", bulk_buttons).click(function(e) {
-				if ($(this).hasClass('disabled')) {
-					return;
-				}
-
-				var user_id = $(this).data('user_id');
-
-				// We should pass empty "checkboxes" parameter
-				// to avoid selected conversations list being empty
-				// after sorting conversations.
-				var conv_ids = getSelectedConversations();
-
-				fsAjax(
-					{
-						action: 'bulk_conversation_change_user',
-						conversation_id: conv_ids,
-						user_id: user_id
-					},
-					laroute.route('conversations.ajax'),
-					function(response) {
-						if (isAjaxSuccess(response)) {
-							location.reload();
-						} else {
-							showAjaxError(response);
-						}
-					}, true
-				);
-				e.preventDefault();
-			});
-
-			// Change conversation status
-			$(".conv-status [data-status]", bulk_buttons).click(function(e) {
-				var status = $(this).data('status');
-
-				// We should pass empty "checkboxes" parameter
-				// to avoid selected conversations list being empty
-				// after sorting conversations.
-				var conv_ids = getSelectedConversations();
-
-				fsAjax(
-					{
-						action: 'bulk_conversation_change_status',
-						conversation_id: conv_ids,
-						status: status
-					},
-					laroute.route('conversations.ajax'),
-					function(response) {
-						if (isAjaxSuccess(response)) {
-							location.reload();
-						} else {
-							showAjaxError(response);
-						}
-					}, true
-				);
-				e.preventDefault();
-			});
-
-			// Delete conversation
-			$(".conv-delete", bulk_buttons).click(function(e) {
-
-				showModalDialog('#conversations-bulk-actions-delete-modal', {
-					on_show: function(modal) {
-						modal.children().find('.delete-conversation-ok:first').click(function(e) {
-							modal.modal('hide');
-
-							// We should pass empty "checkboxes" parameter
-							// to avoid selected conversations list being empty
-							// after sorting conversations.
-							var conv_ids = getSelectedConversations();
-
-							fsAjax(
-								{
-									action: 'bulk_delete_conversation',
-									conversation_id: conv_ids,
-								},
-								laroute.route('conversations.ajax'),
-								function(response) {
-									if (isAjaxSuccess(response)) {
-										location.reload();
-									} else {
-										showAjaxError(response);
-									}
-								}, true
-							);
-							e.preventDefault();
-						});
-					}
-				});
-				e.preventDefault();
-			});
-
-			$('.conv-checkbox-clear', bulk_buttons).click(function(e) {
-				$(checkboxes).trigger('change');
-				$(checkboxes).prop('checked', false);
-				$(checkboxes).trigger('change');
-				$('.conv-row').removeClass('selected');
-			});
-
-			bulk_buttons.attr('data-initialized', '1');
-		}
-
-		$('.toggle-all:checkbox').on('click', function () {
-			$('.conv-checkbox:checkbox').prop('checked', this.checked).trigger('change');
-		});
-
-		// Shift-click selects the range from the previous click.
-		$('input.conv-checkbox').on('click', function(e) {
-			var all_checkboxes = $('input.conv-checkbox');
-
-			if (e.shiftKey && fs_checkbox_shift_last_checked) {
-				var start = all_checkboxes.index(this);
-				var end = all_checkboxes.index(fs_checkbox_shift_last_checked);
-
-				all_checkboxes.slice(Math.min(start, end), Math.max(start, end)+1).prop('checked', this.checked).trigger('change');
-				document.getSelection().removeAllRanges();
-			}
-
-			fs_checkbox_shift_last_checked = this;
-		});
-	});
 }
 
 function getBrowser(){

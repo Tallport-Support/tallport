@@ -173,7 +173,7 @@
 		    <a href="{{ \Helper::fixProtocol(request()->fullUrlWithQuery(['mode' => App\Conversation::SEARCH_MODE_CUSTOMERS])) }}" @if ($mode == App\Conversation::SEARCH_MODE_CUSTOMERS) aria-current="page" @endif>{{ __('Customers') }} <span class="f-badge">{{ $customers->total() }}</span></a>
 		</nav>
 		@if ($mode == App\Conversation::SEARCH_MODE_CONV)
-	    	@include('conversations/conversations_table', ['mailbox' => $search_mailbox, 'params' => ['target_blank' => true, 'show_mailbox' => (count(Auth::user()->mailboxesCanView(true)) > 1)]])
+	    	<livewire:conversation-list :conversations="$conversations" :mailbox="$search_mailbox" :params="['target_blank' => true, 'show_mailbox' => (count(Auth::user()->mailboxesCanView(true)) > 1)]" :filter="['q' => (string) request()->input('q', ''), 'f' => (array) request()->input('f', [])]" />
 	    @else
 	    	@include('customers/partials/customers_table')
 	    @endif

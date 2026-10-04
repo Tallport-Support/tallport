@@ -32,7 +32,6 @@
         "update_subject"
     ],
     "ConversationsController@ajaxHtml": [
-        "assignee_filter",
         "change_customer",
         "default_redirect",
         "merge_conv",

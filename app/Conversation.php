@@ -1263,6 +1263,7 @@ class Conversation extends Model
             }
         }
         \Cache::forget('user_starred_conversations_'.$user_id.'_'.$mailbox_id);
+        unset(self::$starred_conversation_ids[$mailbox_id]);
     }
 
     /**
@@ -2535,6 +2536,79 @@ class Conversation extends Model
         \App\Events\RealtimeConvNewThread::dispatchSelf($thread);
         \App\Events\RealtimeMailboxNewThread::dispatchSelf($conversation->mailbox_id, $thread->id, (int)$conversation->isChat());
         \App\Events\RealtimeChat::dispatchSelf($conversation->mailbox_id, $thread->id, (int)$conversation->isChat());
+    }
+
+    /**
+     * Assign conversations to a user (-1: nobody), as far as the user may.
+     */
+    public static function bulkChangeUser($conversation_ids, $new_user_id, $user)
+    {
+        $new_user_id = (int) $new_user_id;
+
+        foreach (self::findMany($conversation_ids) as $conversation) {
+            if (!$user->can('update', $conversation)) {
+                continue;
+            }
+            if ($new_user_id != -1 && !$conversation->mailbox->userHasAccess($new_user_id)) {
+                continue;
+            }
+            if ((int) $conversation->user_id == ($new_user_id == -1 ? 0 : $new_user_id)) {
+                // Already assigned so.
+                continue;
+            }
+
+            $conversation->changeUser($new_user_id, $user);
+        }
+    }
+
+    /**
+     * Change the status of conversations, as far as the user may.
+     */
+    public static function bulkChangeStatus($conversation_ids, $new_status, $user)
+    {
+        $new_status = (int) $new_status;
+
+        foreach (self::findMany($conversation_ids) as $conversation) {
+            if (!$user->can('update', $conversation)) {
+                continue;
+            }
+            if ($conversation->status == $new_status) {
+                continue;
+            }
+
+            $conversation->changeStatus($new_status, $user);
+        }
+    }
+
+    /**
+     * Move conversations to the Deleted folder, or delete them forever when
+     * they are there already, as far as the user may.
+     */
+    public static function bulkDelete($conversation_ids, $user)
+    {
+        $mailboxes_to_recalculate = [];
+
+        foreach (self::findMany($conversation_ids) as $conversation) {
+            if (!$user->can('delete', $conversation)) {
+                continue;
+            }
+
+            if ($conversation->state != self::STATE_DELETED) {
+                // Move to Deleted folder.
+                $conversation->deleteToFolder($user, false);
+            } else {
+                // Delete forever
+                $conversation->deleteForever();
+            }
+
+            if (!array_key_exists($conversation->mailbox_id, $mailboxes_to_recalculate)) {
+                $mailboxes_to_recalculate[$conversation->mailbox_id] = $conversation->mailbox;
+            }
+        }
+        // Recalculate folders counters for mailboxes.
+        foreach ($mailboxes_to_recalculate as $mailbox) {
+            $mailbox->updateFoldersCounters();
+        }
     }
 
     public static function getConvTableSorting($request = null)

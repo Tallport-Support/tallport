@@ -201,7 +201,6 @@ class SearchTest extends FeatureTestCase
         $html = $response->json('html');
         $this->assertStringContainsString('<mark>refund</mark>', $html);
         $this->assertLessThan(strpos($html, 'Hello'), strpos($html, 'Refund request'));
-        $this->assertStringContainsString('data-sorting_sort_by="relevance"', $html);
     }
 
     public function testIndexFollowsChanges()

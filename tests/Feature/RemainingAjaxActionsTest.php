@@ -123,12 +123,10 @@ class RemainingAjaxActionsTest extends FeatureTestCase
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $base = '/conversation/ajax-html/';
 
-        $this->actingAs($this->agent)->get($base.'assignee_filter?mailbox_id='.$this->mailbox->id)->assertStatus(200)->assertSee($this->agent->first_name);
         $this->actingAs($this->agent)->get($base.'default_redirect?mailbox_id='.$this->mailbox->id)->assertStatus(200);
         $this->actingAs($this->agent)->get($base.'show_original?thread_id='.$reply->id)->assertStatus(200)->assertSee('Visible reply');
 
         $outsider = $this->createUser();
-        $this->actingAs($outsider)->get($base.'assignee_filter?mailbox_id='.$this->mailbox->id)->assertStatus(403);
         $this->actingAs($outsider)->get($base.'show_original?thread_id='.$reply->id)->assertStatus(403);
     }
 
