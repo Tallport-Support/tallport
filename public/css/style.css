@@ -1306,67 +1306,38 @@ https://github.com/freescout-help-desk/freescout/issues/4354
     display: flex;
     /*flex-wrap: wrap;*/
 }
-/* The conversation (header, then threads) beside the customer inspector,
-   a pane of its own that stays in view and scrolls by itself. When the
-   conversation gets narrow, the inspector moves behind a toolbar toggle. */
-.content:has(> #conv-layout),
-.content:has(> * > #conv-layout) {
-    container: conv / inline-size;
-}
-#conv-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--conv-customer-width, 260px);
-    grid-template-rows: auto 1fr;
-    align-items: start;
-    position: relative;
-    width: 100%;
-}
-#conv-layout-header {
-    grid-column: 1;
-    grid-row: 1;
-    min-width: 0;
-}
-#conv-layout-main {
-    grid-column: 1;
-    grid-row: 2;
-    min-width: 0;
-}
-#conv-layout-customer {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    position: sticky;
-    top: 0;
-    max-height: 100vh;
-    min-height: 100vh;
-    overflow-y: auto;
-    border-inline-start: 1px solid var(--f-border);
-    background-color: var(--f-surface);
-    scrollbar-width: thin;
-}
-.conv-customer-toggle {
+/* The conversation's inspector (the customer), following FruitUI's recipe
+   for an inspector at compact widths: below 1200px a toolbar toggle swaps
+   the page pane for the inspector. */
+.app-inspector-toggle,
+.app-inspector-back {
     display: none;
 }
-@container conv (max-width: 719px) {
-    #conv-layout {
-        grid-template-columns: minmax(0, 1fr);
-    }
-    #conv-layout-customer {
-        display: none;
-    }
-    .conv-customer-toggle {
+.app-inspector-title {
+    margin: 0;
+    font-size: var(--f-text-sm);
+    font-weight: 600;
+}
+@container app (max-width: 1200px) {
+    .conv-customer-toggle,
+    .app-inspector-toggle,
+    .app-workspace[data-view='inspector'] .app-inspector-back {
         display: inline-flex;
     }
-    #conv-layout.conv-layout--customer #conv-layout-main {
+    .app-workspace[data-view='inspector'] .app-workspace__content {
         display: none;
     }
-    #conv-layout.conv-layout--customer #conv-layout-customer {
+    .app-workspace[data-view='inspector'] .app-workspace__inspector-toolbar,
+    .app-workspace[data-view='inspector'] .app-workspace__inspector {
+        display: flex;
+        grid-column: -2;
+        border-inline-start: 0;
+    }
+    .app-workspace[data-view='inspector'] .app-workspace__inspector {
         display: block;
-        grid-column: 1;
-        grid-row: 2;
-        position: static;
-        min-height: 0;
-        max-height: none;
-        border: 0;
+    }
+    .app-workspace[data-view='inspector'] .app-workspace__toolbar {
+        display: none;
     }
 }
 /* The conversation's toolbar and subject: FruitUI bars on the page. */
@@ -1374,10 +1345,12 @@ https://github.com/freescout-help-desk/freescout/issues/4354
     background: var(--f-surface);
 }
 #conv-toolbar {
+    display: flex;
+    flex: 1;
     flex-wrap: wrap;
+    align-items: center;
     gap: 6px;
-    padding: 6px 12px;
-    border-bottom: 1px solid var(--f-border);
+    min-width: 0;
 }
 .conv-actions {
     display: flex;

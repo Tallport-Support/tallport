@@ -33,12 +33,8 @@
     @endsection
 @endif
 
-@section('content')
-    @include('partials/flash_messages')
-
-    <div id="conv-layout" class="conv-type-{{ strtolower($conversation->getTypeName()) }} @if ($is_following) conv-following @endif" x-data="{ customerView: false }" :class="{ 'conv-layout--customer': customerView }">
-        <div id="conv-layout-header">
-            <div id="conv-toolbar" class="fruit-ui f-toolbar conv-header-bar">
+@section('toolbar')
+    <div id="conv-toolbar" class="conv-toolbar">
                 @php
                     $actions = \App\Misc\ConversationActionButtons::getActions($conversation, Auth::user(), $mailbox);
                     $toolbar_actions = \App\Misc\ConversationActionButtons::getActionsByLocation($actions, \App\Misc\ConversationActionButtons::LOCATION_TOOLBAR);
@@ -138,10 +134,30 @@
                         <a href="{{ $conversation->urlPrev(App\Conversation::getFolderParam()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Newer") }}" aria-label="{{ __("Newer") }}"><x-heroicon-o-chevron-up class="f-icon" aria-hidden="true" /></a>
                         <a href="{{ $conversation->urlNext(App\Conversation::getFolderParam()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Older") }}" aria-label="{{ __("Older") }}"><x-heroicon-o-chevron-down class="f-icon" aria-hidden="true" /></a>
                     </li><li class="conv-customer-toggle">
-    <button type="button" class="f-button f-button--ghost f-button--icon" x-on:click="customerView = !customerView" :aria-pressed="customerView" aria-pressed="false" aria-controls="conv-layout-customer" aria-label="{{ __('Customer') }}" title="{{ __('Customer') }}"><x-heroicon-o-user-circle class="f-icon" aria-hidden="true" /></button>
+                        <button type="button" class="f-button f-button--ghost f-button--icon app-inspector-toggle" x-data x-on:click="let ws = $el.closest('.app-workspace'); ws.dataset.view = ws.dataset.view === 'inspector' ? '' : 'inspector'; $el.setAttribute('aria-expanded', ws.dataset.view === 'inspector')" aria-expanded="false" aria-controls="app-inspector" aria-label="{{ __('Customer') }}" title="{{ __('Customer') }}"><x-heroicon-o-user-circle class="f-icon" aria-hidden="true" /></button>
                     </li>
                 </ul>
-            </div>
+    </div>
+@endsection
+
+@section('inspector_label', __('Customer'))
+@section('inspector_toolbar')
+    <button type="button" class="f-button f-button--ghost f-button--icon app-inspector-back" x-data x-on:click="$el.closest('.app-workspace').dataset.view = ''" aria-label="{{ __('Back') }}" title="{{ __('Back') }}"><x-heroicon-o-chevron-left class="f-icon" aria-hidden="true" /></button>
+    <h2 class="app-inspector-title">{{ __('Customer') }}</h2>
+@endsection
+
+@section('inspector')
+        <div id="conv-layout-customer">
+            @include('conversations/partials/customer_sidebar')
+            @action('conversation.after_customer_sidebar', $conversation)
+        </div>
+@endsection
+
+@section('content')
+    @include('partials/flash_messages')
+
+    <div id="conv-layout" class="conv-type-{{ strtolower($conversation->getTypeName()) }} @if ($is_following) conv-following @endif">
+        <div id="conv-layout-header">
             <div id="conv-subject">
                 <div class="fruit-ui conv-subj-block conv-header-bar">
                     <div class="conv-subjwrap">
@@ -303,10 +319,6 @@
             </div>
         </div>
 
-        <div id="conv-layout-customer">
-            @include('conversations/partials/customer_sidebar')
-            @action('conversation.after_customer_sidebar', $conversation)
-        </div>
         <div id="conv-layout-main">
             @include('conversations/partials/ai_summary')
             @action('conversation.before_threads', $conversation)
