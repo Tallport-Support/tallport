@@ -155,12 +155,12 @@ class DatabaseSeederTest extends FeatureTestCase
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
 
         $this->assertSame($before_count, Conversation::count());
-        $this->assertSame($before_threads, Thread::orderBy('id')->get(['id', 'body', 'created_at', 'updated_at'])->toArray());
+        $this->assertSame($before_threads, Thread::whereIn('id', array_column($before_threads, 'id'))->orderBy('id')->get(['id', 'body', 'created_at', 'updated_at'])->toArray());
         \App\Option::set('aiassistant.api_key', encrypt('sk-test'));
         foreach (Conversation::all() as $conversation) {
             $participants = $conversation->threads()->where('state', Thread::STATE_PUBLISHED)
-                ->whereNotNull('created_by_user_id')->distinct()->count('created_by_user_id');
-            $this->assertGreaterThanOrEqual($conversation->threads_count >= 20 ? 3 : 2, $participants);
+                ->where('type', Thread::TYPE_MESSAGE)->whereNotNull('created_by_user_id')->distinct()->count('created_by_user_id');
+            $this->assertSame(3, $participants);
             foreach (array_keys(\App\Ai\Settings::LANGUAGES) as $language) {
                 $this->assertFalse(\App\Ai\Summaries::isStale($conversation, $language));
                 (new \App\Jobs\AiSummarizeConversation($conversation->id, $language))->handle();

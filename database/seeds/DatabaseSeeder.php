@@ -294,6 +294,45 @@ class DatabaseSeeder extends Seeder
                     DB::table('threads')->where('id', $thread->id)->update([
                         'created_by_user_id' => $users[$index % $users->count()]->id,
                     ]);
+                    $thread->created_by_user_id = $users[$index % $users->count()]->id;
+                }
+            }
+            $replies = $samples->where('type', Thread::TYPE_MESSAGE)->where('state', Thread::STATE_PUBLISHED);
+            if ($replies->isNotEmpty()) {
+                $authors = $replies->pluck('created_by_user_id');
+                $index = $samples->max(function ($thread) {
+                    preg_match('/-(\d+)@/', $thread->message_id, $match);
+
+                    return (int) $match[1];
+                });
+                $added = false;
+                foreach ($users as $user) {
+                    if ($authors->contains($user->id)) {
+                        continue;
+                    }
+                    $reply = $replies->first()->replicate();
+                    $reply->created_by_user_id = $user->id;
+                    $reply->body = '<p>Hi '.e($conversation->customer->first_name).',</p>'
+                        .'<p>I have reviewed your conversation with the team and will help with the follow-up. '
+                        .'Please reply here if you have any further questions or results to share.</p>'
+                        .'<p>Best,<br>'.e($user->getFullName()).'</p>';
+                    $reply->first = false;
+                    $reply->message_id = 'sample-'.$conversation->id.'-'.(++$index).'@demo.example.test';
+                    $reply->created_at = $conversation->threads->max('created_at')->copy()->addMinute();
+                    $reply->updated_at = $reply->created_at;
+                    $reply->save();
+                    $conversation->threads->push($reply);
+                    $conversation->last_reply_at = $reply->created_at;
+                    $conversation->last_reply_from = Conversation::PERSON_USER;
+                    $conversation->user_updated_at = $reply->created_at;
+                    $conversation->updated_at = $reply->created_at;
+                    $conversation->setPreview($reply->body);
+                    $added = true;
+                }
+                if ($added) {
+                    $conversation->threads_count = $conversation->threads->where('state', Thread::STATE_PUBLISHED)
+                        ->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])->count();
+                    $conversation->save();
                 }
             }
             foreach ($samples->where('type', Thread::TYPE_CUSTOMER)->where('state', Thread::STATE_PUBLISHED) as $thread) {
