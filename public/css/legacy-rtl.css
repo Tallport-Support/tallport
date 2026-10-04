@@ -1,0 +1,83 @@
+/* Right-to-left counterparts of css/legacy.css, from css/bootstrap-rtl.css (MIT). */
+blockquote.pull-left {
+  padding-left: 15px;
+  padding-right: 0;
+  border-left: 5px solid #eeeeee;
+  border-right: 0;
+  text-align: left;
+}
+.caret {
+  margin-right: 2px;
+  margin-left: 0;
+}
+.dropdown-menu {
+  right: 0;
+  left: auto;
+  float: left;
+  text-align: right;
+}
+.dropdown-menu.pull-right {
+  left: 0;
+  right: auto;
+  float: right;
+}
+.dropdown-menu-right {
+  left: auto;
+  right: 0;
+}
+.dropdown-menu-left {
+  left: 0;
+  right: auto;
+}
+@media (min-width: 768px) {
+  .navbar-right .dropdown-menu {
+    left: auto;
+    right: 0;
+  }
+  .navbar-right .dropdown-menu-left {
+    left: 0;
+    right: auto;
+  }
+}
+@media (min-width: 768px) {
+  .navbar-right {
+    float: left !important;
+  }
+}
+@media (min-width: 768px) {
+  .navbar-right:last-child {
+    margin-left: -15px;
+    margin-right: auto;
+  }
+  .navbar-right .dropdown-menu {
+    left: 0;
+    right: auto;
+  }
+}
+.modal-footer {
+  text-align: left;
+}
+.popover {
+  left: auto;
+  text-align: right;
+}
+.popover.top > .arrow {
+  right: 50%;
+  left: auto;
+  margin-right: -11px;
+  margin-left: auto;
+}
+.popover.top > .arrow:after {
+  margin-right: -10px;
+  margin-left: auto;
+}
+.popover.bottom > .arrow {
+  right: 50%;
+  left: auto;
+  margin-right: -11px;
+  margin-left: auto;
+}
+.popover.bottom > .arrow:after {
+  margin-right: -10px;
+  margin-left: auto;
+}

@@ -5039,10 +5039,6 @@ a.disabled:focus {
 /**
  * App shell: the sidebar (FruitUI) and the page.
  */
-.fruit-ui {
-    /* Bootstrap 3 sets the html font size to 10px. */
-    --f-text-root: 16px;
-}
 .app-shell {
     display: flex;
     align-items: flex-start;
