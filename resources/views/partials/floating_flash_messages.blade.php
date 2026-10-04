@@ -2,7 +2,7 @@
     @section('body_bottom')
         @parent
         <div class="alert alert-success alert-floating">
-            <div><i class="glyphicon glyphicon-ok"></i>{!! safe_raw_html(session('flash_success_floating')) !!}</div>
+            <x-heroicon-o-check-circle class="f-icon" aria-hidden="true" /><div>{!! safe_raw_html(session('flash_success_floating')) !!}</div>
         </div>
     @endsection
 @endif
@@ -18,7 +18,7 @@
     @section('body_bottom')
         @parent
         <div class="alert alert-danger alert-floating">
-            <div><i class="glyphicon glyphicon-exclamation-sign"></i>{!! safe_raw_html(session('flash_error_floating')) !!}</div>
+            <x-heroicon-o-exclamation-circle class="f-icon" aria-hidden="true" /><div>{!! safe_raw_html(session('flash_error_floating')) !!}</div>
         </div>
     @endsection
 @endif

@@ -1116,11 +1116,12 @@ function fsFloatingAlertsInit()
 
 function showFloatingAlert(type, msg, no_autohide)
 {
-	var icon = 'ok';
+	// Heroicons check-circle and exclamation-circle.
+	var icon = 'M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z';
 	var alert_class = 'success';
 
 	if (type == 'error') {
-		icon = 'exclamation-sign';
+		icon = 'M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z';
 		alert_class = 'danger';
 	}
 
@@ -1129,7 +1130,7 @@ function showFloatingAlert(type, msg, no_autohide)
 	}
 
 	var html = '<div class="alert alert-'+alert_class+' alert-floating">'+
-        '<div><i class="glyphicon glyphicon-'+icon+'"></i>'+htmlEscape(msg)+'</div>'+
+        '<svg class="f-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="'+icon+'"/></svg><div>'+htmlEscape(msg)+'</div>'+
         '</div>';
     $('body:first').append(html);
     fsFloatingAlertsInit();
