@@ -14,19 +14,19 @@ final class LivewireAssertions
 {
     public static function register(): void
     {
-        /** A toast was dispatched in this request or flashed for the next page; with a message, that exact text. */
-        Testable::macro('assertToasted', function (?string $message = null): Testable {
+        /** A toast was dispatched in this request or flashed for the next page; with a message or tone, those exactly. */
+        Testable::macro('assertToasted', function (?string $message = null, ?string $tone = null): Testable {
             /** @var Testable $this */
             $flashed = session('fruit-toast');
-            if ($flashed !== null && ($message === null || $flashed === $message)) {
+            if ($flashed !== null && ($message === null || $flashed === $message)
+                && ($tone === null || session('fruit-toast-tone', 'neutral') === $tone)) {
                 Assert::assertTrue(true);
 
                 return $this;
             }
+            $expected = array_filter(['message' => $message, 'tone' => $tone], fn (?string $value) => $value !== null);
 
-            return $message === null
-                ? $this->assertDispatched('fruit-toast')
-                : $this->assertDispatched('fruit-toast', message: $message);
+            return $this->assertDispatched('fruit-toast', ...$expected);
         });
 
         Testable::macro('assertNotToasted', function (): Testable {

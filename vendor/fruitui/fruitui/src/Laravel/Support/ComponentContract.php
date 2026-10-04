@@ -2,6 +2,7 @@
 
 namespace FruitUI\Support;
 
+use FruitUI\Fruit;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Str;
 use Illuminate\View\ComponentAttributeBag;
@@ -105,7 +106,8 @@ final class ComponentContract
         'selection-bar' => ['roles' => ['region'], 'owns' => ['x-data'], 'message' => 'owns its fruitSelectionBar helper; bind data-count (for example x-bind:data-count) to update it from script'],
         'skeleton' => [],
         'divider' => ['roles' => ['separator'], 'options' => ['tone' => ['neutral', 'accent'], 'align' => ['center', 'start']]],
-        'message' => ['roles' => ['article', 'listitem'], 'options' => ['layout' => ['inline', 'stacked'], 'variant' => ['default', 'note']]],
+        'message' => ['roles' => ['article', 'listitem'], 'options' => ['layout' => ['inline', 'stacked'], 'variant' => ['default', 'note'], 'direction' => ['incoming', 'outgoing']]],
+        'thread' => ['roles' => ['list']],
         'message-event' => ['roles' => ['note', 'listitem']],
         'timeline' => ['roles' => ['list']],
         'timeline-item' => [],
@@ -117,7 +119,8 @@ final class ComponentContract
         'tabs' => ['roles' => ['tablist']],
         'textarea' => ['roles' => ['textbox']],
         'time' => ['type' => 'time', 'emits' => ['type']],
-        'toaster' => ['roles' => ['status'], 'owns' => ['x-data', 'x-show', 'x-text'], 'message' => 'owns its fruitToast helper and message. Dispatch fruit-toast events instead'],
+        'toaster' => ['roles' => ['status'], 'owns' => ['x-data', 'x-show', 'x-text', 'aria-live', 'data-tone'], 'message' => 'owns its fruitToast helper, message and tone. Dispatch fruit-toast events instead'],
+        'confirmer' => ['roles' => ['alertdialog'], 'owns' => ['x-data', 'open'], 'message' => 'owns its fruitConfirmer helper and open state. Call confirm() or $confirm() instead'],
         'token-field' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract'],
         'tooltip' => ['owns' => ['x-data'], 'message' => 'owns its fruitTooltip helper. Put application state on a parent'],
         'workspace' => ['roles' => ['group', 'region'], 'options' => ['frame' => ['card', 'fill']]],
@@ -300,7 +303,12 @@ final class ComponentContract
     }
 
     /** Returns the message to show first: the explicit one, or the flashed fruit-toast session value. */
-    public static function toaster(mixed $duration, mixed $message, ComponentAttributeBag $attributes): ?string
+    /**
+     * The toaster's initial message and tone, from its props or the flashed session values.
+     *
+     * @return array{0: ?string, 1: string}
+     */
+    public static function toaster(mixed $duration, mixed $message, mixed $tone, ComponentAttributeBag $attributes): array
     {
         self::validate('toaster', $attributes);
         if (! is_int($duration) && ! (is_string($duration) && ctype_digit($duration))) {
@@ -308,12 +316,17 @@ final class ComponentContract
         }
         if ($message === null && app()->bound('session')) {
             $message = app('session')->get('fruit-toast');
+            $tone ??= app('session')->get('fruit-toast-tone');
         }
         if ($message !== null && ! is_string($message)) {
             throw new InvalidArgumentException('FruitUI toaster message must be text.');
         }
+        $tone ??= 'neutral';
+        if (! in_array($tone, Fruit::TOAST_TONES, true)) {
+            throw new InvalidArgumentException('FruitUI toaster tone must be one of: '.implode(', ', Fruit::TOAST_TONES).'.');
+        }
 
-        return $message === '' ? null : $message;
+        return [$message === '' ? null : $message, $tone];
     }
 
     public static function splitter(mixed $pane, mixed $flexible, mixed $variable, mixed $min, mixed $max, mixed $reserve, mixed $edge, ComponentAttributeBag $attributes): void

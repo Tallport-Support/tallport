@@ -76,17 +76,18 @@ The [component guide](docs/components.md) includes HTML and Blade examples. For 
 
 Blade controls accept `wire:model`, `wire:click`, and other native bindings, and survive Livewire's re-renders. Livewire 4's request states are styled: a busy submit keeps the form's appearance with a progress cursor, and `wire:navigate` links marked current are highlighted.
 
-Send feedback from components, form objects, actions or controllers. Put `<x-fruit::toaster />` in your layout, then:
+Send feedback from components, form objects, actions or controllers. Put `<x-fruit::toaster />` and `<x-fruit::confirmer />` in your layout, then:
 
 ```php
 use FruitUI\Fruit;
 
 Fruit::toast('Conversation archived.');      // now; outside Livewire, on the next page
+Fruit::toast('Could not connect.', tone: 'danger');
 Fruit::flashToast('Closed.');                // on the next page, after a redirect
 Fruit::openDialog('confirm-archive');        // <x-fruit::dialog name="confirm-archive">
 ```
 
-A dialog can also bind its open state: `<x-fruit::dialog wire:model="confirming">`. For pagination, set `'pagination_theme' => 'fruit'` in `config/livewire.php`; outside Livewire, use `$items->links('fruit::pagination.default')`.
+A dialog can also bind its open state: `<x-fruit::dialog wire:model="confirming">`. To ask before an action, `$confirm({ title: 'Delete this mailbox?', confirm: 'Delete', tone: 'danger' }).then(confirmed => confirmed && $wire.delete())` resolves true or false. For pagination, set `'pagination_theme' => 'fruit'` in `config/livewire.php`; outside Livewire, use `$items->links('fruit::pagination.default')`.
 
 Without Livewire, register the helpers on your own Alpine instance: `fruitUI(Alpine)` from `src/js/alpine.js`. See [JavaScript setup](docs/adoption.md#javascript-and-optional-editing).
 

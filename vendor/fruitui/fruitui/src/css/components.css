@@ -372,6 +372,30 @@
     padding: 16px 22px;
     border-top: 1px solid var(--f-border);
   }
+  /* A short question before an action: a title, an optional message, then Cancel and the action. */
+  .f-confirm {
+    width: min(380px, calc(100% - 32px));
+  }
+  .f-confirm__body {
+    display: grid;
+    gap: 6px;
+    padding: 22px 22px 18px;
+  }
+  .f-confirm__title {
+    font-size: var(--f-text-lg);
+    font-weight: 600;
+  }
+  .f-confirm__message {
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+  }
+  .f-confirm__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 0 22px 20px;
+  }
   .f-toast {
     /* Also a manual popover in the top layer; these override the browser's popover defaults. */
     position: fixed;
@@ -388,6 +412,27 @@
     background: var(--f-surface-elevated);
     box-shadow: var(--f-shadow);
     z-index: 10;
+  }
+  /* Success and danger toasts lead with an icon, so the tone never depends on color alone. */
+  .f-toast:is([data-tone='success'], [data-tone='danger'])::before {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-inline-end: 8px;
+    vertical-align: -3px;
+    background: var(--f-toast-icon-color);
+    -webkit-mask: var(--f-toast-icon) center / contain no-repeat;
+    mask: var(--f-toast-icon) center / contain no-repeat;
+    content: '';
+  }
+  .f-toast[data-tone='success'] {
+    --f-toast-icon-color: var(--f-success);
+    --f-toast-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='8' cy='8' r='6.75'/%3E%3Cpath d='m5.25 8.25 1.9 1.9 3.6-4'/%3E%3C/svg%3E");
+  }
+  .f-toast[data-tone='danger'] {
+    --f-toast-icon-color: var(--f-danger);
+    --f-toast-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round'%3E%3Ccircle cx='8' cy='8' r='6.75'/%3E%3Cpath d='M8 4.75v3.75M8 11.1v.01' stroke-width='1.75'/%3E%3C/svg%3E");
+    border-color: color-mix(in srgb, var(--f-danger) 45%, var(--f-border));
   }
   @media (pointer: coarse) {
     .f-button,
@@ -422,6 +467,10 @@
     }
     .f-switch > input::before {
       background: ButtonText;
+    }
+    .f-toast[data-tone]::before {
+      forced-color-adjust: none;
+      background: CanvasText;
     }
   }
 }

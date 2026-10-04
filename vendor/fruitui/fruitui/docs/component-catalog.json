@@ -452,10 +452,26 @@
     "contracts": {
       "toaster": {
         "purpose": "Announce short results sent by the application.",
-        "element": "`div role=status`, `f-toast` presentation.",
+        "element": "`div role=status` with `aria-live` (polite, or assertive for danger), `f-toast` presentation.",
         "state": "fruitToast owns the message and its timing; hidden while empty.",
         "keyboard": "No focus transfer; hover or focus within pauses dismissal.",
-        "options": "`duration`: milliseconds (default 4000, 0 keeps it until replaced). `message`: initial text; defaults to the flashed `fruit-toast` session value. Receives `fruit-toast` window events, including Fruit::toast(). No slot."
+        "options": "`duration`: milliseconds (default 4000, 0 keeps it until replaced); danger toasts stay twice as long. `message`: initial text; defaults to the flashed `fruit-toast` session value. `tone`: the initial tone, neutral (default), success or danger; defaults to the flashed `fruit-toast-tone`. Receives `fruit-toast` window events `{ message, tone }`, including Fruit::toast($message, tone:) and $toast(message, { tone }). Success and danger lead with an icon (`data-tone`); danger is announced assertively. No slot."
+      }
+    }
+  },
+  {
+    "id": "confirm",
+    "kind": "composition",
+    "classes": ["f-confirm"],
+    "blade": ["confirmer"],
+    "uses": [],
+    "contracts": {
+      "confirmer": {
+        "purpose": "Ask once before an action requested from script, and answer yes or no.",
+        "element": "`dialog role=alertdialog` (`f-dialog f-confirm`) named by its title and described by its message, with a `method=dialog` form.",
+        "state": "fruitConfirmer owns the question and open state; requests wait their turn. confirm() and $confirm() resolve true for the action and false for Cancel or Escape.",
+        "keyboard": "Opens modally. A danger question focuses Cancel; any other focuses the action. Tab stays inside; Escape cancels.",
+        "options": "Render once per layout. Ask with confirm({ title, message, confirm, cancel, tone }) or $confirm({ … }): `title` is required; `confirm` and `cancel` label the buttons (default OK and Cancel, translated); `tone`: default or danger. Without a confirmer, the browser's confirm() asks. Use `.then(confirmed => confirmed && $wire.action())` in Livewire. No slot."
       }
     }
   },
@@ -1098,7 +1114,7 @@
         "element": "`article` (or a listitem role) with a header, body, attachments and footer.",
         "state": "No state; the application owns message data and actions.",
         "keyboard": "Child links and buttons keep their behavior. The actions bar appears on hover and whenever focus is inside the message, so its buttons are reachable by Tab.",
-        "options": "`layout`: inline (default), stacked. `variant`: default, note. `datetime`: machine-readable time. Slots: `avatar`, `author`, `meta` (inline, may hold state badges), `headers` (further lines such as From, To, Cc or an assignment), `time`, default body, `attachments`, `footer` (independent actions such as reactions or reply counts), `actions` (quick actions shown in the corner on hover or focus, and always on touch screens; a labelled group). Give it an accessible name. `--f-message-actions-top` and `--f-message-actions-end` place the actions (above the top edge by default)."
+        "options": "`layout`: inline (default), stacked. `variant`: default, note. `direction`: incoming (default), outgoing (`f-message--outgoing`, a bar on the leading edge for messages the team sent; say who wrote it in `meta` too). `datetime`: machine-readable time. Slots: `avatar`, `author`, `meta` (inline, may hold state badges), `headers` (further lines such as From, To, Cc or an assignment), `time`, default body, `attachments`, `footer` (independent actions such as reactions or reply counts), `actions` (quick actions shown in the corner on hover or focus, and always on touch screens; a labelled group). Give it an accessible name. `--f-message-actions-top` and `--f-message-actions-end` place the actions (above the top edge by default)."
       }
     }
   },
@@ -1287,6 +1303,22 @@
         "state": "No state; the application owns the history.",
         "keyboard": "Actions keep their own keyboard behavior; they show while focus is inside the event.",
         "options": "Default slot: the event text. `icon` slot: decorative. `time` slot with `datetime` for the machine-readable time. `actions` slot: controls such as a \"…\" Menu after the time, shown on hover, focus or while open, and always on touch screens. Place it in the thread's list between messages."
+      }
+    }
+  },
+  {
+    "id": "thread",
+    "kind": "pattern",
+    "classes": ["f-thread"],
+    "blade": ["thread"],
+    "uses": ["support.html", "examples/laravel/support-desk.blade.php"],
+    "contracts": {
+      "thread": {
+        "purpose": "List a conversation's messages and events in order, set apart from each other.",
+        "element": "`ol` with list semantics; each `li` holds one Message or Message event.",
+        "state": "No state; the application owns the history and its order.",
+        "keyboard": "No keyboard behavior of its own; entries keep theirs.",
+        "options": "Default slot: `li` entries. Messages are separated by a hairline, events sit closer without lines and notes keep their box. `--f-thread-gap` sets the space on each side of the line and `--f-thread-event-gap` the space around events. Give it an accessible name when the page has more than one list."
       }
     }
   }

@@ -50,7 +50,7 @@ fruitUI(Alpine);
 Alpine.start();
 ```
 
-Without a bundler, `build/livewire.global.js` self-registers like the Livewire entry, and `alpine.global.js` exposes `FruitUI.default(Alpine)` and `FruitUI.toast`; load either before Alpine starts. The helpers never include or start Alpine.
+Without a bundler, `build/livewire.global.js` self-registers like the Livewire entry, and `alpine.global.js` exposes `FruitUI.default(Alpine)`, `FruitUI.toast` and `FruitUI.confirm`; load either before Alpine starts. The helpers never include or start Alpine.
 
 Core installs no editor packages. To import the source `fruitui/editor` module, install its optional peers (`@tiptap/core`, `@tiptap/pm`, `@tiptap/starter-kit`, compatible 3.x) in the host. Alternatively, `fruitui/dist/editor.js` bundles those dependencies; `editor.global.js` exposes `FruitEditor(Alpine)`. Register fruitUI first, then fruitEditor on that same instance (in `alpine:init` with injected Livewire scripts), and load Editor CSS. Core registers a quiet native Editor fallback; the optional plugin replaces it before Alpine starts. Without it, Editor remains a native textarea; Token Field and Combobox also preserve editable native fallbacks without Alpine.
 
@@ -102,7 +102,7 @@ Text is rendered as text, with no HTML interpolation. For pluralization, set the
 
 ## Shared notices
 
-A page has one toast outlet: `<x-fruit::toaster />`, or in HTML `<div class="f-toast" role="status" x-data="fruitToast" x-show="notice" x-text="notice" x-cloak></div>`. Send messages with `Fruit::toast()`, `$toast('…')` in Alpine expressions and component methods, or `toast()` from `fruitui/alpine`. `fruitToast({ duration: 4000 })` replaces the current message and cancels its timer; duration zero keeps it until replaced. For messages requiring a response, use a persistent Alert or a Dialog. See [server feedback](components.md#server-feedback-dialogs-and-toasts).
+A page has one toast outlet: `<x-fruit::toaster />`, or in HTML `<div class="f-toast" role="status" x-data="fruitToast" x-show="notice" x-text="notice" x-cloak></div>`. Send messages with `Fruit::toast()`, `$toast('…')` in Alpine expressions and component methods, or `toast()` from `fruitui/alpine`. `fruitToast({ duration: 4000 })` replaces the current message and cancels its timer; duration zero keeps it until replaced. `$toast('Could not connect.', { tone: 'danger' })` shows an error: an icon, an assertive announcement and twice the duration. Ask before an action with one `<x-fruit::confirmer />` and `$confirm({ title, message, confirm, tone })`, which resolves true or false. For messages requiring a response, use a persistent Alert or a Dialog. See [server feedback](components.md#server-feedback-dialogs-toasts-and-confirmations).
 
 ## Compatibility and upgrades
 

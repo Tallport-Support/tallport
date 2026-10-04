@@ -628,6 +628,30 @@
     padding: 16px 22px;
     border-top: 1px solid var(--f-border);
   }
+  /* A short question before an action: a title, an optional message, then Cancel and the action. */
+  .f-confirm {
+    width: min(380px, calc(100% - 32px));
+  }
+  .f-confirm__body {
+    display: grid;
+    gap: 6px;
+    padding: 22px 22px 18px;
+  }
+  .f-confirm__title {
+    font-size: var(--f-text-lg);
+    font-weight: 600;
+  }
+  .f-confirm__message {
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+  }
+  .f-confirm__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 0 22px 20px;
+  }
   .f-toast {
     /* Also a manual popover in the top layer; these override the browser's popover defaults. */
     position: fixed;
@@ -644,6 +668,27 @@
     background: var(--f-surface-elevated);
     box-shadow: var(--f-shadow);
     z-index: 10;
+  }
+  /* Success and danger toasts lead with an icon, so the tone never depends on color alone. */
+  .f-toast:is([data-tone='success'], [data-tone='danger'])::before {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-inline-end: 8px;
+    vertical-align: -3px;
+    background: var(--f-toast-icon-color);
+    -webkit-mask: var(--f-toast-icon) center / contain no-repeat;
+    mask: var(--f-toast-icon) center / contain no-repeat;
+    content: '';
+  }
+  .f-toast[data-tone='success'] {
+    --f-toast-icon-color: var(--f-success);
+    --f-toast-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='8' cy='8' r='6.75'/%3E%3Cpath d='m5.25 8.25 1.9 1.9 3.6-4'/%3E%3C/svg%3E");
+  }
+  .f-toast[data-tone='danger'] {
+    --f-toast-icon-color: var(--f-danger);
+    --f-toast-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round'%3E%3Ccircle cx='8' cy='8' r='6.75'/%3E%3Cpath d='M8 4.75v3.75M8 11.1v.01' stroke-width='1.75'/%3E%3C/svg%3E");
+    border-color: color-mix(in srgb, var(--f-danger) 45%, var(--f-border));
   }
   @media (pointer: coarse) {
     .f-button,
@@ -678,6 +723,10 @@
     }
     .f-switch > input::before {
       background: ButtonText;
+    }
+    .f-toast[data-tone]::before {
+      forced-color-adjust: none;
+      background: CanvasText;
     }
   }
 }
@@ -3023,6 +3072,10 @@
   .f-message > :not(.f-message__avatar) {
     grid-column: -2;
   }
+  /* Without an avatar the empty first column takes no gap either. */
+  .f-message:not(:has(> .f-message__avatar)) {
+    column-gap: 0;
+  }
   .f-message__avatar {
     grid-row: span 4;
     --f-avatar-size: var(--f-message-avatar-size, 32px);
@@ -3207,6 +3260,45 @@
     border: 1px solid var(--f-border);
     border-radius: var(--f-radius);
     background: var(--f-surface-secondary);
+  }
+  /* Messages the team sent carry a bar on the leading edge; incoming ones stay plain. The meta
+     text says who wrote it too, so the bar is never the only cue. Notes keep their own box. */
+  .f-message--outgoing:not(.f-message--note) {
+    padding-inline-start: var(--f-message-outgoing-inset, 14px);
+  }
+  .f-message--outgoing:not(.f-message--note)::before {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    border-inline-start: 3px solid var(--f-accent);
+    border-radius: var(--f-radius-full);
+    content: '';
+  }
+
+  /* A conversation's history in order. Messages are set apart by a hairline and more space than
+     their own paragraphs use; events sit closer without lines, and notes keep their box. */
+  .f-thread {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  /* A client-side template (Alpine's x-for) is not an entry, so the first entry after it has no line. */
+  .f-thread > :not(template) + * {
+    margin-top: var(--f-thread-gap, 20px);
+    padding-top: var(--f-thread-gap, 20px);
+    border-top: 1px solid var(--f-border);
+  }
+  .f-thread > :not(template) + :is(.f-message--note, :has(> .f-message--note)),
+  .f-thread > :is(.f-message--note, :has(> .f-message--note)) + * {
+    padding-top: 0;
+    border-top: 0;
+  }
+  .f-thread > :not(template) + :is(.f-message-event, :has(> .f-message-event)),
+  .f-thread > :is(.f-message-event, :has(> .f-message-event)) + * {
+    margin-top: var(--f-thread-event-gap, 14px);
+    padding-top: 0;
+    border-top: 0;
   }
 
   /* A chronological list of events, such as conversation history or an audit log. */

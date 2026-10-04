@@ -2,6 +2,7 @@
 
 namespace FruitUI;
 
+use InvalidArgumentException;
 use Livewire\Component;
 use Livewire\Livewire;
 use LogicException;
@@ -14,19 +15,25 @@ use LogicException;
  */
 final class Fruit
 {
+    /** Toast tones: danger toasts are announced assertively and stay twice as long. */
+    public const TOAST_TONES = ['neutral', 'success', 'danger'];
+
     /** Show a toast now; outside a Livewire request it shows on the next page. */
-    public static function toast(string $message): void
+    public static function toast(string $message, string $tone = 'neutral'): void
     {
+        self::requireTone($tone);
         $component = self::component();
         $component === null
-            ? self::flashToast($message)
-            : $component->dispatch('fruit-toast', message: $message);
+            ? self::flashToast($message, $tone)
+            : $component->dispatch('fruit-toast', message: $message, tone: $tone);
     }
 
     /** Show a toast on the next page, after a redirect. */
-    public static function flashToast(string $message): void
+    public static function flashToast(string $message, string $tone = 'neutral'): void
     {
+        self::requireTone($tone);
         session()->flash('fruit-toast', $message);
+        session()->flash('fruit-toast-tone', $tone);
     }
 
     public static function openDialog(string $name): void
@@ -50,6 +57,13 @@ final class Fruit
         $tokens = array_filter(array_map(trim(...), preg_split('/\r?\n/', $value ?? '')), fn (string $token) => $token !== '');
 
         return array_values(array_unique($tokens));
+    }
+
+    private static function requireTone(string $tone): void
+    {
+        if (! in_array($tone, self::TOAST_TONES, true)) {
+            throw new InvalidArgumentException('FruitUI toast tone must be one of: '.implode(', ', self::TOAST_TONES).'.');
+        }
     }
 
     private static function component(): ?Component

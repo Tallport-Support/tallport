@@ -440,6 +440,10 @@
   .f-message > :not(.f-message__avatar) {
     grid-column: -2;
   }
+  /* Without an avatar the empty first column takes no gap either. */
+  .f-message:not(:has(> .f-message__avatar)) {
+    column-gap: 0;
+  }
   .f-message__avatar {
     grid-row: span 4;
     --f-avatar-size: var(--f-message-avatar-size, 32px);
@@ -624,6 +628,45 @@
     border: 1px solid var(--f-border);
     border-radius: var(--f-radius);
     background: var(--f-surface-secondary);
+  }
+  /* Messages the team sent carry a bar on the leading edge; incoming ones stay plain. The meta
+     text says who wrote it too, so the bar is never the only cue. Notes keep their own box. */
+  .f-message--outgoing:not(.f-message--note) {
+    padding-inline-start: var(--f-message-outgoing-inset, 14px);
+  }
+  .f-message--outgoing:not(.f-message--note)::before {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    border-inline-start: 3px solid var(--f-accent);
+    border-radius: var(--f-radius-full);
+    content: '';
+  }
+
+  /* A conversation's history in order. Messages are set apart by a hairline and more space than
+     their own paragraphs use; events sit closer without lines, and notes keep their box. */
+  .f-thread {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  /* A client-side template (Alpine's x-for) is not an entry, so the first entry after it has no line. */
+  .f-thread > :not(template) + * {
+    margin-top: var(--f-thread-gap, 20px);
+    padding-top: var(--f-thread-gap, 20px);
+    border-top: 1px solid var(--f-border);
+  }
+  .f-thread > :not(template) + :is(.f-message--note, :has(> .f-message--note)),
+  .f-thread > :is(.f-message--note, :has(> .f-message--note)) + * {
+    padding-top: 0;
+    border-top: 0;
+  }
+  .f-thread > :not(template) + :is(.f-message-event, :has(> .f-message-event)),
+  .f-thread > :is(.f-message-event, :has(> .f-message-event)) + * {
+    margin-top: var(--f-thread-event-gap, 14px);
+    padding-top: 0;
+    border-top: 0;
   }
 
   /* A chronological list of events, such as conversation history or an audit log. */

@@ -24,4 +24,5 @@
     // Some flashes are HTML (a link); a toast is text.
     $toast_message = $toast_message !== null ? html_entity_decode(strip_tags((string) $toast_message)) : null;
 @endphp
-<x-fruit::toaster :message="$toast_message" :data-tone="$toast_tone" />
+<x-fruit::toaster :message="$toast_message" :tone="$toast_message ? $toast_tone : null" />
+<x-fruit::confirmer />

@@ -102,11 +102,13 @@ window.Tallport = (function () {
 	}
 
 	/**
-	 * Ask before an action: resolves true to go ahead.
+	 * Ask before an action, in FruitUI's confirm dialog: resolves true to go ahead.
 	 * options: {message, confirm (button label), tone ('danger' for destructive)}.
-	 * The browser's own dialog until FruitUI's confirm dialog is in.
 	 */
 	function confirm(options) {
+		if (window.FruitUI && window.FruitUI.confirm) {
+			return window.FruitUI.confirm({title: options.message, confirm: options.confirm, tone: options.tone});
+		}
 		return Promise.resolve(window.confirm(options.message));
 	}
 
