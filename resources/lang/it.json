@@ -1468,5 +1468,12 @@
     "Group by": "Raggruppa per",
     "Sort by": "Ordina per",
     "No conversation selected": "Nessuna conversazione selezionata",
-    "Choose a conversation from the list.": "Scegli una conversazione dall'elenco."
+    "Choose a conversation from the list.": "Scegli una conversazione dall'elenco.",
+    "Level": "Livello",
+    "Download": "Scarica",
+    "File": "File",
+    "Delete this log file?": "Eliminare questo file di log?",
+    "Delete all log files?": "Eliminare tutti i file di log?",
+    "No log records.": "Nessuna voce di log.",
+    "This log file is larger than 50 MB. Download it to read it.": "Questo file di log supera i 50 MB. Scaricalo per leggerlo."
 }

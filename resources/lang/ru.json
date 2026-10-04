@@ -1469,5 +1469,12 @@
     "Group by": "Группировать по",
     "Sort by": "Сортировать по",
     "No conversation selected": "Разговор не выбран",
-    "Choose a conversation from the list.": "Выберите разговор из списка."
+    "Choose a conversation from the list.": "Выберите разговор из списка.",
+    "Level": "Уровень",
+    "Download": "Скачать",
+    "File": "Файл",
+    "Delete this log file?": "Удалить этот файл журнала?",
+    "Delete all log files?": "Удалить все файлы журнала?",
+    "No log records.": "Записей в журнале нет.",
+    "This log file is larger than 50 MB. Download it to read it.": "Этот файл журнала больше 50 МБ. Скачайте его, чтобы прочитать."
 }

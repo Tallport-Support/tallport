@@ -1462,5 +1462,12 @@
     "Group by": "Gruppieren nach",
     "Sort by": "Sortieren nach",
     "No conversation selected": "Keine Konversation ausgewählt",
-    "Choose a conversation from the list.": "Wählen Sie eine Konversation aus der Liste."
+    "Choose a conversation from the list.": "Wählen Sie eine Konversation aus der Liste.",
+    "Level": "Stufe",
+    "Download": "Herunterladen",
+    "File": "Datei",
+    "Delete this log file?": "Diese Protokolldatei löschen?",
+    "Delete all log files?": "Alle Protokolldateien löschen?",
+    "No log records.": "Keine Protokolleinträge.",
+    "This log file is larger than 50 MB. Download it to read it.": "Diese Protokolldatei ist größer als 50 MB. Laden Sie sie herunter, um sie zu lesen."
 }

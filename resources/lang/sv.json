@@ -1469,5 +1469,12 @@
     "Group by": "Gruppera efter",
     "Sort by": "Sortera efter",
     "No conversation selected": "Ingen konversation vald",
-    "Choose a conversation from the list.": "Välj en konversation i listan."
+    "Choose a conversation from the list.": "Välj en konversation i listan.",
+    "Level": "Nivå",
+    "Download": "Ladda ned",
+    "File": "Fil",
+    "Delete this log file?": "Ta bort den här loggfilen?",
+    "Delete all log files?": "Ta bort alla loggfiler?",
+    "No log records.": "Inga loggposter.",
+    "This log file is larger than 50 MB. Download it to read it.": "Den här loggfilen är större än 50 MB. Ladda ned den för att läsa den."
 }

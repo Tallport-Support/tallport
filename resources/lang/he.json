@@ -1468,5 +1468,12 @@
     "Group by": "קבץ לפי",
     "Sort by": "מיין לפי",
     "No conversation selected": "לא נבחרה שיחה",
-    "Choose a conversation from the list.": "בחר שיחה מהרשימה."
+    "Choose a conversation from the list.": "בחר שיחה מהרשימה.",
+    "Level": "רמה",
+    "Download": "הורדה",
+    "File": "קובץ",
+    "Delete this log file?": "למחוק את קובץ היומן הזה?",
+    "Delete all log files?": "למחוק את כל קובצי היומן?",
+    "No log records.": "אין רשומות ביומן.",
+    "This log file is larger than 50 MB. Download it to read it.": "קובץ היומן גדול מ-50 MB. יש להוריד אותו כדי לקרוא אותו."
 }

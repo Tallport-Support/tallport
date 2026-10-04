@@ -1468,5 +1468,12 @@
     "Group by": "Grupează după",
     "Sort by": "Sortează după",
     "No conversation selected": "Nicio conversație selectată",
-    "Choose a conversation from the list.": "Alegeți o conversație din listă."
+    "Choose a conversation from the list.": "Alegeți o conversație din listă.",
+    "Level": "Nivel",
+    "Download": "Descarcă",
+    "File": "Fișier",
+    "Delete this log file?": "Ștergeți acest fișier jurnal?",
+    "Delete all log files?": "Ștergeți toate fișierele jurnal?",
+    "No log records.": "Nicio înregistrare în jurnal.",
+    "This log file is larger than 50 MB. Download it to read it.": "Acest fișier jurnal depășește 50 MB. Descărcați-l pentru a-l citi."
 }

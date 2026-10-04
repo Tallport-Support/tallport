@@ -5483,3 +5483,37 @@ a.disabled:focus {
 .content-2col:has(.settings-form) {
     background: transparent;
 }
+/* App Logs: a file's records, filtered and paged by the server. */
+.app-logs__toolbar {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.app-logs__level {
+    width: auto;
+}
+.app-logs__search {
+    flex: 1 1 220px;
+    max-width: 360px;
+}
+.app-logs__date {
+    white-space: nowrap;
+    color: var(--f-secondary);
+}
+.app-logs__text {
+    overflow-wrap: anywhere;
+}
+.app-logs__stack summary {
+    cursor: pointer;
+    color: var(--f-accent);
+    font-size: var(--f-text-sm);
+}
+.app-logs__stack pre {
+    max-height: 400px;
+    margin-top: 6px;
+    white-space: pre-wrap;
+    font-size: var(--f-text-xs);
+}
+.app-logs__actions {
+    margin-top: 16px;
+}

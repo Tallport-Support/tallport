@@ -1469,5 +1469,12 @@
     "Group by": "Csoportosítás",
     "Sort by": "Rendezés",
     "No conversation selected": "Nincs kiválasztott beszélgetés",
-    "Choose a conversation from the list.": "Válasszon egy beszélgetést a listából."
+    "Choose a conversation from the list.": "Válasszon egy beszélgetést a listából.",
+    "Level": "Szint",
+    "Download": "Letöltés",
+    "File": "Fájl",
+    "Delete this log file?": "Törli ezt a naplófájlt?",
+    "Delete all log files?": "Törli az összes naplófájlt?",
+    "No log records.": "Nincsenek naplóbejegyzések.",
+    "This log file is larger than 50 MB. Download it to read it.": "Ez a naplófájl nagyobb 50 MB-nál. Töltse le az olvasáshoz."
 }

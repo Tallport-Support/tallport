@@ -1469,5 +1469,12 @@
     "Group by": "グループ化",
     "Sort by": "並べ替え",
     "No conversation selected": "会話が選択されていません",
-    "Choose a conversation from the list.": "一覧から会話を選択してください。"
+    "Choose a conversation from the list.": "一覧から会話を選択してください。",
+    "Level": "レベル",
+    "Download": "ダウンロード",
+    "File": "ファイル",
+    "Delete this log file?": "このログファイルを削除しますか?",
+    "Delete all log files?": "すべてのログファイルを削除しますか?",
+    "No log records.": "ログの記録はありません。",
+    "This log file is larger than 50 MB. Download it to read it.": "このログファイルは50 MBを超えています。ダウンロードして読んでください。"
 }

@@ -1468,5 +1468,12 @@
     "Group by": "Seskupit podle",
     "Sort by": "Řadit podle",
     "No conversation selected": "Není vybrána žádná konverzace",
-    "Choose a conversation from the list.": "Vyberte konverzaci ze seznamu."
+    "Choose a conversation from the list.": "Vyberte konverzaci ze seznamu.",
+    "Level": "Úroveň",
+    "Download": "Stáhnout",
+    "File": "Soubor",
+    "Delete this log file?": "Smazat tento soubor protokolu?",
+    "Delete all log files?": "Smazat všechny soubory protokolu?",
+    "No log records.": "Žádné záznamy protokolu.",
+    "This log file is larger than 50 MB. Download it to read it.": "Tento soubor protokolu je větší než 50 MB. Stáhněte si ho a přečtěte."
 }

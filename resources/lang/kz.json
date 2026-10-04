@@ -1872,5 +1872,12 @@
     "Group by": "Топтау",
     "Sort by": "Сұрыптау",
     "No conversation selected": "Әңгіме таңдалмаған",
-    "Choose a conversation from the list.": "Тізімнен әңгімені таңдаңыз."
+    "Choose a conversation from the list.": "Тізімнен әңгімені таңдаңыз.",
+    "Level": "Деңгей",
+    "Download": "Жүктеп алу",
+    "File": "Файл",
+    "Delete this log file?": "Осы журнал файлын жою керек пе?",
+    "Delete all log files?": "Барлық журнал файлдарын жою керек пе?",
+    "No log records.": "Журнал жазбалары жоқ.",
+    "This log file is larger than 50 MB. Download it to read it.": "Бұл журнал файлы 50 МБ-тан үлкен. Оқу үшін оны жүктеп алыңыз."
 }

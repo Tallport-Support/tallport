@@ -2,6 +2,8 @@
 
 @section('title_full', __('Logs').' - '.__('App Logs'))
 
+@section('main_class', 'fruit-ui')
+
 @section('sidebar')
     @php
           $names = App\ActivityLog::select('log_name')->distinct()->pluck('log_name')->toArray();
@@ -18,186 +20,95 @@
 @endsection
 
 @section('content')
-
-  <style>
-    
-
-    #table-log {
-        font-size: inherit;
-    }
-
-    #laravel-logs {
-        padding: 0 15px 15px;
-    }
-    #laravel-logs .sidebar {
-        /*font-size: 0.85rem;*/
-        line-height: 1;
-    }
-
-    #laravel-logs .btn {
-        /*font-size: 0.7rem;*/
-    }
-
-    #laravel-logs .stack {
-      /*font-size: 0.85em;*/
-    }
-
-    #laravel-logs .date {
-      min-width: 75px;
-    }
-
-    #laravel-logs .text {
-      word-break: break-all;
-    }
-
-    #laravel-logs a.llv-active {
-      z-index: 2;
-      background-color: #f5f5f5;
-      border-color: #777;
-    }
-
-    #laravel-logs .list-group-item {
-      word-wrap: break-word;
-    }
-
-    #laravel-logs .folder {
-      padding-top: 15px;
-    }
-
-    #laravel-logs .div-scroll {
-      /*height: 80vh;
-      overflow: hidden auto;*/
-    }
-    #laravel-logs .nowrap {
-      white-space: nowrap;
-    }
-
-  </style>
-
-  <div class="section-heading margin-bottom">
-    {{ __('Log Records') }}
-    <div class="small text-help pull-right">{{ App\User::dateFormat(new Illuminate\Support\Carbon()) }}</div>
-  </div>
-
-  <div class="container-fluid1" id="laravel-logs">
-    <div class="row1">
-      <div class="col sidebar mb-3">
-
-        <div class="list-group div-scroll">
-          @foreach($folders as $folder)
-            <div class="list-group-item">
-              <a href="?f={{ \Illuminate\Support\Facades\Crypt::encrypt($folder) }}">
-                <span class="fa fa-folder"></span> {{$folder}}
-              </a>
-              @if ($current_folder == $folder)
-                <div class="list-group folder">
-                  @foreach($folder_files as $file)
-                    <a href="?l={{ \Illuminate\Support\Facades\Crypt::encrypt($file) }}&f={{ \Illuminate\Support\Facades\Crypt::encrypt($folder) }}"
-                      class="list-group-item @if ($current_file == $file) llv-active @endif">
-                      {{$file}}
-                    </a>
-                  @endforeach
-                </div>
-              @endif
-            </div>
-          @endforeach
-          @foreach($files as $file)
-            <a href="?l={{ \Illuminate\Support\Facades\Crypt::encrypt($file) }}"
-               class="list-group-item @if ($current_file == $file) llv-active @endif">
-              {{$file}}
-            </a>
-          @endforeach
-        </div>
-      </div>
-      <div class="col-10 table-container">
-        @if ($logs === null)
-          <div>
-            Log file >50M, please download it.
-          </div>
-        @else
-          <table id="table-log" class="table table-striped" data-ordering-index="{{ $standardFormat ? 2 : 0 }}">
-            <thead>
-            <tr>
-              @if ($standardFormat)
-                <th>Level</th>
-                <th>Context</th>
-                <th>Date</th>
-              @else
-                <th>Line number</th>
-              @endif
-              <th>Content</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            @foreach($logs as $key => $log)
-              <tr data-display="stack{{{$key}}}">
-                @if ($standardFormat)
-                  <td class="nowrap text-{{{$log['level_class']}}}">
-                    <span class="fa fa-{{{$log['level_img']}}}" aria-hidden="true"></span>&nbsp;&nbsp;{{$log['level']}}
-                  </td>
-                  <td class="text">{{$log['context']}}</td>
-                @endif
-                <td class="date">{{{$log['date']}}}</td>
-                <td class="text">
-                  @if ($log['stack'])
-                    <button type="button"
-                            class="float-right expand btn btn-outline-dark btn-sm mb-2 ml-2"
-                            data-display="stack{{{$key}}}">
-                      <span class="fa fa-search"></span>
-                    </button>
-                  @endif
-                  {{{$log['text']}}}
-                  @if (isset($log['in_file']))
-                    <br/>{{{$log['in_file']}}}
-                  @endif
-                  @if ($log['stack'])
-                    <div class="stack" id="stack{{{$key}}}"
-                         style="display: none; white-space: pre-wrap;">{{{ trim($log['stack']) }}}
-                    </div>
-                  @endif
-                </td>
-              </tr>
-            @endforeach
-
-            </tbody>
-          </table>
-        @endif
-        <div class="p-3">
-          @if($current_file)
-            <a href="?dl={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}{{ ($current_folder) ? '&f=' . \Illuminate\Support\Facades\Crypt::encrypt($current_folder) : '' }}">
-              <span class="fa fa-download"></span> Download file
-            </a>
-            {{---
-            <a id="clean-log" href="?clean={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}{{ ($current_folder) ? '&f=' . \Illuminate\Support\Facades\Crypt::encrypt($current_folder) : '' }}">
-              <span class="fa fa-sync"></span> Clean file
-            </a>--}}
-            -
-            <a id="delete-log" href="?del={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}{{ ($current_folder) ? '&f=' . \Illuminate\Support\Facades\Crypt::encrypt($current_folder) : '' }}">
-              <span class="fa fa-trash"></span> Delete file
-            </a>
-            @if(count($files) > 1)
-              -
-              <a id="delete-all-log" href="?delall=true&amp;_token={{ csrf_token() }} {{ ($current_folder) ? '&f=' . \Illuminate\Support\Facades\Crypt::encrypt($current_folder) : '' }}">
-                <span class="fa fa-trash-alt"></span> Delete all files
-              </a>
+    @php
+        $file_query = $current_file ? ['l' => \Illuminate\Support\Facades\Crypt::encrypt($current_file)] : [];
+        $level_tones = ['emergency' => 'danger', 'alert' => 'danger', 'critical' => 'danger', 'error' => 'danger', 'failed' => 'danger', 'warning' => 'warning', 'processed' => 'success'];
+    @endphp
+    <div class="page-content app-logs">
+        <form class="f-toolbar app-logs__toolbar" method="GET" action="">
+            @if ($current_file)
+                <input type="hidden" name="l" value="{{ $file_query['l'] }}">
             @endif
-          @endif
-        </div>
-      </div>
-    </div>
-  </div>
-@endsection
+            <x-fruit::menu :title="__('File')" class="app-logs__files">
+                <x-slot:trigger class="f-button--small"><x-heroicon-o-document-text class="f-icon" aria-hidden="true" /> {{ $current_file ?: __('File') }}</x-slot:trigger>
+                @foreach ($files as $file)
+                    <x-fruit::menu-link :href="'?l='.\Illuminate\Support\Facades\Crypt::encrypt($file)" :aria-current="$current_file == $file ? 'true' : null">{{ $file }}</x-fruit::menu-link>
+                @endforeach
+            </x-fruit::menu>
+            @if ($levels)
+                <select name="level" class="f-input app-logs__level" aria-label="{{ __('Level') }}">
+                    <option value="">{{ __('All') }}</option>
+                    @foreach ($levels as $level)
+                        <option value="{{ $level }}" @selected(request('level') === $level)>{{ ucfirst($level) }}</option>
+                    @endforeach
+                </select>
+            @endif
+            <x-fruit::search name="q" :value="request('q')" :label="__('Search')" :wrapper="['class' => 'app-logs__search']" />
+            <span class="f-toolbar__spacer"></span>
+            <span class="f-muted">{{ App\User::dateFormat(new Illuminate\Support\Carbon()) }}</span>
+        </form>
 
-@section('stylesheets')
-    <link href="{{ asset('js/datatables/datatables.min.css') }}" rel="stylesheet">
+        @if ($logs === null)
+            <x-fruit::alert tone="warning">{{ __('This log file is larger than 50 MB. Download it to read it.') }}</x-fruit::alert>
+        @elseif (!$logs->total())
+            <x-fruit::empty-state>
+                <x-slot:icon><x-heroicon-o-document-text /></x-slot:icon>
+                {{ __('No log records.') }}
+            </x-fruit::empty-state>
+        @else
+            <table class="f-table app-logs__table">
+                <thead>
+                    <tr>
+                        @if ($standardFormat)
+                            <th>{{ __('Level') }}</th>
+                            <th>{{ __('Date') }}</th>
+                            <th>{{ __('Message') }}</th>
+                        @else
+                            <th>#</th>
+                            <th>{{ __('Message') }}</th>
+                        @endif
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($logs as $log)
+                        <tr>
+                            @if ($standardFormat)
+                                <td><span class="f-badge f-badge--{{ $level_tones[$log['level']] ?? 'neutral' }}">{{ ucfirst($log['level']) }}</span></td>
+                            @endif
+                            <td class="app-logs__date">{{ $log['date'] }}</td>
+                            <td class="app-logs__text">
+                                @if ($standardFormat && $log['context'])<span class="f-muted">{{ $log['context'] }}</span> @endif{{ $log['text'] }}
+                                @if (isset($log['in_file']))
+                                    <br/>{{ $log['in_file'] }}
+                                @endif
+                                @if ($log['stack'])
+                                    <details class="app-logs__stack">
+                                        <summary>{{ __('Details') }}</summary>
+                                        <pre>{{ trim($log['stack']) }}</pre>
+                                    </details>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            {{ $logs->links('fruit::pagination.default') }}
+        @endif
+
+        @if ($current_file)
+            <div class="f-row app-logs__actions">
+                <a class="f-button f-button--small" href="?dl={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}"><x-heroicon-o-arrow-down-tray class="f-icon" aria-hidden="true" /> {{ __('Download') }}</a>
+                <span class="f-toolbar__spacer"></span>
+                <a class="f-button f-button--small f-button--ghost" id="delete-log" href="?del={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}" data-confirm="{{ __('Delete this log file?') }}">{{ __('Delete') }}</a>
+                @if (count($files) > 1)
+                    <a class="f-button f-button--small f-button--danger" id="delete-all-log" href="?delall=true&amp;_token={{ csrf_token() }}" data-confirm="{{ __('Delete all log files?') }}">{{ __('Delete All') }}</a>
+                @endif
+            </div>
+        @endif
+    </div>
 @endsection
 
 @section('javascript')
     @parent
     initLogsTable();
-@endsection
-
-@section('javascripts')
-    <script src="{{ asset('js/datatables/datatables.min.js') }}" {!! \Helper::cspNonceAttr() !!}></script>
 @endsection

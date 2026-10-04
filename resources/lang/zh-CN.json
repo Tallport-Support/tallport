@@ -1470,5 +1470,12 @@
     "Group by": "分组方式",
     "Sort by": "排序方式",
     "No conversation selected": "未选择对话",
-    "Choose a conversation from the list.": "从列表中选择一个对话。"
+    "Choose a conversation from the list.": "从列表中选择一个对话。",
+    "Level": "级别",
+    "Download": "下载",
+    "File": "文件",
+    "Delete this log file?": "删除此日志文件？",
+    "Delete all log files?": "删除所有日志文件？",
+    "No log records.": "没有日志记录。",
+    "This log file is larger than 50 MB. Download it to read it.": "此日志文件大于 50 MB。请下载后阅读。"
 }

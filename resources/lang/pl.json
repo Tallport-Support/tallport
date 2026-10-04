@@ -1468,5 +1468,12 @@
     "Group by": "Grupuj według",
     "Sort by": "Sortuj według",
     "No conversation selected": "Nie wybrano rozmowy",
-    "Choose a conversation from the list.": "Wybierz rozmowę z listy."
+    "Choose a conversation from the list.": "Wybierz rozmowę z listy.",
+    "Level": "Poziom",
+    "Download": "Pobierz",
+    "File": "Plik",
+    "Delete this log file?": "Usunąć ten plik dziennika?",
+    "Delete all log files?": "Usunąć wszystkie pliki dziennika?",
+    "No log records.": "Brak wpisów w dzienniku.",
+    "This log file is larger than 50 MB. Download it to read it.": "Ten plik dziennika jest większy niż 50 MB. Pobierz go, aby go przeczytać."
 }

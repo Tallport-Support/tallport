@@ -1487,5 +1487,12 @@
     "Group by": "Ryhmittely",
     "Sort by": "Lajitteluperuste",
     "No conversation selected": "Keskustelua ei ole valittu",
-    "Choose a conversation from the list.": "Valitse keskustelu luettelosta."
+    "Choose a conversation from the list.": "Valitse keskustelu luettelosta.",
+    "Level": "Taso",
+    "Download": "Lataa",
+    "File": "Tiedosto",
+    "Delete this log file?": "Poistetaanko tämä lokitiedosto?",
+    "Delete all log files?": "Poistetaanko kaikki lokitiedostot?",
+    "No log records.": "Ei lokimerkintöjä.",
+    "This log file is larger than 50 MB. Download it to read it.": "Tämä lokitiedosto on yli 50 Mt. Lataa se lukeaksesi sen."
 }

@@ -1469,5 +1469,12 @@
     "Group by": "Grupiraj po",
     "Sort by": "Poredaj po",
     "No conversation selected": "Nije odabran razgovor",
-    "Choose a conversation from the list.": "Odaberite razgovor s popisa."
+    "Choose a conversation from the list.": "Odaberite razgovor s popisa.",
+    "Level": "Razina",
+    "Download": "Preuzmi",
+    "File": "Datoteka",
+    "Delete this log file?": "Izbrisati ovu datoteku zapisa?",
+    "Delete all log files?": "Izbrisati sve datoteke zapisa?",
+    "No log records.": "Nema zapisa.",
+    "This log file is larger than 50 MB. Download it to read it.": "Ova datoteka zapisa veća je od 50 MB. Preuzmite je da biste je pročitali."
 }

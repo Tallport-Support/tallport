@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Crypt;
 use Rap2hpoutre\LaravelLogViewer\LaravelLogViewer;
 
@@ -14,6 +16,11 @@ use Rap2hpoutre\LaravelLogViewer\LaravelLogViewer;
  */
 class AppLogsController extends Controller
 {
+    /**
+     * Log records per page.
+     */
+    const PER_PAGE = 50;
+
     /**
      * Show a log file, or download, empty or delete one or all of them.
      */
@@ -63,7 +70,37 @@ class AppLogsController extends Controller
             }
         }
 
+        $data['levels'] = is_array($data['logs']) ? array_values(array_unique(array_filter(array_column($data['logs'], 'level')))) : [];
+        if (is_array($data['logs'])) {
+            $data['logs'] = $this->paginate($request, $data['logs']);
+        }
+
         return view('laravel-log-viewer::log', $data);
+    }
+
+    /**
+     * A page of the file's records (newest first), filtered by level and by
+     * text found in the message, context or stack trace.
+     */
+    protected function paginate(Request $request, array $logs)
+    {
+        $level = (string) $request->input('level');
+        $search = trim((string) $request->input('q'));
+
+        $logs = array_values(array_filter($logs, function ($log) use ($level, $search) {
+            if ($level !== '' && $log['level'] !== $level) {
+                return false;
+            }
+
+            return $search === '' || mb_stripos($log['text'].' '.$log['context'].' '.$log['stack'], $search) !== false;
+        }));
+
+        $page = Paginator::resolveCurrentPage();
+
+        return new LengthAwarePaginator(array_slice($logs, ($page - 1) * self::PER_PAGE, self::PER_PAGE, true), count($logs), self::PER_PAGE, $page, [
+            'path'  => $request->url(),
+            'query' => $request->query(),
+        ]);
     }
 
     /**

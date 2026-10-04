@@ -1473,5 +1473,12 @@
     "Group by": "Grupper etter",
     "Sort by": "Sorter etter",
     "No conversation selected": "Ingen samtale valgt",
-    "Choose a conversation from the list.": "Velg en samtale fra listen."
+    "Choose a conversation from the list.": "Velg en samtale fra listen.",
+    "Level": "Nivå",
+    "Download": "Last ned",
+    "File": "Fil",
+    "Delete this log file?": "Slette denne loggfilen?",
+    "Delete all log files?": "Slette alle loggfilene?",
+    "No log records.": "Ingen loggoppføringer.",
+    "This log file is larger than 50 MB. Download it to read it.": "Denne loggfilen er større enn 50 MB. Last den ned for å lese den."
 }

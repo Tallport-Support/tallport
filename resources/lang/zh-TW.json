@@ -1520,5 +1520,11 @@
     "More": "更多",
     "Group by": "分組方式",
     "No conversation selected": "未選擇對話",
-    "Choose a conversation from the list.": "從清單中選擇一個對話。"
+    "Choose a conversation from the list.": "從清單中選擇一個對話。",
+    "Level": "等級",
+    "File": "檔案",
+    "Delete this log file?": "刪除此記錄檔？",
+    "Delete all log files?": "刪除所有記錄檔？",
+    "No log records.": "沒有記錄。",
+    "This log file is larger than 50 MB. Download it to read it.": "此記錄檔大於 50 MB。請下載後閱讀。"
 }

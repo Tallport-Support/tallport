@@ -1473,5 +1473,12 @@
     "Group by": "Groeperen per",
     "Sort by": "Sorteren op",
     "No conversation selected": "Geen gesprek geselecteerd",
-    "Choose a conversation from the list.": "Kies een gesprek uit de lijst."
+    "Choose a conversation from the list.": "Kies een gesprek uit de lijst.",
+    "Level": "Niveau",
+    "Download": "Downloaden",
+    "File": "Bestand",
+    "Delete this log file?": "Dit logbestand verwijderen?",
+    "Delete all log files?": "Alle logbestanden verwijderen?",
+    "No log records.": "Geen logregels.",
+    "This log file is larger than 50 MB. Download it to read it.": "Dit logbestand is groter dan 50 MB. Download het om het te lezen."
 }
