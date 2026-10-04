@@ -5405,3 +5405,14 @@ a.disabled:focus {
 .conv-new-form .conv-block {
     margin-top: 16px;
 }
+/* Settings pages: grouped sections on the grouped background, as in FruitUI's
+   settings example. */
+.app-main:has(.settings-form) {
+    background: var(--f-grouped-background);
+}
+.settings-form > .f-form-section + .f-form-section {
+    margin-top: 8px;
+}
+.settings-form__actions {
+    justify-content: flex-end;
+}
