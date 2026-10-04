@@ -1238,58 +1238,14 @@ a h4 {
     padding-bottom: 5px;
     margin-top: -5px;
 }
-.conv-block {
-    margin: 0 20px;
-}
-.conv-block.conv-reply-block {
-    margin-top: -7px;
-    margin-bottom: 12px;
-}
 .conv-reply.glyphicon {
      transform: scaleX(-1);
     -moz-transform: scaleX(-1);
     -webkit-transform: scaleX(-1);
     -ms-transform: scaleX(-1);
 }
-.conv-reply-block .form-group {
-    margin-bottom: 8px;
-}
-/* Reply and new conversation form rows: a label column, then the field.
-   Floats, not a grid: the scripts show and hide rows with display: block. */
-.conv-reply-block .form-group::after,
-.conv-new-form .form-group::after {
-    content: "";
-    display: table;
-    clear: both;
-}
-.conv-reply-label,
-.conv-new-form .control-label,
-.conv-reply-block .control-label {
-    float: left;
-    width: 40px;
-    margin: 0;
-    padding-top: 7px;
-    color: var(--f-secondary);
-    font-weight: normal;
-    text-align: end;
-}
-.conv-new-form .control-label {
-    width: 110px;
-}
-.conv-reply-block .control-label + .conv-reply-field {
-    margin-inline-start: 50px;
-}
-.conv-new-form .form-group > .control-label + div {
-    margin-inline-start: 120px;
-}
-.conv-new-form .toggle-field {
-    margin: -4px 0 8px 120px;
-}
 .conv-reply-body {
     margin-top: 13px;
-}
-.conv-reply-field {
-    min-width: 0;
 }
 .conv-forward-block .alert-switch-to-note {
     display: none;
@@ -1325,8 +1281,6 @@ a h4 {
 .conv-note-block .alert-switch-to-note {
     display: none;
 }
-.conv-note-block #editor_signature,
-.conv-type-chat #editor_signature,
 .conv-type-chat .cc-toggler,
 .conv-type-chat .conv-reply-block:not(.conv-note-block) .f-editor__toolbar > [data-fruit-command] {
     display: none;
@@ -2818,15 +2772,6 @@ a.disabled:focus {
     max-height: 300px;
     overflow-y: scroll;
 }
-.conv-reply-block:not(.conv-forward-block) .form-group.cc-shifted {
-    margin-bottom: -8px;
-}
-.conv-reply-block:not(.conv-forward-block) .cc-shifted .control-label {
-    display: none;
-}
-.conv-reply-block:not(.conv-forward-block) .cc-shifted .conv-reply-field {
-    margin-inline-start: 0;
-}
 .conv-note-block .cc-toggler {
     display: none;
 }
@@ -4234,7 +4179,7 @@ a.disabled:focus {
 /* The thread, as in FruitUI's Support example (support-thread, support-entry,
    support-message): FruitUI messages and events with the example's rhythm. */
 .conv-thread {
-    padding: 22px 26px 16px;
+    padding: 22px var(--conv-gutter) 16px;
 }
 .conv-thread .f-message-event {
     --f-message-event-inset: 38px 0;
@@ -4259,8 +4204,12 @@ a.disabled:focus {
 }
 /* The conversation's heading, as in FruitUI's Support example
    (support-conversation-heading). */
+/* The conversation's heading, composer and history share one gutter. */
+#conv-layout {
+    --conv-gutter: 26px;
+}
 .conv-heading {
-    padding: 21px 26px 18px;
+    padding: 21px var(--conv-gutter) 18px;
     border-bottom: 1px solid var(--f-border);
 }
 .conv-heading__overline {
@@ -4327,7 +4276,7 @@ a.disabled:focus {
    recipients in the header, FruitUI's editor, status, assignee and Send in the
    footer; a note takes the secondary surface. */
 .conv-composer {
-    --f-composer-padding: 15px 20px 18px;
+    --f-composer-padding: 15px var(--conv-gutter) 18px;
     --f-composer-action-gap: 10px;
     --f-composer-footer-margin: 11px;
     --f-composer-input-min-height: 120px;
@@ -4338,14 +4287,6 @@ a.disabled:focus {
 }
 .conv-composer .f-editor__toolbar .f-toolbar__spacer {
     flex: 1;
-}
-.conv-composer__signature:empty {
-    display: none;
-}
-.conv-composer__signature {
-    margin-top: 8px;
-    color: var(--f-secondary);
-    font-size: var(--f-text-sm);
 }
 .conv-composer__footer {
     flex-wrap: wrap;

@@ -95,10 +95,6 @@
 
                 @include('conversations/partials/composer_editor', ['plain' => false, 'placeholder' => null, 'draft_button' => true])
 
-                @if (!$is_phone && $mailbox->signature)
-                    <div id="editor_signature" class="conv-composer__signature f-prose">{!! safe_raw_html($conversation->getSignatureProcessed([], true)) !!}</div>
-                @endif
-
                 @include('conversations/partials/composer_footer', [
                     'send_label' => $is_phone ? __('Create') : __('Send'),
                     'send_menu'  => $send_labels,

@@ -65,10 +65,6 @@
 
                 @include('conversations/partials/composer_editor', ['plain' => $conversation->isChat(), 'placeholder' => $is_chat ? __('Use ENTER to send the message and SHIFT+ENTER for a new line') : null, 'draft_button' => $mode != 'note'])
 
-                @if ($mode != 'note' && $mailbox->signature && !$is_chat)
-                    <div id="editor_signature" class="conv-composer__signature f-prose">{!! safe_raw_html($conversation->getSignatureProcessed([], true)) !!}</div>
-                @endif
-
                 @include('conversations/partials/composer_footer', [
                     'send_label'      => $mode == 'note' ? __('Add Note') : ($mode == 'forward' ? __('Forward') : ($send_labels[$status][0] ?? __('Send Reply'))),
                     'send_menu'       => array_map(fn ($labels) => $labels[$label_index], $send_labels),
