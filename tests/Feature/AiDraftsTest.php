@@ -213,7 +213,7 @@ class AiDraftsTest extends FeatureTestCase
 
         $reply = Thread::where('conversation_id', $this->conversation->id)->where('type', Thread::TYPE_MESSAGE)->first();
         $this->assertSame('Hello Casey', json_decode($reply->ai_assistant, true)['translations']['en']);
-        $this->getConversationPage($this->agent)->assertSee('AI Translation')->assertSee('Hello Casey');
+        $this->getConversationPage($this->agent)->assertSee('f-message__translation', false)->assertSee('Hello Casey');
     }
 
     // Customer context settings.

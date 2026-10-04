@@ -3249,6 +3249,28 @@
     line-height: 1.6;
     overflow-wrap: anywhere;
   }
+  /* A machine translation of the message, kept with it: an outlined card with a translate icon,
+     announced as a translation. Give it the translation's lang. */
+  .f-message__translation {
+    display: flex;
+    gap: 10px;
+    margin-top: var(--f-message-translation-gap, 10px);
+    padding: 10px 12px;
+    border: 1px solid var(--f-generated-border);
+    border-radius: var(--f-radius-md);
+    font-size: var(--f-text-sm);
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+  .f-message__translation-icon {
+    flex: none;
+    margin-top: 3px;
+    color: var(--f-generated);
+    --f-icon-size: 16px;
+  }
+  .f-message__translation-text {
+    min-width: 0;
+  }
   .f-message__footer {
     display: flex;
     flex-wrap: wrap;

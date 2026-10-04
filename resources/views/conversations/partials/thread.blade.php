@@ -33,8 +33,15 @@
             $thread_initials = mb_strtoupper(mb_substr((string) $thread_person->getMainEmail(), 0, 1));
         }
         $send_status_data = $thread_is_draft ? null : $thread->getSendStatusData();
+
+        // AI Assistant: the message's translation.
+        ['wanted' => $ai_translation_wanted, 'language' => $ai_language, 'translation' => $ai_translation] = App\Ai\Translations::forThread($thread, Auth::user());
     @endphp
-    <x-fruit::message layout="stacked" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" :mine="$thread->type == App\Thread::TYPE_MESSAGE && $thread->created_by_user_id == Auth::user()->id" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()">
+    <x-fruit::message layout="stacked" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" :mine="$thread->type == App\Thread::TYPE_MESSAGE && $thread->created_by_user_id == Auth::user()->id" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()" :lang="$ai_translation ? (App\Ai\Summaries::data($thread)['language'] ?? null) : null">
+        @if ($ai_translation)
+            {{-- The translation below the message, in the user's language. --}}
+            <x-slot:translation :lang="$ai_language">@include('conversations/partials/ai_translation')</x-slot:translation>
+        @endif
         <x-slot:avatar>
             @if ($thread_person && $thread_person->photo_url)
                 <x-fruit::avatar :src="$thread_person->getPhotoUrl()" />
@@ -156,9 +163,7 @@
                 </x-fruit::alert>
             @endif
 
-            @if (!$thread_is_draft)
-                @include('conversations/partials/ai_translation')
-            @endif
+            @include('conversations/partials/ai_translation_note')
             @action('thread.before_body', $thread, $loop, $threads, $conversation, $mailbox)
 
             <div class="thread-content f-prose" dir="auto">

@@ -170,7 +170,7 @@ class AiAssistantTest extends FeatureTestCase
         $this->fakeAi();
 
         $conversation = $this->receiveCustomerEmail();
-        $this->getConversationPage($this->agent, $conversation)->assertStatus(200)->assertDontSee('AI Translation');
+        $this->getConversationPage($this->agent, $conversation)->assertStatus(200)->assertDontSee('f-message__translation', false);
 
         ConversationSummarizer::assertNeverPrompted();
         ThreadTranslator::assertNeverPrompted();
@@ -200,7 +200,7 @@ class AiAssistantTest extends FeatureTestCase
         $this->getConversationPage($this->agent, $conversation)
             ->assertStatus(200)
             ->assertSee('Order is late')
-            ->assertSee('AI Translation')
+            ->assertSee('f-message__translation', false)
             ->assertSee('Where is my order?');
         $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id)
             ->assertSee('Customer asks where the order is');
@@ -221,7 +221,7 @@ class AiAssistantTest extends FeatureTestCase
 
         $this->assertNull(Translations::get($thread, 'nl'));
         $this->assertFalse(Translations::isMissing($thread->fresh(), 'nl'));
-        $this->getConversationPage($this->agent, $conversation)->assertDontSee('AI Translation')->assertDontSee('Not translated');
+        $this->getConversationPage($this->agent, $conversation)->assertDontSee('f-message__translation', false)->assertDontSee('Not translated');
         ThreadTranslator::assertPromptedTimes(1);
     }
 

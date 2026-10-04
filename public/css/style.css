@@ -3174,9 +3174,6 @@ a.disabled:focus {
 .ai-assistant-summary-list li:last-child {
     margin-bottom: 0;
 }
-.thread-body .ai-translation {
-    margin-bottom: 16px;
-}
 .ai-assistant-badge {
     font-size: 11px;
     background: color-mix(in srgb, var(--f-accent) 12%, transparent);

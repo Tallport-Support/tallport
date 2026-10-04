@@ -23,6 +23,30 @@ class Translations
         return $data['translations'][$language] ?? null;
     }
 
+    /**
+     * A message's translation for the user reading it: a customer's message, or a
+     * reply made from a draft with the draft's translation. Asks for a missing one.
+     *
+     * @return array wanted (bool), language (the user's), translation (or null)
+     */
+    public static function forThread(Thread $thread, $user)
+    {
+        $result = ['wanted' => false, 'language' => null, 'translation' => null];
+        if ($thread->state == Thread::STATE_DRAFT
+            || !(($thread->type == Thread::TYPE_CUSTOMER && self::isWanted($thread)) || ($thread->type == Thread::TYPE_MESSAGE && $thread->ai_assistant))
+        ) {
+            return $result;
+        }
+        $result['wanted'] = true;
+        $result['language'] = Settings::language($thread->conversation->mailbox, $user);
+        $result['translation'] = self::get($thread, $result['language']);
+        if ($thread->type == Thread::TYPE_CUSTOMER && self::isMissing($thread, $result['language'])) {
+            \App\Jobs\AiTranslateThread::request($thread, $result['language']);
+        }
+
+        return $result;
+    }
+
     public static function isWanted(Thread $thread)
     {
         return Settings::isConfigured()
