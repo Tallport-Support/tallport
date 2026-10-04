@@ -199,7 +199,6 @@ class MailboxesController extends Controller
                 'aliases'          => 'nullable|string',
                 'from_name'        => 'required|integer',
                 'from_name_custom' => 'nullable|string|max:128',
-                'ticket_status'    => 'required|integer',
                 'ticket_assignee'  => 'required|integer',
             ]);
 
@@ -225,7 +224,6 @@ class MailboxesController extends Controller
                 'auto_bcc',
                 'from_name',
                 'from_name_custom',
-                'ticket_status',
                 'ticket_assignee',
                 'before_reply',
             ];

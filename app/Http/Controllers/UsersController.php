@@ -652,7 +652,7 @@ class UsersController extends Controller
 
         $request->validate([
             'reply_status' => 'nullable|in:'.implode(',', array_keys(\App\Conversation::$statuses)),
-            'after_send'   => 'nullable|in:'.implode(',', [\App\MailboxUser::AFTER_SEND_STAY, \App\MailboxUser::AFTER_SEND_NEXT, \App\MailboxUser::AFTER_SEND_FOLDER]),
+            'after_send'   => 'nullable|in:'.implode(',', [\App\MailboxUser::AFTER_SEND_STAY, \App\MailboxUser::AFTER_SEND_NEXT]),
         ]);
         $user->reply_status = $request->reply_status ?: null;
         $user->after_send = $request->after_send ?: null;

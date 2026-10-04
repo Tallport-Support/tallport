@@ -53,15 +53,6 @@
 
             @if (Auth::user()->can('updateSettings', $mailbox))
                 <x-fruit::form-section :title="__('Conversations')">
-                    <x-fruit::field :label="__('Status After Replying')" layout="row">
-                        <x-fruit::select id="ticket_status" name="ticket_status" required>
-                            <option value="{{ App\Mailbox::TICKET_STATUS_KEEP_CURRENT }}" @selected(old('ticket_status', $mailbox->ticket_status) == App\Mailbox::TICKET_STATUS_KEEP_CURRENT)>{{ __('Keep Current') }}</option>
-                            @foreach (App\Conversation::getStatusesWithNames([App\Conversation::STATUS_SPAM]) as $status_id => $status_name)
-                                <option value="{{ $status_id }}" @selected(old('ticket_status', $mailbox->ticket_status) == $status_id)>{{ $status_name }}</option>
-                            @endforeach
-                        </x-fruit::select>
-                    </x-fruit::field>
-
                     @action('mailbox.update.after_ticket_status', $mailbox)
 
                     <x-fruit::field :label="__('Default Assignee')" layout="row">

@@ -41,11 +41,12 @@ class UserPreferencesTest extends FeatureTestCase
         $this->assertStringContainsString('/conversation/'.$conversation->id.'?', $composer->effects['redirect']);
         $this->assertSame(Conversation::STATUS_CLOSED, $conversation->fresh()->status);
 
-        // Unset: the mailbox decides again.
+        // Unset: Pending, then the next active conversation.
         $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), [
             '_token' => csrf_token(), 'reply_status' => '', 'after_send' => '',
         ]);
         $this->assertNull($agent->fresh()->reply_status);
+        $this->assertSame(Conversation::STATUS_PENDING, $agent->fresh()->replyStatus());
         $this->assertSame(MailboxUser::AFTER_SEND_NEXT, (int) $agent->fresh()->afterSend());
     }
 }

@@ -6,10 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * A user's own reply preferences (users/preferences): the status a reply leaves
- * the conversation in (null: as the mailbox is set) and where the user goes
- * after sending (null: the next active conversation). Where to go was set per
- * mailbox (mailbox_user.after_send, Default Redirect): each user keeps the
- * choice made most often.
+ * the conversation in (null: Pending; it was the mailbox's Status After
+ * Replying) and where the user goes after sending (null: the next active
+ * conversation). Where to go was set per mailbox (mailbox_user.after_send,
+ * Default Redirect): each user keeps the choice made most often.
  */
 class AddReplyPreferencesToUsersTable extends Migration
 {
@@ -31,6 +31,10 @@ class AddReplyPreferencesToUsersTable extends Migration
             ->get();
         foreach ($choices->groupBy('user_id') as $user_id => $user_choices) {
             $after_send = (int) $user_choices->first()->after_send;
+            // Back to the folder is gone (the list stays beside the conversation): stay.
+            if ($after_send == \App\MailboxUser::AFTER_SEND_FOLDER) {
+                $after_send = \App\MailboxUser::AFTER_SEND_STAY;
+            }
             if ($after_send && $after_send != \App\MailboxUser::AFTER_SEND_NEXT) {
                 \DB::table('users')->where('id', $user_id)->whereNull('after_send')->update(['after_send' => $after_send]);
             }

@@ -336,19 +336,16 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
     }
 
     /**
-     * The status a reply leaves a conversation in: the user's preference, or
-     * the mailbox's (keep the current status, or a status).
+     * The status a reply leaves a conversation in: the user's preference
+     * (users/preferences), Pending unless set.
      */
-    public function replyStatus($mailbox, $conversation = null)
+    public function replyStatus()
     {
-        if ($this->reply_status && array_key_exists((int) $this->reply_status, Conversation::$statuses)) {
+        if ($this->reply_status && array_key_exists((int) $this->reply_status, Conversation::$statuses) && $this->reply_status != Conversation::STATUS_SPAM) {
             return (int) $this->reply_status;
         }
-        if ($mailbox->ticket_status == Mailbox::TICKET_STATUS_KEEP_CURRENT) {
-            return $conversation && $conversation->status && $conversation->status != Conversation::STATUS_SPAM ? $conversation->status : Conversation::STATUS_ACTIVE;
-        }
 
-        return $mailbox->ticket_status;
+        return Conversation::STATUS_PENDING;
     }
 
     public function mailboxSettings($mailbox_id)

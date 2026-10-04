@@ -101,7 +101,6 @@ class MailboxesTest extends FeatureTestCase
             'aliases'          => 'help@example.org',
             'from_name'        => Mailbox::FROM_NAME_CUSTOM,
             'from_name_custom' => 'The Support Team',
-            'ticket_status'    => Conversation::STATUS_PENDING,
             'signature'        => '<p>Kind regards</p>',
         ]));
 
@@ -111,7 +110,6 @@ class MailboxesTest extends FeatureTestCase
         $this->assertSame('help@example.org', $mailbox->aliases);
         $this->assertEquals(Mailbox::FROM_NAME_CUSTOM, $mailbox->from_name);
         $this->assertSame('The Support Team', $mailbox->from_name_custom);
-        $this->assertEquals(Conversation::STATUS_PENDING, $mailbox->ticket_status);
         $this->assertStringContainsString('Kind regards', $mailbox->signature);
     }
 

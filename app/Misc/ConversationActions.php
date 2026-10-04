@@ -318,7 +318,7 @@ class ConversationActions
 
     /**
      * Where the user goes after replying or changing a conversation: the
-     * conversation, its folder or the next active conversation (the user's
+     * conversation or the next active conversation (the user's
      * preference, or after_send in the request).
      */
     public static function redirectUrl($request, $conversation, $user)
@@ -340,13 +340,6 @@ class ConversationActions
                 case MailboxUser::AFTER_SEND_STAY:
                 default:
                     $redirect_url = $conversation->url();
-                    break;
-                case MailboxUser::AFTER_SEND_FOLDER:
-                    $folder_id = Conversation::getFolderParam();
-                    if (!$folder_id) {
-                        $folder_id = $conversation->folder_id;
-                    }
-                    $redirect_url = route('mailboxes.view.folder', ['id' => $conversation->mailbox_id, 'folder_id' => $folder_id]);
                     break;
                 case MailboxUser::AFTER_SEND_NEXT:
                     // We need to get not any next conversation, but ACTIVE next conversation.

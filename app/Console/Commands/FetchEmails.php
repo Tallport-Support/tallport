@@ -1504,9 +1504,9 @@ class FetchEmails extends Command
         $conversation->setCc(array_merge($cc, $to));
         $conversation->setBcc($bcc);
 
-        // Respect mailbox settings for "Status After Replying
+        // The replying user's status after a reply (users/preferences).
         $prev_status = $conversation->status;
-        $new_status = ($mailbox->ticket_status == Mailbox::TICKET_STATUS_KEEP_CURRENT ? $conversation->status : $mailbox->ticket_status);
+        $new_status = $user->replyStatus();
         if ($new_status != $prev_status) {
             $conversation->setStatus($new_status, $user, $update_folder = false);
             \Eventy::action('conversation.status_changed', $conversation, $user, true, $prev_status);
