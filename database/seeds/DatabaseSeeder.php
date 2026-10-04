@@ -9,7 +9,6 @@ use App\Thread;
 use App\User;
 use App\Ai\Settings;
 use App\Ai\Summaries;
-use App\Ai\Translations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
@@ -339,7 +338,7 @@ class DatabaseSeeder extends Seeder
                 $data = Summaries::data($thread);
                 $original = $data;
                 foreach (Settings::LANGUAGES as $language => $name) {
-                    if (Translations::isMissing($thread, $language)) {
+                    if (!isset($data['translations'][$language])) {
                         // Deliberately labelled English placeholders, not machine translations.
                         $data['translations'][$language] = 'Sample translation ('.$name.")\n\n".Summaries::text($thread);
                         unset($data['errors'][$language]);

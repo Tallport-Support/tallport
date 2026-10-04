@@ -147,7 +147,11 @@ class DatabaseSeederTest extends FeatureTestCase
         $agent = User::orderBy('id')->first();
         \DB::table('threads')->whereIn('type', [Thread::TYPE_MESSAGE, Thread::TYPE_NOTE])
             ->update(['created_by_user_id' => $agent->id]);
-        \DB::table('threads')->update(['ai_assistant' => null, 'ai_assistant_updated_at' => null]);
+        // Existing samples may already have an AI result saying English needs no translation.
+        \DB::table('threads')->update([
+            'ai_assistant' => json_encode(['language' => 'en', 'same' => ['en']]),
+            'ai_assistant_updated_at' => null,
+        ]);
         \DB::table('conversations')->update(['ai_assistant' => null, 'ai_assistant_updated_at' => null]);
         $before_count = Conversation::count();
         $before_threads = Thread::orderBy('id')->get(['id', 'body', 'created_at', 'updated_at'])->toArray();
@@ -169,9 +173,17 @@ class DatabaseSeederTest extends FeatureTestCase
         foreach (Thread::where('type', Thread::TYPE_CUSTOMER)->get() as $thread) {
             foreach (array_keys(\App\Ai\Settings::LANGUAGES) as $language) {
                 $this->assertFalse(\App\Ai\Translations::isMissing($thread, $language));
+                $this->assertNotEmpty(\App\Ai\Translations::get($thread, $language));
                 (new \App\Jobs\AiTranslateThread($thread->id, $language))->handle();
             }
         }
+        $this->actingAs($agent);
+        $thread = Thread::where('type', Thread::TYPE_CUSTOMER)->first();
+        $html = view('conversations.partials.ai_translation', [
+            'thread' => $thread,
+            'conversation' => $thread->conversation,
+        ])->render();
+        $this->assertStringContainsString('Sample translation (English)', $html);
         $before = $this->snapshot();
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
         $this->assertSame($before, $this->snapshot());
