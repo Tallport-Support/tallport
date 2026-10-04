@@ -1,4 +1,4 @@
-{{-- A mailbox's settings: the mailbox (to switch), its settings pages, and a link to it. --}}
+{{-- A mailbox's settings: the mailbox (to switch) and a link to it. Its pages are in the app's sidebar (partials/app_sidebar_settings). --}}
 @php
     $menu_mailboxes = auth()->user()->mailboxesCanView();
 @endphp
@@ -19,5 +19,4 @@
     <x-slot:actions>
         <a href="{{ route('mailboxes.view', ['id' => $mailbox->id]) }}" class="f-button">{{ __('Open Mailbox') }}</a>
     </x-slot:actions>
-    @include('mailboxes/settings_menu')
 </x-page-nav>

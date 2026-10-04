@@ -1,4 +1,4 @@
-{{-- A mailbox's settings pages (tabs in mailboxes/sidebar_menu). Modules add theirs with mailboxes.settings.menu. --}}
+{{-- A mailbox's settings pages (in the settings sidebar, partials/app_sidebar_settings). Modules add theirs with mailboxes.settings.menu. --}}
 @if (Auth::user()->can('update', $mailbox))
     @if (Auth::user()->isAdmin() || Auth::user()->hasManageMailboxPermission($mailbox->id, App\Mailbox::ACCESS_PERM_EDIT) || Auth::user()->hasManageMailboxPermission($mailbox->id, App\Mailbox::ACCESS_PERM_SIGNATURE))
         <a href="{{ route('mailboxes.update', ['id'=>$mailbox->id]) }}" @if (Route::currentRouteName() == 'mailboxes.update') aria-current="page" @endif>{{ __('Edit Mailbox') }}</a>
