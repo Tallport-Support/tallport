@@ -14,6 +14,7 @@
     }
 @endphp
 @if ($ai_summary_items)
+    <li>
     <x-fruit::message layout="stacked" class="thread thread-type-ai-summary" id="thread-ai-summary" :datetime="!empty($ai_summary['at']) ? \Illuminate\Support\Carbon::parse($ai_summary['at'])->toIso8601String() : null">
         <x-slot:avatar><x-fruit::avatar :src="asset('img/ai-assistant.png')" /></x-slot:avatar>
         <x-slot:author>{{ __('Summary') }}</x-slot:author>
@@ -27,4 +28,5 @@
             @endforeach
         </ul>
     </x-fruit::message>
+    </li>
 @endif

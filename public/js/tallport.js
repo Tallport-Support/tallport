@@ -111,3 +111,32 @@ window.Tallport = (function () {
 
 	return {csrf: csrf, post: post, isSuccess: isSuccess, toast: toast, result: result, busy: busy, confirm: confirm};
 })();
+
+/**
+ * wire:navigate (the sidebar's folder links): pages whose scripts are ready
+ * for it (data-navigable on the body) swap in the next page, others load it
+ * in full. The sidebar keeps its scroll position.
+ */
+(function () {
+	var sidebar_scroll = 0;
+
+	function sidebar() {
+		return document.getElementById('app-sidebar');
+	}
+
+	document.addEventListener('livewire:navigate', function (event) {
+		if (!document.body.hasAttribute('data-navigable') && !event.detail.history) {
+			event.preventDefault();
+			window.location.href = event.detail.url;
+			return;
+		}
+		sidebar_scroll = sidebar() ? sidebar().scrollTop : 0;
+	});
+
+	document.addEventListener('livewire:navigated', function () {
+		if (sidebar_scroll && sidebar()) {
+			sidebar().scrollTop = sidebar_scroll;
+		}
+		sidebar_scroll = 0;
+	});
+})();

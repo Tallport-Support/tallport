@@ -1,4 +1,3 @@
-var fs_sidebar_menu_applied = false;
 var fs_loader_timeout;
 var fs_processing_send_reply = false;
 var fs_processing_save_draft = false;
@@ -100,43 +99,34 @@ $.extend(window.ParsleyConfig, {
 $(document).ready(function(){
 
 	triggersInit();
-	initNoreplyWarnings();
-
-    // Submenu
-    $('.sidebar-menu-toggle').click(function(event) {
-    	event.stopPropagation();
-		$(this).parent().children('.sidebar-menu:first').toggleClass('active');
-		$(this).toggleClass('active');
-		if (!fs_sidebar_menu_applied) {
-			$('body').click(function() {
-				$('.sidebar-menu, .sidebar-menu-toggle').removeClass('active');
-			});
-		}
-	});
-
-
+	shellInit();
 	polycastInit();
+
+});
+
+// What the shared scripts set up on the page's body. Run again when
+// wire:navigate swaps the body; the scripts themselves load once.
+function shellInit()
+{
+	initNoreplyWarnings();
 	webNotificationsInit();
 	initAccordionHeading();
+}
 
-	// The sidebar on small screens.
-	$('.app-sidebar-toggle').click(function() {
-		var open = !$('body').hasClass('app-sidebar-open');
-		$('body').toggleClass('app-sidebar-open', open);
-		$(this).attr('aria-expanded', open ? 'true' : 'false');
-	});
-
-	$('#logout-link').click(function(e) {
-		$('#logout-form').submit();
-		e.preventDefault();
-	});
-
-	//applyVoidLinks();
-	$('.customer-snippet a.contact-main').click(function(e) {
-		copyToClipboard($(this).text());
-		e.preventDefault();
-	});
-
+var fs_navigating = false;
+document.addEventListener('livewire:navigating', function() {
+	fs_navigating = true;
+});
+document.addEventListener('livewire:navigated', function() {
+	// Also fired on the first page load, which document ready covers.
+	if (!fs_navigating) {
+		return;
+	}
+	fs_navigating = false;
+	initTooltips();
+	initPopovers();
+	initModals();
+	shellInit();
 });
 
 /*function applyVoidLinks()
@@ -170,13 +160,17 @@ function triggersInit()
 	$(document).on('hidden.bs.dropdown', handler);
 	$(document).on('shown.bs.dropdown', handler);
 
-    // Popover
-    $('[data-toggle="popover"]').popover({
-	    container: 'body'
-	});
+    initPopovers();
 
 	// Modal windows
 	initModals();
+}
+
+function initPopovers()
+{
+	$('[data-toggle="popover"]').popover({
+	    container: 'body'
+	});
 }
 
 function initModals(html_tag)
@@ -2742,14 +2736,13 @@ function polycastInit()
 		    if (typeof(data.thread_html) != "undefined" && data.thread_html && !$('#thread-'+data.thread_id).length) {
 		    	var container = $('#conv-layout-main .thread-type-new');
 		    	if (container.length) {
-		    		container.prepend(data.thread_html);
+		    		container.children('ol').prepend(data.thread_html);
 		    		$('#conv-layout-main .thread-type-new:first .view-new-trigger').text(Lang.get("messages.view_new_messages", {'count': $('#conv-layout-main .thread-type-new .thread').length }));
 		    	} else {
-		    		$('#conv-layout-main').prepend('<div class="thread thread-type-new">'+data.thread_html+'<a href="" class="view-new-trigger">'+Lang.get("messages.view_new_message")+'</a></div>');
+		    		$('#conv-layout-main').prepend('<li class="thread thread-type-new"><ol class="f-thread" role="list">'+data.thread_html+'</ol><a href="" class="view-new-trigger">'+Lang.get("messages.view_new_message")+'</a></li>');
 		    		$('#conv-layout-main .thread-type-new:first .view-new-trigger').click(function(e) {
 		    			var container = $(this).parent();
-		    			$(this).remove();
-		    			$('#conv-layout-main').prepend(container.html());
+		    			$('#conv-layout-main').prepend(container.children('ol').html());
 		    			container.remove();
 		    			e.preventDefault();
 		    		});
@@ -2803,12 +2796,13 @@ function polycastInit()
     var mailbox_id = getGlobalAttr('mailbox_id');
     if (!isChatMode()) {
     	$('.app-sidebar__folders[data-mailbox_id]').each(function() {
-    		var folders = $(this);
-    		var folders_mailbox_id = folders.attr('data-mailbox_id');
+    		var folders_mailbox_id = $(this).attr('data-mailbox_id');
     		poly.subscribe('mailbox.'+folders_mailbox_id).on('App\\Events\\RealtimeMailboxNewThread', function(data, event) {
     			if (!data || typeof(data.mailbox_id) == "undefined" || data.mailbox_id != folders_mailbox_id) {
     				return;
     			}
+    			// Looked up now: wire:navigate may have replaced the page since.
+    			var folders = $('.app-sidebar__folders[data-mailbox_id="'+folders_mailbox_id+'"]:first');
     			if (typeof(data.folders_html) != "undefined" && data.folders_html) {
     				folders.html(data.folders_html);
     				// The open folder's number of active conversations in the page title.
@@ -2820,7 +2814,7 @@ function polycastInit()
     				}
     			}
     			// The list of this mailbox, or of All Mailboxes.
-    			var list_mailbox_id = $(".table-conversations:first").attr('data-mailbox_id') || mailbox_id;
+    			var list_mailbox_id = $(".table-conversations:first").attr('data-mailbox_id') || getGlobalAttr('mailbox_id');
     			if ((list_mailbox_id == folders_mailbox_id || parseInt(list_mailbox_id) < 0)
     				&& $(".table-conversations:first").length && !getSelectedConversations().length
     			) {
@@ -3974,7 +3968,7 @@ function initAccordionHeading()
 }
 
 // Scroll to
-function scrollTo(el, selector, speed, offset)
+function scrollToElement(el, selector, speed, offset)
 {
     if (typeof(offset) == "undefined") {
         offset = 0;
@@ -4220,7 +4214,7 @@ function maybeScrollToReplyBlock(offset)
 		if (typeof(offset) == "undefined") {
 			offset = -20;
 		}
-		scrollTo(reply_block, '', null, offset);
+		scrollToElement(reply_block, '', null, offset);
 	}
 }
 

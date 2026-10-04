@@ -328,10 +328,12 @@
             </div>
         </div>
 
-        <div id="conv-layout-main" class="conv-thread">
-            @include('conversations/partials/ai_summary')
+        <div class="conv-thread">
             @action('conversation.before_threads', $conversation)
-            @include('conversations/partials/threads')
+            <x-fruit::thread id="conv-layout-main" :aria-label="__('Conversation History')">
+                @include('conversations/partials/ai_summary')
+                @include('conversations/partials/threads')
+            </x-fruit::thread>
             @action('conversation.after_threads', $conversation)
         </div>
     </div>

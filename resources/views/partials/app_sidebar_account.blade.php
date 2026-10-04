@@ -49,7 +49,7 @@
     @endif
     <ul class="app-sidebar__module-items">@action('menu_right.user.after_profile')</ul>
     <x-fruit::menu-separator />
-    <x-fruit::menu-link href="#" id="logout-link">{{ __('Log Out') }}</x-fruit::menu-link>
+    <x-fruit::menu-link href="#" id="logout-link" x-on:click.prevent="document.getElementById('logout-form').submit()">{{ __('Log Out') }}</x-fruit::menu-link>
     <x-fruit::menu-link href="#" class="hidden in-app-switcher">{{ __('Switch Helpdesk URL') }}</x-fruit::menu-link>
 </x-fruit::menu>
 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">

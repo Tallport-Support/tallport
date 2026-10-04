@@ -4325,13 +4325,6 @@ a.disabled:focus {
 .conv-thread {
     padding: 22px 26px 16px;
 }
-.conv-thread > .thread + .thread {
-    margin-top: 25px;
-}
-.conv-thread > .f-message-event + .thread,
-.conv-thread > .thread + .f-message-event {
-    margin-top: 14px;
-}
 .conv-thread .f-message-event {
     --f-message-event-inset: 38px 0;
 }

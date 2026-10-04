@@ -61,7 +61,7 @@
             @endphp
             <x-fruit::workspace frame="fill" class="app-workspace {{ $__env->yieldContent('split_class') }}" :aria-label="\Config::get('app.name')" :data-list="$has_list ? '' : null" :data-inspector="$has_inspector ? '' : null">
                 <header class="f-toolbar app-workspace__brand">
-                    <button type="button" class="f-button f-button--ghost f-button--icon app-sidebar-toggle" aria-controls="app-sidebar" aria-expanded="false" aria-label="{{ __('Toggle Navigation') }}"><x-heroicon-o-bars-3 class="f-icon" aria-hidden="true" /></button>
+                    <button type="button" class="f-button f-button--ghost f-button--icon app-sidebar-toggle" aria-controls="app-sidebar" aria-expanded="false" x-data x-on:click="$el.setAttribute('aria-expanded', document.body.classList.toggle('app-sidebar-open'))" aria-label="{{ __('Toggle Navigation') }}"><x-heroicon-o-bars-3 class="f-icon" aria-hidden="true" /></button>
                     @include('partials/app_sidebar_brand')
                 </header>
                 @include('partials/app_sidebar')
@@ -143,7 +143,7 @@
     @php
         try {
     @endphp
-    {!! Minify::javascript(\Eventy::filter('javascripts', array('/js/jquery.js', '/js/bootstrap.js', '/js/lang.js', '/js/builds/vars.js', '/js/laroute.js', '/js/parsley/parsley.min.js', '/js/parsley/i18n/'.strtolower(Config::get('app.locale')).'.js', '/js/select2/select2.full.min.js', '/js/polycast/polycast.js', '/js/push/push.min.js', '/js/featherlight/featherlight.min.js', '/js/featherlight/featherlight.gallery.min.js', '/js/taphold.js', '/js/jquery.titlealert.js', '/vendor/fruitui/livewire.global.js', '/vendor/fruitui/editor.global.js', '/js/tallport.js', '/js/mailboxes.js', '/js/users.js', '/js/customers.js', '/js/conversations.js', '/js/admin.js', '/js/editor.js', '/js/main.js', '/js/shortcuts.js', '/js/saved_replies.js', '/js/attachments.js', '/js/workflows.js', '/js/kb.js'))) !!}
+    {!! Minify::javascript(\Eventy::filter('javascripts', array('/js/jquery.js', '/js/bootstrap.js', '/js/lang.js', '/js/builds/vars.js', '/js/laroute.js', '/js/parsley/parsley.min.js', '/js/parsley/i18n/'.strtolower(Config::get('app.locale')).'.js', '/js/select2/select2.full.min.js', '/js/polycast/polycast.js', '/js/push/push.min.js', '/js/featherlight/featherlight.min.js', '/js/featherlight/featherlight.gallery.min.js', '/js/taphold.js', '/js/jquery.titlealert.js', '/vendor/fruitui/livewire.global.js', '/vendor/fruitui/editor.global.js', '/js/tallport.js', '/js/mailboxes.js', '/js/users.js', '/js/customers.js', '/js/conversations.js', '/js/admin.js', '/js/editor.js', '/js/main.js', '/js/shortcuts.js', '/js/saved_replies.js', '/js/attachments.js', '/js/workflows.js', '/js/kb.js')), ['data-navigate-once' => true]) !!}
     @php
         } catch (\Exception $e) {
             // To prevent 500 errors on update.

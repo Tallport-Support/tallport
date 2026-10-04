@@ -2,6 +2,8 @@
     $thread_date_title = App\User::dateFormat($thread->created_at);
     $thread_date = \Helper::isPrint() ? $thread_date_title : App\User::dateDiffForHumans($thread->created_at);
 @endphp
+{{-- One entry of the conversation's history (x-fruit::thread): an event, or a message from the customer (incoming) or the team (outgoing). --}}
+<li>
 @if ($thread->type == App\Thread::TYPE_LINEITEM)
     {{-- An event between messages (assignments, status changes, merges). --}}
     <x-fruit::message-event class="thread thread-type-lineitem thread-state-{{ $thread->getStateName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()">
@@ -29,7 +31,7 @@
         }
         $send_status_data = $thread_is_draft ? null : $thread->getSendStatusData();
     @endphp
-    <x-fruit::message layout="stacked" :variant="$thread->isNote() ? 'note' : 'default'" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()">
+    <x-fruit::message layout="stacked" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()">
         <x-slot:avatar>
             @if ($thread_person && $thread_person->photo_url)
                 <x-fruit::avatar :src="$thread_person->getPhotoUrl()" />
@@ -223,3 +225,4 @@
         @endunless
     </x-fruit::message>
 @endif
+</li>
