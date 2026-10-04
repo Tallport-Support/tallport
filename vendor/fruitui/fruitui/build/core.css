@@ -3232,13 +3232,33 @@
     border-radius: var(--f-radius);
     background: var(--f-grouped-surface);
   }
+  /* Every row spans the group, including choices that otherwise fit their content. */
   .f-form-section__rows > * {
+    width: auto;
+    max-width: none;
     min-width: 0;
     margin: 0;
     padding: var(--f-form-row-padding, 12px 14px);
   }
   .f-form-section__rows > * + * {
     border-top: 1px solid var(--f-border);
+  }
+  /* A Disclosure row: its summary is the row and its content continues beneath, without a box of
+     its own inside the group. */
+  .f-form-section__rows > .f-disclosure {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+  .f-form-section__rows > .f-disclosure:not(:first-child) {
+    border-top: 1px solid var(--f-border);
+  }
+  .f-form-section__rows > .f-disclosure > summary {
+    padding: var(--f-form-row-padding, 12px 14px);
+  }
+  .f-form-section__rows > .f-disclosure > :not(summary) {
+    padding: 0 14px 14px;
   }
   /* A choice group's legend reads like a row label instead of sitting on the row's top edge. */
   .f-form-section__rows > .f-fieldset > legend {

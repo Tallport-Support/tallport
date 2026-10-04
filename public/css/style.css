@@ -5448,17 +5448,6 @@ a.disabled:focus {
 .settings-form__actions > :first-child:not(:only-child) {
     flex: none;
 }
-/* Settings: a disclosure that is a form-section row (AI customer context)
-   takes the row's frame instead of drawing its own box. */
-.settings-form .f-form-section__rows > .f-disclosure {
-    padding: 0;
-    border-width: 0;
-    border-radius: 0;
-    background: none;
-}
-.settings-form .f-form-section__rows > * + .f-disclosure {
-    border-top-width: 1px;
-}
 /* The keyboard shortcuts dialog: two columns of key/action tables. */
 .keyboard-shortcuts__columns {
     display: grid;
