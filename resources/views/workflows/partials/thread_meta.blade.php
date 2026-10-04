@@ -1,0 +1,1 @@
+<div class="thread-meta"><x-icon.shuffle class="f-icon" aria-hidden="true" /> {!! __('Triggered by the :workflow workflow', ['workflow' => '<strong>'.e($workflow ? $workflow->name : __('Deleted')).'</strong>']) !!}</div>

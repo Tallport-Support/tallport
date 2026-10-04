@@ -40,7 +40,7 @@ Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Lara
 ## User interface
 
 - Tallport follows Apple's Human Interface Guidelines (https://developer.apple.com/design/human-interface-guidelines/), as FruitUI does.
-- New and reworked screens use FruitUI (`fruitui/fruitui`, from GitHub): its `x-fruit::` Blade components and `f-*` classes inside a `.fruit-ui` scope, and Livewire 4 where server interaction helps. Bootstrap 3 and jQuery stay loaded for screens and modules not converted yet.
+- New and reworked screens use FruitUI (`fruitui/fruitui`, from GitHub): its `x-fruit::` Blade components and `f-*` classes inside a `.fruit-ui` scope, and Livewire 4 where server interaction helps, with Alpine for what stays in the browser. jQuery and Bootstrap are gone; don't bring them back. Icons are Lucide, as Blade components in `resources/views/components/icon` (`<x-icon.sparkles class="f-icon" aria-hidden="true" />`); add one by copying its SVG from Lucide.
 - Change FruitUI itself (in its own repository) when a component is missing or wrong, rather than working around it in Tallport. Its strings and their translations belong to FruitUI.
 - Light and dark appearances follow the system; don't force one.
 

@@ -24,9 +24,8 @@
     {{-- style.css must be the last to able to redefine styles --}}
     @php
         try {
-            $styles= array('/css/fonts.css', '/css/legacy.css', '/vendor/fruitui/core.compat.css', '/vendor/fruitui/layout.compat.css', '/vendor/fruitui/editor.compat.css', '/css/style.css' );
+            $styles= array('/css/fonts.css', '/vendor/fruitui/core.compat.css', '/vendor/fruitui/layout.compat.css', '/vendor/fruitui/editor.compat.css', '/css/style.css' );
             if (Helper::isLocaleRtl()) {
-                $styles[] = '/css/legacy-rtl.css';
                 $styles[] = '/css/style-rtl.css';
             }
     @endphp

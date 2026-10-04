@@ -6,7 +6,7 @@
     <div class="conv-actions f-toolbar__group">
         @foreach ($toolbar_actions as $action_key => $action)
             @if (!empty($action['url']))
-                <a href="{{ $action['url']($conversation) }}" class="f-button f-button--ghost f-button--icon {{ $action['class'] }} conv-action @if (!empty($action['mobile_only'])) hidden-xs @endif"
+                <a href="{{ $action['url']($conversation) }}" class="f-button f-button--ghost f-button--icon {{ $action['class'] }} conv-action @if (!empty($action['mobile_only'])) conv-action-wide @endif"
                     @if (!empty($action['attrs']))
                         @foreach ($action['attrs'] as $attr_key => $attr_value)
                             {{ $attr_key }}="{{ $attr_value }}"
@@ -14,7 +14,7 @@
                     @endif
                     title="{{ $action['label'] }}" aria-label="{{ $action['label'] }}">@include('conversations/partials/action_icon', ['icon' => $action['icon']])</a>
             @else
-                <button type="button" class="f-button f-button--ghost f-button--icon {{ $action['class'] }} conv-action @if ($action_key === 'delete' || !empty($action['mobile_only'])) hidden-xs @endif"
+                <button type="button" class="f-button f-button--ghost f-button--icon {{ $action['class'] }} conv-action @if ($action_key === 'delete' || !empty($action['mobile_only'])) conv-action-wide @endif"
                     @if (!empty($action['attrs']))
                         @foreach ($action['attrs'] as $attr_key => $attr_value)
                             {{ $attr_key }}="{{ $attr_value }}"
@@ -37,7 +37,7 @@
             <ul class="menu-module-items">@action('conversation.prepend_action_buttons', $conversation, $mailbox)</ul>
             @foreach ($dropdown_actions as $action_key => $action)
                 @if ($action_key === 'delete_mobile')
-                    <x-fruit::menu-link href="#" :class="$action['class'].' hidden-lg hidden-md hidden-sm'" x-on:click.prevent="{{ $delete_confirm }}">@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['label'] }}</x-fruit::menu-link>
+                    <x-fruit::menu-link href="#" :class="$action['class'].' conv-action-narrow'" x-on:click.prevent="{{ $delete_confirm }}">@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['label'] }}</x-fruit::menu-link>
                 @elseif (!empty($action['has_opposite']))
                     <x-fruit::menu-link href="#" :class="$action['class']" data-follow-action="follow" x-show="!following" x-on:click.prevent="$wire.follow(true).then(ok => ok && (following = true))">@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['label'] }}</x-fruit::menu-link>
                     <x-fruit::menu-link href="#" :class="$action['opposite']['class']" data-follow-action="unfollow" x-show="following" x-on:click.prevent="$wire.follow(false).then(ok => ok && (following = false))">@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['opposite']['label'] }}</x-fruit::menu-link>

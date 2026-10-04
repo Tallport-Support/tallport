@@ -56,7 +56,7 @@ Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Lara
 ## User interface
 
 - Tallport follows Apple's Human Interface Guidelines (https://developer.apple.com/design/human-interface-guidelines/), as FruitUI does.
-- New and reworked screens use FruitUI (`fruitui/fruitui`, from GitHub): its `x-fruit::` Blade components and `f-*` classes inside a `.fruit-ui` scope, and Livewire 4 where server interaction helps. Bootstrap 3 and jQuery stay loaded for screens and modules not converted yet.
+- New and reworked screens use FruitUI (`fruitui/fruitui`, from GitHub): its `x-fruit::` Blade components and `f-*` classes inside a `.fruit-ui` scope, and Livewire 4 where server interaction helps, with Alpine for what stays in the browser. jQuery and Bootstrap are gone; don't bring them back. Icons are Lucide, as Blade components in `resources/views/components/icon` (`<x-icon.sparkles class="f-icon" aria-hidden="true" />`); add one by copying its SVG from Lucide.
 - Change FruitUI itself (in its own repository) when a component is missing or wrong, rather than working around it in Tallport. Its strings and their translations belong to FruitUI.
 - Light and dark appearances follow the system; don't force one.
 
@@ -202,7 +202,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Pass `--no-interaction` to Artisan commands.
 - Many app actions go through `ajax()` controller methods switched on an `action` parameter, not one route per action. Follow that pattern where it is used.
 - Prefer named routes and `route()` when generating links.
-- Frontend assets are joined into minified build files at runtime by `\Minify` (`App\Misc\Minify`; modules add files through the `javascripts`/`stylesheets` filters), built with Laravel Mix (`webpack.mix.js`). There is no Vite. FruitUI's compiled assets are published to `public/vendor/fruitui`; Livewire's scripts come from `@livewireScripts`. Screens not converted to FruitUI are still jQuery and Bootstrap 3.
+- Frontend assets are joined into minified build files at runtime by `\Minify` (`App\Misc\Minify`; modules add files through the `javascripts`/`stylesheets` filters), built with Laravel Mix (`webpack.mix.js`). There is no Vite. FruitUI's compiled assets are published to `public/vendor/fruitui`; Livewire's scripts come from `@livewireScripts`.
 - Tests don't use model factories or Faker for new code. See the Tallport testing rules.
 
 === livewire/core rules ===

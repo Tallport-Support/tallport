@@ -19,5 +19,5 @@
         @endif
     </div>
 @else
-    @include('partials/empty', ['empty_text' => __('No customers found')])
+    @include('partials/empty', ['icon' => 'users', 'empty_text' => __('No customers found')])
 @endif

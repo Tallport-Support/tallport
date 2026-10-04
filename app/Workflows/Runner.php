@@ -111,19 +111,13 @@ class Runner
         \Eventy::addAction('conversation.append_action_buttons', function ($conversation, $mailbox) {
             $workflows = Workflow::activeFor($conversation->mailbox_id, Workflow::TYPE_MANUAL);
             if (count($workflows)) {
-                echo '<li class="divider"></li><li class="dropdown-header">'.e(__('Run Workflow')).'</li>';
-                foreach ($workflows as $workflow) {
-                    echo '<li><a href="#" class="workflow-run" data-workflow-id="'.$workflow->id.'" role="button"><i class="glyphicon glyphicon-random"></i> '.e($workflow->name).'</a></li>';
-                }
+                echo view('workflows/partials/run_menu', ['workflows' => $workflows])->render();
             }
         }, 20, 2);
 
         \Eventy::addAction('thread.meta', function ($thread) {
             if ($thread->type != Thread::TYPE_LINEITEM && ($workflow_id = $thread->getMeta(Actions::META_WORKFLOW))) {
-                $workflow = Workflow::find($workflow_id);
-                echo '<div class="thread-meta"><i class="glyphicon glyphicon-random"></i> '
-                    .__('Triggered by the :workflow workflow', ['workflow' => '<strong>'.e($workflow ? $workflow->name : __('Deleted')).'</strong>'])
-                    .'</div>';
+                echo view('workflows/partials/thread_meta', ['workflow' => Workflow::find($workflow_id)])->render();
             }
         }, 20, 1);
     }

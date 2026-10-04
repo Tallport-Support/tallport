@@ -1,4 +1,4 @@
-{{-- A conversation action's icon: a Lucide icon (components/icon) for the core actions, the action's own glyph otherwise (modules). --}}
+{{-- A conversation action's icon: a Lucide icon (components/icon) for the core actions, none for modules' Glyphicons. --}}
 @php
     $action_icons = [
         'glyphicon-share-alt'   => 'reply',
@@ -12,4 +12,4 @@
         'glyphicon-time'        => 'clock',
     ];
 @endphp
-@if (isset($action_icons[$icon]))<x-dynamic-component :component="'icon.'.$action_icons[$icon]" class="f-icon" aria-hidden="true" />@else<i class="glyphicon {{ $icon }}" aria-hidden="true"></i>@endif
+@if (isset($action_icons[$icon]))<x-dynamic-component :component="'icon.'.$action_icons[$icon]" class="f-icon" aria-hidden="true" />@endif

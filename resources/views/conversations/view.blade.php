@@ -74,7 +74,7 @@
                     @action('conversation.after_subject', $conversation, $mailbox)
                 </header>
                 @if ($is_in_chat_mode)
-                    <div class="conv-top-block conv-top-chat clearfix">
+                    <div class="conv-top-block conv-top-chat">
                         @if ($conversation->user_id != Auth::user()->id)
                             <button type="button" class="f-button f-button--small f-button--primary chat-accept" x-data="tallportChatAction({action: 'conversation_change_user', user_id: {{ Auth::user()->id }}, conversation_id: {{ $conversation->id }}})" x-on:click="run($el)">{{ __('Accept Chat') }}</button>
                         @elseif (!$conversation->isClosed())
