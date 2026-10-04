@@ -3187,13 +3187,8 @@ a.disabled:focus {
 .ai-assistant-summary-list li:last-child {
     margin-bottom: 0;
 }
-.alert-ai-translation {
-    background: color-mix(in srgb, var(--f-accent) 8%, transparent);
-}
-.alert-ai-translation-title {
-    color: var(--f-secondary);
-    font-weight: 600;
-    padding-bottom: 10px;
+.thread-body .ai-translation {
+    margin-bottom: 16px;
 }
 .ai-assistant-badge {
     font-size: 11px;

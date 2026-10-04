@@ -343,54 +343,6 @@ function initConversation()
 			is_chat_mode = true;
 		}
 
-		// Edit thread
-		jQuery(".thread-edit-trigger").click(function(e){
-			editThread($(this));
-			e.preventDefault();
-		});
-
-		// Delete thread
-		jQuery(".thread-delete-trigger").click(function(e){
-			deleteThread($(this));
-			e.preventDefault();
-		});
-
-		// Show original thread
-		jQuery(".thread-original-show").click(function(e){
-			threadShowOriginal($(this));
-			e.preventDefault();
-		});
-
-		// Hide original thread
-		jQuery(".thread-original-hide").click(function(e){
-			threadHideOriginal($(this));
-			e.preventDefault();
-		});
-
-		// Retry failed thread
-	    jQuery("#conv-layout-main .btn-thread-retry").click(function(e){
-	    	var button = $(this);
-	    	button.button('loading');
-
-			fsAjax(
-				{
-					action: 'retry_send',
-					thread_id: button.parents('.thread:first').attr('data-thread_id')
-				},
-				laroute.route('conversations.ajax'),
-				function(response) {
-					if (isAjaxSuccess(response)) {
-						reloadPage();
-					} else {
-						showAjaxError(response);
-						button.button('reset');
-					}
-				}, true
-			);
-
-			e.preventDefault();
-		});
-
 		// Print
 		if (getQueryParam('print')) {
 			window.print();
@@ -2491,31 +2443,14 @@ function polycastInit()
 	        	return;
 		    }
 
-		    if (typeof(data.thread_html) != "undefined" && data.thread_html && !$('#thread-'+data.thread_id).length) {
-		    	var container = $('#conv-layout-main .thread-type-new');
-		    	if (container.length) {
-		    		container.children('ol').prepend(data.thread_html);
-		    		$('#conv-layout-main .thread-type-new:first .view-new-trigger').text(Lang.get("messages.view_new_messages", {'count': $('#conv-layout-main .thread-type-new .thread').length }));
-		    	} else {
-		    		$('#conv-layout-main').prepend('<li class="thread thread-type-new"><ol class="f-thread" role="list">'+data.thread_html+'</ol><a href="" class="view-new-trigger">'+Lang.get("messages.view_new_message")+'</a></li>');
-		    		$('#conv-layout-main .thread-type-new:first .view-new-trigger').click(function(e) {
-		    			var container = $(this).parent();
-		    			$('#conv-layout-main').prepend(container.children('ol').html());
-		    			container.remove();
-		    			e.preventDefault();
-		    		});
-		    		flashElement($('#conv-layout-main .thread-type-new:first'));
-	    			$.titleAlert('✉ '+Lang.get("messages.new_message"), {
-					    requireBlur: true,
-					    stopOnFocus: true,
-					    interval: 600
-					});
-		    		if (convIsChat()) {
-		    			setTimeout(function() {
-							$('#conv-layout-main .thread-type-new:first .view-new-trigger').click();
-					    }, 3000);
-		    		}
-		    	}
+		    // A new message: the thread list shows it (App\Livewire\ConversationThread).
+		    if (typeof(data.thread_html) != "undefined" && data.thread_html && !document.getElementById('thread-'+data.thread_id)) {
+		    	Livewire.dispatch('conversation-thread-created');
+		    	$.titleAlert('✉ '+Lang.get("messages.new_message"), {
+		    		requireBlur: true,
+		    		stopOnFocus: true,
+		    		interval: 600
+		    	});
 		    }
 
 		    // Update assignee if needed
@@ -3234,122 +3169,6 @@ function discardDraft(thread_id)
 			});
 		}
 	});
-}
-
-// Show edit thread textarea
-function editThread(button)
-{
-	var thread_container = button.parents('.thread:first');
-
-	fsAjax({
-			action: 'load_edit_thread',
-			thread_id: thread_container.attr('data-thread_id')
-		},
-		laroute.route('conversations.ajax'),
-		function(response) {
-			loaderHide();
-			if (typeof(response.status) != "undefined" && response.status == 'success') {
-				// Hide all elements in thread container.
-				thread_container.children().hide();
-				thread_container.prepend(response.html);
-
-				thread_container.children().find('.thread-editor-cancel:first').click(function(e) {
-					cancelThreadEdit(e.target);
-					e.preventDefault();
-				});
-				thread_container.children().find('.thread-editor-save:first').click(function(e) {
-					saveThreadEdit(e.target);
-					e.preventDefault();
-				});
-			} else {
-				showAjaxError(response);
-			}
-		}
-	);
-}
-
-// Delete thread (note)
-function deleteThread(button)
-{
-	var thread_container = button.parents('.thread:first');
-	
-	button.button('loading');
-
-	fsAjax({
-			action: 'delete_thread',
-			thread_id: thread_container.attr('data-thread_id')
-		},
-		laroute.route('conversations.ajax'),
-		function(response) {
-			loaderHide();
-			button.button('reset');
-			if (isAjaxSuccess(response)) {
-				thread_container.remove();
-			} else {
-				showAjaxError(response);
-			}
-		}
-	);
-}
-
-// Cancel thread editing
-function cancelThreadEdit(trigger, thread_container)
-{
-	if (typeof(thread_container) == "undefined" || !thread_container) {
-		thread_container = $(trigger).parents('.thread:first');
-	}
-	thread_container.find('.thread-editor-container').remove();
-	thread_container.children().show();
-}
-
-// Cancel thread editing
-function saveThreadEdit(trigger)
-{
-	var button = $(trigger);
-	var thread_container = $(trigger).parents('.thread:first');
-
-	button.button('loading');
-	fsAjax({
-			action: 'save_edit_thread',
-			thread_id: thread_container.attr('data-thread_id'),
-			body: thread_container.find('.thread-editor:first').val()
-		},
-		laroute.route('conversations.ajax'),
-		function(response) {
-			loaderHide();
-			button.button('reset');
-			if (typeof(response.status) != "undefined" && response.status == 'success') {
-				// Show new body
-				thread_container.find('.thread-body .thread-content:first').html(response.body);
-				thread_container.find('.thread-body .thread-meta:first').remove();
-				cancelThreadEdit(trigger, thread_container);
-			} else {
-				showAjaxError(response);
-			}
-		}
-	);
-}
-
-// Show original thread
-function threadShowOriginal(trigger)
-{
-	var container = trigger.parent();
-	var original = container.find('.thread-original:first');
-
-	original.removeClass('hidden');
-	container.find('.thread-original-hide:first').removeClass('hidden');
-	trigger.addClass('hidden');
-}
-
-// Hide original thread
-function threadHideOriginal(trigger)
-{
-	var container = trigger.parent();
-	var original = container.find('.thread-original:first');
-
-	original.addClass('hidden');
-	container.find('.thread-original-show:first').removeClass('hidden');
-	trigger.addClass('hidden');
 }
 
 function hideReplyEditor()

@@ -1482,5 +1482,7 @@
     "Search conversations": "Поиск тикетов",
     "Select": "Выбрать",
     "Clear selection": "Снять выделение",
-    "Selected conversations": "Выбранные тикеты"
+    "Selected conversations": "Выбранные тикеты",
+    "Generated": "Сгенерировано",
+    "Generated, not sent": "Сгенерировано, не отправлено"
 }

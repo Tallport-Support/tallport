@@ -1481,5 +1481,7 @@
     "Search conversations": "Hledat konverzace",
     "Select": "Vybrat",
     "Clear selection": "Zrušit výběr",
-    "Selected conversations": "Vybrané konverzace"
+    "Selected conversations": "Vybrané konverzace",
+    "Generated": "Vygenerováno",
+    "Generated, not sent": "Vygenerováno, neodesláno"
 }

@@ -1885,5 +1885,7 @@
     "Search conversations": "Әңгімелерден іздеу",
     "Select": "Таңдау",
     "Clear selection": "Таңдауды тазалау",
-    "Selected conversations": "Таңдалған тикеттер"
+    "Selected conversations": "Таңдалған тикеттер",
+    "Generated": "Жасалған",
+    "Generated, not sent": "Жасалған, жіберілмеген"
 }

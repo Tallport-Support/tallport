@@ -1930,52 +1930,12 @@ class ConversationsController extends Controller
 
             // Load data to edit thread.
             case 'save_edit_thread':
-                $thread = Thread::find($request->thread_id);
-                if (!$thread) {
-                    $response['msg'] = __('Thread not found');
-                } elseif (!$user->can('edit', $thread)) {
-                    $response['msg'] = __('Not enough permissions');
-                }
-
-                if (!$response['msg']) {
-                    if (!$thread->body_original) {
-                        $thread->body_original = $thread->body;
-                    }
-                    $thread->body = $request->body;
-                    $thread->edited_by_user_id = $user->id;
-                    $thread->edited_at = date('Y-m-d H:i:s');
-                    $response['body'] = $thread->getCleanBody();
-
-                    if (strip_tags($response['body'])) {
-
-                        // Update the preview for the conversation if needed.
-                        $last_thread = $thread->conversation->getLastThread([Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE, Thread::TYPE_NOTE]);
-                        if ($last_thread && $last_thread->id == $thread->id) {
-                            $thread->conversation->setPreview($thread->body);
-                            $thread->conversation->save();
-                        }
-                        $thread->save();
-
-                        $response['status'] = 'success';
-                    } else {
-                        $response['msg'] = __('Message cannot be empty');
-                    }
-                }
+                $response = array_merge($response, \App\Misc\ConversationActions::editThread(Thread::find($request->thread_id), $request->body, $user));
                 break;
 
             // Delete thread (note).
             case 'delete_thread':
-                $thread = Thread::find($request->thread_id);
-                if (!$thread || !$thread->isNote()) {
-                    $response['msg'] = __('Thread not found');
-                } elseif (!$user->can('delete', $thread)) {
-                    $response['msg'] = __('Not enough permissions');
-                }
-
-                if (!$response['msg']) {
-                    $thread->deleteThread();
-                    $response['status'] = 'success';
-                }
+                $response = array_merge($response, \App\Misc\ConversationActions::deleteNote(Thread::find($request->thread_id), $user));
                 break;
 
             // Change conversations user
@@ -2241,34 +2201,7 @@ class ConversationsController extends Controller
                 break;
 
             case 'retry_send':
-                $thread = Thread::find($request->thread_id);
-
-                if (!$thread) {
-                    $response['msg'] = __('Thread not found');
-                } elseif (!$user->can('view', $thread->conversation)) {
-                    $response['msg'] = __('Not enough permissions');
-                }
-
-                if (!$response['msg']) {
-                    $job_id = $thread->getFailedJobId();
-
-                    if ($job_id || $thread->canRetrySend()) {
-                        // Not sent yet: the job skips replies already accepted.
-                        $thread->send_status = null;
-                        $thread->updateSendStatusData(['msg' => '']);
-                        $thread->save();
-
-                        if ($job_id) {
-                            \App\FailedJob::retry($job_id);
-                        } else {
-                            // Never queued, or its failed job has been cleaned up.
-                            (new \App\Listeners\SendReplyToCustomer())->handle(new \App\Events\UserReplied($thread->conversation, $thread));
-                        }
-
-                        $response['status'] = 'success';
-                    }
-                }
-
+                $response = array_merge($response, \App\Misc\ConversationActions::retrySend(Thread::find($request->thread_id), $user));
                 break;
 
             case 'load_customer_info':

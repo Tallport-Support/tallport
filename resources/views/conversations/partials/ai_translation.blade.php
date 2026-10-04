@@ -8,18 +8,18 @@
         }
     @endphp
     @if ($ai_translation)
-        <div class="margin-bottom">
-            <div class="alert alert-ai-translation">
-                <div class="alert-ai-translation-title">{{ __('AI Translation') }}</div>
-                {!! nl2br(e($ai_translation)) !!}
-                @if (!empty(App\Ai\Summaries::data($thread)['truncated']))
-                    <div class="text-help margin-top-10"><small>{{ __('Only the first :count characters were translated.', ['count' => App\Ai\Summaries::MAX_THREAD_CHARS]) }}</small></div>
-                @endif
-            </div>
-        </div>
+        {{-- Generated, not the customer's words: FruitUI's generated message. --}}
+        <x-fruit::message layout="stacked" variant="generated" class="ai-translation">
+            <x-slot:author>{{ __('AI Translation') }}</x-slot:author>
+            <x-slot:meta>{{ __('Generated') }}</x-slot:meta>
+            <p>{!! nl2br(e($ai_translation)) !!}</p>
+            @if (!empty(App\Ai\Summaries::data($thread)['truncated']))
+                <p class="f-footnote f-muted">{{ __('Only the first :count characters were translated.', ['count' => App\Ai\Summaries::MAX_THREAD_CHARS]) }}</p>
+            @endif
+        </x-fruit::message>
     @elseif ($thread->type == App\Thread::TYPE_CUSTOMER && ($ai_reason = App\Ai\Translations::reason($thread, $ai_language)))
         {{-- Why there is no translation. --}}
-        <div class="margin-bottom text-help ai-translation-note"><small><i class="glyphicon glyphicon-ai"></i>
+        <p class="f-footnote f-muted ai-translation-note"><x-heroicon-o-language class="f-icon" aria-hidden="true" />
             @if ($ai_reason[0] == 'same')
                 {{ __('Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.', ['language' => App\Ai\Settings::displayName($ai_language), 'detected' => App\Ai\Settings::displayName($ai_reason[1])]) }}
             @elseif ($ai_reason[0] == 'no_text')
@@ -29,6 +29,6 @@
             @else
                 {{ __('Waiting for the AI Assistant to translate this message.') }}
             @endif
-        </small></div>
+        </p>
     @endif
 @endif

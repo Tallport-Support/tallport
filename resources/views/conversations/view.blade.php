@@ -209,10 +209,7 @@
 
         <div class="conv-thread">
             @action('conversation.before_threads', $conversation)
-            <x-fruit::thread id="conv-layout-main" :aria-label="__('Conversation History')">
-                @include('conversations/partials/ai_summary')
-                @include('conversations/partials/threads')
-            </x-fruit::thread>
+            <livewire:conversation-thread :conversation="$conversation" :threads="$threads" />
             @action('conversation.after_threads', $conversation)
         </div>
     </div>

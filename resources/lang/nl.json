@@ -1486,5 +1486,7 @@
     "Search conversations": "Gesprekken zoeken",
     "Select": "Selecteren",
     "Clear selection": "Selectie wissen",
-    "Selected conversations": "Geselecteerde gesprekken"
+    "Selected conversations": "Geselecteerde gesprekken",
+    "Generated": "Gegenereerd",
+    "Generated, not sent": "Gegenereerd, niet verzonden"
 }

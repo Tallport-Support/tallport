@@ -33,6 +33,13 @@
     --f-danger: light-dark(#c52f27, #ff8179);
     --f-success: light-dark(#25733e, #83d697);
     --f-warning: light-dark(#9a6700, #eaba55);
+    /* Cards for messages that are not sent: internal notes (yellow) and generated text such as
+       summaries and translations (indigo). */
+    --f-note-background: light-dark(#fdf6d3, #3a3420);
+    --f-note-border: light-dark(rgb(196 150 0 / 32%), rgb(234 186 85 / 26%));
+    --f-generated: light-dark(#5149c9, #a5a1ff);
+    --f-generated-background: light-dark(#f1f0fd, #2c2b45);
+    --f-generated-border: light-dark(rgb(88 86 214 / 26%), rgb(165 161 255 / 26%));
     --f-control: light-dark(#fff, #39393e);
     /* Popovers, menus, dialogs and toasts sit above the content; in dark mode they are lighter. */
     --f-surface-elevated: light-dark(#fff, #2c2c30);
@@ -3355,28 +3362,44 @@
       opacity: 1;
     }
   }
-  .f-message--note {
+  /* Messages that are not sent are cards: internal notes in yellow, generated text (summaries,
+     translations) in indigo. Name the kind in the meta text too, so color is not the only cue. */
+  :is(.f-message--note, .f-message--generated) {
     padding: var(--f-message-note-padding, 14px);
-    border: 1px solid var(--f-border);
+    border: 1px solid var(--f-note-border);
     border-radius: var(--f-radius);
-    background: var(--f-surface-secondary);
+    background: var(--f-note-background);
   }
-  /* Messages the team sent carry a bar on the leading edge; incoming ones stay plain. The meta
-     text says who wrote it too, so the bar is never the only cue. Notes keep their own box. */
-  .f-message--outgoing:not(.f-message--note) {
+  .f-message--generated {
+    border-color: var(--f-generated-border);
+    background: var(--f-generated-background);
+  }
+  .f-message--generated .f-message__meta {
+    color: var(--f-generated);
+  }
+  .f-message--generated > .f-message__avatar {
+    --f-avatar-color: var(--f-generated);
+    --f-avatar-background: color-mix(in srgb, var(--f-generated) 14%, var(--f-surface));
+  }
+  /* Sent messages carry a bar on the leading edge: the accent for the viewer's own (mine), a
+     neutral one for a teammate's. Incoming messages stay plain. */
+  .f-message--outgoing:not(.f-message--note, .f-message--generated) {
     padding-inline-start: var(--f-message-outgoing-inset, 14px);
   }
-  .f-message--outgoing:not(.f-message--note)::before {
+  .f-message--outgoing:not(.f-message--note, .f-message--generated)::before {
     position: absolute;
     inset-block: 0;
     inset-inline-start: 0;
-    border-inline-start: 3px solid var(--f-accent);
+    border-inline-start: 3px solid var(--f-message-bar, var(--f-tertiary));
     border-radius: var(--f-radius-full);
     content: '';
   }
+  .f-message--mine {
+    --f-message-bar: var(--f-accent);
+  }
 
   /* A conversation's history in order. Messages are set apart by a hairline and more space than
-     their own paragraphs use; events sit closer without lines, and notes keep their box. */
+     their own paragraphs use; events sit closer without lines, and cards keep their box. */
   .f-thread {
     display: grid;
     margin: 0;
@@ -3389,8 +3412,10 @@
     padding-top: var(--f-thread-gap, 20px);
     border-top: 1px solid var(--f-border);
   }
-  .f-thread > :not(template) + :is(.f-message--note, :has(> .f-message--note)),
-  .f-thread > :is(.f-message--note, :has(> .f-message--note)) + * {
+  .f-thread
+    > :not(template)
+    + :is(.f-message--note, .f-message--generated, :has(> :is(.f-message--note, .f-message--generated))),
+  .f-thread > :is(.f-message--note, .f-message--generated, :has(> :is(.f-message--note, .f-message--generated))) + * {
     padding-top: 0;
     border-top: 0;
   }

@@ -3,8 +3,11 @@
     $thread_date = \Helper::isPrint() ? $thread_date_title : App\User::dateDiffForHumans($thread->created_at);
 @endphp
 {{-- One entry of the conversation's history (x-fruit::thread): an event, or a message from the customer (incoming) or the team (outgoing). --}}
-<li>
-@if ($thread->type == App\Thread::TYPE_LINEITEM)
+<li wire:key="thread-{{ $thread->id }}">
+@if (!empty($editing) && $editing == $thread->id)
+    {{-- Edited in place (App\Livewire\ConversationThread). --}}
+    @include('conversations/partials/edit_thread')
+@elseif ($thread->type == App\Thread::TYPE_LINEITEM)
     {{-- An event between messages (assignments, status changes, merges). --}}
     <x-fruit::message-event class="thread thread-type-lineitem thread-state-{{ $thread->getStateName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()">
         {!! safe_raw_html($thread->getActionText('', true, false, null, view('conversations/thread_by', ['thread' => $thread])->render())) !!}
@@ -15,7 +18,7 @@
                 <x-fruit::menu :title="__('More Actions')" class="thread-options">
                     <x-slot:trigger class="f-button--ghost f-button--icon" :aria-label="__('More Actions')"><x-heroicon-o-ellipsis-horizontal class="f-icon" aria-hidden="true" /></x-slot:trigger>
                     <ul class="menu-module-items">@action('thread.menu', $thread)</ul>
-                    <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'send_log'], \Request::all(), ['thread_id' => $thread->id]))" data-trigger="modal" :data-modal-title="__('Outgoing Emails')" data-modal-size="lg">{{ __("Outgoing Emails") }}</x-fruit::menu-link>
+                    <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" data-trigger="modal" :data-modal-title="__('Outgoing Emails')" data-modal-size="lg">{{ __("Outgoing Emails") }}</x-fruit::menu-link>
                     <ul class="menu-module-items">@action('thread.menu.append', $thread)</ul>
                 </x-fruit::menu>
             </x-slot:actions>
@@ -31,7 +34,7 @@
         }
         $send_status_data = $thread_is_draft ? null : $thread->getSendStatusData();
     @endphp
-    <x-fruit::message layout="stacked" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()">
+    <x-fruit::message layout="stacked" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" :mine="$thread->type == App\Thread::TYPE_MESSAGE && $thread->created_by_user_id == Auth::user()->id" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()">
         <x-slot:avatar>
             @if ($thread_person && $thread_person->photo_url)
                 <x-fruit::avatar :src="$thread_person->getPhotoUrl()" />
@@ -122,7 +125,7 @@
             @if ($thread->isSendStatusError())
                 <x-fruit::alert tone="danger">
                     <strong>{{ __('Message not sent to customer') }}</strong>
-                    (<a href="{{ route('conversations.ajax_html', array_merge(['action' => 'send_log'], \Request::all(), ['thread_id' => $thread->id])) }}" data-trigger="modal" data-modal-title="{{ __("Outgoing Emails") }}" data-modal-size="lg">{{ __('View log') }}</a>)
+                    (<a href="{{ route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id])) }}" data-trigger="modal" data-modal-title="{{ __("Outgoing Emails") }}" data-modal-size="lg">{{ __('View log') }}</a>)
                     @if (!empty($send_status_data['bounced_by_thread']) && !empty($send_status_data['bounced_by_conversation']) && ($bounced_by_conversation = App\Conversation::find($send_status_data['bounced_by_conversation'])))
                         <br><small>{!! __safe_raw_html('Message bounced (:link)', [
                         'link' => '<a href="'.route('conversations.view', ['id' => $send_status_data['bounced_by_conversation']]).'#thread-id='.$send_status_data['bounced_by_thread'].'">#'.$bounced_by_conversation->number.'</a>'
@@ -132,7 +135,7 @@
                         <br><small>{{ $send_status_data['msg'] }}</small>
                     @endif
                     @if ($thread->canRetrySend())
-                        <x-slot:actions><button type="button" class="f-button f-button--small btn-thread-retry" data-loading-text="{{ __('Retry') }}…">{{ __('Retry') }}</button></x-slot:actions>
+                        <x-slot:actions><button type="button" class="f-button f-button--small btn-thread-retry" wire:click="retry({{ $thread->id }})">{{ __('Retry') }}</button></x-slot:actions>
                     @endif
                 </x-fruit::alert>
             @endif
@@ -167,10 +170,10 @@
             </div>
 
             @if ($thread->body_original)
-                <div class="thread-meta">
+                <div class="thread-meta" x-data="{ original: false }">
                     <span class="f-footnote f-muted">{{ __("Edited by :whom :when", ['whom' => $thread->getEditedByUserName(), 'when' => App\User::dateDiffForHumansWithHours($thread->edited_at)]) }}</span>
-                    <a href="#" class="f-footnote thread-original-show">{{ __("Show Original") }}</a><a href="#" class="f-footnote thread-original-hide hidden">{{ __("Hide") }}</a>
-                    <div class="thread-original hidden f-prose">{!! safe_raw_html($thread->getCleanBodyOriginal()) !!}</div>
+                    <a href="#" class="f-footnote thread-original-show" x-show="!original" x-on:click.prevent="original = true">{{ __("Show Original") }}</a><a href="#" class="f-footnote thread-original-hide" x-show="original" x-cloak x-on:click.prevent="original = false">{{ __("Hide") }}</a>
+                    <div class="thread-original f-prose" x-show="original" x-cloak>{!! safe_raw_html($thread->getCleanBodyOriginal()) !!}</div>
                 </div>
             @endif
             @if (!$thread_is_draft)
@@ -199,10 +202,10 @@
                             <x-fruit::menu-separator />
                         @endif
                         @if (Auth::user()->can('edit', $thread))
-                            <x-fruit::menu-link href="#" class="thread-edit-trigger">{{ __("Edit") }}</x-fruit::menu-link>
+                            <x-fruit::menu-link href="#" class="thread-edit-trigger" wire:click.prevent="edit({{ $thread->id }})">{{ __("Edit") }}</x-fruit::menu-link>
                         @endif
                         @if ($thread->isNote() && !$thread->first && Auth::user()->can('delete', $thread))
-                            <x-fruit::menu-link href="#" class="thread-delete-trigger" :data-loading-text="__('Delete').'…'">{{ __("Delete") }}</x-fruit::menu-link>
+                            <x-fruit::menu-link href="#" class="thread-delete-trigger" wire:click.prevent="deleteNote({{ $thread->id }})">{{ __("Delete") }}</x-fruit::menu-link>
                         @endif
                         <x-fruit::menu-link :href="route('conversations.create', ['mailbox_id' => $mailbox->id]).'?from_thread_id='.$thread->id" class="new-conv">{{ __("New Conversation") }}</x-fruit::menu-link>
                         @if ($thread->isCustomerMessage())
@@ -210,13 +213,13 @@
                         @endif
                         <ul class="menu-module-items">@action('thread.menu', $thread)</ul>
                         @if (Auth::user()->isAdmin())
-                            <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'send_log'], \Request::all(), ['thread_id' => $thread->id]))" data-trigger="modal" :data-modal-title="__('Outgoing Emails')" data-modal-size="lg">{{ __("Outgoing Emails") }}</x-fruit::menu-link>
+                            <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" data-trigger="modal" :data-modal-title="__('Outgoing Emails')" data-modal-size="lg">{{ __("Outgoing Emails") }}</x-fruit::menu-link>
                         @endif
                         @if ($thread->isReply())
-                            <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'show_original'], \Request::all(), ['thread_id' => $thread->id]))" data-trigger="modal" :data-modal-title="__('Original Message')" data-modal-fit="true" data-modal-size="lg">{{ __("Show Original") }}</x-fruit::menu-link>
+                            <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'show_original'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" data-trigger="modal" :data-modal-title="__('Original Message')" data-modal-fit="true" data-modal-size="lg">{{ __("Show Original") }}</x-fruit::menu-link>
                         @endif
                         @if ($thread->isReply() || $thread->isNote())
-                            <x-fruit::menu-link :href="\Request::getRequestUri().'&print_thread_id='.$thread->id.'&print=1'" target="_blank">{{ __("Print") }}</x-fruit::menu-link>
+                            <x-fruit::menu-link :href="($page_uri ?? \Request::getRequestUri()).'&print_thread_id='.$thread->id.'&print=1'" target="_blank">{{ __("Print") }}</x-fruit::menu-link>
                         @endif
                         <ul class="menu-module-items">@action('thread.menu.append', $thread)</ul>
                     </x-fruit::menu>

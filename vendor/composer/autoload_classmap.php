@@ -228,6 +228,7 @@ return array(
     'App\\Listeners\\UpdateMailboxCounters' => $baseDir . '/app/Listeners/UpdateMailboxCounters.php',
     'App\\Livewire\\ConversationList' => $baseDir . '/app/Livewire/ConversationList.php',
     'App\\Livewire\\ConversationSubject' => $baseDir . '/app/Livewire/ConversationSubject.php',
+    'App\\Livewire\\ConversationThread' => $baseDir . '/app/Livewire/ConversationThread.php',
     'App\\Livewire\\ConversationToolbar' => $baseDir . '/app/Livewire/ConversationToolbar.php',
     'App\\Mail\\Alert' => $baseDir . '/app/Mail/Alert.php',
     'App\\Mail\\AutoReply' => $baseDir . '/app/Mail/AutoReply.php',

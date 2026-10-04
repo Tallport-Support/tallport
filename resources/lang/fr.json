@@ -1491,5 +1491,7 @@
     "Search conversations": "Rechercher des conversations",
     "Select": "Sélectionner",
     "Clear selection": "Effacer la sélection",
-    "Selected conversations": "Conversations sélectionnées"
+    "Selected conversations": "Conversations sélectionnées",
+    "Generated": "Généré",
+    "Generated, not sent": "Généré, non envoyé"
 }

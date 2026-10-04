@@ -110,7 +110,7 @@ final class ComponentContract
         'selection-bar' => ['roles' => ['region'], 'owns' => ['x-data'], 'message' => 'owns its fruitSelectionBar helper; bind data-count (for example x-bind:data-count) to update it from script'],
         'skeleton' => [],
         'divider' => ['roles' => ['separator'], 'options' => ['tone' => ['neutral', 'accent'], 'align' => ['center', 'start']]],
-        'message' => ['roles' => ['article', 'listitem'], 'options' => ['layout' => ['inline', 'stacked'], 'variant' => ['default', 'note'], 'direction' => ['incoming', 'outgoing']]],
+        'message' => ['roles' => ['article', 'listitem'], 'options' => ['layout' => ['inline', 'stacked'], 'variant' => ['default', 'note', 'generated'], 'direction' => ['incoming', 'outgoing']]],
         'thread' => ['roles' => ['list']],
         'message-event' => ['roles' => ['note', 'listitem']],
         'timeline' => ['roles' => ['list']],
@@ -331,6 +331,18 @@ final class ComponentContract
         }
 
         return [$message === '' ? null : $message, $tone];
+    }
+
+    /** A message's options; `mine` marks a sent message the viewer wrote. */
+    public static function message(mixed $layout, mixed $variant, mixed $direction, mixed $mine, ComponentAttributeBag $attributes): void
+    {
+        self::validate('message', $attributes, ['layout' => $layout, 'variant' => $variant, 'direction' => $direction]);
+        if (! is_bool($mine)) {
+            throw new InvalidArgumentException('FruitUI message mine must be a boolean.');
+        }
+        if ($mine && $direction !== 'outgoing') {
+            throw new InvalidArgumentException('FruitUI message mine marks a sent message; use it with direction="outgoing".');
+        }
     }
 
     /** A Field's label prop or label slot, which must have visible text. */

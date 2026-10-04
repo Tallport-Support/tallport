@@ -1482,5 +1482,7 @@
     "Search conversations": "Пошук розмов",
     "Select": "Вибрати",
     "Clear selection": "Скасувати вибір",
-    "Selected conversations": "Вибрані розмови"
+    "Selected conversations": "Вибрані розмови",
+    "Generated": "Згенеровано",
+    "Generated, not sent": "Згенеровано, не надіслано"
 }

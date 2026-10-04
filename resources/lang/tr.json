@@ -1482,5 +1482,7 @@
     "Search conversations": "Konuşmalarda ara",
     "Select": "Seç",
     "Clear selection": "Seçimi temizle",
-    "Selected conversations": "Seçili konuşmalar"
+    "Selected conversations": "Seçili konuşmalar",
+    "Generated": "Oluşturuldu",
+    "Generated, not sent": "Oluşturuldu, gönderilmedi"
 }

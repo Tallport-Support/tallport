@@ -9,8 +9,9 @@ use App\Thread;
 
 /**
  * What a user does to a conversation from its page: assign, change the status,
- * restore, follow, delete and change the subject. Used by the conversation
- * ajax actions and the Livewire toolbar and heading.
+ * restore, follow, delete and change the subject; edit a message, delete a
+ * note and send a failed reply again. Used by the conversation ajax actions
+ * and the page's Livewire components.
  *
  * Each returns the ajax response's fields: msg (an error), or status success
  * with redirect_url or msg_success where the action has them.
@@ -230,6 +231,87 @@ class ConversationActions
             return [];
         }
         $conversation->changeSubject($subject, $user);
+
+        return ['status' => 'success'];
+    }
+
+    /**
+     * Changes a message's body, keeping the original.
+     */
+    public static function editThread($thread, $body, $user)
+    {
+        if (!$thread) {
+            return ['msg' => __('Thread not found')];
+        }
+        if (!$user->can('edit', $thread)) {
+            return ['msg' => __('Not enough permissions')];
+        }
+
+        if (!$thread->body_original) {
+            $thread->body_original = $thread->body;
+        }
+        $thread->body = $body;
+        $thread->edited_by_user_id = $user->id;
+        $thread->edited_at = date('Y-m-d H:i:s');
+        $clean_body = $thread->getCleanBody();
+
+        if (!strip_tags($clean_body)) {
+            return ['msg' => __('Message cannot be empty')];
+        }
+
+        // Update the preview for the conversation if needed.
+        $last_thread = $thread->conversation->getLastThread([Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE, Thread::TYPE_NOTE]);
+        if ($last_thread && $last_thread->id == $thread->id) {
+            $thread->conversation->setPreview($thread->body);
+            $thread->conversation->save();
+        }
+        $thread->save();
+
+        return ['status' => 'success', 'body' => $clean_body];
+    }
+
+    public static function deleteNote($thread, $user)
+    {
+        if (!$thread || !$thread->isNote()) {
+            return ['msg' => __('Thread not found')];
+        }
+        if (!$user->can('delete', $thread)) {
+            return ['msg' => __('Not enough permissions')];
+        }
+
+        $thread->deleteThread();
+
+        return ['status' => 'success'];
+    }
+
+    /**
+     * Sends a reply that failed to send again.
+     */
+    public static function retrySend($thread, $user)
+    {
+        if (!$thread) {
+            return ['msg' => __('Thread not found')];
+        }
+        if (!$user->can('view', $thread->conversation)) {
+            return ['msg' => __('Not enough permissions')];
+        }
+
+        $job_id = $thread->getFailedJobId();
+        if (!$job_id && !$thread->canRetrySend()) {
+            return [];
+        }
+
+        // Not sent yet: the job skips replies already accepted.
+        $thread->send_status = null;
+        $thread->updateSendStatusData(['msg' => '']);
+        $thread->save();
+
+        if ($job_id) {
+            \App\FailedJob::retry($job_id);
+        } else {
+            // Never queued, or its failed job has been cleaned up.
+            (new \App\Listeners\SendReplyToCustomer())->handle(new \App\Events\UserReplied($thread->conversation, $thread));
+        }
 
         return ['status' => 'success'];
     }

@@ -773,7 +773,8 @@
         "name": "conversation.view.threads",
         "arguments": 1,
         "files": [
-            "app/Http/Controllers/ConversationsController.php"
+            "app/Http/Controllers/ConversationsController.php",
+            "app/Livewire/ConversationThread.php"
         ]
     },
     {

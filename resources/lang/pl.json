@@ -1481,5 +1481,7 @@
     "Search conversations": "Szukaj rozmów",
     "Select": "Zaznacz",
     "Clear selection": "Wyczyść zaznaczenie",
-    "Selected conversations": "Zaznaczone rozmowy"
+    "Selected conversations": "Zaznaczone rozmowy",
+    "Generated": "Wygenerowano",
+    "Generated, not sent": "Wygenerowano, nie wysłano"
 }

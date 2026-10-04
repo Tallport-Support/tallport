@@ -1482,5 +1482,7 @@
     "Search conversations": "Sök konversationer",
     "Select": "Markera",
     "Clear selection": "Rensa markering",
-    "Selected conversations": "Markerade konversationer"
+    "Selected conversations": "Markerade konversationer",
+    "Generated": "Genererad",
+    "Generated, not sent": "Genererad, inte skickad"
 }

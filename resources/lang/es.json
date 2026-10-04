@@ -1483,5 +1483,7 @@
     "Search conversations": "Buscar conversaciones",
     "Select": "Seleccionar",
     "Clear selection": "Borrar selección",
-    "Selected conversations": "Conversaciones seleccionadas"
+    "Selected conversations": "Conversaciones seleccionadas",
+    "Generated": "Generado",
+    "Generated, not sent": "Generado, no enviado"
 }

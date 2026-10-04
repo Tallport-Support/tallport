@@ -1482,5 +1482,7 @@
     "Search conversations": "Pretraži razgovore",
     "Select": "Odaberi",
     "Clear selection": "Poništi odabir",
-    "Selected conversations": "Odabrani razgovori"
+    "Selected conversations": "Odabrani razgovori",
+    "Generated": "Generirano",
+    "Generated, not sent": "Generirano, nije poslano"
 }

@@ -1481,5 +1481,7 @@
     "Search conversations": "חיפוש בשיחות",
     "Select": "בחירה",
     "Clear selection": "ניקוי הבחירה",
-    "Selected conversations": "שיחות שנבחרו"
+    "Selected conversations": "שיחות שנבחרו",
+    "Generated": "נוצר אוטומטית",
+    "Generated, not sent": "נוצר אוטומטית, לא נשלח"
 }

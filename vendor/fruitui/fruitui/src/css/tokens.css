@@ -32,6 +32,13 @@
     --f-danger: light-dark(#c52f27, #ff8179);
     --f-success: light-dark(#25733e, #83d697);
     --f-warning: light-dark(#9a6700, #eaba55);
+    /* Cards for messages that are not sent: internal notes (yellow) and generated text such as
+       summaries and translations (indigo). */
+    --f-note-background: light-dark(#fdf6d3, #3a3420);
+    --f-note-border: light-dark(rgb(196 150 0 / 32%), rgb(234 186 85 / 26%));
+    --f-generated: light-dark(#5149c9, #a5a1ff);
+    --f-generated-background: light-dark(#f1f0fd, #2c2b45);
+    --f-generated-border: light-dark(rgb(88 86 214 / 26%), rgb(165 161 255 / 26%));
     --f-control: light-dark(#fff, #39393e);
     /* Popovers, menus, dialogs and toasts sit above the content; in dark mode they are lighter. */
     --f-surface-elevated: light-dark(#fff, #2c2c30);

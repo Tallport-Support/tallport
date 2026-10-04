@@ -1481,5 +1481,7 @@
     "Search conversations": "Iskanje pogovorov",
     "Select": "Izberi",
     "Clear selection": "Počisti izbor",
-    "Selected conversations": "Izbrani pogovori"
+    "Selected conversations": "Izbrani pogovori",
+    "Generated": "Ustvarjeno",
+    "Generated, not sent": "Ustvarjeno, ni poslano"
 }
