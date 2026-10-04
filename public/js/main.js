@@ -428,11 +428,6 @@ $(document).ready(function(){
 		e.preventDefault();
 	});
 
-	// Dirty JS hack because there was no way found to expand outer container when sidebar grows.
-	if ($('#conv-layout-customer').length && $(window).outerWidth() >= 1100 && $('.conv-sidebar-block').length > 2) {
-		adjustCustomerSidebarHeight();
-		setTimeout(adjustCustomerSidebarHeight, 2000);
-	}                                                   
 });
 
 /*function applyVoidLinks()
@@ -6136,15 +6131,6 @@ function copyToClipboard(text) {
     $temp.val(text).select();
     document.execCommand("copy");
     $temp.remove();
-}
-
-function adjustCustomerSidebarHeight()
-{
-	var sidebar_h = $('#conv-layout-customer')[0].scrollHeight;
-
-	if (sidebar_h > $('#conv-layout').height()) {
-		$('#conv-layout').css('min-height', (sidebar_h+20)+'px');
-	}
 }
 
 function closeAllModals()

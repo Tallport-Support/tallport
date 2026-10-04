@@ -32,7 +32,7 @@
 @section('content')
     @include('partials/flash_messages')
 
-    <div id="conv-layout" class="conv-type-{{ strtolower($conversation->getTypeName()) }} @if ($is_following) conv-following @endif">
+    <div id="conv-layout" class="conv-type-{{ strtolower($conversation->getTypeName()) }} @if ($is_following) conv-following @endif" x-data="{ customerView: false }" :class="{ 'conv-layout--customer': customerView }">
         <div id="conv-layout-header">
             <div id="conv-toolbar" class="fruit-ui f-toolbar conv-header-bar">
                 @php
@@ -133,6 +133,8 @@
                     </li>@action('conversation.convinfo.before_nav', $conversation, $mailbox)<li class="conv-next-prev">
                         <a href="{{ $conversation->urlPrev(App\Conversation::getFolderParam()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Newer") }}" aria-label="{{ __("Newer") }}"><x-heroicon-o-chevron-up class="f-icon" aria-hidden="true" /></a>
                         <a href="{{ $conversation->urlNext(App\Conversation::getFolderParam()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Older") }}" aria-label="{{ __("Older") }}"><x-heroicon-o-chevron-down class="f-icon" aria-hidden="true" /></a>
+                    </li><li class="conv-customer-toggle">
+    <button type="button" class="f-button f-button--ghost f-button--icon" x-on:click="customerView = !customerView" :aria-pressed="customerView" aria-pressed="false" aria-controls="conv-layout-customer" aria-label="{{ __('Customer') }}" title="{{ __('Customer') }}"><x-heroicon-o-user-circle class="f-icon" aria-hidden="true" /></button>
                     </li>
                 </ul>
             </div>
