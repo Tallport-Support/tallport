@@ -59,6 +59,10 @@ class ConversationComposerTest extends FeatureTestCase
         $this->composer()->call('open', 'reply')->set('show_cc', true)->set('cc', "pat@customer.example.org\n")
             ->set('body', '<p>A new zipper is on its way.</p>')->call('send', Conversation::STATUS_PENDING)->assertRedirect();
 
+        // Recipient fields suggest customers.
+        $this->composer()->call('open', 'reply')->set('show_cc', true)->set('recipient_query', 'casey')
+            ->assertSee('<option value="casey@customer.example.org">Casey Customer</option>', false);
+
         $reply = $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $this->assertStringContainsString('A new zipper', $reply->body);
         $this->assertSame(['pat@customer.example.org'], $reply->getCcArray());

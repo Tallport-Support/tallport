@@ -8,6 +8,7 @@ use App\Mailbox;
 use App\Misc\Noreply;
 use App\Thread;
 use FruitUI\Fruit;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -94,6 +95,11 @@ class ConversationComposer extends Component
     public $ai_draft_translation = '';
 
     public $ai_draft_translation_language = '';
+
+    /**
+     * What the user types in a recipient field, for its suggestions.
+     */
+    public $recipient_query = '';
 
     /**
      * The Cc the page suggests for a reply.
@@ -333,6 +339,26 @@ class ConversationComposer extends Component
         $this->ai_draft_translation = (string) $translation;
         $this->ai_draft_translation_language = (string) $language;
         $this->dispatch('fruit-editor-set', target: 'body', html: $this->body);
+    }
+
+    /**
+     * Customers matching what the user types in a recipient field (email => name).
+     */
+    #[Computed]
+    public function recipientMatches()
+    {
+        $query = trim((string) $this->recipient_query);
+        if (mb_strlen($query) < 2) {
+            return [];
+        }
+        $data = app(\App\Http\Controllers\CustomersController::class)
+            ->ajaxSearch(new \Illuminate\Http\Request(['q' => $query, 'search_by' => 'all']))
+            ->getData(true);
+
+        // The name: the field shows the address too.
+        return collect($data['results'] ?? [])->mapWithKeys(fn ($result) => [
+            $result['id'] => trim(preg_replace('/\s*<[^>]*>$/', '', (string) $result['text'])) ?: $result['id'],
+        ])->all();
     }
 
     public function switchToNote()
