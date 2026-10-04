@@ -5443,3 +5443,54 @@ a.disabled:focus {
 .show-original__panel {
     margin-top: 12px;
 }
+/* Settings save bar: a secondary button before the primary one keeps its size
+   (f-form-row stretches a first child). */
+.settings-form__actions > :first-child:not(:only-child) {
+    flex: none;
+}
+/* Settings: a disclosure that is a form-section row (AI customer context)
+   takes the row's frame instead of drawing its own box. */
+.settings-form .f-form-section__rows > .f-disclosure {
+    padding: 0;
+    border-width: 0;
+    border-radius: 0;
+    background: none;
+}
+.settings-form .f-form-section__rows > * + .f-disclosure {
+    border-top-width: 1px;
+}
+/* The keyboard shortcuts dialog: two columns of key/action tables. */
+.keyboard-shortcuts__columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px 24px;
+}
+.keyboard-shortcuts__table td {
+    padding: 4px 8px 4px 0;
+    vertical-align: top;
+}
+.keyboard-shortcuts .f-headline {
+    margin: 8px 0 4px;
+}
+.ai-draft-actions {
+    display: flex;
+    gap: 8px;
+}
+.keyboard-shortcuts__table td:first-child {
+    white-space: nowrap;
+}
+.customer-contacts .nostr-key-icon {
+    display: inline-block;
+    --f-icon-size: 14px;
+    vertical-align: -2px;
+    color: var(--f-tertiary);
+}
+.nostr-keys-table td {
+    vertical-align: middle;
+}
+/* Settings beside a profile column (customer pages): the grouped background
+   shows through the two-column layout. */
+.layout-2col:has(.settings-form),
+.content-2col:has(.settings-form) {
+    background: transparent;
+}
