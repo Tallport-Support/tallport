@@ -129,11 +129,8 @@
 
                 <x-fruit::field :label="__('IMAP Folders')" control-id="in_imap_folders" layout="row">
                     <div class="f-row connection-imap-folders">
-                        <select id="in_imap_folders" class="f-input" name="in_imap_folders[]" multiple>
-                            @foreach ($mailbox->getInImapFolders() as $imap_folder)
-                                <option value="{{ $imap_folder }}" selected="selected">{{ $imap_folder }}</option>
-                            @endforeach
-                        </select>
+                        {{-- One folder per item (posted as in_imap_folders[]); Get folders suggests the server's. --}}
+                        <x-fruit::token-field id="in_imap_folders" name="in_imap_folders" submit="list" placeholder="INBOX" x-on:input="document.getElementById('check-connection').disabled = true">{{ implode("\n", $mailbox->getInImapFolders()) }}<x-slot:options></x-slot:options></x-fruit::token-field>
                         <button type="button" class="f-button f-button--ghost f-button--small" title="{{ __('Retrieve a list of available IMAP folders from the server') }}" id="retrieve-imap-folders" x-on:click="retrieveFolders">{{ __('Get folders') }}</button>
                     </div>
                 </x-fruit::field>
@@ -181,10 +178,3 @@
     </div>
 @endsection
 
-@section('javascript')
-    @parent
-    {{-- The IMAP folders stay on select2 (jQuery) until FruitUI's token field can submit a list. --}}
-    $('#in_imap_folders').select2(fs_select2_config).on('select2:select select2:unselect', function() {
-        document.getElementById('check-connection').disabled = true;
-    });
-@endsection

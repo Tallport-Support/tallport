@@ -160,28 +160,19 @@ document.addEventListener('alpine:init', function () {
 					Tallport.busy(button, false);
 				});
 			},
+			// The server's folders as suggestions in the IMAP Folders field (FruitUI token field).
 			retrieveFolders: function (event) {
 				var button = event.currentTarget;
-				var select = document.getElementById('in_imap_folders');
+				var list = document.querySelector('#in_imap_folders').closest('.f-token-field').querySelector('datalist');
 				Tallport.busy(button, true);
 				Tallport.post(laroute.route('mailboxes.ajax'), {
 					action: 'imap_folders',
 					mailbox_id: mailbox_id
 				}).then(function (response) {
-					var added = false;
+					list.innerHTML = '';
 					(response.folders || []).forEach(function (folder) {
-						var exists = Array.prototype.some.call(select.options, function (option) {
-							return option.value == folder;
-						});
-						if (!exists) {
-							select.add(new Option(folder, folder, true, true));
-							added = true;
-						}
+						list.appendChild(new Option(folder, folder));
 					});
-					if (added) {
-						// Shows the new folders in the select2 control too.
-						select.dispatchEvent(new Event('change', {bubbles: true}));
-					}
 					Tallport.result(response);
 					Tallport.busy(button, false);
 				});
