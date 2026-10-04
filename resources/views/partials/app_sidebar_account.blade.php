@@ -45,7 +45,7 @@
     </x-slot:trigger>
     <x-fruit::menu-link :href="route('users.profile', ['id' => Auth::user()->id])">{{ __('Your Profile') }}</x-fruit::menu-link>
     @if (Auth::user()->hasKeyboardShortcuts())
-        <x-fruit::menu-link href="#" data-toggle="modal" data-target="#keyboard-shortcuts-modal" shortcut="?">{{ __('Keyboard Shortcuts') }}</x-fruit::menu-link>
+        <x-fruit::menu-link href="#" x-on:click.prevent="document.querySelector('[data-fruit-dialog=keyboard-shortcuts]').showModal()" shortcut="?">{{ __('Keyboard Shortcuts') }}</x-fruit::menu-link>
     @endif
     <ul class="app-sidebar__module-items">@action('menu_right.user.after_profile')</ul>
     <x-fruit::menu-separator />

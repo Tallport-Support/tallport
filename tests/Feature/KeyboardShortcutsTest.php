@@ -16,8 +16,8 @@ class KeyboardShortcutsTest extends FeatureTestCase
 
         $this->actingAs($user)->get(route('mailboxes.view', ['id' => $mailbox->id]))->assertOk()
             ->assertSee('data-keyboard-shortcuts="1"', false)
-            ->assertSee('id="keyboard-shortcuts-modal"', false)
-            ->assertSee('data-target="#keyboard-shortcuts-modal"', false);
+            ->assertSee('data-fruit-dialog="keyboard-shortcuts"', false)
+            ->assertSee('[data-fruit-dialog=keyboard-shortcuts]', false);
 
         $this->get(route('users.profile', ['id' => $user->id]))->assertSee('name="keyboard_shortcuts"', false);
         \Session::start();
@@ -29,7 +29,7 @@ class KeyboardShortcutsTest extends FeatureTestCase
 
         $this->actingAs($user->fresh())->get(route('mailboxes.view', ['id' => $mailbox->id]))
             ->assertDontSee('data-keyboard-shortcuts', false)
-            ->assertDontSee('keyboard-shortcuts-modal', false);
+            ->assertDontSee('data-fruit-dialog="keyboard-shortcuts"', false);
     }
 
     public function testNoreplyPatternsFromTheEnvironmentFile()

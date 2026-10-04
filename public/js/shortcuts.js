@@ -3,26 +3,28 @@
  * Other code can make an element ignore them with the shortcuts.ignore_target
  * filter.
  */
-$(document).ready(function() {
-	if ($('body').attr('data-keyboard-shortcuts') != '1') {
+document.addEventListener('DOMContentLoaded', function() {
+	if (document.body.getAttribute('data-keyboard-shortcuts') != '1') {
 		return;
 	}
 
-	// Click the first matching element (links and dropdown items too).
+	var visible = function(element) {
+		return !!(element.offsetWidth || element.offsetHeight || element.getClientRects().length);
+	};
+
+	// Click the first matching element (links and menu items too).
 	var click = function(selector, visible_only) {
-		var el = $(selector).not('.inactive, .hidden');
-		if (visible_only) {
-			el = el.filter(':visible');
-		}
-		el = el.first();
-		if (!el.length) {
+		var elements = Array.prototype.slice.call(document.querySelectorAll(selector)).filter(function(element) {
+			return !element.classList.contains('inactive') && !element.classList.contains('hidden') && (!visible_only || visible(element));
+		});
+		if (!elements.length) {
 			return false;
 		}
-		el[0].click();
+		elements[0].click();
 		return true;
 	};
-	var go = function(selector) {
-		var href = $(selector).first().attr('href');
+	var go = function(link) {
+		var href = link ? link.getAttribute('href') : '';
 		if (!href || href == '#') {
 			return false;
 		}
@@ -30,37 +32,41 @@ $(document).ready(function() {
 		return true;
 	};
 	var formOpen = function() {
-		return $('.form-reply:visible').length > 0;
+		return Array.prototype.some.call(document.querySelectorAll('.form-reply'), visible);
 	};
 	var statuses = {a: 1, p: 2, c: 3, s: 4, n: 'not_spam'};
 
-	$(document).on('keydown.shortcuts', function(e) {
+	document.addEventListener('keydown', function(e) {
 		var key = e.key;
 		var target = e.target;
 		if (e.ctrlKey || e.metaKey || e.altKey) {
 			return;
 		}
-		var typing = $(target).is('input, select, textarea') || target.isContentEditable;
+		var typing = target.matches('input, select, textarea') || target.isContentEditable;
 
 		if (key == '?' && !typing) {
-			$('#keyboard-shortcuts-modal').modal('toggle');
+			var help = document.querySelector('[data-fruit-dialog="keyboard-shortcuts"]');
+			if (help) {
+				help.open ? help.close() : help.showModal();
+			}
 			e.preventDefault();
 			return;
 		}
 
-		var status_open = $('#conv-status').prop('open') || $('#conv-status').hasClass('open');
-		if (!status_open && (e.shiftKey || typing || $('.modal:visible').length || fsApplyFilter('shortcuts.ignore_target', false, {target: target}))) {
+		var status_menu = document.getElementById('conv-status');
+		var status_open = status_menu && status_menu.open;
+		if (!status_open && (e.shiftKey || typing || document.querySelector('dialog[open]') || fsApplyFilter('shortcuts.ignore_target', false, {target: target}))) {
 			return;
 		}
 
-		var conversation = $('.conv-next-prev').length > 0;
-		var list = $('.table-conversations').length == 1;
+		var conversation = !!document.querySelector('.conv-next-prev');
+		var list = document.querySelectorAll('.table-conversations').length == 1;
 		var done = false;
 
 		if (status_open) {
 			// s, then a (active), p (pending), c (closed), s (spam) or n (not spam).
 			if (typeof(statuses[key]) != "undefined") {
-				done = click('#conv-status a[data-status="'+statuses[key]+'"]');
+				done = click('#conv-status [data-status="'+statuses[key]+'"]');
 			}
 		} else if (conversation) {
 			switch (key) {
@@ -97,6 +103,7 @@ $(document).ready(function() {
 					break;
 			}
 			if (!done && !formOpen()) {
+				var nav = document.querySelectorAll('.conv-next-prev a');
 				switch (key) {
 					case 'e':
 						done = click('.edit-draft-trigger', true);
@@ -105,13 +112,13 @@ $(document).ready(function() {
 						done = click('.conv-delete', true);
 						break;
 					case 'j':
-						done = go('.conv-next-prev a:eq(0)');
+						done = go(nav[0]);
 						break;
 					case 'k':
-						done = go('.conv-next-prev a:eq(1)');
+						done = go(nav[1]);
 						break;
 					case 'q':
-						done = go('a.new-conversation-link');
+						done = go(document.querySelector('a.new-conversation-link'));
 						break;
 				}
 			}
@@ -124,14 +131,14 @@ $(document).ready(function() {
 					done = click('.pager-prev:not(.disabled)');
 					break;
 				case 'c':
-					done = !formOpen() && go('a.new-conversation-link');
+					done = !formOpen() && go(document.querySelector('a.new-conversation-link'));
 					break;
 			}
 		}
 
 		if (!done && key == '/') {
-			var search = $('#search-dt');
-			if (search.length) {
+			var search = document.getElementById('search-dt');
+			if (search) {
 				search.focus();
 				done = true;
 			}

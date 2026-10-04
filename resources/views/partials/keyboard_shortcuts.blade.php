@@ -1,13 +1,11 @@
 {{-- The keyboard shortcuts (public/js/shortcuts.js), shown with ?. --}}
-<div class="modal fade" id="keyboard-shortcuts-modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">{{ __('Keyboard Shortcuts') }}</h2>
-                <button type="button" class="f-button f-button--ghost f-button--icon f-button--small modal-close" data-dismiss="modal" aria-label="{{ __('Close') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button>
-            </div>
-            <div class="modal-body keyboard-shortcuts">
-                <div class="keyboard-shortcuts__columns">
+<x-fruit::dialog name="keyboard-shortcuts" size="large" aria-labelledby="keyboard-shortcuts-title">
+    <header class="f-dialog__header">
+        <h2 id="keyboard-shortcuts-title">{{ __('Keyboard Shortcuts') }}</h2>
+        <x-fruit::button variant="ghost" size="small" class="f-button--icon" x-on:click="$el.closest('dialog').close()" :aria-label="__('Close')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+    </header>
+    <div class="f-dialog__body keyboard-shortcuts">
+        <div class="keyboard-shortcuts__columns">
                     <div>
                         <h3 class="f-headline">{{ __('Conversation') }}</h3>
                         <table class="f-table keyboard-shortcuts__table">
@@ -40,7 +38,5 @@
                         <p class="f-help">{{ __('Turn them off in your profile.') }}</p>
                     </div>
                 </div>
-            </div>
-        </div>
     </div>
-</div>
+</x-fruit::dialog>
