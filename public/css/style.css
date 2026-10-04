@@ -5362,6 +5362,7 @@ a.disabled:focus {
     position: relative;
 }
 .conv-list__toolbar {
+    gap: 4px;
     padding: 0 12px 8px;
     border-bottom: 1px solid var(--f-border);
 }
@@ -5373,23 +5374,24 @@ a.disabled:focus {
     --f-item-row-radius: 0;
     margin: 0;
 }
-.conv-list .conv-row {
-    display: flex;
-    align-items: flex-start;
+/* FruitUI's checkbox + row grid, with a third column for the star. */
+.conv-list .conv-list__items > li.conv-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: start;
     gap: 4px;
     padding-inline-start: 12px;
 }
-.conv-list .conv-row > .conv-checkbox {
+.conv-list .conv-list__items > li.conv-row > .conv-checkbox {
     margin-top: 16px;
-    flex-shrink: 0;
+    padding: 0;
 }
-.conv-list .conv-row > .conv-row__link {
-    flex: 1;
-    min-width: 0;
-}
-.conv-list .conv-row > .conv-star {
+.conv-list .conv-list__items > li.conv-row > .conv-star {
     margin-top: 8px;
-    flex-shrink: 0;
+}
+/* Rows without a checkbox (customer history): the link spans. */
+.conv-list .conv-list__items > li.conv-row:not(:has(> .conv-checkbox)) {
+    grid-template-columns: minmax(0, 1fr) auto;
 }
 .conv-list .conv-row.selected {
     background: var(--f-selection-inactive);
@@ -5405,6 +5407,20 @@ a.disabled:focus {
     flex-wrap: wrap;
     align-items: center;
     gap: 4px 12px;
+}
+.conv-list .conv-row__meta > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    width: auto;
+}
+.conv-list .conv-counter {
+    background: none;
+    color: inherit;
+    font: inherit;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
 }
 .conv-row__meta .f-icon,
 .conv-list .conv-badge {
@@ -5479,8 +5495,18 @@ a.disabled:focus {
 .split-view__header {
     padding-bottom: 8px;
 }
-.split-view__empty {
-    margin-top: 20vh;
+/* Nothing open: the empty state in the middle of the pane, the footer left out. */
+.split-view:not(.split-view--open) .split-view__detail > .content {
+    display: grid;
+    min-height: 100vh;
+}
+.app-main:has(> .split-view:not(.split-view--open)) > .footer {
+    display: none;
+}
+.split-view__list,
+.app-sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--f-text) 25%, transparent) transparent;
 }
 .split-view__list .conv-list__toolbar {
     position: sticky;
