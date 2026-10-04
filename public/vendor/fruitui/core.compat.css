@@ -149,9 +149,17 @@ html.fruit-ui > body {
     cursor: not-allowed;
   }
 
+/* Plain links: the accent color with a soft underline, so links in running text are not told apart
+     by color alone; it firms up on hover. Components rendered as links remove it themselves. */
+
 .fruit-ui :where(a) {
     color: var(--f-accent);
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
     text-underline-offset: 3px;
+  }
+
+.fruit-ui :where(a:hover) {
+    text-decoration-color: currentColor;
   }
 
 .fruit-ui :where(h1, h2, h3, h4, h5, h6, p) {
@@ -2464,6 +2472,7 @@ a.f-menu-item {
     background: transparent;
     color: var(--f-secondary);
     font-size: var(--f-text-base);
+    text-decoration: none;
   }
 
 .f-tab:hover {
@@ -3065,6 +3074,8 @@ img.f-avatar {
     border-radius: var(--f-item-row-radius, var(--f-radius-md));
     background: transparent;
     color: var(--f-text);
+    /* Rows may be links; they need no host link reset. */
+    text-decoration: none;
     text-align: start;
   }
 

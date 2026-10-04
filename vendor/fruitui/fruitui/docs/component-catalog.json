@@ -1259,5 +1259,12 @@
         "options": "A `title` makes it a named region. `level`: 2 (default), 3, 4. `footer`: explanatory text, or a named slot. Slot: rows, such as `x-fruit::field layout=\"row\"`, Fieldsets of choices, or `div.f-form-row` for actions and values. Put sections on `--f-grouped-background`; groups use `--f-grouped-surface`."
       }
     }
+  },
+  {
+    "id": "signin",
+    "kind": "composition",
+    "classes": [],
+    "blade": [],
+    "uses": []
   }
 ]

@@ -449,6 +449,7 @@
     background: transparent;
     color: var(--f-secondary);
     font-size: var(--f-text-base);
+    text-decoration: none;
   }
   .f-tab:hover {
     background: var(--f-hover);

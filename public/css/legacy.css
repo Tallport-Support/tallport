@@ -9,10 +9,6 @@
 body {
   margin: 0;
 }
-a {
-  color: var(--f-accent);
-  text-decoration: none;
-}
 img {
   vertical-align: middle;
 }

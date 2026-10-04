@@ -107,6 +107,8 @@
     border-radius: var(--f-item-row-radius, var(--f-radius-md));
     background: transparent;
     color: var(--f-text);
+    /* Rows may be links; they need no host link reset. */
+    text-decoration: none;
     text-align: start;
   }
   .f-item-row:has(> .f-item-row__leading) {

@@ -29,6 +29,10 @@ Copy assets from `build/` to the host's public assets directory, or resolve `fru
 
 This fits FreeScout's existing Blade/Bootstrap/jQuery setup without changing its build pipeline. Start with a scoped screen; keep existing Select2 and Summernote controls until that screen deliberately adopts a FruitUI enhancement. FruitUI does not automatically replace controls or initialize another Alpine instance.
 
+**Choosing a build.** Use the layered build (`fruitui.css`, or `core.css` plus `layout.css`) when your own styles live in cascade layers or are limited to your own classes: layered FruitUI always gives way to unlayered styles. Use the compat build (`*.compat.css`) while unlayered base rules from another framework, such as Bootstrap's bare `label`, `legend` or `code` rules, are still on the page: FruitUI's scoped rules then beat bare element rules by class specificity, and your own classes loaded after FruitUI still win. A host that has removed such a framework can move to the layered build.
+
+**Base styles.** No host reset is needed. The `.fruit-ui` scope (an `html`, `body` or inner element) sets its margin, font, line height, text and background colors; it and everything inside it use `box-sizing: border-box`; buttons, inputs, selects and textareas inherit the font and color; headings, legends, code and keyboard keys follow the text color; and plain links use the accent color with a soft underline that firms up on hover. Components that may render as links (Item Row, Menu Item and Menu Link, Sidebar Item, Section Nav, Button and Back Link, Breadcrumbs, Command Link, Tab, Attachment, Pagination and Notification links) remove the underline and set their own color.
+
 ## JavaScript and optional editing
 
 With Livewire's injected scripts (the default, as in Laravel's starter kits), import the self-registering entry from the app's Vite entry. It registers FruitUI on the Alpine instance Livewire injects, before Livewire starts it:

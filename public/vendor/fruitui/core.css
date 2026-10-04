@@ -141,9 +141,15 @@
     opacity: 0.45;
     cursor: not-allowed;
   }
+  /* Plain links: the accent color with a soft underline, so links in running text are not told apart
+     by color alone; it firms up on hover. Components rendered as links remove it themselves. */
   :where(.fruit-ui) :where(a) {
     color: var(--f-accent);
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
     text-underline-offset: 3px;
+  }
+  :where(.fruit-ui) :where(a:hover) {
+    text-decoration-color: currentColor;
   }
   :where(.fruit-ui) :where(h1, h2, h3, h4, h5, h6, p) {
     margin: 0;
@@ -2154,6 +2160,7 @@
     background: transparent;
     color: var(--f-secondary);
     font-size: var(--f-text-base);
+    text-decoration: none;
   }
   .f-tab:hover {
     background: var(--f-hover);
@@ -2682,6 +2689,8 @@
     border-radius: var(--f-item-row-radius, var(--f-radius-md));
     background: transparent;
     color: var(--f-text);
+    /* Rows may be links; they need no host link reset. */
+    text-decoration: none;
     text-align: start;
   }
   .f-item-row:has(> .f-item-row__leading) {
