@@ -82,7 +82,7 @@
   .f-button--icon > .f-menu__chevron {
     margin: 0;
   }
-  /* A context menu floats at the pointer; an outline marks the item it acts on, as in macOS. */
+  /* A context menu floats at the pointer; an outline marks the item it acts on. */
   .f-context-menu {
     position: fixed;
   }
@@ -761,7 +761,7 @@
     color: var(--f-secondary);
     --f-icon-size: 16px;
   }
-  /* Shortcuts read as text, as in macOS menus, so they follow the row's selected color. */
+  /* Shortcuts read as text, so they follow the row's selected color. */
   .f-command__shortcut {
     margin-inline-start: auto;
     padding: 0;

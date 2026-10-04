@@ -273,7 +273,7 @@ export function fruitDatePicker() {
   };
 }
 
-/** Apple's system colors, for raw HTML without a datalist. Blade renders them as a translated datalist. */
+/** The default system colors, for raw HTML without a datalist. Blade renders them as a translated datalist. */
 const SYSTEM_COLORS = [
   ['Red', '#ff3b30'],
   ['Orange', '#ff9500'],

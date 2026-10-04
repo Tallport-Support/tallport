@@ -628,3 +628,72 @@
     }
   }
 }
+
+@layer fruit.patterns {
+  /* Grouped settings: a heading, a rounded box of separated rows
+     (fields, choice groups, actions), and explanatory footer text. Rows stack in narrow sections. */
+  .f-form-section {
+    display: grid;
+    gap: var(--f-space-2);
+    container-type: inline-size;
+  }
+  .f-form-section__title {
+    padding-inline: var(--f-space-1);
+    font-size: var(--f-text-md);
+    font-weight: 600;
+  }
+  .f-form-section__rows {
+    display: grid;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius);
+    background: var(--f-grouped-surface);
+  }
+  .f-form-section__rows > * {
+    min-width: 0;
+    margin: 0;
+    padding: var(--f-form-row-padding, 12px 14px);
+  }
+  .f-form-section__rows > * + * {
+    border-top: 1px solid var(--f-border);
+  }
+  /* A choice group's legend reads like a row label instead of sitting on the row's top edge. */
+  .f-form-section__rows > .f-fieldset > legend {
+    float: inline-start;
+    width: 100%;
+    margin-block-end: var(--f-space-2);
+    font-size: var(--f-text-base);
+    font-weight: 500;
+  }
+  .f-form-section__rows > .f-fieldset > legend + * {
+    clear: both;
+  }
+  .f-form-section__footer {
+    padding-inline: var(--f-space-1);
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+    line-height: 1.45;
+  }
+  /* A row that is not a field: a value, an action or a destructive button beside its explanation. */
+  .f-form-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--f-space-2) var(--f-space-4);
+  }
+  .f-form-row > :first-child:not(:only-child) {
+    flex: 1 1 14rem;
+    min-width: 0;
+  }
+  /* Narrow sections stack text-like rows; switches and checkboxes stay at the trailing edge. */
+  @container (width < 34rem) {
+    .f-form-section__rows > .f-field--row:not(:has(> :is(.f-switch, .f-check, .f-color-picker))) {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: var(--f-field-gap, 7px);
+    }
+    .f-form-section__rows > .f-field--row:not(:has(> :is(.f-switch, .f-check, .f-color-picker))) > * {
+      grid-column: 1;
+      grid-row: auto;
+    }
+  }
+}

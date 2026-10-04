@@ -2,7 +2,7 @@
   "name": "fruitui",
   "version": "0.1.0",
   "private": true,
-  "description": "An Apple-inspired, CSS-first interface framework for HTML and Laravel.",
+  "description": "A CSS-first interface framework for HTML and Laravel.",
   "type": "module",
   "exports": {
     "./css": "./src/fruitui.css",

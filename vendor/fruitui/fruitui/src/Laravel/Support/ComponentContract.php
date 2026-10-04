@@ -3,6 +3,7 @@
 namespace FruitUI\Support;
 
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Str;
 use Illuminate\View\ComponentAttributeBag;
 use InvalidArgumentException;
 
@@ -52,6 +53,7 @@ final class ComponentContract
         'editor' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract'],
         'empty-state' => ['roles' => ['group', 'region']],
         'field' => ['roles' => ['group']],
+        'form-section' => ['roles' => ['region', 'group']],
         'fieldset' => ['roles' => ['group']],
         'file' => ['type' => 'file', 'emits' => ['type']],
         'floating-disclosure' => ['roles' => ['group'], 'options' => ['placement' => ['below', 'above']]],
@@ -352,6 +354,25 @@ final class ComponentContract
         $describedBy = trim($attributes->get('aria-describedby', '').' '.$id);
 
         return [$attributes->except('aria-describedby')->merge(['aria-describedby' => $describedBy]), $id];
+    }
+
+    /**
+     * A form section's heading level and title id. The id follows the section's id, or the title.
+     *
+     * @return array{0: int, 1: ?string}
+     */
+    public static function formSection(mixed $title, mixed $level, ComponentAttributeBag $attributes): array
+    {
+        self::validate('form-section', $attributes);
+        if (! in_array((int) $level, [2, 3, 4], true) || (string) (int) $level !== (string) $level) {
+            throw new InvalidArgumentException('FruitUI form-section level must be one of: 2, 3, 4.');
+        }
+        $text = trim(strip_tags($title instanceof Htmlable ? $title->toHtml() : (string) $title));
+        if ($text === '') {
+            return [(int) $level, null];
+        }
+
+        return [(int) $level, ($attributes->get('id') ?? 'f-section-'.Str::slug($text)).'-title'];
     }
 
     public static function wrapper(mixed $attributes): ComponentAttributeBag

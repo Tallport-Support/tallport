@@ -14,7 +14,7 @@
 ])->class(['f-color-picker']) }} x-data="fruitColorPicker">
     <input type="color" aria-haspopup="dialog" {{ $attributes->merge(['list' => $palette])->class(['f-input f-color']) }}>
     @unless ($attributes->has('list'))
-        {{-- Apple's system colors; Chrome's own chooser shows them too. --}}
+        {{-- The default system colors; Chrome's own chooser shows them too. --}}
         <datalist id="{{ $palette }}">
             <option value="#ff3b30" label="{{ __('Red') }}"></option>
             <option value="#ff9500" label="{{ __('Orange') }}"></option>

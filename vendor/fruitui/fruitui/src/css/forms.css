@@ -24,7 +24,7 @@
   .f-input[type='search']:disabled::-webkit-search-cancel-button {
     cursor: not-allowed;
   }
-  /* WebKit keeps a native macOS frame for these types unless appearance is none, ignoring the
+  /* WebKit keeps a native frame for these types unless appearance is none, ignoring the
      shared radius and padding; its inner field wrapper also adds vertical padding. */
   .f-input:is([type='date'], [type='datetime-local'], [type='month'], [type='week'], [type='time'], [type='color']) {
     appearance: none;
@@ -148,7 +148,7 @@
     font-size: var(--f-text-base);
     font-weight: 600;
   }
-  /* A group's choices stack, as macOS lists checkbox and radio groups. Class specificity beats a
+  /* A group's choices stack one per row. Class specificity beats a
      host's bare label rules; application row layouts (a switch at the end of a settings row)
      loaded after FruitUI still apply. */
   .f-fieldset > :where(label.f-check, label.f-switch) {
@@ -199,7 +199,7 @@
     cursor: not-allowed;
   }
 
-  /* Time stays typed and stepped with arrows, as on macOS; no browser popup. */
+  /* Time stays typed and stepped with arrows; no browser popup. */
   .f-input[type='time']::-webkit-calendar-picker-indicator {
     display: none;
   }

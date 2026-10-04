@@ -8,6 +8,8 @@
     padding: var(--f-button-padding-block, 6px) var(--f-button-padding-inline, 16px);
     border: 1px solid var(--f-border);
     border-radius: var(--f-radius-sm);
+    /* Text color, also for links styled as buttons; variants set their own. */
+    color: var(--f-text);
     background: var(--f-control);
     box-shadow: var(--f-control-shadow);
     font-family: var(--f-font);
@@ -79,6 +81,53 @@
   .f-field {
     display: grid;
     gap: var(--f-field-gap, 7px);
+  }
+  /* Row layout: label and help on the leading side, the control on the trailing side, errors
+     beneath both. Wide controls (anything with a textarea: Textarea, Editor, Token Field) take the full row. Narrow sections stack (see f-form-section). */
+  .f-field--row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, var(--f-field-control-width, 17rem));
+    align-items: center;
+    column-gap: var(--f-space-4);
+    row-gap: 2px;
+  }
+  .f-field--row > :is(.f-label, .f-help) {
+    grid-column: 1;
+  }
+  .f-field--row > .f-error {
+    grid-column: 1 / -1;
+  }
+  .f-field--row > :not(.f-label, .f-help, .f-error) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  /* The label and its help center together beside the control; alone, the label centers. */
+  .f-field--row > .f-label {
+    align-self: end;
+  }
+  .f-field--row > .f-help {
+    align-self: start;
+  }
+  .f-field--row:not(:has(> .f-help)) > :is(.f-label, :not(.f-label, .f-error)) {
+    grid-row: 1;
+    align-self: center;
+  }
+  .f-field--row:has(> :is(.f-switch, .f-check, .f-color-picker)) {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .f-field--row > :is(.f-switch, .f-check, .f-color-picker) {
+    justify-self: end;
+  }
+  .f-field--row:has(textarea) {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--f-field-gap, 7px);
+  }
+  .f-field--row:has(textarea) > * {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  /* A switch labelled by its Field has no text of its own. */
+  .f-switch > span:empty {
+    display: none;
   }
   .f-label {
     font-size: var(--f-text-base);

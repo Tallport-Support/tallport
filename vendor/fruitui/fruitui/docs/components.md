@@ -19,7 +19,7 @@ These use native markup and existing controls. A CSS composition does not requir
 | Row / Stack | Arrange independent children with `f-row` or `f-stack`. | No owned state or keyboard behavior. | Content and controls; shared spacing tokens. |
 | Muted text | Apply secondary text color with `f-muted`. | Native content semantics; no state or keyboard behavior. | Shared secondary token, automatically light/dark. |
 | Screen-reader text | Preserve accessible content while visually hiding it with `f-sr-only`. | Native label/text semantics. | Use on labels and descriptions; not on focusable controls. |
-| Icon | Size and stroke caller-owned SVG artwork with `f-icon`. | No added state or keyboard behavior. | Decorative artwork uses `aria-hidden=true`; the enclosing control supplies its label. No Apple artwork is distributed. |
+| Icon | Size and stroke caller-owned SVG artwork with `f-icon`. | No added state or keyboard behavior. | Decorative artwork uses `aria-hidden=true`; the enclosing control supplies its label. No icon artwork is distributed. |
 | Mail shell | Opt-in: import `fruitui/mail.css` (or `mail.compat.css`) after the main stylesheet. Arrange toolbars, navigation, list, and reader using `f-mail-container` and `f-mail f-workspace`, with shared `f-pane` classes on its pane elements. | Application owns `data-view=list/message/mailboxes` and navigation. | Named container queries choose desktop, medium, and phone layouts; `--f-sidebar-width`, `--f-list-width`, and `--f-mail-mobile-height` adjust geometry. |
 
 ## Native forms and indicators
@@ -59,8 +59,8 @@ A readonly field has a secondary surface and text but remains focusable, selecta
 Browsers draw their own date, time and color popups, which CSS cannot style, so FruitUI replaces them while the native input keeps the value, typing, validation and `wire:model`:
 
 - **Date and date-time** open a FruitUI calendar on a click or Alt+Down, following the [WAI date picker pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/): arrows move by day and week, PageUp/PageDown by month (Shift for a year), Enter chooses, Escape closes. Typing in the field's segments still works and moves the open calendar. Days outside `min`/`max` cannot be chosen; choosing a day keeps a date-time's time. Month and week keep the browser's control.
-- **Time** stays typed and stepped with the arrow keys, as on macOS; Chromium's clock button is hidden. Firefox's cannot be hidden by CSS and still opens Firefox's picker.
-- **Color** opens a swatch palette from the input's `list` datalist, or Apple's system colors when Blade renders it without one. **Other…** expands a custom editor in the same popover: a saturation/brightness area (drag it, or use the arrow keys), a hue slider and a hex field. Values update the native input as they change and commit on release.
+- **Time** stays typed and stepped with the arrow keys; Chromium's clock button is hidden. Firefox's cannot be hidden by CSS and still opens Firefox's picker.
+- **Color** opens a swatch palette from the input's `list` datalist, or a default palette of system colors when Blade renders it without one. **Other…** expands a custom editor in the same popover: a saturation/brightness area (drag it, or use the arrow keys), a hue slider and a hex field. Values update the native input as they change and commit on release.
 
 Without JavaScript the browser's pickers remain. For raw HTML, wrap the input in `div.f-date-picker[x-data="fruitDatePicker"]` or `div.f-color-picker[x-data="fruitColorPicker"]` with an empty `<div data-fruit-ui wire:ignore></div>`; Blade emits that markup. File dialogs stay the operating system's. MDN describes these [native styling limits](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Advanced_form_styling). Numeric steppers stay available. Range keeps native stepping; Firefox exposes a filled track segment, while Blink/WebKit use the shared neutral track. No script is needed for any of these controls.
 
@@ -237,7 +237,7 @@ Resize is optional. Register `fruitUI` on the existing Alpine/Livewire Alpine in
 
 Left/Right move the divider by 8px; Shift uses 32px. Home/End select the bounds. Escape or pointer cancellation restores the width from before a drag; double-click restores the initial width. RTL reverses physical movement correctly. Pane collapse stays with application navigation; resizing does not close a pane. No widths are persisted automatically.
 
-Without Alpine, handles stay hidden and the CSS layout remains usable. **Applications must hide handles in compact container queries when panes stack, disappear, or are replaced by another screen.** Keep enough width for the declared minimums before enabling resizing. The four examples demonstrate this with their existing navigation attributes and breakpoints; narrowing the workspace removes inspectors first, then switches to one visible phone pane. Follow [Apple layout](https://developer.apple.com/design/human-interface-guidelines/layout) and [column views](https://developer.apple.com/design/human-interface-guidelines/column-views) when choosing that hierarchy.
+Without Alpine, handles stay hidden and the CSS layout remains usable. **Applications must hide handles in compact container queries when panes stack, disappear, or are replaced by another screen.** Keep enough width for the declared minimums before enabling resizing. The four examples demonstrate this with their existing navigation attributes and breakpoints; narrowing the workspace removes inspectors first, then switches to one visible phone pane.
 
 ## Message composers
 
@@ -328,7 +328,7 @@ fruitUI(Alpine);
 
 ### Pull-down chevrons
 
-Like macOS pull-down buttons, a Menu whose trigger is text shows a chevron after it: Blade adds it to the default `title` trigger. A custom `trigger` slot chooses: add `<span class="f-menu__chevron" aria-hidden="true"></span>` after its text, use the chevron alone in an `f-button--icon` trigger with an `aria-label` (the menu half of a split button), or leave it out for an icon-only "more" button.
+A Menu whose trigger is text, a pull-down button, shows a chevron after it: Blade adds it to the default `title` trigger. A custom `trigger` slot chooses: add `<span class="f-menu__chevron" aria-hidden="true"></span>` after its text, use the chevron alone in an `f-button--icon` trigger with an `aria-label` (the menu half of a split button), or leave it out for an icon-only "more" button.
 
 ```blade
 <x-fruit::menu title="Sort">…</x-fruit::menu>
@@ -344,7 +344,7 @@ Like macOS pull-down buttons, a Menu whose trigger is text shows a chevron after
 
 ### Context menus
 
-A context menu holds commands for the element it sits in: put it inside a list item, message or card, after the content. A secondary click opens it at the pointer; Shift+F10 or the context-menu key opens it below the focused control. It uses the same Menu Items, Checkboxes, Radios, Links, Separators and Groups as Menu, with the same arrows, Home/End and typeahead. Escape or Tab closes it and returns focus; activating a command closes it too. While it is open, its target carries `data-fruit-context-open` and an accent outline, as in macOS.
+A context menu holds commands for the element it sits in: put it inside a list item, message or card, after the content. A secondary click opens it at the pointer; Shift+F10 or the context-menu key opens it below the focused control. It uses the same Menu Items, Checkboxes, Radios, Links, Separators and Groups as Menu, with the same arrows, Home/End and typeahead. Escape or Tab closes it and returns focus; activating a command closes it too. While it is open, its target carries `data-fruit-context-open` and an accent outline.
 
 Context menus are hidden by nature, so offer every command somewhere visible as well: a toolbar, a Menu, or the selection bar. Without JavaScript the browser's own context menu remains.
 
@@ -570,7 +570,7 @@ Keep islands outside elements whose `wire:key` changes, such as a pane keyed per
 
 `x-fruit::field` composes one native control with its `label`, an optional `description` and its error. Child form adapters, including Checkbox, Radio and Switch, inherit the id and merged ARIA descriptions. The id is `control-id` when given, otherwise the child's own `id`, otherwise one derived from its `wire:model` or `name` (`form.email` becomes `field-form-email`). Plain HTML children need `control-id` and their own associations. Field associates exactly one control and owns no value, rule or model; use Fieldset for choice groups.
 
-**Choice groups and descriptions.** Put checkboxes, radios and switches directly inside a Fieldset and they stack one per row, as macOS lists them. A choice's `description` adds help text under its label, linked with `aria-describedby` and kept out of the label so the control's name stays short; use the named slot for rich text such as a link. Application row layouts, such as a switch at the end of a settings row, still apply because the stacking rule has zero specificity.
+**Choice groups and descriptions.** Put checkboxes, radios and switches directly inside a Fieldset and they stack one per row. A choice's `description` adds help text under its label, linked with `aria-describedby` and kept out of the label so the control's name stays short; use the named slot for rich text such as a link. Application row layouts, such as a switch at the end of a settings row, still apply because the stacking rule has zero specificity.
 
 ```blade
 <x-fruit::fieldset>
@@ -660,11 +660,46 @@ Text uses a web reading scale of `--f-text-*` tokens in rem: at the default brow
 
 Headings inside a `.fruit-ui` scope take the scope's text color and a title size: `h1` is Title 1, `h2` Title 2, `h3` Title 3 and `h4`–`h6` Headline. In the compat build these rules have class specificity, so a host stylesheet's bare `h1 { color }` cannot make them unreadable in dark mode; an application's own heading classes, loaded after FruitUI, still win. In the layered build they sit in the lowest layer.
 
-For other text, use Apple's text styles on the reading scale: `f-large-title`, `f-title-1`, `f-title-2`, `f-title-3`, `f-headline`, `f-subheadline`, `f-footnote` and `f-caption`. They set size, weight and line height and inherit the color; add `f-muted` for secondary text. Choose the element for meaning and the class for appearance:
+For other text, use the text styles on the reading scale: `f-large-title`, `f-title-1`, `f-title-2`, `f-title-3`, `f-headline`, `f-subheadline`, `f-footnote` and `f-caption`. They set size, weight and line height and inherit the color; add `f-muted` for secondary text. Choose the element for meaning and the class for appearance:
 
 ```blade
 <h1 class="f-large-title">Settings</h1>
 <h2>Customers</h2>
 <p class="f-footnote f-muted">Last changed by {{ $user->name }}</p>
+```
+
+## Grouped settings
+
+Settings screens use a sidebar of categories beside a light grey content area (`--f-grouped-background`, not white), with settings in rounded groups a step lighter (`--f-grouped-surface`). The Settings example (`settings.html`, and `examples/laravel/settings.blade.php` for Livewire) shows every piece; Admin's workspace settings use the same groups.
+
+- **Groups**: `x-fruit::form-section` takes a `title` (a named region, `level` 2–4), rows as its slot, and an optional `footer` of explanatory text. Each child of the group is a row with a hairline between.
+- **Rows**: `x-fruit::field layout="row"` puts the label and description on the leading side and the control on the trailing side, keeping Field's label, description and error associations. Textareas, editors and token fields take the full row. In narrow groups, text rows stack, while switches and checkboxes stay at the trailing edge.
+- **Choices**: a Fieldset of checkboxes or radios is a row; its legend reads like a row label, and choices stack with their own descriptions.
+- **Actions and values**: `div.f-form-row` holds a title and help text beside a button, such as a destructive "Delete Mailbox…" in its own group at the end, which then asks for confirmation.
+- **Sub-pages**: when a settings page has several parts (General, Connection, Permissions, Auto reply), link them with Section Nav above the groups, each a URL (a Livewire `#[Url]` property or a route), rather than in-page tabs.
+- **Saving**: web forms usually save explicitly rather than applying each change at once. Put a save bar after the groups with the status first and Save last, enable Save when something changed (Livewire's `wire:dirty`), validate on the server so errors appear on their rows, and confirm with a toast.
+
+```blade
+<form wire:submit="save" style="background: var(--f-grouped-background)">
+    <x-fruit::section-nav aria-label="Mailbox settings">…</x-fruit::section-nav>
+
+    <x-fruit::form-section title="Automatic reply" footer="Sent once per conversation.">
+        <x-fruit::field label="Send an automatic reply" layout="row" description="To the first message of every new conversation.">
+            <x-fruit::switch wire:model.live="settings.autoReply" />
+        </x-fruit::field>
+        <x-fruit::field label="Subject" layout="row">
+            <x-fruit::input wire:model="settings.autoSubject" />
+        </x-fruit::field>
+        <x-fruit::field label="Message" layout="row">
+            <x-fruit::textarea wire:model="settings.autoBody" rows="4" />
+        </x-fruit::field>
+    </x-fruit::form-section>
+
+    <footer class="f-form-row">
+        <p class="f-help" role="status"><span wire:dirty>You have unsaved changes.</span></p>
+        <x-fruit::button type="button" wire:click="revert">Revert</x-fruit::button>
+        <x-fruit::button type="submit" variant="primary">Save</x-fruit::button>
+    </footer>
+</form>
 ```
 

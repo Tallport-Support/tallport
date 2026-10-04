@@ -43,7 +43,7 @@
         "element": "Native div with label and described text.",
         "state": "Child retains its value and bindings; the field settles one control id.",
         "keyboard": "Native label focuses the control or enhanced query.",
-        "options": "`label`: required. `control-id`: optional; otherwise the child id or one derived from its wire:model/name. `description`, `error` strings; `bag`: named error bag. The error defaults to the shared $errors message for the control. One control slot, including Checkbox/Radio/Switch; plain HTML children need control-id and their own ARIA."
+        "options": "`label`: required. `control-id`: optional; otherwise the child id or one derived from its wire:model/name. `description`, `error` strings; `bag`: named error bag. The error defaults to the shared $errors message for the control. One control slot, including Checkbox/Radio/Switch; plain HTML children need control-id and their own ARIA. `layout`: stacked (default), row: the label and description beside the control, as in grouped settings; textareas, editors and token fields take the full row, and narrow form sections stack text rows."
       }
     }
   },
@@ -203,7 +203,7 @@
         "element": "Native `input type=color` in a `div.f-color-picker` with a generated swatch palette.",
         "state": "Native color value and disabled state. A swatch writes the native value; Other… expands a custom editor (saturation/brightness area, hue slider, hex field) in the same popover.",
         "keyboard": "Tab focuses; activation opens the palette on the current swatch; arrows move; Enter or Space chooses; Escape closes and returns focus. In the editor, arrows change saturation and brightness (Shift for larger steps).",
-        "options": "Fixed type. Swatches come from the input's `list` datalist (option labels name them); without one, Blade renders Apple's system colors. `wrapper` for presentation. Native input attributes and value bindings; no content slot."
+        "options": "Fixed type. Swatches come from the input's `list` datalist (option labels name them); without one, Blade renders a default palette of system colors. `wrapper` for presentation. Native input attributes and value bindings; no content slot."
       }
     }
   },
@@ -1243,5 +1243,21 @@
     ],
     "blade": [],
     "uses": []
+  },
+  {
+    "id": "form-section",
+    "kind": "pattern",
+    "classes": ["f-form-section", "f-form-row"],
+    "blade": ["form-section"],
+    "uses": ["settings.html", "admin.html", "examples/laravel/settings.blade.php"],
+    "contracts": {
+      "form-section": {
+        "purpose": "Group related settings under a heading.",
+        "element": "`section` labelled by its `h2`–`h4` title, with a `div` of rows and an optional footer paragraph.",
+        "state": "No state; rows own their values. Each child of the rows box is one row, separated by a hairline.",
+        "keyboard": "Rows keep their controls' keyboard behavior; no added keyboard model.",
+        "options": "A `title` makes it a named region. `level`: 2 (default), 3, 4. `footer`: explanatory text, or a named slot. Slot: rows, such as `x-fruit::field layout=\"row\"`, Fieldsets of choices, or `div.f-form-row` for actions and values. Put sections on `--f-grouped-background`; groups use `--f-grouped-surface`."
+      }
+    }
   }
 ]

@@ -62,7 +62,7 @@
 }
 
 @layer fruit.components {
-  /* Apple's text styles on FruitUI's reading scale. Color is inherited; pair with f-muted for
+  /* Named text styles on FruitUI's reading scale. Color is inherited; pair with f-muted for
      secondary text. Headings default to Title 1–3 and Headline; these classes restyle any element. */
   .f-large-title {
     font-size: var(--f-text-4xl);

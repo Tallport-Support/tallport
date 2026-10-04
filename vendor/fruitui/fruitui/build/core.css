@@ -36,6 +36,10 @@
     --f-control: light-dark(#fff, #39393e);
     /* Popovers, menus, dialogs and toasts sit above the content; in dark mode they are lighter. */
     --f-surface-elevated: light-dark(#fff, #2c2c30);
+    /* Grouped settings: a light grey content area, not white, holding
+       rounded groups a step lighter. Dark mode uses the system's grouped greys. */
+    --f-grouped-background: light-dark(#f2f2f4, #1c1c1e);
+    --f-grouped-surface: light-dark(#fbfbfc, #2c2c2e);
     --f-material-popup: light-dark(rgb(250 250 252 / 84%), rgb(44 44 48 / 84%));
     /* Unemphasized selection: a selected row whose list does not have focus. */
     --f-selection-inactive: light-dark(#e8e8ec, #3a3a3e);
@@ -253,6 +257,8 @@
     padding: var(--f-button-padding-block, 6px) var(--f-button-padding-inline, 16px);
     border: 1px solid var(--f-border);
     border-radius: var(--f-radius-sm);
+    /* Text color, also for links styled as buttons; variants set their own. */
+    color: var(--f-text);
     background: var(--f-control);
     box-shadow: var(--f-control-shadow);
     font-family: var(--f-font);
@@ -324,6 +330,53 @@
   .f-field {
     display: grid;
     gap: var(--f-field-gap, 7px);
+  }
+  /* Row layout: label and help on the leading side, the control on the trailing side, errors
+     beneath both. Wide controls (anything with a textarea: Textarea, Editor, Token Field) take the full row. Narrow sections stack (see f-form-section). */
+  .f-field--row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, var(--f-field-control-width, 17rem));
+    align-items: center;
+    column-gap: var(--f-space-4);
+    row-gap: 2px;
+  }
+  .f-field--row > :is(.f-label, .f-help) {
+    grid-column: 1;
+  }
+  .f-field--row > .f-error {
+    grid-column: 1 / -1;
+  }
+  .f-field--row > :not(.f-label, .f-help, .f-error) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  /* The label and its help center together beside the control; alone, the label centers. */
+  .f-field--row > .f-label {
+    align-self: end;
+  }
+  .f-field--row > .f-help {
+    align-self: start;
+  }
+  .f-field--row:not(:has(> .f-help)) > :is(.f-label, :not(.f-label, .f-error)) {
+    grid-row: 1;
+    align-self: center;
+  }
+  .f-field--row:has(> :is(.f-switch, .f-check, .f-color-picker)) {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .f-field--row > :is(.f-switch, .f-check, .f-color-picker) {
+    justify-self: end;
+  }
+  .f-field--row:has(textarea) {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--f-field-gap, 7px);
+  }
+  .f-field--row:has(textarea) > * {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  /* A switch labelled by its Field has no text of its own. */
+  .f-switch > span:empty {
+    display: none;
   }
   .f-label {
     font-size: var(--f-text-base);
@@ -779,7 +832,7 @@
   .f-input[type='search']:disabled::-webkit-search-cancel-button {
     cursor: not-allowed;
   }
-  /* WebKit keeps a native macOS frame for these types unless appearance is none, ignoring the
+  /* WebKit keeps a native frame for these types unless appearance is none, ignoring the
      shared radius and padding; its inner field wrapper also adds vertical padding. */
   .f-input:is([type='date'], [type='datetime-local'], [type='month'], [type='week'], [type='time'], [type='color']) {
     appearance: none;
@@ -903,7 +956,7 @@
     font-size: var(--f-text-base);
     font-weight: 600;
   }
-  /* A group's choices stack, as macOS lists checkbox and radio groups. Class specificity beats a
+  /* A group's choices stack one per row. Class specificity beats a
      host's bare label rules; application row layouts (a switch at the end of a settings row)
      loaded after FruitUI still apply. */
   .f-fieldset > :where(label.f-check, label.f-switch) {
@@ -954,7 +1007,7 @@
     cursor: not-allowed;
   }
 
-  /* Time stays typed and stepped with arrows, as on macOS; no browser popup. */
+  /* Time stays typed and stepped with arrows; no browser popup. */
   .f-input[type='time']::-webkit-calendar-picker-indicator {
     display: none;
   }
@@ -1557,7 +1610,7 @@
 }
 
 @layer fruit.components {
-  /* Apple's text styles on FruitUI's reading scale. Color is inherited; pair with f-muted for
+  /* Named text styles on FruitUI's reading scale. Color is inherited; pair with f-muted for
      secondary text. Headings default to Title 1–3 and Headline; these classes restyle any element. */
   .f-large-title {
     font-size: var(--f-text-4xl);
@@ -1734,7 +1787,7 @@
   .f-button--icon > .f-menu__chevron {
     margin: 0;
   }
-  /* A context menu floats at the pointer; an outline marks the item it acts on, as in macOS. */
+  /* A context menu floats at the pointer; an outline marks the item it acts on. */
   .f-context-menu {
     position: fixed;
   }
@@ -2413,7 +2466,7 @@
     color: var(--f-secondary);
     --f-icon-size: 16px;
   }
-  /* Shortcuts read as text, as in macOS menus, so they follow the row's selected color. */
+  /* Shortcuts read as text, so they follow the row's selected color. */
   .f-command__shortcut {
     margin-inline-start: auto;
     padding: 0;
@@ -3147,6 +3200,75 @@
     }
     :is(.f-toast, .f-pagination, .f-menu, .f-floating-disclosure, .f-skeleton, .f-composer) {
       display: none !important;
+    }
+  }
+}
+
+@layer fruit.patterns {
+  /* Grouped settings: a heading, a rounded box of separated rows
+     (fields, choice groups, actions), and explanatory footer text. Rows stack in narrow sections. */
+  .f-form-section {
+    display: grid;
+    gap: var(--f-space-2);
+    container-type: inline-size;
+  }
+  .f-form-section__title {
+    padding-inline: var(--f-space-1);
+    font-size: var(--f-text-md);
+    font-weight: 600;
+  }
+  .f-form-section__rows {
+    display: grid;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius);
+    background: var(--f-grouped-surface);
+  }
+  .f-form-section__rows > * {
+    min-width: 0;
+    margin: 0;
+    padding: var(--f-form-row-padding, 12px 14px);
+  }
+  .f-form-section__rows > * + * {
+    border-top: 1px solid var(--f-border);
+  }
+  /* A choice group's legend reads like a row label instead of sitting on the row's top edge. */
+  .f-form-section__rows > .f-fieldset > legend {
+    float: inline-start;
+    width: 100%;
+    margin-block-end: var(--f-space-2);
+    font-size: var(--f-text-base);
+    font-weight: 500;
+  }
+  .f-form-section__rows > .f-fieldset > legend + * {
+    clear: both;
+  }
+  .f-form-section__footer {
+    padding-inline: var(--f-space-1);
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+    line-height: 1.45;
+  }
+  /* A row that is not a field: a value, an action or a destructive button beside its explanation. */
+  .f-form-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--f-space-2) var(--f-space-4);
+  }
+  .f-form-row > :first-child:not(:only-child) {
+    flex: 1 1 14rem;
+    min-width: 0;
+  }
+  /* Narrow sections stack text-like rows; switches and checkboxes stay at the trailing edge. */
+  @container (width < 34rem) {
+    .f-form-section__rows > .f-field--row:not(:has(> :is(.f-switch, .f-check, .f-color-picker))) {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: var(--f-field-gap, 7px);
+    }
+    .f-form-section__rows > .f-field--row:not(:has(> :is(.f-switch, .f-check, .f-color-picker))) > * {
+      grid-column: 1;
+      grid-row: auto;
     }
   }
 }

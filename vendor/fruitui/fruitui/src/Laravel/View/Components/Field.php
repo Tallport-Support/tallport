@@ -9,6 +9,9 @@ use InvalidArgumentException;
 /** A scoped association for one control, independent of application props/state. */
 class Field extends Component
 {
+    /** Stacked puts the label above the control; row puts it beside, as in grouped settings. */
+    public const LAYOUTS = ['stacked', 'row'];
+
     public FieldContext $fruitField;
 
     public function __construct(
@@ -17,7 +20,11 @@ class Field extends Component
         public mixed $description = null,
         public mixed $error = null,
         public mixed $bag = 'default',
+        public mixed $layout = 'stacked',
     ) {
+        if (! in_array($layout, self::LAYOUTS, true)) {
+            throw new InvalidArgumentException('FruitUI Field layout must be one of: '.implode(', ', self::LAYOUTS).'.');
+        }
         if ($controlId !== null && (! is_string($controlId) || trim($controlId) === '' || preg_match('/\s/', $controlId))) {
             throw new InvalidArgumentException('FruitUI Field control-id must be a nonempty id without whitespace.');
         }
