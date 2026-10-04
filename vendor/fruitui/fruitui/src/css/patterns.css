@@ -15,7 +15,7 @@
     display: block;
     min-height: var(--f-composer-input-min-height, 82px);
     max-height: var(--f-composer-input-max-height, 160px);
-    font-size: var(--f-composer-input-size, var(--f-text-sm));
+    font-size: var(--f-composer-input-size, var(--f-text-base));
     line-height: 1.6;
   }
   .f-composer__header,
@@ -192,7 +192,7 @@
     flex-shrink: 0;
     margin-inline-start: auto;
     color: var(--f-secondary);
-    font-size: var(--f-text-2xs);
+    font-size: var(--f-text-xs);
   }
   .f-item-row__subtitle {
     display: block;
@@ -200,7 +200,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: var(--f-text-sm);
+    font-size: var(--f-text-base);
     font-weight: 500;
   }
   .f-item-row__preview {
@@ -609,7 +609,7 @@
     min-width: 0;
   }
   .f-message__author {
-    font-size: var(--f-text-sm);
+    font-size: var(--f-text-base);
     font-weight: 600;
   }
   .f-message__meta,
@@ -638,7 +638,7 @@
   }
   .f-message__body {
     margin-top: var(--f-message-body-gap, 4px);
-    font-size: var(--f-text-sm);
+    font-size: var(--f-text-base);
     line-height: 1.6;
     overflow-wrap: anywhere;
   }
@@ -686,7 +686,7 @@
     padding: 10px 12px;
     border: 1px solid var(--f-generated-border);
     border-radius: var(--f-radius-md);
-    font-size: var(--f-text-sm);
+    font-size: var(--f-text-base);
     line-height: 1.6;
     overflow-wrap: anywhere;
   }
@@ -766,12 +766,17 @@
   .f-message--stacked:has(> .f-message__actions) > .f-message__header {
     grid-column: 2;
   }
+  /* Here the actions do not float over the text, so they need no frame of their own. */
   .f-message--stacked > .f-message__actions {
     position: static;
     grid-row: 1;
     grid-column: 3;
     align-self: start;
     margin-inline-start: 8px;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
   }
   .f-message--stacked .f-message__header {
     align-items: flex-start;
@@ -857,7 +862,7 @@
     border: 1px solid var(--f-generated-border);
     border-radius: var(--f-radius-md);
     background: var(--f-generated-background);
-    font-size: var(--f-text-sm);
+    font-size: var(--f-text-base);
     line-height: 1.6;
     overflow-wrap: anywhere;
   }

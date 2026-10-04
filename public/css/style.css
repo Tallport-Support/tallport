@@ -481,7 +481,6 @@ a h4 {
 .thread-attachments a {
     display: inline-block;
     color: var(--f-accent);
-    font-size: var(--f-text-sm);
 }
 .thread-attachments a.disabled,
 .thread-attachments a.disabled:hover,
@@ -508,7 +507,6 @@ a h4 {
 }
 .thread-text {
     color: var(--f-text);
-    font-size: 15px;
     line-height: 1.5;
 }
 .thread-content	img {
@@ -809,7 +807,6 @@ a h4 {
     overflow: hidden;
 }
 .web-notification-msg-header {
-    font-size: 14px;
     margin-bottom: 4px;
 }
 .web-notification-img {
@@ -830,7 +827,6 @@ a h4 {
 }
 .web-notification-msg-preview {
     color: var(--f-tertiary);
-    font-size: 13.4px;
     overflow: hidden!important;
     -o-text-overflow: ellipsis!important;
     text-overflow: ellipsis!important;
@@ -1537,7 +1533,6 @@ a.disabled:focus {
 }
 .ai-draft-body,
 .ai-draft-translation {
-    font-size: 13px;
     line-height: 1.45;
     background: var(--f-surface);
     border: 1px solid var(--f-border);
@@ -2535,7 +2530,6 @@ a.disabled:focus {
 .customer-snippet__identity p {
     margin: 3px 0 9px;
     color: var(--f-secondary);
-    font-size: var(--f-text-xs);
 }
 .customer-tags {
     display: flex;
@@ -2578,7 +2572,6 @@ a.disabled:focus {
     gap: 6px;
     padding: 3px 0;
     color: var(--f-text);
-    font-size: var(--f-text-xs);
     line-height: 1.5;
     text-decoration: none;
 }
@@ -2594,7 +2587,6 @@ a.disabled:focus {
 .sidebar-block-link {
     display: inline-block;
     margin-bottom: 12px;
-    font-size: var(--f-text-xs);
 }
 /* The thread, as in FruitUI's Support example (support-thread, support-entry,
    support-message): FruitUI messages and events with the example's rhythm. */
@@ -2609,17 +2601,10 @@ a.disabled:focus {
     --f-message-avatar-size: 29px;
     --f-message-body-gap: 13px;
 }
-.conv-thread .f-message__author {
-    font-size: var(--f-text-xs);
-}
-.conv-thread :is(.f-message__meta, .f-message__time) {
-    font-size: var(--f-text-2xs);
-}
 .conv-thread .f-message__time {
     padding-top: 3px;
 }
 .conv-thread .thread-content {
-    font-size: var(--f-text-sm);
     line-height: 1.7;
 }
 /* The conversation's heading, as in FruitUI's Support example
@@ -2667,7 +2652,7 @@ a.disabled:focus {
 .conv-heading p {
     margin: 8px 0 0;
     color: var(--f-secondary);
-    font-size: var(--f-text-xs);
+    font-size: var(--f-text-sm);
     overflow-wrap: anywhere;
 }
 .conv-heading__mailbox {
@@ -2718,7 +2703,6 @@ a.disabled:focus {
     gap: 6px;
     margin: 0;
     color: var(--f-secondary);
-    font-size: var(--f-text-xs);
     font-weight: normal;
 }
 /* Merge and Change Customer dialogs: plain lists of choices. */
@@ -2751,10 +2735,8 @@ a.disabled:focus {
     width: auto;
     min-height: 30px;
     padding-block: 2px;
-    font-size: var(--f-text-xs);
 }
 .conv-composer__footer .f-button {
-    font-size: var(--f-text-xs);
     min-height: 30px;
 }
 .draft-saved {
@@ -2782,7 +2764,6 @@ a.disabled:focus {
     border-radius: var(--f-radius-sm);
     background: none;
     color: var(--f-text);
-    font-size: var(--f-text-sm);
     text-align: start;
     cursor: pointer;
 }
@@ -2814,7 +2795,6 @@ a.disabled:focus {
     gap: 8px;
     margin-bottom: 3px;
     padding-inline: var(--f-sidebar-item-indent, 8px) 8px;
-    font-size: var(--f-text-sm);
 }
 .app-sidebar .f-sidebar__item > .f-icon {
     --f-icon-size: 16px;
@@ -2825,17 +2805,11 @@ a.disabled:focus {
 .conv-list-search {
     padding: 14px 13px 0;
 }
-.conv-list-search .f-input {
-    font-size: var(--f-text-sm);
-}
 .conv-list__items {
     --f-item-list-padding: 0 7px 8px;
 }
 .conv-list .conv-row__link {
     --f-item-row-leading-inset: 12px;
-}
-.conv-list .f-item-row__title {
-    font-size: var(--f-text-sm);
 }
 .conv-list .f-item-row__subtitle {
     margin-top: 4px;
@@ -2845,12 +2819,10 @@ a.disabled:focus {
 }
 .conv-list .f-item-row__preview {
     margin-top: 4px;
-    font-size: var(--f-text-xs);
     line-height: 1.55;
 }
 .conv-list .f-item-row__meta {
     margin-top: 8px;
-    font-size: var(--f-text-2xs);
 }
 /* The conversation's toolbar stays one line, as in the example. */
 #conv-toolbar {
@@ -2862,7 +2834,6 @@ a.disabled:focus {
 }
 #conv-toolbar .f-button {
     min-height: 30px;
-    font-size: var(--f-text-sm);
 }
 .customer-snippet__avatar {
     --f-avatar-font-size: var(--f-text-3xl);

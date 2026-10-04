@@ -175,7 +175,7 @@
         'fruitui/fruitui' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '84ed074d9ada61c03f15d9164a8eb4d0b24f66c2',
+            'reference' => 'a255a97c261f945084508ed0dd9935639d975b03',
             'type' => 'library',
             'install_path' => __DIR__ . '/../fruitui/fruitui',
             'aliases' => array(

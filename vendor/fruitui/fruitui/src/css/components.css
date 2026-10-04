@@ -5,7 +5,7 @@
     justify-content: center;
     gap: 7px;
     min-height: var(--f-button-height, 36px);
-    padding: var(--f-button-padding-block, 6px) var(--f-button-padding-inline, 16px);
+    padding: var(--f-button-padding-block, 5px) var(--f-button-padding-inline, 16px);
     border: 1px solid var(--f-border);
     border-radius: var(--f-radius-sm);
     /* Text color, also for links styled as buttons; variants set their own. */
@@ -182,7 +182,7 @@
     width: 100%;
     min-width: 0;
     min-height: var(--f-control-height, 36px);
-    padding: var(--f-control-padding-block, 6px) var(--f-control-padding-inline, 12px);
+    padding: var(--f-control-padding-block, 5px) var(--f-control-padding-inline, 12px);
     border: 1px solid var(--f-border);
     border-radius: var(--f-radius-sm);
     background: var(--f-input-background, var(--f-control));

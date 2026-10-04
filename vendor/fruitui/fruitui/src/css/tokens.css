@@ -80,14 +80,16 @@
     --f-focus-ring-width: 3px;
     --f-focus-ring-offset: 1px;
     --f-pressed: color-mix(in srgb, var(--f-text) 12%, transparent);
-    /* A web reading scale: body 16px, controls 15px, nothing below 12px at the default size.
-       Text follows the reader's browser text size through rem. A host that fixes a
-       pixel size on html (Bootstrap 3 uses 10px) sets --f-text-root: 16px on its scope. */
+    /* A web reading scale. The base is 1rem, the reader's own browser text size (16px by
+       default): body text, controls, labels, list titles and messages. Smaller steps are for
+       secondary text (sm), metadata such as times and counts (xs) and captions or badges (2xs),
+       nothing below 12px at the default size. A host that fixes a pixel size on html
+       (Bootstrap 3 uses 10px) sets --f-text-root: 16px on its scope. */
     --f-text-root: 1rem;
     --f-text-2xs: calc(var(--f-text-root) * 0.75);
     --f-text-xs: calc(var(--f-text-root) * 0.8125);
     --f-text-sm: calc(var(--f-text-root) * 0.875);
-    --f-text-base: calc(var(--f-text-root) * 0.9375);
+    --f-text-base: var(--f-text-root);
     --f-text-md: var(--f-text-root);
     --f-text-lg: calc(var(--f-text-root) * 1.0625);
     --f-text-xl: calc(var(--f-text-root) * 1.1875);

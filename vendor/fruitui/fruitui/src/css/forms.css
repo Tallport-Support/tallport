@@ -31,7 +31,7 @@
   }
   /* Their inner editors add engine-specific vertical spacing; hold them to the text field's height. */
   .f-input:is([type='date'], [type='datetime-local'], [type='month'], [type='week'], [type='time']) {
-    height: calc(var(--f-control-line-height, 1.5) * 1em + 2 * var(--f-control-padding-block, 6px) + 2px);
+    height: calc(var(--f-control-line-height, 1.5) * 1em + 2 * var(--f-control-padding-block, 5px) + 2px);
   }
   .f-input::-webkit-datetime-edit,
   .f-input::-webkit-datetime-edit-fields-wrapper {

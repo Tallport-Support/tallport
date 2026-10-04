@@ -80,14 +80,16 @@
     --f-focus-ring-width: 3px;
     --f-focus-ring-offset: 1px;
     --f-pressed: color-mix(in srgb, var(--f-text) 12%, transparent);
-    /* A web reading scale: body 16px, controls 15px, nothing below 12px at the default size.
-       Text follows the reader's browser text size through rem. A host that fixes a
-       pixel size on html (Bootstrap 3 uses 10px) sets --f-text-root: 16px on its scope. */
+    /* A web reading scale. The base is 1rem, the reader's own browser text size (16px by
+       default): body text, controls, labels, list titles and messages. Smaller steps are for
+       secondary text (sm), metadata such as times and counts (xs) and captions or badges (2xs),
+       nothing below 12px at the default size. A host that fixes a pixel size on html
+       (Bootstrap 3 uses 10px) sets --f-text-root: 16px on its scope. */
     --f-text-root: 1rem;
     --f-text-2xs: calc(var(--f-text-root) * 0.75);
     --f-text-xs: calc(var(--f-text-root) * 0.8125);
     --f-text-sm: calc(var(--f-text-root) * 0.875);
-    --f-text-base: calc(var(--f-text-root) * 0.9375);
+    --f-text-base: var(--f-text-root);
     --f-text-md: var(--f-text-root);
     --f-text-lg: calc(var(--f-text-root) * 1.0625);
     --f-text-xl: calc(var(--f-text-root) * 1.1875);
@@ -295,7 +297,7 @@ html.fruit-ui > body {
     justify-content: center;
     gap: 7px;
     min-height: var(--f-button-height, 36px);
-    padding: var(--f-button-padding-block, 6px) var(--f-button-padding-inline, 16px);
+    padding: var(--f-button-padding-block, 5px) var(--f-button-padding-inline, 16px);
     border: 1px solid var(--f-border);
     border-radius: var(--f-radius-sm);
     /* Text color, also for links styled as buttons; variants set their own. */
@@ -514,7 +516,7 @@ html.fruit-ui > body {
     width: 100%;
     min-width: 0;
     min-height: var(--f-control-height, 36px);
-    padding: var(--f-control-padding-block, 6px) var(--f-control-padding-inline, 12px);
+    padding: var(--f-control-padding-block, 5px) var(--f-control-padding-inline, 12px);
     border: 1px solid var(--f-border);
     border-radius: var(--f-radius-sm);
     background: var(--f-input-background, var(--f-control));
@@ -1117,7 +1119,7 @@ select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) {
 /* Their inner editors add engine-specific vertical spacing; hold them to the text field's height. */
 
 .f-input:is([type='date'], [type='datetime-local'], [type='month'], [type='week'], [type='time']) {
-    height: calc(var(--f-control-line-height, 1.5) * 1em + 2 * var(--f-control-padding-block, 6px) + 2px);
+    height: calc(var(--f-control-line-height, 1.5) * 1em + 2 * var(--f-control-padding-block, 5px) + 2px);
   }
 
 .f-input::-webkit-datetime-edit,
@@ -3129,7 +3131,7 @@ img.f-avatar {
     display: block;
     min-height: var(--f-composer-input-min-height, 82px);
     max-height: var(--f-composer-input-max-height, 160px);
-    font-size: var(--f-composer-input-size, var(--f-text-sm));
+    font-size: var(--f-composer-input-size, var(--f-text-base));
     line-height: 1.6;
   }
 
@@ -3340,7 +3342,7 @@ img.f-avatar {
     flex-shrink: 0;
     margin-inline-start: auto;
     color: var(--f-secondary);
-    font-size: var(--f-text-2xs);
+    font-size: var(--f-text-xs);
   }
 
 .f-item-row__subtitle {
@@ -3349,7 +3351,7 @@ img.f-avatar {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: var(--f-text-sm);
+    font-size: var(--f-text-base);
     font-weight: 500;
   }
 
@@ -3831,7 +3833,7 @@ img.f-avatar {
   }
 
 .f-message__author {
-    font-size: var(--f-text-sm);
+    font-size: var(--f-text-base);
     font-weight: 600;
   }
 
@@ -3867,7 +3869,7 @@ img.f-avatar {
 
 .f-message__body {
     margin-top: var(--f-message-body-gap, 4px);
-    font-size: var(--f-text-sm);
+    font-size: var(--f-text-base);
     line-height: 1.6;
     overflow-wrap: anywhere;
   }
@@ -3925,7 +3927,7 @@ img.f-avatar {
     padding: 10px 12px;
     border: 1px solid var(--f-generated-border);
     border-radius: var(--f-radius-md);
-    font-size: var(--f-text-sm);
+    font-size: var(--f-text-base);
     line-height: 1.6;
     overflow-wrap: anywhere;
   }
@@ -4023,12 +4025,18 @@ img.f-avatar {
     grid-column: 2;
   }
 
+/* Here the actions do not float over the text, so they need no frame of their own. */
+
 .f-message--stacked > .f-message__actions {
     position: static;
     grid-row: 1;
     grid-column: 3;
     align-self: start;
     margin-inline-start: 8px;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
   }
 
 .f-message--stacked .f-message__header {
@@ -4133,7 +4141,7 @@ img.f-avatar {
     border: 1px solid var(--f-generated-border);
     border-radius: var(--f-radius-md);
     background: var(--f-generated-background);
-    font-size: var(--f-text-sm);
+    font-size: var(--f-text-base);
     line-height: 1.6;
     overflow-wrap: anywhere;
   }
