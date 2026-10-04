@@ -2,17 +2,18 @@
 @php
     $web_notifications_info = Auth::user()->getWebsiteNotificationsInfo();
 @endphp
+<div class="web-notifications-host" x-data="tallportNotifications({{ (int) $web_notifications_info['unread_count'] }})">
 <x-fruit::floating-disclosure placement="above" class="web-notifications">
-    <x-slot:trigger :class="'f-button f-button--ghost f-button--icon web-notifications-trigger'.($web_notifications_info['unread_count'] ? ' has-unread' : '')" :aria-label="__('Notifications')" :title="__('Notifications')">
+    <x-slot:trigger class="f-button f-button--ghost f-button--icon web-notifications-trigger" x-bind:class="{ 'has-unread': unread > 0 }" :aria-label="__('Notifications')" :title="__('Notifications')">
         <x-heroicon-o-bell class="f-icon" aria-hidden="true" />
     </x-slot:trigger>
     <x-slot:content class="web-notifications-panel">
         <div class="web-notifications-header">
             <h2>
                 {{ __('Notifications') }}
-                <small class="web-notifications-count f-badge @if (!(int)$web_notifications_info['unread_count']) hidden @endif" title="{{ __('Unread Notifications') }}">@if ($web_notifications_info['unread_count']){{ $web_notifications_info['unread_count'] }}@endif</small>
+                <small class="web-notifications-count f-badge" title="{{ __('Unread Notifications') }}" x-show="unread > 0" x-text="unread">{{ $web_notifications_info['unread_count'] ?: '' }}</small>
             </h2>
-            <a href="#" class="web-notifications-mark-read @if (!(int)$web_notifications_info['unread_count']) hidden @endif" data-loading-text="{{ __('Processing') }}…">{{ __('Mark all as read') }}</a>
+            <button type="button" class="f-button f-button--ghost f-button--small web-notifications-mark-read" x-show="unread > 0" x-on:click="markRead($el)">{{ __('Mark all as read') }}</button>
         </div>
         <ul class="web-notifications-list">
             @if (count($web_notifications_info['data']))
@@ -23,7 +24,7 @@
                 @endif
                 @if ($web_notifications_info['notifications']->hasMorePages())
                     <li class="web-notification-more">
-                        <button type="button" class="f-button f-button--ghost btn" data-loading-text="{{ __('Loading') }}…">{{ __('Load more') }}</button>
+                        <button type="button" class="f-button f-button--ghost" x-on:click="more($el)">{{ __('Load more') }}</button>
                     </li>
                 @endif
             @else
@@ -37,6 +38,7 @@
         </ul>
     </x-slot:content>
 </x-fruit::floating-disclosure>
+</div>
 
 <x-fruit::menu :title="__('Account')" placement="above" class="app-sidebar__account">
     <x-slot:trigger class="f-button--ghost app-sidebar__account-trigger" :aria-label="__('Account')">

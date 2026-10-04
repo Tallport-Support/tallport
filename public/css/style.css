@@ -4460,3 +4460,16 @@ a.disabled:focus {
         display: none;
     }
 }
+
+/* The sidebar's notifications (tallportNotifications): its Alpine host stays out of the layout. */
+.web-notifications-host {
+    display: contents;
+}
+/* Changed by someone else (public/js/realtime.js). */
+@keyframes tallport-updated {
+    from { opacity: 0.2; }
+    to { opacity: 1; }
+}
+.is-updated {
+    animation: tallport-updated 2s ease;
+}
