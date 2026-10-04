@@ -110,7 +110,7 @@
                         @if (empty($no_customer))
                             <x-slot:subtitle>@include('conversations/partials/badges'){{ '' }}@if ($conversation->isChat() && $conversation->getChannelName())<span class="f-badge conv-channel">{{ $conversation->getChannelName() }}</span> @endif{{ '' }}@action('conversations_table.before_subject', $conversation){{ $conversation->getSubject() }}@action('conversations_table.after_subject', $conversation)</x-slot:subtitle>
                         @endif
-                        <x-slot:preview>@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner)<span class="f-badge f-badge--accent ai-assistant-badge">AI</span> {{ $ai_one_liner }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</x-slot:preview>
+                        <x-slot:preview>@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner)<x-heroicon-o-sparkles class="f-icon ai-assistant-icon" role="img" :aria-label="__('AI Assistant')" /> {{ $ai_one_liner }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</x-slot:preview>
                         <x-slot:meta class="conv-row__meta">
                             <span class="conv-number">#{{ $conversation->number }}</span>
                             @if ($conversation->threads_count > 1)<span class="conv-counter" title="{{ __('Messages') }}"><x-heroicon-o-chat-bubble-left-right class="f-icon" aria-hidden="true" /> {{ $conversation->threads_count }}</span>@endif
