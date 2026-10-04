@@ -5416,3 +5416,30 @@ a.disabled:focus {
 .settings-form__actions {
     justify-content: flex-end;
 }
+/* Forms inside modals (conversations/ajax_html). */
+.modal-form {
+    gap: 12px;
+}
+.modal-form__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+.conv-merge-table td {
+    padding: 6px 8px;
+}
+.conv-merge-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.conv-merge-item a {
+    color: var(--f-text);
+    text-decoration: none;
+}
+.send-log-heading {
+    margin: 12px 0 6px;
+}
+.show-original__panel {
+    margin-top: 12px;
+}

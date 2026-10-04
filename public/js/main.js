@@ -3588,7 +3588,7 @@ function initMergeConvSelect()
 		// Do not add same conversation twice
 		if (!isNaN(clicked_conv_id) && !selected_list.children().find('.conv-merge-id[value="'+parseInt($(this).val())+'"]').length) {
 
-			var html = '<div class="alert alert-narrow alert-info">'
+			var html = '<div class="f-alert conv-merge-selected-item">'
 				+checkbox_container[0].outerHTML
 				+'</div>';
 

@@ -1,10 +1,10 @@
 @if (!$customers_log && !$users_log)
-    <div class="alert alert-warning">{{ __("There were no send attempts yet") }}</div>
+    <x-fruit::alert tone="warning">{{ __("There were no send attempts yet") }}</x-fruit::alert>
 @else
     @if (!empty($customers_log))
-    	<h5>{{ __("Emails to Customers") }}</h5>
+    	<h3 class="f-headline send-log-heading">{{ __("Emails to Customers") }}</h3>
 
-    	<table class="table table-striped">
+    	<table class="f-table send-log-table">
     		<tr>
     			<th>{{ __("Customer") }}</th>
     			<th>{{ __("Remarks") }}</th>
@@ -22,7 +22,7 @@
 		    			<td>
 		    				<span class="@if ($log->isErrorStatus())text-danger @elseif ($log->isSuccessStatus()) text-success @endif">{{ $log->getStatusName() }}@if ($log->smtp_queue_id) (SMTP ID: {{ $log->smtp_queue_id }})@endif</span>
 		    				@if ($log->status_message)
-		    					<div class="text-help">{{ $log->status_message }}</div>
+		    					<div class="f-help">{{ $log->status_message }}</div>
 		    				@endif
 		    			</td>
 		    		</tr>
@@ -32,9 +32,9 @@
 	@endif
 
     @if (!empty($users_log))
-    	<h5>{{ __("Notification Emails to Users") }}</h5>
+    	<h3 class="f-headline send-log-heading">{{ __("Notification Emails to Users") }}</h3>
 
-    	<table class="table table-striped">
+    	<table class="f-table send-log-table">
     		<tr>
     			<th>{{ __("User") }}</th>
     			<th>{{ __("Date") }}</th>
@@ -50,7 +50,7 @@
 		    			<td>
 		    				<span class="@if ($log->isErrorStatus())text-danger @elseif ($log->isSuccessStatus()) text-success @endif">{{ $log->getStatusName() }}</span>
 		    				@if ($log->status_message)
-		    					<div class="text-help">{{ $log->status_message }}</div>
+		    					<div class="f-help">{{ $log->status_message }}</div>
 		    				@endif
 		    			</td>
 		    		</tr>
