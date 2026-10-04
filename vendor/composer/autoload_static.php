@@ -1004,6 +1004,8 @@ class ComposerStaticInit3c73e184b44e38eaac73543de84411a5
         'App\\Listeners\\SendReplyToCustomer' => __DIR__ . '/../..' . '/app/Listeners/SendReplyToCustomer.php',
         'App\\Listeners\\UpdateMailboxCounters' => __DIR__ . '/../..' . '/app/Listeners/UpdateMailboxCounters.php',
         'App\\Livewire\\ConversationList' => __DIR__ . '/../..' . '/app/Livewire/ConversationList.php',
+        'App\\Livewire\\ConversationSubject' => __DIR__ . '/../..' . '/app/Livewire/ConversationSubject.php',
+        'App\\Livewire\\ConversationToolbar' => __DIR__ . '/../..' . '/app/Livewire/ConversationToolbar.php',
         'App\\Mail\\Alert' => __DIR__ . '/../..' . '/app/Mail/Alert.php',
         'App\\Mail\\AutoReply' => __DIR__ . '/../..' . '/app/Mail/AutoReply.php',
         'App\\Mail\\PasswordChanged' => __DIR__ . '/../..' . '/app/Mail/PasswordChanged.php',

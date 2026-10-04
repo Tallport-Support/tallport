@@ -1,7 +1,7 @@
 /**
  * Lists of conversations (App\Livewire\ConversationList): the selection the
  * bulk actions work on. Shift-click selects the range from the last
- * conversation checked.
+ * conversation checked. And the chat mode's Accept Chat and End Chat.
  */
 document.addEventListener('alpine:init', function () {
 	window.Alpine.data('tallportConversationList', function () {
@@ -24,6 +24,23 @@ document.addEventListener('alpine:init', function () {
 					document.getSelection().removeAllRanges();
 				}
 				this.last_checked = checkbox;
+			}
+		};
+	});
+
+	// Accept Chat (assign to me) and End Chat (close), then the chat again.
+	window.Alpine.data('tallportChatAction', function (data) {
+		return {
+			run: function (button) {
+				Tallport.busy(button, true);
+				Tallport.post(laroute.route('conversations.ajax'), data).then(function (response) {
+					if (Tallport.isSuccess(response)) {
+						window.location.reload();
+					} else {
+						Tallport.result(response);
+						Tallport.busy(button, false);
+					}
+				});
 			}
 		};
 	});

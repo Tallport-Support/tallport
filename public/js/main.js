@@ -273,108 +273,6 @@ function initConversation()
 {
 	$(document).ready(function(){
 
-		// Change conversation assignee
-	    jQuery("#conv-assignee [data-user_id]").click(function(e){
-			if (!$(this).hasClass('active') && !$(this).hasClass('disabled')) {
-				if (fsApplyFilter('conversation.can_change_user', true, {trigger: $(this)})) {
-					$(this).trigger('fs-conv-user-change');
-				}
-			}
-			e.preventDefault();
-		});
-
-	    jQuery("#conv-assignee [data-user_id]").bind('fs-conv-user-change', function(e){
-			//if (!$(this).hasClass('active')) {
-				fsAjax({
-					action: 'conversation_change_user',
-					user_id: $(this).attr('data-user_id'),
-					conversation_id: getGlobalAttr('conversation_id')
-				},
-				laroute.route('conversations.ajax'),
-				function(response) {
-					if (typeof(response.status) != "undefined" && response.status == 'success') {
-						if (typeof(response.redirect_url) != "undefined") {
-							window.location.href = response.redirect_url;
-						} else {
-							window.location.href = '';
-						}
-					} else if (typeof(response.msg) != "undefined") {
-						showFloatingAlert('error', response.msg);
-						loaderHide();
-					} else {
-						showFloatingAlert('error', Lang.get("messages.error_occurred"));
-						loaderHide();
-					}
-				});
-			//}
-			//e.preventDefault();
-		});
-
-		// Change conversation status
-	    jQuery("#conv-status .f-menu-item").click(function(e){
-			if (!$(this).hasClass('active')) {
-				if (fsApplyFilter('conversation.can_change_status', true, {trigger: $(this)})) {
-					$(this).trigger('fs-conv-status-change');
-				}
-			}
-			e.preventDefault();
-		});
-	    jQuery("#conv-status .f-menu-item").bind('fs-conv-status-change', function(e){
-			//if (!$(this).hasClass('active')) {
-				var status = $(this).attr('data-status');
-				// Restore conversation button does not have a status
-				if (!status) {
-					return;
-				}
-				fsAjax({
-					action: 'conversation_change_status',
-					status: status,
-					conversation_id: getGlobalAttr('conversation_id'),
-					folder_id: getQueryParam('folder_id')
-				},
-				laroute.route('conversations.ajax'),
-				function(response) {
-					if (typeof(response.status) != "undefined" && response.status == 'success') {
-						if (typeof(response.redirect_url) != "undefined") {
-							window.location.href = response.redirect_url;
-						} else {
-							window.location.href = '';
-						}
-					} else if (typeof(response.msg) != "undefined") {
-						showFloatingAlert('error', response.msg);
-					} else {
-						showFloatingAlert('error', Lang.get("messages.error_occurred"));
-					}
-					loaderHide();
-				});
-			// }
-			// e.preventDefault();
-		});
-
-		// Restore conversation
-		jQuery("#conv-status .conv-restore-trigger").click(function(e) {
-			if (!$(this).hasClass('active')) {
-				fsAjax({
-					action: 'restore_conversation',
-					conversation_id: getGlobalAttr('conversation_id')
-				},
-				laroute.route('conversations.ajax'),
-				function(response) {
-					if (typeof(response.status) != "undefined" && response.status == 'success') {
-						if (typeof(response.redirect_url) != "undefined") {
-							window.location.href = response.redirect_url;
-						} else {
-							window.location.href = '';
-						}
-					} else  {
-						showAjaxError(response);
-					}
-					loaderHide();
-				});
-			}
-			e.preventDefault();
-		});
-
 	    // Reply
 	    jQuery(".conv-reply").click(function(e){
 	    	// We don't allow to switch between reply and note, as it creates multiple drafts
@@ -413,12 +311,6 @@ function initConversation()
 			e.preventDefault();
 		});
 
-		// Follow/Unfollow
-	    jQuery(".conv-follow").click(function(e){
-	    	followConversation($(this).attr('data-follow-action'));
-			e.preventDefault();
-		});
-
 		// View Send Log
 	    /*jQuery(".thread-send-log-trigger").click(function(e){
 	    	var thread_id = $(this).parents('.thread:first').attr('data-thread_id');
@@ -451,51 +343,6 @@ function initConversation()
 			is_chat_mode = true;
 		}
 
-	    // Delete conversation
-	    jQuery(".conv-delete,.conv-delete-forever").click(function(e){
-	    	var confirm_html = '<div>'+
-			'<div class="text-center">'+
-			'<div class="text-larger margin-top-10">'+Lang.get("messages.confirm_delete_conversation")+'</div>'+
-			'<div class="form-group margin-top">'+
-    		'<button class="f-button f-button--danger delete-conversation-ok">'+Lang.get("messages.delete")+'</button>'+
-    		'<button class="f-button f-button--ghost" data-dismiss="modal">'+Lang.get("messages.cancel")+'</button>'+
-    		'</div>'+
-    		'</div>'+
-    		'</div>';
-
-    		var action = 'delete_conversation';
-    		if ($(this).hasClass('conv-delete-forever')) {
-    			action = 'delete_conversation_forever';
-    		}
-
-			showModalDialog(confirm_html, {
-				on_show: function(modal) {
-					modal.children().find('.delete-conversation-ok:first').click(function(e) {
-						modal.modal('hide');
-						fsAjax(
-							{
-								action: action,
-								conversation_id: getGlobalAttr('conversation_id')
-							},
-							laroute.route('conversations.ajax'),
-							function(response) {
-								if (isAjaxSuccess(response)
-									&& typeof(response.redirect_url) != "undefined"
-								) {
-									window.location.href = response.redirect_url;
-									return;
-								} else {
-									showAjaxError(response);
-								}
-								loaderHide();
-							}
-						);
-						e.preventDefault();
-					});
-				}
-			});
-		});
-
 		// Edit thread
 		jQuery(".thread-edit-trigger").click(function(e){
 			editThread($(this));
@@ -518,43 +365,6 @@ function initConversation()
 		jQuery(".thread-original-hide").click(function(e){
 			threadHideOriginal($(this));
 			e.preventDefault();
-		});
-
-		// Edit subject
-		jQuery(".conv-subjtext").click(function(e){
-	    	$(this).addClass('conv-subj-editing');
-		});
-
-		// Save subject on Enter
-		jQuery("#conv-subj-value").on('keydown', function(e){
-			if (e.which == 13) {
-				e.preventDefault();
-				jQuery(".conv-subj-editor button:first").click();
-			}
-		});
-
-		// Save subject
-	    jQuery(".conv-subj-editor button:first").click(function(e){
-	    	var button = $(this);
-	    	button.button('loading');
-	    	var value = $('#conv-subj-value').val();
-			fsAjax(
-				{
-					action: 'update_subject',
-					conversation_id: getGlobalAttr('conversation_id'),
-					value: value
-				},
-				laroute.route('conversations.ajax'),
-				function(response) {
-					if (isAjaxSuccess(response)) {
-						$('.conv-subjtext > h2:first').text(value);
-					} else {
-						showAjaxError(response);
-					}
-					button.parents('.conv-subj-editing:first').removeClass('conv-subj-editing');
-					button.button('reset');
-				}, true
-			);
 		});
 
 		// Retry failed thread
@@ -586,7 +396,6 @@ function initConversation()
 			window.print();
 		}
 
-		starConversationInit();
 		maybeShowStoredNote();
 		maybeShowDraft();
 		processLinks();
@@ -598,57 +407,6 @@ function initConversation()
 		}
 		// Send reply on ENTER press in chat mode
 		if (is_chat_mode) {
-
-			// Accept chat - assign to yourself
-			$('button.chat-accept:visible').click(function(e) {
-				var button = $(this);
-				button.button('loading');
-
-				fsAjax(
-					{
-						action: 'conversation_change_user',
-						user_id: getGlobalAttr('auth_user_id'),
-						conversation_id: getGlobalAttr('conversation_id')
-					},
-					laroute.route('conversations.ajax'),
-					function(response) {
-						if (isAjaxSuccess(response)) {
-							window.location.href = '';
-						} else {
-							showAjaxResult(response);
-							button.button('reset');
-						}
-					}, true
-				);
-
-				e.preventDefault();
-			});
-
-			// End chat - close conversation
-			$('button.chat-end:visible').click(function(e) {
-				var button = $(this);
-				button.button('loading');
-
-				fsAjax(
-					{
-						action: 'conversation_change_status',
-						status: FS_STATUS_CLOSED,
-						conversation_id: getGlobalAttr('conversation_id'),
-						folder_id: getQueryParam('folder_id')
-					},
-					laroute.route('conversations.ajax'),
-					function(response) {
-						if (isAjaxSuccess(response)) {
-							window.location.href = '';
-						} else {
-							showAjaxResult(response);
-							button.button('reset');
-						}
-					}, true
-				);
-
-				e.preventDefault();
-			});
 
 			// Automatically refresh chat list
 			$(document).on('keydown', function(e) {
@@ -3296,38 +3054,6 @@ function forwardConversation(e)
 	loadAttachments(true);
 }
 
-// Follow / unfollow conversation
-function followConversation(action)
-{
-	var conversation_id = getGlobalAttr('conversation_id');
-	fsAjax(
-		{
-			action: action,
-			conversation_id: conversation_id,
-		},
-		laroute.route('conversations.ajax'),
-		function(response) {
-			if (isAjaxSuccess(response)) {
-				var opposite = '';
-				if (action == 'follow') {
-					opposite = 'unfollow';
-					$('#conv-layout').addClass('conv-following');
-				} else {
-					opposite = 'follow';
-					$('#conv-layout').removeClass('conv-following');
-				}
-				$('.conv-follow[data-follow-action="'+action+'"]').addClass('hidden');
-				$('.conv-follow[data-follow-action="'+opposite+'"]').removeClass('hidden');
-				fsDoAction('conversation.'+action, {
-					user_id: getGlobalAttr('auth_user_id'),
-					conversation_id: conversation_id
-				});
-			}
-			showAjaxResult(response);
-		}, true
-	);
-}
-
 // Load attachments for the draft of a new conversation or draft of the forward
 function loadAttachments(is_forwarding)
 {
@@ -3683,52 +3409,6 @@ function setReplyBody(text)
 	$(".conv-reply-block :input[name='body']:first").val(text);
 }
 
-
-// Star/unstar processing from the list or conversation
-function starConversationInit()
-{
-	// The list's stars are the list's own (App\Livewire\ConversationList).
-	$('.conv-star').not('.conv-row .conv-star').click(function(event) {
-		var trigger = $(this);
-		// In the list, or the open conversation.
-		var conversation_id = trigger.parents('.conv-row:first').attr('data-conversation_id') || getGlobalAttr('conversation_id');
-		if (!conversation_id) {
-			// Something went wrong
-			return false;
-		}
-
-		var sub_action = 'star';
-		if (trigger.hasClass('glyphicon-star') || trigger.attr('aria-pressed') == 'true') {
-			sub_action = 'unstar';
-		}
-		fsAjax(
-			{
-				action: 'star_conversation',
-				conversation_id: conversation_id,
-				sub_action: sub_action
-			},
-			laroute.route('conversations.ajax'),
-			function(response) {
-				if (isAjaxSuccess(response)) {
-					// In the list: a toggle button.
-					if (trigger.attr('aria-pressed')) {
-						trigger.attr('aria-pressed', sub_action == 'star' ? 'true' : 'false');
-						return;
-					}
-					if (sub_action == 'star') {
-						trigger.addClass('glyphicon-star');
-						trigger.removeClass('glyphicon-star-empty');
-					} else {
-						trigger.addClass('glyphicon-star-empty');
-						trigger.removeClass('glyphicon-star');
-					}
-				} else {
-					showAjaxError(response);
-				}
-			}, true
-		);
-	});
-}
 
 // Get ids of the selected conversations
 function getSelectedConversations(checkboxes)

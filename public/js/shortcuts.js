@@ -87,7 +87,7 @@ $(document).ready(function() {
 					break;
 				case 'o':
 					// Follow (not unfollow).
-					done = !$('#conv-layout').hasClass('conv-following') && click('.conv-follow');
+					done = click('.conv-follow[data-follow-action="follow"]', true);
 					break;
 				case 'a':
 					done = click('#conv-assignee > summary');

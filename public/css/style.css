@@ -4375,6 +4375,10 @@ a.disabled:focus {
     overflow-wrap: anywhere;
     cursor: text;
 }
+/* ConversationSubject's root: its parts are the heading's. */
+.conv-heading__top {
+    display: contents;
+}
 .conv-following .conv-subjtext > h2::before {
     content: "🔔 ";
     font-size: 0.6em;

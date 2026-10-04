@@ -119,7 +119,7 @@
         "arguments": 2,
         "files": [
             "resources/views/conversations/partials/bulk_actions.blade.php",
-            "resources/views/conversations/view.blade.php"
+            "resources/views/livewire/conversation-toolbar.blade.php"
         ]
     },
     {
@@ -129,7 +129,7 @@
         "files": [
             "resources/views/conversations/editor_bottom_toolbar.blade.php",
             "resources/views/conversations/partials/bulk_actions.blade.php",
-            "resources/views/conversations/view.blade.php"
+            "resources/views/livewire/conversation-toolbar.blade.php"
         ]
     },
     {
@@ -276,7 +276,7 @@
         "name": "conversation.action_buttons",
         "arguments": 2,
         "files": [
-            "resources/views/conversations/view.blade.php"
+            "resources/views/livewire/conversation-toolbar.blade.php"
         ]
     },
     {
@@ -324,7 +324,7 @@
         "name": "conversation.append_action_buttons",
         "arguments": 2,
         "files": [
-            "resources/views/conversations/view.blade.php"
+            "resources/views/livewire/conversation-toolbar.blade.php"
         ]
     },
     {
@@ -356,7 +356,7 @@
         "name": "conversation.convinfo.before_nav",
         "arguments": 2,
         "files": [
-            "resources/views/conversations/view.blade.php"
+            "resources/views/livewire/conversation-toolbar.blade.php"
         ]
     },
     {
@@ -364,7 +364,7 @@
         "name": "conversation.convinfo.prepend",
         "arguments": 2,
         "files": [
-            "resources/views/conversations/view.blade.php"
+            "resources/views/livewire/conversation-toolbar.blade.php"
         ]
     },
     {
@@ -581,7 +581,7 @@
         "name": "conversation.prepend_action_buttons",
         "arguments": 2,
         "files": [
-            "resources/views/conversations/view.blade.php"
+            "resources/views/livewire/conversation-toolbar.blade.php"
         ]
     },
     {
