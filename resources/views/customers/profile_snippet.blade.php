@@ -7,7 +7,11 @@
 @endphp
 <div class="customer-snippet">
 	<div class="customer-snippet__identity">
-		<x-fruit::avatar :src="$customer->getPhotoUrl()" class="customer-snippet__avatar" />
+		@if ($customer->photo_url)
+			<x-fruit::avatar :src="$customer->getPhotoUrl()" class="customer-snippet__avatar" />
+		@else
+			<x-fruit::avatar class="customer-snippet__avatar">{{ mb_strtoupper(mb_substr((string) $customer->first_name, 0, 1).mb_substr((string) $customer->last_name, 0, 1)) ?: mb_strtoupper(mb_substr((string) $customer->getMainEmail(), 0, 1)) }}</x-fruit::avatar>
+		@endif
 		@if ($customer->getFullName(true, true))
 			<a href="{{ route('customers.update', ['id' => $customer->id]) }}" class="customer-snippet__name customer-name">{{ $customer->getFullName(true, true) }}</a>
 		@endif

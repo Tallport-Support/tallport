@@ -1487,5 +1487,6 @@
     "No log records.": "Aucune entrée de journal.",
     "This log file is larger than 50 MB. Download it to read it.": "Ce fichier journal dépasse 50 Mo. Téléchargez-le pour le lire.",
     "Danger Zone": "Zone de danger",
-    "Local time": "Heure locale"
+    "Local time": "Heure locale",
+    "Search conversations": "Rechercher des conversations"
 }

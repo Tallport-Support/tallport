@@ -8,11 +8,14 @@
     $sidebar_new_mailbox_id = collect($sidebar_mailboxes)->pluck(0)->pluck('id')->contains($sidebar_mailbox_id) ? $sidebar_mailbox_id : ($sidebar_mailboxes[0][0]->id ?? null);
 @endphp
 <nav class="f-pane f-pane--column f-pane--scroll f-pane--border-end f-sidebar app-sidebar" id="app-sidebar" aria-label="{{ __('Navigation') }}" @if (Helper::isLocaleRtl()) dir="rtl" @endif>
-    <div class="f-sidebar__header app-sidebar__header">
-        <form class="app-sidebar__search" role="search" action="{{ route('conversations.search') }}">
-            <x-fruit::search name="q" :label="__('Search')" :placeholder="__('Search')" id="search-dt" />
-        </form>
-    </div>
+    @if (empty($has_list))
+        {{-- With a list, search sits at the top of the list pane. --}}
+        <div class="f-sidebar__header app-sidebar__header">
+            <form class="app-sidebar__search" role="search" action="{{ route('conversations.search') }}">
+                <x-fruit::search name="q" :label="__('Search')" :placeholder="__('Search')" id="search-dt" />
+            </form>
+        </div>
+    @endif
 
     @if ($sidebar_all)
         <p class="f-sidebar__heading">{{ __('All Mailboxes') }}</p>

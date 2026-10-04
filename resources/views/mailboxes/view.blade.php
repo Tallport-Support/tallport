@@ -17,6 +17,7 @@
 @endsection
 
 @section('list')
+    @include('mailboxes/partials/list_search')
     <div class="alerts">
         @php
             $flashes = \Helper::maybeShowSendingProblemsAlert();

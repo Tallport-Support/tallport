@@ -1477,5 +1477,6 @@
     "No log records.": "Brak wpisów w dzienniku.",
     "This log file is larger than 50 MB. Download it to read it.": "Ten plik dziennika jest większy niż 50 MB. Pobierz go, aby go przeczytać.",
     "Danger Zone": "Strefa zagrożenia",
-    "Local time": "Czas lokalny"
+    "Local time": "Czas lokalny",
+    "Search conversations": "Szukaj rozmów"
 }

@@ -3989,8 +3989,14 @@ a.disabled:focus {
 }
 .conv-list__toolbar {
     gap: 4px;
-    padding: 0 12px 8px;
-    border-bottom: 1px solid var(--f-border);
+    margin: 5px 0;
+    padding: 0 13px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-2xs);
+}
+.conv-list__toolbar .f-button {
+    min-height: 28px;
+    font-size: var(--f-text-2xs);
 }
 .conv-list__toolbar .conv-owner.filtered {
     color: var(--f-accent);
@@ -4560,4 +4566,80 @@ a.disabled:focus {
 }
 .editor-picker .f-floating-disclosure__content {
     width: 300px;
+}
+/* The panes' type and spacing, from FruitUI's Support example
+   (support-sidebar, support-list-tools, support-ticket-list, support-ticket). */
+.app-workspace__list,
+.app-workspace__content {
+    --f-pane-background: var(--f-surface);
+}
+.app-sidebar {
+    padding: 18px 9px 14px;
+}
+.app-sidebar .f-sidebar__item {
+    gap: 8px;
+    margin-bottom: 3px;
+    padding-inline: var(--f-sidebar-item-indent, 8px) 8px;
+    font-size: var(--f-text-sm);
+}
+.app-sidebar .f-sidebar__item > .f-icon {
+    --f-icon-size: 16px;
+}
+.app-sidebar .f-sidebar__heading {
+    padding-top: 12px;
+}
+.conv-list-search {
+    padding: 14px 13px 0;
+}
+.conv-list-search .f-input {
+    font-size: var(--f-text-sm);
+}
+.conv-list__items {
+    --f-item-list-padding: 0 7px 8px;
+}
+.conv-list .conv-row__link {
+    --f-item-row-leading-inset: 12px;
+}
+.conv-list .f-item-row__title {
+    font-size: var(--f-text-sm);
+}
+.conv-list .f-item-row__subtitle {
+    margin-top: 4px;
+    font-weight: 550;
+    line-height: 1.45;
+    white-space: normal;
+}
+.conv-list .f-item-row__preview {
+    margin-top: 4px;
+    font-size: var(--f-text-xs);
+    line-height: 1.55;
+}
+.conv-list .f-item-row__meta {
+    margin-top: 8px;
+    font-size: var(--f-text-2xs);
+}
+/* The conversation's toolbar stays one line, as in the example. */
+#conv-toolbar {
+    flex-wrap: nowrap;
+    overflow: hidden;
+}
+#conv-toolbar .conv-info {
+    flex-wrap: nowrap;
+}
+#conv-toolbar .f-button {
+    min-height: 30px;
+    font-size: var(--f-text-sm);
+}
+.customer-snippet__avatar {
+    --f-avatar-font-size: var(--f-text-3xl);
+}
+/* A narrow conversation toolbar keeps the assignee's and status's icon and
+   dot, not their names (the names stay in the menus and titles). */
+.app-workspace__toolbar {
+    container: conv-toolbar / inline-size;
+}
+@container conv-toolbar (max-width: 600px) {
+    #conv-toolbar .conv-info-val {
+        display: none;
+    }
 }

@@ -1477,5 +1477,6 @@
     "No log records.": "Žádné záznamy protokolu.",
     "This log file is larger than 50 MB. Download it to read it.": "Tento soubor protokolu je větší než 50 MB. Stáhněte si ho a přečtěte.",
     "Danger Zone": "Nebezpečná zóna",
-    "Local time": "Místní čas"
+    "Local time": "Místní čas",
+    "Search conversations": "Hledat konverzace"
 }

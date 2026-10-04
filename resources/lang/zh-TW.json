@@ -1528,5 +1528,6 @@
     "No log records.": "沒有記錄。",
     "This log file is larger than 50 MB. Download it to read it.": "此記錄檔大於 50 MB。請下載後閱讀。",
     "Danger Zone": "危險操作",
-    "Local time": "當地時間"
+    "Local time": "當地時間",
+    "Search conversations": "搜尋對話"
 }

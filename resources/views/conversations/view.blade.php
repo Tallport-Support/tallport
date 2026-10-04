@@ -21,6 +21,7 @@
         @include('mailboxes/partials/list_toolbar', ['folder' => $folder, 'mailbox' => $list['mailbox'], 'conversations' => $list['conversations']])
     @endsection
     @section('list')
+        @include('mailboxes/partials/list_search', ['mailbox' => $list['mailbox']])
         @include('conversations/conversations_table', ['conversations' => $list['conversations'], 'mailbox' => $list['mailbox'], 'params' => $list['params'] + ['current_conversation_id' => $conversation->id]])
     @endsection
 @endif

@@ -1478,5 +1478,6 @@
     "No log records.": "Nema zapisa.",
     "This log file is larger than 50 MB. Download it to read it.": "Ova datoteka zapisa veća je od 50 MB. Preuzmite je da biste je pročitali.",
     "Danger Zone": "Opasna zona",
-    "Local time": "Lokalno vrijeme"
+    "Local time": "Lokalno vrijeme",
+    "Search conversations": "Pretraži razgovore"
 }

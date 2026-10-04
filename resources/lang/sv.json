@@ -1478,5 +1478,6 @@
     "No log records.": "Inga loggposter.",
     "This log file is larger than 50 MB. Download it to read it.": "Den här loggfilen är större än 50 MB. Ladda ned den för att läsa den.",
     "Danger Zone": "Riskzon",
-    "Local time": "Lokal tid"
+    "Local time": "Lokal tid",
+    "Search conversations": "Sök konversationer"
 }

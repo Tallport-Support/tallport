@@ -1477,5 +1477,6 @@
     "No log records.": "Nicio înregistrare în jurnal.",
     "This log file is larger than 50 MB. Download it to read it.": "Acest fișier jurnal depășește 50 MB. Descărcați-l pentru a-l citi.",
     "Danger Zone": "Zonă periculoasă",
-    "Local time": "Ora locală"
+    "Local time": "Ora locală",
+    "Search conversations": "Caută conversații"
 }

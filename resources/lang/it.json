@@ -1477,5 +1477,6 @@
     "No log records.": "Nessuna voce di log.",
     "This log file is larger than 50 MB. Download it to read it.": "Questo file di log supera i 50 MB. Scaricalo per leggerlo.",
     "Danger Zone": "Zona pericolosa",
-    "Local time": "Ora locale"
+    "Local time": "Ora locale",
+    "Search conversations": "Cerca conversazioni"
 }

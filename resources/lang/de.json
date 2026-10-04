@@ -1472,5 +1472,6 @@
     "This log file is larger than 50 MB. Download it to read it.": "Diese Protokolldatei ist größer als 50 MB. Laden Sie sie herunter, um sie zu lesen.",
     "Danger Zone": "Gefahrenbereich",
     ":count conversations": ":count Gespräche",
-    "Local time": "Ortszeit"
+    "Local time": "Ortszeit",
+    "Search conversations": "Gespräche durchsuchen"
 }
