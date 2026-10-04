@@ -23,49 +23,49 @@
                 {!! __("You can read more about fetching emails :%a_begin%here:%a_end%.", ['%a_begin%' => '<a href="'.htmlspecialchars(config('app.freescout_repo')).'/wiki/Fetching-Emails" target="_blank">', '%a_end%' =>'</a>']) !!}
             </p>
 
-            <div class="f-field">
-                <span class="f-label">{{ __('Status') }}</span>
-                <div>
+            <x-fruit::form-section :title="__('Fetching Emails')">
+                <div class="f-form-row">
+                    <span class="f-label">{{ __('Status') }}</span>
                     @if ($mailbox->isInActive())
                         <x-fruit::badge tone="success">{{ __('Active') }}</x-fruit::badge>
                     @else
                         <x-fruit::badge tone="warning">{{ __('Inactive') }}</x-fruit::badge>
                     @endif
                 </div>
-            </div>
 
-            <x-fruit::field :label="__('Fetch From')" control-id="email">
-                <div class="f-row">
-                    <input id="email" type="email" class="f-input connection-fetch-from" name="email" value="{{ $mailbox->email }}" disabled="disabled">
-                    <a href="{{ route('mailboxes.update', ['id'=>$mailbox->id]) }}#email" class="f-button f-button--ghost f-button--small" title="{{ __('Change address in mailbox settings') }}">{{ __('Change') }}</a>
-                </div>
-            </x-fruit::field>
+                <x-fruit::field :label="__('Fetch From')" control-id="email" layout="row">
+                    <div class="f-row">
+                        <input id="email" type="email" class="f-input connection-fetch-from" name="email" value="{{ $mailbox->email }}" disabled="disabled">
+                        <a href="{{ route('mailboxes.update', ['id'=>$mailbox->id]) }}#email" class="f-button f-button--ghost f-button--small" title="{{ __('Change address in mailbox settings') }}">{{ __('Change') }}</a>
+                    </div>
+                </x-fruit::field>
 
-            <x-fruit::field :label="__('Protocol')">
-                <x-fruit::select id="in_protocol" name="in_protocol" required>
-                    @foreach($mailbox->getInProtocolDisplayNames() as $id => $name)
-                        <option value="{{$id}}" @selected(old('in_protocol', $mailbox->in_protocol) == $id)>{{$name}}</option>
-                    @endforeach
-                </x-fruit::select>
-            </x-fruit::field>
+                <x-fruit::field :label="__('Protocol')" layout="row">
+                    <x-fruit::select id="in_protocol" name="in_protocol" required>
+                        @foreach($mailbox->getInProtocolDisplayNames() as $id => $name)
+                            <option value="{{$id}}" @selected(old('in_protocol', $mailbox->in_protocol) == $id)>{{$name}}</option>
+                        @endforeach
+                    </x-fruit::select>
+                </x-fruit::field>
+            </x-fruit::form-section>
 
-            <div class="settings-form" data-in-protocol="default">
-                <x-fruit::field :label="__('Server')">
+            <x-fruit::form-section :title="__('Server')" data-in-protocol="default">
+                <x-fruit::field :label="__('Server')" layout="row">
                     <x-fruit::input id="in_server" name="in_server" :value="old('in_server', $mailbox->in_server)" maxlength="255" />
                 </x-fruit::field>
 
-                <x-fruit::field :label="__('Port')">
+                <x-fruit::field :label="__('Port')" layout="row">
                     <x-fruit::number id="in_port" name="in_port" :value="old('in_port', $mailbox->in_port)" maxlength="5" required />
                 </x-fruit::field>
                 @php
                     $in_oauth_enabled = $mailbox->inOauthEnabled();
                 @endphp
-                <x-fruit::field :label="__('Username')">
+                <x-fruit::field :label="__('Username')" layout="row">
                     {{-- new-password: no autocomplete in Chrome. --}}
                     <x-fruit::input id="in_username" name="in_username" :value="old('in_username', $mailbox->in_username)" maxlength="100" autocomplete="new-password" :readonly="$in_oauth_enabled" />
                 </x-fruit::field>
 
-                <x-fruit::field :label="__('Password')">
+                <x-fruit::field :label="__('Password')" layout="row">
                     <x-fruit::input type="password" id="in_password" name="in_password" :value="old('in_password', $mailbox->inPasswordSafe())" maxlength="255" autocomplete="new-password" :readonly="$in_oauth_enabled" />
                 </x-fruit::field>
                 @php
@@ -74,7 +74,7 @@
                         $active_oauth_provider = $mailbox->oauthGetParam('provider');
                     }
                 @endphp
-                <div class="f-help settings-form__note">
+                <div class="f-help">
                     {{-- Microsoft Exchange --}}
                     @if ($active_oauth_provider != \MailHelper::OAUTH_PROVIDER_GOOGLE)
                         <p>
@@ -116,7 +116,7 @@
                         }
                     }
                 @endphp
-                <x-fruit::field :label="__('Encryption')">
+                <x-fruit::field :label="__('Encryption')" layout="row">
                     <x-fruit::select id="in_encryption" name="in_encryption" :required="$mailbox->out_method == App\Mailbox::OUT_METHOD_SMTP">
                         <option value="{{ App\Mailbox::IN_ENCRYPTION_NONE }}" @selected($in_encryption == App\Mailbox::IN_ENCRYPTION_NONE)>{{ __('None') }}</option>
                         <option value="{{ App\Mailbox::IN_ENCRYPTION_SSL }}" @selected($in_encryption == App\Mailbox::IN_ENCRYPTION_SSL)>SSL</option>
@@ -127,7 +127,7 @@
                     </x-fruit::select>
                 </x-fruit::field>
 
-                <x-fruit::field :label="__('IMAP Folders')" control-id="in_imap_folders">
+                <x-fruit::field :label="__('IMAP Folders')" control-id="in_imap_folders" layout="row">
                     <div class="f-row connection-imap-folders">
                         <select id="in_imap_folders" class="f-input" name="in_imap_folders[]" multiple>
                             @foreach ($mailbox->getInImapFolders() as $imap_folder)
@@ -138,14 +138,12 @@
                     </div>
                 </x-fruit::field>
 
-                <x-fruit::switch id="in_validate_cert" name="in_validate_cert" value="1" :checked="(bool) old('in_validate_cert', $mailbox->in_validate_cert)">
-                    {{ __('Validate Certificate') }}
-                    <x-slot:description>
-                        {{ __('Disable certificate validation if receiving "Certificate failure" error.') }}
-                    </x-slot:description>
-                </x-fruit::switch>
+                <x-fruit::field :label="__('Validate Certificate')" layout="row">
+                    <x-fruit::switch id="in_validate_cert" name="in_validate_cert" value="1" :checked="(bool) old('in_validate_cert', $mailbox->in_validate_cert)" />
+                    <x-slot:description>{{ __('Disable certificate validation if receiving "Certificate failure" error.') }}</x-slot:description>
+                </x-fruit::field>
 
-                <x-fruit::field :label="__('IMAP Folder To Save Outgoing Replies')" :description="__('Enter IMAP folder name to save outgoing replies if your mail service provider does not do it automatically (Gmail does it), otherwise leave it blank.')">
+                <x-fruit::field :label="__('IMAP Folder To Save Outgoing Replies')" :description="__('Enter IMAP folder name to save outgoing replies if your mail service provider does not do it automatically (Gmail does it), otherwise leave it blank.')" layout="row">
                     <x-fruit::input id="imap_sent_folder" name="imap_sent_folder" :value="old('imap_sent_folder', $mailbox->imap_sent_folder)" maxlength="50" placeholder="Sent" />
                 </x-fruit::field>
 
@@ -153,26 +151,32 @@
                     $after_fetch = App\Incoming\AfterFetch::settings($mailbox);
                     $after_fetch_action = old('after_fetch_action', $after_fetch['action']);
                 @endphp
-                <x-fruit::field :label="__('After Fetching')" :description="__('IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.')">
-                    <x-fruit::select id="after_fetch_action" name="after_fetch_action">
-                        <option value="{{ App\Incoming\AfterFetch::LEAVE }}" @selected($after_fetch_action == App\Incoming\AfterFetch::LEAVE)>{{ __('Mark email as read') }}</option>
-                        <option value="{{ App\Incoming\AfterFetch::MOVE }}" @selected($after_fetch_action == App\Incoming\AfterFetch::MOVE)>{{ __('Move to IMAP folder') }}</option>
-                        <option value="{{ App\Incoming\AfterFetch::REMOVE }}" @selected($after_fetch_action == App\Incoming\AfterFetch::REMOVE)>{{ __('Remove from the mail server') }}</option>
-                    </x-fruit::select>
+                <x-fruit::field :label="__('After Fetching')" :description="__('IMAP only. Keeps the mail server from filling up: Tallport keeps every email it fetched, with its original source.')" layout="row">
+                    <div class="f-stack">
+                        <x-fruit::select id="after_fetch_action" name="after_fetch_action">
+                            <option value="{{ App\Incoming\AfterFetch::LEAVE }}" @selected($after_fetch_action == App\Incoming\AfterFetch::LEAVE)>{{ __('Mark email as read') }}</option>
+                            <option value="{{ App\Incoming\AfterFetch::MOVE }}" @selected($after_fetch_action == App\Incoming\AfterFetch::MOVE)>{{ __('Move to IMAP folder') }}</option>
+                            <option value="{{ App\Incoming\AfterFetch::REMOVE }}" @selected($after_fetch_action == App\Incoming\AfterFetch::REMOVE)>{{ __('Remove from the mail server') }}</option>
+                        </x-fruit::select>
+                        <input type="text" class="f-input @if ($after_fetch_action != App\Incoming\AfterFetch::MOVE) hidden @endif" id="after_fetch_folder" name="after_fetch_folder" value="{{ old('after_fetch_folder', $after_fetch['folder']) }}" maxlength="255" placeholder="{{ __('IMAP Folder') }}" aria-label="{{ __('IMAP Folder') }}">
+                        @error('after_fetch_folder')<p class="f-error">{{ $message }}</p>@enderror
+                    </div>
                 </x-fruit::field>
-                <input type="text" class="f-input @if ($after_fetch_action != App\Incoming\AfterFetch::MOVE) hidden @endif" id="after_fetch_folder" name="after_fetch_folder" value="{{ old('after_fetch_folder', $after_fetch['folder']) }}" maxlength="255" placeholder="{{ __('IMAP Folder') }}" aria-label="{{ __('IMAP Folder') }}">
-                @error('after_fetch_folder')<p class="f-error">{{ $message }}</p>@enderror
-            </div>
+            </x-fruit::form-section>
 
             @action('mailbox.connection_incoming.after_default_settings', $mailbox)
 
-            <pre class="hidden" id="fetch_test_log"></pre>
+            <x-fruit::form-section :title="__('Test')">
+                <div class="f-form-row">
+                    <p class="f-help">{{ __("Make sure to save settings before checking connection.") }}</p>
+                    <button type="button" class="f-button" id="check-connection" data-loading-text="{{ __('Connecting') }}…" @if (!$mailbox->isOutActive()) disabled="disabled" @endif>{{ __('Check Connection') }}</button>
+                </div>
+                <pre class="hidden" id="fetch_test_log"></pre>
+            </x-fruit::form-section>
 
-            <div class="settings-form__actions f-row">
+            <footer class="f-form-row settings-form__actions">
                 <x-fruit::button type="submit" variant="primary">{{ __('Save Settings') }}</x-fruit::button>
-                <button type="button" class="f-button" id="check-connection" data-loading-text="{{ __('Connecting') }}…" @if (!$mailbox->isOutActive()) disabled="disabled" @endif>{{ __('Check Connection') }}</button>
-            </div>
-            <p class="f-help">{{ __("Make sure to save settings before checking connection.") }}</p>
+            </footer>
         </form>
     </div>
 @endsection
