@@ -14,8 +14,8 @@
         <div class="ai-draft-translation-body"></div>
     </div>
     <div class="ai-draft-actions hidden">
-        <button type="button" class="btn btn-primary btn-sm ai-draft-insert">{{ __('Insert into Reply') }}</button>
-        <button type="button" class="btn btn-default btn-sm ai-draft-action">{{ __('Draft Again') }}</button>
+        <button type="button" class="f-button f-button--primary f-button--small ai-draft-insert">{{ __('Insert into Reply') }}</button>
+        <button type="button" class="f-button f-button--small ai-draft-action">{{ __('Draft Again') }}</button>
     </div>
     <div class="ai-draft-notes hidden">
         <strong>{{ __('Notes') }}</strong>

@@ -57,7 +57,7 @@
                         <button type="button" class="f-button f-button--ghost f-button--icon app-sidebar-toggle" aria-controls="app-sidebar" aria-expanded="false" aria-label="{{ __('Toggle Navigation') }}"><x-heroicon-o-bars-3 class="f-icon" aria-hidden="true" /></button>
                     </div>
                     @if (($browser_check = \Helper::checkBrowser()) && $browser_check['msg'])
-                        <div class="alert alert-danger">{{ $browser_check['msg'] }}</div>
+                        <x-fruit::alert tone="danger">{{ $browser_check["msg"] }}</x-fruit::alert>
                     @endif
                     @yield('sidebar')
                     @if ($__env->yieldContent('list'))
@@ -91,7 +91,7 @@
             </div>
         @else
             @if (($browser_check = \Helper::checkBrowser()) && $browser_check['msg'])
-                <div class="alert alert-danger">{{ $browser_check['msg'] }}</div>
+                <x-fruit::alert tone="danger">{{ $browser_check["msg"] }}</x-fruit::alert>
             @endif
             <div class="content @yield('content_class')">
                 @yield('content')

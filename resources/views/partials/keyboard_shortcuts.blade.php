@@ -3,14 +3,14 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('Close') }}"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">{{ __('Keyboard Shortcuts') }}</h4>
+                <h2 class="modal-title">{{ __('Keyboard Shortcuts') }}</h2>
+                <button type="button" class="f-button f-button--ghost f-button--icon f-button--small modal-close" data-dismiss="modal" aria-label="{{ __('Close') }}"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></button>
             </div>
             <div class="modal-body keyboard-shortcuts">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h5>{{ __('Conversation') }}</h5>
-                        <table class="table table-condensed">
+                <div class="keyboard-shortcuts__columns">
+                    <div>
+                        <h3 class="f-headline">{{ __('Conversation') }}</h3>
+                        <table class="f-table keyboard-shortcuts__table">
                             <tr><td><kbd>r</kbd></td><td>{{ __('Reply') }}</td></tr>
                             <tr><td><kbd>n</kbd></td><td>{{ __('Note') }}</td></tr>
                             <tr><td><kbd>f</kbd></td><td>{{ __('Forward') }}</td></tr>
@@ -26,18 +26,18 @@
                             <tr><td><kbd>Ctrl</kbd> <kbd>Enter</kbd></td><td>{{ __('Send') }}</td></tr>
                         </table>
                     </div>
-                    <div class="col-sm-6">
-                        <h5>{{ __('Conversations') }}</h5>
-                        <table class="table table-condensed">
+                    <div>
+                        <h3 class="f-headline">{{ __('Conversations') }}</h3>
+                        <table class="f-table keyboard-shortcuts__table">
                             <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td>{{ __('Previous Page') }} / {{ __('Next Page') }}</td></tr>
                             <tr><td><kbd>c</kbd></td><td>{{ __('New Conversation') }}</td></tr>
                         </table>
-                        <h5>{{ __('Everywhere') }}</h5>
-                        <table class="table table-condensed">
+                        <h3 class="f-headline">{{ __('Everywhere') }}</h3>
+                        <table class="f-table keyboard-shortcuts__table">
                             <tr><td><kbd>/</kbd></td><td>{{ __('Search') }}</td></tr>
                             <tr><td><kbd>?</kbd></td><td>{{ __('Keyboard Shortcuts') }}</td></tr>
                         </table>
-                        <p class="text-help">{{ __('Turn them off in your profile.') }}</p>
+                        <p class="f-help">{{ __('Turn them off in your profile.') }}</p>
                     </div>
                 </div>
             </div>

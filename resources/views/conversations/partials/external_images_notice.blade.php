@@ -1,6 +1,5 @@
 {{-- Images from other servers aren't shown (App\Misc\ExternalImages). --}}
-<div class="alert alert-warning alert-narrow external-images-notice" data-thread-id="{{ $thread->id }}">
-    <i class="glyphicon glyphicon-picture"></i>
+<div class="f-alert f-alert--warning external-images-notice" data-thread-id="{{ $thread->id }}">
     <small><strong>{{ __('Images from other servers are not shown.') }}</strong>
         <a href="#" class="external-images-show" data-action="display">{{ __('Show images') }}</a>
         @if ($thread->customer_cached)

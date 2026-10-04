@@ -173,9 +173,9 @@
                 @if ($is_in_chat_mode)
                     <div class="conv-top-block conv-top-chat clearfix">
                         @if ($conversation->user_id != Auth::user()->id)
-                            <button class="btn btn-success btn-xs pull-right chat-accept" data-loading-text="{{ __('Accept Chat') }}…">{{ __('Accept Chat') }}</button>
+                            <button type="button" class="f-button f-button--small f-button--primary chat-accept" data-loading-text="{{ __('Accept Chat') }}…">{{ __('Accept Chat') }}</button>
                         @elseif (!$conversation->isClosed())
-                            <button class="btn btn-default btn-xs pull-right chat-end" data-loading-text="{{ __('End Chat') }}…">{{ __('End Chat') }}</button>
+                            <button type="button" class="f-button f-button--small chat-end" data-loading-text="{{ __('End Chat') }}…">{{ __('End Chat') }}</button>
                         @endif
                         <a href="#conv-top-blocks" data-toggle="collapse">{{ __('Show Details') }} <b class="caret"></b></a>
                     </div>
