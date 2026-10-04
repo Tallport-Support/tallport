@@ -2026,36 +2026,6 @@
         "methods": [
             "GET"
         ],
-        "uri": "register",
-        "name": "register",
-        "action": "Auth\\RegisterController@showRegistrationForm",
-        "middleware": [
-            "web",
-            "guest"
-        ],
-        "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "register",
-        "name": null,
-        "action": "Auth\\RegisterController@register",
-        "middleware": [
-            "web",
-            "guest"
-        ],
-        "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "GET"
-        ],
         "uri": "reports/conversations",
         "name": "reports.conversations",
         "action": "ReportsController@conversations",

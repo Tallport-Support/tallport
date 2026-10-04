@@ -96,7 +96,7 @@ class AuthTest extends FeatureTestCase
 
     public function testRegistrationIsDisabled()
     {
-        $this->get('/register')->assertRedirect('login');
+        $this->get('/register')->assertStatus(404);
 
         $this->postForm('/register', [
             'first_name' => 'Self', 'email' => 'self-registered@example.org',

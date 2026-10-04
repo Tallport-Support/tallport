@@ -14,7 +14,7 @@
 */
 
 // Login routes are below, at the configurable login path.
-Auth::routes(['login' => false]);
+Auth::routes(['login' => false, 'register' => false]);
 
 // Logging in (Laravel Fortify, App\Providers\FortifyServiceProvider): a
 // password, then a two-factor code if the user has it on; or a passkey.
