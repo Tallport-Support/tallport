@@ -6,13 +6,16 @@
 
 @section('body_class', 'chat-mode')
 
-@section('aside')
-    @include('partials/sidebar_menu_toggle')
+@section('main_class', 'fruit-ui')
+
+@section('list')
     @include('mailboxes/sidebar_menu_view')
 @endsection
 
-@section('content')    
-<div class="container">
-    @include('partials/empty', ['empty_text' => __('There are no conversations here')])
-</div>
+@section('content')
+    <x-fruit::empty-state class="split-view__empty">
+        <x-slot:icon><x-heroicon-o-chat-bubble-left-right /></x-slot:icon>
+        <x-slot:title>{{ __('No conversation selected') }}</x-slot:title>
+        {{ __('Choose a conversation from the list.') }}
+    </x-fruit::empty-state>
 @endsection

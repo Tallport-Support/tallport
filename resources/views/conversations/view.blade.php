@@ -24,7 +24,8 @@
 
 @if ($is_in_chat_mode)
     {{-- The chats beside the conversation. --}}
-    @section('aside')
+    @section('split_class', 'split-view--open')
+    @section('list')
         @include('mailboxes/sidebar_menu_view')
     @endsection
 @endif
