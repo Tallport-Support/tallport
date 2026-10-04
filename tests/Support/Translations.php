@@ -82,6 +82,18 @@ class Translations
     }
 
     /**
+     * FruitUI's JSON translations of a locale.
+     *
+     * @return array<string, string>
+     */
+    public static function fruitJson($locale)
+    {
+        $path = self::root().'/vendor/fruitui/fruitui/lang/'.$locale.'.json';
+
+        return is_file($path) ? json_decode(file_get_contents($path), true) : [];
+    }
+
+    /**
      * A PHP translation file as "key.subkey" => text.
      *
      * @return array<string, string>
@@ -112,7 +124,8 @@ class Translations
      */
     public static function missing($locale)
     {
-        $json = self::json($locale);
+        // FruitUI translates its own strings (loaded at runtime too).
+        $json = self::json($locale) + self::fruitJson($locale);
         $missing = ['json' => [], 'groups' => []];
         foreach (self::codeStrings() as $string) {
             if (!isset($json[$string]) || $json[$string] === '') {

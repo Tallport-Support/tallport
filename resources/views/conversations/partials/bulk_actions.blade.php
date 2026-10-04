@@ -1,44 +1,31 @@
-<div id="conversations-bulk-actions" class="text-center">
-    <div class="btn-group" role="group">
-        <button type="button" class="btn btn-default conv-checkbox-clear" title="{{ __("Clear") }}">
-            <span class="glyphicon glyphicon-arrow-left"></span>
-        </button>
-        @if (!empty($mailbox))
-            <div class="btn-group">
-                <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{ __("Assignee") }}">
-                    <span class="glyphicon glyphicon-user"></span><span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu conv-user dm-scrollable">
-                    <li><a href="#" data-user_id="-1">{{ __("Anyone") }}</a></li>
-                    <li><a href="#" data-user_id="{{ Auth::user()->id }}">{{ __("Me") }}</a></li>
-                    @foreach ($mailbox->usersAssignable() as $user)
-                        @if ($user->id != Auth::user()->id)
-                            @php
-                                $a_class = \Eventy::filter('assignee_list.a_class', '', $user);
-                            @endphp
-                            <li><a href="#" data-user_id="{{ $user->id }}"  @if ($a_class) class="{{ $a_class }}"@endif>{{ $user->getFullName() }}@action('assignee_list.item_append', $user)</a></li>
-                        @endif
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-        <div class="btn-group">
-            <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{ __("Status") }}">
-                <span class="glyphicon glyphicon-flag"></span><span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu conv-status">
-                @foreach (App\Conversation::$statuses as $status => $dummy)
-                    <li><a href="#" data-status="{{ $status }}">{{ App\Conversation::statusCodeToName($status) }}</a></li>
-                @endforeach
-            </ul>
-        </div>
-        @action('bulk_actions.before_delete', $mailbox ?? null)
-        @if (Auth::user()->can('delete', new App\Conversation()))
-            <button type="button" class="btn btn-default conv-delete" title="{{ __("Delete") }}">
-                <span class="glyphicon glyphicon-trash"></span>
-            </button>
-        @endif
-    </div>
+<div id="conversations-bulk-actions" class="f-selection-bar conv-bulk-actions" role="region" aria-label="{{ __('Selection') }}" hidden data-count-one="{{ trans_choice(':count selected', 1, ['count' => 1]) }}" data-count-other="{{ trans_choice(':count selected', 2, ['count' => '__count__']) }}">
+    <x-fruit::button variant="ghost" size="small" class="conv-checkbox-clear" :aria-label="__('Clear')" :title="__('Clear')"><x-heroicon-o-x-mark class="f-icon" aria-hidden="true" /></x-fruit::button>
+    <span class="f-selection-bar__count" role="status"></span>
+    @if (!empty($mailbox))
+        <x-fruit::menu :title="__('Assignee')" class="conv-user">
+            <x-slot:trigger class="f-button--small"><x-heroicon-o-user class="f-icon" aria-hidden="true" /> {{ __('Assignee') }}</x-slot:trigger>
+            <x-fruit::menu-link href="#" data-user_id="-1">{{ __("Anyone") }}</x-fruit::menu-link>
+            <x-fruit::menu-link href="#" :data-user_id="Auth::user()->id">{{ __("Me") }}</x-fruit::menu-link>
+            @foreach ($mailbox->usersAssignable() as $user)
+                @if ($user->id != Auth::user()->id)
+                    @php
+                        $a_class = \Eventy::filter('assignee_list.a_class', '', $user);
+                    @endphp
+                    <x-fruit::menu-link href="#" :data-user_id="$user->id" :class="$a_class">{{ $user->getFullName() }}@action('assignee_list.item_append', $user)</x-fruit::menu-link>
+                @endif
+            @endforeach
+        </x-fruit::menu>
+    @endif
+    <x-fruit::menu :title="__('Status')" class="conv-status">
+        <x-slot:trigger class="f-button--small"><x-heroicon-o-flag class="f-icon" aria-hidden="true" /> {{ __('Status') }}</x-slot:trigger>
+        @foreach (App\Conversation::$statuses as $status => $dummy)
+            <x-fruit::menu-link href="#" :data-status="$status">{{ App\Conversation::statusCodeToName($status) }}</x-fruit::menu-link>
+        @endforeach
+    </x-fruit::menu>
+    @action('bulk_actions.before_delete', $mailbox ?? null)
+    @if (Auth::user()->can('delete', new App\Conversation()))
+        <x-fruit::button variant="danger" size="small" class="conv-delete"><x-heroicon-o-trash class="f-icon" aria-hidden="true" /> {{ __('Delete') }}</x-fruit::button>
+    @endif
 </div>
 
 <div id="conversations-bulk-actions-delete-modal" class="hide">

@@ -817,14 +817,6 @@
     },
     {
         "type": "action",
-        "name": "conversations_table.after_row",
-        "arguments": 3,
-        "files": [
-            "resources/views/conversations/conversations_table.blade.php"
-        ]
-    },
-    {
-        "type": "action",
         "name": "conversations_table.after_subject",
         "arguments": 1,
         "files": [
@@ -835,14 +827,6 @@
         "type": "action",
         "name": "conversations_table.before_subject",
         "arguments": 1,
-        "files": [
-            "resources/views/conversations/conversations_table.blade.php"
-        ]
-    },
-    {
-        "type": "action",
-        "name": "conversations_table.col_before_conv_number",
-        "arguments": 0,
         "files": [
             "resources/views/conversations/conversations_table.blade.php"
         ]
@@ -875,22 +859,6 @@
         "type": "action",
         "name": "conversations_table.row_class",
         "arguments": 1,
-        "files": [
-            "resources/views/conversations/conversations_table.blade.php"
-        ]
-    },
-    {
-        "type": "action",
-        "name": "conversations_table.td_before_conv_number",
-        "arguments": 1,
-        "files": [
-            "resources/views/conversations/conversations_table.blade.php"
-        ]
-    },
-    {
-        "type": "action",
-        "name": "conversations_table.th_before_conv_number",
-        "arguments": 0,
         "files": [
             "resources/views/conversations/conversations_table.blade.php"
         ]

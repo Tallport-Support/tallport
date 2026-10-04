@@ -1,15 +1,8 @@
 @if ($paginator->hasPages())
- 
-    {{-- First Page Link --}}
-    <a href="#" class="pager-nav pager-first glyphicon glyphicon-backward @if ($paginator->currentPage() <= 2) disabled @endif" data-page="1" title="{{ __('First Page') }}"></a>
-
-    {{-- Previous Page Link --}}
-    <a href="#" class="pager-nav pager-prev glyphicon glyphicon-triangle-left @if ($paginator->onFirstPage()) disabled @endif" data-page="{{ $paginator->currentPage()-1 }}" title="{{ __('Previous Page') }}"></a>
-
-    {{-- Next Page Link --}}
-    <a href="#" class="pager-nav pager-next glyphicon glyphicon-triangle-right @if (!$paginator->hasMorePages()) disabled @endif" data-page="{{ $paginator->currentPage()+1 }}" title="{{ __('Next Page') }}"></a>
-
-    {{-- Last Page Link --}}
-    <a href="#" class="pager-nav pager-last glyphicon glyphicon-forward @if ($paginator->currentPage() >= $paginator->lastPage()-1) disabled @endif" data-page="{{ $paginator->lastPage() }}" title="{{ __('Last Page') }}"></a>
-
+    <div class="f-pagination__controls">
+        <a href="#" class="f-button f-button--small pager-nav pager-first @if ($paginator->currentPage() <= 2) disabled @endif" data-page="1" title="{{ __('First Page') }}" aria-label="{{ __('First Page') }}" @if ($paginator->currentPage() <= 2) aria-disabled="true" @endif>«</a>
+        <a href="#" class="f-button f-button--small pager-nav pager-prev @if ($paginator->onFirstPage()) disabled @endif" data-page="{{ $paginator->currentPage()-1 }}" title="{{ __('Previous Page') }}" aria-label="{{ __('Previous Page') }}" @if ($paginator->onFirstPage()) aria-disabled="true" @endif>‹</a>
+        <a href="#" class="f-button f-button--small pager-nav pager-next @if (!$paginator->hasMorePages()) disabled @endif" data-page="{{ $paginator->currentPage()+1 }}" title="{{ __('Next Page') }}" aria-label="{{ __('Next Page') }}" @if (!$paginator->hasMorePages()) aria-disabled="true" @endif>›</a>
+        <a href="#" class="f-button f-button--small pager-nav pager-last @if ($paginator->currentPage() >= $paginator->lastPage()-1) disabled @endif" data-page="{{ $paginator->lastPage() }}" title="{{ __('Last Page') }}" aria-label="{{ __('Last Page') }}" @if ($paginator->currentPage() >= $paginator->lastPage()-1) aria-disabled="true" @endif>»</a>
+    </div>
 @endif

@@ -5174,6 +5174,7 @@ function setSummernoteText(jtextarea, text)
 function convListSortingInit()
 {
 	$('.conv-col-sort').click(function(event) {
+		event.preventDefault();
 		var table = $(this).parents('.table-conversations:first');
 		table.attr('data-sorting_sort_by', $(this).attr('data-sort-by'));
 		var order = $(this).attr('data-order');
@@ -5205,7 +5206,7 @@ function starConversationInit()
 		}
 
 		var sub_action = 'star';
-		if (trigger.hasClass('glyphicon-star')) {
+		if (trigger.hasClass('glyphicon-star') || trigger.attr('aria-pressed') == 'true') {
 			sub_action = 'unstar';
 		}
 		fsAjax(
@@ -5217,9 +5218,10 @@ function starConversationInit()
 			laroute.route('conversations.ajax'),
 			function(response) {
 				if (isAjaxSuccess(response)) {
-					// In the list there are two stars for desktop and monile
-					if (trigger.parents('.conv-row:first').length) {
-						trigger = trigger.parents('.conv-row:first').children().find('.conv-star');
+					// In the list: a toggle button.
+					if (trigger.attr('aria-pressed')) {
+						trigger.attr('aria-pressed', sub_action == 'star' ? 'true' : 'false');
+						return;
 					}
 					if (sub_action == 'star') {
 						trigger.addClass('glyphicon-star');
@@ -5284,39 +5286,16 @@ function converstationBulkActionsInit()
 		var checkboxes = $('.conv-checkbox');
 		var bulk_buttons = $('#conversations-bulk-actions');
 
-		$(bulk_buttons).show();
-		if ($(bulk_buttons).offset()) {
-			$(bulk_buttons).affix({
-				offset: {
-					top: $(bulk_buttons).offset().top,
-				}
-			});
-		}
-		$(bulk_buttons).hide();
-
-		//fix for bootstrap bug: https://stackoverflow.com/questions/19711202/bootstrap-3-affix-plugin-click-bug/31892323
-		$(bulk_buttons).on( 'affix.bs.affix', function() {
-		    if(!$(window).scrollTop()) return false;
-		} );
-
-	    var resizeFn = function () {
-	        $(bulk_buttons).css('width', $('.content-2col').width());
-	    };
-	    resizeFn();
-	    $(window).resize(resizeFn);
-
 		checkboxes.change(function(event) {
-			if (checkboxes.is(':checked')) {
-				$(bulk_buttons).fadeIn();
-			}
-			else {
-				$(bulk_buttons).fadeOut();
-			}
+			var count = checkboxes.filter(':checked').length;
+			$(bulk_buttons).prop('hidden', !count);
+			$('.f-selection-bar__count', bulk_buttons).text(count == 1 ? bulk_buttons.attr('data-count-one') : String(bulk_buttons.attr('data-count-other')).replace('__count__', count));
+			$(this).parents('.conv-row:first').toggleClass('selected', $(this).prop('checked'));
 		});
 
 		if (!bulk_buttons.attr('data-initialized')) {
 			// Change conversation assignee
-			$(".conv-user li > a", bulk_buttons).click(function(e) {
+			$(".conv-user [data-user_id]", bulk_buttons).click(function(e) {
 				if ($(this).hasClass('disabled')) {
 					return;
 				}
@@ -5347,7 +5326,7 @@ function converstationBulkActionsInit()
 			});
 
 			// Change conversation status
-			$(".conv-status li > a", bulk_buttons).click(function(e) {
+			$(".conv-status [data-status]", bulk_buttons).click(function(e) {
 				var status = $(this).data('status');
 
 				// We should pass empty "checkboxes" parameter
@@ -5411,7 +5390,7 @@ function converstationBulkActionsInit()
 				$(checkboxes).trigger('change');
 				$(checkboxes).prop('checked', false);
 				$(checkboxes).trigger('change');
-				$('table.table-conversations tr').removeClass('selected');
+				$('.conv-row').removeClass('selected');
 			});
 
 			bulk_buttons.attr('data-initialized', '1');
@@ -5421,32 +5400,19 @@ function converstationBulkActionsInit()
 			$('.conv-checkbox:checkbox').prop('checked', this.checked).trigger('change');
 		});
 
-		$('.conv-cb label').on( 'click', function(e){
+		// Shift-click selects the range from the previous click.
+		$('input.conv-checkbox').on('click', function(e) {
+			var all_checkboxes = $('input.conv-checkbox');
 
-		    var all_checkboxes = $('input.conv-checkbox');
-			var this_input = $(this).parent('td').find('input.conv-checkbox')[0];
+			if (e.shiftKey && fs_checkbox_shift_last_checked) {
+				var start = all_checkboxes.index(this);
+				var end = all_checkboxes.index(fs_checkbox_shift_last_checked);
 
-			// Remove the selection of text that happens.
-			document.getSelection().removeAllRanges();
+				all_checkboxes.slice(Math.min(start, end), Math.max(start, end)+1).prop('checked', this.checked).trigger('change');
+				document.getSelection().removeAllRanges();
+			}
 
-		    if (!fs_checkbox_shift_last_checked) {
-		        fs_checkbox_shift_last_checked = this_input;
-		        return;
-		    }
-
-		    if (e.shiftKey) {
-		        var start = all_checkboxes.index(this_input);
-		        var end = all_checkboxes.index(fs_checkbox_shift_last_checked);
-
-		        all_checkboxes.slice(Math.min(start,end), Math.max(start,end)+1).prop('checked', fs_checkbox_shift_last_checked.checked);
-
-				// When removing the selected text using getSelection(), the last click gets nullified. Let's re-do it.
-				if (getBrowser() != 'Firefox') {
-					$(this_input).trigger('click');
-				}
-		    }
-
-		    fs_checkbox_shift_last_checked = this_input;
+			fs_checkbox_shift_last_checked = this;
 		});
 	});
 }

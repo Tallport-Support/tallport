@@ -44,203 +44,97 @@
         // Sorting.
         $sorting = App\Conversation::getConvTableSorting();
 
-        // Build columns list
-        $columns = ['current'];
-        if (empty($no_checkboxes)) {
-            $columns[] = 'cb';
-        }
-        if (empty($no_customer)) {
-            $columns[] = 'customer';
-        }
-        $columns[] = 'attachment';
-        $columns[] = 'subject';
-        $columns[] = 'count';
-        if ($show_assigned) {
-            $columns[] = 'assignee';
-        }
-        $columns[] = 'number';
-        $columns[] = 'date';
-
-        $col_counter = 6;
     @endphp
 
-    {{--@if (!request()->get('page'))--}}
-        @include('/conversations/partials/bulk_actions')
-    {{--@endif--}}
-
-    <table class="table-conversations table @if (!empty($params['show_mailbox']))show-mailbox @endif" data-page="{{ (int)request()->get('page', 1) }}" @foreach ($params as $param_name => $param_value) data-param_{{ $param_name }}="{{ $param_value }}" @endforeach @if (!empty($conversations_filter)) @foreach ($conversations_filter as $filter_field => $filter_value) data-filter_{{ $filter_field }}="{{ $filter_value }}" @endforeach @endif @foreach ($sorting as $sorting_name => $sorting_value) data-sorting_{{ $sorting_name }}="{{ $sorting_value }}" @endforeach >
-        <colgroup>
-            {{-- todo: without this column table becomes not 100% wide --}}
-            <col class="conv-current">
-            @if (empty($no_checkboxes))<col class="conv-cb">@php $col_counter++ ; @endphp@endif
-            @if (empty($no_customer))<col class="conv-customer">@php $col_counter++ ; @endphp@endif
-            <col class="conv-attachment">
-            <col class="conv-subject">
-            <col class="conv-thread-count">
-            @if ($show_assigned)
-                <col class="conv-owner">@php $col_counter++ ; @endphp
-            @endif
-            @action('conversations_table.col_before_conv_number')
-            <col class="conv-number">
-            <col class="conv-date">
-        </colgroup>
-        <thead>
-        <tr>
-            <th class="conv-current">&nbsp;</th>
-            @if (empty($no_checkboxes))<th class="conv-cb"><input type="checkbox" class="toggle-all magic-checkbox" id="toggle-all"><label for="toggle-all"><span class="sr-only">{{ __('Select All Conversations') }}</span></label></th>@endif
-            @if (empty($no_customer))
-                <th class="conv-customer">
-                    <span>{{ __("Customer") }}</span>
-                </th>
-            @endif
-            <th class="conv-attachment">&nbsp;</th>
-            <th class="conv-subject" colspan="2">
-                <span class="conv-col-sort" data-sort-by="subject" data-order="@if ($sorting['sort_by'] == 'subject'){{ $sorting['order'] }}@else{{ 'asc' }}@endif">
-                    {{ __("Conversation") }} 
-                     @if ($sorting['sort_by'] == 'subject' && $sorting['order'] =='desc')↑@endif
-                     @if ($sorting['sort_by'] == 'subject' && $sorting['order'] =='asc')↓@endif
-                </span>
-            </th>
-            @if ($show_assigned)
-                <th class="conv-owner fs-trigger-modal @if (!empty($params['user_id'])) filtered @endif" data-remote="{{ route('conversations.ajax_html', ['action' =>
-                        'assignee_filter', 'mailbox_id' => (\Helper::isRoute('mailboxes.view.folder') ? $folder->mailbox_id : ''), 'user_id' => ($params['user_id'] ?? '')]) }}" data-trigger="modal" data-modal-title="{{ __("Assigned To") }}" data-modal-no-footer="true" data-modal-on-show="initConvAssigneeFilter">
-                    <span>{{ __("Assigned To") }}<small class="glyphicon glyphicon-filter"></small></span>
-                </th>
-                {{--<th class="conv-owner dropdown">
-                    <span {{--data-target="#"- -}} class="dropdown-toggle" data-toggle="dropdown">{{ __("Assigned To") }}</span>
-                    <ul class="dropdown-menu">
-                          <li><a class="filter-owner" data-id="1" href="#"><span class="option-title">{{ __("Anyone") }}</span></a></li>
-                          <li><a class="filter-owner" data-id="123" href="#"><span class="option-title">{{ __("Me") }}</span></a></li>
-                          <li><a class="filter-owner" data-id="123" href="#"><span class="option-title">{{ __("User") }}</span></a></li>
-                    </ul>
-                </th>--}}
-            @endif
-            @action('conversations_table.th_before_conv_number')
-            <th class="conv-number">
-                <span class="conv-col-sort" data-sort-by="number" data-order="@if ($sorting['sort_by'] == 'number'){{ $sorting['order'] }}@else{{ 'asc' }}@endif">
-                    {{ __("Number") }} 
-                     @if ($sorting['sort_by'] == 'number' && $sorting['order'] =='desc')↑@endif
-                     @if ($sorting['sort_by'] == 'number' && $sorting['order'] =='asc')↓@endif
-                </span>
-            </th>
-            <th class="conv-date">
-                <span>
-                    <span class="conv-col-sort" data-sort-by="date" data-order="@if ($sorting['sort_by'] == 'date'){{ $sorting['order'] }}@else{{ 'asc' }}@endif">
-                        @if ($folder->type == App\Folder::TYPE_CLOSED)@php $column_title_date = __("Closed"); @endphp@elseif ($folder->type == App\Folder::TYPE_DRAFTS)@php $column_title_date = __("Last Updated"); @endphp@elseif ($folder->type == App\Folder::TYPE_DELETED)@php $column_title_date = __("Deleted"); @endphp@else@php $column_title_date = \Eventy::filter('conversations_table.column_title_date', __("Waiting Since"), $folder) @endphp@endif{{ $column_title_date }} @if ($sorting['sort_by'] == 'date' && $sorting['order'] == 'desc')↑@elseif ($sorting['sort_by'] == 'date' && $sorting['order'] == 'asc')↓@elseif ($sorting['sort_by'] == '' && $sorting['order'] =='')↓@endif
-                    </a>
-                </span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-            @foreach ($conversations as $conversation)
-                <tr class="conv-row @action('conversations_table.row_class', $conversation) @if ($conversation->isActive()) conv-active @endif @if ($conversation->isSpam()) conv-spam @endif" data-conversation_id="{{ $conversation->id }}">
-                    @if (empty($no_checkboxes))<td class="conv-current">@if (!empty($viewers[$conversation->id]))
-                                <div class="viewer-badge @if (!empty($viewers[$conversation->id]['replying'])) viewer-replying @endif" data-toggle="tooltip" data-html="true" title="{{ implode('<br/>', array_map(function ($viewer) { return e(__($viewer['replying'] ? ':user is replying' : ':user is viewing', ['user' => $viewer['user']->getFullName()])); }, $viewers[$conversation->id]['users'])) }}"><div>
-                            @endif</td>@else<td class="conv-current"></td>@endif
-                    @if (empty($no_checkboxes))
-                        <td class="conv-cb">
-                            <input type="checkbox" class="conv-checkbox magic-checkbox" id="cb-{{ $conversation->id }}" name="cb_{{ $conversation->id }}" value="{{ $conversation->id }}"><label for="cb-{{ $conversation->id }}"><span class="sr-only">{{ __('Select Conversation') }}: {{ $conversation->getSubject() }}</span></label>
-                        </td>
-                    @endif
-                    @if (empty($no_customer))
-                        <td class="conv-customer">
-                            <a href="{{ $conversation->url() }}" @if (!empty($params['target_blank'])) target="_blank" @endif title="{{ $conversation->customer_email }}">
-                                @if ($conversation->customer_id && $conversation->customer){{ $conversation->customer->getFullName(true)}}@endif&nbsp;@if ($conversation->threads_count > 1)<span class="conv-counter">{{ $conversation->threads_count }}</span>@endif
-                                @if ($conversation->user_id)
-                                    <small class="conv-owner-mobile text-help">
-                                        {{ ($assignee = $conversation->user) ? $assignee->getFullName() : '' }} <small class="glyphicon glyphicon-user"></small>
-                                    </small>
-                                @endif
-                                <span class="conv-email">{{ $conversation->customer_email }}</span>
-                            </a>
-                        </td>
-                    @else
-                        {{-- Displayed in customer conversation history --}}
-                        <td class="conv-customer conv-owner-mobile">
-                            <a href="{{ $conversation->url() }}" class="help-link" @if (!empty($params['target_blank'])) target="_blank" @endif>
-                                <small class="glyphicon glyphicon-envelope"></small> 
-                                @if ($conversation->user_id)
-                                     <small>&nbsp;<i class="glyphicon glyphicon-user"></i> {{ ($assignee = $conversation->user) ? $assignee->getFullName() : '' }}</small> 
-                                @endif
-                            </a>
-                        </td>
-                    @endif
-                    <td class="conv-attachment">
-                        <i class="glyphicon conv-star @if ($conversation->isStarredByUser()) glyphicon-star @else glyphicon-star-empty @endif" title="@if ($conversation->isStarredByUser()){{ __("Unstar Conversation") }}@else{{ __("Star Conversation") }}@endif"></i>
-                        
-                        @if ($conversation->has_attachments)
-                            <i class="glyphicon glyphicon-paperclip"></i>
-                        @else
-                            &nbsp;
-                        @endif
-                    </td>
-                    <td class="conv-subject">
-                        <a href="{{ $conversation->url() }}" title="{{ __('View conversation') }}" @if (!empty(request()->x_embed) || !empty($params['target_blank'])) target="_blank"@endif>
-                            <span class="conv-fader"></span>
-                            <p>
-                                @if ($conversation->has_attachments)
-                                    <i class="conv-attachment-mobile glyphicon glyphicon-paperclip"></i>
-                                @endif
-                                @if ($conversation->isPhone())
-                                    <i class="glyphicon glyphicon-earphone"></i>
-                                @endif
-                                @if ($conversation->isCustom())
-                                    <i class="glyphicon glyphicon-comment"></i>
-                                @endif
-                                @include('conversations/partials/badges'){{ '' }}@if ($conversation->isChat() && $conversation->getChannelName())<span class="fs-tag pull-left"><span class="fs-tag-name"><small class="glyphicon glyphicon-phone"></small> {{ $conversation->getChannelName() }}</span></span>@endif{{ '' }}@action('conversations_table.before_subject', $conversation){{ $conversation->getSubject() }}@action('conversations_table.after_subject', $conversation)
-                            </p>
-                            <p class="conv-preview">@action('conversations_table.preview_prepend', $conversation)@if (!empty($params['show_mailbox']))[{{ $conversation->mailbox_cached->name }}]<br/>@endif{{ '' }}@php $ai_one_liner = $conversation->search_snippet === null ? (App\Ai\Summaries::getAny($conversation, App\Ai\Settings::language($conversation->mailbox_cached, Auth::user()))['one_liner'] ?? '') : ''; @endphp @if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner)<span class="ai-assistant-badge">AI</span> {{ $ai_one_liner }}@elseif ($conversation->preview){{ $conversation->preview }}@else&nbsp;@endif</p>
-                        </a>
-                    </td>
-                    <td class="conv-thread-count">
-                        <i class="glyphicon conv-star @if ($conversation->isStarredByUser()) glyphicon-star @else glyphicon-star-empty @endif" title="@if ($conversation->isStarredByUser()){{ __("Unstar Conversation") }}@else{{ __("Star Conversation") }}@endif"></i>
-
-                        {{--<a href="{{ $conversation->url() }}" title="{{ __('View conversation') }}">@if ($conversation->threads_count <= 1)&nbsp;@else<span>{{ $conversation->threads_count }}</span>@endif</a>--}}
-                    </td>
-                    @if ($show_assigned)
-                        <td class="conv-owner">
-                            @if ($conversation->user_id)<a href="{{ $conversation->url() }}" title="{{ __('View conversation') }}" @if (!empty($params['target_blank'])) target="_blank" @endif> {{ ($assignee = $conversation->user) ? $assignee->getFullName() : '' }} </a>@else &nbsp;@endif
-                        </td>
-                    @endif
-                    @action('conversations_table.td_before_conv_number', $conversation)
-                    <td class="conv-number">
-                        <a href="{{ $conversation->url() }}" title="{{ __('View conversation') }}" @if (!empty($params['target_blank'])) target="_blank" @endif><i>#</i>{{ $conversation->number }}</a>
-                    </td>
-                    <td class="conv-date">
-                        @php $conv_waiting_since = $conversation->getWaitingSince($folder); @endphp<a href="{{ $conversation->url() }}" @if (!in_array($folder->type, [App\Folder::TYPE_CLOSED, App\Folder::TYPE_DRAFTS, App\Folder::TYPE_DELETED]))@php $conv_date_title = $conversation->getDateTitle(); @endphp aria-label="{{ $conv_waiting_since }}" aria-description="{{ $conv_date_title }}" data-toggle="tooltip" data-html="true" data-placement="left" title="{{ $conv_date_title }}"@else title="{{ __('View conversation') }}" @endif @if (!empty($params['target_blank'])) target="_blank" @endif>{{ $conv_waiting_since }}</a>
-                    </td>
-                </tr>
-                @action('conversations_table.after_row', $conversation, $columns, $col_counter)
-            @endforeach
-        </tbody>
-        @if (count($conversations))
-            <tfoot>
-                <tr>
-                    <td class="conv-totals" colspan="{{ $col_counter-3 }}">
-                        @if ($conversations->total())
-                            {!! __safe_raw_html(':count conversations', ['count' => '<strong>'.$conversations->total().'</strong>']) !!}&nbsp;|&nbsp; 
-                        @endif
-                        @if (isset($folder->active_count) && !$folder->isIndirect())
-                            <strong>{{ $folder->getActiveCount() }}</strong> {{ __('active') }}&nbsp;|&nbsp; 
-                        @endif
-                        @if ($conversations)
-                            <strong>{{ $conversations->firstItem() }}</strong>-<strong>{{ $conversations->lastItem() }}</strong>
-                        @endif
-                    </td>
-                    <td colspan="3" class="conv-nav">
-                        <div class="table-pager">
-                            @if ($conversations)
-                                {{ $conversations->links('conversations/conversations_pagination') }}
-                            @endif
-                        </div>
-                    </td>
-                </tr>
-            </tfoot>
+    @php
+        $column_title_date = $folder->type == App\Folder::TYPE_CLOSED ? __("Closed") : ($folder->type == App\Folder::TYPE_DRAFTS ? __("Last Updated") : ($folder->type == App\Folder::TYPE_DELETED ? __("Deleted") : \Eventy::filter('conversations_table.column_title_date', __("Waiting Since"), $folder)));
+        $sort_titles = ['date' => $column_title_date, 'number' => __("Number"), 'subject' => __("Conversation")];
+        $sort_by = array_key_exists($sorting['sort_by'], $sort_titles) ? $sorting['sort_by'] : 'date';
+        $sort_order = $sorting['order'] ?: 'asc';
+    @endphp
+    <section class="table-conversations conv-list @if (!empty($params['show_mailbox']))show-mailbox @endif" aria-label="{{ __('Conversations') }}" data-page="{{ (int)request()->get('page', 1) }}" @foreach ($params as $param_name => $param_value) data-param_{{ $param_name }}="{{ $param_value }}" @endforeach @if (!empty($conversations_filter)) @foreach ($conversations_filter as $filter_field => $filter_value) data-filter_{{ $filter_field }}="{{ $filter_value }}" @endforeach @endif @foreach ($sorting as $sorting_name => $sorting_value) data-sorting_{{ $sorting_name }}="{{ $sorting_value }}" @endforeach >
+        @if (empty($no_checkboxes))
+            @include('/conversations/partials/bulk_actions')
         @endif
-    </table>
+
+        <div class="conv-list__toolbar f-row">
+            @if (empty($no_checkboxes))
+                <input type="checkbox" class="f-check toggle-all" id="toggle-all" aria-label="{{ __('Select All Conversations') }}" title="{{ __('Select All Conversations') }}">
+            @endif
+            <x-fruit::menu :title="__('Sort by')" class="conv-list__sort">
+                <x-slot:trigger class="f-button--ghost f-button--small">{{ $sort_titles[$sort_by] }} {{ $sort_order == 'desc' ? '↑' : '↓' }}</x-slot:trigger>
+                @foreach ($sort_titles as $sort_field => $sort_title)
+                    <x-fruit::menu-link href="#" class="conv-col-sort" :data-sort-by="$sort_field" :data-order="$sort_by == $sort_field ? $sort_order : 'desc'" :aria-current="$sort_by == $sort_field ? 'true' : null">{{ $sort_title }}@if ($sort_by == $sort_field) {{ $sort_order == 'desc' ? '↑' : '↓' }}@endif</x-fruit::menu-link>
+                @endforeach
+            </x-fruit::menu>
+            @if ($show_assigned)
+                <button type="button" class="f-button f-button--ghost f-button--small conv-owner fs-trigger-modal @if (!empty($params['user_id'])) filtered @endif" data-remote="{{ route('conversations.ajax_html', ['action' =>
+                        'assignee_filter', 'mailbox_id' => (\Helper::isRoute('mailboxes.view.folder') ? $folder->mailbox_id : ''), 'user_id' => ($params['user_id'] ?? '')]) }}" data-trigger="modal" data-modal-title="{{ __("Assigned To") }}" data-modal-no-footer="true" data-modal-on-show="initConvAssigneeFilter" @if (!empty($params['user_id'])) aria-pressed="true" @endif><x-heroicon-o-funnel class="f-icon" aria-hidden="true" /> {{ __("Assigned To") }}</button>
+            @endif
+        </div>
+
+        <ul class="f-item-list conv-list__items" role="list">
+            @foreach ($conversations as $conversation)
+                @php
+                    $conv_target = (!empty(request()->x_embed) || !empty($params['target_blank']));
+                    $conv_waiting_since = $conversation->getWaitingSince($folder);
+                    $conv_date_title = !in_array($folder->type, [App\Folder::TYPE_CLOSED, App\Folder::TYPE_DRAFTS, App\Folder::TYPE_DELETED]) ? $conversation->getDateTitle() : '';
+                    $conv_customer_name = ($conversation->customer_id && $conversation->customer) ? $conversation->customer->getFullName(true) : $conversation->customer_email;
+                    $ai_one_liner = $conversation->search_snippet === null ? (App\Ai\Summaries::getAny($conversation, App\Ai\Settings::language($conversation->mailbox_cached, Auth::user()))['one_liner'] ?? '') : '';
+                    $conv_starred = $conversation->isStarredByUser();
+                @endphp
+                <li class="conv-row @action('conversations_table.row_class', $conversation) @if ($conversation->isActive()) conv-active @endif @if ($conversation->isSpam()) conv-spam @endif" data-conversation_id="{{ $conversation->id }}">
+                    @if (empty($no_checkboxes))
+                        <input type="checkbox" class="f-check conv-checkbox" id="cb-{{ $conversation->id }}" name="cb_{{ $conversation->id }}" value="{{ $conversation->id }}" aria-label="{{ __('Select Conversation') }}: {{ $conversation->getSubject() }}">
+                    @endif
+                    <a href="{{ $conversation->url() }}" class="f-item-row conv-row__link" @if ($conv_target) target="_blank" @endif>
+                        <span class="f-item-row__top">
+                            <strong class="f-item-row__title" title="{{ $conversation->customer_email }}">@if (empty($no_customer)){{ $conv_customer_name }}@else{{ $conversation->getSubject() }}@endif</strong>
+                            <span class="f-item-row__time" @if ($conv_date_title) title="{{ strip_tags(str_replace('<br/>', ' ', $conv_date_title)) }}" @endif>{{ $conv_waiting_since }}</span>
+                        </span>
+                        @if (empty($no_customer))
+                            <span class="f-item-row__subtitle">@include('conversations/partials/badges'){{ '' }}@if ($conversation->isChat() && $conversation->getChannelName())<span class="f-badge conv-channel">{{ $conversation->getChannelName() }}</span> @endif{{ '' }}@action('conversations_table.before_subject', $conversation){{ $conversation->getSubject() }}@action('conversations_table.after_subject', $conversation)</span>
+                        @endif
+                        <span class="f-item-row__preview">@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner)<span class="ai-assistant-badge">AI</span> {{ $ai_one_liner }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</span>
+                        <span class="f-item-row__meta conv-row__meta">
+                            <span class="conv-number">#{{ $conversation->number }}</span>
+                            @if ($conversation->threads_count > 1)<span class="conv-counter" title="{{ __('Messages') }}"><x-heroicon-o-chat-bubble-left-right class="f-icon" aria-hidden="true" /> {{ $conversation->threads_count }}</span>@endif
+                            @if (!empty($params['show_mailbox']))<span>{{ $conversation->mailbox_cached->name }}</span>@endif
+                            @if ($conversation->user_id && ($assignee = $conversation->user))<span class="conv-owner-name"><x-heroicon-o-user class="f-icon" aria-hidden="true" /> {{ $assignee->getFullName() }}</span>@endif
+                            @if ($conversation->has_attachments)<x-heroicon-o-paper-clip class="f-icon" :aria-label="__('Attachments')" role="img" />@endif
+                            @if ($conversation->isPhone())<x-heroicon-o-phone class="f-icon" aria-hidden="true" />@endif
+                            @if (!empty($viewers[$conversation->id]))
+                                <span class="viewer-badge @if (!empty($viewers[$conversation->id]['replying'])) viewer-replying @endif"><x-heroicon-o-eye class="f-icon" aria-hidden="true" /> {{ implode(', ', array_map(function ($viewer) { return __($viewer['replying'] ? ':user is replying' : ':user is viewing', ['user' => $viewer['user']->getFullName()]); }, $viewers[$conversation->id]['users'])) }}</span>
+                            @endif
+                        </span>
+                    </a>
+                    @if (empty($no_checkboxes))
+                        <button type="button" class="f-button f-button--ghost f-button--icon conv-star" aria-pressed="{{ $conv_starred ? 'true' : 'false' }}" aria-label="{{ __('Star Conversation') }}" title="@if ($conv_starred){{ __("Unstar Conversation") }}@else{{ __("Star Conversation") }}@endif"><x-heroicon-o-star class="f-icon conv-star__off" aria-hidden="true" /><x-heroicon-s-star class="f-icon conv-star__on" aria-hidden="true" /></button>
+                    @endif
+                </li>
+            @endforeach
+        </ul>
+
+        @if (count($conversations))
+            <x-fruit::pagination class="conv-list__footer" :aria-label="__('Conversations')">
+                <span class="f-muted conv-totals">
+                    @if ($conversations->total())
+                        {!! __safe_raw_html(':count conversations', ['count' => '<strong>'.$conversations->total().'</strong>']) !!} ·
+                    @endif
+                    @if (isset($folder->active_count) && !$folder->isIndirect())
+                        <strong>{{ $folder->getActiveCount() }}</strong> {{ __('active') }} ·
+                    @endif
+                    <strong>{{ $conversations->firstItem() }}</strong>–<strong>{{ $conversations->lastItem() }}</strong>
+                </span>
+                {{ $conversations->links('conversations/conversations_pagination') }}
+            </x-fruit::pagination>
+        @endif
+    </section>
 @else
-    @include('partials/empty', ['empty_text' => __('There are no conversations here')])
+    <x-fruit::empty-state>
+        <x-slot:icon><x-heroicon-o-inbox /></x-slot:icon>
+        {{ __('There are no conversations here') }}
+    </x-fruit::empty-state>
 @endif
 
 @section('javascript')

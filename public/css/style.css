@@ -5387,3 +5387,99 @@ a.disabled:focus {
     margin-top: 8px;
     min-width: 260px;
 }
+/* Conversation list: FruitUI item rows with a checkbox and a star beside each. */
+.conv-list {
+    position: relative;
+}
+.conv-list__toolbar {
+    padding: 0 12px 8px;
+    border-bottom: 1px solid var(--f-border);
+}
+.conv-list__toolbar .conv-owner.filtered {
+    color: var(--f-accent);
+}
+.conv-list__items {
+    --f-item-list-padding: 0;
+    --f-item-row-radius: 0;
+    margin: 0;
+}
+.conv-list .conv-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    padding-inline-start: 12px;
+}
+.conv-list .conv-row > .conv-checkbox {
+    margin-top: 16px;
+    flex-shrink: 0;
+}
+.conv-list .conv-row > .conv-row__link {
+    flex: 1;
+    min-width: 0;
+}
+.conv-list .conv-row > .conv-star {
+    margin-top: 8px;
+    flex-shrink: 0;
+}
+.conv-list .conv-row.selected {
+    background: var(--f-selection-inactive);
+}
+.conv-list .conv-active .f-item-row__title {
+    font-weight: 700;
+}
+.conv-list .conv-row:not(.conv-active) .f-item-row__title {
+    font-weight: 500;
+}
+.conv-row__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 12px;
+}
+.conv-row__meta .f-icon,
+.conv-list .conv-badge {
+    --f-icon-size: 14px;
+    vertical-align: -2px;
+}
+.conv-list .viewer-badge {
+    position: static;
+    width: auto;
+    height: auto;
+    border: 0;
+    color: var(--f-warning);
+}
+.conv-list .viewer-badge.viewer-replying {
+    color: var(--f-danger);
+}
+.conv-list .conv-channel {
+    margin-inline-end: 4px;
+}
+.conv-star .conv-star__on,
+.conv-star[aria-pressed="true"] .conv-star__off {
+    display: none;
+}
+.conv-star[aria-pressed="true"] .conv-star__on {
+    display: block;
+    color: var(--f-warning);
+}
+.conv-list .search-snippet mark {
+    background: color-mix(in srgb, var(--f-warning) 30%, transparent);
+}
+.conv-bulk-actions {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+.conv-bulk-actions[hidden] {
+    display: none;
+}
+.conv-bulk-actions .conv-checkbox-clear {
+    display: inline-flex;
+}
+.conv-list__footer {
+    padding-inline: 12px;
+}
+.conv-list__footer .pager-nav.disabled {
+    pointer-events: none;
+    opacity: 0.45;
+}

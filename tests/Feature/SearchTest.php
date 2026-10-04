@@ -176,7 +176,7 @@ class SearchTest extends FeatureTestCase
 
         $this->actingAs($this->agent)->get('/search?q=jacket+broke')
             ->assertOk()
-            ->assertSee('<i>#</i>'.$conversation->number, false)
+            ->assertSee('<span class="conv-number">#'.$conversation->number.'</span>', false)
             ->assertSee('winter <mark>jacket</mark> <mark>broke</mark> yesterday &amp; now', false)
             ->assertSee('Search tips');
         $this->actingAs($this->agent)->get('/search?q=%23'.$conversation->number)->assertRedirect();
