@@ -7,6 +7,9 @@ use App\Folder;
 use App\Mailbox;
 use App\Thread;
 use App\User;
+use App\Ai\Settings;
+use App\Ai\Summaries;
+use App\Ai\Translations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
@@ -48,6 +51,7 @@ class DatabaseSeeder extends Seeder
                 }
                 foreach ($mailboxes as $mailbox) {
                     $this->mailbox($mailbox, $users);
+                    $this->enrichSamples($mailbox, $users);
                 }
             });
         });
@@ -59,15 +63,16 @@ class DatabaseSeeder extends Seeder
     protected function users()
     {
         $users = User::where('status', User::STATUS_ACTIVE)->where('type', User::TYPE_USER)->orderBy('id')->get();
-        for ($i = 1; $users->count() < 2; $i++) {
+        for ($i = 1; $users->count() < 3; $i++) {
             $email = 'agent'.$i.'@demo.example.test';
             if (User::where('email', $email)->exists()) {
                 continue;
             }
             $password = \Illuminate\Support\Str::random(24);
             $user = new User();
-            $user->first_name = $users->isEmpty() ? 'Alex' : 'Sam';
-            $user->last_name = 'Morgan';
+            [$user->first_name, $user->last_name] = [
+                ['Alex', 'Morgan'], ['Sam', 'Rivera'], ['Jamie', 'Park'],
+            ][$users->count()];
             $user->email = $email;
             $user->password = Hash::make($password);
             $user->role = $users->isEmpty() ? User::ROLE_ADMIN : User::ROLE_USER;
@@ -269,6 +274,74 @@ class DatabaseSeeder extends Seeder
             }
         }
         $this->sequence++;
+    }
+
+    protected function enrichSamples($mailbox, $users)
+    {
+        $conversations = $mailbox->conversations()->where('imported', true)
+            ->whereHas('threads', function ($query) {
+                $query->where('message_id', 'like', 'sample-%@demo.example.test');
+            })->with('threads')->get();
+        foreach ($conversations as $conversation) {
+            // The old seeder's message IDs identify its fixtures without touching real mail.
+            $samples = $conversation->threads->filter(function ($thread) use ($conversation) {
+                return preg_match('/^sample-'.(int) $conversation->id.'-\d+@demo\.example\.test$/D', (string) $thread->message_id);
+            })->sortBy('id');
+            $staff = $samples->whereIn('type', [Thread::TYPE_MESSAGE, Thread::TYPE_NOTE])
+                ->where('state', Thread::STATE_PUBLISHED)->values();
+            if ($staff->pluck('created_by_user_id')->filter()->unique()->count() < min(3, $staff->count())) {
+                foreach ($staff as $index => $thread) {
+                    DB::table('threads')->where('id', $thread->id)->update([
+                        'created_by_user_id' => $users[$index % $users->count()]->id,
+                    ]);
+                }
+            }
+            foreach ($samples->where('type', Thread::TYPE_CUSTOMER)->where('state', Thread::STATE_PUBLISHED) as $thread) {
+                $data = Summaries::data($thread);
+                $original = $data;
+                foreach (Settings::LANGUAGES as $language => $name) {
+                    if (Translations::isMissing($thread, $language)) {
+                        // Deliberately labelled English placeholders, not machine translations.
+                        $data['translations'][$language] = 'Sample translation ('.$name.")\n\n".Summaries::text($thread);
+                        unset($data['errors'][$language]);
+                    }
+                }
+                if ($data !== $original) {
+                    DB::table('threads')->where('id', $thread->id)->update([
+                        'ai_assistant' => json_encode($data, JSON_UNESCAPED_UNICODE),
+                        'ai_assistant_updated_at' => now(),
+                    ]);
+                }
+            }
+            $published = $conversation->threads->where('state', Thread::STATE_PUBLISHED)
+                ->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE, Thread::TYPE_NOTE]);
+            $latest = (int) $published->max('id');
+            $data = Summaries::data($conversation);
+            $original = $data;
+            foreach (Settings::LANGUAGES as $language => $name) {
+                $summary = $data['summaries'][$language] ?? null;
+                if (!$summary || (!empty($summary['seeded']) && (int) $summary['thread_id'] < $latest)) {
+                    $first = $samples->where('type', Thread::TYPE_CUSTOMER)->first();
+                    $last = $samples->where('type', Thread::TYPE_CUSTOMER)->last();
+                    $data['summaries'][$language] = [
+                        'one_liner' => 'Sample summary: '.$conversation->subject,
+                        'summary' => "Sample summary (".$name.")\n\n"
+                            ."- Customer request: ".($first ? mb_substr(Summaries::text($first), 0, 400) : $conversation->subject)
+                            ."\n- The support team exchanged replies and internal notes."
+                            ."\n- Latest customer update: ".($last ? mb_substr(Summaries::text($last), 0, 400) : 'Awaiting a reply.'),
+                        'thread_id' => $latest,
+                        'at' => now()->toDateTimeString(),
+                        'seeded' => true,
+                    ];
+                }
+            }
+            if ($data !== $original) {
+                DB::table('conversations')->where('id', $conversation->id)->update([
+                    'ai_assistant' => json_encode($data, JSON_UNESCAPED_UNICODE),
+                    'ai_assistant_updated_at' => now(),
+                ]);
+            }
+        }
     }
 
     protected function longExchange()
