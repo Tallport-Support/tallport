@@ -32,10 +32,11 @@
         <p class="f-help editor-picker__empty">{{ __('No saved replies yet.') }}</p>
     @endif
     @if (App\SavedReply::canManage(Auth::user(), $mailbox))
-        <form class="f-input-group editor-picker__save" x-data="{ name: '' }" x-on:submit.prevent="savedReplySaveFromReply(name, () => { name = ''; $el.closest('details').open = false })">
-            <input type="text" class="f-input" maxlength="75" x-model="name" placeholder="{{ __('Name') }}" aria-label="{{ __('Save as saved reply') }}" required>
-            <button type="submit" class="f-button f-button--primary">{{ __('Save') }}</button>
-        </form>
+        {{-- Not a form: the picker sits inside the reply form. --}}
+        <div class="f-input-group editor-picker__save" x-data="{ name: '', save() { if (this.name.trim()) { savedReplySaveFromReply(this.name, () => { this.name = ''; this.$el.closest('details').open = false }) } } }">
+            <input type="text" class="f-input" maxlength="75" x-model="name" placeholder="{{ __('Name') }}" aria-label="{{ __('Save as saved reply') }}" x-on:keydown.enter.prevent="save()">
+            <button type="button" class="f-button f-button--primary" x-on:click="save()">{{ __('Save') }}</button>
+        </div>
     @endif
 </x-fruit::floating-disclosure>
 
