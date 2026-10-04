@@ -1476,5 +1476,6 @@
     "Delete all log files?": "למחוק את כל קובצי היומן?",
     "No log records.": "אין רשומות ביומן.",
     "This log file is larger than 50 MB. Download it to read it.": "קובץ היומן גדול מ-50 MB. יש להוריד אותו כדי לקרוא אותו.",
-    "Danger Zone": "אזור סכנה"
+    "Danger Zone": "אזור סכנה",
+    "Local time": "שעה מקומית"
 }

@@ -1481,5 +1481,6 @@
     "Delete all log files?": "Slette alle loggfilene?",
     "No log records.": "Ingen loggoppføringer.",
     "This log file is larger than 50 MB. Download it to read it.": "Denne loggfilen er større enn 50 MB. Last den ned for å lese den.",
-    "Danger Zone": "Faresone"
+    "Danger Zone": "Faresone",
+    "Local time": "Lokal tid"
 }

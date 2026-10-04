@@ -10,27 +10,14 @@
         : collect();
 @endphp
 @if (count($sidebar_attachments))
-    <div class="conv-sidebar-block attachments-block">
-        <div class="panel-group accordion accordion-empty">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" href=".collapse-attachments">{{ __('Attachments') }} <x-heroicon-o-chevron-down class="f-icon" aria-hidden="true" /></a>
-                    </h4>
-                </div>
-                <div class="collapse-attachments panel-collapse collapse in">
-                    <div class="panel-body">
-                        <div class="sidebar-block-header2"><strong>{{ __('Attachments') }}</strong> ({{ count($sidebar_attachments) }})</div>
-                        <ul class="sidebar-block-list attachments-list">
-                            @foreach ($sidebar_attachments as $attachment)
-                                <li data-attachment-id="{{ $attachment->id }}" data-mime="{{ $attachment->mime_type }}" @if (App\Http\Controllers\AttachmentsController::isEmail($attachment)) data-email-url="{{ route('attachments.email', ['id' => $attachment->id]) }}" @endif>
-                                    <a href="{{ $attachment->url() }}" target="_blank" class="attachment-link help-link"><i class="glyphicon glyphicon-paperclip"></i>{{ $attachment->file_name }} <span class="text-help">({{ $attachment->getSizeName() }})</span></a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <section class="conv-sidebar-block attachments-block inspector-section">
+        <h3>{{ __('Attachments') }} <span class="f-muted">{{ count($sidebar_attachments) }}</span></h3>
+        <ul class="sidebar-block-list attachments-list">
+            @foreach ($sidebar_attachments as $attachment)
+                <li data-attachment-id="{{ $attachment->id }}" data-mime="{{ $attachment->mime_type }}" @if (App\Http\Controllers\AttachmentsController::isEmail($attachment)) data-email-url="{{ route('attachments.email', ['id' => $attachment->id]) }}" @endif>
+                    <a href="{{ $attachment->url() }}" target="_blank" class="attachment-link"><x-heroicon-o-paper-clip class="f-icon" aria-hidden="true" /><span>{{ $attachment->file_name }} <span class="f-muted">({{ $attachment->getSizeName() }})</span></span></a>
+                </li>
+            @endforeach
+        </ul>
+    </section>
 @endif

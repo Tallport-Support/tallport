@@ -1,31 +1,19 @@
 @if (!empty($customer))
-    <div class="conv-customer-header"></div>
-    <div class="conv-customer-block conv-sidebar-block">
-        @include('customers/profile_snippet', ['customer' => $customer, 'main_email' => $conversation->customer_email ?? '', 'conversation' => $conversation ?? null])
+    <div class="conv-customer-block">
         @if (isset($conversation))
-	        <div class="dropdown customer-trigger" data-toggle="tooltip" title="{{ __("Settings") }}">
-	            <button type="button" class="f-button f-button--ghost f-button--icon f-button--small dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="{{ __("Settings") }}"><x-heroicon-o-cog-6-tooth class="f-icon" aria-hidden="true" /></button>
-	            <ul class="dropdown-menu dropdown-menu-right" role="menu">
-	                <li role="presentation"><a href="{{ route('customers.update', ['id' => $customer->id]) }}" tabindex="-1" role="menuitem">{{ __("Edit Profile") }}</a></li>
-	                @if (!$conversation->isChat())
-	                    <li role="presentation"><a href="{{ route('conversations.ajax_html', array_merge(['action' =>
-	            'change_customer'], \Request::all(), ['conversation_id' => $conversation->id]) ) }}" data-trigger="modal" data-modal-title="{{ __("Change Customer") }}" data-modal-no-footer="true" data-modal-on-show="changeCustomerInit" tabindex="-1" role="menuitem">{{ __("Change Customer") }}</a></li>
-	                @endif
-	                @if (count($prev_conversations))
-	                    <li role="presentation" class="col3-hidden"><a data-toggle="collapse" href=".collapse-conv-prev" tabindex="-1" role="menuitem">{{ __("Previous Conversations") }}</a></li>
-	                @endif
-	                @if ($customer->getMeta(App\Misc\ExternalImages::META_KEY))
-	                    <li role="presentation"><a href="#" class="external-images-block" data-customer-id="{{ $customer->id }}" tabindex="-1" role="menuitem">{{ __('Hide images from other servers') }}</a></li>
-	                @endif
-	                {{ \Eventy::action('conversation.customer.menu', $customer, $conversation) }}
-	                {{-- No need to use this --}}
-	                {{ \Eventy::action('customer_profile.menu', $customer, $conversation) }}
-	            </ul>
-	        </div>
-	    @endif
-        {{--<div data-toggle="collapse" href="#collapse-conv-prev" class="customer-hist-trigger">
-            <div class="glyphicon glyphicon-list-alt" data-toggle="tooltip" title="{{ __("Previous Conversations") }}"></div>
-        </div>--}}
+            <x-fruit::menu :title="__('Settings')" class="customer-trigger">
+                <x-slot:trigger class="f-button--ghost f-button--icon f-button--small" :aria-label="__('Settings')"><x-heroicon-o-cog-6-tooth class="f-icon" aria-hidden="true" /></x-slot:trigger>
+                <x-fruit::menu-link :href="route('customers.update', ['id' => $customer->id])">{{ __('Edit Profile') }}</x-fruit::menu-link>
+                @if (!$conversation->isChat())
+                    <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'change_customer'], \Request::all(), ['conversation_id' => $conversation->id]))" data-trigger="modal" :data-modal-title="__('Change Customer')" data-modal-no-footer="true" data-modal-on-show="changeCustomerInit">{{ __('Change Customer') }}</x-fruit::menu-link>
+                @endif
+                @if ($customer->getMeta(App\Misc\ExternalImages::META_KEY))
+                    <x-fruit::menu-link href="#" class="external-images-block" :data-customer-id="$customer->id">{{ __('Hide images from other servers') }}</x-fruit::menu-link>
+                @endif
+                <ul class="menu-module-items">{{ \Eventy::action('conversation.customer.menu', $customer, $conversation) }}{{ \Eventy::action('customer_profile.menu', $customer, $conversation) }}</ul>
+            </x-fruit::menu>
+        @endif
+        @include('customers/profile_snippet', ['customer' => $customer, 'main_email' => $conversation->customer_email ?? '', 'conversation' => $conversation ?? null])
     </div>
     @if (isset($conversation) && isset($mailbox))
     	@action('conversation.before_prev_convs', $customer, $conversation, $mailbox)

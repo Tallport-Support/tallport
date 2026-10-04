@@ -1476,5 +1476,6 @@
     "Delete all log files?": "Odstrániť všetky súbory denníka?",
     "No log records.": "Žiadne záznamy denníka.",
     "This log file is larger than 50 MB. Download it to read it.": "Tento súbor denníka je väčší ako 50 MB. Stiahnite si ho a prečítajte.",
-    "Danger Zone": "Nebezpečná zóna"
+    "Danger Zone": "Nebezpečná zóna",
+    "Local time": "Miestny čas"
 }

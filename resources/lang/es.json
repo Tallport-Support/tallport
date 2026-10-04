@@ -1478,5 +1478,6 @@
     "Delete all log files?": "¿Eliminar todos los archivos de registro?",
     "No log records.": "No hay registros.",
     "This log file is larger than 50 MB. Download it to read it.": "Este archivo de registro supera los 50 MB. Descárguelo para leerlo.",
-    "Danger Zone": "Zona de peligro"
+    "Danger Zone": "Zona de peligro",
+    "Local time": "Hora local"
 }

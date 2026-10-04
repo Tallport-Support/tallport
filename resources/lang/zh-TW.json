@@ -1527,5 +1527,6 @@
     "Delete all log files?": "刪除所有記錄檔？",
     "No log records.": "沒有記錄。",
     "This log file is larger than 50 MB. Download it to read it.": "此記錄檔大於 50 MB。請下載後閱讀。",
-    "Danger Zone": "危險操作"
+    "Danger Zone": "危險操作",
+    "Local time": "當地時間"
 }

@@ -1481,5 +1481,6 @@
     "Delete all log files?": "Alle logbestanden verwijderen?",
     "No log records.": "Geen logregels.",
     "This log file is larger than 50 MB. Download it to read it.": "Dit logbestand is groter dan 50 MB. Download het om het te lezen.",
-    "Danger Zone": "Gevarenzone"
+    "Danger Zone": "Gevarenzone",
+    "Local time": "Lokale tijd"
 }

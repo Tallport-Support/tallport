@@ -1576,5 +1576,6 @@
     "Delete all log files?": "Voleu suprimir tots els fitxers de registre?",
     "No log records.": "No hi ha registres.",
     "This log file is larger than 50 MB. Download it to read it.": "Aquest fitxer de registre fa més de 50 MB. Baixeu-lo per llegir-lo.",
-    "Danger Zone": "Zona de perill"
+    "Danger Zone": "Zona de perill",
+    "Local time": "Hora local"
 }

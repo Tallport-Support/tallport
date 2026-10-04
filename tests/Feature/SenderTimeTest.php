@@ -28,7 +28,7 @@ class SenderTimeTest extends FeatureTestCase
         $this->assertSame('09:14', SenderTime::format(SenderTime::sentAt($thread), '-05:00'));
 
         $this->actingAs($admin)->followingRedirects()->get('/conversation/'.$conversation->id)->assertOk()
-            ->assertSee('Local time 07:00 (GMT-05:00)')
+            ->assertSeeInOrder(['Local time', '07:00 (GMT-05:00)'])
             ->assertSee('Sent at 09:14 their time (GMT-05:00)');
 
         // Not from an email (Telegram, Nostr, phone): nothing to say.

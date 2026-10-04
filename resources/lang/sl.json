@@ -1476,5 +1476,6 @@
     "Delete all log files?": "Izbrišem vse dnevniške datoteke?",
     "No log records.": "Ni dnevniških zapisov.",
     "This log file is larger than 50 MB. Download it to read it.": "Ta dnevniška datoteka je večja od 50 MB. Prenesite jo, da jo preberete.",
-    "Danger Zone": "Nevarno območje"
+    "Danger Zone": "Nevarno območje",
+    "Local time": "Lokalni čas"
 }

@@ -1477,5 +1477,6 @@
     "Delete all log files?": "すべてのログファイルを削除しますか?",
     "No log records.": "ログの記録はありません。",
     "This log file is larger than 50 MB. Download it to read it.": "このログファイルは50 MBを超えています。ダウンロードして読んでください。",
-    "Danger Zone": "危険な操作"
+    "Danger Zone": "危険な操作",
+    "Local time": "現地時刻"
 }

@@ -1477,5 +1477,6 @@
     "Delete all log files?": "Törli az összes naplófájlt?",
     "No log records.": "Nincsenek naplóbejegyzések.",
     "This log file is larger than 50 MB. Download it to read it.": "Ez a naplófájl nagyobb 50 MB-nál. Töltse le az olvasáshoz.",
-    "Danger Zone": "Veszélyzóna"
+    "Danger Zone": "Veszélyzóna",
+    "Local time": "Helyi idő"
 }

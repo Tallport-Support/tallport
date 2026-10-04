@@ -423,7 +423,7 @@ $(document).ready(function(){
 	});
 
 	//applyVoidLinks();
-	$('ul.customer-contacts a.contact-main').click(function(e) {
+	$('.customer-snippet a.contact-main').click(function(e) {
 		copyToClipboard($(this).text());
 		e.preventDefault();
 	});
