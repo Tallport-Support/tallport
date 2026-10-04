@@ -1,6 +1,19 @@
 let sequence = 0;
 export const fruitId = prefix => `${prefix}-${++sequence}`;
 
+/**
+ * Give a server-rendered element a generated id that survives Livewire updates. Livewire's morph
+ * matches elements by id, so an id only the browser knows would make it replace the element; an
+ * id recorded as an Alpine binding is carried over to the re-rendered element instead.
+ */
+export function keepId(element, prefix) {
+  if (!element.id) {
+    element.id = fruitId(prefix);
+    element._x_bindings = { ...element._x_bindings, id: element.id };
+  }
+  return element.id;
+}
+
 /** Discrete selections commit immediately; document editing commits on blur. */
 export function publishValue(control, value, { commit = true } = {}) {
   if (control.value === value) return;
@@ -34,7 +47,7 @@ export function bridgeControl(component, control, query, sync, { presentation = 
   const attributes = (reason = 'attributes') => {
     if (!control.hidden) control.hidden = true;
     const currentLabels = labels();
-    for (const label of currentLabels) label.id ||= fruitId('fruit-label');
+    for (const label of currentLabels) keepId(label, 'fruit-label');
     for (const name of [
       'aria-label',
       'aria-labelledby',

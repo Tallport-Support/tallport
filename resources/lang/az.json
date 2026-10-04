@@ -1479,5 +1479,8 @@
     "This log file is larger than 50 MB. Download it to read it.": "Bu jurnal faylı 50 MB-dan böyükdür. Oxumaq üçün onu endirin.",
     "Danger Zone": "Təhlükəli zona",
     "Local time": "Yerli vaxt",
-    "Search conversations": "Söhbətlərdə axtar"
+    "Search conversations": "Söhbətlərdə axtar",
+    "Select": "Seç",
+    "Clear selection": "Seçimi təmizlə",
+    "Selected conversations": "Seçilmiş söhbətlər"
 }

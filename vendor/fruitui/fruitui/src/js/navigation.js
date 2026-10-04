@@ -1,4 +1,4 @@
-import { fruitId } from './control-bridge.js';
+import { keepId } from './control-bridge.js';
 import { fruitDetailsPopup, fruitPopup, isRtl } from './popup.js';
 
 const menuItems = '[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]';
@@ -72,7 +72,7 @@ export function fruitMenu() {
           if (open && document.activeElement === trigger) focus(0);
         },
       });
-      popup.id ||= fruitId('fruit-menu');
+      keepId(popup, 'fruit-menu');
       trigger.setAttribute('aria-haspopup', 'menu');
       trigger.setAttribute('aria-controls', popup.id);
       trigger.setAttribute('aria-expanded', String(details.open));
@@ -141,7 +141,7 @@ export function fruitContextMenu() {
       target = menu.parentElement;
       if (!target) return;
       menu.setAttribute('data-fruit-menu', '');
-      menu.id ||= fruitId('fruit-context-menu');
+      keepId(menu, 'fruit-context-menu');
       menu.hidden = true;
       menu.querySelectorAll(menuItems).forEach(item => {
         if (owns(item)) item.tabIndex = -1;

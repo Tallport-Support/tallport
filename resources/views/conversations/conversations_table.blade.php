@@ -57,18 +57,13 @@
         $current_conversation_id = $params['current_conversation_id'] ?? null;
     @endphp
     <section class="table-conversations conv-list @if (!empty($params['show_mailbox']))show-mailbox @endif" aria-label="{{ __('Conversations') }}" data-page="{{ method_exists($conversations, 'currentPage') ? $conversations->currentPage() : (int) request()->get('page', 1) }}" @if ($folder->id) data-folder_id="{{ $folder->id }}" data-mailbox_id="{{ $list_mailbox_id }}" @endif>
-        @if (empty($no_checkboxes))
-            @include('/conversations/partials/bulk_actions')
-        @endif
-
-        <div class="conv-list__toolbar f-row">
-            @if (empty($no_checkboxes))
-                <input type="checkbox" class="f-check toggle-all" id="toggle-all" aria-label="{{ __('Select All Conversations') }}" title="{{ __('Select All Conversations') }}" x-data="{ ids: @js($conversations->pluck('id')->map(fn ($id) => (string) $id)->values()) }" :checked="ids.length && ids.every(id => selected.includes(id))" @change="selected = $event.target.checked ? ids : []">
-            @endif
+        {{-- The list header: view tools, or while conversations are selected, the selection bar in their place.
+             Cmd/Ctrl+click and Shift+click select rows; Select shows the checkboxes for touch. --}}
+        <x-fruit::list-header class="conv-list__header">
             <x-fruit::menu :title="__('Sort by')" class="conv-list__sort">
                 <x-slot:trigger class="f-button--ghost f-button--small">{{ $sort_titles[$sort_by] }} {{ $sort_order == 'desc' ? '↑' : '↓' }}</x-slot:trigger>
                 @foreach ($sort_titles as $sort_field => $sort_title)
-                    <x-fruit::menu-link href="#" class="conv-col-sort" wire:click.prevent="sort('{{ $sort_field }}')" x-on:click="selected = []" :aria-current="$sort_by == $sort_field ? 'true' : null">{{ $sort_title }}@if ($sort_by == $sort_field) {{ $sort_order == 'desc' ? '↑' : '↓' }}@endif</x-fruit::menu-link>
+                    <x-fruit::menu-link href="#" class="conv-col-sort" wire:click.prevent="sort('{{ $sort_field }}')" :aria-current="$sort_by == $sort_field ? 'true' : null">{{ $sort_title }}@if ($sort_by == $sort_field) {{ $sort_order == 'desc' ? '↑' : '↓' }}@endif</x-fruit::menu-link>
                 @endforeach
             </x-fruit::menu>
             @if ($show_assigned)
@@ -85,9 +80,17 @@
                     @endforeach
                 </x-fruit::menu>
             @endif
-        </div>
+            @if (empty($no_checkboxes))
+                <span class="f-toolbar__spacer"></span>
+                <x-fruit::button variant="ghost" size="small" data-fruit-select-toggle aria-controls="conversations" aria-pressed="false">{{ __('Select') }}</x-fruit::button>
+                <x-slot:selection>
+                    @include('conversations/partials/bulk_actions')
+                </x-slot:selection>
+            @endif
+        </x-fruit::list-header>
 
-        <x-fruit::item-list class="conv-list__items" :aria-label="__('Conversations')">
+        <div class="f-pane__scroll split-view__list">
+        <x-fruit::item-list class="conv-list__items" :id="empty($no_checkboxes) ? 'conversations' : null" :selection="empty($no_checkboxes) ? 'multiple' : 'none'" :aria-label="__('Conversations')">
             @foreach ($conversations as $conversation)
                 @php
                     $conv_target = (!empty(request()->x_embed) || !empty($params['target_blank']));
@@ -97,9 +100,9 @@
                     $ai_one_liner = $conversation->search_snippet === null ? (App\Ai\Summaries::getAny($conversation, App\Ai\Settings::language($conversation->mailbox_cached, Auth::user()))['one_liner'] ?? '') : '';
                     $conv_starred = $conversation->isStarredByUser();
                 @endphp
-                <li class="conv-row @action('conversations_table.row_class', $conversation) @if ($conversation->isActive()) conv-active @endif @if ($conversation->isSpam()) conv-spam @endif" data-conversation_id="{{ $conversation->id }}" wire:key="conv-{{ $conversation->id }}" :class="{ selected: selected.includes('{{ $conversation->id }}') }">
+                <li class="conv-row @action('conversations_table.row_class', $conversation) @if ($conversation->isActive()) conv-active @endif @if ($conversation->isSpam()) conv-spam @endif" data-conversation_id="{{ $conversation->id }}" wire:key="conv-{{ $conversation->id }}">
                     @if (empty($no_checkboxes))
-                        <x-fruit::checkbox class="conv-checkbox" :id="'cb-'.$conversation->id" :name="'cb_'.$conversation->id" :value="$conversation->id" x-model="selected" x-on:click="checked($event)"><span class="f-sr-only">{{ __('Select Conversation') }}: {{ $conversation->getSubject() }}</span></x-fruit::checkbox>
+                        <x-fruit::checkbox class="conv-checkbox" :id="'cb-'.$conversation->id" :name="'cb_'.$conversation->id" :value="$conversation->id" wire:model.live="selected"><span class="f-sr-only">{{ __('Select Conversation') }}: {{ $conversation->getSubject() }}</span></x-fruit::checkbox>
                     @endif
                     <x-fruit::item-link :href="$conversation->url(null, null, $list_params)" :current="$current_conversation_id == $conversation->id" :target="$conv_target ? '_blank' : null" class="conv-row__link">
                         <x-slot:title :title="$conversation->customer_email">@if (empty($no_customer)){{ $conv_customer_name }}@else{{ $conversation->getSubject() }}@endif</x-slot:title>
@@ -141,6 +144,7 @@
                 {{ $conversations->links('conversations/conversations_pagination', ['wire' => true]) }}
             </x-fruit::pagination>
         @endif
+        </div>
     </section>
 @else
     <x-fruit::empty-state>

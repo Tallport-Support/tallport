@@ -50,6 +50,11 @@ class ConversationList extends Component
     public $url;
 
     /**
+     * The checked conversations (FruitUI's list selection), for the bulk actions.
+     */
+    public $selected = [];
+
+    /**
      * The conversations the page has loaded already, for the first render.
      */
     protected $initial;
@@ -84,11 +89,13 @@ class ConversationList extends Component
             $order = 'desc';
         }
         $this->sorting = ['sort_by' => $sort_by, 'order' => $order];
+        $this->selected = [];
     }
 
     public function gotoPage($page)
     {
         $this->page = max(1, (int) $page);
+        $this->selected = [];
         if ($this->page_param) {
             $this->js('window.history.replaceState({}, "", (url => (url.searchParams.set('.json_encode($this->page_param).', '.$this->page.'), url))(new URL(window.location)))');
         }
@@ -107,6 +114,7 @@ class ConversationList extends Component
         }
         $this->params = $params;
         $this->page = 1;
+        $this->selected = [];
     }
 
     public function star($conversation_id)
@@ -126,26 +134,26 @@ class ConversationList extends Component
         }
     }
 
-    public function assign($user_id, $conversation_ids)
+    public function assign($user_id)
     {
-        Conversation::bulkChangeUser((array) $conversation_ids, $user_id, auth()->user());
+        Conversation::bulkChangeUser((array) $this->selected, $user_id, auth()->user());
 
         $this->reload(__('Assignee updated'));
     }
 
-    public function changeStatus($status, $conversation_ids)
+    public function changeStatus($status)
     {
         if (!array_key_exists((int) $status, Conversation::$statuses)) {
             Fruit::toast(__('Incorrect status'), 'danger');
 
             return;
         }
-        Conversation::bulkChangeStatus((array) $conversation_ids, $status, auth()->user());
+        Conversation::bulkChangeStatus((array) $this->selected, $status, auth()->user());
 
         $this->reload(__('Status updated'));
     }
 
-    public function delete($conversation_ids)
+    public function delete()
     {
         $user = auth()->user();
         if (!$user->can('delete', new Conversation())) {
@@ -153,7 +161,7 @@ class ConversationList extends Component
 
             return;
         }
-        Conversation::bulkDelete((array) $conversation_ids, $user);
+        Conversation::bulkDelete((array) $this->selected, $user);
 
         $this->reload(__('Conversations deleted'));
     }

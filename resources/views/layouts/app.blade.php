@@ -71,9 +71,7 @@
                         <header class="f-toolbar app-workspace__list-toolbar">@yield('list_toolbar')</header>
                     @endif
                     <section id="app-list" class="f-pane f-pane--column f-pane--border-end app-workspace__list @if (!$has_list_toolbar) app-workspace__pane--full @endif" aria-label="{{ __('Conversations') }}">
-                        <div class="f-pane__scroll split-view__list">
-                            @yield('list')
-                        </div>
+                        @yield('list')
                     </section>
                 @endif
 

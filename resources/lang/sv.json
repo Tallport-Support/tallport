@@ -1479,5 +1479,8 @@
     "This log file is larger than 50 MB. Download it to read it.": "Den här loggfilen är större än 50 MB. Ladda ned den för att läsa den.",
     "Danger Zone": "Riskzon",
     "Local time": "Lokal tid",
-    "Search conversations": "Sök konversationer"
+    "Search conversations": "Sök konversationer",
+    "Select": "Markera",
+    "Clear selection": "Rensa markering",
+    "Selected conversations": "Markerade konversationer"
 }

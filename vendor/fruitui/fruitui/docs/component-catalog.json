@@ -520,9 +520,9 @@
       "item-list": {
         "purpose": "Arrange independent item-opening rows, such as conversations or tickets, in a scrollable list.",
         "element": "`ul`, fixed list role; callers supply native li children.",
-        "state": "No owned selection or application state.",
-        "keyboard": "Tab reaches child buttons; no added listbox keyboard model.",
-        "options": "Native list attributes. Slot: li elements containing composed content."
+        "state": "No owned application state. With selection=multiple, fruitListSelection checks the items' own checkboxes; the checkboxes hold the selection.",
+        "keyboard": "Tab reaches child buttons; no added listbox keyboard model. With selection=multiple: Shift+Up/Down, Cmd/Ctrl+A and Escape on a focused row.",
+        "options": "Native list attributes. Slot: li elements containing composed content. `selection`: none (default) or multiple: the items' checkboxes stay hidden while Cmd/Ctrl+click toggles an item (the open item joins first), Shift+click selects a range, Shift+Up/Down extends from the focused row, Cmd/Ctrl+A selects all and Escape clears; a plain click clears the selection before the row's own action. A `[data-fruit-select-toggle]` button with `aria-controls` naming the list shows the checkboxes (touch and assistive technology), and then a plain click toggles. A checkbox reached by Tab shows while focused. Checked items take the current highlight; the checkboxes keep the value, `wire:model` and `x-model`."
       }
     }
   },
@@ -1147,6 +1147,22 @@
         "state": "`count` renders the count; nothing renders at zero. The application owns the selection.",
         "keyboard": "Buttons keep their native behavior.",
         "options": "`count`: number of selected items. Accessible label (default `Selection`). Slot: independent actions. Select items with Checkboxes beside Item Rows."
+      }
+    }
+  },
+  {
+    "id": "list-header",
+    "kind": "pattern",
+    "classes": ["f-list-header"],
+    "blade": ["list-header"],
+    "uses": ["support.html", "examples/laravel/support-desk.blade.php"],
+    "contracts": {
+      "list-header": {
+        "purpose": "Head a list with its view tools, replaced in place by the selection bar while items are selected.",
+        "element": "`div` row: optional leading control, `f-list-header__tools`, then a Selection Bar.",
+        "state": "No state; the Selection Bar's count decides which content shows.",
+        "keyboard": "Child controls keep their own keyboard behavior.",
+        "options": "Default slot: the list's view tools (sort, filters, a Select toggle). `leading` slot: a control before them, such as a select-all checkbox. `selection` slot: an `x-fruit::selection-bar`, which takes the tools' place in the same row and stays one line (the count shortens; actions keep their size). Keep two to four icon actions with labels and tooltips, and put the rest in a \"…\" Menu. `--f-list-header-height` and `--f-list-header-padding` adjust the row."
       }
     }
   },

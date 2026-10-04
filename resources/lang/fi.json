@@ -1498,5 +1498,8 @@
     "Danger Zone": "Vaaravyöhyke",
     ":count conversations": ":count keskustelua",
     "Local time": "Paikallinen aika",
-    "Search conversations": "Hae keskusteluista"
+    "Search conversations": "Hae keskusteluista",
+    "Select": "Valitse",
+    "Clear selection": "Tyhjennä valinta",
+    "Selected conversations": "Valitut keskustelut"
 }

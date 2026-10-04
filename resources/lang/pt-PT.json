@@ -1479,5 +1479,8 @@
     "This log file is larger than 50 MB. Download it to read it.": "Este ficheiro de registo tem mais de 50 MB. Transfira-o para o ler.",
     "Danger Zone": "Zona de perigo",
     "Local time": "Hora local",
-    "Search conversations": "Pesquisar conversas"
+    "Search conversations": "Pesquisar conversas",
+    "Select": "Selecionar",
+    "Clear selection": "Limpar seleção",
+    "Selected conversations": "Conversas selecionadas"
 }

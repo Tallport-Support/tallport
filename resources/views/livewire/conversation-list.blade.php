@@ -1,4 +1,4 @@
-{{-- A list of conversations (App\Livewire\ConversationList). The selection stays in the browser. --}}
-<div class="conv-list-host" x-data="tallportConversationList">
+{{-- A list of conversations (App\Livewire\ConversationList). --}}
+<div class="conv-list-host">
     @include('conversations/conversations_table')
 </div>

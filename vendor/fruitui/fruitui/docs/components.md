@@ -127,7 +127,22 @@ Mail messages and Support tickets use the same native list and item-opening butt
 ```
 
 ```blade
-<x-fruit::item-list aria-label="Conversations">
+<x-fruit::list-header>
+    <span>Newest first</span>
+    <span class="f-toolbar__spacer"></span>
+    <x-fruit::button variant="ghost" size="small" data-fruit-select-toggle aria-controls="conversations" aria-pressed="false">Select</x-fruit::button>
+    <x-slot:selection>
+        <x-fruit::selection-bar :count="count($selected)" aria-label="Selected conversations">
+            <x-fruit::button variant="ghost" class="f-button--icon" wire:click="archiveSelected" aria-label="Archive selected" title="Archive selected">…</x-fruit::button>
+            <x-fruit::menu title="More actions for selected conversations">
+                <x-slot:trigger class="f-button--ghost f-button--icon" aria-label="More" title="More">…</x-slot:trigger>
+                <x-fruit::menu-item wire:click="markUnread">Mark as unread</x-fruit::menu-item>
+            </x-fruit::menu>
+            <x-fruit::button variant="ghost" class="f-button--icon" wire:click="$set('selected', [])" aria-label="Clear selection" title="Clear selection">…</x-fruit::button>
+        </x-fruit::selection-bar>
+    </x-slot:selection>
+</x-fruit::list-header>
+<x-fruit::item-list id="conversations" selection="multiple" aria-label="Conversations">
     @foreach ($conversations as $conversation)
         <li>
             <x-fruit::item-row variant="filled"
@@ -603,6 +618,8 @@ These cover the core screens of helpdesks, mail and chat. Contracts are in the [
 - **Timeline** (`x-fruit::timeline`, `timeline-item`): conversation history and audit logs, with a native `time`.
 - **Rows as links**: `x-fruit::item-link href="…"` is the same row as a real link, for rows that are destinations: they open in a new tab, follow `target` and work without JavaScript. `current` marks the open row (`aria-current="page"`). Use Item Row (a button) for rows that act in place.
 - **Leading and trailing controls**: a list item can hold a Checkbox before its row and controls after it, such as a star or follow toggle (`x-fruit::button variant="ghost" size="small" class="f-button--icon"` with `aria-pressed`). The list item then draws the row's rounded hover and current backgrounds across all of them; trailing controls sit on the title line and never wrap (`--f-item-accessory-offset` adjusts for other control heights).
+- **Selecting without checkboxes**: `x-fruit::item-list selection="multiple"` keeps each item's Checkbox (the value, `wire:model` and `x-model` stay there) but hides it. Cmd/Ctrl+click toggles an item (the open item joins the first time), Shift+click selects a range, and on a focused row Shift+Up/Down extends, Cmd/Ctrl+A selects all and Escape clears; a plain click clears the selection and the row acts as usual. Checked items take the current highlight. For touch and assistive technology, a Select toggle (`data-fruit-select-toggle` with `aria-controls` naming the list) shows the checkboxes, and a plain click then toggles; a checkbox reached by Tab also shows while focused. Opening a row in a new tab stays available from middle click and the context menu.
+- **List header**: `x-fruit::list-header` is the row above a list: its view tools (sort, filters, Select) in the default slot, an optional `leading` control, and the Selection Bar in its `selection` slot. While items are selected the bar takes the tools' place in the same row, as mail apps do, instead of adding a band. It stays one line: the count shortens and the actions keep their size, so keep two to four icon actions with labels and tooltips and put the rest (including actions added by modules) in a "…" Menu. Place it between the search field and the list's scroll area.
 - **Bulk selection**: `x-fruit::selection-bar :count="count($selected)"` shows the count and independent actions, and is hidden at zero. Client-side selection updates its `data-count` attribute instead: `x-bind:data-count="selected.length"` with Alpine, or `bar.dataset.count = n` from any script; the bar updates its translated text and hides at zero.
 - **Loading**: `x-fruit::skeleton :lines="3"` inside a container with `aria-busy="true"`, for example a Livewire lazy component's `placeholder()`. Busy buttons (Livewire `data-loading`, or `aria-busy`) show a progress cursor; compose `x-fruit::spinner` beside a readable label.
 - **Files**: `x-fruit::dropzone` wraps a native file input. Dropped files are filtered by `accept` and `multiple`, then assigned to the input with `input` and `change`, so `wire:model` uploads and change handlers work unchanged. Use Livewire's `temporaryUrl()` with Avatar or Attachment for previews.
@@ -615,7 +632,22 @@ These cover the core screens of helpdesks, mail and chat. Contracts are in the [
 - **Breadcrumbs** (`x-fruit::breadcrumbs`, `crumb`): ancestors link, the current page uses `current`.
 
 ```blade
-<x-fruit::item-list aria-label="Conversations">
+<x-fruit::list-header>
+    <span>Newest first</span>
+    <span class="f-toolbar__spacer"></span>
+    <x-fruit::button variant="ghost" size="small" data-fruit-select-toggle aria-controls="conversations" aria-pressed="false">Select</x-fruit::button>
+    <x-slot:selection>
+        <x-fruit::selection-bar :count="count($selected)" aria-label="Selected conversations">
+            <x-fruit::button variant="ghost" class="f-button--icon" wire:click="archiveSelected" aria-label="Archive selected" title="Archive selected">…</x-fruit::button>
+            <x-fruit::menu title="More actions for selected conversations">
+                <x-slot:trigger class="f-button--ghost f-button--icon" aria-label="More" title="More">…</x-slot:trigger>
+                <x-fruit::menu-item wire:click="markUnread">Mark as unread</x-fruit::menu-item>
+            </x-fruit::menu>
+            <x-fruit::button variant="ghost" class="f-button--icon" wire:click="$set('selected', [])" aria-label="Clear selection" title="Clear selection">…</x-fruit::button>
+        </x-fruit::selection-bar>
+    </x-slot:selection>
+</x-fruit::list-header>
+<x-fruit::item-list id="conversations" selection="multiple" aria-label="Conversations">
     @foreach ($conversations as $conversation)
         <li wire:key="conversation-{{ $conversation->id }}">
             <x-fruit::checkbox wire:model.live="selected" value="{{ $conversation->id }}">
@@ -625,9 +657,6 @@ These cover the core screens of helpdesks, mail and chat. Contracts are in the [
         </li>
     @endforeach
 </x-fruit::item-list>
-<x-fruit::selection-bar :count="count($selected)" aria-label="Selected conversations">
-    <x-fruit::button size="small" wire:click="closeSelected">Close selected</x-fruit::button>
-</x-fruit::selection-bar>
 ```
 
 ```blade

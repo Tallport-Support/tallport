@@ -84,21 +84,22 @@ class ConversationListTest extends FeatureTestCase
         $first = $this->conversation('First question');
         $second = $this->conversation('Second question');
         $ids = [(string) $first->id, (string) $second->id];
-        $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)]);
+        $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)])
+            ->set('selected', $ids)->assertSee('2 selected');
 
-        $list->call('changeStatus', Conversation::STATUS_PENDING, $ids)->assertToasted('Status updated')->assertRedirect();
+        $list->call('changeStatus', Conversation::STATUS_PENDING)->assertToasted('Status updated')->assertRedirect();
         $this->assertSame([Conversation::STATUS_PENDING, Conversation::STATUS_PENDING], [$first->fresh()->status, $second->fresh()->status]);
 
-        $list->call('assign', $this->agent->id, $ids)->assertToasted('Assignee updated');
+        $list->set('selected', $ids)->call('assign', $this->agent->id)->assertToasted('Assignee updated');
         $this->assertSame($this->agent->id, $first->fresh()->user_id);
 
         // Agents may not delete conversations by default.
-        $list->call('delete', $ids)->assertToasted('Not enough permissions', 'danger');
+        $list->set('selected', $ids)->call('delete')->assertToasted('Not enough permissions', 'danger');
         $this->assertSame(Conversation::STATE_PUBLISHED, $first->fresh()->state);
 
         $admin = $this->createAdmin();
         Livewire::actingAs($admin)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)])
-            ->call('delete', $ids)->assertToasted('Conversations deleted');
+            ->set('selected', $ids)->call('delete')->assertToasted('Conversations deleted');
         $this->assertSame(Conversation::STATE_DELETED, $first->fresh()->state);
     }
 

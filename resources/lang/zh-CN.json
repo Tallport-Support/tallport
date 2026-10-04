@@ -1480,5 +1480,8 @@
     "This log file is larger than 50 MB. Download it to read it.": "此日志文件大于 50 MB。请下载后阅读。",
     "Danger Zone": "危险操作",
     "Local time": "当地时间",
-    "Search conversations": "搜索会话"
+    "Search conversations": "搜索会话",
+    "Select": "选择",
+    "Clear selection": "清除选择",
+    "Selected conversations": "已选对话"
 }

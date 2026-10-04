@@ -1478,7 +1478,7 @@ a h4 {
  * Alerts
  */
 .alerts {
-    flex: 0 0 100%;
+    flex: none;
 }
 .alerts .alert {
     margin-bottom: 0;
@@ -3925,22 +3925,19 @@ a.disabled:focus {
     margin-top: 8px;
     min-width: 260px;
 }
-/* Conversation list: FruitUI item rows with a checkbox and a star beside each. */
+/* Conversation list (App\Livewire\ConversationList): FruitUI's list header above
+   its own scroll area, item rows with a hidden checkbox and a star beside each. */
+.conv-list-host {
+    display: contents;
+}
 .conv-list {
     position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
 }
-.conv-list__toolbar {
-    gap: 4px;
-    margin: 5px 0;
-    padding: 0 13px;
-    color: var(--f-secondary);
-    font-size: var(--f-text-2xs);
-}
-.conv-list__toolbar .f-button {
-    min-height: 28px;
-    font-size: var(--f-text-2xs);
-}
-.conv-list__toolbar .conv-owner.filtered {
+.conv-list__header .conv-owner.filtered {
     color: var(--f-accent);
 }
 .conv-list .conv-active .f-item-row__title {
@@ -3985,11 +3982,6 @@ a.disabled:focus {
 .conv-list .search-snippet mark {
     background: color-mix(in srgb, var(--f-warning) 30%, transparent);
 }
-.conv-bulk-actions {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-}
 .conv-list__footer {
     padding-inline: 12px;
 }
@@ -4019,7 +4011,7 @@ a.disabled:focus {
     align-items: center;
     margin-bottom: 16px;
 }
-.split-view__list .flash-alert {
+#app-list .flash-alert {
     margin: 0 12px 12px;
 }
 /* Confirmation dialogs (showModalConfirm and alike): Cancel, then the action. */

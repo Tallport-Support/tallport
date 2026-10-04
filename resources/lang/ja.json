@@ -1479,5 +1479,8 @@
     "This log file is larger than 50 MB. Download it to read it.": "このログファイルは50 MBを超えています。ダウンロードして読んでください。",
     "Danger Zone": "危険な操作",
     "Local time": "現地時刻",
-    "Search conversations": "会話を検索"
+    "Search conversations": "会話を検索",
+    "Select": "選択",
+    "Clear selection": "選択を解除",
+    "Selected conversations": "選択した会話"
 }

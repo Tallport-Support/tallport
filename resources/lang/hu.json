@@ -1479,5 +1479,8 @@
     "This log file is larger than 50 MB. Download it to read it.": "Ez a naplófájl nagyobb 50 MB-nál. Töltse le az olvasáshoz.",
     "Danger Zone": "Veszélyzóna",
     "Local time": "Helyi idő",
-    "Search conversations": "Beszélgetések keresése"
+    "Search conversations": "Beszélgetések keresése",
+    "Select": "Kijelölés",
+    "Clear selection": "Kijelölés törlése",
+    "Selected conversations": "Kijelölt beszélgetések"
 }

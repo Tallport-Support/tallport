@@ -1473,5 +1473,8 @@
     "Danger Zone": "Gefahrenbereich",
     ":count conversations": ":count Gespräche",
     "Local time": "Ortszeit",
-    "Search conversations": "Gespräche durchsuchen"
+    "Search conversations": "Gespräche durchsuchen",
+    "Select": "Auswählen",
+    "Clear selection": "Auswahl aufheben",
+    "Selected conversations": "Ausgewählte Gespräche"
 }

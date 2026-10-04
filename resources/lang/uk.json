@@ -1479,5 +1479,8 @@
     "This log file is larger than 50 MB. Download it to read it.": "Цей файл журналу більший за 50 МБ. Завантажте його, щоб прочитати.",
     "Danger Zone": "Небезпечна зона",
     "Local time": "Місцевий час",
-    "Search conversations": "Пошук розмов"
+    "Search conversations": "Пошук розмов",
+    "Select": "Вибрати",
+    "Clear selection": "Скасувати вибір",
+    "Selected conversations": "Вибрані розмови"
 }

@@ -14274,10 +14274,16 @@ var I_ = J.create({
 		return this.options.bold !== !1 && e.push(Xf.configure(this.options.bold)), this.options.blockquote !== !1 && e.push(Gf.configure(this.options.blockquote)), this.options.bulletList !== !1 && e.push(Vh.configure(this.options.bulletList)), this.options.code !== !1 && e.push(ep.configure(this.options.code)), this.options.codeBlock !== !1 && e.push(ip.configure(this.options.codeBlock)), this.options.document !== !1 && e.push(ap.configure(this.options.document)), this.options.dropcursor !== !1 && e.push(f_.configure(this.options.dropcursor)), this.options.gapcursor !== !1 && e.push(p_.configure(this.options.gapcursor)), this.options.hardBreak !== !1 && e.push(op.configure(this.options.hardBreak)), this.options.heading !== !1 && e.push(sp.configure(this.options.heading)), this.options.undoRedo !== !1 && e.push(L_.configure(this.options.undoRedo)), this.options.horizontalRule !== !1 && e.push(cp.configure(this.options.horizontalRule)), this.options.italic !== !1 && e.push(pp.configure(this.options.italic)), this.options.listItem !== !1 && e.push(ug.configure(this.options.listItem)), this.options.listKeymap !== !1 && e.push(yg.configure(this.options?.listKeymap)), this.options.link !== !1 && e.push(Lh.configure(this.options?.link)), this.options.orderedList !== !1 && e.push(zg.configure(this.options.orderedList)), this.options.paragraph !== !1 && e.push(qg.configure(this.options.paragraph)), this.options.strike !== !1 && e.push(Xg.configure(this.options.strike)), this.options.text !== !1 && e.push(Zg.configure(this.options.text)), this.options.underline !== !1 && e.push(Qg.configure(this.options?.underline)), this.options.trailingNode !== !1 && e.push(I_.configure(this.options?.trailingNode)), e;
 	}
 }), z_ = 0, B_ = (e) => `${e}-${++z_}`;
-function V_(e, t, { commit: n = !0 } = {}) {
+function V_(e, t) {
+	return e.id || (e.id = B_(t), e._x_bindings = {
+		...e._x_bindings,
+		id: e.id
+	}), e.id;
+}
+function H_(e, t, { commit: n = !0 } = {}) {
 	e.value !== t && (e.value = t, e.dispatchEvent(new Event("input", { bubbles: !0 })), n && e.dispatchEvent(new Event("change", { bubbles: !0 })));
 }
-function H_(e, t, n, r, { presentation: i = n, focusRoot: a = n } = {}) {
+function U_(e, t, n, r, { presentation: i = n, focusRoot: a = n } = {}) {
 	let o = [], s = (e, t, n) => {
 		e?.addEventListener(t, n), o.push(() => e?.removeEventListener(t, n));
 	}, c = () => [...t.labels || []], l = i.className, u = i.getAttribute("style"), d = n.placeholder || "", f = t.ownerDocument.activeElement === t, p = t.value;
@@ -14287,7 +14293,7 @@ function H_(e, t, n, r, { presentation: i = n, focusRoot: a = n } = {}) {
 	let m = (e = "attributes") => {
 		t.hidden ||= !0;
 		let a = c();
-		for (let e of a) e.id ||= B_("fruit-label");
+		for (let e of a) V_(e, "fruit-label");
 		for (let e of [
 			"aria-label",
 			"aria-labelledby",
@@ -14342,8 +14348,8 @@ function H_(e, t, n, r, { presentation: i = n, focusRoot: a = n } = {}) {
 }
 //#endregion
 //#region src/js/editor-content.js
-var U_ = Symbol.for("fruitui.editor");
-function W_(e, t, { insert: n, set: r, commit: i }) {
+var W_ = Symbol.for("fruitui.editor");
+function G_(e, t, { insert: n, set: r, commit: i }) {
 	let a = new AbortController(), o = (e) => {
 		let { html: a = "", target: o } = e.detail ?? {};
 		(e.currentTarget !== window || o === t.id || o === t.name) && (t.matches(":disabled") || t.readOnly || ((e.type === "fruit-editor-set" ? r : n)(String(a)), i()));
@@ -14353,15 +14359,15 @@ function W_(e, t, { insert: n, set: r, commit: i }) {
 }
 //#endregion
 //#region src/js/popup.js
-var G_ = (e) => getComputedStyle(e).direction === "rtl";
-function K_(e, t, { stretch: n = !1, above: r = !1, point: i = null, start: a = !1 } = {}) {
+var K_ = (e) => getComputedStyle(e).direction === "rtl";
+function q_(e, t, { stretch: n = !1, above: r = !1, point: i = null, start: a = !1 } = {}) {
 	let o = typeof e.showPopover == "function", s = e.getAttribute("style"), c = !1;
 	o && (e.popover = "manual");
 	let l = () => {
 		if (!c || !o) return;
 		let s = t.getBoundingClientRect(), l = window.visualViewport, u = l?.offsetLeft || 0, d = l?.offsetTop || 0, f = l?.width || window.innerWidth, p = l?.height || window.innerHeight;
 		e.style.position = "fixed", e.style.inset = "auto", e.style.margin = "0", e.style.transform = "none", e.style.maxWidth = `${Math.max(0, f - 16)}px`, e.style.maxHeight = `${Math.max(40, p - 16)}px`, e.style.overflowY = "auto", n && (e.style.width = `${Math.min(s.width, f - 16)}px`);
-		let m = e.getBoundingClientRect(), h = i ? G_(i) ? s.left - m.width : s.left : n || G_(t) !== a ? s.left : s.right - m.width, g = d + p - s.bottom - 8, _ = s.top - d - 8, ee = r && _ >= m.height || g < m.height && _ > g, v = ee ? _ : g;
+		let m = e.getBoundingClientRect(), h = i ? K_(i) ? s.left - m.width : s.left : n || K_(t) !== a ? s.left : s.right - m.width, g = d + p - s.bottom - 8, _ = s.top - d - 8, ee = r && _ >= m.height || g < m.height && _ > g, v = ee ? _ : g;
 		e.style.maxHeight = `${Math.max(40, v)}px`;
 		let y = e.getBoundingClientRect().height;
 		e.style.left = `${Math.max(u + 8, Math.min(h, u + f - m.width - 8))}px`, e.style.top = `${Math.max(d + 8, Math.min(ee ? s.top - y - 4 : s.bottom + 4, d + p - y - 8))}px`;
@@ -14380,12 +14386,12 @@ function K_(e, t, { stretch: n = !1, above: r = !1, point: i = null, start: a = 
 }
 //#endregion
 //#region src/js/messages.js
-function q_(e, t, n, r = {}) {
+function J_(e, t, n, r = {}) {
 	return (e.getAttribute(`data-fruit-${t}`) ?? n).replace(/\{(\w+)\}/g, (e, t) => String(r[t] ?? e));
 }
 //#endregion
 //#region src/js/editor.js
-var J_ = Y.create({
+var Y_ = Y.create({
 	name: "image",
 	group: "inline",
 	inline: !0,
@@ -14404,8 +14410,8 @@ var J_ = Y.create({
 		return ["img", q(e)];
 	}
 });
-function Y_(e) {
-	e[U_] = !0, e.data("fruitEditor", () => {
+function X_(e) {
+	e[W_] = !0, e.data("fruitEditor", () => {
 		let e, t, n, r, i, a, o, s, c, l, u, d, f, p, m = {
 			bold: (e) => e.toggleBold(),
 			italic: (e) => e.toggleItalic(),
@@ -14426,14 +14432,14 @@ function Y_(e) {
 			p?.();
 			let a = r === "link", o = a && e.getAttributes("link").href || "";
 			d = document.createElement("form"), d.className = "f-editor__popover", d.setAttribute("role", "dialog"), d.id = B_("fruit-editor-popover");
-			let s = q_(t, a ? "link-label" : "image-label", a ? "Link address" : "Image address");
+			let s = J_(t, a ? "link-label" : "image-label", a ? "Link address" : "Image address");
 			d.setAttribute("aria-label", s);
 			let c = document.createElement("input");
 			c.className = "f-input", c.type = "url", c.required = !a || !o, c.value = o, c.placeholder = "https://", c.setAttribute("aria-label", s);
 			let l = document.createElement("button");
-			if (l.className = "f-button f-button--primary f-button--small", l.type = "submit", l.textContent = q_(t, a ? "apply-label" : "insert-label", a ? "Apply" : "Insert"), d.append(c, l), a && o) {
+			if (l.className = "f-button f-button--primary f-button--small", l.type = "submit", l.textContent = J_(t, a ? "apply-label" : "insert-label", a ? "Apply" : "Insert"), d.append(c, l), a && o) {
 				let n = document.createElement("button");
-				n.className = "f-button f-button--ghost f-button--small", n.type = "button", n.textContent = q_(t, "remove-link-label", "Remove link"), n.addEventListener("click", () => {
+				n.className = "f-button f-button--ghost f-button--small", n.type = "button", n.textContent = J_(t, "remove-link-label", "Remove link"), n.addEventListener("click", () => {
 					e.chain().focus().extendMarkRange("link").unsetLink().run(), h(), p(!1);
 				}), d.append(n);
 			}
@@ -14457,7 +14463,7 @@ function Y_(e) {
 				h(), p(!1);
 			}), d.addEventListener("keydown", (e) => {
 				e.key === "Escape" && (e.preventDefault(), e.stopPropagation(), p(!0));
-			}), i.append(d), f = K_(d, n, { start: !0 }), f.show(), n.setAttribute("aria-expanded", "true"), p = (e) => {
+			}), i.append(d), f = q_(d, n, { start: !0 }), f.show(), n.setAttribute("aria-expanded", "true"), p = (e) => {
 				f?.destroy(), d?.remove(), d = f = p = null, n.setAttribute("aria-expanded", "false"), e && n.focus();
 			}, c.focus();
 		}, _ = (n) => {
@@ -14503,7 +14509,7 @@ function Y_(e) {
 			init() {
 				t = this.$el, n = this.$el.querySelector("textarea[data-fruit-control]"), r = this.$el.querySelector(".f-editor__surface"), i = this.$el.querySelector(".f-editor__toolbar"), n && r && i && (l = u = n.value, e = new Af({
 					element: r,
-					extensions: [R_.configure({ link: { openOnClick: !1 } }), J_],
+					extensions: [R_.configure({ link: { openOnClick: !1 } }), Y_],
 					content: n.value,
 					editorProps: {
 						attributes: {
@@ -14518,19 +14524,19 @@ function Y_(e) {
 						})?.pos)
 					},
 					onUpdate: () => {
-						l = e.isEmpty ? "" : e.getHTML(), V_(n, l, { commit: !1 }), e.view.dom.removeAttribute("aria-invalid");
+						l = e.isEmpty ? "" : e.getHTML(), H_(n, l, { commit: !1 }), e.view.dom.removeAttribute("aria-invalid");
 					},
 					onTransaction: () => {
 						e && v();
 					}
-				}), a = H_(this, n, e.view.dom, (t) => {
+				}), a = U_(this, n, e.view.dom, (t) => {
 					n.value !== l && (e.commands.setContent(n.value, { emitUpdate: !1 }), l = u = n.value), t === "reset" && (u = n.value), v();
 				}, {
 					presentation: r,
 					focusRoot: this.$el
 				}), s = (e) => {
 					!this.$el.contains(e.relatedTarget) && n.value !== u && (u = n.value, n.dispatchEvent(new Event("change", { bubbles: !0 })));
-				}, this.$el.addEventListener("focusout", s), c = W_(this.$el, n, {
+				}, this.$el.addEventListener("focusout", s), c = G_(this.$el, n, {
 					insert: (t) => e.chain().focus().insertContent(t).run(),
 					set: (t) => e.commands.setContent(t, { emitUpdate: !0 }),
 					commit: h
@@ -14548,4 +14554,4 @@ function Y_(e) {
 	});
 }
 //#endregion
-export { Y_ as default };
+export { X_ as default };

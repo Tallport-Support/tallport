@@ -3508,10 +3508,110 @@ img.f-avatar {
     white-space: nowrap;
   }
 
+/* A selectable list (fruitListSelection) hides the items' checkboxes until the list is put in
+     select mode, or a checkbox is reached with Tab; checked items take the current highlight. */
+
+.f-item-list[data-fruit-selection]:not([data-selecting]) > li > .f-check:not(:focus-within),
+  .f-item-list[data-fruit-selection]:not([data-selecting]) > li > input[type='checkbox']:not(:focus) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+.f-item-list > li:has(> .f-item-row):has(> .f-check :checked, > input[type='checkbox']:checked),
+  .f-item-list > li:has(> .f-item-row):has(> .f-check :checked, > input[type='checkbox']:checked):hover {
+    background: var(--f-item-current-background, var(--f-internal-item-current-background));
+  }
+
+.f-item-list > li:has(> .f-check :checked, > input[type='checkbox']:checked) > .f-item-row {
+    color: var(--f-item-current-color, var(--f-internal-item-current-color));
+  }
+
+.f-item-list
+    > li:has(> .f-check :checked, > input[type='checkbox']:checked)
+    > .f-item-row
+    :is(.f-item-row__time, .f-item-row__preview, .f-item-row__meta) {
+    color: var(--f-item-current-secondary, var(--f-internal-item-current-secondary));
+  }
+
 /* The count of selected items with independent actions for them. */
 
 .f-selection-bar[hidden] {
     display: none;
+  }
+
+/* The row above a list: a select-all control and the list's view tools (sort, filters). While
+     items are selected the selection bar takes the tools' place in the same row, as mail apps do,
+     and stays one line: the count shortens, the actions keep their size. */
+
+.f-list-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: var(--f-list-header-height, 40px);
+    padding: var(--f-list-header-padding, 4px 12px);
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+  }
+
+.f-list-header__leading {
+    display: flex;
+    flex: none;
+    align-items: center;
+  }
+
+.f-list-header__tools {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+  }
+
+.f-list-header:has(> .f-selection-bar:not([hidden])) > .f-list-header__tools {
+    display: none;
+  }
+
+.f-list-header > .f-selection-bar {
+    flex: 1;
+    flex-wrap: nowrap;
+    gap: 2px;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--f-text);
+    font-size: inherit;
+  }
+
+.f-list-header > .f-selection-bar > .f-selection-bar__count {
+    min-width: 0;
+    overflow: hidden;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+.f-list-header :is(.f-selection-bar, .f-list-header__tools) > :not(.f-selection-bar__count, .f-toolbar__spacer) {
+    flex: none;
+  }
+
+/* Compact controls keep the row its own height. */
+
+.f-list-header .f-button {
+    min-height: 28px;
+    padding: 3px 8px;
+    font-size: var(--f-text-xs);
+  }
+
+.f-list-header .f-button--icon {
+    min-width: 28px;
+    padding: 4px;
   }
 
 .f-selection-bar {

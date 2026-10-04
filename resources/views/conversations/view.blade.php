@@ -30,7 +30,9 @@
     {{-- The chats beside the conversation. --}}
     @section('split_class', 'split-view--open')
     @section('list')
-        @include('mailboxes/sidebar_menu_view')
+        <div class="f-pane__scroll">
+            @include('mailboxes/sidebar_menu_view')
+        </div>
     @endsection
 @endif
 

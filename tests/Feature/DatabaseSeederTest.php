@@ -137,6 +137,73 @@ class DatabaseSeederTest extends FeatureTestCase
         $this->assertSame($before, $this->snapshot());
     }
 
+    public function testSeederBackfillsAgentParticipationAndAiCachesWithoutProviderCalls()
+    {
+        \App\Ai\Agents\ConversationSummarizer::fake()->preventStrayPrompts();
+        \App\Ai\Agents\ThreadTranslator::fake()->preventStrayPrompts();
+        Queue::fake();
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $this->assertSame(3, User::count());
+        $agent = User::orderBy('id')->first();
+        \DB::table('threads')->whereIn('type', [Thread::TYPE_MESSAGE, Thread::TYPE_NOTE])
+            ->update(['created_by_user_id' => $agent->id]);
+        \DB::table('threads')->update(['ai_assistant' => null, 'ai_assistant_updated_at' => null]);
+        \DB::table('conversations')->update(['ai_assistant' => null, 'ai_assistant_updated_at' => null]);
+        $before_count = Conversation::count();
+        $before_threads = Thread::orderBy('id')->get(['id', 'body', 'created_at', 'updated_at'])->toArray();
+
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+
+        $this->assertSame($before_count, Conversation::count());
+        $this->assertSame($before_threads, Thread::orderBy('id')->get(['id', 'body', 'created_at', 'updated_at'])->toArray());
+        \App\Option::set('aiassistant.api_key', encrypt('sk-test'));
+        foreach (Conversation::all() as $conversation) {
+            $participants = $conversation->threads()->where('state', Thread::STATE_PUBLISHED)
+                ->whereNotNull('created_by_user_id')->distinct()->count('created_by_user_id');
+            $this->assertGreaterThanOrEqual($conversation->threads_count >= 20 ? 3 : 2, $participants);
+            foreach (array_keys(\App\Ai\Settings::LANGUAGES) as $language) {
+                $this->assertFalse(\App\Ai\Summaries::isStale($conversation, $language));
+                (new \App\Jobs\AiSummarizeConversation($conversation->id, $language))->handle();
+            }
+        }
+        foreach (Thread::where('type', Thread::TYPE_CUSTOMER)->get() as $thread) {
+            foreach (array_keys(\App\Ai\Settings::LANGUAGES) as $language) {
+                $this->assertFalse(\App\Ai\Translations::isMissing($thread, $language));
+                (new \App\Jobs\AiTranslateThread($thread->id, $language))->handle();
+            }
+        }
+        $before = $this->snapshot();
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $this->assertSame($before, $this->snapshot());
+        \App\Ai\Agents\ConversationSummarizer::assertNeverPrompted();
+        \App\Ai\Agents\ThreadTranslator::assertNeverPrompted();
+        Queue::assertNothingPushed();
+    }
+
+    public function testAiBackfillPreservesRealConversationsAndExistingAiResults()
+    {
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $real = Conversation::orderBy('id')->first();
+        \DB::table('conversations')->where('id', $real->id)->update(['imported' => false, 'ai_assistant' => null]);
+        \DB::table('threads')->where('conversation_id', $real->id)->update(['ai_assistant' => null]);
+        $real_before = $real->fresh()->toArray();
+        $threads_before = $real->threads()->orderBy('id')->get()->toArray();
+        $sample = Conversation::where('id', '<>', $real->id)->first();
+        $summary = ['one_liner' => 'A real summary', 'summary' => 'Keep this text.', 'thread_id' => 0, 'at' => '2026-10-01 12:00:00'];
+        $sample->ai_assistant = json_encode(['summaries' => ['en' => $summary]]);
+        $sample->saveQuietly();
+        $thread = $sample->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
+        $thread->ai_assistant = json_encode(['translations' => ['fr' => 'Une vraie traduction.']]);
+        $thread->saveQuietly();
+
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+
+        $this->assertSame($real_before, $real->fresh()->toArray());
+        $this->assertSame($threads_before, $real->threads()->orderBy('id')->get()->toArray());
+        $this->assertSame($summary, \App\Ai\Summaries::get($sample->fresh(), 'en'));
+        $this->assertSame('Une vraie traduction.', \App\Ai\Translations::get($thread->fresh(), 'fr'));
+    }
+
     private function snapshot()
     {
         $snapshot = [];

@@ -1478,5 +1478,8 @@
     "This log file is larger than 50 MB. Download it to read it.": "Ten plik dziennika jest większy niż 50 MB. Pobierz go, aby go przeczytać.",
     "Danger Zone": "Strefa zagrożenia",
     "Local time": "Czas lokalny",
-    "Search conversations": "Szukaj rozmów"
+    "Search conversations": "Szukaj rozmów",
+    "Select": "Zaznacz",
+    "Clear selection": "Wyczyść zaznaczenie",
+    "Selected conversations": "Zaznaczone rozmowy"
 }

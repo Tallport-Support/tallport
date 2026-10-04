@@ -1,4 +1,4 @@
-import { fruitId } from './control-bridge.js';
+import { keepId } from './control-bridge.js';
 
 /**
  * A modal command palette: a dialog with a search field filtering a listbox of command links and
@@ -22,7 +22,7 @@ export function fruitCommandPalette() {
     for (const option of list.querySelectorAll('[role="option"]')) option.setAttribute('aria-selected', 'false');
     const option = visible[active];
     if (!option) return input.removeAttribute('aria-activedescendant');
-    option.id ||= fruitId('fruit-command');
+    keepId(option, 'fruit-command');
     option.setAttribute('aria-selected', 'true');
     input.setAttribute('aria-activedescendant', option.id);
     option.scrollIntoView({ block: 'nearest' });

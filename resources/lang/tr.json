@@ -1479,5 +1479,8 @@
     "This log file is larger than 50 MB. Download it to read it.": "Bu günlük dosyası 50 MB'tan büyük. Okumak için indirin.",
     "Danger Zone": "Tehlikeli bölge",
     "Local time": "Yerel saat",
-    "Search conversations": "Konuşmalarda ara"
+    "Search conversations": "Konuşmalarda ara",
+    "Select": "Seç",
+    "Clear selection": "Seçimi temizle",
+    "Selected conversations": "Seçili konuşmalar"
 }
