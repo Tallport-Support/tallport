@@ -1980,7 +1980,8 @@
         "name": "menu.manage.after_mailboxes",
         "arguments": 0,
         "files": [
-            "resources/views/partials/app_sidebar.blade.php"
+            "resources/views/partials/app_sidebar.blade.php",
+            "resources/views/partials/app_sidebar_settings.blade.php"
         ]
     },
     {
@@ -1988,7 +1989,8 @@
         "name": "menu.manage.append",
         "arguments": 0,
         "files": [
-            "resources/views/partials/app_sidebar.blade.php"
+            "resources/views/partials/app_sidebar.blade.php",
+            "resources/views/partials/app_sidebar_settings.blade.php"
         ]
     },
     {
@@ -1996,7 +1998,8 @@
         "name": "menu.manage.can_view",
         "arguments": 1,
         "files": [
-            "resources/views/partials/app_sidebar.blade.php"
+            "resources/views/partials/app_sidebar.blade.php",
+            "resources/views/partials/app_sidebar_settings.blade.php"
         ]
     },
     {
@@ -2401,6 +2404,14 @@
         "arguments": 2,
         "files": [
             "resources/views/settings/view.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "sidebar.is_settings",
+        "arguments": 2,
+        "files": [
+            "app/Misc/Sidebar.php"
         ]
     },
     {

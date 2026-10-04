@@ -154,6 +154,29 @@ class AllMailboxesTest extends FeatureTestCase
         $this->get(route('mailboxes.all', ['folder_id' => -Folder::TYPE_MINE]))->assertSee('Assigned to me');
     }
 
+    public function testSettingsPagesListTheSettingsInTheSidebar()
+    {
+        $admin = $this->createAdmin();
+        $this->support->users()->attach($admin->id);
+
+        // Settings: back to the inbox, the account, the app's settings and Manage; no mailboxes.
+        $html = $this->actingAs($admin)->get(route('settings', ['section' => 'emails']))->assertOk()->getContent();
+        $sidebar = substr($html, strpos($html, 'id="app-sidebar"'));
+        $this->assertStringContainsString('app-sidebar__back', $sidebar);
+        $this->assertStringContainsString('<a aria-current="page" class="f-sidebar__item" href="'.route('settings', ['section' => 'emails']).'">', $sidebar);
+        $this->assertStringContainsString(route('users.preferences', ['id' => $admin->id]), $sidebar);
+        $this->assertStringNotContainsString('app-sidebar__mailbox', $sidebar);
+
+        // A mailbox's settings are under Manage > Mailboxes; an agent sees only the account.
+        $this->assertStringContainsString('app-sidebar__back', $this->get(route('mailboxes.update', ['id' => $this->support->id]))->getContent());
+        $html = $this->actingAs($this->agent)->get(route('users.preferences', ['id' => $this->agent->id]))->assertOk()->getContent();
+        $this->assertStringContainsString('app-sidebar__back', $html);
+        $this->assertStringNotContainsString(route('settings', ['section' => 'general']), $html);
+
+        // Elsewhere the mailboxes, as ever.
+        $this->assertStringNotContainsString('app-sidebar__back', $this->get(route('mailboxes.view', ['id' => $this->support->id]))->getContent());
+    }
+
     public function testMailboxButtonsAreOnTheHeadings()
     {
         $admin = $this->createAdmin();

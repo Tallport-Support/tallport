@@ -17,6 +17,9 @@
         </div>
     @endif
 
+    @if (App\Misc\Sidebar::isSettings())
+        @include('partials/app_sidebar_settings')
+    @else
     @if ($sidebar_all)
         <p class="f-sidebar__heading">{{ __('All Mailboxes') }}</p>
         @php $all_folders = App\Misc\AllMailboxes::folders($sidebar_user); @endphp
@@ -112,6 +115,7 @@
         </details>
     @endif
     <ul class="app-sidebar__module-items">@action('menu.append')</ul>
+    @endif
 
     <div class="f-sidebar__footer app-sidebar__footer">
         @include('partials/app_sidebar_account')

@@ -5,11 +5,9 @@
 @section('page_width', $section == 'api' ? 'medium' : 'narrow')
 
 @section('sidebar')
+    {{-- The sections are in the app's sidebar (partials/app_sidebar_settings). --}}
     <x-page-nav :label="__('Settings')">
-        <x-slot:title><h1>{{ __('Settings') }}</h1></x-slot:title>
-        @foreach ($sections as $item_name => $item_info)
-            <a href="{{ route('settings', ['section' => $item_name]) }}" @if ($item_name == $section) aria-current="page" @endif>{{ $item_info['title'] }}</a>
-        @endforeach
+        <x-slot:title><h1>{{ $section_name }}</h1></x-slot:title>
     </x-page-nav>
 @endsection
 

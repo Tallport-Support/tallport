@@ -13,7 +13,20 @@ use App\User;
 class Sidebar
 {
     /**
-     * Heroicons of folder types (outline set).
+     * Whether the page is one of the settings (the app's, a mailbox's, users',
+     * the account's, Manage): the sidebar then lists the settings instead of the
+     * mailboxes (partials/app_sidebar_settings). Modules' pages may join in.
+     */
+    public static function isSettings()
+    {
+        $route = (string) \Route::currentRouteName();
+        $is_settings = (bool) preg_match('#^(settings|mailboxes$|mailboxes\.(create|update|connection|permissions|auto_reply|telegram|nostr|saved_replies|workflows|customapp)|users|workflows|modules|logs|system)#', $route);
+
+        return (bool) \Eventy::filter('sidebar.is_settings', $is_settings, $route);
+    }
+
+    /**
+     * Lucide icons of folder types.
      */
     const FOLDER_ICONS = [
         Folder::TYPE_UNASSIGNED => 'inbox',
