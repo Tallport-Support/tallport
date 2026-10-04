@@ -42,7 +42,7 @@
             <div class="conv-block">
                 <div>
                     <div>
-                        <form class="form-reply" method="POST" action="" id="form-create">
+                        <form class="form-reply f-composer conv-composer" method="POST" action="" id="form-create">
                             {{ csrf_field() }}
                             <input type="hidden" name="conversation_id" value="{{ $conversation->id }}"/>
                             <input type="hidden" name="mailbox_id" value="{{ $mailbox->id }}"/>
@@ -227,25 +227,25 @@
                             </div>
 
                             <div class="form-group{{ $errors->has('body') ? ' has-error' : '' }} conv-reply-body">
-                                <div class="col-sm-12">
-                                    <textarea id="body" class="f-input" name="body" rows="13" data-parsley-required="true" data-parsley-required-message="{{ __('Please enter a message') }}">{{ old('body', $thread->body) }}</textarea>
-                                    <div class="help-block">
-                                        @include('partials/field_error', ['field'=>'body'])
-                                    </div>
-                                </div>
+                                <x-editor id="body" name="body" rows="8" :upload-url="route('conversations.upload')" :aria-label="__('Message')" data-parsley-required="true" :data-parsley-required-message="__('Please enter a message')">
+                                    {{ old('body', $thread->body) }}
+                                    <x-slot:extras>
+                                        @include('conversations/partials/editor_extras')
+                                    </x-slot:extras>
+                                </x-editor>
+                                @include('partials/field_error', ['field'=>'body'])
                             </div>
 
+                            @include('conversations/editor_bottom_toolbar', ['new_converstion' => true])
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    @include('conversations/editor_bottom_toolbar', ['new_converstion' => true])
     @action('new_conversation_form.after', $conversation)
 @endsection
 
-@include('partials/editor')
 
 @section('javascript')
     @parent

@@ -1,21 +1,21 @@
 @section('body_attrs')@parent data-mailbox_id="{{ $mailbox->id }}"@endsection
 
-<div id="editor_bottom_toolbar" style="display:none">
-    <div id="editor_signature">
-        @if ($mailbox->signature)
-            {!! safe_raw_html($conversation->getSignatureProcessed([], true)) !!}
-        @endif
-    </div>
+<div id="editor_signature" class="conv-composer__signature f-prose">
+    @if ($mailbox->signature)
+        {!! safe_raw_html($conversation->getSignatureProcessed([], true)) !!}
+    @endif
+</div>
+<div id="editor_bottom_toolbar" class="f-composer__footer conv-composer__footer">
     @action('conv_editor.editor_toolbar_prepend', $mailbox, $conversation)
-	<span class="editor-btm-text">{{ __('Status') }}:</span> 
+    <label class="conv-composer__field"><span class="editor-btm-text">{{ __('Status') }}</span>
     {{-- Note keeps status--}}
 	<select name="status" class="f-input parsley-exclude" data-reply-status="@if ($mailbox->ticket_status == App\Mailbox::TICKET_STATUS_KEEP_CURRENT){{ $conversation->status }}@else{{ $mailbox->ticket_status }}@endif" data-note-status="{{ $conversation->status }}">
         @foreach (App\Conversation::getStatusesWithNames([App\Conversation::STATUS_SPAM]) as $status_id => $status_name)
             <option value="{{ $status_id }}" @if ($mailbox->ticket_status == $status_id || ($mailbox->ticket_status == App\Mailbox::TICKET_STATUS_KEEP_CURRENT && $conversation->status == $status_id))selected="selected"@endif>{{ $status_name }}</option>
         @endforeach
-    </select> 
-    <small class="note-bottom-div"></small> 
-    <span class="editor-btm-text">{{ __('Assign to') }}:</span> 
+    </select></label>
+    <small class="note-bottom-div"></small>
+    <label class="conv-composer__field"><span class="editor-btm-text">{{ __('Assign to') }}</span>
     {{-- Note never changes Assignee --}}
     <select name="user_id" class="f-input parsley-exclude">
         <option value="-1" @if ($mailbox->ticket_assignee == App\Mailbox::TICKET_ASSIGNEE_ANYONE || ($mailbox->ticket_assignee == App\Mailbox::TICKET_ASSIGNEE_KEEP_CURRENT && $conversation->assignee == App\Mailbox::TICKET_ASSIGNEE_ANYONE))data-default="true" selected="selected"@endif>{{ __('Anyone') }}</option>
@@ -29,7 +29,7 @@
             	<option value="{{ $user->id }}" @if ($conversation->user_id == $user->id && !in_array($mailbox->ticket_assignee, [App\Mailbox::TICKET_ASSIGNEE_REPLYING, App\Mailbox::TICKET_ASSIGNEE_ANYONE]))data-default="true" selected="selected"@endif @action('assignee_list.option_attrs', $user)>{{ $user->getFullName() }}@action('assignee_list.item_append', $user)</option>
             @endif
         @endforeach
-    </select> 
+    </select></label>
 
     <input type="hidden" name="after_send" id="after_send" value="{{ $after_send }}" class="parsley-exclude"/>
     <span id="saved-replies-data" class="hidden"
@@ -53,23 +53,20 @@
     <span id="noreply-patterns" class="hidden" data-regexes="{{ json_encode(App\Misc\Noreply::regexes()) }}" data-message="{{ __(':email looks like an address that does not read replies.') }}"></span>
     {{-- One Send button: it sends with the status chosen above (its label says
          which); the menu sends with another status right away. --}}
-    <div class="btn-group-send">
-    	<button class="hidden"></button>
-        <button type="button" class="f-button f-button--primary btn-reply-submit btn-send-text" data-loading-text="{{ __('Sending') }}…">@if (empty($new_converstion)){{ __('Send Reply') }}@else{{ __('Send') }}@endif</button>
-        <button type="button" class="f-button f-button--primary btn-reply-submit btn-send-forward" data-loading-text="{{ __('Sending') }}…">{{ __('Forward') }}</button>
-        <button type="button" class="f-button f-button--primary btn-reply-submit btn-add-note-text" data-loading-text="{{ __('Saving') }}…">{{ __('Add Note') }}</button>
-        <button type="button" class="f-button f-button--primary btn-reply-submit btn-create-conv" data-loading-text="{{ __('Creating') }}…">{{ __('Create') }}</button>
-        <button type="button" class="f-button f-button--primary btn-send-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="{{ __('More send options') }}"><x-heroicon-o-chevron-down class="f-icon" aria-hidden="true" /></button>
-        <ul class="dropdown-menu dropdown-menu-right dropdown-send-status">
-            @action('conversation.prepend_send_dropdown', $conversation, $mailbox, $new_converstion ?? false)
+    <span class="f-toolbar__spacer"></span>
+    <div class="f-button-group btn-group-send">
+        <button type="button" class="f-button f-button--primary btn-reply-submit" data-loading-text="{{ __('Sending') }}…"><span class="btn-send-text">@if (empty($new_converstion)){{ __('Send Reply') }}@else{{ __('Send') }}@endif</span><span class="btn-send-forward">{{ __('Forward') }}</span><span class="btn-add-note-text">{{ __('Add Note') }}</span><span class="btn-create-conv">{{ __('Create') }}</span></button>
+        <x-fruit::menu :title="__('More send options')" class="dropdown-send-status">
+            <x-slot:trigger class="f-button--primary f-button--icon" :aria-label="__('More send options')"><span class="f-menu__chevron" aria-hidden="true"></span></x-slot:trigger>
+            <ul class="menu-module-items">@action('conversation.prepend_send_dropdown', $conversation, $mailbox, $new_converstion ?? false)</ul>
             @foreach ([
                 App\Conversation::STATUS_CLOSED  => [__('Send & Close'), __('Add Note & Close'), __('Forward & Close')],
                 App\Conversation::STATUS_ACTIVE  => [__('Send & Active'), __('Add Note & Active'), __('Forward & Active')],
                 App\Conversation::STATUS_PENDING => [__('Send & Pending'), __('Add Note & Pending'), __('Forward & Pending')],
             ] as $send_status => [$send_label, $note_label, $forward_label])
-                <li><a href="#" data-send-status="{{ $send_status }}" data-label="{{ $send_label }}"><span class="send-status-reply">{{ $send_label }}</span><span class="send-status-note">{{ $note_label }}</span><span class="send-status-forward">{{ $forward_label }}</span></a></li>
+                <x-fruit::menu-link href="#" :data-send-status="$send_status" :data-label="$send_label"><span class="send-status-reply">{{ $send_label }}</span><span class="send-status-note">{{ $note_label }}</span><span class="send-status-forward">{{ $forward_label }}</span></x-fruit::menu-link>
             @endforeach
-            @action('conversation.append_send_dropdown', $conversation, $mailbox, $new_converstion ?? false)
-        </ul>
+            <ul class="menu-module-items">@action('conversation.append_send_dropdown', $conversation, $mailbox, $new_converstion ?? false)</ul>
+        </x-fruit::menu>
     </div>
 </div>

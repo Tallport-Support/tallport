@@ -211,7 +211,7 @@
                 <div class="conv-action-wrapper">
                     <div class="conv-block conv-reply-block conv-action-block hidden">
                         <div>
-                            <form class="form-horizontal form-reply" method="POST" action="">
+                            <x-fruit::composer class="form-reply conv-composer" method="POST" action="">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="conversation_id" value="{{ $conversation->id }}"/>
                                 <input type="hidden" name="mailbox_id" value="{{ $mailbox->id }}"/>
@@ -222,6 +222,7 @@
                                 <input type="hidden" name="subtype" value=""/>
                                 <input type="hidden" name="conv_history" value=""/>
 
+                                <div class="f-composer__header conv-composer__header">
                                 @if (count($from_aliases))
                                     <div class="form-group conv-from-alias">
                                         <label class="control-label">{{ __('From') }}</label>
@@ -292,6 +293,7 @@
                                         <a href="#" class="help-link" id="toggle-cc">Cc/Bcc</a>
                                     </div>
                                 </div>
+                                </div>
 
                                 @if (!empty($threads[0]) && $threads[0]->type == App\Thread::TYPE_NOTE && $threads[0]->created_by_user_id != Auth::user()->id && $threads[0]->created_by_user)
                                     <div class="f-alert f-alert--warning alert-switch-to-note">
@@ -304,16 +306,18 @@
                                 </div>
 
                                 <div class="form-group{{ $errors->has('body') ? ' has-error' : '' }} conv-reply-body">
-                                    <textarea id="body" class="f-input" name="body" rows="13" data-parsley-required="true" data-parsley-required-message="{{ __('Please enter a message') }}" @if ($conversation->isInChatMode()) placeholder="{{ __('Use ENTER to send the message and SHIFT+ENTER for a new line') }}" @endif>{{ old('body', $conversation->body) }}</textarea>
-                                    <div class="help-block has-error">
-                                        @include('partials/field_error', ['field'=>'body'])
-                                    </div>
+                                    <x-editor id="body" name="body" rows="8" :upload-url="route('conversations.upload')" :aria-label="__('Message')" data-parsley-required="true" :data-parsley-required-message="__('Please enter a message')" :placeholder="$conversation->isInChatMode() ? __('Use ENTER to send the message and SHIFT+ENTER for a new line') : null">
+                                        {{ old('body', $conversation->body) }}
+                                        <x-slot:extras>
+                                            @include('conversations/partials/editor_extras')
+                                        </x-slot:extras>
+                                    </x-editor>
+                                    @include('partials/field_error', ['field'=>'body'])
                                 </div>
 
-                            </form>
+                                @include('conversations/editor_bottom_toolbar')
+                            </x-fruit::composer>
                         </div>
-                        <div class="clearfix"></div>
-                        @include('conversations/editor_bottom_toolbar')
                         @if (App\Ai\Drafts::allowed(Auth::user(), $conversation))
                             @include('conversations/partials/ai_draft_panel')
                         @endif
@@ -337,7 +341,6 @@
     @include('conversations.partials.settings_modal', ['conversation' => $conversation])
 @append
 
-@include('partials/editor')
 
 @section('javascript')
     @parent

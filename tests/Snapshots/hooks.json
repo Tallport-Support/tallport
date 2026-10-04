@@ -477,6 +477,14 @@
         ]
     },
     {
+        "type": "action",
+        "name": "conversation.editor_extras",
+        "arguments": 2,
+        "files": [
+            "resources/views/conversations/partials/editor_extras.blade.php"
+        ]
+    },
+    {
         "type": "filter",
         "name": "conversation.get_action_buttons",
         "arguments": 4,

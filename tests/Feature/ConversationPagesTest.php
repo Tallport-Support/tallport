@@ -115,7 +115,8 @@ class ConversationPagesTest extends FeatureTestCase
             ->assertSee('data-send-status="'.\App\Conversation::STATUS_ACTIVE.'" data-label="Send &amp; Active"', false)
             ->assertSee('Add Note &amp; Close', false)->assertSee('Forward &amp; Pending', false)
             ->assertDontSee('btn-send-close', false)->assertDontSee('Send and stay on page')->assertDontSee('Change default redirect');
-        $this->assertSame(1, substr_count($page->getContent(), 'btn-reply-submit btn-send-text'));
+        $this->assertSame(1, substr_count($page->getContent(), 'btn-reply-submit'));
+        $page->assertSee('<span class="btn-send-text">Send Reply</span>', false);
         $page->assertSee('data-target="#conv-settings-modal"', false);
         $this->getPage($this->agent, '/mailbox/'.$this->mailbox->id.'/new-ticket')->assertSee('Send &amp; Close', false);
     }

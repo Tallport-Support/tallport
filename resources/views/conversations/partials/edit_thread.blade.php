@@ -1,5 +1,5 @@
 <div class="thread-editor-container @if ($thread->type == \App\Thread::TYPE_NOTE) conv-note-block @endif">
-    <textarea class="f-input thread-editor" rows="8">{!! htmlspecialchars($thread->body) !!}</textarea>
+    <x-editor class="thread-editor" :id="'thread-editor-'.$thread->id" rows="8" :aria-label="__('Message')" :upload-url="route('conversations.upload')">{{ $thread->body }}</x-editor>
 
     <div class="thread-editor-statusbar">
         <a href="#" class="f-button f-button--ghost thread-editor-cancel">{{ __('Cancel') }}</a> 

@@ -982,193 +982,6 @@ a h4 {
 }
 
 /**
- * Editor: Summernote (Bootstrap 3 flavour) in FruitUI's look.
- */
-.summernote-inservar {
-    max-width: 200px;
-}
-/* 
-This is needed to avoid an issue with the SPAN tag being added
-https://github.com/freescout-help-desk/freescout/issues/4354
-*/
-.note-editor .note-editable span,
-.note-editor .note-editable div {
-    font-size: inherit;
-}
-.note-editor.note-frame {
-    margin: 0;
-    border: 1px solid var(--f-border);
-    border-radius: var(--f-radius-md);
-    background: var(--f-surface);
-    color: var(--f-text);
-}
-/* summernote.css loads after this file. */
-.fruit-ui .note-editor.note-frame .note-editing-area .note-editable {
-    background: transparent;
-    color: var(--f-text);
-}
-.note-toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 2px 8px;
-    position: relative;
-    padding: 6px 8px;
-    border-bottom: 1px solid var(--f-border);
-    background: transparent;
-}
-.note-btn-group {
-    display: inline-flex;
-    flex-wrap: wrap;
-    position: relative;
-    gap: 2px;
-}
-.note-toolbar > .note-style {
-    flex: 1 1 0;
-    min-width: 0;
-}
-.note-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    min-width: 30px;
-    height: 30px;
-    padding: 0 6px;
-    border: 0;
-    border-radius: var(--f-radius-sm);
-    background: transparent;
-    color: var(--f-secondary);
-    font-size: 14px;
-    line-height: 1;
-    cursor: pointer;
-}
-.note-btn:hover,
-.note-btn-group.open > .note-btn {
-    background: var(--f-hover);
-    color: var(--f-text);
-}
-.note-btn.active {
-    background: var(--f-pressed);
-    color: var(--f-text);
-}
-.note-btn:focus-visible {
-    outline: 2px solid var(--f-accent);
-    outline-offset: 1px;
-}
-.note-btn.disabled,
-.note-btn[disabled] {
-    opacity: 0.45;
-    pointer-events: none;
-}
-.note-btn.text-success {
-    color: var(--f-success);
-}
-.note-btn .caret {
-    margin-inline-start: 2px;
-}
-.note-toolbar .dropdown-menu {
-    min-width: 83px;
-}
-/* Save draft and discard: the toolbar's end. */
-.note-actions {
-    margin-inline-start: auto;
-}
-.note-actions .note-btn-save-draft {
-    font-size: 16px;
-}
-.note-actions-select {
-    margin-inline-start: auto;
-}
-.note-actions-select select {
-    width: auto;
-    min-height: 26px;
-    padding: 0 6px;
-    border: 1px solid var(--f-border);
-    border-radius: var(--f-radius-sm);
-    background: var(--f-control);
-    color: var(--f-text);
-}
-.note-actions-select .note-btn,
-.note-actions-select .note-btn:hover {
-    background: transparent;
-    cursor: default;
-}
-.draft-saved {
-    color: var(--f-tertiary);
-    font-size: var(--f-text-xs);
-}
-/* The status bar holds the signature, status, assignee and Send. */
-.note-editor.note-frame .note-statusbar.note-statusbar-toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
-    padding: 8px;
-    border-top: 1px solid var(--f-border);
-    border-radius: 0 0 var(--f-radius-md) var(--f-radius-md);
-    background: var(--f-surface-secondary);
-    color: var(--f-secondary);
-}
-.note-statusbar-toolbar #editor_signature {
-    flex: 0 0 calc(100% + 16px);
-}
-.note-statusbar-toolbar select.f-input {
-    width: auto;
-    min-height: 30px;
-    padding-block: 2px;
-    font-size: var(--f-text-sm);
-}
-.note-bottom-div:empty {
-    display: none;
-}
-.note-bottom-div {
-    color: var(--f-tertiary);
-    font-size: var(--f-text-xs);
-}
-#editor_signature {
-    padding: 8px;
-    border-bottom: 1px solid var(--f-border);
-    background: var(--f-surface);
-    color: var(--f-text);
-    font-size: 14px;
-    line-height: 20px;
-    text-align: start;
-}
-.note-statusbar-toolbar #editor_signature {
-    margin: -8px -8px 0;
-}
-/* One Send button with a menu of other statuses beside it. */
-.btn-group-send {
-    display: inline-flex;
-    position: relative;
-    margin-inline-start: 4px;
-}
-.btn-group-send > .btn-reply-submit {
-    min-width: 94px;
-    border-start-end-radius: 0;
-    border-end-end-radius: 0;
-}
-.btn-group-send > .btn-send-menu {
-    margin-inline-start: 1px;
-    padding-inline: 8px;
-    border-start-start-radius: 0;
-    border-end-start-radius: 0;
-}
-.dropdown-send-status {
-    top: auto;
-    bottom: 100%;
-    margin: 0 0 4px;
-}
-@media (max-width:582px) {
-    .draft-saved,
-    .editor-btm-text {
-        display: none !important;
-    }
-}
-
-/**
  * Customer
  */
 .customer-profile-menu {
@@ -1493,25 +1306,17 @@ https://github.com/freescout-help-desk/freescout/issues/4354
 .conv-forward-block .dropdown-send-status .send-status-reply,
 .conv-forward-block .btn-send-text,
 .conv-note-block .btn-send-text,
+.conv-phone-block .btn-add-note-text,
 .conv-note-block .conv-recipient,
 .conv-note-block .conv-from-alias {
     display: none;
 }
-.conv-note-block .btn-add-note-text {
-    display: block;
-}
+.conv-note-block .btn-add-note-text,
 .conv-note-block .dropdown-send-status .send-status-note,
-.conv-forward-block .dropdown-send-status .send-status-forward {
-    display: inline;
-}
-.conv-forward-block .btn-send-forward {
-    display: block;
-}
+.conv-forward-block .dropdown-send-status .send-status-forward,
+.conv-forward-block .btn-send-forward,
 .conv-phone-block .btn-create-conv {
-    display: block;
-}
-.conv-phone-block .btn-add-note-text {
-    display: none;
+    display: inline;
 }
 .conv-forward-block .conv-recipient-to.hidden {
     display: block !important;
@@ -1519,64 +1324,17 @@ https://github.com/freescout-help-desk/freescout/issues/4354
 .conv-note-block .conv-reply-body {
     margin-top: 5px;
 }
-.conv-note-block .note-editor.note-frame .note-statusbar.note-statusbar-toolbar {
-    border-top: 1px solid color-mix(in srgb, var(--f-warning) 50%, transparent);
-    background-color: color-mix(in srgb, var(--f-warning) 12%, transparent);
-    color: var(--f-warning);
-}
-.conv-note-block .note-editor.note-frame {
-    border-color: color-mix(in srgb, var(--f-warning) 40%, transparent) !important;
-    color: var(--f-warning);
-}
-.conv-note-block .note-editor .form-control {
-    border-color: color-mix(in srgb, var(--f-warning) 50%, transparent);
-    color: var(--f-warning);
-}
-.conv-note-block .btn-group-send .f-button--primary {
-    border-color: var(--f-warning);
-    background: var(--f-warning);
-    color: #fff;
-}
-.conv-note-block .btn-group-send .f-button--primary:hover {
-    background: color-mix(in srgb, var(--f-warning) 85%, black);
-}
-.conv-note-block .btn-send-menu {
-    border-left-color: color-mix(in srgb, var(--f-warning) 50%, transparent);
-}
-.conv-note-block .note-bottom-div {
-    color: var(--f-warning);
-}
-.conv-note-block .panel-default > .panel-heading {
-    border-color: color-mix(in srgb, var(--f-warning) 50%, transparent);
-    background-color: color-mix(in srgb, var(--f-warning) 12%, transparent);
-    color: var(--f-warning);
-}
-.conv-note-block .note-actions .note-btn-save-draft,
-.conv-note-block .note-actions .draft-saved {
-    display: none;
-}
-.conv-note-block.conv-phone-block .note-actions .note-btn-save-draft,
-.conv-note-block.conv-phone-block .note-actions .draft-saved {
-    color: var(--f-warning);
-    display: block;
-}
-.conv-note-block .note-btn {
-    color: var(--f-warning);
-}
+
 .conv-note-block .alert-switch-to-note {
     display: none;
 }
 .conv-note-block #editor_signature,
 .conv-type-chat #editor_signature,
 .conv-type-chat .cc-toggler,
-.conv-type-chat .conv-reply-block:not(.conv-note-block) .note-btn {
+.conv-type-chat .conv-reply-block:not(.conv-note-block) .f-editor__toolbar > [data-fruit-command] {
     display: none;
 }
-.conv-type-chat .conv-reply-block:not(.conv-note-block) .note-btn-attachment,
-.conv-type-chat .conv-reply-block:not(.conv-note-block) .note-actions .note-btn,
-.conv-type-chat .conv-reply-block:not(.conv-note-block) .btn-codeview ~ .note-btn-group .note-btn {
-    display: block;
-}
+
 .alert-switch-to-note {
     margin: 8px 0;
 }
@@ -3384,16 +3142,7 @@ a.disabled:focus {
 .chats.sidebar-menu > li:nth-child(n+2) > a {
     padding-left: 22px;
 }
-.chat-mode .note-statusbar {
-    display: none;
-}
-.chat-mode .conv-note-block .note-statusbar {
-    display: block;
-}
-.chat-mode .conv-note-block .note-placeholder {
-    /*color: #fff;*/
-    display: none !important;
-}
+
 .conv-top-chat {
     line-height: 21px;
 }
@@ -3450,10 +3199,6 @@ a.disabled:focus {
 @media (max-width:767px) {
     .descr-block {
         margin: 20px 0;
-    }
-    /* Chat placeholder is not needed on mobile as mobile devices don't have ENTER button */
-    .chat-mode .note-placeholder {
-        display: none !important;
     }
 }
 /**
@@ -4721,4 +4466,98 @@ a.disabled:focus {
 .app-workspace .content {
     margin-top: 0;
     min-height: 0;
+}
+/* The reply composer, as in FruitUI's Support example (support-composer):
+   recipients in the header, FruitUI's editor, status, assignee and Send in the
+   footer; a note takes the secondary surface. */
+.conv-composer {
+    --f-composer-padding: 15px 20px 18px;
+    --f-composer-action-gap: 10px;
+    --f-composer-footer-margin: 11px;
+    --f-composer-input-min-height: 120px;
+    margin: 0 0 16px;
+}
+.conv-note-block .conv-composer {
+    --f-composer-background: var(--f-surface-secondary);
+}
+.conv-composer .f-editor__toolbar .f-toolbar__spacer {
+    flex: 1;
+}
+.conv-composer__signature:empty {
+    display: none;
+}
+.conv-composer__signature {
+    margin-top: 8px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+}
+.conv-composer__footer {
+    flex-wrap: wrap;
+    align-items: center;
+}
+.conv-composer__field {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+    font-weight: normal;
+}
+.conv-composer__field .f-input {
+    width: auto;
+    min-height: 30px;
+    padding-block: 2px;
+    font-size: var(--f-text-xs);
+}
+.conv-composer__footer .f-button {
+    font-size: var(--f-text-xs);
+    min-height: 30px;
+}
+.draft-saved {
+    color: var(--f-tertiary);
+    font-size: var(--f-text-2xs);
+}
+.note-bottom-div:empty {
+    display: none;
+}
+.editor-picker__list {
+    max-height: 320px;
+    margin: 8px 0 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+}
+.editor-picker__category {
+    padding: 8px 8px 2px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-2xs);
+    font-weight: 600;
+}
+.editor-picker__item {
+    display: block;
+    width: 100%;
+    padding: 6px 8px 6px calc(8px + var(--picker-depth, 0) * 14px);
+    border: 0;
+    border-radius: var(--f-radius-sm);
+    background: none;
+    color: var(--f-text);
+    font-size: var(--f-text-sm);
+    text-align: start;
+    cursor: pointer;
+}
+.editor-picker__item:hover,
+.editor-picker__item:focus-visible {
+    background: var(--f-hover);
+}
+.editor-picker__empty {
+    margin: 8px;
+}
+.editor-picker__save {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--f-border);
+}
+.editor-picker .f-floating-disclosure__content {
+    width: 300px;
 }

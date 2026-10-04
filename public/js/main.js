@@ -11,11 +11,6 @@ var fs_editor_change_timeout = -1;
 var fs_keep_conversation_notes = 30; // days
 var fs_draft_autosave_period = 12; // seconds
 var fs_reply_changed = false;
-var fs_conv_editor_buttons = {};
-var fs_conv_editor_toolbar = [
-    ['style', ['attachment', 'bold', 'italic', 'underline', 'lists', 'removeformat', 'link', 'picture', 'codeview']],
-    ['actions', ['savedraft', 'discard']],
-];
 var fs_in_app_data = {};
 var fs_actions = {};
 var fs_filters = {};
@@ -103,273 +98,6 @@ $.extend(window.ParsleyConfig, {
     }
 });*/
 
-// Configuring editor
-
-var EditorAttachmentButton = function (context) {
-	var ui = $.summernote.ui;
-
-	// create button
-	var button = ui.button({
-		contents: '<i class="glyphicon glyphicon-paperclip"></i>',
-		tooltip: Lang.get("messages.upload_attachments"),
-		className: 'note-btn-attachment',
-		container: 'body',
-		click: function () {
-			var element = document.createElement('div');
-			element.innerHTML = '<input type="file" multiple>';
-			var fileInput = element.firstChild;
-
-			fileInput.addEventListener('change', function() {
-				if (fileInput.files) {
-					for (var i = 0; i < fileInput.files.length; i++) {
-						editorSendFile(fileInput.files[i], true, true);
-		            }
-			    }
-			});
-
-			fileInput.click();
-		}
-	});
-
-	return button.render();   // return button as jquery object
-}
-
-var EditorSaveDraftButton = function (context) {
-	var ui = $.summernote.ui;
-
-	// create button
-	var button = ui.button({
-		className: 'note-btn-save-draft',
-		contents: '<i class="glyphicon glyphicon-ok"></i>',
-		tooltip: Lang.get("messages.save_draft"),
-		container: 'body',
-		click: function () {
-			saveDraft(true);
-		}
-	});
-
-	return button.render();   // return button as jquery object
-}
-
-var EditorDiscardButton = function (context) {
-	var ui = $.summernote.ui;
-
-	// create button
-	var button = ui.button({
-		contents: '<i class="glyphicon glyphicon-trash"></i>',
-		tooltip: Lang.get("messages.discard"),
-		container: 'body',
-		click: function () {
-			discardDraft();
-		}
-	});
-
-	return button.render();   // return button as jquery object
-}
-
-var EditorInsertVarButton = function (context) {
-	var ui = $.summernote.ui;
-
-	var vars = {
-		mailbox: {
-			'mailbox.email': Lang.get("messages.email"),
-			'mailbox.name': Lang.get("messages.name"),
-			'mailbox.fromName': Lang.get("messages.from_name")
-		},
-		conversation: {
-			'conversation.number': Lang.get("messages.number")
-		},
-		customer: {
-			'customer.fullName': Lang.get("messages.full_name"),
-			'customer.firstName': Lang.get("messages.first_name"),
-			'customer.lastName': Lang.get("messages.last_name"),
-			'customer.email': Lang.get("messages.email_addr"),
-			'customer.company': Lang.get("messages.company"),
-		},
-		user: {
-			'user.fullName': Lang.get("messages.full_name"),
-			'user.firstName': Lang.get("messages.first_name"),
-			'user.lastName': Lang.get("messages.last_name"),
-			'user.jobTitle': Lang.get("messages.job_title"),
-			'user.phone': Lang.get("messages.phone"),
-			'user.email': Lang.get("messages.email_addr"),
-			'user.photoUrl': Lang.get("messages.photo_url"),
-
-		},
-	};
-
-	vars = fsApplyFilter('editor.vars', vars);
-
-	var contents = '<select class="form-control summernote-inservar">'+
-		    '<option value="">'+Lang.get("messages.insert_var")+' ...</option>';
-    for (var entity_name in vars) {
-    	contents += '<optgroup label="'+Lang.get("messages."+entity_name)+'">';
-		for (var var_name in vars[entity_name]) {
-			contents += '<option value="{%'+var_name+'%}">'+vars[entity_name][var_name]+'</option>';
-		}
-    	contents += '</optgroup>';
-    }
-
-	contents += '</select>';
-
-	// create button
-	var button = ui.button({
-		contents: contents,
-		tooltip: Lang.get("messages.insert_var"),
-		container: 'body'
-	});
-
-	return button.render();   // return button as jquery object
-}
-
-var EditorRemoveFormatButton = function (context) {
-	var ui = $.summernote.ui;
-
-	// create button
-	var button = ui.button({
-		contents: '<i class="note-icon-close"></i>',
-		tooltip: Lang.get("messages.remove_format"),
-		container: 'body',
-		click: function () {
-			context.invoke('removeFormat');
-		}
-	});
-
-	return button.render();   // return button as jquery object
-}
-
-function editorPlainTextPasteStorageKey()
-{
-	var user_id = getGlobalAttr('auth_user_id');
-
-	if (!user_id) {
-		return '';
-	}
-
-	return 'editor_plain_text_paste_'+user_id;
-}
-
-function editorPlainTextPasteEnabled()
-{
-	var key = editorPlainTextPasteStorageKey();
-
-	if (!key) {
-		return false;
-	}
-
-	return localStorageGet(key) == '1';
-}
-
-function editorPlainTextPasteSet(enabled)
-{
-	var key = editorPlainTextPasteStorageKey();
-
-	if (!key) {
-		return;
-	}
-
-	if (enabled) {
-		localStorageSet(key, '1');
-	} else {
-		localStorageRemove(key);
-	}
-}
-
-var EditorRemoveFormatPasteButton = function (context) {
-	if (convIsChat()) {
-		return EditorRemoveFormatButton(context);
-	}
-
-	var ui = $.summernote.ui;
-	var plain_text_enabled = editorPlainTextPasteEnabled();
-
-	var button = ui.buttonGroup({
-		className: 'note-remove-format',
-	    children: [
-			ui.button({
-				className: 'note-remove-format-btn',
-				contents: '<i class="note-icon-close"></i>',
-				tooltip: Lang.get("messages.remove_format"),
-				container: 'body',
-				click: function () {
-					context.invoke('removeFormat');
-				}
-			}),
-			ui.button({
-				className: 'dropdown-toggle',
-				contents: '<span class="note-icon-caret"></span>',
-				tooltip: Lang.get("messages.paste_as_plain_text"),
-				container: 'body',
-				data: {
-					toggle: 'dropdown'
-				}
-			}),
-			ui.dropdown([
-				ui.button({
-					className: 'editor-plain-text-paste-toggle',
-					contents: '<span class="editor-plain-text-paste-state">'+(plain_text_enabled ? '&#9745;' : '&#9744;')+'</span> '+htmlEscape(Lang.get("messages.paste_as_plain_text")),
-					click: function (e) {
-						var enabled = !editorPlainTextPasteEnabled();
-						editorPlainTextPasteSet(enabled);
-						$(e.currentTarget).find('.editor-plain-text-paste-state:first').html(enabled ? '&#9745;' : '&#9744;');
-					}
-				})
-			])
-		]
-	});
-
-	return button.render();
-}
-
-function editorConversationToolbar(toolbar)
-{
-	var result = [];
-
-	for (var group_i = 0; group_i < toolbar.length; group_i++) {
-		var buttons = toolbar[group_i][1].slice(0);
-
-		for (var button_i = 0; button_i < buttons.length; button_i++) {
-			if (buttons[button_i] == 'removeformat') {
-				buttons[button_i] = 'removeformatpaste';
-			}
-		}
-
-		result.push([toolbar[group_i][0], buttons]);
-	}
-
-	return result;
-}
-
-var EditorListsButton = function (context) {
-	var ui = $.summernote.ui;
-
-	// create button
-	var button = ui.buttonGroup([
-        ui.button({
-            className: 'dropdown-toggle',
-            contents: ui.dropdownButtonContents(ui.icon('note-icon-unorderedlist'), {icons:{'caret': 'note-icon-caret1'}}),
-            tooltip: Lang.get("messages.list"),
-            data: {
-                toggle: 'dropdown'
-            }
-        }),
-        ui.dropdown([
-            ui.button({
-                contents: ui.icon($.summernote.options.icons.unorderedlist),
-                tooltip: $.summernote.lang[$.summernote.options.lang].lists.unordered /*+ $.summernote.representShortcut('insertUnorderedList')*/,
-                click: context.createInvokeHandler('editor.insertUnorderedList')
-            }),
-            ui.button({
-                contents: ui.icon($.summernote.options.icons.orderedlist),
-                tooltip: $.summernote.lang[$.summernote.options.lang].lists.ordered /*+ $.summernote.representShortcut('insertUnorderedList')*/,
-                click: context.createInvokeHandler('editor.insertOrderedList')
-            })
-        ])
-    ]);
-
-	return button.render();   // return button as jquery object
-}
-
 $(document).ready(function(){
 
 	triggersInit();
@@ -390,20 +118,6 @@ $(document).ready(function(){
 
 	// Floating alerts
 	fsFloatingAlertsInit();
-
-	// Editor
-	(function($) {
-		if (typeof($.summernote) != "undefined") {
-			// DIV instead of P
-			// https://github.com/summernote/summernote/issues/546
-			// https://github.com/summernote/summernote/issues/702
-			// This causes TypeError: Cannot read property 'childNodes' of undefined
-			//$.summernote.dom.emptyPara = "<div><br></div>";
-
-			$.summernote.lang['en-US'].image.dragImageHere = Lang.get("messages.drag_image_file");
-			$.summernote.lang['en-US'].image.dropImage = Lang.get("messages.drag_image_file");
-		}
-	})(jQuery);
 
 	polycastInit();
 	webNotificationsInit();
@@ -529,14 +243,6 @@ function initModals(html_tag)
 	});
 }
 
-function editorProcessInsertVar(editor)
-{
-	editor.parent().children().find('.summernote-inservar:first').on('change', function(event) {
-		editor.summernote('insertText', $(this).val());
-		$(this).val('');
-	});
-}
-
 function mailboxUpdateInit(from_name_custom)
 {
 	$(document).ready(function(){
@@ -620,101 +326,6 @@ function deactivateLicenseModal(modal)
 	});
 }
 
-// Init summernote editor with default settings
-//
-// https://github.com/Studio-42/elFinder/wiki/Integration-with-Multiple-Summernote-%28fixed-functions%29
-// https://stackoverflow.com/questions/21628222/summernote-image-upload
-// https://www.kerneldev.com/2018/01/11/using-summernote-wysiwyg-editor-with-laravel/
-// https://gist.github.com/abr4xas/22caf07326a81ecaaa195f97321da4ae
-function summernoteInit(selector, new_options)
-{
-	if (typeof(new_options) == "undefined") {
-		new_options = {};
-	}
-	var buttons = {
-		removeformat: EditorRemoveFormatButton,
-		lists: EditorListsButton
-	};
-
-	if (typeof(new_options.insertVar) == "undefined" || new_options.insertVar) {
-		buttons.insertvar = EditorInsertVarButton;
-	}
-
-	options = {
-		minHeight: 120,
-		dialogsInBody: true,
-		disableResizeEditor: true,
-		followingToolbar: false,
-		disableDragAndDrop: true,
-		toolbar: [
-		    // [groupName, [list of button]]
-		    ['style', ['attachment', 'bold', 'italic', 'underline', 'color', 'lists', 'removeformat', 'link', 'picture', 'codeview']],
-		    ['actions-select', ['insertvar']]
-		],
-		buttons: buttons,
-		// Disable inserting HR tag.
-		// https://github.com/freescout-help-desk/freescout/issues/4909
-		// 
-		// Caused issue on Mac: https://github.com/freescout-help-desk/freescout/issues/5572
-	    /*keyMap: {
-	        pc: {
-	            'CTRL+ENTER': '' // Disable the shortcut on Windows/Linux
-	        },
-	        mac: {
-	            'CTRL+ENTER': '' // Disable the shortcut on Mac
-	        }
-	    },*/
-	    callbacks: {
-		    onInit: function() {
-		    	// Remove statusbar
-		    	$(selector).parent().children().find('.note-statusbar').remove();
-
-		    	// Insert variables
-		    	if (typeof(new_options.insertVar) != "undefined" || new_options.insertVar) {
-					$(selector).parent().children().find('.summernote-inservar:first').on('change', function(event) {
-						$(selector).summernote('insertText', $(this).val());
-						$(this).val('');
-					});
-				}
-
-				// Hide some variables
-				if (typeof(new_options.excludeVars) != "undefined" || new_options.excludeVars) {
-					$(selector).parent().children().find('.summernote-inservar:first option').each(function(i, el) {
-						for (var var_i = 0; var_i < new_options.excludeVars.length; var_i++) {
-							if ($(el).val().indexOf(new_options.excludeVars[var_i]) != -1) {
-								$(el).parent().hide();
-								break;
-							}
-						}
-					});
-				}
-		    }
-	    }
-	};
-
-	$.extend(options, new_options);
-
-	var $el = $(selector);
-	// Maybe uncomment
-	/*if (!$el.val()) {
-		$el.val('div><br></div>');
-	}*/
-
-	$el.summernote(options);
-
-	// To save data when editing the code directly
-	fsFixEditorCodeSaving($el)
-}
-
-// To save data when editing the code directly
-function fsFixEditorCodeSaving($el)
-{
-	$el.next().children().find('.note-codable').on('blur', function() {
-		if ($el.summernote('codeview.isActivated')) {
-			$el.val($el.summernote('code'));
-		}
-	});
-}
 
 function permissionsInit()
 {
@@ -1511,14 +1122,14 @@ function initConversation()
 					&& $(e.target).attr('contentEditable') == 'true'
 
 				) {
-					if (!$(':focus').hasClass('note-editable')) {
+					if (!$(':focus').closest('.f-editor').length) {
 						return;
 					}
 					var body = $('#body').val();
 					if (!body || body == '<div><br></div>') {
 						return;
 					}
-					var button = $('div.conv-block:not(.conv-note-block) div.conv-reply-body:visible .btn-reply-submit:first');
+					var button = $('div.conv-block:not(.conv-note-block) .form-reply:visible .btn-reply-submit:first');
 					if (button.length) {
 						button.click();
 						// Does not work
@@ -1665,8 +1276,7 @@ function showNoteForm()
 
 		$(".conv-action").addClass('inactive');
 		$(this).removeClass('inactive');
-		//$('#body').summernote("code", '');
-		$('#body').summernote('focus');
+		editorFocus('body');
 
 		maybeScrollToReplyBlock();
 	}
@@ -1717,8 +1327,7 @@ function showReplyForm(data, scroll_offset)
 			$(".conv-reply-block form:first :input[name='"+field+"']").val(data[field]);
 			if (field == 'body') {
 				// Display body value in editor
-				$('#body').summernote("code", data[field]);
-				$('#body').summernote('commit');
+				editorSetContent('body', data[field]);
 			}
 			// Happens when opening draft or after Undo
 			if (field == 'to_email' || field == 'cc' || field == 'bcc') {
@@ -1754,7 +1363,7 @@ function showReplyForm(data, scroll_offset)
 	// Focus reply area. Do not focus when creating a new conversation.
 	//if (!$('#to').length) {
 	if (!$('#subject').length) {
-		$('#body').summernote('focus');
+		editorFocus('body');
 	}
 
 	if (!isChatMode()) {
@@ -1831,77 +1440,26 @@ function setGlobalAttr(attr, value)
 // Initialize conversation body editor
 function convEditorInit()
 {
-	$.extend(fs_conv_editor_buttons, {
-	    attachment: EditorAttachmentButton,
-	    savedraft: EditorSaveDraftButton,
-	    discard: EditorDiscardButton,
-	    removeformat: EditorRemoveFormatButton,
-	    removeformatpaste: EditorRemoveFormatPasteButton,
-	    lists: EditorListsButton
-	});
-
-	var options = {
-		placeholder: $('#body').attr('placeholder'),
-		minHeight: 120,
-		dialogsInBody: true,
-		dialogsFade: true,
-		disableResizeEditor: true,
-		followingToolbar: false,
-		toolbar: editorConversationToolbar(fsApplyFilter('conversation.editor_toolbar', fs_conv_editor_toolbar)),
-		buttons: fs_conv_editor_buttons,
-		// Disable inserting HR tag.
-		// https://github.com/freescout-help-desk/freescout/issues/4909
-		// 
-		// Caused issue on Mac: https://github.com/freescout-help-desk/freescout/issues/5572
-	    /*keyMap: {
-	        pc: {
-	            'CTRL+ENTER': '' // Disable the shortcut on Windows/Linux
-	        },
-	        mac: {
-	            'CTRL+ENTER': '' // Disable the shortcut on Mac
-	        }
-	    },*/
-		callbacks: {
-	 		onImageUpload: function(files) {
-	 			if (!files) {
-	 				return;
-	 			}
-	            for (var i = 0; i < files.length; i++) {
-					editorSendFile(files[i], undefined, true);
-	            }
-	        },
-	        onBlur: function() {
-	        	onReplyBlur();
-		    },
-		    onChange: function(contents, $editable) {
-		    	// Return if reply body is empty and never changed before
-		    	if (!contents && !fs_reply_changed) {
-		    		return;
-		    	}
-		    	onReplyChange();
-		    }
-	    }
-	};
-
-	// Allow plain-text paste in chats and when enabled by the user.
-	options.callbacks.onPaste = function (e) {
-		if (!convIsChat() && !editorPlainTextPasteEnabled()) {
+	// The reply editor (FruitUI's x-fruit::editor on #body) mirrors its HTML
+	// to the textarea: input while typing, change on blur.
+	$('#body').on('input', function() {
+		// Not when the reply is empty and never changed
+		if (!$(this).val() && !fs_reply_changed) {
 			return;
 		}
-		var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
-		e.preventDefault();
-		document.execCommand('insertText', false, bufferText);
-	};
+		onReplyChange();
+	}).on('change', function() {
+		onReplyBlur();
+	});
 
-	options = fsApplyFilter('editor.options', options);
-
-	$('#body').summernote(options);
-	fsFixEditorCodeSaving($('#body'));
-	$('#editor_bottom_toolbar a[data-modal-applied="1"]').removeAttr('data-modal-applied');
-	var html = $('#editor_bottom_toolbar').html();
-	$('.note-statusbar').addClass('note-statusbar-toolbar form-inline').html(html);
-	// To init new modal links
-	initModals();
+	// Images pasted or dropped are embedded in the reply (FruitUI's upload hook).
+	$('#body').on('fruit-editor-upload', function(e) {
+		var detail = e.originalEvent.detail;
+		e.stopPropagation();
+		for (var i = 0; i < detail.files.length; i++) {
+			editorSendFile(detail.files[i], false, true, '#body', undefined, detail.insert);
+		}
+	});
 
 	// Track changes to save draft
 	$("#to, #to_email, #cc, #bcc, #subject, #name, #phone").on('keyup keypress', function(event) {
@@ -1985,7 +1543,7 @@ function onReplyChange()
 			return;
 		}*/
 
-		$('.form-reply:first .note-actions .note-btn:first').removeClass('text-success');
+		$('.form-reply:first .note-btn-save-draft:first').removeClass('text-success');
 		fs_editor_change_timeout = null;
 		fs_reply_changed = true;
 	}, 100);
@@ -1994,8 +1552,6 @@ function onReplyChange()
 // Save reply draft or note on form focus out
 function onReplyBlur()
 {
-	$('#body').summernote('editor.saveRange');
-
 	// If start saving draft immediately, then when Send Reply is clicked
 	// two ajax requests will be sent at the same time.
 	setTimeout(function() {
@@ -2038,7 +1594,7 @@ function generateDummyId()
 }
 
 // Save file uploaded in editor
-function editorSendFile(file, attach, is_conv, editor_id, container)
+function editorSendFile(file, attach, is_conv, editor_id, container, insert)
 {
 	if (!file || typeof(file.type) == "undefined") {
 		return false;
@@ -2132,17 +1688,15 @@ function editorSendFile(file, attach, is_conv, editor_id, container)
 
 				if (typeof(response.attachment_id) == "undefined" && typeof(response.url) != "undefined" && response.url) {
 					// Insert link to uploaded file into the editor
-					$(editor_id).summernote('pasteHTML', '<a href="'+response.url+'">'+file.name+'</a>');
+					editorInsert(editor_id, '<a href="'+response.url+'">'+htmlEscape(file.name)+'</a>');
 				}
 			} else {
 				// Embed image
-				$(editor_id).summernote('insertImage', response.url, function (image) {
-					var editor_width = $('.note-editable:first:visible').width();
-					if (image.width() > editor_width-85) {
-						image.css('width', editor_width-85);
-					}
-					image.attr('width', image.css('width').replace('px', ''));
-				});
+				if (typeof(insert) == "function") {
+					insert(response.url, file.name);
+				} else {
+					editorInsert(editor_id, '<img src="'+response.url+'" alt="'+htmlEscape(file.name)+'">');
+				}
 			}
 			if (typeof(response.attachment_id) != "undefined" || response.attachment_id) {
 				var input_html = '<input type="hidden" name="attachments_all[]" value="'+response.attachment_id+'" />';
@@ -2334,10 +1888,10 @@ function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
 			if (isChatMode() || $('.modal:visible').length) {
 				return;
 			}
-			if (!$(':focus').hasClass('note-editable')) {
+			if (!$(':focus').closest('.f-editor').length) {
 				return;
 			}
-			var button = $('div.conv-reply-body:visible .btn-reply-submit:first');
+			var button = $('.form-reply:visible .btn-reply-submit:first');
 			if (button.length) {
 				e.preventDefault();
 				button.click();
@@ -2346,13 +1900,13 @@ function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
 
 		// Send reply, new conversation or note
 	    // Send with a status from the menu: that status, then send.
-	    $(".dropdown-send-status a[data-send-status]").click(function(e) {
+	    $(".dropdown-send-status [data-send-status]").click(function(e) {
 	    	e.preventDefault();
-	    	$(this).closest('.note-statusbar, #editor_bottom_toolbar').find('select[name="status"]:first').val($(this).attr('data-send-status'));
+	    	$(this).closest('#editor_bottom_toolbar').find('select[name="status"]:first').val($(this).attr('data-send-status'));
 	    	updateSendButtonLabel();
 	    	$(this).closest('.btn-group-send').find('.btn-reply-submit:visible:first').click();
 	    });
-	    $('.note-statusbar select[name="status"]').change(function(e) {
+	    $('#editor_bottom_toolbar select[name="status"]').change(function(e) {
 	    	updateSendButtonLabel();
 	    });
 	    updateSendButtonLabel();
@@ -2378,15 +1932,9 @@ function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
 	    	// Validate before sending
 	    	form = $(".form-reply:first");
 
-			// Sync Summernote's empty-HTML state to the textarea before validation so that
-			// data-parsley-required treats visually-empty content (e.g. <div><br></div>)
-			// the same as a truly empty field (issue #4590).
-			if (typeof $.fn.summernote !== 'undefined' && editor.length) {
-				var body_code = editor.summernote('code');
-				body_code = body_code.replace(/<(?!img\b)[^>]+>/gi, '').replace(/&nbsp;/gi, '');
-				if (!$.trim(body_code)) {
-					editor.val('');
-				}
+			// Visually empty content (e.g. <p></p>) counts as empty (issue #4590).
+			if (editor.length && !$.trim(editor.val().replace(/<(?!img\b)[^>]+>/gi, '').replace(/&nbsp;/gi, ''))) {
+				editor.val('');
 			}
 
 	    	if (!form.parsley().validate()) {
@@ -2411,25 +1959,6 @@ function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
 	    		return;
 	    	}
 
-			// Convert last entered text into link if needed.
-			// https://github.com/freescout-help-desk/freescout/issues/5280
-			var word = editor.summernote('createRange').getWordRange();
-			var url = word.toString();
-			if (/^https?:\/\/\S+$/i.test(url)) {
-				var focused_element = document.activeElement;
-				editor.summernote('createLink', {
-					range: word,
-					text: url,
-					url,
-					isNewWindow: false
-				});
-				// Unselect the word
-				window.getSelection().removeAllRanges();
-				if (focused_element && typeof focused_element.focus === 'function') {
-				    focused_element.focus();
-				}
-			}
-
 			data = form.serialize();
 	    	data += '&action=send_reply';
 
@@ -2438,7 +1967,7 @@ function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
 	    	var is_chat = isChatMode();
 	    	var disable_editor = isChatMode() && !is_note;
 	    	if (disable_editor) {
-	    		editor.summernote('disable');
+	    		editor.prop('readonly', true);
 	    	}
 
 			fsAjax(data, laroute.route('conversations.ajax'), function(response) {
@@ -2457,7 +1986,7 @@ function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
 						showAjaxError(response);
 						button.button('reset');
 						if (disable_editor) {
-							editor.summernote('enable');
+							editor.prop('readonly', false);
 						}
 					}
 					loaderHide();
@@ -2469,7 +1998,7 @@ function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
 					loaderHide();
 					button.button('reset');
 					if (disable_editor) {
-						$('#body').summernote('enable');
+						$('#body').prop('readonly', false);
 					}
 					fs_processing_send_reply = false;
 				});
@@ -4648,7 +4177,7 @@ function saveDraft(reload_page, no_loader, do_not_save_empty)
 		}
 	}
 
-	var button = form.children().find('.note-actions .note-btn:first');
+	var button = form.find('.note-btn-save-draft:first');
 	// Are we saving a draft of a new conversation
 	var new_conversation = isNewConversation();
 
@@ -4680,7 +4209,7 @@ function saveDraft(reload_page, no_loader, do_not_save_empty)
 				button.addClass('text-success');
 				fs_reply_changed = false;
 				// Show Saved
-				var saved_text = form.children().find('.draft-saved:first');
+				var saved_text = form.find('.draft-saved:first');
 				if (!saved_text.length || !saved_text.is(':visible')) {
 					if (!saved_text.length) {
 						saved_text = $('<span class="draft-saved">'+Lang.get("messages.saved")+'</span>');
@@ -4997,9 +4526,6 @@ function editThread(button)
 				// Hide all elements in thread container.
 				thread_container.children().hide();
 				thread_container.prepend(response.html);
-				summernoteInit(thread_container.find('.thread-editor:first'), {
-					toolbar: fs_conv_editor_toolbar
-				});
 
 				thread_container.children().find('.thread-editor-cancel:first').click(function(e) {
 					cancelThreadEdit(e.target);
@@ -5117,23 +4643,46 @@ function getReplyBody()
 	return $("#body").val();
 }
 
+// FruitUI's editor: replace the content, insert at the cursor, focus.
+function editorSetContent(id, html)
+{
+	window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: String(id).replace('#', ''), html: html}}));
+}
+
+function editorInsert(id, html)
+{
+	window.dispatchEvent(new CustomEvent('fruit-editor-insert', {detail: {target: String(id).replace('#', ''), html: html}}));
+}
+
+function editorFocus(id)
+{
+	var textarea = document.getElementById(String(id).replace('#', ''));
+	var editor = textarea ? textarea.closest('.f-editor') : null;
+	var surface = editor ? editor.querySelector('.f-editor__surface [contenteditable="true"]') : null;
+	if (surface) {
+		surface.focus();
+	} else if (textarea) {
+		textarea.focus();
+	}
+}
+
+// Files chosen with the reply editor's Attach button.
+function editorAttachFiles(files)
+{
+	for (var i = 0; i < files.length; i++) {
+		editorSendFile(files[i], true, true);
+	}
+}
+
 function setReplyBody(text)
 {
-	$('#body').summernote("code", text);
-	// Commit is needed for proper CTRL+Z functioning
-	//$('#body').summernote('commit');
+	editorSetContent('body', text);
 	if (text == fs_body_default) {
 		text = '';
 	}
 	$(".conv-reply-block :input[name='body']:first").val(text);
 }
 
-// Set text in summernote editor
-function setSummernoteText(jtextarea, text)
-{
-	jtextarea.summernote("code", text);
-	jtextarea.summernote("commit");
-}
 
 function convListSortingInit()
 {
@@ -6500,8 +6049,8 @@ function reportsInit()
 // The Send button says which status it sends with: "Send & Close".
 function updateSendButtonLabel()
 {
-	$('.note-statusbar .btn-send-text').each(function() {
-		var toolbar = $(this).closest('.note-statusbar');
+	$('#editor_bottom_toolbar .btn-send-text').each(function() {
+		var toolbar = $(this).closest('#editor_bottom_toolbar');
 		var link = toolbar.find('.dropdown-send-status a[data-send-status="'+toolbar.find('select[name="status"]:first').val()+'"]:first');
 		if (link.length) {
 			$(this).text(link.attr('data-label'));
