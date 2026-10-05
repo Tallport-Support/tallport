@@ -140,6 +140,91 @@ class Translations
         self::save($thread, $data);
     }
 
+    /**
+     * Tags kept when a message goes to translation as HTML, with the attributes they keep.
+     */
+    const HTML_TAGS = [
+        'p' => [], 'br' => [], 'div' => [], 'b' => [], 'strong' => [], 'i' => [], 'em' => [], 'u' => [],
+        'ul' => [], 'ol' => [], 'li' => [], 'blockquote' => [], 'pre' => [], 'code' => [], 'hr' => [],
+        'h1' => [], 'h2' => [], 'h3' => [], 'h4' => [], 'h5' => [], 'h6' => [],
+        'table' => [], 'thead' => [], 'tbody' => [], 'tr' => [], 'td' => [], 'th' => [],
+        'a' => ['href'], 'img' => ['src', 'alt', 'width', 'height'],
+    ];
+
+    /**
+     * A message as simple HTML for translating it as it looks (links, images, lists, tables
+     * such as a signature's business card): other tags unwrapped, styles and scripts gone,
+     * links and images only from http(s) (mailto/tel links too).
+     */
+    public static function sourceHtml(Thread $thread)
+    {
+        $html = (string) $thread->getCleanBody();
+        if (trim($html) === '') {
+            return '';
+        }
+        $document = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $document->loadHTML('<?xml encoding="utf-8"?><div id="tallport-source">'.$html.'</div>', LIBXML_NONET);
+        libxml_clear_errors();
+        $root = $document->getElementById('tallport-source');
+        if (!$root) {
+            return '';
+        }
+        $clean = function (\DOMNode $node) use (&$clean) {
+            foreach (iterator_to_array($node->childNodes) as $child) {
+                if ($child instanceof \DOMComment) {
+                    $node->removeChild($child);
+                    continue;
+                }
+                if (!$child instanceof \DOMElement) {
+                    continue;
+                }
+                $tag = strtolower($child->tagName);
+                if (in_array($tag, ['style', 'script', 'head', 'meta', 'title', 'link', 'noscript', 'template', 'svg'])) {
+                    $node->removeChild($child);
+                    continue;
+                }
+                $clean($child);
+                if (!array_key_exists($tag, self::HTML_TAGS)) {
+                    while ($child->firstChild) {
+                        $node->insertBefore($child->firstChild, $child);
+                    }
+                    $node->removeChild($child);
+                    continue;
+                }
+                foreach (iterator_to_array($child->attributes) as $attribute) {
+                    $value = trim($attribute->value);
+                    $keep = in_array($attribute->name, self::HTML_TAGS[$tag])
+                        && ($attribute->name != 'href' || preg_match('#^(https?:|mailto:|tel:)#i', $value))
+                        && ($attribute->name != 'src' || preg_match('#^https?:#i', $value));
+                    if (!$keep) {
+                        $child->removeAttribute($attribute->name);
+                    }
+                }
+                // An image that can't be shown here (e.g. attached, cid:): its text, if any.
+                if ($tag == 'img' && !$child->hasAttribute('src')) {
+                    $node->replaceChild($document->createTextNode((string) $child->getAttribute('alt')), $child);
+                }
+            }
+        };
+        $clean($root);
+        $result = '';
+        foreach ($root->childNodes as $child) {
+            $result .= $document->saveHTML($child);
+        }
+
+        return trim(preg_replace(['/[ \t]+/', "/\n\s*\n+/"], [' ', "\n"], $result));
+    }
+
+    /**
+     * Whether a translation is HTML (kept the message's links, images and layout), or
+     * plain text (older translations).
+     */
+    public static function isHtml(Thread $thread, $language)
+    {
+        return in_array($language, (array) (Summaries::data($thread)['html'] ?? []));
+    }
+
     public static function translate(Thread $thread, $language)
     {
         $text = Summaries::text($thread);
@@ -152,12 +237,22 @@ class Translations
             if (mb_strlen(trim((string) $thread->getBodyAsText())) > Summaries::MAX_THREAD_CHARS) {
                 $data['truncated'] = true;
             }
-            $response = (new ThreadTranslator($language))->prompt(TallportAgent::data('message', $text));
+            // As it looks (HTML) where that fits, else as text.
+            $html = self::sourceHtml($thread);
+            $as_html = $html !== '' && mb_strlen($html) <= Summaries::MAX_THREAD_CHARS * 3;
+            $response = (new ThreadTranslator($language, $as_html))->prompt(TallportAgent::data('message', $as_html ? $html : $text));
             $data['language'] = strtolower(trim((string) $response['detected_language'])) ?: ($data['language'] ?? null);
             if ($response['same_language'] || trim((string) $response['translation']) === '') {
                 $data['same'] = array_values(array_unique(array_merge((array) ($data['same'] ?? []), [$language])));
             } else {
                 $data['translations'][$language] = trim((string) $response['translation']);
+                $data['html'] = array_values(array_diff((array) ($data['html'] ?? []), [$language]));
+                if ($as_html) {
+                    $data['html'][] = $language;
+                }
+                if (!$data['html']) {
+                    unset($data['html']);
+                }
             }
         } else {
             $data['no_text'] = true;

@@ -13,9 +13,15 @@ class ThreadTranslator extends TallportAgent implements HasStructuredOutput
 {
     public $language;
 
-    public function __construct($language)
+    /**
+     * The message is HTML, translated as it looks (Translations::sourceHtml()).
+     */
+    public $html;
+
+    public function __construct($language, $html = false)
     {
         $this->language = $language;
+        $this->html = $html;
     }
 
     public function instructions(): string
@@ -25,7 +31,9 @@ class ThreadTranslator extends TallportAgent implements HasStructuredOutput
             self::dataRules(),
             'Translate the message to: '.Settings::languageName($this->language).' ('.$this->language.').',
             'Do not change the content, do not add information, keep the paragraphs.',
-            'translation: only the translated text, not JSON.',
+            $this->html
+                ? 'The message is HTML. Translate only the text people read; keep every tag, attribute, link address and image exactly as it is. translation: the translated HTML, not JSON.'
+                : 'translation: only the translated text, not JSON.',
             'If the message is already entirely in the target language, set same_language to true and leave translation empty.',
             'detected_language: the language of the message, as an ISO 639-1 code.',
         ]);

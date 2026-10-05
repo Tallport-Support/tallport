@@ -237,6 +237,31 @@ class AiAssistantTest extends FeatureTestCase
         $this->assertNull(Translations::get($note->fresh(), 'en'));
     }
 
+    /**
+     * A message is translated as it looks: its links, images and layout (a signature's
+     * business card) go as simple HTML and come back translated, shown made safe.
+     */
+    public function testTranslationKeepsLinksAndLayout()
+    {
+        $this->configureAi();
+        $this->fakeAi();
+        $conversation = $this->receiveCustomerEmail();
+        $thread = \App\Thread::createExtended(['type' => \App\Thread::TYPE_CUSTOMER, 'body' => '<p style="color:red">Bedankt!</p><table><tr><td><b>Jane</b><br><a href="https://acme.test/card" onclick="x()">Mijn visitekaartje</a></td></tr></table><script>alert(1)</script>'], $conversation, $conversation->customer);
+
+        ThreadTranslator::fake([['translation' => '<p>Thanks!</p><table><tr><td><b>Jane</b><br><a href="https://acme.test/card">My business card</a><script>alert(2)</script></td></tr></table>', 'same_language' => false, 'detected_language' => 'nl']]);
+        Translations::translate($thread->fresh(), 'en');
+        ThreadTranslator::assertPrompted(function ($prompt) {
+            return $prompt->agent->html && str_contains($prompt->prompt, 'acme.test/card') && str_contains($prompt->prompt, 'Mijn visitekaartje</a>')
+                && !str_contains($prompt->prompt, 'onclick') && !str_contains($prompt->prompt, '<script') && !str_contains($prompt->prompt, 'style=');
+        });
+        $this->assertTrue(Translations::isHtml($thread->fresh(), 'en'));
+
+        $this->getConversationPage($this->agent, $conversation)
+            ->assertSee('<a href="https://acme.test/card"', false)
+            ->assertSee('My business card')
+            ->assertDontSee('alert(2)', false);
+    }
+
     public function testMessageInTheTargetLanguageIsNotTranslated()
     {
         $this->configureAi(['aiassistant.translation_language' => 'nl']);
