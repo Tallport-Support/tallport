@@ -105,7 +105,7 @@ class ModuleSystemTest extends FeatureTestCase
         $json = json_decode(file_get_contents($this->dir.'/TpModule/module.json'), true);
         file_put_contents($this->dir.'/TpModule/module.json', json_encode($json + ['authorUrl' => 'https://example.org', 'latestVersionUrl' => 'https://example.org/tpmodule/version']));
         $this->app->instance('modules', new Repository($this->app, $this->dir));
-        \Cache::put('module_latest_version.'.md5('https://example.org/tpmodule/version'), '2.0.0', now()->addMinutes(5));
+        \Cache::put('module_latest_version.'.config('app.version').'.'.md5('https://example.org/tpmodule/version'), '2.0.0', now()->addMinutes(5));
         \Cache::put('modules_directory', [['alias' => 'othermodule', 'name' => 'Other Official Module', 'version' => '1.0.0']], now()->addMinutes(5));
 
         $admin = $this->createAdmin();

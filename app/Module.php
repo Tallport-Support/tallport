@@ -95,7 +95,7 @@ class Module extends Model
 
     /**
      * New versions of the installed modules, by alias, from each module's own
-     * latestVersionUrl (kept for 15 minutes). FreeScout's directory isn't asked.
+     * latestVersionUrl (kept for 15 minutes per Tallport version). FreeScout's directory isn't asked.
      */
     public static function availableUpdates()
     {
@@ -106,11 +106,13 @@ class Module extends Model
             if (self::isOfficial($module->get('authorUrl')) || !$url) {
                 continue;
             }
-            $latest_version = \Cache::remember('module_latest_version.'.md5($url), now()->addMinutes(15), function () use ($url) {
+            // Per Tallport version: an update of Tallport (when people look for module
+            // updates) asks again. A failed request isn't kept (null isn't cached).
+            $latest_version = \Cache::remember('module_latest_version.'.config('app.version').'.'.md5($url), now()->addMinutes(15), function () use ($url) {
                 try {
                     $body = trim((string) (new \GuzzleHttp\Client())->request('GET', $url, \Helper::setGuzzleDefaultOptions())->getBody());
                 } catch (\Exception $e) {
-                    return '';
+                    return null;
                 }
                 // It may be the module.json file.
                 if (preg_match('#"version":[^"]*"([\d\.]+)"#', $body, $m)) {
