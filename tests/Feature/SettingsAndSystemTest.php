@@ -200,8 +200,9 @@ class SettingsAndSystemTest extends FeatureTestCase
         $unknown = $this->postAjax($this->admin, '/modules/ajax', ['action' => 'activate', 'alias' => 'nosuchmodule'])->json();
         $this->assertSame('Module not found: nosuchmodule', $unknown['msg']);
 
-        $no_license = $this->postAjax($this->admin, '/modules/ajax', ['action' => 'install', 'alias' => 'nosuchmodule', 'license' => ''])->json();
-        $this->assertSame('Empty license key', $no_license['msg']);
+        // No licences: FreeScout's install and license actions are gone.
+        $this->assertSame('error', $this->postAjax($this->admin, '/modules/ajax', ['action' => 'install', 'alias' => 'nosuchmodule', 'license' => 'x'])->json()['status']);
+        $this->actingAs($this->admin)->get(route('modules'))->assertOk()->assertDontSee('License');
 
         $this->assertSame(403, $this->postAjax($this->createUser(), '/modules/ajax', ['action' => 'activate', 'alias' => 'x'])->status());
     }

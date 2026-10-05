@@ -21,9 +21,6 @@
 		    @if (!empty($module['detailsUrl']))
 		    	· <a href="{{ $module['detailsUrl'] }}" target="_blank">{{ __('View details') }}</a>
 		    @endif
-			@if (!empty($module['license']) && Eventy::filter('modules.show_license', true))
-		    	<span>· {{ __('License') }}: <span class="license-key-text">{{ $module['license'] }}</span> <button type="button" class="f-button f-button--ghost f-button--small deactivate-license-trigger" x-on:click="deactivateLicense" title="{{ __('Deactivate the license for this domain (to use on another domain)') }}" aria-label="{{ __('Deactivate the license for this domain (to use on another domain)') }}"><x-icon.trash-2 class="f-icon" aria-hidden="true" /></button></span>
-		    @endif
 		    @if (!empty($module['requiredAppVersion']) && !\Helper::checkAppVersion($module['requiredAppVersion']))
 		    	@php
 		    		$wrong_app_verion = true;
@@ -41,16 +38,8 @@
 			@if ((empty($wrong_app_verion) && empty($module['requiredPhpExtensionsMissing'])) || !empty($module['active']))
 				@if (!empty($module['active']))
 					<button type="button" class="f-button deactivate-trigger" x-on:click="action($event, 'deactivate')">{{ __('Deactivate') }}</button>
-				@elseif (!empty($module['activated']))
+				@else
 					<button type="button" class="f-button f-button--primary activate-trigger" x-on:click="action($event, 'activate')">{{ __('Activate') }}</button>
-				@elseif (empty($third_party))
-					<form action="" class="install-module-form" data-module-alias="{{ $module['alias'] }}" x-on:submit.prevent="install">
-						<div class="f-input-group">
-							<input type="text" class="f-input license-key" placeholder="{{ __('License Key') }}" aria-label="{{ __('License Key') }}" value="{{ App\Module::getLicense($module['alias']) }}" required="required">
-							<button class="f-button f-button--primary install-trigger" type="submit" @if (!empty($module['installed']))data-action="activate_license" @else data-action="install" @endif >@if (!empty($module['installed'])){{ __('Activate License') }}@else{{ __('Install Module') }}@endif</button>
-						</div>
-				    </form>
-				    <small><a href="{{ $module['detailsUrl'] }}" target="_blank">{{ __('Get license key') }}</a></small>
 				@endif
 			@endif
 

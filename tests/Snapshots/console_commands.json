@@ -284,15 +284,6 @@
         },
         "options": {}
     },
-    "tallport:module-check-licenses": {
-        "class": "App\\Console\\Commands\\ModuleCheckLicenses",
-        "aliases": [
-            "freescout:module-check-licenses"
-        ],
-        "description": "Check licenses for modules",
-        "arguments": {},
-        "options": {}
-    },
     "tallport:module-install": {
         "class": "App\\Console\\Commands\\ModuleInstall",
         "aliases": [

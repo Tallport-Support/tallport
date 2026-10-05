@@ -115,13 +115,6 @@ class Kernel extends ConsoleKernel
             ->dailyAt('03:40')
             ->withoutOverlapping();
 
-        $app_key = config('app.key');
-        if ($app_key) {
-            $crc = crc32($app_key);
-            $schedule->command('tallport:module-check-licenses')
-                ->cron((int)($crc % 59).' '.(int)($crc % 23).' * * *');
-        }
-
         // Check if user finished viewing conversation.
         $schedule->command('tallport:check-conv-viewers')
             ->everyMinute()

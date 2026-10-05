@@ -271,8 +271,6 @@ class RemainingAjaxActionsTest extends FeatureTestCase
             return $this->postAjax($this->admin, '/modules/ajax', $data)->json();
         };
 
-        $this->assertSame('Empty license key', $ajax(['action' => 'activate_license', 'alias' => 'nosuchmodule', 'license' => ''])['msg']);
-        $this->assertSame('Empty license key', $ajax(['action' => 'deactivate_license', 'alias' => 'nosuchmodule', 'license' => ''])['msg']);
         $delete_missing = $ajax(['action' => 'delete', 'alias' => 'nosuchmodule']);
         $this->assertSame('Module not found: nosuchmodule', $delete_missing['msg']);
         $this->assertSame('error', $delete_missing['status'], 'Deleting a missing module is not a success (S5).');

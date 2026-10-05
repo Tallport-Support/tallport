@@ -18,10 +18,6 @@
     @else
         <div class="page-toolbar f-row" id="installed">
             <h2 class="f-title-3">{{ __('Installed Modules') }} <span class="f-muted">({{ count($installed_modules) }})</span></h2>
-            <div class="f-row">
-                <button type="button" x-on:click="$dispatch('fruit-dialog-open', { name: 'deactivate-license' })" class="f-button f-button--ghost f-button--small">{{ __('Deactivate License') }}</button>
-                <a href="https://freescout.net/remind-license-keys/" target="_blank" class="f-button f-button--ghost f-button--small">{{ __('Remind License Keys') }}</a>
-            </div>
         </div>
 
         {{-- New versions are checked once the page is open. --}}
@@ -37,23 +33,6 @@
             @endforeach
         </div>
 
-        <x-fruit::dialog name="deactivate-license" aria-labelledby="deactivate-license-title">
-            <form x-on:submit.prevent="deactivateAnyLicense">
-                <header class="f-dialog__header"><h2 id="deactivate-license-title">{{ __('Deactivate License') }}</h2></header>
-                <div class="f-dialog__body f-stack">
-                    <select class="f-input deactivate-license-module" aria-label="{{ __('Modules') }}">
-                        @foreach ($all_modules as $module_alias => $module_name)
-                            <option value="{{ $module_alias }}">{{ App\Module::formatName($module_name) }}</option>
-                        @endforeach
-                    </select>
-                    <input type="text" class="f-input deactivate-license-key" placeholder="{{ __('License Key') }}" aria-label="{{ __('License Key') }}" />
-                </div>
-                <footer class="f-dialog__footer">
-                    <x-fruit::button x-on:click="$el.closest('dialog').close()">{{ __('Cancel') }}</x-fruit::button>
-                    <x-fruit::button type="submit" variant="primary" class="button-deactivate-license">{{ __('Deactivate') }}</x-fruit::button>
-                </footer>
-            </form>
-        </x-fruit::dialog>
     @endif
 </div>
 

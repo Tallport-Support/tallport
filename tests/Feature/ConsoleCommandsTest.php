@@ -355,11 +355,6 @@ class ConsoleCommandsTest extends FeatureTestCase
         rmdir($dir);
     }
 
-    public function testModuleLicenseCheckWithoutNetwork()
-    {
-        $this->assertStringContainsString('Checking licenses finished', $this->runCommand('tallport:module-check-licenses'));
-    }
-
     /**
      * clean-tmp may only remove FreeScout's own temp files and SwiftMailer's
      * cache directories, never other programs' files (S11).

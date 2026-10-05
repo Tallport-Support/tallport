@@ -6,7 +6,6 @@
 
 namespace App;
 
-use App\Misc\WpApi;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -76,24 +75,6 @@ class Module extends Model
     }
 
     /**
-     * Is module license activated.
-     */
-    public static function isLicenseActivated($alias, $author_url)
-    {
-        // If module is from modules directory, license activation is required
-        if ($author_url && self::isOfficial($author_url)) {
-            $module = self::getByAlias($alias);
-            if ($module) {
-                return $module->activated;
-            } else {
-                return false;
-            }
-        } else {
-            return true;
-        }
-    }
-
-    /**
      * New versions of the installed modules, by alias, from each module's own
      * latestVersionUrl (kept for 15 minutes per Tallport version). FreeScout's directory isn't asked.
      */
@@ -135,30 +116,6 @@ class Module extends Model
         return parse_url($author_url ?? '', PHP_URL_HOST) == parse_url(\Config::get('app.freescout_url') ?? '', PHP_URL_HOST);
     }
 
-    /**
-     * Activate module license.
-     *
-     * @param [type] $alias       [description]
-     * @param [type] $details_url [description]
-     *
-     * @return bool [description]
-     */
-    public static function activateLicense($alias, $license)
-    {
-        $module = self::getByAliasOrCreate($alias);
-        $module->license = $license;
-        $module->activated = true;
-        $module->save();
-    }
-
-    public static function deactivateLicense($alias, $license)
-    {
-        $module = self::getByAliasOrCreate($alias);
-        $module->license = $license;
-        $module->activated = false;
-        $module->save();
-    }
-
     public static function getByAliasOrCreate($alias)
     {
         $module = self::getByAlias($alias);
@@ -168,50 +125,6 @@ class Module extends Model
         }
 
         return $module;
-    }
-
-    /**
-     * Get module license.
-     */
-    public static function getLicense($alias)
-    {
-        $module = self::getByAlias($alias);
-        if ($module) {
-            return $module->license;
-        } else {
-            return '';
-        }
-    }
-
-    public static function setLicense($alias, $license)
-    {
-        $module = self::getByAliasOrCreate($alias);
-        $module->license = $license;
-        $module->save();
-    }
-
-    /**
-     * Automatically encrypt license key.
-     */
-    public function setLicenseAttribute($value)
-    {
-        if ($value != '') {
-            $this->attributes['license'] = \Helper::encrypt($value);
-        } else {
-            $this->attributes['license'] = '';
-        }
-    }
-
-    /**
-     * Automatically decrypt license key.
-     */
-    public function getLicenseAttribute($value)
-    {
-        if (!$value) {
-            return '';
-        }
-
-        return \Helper::decrypt($value) ?: $value;
     }
 
     public static function normalizeAlias($alias)
@@ -240,16 +153,6 @@ class Module extends Model
         if ($clear_app_cache) {
             \Artisan::call('tallport:clear-cache');
         }
-    }
-
-    /**
-     * Get URL used to active and check license.
-     *
-     * @return [type] [description]
-     */
-    public static function getAppUrl()
-    {
-        return parse_url(\Config::get('app.url'), PHP_URL_HOST);
     }
 
     /**
@@ -478,40 +381,15 @@ class Module extends Model
 
         // Download new version.
         if (!$result['msg']) {
-            // Check if the module's author is officially recognized
-            if (self::isOfficial($module->authorUrl)) {
-                $params = [
-                    'license'      => self::getLicense($alias),
-                    'module_alias' => $alias,
-                    'url'          => self::getAppUrl(),
-                ];
-                $license_details = WpApi::getVersion($params);
+            // From the module's own download address (latestVersionZipUrl).
+            $latest_version_zip_url = $module->latestVersionZipUrl ?? null;
 
-                if (WpApi::$lastError) {
-                    $result['msg'] = WpApi::$lastError['message'];
-                } elseif (!empty($license_details['code']) && !empty($license_details['message'])) {
-                    $result['msg'] = $license_details['message'];
-                } elseif (!empty($license_details['required_app_version']) && !\Helper::checkAppVersion($license_details['required_app_version'])) {
-                    $result['msg'] = 'Module requires app version:'.' '.$license_details['required_app_version'];
-                } elseif (!empty($license_details['download_link'])) {
-                    // If a download link is available, proceed to update the module from the URL
-                    $result = self::updateFromUrl($module, $license_details['download_link'], $result);
-                } elseif ($license_details['status'] && $result['msg'] = self::getErrorMessage($license_details['status'])) {
-                    //$result['msg'] = ;
-                } else {
-                    $result['msg'] = __('Error occurred').': '.json_encode($license_details);
-                }
+            if (!empty($latest_version_zip_url)) {
+                // Update the module from the provided ZIP URL
+                $result = self::updateFromUrl($module, $module->latestVersionZipUrl, $result);
             } else {
-                // If the module's author is not officially recognized, check for a direct download link
-                $latest_version_zip_url = $module->latestVersionZipUrl ?? null;
-
-                if (!empty($latest_version_zip_url)) {
-                    // Update the module from the provided ZIP URL
-                    $result = self::updateFromUrl($module, $module->latestVersionZipUrl, $result);
-                } else {
-                    // If no download link is available, set an error message indicating the module cannot be downloaded
-                    $result['msg'] = __('Error occurred') . ': module not available for download';
-                }
+                // If no download link is available, set an error message indicating the module cannot be downloaded
+                $result['msg'] = __('Error occurred') . ': module not available for download';
             }
         }
 
@@ -623,45 +501,4 @@ class Module extends Model
         return $result;
     }
 
-    public static function getErrorMessage($code, $result = null)
-    {
-        $msg = '';
-
-        switch ($code) {
-            case 'missing':
-                $msg = __('License key does not exist');
-                break;
-            case 'license_not_activable':
-                $msg = __("You have to activate each bundle's module separately");
-                break;
-            case 'disabled':
-                $msg = __('License key has been revoked');
-                break;
-            case 'no_activations_left':
-                $msg = __('No activations left for this license key').' ('.__("Use 'Deactivate License' link above to transfer license key from another domain").')';
-                break;
-            case 'expired':
-                $msg = __('License key has expired');
-                break;
-            case 'key_mismatch':
-                $msg = __('License key belongs to another module');
-                break;
-            // This also happens when entering a valid license key for wrong module.
-            case 'invalid_item_id':
-                $msg = __('Invalid license key');
-                //$msg = __('Module not found in the modules directory');
-                break;
-            case 'site_inactive':
-                $msg = __('License key is activated on another domain.').' '.__("Use 'Deactivate License' link above to transfer license key from another domain");
-                //$msg = __('Module not found in the modules directory');
-                break;
-            default:
-                if ($result && !empty($result['error'])) {
-                    $msg = __('Error code:'.' '.$result['error']);
-                }
-                break;
-        }
-
-        return $msg;
-    }
 }

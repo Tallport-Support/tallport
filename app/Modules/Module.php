@@ -138,13 +138,4 @@ class Module extends \Nwidart\Modules\Laravel\Module
         return \App\Module::isOfficial($this->get('authorUrl'));
     }
 
-    /**
-     * Get module license from DB.
-     *
-     * @return string
-     */
-    public function getLicense()
-    {
-        return \App\Module::getLicense($this->getAlias());
-    }
 }

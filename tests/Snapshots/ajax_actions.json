@@ -63,15 +63,8 @@
     ],
     "ModulesController@ajax": [
         "activate",
-        "activate_license",
         "deactivate",
-        "deactivate_license",
         "delete",
-        "disabled",
-        "expired",
-        "inactive",
-        "install",
-        "site_inactive",
         "update",
         "update_all"
     ],

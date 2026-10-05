@@ -2064,14 +2064,6 @@
         ]
     },
     {
-        "type": "filter",
-        "name": "modules.show_license",
-        "arguments": 1,
-        "files": [
-            "resources/views/modules/partials/module_card.blade.php"
-        ]
-    },
-    {
         "type": "action",
         "name": "new_conversation_form.after",
         "arguments": 1,

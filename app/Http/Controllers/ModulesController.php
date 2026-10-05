@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Misc\WpApi;
 use Illuminate\Http\Request;
 //use Nwidart\Modules\Traits\CanClearModulesCache;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -27,7 +26,6 @@ class ModulesController extends Controller
     public function modules(Request $request)
     {
         $installed_modules = [];
-        $all_modules = [];
         $flashes = [];
 
         $flash = \Cache::get('modules_flash');
@@ -59,8 +57,6 @@ class ModulesController extends Controller
                 'img'                          => $module->get('img'),
                 'active'                       => $module->active(), //\App\Module::isActive($module->getAlias()),
                 'installed'                    => true,
-                'activated'                    => \App\Module::isLicenseActivated($module->getAlias(), $module->get('authorUrl')),
-                'license'                      => \App\Module::getLicense($module->getAlias()),
                 // Update configuration for third party modules
                 'latestVersionNumberUrl'       => $module->get('latestVersionUrl'),
                 'latestVersionZipUrl'          => $module->get('latestVersionZipUrl'),
@@ -78,22 +74,14 @@ class ModulesController extends Controller
         // }
 
         // New versions are checked by App\Livewire\ModuleUpdates, after the page has opened.
-        foreach ($installed_modules as $module) {
-            $all_modules[$module['alias']] = $module['name'];
-        }
-
         // Check modules symlinks. Somestimes instead of symlinks folders with files appear.
         $invalid_symlinks = \App\Module::checkSymlinks(
             collect($installed_modules)->where('active', true)->pluck('alias')->toArray()
         );
 
-        // Sort all modules.
-        asort($all_modules);
-
         return view('modules/modules', [
             'installed_modules' => $installed_modules,
             'flashes'           => $flashes,
-            'all_modules'       => $all_modules,
             'invalid_symlinks'  => $invalid_symlinks,
         ]);
     }
@@ -110,108 +98,6 @@ class ModulesController extends Controller
 
         switch ($request->action) {
 
-            // Install module or activate license.
-            case 'install':
-            case 'activate_license':
-                $license = $request->license;
-                $alias = preg_replace("#[^a-zA-Z0-9_\-]#", '', $request->alias);
-
-                if (!$license) {
-                    $response['msg'] = __('Empty license key');
-                }
-
-                if (!$response['msg']) {
-                    $params = [
-                        'license'      => $license,
-                        'module_alias' => $alias,
-                        'url'          => \App\Module::getAppUrl(),
-                    ];
-                    $result = WpApi::activateLicense($params);
-
-                    if (WpApi::$lastError) {
-                        $response['msg'] = WpApi::$lastError['message'];
-                    } elseif (!empty($result['code']) && !empty($result['message'])) {
-                        $response['msg'] = $result['message'];
-                    } else {
-                        if (!empty($result['status']) && $result['status'] == 'valid') {
-                            if ($request->action == 'install') {
-                                // Download and install module
-                                $license_details = WpApi::getVersion($params);
-
-                                if (WpApi::$lastError) {
-                                    $response['msg'] = WpApi::$lastError['message'];
-                                } elseif (!empty($license_details['code']) && !empty($license_details['message'])) {
-                                    $response['msg'] = $license_details['message'];
-                                } elseif (!empty($license_details['download_link'])) {
-                                    // Download module
-                                    $module_archive = \Module::getPath().DIRECTORY_SEPARATOR.$alias.'.zip';
-
-                                    try {
-                                        \Helper::downloadRemoteFile($license_details['download_link'], $module_archive);
-                                    } catch (\Exception $e) {
-                                        $response['msg'] = $e->getMessage();
-                                    }
-
-                                    $download_error = false;
-                                    if (!file_exists($module_archive)) {
-                                        $download_error = true;
-                                    } else {
-                                        // Extract
-                                        try {
-                                            \Helper::unzip($module_archive, \Module::getPath());
-                                        } catch (\Exception $e) {
-                                            $response['msg'] = $e->getMessage();
-                                        }
-                                        // Check if extracted module exists
-                                        \Module::clearCache();
-                                        $module = \Module::findByAlias($alias);
-                                        if (!$module) {
-                                            $download_error = true;
-                                        }
-                                    }
-
-                                    // Remove archive
-                                    if (file_exists($module_archive)) {
-                                        \File::delete($module_archive);
-                                    }
-
-                                    if (!$response['msg'] && !$download_error) {
-                                        // Activate license
-                                        \App\Module::activateLicense($alias, $license);
-
-                                        \Session::flash('flash_success_floating', __('Module successfully installed!'));
-                                        $response['status'] = 'success';
-                                    } elseif ($download_error) {
-                                        $response['reload'] = true;
-
-                                        if ($response['msg']) {
-                                            \Session::flash('flash_error_floating', $response['msg']);
-                                        }
-
-                                        \Session::flash('flash_error_unescaped', __('Error occurred downloading the module. Please :%a_being%download:%a_end% module manually and extract into :folder', ['%a_being%' => '<a href="'.$license_details['download_link'].'" target="_blank">', '%a_end%' => '</a>', 'folder' => '<strong>'.\Module::getPath().'</strong>']));
-                                    }
-                                } else {
-                                    $response['msg'] = __('Error occurred. Please try again later.');
-                                }
-                            } else {
-                                // Just activate license
-                                \App\Module::activateLicense($alias, $license);
-
-                                \Session::flash('flash_success_floating', __('License successfully activated!'));
-                                $response['status'] = 'success';
-                            }
-                        } elseif (!empty($result['error'])) {
-                            $response['msg'] = \App\Module::getErrorMessage($result['error'], $result);
-                        } else {
-                            $response['msg'] = __('Error occurred. Please try again later.');
-                        }
-                    }
-                }
-                // If everything is fine try to activate the Module.
-                if (!empty($response['msg'])) {
-                    break;
-                }
-                // Continue to activation.
             case 'activate':
                 $alias = $request->alias;
                 $module = \Module::findByAlias($alias);
@@ -220,104 +106,55 @@ class ModulesController extends Controller
                     $response['msg'] = __('Module not found').': '.$alias;
                 }
 
-                // Check license
+                // Module folders named as their providers expect.
                 if (!$response['msg']) {
-                    if (!empty($module->get('authorUrl')) && $module->isOfficial()) {
-                        $params = [
-                            'license'      => $request->license ?: $module->getLicense(),
-                            'module_alias' => $alias,
-                            'url'          => \App\Module::getAppUrl(),
-                        ];
-                        $license_result = WpApi::checkLicense($params);
+                    // Check folder names for custom modules o avoid errors after activation:
+                    // Class "Modules\CustomModule\Providers\CustomModuleServiceProvider" not found.
+                    try {
+                        $old_path = '';
+                        $correct_path = '';
+                        foreach (\Module::getScanPaths() as $key => $path) {
+                            $manifests = \Module::getFiles()->glob("{$path}/module.json");
 
-                        if (!empty($license_result['code']) && !empty($license_result['message'])) {
-                            // Remove remembered license key and deactivate license in DB
-                            \App\Module::deactivateLicense($alias, '');
+                            is_array($manifests) || $manifests = [];
 
-                            $response['msg'] = $license_result['message'];
-                        } elseif (!empty($license_result['status']) && $license_result['status'] != 'valid' && $license_result['status'] != 'inactive') {
-                            // Remove remembered license key and deactivate license in DB
-                            \App\Module::deactivateLicense($alias, '');
-
-                            switch ($license_result['status']) {
-                                case 'expired':
-                                    $response['msg'] = __('License key has expired');
-                                    break;
-                                case 'disabled':
-                                    $response['msg'] = __('License key has been revoked');
-                                    break;
-                                case 'inactive':
-                                    $response['msg'] = __('License key has not been activated yet');
-                                    break;
-                                case 'site_inactive':
-                                    $response['msg'] = __('No activations left for this license key').' ('.__("Use 'Deactivate License' link above to transfer license key from another domain").')';
-                                    break;
-                            }
-                        } elseif (!empty($license_result['status']) && $license_result['status'] == 'inactive') {
-                            // Activate the license.
-                            $result = WpApi::activateLicense($params);
-                            if (WpApi::$lastError) {
-                                $response['msg'] = WpApi::$lastError['message'];
-                            } elseif (!empty($result['code']) && !empty($result['message'])) {
-                                $response['msg'] = $result['message'];
-                            } else {
-                                if (!empty($result['status']) && $result['status'] == 'valid') {
-                                    // Success.
-                                } elseif (!empty($result['error'])) {
-                                    $response['msg'] = \App\Module::getErrorMessage($result['error'], $result);
-                                } else {
-                                    // Some unknown error. Do nothing.
+                            // Determine correct module folder name from providers in module.json.
+                            // Each module must have at least on "provider" specified.
+                            foreach ($manifests as $manifest) {
+                                $manifest_json = \App\Modules\Json::make($manifest);
+                                if ($manifest_json->get('alias') != $alias) {
+                                    continue;
                                 }
+
+                                $providers = $manifest_json->get('providers');
+                                $correct_folder_name = $providers[0] ?? '';
+                                $correct_folder_name = preg_replace('#^Modules\\\\([^\\\\]+)\\\\.*#', '$1', $correct_folder_name);
+                                if (!$correct_folder_name) {
+                                    break;
+                                }
+                                // Rename module's folder into correct name.
+                                $old_path = str_replace('/module.json', '', $manifest);
+                                $correct_path = \Module::getPath().'/'.$correct_folder_name;
+
+                                if (\File::exists($old_path) && !\File::exists($correct_path)) {
+                                    \File::move($old_path, $correct_path);
+                                     // Re-scan and re-cache modules.
+                                    \Module::scan();
+                                }
+                                break;
                             }
                         }
-                    } else {
-                        // Check folder names for custom modules o avoid errors after activation:
-                        // Class "Modules\CustomModule\Providers\CustomModuleServiceProvider" not found.
-                        try {
-                            $old_path = '';
-                            $correct_path = '';
-                            foreach (\Module::getScanPaths() as $key => $path) {
-                                $manifests = \Module::getFiles()->glob("{$path}/module.json");
-
-                                is_array($manifests) || $manifests = [];
-
-                                // Determine correct module folder name from providers in module.json.
-                                // Each module must have at least on "provider" specified.
-                                foreach ($manifests as $manifest) {
-                                    $manifest_json = \App\Modules\Json::make($manifest);
-                                    if ($manifest_json->get('alias') != $alias) {
-                                        continue;
-                                    }
-
-                                    $providers = $manifest_json->get('providers');
-                                    $correct_folder_name = $providers[0] ?? '';
-                                    $correct_folder_name = preg_replace('#^Modules\\\\([^\\\\]+)\\\\.*#', '$1', $correct_folder_name);
-                                    if (!$correct_folder_name) {
-                                        break;
-                                    }
-                                    // Rename module's folder into correct name.
-                                    $old_path = str_replace('/module.json', '', $manifest);
-                                    $correct_path = \Module::getPath().'/'.$correct_folder_name;
-
-                                    if (\File::exists($old_path) && !\File::exists($correct_path)) {
-                                        \File::move($old_path, $correct_path);
-                                         // Re-scan and re-cache modules.
-                                        \Module::scan();
-                                    }
-                                    break;
-                                }
-                            }
-                        } catch (\Exception $e) {
-                            if ($old_path && $correct_path) {
-                                $response['msg'] = __('Rename ":old_path" into ":new_path"', [
-                                    'old_path' => str_replace(\Module::getPath(), '/Modules', $old_path),
-                                    'new_path' => str_replace(\Module::getPath(), '/Modules', $correct_path),
-                                ]);
-                            } else {
-                                \Helper::logException($e, '[Modules] Error occured checking module folder name on activation');
-                            }
+                    } catch (\Exception $e) {
+                        if ($old_path && $correct_path) {
+                            $response['msg'] = __('Rename ":old_path" into ":new_path"', [
+                                'old_path' => str_replace(\Module::getPath(), '/Modules', $old_path),
+                                'new_path' => str_replace(\Module::getPath(), '/Modules', $correct_path),
+                            ]);
+                        } else {
+                            \Helper::logException($e, '[Modules] Error occured checking module folder name on activation');
                         }
                     }
+                
                 }
 
                 if (!$response['msg']) {
@@ -420,66 +257,12 @@ class ModulesController extends Controller
                 $response['status'] = 'success';
                 break;
 
-            case 'deactivate_license':
-                $license = $request->license;
-                $alias = $request->alias;
-
-                if (!$license) {
-                    $response['msg'] = __('Empty license key');
-                }
-
-                if (!$response['msg']) {
-                    $params = [
-                        'license'      => $license,
-                        'module_alias' => $alias,
-                        'url'          => (!empty($request->any_url) ? '*' : \App\Module::getAppUrl()),
-                    ];
-                    $result = WpApi::deactivateLicense($params);
-
-                    if (WpApi::$lastError) {
-                        $response['msg'] = WpApi::$lastError['message'];
-                    } elseif (!empty($result['code']) && !empty($result['message'])) {
-                        $response['msg'] = $result['message'];
-                    } else {
-                        if (!empty($result['status']) && $result['status'] == 'success') {
-                            $db_module = \App\Module::getByAlias($alias);
-                            if ($db_module && trim($db_module->license ?? '') == trim($license ?? '')) {
-                                // Remove remembered license key and deactivate license in DB
-                                \App\Module::deactivateLicense($alias, '');
-
-                                // Deactivate module
-                                \App\Module::setActive($alias, false);
-                                \Artisan::call('tallport:clear-cache', []);
-                            }
-
-                            // Flash does not work here.
-                            $flash = [
-                                'text'      => '<strong>'.__('License successfully Deactivated!').'</strong>',
-                                'unescaped' => true,
-                                'type'      => 'success',
-                            ];
-                            \Cache::forever('modules_flash', $flash);
-
-                            $response['status'] = 'success';
-                        } elseif (!empty($result['error'])) {
-                            $response['msg'] = \App\Module::getErrorMessage($result['error'], $result);
-                        } elseif (!empty($result['status']) && $result['status'] == 'error') {
-                            $response['msg'] = __('License key does not exist');
-                        } else {
-                            $response['msg'] = __('Error occurred. Please try again later.');
-                        }
-                    }
-                }
-                break;
-
             case 'delete':
                 $alias = $request->alias;
 
                 $module = \Module::findByAlias($alias);
 
                 if ($module) {
-
-                    //\App\Module::deactivateLicense($alias, $license);
 
                     // Deactivate first: an active module without files breaks the app.
                     \App\Module::deactiveModule($alias);

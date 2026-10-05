@@ -52,11 +52,6 @@
         "without_overlapping": true
     },
     {
-        "command": "artisan tallport:module-check-licenses",
-        "expression": "57 9 * * *",
-        "timezone": "UTC"
-    },
-    {
         "command": "artisan tallport:check-conv-viewers",
         "expression": "* * * * *",
         "timezone": "UTC",

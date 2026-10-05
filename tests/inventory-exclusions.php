@@ -14,8 +14,6 @@ return [
     // Not actions: license statuses in a switch inside ModulesController::ajax().
     'ajax ModulesController@ajax disabled'      => 'not an action (license status case)',
     'ajax ModulesController@ajax expired'       => 'not an action (license status case)',
-    'ajax ModulesController@ajax inactive'      => 'not an action (license status case)',
-    'ajax ModulesController@ajax site_inactive' => 'not an action (license status case)',
 
     'ajax ModulesController@ajax update'     => $network,
     'ajax ModulesController@ajax update_all' => $network,

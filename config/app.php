@@ -733,7 +733,6 @@ return [
         'Helper'       => App\Misc\Helper::class,
         'MailHelper'   => App\Misc\Mail::class,
         'ModuleHelper' => App\Module::class,
-        'WpApi'        => App\Misc\WpApi::class,
         'Option'       => App\Option::class,
         'Str'          => Illuminate\Support\Str::class,
         // Autodiscovery did not work for this one, becasuse it's composer.json

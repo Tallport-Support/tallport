@@ -96,7 +96,7 @@ document.addEventListener('alpine:init', function () {
 		};
 	});
 
-	// Modules: activating, installing, updating and deleting modules, and their licenses.
+	// Modules: activating, updating and deleting modules.
 	window.Alpine.data('tallportModules', function () {
 		// A modules.ajax request; the page reloads when it is done.
 		var request = function (button, data, reload_on) {
@@ -133,37 +133,6 @@ document.addEventListener('alpine:init', function () {
 				});
 				request(event.currentTarget, {action: 'update_all', aliases: aliases});
 			},
-			// Install, or activate the license of an installed module.
-			install: function (event) {
-				var form = event.currentTarget;
-				var button = form.querySelector('.install-trigger');
-				request(button, {
-					action: button.getAttribute('data-action'),
-					alias: form.getAttribute('data-module-alias'),
-					license: form.querySelector('.license-key').value
-				}, function (response) {
-					return !!response.reload;
-				});
-			},
-			// The license of a module: deactivated for this domain.
-			deactivateLicense: function (event) {
-				var button = event.currentTarget;
-				request(button, {
-					action: 'deactivate_license',
-					alias: alias(button),
-					license: button.closest('.module-card').querySelector('.license-key-text').textContent
-				});
-			},
-			// The Deactivate License dialog: any module's license, on any domain.
-			deactivateAnyLicense: function (event) {
-				var form = event.currentTarget;
-				request(event.submitter || form.querySelector('[type="submit"]'), {
-					action: 'deactivate_license',
-					alias: form.querySelector('.deactivate-license-module').value,
-					license: form.querySelector('.deactivate-license-key').value,
-					any_url: 1
-				});
-			}
 		};
 	});
 });
