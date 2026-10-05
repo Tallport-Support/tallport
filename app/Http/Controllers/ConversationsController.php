@@ -132,7 +132,7 @@ class ConversationsController extends Controller
         }
 
         // Opening the folder again comes back here (openFolder()).
-        $request->session()->put('folder_conversation.'.$folder->id, $conversation->id);
+        session()->put('folder_conversation.'.$folder->id, $conversation->id);
 
         //$after_send = $conversation->mailbox->getUserSettings($user->id)->after_send;
         $after_send = $user->afterSend();
@@ -416,7 +416,7 @@ class ConversationsController extends Controller
         if (!count($conversations) || $request->filled('page') || $request->cookie('tallport_narrow')) {
             return null;
         }
-        $conversation_id = $request->session()->get('folder_conversation.'.$folder->id);
+        $conversation_id = session()->get('folder_conversation.'.$folder->id);
         if (!$conversation_id || !(clone $query)->where('conversations.id', $conversation_id)->exists()) {
             $conversation_id = $conversations->first()->id;
         }

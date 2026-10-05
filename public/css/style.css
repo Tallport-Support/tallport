@@ -2510,9 +2510,6 @@ a.disabled:focus {
     gap: 6px;
 }
 .customer-snippet__details {
-    --f-description-term-size: var(--f-text-2xs);
-    --f-description-value-size: var(--f-text-xs);
-    --f-description-value-line-height: normal;
     margin: 0;
     padding: 17px 16px;
     border-top: 1px solid var(--f-border);
