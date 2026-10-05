@@ -152,7 +152,6 @@ class ReportsTest extends FeatureTestCase
         $telegram->save();
 
         $this->assertArrayHasKey('channel-'.\App\Telegram\Telegram::CHANNEL, Report::types());
-        $this->assertArrayNotHasKey(Conversation::TYPE_CHAT, Report::types());
         $new = fn ($type) => (new ConversationsReport($this->admin, ['period' => 'last_7', 'type' => $type]))->data()['metrics']['new']['value'];
         $this->assertSame(2, $new(''));
         $this->assertSame(1, $new((string) Conversation::TYPE_EMAIL));

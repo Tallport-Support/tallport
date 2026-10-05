@@ -66,13 +66,11 @@ class Conversation extends Model
      */
     const TYPE_EMAIL = 1;
     const TYPE_PHONE = 2;
-    const TYPE_CHAT = 3;
     const TYPE_CUSTOM = 4;
 
     public static $types = [
         self::TYPE_EMAIL => 'email',
         self::TYPE_PHONE => 'phone',
-        self::TYPE_CHAT  => 'chat',
         self::TYPE_CUSTOM => 'custom',
     ];
 
@@ -1905,10 +1903,6 @@ class Conversation extends Model
                 $name = __('Phone');
                 break;
 
-            case self::TYPE_CHAT:
-                $name = __('Chat');
-                break;
-
             default:
                 $name = \Eventy::filter('conversation.type_name', $type);
                 break;
@@ -1965,14 +1959,6 @@ class Conversation extends Model
     public function hasChannel()
     {
         return (bool) $this->channel;
-    }
-
-    /**
-     * FreeScout modules' name for hasChannel().
-     */
-    public function isChat()
-    {
-        return $this->hasChannel();
     }
 
     /**
@@ -2539,7 +2525,7 @@ class Conversation extends Model
     public static function refreshConversations($conversation, $thread)
     {
         \App\Events\RealtimeConvNewThread::dispatchSelf($thread);
-        \App\Events\RealtimeMailboxNewThread::dispatchSelf($conversation->mailbox_id, $thread->id, (int)$conversation->hasChannel());
+        \App\Events\RealtimeMailboxNewThread::dispatchSelf($conversation->mailbox_id, $thread->id);
     }
 
     /**

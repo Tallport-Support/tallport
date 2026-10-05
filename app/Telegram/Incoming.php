@@ -87,7 +87,7 @@ class Incoming
             Thread::createExtended($thread, $conversation, $customer);
         } else {
             Conversation::create([
-                'type'        => Conversation::TYPE_CHAT,
+                'type'        => Conversation::TYPE_EMAIL,
                 'subject'     => self::subject($text, $body),
                 'mailbox_id'  => $mailbox->id,
                 'source_type' => Conversation::SOURCE_TYPE_WEB,

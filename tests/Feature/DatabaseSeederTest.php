@@ -34,7 +34,7 @@ class DatabaseSeederTest extends FeatureTestCase
                 $this->assertGreaterThanOrEqual($minimum, $folder->total_count);
                 foreach ($conversations as $conversation) {
                     $this->assertNotNull($conversation->customer);
-                    if (!$conversation->isChat()) {
+                    if (!$conversation->hasChannel()) {
                         $this->assertNotEmpty($conversation->customer->emails);
                     }
                     $this->assertSame($conversation->threads()->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
@@ -67,7 +67,7 @@ class DatabaseSeederTest extends FeatureTestCase
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
 
         $this->assertSame($before + 1, Conversation::count());
-        $this->assertSame(4, $folder->conversations()->where('type', Conversation::TYPE_EMAIL)->count());
+        $this->assertSame(4, $folder->conversations()->where('type', Conversation::TYPE_EMAIL)->whereNull('channel')->count());
         $this->assertSame($unaffected, Conversation::where('folder_id', '<>', $folder->id)->orderBy('id')->get()->toArray());
     }
 
@@ -104,7 +104,7 @@ class DatabaseSeederTest extends FeatureTestCase
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
 
         $this->assertSame($before + 1, Conversation::count());
-        $this->assertSame(4, $folder->conversations()->where('type', Conversation::TYPE_EMAIL)->whereHas('threads', function ($query) {
+        $this->assertSame(4, $folder->conversations()->where('type', Conversation::TYPE_EMAIL)->whereNull('channel')->whereHas('threads', function ($query) {
             $query->where('type', Thread::TYPE_MESSAGE)->where('state', Thread::STATE_PUBLISHED);
         })->count());
         $this->assertFalse($conversation->threads()->where('type', Thread::TYPE_MESSAGE)->exists());
@@ -115,7 +115,7 @@ class DatabaseSeederTest extends FeatureTestCase
     public function testSeederAddsLongExchangesToAlreadyPopulatedMailboxes()
     {
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
-        foreach (Conversation::where('type', Conversation::TYPE_EMAIL)->where('threads_count', '>=', 20)->get() as $conversation) {
+        foreach (Conversation::where('type', Conversation::TYPE_EMAIL)->whereNull('channel')->where('threads_count', '>=', 20)->get() as $conversation) {
             $conversation->threads()->delete();
             $conversation->delete();
         }
@@ -127,7 +127,7 @@ class DatabaseSeederTest extends FeatureTestCase
         $this->assertSame($before + 6, Conversation::count());
         $this->assertSame($existing, Conversation::whereIn('id', array_column($existing, 'id'))->orderBy('id')->get()->toArray());
         foreach (Mailbox::all() as $mailbox) {
-            $long = $mailbox->conversations()->where('type', Conversation::TYPE_EMAIL)->where('threads_count', '>=', 20)->get();
+            $long = $mailbox->conversations()->where('type', Conversation::TYPE_EMAIL)->whereNull('channel')->where('threads_count', '>=', 20)->get();
             $this->assertCount(2, $long);
             foreach ($long as $conversation) {
                 $threads = $conversation->threads()->orderBy('created_at')->get();
@@ -344,7 +344,7 @@ class DatabaseSeederTest extends FeatureTestCase
             $this->assertCount(3, $chats);
             $this->assertCount(1, $chats->where('threads_count', '>=', 20));
             foreach ($chats as $chat) {
-                $this->assertTrue($chat->isChat());
+                $this->assertTrue($chat->hasChannel());
                 $this->assertSame('Telegram', $chat->getChannelName());
                 $this->assertNull($chat->customer_email);
                 $this->assertCount(0, $chat->customer->emails);

@@ -42,7 +42,6 @@ class Thread extends Model
     // Forwarded threads - used in API only.
     //const TYPE_FORWARDPARENT = 6;
     //const TYPE_FORWARDCHILD = 7;
-    const TYPE_CHAT = 8;
 
     public static $types = [
         // Thread by customer
@@ -58,8 +57,6 @@ class Thread extends Model
         //self::TYPE_FORWARDPARENT => 'forwardparent',
         // forwardchild is the type set on the first thread of the new forwarded conversation.
         //self::TYPE_FORWARDCHILD => 'forwardchild',
-        // Not used.
-        self::TYPE_CHAT         => 'chat',
     ];
 
     /**

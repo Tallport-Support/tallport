@@ -147,6 +147,7 @@ class DatabaseSeeder extends Seeder
             }
             $query = Conversation::getQueryByFolder($folder, $user->id)
                 ->where('conversations.type', Conversation::TYPE_EMAIL)
+                ->whereNull('conversations.channel')
                 ->whereHas('customer.emails')
                 ->whereHas('threads', function ($query) {
                     $query->where('type', Thread::TYPE_CUSTOMER)->where('state', Thread::STATE_PUBLISHED);
@@ -167,6 +168,7 @@ class DatabaseSeeder extends Seeder
         }
         $long_count = $mailbox->conversations()
             ->where('type', Conversation::TYPE_EMAIL)
+            ->whereNull('channel')
             ->where('state', Conversation::STATE_PUBLISHED)
             ->whereIn('status', [Conversation::STATUS_ACTIVE, Conversation::STATUS_PENDING])
             ->whereHas('threads', function ($query) {
@@ -191,7 +193,6 @@ class DatabaseSeeder extends Seeder
         foreach ([Folder::TYPE_UNASSIGNED, Folder::TYPE_ASSIGNED, Folder::TYPE_CLOSED] as $index => $type) {
             $folder = $mailbox->folders()->where('type', $type)->first();
             $query = Conversation::getQueryByFolder($folder, $users->first()->id)
-                ->where('conversations.type', Conversation::TYPE_CHAT)
                 ->where('channel', Telegram::CHANNEL)
                 ->whereHas('customer')
                 ->whereHas('threads', function ($query) {
@@ -313,7 +314,7 @@ class DatabaseSeeder extends Seeder
         $conversation = new Conversation();
         $conversation->number = ++$this->number;
         $conversation->mailbox_id = $mailbox->id;
-        $conversation->type = $telegram_customer ? Conversation::TYPE_CHAT : Conversation::TYPE_EMAIL;
+        $conversation->type = Conversation::TYPE_EMAIL;
         if ($telegram_customer) {
             $conversation->channel = Telegram::CHANNEL;
         }

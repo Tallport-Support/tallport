@@ -201,7 +201,6 @@ class TelegramTest extends FeatureTestCase
         $this->postUpdate($this->update())->assertStatus(200);
 
         $conversation = $this->conversation();
-        $this->assertSame(Conversation::TYPE_CHAT, (int) $conversation->type);
         $this->assertSame(Telegram::CHANNEL, (int) $conversation->channel);
         $this->assertSame('Hello, my app <does not> work', $conversation->subject);
         $thread = $conversation->threads()->first();

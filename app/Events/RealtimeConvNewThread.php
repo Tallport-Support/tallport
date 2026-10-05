@@ -124,13 +124,6 @@ class RealtimeConvNewThread implements ShouldBroadcastNow
         $payload->conversation_status_class = Conversation::$status_classes[$conversation->status];
         $payload->conversation_status_icon = Conversation::$status_icons[$conversation->status];
 
-        // A sound for messages from channels (Telegram, Nostr).
-        if ($conversation->hasChannel()) {
-            $payload->audio = [
-                'thread_id' => $thread->id,
-            ];
-        }
-
         return $payload;
     }
 }

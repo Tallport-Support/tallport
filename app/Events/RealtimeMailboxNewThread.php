@@ -70,12 +70,11 @@ class RealtimeMailboxNewThread implements ShouldBroadcastNow
     /**
      * Helper funciton.
      */
-    public static function dispatchSelf($mailbox_id, $thread_id, $is_chat)
+    public static function dispatchSelf($mailbox_id, $thread_id)
     {
         $notification_data = [
             'mailbox_id' => $mailbox_id,
             'thread_id'  => $thread_id,
-            'is_chat'    => (int)$is_chat,
         ];
         event(new \App\Events\RealtimeMailboxNewThread($notification_data));
     }
@@ -110,13 +109,6 @@ class RealtimeMailboxNewThread implements ShouldBroadcastNow
             'sidebar_folders'           => $template_data['folders'],
             'sidebar_current_folder_id' => $folder->mailbox_id == $mailbox->id ? $folder->id : null,
         ])->render();
-
-        // Audio notification for chats.
-        if ((int)$payload->is_chat && $payload->thread_id) {
-            $payload->audio = [
-                'thread_id' => $payload->thread_id,
-            ];
-        }
 
         return $payload;
     }

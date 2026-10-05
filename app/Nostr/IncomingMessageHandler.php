@@ -139,7 +139,7 @@ class IncomingMessageHandler
             $thread = Thread::createExtended($threadData, $conversation, $customer);
         } else {
             $result = Conversation::create([
-                'type' => Conversation::TYPE_CHAT,
+                'type' => Conversation::TYPE_EMAIL,
                 'subject' => $subject,
                 'mailbox_id' => $cfg->mailbox_id,
                 'source_type' => Conversation::SOURCE_TYPE_API,

@@ -1,7 +1,7 @@
 /**
  * Realtime updates (Polycast): notifications, who else is viewing or replying
  * to the open conversation, its new messages, assignee and status, the
- * sidebar's folders and the lists, with a sound for channels' messages.
+ * sidebar's folders and the lists.
  */
 var poly;
 var poly_data_closures = [];
@@ -47,40 +47,6 @@ function maybeShowConnectionRestored()
 			title_timer = null;
 			document.title = original;
 		}, {once: true});
-	};
-
-	// A chat message's sound, once across the user's tabs.
-	var sound_blocked = false;
-	var playSound = function () {
-		var audio = new Audio(Vars.public_url+'/audio/chat.mp3');
-		audio.play().catch(function (error) {
-			if (error.name === 'NotAllowedError' && !sound_blocked && !document.querySelector('dialog[open]')) {
-				sound_blocked = true;
-				Tallport.confirm({message: Lang.get('messages.autoplay')}).then(function (ok) {
-					if (ok) {
-						audio.play();
-					}
-				});
-			}
-		});
-	};
-	window.playAudioNotification = function (data) {
-		if (!data || !data.audio || !data.audio.thread_id) {
-			return;
-		}
-		var thread_id = data.audio.thread_id+'';
-		var now = Math.floor(Date.now() / 1000);
-		var played = localStorageGetObject('audio_notifications') || {};
-		if (!(thread_id in played)) {
-			played[thread_id] = now;
-			playSound();
-		}
-		Object.keys(played).forEach(function (key) {
-			if (parseInt(played[key]) < now - 3600) {
-				delete played[key];
-			}
-		});
-		localStorageSetObject('audio_notifications', played);
 	};
 
 	// Who else is viewing (or replying to) the open conversation, replying first.
@@ -216,7 +182,7 @@ function maybeShowConnectionRestored()
 		window.addEventListener('online', pollIfIdle);
 		window.addEventListener('focus', pollIfIdle);
 
-		// Notifications: in the menu (tallportNotifications), from the browser, and a chat's sound.
+		// Notifications: in the menu (tallportNotifications) and from the browser.
 		poly.subscribe('private-App.User.'+user_id).on('App\\Events\\RealtimeBroadcastNotificationCreated', function (data, event) {
 			if (!event.data) {
 				return;
@@ -239,7 +205,6 @@ function maybeShowConnectionRestored()
 					}
 				});
 			}
-			playAudioNotification(event.data);
 		});
 
 		var conv = poly.subscribe('conv');
@@ -285,7 +250,6 @@ function maybeShowConnectionRestored()
 						dot.className = 'f-badge conv-status-dot f-badge--'+(tones[data.conversation_status_class] || 'neutral');
 					}
 				}
-				playAudioNotification(data);
 			});
 		};
 		subscribeConversation();
@@ -322,7 +286,6 @@ function maybeShowConnectionRestored()
 					if (list && (list_mailbox_id == folders_mailbox_id || parseInt(list_mailbox_id) < 0) && !list.querySelector('.conv-checkbox:checked')) {
 						Livewire.dispatch('conversations-changed');
 					}
-					playAudioNotification(data);
 				});
 			});
 		};

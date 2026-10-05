@@ -160,7 +160,6 @@ class NostrTest extends FeatureTestCase
         $thread = $this->receive($cfg, "Hello, my VPN won't connect.\nhttps://example.com/help", [['subject', 'VPN problem']]);
 
         $conversation = $thread->conversation;
-        $this->assertSame(Conversation::TYPE_CHAT, (int) $conversation->type);
         $this->assertSame(90, (int) $conversation->channel);
         $this->assertSame('VPN problem', $conversation->subject);
         $this->assertStringContainsString('won&#039;t connect', $thread->body);
