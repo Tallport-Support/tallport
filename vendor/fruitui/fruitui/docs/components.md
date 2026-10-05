@@ -330,7 +330,7 @@ Settings work best inside the app rather than as a separate full-width page: kee
 
 ## Chat histories
 
-A chat conversation reads from the bottom up: oldest at the top, the newest message just above a composer docked at the bottom. `x-fruit::history` is the scrolling part. It opens at the newest message and stays there as messages arrive, images load or a Livewire morph changes the thread, unless the reader has scrolled back: then new messages leave them where they are, and Jump to Latest appears. Sending from the composer in the same pane returns to the newest message. Separate days with a labelled `x-fruit::divider`, one thread per day. A compact thread (`density="compact"`) with inline messages gives it the look of a chat: rows close together without lines between them, the name and time on one line. The default, comfortable thread is the email presentation.
+A chat conversation reads from the bottom up: oldest at the top, the newest message just above a composer docked at the bottom. `x-fruit::history` is the scrolling part. It opens at the newest message and stays there as messages arrive, images load or a Livewire morph changes the thread, unless the reader has scrolled back: then new messages leave them where they are, and Jump to Latest appears. Sending from the composer in the same pane returns to the newest message. Separate days with a labelled `x-fruit::divider`, one thread per day. A compact thread (`density="compact"`) with inline messages gives it the look of a chat: rows close together without lines between them, the name and time on one line. When one person sends several messages in a row, mark each after the first `continued`: the name and avatar then show once per run, as chat apps do. The default, comfortable thread is the email presentation.
 
 ```blade
 <section class="f-pane f-pane--column" aria-label="Conversation">
@@ -347,7 +347,7 @@ A chat conversation reads from the bottom up: oldest at the top, the newest mess
 </section>
 ```
 
-The pane is a flex column, so the history takes the remaining height and scrolls while the composer stays in view. An application that swaps the whole conversation without re-rendering the history (Alpine state, say) calls `jumpToLatest({ smooth: false })` inside it; with Livewire, a new conversation renders a new history that opens at its newest message.
+The pane is a flex column, so the history takes the remaining height and scrolls while the composer stays in view. An application that swaps the whole conversation without re-rendering the history (Alpine state, say) calls `jumpToLatest({ smooth: false })` inside it; with Livewire, a new conversation renders a new history that opens at its newest message. When the history is a Livewire component's own view, give the view one root element around it: Livewire takes the first element of the output as the component's root, so a view that starts with `@if` or with the history's day threads can make the first thread the root, and later updates then morph only that thread.
 
 ## Message composers
 
@@ -612,6 +612,12 @@ fruitEditor(Alpine); // before this same Alpine instance starts
 Without a bundler, link the prebuilt `editor.global.js` (published with the other assets); it registers itself on the page's Alpine, including the one Livewire injects, whether it loads before or after `livewire.global.js`.
 
 **Links, images and formatting.** The default toolbar is compact icon buttons in groups (bold and italic; lists and quote; link, image and remove formatting; undo and redo), each named by its accessible label and tooltip. It adds Link, Image and Remove formatting (`data-fruit-command` `link`, `image` and `clear` in a custom toolbar). Link opens a small popover for the address: it links the selected text, edits the link the cursor is in, or removes it. Image inserts a picture by address. Images are accepted only by address; pasted `data:` images are refused, so files go through the upload hook below.
+
+**Formats.** Where the message goes decides the markup it can carry: email takes everything, a chat channel such as Telegram bold, italic and links, another only plain text. Pass the channel's formats as `formats` (a list of `bold`, `italic`, `bulletList`, `orderedList`, `blockquote`, `link`, `image`; `[]` for plain text): the toolbar shows only those commands, plus Remove Formatting, Undo and Redo, and the editor itself produces only that markup, so keyboard shortcuts, Markdown-style typing and pasted content cannot add more. Without `formats` everything is allowed. The formats are read when the editor starts; render a new editor (a new `wire:key`) when the channel changes.
+
+```blade
+<x-fruit::editor name="body" wire:model="body" :formats="$conversation->channel->formats()" />
+```
 
 **Pasting, links and locking.** `paste="plain"` (the `data-fruit-paste` attribute on the editor element) pastes text without formatting; the editor reads it on every paste, so changing the attribute switches modes at runtime, for example from a user's "paste without formatting" setting. Typed and pasted addresses become links. Setting or removing `readonly` or `disabled` on the textarea, at any time, locks or unlocks the rich surface, for example while a message sends.
 

@@ -2,9 +2,10 @@
     A rich-text field: FruitUI's editor plus what Tallport's editors share.
     Images pasted or dropped are uploaded (public/js/editor.js); `vars` adds an
     Insert variable menu ({%customer.fullName%} and the like; modules add theirs
-    through the editor.vars filter), `exclude-vars` leaves groups out.
+    through the editor.vars filter), `exclude-vars` leaves groups out; `formats`:
+    the formatting allowed (FruitUI's formats; null: all).
 --}}
-@props(['vars' => false, 'excludeVars' => [], 'uploadUrl' => null])
+@props(['vars' => false, 'excludeVars' => [], 'uploadUrl' => null, 'formats' => null])
 @php
     $editor_vars = [];
     if ($vars) {
@@ -48,7 +49,7 @@
         }
     }
 @endphp
-<x-fruit::editor {{ $attributes }} :wrapper="['class' => 'tallport-editor', 'data-upload-url' => $uploadUrl ?? route('uploads.upload')]">
+<x-fruit::editor {{ $attributes }} :formats="$formats" :wrapper="['class' => 'tallport-editor', 'data-upload-url' => $uploadUrl ?? route('uploads.upload')]">
     {{ $slot }}
     @if ($editor_vars || isset($extras))
         <x-slot:extras>

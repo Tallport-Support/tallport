@@ -1,6 +1,6 @@
-@props(['layout' => 'inline', 'variant' => 'default', 'direction' => 'incoming', 'mine' => false, 'datetime' => null])
-@php(\FruitUI\Support\ComponentContract::message($layout, $variant, $direction, $mine, $attributes))
-<article {{ $attributes->class(['f-message', 'f-message--stacked' => $layout === 'stacked', 'f-message--note' => $variant === 'note', 'f-message--outgoing' => $direction === 'outgoing', 'f-message--generated' => $variant === 'generated', 'f-message--mine' => $mine]) }}>
+@props(['layout' => 'inline', 'variant' => 'default', 'direction' => 'incoming', 'mine' => false, 'continued' => false, 'datetime' => null])
+@php(\FruitUI\Support\ComponentContract::message($layout, $variant, $direction, $mine, $attributes, $continued))
+<article {{ $attributes->class(['f-message', 'f-message--stacked' => $layout === 'stacked', 'f-message--note' => $variant === 'note', 'f-message--outgoing' => $direction === 'outgoing', 'f-message--generated' => $variant === 'generated', 'f-message--mine' => $mine, 'f-message--continued' => $continued]) }}>
     @isset($avatar)<span class="f-message__avatar">{{ $avatar }}</span>@endisset
     <header class="f-message__header">
         <span class="f-message__identity">@isset($author)<strong class="f-message__author">{{ $author }}</strong>@endisset @isset($meta)<small class="f-message__meta">{{ $meta }}</small>@endisset @isset($headers)<span {{ $headers->attributes->class(['f-message__headers']) }}>{{ $headers }}</span>@endisset</span>

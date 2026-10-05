@@ -218,6 +218,25 @@ function localStorageRemove(key)
 	}
 }
 
+// Per tab, and gone with it.
+function sessionStorageGet(key)
+{
+	try {
+		return window.sessionStorage.getItem(key);
+	} catch (e) {
+		return null;
+	}
+}
+
+function sessionStorageSet(key, value)
+{
+	try {
+		window.sessionStorage.setItem(key, value);
+	} catch (e) {
+		// Not available (private mode).
+	}
+}
+
 function localStorageGetObject(key)
 {
 	var obj = {};

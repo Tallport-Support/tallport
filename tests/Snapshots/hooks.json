@@ -238,6 +238,14 @@
     },
     {
         "type": "filter",
+        "name": "channel.formats",
+        "arguments": 2,
+        "files": [
+            "app/Conversation.php"
+        ]
+    },
+    {
+        "type": "filter",
         "name": "channel.name",
         "arguments": 2,
         "files": [

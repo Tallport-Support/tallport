@@ -14411,6 +14411,27 @@ var Y_ = Y.create({
 	}
 });
 function X_(e) {
+	let t = e === void 0 ? null : new Set(e.split(/\s+/).filter(Boolean)), n = (e) => !t || t.has(e), r = n("bulletList") || n("orderedList"), i = (e) => n(e) ? void 0 : !1;
+	return [R_.configure({
+		bold: i("bold"),
+		italic: i("italic"),
+		blockquote: i("blockquote"),
+		bulletList: i("bulletList"),
+		orderedList: i("orderedList"),
+		listItem: r ? void 0 : !1,
+		listKeymap: r ? void 0 : !1,
+		link: n("link") ? { openOnClick: !1 } : !1,
+		...t && {
+			heading: !1,
+			code: !1,
+			codeBlock: !1,
+			strike: !1,
+			underline: !1,
+			horizontalRule: !1
+		}
+	}), ...n("image") ? [Y_] : []];
+}
+function Z_(e) {
 	e[W_] = !0, e.data("fruitEditor", () => {
 		let e, t, n, r, i, a, o, s, c, l, u, d, f, p, m = {
 			bold: (e) => e.toggleBold(),
@@ -14473,6 +14494,7 @@ function X_(e) {
 			let i = (e) => e.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"), a = r.replace(/\r\n?/g, "\n").split(/\n{2,}/).map((e) => `<p>${i(e).replace(/\n/g, "<br>")}</p>`).join("");
 			return e.chain().focus().insertContent(a, { parseOptions: { preserveWhitespace: !1 } }).run(), !0;
 		}, ee = (t, r) => {
+			if (!e.schema.nodes.image) return !1;
 			let i = [...t ?? []].filter((e) => e.type.startsWith("image/"));
 			if (!i.length) return !1;
 			let a = new CustomEvent("fruit-editor-upload", {
@@ -14509,7 +14531,7 @@ function X_(e) {
 			init() {
 				t = this.$el, n = this.$el.querySelector("textarea[data-fruit-control]"), r = this.$el.querySelector(".f-editor__surface"), i = this.$el.querySelector(".f-editor__toolbar"), n && r && i && (l = u = n.value, e = new Af({
 					element: r,
-					extensions: [R_.configure({ link: { openOnClick: !1 } }), Y_],
+					extensions: X_(t.dataset.fruitFormats),
 					content: n.value,
 					editorProps: {
 						attributes: {
@@ -14554,4 +14576,4 @@ function X_(e) {
 	});
 }
 //#endregion
-export { X_ as default };
+export { Z_ as default };

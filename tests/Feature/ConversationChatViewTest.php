@@ -114,4 +114,42 @@ class ConversationChatViewTest extends FeatureTestCase
         Livewire::actingAs($this->agent->fresh())->test(ConversationComposer::class, ['conversation' => $this->conversation])
             ->call('open', 'reply')->assertSet('status', Conversation::STATUS_CLOSED)->assertSeeHtml('dropdown-send-status');
     }
+
+    public function testTheEditorAllowsTheChannelsFormatting()
+    {
+        $composer = fn () => Livewire::actingAs($this->agent)->test(ConversationComposer::class, ['conversation' => $this->conversation->fresh(), 'chat' => true]);
+
+        // Email: everything.
+        $composer()->assertDontSeeHtml('data-fruit-formats');
+
+        // Telegram: what Telegram carries; a note (internal) has everything.
+        $this->conversation->channel = Telegram::CHANNEL;
+        $this->conversation->save();
+        $composer()->assertSeeHtml('data-fruit-formats="bold italic link blockquote"')
+            ->call('open', 'note')->assertDontSeeHtml('data-fruit-formats');
+
+        // Nostr: plain text.
+        $this->conversation->channel = \App\Nostr\Nostr::channel();
+        $this->conversation->save();
+        $composer()->assertSeeHtml('data-fruit-formats=""');
+    }
+
+    public function testAPersonsMessagesMinutesApartAreGrouped()
+    {
+        $first = $this->conversation->threads()->first();
+        $this->receiveEmail($this->mailbox, $this->makeEmail([
+            'from' => 'Casey Customer <casey@customer.example.org>', 'to' => $this->mailbox->email, 'subject' => 'Re: Broken zipper',
+            'in_reply_to' => $first->message_id,
+        ]));
+        $second = $this->conversation->threads()->orderBy('id', 'desc')->first();
+        $this->assertSame($this->conversation->id, $second->conversation_id);
+        $this->assertTrue(Thread::continues($second, $first));
+
+        $html = Livewire::actingAs($this->agent)->test(ConversationThread::class, ['conversation' => $this->conversation, 'chat' => true])->html();
+        $this->assertSame(1, substr_count($html, 'f-message--continued'));
+
+        // Not after a gap.
+        $second->created_at = $first->created_at->copy()->addMinutes(10);
+        $this->assertFalse(Thread::continues($second, $first));
+    }
 }

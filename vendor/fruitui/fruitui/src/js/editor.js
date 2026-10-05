@@ -22,6 +22,39 @@ const Image = Node.create({
   },
 });
 
+/**
+ * The editor's schema. Without data-fruit-formats it allows everything; with it (a channel's formats,
+ * such as "bold italic link"), only those, so shortcuts and pasted content cannot add other markup.
+ */
+function extensions(formats) {
+  const allowed = formats === undefined ? null : new Set(formats.split(/\s+/).filter(Boolean));
+  const has = name => !allowed || allowed.has(name);
+  const lists = has('bulletList') || has('orderedList');
+  const off = name => (has(name) ? undefined : false);
+  return [
+    StarterKit.configure({
+      bold: off('bold'),
+      italic: off('italic'),
+      blockquote: off('blockquote'),
+      bulletList: off('bulletList'),
+      orderedList: off('orderedList'),
+      listItem: lists ? undefined : false,
+      listKeymap: lists ? undefined : false,
+      link: has('link') ? { openOnClick: false } : false,
+      // Markup without a toolbar command exists only in the unrestricted editor.
+      ...(allowed && {
+        heading: false,
+        code: false,
+        codeBlock: false,
+        strike: false,
+        underline: false,
+        horizontalRule: false,
+      }),
+    }),
+    ...(has('image') ? [Image] : []),
+  ];
+}
+
 /** Optional integration: import fruitui/editor explicitly on your existing Alpine. */
 export default function fruitEditor(Alpine) {
   // FruitUI's plain-textarea fallback steps aside, whichever script registers first.
@@ -143,6 +176,7 @@ export default function fruitEditor(Alpine) {
     };
     /** Pasted or dropped image files go to the application, which uploads them and inserts the address. */
     const upload = (files, position) => {
+      if (!editor.schema.nodes.image) return false;
       const images = [...(files ?? [])].filter(file => file.type.startsWith('image/'));
       if (!images.length) return false;
       const request = new CustomEvent('fruit-editor-upload', {
@@ -185,7 +219,7 @@ export default function fruitEditor(Alpine) {
         lastValue = committedValue = control.value;
         editor = new Editor({
           element: surface,
-          extensions: [StarterKit.configure({ link: { openOnClick: false } }), Image],
+          extensions: extensions(root.dataset.fruitFormats),
           content: control.value,
           editorProps: {
             attributes: { class: 'f-prose', role: 'textbox', 'aria-multiline': 'true' },

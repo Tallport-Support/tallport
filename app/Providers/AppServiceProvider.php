@@ -58,6 +58,10 @@ class AppServiceProvider extends ServiceProvider
 
             return $channel == \App\Telegram\Telegram::CHANNEL ? \App\Telegram\Telegram::CHANNEL_NAME : $name;
         }, 10, 2);
+        // The formatting a channel's replies can have (Conversation::editorFormats()); Nostr: plain text.
+        \Eventy::addFilter('channel.formats', function ($formats, $channel) {
+            return $channel == \App\Telegram\Telegram::CHANNEL ? \App\Telegram\Telegram::FORMATS : $formats;
+        }, 10, 2);
         \Eventy::addFilter('channels.list', function ($channels) {
             $channels[\App\Telegram\Telegram::CHANNEL] = \App\Telegram\Telegram::CHANNEL_NAME;
             $channels[\App\Nostr\Nostr::channel()] = 'Nostr';

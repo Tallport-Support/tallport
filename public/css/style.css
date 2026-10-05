@@ -546,10 +546,6 @@ a h4 {
 .conv-note-block .alert-switch-to-note {
     display: none;
 }
-/* A channel's replies are plain text: no formatting. */
-.conv-has-channel .conv-reply-block:not(.conv-note-block) .f-editor__toolbar > [data-fruit-command] {
-    display: none;
-}
 
 .alert-switch-to-note {
     margin: 8px 0;

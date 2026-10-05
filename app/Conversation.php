@@ -1962,6 +1962,19 @@ class Conversation extends Model
     }
 
     /**
+     * The formatting a reply can have, for the editor (FruitUI's formats): null
+     * for email (all of it), the channel's (channel.formats; none by default).
+     */
+    public function editorFormats()
+    {
+        if (!$this->hasChannel()) {
+            return null;
+        }
+
+        return \Eventy::filter('channel.formats', [], (int) $this->channel);
+    }
+
+    /**
      * Get information on viewers for conversation table.
      * Returns users in "users" key with the current user excluded: replying users first, then viewing users.
      */

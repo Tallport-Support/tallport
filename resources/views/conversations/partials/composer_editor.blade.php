@@ -1,5 +1,6 @@
 {{-- The composers' files and editor (livewire/conversation-composer, livewire/new-conversation):
-     $attachments, $body, $plain (plain text only), $placeholder, $draft_button. --}}
+     $attachments, $body, $formats (the formatting allowed: null all, [] plain text), $placeholder,
+     $draft_button. --}}
 @if (collect($attachments)->where('embed', false)->count())
     <ul class="conv-composer__attachments">
         @foreach ($attachments as $attachment)
@@ -17,8 +18,9 @@
     <template x-for="name in uploading"><li><x-fruit::spinner /> <span x-text="name"></span></li></template>
 </ul>
 
-<div class="conv-reply-body" wire:ignore>
-    <x-editor id="body" rows="8" :paste="$plain ? 'plain' : 'rich'" :upload-url="route('conversations.upload')" :aria-label="__('Message')" :placeholder="$placeholder ?? null">
+{{-- A new editor when the formats change (a reply's channel, a note): it reads them when it starts. --}}
+<div class="conv-reply-body" wire:ignore wire:key="editor-{{ $formats === null ? 'all' : (implode('-', $formats) ?: 'plain') }}">
+    <x-editor id="body" rows="8" :formats="$formats" :paste="$formats === [] ? 'plain' : 'rich'" :upload-url="route('conversations.upload')" :aria-label="__('Message')" :placeholder="$placeholder ?? null">
         {{ $body }}
         <x-slot:extras>
             <span class="editor-attach">
@@ -26,7 +28,7 @@
                 <input type="file" multiple hidden x-ref="files" x-on:change="upload($el.files); $el.value = ''">
             </span>
             @include('conversations/partials/editor_pickers')
-            @if (!$plain)
+            @if ($formats !== [])
                 <button type="button" class="f-button f-button--ghost f-button--icon" x-data="editorPlainPaste" x-on:click="toggle()" x-bind:aria-pressed="plain ? 'true' : 'false'" aria-pressed="false" aria-label="{{ __('Paste as Plain Text') }}" title="{{ __('Paste as Plain Text') }}"><x-icon.clipboard class="f-icon" aria-hidden="true" /></button>
             @endif
             @action('conversation.editor_extras', $conversation, $mailbox)

@@ -6,7 +6,7 @@
         App\Conversation::STATUS_PENDING => [__('Send & Pending'), __('Add Note & Pending'), __('Forward & Pending')],
     ];
     $label_index = $mode == 'note' ? 1 : ($mode == 'forward' ? 2 : 0);
-    // A channel (Telegram, Nostr) has no copies, rich text or quoted history.
+    // A channel (Telegram, Nostr) has no copies or quoted history; its formats are the editor's.
     $has_channel = $conversation->hasChannel();
 @endphp
 <div class="conv-action-wrapper @if ($chat) conv-composer-docked @endif" x-data="tallportComposer({{ $conversation->id }}, @js($mode), @js($chat))" x-on:input="changed($event)" x-on:change="blurred($event)" x-on:fruit-editor-upload.stop="embed($event)" x-on:keydown.enter="enter($event)">
@@ -64,7 +64,7 @@
                     </x-fruit::alert>
                 @endif
 
-                @include('conversations/partials/composer_editor', ['plain' => $has_channel, 'placeholder' => $chat ? __('Use ENTER to send the message and SHIFT+ENTER for a new line') : null, 'draft_button' => $mode != 'note'])
+                @include('conversations/partials/composer_editor', ['formats' => $mode == 'note' ? null : $conversation->editorFormats(), 'placeholder' => $chat ? __('Use ENTER to send the message and SHIFT+ENTER for a new line') : null, 'draft_button' => $mode != 'note'])
 
                 @include('conversations/partials/composer_footer', [
                     'send_label'      => $mode == 'note' ? __('Add Note') : ($mode == 'forward' ? __('Forward') : ($chat ? __('Send') : ($send_labels[$status][0] ?? __('Send Reply')))),

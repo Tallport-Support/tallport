@@ -60,6 +60,24 @@ class Thread extends Model
     ];
 
     /**
+     * Whether a message continues the one before it in a chat (FruitUI's grouped
+     * messages): both published messages from the same person, under 5 minutes apart.
+     */
+    public static function continues(Thread $thread, Thread $previous)
+    {
+        foreach ([$thread, $previous] as $message) {
+            if (!in_array($message->type, [self::TYPE_CUSTOMER, self::TYPE_MESSAGE]) || $message->state != self::STATE_PUBLISHED) {
+                return false;
+            }
+        }
+        $same_person = $thread->type == self::TYPE_CUSTOMER
+            ? $previous->type == self::TYPE_CUSTOMER && $thread->created_by_customer_id == $previous->created_by_customer_id
+            : $previous->type == self::TYPE_MESSAGE && $thread->created_by_user_id == $previous->created_by_user_id;
+
+        return $same_person && abs($thread->created_at->diffInSeconds($previous->created_at)) < 300;
+    }
+
+    /**
      * Subtypes (for notes mostly)
      */
     const SUBTYPE_FORWARD = 1;

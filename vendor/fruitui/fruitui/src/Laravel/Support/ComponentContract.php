@@ -340,11 +340,17 @@ final class ComponentContract
     }
 
     /** A message's options; `mine` marks a sent message the viewer wrote. */
-    public static function message(mixed $layout, mixed $variant, mixed $direction, mixed $mine, ComponentAttributeBag $attributes): void
+    public static function message(mixed $layout, mixed $variant, mixed $direction, mixed $mine, ComponentAttributeBag $attributes, mixed $continued = false): void
     {
         self::validate('message', $attributes, ['layout' => $layout, 'variant' => $variant, 'direction' => $direction]);
         if (! is_bool($mine)) {
             throw new InvalidArgumentException('FruitUI message mine must be a boolean.');
+        }
+        if (! is_bool($continued)) {
+            throw new InvalidArgumentException('FruitUI message continued must be a boolean.');
+        }
+        if ($continued && $variant !== 'default') {
+            throw new InvalidArgumentException('FruitUI message continued joins a message to the one before it from the same person; notes and generated text keep their own header.');
         }
         if ($mine && $direction !== 'outgoing') {
             throw new InvalidArgumentException('FruitUI message mine marks a sent message; use it with direction="outgoing".');
@@ -405,6 +411,27 @@ final class ComponentContract
         }
 
         return (int) $level;
+    }
+
+    /** The editor's formatting commands; undo and redo are always available. */
+    public const EDITOR_FORMATS = ['bold', 'italic', 'bulletList', 'orderedList', 'blockquote', 'link', 'image'];
+
+    /**
+     * The formats an editor allows: null for all of them, or a list of EDITOR_FORMATS, such as what a
+     * channel supports. The toolbar shows only those commands and the editor only produces that markup.
+     *
+     * @return list<string>|null
+     */
+    public static function editorFormats(mixed $formats): ?array
+    {
+        if ($formats === null) {
+            return null;
+        }
+        if (! is_array($formats) || ! array_is_list($formats) || array_diff($formats, self::EDITOR_FORMATS) !== []) {
+            throw new InvalidArgumentException('FruitUI editor formats must be a list of: '.implode(', ', self::EDITOR_FORMATS).'.');
+        }
+
+        return array_values(array_unique($formats));
     }
 
     /** An accent picker's checked accent must be one of FruitUI's named accents. */

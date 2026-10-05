@@ -16,6 +16,13 @@ document.addEventListener('livewire:navigated', function () {
 	if (!document.body.getAttribute('data-conversation_id')) {
 		return;
 	}
+	// After a message sent in the chat view, the next one can be typed right away.
+	if (sessionStorageGet('tallport_chat_focus') == document.body.getAttribute('data-conversation_id')) {
+		sessionStorageSet('tallport_chat_focus', '');
+		setTimeout(function () {
+			editorFocus('body');
+		}, 50);
+	}
 	if (new URLSearchParams(window.location.search).get('print')) {
 		window.print();
 	}
@@ -144,6 +151,10 @@ document.addEventListener('alpine:init', function () {
 				this.attachmentReminder().then(function (ok) {
 					if (ok) {
 						self.dirty = false;
+						// The chat view: back in the composer once the conversation is shown again.
+						if (chat) {
+							sessionStorageSet('tallport_chat_focus', conversation_id);
+						}
 						self.$wire.send(status === undefined ? null : status);
 					}
 				});

@@ -20,6 +20,12 @@ class Telegram
 
     const CHANNEL_NAME = 'Telegram';
 
+    /**
+     * The formatting a reply can have (FruitUI's editor formats): what
+     * Formatter::toTelegramHtml() carries over.
+     */
+    const FORMATS = ['bold', 'italic', 'link', 'blockquote'];
+
     const META = 'telegram';
 
     const LOG = 'telegram';

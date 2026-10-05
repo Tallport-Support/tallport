@@ -18,7 +18,12 @@
                 <x-fruit::divider wire:key="divider-{{ $day }}">{{ $day_name }}</x-fruit::divider>
                 <x-fruit::thread density="compact" wire:key="day-{{ $day }}" :aria-label="$day_name">
                     @foreach ($day_threads as $thread)
-                        @php $older_thread = $threads[$thread_positions[$thread->id] - 1] ?? null; @endphp
+                        @php
+                            $older_thread = $threads[$thread_positions[$thread->id] - 1] ?? null;
+                            // Name and avatar once for a run: the same person's messages, minutes apart.
+                            $previous = $loop->first ? null : $day_threads->values()[$loop->index - 1];
+                            $continued = $previous && App\Thread::continues($thread, $previous);
+                        @endphp
                         @include('conversations/partials/thread')
                     @endforeach
                 </x-fruit::thread>

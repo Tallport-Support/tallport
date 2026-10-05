@@ -48,7 +48,7 @@
         ['wanted' => $ai_translation_wanted, 'language' => $ai_language, 'translation' => $ai_translation] = App\Ai\Translations::forThread($thread, Auth::user());
     @endphp
     {{-- The chat view ($chat): name, meta and time on one line, the body beside the avatar. --}}
-    <x-fruit::message :layout="empty($chat) ? 'stacked' : 'inline'" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" :mine="$thread->type == App\Thread::TYPE_MESSAGE && $thread->created_by_user_id == Auth::user()->id" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()" :lang="$ai_translation ? (App\Ai\Summaries::data($thread)['language'] ?? null) : null">
+    <x-fruit::message :layout="empty($chat) ? 'stacked' : 'inline'" :continued="!empty($continued) && !empty($chat)" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" :mine="$thread->type == App\Thread::TYPE_MESSAGE && $thread->created_by_user_id == Auth::user()->id" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()" :lang="$ai_translation ? (App\Ai\Summaries::data($thread)['language'] ?? null) : null">
         @if ($ai_translation)
             {{-- The translation below the message, in the user's language. --}}
             <x-slot:translation :lang="$ai_language">@include('conversations/partials/ai_translation')</x-slot:translation>

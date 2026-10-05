@@ -58,7 +58,7 @@
     @if ($chat_view)
         {{-- Chat view: a one-line heading, the history (oldest first, opening at the newest
              message) and the composer docked below it (FruitUI's history and composer). --}}
-        <div id="conv-layout" class="conv-chat conv-type-{{ strtolower($conversation->getTypeName()) }} @if ($conversation->hasChannel()) conv-has-channel @endif">
+        <div id="conv-layout" class="conv-chat conv-type-{{ strtolower($conversation->getTypeName()) }}">
             <header class="conv-heading conv-heading--chat">
                 <livewire:conversation-subject :conversation="$conversation" :viewers="$viewers" compact />
                 <p class="conv-heading__customer">@if ($customer)<strong>{{ $customer->getFullName(true) }}</strong>@endif</p>
@@ -76,7 +76,7 @@
             <livewire:conversation-composer :conversation="$conversation" :to-customers="$to_customers" :cc="$cc" :from-aliases="$from_aliases" :from-alias="$from_alias" :after-send="$after_send" chat />
         </div>
     @else
-        <div id="conv-layout" class="conv-type-{{ strtolower($conversation->getTypeName()) }} @if ($conversation->hasChannel()) conv-has-channel @endif">
+        <div id="conv-layout" class="conv-type-{{ strtolower($conversation->getTypeName()) }}">
             <div id="conv-layout-header">
                 <div id="conv-subject">
                     <header class="conv-heading">

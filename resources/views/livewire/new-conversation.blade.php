@@ -93,7 +93,7 @@
                     @action('conversation.create_form.after_subject', $conversation, $mailbox, $thread)
                 </div>
 
-                @include('conversations/partials/composer_editor', ['plain' => false, 'placeholder' => null, 'draft_button' => true])
+                @include('conversations/partials/composer_editor', ['formats' => null, 'placeholder' => null, 'draft_button' => true])
 
                 @include('conversations/partials/composer_footer', [
                     'send_label' => $is_phone ? __('Create') : __('Send'),

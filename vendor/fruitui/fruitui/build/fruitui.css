@@ -3932,6 +3932,39 @@
     white-space: nowrap;
   }
 
+  /* A message that continues the previous one from the same person: the name and avatar show once
+     per run. The name stays for screen readers; the time shows beside the message on hover or focus. */
+  .f-message--continued > .f-message__avatar {
+    visibility: hidden;
+  }
+  .f-message--continued > .f-message__header {
+    /* Without a grid area, the position is measured from the message's edge, over the avatar column. */
+    grid-area: auto;
+    position: absolute;
+    inset-block-start: var(--f-message-continued-top, 0);
+    inset-inline-start: var(--f-message-continued-inset, 0);
+    justify-content: center;
+    width: var(--f-message-avatar-size, 32px);
+  }
+  .f-message--continued .f-message__identity {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .f-message--continued .f-message__time {
+    margin: 0;
+    line-height: var(--f-message-continued-line-height, 1.6rem);
+    opacity: 0;
+  }
+  .f-message--continued:is(:hover, :focus-within) .f-message__time {
+    opacity: 1;
+  }
+  .f-message--continued > .f-message__body {
+    margin-top: 0;
+  }
   /* Sent messages carry a bar on the leading edge: the accent for the viewer's own (mine), a
      neutral one for a teammate's. Incoming messages stay plain. */
   .f-message--outgoing:not(.f-message--note, .f-message--generated) {
@@ -4021,8 +4054,20 @@
   }
   .f-thread--compact .f-message:not(.f-message--note, .f-message--generated) {
     --f-message-actions-top: 4px;
+    --f-message-continued-inset: var(--f-thread-row-padding-inline, 12px);
+    --f-message-continued-top: var(--f-thread-continued-padding-block, 3px);
     padding: var(--f-thread-row-padding-block, 8px) var(--f-thread-row-padding-inline, 12px);
     border-radius: var(--f-radius);
+  }
+  /* A run of messages from one person reads as one block. */
+  .f-thread--compact .f-message--continued:not(.f-message--note, .f-message--generated) {
+    padding-block: var(--f-thread-continued-padding-block, 3px);
+  }
+  .f-thread--compact > :has(> .f-message--continued) {
+    margin-top: 0;
+  }
+  .f-thread--compact > :has(+ * > .f-message--continued) > .f-message {
+    padding-bottom: var(--f-thread-continued-padding-block, 3px);
   }
   .f-thread--compact .f-message:not(.f-message--note, .f-message--generated):is(:hover, :focus-within) {
     background: var(--f-hover);
