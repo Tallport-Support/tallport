@@ -1568,5 +1568,7 @@
     "Never delete this customer or their conversations.": "Bu müştəri və onun söhbətləri heç vaxt silinməsin.",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "Deaktiv: yalnız jurnallar təmizlənir. Aktiv: hər gecə aşağıdakı müddətlərin artıq saxlamadığı hər şey silinir.",
     "On legal hold: it will not be deleted.": "Hüquqi bloklamada: silinməyəcək.",
-    "Since :date, by :user.": ":date tarixindən, :user tərəfindən."
+    "Since :date, by :user.": ":date tarixindən, :user tərəfindən.",
+    "Search Settings": "Parametrlərdə Axtar",
+    "No Settings Found": "Parametr Tapılmadı"
 }

@@ -1568,5 +1568,7 @@
     "Never delete this customer or their conversations.": "この顧客とその会話を削除しない。",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "オフ：ログのみクリーンアップします。オン：毎晩、下記の期間で保持されなくなったものを削除します。",
     "On legal hold: it will not be deleted.": "リーガルホールド中：削除されません。",
-    "Since :date, by :user.": ":date から（:user）。"
+    "Since :date, by :user.": ":date から（:user）。",
+    "Search Settings": "設定を検索",
+    "No Settings Found": "一致する設定はありません"
 }

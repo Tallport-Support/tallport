@@ -1568,5 +1568,7 @@
     "Never delete this customer or their conversations.": "Ez az ügyfél és beszélgetései soha nem törlődnek.",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "Ki: csak a naplók tisztítása történik meg. Be: minden éjjel törlődik, amit az alábbi időszakok már nem őriznek meg.",
     "On legal hold: it will not be deleted.": "Jogi zárolás alatt: nem törlődik.",
-    "Since :date, by :user.": ":date óta, :user által."
+    "Since :date, by :user.": ":date óta, :user által.",
+    "Search Settings": "Keresés a Beállításokban",
+    "No Settings Found": "Nincs Találat a Beállításokban"
 }

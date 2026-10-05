@@ -8,7 +8,12 @@
     $sidebar_new_mailbox_id = collect($sidebar_mailboxes)->pluck(0)->pluck('id')->contains($sidebar_mailbox_id) ? $sidebar_mailbox_id : ($sidebar_mailboxes[0][0]->id ?? null);
 @endphp
 <nav class="f-pane f-pane--column f-pane--scroll f-pane--border-end f-sidebar app-sidebar" id="app-sidebar" aria-label="{{ __('Navigation') }}" @if (Helper::isLocaleRtl()) dir="rtl" @endif>
-    @if (empty($has_list))
+    @if (App\Misc\Sidebar::isSettings())
+        {{-- Settings' search: finds settings pages by their names and what's on them (tallport.js). --}}
+        <div class="f-sidebar__header app-sidebar__header" role="search">
+            <x-fruit::search name="settings_q" :label="__('Search Settings')" :placeholder="__('Search Settings')" id="settings-search" class="app-settings-search" />
+        </div>
+    @elseif (empty($has_list))
         {{-- With a list, search sits at the top of the list pane. --}}
         <div class="f-sidebar__header app-sidebar__header">
             <form class="app-sidebar__search" role="search" action="{{ route('conversations.search') }}">

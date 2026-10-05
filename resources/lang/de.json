@@ -1562,5 +1562,7 @@
     "Never delete this customer or their conversations.": "Diesen Kunden und seine Gespräche nie löschen.",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "Aus: Nur Protokolle werden bereinigt. Ein: Jede Nacht wird gelöscht, was die Zeiträume unten nicht mehr aufbewahren.",
     "On legal hold: it will not be deleted.": "Unter Legal Hold: wird nicht gelöscht.",
-    "Since :date, by :user.": "Seit :date, von :user."
+    "Since :date, by :user.": "Seit :date, von :user.",
+    "Search Settings": "Einstellungen Durchsuchen",
+    "No Settings Found": "Keine Einstellungen Gefunden"
 }

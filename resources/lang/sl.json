@@ -1567,5 +1567,7 @@
     "Never delete this customer or their conversations.": "Nikoli ne izbriši te stranke ali njenih pogovorov.",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "Izklop: čistijo se samo dnevniki. Vklop: vsako noč se izbriše, česar spodnja obdobja ne hranijo več.",
     "On legal hold: it will not be deleted.": "V pravnem zadržanju: ne bo izbrisano.",
-    "Since :date, by :user.": "Od :date, :user."
+    "Since :date, by :user.": "Od :date, :user.",
+    "Search Settings": "Išči po Nastavitvah",
+    "No Settings Found": "Ni Najdenih Nastavitev"
 }

@@ -1972,7 +1972,6 @@ a.disabled:focus {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding-bottom: 4px;
 }
 .app-sidebar__brand img,
 .app-sidebar__logo {

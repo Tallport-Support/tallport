@@ -1586,5 +1586,7 @@
     "Never delete this customer or their conversations.": "Älä koskaan poista tätä asiakasta tai hänen keskustelujaan.",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "Pois: vain lokit siivotaan. Päällä: joka yö poistetaan se, mitä alla olevat ajat eivät enää säilytä.",
     "On legal hold: it will not be deleted.": "Lakisääteisessä säilytyksessä: ei poisteta.",
-    "Since :date, by :user.": "Alkaen :date, :user."
+    "Since :date, by :user.": "Alkaen :date, :user.",
+    "Search Settings": "Hae Asetuksista",
+    "No Settings Found": "Asetuksia ei Löytynyt"
 }

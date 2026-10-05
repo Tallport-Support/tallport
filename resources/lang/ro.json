@@ -1567,5 +1567,7 @@
     "Never delete this customer or their conversations.": "Nu șterge niciodată acest client sau conversațiile sale.",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "Oprită: doar jurnalele sunt curățate. Pornită: în fiecare noapte se șterge ceea ce perioadele de mai jos nu mai păstrează.",
     "On legal hold: it will not be deleted.": "Sub reținere legală: nu va fi șters.",
-    "Since :date, by :user.": "Din :date, de :user."
+    "Since :date, by :user.": "Din :date, de :user.",
+    "Search Settings": "Caută în Setări",
+    "No Settings Found": "Nicio Setare Găsită"
 }

@@ -1567,5 +1567,7 @@
     "Never delete this customer or their conversations.": "לעולם לא למחוק לקוח זה או את השיחות שלו.",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "כבוי: רק היומנים מנוקים. פעיל: בכל לילה נמחק מה שהתקופות שלהלן כבר לא שומרות.",
     "On legal hold: it will not be deleted.": "בשימור משפטי: לא יימחק.",
-    "Since :date, by :user.": "מאז :date, על ידי :user."
+    "Since :date, by :user.": "מאז :date, על ידי :user.",
+    "Search Settings": "חיפוש בהגדרות",
+    "No Settings Found": "לא נמצאו הגדרות"
 }

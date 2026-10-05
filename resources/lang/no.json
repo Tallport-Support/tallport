@@ -1572,5 +1572,7 @@
     "Never delete this customer or their conversations.": "Slett aldri denne kunden eller kundens samtaler.",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "Av: bare logger ryddes. På: hver natt slettes det periodene nedenfor ikke lenger beholder.",
     "On legal hold: it will not be deleted.": "Under juridisk bevaring: blir ikke slettet.",
-    "Since :date, by :user.": "Siden :date, av :user."
+    "Since :date, by :user.": "Siden :date, av :user.",
+    "Search Settings": "Søk i Innstillinger",
+    "No Settings Found": "Ingen Innstillinger Funnet"
 }

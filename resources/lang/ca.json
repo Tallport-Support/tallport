@@ -1665,5 +1665,7 @@
     "Never delete this customer or their conversations.": "No eliminis mai aquest client ni les seves converses.",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "Desactivada: només es netegen els registres. Activada: cada nit s'elimina el que els períodes de sota ja no conserven.",
     "On legal hold: it will not be deleted.": "En retenció legal: no s'eliminarà.",
-    "Since :date, by :user.": "Des del :date, per :user."
+    "Since :date, by :user.": "Des del :date, per :user.",
+    "Search Settings": "Cerca a la Configuració",
+    "No Settings Found": "No s'ha Trobat Cap Configuració"
 }

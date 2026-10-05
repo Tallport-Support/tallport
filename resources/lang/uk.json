@@ -1568,5 +1568,7 @@
     "Never delete this customer or their conversations.": "Ніколи не видаляти цього клієнта та його розмови.",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "Вимкнено: очищаються лише журнали. Увімкнено: щоночі видаляється те, що наведені нижче терміни більше не зберігають.",
     "On legal hold: it will not be deleted.": "Під юридичним утриманням: не буде видалено.",
-    "Since :date, by :user.": "З :date, :user."
+    "Since :date, by :user.": "З :date, :user.",
+    "Search Settings": "Пошук у Налаштуваннях",
+    "No Settings Found": "Налаштувань не Знайдено"
 }

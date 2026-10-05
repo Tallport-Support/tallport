@@ -1571,5 +1571,7 @@
     "Never delete this customer or their conversations.": "Deze klant en zijn gesprekken nooit verwijderen.",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "Uit: alleen logs worden opgeschoond. Aan: elke nacht wordt verwijderd wat de termijnen hieronder niet meer bewaren.",
     "On legal hold: it will not be deleted.": "Onder juridische bewaring: wordt niet verwijderd.",
-    "Since :date, by :user.": "Sinds :date, door :user."
+    "Since :date, by :user.": "Sinds :date, door :user.",
+    "Search Settings": "Instellingen Zoeken",
+    "No Settings Found": "Geen Instellingen Gevonden"
 }

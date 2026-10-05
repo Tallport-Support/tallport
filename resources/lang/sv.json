@@ -1568,5 +1568,7 @@
     "Never delete this customer or their conversations.": "Radera aldrig den här kunden eller kundens konversationer.",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "Av: endast loggar rensas. På: varje natt raderas det som perioderna nedan inte längre behåller.",
     "On legal hold: it will not be deleted.": "Juridiskt kvarhållande: raderas inte.",
-    "Since :date, by :user.": "Sedan :date, av :user."
+    "Since :date, by :user.": "Sedan :date, av :user.",
+    "Search Settings": "Sök i Inställningar",
+    "No Settings Found": "Inga Inställningar Hittades"
 }

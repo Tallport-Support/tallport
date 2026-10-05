@@ -1970,5 +1970,7 @@
     "Never delete this customer or their conversations.": "Бұл клиентті және оның тикеттерін ешқашан жоймау.",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "Өшірулі: тек журналдар тазаланады. Қосулы: әр түні төмендегі мерзімдер енді сақтамайтынның бәрі жойылады.",
     "On legal hold: it will not be deleted.": "Құқықтық бұғаттауда: жойылмайды.",
-    "Since :date, by :user.": ":date бастап, :user."
+    "Since :date, by :user.": ":date бастап, :user.",
+    "Search Settings": "Орнатулардан Іздеу",
+    "No Settings Found": "Орнатулар Табылмады"
 }

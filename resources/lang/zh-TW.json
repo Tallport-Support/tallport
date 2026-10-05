@@ -1616,5 +1616,7 @@
     "Never delete this customer or their conversations.": "永不刪除此客戶或其對話。",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "關閉：僅清理日誌。開啟：每晚刪除下方期限不再保留的內容。",
     "On legal hold: it will not be deleted.": "處於法律保留狀態：不會被刪除。",
-    "Since :date, by :user.": "自 :date 起，由 :user 設定。"
+    "Since :date, by :user.": "自 :date 起，由 :user 設定。",
+    "Search Settings": "搜尋設定",
+    "No Settings Found": "找不到設定"
 }

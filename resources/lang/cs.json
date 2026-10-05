@@ -1567,5 +1567,7 @@
     "Never delete this customer or their conversations.": "Nikdy neodstraňovat tohoto zákazníka ani jeho konverzace.",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "Vypnuto: čistí se pouze protokoly. Zapnuto: každou noc se odstraní to, co období níže již neuchovávají.",
     "On legal hold: it will not be deleted.": "S právní blokací: nebude odstraněno.",
-    "Since :date, by :user.": "Od :date, uživatel :user."
+    "Since :date, by :user.": "Od :date, uživatel :user.",
+    "Search Settings": "Hledat v Nastavení",
+    "No Settings Found": "Žádná Nastavení Nenalezena"
 }

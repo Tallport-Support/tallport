@@ -1568,5 +1568,7 @@
     "Never delete this customer or their conversations.": "Nunca eliminar este cliente nem as suas conversas.",
     "Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.": "Desligada: apenas os registos são limpos. Ligada: todas as noites, o que os períodos abaixo já não mantêm é eliminado.",
     "On legal hold: it will not be deleted.": "Sob bloqueio legal: não será eliminado.",
-    "Since :date, by :user.": "Desde :date, por :user."
+    "Since :date, by :user.": "Desde :date, por :user.",
+    "Search Settings": "Pesquisar Definições",
+    "No Settings Found": "Nenhuma Definição Encontrada"
 }

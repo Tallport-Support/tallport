@@ -26,6 +26,29 @@ class Sidebar
     }
 
     /**
+     * What Settings' search finds a page by (partials/app_sidebar_settings): the
+     * labels and section titles in its views, in the user's language, read from
+     * the templates so they follow the pages.
+     */
+    public static function settingsKeywords(...$views)
+    {
+        $keywords = [];
+        foreach ($views as $view) {
+            $path = resource_path('views/'.$view.'.blade.php');
+            if (!is_file($path)) {
+                continue;
+            }
+            // Labels and titles given to fruit fields and sections, and row labels in spans.
+            preg_match_all("/(?::label|:title)=\"__\('((?:[^'\\\\]|\\\\.)+)'\)|<span>\{\{ __\('((?:[^'\\\\]|\\\\.)+)'\) \}\}<\/span>/", file_get_contents($path), $matches);
+            foreach (array_filter(array_merge($matches[1], $matches[2])) as $label) {
+                $keywords[] = __(stripslashes($label));
+            }
+        }
+
+        return mb_strtolower(implode(' · ', array_unique($keywords)));
+    }
+
+    /**
      * Lucide icons of folder types.
      */
     const FOLDER_ICONS = [

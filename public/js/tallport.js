@@ -191,3 +191,53 @@ window.addEventListener('pageshow', function (event) {
 		});
 	}
 });
+
+// Settings' search (partials/app_sidebar): the settings pages whose names, or what's on
+// them (data-search), have every word typed; Return opens the first.
+(function () {
+	var filter = function (query) {
+		var sidebar = document.getElementById('app-sidebar');
+		var terms = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
+		var found = 0;
+		sidebar.querySelectorAll('a.f-sidebar__item').forEach(function (item) {
+			var text = ((item.getAttribute('data-search') || '') + ' ' + item.textContent).toLowerCase();
+			item.hidden = !terms.every(function (term) {
+				return text.indexOf(term) != -1;
+			});
+			found += item.hidden ? 0 : 1;
+		});
+		// Module items' wrappers, a mailbox's pages and the headings: only with something in them.
+		sidebar.querySelectorAll('.app-sidebar__module-items > li, details.f-sidebar__group').forEach(function (group) {
+			group.hidden = !group.querySelector('a.f-sidebar__item:not([hidden])');
+		});
+		sidebar.querySelectorAll('.f-sidebar__heading').forEach(function (heading) {
+			var visible = false;
+			for (var next = heading.nextElementSibling; next && !next.classList.contains('f-sidebar__heading'); next = next.nextElementSibling) {
+				if (next.matches('a.f-sidebar__item:not([hidden])') || next.querySelector('a.f-sidebar__item:not([hidden])')) {
+					visible = true;
+					break;
+				}
+			}
+			heading.hidden = !visible;
+		});
+		var none = sidebar.querySelector('.app-sidebar__no-results');
+		if (none) {
+			none.hidden = found > 0 || !terms.length;
+		}
+	};
+	document.addEventListener('input', function (e) {
+		if (e.target.matches && e.target.matches('.app-settings-search')) {
+			filter(e.target.value);
+		}
+	});
+	document.addEventListener('keydown', function (e) {
+		if (e.key != 'Enter' || !e.target.matches || !e.target.matches('.app-settings-search')) {
+			return;
+		}
+		var first = document.querySelector('#app-sidebar a.f-sidebar__item:not([hidden])');
+		if (first) {
+			e.preventDefault();
+			Livewire.navigate(first.href);
+		}
+	});
+})();

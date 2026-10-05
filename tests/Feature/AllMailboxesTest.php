@@ -163,7 +163,7 @@ class AllMailboxesTest extends FeatureTestCase
         $html = $this->actingAs($admin)->get(route('settings', ['section' => 'emails']))->assertOk()->getContent();
         $sidebar = substr($html, strpos($html, 'id="app-sidebar"'));
         $this->assertStringContainsString('app-sidebar__back', $html);
-        $this->assertStringContainsString('<a aria-current="page" class="f-sidebar__item" wire:navigate="" href="'.route('settings', ['section' => 'emails']).'">', $sidebar);
+        $this->assertMatchesRegularExpression('#<a aria-current="page" class="f-sidebar__item" wire:navigate="" data-search="[^"]*" href="'.preg_quote(route('settings', ['section' => 'emails']), '#').'">#', $sidebar);
         $this->assertStringContainsString('app-sidebar__account-card', $sidebar);
         $this->assertStringContainsString(route('users.preferences', ['id' => $admin->id]), substr($sidebar, 0, strpos($sidebar, 'app-sidebar__footer')));
         $this->assertStringNotContainsString('app-sidebar__mailbox', $sidebar);
@@ -221,5 +221,21 @@ class AllMailboxesTest extends FeatureTestCase
         $this->actingAs($this->agent)->get(route('mailboxes.view', ['id' => $this->support->id]))
             ->assertSee('class="app-sidebar__brand" href="'.route('dashboard', ['dashboard' => 1]).'"', false)
             ->assertSee('id="app-sidebar"', false);
+    }
+
+    public function testSettingsSearchFindsSettings()
+    {
+        $admin = $this->createAdmin();
+        $this->support->users()->attach($admin->id);
+
+        // In Settings, the sidebar's search is for settings: pages carry what's on them.
+        $html = $this->actingAs($admin)->get(route('settings', ['section' => 'emails']))->assertOk()->getContent();
+        $this->assertStringContainsString('app-settings-search', $html);
+        $this->assertStringNotContainsString('action="'.route('conversations.search').'"', substr($html, strpos($html, 'id="app-sidebar"'), 4000));
+        $this->assertMatchesRegularExpression('#data-search="[^"]*accent color[^"]*" href="'.preg_quote(route('users.preferences', ['id' => $admin->id]), '#').'"#', $html);
+        $this->assertStringContainsString(e(\App\Misc\Sidebar::settingsKeywords('settings/retention')), $html);
+
+        // Elsewhere it searches conversations.
+        $this->assertStringNotContainsString('app-settings-search', $this->get(route('reports.conversations'))->getContent());
     }
 }
