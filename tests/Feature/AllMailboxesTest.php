@@ -165,8 +165,7 @@ class AllMailboxesTest extends FeatureTestCase
         $this->assertStringContainsString('app-sidebar__back', $sidebar);
         $this->assertStringContainsString('<a aria-current="page" class="f-sidebar__item" href="'.route('settings', ['section' => 'emails']).'">', $sidebar);
         $this->assertStringContainsString('app-sidebar__account-card', $sidebar);
-        $this->assertStringNotContainsString('app-sidebar__account-pages', $sidebar, 'The account\'s pages show while one is open.');
-        $this->assertStringContainsString('app-sidebar__account-pages', $this->get(route('users.profile', ['id' => $admin->id]))->getContent());
+        $this->assertStringContainsString(route('users.preferences', ['id' => $admin->id]), substr($sidebar, 0, strpos($sidebar, 'app-sidebar__footer')));
         $this->assertStringNotContainsString('app-sidebar__mailbox', $sidebar);
 
         // A mailbox's settings are under Manage > Mailboxes; an agent sees only the account.

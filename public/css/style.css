@@ -994,7 +994,6 @@ a h4 {
 }
 .app-sidebar__account-pages {
     margin: -4px 0 8px;
-    padding-inline-start: 12px;
 }
 /* The password gate (<x-password-gate>): a form centred like an empty state. */
 .password-gate__form {
