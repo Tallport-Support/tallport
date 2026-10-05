@@ -8,7 +8,7 @@
     @section('body_class', 'body-conv')
 @endif
 
-@section('body_attrs')@parent data-conversation_id="{{ $conversation->id }}"@endsection
+@section('body_attrs')@parent data-conversation_id="{{ $conversation->id }}" data-mailbox_id="{{ $conversation->mailbox_id }}" data-folder_id="{{ $folder->id }}"@endsection
 {{-- Shown at a folder's URL (ConversationsController::openFolder()): the conversation's own. --}}
 @if (!Route::is('conversations.view'))
     @section('body_attrs')@parent data-page-url="{{ route('conversations.view', ['id' => $conversation->id, 'folder_id' => $folder->id]) }}"@endsection
@@ -18,7 +18,7 @@
     {{-- The folder's conversations beside the conversation. --}}
     @section('split_class', 'split-view--open')
     @section('list_toolbar')
-        @include('mailboxes/partials/list_toolbar', ['folder' => $folder, 'mailbox' => $list['mailbox'], 'conversations' => $list['conversations']])
+        <livewire:conversation-list-toolbar :folder="$folder" />
     @endsection
     @section('list')
         @include('mailboxes/partials/list_search', ['mailbox' => $list['mailbox']])

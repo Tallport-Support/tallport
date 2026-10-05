@@ -2763,7 +2763,8 @@ a.disabled:focus {
     font-size: var(--f-text-sm);
 }
 .conv-thread-host,
-.conv-pane {
+.conv-pane,
+.conv-list-toolbar-host {
     display: contents;
 }
 .conv-history {

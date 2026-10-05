@@ -178,6 +178,31 @@ class ConversationList extends Component
     }
 
     /**
+     * Another folder opened in place (public/js/tallport.js): its conversations, from
+     * the first page, with the one it opens at current (App\Livewire\ConversationPane).
+     */
+    #[On('folder-open')]
+    public function openFolder($folder_id, $conversation_id = null)
+    {
+        $folder = ConversationOpens::findFolder($folder_id);
+        $user = auth()->user();
+        if (!$folder) {
+            $this->skipRender();
+
+            return;
+        }
+        $list = ConversationsController::folderList($folder, $user);
+        $this->folder_id = $folder->id;
+        $this->mailbox_id = $folder->id < 0 ? AllMailboxes::MAILBOX_ID : $folder->mailbox_id;
+        $this->params = array_intersect_key($this->params, ['target_blank' => 1]) + $list['params']
+            + ['current_conversation_id' => $conversation_id ?: ConversationsController::folderConversationId($folder, $user)];
+        $this->filter = [];
+        $this->page = 1;
+        $this->selected = [];
+        $this->url = $folder->id < 0 ? route('mailboxes.all', ['folder_id' => $folder->id]) : $folder->url($folder->mailbox_id);
+    }
+
+    /**
      * New conversations or changes in the list (realtime events).
      */
     #[On('conversations-changed')]

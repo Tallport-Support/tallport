@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Conversation;
 use App\Folder;
+use App\Http\Controllers\ConversationsController;
 use App\Misc\AllMailboxes;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
@@ -11,8 +12,9 @@ use Livewire\Attributes\On;
 /**
  * For the open conversation's components (its column, toolbar and customer):
  * another conversation opens in them in place (conversation-open, sent by
- * public/js/conversations.js when a row of the list is clicked), without
- * loading the page.
+ * public/js/conversations.js when a row of the list is clicked), or another
+ * folder's (folder-open, public/js/tallport.js: the conversation it opens at),
+ * without loading the page.
  */
 trait ConversationOpens
 {
@@ -29,6 +31,48 @@ trait ConversationOpens
     public function openConversation($id, $folder_id = null)
     {
         $this->switchTo($id, $folder_id);
+    }
+
+    #[On('folder-open')]
+    public function openFolder($folder_id, $conversation_id = null)
+    {
+        $this->switchToFolder($folder_id, $conversation_id);
+    }
+
+    /**
+     * Shows the conversation a folder opens at (or the one given); the conversation,
+     * or null when there's none or the user can't see the folder.
+     */
+    protected function switchToFolder($folder_id, $conversation_id = null)
+    {
+        $folder = self::findFolder($folder_id);
+        if (!$folder) {
+            $this->skipRender();
+
+            return null;
+        }
+        $conversation_id = $conversation_id ?: ConversationsController::folderConversationId($folder, auth()->user());
+        if (!$conversation_id) {
+            $this->skipRender();
+
+            return null;
+        }
+
+        return $this->switchTo($conversation_id, $folder->id);
+    }
+
+    /**
+     * A folder the user can see (All Mailboxes' too), or null.
+     */
+    public static function findFolder($folder_id)
+    {
+        $user = auth()->user();
+        if ((int) $folder_id < 0) {
+            return AllMailboxes::isAvailable($user) ? AllMailboxes::folder($user, (int) $folder_id) : null;
+        }
+        $folder = Folder::find($folder_id);
+
+        return $folder && $user->can('view', $folder) ? $folder : null;
     }
 
     /**

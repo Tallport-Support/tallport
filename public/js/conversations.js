@@ -30,8 +30,60 @@ document.addEventListener('click', function (e) {
 		return;
 	}
 	e.preventDefault();
-	window.history.pushState({tallport_conversation: open}, '', link.href);
+	window.history.pushState({tallport_conversation: open, tallport_folder: {folder_id: document.body.getAttribute('data-folder_id')}}, '', link.href);
 	conversationOpen(open);
+});
+
+/**
+ * Another folder opens in place beside an open conversation (its sidebar link, a
+ * wire:navigate link): the list, its toolbar and the conversation it opens at
+ * (App\Livewire\ConversationList, ConversationListToolbar, ConversationPane…).
+ * The sidebar stays, with the folder marked; an empty folder loads its page.
+ */
+var folderOpen = function (folder_id, conversation_id) {
+	var link = document.querySelector('.app-sidebar a[data-folder_id="'+folder_id+'"]');
+	document.querySelectorAll('.app-sidebar a[data-folder_id][aria-current]').forEach(function (item) {
+		item.removeAttribute('aria-current');
+	});
+	if (link) {
+		link.setAttribute('aria-current', 'page');
+		var mailbox_id = (link.closest('[data-mailbox_id]') || link).getAttribute('data-mailbox_id');
+		if (mailbox_id) {
+			document.body.setAttribute('data-mailbox_id', mailbox_id);
+			// The list's search: within this mailbox (All Mailboxes: all of them).
+			var search = document.querySelector('.conv-list-search');
+			var scope = search ? search.querySelector('input[name="f[mailbox]"]') : null;
+			if (search && parseInt(mailbox_id) > 0) {
+				if (!scope) {
+					scope = document.createElement('input');
+					scope.type = 'hidden';
+					scope.name = 'f[mailbox]';
+					search.prepend(scope);
+				}
+				scope.value = mailbox_id;
+			} else if (scope) {
+				scope.remove();
+			}
+		}
+	}
+	document.body.setAttribute('data-folder_id', folder_id);
+	document.getElementById('app-content').setAttribute('aria-busy', 'true');
+	Livewire.dispatch('folder-open', {folder_id: parseInt(folder_id), conversation_id: conversation_id || null});
+};
+// The sidebar's folders: in place beside an open conversation, else the folder's page
+// (wire:navigate, with its progress bar).
+document.addEventListener('click', function (e) {
+	var link = e.target.closest && e.target.closest('a.app-folder-link');
+	if (!link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
+		return;
+	}
+	e.preventDefault();
+	if (!document.querySelector('.conv-pane') || !document.querySelector('.conv-list-host')) {
+		Livewire.navigate(link.href);
+		return;
+	}
+	window.history.pushState({tallport_folder: {folder_id: link.getAttribute('data-folder_id')}}, '', link.href);
+	folderOpen(link.getAttribute('data-folder_id'));
 });
 var conversationOpen = function (open) {
 	document.querySelectorAll('a.conv-row__link[aria-current]').forEach(function (row) {
@@ -46,10 +98,16 @@ var conversationOpen = function (open) {
 	document.getElementById('app-content').setAttribute('aria-busy', 'true');
 	Livewire.dispatch('conversation-open', open);
 };
-// Back and Forward between conversations opened in place.
+// Back and Forward between conversations and folders opened in place.
 window.addEventListener('popstate', function (e) {
-	if (e.state && e.state.tallport_conversation && document.querySelector('.conv-pane')) {
-		conversationOpen(e.state.tallport_conversation);
+	var state = e.state || {};
+	if (!document.querySelector('.conv-pane')) {
+		return;
+	}
+	if (state.tallport_folder && state.tallport_folder.folder_id != document.body.getAttribute('data-folder_id')) {
+		folderOpen(state.tallport_folder.folder_id, state.tallport_conversation ? state.tallport_conversation.id : null);
+	} else if (state.tallport_conversation) {
+		conversationOpen(state.tallport_conversation);
 	}
 });
 document.addEventListener('livewire:init', function () {
@@ -59,8 +117,9 @@ document.addEventListener('livewire:init', function () {
 		document.title = data.title;
 		document.body.setAttribute('data-conversation_id', data.id);
 		document.body.setAttribute('data-mailbox_id', data.mailbox_id);
+		document.body.setAttribute('data-folder_id', data.folder_id);
 		document.body.removeAttribute('data-page-url');
-		window.history.replaceState(Object.assign({}, window.history.state || {}, {tallport_conversation: {id: data.id, folder_id: data.folder_id}}), '', data.url);
+		window.history.replaceState(Object.assign({}, window.history.state || {}, {tallport_conversation: {id: data.id, folder_id: data.folder_id}, tallport_folder: {folder_id: data.folder_id}}), '', data.url);
 		// For realtime updates, the composer and modules (CustomApp, Nostr).
 		document.dispatchEvent(new CustomEvent('tallport:conversation-opened', {detail: data}));
 	});
@@ -79,7 +138,7 @@ document.addEventListener('livewire:navigated', function () {
 	window.history.replaceState(Object.assign({}, window.history.state || {}, {tallport_conversation: {
 		id: parseInt(document.body.getAttribute('data-conversation_id')),
 		folder_id: new URLSearchParams(window.location.search).get('folder_id') || ''
-	}}), '');
+	}, tallport_folder: {folder_id: document.body.getAttribute('data-folder_id')}}), '');
 	// Shown after wire:navigate (perhaps prefetched on hover): now it's seen
 	// (ConversationsController::view() does this for a page loaded in full).
 	if (!first_page) {

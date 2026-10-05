@@ -141,7 +141,7 @@ class ConversationsController extends Controller
         // The folder's conversations beside the conversation (split view).
         $list = null;
         if ($template == 'conversations/view' && !$request->input('print')) {
-            $list = $this->folderList($folder, $user, $request->input('list_page'));
+            $list = self::folderList($folder, $user, $request->input('list_page'));
         }
 
         return view($template, array_merge(self::pageData($conversation, $folder, $user), ['list' => $list]));
@@ -449,6 +449,30 @@ class ConversationsController extends Controller
      * The conversation is shown at the folder's URL, without a redirect (one request
      * instead of two); the page then shows its own URL (data-page-url, tallport.js).
      */
+    /**
+     * The conversation a folder opens at (openFolder()), for opening it in place
+     * (App\Livewire\ConversationOpens); null when it has none. Once per request.
+     */
+    public static function folderConversationId($folder, $user)
+    {
+        $memo = request()->attributes->get('folder_conversation_id', []);
+        if (!array_key_exists($folder->id, $memo)) {
+            $list = self::folderList($folder, $user);
+            $conversation_id = null;
+            if (count($list['conversations'])) {
+                $query = $folder->id < 0 ? \App\Misc\AllMailboxes::query($folder, $user) : Conversation::getQueryByFolder($folder, $user->id);
+                $conversation_id = session()->get('folder_conversation.'.$folder->id);
+                if (!$conversation_id || !$query->where('conversations.id', $conversation_id)->exists()) {
+                    $conversation_id = $list['conversations']->first()->id;
+                }
+            }
+            $memo[$folder->id] = $conversation_id;
+            request()->attributes->set('folder_conversation_id', $memo);
+        }
+
+        return $memo[$folder->id];
+    }
+
     public static function openFolder(Request $request, $folder, $query, $conversations)
     {
         if (!count($conversations) || $request->filled('page') || $request->cookie('tallport_narrow')) {
@@ -467,8 +491,13 @@ class ConversationsController extends Controller
     /**
      * A folder's conversations, for the list beside an open conversation.
      */
-    private function folderList($folder, $user, $page)
+    public static function folderList($folder, $user, $page = null)
     {
+        $memo = request()->attributes->get('folder_list', []);
+        $key = $folder->id.'-'.$user->id.'-'.(int) $page;
+        if (isset($memo[$key])) {
+            return $memo[$key];
+        }
         if ($folder->id < 0) {
             $query = \App\Misc\AllMailboxes::query($folder, $user);
             $mailbox = \App\Misc\AllMailboxes::mailbox();
@@ -479,11 +508,14 @@ class ConversationsController extends Controller
             $params = [];
         }
 
-        return [
+        $memo[$key] = [
             'conversations' => $folder->queryAddOrderBy($query)->paginate(Conversation::DEFAULT_LIST_SIZE, ['*'], 'page', $page),
             'mailbox'       => $mailbox,
             'params'        => $params,
         ];
+        request()->attributes->set('folder_list', $memo);
+
+        return $memo[$key];
     }
 
     /**

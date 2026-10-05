@@ -25,7 +25,7 @@
         @php $all_folders = App\Misc\AllMailboxes::folders($sidebar_user); @endphp
         @foreach (App\Misc\Sidebar::visibleFolders($all_folders, $sidebar_mailbox_id == App\Misc\AllMailboxes::MAILBOX_ID ? $sidebar_folder_id : null) as $sidebar_folder)
             @php $sidebar_count = App\Misc\Sidebar::count($sidebar_folder, $all_folders); @endphp
-            <a href="{{ route('mailboxes.all', ['folder_id' => $sidebar_folder->id]) }}" class="f-sidebar__item" wire:navigate.hover @if ($sidebar_mailbox_id == App\Misc\AllMailboxes::MAILBOX_ID && $sidebar_folder_id == $sidebar_folder->id) aria-current="page" @endif data-folder_id="{{ $sidebar_folder->id }}" data-mailbox_id="{{ App\Misc\AllMailboxes::MAILBOX_ID }}"><x-dynamic-component :component="App\Misc\Sidebar::folderIcon($sidebar_folder)" class="f-icon" aria-hidden="true" /><span class="f-sidebar__identity">{{ $sidebar_folder->getTypeName() }}</span>@if ($sidebar_count)<span class="f-badge active-count">{{ $sidebar_count }}</span>@endif</a>
+            <a href="{{ route('mailboxes.all', ['folder_id' => $sidebar_folder->id]) }}" class="f-sidebar__item app-folder-link" @if ($sidebar_mailbox_id == App\Misc\AllMailboxes::MAILBOX_ID && $sidebar_folder_id == $sidebar_folder->id) aria-current="page" @endif data-folder_id="{{ $sidebar_folder->id }}" data-mailbox_id="{{ App\Misc\AllMailboxes::MAILBOX_ID }}"><x-dynamic-component :component="App\Misc\Sidebar::folderIcon($sidebar_folder)" class="f-icon" aria-hidden="true" /><span class="f-sidebar__identity">{{ $sidebar_folder->getTypeName() }}</span>@if ($sidebar_count)<span class="f-badge active-count">{{ $sidebar_count }}</span>@endif</a>
         @endforeach
     @endif
 

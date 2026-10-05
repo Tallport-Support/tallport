@@ -230,6 +230,7 @@ return array(
     'App\\Livewire\\ConversationComposer' => $baseDir . '/app/Livewire/ConversationComposer.php',
     'App\\Livewire\\ConversationInspector' => $baseDir . '/app/Livewire/ConversationInspector.php',
     'App\\Livewire\\ConversationList' => $baseDir . '/app/Livewire/ConversationList.php',
+    'App\\Livewire\\ConversationListToolbar' => $baseDir . '/app/Livewire/ConversationListToolbar.php',
     'App\\Livewire\\ConversationOpens' => $baseDir . '/app/Livewire/ConversationOpens.php',
     'App\\Livewire\\ConversationPane' => $baseDir . '/app/Livewire/ConversationPane.php',
     'App\\Livewire\\ConversationSubject' => $baseDir . '/app/Livewire/ConversationSubject.php',

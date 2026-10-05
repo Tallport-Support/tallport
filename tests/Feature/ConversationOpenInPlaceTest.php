@@ -4,7 +4,9 @@ namespace Tests\Feature;
 
 use App\Conversation;
 use App\Livewire\ConversationInspector;
+use App\Folder;
 use App\Livewire\ConversationList;
+use App\Livewire\ConversationListToolbar;
 use App\Livewire\ConversationPane;
 use App\Livewire\ConversationToolbar;
 use Livewire\Livewire;
@@ -83,5 +85,35 @@ class ConversationOpenInPlaceTest extends FeatureTestCase
         Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $first->folder, 'mailbox' => $this->mailbox, 'params' => ['current_conversation_id' => $first->id]])
             ->dispatch('conversation-open', id: $second->id)
             ->assertSet('params.current_conversation_id', $second->id);
+    }
+
+    public function testAnotherFolderOpensInPlace()
+    {
+        $unassigned = $this->conversation('Broken zipper', 'casey@customer.example.org');
+        $mine = $this->conversation('Lost parcel', 'sam@customer.example.org');
+        $mine->user_id = $this->agent->id;
+        $mine->save();
+        $this->mailbox->updateFoldersCounters();
+        $mine_folder = $this->mailbox->folders()->where('type', Folder::TYPE_MINE)->where('user_id', $this->agent->id)->first();
+        $closed_folder = $this->mailbox->folders()->where('type', Folder::TYPE_CLOSED)->first();
+
+        // The list, its toolbar and the column follow, at the folder's conversation.
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $unassigned->folder, 'mailbox' => $this->mailbox, 'params' => ['current_conversation_id' => $unassigned->id]])
+            ->dispatch('folder-open', folder_id: $mine_folder->id)
+            ->assertSet('folder_id', $mine_folder->id)->assertSet('params.current_conversation_id', $mine->id)
+            ->assertSee('Lost parcel')->assertDontSee('Broken zipper');
+        Livewire::actingAs($this->agent)->test(ConversationListToolbar::class, ['folder' => $unassigned->folder])
+            ->dispatch('folder-open', folder_id: $mine_folder->id)->assertSee($mine_folder->getTypeName());
+        Livewire::actingAs($this->agent)->test(ConversationPane::class, ['conversation' => $unassigned, 'folder' => $unassigned->folder])
+            ->dispatch('folder-open', folder_id: $mine_folder->id)
+            ->assertSee('Lost parcel')->assertDispatched('conversation-opened', id: $mine->id, folder_id: $mine_folder->id)
+            // An empty folder: its page.
+            ->dispatch('folder-open', folder_id: $closed_folder->id)
+            ->assertRedirect($closed_folder->url($this->mailbox->id));
+
+        // Someone else's folder: nothing.
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $unassigned->folder, 'mailbox' => $this->mailbox])
+            ->dispatch('folder-open', folder_id: $this->createMailbox()->folders()->first()->id)
+            ->assertSet('folder_id', $unassigned->folder_id);
     }
 }

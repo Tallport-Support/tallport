@@ -27,7 +27,33 @@ class ConversationPane extends Component
     #[\Livewire\Attributes\On('conversation-open')]
     public function openConversation($id, $folder_id = null)
     {
-        $conversation = $this->switchTo($id, $folder_id);
+        $this->opened($this->switchTo($id, $folder_id));
+    }
+
+    /**
+     * Another folder, at its conversation; one without conversations (or a narrow
+     * window, where the list goes first) loads its page.
+     */
+    #[\Livewire\Attributes\On('folder-open')]
+    public function openFolder($folder_id, $conversation_id = null)
+    {
+        $folder = self::findFolder($folder_id);
+        $conversation = request()->cookie('tallport_narrow') ? null : $this->switchToFolder($folder_id, $conversation_id);
+        if (!$conversation) {
+            if ($folder) {
+                $this->redirect($folder->id < 0 ? route('mailboxes.all', ['folder_id' => $folder->id]) : $folder->url($folder->mailbox_id), navigate: true);
+            }
+
+            return;
+        }
+        $this->opened($conversation);
+    }
+
+    /**
+     * What opening a conversation does, as the page does when loaded.
+     */
+    protected function opened($conversation)
+    {
         if (!$conversation) {
             return;
         }

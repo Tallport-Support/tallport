@@ -276,6 +276,14 @@ function maybeShowConnectionRestored()
 					var folders = document.querySelector('.app-sidebar__folders[data-mailbox_id="'+folders_mailbox_id+'"]');
 					if (folders && data.folders_html) {
 						folders.innerHTML = data.folders_html;
+						// The open folder stays marked (it may have been opened in place).
+						folders.querySelectorAll('a[data-folder_id]').forEach(function (item) {
+							if (item.getAttribute('data-folder_id') == attr('folder_id')) {
+								item.setAttribute('aria-current', 'page');
+							} else {
+								item.removeAttribute('aria-current');
+							}
+						});
 						// The open folder's number of active conversations in the page title.
 						var current = folders.querySelector(':scope > [aria-current="page"]');
 						if (current && !attr('conversation_id')) {
