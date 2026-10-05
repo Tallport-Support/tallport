@@ -1000,6 +1000,8 @@ class ComposerStaticInit2902b8515f6672bf67bcf119cdb6b034
         'App\\Livewire\\ModuleUpdates' => __DIR__ . '/../..' . '/app/Livewire/ModuleUpdates.php',
         'App\\Livewire\\NewConversation' => __DIR__ . '/../..' . '/app/Livewire/NewConversation.php',
         'App\\Livewire\\PasswordGate' => __DIR__ . '/../..' . '/app/Livewire/PasswordGate.php',
+        'App\\Livewire\\ReportResults' => __DIR__ . '/../..' . '/app/Livewire/ReportResults.php',
+        'App\\Livewire\\SystemStatus' => __DIR__ . '/../..' . '/app/Livewire/SystemStatus.php',
         'App\\Mail\\Alert' => __DIR__ . '/../..' . '/app/Mail/Alert.php',
         'App\\Mail\\AutoReply' => __DIR__ . '/../..' . '/app/Mail/AutoReply.php',
         'App\\Mail\\PasswordChanged' => __DIR__ . '/../..' . '/app/Mail/PasswordChanged.php',

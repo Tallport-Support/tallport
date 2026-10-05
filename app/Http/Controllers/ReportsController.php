@@ -46,10 +46,10 @@ class ReportsController extends Controller
         $class = self::REPORTS[$name];
         $report = new $class(auth()->user(), (array) $request->query());
 
+        // The figures load after the page (App\Livewire\ReportResults).
         return view('reports/'.$name, [
             'name'   => $name,
             'report' => $report,
-            'data'   => $report->data(['type' => $request->query('chart'), 'group_by' => $request->query('group_by')]),
         ]);
     }
 }

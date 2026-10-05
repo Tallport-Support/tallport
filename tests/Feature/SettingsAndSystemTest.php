@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Livewire\SystemStatus;
 use App\Option;
 use App\SendLog;
+use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
@@ -162,6 +164,19 @@ class SettingsAndSystemTest extends FeatureTestCase
         $this->assertCommandCalled('schedule:run');
     }
 
+    public function testSystemStatusChecksLoadAfterThePage()
+    {
+        // The page shows a placeholder; the checks (running commands and more) load after it.
+        $this->actingAs($this->admin)->get(route('system'))->assertOk()
+            ->assertSee('lazy-placeholder', false)->assertDontSee('tallport:fetch-emails');
+
+        Livewire::withoutLazyLoading();
+        Livewire::actingAs($this->admin)->test(SystemStatus::class)->assertSee('tallport:fetch-emails');
+
+        Livewire::withoutLazyLoading();
+        Livewire::actingAs($this->createUser())->test(SystemStatus::class)->assertForbidden();
+    }
+
     public function testFailedJobsCanBeInspectedAndDeleted()
     {
         $job_id = \DB::table('failed_jobs')->insertGetId([
@@ -173,6 +188,7 @@ class SettingsAndSystemTest extends FeatureTestCase
         ]);
 
         // The status page calls it out at the top; its details open in a dialog.
+        Livewire::withoutLazyLoading();
         $this->actingAs($this->admin)->get(route('system'))->assertOk()
             ->assertSeeInOrder(['need attention', '1 job failed', 'Failed Jobs'])
             ->assertSee('data-fruit-dialog-url', false)

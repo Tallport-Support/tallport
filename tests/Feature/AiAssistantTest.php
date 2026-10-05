@@ -10,6 +10,7 @@ use App\Ai\Translations;
 use App\Conversation;
 use App\Option;
 use App\Thread;
+use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
@@ -397,11 +398,13 @@ class AiAssistantTest extends FeatureTestCase
         };
 
         $this->assertCount(1, $workers());
+        Livewire::withoutLazyLoading();
         $this->actingAs($this->admin)->get('/system/status')->assertDontSee('queue:work (AI)');
 
         $this->configureAi();
         $this->assertCount(2, $workers());
         $this->assertStringContainsString("--queue='ai-drafts,ai,".\Helper::getWorkerIdentifier(\App\Console\Kernel::AI_WORKER)."'", $workers()[1]);
+        Livewire::withoutLazyLoading();
         $this->actingAs($this->admin)->get('/system/status')->assertSee('queue:work (AI)');
     }
 

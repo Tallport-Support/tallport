@@ -30,6 +30,16 @@ class SystemController extends Controller
      */
     public function status(Request $request)
     {
+        // The checks load after the page (App\Livewire\SystemStatus).
+        return view('system/status');
+    }
+
+    /**
+     * What System Status shows: the checks of PHP, files, the database, Redis,
+     * commands, jobs and updates.
+     */
+    public static function statusData()
+    {
         // PHP extensions.
         $php_extensions = \Helper::checkRequiredExtensions();
 
@@ -261,7 +271,7 @@ class SystemController extends Controller
         preg_match_all("#\| N    \| ([^\|]+)\|#", $migrations_output, $migrations_m);
         $missing_migrations = $migrations_m[1] ?? [];
 
-        return view('system/status', [
+        return [
             'commands'              => $commands,
             'queued_jobs'           => $queued_jobs,
             'failed_jobs'           => $failed_jobs,
@@ -281,7 +291,7 @@ class SystemController extends Controller
             'non_writable_cache_file' => $non_writable_cache_file,
             'missing_migrations'    => $missing_migrations,
             'invalid_symlinks'      => \App\Module::checkSymlinks(),
-        ]);
+        ];
     }
 
     public static function updateLogPath()

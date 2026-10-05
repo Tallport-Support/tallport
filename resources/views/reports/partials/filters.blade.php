@@ -30,9 +30,9 @@
             @endforeach
         </x-fruit::select>
     @endif
-    <input type="hidden" name="chart" value="{{ $data['chart']['type'] }}">
-    @if (count($data['chart']['group_bys']) <= 1)
-        <input type="hidden" name="group_by" value="{{ $data['chart']['group_by'] }}">
+    <input type="hidden" name="chart" value="{{ request()->query('chart') }}">
+    @if (count($report->groupBys()) <= 1)
+        <input type="hidden" name="group_by" value="{{ $report->groupBys()[0] }}">
     @endif
     <noscript><x-fruit::button type="submit" size="small">{{ __('Refresh') }}</x-fruit::button></noscript>
 </form>

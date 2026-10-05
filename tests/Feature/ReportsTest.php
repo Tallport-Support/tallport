@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Api\ApiKey;
 use App\Conversation;
+use App\Livewire\ReportResults;
 use App\Reports\ConversationsReport;
 use App\Reports\ProductivityReport;
 use App\Reports\Replies;
@@ -12,6 +13,7 @@ use App\Thread;
 use App\User;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
+use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
@@ -122,6 +124,7 @@ class ReportsTest extends FeatureTestCase
         $this->assertSame(3, array_sum($data['chart']['datasets'][0]['data']));
         $this->assertSame(1, array_sum($data['chart']['datasets'][1]['data']));
 
+        Livewire::withoutLazyLoading();
         $this->actingAs($this->admin)->get(route('reports.conversations', ['period' => 'last_7']))->assertOk()
             ->assertSee('Conversations Report')->assertSee('<svg class="rpt-chart"', false)
             ->assertSee('Most Active Customers')->assertSee('casey@customer.example.org')
@@ -132,11 +135,31 @@ class ReportsTest extends FeatureTestCase
         $this->actingAs($this->agent)->get('/?dashboard=1')->assertDontSee(route('reports.conversations'), false);
         $this->agent->permissions = [User::PERM_ACCESS_REPORTS => true];
         $this->agent->save();
+        Livewire::withoutLazyLoading();
         $this->actingAs($this->agent->fresh())->get(route('reports.conversations', ['period' => 'last_7', 'mailbox' => $this->sales->id]))->assertOk()
             ->assertDontSee('Sales');
         $data = (new ConversationsReport($this->agent->fresh(), ['period' => 'last_7', 'mailbox' => $this->sales->id]))->data();
         $this->assertSame(2, $data['metrics']['new']['value'], 'Not a mailbox they can view: their own.');
         $this->assertSame([], $data['table_mailboxes']);
+    }
+
+    public function testReportFiguresLoadAfterThePage()
+    {
+        $this->conversation($this->sales, Carbon::now('UTC')->subDays(1)->setTime(10, 0));
+
+        // The page shows the filters, and a placeholder for the figures.
+        $this->actingAs($this->admin)->get(route('reports.conversations', ['period' => 'last_7']))->assertOk()
+            ->assertSee('id="rpt_filters"', false)->assertSee('lazy-placeholder', false)
+            ->assertDontSee('Most Active Customers');
+
+        // The figures, with links that keep the page's filters.
+        Livewire::withoutLazyLoading();
+        Livewire::actingAs($this->admin)->test(ReportResults::class, ['name' => 'conversations', 'query' => ['period' => 'last_7']])
+            ->assertSee('Most Active Customers')
+            ->assertSeeHtml(e(route('reports.conversations', ['period' => 'last_7', 'mailbox' => $this->sales->id])));
+
+        Livewire::withoutLazyLoading();
+        Livewire::actingAs($this->agent)->test(ReportResults::class, ['name' => 'conversations'])->assertForbidden();
     }
 
     public function testProductivityReport()
@@ -174,6 +197,7 @@ class ReportsTest extends FeatureTestCase
         $this->assertSame(1, $data['metrics']['closed']['value']);
         $this->assertSame(0, $data['metrics']['rfr']['value']);
 
+        Livewire::withoutLazyLoading();
         $page = $this->actingAs($this->admin)->get(route('reports.productivity', ['period' => 'last_7', 'chart' => 'closed', 'group_by' => 'd']))->assertOk()
             ->assertSee('First Response Time')->assertSee('Robin Reply');
         $this->assertMatchesRegularExpression('#<option value="closed"\s+selected#', $page->getContent());

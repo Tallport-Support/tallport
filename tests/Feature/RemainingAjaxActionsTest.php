@@ -7,6 +7,7 @@ use App\Thread;
 use App\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
@@ -261,9 +262,11 @@ class RemainingAjaxActionsTest extends FeatureTestCase
 
         $this->assertTrue($this->postAjax($this->admin, '/system/ajax', ['action' => 'check_updates'])->json()['new_version_available']);
         $this->assertSame('99.0.0', \Cache::get('latest_version'));
+        Livewire::withoutLazyLoading();
         $this->actingAs($this->admin)->get(route('system'))->assertSee('update-trigger', false)->assertDontSee('Background commands restart');
 
         \Option::set('app_updated_at', time() - 60);
+        Livewire::withoutLazyLoading();
         $this->actingAs($this->admin)->get(route('system'))->assertSee('Background commands restart within a minute or two.');
     }
 

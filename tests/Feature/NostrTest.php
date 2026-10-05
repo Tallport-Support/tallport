@@ -17,6 +17,7 @@ use App\Nostr\OutgoingMessageSender;
 use App\SendLog;
 use App\Thread;
 use Illuminate\Support\Facades\Http;
+use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
@@ -146,6 +147,7 @@ class NostrTest extends FeatureTestCase
         ListenerStatus::write(['pid' => 4242, 'host' => 'box', 'started_at' => time() - 100, 'lifetime' => 1200, 'ends_at' => time() + 1100, 'stopped_at' => null, 'stop_reason' => null,
             'connections' => [['mailbox_id' => $this->mailbox->id, 'url' => self::UNREACHABLE, 'state' => 'reconnecting', 'since' => null, 'caught_up' => false, 'authed' => false, 'events' => 0, 'last_event_at' => null, 'error' => 'Connection refused', 'retry_in' => 20]],]);
         $this->actingAs($this->admin)->get($this->settingsUrl())->assertSee('>Running<', false)->assertSee('Process 4242 on box')->assertSee('Connection refused');
+        Livewire::withoutLazyLoading();
         $this->actingAs($this->admin)->get('/system/status')->assertSee('tallport:nostr-listen');
     }
 

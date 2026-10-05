@@ -2488,7 +2488,7 @@
         "name": "system.status.after_background_jobs",
         "arguments": 0,
         "files": [
-            "resources/views/system/status.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {
@@ -2504,7 +2504,7 @@
         "name": "system.status.after_cron_commands",
         "arguments": 0,
         "files": [
-            "resources/views/system/status.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {
@@ -2512,7 +2512,7 @@
         "name": "system.status.after_functions",
         "arguments": 0,
         "files": [
-            "resources/views/system/status.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {
@@ -2520,7 +2520,7 @@
         "name": "system.status.after_info_table",
         "arguments": 0,
         "files": [
-            "resources/views/system/status.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {
@@ -2528,7 +2528,7 @@
         "name": "system.status.after_permissions",
         "arguments": 0,
         "files": [
-            "resources/views/system/status.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {
@@ -2536,7 +2536,7 @@
         "name": "system.status.after_php_extensions",
         "arguments": 0,
         "files": [
-            "resources/views/system/status.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {
@@ -2544,7 +2544,7 @@
         "name": "system.status.before_info_table",
         "arguments": 0,
         "files": [
-            "resources/views/system/status.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {

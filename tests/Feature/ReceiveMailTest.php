@@ -6,6 +6,7 @@ use App\Conversation;
 use App\Incoming\RawSources;
 use App\Thread;
 use Illuminate\Filesystem\Filesystem;
+use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
@@ -232,6 +233,7 @@ class ReceiveMailTest extends FeatureTestCase
     public function testStatusShowsWhereThePcreJitIsOff()
     {
         $admin = $this->createAdmin();
+        Livewire::withoutLazyLoading();
         $this->actingAs($admin)->get(route('system'))->assertSee('PCRE JIT');
 
         \App\Misc\Helper::$pcre_jit_available = false;
@@ -239,6 +241,7 @@ class ReceiveMailTest extends FeatureTestCase
         \App\Misc\Helper::$pcre_jit_available = true;
 
         $this->assertSame('1', (string) \Option::get('receive_pcre_jit_off'));
+        Livewire::withoutLazyLoading();
         $this->actingAs($admin)->get(route('system'))->assertSee('tallport:receive')->assertSee('Faster text processing');
     }
 }

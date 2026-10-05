@@ -41,6 +41,10 @@ abstract class FeatureTestCase extends TestCase
         // conversation (ConversationsController::openFolder()).
         $this->withUnencryptedCookie('tallport_narrow', '1');
 
+        // Lazy components load lazily, also after a test that turned it off
+        // (Livewire::withoutLazyLoading() lasts until Livewire's state is flushed).
+        \Livewire\Features\SupportLazyLoading\SupportLazyLoading::$disableWhileTesting = false;
+
         \Tests\Support\StubCommand::$calls = [];
         foreach ($this->stubbed_commands as $name) {
             $this->app[\Illuminate\Contracts\Console\Kernel::class]->registerCommand(new \Tests\Support\StubCommand($name));

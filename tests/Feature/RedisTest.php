@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Conversation;
 use App\Job;
 use App\Thread;
+use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
@@ -98,6 +99,7 @@ class RedisTest extends FeatureTestCase
         [$conversation, $reply] = $this->queuedReply();
         $admin = $this->createAdmin();
 
+        Livewire::withoutLazyLoading();
         $this->actingAs($admin)->get(route('system'))
             ->assertOk()
             ->assertSee('Send reply to customer')

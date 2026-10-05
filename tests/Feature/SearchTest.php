@@ -4,9 +4,11 @@ namespace Tests\Feature;
 
 use App\Conversation;
 use App\Customer;
+use App\Livewire\SystemStatus;
 use App\Search\ConversationSearch;
 use App\Search\Indexer;
 use App\Thread;
+use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
@@ -245,7 +247,8 @@ class SearchTest extends FeatureTestCase
         $this->artisan('tallport:search-index', ['--prune' => true, '--seconds' => 0])->expectsOutputToContain('Removed: 1');
 
         $admin = $this->createAdmin();
-        $this->actingAs($admin)->get(route('system'))->assertSee('Search Index');
+        Livewire::withoutLazyLoading();
+        Livewire::actingAs($admin)->test(SystemStatus::class)->assertSee('Search Index');
     }
 
     public function testCustomerSearchMatchesEveryWord()

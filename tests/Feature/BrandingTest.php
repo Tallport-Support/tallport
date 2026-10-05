@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Conversation;
 use App\Option;
+use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
@@ -59,6 +60,7 @@ class BrandingTest extends FeatureTestCase
         // The status page caches the latest version under this key.
         \Cache::put('latest_version', '99.0.0', 15);
 
+        Livewire::withoutLazyLoading();
         $response = $this->actingAs($this->createAdmin())->get('/system/status');
 
         $response->assertSee('A new version is available');
