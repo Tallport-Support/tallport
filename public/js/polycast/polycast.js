@@ -123,6 +123,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		                } else {
 		                	console.log(xhr);
 		                	maybeShowConnectionError();
+		                	PolycastObject.fire('failed', xhr.status);
 
 		                	// Try to reinit on error
 		                	setTimeout(function(){
@@ -253,6 +254,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (xhr.readyState > 3 /*&& xhr.status === 200*/) {
 	                	if (xhr.status !== 200) {
 		                	maybeShowConnectionError();
+		                	PolycastObject.fire('failed', xhr.status);
 	                	} else {
 	                		maybeShowConnectionRestored();
 	                	}

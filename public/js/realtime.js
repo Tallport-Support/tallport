@@ -180,6 +180,35 @@ function maybeShowConnectionRestored()
 				catchUp();
 			}
 		});
+		// A long sleep can outlast the session: "remember me" then starts a new one and
+		// the page's token is refused (419) at every poll, so nothing arrives any more.
+		// A fresh token from the page, for the polling, Livewire and Tallport.post (the
+		// meta); signed out, the page itself (the login).
+		var refreshing = false;
+		poly.on('failed', function (status) {
+			if (status != 419 || refreshing) {
+				return;
+			}
+			refreshing = true;
+			fetch(window.location.href, {credentials: 'same-origin', headers: {'X-Requested-With': 'fetch'}}).then(function (response) {
+				if (response.redirected) {
+					window.location.reload();
+					return '';
+				}
+				return response.ok ? response.text() : '';
+			}).then(function (html) {
+				var fresh = html && new DOMParser().parseFromString(html, 'text/html').querySelector('meta[name="csrf-token"]');
+				var meta = document.querySelector('meta[name="csrf-token"]');
+				if (fresh && meta && fresh.getAttribute('content')) {
+					meta.setAttribute('content', fresh.getAttribute('content'));
+					poly.options.token = fresh.getAttribute('content');
+					catchUp();
+				}
+			}).catch(function () {}).finally(function () {
+				refreshing = false;
+			});
+		});
+
 		var pollIfIdle = function () {
 			if (document.visibilityState == 'visible' && Date.now() - last_receive > 30 * 1000) {
 				poly.fetchNow();
