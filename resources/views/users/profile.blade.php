@@ -90,12 +90,16 @@
                 @action('user.edit.before_photo', $user)
 
                 @if ($user->photo_url)
+                    {{-- The photo on the right with its Delete (a row stretches its first item). --}}
                     <div id="user-profile-photo" class="f-form-row">
-                        <x-fruit::avatar :src="$user->getPhotoUrl()" :label="__('Photo')" />
-                        <button type="button" id="user-photo-delete" class="f-button f-button--ghost f-button--small" @click="deletePhoto($el)">{{ __('Delete Photo') }}</button>
+                        <span>{{ __('Photo') }}</span>
+                        <span class="f-row">
+                            <x-fruit::avatar :src="$user->getPhotoUrl()" :label="__('Photo')" />
+                            <button type="button" id="user-photo-delete" class="f-button f-button--ghost f-button--small" @click="deletePhoto($el)">{{ __('Delete Photo') }}</button>
+                        </span>
                     </div>
                 @endif
-                <x-fruit::field :label="__('Photo')" :description="__('Image will be re-sized to :dimensions. JPG, GIF, PNG accepted.', ['dimensions' => config('app.user_photo_size').'x'.config('app.user_photo_size')])" layout="row">
+                <x-fruit::field :label="$user->photo_url ? __('Replace Photo') : __('Photo')" :description="__('Image will be re-sized to :dimensions. JPG, GIF, PNG accepted.', ['dimensions' => config('app.user_photo_size').'x'.config('app.user_photo_size')])" layout="row">
                     <x-fruit::file id="photo_url" name="photo_url" />
                 </x-fruit::field>
             </x-fruit::form-section>
