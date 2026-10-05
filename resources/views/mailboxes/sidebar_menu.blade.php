@@ -17,6 +17,6 @@
         <small class="f-muted">{{ $mailbox->email }}</small>
     </x-slot:title>
     <x-slot:actions>
-        <a href="{{ route('mailboxes.view', ['id' => $mailbox->id]) }}" class="f-button">{{ __('Open Mailbox') }}</a>
+        <a wire:navigate href="{{ route('mailboxes.view', ['id' => $mailbox->id]) }}" class="f-button">{{ __('Open Mailbox') }}</a>
     </x-slot:actions>
 </x-page-nav>

@@ -77,12 +77,12 @@
     @endforeach
 
     <hr class="app-sidebar__separator">
-    <x-fruit::sidebar-item :href="route('kb')" :current="\App\Misc\Helper::isMenuSelected('kb')">
+    <x-fruit::sidebar-item wire:navigate :href="route('kb')" :current="\App\Misc\Helper::isMenuSelected('kb')">
         <x-slot:icon><x-icon.book-open class="f-icon" aria-hidden="true" /></x-slot:icon>
         {{ __('Knowledge Base') }}
     </x-fruit::sidebar-item>
     @if (App\Http\Controllers\ReportsController::canAccess($sidebar_user))
-        <x-fruit::sidebar-item :href="route('reports.conversations')" :current="\App\Misc\Helper::isMenuSelected('reports')">
+        <x-fruit::sidebar-item wire:navigate :href="route('reports.conversations')" :current="\App\Misc\Helper::isMenuSelected('reports')">
             <x-slot:icon><x-icon.chart-column class="f-icon" aria-hidden="true" /></x-slot:icon>
             {{ __('Reports') }}
         </x-fruit::sidebar-item>
@@ -94,13 +94,13 @@
         $sidebar_reply_mailbox = collect($sidebar_mailboxes)->pluck(0)->first(fn ($mailbox) => App\SavedReply::canManage($sidebar_user, $mailbox));
     @endphp
     @if ($sidebar_user->isAdmin() || $sidebar_workflow_mailbox)
-        <x-fruit::sidebar-item :href="$sidebar_user->isAdmin() ? route('workflows') : route('mailboxes.workflows', ['mailbox_id' => $sidebar_workflow_mailbox->id])" :current="str_starts_with($sidebar_route, 'workflows') || str_starts_with($sidebar_route, 'mailboxes.workflows')">
+        <x-fruit::sidebar-item wire:navigate :href="$sidebar_user->isAdmin() ? route('workflows') : route('mailboxes.workflows', ['mailbox_id' => $sidebar_workflow_mailbox->id])" :current="str_starts_with($sidebar_route, 'workflows') || str_starts_with($sidebar_route, 'mailboxes.workflows')">
             <x-slot:icon><x-icon.shuffle class="f-icon" aria-hidden="true" /></x-slot:icon>
             {{ __('Workflows') }}
         </x-fruit::sidebar-item>
     @endif
     @if ($sidebar_reply_mailbox)
-        <x-fruit::sidebar-item :href="route('mailboxes.saved_replies', ['id' => $sidebar_reply_mailbox->id])" :current="str_starts_with($sidebar_route, 'mailboxes.saved_replies')">
+        <x-fruit::sidebar-item wire:navigate :href="route('mailboxes.saved_replies', ['id' => $sidebar_reply_mailbox->id])" :current="str_starts_with($sidebar_route, 'mailboxes.saved_replies')">
             <x-slot:icon><x-icon.message-square-text class="f-icon" aria-hidden="true" /></x-slot:icon>
             {{ __('Saved Replies') }}
         </x-fruit::sidebar-item>
@@ -112,7 +112,7 @@
             : ($sidebar_user->can('viewMailboxMenu', $sidebar_user) ? route('mailboxes')
             : route('users.profile', ['id' => $sidebar_user->id])));
     @endphp
-    <x-fruit::sidebar-item :href="$sidebar_settings_url" class="app-sidebar__settings">
+    <x-fruit::sidebar-item wire:navigate :href="$sidebar_settings_url" class="app-sidebar__settings">
         <x-slot:icon><x-icon.settings class="f-icon" aria-hidden="true" /></x-slot:icon>
         {{ __('Settings') }}
     </x-fruit::sidebar-item>

@@ -6,9 +6,9 @@
     </x-slot:title>
     <x-slot:actions>
         @if (isset($folder))
-            <a href="{{ route('mailboxes.view.folder', ['id' => $mailbox->id, 'folder_id' => $folder->id, 'chat_mode' => 0]) }}" class="f-button f-button--small">{{ __('Exit') }}</a>
+            <a wire:navigate href="{{ route('mailboxes.view.folder', ['id' => $mailbox->id, 'folder_id' => $folder->id, 'chat_mode' => 0]) }}" class="f-button f-button--small">{{ __('Exit') }}</a>
         @else
-            <a href="{{ route('mailboxes.view', ['id' => $mailbox->id, 'chat_mode' => 0]) }}" class="f-button f-button--small">{{ __('Exit') }}</a>
+            <a wire:navigate href="{{ route('mailboxes.view', ['id' => $mailbox->id, 'chat_mode' => 0]) }}" class="f-button f-button--small">{{ __('Exit') }}</a>
         @endif
     </x-slot:actions>
 </x-page-nav>

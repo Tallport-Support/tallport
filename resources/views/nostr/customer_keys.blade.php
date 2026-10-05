@@ -15,8 +15,11 @@
     </div>
 @endsection
 
-@section('content')
+@section('sidebar')
     @include('customers/profile_tabs')
+@endsection
+
+@section('content')
 
     <div class="page-content">
         @include('partials/flash_messages')

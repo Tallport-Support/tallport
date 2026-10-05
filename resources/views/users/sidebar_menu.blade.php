@@ -27,25 +27,25 @@
     </x-slot:title>
     @if (Auth::user()->isAdmin() || Auth::user()->hasPermission(App\User::PERM_EDIT_USERS))
         <x-slot:actions>
-            <a href="{{ route('users.create') }}" class="f-button">{{ __('New User') }}</a>
+            <a wire:navigate href="{{ route('users.create') }}" class="f-button">{{ __('New User') }}</a>
         </x-slot:actions>
     @endif
-    <a href="{{ route('users.profile', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.profile') aria-current="page" @endif>{{ __('Profile') }}</a>
+    <a wire:navigate href="{{ route('users.profile', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.profile') aria-current="page" @endif>{{ __('Profile') }}</a>
     @action('user.profile.menu.after_profile', $user)
     @if (Auth::user()->id == $user->id || Auth::user()->isAdmin())
-        <a href="{{ route('users.security', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.security') aria-current="page" @endif>{{ __('Security') }}</a>
+        <a wire:navigate href="{{ route('users.security', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.security') aria-current="page" @endif>{{ __('Security') }}</a>
     @endif
     @if (Auth::user()->id == $user->id)
-        <a href="{{ route('users.preferences', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.preferences') aria-current="page" @endif>{{ __('Preferences') }}</a>
+        <a wire:navigate href="{{ route('users.preferences', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.preferences') aria-current="page" @endif>{{ __('Preferences') }}</a>
     @endif
     @if (Auth::user()->id == $user->id)
-        <a href="{{ route('users.api_keys', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.api_keys') aria-current="page" @endif>{{ __('API Keys') }}</a>
+        <a wire:navigate href="{{ route('users.api_keys', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.api_keys') aria-current="page" @endif>{{ __('API Keys') }}</a>
     @endif
     @if (Auth::user()->isAdmin())
-        <a href="{{ route('users.permissions', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.permissions') aria-current="page" @endif>{{ __('Permissions') }}</a>
+        <a wire:navigate href="{{ route('users.permissions', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.permissions') aria-current="page" @endif>{{ __('Permissions') }}</a>
     @endif
     @if (Auth::user()->can('updateNotifications', $user))
-        <a href="{{ route('users.notifications', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.notifications') aria-current="page" @endif>{{ __('Notifications') }}</a>
+        <a wire:navigate href="{{ route('users.notifications', ['id' => $user->id]) }}" @if (Route::currentRouteName() == 'users.notifications') aria-current="page" @endif>{{ __('Notifications') }}</a>
     @endif
 </x-page-nav>
 @endif

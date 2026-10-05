@@ -12,7 +12,8 @@ document.addEventListener('click', function (e) {
 	}
 });
 
-document.addEventListener('DOMContentLoaded', function () {
+// Each conversation page, also one opened with wire:navigate.
+document.addEventListener('livewire:navigated', function () {
 	if (!document.body.getAttribute('data-conversation_id')) {
 		return;
 	}

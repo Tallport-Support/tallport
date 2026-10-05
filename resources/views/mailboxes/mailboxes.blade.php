@@ -9,7 +9,7 @@
         <x-slot:title><h1>{{ __('Mailboxes') }}</h1></x-slot:title>
         <x-slot:actions>
             @if (Auth::user()->isAdmin())
-                <a href="{{ route('mailboxes.create') }}" class="f-button">{{ __('New Mailbox') }}</a>
+                <a wire:navigate href="{{ route('mailboxes.create') }}" class="f-button">{{ __('New Mailbox') }}</a>
             @endif
         </x-slot:actions>
     </x-page-nav>

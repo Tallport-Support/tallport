@@ -4905,6 +4905,10 @@ img.f-avatar {
     flex-wrap: wrap;
     gap: 8px;
   }
+/* Section tabs between the header and the content; the page's gap spaces them from both. */
+.f-page__nav {
+    min-width: 0;
+  }
 .f-page__body {
     display: grid;
     gap: var(--f-page-gap, 24px);

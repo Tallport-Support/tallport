@@ -8,7 +8,7 @@
 <a href="{{ url('/') }}" class="f-sidebar__item app-sidebar__back" wire:navigate><x-icon.chevron-left class="f-icon" aria-hidden="true" /><span class="f-sidebar__identity">{{ __('Inbox') }}</span></a>
 
 {{-- The user's account as a card (as Apple's account in System Settings), its pages under it. --}}
-<a href="{{ route('users.profile', ['id' => $sidebar_user->id]) }}" class="f-sidebar__item app-sidebar__account-card">
+<a href="{{ route('users.profile', ['id' => $sidebar_user->id]) }}" class="f-sidebar__item app-sidebar__account-card" wire:navigate>
     @if ($sidebar_user->photo_url)
         <x-fruit::avatar :src="$sidebar_user->getPhotoUrl()" class="app-sidebar__account-photo" />
     @else
@@ -17,13 +17,13 @@
     <span class="f-sidebar__identity"><strong>{{ $sidebar_user->getFullName() }}</strong><small>{{ $sidebar_user->email }}</small></span>
 </a>
 <div class="app-sidebar__account-pages" role="group" aria-label="{{ __('Account') }}">
-        <x-fruit::sidebar-item :href="route('users.profile', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.profile'"><x-slot:icon><x-icon.circle-user class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Profile') }}</x-fruit::sidebar-item>
-        <x-fruit::sidebar-item :href="route('users.security', ['id' => $sidebar_user->id])" :current="$settings_own && in_array($settings_route, ['users.security', 'users.password'])"><x-slot:icon><x-icon.lock class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Security') }}</x-fruit::sidebar-item>
-        <x-fruit::sidebar-item :href="route('users.preferences', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.preferences'"><x-slot:icon><x-icon.sliders-horizontal class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Preferences') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :href="route('users.profile', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.profile'"><x-slot:icon><x-icon.circle-user class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Profile') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :href="route('users.security', ['id' => $sidebar_user->id])" :current="$settings_own && in_array($settings_route, ['users.security', 'users.password'])"><x-slot:icon><x-icon.lock class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Security') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :href="route('users.preferences', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.preferences'"><x-slot:icon><x-icon.sliders-horizontal class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Preferences') }}</x-fruit::sidebar-item>
         @if ($sidebar_user->can('updateNotifications', $sidebar_user))
-            <x-fruit::sidebar-item :href="route('users.notifications', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.notifications'"><x-slot:icon><x-icon.bell class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Notifications') }}</x-fruit::sidebar-item>
+            <x-fruit::sidebar-item wire:navigate :href="route('users.notifications', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.notifications'"><x-slot:icon><x-icon.bell class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Notifications') }}</x-fruit::sidebar-item>
         @endif
-        <x-fruit::sidebar-item :href="route('users.api_keys', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.api_keys'"><x-slot:icon><x-icon.key-round class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('API Keys') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :href="route('users.api_keys', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.api_keys'"><x-slot:icon><x-icon.key-round class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('API Keys') }}</x-fruit::sidebar-item>
     </div>
 
 @if ($sidebar_user->isAdmin())
@@ -32,7 +32,7 @@
     @endphp
     <p class="f-sidebar__heading">{{ __('Settings') }}</p>
     @foreach (app(App\Http\Controllers\SettingsController::class)->getSections() as $settings_name => $settings_info)
-        <x-fruit::sidebar-item :href="route('settings', ['section' => $settings_name])" :current="$settings_route == 'settings' && $settings_section == $settings_name || ($settings_route == 'settings.ai_documents' && $settings_name == 'ai')"><x-slot:icon><x-dynamic-component :component="'icon.'.($settings_icons[$settings_name] ?? 'settings')" class="f-icon" aria-hidden="true" /></x-slot:icon>{{ $settings_info['title'] }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :href="route('settings', ['section' => $settings_name])" :current="$settings_route == 'settings' && $settings_section == $settings_name || ($settings_route == 'settings.ai_documents' && $settings_name == 'ai')"><x-slot:icon><x-dynamic-component :component="'icon.'.($settings_icons[$settings_name] ?? 'settings')" class="f-icon" aria-hidden="true" /></x-slot:icon>{{ $settings_info['title'] }}</x-fruit::sidebar-item>
     @endforeach
 @endif
 
@@ -43,7 +43,7 @@
 )
     <p class="f-sidebar__heading">{{ __('Manage') }}</p>
     @if ($sidebar_user->can('viewMailboxMenu', $sidebar_user))
-        <x-fruit::sidebar-item :href="route('mailboxes')" :current="in_array($settings_route, ['mailboxes', 'mailboxes.create'])"><x-slot:icon><x-icon.inbox class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Mailboxes') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :href="route('mailboxes')" :current="in_array($settings_route, ['mailboxes', 'mailboxes.create'])"><x-slot:icon><x-icon.inbox class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Mailboxes') }}</x-fruit::sidebar-item>
     @endif
     @if (!empty($mailbox) && $mailbox instanceof App\Mailbox && $mailbox->id && str_starts_with((string) $settings_route, 'mailboxes.'))
         {{-- The mailbox's settings pages (mailboxes/settings_menu, modules' too), as sidebar items. --}}
@@ -54,11 +54,11 @@
     @endif
     <ul class="app-sidebar__module-items">@action('menu.manage.after_mailboxes')</ul>
     @if ($sidebar_user->isAdmin() || $sidebar_user->hasPermission(App\User::PERM_EDIT_USERS))
-        <x-fruit::sidebar-item :href="route('users')" :current="\App\Misc\Helper::isMenuSelected('users')"><x-slot:icon><x-icon.users class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Users') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :href="route('users')" :current="\App\Misc\Helper::isMenuSelected('users')"><x-slot:icon><x-icon.users class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Users') }}</x-fruit::sidebar-item>
     @endif
     @if ($sidebar_user->isAdmin())
-        <x-fruit::sidebar-item :href="route('modules')" :current="$settings_route == 'modules'"><x-slot:icon><x-icon.puzzle class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Modules') }}</x-fruit::sidebar-item>
-        <x-fruit::sidebar-item :href="route('system')" :current="\App\Misc\Helper::isMenuSelected('system') || \App\Misc\Helper::isMenuSelected('logs') || $settings_route == 'logs.app'"><x-slot:icon><x-icon.server class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('System') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :href="route('modules')" :current="$settings_route == 'modules'"><x-slot:icon><x-icon.puzzle class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Modules') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :href="route('system')" :current="\App\Misc\Helper::isMenuSelected('system') || \App\Misc\Helper::isMenuSelected('logs') || $settings_route == 'logs.app'"><x-slot:icon><x-icon.server class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('System') }}</x-fruit::sidebar-item>
     @endif
     <ul class="app-sidebar__module-items">@action('menu.manage.append')</ul>
 @endif

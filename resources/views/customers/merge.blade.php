@@ -14,8 +14,11 @@
     </div>
 @endsection
 
-@section('content')
+@section('sidebar')
     @include('customers/profile_tabs', ['extra_tab' => __('Merge')])
+@endsection
+
+@section('content')
 
     @include('partials/flash_messages')
 

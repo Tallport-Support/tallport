@@ -305,11 +305,17 @@ The Support example (`support.html`, `examples/support/support.css`) goes furthe
 
 ## Page column
 
-Pages that are read or filled in (settings, account and profile pages, a customer's details, reports) keep their content in one column centered in the pane, instead of stretching across a wide window where labels drift away from their fields. `x-fruit::page` gives the header, the content and the save bar the same width, so the title and Save line up with what they belong to. `width="narrow"` (640px) suits forms and settings, `medium` (880px, the default) reading and detail pages, `wide` (1200px) tables and dashboards. The `footer` slot is a save bar that stays at the bottom of the scrolling pane or window; set `--f-page-background` to the background behind the page so it covers content scrolling under it.
+Pages that are read or filled in (settings, account and profile pages, a customer's details, reports) keep their content in one column centered in the pane, instead of stretching across a wide window where labels drift away from their fields. `x-fruit::page` gives the header, the content and the save bar the same width, so the title and Save line up with what they belong to. `width="narrow"` (640px) suits forms and settings, `medium` (880px, the default) reading and detail pages, `wide` (1200px) tables and dashboards. The `footer` slot is a save bar that stays at the bottom of the scrolling pane or window; set `--f-page-background` to the background behind the page so it covers content scrolling under it. Tabs between sibling pages (Section Navigation: a customer's Profile, Conversations, Notes) go in the `nav` slot, under the header; the page spaces them from the content, however the content is wrapped, so neither needs its own margins.
 
 ```blade
 <form wire:submit="save">
     <x-fruit::page width="narrow" title="Support Mailbox" description="How this mailbox sends and receives.">
+        <x-slot:nav>
+            <x-fruit::section-nav aria-label="Mailbox Settings">
+                <a href="/mailboxes/1/settings" aria-current="page">General</a>
+                <a href="/mailboxes/1/permissions">Permissions</a>
+            </x-fruit::section-nav>
+        </x-slot:nav>
         <x-fruit::form-section title="Mailbox">…</x-fruit::form-section>
         <x-slot:footer>
             <p class="f-help" role="status"><span wire:dirty>You have unsaved changes.</span></p>

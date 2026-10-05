@@ -8,7 +8,7 @@
     <x-page-nav :label="__('Users')">
         <x-slot:title><h1>{{ __('Users') }}@if (count($users)) <span class="f-muted">({{ count($users) }})</span>@endif</h1></x-slot:title>
         <x-slot:actions>
-            <a href="{{ route('users.create') }}" class="f-button">{{ __('New User') }}</a>
+            <a wire:navigate href="{{ route('users.create') }}" class="f-button">{{ __('New User') }}</a>
         </x-slot:actions>
     </x-page-nav>
 @endsection

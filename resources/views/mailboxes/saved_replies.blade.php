@@ -40,7 +40,3 @@
     </div>
 @endsection
 
-@section('javascripts')
-    @parent
-    <script src="{{ asset('js/html5sortable.js') }}" {!! \Helper::cspNonceAttr() !!}></script>
-@endsection

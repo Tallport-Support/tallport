@@ -86,7 +86,10 @@
                             {{-- A settings or detail page: one column (FruitUI's page) for its tabs and
                                  content, with its save bar (page_footer) kept in view. --}}
                             <x-fruit::page :width="$__env->yieldContent('page_width')" class="app-page" style="--f-page-background: var(--f-grouped-background)" x-data="{ dirty: false }" x-on:input="dirty = true" x-on:change="dirty = true">
-                                @yield('sidebar')
+                                {{-- Its tabs (x-page-nav) under the header, spaced by the page. --}}
+                                @hasSection('sidebar')
+                                    <x-slot:nav>@yield('sidebar')</x-slot:nav>
+                                @endif
                                 <div class="content @yield('content_class')">
                                     @yield('content')
                                 </div>
@@ -157,7 +160,7 @@
     @php
         try {
     @endphp
-    {!! Minify::javascript(\Eventy::filter('javascripts', array('/js/lang.js', '/js/builds/vars.js', '/js/laroute.js', '/js/polycast/polycast.js', '/js/push/push.min.js', '/vendor/fruitui/livewire.global.js', '/vendor/fruitui/editor.global.js', '/js/tallport.js', '/js/mailboxes.js', '/js/users.js', '/js/customers.js', '/js/conversations.js', '/js/admin.js', '/js/editor.js', '/js/main.js', '/js/realtime.js', '/js/shortcuts.js', '/js/saved_replies.js', '/js/attachments.js', '/js/workflows.js', '/js/kb.js')), ['data-navigate-once' => true]) !!}
+    {!! Minify::javascript(\Eventy::filter('javascripts', array('/js/lang.js', '/js/builds/vars.js', '/js/laroute.js', '/js/polycast/polycast.js', '/js/push/push.min.js', '/vendor/fruitui/livewire.global.js', '/vendor/fruitui/editor.global.js', '/js/tallport.js', '/js/mailboxes.js', '/js/users.js', '/js/customers.js', '/js/conversations.js', '/js/admin.js', '/js/editor.js', '/js/main.js', '/js/realtime.js', '/js/shortcuts.js', '/js/saved_replies.js', '/js/attachments.js', '/js/html5sortable.js', '/js/workflows.js', '/js/kb.js')), ['data-navigate-once' => true]) !!}
     @php
         } catch (\Exception $e) {
             // To prevent 500 errors on update.

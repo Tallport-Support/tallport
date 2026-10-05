@@ -10,41 +10,6 @@
     @include('mailboxes/sidebar_menu')
 @endsection
 
-@section('javascript')
-    @parent
-    // Copy buttons: the text in data-copy, and "Copied" for a moment.
-    document.addEventListener('alpine:init', function () {
-        Alpine.data('nostrCopy', function () {
-            return {
-                copied: false,
-                copy: function () {
-                    var self = this;
-                    var text = this.$el.getAttribute('data-copy');
-                    var done = function () {
-                        self.copied = true;
-                        setTimeout(function () { self.copied = false; }, 1500);
-                    };
-                    var fallback = function () {
-                        var area = document.createElement('textarea');
-                        area.readOnly = true;
-                        area.value = text;
-                        area.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
-                        document.body.appendChild(area);
-                        area.select();
-                        try { if (document.execCommand('copy')) { done(); } } catch (err) {}
-                        area.remove();
-                    };
-                    if (navigator.clipboard && window.isSecureContext) {
-                        navigator.clipboard.writeText(text).then(done, fallback);
-                    } else {
-                        fallback();
-                    }
-                }
-            };
-        });
-    });
-@endsection
-
 @section('content')
     <div class="page-content">
         @include('partials/flash_messages')
@@ -59,9 +24,9 @@
                     <h2 class="f-title-3">{{ __('Identity of This Mailbox') }}</h2>
                     <dl class="nostr-facts">
                         <dt>{{ __('Public key') }}</dt>
-                        <dd><code>{{ $cfg->getNpub() }}</code> <button type="button" class="f-button f-button--small nostr-copy" data-copy="{{ $cfg->getNpub() }}" x-data="nostrCopy" @click="copy()" x-text="copied ? @js(__('Copied')) : @js(__('Copy'))">{{ __('Copy') }}</button></dd>
+                        <dd><code>{{ $cfg->getNpub() }}</code> <x-fruit::copy-button size="small" :value="$cfg->getNpub()">{{ __('Copy') }}</x-fruit::copy-button></dd>
                         <dt>{{ __('Hex') }}</dt>
-                        <dd><small class="f-muted">{{ $cfg->pubkey }}</small> <button type="button" class="f-button f-button--small nostr-copy" data-copy="{{ $cfg->pubkey }}" x-data="nostrCopy" @click="copy()" x-text="copied ? @js(__('Copied')) : @js(__('Copy'))">{{ __('Copy') }}</button></dd>
+                        <dd><small class="f-muted">{{ $cfg->pubkey }}</small> <x-fruit::copy-button size="small" :value="$cfg->pubkey">{{ __('Copy') }}</x-fruit::copy-button></dd>
                         <dt>{{ __('Key since') }}</dt>
                         <dd>{{ $cfg->key_created_at ? App\User::dateFormat($cfg->key_created_at) : '' }}</dd>
                         @if ($cfg->getNip05())

@@ -2,8 +2,6 @@
 
 @section('body_attrs')@parent data-mailbox_id="{{ $mailbox->id }}"@endsection
 @section('body_attrs')@parent data-folder_id="{{ $folder->id }}"@endsection
-{{-- Its scripts are ready for wire:navigate (the sidebar's folder links). --}}
-@section('body_attrs')@parent data-navigable @endsection
 
 @if ($folder->active_count)
     @section('title', '('.(int)$folder->getCount().') '.$folder->getTypeName().' - '.$mailbox->name)

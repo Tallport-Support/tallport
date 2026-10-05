@@ -14,7 +14,10 @@
     </div>
 @endsection
 
-@section('content')
+@section('sidebar')
     @include('customers/profile_tabs')
+@endsection
+
+@section('content')
     @include('customers/partials/edit_form')
 @endsection

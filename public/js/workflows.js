@@ -233,7 +233,9 @@ document.addEventListener('alpine:init', function () {
 	});
 });
 
-// Mailbox Settings » Workflows: drag to change the order.
+// Mailbox Settings » Workflows: drag to change the order (each page, also one
+// opened with wire:navigate).
+document.addEventListener('livewire:navigated', workflowsListInit);
 function workflowsListInit()
 {
 	if (typeof(sortable) == "undefined") {

@@ -78,7 +78,7 @@ document.addEventListener('livewire:init', function() {
 		}
 	});
 });
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('livewire:navigated', function() {
 	var data = document.getElementById('saved-replies-data');
 	if (data && data.getAttribute('data-new') == '1') {
 		// After the editor is there.
