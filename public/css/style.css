@@ -974,6 +974,28 @@ a h4 {
     background: repeating-conic-gradient(#2c2c2e 0% 25%, #1c1c1e 0% 50%) 50% / 12px 12px;
     color-scheme: dark;
 }
+/* The settings sidebar's account card, and the account's pages under it. */
+.app-sidebar__account-card {
+    margin: 4px 0 8px;
+    padding-block: 8px;
+}
+.app-sidebar__account-card .app-sidebar__account-photo {
+    --f-avatar-size: 36px;
+    flex: none;
+}
+.app-sidebar__account-card .f-sidebar__identity {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.app-sidebar__account-card .f-sidebar__identity small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.app-sidebar__account-pages {
+    margin: -4px 0 8px;
+    padding-inline-start: 12px;
+}
 /* Preferences: the accent picker, off while the installation's accent is used. */
 .accent-choice {
     min-width: 0;

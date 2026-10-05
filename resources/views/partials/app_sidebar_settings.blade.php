@@ -1,5 +1,5 @@
 {{-- The sidebar on settings pages (App\Misc\Sidebar::isSettings()): back to the inbox, then the
-     account's pages, the app's settings and Manage, each where the user may go. --}}
+     user's account, the app's settings and Manage, each where the user may go. --}}
 @php
     $settings_route = Route::currentRouteName();
     $settings_own = str_starts_with((string) $settings_route, 'users.') && request()->route('id') == $sidebar_user->id;
@@ -7,14 +7,26 @@
 @endphp
 <a href="{{ url('/') }}" class="f-sidebar__item app-sidebar__back" wire:navigate><x-icon.chevron-left class="f-icon" aria-hidden="true" /><span class="f-sidebar__identity">{{ __('Inbox') }}</span></a>
 
-<p class="f-sidebar__heading">{{ __('Account') }}</p>
-<x-fruit::sidebar-item :href="route('users.profile', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.profile'"><x-slot:icon><x-icon.circle-user class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Profile') }}</x-fruit::sidebar-item>
-<x-fruit::sidebar-item :href="route('users.security', ['id' => $sidebar_user->id])" :current="$settings_own && in_array($settings_route, ['users.security', 'users.password'])"><x-slot:icon><x-icon.lock class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Security') }}</x-fruit::sidebar-item>
-<x-fruit::sidebar-item :href="route('users.preferences', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.preferences'"><x-slot:icon><x-icon.sliders-horizontal class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Preferences') }}</x-fruit::sidebar-item>
-@if ($sidebar_user->can('updateNotifications', $sidebar_user))
-    <x-fruit::sidebar-item :href="route('users.notifications', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.notifications'"><x-slot:icon><x-icon.bell class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Notifications') }}</x-fruit::sidebar-item>
+{{-- The user's account as a card (as Apple's account in System Settings); its pages show under it while one is open. --}}
+<a href="{{ route('users.profile', ['id' => $sidebar_user->id]) }}" class="f-sidebar__item app-sidebar__account-card">
+    @if ($sidebar_user->photo_url)
+        <x-fruit::avatar :src="$sidebar_user->getPhotoUrl()" class="app-sidebar__account-photo" />
+    @else
+        <x-fruit::avatar class="app-sidebar__account-photo">{{ mb_strtoupper(mb_substr((string) $sidebar_user->first_name, 0, 1).mb_substr((string) $sidebar_user->last_name, 0, 1)) }}</x-fruit::avatar>
+    @endif
+    <span class="f-sidebar__identity"><strong>{{ $sidebar_user->getFullName() }}</strong><small>{{ $sidebar_user->email }}</small></span>
+</a>
+@if ($settings_own)
+    <div class="app-sidebar__account-pages" role="group" aria-label="{{ __('Account') }}">
+        <x-fruit::sidebar-item :href="route('users.profile', ['id' => $sidebar_user->id])" :current="$settings_route == 'users.profile'"><x-slot:icon><x-icon.circle-user class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Profile') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item :href="route('users.security', ['id' => $sidebar_user->id])" :current="in_array($settings_route, ['users.security', 'users.password'])"><x-slot:icon><x-icon.lock class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Security') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item :href="route('users.preferences', ['id' => $sidebar_user->id])" :current="$settings_route == 'users.preferences'"><x-slot:icon><x-icon.sliders-horizontal class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Preferences') }}</x-fruit::sidebar-item>
+        @if ($sidebar_user->can('updateNotifications', $sidebar_user))
+            <x-fruit::sidebar-item :href="route('users.notifications', ['id' => $sidebar_user->id])" :current="$settings_route == 'users.notifications'"><x-slot:icon><x-icon.bell class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Notifications') }}</x-fruit::sidebar-item>
+        @endif
+        <x-fruit::sidebar-item :href="route('users.api_keys', ['id' => $sidebar_user->id])" :current="$settings_route == 'users.api_keys'"><x-slot:icon><x-icon.key-round class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('API Keys') }}</x-fruit::sidebar-item>
+    </div>
 @endif
-<x-fruit::sidebar-item :href="route('users.api_keys', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.api_keys'"><x-slot:icon><x-icon.key-round class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('API Keys') }}</x-fruit::sidebar-item>
 
 @if ($sidebar_user->isAdmin())
     @php
