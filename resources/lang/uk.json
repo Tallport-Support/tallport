@@ -1147,7 +1147,7 @@
     "waiting for the relay": "очікування реле",
     "No modules are installed.": "Модулі не встановлено.",
     "Faster text processing": "Швидша обробка тексту",
-    "Search index": "Пошуковий індекс",
+    "Search Index": "Пошуковий індекс",
     "Building: :indexed of :total conversations": "Побудова: :indexed з :total розмов",
     "Search tips": "Поради щодо пошуку",
     "all words, anywhere in the conversation": "усі слова, будь-де в розмові",
@@ -1509,7 +1509,7 @@
     "1 job failed|:count jobs failed": ":count завдання не виконано|:count завдання не виконано|:count завдань не виконано",
     "Database": "База даних",
     "1 conversation indexed|:count conversations indexed": ":count розмову проіндексовано|:count розмови проіндексовано|:count розмов проіндексовано",
-    "Maximum upload size": "Максимальний розмір завантаження",
+    "Maximum Upload Size": "Максимальний розмір завантаження",
     "Requests up to :size (post_max_size)": "Запити до :size (post_max_size)",
     "Hasn't run yet": "Ще не запускалася",
     "Last ran :time": "Останній запуск: :time",
@@ -1520,5 +1520,8 @@
     "1 attempt|:count attempts": ":count спроба|:count спроби|:count спроб",
     "The optional :name extension is missing": "Відсутнє необов’язкове розширення :name",
     "PCRE JIT is off": "PCRE JIT вимкнено",
-    "Next attempt in :time": "Наступна спроба через :time"
+    "Next attempt in :time": "Наступна спроба через :time",
+    "Appearance": "Вигляд",
+    "Light": "Світле",
+    "Dark": "Темне"
 }

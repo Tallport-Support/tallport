@@ -1166,7 +1166,7 @@
     "waiting for the relay": "odotetaan relettä",
     "No modules are installed.": "Moduuleja ei ole asennettu.",
     "Faster text processing": "Nopeampi tekstinkäsittely",
-    "Search index": "Hakuhakemisto",
+    "Search Index": "Hakuhakemisto",
     "Building: :indexed of :total conversations": "Rakennetaan: :indexed / :total keskustelua",
     "Search tips": "Hakuvinkit",
     "all words, anywhere in the conversation": "kaikki sanat, missä tahansa keskustelussa",
@@ -1528,7 +1528,7 @@
     "1 job failed|:count jobs failed": "1 tehtävä epäonnistui|:count tehtävää epäonnistui",
     "Database": "Tietokanta",
     "1 conversation indexed|:count conversations indexed": "1 keskustelu indeksoitu|:count keskustelua indeksoitu",
-    "Maximum upload size": "Suurin latauskoko",
+    "Maximum Upload Size": "Suurin latauskoko",
     "Requests up to :size (post_max_size)": "Pyynnöt enintään :size (post_max_size)",
     "Hasn't run yet": "Ei ole vielä suoritettu",
     "Last ran :time": "Viimeksi suoritettu: :time",
@@ -1539,5 +1539,8 @@
     "1 attempt|:count attempts": "1 yritys|:count yritystä",
     "The optional :name extension is missing": "Valinnainen laajennus :name puuttuu",
     "PCRE JIT is off": "PCRE JIT on pois päältä",
-    "Next attempt in :time": "Seuraava yritys :time kuluttua"
+    "Next attempt in :time": "Seuraava yritys :time kuluttua",
+    "Appearance": "Ulkoasu",
+    "Light": "Vaalea",
+    "Dark": "Tumma"
 }

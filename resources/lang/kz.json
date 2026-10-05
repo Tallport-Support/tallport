@@ -1644,7 +1644,7 @@
     "waiting for the relay": "релені күтуде",
     "No modules are installed.": "Модульдер орнатылмаған.",
     "Faster text processing": "Мәтінді жылдамырақ өңдеу",
-    "Search index": "Іздеу индексі",
+    "Search Index": "Іздеу индексі",
     "Building: :indexed of :total conversations": "Құрылуда: :total тикеттің :indexed",
     "Search tips": "Іздеу кеңестері",
     "all words, anywhere in the conversation": "барлық сөздер, тикеттің кез келген жерінде",
@@ -1911,7 +1911,7 @@
     "1 job failed|:count jobs failed": ":count тапсырма сәтсіз аяқталды",
     "Database": "Дерекқор",
     "1 conversation indexed|:count conversations indexed": ":count әңгіме индекстелген",
-    "Maximum upload size": "Жүктеудің ең үлкен өлшемі",
+    "Maximum Upload Size": "Жүктеудің ең үлкен өлшемі",
     "Requests up to :size (post_max_size)": "Сұраулар :size дейін (post_max_size)",
     "Hasn't run yet": "Әлі іске қосылмаған",
     "Last ran :time": "Соңғы іске қосылуы: :time",
@@ -1922,5 +1922,8 @@
     "1 attempt|:count attempts": ":count әрекет",
     "The optional :name extension is missing": "Міндетті емес :name кеңейтімі жоқ",
     "PCRE JIT is off": "PCRE JIT өшірулі",
-    "Next attempt in :time": "Келесі әрекет :time кейін"
+    "Next attempt in :time": "Келесі әрекет :time кейін",
+    "Appearance": "Сыртқы түрі",
+    "Light": "Ашық",
+    "Dark": "Қараңғы"
 }

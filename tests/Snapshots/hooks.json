@@ -1486,6 +1486,14 @@
     },
     {
         "type": "filter",
+        "name": "layout.header_logo_dark",
+        "arguments": 1,
+        "files": [
+            "resources/views/partials/app_sidebar_brand.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
         "name": "layout.theme_color",
         "arguments": 1,
         "files": [
@@ -1520,6 +1528,14 @@
     {
         "type": "filter",
         "name": "login.banner",
+        "arguments": 1,
+        "files": [
+            "resources/views/auth/banner.blade.php"
+        ]
+    },
+    {
+        "type": "filter",
+        "name": "login.banner_dark",
         "arguments": 1,
         "files": [
             "resources/views/auth/banner.blade.php"

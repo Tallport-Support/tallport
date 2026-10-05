@@ -2,21 +2,40 @@
     {{ csrf_field() }}
 
     <x-fruit::form-section :title="__('Branding')">
+        {{-- Logo and banner each have a dark-mode version; without it, the light one shows in both. --}}
         @foreach ([
-            'branding.logo'    => [__('Header Logo'), asset('img/logo-brand.svg'), '22 × 22, JPG PNG GIF SVG'],
-            'branding.banner'  => [__('Login Page Banner'), asset('img/banner.png'), '184 × 36, JPG PNG GIF SVG'],
-            'branding.favicon' => [__('Favicon'), asset('favicon.ico'), '16 × 16 / 32 × 32, ICO PNG'],
-        ] as $name => [$label, $default, $help])
-            @php $field = str_replace('.', '_', $name); $url = App\Misc\Branding::imageUrl($name); @endphp
-            <div class="f-stack">
-                <div class="branding-image"><img src="{{ $url ?: $default }}" alt="" @if (!$url) class="branding-default" @endif></div>
-                <x-fruit::field :label="$label" :description="$help">
-                    <x-fruit::file :name="$field" :accept="'.'.implode(',.', App\Misc\Branding::IMAGES[$name])" />
-                </x-fruit::field>
-                @if ($url)
-                    <x-fruit::checkbox :name="$field.'_remove'" value="1">{{ __('Remove') }}</x-fruit::checkbox>
-                @endif
-            </div>
+            [__('Header Logo'), '22 × 22, JPG PNG GIF SVG', ['branding.logo' => __('Light'), 'branding.logo_dark' => __('Dark')]],
+            [__('Login Page Banner'), '184 × 36, JPG PNG GIF SVG', ['branding.banner' => __('Light'), 'branding.banner_dark' => __('Dark')]],
+            [__('Favicon'), '16 × 16 / 32 × 32, ICO PNG', ['branding.favicon' => __('File')]],
+        ] as [$label, $help, $images])
+            <x-fruit::fieldset class="branding-images">
+                <legend>{{ $label }}</legend>
+                <p class="f-help">{{ $help }}</p>
+                <div class="branding-images__row">
+                    @foreach ($images as $name => $appearance)
+                        @php $field = str_replace('.', '_', $name); $url = App\Misc\Branding::imageUrl($name); @endphp
+                        <div class="f-stack branding-image__item @if (str_ends_with($name, '_dark')) branding-image__item--dark @endif">
+                            <div class="branding-image">
+                                @if ($url)
+                                    <img src="{{ $url }}" alt="">
+                                @elseif ($name == 'branding.logo' || $name == 'branding.logo_dark')
+                                    <x-logo class="branding-default branding-default--logo" aria-hidden="true" />
+                                @elseif ($name == 'branding.banner' || $name == 'branding.banner_dark')
+                                    <span class="banner__default branding-default"><x-logo class="banner__logo" aria-hidden="true" />Tallport</span>
+                                @else
+                                    <img src="{{ asset('favicon.ico') }}" alt="" class="branding-default">
+                                @endif
+                            </div>
+                            <x-fruit::field :label="$appearance">
+                                <x-fruit::file :name="$field" :accept="'.'.implode(',.', App\Misc\Branding::IMAGES[$name])" />
+                            </x-fruit::field>
+                            @if ($url)
+                                <x-fruit::checkbox :name="$field.'_remove'" value="1">{{ __('Remove') }}</x-fruit::checkbox>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </x-fruit::fieldset>
         @endforeach
 
         @php $color = ltrim((string) $settings['branding.header_color'], '#') ?: App\Misc\Branding::DEFAULT_HEADER_COLOR; @endphp

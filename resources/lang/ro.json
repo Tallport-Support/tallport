@@ -1146,7 +1146,7 @@
     "waiting for the relay": "așteaptă relay-ul",
     "No modules are installed.": "Nu este instalat niciun modul.",
     "Faster text processing": "Procesare mai rapidă a textului",
-    "Search index": "Index de căutare",
+    "Search Index": "Index de căutare",
     "Building: :indexed of :total conversations": "Se construiește: :indexed din :total conversații",
     "Search tips": "Sfaturi de căutare",
     "all words, anywhere in the conversation": "toate cuvintele, oriunde în conversație",
@@ -1508,7 +1508,7 @@
     "1 job failed|:count jobs failed": "1 sarcină a eșuat|:count sarcini au eșuat|:count de sarcini au eșuat",
     "Database": "Bază de date",
     "1 conversation indexed|:count conversations indexed": "1 conversație indexată|:count conversații indexate|:count de conversații indexate",
-    "Maximum upload size": "Dimensiunea maximă de încărcare",
+    "Maximum Upload Size": "Dimensiunea maximă de încărcare",
     "Requests up to :size (post_max_size)": "Cereri de până la :size (post_max_size)",
     "Hasn't run yet": "Nu a rulat încă",
     "Last ran :time": "Ultima rulare: :time",
@@ -1519,5 +1519,8 @@
     "1 attempt|:count attempts": "1 încercare|:count încercări|:count de încercări",
     "The optional :name extension is missing": "Lipsește extensia opțională :name",
     "PCRE JIT is off": "PCRE JIT este dezactivat",
-    "Next attempt in :time": "Următoarea încercare peste :time"
+    "Next attempt in :time": "Următoarea încercare peste :time",
+    "Appearance": "Aspect",
+    "Light": "Luminos",
+    "Dark": "Întunecat"
 }

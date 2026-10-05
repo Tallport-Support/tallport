@@ -1149,7 +1149,7 @@
     "waiting for the relay": "等待中继",
     "No modules are installed.": "未安装任何模块。",
     "Faster text processing": "更快的文本处理",
-    "Search index": "搜索索引",
+    "Search Index": "搜索索引",
     "Building: :indexed of :total conversations": "构建中：:indexed / :total 个对话",
     "Search tips": "搜索技巧",
     "all words, anywhere in the conversation": "所有词语，可出现在对话中的任意位置",
@@ -1510,7 +1510,7 @@
     "1 job failed|:count jobs failed": ":count 个任务失败",
     "Database": "数据库",
     "1 conversation indexed|:count conversations indexed": "已索引 :count 个会话",
-    "Maximum upload size": "最大上传大小",
+    "Maximum Upload Size": "最大上传大小",
     "Requests up to :size (post_max_size)": "请求最大 :size（post_max_size）",
     "Hasn't run yet": "尚未运行",
     "Last ran :time": "上次运行：:time",
@@ -1521,5 +1521,8 @@
     "1 attempt|:count attempts": ":count 次尝试",
     "The optional :name extension is missing": "缺少可选的 :name 扩展",
     "PCRE JIT is off": "PCRE JIT 已关闭",
-    "Next attempt in :time": ":time后再次尝试"
+    "Next attempt in :time": ":time后再次尝试",
+    "Appearance": "外观",
+    "Light": "浅色",
+    "Dark": "深色"
 }

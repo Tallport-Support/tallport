@@ -87,6 +87,33 @@ class BrandingSettingsTest extends FeatureTestCase
         $this->assertFalse(\Storage::exists('uploads/'.$logo));
     }
 
+    /**
+     * Logo and banner have a dark-mode version (light one in both without it);
+     * the sign-in pages show Tallport's mark and name by default.
+     */
+    public function testDarkModeImagesAndDefaultBanner()
+    {
+        $this->get(route('login'))->assertOk()->assertSee('banner__default', false)->assertSee('Tallport')->assertDontSee('img/banner.png', false);
+
+        \Session::start();
+        $this->actingAs($this->admin)->get(route('settings', ['section' => 'branding']))->assertOk()->assertSee('Appearance');
+        $this->post(route('settings.save', ['section' => 'branding']), [
+            '_token'               => csrf_token(),
+            'branding_logo'        => UploadedFile::fake()->image('logo.png', 22, 22),
+            'branding_banner'      => UploadedFile::fake()->image('banner.png', 184, 36),
+            'branding_banner_dark' => UploadedFile::fake()->image('banner-dark.png', 184, 36),
+        ])->assertRedirect();
+        \Option::$cache = [];
+        $logo = \Helper::uploadedFileUrl(\Option::get('branding.logo'));
+        $dark_banner = \Helper::uploadedFileUrl(\Option::get('branding.banner_dark'));
+
+        // No dark logo: the light one shows in both.
+        $this->get('/?dashboard=1')->assertSee('<img src="'.$logo.'"', false)->assertDontSee('prefers-color-scheme', false);
+        \Auth::logout();
+        $this->get(route('login'))->assertSee('<source srcset="'.$dark_banner.'" media="(prefers-color-scheme: dark)">', false)
+            ->assertDontSee('banner__default', false);
+    }
+
     public function testEmailsToCustomers()
     {
         \Option::set('branding.email_header', '<p>Acme header</p>');

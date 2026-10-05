@@ -1146,7 +1146,7 @@
     "waiting for the relay": "in attesa del relay",
     "No modules are installed.": "Nessun modulo installato.",
     "Faster text processing": "Elaborazione del testo più veloce",
-    "Search index": "Indice di ricerca",
+    "Search Index": "Indice di ricerca",
     "Building: :indexed of :total conversations": "Creazione: :indexed di :total ticket",
     "Search tips": "Suggerimenti di ricerca",
     "all words, anywhere in the conversation": "tutte le parole, in qualsiasi punto del ticket",
@@ -1508,7 +1508,7 @@
     "1 job failed|:count jobs failed": "1 attività non riuscita|:count attività non riuscite",
     "Database": "Database",
     "1 conversation indexed|:count conversations indexed": "1 conversazione indicizzata|:count conversazioni indicizzate",
-    "Maximum upload size": "Dimensione massima di caricamento",
+    "Maximum Upload Size": "Dimensione massima di caricamento",
     "Requests up to :size (post_max_size)": "Richieste fino a :size (post_max_size)",
     "Hasn't run yet": "Non è ancora stato eseguito",
     "Last ran :time": "Ultima esecuzione: :time",
@@ -1519,5 +1519,8 @@
     "1 attempt|:count attempts": "1 tentativo|:count tentativi",
     "The optional :name extension is missing": "Manca l'estensione facoltativa :name",
     "PCRE JIT is off": "PCRE JIT è disattivato",
-    "Next attempt in :time": "Prossimo tentativo tra :time"
+    "Next attempt in :time": "Prossimo tentativo tra :time",
+    "Appearance": "Aspetto",
+    "Light": "Chiaro",
+    "Dark": "Scuro"
 }

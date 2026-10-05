@@ -1147,7 +1147,7 @@
     "waiting for the relay": "röle bekleniyor",
     "No modules are installed.": "Yüklü modül yok.",
     "Faster text processing": "Daha hızlı metin işleme",
-    "Search index": "Arama dizini",
+    "Search Index": "Arama dizini",
     "Building: :indexed of :total conversations": "Oluşturuluyor: :total konuşmadan :indexed",
     "Search tips": "Arama ipuçları",
     "all words, anywhere in the conversation": "tüm kelimeler, konuşmanın herhangi bir yerinde",
@@ -1509,7 +1509,7 @@
     "1 job failed|:count jobs failed": ":count iş başarısız oldu",
     "Database": "Veritabanı",
     "1 conversation indexed|:count conversations indexed": ":count görüşme dizinlendi",
-    "Maximum upload size": "En büyük yükleme boyutu",
+    "Maximum Upload Size": "En büyük yükleme boyutu",
     "Requests up to :size (post_max_size)": "İstekler en fazla :size (post_max_size)",
     "Hasn't run yet": "Henüz çalışmadı",
     "Last ran :time": "Son çalışma: :time",
@@ -1520,5 +1520,8 @@
     "1 attempt|:count attempts": ":count deneme",
     "The optional :name extension is missing": "İsteğe bağlı :name eklentisi eksik",
     "PCRE JIT is off": "PCRE JIT kapalı",
-    "Next attempt in :time": "Sonraki deneme :time sonra"
+    "Next attempt in :time": "Sonraki deneme :time sonra",
+    "Appearance": "Görünüm",
+    "Light": "Açık",
+    "Dark": "Koyu"
 }

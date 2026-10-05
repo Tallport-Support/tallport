@@ -1146,7 +1146,7 @@
     "waiting for the relay": "ממתין לממסר",
     "No modules are installed.": "אין מודולים מותקנים.",
     "Faster text processing": "עיבוד טקסט מהיר יותר",
-    "Search index": "אינדקס חיפוש",
+    "Search Index": "אינדקס חיפוש",
     "Building: :indexed of :total conversations": "בבנייה: :indexed מתוך :total שיחות",
     "Search tips": "טיפים לחיפוש",
     "all words, anywhere in the conversation": "כל המילים, בכל מקום בשיחה",
@@ -1508,7 +1508,7 @@
     "1 job failed|:count jobs failed": "משימה אחת נכשלה|:count משימות נכשלו",
     "Database": "מסד נתונים",
     "1 conversation indexed|:count conversations indexed": "שיחה אחת עברה אינדוקס|:count שיחות עברו אינדוקס",
-    "Maximum upload size": "גודל העלאה מרבי",
+    "Maximum Upload Size": "גודל העלאה מרבי",
     "Requests up to :size (post_max_size)": "בקשות עד :size (post_max_size)",
     "Hasn't run yet": "עדיין לא רץ",
     "Last ran :time": "הרצה אחרונה: :time",
@@ -1519,5 +1519,8 @@
     "1 attempt|:count attempts": "ניסיון אחד|:count ניסיונות",
     "The optional :name extension is missing": "ההרחבה האופציונלית :name חסרה",
     "PCRE JIT is off": "PCRE JIT כבוי",
-    "Next attempt in :time": "הניסיון הבא בעוד :time"
+    "Next attempt in :time": "הניסיון הבא בעוד :time",
+    "Appearance": "מראה",
+    "Light": "בהיר",
+    "Dark": "כהה"
 }

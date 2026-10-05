@@ -343,7 +343,7 @@ class SettingsController extends Controller
             'alerts'  => ['title' => __('Alerts'), 'icon' => 'bell', 'order' => 300],
             'ai'      => ['title' => __('AI Assistant'), 'icon' => 'ai', 'order' => 400],
             'api'     => ['title' => __('API & Webhooks'), 'icon' => 'transfer', 'order' => 600],
-            'branding' => ['title' => __('Branding'), 'icon' => 'adjust', 'order' => 650],
+            'branding' => ['title' => __('Appearance'), 'icon' => 'adjust', 'order' => 650],
         ];
         $sections = \Eventy::filter('settings.sections', $sections);
 

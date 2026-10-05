@@ -1147,7 +1147,7 @@
     "waiting for the relay": "čeka se relej",
     "No modules are installed.": "Nema instaliranih modula.",
     "Faster text processing": "Brža obrada teksta",
-    "Search index": "Indeks pretraživanja",
+    "Search Index": "Indeks pretraživanja",
     "Building: :indexed of :total conversations": "Izgradnja: :indexed od :total razgovora",
     "Search tips": "Savjeti za pretraživanje",
     "all words, anywhere in the conversation": "sve riječi, bilo gdje u razgovoru",
@@ -1509,7 +1509,7 @@
     "1 job failed|:count jobs failed": ":count posao nije uspio|:count posla nisu uspjela|:count poslova nije uspjelo",
     "Database": "Baza podataka",
     "1 conversation indexed|:count conversations indexed": ":count razgovor indeksiran|:count razgovora indeksirana|:count razgovora indeksirano",
-    "Maximum upload size": "Najveća veličina prijenosa",
+    "Maximum Upload Size": "Najveća veličina prijenosa",
     "Requests up to :size (post_max_size)": "Zahtjevi do :size (post_max_size)",
     "Hasn't run yet": "Još se nije izvršilo",
     "Last ran :time": "Zadnje izvršavanje: :time",
@@ -1520,5 +1520,8 @@
     "1 attempt|:count attempts": ":count pokušaj|:count pokušaja|:count pokušaja",
     "The optional :name extension is missing": "Nedostaje neobavezno proširenje :name",
     "PCRE JIT is off": "PCRE JIT je isključen",
-    "Next attempt in :time": "Sljedeći pokušaj za :time"
+    "Next attempt in :time": "Sljedeći pokušaj za :time",
+    "Appearance": "Izgled",
+    "Light": "Svijetlo",
+    "Dark": "Tamno"
 }

@@ -1258,7 +1258,7 @@
     "waiting for the relay": "esperant el relay",
     "No modules are installed.": "No hi ha cap mòdul instal·lat.",
     "Faster text processing": "Processament de text més ràpid",
-    "Search index": "Índex de cerca",
+    "Search Index": "Índex de cerca",
     "Building: :indexed of :total conversations": "Construint: :indexed de :total converses",
     "Search tips": "Consells de cerca",
     "all words, anywhere in the conversation": "totes les paraules, a qualsevol lloc de la conversa",
@@ -1606,7 +1606,7 @@
     "1 job failed|:count jobs failed": "1 tasca ha fallat|:count tasques han fallat",
     "Database": "Base de dades",
     "1 conversation indexed|:count conversations indexed": "1 conversa indexada|:count converses indexades",
-    "Maximum upload size": "Mida màxima de pujada",
+    "Maximum Upload Size": "Mida màxima de pujada",
     "Requests up to :size (post_max_size)": "Peticions fins a :size (post_max_size)",
     "Hasn't run yet": "Encara no s'ha executat",
     "Last ran :time": "Darrera execució: :time",
@@ -1617,5 +1617,8 @@
     "1 attempt|:count attempts": "1 intent|:count intents",
     "The optional :name extension is missing": "Falta l'extensió opcional :name",
     "PCRE JIT is off": "PCRE JIT està desactivat",
-    "Next attempt in :time": "Proper intent d'aquí a :time"
+    "Next attempt in :time": "Proper intent d'aquí a :time",
+    "Appearance": "Aparença",
+    "Light": "Clar",
+    "Dark": "Fosc"
 }

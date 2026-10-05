@@ -1147,7 +1147,7 @@
     "waiting for the relay": "ожидание реле",
     "No modules are installed.": "Модули не установлены.",
     "Faster text processing": "Более быстрая обработка текста",
-    "Search index": "Поисковый индекс",
+    "Search Index": "Поисковый индекс",
     "Building: :indexed of :total conversations": "Построение: :indexed из :total тикетов",
     "Search tips": "Советы по поиску",
     "all words, anywhere in the conversation": "все слова, в любом месте тикета",
@@ -1509,7 +1509,7 @@
     "1 job failed|:count jobs failed": ":count задача не выполнена|:count задачи не выполнены|:count задач не выполнено",
     "Database": "База данных",
     "1 conversation indexed|:count conversations indexed": ":count разговор проиндексирован|:count разговора проиндексированы|:count разговоров проиндексировано",
-    "Maximum upload size": "Максимальный размер загрузки",
+    "Maximum Upload Size": "Максимальный размер загрузки",
     "Requests up to :size (post_max_size)": "Запросы до :size (post_max_size)",
     "Hasn't run yet": "Ещё не запускалась",
     "Last ran :time": "Последний запуск: :time",
@@ -1520,5 +1520,8 @@
     "1 attempt|:count attempts": ":count попытка|:count попытки|:count попыток",
     "The optional :name extension is missing": "Отсутствует необязательное расширение :name",
     "PCRE JIT is off": "PCRE JIT выключен",
-    "Next attempt in :time": "Следующая попытка через :time"
+    "Next attempt in :time": "Следующая попытка через :time",
+    "Appearance": "Оформление",
+    "Light": "Светлое",
+    "Dark": "Тёмное"
 }

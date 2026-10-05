@@ -947,7 +947,56 @@ a h4 {
     max-width: 220px;
 }
 .branding-image .branding-default {
-    opacity: .5;
+    opacity: .6;
+}
+.branding-default--logo {
+    width: 28px;
+    height: 28px;
+    color: var(--f-accent);
+    opacity: 1;
+}
+/* Logo and banner: the light and dark versions side by side, each on its own background. */
+.branding-images__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+.branding-images__row > .branding-image__item {
+    flex: 1 1 220px;
+    min-width: 0;
+}
+.branding-image__item .branding-image {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+}
+.branding-image__item--dark .branding-image {
+    background: repeating-conic-gradient(#2c2c2e 0% 25%, #1c1c1e 0% 50%) 50% / 12px 12px;
+    color-scheme: dark;
+}
+/* The sign-in pages' default banner: Tallport's mark and name. */
+.banner__default {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--f-text);
+}
+.banner__logo {
+    width: 34px;
+    height: 34px;
+    color: var(--f-accent);
+}
+.branding-image .banner__default {
+    font-size: 1.25rem;
+}
+.branding-image .banner__logo {
+    width: 24px;
+    height: 24px;
+}
+.branding-image__item--dark .banner__default {
+    color: #fff;
 }
 /* Attachment viewer. */
 /* The attachment viewer (public/js/attachments.js): one file in a FruitUI dialog. */

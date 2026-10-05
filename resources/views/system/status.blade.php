@@ -189,7 +189,7 @@
         </div>
         @if ($search_index)
             <div class="f-form-row">
-                <span>{{ __('Search index') }}</span>
+                <span>{{ __('Search Index') }}</span>
                 @if ($search_index[0] >= $search_index[1] && \App\Search\Indexer::isReady())
                     <span class="f-muted">{{ trans_choice('1 conversation indexed|:count conversations indexed', $search_index[1]) }}</span>
                 @else
@@ -220,7 +220,7 @@
         </div>
         <div class="f-form-row">
             <div>
-                <span>{{ __('Maximum upload size') }}</span>
+                <span>{{ __('Maximum Upload Size') }}</span>
                 <p class="f-help">{{ __('Requests up to :size (post_max_size)', ['size' => $size_label(ini_get('post_max_size'))]) }}</p>
             </div>
             <span class="f-muted">{{ $size_label(ini_get('upload_max_filesize')) }}</span>

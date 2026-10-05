@@ -245,7 +245,7 @@ class SearchTest extends FeatureTestCase
         $this->artisan('tallport:search-index', ['--prune' => true, '--seconds' => 0])->expectsOutputToContain('Removed: 1');
 
         $admin = $this->createAdmin();
-        $this->actingAs($admin)->get(route('system'))->assertSee('Search index');
+        $this->actingAs($admin)->get(route('system'))->assertSee('Search Index');
     }
 
     public function testCustomerSearchMatchesEveryWord()

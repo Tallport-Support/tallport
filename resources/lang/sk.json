@@ -1146,7 +1146,7 @@
     "waiting for the relay": "čaká sa na relay",
     "No modules are installed.": "Nie sú nainštalované žiadne moduly.",
     "Faster text processing": "Rýchlejšie spracovanie textu",
-    "Search index": "Vyhľadávací index",
+    "Search Index": "Vyhľadávací index",
     "Building: :indexed of :total conversations": "Vytváranie: :indexed z :total konverzácií",
     "Search tips": "Tipy na vyhľadávanie",
     "all words, anywhere in the conversation": "všetky slová, kdekoľvek v konverzácii",
@@ -1508,7 +1508,7 @@
     "1 job failed|:count jobs failed": ":count úloha zlyhala|:count úlohy zlyhali|:count úloh zlyhalo",
     "Database": "Databáza",
     "1 conversation indexed|:count conversations indexed": ":count konverzácia indexovaná|:count konverzácie indexované|:count konverzácií indexovaných",
-    "Maximum upload size": "Maximálna veľkosť nahrávaného súboru",
+    "Maximum Upload Size": "Maximálna veľkosť nahrávaného súboru",
     "Requests up to :size (post_max_size)": "Požiadavky do :size (post_max_size)",
     "Hasn't run yet": "Ešte nebežalo",
     "Last ran :time": "Naposledy spustené: :time",
@@ -1519,5 +1519,8 @@
     "1 attempt|:count attempts": ":count pokus|:count pokusy|:count pokusov",
     "The optional :name extension is missing": "Chýba voliteľné rozšírenie :name",
     "PCRE JIT is off": "PCRE JIT je vypnutý",
-    "Next attempt in :time": "Ďalší pokus o :time"
+    "Next attempt in :time": "Ďalší pokus o :time",
+    "Appearance": "Vzhľad",
+    "Light": "Svetlý",
+    "Dark": "Tmavý"
 }

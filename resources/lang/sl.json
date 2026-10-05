@@ -1146,7 +1146,7 @@
     "waiting for the relay": "čakanje na rele",
     "No modules are installed.": "Ni nameščenih modulov.",
     "Faster text processing": "Hitrejša obdelava besedila",
-    "Search index": "Iskalni indeks",
+    "Search Index": "Iskalni indeks",
     "Building: :indexed of :total conversations": "Gradnja: :indexed od :total pogovorov",
     "Search tips": "Nasveti za iskanje",
     "all words, anywhere in the conversation": "vse besede, kjer koli v pogovoru",
@@ -1508,7 +1508,7 @@
     "1 job failed|:count jobs failed": ":count opravilo ni uspelo|:count opravili nista uspeli|:count opravila niso uspela|:count opravil ni uspelo",
     "Database": "Zbirka podatkov",
     "1 conversation indexed|:count conversations indexed": ":count pogovor indeksiran|:count pogovora indeksirana|:count pogovori indeksirani|:count pogovorov indeksiranih",
-    "Maximum upload size": "Največja velikost nalaganja",
+    "Maximum Upload Size": "Največja velikost nalaganja",
     "Requests up to :size (post_max_size)": "Zahteve do :size (post_max_size)",
     "Hasn't run yet": "Še se ni izvedlo",
     "Last ran :time": "Nazadnje izvedeno: :time",
@@ -1519,5 +1519,8 @@
     "1 attempt|:count attempts": ":count poskus|:count poskusa|:count poskusi|:count poskusov",
     "The optional :name extension is missing": "Manjka izbirna razširitev :name",
     "PCRE JIT is off": "PCRE JIT je izklopljen",
-    "Next attempt in :time": "Naslednji poskus čez :time"
+    "Next attempt in :time": "Naslednji poskus čez :time",
+    "Appearance": "Videz",
+    "Light": "Svetlo",
+    "Dark": "Temno"
 }

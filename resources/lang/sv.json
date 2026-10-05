@@ -1147,7 +1147,7 @@
     "waiting for the relay": "väntar på reläet",
     "No modules are installed.": "Inga moduler är installerade.",
     "Faster text processing": "Snabbare textbehandling",
-    "Search index": "Sökindex",
+    "Search Index": "Sökindex",
     "Building: :indexed of :total conversations": "Byggs: :indexed av :total konversationer",
     "Search tips": "Söktips",
     "all words, anywhere in the conversation": "alla ord, var som helst i konversationen",
@@ -1509,7 +1509,7 @@
     "1 job failed|:count jobs failed": "1 jobb misslyckades|:count jobb misslyckades",
     "Database": "Databas",
     "1 conversation indexed|:count conversations indexed": "1 konversation indexerad|:count konversationer indexerade",
-    "Maximum upload size": "Största uppladdningsstorlek",
+    "Maximum Upload Size": "Största uppladdningsstorlek",
     "Requests up to :size (post_max_size)": "Förfrågningar upp till :size (post_max_size)",
     "Hasn't run yet": "Har inte körts än",
     "Last ran :time": "Senast körd: :time",
@@ -1520,5 +1520,8 @@
     "1 attempt|:count attempts": "1 försök|:count försök",
     "The optional :name extension is missing": "Det valfria tillägget :name saknas",
     "PCRE JIT is off": "PCRE JIT är avstängt",
-    "Next attempt in :time": "Nästa försök om :time"
+    "Next attempt in :time": "Nästa försök om :time",
+    "Appearance": "Utseende",
+    "Light": "Ljust",
+    "Dark": "Mörkt"
 }

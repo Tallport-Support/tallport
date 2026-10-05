@@ -1152,7 +1152,7 @@
     "waiting for the relay": "venter på reléet",
     "No modules are installed.": "Ingen moduler er installert.",
     "Faster text processing": "Raskere tekstbehandling",
-    "Search index": "Søkeindeks",
+    "Search Index": "Søkeindeks",
     "Building: :indexed of :total conversations": "Bygger: :indexed av :total samtaler",
     "Search tips": "Søketips",
     "all words, anywhere in the conversation": "alle ord, hvor som helst i samtalen",
@@ -1513,7 +1513,7 @@
     "1 job failed|:count jobs failed": "1 jobb mislyktes|:count jobber mislyktes",
     "Database": "Database",
     "1 conversation indexed|:count conversations indexed": "1 samtale indeksert|:count samtaler indeksert",
-    "Maximum upload size": "Maksimal opplastingsstørrelse",
+    "Maximum Upload Size": "Maksimal opplastingsstørrelse",
     "Requests up to :size (post_max_size)": "Forespørsler opptil :size (post_max_size)",
     "Hasn't run yet": "Har ikke kjørt ennå",
     "Last ran :time": "Sist kjørt: :time",
@@ -1524,5 +1524,8 @@
     "1 attempt|:count attempts": "1 forsøk|:count forsøk",
     "The optional :name extension is missing": "Den valgfrie utvidelsen :name mangler",
     "PCRE JIT is off": "PCRE JIT er av",
-    "Next attempt in :time": "Neste forsøk om :time"
+    "Next attempt in :time": "Neste forsøk om :time",
+    "Appearance": "Utseende",
+    "Light": "Lyst",
+    "Dark": "Mørkt"
 }

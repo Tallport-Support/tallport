@@ -3,7 +3,7 @@
 namespace App\Misc;
 
 /**
- * Settings » Branding: logo, login banner, favicon, header colour, the name
+ * Settings » Appearance: logo and login banner (each with a dark-mode version), favicon, accent colour, the name
  * in browser tabs, the footer, custom CSS, and a header, footer and CSS for
  * emails to customers. "Powered by" notices in widgets can be turned off.
  */
@@ -16,7 +16,9 @@ class Branding
      */
     const IMAGES = [
         'branding.logo'    => ['jpg', 'jpeg', 'png', 'gif', 'svg'],
+        'branding.logo_dark' => ['jpg', 'jpeg', 'png', 'gif', 'svg'],
         'branding.banner'  => ['jpg', 'jpeg', 'png', 'gif', 'svg'],
+        'branding.banner_dark' => ['jpg', 'jpeg', 'png', 'gif', 'svg'],
         'branding.favicon' => ['ico', 'png'],
     ];
 
@@ -24,7 +26,7 @@ class Branding
      * Settings stored as options (Settings » Branding).
      */
     const SETTINGS = [
-        'branding.logo', 'branding.banner', 'branding.favicon', 'branding.header_color', 'branding.title',
+        'branding.logo', 'branding.logo_dark', 'branding.banner', 'branding.banner_dark', 'branding.favicon', 'branding.header_color', 'branding.title',
         'branding.footer', 'branding.css', 'branding.email_css', 'branding.email_header', 'branding.email_footer',
         'branding.widget_powered_by',
     ];
@@ -120,6 +122,13 @@ class Branding
         }, 20, 1);
         \Eventy::addFilter('login.banner', function ($url) {
             return self::imageUrl('branding.banner') ?: $url;
+        }, 20, 1);
+        // The dark-mode versions; without one, the light one shows in both.
+        \Eventy::addFilter('layout.header_logo_dark', function ($url) {
+            return self::imageUrl('branding.logo') ? (self::imageUrl('branding.logo_dark') ?: $url) : $url;
+        }, 20, 1);
+        \Eventy::addFilter('login.banner_dark', function ($url) {
+            return self::imageUrl('branding.banner') ? (self::imageUrl('branding.banner_dark') ?: $url) : $url;
         }, 20, 1);
         \Eventy::addFilter('layout.favicon', function ($url) {
             return self::imageUrl('branding.favicon') ?: $url;

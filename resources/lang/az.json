@@ -1147,7 +1147,7 @@
     "waiting for the relay": "rele gözlənilir",
     "No modules are installed.": "Quraşdırılmış modul yoxdur.",
     "Faster text processing": "Mətnin daha sürətli emalı",
-    "Search index": "Axtarış indeksi",
+    "Search Index": "Axtarış indeksi",
     "Building: :indexed of :total conversations": "Qurulur: :total söhbətdən :indexed",
     "Search tips": "Axtarış məsləhətləri",
     "all words, anywhere in the conversation": "bütün sözlər, söhbətin istənilən yerində",
@@ -1509,7 +1509,7 @@
     "1 job failed|:count jobs failed": ":count tapşırıq uğursuz oldu",
     "Database": "Verilənlər bazası",
     "1 conversation indexed|:count conversations indexed": ":count söhbət indekslənib",
-    "Maximum upload size": "Maksimum yükləmə ölçüsü",
+    "Maximum Upload Size": "Maksimum yükləmə ölçüsü",
     "Requests up to :size (post_max_size)": "Sorğular :size-a qədər (post_max_size)",
     "Hasn't run yet": "Hələ işə düşməyib",
     "Last ran :time": "Son işə düşmə: :time",
@@ -1520,5 +1520,8 @@
     "1 attempt|:count attempts": ":count cəhd",
     "The optional :name extension is missing": "İstəyə bağlı :name genişləndirməsi yoxdur",
     "PCRE JIT is off": "PCRE JIT söndürülüb",
-    "Next attempt in :time": "Növbəti cəhd :time sonra"
+    "Next attempt in :time": "Növbəti cəhd :time sonra",
+    "Appearance": "Görünüş",
+    "Light": "Açıq",
+    "Dark": "Tünd"
 }

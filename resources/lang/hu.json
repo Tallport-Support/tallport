@@ -1147,7 +1147,7 @@
     "waiting for the relay": "várakozás a relére",
     "No modules are installed.": "Nincs telepített modul.",
     "Faster text processing": "Gyorsabb szövegfeldolgozás",
-    "Search index": "Keresési index",
+    "Search Index": "Keresési index",
     "Building: :indexed of :total conversations": "Felépítés: :indexed / :total beszélgetés",
     "Search tips": "Keresési tippek",
     "all words, anywhere in the conversation": "minden szó, bárhol a beszélgetésben",
@@ -1509,7 +1509,7 @@
     "1 job failed|:count jobs failed": ":count feladat sikertelen|:count feladat sikertelen",
     "Database": "Adatbázis",
     "1 conversation indexed|:count conversations indexed": ":count beszélgetés indexelve|:count beszélgetés indexelve",
-    "Maximum upload size": "Maximális feltöltési méret",
+    "Maximum Upload Size": "Maximális feltöltési méret",
     "Requests up to :size (post_max_size)": "Kérések legfeljebb :size méretig (post_max_size)",
     "Hasn't run yet": "Még nem futott",
     "Last ran :time": "Utoljára futott: :time",
@@ -1520,5 +1520,8 @@
     "1 attempt|:count attempts": ":count próbálkozás|:count próbálkozás",
     "The optional :name extension is missing": "A(z) :name opcionális bővítmény hiányzik",
     "PCRE JIT is off": "A PCRE JIT ki van kapcsolva",
-    "Next attempt in :time": "Következő próbálkozás :time múlva"
+    "Next attempt in :time": "Következő próbálkozás :time múlva",
+    "Appearance": "Megjelenés",
+    "Light": "Világos",
+    "Dark": "Sötét"
 }
