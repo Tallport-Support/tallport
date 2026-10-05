@@ -5,11 +5,7 @@
 @section('main_class', 'fruit-ui')
 
 @section('sidebar')
-    @if ($mailbox && !Auth::user()->isAdmin())
-        @include('mailboxes/sidebar_menu')
-    @else
-        @include('workflows/sidebar_menu')
-    @endif
+    @include('workflows/sidebar_menu')
 @endsection
 
 @section('content')

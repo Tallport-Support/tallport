@@ -57,10 +57,8 @@
         <x-fruit::sidebar-item :href="route('users')" :current="\App\Misc\Helper::isMenuSelected('users')"><x-slot:icon><x-icon.users class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Users') }}</x-fruit::sidebar-item>
     @endif
     @if ($sidebar_user->isAdmin())
-        <x-fruit::sidebar-item :href="route('workflows')" :current="\App\Misc\Helper::isMenuSelected('workflows')"><x-slot:icon><x-icon.shuffle class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Workflows') }}</x-fruit::sidebar-item>
         <x-fruit::sidebar-item :href="route('modules')" :current="$settings_route == 'modules'"><x-slot:icon><x-icon.puzzle class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Modules') }}</x-fruit::sidebar-item>
-        <x-fruit::sidebar-item :href="route('logs')" :current="\App\Misc\Helper::isMenuSelected('logs')"><x-slot:icon><x-icon.file-text class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Logs') }}</x-fruit::sidebar-item>
-        <x-fruit::sidebar-item :href="route('system')" :current="\App\Misc\Helper::isMenuSelected('system')"><x-slot:icon><x-icon.server class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('System') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item :href="route('system')" :current="\App\Misc\Helper::isMenuSelected('system') || \App\Misc\Helper::isMenuSelected('logs') || $settings_route == 'logs.app'"><x-slot:icon><x-icon.server class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('System') }}</x-fruit::sidebar-item>
     @endif
     <ul class="app-sidebar__module-items">@action('menu.manage.append')</ul>
 @endif

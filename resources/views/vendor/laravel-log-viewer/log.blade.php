@@ -11,12 +11,8 @@
           array_push($names, App\ActivityLog::NAME_APP_LOGS);
           $current_name = 'app';
         @endphp
-    <x-page-nav :label="__('Logs')">
-        <x-slot:title><h1>{{ __('Logs') }}</h1></x-slot:title>
-        @foreach ($names as $name)
-            <a href="{{ route('logs', ['name' => $name]) }}" @if ($current_name == $name) aria-current="page" @endif>{{ App\ActivityLog::getLogTitle($name) }}</a>
-        @endforeach
-    </x-page-nav>
+    @include('system/sidebar_menu')
+    @include('secure/logs_menu')
 @endsection
 
 @section('content')

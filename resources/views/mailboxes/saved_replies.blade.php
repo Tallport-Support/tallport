@@ -5,7 +5,7 @@
 @section('main_class', 'fruit-ui')
 
 @section('sidebar')
-    @include('mailboxes/sidebar_menu')
+    @include('mailboxes/saved_replies_menu')
 @endsection
 
 @section('content')

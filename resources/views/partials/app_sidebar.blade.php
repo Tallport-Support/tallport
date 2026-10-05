@@ -87,6 +87,24 @@
             {{ __('Reports') }}
         </x-fruit::sidebar-item>
     @endif
+    {{-- Builders people work in, not settings: workflows and saved replies (where the user may edit them). --}}
+    @php
+        $sidebar_route = (string) Route::currentRouteName();
+        $sidebar_workflow_mailbox = $sidebar_user->isAdmin() ? null : collect($sidebar_mailboxes)->pluck(0)->first(fn ($mailbox) => App\Workflow::canEdit($sidebar_user, $mailbox));
+        $sidebar_reply_mailbox = collect($sidebar_mailboxes)->pluck(0)->first(fn ($mailbox) => App\SavedReply::canManage($sidebar_user, $mailbox));
+    @endphp
+    @if ($sidebar_user->isAdmin() || $sidebar_workflow_mailbox)
+        <x-fruit::sidebar-item :href="$sidebar_user->isAdmin() ? route('workflows') : route('mailboxes.workflows', ['mailbox_id' => $sidebar_workflow_mailbox->id])" :current="str_starts_with($sidebar_route, 'workflows') || str_starts_with($sidebar_route, 'mailboxes.workflows')">
+            <x-slot:icon><x-icon.shuffle class="f-icon" aria-hidden="true" /></x-slot:icon>
+            {{ __('Workflows') }}
+        </x-fruit::sidebar-item>
+    @endif
+    @if ($sidebar_reply_mailbox)
+        <x-fruit::sidebar-item :href="route('mailboxes.saved_replies', ['id' => $sidebar_reply_mailbox->id])" :current="str_starts_with($sidebar_route, 'mailboxes.saved_replies')">
+            <x-slot:icon><x-icon.message-square-text class="f-icon" aria-hidden="true" /></x-slot:icon>
+            {{ __('Saved Replies') }}
+        </x-fruit::sidebar-item>
+    @endif
     {{-- Settings: the sidebar then lists them (partials/app_sidebar_settings). --}}
     @php
         $sidebar_settings_url = $sidebar_user->isAdmin() ? route('settings')
