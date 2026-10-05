@@ -330,7 +330,7 @@ Settings work best inside the app rather than as a separate full-width page: kee
 
 ## Chat histories
 
-A chat conversation reads from the bottom up: oldest at the top, the newest message just above a composer docked at the bottom. `x-fruit::history` is the scrolling part. It opens at the newest message and stays there as messages arrive, images load or a Livewire morph changes the thread, unless the reader has scrolled back: then new messages leave them where they are, and Jump to Latest appears. Sending from the composer in the same pane returns to the newest message. Separate days with a labelled `x-fruit::divider`, one thread per day. A compact thread (`density="compact"`) with inline messages gives it the look of a chat: rows close together without lines between them, the name and time on one line. When one person sends several messages in a row, mark each after the first `continued`: the name and avatar then show once per run, as chat apps do. A chat message shows only the name and the time: leave out the Customer and Reply labels and header lines such as the customer's device (put those in the conversation's heading); notes keep their Internal note label. The default, comfortable thread is the email presentation.
+A chat conversation reads from the bottom up: oldest at the top, the newest message just above a composer docked at the bottom. `x-fruit::history` is the scrolling part. It opens at the newest message and stays there as messages arrive, images load or a Livewire morph changes the thread, unless the reader has scrolled back: then new messages leave them where they are, and Jump to Latest appears. Sending from the composer in the same pane returns to the newest message. Separate days with a labelled `x-fruit::divider`, one thread per day. A compact thread (`density="compact"`) with inline messages gives it the look of a chat: rows close together without lines between them, the name and time on one line. When one person sends several messages in a row, mark each after the first `continued`: the name and avatar then show once per run, as chat apps do. A message marked in its header, such as a pinned one, starts a new run so the mark sits beside its time. A chat message shows only the name and the time: leave out the Customer and Reply labels and header lines such as the customer's device (put those in the conversation's heading); notes keep their Internal note label. The default, comfortable thread is the email presentation.
 
 ```blade
 <section class="f-pane f-pane--column" aria-label="Conversation">
@@ -347,7 +347,22 @@ A chat conversation reads from the bottom up: oldest at the top, the newest mess
 </section>
 ```
 
-The pane is a flex column, so the history takes the remaining height and scrolls while the composer stays in view. An application that swaps the whole conversation without re-rendering the history (Alpine state, say) calls `jumpToLatest({ smooth: false })` inside it; with Livewire, a new conversation renders a new history that opens at its newest message. When the history is a Livewire component's own view, give the view one root element around it: Livewire takes the first element of the output as the component's root, so a view that starts with `@if` or with the history's day threads can make the first thread the root, and later updates then morph only that thread.
+The pane is a flex column, so the history takes the remaining height and scrolls while the composer stays in view. A chat's composer is a single-line message field: put the textarea (`rows="1"`) and its icon buttons in a `div.f-composer__field`. It grows as Shift+Enter adds lines, Enter sends, and the Send button (`f-composer__send`) appears only on touch screens, whose keyboards have no Shift+Enter. Say "Enter to send, Shift+Enter for a new line" in a visually hidden description of the textarea.
+
+```blade
+<x-fruit::composer wire:submit="send">
+    <label class="f-sr-only" for="chat-message">Message Sophie Chen</label>
+    <div class="f-composer__field">
+        <x-fruit::textarea id="chat-message" class="f-composer__input" rows="1" wire:model="body" aria-describedby="chat-help"
+            x-on:keydown.enter="if (!$event.shiftKey && !$event.isComposing && !$event.defaultPrevented) { $event.preventDefault(); $el.form.requestSubmit() }" />
+        <x-fruit::button variant="ghost" class="f-button--icon" aria-label="Attach Files">…</x-fruit::button>
+        <x-fruit::button type="submit" variant="primary" class="f-button--icon f-composer__send" aria-label="Send">…</x-fruit::button>
+    </div>
+    <p class="f-sr-only" id="chat-help">Enter to send, Shift+Enter for a new line.</p>
+</x-fruit::composer>
+```
+
+On touch screens a chat message shows its actions when tapped (it needs `tabindex="-1"` to take focus), rather than under every message. An application that swaps the whole conversation without re-rendering the history (Alpine state, say) calls `jumpToLatest({ smooth: false })` inside it; with Livewire, a new conversation renders a new history that opens at its newest message. When the history is a Livewire component's own view, give the view one root element around it: Livewire takes the first element of the output as the component's root, so a view that starts with `@if` or with the history's day threads can make the first thread the root, and later updates then morph only that thread.
 
 ## Message composers
 
