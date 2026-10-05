@@ -1531,5 +1531,9 @@
     "then": "потім",
     "Replace Photo": "Замінити Фото",
     "Conversation View": "Вигляд Розмови",
-    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Як виглядають розмови з кожного каналу: як листи або як чат із найновішим повідомленням унизу."
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Як виглядають розмови з кожного каналу: як листи або як чат із найновішим повідомленням унизу.",
+    "Much faster pages: PHP keeps its compiled code in memory": "Значно швидші сторінки: PHP зберігає скомпільований код у пам'яті",
+    "Faster Nostr encryption (bcmath is used without it)": "Швидше шифрування Nostr (без нього використовується bcmath)",
+    "Nostr, when gmp is missing": "Nostr, коли немає gmp",
+    "Redis for the cache, sessions or queue": "Redis для кешу, сесій або черги"
 }

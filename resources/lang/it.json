@@ -1530,5 +1530,9 @@
     "then": "poi",
     "Replace Photo": "Sostituisci Foto",
     "Conversation View": "Vista del Ticket",
-    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Come appaiono i ticket di ogni canale: come email, o come una chat con il messaggio più recente in basso."
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Come appaiono i ticket di ogni canale: come email, o come una chat con il messaggio più recente in basso.",
+    "Much faster pages: PHP keeps its compiled code in memory": "Pagine molto più veloci: PHP tiene il codice compilato in memoria",
+    "Faster Nostr encryption (bcmath is used without it)": "Crittografia Nostr più veloce (senza, si usa bcmath)",
+    "Nostr, when gmp is missing": "Nostr, quando manca gmp",
+    "Redis for the cache, sessions or queue": "Redis per la cache, le sessioni o la coda"
 }

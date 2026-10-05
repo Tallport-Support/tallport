@@ -2836,6 +2836,18 @@ class Helper
         return self::$pcre_jit_available && (bool) ini_get('pcre.jit');
     }
 
+    /**
+     * Whether a PHP extension is there; OPcache (opcache) only when it's also enabled.
+     */
+    public static function extensionEnabled($name)
+    {
+        if (strtolower($name) == 'opcache') {
+            return extension_loaded('Zend OPcache') && filter_var(ini_get('opcache.enable'), FILTER_VALIDATE_BOOLEAN);
+        }
+
+        return extension_loaded($name);
+    }
+
     public static function checkRequiredExtensions()
     {
         $php_extensions = [];
@@ -2847,13 +2859,13 @@ class Helper
             $alternatives = explode('/', $extension_name);
             if ($alternatives) {
                 foreach ($alternatives as $alternative) {
-                    $php_extensions[$extension_name] = extension_loaded(trim($alternative));
+                    $php_extensions[$extension_name] = self::extensionEnabled(trim($alternative));
                     if ($php_extensions[$extension_name]) {
                         break;
                     }
                 }
             } else {
-                $php_extensions[$extension_name] = extension_loaded($extension_name);
+                $php_extensions[$extension_name] = self::extensionEnabled($extension_name);
             }
         }
 

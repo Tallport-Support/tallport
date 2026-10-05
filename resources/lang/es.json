@@ -1532,5 +1532,9 @@
     "then": "luego",
     "Replace Photo": "Reemplazar Foto",
     "Conversation View": "Vista de la Conversación",
-    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Cómo se ven las conversaciones de cada canal: como correos o como un chat con el mensaje más reciente abajo."
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Cómo se ven las conversaciones de cada canal: como correos o como un chat con el mensaje más reciente abajo.",
+    "Much faster pages: PHP keeps its compiled code in memory": "Páginas mucho más rápidas: PHP mantiene su código compilado en memoria",
+    "Faster Nostr encryption (bcmath is used without it)": "Cifrado de Nostr más rápido (sin ella se usa bcmath)",
+    "Nostr, when gmp is missing": "Nostr, cuando falta gmp",
+    "Redis for the cache, sessions or queue": "Redis para la caché, las sesiones o la cola"
 }

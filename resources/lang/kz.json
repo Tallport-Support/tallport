@@ -1933,5 +1933,9 @@
     "then": "содан кейін",
     "Replace Photo": "Фотоны Ауыстыру",
     "Conversation View": "Тикет Көрінісі",
-    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Әр арнадағы тикеттердің көрінісі: эл. хат ретінде немесе ең жаңа хабарлама төменде тұратын чат ретінде."
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Әр арнадағы тикеттердің көрінісі: эл. хат ретінде немесе ең жаңа хабарлама төменде тұратын чат ретінде.",
+    "Much faster pages: PHP keeps its compiled code in memory": "Беттер әлдеқайда жылдам: PHP компиляцияланған кодын жадта сақтайды",
+    "Faster Nostr encryption (bcmath is used without it)": "Nostr шифрлауы жылдамырақ (онсыз bcmath қолданылады)",
+    "Nostr, when gmp is missing": "Nostr, gmp болмаған кезде",
+    "Redis for the cache, sessions or queue": "Кэш, сессиялар немесе кезек үшін Redis"
 }

@@ -1531,5 +1531,9 @@
     "then": "затем",
     "Replace Photo": "Заменить Фото",
     "Conversation View": "Вид Тикета",
-    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Как выглядят тикеты из каждого канала: как письма или как чат с новейшим сообщением внизу."
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Как выглядят тикеты из каждого канала: как письма или как чат с новейшим сообщением внизу.",
+    "Much faster pages: PHP keeps its compiled code in memory": "Гораздо более быстрые страницы: PHP хранит скомпилированный код в памяти",
+    "Faster Nostr encryption (bcmath is used without it)": "Более быстрое шифрование Nostr (без него используется bcmath)",
+    "Nostr, when gmp is missing": "Nostr, если нет gmp",
+    "Redis for the cache, sessions or queue": "Redis для кэша, сессий или очереди"
 }

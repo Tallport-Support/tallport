@@ -1549,5 +1549,9 @@
     "then": "sitten",
     "Replace Photo": "Vaihda Kuva",
     "Conversation View": "Keskustelunäkymä",
-    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Miltä kunkin kanavan keskustelut näyttävät: sähköposteina tai chattina, jossa uusin viesti on alimpana."
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Miltä kunkin kanavan keskustelut näyttävät: sähköposteina tai chattina, jossa uusin viesti on alimpana.",
+    "Much faster pages: PHP keeps its compiled code in memory": "Paljon nopeammat sivut: PHP pitää käännetyn koodinsa muistissa",
+    "Faster Nostr encryption (bcmath is used without it)": "Nopeampi Nostr-salaus (ilman sitä käytetään bcmathia)",
+    "Nostr, when gmp is missing": "Nostr, kun gmp puuttuu",
+    "Redis for the cache, sessions or queue": "Redis välimuistille, istunnoille tai jonolle"
 }

@@ -1531,5 +1531,9 @@
     "then": "次に",
     "Replace Photo": "写真を置き換える",
     "Conversation View": "会話の表示",
-    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "各チャネルの会話の表示方法：メールとして、または最新のメッセージが下に来るチャットとして。"
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "各チャネルの会話の表示方法：メールとして、または最新のメッセージが下に来るチャットとして。",
+    "Much faster pages: PHP keeps its compiled code in memory": "ページが大幅に高速化：PHP がコンパイル済みのコードをメモリに保持します",
+    "Faster Nostr encryption (bcmath is used without it)": "Nostr の暗号化を高速化（ない場合は bcmath を使用）",
+    "Nostr, when gmp is missing": "gmp がない場合の Nostr",
+    "Redis for the cache, sessions or queue": "キャッシュ、セッション、キュー用の Redis"
 }

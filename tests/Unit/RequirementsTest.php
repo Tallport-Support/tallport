@@ -34,4 +34,14 @@ class RequirementsTest extends TestCase
 
         $this->assertSame([], $missing, 'Add these to installer.requirements.php in config/installer.php');
     }
+
+    public function testOpcacheIsRecommendedAndCountsOnlyWhenEnabled()
+    {
+        $this->assertArrayHasKey('opcache', config('installer.optional'));
+
+        // Loaded but off (it can only be switched off at runtime).
+        ini_set('opcache.enable', '0');
+        $this->assertFalse(\Helper::extensionEnabled('opcache'));
+        $this->assertSame(extension_loaded('gmp'), \Helper::extensionEnabled('gmp'));
+    }
 }

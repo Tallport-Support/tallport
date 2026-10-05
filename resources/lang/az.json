@@ -1531,5 +1531,9 @@
     "then": "sonra",
     "Replace Photo": "Fotonu Əvəz Et",
     "Conversation View": "Söhbət Görünüşü",
-    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Hər kanaldan gələn söhbətlərin görünüşü: e-poçt kimi və ya ən yeni mesajı aşağıda olan çat kimi."
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Hər kanaldan gələn söhbətlərin görünüşü: e-poçt kimi və ya ən yeni mesajı aşağıda olan çat kimi.",
+    "Much faster pages: PHP keeps its compiled code in memory": "Daha sürətli səhifələr: PHP tərtib olunmuş kodu yaddaşda saxlayır",
+    "Faster Nostr encryption (bcmath is used without it)": "Daha sürətli Nostr şifrələməsi (onsuz bcmath istifadə olunur)",
+    "Nostr, when gmp is missing": "Nostr, gmp olmadıqda",
+    "Redis for the cache, sessions or queue": "Keş, sessiyalar və ya növbə üçün Redis"
 }

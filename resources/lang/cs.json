@@ -1530,5 +1530,9 @@
     "then": "potom",
     "Replace Photo": "Nahradit Fotku",
     "Conversation View": "Zobrazení Konverzace",
-    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Jak vypadají konverzace z jednotlivých kanálů: jako e-maily, nebo jako chat s nejnovější zprávou dole."
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Jak vypadají konverzace z jednotlivých kanálů: jako e-maily, nebo jako chat s nejnovější zprávou dole.",
+    "Much faster pages: PHP keeps its compiled code in memory": "Mnohem rychlejší stránky: PHP uchovává zkompilovaný kód v paměti",
+    "Faster Nostr encryption (bcmath is used without it)": "Rychlejší šifrování Nostr (bez něj se použije bcmath)",
+    "Nostr, when gmp is missing": "Nostr, když chybí gmp",
+    "Redis for the cache, sessions or queue": "Redis pro mezipaměť, relace nebo frontu"
 }

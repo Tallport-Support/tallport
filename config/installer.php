@@ -53,10 +53,11 @@ return [
 
     // Optional PHP extensions, and what for (English, translated when shown).
     'optional' => [
-        'intl'   => 'Dates in the users\' languages; Simplified and Traditional Chinese auto replies',
-        'gmp'    => 'Faster Nostr encryption (bcmath is used without it)',
-        'bcmath' => 'Nostr, when gmp is missing',
-        'redis'  => 'Redis for the cache, sessions or queue',
+        'intl'    => 'Dates in the users\' languages; Simplified and Traditional Chinese auto replies',
+        'gmp'     => 'Faster Nostr encryption (bcmath is used without it)',
+        'bcmath'  => 'Nostr, when gmp is missing',
+        'redis'   => 'Redis for the cache, sessions or queue',
+        'opcache' => 'Much faster pages: PHP keeps its compiled code in memory',
     ],
 
     /*

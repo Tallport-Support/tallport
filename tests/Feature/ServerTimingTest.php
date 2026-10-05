@@ -15,6 +15,6 @@ class ServerTimingTest extends FeatureTestCase
 
         $user = $this->createUser();
         $timing = $this->actingAs($user)->get(route('users.preferences', ['id' => $user->id]))->headers->get('Server-Timing');
-        $this->assertMatchesRegularExpression('#^app;dur=[\d.]+, db;dur=[\d.]+;desc="\d+ queries"$#', (string) $timing);
+        $this->assertMatchesRegularExpression('#^app;dur=[\d.]+, boot;dur=[\d.]+, db;dur=[\d.]+;desc="\d+ queries"$#', (string) $timing);
     }
 }

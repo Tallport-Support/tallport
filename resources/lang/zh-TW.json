@@ -1579,5 +1579,9 @@
     "then": "然後",
     "Replace Photo": "更換照片",
     "Conversation View": "對話檢視",
-    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "各頻道對話的顯示方式：以電子郵件形式，或以最新訊息在底部的聊天形式。"
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "各頻道對話的顯示方式：以電子郵件形式，或以最新訊息在底部的聊天形式。",
+    "Much faster pages: PHP keeps its compiled code in memory": "頁面快得多：PHP 會將編譯後的程式碼保留在記憶體中",
+    "Faster Nostr encryption (bcmath is used without it)": "更快的 Nostr 加密（沒有時使用 bcmath）",
+    "Nostr, when gmp is missing": "缺少 gmp 時用於 Nostr",
+    "Redis for the cache, sessions or queue": "用於快取、工作階段或佇列的 Redis"
 }

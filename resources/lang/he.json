@@ -1530,5 +1530,9 @@
     "then": "ואז",
     "Replace Photo": "החלפת תמונה",
     "Conversation View": "תצוגת שיחה",
-    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "איך נראות שיחות מכל ערוץ: כאימיילים, או כצ'אט עם ההודעה החדשה ביותר למטה."
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "איך נראות שיחות מכל ערוץ: כאימיילים, או כצ'אט עם ההודעה החדשה ביותר למטה.",
+    "Much faster pages: PHP keeps its compiled code in memory": "דפים מהירים בהרבה: PHP שומר את הקוד המהודר שלו בזיכרון",
+    "Faster Nostr encryption (bcmath is used without it)": "הצפנת Nostr מהירה יותר (בלעדיה משתמשים ב-bcmath)",
+    "Nostr, when gmp is missing": "Nostr, כאשר gmp חסר",
+    "Redis for the cache, sessions or queue": "Redis למטמון, להפעלות או לתור"
 }

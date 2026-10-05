@@ -1532,5 +1532,9 @@
     "then": "然后",
     "Replace Photo": "更换照片",
     "Conversation View": "对话视图",
-    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "各渠道对话的显示方式：以电子邮件形式，或以最新消息在底部的聊天形式。"
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "各渠道对话的显示方式：以电子邮件形式，或以最新消息在底部的聊天形式。",
+    "Much faster pages: PHP keeps its compiled code in memory": "页面快得多：PHP 将编译后的代码保留在内存中",
+    "Faster Nostr encryption (bcmath is used without it)": "更快的 Nostr 加密（没有时使用 bcmath）",
+    "Nostr, when gmp is missing": "缺少 gmp 时用于 Nostr",
+    "Redis for the cache, sessions or queue": "用于缓存、会话或队列的 Redis"
 }

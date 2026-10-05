@@ -1531,5 +1531,9 @@
     "then": "majd",
     "Replace Photo": "Fénykép Cseréje",
     "Conversation View": "Beszélgetésnézet",
-    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Hogyan jelennek meg az egyes csatornák beszélgetései: e-mailként, vagy chatként, alul a legújabb üzenettel."
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Hogyan jelennek meg az egyes csatornák beszélgetései: e-mailként, vagy chatként, alul a legújabb üzenettel.",
+    "Much faster pages: PHP keeps its compiled code in memory": "Sokkal gyorsabb oldalak: a PHP a lefordított kódját a memóriában tartja",
+    "Faster Nostr encryption (bcmath is used without it)": "Gyorsabb Nostr-titkosítás (nélküle a bcmath kerül használatra)",
+    "Nostr, when gmp is missing": "Nostr, ha a gmp hiányzik",
+    "Redis for the cache, sessions or queue": "Redis a gyorsítótárhoz, munkamenetekhez vagy a sorhoz"
 }

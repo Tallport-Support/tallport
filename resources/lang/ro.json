@@ -1530,5 +1530,9 @@
     "then": "apoi",
     "Replace Photo": "Înlocuiește Fotografia",
     "Conversation View": "Vizualizarea Conversației",
-    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Cum arată conversațiile din fiecare canal: ca emailuri sau ca un chat cu cel mai nou mesaj jos."
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Cum arată conversațiile din fiecare canal: ca emailuri sau ca un chat cu cel mai nou mesaj jos.",
+    "Much faster pages: PHP keeps its compiled code in memory": "Pagini mult mai rapide: PHP își păstrează codul compilat în memorie",
+    "Faster Nostr encryption (bcmath is used without it)": "Criptare Nostr mai rapidă (fără ea se folosește bcmath)",
+    "Nostr, when gmp is missing": "Nostr, când lipsește gmp",
+    "Redis for the cache, sessions or queue": "Redis pentru cache, sesiuni sau coadă"
 }
