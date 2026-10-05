@@ -10,7 +10,7 @@
 
 - Run tests with `./test.sh`. It accepts phpunit arguments, e.g. `./test.sh --filter=testName` or `./test.sh tests/Feature/SomeTest.php`.
 - Run the narrowest set of tests that covers the change, and rerun a test after each change to it.
-- Before finishing, run the full suite with `./test.sh` (no arguments). It also runs the inventory check.
+- Before finishing, run the full suite with `./test.sh` (no arguments). It also checks the code style (phpcs) and runs the inventory check.
 
 === .ai/tallport rules ===
 
@@ -81,7 +81,7 @@ Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Lara
 
 ## Releases and production
 
-- Releases are made with `./release.sh <version> -m "notes"` from a commit on origin/main that passed the Tests workflow. Installations pick them up through the built-in updater.
+- Releases are made with `./release.sh <version> -m "notes"` from main. It runs the full `./test.sh` (code style, tests, inventory) and releases without waiting for CI; CI runs on the push and reports failures afterwards. Installations pick releases up through the built-in updater.
 - After an update, `php artisan tallport:after-app-update` must run from the command line.
 - After changing `.env` or config, run `php artisan tallport:clear-cache`.
 

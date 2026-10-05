@@ -7,4 +7,4 @@
 
 - Run tests with `./test.sh`. It accepts phpunit arguments, e.g. `./test.sh --filter=testName` or `./test.sh tests/Feature/SomeTest.php`.
 - Run the narrowest set of tests that covers the change, and rerun a test after each change to it.
-- Before finishing, run the full suite with `./test.sh` (no arguments). It also runs the inventory check.
+- Before finishing, run the full suite with `./test.sh` (no arguments). It also checks the code style (phpcs) and runs the inventory check.

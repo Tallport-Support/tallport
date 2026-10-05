@@ -20,8 +20,9 @@
 # This bumps 'version' in config/app.php only; 'compatibility_version' is the
 # FreeScout version for FreeScout modules and is changed by hand.
 #
-# Only a commit that is pushed to origin/main and passed the "Tests" workflow
-# can be released; the script waits for a CI run that is still in progress.
+# The release is checked here, not by waiting for CI: the full ./test.sh (code
+# style, tests, inventory) must pass. CI still runs on the push and reports
+# afterwards (GitHub notifies about a failed run).
 
 set -euo pipefail
 
@@ -104,34 +105,22 @@ if [ -n "$(git status --porcelain)" ]; then
     exit 1
 fi
 git fetch --quiet origin main
-if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
-    echo "main must match origin/main: push your commits and let CI test them first" >&2
+if ! git merge-base --is-ancestor origin/main HEAD; then
+    echo "main is behind or has diverged from origin/main: pull first" >&2
     exit 1
 fi
 
-# Only release what CI tested: the latest "Tests" run for this commit must
-# have passed. SKIP_CI=1 ./release.sh overrides this in an emergency.
-if [ "${SKIP_CI:-}" = "1" ]; then
-    echo "WARNING: releasing without checking CI (SKIP_CI=1)" >&2
+# Release what our own checks pass. SKIP_TESTS=1 ./release.sh skips them in an emergency.
+if [ "${SKIP_TESTS:-}" = "1" ]; then
+    echo "WARNING: releasing without running the tests (SKIP_TESTS=1)" >&2
 else
-    sha=$(git rev-parse HEAD)
-    run=$(gh run list --repo "$repo" --workflow test.yml --commit "$sha" --limit 1 \
-        --json databaseId,status,conclusion,url --jq '.[0] | select(.) | [.databaseId, .status, .conclusion, .url] | join("|")')
-    if [ -z "$run" ]; then
-        echo "No CI run found for ${sha:0:7}; wait for GitHub Actions to pick up the push" >&2
+    echo "Running ./test.sh"
+    if ! ./test.sh > /tmp/tallport-release-tests.log 2>&1; then
+        tail -30 /tmp/tallport-release-tests.log >&2
+        echo "Tests failed: see /tmp/tallport-release-tests.log" >&2
         exit 1
     fi
-    IFS='|' read -r run_id run_status run_conclusion run_url <<< "$run"
-    if [ "$run_status" != "completed" ]; then
-        echo "Waiting for CI: $run_url"
-        gh run watch "$run_id" --repo "$repo" --exit-status >/dev/null 2>&1 || true
-        run_conclusion=$(gh run view "$run_id" --repo "$repo" --json conclusion --jq .conclusion)
-    fi
-    if [ "$run_conclusion" != "success" ]; then
-        echo "CI did not pass for ${sha:0:7} ($run_conclusion): $run_url" >&2
-        exit 1
-    fi
-    echo "CI passed for ${sha:0:7}"
+    tail -2 /tmp/tallport-release-tests.log
 fi
 
 if [ "$version" = "$current" ]; then

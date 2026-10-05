@@ -65,6 +65,6 @@ Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Lara
 
 ## Releases and production
 
-- Releases are made with `./release.sh <version> -m "notes"` from a commit on origin/main that passed the Tests workflow. Installations pick them up through the built-in updater.
+- Releases are made with `./release.sh <version> -m "notes"` from main. It runs the full `./test.sh` (code style, tests, inventory) and releases without waiting for CI; CI runs on the push and reports failures afterwards. Installations pick releases up through the built-in updater.
 - After an update, `php artisan tallport:after-app-update` must run from the command line.
 - After changing `.env` or config, run `php artisan tallport:clear-cache`.
