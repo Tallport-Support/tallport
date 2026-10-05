@@ -1566,5 +1566,11 @@
     "The AI Assistant took this message to be in :language already.": "AI 助理認為此訊息已經是:language。",
     "Could not translate the message: :error": "無法翻譯此訊息：:error",
     "People can choose their own in their Preferences.": "每個人都可以在自己的偏好設定中選擇。",
-    "Use the Installation Default": "使用安裝預設值"
+    "Use the Installation Default": "使用安裝預設值",
+    "Confirm Your Password": "確認您的密碼",
+    "These settings need your password again.": "這些設定需要再次輸入您的密碼。",
+    "Security settings need your password again.": "安全性設定需要再次輸入您的密碼。",
+    "API keys need your password again.": "API 金鑰需要再次輸入您的密碼。",
+    "Confirm your password first.": "請先確認您的密碼。",
+    "Too many attempts. Please try again in :seconds seconds.": "嘗試次數過多。請在 :seconds 秒後重試。"
 }

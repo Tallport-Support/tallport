@@ -1518,5 +1518,11 @@
     "The AI Assistant took this message to be in :language already.": "O AI Assistant considerou que esta mensagem já está em :language.",
     "Could not translate the message: :error": "Não foi possível traduzir a mensagem: :error",
     "People can choose their own in their Preferences.": "Cada pessoa pode escolher a sua nas Preferências.",
-    "Use the Installation Default": "Usar a Predefinição da Instalação"
+    "Use the Installation Default": "Usar a Predefinição da Instalação",
+    "Confirm Your Password": "Confirme a Sua Palavra-Passe",
+    "These settings need your password again.": "Estas definições precisam novamente da sua palavra-passe.",
+    "Security settings need your password again.": "As definições de segurança precisam novamente da sua palavra-passe.",
+    "API keys need your password again.": "As chaves de API precisam novamente da sua palavra-passe.",
+    "Confirm your password first.": "Confirme primeiro a sua palavra-passe.",
+    "Too many attempts. Please try again in :seconds seconds.": "Demasiadas tentativas. Tente novamente dentro de :seconds segundos."
 }

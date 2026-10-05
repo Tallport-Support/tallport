@@ -1518,5 +1518,11 @@
     "The AI Assistant took this message to be in :language already.": "AI Assistant smatra da je ova poruka već na jeziku :language.",
     "Could not translate the message: :error": "Poruku nije moguće prevesti: :error",
     "People can choose their own in their Preferences.": "Svatko može odabrati svoju u svojim Postavkama.",
-    "Use the Installation Default": "Koristi Zadanu Vrijednost Instalacije"
+    "Use the Installation Default": "Koristi Zadanu Vrijednost Instalacije",
+    "Confirm Your Password": "Potvrdite Svoju Lozinku",
+    "These settings need your password again.": "Za ove postavke ponovno je potrebna vaša lozinka.",
+    "Security settings need your password again.": "Za sigurnosne postavke ponovno je potrebna vaša lozinka.",
+    "API keys need your password again.": "Za API ključeve ponovno je potrebna vaša lozinka.",
+    "Confirm your password first.": "Najprije potvrdite svoju lozinku.",
+    "Too many attempts. Please try again in :seconds seconds.": "Previše pokušaja. Pokušajte ponovno za :seconds s."
 }

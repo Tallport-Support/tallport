@@ -14,6 +14,7 @@
     <div class="page-content">
         @include('partials/flash_messages')
 
+        <x-password-gate :description="__('Security settings need your password again.')">
         <div class="settings-form">
             @if ($must_turn_on)
                 <x-fruit::alert tone="warning">{{ __('Two-factor authentication is required. Turn it on to continue.') }}</x-fruit::alert>
@@ -142,6 +143,7 @@
                 @endif
             </x-fruit::form-section>
         </div>
+        </x-password-gate>
         @if ($own && !$user->hasEnabledTwoFactorAuthentication() && $user->two_factor_secret)
             <form id="two_factor_cancel" method="POST" action="{{ route('two-factor.disable') }}">
                 {{ csrf_field() }}

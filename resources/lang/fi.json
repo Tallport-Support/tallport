@@ -1536,5 +1536,11 @@
     "The AI Assistant took this message to be in :language already.": "AI Assistant tulkitsi viestin olevan jo kielellä :language.",
     "Could not translate the message: :error": "Viestiä ei voitu kääntää: :error",
     "People can choose their own in their Preferences.": "Jokainen voi valita omansa Asetuksistaan.",
-    "Use the Installation Default": "Käytä Asennuksen Oletusta"
+    "Use the Installation Default": "Käytä Asennuksen Oletusta",
+    "Confirm Your Password": "Vahvista Salasanasi",
+    "These settings need your password again.": "Nämä asetukset vaativat salasanasi uudelleen.",
+    "Security settings need your password again.": "Suojausasetukset vaativat salasanasi uudelleen.",
+    "API keys need your password again.": "API-avaimet vaativat salasanasi uudelleen.",
+    "Confirm your password first.": "Vahvista ensin salasanasi.",
+    "Too many attempts. Please try again in :seconds seconds.": "Liian monta yritystä. Yritä uudelleen :seconds sekunnin kuluttua."
 }

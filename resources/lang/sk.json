@@ -1517,5 +1517,11 @@
     "The AI Assistant took this message to be in :language already.": "AI Assistant usúdil, že táto správa už je v jazyku :language.",
     "Could not translate the message: :error": "Správu sa nepodarilo preložiť: :error",
     "People can choose their own in their Preferences.": "Každý si môže vybrať vlastnú vo svojich Predvoľbách.",
-    "Use the Installation Default": "Použiť Predvolené Nastavenie Inštalácie"
+    "Use the Installation Default": "Použiť Predvolené Nastavenie Inštalácie",
+    "Confirm Your Password": "Potvrďte Svoje Heslo",
+    "These settings need your password again.": "Tieto nastavenia znova vyžadujú vaše heslo.",
+    "Security settings need your password again.": "Nastavenia zabezpečenia znova vyžadujú vaše heslo.",
+    "API keys need your password again.": "Kľúče API znova vyžadujú vaše heslo.",
+    "Confirm your password first.": "Najprv potvrďte svoje heslo.",
+    "Too many attempts. Please try again in :seconds seconds.": "Príliš veľa pokusov. Skúste to znova o :seconds s."
 }

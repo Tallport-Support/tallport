@@ -2356,36 +2356,6 @@
     },
     {
         "methods": [
-            "GET"
-        ],
-        "uri": "user/confirm-password",
-        "name": "password.confirm",
-        "action": "Laravel\\Fortify\\Http\\Controllers\\ConfirmablePasswordController@show",
-        "middleware": [
-            "web",
-            "auth"
-        ],
-        "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "user/confirm-password",
-        "name": "password.confirm.store",
-        "action": "Laravel\\Fortify\\Http\\Controllers\\ConfirmablePasswordController@store",
-        "middleware": [
-            "web",
-            "auth"
-        ],
-        "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
             "POST"
         ],
         "uri": "user/confirmed-two-factor-authentication",

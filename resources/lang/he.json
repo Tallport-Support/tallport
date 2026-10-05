@@ -1517,5 +1517,11 @@
     "The AI Assistant took this message to be in :language already.": "ה-AI Assistant הניח שההודעה כבר ב:language.",
     "Could not translate the message: :error": "לא ניתן היה לתרגם את ההודעה: :error",
     "People can choose their own in their Preferences.": "כל אחד יכול לבחור צבע משלו בהעדפות שלו.",
-    "Use the Installation Default": "שימוש בברירת המחדל של ההתקנה"
+    "Use the Installation Default": "שימוש בברירת המחדל של ההתקנה",
+    "Confirm Your Password": "אשרו את הסיסמה",
+    "These settings need your password again.": "הגדרות אלה דורשות שוב את הסיסמה שלך.",
+    "Security settings need your password again.": "הגדרות האבטחה דורשות שוב את הסיסמה שלך.",
+    "API keys need your password again.": "מפתחות API דורשים שוב את הסיסמה שלך.",
+    "Confirm your password first.": "אשרו תחילה את הסיסמה.",
+    "Too many attempts. Please try again in :seconds seconds.": "יותר מדי ניסיונות. נסו שוב בעוד :seconds שניות."
 }

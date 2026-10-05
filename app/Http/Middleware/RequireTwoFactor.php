@@ -14,7 +14,7 @@ class RequireTwoFactor
      * What a user without two-factor authentication can still use.
      */
     const ALLOWED_ROUTES = [
-        'users.security', 'two-factor.*', 'password.confirm', 'password.confirm.store', 'password.confirmation',
+        'users.security', 'two-factor.*', 'password.confirmation',
         'passkey.*', 'logout',
     ];
 

@@ -81,7 +81,7 @@ class Kernel extends HttpKernel
         'can'        => \Illuminate\Auth\Middleware\Authorize::class,
         'guest'      => \App\Http\Middleware\RedirectIfAuthenticated::class,
         // Asks for the password again before changing two-factor login or passkeys.
-        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+        'password.confirm' => \App\Http\Middleware\RequirePasswordInline::class,
         'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'roles'      => \App\Http\Middleware\CheckRole::class,
     ];

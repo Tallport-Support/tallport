@@ -1920,5 +1920,11 @@
     "The AI Assistant took this message to be in :language already.": "AI Assistant бұл хабарлама әлдеқашан :language тілінде деп санады.",
     "Could not translate the message: :error": "Хабарламаны аудару мүмкін болмады: :error",
     "People can choose their own in their Preferences.": "Әркім өз Баптауларында өзінікін таңдай алады.",
-    "Use the Installation Default": "Орнатудың Әдепкі Мәнін Пайдалану"
+    "Use the Installation Default": "Орнатудың Әдепкі Мәнін Пайдалану",
+    "Confirm Your Password": "Құпиясөзді Растаңыз",
+    "These settings need your password again.": "Бұл баптаулар үшін құпиясөзіңіз қайта қажет.",
+    "Security settings need your password again.": "Қауіпсіздік баптаулары үшін құпиясөзіңіз қайта қажет.",
+    "API keys need your password again.": "API кілттері үшін құпиясөзіңіз қайта қажет.",
+    "Confirm your password first.": "Алдымен құпиясөзді растаңыз.",
+    "Too many attempts. Please try again in :seconds seconds.": "Тым көп әрекет. :seconds секундтан кейін қайталаңыз."
 }

@@ -1518,5 +1518,11 @@
     "The AI Assistant took this message to be in :language already.": "AI Assistant bedömde att meddelandet redan är på :language.",
     "Could not translate the message: :error": "Det gick inte att översätta meddelandet: :error",
     "People can choose their own in their Preferences.": "Var och en kan välja sin egen i sina Inställningar.",
-    "Use the Installation Default": "Använd Installationens Standard"
+    "Use the Installation Default": "Använd Installationens Standard",
+    "Confirm Your Password": "Bekräfta Ditt Lösenord",
+    "These settings need your password again.": "De här inställningarna kräver ditt lösenord igen.",
+    "Security settings need your password again.": "Säkerhetsinställningarna kräver ditt lösenord igen.",
+    "API keys need your password again.": "API-nycklar kräver ditt lösenord igen.",
+    "Confirm your password first.": "Bekräfta ditt lösenord först.",
+    "Too many attempts. Please try again in :seconds seconds.": "För många försök. Försök igen om :seconds sekunder."
 }

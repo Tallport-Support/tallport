@@ -1518,5 +1518,11 @@
     "The AI Assistant took this message to be in :language already.": "Az AI Assistant szerint ez az üzenet már :language nyelvű.",
     "Could not translate the message: :error": "Az üzenetet nem sikerült lefordítani: :error",
     "People can choose their own in their Preferences.": "Mindenki választhat sajátot a Beállításaiban.",
-    "Use the Installation Default": "A Telepítés Alapértelmezésének Használata"
+    "Use the Installation Default": "A Telepítés Alapértelmezésének Használata",
+    "Confirm Your Password": "Erősítse Meg a Jelszavát",
+    "These settings need your password again.": "Ezekhez a beállításokhoz ismét meg kell adnia a jelszavát.",
+    "Security settings need your password again.": "A biztonsági beállításokhoz ismét meg kell adnia a jelszavát.",
+    "API keys need your password again.": "Az API-kulcsokhoz ismét meg kell adnia a jelszavát.",
+    "Confirm your password first.": "Először erősítse meg a jelszavát.",
+    "Too many attempts. Please try again in :seconds seconds.": "Túl sok próbálkozás. Próbálja újra :seconds másodperc múlva."
 }

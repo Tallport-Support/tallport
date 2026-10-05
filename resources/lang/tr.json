@@ -1518,5 +1518,11 @@
     "The AI Assistant took this message to be in :language already.": "AI Assistant bu mesajın zaten :language olduğunu düşündü.",
     "Could not translate the message: :error": "Mesaj çevrilemedi: :error",
     "People can choose their own in their Preferences.": "Herkes kendi rengini Tercihlerinden seçebilir.",
-    "Use the Installation Default": "Kurulum Varsayılanını Kullan"
+    "Use the Installation Default": "Kurulum Varsayılanını Kullan",
+    "Confirm Your Password": "Şifrenizi Onaylayın",
+    "These settings need your password again.": "Bu ayarlar için şifreniz yeniden gerekiyor.",
+    "Security settings need your password again.": "Güvenlik ayarları için şifreniz yeniden gerekiyor.",
+    "API keys need your password again.": "API anahtarları için şifreniz yeniden gerekiyor.",
+    "Confirm your password first.": "Önce şifrenizi onaylayın.",
+    "Too many attempts. Please try again in :seconds seconds.": "Çok fazla deneme. :seconds saniye sonra yeniden deneyin."
 }

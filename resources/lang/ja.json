@@ -1518,5 +1518,11 @@
     "The AI Assistant took this message to be in :language already.": "AI Assistant はこのメッセージがすでに:languageだと判断しました。",
     "Could not translate the message: :error": "メッセージを翻訳できませんでした: :error",
     "People can choose their own in their Preferences.": "各自が環境設定で独自の色を選べます。",
-    "Use the Installation Default": "インストールの既定値を使用"
+    "Use the Installation Default": "インストールの既定値を使用",
+    "Confirm Your Password": "パスワードを確認",
+    "These settings need your password again.": "これらの設定にはもう一度パスワードが必要です。",
+    "Security settings need your password again.": "セキュリティ設定にはもう一度パスワードが必要です。",
+    "API keys need your password again.": "API キーにはもう一度パスワードが必要です。",
+    "Confirm your password first.": "まずパスワードを確認してください。",
+    "Too many attempts. Please try again in :seconds seconds.": "試行回数が多すぎます。:seconds 秒後にもう一度お試しください。"
 }

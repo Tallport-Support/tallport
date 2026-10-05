@@ -172,10 +172,23 @@ class TwoFactorTest extends FeatureTestCase
         $user = $this->createUser(['password' => \Hash::make('secret-password')]);
         $this->actingAs($user);
 
-        $this->get(route('users.security', ['id' => $user->id]))->assertRedirect(route('password.confirm'));
-        $this->get(route('password.confirm'))->assertStatus(200);
-        $this->postForm(route('password.confirm.store'), ['password' => 'wrong'])->assertSessionHasErrors('password');
-        $this->postForm(route('password.confirm.store'), ['password' => 'secret-password'])->assertRedirect(route('users.security', ['id' => $user->id]));
+        // The page opens and asks for the password in place; its settings stay hidden.
+        $this->get(route('users.security', ['id' => $user->id]))->assertOk()
+            ->assertSee('password-gate', false)->assertDontSee(__('Two-Factor Authentication'));
+        // A change made without confirming goes back to the page (scripts get an error).
+        $this->from(route('users.security', ['id' => $user->id]))->postForm(route('two-factor.enable'), [])
+            ->assertRedirect(route('users.security', ['id' => $user->id]));
+        $this->assertFalse((bool) $user->fresh()->two_factor_secret);
+        $this->postJson(route('users.api_keys.action', ['id' => $user->id]), ['action' => 'create'])->assertStatus(423);
+
+        $gate = \Livewire\Livewire::actingAs($user)->test(\App\Livewire\PasswordGate::class)
+            ->set('password', 'wrong')->call('confirm')->assertHasErrors('password');
+        $this->assertFalse(\App\Auth\PasswordConfirmation::isRecent());
+        $gate->set('password', 'secret-password')->call('confirm')->assertHasNoErrors()->assertRedirect();
+        $this->assertTrue(\App\Auth\PasswordConfirmation::isRecent());
+
+        $this->withSession(['auth.password_confirmed_at' => time()])->get(route('users.security', ['id' => $user->id]))
+            ->assertSee(__('Two-Factor Authentication'))->assertDontSee('password-gate', false);
     }
 
     public function testAdminResetsAUser()

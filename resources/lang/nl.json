@@ -1521,5 +1521,11 @@
     "The AI Assistant took this message to be in :language already.": "De AI Assistant nam aan dat dit bericht al in het :language is.",
     "Could not translate the message: :error": "Het bericht kon niet worden vertaald: :error",
     "People can choose their own in their Preferences.": "Iedereen kan in de eigen Voorkeuren een eigen kleur kiezen.",
-    "Use the Installation Default": "Standaard van de Installatie Gebruiken"
+    "Use the Installation Default": "Standaard van de Installatie Gebruiken",
+    "Confirm Your Password": "Bevestig Uw Wachtwoord",
+    "These settings need your password again.": "Voor deze instellingen is uw wachtwoord opnieuw nodig.",
+    "Security settings need your password again.": "Voor de beveiligingsinstellingen is uw wachtwoord opnieuw nodig.",
+    "API keys need your password again.": "Voor API-sleutels is uw wachtwoord opnieuw nodig.",
+    "Confirm your password first.": "Bevestig eerst uw wachtwoord.",
+    "Too many attempts. Please try again in :seconds seconds.": "Te veel pogingen. Probeer het over :seconds seconden opnieuw."
 }

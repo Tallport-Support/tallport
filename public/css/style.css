@@ -996,6 +996,14 @@ a h4 {
     margin: -4px 0 8px;
     padding-inline-start: 12px;
 }
+/* The password gate (<x-password-gate>): a form centred like an empty state. */
+.password-gate__form {
+    width: min(100%, 20rem);
+    text-align: start;
+}
+.password-gate__actions {
+    justify-content: center;
+}
 /* Preferences: the accent picker, off while the installation's accent is used. */
 .accent-choice {
     min-width: 0;

@@ -14,6 +14,7 @@
     <div class="page-content">
         @include('partials/flash_messages')
 
+        <x-password-gate :description="__('API keys need your password again.')">
         <div class="settings-form settings-form--wide">
             <p class="f-help">{{ __('A key lets a program use the REST API as you: it sees and does what you can, in the mailboxes you choose. Send it in the X-FreeScout-API-Key header.') }}</p>
 
@@ -89,5 +90,6 @@
                 </footer>
             </form>
         </div>
+        </x-password-gate>
     </div>
 @endsection

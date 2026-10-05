@@ -42,9 +42,6 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::twoFactorChallengeView(function () {
             return view('auth.two_factor_challenge');
         });
-        Fortify::confirmPasswordView(function () {
-            return view('auth.confirm_password');
-        });
 
         Fortify::authenticateUsing(function (Request $request) {
             // Called twice per login (before the two-factor step and to log in).

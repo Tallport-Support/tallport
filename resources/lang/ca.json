@@ -1615,5 +1615,11 @@
     "The AI Assistant took this message to be in :language already.": "L'AI Assistant ha considerat que aquest missatge ja és en :language.",
     "Could not translate the message: :error": "No s'ha pogut traduir el missatge: :error",
     "People can choose their own in their Preferences.": "Cadascú pot triar el seu a les seves Preferències.",
-    "Use the Installation Default": "Fes Servir el Valor per Defecte de la Instal·lació"
+    "Use the Installation Default": "Fes Servir el Valor per Defecte de la Instal·lació",
+    "Confirm Your Password": "Confirmeu la Contrasenya",
+    "These settings need your password again.": "Aquests paràmetres necessiten de nou la vostra contrasenya.",
+    "Security settings need your password again.": "La configuració de seguretat necessita de nou la vostra contrasenya.",
+    "API keys need your password again.": "Les claus d'API necessiten de nou la vostra contrasenya.",
+    "Confirm your password first.": "Primer confirmeu la contrasenya.",
+    "Too many attempts. Please try again in :seconds seconds.": "Massa intents. Torneu-ho a provar d'aquí a :seconds segons."
 }
