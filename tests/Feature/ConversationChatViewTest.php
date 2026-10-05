@@ -66,7 +66,9 @@ class ConversationChatViewTest extends FeatureTestCase
         $this->assertLessThan(strpos($html, 'thread-'.$reply->id.'"'), strpos($html, 'thread-'.$first->id.'"'));
         // A divider and a list for each day.
         $this->assertSame(2, substr_count($html, 'f-divider'));
-        $this->assertSame(2, preg_match_all('#<ol role="list"[^>]*class="f-thread f-thread--compact"#', $html));
+        $this->assertSame(2, preg_match_all('#<ol role="list" class="f-thread f-thread--compact"#', $html));
+        // The component's root is its own element, not a day's list.
+        $this->assertMatchesRegularExpression('#^\s*<div [^>]*wire:id="[^"]+"[^>]*class="conv-thread-host"#', preg_replace('#<!--.*?-->#s', '', $html));
         $this->assertStringContainsString('Today', $html);
 
         // The email view: newest first, no dividers.

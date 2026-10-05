@@ -2759,6 +2759,9 @@ a.disabled:focus {
     grid-column: 1;
     margin-top: 2px;
 }
+.conv-thread-host {
+    display: contents;
+}
 .conv-history {
     flex: 1;
 }
