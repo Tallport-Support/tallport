@@ -252,6 +252,7 @@ class SettingsController extends Controller
                     'max_message_size'     => config('app.max_message_size'),
                     'email_user_history'   => config('app.email_user_history'),
                     \App\Misc\Gravatar::OPTION => Option::get(\App\Misc\Gravatar::OPTION, false),
+                    \App\Misc\Gravatar::DEFAULT_OPTION => Option::get(\App\Misc\Gravatar::DEFAULT_OPTION, ''),
                     'time_format'          => Option::get('time_format', User::TIME_FORMAT_24),
                     'locale'               => \Helper::getRealAppLocale(),
                     'timezone'             => config('app.timezone'),

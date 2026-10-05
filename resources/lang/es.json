@@ -1536,5 +1536,7 @@
     "Much faster pages: PHP keeps its compiled code in memory": "Páginas mucho más rápidas: PHP mantiene su código compilado en memoria",
     "Faster Nostr encryption (bcmath is used without it)": "Cifrado de Nostr más rápido (sin ella se usa bcmath)",
     "Nostr, when gmp is missing": "Nostr, cuando falta gmp",
-    "Redis for the cache, sessions or queue": "Redis para la caché, las sesiones o la cola"
+    "Redis for the cache, sessions or queue": "Redis para la caché, las sesiones o la cola",
+    "Without a Gravatar": "Sin Gravatar",
+    "Initials": "Iniciales"
 }

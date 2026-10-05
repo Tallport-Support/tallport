@@ -1536,5 +1536,7 @@
     "Much faster pages: PHP keeps its compiled code in memory": "页面快得多：PHP 将编译后的代码保留在内存中",
     "Faster Nostr encryption (bcmath is used without it)": "更快的 Nostr 加密（没有时使用 bcmath）",
     "Nostr, when gmp is missing": "缺少 gmp 时用于 Nostr",
-    "Redis for the cache, sessions or queue": "用于缓存、会话或队列的 Redis"
+    "Redis for the cache, sessions or queue": "用于缓存、会话或队列的 Redis",
+    "Without a Gravatar": "没有 Gravatar 时",
+    "Initials": "姓名首字母"
 }

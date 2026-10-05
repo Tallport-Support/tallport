@@ -1535,5 +1535,7 @@
     "Much faster pages: PHP keeps its compiled code in memory": "Sokkal gyorsabb oldalak: a PHP a lefordított kódját a memóriában tartja",
     "Faster Nostr encryption (bcmath is used without it)": "Gyorsabb Nostr-titkosítás (nélküle a bcmath kerül használatra)",
     "Nostr, when gmp is missing": "Nostr, ha a gmp hiányzik",
-    "Redis for the cache, sessions or queue": "Redis a gyorsítótárhoz, munkamenetekhez vagy a sorhoz"
+    "Redis for the cache, sessions or queue": "Redis a gyorsítótárhoz, munkamenetekhez vagy a sorhoz",
+    "Without a Gravatar": "Gravatar Nélkül",
+    "Initials": "Monogram"
 }

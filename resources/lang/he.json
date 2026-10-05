@@ -1534,5 +1534,7 @@
     "Much faster pages: PHP keeps its compiled code in memory": "דפים מהירים בהרבה: PHP שומר את הקוד המהודר שלו בזיכרון",
     "Faster Nostr encryption (bcmath is used without it)": "הצפנת Nostr מהירה יותר (בלעדיה משתמשים ב-bcmath)",
     "Nostr, when gmp is missing": "Nostr, כאשר gmp חסר",
-    "Redis for the cache, sessions or queue": "Redis למטמון, להפעלות או לתור"
+    "Redis for the cache, sessions or queue": "Redis למטמון, להפעלות או לתור",
+    "Without a Gravatar": "ללא Gravatar",
+    "Initials": "ראשי תיבות"
 }

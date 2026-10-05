@@ -1534,5 +1534,7 @@
     "Much faster pages: PHP keeps its compiled code in memory": "Precej hitrejše strani: PHP hrani prevedeno kodo v pomnilniku",
     "Faster Nostr encryption (bcmath is used without it)": "Hitrejše šifriranje Nostr (brez njega se uporabi bcmath)",
     "Nostr, when gmp is missing": "Nostr, ko gmp manjka",
-    "Redis for the cache, sessions or queue": "Redis za predpomnilnik, seje ali čakalno vrsto"
+    "Redis for the cache, sessions or queue": "Redis za predpomnilnik, seje ali čakalno vrsto",
+    "Without a Gravatar": "Brez Gravatarja",
+    "Initials": "Začetnice"
 }

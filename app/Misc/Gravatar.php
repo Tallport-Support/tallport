@@ -7,9 +7,10 @@ use App\Thread;
 use Illuminate\Support\Facades\Http;
 
 /**
- * Customer photos from Gravatar (a setting): looked up once per customer
- * without a photo, when they email. Gravatar gets the address's SHA-256
- * hash.
+ * Customer photos from Gravatar (a setting): looked up for a customer without
+ * a photo of their own when they email, and again after REFRESH_DAYS. Without
+ * a Gravatar: initials, or Gravatar's generated image (DEFAULT_OPTION).
+ * Gravatar gets the address's SHA-256 hash.
  */
 class Gravatar
 {
@@ -19,6 +20,18 @@ class Gravatar
      * Customer meta: when Gravatar was asked.
      */
     const META = 'gravatar_checked_at';
+
+    /**
+     * Without a Gravatar: Gravatar's generated image (d=), or initials (none set).
+     */
+    const DEFAULT_OPTION = 'customer_gravatar_default';
+
+    const DEFAULTS = ['robohash' => 'Robohash', 'identicon' => 'Identicon', 'retro' => 'Retro', 'monsterid' => 'MonsterID', 'wavatar' => 'Wavatar'];
+
+    /**
+     * Asked again after this long, when the customer emails.
+     */
+    const REFRESH_DAYS = 90;
 
     public static function isEnabled()
     {
@@ -37,15 +50,30 @@ class Gravatar
 
     public static function request(?Customer $customer, $email)
     {
-        if (self::isEnabled() && $customer && !$customer->photo_url && !$customer->getMeta(self::META) && $email) {
+        if (self::isEnabled() && $customer && $email && self::isDue($customer)) {
             \App\Jobs\FetchGravatar::dispatch($customer->id, $email);
         }
     }
 
+    /**
+     * Whether to ask Gravatar: no photo of their own, and not asked lately.
+     */
+    public static function isDue(Customer $customer)
+    {
+        if ($customer->photo_url && $customer->photo_type != Customer::PHOTO_TYPE_GRAVATAR) {
+            return false;
+        }
+        $checked_at = $customer->getMeta(self::META);
+
+        return !$checked_at || \Carbon\Carbon::parse($checked_at)->lt(now()->subDays(self::REFRESH_DAYS));
+    }
+
     public static function url($email)
     {
+        $default = (string) \Option::get(self::DEFAULT_OPTION, '');
+
         return 'https://gravatar.com/avatar/'.hash('sha256', strtolower(trim($email)))
-            .'?d=404&s='.(int) config('app.customer_photo_size');
+            .'?d='.(array_key_exists($default, self::DEFAULTS) ? $default : '404').'&s='.(int) config('app.customer_photo_size');
     }
 
     /**
@@ -53,7 +81,7 @@ class Gravatar
      */
     public static function fetch(Customer $customer, $email)
     {
-        if ($customer->photo_url || $customer->getMeta(self::META)) {
+        if (!self::isDue($customer)) {
             return false;
         }
         $found = false;
@@ -67,8 +95,12 @@ class Gravatar
                 @unlink($file);
                 if ($photo_url) {
                     $customer->photo_url = $photo_url;
+                    $customer->photo_type = Customer::PHOTO_TYPE_GRAVATAR;
                     $found = true;
                 }
+            } elseif ($response->status() == 404 && $customer->photo_url) {
+                // Their Gravatar is gone.
+                $customer->removePhoto();
             }
         } catch (\Throwable $e) {
             // Not now: asked again for the next address.

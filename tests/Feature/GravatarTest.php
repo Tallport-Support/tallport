@@ -67,4 +67,40 @@ class GravatarTest extends FeatureTestCase
         Gravatar::request($sam, 'sam@customer.example.org');
         Http::assertSentCount(2);
     }
+
+    public function testGeneratedImagesRefreshesAndOwnPhotos()
+    {
+        $hash = hash('sha256', 'casey@customer.example.org');
+        \Option::set(Gravatar::OPTION, true);
+
+        // Without a Gravatar: the generated image chosen, or initials (404).
+        $this->assertStringContainsString('d=404', Gravatar::url('casey@customer.example.org'));
+        \Option::set(Gravatar::DEFAULT_OPTION, 'robohash');
+        $this->assertStringContainsString('d=robohash', Gravatar::url('casey@customer.example.org'));
+        \Option::set(Gravatar::DEFAULT_OPTION, 'something');
+        $this->assertStringContainsString('d=404', Gravatar::url('casey@customer.example.org'));
+
+        Http::fake(['gravatar.com/avatar/'.$hash.'*' => Http::sequence()
+            ->push($this->png(), 200, ['Content-Type' => 'image/png'])
+            ->push('', 404)]);
+        $casey = $this->createCustomer('casey@customer.example.org');
+        $this->assertTrue(Gravatar::fetch($casey, 'casey@customer.example.org'));
+        $this->assertSame(Customer::PHOTO_TYPE_GRAVATAR, (int) $casey->fresh()->photo_type);
+
+        // Not asked again for a while; after REFRESH_DAYS, and a Gravatar that's gone goes.
+        $this->assertFalse(Gravatar::isDue($casey->fresh()));
+        $casey->setMeta(Gravatar::META, now()->subDays(Gravatar::REFRESH_DAYS + 1)->toDateTimeString());
+        $casey->save();
+        $this->assertTrue(Gravatar::isDue($casey->fresh()));
+        Gravatar::fetch($casey->fresh(), 'casey@customer.example.org');
+        $this->assertEmpty($casey->fresh()->photo_url);
+
+        // A photo of their own is never replaced.
+        $casey = $casey->fresh();
+        $casey->photo_url = 'own.jpg';
+        $casey->photo_type = Customer::PHOTO_TYPE_UKNOWN;
+        $casey->setMeta(Gravatar::META, null);
+        $casey->save();
+        $this->assertFalse(Gravatar::isDue($casey->fresh()));
+    }
 }

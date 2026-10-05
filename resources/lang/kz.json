@@ -1937,5 +1937,7 @@
     "Much faster pages: PHP keeps its compiled code in memory": "Беттер әлдеқайда жылдам: PHP компиляцияланған кодын жадта сақтайды",
     "Faster Nostr encryption (bcmath is used without it)": "Nostr шифрлауы жылдамырақ (онсыз bcmath қолданылады)",
     "Nostr, when gmp is missing": "Nostr, gmp болмаған кезде",
-    "Redis for the cache, sessions or queue": "Кэш, сессиялар немесе кезек үшін Redis"
+    "Redis for the cache, sessions or queue": "Кэш, сессиялар немесе кезек үшін Redis",
+    "Without a Gravatar": "Gravatar Болмаса",
+    "Initials": "Бас Әріптер"
 }

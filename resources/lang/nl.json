@@ -1538,5 +1538,7 @@
     "Much faster pages: PHP keeps its compiled code in memory": "Veel snellere pagina's: PHP houdt zijn gecompileerde code in het geheugen",
     "Faster Nostr encryption (bcmath is used without it)": "Snellere Nostr-versleuteling (zonder wordt bcmath gebruikt)",
     "Nostr, when gmp is missing": "Nostr, als gmp ontbreekt",
-    "Redis for the cache, sessions or queue": "Redis voor de cache, sessies of wachtrij"
+    "Redis for the cache, sessions or queue": "Redis voor de cache, sessies of wachtrij",
+    "Without a Gravatar": "Zonder Gravatar",
+    "Initials": "Initialen"
 }

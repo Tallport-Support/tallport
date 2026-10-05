@@ -1535,5 +1535,7 @@
     "Much faster pages: PHP keeps its compiled code in memory": "ページが大幅に高速化：PHP がコンパイル済みのコードをメモリに保持します",
     "Faster Nostr encryption (bcmath is used without it)": "Nostr の暗号化を高速化（ない場合は bcmath を使用）",
     "Nostr, when gmp is missing": "gmp がない場合の Nostr",
-    "Redis for the cache, sessions or queue": "キャッシュ、セッション、キュー用の Redis"
+    "Redis for the cache, sessions or queue": "キャッシュ、セッション、キュー用の Redis",
+    "Without a Gravatar": "Gravatar がない場合",
+    "Initials": "イニシャル"
 }

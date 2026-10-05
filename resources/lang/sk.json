@@ -1534,5 +1534,7 @@
     "Much faster pages: PHP keeps its compiled code in memory": "Oveľa rýchlejšie stránky: PHP uchováva skompilovaný kód v pamäti",
     "Faster Nostr encryption (bcmath is used without it)": "Rýchlejšie šifrovanie Nostr (bez neho sa použije bcmath)",
     "Nostr, when gmp is missing": "Nostr, keď chýba gmp",
-    "Redis for the cache, sessions or queue": "Redis pre vyrovnávaciu pamäť, relácie alebo frontu"
+    "Redis for the cache, sessions or queue": "Redis pre vyrovnávaciu pamäť, relácie alebo frontu",
+    "Without a Gravatar": "Bez Gravataru",
+    "Initials": "Iniciály"
 }

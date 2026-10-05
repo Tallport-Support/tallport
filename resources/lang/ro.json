@@ -1534,5 +1534,7 @@
     "Much faster pages: PHP keeps its compiled code in memory": "Pagini mult mai rapide: PHP își păstrează codul compilat în memorie",
     "Faster Nostr encryption (bcmath is used without it)": "Criptare Nostr mai rapidă (fără ea se folosește bcmath)",
     "Nostr, when gmp is missing": "Nostr, când lipsește gmp",
-    "Redis for the cache, sessions or queue": "Redis pentru cache, sesiuni sau coadă"
+    "Redis for the cache, sessions or queue": "Redis pentru cache, sesiuni sau coadă",
+    "Without a Gravatar": "Fără Gravatar",
+    "Initials": "Inițiale"
 }

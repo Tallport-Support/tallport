@@ -1553,5 +1553,7 @@
     "Much faster pages: PHP keeps its compiled code in memory": "Paljon nopeammat sivut: PHP pitää käännetyn koodinsa muistissa",
     "Faster Nostr encryption (bcmath is used without it)": "Nopeampi Nostr-salaus (ilman sitä käytetään bcmathia)",
     "Nostr, when gmp is missing": "Nostr, kun gmp puuttuu",
-    "Redis for the cache, sessions or queue": "Redis välimuistille, istunnoille tai jonolle"
+    "Redis for the cache, sessions or queue": "Redis välimuistille, istunnoille tai jonolle",
+    "Without a Gravatar": "Ilman Gravataria",
+    "Initials": "Nimikirjaimet"
 }

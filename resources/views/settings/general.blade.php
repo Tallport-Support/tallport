@@ -67,6 +67,16 @@
             <x-fruit::switch name="settings[customer_gravatar]" value="1" :checked="(bool) old('settings.customer_gravatar', $settings['customer_gravatar'])" />
         </x-fruit::field>
 
+        {{-- Gravatar's generated images (robots, patterns…), or initials. --}}
+        <x-fruit::field :label="__('Without a Gravatar')" layout="row">
+            <x-fruit::select name="settings[customer_gravatar_default]">
+                <option value="">{{ __('Initials') }}</option>
+                @foreach (App\Misc\Gravatar::DEFAULTS as $gravatar_default => $gravatar_default_name)
+                    <option value="{{ $gravatar_default }}" @selected(old('settings.customer_gravatar_default', $settings['customer_gravatar_default']) == $gravatar_default)>{{ $gravatar_default_name }}</option>
+                @endforeach
+            </x-fruit::select>
+        </x-fruit::field>
+
         <x-fruit::field :label="__('Spread the Word', ['app_name' => \Config::get('app.name')])" layout="row">
             <x-fruit::switch name="settings[email_branding]" value="1" :checked="(bool) old('settings.email_branding', $settings['email_branding'])" />
             <x-slot:description>{{ __('Add "Powered by :app_name" footer text to the outgoing emails to invite more developers to the project and make the application better.', ['app_name' => \Config::get('app.name')]) }}</x-slot:description>
