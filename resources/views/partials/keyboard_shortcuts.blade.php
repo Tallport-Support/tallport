@@ -1,8 +1,9 @@
 {{-- The keyboard shortcuts (public/js/shortcuts.js), shown with ?. --}}
-<x-fruit::dialog name="keyboard-shortcuts" size="large" aria-labelledby="keyboard-shortcuts-title">
+{{-- Closed by its X (a dialog form, no script needed), Esc, ? or a click outside it. --}}
+<x-fruit::dialog name="keyboard-shortcuts" size="large" aria-labelledby="keyboard-shortcuts-title" closedby="any">
     <header class="f-dialog__header">
         <h2 id="keyboard-shortcuts-title">{{ __('Keyboard Shortcuts') }}</h2>
-        <x-fruit::button variant="ghost" size="small" class="f-button--icon" x-on:click="$el.closest('dialog').close()" :aria-label="__('Close')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+        <form method="dialog"><x-fruit::button type="submit" variant="ghost" size="small" class="f-button--icon" :aria-label="__('Close')" :title="__('Close')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button></form>
     </header>
     <div class="f-dialog__body keyboard-shortcuts">
         <div class="keyboard-shortcuts__columns">
