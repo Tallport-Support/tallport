@@ -2065,6 +2065,9 @@ a.disabled:focus {
 .system-status__command {
     margin-top: 6px;
 }
+.system-status__attempts {
+    color: var(--f-warning);
+}
 .system-status__wide {
     flex: 1;
     min-width: 0;
@@ -2318,7 +2321,11 @@ a.disabled:focus {
 .conv-new-form .conv-block {
     margin-top: 16px;
 }
-/* A page column (layouts/app's page_width): its own padding, not the old wrappers'. */
+/* A page column (layouts/app's page_width): its own padding, not the old wrappers';
+   its title and tabs on the column's edge. */
+.app-page .page-nav {
+    padding: 0;
+}
 .app-page .page-content,
 .app-page > .f-page__body > .content {
     padding: 0;

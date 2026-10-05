@@ -100,9 +100,9 @@ class RedisTest extends FeatureTestCase
 
         $this->actingAs($admin)->get(route('system'))
             ->assertOk()
-            ->assertSee('SendReplyToCustomer')
+            ->assertSee('Send reply to customer')
             ->assertSee('#'.$conversation->number)
-            ->assertSee('(queue)');
+            ->assertSeeInOrder(['Redis', 'queue']);
 
         $this->actingAs($admin)->post(route('system.action'), ['action' => 'cancel_job', 'job_id' => $reply->getQueuedJobId()]);
 

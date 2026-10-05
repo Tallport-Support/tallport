@@ -232,6 +232,8 @@ class SystemController extends Controller
                 'name'        => $command_name,
                 'status'      => $status,
                 'status_text' => implode(' ', $status_texts),
+                'last_run'            => $last_run ? Carbon::createFromTimestamp($last_run) : null,
+                'last_successful_run' => $last_successful_run ? Carbon::createFromTimestamp($last_successful_run) : null,
             ];
         }
 

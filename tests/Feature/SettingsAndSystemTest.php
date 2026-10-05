@@ -174,7 +174,7 @@ class SettingsAndSystemTest extends FeatureTestCase
 
         // The status page calls it out at the top; its details open in a dialog.
         $this->actingAs($this->admin)->get(route('system'))->assertOk()
-            ->assertSeeInOrder(['Needs attention', 'Failed Jobs: 1', 'Background Jobs'])
+            ->assertSeeInOrder(['need attention', '1 job failed', 'Failed Jobs'])
             ->assertSee('data-fruit-dialog-url', false)
             ->assertSee(route('system.ajax_html', ['action' => 'job_details', 'param' => $job_id]), false);
 
