@@ -7,22 +7,23 @@ Please report vulnerabilities in Tallport privately through
 not in public issues.
 
 * One issue per advisory, so each can be tracked and fixed on its own.
-* Include the Tallport version (Manage » System » Status), steps to
+* Include the Tallport version (Settings » System » Status), steps to
   reproduce and what an attacker gains.
 * Fixes are released as a new Tallport version; the advisory is published
   after that.
 
-Vulnerabilities in **modules** go to the module's author. For FreeScout's
-official modules that is the FreeScout team: https://freescout.net/contact-us/.
+Vulnerabilities in a **module** go to that module's author, through the
+security advisories of the module's own GitHub repository (its "View details"
+link on the Modules page).
 
 Tallport is a fork of FreeScout. If a vulnerability also affects FreeScout,
-please report it to FreeScout as well:
-https://github.com/freescout-help-desk/freescout/security/advisories.
+please report it to FreeScout as well, the same way:
+https://github.com/freescout-help-desk/freescout/security/advisories/new.
 
 ## Supported versions
 
 Only the latest release is supported. Installations update to it through
-Manage » System » Status » Update Now.
+Settings » System » Status » Update Now.
 
 ## Current behaviour that is not a vulnerability
 
