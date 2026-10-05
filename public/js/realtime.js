@@ -108,8 +108,9 @@ function maybeShowConnectionRestored()
 		return true;
 	};
 
-	// After missed events: what could have changed, refreshed.
-	var catchUp = function () {
+	// After missed events: what could have changed, refreshed (also a page that was
+	// prefetched a while before it was shown: tallport.js).
+	var catchUp = window.tallportCatchUp = function () {
 		if (attr('conversation_id')) {
 			Livewire.dispatch('conversation-thread-created');
 		}

@@ -115,7 +115,9 @@ window.Tallport = (function () {
 
 /**
  * wire:navigate (the app's own links): the next page is swapped in, with
- * Livewire's progress bar. The sidebar keeps its scroll position.
+ * Livewire's progress bar; folders and conversations are fetched on hover
+ * already (wire:navigate.hover), and brought up to date when shown later.
+ * The sidebar keeps its scroll position.
  */
 (function () {
 	var sidebar_scroll = 0;
@@ -128,7 +130,14 @@ window.Tallport = (function () {
 		sidebar_scroll = sidebar() ? sidebar().scrollTop : 0;
 	});
 
+	var first_page = true;
 	document.addEventListener('livewire:navigated', function () {
+		// A page prefetched on hover (wire:navigate.hover) a while before it was shown.
+		var rendered_at = parseInt(document.body.getAttribute('data-rendered-at')) || 0;
+		if (!first_page && rendered_at && Date.now() / 1000 - rendered_at > 5 && window.tallportCatchUp) {
+			window.tallportCatchUp();
+		}
+		first_page = false;
 		// A page shown at another URL (a folder showing its conversation) says its own.
 		var page_url = document.body.getAttribute('data-page-url');
 		if (page_url && page_url != window.location.href) {

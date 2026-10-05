@@ -12,9 +12,23 @@ document.addEventListener('click', function (e) {
 });
 
 // Each conversation page, also one opened with wire:navigate.
+var conversation_first_page = true;
 document.addEventListener('livewire:navigated', function () {
+	var first_page = conversation_first_page;
+	conversation_first_page = false;
 	if (!document.body.getAttribute('data-conversation_id')) {
 		return;
+	}
+	// Shown after wire:navigate (perhaps prefetched on hover): now it's seen
+	// (ConversationsController::view() does this for a page loaded in full).
+	if (!first_page) {
+		var params = new URLSearchParams(window.location.search);
+		Tallport.post(laroute.route('conversations.ajax'), {
+			action: 'viewed',
+			conversation_id: document.body.getAttribute('data-conversation_id'),
+			folder_id: params.get('folder_id') || '',
+			mark_as_read: params.get('mark_as_read') || ''
+		});
 	}
 	// After a message sent in the chat view, the next one can be typed right away.
 	if (sessionStorageGet('tallport_chat_focus') == document.body.getAttribute('data-conversation_id')) {

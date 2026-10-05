@@ -97,8 +97,8 @@
                 @endif
             </x-fruit::menu>
         </li>@action('conversation.convinfo.before_nav', $conversation, $mailbox)<li class="conv-next-prev">
-            <a wire:navigate href="{{ $conversation->urlPrev(App\Conversation::getFolderParam()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Newer") }}" aria-label="{{ __("Newer") }}"><x-icon.chevron-up class="f-icon" aria-hidden="true" /></a>
-            <a wire:navigate href="{{ $conversation->urlNext(App\Conversation::getFolderParam()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Older") }}" aria-label="{{ __("Older") }}"><x-icon.chevron-down class="f-icon" aria-hidden="true" /></a>
+            <a wire:navigate.hover href="{{ $conversation->urlPrev(App\Conversation::getFolderParam()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Newer") }}" aria-label="{{ __("Newer") }}"><x-icon.chevron-up class="f-icon" aria-hidden="true" /></a>
+            <a wire:navigate.hover href="{{ $conversation->urlNext(App\Conversation::getFolderParam()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Older") }}" aria-label="{{ __("Older") }}"><x-icon.chevron-down class="f-icon" aria-hidden="true" /></a>
         </li><li class="conv-customer-toggle">
             <button type="button" class="f-button f-button--ghost f-button--icon app-inspector-toggle" x-data x-on:click="let ws = $el.closest('.app-workspace'); ws.dataset.view = ws.dataset.view === 'inspector' ? '' : 'inspector'; $el.setAttribute('aria-expanded', ws.dataset.view === 'inspector')" aria-expanded="false" aria-controls="app-inspector" aria-label="{{ __('Customer') }}" title="{{ __('Customer') }}"><x-icon.circle-user class="f-icon" aria-hidden="true" /></button>
         </li>

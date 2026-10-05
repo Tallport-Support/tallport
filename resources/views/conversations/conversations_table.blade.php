@@ -104,7 +104,7 @@
                     @if (empty($no_checkboxes))
                         <x-fruit::checkbox class="conv-checkbox" :id="'cb-'.$conversation->id" :name="'cb_'.$conversation->id" :value="$conversation->id" wire:model.live="selected"><span class="f-sr-only">{{ __('Select Conversation') }}: {{ $conversation->getSubject() }}</span></x-fruit::checkbox>
                     @endif
-                    <x-fruit::item-link :href="$conversation->url(null, null, $list_params)" :current="$current_conversation_id == $conversation->id" :target="$conv_target ? '_blank' : null" :wire:navigate="!$conv_target" class="conv-row__link">
+                    <x-fruit::item-link :href="$conversation->url(null, null, $list_params)" :current="$current_conversation_id == $conversation->id" :target="$conv_target ? '_blank' : null" :wire:navigate.hover="!$conv_target" class="conv-row__link">
                         <x-slot:title :title="$conversation->customer_email">@if (empty($no_customer)){{ $conv_customer_name }}@else{{ $conversation->getSubject() }}@endif</x-slot:title>
                         <x-slot:trailing :title="$conv_date_title ?: null">{{ $conv_waiting_since }}</x-slot:trailing>
                         @if (empty($no_customer))

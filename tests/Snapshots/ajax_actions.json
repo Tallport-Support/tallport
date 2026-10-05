@@ -27,7 +27,8 @@
         "send_reply",
         "star_conversation",
         "unfollow",
-        "update_subject"
+        "update_subject",
+        "viewed"
     ],
     "ConversationsController@ajaxHtml": [
         "change_customer",

@@ -152,4 +152,37 @@ class ConversationListTest extends FeatureTestCase
             ->call('gotoPage', 1)
             ->assertSee('Support question')->assertSee('Sales question')->assertDontSee('conv-checkbox', false);
     }
+
+    public function testAPrefetchedConversationIsSeenOnlyWhenShown()
+    {
+        $conversation = $this->conversation('Prefetched question');
+        $folder = $this->folder(Folder::TYPE_UNASSIGNED);
+        $notification = function () use ($conversation) {
+            \DB::table('notifications')->insert([
+                'id' => (string) \Illuminate\Support\Str::uuid(), 'type' => 'App\\Notifications\\WebsiteNotification', 'notifiable_id' => $this->agent->id,
+                'notifiable_type' => \App\User::class, 'data' => '{}', 'conversation_id' => $conversation->id, 'read_at' => null, 'created_at' => now(), 'updated_at' => now(),
+            ]);
+        };
+        $unread = fn () => \DB::table('notifications')->where('conversation_id', $conversation->id)->whereNull('read_at')->count();
+
+        // Fetched by wire:navigate (maybe on hover): nothing happens yet.
+        $notification();
+        $this->actingAs($this->agent)->get($conversation->url($folder->id), ['X-Livewire-Navigate' => '1'])->assertOk();
+        $this->assertSame(1, $unread());
+        $this->assertNull(session('folder_conversation.'.$folder->id));
+
+        // Shown: read, and the folder opens at it again.
+        $this->postAjax($this->agent, '/conversation/ajax', ['action' => 'viewed', 'conversation_id' => $conversation->id, 'folder_id' => $folder->id])
+            ->assertJson(['status' => 'success']);
+        $this->assertSame(0, $unread());
+        $this->assertSame($conversation->id, session('folder_conversation.'.$folder->id));
+
+        // Loaded in full: at once.
+        $notification();
+        $this->actingAs($this->agent)->get($conversation->url($folder->id))->assertOk();
+        $this->assertSame(0, $unread());
+
+        $this->postAjax($this->createUser(), '/conversation/ajax', ['action' => 'viewed', 'conversation_id' => $conversation->id])
+            ->assertJson(['status' => 'error']);
+    }
 }

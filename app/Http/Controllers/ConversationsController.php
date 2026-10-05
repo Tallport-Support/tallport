@@ -57,20 +57,11 @@ class ConversationsController extends Controller
             $mailbox->fetchUserSettings($user->id);
         }
 
-        // Mark notifications as read
-        if (!empty($request->mark_as_read)) {
-            $user->unreadNotifications()->where('id', $request->mark_as_read)->update(['read_at' => now()]);
-            $user->clearWebsiteNotificationsCache();
-        } else {
-            // Build quiery manually instad of unreadNotifications() in order to use indexes.
-            //$mark_read_result = $user->unreadNotifications()->where('data', 'like', '%"conversation_id":'.$conversation->id.'%')->update(['read_at' => now()]);
-            $mark_read_result = $user->morphMany(\Illuminate\Notifications\DatabaseNotification::class, 'notifiable')
-                ->where('conversation_id', $conversation->id)
-                ->whereNull('read_at')
-                ->update(['read_at' => now()]);
-            if ($mark_read_result) {
-                $user->clearWebsiteNotificationsCache();
-            }
+        // Seen: its notifications read. Pages fetched by wire:navigate may be prefetched on
+        // hover and never shown: they say they were seen themselves (the viewed ajax action).
+        $prefetchable = (bool) $request->header('X-Livewire-Navigate');
+        if (!$prefetchable) {
+            self::markNotificationsRead($conversation, $user, $request->mark_as_read);
         }
 
         // Detect folder and redirect if needed
@@ -132,7 +123,9 @@ class ConversationsController extends Controller
         }
 
         // Opening the folder again comes back here (openFolder()).
-        session()->put('folder_conversation.'.$folder->id, $conversation->id);
+        if (!$prefetchable) {
+            session()->put('folder_conversation.'.$folder->id, $conversation->id);
+        }
 
         //$after_send = $conversation->mailbox->getUserSettings($user->id)->after_send;
         $after_send = $user->afterSend();
@@ -404,6 +397,27 @@ class ConversationsController extends Controller
     }
 
     /**
+     * The user's notifications about a conversation (or the one opened from) read.
+     */
+    public static function markNotificationsRead($conversation, $user, $notification_id = null)
+    {
+        if ($notification_id) {
+            $user->unreadNotifications()->where('id', $notification_id)->update(['read_at' => now()]);
+            $user->clearWebsiteNotificationsCache();
+
+            return;
+        }
+        // Built by hand rather than unreadNotifications(), to use the index.
+        $marked = $user->morphMany(\Illuminate\Notifications\DatabaseNotification::class, 'notifiable')
+            ->where('conversation_id', $conversation->id)
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+        if ($marked) {
+            $user->clearWebsiteNotificationsCache();
+        }
+    }
+
+    /**
      * A folder opens at a conversation beside its list: the one last opened from it in
      * this session, or its first. Null for an empty folder, a later page, or a narrow
      * window, where the list goes first (the tallport_narrow cookie, public/js/tallport.js).
@@ -653,6 +667,22 @@ class ConversationsController extends Controller
         $user = auth()->user();
 
         switch ($request->action) {
+
+            // A conversation page shown after wire:navigate (public/js/conversations.js):
+            // what opening it does (ConversationsController::view()), now that it's seen.
+            case 'viewed':
+                $conversation = Conversation::find($request->conversation_id);
+                if (!$conversation || !$user->can('view', $conversation)) {
+                    $response['msg'] = __('Not enough permissions');
+                    break;
+                }
+                self::markNotificationsRead($conversation, $user, $request->mark_as_read);
+                // openFolder() checks it's still in the folder.
+                if ((int) $request->folder_id) {
+                    session()->put('folder_conversation.'.(int) $request->folder_id, $conversation->id);
+                }
+                $response['status'] = 'success';
+                break;
 
             // Change conversation user
             case 'conversation_change_user':
