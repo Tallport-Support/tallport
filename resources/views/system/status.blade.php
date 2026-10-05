@@ -45,11 +45,11 @@
     }
     foreach ($missing_extensions as $extension_name => $optional_purpose) {
         $problems[] = $optional_purpose
-            ? ['php-extensions', __('The :name extension is missing (optional: :purpose)', ['name' => $extension_name, 'purpose' => __($optional_purpose)]), 'warning']
+            ? ['php-extensions', __('The optional :name extension is missing', ['name' => $extension_name]), 'warning']
             : ['php-extensions', __('The :name extension is missing', ['name' => $extension_name]), 'danger'];
     }
     if ($pcre_jit_off) {
-        $problems[] = ['php-extensions', __('PCRE JIT is off (optional: :purpose)', ['purpose' => __('Faster text processing')]), 'warning'];
+        $problems[] = ['php-extensions', __('PCRE JIT is off'), 'warning'];
     }
     foreach ($missing_functions as $function_name) {
         $problems[] = ['functions', __('The :name function is missing', ['name' => $function_name]), 'danger'];
@@ -389,7 +389,7 @@
 
     @action('system.status.after_cron_commands')
 
-    <x-fruit::form-section :title="__('Queued Jobs').' · '.count($queued_jobs)" id="jobs">
+    <x-fruit::form-section :title="__('Queued Jobs').(count($queued_jobs) ? ' · '.count($queued_jobs) : '')" id="jobs">
         @forelse ($queued_jobs as $job)
             @php
                 $payload = $job->getPayloadDecoded();
@@ -402,7 +402,7 @@
                         @if ($job_conversation)<a href="{{ route('conversations.view', ['id' => $last_thread->conversation_id]) }}#thread-{{ $last_thread->id }}" target="_blank">{{ __('Conversation') }} #{{ $job_conversation->number }}</a> · @endif{{ __('Queue') }}: {{ $job->queue }}
                         @if ($job->attempts > 0)
                             · <span class="system-status__attempts">{{ trans_choice('1 attempt|:count attempts', $job->attempts) }}</span>
-                            · {{ __('Next attempt :time', ['time' => \Illuminate\Support\Carbon::make(is_numeric($job->available_at) ? '@'.$job->available_at : $job->available_at)->diffForHumans()]) }}
+                            · {{ __('Next attempt in :time', ['time' => \Illuminate\Support\Carbon::make(is_numeric($job->available_at) ? '@'.$job->available_at : $job->available_at)->diffForHumans(['syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE, 'parts' => 1])]) }}
                         @endif
                     </p>
                 </div>
@@ -423,7 +423,7 @@
         @endforelse
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Failed Jobs').' · '.count($failed_jobs)" id="failed-jobs" :footer="count($queued_jobs) || count($failed_jobs) ? __('Queued and failed jobs are cleaned automatically once in a while. No need to worry or delete them manually.') : null">
+    <x-fruit::form-section :title="__('Failed Jobs').(count($failed_jobs) ? ' · '.count($failed_jobs) : '')" id="failed-jobs" :footer="count($queued_jobs) || count($failed_jobs) ? __('Queued and failed jobs are cleaned automatically once in a while. No need to worry or delete them manually.') : null">
         @if (count($failed_jobs))
             <div class="f-form-row">
                 <span class="f-muted">{{ trans_choice('1 job failed|:count jobs failed', count($failed_jobs)) }}</span>

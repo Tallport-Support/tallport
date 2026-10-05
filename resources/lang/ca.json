@@ -1597,9 +1597,7 @@
     "1 thing needs attention|:count things need attention": "1 cosa requereix atenció|:count coses requereixen atenció",
     "Database migrations are pending": "Hi ha migracions de la base de dades pendents",
     "Redis isn't reachable": "No es pot connectar amb Redis",
-    "The :name extension is missing (optional: :purpose)": "Falta l'extensió :name (opcional: :purpose)",
     "The :name extension is missing": "Falta l'extensió :name",
-    "PCRE JIT is off (optional: :purpose)": "PCRE JIT està desactivat (opcional: :purpose)",
     "The :name function is missing": "Falta la funció :name",
     ":path isn't writable": ":path no té permís d'escriptura",
     "Some cache files aren't writable": "Alguns fitxers de la memòria cau no tenen permís d'escriptura",
@@ -1617,5 +1615,7 @@
     "No queued jobs": "No hi ha tasques a la cua",
     "No failed jobs": "No hi ha tasques fallides",
     "1 attempt|:count attempts": "1 intent|:count intents",
-    "Next attempt :time": "Proper intent: :time"
+    "The optional :name extension is missing": "Falta l'extensió opcional :name",
+    "PCRE JIT is off": "PCRE JIT està desactivat",
+    "Next attempt in :time": "Proper intent d'aquí a :time"
 }

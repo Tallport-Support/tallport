@@ -1519,9 +1519,7 @@
     "1 thing needs attention|:count things need attention": "1 asia vaatii huomiota|:count asiaa vaatii huomiota",
     "Database migrations are pending": "Tietokannan migraatioita odottaa",
     "Redis isn't reachable": "Redisiin ei saada yhteyttä",
-    "The :name extension is missing (optional: :purpose)": "Laajennus :name puuttuu (valinnainen: :purpose)",
     "The :name extension is missing": "Laajennus :name puuttuu",
-    "PCRE JIT is off (optional: :purpose)": "PCRE JIT on pois päältä (valinnainen: :purpose)",
     "The :name function is missing": "Funktio :name puuttuu",
     ":path isn't writable": ":path ei ole kirjoitettavissa",
     "Some cache files aren't writable": "Joihinkin välimuistitiedostoihin ei voi kirjoittaa",
@@ -1539,5 +1537,7 @@
     "No queued jobs": "Ei jonossa olevia tehtäviä",
     "No failed jobs": "Ei epäonnistuneita tehtäviä",
     "1 attempt|:count attempts": "1 yritys|:count yritystä",
-    "Next attempt :time": "Seuraava yritys: :time"
+    "The optional :name extension is missing": "Valinnainen laajennus :name puuttuu",
+    "PCRE JIT is off": "PCRE JIT on pois päältä",
+    "Next attempt in :time": "Seuraava yritys :time kuluttua"
 }

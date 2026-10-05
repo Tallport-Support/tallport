@@ -1500,9 +1500,7 @@
     "1 thing needs attention|:count things need attention": ":count dolog figyelmet igényel|:count dolog figyelmet igényel",
     "Database migrations are pending": "Adatbázis-migrációk várnak futtatásra",
     "Redis isn't reachable": "A Redis nem érhető el",
-    "The :name extension is missing (optional: :purpose)": "A(z) :name bővítmény hiányzik (opcionális: :purpose)",
     "The :name extension is missing": "A(z) :name bővítmény hiányzik",
-    "PCRE JIT is off (optional: :purpose)": "A PCRE JIT ki van kapcsolva (opcionális: :purpose)",
     "The :name function is missing": "A(z) :name függvény hiányzik",
     ":path isn't writable": "A(z) :path nem írható",
     "Some cache files aren't writable": "Néhány gyorsítótárfájl nem írható",
@@ -1520,5 +1518,7 @@
     "No queued jobs": "Nincs várakozó feladat",
     "No failed jobs": "Nincs sikertelen feladat",
     "1 attempt|:count attempts": ":count próbálkozás|:count próbálkozás",
-    "Next attempt :time": "Következő próbálkozás: :time"
+    "The optional :name extension is missing": "A(z) :name opcionális bővítmény hiányzik",
+    "PCRE JIT is off": "A PCRE JIT ki van kapcsolva",
+    "Next attempt in :time": "Következő próbálkozás :time múlva"
 }

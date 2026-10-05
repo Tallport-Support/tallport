@@ -1500,9 +1500,7 @@
     "1 thing needs attention|:count things need attention": ":count konu ilgilenilmesini gerektiriyor",
     "Database migrations are pending": "Bekleyen veritabanı geçişleri var",
     "Redis isn't reachable": "Redis erişilemiyor",
-    "The :name extension is missing (optional: :purpose)": ":name eklentisi eksik (isteğe bağlı: :purpose)",
     "The :name extension is missing": ":name eklentisi eksik",
-    "PCRE JIT is off (optional: :purpose)": "PCRE JIT kapalı (isteğe bağlı: :purpose)",
     "The :name function is missing": ":name fonksiyonu eksik",
     ":path isn't writable": ":path yazılabilir değil",
     "Some cache files aren't writable": "Bazı önbellek dosyaları yazılabilir değil",
@@ -1520,5 +1518,7 @@
     "No queued jobs": "Kuyrukta iş yok",
     "No failed jobs": "Başarısız iş yok",
     "1 attempt|:count attempts": ":count deneme",
-    "Next attempt :time": "Sonraki deneme: :time"
+    "The optional :name extension is missing": "İsteğe bağlı :name eklentisi eksik",
+    "PCRE JIT is off": "PCRE JIT kapalı",
+    "Next attempt in :time": "Sonraki deneme :time sonra"
 }

@@ -1499,9 +1499,7 @@
     "1 thing needs attention|:count things need attention": ":count rzecz wymaga uwagi|:count rzeczy wymagają uwagi|:count rzeczy wymaga uwagi",
     "Database migrations are pending": "Oczekują migracje bazy danych",
     "Redis isn't reachable": "Redis jest nieosiągalny",
-    "The :name extension is missing (optional: :purpose)": "Brak rozszerzenia :name (opcjonalne: :purpose)",
     "The :name extension is missing": "Brak rozszerzenia :name",
-    "PCRE JIT is off (optional: :purpose)": "PCRE JIT jest wyłączony (opcjonalne: :purpose)",
     "The :name function is missing": "Brak funkcji :name",
     ":path isn't writable": ":path nie jest zapisywalny",
     "Some cache files aren't writable": "Niektóre pliki pamięci podręcznej nie są zapisywalne",
@@ -1519,5 +1517,7 @@
     "No queued jobs": "Brak zadań w kolejce",
     "No failed jobs": "Brak nieudanych zadań",
     "1 attempt|:count attempts": ":count próba|:count próby|:count prób",
-    "Next attempt :time": "Następna próba: :time"
+    "The optional :name extension is missing": "Brak opcjonalnego rozszerzenia :name",
+    "PCRE JIT is off": "PCRE JIT jest wyłączony",
+    "Next attempt in :time": "Następna próba za :time"
 }

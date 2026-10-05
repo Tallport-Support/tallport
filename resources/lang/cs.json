@@ -1499,9 +1499,7 @@
     "1 thing needs attention|:count things need attention": ":count věc vyžaduje pozornost|:count věci vyžadují pozornost|:count věcí vyžaduje pozornost",
     "Database migrations are pending": "Čekají migrace databáze",
     "Redis isn't reachable": "Redis není dostupný",
-    "The :name extension is missing (optional: :purpose)": "Chybí rozšíření :name (volitelné: :purpose)",
     "The :name extension is missing": "Chybí rozšíření :name",
-    "PCRE JIT is off (optional: :purpose)": "PCRE JIT je vypnutý (volitelné: :purpose)",
     "The :name function is missing": "Chybí funkce :name",
     ":path isn't writable": "Do :path nelze zapisovat",
     "Some cache files aren't writable": "Do některých souborů mezipaměti nelze zapisovat",
@@ -1519,5 +1517,7 @@
     "No queued jobs": "Žádné úlohy ve frontě",
     "No failed jobs": "Žádné neúspěšné úlohy",
     "1 attempt|:count attempts": ":count pokus|:count pokusy|:count pokusů",
-    "Next attempt :time": "Další pokus: :time"
+    "The optional :name extension is missing": "Chybí volitelné rozšíření :name",
+    "PCRE JIT is off": "PCRE JIT je vypnutý",
+    "Next attempt in :time": "Další pokus za :time"
 }

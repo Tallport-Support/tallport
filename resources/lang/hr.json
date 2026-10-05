@@ -1500,9 +1500,7 @@
     "1 thing needs attention|:count things need attention": ":count stvar zahtijeva pozornost|:count stvari zahtijevaju pozornost|:count stvari zahtijeva pozornost",
     "Database migrations are pending": "Migracije baze podataka čekaju",
     "Redis isn't reachable": "Redis nije dostupan",
-    "The :name extension is missing (optional: :purpose)": "Nedostaje proširenje :name (neobavezno: :purpose)",
     "The :name extension is missing": "Nedostaje proširenje :name",
-    "PCRE JIT is off (optional: :purpose)": "PCRE JIT je isključen (neobavezno: :purpose)",
     "The :name function is missing": "Nedostaje funkcija :name",
     ":path isn't writable": ":path nije zapisiv",
     "Some cache files aren't writable": "Neke datoteke predmemorije nisu zapisive",
@@ -1520,5 +1518,7 @@
     "No queued jobs": "Nema poslova na čekanju",
     "No failed jobs": "Nema neuspjelih poslova",
     "1 attempt|:count attempts": ":count pokušaj|:count pokušaja|:count pokušaja",
-    "Next attempt :time": "Sljedeći pokušaj: :time"
+    "The optional :name extension is missing": "Nedostaje neobavezno proširenje :name",
+    "PCRE JIT is off": "PCRE JIT je isključen",
+    "Next attempt in :time": "Sljedeći pokušaj za :time"
 }

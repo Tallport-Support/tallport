@@ -1504,9 +1504,7 @@
     "1 thing needs attention|:count things need attention": "1 ting krever oppmerksomhet|:count ting krever oppmerksomhet",
     "Database migrations are pending": "Databasemigreringer venter",
     "Redis isn't reachable": "Redis kan ikke nås",
-    "The :name extension is missing (optional: :purpose)": "Utvidelsen :name mangler (valgfri: :purpose)",
     "The :name extension is missing": "Utvidelsen :name mangler",
-    "PCRE JIT is off (optional: :purpose)": "PCRE JIT er av (valgfri: :purpose)",
     "The :name function is missing": "Funksjonen :name mangler",
     ":path isn't writable": ":path er ikke skrivbar",
     "Some cache files aren't writable": "Noen hurtigbufferfiler er ikke skrivbare",
@@ -1524,5 +1522,7 @@
     "No queued jobs": "Ingen jobber i kø",
     "No failed jobs": "Ingen mislykkede jobber",
     "1 attempt|:count attempts": "1 forsøk|:count forsøk",
-    "Next attempt :time": "Neste forsøk: :time"
+    "The optional :name extension is missing": "Den valgfrie utvidelsen :name mangler",
+    "PCRE JIT is off": "PCRE JIT er av",
+    "Next attempt in :time": "Neste forsøk om :time"
 }

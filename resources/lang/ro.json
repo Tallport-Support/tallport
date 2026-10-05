@@ -1499,9 +1499,7 @@
     "1 thing needs attention|:count things need attention": "1 element necesită atenție|:count elemente necesită atenție|:count de elemente necesită atenție",
     "Database migrations are pending": "Există migrări ale bazei de date în așteptare",
     "Redis isn't reachable": "Redis nu este accesibil",
-    "The :name extension is missing (optional: :purpose)": "Lipsește extensia :name (opțională: :purpose)",
     "The :name extension is missing": "Lipsește extensia :name",
-    "PCRE JIT is off (optional: :purpose)": "PCRE JIT este dezactivat (opțional: :purpose)",
     "The :name function is missing": "Lipsește funcția :name",
     ":path isn't writable": ":path nu poate fi scris",
     "Some cache files aren't writable": "Unele fișiere din cache nu pot fi scrise",
@@ -1519,5 +1517,7 @@
     "No queued jobs": "Nicio sarcină în coadă",
     "No failed jobs": "Nicio sarcină eșuată",
     "1 attempt|:count attempts": "1 încercare|:count încercări|:count de încercări",
-    "Next attempt :time": "Următoarea încercare: :time"
+    "The optional :name extension is missing": "Lipsește extensia opțională :name",
+    "PCRE JIT is off": "PCRE JIT este dezactivat",
+    "Next attempt in :time": "Următoarea încercare peste :time"
 }

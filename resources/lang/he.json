@@ -1499,9 +1499,7 @@
     "1 thing needs attention|:count things need attention": "דבר אחד דורש תשומת לב|:count דברים דורשים תשומת לב",
     "Database migrations are pending": "העברות מסד נתונים ממתינות",
     "Redis isn't reachable": "Redis אינו זמין",
-    "The :name extension is missing (optional: :purpose)": "ההרחבה :name חסרה (אופציונלי: :purpose)",
     "The :name extension is missing": "ההרחבה :name חסרה",
-    "PCRE JIT is off (optional: :purpose)": "PCRE JIT כבוי (אופציונלי: :purpose)",
     "The :name function is missing": "הפונקציה :name חסרה",
     ":path isn't writable": "אין הרשאת כתיבה ל-:path",
     "Some cache files aren't writable": "לחלק מקובצי המטמון אין הרשאת כתיבה",
@@ -1519,5 +1517,7 @@
     "No queued jobs": "אין משימות בתור",
     "No failed jobs": "אין משימות שנכשלו",
     "1 attempt|:count attempts": "ניסיון אחד|:count ניסיונות",
-    "Next attempt :time": "הניסיון הבא: :time"
+    "The optional :name extension is missing": "ההרחבה האופציונלית :name חסרה",
+    "PCRE JIT is off": "PCRE JIT כבוי",
+    "Next attempt in :time": "הניסיון הבא בעוד :time"
 }

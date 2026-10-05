@@ -1902,9 +1902,7 @@
     "1 thing needs attention|:count things need attention": ":count мәселе назар аударуды қажет етеді",
     "Database migrations are pending": "Дерекқор миграциялары күтуде",
     "Redis isn't reachable": "Redis қолжетімсіз",
-    "The :name extension is missing (optional: :purpose)": ":name кеңейтімі жоқ (міндетті емес: :purpose)",
     "The :name extension is missing": ":name кеңейтімі жоқ",
-    "PCRE JIT is off (optional: :purpose)": "PCRE JIT өшірулі (міндетті емес: :purpose)",
     "The :name function is missing": ":name функциясы жоқ",
     ":path isn't writable": ":path жазуға болмайды",
     "Some cache files aren't writable": "Кейбір кэш файлдарына жазуға болмайды",
@@ -1922,5 +1920,7 @@
     "No queued jobs": "Кезекте тапсырма жоқ",
     "No failed jobs": "Сәтсіз тапсырма жоқ",
     "1 attempt|:count attempts": ":count әрекет",
-    "Next attempt :time": "Келесі әрекет: :time"
+    "The optional :name extension is missing": "Міндетті емес :name кеңейтімі жоқ",
+    "PCRE JIT is off": "PCRE JIT өшірулі",
+    "Next attempt in :time": "Келесі әрекет :time кейін"
 }

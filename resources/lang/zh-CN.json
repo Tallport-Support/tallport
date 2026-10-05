@@ -1501,9 +1501,7 @@
     "1 thing needs attention|:count things need attention": ":count 项需要注意",
     "Database migrations are pending": "有待执行的数据库迁移",
     "Redis isn't reachable": "无法连接 Redis",
-    "The :name extension is missing (optional: :purpose)": "缺少 :name 扩展（可选：:purpose）",
     "The :name extension is missing": "缺少 :name 扩展",
-    "PCRE JIT is off (optional: :purpose)": "PCRE JIT 已关闭（可选：:purpose）",
     "The :name function is missing": "缺少 :name 函数",
     ":path isn't writable": ":path 不可写",
     "Some cache files aren't writable": "部分缓存文件不可写",
@@ -1521,5 +1519,7 @@
     "No queued jobs": "没有排队的任务",
     "No failed jobs": "没有失败的任务",
     "1 attempt|:count attempts": ":count 次尝试",
-    "Next attempt :time": "下次尝试：:time"
+    "The optional :name extension is missing": "缺少可选的 :name 扩展",
+    "PCRE JIT is off": "PCRE JIT 已关闭",
+    "Next attempt in :time": ":time后再次尝试"
 }

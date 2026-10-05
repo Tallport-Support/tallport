@@ -1500,9 +1500,7 @@
     "1 thing needs attention|:count things need attention": "1 sak kräver uppmärksamhet|:count saker kräver uppmärksamhet",
     "Database migrations are pending": "Databasmigreringar väntar",
     "Redis isn't reachable": "Redis kan inte nås",
-    "The :name extension is missing (optional: :purpose)": "Tillägget :name saknas (valfritt: :purpose)",
     "The :name extension is missing": "Tillägget :name saknas",
-    "PCRE JIT is off (optional: :purpose)": "PCRE JIT är avstängt (valfritt: :purpose)",
     "The :name function is missing": "Funktionen :name saknas",
     ":path isn't writable": ":path är inte skrivbar",
     "Some cache files aren't writable": "Vissa cachefiler är inte skrivbara",
@@ -1520,5 +1518,7 @@
     "No queued jobs": "Inga jobb i kö",
     "No failed jobs": "Inga misslyckade jobb",
     "1 attempt|:count attempts": "1 försök|:count försök",
-    "Next attempt :time": "Nästa försök: :time"
+    "The optional :name extension is missing": "Det valfria tillägget :name saknas",
+    "PCRE JIT is off": "PCRE JIT är avstängt",
+    "Next attempt in :time": "Nästa försök om :time"
 }
