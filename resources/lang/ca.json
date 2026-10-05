@@ -1622,5 +1622,8 @@
     "API keys need your password again.": "Les claus d'API necessiten de nou la vostra contrasenya.",
     "Confirm your password first.": "Primer confirmeu la contrasenya.",
     "Too many attempts. Please try again in :seconds seconds.": "Massa intents. Torneu-ho a provar d'aquí a :seconds segons.",
-    "Translating…": "S'està traduint…"
+    "Translating…": "S'està traduint…",
+    "In a Conversation": "En una Conversa",
+    "In the List": "A la Llista",
+    "then": "i després"
 }

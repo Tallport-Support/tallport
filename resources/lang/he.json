@@ -1524,5 +1524,8 @@
     "API keys need your password again.": "מפתחות API דורשים שוב את הסיסמה שלך.",
     "Confirm your password first.": "אשרו תחילה את הסיסמה.",
     "Too many attempts. Please try again in :seconds seconds.": "יותר מדי ניסיונות. נסו שוב בעוד :seconds שניות.",
-    "Translating…": "מתרגם…"
+    "Translating…": "מתרגם…",
+    "In a Conversation": "בשיחה",
+    "In the List": "ברשימה",
+    "then": "ואז"
 }

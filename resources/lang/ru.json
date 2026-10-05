@@ -1525,5 +1525,8 @@
     "API keys need your password again.": "Для ключей API снова нужен ваш пароль.",
     "Confirm your password first.": "Сначала подтвердите пароль.",
     "Too many attempts. Please try again in :seconds seconds.": "Слишком много попыток. Повторите через :seconds с.",
-    "Translating…": "Перевод…"
+    "Translating…": "Перевод…",
+    "In a Conversation": "В Разговоре",
+    "In the List": "В Списке",
+    "then": "затем"
 }

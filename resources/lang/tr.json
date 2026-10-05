@@ -1525,5 +1525,8 @@
     "API keys need your password again.": "API anahtarları için şifreniz yeniden gerekiyor.",
     "Confirm your password first.": "Önce şifrenizi onaylayın.",
     "Too many attempts. Please try again in :seconds seconds.": "Çok fazla deneme. :seconds saniye sonra yeniden deneyin.",
-    "Translating…": "Çevriliyor…"
+    "Translating…": "Çevriliyor…",
+    "In a Conversation": "Bir Görüşmede",
+    "In the List": "Listede",
+    "then": "sonra"
 }

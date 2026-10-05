@@ -2457,18 +2457,37 @@ a.disabled:focus {
 .settings-form__actions > :first-child:not(:only-child) {
     flex: none;
 }
-/* The keyboard shortcuts dialog: two columns of key/action tables. */
-.keyboard-shortcuts__columns {
+/* The keyboard shortcuts dialog: groups of actions with their keys on the right. */
+.keyboard-shortcuts {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 8px 24px;
-}
-.keyboard-shortcuts__table td {
-    padding: 4px 8px 4px 0;
-    vertical-align: top;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 24px 32px;
+    align-items: start;
 }
 .keyboard-shortcuts .f-headline {
-    margin: 8px 0 4px;
+    margin: 0 0 8px;
+}
+.keyboard-shortcuts__list {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+}
+.keyboard-shortcuts__list > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+}
+.keyboard-shortcuts__list dd {
+    margin: 0;
+    white-space: nowrap;
+}
+.keyboard-shortcuts__then {
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+}
+.keyboard-shortcuts__footer {
+    justify-content: space-between;
 }
 /* Draft with AI, in the toolbar. */
 .conv-actions .ai-draft-action {
@@ -2480,9 +2499,6 @@ a.disabled:focus {
 }
 .ai-draft-translation-body {
     white-space: pre-wrap;
-}
-.keyboard-shortcuts__table td:first-child {
-    white-space: nowrap;
 }
 .customer-contacts .nostr-key-icon {
     display: inline-block;

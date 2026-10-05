@@ -1524,5 +1524,8 @@
     "API keys need your password again.": "Ključi API znova zahtevajo vaše geslo.",
     "Confirm your password first.": "Najprej potrdite svoje geslo.",
     "Too many attempts. Please try again in :seconds seconds.": "Preveč poskusov. Poskusite znova čez :seconds s.",
-    "Translating…": "Prevajanje…"
+    "Translating…": "Prevajanje…",
+    "In a Conversation": "V Pogovoru",
+    "In the List": "Na Seznamu",
+    "then": "nato"
 }

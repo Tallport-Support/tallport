@@ -1927,5 +1927,8 @@
     "API keys need your password again.": "API кілттері үшін құпиясөзіңіз қайта қажет.",
     "Confirm your password first.": "Алдымен құпиясөзді растаңыз.",
     "Too many attempts. Please try again in :seconds seconds.": "Тым көп әрекет. :seconds секундтан кейін қайталаңыз.",
-    "Translating…": "Аударылуда…"
+    "Translating…": "Аударылуда…",
+    "In a Conversation": "Әңгімеде",
+    "In the List": "Тізімде",
+    "then": "содан кейін"
 }

@@ -1525,5 +1525,8 @@
     "API keys need your password again.": "API-nycklar kräver ditt lösenord igen.",
     "Confirm your password first.": "Bekräfta ditt lösenord först.",
     "Too many attempts. Please try again in :seconds seconds.": "För många försök. Försök igen om :seconds sekunder.",
-    "Translating…": "Översätter…"
+    "Translating…": "Översätter…",
+    "In a Conversation": "I en Konversation",
+    "In the List": "I Listan",
+    "then": "sedan"
 }

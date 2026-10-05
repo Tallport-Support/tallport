@@ -1524,5 +1524,8 @@
     "API keys need your password again.": "Kľúče API znova vyžadujú vaše heslo.",
     "Confirm your password first.": "Najprv potvrďte svoje heslo.",
     "Too many attempts. Please try again in :seconds seconds.": "Príliš veľa pokusov. Skúste to znova o :seconds s.",
-    "Translating…": "Prekladá sa…"
+    "Translating…": "Prekladá sa…",
+    "In a Conversation": "V Konverzácii",
+    "In the List": "V Zozname",
+    "then": "potom"
 }

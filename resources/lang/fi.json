@@ -1543,5 +1543,8 @@
     "API keys need your password again.": "API-avaimet vaativat salasanasi uudelleen.",
     "Confirm your password first.": "Vahvista ensin salasanasi.",
     "Too many attempts. Please try again in :seconds seconds.": "Liian monta yritystä. Yritä uudelleen :seconds sekunnin kuluttua.",
-    "Translating…": "Käännetään…"
+    "Translating…": "Käännetään…",
+    "In a Conversation": "Keskustelussa",
+    "In the List": "Luettelossa",
+    "then": "sitten"
 }

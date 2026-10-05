@@ -1524,5 +1524,8 @@
     "API keys need your password again.": "Klucze API ponownie wymagają hasła.",
     "Confirm your password first.": "Najpierw potwierdź hasło.",
     "Too many attempts. Please try again in :seconds seconds.": "Zbyt wiele prób. Spróbuj ponownie za :seconds s.",
-    "Translating…": "Tłumaczenie…"
+    "Translating…": "Tłumaczenie…",
+    "In a Conversation": "W Rozmowie",
+    "In the List": "Na Liście",
+    "then": "potem"
 }

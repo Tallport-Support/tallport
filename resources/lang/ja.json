@@ -1525,5 +1525,8 @@
     "API keys need your password again.": "API キーにはもう一度パスワードが必要です。",
     "Confirm your password first.": "まずパスワードを確認してください。",
     "Too many attempts. Please try again in :seconds seconds.": "試行回数が多すぎます。:seconds 秒後にもう一度お試しください。",
-    "Translating…": "翻訳中…"
+    "Translating…": "翻訳中…",
+    "In a Conversation": "会話内",
+    "In the List": "一覧内",
+    "then": "次に"
 }

@@ -1528,5 +1528,8 @@
     "API keys need your password again.": "Voor API-sleutels is uw wachtwoord opnieuw nodig.",
     "Confirm your password first.": "Bevestig eerst uw wachtwoord.",
     "Too many attempts. Please try again in :seconds seconds.": "Te veel pogingen. Probeer het over :seconds seconden opnieuw.",
-    "Translating…": "Vertalen…"
+    "Translating…": "Vertalen…",
+    "In a Conversation": "In een Gesprek",
+    "In the List": "In de Lijst",
+    "then": "dan"
 }

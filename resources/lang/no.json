@@ -1529,5 +1529,8 @@
     "API keys need your password again.": "API-nøkler krever passordet ditt igjen.",
     "Confirm your password first.": "Bekreft passordet ditt først.",
     "Too many attempts. Please try again in :seconds seconds.": "For mange forsøk. Prøv igjen om :seconds sekunder.",
-    "Translating…": "Oversetter…"
+    "Translating…": "Oversetter…",
+    "In a Conversation": "I en Samtale",
+    "In the List": "I Listen",
+    "then": "deretter"
 }
