@@ -219,6 +219,28 @@ function localStorageRemove(key)
 }
 
 // Per tab, and gone with it.
+/**
+ * Whether a key sends what's being written: in a chat ('chat') or another message
+ * ('message'), as App\Misc\KeyboardShortcuts says (the body's data-send-keys).
+ * Not while an input method composes, nor what something else handled (a picked mention).
+ */
+function tallportSendKey(event, kind)
+{
+	if (event.key != 'Enter' || event.isComposing || event.defaultPrevented || event.altKey) {
+		return false;
+	}
+	var keys = [];
+	try {
+		keys = JSON.parse(document.body.getAttribute('data-send-keys') || '{}')[kind] || [];
+	} catch (e) {}
+	var mod = event.metaKey || event.ctrlKey;
+
+	return keys.some(function (combo) {
+		var parts = combo.split('+');
+		return parts.indexOf('Shift') != -1 == event.shiftKey && parts.indexOf('Mod') != -1 == mod;
+	});
+}
+
 function sessionStorageGet(key)
 {
 	try {

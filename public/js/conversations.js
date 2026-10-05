@@ -367,12 +367,12 @@ document.addEventListener('alpine:init', function () {
 				});
 			},
 
-			// Cmd/Ctrl+Enter sends (in the chat view too: a message can have several lines).
+			// The send keys (App\Misc\KeyboardShortcuts): Enter in the chat view, Cmd/Ctrl+Enter otherwise.
 			enter: function (event) {
-				if (!event.target.closest || !event.target.closest('.f-editor') || event.altKey || event.shiftKey) {
+				if (!event.target.closest || !event.target.closest('.f-editor')) {
 					return;
 				}
-				if (event.metaKey || event.ctrlKey) {
+				if (tallportSendKey(event, chat ? 'chat' : 'message')) {
 					event.preventDefault();
 					this.submit();
 				}

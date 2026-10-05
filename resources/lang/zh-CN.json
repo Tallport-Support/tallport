@@ -1579,7 +1579,6 @@
     "A Room for the Team": "团队专属空间",
     "Attach Files": "附加文件",
     "Attachments to Send": "待发送的附件",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter 发送 · @ 提及",
     "Everyone who works in :mailbox can read and write here.": "在 :mailbox 工作的每个人都可以在这里阅读和发言。",
     "Message the :mailbox Team": "给 :mailbox 团队发消息",
     "New": "新",
@@ -1589,5 +1588,11 @@
     "Search Messages": "搜索消息",
     "No Messages Found": "未找到消息",
     "Delete Team Chat Messages After": "删除团队聊天消息的期限",
-    "Messages and their files, counted from when they were sent.": "消息及其文件，从发送时起计算。"
+    "Messages and their files, counted from when they were sent.": "消息及其文件，从发送时起计算。",
+    "Enter to send · Shift + Enter for a new line": "Enter 发送 · Shift + Enter 换行",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter 发送 · Shift + Enter 换行 · @ 提及",
+    "Send a Chat Message": "发送聊天消息",
+    "New Line in a Chat Message": "在聊天消息中换行",
+    "Send a Reply or Note": "发送回复或备注",
+    "Writing": "输入时"
 }

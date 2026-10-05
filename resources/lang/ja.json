@@ -1578,7 +1578,6 @@
     "A Room for the Team": "チームのための場所",
     "Attach Files": "ファイルを添付",
     "Attachments to Send": "送信する添付ファイル",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter で送信 · @ でメンション",
     "Everyone who works in :mailbox can read and write here.": ":mailbox で働く全員がここで読み書きできます。",
     "Message the :mailbox Team": ":mailbox チームへのメッセージ",
     "New": "新着",
@@ -1588,5 +1587,11 @@
     "Search Messages": "メッセージを検索",
     "No Messages Found": "一致するメッセージはありません",
     "Delete Team Chat Messages After": "チームチャットのメッセージを削除するまでの期間",
-    "Messages and their files, counted from when they were sent.": "メッセージとそのファイル。送信時から数えます。"
+    "Messages and their files, counted from when they were sent.": "メッセージとそのファイル。送信時から数えます。",
+    "Enter to send · Shift + Enter for a new line": "Enter で送信 · Shift + Enter で改行",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter で送信 · Shift + Enter で改行 · @ でメンション",
+    "Send a Chat Message": "チャットメッセージを送信",
+    "New Line in a Chat Message": "チャットメッセージ内で改行",
+    "Send a Reply or Note": "返信または記録を送信",
+    "Writing": "入力中"
 }

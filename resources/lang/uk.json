@@ -1578,7 +1578,6 @@
     "A Room for the Team": "Кімната для Команди",
     "Attach Files": "Прикріпити Файли",
     "Attachments to Send": "Вкладення для Надсилання",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter — надіслати · @ — згадати",
     "Everyone who works in :mailbox can read and write here.": "Усі, хто працює в :mailbox, можуть тут читати й писати.",
     "Message the :mailbox Team": "Повідомлення команді :mailbox",
     "New": "Нові",
@@ -1588,5 +1587,11 @@
     "Search Messages": "Пошук у Повідомленнях",
     "No Messages Found": "Повідомлень не Знайдено",
     "Delete Team Chat Messages After": "Видаляти Повідомлення Чату Команди Через",
-    "Messages and their files, counted from when they were sent.": "Повідомлення та їхні файли, відлік від моменту надсилання."
+    "Messages and their files, counted from when they were sent.": "Повідомлення та їхні файли, відлік від моменту надсилання.",
+    "Enter to send · Shift + Enter for a new line": "Enter — надіслати · Shift + Enter — новий рядок",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter — надіслати · Shift + Enter — новий рядок · @ — згадати",
+    "Send a Chat Message": "Надіслати Повідомлення в Чаті",
+    "New Line in a Chat Message": "Новий Рядок у Повідомленні Чату",
+    "Send a Reply or Note": "Надіслати Відповідь або Нотатку",
+    "Writing": "Під Час Набору"
 }

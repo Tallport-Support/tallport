@@ -1577,7 +1577,6 @@
     "A Room for the Team": "Una Stanza per il Team",
     "Attach Files": "Allega File",
     "Attachments to Send": "Allegati da Inviare",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter per inviare · @ per menzionare",
     "Everyone who works in :mailbox can read and write here.": "Chiunque lavori in :mailbox può leggere e scrivere qui.",
     "Message the :mailbox Team": "Messaggio al team :mailbox",
     "New": "Nuovi",
@@ -1587,5 +1586,11 @@
     "Search Messages": "Cerca nei Messaggi",
     "No Messages Found": "Nessun Messaggio Trovato",
     "Delete Team Chat Messages After": "Elimina Messaggi della Chat del Team Dopo",
-    "Messages and their files, counted from when they were sent.": "I messaggi e i loro file, contati da quando sono stati inviati."
+    "Messages and their files, counted from when they were sent.": "I messaggi e i loro file, contati da quando sono stati inviati.",
+    "Enter to send · Shift + Enter for a new line": "Enter per inviare · Shift + Enter per andare a capo",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter per inviare · Shift + Enter per andare a capo · @ per menzionare",
+    "Send a Chat Message": "Invia un Messaggio in Chat",
+    "New Line in a Chat Message": "Nuova Riga in un Messaggio in Chat",
+    "Send a Reply or Note": "Invia una Risposta o una Nota",
+    "Writing": "Durante la Scrittura"
 }

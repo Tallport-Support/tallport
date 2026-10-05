@@ -272,6 +272,7 @@ return array(
     'App\\Misc\\Helper' => $baseDir . '/app/Misc/Helper.php',
     'App\\Misc\\Html2Text' => $baseDir . '/app/Misc/Html2Text.php',
     'App\\Misc\\JsRoutes' => $baseDir . '/app/Misc/JsRoutes.php',
+    'App\\Misc\\KeyboardShortcuts' => $baseDir . '/app/Misc/KeyboardShortcuts.php',
     'App\\Misc\\Mail' => $baseDir . '/app/Misc/Mail.php',
     'App\\Misc\\MailManager' => $baseDir . '/app/Misc/MailManager.php',
     'App\\Misc\\Minify' => $baseDir . '/app/Misc/Minify.php',

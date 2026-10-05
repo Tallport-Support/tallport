@@ -1577,7 +1577,6 @@
     "A Room for the Team": "Prostor za Ekipo",
     "Attach Files": "Priloži Datoteke",
     "Attachments to Send": "Priponke za Pošiljanje",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter za pošiljanje · @ za omembo",
     "Everyone who works in :mailbox can read and write here.": "Vsi, ki delajo v :mailbox, lahko tu berejo in pišejo.",
     "Message the :mailbox Team": "Sporočilo ekipi :mailbox",
     "New": "Novo",
@@ -1587,5 +1586,11 @@
     "Search Messages": "Išči po Sporočilih",
     "No Messages Found": "Ni Najdenih Sporočil",
     "Delete Team Chat Messages After": "Izbriši Sporočila Klepeta Ekipe Po",
-    "Messages and their files, counted from when they were sent.": "Sporočila in njihove datoteke, šteto od trenutka pošiljanja."
+    "Messages and their files, counted from when they were sent.": "Sporočila in njihove datoteke, šteto od trenutka pošiljanja.",
+    "Enter to send · Shift + Enter for a new line": "Enter za pošiljanje · Shift + Enter za novo vrstico",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter za pošiljanje · Shift + Enter za novo vrstico · @ za omembo",
+    "Send a Chat Message": "Pošlji Sporočilo v Klepetu",
+    "New Line in a Chat Message": "Nova Vrstica v Sporočilu v Klepetu",
+    "Send a Reply or Note": "Pošlji Odgovor ali Opombo",
+    "Writing": "Med Pisanjem"
 }

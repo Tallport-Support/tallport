@@ -1577,7 +1577,6 @@
     "A Room for the Team": "Místnost pro Tým",
     "Attach Files": "Přiložit Soubory",
     "Attachments to Send": "Přílohy k Odeslání",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter pro odeslání · @ pro zmínku",
     "Everyone who works in :mailbox can read and write here.": "Každý, kdo pracuje v :mailbox, zde může číst a psát.",
     "Message the :mailbox Team": "Zpráva pro tým :mailbox",
     "New": "Nové",
@@ -1587,5 +1586,11 @@
     "Search Messages": "Hledat ve Zprávách",
     "No Messages Found": "Žádné Zprávy Nenalezeny",
     "Delete Team Chat Messages After": "Odstranit Zprávy Týmového Chatu Po",
-    "Messages and their files, counted from when they were sent.": "Zprávy a jejich soubory, počítáno od jejich odeslání."
+    "Messages and their files, counted from when they were sent.": "Zprávy a jejich soubory, počítáno od jejich odeslání.",
+    "Enter to send · Shift + Enter for a new line": "Enter pro odeslání · Shift + Enter pro nový řádek",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter pro odeslání · Shift + Enter pro nový řádek · @ pro zmínku",
+    "Send a Chat Message": "Odeslat Zprávu v Chatu",
+    "New Line in a Chat Message": "Nový Řádek ve Zprávě v Chatu",
+    "Send a Reply or Note": "Odeslat Odpověď nebo Poznámku",
+    "Writing": "Při Psaní"
 }

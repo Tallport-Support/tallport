@@ -1581,7 +1581,6 @@
     "A Room for the Team": "Een Ruimte voor het Team",
     "Attach Files": "Bestanden Bijvoegen",
     "Attachments to Send": "Te Verzenden Bijlagen",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter om te verzenden · @ om iemand te noemen",
     "Everyone who works in :mailbox can read and write here.": "Iedereen die in :mailbox werkt, kan hier lezen en schrijven.",
     "Message the :mailbox Team": "Bericht aan het team van :mailbox",
     "New": "Nieuw",
@@ -1591,5 +1590,11 @@
     "Search Messages": "Berichten Zoeken",
     "No Messages Found": "Geen Berichten Gevonden",
     "Delete Team Chat Messages After": "Teamchatberichten Verwijderen Na",
-    "Messages and their files, counted from when they were sent.": "Berichten en hun bestanden, gerekend vanaf het moment van verzenden."
+    "Messages and their files, counted from when they were sent.": "Berichten en hun bestanden, gerekend vanaf het moment van verzenden.",
+    "Enter to send · Shift + Enter for a new line": "Enter om te verzenden · Shift + Enter voor een nieuwe regel",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter om te verzenden · Shift + Enter voor een nieuwe regel · @ om iemand te noemen",
+    "Send a Chat Message": "Chatbericht Verzenden",
+    "New Line in a Chat Message": "Nieuwe Regel in een Chatbericht",
+    "Send a Reply or Note": "Antwoord of Notitie Verzenden",
+    "Writing": "Tijdens het Schrijven"
 }

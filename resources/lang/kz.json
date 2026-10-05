@@ -1980,7 +1980,6 @@
     "A Room for the Team": "Командаға Арналған Бөлме",
     "Attach Files": "Файлдарды Тіркеу",
     "Attachments to Send": "Жіберілетін Тіркемелер",
-    "Ctrl+Enter to send · @ to mention": "Жіберу үшін Ctrl+Enter · атап өту үшін @",
     "Everyone who works in :mailbox can read and write here.": ":mailbox жәшігінде жұмыс істейтіндердің бәрі мұнда оқып, жаза алады.",
     "Message the :mailbox Team": ":mailbox командасына хабарлама",
     "New": "Жаңа",
@@ -1990,5 +1989,11 @@
     "Search Messages": "Хабарламалардан Іздеу",
     "No Messages Found": "Хабарламалар Табылмады",
     "Delete Team Chat Messages After": "Команда Чаты Хабарламаларын Жою Мерзімі",
-    "Messages and their files, counted from when they were sent.": "Хабарламалар мен олардың файлдары, жіберілген уақыттан бастап есептеледі."
+    "Messages and their files, counted from when they were sent.": "Хабарламалар мен олардың файлдары, жіберілген уақыттан бастап есептеледі.",
+    "Enter to send · Shift + Enter for a new line": "Жіберу үшін Enter · жаңа жол үшін Shift + Enter",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Жіберу үшін Enter · жаңа жол үшін Shift + Enter · атап өту үшін @",
+    "Send a Chat Message": "Чат Хабарламасын Жіберу",
+    "New Line in a Chat Message": "Чат Хабарламасындағы Жаңа Жол",
+    "Send a Reply or Note": "Жауап немесе Ескертпе Жіберу",
+    "Writing": "Жазу Кезінде"
 }

@@ -1578,7 +1578,6 @@
     "A Room for the Team": "Ekip İçin Bir Oda",
     "Attach Files": "Dosya Ekle",
     "Attachments to Send": "Gönderilecek Ekler",
-    "Ctrl+Enter to send · @ to mention": "Göndermek için Ctrl+Enter · bahsetmek için @",
     "Everyone who works in :mailbox can read and write here.": ":mailbox içinde çalışan herkes burada okuyup yazabilir.",
     "Message the :mailbox Team": ":mailbox ekibine mesaj",
     "New": "Yeni",
@@ -1588,5 +1587,11 @@
     "Search Messages": "Mesajlarda Ara",
     "No Messages Found": "Mesaj Bulunamadı",
     "Delete Team Chat Messages After": "Ekip Sohbeti Mesajlarını Silme Süresi",
-    "Messages and their files, counted from when they were sent.": "Mesajlar ve dosyaları, gönderildikleri andan itibaren sayılır."
+    "Messages and their files, counted from when they were sent.": "Mesajlar ve dosyaları, gönderildikleri andan itibaren sayılır.",
+    "Enter to send · Shift + Enter for a new line": "Göndermek için Enter · yeni satır için Shift + Enter",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Göndermek için Enter · yeni satır için Shift + Enter · bahsetmek için @",
+    "Send a Chat Message": "Sohbet Mesajı Gönder",
+    "New Line in a Chat Message": "Sohbet Mesajında Yeni Satır",
+    "Send a Reply or Note": "Yanıt veya Not Gönder",
+    "Writing": "Yazarken"
 }

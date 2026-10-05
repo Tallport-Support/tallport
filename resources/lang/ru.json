@@ -1578,7 +1578,6 @@
     "A Room for the Team": "Комната для Команды",
     "Attach Files": "Прикрепить Файлы",
     "Attachments to Send": "Вложения для Отправки",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter — отправить · @ — упомянуть",
     "Everyone who works in :mailbox can read and write here.": "Все, кто работает в :mailbox, могут здесь читать и писать.",
     "Message the :mailbox Team": "Сообщение команде :mailbox",
     "New": "Новые",
@@ -1588,5 +1587,11 @@
     "Search Messages": "Поиск по Сообщениям",
     "No Messages Found": "Сообщения не Найдены",
     "Delete Team Chat Messages After": "Удалять Сообщения Чата Команды Через",
-    "Messages and their files, counted from when they were sent.": "Сообщения и их файлы, считается с момента отправки."
+    "Messages and their files, counted from when they were sent.": "Сообщения и их файлы, считается с момента отправки.",
+    "Enter to send · Shift + Enter for a new line": "Enter — отправить · Shift + Enter — новая строка",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter — отправить · Shift + Enter — новая строка · @ — упомянуть",
+    "Send a Chat Message": "Отправить Сообщение в Чате",
+    "New Line in a Chat Message": "Новая Строка в Сообщении Чата",
+    "Send a Reply or Note": "Отправить Ответ или Примечание",
+    "Writing": "При Наборе Текста"
 }

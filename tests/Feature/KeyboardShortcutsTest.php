@@ -32,6 +32,19 @@ class KeyboardShortcutsTest extends FeatureTestCase
             ->assertDontSee('data-fruit-dialog="keyboard-shortcuts"', false);
     }
 
+    public function testTheSheetShowsTheSendKeysTheComposersUse()
+    {
+        $user = $this->createUser();
+        $mailbox = $this->createMailbox([$user]);
+
+        // The composers' keys (tallportSendKey()) and the sheet: one definition.
+        $this->actingAs($user)->get(route('mailboxes.view', ['id' => $mailbox->id]))->assertOk()
+            ->assertSee('data-send-keys="'.e(json_encode(\App\Misc\KeyboardShortcuts::SEND)).'"', false)
+            ->assertSeeInOrder(['Send a Chat Message', '<kbd>Enter</kbd>', 'New Line in a Chat Message', '<kbd>Shift</kbd><kbd>Enter</kbd>', 'Send a Reply or Note', '<kbd>Ctrl</kbd><kbd>Enter</kbd>'], false);
+        $this->withHeader('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0)')->get(route('mailboxes.view', ['id' => $mailbox->id]))
+            ->assertSeeInOrder(['Send a Chat Message', '<kbd>Return</kbd>', '<kbd>⇧</kbd><kbd>Return</kbd>', '<kbd>⌘</kbd><kbd>Return</kbd>'], false);
+    }
+
     public function testNoreplyPatternsFromTheEnvironmentFile()
     {
         require_once base_path('database/migrations/2026_10_11_010101_add_keyboard_shortcuts_column_to_users_table.php');

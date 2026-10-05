@@ -1596,7 +1596,6 @@
     "A Room for the Team": "Huone Tiimille",
     "Attach Files": "Liitä Tiedostoja",
     "Attachments to Send": "Lähetettävät Liitteet",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter lähettää · @ mainitsee",
     "Everyone who works in :mailbox can read and write here.": "Kaikki, jotka työskentelevät postilaatikossa :mailbox, voivat lukea ja kirjoittaa täällä.",
     "Message the :mailbox Team": "Viesti :mailbox-tiimille",
     "New": "Uudet",
@@ -1606,5 +1605,11 @@
     "Search Messages": "Hae Viesteistä",
     "No Messages Found": "Viestejä ei Löytynyt",
     "Delete Team Chat Messages After": "Tiimin Chatin Viestit Poistetaan",
-    "Messages and their files, counted from when they were sent.": "Viestit ja niiden tiedostot, laskettuna lähetyshetkestä."
+    "Messages and their files, counted from when they were sent.": "Viestit ja niiden tiedostot, laskettuna lähetyshetkestä.",
+    "Enter to send · Shift + Enter for a new line": "Enter lähettää · Shift + Enter lisää uuden rivin",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter lähettää · Shift + Enter lisää uuden rivin · @ mainitsee",
+    "Send a Chat Message": "Lähetä Chat-Viesti",
+    "New Line in a Chat Message": "Uusi Rivi Chat-Viestissä",
+    "Send a Reply or Note": "Lähetä Vastaus tai Huomautus",
+    "Writing": "Kirjoittaessa"
 }

@@ -1038,6 +1038,7 @@ class ComposerStaticInit2902b8515f6672bf67bcf119cdb6b034
         'App\\Misc\\Helper' => __DIR__ . '/../..' . '/app/Misc/Helper.php',
         'App\\Misc\\Html2Text' => __DIR__ . '/../..' . '/app/Misc/Html2Text.php',
         'App\\Misc\\JsRoutes' => __DIR__ . '/../..' . '/app/Misc/JsRoutes.php',
+        'App\\Misc\\KeyboardShortcuts' => __DIR__ . '/../..' . '/app/Misc/KeyboardShortcuts.php',
         'App\\Misc\\Mail' => __DIR__ . '/../..' . '/app/Misc/Mail.php',
         'App\\Misc\\MailManager' => __DIR__ . '/../..' . '/app/Misc/MailManager.php',
         'App\\Misc\\Minify' => __DIR__ . '/../..' . '/app/Misc/Minify.php',

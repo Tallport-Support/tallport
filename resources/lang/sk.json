@@ -1577,7 +1577,6 @@
     "A Room for the Team": "Miestnosť pre Tím",
     "Attach Files": "Priložiť Súbory",
     "Attachments to Send": "Prílohy na Odoslanie",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter na odoslanie · @ na spomenutie",
     "Everyone who works in :mailbox can read and write here.": "Každý, kto pracuje v :mailbox, tu môže čítať a písať.",
     "Message the :mailbox Team": "Správa pre tím :mailbox",
     "New": "Nové",
@@ -1587,5 +1586,11 @@
     "Search Messages": "Hľadať v Správach",
     "No Messages Found": "Žiadne Správy sa Nenašli",
     "Delete Team Chat Messages After": "Vymazať Správy Tímového Chatu Po",
-    "Messages and their files, counted from when they were sent.": "Správy a ich súbory, počítané od ich odoslania."
+    "Messages and their files, counted from when they were sent.": "Správy a ich súbory, počítané od ich odoslania.",
+    "Enter to send · Shift + Enter for a new line": "Enter na odoslanie · Shift + Enter na nový riadok",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter na odoslanie · Shift + Enter na nový riadok · @ na spomenutie",
+    "Send a Chat Message": "Odoslať Správu v Chate",
+    "New Line in a Chat Message": "Nový Riadok v Správe v Chate",
+    "Send a Reply or Note": "Odoslať Odpoveď alebo Poznámku",
+    "Writing": "Pri Písaní"
 }

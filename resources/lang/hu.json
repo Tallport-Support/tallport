@@ -1578,7 +1578,6 @@
     "A Room for the Team": "Egy Szoba a Csapatnak",
     "Attach Files": "Fájlok Csatolása",
     "Attachments to Send": "Elküldendő Csatolmányok",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter a küldéshez · @ az említéshez",
     "Everyone who works in :mailbox can read and write here.": "Mindenki, aki a(z) :mailbox postafiókban dolgozik, itt olvashat és írhat.",
     "Message the :mailbox Team": "Üzenet a(z) :mailbox csapatnak",
     "New": "Új",
@@ -1588,5 +1587,11 @@
     "Search Messages": "Keresés az Üzenetekben",
     "No Messages Found": "Nincs Találat az Üzenetekben",
     "Delete Team Chat Messages After": "Csapatchat-Üzenetek Törlése",
-    "Messages and their files, counted from when they were sent.": "Az üzenetek és fájljaik, az elküldésüktől számítva."
+    "Messages and their files, counted from when they were sent.": "Az üzenetek és fájljaik, az elküldésüktől számítva.",
+    "Enter to send · Shift + Enter for a new line": "Enter a küldéshez · Shift + Enter az új sorhoz",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter a küldéshez · Shift + Enter az új sorhoz · @ az említéshez",
+    "Send a Chat Message": "Chatüzenet Küldése",
+    "New Line in a Chat Message": "Új Sor a Chatüzenetben",
+    "Send a Reply or Note": "Válasz vagy Megjegyzés Küldése",
+    "Writing": "Írás Közben"
 }

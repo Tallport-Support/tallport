@@ -1578,7 +1578,6 @@
     "A Room for the Team": "Ett Rum för Teamet",
     "Attach Files": "Bifoga Filer",
     "Attachments to Send": "Bifogade Filer att Skicka",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter för att skicka · @ för att nämna",
     "Everyone who works in :mailbox can read and write here.": "Alla som arbetar i :mailbox kan läsa och skriva här.",
     "Message the :mailbox Team": "Meddelande till teamet i :mailbox",
     "New": "Nytt",
@@ -1588,5 +1587,11 @@
     "Search Messages": "Sök i Meddelanden",
     "No Messages Found": "Inga Meddelanden Hittades",
     "Delete Team Chat Messages After": "Radera Teamchattmeddelanden Efter",
-    "Messages and their files, counted from when they were sent.": "Meddelanden och deras filer, räknat från när de skickades."
+    "Messages and their files, counted from when they were sent.": "Meddelanden och deras filer, räknat från när de skickades.",
+    "Enter to send · Shift + Enter for a new line": "Enter för att skicka · Shift + Enter för ny rad",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter för att skicka · Shift + Enter för ny rad · @ för att nämna",
+    "Send a Chat Message": "Skicka ett Chattmeddelande",
+    "New Line in a Chat Message": "Ny Rad i ett Chattmeddelande",
+    "Send a Reply or Note": "Skicka ett Svar eller en Anteckning",
+    "Writing": "Under Skrivandet"
 }

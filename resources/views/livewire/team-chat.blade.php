@@ -68,7 +68,7 @@
         @error('files.*')<x-fruit::alert tone="danger">{{ $message }}</x-fruit::alert>@enderror
         <label class="f-sr-only" for="team-message-{{ $mailbox->id }}">{{ __('Message the :mailbox Team', ['mailbox' => $mailbox->name]) }}</label>
         <x-fruit::autocomplete trigger="@">
-            <textarea id="team-message-{{ $mailbox->id }}" class="f-composer__input f-input team-room__input" rows="2" wire:model="body" placeholder="{{ __('Message the :mailbox Team', ['mailbox' => $mailbox->name]) }}" aria-describedby="team-room-help" x-on:keydown.enter="if (($event.ctrlKey || $event.metaKey) && !$event.defaultPrevented && !$event.isComposing) { $event.preventDefault(); $el.form.requestSubmit(); }"></textarea>
+            <textarea id="team-message-{{ $mailbox->id }}" class="f-composer__input f-input team-room__input" rows="2" wire:model="body" placeholder="{{ __('Message the :mailbox Team', ['mailbox' => $mailbox->name]) }}" aria-describedby="team-room-help" x-on:keydown.enter="if (tallportSendKey($event, 'chat')) { $event.preventDefault(); $el.form.requestSubmit(); }"></textarea>
             <x-slot:options>
                 @foreach ($members as $member)
                     @if ($member->id != auth()->id())
@@ -78,7 +78,7 @@
             </x-slot:options>
         </x-fruit::autocomplete>
         <div class="f-composer__footer team-room__footer">
-            <span id="team-room-help" class="f-help">{{ __('Ctrl+Enter to send · @ to mention') }}</span>
+            <span id="team-room-help" class="f-help">{{ __('Enter to send · Shift + Enter for a new line · @ to mention') }}</span>
             <input type="file" multiple hidden x-ref="files" wire:model="files">
             <x-fruit::button variant="ghost" class="f-button--icon team-room__attach" x-on:click="$refs.files.click()" :aria-label="__('Attach Files')" :title="__('Attach Files')"><x-icon.paperclip class="f-icon" aria-hidden="true" /></x-fruit::button>
             <x-fruit::button type="submit" variant="primary" wire:loading.attr="disabled" wire:target="send,files"><x-icon.send class="f-icon" aria-hidden="true" />{{ __('Send') }}</x-fruit::button>

@@ -1675,7 +1675,6 @@
     "A Room for the Team": "Una Sala per a l'Equip",
     "Attach Files": "Adjunta Fitxers",
     "Attachments to Send": "Adjunts per Enviar",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter per enviar · @ per esmentar",
     "Everyone who works in :mailbox can read and write here.": "Tothom qui treballa a :mailbox pot llegir i escriure aquí.",
     "Message the :mailbox Team": "Missatge a l'equip de :mailbox",
     "New Messages": "Missatges Nous",
@@ -1684,5 +1683,11 @@
     "Search Messages": "Cerca als Missatges",
     "No Messages Found": "No s'ha Trobat Cap Missatge",
     "Delete Team Chat Messages After": "Elimina els Missatges del Xat de l'Equip Després De",
-    "Messages and their files, counted from when they were sent.": "Els missatges i els seus fitxers, comptats des que es van enviar."
+    "Messages and their files, counted from when they were sent.": "Els missatges i els seus fitxers, comptats des que es van enviar.",
+    "Enter to send · Shift + Enter for a new line": "Enter per enviar · Shift + Enter per a una línia nova",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter per enviar · Shift + Enter per a una línia nova · @ per esmentar",
+    "Send a Chat Message": "Envia un Missatge de Xat",
+    "New Line in a Chat Message": "Línia Nova en un Missatge de Xat",
+    "Send a Reply or Note": "Envia una Resposta o Nota",
+    "Writing": "En Escriure"
 }

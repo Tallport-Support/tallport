@@ -23,7 +23,12 @@
             [__('Newer'), ['J']],
             [__('Older'), ['K']],
             [__('New Conversation'), ['Q']],
-            [__('Send'), [$shortcuts_mac ? '⌘ Return' : 'Ctrl + Enter'], true],
+        ],
+        // The keys App\Misc\KeyboardShortcuts defines (the composers follow the same).
+        __('Writing') => [
+            [__('Send a Chat Message'), [App\Misc\KeyboardShortcuts::label(App\Misc\KeyboardShortcuts::SEND['chat'][0], $shortcuts_mac)], true],
+            [__('New Line in a Chat Message'), [App\Misc\KeyboardShortcuts::label(App\Misc\KeyboardShortcuts::CHAT_NEW_LINE, $shortcuts_mac)], true],
+            [__('Send a Reply or Note'), [App\Misc\KeyboardShortcuts::label(App\Misc\KeyboardShortcuts::SEND['message'][0], $shortcuts_mac)], true],
         ],
         __('In the List') => [
             [__('Previous Page'), ['J']],

@@ -1577,7 +1577,6 @@
     "A Room for the Team": "O Cameră pentru Echipă",
     "Attach Files": "Atașează Fișiere",
     "Attachments to Send": "Atașamente de Trimis",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter pentru a trimite · @ pentru a menționa",
     "Everyone who works in :mailbox can read and write here.": "Toți cei care lucrează în :mailbox pot citi și scrie aici.",
     "Message the :mailbox Team": "Mesaj către echipa :mailbox",
     "New": "Noi",
@@ -1587,5 +1586,11 @@
     "Search Messages": "Caută în Mesaje",
     "No Messages Found": "Niciun Mesaj Găsit",
     "Delete Team Chat Messages After": "Șterge Mesajele din Chat-ul Echipei După",
-    "Messages and their files, counted from when they were sent.": "Mesajele și fișierele lor, socotite de la trimitere."
+    "Messages and their files, counted from when they were sent.": "Mesajele și fișierele lor, socotite de la trimitere.",
+    "Enter to send · Shift + Enter for a new line": "Enter pentru a trimite · Shift + Enter pentru un rând nou",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter pentru a trimite · Shift + Enter pentru un rând nou · @ pentru a menționa",
+    "Send a Chat Message": "Trimite un Mesaj în Chat",
+    "New Line in a Chat Message": "Rând Nou într-un Mesaj din Chat",
+    "Send a Reply or Note": "Trimite un Răspuns sau o Notă",
+    "Writing": "În Timpul Scrierii"
 }

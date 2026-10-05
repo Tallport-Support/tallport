@@ -1582,7 +1582,6 @@
     "A Room for the Team": "Et Rom for Teamet",
     "Attach Files": "Legg ved Filer",
     "Attachments to Send": "Vedlegg som Skal Sendes",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter for å sende · @ for å nevne",
     "Everyone who works in :mailbox can read and write here.": "Alle som jobber i :mailbox kan lese og skrive her.",
     "Message the :mailbox Team": "Melding til teamet i :mailbox",
     "New": "Ny",
@@ -1592,5 +1591,11 @@
     "Search Messages": "Søk i Meldinger",
     "No Messages Found": "Ingen Meldinger Funnet",
     "Delete Team Chat Messages After": "Slett Teamchatmeldinger Etter",
-    "Messages and their files, counted from when they were sent.": "Meldinger og filene deres, regnet fra når de ble sendt."
+    "Messages and their files, counted from when they were sent.": "Meldinger og filene deres, regnet fra når de ble sendt.",
+    "Enter to send · Shift + Enter for a new line": "Enter for å sende · Shift + Enter for ny linje",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter for å sende · Shift + Enter for ny linje · @ for å nevne",
+    "Send a Chat Message": "Send en Chatmelding",
+    "New Line in a Chat Message": "Ny Linje i en Chatmelding",
+    "Send a Reply or Note": "Send et Svar eller en Merknad",
+    "Writing": "Under Skriving"
 }

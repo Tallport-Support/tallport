@@ -1577,7 +1577,6 @@
     "A Room for the Team": "חדר לצוות",
     "Attach Files": "צרף קבצים",
     "Attachments to Send": "קבצים מצורפים לשליחה",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter לשליחה · @ לאזכור",
     "Everyone who works in :mailbox can read and write here.": "כל מי שעובד ב-:mailbox יכול לקרוא ולכתוב כאן.",
     "Message the :mailbox Team": "הודעה לצוות :mailbox",
     "New": "חדש",
@@ -1587,5 +1586,11 @@
     "Search Messages": "חיפוש בהודעות",
     "No Messages Found": "לא נמצאו הודעות",
     "Delete Team Chat Messages After": "מחיקת הודעות צ'אט צוות לאחר",
-    "Messages and their files, counted from when they were sent.": "הודעות והקבצים שלהן, נספר מרגע שליחתן."
+    "Messages and their files, counted from when they were sent.": "הודעות והקבצים שלהן, נספר מרגע שליחתן.",
+    "Enter to send · Shift + Enter for a new line": "Enter לשליחה · Shift + Enter לשורה חדשה",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter לשליחה · Shift + Enter לשורה חדשה · @ לאזכור",
+    "Send a Chat Message": "שלח הודעת צ'אט",
+    "New Line in a Chat Message": "שורה חדשה בהודעת צ'אט",
+    "Send a Reply or Note": "שלח תשובה או פתק",
+    "Writing": "בזמן כתיבה"
 }

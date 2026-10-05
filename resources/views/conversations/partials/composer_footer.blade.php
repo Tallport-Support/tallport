@@ -23,6 +23,8 @@
                 @endforeach
             </select>
         </label>
+    @else
+        <span class="f-help conv-composer__hint">{{ __('Enter to send · Shift + Enter for a new line') }}</span>
     @endif
 
     <span id="saved-replies-data" class="hidden"

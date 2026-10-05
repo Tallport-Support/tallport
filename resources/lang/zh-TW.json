@@ -1626,7 +1626,6 @@
     "A Room for the Team": "團隊專屬空間",
     "Attach Files": "附加檔案",
     "Attachments to Send": "待傳送的附件",
-    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter 傳送 · @ 提及",
     "Everyone who works in :mailbox can read and write here.": "在 :mailbox 工作的每個人都可以在這裡閱讀和發言。",
     "Message the :mailbox Team": "傳訊息給 :mailbox 團隊",
     "New": "新",
@@ -1636,5 +1635,11 @@
     "Search Messages": "搜尋訊息",
     "No Messages Found": "找不到訊息",
     "Delete Team Chat Messages After": "刪除團隊聊天訊息的期限",
-    "Messages and their files, counted from when they were sent.": "訊息及其檔案，從傳送時起計算。"
+    "Messages and their files, counted from when they were sent.": "訊息及其檔案，從傳送時起計算。",
+    "Enter to send · Shift + Enter for a new line": "Enter 傳送 · Shift + Enter 換行",
+    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter 傳送 · Shift + Enter 換行 · @ 提及",
+    "Send a Chat Message": "傳送聊天訊息",
+    "New Line in a Chat Message": "在聊天訊息中換行",
+    "Send a Reply or Note": "傳送回覆或備註",
+    "Writing": "輸入時"
 }
