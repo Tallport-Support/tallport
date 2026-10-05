@@ -3740,6 +3740,13 @@
                 "type": "tinyint(3) unsigned",
                 "nullable": true,
                 "default": "NULL"
+            },
+            "accent": {
+                "type": "varchar(16)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {

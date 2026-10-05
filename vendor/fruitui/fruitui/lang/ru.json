@@ -1,6 +1,7 @@
 {
   ":count selected": "Выбрано: :count",
   ":first–:last of :total": ":first–:last из :total",
+  "Accent Color": "Цвет акцента",
   "Actions": "Действия",
   "Add an item": "Добавить элемент",
   "Apply": "Применить",
@@ -27,6 +28,7 @@
   "Drop files here or": "Перетащите файлы сюда или",
   "Event actions": "Действия события",
   "Generated": "Сгенерировано",
+  "Graphite": "Графитовый",
   "Gray": "Серый",
   "Green": "Зеленый",
   "Hex": "Hex",

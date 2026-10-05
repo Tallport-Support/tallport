@@ -1516,5 +1516,7 @@
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport :time güncellendi. Arka plan komutları bir iki dakika içinde yeniden başlar.",
     ":name couldn't be checked for updates: :error": ":name için güncellemeler denetlenemedi: :error",
     "The AI Assistant took this message to be in :language already.": "AI Assistant bu mesajın zaten :language olduğunu düşündü.",
-    "Could not translate the message: :error": "Mesaj çevrilemedi: :error"
+    "Could not translate the message: :error": "Mesaj çevrilemedi: :error",
+    "People can choose their own in their Preferences.": "Herkes kendi rengini Tercihlerinden seçebilir.",
+    "Use the Installation Default": "Kurulum varsayılanını kullan"
 }

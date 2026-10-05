@@ -1,6 +1,7 @@
 {
   ":count selected": "נבחרו: :count",
   ":first–:last of :total": ":first–:last מתוך :total",
+  "Accent Color": "צבע הדגשה",
   "Actions": "פעולות",
   "Add an item": "הוספת פריט",
   "Apply": "החל",
@@ -27,6 +28,7 @@
   "Drop files here or": "יש לשחרר קבצים כאן או",
   "Event actions": "פעולות אירוע",
   "Generated": "נוצר אוטומטית",
+  "Graphite": "גרפיט",
   "Gray": "אפור",
   "Green": "ירוק",
   "Hex": "Hex",

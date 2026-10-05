@@ -1,6 +1,7 @@
 {
   ":count selected": ":count geselecteerd",
   ":first–:last of :total": ":first–:last van :total",
+  "Accent Color": "Accentkleur",
   "Actions": "Acties",
   "Add an item": "Item toevoegen",
   "Apply": "Pas toe",
@@ -27,6 +28,7 @@
   "Drop files here or": "Zet bestanden hier neer of",
   "Event actions": "Gebeurtenisacties",
   "Generated": "Gegenereerd",
+  "Graphite": "Grafiet",
   "Gray": "Grijs",
   "Green": "Groen",
   "Hex": "Hex",

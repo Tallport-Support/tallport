@@ -653,9 +653,12 @@ class UsersController extends Controller
         $request->validate([
             'reply_status' => 'nullable|in:'.implode(',', array_keys(\App\Conversation::$statuses)),
             'after_send'   => 'nullable|in:'.implode(',', [\App\MailboxUser::AFTER_SEND_STAY, \App\MailboxUser::AFTER_SEND_NEXT]),
+            'accent'       => ['nullable', \Illuminate\Validation\Rule::in(\FruitUI\Fruit::ACCENTS)],
         ]);
         $user->reply_status = $request->reply_status ?: null;
         $user->after_send = $request->after_send ?: null;
+        // Off: the installation's accent (Settings » Appearance).
+        $user->accent = $request->filled('accent_default') ? null : ($request->accent ?: null);
         $user->save();
 
         \Session::flash('flash_success_floating', __('Settings updated'));

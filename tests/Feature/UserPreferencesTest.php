@@ -41,6 +41,16 @@ class UserPreferencesTest extends FeatureTestCase
         $this->assertStringContainsString('/conversation/'.$conversation->id.'?', $composer->effects['redirect']);
         $this->assertSame(Conversation::STATUS_CLOSED, $conversation->fresh()->status);
 
+        // An accent of one's own, else the installation's.
+        \Option::set('branding.accent', 'green');
+        $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), ['_token' => csrf_token(), 'accent' => 'pink']);
+        $this->assertSame('pink', $agent->fresh()->accent);
+        $this->actingAs($agent->fresh())->get(route('users.preferences', ['id' => $agent->id]))->assertSee('data-fruit-accent="pink"', false);
+        $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), ['_token' => csrf_token(), 'accent' => 'pink', 'accent_default' => 1]);
+        $this->assertNull($agent->fresh()->accent);
+        $this->actingAs($agent->fresh())->get(route('users.preferences', ['id' => $agent->id]))->assertSee('data-fruit-accent="green"', false);
+        $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), ['_token' => csrf_token(), 'accent' => 'neon'])->assertSessionHasErrors('accent');
+
         // Unset: Pending, then the next active conversation.
         $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), [
             '_token' => csrf_token(), 'reply_status' => '', 'after_send' => '',

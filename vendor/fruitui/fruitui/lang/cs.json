@@ -1,6 +1,7 @@
 {
   ":count selected": "Vybráno: :count",
   ":first–:last of :total": ":first–:last z :total",
+  "Accent Color": "Barva zvýraznění",
   "Actions": "Akce",
   "Add an item": "Přidat položku",
   "Apply": "Použít",
@@ -27,6 +28,7 @@
   "Drop files here or": "Přetáhněte soubory sem nebo",
   "Event actions": "Akce události",
   "Generated": "Vygenerováno",
+  "Graphite": "Grafit",
   "Gray": "Šedá",
   "Green": "Zelená",
   "Hex": "Hex",

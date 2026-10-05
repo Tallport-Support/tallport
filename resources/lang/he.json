@@ -1515,5 +1515,7 @@
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport עודכן :time. פקודות הרקע יופעלו מחדש תוך דקה או שתיים.",
     ":name couldn't be checked for updates: :error": "לא ניתן היה לבדוק עדכונים עבור :name: :error",
     "The AI Assistant took this message to be in :language already.": "ה-AI Assistant הניח שההודעה כבר ב:language.",
-    "Could not translate the message: :error": "לא ניתן היה לתרגם את ההודעה: :error"
+    "Could not translate the message: :error": "לא ניתן היה לתרגם את ההודעה: :error",
+    "People can choose their own in their Preferences.": "כל אחד יכול לבחור צבע משלו בהעדפות שלו.",
+    "Use the Installation Default": "שימוש בברירת המחדל של ההתקנה"
 }

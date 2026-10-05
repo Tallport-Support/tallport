@@ -115,6 +115,69 @@
     color-scheme: dark;
   }
 
+/* Named accents, like the system accent color. Set data-fruit-accent on the .fruit-ui scope or an
+     ancestor; every accent shade derives from the tint. Each keeps 4.5:1 for links on white, white
+     text on filled buttons, the lighter dark-appearance accent and selection text. */
+
+:where([data-fruit-accent='blue']),
+  :where([data-fruit-accent='blue'] .fruit-ui) {
+    --f-tint: #006cde;
+  }
+
+:where([data-fruit-accent='purple']),
+  :where([data-fruit-accent='purple'] .fruit-ui) {
+    --f-tint: #9c3fbf;
+  }
+
+:where([data-fruit-accent='pink']),
+  :where([data-fruit-accent='pink'] .fruit-ui) {
+    --f-tint: #d8326e;
+  }
+
+:where([data-fruit-accent='red']),
+  :where([data-fruit-accent='red'] .fruit-ui) {
+    --f-tint: #dc343b;
+  }
+
+:where([data-fruit-accent='orange']),
+  :where([data-fruit-accent='orange'] .fruit-ui) {
+    --f-tint: #c55400;
+  }
+
+:where([data-fruit-accent='yellow']),
+  :where([data-fruit-accent='yellow'] .fruit-ui) {
+    --f-tint: #a06a00;
+  }
+
+:where([data-fruit-accent='green']),
+  :where([data-fruit-accent='green'] .fruit-ui) {
+    --f-tint: #2e8700;
+  }
+
+:where([data-fruit-accent='graphite']),
+  :where([data-fruit-accent='graphite'] .fruit-ui) {
+    --f-tint: #767676;
+  }
+
+/* An accent set on an element inside a scope (a preview area, an accent picker's circle)
+     re-derives the tint's shades there, since custom properties derived on the scope would keep
+     the scope's tint. The same formulas as tokens.css. */
+
+:where([data-fruit-accent]:not(.fruit-ui)) {
+    --f-accent: light-dark(var(--f-tint), oklch(from var(--f-tint) calc(l + 0.13) c h));
+    --f-accent-fill: color-mix(in srgb, var(--f-tint) 93%, black);
+    --f-accent-fill-hover: color-mix(in srgb, var(--f-tint) 81%, black);
+    --f-selection: light-dark(
+      color-mix(in srgb, var(--f-tint) 11%, white),
+      color-mix(in srgb, var(--f-tint) 25%, #2c2c2e)
+    );
+    --f-selection-text: light-dark(
+      color-mix(in srgb, var(--f-tint) 76%, #1c1c1e),
+      oklch(from var(--f-tint) calc(l + 0.29) calc(c * 0.55) h)
+    );
+    --f-focus-ring-color: color-mix(in srgb, var(--f-accent) 75%, transparent);
+  }
+
 .fruit-ui {
     margin: 0;
     font-family: var(--f-font);
@@ -1924,6 +1987,61 @@ select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) {
     background: var(--f-input-background, var(--f-control));
     color: var(--f-input-color, var(--f-text));
     box-shadow: var(--f-input-shadow);
+  }
+
+/* The accent picker: a row of accent circles, like the system accent color setting. Each circle
+     shows its accent in the current appearance; the checked one carries a white center. */
+
+.f-accent-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+.f-accent-picker__option {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--f-accent-swatch-size, 22px);
+    height: var(--f-accent-swatch-size, 22px);
+    border-radius: var(--f-radius-full);
+    background: var(--f-accent);
+    box-shadow: inset 0 0 0 1px var(--f-border);
+    cursor: pointer;
+  }
+
+.f-accent-picker__option > input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    border-radius: inherit;
+    opacity: 0;
+    cursor: inherit;
+  }
+
+.f-accent-picker__option:has(> input:checked)::after {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--f-radius-full);
+    background: var(--f-on-accent);
+    content: '';
+  }
+
+.f-accent-picker__option:has(> input:focus-visible) {
+    outline: var(--f-focus-ring-width) solid var(--f-focus-ring-color);
+    outline-offset: 2px;
+  }
+
+.f-accent-picker__option:has(> input:disabled) {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+@media (forced-colors: active) {
+    .f-accent-picker__option {
+      forced-color-adjust: none;
+      border: 1px solid CanvasText;
+    }
   }
 
 .fruit-ui :where(code, kbd, pre) {

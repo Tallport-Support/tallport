@@ -1,6 +1,7 @@
 {
   ":count selected": ":count件選択済み",
   ":first–:last of :total": "全:total件中 :first–:last件",
+  "Accent Color": "アクセントカラー",
   "Actions": "アクション",
   "Add an item": "項目を追加",
   "Apply": "適用",
@@ -27,6 +28,7 @@
   "Drop files here or": "ここにファイルをドロップするか、",
   "Event actions": "イベントの操作",
   "Generated": "生成済み",
+  "Graphite": "グラファイト",
   "Gray": "グレイ",
   "Green": "グリーン",
   "Hex": "16進数",

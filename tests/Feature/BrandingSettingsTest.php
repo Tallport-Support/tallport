@@ -43,14 +43,14 @@ class BrandingSettingsTest extends FeatureTestCase
             '_token'           => csrf_token(),
             'branding_logo'    => UploadedFile::fake()->image('logo.png', 22, 22),
             'branding_favicon' => UploadedFile::fake()->createWithContent('icon.php', '<?php'),
-            'settings'         => ['branding.header_color' => '#AA3300'],
+            'settings'         => ['branding.accent' => 'purple'],
         ])->assertSessionHasErrors('branding_favicon');
 
         $this->post(route('settings.save', ['section' => 'branding']), [
             '_token'        => csrf_token(),
             'branding_logo' => UploadedFile::fake()->image('logo.png', 22, 22),
             'settings'      => [
-                'branding.header_color' => '#AA3300',
+                'branding.accent'       => 'orange',
                 'branding.title'        => 'Acme Support',
                 'branding.footer'       => '<p>Acme Inc.<script>alert(1)</script></p>',
                 'branding.css'          => '.a { color: red; } .b { background: url(javascript:alert(1)); } @import url(x.css); }',
@@ -64,7 +64,7 @@ class BrandingSettingsTest extends FeatureTestCase
         $logo = \Option::get('branding.logo');
         $this->assertStringEndsWith('.png', $logo);
         $this->assertTrue(\Storage::exists('uploads/'.$logo));
-        $this->assertSame('aa3300', \Option::get('branding.header_color'));
+        $this->assertSame('orange', \Option::get('branding.accent'));
         $this->assertStringNotContainsString('<script>', \Option::get('branding.footer'));
         $this->assertStringNotContainsString('javascript:', \Option::get('branding.css'));
         $this->assertStringNotContainsString('@import', \Option::get('branding.css'));
@@ -73,12 +73,10 @@ class BrandingSettingsTest extends FeatureTestCase
         $page = $this->get(route('settings', ['section' => 'branding']))->assertOk();
         $this->get('/?dashboard=1')->assertSee('Dashboard - Acme Support', false);
         $page->assertSee(\Helper::uploadedFileUrl($logo), false)
-            ->assertSee('.fruit-ui{--f-tint:#aa3300;}', false)
-            ->assertSee('<meta name="theme-color" content="#aa3300">', false)
+            ->assertSee('data-fruit-accent="orange"', false)
             ->assertSee('Acme Inc.');
-        // After the stylesheets, so it overrides them.
-        $this->assertMatchesRegularExpression('#<link[^>]+\.css[^>]*>.*<style>\.fruit-ui\{#s', $page->getContent());
-        $this->assertDoesNotMatchRegularExpression('#<style>\.fruit-ui\{.*<link[^>]+\.css#s', $page->getContent());
+        // Custom CSS after the stylesheets, so it overrides them.
+        $this->assertMatchesRegularExpression('#<link[^>]+\.css[^>]*>.*<style>\.a \{#s', $page->getContent());
 
         // Removed: the standard logo again, the file gone.
         $this->post(route('settings.save', ['section' => 'branding']), ['_token' => csrf_token(), 'branding_logo_remove' => 1, 'settings' => ['branding.widget_powered_by' => 1]]);
@@ -162,7 +160,14 @@ class BrandingSettingsTest extends FeatureTestCase
         \Option::$cache = [];
 
         $this->assertSame('abc.png', \Option::get('branding.logo'));
-        $this->assertSame('112233', \Option::get('branding.header_color'));
+        // The old header colour: the nearest accent (2026_10_20 migration).
+        if (!class_exists('AddAccentColors')) {
+            require base_path('database/migrations/2026_10_20_010101_add_accent_colors.php');
+        }
+        (new \AddAccentColors())->up();
+        \Option::$cache = [];
+        $this->assertSame('blue', \Option::get('branding.accent'), 'Dark navy: the nearest hue.');
+        $this->assertNull(\Option::get('branding.header_color', null));
         $this->assertNull(\Option::get('branding.title', null), 'The old default name is not kept.');
         $this->assertSame('.x { color: red; }', \Option::get('branding.css'));
         $this->assertStringNotContainsString('<script>', \Option::get('branding.email_footer'));

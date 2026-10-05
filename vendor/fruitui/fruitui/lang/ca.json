@@ -1,6 +1,7 @@
 {
   ":count selected": "Seleccionats: :count",
   ":first–:last of :total": ":first–:last de :total",
+  "Accent Color": "Color d’èmfasi",
   "Actions": "Accions",
   "Add an item": "Afegir un element",
   "Apply": "Aplica",
@@ -27,6 +28,7 @@
   "Drop files here or": "Deixa anar els fitxers aquí o",
   "Event actions": "Accions de l’esdeveniment",
   "Generated": "Generat",
+  "Graphite": "Grafit",
   "Gray": "Gris",
   "Green": "Verd",
   "Hex": "Hex",

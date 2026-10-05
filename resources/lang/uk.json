@@ -1516,5 +1516,7 @@
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport оновлено :time. Фонові команди перезапустяться протягом хвилини-двох.",
     ":name couldn't be checked for updates: :error": "Не вдалося перевірити оновлення :name: :error",
     "The AI Assistant took this message to be in :language already.": "AI Assistant вирішив, що це повідомлення вже мовою «:language».",
-    "Could not translate the message: :error": "Не вдалося перекласти повідомлення: :error"
+    "Could not translate the message: :error": "Не вдалося перекласти повідомлення: :error",
+    "People can choose their own in their Preferences.": "Кожен може вибрати свій у своїх Налаштуваннях.",
+    "Use the Installation Default": "Використовувати типове значення інсталяції"
 }

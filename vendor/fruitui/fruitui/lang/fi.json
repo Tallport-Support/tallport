@@ -1,6 +1,7 @@
 {
   ":count selected": "Valittu: :count",
   ":first–:last of :total": ":first–:last / :total",
+  "Accent Color": "Korostusväri",
   "Actions": "Toiminnot",
   "Add an item": "Lisää kohde",
   "Apply": "Käytä",
@@ -27,6 +28,7 @@
   "Drop files here or": "Pudota tiedostot tähän tai",
   "Event actions": "Tapahtuman toiminnot",
   "Generated": "Luotu",
+  "Graphite": "Grafiitti",
   "Gray": "Harmaa",
   "Green": "Vihreä",
   "Hex": "Hex",

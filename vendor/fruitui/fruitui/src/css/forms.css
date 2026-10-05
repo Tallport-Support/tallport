@@ -736,4 +736,52 @@
     color: var(--f-input-color, var(--f-text));
     box-shadow: var(--f-input-shadow);
   }
+
+  /* The accent picker: a row of accent circles, like the system accent color setting. Each circle
+     shows its accent in the current appearance; the checked one carries a white center. */
+  .f-accent-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .f-accent-picker__option {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--f-accent-swatch-size, 22px);
+    height: var(--f-accent-swatch-size, 22px);
+    border-radius: var(--f-radius-full);
+    background: var(--f-accent);
+    box-shadow: inset 0 0 0 1px var(--f-border);
+    cursor: pointer;
+  }
+  .f-accent-picker__option > input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    border-radius: inherit;
+    opacity: 0;
+    cursor: inherit;
+  }
+  .f-accent-picker__option:has(> input:checked)::after {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--f-radius-full);
+    background: var(--f-on-accent);
+    content: '';
+  }
+  .f-accent-picker__option:has(> input:focus-visible) {
+    outline: var(--f-focus-ring-width) solid var(--f-focus-ring-color);
+    outline-offset: 2px;
+  }
+  .f-accent-picker__option:has(> input:disabled) {
+    opacity: 0.4;
+    cursor: default;
+  }
+  @media (forced-colors: active) {
+    .f-accent-picker__option {
+      forced-color-adjust: none;
+      border: 1px solid CanvasText;
+    }
+  }
 }

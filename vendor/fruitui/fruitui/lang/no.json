@@ -1,6 +1,7 @@
 {
   ":count selected": "Valgt: :count",
   ":first–:last of :total": ":first–:last av :total",
+  "Accent Color": "Uthevingsfarge",
   "Actions": "Handlinger",
   "Add an item": "Legg til et objekt",
   "Apply": "Bruk",
@@ -27,6 +28,7 @@
   "Drop files here or": "Slipp filer her eller",
   "Event actions": "Hendelseshandlinger",
   "Generated": "Generert",
+  "Graphite": "Grafitt",
   "Gray": "Grå",
   "Green": "Grønn",
   "Hex": "Hex",

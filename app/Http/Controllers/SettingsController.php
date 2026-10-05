@@ -397,8 +397,7 @@ class SettingsController extends Controller
         foreach (['branding.css', 'branding.email_css'] as $name) {
             $values[$name] = \App\Misc\Branding::sanitizeCss($values[$name] ?? '');
         }
-        $color = strtolower(ltrim(trim((string) ($values['branding.header_color'] ?? '')), '#'));
-        $values['branding.header_color'] = preg_match('/^[0-9a-f]{6}$/', $color) ? $color : '';
+        $values['branding.accent'] = in_array($values['branding.accent'] ?? '', \FruitUI\Fruit::ACCENTS, true) ? $values['branding.accent'] : 'blue';
         $values['branding.widget_powered_by'] = !empty($values['branding.widget_powered_by']);
         $request->merge(['settings' => $values]);
 

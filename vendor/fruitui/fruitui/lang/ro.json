@@ -1,6 +1,7 @@
 {
   ":count selected": "Selectate: :count",
   ":first–:last of :total": ":first–:last din :total",
+  "Accent Color": "Culoare de accent",
   "Actions": "Acțiuni",
   "Add an item": "Adaugă un element",
   "Apply": "Aplică",
@@ -27,6 +28,7 @@
   "Drop files here or": "Plasați fișierele aici sau",
   "Event actions": "Acțiuni eveniment",
   "Generated": "Generat",
+  "Graphite": "Grafit",
   "Gray": "Gri",
   "Green": "Verde",
   "Hex": "Hex",

@@ -9,8 +9,6 @@ namespace App\Misc;
  */
 class Branding
 {
-    const DEFAULT_HEADER_COLOR = '0078d7';
-
     /**
      * Uploaded images (file names in storage/app/public/uploads).
      */
@@ -26,7 +24,7 @@ class Branding
      * Settings stored as options (Settings » Branding).
      */
     const SETTINGS = [
-        'branding.logo', 'branding.logo_dark', 'branding.banner', 'branding.banner_dark', 'branding.favicon', 'branding.header_color', 'branding.title',
+        'branding.logo', 'branding.logo_dark', 'branding.banner', 'branding.banner_dark', 'branding.favicon', 'branding.accent', 'branding.title',
         'branding.footer', 'branding.css', 'branding.email_css', 'branding.email_header', 'branding.email_footer',
         'branding.widget_powered_by',
     ];
@@ -44,13 +42,17 @@ class Branding
     }
 
     /**
-     * The header colour as #rrggbb, or '' for the standard one.
+     * The accent colour (one of FruitUI's): the user's own, else the installation's, else blue.
      */
-    public static function headerColor()
+    public static function accent($user = null)
     {
-        $color = strtolower(ltrim(trim((string) self::get('branding.header_color')), '#'));
+        foreach ([$user ? $user->accent : null, self::get('branding.accent')] as $accent) {
+            if (in_array($accent, \FruitUI\Fruit::ACCENTS, true)) {
+                return $accent;
+            }
+        }
 
-        return preg_match('/^[0-9a-f]{6}$/', $color) && $color != self::DEFAULT_HEADER_COLOR ? '#'.$color : '';
+        return 'blue';
     }
 
     /**
@@ -136,21 +138,13 @@ class Branding
         \Eventy::addFilter('layout.title.name', function ($name) {
             return trim((string) self::get('branding.title')) ?: $name;
         }, 20, 1);
-        \Eventy::addFilter('layout.theme_color', function ($color) {
-            return self::headerColor() ?: $color;
-        }, 20, 1);
         \Eventy::addFilter('footer.text', function ($text) {
             return self::html('branding.footer') ?: $text;
         }, 20, 1);
 
-        // The brand colour and custom CSS, after the stylesheets they override.
+        // Custom CSS, after the stylesheets it overrides.
         \Eventy::addAction('layout.after_stylesheets', function () {
-            $css = '';
-            if ($color = self::headerColor()) {
-                // FruitUI's brand colour: accents in both appearances derive from it.
-                $css .= '.fruit-ui{--f-tint:'.$color.';}';
-            }
-            $css .= self::sanitizeCss(self::get('branding.css'));
+            $css = self::sanitizeCss(self::get('branding.css'));
             if ($css !== '') {
                 echo '<style>'.str_replace('</', '<\/', $css).'</style>';
             }

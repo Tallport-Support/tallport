@@ -974,6 +974,16 @@ a h4 {
     background: repeating-conic-gradient(#2c2c2e 0% 25%, #1c1c1e 0% 50%) 50% / 12px 12px;
     color-scheme: dark;
 }
+/* Preferences: the accent picker, off while the installation's accent is used. */
+.accent-choice {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.accent-choice:disabled {
+    opacity: .5;
+}
 /* The sign-in pages' default banner: Tallport's mark and name. */
 .banner__default {
     display: inline-flex;

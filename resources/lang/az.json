@@ -1516,5 +1516,7 @@
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport :time yeniləndi. Arxa plan əmrləri bir-iki dəqiqə ərzində yenidən başlayır.",
     ":name couldn't be checked for updates: :error": ":name üçün yeniləmələri yoxlamaq mümkün olmadı: :error",
     "The AI Assistant took this message to be in :language already.": "AI Assistant bu mesajın artıq :language dilində olduğunu müəyyən etdi.",
-    "Could not translate the message: :error": "Mesajı tərcümə etmək mümkün olmadı: :error"
+    "Could not translate the message: :error": "Mesajı tərcümə etmək mümkün olmadı: :error",
+    "People can choose their own in their Preferences.": "Hər kəs öz rəngini Seçimlərində seçə bilər.",
+    "Use the Installation Default": "Quraşdırmanın standartından istifadə et"
 }

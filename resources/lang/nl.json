@@ -1519,5 +1519,7 @@
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport is :time bijgewerkt. Achtergrondopdrachten starten binnen een minuut of twee opnieuw.",
     ":name couldn't be checked for updates: :error": "Kon niet controleren op updates voor :name: :error",
     "The AI Assistant took this message to be in :language already.": "De AI Assistant nam aan dat dit bericht al in het :language is.",
-    "Could not translate the message: :error": "Het bericht kon niet worden vertaald: :error"
+    "Could not translate the message: :error": "Het bericht kon niet worden vertaald: :error",
+    "People can choose their own in their Preferences.": "Iedereen kan in de eigen Voorkeuren een eigen kleur kiezen.",
+    "Use the Installation Default": "Standaard van de installatie gebruiken"
 }

@@ -1534,5 +1534,7 @@
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport päivitettiin :time. Taustakomennot käynnistyvät uudelleen minuutin tai kahden kuluessa.",
     ":name couldn't be checked for updates: :error": ":name: päivityksiä ei voitu tarkistaa: :error",
     "The AI Assistant took this message to be in :language already.": "AI Assistant tulkitsi viestin olevan jo kielellä :language.",
-    "Could not translate the message: :error": "Viestiä ei voitu kääntää: :error"
+    "Could not translate the message: :error": "Viestiä ei voitu kääntää: :error",
+    "People can choose their own in their Preferences.": "Jokainen voi valita omansa Asetuksistaan.",
+    "Use the Installation Default": "Käytä asennuksen oletusta"
 }

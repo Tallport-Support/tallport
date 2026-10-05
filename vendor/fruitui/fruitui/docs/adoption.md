@@ -78,6 +78,8 @@ FruitUI ships Azerbaijani (`az`), Catalan (`ca`), Chinese (`zh-CN`, `zh-TW`), Cr
 
 ## Customization, direction and generated text
 
+**Accent color.** Like the system accent color, people can pick one of FruitUI's named accents: blue (default), purple, pink, red, orange, yellow, green or graphite. Set `data-fruit-accent="purple"` on the `.fruit-ui` scope or an ancestor (usually `html`), from an installation default and a per-user preference. Links, filled buttons, selection, switches, focus rings and the bar on your own replies follow it in both appearances; each accent keeps 4.5:1 contrast. Status colors (success, warning, danger), note yellow and the generated indigo keep their meaning. `<x-fruit::accent-picker name="accent" wire:model="accent" />` offers the choice as a radio group of colored circles; validate with `Rule::in(FruitUI\Fruit::ACCENTS)`. To preview before saving, set the attribute when the choice changes: `x-on:change="document.documentElement.dataset.fruitAccent = $event.target.value"`.
+
 **Brand color.** Set `--f-tint` on the `.fruit-ui` scope to your brand color; accents, button fills and hovers, selection and focus rings derive from it in both appearances. Set it where `.fruit-ui` is (the derived tokens are computed there); to brand a nested area, give that element the `fruit-ui` class too. Choose a tint dark enough for white text on filled buttons.
 
 ```css

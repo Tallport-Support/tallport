@@ -1,6 +1,7 @@
 {
   ":count selected": "Kijelölve: :count",
   ":first–:last of :total": ":first–:last / :total",
+  "Accent Color": "Kiemelőszín",
   "Actions": "Műveletek",
   "Add an item": "Elem hozzáadása",
   "Apply": "Alkalmaz",
@@ -27,6 +28,7 @@
   "Drop files here or": "Húzza ide a fájlokat, vagy",
   "Event actions": "Esemény műveletei",
   "Generated": "Generált",
+  "Graphite": "Grafit",
   "Gray": "Szürke",
   "Green": "Zöld",
   "Hex": "Hex",

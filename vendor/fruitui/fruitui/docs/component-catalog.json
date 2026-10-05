@@ -1417,5 +1417,21 @@
         "options": "`width`: narrow (640px, forms and settings), medium (default, 880px, reading and detail pages), wide (1200px, tables). `title`, `description`, `level` (1 to 3, default 1). Slots: default (content), `actions` (beside the title), `footer` (a save bar: status first, actions last). Set `--f-page-background` to the background the page sits on, so the save bar covers what scrolls beneath it; `--f-page-gap`, `--f-page-padding-block` and `--f-page-padding-inline` adjust spacing."
       }
     }
+  },
+  {
+    "id": "accent-picker",
+    "kind": "primitive",
+    "classes": ["f-accent-picker"],
+    "blade": ["accent-picker"],
+    "uses": ["settings.html"],
+    "contracts": {
+      "accent-picker": {
+        "purpose": "Choose the application's accent color from FruitUI's named accents, like the system accent color.",
+        "element": "`div role=radiogroup` named by `label` (default Accent Color) with one native radio per accent inside a labelled circle (`data-fruit-accent`).",
+        "state": "Native radio value; the application stores the choice and sets `data-fruit-accent` on its `.fruit-ui` scope or an ancestor.",
+        "keyboard": "Native radio group: Tab reaches the checked accent, arrow keys move and select.",
+        "options": "`name` (default accent), `value`: blue (default), purple, pink, red, orange, yellow, green, graphite (`Fruit::ACCENTS`). `wire:model`, `x-model`, `form`, `disabled` and `required` go to the radios. Each accent keeps 4.5:1 for links, filled buttons, selection and the dark-appearance accent; status colors and the generated indigo do not change."
+      }
+    }
   }
 ]

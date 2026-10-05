@@ -1,6 +1,7 @@
 {
   ":count selected": "Odabrano: :count",
   ":first–:last of :total": ":first–:last od :total",
+  "Accent Color": "Boja naglaska",
   "Actions": "Radnje",
   "Add an item": "Dodaj stavku",
   "Apply": "Primijeni",
@@ -27,6 +28,7 @@
   "Drop files here or": "Ispustite datoteke ovdje ili",
   "Event actions": "Radnje događaja",
   "Generated": "Generirano",
+  "Graphite": "Grafit",
   "Gray": "Siva",
   "Green": "Zelena",
   "Hex": "Hex",

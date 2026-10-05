@@ -1,6 +1,7 @@
 {
   ":count selected": "Markerade: :count",
   ":first–:last of :total": ":first–:last av :total",
+  "Accent Color": "Accentfärg",
   "Actions": "Åtgärder",
   "Add an item": "Lägg till ett objekt",
   "Apply": "Verkställ",
@@ -27,6 +28,7 @@
   "Drop files here or": "Släpp filer här eller",
   "Event actions": "Händelseåtgärder",
   "Generated": "Genererad",
+  "Graphite": "Grafit",
   "Gray": "Grå",
   "Green": "Grön",
   "Hex": "Hex",

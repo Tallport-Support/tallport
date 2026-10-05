@@ -1,6 +1,7 @@
 {
   ":count selected": "Вибрано: :count",
   ":first–:last of :total": ":first–:last з :total",
+  "Accent Color": "Колір акценту",
   "Actions": "Дії",
   "Add an item": "Додати елемент",
   "Apply": "Застосувати",
@@ -27,6 +28,7 @@
   "Drop files here or": "Перетягніть файли сюди або",
   "Event actions": "Дії події",
   "Generated": "Згенеровано",
+  "Graphite": "Графітовий",
   "Gray": "Сірий",
   "Green": "Зелений",
   "Hex": "Hex",

@@ -1,6 +1,7 @@
 {
   ":count selected": ":count seçilib",
   ":first–:last of :total": ":first–:last / :total",
+  "Accent Color": "Vurğu rəngi",
   "Actions": "Əməliyyatlar",
   "Add an item": "Element əlavə et",
   "Apply": "Tətbiq et",
@@ -27,6 +28,7 @@
   "Drop files here or": "Faylları bura atın və ya",
   "Event actions": "Hadisə əməliyyatları",
   "Generated": "Yaradılıb",
+  "Graphite": "Qrafit",
   "Gray": "Boz",
   "Green": "Yaşıl",
   "Hex": "Hex",

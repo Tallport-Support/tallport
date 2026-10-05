@@ -38,13 +38,14 @@
             </x-fruit::fieldset>
         @endforeach
 
-        @php $color = ltrim((string) $settings['branding.header_color'], '#') ?: App\Misc\Branding::DEFAULT_HEADER_COLOR; @endphp
-        <x-fruit::field :label="__('Header Color')" layout="row">
-            <div class="f-row">
-                <x-fruit::color id="branding_header_color" name="settings[branding.header_color]" :value="'#'.$color" class="branding-color" />
-                <x-fruit::button variant="ghost" size="small" class="branding-color-reset" data-color="#{{ App\Misc\Branding::DEFAULT_HEADER_COLOR }}" x-data x-on:click="const color = document.getElementById('branding_header_color'); color.value = $el.dataset.color; color.dispatchEvent(new Event('input', {bubbles: true})); color.dispatchEvent(new Event('change', {bubbles: true}))">{{ __('Reset') }}</x-fruit::button>
+        {{-- Everyone's accent unless they choose their own (Preferences); previewed when picked. --}}
+        <div class="f-form-row">
+            <div>
+                <span>{{ __('Accent Color') }}</span>
+                <p class="f-help">{{ __('People can choose their own in their Preferences.') }}</p>
             </div>
-        </x-fruit::field>
+            <x-fruit::accent-picker name="settings[branding.accent]" :value="App\Misc\Branding::accent()" x-data x-on:change="document.documentElement.dataset.fruitAccent = $event.target.value" />
+        </div>
 
         <x-fruit::field :label="__('Name')" :description="__('In browser tabs.')" layout="row">
             <x-fruit::input id="branding_title" name="settings[branding.title]" :value="old('settings.branding.title', $settings['branding.title'])" :placeholder="config('app.name')" maxlength="100" />

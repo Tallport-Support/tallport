@@ -1516,5 +1516,7 @@
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport は :time に更新されました。バックグラウンドのコマンドは 1〜2 分以内に再開します。",
     ":name couldn't be checked for updates: :error": ":name の更新を確認できませんでした: :error",
     "The AI Assistant took this message to be in :language already.": "AI Assistant はこのメッセージがすでに:languageだと判断しました。",
-    "Could not translate the message: :error": "メッセージを翻訳できませんでした: :error"
+    "Could not translate the message: :error": "メッセージを翻訳できませんでした: :error",
+    "People can choose their own in their Preferences.": "各自が環境設定で独自の色を選べます。",
+    "Use the Installation Default": "インストールの既定値を使用"
 }

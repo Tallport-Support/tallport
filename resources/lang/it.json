@@ -1515,5 +1515,7 @@
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport è stato aggiornato :time. I comandi in background ripartono entro un paio di minuti.",
     ":name couldn't be checked for updates: :error": "Impossibile verificare gli aggiornamenti di :name: :error",
     "The AI Assistant took this message to be in :language already.": "L'AI Assistant ha ritenuto che questo messaggio sia già in :language.",
-    "Could not translate the message: :error": "Impossibile tradurre il messaggio: :error"
+    "Could not translate the message: :error": "Impossibile tradurre il messaggio: :error",
+    "People can choose their own in their Preferences.": "Ognuno può sceglierne uno proprio nelle Preferenze.",
+    "Use the Installation Default": "Usa il predefinito dell'installazione"
 }

@@ -33,6 +33,17 @@
                 </x-fruit::field>
             </x-fruit::form-section>
 
+            {{-- The accent: the installation's (Settings » Appearance) unless one is chosen here; previewed when picked. --}}
+            <x-fruit::form-section :title="__('Appearance')" x-data="{ installation: {{ $user->accent ? 'false' : 'true' }} }">
+                <x-fruit::field :label="__('Use the Installation Default')" layout="row">
+                    <x-fruit::switch name="accent_default" value="1" :checked="!$user->accent" x-model="installation" x-on:change="if (installation) document.documentElement.dataset.fruitAccent = {{ \Illuminate\Support\Js::from(App\Misc\Branding::accent()) }}" />
+                </x-fruit::field>
+                <div class="f-form-row">
+                    <span>{{ __('Accent Color') }}</span>
+                    <fieldset class="accent-choice" x-bind:disabled="installation"><x-fruit::accent-picker name="accent" :value="App\Misc\Branding::accent($user)" x-on:change="document.documentElement.dataset.fruitAccent = $event.target.value" /></fieldset>
+                </div>
+            </x-fruit::form-section>
+
         </form>
     </div>
 @endsection

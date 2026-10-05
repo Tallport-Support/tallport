@@ -15,6 +15,12 @@ use LogicException;
  */
 final class Fruit
 {
+    /**
+     * The named accent colors, like the system accent color: data-fruit-accent on the .fruit-ui
+     * scope or an ancestor. Validate a stored choice with Rule::in(Fruit::ACCENTS).
+     */
+    public const ACCENTS = ['blue', 'purple', 'pink', 'red', 'orange', 'yellow', 'green', 'graphite'];
+
     /** Toast tones: danger toasts are announced assertively and stay twice as long. */
     public const TOAST_TONES = ['neutral', 'success', 'danger'];
 

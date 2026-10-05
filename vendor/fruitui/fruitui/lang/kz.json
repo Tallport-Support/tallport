@@ -1,6 +1,7 @@
 {
   ":count selected": "Таңдалды: :count",
   ":first–:last of :total": ":first–:last / :total",
+  "Accent Color": "Акцент түсі",
   "Actions": "Әрекеттер",
   "Add an item": "Элемент қосу",
   "Apply": "Қолдану",
@@ -27,6 +28,7 @@
   "Drop files here or": "Файлдарды осында тастаңыз немесе",
   "Event actions": "Оқиға әрекеттері",
   "Generated": "Жасалған",
+  "Graphite": "Графит",
   "Gray": "Сұр",
   "Green": "Жасыл",
   "Hex": "Hex",

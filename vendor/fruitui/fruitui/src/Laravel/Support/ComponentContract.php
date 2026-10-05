@@ -56,6 +56,7 @@ final class ComponentContract
         'generated' => ['roles' => ['note']],
         'suggestion' => ['roles' => ['region']],
         'page' => ['options' => ['width' => ['narrow', 'medium', 'wide']]],
+        'accent-picker' => ['roles' => ['radiogroup']],
         'disclosure' => ['roles' => ['group']],
         'editor' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract', 'options' => ['paste' => ['rich', 'plain']]],
         'empty-state' => ['roles' => ['group', 'region']],
@@ -403,6 +404,15 @@ final class ComponentContract
         }
 
         return (int) $level;
+    }
+
+    /** An accent picker's checked accent must be one of FruitUI's named accents. */
+    public static function accentPicker(mixed $value, ComponentAttributeBag $attributes): void
+    {
+        self::validate('accent-picker', $attributes);
+        if (! in_array($value, Fruit::ACCENTS, true)) {
+            throw new InvalidArgumentException('FruitUI accent-picker value must be one of: '.implode(', ', Fruit::ACCENTS).'.');
+        }
     }
 
     /** A Field's label prop or label slot, which must have visible text. */

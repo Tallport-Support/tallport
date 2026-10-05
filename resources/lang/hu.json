@@ -1516,5 +1516,7 @@
     "Tallport was updated :time. Background commands restart within a minute or two.": "A Tallport frissítve :time. A háttérparancsok egy-két percen belül újraindulnak.",
     ":name couldn't be checked for updates: :error": "A(z) :name frissítéseit nem sikerült ellenőrizni: :error",
     "The AI Assistant took this message to be in :language already.": "Az AI Assistant szerint ez az üzenet már :language nyelvű.",
-    "Could not translate the message: :error": "Az üzenetet nem sikerült lefordítani: :error"
+    "Could not translate the message: :error": "Az üzenetet nem sikerült lefordítani: :error",
+    "People can choose their own in their Preferences.": "Mindenki választhat sajátot a Beállításaiban.",
+    "Use the Installation Default": "A telepítés alapértelmezésének használata"
 }

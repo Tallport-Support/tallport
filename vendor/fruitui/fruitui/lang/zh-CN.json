@@ -1,6 +1,7 @@
 {
   ":count selected": "已选择 :count 项",
   ":first–:last of :total": ":first–:last，共 :total 项",
+  "Accent Color": "强调色",
   "Actions": "操作",
   "Add an item": "添加项目",
   "Apply": "应用",
@@ -27,6 +28,7 @@
   "Drop files here or": "将文件拖到此处或",
   "Event actions": "事件操作",
   "Generated": "已生成",
+  "Graphite": "石墨色",
   "Gray": "灰色",
   "Green": "绿色",
   "Hex": "Hex",

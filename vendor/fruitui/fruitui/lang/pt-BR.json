@@ -1,6 +1,7 @@
 {
   ":count selected": "Selecionados: :count",
   ":first–:last of :total": ":first–:last de :total",
+  "Accent Color": "Cor de destaque",
   "Actions": "Ações",
   "Add an item": "Adicionar item",
   "Apply": "Aplicar",
@@ -27,6 +28,7 @@
   "Drop files here or": "Solte os arquivos aqui ou",
   "Event actions": "Ações do evento",
   "Generated": "Gerado",
+  "Graphite": "Grafite",
   "Gray": "Cinza",
   "Green": "Verde",
   "Hex": "Hex",

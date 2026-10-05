@@ -1515,5 +1515,7 @@
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport je bil posodobljen :time. Ukazi v ozadju se znova zaženejo v minuti ali dveh.",
     ":name couldn't be checked for updates: :error": "Posodobitev za :name ni bilo mogoče preveriti: :error",
     "The AI Assistant took this message to be in :language already.": "AI Assistant je presodil, da je sporočilo že v jeziku :language.",
-    "Could not translate the message: :error": "Sporočila ni bilo mogoče prevesti: :error"
+    "Could not translate the message: :error": "Sporočila ni bilo mogoče prevesti: :error",
+    "People can choose their own in their Preferences.": "Vsak lahko izbere svojo v svojih Nastavitvah.",
+    "Use the Installation Default": "Uporabi privzeto vrednost namestitve"
 }
