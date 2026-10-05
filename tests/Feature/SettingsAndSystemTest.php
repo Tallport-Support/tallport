@@ -206,4 +206,16 @@ class SettingsAndSystemTest extends FeatureTestCase
 
         $this->assertSame(403, $this->postAjax($this->createUser(), '/modules/ajax', ['action' => 'activate', 'alias' => 'x'])->status());
     }
+
+    /**
+     * Livewire's script is a published file (public/vendor/livewire, kept in step by
+     * composer's post-update-cmd), not its PHP route, which web servers that serve
+     * every .js URL as a file answer with 404.
+     */
+    public function testLivewireScriptIsAPublishedFile()
+    {
+        $this->actingAs($this->admin)->get('/?dashboard=1')->assertOk()
+            ->assertSee('/vendor/livewire/livewire', false)
+            ->assertDontSee(\Livewire\Mechanisms\HandleRequests\EndpointResolver::prefix().'/livewire', false);
+    }
 }
