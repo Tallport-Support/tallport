@@ -64,13 +64,15 @@ class ConversationChatViewTest extends FeatureTestCase
         $html = Livewire::actingAs($this->agent)->test(ConversationThread::class, ['conversation' => $this->conversation, 'chat' => true])->html();
         $this->assertStringContainsString('f-history', $html);
         $this->assertLessThan(strpos($html, 'thread-'.$reply->id.'"'), strpos($html, 'thread-'.$first->id.'"'));
-        $this->assertSame(2, substr_count($html, 'class="conv-day"'));
+        // A divider and a list for each day.
+        $this->assertSame(2, substr_count($html, 'f-divider'));
+        $this->assertSame(2, preg_match_all('#<ol role="list"[^>]*class="f-thread"#', $html));
         $this->assertStringContainsString('Today', $html);
 
         // The email view: newest first, no dividers.
         $html = Livewire::actingAs($this->agent)->test(ConversationThread::class, ['conversation' => $this->conversation])->html();
         $this->assertGreaterThan(strpos($html, 'thread-'.$reply->id.'"'), strpos($html, 'thread-'.$first->id.'"'));
-        $this->assertStringNotContainsString('conv-day', $html);
+        $this->assertStringNotContainsString('f-divider', $html);
     }
 
     public function testTheComposerStaysOpenAndSwitchesWhileEmpty()
