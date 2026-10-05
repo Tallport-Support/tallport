@@ -644,7 +644,9 @@ Use `f-prose` around sanitized message content to scope paragraph, list, quote, 
 </x-fruit::field>
 ```
 
-`f-upload` rows combine File, Progress, text/links, and independent cancel/retry/remove buttons. The application owns FileList handling and transport. The Mail and Support examples simulate upload progress locally and provide downloadable browser blobs; they send no files to a server. `f-spinner` is decorative activity: keep a readable action name, set `aria-busy`, and use native disabled when repeated activation must be blocked. Reduced motion stops spinning.
+`f-upload` rows combine File, Progress, text/links, and independent cancel/retry/remove buttons. The application owns FileList handling and transport. The Mail and Support examples simulate upload progress locally and provide downloadable browser blobs; they send no files to a server. `f-spinner` is decorative activity. Reduced motion slows it rather than stopping it.
+
+A button with work in progress sets `aria-busy="true"`; Livewire 4 sets `data-loading` on the button that sent the request, which looks the same. After `--f-busy-delay` (150ms, so quick responses never flash) a spinner covers the label. The label stays in place, so the button keeps its width and its accessible name, and it keeps focus. With the Alpine plugin, a busy button ignores further clicks and Enter/Space, including `wire:click` and form submission; without JavaScript it only shows progress, so add native `disabled` where a repeat must be impossible. To show progress text instead, such as Saving Changes…, put an `f-spinner` before the label; the button then shows both and no overlay.
 
 `f-avatar` also accepts an `img` with meaningful alt text, or empty alt when an adjacent name supplies identity. `<x-fruit::avatar>` is decorative by default; `label` gives it an accessible identity and `src` renders a photo. `f-avatar-group` overlaps independent avatars; `f-presence` must have adjacent readable status or equivalent accessible text. `f-notifications` arranges grouped native lists of destination links, badges, and independent actions; unread counts and read state stay in the application.
 

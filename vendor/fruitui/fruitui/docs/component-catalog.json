@@ -9,8 +9,8 @@
       "button": {
         "purpose": "Invoke an action.",
         "element": "`button`, button role; native `aria-pressed` can describe a toggle action.",
-        "state": "Native disabled state; explicit form button type.",
-        "keyboard": "Tab focuses; Enter/Space invokes.",
+        "state": "Native disabled state; explicit form button type. `aria-busy=\"true\"` (or Livewire's `data-loading`) marks work in progress: after `--f-busy-delay` (150ms) a spinner covers the label, the width, focus and accessible name hold, and the Alpine plugin ignores further clicks.",
+        "keyboard": "Tab focuses; Enter/Space invokes; a busy button keeps focus and ignores activation.",
         "options": "`variant`: default, primary, ghost, danger. `size`: small (30px), regular (36px, default), large (44px). `type`: button (default), submit, reset. Slot: action label and optional decorative icon."
       }
     }
@@ -960,7 +960,7 @@
         "element": "Decorative `span` (aria-hidden).",
         "state": "No state; the busy element sets aria-busy.",
         "keyboard": "Not focusable.",
-        "options": "No options or slot. Keep a readable action label beside it."
+        "options": "No options or slot. Inside a busy button it replaces the automatic spinner and keeps a readable action label beside it, such as Saving Changes…."
       }
     }
   },

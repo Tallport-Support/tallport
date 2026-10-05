@@ -75,6 +75,8 @@
     --f-space-6: 24px;
     --f-space-8: 32px;
     --f-motion: 140ms;
+    /* How long a busy button waits before its spinner covers the label. */
+    --f-busy-delay: 150ms;
     /* Derived from palette tokens, so they follow every appearance without separate dark values. */
     --f-focus-ring-color: color-mix(in srgb, var(--f-accent) 75%, transparent);
     --f-focus-ring-width: 3px;

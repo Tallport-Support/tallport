@@ -89,11 +89,12 @@ window.Tallport = (function () {
 	}
 
 	// A button that is working: busy for assistive tech, not clickable twice.
+	// FruitUI shows a spinner on a busy button and ignores clicks on it; not
+	// disabled, which would take the focus away.
 	function busy(button, on) {
 		if (!button) {
 			return;
 		}
-		button.disabled = !!on;
 		if (on) {
 			button.setAttribute('aria-busy', 'true');
 		} else {
@@ -164,4 +165,21 @@ document.addEventListener('fruit-resize', function (event) {
 	}
 	widths[event.detail.variable] = Math.round(event.detail.value);
 	document.cookie = 'tallport_columns=' + encodeURIComponent(JSON.stringify(widths)) + '; path=/; max-age=31536000; SameSite=Lax';
+});
+
+// A form sent the regular way: its button is busy until the next page shows (FruitUI's
+// spinner). Forms that scripts send themselves (submit prevented) are left alone.
+document.addEventListener('submit', function (event) {
+	var button = event.submitter;
+	if (!event.defaultPrevented && button && button.classList.contains('f-button')) {
+		button.setAttribute('aria-busy', 'true');
+	}
+});
+// Back to a page from the browser's cache: nothing is busy any more.
+window.addEventListener('pageshow', function (event) {
+	if (event.persisted) {
+		document.querySelectorAll('.f-button[aria-busy="true"]').forEach(function (button) {
+			button.removeAttribute('aria-busy');
+		});
+	}
 });

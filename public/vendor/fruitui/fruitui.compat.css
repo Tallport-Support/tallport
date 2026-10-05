@@ -75,6 +75,8 @@
     --f-space-6: 24px;
     --f-space-8: 32px;
     --f-motion: 140ms;
+    /* How long a busy button waits before its spinner covers the label. */
+    --f-busy-delay: 150ms;
     /* Derived from palette tokens, so they follow every appearance without separate dark values. */
     --f-focus-ring-color: color-mix(in srgb, var(--f-accent) 75%, transparent);
     --f-focus-ring-width: 3px;
@@ -116,42 +118,77 @@
      text on filled buttons, the lighter dark-appearance accent and selection text. */
 
 :where([data-fruit-accent='blue']),
-  :where([data-fruit-accent='blue'] .fruit-ui) {
+  [data-fruit-accent='blue'] .fruit-ui {
     --f-tint: #006cde;
   }
 
 :where([data-fruit-accent='purple']),
-  :where([data-fruit-accent='purple'] .fruit-ui) {
+  [data-fruit-accent='purple'] .fruit-ui {
     --f-tint: #9c3fbf;
   }
 
 :where([data-fruit-accent='pink']),
-  :where([data-fruit-accent='pink'] .fruit-ui) {
+  [data-fruit-accent='pink'] .fruit-ui {
     --f-tint: #d8326e;
   }
 
 :where([data-fruit-accent='red']),
-  :where([data-fruit-accent='red'] .fruit-ui) {
+  [data-fruit-accent='red'] .fruit-ui {
     --f-tint: #dc343b;
   }
 
 :where([data-fruit-accent='orange']),
-  :where([data-fruit-accent='orange'] .fruit-ui) {
+  [data-fruit-accent='orange'] .fruit-ui {
     --f-tint: #c55400;
   }
 
 :where([data-fruit-accent='yellow']),
-  :where([data-fruit-accent='yellow'] .fruit-ui) {
+  [data-fruit-accent='yellow'] .fruit-ui {
     --f-tint: #a06a00;
   }
 
 :where([data-fruit-accent='green']),
-  :where([data-fruit-accent='green'] .fruit-ui) {
+  [data-fruit-accent='green'] .fruit-ui {
     --f-tint: #2e8700;
   }
 
 :where([data-fruit-accent='graphite']),
-  :where([data-fruit-accent='graphite'] .fruit-ui) {
+  [data-fruit-accent='graphite'] .fruit-ui {
+    --f-tint: #767676;
+  }
+
+/* The scope's own accent comes last, so it wins over an ancestor's. The compat build gives these
+     selectors and the ancestor ones the scope's class weight, as it does the default tint. */
+
+.fruit-ui[data-fruit-accent='blue'] {
+    --f-tint: #006cde;
+  }
+
+.fruit-ui[data-fruit-accent='purple'] {
+    --f-tint: #9c3fbf;
+  }
+
+.fruit-ui[data-fruit-accent='pink'] {
+    --f-tint: #d8326e;
+  }
+
+.fruit-ui[data-fruit-accent='red'] {
+    --f-tint: #dc343b;
+  }
+
+.fruit-ui[data-fruit-accent='orange'] {
+    --f-tint: #c55400;
+  }
+
+.fruit-ui[data-fruit-accent='yellow'] {
+    --f-tint: #a06a00;
+  }
+
+.fruit-ui[data-fruit-accent='green'] {
+    --f-tint: #2e8700;
+  }
+
+.fruit-ui[data-fruit-accent='graphite'] {
     --f-tint: #767676;
   }
 
@@ -339,7 +376,7 @@ html.fruit-ui > body {
     /* Activity indicators keep moving (more slowly) so progress stays visible. */
     .fruit-ui :not(.f-spinner),
     .fruit-ui *::before,
-    .fruit-ui *::after {
+    .fruit-ui :not(.f-button:is([aria-busy='true'], [data-loading]))::after {
       animation-duration: 0.01ms !important;
     }
     .fruit-ui *,
@@ -1966,7 +2003,7 @@ select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) {
       .f-tab,
       .f-chip__remove,
       .f-segmented > label > span
-    ):active:not(:disabled, [aria-disabled='true']) {
+    ):active:not(:disabled, [aria-disabled='true'], [aria-busy='true'], [data-loading]) {
     background-image: linear-gradient(var(--f-pressed), var(--f-pressed));
   }
 
@@ -2620,6 +2657,53 @@ a.f-menu-item {
     cursor: progress;
   }
 
+/* A busy button without its own spinner: after a short delay (quick responses never flash), a
+     spinner covers the label, which stays in place for its width and accessible name. A button that
+     carries an f-spinner shows it beside a label of the author's choosing instead. */
+
+.f-button:is([aria-busy='true'], [data-loading]):not(:has(> .f-spinner)) {
+    position: relative;
+    animation: fruit-busy-label 0s var(--f-busy-delay) both;
+  }
+
+.f-button:is([aria-busy='true'], [data-loading]):not(:has(> .f-spinner)) > * {
+    animation: fruit-busy-content 0s var(--f-busy-delay) both;
+  }
+
+.f-button:is([aria-busy='true'], [data-loading]):not(:has(> .f-spinner))::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: calc(1em - 2px);
+    height: calc(1em - 2px);
+    margin: auto;
+    box-sizing: border-box;
+    border: 2px solid currentColor;
+    border-inline-end-color: transparent;
+    border-radius: 50%;
+    animation:
+      fruit-busy-spinner 0s var(--f-busy-delay) both,
+      fruit-spin 0.8s linear var(--f-busy-delay) infinite;
+  }
+
+@keyframes fruit-busy-label {
+    to {
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+@keyframes fruit-busy-content {
+    to {
+      opacity: 0;
+    }
+  }
+
+@keyframes fruit-busy-spinner {
+    from {
+      opacity: 0;
+    }
+  }
+
 @keyframes fruit-spin {
     to {
       transform: rotate(360deg);
@@ -2630,6 +2714,9 @@ a.f-menu-item {
     /* Activity stays visible, more slowly. */
     .f-spinner {
       animation-duration: 2.4s;
+    }
+    .f-button:is([aria-busy='true'], [data-loading]):not(:has(> .f-spinner))::after {
+      animation-duration: 0s, 2.4s;
     }
   }
 

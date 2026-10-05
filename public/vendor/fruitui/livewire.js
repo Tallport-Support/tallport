@@ -452,7 +452,7 @@ function T(e, t, { above: n = !1, owns: r = (t) => t?.closest("details") === e, 
 }
 //#endregion
 //#region src/js/splitter.js
-function E({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280, flexible: a, edge: s = "end" }) {
+function ee({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280, flexible: a, edge: s = "end" }) {
 	if (!e || !a || e === a || !/^--f-[\w-]+$/.test(t) || !["start", "end"].includes(s) || ![
 		n,
 		r,
@@ -559,8 +559,17 @@ function E({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280,
 	};
 }
 //#endregion
+//#region src/js/busy.js
+var E = ".f-button:is([aria-busy=\"true\"], [data-loading])";
+function D(e = document) {
+	let t = (e) => {
+		e.target.closest?.(E) && (e.preventDefault(), e.stopImmediatePropagation());
+	};
+	return e.addEventListener("click", t, !0), () => e.removeEventListener("click", t, !0);
+}
+//#endregion
 //#region src/js/suggestions.js
-function D(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anchor: s = t, messages: c = {
+function O(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anchor: s = t, messages: c = {
 	label: "label",
 	count: "count-message"
 } }) {
@@ -633,7 +642,7 @@ function D(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anc
 }
 //#endregion
 //#region src/js/autocomplete.js
-function ee() {
+function te() {
 	let e, t, n, r = () => e.dataset.fruitTrigger || "", i = () => {
 		let e = t.selectionStart ?? t.value.length, n = t.value.slice(0, e), i = n.search(/[^\s,]*$/), a = n.slice(i), o = r();
 		return o ? a.startsWith(o) ? {
@@ -650,7 +659,7 @@ function ee() {
 		init() {
 			if (e = this.$el, t = e.querySelector("input:not([type=\"hidden\"]), textarea"), !t) return;
 			let a = null;
-			n = D(e, t, {
+			n = O(e, t, {
 				query() {
 					return a = i(), a && a.query;
 				},
@@ -669,7 +678,7 @@ function ee() {
 }
 //#endregion
 //#region src/js/command-palette.js
-function te() {
+function ne() {
 	let e, t, n, r, i, a, o = -1, s = () => [...n.querySelectorAll("[role=\"option\"]")].filter((e) => !e.hidden && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true"), c = (e) => {
 		let r = s();
 		o = r.length ? (e + r.length) % r.length : -1;
@@ -717,13 +726,13 @@ function te() {
 }
 //#endregion
 //#region src/js/dropzone.js
-var O = (e, t) => {
+var k = (e, t) => {
 	let n = (e.accept || "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
 	if (!n.length) return !0;
 	let r = t.name.toLowerCase(), i = (t.type || "").toLowerCase();
 	return n.some((e) => e.startsWith(".") ? r.endsWith(e) : e.endsWith("/*") ? i.startsWith(e.slice(0, -1)) : i === e);
 };
-function ne() {
+function A() {
 	let e;
 	return {
 		init() {
@@ -740,7 +749,7 @@ function ne() {
 			}), r("drop", (e) => {
 				if (!a(e) || n.disabled) return;
 				e.preventDefault(), i = 0, t.removeAttribute("data-dragging");
-				let r = [...e.dataTransfer.files].filter((e) => O(n, e));
+				let r = [...e.dataTransfer.files].filter((e) => k(n, e));
 				if (!r.length) return;
 				let o = new DataTransfer();
 				for (let e of n.multiple ? r : r.slice(0, 1)) o.items.add(e);
@@ -754,21 +763,21 @@ function ne() {
 }
 //#endregion
 //#region src/js/pickers.js
-var k = (e) => String(e).padStart(2, "0"), A = (e) => `${String(e.getFullYear()).padStart(4, "0")}-${k(e.getMonth() + 1)}-${k(e.getDate())}`, j = (e) => {
+var j = (e) => String(e).padStart(2, "0"), M = (e) => `${String(e.getFullYear()).padStart(4, "0")}-${j(e.getMonth() + 1)}-${j(e.getDate())}`, N = (e) => {
 	let t = /^(\d{4,})-(\d{2})-(\d{2})/.exec(e || "");
 	return t ? new Date(Number(t[1]), Number(t[2]) - 1, Number(t[3])) : null;
-}, M = (e, t) => new Date(e.getFullYear(), e.getMonth(), e.getDate() + t), N = (e, t) => {
+}, P = (e, t) => new Date(e.getFullYear(), e.getMonth(), e.getDate() + t), F = (e, t) => {
 	let n = new Date(e.getFullYear(), e.getMonth() + t, 1), r = new Date(n.getFullYear(), n.getMonth() + 1, 0).getDate();
 	return n.setDate(Math.min(e.getDate(), r)), n;
-}, P = (e, t) => !!(e && t) && A(e) === A(t), F = (e) => e.closest("[lang]")?.lang || navigator.language || "en";
-function I(e) {
+}, I = (e, t) => !!(e && t) && M(e) === M(t), L = (e) => e.closest("[lang]")?.lang || navigator.language || "en";
+function R(e) {
 	try {
 		let t = new Intl.Locale(e), n = t.getWeekInfo?.() ?? t.weekInfo;
 		if (n?.firstDay) return n.firstDay % 7;
 	} catch {}
 	return +!/^en(-US|-CA)?$/i.test(e);
 }
-function L(e, t, n, { onOpen: r, onFocus: i }) {
+function z(e, t, n, { onOpen: r, onFocus: i }) {
 	let a = w(n, t, { start: !0 }), o = new AbortController(), s = (e, t, n) => e.addEventListener(t, n, { signal: o.signal }), c = () => !n.hidden, l = () => {
 		t.setAttribute("aria-haspopup", "dialog"), t.setAttribute("aria-controls", n.id);
 	}, u = (e) => {
@@ -799,57 +808,57 @@ function L(e, t, n, { onOpen: r, onFocus: i }) {
 		}
 	};
 }
-function re() {
-	let e, t, n, r, i, a, s = /* @__PURE__ */ new Date(), c = /* @__PURE__ */ new Date(), l = () => j(t.value), u = () => [j(t.min), j(t.max)], f = (e) => {
+function B() {
+	let e, t, n, r, i, a, s = /* @__PURE__ */ new Date(), c = /* @__PURE__ */ new Date(), l = () => N(t.value), u = () => [N(t.min), N(t.max)], f = (e) => {
 		let [t, n] = u();
 		return !!(t && e < t || n && e > n);
 	}, m = (e) => {
 		let [t, n] = u();
 		return t && e < t ? t : n && e > n ? n : e;
 	}, h = () => {
-		let e = F(t);
+		let e = L(t);
 		r.textContent = new Intl.DateTimeFormat(e, {
 			month: "long",
 			year: "numeric"
 		}).format(s);
-		let n = M(s, -((s.getDay() - I(e) + 7) % 7)), a = new Intl.DateTimeFormat(e, { weekday: "narrow" }), o = new Intl.DateTimeFormat(e, { weekday: "long" }), u = new Intl.DateTimeFormat(e, { dateStyle: "full" }), d = document.createElement("tr");
+		let n = P(s, -((s.getDay() - R(e) + 7) % 7)), a = new Intl.DateTimeFormat(e, { weekday: "narrow" }), o = new Intl.DateTimeFormat(e, { weekday: "long" }), u = new Intl.DateTimeFormat(e, { dateStyle: "full" }), d = document.createElement("tr");
 		for (let e = 0; e < 7; e++) {
-			let t = M(n, e), r = document.createElement("th");
+			let t = P(n, e), r = document.createElement("th");
 			r.scope = "col", r.abbr = o.format(t), r.textContent = a.format(t), d.append(r);
 		}
 		let p = [];
 		for (let e = 0; e < 6; e++) {
 			let t = document.createElement("tr");
 			for (let r = 0; r < 7; r++) {
-				let i = M(n, e * 7 + r), a = document.createElement("td");
-				a.setAttribute("aria-selected", String(P(i, l())));
+				let i = P(n, e * 7 + r), a = document.createElement("td");
+				a.setAttribute("aria-selected", String(I(i, l())));
 				let o = document.createElement("button");
-				o.type = "button", o.className = "f-calendar__day", o.tabIndex = P(i, c) ? 0 : -1, o.textContent = String(i.getDate()), o.dataset.date = A(i), o.setAttribute("aria-label", u.format(i)), i.getMonth() !== s.getMonth() && (o.dataset.outside = ""), P(i, /* @__PURE__ */ new Date()) && o.setAttribute("aria-current", "date"), f(i) && o.setAttribute("aria-disabled", "true"), a.append(o), t.append(a);
+				o.type = "button", o.className = "f-calendar__day", o.tabIndex = I(i, c) ? 0 : -1, o.textContent = String(i.getDate()), o.dataset.date = M(i), o.setAttribute("aria-label", u.format(i)), i.getMonth() !== s.getMonth() && (o.dataset.outside = ""), I(i, /* @__PURE__ */ new Date()) && o.setAttribute("aria-current", "date"), f(i) && o.setAttribute("aria-disabled", "true"), a.append(o), t.append(a);
 			}
 			p.push(t);
 		}
 		i.tHead.replaceChildren(d), i.tBodies[0].replaceChildren(...p);
 	}, g = (e, t = !0) => {
-		c = e, s = new Date(e.getFullYear(), e.getMonth(), 1), h(), t && i.querySelector(`[data-date="${A(e)}"]`)?.focus();
+		c = e, s = new Date(e.getFullYear(), e.getMonth(), 1), h(), t && i.querySelector(`[data-date="${M(e)}"]`)?.focus();
 	}, _ = (e) => {
 		if (f(e)) return;
-		let n = A(e);
+		let n = M(e);
 		if (t.type === "datetime-local") {
 			let e = /* @__PURE__ */ new Date();
-			n += `T${t.value.split("T")[1] || `${k(e.getHours())}:${k(e.getMinutes())}`}`;
+			n += `T${t.value.split("T")[1] || `${j(e.getHours())}:${j(e.getMinutes())}`}`;
 		}
 		p(t, n), a.close(!0);
 	}, v = (e, n) => {
 		let r = C(t) ? -1 : 1;
 		return {
-			ArrowLeft: () => M(n, -r),
-			ArrowRight: () => M(n, r),
-			ArrowUp: () => M(n, -7),
-			ArrowDown: () => M(n, 7),
-			Home: () => M(n, -((n.getDay() - I(F(t)) + 7) % 7)),
-			End: () => M(n, 6 - (n.getDay() - I(F(t)) + 7) % 7),
-			PageUp: () => N(n, e.shiftKey ? -12 : -1),
-			PageDown: () => N(n, e.shiftKey ? 12 : 1)
+			ArrowLeft: () => P(n, -r),
+			ArrowRight: () => P(n, r),
+			ArrowUp: () => P(n, -7),
+			ArrowDown: () => P(n, 7),
+			Home: () => P(n, -((n.getDay() - R(L(t)) + 7) % 7)),
+			End: () => P(n, 6 - (n.getDay() - R(L(t)) + 7) % 7),
+			PageUp: () => F(n, e.shiftKey ? -12 : -1),
+			PageDown: () => F(n, e.shiftKey ? 12 : 1)
 		}[e.key]?.();
 	};
 	return {
@@ -861,10 +870,10 @@ function re() {
 			let f = (t, n, r) => {
 				let i = document.createElement("button");
 				return i.type = "button", i.className = "f-calendar__nav", i.dataset.direction = t, i.setAttribute("aria-label", o(e, n, r)), i.addEventListener("click", () => {
-					c = m(N(c, t === "next" ? 1 : -1)), s = new Date(c.getFullYear(), c.getMonth(), 1), h();
+					c = m(F(c, t === "next" ? 1 : -1)), s = new Date(c.getFullYear(), c.getMonth(), 1), h();
 				}), i;
 			};
-			u.append(r, f("previous", "previous-label", "Previous Month"), f("next", "next-label", "Next Month")), i = document.createElement("table"), i.className = "f-calendar__grid", i.setAttribute("role", "grid"), i.setAttribute("aria-labelledby", r.id), i.append(document.createElement("thead"), document.createElement("tbody")), n.append(u, i), (e.querySelector("[data-fruit-ui]") ?? e).append(n), a = L(e, t, n, {
+			u.append(r, f("previous", "previous-label", "Previous Month"), f("next", "next-label", "Next Month")), i = document.createElement("table"), i.className = "f-calendar__grid", i.setAttribute("role", "grid"), i.setAttribute("aria-labelledby", r.id), i.append(document.createElement("thead"), document.createElement("tbody")), n.append(u, i), (e.querySelector("[data-fruit-ui]") ?? e).append(n), a = z(e, t, n, {
 				onOpen: () => g(m(l() ?? /* @__PURE__ */ new Date()), !1),
 				onFocus: () => i.querySelector(".f-calendar__day[tabindex=\"0\"]")?.focus()
 			}), e.setAttribute("data-ready", ""), a.listen(t, "click", (e) => {
@@ -876,11 +885,11 @@ function re() {
 				a.isOpen() && e && g(e, !1);
 			}), a.listen(i, "click", (e) => {
 				let t = e.target.closest(".f-calendar__day");
-				t && _(j(t.dataset.date));
+				t && _(N(t.dataset.date));
 			}), a.listen(i, "keydown", (e) => {
 				let t = e.target.closest(".f-calendar__day");
 				if (!t) return;
-				let n = v(e, j(t.dataset.date));
+				let n = v(e, N(t.dataset.date));
 				n && (e.preventDefault(), g(n));
 			});
 		},
@@ -889,7 +898,7 @@ function re() {
 		}
 	};
 }
-var ie = [
+var V = [
 	["Red", "#ff3b30"],
 	["Orange", "#ff9500"],
 	["Yellow", "#ffcc00"],
@@ -903,20 +912,20 @@ var ie = [
 	["Pink", "#ff2d55"],
 	["Brown", "#a2845e"],
 	["Gray", "#8e8e93"]
-], R = 7, ae = (e) => [
+], H = 7, U = (e) => [
 	1,
 	3,
 	5
 ].map((t) => parseInt(e.slice(t, t + 2), 16) / 255);
-function z(e) {
-	let [t, n, r] = ae(e), i = Math.max(t, n, r), a = i - Math.min(t, n, r), o = 0;
+function W(e) {
+	let [t, n, r] = U(e), i = Math.max(t, n, r), a = i - Math.min(t, n, r), o = 0;
 	return a && (o = i === t ? (n - r) / a % 6 : i === n ? (r - t) / a + 2 : (t - n) / a + 4), [
 		(o * 60 + 360) % 360,
 		i ? a / i : 0,
 		i
 	];
 }
-function B(e, t, n) {
+function G(e, t, n) {
 	let r = (r) => {
 		let i = (r + e / 60) % 6;
 		return n - n * t * Math.max(0, Math.min(i, 4 - i, 1));
@@ -927,14 +936,14 @@ function B(e, t, n) {
 		r(1)
 	].map((e) => Math.round(e * 255).toString(16).padStart(2, "0")).join("")}`;
 }
-function V() {
+function K() {
 	let e, t, n, r, i, a, s, c, l, u, f, m = [
 		0,
 		0,
 		0
 	], h = () => {
 		let e = [...t.list?.options ?? []].filter((e) => /^#[0-9a-f]{6}$/i.test(e.value)).map((e) => [e.label || e.value, e.value.toLowerCase()]);
-		return e.length ? e : ie;
+		return e.length ? e : V;
 	}, g = () => [...r.querySelectorAll("[role=\"option\"]")], _ = () => {
 		let e = t.value.toLowerCase();
 		r.replaceChildren(...h().map(([t, n]) => {
@@ -945,21 +954,21 @@ function V() {
 		}));
 	}, v = () => {
 		let [n, r, i] = m;
-		a.style.setProperty("--f-picker-hue", B(n, 1, 1)), c.style.left = `${r * 100}%`, c.style.top = `${(1 - i) * 100}%`;
+		a.style.setProperty("--f-picker-hue", G(n, 1, 1)), c.style.left = `${r * 100}%`, c.style.top = `${(1 - i) * 100}%`;
 		let d = (e) => Math.round(e * 100);
 		s.setAttribute("aria-valuenow", String(d(r))), s.setAttribute("aria-valuetext", o(e, "area-text", "Saturation {saturation}%, brightness {brightness}%", {
 			saturation: d(r),
 			brightness: d(i)
 		})), l.value = String(Math.round(n)), document.activeElement !== u && (u.value = t.value);
 	}, y = () => {
-		let [e, n, r] = z(t.value);
+		let [e, n, r] = W(t.value);
 		m = [
 			n && r ? e : m[0],
 			n,
 			r
 		], v();
 	}, b = (e, n) => {
-		m = e, p(t, B(...m), { commit: n }), v();
+		m = e, p(t, G(...m), { commit: n }), v();
 	}, x = (e) => {
 		p(t, e.dataset.value), f.close(!0);
 	}, S = (e, t, n = {}) => {
@@ -978,7 +987,7 @@ function V() {
 			}), n.hidden = !0, r = S("div", "f-color-palette__swatches", {
 				role: "listbox",
 				"aria-label": o(e, "colors-label", "Colors")
-			}), r.style.setProperty("--f-swatch-columns", String(R)), i = S("button", "f-button f-button--ghost f-button--small f-color-palette__other", {
+			}), r.style.setProperty("--f-swatch-columns", String(H)), i = S("button", "f-button f-button--ghost f-button--small f-color-palette__other", {
 				type: "button",
 				"aria-expanded": "false"
 			}), i.textContent = o(e, "other-label", "Other…"), a = S("div", "f-color-editor"), a.hidden = !0, a.style.setProperty("--f-picker-black", "#000"), a.style.setProperty("--f-picker-white", "#fff"), a.style.setProperty("--f-picker-spectrum", "linear-gradient(90deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00)"), s = S("div", "f-color-editor__area", {
@@ -999,7 +1008,7 @@ function V() {
 				maxlength: "7",
 				spellcheck: "false",
 				autocomplete: "off"
-			}), h.append(v, u), a.append(s, l, h), i.setAttribute("aria-controls", a.id = `${n.id}-editor`), n.append(r, i, a), _(), (e.querySelector("[data-fruit-ui]") ?? e).append(n), f = L(e, t, n, {
+			}), h.append(v, u), a.append(s, l, h), i.setAttribute("aria-controls", a.id = `${n.id}-editor`), n.append(r, i, a), _(), (e.querySelector("[data-fruit-ui]") ?? e).append(n), f = z(e, t, n, {
 				onOpen: () => {
 					_(), a.hidden = !0, i.hidden = !1, i.setAttribute("aria-expanded", "false");
 				},
@@ -1020,8 +1029,8 @@ function V() {
 				let i = C(t) ? -1 : 1, a = {
 					ArrowRight: r + i,
 					ArrowLeft: r - i,
-					ArrowDown: r + R,
-					ArrowUp: r - R,
+					ArrowDown: r + H,
+					ArrowUp: r - H,
 					Home: 0,
 					End: n.length - 1
 				};
@@ -1080,8 +1089,8 @@ function V() {
 }
 //#endregion
 //#region src/js/editor-content.js
-var H = Symbol.for("fruitui.editor");
-function U(e, t, { insert: n, set: r, commit: i }) {
+var q = Symbol.for("fruitui.editor");
+function re(e, t, { insert: n, set: r, commit: i }) {
 	let a = new AbortController(), o = (e) => {
 		let { html: a = "", target: o } = e.detail ?? {};
 		(e.currentTarget !== window || o === t.id || o === t.name) && (t.matches(":disabled") || t.readOnly || ((e.type === "fruit-editor-set" ? r : n)(String(a)), i()));
@@ -1089,12 +1098,12 @@ function U(e, t, { insert: n, set: r, commit: i }) {
 	for (let t of ["fruit-editor-insert", "fruit-editor-set"]) e.addEventListener(t, o, { signal: a.signal }), window.addEventListener(t, o, { signal: a.signal });
 	return () => a.abort();
 }
-function W() {
+function ie() {
 	let e;
 	return {
 		init() {
 			let t = this.$el.querySelector("textarea[data-fruit-control]");
-			t && (e = U(this.$el, t, {
+			t && (e = re(this.$el, t, {
 				insert: (e) => {
 					let n = t.selectionStart ?? t.value.length, r = t.selectionEnd ?? n;
 					p(t, t.value.slice(0, n) + e + t.value.slice(r), { commit: !1 }), t.setSelectionRange?.(n + e.length, n + e.length);
@@ -1110,7 +1119,7 @@ function W() {
 }
 //#endregion
 //#region src/js/selection.js
-function G() {
+function ae() {
 	let e, t, n, r, i, a, s, c, l, u = [], f = -1, h = !1, g = () => t.selectedOptions[0]?.label || "", _ = () => {
 		h = !1, l.hide(), r.hidden = !0, n.setAttribute("aria-expanded", "false"), n.removeAttribute("aria-activedescendant");
 	}, v = (e) => {
@@ -1159,7 +1168,7 @@ function G() {
 		}
 	};
 }
-function K() {
+function oe() {
 	let e, t, n, r, i, a, s, c, l, u, d, f, h = [], g = () => {
 		f && (t.hasAttribute("name") && (d = t.name.replace(/\[\]$/, ""), t.removeAttribute("name")), f.replaceChildren(...h.map((e) => {
 			let n = document.createElement("input");
@@ -1207,7 +1216,7 @@ function K() {
 	};
 	return {
 		init() {
-			e = this.$el, t = e.querySelector("textarea[data-fruit-control]"), t && (n = document.createElement("div"), n.className = "f-token-field__entry", r = document.createElement("input"), r.type = "text", r.autocomplete = "off", r.placeholder = o(e, "placeholder", "Add an item"), i = document.createElement("span"), i.className = "f-sr-only", i.setAttribute("role", "status"), a = this.$el.querySelector("[data-fruit-ui]"), s = !a, a || (a = document.createElement("div"), a.setAttribute("data-fruit-ui", ""), this.$el.append(a)), n.append(r), a.append(n, i), t.hidden = !0, e.dataset.fruitSubmit === "list" && t.name && (d = t.name.replace(/\[\]$/, ""), t.removeAttribute("name"), f = document.createElement("div"), f.hidden = !0, a.append(f)), e.querySelector("datalist") && (u = D(e, r, {
+			e = this.$el, t = e.querySelector("textarea[data-fruit-control]"), t && (n = document.createElement("div"), n.className = "f-token-field__entry", r = document.createElement("input"), r.type = "text", r.autocomplete = "off", r.placeholder = o(e, "placeholder", "Add an item"), i = document.createElement("span"), i.className = "f-sr-only", i.setAttribute("role", "status"), a = this.$el.querySelector("[data-fruit-ui]"), s = !a, a || (a = document.createElement("div"), a.setAttribute("data-fruit-ui", ""), this.$el.append(a)), n.append(r), a.append(n, i), t.hidden = !0, e.dataset.fruitSubmit === "list" && t.name && (d = t.name.replace(/\[\]$/, ""), t.removeAttribute("name"), f = document.createElement("div"), f.hidden = !0, a.append(f)), e.querySelector("datalist") && (u = O(e, r, {
 				query: () => r.value.trim() || null,
 				pick: (e) => {
 					b(e.value), r.focus();
@@ -1245,7 +1254,7 @@ function K() {
 		}
 	};
 }
-function q() {
+function se() {
 	let e, t, n = () => {
 		let t = Math.max(0, Number.parseInt(e.dataset.count ?? "0", 10) || 0), n = (e.dataset.fruitTemplate || ":count selected").split("|"), r = e.closest("[lang]")?.lang || navigator.language || "en", i = n.length > 1 && new Intl.PluralRules(r).select(t) !== "one" ? n[1] : n[0], a = e.querySelector(".f-selection-bar__count");
 		a && (a.textContent = i.trim().replace(":count", String(t))), e.hidden = t === 0;
@@ -1266,7 +1275,7 @@ function q() {
 //#region src/js/navigation.js
 var J = "[role=\"menuitem\"], [role=\"menuitemcheckbox\"], [role=\"menuitemradio\"]", Y = (e, t) => [...e.querySelectorAll(J)].filter((e) => t(e) && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true" && e.getClientRects().length), X = (e, t) => {
 	e.length && e[(t + e.length) % e.length].focus();
-}, oe = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
+}, ce = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
 function Z(e, t, n) {
 	let r = t.indexOf(document.activeElement);
 	return [
@@ -1274,11 +1283,11 @@ function Z(e, t, n) {
 		"ArrowUp",
 		"Home",
 		"End"
-	].includes(e.key) ? (e.preventDefault(), X(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => oe(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
+	].includes(e.key) ? (e.preventDefault(), X(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => ce(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
 		n.search = "";
 	}, 600), !0);
 }
-function se() {
+function le() {
 	let e, t, n, r, i, a, o, s = {
 		search: "",
 		timer: null
@@ -1307,7 +1316,7 @@ function se() {
 		}
 	};
 }
-function ce() {
+function ue() {
 	let e, t, n, r, i, a, o = {
 		x: 0,
 		y: 0
@@ -1350,7 +1359,7 @@ function ce() {
 		}
 	};
 }
-function le() {
+function de() {
 	let e, t, n, r, i, a, o;
 	return {
 		init() {
@@ -1375,7 +1384,7 @@ function le() {
 		}
 	};
 }
-function ue() {
+function fe() {
 	let e, t, n, r, i = (t) => t?.closest("[data-fruit-tabs], [x-data^=\"fruitTabs\"]") === e, a = () => [...e.querySelectorAll("[role=\"tab\"]")].filter(i), o = () => a().filter((e) => !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true"), s = (t) => {
 		for (let n of a()) {
 			let r = n === t;
@@ -1412,7 +1421,7 @@ function ue() {
 		}
 	};
 }
-function de() {
+function pe() {
 	let e;
 	return {
 		init() {
@@ -1434,7 +1443,7 @@ function de() {
 //#region src/js/alpine.js
 var Q = !1;
 function $(e) {
-	e[H] || e.data("fruitEditor", W), e.data("fruitToast", n), e.magic("toast", () => t), e.data("fruitConfirmer", a), e.magic("confirm", () => i), e.data("fruitCopy", c), e.data("fruitListSelection", l), e.magic("dialog", () => y), e.data("fruitCombobox", G), e.data("fruitTokenField", K), e.data("fruitSelectionBar", q), e.data("fruitAutocomplete", ee), e.data("fruitCommandPalette", te), e.data("fruitDropzone", ne), e.data("fruitMenu", se), e.data("fruitDatePicker", re), e.data("fruitColorPicker", V), e.data("fruitContextMenu", ce), e.data("fruitTooltip", le), e.data("fruitTabs", ue), e.data("fruitSplitter", E), e.data("fruitFloatingDisclosure", de), e.data("fruitDialogModel", S), typeof window < "u" && !Q && (x(window), b(document), Q = !0);
+	e[q] || e.data("fruitEditor", ie), e.data("fruitToast", n), e.magic("toast", () => t), e.data("fruitConfirmer", a), e.magic("confirm", () => i), e.data("fruitCopy", c), e.data("fruitListSelection", l), e.magic("dialog", () => y), e.data("fruitCombobox", ae), e.data("fruitTokenField", oe), e.data("fruitSelectionBar", se), e.data("fruitAutocomplete", te), e.data("fruitCommandPalette", ne), e.data("fruitDropzone", A), e.data("fruitMenu", le), e.data("fruitDatePicker", B), e.data("fruitColorPicker", K), e.data("fruitContextMenu", ue), e.data("fruitTooltip", de), e.data("fruitTabs", fe), e.data("fruitSplitter", ee), e.data("fruitFloatingDisclosure", pe), e.data("fruitDialogModel", S), typeof window < "u" && !Q && (x(window), b(document), D(document), Q = !0);
 }
 //#endregion
 //#region src/js/livewire.js

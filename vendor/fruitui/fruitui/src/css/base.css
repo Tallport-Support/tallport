@@ -133,7 +133,7 @@
     /* Activity indicators keep moving (more slowly) so progress stays visible. */
     :where(.fruit-ui) :not(.f-spinner),
     :where(.fruit-ui) *::before,
-    :where(.fruit-ui) *::after {
+    :where(.fruit-ui) :not(.f-button:is([aria-busy='true'], [data-loading]))::after {
       animation-duration: 0.01ms !important;
     }
     :where(.fruit-ui) *,

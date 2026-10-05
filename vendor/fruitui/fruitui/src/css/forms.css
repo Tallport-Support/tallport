@@ -720,7 +720,7 @@
       .f-tab,
       .f-chip__remove,
       .f-segmented > label > span
-    ):active:not(:disabled, [aria-disabled='true']) {
+    ):active:not(:disabled, [aria-disabled='true'], [aria-busy='true'], [data-loading]) {
     background-image: linear-gradient(var(--f-pressed), var(--f-pressed));
   }
 

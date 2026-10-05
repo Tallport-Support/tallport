@@ -34,6 +34,32 @@
   :where([data-fruit-accent='graphite'] .fruit-ui) {
     --f-tint: #767676;
   }
+  /* The scope's own accent comes last, so it wins over an ancestor's. The compat build gives these
+     selectors and the ancestor ones the scope's class weight, as it does the default tint. */
+  :where(.fruit-ui[data-fruit-accent='blue']) {
+    --f-tint: #006cde;
+  }
+  :where(.fruit-ui[data-fruit-accent='purple']) {
+    --f-tint: #9c3fbf;
+  }
+  :where(.fruit-ui[data-fruit-accent='pink']) {
+    --f-tint: #d8326e;
+  }
+  :where(.fruit-ui[data-fruit-accent='red']) {
+    --f-tint: #dc343b;
+  }
+  :where(.fruit-ui[data-fruit-accent='orange']) {
+    --f-tint: #c55400;
+  }
+  :where(.fruit-ui[data-fruit-accent='yellow']) {
+    --f-tint: #a06a00;
+  }
+  :where(.fruit-ui[data-fruit-accent='green']) {
+    --f-tint: #2e8700;
+  }
+  :where(.fruit-ui[data-fruit-accent='graphite']) {
+    --f-tint: #767676;
+  }
   /* An accent set on an element inside a scope (a preview area, an accent picker's circle)
      re-derives the tint's shades there, since custom properties derived on the scope would keep
      the scope's tint. The same formulas as tokens.css. */
