@@ -1510,5 +1510,8 @@
     "Powered By": "מופעל על ידי",
     "Public Key": "מפתח ציבורי",
     "Replace the Key": "החלף את המפתח",
-    "Show Private Key": "הצג מפתח פרטי"
+    "Show Private Key": "הצג מפתח פרטי",
+    "Updating… This may take several minutes.": "מעדכן… זה עשוי להימשך מספר דקות.",
+    "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport עודכן :time. פקודות הרקע יופעלו מחדש תוך דקה או שתיים.",
+    ":name couldn't be checked for updates: :error": "לא ניתן היה לבדוק עדכונים עבור :name: :error"
 }

@@ -1913,5 +1913,8 @@
     "Powered By": "Powered by",
     "Public Key": "Ашық кілт",
     "Replace the Key": "Кілтті ауыстыру",
-    "Show Private Key": "Жеке кілтті көрсету"
+    "Show Private Key": "Жеке кілтті көрсету",
+    "Updating… This may take several minutes.": "Жаңартылуда… Бұл бірнеше минутқа созылуы мүмкін.",
+    "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport :time жаңартылды. Фондық командалар бір-екі минут ішінде қайта іске қосылады.",
+    ":name couldn't be checked for updates: :error": ":name жаңартуларын тексеру мүмкін болмады: :error"
 }

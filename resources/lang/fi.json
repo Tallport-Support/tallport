@@ -1529,5 +1529,8 @@
     "Powered By": "Powered by",
     "Public Key": "Julkinen avain",
     "Replace the Key": "Vaihda avain",
-    "Show Private Key": "Näytä yksityinen avain"
+    "Show Private Key": "Näytä yksityinen avain",
+    "Updating… This may take several minutes.": "Päivitetään… Tämä voi kestää useita minuutteja.",
+    "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport päivitettiin :time. Taustakomennot käynnistyvät uudelleen minuutin tai kahden kuluessa.",
+    ":name couldn't be checked for updates: :error": ":name: päivityksiä ei voitu tarkistaa: :error"
 }

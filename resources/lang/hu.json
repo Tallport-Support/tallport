@@ -1511,5 +1511,8 @@
     "Powered By": "Powered by",
     "Public Key": "Nyilvános kulcs",
     "Replace the Key": "Kulcs cseréje",
-    "Show Private Key": "Privát kulcs megjelenítése"
+    "Show Private Key": "Privát kulcs megjelenítése",
+    "Updating… This may take several minutes.": "Frissítés… Ez több percig is eltarthat.",
+    "Tallport was updated :time. Background commands restart within a minute or two.": "A Tallport frissítve :time. A háttérparancsok egy-két percen belül újraindulnak.",
+    ":name couldn't be checked for updates: :error": "A(z) :name frissítéseit nem sikerült ellenőrizni: :error"
 }

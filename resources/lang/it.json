@@ -1510,5 +1510,8 @@
     "Powered By": "Powered by",
     "Public Key": "Chiave pubblica",
     "Replace the Key": "Sostituisci la chiave",
-    "Show Private Key": "Mostra chiave privata"
+    "Show Private Key": "Mostra chiave privata",
+    "Updating… This may take several minutes.": "Aggiornamento… Potrebbe richiedere alcuni minuti.",
+    "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport è stato aggiornato :time. I comandi in background ripartono entro un paio di minuti.",
+    ":name couldn't be checked for updates: :error": "Impossibile verificare gli aggiornamenti di :name: :error"
 }

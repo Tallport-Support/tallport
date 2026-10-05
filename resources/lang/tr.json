@@ -1511,5 +1511,8 @@
     "Powered By": "Powered by",
     "Public Key": "Açık anahtar",
     "Replace the Key": "Anahtarı değiştir",
-    "Show Private Key": "Özel anahtarı göster"
+    "Show Private Key": "Özel anahtarı göster",
+    "Updating… This may take several minutes.": "Güncelleniyor… Bu birkaç dakika sürebilir.",
+    "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport :time güncellendi. Arka plan komutları bir iki dakika içinde yeniden başlar.",
+    ":name couldn't be checked for updates: :error": ":name için güncellemeler denetlenemedi: :error"
 }

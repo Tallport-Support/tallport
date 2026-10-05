@@ -1511,5 +1511,8 @@
     "Powered By": "Powered by",
     "Public Key": "Açıq açar",
     "Replace the Key": "Açarı dəyiş",
-    "Show Private Key": "Şəxsi açarı göstər"
+    "Show Private Key": "Şəxsi açarı göstər",
+    "Updating… This may take several minutes.": "Yenilənir… Bu bir neçə dəqiqə çəkə bilər.",
+    "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport :time yeniləndi. Arxa plan əmrləri bir-iki dəqiqə ərzində yenidən başlayır.",
+    ":name couldn't be checked for updates: :error": ":name üçün yeniləmələri yoxlamaq mümkün olmadı: :error"
 }

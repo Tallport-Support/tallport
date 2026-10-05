@@ -1511,5 +1511,8 @@
     "Powered By": "Powered by",
     "Public Key": "Публічний ключ",
     "Replace the Key": "Замінити ключ",
-    "Show Private Key": "Показати приватний ключ"
+    "Show Private Key": "Показати приватний ключ",
+    "Updating… This may take several minutes.": "Оновлення… Це може тривати кілька хвилин.",
+    "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport оновлено :time. Фонові команди перезапустяться протягом хвилини-двох.",
+    ":name couldn't be checked for updates: :error": "Не вдалося перевірити оновлення :name: :error"
 }

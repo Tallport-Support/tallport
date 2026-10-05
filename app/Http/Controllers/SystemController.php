@@ -284,6 +284,29 @@ class SystemController extends Controller
         ]);
     }
 
+    public static function updateLogPath()
+    {
+        return storage_path('logs/web-update.log');
+    }
+
+    /**
+     * Start tallport:update in the background (with the command-line PHP), logging to
+     * storage/logs/web-update.log, which ends with TALLPORT_UPDATE_EXIT:<exit code>.
+     * False where processes can't be started; the update then runs in this request.
+     */
+    protected function startBackgroundUpdate()
+    {
+        if (!function_exists('shell_exec') || in_array('shell_exec', array_map('trim', explode(',', (string) ini_get('disable_functions'))))) {
+            return false;
+        }
+        $php = is_executable(PHP_BINDIR.'/php') ? PHP_BINDIR.'/php' : 'php';
+        $log = self::updateLogPath();
+        @file_put_contents($log, '');
+        $command = '('.escapeshellarg($php).' '.escapeshellarg(base_path('artisan')).' tallport:update --force; echo "TALLPORT_UPDATE_EXIT:$?") > '.escapeshellarg($log).' 2>&1 &';
+
+        return \Helper::shellExec('nohup sh -c '.escapeshellarg($command).' > /dev/null 2>&1 &') !== false;
+    }
+
     public function action(Request $request)
     {
         switch ($request->action) {
@@ -391,6 +414,14 @@ class SystemController extends Controller
                     $response['msg'] = __('Updating is disabled (APP_DISABLE_UPDATING).');
                     break;
                 }
+                // As on the command line (tallport:update, then tallport:after-app-update in a
+                // new process), in the background: the update replaces the code this request runs.
+                if ($this->startBackgroundUpdate()) {
+                    $response['status'] = 'success';
+                    $response['started'] = true;
+                    $response['msg_success'] = __('Updating… This may take several minutes.');
+                    break;
+                }
                 try {
                     $status = \Updater::update();
 
@@ -408,9 +439,21 @@ class SystemController extends Controller
                 }
                 break;
 
+            // The background update: still running, or finished (and how).
+            case 'update_status':
+                $log = is_file(self::updateLogPath()) ? (string) file_get_contents(self::updateLogPath()) : '';
+                $response['status'] = 'success';
+                $response['finished'] = (bool) preg_match('/TALLPORT_UPDATE_EXIT:(\d+)/', $log, $exit_m);
+                $response['succeeded'] = $response['finished'] && $exit_m[1] === '0';
+                $response['version'] = config('app.version');
+                $response['log'] = trim(mb_substr(preg_replace('/TALLPORT_UPDATE_EXIT:\d+/', '', $log), -2000));
+                break;
+
             case 'check_updates':
                 if (!\Config::get('app.disable_updating')) {
                     try {
+                        // The page shows the cached latest version: ask again and keep the answer.
+                        \Cache::put('latest_version', \Updater::getVersionAvailable(), 15 * 60);
                         $response['new_version_available'] = \Updater::isNewVersionAvailable(config('app.version'));
                         $response['status'] = 'success';
                     } catch (\Exception $e) {

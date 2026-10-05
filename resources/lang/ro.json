@@ -1510,5 +1510,8 @@
     "Powered By": "Powered by",
     "Public Key": "Cheie publică",
     "Replace the Key": "Înlocuiește cheia",
-    "Show Private Key": "Arată cheia privată"
+    "Show Private Key": "Arată cheia privată",
+    "Updating… This may take several minutes.": "Se actualizează… Poate dura câteva minute.",
+    "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport a fost actualizat :time. Comenzile din fundal repornesc în unul-două minute.",
+    ":name couldn't be checked for updates: :error": "Nu s-au putut verifica actualizările pentru :name: :error"
 }

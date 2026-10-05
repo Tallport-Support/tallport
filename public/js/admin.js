@@ -60,6 +60,7 @@ document.addEventListener('alpine:init', function () {
 		return {
 			https: location.protocol == 'https:',
 			update: function (event) {
+				var self = this;
 				var button = event.currentTarget;
 				Tallport.confirm({message: Lang.get('messages.confirm_update'), confirm: Lang.get('messages.update'), tone: 'danger'}).then(function (ok) {
 					if (!ok) {
@@ -71,7 +72,11 @@ document.addEventListener('alpine:init', function () {
 						poly.disconnect();
 					}
 					Tallport.post(laroute.route('system.ajax'), {action: 'update'}).then(function (response) {
-						if (Tallport.isSuccess(response)) {
+						if (Tallport.isSuccess(response) && response.started) {
+							// Running in the background: wait for it to finish.
+							Tallport.result(response);
+							self.waitForUpdate(button);
+						} else if (Tallport.isSuccess(response)) {
 							Tallport.result(response);
 							window.location.href = '';
 						} else {
@@ -80,6 +85,23 @@ document.addEventListener('alpine:init', function () {
 						}
 					});
 				});
+			},
+			// The background update's status every few seconds; while files are being
+			// replaced a request may fail, which only means asking again.
+			waitForUpdate: function (button) {
+				var self = this;
+				setTimeout(function () {
+					Tallport.post(laroute.route('system.ajax'), {action: 'update_status'}).then(function (response) {
+						if (!Tallport.isSuccess(response) || !response.finished) {
+							self.waitForUpdate(button);
+						} else if (response.succeeded) {
+							window.location.href = '';
+						} else {
+							Tallport.toast(htmlDecode(Lang.get('messages.error_occurred_updating')) + '\n' + (response.log || ''), 'danger');
+							Tallport.busy(button, false);
+						}
+					});
+				}, 3000);
 			},
 			checkUpdates: function (event) {
 				var button = event.currentTarget;

@@ -79,7 +79,8 @@
     ],
     "SystemController@ajax": [
         "check_updates",
-        "update"
+        "update",
+        "update_status"
     ],
     "SystemController@ajaxHtml": [
         "job_details"

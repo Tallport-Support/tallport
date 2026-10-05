@@ -1608,5 +1608,8 @@
     "Powered By": "Impulsat per",
     "Public Key": "Clau pública",
     "Replace the Key": "Substitueix la clau",
-    "Show Private Key": "Mostra la clau privada"
+    "Show Private Key": "Mostra la clau privada",
+    "Updating… This may take several minutes.": "S'està actualitzant… Pot trigar uns minuts.",
+    "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport s'ha actualitzat :time. Les ordres en segon pla es reinicien en un o dos minuts.",
+    ":name couldn't be checked for updates: :error": "No s'han pogut comprovar les actualitzacions de :name: :error"
 }

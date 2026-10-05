@@ -1514,5 +1514,8 @@
     "Powered By": "Powered by",
     "Public Key": "Publieke sleutel",
     "Replace the Key": "Sleutel vervangen",
-    "Show Private Key": "Privésleutel tonen"
+    "Show Private Key": "Privésleutel tonen",
+    "Updating… This may take several minutes.": "Bijwerken… Dit kan enkele minuten duren.",
+    "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport is :time bijgewerkt. Achtergrondopdrachten starten binnen een minuut of twee opnieuw.",
+    ":name couldn't be checked for updates: :error": "Kon niet controleren op updates voor :name: :error"
 }

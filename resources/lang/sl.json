@@ -1510,5 +1510,8 @@
     "Powered By": "Powered by",
     "Public Key": "Javni ključ",
     "Replace the Key": "Zamenjaj ključ",
-    "Show Private Key": "Prikaži zasebni ključ"
+    "Show Private Key": "Prikaži zasebni ključ",
+    "Updating… This may take several minutes.": "Posodabljanje… To lahko traja nekaj minut.",
+    "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport je bil posodobljen :time. Ukazi v ozadju se znova zaženejo v minuti ali dveh.",
+    ":name couldn't be checked for updates: :error": "Posodobitev za :name ni bilo mogoče preveriti: :error"
 }

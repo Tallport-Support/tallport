@@ -1510,5 +1510,8 @@
     "Powered By": "Powered by",
     "Public Key": "Verejný kľúč",
     "Replace the Key": "Nahradiť kľúč",
-    "Show Private Key": "Zobraziť súkromný kľúč"
+    "Show Private Key": "Zobraziť súkromný kľúč",
+    "Updating… This may take several minutes.": "Aktualizácia… Môže to trvať niekoľko minút.",
+    "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport bol aktualizovaný :time. Príkazy na pozadí sa znova spustia do minúty či dvoch.",
+    ":name couldn't be checked for updates: :error": "Aktualizácie pre :name sa nepodarilo skontrolovať: :error"
 }

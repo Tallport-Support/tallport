@@ -75,12 +75,18 @@ class Module extends Model
     }
 
     /**
+     * Modules whose update check failed in availableUpdates(): alias => [name, error].
+     */
+    public static $update_check_errors = [];
+
+    /**
      * New versions of the installed modules, by alias, from each module's own
      * latestVersionUrl (kept for 15 minutes per Tallport version). FreeScout's directory isn't asked.
      */
     public static function availableUpdates()
     {
         $updates = [];
+        self::$update_check_errors = [];
 
         foreach (\Module::all() as $module) {
             $url = $module->get('latestVersionUrl');
@@ -89,10 +95,12 @@ class Module extends Model
             }
             // Per Tallport version: an update of Tallport (when people look for module
             // updates) asks again. A failed request isn't kept (null isn't cached).
-            $latest_version = \Cache::remember('module_latest_version.'.config('app.version').'.'.md5($url), now()->addMinutes(15), function () use ($url) {
+            $latest_version = \Cache::remember('module_latest_version.'.config('app.version').'.'.md5($url), now()->addMinutes(15), function () use ($url, $module) {
                 try {
                     $body = trim((string) (new \GuzzleHttp\Client())->request('GET', $url, \Helper::setGuzzleDefaultOptions())->getBody());
                 } catch (\Exception $e) {
+                    self::$update_check_errors[$module->getAlias()] = [self::formatName($module->getName()), $e->getMessage()];
+
                     return null;
                 }
                 // It may be the module.json file.

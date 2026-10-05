@@ -123,4 +123,20 @@ class ModuleSystemTest extends FeatureTestCase
             ->assertDispatched('module-updates', versions: ['tpmodule' => '2.0.0']);
         \Livewire\Livewire::actingAs($this->createUser())->withoutLazyLoading()->test(\App\Livewire\ModuleUpdates::class)->assertForbidden();
     }
+
+    /**
+     * A module whose update check fails says so, instead of looking up to date.
+     */
+    public function testFailedUpdateCheckIsShown()
+    {
+        config(['modules.cache.enabled' => false]);
+        $this->makeModule();
+        $json = json_decode(file_get_contents($this->dir.'/TpModule/module.json'), true);
+        file_put_contents($this->dir.'/TpModule/module.json', json_encode($json + ['authorUrl' => 'https://example.org', 'latestVersionUrl' => 'http://127.0.0.1:1/version']));
+        $this->app->instance('modules', new Repository($this->app, $this->dir));
+
+        \Livewire\Livewire::actingAs($this->createAdmin())->withoutLazyLoading()->test(\App\Livewire\ModuleUpdates::class)
+            ->assertSee("TpModule couldn't be checked for updates:")
+            ->assertDontSee('There are updates available');
+    }
 }

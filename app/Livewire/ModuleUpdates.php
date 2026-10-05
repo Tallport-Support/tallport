@@ -26,6 +26,6 @@ class ModuleUpdates extends Component
         $updates = Module::availableUpdates();
         $this->dispatch('module-updates', versions: collect($updates)->map(fn ($update) => $update['version'])->all());
 
-        return view('livewire.module-updates', ['updates' => $updates]);
+        return view('livewire.module-updates', ['updates' => $updates, 'check_errors' => Module::$update_check_errors]);
     }
 }

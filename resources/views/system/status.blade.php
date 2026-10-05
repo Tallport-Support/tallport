@@ -69,9 +69,12 @@
     if ($invalid_symlinks) {
         $problems[] = ['permissions', __('Invalid or missing modules symlinks'), 'danger'];
     }
+    // Just updated: background commands restart within a minute or two.
+    $updated_at = (int) \Option::get('app_updated_at');
+    $just_updated = $updated_at && time() - $updated_at < 5 * 60;
     foreach ($commands as $command) {
         if ($command['status'] != 'success') {
-            $problems[] = ['cron', __(':command isn\'t running', ['command' => $command['name']]), 'danger'];
+            $problems[] = ['cron', __(':command isn\'t running', ['command' => $command['name']]), $just_updated ? 'warning' : 'danger'];
         }
     }
     if (count($failed_jobs)) {
@@ -111,6 +114,9 @@
     @if ($problems)
         <x-fruit::alert :tone="$problems_tone" class="system-status__problems">
             <strong>{{ trans_choice('1 thing needs attention|:count things need attention', count($problems)) }}</strong>
+            @if ($just_updated)
+                <p class="f-help">{{ __('Tallport was updated :time. Background commands restart within a minute or two.', ['time' => \Carbon\Carbon::createFromTimestamp($updated_at)->diffForHumans()]) }}</p>
+            @endif
             <ul>
                 @foreach ($problems as [$anchor, $text, $tone])
                     <li><a href="#{{ $anchor }}">{{ $text }}</a></li>

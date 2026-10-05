@@ -1559,5 +1559,8 @@
     "Powered By": "Powered by",
     "Public Key": "公鑰",
     "Replace the Key": "更換金鑰",
-    "Show Private Key": "顯示私鑰"
+    "Show Private Key": "顯示私鑰",
+    "Updating… This may take several minutes.": "正在更新… 可能需要幾分鐘。",
+    "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport 已於:time更新。背景命令會在一兩分鐘內重新啟動。",
+    ":name couldn't be checked for updates: :error": "無法檢查 :name 的更新：:error"
 }

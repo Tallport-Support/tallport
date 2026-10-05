@@ -60,6 +60,9 @@ class AfterAppUpdate extends Command
         }
         $this->call('queue:restart');
 
+        // System Status says for a while that stopped commands are expected to restart.
+        \Option::set('app_updated_at', time());
+
         \Eventy::action('command.after_app_update');
     }
 }

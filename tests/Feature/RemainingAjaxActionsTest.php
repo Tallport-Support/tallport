@@ -205,14 +205,66 @@ class RemainingAjaxActionsTest extends FeatureTestCase
         $this->assertStringStartsWith('Error occurred', $response['msg']);
     }
 
+    /**
+     * Update Now starts tallport:update in the background (as on the command line) and
+     * the page asks for its status; where processes can't be started, it runs in the request.
+     */
     public function testUpdateRunsTheUpdater()
     {
+        $starts = (object) ['can' => true, 'count' => 0];
+        $this->app->bind(\App\Http\Controllers\SystemController::class, function () use ($starts) {
+            return new class($starts) extends \App\Http\Controllers\SystemController {
+                public function __construct(private $starts)
+                {
+                    parent::__construct();
+                }
+
+                protected function startBackgroundUpdate()
+                {
+                    $this->starts->count++;
+
+                    return $this->starts->can;
+                }
+            };
+        });
         \Updater::shouldReceive('update')->once()->andReturn(true);
 
         $response = $this->postAjax($this->admin, '/system/ajax', ['action' => 'update'])->json();
+        $this->assertTrue($response['started'] ?? false, json_encode($response));
+        $this->assertSame(1, $starts->count);
 
+        file_put_contents(\App\Http\Controllers\SystemController::updateLogPath(), "Updating...\n");
+        $this->assertFalse($this->postAjax($this->admin, '/system/ajax', ['action' => 'update_status'])->json()['finished']);
+        file_put_contents(\App\Http\Controllers\SystemController::updateLogPath(), "Updating...\nTALLPORT_UPDATE_EXIT:0\n");
+        $status = $this->postAjax($this->admin, '/system/ajax', ['action' => 'update_status'])->json();
+        $this->assertTrue($status['finished'] && $status['succeeded']);
+        $this->assertSame('Updating...', $status['log']);
+        @unlink(\App\Http\Controllers\SystemController::updateLogPath());
+
+        // No background processes: the update runs in this request.
+        $starts->can = false;
+        $response = $this->postAjax($this->admin, '/system/ajax', ['action' => 'update'])->json();
         $this->assertSame('success', $response['status'], json_encode($response));
+        $this->assertArrayNotHasKey('started', $response);
+
         $this->assertSame(403, $this->postAjax($this->agent, '/system/ajax', ['action' => 'update'])->status());
+    }
+
+    /**
+     * Check for Updates keeps the version it found, so the page shows Update Now after
+     * reloading; right after an update, Status says stopped commands restart soon.
+     */
+    public function testCheckForUpdatesAndJustUpdated()
+    {
+        \Updater::shouldReceive('getVersionAvailable')->andReturn('99.0.0');
+        \Updater::shouldReceive('isNewVersionAvailable')->andReturn(true);
+
+        $this->assertTrue($this->postAjax($this->admin, '/system/ajax', ['action' => 'check_updates'])->json()['new_version_available']);
+        $this->assertSame('99.0.0', \Cache::get('latest_version'));
+        $this->actingAs($this->admin)->get(route('system'))->assertSee('update-trigger', false)->assertDontSee('Background commands restart');
+
+        \Option::set('app_updated_at', time() - 60);
+        $this->actingAs($this->admin)->get(route('system'))->assertSee('Background commands restart within a minute or two.');
     }
 
     /**

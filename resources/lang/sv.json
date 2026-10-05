@@ -1511,5 +1511,8 @@
     "Powered By": "Powered by",
     "Public Key": "Publik nyckel",
     "Replace the Key": "Byt nyckel",
-    "Show Private Key": "Visa privat nyckel"
+    "Show Private Key": "Visa privat nyckel",
+    "Updating… This may take several minutes.": "Uppdaterar… Det kan ta flera minuter.",
+    "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport uppdaterades :time. Bakgrundskommandon startar om inom en minut eller två.",
+    ":name couldn't be checked for updates: :error": "Det gick inte att söka efter uppdateringar för :name: :error"
 }
