@@ -500,5 +500,4 @@ class Module extends Model
 
         return $result;
     }
-
 }
