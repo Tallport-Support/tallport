@@ -2,10 +2,12 @@
 
 use App\Conversation;
 use App\Customer;
+use App\CustomerChannel;
 use App\Email;
 use App\Folder;
 use App\Mailbox;
 use App\Thread;
+use App\Telegram\Telegram;
 use App\User;
 use App\Workflow;
 use App\Ai\Settings;
@@ -178,8 +180,43 @@ class DatabaseSeeder extends Seeder
         for ($i = $long_count; $i < self::LONG_SAMPLES; $i++) {
             $this->conversation($mailbox, $folder, $users->first(), true);
         }
+        $this->telegramChats($mailbox, $users);
         foreach ($mailbox->folders as $folder) {
             $folder->updateCountersNow();
+        }
+    }
+
+    protected function telegramChats($mailbox, $users)
+    {
+        foreach ([Folder::TYPE_UNASSIGNED, Folder::TYPE_ASSIGNED, Folder::TYPE_CLOSED] as $index => $type) {
+            $folder = $mailbox->folders()->where('type', $type)->first();
+            $query = Conversation::getQueryByFolder($folder, $users->first()->id)
+                ->where('conversations.type', Conversation::TYPE_CHAT)
+                ->where('channel', Telegram::CHANNEL)
+                ->whereHas('customer')
+                ->whereHas('threads', function ($query) {
+                    $query->where('type', Thread::TYPE_CUSTOMER)->where('state', Thread::STATE_PUBLISHED);
+                })->whereHas('threads', function ($query) {
+                    $query->where('type', Thread::TYPE_MESSAGE)->where('state', Thread::STATE_PUBLISHED);
+                });
+            if ($query->exists()) {
+                continue;
+            }
+            // Deliberately invalid Telegram destinations: demo chats cannot identify real users.
+            $channel_id = 'sample-telegram-'.($index + 1);
+            $customer = Customer::getCustomerByChannel(Telegram::CHANNEL, $channel_id);
+            if (!$customer) {
+                $customer = new Customer();
+                [$customer->first_name, $customer->last_name] = [
+                    ['Casey', 'Lee'], ['Riley', 'Brooks'], ['Taylor', 'Reed'],
+                ][$index];
+                $customer->channel = Telegram::CHANNEL;
+                $customer->channel_id = $channel_id;
+                $customer->save();
+                // Observers are disabled while seeding, so link the channel explicitly.
+                CustomerChannel::create($customer->id, Telegram::CHANNEL, $channel_id);
+            }
+            $this->conversation($mailbox, $folder, $users->last(), $type == Folder::TYPE_ASSIGNED, $customer);
         }
     }
 
@@ -256,9 +293,9 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    protected function conversation($mailbox, $folder, $agent, $long = false)
+    protected function conversation($mailbox, $folder, $agent, $long = false, $telegram_customer = null)
     {
-        $customer = $this->customers[$this->sequence % $this->customers->count()];
+        $customer = $telegram_customer ?: $this->customers[$this->sequence % $this->customers->count()];
         $topics = [
             ['Help connecting my new laptop', 'I can sign in on my phone, but the connection on my new laptop stops during setup. What should I check?', 'Please install the latest client and try the nearest location. If it still fails, send us the connection log.'],
             ['A question about my latest invoice', 'Could you explain the adjustment on my latest invoice and confirm when the next payment is due?', 'The adjustment covers the additional seats for the remaining days of this billing period. Your next invoice will use the regular monthly rate.'],
@@ -276,7 +313,10 @@ class DatabaseSeeder extends Seeder
         $conversation = new Conversation();
         $conversation->number = ++$this->number;
         $conversation->mailbox_id = $mailbox->id;
-        $conversation->type = Conversation::TYPE_EMAIL;
+        $conversation->type = $telegram_customer ? Conversation::TYPE_CHAT : Conversation::TYPE_EMAIL;
+        if ($telegram_customer) {
+            $conversation->channel = Telegram::CHANNEL;
+        }
         $conversation->state = $folder->type == Folder::TYPE_DELETED ? Conversation::STATE_DELETED : Conversation::STATE_PUBLISHED;
         $conversation->status = match ($folder->type) {
             Folder::TYPE_CLOSED => Conversation::STATUS_CLOSED,
@@ -285,11 +325,11 @@ class DatabaseSeeder extends Seeder
         };
         $conversation->user_id = $folder->type == Folder::TYPE_UNASSIGNED ? null : $agent->id;
         $conversation->customer_id = $customer->id;
-        $conversation->customer_email = $customer->emails->first()->email;
+        $conversation->customer_email = $telegram_customer ? null : $customer->emails->first()->email;
         $conversation->created_by_customer_id = $customer->id;
         $conversation->subject = $subject;
         $conversation->source_via = Conversation::PERSON_CUSTOMER;
-        $conversation->source_type = Conversation::SOURCE_TYPE_EMAIL;
+        $conversation->source_type = $telegram_customer ? Conversation::SOURCE_TYPE_WEB : Conversation::SOURCE_TYPE_EMAIL;
         $conversation->imported = true;
         $conversation->threads_count = 3;
         $conversation->read_by_user = $this->sequence % 2 == 0;
@@ -339,12 +379,17 @@ class DatabaseSeeder extends Seeder
             $thread->body = '<p>'.implode('</p><p>', array_map('e', explode("\n\n", $body))).'</p>';
             $thread->first = $index == 0;
             $thread->source_via = $incoming ? Thread::PERSON_CUSTOMER : Thread::PERSON_USER;
-            $thread->source_type = $incoming ? Thread::SOURCE_TYPE_EMAIL : Thread::SOURCE_TYPE_WEB;
+            $thread->source_type = $incoming
+                ? ($telegram_customer ? Thread::SOURCE_TYPE_API : Thread::SOURCE_TYPE_EMAIL) : Thread::SOURCE_TYPE_WEB;
             $thread->created_by_customer_id = $incoming ? $customer->id : null;
             $thread->created_by_user_id = $incoming ? null : $agent->id;
             $thread->user_id = $conversation->user_id;
-            $thread->from = $incoming ? $conversation->customer_email : $mailbox->email;
-            $thread->setTo([$incoming ? $mailbox->email : $conversation->customer_email]);
+            if (!$telegram_customer) {
+                $thread->from = $incoming ? $conversation->customer_email : $mailbox->email;
+                $thread->setTo([$incoming ? $mailbox->email : $conversation->customer_email]);
+            } elseif ($type == Thread::TYPE_MESSAGE) {
+                $thread->send_status = \App\SendLog::STATUS_ACCEPTED;
+            }
             $thread->message_id = 'sample-'.$conversation->id.'-'.$index.'@demo.example.test';
             $thread->created_at = $started->copy()->addMinutes($index * 40);
             $thread->updated_at = $thread->created_at;

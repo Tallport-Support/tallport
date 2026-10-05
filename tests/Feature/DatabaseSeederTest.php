@@ -4,14 +4,17 @@ namespace Tests\Feature;
 
 use App\Conversation;
 use App\Customer;
+use App\CustomerChannel;
 use App\Folder;
 use App\Mailbox;
 use App\Thread;
+use App\Telegram\Telegram;
 use App\User;
 use App\Workflow;
 use App\Workflows\Conditions;
 use App\Workflows\Runner;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Http;
 use Tests\FeatureTestCase;
 
 class DatabaseSeederTest extends FeatureTestCase
@@ -21,7 +24,7 @@ class DatabaseSeederTest extends FeatureTestCase
         Queue::fake();
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
         $this->assertSame(3, Mailbox::count());
-        $this->assertSame(12, Customer::count());
+        $this->assertSame(12, Customer::whereHas('emails')->count());
         foreach (Mailbox::all() as $mailbox) {
             foreach ($mailbox->folders as $folder) {
                 $user_id = $folder->user_id ?: User::orderBy('id')->first()->id;
@@ -31,7 +34,9 @@ class DatabaseSeederTest extends FeatureTestCase
                 $this->assertGreaterThanOrEqual($minimum, $folder->total_count);
                 foreach ($conversations as $conversation) {
                     $this->assertNotNull($conversation->customer);
-                    $this->assertNotEmpty($conversation->customer->emails);
+                    if (!$conversation->isChat()) {
+                        $this->assertNotEmpty($conversation->customer->emails);
+                    }
                     $this->assertSame($conversation->threads()->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
                         ->where('state', Thread::STATE_PUBLISHED)->count(), $conversation->threads_count);
                     $this->assertTrue($conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->exists());
@@ -62,7 +67,7 @@ class DatabaseSeederTest extends FeatureTestCase
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
 
         $this->assertSame($before + 1, Conversation::count());
-        $this->assertSame(4, $folder->conversations()->count());
+        $this->assertSame(4, $folder->conversations()->where('type', Conversation::TYPE_EMAIL)->count());
         $this->assertSame($unaffected, Conversation::where('folder_id', '<>', $folder->id)->orderBy('id')->get()->toArray());
     }
 
@@ -99,7 +104,7 @@ class DatabaseSeederTest extends FeatureTestCase
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
 
         $this->assertSame($before + 1, Conversation::count());
-        $this->assertSame(4, $folder->conversations()->whereHas('threads', function ($query) {
+        $this->assertSame(4, $folder->conversations()->where('type', Conversation::TYPE_EMAIL)->whereHas('threads', function ($query) {
             $query->where('type', Thread::TYPE_MESSAGE)->where('state', Thread::STATE_PUBLISHED);
         })->count());
         $this->assertFalse($conversation->threads()->where('type', Thread::TYPE_MESSAGE)->exists());
@@ -110,7 +115,7 @@ class DatabaseSeederTest extends FeatureTestCase
     public function testSeederAddsLongExchangesToAlreadyPopulatedMailboxes()
     {
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
-        foreach (Conversation::where('threads_count', '>=', 20)->get() as $conversation) {
+        foreach (Conversation::where('type', Conversation::TYPE_EMAIL)->where('threads_count', '>=', 20)->get() as $conversation) {
             $conversation->threads()->delete();
             $conversation->delete();
         }
@@ -122,7 +127,7 @@ class DatabaseSeederTest extends FeatureTestCase
         $this->assertSame($before + 6, Conversation::count());
         $this->assertSame($existing, Conversation::whereIn('id', array_column($existing, 'id'))->orderBy('id')->get()->toArray());
         foreach (Mailbox::all() as $mailbox) {
-            $long = $mailbox->conversations()->where('threads_count', '>=', 20)->get();
+            $long = $mailbox->conversations()->where('type', Conversation::TYPE_EMAIL)->where('threads_count', '>=', 20)->get();
             $this->assertCount(2, $long);
             foreach ($long as $conversation) {
                 $threads = $conversation->threads()->orderBy('created_at')->get();
@@ -320,10 +325,70 @@ class DatabaseSeederTest extends FeatureTestCase
         $this->assertCount(0, $this->sentEmails());
     }
 
+    public function testSeederAddsTelegramChatsWithoutConnectingOrSending()
+    {
+        $admin = $this->createAdmin();
+        $mailbox = $this->createMailbox([$admin]);
+        Telegram::saveSettings($mailbox, ['enabled' => true, 'token' => '123:existing-token']);
+        $settings = $mailbox->fresh()->meta;
+        Queue::fake();
+        Http::fake();
+        Http::preventStrayRequests();
+
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+
+        $this->assertSame($settings, $mailbox->fresh()->meta);
+        $this->assertSame(3, CustomerChannel::where('channel', Telegram::CHANNEL)->count());
+        foreach (Mailbox::all() as $mailbox) {
+            $chats = $mailbox->conversations()->where('channel', Telegram::CHANNEL)->get();
+            $this->assertCount(3, $chats);
+            $this->assertCount(1, $chats->where('threads_count', '>=', 20));
+            foreach ($chats as $chat) {
+                $this->assertTrue($chat->isChat());
+                $this->assertSame('Telegram', $chat->getChannelName());
+                $this->assertNull($chat->customer_email);
+                $this->assertCount(0, $chat->customer->emails);
+                $this->assertStringStartsWith('sample-telegram-', $chat->customer->getChannelId(Telegram::CHANNEL));
+                $this->assertSame(3, $chat->threads()->where('type', Thread::TYPE_MESSAGE)->distinct()->count('created_by_user_id'));
+                $this->assertTrue($chat->threads()->where('type', Thread::TYPE_NOTE)->exists());
+                $this->assertFalse(\App\Ai\Summaries::isStale($chat, 'en'));
+                foreach ($chat->threads()->where('type', Thread::TYPE_CUSTOMER)->get() as $thread) {
+                    $this->assertNotEmpty(\App\Ai\Translations::get($thread, 'en'));
+                    $this->assertSame(Thread::SOURCE_TYPE_API, $thread->source_type);
+                }
+            }
+        }
+        $this->actingAs($admin)->followingRedirects()->get('/conversation/'.$chats->first()->id)->assertSee('Telegram');
+        Queue::assertNothingPushed();
+        Http::assertNothingSent();
+        $this->assertCount(0, $this->sentEmails());
+    }
+
+    public function testSeederOnlyTopsUpInsufficientTelegramChats()
+    {
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $chat = Conversation::where('channel', Telegram::CHANNEL)->where('status', Conversation::STATUS_CLOSED)->first();
+        $chat->threads()->where('type', Thread::TYPE_MESSAGE)->delete();
+        $chat->subject = 'Existing Telegram conversation';
+        $chat->imported = false;
+        $chat->saveQuietly();
+        $before = Conversation::orderBy('id')->get()->toArray();
+        $customers = Customer::orderBy('id')->get()->toArray();
+
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+
+        $this->assertSame(count($before) + 1, Conversation::count());
+        $this->assertSame($before, Conversation::whereIn('id', array_column($before, 'id'))->orderBy('id')->get()->toArray());
+        $this->assertSame($customers, Customer::orderBy('id')->get()->toArray());
+        $snapshot = $this->snapshot();
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $this->assertSame($snapshot, $this->snapshot());
+    }
+
     private function snapshot()
     {
         $snapshot = [];
-        foreach (['users', 'mailboxes', 'customers', 'emails', 'conversations', 'threads', 'folders', 'conversation_folder', 'mailbox_user', 'workflows', 'conversation_workflow'] as $table) {
+        foreach (['users', 'mailboxes', 'customers', 'customer_channel', 'emails', 'conversations', 'threads', 'folders', 'conversation_folder', 'mailbox_user', 'workflows', 'conversation_workflow'] as $table) {
             $snapshot[$table] = \DB::table($table)->orderBy('id')->get()->toJson();
         }
 
