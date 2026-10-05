@@ -2819,8 +2819,32 @@ a.disabled:focus {
     min-height: 30px;
 }
 .draft-saved {
+    container-type: inline-size; /* no intrinsic width: the status never makes the toolbar wrap */
+    min-width: 0;
+    align-self: center;
+    text-align: end;
+}
+.draft-saved > span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     color: var(--f-tertiary);
     font-size: var(--f-text-2xs);
+}
+@container (width < 2.5rem) {
+    /* No room: hidden from view; screen readers still hear it. */
+    .draft-saved > span {
+        clip-path: inset(50%);
+    }
+}
+.draft-saved > span:not(:empty) {
+    animation: draft-saved-in 150ms ease-out;
+}
+@keyframes draft-saved-in {
+    from {
+        opacity: 0;
+    }
 }
 .editor-picker__list {
     max-height: 320px;

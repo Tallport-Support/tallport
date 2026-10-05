@@ -30,8 +30,8 @@
                 <button type="button" class="f-button f-button--ghost f-button--icon" x-data="editorPlainPaste" x-on:click="toggle()" x-bind:aria-pressed="plain ? 'true' : 'false'" aria-pressed="false" aria-label="{{ __('Paste as Plain Text') }}" title="{{ __('Paste as Plain Text') }}"><x-icon.clipboard class="f-icon" aria-hidden="true" /></button>
             @endif
             @action('conversation.editor_extras', $conversation, $mailbox)
-            <span class="f-toolbar__spacer"></span>
-            <span class="draft-saved f-footnote f-muted" x-show="saved" x-transition.opacity x-cloak role="status">{{ __('Saved') }}</span>
+            {{-- Saved shows in the spacer, which has no width of its own: it never wraps the toolbar. --}}
+            <span class="f-toolbar__spacer draft-saved"><span role="status" x-text="saved ? @js(__('Saved')) : ''"></span></span>
             @if ($draft_button)
                 <button type="button" class="f-button f-button--ghost f-button--icon note-btn-save-draft" aria-label="{{ __('Save Draft') }}" title="{{ __('Save Draft') }}" x-on:click="save(true)"><x-icon.check class="f-icon" aria-hidden="true" /></button>
             @endif
