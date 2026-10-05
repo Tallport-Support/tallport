@@ -1,11 +1,10 @@
-{{-- The sidebar on settings pages (App\Misc\Sidebar::isSettings()): back to the inbox, then the
-     user's account, the app's settings and Manage, each where the user may go. --}}
+{{-- The sidebar on settings pages (App\Misc\Sidebar::isSettings()): the user's account, the app's
+     settings and Manage, each where the user may go (back to the inbox: the bar above, layouts/app). --}}
 @php
     $settings_route = Route::currentRouteName();
     $settings_own = str_starts_with((string) $settings_route, 'users.') && request()->route('id') == $sidebar_user->id;
     $settings_section = request()->route('section') ?: 'general';
 @endphp
-<a href="{{ url('/') }}" class="f-sidebar__item app-sidebar__back" wire:navigate><x-icon.chevron-left class="f-icon" aria-hidden="true" /><span class="f-sidebar__identity">{{ __('Inbox') }}</span></a>
 
 {{-- The user's account as a card (as Apple's account in System Settings), its pages under it. --}}
 <a href="{{ route('users.profile', ['id' => $sidebar_user->id]) }}" class="f-sidebar__item app-sidebar__account-card" wire:navigate>

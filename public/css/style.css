@@ -973,7 +973,6 @@ a h4 {
 }
 /* The settings sidebar's account card, and the account's pages under it. */
 .app-sidebar__account-card {
-    margin: 4px 0 8px;
     padding-block: 8px;
 }
 .app-sidebar__account-card .app-sidebar__account-photo {
@@ -988,9 +987,6 @@ a h4 {
 .app-sidebar__account-card .f-sidebar__identity small {
     overflow: hidden;
     text-overflow: ellipsis;
-}
-.app-sidebar__account-pages {
-    margin: -4px 0 8px;
 }
 /* The password gate (<x-password-gate>): a form centred like an empty state. */
 .password-gate__form {

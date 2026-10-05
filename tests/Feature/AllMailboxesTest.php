@@ -162,7 +162,7 @@ class AllMailboxesTest extends FeatureTestCase
         // Settings: back to the inbox, the account, the app's settings and Manage; no mailboxes.
         $html = $this->actingAs($admin)->get(route('settings', ['section' => 'emails']))->assertOk()->getContent();
         $sidebar = substr($html, strpos($html, 'id="app-sidebar"'));
-        $this->assertStringContainsString('app-sidebar__back', $sidebar);
+        $this->assertStringContainsString('app-sidebar__back', $html);
         $this->assertStringContainsString('<a aria-current="page" class="f-sidebar__item" wire:navigate="" href="'.route('settings', ['section' => 'emails']).'">', $sidebar);
         $this->assertStringContainsString('app-sidebar__account-card', $sidebar);
         $this->assertStringContainsString(route('users.preferences', ['id' => $admin->id]), substr($sidebar, 0, strpos($sidebar, 'app-sidebar__footer')));

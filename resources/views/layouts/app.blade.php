@@ -62,6 +62,10 @@
                 <header class="f-toolbar app-workspace__brand">
                     <button type="button" class="f-button f-button--ghost f-button--icon app-sidebar-toggle" aria-controls="app-sidebar" aria-expanded="false" x-data x-on:click="$el.setAttribute('aria-expanded', document.body.classList.toggle('app-sidebar-open'))" aria-label="{{ __('Toggle Navigation') }}"><x-icon.menu class="f-icon" aria-hidden="true" /></button>
                     @include('partials/app_sidebar_brand')
+                    {{-- The way back out of Settings: in the column's bar, not in its list. --}}
+                    @if (App\Misc\Sidebar::isSettings())
+                        <x-fruit::back-link :href="url('/')" wire:navigate class="app-sidebar__back">{{ __('Inbox') }}</x-fruit::back-link>
+                    @endif
                 </header>
                 @include('partials/app_sidebar')
 
