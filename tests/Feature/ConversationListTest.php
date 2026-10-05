@@ -73,12 +73,14 @@ class ConversationListTest extends FeatureTestCase
         // Narrow: the list goes first.
         $this->actingAs($this->agent)->get($url)->assertOk()->assertSee('Newer question');
 
-        // Wide: the first conversation, then the one last opened from the folder.
+        // Wide: the first conversation, then the one last opened from the folder, shown at
+        // the folder's URL (no redirect) with the conversation's own URL for the page.
         $this->withUnencryptedCookie('tallport_narrow', '0');
-        $first = $this->get($url)->headers->get('Location');
-        $this->assertContains((int) basename(parse_url($first, PHP_URL_PATH)), [$older->id, $newer->id]);
-        $this->get($older->url($folder->id))->assertOk();
-        $this->get($url)->assertRedirect(route('conversations.view', ['id' => $older->id, 'folder_id' => $folder->id]));
+        $first = $this->get($url)->assertOk();
+        $this->assertMatchesRegularExpression('#data-conversation_id="('.$older->id.'|'.$newer->id.')"#', $first->getContent());
+        $this->get($older->url($folder->id))->assertOk()->assertDontSee('data-page-url', false);
+        $this->get($url)->assertOk()->assertSee('data-conversation_id="'.$older->id.'"', false)
+            ->assertSee('data-page-url="'.e(route('conversations.view', ['id' => $older->id, 'folder_id' => $folder->id])).'"', false);
 
         // An empty folder, and the All Mailboxes one.
         $this->get(route('mailboxes.view.folder', ['id' => $this->mailbox->id, 'folder_id' => $this->folder(Folder::TYPE_CLOSED)->id]))->assertOk();

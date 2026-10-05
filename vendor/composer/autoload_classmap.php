@@ -164,6 +164,7 @@ return array(
     'App\\Http\\Middleware\\RequirePasswordInline' => $baseDir . '/app/Http/Middleware/RequirePasswordInline.php',
     'App\\Http\\Middleware\\RequireTwoFactor' => $baseDir . '/app/Http/Middleware/RequireTwoFactor.php',
     'App\\Http\\Middleware\\ResponseHeaders' => $baseDir . '/app/Http/Middleware/ResponseHeaders.php',
+    'App\\Http\\Middleware\\ServerTiming' => $baseDir . '/app/Http/Middleware/ServerTiming.php',
     'App\\Http\\Middleware\\TerminateHandler' => $baseDir . '/app/Http/Middleware/TerminateHandler.php',
     'App\\Http\\Middleware\\TrimStrings' => $baseDir . '/app/Http/Middleware/TrimStrings.php',
     'App\\Http\\Middleware\\TrustHosts' => $baseDir . '/app/Http/Middleware/TrustHosts.php',

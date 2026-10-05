@@ -404,12 +404,12 @@ class ConversationsController extends Controller
     }
 
     /**
-     * A folder's conversations, for the list beside an open conversation.
-     */
-    /**
      * A folder opens at a conversation beside its list: the one last opened from it in
      * this session, or its first. Null for an empty folder, a later page, or a narrow
      * window, where the list goes first (the tallport_narrow cookie, public/js/tallport.js).
+     *
+     * The conversation is shown at the folder's URL, without a redirect (one request
+     * instead of two); the page then shows its own URL (data-page-url, tallport.js).
      */
     public static function openFolder(Request $request, $folder, $query, $conversations)
     {
@@ -421,9 +421,14 @@ class ConversationsController extends Controller
             $conversation_id = $conversations->first()->id;
         }
 
-        return redirect()->route('conversations.view', ['id' => $conversation_id, 'folder_id' => $folder->id]);
+        $request->merge(['folder_id' => $folder->id]);
+
+        return app(self::class)->view($request, $conversation_id);
     }
 
+    /**
+     * A folder's conversations, for the list beside an open conversation.
+     */
     private function folderList($folder, $user, $page)
     {
         if ($folder->id < 0) {

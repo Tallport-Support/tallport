@@ -15,6 +15,8 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         \App\Http\Middleware\HttpsAndCloudflareIp::class,
+        // Early: it times everything after it.
+        \App\Http\Middleware\ServerTiming::class,
         // defer(): after the response.
         \Illuminate\Foundation\Http\Middleware\InvokeDeferredCallbacks::class,
         // CORS for the REST API (config/cors.php).

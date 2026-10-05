@@ -129,6 +129,11 @@ window.Tallport = (function () {
 	});
 
 	document.addEventListener('livewire:navigated', function () {
+		// A page shown at another URL (a folder showing its conversation) says its own.
+		var page_url = document.body.getAttribute('data-page-url');
+		if (page_url && page_url != window.location.href) {
+			history.replaceState(history.state, '', page_url);
+		}
 		if (sidebar_scroll && sidebar()) {
 			sidebar().scrollTop = sidebar_scroll;
 		}

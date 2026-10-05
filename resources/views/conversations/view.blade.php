@@ -9,6 +9,10 @@
 @endif
 
 @section('body_attrs')@parent data-conversation_id="{{ $conversation->id }}"@endsection
+{{-- Shown at a folder's URL (ConversationsController::openFolder()): the conversation's own. --}}
+@if (!Route::is('conversations.view'))
+    @section('body_attrs')@parent data-page-url="{{ route('conversations.view', ['id' => $conversation->id, 'folder_id' => $folder->id]) }}"@endsection
+@endif
 
 @if (!empty($list))
     {{-- The folder's conversations beside the conversation. --}}
