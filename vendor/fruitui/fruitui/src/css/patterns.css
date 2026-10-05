@@ -1271,7 +1271,7 @@
   }
   .f-breadcrumbs a {
     min-width: 0;
-    color: var(--f-selection-text);
+    color: var(--f-accent-text);
     text-decoration: none;
     overflow-wrap: anywhere;
   }

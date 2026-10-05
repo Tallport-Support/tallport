@@ -2544,7 +2544,7 @@ a.disabled:focus {
 /* The customer inspector, as in FruitUI's Support example
    (examples/support/support.css: support-customer-profile, inspector sections). */
 .app-workspace__inspector {
-    --f-pane-background: var(--f-surface-secondary);
+    --f-pane-background: var(--f-material);
 }
 .conv-customer-block {
     position: relative;

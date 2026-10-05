@@ -502,7 +502,7 @@
     background: var(--f-hover);
   }
   .f-tab[aria-selected='true'] {
-    color: var(--f-selection-text);
+    color: var(--f-accent-text);
   }
   .f-tab[aria-selected='true']::after {
     content: '';

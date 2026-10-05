@@ -28,6 +28,11 @@
       color-mix(in srgb, var(--f-tint) 76%, #1c1c1e),
       oklch(from var(--f-tint) calc(l + 0.29) calc(c * 0.55) h)
     );
+    /* The accent as text on any surface, toolbars and hover included: 4.5:1 for every accent. */
+    --f-accent-text: light-dark(
+      color-mix(in srgb, var(--f-tint) 88%, black),
+      oklch(from var(--f-tint) calc(l + 0.22) c h)
+    );
     --f-on-accent: #fff;
     --f-danger: light-dark(#c52f27, #ff8179);
     --f-success: light-dark(#25733e, #83d697);

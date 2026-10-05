@@ -51,8 +51,8 @@
     gap: 3px;
     max-width: var(--f-back-max-width, 160px);
     padding-inline: 4px 8px;
-    /* The selection text blue keeps 4.5:1 on the ghost button's hover surface. */
-    color: var(--f-selection-text);
+    /* The accent as text keeps 4.5:1 on the ghost button's hover surface. */
+    color: var(--f-accent-text);
   }
   .f-back > span {
     overflow: hidden;

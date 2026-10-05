@@ -28,6 +28,11 @@
       color-mix(in srgb, var(--f-tint) 76%, #1c1c1e),
       oklch(from var(--f-tint) calc(l + 0.29) calc(c * 0.55) h)
     );
+    /* The accent as text on any surface, toolbars and hover included: 4.5:1 for every accent. */
+    --f-accent-text: light-dark(
+      color-mix(in srgb, var(--f-tint) 88%, black),
+      oklch(from var(--f-tint) calc(l + 0.22) c h)
+    );
     --f-on-accent: #fff;
     --f-danger: light-dark(#c52f27, #ff8179);
     --f-success: light-dark(#25733e, #83d697);
@@ -207,6 +212,11 @@
     --f-selection-text: light-dark(
       color-mix(in srgb, var(--f-tint) 76%, #1c1c1e),
       oklch(from var(--f-tint) calc(l + 0.29) calc(c * 0.55) h)
+    );
+    /* The accent as text on any surface, toolbars and hover included: 4.5:1 for every accent. */
+    --f-accent-text: light-dark(
+      color-mix(in srgb, var(--f-tint) 88%, black),
+      oklch(from var(--f-tint) calc(l + 0.22) c h)
     );
     --f-focus-ring-color: color-mix(in srgb, var(--f-accent) 75%, transparent);
   }
@@ -448,8 +458,8 @@ html.fruit-ui > body {
     gap: 3px;
     max-width: var(--f-back-max-width, 160px);
     padding-inline: 4px 8px;
-    /* The selection text blue keeps 4.5:1 on the ghost button's hover surface. */
-    color: var(--f-selection-text);
+    /* The accent as text keeps 4.5:1 on the ghost button's hover surface. */
+    color: var(--f-accent-text);
   }
 
 .f-back > span {
@@ -2234,7 +2244,7 @@ select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) {
   }
 
 .f-prose a {
-    color: var(--f-selection-text);
+    color: var(--f-accent-text);
     text-underline-offset: 2px;
   }
 
@@ -2844,7 +2854,7 @@ a.f-menu-item {
   }
 
 .f-tab[aria-selected='true'] {
-    color: var(--f-selection-text);
+    color: var(--f-accent-text);
   }
 
 .f-tab[aria-selected='true']::after {
@@ -4843,7 +4853,7 @@ img.f-avatar {
 
 .f-breadcrumbs a {
     min-width: 0;
-    color: var(--f-selection-text);
+    color: var(--f-accent-text);
     text-decoration: none;
     overflow-wrap: anywhere;
   }

@@ -134,7 +134,7 @@
     height: auto;
   }
   .f-prose a {
-    color: var(--f-selection-text);
+    color: var(--f-accent-text);
     text-underline-offset: 2px;
   }
   .f-prose table {
