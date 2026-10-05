@@ -96,4 +96,22 @@ class ConversationChatViewTest extends FeatureTestCase
         // The email view opens on request only.
         Livewire::actingAs($this->agent)->test(ConversationComposer::class, ['conversation' => $this->conversation])->assertSet('mode', '');
     }
+
+    public function testTheChatComposerOnlySends()
+    {
+        // A reply never closes the chat (the toolbar does), and stays in the conversation.
+        $this->agent->reply_status = Conversation::STATUS_CLOSED;
+        $this->agent->after_send = \App\MailboxUser::AFTER_SEND_NEXT;
+        $this->agent->save();
+
+        $composer = Livewire::actingAs($this->agent->fresh())->test(ConversationComposer::class, ['conversation' => $this->conversation, 'chat' => true])
+            ->assertSet('status', Conversation::STATUS_PENDING)
+            ->assertSeeHtml('btn-reply-submit')->assertDontSeeHtml('dropdown-send-status')->assertDontSeeHtml('name="status"');
+        $composer->set('body', '<p>On it.</p>')->call('send')->assertRedirect($this->conversation->url());
+        $this->assertSame(Conversation::STATUS_PENDING, $this->conversation->fresh()->status);
+
+        // The email view keeps the user's choices.
+        Livewire::actingAs($this->agent->fresh())->test(ConversationComposer::class, ['conversation' => $this->conversation])
+            ->call('open', 'reply')->assertSet('status', Conversation::STATUS_CLOSED)->assertSeeHtml('dropdown-send-status');
+    }
 }

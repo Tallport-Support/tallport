@@ -53,7 +53,8 @@ class ConversationComposer extends Component
 
     /**
      * The chat view: the composer stays open below the history, a reply unless
-     * switched to a note, and Enter sends (public/js/conversations.js).
+     * switched to a note, Enter sends (public/js/conversations.js), and Send is
+     * the only action: status and assignee are the toolbar's.
      */
     #[Locked]
     public $chat = false;
@@ -396,7 +397,8 @@ class ConversationComposer extends Component
             'body'            => $this->body,
             'status'          => $this->status,
             'user_id'         => $this->user_id,
-            'after_send'      => $this->after_send,
+            // The chat view stays in the conversation.
+            'after_send'      => $this->chat ? \App\MailboxUser::AFTER_SEND_STAY : $this->after_send,
             'attachments'     => $attachment_ids,
             'attachments_all' => $attachment_ids,
             'embeds'          => array_column(array_filter($this->attachments, fn ($attachment) => !empty($attachment['embed'])), 'id'),
@@ -443,8 +445,12 @@ class ConversationComposer extends Component
         $this->bcc = '';
         $this->conv_history = '';
 
-        // The user's preference.
+        // The user's preference; in the chat view a reply doesn't close the
+        // conversation (agents close it from the toolbar).
         $this->status = $user->replyStatus();
+        if ($this->chat && $this->status == Conversation::STATUS_CLOSED) {
+            $this->status = Conversation::STATUS_PENDING;
+        }
 
         // The assignee, as the mailbox's setting says.
         if ($mailbox->ticket_assignee == Mailbox::TICKET_ASSIGNEE_ANYONE

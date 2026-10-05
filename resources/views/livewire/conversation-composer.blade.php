@@ -67,7 +67,8 @@
                 @include('conversations/partials/composer_editor', ['plain' => $has_channel, 'placeholder' => $chat ? __('Use ENTER to send the message and SHIFT+ENTER for a new line') : null, 'draft_button' => $mode != 'note'])
 
                 @include('conversations/partials/composer_footer', [
-                    'send_label'      => $mode == 'note' ? __('Add Note') : ($mode == 'forward' ? __('Forward') : ($send_labels[$status][0] ?? __('Send Reply'))),
+                    'send_label'      => $mode == 'note' ? __('Add Note') : ($mode == 'forward' ? __('Forward') : ($chat ? __('Send') : ($send_labels[$status][0] ?? __('Send Reply')))),
+                    'send_only'       => $chat,
                     'send_menu'       => array_map(fn ($labels) => $labels[$label_index], $send_labels),
                     'history'         => !$has_channel && $mode != 'note',
                     'history_exclude' => $mode == 'forward' ? ['global', 'none'] : [],
