@@ -1591,7 +1591,6 @@
     "No Settings Found": "Asetuksia ei Löytynyt",
     ":mailbox Team": ":mailbox-Tiimi",
     ":mailbox Team Chat": ":mailbox-Tiimin Chat",
-    ":mailbox Team Chat, :count unread": ":mailbox-Tiimin Chat, :count lukematonta",
     ":person mentioned you in :mailbox Team Chat": ":person mainitsi sinut :mailbox-tiimin chatissa",
     "A Room for the Team": "Huone Tiimille",
     "Attach Files": "Liitä Tiedostoja",
@@ -1611,5 +1610,18 @@
     "Send a Chat Message": "Lähetä Chat-Viesti",
     "New Line in a Chat Message": "Uusi Rivi Chat-Viestissä",
     "Send a Reply or Note": "Lähetä Vastaus tai Huomautus",
-    "Writing": "Kirjoittaessa"
+    "Writing": "Kirjoittaessa",
+    ":mailbox, :count unread": ":mailbox, :count lukematonta",
+    "Back to Team Chat": "Takaisin Tiimin Chattiin",
+    "Files shared here appear in this list.": "Täällä jaetut tiedostot näkyvät tässä luettelossa.",
+    "Message from :name": "Viesti käyttäjältä :name",
+    "Message from :name, pinned": "Viesti käyttäjältä :name, kiinnitetty",
+    "Pin Message": "Kiinnitä Viesti",
+    "Pin a message from its actions to keep it here.": "Kiinnitä viesti sen toiminnoista pitääksesi sen täällä.",
+    "Pinned": "Kiinnitetyt",
+    "Recent Files": "Viimeisimmät Tiedostot",
+    "Show Chat Details": "Näytä Chatin Tiedot",
+    "Team Chat, :count unread": "Tiimin Chat, :count lukematonta",
+    "Switch Team Chat": "Vaihda Tiimin Chat",
+    "You": "Sinä"
 }

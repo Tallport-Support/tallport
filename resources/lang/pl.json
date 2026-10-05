@@ -1572,7 +1572,6 @@
     "No Settings Found": "Nie Znaleziono Ustawień",
     ":mailbox Team": "Zespół :mailbox",
     ":mailbox Team Chat": "Czat Zespołu :mailbox",
-    ":mailbox Team Chat, :count unread": "Czat Zespołu :mailbox, nieprzeczytane: :count",
     ":person mentioned you in :mailbox Team Chat": ":person wspomniał(a) o Tobie na czacie zespołu :mailbox",
     "A Room for the Team": "Pokój dla Zespołu",
     "Attach Files": "Załącz Pliki",
@@ -1592,5 +1591,18 @@
     "Send a Chat Message": "Wyślij Wiadomość na Czacie",
     "New Line in a Chat Message": "Nowy Wiersz w Wiadomości na Czacie",
     "Send a Reply or Note": "Wyślij Odpowiedź lub Notkę",
-    "Writing": "Podczas Pisania"
+    "Writing": "Podczas Pisania",
+    ":mailbox, :count unread": ":mailbox, nieprzeczytane: :count",
+    "Back to Team Chat": "Wróć do Czatu Zespołu",
+    "Files shared here appear in this list.": "Pliki udostępnione tutaj pojawiają się na tej liście.",
+    "Message from :name": "Wiadomość od :name",
+    "Message from :name, pinned": "Wiadomość od :name, przypięta",
+    "Pin Message": "Przypnij Wiadomość",
+    "Pin a message from its actions to keep it here.": "Przypnij wiadomość z jej akcji, aby zachować ją tutaj.",
+    "Pinned": "Przypięte",
+    "Recent Files": "Ostatnie Pliki",
+    "Show Chat Details": "Pokaż Szczegóły Czatu",
+    "Team Chat, :count unread": "Czat Zespołu, nieprzeczytane: :count",
+    "Switch Team Chat": "Przełącz Czat Zespołu",
+    "You": "Ty"
 }

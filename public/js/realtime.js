@@ -130,12 +130,11 @@ function maybeShowConnectionRestored()
 					folders.innerHTML = fresh.innerHTML;
 				}
 			});
-			page.querySelectorAll('.app-team-chat-link[data-mailbox_id]').forEach(function (fresh) {
-				var link = document.querySelector('.app-team-chat-link[data-mailbox_id="'+fresh.getAttribute('data-mailbox_id')+'"]');
-				if (link) {
-					link.replaceWith(fresh);
-				}
-			});
+			var fresh = page.querySelector('.app-team-chat-link');
+			var link = document.querySelector('.app-team-chat-link');
+			if (fresh && link) {
+				link.replaceWith(fresh);
+			}
 		}).catch(function () {});
 	};
 
@@ -341,7 +340,7 @@ function maybeShowConnectionRestored()
 						Livewire.dispatch('team-message-created');
 						return;
 					}
-					var link = document.querySelector('.app-team-chat-link[data-mailbox_id="'+folders_mailbox_id+'"]');
+					var link = document.querySelector('.app-team-chat-link');
 					var badge = link && link.querySelector('.app-team-chat-badge');
 					if (badge && typeof data.unread != 'undefined') {
 						badge.textContent = data.unread;

@@ -1573,7 +1573,6 @@
     "No Settings Found": "一致する設定はありません",
     ":mailbox Team": ":mailbox チーム",
     ":mailbox Team Chat": ":mailbox チームチャット",
-    ":mailbox Team Chat, :count unread": ":mailbox チームチャット、未読 :count 件",
     ":person mentioned you in :mailbox Team Chat": ":person さんが :mailbox チームチャットであなたをメンションしました",
     "A Room for the Team": "チームのための場所",
     "Attach Files": "ファイルを添付",
@@ -1593,5 +1592,18 @@
     "Send a Chat Message": "チャットメッセージを送信",
     "New Line in a Chat Message": "チャットメッセージ内で改行",
     "Send a Reply or Note": "返信または記録を送信",
-    "Writing": "入力中"
+    "Writing": "入力中",
+    ":mailbox, :count unread": ":mailbox、未読 :count 件",
+    "Back to Team Chat": "チームチャットに戻る",
+    "Files shared here appear in this list.": "ここで共有されたファイルがこの一覧に表示されます。",
+    "Message from :name": ":name さんからのメッセージ",
+    "Message from :name, pinned": ":name さんからのメッセージ、ピン留め済み",
+    "Pin Message": "メッセージをピン留め",
+    "Pin a message from its actions to keep it here.": "メッセージの操作からピン留めすると、ここに表示されます。",
+    "Pinned": "ピン留め",
+    "Recent Files": "最近のファイル",
+    "Show Chat Details": "チャットの詳細を表示",
+    "Team Chat, :count unread": "チームチャット、未読 :count 件",
+    "Switch Team Chat": "チームチャットを切り替え",
+    "You": "あなた"
 }

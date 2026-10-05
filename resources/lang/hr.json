@@ -1573,7 +1573,6 @@
     "No Settings Found": "Nema Pronađenih Postavki",
     ":mailbox Team": "Tim :mailbox",
     ":mailbox Team Chat": "Chat Tima :mailbox",
-    ":mailbox Team Chat, :count unread": "Chat Tima :mailbox, nepročitano: :count",
     ":person mentioned you in :mailbox Team Chat": ":person vas je spomenuo u chatu tima :mailbox",
     "A Room for the Team": "Prostor za Tim",
     "Attach Files": "Priloži Datoteke",
@@ -1593,5 +1592,18 @@
     "Send a Chat Message": "Pošalji Poruku u Chatu",
     "New Line in a Chat Message": "Novi Redak u Poruci u Chatu",
     "Send a Reply or Note": "Pošalji Odgovor ili Bilješku",
-    "Writing": "Pri Pisanju"
+    "Writing": "Pri Pisanju",
+    ":mailbox, :count unread": ":mailbox, nepročitano: :count",
+    "Back to Team Chat": "Natrag na Chat Tima",
+    "Files shared here appear in this list.": "Datoteke podijeljene ovdje prikazuju se na ovom popisu.",
+    "Message from :name": "Poruka od :name",
+    "Message from :name, pinned": "Poruka od :name, prikvačena",
+    "Pin Message": "Prikvači Poruku",
+    "Pin a message from its actions to keep it here.": "Prikvačite poruku iz njezinih radnji kako bi ostala ovdje.",
+    "Pinned": "Prikvačeno",
+    "Recent Files": "Nedavne Datoteke",
+    "Show Chat Details": "Prikaži Detalje Chata",
+    "Team Chat, :count unread": "Chat Tima, nepročitano: :count",
+    "Switch Team Chat": "Promijeni Chat Tima",
+    "You": "Vi"
 }

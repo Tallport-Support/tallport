@@ -629,14 +629,38 @@ class MailboxesController extends Controller
     /**
      * The mailbox's team chat: a room for the users who work in it (App\Livewire\TeamChat).
      */
+    /**
+     * Team Chat: the room the user opened last (App\TeamMessage::roomFor()).
+     */
+    public function teamChatOpen()
+    {
+        $mailbox = \App\TeamMessage::roomFor(auth()->user());
+        if (!$mailbox) {
+            \Helper::denyAccess();
+        }
+
+        return redirect()->route('mailboxes.team_chat', ['id' => $mailbox->id]);
+    }
+
+    /**
+     * A mailbox's team chat; Team Chat opens it next time.
+     */
     public function teamChat($id)
     {
         $mailbox = Mailbox::findOrFail($id);
         $this->authorize('viewCached', $mailbox);
+        $user = auth()->user();
+        if ($user->team_chat_mailbox_id != $mailbox->id) {
+            User::where('id', $user->id)->update(['team_chat_mailbox_id' => $mailbox->id]);
+            $user->team_chat_mailbox_id = $mailbox->id;
+        }
+        $rooms = \App\TeamMessage::rooms($user);
 
         return view('mailboxes/team_chat', [
             'mailbox' => $mailbox,
             'members' => \App\TeamMessage::members($mailbox),
+            'rooms'   => $rooms,
+            'unread'  => \App\TeamMessage::unreadCounts($user, $rooms->pluck('id')->all()),
         ]);
     }
 

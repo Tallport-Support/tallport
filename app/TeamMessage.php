@@ -22,7 +22,8 @@ class TeamMessage extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'body' => 'encrypted',
+        'body'      => 'encrypted',
+        'pinned_at' => 'datetime',
     ];
 
     public function user()
@@ -51,6 +52,32 @@ class TeamMessage extends Model
         }
         self::where('mailbox_id', $mailbox_id)->delete();
         \DB::table(self::READS_TABLE)->where('mailbox_id', $mailbox_id)->delete();
+    }
+
+    /**
+     * The rooms a user can open: their mailboxes'.
+     */
+    public static function rooms(User $user)
+    {
+        return $user->mailboxesCanView(true);
+    }
+
+    /**
+     * The room Team Chat opens for the user: the one they chose last, else their first mailbox's.
+     */
+    public static function roomFor(User $user)
+    {
+        $rooms = self::rooms($user);
+
+        return $rooms->firstWhere('id', $user->team_chat_mailbox_id) ?: $rooms->first();
+    }
+
+    /**
+     * Unread messages in all the user's rooms.
+     */
+    public static function unreadTotal(User $user)
+    {
+        return array_sum(self::unreadCounts($user, self::rooms($user)->pluck('id')->all()));
     }
 
     /**

@@ -1670,7 +1670,6 @@
     "No Settings Found": "No s'ha Trobat Cap Configuració",
     ":mailbox Team": "Equip de :mailbox",
     ":mailbox Team Chat": "Xat de l'Equip de :mailbox",
-    ":mailbox Team Chat, :count unread": "Xat de l'Equip de :mailbox, :count sense llegir",
     ":person mentioned you in :mailbox Team Chat": ":person us ha esmentat al xat de l'equip de :mailbox",
     "A Room for the Team": "Una Sala per a l'Equip",
     "Attach Files": "Adjunta Fitxers",
@@ -1689,5 +1688,18 @@
     "Send a Chat Message": "Envia un Missatge de Xat",
     "New Line in a Chat Message": "Línia Nova en un Missatge de Xat",
     "Send a Reply or Note": "Envia una Resposta o Nota",
-    "Writing": "En Escriure"
+    "Writing": "En Escriure",
+    ":mailbox, :count unread": ":mailbox, :count sense llegir",
+    "Back to Team Chat": "Torna al Xat de l'Equip",
+    "Files shared here appear in this list.": "Els fitxers compartits aquí apareixen en aquesta llista.",
+    "Message from :name": "Missatge de :name",
+    "Message from :name, pinned": "Missatge de :name, fixat",
+    "Pin Message": "Fixa el Missatge",
+    "Pin a message from its actions to keep it here.": "Fixeu un missatge des de les seves accions per mantenir-lo aquí.",
+    "Pinned": "Fixats",
+    "Recent Files": "Fitxers Recents",
+    "Show Chat Details": "Mostra Detalls del Xat",
+    "Team Chat, :count unread": "Xat de l'Equip, :count sense llegir",
+    "Switch Team Chat": "Canvia de Xat de l'Equip",
+    "You": "Vós"
 }

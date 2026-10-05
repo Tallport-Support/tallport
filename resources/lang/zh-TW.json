@@ -1621,7 +1621,6 @@
     "No Settings Found": "找不到設定",
     ":mailbox Team": ":mailbox 團隊",
     ":mailbox Team Chat": ":mailbox 團隊聊天",
-    ":mailbox Team Chat, :count unread": ":mailbox 團隊聊天，:count 則未讀",
     ":person mentioned you in :mailbox Team Chat": ":person 在 :mailbox 團隊聊天中提到了您",
     "A Room for the Team": "團隊專屬空間",
     "Attach Files": "附加檔案",
@@ -1641,5 +1640,18 @@
     "Send a Chat Message": "傳送聊天訊息",
     "New Line in a Chat Message": "在聊天訊息中換行",
     "Send a Reply or Note": "傳送回覆或備註",
-    "Writing": "輸入時"
+    "Writing": "輸入時",
+    ":mailbox, :count unread": ":mailbox，:count 則未讀",
+    "Back to Team Chat": "返回團隊聊天",
+    "Files shared here appear in this list.": "在此分享的檔案會顯示在此清單中。",
+    "Message from :name": "來自 :name 的訊息",
+    "Message from :name, pinned": "來自 :name 的訊息，已釘選",
+    "Pin Message": "釘選訊息",
+    "Pin a message from its actions to keep it here.": "從訊息的動作中將其釘選，即可保留在此處。",
+    "Pinned": "已釘選",
+    "Recent Files": "最近的檔案",
+    "Show Chat Details": "顯示聊天詳細資訊",
+    "Team Chat, :count unread": "團隊聊天，:count 則未讀",
+    "Switch Team Chat": "切換團隊聊天",
+    "You": "您"
 }

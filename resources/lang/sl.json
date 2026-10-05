@@ -1572,7 +1572,6 @@
     "No Settings Found": "Ni Najdenih Nastavitev",
     ":mailbox Team": "Ekipa :mailbox",
     ":mailbox Team Chat": "Klepet Ekipe :mailbox",
-    ":mailbox Team Chat, :count unread": "Klepet Ekipe :mailbox, neprebrano: :count",
     ":person mentioned you in :mailbox Team Chat": ":person te je omenil v klepetu ekipe :mailbox",
     "A Room for the Team": "Prostor za Ekipo",
     "Attach Files": "Priloži Datoteke",
@@ -1592,5 +1591,18 @@
     "Send a Chat Message": "Pošlji Sporočilo v Klepetu",
     "New Line in a Chat Message": "Nova Vrstica v Sporočilu v Klepetu",
     "Send a Reply or Note": "Pošlji Odgovor ali Opombo",
-    "Writing": "Med Pisanjem"
+    "Writing": "Med Pisanjem",
+    ":mailbox, :count unread": ":mailbox, neprebrano: :count",
+    "Back to Team Chat": "Nazaj na Klepet Ekipe",
+    "Files shared here appear in this list.": "Datoteke, deljene tukaj, se prikažejo na tem seznamu.",
+    "Message from :name": "Sporočilo od :name",
+    "Message from :name, pinned": "Sporočilo od :name, pripeto",
+    "Pin Message": "Pripni Sporočilo",
+    "Pin a message from its actions to keep it here.": "Pripni sporočilo prek njegovih dejanj, da ostane tukaj.",
+    "Pinned": "Pripeto",
+    "Recent Files": "Nedavne Datoteke",
+    "Show Chat Details": "Prikaži Podrobnosti Klepeta",
+    "Team Chat, :count unread": "Klepet Ekipe, neprebrano: :count",
+    "Switch Team Chat": "Zamenjaj Klepet Ekipe",
+    "You": "Ti"
 }

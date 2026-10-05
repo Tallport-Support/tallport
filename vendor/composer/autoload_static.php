@@ -1011,6 +1011,7 @@ class ComposerStaticInit2902b8515f6672bf67bcf119cdb6b034
         'App\\Livewire\\RetentionPreview' => __DIR__ . '/../..' . '/app/Livewire/RetentionPreview.php',
         'App\\Livewire\\SystemStatus' => __DIR__ . '/../..' . '/app/Livewire/SystemStatus.php',
         'App\\Livewire\\TeamChat' => __DIR__ . '/../..' . '/app/Livewire/TeamChat.php',
+        'App\\Livewire\\TeamChatDetails' => __DIR__ . '/../..' . '/app/Livewire/TeamChatDetails.php',
         'App\\Mail\\Alert' => __DIR__ . '/../..' . '/app/Mail/Alert.php',
         'App\\Mail\\AutoReply' => __DIR__ . '/../..' . '/app/Mail/AutoReply.php',
         'App\\Mail\\PasswordChanged' => __DIR__ . '/../..' . '/app/Mail/PasswordChanged.php',

@@ -2802,6 +2802,84 @@ a.disabled:focus {
 .team-room__attach {
     margin-inline-start: auto;
 }
+.team-room__heading {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+.team-room__pinned {
+    --f-icon-size: 13px;
+    display: inline-block;
+    margin-inline-start: 4px;
+    color: var(--f-secondary);
+    vertical-align: -1px;
+}
+.team-room .f-message:focus-visible {
+    outline: var(--f-focus-ring-width) solid var(--f-focus-ring-color);
+    outline-offset: -2px;
+}
+.team-room__details-icon {
+    color: var(--f-secondary);
+}
+/* A team chat's details (livewire/team-chat-details), in the inspector's place, as in
+   FruitUI's Support example (support-room-details). */
+.team-details .inspector-section:first-child {
+    border-top: 0;
+}
+.team-details__list {
+    display: grid;
+    gap: 8px;
+    margin: 0 0 12px;
+    padding: 0;
+    list-style: none;
+}
+.team-details__people li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--f-text-sm);
+}
+.team-details__people .f-avatar {
+    --f-avatar-size: 26px;
+    --f-avatar-font-size: var(--f-text-2xs);
+}
+.team-details__people small {
+    color: var(--f-secondary);
+    font-size: var(--f-text-xs);
+}
+.team-details__pin {
+    display: grid;
+    gap: 2px;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-md);
+    background: var(--f-surface);
+    color: var(--f-text);
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+}
+.team-details__pin:hover {
+    background: var(--f-surface-secondary);
+}
+.team-details__pin-author {
+    font-size: var(--f-text-xs);
+}
+.team-details__pin-author time {
+    color: var(--f-secondary);
+}
+.team-details__pin-text {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: var(--f-text-sm);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+.team-details .f-attachment {
+    width: 100%;
+    margin-bottom: 6px;
+}
 
 /* Inside the workspace the panes space their content themselves. */
 .app-workspace .content {

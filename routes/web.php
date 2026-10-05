@@ -156,7 +156,8 @@ Route::get('/reports/productivity', 'ReportsController@productivity')->name('rep
 
 Route::get('/mailbox/all/{folder_id?}', 'AllMailboxesController@view')->where('folder_id', '-?\d+')->name('mailboxes.all');
 Route::get('/mailbox/{id}', 'MailboxesController@view')->name('mailboxes.view');
-Route::get('/mailbox/{id}/team', 'MailboxesController@teamChat')->name('mailboxes.team_chat');
+Route::get('/chat', 'MailboxesController@teamChatOpen')->name('team_chat');
+Route::get('/chat/{id}', 'MailboxesController@teamChat')->name('mailboxes.team_chat');
 Route::get('/mailbox/{id}/{folder_id}', 'MailboxesController@view')->name('mailboxes.view.folder');
 Route::get('/mailbox/connection-settings/{id}/outgoing', 'MailboxesController@connectionOutgoing')->name('mailboxes.connection');
 Route::post('/mailbox/connection-settings/{id}/outgoing', 'MailboxesController@connectionOutgoingSave')->name('mailboxes.connection.save');

@@ -1573,7 +1573,6 @@
     "No Settings Found": "Nenhuma Definição Encontrada",
     ":mailbox Team": "Equipa :mailbox",
     ":mailbox Team Chat": "Chat da Equipa :mailbox",
-    ":mailbox Team Chat, :count unread": "Chat da Equipa :mailbox, :count não lidas",
     ":person mentioned you in :mailbox Team Chat": ":person mencionou-o no chat da equipa :mailbox",
     "A Room for the Team": "Uma Sala para a Equipa",
     "Attach Files": "Anexar Ficheiros",
@@ -1593,5 +1592,18 @@
     "Send a Chat Message": "Enviar uma Mensagem de Chat",
     "New Line in a Chat Message": "Nova Linha numa Mensagem de Chat",
     "Send a Reply or Note": "Enviar uma Resposta ou Nota",
-    "Writing": "Ao Escrever"
+    "Writing": "Ao Escrever",
+    ":mailbox, :count unread": ":mailbox, :count não lidas",
+    "Back to Team Chat": "Voltar ao Chat da Equipa",
+    "Files shared here appear in this list.": "Os ficheiros partilhados aqui aparecem nesta lista.",
+    "Message from :name": "Mensagem de :name",
+    "Message from :name, pinned": "Mensagem de :name, afixada",
+    "Pin Message": "Afixar Mensagem",
+    "Pin a message from its actions to keep it here.": "Afixe uma mensagem a partir das respetivas ações para a manter aqui.",
+    "Pinned": "Afixadas",
+    "Recent Files": "Ficheiros Recentes",
+    "Show Chat Details": "Mostrar Detalhes do Chat",
+    "Team Chat, :count unread": "Chat da Equipa, :count não lidas",
+    "Switch Team Chat": "Mudar de Chat da Equipa",
+    "You": "Você"
 }

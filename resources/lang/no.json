@@ -1577,7 +1577,6 @@
     "No Settings Found": "Ingen Innstillinger Funnet",
     ":mailbox Team": "Team :mailbox",
     ":mailbox Team Chat": "Teamchat for :mailbox",
-    ":mailbox Team Chat, :count unread": "Teamchat for :mailbox, :count uleste",
     ":person mentioned you in :mailbox Team Chat": ":person nevnte deg i teamchatten for :mailbox",
     "A Room for the Team": "Et Rom for Teamet",
     "Attach Files": "Legg ved Filer",
@@ -1597,5 +1596,18 @@
     "Send a Chat Message": "Send en Chatmelding",
     "New Line in a Chat Message": "Ny Linje i en Chatmelding",
     "Send a Reply or Note": "Send et Svar eller en Merknad",
-    "Writing": "Under Skriving"
+    "Writing": "Under Skriving",
+    ":mailbox, :count unread": ":mailbox, :count uleste",
+    "Back to Team Chat": "Tilbake til Teamchat",
+    "Files shared here appear in this list.": "Filer som deles her, vises i denne listen.",
+    "Message from :name": "Melding fra :name",
+    "Message from :name, pinned": "Melding fra :name, festet",
+    "Pin Message": "Fest Melding",
+    "Pin a message from its actions to keep it here.": "Fest en melding fra handlingene dens for å beholde den her.",
+    "Pinned": "Festet",
+    "Recent Files": "Nylige Filer",
+    "Show Chat Details": "Vis Chatdetaljer",
+    "Team Chat, :count unread": "Teamchat, :count uleste",
+    "Switch Team Chat": "Bytt Teamchat",
+    "You": "Du"
 }

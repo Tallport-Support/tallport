@@ -60,6 +60,19 @@ class TeamChat extends Component
         $this->markRead();
     }
 
+    /**
+     * Pinned for everyone in the room (the details list them), or not any more.
+     */
+    public function togglePin($id)
+    {
+        $message = TeamMessage::where('mailbox_id', $this->mailbox()->id)->findOrFail($id);
+        $message->pinned_at = $message->pinned_at ? null : now();
+        $message->pinned_by_user_id = $message->pinned_at ? auth()->id() : null;
+        $message->save();
+        $this->dispatch('team-chat-changed');
+        \App\Events\RealtimeTeamMessage::dispatchSelf($message);
+    }
+
     public function removeFile($index)
     {
         unset($this->files[$index]);
@@ -103,6 +116,7 @@ class TeamChat extends Component
                 $member->clearWebsiteNotificationsCache();
             }
         }
+        $this->dispatch('team-chat-changed');
         \App\Events\RealtimeTeamMessage::dispatchSelf($message);
         \Eventy::action('team_chat.message_created', $message);
     }
@@ -151,8 +165,8 @@ class TeamChat extends Component
             $sections[$key]['messages'][] = [
                 'message'   => $message,
                 'html'      => TeamMessage::html($message->body, $mailbox, $user, $members),
-                // A run: the same person, minutes apart.
-                'continued' => $previous && $previous->user_id == $message->user_id && $message->created_at->diffInSeconds($previous->created_at, true) < 300,
+                // A run: the same person, minutes apart; a pinned message starts its own (its name, time and pin show).
+                'continued' => $previous && $previous->user_id == $message->user_id && $message->created_at->diffInSeconds($previous->created_at, true) < 300 && !$message->pinned_at,
             ];
             $previous = $message;
         }

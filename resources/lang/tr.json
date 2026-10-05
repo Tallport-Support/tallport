@@ -1573,7 +1573,6 @@
     "No Settings Found": "Ayar Bulunamadı",
     ":mailbox Team": ":mailbox Ekibi",
     ":mailbox Team Chat": ":mailbox Ekip Sohbeti",
-    ":mailbox Team Chat, :count unread": ":mailbox Ekip Sohbeti, :count okunmamış",
     ":person mentioned you in :mailbox Team Chat": ":person sizden :mailbox ekip sohbetinde bahsetti",
     "A Room for the Team": "Ekip İçin Bir Oda",
     "Attach Files": "Dosya Ekle",
@@ -1593,5 +1592,18 @@
     "Send a Chat Message": "Sohbet Mesajı Gönder",
     "New Line in a Chat Message": "Sohbet Mesajında Yeni Satır",
     "Send a Reply or Note": "Yanıt veya Not Gönder",
-    "Writing": "Yazarken"
+    "Writing": "Yazarken",
+    ":mailbox, :count unread": ":mailbox, :count okunmamış",
+    "Back to Team Chat": "Ekip Sohbetine Dön",
+    "Files shared here appear in this list.": "Burada paylaşılan dosyalar bu listede görünür.",
+    "Message from :name": ":name tarafından gönderilen mesaj",
+    "Message from :name, pinned": ":name tarafından gönderilen mesaj, sabitlendi",
+    "Pin Message": "Mesajı Sabitle",
+    "Pin a message from its actions to keep it here.": "Burada tutmak için bir mesajı işlemlerinden sabitleyin.",
+    "Pinned": "Sabitlenenler",
+    "Recent Files": "Son Dosyalar",
+    "Show Chat Details": "Sohbet Ayrıntılarını Göster",
+    "Team Chat, :count unread": "Ekip Sohbeti, :count okunmamış",
+    "Switch Team Chat": "Ekip Sohbetini Değiştir",
+    "You": "Siz"
 }

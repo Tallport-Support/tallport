@@ -687,6 +687,36 @@
     },
     {
         "methods": [
+            "GET"
+        ],
+        "uri": "chat",
+        "name": "team_chat",
+        "action": "MailboxesController@teamChatOpen",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "chat/{id}",
+        "name": "mailboxes.team_chat",
+        "action": "MailboxesController@teamChat",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
             "POST"
         ],
         "uri": "conversation/ajax",
@@ -1785,21 +1815,6 @@
         "uri": "mailbox/{id}",
         "name": "mailboxes.view",
         "action": "MailboxesController@view",
-        "middleware": [
-            "web",
-            "auth"
-        ],
-        "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "GET"
-        ],
-        "uri": "mailbox/{id}/team",
-        "name": "mailboxes.team_chat",
-        "action": "MailboxesController@teamChat",
         "middleware": [
             "web",
             "auth"

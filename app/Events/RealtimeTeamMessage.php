@@ -41,7 +41,7 @@ class RealtimeTeamMessage implements ShouldBroadcastNow
     }
 
     /**
-     * For users who see the mailbox, with their number of unread messages there.
+     * For users who see the mailbox, with their number of unread messages in all rooms.
      */
     public static function processPayload($payload)
     {
@@ -50,7 +50,7 @@ class RealtimeTeamMessage implements ShouldBroadcastNow
         if (!$user || !$mailbox || !$user->can('viewCached', $mailbox)) {
             return [];
         }
-        $payload->unread = TeamMessage::unreadCounts($user, [$mailbox->id])[$mailbox->id] ?? 0;
+        $payload->unread = TeamMessage::unreadTotal($user);
 
         return $payload;
     }

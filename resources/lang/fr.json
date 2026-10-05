@@ -1582,7 +1582,6 @@
     "No Settings Found": "Aucun Réglage Trouvé",
     ":mailbox Team": "Équipe :mailbox",
     ":mailbox Team Chat": "Tchat de l'Équipe :mailbox",
-    ":mailbox Team Chat, :count unread": "Tchat de l'Équipe :mailbox, :count non lus",
     ":person mentioned you in :mailbox Team Chat": ":person vous a mentionné dans le tchat de l'équipe :mailbox",
     "A Room for the Team": "Une Salle pour l'Équipe",
     "Attach Files": "Joindre des Fichiers",
@@ -1602,5 +1601,18 @@
     "Send a Chat Message": "Envoyer un Message de Tchat",
     "New Line in a Chat Message": "Nouvelle Ligne dans un Message de Tchat",
     "Send a Reply or Note": "Envoyer une Réponse ou une Note",
-    "Writing": "Pendant la Rédaction"
+    "Writing": "Pendant la Rédaction",
+    ":mailbox, :count unread": ":mailbox, :count non lus",
+    "Back to Team Chat": "Retour au Tchat d'Équipe",
+    "Files shared here appear in this list.": "Les fichiers partagés ici apparaissent dans cette liste.",
+    "Message from :name": "Message de :name",
+    "Message from :name, pinned": "Message de :name, épinglé",
+    "Pin Message": "Épingler le Message",
+    "Pin a message from its actions to keep it here.": "Épinglez un message depuis ses actions pour le garder ici.",
+    "Pinned": "Épinglés",
+    "Recent Files": "Fichiers Récents",
+    "Show Chat Details": "Afficher les Détails du Tchat",
+    "Team Chat, :count unread": "Tchat d'Équipe, :count non lus",
+    "Switch Team Chat": "Changer de Tchat d'Équipe",
+    "You": "Vous"
 }

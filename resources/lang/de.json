@@ -1567,7 +1567,6 @@
     "No Settings Found": "Keine Einstellungen Gefunden",
     ":mailbox Team": ":mailbox-Team",
     ":mailbox Team Chat": ":mailbox-Team-Chat",
-    ":mailbox Team Chat, :count unread": ":mailbox-Team-Chat, :count ungelesen",
     ":person mentioned you in :mailbox Team Chat": ":person hat Sie im :mailbox-Team-Chat erwähnt",
     "A Room for the Team": "Ein Raum für das Team",
     "Attach Files": "Dateien Anhängen",
@@ -1587,5 +1586,18 @@
     "Send a Chat Message": "Chat-Nachricht Senden",
     "New Line in a Chat Message": "Neue Zeile in einer Chat-Nachricht",
     "Send a Reply or Note": "Antwort oder Notiz Senden",
-    "Writing": "Beim Schreiben"
+    "Writing": "Beim Schreiben",
+    ":mailbox, :count unread": ":mailbox, :count ungelesen",
+    "Back to Team Chat": "Zurück zum Team-Chat",
+    "Files shared here appear in this list.": "Hier geteilte Dateien erscheinen in dieser Liste.",
+    "Message from :name": "Nachricht von :name",
+    "Message from :name, pinned": "Nachricht von :name, angeheftet",
+    "Pin Message": "Nachricht Anheften",
+    "Pin a message from its actions to keep it here.": "Eine Nachricht über ihre Aktionen anheften, um sie hier zu behalten.",
+    "Pinned": "Angeheftet",
+    "Recent Files": "Neueste Dateien",
+    "Show Chat Details": "Chat-Details Anzeigen",
+    "Team Chat, :count unread": "Team-Chat, :count ungelesen",
+    "Switch Team Chat": "Team-Chat Wechseln",
+    "You": "Sie"
 }

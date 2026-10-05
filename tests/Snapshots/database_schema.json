@@ -3295,6 +3295,16 @@
                 "type": "timestamp",
                 "nullable": true,
                 "default": "NULL"
+            },
+            "pinned_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "pinned_by_user_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
             }
         },
         "indexes": {
@@ -3892,6 +3902,11 @@
                 "default": "NULL",
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
+            },
+            "team_chat_mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
             }
         },
         "indexes": {

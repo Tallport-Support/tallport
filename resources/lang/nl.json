@@ -1576,7 +1576,6 @@
     "No Settings Found": "Geen Instellingen Gevonden",
     ":mailbox Team": "Team :mailbox",
     ":mailbox Team Chat": "Teamchat :mailbox",
-    ":mailbox Team Chat, :count unread": "Teamchat :mailbox, :count ongelezen",
     ":person mentioned you in :mailbox Team Chat": ":person heeft u genoemd in de teamchat van :mailbox",
     "A Room for the Team": "Een Ruimte voor het Team",
     "Attach Files": "Bestanden Bijvoegen",
@@ -1596,5 +1595,18 @@
     "Send a Chat Message": "Chatbericht Verzenden",
     "New Line in a Chat Message": "Nieuwe Regel in een Chatbericht",
     "Send a Reply or Note": "Antwoord of Notitie Verzenden",
-    "Writing": "Tijdens het Schrijven"
+    "Writing": "Tijdens het Schrijven",
+    ":mailbox, :count unread": ":mailbox, :count ongelezen",
+    "Back to Team Chat": "Terug naar Teamchat",
+    "Files shared here appear in this list.": "Bestanden die hier worden gedeeld, verschijnen in deze lijst.",
+    "Message from :name": "Bericht van :name",
+    "Message from :name, pinned": "Bericht van :name, vastgezet",
+    "Pin Message": "Bericht Vastzetten",
+    "Pin a message from its actions to keep it here.": "Zet een bericht vast via de acties ervan om het hier te bewaren.",
+    "Pinned": "Vastgezet",
+    "Recent Files": "Recente Bestanden",
+    "Show Chat Details": "Chatdetails Tonen",
+    "Team Chat, :count unread": "Teamchat, :count ongelezen",
+    "Switch Team Chat": "Teamchat Wisselen",
+    "You": "U"
 }

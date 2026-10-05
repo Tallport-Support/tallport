@@ -1572,7 +1572,6 @@
     "No Settings Found": "לא נמצאו הגדרות",
     ":mailbox Team": "צוות :mailbox",
     ":mailbox Team Chat": "צ'אט צוות :mailbox",
-    ":mailbox Team Chat, :count unread": "צ'אט צוות :mailbox, :count שלא נקראו",
     ":person mentioned you in :mailbox Team Chat": ":person הזכיר אותך בצ'אט צוות :mailbox",
     "A Room for the Team": "חדר לצוות",
     "Attach Files": "צרף קבצים",
@@ -1592,5 +1591,18 @@
     "Send a Chat Message": "שלח הודעת צ'אט",
     "New Line in a Chat Message": "שורה חדשה בהודעת צ'אט",
     "Send a Reply or Note": "שלח תשובה או פתק",
-    "Writing": "בזמן כתיבה"
+    "Writing": "בזמן כתיבה",
+    ":mailbox, :count unread": ":mailbox, :count שלא נקראו",
+    "Back to Team Chat": "חזרה לצ'אט צוות",
+    "Files shared here appear in this list.": "קבצים ששותפו כאן מופיעים ברשימה זו.",
+    "Message from :name": "הודעה מאת :name",
+    "Message from :name, pinned": "הודעה מאת :name, מוצמדת",
+    "Pin Message": "הצמד הודעה",
+    "Pin a message from its actions to keep it here.": "הצמד הודעה מהפעולות שלה כדי לשמור אותה כאן.",
+    "Pinned": "מוצמדות",
+    "Recent Files": "קבצים אחרונים",
+    "Show Chat Details": "הצג פרטי צ'אט",
+    "Team Chat, :count unread": "צ'אט צוות, :count שלא נקראו",
+    "Switch Team Chat": "החלף צ'אט צוות",
+    "You": "אתה"
 }

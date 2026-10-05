@@ -43,6 +43,50 @@ class TeamChatTest extends FeatureTestCase
         $this->actingAs($outsider)->get(route('mailboxes.team_chat', ['id' => $this->mailbox->id]))->assertForbidden();
     }
 
+    public function testTeamChatOpensTheRoomChosenLast()
+    {
+        $billing = $this->createMailbox([$this->ann, $this->bob], ['name' => 'Billing']);
+        TeamMessage::create(['mailbox_id' => $billing->id, 'user_id' => $this->bob->id, 'body' => 'Invoice?']);
+        $first = TeamMessage::roomFor($this->ann);
+
+        $this->actingAs($this->ann)->get(route('team_chat'))->assertRedirect(route('mailboxes.team_chat', ['id' => $first->id]));
+
+        // One entry in the sidebar, current in any room; the switcher lists the rooms with their unread messages.
+        $this->get(route('mailboxes.team_chat', ['id' => $billing->id]))->assertOk()
+            ->assertSee('app-team-chat-link" data-label-unread="Team Chat, :count unread"   aria-current="page"', false)
+            ->assertSee('aria-label="Switch Team Chat"', false)
+            ->assertSee('aria-label="Billing, 1 unread"', false)
+            ->assertSee('aria-label="Back to Team Chat"', false)->assertSee('Files shared here appear in this list.');
+        $this->assertSame($billing->id, $this->ann->fresh()->team_chat_mailbox_id);
+        $this->get(route('team_chat'))->assertRedirect(route('mailboxes.team_chat', ['id' => $billing->id]));
+
+        // One mailbox: no switcher.
+        $solo = $this->createUser();
+        $this->createMailbox([$solo]);
+        $this->actingAs($solo)->followingRedirects()->get(route('team_chat'))->assertOk()->assertDontSee('Switch Team Chat');
+    }
+
+    public function testPinnedMessagesForEveryone()
+    {
+        $first = TeamMessage::create(['mailbox_id' => $this->mailbox->id, 'user_id' => $this->ann->id, 'body' => 'Deploy at 5.']);
+        $second = TeamMessage::create(['mailbox_id' => $this->mailbox->id, 'user_id' => $this->ann->id, 'body' => 'The VPN key is in the vault.']);
+
+        Livewire::actingAs($this->bob)->test(TeamChat::class, ['mailbox' => $this->mailbox])
+            ->call('togglePin', $second->id)->assertDispatched('team-chat-changed')
+            ->assertSeeHtml('aria-label="Message from Ann Lee, pinned"')->assertSeeHtml('aria-pressed="true"');
+        $this->assertNotNull($second->fresh()->pinned_at);
+
+        // A pinned message starts its own run; the details list it for everyone.
+        $html = Livewire::actingAs($this->ann)->test(TeamChat::class, ['mailbox' => $this->mailbox])->html();
+        $this->assertSame(0, substr_count($html, 'f-message--continued'));
+        Livewire::actingAs($this->ann)->test(\App\Livewire\TeamChatDetails::class, ['mailbox' => $this->mailbox])
+            ->assertSee('The VPN key is in the vault.')->assertDontSee('Deploy at 5.')->assertSee('You');
+
+        Livewire::actingAs($this->ann)->test(TeamChat::class, ['mailbox' => $this->mailbox])->call('togglePin', $second->id);
+        $this->assertNull($second->fresh()->pinned_at);
+        $this->assertStringContainsString('f-message--continued', Livewire::actingAs($this->ann)->test(TeamChat::class, ['mailbox' => $this->mailbox])->html());
+    }
+
     public function testMessagesAreStoredEncrypted()
     {
         Livewire::actingAs($this->ann)->test(TeamChat::class, ['mailbox' => $this->mailbox])
@@ -65,7 +109,7 @@ class TeamChatTest extends FeatureTestCase
         $this->assertSame([$this->mailbox->id => 2], TeamMessage::unreadCounts($this->bob, [$this->mailbox->id]));
         $this->assertSame([], TeamMessage::unreadCounts($this->ann, [$this->mailbox->id]));
         $this->actingAs($this->bob)->get(route('mailboxes.view', ['id' => $this->mailbox->id]))->assertOk()
-            ->assertSee('aria-label="Support Team Chat, 2 unread"', false);
+            ->assertSee('aria-label="Team Chat, 2 unread"', false);
 
         // Opening the room: "New" from the first unread, and read.
         Livewire::actingAs($this->bob)->test(TeamChat::class, ['mailbox' => $this->mailbox])
@@ -130,8 +174,11 @@ class TeamChatTest extends FeatureTestCase
     {
         $message = TeamMessage::create(['mailbox_id' => $this->mailbox->id, 'user_id' => $this->ann->id, 'body' => 'Hello']);
         $this->actingAs($this->bob);
+        // The unread messages of all the user's rooms.
+        $billing = $this->createMailbox([$this->ann, $this->bob], ['name' => 'Billing']);
+        TeamMessage::create(['mailbox_id' => $billing->id, 'user_id' => $this->ann->id, 'body' => 'Invoice?']);
         $payload = RealtimeTeamMessage::processPayload((object) ['mailbox_id' => $this->mailbox->id, 'team_message_id' => $message->id]);
-        $this->assertSame(1, $payload->unread);
+        $this->assertSame(2, $payload->unread);
 
         $this->actingAs($this->createUser());
         $this->assertSame([], RealtimeTeamMessage::processPayload((object) ['mailbox_id' => $this->mailbox->id]));

@@ -1572,7 +1572,6 @@
     "No Settings Found": "Žádná Nastavení Nenalezena",
     ":mailbox Team": "Tým :mailbox",
     ":mailbox Team Chat": "Týmový Chat :mailbox",
-    ":mailbox Team Chat, :count unread": "Týmový Chat :mailbox, nepřečteno: :count",
     ":person mentioned you in :mailbox Team Chat": ":person vás zmínil v týmovém chatu :mailbox",
     "A Room for the Team": "Místnost pro Tým",
     "Attach Files": "Přiložit Soubory",
@@ -1592,5 +1591,18 @@
     "Send a Chat Message": "Odeslat Zprávu v Chatu",
     "New Line in a Chat Message": "Nový Řádek ve Zprávě v Chatu",
     "Send a Reply or Note": "Odeslat Odpověď nebo Poznámku",
-    "Writing": "Při Psaní"
+    "Writing": "Při Psaní",
+    ":mailbox, :count unread": ":mailbox, nepřečteno: :count",
+    "Back to Team Chat": "Zpět na Týmový Chat",
+    "Files shared here appear in this list.": "Soubory sdílené zde se zobrazí v tomto seznamu.",
+    "Message from :name": "Zpráva od :name",
+    "Message from :name, pinned": "Zpráva od :name, připnutá",
+    "Pin Message": "Připnout Zprávu",
+    "Pin a message from its actions to keep it here.": "Připněte zprávu z jejích akcí, aby zůstala zde.",
+    "Pinned": "Připnuté",
+    "Recent Files": "Nedávné Soubory",
+    "Show Chat Details": "Zobrazit Podrobnosti Chatu",
+    "Team Chat, :count unread": "Týmový Chat, nepřečteno: :count",
+    "Switch Team Chat": "Přepnout Týmový Chat",
+    "You": "Vy"
 }

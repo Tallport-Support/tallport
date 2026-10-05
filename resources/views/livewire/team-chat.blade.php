@@ -18,7 +18,8 @@
                         $team_author = $team_message->user;
                     @endphp
                     <li wire:key="team-message-{{ $team_message->id }}" data-search="{{ mb_strtolower(($team_author ? $team_author->getFullName() : '').' '.$team_message->body.' '.$team_message->attachments->pluck('file_name')->implode(' ')) }}" x-show="!query || $el.dataset.search.includes(query)">
-                        <x-fruit::message :continued="$item['continued']" id="team-message-{{ $team_message->id }}" :datetime="$team_message->created_at->toIso8601String()">
+                        @php $team_author_name = $team_author ? $team_author->getFullName() : ''; @endphp
+                        <x-fruit::message :continued="$item['continued']" id="team-message-{{ $team_message->id }}" tabindex="-1" data-team-message="{{ $team_message->id }}" :datetime="$team_message->created_at->toIso8601String()" :aria-label="$team_message->pinned_at ? __('Message from :name, pinned', ['name' => $team_author_name]) : __('Message from :name', ['name' => $team_author_name])">
                             <x-slot:avatar>
                                 @if ($team_author && $team_author->photo_url)
                                     <x-fruit::avatar :src="$team_author->getPhotoUrl()" />
@@ -26,8 +27,11 @@
                                     <x-fruit::avatar>{{ $team_author ? $team_author->getInitials() : '' }}</x-fruit::avatar>
                                 @endif
                             </x-slot:avatar>
-                            <x-slot:author>{{ $team_author ? $team_author->getFullName() : '' }}</x-slot:author>
-                            <x-slot:time><span title="{{ App\User::dateFormat($team_message->created_at) }}">{{ App\User::dateFormat($team_message->created_at, 'H:i') }}</span></x-slot:time>
+                            <x-slot:author>{{ $team_author_name }}</x-slot:author>
+                            <x-slot:time><span title="{{ App\User::dateFormat($team_message->created_at) }}">{{ App\User::dateFormat($team_message->created_at, 'H:i') }}</span>@if ($team_message->pinned_at) <x-icon.pin class="f-icon team-room__pinned" aria-hidden="true" />@endif</x-slot:time>
+                            <x-slot:actions>
+                                <x-fruit::button variant="ghost" size="small" class="f-button--icon" wire:click="togglePin({{ $team_message->id }})" :aria-pressed="$team_message->pinned_at ? 'true' : 'false'" :aria-label="__('Pin Message')" :title="__('Pin Message')"><x-icon.pin class="f-icon" aria-hidden="true" /></x-fruit::button>
+                            </x-slot:actions>
                             @if ($team_message->body !== '')
                                 <p class="team-room__text">{!! $item['html'] !!}</p>
                             @endif
@@ -66,9 +70,9 @@
             </ul>
         @endif
         @error('files.*')<x-fruit::alert tone="danger">{{ $message }}</x-fruit::alert>@enderror
-        <label class="f-sr-only" for="team-message-{{ $mailbox->id }}">{{ __('Message the :mailbox Team', ['mailbox' => $mailbox->name]) }}</label>
+        <label class="f-sr-only" for="team-composer-{{ $mailbox->id }}">{{ __('Message the :mailbox Team', ['mailbox' => $mailbox->name]) }}</label>
         <x-fruit::autocomplete trigger="@">
-            <textarea id="team-message-{{ $mailbox->id }}" class="f-composer__input f-input team-room__input" rows="2" wire:model="body" placeholder="{{ __('Message the :mailbox Team', ['mailbox' => $mailbox->name]) }}" aria-describedby="team-room-help" x-on:keydown.enter="if (tallportSendKey($event, 'chat')) { $event.preventDefault(); $el.form.requestSubmit(); }"></textarea>
+            <textarea id="team-composer-{{ $mailbox->id }}" class="f-composer__input f-input team-room__input" rows="2" wire:model="body" placeholder="{{ __('Message the :mailbox Team', ['mailbox' => $mailbox->name]) }}" aria-describedby="team-room-help" x-on:keydown.enter="if (tallportSendKey($event, 'chat')) { $event.preventDefault(); $el.form.requestSubmit(); }"></textarea>
             <x-slot:options>
                 @foreach ($members as $member)
                     @if ($member->id != auth()->id())

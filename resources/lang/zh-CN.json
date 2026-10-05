@@ -1574,7 +1574,6 @@
     "No Settings Found": "未找到设置",
     ":mailbox Team": ":mailbox 团队",
     ":mailbox Team Chat": ":mailbox 团队聊天",
-    ":mailbox Team Chat, :count unread": ":mailbox 团队聊天，:count 条未读",
     ":person mentioned you in :mailbox Team Chat": ":person 在 :mailbox 团队聊天中提到了您",
     "A Room for the Team": "团队专属空间",
     "Attach Files": "附加文件",
@@ -1594,5 +1593,18 @@
     "Send a Chat Message": "发送聊天消息",
     "New Line in a Chat Message": "在聊天消息中换行",
     "Send a Reply or Note": "发送回复或备注",
-    "Writing": "输入时"
+    "Writing": "输入时",
+    ":mailbox, :count unread": ":mailbox，:count 条未读",
+    "Back to Team Chat": "返回团队聊天",
+    "Files shared here appear in this list.": "在此分享的文件会显示在此列表中。",
+    "Message from :name": "来自 :name 的消息",
+    "Message from :name, pinned": "来自 :name 的消息，已置顶",
+    "Pin Message": "置顶消息",
+    "Pin a message from its actions to keep it here.": "从消息的操作中将其置顶，即可保留在此处。",
+    "Pinned": "已置顶",
+    "Recent Files": "最近的文件",
+    "Show Chat Details": "显示聊天详情",
+    "Team Chat, :count unread": "团队聊天，:count 条未读",
+    "Switch Team Chat": "切换团队聊天",
+    "You": "您"
 }

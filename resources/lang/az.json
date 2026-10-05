@@ -1573,7 +1573,6 @@
     "No Settings Found": "Parametr Tapılmadı",
     ":mailbox Team": ":mailbox Komandası",
     ":mailbox Team Chat": ":mailbox Komanda Çatı",
-    ":mailbox Team Chat, :count unread": ":mailbox Komanda Çatı, :count oxunmamış",
     ":person mentioned you in :mailbox Team Chat": ":person sizi :mailbox komanda çatında qeyd etdi",
     "A Room for the Team": "Komanda Üçün Otaq",
     "Attach Files": "Faylları Əlavə Et",
@@ -1593,5 +1592,18 @@
     "Send a Chat Message": "Çat Mesajı Göndər",
     "New Line in a Chat Message": "Çat Mesajında Yeni Sətir",
     "Send a Reply or Note": "Cavab və ya Qeyd Göndər",
-    "Writing": "Yazarkən"
+    "Writing": "Yazarkən",
+    ":mailbox, :count unread": ":mailbox, :count oxunmamış",
+    "Back to Team Chat": "Komanda Çatına Qayıt",
+    "Files shared here appear in this list.": "Burada paylaşılan fayllar bu siyahıda görünür.",
+    "Message from :name": ":name tərəfindən mesaj",
+    "Message from :name, pinned": ":name tərəfindən mesaj, sancaqlanıb",
+    "Pin Message": "Mesajı Sancaqla",
+    "Pin a message from its actions to keep it here.": "Burada saxlamaq üçün mesajı onun əməliyyatlarından sancaqlayın.",
+    "Pinned": "Sancaqlananlar",
+    "Recent Files": "Son Fayllar",
+    "Show Chat Details": "Çat Təfərrüatlarını Göstər",
+    "Team Chat, :count unread": "Komanda Çatı, :count oxunmamış",
+    "Switch Team Chat": "Komanda Çatını Dəyiş",
+    "You": "Siz"
 }

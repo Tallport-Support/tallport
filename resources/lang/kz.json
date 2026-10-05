@@ -1975,7 +1975,6 @@
     "No Settings Found": "Орнатулар Табылмады",
     ":mailbox Team": ":mailbox Командасы",
     ":mailbox Team Chat": ":mailbox Командасының Чаты",
-    ":mailbox Team Chat, :count unread": ":mailbox Командасының Чаты, :count оқылмаған",
     ":person mentioned you in :mailbox Team Chat": ":person сізді :mailbox командасының чатында атап өтті",
     "A Room for the Team": "Командаға Арналған Бөлме",
     "Attach Files": "Файлдарды Тіркеу",
@@ -1995,5 +1994,18 @@
     "Send a Chat Message": "Чат Хабарламасын Жіберу",
     "New Line in a Chat Message": "Чат Хабарламасындағы Жаңа Жол",
     "Send a Reply or Note": "Жауап немесе Ескертпе Жіберу",
-    "Writing": "Жазу Кезінде"
+    "Writing": "Жазу Кезінде",
+    ":mailbox, :count unread": ":mailbox, :count оқылмаған",
+    "Back to Team Chat": "Команда Чатына Оралу",
+    "Files shared here appear in this list.": "Мұнда бөлісілген файлдар осы тізімде көрсетіледі.",
+    "Message from :name": ":name жіберген хабарлама",
+    "Message from :name, pinned": ":name жіберген хабарлама, бекітілген",
+    "Pin Message": "Хабарламаны Бекіту",
+    "Pin a message from its actions to keep it here.": "Хабарламаны осында сақтау үшін оны әрекеттері арқылы бекітіңіз.",
+    "Pinned": "Бекітілгендер",
+    "Recent Files": "Соңғы Файлдар",
+    "Show Chat Details": "Чат Мәліметтерін Көрсету",
+    "Team Chat, :count unread": "Команда Чаты, :count оқылмаған",
+    "Switch Team Chat": "Команда Чатын Ауыстыру",
+    "You": "Сіз"
 }

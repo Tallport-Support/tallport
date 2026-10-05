@@ -1573,7 +1573,6 @@
     "No Settings Found": "Налаштувань не Знайдено",
     ":mailbox Team": "Команда :mailbox",
     ":mailbox Team Chat": "Чат Команди :mailbox",
-    ":mailbox Team Chat, :count unread": "Чат Команди :mailbox, непрочитаних: :count",
     ":person mentioned you in :mailbox Team Chat": ":person згадав(ла) вас у чаті команди :mailbox",
     "A Room for the Team": "Кімната для Команди",
     "Attach Files": "Прикріпити Файли",
@@ -1593,5 +1592,18 @@
     "Send a Chat Message": "Надіслати Повідомлення в Чаті",
     "New Line in a Chat Message": "Новий Рядок у Повідомленні Чату",
     "Send a Reply or Note": "Надіслати Відповідь або Нотатку",
-    "Writing": "Під Час Набору"
+    "Writing": "Під Час Набору",
+    ":mailbox, :count unread": ":mailbox, непрочитаних: :count",
+    "Back to Team Chat": "Назад до Чату Команди",
+    "Files shared here appear in this list.": "Файли, якими поділилися тут, з'являться в цьому списку.",
+    "Message from :name": "Повідомлення від :name",
+    "Message from :name, pinned": "Повідомлення від :name, закріплене",
+    "Pin Message": "Закріпити Повідомлення",
+    "Pin a message from its actions to keep it here.": "Закріпіть повідомлення через його дії, щоб воно залишалося тут.",
+    "Pinned": "Закріплені",
+    "Recent Files": "Останні Файли",
+    "Show Chat Details": "Показати Подробиці Чату",
+    "Team Chat, :count unread": "Чат Команди, непрочитаних: :count",
+    "Switch Team Chat": "Змінити Чат Команди",
+    "You": "Ви"
 }

@@ -1573,7 +1573,6 @@
     "No Settings Found": "Inga Inställningar Hittades",
     ":mailbox Team": "Team :mailbox",
     ":mailbox Team Chat": "Teamchatt :mailbox",
-    ":mailbox Team Chat, :count unread": "Teamchatt :mailbox, :count olästa",
     ":person mentioned you in :mailbox Team Chat": ":person nämnde dig i teamchatten för :mailbox",
     "A Room for the Team": "Ett Rum för Teamet",
     "Attach Files": "Bifoga Filer",
@@ -1593,5 +1592,18 @@
     "Send a Chat Message": "Skicka ett Chattmeddelande",
     "New Line in a Chat Message": "Ny Rad i ett Chattmeddelande",
     "Send a Reply or Note": "Skicka ett Svar eller en Anteckning",
-    "Writing": "Under Skrivandet"
+    "Writing": "Under Skrivandet",
+    ":mailbox, :count unread": ":mailbox, :count olästa",
+    "Back to Team Chat": "Tillbaka till Teamchatt",
+    "Files shared here appear in this list.": "Filer som delas här visas i den här listan.",
+    "Message from :name": "Meddelande från :name",
+    "Message from :name, pinned": "Meddelande från :name, fäst",
+    "Pin Message": "Fäst Meddelande",
+    "Pin a message from its actions to keep it here.": "Fäst ett meddelande via dess åtgärder för att behålla det här.",
+    "Pinned": "Fästa",
+    "Recent Files": "Senaste Filer",
+    "Show Chat Details": "Visa Chattdetaljer",
+    "Team Chat, :count unread": "Teamchatt, :count olästa",
+    "Switch Team Chat": "Byt Teamchatt",
+    "You": "Du"
 }
