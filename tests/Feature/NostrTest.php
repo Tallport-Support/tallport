@@ -210,6 +210,12 @@ class NostrTest extends FeatureTestCase
         $this->assertSame($customer->id, $this->receive($cfg, 'From my phone', [], 14, $second)->conversation->customer_id);
 
         $this->actingAs($this->agent)->get('/customers/'.$customer->id.'/nostr')->assertStatus(200)->assertSee('Android app');
+
+        // The customer panel lists devices by name (the unnamed first key isn't), not keys' addresses.
+        $panel = view('customers/profile_snippet', ['customer' => $customer->fresh()])->render();
+        $this->assertSame(1, substr_count($panel, 'nostr-device-label'));
+        $this->assertStringContainsString('Android app</a>', $panel);
+        $this->assertStringNotContainsString(Keys::shortNpub(Keys::pubkeyFromPrivate($second)), $panel);
         $this->actingAs($this->agent)->get('/customers/'.$customer->id.'/edit')->assertSee('customers/'.$customer->id.'/nostr');
 
         $new = Keys::pubkeyFromPrivate(Keys::generatePrivateKey());

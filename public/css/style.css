@@ -2618,6 +2618,8 @@ a.disabled:focus {
     gap: 6px;
     padding: 3px 0;
     color: var(--f-text);
+    /* As the conversation list's previews. */
+    font-size: var(--f-text-sm);
     line-height: 1.5;
     text-decoration: none;
 }

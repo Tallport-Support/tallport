@@ -1,5 +1,5 @@
 <section class="conv-sidebar-block inspector-section">
-    <h3>{{ __('Previous Conversations') }}</h3>
+    <h3>{{ __('Conversations') }}</h3>
     <ul class="sidebar-block-list">
         @foreach ($prev_conversations as $prev_conversation)
             <li>
