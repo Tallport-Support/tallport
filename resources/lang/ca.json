@@ -1680,5 +1680,9 @@
     "Message the :mailbox Team": "Missatge a l'equip de :mailbox",
     "New Messages": "Missatges Nous",
     "Remove :name": "Elimina :name",
-    "Team Chat": "Xat de l'Equip"
+    "Team Chat": "Xat de l'Equip",
+    "Search Messages": "Cerca als Missatges",
+    "No Messages Found": "No s'ha Trobat Cap Missatge",
+    "Delete Team Chat Messages After": "Elimina els Missatges del Xat de l'Equip Després De",
+    "Messages and their files, counted from when they were sent.": "Els missatges i els seus fitxers, comptats des que es van enviar."
 }

@@ -1986,5 +1986,9 @@
     "New": "Жаңа",
     "New Messages": "Жаңа Хабарламалар",
     "Remove :name": ":name жою",
-    "Team Chat": "Команда Чаты"
+    "Team Chat": "Команда Чаты",
+    "Search Messages": "Хабарламалардан Іздеу",
+    "No Messages Found": "Хабарламалар Табылмады",
+    "Delete Team Chat Messages After": "Команда Чаты Хабарламаларын Жою Мерзімі",
+    "Messages and their files, counted from when they were sent.": "Хабарламалар мен олардың файлдары, жіберілген уақыттан бастап есептеледі."
 }

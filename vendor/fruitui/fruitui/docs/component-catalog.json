@@ -1084,7 +1084,7 @@
         "element": "`div` role=separator; a label becomes its accessible name.",
         "state": "No state.",
         "keyboard": "Not focusable.",
-        "options": "`tone`: neutral (default), accent. `align`: center (default), start. Slot: optional label text."
+        "options": "`tone`: neutral (default), accent. `align`: center (default), start. Slot: optional label text, which also names the separator; `aria-label` names it instead when the short visible text needs more, such as New read as New messages."
       }
     }
   },

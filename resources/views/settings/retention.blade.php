@@ -49,6 +49,12 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
+    <x-fruit::form-section :title="__('Team Chat')">
+        <x-fruit::field :label="__('Delete Team Chat Messages After')" :description="__('Messages and their files, counted from when they were sent.')" layout="row">
+            <x-fruit::select name="settings[retention_team_chat_months]">{!! $retention_choice('retention_team_chat_months') !!}</x-fruit::select>
+        </x-fruit::field>
+    </x-fruit::form-section>
+
     <x-fruit::form-section :title="__('Logs')" :footer="__('Logs are cleaned up even when retention is off.')">
         <x-fruit::field :label="__('Outgoing Emails')" layout="row">
             <x-fruit::select name="settings[retention_send_log_months]">{!! $retention_choice('retention_send_log_months') !!}</x-fruit::select>

@@ -1586,5 +1586,9 @@
     "New": "Novas",
     "New Messages": "Novas Mensagens",
     "Remove :name": "Remover :name",
-    "Team Chat": "Chat da Equipe"
+    "Team Chat": "Chat da Equipe",
+    "Search Messages": "Pesquisar Mensagens",
+    "No Messages Found": "Nenhuma Mensagem Encontrada",
+    "Delete Team Chat Messages After": "Excluir Mensagens do Chat da Equipe Após",
+    "Messages and their files, counted from when they were sent.": "As mensagens e seus arquivos, contados a partir do envio."
 }

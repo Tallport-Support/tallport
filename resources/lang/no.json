@@ -1588,5 +1588,9 @@
     "New": "Ny",
     "New Messages": "Nye Meldinger",
     "Remove :name": "Fjern :name",
-    "Team Chat": "Teamchat"
+    "Team Chat": "Teamchat",
+    "Search Messages": "Søk i Meldinger",
+    "No Messages Found": "Ingen Meldinger Funnet",
+    "Delete Team Chat Messages After": "Slett Teamchatmeldinger Etter",
+    "Messages and their files, counted from when they were sent.": "Meldinger og filene deres, regnet fra når de ble sendt."
 }

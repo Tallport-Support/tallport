@@ -1602,5 +1602,9 @@
     "New": "Uudet",
     "New Messages": "Uudet Viestit",
     "Remove :name": "Poista :name",
-    "Team Chat": "Tiimin Chat"
+    "Team Chat": "Tiimin Chat",
+    "Search Messages": "Hae Viesteistä",
+    "No Messages Found": "Viestejä ei Löytynyt",
+    "Delete Team Chat Messages After": "Tiimin Chatin Viestit Poistetaan",
+    "Messages and their files, counted from when they were sent.": "Viestit ja niiden tiedostot, laskettuna lähetyshetkestä."
 }

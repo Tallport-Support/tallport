@@ -1583,5 +1583,9 @@
     "New": "חדש",
     "New Messages": "הודעות חדשות",
     "Remove :name": "הסר :name",
-    "Team Chat": "צ'אט צוות"
+    "Team Chat": "צ'אט צוות",
+    "Search Messages": "חיפוש בהודעות",
+    "No Messages Found": "לא נמצאו הודעות",
+    "Delete Team Chat Messages After": "מחיקת הודעות צ'אט צוות לאחר",
+    "Messages and their files, counted from when they were sent.": "הודעות והקבצים שלהן, נספר מרגע שליחתן."
 }

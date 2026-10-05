@@ -1584,5 +1584,9 @@
     "New": "Yeni",
     "New Messages": "Yeni Mesajlar",
     "Remove :name": ":name kaldır",
-    "Team Chat": "Ekip Sohbeti"
+    "Team Chat": "Ekip Sohbeti",
+    "Search Messages": "Mesajlarda Ara",
+    "No Messages Found": "Mesaj Bulunamadı",
+    "Delete Team Chat Messages After": "Ekip Sohbeti Mesajlarını Silme Süresi",
+    "Messages and their files, counted from when they were sent.": "Mesajlar ve dosyaları, gönderildikleri andan itibaren sayılır."
 }

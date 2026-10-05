@@ -5,6 +5,7 @@ namespace App\Retention;
 use App\Attachment;
 use App\Conversation;
 use App\Customer;
+use App\TeamMessage;
 use App\Thread;
 use Carbon\Carbon;
 
@@ -19,8 +20,8 @@ use Carbon\Carbon;
  * (expired_at), restorable, and deleted for good after the grace period. A
  * customer's message restores their expired conversations in every mailbox. An
  * optional maximum age expires conversations whatever the customer's activity.
- * The Deleted folder, spam, customers without conversations and logs have
- * their own periods. A legal hold (retention_hold_at) on a conversation or its
+ * The Deleted folder, spam, customers without conversations, team chat
+ * messages and logs have their own periods. A legal hold (retention_hold_at) on a conversation or its
  * customer keeps it.
  */
 class Retention
@@ -37,6 +38,7 @@ class Retention
         'retention_trash_days'       => 30,
         'retention_spam_days'        => 30,
         'retention_customer_months'  => 12,
+        'retention_team_chat_months' => 12,
         'retention_send_log_months'  => 6,
         'retention_notification_months' => 6,
         'retention_activity_log_days' => 90,
@@ -52,6 +54,7 @@ class Retention
         'retention_trash_days'          => [7, 14, 30, 60, 90],
         'retention_spam_days'           => [7, 14, 30, 60, 90],
         'retention_customer_months'     => [3, 6, 12, 24, 36],
+        'retention_team_chat_months'    => [1, 3, 6, 12, 24, 36],
         'retention_send_log_months'     => [1, 3, 6, 12],
         'retention_notification_months' => [1, 3, 6, 12],
         'retention_activity_log_days'   => [30, 90, 180, 365],
@@ -168,6 +171,7 @@ class Retention
             $counts['deleted'] = self::deleteExpired($dry_run);
             $counts['expired'] = self::expire($dry_run);
             $counts['customers'] = self::deleteCustomers($dry_run);
+            $counts['team_chat'] = self::deleteTeamMessages($dry_run);
         }
         if (!$dry_run) {
             \Option::set(self::LAST_RUN_OPTION, ['at' => now()->toDateTimeString()] + $counts);
@@ -306,6 +310,25 @@ class Retention
             Customer::whereIn('id', $ids)->delete();
             $count += count($ids);
         });
+
+        return $count;
+    }
+
+    /**
+     * Team chat messages older than their period, with their files.
+     */
+    public static function deleteTeamMessages($dry_run = false)
+    {
+        $query = TeamMessage::where('created_at', '<', now()->subMonths(self::get('retention_team_chat_months')));
+        if ($dry_run) {
+            return $query->count();
+        }
+        $count = 0;
+        while ($ids = (clone $query)->limit(self::BATCH)->pluck('id')->all()) {
+            Attachment::deleteForever(Attachment::whereIn('team_message_id', $ids)->get());
+            TeamMessage::whereIn('id', $ids)->delete();
+            $count += count($ids);
+        }
 
         return $count;
     }

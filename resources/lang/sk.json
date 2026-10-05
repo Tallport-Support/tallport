@@ -1583,5 +1583,9 @@
     "New": "Nové",
     "New Messages": "Nové Správy",
     "Remove :name": "Odstrániť :name",
-    "Team Chat": "Tímový Chat"
+    "Team Chat": "Tímový Chat",
+    "Search Messages": "Hľadať v Správach",
+    "No Messages Found": "Žiadne Správy sa Nenašli",
+    "Delete Team Chat Messages After": "Vymazať Správy Tímového Chatu Po",
+    "Messages and their files, counted from when they were sent.": "Správy a ich súbory, počítané od ich odoslania."
 }

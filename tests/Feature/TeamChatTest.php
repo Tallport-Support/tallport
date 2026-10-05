@@ -36,7 +36,7 @@ class TeamChatTest extends FeatureTestCase
     public function testTheRoomIsForThoseWhoSeeTheMailbox()
     {
         $this->actingAs($this->ann)->get(route('mailboxes.team_chat', ['id' => $this->mailbox->id]))->assertOk()
-            ->assertSee('Support Team')->assertSee('Ann, Bob')->assertSee('team-room', false)
+            ->assertSee('Support Team')->assertSee('Ann, Bob')->assertSee('aria-label="Search Messages"', false)->assertSee('team-room', false)
             ->assertSee('data-fruit-trigger="@"', false)->assertSee('<option value="@Bob">Bob Ray</option>', false);
 
         $outsider = $this->createUser();
@@ -69,8 +69,28 @@ class TeamChatTest extends FeatureTestCase
 
         // Opening the room: "New" from the first unread, and read.
         Livewire::actingAs($this->bob)->test(TeamChat::class, ['mailbox' => $this->mailbox])
-            ->assertSet('first_new_id', $new->id)->assertSeeHtml('f-divider--accent')->assertSeeHtml('aria-label="New Messages"');
+            ->assertSet('first_new_id', $new->id)->assertSeeHtml('aria-label="New Messages"  class="f-divider f-divider--accent"')
+            ->assertSeeHtml('aria-label="Today"')->assertSeeHtml('data-search="ann lee never mind. "');
         $this->assertSame([], TeamMessage::unreadCounts($this->bob, [$this->mailbox->id]));
+    }
+
+    public function testRetentionDeletesOldMessagesWithTheirFiles()
+    {
+        \Storage::fake(Attachment::getDiskName());
+        $old = TeamMessage::create(['mailbox_id' => $this->mailbox->id, 'user_id' => $this->ann->id, 'body' => 'Long ago']);
+        $old->created_at = now()->subMonths(13);
+        $old->save();
+        $file = Attachment::create('old.txt', 'text/plain', null, \Crypt::encryptString('x'), null, false, null, $this->ann->id);
+        $file->team_message_id = $old->id;
+        $file->save();
+        $recent = TeamMessage::create(['mailbox_id' => $this->mailbox->id, 'user_id' => $this->ann->id, 'body' => 'Recent']);
+
+        \Option::set('retention_enabled', true);
+        $this->assertSame(1, \App\Retention\Retention::run(true)['team_chat']);
+        $this->assertSame(1, \App\Retention\Retention::run()['team_chat']);
+        $this->assertSame([$recent->id], TeamMessage::where('mailbox_id', $this->mailbox->id)->pluck('id')->all());
+        $this->assertNull(Attachment::find($file->id));
+        \Storage::disk(Attachment::getDiskName())->assertMissing($file->getStorageFilePath());
     }
 
     public function testLinksAndMentions()

@@ -1584,5 +1584,9 @@
     "New": "Nytt",
     "New Messages": "Nya Meddelanden",
     "Remove :name": "Ta bort :name",
-    "Team Chat": "Teamchatt"
+    "Team Chat": "Teamchatt",
+    "Search Messages": "Sök i Meddelanden",
+    "No Messages Found": "Inga Meddelanden Hittades",
+    "Delete Team Chat Messages After": "Radera Teamchattmeddelanden Efter",
+    "Messages and their files, counted from when they were sent.": "Meddelanden och deras filer, räknat från när de skickades."
 }

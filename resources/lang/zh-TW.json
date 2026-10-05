@@ -1632,5 +1632,9 @@
     "New": "新",
     "New Messages": "新訊息",
     "Remove :name": "移除 :name",
-    "Team Chat": "團隊聊天"
+    "Team Chat": "團隊聊天",
+    "Search Messages": "搜尋訊息",
+    "No Messages Found": "找不到訊息",
+    "Delete Team Chat Messages After": "刪除團隊聊天訊息的期限",
+    "Messages and their files, counted from when they were sent.": "訊息及其檔案，從傳送時起計算。"
 }

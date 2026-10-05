@@ -1583,5 +1583,9 @@
     "New": "Nowe",
     "New Messages": "Nowe Wiadomości",
     "Remove :name": "Usuń :name",
-    "Team Chat": "Czat Zespołu"
+    "Team Chat": "Czat Zespołu",
+    "Search Messages": "Szukaj w Wiadomościach",
+    "No Messages Found": "Nie Znaleziono Wiadomości",
+    "Delete Team Chat Messages After": "Usuń Wiadomości Czatu Zespołu Po",
+    "Messages and their files, counted from when they were sent.": "Wiadomości i ich pliki, liczone od chwili wysłania."
 }

@@ -1584,5 +1584,9 @@
     "New": "Yeni",
     "New Messages": "Yeni Mesajlar",
     "Remove :name": ":name sil",
-    "Team Chat": "Komanda Çatı"
+    "Team Chat": "Komanda Çatı",
+    "Search Messages": "Mesajlarda Axtar",
+    "No Messages Found": "Mesaj Tapılmadı",
+    "Delete Team Chat Messages After": "Komanda Çatı Mesajlarının Silinmə Müddəti",
+    "Messages and their files, counted from when they were sent.": "Mesajlar və onların faylları, göndərildikləri vaxtdan hesablanır."
 }

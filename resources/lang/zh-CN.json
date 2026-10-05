@@ -1585,5 +1585,9 @@
     "New": "新",
     "New Messages": "新消息",
     "Remove :name": "移除 :name",
-    "Team Chat": "团队聊天"
+    "Team Chat": "团队聊天",
+    "Search Messages": "搜索消息",
+    "No Messages Found": "未找到消息",
+    "Delete Team Chat Messages After": "删除团队聊天消息的期限",
+    "Messages and their files, counted from when they were sent.": "消息及其文件，从发送时起计算。"
 }

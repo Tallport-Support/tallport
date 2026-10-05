@@ -1584,5 +1584,9 @@
     "New": "Новые",
     "New Messages": "Новые Сообщения",
     "Remove :name": "Удалить :name",
-    "Team Chat": "Чат Команды"
+    "Team Chat": "Чат Команды",
+    "Search Messages": "Поиск по Сообщениям",
+    "No Messages Found": "Сообщения не Найдены",
+    "Delete Team Chat Messages After": "Удалять Сообщения Чата Команды Через",
+    "Messages and their files, counted from when they were sent.": "Сообщения и их файлы, считается с момента отправки."
 }

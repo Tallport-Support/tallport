@@ -1,16 +1,23 @@
 {{-- A mailbox's team chat (App\Livewire\TeamChat), as FruitUI's Support example's room. --}}
-{{-- Sending (a submit) takes the history to the newest message (FruitUI's history). --}}
-<div class="team-room" x-data>
+{{-- Sending (a submit) takes the history to the newest message (FruitUI's history). The bar's
+     search (mailboxes/team_chat) filters the messages shown here, in the browser: the text is
+     stored encrypted. --}}
+<div class="team-room" x-data="{ query: '', has: (element, query) => [...element.querySelectorAll('li[data-search]')].some((item) => item.dataset.search.includes(query)) }" x-on:team-search.window="query = $event.detail.trim().toLocaleLowerCase()">
     <x-fruit::history :aria-label="__(':mailbox Team Chat', ['mailbox' => $mailbox->name])" class="team-room__history">
         @forelse ($sections as $section_key => $section)
-            <x-fruit::divider :tone="$section['new'] ? 'accent' : 'neutral'" wire:key="team-divider-{{ $section_key }}">{{ $section['label'] }}</x-fruit::divider>
-            <x-fruit::thread density="compact" wire:key="team-day-{{ $section_key }}" :aria-label="$section['new'] ? __('New Messages') : $section['label']">
+            <div class="team-room__section" wire:key="team-section-{{ $section_key }}" x-show="!query || has($el, query)">
+            @if ($section['new'])
+                <x-fruit::divider tone="accent" :aria-label="__('New Messages')">{{ $section['label'] }}</x-fruit::divider>
+            @else
+                <x-fruit::divider>{{ $section['label'] }}</x-fruit::divider>
+            @endif
+            <x-fruit::thread density="compact" :aria-label="$section['label']">
                 @foreach ($section['messages'] as $item)
                     @php
                         $team_message = $item['message'];
                         $team_author = $team_message->user;
                     @endphp
-                    <li wire:key="team-message-{{ $team_message->id }}">
+                    <li wire:key="team-message-{{ $team_message->id }}" data-search="{{ mb_strtolower(($team_author ? $team_author->getFullName() : '').' '.$team_message->body.' '.$team_message->attachments->pluck('file_name')->implode(' ')) }}" x-show="!query || $el.dataset.search.includes(query)">
                         <x-fruit::message :continued="$item['continued']" id="team-message-{{ $team_message->id }}" :datetime="$team_message->created_at->toIso8601String()">
                             <x-slot:avatar>
                                 @if ($team_author && $team_author->photo_url)
@@ -39,6 +46,7 @@
                     </li>
                 @endforeach
             </x-fruit::thread>
+            </div>
         @empty
             <x-fruit::empty-state class="team-room__empty">
                 <x-slot:icon><x-icon.messages-square /></x-slot:icon>
@@ -46,6 +54,7 @@
                 {{ __('Everyone who works in :mailbox can read and write here.', ['mailbox' => $mailbox->name]) }}
             </x-fruit::empty-state>
         @endforelse
+        <p class="f-help team-room__no-results" x-show="query && !has($root, query)" x-cloak>{{ __('No Messages Found') }}</p>
     </x-fruit::history>
 
     <x-fruit::composer class="team-room__composer" x-on:submit.prevent="$wire.send()">

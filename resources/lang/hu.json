@@ -1584,5 +1584,9 @@
     "New": "Új",
     "New Messages": "Új Üzenetek",
     "Remove :name": ":name eltávolítása",
-    "Team Chat": "Csapatchat"
+    "Team Chat": "Csapatchat",
+    "Search Messages": "Keresés az Üzenetekben",
+    "No Messages Found": "Nincs Találat az Üzenetekben",
+    "Delete Team Chat Messages After": "Csapatchat-Üzenetek Törlése",
+    "Messages and their files, counted from when they were sent.": "Az üzenetek és fájljaik, az elküldésüktől számítva."
 }

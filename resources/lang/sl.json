@@ -1583,5 +1583,9 @@
     "New": "Novo",
     "New Messages": "Nova Sporočila",
     "Remove :name": "Odstrani :name",
-    "Team Chat": "Klepet Ekipe"
+    "Team Chat": "Klepet Ekipe",
+    "Search Messages": "Išči po Sporočilih",
+    "No Messages Found": "Ni Najdenih Sporočil",
+    "Delete Team Chat Messages After": "Izbriši Sporočila Klepeta Ekipe Po",
+    "Messages and their files, counted from when they were sent.": "Sporočila in njihove datoteke, šteto od trenutka pošiljanja."
 }

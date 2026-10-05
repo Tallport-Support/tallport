@@ -1583,5 +1583,9 @@
     "New": "Noi",
     "New Messages": "Mesaje Noi",
     "Remove :name": "Elimină :name",
-    "Team Chat": "Chat-ul Echipei"
+    "Team Chat": "Chat-ul Echipei",
+    "Search Messages": "Caută în Mesaje",
+    "No Messages Found": "Niciun Mesaj Găsit",
+    "Delete Team Chat Messages After": "Șterge Mesajele din Chat-ul Echipei După",
+    "Messages and their files, counted from when they were sent.": "Mesajele și fișierele lor, socotite de la trimitere."
 }

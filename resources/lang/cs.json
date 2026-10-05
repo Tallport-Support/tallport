@@ -1583,5 +1583,9 @@
     "New": "Nové",
     "New Messages": "Nové Zprávy",
     "Remove :name": "Odebrat :name",
-    "Team Chat": "Týmový Chat"
+    "Team Chat": "Týmový Chat",
+    "Search Messages": "Hledat ve Zprávách",
+    "No Messages Found": "Žádné Zprávy Nenalezeny",
+    "Delete Team Chat Messages After": "Odstranit Zprávy Týmového Chatu Po",
+    "Messages and their files, counted from when they were sent.": "Zprávy a jejich soubory, počítáno od jejich odeslání."
 }

@@ -1584,5 +1584,9 @@
     "New": "新着",
     "New Messages": "新着メッセージ",
     "Remove :name": ":name を削除",
-    "Team Chat": "チームチャット"
+    "Team Chat": "チームチャット",
+    "Search Messages": "メッセージを検索",
+    "No Messages Found": "一致するメッセージはありません",
+    "Delete Team Chat Messages After": "チームチャットのメッセージを削除するまでの期間",
+    "Messages and their files, counted from when they were sent.": "メッセージとそのファイル。送信時から数えます。"
 }

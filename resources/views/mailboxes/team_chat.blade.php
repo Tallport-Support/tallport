@@ -13,6 +13,9 @@
         <h1>{{ __(':mailbox Team', ['mailbox' => $mailbox->name]) }}</h1>
         <p>{{ $members->map(fn ($member) => $member->first_name ?: $member->getFullName())->implode(', ') }}</p>
     </div>
+    <span class="f-toolbar__spacer"></span>
+    {{-- Filters the messages in the room (livewire/team-chat), in the browser. --}}
+    <x-fruit::search :label="__('Search Messages')" :placeholder="__('Search')" class="team-room__search" x-data x-on:input="$dispatch('team-search', $event.target.value)" />
 @endsection
 
 @section('content')

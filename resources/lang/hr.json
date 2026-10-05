@@ -1584,5 +1584,9 @@
     "New": "Novo",
     "New Messages": "Nove Poruke",
     "Remove :name": "Ukloni :name",
-    "Team Chat": "Chat Tima"
+    "Team Chat": "Chat Tima",
+    "Search Messages": "Pretraži Poruke",
+    "No Messages Found": "Nema Pronađenih Poruka",
+    "Delete Team Chat Messages After": "Izbriši Poruke Chata Tima Nakon",
+    "Messages and their files, counted from when they were sent.": "Poruke i njihove datoteke, računajući od trenutka slanja."
 }

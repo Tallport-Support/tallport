@@ -1578,5 +1578,9 @@
     "New": "Neu",
     "New Messages": "Neue Nachrichten",
     "Remove :name": ":name entfernen",
-    "Team Chat": "Team-Chat"
+    "Team Chat": "Team-Chat",
+    "Search Messages": "Nachrichten Durchsuchen",
+    "No Messages Found": "Keine Nachrichten Gefunden",
+    "Delete Team Chat Messages After": "Team-Chat-Nachrichten Löschen Nach",
+    "Messages and their files, counted from when they were sent.": "Nachrichten und ihre Dateien, ab dem Versand gerechnet."
 }
