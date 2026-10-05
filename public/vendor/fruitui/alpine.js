@@ -452,7 +452,7 @@ function T(e, t, { above: n = !1, owns: r = (t) => t?.closest("details") === e, 
 }
 //#endregion
 //#region src/js/splitter.js
-function ee({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280, flexible: a, edge: s = "end" }) {
+function E({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280, flexible: a, edge: s = "end" }) {
 	if (!e || !a || e === a || !/^--f-[\w-]+$/.test(t) || !["start", "end"].includes(s) || ![
 		n,
 		r,
@@ -469,7 +469,8 @@ function ee({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280
 				pointercancel: this.cancel,
 				lostpointercapture: this.end,
 				keydown: this.key,
-				dblclick: this.reset
+				dblclick: this.reset,
+				blur: this.forget
 			}).map(([e, t]) => [e, t.bind(this)]));
 			for (let [e, t] of Object.entries(g)) c.addEventListener(e, t);
 			f = new ResizeObserver(() => {
@@ -504,7 +505,7 @@ function ee({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280
 			l.style.getPropertyValue(t) !== i && (l.style.setProperty(t, i), this.schedule());
 		},
 		start(e) {
-			e.button === 0 && v(u) && v(d) && (e.preventDefault(), c.focus({ preventScroll: !0 }), h = {
+			e.button === 0 && v(u) && v(d) && (e.preventDefault(), c.setAttribute("data-pointer", ""), c.focus({ preventScroll: !0 }), h = {
 				id: e.pointerId,
 				x: e.clientX,
 				width: u.getBoundingClientRect().width,
@@ -537,7 +538,7 @@ function ee({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280
 			}, n);
 		},
 		key(e) {
-			if (e.key === "Escape" && h) {
+			if (e.key !== "Escape" && this.forget(), e.key === "Escape" && h) {
 				e.preventDefault(), e.stopPropagation(), this.cancel();
 				return;
 			}
@@ -549,6 +550,9 @@ function ee({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280
 			};
 			e.key in o && (e.preventDefault(), e.stopPropagation(), this.set(o[e.key]), this.commit(400));
 		},
+		forget() {
+			c.removeAttribute("data-pointer");
+		},
 		reset() {
 			l.style.removeProperty(t), this.schedule(), requestAnimationFrame(() => this.commit());
 		},
@@ -559,17 +563,48 @@ function ee({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280
 	};
 }
 //#endregion
+//#region src/js/history.js
+function ee({ threshold: e = 160 } = {}) {
+	let t, n, r, i, a, o, s, c = !0, l = 0, u = () => t.scrollHeight - t.scrollTop - t.clientHeight;
+	return {
+		awayFromLatest: !1,
+		init() {
+			t = this.$el, s = () => {
+				t.scrollTop !== l && (c = u() < 24), c && (t.scrollTop = t.scrollHeight), l = t.scrollTop;
+			}, a = () => {
+				c = u() < 24, this.awayFromLatest = u() > e, l = t.scrollTop;
+			}, o = () => this.jumpToLatest({ smooth: !1 }), r = new ResizeObserver(s), r.observe(t);
+			for (let e of t.children) r.observe(e);
+			i = new MutationObserver((e) => {
+				for (let t of e) for (let e of t.addedNodes) e.nodeType === 1 && r.observe(e);
+				s();
+			}), i.observe(t, { childList: !0 }), t.addEventListener("scroll", a, { passive: !0 }), n = t.parentElement?.closest(".f-pane") ?? t.parentElement, n?.addEventListener("submit", o), s();
+		},
+		jumpToLatest({ focus: e = !1, smooth: n = !0 } = {}) {
+			c = !0, this.awayFromLatest = !1;
+			let r = n && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+			t.scrollTo({
+				top: t.scrollHeight,
+				behavior: r ? "smooth" : "auto"
+			}), l = t.scrollTop, e && ([...t.querySelectorAll("[tabindex=\"-1\"]")].at(-1) ?? t).focus({ preventScroll: !0 });
+		},
+		destroy() {
+			r?.disconnect(), i?.disconnect(), t?.removeEventListener("scroll", a), n?.removeEventListener("submit", o);
+		}
+	};
+}
+//#endregion
 //#region src/js/busy.js
-var E = ".f-button:is([aria-busy=\"true\"], [data-loading])";
-function D(e = document) {
+var te = ".f-button:is([aria-busy=\"true\"], [data-loading])";
+function ne(e = document) {
 	let t = (e) => {
-		e.target.closest?.(E) && (e.preventDefault(), e.stopImmediatePropagation());
+		e.target.closest?.(te) && (e.preventDefault(), e.stopImmediatePropagation());
 	};
 	return e.addEventListener("click", t, !0), () => e.removeEventListener("click", t, !0);
 }
 //#endregion
 //#region src/js/suggestions.js
-function O(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anchor: s = t, messages: c = {
+function D(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anchor: s = t, messages: c = {
 	label: "label",
 	count: "count-message"
 } }) {
@@ -642,7 +677,7 @@ function O(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anc
 }
 //#endregion
 //#region src/js/autocomplete.js
-function te() {
+function re() {
 	let e, t, n, r = () => e.dataset.fruitTrigger || "", i = () => {
 		let e = t.selectionStart ?? t.value.length, n = t.value.slice(0, e), i = n.search(/[^\s,]*$/), a = n.slice(i), o = r();
 		return o ? a.startsWith(o) ? {
@@ -659,7 +694,7 @@ function te() {
 		init() {
 			if (e = this.$el, t = e.querySelector("input:not([type=\"hidden\"]), textarea"), !t) return;
 			let a = null;
-			n = O(e, t, {
+			n = D(e, t, {
 				query() {
 					return a = i(), a && a.query;
 				},
@@ -678,7 +713,7 @@ function te() {
 }
 //#endregion
 //#region src/js/command-palette.js
-function ne() {
+function O() {
 	let e, t, n, r, i, a, o = -1, s = () => [...n.querySelectorAll("[role=\"option\"]")].filter((e) => !e.hidden && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true"), c = (e) => {
 		let r = s();
 		o = r.length ? (e + r.length) % r.length : -1;
@@ -808,7 +843,7 @@ function z(e, t, n, { onOpen: r, onFocus: i }) {
 		}
 	};
 }
-function B() {
+function ie() {
 	let e, t, n, r, i, a, s = /* @__PURE__ */ new Date(), c = /* @__PURE__ */ new Date(), l = () => N(t.value), u = () => [N(t.min), N(t.max)], f = (e) => {
 		let [t, n] = u();
 		return !!(t && e < t || n && e > n);
@@ -898,7 +933,7 @@ function B() {
 		}
 	};
 }
-var V = [
+var B = [
 	["Red", "#ff3b30"],
 	["Orange", "#ff9500"],
 	["Yellow", "#ffcc00"],
@@ -912,20 +947,20 @@ var V = [
 	["Pink", "#ff2d55"],
 	["Brown", "#a2845e"],
 	["Gray", "#8e8e93"]
-], H = 7, U = (e) => [
+], V = 7, H = (e) => [
 	1,
 	3,
 	5
 ].map((t) => parseInt(e.slice(t, t + 2), 16) / 255);
-function W(e) {
-	let [t, n, r] = U(e), i = Math.max(t, n, r), a = i - Math.min(t, n, r), o = 0;
+function U(e) {
+	let [t, n, r] = H(e), i = Math.max(t, n, r), a = i - Math.min(t, n, r), o = 0;
 	return a && (o = i === t ? (n - r) / a % 6 : i === n ? (r - t) / a + 2 : (t - n) / a + 4), [
 		(o * 60 + 360) % 360,
 		i ? a / i : 0,
 		i
 	];
 }
-function G(e, t, n) {
+function W(e, t, n) {
 	let r = (r) => {
 		let i = (r + e / 60) % 6;
 		return n - n * t * Math.max(0, Math.min(i, 4 - i, 1));
@@ -936,14 +971,14 @@ function G(e, t, n) {
 		r(1)
 	].map((e) => Math.round(e * 255).toString(16).padStart(2, "0")).join("")}`;
 }
-function K() {
+function G() {
 	let e, t, n, r, i, a, s, c, l, u, f, m = [
 		0,
 		0,
 		0
 	], h = () => {
 		let e = [...t.list?.options ?? []].filter((e) => /^#[0-9a-f]{6}$/i.test(e.value)).map((e) => [e.label || e.value, e.value.toLowerCase()]);
-		return e.length ? e : V;
+		return e.length ? e : B;
 	}, g = () => [...r.querySelectorAll("[role=\"option\"]")], _ = () => {
 		let e = t.value.toLowerCase();
 		r.replaceChildren(...h().map(([t, n]) => {
@@ -954,21 +989,21 @@ function K() {
 		}));
 	}, v = () => {
 		let [n, r, i] = m;
-		a.style.setProperty("--f-picker-hue", G(n, 1, 1)), c.style.left = `${r * 100}%`, c.style.top = `${(1 - i) * 100}%`;
+		a.style.setProperty("--f-picker-hue", W(n, 1, 1)), c.style.left = `${r * 100}%`, c.style.top = `${(1 - i) * 100}%`;
 		let d = (e) => Math.round(e * 100);
 		s.setAttribute("aria-valuenow", String(d(r))), s.setAttribute("aria-valuetext", o(e, "area-text", "Saturation {saturation}%, brightness {brightness}%", {
 			saturation: d(r),
 			brightness: d(i)
 		})), l.value = String(Math.round(n)), document.activeElement !== u && (u.value = t.value);
 	}, y = () => {
-		let [e, n, r] = W(t.value);
+		let [e, n, r] = U(t.value);
 		m = [
 			n && r ? e : m[0],
 			n,
 			r
 		], v();
 	}, b = (e, n) => {
-		m = e, p(t, G(...m), { commit: n }), v();
+		m = e, p(t, W(...m), { commit: n }), v();
 	}, x = (e) => {
 		p(t, e.dataset.value), f.close(!0);
 	}, S = (e, t, n = {}) => {
@@ -987,7 +1022,7 @@ function K() {
 			}), n.hidden = !0, r = S("div", "f-color-palette__swatches", {
 				role: "listbox",
 				"aria-label": o(e, "colors-label", "Colors")
-			}), r.style.setProperty("--f-swatch-columns", String(H)), i = S("button", "f-button f-button--ghost f-button--small f-color-palette__other", {
+			}), r.style.setProperty("--f-swatch-columns", String(V)), i = S("button", "f-button f-button--ghost f-button--small f-color-palette__other", {
 				type: "button",
 				"aria-expanded": "false"
 			}), i.textContent = o(e, "other-label", "Other…"), a = S("div", "f-color-editor"), a.hidden = !0, a.style.setProperty("--f-picker-black", "#000"), a.style.setProperty("--f-picker-white", "#fff"), a.style.setProperty("--f-picker-spectrum", "linear-gradient(90deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00)"), s = S("div", "f-color-editor__area", {
@@ -1029,8 +1064,8 @@ function K() {
 				let i = C(t) ? -1 : 1, a = {
 					ArrowRight: r + i,
 					ArrowLeft: r - i,
-					ArrowDown: r + H,
-					ArrowUp: r - H,
+					ArrowDown: r + V,
+					ArrowUp: r - V,
 					Home: 0,
 					End: n.length - 1
 				};
@@ -1089,8 +1124,8 @@ function K() {
 }
 //#endregion
 //#region src/js/editor-content.js
-var q = Symbol.for("fruitui.editor");
-function J(e, t, { insert: n, set: r, commit: i }) {
+var K = Symbol.for("fruitui.editor");
+function q(e, t, { insert: n, set: r, commit: i }) {
 	let a = new AbortController(), o = (e) => {
 		let { html: a = "", target: o } = e.detail ?? {};
 		(e.currentTarget !== window || o === t.id || o === t.name) && (t.matches(":disabled") || t.readOnly || ((e.type === "fruit-editor-set" ? r : n)(String(a)), i()));
@@ -1098,12 +1133,12 @@ function J(e, t, { insert: n, set: r, commit: i }) {
 	for (let t of ["fruit-editor-insert", "fruit-editor-set"]) e.addEventListener(t, o, { signal: a.signal }), window.addEventListener(t, o, { signal: a.signal });
 	return () => a.abort();
 }
-function re() {
+function J() {
 	let e;
 	return {
 		init() {
 			let t = this.$el.querySelector("textarea[data-fruit-control]");
-			t && (e = J(this.$el, t, {
+			t && (e = q(this.$el, t, {
 				insert: (e) => {
 					let n = t.selectionStart ?? t.value.length, r = t.selectionEnd ?? n;
 					p(t, t.value.slice(0, n) + e + t.value.slice(r), { commit: !1 }), t.setSelectionRange?.(n + e.length, n + e.length);
@@ -1119,7 +1154,7 @@ function re() {
 }
 //#endregion
 //#region src/js/selection.js
-function ie() {
+function ae() {
 	let e, t, n, r, i, a, s, c, l, u = [], f = -1, h = !1, g = () => t.selectedOptions[0]?.label || "", _ = () => {
 		h = !1, l.hide(), r.hidden = !0, n.setAttribute("aria-expanded", "false"), n.removeAttribute("aria-activedescendant");
 	}, v = (e) => {
@@ -1168,7 +1203,7 @@ function ie() {
 		}
 	};
 }
-function ae() {
+function oe() {
 	let e, t, n, r, i, a, s, c, l, u, d, f, h = [], g = () => {
 		f && (t.hasAttribute("name") && (d = t.name.replace(/\[\]$/, ""), t.removeAttribute("name")), f.replaceChildren(...h.map((e) => {
 			let n = document.createElement("input");
@@ -1216,7 +1251,7 @@ function ae() {
 	};
 	return {
 		init() {
-			e = this.$el, t = e.querySelector("textarea[data-fruit-control]"), t && (n = document.createElement("div"), n.className = "f-token-field__entry", r = document.createElement("input"), r.type = "text", r.autocomplete = "off", r.placeholder = o(e, "placeholder", "Add an item"), i = document.createElement("span"), i.className = "f-sr-only", i.setAttribute("role", "status"), a = this.$el.querySelector("[data-fruit-ui]"), s = !a, a || (a = document.createElement("div"), a.setAttribute("data-fruit-ui", ""), this.$el.append(a)), n.append(r), a.append(n, i), t.hidden = !0, e.dataset.fruitSubmit === "list" && t.name && (d = t.name.replace(/\[\]$/, ""), t.removeAttribute("name"), f = document.createElement("div"), f.hidden = !0, a.append(f)), e.querySelector("datalist") && (u = O(e, r, {
+			e = this.$el, t = e.querySelector("textarea[data-fruit-control]"), t && (n = document.createElement("div"), n.className = "f-token-field__entry", r = document.createElement("input"), r.type = "text", r.autocomplete = "off", r.placeholder = o(e, "placeholder", "Add an item"), i = document.createElement("span"), i.className = "f-sr-only", i.setAttribute("role", "status"), a = this.$el.querySelector("[data-fruit-ui]"), s = !a, a || (a = document.createElement("div"), a.setAttribute("data-fruit-ui", ""), this.$el.append(a)), n.append(r), a.append(n, i), t.hidden = !0, e.dataset.fruitSubmit === "list" && t.name && (d = t.name.replace(/\[\]$/, ""), t.removeAttribute("name"), f = document.createElement("div"), f.hidden = !0, a.append(f)), e.querySelector("datalist") && (u = D(e, r, {
 				query: () => r.value.trim() || null,
 				pick: (e) => {
 					b(e.value), r.focus();
@@ -1254,7 +1289,7 @@ function ae() {
 		}
 	};
 }
-function oe() {
+function se() {
 	let e, t, n = () => {
 		let t = Math.max(0, Number.parseInt(e.dataset.count ?? "0", 10) || 0), n = (e.dataset.fruitTemplate || ":count selected").split("|"), r = e.closest("[lang]")?.lang || navigator.language || "en", i = n.length > 1 && new Intl.PluralRules(r).select(t) !== "one" ? n[1] : n[0], a = e.querySelector(".f-selection-bar__count");
 		a && (a.textContent = i.trim().replace(":count", String(t))), e.hidden = t === 0;
@@ -1275,7 +1310,7 @@ function oe() {
 //#region src/js/navigation.js
 var Y = "[role=\"menuitem\"], [role=\"menuitemcheckbox\"], [role=\"menuitemradio\"]", X = (e, t) => [...e.querySelectorAll(Y)].filter((e) => t(e) && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true" && e.getClientRects().length), Z = (e, t) => {
 	e.length && e[(t + e.length) % e.length].focus();
-}, se = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
+}, ce = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
 function Q(e, t, n) {
 	let r = t.indexOf(document.activeElement);
 	return [
@@ -1283,11 +1318,11 @@ function Q(e, t, n) {
 		"ArrowUp",
 		"Home",
 		"End"
-	].includes(e.key) ? (e.preventDefault(), Z(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => se(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
+	].includes(e.key) ? (e.preventDefault(), Z(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => ce(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
 		n.search = "";
 	}, 600), !0);
 }
-function ce() {
+function le() {
 	let e, t, n, r, i, a, o, s = {
 		search: "",
 		timer: null
@@ -1316,7 +1351,7 @@ function ce() {
 		}
 	};
 }
-function le() {
+function ue() {
 	let e, t, n, r, i, a, o = {
 		x: 0,
 		y: 0
@@ -1359,7 +1394,7 @@ function le() {
 		}
 	};
 }
-function ue() {
+function de() {
 	let e, t, n, r, i, a, o;
 	return {
 		init() {
@@ -1384,7 +1419,7 @@ function ue() {
 		}
 	};
 }
-function de() {
+function fe() {
 	let e, t, n, r, i = (t) => t?.closest("[data-fruit-tabs], [x-data^=\"fruitTabs\"]") === e, a = () => [...e.querySelectorAll("[role=\"tab\"]")].filter(i), o = () => a().filter((e) => !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true"), s = (t) => {
 		for (let n of a()) {
 			let r = n === t;
@@ -1421,7 +1456,7 @@ function de() {
 		}
 	};
 }
-function fe() {
+function pe() {
 	let e;
 	return {
 		init() {
@@ -1442,8 +1477,8 @@ function fe() {
 //#endregion
 //#region src/js/alpine.js
 var $ = !1;
-function pe(e) {
-	e[q] || e.data("fruitEditor", re), e.data("fruitToast", n), e.magic("toast", () => t), e.data("fruitConfirmer", a), e.magic("confirm", () => i), e.data("fruitCopy", c), e.data("fruitListSelection", l), e.magic("dialog", () => y), e.data("fruitCombobox", ie), e.data("fruitTokenField", ae), e.data("fruitSelectionBar", oe), e.data("fruitAutocomplete", te), e.data("fruitCommandPalette", ne), e.data("fruitDropzone", A), e.data("fruitMenu", ce), e.data("fruitDatePicker", B), e.data("fruitColorPicker", K), e.data("fruitContextMenu", le), e.data("fruitTooltip", ue), e.data("fruitTabs", de), e.data("fruitSplitter", ee), e.data("fruitFloatingDisclosure", fe), e.data("fruitDialogModel", S), typeof window < "u" && !$ && (x(window), b(document), D(document), $ = !0);
+function me(e) {
+	e[K] || e.data("fruitEditor", J), e.data("fruitToast", n), e.magic("toast", () => t), e.data("fruitConfirmer", a), e.magic("confirm", () => i), e.data("fruitCopy", c), e.data("fruitListSelection", l), e.magic("dialog", () => y), e.data("fruitCombobox", ae), e.data("fruitTokenField", oe), e.data("fruitSelectionBar", se), e.data("fruitAutocomplete", re), e.data("fruitCommandPalette", O), e.data("fruitDropzone", A), e.data("fruitMenu", le), e.data("fruitDatePicker", ie), e.data("fruitColorPicker", G), e.data("fruitContextMenu", ue), e.data("fruitTooltip", de), e.data("fruitTabs", fe), e.data("fruitSplitter", E), e.data("fruitHistory", ee), e.data("fruitFloatingDisclosure", pe), e.data("fruitDialogModel", S), typeof window < "u" && !$ && (x(window), b(document), ne(document), $ = !0);
 }
 //#endregion
-export { i as confirm, pe as default, y as dialog, a as fruitConfirmer, n as fruitToast, t as toast };
+export { i as confirm, me as default, y as dialog, a as fruitConfirmer, n as fruitToast, t as toast };

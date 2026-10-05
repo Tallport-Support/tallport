@@ -2667,6 +2667,17 @@
 }
 
 @layer fruit.components {
+  /* A message history read from the bottom up. Jump to Latest floats over the bottom of the scrolling
+     history once the reader has scrolled back. */
+  .f-history__latest {
+    position: sticky;
+    bottom: 12px;
+    z-index: 2;
+    display: flex;
+    margin: 8px auto 0;
+    border-radius: var(--f-radius-full);
+    box-shadow: var(--f-shadow);
+  }
   /* Someone is writing; the text names who. Reduced motion holds the dots still. */
   .f-typing {
     display: flex;
@@ -4513,22 +4524,23 @@
     width: 2px;
     background: transparent;
   }
-  .f-splitter:hover::after,
-  .f-splitter:focus-visible::after,
-  .f-splitter[data-resizing]::after {
+  /* The col-resize cursor tells a pointer it can drag; keyboard focus shows the divider line. A drag
+     keeps focus on the handle (data-pointer) without it, until a key is pressed. */
+  .f-splitter:focus-visible:not([data-pointer])::after {
     background: var(--f-accent);
   }
   .f-splitter:focus-visible {
     outline-offset: calc(var(--f-focus-ring-width) * -1);
+  }
+  .f-splitter[data-pointer]:focus-visible {
+    outline: none;
   }
   .f-workspace[data-resizing] {
     cursor: col-resize;
     user-select: none;
   }
   @media (forced-colors: active) {
-    .f-splitter:hover::after,
-    .f-splitter:focus-visible::after,
-    .f-splitter[data-resizing]::after {
+    .f-splitter:focus-visible:not([data-pointer])::after {
       background: Highlight;
     }
   }

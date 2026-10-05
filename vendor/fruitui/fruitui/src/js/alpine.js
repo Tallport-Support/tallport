@@ -8,6 +8,7 @@ export { dialog } from './remote-dialog.js';
 export { confirm, fruitConfirmer } from './confirm.js';
 import { fruitDialogModel, listenForNamedDialogs } from './dialog.js';
 import { fruitSplitter } from './splitter.js';
+import { fruitHistory } from './history.js';
 import { listenForBusyButtons } from './busy.js';
 import { fruitAutocomplete } from './autocomplete.js';
 import { fruitCommandPalette } from './command-palette.js';
@@ -43,6 +44,7 @@ export default function fruitUI(Alpine) {
   Alpine.data('fruitTooltip', fruitTooltip);
   Alpine.data('fruitTabs', fruitTabs);
   Alpine.data('fruitSplitter', fruitSplitter);
+  Alpine.data('fruitHistory', fruitHistory);
   Alpine.data('fruitFloatingDisclosure', fruitFloatingDisclosure);
   Alpine.data('fruitDialogModel', fruitDialogModel);
   if (typeof window !== 'undefined' && !listening) {

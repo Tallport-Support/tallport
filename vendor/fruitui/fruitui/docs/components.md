@@ -328,6 +328,27 @@ Pages that are read or filled in (settings, account and profile pages, a custome
 
 Settings work best inside the app rather than as a separate full-width page: keep the app's frame, show the settings sections in the sidebar with a way back, and put each settings page in a narrow column. Settings for one thing (a mailbox, a view) open in place, in a dialog or an inspector.
 
+## Chat histories
+
+A chat conversation reads from the bottom up: oldest at the top, the newest message just above a composer docked at the bottom. `x-fruit::history` is the scrolling part. It opens at the newest message and stays there as messages arrive, images load or a Livewire morph changes the thread, unless the reader has scrolled back: then new messages leave them where they are, and Jump to Latest appears. Sending from the composer in the same pane returns to the newest message. Separate days with a labelled `x-fruit::divider`.
+
+```blade
+<section class="f-pane f-pane--column" aria-label="Conversation">
+    <x-fruit::history aria-label="Conversation with Sophie Chen">
+        <x-fruit::divider>Today</x-fruit::divider>
+        <x-fruit::thread>
+            @foreach ($messages as $message)
+                <li wire:key="message-{{ $message->id }}">…</li>
+            @endforeach
+        </x-fruit::thread>
+    </x-fruit::history>
+    <x-fruit::typing>{{ $typing }}</x-fruit::typing>
+    <x-fruit::composer wire:submit="send">…</x-fruit::composer>
+</section>
+```
+
+The pane is a flex column, so the history takes the remaining height and scrolls while the composer stays in view. An application that swaps the whole conversation without re-rendering the history (Alpine state, say) calls `jumpToLatest({ smooth: false })` inside it; with Livewire, a new conversation renders a new history that opens at its newest message.
+
 ## Message composers
 
 A reply composer with recipients and options keeps them in the form's header and footer: token fields for To, Cc and Bcc and a From select in `f-composer__header`, and Status and Assignee selects with a split Send button (`f-button-group` with a Menu of "Send & Close" variants) in `f-composer__footer`. Every control keeps its own label and value.

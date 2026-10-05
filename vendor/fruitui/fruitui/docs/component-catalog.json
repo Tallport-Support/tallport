@@ -1252,6 +1252,22 @@
     }
   },
   {
+    "id": "history",
+    "kind": "pattern",
+    "classes": ["f-history"],
+    "blade": ["history"],
+    "uses": ["chat.html", "examples/laravel/support-desk.blade.php"],
+    "contracts": {
+      "history": {
+        "purpose": "Show a chat history read from the bottom up, following new messages.",
+        "element": "Scrolling `div.f-pane__scroll` region (focusable, named) with the fruitHistory helper and a Jump to Latest `button.f-history__latest`.",
+        "state": "Opens at the newest (last) content and stays there as content grows (new messages, loading images, Livewire morphs). A scroll away, by the reader or by the application, stops following; past 160px `awayFromLatest` shows Jump to Latest. A form submitted in the same pane (its composer) returns to the newest.",
+        "keyboard": "Tab focuses the region and arrow keys scroll it; Jump to Latest moves focus to the last `tabindex=\"-1\"` message, or the region.",
+        "options": "`label`: the region's name (default Message History), or `aria-label`. Default slot: dividers (`x-fruit::divider` for days) and threads, oldest first. Put it in an `f-pane f-pane--column` before a bottom `x-fruit::composer`, so the history scrolls while the composer stays docked. Inside it, `jumpToLatest({ smooth: false })` returns to the newest, for example when the application switches conversations."
+      }
+    }
+  },
+  {
     "id": "typing",
     "kind": "composition",
     "classes": ["f-typing"],

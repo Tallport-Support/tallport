@@ -44,6 +44,7 @@ export function fruitSplitter({ pane, variable, min = 160, max = 420, reserve = 
           lostpointercapture: this.end,
           keydown: this.key,
           dblclick: this.reset,
+          blur: this.forget,
         }).map(([event, handler]) => [event, handler.bind(this)]),
       );
       for (const [event, handler] of Object.entries(handlers)) handle.addEventListener(event, handler);
@@ -102,6 +103,8 @@ export function fruitSplitter({ pane, variable, min = 160, max = 420, reserve = 
     start(event) {
       if (event.button !== 0 || !visible(primary) || !visible(remaining)) return;
       event.preventDefault();
+      // Focus stays for Escape and arrow keys, without the keyboard focus line a pointer doesn't need.
+      handle.setAttribute('data-pointer', '');
       handle.focus({ preventScroll: true });
       drag = {
         id: event.pointerId,
@@ -148,6 +151,7 @@ export function fruitSplitter({ pane, variable, min = 160, max = 420, reserve = 
       }, delay);
     },
     key(event) {
+      if (event.key !== 'Escape') this.forget();
       if (event.key === 'Escape' && drag) {
         event.preventDefault();
         event.stopPropagation();
@@ -168,6 +172,9 @@ export function fruitSplitter({ pane, variable, min = 160, max = 420, reserve = 
       event.stopPropagation();
       this.set(values[event.key]);
       this.commit(400);
+    },
+    forget() {
+      handle.removeAttribute('data-pointer');
     },
     /** Back to the stylesheet's width: drop the custom value, then report the result. */
     reset() {
