@@ -53,7 +53,7 @@ class ConversationComposer extends Component
 
     /**
      * The chat view: the composer stays open below the history, a reply unless
-     * switched to a note, Enter sends (public/js/conversations.js), and Send is
+     * switched to a note, Ctrl+Enter sends (public/js/conversations.js), and Send is
      * the only action: it leaves the status as it is (the toolbar's).
      */
     #[Locked]

@@ -64,7 +64,7 @@
                     </x-fruit::alert>
                 @endif
 
-                @include('conversations/partials/composer_editor', ['formats' => $mode == 'note' ? null : $conversation->editorFormats(), 'placeholder' => $chat ? __('Use ENTER to send the message and SHIFT+ENTER for a new line') : null, 'draft_button' => $mode != 'note'])
+                @include('conversations/partials/composer_editor', ['formats' => $mode == 'note' ? null : $conversation->editorFormats(), 'placeholder' => null, 'draft_button' => $mode != 'note'])
 
                 @include('conversations/partials/composer_footer', [
                     'send_label'      => $mode == 'note' ? __('Add Note') : ($mode == 'forward' ? __('Forward') : ($chat ? __('Send') : ($send_labels[$status][0] ?? __('Send Reply')))),

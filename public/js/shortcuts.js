@@ -39,12 +39,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.addEventListener('keydown', function(e) {
 		var key = e.key;
 		var target = e.target;
-		if (e.ctrlKey || e.metaKey || e.altKey) {
+		var typing = target.matches('input, select, textarea') || target.isContentEditable;
+		// The shortcuts: ?, or Ctrl+/ (also while typing).
+		var help_key = key == '?';
+		if (key == '/' && e.ctrlKey && !e.metaKey && !e.altKey) {
+			help_key = true;
+			typing = false;
+		} else if (e.ctrlKey || e.metaKey || e.altKey) {
 			return;
 		}
-		var typing = target.matches('input, select, textarea') || target.isContentEditable;
 
-		if (key == '?' && !typing) {
+		if (help_key && !typing) {
 			var help = document.querySelector('[data-fruit-dialog="keyboard-shortcuts"]');
 			if (help) {
 				help.open ? help.close() : help.showModal();

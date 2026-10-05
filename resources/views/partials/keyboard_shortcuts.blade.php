@@ -1,5 +1,6 @@
-{{-- The keyboard shortcuts (public/js/shortcuts.js), shown with ?: a reference sheet, actions with
-     their keys (as menus list them), closed with Done, Esc, ? or a click outside it. --}}
+{{-- The keyboard shortcuts (public/js/shortcuts.js), shown with ? (or Ctrl+/, also while typing): a reference
+     sheet, actions with their keys (as menus list them; a chord, or another way to press them), closed
+     with Done, Esc, ? or a click outside it. --}}
 @php
     $shortcuts_mac = str_contains((string) request()->userAgent(), 'Mac');
     $shortcuts_then = '<span class="keyboard-shortcuts__then">'.e(__('then')).'</span>';
@@ -31,7 +32,7 @@
         ],
         __('Everywhere') => [
             [__('Search'), ['/']],
-            [__('Keyboard Shortcuts'), ['?']],
+            [__('Keyboard Shortcuts'), ['?'], false, 'Ctrl + /'],
         ],
     ];
 @endphp
@@ -48,7 +49,7 @@
                         <div>
                             <dt>{{ $shortcut[0] }}</dt>
                             {{-- A sequence of keys: one, "then" the next; a chord (Send) as one. --}}
-                            <dd>@if (!empty($shortcut[2]))@foreach (explode(' ', str_replace(' + ', ' ', $shortcut[1][0])) as $key)<kbd>{{ $key }}</kbd>@endforeach @else{!! implode(' '.$shortcuts_then.' ', array_map(fn ($key) => '<kbd>'.e($key).'</kbd>', $shortcut[1])) !!}@endif</dd>
+                            <dd>@if (!empty($shortcut[2]))@foreach (explode(' ', str_replace(' + ', ' ', $shortcut[1][0])) as $key)<kbd>{{ $key }}</kbd>@endforeach @else{!! implode(' '.$shortcuts_then.' ', array_map(fn ($key) => '<kbd>'.e($key).'</kbd>', $shortcut[1])) !!}@endif@if (!empty($shortcut[3])) <span class="keyboard-shortcuts__then">{{ __('or') }}</span> @foreach (explode(' ', str_replace(' + ', ' ', $shortcut[3])) as $key)<kbd>{{ $key }}</kbd>@endforeach @endif</dd>
                         </div>
                     @endforeach
                 </dl>

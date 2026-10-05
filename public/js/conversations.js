@@ -308,12 +308,12 @@ document.addEventListener('alpine:init', function () {
 				});
 			},
 
-			// Cmd/Ctrl+Enter sends; in the chat view Enter does (Shift+Enter: a new line).
+			// Cmd/Ctrl+Enter sends (in the chat view too: a message can have several lines).
 			enter: function (event) {
 				if (!event.target.closest || !event.target.closest('.f-editor') || event.altKey || event.shiftKey) {
 					return;
 				}
-				if (event.metaKey || event.ctrlKey || chat && !event.isComposing) {
+				if (event.metaKey || event.ctrlKey) {
 					event.preventDefault();
 					this.submit();
 				}
