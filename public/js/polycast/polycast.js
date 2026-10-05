@@ -106,6 +106,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 	            xhr.open('POST', this.options.url + '/connect');
+	            // A request stuck by sleep or a network change mustn't stop the polling.
+	            xhr.timeout = 30000;
 	            xhr.onreadystatechange = function() {
 	                if (xhr.readyState > 3) {
 	                	if (xhr.status === 200) {
@@ -188,6 +190,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        fetch: function(){
 	            this.request();
 	        },
+	        // Poll right away (e.g. when the tab is shown again).
+	        fetchNow: function(){
+	            if (!this.connected) {
+	                return;
+	            }
+	            clearTimeout(this.timeout);
+	            this.fetch();
+	        },
 	        request: function(){
 	            var PolycastObject = this;
 
@@ -238,6 +248,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 	            xhr.open('POST', this.options.url + '/receive');
+	            xhr.timeout = 30000;
 	            xhr.onreadystatechange = function() {
 	                if (xhr.readyState > 3 /*&& xhr.status === 200*/) {
 	                	if (xhr.status !== 200) {
@@ -289,9 +300,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                            //var channel = response.payloads[payload]['channels'][i];
 	                            var channel = response.payloads[payload]['channels'][i].name;
 	                            //console.log('Polycast channel: ' + channel + ' received event: ' + response.payloads[payload]['event']);
-	                            for (index = 0; index < this.channels[channel].length; ++index){
-	                                //console.log(response.payloads[payload]);
-	                                this.channels[channel][index].fire(response.payloads[payload]);
+	                            for (index = 0; index < (this.channels[channel] || []).length; ++index){
+	                                // A failing handler mustn't stop the polling (setTimeout below).
+	                                try {
+	                                    this.channels[channel][index].fire(response.payloads[payload]);
+	                                } catch (e) {
+	                                    console.error(e);
+	                                }
 	                                //this.channels[channel][index].fire(response.payloads[payload]['event'], response.payloads[payload]['payload'], response.payloads[payload]['delay']);
 	                            }
 	                        }
@@ -300,6 +315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                //lets do it again!
 	                //this.setTimeout();
+	                this.fire('receive', this);
 	            }
 
 	            // Continue in any case

@@ -142,32 +142,79 @@ function maybeShowConnectionRestored()
 		return true;
 	};
 
+	// After missed events: what could have changed, refreshed.
+	var catchUp = function () {
+		if (attr('conversation_id')) {
+			Livewire.dispatch('conversation-thread-created');
+		}
+		if (document.querySelector('.table-conversations') && !document.querySelector('.table-conversations .conv-checkbox:checked')) {
+			Livewire.dispatch('conversations-changed');
+		}
+		if (!document.querySelector('.app-sidebar__folders[data-mailbox_id]')) {
+			return;
+		}
+		fetch(window.location.href, {credentials: 'same-origin', headers: {'X-Requested-With': 'fetch'}}).then(function (response) {
+			return response.ok ? response.text() : '';
+		}).then(function (html) {
+			var page = new DOMParser().parseFromString(html, 'text/html');
+			page.querySelectorAll('.app-sidebar__folders[data-mailbox_id]').forEach(function (fresh) {
+				var folders = document.querySelector('.app-sidebar__folders[data-mailbox_id="'+fresh.getAttribute('data-mailbox_id')+'"]');
+				if (folders) {
+					folders.innerHTML = fresh.innerHTML;
+				}
+			});
+		}).catch(function () {});
+	};
+
 	var connect = function () {
 		var user_id = attr('auth_user_id');
 		if (!user_id) {
 			return;
 		}
 
-		if (attr('conversation_id')) {
-			var had_focus = true;
-			poly_data_closures.push(function (data) {
-				data.replying = getReplyFormMode() == 'reply' ? 1 : 0;
-				if (!had_focus && document.hasFocus()) {
-					data.conversation_view_focus = 1;
-				}
-				had_focus = document.hasFocus();
-				// The conversation_id says the user is viewing the conversation.
-				if (document.hasFocus() || data.replying) {
-					data.conversation_id = attr('conversation_id');
-				}
+		// Who is viewing the open conversation: read from the page at each request
+		// (wire:navigate changes it without a new connection).
+		var had_focus = true;
+		poly_data_closures.push(function (data) {
+			if (!attr('conversation_id')) {
 				return data;
-			});
-		}
+			}
+			data.replying = getReplyFormMode() == 'reply' ? 1 : 0;
+			if (!had_focus && document.hasFocus()) {
+				data.conversation_view_focus = 1;
+			}
+			had_focus = document.hasFocus();
+			// The conversation_id says the user is viewing the conversation.
+			if (document.hasFocus() || data.replying) {
+				data.conversation_id = attr('conversation_id');
+			}
+			return data;
+		});
 
 		poly = new Polycast(Vars.public_url+'/polycast', {
 			token: getCsrfToken(),
 			data: poly_data_closures
 		});
+
+		// The server keeps events for two minutes (broadcasting delete_old): after a longer
+		// gap (sleep, a frozen background tab) some were missed, so the open conversation,
+		// the list and the sidebar's folders are brought up to date.
+		var last_receive = Date.now();
+		poly.on('receive', function () {
+			var gap = Date.now() - last_receive;
+			last_receive = Date.now();
+			if (gap > 90 * 1000) {
+				catchUp();
+			}
+		});
+		var pollIfIdle = function () {
+			if (document.visibilityState == 'visible' && Date.now() - last_receive > 30 * 1000) {
+				poly.fetchNow();
+			}
+		};
+		document.addEventListener('visibilitychange', pollIfIdle);
+		window.addEventListener('online', pollIfIdle);
+		window.addEventListener('focus', pollIfIdle);
 
 		// Notifications: in the menu (tallportNotifications), from the browser, and a chat's sound.
 		poly.subscribe('private-App.User.'+user_id).on('App\\Events\\RealtimeBroadcastNotificationCreated', function (data, event) {
@@ -210,9 +257,16 @@ function maybeShowConnectionRestored()
 			}
 		});
 
-		// The open conversation: new messages, and its assignee and status.
-		var conversation_id = attr('conversation_id');
-		if (conversation_id) {
+		// The open conversation: new messages, and its assignee and status. Subscribed for
+		// each conversation opened, also after wire:navigate (the page changes, the
+		// connection stays).
+		var subscribed = {};
+		var subscribeConversation = function () {
+			var conversation_id = attr('conversation_id');
+			if (!conversation_id || subscribed[conversation_id]) {
+				return;
+			}
+			subscribed[conversation_id] = true;
 			poly.subscribe('conv.'+conversation_id).on('App\\Events\\RealtimeConvNewThread', function (data) {
 				if (!data || data.conversation_id != attr('conversation_id') || data.user_id == attr('auth_user_id')) {
 					return;
@@ -233,11 +287,22 @@ function maybeShowConnectionRestored()
 				}
 				playAudioNotification(data);
 			});
-		}
+		};
+		subscribeConversation();
+		document.addEventListener('livewire:navigated', subscribeConversation);
 
-		// New messages: the sidebar's folders (of every mailbox) and the conversations list.
-		if (!document.body.classList.contains('chat-mode')) {
+		// New messages: the sidebar's folders (of every mailbox) and the conversations list;
+		// each mailbox subscribed once, when its folders are first on a page.
+		var subscribed_mailboxes = {};
+		var subscribeMailboxes = function () {
+			if (document.body.classList.contains('chat-mode')) {
+				return;
+			}
 			document.querySelectorAll('.app-sidebar__folders[data-mailbox_id]').forEach(function (element) {
+				if (subscribed_mailboxes[element.getAttribute('data-mailbox_id')]) {
+					return;
+				}
+				subscribed_mailboxes[element.getAttribute('data-mailbox_id')] = true;
 				var folders_mailbox_id = element.getAttribute('data-mailbox_id');
 				poly.subscribe('mailbox.'+folders_mailbox_id).on('App\\Events\\RealtimeMailboxNewThread', function (data) {
 					if (!data || data.mailbox_id != folders_mailbox_id) {
@@ -263,18 +328,25 @@ function maybeShowConnectionRestored()
 					playAudioNotification(data);
 				});
 			});
-		}
+		};
+		subscribeMailboxes();
+		document.addEventListener('livewire:navigated', subscribeMailboxes);
 
-		// Chat mode: the mailbox's chats.
-		var chats = document.querySelector('#folders.chat-list');
-		var mailbox_id = attr('mailbox_id');
-		if (chats && mailbox_id) {
+		// Chat mode: the mailbox's chats (looked up when they change: wire:navigate).
+		var subscribed_chats = {};
+		var subscribeChats = function () {
+			var mailbox_id = attr('mailbox_id');
+			if (!document.querySelector('#folders.chat-list') || !mailbox_id || subscribed_chats[mailbox_id]) {
+				return;
+			}
+			subscribed_chats[mailbox_id] = true;
 			poly.subscribe('chat.'+mailbox_id).on('App\\Events\\RealtimeChat', function (data) {
 				if (!data) {
 					return;
 				}
 				playAudioNotification(data);
-				if (data.mailbox_id == mailbox_id && data.chats_html) {
+				var chats = document.querySelector('#folders.chat-list');
+				if (chats && data.mailbox_id == attr('mailbox_id') && data.chats_html) {
 					chats.innerHTML = data.chats_html;
 					var current = chats.querySelector('[data-chat_id="'+attr('conversation_id')+'"] .f-item-row');
 					if (current) {
@@ -282,7 +354,9 @@ function maybeShowConnectionRestored()
 					}
 				}
 			});
-		}
+		};
+		subscribeChats();
+		document.addEventListener('livewire:navigated', subscribeChats);
 	};
 
 	// Chat mode: more chats.
