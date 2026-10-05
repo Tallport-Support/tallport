@@ -221,7 +221,7 @@ class Conversation extends Model
     /**
      * Automatically converted into Carbon dates.
      */
-    protected $dates = ['created_at', 'updated_at', 'last_reply_at', 'closed_at', 'user_updated_at'];
+    protected $dates = ['created_at', 'updated_at', 'last_reply_at', 'closed_at', 'user_updated_at', 'expired_at', 'retention_reset_at', 'retention_hold_at'];
 
     /**
      * Attributes which are not fillable using fill() method.
@@ -2193,6 +2193,16 @@ class Conversation extends Model
             // Delete attachments.
             $thread_ids = Thread::whereIn('conversation_id', $ids)->pluck('id')->toArray();
             Attachment::deleteByThreadIds($thread_ids);
+
+            // What else is kept about them: delivery logs, notifications, report figures,
+            // workflow runs, Nostr events.
+            for ($j = 0; $j < ceil(count($thread_ids) / \Helper::IN_LIMIT); $j++) {
+                \DB::table('send_logs')->whereIn('thread_id', array_slice($thread_ids, $j * \Helper::IN_LIMIT, \Helper::IN_LIMIT))->delete();
+            }
+            \DB::table('notifications')->whereIn('conversation_id', $ids)->delete();
+            \DB::table('report_replies')->whereIn('conversation_id', $ids)->delete();
+            \DB::table('conversation_workflow')->whereIn('conversation_id', $ids)->delete();
+            \DB::table('nostr_events')->whereIn('conversation_id', $ids)->delete();
 
             // Collect folders IDs.
             $folder_ids = array_merge($folder_ids, ConversationFolder::whereIn('conversation_id', $ids)

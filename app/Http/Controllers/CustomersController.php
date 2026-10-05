@@ -50,10 +50,10 @@ class CustomersController extends Controller
      */
     public function updateSave($id, Request $request)
     {
-        function mb_ucfirst($string)
-        {
+        // A closure: a named function here can't be declared twice in one process.
+        $mb_ucfirst = function ($string) {
             return mb_strtoupper(mb_substr($string, 0, 1)).mb_strtolower(mb_substr($string, 1));
-        }
+        };
 
         $customer = Customer::findOrFail($id);
         $flash_message = '';
@@ -85,6 +85,8 @@ class CustomersController extends Controller
 
                 if ($path_url) {
                     $customer->photo_url = $path_url;
+                    // Their own: not replaced or removed with Gravatar photos.
+                    $customer->photo_type = Customer::PHOTO_TYPE_UKNOWN;
                 } else {
                     $validator->errors()->add('photo_url', __('Error occurred processing the image. Make sure that PHP GD extension is enabled.'));
                 }
@@ -95,6 +97,17 @@ class CustomersController extends Controller
             return redirect()->route('customers.update', ['id' => $id])
                         ->withErrors($validator)
                         ->withInput();
+        }
+
+        // Legal hold (administrators): retention never deletes them or their conversations.
+        if (auth()->user()->isAdmin()) {
+            if ($request->boolean('retention_hold') && !$customer->retention_hold_at) {
+                $customer->retention_hold_at = now();
+                $customer->retention_hold_by = auth()->id();
+            } elseif (!$request->boolean('retention_hold')) {
+                $customer->retention_hold_at = null;
+                $customer->retention_hold_by = null;
+            }
         }
 
         $new_emails = [];
@@ -132,7 +145,7 @@ class CustomersController extends Controller
                     } elseif ($customer->first_name) {
                         $email->customer->first_name = $customer->first_name;
                     } else {
-                        $email->customer->first_name = mb_ucfirst($email->getNameFromEmail());
+                        $email->customer->first_name = $mb_ucfirst($email->getNameFromEmail());
                     }
                     $email->customer->save();
                 }

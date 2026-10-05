@@ -32,6 +32,16 @@
             </x-fruit::field>
         </x-fruit::form-section>
 
+        @if (Auth::user()->isAdmin())
+            {{-- Retention (Settings » Retention) never deletes a customer on legal hold, nor their conversations. --}}
+            <x-fruit::form-section :title="__('Retention')">
+                <x-fruit::field :label="__('Legal Hold')" layout="row">
+                    <x-fruit::switch name="retention_hold" value="1" :checked="(bool) old('retention_hold', (bool) $customer->retention_hold_at)" />
+                    <x-slot:description>@if ($customer->retention_hold_at){{ __('Since :date, by :user.', ['date' => App\User::dateFormat($customer->retention_hold_at, 'M j, Y'), 'user' => optional(App\User::find($customer->retention_hold_by))->getFullName() ?? '?']) }} @endif{{ __('Never delete this customer or their conversations.') }}</x-slot:description>
+                </x-fruit::field>
+            </x-fruit::form-section>
+        @endif
+
         <x-fruit::form-section :title="__('Contact')">
             <div class="f-field">
                 <span class="f-label">{{ __('Email') }}</span>

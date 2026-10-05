@@ -442,7 +442,10 @@ class Customer extends Model
     ];
 
     protected $casts = [
-        'meta' => 'array',
+        'meta'              => 'array',
+        // Retention (App\Retention\Retention).
+        'last_contact_at'   => 'datetime',
+        'retention_hold_at' => 'datetime',
     ];
 
     /**

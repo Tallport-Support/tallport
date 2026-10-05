@@ -413,6 +413,19 @@
             }
         }
     },
+    "tallport:retention": {
+        "class": "App\\Console\\Commands\\Retention",
+        "description": "Remove what the retention settings no longer keep",
+        "arguments": {},
+        "options": {
+            "dry-run": {
+                "value": "none"
+            },
+            "sweep-files": {
+                "value": "none"
+            }
+        }
+    },
     "tallport:search-index": {
         "class": "App\\Console\\Commands\\SearchIndex",
         "description": "Index conversations for search: new and changed ones, and existing ones after installing",

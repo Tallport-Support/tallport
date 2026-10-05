@@ -53,6 +53,11 @@
                 @endif
             @endforeach
             <ul class="menu-module-items">@action('conversation.append_action_buttons', $conversation, $mailbox)</ul>
+            @if (Auth::user()->isAdmin())
+                {{-- Retention (Settings » Retention) never deletes a conversation on legal hold. --}}
+                <x-fruit::menu-separator />
+                <x-fruit::menu-checkbox :checked="(bool) $conversation->retention_hold_at" wire:click="toggleHold">{{ __('Legal Hold') }}</x-fruit::menu-checkbox>
+            @endif
         </x-fruit::menu>
 </div>
 

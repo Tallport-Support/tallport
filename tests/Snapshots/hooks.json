@@ -2222,6 +2222,30 @@
         ]
     },
     {
+        "type": "action",
+        "name": "retention.conversation_restored",
+        "arguments": 1,
+        "files": [
+            "app/Retention/Retention.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "retention.conversations_expired",
+        "arguments": 1,
+        "files": [
+            "app/Retention/Retention.php"
+        ]
+    },
+    {
+        "type": "action",
+        "name": "retention.customers_deleting",
+        "arguments": 1,
+        "files": [
+            "app/Retention/Retention.php"
+        ]
+    },
+    {
         "type": "filter",
         "name": "schedule",
         "arguments": 1,

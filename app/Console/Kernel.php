@@ -120,11 +120,14 @@ class Kernel extends ConsoleKernel
             ->everyMinute()
             ->withoutOverlapping();
 
-        $schedule->command('tallport:clean-send-log')
-            ->monthly();
-
-        $schedule->command('tallport:clean-notifications-table')
-            ->weekly();
+        // What the retention settings no longer keep: logs (always), and with retention on
+        // conversations and customers; files no record points to, weekly.
+        $schedule->command('tallport:retention')
+            ->dailyAt('03:20')
+            ->withoutOverlapping();
+        $schedule->command('tallport:retention', ['--sweep-files'])
+            ->weeklyOn(0, '03:50')
+            ->withoutOverlapping();
 
         $schedule->command('tallport:clean-tmp')
             ->daily();

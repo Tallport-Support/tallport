@@ -58,14 +58,16 @@
         "without_overlapping": true
     },
     {
-        "command": "artisan tallport:clean-send-log",
-        "expression": "0 0 1 * *",
-        "timezone": "UTC"
+        "command": "artisan tallport:retention",
+        "expression": "20 3 * * *",
+        "timezone": "UTC",
+        "without_overlapping": true
     },
     {
-        "command": "artisan tallport:clean-notifications-table",
-        "expression": "0 0 * * 0",
-        "timezone": "UTC"
+        "command": "artisan tallport:retention --sweep-files",
+        "expression": "50 3 * * 0",
+        "timezone": "UTC",
+        "without_overlapping": true
     },
     {
         "command": "artisan tallport:clean-tmp",

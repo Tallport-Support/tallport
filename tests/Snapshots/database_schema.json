@@ -1060,6 +1060,26 @@
                 "type": "timestamp",
                 "nullable": true,
                 "default": "NULL"
+            },
+            "expired_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "retention_reset_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "retention_hold_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "retention_hold_by": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
             }
         },
         "indexes": {
@@ -1085,6 +1105,13 @@
                 "columns": [
                     "customer_id",
                     "created_at"
+                ]
+            },
+            "conversations_expired_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "expired_at"
                 ]
             },
             "conversations_folder_id_state_closed_at_index": {
@@ -1354,6 +1381,21 @@
                 "default": "NULL",
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
+            },
+            "last_contact_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "retention_hold_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "retention_hold_by": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
             }
         },
         "indexes": {
@@ -1363,6 +1405,13 @@
                 "columns": [
                     "first_name(80)",
                     "last_name(80)"
+                ]
+            },
+            "customers_last_contact_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "last_contact_at"
                 ]
             },
             "PRIMARY": {

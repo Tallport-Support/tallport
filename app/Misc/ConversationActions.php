@@ -130,6 +130,11 @@ class ConversationActions
 
         $prev_state = $conversation->state;
         $conversation->state = Conversation::STATE_PUBLISHED;
+        // Expired by retention: its clock starts over from now.
+        if ($conversation->expired_at) {
+            $conversation->expired_at = null;
+            $conversation->retention_reset_at = now();
+        }
         $conversation->user_updated_at = date('Y-m-d H:i:s');
         $conversation->updateFolder();
         $conversation->save();

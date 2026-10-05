@@ -51,6 +51,19 @@ class ConversationToolbar extends Component
     }
 
     /**
+     * Legal hold on or off (administrators): retention never deletes it.
+     */
+    public function toggleHold()
+    {
+        abort_unless(auth()->user()->isAdmin(), 403);
+        $conversation = $this->conversation();
+        $conversation->retention_hold_at = $conversation->retention_hold_at ? null : now();
+        $conversation->retention_hold_by = $conversation->retention_hold_at ? auth()->id() : null;
+        $conversation->save();
+        Fruit::toast($conversation->retention_hold_at ? __('On legal hold: it will not be deleted.') : __('Legal hold lifted.'));
+    }
+
+    /**
      * The menu shows Follow or Unfollow by itself (Alpine).
      */
     public function follow($follow = true)

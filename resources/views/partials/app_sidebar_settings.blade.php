@@ -28,7 +28,7 @@
 
 @if ($sidebar_user->isAdmin())
     @php
-        $settings_icons = ['general' => 'settings', 'emails' => 'mail', 'alerts' => 'bell-ring', 'ai' => 'sparkles', 'api' => 'webhook', 'branding' => 'palette'];
+        $settings_icons = ['general' => 'settings', 'emails' => 'mail', 'alerts' => 'bell-ring', 'ai' => 'sparkles', 'api' => 'webhook', 'retention' => 'archive', 'branding' => 'palette'];
     @endphp
     <p class="f-sidebar__heading">{{ __('Settings') }}</p>
     @foreach (app(App\Http\Controllers\SettingsController::class)->getSections() as $settings_name => $settings_info)

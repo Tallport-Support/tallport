@@ -319,6 +319,12 @@ class SettingsController extends Controller
                     'api.cors_hosts' => config('api.cors_hosts'),
                 ];
                 break;
+            case 'retention':
+                $settings = [];
+                foreach (array_keys(\App\Retention\Retention::OPTIONS) as $name) {
+                    $settings[$name] = \App\Retention\Retention::get($name);
+                }
+                break;
             case 'branding':
                 $settings = [];
                 foreach (\App\Misc\Branding::SETTINGS as $name) {
@@ -344,6 +350,7 @@ class SettingsController extends Controller
             'alerts'  => ['title' => __('Alerts'), 'icon' => 'bell', 'order' => 300],
             'ai'      => ['title' => __('AI Assistant'), 'icon' => 'ai', 'order' => 400],
             'api'     => ['title' => __('API & Webhooks'), 'icon' => 'transfer', 'order' => 600],
+            'retention' => ['title' => __('Retention'), 'icon' => 'archive', 'order' => 620],
             'branding' => ['title' => __('Appearance'), 'icon' => 'adjust', 'order' => 650],
         ];
         $sections = \Eventy::filter('settings.sections', $sections);

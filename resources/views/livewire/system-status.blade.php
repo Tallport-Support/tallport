@@ -191,6 +191,30 @@
                 @endif
             </div>
         @endif
+        {{-- Retention (Settings » Retention): the last night's run and what waits to be deleted. --}}
+        @php
+            $retention_last = \Option::get(App\Retention\Retention::LAST_RUN_OPTION);
+            $retention_pending = App\Retention\Retention::isEnabled() ? App\Retention\Retention::pending() : null;
+        @endphp
+        <div class="f-form-row">
+            <span>{{ __('Retention') }}</span>
+            <span class="f-muted">
+                @if (!$retention_pending)
+                    {{ __('Off') }}
+                @else
+                    @if (!empty($retention_last['at']))
+                        {{ __('Last run :date: :expired expired, :deleted deleted for good.', [
+                            'date'    => App\User::dateFormat($retention_last['at'], 'M j, H:i'),
+                            'expired' => $retention_last['expired'] ?? 0,
+                            'deleted' => ($retention_last['deleted'] ?? 0) + ($retention_last['trash'] ?? 0) + ($retention_last['spam'] ?? 0),
+                        ]) }}
+                    @endif
+                    @if ($retention_pending['count'])
+                        {{ __(':count waiting, the first to be deleted on :date.', ['count' => $retention_pending['count'], 'date' => App\User::dateFormat($retention_pending['next'], 'M j, Y')]) }}
+                    @endif
+                @endif
+            </span>
+        </div>
         @if ($redis_uses)
             <div class="f-form-row" id="redis">
                 <div>
