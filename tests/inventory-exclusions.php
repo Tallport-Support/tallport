@@ -5,16 +5,12 @@
  * Format: 'item as printed by tests/inventory.php' => 'reason'.
  */
 
-$network = 'needs freescout.net (license server or module downloads)';
+$network = 'downloads modules from their own addresses';
 $modules_on_disk = 'builds, installs or migrates modules in Modules/ and public/modules, which tests must not touch';
 $oauth = 'OAuth flow with Microsoft/Google servers';
 $livewire = "Livewire's own route (its prefix comes from the app key); not used by a Tallport page yet";
 
 return [
-    // Not actions: license statuses in a switch inside ModulesController::ajax().
-    'ajax ModulesController@ajax disabled'      => 'not an action (license status case)',
-    'ajax ModulesController@ajax expired'       => 'not an action (license status case)',
-
     'ajax ModulesController@ajax update'     => $network,
     'ajax ModulesController@ajax update_all' => $network,
 
