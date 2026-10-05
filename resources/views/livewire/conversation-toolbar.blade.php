@@ -59,6 +59,10 @@
     <span class="f-toolbar__spacer"></span>
 
     <ul class="conv-info">
+        @if ($conversation->isChat() && $conversation->getChannelName())
+            {{-- Chat Mode: how chats are shown (the chats beside them, the reply open), for the session. --}}
+            <li><x-fruit::button variant="ghost" class="f-button--icon conv-chat-mode" wire:click="toggleChatMode" :aria-pressed="\Helper::isChatMode() ? 'true' : 'false'" :aria-label="__('Chat Mode')" :title="__('Chat Mode')"><x-icon.messages-square class="f-icon" aria-hidden="true" /></x-fruit::button></li>
+        @endif
         @action('conversation.convinfo.prepend', $conversation, $mailbox)
         @if ($conversation->state != App\Conversation::STATE_DELETED)
             <li>

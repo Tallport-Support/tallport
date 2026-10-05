@@ -64,13 +64,12 @@
                     @if ($customer)
                         <p>{{ $customer->getFullName(true) }}@if ($conversation->customer_email && $conversation->customer_email != $customer->getFullName(true)) · {{ $conversation->customer_email }}@endif</p>
                     @endif
-                    <p class="conv-heading__mailbox"><x-icon.mail class="f-icon" aria-hidden="true" /><span>{{ $mailbox->name }}@if ($mailbox->email) · {{ $mailbox->email }}@endif</span></p>
+                    {{-- How the conversation reaches the mailbox: its address, or a chat channel (Nostr, Telegram). --}}
                     @if ($conversation->isChat() && $conversation->getChannelName())
-                            <span class="conv-tags f-row">
-                                @if (\Helper::isChatMode())<a class="f-button f-button--small" href="{{ request()->fullUrlWithQuery(['chat_mode' => '0']) }}" title="{{ __('Exit') }}"><x-icon.square fill="currentColor" class="f-icon" aria-hidden="true" /> {{ __('Chat Mode') }}</a>@else<a class="f-button f-button--small f-button--primary" href="{{ request()->fullUrlWithQuery(['chat_mode' => '1']) }}"><x-icon.play fill="currentColor" class="f-icon" aria-hidden="true" /> {{ __('Chat Mode') }}</a>@endif
-                                <x-fruit::badge>{{ $conversation->getChannelName() }}</x-fruit::badge>
-                            </span>
-                        @endif
+                        <p class="conv-heading__mailbox"><x-icon.message-circle class="f-icon" aria-hidden="true" /><span>{{ $mailbox->name }} · {{ $conversation->getChannelName() }}</span></p>
+                    @else
+                        <p class="conv-heading__mailbox"><x-icon.mail class="f-icon" aria-hidden="true" /><span>{{ $mailbox->name }}@if ($mailbox->email) · {{ $mailbox->email }}@endif</span></p>
+                    @endif
                     @action('conversation.after_subject', $conversation, $mailbox)
                 </header>
                 @if ($is_in_chat_mode)

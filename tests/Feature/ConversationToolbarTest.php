@@ -50,6 +50,26 @@ class ConversationToolbarTest extends FeatureTestCase
         $this->assertSame(Conversation::STATUS_ACTIVE, $this->conversation->fresh()->status);
     }
 
+    public function testChatModeIsAToolbarToggleForChats()
+    {
+        // Email conversations: no Chat Mode, the mailbox's address in the heading.
+        $this->toolbar()->assertDontSee('conv-chat-mode', false);
+        $this->actingAs($this->agent)->get($this->conversation->url())->assertSee($this->mailbox->name.' · '.$this->mailbox->email);
+
+        // Chats: the toggle, and the channel instead of the address.
+        $this->conversation->type = Conversation::TYPE_CHAT;
+        $this->conversation->channel = \App\Telegram\Telegram::CHANNEL;
+        $this->conversation->save();
+        $this->actingAs($this->agent)->get($this->conversation->url())->assertSee($this->mailbox->name.' · Telegram')
+            ->assertDontSee($this->mailbox->name.' · '.$this->mailbox->email);
+
+        $this->toolbar()->assertSeeHtml('aria-pressed="false"')
+            ->call('toggleChatMode')->assertRedirect($this->conversation->url());
+        $this->assertSame(1, \Helper::isChatMode());
+        $this->toolbar()->assertSeeHtml('aria-pressed="true"')->call('toggleChatMode');
+        $this->assertSame(0, \Helper::isChatMode());
+    }
+
     public function testFollowsAndDeletes()
     {
         $this->toolbar()->call('follow', true)->assertReturned(true)->assertToasted('Following')->assertDispatched('conversation-followed', following: true);
