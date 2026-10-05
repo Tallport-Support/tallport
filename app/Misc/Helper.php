@@ -3098,6 +3098,44 @@ class Helper
         return ' nonce="'.\Helper::cspNonce().'"';
     }
 
+    /**
+     * The date (Y-m-d) in the user's time zone.
+     */
+    public static function userDate($date)
+    {
+        return \App\User::dateFormat($date->copy(), 'Y-m-d', null, false);
+    }
+
+    /**
+     * A day for a heading, in the user's time zone and language: Today, Yesterday,
+     * or "Monday, October 5" (with the year when it's another year).
+     */
+    public static function dayName($date)
+    {
+        $day = self::userDate($date);
+        $today = self::userDate(now());
+        if ($day == $today) {
+            return __('Today');
+        }
+        if ($day == self::userDate(now()->subDay())) {
+            return __('Yesterday');
+        }
+
+        $same_year = substr($day, 0, 4) == substr($today, 0, 4);
+        if (!class_exists('IntlDatePatternGenerator')) {
+            // intl is optional (config/installer.php).
+            return \App\User::dateFormat($date->copy(), $same_year ? 'l, M j' : 'l, M j, Y', null, false);
+        }
+        // The language's own order of weekday, day and month (ICU skeleton), capitalized.
+        $locale = app()->getLocale();
+        $pattern = (new \IntlDatePatternGenerator($locale))->getBestPattern($same_year ? 'EEEEMMMMd' : 'EEEEMMMMdy');
+        $timezone = auth()->user() ? auth()->user()->timezone : config('app.timezone');
+
+        $name = (string) (new \IntlDateFormatter($locale, \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, $timezone, null, $pattern))->format($date->getTimestamp());
+
+        return mb_strtoupper(mb_substr($name, 0, 1)).mb_substr($name, 1);
+    }
+
     public static function detectCloudFlare()
     {
         if (!empty($_SERVER['HTTP_CF_IPCOUNTRY'])

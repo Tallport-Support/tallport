@@ -52,6 +52,13 @@ class ConversationComposer extends Component
     public $after_send;
 
     /**
+     * The chat view: the composer stays open below the history, a reply unless
+     * switched to a note, and Enter sends (public/js/conversations.js).
+     */
+    #[Locked]
+    public $chat = false;
+
+    /**
      * reply, note or forward; empty while the composer is closed.
      */
     public $mode = '';
@@ -105,8 +112,9 @@ class ConversationComposer extends Component
     #[Locked]
     public $default_cc = [];
 
-    public function mount($conversation, $toCustomers = [], $cc = [], $fromAliases = [], $fromAlias = '', $afterSend = null)
+    public function mount($conversation, $toCustomers = [], $cc = [], $fromAliases = [], $fromAlias = '', $afterSend = null, $chat = false)
     {
+        $this->chat = (bool) $chat;
         $this->conversation_id = $conversation->id;
         $this->folder_id = Conversation::getFolderParam();
         $this->x_embed = request()->x_embed;
@@ -122,17 +130,20 @@ class ConversationComposer extends Component
         // A draft to continue (?show_draft=).
         if (request()->show_draft) {
             $this->editDraft(request()->show_draft);
+        } elseif ($this->chat) {
+            $this->mode = 'reply';
         }
     }
 
     /**
      * Opens the composer for a reply, a note or a forward. An open composer
-     * stays as it is: switching would leave a draft behind.
+     * stays as it is: switching would leave a draft behind (in the chat view, an
+     * empty one switches).
      */
     #[On('composer-open')]
     public function open($mode)
     {
-        if ($this->mode || !in_array($mode, ['reply', 'note', 'forward'])) {
+        if (!in_array($mode, ['reply', 'note', 'forward']) || $this->mode && !($this->chat && $this->mode != $mode && !$this->hasText() && !$this->thread_id)) {
             return;
         }
         $conversation = $this->conversation();
@@ -252,7 +263,7 @@ class ConversationComposer extends Component
                 $this->dispatch('composer-note-forget');
             }
             $this->resetFields($this->conversation());
-            $this->mode = '';
+            $this->mode = $this->chat ? 'reply' : '';
             $this->dispatch('fruit-editor-set', target: 'body', html: '');
         }
     }
@@ -281,7 +292,7 @@ class ConversationComposer extends Component
         if ($is_note) {
             $this->dispatch('composer-note-forget');
         }
-        $this->redirect($response['redirect_url'] ?? $this->conversation()->url());
+        $this->redirect($response['redirect_url'] ?? $this->conversation()->url(), navigate: $this->chat);
     }
 
     /**

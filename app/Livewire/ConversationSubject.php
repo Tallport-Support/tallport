@@ -12,21 +12,26 @@ use Livewire\Component;
 /**
  * The open conversation's heading: its status and number, who else is viewing
  * it (updated by the realtime script), the star and the subject, which a user
- * may edit. A bell marks the conversations the user follows.
+ * may edit. A bell marks the conversations the user follows. Compact (the chat
+ * view): the status, viewers and star without the subject.
  */
 class ConversationSubject extends Component
 {
     #[Locked]
     public $conversation_id;
 
+    #[Locked]
+    public $compact = false;
+
     /**
      * The users viewing the conversation when the page loaded.
      */
     protected $viewers = [];
 
-    public function mount($conversation, $viewers = [])
+    public function mount($conversation, $viewers = [], $compact = false)
     {
         $this->conversation_id = $conversation->id;
+        $this->compact = (bool) $compact;
         $this->viewers = $viewers;
     }
 

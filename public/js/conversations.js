@@ -26,7 +26,7 @@ document.addEventListener('alpine:init', function () {
 	 * the editor's text, saves drafts while the user writes, keeps an unsent
 	 * note in the browser, uploads files and asks about a forgotten attachment.
 	 */
-	window.Alpine.data('tallportComposer', function (conversation_id) {
+	window.Alpine.data('tallportComposer', function (conversation_id, mode, chat) {
 		var editor = function () {
 			return document.getElementById('body');
 		};
@@ -222,12 +222,12 @@ document.addEventListener('alpine:init', function () {
 				});
 			},
 
-			// Cmd/Ctrl+Enter sends.
+			// Cmd/Ctrl+Enter sends; in the chat view Enter does (Shift+Enter: a new line).
 			enter: function (event) {
 				if (!event.target.closest || !event.target.closest('.f-editor') || event.altKey || event.shiftKey) {
 					return;
 				}
-				if (event.metaKey || event.ctrlKey) {
+				if (event.metaKey || event.ctrlKey || chat && !event.isComposing) {
 					event.preventDefault();
 					this.submit();
 				}

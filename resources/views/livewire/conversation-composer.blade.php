@@ -9,11 +9,11 @@
     // A channel (Telegram, Nostr) has no copies, rich text or quoted history.
     $has_channel = $conversation->hasChannel();
 @endphp
-<div class="conv-action-wrapper" x-data="tallportComposer({{ $conversation->id }}, @js($mode))" x-on:input="changed($event)" x-on:change="blurred($event)" x-on:fruit-editor-upload.stop="embed($event)" x-on:keydown.enter="enter($event)">
+<div class="conv-action-wrapper @if ($chat) conv-composer-docked @endif" x-data="tallportComposer({{ $conversation->id }}, @js($mode), @js($chat))" x-on:input="changed($event)" x-on:change="blurred($event)" x-on:fruit-editor-upload.stop="embed($event)" x-on:keydown.enter="enter($event)">
     @if ($mode)
         <div class="conv-block conv-reply-block conv-action-block @if ($mode == 'note') conv-note-block @elseif ($mode == 'forward') conv-forward-block @endif">
-            <x-fruit::composer placement="top" class="form-reply conv-composer" :aria-label="$mode == 'note' ? __('Note') : ($mode == 'forward' ? __('Forward') : __('Reply'))" x-on:submit.prevent="submit()">
-                @if ($mode != 'note')
+            <x-fruit::composer :placement="$chat ? 'bottom' : 'top'" class="form-reply conv-composer" :aria-label="$mode == 'note' ? __('Note') : ($mode == 'forward' ? __('Forward') : __('Reply'))" x-on:submit.prevent="submit()">
+                @if ($mode != 'note' && !($chat && $has_channel))
                     {{-- Mail-style recipient rows (FruitUI inline fields); Cc and Bcc on demand. --}}
                     <div class="conv-composer__recipients" x-data="{ copies: @js($cc !== '' || $bcc !== '') }">
                         @if (count($from_aliases))
@@ -64,7 +64,7 @@
                     </x-fruit::alert>
                 @endif
 
-                @include('conversations/partials/composer_editor', ['plain' => $has_channel, 'draft_button' => $mode != 'note'])
+                @include('conversations/partials/composer_editor', ['plain' => $has_channel, 'placeholder' => $chat ? __('Use ENTER to send the message and SHIFT+ENTER for a new line') : null, 'draft_button' => $mode != 'note'])
 
                 @include('conversations/partials/composer_footer', [
                     'send_label'      => $mode == 'note' ? __('Add Note') : ($mode == 'forward' ? __('Forward') : ($send_labels[$status][0] ?? __('Send Reply'))),

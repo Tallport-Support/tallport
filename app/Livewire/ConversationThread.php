@@ -12,7 +12,8 @@ use Livewire\Component;
 
 /**
  * The open conversation's history (x-fruit::thread): its messages, notes and
- * events, newest first, with the AI summary on top. New messages arrive by the
+ * events, newest first, with the AI summary on top; in the chat view ($chat)
+ * oldest first, in a history (x-fruit::history) that opens at the newest. New messages arrive by the
  * realtime script (conversation-thread-created). A user edits a message in
  * place, deletes a note or sends a failed reply again.
  */
@@ -32,6 +33,12 @@ class ConversationThread extends Component
     public $page_uri = '';
 
     /**
+     * The chat view (the user's Conversation View for the channel).
+     */
+    #[Locked]
+    public $chat = false;
+
+    /**
      * The message being edited.
      */
     public $editing = null;
@@ -41,9 +48,10 @@ class ConversationThread extends Component
      */
     protected $initial;
 
-    public function mount($conversation, $threads = null)
+    public function mount($conversation, $threads = null, $chat = false)
     {
         $this->conversation_id = $conversation->id;
+        $this->chat = (bool) $chat;
         $this->initial = $threads;
         $this->page_query = request()->query();
         $this->page_uri = request()->getRequestUri();
@@ -138,6 +146,9 @@ class ConversationThread extends Component
     {
         $conversation = $this->conversation();
         $threads = $this->initial ?? \Eventy::filter('conversation.view.threads', $conversation->threads()->orderBy('created_at', 'desc')->get());
+        if ($this->chat && $this->initial === null) {
+            $threads = $threads->reverse()->values();
+        }
 
         return view('livewire.conversation-thread', [
             'conversation' => $conversation,

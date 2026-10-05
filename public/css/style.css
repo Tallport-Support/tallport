@@ -546,7 +546,8 @@ a h4 {
 .conv-note-block .alert-switch-to-note {
     display: none;
 }
-.conv-type-chat .conv-reply-block:not(.conv-note-block) .f-editor__toolbar > [data-fruit-command] {
+/* A channel's replies are plain text: no formatting. */
+.conv-has-channel .conv-reply-block:not(.conv-note-block) .f-editor__toolbar > [data-fruit-command] {
     display: none;
 }
 
@@ -2721,6 +2722,53 @@ a.disabled:focus {
     height: 20px;
     border-radius: 50%;
 }
+/* The chat view (conversations/view): a one-line heading, the history scrolling
+   below it (FruitUI's history) and the composer docked at the bottom. */
+.conv-chat-view > #app-content-scroll {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.conv-chat-view > #app-content-scroll > .content,
+.conv-chat {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+}
+.conv-heading--chat {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 12px;
+    padding-block: 12px;
+}
+.conv-heading--chat .conv-heading__overline {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    margin: 0;
+}
+.conv-heading--chat .conv-heading__customer {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+    color: var(--f-label);
+    font-size: var(--f-text-md);
+}
+.conv-heading--chat .conv-heading__mailbox {
+    grid-column: 1;
+    margin-top: 2px;
+}
+.conv-history {
+    flex: 1;
+}
+.conv-composer-docked .conv-composer {
+    --f-composer-input-min-height: 0;
+    --f-editor-min-height: 3lh;
+    margin: 0;
+    border-top: 1px solid var(--f-border);
+}
+
 /* Inside the workspace the panes space their content themselves. */
 .app-workspace .content {
     margin-top: 0;

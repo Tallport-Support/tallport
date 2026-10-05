@@ -34,8 +34,9 @@
         }
         $send_status_data = $thread_is_draft ? null : $thread->getSendStatusData();
 
-        $show_status = $loop->last || ($thread->status != App\Thread::STATUS_NOCHANGE && $thread->status != $threads[$loop->index+1]->status);
-        $show_user = $loop->last || $thread->user_id != $threads[$loop->index+1]->user_id || $threads[$loop->index+1]->action_type == App\Thread::ACTION_TYPE_USER_CHANGED;
+        // $older_thread: the one before it (partials/threads).
+        $show_status = !$older_thread || ($thread->status != App\Thread::STATUS_NOCHANGE && $thread->status != $older_thread->status);
+        $show_user = !$older_thread || $thread->user_id != $older_thread->user_id || $older_thread->action_type == App\Thread::ACTION_TYPE_USER_CHANGED;
         // Next to the author: "You" for the viewer's own, then the status and the assignee the thread left.
         $thread_meta_line = array_filter([
             $thread->type != App\Thread::TYPE_CUSTOMER && $thread->created_by_user_id == Auth::user()->id ? \Illuminate\Support\Str::ucfirst(__('you')) : '',
