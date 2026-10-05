@@ -1569,5 +1569,19 @@
     "On legal hold: it will not be deleted.": "Sub reținere legală: nu va fi șters.",
     "Since :date, by :user.": "Din :date, de :user.",
     "Search Settings": "Caută în Setări",
-    "No Settings Found": "Nicio Setare Găsită"
+    "No Settings Found": "Nicio Setare Găsită",
+    ":mailbox Team": "Echipa :mailbox",
+    ":mailbox Team Chat": "Chat-ul Echipei :mailbox",
+    ":mailbox Team Chat, :count unread": "Chat-ul Echipei :mailbox, :count necitite",
+    ":person mentioned you in :mailbox Team Chat": ":person te-a menționat în chat-ul echipei :mailbox",
+    "A Room for the Team": "O Cameră pentru Echipă",
+    "Attach Files": "Atașează Fișiere",
+    "Attachments to Send": "Atașamente de Trimis",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter pentru a trimite · @ pentru a menționa",
+    "Everyone who works in :mailbox can read and write here.": "Toți cei care lucrează în :mailbox pot citi și scrie aici.",
+    "Message the :mailbox Team": "Mesaj către echipa :mailbox",
+    "New": "Noi",
+    "New Messages": "Mesaje Noi",
+    "Remove :name": "Elimină :name",
+    "Team Chat": "Chat-ul Echipei"
 }

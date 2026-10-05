@@ -1570,5 +1570,19 @@
     "On legal hold: it will not be deleted.": "Hüquqi bloklamada: silinməyəcək.",
     "Since :date, by :user.": ":date tarixindən, :user tərəfindən.",
     "Search Settings": "Parametrlərdə Axtar",
-    "No Settings Found": "Parametr Tapılmadı"
+    "No Settings Found": "Parametr Tapılmadı",
+    ":mailbox Team": ":mailbox Komandası",
+    ":mailbox Team Chat": ":mailbox Komanda Çatı",
+    ":mailbox Team Chat, :count unread": ":mailbox Komanda Çatı, :count oxunmamış",
+    ":person mentioned you in :mailbox Team Chat": ":person sizi :mailbox komanda çatında qeyd etdi",
+    "A Room for the Team": "Komanda Üçün Otaq",
+    "Attach Files": "Faylları Əlavə Et",
+    "Attachments to Send": "Göndəriləcək Qoşmalar",
+    "Ctrl+Enter to send · @ to mention": "Göndərmək üçün Ctrl+Enter · qeyd etmək üçün @",
+    "Everyone who works in :mailbox can read and write here.": ":mailbox poçt qutusunda işləyən hər kəs burada oxuya və yaza bilər.",
+    "Message the :mailbox Team": ":mailbox komandasına mesaj yazın",
+    "New": "Yeni",
+    "New Messages": "Yeni Mesajlar",
+    "Remove :name": ":name sil",
+    "Team Chat": "Komanda Çatı"
 }

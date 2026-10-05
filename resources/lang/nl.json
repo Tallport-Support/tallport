@@ -1573,5 +1573,19 @@
     "On legal hold: it will not be deleted.": "Onder juridische bewaring: wordt niet verwijderd.",
     "Since :date, by :user.": "Sinds :date, door :user.",
     "Search Settings": "Instellingen Zoeken",
-    "No Settings Found": "Geen Instellingen Gevonden"
+    "No Settings Found": "Geen Instellingen Gevonden",
+    ":mailbox Team": "Team :mailbox",
+    ":mailbox Team Chat": "Teamchat :mailbox",
+    ":mailbox Team Chat, :count unread": "Teamchat :mailbox, :count ongelezen",
+    ":person mentioned you in :mailbox Team Chat": ":person heeft u genoemd in de teamchat van :mailbox",
+    "A Room for the Team": "Een Ruimte voor het Team",
+    "Attach Files": "Bestanden Bijvoegen",
+    "Attachments to Send": "Te Verzenden Bijlagen",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter om te verzenden · @ om iemand te noemen",
+    "Everyone who works in :mailbox can read and write here.": "Iedereen die in :mailbox werkt, kan hier lezen en schrijven.",
+    "Message the :mailbox Team": "Bericht aan het team van :mailbox",
+    "New": "Nieuw",
+    "New Messages": "Nieuwe Berichten",
+    "Remove :name": ":name verwijderen",
+    "Team Chat": "Teamchat"
 }

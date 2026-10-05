@@ -1571,5 +1571,19 @@
     "On legal hold: it will not be deleted.": "处于法律保留状态：不会被删除。",
     "Since :date, by :user.": "自 :date 起，由 :user 设置。",
     "Search Settings": "搜索设置",
-    "No Settings Found": "未找到设置"
+    "No Settings Found": "未找到设置",
+    ":mailbox Team": ":mailbox 团队",
+    ":mailbox Team Chat": ":mailbox 团队聊天",
+    ":mailbox Team Chat, :count unread": ":mailbox 团队聊天，:count 条未读",
+    ":person mentioned you in :mailbox Team Chat": ":person 在 :mailbox 团队聊天中提到了您",
+    "A Room for the Team": "团队专属空间",
+    "Attach Files": "附加文件",
+    "Attachments to Send": "待发送的附件",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter 发送 · @ 提及",
+    "Everyone who works in :mailbox can read and write here.": "在 :mailbox 工作的每个人都可以在这里阅读和发言。",
+    "Message the :mailbox Team": "给 :mailbox 团队发消息",
+    "New": "新",
+    "New Messages": "新消息",
+    "Remove :name": "移除 :name",
+    "Team Chat": "团队聊天"
 }

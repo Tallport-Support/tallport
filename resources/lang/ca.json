@@ -1667,5 +1667,18 @@
     "On legal hold: it will not be deleted.": "En retenció legal: no s'eliminarà.",
     "Since :date, by :user.": "Des del :date, per :user.",
     "Search Settings": "Cerca a la Configuració",
-    "No Settings Found": "No s'ha Trobat Cap Configuració"
+    "No Settings Found": "No s'ha Trobat Cap Configuració",
+    ":mailbox Team": "Equip de :mailbox",
+    ":mailbox Team Chat": "Xat de l'Equip de :mailbox",
+    ":mailbox Team Chat, :count unread": "Xat de l'Equip de :mailbox, :count sense llegir",
+    ":person mentioned you in :mailbox Team Chat": ":person us ha esmentat al xat de l'equip de :mailbox",
+    "A Room for the Team": "Una Sala per a l'Equip",
+    "Attach Files": "Adjunta Fitxers",
+    "Attachments to Send": "Adjunts per Enviar",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter per enviar · @ per esmentar",
+    "Everyone who works in :mailbox can read and write here.": "Tothom qui treballa a :mailbox pot llegir i escriure aquí.",
+    "Message the :mailbox Team": "Missatge a l'equip de :mailbox",
+    "New Messages": "Missatges Nous",
+    "Remove :name": "Elimina :name",
+    "Team Chat": "Xat de l'Equip"
 }

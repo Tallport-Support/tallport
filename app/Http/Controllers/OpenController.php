@@ -280,6 +280,18 @@ class OpenController extends Controller
             $csp_header_value .= ' allow-same-origin';
         }
 
+        // A team chat's file: stored encrypted (App\Livewire\TeamChat).
+        if ($attachment->team_message_id) {
+            $headers = ['Content-Type' => $attachment->mime_type];
+            if ($view_attachment) {
+                $headers['Content-Security-Policy'] = $csp_header_value;
+            } else {
+                $headers['Content-Disposition'] = 'attachment; filename="'.$attachment->file_name.'"';
+            }
+
+            return response(\Crypt::decryptString(Attachment::getDisk()->get($attachment->getStorageFilePath())), 200, $headers);
+        }
+
         // Send file.
         if (config('app.download_attachments_via') == 'apache') {
             // Send using Apache mod_xsendfile.

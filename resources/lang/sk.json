@@ -1569,5 +1569,19 @@
     "On legal hold: it will not be deleted.": "S právnym blokovaním: nebude vymazané.",
     "Since :date, by :user.": "Od :date, používateľ :user.",
     "Search Settings": "Hľadať v Nastaveniach",
-    "No Settings Found": "Žiadne Nastavenia sa Nenašli"
+    "No Settings Found": "Žiadne Nastavenia sa Nenašli",
+    ":mailbox Team": "Tím :mailbox",
+    ":mailbox Team Chat": "Tímový Chat :mailbox",
+    ":mailbox Team Chat, :count unread": "Tímový Chat :mailbox, neprečítané: :count",
+    ":person mentioned you in :mailbox Team Chat": ":person vás spomenul v tímovom chate :mailbox",
+    "A Room for the Team": "Miestnosť pre Tím",
+    "Attach Files": "Priložiť Súbory",
+    "Attachments to Send": "Prílohy na Odoslanie",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter na odoslanie · @ na spomenutie",
+    "Everyone who works in :mailbox can read and write here.": "Každý, kto pracuje v :mailbox, tu môže čítať a písať.",
+    "Message the :mailbox Team": "Správa pre tím :mailbox",
+    "New": "Nové",
+    "New Messages": "Nové Správy",
+    "Remove :name": "Odstrániť :name",
+    "Team Chat": "Tímový Chat"
 }

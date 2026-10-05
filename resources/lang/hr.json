@@ -1570,5 +1570,19 @@
     "On legal hold: it will not be deleted.": "Pod pravnim zadržavanjem: neće biti izbrisan.",
     "Since :date, by :user.": "Od :date, :user.",
     "Search Settings": "Pretraži Postavke",
-    "No Settings Found": "Nema Pronađenih Postavki"
+    "No Settings Found": "Nema Pronađenih Postavki",
+    ":mailbox Team": "Tim :mailbox",
+    ":mailbox Team Chat": "Chat Tima :mailbox",
+    ":mailbox Team Chat, :count unread": "Chat Tima :mailbox, nepročitano: :count",
+    ":person mentioned you in :mailbox Team Chat": ":person vas je spomenuo u chatu tima :mailbox",
+    "A Room for the Team": "Prostor za Tim",
+    "Attach Files": "Priloži Datoteke",
+    "Attachments to Send": "Prilozi za Slanje",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter za slanje · @ za spominjanje",
+    "Everyone who works in :mailbox can read and write here.": "Svi koji rade u :mailbox mogu ovdje čitati i pisati.",
+    "Message the :mailbox Team": "Poruka timu :mailbox",
+    "New": "Novo",
+    "New Messages": "Nove Poruke",
+    "Remove :name": "Ukloni :name",
+    "Team Chat": "Chat Tima"
 }

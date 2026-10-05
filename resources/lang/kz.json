@@ -1972,5 +1972,19 @@
     "On legal hold: it will not be deleted.": "Құқықтық бұғаттауда: жойылмайды.",
     "Since :date, by :user.": ":date бастап, :user.",
     "Search Settings": "Орнатулардан Іздеу",
-    "No Settings Found": "Орнатулар Табылмады"
+    "No Settings Found": "Орнатулар Табылмады",
+    ":mailbox Team": ":mailbox Командасы",
+    ":mailbox Team Chat": ":mailbox Командасының Чаты",
+    ":mailbox Team Chat, :count unread": ":mailbox Командасының Чаты, :count оқылмаған",
+    ":person mentioned you in :mailbox Team Chat": ":person сізді :mailbox командасының чатында атап өтті",
+    "A Room for the Team": "Командаға Арналған Бөлме",
+    "Attach Files": "Файлдарды Тіркеу",
+    "Attachments to Send": "Жіберілетін Тіркемелер",
+    "Ctrl+Enter to send · @ to mention": "Жіберу үшін Ctrl+Enter · атап өту үшін @",
+    "Everyone who works in :mailbox can read and write here.": ":mailbox жәшігінде жұмыс істейтіндердің бәрі мұнда оқып, жаза алады.",
+    "Message the :mailbox Team": ":mailbox командасына хабарлама",
+    "New": "Жаңа",
+    "New Messages": "Жаңа Хабарламалар",
+    "Remove :name": ":name жою",
+    "Team Chat": "Команда Чаты"
 }

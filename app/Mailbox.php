@@ -1141,6 +1141,7 @@ class Mailbox extends Model
 
         $this->users()->sync([]);
         $this->folders()->delete();
+        TeamMessage::deleteForMailbox($this->id);
         // Maybe remove notifications on events in this mailbox?
 
         $this->delete();

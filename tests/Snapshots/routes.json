@@ -1797,6 +1797,21 @@
         "methods": [
             "GET"
         ],
+        "uri": "mailbox/{id}/team",
+        "name": "mailboxes.team_chat",
+        "action": "MailboxesController@teamChat",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "mailbox/{id}/telegram",
         "name": "mailboxes.telegram",
         "action": "TelegramController@settings",

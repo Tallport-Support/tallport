@@ -1618,5 +1618,19 @@
     "On legal hold: it will not be deleted.": "處於法律保留狀態：不會被刪除。",
     "Since :date, by :user.": "自 :date 起，由 :user 設定。",
     "Search Settings": "搜尋設定",
-    "No Settings Found": "找不到設定"
+    "No Settings Found": "找不到設定",
+    ":mailbox Team": ":mailbox 團隊",
+    ":mailbox Team Chat": ":mailbox 團隊聊天",
+    ":mailbox Team Chat, :count unread": ":mailbox 團隊聊天，:count 則未讀",
+    ":person mentioned you in :mailbox Team Chat": ":person 在 :mailbox 團隊聊天中提到了您",
+    "A Room for the Team": "團隊專屬空間",
+    "Attach Files": "附加檔案",
+    "Attachments to Send": "待傳送的附件",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter 傳送 · @ 提及",
+    "Everyone who works in :mailbox can read and write here.": "在 :mailbox 工作的每個人都可以在這裡閱讀和發言。",
+    "Message the :mailbox Team": "傳訊息給 :mailbox 團隊",
+    "New": "新",
+    "New Messages": "新訊息",
+    "Remove :name": "移除 :name",
+    "Team Chat": "團隊聊天"
 }

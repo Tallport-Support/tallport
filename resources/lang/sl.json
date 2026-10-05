@@ -1569,5 +1569,19 @@
     "On legal hold: it will not be deleted.": "V pravnem zadržanju: ne bo izbrisano.",
     "Since :date, by :user.": "Od :date, :user.",
     "Search Settings": "Išči po Nastavitvah",
-    "No Settings Found": "Ni Najdenih Nastavitev"
+    "No Settings Found": "Ni Najdenih Nastavitev",
+    ":mailbox Team": "Ekipa :mailbox",
+    ":mailbox Team Chat": "Klepet Ekipe :mailbox",
+    ":mailbox Team Chat, :count unread": "Klepet Ekipe :mailbox, neprebrano: :count",
+    ":person mentioned you in :mailbox Team Chat": ":person te je omenil v klepetu ekipe :mailbox",
+    "A Room for the Team": "Prostor za Ekipo",
+    "Attach Files": "Priloži Datoteke",
+    "Attachments to Send": "Priponke za Pošiljanje",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter za pošiljanje · @ za omembo",
+    "Everyone who works in :mailbox can read and write here.": "Vsi, ki delajo v :mailbox, lahko tu berejo in pišejo.",
+    "Message the :mailbox Team": "Sporočilo ekipi :mailbox",
+    "New": "Novo",
+    "New Messages": "Nova Sporočila",
+    "Remove :name": "Odstrani :name",
+    "Team Chat": "Klepet Ekipe"
 }

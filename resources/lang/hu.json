@@ -1570,5 +1570,19 @@
     "On legal hold: it will not be deleted.": "Jogi zárolás alatt: nem törlődik.",
     "Since :date, by :user.": ":date óta, :user által.",
     "Search Settings": "Keresés a Beállításokban",
-    "No Settings Found": "Nincs Találat a Beállításokban"
+    "No Settings Found": "Nincs Találat a Beállításokban",
+    ":mailbox Team": ":mailbox Csapat",
+    ":mailbox Team Chat": ":mailbox Csapatchat",
+    ":mailbox Team Chat, :count unread": ":mailbox Csapatchat, :count olvasatlan",
+    ":person mentioned you in :mailbox Team Chat": ":person megemlített a(z) :mailbox csapatchatben",
+    "A Room for the Team": "Egy Szoba a Csapatnak",
+    "Attach Files": "Fájlok Csatolása",
+    "Attachments to Send": "Elküldendő Csatolmányok",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter a küldéshez · @ az említéshez",
+    "Everyone who works in :mailbox can read and write here.": "Mindenki, aki a(z) :mailbox postafiókban dolgozik, itt olvashat és írhat.",
+    "Message the :mailbox Team": "Üzenet a(z) :mailbox csapatnak",
+    "New": "Új",
+    "New Messages": "Új Üzenetek",
+    "Remove :name": ":name eltávolítása",
+    "Team Chat": "Csapatchat"
 }

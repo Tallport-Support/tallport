@@ -1570,5 +1570,19 @@
     "On legal hold: it will not be deleted.": "Під юридичним утриманням: не буде видалено.",
     "Since :date, by :user.": "З :date, :user.",
     "Search Settings": "Пошук у Налаштуваннях",
-    "No Settings Found": "Налаштувань не Знайдено"
+    "No Settings Found": "Налаштувань не Знайдено",
+    ":mailbox Team": "Команда :mailbox",
+    ":mailbox Team Chat": "Чат Команди :mailbox",
+    ":mailbox Team Chat, :count unread": "Чат Команди :mailbox, непрочитаних: :count",
+    ":person mentioned you in :mailbox Team Chat": ":person згадав(ла) вас у чаті команди :mailbox",
+    "A Room for the Team": "Кімната для Команди",
+    "Attach Files": "Прикріпити Файли",
+    "Attachments to Send": "Вкладення для Надсилання",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter — надіслати · @ — згадати",
+    "Everyone who works in :mailbox can read and write here.": "Усі, хто працює в :mailbox, можуть тут читати й писати.",
+    "Message the :mailbox Team": "Повідомлення команді :mailbox",
+    "New": "Нові",
+    "New Messages": "Нові Повідомлення",
+    "Remove :name": "Видалити :name",
+    "Team Chat": "Чат Команди"
 }

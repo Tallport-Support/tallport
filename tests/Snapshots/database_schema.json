@@ -694,9 +694,21 @@
                 "type": "tinyint(3) unsigned",
                 "nullable": false,
                 "default": "3"
+            },
+            "team_message_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
             }
         },
         "indexes": {
+            "attachments_team_message_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "team_message_id"
+                ]
+            },
             "attachments_thread_id_embedded_index": {
                 "unique": false,
                 "type": "BTREE",
@@ -3222,6 +3234,83 @@
                     "user_id",
                     "medium",
                     "event"
+                ]
+            }
+        }
+    },
+    "team_chat_reads": {
+        "columns": {
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "last_read_id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "default": "0"
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id",
+                    "user_id"
+                ]
+            }
+        }
+    },
+    "team_messages": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "body": {
+                "type": "mediumtext",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            },
+            "team_messages_mailbox_id_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id",
+                    "id"
                 ]
             }
         }

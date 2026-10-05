@@ -1570,5 +1570,19 @@
     "On legal hold: it will not be deleted.": "На юридическом удержании: не будет удалён.",
     "Since :date, by :user.": "С :date, :user.",
     "Search Settings": "Поиск в Настройках",
-    "No Settings Found": "Настройки не Найдены"
+    "No Settings Found": "Настройки не Найдены",
+    ":mailbox Team": "Команда :mailbox",
+    ":mailbox Team Chat": "Чат Команды :mailbox",
+    ":mailbox Team Chat, :count unread": "Чат Команды :mailbox, непрочитанных: :count",
+    ":person mentioned you in :mailbox Team Chat": ":person упомянул(а) вас в чате команды :mailbox",
+    "A Room for the Team": "Комната для Команды",
+    "Attach Files": "Прикрепить Файлы",
+    "Attachments to Send": "Вложения для Отправки",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter — отправить · @ — упомянуть",
+    "Everyone who works in :mailbox can read and write here.": "Все, кто работает в :mailbox, могут здесь читать и писать.",
+    "Message the :mailbox Team": "Сообщение команде :mailbox",
+    "New": "Новые",
+    "New Messages": "Новые Сообщения",
+    "Remove :name": "Удалить :name",
+    "Team Chat": "Чат Команды"
 }

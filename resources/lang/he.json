@@ -1569,5 +1569,19 @@
     "On legal hold: it will not be deleted.": "בשימור משפטי: לא יימחק.",
     "Since :date, by :user.": "מאז :date, על ידי :user.",
     "Search Settings": "חיפוש בהגדרות",
-    "No Settings Found": "לא נמצאו הגדרות"
+    "No Settings Found": "לא נמצאו הגדרות",
+    ":mailbox Team": "צוות :mailbox",
+    ":mailbox Team Chat": "צ'אט צוות :mailbox",
+    ":mailbox Team Chat, :count unread": "צ'אט צוות :mailbox, :count שלא נקראו",
+    ":person mentioned you in :mailbox Team Chat": ":person הזכיר אותך בצ'אט צוות :mailbox",
+    "A Room for the Team": "חדר לצוות",
+    "Attach Files": "צרף קבצים",
+    "Attachments to Send": "קבצים מצורפים לשליחה",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter לשליחה · @ לאזכור",
+    "Everyone who works in :mailbox can read and write here.": "כל מי שעובד ב-:mailbox יכול לקרוא ולכתוב כאן.",
+    "Message the :mailbox Team": "הודעה לצוות :mailbox",
+    "New": "חדש",
+    "New Messages": "הודעות חדשות",
+    "Remove :name": "הסר :name",
+    "Team Chat": "צ'אט צוות"
 }

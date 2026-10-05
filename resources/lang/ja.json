@@ -1570,5 +1570,19 @@
     "On legal hold: it will not be deleted.": "リーガルホールド中：削除されません。",
     "Since :date, by :user.": ":date から（:user）。",
     "Search Settings": "設定を検索",
-    "No Settings Found": "一致する設定はありません"
+    "No Settings Found": "一致する設定はありません",
+    ":mailbox Team": ":mailbox チーム",
+    ":mailbox Team Chat": ":mailbox チームチャット",
+    ":mailbox Team Chat, :count unread": ":mailbox チームチャット、未読 :count 件",
+    ":person mentioned you in :mailbox Team Chat": ":person さんが :mailbox チームチャットであなたをメンションしました",
+    "A Room for the Team": "チームのための場所",
+    "Attach Files": "ファイルを添付",
+    "Attachments to Send": "送信する添付ファイル",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter で送信 · @ でメンション",
+    "Everyone who works in :mailbox can read and write here.": ":mailbox で働く全員がここで読み書きできます。",
+    "Message the :mailbox Team": ":mailbox チームへのメッセージ",
+    "New": "新着",
+    "New Messages": "新着メッセージ",
+    "Remove :name": ":name を削除",
+    "Team Chat": "チームチャット"
 }

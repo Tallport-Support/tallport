@@ -14,6 +14,18 @@
         </li>
     @endif
     <li class="web-notification @if (empty($web_notification_data['notification']->read_at)) is-unread @endif" data-notification_id="{{ $web_notification_data['notification']->id }}">
+        @if (!empty($web_notification_data['team_message']))
+            {{-- A mention in a team chat (App\Notifications\TeamMentionNotification); the room marks it read. --}}
+            <a href="{{ route('mailboxes.team_chat', ['id' => $web_notification_data['team_message']->mailbox_id]) }}" wire:navigate>
+                <div class="web-notification-img">
+                    @include('partials/person_photo', ['person' => $web_notification_data['team_message']->user])
+                </div>
+                <div class="web-notification-msg">
+                    <div class="web-notification-msg-header">{{ App\Notifications\TeamMentionNotification::description($web_notification_data['team_message']) }}</div>
+                    <div class="web-notification-msg-preview">{{ App\Misc\Helper::textPreview($web_notification_data['last_thread_body']) }}</div>
+                </div>
+            </a>
+        @else
         @php
             $conv_params = [];
             if (!$web_notification_data['notification']->read_at) {
@@ -34,5 +46,6 @@
                 @action('web_notification.after_body', $web_notification_data)
             </div>
         </a>
+        @endif
     </li>
 @endforeach

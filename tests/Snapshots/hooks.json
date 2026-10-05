@@ -2664,6 +2664,14 @@
         ]
     },
     {
+        "type": "action",
+        "name": "team_chat.message_created",
+        "arguments": 1,
+        "files": [
+            "app/Livewire/TeamChat.php"
+        ]
+    },
+    {
         "type": "filter",
         "name": "thread.action_person",
         "arguments": 3,

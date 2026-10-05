@@ -1574,5 +1574,19 @@
     "On legal hold: it will not be deleted.": "Under juridisk bevaring: blir ikke slettet.",
     "Since :date, by :user.": "Siden :date, av :user.",
     "Search Settings": "Søk i Innstillinger",
-    "No Settings Found": "Ingen Innstillinger Funnet"
+    "No Settings Found": "Ingen Innstillinger Funnet",
+    ":mailbox Team": "Team :mailbox",
+    ":mailbox Team Chat": "Teamchat for :mailbox",
+    ":mailbox Team Chat, :count unread": "Teamchat for :mailbox, :count uleste",
+    ":person mentioned you in :mailbox Team Chat": ":person nevnte deg i teamchatten for :mailbox",
+    "A Room for the Team": "Et Rom for Teamet",
+    "Attach Files": "Legg ved Filer",
+    "Attachments to Send": "Vedlegg som Skal Sendes",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter for å sende · @ for å nevne",
+    "Everyone who works in :mailbox can read and write here.": "Alle som jobber i :mailbox kan lese og skrive her.",
+    "Message the :mailbox Team": "Melding til teamet i :mailbox",
+    "New": "Ny",
+    "New Messages": "Nye Meldinger",
+    "Remove :name": "Fjern :name",
+    "Team Chat": "Teamchat"
 }

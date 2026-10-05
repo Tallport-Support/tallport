@@ -1569,5 +1569,19 @@
     "On legal hold: it will not be deleted.": "Objęty blokadą prawną: nie zostanie usunięty.",
     "Since :date, by :user.": "Od :date, przez :user.",
     "Search Settings": "Szukaj w Ustawieniach",
-    "No Settings Found": "Nie Znaleziono Ustawień"
+    "No Settings Found": "Nie Znaleziono Ustawień",
+    ":mailbox Team": "Zespół :mailbox",
+    ":mailbox Team Chat": "Czat Zespołu :mailbox",
+    ":mailbox Team Chat, :count unread": "Czat Zespołu :mailbox, nieprzeczytane: :count",
+    ":person mentioned you in :mailbox Team Chat": ":person wspomniał(a) o Tobie na czacie zespołu :mailbox",
+    "A Room for the Team": "Pokój dla Zespołu",
+    "Attach Files": "Załącz Pliki",
+    "Attachments to Send": "Załączniki do Wysłania",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter, aby wysłać · @, aby wspomnieć",
+    "Everyone who works in :mailbox can read and write here.": "Każdy, kto pracuje w :mailbox, może tu czytać i pisać.",
+    "Message the :mailbox Team": "Wiadomość do zespołu :mailbox",
+    "New": "Nowe",
+    "New Messages": "Nowe Wiadomości",
+    "Remove :name": "Usuń :name",
+    "Team Chat": "Czat Zespołu"
 }

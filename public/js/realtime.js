@@ -130,6 +130,12 @@ function maybeShowConnectionRestored()
 					folders.innerHTML = fresh.innerHTML;
 				}
 			});
+			page.querySelectorAll('.app-team-chat-link[data-mailbox_id]').forEach(function (fresh) {
+				var link = document.querySelector('.app-team-chat-link[data-mailbox_id="'+fresh.getAttribute('data-mailbox_id')+'"]');
+				if (link) {
+					link.replaceWith(fresh);
+				}
+			});
 		}).catch(function () {});
 	};
 
@@ -296,6 +302,26 @@ function maybeShowConnectionRestored()
 					var list_mailbox_id = (list && list.getAttribute('data-mailbox_id')) || attr('mailbox_id');
 					if (list && (list_mailbox_id == folders_mailbox_id || parseInt(list_mailbox_id) < 0) && !list.querySelector('.conv-checkbox:checked')) {
 						Livewire.dispatch('conversations-changed');
+					}
+				}).on('App\\Events\\RealtimeTeamMessage', function (data) {
+					if (!data || data.mailbox_id != folders_mailbox_id) {
+						return;
+					}
+					// The open room shows it (and reads it); elsewhere the unread count follows.
+					if (attr('team_chat') == folders_mailbox_id) {
+						Livewire.dispatch('team-message-created');
+						return;
+					}
+					var link = document.querySelector('.app-team-chat-link[data-mailbox_id="'+folders_mailbox_id+'"]');
+					var badge = link && link.querySelector('.app-team-chat-badge');
+					if (badge && typeof data.unread != 'undefined') {
+						badge.textContent = data.unread;
+						badge.hidden = !data.unread;
+						if (data.unread) {
+							link.setAttribute('aria-label', link.getAttribute('data-label-unread').replace(':count', data.unread));
+						} else {
+							link.removeAttribute('aria-label');
+						}
 					}
 				});
 			});

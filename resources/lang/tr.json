@@ -1570,5 +1570,19 @@
     "On legal hold: it will not be deleted.": "Yasal tutma altında: silinmeyecek.",
     "Since :date, by :user.": ":date tarihinden beri, :user tarafından.",
     "Search Settings": "Ayarlarda Ara",
-    "No Settings Found": "Ayar Bulunamadı"
+    "No Settings Found": "Ayar Bulunamadı",
+    ":mailbox Team": ":mailbox Ekibi",
+    ":mailbox Team Chat": ":mailbox Ekip Sohbeti",
+    ":mailbox Team Chat, :count unread": ":mailbox Ekip Sohbeti, :count okunmamış",
+    ":person mentioned you in :mailbox Team Chat": ":person sizden :mailbox ekip sohbetinde bahsetti",
+    "A Room for the Team": "Ekip İçin Bir Oda",
+    "Attach Files": "Dosya Ekle",
+    "Attachments to Send": "Gönderilecek Ekler",
+    "Ctrl+Enter to send · @ to mention": "Göndermek için Ctrl+Enter · bahsetmek için @",
+    "Everyone who works in :mailbox can read and write here.": ":mailbox içinde çalışan herkes burada okuyup yazabilir.",
+    "Message the :mailbox Team": ":mailbox ekibine mesaj",
+    "New": "Yeni",
+    "New Messages": "Yeni Mesajlar",
+    "Remove :name": ":name kaldır",
+    "Team Chat": "Ekip Sohbeti"
 }

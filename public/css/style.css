@@ -2717,13 +2717,14 @@ a.disabled:focus {
 }
 /* The chat view (conversations/view): a one-line heading, the history scrolling
    below it (FruitUI's history) and the composer docked at the bottom. */
-.app-main:has(.conv-chat) > #app-content-scroll {
+.app-main:has(.conv-chat, .team-room) > #app-content-scroll {
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
-.app-main:has(.conv-chat) > #app-content-scroll > .content,
-.conv-chat {
+.app-main:has(.conv-chat, .team-room) > #app-content-scroll > .content,
+.conv-chat,
+.team-room {
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -2770,6 +2771,36 @@ a.disabled:focus {
     --f-editor-min-height: 3lh;
     margin: 0;
     border-top: 1px solid var(--f-border);
+}
+
+/* A mailbox's team chat (livewire/team-chat), as FruitUI's Support example's room:
+   the messages and the composer in one readable column. */
+.team-room__history {
+    --f-pane-scroll-padding: 8px max(14px, calc((100% - 760px) / 2)) 16px;
+    flex: 1;
+}
+.team-room__composer {
+    --f-composer-padding: 15px max(20px, calc((100% - 760px) / 2)) 18px;
+    border-top: 1px solid var(--f-border);
+}
+.team-room__text {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+.team-mention {
+    color: var(--f-accent);
+    font-weight: 600;
+}
+.team-room__files {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 8px;
+    padding: 0;
+    list-style: none;
+}
+.team-room__attach {
+    margin-inline-start: auto;
 }
 
 /* Inside the workspace the panes space their content themselves. */

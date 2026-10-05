@@ -70,6 +70,10 @@ class BroadcastNotification extends Notification implements ShouldQueue
 
         $user = auth()->user();
 
+        if (!empty($payload->team_message_id)) {
+            return TeamMentionNotification::fetchPayloadData($payload);
+        }
+
         if (empty($payload->thread_id) || empty($payload->mediums)) {
             return $data;
         }

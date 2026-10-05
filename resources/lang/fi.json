@@ -1588,5 +1588,19 @@
     "On legal hold: it will not be deleted.": "Lakisääteisessä säilytyksessä: ei poisteta.",
     "Since :date, by :user.": "Alkaen :date, :user.",
     "Search Settings": "Hae Asetuksista",
-    "No Settings Found": "Asetuksia ei Löytynyt"
+    "No Settings Found": "Asetuksia ei Löytynyt",
+    ":mailbox Team": ":mailbox-Tiimi",
+    ":mailbox Team Chat": ":mailbox-Tiimin Chat",
+    ":mailbox Team Chat, :count unread": ":mailbox-Tiimin Chat, :count lukematonta",
+    ":person mentioned you in :mailbox Team Chat": ":person mainitsi sinut :mailbox-tiimin chatissa",
+    "A Room for the Team": "Huone Tiimille",
+    "Attach Files": "Liitä Tiedostoja",
+    "Attachments to Send": "Lähetettävät Liitteet",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter lähettää · @ mainitsee",
+    "Everyone who works in :mailbox can read and write here.": "Kaikki, jotka työskentelevät postilaatikossa :mailbox, voivat lukea ja kirjoittaa täällä.",
+    "Message the :mailbox Team": "Viesti :mailbox-tiimille",
+    "New": "Uudet",
+    "New Messages": "Uudet Viestit",
+    "Remove :name": "Poista :name",
+    "Team Chat": "Tiimin Chat"
 }

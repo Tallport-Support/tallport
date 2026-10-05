@@ -626,6 +626,20 @@ class MailboxesController extends Controller
     /**
      * View mailbox.
      */
+    /**
+     * The mailbox's team chat: a room for the users who work in it (App\Livewire\TeamChat).
+     */
+    public function teamChat($id)
+    {
+        $mailbox = Mailbox::findOrFail($id);
+        $this->authorize('viewCached', $mailbox);
+
+        return view('mailboxes/team_chat', [
+            'mailbox' => $mailbox,
+            'members' => \App\TeamMessage::members($mailbox),
+        ]);
+    }
+
     public function view(Request $request, $id, $folder_id = null)
     {
         $user = auth()->user();

@@ -35,6 +35,7 @@
     @endif
 
     <p class="f-sidebar__heading">{{ $sidebar_all ? __('Mailboxes') : __('Mailbox') }}</p>
+    @php $sidebar_team_unread = App\TeamMessage::unreadCounts($sidebar_user, collect($sidebar_mailboxes)->pluck(0)->pluck('id')->all()); @endphp
     @foreach ($sidebar_mailboxes as [$sidebar_mailbox, $sidebar_folders])
         @php
             $sidebar_is_current = $sidebar_mailbox_id == $sidebar_mailbox->id;
@@ -63,6 +64,9 @@
             <div class="app-sidebar__folders" data-mailbox_id="{{ $sidebar_mailbox->id }}">
                 @include('partials/app_sidebar_folders', ['sidebar_mailbox' => $sidebar_mailbox, 'sidebar_folders' => $sidebar_folders, 'sidebar_current_folder_id' => $sidebar_is_current ? $sidebar_folder_id : null])
             </div>
+            {{-- The mailbox's team chat (App\Livewire\TeamChat); its unread count follows (public/js/realtime.js). --}}
+            @php $sidebar_unread = $sidebar_team_unread[$sidebar_mailbox->id] ?? 0; @endphp
+            <a href="{{ route('mailboxes.team_chat', ['id' => $sidebar_mailbox->id]) }}" wire:navigate class="f-sidebar__item app-team-chat-link" data-mailbox_id="{{ $sidebar_mailbox->id }}" data-label="{{ __(':mailbox Team Chat', ['mailbox' => $sidebar_mailbox->name]) }}" data-label-unread="{{ __(':mailbox Team Chat, :count unread', ['mailbox' => $sidebar_mailbox->name]) }}" @if ($sidebar_unread) aria-label="{{ __(':mailbox Team Chat, :count unread', ['mailbox' => $sidebar_mailbox->name, 'count' => $sidebar_unread]) }}" @endif @if ($sidebar_is_current && Route::currentRouteName() == 'mailboxes.team_chat') aria-current="page" @endif><x-icon.messages-square class="f-icon" aria-hidden="true" /><span class="f-sidebar__identity">{{ __('Team Chat') }}</span><span class="f-badge f-badge--accent app-team-chat-badge" @if (!$sidebar_unread) hidden @endif>{{ $sidebar_unread }}</span></a>
             <div class="app-sidebar__mailbox-actions">
                 <a href="{{ route('conversations.create', ['mailbox_id' => $sidebar_mailbox->id]) }}" class="f-button f-button--ghost f-button--small @if ($sidebar_mailbox->id == $sidebar_new_mailbox_id) new-conversation-link @endif"><x-icon.square-pen class="f-icon" aria-hidden="true" /> {{ __('New Conversation') }}</a>
                 <x-fruit::menu :title="__('Mailbox')" class="app-sidebar__mailbox-menu">

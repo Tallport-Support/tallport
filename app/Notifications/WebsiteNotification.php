@@ -103,6 +103,9 @@ class WebsiteNotification extends Notification implements ShouldQueue
         //         ->get();
         // }
 
+        // Mentions in team chats.
+        $team_entries = TeamMentionNotification::entries($notifications, $auth_user);
+
         // Populate all collected data into array
         foreach ($notifications as $notification) {
             $conversation_number = '';
@@ -130,6 +133,9 @@ class WebsiteNotification extends Notification implements ShouldQueue
                     $created_by_customer = $thread->created_by_customer_id;
                 }
             } else {
+                if (isset($team_entries[$notification->id])) {
+                    $data[] = $team_entries[$notification->id];
+                }
                 continue;
             }
 

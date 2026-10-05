@@ -1570,5 +1570,19 @@
     "On legal hold: it will not be deleted.": "Juridiskt kvarhållande: raderas inte.",
     "Since :date, by :user.": "Sedan :date, av :user.",
     "Search Settings": "Sök i Inställningar",
-    "No Settings Found": "Inga Inställningar Hittades"
+    "No Settings Found": "Inga Inställningar Hittades",
+    ":mailbox Team": "Team :mailbox",
+    ":mailbox Team Chat": "Teamchatt :mailbox",
+    ":mailbox Team Chat, :count unread": "Teamchatt :mailbox, :count olästa",
+    ":person mentioned you in :mailbox Team Chat": ":person nämnde dig i teamchatten för :mailbox",
+    "A Room for the Team": "Ett Rum för Teamet",
+    "Attach Files": "Bifoga Filer",
+    "Attachments to Send": "Bifogade Filer att Skicka",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter för att skicka · @ för att nämna",
+    "Everyone who works in :mailbox can read and write here.": "Alla som arbetar i :mailbox kan läsa och skriva här.",
+    "Message the :mailbox Team": "Meddelande till teamet i :mailbox",
+    "New": "Nytt",
+    "New Messages": "Nya Meddelanden",
+    "Remove :name": "Ta bort :name",
+    "Team Chat": "Teamchatt"
 }

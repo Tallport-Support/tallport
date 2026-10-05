@@ -1570,5 +1570,19 @@
     "On legal hold: it will not be deleted.": "Sob bloqueio legal: não será eliminado.",
     "Since :date, by :user.": "Desde :date, por :user.",
     "Search Settings": "Pesquisar Definições",
-    "No Settings Found": "Nenhuma Definição Encontrada"
+    "No Settings Found": "Nenhuma Definição Encontrada",
+    ":mailbox Team": "Equipa :mailbox",
+    ":mailbox Team Chat": "Chat da Equipa :mailbox",
+    ":mailbox Team Chat, :count unread": "Chat da Equipa :mailbox, :count não lidas",
+    ":person mentioned you in :mailbox Team Chat": ":person mencionou-o no chat da equipa :mailbox",
+    "A Room for the Team": "Uma Sala para a Equipa",
+    "Attach Files": "Anexar Ficheiros",
+    "Attachments to Send": "Anexos a Enviar",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter para enviar · @ para mencionar",
+    "Everyone who works in :mailbox can read and write here.": "Todos os que trabalham em :mailbox podem ler e escrever aqui.",
+    "Message the :mailbox Team": "Mensagem para a equipa :mailbox",
+    "New": "Novas",
+    "New Messages": "Novas Mensagens",
+    "Remove :name": "Remover :name",
+    "Team Chat": "Chat da Equipa"
 }

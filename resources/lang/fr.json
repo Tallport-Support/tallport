@@ -1579,5 +1579,19 @@
     "On legal hold: it will not be deleted.": "Sous conservation légale : ne sera pas supprimé.",
     "Since :date, by :user.": "Depuis le :date, par :user.",
     "Search Settings": "Rechercher dans les Réglages",
-    "No Settings Found": "Aucun Réglage Trouvé"
+    "No Settings Found": "Aucun Réglage Trouvé",
+    ":mailbox Team": "Équipe :mailbox",
+    ":mailbox Team Chat": "Tchat de l'Équipe :mailbox",
+    ":mailbox Team Chat, :count unread": "Tchat de l'Équipe :mailbox, :count non lus",
+    ":person mentioned you in :mailbox Team Chat": ":person vous a mentionné dans le tchat de l'équipe :mailbox",
+    "A Room for the Team": "Une Salle pour l'Équipe",
+    "Attach Files": "Joindre des Fichiers",
+    "Attachments to Send": "Pièces Jointes à Envoyer",
+    "Ctrl+Enter to send · @ to mention": "Ctrl+Enter pour envoyer · @ pour mentionner",
+    "Everyone who works in :mailbox can read and write here.": "Toutes les personnes qui travaillent dans :mailbox peuvent lire et écrire ici.",
+    "Message the :mailbox Team": "Message à l'équipe :mailbox",
+    "New": "Nouveau",
+    "New Messages": "Nouveaux Messages",
+    "Remove :name": "Retirer :name",
+    "Team Chat": "Tchat d'Équipe"
 }
