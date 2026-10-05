@@ -7,6 +7,7 @@ use App\Folder;
 use App\Mailbox;
 use App\Thread;
 use App\User;
+use App\Workflow;
 use App\Ai\Settings;
 use App\Ai\Summaries;
 use Illuminate\Database\Eloquent\Model;
@@ -51,7 +52,17 @@ class DatabaseSeeder extends Seeder
                 foreach ($mailboxes as $mailbox) {
                     $this->mailbox($mailbox, $users);
                     $this->enrichSamples($mailbox, $users);
+                    $this->workflows($mailbox, $users);
                 }
+                $this->seedWorkflows(null, [
+                    Workflow::TYPE_MANUAL => [
+                        [
+                            'name' => 'Sample: Resolve conversation',
+                            'conditions' => [],
+                            'actions' => [[['type' => 'status', 'value' => (string) Conversation::STATUS_CLOSED]]],
+                        ],
+                    ],
+                ]);
             });
         });
         if ($this->command) {
@@ -169,6 +180,79 @@ class DatabaseSeeder extends Seeder
         }
         foreach ($mailbox->folders as $folder) {
             $folder->updateCountersNow();
+        }
+    }
+
+    protected function workflows($mailbox, $users)
+    {
+        $samples = [
+            Workflow::TYPE_AUTOMATIC => [
+                [
+                    'name' => 'Sample: Route invoice questions',
+                    'conditions' => [
+                        [['type' => 'subject', 'operator' => 'contains', 'value' => 'invoice'],
+                            ['type' => 'subject', 'operator' => 'contains', 'value' => 'payment']],
+                        [['type' => 'status', 'operator' => 'equal', 'value' => (string) Conversation::STATUS_ACTIVE]],
+                    ],
+                    'actions' => [
+                        [['type' => 'assign', 'value' => (string) $users[1]->id]],
+                        [['type' => 'status', 'value' => (string) Conversation::STATUS_PENDING]],
+                    ],
+                ],
+                [
+                    'name' => 'Sample: Follow up after two days',
+                    'conditions' => [
+                        [['type' => 'waiting', 'operator' => 'longer', 'value' => ['number' => '2', 'metric' => 'd']]],
+                        [['type' => 'state', 'operator' => 'equal', 'value' => (string) Conversation::STATE_PUBLISHED]],
+                    ],
+                    'actions' => [
+                        [['type' => 'assign', 'value' => (string) $users[2]->id]],
+                        [['type' => 'note', 'value' => json_encode(['body' => '<p>This customer has been waiting for two days. Please review the conversation and follow up.</p>'])]],
+                    ],
+                ],
+            ],
+            Workflow::TYPE_MANUAL => [
+                [
+                    'name' => 'Sample: Take ownership',
+                    'conditions' => [],
+                    'actions' => [
+                        [['type' => 'assign', 'value' => (string) Workflow::ASSIGNEE_CURRENT]],
+                        [['type' => 'status', 'value' => (string) Conversation::STATUS_ACTIVE]],
+                    ],
+                ],
+            ],
+        ];
+        $this->seedWorkflows($mailbox->id, $samples);
+    }
+
+    protected function seedWorkflows($mailbox_id, $samples)
+    {
+        foreach ($samples as $type => $examples) {
+            $existing = Workflow::where('mailbox_id', $mailbox_id)->where('type', $type)->get();
+            $missing = count($examples) - $existing->count();
+            $sort_order = (int) Workflow::where('mailbox_id', $mailbox_id)->max('sort_order');
+            foreach ($examples as $example) {
+                if ($missing <= 0) {
+                    break;
+                }
+                if ($existing->contains('name', $example['name'])) {
+                    continue;
+                }
+                $workflow = new Workflow();
+                $workflow->mailbox_id = $mailbox_id;
+                $workflow->name = $example['name'];
+                $workflow->type = $type;
+                // Automatic examples are opt-in; manual ones run only when selected.
+                $workflow->active = $type == Workflow::TYPE_MANUAL;
+                $workflow->complete = true;
+                $workflow->apply_to_prev = false;
+                $workflow->max_executions = 1;
+                $workflow->sort_order = ++$sort_order;
+                $workflow->setConditions($example['conditions']);
+                $workflow->setActions($example['actions']);
+                $workflow->save();
+                $missing--;
+            }
         }
     }
 

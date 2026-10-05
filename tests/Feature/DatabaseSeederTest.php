@@ -8,6 +8,9 @@ use App\Folder;
 use App\Mailbox;
 use App\Thread;
 use App\User;
+use App\Workflow;
+use App\Workflows\Conditions;
+use App\Workflows\Runner;
 use Illuminate\Support\Facades\Queue;
 use Tests\FeatureTestCase;
 
@@ -216,10 +219,111 @@ class DatabaseSeederTest extends FeatureTestCase
         $this->assertSame('Une vraie traduction.', \App\Ai\Translations::get($thread->fresh(), 'fr'));
     }
 
+    public function testSeederAddsUsableWorkflowsWithoutRunningAutomaticExamples()
+    {
+        Queue::fake();
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+
+        foreach (Mailbox::all() as $mailbox) {
+            $automatic = Workflow::where('mailbox_id', $mailbox->id)->where('type', Workflow::TYPE_AUTOMATIC)->orderBy('sort_order')->get();
+            $this->assertCount(2, $automatic);
+            foreach ($automatic as $workflow) {
+                $this->assertFalse($workflow->active);
+                $this->assertFalse($workflow->apply_to_prev);
+                $this->assertTrue($workflow->complete);
+                $this->assertSame(0, $workflow->conversationsCount());
+                $assignee = $workflow->getActions()[0][0]['value'];
+                $this->assertTrue($mailbox->users()->where('users.id', $assignee)->exists());
+            }
+            $conversation = $mailbox->conversations()->where('state', Conversation::STATE_PUBLISHED)->first();
+            $conversation->subject = 'A payment question';
+            $conversation->status = Conversation::STATUS_ACTIVE;
+            $this->assertTrue(Conditions::check($automatic[0], $conversation));
+            $conversation->subject = 'An unrelated question';
+            $this->assertFalse(Conditions::check($automatic[0], $conversation));
+            $conversation->last_reply_from = Conversation::PERSON_CUSTOMER;
+            $conversation->last_reply_at = now()->subDays(3);
+            $this->assertTrue(Conditions::check($automatic[1], $conversation));
+            $conversation->last_reply_at = now();
+            $this->assertFalse(Conditions::check($automatic[1], $conversation));
+
+            $manual = Workflow::activeFor($mailbox->id, Workflow::TYPE_MANUAL)->where('mailbox_id', $mailbox->id);
+            $this->assertCount(1, $manual);
+            $agent = $mailbox->users()->first();
+            $conversation->user_id = null;
+            $conversation->status = Conversation::STATUS_PENDING;
+            $conversation->saveQuietly();
+            $this->assertSame(1, Runner::runManual($manual->first(), [$conversation], $agent));
+            $this->assertSame($agent->id, $conversation->fresh()->user_id);
+            $this->assertSame(Conversation::STATUS_ACTIVE, $conversation->fresh()->status);
+        }
+        $this->assertCount(0, $this->sentEmails());
+    }
+
+    public function testSeederReplenishesMissingWorkflowsAndPreservesExistingOnes()
+    {
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $existing = Workflow::orderBy('id')->first();
+        $existing->name = 'Our own routing rule';
+        $existing->active = true;
+        $existing->sort_order = 20;
+        $existing->setActions([[['type' => 'status', 'value' => (string) Conversation::STATUS_CLOSED]]]);
+        $existing->save();
+        $extra = $existing->replicate();
+        $extra->name = 'Another existing rule';
+        $extra->save();
+        $missing = Workflow::where('mailbox_id', '<>', $existing->mailbox_id)->where('type', Workflow::TYPE_AUTOMATIC)->first();
+        $mailbox_id = $missing->mailbox_id;
+        $missing->delete();
+        $before = Workflow::orderBy('id')->get()->toArray();
+
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+
+        $this->assertSame(count($before) + 1, Workflow::count());
+        $this->assertSame(2, Workflow::where('mailbox_id', $mailbox_id)->where('type', Workflow::TYPE_AUTOMATIC)->count());
+        $this->assertSame($before, Workflow::whereIn('id', array_column($before, 'id'))->orderBy('id')->get()->toArray());
+        $snapshot = $this->snapshot();
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $this->assertSame($snapshot, $this->snapshot());
+    }
+
+    public function testSeederAddsAGlobalWorkflowAndPreservesExistingGlobalRules()
+    {
+        Queue::fake();
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $global = Workflow::whereNull('mailbox_id')->sole();
+        $this->assertTrue($global->isGlobal());
+        $this->actingAs(User::where('role', User::ROLE_ADMIN)->first())
+            ->get(route('workflows'))->assertSee($global->name);
+
+        foreach (Mailbox::all() as $mailbox) {
+            $this->assertTrue(Workflow::activeFor($mailbox->id, Workflow::TYPE_MANUAL)->contains('id', $global->id));
+            $conversation = $mailbox->conversations()->where('state', Conversation::STATE_PUBLISHED)
+                ->where('status', Conversation::STATUS_ACTIVE)->first();
+            $this->assertSame(1, Runner::runManual($global, [$conversation], $mailbox->users()->first()));
+            $this->assertSame(Conversation::STATUS_CLOSED, $conversation->fresh()->status);
+        }
+
+        $global->name = 'Our global rule';
+        $global->active = false;
+        $global->setActions([[['type' => 'status', 'value' => (string) Conversation::STATUS_PENDING]]]);
+        $global->save();
+        $before = $global->fresh()->toArray();
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $this->assertSame($before, Workflow::whereNull('mailbox_id')->sole()->toArray());
+
+        $global->delete();
+        $local = Workflow::whereNotNull('mailbox_id')->orderBy('id')->get()->toArray();
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $this->assertTrue(Workflow::whereNull('mailbox_id')->sole()->active);
+        $this->assertSame($local, Workflow::whereNotNull('mailbox_id')->orderBy('id')->get()->toArray());
+        $this->assertCount(0, $this->sentEmails());
+    }
+
     private function snapshot()
     {
         $snapshot = [];
-        foreach (['users', 'mailboxes', 'customers', 'emails', 'conversations', 'threads', 'folders', 'conversation_folder', 'mailbox_user'] as $table) {
+        foreach (['users', 'mailboxes', 'customers', 'emails', 'conversations', 'threads', 'folders', 'conversation_folder', 'mailbox_user', 'workflows', 'conversation_workflow'] as $table) {
             $snapshot[$table] = \DB::table($table)->orderBy('id')->get()->toJson();
         }
 
