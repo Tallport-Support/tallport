@@ -50,6 +50,7 @@ return array(
     'App\\Console\\Commands\\CheckConvViewers' => $baseDir . '/app/Console/Commands/CheckConvViewers.php',
     'App\\Console\\Commands\\CheckOutgoing' => $baseDir . '/app/Console/Commands/CheckOutgoing.php',
     'App\\Console\\Commands\\CheckRequirements' => $baseDir . '/app/Console/Commands/CheckRequirements.php',
+    'App\\Console\\Commands\\CleanGravatars' => $baseDir . '/app/Console/Commands/CleanGravatars.php',
     'App\\Console\\Commands\\CleanNotificationsTable' => $baseDir . '/app/Console/Commands/CleanNotificationsTable.php',
     'App\\Console\\Commands\\CleanSendLog' => $baseDir . '/app/Console/Commands/CleanSendLog.php',
     'App\\Console\\Commands\\CleanTmp' => $baseDir . '/app/Console/Commands/CleanTmp.php',

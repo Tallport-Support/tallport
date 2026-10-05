@@ -41,6 +41,7 @@ class ConversationPane extends Component
         ConversationsController::markNotificationsRead($conversation, $user);
         session()->put('folder_conversation.'.$this->folder_id, $conversation->id);
         \App\Events\RealtimeConvView::dispatchSelf($conversation->id, $user, false);
+        \App\Misc\Gravatar::request($conversation->customer, $conversation->customer_email);
         \Eventy::action('conversation.view.start', $conversation, request());
 
         // The page around it follows (public/js/conversations.js).

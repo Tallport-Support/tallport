@@ -103,4 +103,31 @@ class GravatarTest extends FeatureTestCase
         $casey->save();
         $this->assertFalse(Gravatar::isDue($casey->fresh()));
     }
+
+    public function testOldPhotosAreRemovedAndOpeningAConversationGetsAFreshOne()
+    {
+        \Option::set(Gravatar::OPTION, true);
+        Http::fake(['gravatar.com/*' => Http::response($this->png(), 200, ['Content-Type' => 'image/png'])]);
+        $mailbox = $this->createMailbox();
+        $agent = $this->createUser();
+        $mailbox->users()->attach($agent->id);
+        $this->receiveEmail($mailbox, $this->makeEmail(['from' => 'casey@customer.example.org', 'to' => $mailbox->email]));
+        $this->receiveEmail($mailbox, $this->makeEmail(['from' => 'sam@customer.example.org', 'to' => $mailbox->email]));
+        $casey = Customer::getByEmail('casey@customer.example.org');
+        $sam = Customer::getByEmail('sam@customer.example.org');
+        $this->assertNotEmpty($casey->fresh()->photo_url);
+
+        // Older than REFRESH_DAYS: removed; newer ones stay.
+        $casey = $casey->fresh();
+        $casey->setMeta(Gravatar::META, now()->subDays(Gravatar::REFRESH_DAYS + 1)->toDateTimeString());
+        $casey->save();
+        $this->artisan('tallport:clean-gravatars')->expectsOutput('Removed: 1')->assertExitCode(0);
+        $this->assertEmpty($casey->fresh()->photo_url);
+        $this->assertNotEmpty($sam->fresh()->photo_url);
+
+        // Their conversation opened: a fresh one.
+        $conversation = \App\Conversation::where('customer_id', $casey->id)->first();
+        $this->actingAs($agent)->get($conversation->url())->assertOk();
+        $this->assertNotEmpty($casey->fresh()->photo_url);
+    }
 }

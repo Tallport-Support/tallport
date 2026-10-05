@@ -73,6 +73,11 @@
         "timezone": "UTC"
     },
     {
+        "command": "artisan tallport:clean-gravatars",
+        "expression": "10 4 * * *",
+        "timezone": "UTC"
+    },
+    {
         "command": "artisan tallport:search-index",
         "expression": "* * * * *",
         "timezone": "UTC",

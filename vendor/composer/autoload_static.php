@@ -816,6 +816,7 @@ class ComposerStaticInit2902b8515f6672bf67bcf119cdb6b034
         'App\\Console\\Commands\\CheckConvViewers' => __DIR__ . '/../..' . '/app/Console/Commands/CheckConvViewers.php',
         'App\\Console\\Commands\\CheckOutgoing' => __DIR__ . '/../..' . '/app/Console/Commands/CheckOutgoing.php',
         'App\\Console\\Commands\\CheckRequirements' => __DIR__ . '/../..' . '/app/Console/Commands/CheckRequirements.php',
+        'App\\Console\\Commands\\CleanGravatars' => __DIR__ . '/../..' . '/app/Console/Commands/CleanGravatars.php',
         'App\\Console\\Commands\\CleanNotificationsTable' => __DIR__ . '/../..' . '/app/Console/Commands/CleanNotificationsTable.php',
         'App\\Console\\Commands\\CleanSendLog' => __DIR__ . '/../..' . '/app/Console/Commands/CleanSendLog.php',
         'App\\Console\\Commands\\CleanTmp' => __DIR__ . '/../..' . '/app/Console/Commands/CleanTmp.php',

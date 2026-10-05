@@ -129,6 +129,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('tallport:clean-tmp')
             ->daily();
 
+        $schedule->command('tallport:clean-gravatars')
+            ->dailyAt('04:10');
+
         // Search: index what the requests and jobs didn't (new installations,
         // missed changes), and forget conversations deleted around Tallport.
         $schedule->command('tallport:search-index')

@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\Http;
 
 /**
  * Customer photos from Gravatar (a setting): looked up for a customer without
- * a photo of their own when they email, and again after REFRESH_DAYS. Without
- * a Gravatar: initials, or Gravatar's generated image (DEFAULT_OPTION).
- * Gravatar gets the address's SHA-256 hash.
+ * a photo of their own when they email or their conversation is opened. Photos
+ * older than REFRESH_DAYS are removed (tallport:clean-gravatars), so a customer
+ * still in touch gets a fresh one and the others none. Without a Gravatar:
+ * initials, or Gravatar's generated image (DEFAULT_OPTION). Gravatar gets the
+ * address's SHA-256 hash.
  */
 class Gravatar
 {
@@ -29,7 +31,7 @@ class Gravatar
     const DEFAULTS = ['robohash' => 'Robohash', 'identicon' => 'Identicon', 'retro' => 'Retro', 'monsterid' => 'MonsterID', 'wavatar' => 'Wavatar'];
 
     /**
-     * Asked again after this long, when the customer emails.
+     * How long a photo from Gravatar is kept.
      */
     const REFRESH_DAYS = 90;
 
@@ -66,6 +68,29 @@ class Gravatar
         $checked_at = $customer->getMeta(self::META);
 
         return !$checked_at || \Carbon\Carbon::parse($checked_at)->lt(now()->subDays(self::REFRESH_DAYS));
+    }
+
+    /**
+     * Removes the Gravatar photos older than REFRESH_DAYS; how many.
+     */
+    public static function removeOld()
+    {
+        $removed = 0;
+        Customer::where('photo_type', Customer::PHOTO_TYPE_GRAVATAR)->where('photo_url', '!=', '')->whereNotNull('photo_url')
+            ->chunkById(500, function ($customers) use (&$removed) {
+                foreach ($customers as $customer) {
+                    $checked_at = $customer->getMeta(self::META);
+                    if ($checked_at && \Carbon\Carbon::parse($checked_at)->gte(now()->subDays(self::REFRESH_DAYS))) {
+                        continue;
+                    }
+                    $customer->removePhoto();
+                    $customer->setMeta(self::META, null);
+                    $customer->save();
+                    $removed++;
+                }
+            });
+
+        return $removed;
     }
 
     public static function url($email)
