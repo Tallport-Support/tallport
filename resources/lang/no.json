@@ -1533,5 +1533,7 @@
     "In a Conversation": "I en Samtale",
     "In the List": "I Listen",
     "then": "deretter",
-    "Replace Photo": "Erstatt Bilde"
+    "Replace Photo": "Erstatt Bilde",
+    "Conversation View": "Samtalevisning",
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Hvordan samtaler fra hver kanal ser ut: som e-poster, eller som en chat med den nyeste meldingen nederst."
 }

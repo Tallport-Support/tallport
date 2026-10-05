@@ -90,7 +90,7 @@ class ConversationActionButtons
                             'location'       => self::LOCATION_DROPDOWN,
                             'label'          => __('Merge'),
                             'permission'     => function ($conversation) {
-                                    return ! $conversation->isChat();
+                                    return ! $conversation->hasChannel();
                             },
                             'class'          => '',
                             'url'            => function ($conversation) {

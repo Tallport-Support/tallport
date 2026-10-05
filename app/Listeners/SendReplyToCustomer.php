@@ -88,7 +88,7 @@ class SendReplyToCustomer
 
         // Telegram: the reply is sent by Tallport's Telegram bot, right away
         // (Undo deletes it from the chat).
-        if ($conversation->isChat() && $conversation->channel == \App\Telegram\Telegram::CHANNEL) {
+        if ($conversation->channel == \App\Telegram\Telegram::CHANNEL) {
             \App\Jobs\SendReplyToTelegram::dispatch($thread->id);
             return;
         }
@@ -99,8 +99,8 @@ class SendReplyToCustomer
             return;
         }
 
-        // Chat conversation.
-        if ($conversation->isChat()) {
+        // Modules' channels.
+        if ($conversation->hasChannel()) {
             \Helper::backgroundAction('chat_conversation.send_reply', [$conversation, $replies, $conversation->customer], now()->addSeconds(Conversation::UNDO_TIMOUT));
             return;
         }

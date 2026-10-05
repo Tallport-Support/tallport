@@ -1529,5 +1529,7 @@
     "In a Conversation": "Bir Görüşmede",
     "In the List": "Listede",
     "then": "sonra",
-    "Replace Photo": "Fotoğrafı Değiştir"
+    "Replace Photo": "Fotoğrafı Değiştir",
+    "Conversation View": "Konu Görünümü",
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Her kanaldan gelen konuların görünümü: e-posta olarak veya en yeni mesajın altta olduğu bir sohbet olarak."
 }

@@ -209,11 +209,6 @@ class Conversation extends Model
     const DEFAULT_LIST_SIZE = 50;
 
     /**
-     * Default size of the chats list.
-     */
-    const CHATS_LIST_SIZE = 50;
-
-    /**
      * Cache of the conversations starred by user.
      *
      * @var array
@@ -1963,11 +1958,21 @@ class Conversation extends Model
     }
 
     /**
-     * Is it as chat conversation.
+     * Whether the conversation came through a messaging channel (Telegram, Nostr,
+     * modules' channels) rather than email: the channel decides how replies are
+     * sent and what they can contain.
+     */
+    public function hasChannel()
+    {
+        return (bool) $this->channel;
+    }
+
+    /**
+     * FreeScout modules' name for hasChannel().
      */
     public function isChat()
     {
-        return ($this->type == self::TYPE_CHAT);
+        return $this->hasChannel();
     }
 
     /**
@@ -2534,8 +2539,7 @@ class Conversation extends Model
     public static function refreshConversations($conversation, $thread)
     {
         \App\Events\RealtimeConvNewThread::dispatchSelf($thread);
-        \App\Events\RealtimeMailboxNewThread::dispatchSelf($conversation->mailbox_id, $thread->id, (int)$conversation->isChat());
-        \App\Events\RealtimeChat::dispatchSelf($conversation->mailbox_id, $thread->id, (int)$conversation->isChat());
+        \App\Events\RealtimeMailboxNewThread::dispatchSelf($conversation->mailbox_id, $thread->id, (int)$conversation->hasChannel());
     }
 
     /**
@@ -2847,36 +2851,6 @@ class Conversation extends Model
             $thread->conversation->setPreview($thread->body);
             $thread->conversation->save();
         }
-    }
-
-    public function isInChatMode()
-    {
-        return $this->isChat() && \Helper::isChatMode() && \Route::is('conversations.view');
-    }
-
-    public static function getChats($mailbox_id, $offset = 0, $limit = self::CHATS_LIST_SIZE+1)
-    {
-        $query = Conversation::where('type', self::TYPE_CHAT)
-            ->where('mailbox_id', $mailbox_id)
-            ->where('state', self::STATE_PUBLISHED)
-            ->whereIn('status', [self::STATUS_ACTIVE, self::STATUS_PENDING])
-            ->orderBy('last_reply_at', 'desc')
-            ->offset($offset)
-            ->limit($limit);
-
-        // Check access.
-        $user = auth()->user();
-        if ($user->canSeeOnlyAssignedConversations()) {
-            $query->where('conversations.user_id', $user->id);
-        }
-        $chats = $query->get();
-
-        // Preload customers.
-        if (count($chats)) {
-            self::loadCustomers($chats);
-        }
-
-        return $chats;
     }
 
     public static function queryContainsStr($query_str, $substr)

@@ -1529,5 +1529,7 @@
     "In a Conversation": "В Разговоре",
     "In the List": "В Списке",
     "then": "затем",
-    "Replace Photo": "Заменить Фото"
+    "Replace Photo": "Заменить Фото",
+    "Conversation View": "Вид Тикета",
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Как выглядят тикеты из каждого канала: как письма или как чат с новейшим сообщением внизу."
 }

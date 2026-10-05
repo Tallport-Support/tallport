@@ -631,7 +631,8 @@ class UsersController extends Controller
     }
 
     /**
-     * The user's own preferences: the status of a reply and where to go after sending.
+     * The user's own preferences: the status of a reply, where to go after sending,
+     * the accent and how each channel's conversations look.
      */
     public function preferences($id)
     {
@@ -654,11 +655,16 @@ class UsersController extends Controller
             'reply_status' => 'nullable|in:'.implode(',', array_keys(\App\Conversation::$statuses)),
             'after_send'   => 'nullable|in:'.implode(',', [\App\MailboxUser::AFTER_SEND_STAY, \App\MailboxUser::AFTER_SEND_NEXT]),
             'accent'       => ['nullable', \Illuminate\Validation\Rule::in(\FruitUI\Fruit::ACCENTS)],
+            'conversation_views'   => 'nullable|array',
+            'conversation_views.*' => 'in:'.User::VIEW_EMAIL.','.User::VIEW_CHAT,
         ]);
         $user->reply_status = $request->reply_status ?: null;
         $user->after_send = $request->after_send ?: null;
         // Off: the installation's accent (Settings » Appearance).
         $user->accent = $request->filled('accent_default') ? null : ($request->accent ?: null);
+        // Per channel: email ("email") and the channels Tallport and modules have.
+        $channels = array_merge(['email'], array_map('strval', array_keys(\Eventy::filter('channels.list', []))));
+        $user->conversation_views = json_encode(array_intersect_key((array) $request->conversation_views, array_flip($channels))) ?: null;
         $user->save();
 
         \Session::flash('flash_success_floating', __('Settings updated'));

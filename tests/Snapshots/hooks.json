@@ -252,7 +252,10 @@
         "arguments": 1,
         "files": [
             "app/CustomerChannel.php",
-            "app/Workflows/Conditions.php"
+            "app/Http/Controllers/UsersController.php",
+            "app/Reports/Report.php",
+            "app/Workflows/Conditions.php",
+            "resources/views/users/preferences.blade.php"
         ]
     },
     {
@@ -1916,7 +1919,7 @@
         "name": "mailbox.view.before_name",
         "arguments": 1,
         "files": [
-            "resources/views/mailboxes/sidebar_menu_view.blade.php"
+            "resources/views/mailboxes/partials/list_toolbar.blade.php"
         ]
     },
     {

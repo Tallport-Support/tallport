@@ -1,7 +1,7 @@
 /**
  * Realtime updates (Polycast): notifications, who else is viewing or replying
  * to the open conversation, its new messages, assignee and status, the
- * sidebar's folders and the lists, and chats, with their sound.
+ * sidebar's folders and the lists, with a sound for channels' messages.
  */
 var poly;
 var poly_data_closures = [];
@@ -295,9 +295,6 @@ function maybeShowConnectionRestored()
 		// each mailbox subscribed once, when its folders are first on a page.
 		var subscribed_mailboxes = {};
 		var subscribeMailboxes = function () {
-			if (document.body.classList.contains('chat-mode')) {
-				return;
-			}
 			document.querySelectorAll('.app-sidebar__folders[data-mailbox_id]').forEach(function (element) {
 				if (subscribed_mailboxes[element.getAttribute('data-mailbox_id')]) {
 					return;
@@ -331,55 +328,7 @@ function maybeShowConnectionRestored()
 		};
 		subscribeMailboxes();
 		document.addEventListener('livewire:navigated', subscribeMailboxes);
-
-		// Chat mode: the mailbox's chats (looked up when they change: wire:navigate).
-		var subscribed_chats = {};
-		var subscribeChats = function () {
-			var mailbox_id = attr('mailbox_id');
-			if (!document.querySelector('#folders.chat-list') || !mailbox_id || subscribed_chats[mailbox_id]) {
-				return;
-			}
-			subscribed_chats[mailbox_id] = true;
-			poly.subscribe('chat.'+mailbox_id).on('App\\Events\\RealtimeChat', function (data) {
-				if (!data) {
-					return;
-				}
-				playAudioNotification(data);
-				var chats = document.querySelector('#folders.chat-list');
-				if (chats && data.mailbox_id == attr('mailbox_id') && data.chats_html) {
-					chats.innerHTML = data.chats_html;
-					var current = chats.querySelector('[data-chat_id="'+attr('conversation_id')+'"] .f-item-row');
-					if (current) {
-						current.setAttribute('aria-current', 'true');
-					}
-				}
-			});
-		};
-		subscribeChats();
-		document.addEventListener('livewire:navigated', subscribeChats);
 	};
-
-	// Chat mode: more chats.
-	document.addEventListener('click', function (e) {
-		var button = e.target.closest('.chats-load-more');
-		if (!button) {
-			return;
-		}
-		e.preventDefault();
-		Tallport.busy(button, true);
-		Tallport.post(laroute.route('conversations.ajax'), {
-			action: 'chats_load_more',
-			mailbox_id: attr('mailbox_id'),
-			offset: document.querySelectorAll('#folders .chat-item').length
-		}).then(function (response) {
-			if (Tallport.result(response)) {
-				button.closest('li').insertAdjacentHTML('beforebegin', response.html);
-				button.closest('li').remove();
-			} else {
-				Tallport.busy(button, false);
-			}
-		});
-	});
 
 	document.addEventListener('DOMContentLoaded', connect);
 

@@ -1529,5 +1529,7 @@
     "In a Conversation": "У Розмові",
     "In the List": "У Списку",
     "then": "потім",
-    "Replace Photo": "Замінити Фото"
+    "Replace Photo": "Замінити Фото",
+    "Conversation View": "Вигляд Розмови",
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Як виглядають розмови з кожного каналу: як листи або як чат із найновішим повідомленням унизу."
 }

@@ -108,7 +108,7 @@
                         <x-slot:title :title="$conversation->customer_email">@if (empty($no_customer)){{ $conv_customer_name }}@else{{ $conversation->getSubject() }}@endif</x-slot:title>
                         <x-slot:trailing :title="$conv_date_title ?: null">{{ $conv_waiting_since }}</x-slot:trailing>
                         @if (empty($no_customer))
-                            <x-slot:subtitle>@include('conversations/partials/badges'){{ '' }}@if ($conversation->isChat() && $conversation->getChannelName())<span class="f-badge conv-channel">{{ $conversation->getChannelName() }}</span> @endif{{ '' }}@action('conversations_table.before_subject', $conversation){{ $conversation->getSubject() }}@action('conversations_table.after_subject', $conversation)</x-slot:subtitle>
+                            <x-slot:subtitle>@include('conversations/partials/badges'){{ '' }}@if ($conversation->hasChannel() && $conversation->getChannelName())<span class="f-badge conv-channel">{{ $conversation->getChannelName() }}</span> @endif{{ '' }}@action('conversations_table.before_subject', $conversation){{ $conversation->getSubject() }}@action('conversations_table.after_subject', $conversation)</x-slot:subtitle>
                         @endif
                         <x-slot:preview>@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner)<x-icon.sparkles class="f-icon ai-assistant-icon" role="img" :aria-label="__('AI Assistant')" /> {{ $ai_one_liner }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</x-slot:preview>
                         <x-slot:meta class="conv-row__meta">

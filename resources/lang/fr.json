@@ -1538,5 +1538,7 @@
     "In a Conversation": "Dans une Conversation",
     "In the List": "Dans la Liste",
     "then": "puis",
-    "Replace Photo": "Remplacer la Photo"
+    "Replace Photo": "Remplacer la Photo",
+    "Conversation View": "Affichage des Conversations",
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "L'apparence des conversations de chaque canal : comme des emails, ou comme un tchat avec le message le plus récent en bas."
 }

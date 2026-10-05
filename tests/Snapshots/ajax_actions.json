@@ -3,7 +3,6 @@
         "bulk_conversation_change_status",
         "bulk_conversation_change_user",
         "bulk_delete_conversation",
-        "chats_load_more",
         "conversation_change_customer",
         "conversation_change_status",
         "conversation_change_user",

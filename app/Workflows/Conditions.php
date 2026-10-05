@@ -78,7 +78,7 @@ class Conditions
             'conversation' => [
                 'title' => __('Conversation'),
                 'items' => [
-                    'type' => ['title' => __('Type'), 'operators' => $is, 'values' => [Conversation::TYPE_EMAIL => __('Email'), Conversation::TYPE_PHONE => __('Phone'), Conversation::TYPE_CHAT => __('Chat')], 'triggers' => self::TEXT_TRIGGERS],
+                    'type' => ['title' => __('Type'), 'operators' => $is, 'values' => [Conversation::TYPE_EMAIL => __('Email'), Conversation::TYPE_PHONE => __('Phone')], 'triggers' => self::TEXT_TRIGGERS],
                     'status' => [
                         'title'     => __('Status'),
                         'operators' => $is,

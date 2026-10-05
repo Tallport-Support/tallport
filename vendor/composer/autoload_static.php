@@ -855,7 +855,6 @@ class ComposerStaticInit2902b8515f6672bf67bcf119cdb6b034
         'App\\Events\\CustomerCreatedConversation' => __DIR__ . '/../..' . '/app/Events/CustomerCreatedConversation.php',
         'App\\Events\\CustomerReplied' => __DIR__ . '/../..' . '/app/Events/CustomerReplied.php',
         'App\\Events\\RealtimeBroadcastNotificationCreated' => __DIR__ . '/../..' . '/app/Events/RealtimeBroadcastNotificationCreated.php',
-        'App\\Events\\RealtimeChat' => __DIR__ . '/../..' . '/app/Events/RealtimeChat.php',
         'App\\Events\\RealtimeConvNewThread' => __DIR__ . '/../..' . '/app/Events/RealtimeConvNewThread.php',
         'App\\Events\\RealtimeConvView' => __DIR__ . '/../..' . '/app/Events/RealtimeConvView.php',
         'App\\Events\\RealtimeConvViewFinish' => __DIR__ . '/../..' . '/app/Events/RealtimeConvViewFinish.php',

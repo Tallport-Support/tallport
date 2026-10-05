@@ -101,14 +101,6 @@ class RemainingAjaxActionsTest extends FeatureTestCase
         $this->assertSame('Not enough permissions', $this->conversationAjax($this->createUser(), ['action' => 'retry_send', 'thread_id' => $reply->id])['msg']);
     }
 
-    public function testChatsLoadMore()
-    {
-        $response = $this->conversationAjax($this->agent, ['action' => 'chats_load_more', 'mailbox_id' => $this->mailbox->id, 'offset' => 0]);
-
-        $this->assertSame('success', $response['status']);
-        $this->assertSame('Action not authorized', $this->conversationAjax($this->createUser(), ['action' => 'chats_load_more', 'mailbox_id' => $this->mailbox->id, 'offset' => 0])['msg']);
-    }
-
     public function testMoreDialogs()
     {
         $conversation = $this->receiveConversation();

@@ -10,7 +10,7 @@ use Tests\FeatureTestCase;
 
 /**
  * Smaller features around conversations: undoing a sent reply, cloning a
- * conversation from a thread, the chats page, in-app (web) notifications,
+ * conversation from a thread, in-app (web) notifications,
  * and the general file upload used by the editors.
  */
 class ConversationExtrasTest extends FeatureTestCase
@@ -117,14 +117,6 @@ class ConversationExtrasTest extends FeatureTestCase
         $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id.'/clone-ticket/'.$conversation->threads()->first()->id.'/wrong-token');
 
         $this->assertSame(1, Conversation::where('mailbox_id', $this->mailbox->id)->count());
-    }
-
-    // Chats.
-
-    public function testChatsPageWithoutChats()
-    {
-        $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id.'/chats')->assertStatus(200);
-        $this->actingAs($this->createUser())->get('/mailbox/'.$this->mailbox->id.'/chats')->assertStatus(403);
     }
 
     // Web notifications.

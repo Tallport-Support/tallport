@@ -1529,5 +1529,7 @@
     "In a Conversation": "I en Konversation",
     "In the List": "I Listan",
     "then": "sedan",
-    "Replace Photo": "Ersätt Foto"
+    "Replace Photo": "Ersätt Foto",
+    "Conversation View": "Konversationsvy",
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Hur konversationer från varje kanal ser ut: som e-post, eller som en chatt med det senaste meddelandet längst ned."
 }

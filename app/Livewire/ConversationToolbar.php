@@ -54,17 +54,6 @@ class ConversationToolbar extends Component
     }
 
     /**
-     * Chat Mode on or off (for the session), then the conversation again.
-     */
-    public function toggleChatMode()
-    {
-        $conversation = $this->conversation();
-        \Helper::setChatMode(!\Helper::isChatMode());
-
-        $this->redirect($conversation->url($this->folder_id), navigate: true);
-    }
-
-    /**
      * The menu shows Follow or Unfollow by itself (Alpine).
      */
     public function follow($follow = true)

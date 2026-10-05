@@ -10,7 +10,6 @@ use Carbon\Carbon;
 use App\Email;
 use App\Option;
 use App\User;
-use App\CustomerChannel;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -3097,25 +3096,6 @@ class Helper
         // }
 
         return ' nonce="'.\Helper::cspNonce().'"';
-    }
-
-    public static function isChatModeAvailable()
-    {
-        return count(CustomerChannel::getChannels());
-    }
-
-    public static function isChatMode()
-    {
-        return (int)\Session::get('chat_mode', 0);
-    }
-
-    public static function setChatMode($is_on)
-    {
-        if ((int)$is_on) {
-            \Session::put('chat_mode', 1);
-        } else {
-            \Session::forget('chat_mode');
-        }
     }
 
     public static function detectCloudFlare()

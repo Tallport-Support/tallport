@@ -1530,5 +1530,7 @@
     "In a Conversation": "在会话中",
     "In the List": "在列表中",
     "then": "然后",
-    "Replace Photo": "更换照片"
+    "Replace Photo": "更换照片",
+    "Conversation View": "对话视图",
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "各渠道对话的显示方式：以电子邮件形式，或以最新消息在底部的聊天形式。"
 }

@@ -85,9 +85,9 @@ class BroadcastNotification extends Notification implements ShouldQueue
 
         $conversation = $thread->conversation;
 
-        // Play audio notification if this is Chat conversation.
+        // A sound for messages from channels (Telegram, Nostr).
         //$now = time();
-        if ($conversation->isChat() /*&& $conversation->last_reply_at && $conversation->last_reply_at->timestamp < ($now - 10*60)*/) {
+        if ($conversation->hasChannel()) {
             $data['audio'] = [
                 'thread_id' => $thread->id,
             ];

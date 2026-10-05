@@ -89,7 +89,6 @@ return array(
     'App\\Events\\CustomerCreatedConversation' => $baseDir . '/app/Events/CustomerCreatedConversation.php',
     'App\\Events\\CustomerReplied' => $baseDir . '/app/Events/CustomerReplied.php',
     'App\\Events\\RealtimeBroadcastNotificationCreated' => $baseDir . '/app/Events/RealtimeBroadcastNotificationCreated.php',
-    'App\\Events\\RealtimeChat' => $baseDir . '/app/Events/RealtimeChat.php',
     'App\\Events\\RealtimeConvNewThread' => $baseDir . '/app/Events/RealtimeConvNewThread.php',
     'App\\Events\\RealtimeConvView' => $baseDir . '/app/Events/RealtimeConvView.php',
     'App\\Events\\RealtimeConvViewFinish' => $baseDir . '/app/Events/RealtimeConvViewFinish.php',

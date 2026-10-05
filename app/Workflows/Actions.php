@@ -120,7 +120,7 @@ class Actions
             case 'note':
                 $email = self::email($value);
                 $body = trim((string) ($email['body'] ?? ''));
-                if (strip_tags($body, '<img>') === '' || $conversation->isChat() && $row['type'] != 'note') {
+                if (strip_tags($body, '<img>') === '' || $conversation->hasChannel() && $row['type'] != 'note') {
                     return false;
                 }
                 $meta = [self::META_WORKFLOW => $workflow->id];

@@ -1,6 +1,5 @@
 /**
- * The conversation page: the composer, chat mode's Accept Chat and End Chat,
- * the Merge, Move and Change Customer dialogs (FruitUI remote dialogs), links
+ * The conversation page: the composer, the Merge, Move and Change Customer dialogs (FruitUI remote dialogs), links
  * in messages, and printing. And the search page's filters.
  */
 
@@ -17,33 +16,11 @@ document.addEventListener('livewire:navigated', function () {
 	if (!document.body.getAttribute('data-conversation_id')) {
 		return;
 	}
-	// Chat mode: no Show Details without details.
-	var details = document.getElementById('conv-top-blocks');
-	if (details && !details.querySelector('.conv-top-block')) {
-		details.hidden = true;
-	}
 	if (new URLSearchParams(window.location.search).get('print')) {
 		window.print();
 	}
 });
 document.addEventListener('alpine:init', function () {
-	// Accept Chat (assign to me) and End Chat (close), then the chat again.
-	window.Alpine.data('tallportChatAction', function (data) {
-		return {
-			run: function (button) {
-				Tallport.busy(button, true);
-				Tallport.post(laroute.route('conversations.ajax'), data).then(function (response) {
-					if (Tallport.isSuccess(response)) {
-						window.location.reload();
-					} else {
-						Tallport.result(response);
-						Tallport.busy(button, false);
-					}
-				});
-			}
-		};
-	});
-
 	/**
 	 * The composer (App\Livewire\ConversationComposer): gives the component
 	 * the editor's text, saves drafts while the user writes, keeps an unsent
@@ -245,13 +222,12 @@ document.addEventListener('alpine:init', function () {
 				});
 			},
 
-			// Cmd/Ctrl+Enter sends; in chat mode Enter does.
+			// Cmd/Ctrl+Enter sends.
 			enter: function (event) {
 				if (!event.target.closest || !event.target.closest('.f-editor') || event.altKey || event.shiftKey) {
 					return;
 				}
-				var chat = document.body.classList.contains('chat-mode') && this.$wire.mode != 'note';
-				if (event.metaKey || event.ctrlKey || chat) {
+				if (event.metaKey || event.ctrlKey) {
 					event.preventDefault();
 					this.submit();
 				}

@@ -35,11 +35,6 @@ function getLocale()
 	return document.documentElement.getAttribute('lang');
 }
 
-function isChatMode()
-{
-	return document.body.classList.contains('chat-mode');
-}
-
 function reloadPage()
 {
 	window.location.href = '';

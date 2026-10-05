@@ -1529,5 +1529,7 @@
     "In a Conversation": "Beszélgetésben",
     "In the List": "A Listában",
     "then": "majd",
-    "Replace Photo": "Fénykép Cseréje"
+    "Replace Photo": "Fénykép Cseréje",
+    "Conversation View": "Beszélgetésnézet",
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Hogyan jelennek meg az egyes csatornák beszélgetései: e-mailként, vagy chatként, alul a legújabb üzenettel."
 }

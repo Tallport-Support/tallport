@@ -54,8 +54,7 @@ class CheckOutgoing extends Command
                 })
                 // Telegram and Nostr replies: accepted by Telegram, or a relay.
                 ->orWhere(function ($query) {
-                    $query->where('conversations.type', Conversation::TYPE_CHAT)
-                        ->whereIn('conversations.channel', [\App\Telegram\Telegram::CHANNEL, \App\Nostr\Nostr::channel()])
+                    $query->whereIn('conversations.channel', [\App\Telegram\Telegram::CHANNEL, \App\Nostr\Nostr::channel()])
                         ->where(function ($query) {
                             $query->whereNull('threads.send_status')
                                 ->orWhere('threads.send_status', '!=', SendLog::STATUS_ACCEPTED);
@@ -107,7 +106,7 @@ class CheckOutgoing extends Command
     {
         $conversation = $thread->conversation;
         $message = 'Not sent: no job is sending this reply (found by tallport:check-outgoing).';
-        if (!$conversation->isChat()) {
+        if (!$conversation->hasChannel()) {
             $email = $thread->getToArray()[0] ?? $conversation->customer_email;
             SendLog::log($thread->id, null, $email, SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER, SendLog::STATUS_SEND_ERROR, $conversation->customer_id, null, $message);
         } else {

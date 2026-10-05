@@ -1547,5 +1547,7 @@
     "In a Conversation": "Keskustelussa",
     "In the List": "Luettelossa",
     "then": "sitten",
-    "Replace Photo": "Vaihda Kuva"
+    "Replace Photo": "Vaihda Kuva",
+    "Conversation View": "Keskustelunäkymä",
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Miltä kunkin kanavan keskustelut näyttävät: sähköposteina tai chattina, jossa uusin viesti on alimpana."
 }

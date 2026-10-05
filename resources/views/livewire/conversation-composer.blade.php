@@ -6,7 +6,8 @@
         App\Conversation::STATUS_PENDING => [__('Send & Pending'), __('Add Note & Pending'), __('Forward & Pending')],
     ];
     $label_index = $mode == 'note' ? 1 : ($mode == 'forward' ? 2 : 0);
-    $is_chat = $conversation->isInChatMode();
+    // A channel (Telegram, Nostr) has no copies, rich text or quoted history.
+    $has_channel = $conversation->hasChannel();
 @endphp
 <div class="conv-action-wrapper" x-data="tallportComposer({{ $conversation->id }}, @js($mode))" x-on:input="changed($event)" x-on:change="blurred($event)" x-on:fruit-editor-upload.stop="embed($event)" x-on:keydown.enter="enter($event)">
     @if ($mode)
@@ -37,12 +38,12 @@
                             @else
                                 <x-fruit::input id="to" readonly :value="$to_customers[$to] ?? ($conversation->customer ? $conversation->customer->getFullName(true).' <'.$conversation->customer_email.'>' : $conversation->customer_email)" />
                             @endif
-                            @unless ($is_chat)
+                            @unless ($has_channel)
                                 <x-fruit::button variant="ghost" size="small" id="toggle-cc" x-show="!copies" aria-controls="cc-row bcc-row" aria-expanded="false" x-on:click="copies = true; $nextTick(() => $root.querySelector('#cc-row input')?.focus())">{{ __('Cc') }}/{{ __('Bcc') }}</x-fruit::button>
                             @endunless
                         </x-fruit::field>
 
-                        @unless ($is_chat)
+                        @unless ($has_channel)
                             <x-fruit::field :label="__('Cc')" layout="inline" class="conv-recipient field-cc" id="cc-row" x-show="copies" x-cloak>
                                 <x-fruit::token-field name="cc" id="cc" wire:model.live="cc" :placeholder="__('Email Address')" search="server" x-on:fruit-suggest.debounce.200ms="$wire.set('recipient_query', $event.detail.query)">{{ $cc }}<x-slot:options>@foreach ($this->recipientMatches as $match_email => $match_label)<option value="{{ $match_email }}">{{ $match_label }}</option>@endforeach</x-slot:options></x-fruit::token-field>
                             </x-fruit::field>
@@ -63,12 +64,12 @@
                     </x-fruit::alert>
                 @endif
 
-                @include('conversations/partials/composer_editor', ['plain' => $conversation->isChat(), 'placeholder' => $is_chat ? __('Use ENTER to send the message and SHIFT+ENTER for a new line') : null, 'draft_button' => $mode != 'note'])
+                @include('conversations/partials/composer_editor', ['plain' => $has_channel, 'draft_button' => $mode != 'note'])
 
                 @include('conversations/partials/composer_footer', [
                     'send_label'      => $mode == 'note' ? __('Add Note') : ($mode == 'forward' ? __('Forward') : ($send_labels[$status][0] ?? __('Send Reply'))),
                     'send_menu'       => array_map(fn ($labels) => $labels[$label_index], $send_labels),
-                    'history'         => !$conversation->isChat() && $mode != 'note',
+                    'history'         => !$has_channel && $mode != 'note',
                     'history_exclude' => $mode == 'forward' ? ['global', 'none'] : [],
                 ])
             </x-fruit::composer>

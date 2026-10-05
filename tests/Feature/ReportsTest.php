@@ -143,6 +143,22 @@ class ReportsTest extends FeatureTestCase
         $this->assertSame([], $data['table_mailboxes']);
     }
 
+    public function testTypeFilterSeparatesEmailFromChannels()
+    {
+        $yesterday = Carbon::now('UTC')->subDays(1)->setTime(10, 0);
+        $this->conversation($this->support, $yesterday);
+        $telegram = $this->conversation($this->support, $yesterday->copy()->addHour(), 'sam@customer.example.org');
+        $telegram->channel = \App\Telegram\Telegram::CHANNEL;
+        $telegram->save();
+
+        $this->assertArrayHasKey('channel-'.\App\Telegram\Telegram::CHANNEL, Report::types());
+        $this->assertArrayNotHasKey(Conversation::TYPE_CHAT, Report::types());
+        $new = fn ($type) => (new ConversationsReport($this->admin, ['period' => 'last_7', 'type' => $type]))->data()['metrics']['new']['value'];
+        $this->assertSame(2, $new(''));
+        $this->assertSame(1, $new((string) Conversation::TYPE_EMAIL));
+        $this->assertSame(1, $new('channel-'.\App\Telegram\Telegram::CHANNEL));
+    }
+
     public function testReportFiguresLoadAfterThePage()
     {
         $this->conversation($this->sales, Carbon::now('UTC')->subDays(1)->setTime(10, 0));

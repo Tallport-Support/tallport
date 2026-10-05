@@ -95,7 +95,7 @@ abstract class Report
         $mailbox = (int) ($input['mailbox'] ?? 0);
         $this->mailbox_ids = in_array($mailbox, $mailbox_ids) ? [$mailbox] : $mailbox_ids;
 
-        $type = (int) ($input['type'] ?? 0);
+        $type = (string) ($input['type'] ?? '');
         $user = (int) ($input['user'] ?? 0);
         $this->filters = [
             'period'  => $period,
@@ -170,13 +170,20 @@ abstract class Report
         ];
     }
 
+    /**
+     * How conversations came in: email, phone, or a channel (channel-<code>).
+     */
     public static function types()
     {
-        return [
+        $types = [
             Conversation::TYPE_EMAIL => __('Email'),
             Conversation::TYPE_PHONE => __('Phone'),
-            Conversation::TYPE_CHAT  => __('Chat'),
         ];
+        foreach (\Eventy::filter('channels.list', []) as $channel => $channel_name) {
+            $types['channel-'.$channel] = $channel_name;
+        }
+
+        return $types;
     }
 
     /**
@@ -298,8 +305,11 @@ abstract class Report
         $query->whereIn('conversations.mailbox_id', $this->mailbox_ids ?: [0])
             ->where('conversations.state', Conversation::STATE_PUBLISHED)
             ->where('conversations.status', '!=', Conversation::STATUS_SPAM);
-        if ($this->filters['type'] ?? null) {
-            $query->where('conversations.type', $this->filters['type']);
+        $type = (string) ($this->filters['type'] ?? '');
+        if (str_starts_with($type, 'channel-')) {
+            $query->where('conversations.channel', (int) substr($type, 8));
+        } elseif ($type !== '') {
+            $query->where('conversations.type', (int) $type)->whereNull('conversations.channel');
         }
 
         return $query;

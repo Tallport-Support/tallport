@@ -21,7 +21,7 @@ class Nostr
 
     public static function isNostr($conversation)
     {
-        return $conversation && $conversation->isChat() && (int) $conversation->channel === self::channel();
+        return $conversation && (int) $conversation->channel === self::channel();
     }
 
     /**

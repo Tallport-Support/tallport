@@ -33,6 +33,20 @@
                 </x-fruit::field>
             </x-fruit::form-section>
 
+            {{-- Per channel: email, then Tallport's and modules' channels (channels.list). --}}
+            <x-fruit::form-section :title="__('Conversation View')" :footer="__('How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.')">
+                @foreach (['email' => __('Email')] + \Eventy::filter('channels.list', []) as $view_channel => $view_channel_name)
+                    @php $view_value = old('conversation_views.'.$view_channel, $user->conversationView($view_channel === 'email' ? null : $view_channel)); @endphp
+                    <div class="f-form-row">
+                        <span>{{ $view_channel_name }}</span>
+                        <x-fruit::segmented :legend="$view_channel_name" legend-hidden>
+                            <x-fruit::segment :name="'conversation_views['.$view_channel.']'" value="{{ App\User::VIEW_EMAIL }}" :checked="$view_value == App\User::VIEW_EMAIL">{{ __('Email') }}</x-fruit::segment>
+                            <x-fruit::segment :name="'conversation_views['.$view_channel.']'" value="{{ App\User::VIEW_CHAT }}" :checked="$view_value == App\User::VIEW_CHAT">{{ __('Chat') }}</x-fruit::segment>
+                        </x-fruit::segmented>
+                    </div>
+                @endforeach
+            </x-fruit::form-section>
+
             {{-- The accent: the installation's (Settings » Appearance) unless one is chosen here; previewed when picked. --}}
             <x-fruit::form-section :title="__('Appearance')" x-data="{ installation: {{ $user->accent ? 'false' : 'true' }} }">
                 <x-fruit::field :label="__('Use the Installation Default')" layout="row">

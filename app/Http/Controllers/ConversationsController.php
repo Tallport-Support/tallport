@@ -374,7 +374,7 @@ class ConversationsController extends Controller
 
         // The folder's conversations beside the conversation (split view).
         $list = null;
-        if ($template == 'conversations/view' && !$request->input('print') && !$conversation->isInChatMode()) {
+        if ($template == 'conversations/view' && !$request->input('print')) {
             $list = $this->folderList($folder, $user, $request->input('list_page'));
         }
 
@@ -1133,24 +1133,6 @@ class ConversationsController extends Controller
                     $response['status'] = 'success';
                 }
 
-                break;
-
-            case 'chats_load_more':
-                $mailbox = Mailbox::find($request->mailbox_id);
-
-                if (!$mailbox) {
-                    $response['msg'] = __('Mailbox not found');
-                } elseif (!$mailbox->userHasAccess($user->id)) {
-                    $response['msg'] = __('Action not authorized');
-                }
-
-                if (!$response['msg']) {
-                    $response['html'] = \View::make('mailboxes/partials/chat_list')->with([
-                            'mailbox' => $mailbox,
-                            'offset' => $request->offset,
-                        ])->render();
-                    $response['status'] = 'success';
-                }
                 break;
 
             case 'retry_send':
@@ -2052,9 +2034,6 @@ class ConversationsController extends Controller
                 $user->followConversation($conversation->id);
             }
 
-            if ($conversation->isChat() && \Helper::isChatMode()) {
-                $can_undo = false;
-            }
             // Nostr replies are sent right away.
             $sent_right_away = !$is_note && \App\Nostr\Nostr::isNostr($conversation);
             if ($sent_right_away) {
@@ -3026,7 +3005,7 @@ class ConversationsController extends Controller
             }
         }
         // A Telegram reply is sent right away: delete it from the chat.
-        if ($conversation->isChat() && $conversation->channel == \App\Telegram\Telegram::CHANNEL) {
+        if ($conversation->channel == \App\Telegram\Telegram::CHANNEL) {
             \App\Jobs\SendReplyToTelegram::undo($thread);
         }
 
@@ -3185,33 +3164,6 @@ class ConversationsController extends Controller
             'customer' => $customer,
             'customer_email' => $customer_email,
         ];
-    }
-
-    /**
-     * View conversation.
-     */
-    public function chats(Request $request, $mailbox_id)
-    {
-        $user = auth()->user();
-
-        $mailbox = Mailbox::findOrFailWithSettings($mailbox_id, $user->id);
-        $this->authorize('viewCached', $mailbox);
-
-        // Redirect to the first available chat.
-        $chats = Conversation::getChats($mailbox_id, 0, 1);
-
-        if (count($chats)) {
-            if (!\Helper::isChatMode()) {
-                \Helper::setChatMode(true);
-            }
-
-            return redirect()->away($chats[0]->url());
-        }
-
-        return view('conversations/chats', [
-            'is_in_chat_mode'    => true,
-            'mailbox'            => $mailbox,
-        ]);
     }
 
     public function getUndoTimeout($can_undo)

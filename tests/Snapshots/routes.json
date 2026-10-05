@@ -1844,21 +1844,6 @@
         "methods": [
             "GET"
         ],
-        "uri": "mailbox/{mailbox_id}/chats",
-        "name": "conversations.chats",
-        "action": "ConversationsController@chats",
-        "middleware": [
-            "web",
-            "auth"
-        ],
-        "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "GET"
-        ],
         "uri": "mailbox/{mailbox_id}/clone-ticket/{from_thread_id}/{token}",
         "name": "conversations.clone_conversation",
         "action": "ConversationsController@cloneConversation",

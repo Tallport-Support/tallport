@@ -1529,5 +1529,7 @@
     "In a Conversation": "会話内",
     "In the List": "一覧内",
     "then": "次に",
-    "Replace Photo": "写真を置き換える"
+    "Replace Photo": "写真を置き換える",
+    "Conversation View": "会話の表示",
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "各チャネルの会話の表示方法：メールとして、または最新のメッセージが下に来るチャットとして。"
 }

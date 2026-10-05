@@ -122,8 +122,6 @@ class ConversationComposer extends Component
         // A draft to continue (?show_draft=).
         if (request()->show_draft) {
             $this->editDraft(request()->show_draft);
-        } elseif ($conversation->isInChatMode()) {
-            $this->mode = 'reply';
         }
     }
 

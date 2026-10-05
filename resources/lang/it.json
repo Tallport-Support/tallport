@@ -1528,5 +1528,7 @@
     "In a Conversation": "In una Conversazione",
     "In the List": "Nell'Elenco",
     "then": "poi",
-    "Replace Photo": "Sostituisci Foto"
+    "Replace Photo": "Sostituisci Foto",
+    "Conversation View": "Vista del Ticket",
+    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Come appaiono i ticket di ogni canale: come email, o come una chat con il messaggio più recente in basso."
 }
