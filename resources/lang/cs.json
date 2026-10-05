@@ -1513,5 +1513,7 @@
     "Show Private Key": "Zobrazit soukromý klíč",
     "Updating… This may take several minutes.": "Aktualizace… Může to trvat několik minut.",
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport byl aktualizován :time. Příkazy na pozadí se znovu spustí do minuty či dvou.",
-    ":name couldn't be checked for updates: :error": "Aktualizace pro :name nelze zkontrolovat: :error"
+    ":name couldn't be checked for updates: :error": "Aktualizace pro :name nelze zkontrolovat: :error",
+    "The AI Assistant took this message to be in :language already.": "AI Assistant usoudil, že tato zpráva už je v jazyce :language.",
+    "Could not translate the message: :error": "Zprávu se nepodařilo přeložit: :error"
 }

@@ -1916,5 +1916,7 @@
     "Show Private Key": "Жеке кілтті көрсету",
     "Updating… This may take several minutes.": "Жаңартылуда… Бұл бірнеше минутқа созылуы мүмкін.",
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport :time жаңартылды. Фондық командалар бір-екі минут ішінде қайта іске қосылады.",
-    ":name couldn't be checked for updates: :error": ":name жаңартуларын тексеру мүмкін болмады: :error"
+    ":name couldn't be checked for updates: :error": ":name жаңартуларын тексеру мүмкін болмады: :error",
+    "The AI Assistant took this message to be in :language already.": "AI Assistant бұл хабарлама әлдеқашан :language тілінде деп санады.",
+    "Could not translate the message: :error": "Хабарламаны аудару мүмкін болмады: :error"
 }

@@ -1514,5 +1514,7 @@
     "Show Private Key": "秘密鍵を表示",
     "Updating… This may take several minutes.": "更新中… 数分かかる場合があります。",
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport は :time に更新されました。バックグラウンドのコマンドは 1〜2 分以内に再開します。",
-    ":name couldn't be checked for updates: :error": ":name の更新を確認できませんでした: :error"
+    ":name couldn't be checked for updates: :error": ":name の更新を確認できませんでした: :error",
+    "The AI Assistant took this message to be in :language already.": "AI Assistant はこのメッセージがすでに:languageだと判断しました。",
+    "Could not translate the message: :error": "メッセージを翻訳できませんでした: :error"
 }

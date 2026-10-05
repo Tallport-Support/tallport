@@ -206,6 +206,9 @@
                             <x-fruit::menu-group :label="__('Sent at :time their time (GMT:offset)', ['time' => App\Misc\SenderTime::format($sender_sent_at, $sender_sent_at->getOffsetString()), 'offset' => $sender_sent_at->getOffsetString()])"></x-fruit::menu-group>
                             <x-fruit::menu-separator />
                         @endif
+                        @if (App\Ai\Translations::canForce($thread, Auth::user()))
+                            <x-fruit::menu-link href="#" class="thread-translate-trigger" wire:click.prevent="translate({{ $thread->id }})">{{ __('Translate') }}</x-fruit::menu-link>
+                        @endif
                         @if (Auth::user()->can('edit', $thread))
                             <x-fruit::menu-link href="#" class="thread-edit-trigger" wire:click.prevent="edit({{ $thread->id }})">{{ __("Edit") }}</x-fruit::menu-link>
                         @endif

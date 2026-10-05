@@ -210,6 +210,33 @@ class AiAssistantTest extends FeatureTestCase
         ThreadTranslator::assertPromptedTimes(1);
     }
 
+    /**
+     * A message's menu offers Translate when it has no translation for the user: also an
+     * agent's reply (e.g. written with another translator). It is translated right away.
+     */
+    public function testTranslateOnRequestAlsoForReplies()
+    {
+        $this->configureAi();
+        $this->fakeAi();
+        $conversation = $this->receiveCustomerEmail();
+        $reply = \App\Thread::createExtended(['type' => \App\Thread::TYPE_MESSAGE, 'body' => '<p>Uw bestelling is onderweg.</p>', 'created_by_user_id' => $this->agent->id], $conversation, $conversation->customer);
+        $note = \App\Thread::createExtended(['type' => \App\Thread::TYPE_NOTE, 'body' => '<p>Intern</p>', 'created_by_user_id' => $this->agent->id], $conversation, $conversation->customer);
+
+        $thread = \Livewire\Livewire::actingAs($this->agent)->test(\App\Livewire\ConversationThread::class, ['conversation' => $conversation])
+            ->assertSee('translate('.$reply->id.')', false)
+            ->assertDontSee('translate('.$note->id.')', false);
+
+        ThreadTranslator::fake([['translation' => 'Your order is on its way.', 'same_language' => false, 'detected_language' => 'nl']]);
+        $thread->call('translate', $reply->id)
+            ->assertSee('Your order is on its way.')
+            ->assertDontSee('translate('.$reply->id.')', false);
+        $this->assertSame('Your order is on its way.', Translations::get($reply->fresh(), 'en'));
+
+        // Notes stay untranslated, even when asked.
+        $thread->call('translate', $note->id);
+        $this->assertNull(Translations::get($note->fresh(), 'en'));
+    }
+
     public function testMessageInTheTargetLanguageIsNotTranslated()
     {
         $this->configureAi(['aiassistant.translation_language' => 'nl']);

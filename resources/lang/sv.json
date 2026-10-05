@@ -1514,5 +1514,7 @@
     "Show Private Key": "Visa privat nyckel",
     "Updating… This may take several minutes.": "Uppdaterar… Det kan ta flera minuter.",
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport uppdaterades :time. Bakgrundskommandon startar om inom en minut eller två.",
-    ":name couldn't be checked for updates: :error": "Det gick inte att söka efter uppdateringar för :name: :error"
+    ":name couldn't be checked for updates: :error": "Det gick inte att söka efter uppdateringar för :name: :error",
+    "The AI Assistant took this message to be in :language already.": "AI Assistant bedömde att meddelandet redan är på :language.",
+    "Could not translate the message: :error": "Det gick inte att översätta meddelandet: :error"
 }

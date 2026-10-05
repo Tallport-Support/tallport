@@ -1514,5 +1514,7 @@
     "Show Private Key": "Şəxsi açarı göstər",
     "Updating… This may take several minutes.": "Yenilənir… Bu bir neçə dəqiqə çəkə bilər.",
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport :time yeniləndi. Arxa plan əmrləri bir-iki dəqiqə ərzində yenidən başlayır.",
-    ":name couldn't be checked for updates: :error": ":name üçün yeniləmələri yoxlamaq mümkün olmadı: :error"
+    ":name couldn't be checked for updates: :error": ":name üçün yeniləmələri yoxlamaq mümkün olmadı: :error",
+    "The AI Assistant took this message to be in :language already.": "AI Assistant bu mesajın artıq :language dilində olduğunu müəyyən etdi.",
+    "Could not translate the message: :error": "Mesajı tərcümə etmək mümkün olmadı: :error"
 }

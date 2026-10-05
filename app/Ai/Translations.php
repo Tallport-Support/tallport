@@ -32,8 +32,11 @@ class Translations
     public static function forThread(Thread $thread, $user)
     {
         $result = ['wanted' => false, 'language' => null, 'translation' => null];
+        // Also a message translated on request (forceTranslate()) where translations are off.
+        $requested = in_array($thread->type, [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE]) && $thread->ai_assistant && $thread->conversation
+            && self::get($thread, Settings::language($thread->conversation->mailbox, $user));
         if ($thread->state == Thread::STATE_DRAFT
-            || !(($thread->type == Thread::TYPE_CUSTOMER && self::isWanted($thread)) || ($thread->type == Thread::TYPE_MESSAGE && $thread->ai_assistant))
+            || !(($thread->type == Thread::TYPE_CUSTOMER && self::isWanted($thread)) || ($thread->type == Thread::TYPE_MESSAGE && $thread->ai_assistant) || $requested)
         ) {
             return $result;
         }
@@ -91,6 +94,40 @@ class Translations
         }
 
         return ['waiting'];
+    }
+
+    /**
+     * Whether a user may have a message translated on request (the message's menu):
+     * a customer's message or a reply (notes stay with the team), not yet translated
+     * into the user's language.
+     */
+    public static function canForce(Thread $thread, $user)
+    {
+        return Settings::isConfigured()
+            && $thread->state == Thread::STATE_PUBLISHED
+            && in_array($thread->type, [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
+            && $thread->conversation
+            && !self::get($thread, Settings::language($thread->conversation->mailbox, $user));
+    }
+
+    /**
+     * Translate a message now, on request, into the user's language: also a reply,
+     * and also when an earlier translation took it to be in that language already.
+     *
+     * @return string|null the translation; null when it is in that language already
+     */
+    public static function forceTranslate(Thread $thread, $user)
+    {
+        $language = Settings::language($thread->conversation->mailbox, $user);
+        $data = Summaries::data($thread);
+        $data['same'] = array_values(array_diff((array) ($data['same'] ?? []), [$language]));
+        if (!$data['same']) {
+            unset($data['same']);
+        }
+        unset($data['no_text']);
+        self::save($thread, $data);
+
+        return self::translate($thread, $language);
     }
 
     /**

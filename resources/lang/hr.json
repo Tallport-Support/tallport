@@ -1514,5 +1514,7 @@
     "Show Private Key": "Prikaži privatni ključ",
     "Updating… This may take several minutes.": "Ažuriranje… Ovo može potrajati nekoliko minuta.",
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport je ažuriran :time. Pozadinske naredbe ponovno se pokreću u minuti-dvije.",
-    ":name couldn't be checked for updates: :error": "Nije moguće provjeriti ažuriranja za :name: :error"
+    ":name couldn't be checked for updates: :error": "Nije moguće provjeriti ažuriranja za :name: :error",
+    "The AI Assistant took this message to be in :language already.": "AI Assistant smatra da je ova poruka već na jeziku :language.",
+    "Could not translate the message: :error": "Poruku nije moguće prevesti: :error"
 }

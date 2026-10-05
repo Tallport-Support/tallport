@@ -1517,5 +1517,7 @@
     "Show Private Key": "Privésleutel tonen",
     "Updating… This may take several minutes.": "Bijwerken… Dit kan enkele minuten duren.",
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport is :time bijgewerkt. Achtergrondopdrachten starten binnen een minuut of twee opnieuw.",
-    ":name couldn't be checked for updates: :error": "Kon niet controleren op updates voor :name: :error"
+    ":name couldn't be checked for updates: :error": "Kon niet controleren op updates voor :name: :error",
+    "The AI Assistant took this message to be in :language already.": "De AI Assistant nam aan dat dit bericht al in het :language is.",
+    "Could not translate the message: :error": "Het bericht kon niet worden vertaald: :error"
 }

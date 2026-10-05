@@ -86,6 +86,29 @@ class ConversationThread extends Component
     }
 
     /**
+     * Translate a message into the user's language now (its menu's Translate).
+     */
+    public function translate($thread_id)
+    {
+        $thread = $this->thread($thread_id);
+        $user = auth()->user();
+        if (!$thread || !\App\Ai\Translations::canForce($thread, $user)) {
+            $this->skipRender();
+
+            return;
+        }
+        @set_time_limit(180);
+        try {
+            if (!\App\Ai\Translations::forceTranslate($thread, $user)) {
+                Fruit::toast(__('The AI Assistant took this message to be in :language already.', ['language' => \App\Ai\Settings::displayName(\App\Ai\Settings::language($thread->conversation->mailbox, $user))]));
+            }
+        } catch (\Throwable $e) {
+            \Helper::logException($e, '[AI Assistant] Translation of thread '.$thread->id.':');
+            Fruit::toast(__('Could not translate the message: :error', ['error' => $e->getMessage()]), 'danger');
+        }
+    }
+
+    /**
      * A new message or event (the realtime script).
      */
     #[On('conversation-thread-created')]

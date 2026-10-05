@@ -1513,5 +1513,7 @@
     "Show Private Key": "Arată cheia privată",
     "Updating… This may take several minutes.": "Se actualizează… Poate dura câteva minute.",
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport a fost actualizat :time. Comenzile din fundal repornesc în unul-două minute.",
-    ":name couldn't be checked for updates: :error": "Nu s-au putut verifica actualizările pentru :name: :error"
+    ":name couldn't be checked for updates: :error": "Nu s-au putut verifica actualizările pentru :name: :error",
+    "The AI Assistant took this message to be in :language already.": "AI Assistant a considerat că acest mesaj este deja în :language.",
+    "Could not translate the message: :error": "Mesajul nu a putut fi tradus: :error"
 }

@@ -1515,5 +1515,7 @@
     "Show Private Key": "显示私钥",
     "Updating… This may take several minutes.": "正在更新… 可能需要几分钟。",
     "Tallport was updated :time. Background commands restart within a minute or two.": "Tallport 已于:time更新。后台命令会在一两分钟内重新启动。",
-    ":name couldn't be checked for updates: :error": "无法检查 :name 的更新：:error"
+    ":name couldn't be checked for updates: :error": "无法检查 :name 的更新：:error",
+    "The AI Assistant took this message to be in :language already.": "AI 助手认为此消息已经是:language。",
+    "Could not translate the message: :error": "无法翻译此消息：:error"
 }
