@@ -3988,6 +3988,45 @@
     border-top: 0;
   }
 
+  /* Compact: a chat. Messages are rows close together, without lines between them; a row shows its
+     background on hover. Use inline messages, so the name and time share a line. */
+  .f-thread--compact {
+    --f-message-event-inset: var(--f-thread-row-padding-inline, 12px);
+  }
+  .f-thread--compact > :not(template) + * {
+    margin-top: var(--f-thread-compact-gap, 2px);
+    padding-top: 0;
+    border-top: 0;
+  }
+  .f-thread--compact > :not(template) + :is(.f-message-event, :has(> .f-message-event)),
+  .f-thread--compact > :is(.f-message-event, :has(> .f-message-event)) + *,
+  .f-thread--compact
+    > :not(template)
+    + :is(
+      .f-message--note,
+      .f-message--generated,
+      .f-generated,
+      :has(> :is(.f-message--note, .f-message--generated, .f-generated))
+    ),
+  .f-thread--compact
+    > :is(
+      .f-message--note,
+      .f-message--generated,
+      .f-generated,
+      :has(> :is(.f-message--note, .f-message--generated, .f-generated))
+    )
+    + * {
+    margin-top: var(--f-thread-event-gap, 10px);
+  }
+  .f-thread--compact .f-message:not(.f-message--note, .f-message--generated) {
+    --f-message-actions-top: 4px;
+    padding: var(--f-thread-row-padding-block, 8px) var(--f-thread-row-padding-inline, 12px);
+    border-radius: var(--f-radius);
+  }
+  .f-thread--compact .f-message:not(.f-message--note, .f-message--generated):is(:hover, :focus-within) {
+    background: var(--f-hover);
+  }
+
   /* A chronological list of events, such as conversation history or an audit log. */
   .f-timeline {
     margin: 0;

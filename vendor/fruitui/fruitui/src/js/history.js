@@ -22,6 +22,8 @@ export function fruitHistory({ threshold = 160 } = {}) {
         top = scroller.scrollTop;
       };
       track = () => {
+        // The event for this helper's own scroll can arrive after new content; it moved nothing.
+        if (scroller.scrollTop === top) return;
         following = distance() < 24;
         this.awayFromLatest = distance() > threshold;
         top = scroller.scrollTop;
@@ -46,7 +48,7 @@ export function fruitHistory({ threshold = 160 } = {}) {
       following = true;
       this.awayFromLatest = false;
       const motion = smooth && !matchMedia('(prefers-reduced-motion: reduce)').matches;
-      scroller.scrollTo({ top: scroller.scrollHeight, behavior: motion ? 'smooth' : 'auto' });
+      scroller.scrollTo({ top: scroller.scrollHeight, behavior: motion ? 'smooth' : 'instant' });
       top = scroller.scrollTop;
       if (focus) ([...scroller.querySelectorAll('[tabindex="-1"]')].at(-1) ?? scroller).focus({ preventScroll: true });
     },

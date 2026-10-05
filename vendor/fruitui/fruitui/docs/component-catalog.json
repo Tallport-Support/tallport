@@ -1263,7 +1263,7 @@
         "element": "Scrolling `div.f-pane__scroll` region (focusable, named) with the fruitHistory helper and a Jump to Latest `button.f-history__latest`.",
         "state": "Opens at the newest (last) content and stays there as content grows (new messages, loading images, Livewire morphs). A scroll away, by the reader or by the application, stops following; past 160px `awayFromLatest` shows Jump to Latest. A form submitted in the same pane (its composer) returns to the newest.",
         "keyboard": "Tab focuses the region and arrow keys scroll it; Jump to Latest moves focus to the last `tabindex=\"-1\"` message, or the region.",
-        "options": "`label`: the region's name (default Message History), or `aria-label`. Default slot: dividers (`x-fruit::divider` for days) and threads, oldest first. Put it in an `f-pane f-pane--column` before a bottom `x-fruit::composer`, so the history scrolls while the composer stays docked. Inside it, `jumpToLatest({ smooth: false })` returns to the newest, for example when the application switches conversations."
+        "options": "`label`: the region's name (default Message History), or `aria-label`. Default slot: dividers (`x-fruit::divider` for days) and threads, oldest first; a compact thread (`density=\"compact\"`) gives it the look of a chat. Put it in an `f-pane f-pane--column` before a bottom `x-fruit::composer`, so the history scrolls while the composer stays docked. Inside it, `jumpToLatest({ smooth: false })` returns to the newest, for example when the application switches conversations."
       }
     }
   },
@@ -1375,14 +1375,14 @@
     "kind": "pattern",
     "classes": ["f-thread"],
     "blade": ["thread"],
-    "uses": ["support.html", "examples/laravel/support-desk.blade.php"],
+    "uses": ["support.html", "chat.html", "examples/laravel/support-desk.blade.php"],
     "contracts": {
       "thread": {
         "purpose": "List a conversation's messages and events in order, set apart from each other.",
         "element": "`ol` with list semantics; each `li` holds one Message or Message event.",
         "state": "No state; the application owns the history and its order.",
         "keyboard": "No keyboard behavior of its own; entries keep theirs.",
-        "options": "Default slot: `li` entries. Messages are separated by a hairline; events sit closer without lines, and note and generated cards keep their box. `--f-thread-gap` sets the space on each side of the line and `--f-thread-event-gap` the space around events. Give it an accessible name when the page has more than one list."
+        "options": "Default slot: `li` entries. `density`: comfortable (default, an email thread: messages separated by a hairline; events sit closer without lines, and note and generated cards keep their box) or compact (`f-thread--compact`, a chat: messages are rows close together without lines, showing a background on hover; use inline messages so the name and time share a line, oldest first in a Message History). `--f-thread-gap` sets the space on each side of the line, `--f-thread-event-gap` the space around events and cards, and `--f-thread-compact-gap`, `--f-thread-row-padding-block`/`-inline` the compact rows. Give it an accessible name when the page has more than one list."
       }
     }
   },

@@ -14,7 +14,7 @@
         @foreach ($threads->groupBy(fn ($thread) => App\Misc\Helper::userDate($thread->created_at)) as $day => $day_threads)
             @php $day_name = App\Misc\Helper::dayName($day_threads->first()->created_at); @endphp
             <x-fruit::divider wire:key="divider-{{ $day }}">{{ $day_name }}</x-fruit::divider>
-            <x-fruit::thread wire:key="day-{{ $day }}" :aria-label="$day_name">
+            <x-fruit::thread density="compact" wire:key="day-{{ $day }}" :aria-label="$day_name">
                 @foreach ($day_threads as $thread)
                     @php $older_thread = $threads[$thread_positions[$thread->id] - 1] ?? null; @endphp
                     @include('conversations/partials/thread')

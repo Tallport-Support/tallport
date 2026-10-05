@@ -572,7 +572,7 @@ function ee({ threshold: e = 160 } = {}) {
 			t = this.$el, s = () => {
 				t.scrollTop !== l && (c = u() < 24), c && (t.scrollTop = t.scrollHeight), l = t.scrollTop;
 			}, a = () => {
-				c = u() < 24, this.awayFromLatest = u() > e, l = t.scrollTop;
+				t.scrollTop !== l && (c = u() < 24, this.awayFromLatest = u() > e, l = t.scrollTop);
 			}, o = () => this.jumpToLatest({ smooth: !1 }), r = new ResizeObserver(s), r.observe(t);
 			for (let e of t.children) r.observe(e);
 			i = new MutationObserver((e) => {
@@ -585,7 +585,7 @@ function ee({ threshold: e = 160 } = {}) {
 			let r = n && !matchMedia("(prefers-reduced-motion: reduce)").matches;
 			t.scrollTo({
 				top: t.scrollHeight,
-				behavior: r ? "smooth" : "auto"
+				behavior: r ? "smooth" : "instant"
 			}), l = t.scrollTop, e && ([...t.querySelectorAll("[tabindex=\"-1\"]")].at(-1) ?? t).focus({ preventScroll: !0 });
 		},
 		destroy() {

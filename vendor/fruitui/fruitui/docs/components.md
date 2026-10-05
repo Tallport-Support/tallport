@@ -330,13 +330,13 @@ Settings work best inside the app rather than as a separate full-width page: kee
 
 ## Chat histories
 
-A chat conversation reads from the bottom up: oldest at the top, the newest message just above a composer docked at the bottom. `x-fruit::history` is the scrolling part. It opens at the newest message and stays there as messages arrive, images load or a Livewire morph changes the thread, unless the reader has scrolled back: then new messages leave them where they are, and Jump to Latest appears. Sending from the composer in the same pane returns to the newest message. Separate days with a labelled `x-fruit::divider`.
+A chat conversation reads from the bottom up: oldest at the top, the newest message just above a composer docked at the bottom. `x-fruit::history` is the scrolling part. It opens at the newest message and stays there as messages arrive, images load or a Livewire morph changes the thread, unless the reader has scrolled back: then new messages leave them where they are, and Jump to Latest appears. Sending from the composer in the same pane returns to the newest message. Separate days with a labelled `x-fruit::divider`, one thread per day. A compact thread (`density="compact"`) with inline messages gives it the look of a chat: rows close together without lines between them, the name and time on one line. The default, comfortable thread is the email presentation.
 
 ```blade
 <section class="f-pane f-pane--column" aria-label="Conversation">
     <x-fruit::history aria-label="Conversation with Sophie Chen">
         <x-fruit::divider>Today</x-fruit::divider>
-        <x-fruit::thread>
+        <x-fruit::thread density="compact">
             @foreach ($messages as $message)
                 <li wire:key="message-{{ $message->id }}">…</li>
             @endforeach

@@ -47,7 +47,8 @@
         // AI Assistant: the message's translation.
         ['wanted' => $ai_translation_wanted, 'language' => $ai_language, 'translation' => $ai_translation] = App\Ai\Translations::forThread($thread, Auth::user());
     @endphp
-    <x-fruit::message layout="stacked" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" :mine="$thread->type == App\Thread::TYPE_MESSAGE && $thread->created_by_user_id == Auth::user()->id" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()" :lang="$ai_translation ? (App\Ai\Summaries::data($thread)['language'] ?? null) : null">
+    {{-- The chat view ($chat): name, meta and time on one line, the body beside the avatar. --}}
+    <x-fruit::message :layout="empty($chat) ? 'stacked' : 'inline'" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" :mine="$thread->type == App\Thread::TYPE_MESSAGE && $thread->created_by_user_id == Auth::user()->id" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()" :lang="$ai_translation ? (App\Ai\Summaries::data($thread)['language'] ?? null) : null">
         @if ($ai_translation)
             {{-- The translation below the message, in the user's language. --}}
             <x-slot:translation :lang="$ai_language">@include('conversations/partials/ai_translation')</x-slot:translation>
@@ -76,7 +77,10 @@
             @if ($thread->isNote())<x-fruit::badge tone="warning">{{ __('Note') }}</x-fruit::badge>@endif
             @if (!$thread_is_draft && $thread->isForward())<x-fruit::badge tone="accent">{{ __('Forward') }}</x-fruit::badge>@endif
             @if ($conversation->isPhone() && $thread->first)<x-fruit::badge>{{ __('Phone') }}</x-fruit::badge>@endif
-            @if ($thread_meta_line){{ implode(' · ', $thread_meta_line) }}@endif
+            @if (!empty($chat))
+                {{-- Short in the chat view: the customer, or the viewer's own reply. --}}
+                @if ($thread->type == App\Thread::TYPE_CUSTOMER){{ __('Customer') }}@elseif ($thread->type != App\Thread::TYPE_CUSTOMER && $thread->created_by_user_id == Auth::user()->id){{ \Illuminate\Support\Str::ucfirst(__('you')) }}@endif
+            @elseif ($thread_meta_line){{ implode(' · ', $thread_meta_line) }}@endif
             {{-- Lines below must be spaceless --}}
             {{ \Eventy::action('thread.after_person_action', $thread, $loop, $threads, $conversation, $mailbox) }}
         </x-slot:meta>
