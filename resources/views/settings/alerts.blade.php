@@ -20,7 +20,7 @@
         </x-fruit::field>
 
         <x-fruit::fieldset x-show="alertLogs">
-            <legend>{{ __('Logs to monitor') }}</legend>
+            <legend>{{ __('Logs to Monitor') }}</legend>
             @foreach ($logs as $log)
                 <x-fruit::checkbox name="settings[alert_logs_names][]" :value="$log" :checked="in_array($log, $alert_logs_names)">{{ App\ActivityLog::getLogTitle($log) }}</x-fruit::checkbox>
             @endforeach

@@ -19,7 +19,7 @@
                 <x-fruit::alert tone="warning">{{ __('Two-factor authentication is required. Turn it on to continue.') }}</x-fruit::alert>
             @endif
 
-            <x-fruit::form-section :title="__('Two-factor authentication')">
+            <x-fruit::form-section :title="__('Two-Factor Authentication')">
                 <div class="f-form-row">
                     <p class="f-help">{{ __('After the password, a code from an authenticator app on a phone is asked for.') }}</p>
                     @if ($user->hasEnabledTwoFactorAuthentication())
@@ -38,7 +38,7 @@
                         <form method="POST" action="{{ route('users.security.reset', ['id' => $user->id]) }}" class="f-form-row">
                             {{ csrf_field() }}
                             <p class="f-help">{{ __('For a user who lost their phone: they log in with their password only, and then set it up again.') }}</p>
-                            <x-fruit::button type="submit" variant="danger">{{ __('Reset two-factor authentication and passkeys') }}</x-fruit::button>
+                            <x-fruit::button type="submit" variant="danger">{{ __('Reset Two-Factor Authentication and Passkeys') }}</x-fruit::button>
                         </form>
                     @endif
                 @elseif ($user->hasEnabledTwoFactorAuthentication())
@@ -56,13 +56,13 @@
                         @endif
                         <form method="POST" action="{{ route('two-factor.recovery-codes.store') }}">
                             {{ csrf_field() }}
-                            <x-fruit::button type="submit">{{ __('New recovery codes') }}</x-fruit::button>
+                            <x-fruit::button type="submit">{{ __('New Recovery Codes') }}</x-fruit::button>
                         </form>
                         @if (!$required)
                             <form method="POST" action="{{ route('two-factor.disable') }}">
                                 {{ csrf_field() }}
                                 {{ method_field('DELETE') }}
-                                <x-fruit::button type="submit" variant="ghost">{{ __('Turn off') }}</x-fruit::button>
+                                <x-fruit::button type="submit" variant="ghost">{{ __('Turn Off') }}</x-fruit::button>
                             </form>
                         @endif
                     </div>
@@ -71,7 +71,7 @@
                         <form method="POST" action="{{ route('users.security.forget_devices', ['id' => $user->id]) }}" class="f-form-row">
                             {{ csrf_field() }}
                             <span>{{ __('Remembered devices: :count', ['count' => $trusted_devices]) }}</span>
-                            <x-fruit::button type="submit" variant="ghost" size="small">{{ __('Forget them') }}</x-fruit::button>
+                            <x-fruit::button type="submit" variant="ghost" size="small">{{ __('Forget Them') }}</x-fruit::button>
                         </form>
                     @endif
                 @elseif ($user->two_factor_secret)
@@ -95,7 +95,7 @@
                 @else
                     <form method="POST" action="{{ route('two-factor.enable') }}" class="f-form-row">
                         {{ csrf_field() }}
-                        <x-fruit::button type="submit" variant="primary">{{ __('Turn on two-factor authentication') }}</x-fruit::button>
+                        <x-fruit::button type="submit" variant="primary">{{ __('Turn On Two-Factor Authentication') }}</x-fruit::button>
                     </form>
                 @endif
             </x-fruit::form-section>
@@ -137,7 +137,7 @@
                 @if ($own)
                     <form class="f-form-row" id="passkey-add-form" x-data="tallportPasskeyAdd(@js(route('passkey.registration-options')), @js(route('passkey.store')))" @submit.prevent="add($el)">
                         <input type="text" class="f-input passkey-name" id="passkey-name" maxlength="255" placeholder="{{ __('Name, e.g. Laptop') }}" aria-label="{{ __('Name') }}" required>
-                        <button type="submit" class="f-button">{{ __('Add a passkey') }}</button>
+                        <button type="submit" class="f-button">{{ __('Add a Passkey') }}</button>
                     </form>
                 @endif
             </x-fruit::form-section>

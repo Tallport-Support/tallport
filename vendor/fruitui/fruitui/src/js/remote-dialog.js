@@ -87,7 +87,7 @@ export function dialog({ title, html, url, size = 'medium', trigger = null } = {
       const retry = document.createElement('button');
       retry.type = 'button';
       retry.className = 'f-button';
-      retry.textContent = label('retry-label', 'Try again');
+      retry.textContent = label('retry-label', 'Try Again');
       retry.addEventListener('click', load);
       const actions = document.createElement('div');
       actions.append(retry);

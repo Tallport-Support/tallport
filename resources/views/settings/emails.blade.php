@@ -65,7 +65,7 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('No-reply addresses')">
+    <x-fruit::form-section :title="__('No-Reply Addresses')">
         <x-fruit::field :label="__('Addresses')">
             <x-fruit::textarea name="settings[noreply_emails]" rows="5" placeholder="notifications@example.com&#10;mailer-daemon">{{ old('settings.noreply_emails', $settings['noreply_emails']) }}</x-fruit::textarea>
             <x-slot:description>

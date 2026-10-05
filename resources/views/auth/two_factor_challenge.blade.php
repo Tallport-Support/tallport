@@ -15,7 +15,7 @@
                 </x-fruit::field>
             </div>
             <div x-show="recovery" x-cloak>
-                <x-fruit::field :label="__('Recovery code')">
+                <x-fruit::field :label="__('Recovery Code')">
                     <x-fruit::input id="recovery_code" type="text" name="recovery_code" autocomplete="off" />
                 </x-fruit::field>
             </div>

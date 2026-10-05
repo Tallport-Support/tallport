@@ -60,7 +60,7 @@
                             @endforeach
                         </x-fruit::select>
                     </x-fruit::field>
-                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('assigned')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('assigned')" :aria-label="__('Remove Filter')" :title="__('Remove Filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
                 </div>
                 <div class="search-filter" data-filter="customer" @unless (isset($filters['customer'])) hidden @endunless>
                     <x-fruit::field :label="__('Customer')" control-id="search-filter-customer">
@@ -71,7 +71,7 @@
                             @endif
                         </x-fruit::combobox>
                     </x-fruit::field>
-                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('customer')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('customer')" :aria-label="__('Remove Filter')" :title="__('Remove Filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
                 </div>
                 <div class="search-filter" data-filter="mailbox" @unless (isset($filters['mailbox'])) hidden @endunless>
                     <x-fruit::field :label="__('Mailbox')" control-id="search-filter-mailbox">
@@ -82,7 +82,7 @@
                             @endforeach
                         </x-fruit::select>
                     </x-fruit::field>
-                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('mailbox')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('mailbox')" :aria-label="__('Remove Filter')" :title="__('Remove Filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
                 </div>
                 <div class="search-filter" data-filter="status" @unless (isset($filters['status'])) hidden @endunless>
                     <x-fruit::fieldset>
@@ -91,7 +91,7 @@
                             <x-fruit::checkbox name="f[status][]" :value="$option_id" :checked="in_array($option_id, (array) ($filters['status'] ?? []))">{{ App\Conversation::statusCodeToName($option_id) }}</x-fruit::checkbox>
                         @endforeach
                     </x-fruit::fieldset>
-                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('status')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('status')" :aria-label="__('Remove Filter')" :title="__('Remove Filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
                 </div>
                 <div class="search-filter" data-filter="state" @unless (isset($filters['state'])) hidden @endunless>
                     <x-fruit::fieldset>
@@ -100,13 +100,13 @@
                             <x-fruit::checkbox name="f[state][]" :value="$option_id" :checked="in_array($option_id, (array) ($filters['state'] ?? []))">{{ App\Conversation::stateCodeToName($option_id) }}</x-fruit::checkbox>
                         @endforeach
                     </x-fruit::fieldset>
-                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('state')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('state')" :aria-label="__('Remove Filter')" :title="__('Remove Filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
                 </div>
                 <div class="search-filter" data-filter="subject" @unless (isset($filters['subject'])) hidden @endunless>
                     <x-fruit::field :label="__('Subject')" control-id="search-filter-subject">
                         <x-fruit::input id="search-filter-subject" name="f[subject]" :value="$filters['subject'] ?? ''" />
                     </x-fruit::field>
-                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('subject')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('subject')" :aria-label="__('Remove Filter')" :title="__('Remove Filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
                 </div>
                 <div class="search-filter" data-filter="attachments" @unless (isset($filters['attachments'])) hidden @endunless>
                     <x-fruit::field :label="__('Attachments')" control-id="search-filter-attachments">
@@ -116,13 +116,13 @@
                             <option value="no" @if (($filters['attachments'] ?? '') == 'no') selected @endif>{{ __('No') }}</option>
                         </x-fruit::select>
                     </x-fruit::field>
-                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('attachments')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('attachments')" :aria-label="__('Remove Filter')" :title="__('Remove Filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
                 </div>
                 <div class="search-filter" data-filter="attachment name" @unless (isset($filters['attachment name'])) hidden @endunless>
                     <x-fruit::field :label="__('Attachment Name')" control-id="search-filter-attachment-name">
                         <x-fruit::input id="search-filter-attachment-name" name="f[attachment name]" :value="$filters['attachment name'] ?? ''" />
                     </x-fruit::field>
-                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('attachment name')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('attachment name')" :aria-label="__('Remove Filter')" :title="__('Remove Filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
                 </div>
                 <div class="search-filter" data-filter="type" @unless (isset($filters['type'])) hidden @endunless>
                     <x-fruit::field :label="__('Type')" control-id="search-filter-type">
@@ -133,19 +133,19 @@
                             @endforeach
                         </x-fruit::select>
                     </x-fruit::field>
-                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('type')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('type')" :aria-label="__('Remove Filter')" :title="__('Remove Filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
                 </div>
                 <div class="search-filter" data-filter="body" @unless (isset($filters['body'])) hidden @endunless>
                     <x-fruit::field :label="__('Body')" control-id="search-filter-body">
                         <x-fruit::input id="search-filter-body" name="f[body]" :value="$filters['body'] ?? ''" />
                     </x-fruit::field>
-                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('body')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('body')" :aria-label="__('Remove Filter')" :title="__('Remove Filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
                 </div>
                 <div class="search-filter" data-filter="number" @unless (isset($filters['number'])) hidden @endunless>
                     <x-fruit::field :label="__('Number')" control-id="search-filter-number">
                         <x-fruit::input id="search-filter-number" name="f[number]" :value="$filters['number'] ?? ''" />
                     </x-fruit::field>
-                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('number')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('number')" :aria-label="__('Remove Filter')" :title="__('Remove Filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
                 </div>
                 <div class="search-filter" data-filter="following" @unless (isset($filters['following'])) hidden @endunless>
                     <x-fruit::field :label="__('Following')" control-id="search-filter-following">
@@ -154,31 +154,31 @@
                             <option value="yes" @if (($filters['following'] ?? '') == 'yes') selected @endif>{{ __('Yes') }}</option>
                         </x-fruit::select>
                     </x-fruit::field>
-                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('following')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('following')" :aria-label="__('Remove Filter')" :title="__('Remove Filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
                 </div>
                 <div class="search-filter" data-filter="id" @unless (isset($filters['id'])) hidden @endunless>
                     <x-fruit::field :label="__('ID')" control-id="search-filter-id">
                         <x-fruit::input id="search-filter-id" name="f[id]" :value="$filters['id'] ?? ''" />
                     </x-fruit::field>
-                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('id')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('id')" :aria-label="__('Remove Filter')" :title="__('Remove Filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
                 </div>
                 <div class="search-filter" data-filter="after" @unless (isset($filters['after'])) hidden @endunless>
                     <x-fruit::field :label="__('After')" control-id="search-filter-after">
                         <x-fruit::date id="search-filter-after" name="f[after]" :value="!empty($filters['after']) ? date('Y-m-d', strtotime($filters['after'])) : ''" />
                     </x-fruit::field>
-                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('after')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('after')" :aria-label="__('Remove Filter')" :title="__('Remove Filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
                 </div>
                 <div class="search-filter" data-filter="before" @unless (isset($filters['before'])) hidden @endunless>
                     <x-fruit::field :label="__('Before')" control-id="search-filter-before">
                         <x-fruit::date id="search-filter-before" name="f[before]" :value="!empty($filters['before']) ? date('Y-m-d', strtotime($filters['before'])) : ''" />
                     </x-fruit::field>
-                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('before')" :aria-label="__('Remove filter')" :title="__('Remove filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="f-button--icon search-filter__remove" x-on:click="toggle('before')" :aria-label="__('Remove Filter')" :title="__('Remove Filter')"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
                 </div>
 		        @action('search.display_filters', $filters, $filters_data, $mode)
 		    </div>
 
 	        @if ($mode == App\Conversation::SEARCH_MODE_CONV && App\Search\ConversationSearch::available())
-	            <x-fruit::disclosure :title="__('Search tips')" class="search-tips">
+	            <x-fruit::disclosure :title="__('Search Tips')" class="search-tips">
 	                <p class="f-help">
 	                    <code>refund jacket</code> {{ __('all words, anywhere in the conversation') }}<br>
 	                    <code>"exact phrase"</code> {{ __('words in this order') }} · <code>-word</code> {{ __('without this word') }}<br>

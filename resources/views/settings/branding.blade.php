@@ -74,7 +74,7 @@
     </x-fruit::form-section>
 
     <x-fruit::form-section :title="__('Widgets')">
-        <x-fruit::field :label="__('Powered by')" layout="row">
+        <x-fruit::field :label="__('Powered By')" layout="row">
             <x-fruit::switch name="settings[branding.widget_powered_by]" value="1" :checked="(bool) $settings['branding.widget_powered_by']" />
             <x-slot:description>{{ __('Show "Powered by" in widgets for customers (such as the knowledge base widget)') }}</x-slot:description>
         </x-fruit::field>

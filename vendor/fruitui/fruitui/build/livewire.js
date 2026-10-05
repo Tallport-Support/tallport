@@ -341,7 +341,7 @@ function y({ title: e, html: t, url: n, size: r = "medium", trigger: i = null } 
 			let t = document.createElement("p");
 			t.className = "f-error", t.setAttribute("role", "alert"), t.textContent = g("error-message", "Could not load this content.");
 			let r = document.createElement("button");
-			r.type = "button", r.className = "f-button", r.textContent = g("retry-label", "Try again"), r.addEventListener("click", y);
+			r.type = "button", r.className = "f-button", r.textContent = g("retry-label", "Try Again"), r.addEventListener("click", y);
 			let i = document.createElement("div");
 			i.append(r), o.replaceChildren(t, i), a.dispatchEvent(new CustomEvent("fruit-dialog-error", {
 				bubbles: !0,
@@ -855,7 +855,7 @@ function re() {
 	return {
 		init() {
 			if (e = this.$el, t = e.querySelector("input[type=\"date\"], input[type=\"datetime-local\"]"), !t) return;
-			n = document.createElement("div"), n.id = d("fruit-calendar"), n.className = "f-calendar", n.setAttribute("role", "dialog"), n.setAttribute("aria-label", o(e, "label", "Choose date")), n.hidden = !0;
+			n = document.createElement("div"), n.id = d("fruit-calendar"), n.className = "f-calendar", n.setAttribute("role", "dialog"), n.setAttribute("aria-label", o(e, "label", "Choose Date")), n.hidden = !0;
 			let u = document.createElement("div");
 			u.className = "f-calendar__header", r = document.createElement("div"), r.className = "f-calendar__title", r.id = `${n.id}-title`, r.setAttribute("aria-live", "polite");
 			let f = (t, n, r) => {
@@ -864,7 +864,7 @@ function re() {
 					c = m(N(c, t === "next" ? 1 : -1)), s = new Date(c.getFullYear(), c.getMonth(), 1), h();
 				}), i;
 			};
-			u.append(r, f("previous", "previous-label", "Previous month"), f("next", "next-label", "Next month")), i = document.createElement("table"), i.className = "f-calendar__grid", i.setAttribute("role", "grid"), i.setAttribute("aria-labelledby", r.id), i.append(document.createElement("thead"), document.createElement("tbody")), n.append(u, i), (e.querySelector("[data-fruit-ui]") ?? e).append(n), a = L(e, t, n, {
+			u.append(r, f("previous", "previous-label", "Previous Month"), f("next", "next-label", "Next Month")), i = document.createElement("table"), i.className = "f-calendar__grid", i.setAttribute("role", "grid"), i.setAttribute("aria-labelledby", r.id), i.append(document.createElement("thead"), document.createElement("tbody")), n.append(u, i), (e.querySelector("[data-fruit-ui]") ?? e).append(n), a = L(e, t, n, {
 				onOpen: () => g(m(l() ?? /* @__PURE__ */ new Date()), !1),
 				onFocus: () => i.querySelector(".f-calendar__day[tabindex=\"0\"]")?.focus()
 			}), e.setAttribute("data-ready", ""), a.listen(t, "click", (e) => {
@@ -974,7 +974,7 @@ function V() {
 			n = S("div", "f-color-palette", {
 				id: d("fruit-colors"),
 				role: "dialog",
-				"aria-label": o(e, "label", "Choose color")
+				"aria-label": o(e, "label", "Choose Color")
 			}), n.hidden = !0, r = S("div", "f-color-palette__swatches", {
 				role: "listbox",
 				"aria-label": o(e, "colors-label", "Colors")

@@ -10,7 +10,7 @@
     <p class="f-muted customer-not-found-title" x-show="searched && !results.length" x-cloak>{{ __('No customers found. Would you like to create one?') }}</p>
 
     <div x-show="creating" x-cloak>
-        <h3 class="f-headline">{{ __('Create a new customer') }}</h3>
+        <h3 class="f-headline">{{ __('Create a New Customer') }}</h3>
         <form class="f-stack" x-on:submit.prevent="create($refs.save)">
             <x-fruit::field :label="__('First Name')" control-id="change-customer-first-name">
                 <x-fruit::input id="change-customer-first-name" name="first_name" required />
@@ -27,6 +27,6 @@
         </form>
     </div>
     <div x-show="!creating">
-        <button type="button" class="f-button f-button--ghost f-button--small" x-on:click="creating = true">{{ __('Create a new customer') }}</button>
+        <button type="button" class="f-button f-button--ghost f-button--small" x-on:click="creating = true">{{ __('Create a New Customer') }}</button>
     </div>
 </div>

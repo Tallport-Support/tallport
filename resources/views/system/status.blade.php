@@ -129,7 +129,7 @@
             <span class="f-row">
                 <span class="f-muted">{{ \Config::get('app.version') }}</span>
                 @if (!\Config::get('app.disable_updating') && !$new_version_available)
-                    <x-fruit::button variant="ghost" size="small" class="check-updates-trigger" x-on:click="checkUpdates">{{ __('Check for updates') }}</x-fruit::button>
+                    <x-fruit::button variant="ghost" size="small" class="check-updates-trigger" x-on:click="checkUpdates">{{ __('Check for Updates') }}</x-fruit::button>
                 @endif
             </span>
         </div>

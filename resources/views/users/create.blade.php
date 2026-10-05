@@ -60,8 +60,8 @@
                 </x-fruit::fieldset>
                 <div class="f-form-row">
                     <div class="f-row" x-data="{ check(on) { document.querySelectorAll('#permissions-fields input').forEach(input => input.checked = on) } }">
-                        <button type="button" class="f-button f-button--ghost f-button--small" @click="check(true)">{{ __('all') }}</button>
-                        <button type="button" class="f-button f-button--ghost f-button--small" @click="check(false)">{{ __('none') }}</button>
+                        <button type="button" class="f-button f-button--ghost f-button--small" @click="check(true)">{{ __('All') }}</button>
+                        <button type="button" class="f-button f-button--ghost f-button--small" @click="check(false)">{{ __('None') }}</button>
                     </div>
                     @error('mailboxes')<p class="f-error">{{ $message }}</p>@enderror
                 </div>
@@ -69,7 +69,7 @@
         @endif
 
         <x-fruit::form-section :title="__('Password')">
-            <x-fruit::field :label="__('Send an invite email')" :description="__('An invite can be sent later if you aren\'t ready')" layout="row">
+            <x-fruit::field :label="__('Send an Invite Email')" :description="__('An invite can be sent later if you aren\'t ready')" layout="row">
                 <x-fruit::switch id="send_invite" name="send_invite" value="1" :checked="$send_invite" x-model="sendInvite" />
             </x-fruit::field>
 

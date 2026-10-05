@@ -2,6 +2,10 @@
 
 The [component gallery](../components.html) is the visual catalog of the CSS shipped by `fruitui/css` and the opt-in `fruitui/mail.css`. Every entry has a live specimen and HTML/Blade usage. [component-catalog.json](component-catalog.json) maps public CSS families to gallery anchors, Blade adapters, and actual consumers. The [component policy](component-policy.md#blade-contracts) defines the native contracts for every Blade adapter. Gallery specimens are rendered from the Blade sources in `gallery/specimens/` (`composer gallery`), so the live specimen and the Blade usage shown beside it are the same code.
 
+## Writing interface text
+
+FruitUI follows Apple's capitalization. Use **Title Case** for short interface text: page, window and tab titles, section headings, buttons, menu titles and items, field and row labels, column headings, sort options and status badges ("Send Reply", "Mark as Unread", "Danger Zone", "Customers per Page"). Capitalize every word except articles, coordinating conjunctions and prepositions of three letters or fewer, unless they come first or last ("Assigned To", "New Conversation From Here"). Use **sentence case** for anything that reads as a sentence: descriptions, help and footer text, alert messages (their titles are Title Case), toasts and status lines, placeholders, tooltips, and checkbox, radio or switch options written as a phrase ("Keep me signed in", "Automatically send a reply"). Apply it consistently across an application, including its translations' English source strings.
+
 ## CSS compositions and utilities
 
 These use native markup and existing controls. A CSS composition does not require a separate Blade wrapper to be reusable.
@@ -85,7 +89,7 @@ Touch devices keep their operating system's picker. Unsupported browsers retain 
     <optgroup label="Accounts">
       <option value="work">Work</option>
       <option value="personal">Personal</option>
-      <option value="offline" disabled>Offline account</option>
+      <option value="offline" disabled>Offline Account</option>
     </optgroup>
   </select>
 </label>
@@ -93,7 +97,7 @@ Touch devices keep their operating system's picker. Unsupported browsers retain 
 
 ```blade
 <label class="f-field">
-    <span class="f-label">Included folders</span>
+    <span class="f-label">Included Folders</span>
     <x-fruit::select name="folders[]" multiple size="3" wire:model="folders">
         <option value="inbox">Inbox</option>
         <option value="sent">Sent</option>
@@ -120,7 +124,7 @@ Mail messages and Support tickets use the same native list and item-opening butt
       </span>
       <span class="f-item-row__subtitle">A fresh start</span>
       <span class="f-item-row__preview">A few thoughts on our next release.</span>
-      <span class="f-item-row__meta">Work mailbox</span>
+      <span class="f-item-row__meta">Work Mailbox</span>
     </button>
   </li>
 </ul>
@@ -128,7 +132,7 @@ Mail messages and Support tickets use the same native list and item-opening butt
 
 ```blade
 <x-fruit::list-header>
-    <span>Newest first</span>
+    <span>Newest First</span>
     <span class="f-toolbar__spacer"></span>
     <x-fruit::button variant="ghost" size="small" data-fruit-select-toggle aria-controls="conversations" aria-pressed="false">Select</x-fruit::button>
     <x-slot:selection>
@@ -136,9 +140,9 @@ Mail messages and Support tickets use the same native list and item-opening butt
             <x-fruit::button variant="ghost" class="f-button--icon" wire:click="archiveSelected" aria-label="Archive selected" title="Archive selected">…</x-fruit::button>
             <x-fruit::menu title="More actions for selected conversations">
                 <x-slot:trigger class="f-button--ghost f-button--icon" aria-label="More" title="More">…</x-slot:trigger>
-                <x-fruit::menu-item wire:click="markUnread">Mark as unread</x-fruit::menu-item>
+                <x-fruit::menu-item wire:click="markUnread">Mark as Unread</x-fruit::menu-item>
             </x-fruit::menu>
-            <x-fruit::button variant="ghost" class="f-button--icon" wire:click="$set('selected', [])" aria-label="Clear selection" title="Clear selection">…</x-fruit::button>
+            <x-fruit::button variant="ghost" class="f-button--icon" wire:click="$set('selected', [])" aria-label="Clear Selection" title="Clear Selection">…</x-fruit::button>
         </x-fruit::selection-bar>
     </x-slot:selection>
 </x-fruit::list-header>
@@ -206,10 +210,10 @@ All four examples use `f-empty-state` for empty results. It owns no filter state
 
 ```blade
 <x-fruit::empty-state>
-    <x-slot:title><h2>No conversations</h2></x-slot:title>
+    <x-slot:title><h2>No Conversations</h2></x-slot:title>
     Try another search.
     <x-slot:actions>
-        <x-fruit::button wire:click="clearFilters">Clear filters</x-fruit::button>
+        <x-fruit::button wire:click="clearFilters">Clear Filters</x-fruit::button>
     </x-slot:actions>
 </x-fruit::empty-state>
 ```
@@ -305,7 +309,7 @@ Pages that are read or filled in (settings, account and profile pages, a custome
 
 ```blade
 <form wire:submit="save">
-    <x-fruit::page width="narrow" title="Support mailbox" description="How this mailbox sends and receives.">
+    <x-fruit::page width="narrow" title="Support Mailbox" description="How this mailbox sends and receives.">
         <x-fruit::form-section title="Mailbox">…</x-fruit::form-section>
         <x-slot:footer>
             <p class="f-help" role="status"><span wire:dirty>You have unsaved changes.</span></p>
@@ -378,7 +382,7 @@ Mail's phone options and Chat's reaction picker share native `.f-floating-disclo
 <x-fruit::floating-disclosure placement="above" x-data="fruitFloatingDisclosure">
     <x-slot:trigger class="f-button">Options</x-slot:trigger>
     <x-slot:content class="f-stack">
-        <x-fruit::button wire:click="markAllRead" x-on:click="close(true)">Mark all read</x-fruit::button>
+        <x-fruit::button wire:click="markAllRead" x-on:click="close(true)">Mark All Read</x-fruit::button>
     </x-slot:content>
 </x-fruit::floating-disclosure>
 ```
@@ -437,7 +441,7 @@ A Menu whose trigger is text, a pull-down button, shows a chevron after it: Blad
 <x-fruit::menu title="Sort">…</x-fruit::menu>
 
 <div class="f-button-group">
-    <x-fruit::button type="submit">Send reply</x-fruit::button>
+    <x-fruit::button type="submit">Send Reply</x-fruit::button>
     <x-fruit::menu title="Send options">
         <x-slot:trigger class="f-button--icon" aria-label="Send options"><span class="f-menu__chevron" aria-hidden="true"></span></x-slot:trigger>
         …
@@ -455,8 +459,8 @@ Context menus are hidden by nature, so offer every command somewhere visible as 
 <li wire:key="ticket-{{ $ticket->id }}">
     <x-fruit::item-row wire:click="open({{ $ticket->id }})">{{ $ticket->subject }}</x-fruit::item-row>
     <x-fruit::context-menu title="Conversation actions">
-        <x-fruit::menu-item wire:click="open({{ $ticket->id }})">Open conversation</x-fruit::menu-item>
-        <x-fruit::menu-item wire:click="close({{ $ticket->id }})">Close conversation</x-fruit::menu-item>
+        <x-fruit::menu-item wire:click="open({{ $ticket->id }})">Open Conversation</x-fruit::menu-item>
+        <x-fruit::menu-item wire:click="close({{ $ticket->id }})">Close Conversation</x-fruit::menu-item>
     </x-fruit::context-menu>
 </li>
 ```
@@ -466,7 +470,7 @@ For raw HTML, put `x-data="fruitCombobox"` on a `div.f-combobox` containing `sel
 Blade includes stable `wire:ignore` containers for generated UI. The named native control remains outside them, so Livewire can update its model, options, labels, validation, disabled, and readonly attributes. For handwritten Livewire markup, include an empty `<div data-fruit-ui wire:ignore></div>` beside the native select/textarea. Rich Editor's toolbar and surface each use `wire:ignore`; its textarea remains outside those boundaries. Keep a widget's DOM identity stable, or key an outer container when replacing it.
 
 ```blade
-<label for="assignee">Assigned to</label>
+<label for="assignee">Assigned To</label>
 <x-fruit::combobox id="assignee" name="assignee" wire:model.live="assignee">
     <option value="">Unassigned</option>
     <option value="alex">Alex Morgan</option>
@@ -561,11 +565,11 @@ Up/Down choose, Enter or Tab inserts, Escape closes. The control gets `aria-auto
 `x-fruit::command-palette` is a modal search over destinations and actions, opened by Cmd/Ctrl with its `shortcut`, or by name like a named Dialog (`Fruit::openDialog('commands')`, `$dispatch('fruit-dialog-open', { name: 'commands' })`). `x-fruit::command-link` items navigate (including `wire:navigate`); `x-fruit::command` items run an action (`wire:click`, `@click`); `x-fruit::command-group` labels related items. Typing filters by label, Up/Down move the highlight, Enter activates it and closes the palette, Escape closes it.
 
 ```blade
-<x-fruit::command-palette name="commands" shortcut="k" label="Go to">
+<x-fruit::command-palette name="commands" shortcut="k" label="Go To">
     <x-fruit::command-group label="Mailboxes">
         <x-fruit::command-link href="{{ route('mailbox', 'inbox') }}" wire:navigate>Inbox</x-fruit::command-link>
     </x-fruit::command-group>
-    <x-fruit::command wire:click="compose" shortcut="⌘N">New message</x-fruit::command>
+    <x-fruit::command wire:click="compose" shortcut="⌘N">New Message</x-fruit::command>
 </x-fruit::command-palette>
 ```
 
@@ -589,9 +593,9 @@ Without a bundler, link the prebuilt `editor.global.js` (published with the othe
 ```blade
 <x-fruit::editor wire:model="body">
     <x-slot:extras>
-        <x-fruit::menu title="Insert variable">
-            <x-slot:trigger class="f-button--ghost">Insert variable<span class="f-menu__chevron" aria-hidden="true"></span></x-slot:trigger>
-            <x-fruit::menu-item x-on:click="$dispatch('fruit-editor-insert', { html: '{%customer.firstName%}' })">Customer first name</x-fruit::menu-item>
+        <x-fruit::menu title="Insert Variable">
+            <x-slot:trigger class="f-button--ghost">Insert Variable<span class="f-menu__chevron" aria-hidden="true"></span></x-slot:trigger>
+            <x-fruit::menu-item x-on:click="$dispatch('fruit-editor-insert', { html: '{%customer.firstName%}' })">Customer First Name</x-fruit::menu-item>
         </x-fruit::menu>
     </x-slot:extras>
 </x-fruit::editor>
@@ -615,7 +619,7 @@ With Livewire, `$wire.upload('image', file, () => $wire.storeImage().then(url =>
 **Inserting and replacing content.** Saved replies, drafts and signatures go through two events. `fruit-editor-insert` puts `{ html }` at the cursor and `fruit-editor-set` replaces the content with `{ html }`. Dispatch them from a button inside the editor (`$dispatch('fruit-editor-insert', { html })` in an app toolbar button), on the `.f-editor` element, or on `window` with `target` naming the editor's textarea `id` or `name`, as Livewire's `$this->dispatch('fruit-editor-set', target: 'reply', html: $draft)` does. Each request updates the native textarea with `input` and `change`, so `wire:model`, autosave listeners and form posts see it. Without the editor plugin the plain textarea answers the same requests.
 
 ```blade
-<label for="signature">Reply signature</label>
+<label for="signature">Reply Signature</label>
 <x-fruit::editor id="signature" name="signature" wire:model="signature">
     {{ $signature }}
 </x-fruit::editor>
@@ -632,7 +636,7 @@ Use `f-prose` around sanitized message content to scope paragraph, list, quote, 
 **Copy button** (`x-fruit::copy-button value="…"`) copies its value to the clipboard: API keys, webhook secrets, forwarding addresses, invite links. For a moment its icon becomes a check and its label reads Copied; a polite status announces Copied, or Could not copy when the browser refuses. Without a label it is an icon button named Copy, so give it a specific `aria-label` ("Copy webhook secret"). It takes Button's `variant` (default, primary, ghost) and `size`, joins an `f-input-group` beside a read-only input, and sends a bubbling `fruit-copied` event with `detail.value`. In HTML, bind `data-fruit-copy` on the button inside `span.f-copy[x-data="fruitCopy"]` (see the gallery); pages without HTTPS fall back to the selection copy command.
 
 ```blade
-<x-fruit::field label="Webhook secret">
+<x-fruit::field label="Webhook Secret">
     <div class="f-input-group">
         <x-fruit::input id="webhook-secret" value="{{ $secret }}" readonly />
         <x-fruit::copy-button value="{{ $secret }}" aria-label="Copy webhook secret" />
@@ -658,8 +662,8 @@ All new CSS uses existing semantic appearance tokens, follows system light/dark 
 
 These cover the core screens of helpdesks, mail and chat. Contracts are in the [policy](component-policy.md#blade-contracts); every one has a gallery specimen.
 
-- **Message** (`x-fruit::message`): one message's avatar, author, meta, time, body, attachments and footer. `layout="inline"` suits chat (Chat's channel); `layout="stacked"` suits email and helpdesk threads (Support, Chat threads); `variant="note"` marks internal notes. Each kind is identifiable at a glance. Sent messages carry a bar on the leading edge: `direction="outgoing"` gives a teammate's a neutral bar, and `mine` gives the viewer's own the accent, as messaging apps color your own messages. Incoming messages (customers) stay plain. What is not sent is a card: `variant="note"` is yellow for internal notes, and `variant="generated"` is indigo for generated text shown as a message, with an author and time. A summary of the conversation is compact instead: `<x-fruit::generated label="Summary">…</x-fruit::generated>` shows a sparkles icon and the text on the same indigo tint, without avatar or header, and names it for screen readers; as a Thread entry it sits without hairlines. A machine translation belongs to the message it translates: put it in the `translation` slot (`<x-slot:translation lang="en">…</x-slot:translation>`, with the original's `lang` on the message), which shows it above the original text, so it is read first, in an outlined card with a subtle translate icon and announces it as a translation, without a separate label. Name the kind in `meta` too ("Customer", "Reply to customer", "Internal note", "Summary · Generated, not sent"), so color is never the only cue. Reactions and reply counts are independent controls in the footer. The `actions` slot holds quick actions (react, reply in thread, quote) in a labelled group that appears at the message's top corner on hover or whenever focus is inside it, and stays visible on touch screens; stacked messages give it a column beside the header so the time stays readable. Offer the same commands elsewhere when they matter, since hover is not discoverable.
-- **Long histories**: render a window of recent messages and load older ones as the reader scrolls up, rather than the whole history: a `wire:intersect="loadOlder"` sentinel before the first message, with a Skeleton while it loads (see [infinite scroll](#app-shells-icons-and-infinite-scroll)). Chat apps usually add a "Jump to latest" button once the reader scrolls back; the Chat example shows one.
+- **Message** (`x-fruit::message`): one message's avatar, author, meta, time, body, attachments and footer. `layout="inline"` suits chat (Chat's channel); `layout="stacked"` suits email and helpdesk threads (Support, Chat threads); `variant="note"` marks internal notes. Each kind is identifiable at a glance. Sent messages carry a bar on the leading edge: `direction="outgoing"` gives a teammate's a neutral bar, and `mine` gives the viewer's own the accent, as messaging apps color your own messages. Incoming messages (customers) stay plain. What is not sent is a card: `variant="note"` is yellow for internal notes, and `variant="generated"` is indigo for generated text shown as a message, with an author and time. A summary of the conversation is compact instead: `<x-fruit::generated label="Summary">…</x-fruit::generated>` shows a sparkles icon and the text on the same indigo tint, without avatar or header, and names it for screen readers; as a Thread entry it sits without hairlines. A machine translation belongs to the message it translates: put it in the `translation` slot (`<x-slot:translation lang="en">…</x-slot:translation>`, with the original's `lang` on the message), which shows it above the original text, so it is read first, in an outlined card with a subtle translate icon and announces it as a translation, without a separate label. Name the kind in `meta` too ("Customer", "Reply to Customer", "Internal Note", "Summary · Generated, not sent"), so color is never the only cue. Reactions and reply counts are independent controls in the footer. The `actions` slot holds quick actions (react, reply in thread, quote) in a labelled group that appears at the message's top corner on hover or whenever focus is inside it, and stays visible on touch screens; stacked messages give it a column beside the header so the time stays readable. Offer the same commands elsewhere when they matter, since hover is not discoverable.
+- **Long histories**: render a window of recent messages and load older ones as the reader scrolls up, rather than the whole history: a `wire:intersect="loadOlder"` sentinel before the first message, with a Skeleton while it loads (see [infinite scroll](#app-shells-icons-and-infinite-scroll)). Chat apps usually add a "Jump to Latest" button once the reader scrolls back; the Chat example shows one.
 - **Header lines and state**: Message's `headers` slot holds further lines under the identity (From, To, Cc, or "Assigned to Mia · Pending"); short labels such as Draft or Forwarded go in `meta`. A "…" Menu in the `actions` slot keeps the actions visible while it is open.
 - **Delivery and failures**: say it once, in the `status` slot: one quiet line under the header with an icon, a short text and small actions, in `tone="danger"` for a failure or `tone="warning"` for a delay. Don't add a "Not sent" badge or an Alert inside the message as well; a box within the message and a second colored bar outweigh the message itself.
 
@@ -667,7 +671,7 @@ These cover the core screens of helpdesks, mail and chat. Contracts are in the [
 <x-slot:status tone="danger">
     Not sent: {{ $message->sendError }}
     <x-fruit::button variant="ghost" wire:click="retry({{ $message->id }})">Retry</x-fruit::button>
-    <x-fruit::button variant="ghost" data-fruit-dialog-url="{{ route('messages.log', $message) }}" data-fruit-dialog-title="Delivery log">View log</x-fruit::button>
+    <x-fruit::button variant="ghost" data-fruit-dialog-url="{{ route('messages.log', $message) }}" data-fruit-dialog-title="Delivery log">View Log</x-fruit::button>
 </x-slot:status>
 ```
 
@@ -675,7 +679,7 @@ These cover the core screens of helpdesks, mail and chat. Contracts are in the [
 - **Links in the header**: a link in the author (a profile) or the time (the message's own anchor, titled with the full date) keeps the header's text color and shows an underline only on hover or focus; the same holds for a thread event's time.
 - **Thread** (`x-fruit::thread`, `ol.f-thread`): the list that holds a conversation's history, one `li` per message or event, in either order (the Support examples list newest first, below a top composer). Messages are divided by a hairline with `--f-thread-gap` (20px) on each side, more than the space between their own paragraphs, so each reads as one unit. Events sit closer (`--f-thread-event-gap`) without lines, and note and generated cards keep their box instead of a line. Chat channels keep inline messages without lines.
 - **Thread events** (`x-fruit::message-event`): one quiet line between messages for assignments and status changes, with an optional icon, a `time`, and an `actions` slot (a "…" Menu after the time, shown on hover, focus or while open).
-- **Divider** (`x-fruit::divider`): days, "New messages" (`tone="accent"`) or reply counts (`align="start"`).
+- **Divider** (`x-fruit::divider`): days, "New Messages" (`tone="accent"`) or reply counts (`align="start"`).
 - **Timeline** (`x-fruit::timeline`, `timeline-item`): conversation history and audit logs, with a native `time`.
 - **Rows as links**: `x-fruit::item-link href="…"` is the same row as a real link, for rows that are destinations: they open in a new tab, follow `target` and work without JavaScript. `current` marks the open row (`aria-current="page"`). Use Item Row (a button) for rows that act in place.
 - **Leading and trailing controls**: a list item can hold a Checkbox before its row and controls after it, such as a star or follow toggle (`x-fruit::button variant="ghost" size="small" class="f-button--icon"` with `aria-pressed`). The list item then draws the row's rounded hover and current backgrounds across all of them; trailing controls sit on the title line and never wrap (`--f-item-accessory-offset` adjusts for other control heights).
@@ -694,7 +698,7 @@ These cover the core screens of helpdesks, mail and chat. Contracts are in the [
 
 ```blade
 <x-fruit::list-header>
-    <span>Newest first</span>
+    <span>Newest First</span>
     <span class="f-toolbar__spacer"></span>
     <x-fruit::button variant="ghost" size="small" data-fruit-select-toggle aria-controls="conversations" aria-pressed="false">Select</x-fruit::button>
     <x-slot:selection>
@@ -702,9 +706,9 @@ These cover the core screens of helpdesks, mail and chat. Contracts are in the [
             <x-fruit::button variant="ghost" class="f-button--icon" wire:click="archiveSelected" aria-label="Archive selected" title="Archive selected">…</x-fruit::button>
             <x-fruit::menu title="More actions for selected conversations">
                 <x-slot:trigger class="f-button--ghost f-button--icon" aria-label="More" title="More">…</x-slot:trigger>
-                <x-fruit::menu-item wire:click="markUnread">Mark as unread</x-fruit::menu-item>
+                <x-fruit::menu-item wire:click="markUnread">Mark as Unread</x-fruit::menu-item>
             </x-fruit::menu>
-            <x-fruit::button variant="ghost" class="f-button--icon" wire:click="$set('selected', [])" aria-label="Clear selection" title="Clear selection">…</x-fruit::button>
+            <x-fruit::button variant="ghost" class="f-button--icon" wire:click="$set('selected', [])" aria-label="Clear Selection" title="Clear Selection">…</x-fruit::button>
         </x-fruit::selection-bar>
     </x-slot:selection>
 </x-fruit::list-header>
@@ -768,10 +772,10 @@ These cover the core screens of helpdesks, mail and chat. Contracts are in the [
 ```blade
 @island(name: 'history', lazy: true)
     @placeholder
-        <section aria-label="Earlier conversations" aria-busy="true"><x-fruit::skeleton :lines="2" /></section>
+        <section aria-label="Earlier Conversations" aria-busy="true"><x-fruit::skeleton :lines="2" /></section>
     @endplaceholder
     <section aria-labelledby="history-title">
-        <h2 id="history-title">Earlier conversations</h2>
+        <h2 id="history-title">Earlier Conversations</h2>
         <x-fruit::timeline aria-labelledby="history-title">…</x-fruit::timeline>
     </section>
 @endisland
@@ -788,7 +792,7 @@ Keep islands outside elements whose `wire:key` changes, such as a pane keyed per
 ```blade
 <x-fruit::fieldset>
     <legend>Customers</legend>
-    <x-fruit::switch wire:model="settings.photos" description="From Gravatar, for customers without a photo.">Customer photos</x-fruit::switch>
+    <x-fruit::switch wire:model="settings.photos" description="From Gravatar, for customers without a photo.">Customer Photos</x-fruit::switch>
     <x-fruit::checkbox wire:model="settings.manageTags">Users can manage tags</x-fruit::checkbox>
     <x-fruit::checkbox wire:model="settings.manageFolders">Users can manage custom folders</x-fruit::checkbox>
 </x-fruit::fieldset>
@@ -889,7 +893,7 @@ An AI reply draft, or any generated suggestion the reader reviews and uses, is `
     </x-slot:actions>
     <x-slot:details>
         <section><h4>Notes</h4><ul><li>Guest invites expire after seven days.</li></ul></section>
-        <section><h4>Documentation used</h4>
+        <section><h4>Documentation Used</h4>
             <ul class="f-suggestion__sources"><li><a href="{{ $url }}">Inviting guests</a><small>forma.example/help</small></li></ul>
         </section>
     </x-slot:details>
@@ -901,13 +905,13 @@ An AI reply draft, or any generated suggestion the reader reviews and uses, is `
 For content the server renders on demand (outgoing emails, the original message, a merge or move form), put one `<x-fruit::remote-dialog />` in the layout for translated labels, then open dialogs from links or script. A link or button with `data-fruit-dialog-url` loads that URL (empty on a link: its `href`) with the title from `data-fruit-dialog-title` (default: its text) and `data-fruit-dialog-size` (medium or large); Cmd/Ctrl/Shift-clicks keep the link's own behavior, so it can still open in a new tab.
 
 ```blade
-<a href="{{ route('conversations.merge', $conversation) }}" data-fruit-dialog-url data-fruit-dialog-title="Merge conversation">Merge…</a>
+<a href="{{ route('conversations.merge', $conversation) }}" data-fruit-dialog-url data-fruit-dialog-title="Merge Conversation">Merge…</a>
 ```
 
 From script, `FruitUI.dialog({ title, url | html, size })` (`$dialog(…)` in Alpine, `dialog` from `fruitui/alpine`) returns `{ element, body, loaded, closed, close(value) }`. The request asks for HTML with `X-Requested-With: XMLHttpRequest`, so a Laravel route can return a partial view. A skeleton and a polite Loading status show meanwhile; a failed request shows an alert with Try again. Alpine starts on the inserted content by itself, and a trailing `.f-dialog__footer` becomes the dialog's footer, kept in view while the body scrolls. `<form method="dialog">` buttons close it with their value, and the dialog is removed on close, with focus back on the opener. Scripts in loaded HTML do not run: wire up the content from `loaded`, or from the bubbling `fruit-dialog-loaded` event (`detail.body`, `url`, `trigger`) for links.
 
 ```js
-const { loaded, closed } = FruitUI.dialog({ title: 'Outgoing emails', url: `/conversations/${id}/emails`, size: 'large' });
+const { loaded, closed } = FruitUI.dialog({ title: 'Outgoing Emails', url: `/conversations/${id}/emails`, size: 'large' });
 loaded.then(body => initEmailList(body));
 closed.then(value => value === 'resent' && FruitUI.toast('Email sent again.', { tone: 'success' }));
 ```
@@ -957,7 +961,7 @@ Settings screens use a sidebar of categories beside a light grey content area (`
 <form wire:submit="save" style="background: var(--f-grouped-background)">
     <x-fruit::section-nav aria-label="Mailbox settings">…</x-fruit::section-nav>
 
-    <x-fruit::form-section title="Automatic reply" footer="Sent once per conversation.">
+    <x-fruit::form-section title="Automatic Reply" footer="Sent once per conversation.">
         <x-fruit::field label="Send an automatic reply" layout="row" description="To the first message of every new conversation.">
             <x-fruit::switch wire:model.live="settings.autoReply" />
         </x-fruit::field>

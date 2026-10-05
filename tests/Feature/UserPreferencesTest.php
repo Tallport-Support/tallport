@@ -24,7 +24,7 @@ class UserPreferencesTest extends FeatureTestCase
         $conversation = Conversation::where('mailbox_id', $mailbox->id)->first();
 
         $this->actingAs($agent)->get(route('users.preferences', ['id' => $agent->id]))->assertOk()
-            ->assertSee('Status after a reply')->assertSee('Next active conversation');
+            ->assertSee('Status After a Reply')->assertSee('Next active conversation');
         $this->actingAs($agent)->get(route('users.preferences', ['id' => $this->createUser()->id]))->assertForbidden();
 
         \Session::start();

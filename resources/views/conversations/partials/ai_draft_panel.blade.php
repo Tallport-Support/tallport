@@ -13,7 +13,7 @@
         <p class="f-muted" x-show="detail" x-text="detail"></p>
         <x-slot:translation x-show="draft && draft.translation" :lang="App\Ai\Settings::language($conversation->mailbox, Auth::user())"><div class="ai-draft-translation-body" x-text="draft ? draft.translation : ''"></div></x-slot:translation>
         <x-slot:actions x-show="draft || failed">
-            <x-fruit::button variant="primary" class="ai-draft-insert" x-show="draft" x-on:click="insert()">{{ __('Insert into Reply') }}</x-fruit::button>
+            <x-fruit::button variant="primary" class="ai-draft-insert" x-show="draft" x-on:click="insert()">{{ __('Insert Into Reply') }}</x-fruit::button>
             <x-fruit::button class="ai-draft-again" x-on:click="request()">{{ __('Draft Again') }}</x-fruit::button>
         </x-slot:actions>
         <x-slot:details x-show="draft && ((draft.staff_notes || []).length || (draft.retrieved_documents || []).length)">

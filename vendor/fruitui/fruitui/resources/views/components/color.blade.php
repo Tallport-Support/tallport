@@ -4,7 +4,7 @@
 @php($palette = $attributes->get('list') ?? ($attributes->get('id') ?? 'fruit-color-'.\Illuminate\Support\Str::slug((string) $attributes->get('name', 'default'))).'-palette')
 {{-- The native input keeps the value; the swatch palette and its custom editor replace the browser's chooser. --}}
 <div {{ \FruitUI\Support\ComponentContract::wrapper($wrapper)->merge([
-    'data-fruit-label' => __('Choose color'),
+    'data-fruit-label' => __('Choose Color'),
     'data-fruit-colors-label' => __('Colors'),
     'data-fruit-other-label' => __('Other…'),
     'data-fruit-area-label' => __('Saturation and brightness'),

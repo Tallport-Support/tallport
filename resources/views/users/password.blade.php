@@ -2,7 +2,7 @@
 
 @section('page_width', 'narrow')
 
-@section('title_full', __('Change your password').' - '.$user->getFullName())
+@section('title_full', __('Change Your Password').' - '.$user->getFullName())
 
 @section('main_class', 'fruit-ui')
 
@@ -15,7 +15,7 @@
         <form id="page-form" class="settings-form" method="POST" action="">
             {{ csrf_field() }}
 
-            <x-fruit::form-section :title="__('Change your password')">
+            <x-fruit::form-section :title="__('Change Your Password')">
                 <x-fruit::field :label="__('Current Password')" layout="row">
                     <x-fruit::input type="password" id="password_current" name="password_current" :value="old('password_current')" required autofocus />
                 </x-fruit::field>

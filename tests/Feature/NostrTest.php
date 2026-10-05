@@ -84,7 +84,7 @@ class NostrTest extends FeatureTestCase
 
     public function testSettingsKeysAndAddress()
     {
-        $this->actingAs($this->admin)->get($this->settingsUrl())->assertStatus(200)->assertSee('Generate keypair');
+        $this->actingAs($this->admin)->get($this->settingsUrl())->assertStatus(200)->assertSee('Generate Keypair');
         $this->actingAs($this->agent)->get($this->settingsUrl())->assertStatus(403);
 
         $cfg = $this->setUpNostr(['inbox_relays' => self::UNREACHABLE."\nrelay.example.org/", 'nip05' => 'Support@Example.COM']);

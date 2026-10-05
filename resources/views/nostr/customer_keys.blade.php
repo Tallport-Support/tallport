@@ -28,7 +28,7 @@
                         <thead>
                             <tr>
                                 <th>{{ __('Label') }}</th>
-                                <th>{{ __('Public key') }}</th>
+                                <th>{{ __('Public Key') }}</th>
                                 <th>{{ __('Source') }}</th>
                                 <th>{{ __('Last message') }}</th>
                                 <th><span class="f-sr-only">{{ __('Remove') }}</span></th>
@@ -74,8 +74,8 @@
             <form method="POST" action="{{ route('customers.nostr.save', ['id' => $customer->id]) }}" class="settings-form settings-form--wide">
                 {{ csrf_field() }}
                 <input type="hidden" name="action" value="add">
-                <x-fruit::form-section :title="__('Link a public key')">
-                    <x-fruit::field :label="__('Public key')" :description="__('npub, nprofile or 64 character hex key.')" layout="row">
+                <x-fruit::form-section :title="__('Link a Public Key')">
+                    <x-fruit::field :label="__('Public Key')" :description="__('npub, nprofile or 64 character hex key.')" layout="row">
                         <x-fruit::input id="nostr_pubkey" name="pubkey" placeholder="npub1…" required />
                     </x-fruit::field>
                     <x-fruit::field :label="__('Label')" layout="row">
@@ -83,7 +83,7 @@
                     </x-fruit::field>
                 </x-fruit::form-section>
                 <footer class="f-form-row settings-form__actions">
-                    <x-fruit::button type="submit" variant="primary">{{ __('Add key') }}</x-fruit::button>
+                    <x-fruit::button type="submit" variant="primary">{{ __('Add Key') }}</x-fruit::button>
                 </footer>
             </form>
         </div>

@@ -29,7 +29,7 @@
                     {{ __('Login') }}
                 </button>
 
-                <button type="button" class="f-button" id="passkey-login" x-data="tallportPasskeyLogin(@js(route('passkey.login-options')), @js(route('passkey.login')))" x-show="supported" @click="login($el)"><x-icon.fingerprint-pattern class="f-icon" aria-hidden="true" /> {{ __('Sign in with a passkey') }}</button>
+                <button type="button" class="f-button" id="passkey-login" x-data="tallportPasskeyLogin(@js(route('passkey.login-options')), @js(route('passkey.login')))" x-show="supported" @click="login($el)"><x-icon.fingerprint-pattern class="f-icon" aria-hidden="true" /> {{ __('Sign In with a Passkey') }}</button>
 
                 @if (Eventy::filter('auth.password_reset_available', true))
                     <a class="f-button f-button--ghost" href="{{ route('password.request') }}">

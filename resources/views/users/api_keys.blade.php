@@ -64,7 +64,7 @@
                 {{ csrf_field() }}
                 <input type="hidden" name="action" value="create">
 
-                <x-fruit::form-section :title="__('New API key')">
+                <x-fruit::form-section :title="__('New API Key')">
                     <x-fruit::field :label="__('Name')" layout="row">
                         <x-fruit::input id="api_key_name" name="name" maxlength="255" required :placeholder="__('What it is for')" />
                     </x-fruit::field>
@@ -85,7 +85,7 @@
                 </x-fruit::form-section>
 
                 <footer class="f-form-row settings-form__actions">
-                    <x-fruit::button type="submit" variant="primary">{{ __('Create API key') }}</x-fruit::button>
+                    <x-fruit::button type="submit" variant="primary">{{ __('Create API Key') }}</x-fruit::button>
                 </footer>
             </form>
         </div>

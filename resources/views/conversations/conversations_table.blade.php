@@ -60,7 +60,7 @@
         {{-- The list header: view tools, or while conversations are selected, the selection bar in their place.
              Cmd/Ctrl+click and Shift+click select rows; Select shows the checkboxes for touch. --}}
         <x-fruit::list-header class="conv-list__header">
-            <x-fruit::menu :title="__('Sort by')" class="conv-list__sort">
+            <x-fruit::menu :title="__('Sort By')" class="conv-list__sort">
                 <x-slot:trigger class="f-button--ghost f-button--small">{{ $sort_titles[$sort_by] }} {{ $sort_order == 'desc' ? '↑' : '↓' }}</x-slot:trigger>
                 @foreach ($sort_titles as $sort_field => $sort_title)
                     <x-fruit::menu-link href="#" class="conv-col-sort" wire:click.prevent="sort('{{ $sort_field }}')" :aria-current="$sort_by == $sort_field ? 'true' : null">{{ $sort_title }}@if ($sort_by == $sort_field) {{ $sort_order == 'desc' ? '↑' : '↓' }}@endif</x-fruit::menu-link>

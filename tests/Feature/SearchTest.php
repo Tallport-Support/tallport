@@ -178,7 +178,7 @@ class SearchTest extends FeatureTestCase
             ->assertOk()
             ->assertSee('<span class="conv-number">#'.$conversation->number.'</span>', false)
             ->assertSee('winter <mark>jacket</mark> <mark>broke</mark> yesterday &amp; now', false)
-            ->assertSee('Search tips');
+            ->assertSee('Search Tips');
         $this->actingAs($this->agent)->get('/search?q=%23'.$conversation->number)->assertRedirect();
     }
 
@@ -232,7 +232,7 @@ class SearchTest extends FeatureTestCase
         $this->assertFalse(ConversationSearch::available(), 'Not until every conversation is indexed.');
 
         // Before: the search without the index.
-        $this->actingAs($this->agent)->get('/search?q=jacket')->assertOk()->assertSee('My jacket broke.')->assertDontSee('Search tips');
+        $this->actingAs($this->agent)->get('/search?q=jacket')->assertOk()->assertSee('My jacket broke.')->assertDontSee('Search Tips');
 
         \DB::table(Indexer::TABLE)->delete();
         $this->artisan('tallport:search-index')->expectsOutputToContain('in the index: 1 of 1')->assertExitCode(0);

@@ -13,7 +13,7 @@
         </x-fruit::form-section>
 
         <footer class="f-form-row settings-form__actions">
-            <x-fruit::button type="submit" form="api_regenerate_form">{{ __('Generate a new API key') }}</x-fruit::button>
+            <x-fruit::button type="submit" form="api_regenerate_form">{{ __('Generate a New API Key') }}</x-fruit::button>
             <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
         </footer>
     </form>
@@ -147,7 +147,7 @@
 
     {{-- Forms that buttons above submit with their form attribute. --}}
     <div hidden>
-        <form id="api_regenerate_form" method="POST" action="{{ route('settings.api.action') }}" x-data x-on:submit.prevent="Tallport.confirm({message: @js(__('Integrations using the current API key will stop working. Continue?')), confirm: @js(__('Generate a new API key')), tone: 'danger'}).then(ok => ok && $el.submit())">
+        <form id="api_regenerate_form" method="POST" action="{{ route('settings.api.action') }}" x-data x-on:submit.prevent="Tallport.confirm({message: @js(__('Integrations using the current API key will stop working. Continue?')), confirm: @js(__('Generate a New API Key')), tone: 'danger'}).then(ok => ok && $el.submit())">
             {{ csrf_field() }}
             <input type="hidden" name="action" value="regenerate_key">
         </form>

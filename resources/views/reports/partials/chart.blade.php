@@ -8,7 +8,7 @@
         <span class="rpt-chart-legend"><i class="rpt-legend-current"></i> {{ __('This Period') }} <i class="rpt-legend-previous"></i> {{ __('Previous Period') }}</span>
         @if (count($data['chart']['group_bys']) > 1)
             <fieldset class="f-fieldset" x-data x-on:change="document.getElementById('rpt_filters').submit()">
-                <legend class="f-sr-only">{{ __('Group by') }}</legend>
+                <legend class="f-sr-only">{{ __('Group By') }}</legend>
                 <div class="f-segmented">
                     @foreach ($data['chart']['group_bys'] as $group_by)
                         <label><input type="radio" name="group_by" value="{{ $group_by }}" form="rpt_filters" class="rpt-group-by" @checked($data['chart']['group_by'] == $group_by)><span>{{ ['d' => __('Day'), 'w' => __('Week'), 'm' => __('Month')][$group_by] }}</span></label>

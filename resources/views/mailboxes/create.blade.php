@@ -8,7 +8,7 @@
 
 @section('sidebar')
     <x-page-nav>
-        <x-slot:title><h1>{{ __('Create a mailbox') }}</h1></x-slot:title>
+        <x-slot:title><h1>{{ __('Create a Mailbox') }}</h1></x-slot:title>
     </x-page-nav>
 @endsection
 

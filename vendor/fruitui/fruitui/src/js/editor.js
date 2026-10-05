@@ -56,7 +56,7 @@ export default function fruitEditor(Alpine) {
       popover.className = 'f-editor__popover';
       popover.setAttribute('role', 'dialog');
       popover.id = fruitId('fruit-editor-popover');
-      const label = fruitMessage(root, link ? 'link-label' : 'image-label', link ? 'Link address' : 'Image address');
+      const label = fruitMessage(root, link ? 'link-label' : 'image-label', link ? 'Link Address' : 'Image Address');
       popover.setAttribute('aria-label', label);
       const field = document.createElement('input');
       field.className = 'f-input';
@@ -74,7 +74,7 @@ export default function fruitEditor(Alpine) {
         const remove = document.createElement('button');
         remove.className = 'f-button f-button--ghost f-button--small';
         remove.type = 'button';
-        remove.textContent = fruitMessage(root, 'remove-link-label', 'Remove link');
+        remove.textContent = fruitMessage(root, 'remove-link-label', 'Remove Link');
         remove.addEventListener('click', () => {
           editor.chain().focus().extendMarkRange('link').unsetLink().run();
           commit();

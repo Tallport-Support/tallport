@@ -54,8 +54,8 @@
         <x-slot:extras>
             {{ $extras ?? '' }}
             @if ($editor_vars)
-                <x-fruit::menu :title="__('Insert variable')" class="editor-vars">
-                    <x-slot:trigger class="f-button--ghost">{{ __('Insert variable') }}<span class="f-menu__chevron" aria-hidden="true"></span></x-slot:trigger>
+                <x-fruit::menu :title="__('Insert Variable')" class="editor-vars">
+                    <x-slot:trigger class="f-button--ghost">{{ __('Insert Variable') }}<span class="f-menu__chevron" aria-hidden="true"></span></x-slot:trigger>
                     @foreach ($editor_vars as $group => $group_vars)
                         <x-fruit::menu-group :label="$group">
                             @foreach ($group_vars as $var_name => $var_label)

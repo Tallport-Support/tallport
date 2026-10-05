@@ -36,5 +36,5 @@
             {!! $bulk_more !!}
         </x-fruit::menu>
     @endif
-    <x-fruit::button variant="ghost" class="f-button--icon conv-checkbox-clear" :aria-label="__('Clear selection')" :title="__('Clear selection')" wire:click="$set('selected', [])"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
+    <x-fruit::button variant="ghost" class="f-button--icon conv-checkbox-clear" :aria-label="__('Clear Selection')" :title="__('Clear Selection')" wire:click="$set('selected', [])"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button>
 </x-fruit::selection-bar>

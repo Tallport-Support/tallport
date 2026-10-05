@@ -73,7 +73,7 @@ class NoreplyTest extends FeatureTestCase
         });
 
         $admin = $this->createAdmin();
-        $this->actingAs($admin)->get(route('settings', ['section' => 'emails']))->assertOk()->assertSee('No-reply addresses');
+        $this->actingAs($admin)->get(route('settings', ['section' => 'emails']))->assertOk()->assertSee('No-Reply Addresses');
         \Session::start();
         $this->post(route('settings.save', ['section' => 'emails']), ['_token' => csrf_token(), 'settings' => [
             'mail_from' => 'help@example.com', 'mail_driver' => 'mail', 'noreply_emails' => "alerts\nbounces",

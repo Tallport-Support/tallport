@@ -9,7 +9,7 @@
             @endforeach
         </x-fruit::select>
     </x-fruit::field>
-    <x-fruit::field :label="__('or Enter Mailbox Email')" control-id="move-conv-mailbox-email">
+    <x-fruit::field :label="__('Or Enter Mailbox Email')" control-id="move-conv-mailbox-email">
         <x-fruit::input type="email" id="move-conv-mailbox-email" x-model.trim="email" />
     </x-fruit::field>
     <div class="modal-form__actions">

@@ -189,7 +189,7 @@ class TwoFactorTest extends FeatureTestCase
         $this->get(route('users.security', ['id' => $admin->id]))->assertStatus(403);
 
         $this->actingAs($admin);
-        $this->get(route('users.security', ['id' => $user->id]))->assertStatus(200)->assertSee(__('Reset two-factor authentication and passkeys'));
+        $this->get(route('users.security', ['id' => $user->id]))->assertStatus(200)->assertSee(__('Reset Two-Factor Authentication and Passkeys'));
         $this->postForm(route('users.security.reset', ['id' => $user->id]), [])->assertRedirect();
 
         $this->assertFalse($user->fresh()->hasEnabledTwoFactorAuthentication());

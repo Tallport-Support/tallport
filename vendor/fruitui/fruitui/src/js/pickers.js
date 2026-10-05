@@ -191,7 +191,7 @@ export function fruitDatePicker() {
       panel.id = fruitId('fruit-calendar');
       panel.className = 'f-calendar';
       panel.setAttribute('role', 'dialog');
-      panel.setAttribute('aria-label', fruitMessage(root, 'label', 'Choose date'));
+      panel.setAttribute('aria-label', fruitMessage(root, 'label', 'Choose Date'));
       panel.hidden = true;
       const header = document.createElement('div');
       header.className = 'f-calendar__header';
@@ -214,8 +214,8 @@ export function fruitDatePicker() {
       };
       header.append(
         title,
-        navigation('previous', 'previous-label', 'Previous month'),
-        navigation('next', 'next-label', 'Next month'),
+        navigation('previous', 'previous-label', 'Previous Month'),
+        navigation('next', 'next-label', 'Next Month'),
       );
       grid = document.createElement('table');
       grid.className = 'f-calendar__grid';
@@ -400,7 +400,7 @@ export function fruitColorPicker() {
       panel = element('div', 'f-color-palette', {
         id: fruitId('fruit-colors'),
         role: 'dialog',
-        'aria-label': fruitMessage(root, 'label', 'Choose color'),
+        'aria-label': fruitMessage(root, 'label', 'Choose Color'),
       });
       panel.hidden = true;
       list = element('div', 'f-color-palette__swatches', {

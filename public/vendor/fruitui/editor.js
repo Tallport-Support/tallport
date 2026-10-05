@@ -14432,14 +14432,14 @@ function X_(e) {
 			p?.();
 			let a = r === "link", o = a && e.getAttributes("link").href || "";
 			d = document.createElement("form"), d.className = "f-editor__popover", d.setAttribute("role", "dialog"), d.id = B_("fruit-editor-popover");
-			let s = J_(t, a ? "link-label" : "image-label", a ? "Link address" : "Image address");
+			let s = J_(t, a ? "link-label" : "image-label", a ? "Link Address" : "Image Address");
 			d.setAttribute("aria-label", s);
 			let c = document.createElement("input");
 			c.className = "f-input", c.type = "url", c.required = !a || !o, c.value = o, c.placeholder = "https://", c.setAttribute("aria-label", s);
 			let l = document.createElement("button");
 			if (l.className = "f-button f-button--primary f-button--small", l.type = "submit", l.textContent = J_(t, a ? "apply-label" : "insert-label", a ? "Apply" : "Insert"), d.append(c, l), a && o) {
 				let n = document.createElement("button");
-				n.className = "f-button f-button--ghost f-button--small", n.type = "button", n.textContent = J_(t, "remove-link-label", "Remove link"), n.addEventListener("click", () => {
+				n.className = "f-button f-button--ghost f-button--small", n.type = "button", n.textContent = J_(t, "remove-link-label", "Remove Link"), n.addEventListener("click", () => {
 					e.chain().focus().extendMarkRange("link").unsetLink().run(), h(), p(!1);
 				}), d.append(n);
 			}

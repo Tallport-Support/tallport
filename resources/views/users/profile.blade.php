@@ -145,7 +145,7 @@
             @if (Auth::user()->can('delete', $user))
                 <x-fruit::form-section :title="__('Danger Zone')">
                     <div class="f-form-row">
-                        <button type="button" id="delete-user-trigger" class="f-button f-button--danger" @click="$dispatch('fruit-dialog-open', { name: 'delete-user' })">{{ __('Delete user') }}</button>
+                        <button type="button" id="delete-user-trigger" class="f-button f-button--danger" @click="$dispatch('fruit-dialog-open', { name: 'delete-user' })">{{ __('Delete User') }}</button>
                     </div>
                 </x-fruit::form-section>
             @endif
@@ -154,12 +154,12 @@
             @if (Auth::user()->isAdmin())
                 @if ($user->invite_state == App\User::INVITE_STATE_ACTIVATED)
                     @if ($user->id != Auth::user()->id)
-                        <button type="button" class="f-button f-button--ghost reset-password-trigger" @click="resetPassword($el)">{{ __('Reset password') }}</button>
+                        <button type="button" class="f-button f-button--ghost reset-password-trigger" @click="resetPassword($el)">{{ __('Reset Password') }}</button>
                     @endif
                 @elseif ($user->invite_state == App\User::INVITE_STATE_SENT)
-                    <button type="button" class="f-button f-button--ghost resend-invite-trigger" @click="sendInvite($el, true)">{{ __('Re-send invite email') }}</button>
+                    <button type="button" class="f-button f-button--ghost resend-invite-trigger" @click="sendInvite($el, true)">{{ __('Re-send Invite Email') }}</button>
                 @elseif ($user->invite_state == App\User::INVITE_STATE_NOT_INVITED)
-                    <button type="button" class="f-button f-button--ghost send-invite-trigger" @click="sendInvite($el, false)">{{ __('Send invite email') }}</button>
+                    <button type="button" class="f-button f-button--ghost send-invite-trigger" @click="sendInvite($el, false)">{{ __('Send Invite Email') }}</button>
                 @endif
             @endif
             </div>
@@ -168,7 +168,7 @@
         @if (Auth::user()->can('delete', $user))
             <x-fruit::dialog name="delete-user" aria-labelledby="delete-user-title">
                 <form x-data="{ typed: '' }" @submit.prevent="deleteUser($el)">
-                    <header class="f-dialog__header"><h2 id="delete-user-title">{{ __('Delete user') }}</h2></header>
+                    <header class="f-dialog__header"><h2 id="delete-user-title">{{ __('Delete User') }}</h2></header>
                     <div class="f-dialog__body f-stack">
                         <p>{!! __h("Deleting :name will deactivate workflows they are tied to and assign their conversations to:", ['name' => '<strong>'.htmlspecialchars($user->getFullName()).'</strong>']) !!}</p>
                         @foreach (App\Mailbox::all() as $assign_mailbox)
@@ -188,7 +188,7 @@
                     </div>
                     <footer class="f-dialog__footer">
                         <x-fruit::button type="button" @click="$dispatch('fruit-dialog-close', { name: 'delete-user' })">{{ __('Cancel') }}</x-fruit::button>
-                        <x-fruit::button type="submit" variant="danger" x-bind:disabled="typed != 'DELETE'">{{ __('Delete user') }}</x-fruit::button>
+                        <x-fruit::button type="submit" variant="danger" x-bind:disabled="typed != 'DELETE'">{{ __('Delete User') }}</x-fruit::button>
                     </footer>
                 </form>
             </x-fruit::dialog>

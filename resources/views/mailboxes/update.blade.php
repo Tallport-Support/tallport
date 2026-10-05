@@ -112,7 +112,7 @@
                             <strong class="f-headline">{{ __('Delete Mailbox') }}</strong>
                             <p class="f-help">{{ __('Deleting this mailbox will remove all historical data and deactivate related workflows and reports.') }}</p>
                         </div>
-                        <x-fruit::button variant="danger" x-on:click="$dispatch('fruit-dialog-open', { name: 'delete-mailbox' })">{{ __('Delete mailbox') }}</x-fruit::button>
+                        <x-fruit::button variant="danger" x-on:click="$dispatch('fruit-dialog-open', { name: 'delete-mailbox' })">{{ __('Delete Mailbox') }}</x-fruit::button>
                     </div>
                 </x-fruit::form-section>
             @endif

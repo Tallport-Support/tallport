@@ -56,7 +56,7 @@
 
             @if ($cfg->pubkey)
                 <x-fruit::card class="f-stack">
-                    <h2 class="f-title-3">{{ __('Identity of this mailbox') }}</h2>
+                    <h2 class="f-title-3">{{ __('Identity of This Mailbox') }}</h2>
                     <dl class="nostr-facts">
                         <dt>{{ __('Public key') }}</dt>
                         <dd><code>{{ $cfg->getNpub() }}</code> <button type="button" class="f-button f-button--small nostr-copy" data-copy="{{ $cfg->getNpub() }}" x-data="nostrCopy" @click="copy()" x-text="copied ? @js(__('Copied')) : @js(__('Copy'))">{{ __('Copy') }}</button></dd>
@@ -162,7 +162,7 @@
                     <form method="POST" action="{{ route('mailboxes.nostr.save', ['id' => $mailbox->id]) }}" class="f-row">
                         {{ csrf_field() }}
                         <input type="hidden" name="action" value="diagnose">
-                        <x-fruit::button type="submit" size="small">{{ __('Check relays') }}</x-fruit::button>
+                        <x-fruit::button type="submit" size="small">{{ __('Check Relays') }}</x-fruit::button>
                         <small class="f-muted">{{ __('Asks each relay what it holds for this mailbox (takes up to a minute).') }}</small>
                     </form>
                 @endif
@@ -198,7 +198,7 @@
                 @endif
 
                 @if ($listener['log'] !== '')
-                    <x-fruit::disclosure :title="__('Show listener log')">
+                    <x-fruit::disclosure :title="__('Show Listener Log')">
                         <p class="f-muted">storage/logs/nostr-listen.log</p>
                         <pre class="nostr-log">{{ $listener['log'] }}</pre>
                     </x-fruit::disclosure>
@@ -219,12 +219,12 @@
                 <form method="POST" action="{{ route('mailboxes.nostr.save', ['id' => $mailbox->id]) }}">
                     {{ csrf_field() }}
                     <input type="hidden" name="action" value="generate">
-                    <x-fruit::button type="submit" variant="primary">{{ __('Generate keypair') }}</x-fruit::button>
+                    <x-fruit::button type="submit" variant="primary">{{ __('Generate Keypair') }}</x-fruit::button>
                 </form>
                 <form method="POST" action="{{ route('mailboxes.nostr.save', ['id' => $mailbox->id]) }}" class="settings-form">
                     {{ csrf_field() }}
                     <input type="hidden" name="action" value="import">
-                    <x-fruit::field :label="__('Import private key')" :description="__('nsec or hex. The private key is stored encrypted with the application key.')" control-id="nostr_nsec">
+                    <x-fruit::field :label="__('Import Private Key')" :description="__('nsec or hex. The private key is stored encrypted with the application key.')" control-id="nostr_nsec">
                         <div class="f-input-group">
                             <input type="password" id="nostr_nsec" name="nsec" class="f-input" placeholder="nsec1…" autocomplete="off" aria-describedby="nostr_nsec-description">
                             <button type="submit" class="f-button">{{ __('Import') }}</button>
@@ -263,9 +263,9 @@
                                                     <input type="hidden" name="action" value="delete_key">
                                                     <input type="hidden" name="key_id" value="{{ $key->id }}">
                                                     <span class="f-error">{{ __('Messages still sent to this key will be unreadable forever.') }}</span>
-                                                    <input type="password" name="password" class="f-input" placeholder="{{ __('Your password') }}" aria-label="{{ __('Your password') }}" autocomplete="current-password" required>
+                                                    <input type="password" name="password" class="f-input" placeholder="{{ __('Your Password') }}" aria-label="{{ __('Your Password') }}" autocomplete="current-password" required>
                                                     <input type="text" name="confirm" class="f-input" placeholder="{{ __('Type DELETE') }}" aria-label="{{ __('Type DELETE') }}" autocomplete="off" required>
-                                                    <div><x-fruit::button type="submit" variant="danger" size="small">{{ __('Delete retired key') }}</x-fruit::button></div>
+                                                    <div><x-fruit::button type="submit" variant="danger" size="small">{{ __('Delete Retired Key') }}</x-fruit::button></div>
                                                 </form>
                                             </details>
                                         </td>
@@ -276,36 +276,36 @@
                     </div>
                 @endif
 
-                <x-fruit::disclosure :title="__('Show private key (backup)…')">
+                <x-fruit::disclosure :title="__('Show Private Key (Backup)…')">
                     <form method="POST" action="{{ route('mailboxes.nostr.save', ['id' => $mailbox->id]) }}" class="f-stack">
                         {{ csrf_field() }}
                         <input type="hidden" name="action" value="reveal">
                         <p class="f-help">{{ __('Keep a copy of the private key outside this server so the identity survives a lost database or a migration.') }}</p>
                         <div class="f-row">
-                            <input type="password" name="password" class="f-input nostr-password" placeholder="{{ __('Your password') }}" aria-label="{{ __('Your password') }}" autocomplete="current-password" required>
-                            <x-fruit::button type="submit">{{ __('Show private key') }}</x-fruit::button>
+                            <input type="password" name="password" class="f-input nostr-password" placeholder="{{ __('Your Password') }}" aria-label="{{ __('Your Password') }}" autocomplete="current-password" required>
+                            <x-fruit::button type="submit">{{ __('Show Private Key') }}</x-fruit::button>
                         </div>
                     </form>
                 </x-fruit::disclosure>
 
-                <x-fruit::disclosure :title="__('Replace the key…')">
+                <x-fruit::disclosure :title="__('Replace the Key…')">
                     <form method="POST" action="{{ route('mailboxes.nostr.save', ['id' => $mailbox->id]) }}" class="settings-form">
                         {{ csrf_field() }}
                         <input type="hidden" name="action" value="replace">
                         <p class="f-help">{{ __('Customers who saved the current public key can still reach this mailbox afterwards: the current key is retired, not deleted. New customers are pointed to the new key through the profile, the relay lists and the address.') }}</p>
                         <x-fruit::fieldset>
-                            <legend>{{ __('New key') }}</legend>
+                            <legend>{{ __('New Key') }}</legend>
                             <x-fruit::radio name="replace_mode" value="generate" checked>{{ __('Generate') }}</x-fruit::radio>
                             <x-fruit::radio name="replace_mode" value="import">{{ __('Import') }}</x-fruit::radio>
                         </x-fruit::fieldset>
-                        <input type="password" name="nsec" class="f-input" placeholder="{{ __('nsec1… (only when importing)') }}" aria-label="{{ __('Import private key') }}" autocomplete="off">
-                        <x-fruit::field :label="__('Your password')">
+                        <input type="password" name="nsec" class="f-input" placeholder="{{ __('nsec1… (only when importing)') }}" aria-label="{{ __('Import Private Key') }}" autocomplete="off">
+                        <x-fruit::field :label="__('Your Password')">
                             <x-fruit::input type="password" name="password" autocomplete="current-password" required />
                         </x-fruit::field>
                         <x-fruit::field :label="__('Type REPLACE')">
                             <x-fruit::input name="confirm" autocomplete="off" required />
                         </x-fruit::field>
-                        <div><x-fruit::button type="submit" variant="danger">{{ __('Replace the key') }}</x-fruit::button></div>
+                        <div><x-fruit::button type="submit" variant="danger">{{ __('Replace the Key') }}</x-fruit::button></div>
                     </form>
                 </x-fruit::disclosure>
             @endif
@@ -317,15 +317,15 @@
 
                 <h2 class="settings-form__heading">{{ __('Relays') }}</h2>
 
-                <x-fruit::field :label="__('Inbox relays')" :description="__('One per line. Where customers deliver their messages and where Tallport listens. Keep this list short (1-3 relays); it is published as your DM relay list (kind 10050).')">
+                <x-fruit::field :label="__('Inbox Relays')" :description="__('One per line. Where customers deliver their messages and where Tallport listens. Keep this list short (1-3 relays); it is published as your DM relay list (kind 10050).')">
                     <x-fruit::textarea id="nostr_inbox_relays" name="inbox_relays" rows="4">{{ old('inbox_relays', implode("\n", $cfg->getInboxRelays())) }}</x-fruit::textarea>
                 </x-fruit::field>
 
-                <x-fruit::field :label="__('Announce relays')" :description="__('One per line. Popular relays where the profile and relay lists of this mailbox are published, and where customer profiles are looked up.')">
+                <x-fruit::field :label="__('Announce Relays')" :description="__('One per line. Popular relays where the profile and relay lists of this mailbox are published, and where customer profiles are looked up.')">
                     <x-fruit::textarea id="nostr_announce_relays" name="announce_relays" rows="4">{{ old('announce_relays', implode("\n", $cfg->getAnnounceRelays())) }}</x-fruit::textarea>
                 </x-fruit::field>
 
-                <h2 class="settings-form__heading">{{ __('Public profile') }}</h2>
+                <h2 class="settings-form__heading">{{ __('Public Profile') }}</h2>
 
                 <x-fruit::field :label="__('Name')">
                     <x-fruit::input id="nostr_profile_name" name="profile_name" :value="old('profile_name', $cfg->profile_name ?? '')" :placeholder="$mailbox->name" maxlength="255" />
@@ -356,7 +356,7 @@
 
                 <h2 class="settings-form__heading">{{ __('Conversations') }}</h2>
 
-                <x-fruit::field :label="__('Reopen window')" :description="__('A new message reopens the customer\'s latest Nostr conversation if it had activity within this many days; otherwise a new conversation is started.')" control-id="nostr_reopen_days">
+                <x-fruit::field :label="__('Reopen Window')" :description="__('A new message reopens the customer\'s latest Nostr conversation if it had activity within this many days; otherwise a new conversation is started.')" control-id="nostr_reopen_days">
                     <div class="f-input-group nostr-days">
                         <input type="number" id="nostr_reopen_days" name="reopen_days" class="f-input" value="{{ old('reopen_days', $cfg->reopen_days ?: 30) }}" min="1" max="3650" aria-describedby="nostr_reopen_days-description">
                         <span class="f-input-group__addon">{{ __('days') }}</span>
@@ -365,13 +365,13 @@
 
                 <x-fruit::switch name="auto_reply_enabled" value="1" id="nostr_auto_reply_enabled" :checked="(bool) old('auto_reply_enabled', $cfg->auto_reply_enabled)" :description="__('Sent once when a new conversation is started, not when an existing one is reopened.')">{{ __('Auto reply') }}</x-fruit::switch>
 
-                <x-fruit::field :label="__('Auto reply text')" :description="__('Plain text. Nostr messages have no formatting.')">
+                <x-fruit::field :label="__('Auto Reply Text')" :description="__('Plain text. Nostr messages have no formatting.')">
                     <x-fruit::textarea id="nostr_auto_reply_text" name="auto_reply_text" rows="4">{{ old('auto_reply_text', $cfg->auto_reply_text ?? '') }}</x-fruit::textarea>
                 </x-fruit::field>
 
             </form>
 
-            <h2 class="settings-form__heading">{{ __('How it works') }}</h2>
+            <h2 class="settings-form__heading">{{ __('How It Works') }}</h2>
             <ul class="f-help">
                 <li>{{ __('The relay listener runs from the cron job (tallport:nostr-listen). Check storage/logs/nostr-listen.log if messages do not arrive.') }}</li>
                 <li>{{ __('Unknown senders become new customers; link additional public keys on the Nostr tab of a customer profile.') }}</li>
@@ -384,6 +384,6 @@
 @section('page_footer')
     <x-fruit::button type="submit" form="page-form" name="action" value="save" variant="primary">{{ __('Save') }}</x-fruit::button>
     @if ($cfg->pubkey)
-        <x-fruit::button type="submit" form="page-form" name="action" value="announce" title="{{ __('Publish the profile and relay lists to the relays now') }}">{{ __('Publish profile now') }}</x-fruit::button>
+        <x-fruit::button type="submit" form="page-form" name="action" value="announce" title="{{ __('Publish the profile and relay lists to the relays now') }}">{{ __('Publish Profile Now') }}</x-fruit::button>
     @endif
 @endsection

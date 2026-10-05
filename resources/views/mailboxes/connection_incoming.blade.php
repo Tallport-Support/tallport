@@ -133,7 +133,7 @@
                     <div class="f-row connection-imap-folders">
                         {{-- One folder per item (posted as in_imap_folders[]); Get folders suggests the server's. --}}
                         <x-fruit::token-field id="in_imap_folders" name="in_imap_folders" submit="list" placeholder="INBOX" x-on:input="document.getElementById('check-connection').disabled = true">{{ implode("\n", $mailbox->getInImapFolders()) }}<x-slot:options></x-slot:options></x-fruit::token-field>
-                        <button type="button" class="f-button f-button--ghost f-button--small" title="{{ __('Retrieve a list of available IMAP folders from the server') }}" id="retrieve-imap-folders" x-on:click="retrieveFolders">{{ __('Get folders') }}</button>
+                        <button type="button" class="f-button f-button--ghost f-button--small" title="{{ __('Retrieve a list of available IMAP folders from the server') }}" id="retrieve-imap-folders" x-on:click="retrieveFolders">{{ __('Get Folders') }}</button>
                     </div>
                 </x-fruit::field>
 

@@ -24,7 +24,7 @@
                 @endif
                 @if ($web_notifications_info['notifications']->hasMorePages())
                     <li class="web-notification-more">
-                        <button type="button" class="f-button f-button--ghost" x-on:click="more($el)">{{ __('Load more') }}</button>
+                        <button type="button" class="f-button f-button--ghost" x-on:click="more($el)">{{ __('Load More') }}</button>
                     </li>
                 @endif
             @else
