@@ -5,7 +5,7 @@
                 <x-slot:trigger class="f-button--ghost f-button--icon f-button--small" :aria-label="__('Settings')"><x-icon.settings class="f-icon" aria-hidden="true" /></x-slot:trigger>
                 <x-fruit::menu-link :href="route('customers.update', ['id' => $customer->id])">{{ __('Edit Profile') }}</x-fruit::menu-link>
                 @if (!$conversation->hasChannel())
-                    <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'change_customer'], \Request::all(), ['conversation_id' => $conversation->id]))" data-fruit-dialog-url :data-fruit-dialog-title="__('Change Customer')">{{ __('Change Customer') }}</x-fruit::menu-link>
+                    <x-fruit::menu-link :href="route('conversations.ajax_html', ['action' => 'change_customer', 'folder_id' => request()->input('folder_id'), 'conversation_id' => $conversation->id])" data-fruit-dialog-url :data-fruit-dialog-title="__('Change Customer')">{{ __('Change Customer') }}</x-fruit::menu-link>
                 @endif
                 @if ($customer->getMeta(App\Misc\ExternalImages::META_KEY))
                     <x-fruit::menu-link href="#" class="external-images-block" :data-customer-id="$customer->id">{{ __('Hide images from other servers') }}</x-fruit::menu-link>

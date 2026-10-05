@@ -295,7 +295,7 @@
         "name": "conversation.after_customer_sidebar",
         "arguments": 1,
         "files": [
-            "resources/views/conversations/view.blade.php"
+            "resources/views/livewire/conversation-inspector.blade.php"
         ]
     },
     {
@@ -311,7 +311,7 @@
         "name": "conversation.after_subject",
         "arguments": 2,
         "files": [
-            "resources/views/conversations/view.blade.php"
+            "resources/views/livewire/conversation-pane.blade.php"
         ]
     },
     {
@@ -319,7 +319,7 @@
         "name": "conversation.after_subject_block",
         "arguments": 2,
         "files": [
-            "resources/views/conversations/view.blade.php"
+            "resources/views/livewire/conversation-pane.blade.php"
         ]
     },
     {
@@ -327,7 +327,7 @@
         "name": "conversation.after_threads",
         "arguments": 1,
         "files": [
-            "resources/views/conversations/view.blade.php"
+            "resources/views/livewire/conversation-pane.blade.php"
         ]
     },
     {
@@ -359,7 +359,7 @@
         "name": "conversation.before_threads",
         "arguments": 1,
         "files": [
-            "resources/views/conversations/view.blade.php"
+            "resources/views/livewire/conversation-pane.blade.php"
         ]
     },
     {
@@ -776,7 +776,8 @@
         "name": "conversation.view.start",
         "arguments": 2,
         "files": [
-            "app/Http/Controllers/ConversationsController.php"
+            "app/Http/Controllers/ConversationsController.php",
+            "app/Livewire/ConversationPane.php"
         ]
     },
     {

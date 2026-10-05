@@ -255,6 +255,8 @@ function maybeShowConnectionRestored()
 		};
 		subscribeConversation();
 		document.addEventListener('livewire:navigated', subscribeConversation);
+		// Opened in place (public/js/conversations.js).
+		document.addEventListener('tallport:conversation-opened', subscribeConversation);
 
 		// New messages: the sidebar's folders (of every mailbox) and the conversations list;
 		// each mailbox subscribed once, when its folders are first on a page.

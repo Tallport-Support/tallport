@@ -2720,12 +2720,12 @@ a.disabled:focus {
 }
 /* The chat view (conversations/view): a one-line heading, the history scrolling
    below it (FruitUI's history) and the composer docked at the bottom. */
-.conv-chat-view > #app-content-scroll {
+.app-main:has(.conv-chat) > #app-content-scroll {
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
-.conv-chat-view > #app-content-scroll > .content,
+.app-main:has(.conv-chat) > #app-content-scroll > .content,
 .conv-chat {
     display: flex;
     flex: 1;
@@ -2760,7 +2760,8 @@ a.disabled:focus {
     color: var(--f-secondary);
     font-size: var(--f-text-sm);
 }
-.conv-thread-host {
+.conv-thread-host,
+.conv-pane {
     display: contents;
 }
 .conv-history {

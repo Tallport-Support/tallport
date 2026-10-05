@@ -127,6 +127,39 @@ class ConversationsController extends Controller
             session()->put('folder_conversation.'.$folder->id, $conversation->id);
         }
 
+        $template = 'conversations/view';
+        if ($conversation->state == Conversation::STATE_DRAFT) {
+            $template = 'conversations/create';
+        }
+
+        // Other users see who is viewing (polycast conview), modules that it's opened.
+        \App\Events\RealtimeConvView::dispatchSelf($conversation->id, $user, false);
+        \Eventy::action('conversation.view.start', $conversation, $request);
+
+        // The folder's conversations beside the conversation (split view).
+        $list = null;
+        if ($template == 'conversations/view' && !$request->input('print')) {
+            $list = $this->folderList($folder, $user, $request->input('list_page'));
+        }
+
+        return view($template, array_merge(self::pageData($conversation, $folder, $user), ['list' => $list]));
+    }
+
+    /**
+     * What a conversation's page shows (conversations/view, App\Livewire\ConversationPane):
+     * its threads, customer, recipients, aliases, viewers and previous conversations.
+     * Computed once per request for a conversation and user.
+     */
+    public static function pageData($conversation, $folder, $user)
+    {
+        $memo = request()->attributes->get('conversation_page_data', []);
+        $key = $conversation->id.'-'.($folder ? $folder->id : '').'-'.$user->id;
+        if (isset($memo[$key])) {
+            return $memo[$key];
+        }
+        $mailbox = $conversation->mailbox;
+        $customer = $conversation->customer_cached;
+
         //$after_send = $conversation->mailbox->getUserSettings($user->id)->after_send;
         $after_send = $user->afterSend();
 
@@ -140,7 +173,7 @@ class ConversationsController extends Controller
         $prev_customers_emails = [];
         if ($conversation->customer_email) {
             $prev_customers_emails = Thread::select('from', 'customer_id')
-                ->where('conversation_id', $id)
+                ->where('conversation_id', $conversation->id)
                 ->where('type', Thread::TYPE_CUSTOMER)
                 ->where('from', '<>', $conversation->customer_email)
                 ->groupBy(['from', 'customer_id'])
@@ -238,11 +271,6 @@ class ConversationsController extends Controller
                                     ->paginate(self::PREV_CONVERSATIONS_LIMIT);
         }
 
-        $template = 'conversations/view';
-        if ($conversation->state == Conversation::STATE_DRAFT) {
-            $template = 'conversations/create';
-        }
-
         // CC.
         $exclude_array = $conversation->getExcludeArray($mailbox);
         $cc = $conversation->getCcArray($exclude_array);
@@ -300,7 +328,6 @@ class ConversationsController extends Controller
         // If we send notification to each user, applications having thouthans of users
         // will be overloaded.
         // // https://laravel.com/docs/5.5/broadcasting#broadcasting-events
-        \App\Events\RealtimeConvView::dispatchSelf($conversation->id, $user, false);
 
         // Get viewers.
         $viewers = [];
@@ -323,7 +350,6 @@ class ConversationsController extends Controller
 
         $is_following = $conversation->isUserFollowing($user->id);
 
-        \Eventy::action('conversation.view.start', $conversation, $request);
 
         // Mailbox aliases.
         $from_aliases = $conversation->mailbox->getAliases(true, true);
@@ -365,16 +391,9 @@ class ConversationsController extends Controller
             }
         }
 
-        // The folder's conversations beside the conversation (split view).
-        $list = null;
-        if ($template == 'conversations/view' && !$request->input('print')) {
-            $list = $this->folderList($folder, $user, $request->input('list_page'));
-        }
-
-        return view($template, [
-            'list'               => $list,
+        $memo[$key] = [
             'conversation'       => $conversation,
-            'mailbox'            => $conversation->mailbox,
+            'mailbox'            => $mailbox,
             'customer'           => $customer,
             'threads'            => \Eventy::filter('conversation.view.threads', $threads),
             'folder'             => $folder,
@@ -393,7 +412,10 @@ class ConversationsController extends Controller
             'is_following'       => $is_following,
             'from_aliases'       => $from_aliases,
             'from_alias'         => $from_alias,
-        ]);
+        ];
+        request()->attributes->set('conversation_page_data', $memo);
+
+        return $memo[$key];
     }
 
     /**

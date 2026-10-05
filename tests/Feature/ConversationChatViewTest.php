@@ -37,17 +37,17 @@ class ConversationChatViewTest extends FeatureTestCase
     {
         // Email: the email view.
         $this->actingAs($this->agent)->get($this->conversation->url())->assertOk()
-            ->assertDontSee('conv-chat-view', false)->assertSee('conv-heading__top', false);
+            ->assertDontSee('conv-chat ', false)->assertSee('conv-heading__top', false);
 
         // Telegram: the chat view, unless the user chose the email view.
         $this->conversation->channel = Telegram::CHANNEL;
         $this->conversation->save();
         $this->actingAs($this->agent)->get($this->conversation->url())->assertOk()
-            ->assertSee('conv-chat-view', false)->assertSee('f-history', false)->assertSee('conv-composer-docked', false);
+            ->assertSee('conv-chat ', false)->assertSee('f-history', false)->assertSee('conv-composer-docked', false);
 
         $this->agent->conversation_views = json_encode([Telegram::CHANNEL => User::VIEW_EMAIL]);
         $this->agent->save();
-        $this->actingAs($this->agent->fresh())->get($this->conversation->url())->assertOk()->assertDontSee('conv-chat-view', false);
+        $this->actingAs($this->agent->fresh())->get($this->conversation->url())->assertOk()->assertDontSee('conv-chat ', false);
     }
 
     public function testTheHistoryRunsOldestFirstUnderDayDividers()

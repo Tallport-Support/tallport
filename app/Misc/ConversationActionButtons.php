@@ -94,7 +94,7 @@ class ConversationActionButtons
                             },
                             'class'          => '',
                             'url'            => function ($conversation) {
-                                    return route('conversations.ajax_html', array_merge([ 'action' => 'merge_conv' ], \Request::all(), [ 'conversation_id' => $conversation->id ]));
+                                    return route('conversations.ajax_html', [ 'action' => 'merge_conv', 'folder_id' => request()->input('folder_id'), 'conversation_id' => $conversation->id ]);
                             },
                             'attrs'          => [
                                     'data-fruit-dialog-url'   => '',
@@ -111,7 +111,7 @@ class ConversationActionButtons
                             },
                             'class'          => '',
                             'url'            => function ($conversation) {
-                                    return route('conversations.ajax_html', array_merge([ 'action' => 'move_conv' ], \Request::all(), [ 'conversation_id' => $conversation->id ]));
+                                    return route('conversations.ajax_html', [ 'action' => 'move_conv', 'folder_id' => request()->input('folder_id'), 'conversation_id' => $conversation->id ]);
                             },
                             'attrs'          => [
                                     'data-fruit-dialog-url'   => '',
@@ -127,8 +127,9 @@ class ConversationActionButtons
                             'permission'     => function () {
                                     return true;
                             },
-                            'url'            => function () {
-                                    return \Request::getRequestUri() . '&amp;print=1';
+                            'url'            => function ($conversation) {
+                                    // The conversation's page (also when the toolbar renders in a Livewire update).
+                                    return $conversation->url(request()->input('folder_id')) . '&amp;print=1';
                             },
                             'attrs'          => [
                                     'target' => '_blank',

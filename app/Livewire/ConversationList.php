@@ -167,6 +167,17 @@ class ConversationList extends Component
     }
 
     /**
+     * Another conversation opened beside the list (App\Livewire\ConversationPane): its row
+     * is the current one (marked by the script meanwhile).
+     */
+    #[On('conversation-open')]
+    public function conversationOpened($id)
+    {
+        $this->params['current_conversation_id'] = (int) $id;
+        $this->skipRender();
+    }
+
+    /**
      * New conversations or changes in the list (realtime events).
      */
     #[On('conversations-changed')]

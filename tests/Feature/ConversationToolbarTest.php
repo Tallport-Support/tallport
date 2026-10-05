@@ -52,14 +52,19 @@ class ConversationToolbarTest extends FeatureTestCase
 
     public function testTheHeadingNamesTheChannel()
     {
+        // The page's text, without Livewire's markers.
+        $page = fn () => preg_replace('#<!--.*?-->#s', '', $this->actingAs($this->agent)->get($this->conversation->url())->assertOk()->getContent());
+
         // Email: the mailbox's address.
-        $this->actingAs($this->agent)->get($this->conversation->url())->assertSee($this->mailbox->name.' · '.$this->mailbox->email);
+        $this->assertStringContainsString($this->mailbox->name.' · '.$this->mailbox->email, $page());
 
         // A channel: its name instead, and no Cc/Bcc or Merge.
         $this->conversation->channel = \App\Telegram\Telegram::CHANNEL;
         $this->conversation->save();
-        $this->actingAs($this->agent)->get($this->conversation->url())->assertSee($this->mailbox->name.' · Telegram')
-            ->assertDontSee($this->mailbox->name.' · '.$this->mailbox->email)->assertDontSee('id="toggle-cc"', false);
+        $html = $page();
+        $this->assertStringContainsString($this->mailbox->name.' · Telegram', $html);
+        $this->assertStringNotContainsString($this->mailbox->name.' · '.$this->mailbox->email, $html);
+        $this->assertStringNotContainsString('id="toggle-cc"', $html);
         $this->assertTrue($this->conversation->hasChannel());
     }
 

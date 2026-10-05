@@ -1,0 +1,87 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Conversation;
+use App\Livewire\ConversationInspector;
+use App\Livewire\ConversationList;
+use App\Livewire\ConversationPane;
+use App\Livewire\ConversationToolbar;
+use Livewire\Livewire;
+use Tests\FeatureTestCase;
+
+/**
+ * Another conversation opens in place (conversation-open): the column, toolbar and
+ * customer switch to it, and it counts as viewed, without loading the page.
+ */
+class ConversationOpenInPlaceTest extends FeatureTestCase
+{
+    protected $agent;
+    protected $mailbox;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->agent = $this->createUser();
+        $this->mailbox = $this->createMailbox([$this->agent]);
+    }
+
+    protected function conversation($subject, $from)
+    {
+        $this->receiveEmail($this->mailbox, $this->makeEmail(['from' => $from, 'to' => $this->mailbox->email, 'subject' => $subject]));
+
+        return Conversation::where('mailbox_id', $this->mailbox->id)->orderBy('id', 'desc')->first();
+    }
+
+    public function testTheColumnToolbarAndCustomerSwitch()
+    {
+        $first = $this->conversation('Broken zipper', 'Casey Customer <casey@customer.example.org>');
+        $second = $this->conversation('Lost parcel', 'Sam Shopper <sam@customer.example.org>');
+        \DB::table('notifications')->insert([
+            'id' => (string) \Illuminate\Support\Str::uuid(), 'type' => 'App\\Notifications\\WebsiteNotification', 'notifiable_id' => $this->agent->id,
+            'notifiable_type' => \App\User::class, 'data' => '{}', 'conversation_id' => $second->id, 'read_at' => null, 'created_at' => now(), 'updated_at' => now(),
+        ]);
+
+        $pane = Livewire::actingAs($this->agent)->test(ConversationPane::class, ['conversation' => $first, 'folder' => $first->folder])
+            ->assertSee('Broken zipper')
+            ->dispatch('conversation-open', id: $second->id, folder_id: $first->folder_id)
+            ->assertSee('Lost parcel')->assertDontSee('Broken zipper')
+            ->assertDispatched('conversation-opened', id: $second->id, url: route('conversations.view', ['id' => $second->id, 'folder_id' => $first->folder_id]));
+        $this->assertSame(0, \DB::table('notifications')->where('conversation_id', $second->id)->whereNull('read_at')->count());
+        $this->assertSame($second->id, session('folder_conversation.'.$first->folder_id));
+
+        Livewire::actingAs($this->agent)->test(ConversationToolbar::class, ['conversation' => $first])
+            ->dispatch('conversation-open', id: $second->id)->assertSet('conversation_id', $second->id);
+        Livewire::actingAs($this->agent)->test(ConversationInspector::class, ['conversation' => $first])
+            ->assertSee('casey@customer.example.org')
+            ->dispatch('conversation-open', id: $second->id)->assertSee('sam@customer.example.org');
+
+        // Someone else's conversation: nothing changes.
+        $other = $this->createMailbox();
+        $this->receiveEmail($other, $this->makeEmail(['from' => 'pat@customer.example.org', 'to' => $other->email, 'subject' => 'Not yours']));
+        $pane->dispatch('conversation-open', id: Conversation::where('mailbox_id', $other->id)->first()->id)
+            ->assertSet('conversation_id', $second->id);
+    }
+
+    public function testADraftOpensInItsOwnPage()
+    {
+        $first = $this->conversation('Broken zipper', 'casey@customer.example.org');
+        $draft = $this->conversation('Draft question', 'sam@customer.example.org');
+        $draft->state = Conversation::STATE_DRAFT;
+        $draft->save();
+
+        Livewire::actingAs($this->agent)->test(ConversationPane::class, ['conversation' => $first])
+            ->dispatch('conversation-open', id: $draft->id)->assertRedirect();
+    }
+
+    public function testTheListMarksTheOpenConversation()
+    {
+        $first = $this->conversation('Broken zipper', 'casey@customer.example.org');
+        $second = $this->conversation('Lost parcel', 'sam@customer.example.org');
+
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $first->folder, 'mailbox' => $this->mailbox, 'params' => ['current_conversation_id' => $first->id]])
+            ->dispatch('conversation-open', id: $second->id)
+            ->assertSet('params.current_conversation_id', $second->id);
+    }
+}

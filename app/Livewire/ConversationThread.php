@@ -55,6 +55,11 @@ class ConversationThread extends Component
         $this->initial = $threads;
         $this->page_query = request()->query();
         $this->page_uri = request()->getRequestUri();
+        // Opened in place (ConversationPane): the conversation's page, not Livewire's request.
+        if (\Livewire\Livewire::isLivewireRequest()) {
+            $this->page_query = ['folder_id' => request()->input('folder_id')];
+            $this->page_uri = $conversation->url(request()->input('folder_id'));
+        }
     }
 
     public function edit($thread_id)

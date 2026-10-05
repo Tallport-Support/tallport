@@ -11,6 +11,61 @@ document.addEventListener('click', function (e) {
 	}
 });
 
+/**
+ * Another conversation opens in place (App\Livewire\ConversationPane and the toolbar and
+ * customer beside it): a row of the list, Newer and Older. The rest of the page stays;
+ * the address, the title and the page's data follow when it's there (conversation-opened).
+ */
+var conversationOpenLink = function (link) {
+	var match = (link.getAttribute('href') || '').match(/\/conversation\/(\d+)/);
+	return match ? {id: parseInt(match[1]), folder_id: new URL(link.href, window.location.href).searchParams.get('folder_id') || ''} : null;
+};
+document.addEventListener('click', function (e) {
+	var link = e.target.closest && e.target.closest('a.conv-row__link, .conv-next-prev a');
+	if (!link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || link.target == '_blank' || !document.querySelector('.conv-pane')) {
+		return;
+	}
+	var open = conversationOpenLink(link);
+	if (!open) {
+		return;
+	}
+	e.preventDefault();
+	window.history.pushState({tallport_conversation: open}, '', link.href);
+	conversationOpen(open);
+});
+var conversationOpen = function (open) {
+	document.querySelectorAll('a.conv-row__link[aria-current]').forEach(function (row) {
+		row.removeAttribute('aria-current');
+	});
+	document.querySelectorAll('a.conv-row__link').forEach(function (row) {
+		var row_open = conversationOpenLink(row);
+		if (row_open && row_open.id == open.id) {
+			row.setAttribute('aria-current', 'page');
+		}
+	});
+	document.getElementById('app-content').setAttribute('aria-busy', 'true');
+	Livewire.dispatch('conversation-open', open);
+};
+// Back and Forward between conversations opened in place.
+window.addEventListener('popstate', function (e) {
+	if (e.state && e.state.tallport_conversation && document.querySelector('.conv-pane')) {
+		conversationOpen(e.state.tallport_conversation);
+	}
+});
+document.addEventListener('livewire:init', function () {
+	Livewire.on('conversation-opened', function (event) {
+		var data = Array.isArray(event) ? event[0] : event;
+		document.getElementById('app-content').removeAttribute('aria-busy');
+		document.title = data.title;
+		document.body.setAttribute('data-conversation_id', data.id);
+		document.body.setAttribute('data-mailbox_id', data.mailbox_id);
+		document.body.removeAttribute('data-page-url');
+		window.history.replaceState(Object.assign({}, window.history.state || {}, {tallport_conversation: {id: data.id, folder_id: data.folder_id}}), '', data.url);
+		// For realtime updates, the composer and modules (CustomApp, Nostr).
+		document.dispatchEvent(new CustomEvent('tallport:conversation-opened', {detail: data}));
+	});
+});
+
 // Each conversation page, also one opened with wire:navigate.
 var conversation_first_page = true;
 document.addEventListener('livewire:navigated', function () {
@@ -19,6 +74,12 @@ document.addEventListener('livewire:navigated', function () {
 	if (!document.body.getAttribute('data-conversation_id')) {
 		return;
 	}
+	// Back to this page after conversations opened in place opens it again (with
+	// Livewire's own entry kept).
+	window.history.replaceState(Object.assign({}, window.history.state || {}, {tallport_conversation: {
+		id: parseInt(document.body.getAttribute('data-conversation_id')),
+		folder_id: new URLSearchParams(window.location.search).get('folder_id') || ''
+	}}), '');
 	// Shown after wire:navigate (perhaps prefetched on hover): now it's seen
 	// (ConversationsController::view() does this for a page loaded in full).
 	if (!first_page) {

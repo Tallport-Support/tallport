@@ -13,21 +13,18 @@ use Livewire\Component;
  * with the modules' hooks), the assignee, the status and the way to the
  * newer and older conversations.
  *
- * It renders once: the actions' links come from the page's request, and every
- * action but following leads to another page.
+ * Another conversation opens in it in place (ConversationOpens); its actions'
+ * links are built for the folder it was opened from (actionRequest()).
  */
 class ConversationToolbar extends Component
 {
-    #[Locked]
-    public $conversation_id;
+    // The conversation, and the folder it was opened from: where the user goes after a
+    // change (ConversationActions::redirectUrl()); another conversation opens in place.
+    use ConversationOpens;
 
     /**
-     * The folder the conversation was opened from, and the embedded view:
-     * where the user goes after a change (ConversationActions::redirectUrl()).
+     * The embedded view.
      */
-    #[Locked]
-    public $folder_id;
-
     #[Locked]
     public $x_embed;
 
@@ -116,6 +113,7 @@ class ConversationToolbar extends Component
         $conversation = $this->conversation();
         $user = auth()->user();
         $mailbox = $conversation->mailbox;
+        $this->actionRequest();
         $actions = \App\Misc\ConversationActionButtons::getActions($conversation, $user, $mailbox);
 
         return view('livewire.conversation-toolbar', [
