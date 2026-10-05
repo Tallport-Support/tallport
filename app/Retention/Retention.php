@@ -71,9 +71,15 @@ class Retention
 
     const BATCH = 500;
 
+    /**
+     * Values to use instead of the saved ones: the settings page's preview of
+     * unsaved changes (App\Livewire\RetentionPreview).
+     */
+    public static $overrides = [];
+
     public static function get($option)
     {
-        $value = \Option::get($option, self::OPTIONS[$option]);
+        $value = array_key_exists($option, self::$overrides) ? self::$overrides[$option] : \Option::get($option, self::OPTIONS[$option]);
         if ($option == 'retention_enabled') {
             return (bool) $value;
         }

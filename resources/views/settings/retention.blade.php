@@ -1,6 +1,5 @@
 {{-- Settings » Retention (App\Retention\Retention): how long conversations, customers and logs are kept. --}}
 @php
-    $retention_preview = App\Retention\Retention::run(true);
     $retention_choice = function ($name) use ($settings) {
         $html = '';
         foreach (App\Retention\Retention::CHOICES[$name] as $value) {
@@ -11,7 +10,7 @@
         return $html;
     };
 @endphp
-<form id="page-form" class="settings-form" method="POST" action="">
+<form id="page-form" class="settings-form" method="POST" action="" x-data x-on:change="Livewire.dispatch('retention-settings-changed', {settings: Object.fromEntries(new FormData($el))})">
     {{ csrf_field() }}
 
     <x-fruit::form-section :title="__('Retention')" :footer="__('Deleted conversations stay in backups until those are replaced.')">
@@ -19,15 +18,8 @@
             <x-fruit::switch name="settings[retention_enabled]" value="1" :checked="(bool) old('settings.retention_enabled', $settings['retention_enabled'])" />
             <x-slot:description>{{ __('Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.') }}</x-slot:description>
         </x-fruit::field>
-        {{-- What a run would do now, with the saved settings. --}}
-        <div class="f-form-row retention-preview">
-            <span>{{ $settings['retention_enabled'] ? __('Next Run') : __('If Switched On Now') }}</span>
-            <span class="f-help">{{ __(':expired conversations expire, :deleted are deleted for good, :customers customers are deleted.', [
-                'expired'   => $retention_preview['expired'],
-                'deleted'   => $retention_preview['deleted'] + $retention_preview['trash'] + $retention_preview['spam'],
-                'customers' => $retention_preview['customers'],
-            ]) }}</span>
-        </div>
+        {{-- What a run would do now, with the values below, saved or not. --}}
+        <livewire:retention-preview />
     </x-fruit::form-section>
 
     <x-fruit::form-section :title="__('Conversations')" :footer="__('A customer who writes again gets their expired conversations back, and all their conversations are kept longer. A conversation or customer on legal hold is never deleted.')">

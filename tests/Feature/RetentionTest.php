@@ -237,4 +237,18 @@ class RetentionTest extends FeatureTestCase
         $this->assertFalse(\Storage::disk('local')->exists(Customer::PHOTO_DIRECTORY.'/orphan.jpg'));
         $this->assertTrue(\Storage::disk('local')->exists(Customer::PHOTO_DIRECTORY.'/new.jpg'), 'Too new: maybe being saved.');
     }
+
+    public function testThePreviewFollowsUnsavedChanges()
+    {
+        $this->conversation('casey@customer.example.org', 8);
+        $this->conversation('sam@customer.example.org', 30);
+
+        $preview = Livewire::actingAs($this->admin)->test(\App\Livewire\RetentionPreview::class)
+            ->assertSee('1 conversations expire');
+        $preview->dispatch('retention-settings-changed', settings: ['_token' => 'x', 'settings[retention_keep_months]' => '6'])
+            ->assertSee('2 conversations expire');
+        $this->assertSame(24, Retention::get('retention_keep_months'), 'Not saved.');
+
+        Livewire::actingAs($this->createUser())->test(\App\Livewire\RetentionPreview::class)->assertForbidden();
+    }
 }

@@ -241,6 +241,7 @@ return array(
     'App\\Livewire\\NewConversation' => $baseDir . '/app/Livewire/NewConversation.php',
     'App\\Livewire\\PasswordGate' => $baseDir . '/app/Livewire/PasswordGate.php',
     'App\\Livewire\\ReportResults' => $baseDir . '/app/Livewire/ReportResults.php',
+    'App\\Livewire\\RetentionPreview' => $baseDir . '/app/Livewire/RetentionPreview.php',
     'App\\Livewire\\SystemStatus' => $baseDir . '/app/Livewire/SystemStatus.php',
     'App\\Mail\\Alert' => $baseDir . '/app/Mail/Alert.php',
     'App\\Mail\\AutoReply' => $baseDir . '/app/Mail/AutoReply.php',
