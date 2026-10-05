@@ -1524,5 +1524,6 @@
     "Security settings need your password again.": "Za sigurnosne postavke ponovno je potrebna vaša lozinka.",
     "API keys need your password again.": "Za API ključeve ponovno je potrebna vaša lozinka.",
     "Confirm your password first.": "Najprije potvrdite svoju lozinku.",
-    "Too many attempts. Please try again in :seconds seconds.": "Previše pokušaja. Pokušajte ponovno za :seconds s."
+    "Too many attempts. Please try again in :seconds seconds.": "Previše pokušaja. Pokušajte ponovno za :seconds s.",
+    "Translating…": "Prevođenje…"
 }

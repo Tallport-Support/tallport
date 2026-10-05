@@ -1518,5 +1518,6 @@
     "Security settings need your password again.": "Für die Sicherheitseinstellungen wird Ihr Passwort erneut benötigt.",
     "API keys need your password again.": "Für API-Schlüssel wird Ihr Passwort erneut benötigt.",
     "Confirm your password first.": "Bestätigen Sie zuerst Ihr Passwort.",
-    "Too many attempts. Please try again in :seconds seconds.": "Zu viele Versuche. Bitte versuchen Sie es in :seconds Sekunden erneut."
+    "Too many attempts. Please try again in :seconds seconds.": "Zu viele Versuche. Bitte versuchen Sie es in :seconds Sekunden erneut.",
+    "Translating…": "Wird übersetzt…"
 }

@@ -1523,5 +1523,6 @@
     "Security settings need your password again.": "Nastavenia zabezpečenia znova vyžadujú vaše heslo.",
     "API keys need your password again.": "Kľúče API znova vyžadujú vaše heslo.",
     "Confirm your password first.": "Najprv potvrďte svoje heslo.",
-    "Too many attempts. Please try again in :seconds seconds.": "Príliš veľa pokusov. Skúste to znova o :seconds s."
+    "Too many attempts. Please try again in :seconds seconds.": "Príliš veľa pokusov. Skúste to znova o :seconds s.",
+    "Translating…": "Prekladá sa…"
 }

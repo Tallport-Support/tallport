@@ -1527,5 +1527,6 @@
     "Security settings need your password again.": "Voor de beveiligingsinstellingen is uw wachtwoord opnieuw nodig.",
     "API keys need your password again.": "Voor API-sleutels is uw wachtwoord opnieuw nodig.",
     "Confirm your password first.": "Bevestig eerst uw wachtwoord.",
-    "Too many attempts. Please try again in :seconds seconds.": "Te veel pogingen. Probeer het over :seconds seconden opnieuw."
+    "Too many attempts. Please try again in :seconds seconds.": "Te veel pogingen. Probeer het over :seconds seconden opnieuw.",
+    "Translating…": "Vertalen…"
 }

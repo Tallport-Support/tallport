@@ -1524,5 +1524,6 @@
     "Security settings need your password again.": "A biztonsági beállításokhoz ismét meg kell adnia a jelszavát.",
     "API keys need your password again.": "Az API-kulcsokhoz ismét meg kell adnia a jelszavát.",
     "Confirm your password first.": "Először erősítse meg a jelszavát.",
-    "Too many attempts. Please try again in :seconds seconds.": "Túl sok próbálkozás. Próbálja újra :seconds másodperc múlva."
+    "Too many attempts. Please try again in :seconds seconds.": "Túl sok próbálkozás. Próbálja újra :seconds másodperc múlva.",
+    "Translating…": "Fordítás…"
 }

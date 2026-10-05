@@ -1524,5 +1524,6 @@
     "Security settings need your password again.": "セキュリティ設定にはもう一度パスワードが必要です。",
     "API keys need your password again.": "API キーにはもう一度パスワードが必要です。",
     "Confirm your password first.": "まずパスワードを確認してください。",
-    "Too many attempts. Please try again in :seconds seconds.": "試行回数が多すぎます。:seconds 秒後にもう一度お試しください。"
+    "Too many attempts. Please try again in :seconds seconds.": "試行回数が多すぎます。:seconds 秒後にもう一度お試しください。",
+    "Translating…": "翻訳中…"
 }

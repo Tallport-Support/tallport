@@ -1524,5 +1524,6 @@
     "Security settings need your password again.": "Təhlükəsizlik parametrləri üçün şifrənizi yenidən daxil edin.",
     "API keys need your password again.": "API açarları üçün şifrənizi yenidən daxil edin.",
     "Confirm your password first.": "Əvvəlcə şifrənizi təsdiqləyin.",
-    "Too many attempts. Please try again in :seconds seconds.": "Çox cəhd edildi. :seconds saniyədən sonra yenidən cəhd edin."
+    "Too many attempts. Please try again in :seconds seconds.": "Çox cəhd edildi. :seconds saniyədən sonra yenidən cəhd edin.",
+    "Translating…": "Tərcümə edilir…"
 }

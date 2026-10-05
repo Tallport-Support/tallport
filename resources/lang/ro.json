@@ -1523,5 +1523,6 @@
     "Security settings need your password again.": "Setările de securitate necesită din nou parola.",
     "API keys need your password again.": "Cheile API necesită din nou parola.",
     "Confirm your password first.": "Mai întâi confirmați parola.",
-    "Too many attempts. Please try again in :seconds seconds.": "Prea multe încercări. Încercați din nou peste :seconds secunde."
+    "Too many attempts. Please try again in :seconds seconds.": "Prea multe încercări. Încercați din nou peste :seconds secunde.",
+    "Translating…": "Se traduce…"
 }

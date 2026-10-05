@@ -1572,5 +1572,6 @@
     "Security settings need your password again.": "安全性設定需要再次輸入您的密碼。",
     "API keys need your password again.": "API 金鑰需要再次輸入您的密碼。",
     "Confirm your password first.": "請先確認您的密碼。",
-    "Too many attempts. Please try again in :seconds seconds.": "嘗試次數過多。請在 :seconds 秒後重試。"
+    "Too many attempts. Please try again in :seconds seconds.": "嘗試次數過多。請在 :seconds 秒後重試。",
+    "Translating…": "正在翻譯…"
 }

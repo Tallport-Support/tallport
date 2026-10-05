@@ -164,6 +164,10 @@
                 </x-fruit::alert>
             @endif
 
+            @if (App\Ai\Translations::canForce($thread, Auth::user()))
+                {{-- While Translate (its menu) works on this message. --}}
+                <p class="f-help ai-translating" wire:loading.flex wire:target="translate({{ $thread->id }})" role="status"><x-fruit::spinner /> {{ __('Translating…') }}</p>
+            @endif
             @include('conversations/partials/ai_translation_note')
             @action('thread.before_body', $thread, $loop, $threads, $conversation, $mailbox)
 

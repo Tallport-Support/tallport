@@ -1524,5 +1524,6 @@
     "Security settings need your password again.": "Säkerhetsinställningarna kräver ditt lösenord igen.",
     "API keys need your password again.": "API-nycklar kräver ditt lösenord igen.",
     "Confirm your password first.": "Bekräfta ditt lösenord först.",
-    "Too many attempts. Please try again in :seconds seconds.": "För många försök. Försök igen om :seconds sekunder."
+    "Too many attempts. Please try again in :seconds seconds.": "För många försök. Försök igen om :seconds sekunder.",
+    "Translating…": "Översätter…"
 }

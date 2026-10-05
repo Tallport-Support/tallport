@@ -1523,5 +1523,6 @@
     "Security settings need your password again.": "הגדרות האבטחה דורשות שוב את הסיסמה שלך.",
     "API keys need your password again.": "מפתחות API דורשים שוב את הסיסמה שלך.",
     "Confirm your password first.": "אשרו תחילה את הסיסמה.",
-    "Too many attempts. Please try again in :seconds seconds.": "יותר מדי ניסיונות. נסו שוב בעוד :seconds שניות."
+    "Too many attempts. Please try again in :seconds seconds.": "יותר מדי ניסיונות. נסו שוב בעוד :seconds שניות.",
+    "Translating…": "מתרגם…"
 }

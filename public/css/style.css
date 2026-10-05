@@ -1003,6 +1003,12 @@ a h4 {
 .password-gate__actions {
     justify-content: center;
 }
+/* A message being translated on request (its menu's Translate). */
+.ai-translating {
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 8px;
+}
 /* Preferences: the accent picker, off while the installation's accent is used. */
 .accent-choice {
     min-width: 0;
