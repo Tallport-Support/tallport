@@ -67,6 +67,11 @@
                 @else
                     <p class="conv-heading__mailbox"><x-icon.mail class="f-icon" aria-hidden="true" /><span>{{ $mailbox->name }}@if ($mailbox->email) · {{ $mailbox->email }}@endif</span></p>
                 @endif
+                {{-- Where the customer writes from (their latest message), rather than on every message. --}}
+                @php $chat_last_customer = collect($threads)->first(fn ($chat_thread) => $chat_thread->isCustomerMessage()); @endphp
+                @if ($chat_last_customer && App\Nostr\Nostr::isNostr($conversation))
+                    <div class="conv-heading__device">@include('nostr/partials/thread_sender', ['sender' => App\Nostr\NostrEvent::sender($conversation, $threads, $chat_last_customer), 'thread' => $chat_last_customer])</div>
+                @endif
                 @action('conversation.after_subject', $conversation, $mailbox)
             </header>
             @action('conversation.after_subject_block', $conversation, $mailbox)

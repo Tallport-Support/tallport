@@ -4055,6 +4055,21 @@ img.f-avatar {
     font-weight: 600;
   }
 
+/* Inline messages keep the name, meta and time together on the first line, whatever header lines
+     (From, To, a device) follow below them. */
+
+.f-message:not(.f-message--stacked) > .f-message__header {
+    flex-wrap: wrap;
+  }
+
+.f-message:not(.f-message--stacked, .f-message--continued) .f-message__identity {
+    display: contents;
+  }
+
+.f-message:not(.f-message--stacked) .f-message__headers {
+    order: 1;
+  }
+
 .f-message__meta,
   .f-message__time {
     color: var(--f-secondary);
@@ -4722,6 +4737,18 @@ img.f-avatar {
 
 .f-thread--compact > :has(+ * > .f-message--continued) > .f-message {
     padding-bottom: var(--f-thread-continued-padding-block, 3px);
+  }
+
+/* The sent-message bar runs unbroken through a run. */
+
+.f-thread--compact > :has(+ * > .f-message--continued) > .f-message::before {
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+.f-thread--compact .f-message--continued::before {
+    border-start-start-radius: 0;
+    border-start-end-radius: 0;
   }
 
 .f-thread--compact .f-message:not(.f-message--note, .f-message--generated):is(:hover, :focus-within) {

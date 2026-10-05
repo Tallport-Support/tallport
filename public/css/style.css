@@ -2751,9 +2751,14 @@ a.disabled:focus {
     color: var(--f-label);
     font-size: var(--f-text-md);
 }
-.conv-heading--chat .conv-heading__mailbox {
+.conv-heading--chat .conv-heading__mailbox,
+.conv-heading--chat .conv-heading__device {
     grid-column: 1;
     margin-top: 2px;
+}
+.conv-heading__device {
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
 }
 .conv-thread-host {
     display: contents;

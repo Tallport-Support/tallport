@@ -77,14 +77,13 @@
             @if ($thread->isNote())<x-fruit::badge tone="warning">{{ __('Note') }}</x-fruit::badge>@endif
             @if (!$thread_is_draft && $thread->isForward())<x-fruit::badge tone="accent">{{ __('Forward') }}</x-fruit::badge>@endif
             @if ($conversation->isPhone() && $thread->first)<x-fruit::badge>{{ __('Phone') }}</x-fruit::badge>@endif
-            @if (!empty($chat))
-                {{-- Short in the chat view: the customer, or the viewer's own reply. --}}
-                @if ($thread->type == App\Thread::TYPE_CUSTOMER){{ __('Customer') }}@elseif ($thread->type != App\Thread::TYPE_CUSTOMER && $thread->created_by_user_id == Auth::user()->id){{ \Illuminate\Support\Str::ucfirst(__('you')) }}@endif
-            @elseif ($thread_meta_line){{ implode(' · ', $thread_meta_line) }}@endif
+            {{-- The chat view: just the name and time (and the badges above). --}}
+            @if (empty($chat) && $thread_meta_line){{ implode(' · ', $thread_meta_line) }}@endif
             {{-- Lines below must be spaceless --}}
             {{ \Eventy::action('thread.after_person_action', $thread, $loop, $threads, $conversation, $mailbox) }}
         </x-slot:meta>
-        @if (!$thread_is_draft && ($thread->type != App\Thread::TYPE_NOTE || $thread->isForward()))
+        {{-- Senders and recipients; not in the chat view (the device is in its heading). --}}
+        @if (empty($chat) && !$thread_is_draft && ($thread->type != App\Thread::TYPE_NOTE || $thread->isForward()))
             @php
                 // Highlight "From" field if "From" header is different from "Reply-To".
                 $from_header = $thread->isCustomerMessage() ? $thread->getFromIfDifferentFromReplyTo($customer ?? null) : '';

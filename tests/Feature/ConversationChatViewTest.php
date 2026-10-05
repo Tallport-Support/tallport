@@ -70,11 +70,14 @@ class ConversationChatViewTest extends FeatureTestCase
         // The component's root is its own element, not a day's list.
         $this->assertMatchesRegularExpression('#^\s*<div [^>]*wire:id="[^"]+"[^>]*class="conv-thread-host"#', preg_replace('#<!--.*?-->#s', '', $html));
         $this->assertStringContainsString('Today', $html);
+        // Just the name and time: no sender and recipient lines.
+        $this->assertStringNotContainsString('thread-recipients', $html);
 
         // The email view: newest first, no dividers.
         $html = Livewire::actingAs($this->agent)->test(ConversationThread::class, ['conversation' => $this->conversation])->html();
         $this->assertGreaterThan(strpos($html, 'thread-'.$reply->id.'"'), strpos($html, 'thread-'.$first->id.'"'));
         $this->assertStringNotContainsString('f-divider', $html);
+        $this->assertStringContainsString('thread-recipients', $html);
     }
 
     public function testTheComposerStaysOpenAndSwitchesWhileEmpty()
