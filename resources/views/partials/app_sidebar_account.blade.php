@@ -11,7 +11,7 @@
         <div class="web-notifications-header">
             <h2>
                 {{ __('Notifications') }}
-                <small class="web-notifications-count f-badge" title="{{ __('Unread Notifications') }}" x-show="unread > 0" x-text="unread">{{ $web_notifications_info['unread_count'] ?: '' }}</small>
+                <small class="web-notifications-count f-badge f-badge--warning" title="{{ __('Unread Notifications') }}" x-show="unread > 0" x-text="unread">{{ $web_notifications_info['unread_count'] ?: '' }}</small>
             </h2>
             <button type="button" class="f-button f-button--ghost f-button--small web-notifications-mark-read" x-show="unread > 0" x-on:click="markRead($el)">{{ __('Mark all as read') }}</button>
         </div>

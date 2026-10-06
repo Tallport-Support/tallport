@@ -3,6 +3,11 @@
     "description": "CSS-first UI components for Laravel.",
     "type": "library",
     "license": "MIT",
+    "homepage": "https://github.com/FruitUI/fruitui",
+    "support": {
+        "issues": "https://github.com/FruitUI/fruitui/issues",
+        "source": "https://github.com/FruitUI/fruitui"
+    },
     "require": {
         "php": "^8.3",
         "illuminate/support": "^13.0",

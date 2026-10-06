@@ -119,6 +119,8 @@
   }
   @media (prefers-contrast: more) {
     :where(.fruit-ui) {
+      /* Dark text is softened from white for comfort; Increase Contrast restores it. */
+      --f-text: light-dark(#222225, #f3f3f5);
       --f-border: color-mix(in srgb, var(--f-text) 45%, transparent);
       --f-hover: color-mix(in srgb, var(--f-text) 12%, transparent);
       --f-secondary: color-mix(in srgb, var(--f-text) 85%, var(--f-bg));

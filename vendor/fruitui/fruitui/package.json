@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "description": "A CSS-first interface framework for HTML and Laravel.",
+  "homepage": "https://github.com/FruitUI/fruitui",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FruitUI/fruitui.git"
+  },
+  "bugs": "https://github.com/FruitUI/fruitui/issues",
   "type": "module",
   "exports": {
     "./css": "./src/fruitui.css",

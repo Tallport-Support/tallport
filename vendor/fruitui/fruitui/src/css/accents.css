@@ -80,7 +80,7 @@
     --f-accent-fill-hover: color-mix(in srgb, var(--f-tint) 81%, black);
     --f-selection: light-dark(
       color-mix(in srgb, var(--f-tint) 11%, white),
-      color-mix(in srgb, var(--f-tint) 25%, #2c2c2e)
+      color-mix(in srgb, var(--f-tint) 25%, #232325)
     );
     --f-selection-text: light-dark(
       color-mix(in srgb, var(--f-tint) 76%, #1c1c1e),

@@ -1,3 +1,5 @@
+<p align="center"><img src="public/fruitui-logo.svg" width="96" height="96" alt=""></p>
+
 # FruitUI
 
 FruitUI is a CSS-first UI framework for HTML and Laravel. We try to follow Apple's Human Interface Guidelines. It includes native controls, reusable layouts, and optional Alpine.js and Livewire behavior. Light and dark appearances follow the system automatically through CSS.

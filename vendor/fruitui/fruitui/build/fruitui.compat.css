@@ -6,13 +6,15 @@
     color-scheme: light;
     --f-font:
       -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
-    --f-bg: light-dark(#f6f5f3, #19191c);
-    --f-surface: light-dark(#fff, #252528);
-    --f-surface-secondary: light-dark(#f3f3f5, #2d2d31);
-    --f-material: light-dark(rgb(246 246 248 / 82%), rgb(39 39 43 / 88%));
-    --f-text: light-dark(#222225, #f3f3f5);
-    --f-secondary: light-dark(#65656c, #b0b0b8);
-    --f-tertiary: light-dark(#76767d, #a1a1ab);
+    /* The dark appearance is calm for long reading: near-black surfaces (#1c1c1e) and soft white
+       text, about 10:1 rather than pure white's 15:1. Increase Contrast restores near-white text. */
+    --f-bg: light-dark(#f6f5f3, #121214);
+    --f-surface: light-dark(#fff, #1c1c1e);
+    --f-surface-secondary: light-dark(#f3f3f5, #242427);
+    --f-material: light-dark(rgb(246 246 248 / 82%), rgb(30 30 33 / 88%));
+    --f-text: light-dark(#222225, #cccccf);
+    --f-secondary: light-dark(#65656c, #a0a0a8);
+    --f-tertiary: light-dark(#76767d, #8f8f97);
     --f-border: light-dark(rgb(60 60 67 / 15%), rgb(235 235 245 / 14%));
     --f-hover: light-dark(rgb(60 60 67 / 6%), rgb(235 235 245 / 7%));
     /* The one brand color. Every accent shade derives from it, so a scope can set just --f-tint. */
@@ -22,7 +24,7 @@
     --f-accent-fill-hover: color-mix(in srgb, var(--f-tint) 81%, black);
     --f-selection: light-dark(
       color-mix(in srgb, var(--f-tint) 11%, white),
-      color-mix(in srgb, var(--f-tint) 25%, #2c2c2e)
+      color-mix(in srgb, var(--f-tint) 25%, #232325)
     );
     --f-selection-text: light-dark(
       color-mix(in srgb, var(--f-tint) 76%, #1c1c1e),
@@ -39,22 +41,22 @@
     --f-warning: light-dark(#9a6700, #eaba55);
     /* Cards for messages that are not sent: internal notes (yellow) and generated text such as
        summaries and translations (indigo). */
-    --f-note-background: light-dark(#fdf6d3, #3a3420);
+    --f-note-background: light-dark(#fdf6d3, #302a19);
     --f-note-border: light-dark(rgb(196 150 0 / 32%), rgb(234 186 85 / 26%));
     --f-generated: light-dark(#5149c9, #a5a1ff);
-    --f-generated-background: light-dark(#f1f0fd, #2c2b45);
+    --f-generated-background: light-dark(#f1f0fd, #24233a);
     --f-generated-border: light-dark(rgb(88 86 214 / 26%), rgb(165 161 255 / 26%));
-    --f-control: light-dark(#fff, #39393e);
+    --f-control: light-dark(#fff, #2e2e32);
     /* Popovers, menus, dialogs and toasts sit above the content; in dark mode they are lighter. */
-    --f-surface-elevated: light-dark(#fff, #2c2c30);
+    --f-surface-elevated: light-dark(#fff, #232326);
     /* Grouped settings: a light grey content area, not white, holding
        rounded groups a step lighter. Dark mode uses the system's grouped greys. */
-    --f-grouped-background: light-dark(#f2f2f4, #1c1c1e);
-    --f-grouped-surface: light-dark(#fbfbfc, #2c2c2e);
-    --f-material-popup: light-dark(rgb(250 250 252 / 84%), rgb(44 44 48 / 84%));
+    --f-grouped-background: light-dark(#f2f2f4, #141416);
+    --f-grouped-surface: light-dark(#fbfbfc, #222224);
+    --f-material-popup: light-dark(rgb(250 250 252 / 84%), rgb(36 36 40 / 84%));
     /* Unemphasized selection: a selected row whose list does not have focus. */
-    --f-selection-inactive: light-dark(#e8e8ec, #3a3a3e);
-    --f-switch-off: light-dark(#e5e5ea, #3a3a3e);
+    --f-selection-inactive: light-dark(#e8e8ec, #2f2f33);
+    --f-switch-off: light-dark(#e5e5ea, #313135);
     --f-switch-off-border: #8e8e93;
     --f-shadow:
       0 16px 56px light-dark(rgb(29 28 38 / 10%), rgb(0 0 0 / 25%)),
@@ -220,7 +222,7 @@
     --f-accent-fill-hover: color-mix(in srgb, var(--f-tint) 81%, black);
     --f-selection: light-dark(
       color-mix(in srgb, var(--f-tint) 11%, white),
-      color-mix(in srgb, var(--f-tint) 25%, #2c2c2e)
+      color-mix(in srgb, var(--f-tint) 25%, #232325)
     );
     --f-selection-text: light-dark(
       color-mix(in srgb, var(--f-tint) 76%, #1c1c1e),
@@ -424,6 +426,8 @@ html.fruit-ui > body {
 
 @media (prefers-contrast: more) {
     .fruit-ui {
+      /* Dark text is softened from white for comfort; Increase Contrast restores it. */
+      --f-text: light-dark(#222225, #f3f3f5);
       --f-border: color-mix(in srgb, var(--f-text) 45%, transparent);
       --f-hover: color-mix(in srgb, var(--f-text) 12%, transparent);
       --f-secondary: color-mix(in srgb, var(--f-text) 85%, var(--f-bg));

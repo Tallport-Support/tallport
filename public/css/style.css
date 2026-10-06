@@ -22,7 +22,7 @@ body.user-is-guest {
     font-size: 0.75rem;
     /*position: absolute;
     bottom: 0;*/
-    color: #b4c0ca;
+    color: var(--f-tertiary);
     margin-bottom: 20px;
     margin-top: 20px;
     width: 100%;
@@ -406,10 +406,10 @@ a h4 {
     background-color: #d43f3a!important;
 }
 .conv-star {
-    color: #bbc4cc;
+    color: var(--f-tertiary);
 }
 .conv-star:hover {
-    color: #f4b400!important;
+    color: var(--f-warning)!important;
 }
 .conv-info {
     display: flex;
@@ -763,7 +763,6 @@ a h4 {
     text-decoration:none
 }
 .web-notifications-count {
-    color: #ff9139;
     margin-left: 3px;
     position: relative;
     top: -1px;
@@ -3230,7 +3229,6 @@ a.disabled:focus {
 }
 .conv-list .f-item-row__subtitle {
     margin-top: 4px;
-    font-weight: 550;
     line-height: 1.45;
     white-space: normal;
 }
