@@ -111,6 +111,17 @@ class Conversation extends Model
         //self::STATUS_OPEN => 'folder-open',
     ];
 
+    /**
+     * The status dots' tones (conversations/partials/status_dot): Active, Pending and
+     * Closed told apart, unlike $status_classes (kept as they were for modules).
+     */
+    const STATUS_TONES = [
+        self::STATUS_ACTIVE  => 'success',
+        self::STATUS_PENDING => 'warning',
+        self::STATUS_CLOSED  => 'neutral',
+        self::STATUS_SPAM    => 'danger',
+    ];
+
     public static $status_classes = [
         self::STATUS_ACTIVE  => 'success',
         self::STATUS_PENDING => 'lightgrey',

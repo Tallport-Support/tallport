@@ -283,11 +283,18 @@ function maybeShowConnectionRestored()
 				if (data.conversation_user_id) {
 					menuChanged('conv-assignee', 'data-user_id', data.conversation_user_id);
 				}
-				if (data.conversation_status && menuChanged('conv-status', 'data-status', data.conversation_status) && data.conversation_status_class) {
-					var tones = {success: 'success', info: 'accent', warning: 'warning', danger: 'danger'};
-					var dot = document.querySelector('#conv-status .conv-status-dot');
-					if (dot) {
-						dot.className = 'f-badge conv-status-dot f-badge--'+(tones[data.conversation_status_class] || 'neutral');
+				if (data.conversation_status && menuChanged('conv-status', 'data-status', data.conversation_status)) {
+					// The trigger's dot as the menu's for that status (Conversation::STATUS_TONES).
+					var dot = document.querySelector('#conv-status summary .conv-status-dot');
+					var item_dot = document.querySelector('#conv-status [data-status="'+data.conversation_status+'"] .conv-status-dot');
+					if (dot && item_dot) {
+						dot.className = item_dot.className;
+						// "Status: Active": the label's prefix kept, in the user's language.
+						var trigger = dot.closest('summary');
+						var prefix = (trigger.getAttribute('aria-label') || '').split(': ')[0];
+						var name = item_dot.parentElement.textContent.trim();
+						trigger.setAttribute('aria-label', prefix+': '+name);
+						trigger.setAttribute('title', prefix+': '+name);
 					}
 				}
 			});

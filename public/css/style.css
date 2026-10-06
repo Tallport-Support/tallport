@@ -429,12 +429,21 @@ a h4 {
 }
 .conv-status-dot {
     display: inline-block;
+    flex: none;
+    box-sizing: border-box;
     width: 8px;
     height: 8px;
     min-width: 0;
     padding: 0;
+    border: 0;
     border-radius: 50%;
-    background: var(--f-tertiary);
+    /* Closed (neutral): --f-secondary keeps 3:1 against the button. */
+    background: var(--f-secondary);
+}
+/* Selected conversations with different statuses: a hollow ring. */
+.conv-status-dot--mixed {
+    border: 1.5px solid var(--f-secondary);
+    background: none;
 }
 .conv-status-dot.f-badge--success {
     background: var(--f-success);

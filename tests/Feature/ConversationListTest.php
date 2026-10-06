@@ -103,6 +103,10 @@ class ConversationListTest extends FeatureTestCase
         $conversation = $this->conversation('Mine question');
         $conversation->changeUser($this->agent->id, $this->agent);
 
+        // One mailbox: no color bar (every row would have it).
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_MINE)])
+            ->assertDontSeeHtml('data-fruit-mark');
+
         // Mine is the viewer's own; elsewhere the assignee shows.
         Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_MINE)])
             ->assertSee('Mine question')->assertDontSeeHtml('conv-owner-name');
@@ -169,7 +173,15 @@ class ConversationListTest extends FeatureTestCase
         $second = $this->conversation('Second question');
         $ids = [(string) $first->id, (string) $second->id];
         $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)])
-            ->set('selected', $ids)->assertSee('2 selected');
+            ->set('selected', $ids)->assertSee('2 selected')
+            // The same status: its dot, named; each status in the menu leads with its dot.
+            ->assertSeeHtml('aria-label="Status: Active"')->assertSeeHtml('f-badge--warning conv-status-dot');
+
+        $first->setStatus(Conversation::STATUS_CLOSED);
+        $first->save();
+        $list->set('selected', [$ids[0]])->set('selected', $ids)
+            // Different statuses: a ring, just "Status".
+            ->assertSeeHtml('conv-status-dot--mixed')->assertDontSeeHtml('aria-label="Status: Active"');
 
         $list->call('changeStatus', Conversation::STATUS_PENDING)->assertToasted('Status updated')->assertRedirect();
         $this->assertSame([Conversation::STATUS_PENDING, Conversation::STATUS_PENDING], [$first->fresh()->status, $second->fresh()->status]);
@@ -189,12 +201,14 @@ class ConversationListTest extends FeatureTestCase
 
     public function testAllMailboxesAndCustomerLists()
     {
-        $sales = $this->createMailbox([$this->agent], ['name' => 'Sales']);
+        $sales = $this->createMailbox([$this->agent], ['name' => 'Sales', 'accent' => 'orange']);
         $support = $this->conversation('Support question');
         $this->conversation('Sales question', $sales);
         $folder = AllMailboxes::folder($this->agent, -Folder::TYPE_UNASSIGNED);
 
+        // Across mailboxes: each row's mailbox as a bar in its color, its name for screen readers only.
         Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $folder, 'params' => ['show_mailbox' => true]])
+            ->assertSeeHtml('data-fruit-mark="orange"')->assertSeeHtml('Sales mailbox')
             ->assertSee('Support question')->assertSee('Sales question')
             ->call('sort', 'subject')->assertSeeInOrder(['Sales question', 'Support question']);
 

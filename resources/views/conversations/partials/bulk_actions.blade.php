@@ -4,6 +4,10 @@
     ob_start();
     \Eventy::action('bulk_actions.before_delete', $mailbox ?? null);
     $bulk_more = trim(ob_get_clean());
+    // The selected conversations' status, when they share one (else a ring).
+    $bulk_statuses = count($selected ?? []) ? App\Conversation::whereIn('id', $selected)->distinct()->pluck('status') : collect();
+    $bulk_status = count($bulk_statuses) == 1 ? (int) $bulk_statuses->first() : null;
+    $bulk_status_label = $bulk_status !== null ? __('Status').': '.App\Conversation::statusCodeToName($bulk_status) : __('Status');
 @endphp
 <x-fruit::selection-bar id="conversations-bulk-actions" class="conv-bulk-actions" :count="count($selected ?? [])" :aria-label="__('Selected conversations')">
     @if (!empty($mailbox))
@@ -22,9 +26,9 @@
         </x-fruit::menu>
     @endif
     <x-fruit::menu :title="__('Status')" class="conv-status">
-        <x-slot:trigger class="f-button--ghost f-button--icon" :aria-label="__('Status')" :title="__('Status')"><x-icon.flag class="f-icon" aria-hidden="true" /></x-slot:trigger>
+        <x-slot:trigger class="f-button--ghost f-button--icon" :aria-label="$bulk_status_label" :title="$bulk_status_label">@include('conversations/partials/status_dot', ['status' => $bulk_status])</x-slot:trigger>
         @foreach (App\Conversation::$statuses as $status => $dummy)
-            <x-fruit::menu-link href="#" :data-status="$status" wire:click.prevent="changeStatus({{ $status }})">{{ App\Conversation::statusCodeToName($status) }}</x-fruit::menu-link>
+            <x-fruit::menu-link href="#" :data-status="$status" wire:click.prevent="changeStatus({{ $status }})">@include('conversations/partials/status_dot', ['status' => $status]) {{ App\Conversation::statusCodeToName($status) }}</x-fruit::menu-link>
         @endforeach
     </x-fruit::menu>
     @if (Auth::user()->can('delete', new App\Conversation()))
