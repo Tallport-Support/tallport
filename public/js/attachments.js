@@ -5,9 +5,16 @@
  * opens in it: the messages' files and the conversation's Attachments list.
  */
 (function () {
+	// Each attachment once: a file is under its message and in the Attachments list too.
 	var items = function () {
+		var seen = {};
 		return Array.prototype.slice.call(document.querySelectorAll('[data-attachment-id][data-mime]')).filter(function (item) {
-			return kind(item) !== '';
+			var id = item.getAttribute('data-attachment-id');
+			if (seen[id] || kind(item) === '') {
+				return false;
+			}
+			seen[id] = true;
+			return true;
 		});
 	};
 
@@ -64,7 +71,9 @@
 	var show = function (item) {
 		var link = item.querySelector('.attachment-link');
 		var list = items();
-		var index = list.indexOf(item);
+		var index = list.findIndex(function (other) {
+			return other.getAttribute('data-attachment-id') == item.getAttribute('data-attachment-id');
+		});
 		var name = (link.querySelector('.f-attachment__body') || link).firstChild.textContent.trim() || link.textContent.trim();
 
 		var body = document.createElement('div');
