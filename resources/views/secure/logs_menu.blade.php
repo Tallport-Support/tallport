@@ -10,6 +10,6 @@
     </select>
     <span class="f-toolbar__spacer"></span>
     @if (!empty($clearable))
-        <x-fruit::button variant="danger" size="small" x-on:click="$confirm({ title: @js(__('Clear :log?', ['log' => App\ActivityLog::getLogTitle($current_name)])), message: @js(__('Its entries are deleted for good.')), confirm: @js(__('Clear Log')), tone: 'danger' }).then((confirmed) => confirmed && $root.submit())">{{ __('Clear Log…') }}</x-fruit::button>
+        <button type="button" class="f-button f-button--danger f-button--small" x-on:click="$confirm({ title: @js(__('Clear :log?', ['log' => App\ActivityLog::getLogTitle($current_name)])), message: @js(__('Its entries are deleted for good.')), confirm: @js(__('Clear Log')), tone: 'danger' }).then((confirmed) => confirmed && $root.submit())">{{ __('Clear Log…') }}</button>
     @endif
 </form>

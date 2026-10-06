@@ -243,5 +243,11 @@ class ReceiveMailTest extends FeatureTestCase
         $this->assertSame('1', (string) \Option::get('receive_pcre_jit_off'));
         Livewire::withoutLazyLoading();
         $this->actingAs($admin)->get(route('system'))->assertSee('tallport:receive')->assertSee('Speeds up text matching');
+
+        // Turned off on purpose (php -d pcre.jit=0, as the README suggests): not reported.
+        ini_set('pcre.jit', '0');
+        $this->artisan('tallport:receive', ['file' => $this->eml()])->assertExitCode(0);
+        ini_set('pcre.jit', '1');
+        $this->assertFalse((bool) \Option::get('receive_pcre_jit_off'));
     }
 }

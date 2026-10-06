@@ -450,7 +450,7 @@
                     <span>{{ __('Sign Out Everyone') }}</span>
                     <p class="f-help">{{ __('Ends every session, including yours.') }}</p>
                 </div>
-                <x-fruit::button variant="danger" size="small" x-on:click="$confirm({ title: @js(__('Sign out everyone?')), message: @js(__('Everyone, including you, will need to sign in again.')), confirm: @js(__('Sign Out Everyone')), tone: 'danger' }).then((confirmed) => { if (confirmed) { $refs.action.value = 'logout_users'; $root.submit(); } })">{{ __('Sign Out Everyone…') }}</x-fruit::button>
+                <button type="button" class="f-button f-button--danger f-button--small" x-on:click="$confirm({ title: @js(__('Sign out everyone?')), message: @js(__('Everyone, including you, will need to sign in again.')), confirm: @js(__('Sign Out Everyone')), tone: 'danger' }).then((confirmed) => { if (confirmed) { $refs.action.value = 'logout_users'; $root.submit(); } })">{{ __('Sign Out Everyone…') }}</button>
             </div>
             @action('system.tools.main_buttons')
             @action('system.tools.after_main_buttons')

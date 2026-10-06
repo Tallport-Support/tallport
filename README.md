@@ -241,8 +241,8 @@ tallport  unix  -       n       n       -       -       pipe
 
 `-d pcre.jit=0`: Postfix may run the command where PHP can't use PCRE's JIT
 (it may not allocate executable memory there). Tallport copes without it, but
-turning it off avoids PHP's warning. System » Status shows whether
-`tallport:receive` ran without the JIT.
+turning it off avoids PHP's warning. System » Status shows when
+`tallport:receive` ran where the JIT failed (not when it's turned off like this).
 
 and in `/etc/postfix/main.cf` deliver one recipient at a time and send the
 mailboxes' addresses (or their whole domain) to it:
