@@ -16,6 +16,9 @@ error_clear_last();
 @preg_match('/^(?:a|b)+$/', 'ab');
 if (str_contains(error_get_last()['message'] ?? '', 'JIT')) {
     App\Misc\Helper::$pcre_jit_available = false;
+    // Off for the rest of this process too, so no other expression tries again
+    // (no need for "php -d pcre.jit=0" wherever Tallport runs, e.g. under Postfix).
+    ini_set('pcre.jit', '0');
 }
 
 /*

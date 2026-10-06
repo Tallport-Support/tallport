@@ -236,13 +236,12 @@ each email to Tallport as it arrives. With Postfix, add a transport to
 
 ```
 tallport  unix  -       n       n       -       -       pipe
-  flags=R user=www-data argv=/usr/bin/php -d pcre.jit=0 /var/www/html/artisan tallport:receive --mailbox=${recipient}
+  flags=R user=www-data argv=/usr/bin/php /var/www/html/artisan tallport:receive --mailbox=${recipient}
 ```
 
-`-d pcre.jit=0`: Postfix may run the command where PHP can't use PCRE's JIT
-(it may not allocate executable memory there). Tallport copes without it, but
-turning it off avoids PHP's warning. System » Status shows when
-`tallport:receive` ran where the JIT failed (not when it's turned off like this).
+Postfix may run the command where PHP can't use PCRE's JIT (it may not allocate
+executable memory there). Tallport notices at the start and carries on without
+it, quietly; System » Status shows when that happened.
 
 and in `/etc/postfix/main.cf` deliver one recipient at a time and send the
 mailboxes' addresses (or their whole domain) to it:
