@@ -1643,5 +1643,6 @@
     "Receives Nostr messages": "Mottar Nostr-meldinger",
     "Recipient": "Mottaker",
     "Technical Details": "Tekniske Detaljer",
-    "Not sent: the reply was never queued.": "Ikke sendt: svaret ble aldri lagt i køen."
+    "Not sent: the reply was never queued.": "Ikke sendt: svaret ble aldri lagt i køen.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Bakgrunnsoppgaver som stoppet med en feil, for eksempel et svar som ikke kunne sendes. De vises under Mislykkede Jobber."
 }

@@ -1639,5 +1639,6 @@
     "Receives Nostr messages": "Nostr mesajlarını qəbul edir",
     "Recipient": "Alıcı",
     "Technical Details": "Texniki Təfərrüatlar",
-    "Not sent: the reply was never queued.": "Göndərilmədi: cavab heç vaxt növbəyə qoyulmadı."
+    "Not sent: the reply was never queued.": "Göndərilmədi: cavab heç vaxt növbəyə qoyulmadı.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Xəta ilə dayanan fon tapşırıqları, məsələn, göndərilə bilməyən cavab. Onlar Uğursuz Tapşırıqlar bölməsində göstərilir."
 }

@@ -1686,5 +1686,6 @@
     "Receives Nostr messages": "接收 Nostr 訊息",
     "Recipient": "收件者",
     "Technical Details": "技術詳細資料",
-    "Not sent: the reply was never queued.": "未寄出：回覆從未進入佇列。"
+    "Not sent: the reply was never queued.": "未寄出：回覆從未進入佇列。",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "因錯誤而停止的背景工作，例如無法傳送的回覆。這些工作列在失敗的工作中。"
 }

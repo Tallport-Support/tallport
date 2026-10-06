@@ -1638,5 +1638,6 @@
     "Receives Nostr messages": "Riceve i messaggi Nostr",
     "Recipient": "Destinatario",
     "Technical Details": "Dettagli Tecnici",
-    "Not sent: the reply was never queued.": "Non inviata: la risposta non è mai stata messa in coda."
+    "Not sent: the reply was never queued.": "Non inviata: la risposta non è mai stata messa in coda.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Operazioni in background interrotte da un errore, come una risposta che non è stato possibile inviare. Sono elencate in Operazioni Fallite."
 }

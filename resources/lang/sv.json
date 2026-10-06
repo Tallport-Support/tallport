@@ -1639,5 +1639,6 @@
     "Receives Nostr messages": "Tar emot Nostr-meddelanden",
     "Recipient": "Mottagare",
     "Technical Details": "Tekniska Detaljer",
-    "Not sent: the reply was never queued.": "Inte skickat: svaret köades aldrig."
+    "Not sent: the reply was never queued.": "Inte skickat: svaret köades aldrig.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Bakgrundsjobb som stoppades av ett fel, till exempel ett svar som inte kunde skickas. De listas under Misslyckade Jobb."
 }

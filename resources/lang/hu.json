@@ -1639,5 +1639,6 @@
     "Receives Nostr messages": "Nostr-üzeneteket fogad",
     "Recipient": "Címzett",
     "Technical Details": "Technikai Részletek",
-    "Not sent: the reply was never queued.": "Nem lett elküldve: a válasz soha nem került a sorba."
+    "Not sent: the reply was never queued.": "Nem lett elküldve: a válasz soha nem került a sorba.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Hibával leállt háttérfolyamatok, például egy válasz, amelyet nem sikerült elküldeni. A Sikertelen Feladatok alatt szerepelnek."
 }

@@ -1638,5 +1638,6 @@
     "Receives Nostr messages": "Primește mesaje Nostr",
     "Recipient": "Destinatar",
     "Technical Details": "Detalii Tehnice",
-    "Not sent: the reply was never queued.": "Netrimis: răspunsul nu a fost pus niciodată în coadă."
+    "Not sent: the reply was never queued.": "Netrimis: răspunsul nu a fost pus niciodată în coadă.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Sarcini în fundal care s-au oprit cu o eroare, cum ar fi un răspuns care nu a putut fi trimis. Sunt listate la Sarcini Eșuate."
 }

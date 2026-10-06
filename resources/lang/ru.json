@@ -1639,5 +1639,6 @@
     "Receives Nostr messages": "Получает сообщения Nostr",
     "Recipient": "Получатель",
     "Technical Details": "Технические Подробности",
-    "Not sent: the reply was never queued.": "Не отправлено: ответ так и не попал в очередь."
+    "Not sent: the reply was never queued.": "Не отправлено: ответ так и не попал в очередь.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Фоновые задания, остановившиеся с ошибкой, например ответ, который не удалось отправить. Они перечислены в разделе Неудавшиеся Задания."
 }

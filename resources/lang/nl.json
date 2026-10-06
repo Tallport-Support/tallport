@@ -1642,5 +1642,6 @@
     "Receives Nostr messages": "Ontvangt Nostr-berichten",
     "Recipient": "Ontvanger",
     "Technical Details": "Technische Details",
-    "Not sent: the reply was never queued.": "Niet verzonden: het antwoord is nooit in de wachtrij gezet."
+    "Not sent: the reply was never queued.": "Niet verzonden: het antwoord is nooit in de wachtrij gezet.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Achtergrondtaken die met een fout zijn gestopt, zoals een antwoord dat niet verzonden kon worden. Ze staan onder Mislukte Opdrachten."
 }

@@ -2041,5 +2041,6 @@
     "Receives Nostr messages": "Nostr хабарламаларын қабылдайды",
     "Recipient": "Алушы",
     "Technical Details": "Техникалық Мәліметтер",
-    "Not sent: the reply was never queued.": "Жіберілмеді: жауап ешқашан кезекке қойылмады."
+    "Not sent: the reply was never queued.": "Жіберілмеді: жауап ешқашан кезекке қойылмады.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Қатемен тоқтаған фондық тапсырмалар, мысалы, жіберілмей қалған жауап. Олар Сәтсіз Тапсырмалар бөлімінде көрсетіледі."
 }

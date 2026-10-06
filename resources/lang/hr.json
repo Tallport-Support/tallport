@@ -1639,5 +1639,6 @@
     "Receives Nostr messages": "Prima Nostr poruke",
     "Recipient": "Primatelj",
     "Technical Details": "Tehničke Pojedinosti",
-    "Not sent: the reply was never queued.": "Nije poslano: odgovor nikada nije stavljen u red čekanja."
+    "Not sent: the reply was never queued.": "Nije poslano: odgovor nikada nije stavljen u red čekanja.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Pozadinski zadaci koji su se zaustavili s pogreškom, poput odgovora koji nije bilo moguće poslati. Navedeni su pod Neuspjeli Zadaci."
 }

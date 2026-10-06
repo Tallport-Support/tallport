@@ -1734,5 +1734,6 @@
     "Receives Nostr messages": "Rep missatges de Nostr",
     "Recipient": "Destinatari",
     "Technical Details": "Detalls Tècnics",
-    "Not sent: the reply was never queued.": "No enviat: la resposta no es va posar mai a la cua."
+    "Not sent: the reply was never queued.": "No enviat: la resposta no es va posar mai a la cua.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Tasques en segon pla que s'han aturat amb un error, com ara una resposta que no s'ha pogut enviar. Apareixen a Tasques Fallades."
 }

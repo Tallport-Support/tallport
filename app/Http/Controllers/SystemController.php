@@ -354,7 +354,7 @@ class SystemController extends Controller
             }
         }
         if (count($data['failed_jobs'])) {
-            $problems[] = ['failed_jobs', trans_choice('1 job failed|:count jobs failed', count($data['failed_jobs'])), 'warning', null];
+            $problems[] = ['failed_jobs', trans_choice('1 job failed|:count jobs failed', count($data['failed_jobs'])), 'warning', __('Background work that stopped with an error, such as a reply that couldn\'t be sent. It\'s listed under Failed Jobs.')];
         }
 
         return $problems;

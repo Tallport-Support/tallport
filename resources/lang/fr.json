@@ -1648,5 +1648,6 @@
     "Receives Nostr messages": "Reçoit les messages Nostr",
     "Recipient": "Destinataire",
     "Technical Details": "Détails Techniques",
-    "Not sent: the reply was never queued.": "Non envoyé : la réponse n'a jamais été mise en file d'attente."
+    "Not sent: the reply was never queued.": "Non envoyé : la réponse n'a jamais été mise en file d'attente.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Travaux en arrière-plan arrêtés par une erreur, comme une réponse qui n'a pas pu être envoyée. Ils figurent sous Travaux Ayant Échoué."
 }

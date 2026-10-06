@@ -1640,5 +1640,6 @@
     "Receives Nostr messages": "接收 Nostr 消息",
     "Recipient": "收件人",
     "Technical Details": "技术详情",
-    "Not sent: the reply was never queued.": "未发送：回复从未进入队列。"
+    "Not sent: the reply was never queued.": "未发送：回复从未进入队列。",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "因错误而停止的后台作业，例如无法发送的回复。它们列在失败的作业下。"
 }

@@ -1639,5 +1639,6 @@
     "Receives Nostr messages": "Recebe mensagens do Nostr",
     "Recipient": "Destinatário",
     "Technical Details": "Detalhes Técnicos",
-    "Not sent: the reply was never queued.": "Não enviado: a resposta nunca foi colocada na fila de espera."
+    "Not sent: the reply was never queued.": "Não enviado: a resposta nunca foi colocada na fila de espera.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Trabalhos em segundo plano que pararam com um erro, como uma resposta que não pôde ser enviada. Aparecem em Trabalhos com Falha."
 }

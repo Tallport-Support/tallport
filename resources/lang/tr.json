@@ -1639,5 +1639,6 @@
     "Receives Nostr messages": "Nostr mesajlarını alır",
     "Recipient": "Alıcı",
     "Technical Details": "Teknik Ayrıntılar",
-    "Not sent: the reply was never queued.": "Gönderilmedi: yanıt hiç kuyruğa alınmadı."
+    "Not sent: the reply was never queued.": "Gönderilmedi: yanıt hiç kuyruğa alınmadı.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Bir hatayla duran arka plan işleri, örneğin gönderilemeyen bir yanıt. Başarısız İşler altında listelenir."
 }

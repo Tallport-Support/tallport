@@ -1633,5 +1633,6 @@
     "Receives Nostr messages": "Empfängt Nostr-Nachrichten",
     "Recipient": "Empfänger",
     "Technical Details": "Technische Details",
-    "Not sent: the reply was never queued.": "Nicht gesendet: Die Antwort wurde nie in die Warteschlange gestellt."
+    "Not sent: the reply was never queued.": "Nicht gesendet: Die Antwort wurde nie in die Warteschlange gestellt.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Hintergrundaufgaben, die mit einem Fehler abgebrochen wurden, z. B. eine Antwort, die nicht gesendet werden konnte. Sie sind unter Fehlerhafte Aufgaben aufgeführt."
 }

@@ -1638,5 +1638,6 @@
     "Receives Nostr messages": "Prejema sporočila Nostr",
     "Recipient": "Prejemnik",
     "Technical Details": "Tehnične Podrobnosti",
-    "Not sent: the reply was never queued.": "Ni poslano: odgovor ni bil nikoli uvrščen v čakalno vrsto."
+    "Not sent: the reply was never queued.": "Ni poslano: odgovor ni bil nikoli uvrščen v čakalno vrsto.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Ozadnja opravila, ki so se ustavila z napako, na primer odgovor, ki ga ni bilo mogoče poslati. Navedena so pod Neuspešna Opravila."
 }

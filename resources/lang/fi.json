@@ -1657,5 +1657,6 @@
     "Receives Nostr messages": "Vastaanottaa Nostr-viestit",
     "Recipient": "Vastaanottaja",
     "Technical Details": "Tekniset Tiedot",
-    "Not sent: the reply was never queued.": "Ei lähetetty: vastausta ei koskaan lisätty jonoon."
+    "Not sent: the reply was never queued.": "Ei lähetetty: vastausta ei koskaan lisätty jonoon.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Taustatyöt, jotka pysähtyivät virheeseen, kuten vastaus, jota ei voitu lähettää. Ne näkyvät kohdassa Epäonnistuneet Työt."
 }

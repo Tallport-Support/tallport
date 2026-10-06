@@ -1639,5 +1639,6 @@
     "Receives Nostr messages": "Отримує повідомлення Nostr",
     "Recipient": "Одержувач",
     "Technical Details": "Технічні Подробиці",
-    "Not sent: the reply was never queued.": "Не надіслано: відповідь так і не потрапила в чергу."
+    "Not sent: the reply was never queued.": "Не надіслано: відповідь так і не потрапила в чергу.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Фонові завдання, що зупинилися з помилкою, наприклад відповідь, яку не вдалося надіслати. Їх наведено в розділі Невдалі Завдання."
 }

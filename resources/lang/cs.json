@@ -1638,5 +1638,6 @@
     "Receives Nostr messages": "Přijímá zprávy Nostr",
     "Recipient": "Příjemce",
     "Technical Details": "Technické Podrobnosti",
-    "Not sent: the reply was never queued.": "Neodesláno: odpověď nebyla nikdy zařazena do fronty."
+    "Not sent: the reply was never queued.": "Neodesláno: odpověď nebyla nikdy zařazena do fronty.",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "Úlohy na pozadí, které skončily chybou, například odpověď, kterou se nepodařilo odeslat. Najdete je v části Neúspěšné Úlohy."
 }

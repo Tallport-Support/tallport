@@ -1639,5 +1639,6 @@
     "Receives Nostr messages": "Nostrメッセージを受信します",
     "Recipient": "受信者",
     "Technical Details": "技術的な詳細",
-    "Not sent: the reply was never queued.": "未送信：返信がキューに入れられませんでした。"
+    "Not sent: the reply was never queued.": "未送信：返信がキューに入れられませんでした。",
+    "Background work that stopped with an error, such as a reply that couldn't be sent. It's listed under Failed Jobs.": "エラーで停止したバックグラウンドジョブ（送信できなかった返信など）。失敗したジョブに一覧表示されます。"
 }
