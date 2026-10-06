@@ -11,6 +11,36 @@ document.addEventListener('click', function (e) {
 	}
 });
 
+// Images from other servers (App\Misc\ExternalImages): shown in this message, always for
+// the customer (reloads), or hidden again for the customer (its sidebar menu).
+document.addEventListener('click', function (e) {
+	var button = e.target.closest && e.target.closest('.external-images-show, .external-images-block');
+	if (!button) {
+		return;
+	}
+	e.preventDefault();
+	var notice = button.closest('.external-images-notice');
+	Tallport.busy(button, true);
+	Tallport.post(laroute.route('conversations.external_images'), {
+		action: button.classList.contains('external-images-block') ? 'block_customer' : button.getAttribute('data-action'),
+		thread_id: notice ? notice.getAttribute('data-thread-id') : '',
+		customer_id: button.getAttribute('data-customer-id') || ''
+	}).then(function (response) {
+		Tallport.busy(button, false);
+		if (!Tallport.isSuccess(response)) {
+			Tallport.result(response);
+		} else if (response.reload) {
+			window.location.reload();
+		} else {
+			var content = notice.parentElement.querySelector('.thread-content');
+			if (content) {
+				content.innerHTML = response.html;
+			}
+			notice.remove();
+		}
+	});
+});
+
 /**
  * Another conversation opens in place (App\Livewire\ConversationPane and the toolbar and
  * customer beside it): a row of the list, Newer and Older. The rest of the page stays;

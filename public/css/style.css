@@ -1189,6 +1189,16 @@ body.print {
 .print .thread .thread-person {
     color: var(--f-text);
 }
+/* Notes above a message's text (a bounce, a forward, images not shown). */
+.thread-body > .f-alert {
+    margin-bottom: 12px;
+}
+.external-images-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    margin-top: 8px;
+}
 .print .thread-body {
     margin: 0;
     padding-left: 12px;
