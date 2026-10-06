@@ -1287,7 +1287,6 @@
     "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "Inte översatt: AI-assistenten antog att meddelandet redan var på :language, trots att den upptäckte :detected.",
     "Not translated: the message has no text.": "Inte översatt: meddelandet har ingen text.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Inte översatt: AI-assistenten misslyckades (:error). Den försöker igen när konversationen öppnas.",
-    "Waiting for the AI Assistant to translate this message.": "Väntar på att AI-assistenten ska översätta meddelandet.",
     "Only the first :count characters were translated.": "Endast de första :count tecknen översattes.",
     "After Fetching": "Efter Hämtning",
     "Choose a folder that is not fetched.": "Välj en mapp som inte hämtas.",

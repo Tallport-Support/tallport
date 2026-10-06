@@ -1291,7 +1291,6 @@
     "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "Niet vertaald: de AI-assistent nam aan dat dit bericht al in :language was, hoewel hij :detected herkende.",
     "Not translated: the message has no text.": "Niet vertaald: het bericht bevat geen tekst.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Niet vertaald: de AI-assistent gaf een fout (:error). Hij probeert het opnieuw wanneer het gesprek wordt geopend.",
-    "Waiting for the AI Assistant to translate this message.": "Wachten tot de AI-assistent dit bericht vertaalt.",
     "Only the first :count characters were translated.": "Alleen de eerste :count tekens zijn vertaald.",
     "After Fetching": "Na het Ophalen",
     "Choose a folder that is not fetched.": "Kies een map die niet wordt opgehaald.",

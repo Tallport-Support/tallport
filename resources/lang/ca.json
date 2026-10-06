@@ -1393,7 +1393,6 @@
     "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "No traduït: l'assistent d'IA ha considerat que aquest missatge ja era en :language, tot i que ha detectat :detected.",
     "Not translated: the message has no text.": "No traduït: el missatge no té text.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "No traduït: l'assistent d'IA ha fallat (:error). Ho torna a provar quan s'obre la conversa.",
-    "Waiting for the AI Assistant to translate this message.": "S'està esperant que l'assistent d'IA tradueixi aquest missatge.",
     "Only the first :count characters were translated.": "Només s'han traduït els primers :count caràcters.",
     "After Fetching": "Després d'Obtenir",
     "Choose a folder that is not fetched.": "Tria una carpeta que no s'obtingui.",

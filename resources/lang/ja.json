@@ -1287,7 +1287,6 @@
     "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "未翻訳：AIアシスタントは:detectedを検出しましたが、このメッセージはすでに:languageであると判断しました。",
     "Not translated: the message has no text.": "未翻訳：メッセージにテキストがありません。",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "未翻訳：AIアシスタントでエラーが発生しました（:error）。会話を開くと再試行します。",
-    "Waiting for the AI Assistant to translate this message.": "AIアシスタントによるこのメッセージの翻訳を待っています。",
     "Only the first :count characters were translated.": "最初の:count文字のみ翻訳されました。",
     "After Fetching": "取得後",
     "Choose a folder that is not fetched.": "取得対象ではないフォルダーを選択してください。",

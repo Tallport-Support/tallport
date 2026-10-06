@@ -52,6 +52,8 @@ class AiTranslateThread implements ShouldQueue, ShouldBeUnique
             \Helper::logException($e, '[AI Assistant] Translation of thread '.$thread->id.':');
             Translations::failed($thread, $this->language, $e);
         }
+        // Open pages show it (or why not) in place of "Translating…".
+        \App\Events\RealtimeConvNewThread::dispatchSelf($thread, ['ai_updated' => true]);
     }
 
     public static function request(Thread $thread, $language)

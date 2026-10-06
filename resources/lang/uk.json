@@ -1287,7 +1287,6 @@
     "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "Не перекладено: ШІ-асистент вважав, що це повідомлення вже мовою :language, хоча визначив :detected.",
     "Not translated: the message has no text.": "Не перекладено: у повідомленні немає тексту.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Не перекладено: помилка ШІ-асистента (:error). Він спробує знову, коли розмову буде відкрито.",
-    "Waiting for the AI Assistant to translate this message.": "Очікування перекладу цього повідомлення ШІ-асистентом.",
     "Only the first :count characters were translated.": "Перекладено лише перші :count символів.",
     "After Fetching": "Після Отримання",
     "Choose a folder that is not fetched.": "Виберіть папку, з якої листи не отримуються.",

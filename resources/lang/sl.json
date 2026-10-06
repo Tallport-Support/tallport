@@ -1286,7 +1286,6 @@
     "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "Ni prevedeno: pomočnik AI je presodil, da je to sporočilo že v jeziku :language, čeprav je zaznal :detected.",
     "Not translated: the message has no text.": "Ni prevedeno: sporočilo nima besedila.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Ni prevedeno: pomočnik AI ni uspel (:error). Znova poskusi, ko se pogovor odpre.",
-    "Waiting for the AI Assistant to translate this message.": "Čakanje, da pomočnik AI prevede to sporočilo.",
     "Only the first :count characters were translated.": "Prevedenih je bilo le prvih :count znakov.",
     "After Fetching": "Po Pridobitvi",
     "Choose a folder that is not fetched.": "Izberite mapo, ki se ne pridobiva.",

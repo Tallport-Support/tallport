@@ -425,6 +425,31 @@ class AiAssistantTest extends FeatureTestCase
     }
 
     /**
+     * A translation on its way shows in the translation's card; when it's done, open pages
+     * show it without a reload (RealtimeConvNewThread, public/js/realtime.js).
+     */
+    public function testTranslationOnItsWayAndThenShown()
+    {
+        $this->configureAi();
+        \Queue::fake([\App\Jobs\AiTranslateThread::class]);
+        $conversation = $this->receiveCustomerEmail();
+        $thread = $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
+
+        $this->getConversationPage($this->agent, $conversation)->assertStatus(200)
+            ->assertSee('ai-translation-waiting', false)->assertDontSee('Waiting for the AI Assistant');
+
+        $broadcast = [];
+        \Event::listen(\App\Events\RealtimeConvNewThread::class, function ($event) use (&$broadcast) {
+            $broadcast[] = $event->data;
+        });
+        ThreadTranslator::fake([['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'nl']]);
+        (new \App\Jobs\AiTranslateThread($thread->id, 'en'))->handle();
+
+        $this->assertContains($thread->id, array_column(array_filter($broadcast, fn ($data) => !empty($data['ai_updated'])), 'thread_id'));
+        $this->getConversationPage($this->agent, $conversation)->assertSee('Where is my order?')->assertDontSee('ai-translation-waiting', false);
+    }
+
+    /**
      * Where it stands, always; what's been tried and what's open only for long conversations.
      */
     public function testBackgroundOnlyForLongConversations()

@@ -52,6 +52,9 @@
         @if ($ai_translation)
             {{-- The translation below the message, in the user's language. --}}
             <x-slot:translation :lang="$ai_language">@include('conversations/partials/ai_translation')</x-slot:translation>
+        @elseif ($ai_translation_wanted && $thread->type == App\Thread::TYPE_CUSTOMER && (App\Ai\Translations::reason($thread, $ai_language)[0] ?? '') == 'waiting')
+            {{-- On its way: the translation shows here when it's done (realtime, AiTranslateThread). --}}
+            <x-slot:translation><span class="ai-translation-waiting" role="status"><x-fruit::spinner /> {{ __('Translating…') }}</span></x-slot:translation>
         @endif
         @if ($thread->has_attachments)
             <x-slot:attachments>@include('conversations/partials/thread_attachments')</x-slot:attachments>

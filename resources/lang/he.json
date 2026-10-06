@@ -1286,7 +1286,6 @@
     "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "לא תורגם: עוזר ה-AI הניח שההודעה כבר בשפה :language, אף שזיהה :detected.",
     "Not translated: the message has no text.": "לא תורגם: אין בהודעה טקסט.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "לא תורגם: עוזר ה-AI נכשל (:error). הוא ינסה שוב כשהשיחה תיפתח.",
-    "Waiting for the AI Assistant to translate this message.": "ממתין לתרגום ההודעה על ידי עוזר ה-AI.",
     "Only the first :count characters were translated.": "רק :count התווים הראשונים תורגמו.",
     "After Fetching": "לאחר האחזור",
     "Choose a folder that is not fetched.": "בחר תיקייה שאינה מאוחזרת.",

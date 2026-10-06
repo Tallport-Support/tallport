@@ -1280,7 +1280,6 @@
     "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "Nicht übersetzt: Der KI-Assistent hat diese Nachricht bereits für :language gehalten, obwohl er :detected erkannt hat.",
     "Not translated: the message has no text.": "Nicht übersetzt: Die Nachricht enthält keinen Text.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Nicht übersetzt: Der KI-Assistent ist fehlgeschlagen (:error). Er versucht es erneut, wenn das Gespräch geöffnet wird.",
-    "Waiting for the AI Assistant to translate this message.": "Warten darauf, dass der KI-Assistent diese Nachricht übersetzt.",
     "Only the first :count characters were translated.": "Nur die ersten :count Zeichen wurden übersetzt.",
     "After Fetching": "Nach dem Abrufen",
     "Choose a folder that is not fetched.": "Wählen Sie einen Ordner, der nicht abgerufen wird.",

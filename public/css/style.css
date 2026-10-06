@@ -3283,3 +3283,11 @@ body.fruit-ui {
 .conv-action-wrapper--sent {
     display: none;
 }
+
+/* A translation on its way, in the translation's card (conversations/partials/thread). */
+.ai-translation-waiting {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--f-secondary);
+}

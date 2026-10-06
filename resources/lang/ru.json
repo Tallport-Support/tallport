@@ -1287,7 +1287,6 @@
     "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "Не переведено: ИИ-ассистент счёл, что это сообщение уже на языке :language, хотя определил :detected.",
     "Not translated: the message has no text.": "Не переведено: в сообщении нет текста.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Не переведено: ошибка ИИ-ассистента (:error). Он попробует снова, когда тикет будет открыт.",
-    "Waiting for the AI Assistant to translate this message.": "Ожидание перевода этого сообщения ИИ-ассистентом.",
     "Only the first :count characters were translated.": "Переведены только первые :count символов.",
     "After Fetching": "После Получения",
     "Choose a folder that is not fetched.": "Выберите папку, из которой не получаются письма.",

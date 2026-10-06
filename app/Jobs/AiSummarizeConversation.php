@@ -51,6 +51,13 @@ class AiSummarizeConversation implements ShouldQueue, ShouldBeUnique
             Summaries::summarize($conversation, $this->language);
         } catch (\Throwable $e) {
             \Helper::logException($e, '[AI Assistant] Summary of conversation #'.$conversation->number.':');
+
+            return;
+        }
+        // Open pages show the new summary.
+        $last_thread = $conversation->threads()->where('state', \App\Thread::STATE_PUBLISHED)->orderBy('id', 'desc')->first();
+        if ($last_thread) {
+            \App\Events\RealtimeConvNewThread::dispatchSelf($last_thread, ['ai_updated' => true]);
         }
     }
 

@@ -1287,7 +1287,6 @@
     "Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.": "Çevrilmedi: Yapay zekâ asistanı :detected algılamasına rağmen bu mesajın zaten :language olduğunu varsaydı.",
     "Not translated: the message has no text.": "Çevrilmedi: mesajda metin yok.",
     "Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.": "Çevrilmedi: Yapay zekâ asistanı başarısız oldu (:error). Konuşma açıldığında yeniden dener.",
-    "Waiting for the AI Assistant to translate this message.": "Yapay zekâ asistanının bu mesajı çevirmesi bekleniyor.",
     "Only the first :count characters were translated.": "Yalnızca ilk :count karakter çevrildi.",
     "After Fetching": "Getirdikten Sonra",
     "Choose a folder that is not fetched.": "Getirilmeyen bir klasör seçin.",

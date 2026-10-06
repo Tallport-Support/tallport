@@ -271,8 +271,9 @@ function maybeShowConnectionRestored()
 				if (!data || data.conversation_id != attr('conversation_id') || data.user_id == attr('auth_user_id')) {
 					return;
 				}
-				// A message that couldn't be sent: shown as such (and the conversation active again).
-				if (data.send_failed) {
+				// A message that couldn't be sent (shown as such, the conversation active again), or
+				// the AI Assistant's translation or summary ready.
+				if (data.send_failed || data.ai_updated) {
 					Livewire.dispatch('conversation-thread-created');
 				}
 				if (data.thread_html && !document.getElementById('thread-'+data.thread_id)) {
