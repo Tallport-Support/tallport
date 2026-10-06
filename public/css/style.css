@@ -3104,6 +3104,18 @@ a.disabled:focus {
     padding: 0;
     list-style: none;
 }
+.conv-merge-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.conv-merge-list .f-check {
+    flex: 1;
+    min-width: 0;
+}
+.conv-merge-number {
+    color: var(--f-secondary);
+}
 /* The composer's files: attached, and uploading. */
 .conv-composer__attachments,
 .conv-composer__uploading {
