@@ -257,7 +257,6 @@
     "Email Address": "Emailová Adresa",
     "Email Alerts For Administrators": "Posielať E-Mailové Upozornenia Administrátorom",
     "Email Header": "Hlavička Emailu",
-    "Email Headers": "Hlavičky Emailu",
     "Email Signature": "Emailový Podpis",
     "Email Template": "Emailová Šablóna",
     "Email passed for delivery. If you don't receive a test email, check your mail server logs.": "Email odovzdaný na doručenie. Ak nedostanete testovací email, skontrolujte logy poštového servera.",
@@ -517,7 +516,6 @@
     "Please specify recipient of the test email": "Prosím špecifikujte príjemcu testovacieho emailu",
     "Port": "Port",
     "Prevent user from logging in": "Zabrániť používateľovi v prihlásení",
-    "Preview": "Náhľad",
     "Previous Conversations": "Predchádzajúce Konverzácie",
     "Previous Page": "Predchádzajúca Stránka",
     "Print": "Tlačiť",
@@ -1658,5 +1656,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport sa aktualizuje sám zo svojich vydaní na GitHube.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "Databáza zaostáva za touto verziou Tallportu. Aktualizovať Databázu ju uvedie do aktuálneho stavu.",
     "Tried once|Tried :count times": "Skúšané raz|Skúšané :count×|Skúšané :count×",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Práca čakajúca na spustenie, napríklad emaily na odoslanie. Skúsiť znova spustí úlohu hneď; Zrušiť ju odstráni, takže sa nikdy nespustí."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Práca čakajúca na spustenie, napríklad emaily na odoslanie. Skúsiť znova spustí úlohu hneď; Zrušiť ju odstráni, takže sa nikdy nespustí.",
+    "All Headers (:count)": "Všetky Hlavičky (:count)",
+    "Authentication": "Overenie",
+    "Delivered via": "Doručené cez",
+    "Not checked": "Nekontrolované",
+    "Copy Headers": "Kopírovať Hlavičky",
+    "Copy Source": "Kopírovať Zdroj",
+    "Download .eml": "Stiahnuť .eml"
 }

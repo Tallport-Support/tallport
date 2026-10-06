@@ -309,7 +309,6 @@
     "Get Folders": "Қапшықтарды Алу",
     "Go to": "Көшу",
     "HTTPS protocol is required for the browser push notifications to work.": "Шолғыштың push-хабарландыруларының жұмыс істеуі үшін HTTPS протоколы қажет.",
-    "Email Headers": "Тақырыптар",
     "Hello :user_name": "Cәлеметсіз бе, :user_name",
     "Help": "Көмек",
     "Hi :user, an account has been created for you at :app_url": "Сәлем, :user, сіз үшін аккаунт жасалды :app_url",
@@ -496,7 +495,6 @@
     "Please specify recipient of the test email": "Сынақ хаттың қабылдаушысын көрсетіңіз",
     "Port": "Порт",
     "Prevent user from logging in": "Пайдаланушының жүйеге кіруіне тыйым салу",
-    "Preview": "Алдын ала қарау",
     "Previous Conversations": "Алдыңғы Тикеттер",
     "Previous Page": "Алдыңғы Бет",
     "Print": "Басып шығару",
@@ -2061,5 +2059,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport GitHub-тағы өз шығарылымдарынан өзін жаңартады.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "Дерекқор Tallport-тың осы нұсқасынан артта қалған. Дерекқорды Жаңарту оны жаңартады.",
     "Tried once|Tried :count times": ":count рет әрекет жасалды",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Іске қосылуды күтіп тұрған жұмыс, мысалы, жіберілетін хаттар. Қайталау тапсырманы қазір іске қосады; Бас тарту оны өшіреді, сондықтан ол ешқашан іске қосылмайды."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Іске қосылуды күтіп тұрған жұмыс, мысалы, жіберілетін хаттар. Қайталау тапсырманы қазір іске қосады; Бас тарту оны өшіреді, сондықтан ол ешқашан іске қосылмайды.",
+    "All Headers (:count)": "Барлық Тақырыптамалар (:count)",
+    "Authentication": "Аутентификация",
+    "Delivered via": "Жеткізу жолы",
+    "Not checked": "Тексерілмеген",
+    "Copy Headers": "Тақырыптамаларды Көшіру",
+    "Copy Source": "Дереккөзді Көшіру",
+    "Download .eml": ".eml Жүктеп Алу"
 }

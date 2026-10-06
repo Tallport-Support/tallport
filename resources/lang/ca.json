@@ -220,7 +220,6 @@
     "Photo": "Foto",
     "Please backup application files and database before you continue.": "Feu una còpia de seguretat dels fitxers de l'aplicació i la base de dades abans de continuar.",
     "Please enter a message": "Introduïu un missatge",
-    "Preview": "Vista prèvia",
     "Profile": "Perfil",
     "Profile Photo (URL)": "Foto de Perfil (URL)",
     "Registered": "Registrat",
@@ -480,7 +479,6 @@
     "Get Folders": "Obtén Carpetes",
     "Go": "Ves",
     "Go to": "Ves a",
-    "Email Headers": "Capçaleres de Correu",
     "HTML is supported. This content will be inserted as-is into the email editor.": "S'admet HTML. Aquest contingut s'inserirà tal com és a l'editor de correu.",
     "Hello :user_name": "Hola, :user_name",
     "Hi :user, an account has been created for you at :app_url": "Hola, :user, s'ha creat un compte per a tu a :app_url",
@@ -1754,5 +1752,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport s'actualitza a partir de les seves versions a GitHub.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "La base de dades va per darrere d'aquesta versió de Tallport. Actualitza la Base de Dades la posa al dia.",
     "Tried once|Tried :count times": "Intentat 1 cop|Intentat :count cops",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Feina pendent d'executar, com ara correus per enviar. Torna-ho a intentar executa una tasca ara; Cancel·la la suprimeix, de manera que no s'executa mai."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Feina pendent d'executar, com ara correus per enviar. Torna-ho a intentar executa una tasca ara; Cancel·la la suprimeix, de manera que no s'executa mai.",
+    "All Headers (:count)": "Totes les Capçaleres (:count)",
+    "Authentication": "Autenticació",
+    "Delivered via": "Lliurat via",
+    "Not checked": "No comprovat",
+    "Copy Headers": "Copia les Capçaleres",
+    "Copy Source": "Copia l'Origen",
+    "Download .eml": "Descarrega .eml"
 }

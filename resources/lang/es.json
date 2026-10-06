@@ -319,7 +319,6 @@
     "Get Folders": "Obtener Carpetas",
     "Go to": "Ir a",
     "HTTPS protocol is required for the browser push notifications to work.": "Se requiere protocolo HTTPS para que funcionen las notificaciones push del navegador.",
-    "Email Headers": "Cabeceras",
     "Hello :user_name": "Hola :user_name",
     "Help": "Ayuda",
     "Hi :user, an account has been created for you at :app_url": "Hola :user, se ha creado una cuenta para ti en :app_url",
@@ -511,7 +510,6 @@
     "Please specify recipient of the test email": "Por favor, especifique el destinatario del correo de prueba",
     "Port": "Puerto",
     "Prevent user from logging in": "Denegar inicio de sesión de usuario",
-    "Preview": "Vista previa",
     "Previous Conversations": "Conversaciones Anteriores",
     "Previous Page": "Página Anterior",
     "Print": "Imprimir",
@@ -1660,5 +1658,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport se actualiza a sí mismo desde sus versiones en GitHub.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "La base de datos está por detrás de esta versión de Tallport. Actualizar Base de Datos la pone al día.",
     "Tried once|Tried :count times": "Intentado una vez|Intentado :count veces",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Trabajo pendiente de ejecutar, como correos por enviar. Reintentar ejecuta un trabajo ahora; Cancelar lo elimina, así que nunca se ejecuta."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Trabajo pendiente de ejecutar, como correos por enviar. Reintentar ejecuta un trabajo ahora; Cancelar lo elimina, así que nunca se ejecuta.",
+    "All Headers (:count)": "Todas las Cabeceras (:count)",
+    "Authentication": "Autenticación",
+    "Delivered via": "Entregado vía",
+    "Not checked": "No comprobado",
+    "Copy Headers": "Copiar Cabeceras",
+    "Copy Source": "Copiar Origen",
+    "Download .eml": "Descargar .eml"
 }

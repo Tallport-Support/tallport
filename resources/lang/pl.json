@@ -323,7 +323,6 @@
     "Get Folders": "Pobierz Foldery",
     "Go to": "Idź do",
     "HTTPS protocol is required for the browser push notifications to work.": "Protokół HTTPS jest wymagany do działania powiadomień push przeglądarki.",
-    "Email Headers": "Nagłówki",
     "Hello :user_name": "Witaj :user_name",
     "Help": "Pomoc",
     "Hi :user, an account has been created for you at :app_url": "Witaj :user, utworzono dla Ciebie konto w serwisie :app_url",
@@ -516,7 +515,6 @@
     "Please specify recipient of the test email": "Proszę podać adresata e-maila testowego",
     "Port": "Port",
     "Prevent user from logging in": "Odmów logowania użytkownikowi",
-    "Preview": "Podgląd",
     "Previous Conversations": "Poprzednie Rozmowy",
     "Previous Page": "Poprzednia Strona",
     "Print": "Drukuj",
@@ -1658,5 +1656,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport aktualizuje się sam ze swoich wydań na GitHub.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "Baza danych jest starsza niż ta wersja Tallport. Zaktualizuj Bazę Danych ją aktualizuje.",
     "Tried once|Tried :count times": "Próbowano raz|Próbowano :count razy|Próbowano :count razy",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Praca czekająca na uruchomienie, np. e-maile do wysłania. Spróbuj ponownie uruchamia zadanie teraz; Anuluj je usuwa, więc nigdy się nie uruchomi."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Praca czekająca na uruchomienie, np. e-maile do wysłania. Spróbuj ponownie uruchamia zadanie teraz; Anuluj je usuwa, więc nigdy się nie uruchomi.",
+    "All Headers (:count)": "Wszystkie Nagłówki (:count)",
+    "Authentication": "Uwierzytelnianie",
+    "Delivered via": "Dostarczono przez",
+    "Not checked": "Nie sprawdzono",
+    "Copy Headers": "Kopiuj Nagłówki",
+    "Copy Source": "Kopiuj Źródło",
+    "Download .eml": "Pobierz .eml"
 }

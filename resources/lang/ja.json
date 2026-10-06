@@ -320,7 +320,6 @@
     "Get Folders": "フォルダを取得する",
     "Go to": "移動",
     "HTTPS protocol is required for the browser push notifications to work.": "ブラウザのプッシュ通知が機能するためには、HTTPS環境が必要です。",
-    "Email Headers": "ヘッダー",
     "Hello :user_name": "こんにちは :user_name",
     "Help": "ヘルプ",
     "Hi :user, an account has been created for you at :app_url": "こんにちは :user さん、アカウントは :app_url で作成されました",
@@ -512,7 +511,6 @@
     "Please specify recipient of the test email": "テストメールの受信者を指定してください",
     "Port": "ポート番号",
     "Prevent user from logging in": "ユーザーのログインを防止",
-    "Preview": "プレビュー",
     "Previous Conversations": "以前の会話",
     "Previous Page": "前のページ",
     "Print": "印刷",
@@ -1659,5 +1657,12 @@
     "Tallport updates itself from its releases on GitHub.": "TallportはGitHubのリリースから自身を更新します。",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "データベースがこのバージョンのTallportより古くなっています。データベースを更新で最新の状態にします。",
     "Tried once|Tried :count times": ":count 回試行",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "実行待ちの処理（送信するメールなど）。再試行はジョブを今すぐ実行します。取り消しはジョブを削除し、実行されることはありません。"
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "実行待ちの処理（送信するメールなど）。再試行はジョブを今すぐ実行します。取り消しはジョブを削除し、実行されることはありません。",
+    "All Headers (:count)": "すべてのヘッダー (:count)",
+    "Authentication": "認証",
+    "Delivered via": "配送経路",
+    "Not checked": "未確認",
+    "Copy Headers": "ヘッダーをコピー",
+    "Copy Source": "ソースをコピー",
+    "Download .eml": ".emlをダウンロード"
 }

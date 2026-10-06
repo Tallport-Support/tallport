@@ -314,7 +314,6 @@
     "Get Folders": "Krijg Mappen",
     "Go to": "Ga naar",
     "HTTPS protocol is required for the browser push notifications to work.": "HTTPS-protocol is vereist om de pushmeldingen van de browser te laten werken.",
-    "Email Headers": "Email Headers",
     "Hello :user_name": "Hallo :user_name",
     "Help": "Hulp",
     "Hi :user, an account has been created for you at :app_url": "Hallo :user, er is een account voor je aangemaakt op :app_url",
@@ -502,7 +501,6 @@
     "Please specify recipient of the test email": "Geef de ontvanger van de test-e-mail op",
     "Port": "Poort",
     "Prevent user from logging in": "Voorkom dat gebruiker kan inloggen",
-    "Preview": "Voorbeeld",
     "Previous Conversations": "Vorige Gesprekken",
     "Previous Page": "Vorige Pagina",
     "Print": "Afdrukken",
@@ -1662,5 +1660,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport werkt zichzelf bij vanuit zijn releases op GitHub.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "De database loopt achter op deze versie van Tallport. Database Bijwerken brengt hem up-to-date.",
     "Tried once|Tried :count times": "1 keer geprobeerd|:count keer geprobeerd",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Werk dat wacht om uitgevoerd te worden, zoals e-mails die verzonden moeten worden. Opnieuw proberen voert een taak nu uit; Annuleren verwijdert hem, zodat hij nooit wordt uitgevoerd."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Werk dat wacht om uitgevoerd te worden, zoals e-mails die verzonden moeten worden. Opnieuw proberen voert een taak nu uit; Annuleren verwijdert hem, zodat hij nooit wordt uitgevoerd.",
+    "All Headers (:count)": "Alle Headers (:count)",
+    "Authentication": "Authenticatie",
+    "Delivered via": "Afgeleverd via",
+    "Not checked": "Niet gecontroleerd",
+    "Copy Headers": "Headers Kopiëren",
+    "Copy Source": "Bron Kopiëren",
+    "Download .eml": ".eml Downloaden"
 }

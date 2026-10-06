@@ -323,7 +323,6 @@
     "Get Folders": "Získat Složky",
     "Go to": "Přejít na",
     "HTTPS protocol is required for the browser push notifications to work.": "Pro fungování oznámení push v prohlížeči je vyžadován protokol HTTPS.",
-    "Email Headers": "Záhlaví",
     "Hello :user_name": "Dobrý den, :user_name",
     "Help": "Pomoc",
     "Hi :user, an account has been created for you at :app_url": "Dobrý den :user, byl pro vás vytvořen účet na adrese :app_url",
@@ -516,7 +515,6 @@
     "Please specify recipient of the test email": "Uveďte příjemce testovacího e-mailu",
     "Port": "Port",
     "Prevent user from logging in": "Zabránit uživateli v přihlášení",
-    "Preview": "Náhled",
     "Previous Conversations": "Předchozí Konverzace",
     "Previous Page": "Předchozí Stránka",
     "Print": "Tisk",
@@ -1658,5 +1656,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport se aktualizuje sám ze svých vydání na GitHubu.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "Databáze zaostává za touto verzí Tallportu. Aktualizovat Databázi ji uvede do aktuálního stavu.",
     "Tried once|Tried :count times": "Zkoušeno jednou|Zkoušeno :count×|Zkoušeno :count×",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Práce čekající na spuštění, například e-maily k odeslání. Opakovat spustí úlohu hned; Zrušit ji odebere, takže se nikdy nespustí."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Práce čekající na spuštění, například e-maily k odeslání. Opakovat spustí úlohu hned; Zrušit ji odebere, takže se nikdy nespustí.",
+    "All Headers (:count)": "Všechny Hlavičky (:count)",
+    "Authentication": "Ověření",
+    "Delivered via": "Doručeno přes",
+    "Not checked": "Nekontrolováno",
+    "Copy Headers": "Kopírovat Hlavičky",
+    "Copy Source": "Kopírovat Zdroj",
+    "Download .eml": "Stáhnout .eml"
 }

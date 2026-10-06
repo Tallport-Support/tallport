@@ -320,7 +320,6 @@
     "Get Folders": "Отримати Папки",
     "Go to": "Перейти до",
     "HTTPS protocol is required for the browser push notifications to work.": "Для роботи push-сповіщень у браузері потрібен протокол HTTPS.",
-    "Email Headers": "Заголовки",
     "Hello :user_name": "Привіт, :user_name",
     "Help": "Допомога",
     "Hi :user, an account has been created for you at :app_url": "Привіт, :user, для вас створено обліковий запис на :app_url",
@@ -512,7 +511,6 @@
     "Please specify recipient of the test email": "Будь ласка, вкажіть одержувача тестового листа",
     "Port": "Порт",
     "Prevent user from logging in": "Заборонити користувачеві вхід",
-    "Preview": "Попередній перегляд",
     "Previous Conversations": "Попередні Розмови",
     "Previous Page": "Попередня Сторінка",
     "Print": "Друкувати",
@@ -1659,5 +1657,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport оновлюється сам зі своїх релізів на GitHub.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "База даних відстає від цієї версії Tallport. Оновити Базу Даних оновлює її.",
     "Tried once|Tried :count times": "Запущено :count раз|Запущено :count рази|Запущено :count разів",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Робота, що чекає на запуск, наприклад листи для надсилання. Повторити запускає завдання зараз; Скасувати видаляє його, і воно ніколи не запуститься."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Робота, що чекає на запуск, наприклад листи для надсилання. Повторити запускає завдання зараз; Скасувати видаляє його, і воно ніколи не запуститься.",
+    "All Headers (:count)": "Усі Заголовки (:count)",
+    "Authentication": "Автентифікація",
+    "Delivered via": "Доставлено через",
+    "Not checked": "Не перевірено",
+    "Copy Headers": "Копіювати Заголовки",
+    "Copy Source": "Копіювати Джерело",
+    "Download .eml": "Завантажити .eml"
 }

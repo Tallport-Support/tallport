@@ -2298,6 +2298,21 @@
         "methods": [
             "GET"
         ],
+        "uri": "thread/{thread_id}/original.eml",
+        "name": "threads.original_eml",
+        "action": "ConversationsController@originalEml",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "two-factor-challenge",
         "name": "two-factor.login",
         "action": "Laravel\\Fortify\\Http\\Controllers\\TwoFactorAuthenticatedSessionController@create",

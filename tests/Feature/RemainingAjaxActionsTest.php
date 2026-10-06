@@ -114,6 +114,37 @@ class RemainingAjaxActionsTest extends FeatureTestCase
         $this->actingAs($outsider)->get($base.'show_original?thread_id='.$reply->id)->assertStatus(403);
     }
 
+    public function testShowOriginalSummarisesHeadersAndOffersTheEml()
+    {
+        $storage = sys_get_temp_dir().'/tallport-storage-'.uniqid();
+        mkdir($storage.'/app', 0777, true);
+        $this->app->useStoragePath($storage);
+        config(['app.incoming_mail_retention_days' => 30]);
+        try {
+            $conversation = $this->receiveConversation(['subject' => 'Original question']);
+            $thread = $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
+            $base = '/conversation/ajax-html/';
+
+            // Message, Source, Headers: a summary, then every header; Download .eml while it's kept.
+            $this->actingAs($this->agent)->get($base.'show_original?thread_id='.$thread->id)->assertOk()
+                ->assertSeeInOrder(['Message', 'Source', 'Headers'])
+                ->assertSee('<th scope="row">Subject</th><td>Original question</td>', false)
+                ->assertSee('Not checked')->assertSee('All Headers (')->assertSee('Copy Headers')
+                ->assertSee(route('threads.original_eml', ['thread_id' => $thread->id]), false);
+
+            $this->actingAs($this->agent)->get(route('threads.original_eml', ['thread_id' => $thread->id]))->assertOk()
+                ->assertHeader('Content-Type', 'message/rfc822')->assertDownload('message-'.$thread->id.'.eml');
+            $this->actingAs($this->createUser())->get(route('threads.original_eml', ['thread_id' => $thread->id]))->assertForbidden();
+
+            // No longer kept: no download.
+            unlink(\App\Incoming\RawSources::path($thread));
+            $this->actingAs($this->agent)->get(route('threads.original_eml', ['thread_id' => $thread->id]))->assertNotFound();
+            $this->actingAs($this->agent)->get($base.'show_original?thread_id='.$thread->id)->assertDontSee('Download .eml');
+        } finally {
+            (new \Illuminate\Filesystem\Filesystem())->deleteDirectory($storage);
+        }
+    }
+
     // Customers.
 
     public function testCustomersPaginationAndSearchVariants()

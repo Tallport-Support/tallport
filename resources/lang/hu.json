@@ -323,7 +323,6 @@
     "Get Folders": "Mappák Lekérése",
     "Go to": "Ugrás ide",
     "HTTPS protocol is required for the browser push notifications to work.": "HTTPS protokoll szükséges a böngésző push értesítések működéséhez.",
-    "Email Headers": "Fejlécek",
     "Hello :user_name": "Üdvözöllek, :user_name",
     "Help": "Segítség",
     "Hi :user, an account has been created for you at :app_url": "Szia :user, egy fiókot hoztunk létre neked itt: :app_url",
@@ -516,7 +515,6 @@
     "Please specify recipient of the test email": "Kérlek, add meg a tesztüzenet címzettjét",
     "Port": "Port",
     "Prevent user from logging in": "Felhasználó bejelentkezésének megakadályozása",
-    "Preview": "Előnézet",
     "Previous Conversations": "Előző Beszélgetések",
     "Previous Page": "Előző Oldal",
     "Print": "Nyomtatás",
@@ -1659,5 +1657,12 @@
     "Tallport updates itself from its releases on GitHub.": "A Tallport a GitHubon lévő kiadásaiból frissíti magát.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "Az adatbázis le van maradva a Tallport ezen verziójához képest. Az Adatbázis Frissítése naprakésszé teszi.",
     "Tried once|Tried :count times": "Egyszer próbálva|:count alkalommal próbálva",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Futásra váró munka, például elküldendő e-mailek. Az Újrapróbálás most lefuttat egy feladatot; a Mégse eltávolítja, így soha nem fut le."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Futásra váró munka, például elküldendő e-mailek. Az Újrapróbálás most lefuttat egy feladatot; a Mégse eltávolítja, így soha nem fut le.",
+    "All Headers (:count)": "Összes Fejléc (:count)",
+    "Authentication": "Hitelesítés",
+    "Delivered via": "Kézbesítés útvonala",
+    "Not checked": "Nincs ellenőrizve",
+    "Copy Headers": "Fejlécek Másolása",
+    "Copy Source": "Forrás Másolása",
+    "Download .eml": ".eml Letöltése"
 }

@@ -271,7 +271,6 @@
     "Email Address": "電子郵件地址",
     "Email Alerts For Administrators": "管理員電子郵件警示",
     "Email Header": "電子郵件標頭",
-    "Email Headers": "電子郵件標頭",
     "Email Signature": "電子郵件簽名檔",
     "Email Template": "電子郵件範本",
     "Email passed for delivery. If you don't receive a test email, check your mail server logs.": "電子郵件已通過傳遞。若未收到測試郵件，請檢查郵件伺服器日誌。",
@@ -425,7 +424,6 @@
     "Please reply above this line": "請在此行上方回覆",
     "Port": "連接埠",
     "Prevent user from logging in": "禁止使用者登入",
-    "Preview": "預覽",
     "Previous Conversations": "之前的對話",
     "Previous Page": "上一頁",
     "Processing": "處理中",
@@ -1706,5 +1704,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport 會從其在 GitHub 上的發行版本自行更新。",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "資料庫落後於此版本的 Tallport。更新資料庫會將其更新至最新。",
     "Tried once|Tried :count times": "已嘗試 :count 次",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "等待執行的工作，例如要傳送的郵件。重試會立即執行一個工作；取消會移除它，使其永不執行。"
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "等待執行的工作，例如要傳送的郵件。重試會立即執行一個工作；取消會移除它，使其永不執行。",
+    "All Headers (:count)": "所有郵件標頭 (:count)",
+    "Authentication": "驗證",
+    "Delivered via": "傳遞路徑",
+    "Not checked": "未檢查",
+    "Copy Headers": "複製郵件標頭",
+    "Copy Source": "複製來源",
+    "Download .eml": "下載 .eml"
 }

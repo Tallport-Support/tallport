@@ -319,7 +319,6 @@
     "Get Folders": "Obter Pastas",
     "Go to": "Ir para",
     "HTTPS protocol is required for the browser push notifications to work.": "O protocolo HTTPS é necessário para que as notificações push do navegador funcionem.",
-    "Email Headers": "Cabeçalhos",
     "Hello :user_name": "Olá :user_name",
     "Help": "Ajuda",
     "Hi :user, an account has been created for you at :app_url": "Olá :user, foi criada uma conta para si em :app_url",
@@ -511,7 +510,6 @@
     "Please specify recipient of the test email": "Por favor, especifique o destinatário do email de teste",
     "Port": "Porta",
     "Prevent user from logging in": "Evitar utilizador de entrar",
-    "Preview": "Pré-visualização",
     "Previous Conversations": "Conversas Anteriores",
     "Previous Page": "Página Anterior",
     "Print": "Imprimir",
@@ -1659,5 +1657,12 @@
     "Tallport updates itself from its releases on GitHub.": "O Tallport atualiza-se a partir das suas versões no GitHub.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "A base de dados está atrás desta versão do Tallport. Atualizar Base de Dados atualiza-a.",
     "Tried once|Tried :count times": "{1} Tentado uma vez|[0,*] Tentado :count vezes",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Trabalho à espera de ser executado, como e-mails por enviar. Tente novamente executa uma tarefa agora; Cancelar remove-a, pelo que nunca é executada."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Trabalho à espera de ser executado, como e-mails por enviar. Tente novamente executa uma tarefa agora; Cancelar remove-a, pelo que nunca é executada.",
+    "All Headers (:count)": "Todos os Cabeçalhos (:count)",
+    "Authentication": "Autenticação",
+    "Delivered via": "Entregue via",
+    "Not checked": "Não verificado",
+    "Copy Headers": "Copiar Cabeçalhos",
+    "Copy Source": "Copiar Origem",
+    "Download .eml": "Transferir .eml"
 }

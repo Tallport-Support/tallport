@@ -1387,7 +1387,26 @@ class ConversationsController extends Controller
             'thread' => $thread,
             'body_preview' => $body_preview,
             'fetched' => $fetched,
+            // The email as it came in, kept for a while (App\Incoming\RawSources).
+            'raw_kept' => is_file(\App\Incoming\RawSources::path($thread)),
         ]);
+    }
+
+    /**
+     * Show Original's Download .eml: the email as it came in, while it's kept (App\Incoming\RawSources).
+     */
+    public function originalEml($thread_id)
+    {
+        $thread = Thread::findOrFail($thread_id);
+        if (!auth()->user()->can('view', $thread->conversation)) {
+            abort(403);
+        }
+        $path = \App\Incoming\RawSources::path($thread);
+        if (!is_file($path)) {
+            abort(404);
+        }
+
+        return response()->download($path, 'message-'.$thread->id.'.eml', ['Content-Type' => 'message/rfc822']);
     }
 
     /**

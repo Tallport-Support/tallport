@@ -180,6 +180,7 @@ return array(
     'App\\Incoming\\HeaderText' => $baseDir . '/app/Incoming/HeaderText.php',
     'App\\Incoming\\ImapClient' => $baseDir . '/app/Incoming/ImapClient.php',
     'App\\Incoming\\IncomingMessage' => $baseDir . '/app/Incoming/IncomingMessage.php',
+    'App\\Incoming\\OriginalHeaders' => $baseDir . '/app/Incoming/OriginalHeaders.php',
     'App\\Incoming\\Parser' => $baseDir . '/app/Incoming/Parser.php',
     'App\\Incoming\\RawSources' => $baseDir . '/app/Incoming/RawSources.php',
     'App\\Incoming\\ReceiveFailures' => $baseDir . '/app/Incoming/ReceiveFailures.php',

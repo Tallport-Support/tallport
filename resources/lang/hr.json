@@ -321,7 +321,6 @@
     "Get Folders": "Dohvati Mape",
     "Go to": "Idi na",
     "HTTPS protocol is required for the browser push notifications to work.": "HTTPS protokol je potreban za rad push obavijesti u pregledniku.",
-    "Email Headers": "Zaglavlja",
     "Hello :user_name": "Pozdrav :user_name",
     "Help": "Pomoć",
     "Hi :user, an account has been created for you at :app_url": "Pozdrav :user, kreiran vam je račun na :app_url",
@@ -513,7 +512,6 @@
     "Please specify recipient of the test email": "Molimo navedite primatelja testne e-poruke",
     "Port": "Port",
     "Prevent user from logging in": "Spriječi prijavu korisnika",
-    "Preview": "Pregled",
     "Previous Conversations": "Prethodni Razgovori",
     "Previous Page": "Prethodna Stranica",
     "Print": "Ispis",
@@ -1659,5 +1657,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport se sam ažurira iz svojih izdanja na GitHubu.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "Baza podataka zaostaje za ovom verzijom Tallporta. Ažuriraj Bazu Podataka je ažurira.",
     "Tried once|Tried :count times": "Pokušano :count put|Pokušano :count puta|Pokušano :count puta",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Posao koji čeka na pokretanje, poput e-mailova za slanje. Pokušaj ponovno odmah pokreće posao; Odustani ga uklanja, pa se nikada ne pokreće."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Posao koji čeka na pokretanje, poput e-mailova za slanje. Pokušaj ponovno odmah pokreće posao; Odustani ga uklanja, pa se nikada ne pokreće.",
+    "All Headers (:count)": "Sva Zaglavlja (:count)",
+    "Authentication": "Autentifikacija",
+    "Delivered via": "Isporučeno putem",
+    "Not checked": "Nije provjereno",
+    "Copy Headers": "Kopiraj Zaglavlja",
+    "Copy Source": "Kopiraj Izvor",
+    "Download .eml": "Preuzmi .eml"
 }

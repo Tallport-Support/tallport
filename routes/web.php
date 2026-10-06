@@ -117,6 +117,7 @@ Route::get('/mailbox/{mailbox_id}/new-ticket', 'ConversationsController@create')
 Route::get('/mailbox/{mailbox_id}/clone-ticket/{from_thread_id}/{token}', 'ConversationsController@cloneConversation')->name('conversations.clone_conversation');
 //Route::get('/conversation/draft/{id}', 'ConversationsController@draft')->name('conversations.draft');
 Route::get('/conversation/ajax-html/{action}', ['uses' => 'ConversationsController@ajaxHtml', 'laroute' => true])->name('conversations.ajax_html');
+Route::get('/thread/{thread_id}/original.eml', 'ConversationsController@originalEml')->name('threads.original_eml');
 Route::get('/search', 'ConversationsController@search')->name('conversations.search');
 Route::get('/conversation/undo-reply/{thread_id}/{token}', 'ConversationsController@undoReply')->name('conversations.undo');
 

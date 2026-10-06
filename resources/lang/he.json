@@ -319,7 +319,6 @@
     "Get Folders": "קבל תיקיות",
     "Go to": "עבור אל",
     "HTTPS protocol is required for the browser push notifications to work.": "פרוטוקול HTTPS נדרש כדי שהתראות הדפדפן יעבדו.",
-    "Email Headers": "כותרות",
     "Hello :user_name": "שלום :user_name",
     "Help": "עזרה",
     "Hi :user, an account has been created for you at :app_url": "היי :user, נוצר עבורך חשבון בכתובת :app_url",
@@ -510,7 +509,6 @@
     "Please specify recipient of the test email": "אנא ציין את נמען דוא\"ל הבדיקה",
     "Port": "פורט",
     "Prevent user from logging in": "מנע ממשתמש להתחבר",
-    "Preview": "תצוגה מקדימה",
     "Previous Conversations": "שיחות קודמות",
     "Previous Page": "עמוד קודם",
     "Print": "הדפס",
@@ -1658,5 +1656,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport מעדכן את עצמו מהגרסאות שלו ב-GitHub.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "מסד הנתונים מפגר אחרי גרסה זו של Tallport. עדכן מסד נתונים מביא אותו לעדכניות.",
     "Tried once|Tried :count times": "נוסה פעם אחת|נוסה :count פעמים",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "עבודה שממתינה לריצה, כמו הודעות דואר שיש לשלוח. נסה שוב מריץ משימה עכשיו; ביטול מסיר אותה, כך שהיא לעולם לא תרוץ."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "עבודה שממתינה לריצה, כמו הודעות דואר שיש לשלוח. נסה שוב מריץ משימה עכשיו; ביטול מסיר אותה, כך שהיא לעולם לא תרוץ.",
+    "All Headers (:count)": "כל הכותרות (:count)",
+    "Authentication": "אימות",
+    "Delivered via": "נמסר דרך",
+    "Not checked": "לא נבדק",
+    "Copy Headers": "העתק כותרות",
+    "Copy Source": "העתק מקור",
+    "Download .eml": "הורדת .eml"
 }

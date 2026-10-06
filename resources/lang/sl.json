@@ -318,7 +318,6 @@
     "Get Folders": "Pridobi Mape",
     "Go to": "Pojdi na",
     "HTTPS protocol is required for the browser push notifications to work.": "Za potisna obvestila v brskalniku je potreben protokol HTTPS.",
-    "Email Headers": "Glave",
     "Hello :user_name": "Pozdravljen\/-a :user_name",
     "Help": "Pomoč",
     "Hi :user, an account has been created for you at :app_url": "Pozdravljen\/-a :user, račun je bil ustvarjen zate na :app_url",
@@ -503,7 +502,6 @@
     "Please specify recipient of the test email": "Navedi prejemnika testnega e-poštnega sporočila",
     "Port": "Vrata",
     "Prevent user from logging in": "Prepreči prijavo uporabnika",
-    "Preview": "Predogled",
     "Previous Conversations": "Prejšnji Pogovori",
     "Previous Page": "Prejšnja Stran",
     "Print": "Natisni",
@@ -1658,5 +1656,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport se sam posodablja iz svojih izdaj na GitHubu.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "Zbirka podatkov zaostaja za to različico Tallporta. Posodobi Zbirko Podatkov jo posodobi.",
     "Tried once|Tried :count times": "Poskušeno :count-krat|Poskušeno :count-krat|Poskušeno :count-krat|Poskušeno :count-krat",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Delo, ki čaka na izvedbo, na primer e-pošta za pošiljanje. Poskusi znova izvede opravilo takoj; Prekliči ga odstrani, zato se nikoli ne izvede."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Delo, ki čaka na izvedbo, na primer e-pošta za pošiljanje. Poskusi znova izvede opravilo takoj; Prekliči ga odstrani, zato se nikoli ne izvede.",
+    "All Headers (:count)": "Vse Glave (:count)",
+    "Authentication": "Overjanje",
+    "Delivered via": "Dostavljeno prek",
+    "Not checked": "Ni preverjeno",
+    "Copy Headers": "Kopiraj Glave",
+    "Copy Source": "Kopiraj Vir",
+    "Download .eml": "Prenesi .eml"
 }

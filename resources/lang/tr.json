@@ -319,7 +319,6 @@
     "Get Folders": "Klasörleri Al",
     "Go to": "Git",
     "HTTPS protocol is required for the browser push notifications to work.": "Tarayıcı push bildirimlerinin çalışması için HTTPS protokolü gereklidir.",
-    "Email Headers": "Başlıklar",
     "Hello :user_name": "Merhaba :user_name",
     "Help": "Yardım",
     "Hi :user, an account has been created for you at :app_url": "Merhaba, :user sizin için :app_url adresinde bir hesap oluşturuldu",
@@ -511,7 +510,6 @@
     "Please specify recipient of the test email": "Lütfen test e-postasının alıcısını belirtin",
     "Port": "Port",
     "Prevent user from logging in": "Kullanıcının oturum açmasını engelle",
-    "Preview": "Önizleme",
     "Previous Conversations": "Önceki Konuşmalar",
     "Previous Page": "Önceki Sayfa",
     "Print": "Yazdır",
@@ -1659,5 +1657,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport kendini GitHub'daki sürümlerinden günceller.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "Veritabanı Tallport'un bu sürümünün gerisinde. Veritabanını Güncelle onu güncel hale getirir.",
     "Tried once|Tried :count times": ":count kez denendi",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Çalışmayı bekleyen işler, örneğin gönderilecek e-postalar. Yeniden dene bir işi şimdi çalıştırır; Vazgeç onu kaldırır, böylece hiç çalışmaz."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Çalışmayı bekleyen işler, örneğin gönderilecek e-postalar. Yeniden dene bir işi şimdi çalıştırır; Vazgeç onu kaldırır, böylece hiç çalışmaz.",
+    "All Headers (:count)": "Tüm Başlıklar (:count)",
+    "Authentication": "Kimlik Doğrulama",
+    "Delivered via": "Teslim yolu",
+    "Not checked": "Kontrol edilmedi",
+    "Copy Headers": "Başlıkları Kopyala",
+    "Copy Source": "Kaynağı Kopyala",
+    "Download .eml": ".eml İndir"
 }

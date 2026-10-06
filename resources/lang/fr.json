@@ -255,7 +255,6 @@
     "Email Address": "Adresse E-Mail",
     "Email Alerts For Administrators": "Envoyez des Alertes par E-Mail aux Administrateurs",
     "Email Header": "En-Tête de l'E-Mail",
-    "Email Headers": "En-Têtes",
     "Email Signature": "Signature E-Mail",
     "Email Template": "Modèle d'E-Mail",
     "Email passed for delivery. If you don't receive a test email, check your mail server logs.": "E-mail transmis pour livraison. Si vous ne recevez pas d'e-mail de test, consultez les journaux de votre serveur de messagerie.",
@@ -516,7 +515,6 @@
     "Please specify recipient of the test email": "Veuillez spécifier le destinataire de l'e-mail de test",
     "Port": "Port",
     "Prevent user from logging in": "Refuser la connexion de l'utilisateur",
-    "Preview": "Aperçu",
     "Previous Conversations": "Conversations Précédentes",
     "Previous Page": "Page Précédente",
     "Print": "Imprimer",
@@ -1668,5 +1666,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport se met à jour à partir de ses versions publiées sur GitHub.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "La base de données est en retard sur cette version de Tallport. Mettre à Jour la Base de Données la met à jour.",
     "Tried once|Tried :count times": "Tenté une fois|Tenté :count fois",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Travaux en attente d'exécution, comme des e-mails à envoyer. Retenter exécute un travail maintenant ; Annuler le retire, il ne s'exécute donc jamais."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Travaux en attente d'exécution, comme des e-mails à envoyer. Retenter exécute un travail maintenant ; Annuler le retire, il ne s'exécute donc jamais.",
+    "All Headers (:count)": "Tous les En-Têtes (:count)",
+    "Authentication": "Authentification",
+    "Delivered via": "Distribué via",
+    "Not checked": "Non vérifié",
+    "Copy Headers": "Copier les En-Têtes",
+    "Copy Source": "Copier la Source",
+    "Download .eml": "Télécharger .eml"
 }

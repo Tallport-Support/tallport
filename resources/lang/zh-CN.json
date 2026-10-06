@@ -314,7 +314,6 @@
     "Get Folders": "获取文件夹",
     "Go to": "前往",
     "HTTPS protocol is required for the browser push notifications to work.": "浏览器推送通知需要 HTTPS 协议才能工作。",
-    "Email Headers": "标头",
     "Hello :user_name": "你好:user_name",
     "Help": "帮助",
     "Hi :user, an account has been created for you at :app_url": "嗨 :user,已为您创建了一个账户:app_url",
@@ -502,7 +501,6 @@
     "Please specify recipient of the test email": "请指定测试电子邮件的收件人",
     "Port": "端口",
     "Prevent user from logging in": "阻止用户登录",
-    "Preview": "预览",
     "Previous Conversations": "以前的对话",
     "Previous Page": "上一页",
     "Print": "打印",
@@ -1660,5 +1658,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport 会从其在 GitHub 上的发布版本自我更新。",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "数据库落后于此版本的 Tallport。更新数据库会将其更新到最新。",
     "Tried once|Tried :count times": "已尝试 :count 次",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "等待运行的工作，例如待发送的邮件。重试会立即运行一个作业；取消会移除它，使其永不运行。"
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "等待运行的工作，例如待发送的邮件。重试会立即运行一个作业；取消会移除它，使其永不运行。",
+    "All Headers (:count)": "所有邮件头 (:count)",
+    "Authentication": "身份验证",
+    "Delivered via": "投递路径",
+    "Not checked": "未检查",
+    "Copy Headers": "复制邮件头",
+    "Copy Source": "复制来源",
+    "Download .eml": "下载 .eml"
 }

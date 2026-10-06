@@ -2478,6 +2478,56 @@ a.disabled:focus {
 .show-original__panel {
     margin-top: 12px;
 }
+/* Show Original (conversations/ajax_html/show_original): the message at the panel's width,
+   the source and headers wrapped so nothing scrolls sideways (a DKIM signature is one long word). */
+.show-original__preview {
+    display: block;
+    width: 100%;
+    height: min(70vh, 40rem);
+    min-height: 0;
+    border: 0;
+}
+.show-original__copy {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+.original-source {
+    margin: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: var(--f-text-sm);
+    line-height: 1.5;
+}
+.original-headers {
+    table-layout: fixed;
+    width: 100%;
+}
+.original-headers th[scope='row'] {
+    width: 9rem;
+    color: var(--f-secondary);
+    font-weight: 500;
+    vertical-align: top;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.original-headers td {
+    overflow-wrap: anywhere;
+    vertical-align: top;
+}
+.original-headers code {
+    padding: 0;
+    background: none;
+    font-size: var(--f-text-sm);
+}
+.original-headers__badges {
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.original-headers__all {
+    margin-top: 16px;
+}
 /* Settings save bar: a secondary button before the primary one keeps its size
    (f-form-row stretches a first child). */
 .settings-form__actions > :first-child:not(:only-child) {

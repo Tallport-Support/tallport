@@ -312,7 +312,6 @@
     "Get Folders": "Получить Папки",
     "Go to": "Перейти к",
     "HTTPS protocol is required for the browser push notifications to work.": "Протокол HTTPS необходим для работы push-уведомлений в браузере.",
-    "Email Headers": "Заголовки",
     "Hello :user_name": "Здравствуйте, :user_name",
     "Help": "Помощь",
     "Hi :user, an account has been created for you at :app_url": "Привет, :user, для вас был создан аккаунт в :app_url",
@@ -499,7 +498,6 @@
     "Please specify recipient of the test email": "Пожалуйста, укажите получателя тестового письма",
     "Port": "Порт",
     "Prevent user from logging in": "Запретить пользователю входить в систему",
-    "Preview": "Предпросмотр",
     "Previous Conversations": "Предыдущие Тикеты",
     "Previous Page": "Предыдущая Страница",
     "Print": "Печать",
@@ -1659,5 +1657,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport обновляется сам из своих релизов на GitHub.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "База данных отстаёт от этой версии Tallport. Обновить Базу Данных приводит её в актуальное состояние.",
     "Tried once|Tried :count times": "Запущена :count раз|Запущена :count раза|Запущена :count раз",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Работа, ожидающая запуска, например письма для отправки. Повторить запускает задачу сейчас; Отмена удаляет её, и она никогда не запустится."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Работа, ожидающая запуска, например письма для отправки. Повторить запускает задачу сейчас; Отмена удаляет её, и она никогда не запустится.",
+    "All Headers (:count)": "Все Заголовки (:count)",
+    "Authentication": "Аутентификация",
+    "Delivered via": "Доставлено через",
+    "Not checked": "Не проверено",
+    "Copy Headers": "Копировать Заголовки",
+    "Copy Source": "Копировать Источник",
+    "Download .eml": "Скачать .eml"
 }

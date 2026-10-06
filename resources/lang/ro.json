@@ -323,7 +323,6 @@
     "Get Folders": "Obține Dosarele",
     "Go to": "Du-te la",
     "HTTPS protocol is required for the browser push notifications to work.": "Protocolul HTTPS este necesar pentru ca notificările push ale browserului să funcționeze.",
-    "Email Headers": "Anteturi",
     "Hello :user_name": "Bună :user_name",
     "Help": "Ajutor",
     "Hi :user, an account has been created for you at :app_url": "Bună :user, un cont a fost creat pentru tine la :app_url",
@@ -516,7 +515,6 @@
     "Please specify recipient of the test email": "Vă rugăm să specificați destinatarul e-mailului de testare",
     "Port": "Port",
     "Prevent user from logging in": "Împiedicați utilizatorul să se conecteze",
-    "Preview": "Previzualizare",
     "Previous Conversations": "Conversații Anterioare",
     "Previous Page": "Pagina Anterioară",
     "Print": "Printează",
@@ -1658,5 +1656,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport se actualizează singur din versiunile sale de pe GitHub.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "Baza de date este în urma acestei versiuni de Tallport. Actualizează Baza de Date o aduce la zi.",
     "Tried once|Tried :count times": "Încercat o dată|Încercat de :count ori|Încercat de :count de ori",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Lucru care așteaptă să ruleze, cum ar fi emailuri de trimis. Reîncearcă rulează acum o sarcină; Anulează o elimină, așa că nu rulează niciodată."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Lucru care așteaptă să ruleze, cum ar fi emailuri de trimis. Reîncearcă rulează acum o sarcină; Anulează o elimină, așa că nu rulează niciodată.",
+    "All Headers (:count)": "Toate Antetele (:count)",
+    "Authentication": "Autentificare",
+    "Delivered via": "Livrat prin",
+    "Not checked": "Neverificat",
+    "Copy Headers": "Copiază Antetele",
+    "Copy Source": "Copiază Sursa",
+    "Download .eml": "Descarcă .eml"
 }

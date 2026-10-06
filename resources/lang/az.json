@@ -319,7 +319,6 @@
     "Get Folders": "Qovluqları Əldə Et",
     "Go to": "Keç",
     "HTTPS protocol is required for the browser push notifications to work.": "Brauzer push bildirişlərinin işləməsi üçün HTTPS protokolu tələb olunur.",
-    "Email Headers": "E-Poçt Başlıqları",
     "Hello :user_name": "Salam :user_name",
     "Help": "Kömək",
     "Hi :user, an account has been created for you at :app_url": "Salam :user, sizin üçün :app_url ünvanında hesab yaradıldı",
@@ -511,7 +510,6 @@
     "Please specify recipient of the test email": "Zəhmət olmasa test e-poçtunun alıcısını göstərin",
     "Port": "Port",
     "Prevent user from logging in": "İstifadəçinin daxil olmasının qarşısını al",
-    "Preview": "Önizləmə",
     "Previous Conversations": "Əvvəlki Söhbətlər",
     "Previous Page": "Əvvəlki Səhifə",
     "Print": "Çap et",
@@ -1659,5 +1657,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport özünü GitHub-dakı buraxılışlarından yeniləyir.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "Verilənlər bazası Tallport-un bu versiyasından geri qalır. Verilənlər Bazasını Yenilə onu yeniləyir.",
     "Tried once|Tried :count times": ":count dəfə cəhd edildi",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "İşə düşməyi gözləyən iş, məsələn, göndəriləcək e-poçtlar. Yenidən cəhd et tapşırığı indi işə salır; Ləğv et onu silir, beləliklə o heç vaxt işə düşmür."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "İşə düşməyi gözləyən iş, məsələn, göndəriləcək e-poçtlar. Yenidən cəhd et tapşırığı indi işə salır; Ləğv et onu silir, beləliklə o heç vaxt işə düşmür.",
+    "All Headers (:count)": "Bütün Başlıqlar (:count)",
+    "Authentication": "Autentifikasiya",
+    "Delivered via": "Çatdırılma yolu",
+    "Not checked": "Yoxlanılmayıb",
+    "Copy Headers": "Başlıqları Kopyala",
+    "Copy Source": "Mənbəni Kopyala",
+    "Download .eml": ".eml Endir"
 }

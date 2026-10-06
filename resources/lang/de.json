@@ -259,7 +259,6 @@
     "Email Address": "E-Mail-Adresse",
     "Email Alerts For Administrators": "E-Mail-Benachrichtigungen für Administratoren",
     "Email Header": "E-Mail-Kopfzeile",
-    "Email Headers": "Überschriften",
     "Email Signature": "E-Mail-Signatur",
     "Email Template": "E-Mail-Vorlage",
     "Email passed for delivery. If you don't receive a test email, check your mail server logs.": "Die E-Mail wurde zur Zustellung weitergeleitet. Wenn diese nicht empfangen wird prüfen Sie bitte die Protokolle Ihres Mailservers.",
@@ -519,7 +518,6 @@
     "Please specify recipient of the test email": "Bitte den Empfänger der Test-E-Mail eingeben",
     "Port": "Port",
     "Prevent user from logging in": "Benutzeranmeldung verweigern",
-    "Preview": "Vorschau",
     "Previous Conversations": "Vorheriges Gespräch",
     "Previous Page": "Vorherige Seite",
     "Print": "Drucken",
@@ -1653,5 +1651,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport aktualisiert sich selbst über seine Releases auf GitHub.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "Die Datenbank ist älter als diese Version von Tallport. Datenbank Aktualisieren bringt sie auf den neuesten Stand.",
     "Tried once|Tried :count times": "Einmal versucht|:count-mal versucht",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Arbeit, die auf ihre Ausführung wartet, z. B. zu sendende E-Mails. Erneut probieren führt einen Job sofort aus; Abbrechen entfernt ihn, sodass er nie ausgeführt wird."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Arbeit, die auf ihre Ausführung wartet, z. B. zu sendende E-Mails. Erneut probieren führt einen Job sofort aus; Abbrechen entfernt ihn, sodass er nie ausgeführt wird.",
+    "All Headers (:count)": "Alle E-Mail-Header (:count)",
+    "Authentication": "Authentifizierung",
+    "Delivered via": "Zugestellt über",
+    "Not checked": "Nicht geprüft",
+    "Copy Headers": "E-Mail-Header Kopieren",
+    "Copy Source": "Quelle Kopieren",
+    "Download .eml": ".eml Herunterladen"
 }

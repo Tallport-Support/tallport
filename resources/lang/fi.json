@@ -313,7 +313,6 @@
     "Get Folders": "Hae Kansiot",
     "Go to": "Mene",
     "HTTPS protocol is required for the browser push notifications to work.": "HTTPS-protokolla vaaditaan, jotta selaimen push-ilmoitukset toimivat.",
-    "Email Headers": "Otsikot",
     "Hello :user_name": "Hei :user_name",
     "Help": "Apua",
     "Hi :user, an account has been created for you at :app_url": "Hei :user, sinulle on luotu tili :app_url",
@@ -500,7 +499,6 @@
     "Please specify recipient of the test email": "Määritä testisähköpostin vastaanottaja",
     "Port": "Portti",
     "Prevent user from logging in": "Estä käyttäjää kirjautumasta sisään",
-    "Preview": "Esikatselu",
     "Previous Conversations": "Aiemmat Keskustelut",
     "Previous Page": "Edellinen Sivu",
     "Print": "Tulosta",
@@ -1677,5 +1675,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport päivittää itsensä julkaisuistaan GitHubissa.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "Tietokanta on jäljessä tästä Tallportin versiosta. Päivitä Tietokanta tuo sen ajan tasalle.",
     "Tried once|Tried :count times": "Yritetty kerran|Yritetty :count kertaa",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Suoritusta odottava työ, kuten lähetettävät sähköpostit. Yritä uudelleen suorittaa tehtävän nyt; Peruuta poistaa sen, joten sitä ei suoriteta koskaan."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Suoritusta odottava työ, kuten lähetettävät sähköpostit. Yritä uudelleen suorittaa tehtävän nyt; Peruuta poistaa sen, joten sitä ei suoriteta koskaan.",
+    "All Headers (:count)": "Kaikki Otsaketiedot (:count)",
+    "Authentication": "Todennus",
+    "Delivered via": "Toimitusreitti",
+    "Not checked": "Ei tarkistettu",
+    "Copy Headers": "Kopioi Otsaketiedot",
+    "Copy Source": "Kopioi Lähde",
+    "Download .eml": "Lataa .eml"
 }

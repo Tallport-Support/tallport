@@ -946,6 +946,7 @@ class ComposerStaticInit2902b8515f6672bf67bcf119cdb6b034
         'App\\Incoming\\HeaderText' => __DIR__ . '/../..' . '/app/Incoming/HeaderText.php',
         'App\\Incoming\\ImapClient' => __DIR__ . '/../..' . '/app/Incoming/ImapClient.php',
         'App\\Incoming\\IncomingMessage' => __DIR__ . '/../..' . '/app/Incoming/IncomingMessage.php',
+        'App\\Incoming\\OriginalHeaders' => __DIR__ . '/../..' . '/app/Incoming/OriginalHeaders.php',
         'App\\Incoming\\Parser' => __DIR__ . '/../..' . '/app/Incoming/Parser.php',
         'App\\Incoming\\RawSources' => __DIR__ . '/../..' . '/app/Incoming/RawSources.php',
         'App\\Incoming\\ReceiveFailures' => __DIR__ . '/../..' . '/app/Incoming/ReceiveFailures.php',

@@ -321,7 +321,6 @@
     "Get Folders": "Hämta Mappar",
     "Go to": "Gå till",
     "HTTPS protocol is required for the browser push notifications to work.": "HTTPS-protokoll krävs för att webbläsarens pushnotiser ska fungera.",
-    "Email Headers": "Rubriker",
     "Hello :user_name": "Hej :user_name",
     "Help": "Hjälp",
     "Hi :user, an account has been created for you at :app_url": "Hej :user, ett konto har skapats åt dig på :app_url",
@@ -513,7 +512,6 @@
     "Please specify recipient of the test email": "Ange mottagare för testmail",
     "Port": "Port",
     "Prevent user from logging in": "Förhindra att användaren loggar in",
-    "Preview": "Förhandsgranska",
     "Previous Conversations": "Tidigare Konversationer",
     "Previous Page": "Föregående Sida",
     "Print": "Skriv ut",
@@ -1659,5 +1657,12 @@
     "Tallport updates itself from its releases on GitHub.": "Tallport uppdaterar sig själv från sina versioner på GitHub.",
     "The database is behind this version of Tallport. Update Database brings it up to date.": "Databasen ligger efter den här versionen av Tallport. Uppdatera Databasen gör den aktuell.",
     "Tried once|Tried :count times": "Försökt en gång|Försökt :count gånger",
-    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Arbete som väntar på att köras, till exempel e-post som ska skickas. Försök igen kör ett jobb nu; Avbryt tar bort det, så att det aldrig körs."
+    "Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.": "Arbete som väntar på att köras, till exempel e-post som ska skickas. Försök igen kör ett jobb nu; Avbryt tar bort det, så att det aldrig körs.",
+    "All Headers (:count)": "Alla Huvuden (:count)",
+    "Authentication": "Autentisering",
+    "Delivered via": "Levererat via",
+    "Not checked": "Inte kontrollerat",
+    "Copy Headers": "Kopiera Huvuden",
+    "Copy Source": "Kopiera Källa",
+    "Download .eml": "Ladda Ned .eml"
 }
