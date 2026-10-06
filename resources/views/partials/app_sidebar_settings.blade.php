@@ -47,7 +47,7 @@
     @if (!empty($mailbox) && $mailbox instanceof App\Mailbox && $mailbox->id && str_starts_with((string) $settings_route, 'mailboxes.'))
         {{-- The mailbox's settings pages (mailboxes/settings_menu, modules' too), as sidebar items. --}}
         <details class="f-sidebar__group app-sidebar__mailbox-pages" open>
-            <summary class="f-sidebar__item"><x-icon.mail class="f-icon" aria-hidden="true" /><span class="f-sidebar__identity">{{ $mailbox->name }}</span><svg class="f-icon f-sidebar__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></summary>
+            <summary class="f-sidebar__item" data-fruit-mark="{{ $mailbox->accent ?: 'blue' }}"><x-icon.mail class="f-icon" aria-hidden="true" /><span class="f-sidebar__identity">{{ $mailbox->name }}</span><svg class="f-icon f-sidebar__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></summary>
             {!! preg_replace('#<a (?![^>]*\bclass=)#', '<a class="f-sidebar__item" ', view('mailboxes/settings_menu', ['mailbox' => $mailbox])->render()) !!}
         </details>
     @endif

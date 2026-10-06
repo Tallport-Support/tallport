@@ -1665,5 +1665,8 @@
     "Copy Source": "Копировать Источник",
     "Download .eml": "Скачать .eml",
     "Background": "Предыстория",
-    "Last Activity": "Последняя Активность"
+    "Last Activity": "Последняя Активность",
+    ":name mailbox": "Ящик :name",
+    "Color": "Цвет",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Отмечает тикеты этого ящика в представлениях нескольких ящиков и его значок на боковой панели."
 }

@@ -1668,5 +1668,8 @@
     "Copy Source": "Bron Kopiëren",
     "Download .eml": ".eml Downloaden",
     "Background": "Achtergrond",
-    "Last Activity": "Laatste Activiteit"
+    "Last Activity": "Laatste Activiteit",
+    ":name mailbox": "Mailbox :name",
+    "Color": "Kleur",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Markeert de gesprekken van deze mailbox in overzichten van meerdere mailboxen en het pictogram in de zijbalk."
 }

@@ -1659,5 +1659,8 @@
     "Copy Source": "Quelle Kopieren",
     "Download .eml": ".eml Herunterladen",
     "Background": "Hintergrund",
-    "Last Activity": "Letzte Aktivität"
+    "Last Activity": "Letzte Aktivität",
+    ":name mailbox": "Postfach :name",
+    "Color": "Farbe",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Kennzeichnet die Gespräche dieses Postfachs in postfachübergreifenden Ansichten und sein Symbol in der Seitenleiste."
 }

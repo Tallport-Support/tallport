@@ -1674,5 +1674,8 @@
     "Copy Source": "Copier la Source",
     "Download .eml": "Télécharger .eml",
     "Background": "Contexte",
-    "Last Activity": "Dernière Activité"
+    "Last Activity": "Dernière Activité",
+    ":name mailbox": "Boîte de réception :name",
+    "Color": "Couleur",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Identifie les conversations de cette boîte de réception dans les vues regroupant plusieurs boîtes de réception, ainsi que son icône dans la barre latérale."
 }

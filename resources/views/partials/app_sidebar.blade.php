@@ -47,7 +47,7 @@
             $sidebar_open_count = $sidebar_folders->whereIn('type', [App\Folder::TYPE_UNASSIGNED, App\Folder::TYPE_MINE])->sum(fn ($item) => $item->getCount($sidebar_folders));
         @endphp
         <details class="f-sidebar__group app-sidebar__mailbox" data-mailbox_id="{{ $sidebar_mailbox->id }}" @if ($sidebar_is_current || (!$sidebar_all && count($sidebar_mailboxes) == 1)) open @endif>
-            <summary class="f-sidebar__item">
+            <summary class="f-sidebar__item" data-fruit-mark="{{ $sidebar_mailbox->accent ?: 'blue' }}">
                 @if ($sidebar_mailbox->isArchived())<x-icon.lock class="f-icon" aria-hidden="true" />@else<x-icon.mail class="f-icon" aria-hidden="true" />@endif
                 <span class="f-sidebar__identity mailbox-name">
                     @if (count($sidebar_mailboxes) == 1)

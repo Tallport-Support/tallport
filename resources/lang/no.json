@@ -1669,5 +1669,8 @@
     "Copy Source": "Kopier Kilde",
     "Download .eml": "Last Ned .eml",
     "Background": "Bakgrunn",
-    "Last Activity": "Siste Aktivitet"
+    "Last Activity": "Siste Aktivitet",
+    ":name mailbox": "Postkasse :name",
+    "Color": "Farge",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Markerer samtalene i denne postkassen i visninger på tvers av postkasser og ikonet dens i sidefeltet."
 }

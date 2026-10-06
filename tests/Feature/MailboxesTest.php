@@ -117,6 +117,29 @@ class MailboxesTest extends FeatureTestCase
      * The sidebar's Mailbox Settings: name and signature in a dialog. An agent with the
      * signature permission changes only the signature; others may not open it.
      */
+    /**
+     * Each mailbox has a color: a new one the first free one, in turn when all are taken;
+     * shown as the bar on its conversations across mailboxes and on its sidebar icon.
+     */
+    public function testMailboxColors()
+    {
+        $taken = \App\Mailbox::pluck('accent')->filter()->all();
+        $mailbox = $this->createMailbox([$this->admin]);
+        $this->assertSame(collect(\FruitUI\Fruit::ACCENTS)->first(fn ($accent) => !in_array($accent, $taken)) ?? \FruitUI\Fruit::ACCENTS[0], $mailbox->fresh()->accent);
+
+        $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox, ['accent' => 'green']))
+            ->assertRedirect(route('mailboxes.update', ['id' => $mailbox->id]));
+        $this->assertSame('green', $mailbox->fresh()->accent);
+        $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox, ['accent' => 'chartreuse']))
+            ->assertSessionHasErrors('accent');
+        $this->assertSame('green', $mailbox->fresh()->accent);
+
+        $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk()
+            ->assertSee('Marks this mailbox&#039;s conversations', false)->assertSee('value="green" checked', false);
+        $this->actingAs($this->admin)->get(route('mailboxes.view', ['id' => $mailbox->id]))->assertOk()
+            ->assertSee('data-fruit-mark="green"', false);
+    }
+
     public function testQuickSettings()
     {
         $mailbox = $this->createMailbox([], ['name' => 'Support']);

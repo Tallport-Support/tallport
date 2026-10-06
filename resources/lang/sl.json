@@ -1664,5 +1664,8 @@
     "Copy Source": "Kopiraj Vir",
     "Download .eml": "Prenesi .eml",
     "Background": "Kontekst",
-    "Last Activity": "Zadnja Aktivnost"
+    "Last Activity": "Zadnja Aktivnost",
+    ":name mailbox": "Poštni predal :name",
+    "Color": "Barva",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Označi pogovore tega poštnega predala v pogledih več poštnih predalov in njegovo ikono v stranski vrstici."
 }

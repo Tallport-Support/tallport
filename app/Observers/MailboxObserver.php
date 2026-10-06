@@ -7,6 +7,16 @@ use App\Mailbox;
 class MailboxObserver
 {
     /**
+     * A color of its own (Mailbox::nextAccent()).
+     */
+    public function creating(Mailbox $mailbox)
+    {
+        if (!$mailbox->accent) {
+            $mailbox->accent = Mailbox::nextAccent();
+        }
+    }
+
+    /**
      * Listen to the Mailbox created event.
      *
      * @param \App\Mailbox $mailbox

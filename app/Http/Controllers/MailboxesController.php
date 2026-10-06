@@ -200,6 +200,7 @@ class MailboxesController extends Controller
                 'from_name'        => 'required|integer',
                 'from_name_custom' => 'nullable|string|max:128',
                 'ticket_assignee'  => 'required|integer',
+                'accent'           => ['nullable', \Illuminate\Validation\Rule::in(\FruitUI\Fruit::ACCENTS)],
             ]);
 
             //event(new Registered($user = $this->create($request->all())));
@@ -226,6 +227,7 @@ class MailboxesController extends Controller
                 'from_name_custom',
                 'ticket_assignee',
                 'before_reply',
+                'accent',
             ];
         }
 

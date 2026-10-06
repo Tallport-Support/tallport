@@ -2124,6 +2124,13 @@
                 "type": "tinyint(1)",
                 "nullable": false,
                 "default": "0"
+            },
+            "accent": {
+                "type": "varchar(20)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {

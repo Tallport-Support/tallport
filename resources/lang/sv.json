@@ -1665,5 +1665,8 @@
     "Copy Source": "Kopiera Källa",
     "Download .eml": "Ladda Ned .eml",
     "Background": "Bakgrund",
-    "Last Activity": "Senaste Aktivitet"
+    "Last Activity": "Senaste Aktivitet",
+    ":name mailbox": "Brevlåda :name",
+    "Color": "Färg",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Markerar den här brevlådans konversationer i vyer över flera brevlådor och dess ikon i sidofältet."
 }

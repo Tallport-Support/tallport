@@ -1711,5 +1711,8 @@
     "Copy Headers": "複製郵件標頭",
     "Copy Source": "複製來源",
     "Download .eml": "下載 .eml",
-    "Background": "背景"
+    "Background": "背景",
+    ":name mailbox": ":name 信箱",
+    "Color": "顏色",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "在跨信箱檢視中標示此信箱的對話，並用於側邊欄中的信箱圖示。"
 }

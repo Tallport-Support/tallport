@@ -1,7 +1,8 @@
-@props(['title', 'subtitle' => null])
+@props(['title', 'subtitle' => null, 'mark' => null])
 @php(\FruitUI\Support\ComponentContract::validate('sidebar-group', $attributes))
+@php($mark = \FruitUI\Support\ComponentContract::mark($mark))
 <details {{ $attributes->class(['f-sidebar__group']) }}>
-    <summary class="f-sidebar__item">
+    <summary class="f-sidebar__item" @if($mark !== null) data-fruit-mark="{{ $mark }}" @endif>
         @isset($icon){{ $icon }}@endisset
         @if($subtitle !== null)
             <span class="f-sidebar__identity"><strong>{{ $title }}</strong><small>{{ $subtitle }}</small></span>

@@ -1759,5 +1759,7 @@
     "Copy Headers": "Copia les Capçaleres",
     "Copy Source": "Copia l'Origen",
     "Download .eml": "Descarrega .eml",
-    "Last Activity": "Darrera Activitat"
+    "Last Activity": "Darrera Activitat",
+    ":name mailbox": "Bústia :name",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Marca les converses d'aquesta bústia a les vistes de diverses bústies i la seva icona a la barra lateral."
 }

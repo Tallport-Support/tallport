@@ -7,3 +7,4 @@
 @isset($subtitle)<span {{ $subtitle->attributes->class(['f-item-row__subtitle']) }}>{{ $subtitle }}</span>@endisset
 @isset($preview)<span {{ $preview->attributes->class(['f-item-row__preview']) }}>{{ $preview }}</span>@endisset
 @isset($meta)<span {{ $meta->attributes->class(['f-item-row__meta']) }}>{{ $meta }}</span>@endisset
+@if (!empty($markLabel))<span class="f-sr-only">{{ $markLabel }}</span>@endif

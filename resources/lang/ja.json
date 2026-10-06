@@ -1665,5 +1665,8 @@
     "Copy Source": "ソースをコピー",
     "Download .eml": ".emlをダウンロード",
     "Background": "経緯",
-    "Last Activity": "最終アクティビティ"
+    "Last Activity": "最終アクティビティ",
+    ":name mailbox": ":name メールボックス",
+    "Color": "色",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "複数のメールボックスにまたがるビューでこのメールボックスの会話を示し、サイドバーのアイコンにも使われます。"
 }

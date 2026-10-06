@@ -1666,5 +1666,8 @@
     "Copy Source": "复制来源",
     "Download .eml": "下载 .eml",
     "Background": "背景",
-    "Last Activity": "最后活动"
+    "Last Activity": "最后活动",
+    ":name mailbox": ":name 邮箱",
+    "Color": "颜色",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "在跨邮箱视图中标记此邮箱的对话，并用于侧边栏中的邮箱图标。"
 }

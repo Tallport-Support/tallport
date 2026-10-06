@@ -2066,5 +2066,7 @@
     "Copy Headers": "Тақырыптамаларды Көшіру",
     "Copy Source": "Дереккөзді Көшіру",
     "Download .eml": ".eml Жүктеп Алу",
-    "Background": "Контекст"
+    "Background": "Контекст",
+    ":name mailbox": "Пошталық жәшік :name",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Бірнеше пошталық жәшікті қамтитын көріністерде осы пошталық жәшіктің тикеттерін және бүйірлік панельдегі оның иконкасын белгілейді."
 }

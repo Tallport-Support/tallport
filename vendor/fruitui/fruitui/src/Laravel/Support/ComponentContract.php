@@ -434,6 +434,25 @@ final class ComponentContract
         return array_values(array_unique($formats));
     }
 
+    /**
+     * A mark: one of FruitUI's named accents saying what something belongs to (a mailbox). On a row it
+     * needs a label naming it, so color is never the only cue; a sidebar item names it already.
+     */
+    public static function mark(mixed $mark, mixed $label = null, bool $needsLabel = false): ?string
+    {
+        if ($mark === null) {
+            return null;
+        }
+        if (! in_array($mark, Fruit::ACCENTS, true)) {
+            throw new InvalidArgumentException('FruitUI mark must be one of: '.implode(', ', Fruit::ACCENTS).'.');
+        }
+        if ($needsLabel && (! is_string($label) || trim($label) === '')) {
+            throw new InvalidArgumentException('FruitUI mark needs a mark-label naming it, such as the mailbox, so color is never the only cue.');
+        }
+
+        return $mark;
+    }
+
     /** An accent picker's checked accent must be one of FruitUI's named accents. */
     public static function accentPicker(mixed $value, ComponentAttributeBag $attributes): void
     {

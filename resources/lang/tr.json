@@ -1665,5 +1665,8 @@
     "Copy Source": "Kaynağı Kopyala",
     "Download .eml": ".eml İndir",
     "Background": "Bağlam",
-    "Last Activity": "Son Etkinlik"
+    "Last Activity": "Son Etkinlik",
+    ":name mailbox": ":name posta kutusu",
+    "Color": "Renk",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Bu posta kutusunun konuşmalarını birden fazla posta kutusunu kapsayan görünümlerde, simgesini ise kenar çubuğunda işaretler."
 }

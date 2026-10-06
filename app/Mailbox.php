@@ -161,7 +161,7 @@ class Mailbox extends Model
      *
      * @var [type]
      */
-    protected $fillable = ['name', 'email', 'aliases', 'aliases_reply', 'auto_bcc', 'from_name', 'from_name_custom', 'ticket_status', 'ticket_assignee', 'before_reply', 'signature', 'out_method', 'out_server', 'out_username', 'out_password', 'out_port', 'out_encryption', 'in_server', 'in_port', 'in_username', 'in_password', 'in_protocol', 'in_encryption', 'in_validate_cert', 'auto_reply_enabled', 'auto_reply_subject', 'auto_reply_message', 'office_hours_enabled', 'ratings', 'ratings_placement', 'ratings_text', 'imap_sent_folder'];
+    protected $fillable = ['name', 'email', 'aliases', 'aliases_reply', 'auto_bcc', 'from_name', 'from_name_custom', 'ticket_status', 'ticket_assignee', 'before_reply', 'signature', 'out_method', 'out_server', 'out_username', 'out_password', 'out_port', 'out_encryption', 'in_server', 'in_port', 'in_username', 'in_password', 'in_protocol', 'in_encryption', 'in_validate_cert', 'auto_reply_enabled', 'auto_reply_subject', 'auto_reply_message', 'office_hours_enabled', 'ratings', 'ratings_placement', 'ratings_text', 'imap_sent_folder', 'accent'];
 
     protected static function boot()
     {
@@ -474,6 +474,23 @@ class Mailbox extends Model
         } else {
             return false;
         }
+    }
+
+    /**
+     * A new mailbox's color: the first of FruitUI's accents no other mailbox has, in turn
+     * once all are taken.
+     */
+    public static function nextAccent()
+    {
+        $accents = \FruitUI\Fruit::ACCENTS;
+        $used = self::pluck('accent')->filter()->all();
+        foreach ($accents as $accent) {
+            if (!in_array($accent, $used)) {
+                return $accent;
+            }
+        }
+
+        return $accents[self::count() % count($accents)];
     }
 
     /**

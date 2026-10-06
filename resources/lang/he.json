@@ -1664,5 +1664,8 @@
     "Copy Source": "העתק מקור",
     "Download .eml": "הורדת .eml",
     "Background": "רקע",
-    "Last Activity": "פעילות אחרונה"
+    "Last Activity": "פעילות אחרונה",
+    ":name mailbox": "תיבת הדואר :name",
+    "Color": "צבע",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "מסמן את השיחות של תיבת דואר זו בתצוגות של כמה תיבות דואר ואת הסמל שלה בסרגל הצד."
 }

@@ -1664,5 +1664,8 @@
     "Copy Source": "Kopírovat Zdroj",
     "Download .eml": "Stáhnout .eml",
     "Background": "Kontext",
-    "Last Activity": "Poslední Aktivita"
+    "Last Activity": "Poslední Aktivita",
+    ":name mailbox": "Schránka :name",
+    "Color": "Barva",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Označuje konverzace této schránky v zobrazeních napříč schránkami a její ikonu v postranním panelu."
 }

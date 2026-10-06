@@ -1664,5 +1664,8 @@
     "Copy Source": "Copia Origine",
     "Download .eml": "Scarica .eml",
     "Background": "Contesto",
-    "Last Activity": "Ultima Attività"
+    "Last Activity": "Ultima Attività",
+    ":name mailbox": "Casella postale :name",
+    "Color": "Colore",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Contrassegna i ticket di questa casella postale nelle viste che includono più caselle postali e la sua icona nella barra laterale."
 }

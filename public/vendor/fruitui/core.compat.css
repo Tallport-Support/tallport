@@ -122,83 +122,96 @@
     color-scheme: dark;
   }
 
+/* The named accents' colors, for the app's accent and for marks. */
+
+:where(:root) {
+    --f-palette-blue: #006cde;
+    --f-palette-purple: #9c3fbf;
+    --f-palette-pink: #d8326e;
+    --f-palette-red: #dc343b;
+    --f-palette-orange: #c55400;
+    --f-palette-yellow: #a06a00;
+    --f-palette-green: #2e8700;
+    --f-palette-graphite: #767676;
+  }
+
 /* Named accents, like the system accent color. Set data-fruit-accent on the .fruit-ui scope or an
      ancestor; every accent shade derives from the tint. Each keeps 4.5:1 for links on white, white
      text on filled buttons, the lighter dark-appearance accent and selection text. */
 
 :where([data-fruit-accent='blue']),
   [data-fruit-accent='blue'] .fruit-ui {
-    --f-tint: #006cde;
+    --f-tint: var(--f-palette-blue);
   }
 
 :where([data-fruit-accent='purple']),
   [data-fruit-accent='purple'] .fruit-ui {
-    --f-tint: #9c3fbf;
+    --f-tint: var(--f-palette-purple);
   }
 
 :where([data-fruit-accent='pink']),
   [data-fruit-accent='pink'] .fruit-ui {
-    --f-tint: #d8326e;
+    --f-tint: var(--f-palette-pink);
   }
 
 :where([data-fruit-accent='red']),
   [data-fruit-accent='red'] .fruit-ui {
-    --f-tint: #dc343b;
+    --f-tint: var(--f-palette-red);
   }
 
 :where([data-fruit-accent='orange']),
   [data-fruit-accent='orange'] .fruit-ui {
-    --f-tint: #c55400;
+    --f-tint: var(--f-palette-orange);
   }
 
 :where([data-fruit-accent='yellow']),
   [data-fruit-accent='yellow'] .fruit-ui {
-    --f-tint: #a06a00;
+    --f-tint: var(--f-palette-yellow);
   }
 
 :where([data-fruit-accent='green']),
   [data-fruit-accent='green'] .fruit-ui {
-    --f-tint: #2e8700;
+    --f-tint: var(--f-palette-green);
   }
 
 :where([data-fruit-accent='graphite']),
   [data-fruit-accent='graphite'] .fruit-ui {
-    --f-tint: #767676;
+    --f-tint: var(--f-palette-graphite);
   }
 
 /* The scope's own accent comes last, so it wins over an ancestor's. The compat build gives these
      selectors and the ancestor ones the scope's class weight, as it does the default tint. */
 
 .fruit-ui[data-fruit-accent='blue'] {
-    --f-tint: #006cde;
+    --f-tint: var(--f-palette-blue);
   }
 
 .fruit-ui[data-fruit-accent='purple'] {
-    --f-tint: #9c3fbf;
+    --f-tint: var(--f-palette-purple);
   }
 
 .fruit-ui[data-fruit-accent='pink'] {
-    --f-tint: #d8326e;
+    --f-tint: var(--f-palette-pink);
   }
 
 .fruit-ui[data-fruit-accent='red'] {
-    --f-tint: #dc343b;
+    --f-tint: var(--f-palette-red);
   }
 
 .fruit-ui[data-fruit-accent='orange'] {
-    --f-tint: #c55400;
+    --f-tint: var(--f-palette-orange);
   }
 
 .fruit-ui[data-fruit-accent='yellow'] {
-    --f-tint: #a06a00;
+    --f-tint: var(--f-palette-yellow);
   }
 
 .fruit-ui[data-fruit-accent='green'] {
-    --f-tint: #2e8700;
+    --f-tint: var(--f-palette-green);
   }
 
 .fruit-ui[data-fruit-accent='graphite'] {
-    --f-tint: #767676;
+    --f-tint: var(--f-palette-graphite);
   }
 
 /* An accent set on an element inside a scope (a preview area, an accent picker's circle)
@@ -223,6 +236,48 @@
       oklch(from var(--f-tint) calc(l + 0.22) c h)
     );
     --f-focus-ring-color: color-mix(in srgb, var(--f-accent) 75%, transparent);
+  }
+
+/* A mark: one of the named accents identifying what something belongs to, such as a mailbox,
+     without changing the accent around it. As text-safe as accent text (--f-accent-text). */
+
+:where([data-fruit-mark='blue']) {
+    --f-mark-tint: var(--f-palette-blue);
+  }
+
+:where([data-fruit-mark='purple']) {
+    --f-mark-tint: var(--f-palette-purple);
+  }
+
+:where([data-fruit-mark='pink']) {
+    --f-mark-tint: var(--f-palette-pink);
+  }
+
+:where([data-fruit-mark='red']) {
+    --f-mark-tint: var(--f-palette-red);
+  }
+
+:where([data-fruit-mark='orange']) {
+    --f-mark-tint: var(--f-palette-orange);
+  }
+
+:where([data-fruit-mark='yellow']) {
+    --f-mark-tint: var(--f-palette-yellow);
+  }
+
+:where([data-fruit-mark='green']) {
+    --f-mark-tint: var(--f-palette-green);
+  }
+
+:where([data-fruit-mark='graphite']) {
+    --f-mark-tint: var(--f-palette-graphite);
+  }
+
+:where([data-fruit-mark]) {
+    --f-mark: light-dark(
+      color-mix(in srgb, var(--f-mark-tint) 88%, black),
+      oklch(from var(--f-mark-tint) calc(l + 0.22) c h)
+    );
   }
 
 .fruit-ui {
@@ -3531,6 +3586,7 @@ img.f-avatar {
     --f-internal-item-current-secondary: var(--f-secondary);
     --f-internal-item-current-unread: var(--f-accent);
     --f-internal-item-current-border: transparent;
+    --f-internal-item-current-mark: var(--f-mark);
     position: relative;
     display: block;
     width: 100%;
@@ -3561,6 +3617,19 @@ img.f-avatar {
     inset-inline-start: var(--f-item-row-leading-inset, 62px);
   }
 
+/* A mark (data-fruit-mark, a named accent) says what the row belongs to, such as its mailbox: a bar
+     on the leading edge, never the only cue (the row names it too, as text). */
+
+.f-item-row[data-fruit-mark]::before {
+    content: '';
+    position: absolute;
+    inset-block: 10px;
+    inset-inline-start: 3px;
+    width: 3px;
+    border-radius: var(--f-radius-full);
+    background: var(--f-mark);
+  }
+
 .f-item-row:hover {
     background: var(--f-hover);
   }
@@ -3587,11 +3656,18 @@ img.f-avatar {
     background: var(--f-item-current-unread, var(--f-internal-item-current-unread));
   }
 
+/* On the accent fill a mark turns the fill's text color, as the unread dot does, to stay visible. */
+
+.f-item-row[data-fruit-mark]:is([aria-current='true'], [aria-current='page'])::before {
+    background: var(--f-item-current-mark, var(--f-internal-item-current-mark));
+  }
+
 .f-item-row--filled {
     --f-internal-item-current-background: var(--f-accent-fill);
     --f-internal-item-current-color: var(--f-on-accent);
     --f-internal-item-current-secondary: var(--f-on-accent);
     --f-internal-item-current-unread: var(--f-on-accent);
+    --f-internal-item-current-mark: var(--f-on-accent);
   }
 
 /* A filled current row is emphasized while its list has focus and unemphasized otherwise. */
@@ -3601,6 +3677,7 @@ img.f-avatar {
     --f-internal-item-current-color: var(--f-text);
     --f-internal-item-current-secondary: var(--f-secondary);
     --f-internal-item-current-unread: var(--f-accent);
+    --f-internal-item-current-mark: var(--f-mark);
   }
 
 .f-item-row:focus-visible {

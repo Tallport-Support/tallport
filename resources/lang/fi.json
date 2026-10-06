@@ -1683,5 +1683,8 @@
     "Copy Source": "Kopioi Lähde",
     "Download .eml": "Lataa .eml",
     "Background": "Tausta",
-    "Last Activity": "Viimeisin Toiminta"
+    "Last Activity": "Viimeisin Toiminta",
+    ":name mailbox": "Postilaatikko :name",
+    "Color": "Väri",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Merkitsee tämän postilaatikon keskustelut useamman postilaatikon näkymissä ja sen kuvakkeen sivupalkissa."
 }

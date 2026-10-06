@@ -1666,5 +1666,8 @@
     "Copy Source": "Copiar Origen",
     "Download .eml": "Descargar .eml",
     "Background": "Antecedentes",
-    "Last Activity": "Última Actividad"
+    "Last Activity": "Última Actividad",
+    ":name mailbox": "Correo :name",
+    "Color": "Color",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Marca las conversaciones de este correo en las vistas de varios correos y su icono en la barra lateral."
 }

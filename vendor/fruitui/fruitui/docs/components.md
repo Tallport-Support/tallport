@@ -16,7 +16,7 @@ These use native markup and existing controls. A CSS composition does not requir
 | Search | Arrange a decorative SVG and `input type=search` in `f-search`. | Native text value/editing; application owns results. | Optional `f-icon`, accessible label, existing Input attributes. |
 | Segmented choices | Present related native radios in `f-segmented` labels. | Native checked value; Tab enters, arrows select, Space checks. | Same radio name; each input is followed by its label span. Use fieldset/legend. No tablist or behavior modes. |
 | Avatar | Present initials in a native span with `f-avatar`; Blade `x-fruit::avatar`. | No interaction or keyboard behavior. | Decorative when a name is adjacent; otherwise supply an accessible identity (`label` in Blade). Scoped `--f-avatar-size`, `--f-avatar-radius`, `--f-avatar-border`, `--f-avatar-background`, `--f-avatar-color`, `--f-avatar-font-size`, and `--f-avatar-font-weight` customize presentation. |
-| Sidebar | Arrange navigation links/buttons and optional native disclosure groups with `f-sidebar`; Blade `x-fruit::sidebar`, `sidebar-group` and `sidebar-item` (links). | `details` owns open; links/buttons own actions and `aria-current=page`. Native Tab, Enter/Space. | Header (workspace) and footer (account) identity lockups, heading, item, nested item (automatic inside a group), identity text, count badge, decorative chevron. Tokens: `--f-sidebar-identity-gap`, `--f-sidebar-header-padding`, `--f-sidebar-footer-padding`, `--f-sidebar-item-indent`. No navigation data model. |
+| Sidebar | Arrange navigation links/buttons and optional native disclosure groups with `f-sidebar`; Blade `x-fruit::sidebar`, `sidebar-group` and `sidebar-item` (links). | `details` owns open; links/buttons own actions and `aria-current=page`. Native Tab, Enter/Space. | Header (workspace) and footer (account) identity lockups, heading, item, nested item (automatic inside a group), identity text, count badge, decorative chevron. `mark` (`data-fruit-mark`, a named accent) colors an item's or group's icon as the legend for marked Item Rows. Tokens: `--f-sidebar-identity-gap`, `--f-sidebar-header-padding`, `--f-sidebar-footer-padding`, `--f-sidebar-item-indent`. No navigation data model. |
 | Toolbar | Arrange actions in a div/header with `f-toolbar`. | No added state or keyboard behavior. | Group independent controls with `f-toolbar__group`; flexible space with `f-toolbar__spacer`. |
 | Badge | Present a count or short label in `span.f-badge`; Blade `x-fruit::badge`. | No value, interaction, or added keyboard behavior. | Text content; scoped semantic tokens for appearance. |
 | Toast | Announce a short result on one `div.f-toast` outlet: `x-fruit::toaster` in Blade, or `x-data="fruitToast"` with `x-show`/`x-text="notice"` in HTML. | The outlet owns one message and its timing; hover and focus pause it. Announced through `role=status`; no focus transfer. | Send messages with `Fruit::toast()` on the server, `$toast()` in Alpine, or `toast()` from `fruitui/alpine`, with an optional `tone` (success, danger); see [server feedback](#server-feedback-dialogs-toasts-and-confirmations). |
@@ -166,6 +166,16 @@ Mail messages and Support tickets use the same native list and item-opening butt
 
 The default slot supplies the title; an explicit `title` slot can replace it. `leading` is an optional decorative identity cue; `trailing` is time or similar short text; `subtitle`, `preview`, and `meta` are optional supporting content. Slot attributes reach their corresponding spans. All content inside the button must be noninteractive. For an unread cue, compose `span.f-item-row__unread` with `aria-hidden=true` and separate `f-sr-only` text explaining the unread state.
 
+In a view across several mailboxes (or projects, or teams), `mark` says which one a row belongs to without a tag on every row: one of FruitUI's named accents (`Fruit::ACCENTS`, the same eight as the Accent Picker), drawn as a short bar on the row's leading edge. A mark needs `mark-label`, the owner's name, which the row includes as screen reader text, so color is never the only cue; keep the name visible where the item opens too. Give the same accent to the owner's Sidebar Item or Sidebar Group (`mark`), whose icon takes the color and serves as the legend. Leave the mark off in a view of one mailbox, where every row would carry the same color. In HTML, set `data-fruit-mark="green"` on the row and add the `f-sr-only` name yourself. Each mark keeps 3:1 against the row in both appearances, and on a filled current row it turns the fill's text color, as the unread dot does.
+
+```blade
+<x-fruit::item-row :mark="$conversation->mailbox->accent" :mark-label="$conversation->mailbox->name.' mailbox'" wire:click="open({{ $conversation->id }})">
+    {{ $conversation->customer }}
+</x-fruit::item-row>
+
+<x-fruit::sidebar-group :title="$mailbox->name" :mark="$mailbox->accent">…</x-fruit::sidebar-group>
+```
+
 Bulk selection is a separate control beside the opening button:
 
 ```blade
@@ -187,7 +197,7 @@ Apply layout overrides for the available row width when composing side-by-side c
 | `--f-item-row-radius` | `9px`; row corner radius. |
 | `--f-item-separator-end` | `12px`; trailing separator inset. |
 | `--f-item-current-background`, `--f-item-current-hover` | Current-row surface and hover appearance. |
-| `--f-item-current-color`, `--f-item-current-secondary`, `--f-item-current-unread`, `--f-item-current-border` | Current-row text, supporting text, unread cue, and separator appearance. |
+| `--f-item-current-color`, `--f-item-current-secondary`, `--f-item-current-unread`, `--f-item-current-mark`, `--f-item-current-border` | Current-row text, supporting text, unread cue, mark, and separator appearance. |
 
 Current-state appearance defaults are defined on the row; override them on the row rather than an ancestor. Use semantic `--f-` color tokens so overrides retain both appearances. Responsive Mail/Support aliases now specify only spacing, typography, identity placement, and presentation overrides; shared hover, current state, separators, truncation, and preview clamping live in `src/css/patterns.css`.
 

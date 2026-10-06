@@ -105,7 +105,10 @@
                     @if (empty($no_checkboxes))
                         <x-fruit::checkbox class="conv-checkbox" :id="'cb-'.$conversation->id" :name="'cb_'.$conversation->id" :value="$conversation->id" wire:model.live="selected"><span class="f-sr-only">{{ __('Select Conversation') }}: {{ $conversation->getSubject() }}</span></x-fruit::checkbox>
                     @endif
-                    <x-fruit::item-link :href="$conversation->url(null, null, $list_params)" :current="$current_conversation_id == $conversation->id" :target="$conv_target ? '_blank' : null" class="conv-row__link">
+                    {{-- Across mailboxes: a bar in the mailbox's color instead of its name (the sidebar's icons are the legend). --}}
+                    <x-fruit::item-link :href="$conversation->url(null, null, $list_params)" :current="$current_conversation_id == $conversation->id" :target="$conv_target ? '_blank' : null" class="conv-row__link"
+                        :mark="!empty($params['show_mailbox']) ? ($conversation->mailbox_cached->accent ?: 'blue') : null"
+                        :mark-label="!empty($params['show_mailbox']) ? __(':name mailbox', ['name' => $conversation->mailbox_cached->name]) : null">
                         <x-slot:title :title="$conversation->customer_email">@if (empty($no_customer)){{ $conv_customer_name }}@else{{ $conversation->getSubject() }}@endif</x-slot:title>
                         <x-slot:trailing :title="$conv_date_title ?: null">{{ $conv_waiting_since }}</x-slot:trailing>
                         @if (empty($no_customer))
@@ -115,7 +118,6 @@
                         <x-slot:meta class="conv-row__meta">
                             <span class="conv-number">#{{ $conversation->number }}</span>
                             @if ($conversation->threads_count > 1)<span class="conv-counter" title="{{ __('Messages') }}"><x-icon.messages-square class="f-icon" aria-hidden="true" /> {{ $conversation->threads_count }}</span>@endif
-                            @if (!empty($params['show_mailbox']))<span>{{ $conversation->mailbox_cached->name }}</span>@endif
                             {{-- Not in Mine: the viewer's own. --}}@if ($conversation->user_id && $folder->type != App\Folder::TYPE_MINE && ($assignee = $conversation->user))<span class="conv-owner-name"><x-icon.user class="f-icon" aria-hidden="true" /> {{ $assignee->getFullName() }}</span>@endif
                             @if ($conversation->has_attachments)<x-icon.paperclip class="f-icon" :aria-label="__('Attachments')" role="img" />@endif
                             @if ($conversation->isPhone())<x-icon.phone class="f-icon" aria-hidden="true" />@endif

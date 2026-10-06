@@ -1665,5 +1665,8 @@
     "Copy Source": "Kopiraj Izvor",
     "Download .eml": "Preuzmi .eml",
     "Background": "Kontekst",
-    "Last Activity": "Posljednja Aktivnost"
+    "Last Activity": "Posljednja Aktivnost",
+    ":name mailbox": "Poštanski sandučić :name",
+    "Color": "Boja",
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Označava razgovore ovog poštanskog sandučića u prikazima više poštanskih sandučića i njegovu ikonu na bočnoj traci."
 }

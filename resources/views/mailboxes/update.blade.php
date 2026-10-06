@@ -46,6 +46,15 @@
                 @endif
 
                 @if (Auth::user()->can('updateSettings', $mailbox))
+                    {{-- Its color: the mark on its conversations in views across mailboxes, and its sidebar icon. --}}
+                    <div class="f-form-row">
+                        <div>
+                            <span class="f-label" id="mailbox-accent-label">{{ __('Color') }}</span>
+                            <p class="f-help">{{ __('Marks this mailbox\'s conversations in views across mailboxes and its icon in the sidebar.') }}</p>
+                        </div>
+                        <x-fruit::accent-picker name="accent" :value="in_array(old('accent'), FruitUI\Fruit::ACCENTS) ? old('accent') : ($mailbox->accent ?: 'blue')" :label="__('Color')" />
+                    </div>
+
                     <x-fruit::field :label="__('Aliases')" :description="__('Aliases are other email addresses that also forward to your mailbox address. Separate each email with a comma.')" layout="row">
                         <x-fruit::input id="aliases" name="aliases" :value="old('aliases', $mailbox->aliases)" :placeholder="'alias1@example.org, alias2@example.org('.__('Mailbox Name').')'" />
                     </x-fruit::field>

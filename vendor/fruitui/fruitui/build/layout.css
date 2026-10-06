@@ -132,6 +132,10 @@
   .f-sidebar__item > .f-badge {
     margin-inline-start: auto;
   }
+  /* A marked item (data-fruit-mark) shows its accent in its icon: the legend for marked rows. */
+  .f-sidebar__item[data-fruit-mark] > .f-icon:not(.f-sidebar__chevron) {
+    color: var(--f-mark);
+  }
   .f-sidebar__item:is([aria-current='page'], [data-current]) {
     background: var(--f-selection-inactive);
     color: var(--f-text);

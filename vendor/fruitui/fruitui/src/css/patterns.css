@@ -158,6 +158,7 @@
     --f-internal-item-current-secondary: var(--f-secondary);
     --f-internal-item-current-unread: var(--f-accent);
     --f-internal-item-current-border: transparent;
+    --f-internal-item-current-mark: var(--f-mark);
     position: relative;
     display: block;
     width: 100%;
@@ -184,6 +185,17 @@
   .f-item-row:has(> .f-item-row__leading)::after {
     inset-inline-start: var(--f-item-row-leading-inset, 62px);
   }
+  /* A mark (data-fruit-mark, a named accent) says what the row belongs to, such as its mailbox: a bar
+     on the leading edge, never the only cue (the row names it too, as text). */
+  .f-item-row[data-fruit-mark]::before {
+    content: '';
+    position: absolute;
+    inset-block: 10px;
+    inset-inline-start: 3px;
+    width: 3px;
+    border-radius: var(--f-radius-full);
+    background: var(--f-mark);
+  }
   .f-item-row:hover {
     background: var(--f-hover);
   }
@@ -204,11 +216,16 @@
   .f-item-row:is([aria-current='true'], [aria-current='page']) .f-item-row__unread {
     background: var(--f-item-current-unread, var(--f-internal-item-current-unread));
   }
+  /* On the accent fill a mark turns the fill's text color, as the unread dot does, to stay visible. */
+  .f-item-row[data-fruit-mark]:is([aria-current='true'], [aria-current='page'])::before {
+    background: var(--f-item-current-mark, var(--f-internal-item-current-mark));
+  }
   .f-item-row--filled {
     --f-internal-item-current-background: var(--f-accent-fill);
     --f-internal-item-current-color: var(--f-on-accent);
     --f-internal-item-current-secondary: var(--f-on-accent);
     --f-internal-item-current-unread: var(--f-on-accent);
+    --f-internal-item-current-mark: var(--f-on-accent);
   }
   /* A filled current row is emphasized while its list has focus and unemphasized otherwise. */
   :where(.f-item-list:not(:focus-within)) .f-item-row--filled {
@@ -216,6 +233,7 @@
     --f-internal-item-current-color: var(--f-text);
     --f-internal-item-current-secondary: var(--f-secondary);
     --f-internal-item-current-unread: var(--f-accent);
+    --f-internal-item-current-mark: var(--f-mark);
   }
   .f-item-row:focus-visible {
     outline-offset: calc(var(--f-focus-ring-width) * -1);
