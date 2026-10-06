@@ -51,6 +51,12 @@
                 </x-fruit::field>
             </x-fruit::form-section>
 
+            {{-- Delivered by the mail server (tallport:receive, see README): nothing to fetch. --}}
+            <x-fruit::form-section :title="__('Mail Server (Direct Delivery)')" data-in-protocol="{{ App\Mailbox::IN_PROTOCOL_MAIL_SERVER }}">
+                <p class="f-help">{{ __('Your mail server hands this mailbox\'s email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport\'s transport in /etc/postfix/transport:') }}</p>
+                <pre class="connection-transport">{{ $mailbox->email }}    tallport:</pre>
+            </x-fruit::form-section>
+
             <x-fruit::form-section :title="__('Server')" data-in-protocol="default">
                 <x-fruit::field :label="__('Server')" layout="row">
                     <x-fruit::input id="in_server" name="in_server" :value="old('in_server', $mailbox->in_server)" maxlength="255" />
@@ -165,7 +171,7 @@
 
             @action('mailbox.connection_incoming.after_default_settings', $mailbox)
 
-            <x-fruit::form-section :title="__('Test')">
+            <x-fruit::form-section :title="__('Test')" data-in-protocol="default">
                 <div class="f-form-row">
                     <p class="f-help">{{ __("Make sure to save settings before checking connection.") }}</p>
                     <button type="button" class="f-button" id="check-connection" x-ref="check" x-on:click="checkConnection" @if (!$mailbox->isOutActive()) disabled="disabled" @endif>{{ __('Check Connection') }}</button>

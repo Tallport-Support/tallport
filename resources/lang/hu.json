@@ -1605,5 +1605,7 @@
     "Show Chat Details": "Chat Részleteinek Mutatása",
     "Team Chat, :count unread": "Csapatchat, :count olvasatlan",
     "Switch Team Chat": "Csapatchat Váltása",
-    "You": "Te"
+    "You": "Te",
+    "Mail Server (Direct Delivery)": "Levelezőszerver (Közvetlen Kézbesítés)",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "A levelezőszervered a postafiók e-mailjeit beérkezéskor azonnal átadja a Tallportnak, így semmit sem kell lekérni. Postfix esetén irányítsd a címet a Tallport transportjára az \/etc\/postfix\/transport fájlban:"
 }

@@ -551,7 +551,8 @@ class MailboxesController extends Controller
         $mailbox = Mailbox::findOrFail($id);
         $this->authorize('admin', $mailbox);
 
-        $validator = Validator::make($request->all(), [
+        // Delivered by the mail server: no server to fetch from.
+        $validator = Validator::make($request->all(), $request->in_protocol == Mailbox::IN_PROTOCOL_MAIL_SERVER ? [] : [
             'in_server'   => 'required|string|max:255|safehost',
             'in_port'     => 'required|integer',
             'in_username' => 'required|string|max:100',

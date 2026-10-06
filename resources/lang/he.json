@@ -1604,5 +1604,7 @@
     "Show Chat Details": "הצג פרטי צ'אט",
     "Team Chat, :count unread": "צ'אט צוות, :count שלא נקראו",
     "Switch Team Chat": "החלף צ'אט צוות",
-    "You": "אתה"
+    "You": "אתה",
+    "Mail Server (Direct Delivery)": "שרת דואר (מסירה ישירה)",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "שרת הדואר שלך מעביר את האימיילים של תיבת דואר זו ל-Tallport ברגע שהם מגיעים, כך ששום דבר לא מאוחזר. עם Postfix, הפנה את הכתובת ל-transport של Tallport בקובץ \/etc\/postfix\/transport:"
 }

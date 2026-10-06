@@ -280,7 +280,9 @@ sudo -u www-data php artisan tallport:receive --mailbox=support@example.com < te
 
 Postfix delivers an address in `transport_maps` only to Tallport, so the
 mailbox's fetching settings can stay as a fallback (for mail that still ends
-up in its IMAP inbox). Just don't deliver the same email both ways (for
+up in its IMAP inbox). With no inbox to fetch from, set the mailbox's
+Protocol to "Mail Server (Direct Delivery)" (Connection Settings » Fetching
+Emails): it then needs no IMAP or POP3 settings and isn't fetched. Just don't deliver the same email both ways (for
 example through an alias to the IMAP inbox as well): the two copies arrive
 with different headers and would be saved twice.
 

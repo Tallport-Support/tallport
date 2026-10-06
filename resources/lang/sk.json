@@ -1604,5 +1604,7 @@
     "Show Chat Details": "Zobraziť Detaily Chatu",
     "Team Chat, :count unread": "Tímový Chat, neprečítané: :count",
     "Switch Team Chat": "Prepnúť Tímový Chat",
-    "You": "Vy"
+    "You": "Vy",
+    "Mail Server (Direct Delivery)": "Poštový Server (Priame Doručenie)",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Váš poštový server odovzdáva emaily tohto mailboxu do Tallportu hneď, ako prídu, takže sa nič nenačítava. S Postfixom nasmerujte adresu na transport Tallportu v \/etc\/postfix\/transport:"
 }

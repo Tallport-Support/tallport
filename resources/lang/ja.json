@@ -1605,5 +1605,7 @@
     "Show Chat Details": "チャットの詳細を表示",
     "Team Chat, :count unread": "チームチャット、未読 :count 件",
     "Switch Team Chat": "チームチャットを切り替え",
-    "You": "あなた"
+    "You": "あなた",
+    "Mail Server (Direct Delivery)": "メールサーバー（直接配信）",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "メールサーバーがこのメールボックスのメールを受信と同時に Tallport へ渡すため、取得は行われません。Postfix の場合は、\/etc\/postfix\/transport でアドレスを Tallport のトランスポートに送ってください:"
 }

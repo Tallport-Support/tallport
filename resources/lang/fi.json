@@ -1623,5 +1623,7 @@
     "Show Chat Details": "Näytä Chatin Tiedot",
     "Team Chat, :count unread": "Tiimin Chat, :count lukematonta",
     "Switch Team Chat": "Vaihda Tiimin Chat",
-    "You": "Sinä"
+    "You": "Sinä",
+    "Mail Server (Direct Delivery)": "Postipalvelin (Suora Toimitus)",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Postipalvelimesi välittää tämän postilaatikon sähköpostit Tallportille heti niiden saapuessa, joten mitään ei haeta. Postfixissa ohjaa osoite Tallportin transportiin tiedostossa \/etc\/postfix\/transport:"
 }

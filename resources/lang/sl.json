@@ -1604,5 +1604,7 @@
     "Show Chat Details": "Prikaži Podrobnosti Klepeta",
     "Team Chat, :count unread": "Klepet Ekipe, neprebrano: :count",
     "Switch Team Chat": "Zamenjaj Klepet Ekipe",
-    "You": "Ti"
+    "You": "Ti",
+    "Mail Server (Direct Delivery)": "Poštni Strežnik (Neposredna Dostava)",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Vaš poštni strežnik preda e-pošto tega poštnega predala Tallportu takoj, ko prispe, zato se nič ne pridobiva. S Postfixom usmerite naslov na Tallportov transport v \/etc\/postfix\/transport:"
 }

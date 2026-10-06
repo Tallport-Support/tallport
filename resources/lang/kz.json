@@ -2007,5 +2007,7 @@
     "Show Chat Details": "Чат Мәліметтерін Көрсету",
     "Team Chat, :count unread": "Команда Чаты, :count оқылмаған",
     "Switch Team Chat": "Команда Чатын Ауыстыру",
-    "You": "Сіз"
+    "You": "Сіз",
+    "Mail Server (Direct Delivery)": "Пошта Сервері (Тікелей Жеткізу)",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Пошта серверіңіз осы пошталық жәшіктің хаттарын келген сәтте Tallport-қа береді, сондықтан ештеңе алынбайды. Postfix қолдансаңыз, \/etc\/postfix\/transport файлында мекенжайды Tallport транспортына бағыттаңыз:"
 }

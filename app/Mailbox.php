@@ -81,6 +81,12 @@ class Mailbox extends Model
     const IN_PROTOCOL_IMAP = 1;
     const IN_PROTOCOL_POP3 = 2;
 
+    /**
+     * Not fetched: the mail server delivers the mailbox's email (tallport:receive).
+     * Not one of $in_protocols, which are fetched.
+     */
+    const IN_PROTOCOL_MAIL_SERVER = 10;
+
     public static $in_protocols = [
         self::IN_PROTOCOL_IMAP => 'imap',
         self::IN_PROTOCOL_POP3 => 'pop3',
@@ -459,11 +465,23 @@ class Mailbox extends Model
             return $in_active;
         }
 
+        if ($this->isDeliveredByMailServer()) {
+            return true;
+        }
+
         if ($this->in_protocol && $this->in_server && $this->in_port && $this->in_username && $this->in_password) {
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * The mail server delivers the mailbox's email; nothing to fetch.
+     */
+    public function isDeliveredByMailServer()
+    {
+        return $this->in_protocol == self::IN_PROTOCOL_MAIL_SERVER;
     }
 
     /**
@@ -695,6 +713,7 @@ class Mailbox extends Model
 
         $display_names[self::IN_PROTOCOL_IMAP] = 'IMAP';
         $display_names[self::IN_PROTOCOL_POP3] = 'POP3';
+        $display_names[self::IN_PROTOCOL_MAIL_SERVER] = __('Mail Server (Direct Delivery)');
 
         return \Eventy::filter('mailbox.in_protocols.display_names', $display_names);
     }

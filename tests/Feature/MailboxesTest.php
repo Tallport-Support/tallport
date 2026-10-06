@@ -296,6 +296,26 @@ class MailboxesTest extends FeatureTestCase
         $this->assertSame('imap-secret', $mailbox->fresh()->in_password);
     }
 
+    public function testMailDeliveredByTheMailServerNeedsNoFetching()
+    {
+        $mailbox = $this->createMailbox();
+        $this->assertFalse($mailbox->isInActive());
+
+        $this->postForm($this->admin, '/mailbox/connection-settings/'.$mailbox->id.'/incoming', [
+            'in_protocol' => Mailbox::IN_PROTOCOL_MAIL_SERVER,
+        ])->assertRedirect(route('mailboxes.connection.incoming', ['id' => $mailbox->id]))->assertSessionHasNoErrors();
+
+        // Receiving is set up: no warnings, and nothing to fetch.
+        $mailbox->refresh();
+        $this->assertTrue($mailbox->isInActive());
+        $this->assertTrue($mailbox->isDeliveredByMailServer());
+        $this->actingAs($this->admin)->get(route('mailboxes.connection.incoming', ['id' => $mailbox->id]))->assertOk()
+            ->assertSee($mailbox->email.'    tallport:')->assertSee('Mail Server (Direct Delivery)');
+        $this->actingAs($this->admin)->get(route('mailboxes.connection', ['id' => $mailbox->id]))
+            ->assertDontSee('Receiving emails need to be configured');
+        $this->artisan('tallport:fetch-emails')->doesntExpectOutputToContain('Mailbox: '.$mailbox->name)->assertSuccessful();
+    }
+
     public function testIncomingServerMustNotBeInternal()
     {
         $mailbox = $this->createMailbox();

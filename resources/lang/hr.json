@@ -1605,5 +1605,7 @@
     "Show Chat Details": "Prikaži Detalje Chata",
     "Team Chat, :count unread": "Chat Tima, nepročitano: :count",
     "Switch Team Chat": "Promijeni Chat Tima",
-    "You": "Vi"
+    "You": "Vi",
+    "Mail Server (Direct Delivery)": "Poslužitelj Pošte (Izravna Dostava)",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Vaš poslužitelj pošte predaje e-mailove ovog poštanskog sandučića Tallportu čim stignu, pa se ništa ne dohvaća. S Postfixom usmjerite adresu na Tallportov transport u \/etc\/postfix\/transport:"
 }

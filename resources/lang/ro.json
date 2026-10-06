@@ -1604,5 +1604,7 @@
     "Show Chat Details": "Arată Detaliile Chat-ului",
     "Team Chat, :count unread": "Chat-ul Echipei, :count necitite",
     "Switch Team Chat": "Schimbă Chat-ul Echipei",
-    "You": "Tu"
+    "You": "Tu",
+    "Mail Server (Direct Delivery)": "Server de Email (Livrare Directă)",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Serverul dvs. de email predă email-urile acestei cutii poștale către Tallport imediat ce sosesc, deci nu se preia nimic. Cu Postfix, trimiteți adresa către transportul Tallport în \/etc\/postfix\/transport:"
 }

@@ -1653,5 +1653,7 @@
     "Show Chat Details": "顯示聊天詳細資訊",
     "Team Chat, :count unread": "團隊聊天，:count 則未讀",
     "Switch Team Chat": "切換團隊聊天",
-    "You": "您"
+    "You": "您",
+    "Mail Server (Direct Delivery)": "郵件伺服器（直接投遞）",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "您的郵件伺服器會在郵件到達時直接將此信箱的郵件交給 Tallport，因此無需收取。使用 Postfix 時，請在 \/etc\/postfix\/transport 中將該地址傳送至 Tallport 的 transport："
 }

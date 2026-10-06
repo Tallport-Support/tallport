@@ -1701,5 +1701,7 @@
     "Show Chat Details": "Mostra Detalls del Xat",
     "Team Chat, :count unread": "Xat de l'Equip, :count sense llegir",
     "Switch Team Chat": "Canvia de Xat de l'Equip",
-    "You": "Vós"
+    "You": "Vós",
+    "Mail Server (Direct Delivery)": "Servidor de Correu (Lliurament Directe)",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "El vostre servidor de correu lliura el correu d'aquesta bústia a Tallport tan bon punt arriba, així que no s'obté res. Amb Postfix, envieu l'adreça al transport de Tallport a \/etc\/postfix\/transport:"
 }

@@ -1605,5 +1605,7 @@
     "Show Chat Details": "Sohbet Ayrıntılarını Göster",
     "Team Chat, :count unread": "Ekip Sohbeti, :count okunmamış",
     "Switch Team Chat": "Ekip Sohbetini Değiştir",
-    "You": "Siz"
+    "You": "Siz",
+    "Mail Server (Direct Delivery)": "Posta Sunucusu (Doğrudan Teslim)",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Posta sunucunuz bu posta kutusunun e-postalarını geldiği anda Tallport'a iletir, bu yüzden hiçbir şey getirilmez. Postfix ile adresi \/etc\/postfix\/transport dosyasında Tallport'un transport'una yönlendirin:"
 }

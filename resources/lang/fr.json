@@ -1614,5 +1614,7 @@
     "Show Chat Details": "Afficher les Détails du Tchat",
     "Team Chat, :count unread": "Tchat d'Équipe, :count non lus",
     "Switch Team Chat": "Changer de Tchat d'Équipe",
-    "You": "Vous"
+    "You": "Vous",
+    "Mail Server (Direct Delivery)": "Serveur de Messagerie (Livraison Directe)",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Votre serveur de messagerie transmet les e-mails de cette boîte de réception à Tallport dès leur arrivée, donc rien n'est récupéré. Avec Postfix, dirigez l'adresse vers le transport de Tallport dans \/etc\/postfix\/transport :"
 }

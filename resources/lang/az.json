@@ -1605,5 +1605,7 @@
     "Show Chat Details": "Çat Təfərrüatlarını Göstər",
     "Team Chat, :count unread": "Komanda Çatı, :count oxunmamış",
     "Switch Team Chat": "Komanda Çatını Dəyiş",
-    "You": "Siz"
+    "You": "Siz",
+    "Mail Server (Direct Delivery)": "Poçt Serveri (Birbaşa Çatdırılma)",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Poçt serveriniz bu poçt qutusunun e-poçtlarını gəldiyi anda Tallport-a ötürür, buna görə heç nə əldə edilmir. Postfix ilə ünvanı \/etc\/postfix\/transport faylında Tallport-un transportuna yönləndirin:"
 }

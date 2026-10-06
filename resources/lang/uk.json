@@ -1605,5 +1605,7 @@
     "Show Chat Details": "Показати Подробиці Чату",
     "Team Chat, :count unread": "Чат Команди, непрочитаних: :count",
     "Switch Team Chat": "Змінити Чат Команди",
-    "You": "Ви"
+    "You": "Ви",
+    "Mail Server (Direct Delivery)": "Поштовий Сервер (Пряма Доставка)",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Ваш поштовий сервер передає листи цієї поштової скриньки в Tallport одразу після надходження, тому нічого не потрібно отримувати. У Postfix спрямуйте адресу на транспорт Tallport у \/etc\/postfix\/transport:"
 }

@@ -1608,5 +1608,7 @@
     "Show Chat Details": "Chatdetails Tonen",
     "Team Chat, :count unread": "Teamchat, :count ongelezen",
     "Switch Team Chat": "Teamchat Wisselen",
-    "You": "U"
+    "You": "U",
+    "Mail Server (Direct Delivery)": "Mailserver (Directe Aflevering)",
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Uw mailserver levert de e-mail van deze mailbox direct bij aankomst af bij Tallport, dus er wordt niets opgehaald. Stuur met Postfix het adres naar het transport van Tallport in \/etc\/postfix\/transport:"
 }
