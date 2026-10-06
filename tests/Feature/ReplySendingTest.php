@@ -147,6 +147,21 @@ class ReplySendingTest extends FeatureTestCase
         $this->assertSame(1, \DB::table('jobs')->where('queue', 'emails')->count(), 'Sending is retried later.');
     }
 
+    public function testOpenPagesHearThatAReplyFailed()
+    {
+        [$conversation, $reply] = $this->queuedReplyInClosedConversation();
+        $this->failSending(new \Symfony\Component\Mailer\Exception\TransportException('Expected response code "250" but got code "550", with message "550 5.1.1 User unknown".', 550));
+        $broadcast = [];
+        \Event::listen(\App\Events\RealtimeConvNewThread::class, function ($event) use (&$broadcast) {
+            $broadcast[] = $event->data;
+        });
+
+        $this->runQueue();
+
+        // The conversation's open pages show the reply as not sent (public/js/realtime.js).
+        $this->assertContains($reply->id, array_column(array_filter($broadcast, fn ($data) => !empty($data['send_failed'])), 'thread_id'));
+    }
+
     public function testPermanentFailureReopensConversation()
     {
         [$conversation, $reply] = $this->queuedReplyInClosedConversation();

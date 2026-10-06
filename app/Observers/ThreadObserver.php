@@ -100,7 +100,7 @@ class ThreadObserver
     public function updated(Thread $thread)
     {
         // Sending failed after the message showed as sent: open pages show it (realtime).
-        if ($thread->wasChanged('send_status') && $thread->send_status == \App\SendLog::STATUS_SEND_ERROR) {
+        if ($thread->wasChanged('send_status') && $thread->isSendStatusError()) {
             \App\Events\RealtimeConvNewThread::dispatchSelf($thread, ['send_failed' => true]);
         }
         \Eventy::action('thread.updated', $thread);
