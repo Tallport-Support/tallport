@@ -63,6 +63,21 @@ class ConversationListTest extends FeatureTestCase
         $list->call('filterAssignee')->assertSee('Apple question');
     }
 
+    public function testMineDoesNotNameTheAssignee()
+    {
+        $conversation = $this->conversation('Mine question');
+        $conversation->changeUser($this->agent->id, $this->agent);
+
+        // Mine is the viewer's own; elsewhere the assignee shows.
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_MINE)])
+            ->assertSee('Mine question')->assertDontSeeHtml('conv-owner-name');
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => AllMailboxes::folder($this->agent, -Folder::TYPE_MINE)])
+            ->assertSee('Mine question')->assertDontSeeHtml('conv-owner-name');
+        $conversation->changeStatus(Conversation::STATUS_CLOSED, $this->agent);
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_CLOSED)])
+            ->assertSeeHtml('conv-owner-name')->assertSee('Alex Agent');
+    }
+
     public function testFolderOpensAtAConversationInAWideWindow()
     {
         $older = $this->conversation('Older question');

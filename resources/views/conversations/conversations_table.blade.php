@@ -115,7 +115,7 @@
                             <span class="conv-number">#{{ $conversation->number }}</span>
                             @if ($conversation->threads_count > 1)<span class="conv-counter" title="{{ __('Messages') }}"><x-icon.messages-square class="f-icon" aria-hidden="true" /> {{ $conversation->threads_count }}</span>@endif
                             @if (!empty($params['show_mailbox']))<span>{{ $conversation->mailbox_cached->name }}</span>@endif
-                            @if ($conversation->user_id && ($assignee = $conversation->user))<span class="conv-owner-name"><x-icon.user class="f-icon" aria-hidden="true" /> {{ $assignee->getFullName() }}</span>@endif
+                            {{-- Not in Mine: the viewer's own. --}}@if ($conversation->user_id && $folder->type != App\Folder::TYPE_MINE && ($assignee = $conversation->user))<span class="conv-owner-name"><x-icon.user class="f-icon" aria-hidden="true" /> {{ $assignee->getFullName() }}</span>@endif
                             @if ($conversation->has_attachments)<x-icon.paperclip class="f-icon" :aria-label="__('Attachments')" role="img" />@endif
                             @if ($conversation->isPhone())<x-icon.phone class="f-icon" aria-hidden="true" />@endif
                             @if (!empty($viewers[$conversation->id]))
