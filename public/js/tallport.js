@@ -192,6 +192,116 @@ window.addEventListener('pageshow', function (event) {
 	}
 });
 
+// The progress bar along the top for every navigation, not only wire:navigate's: Livewire's
+// own look (its #nprogress styles), shown after 150ms as Livewire does. It runs while a
+// conversation or folder opens in place (#app-content busy, public/js/conversations.js) and
+// while the browser loads another page (a link, a form, a reload).
+var tallportProgress = (function () {
+	var element = null;
+	var status = null;
+	var timers = [];
+	var clear = function () {
+		timers.forEach(clearTimeout);
+		timers = [];
+	};
+	var render = function () {
+		if (!element) {
+			element = document.createElement('div');
+			element.id = 'nprogress';
+			element.innerHTML = '<div class="bar" role="bar"><div class="peg"></div></div>';
+		}
+		if (!element.isConnected) {
+			document.body.appendChild(element);
+		}
+		return element.querySelector('.bar');
+	};
+	var set = function (value) {
+		status = value;
+		var bar = render();
+		bar.style.transition = 'transform 200ms ease, opacity 200ms ease';
+		bar.style.opacity = '1';
+		bar.style.transform = 'translate3d(' + ((value - 1) * 100) + '%, 0, 0)';
+	};
+	var trickle = function () {
+		if (status === null || status >= 0.95) {
+			return;
+		}
+		set(status + (1 - status) * 0.08 * Math.random() + 0.01);
+		timers.push(setTimeout(trickle, 200));
+	};
+	return {
+		start: function () {
+			if (status !== null || document.getElementById('nprogress') && element !== document.getElementById('nprogress')) {
+				// Already running (or Livewire's own bar is up).
+				return;
+			}
+			clear();
+			status = 0;
+			timers.push(setTimeout(function () {
+				if (status === null) {
+					return;
+				}
+				set(0.1);
+				timers.push(setTimeout(trickle, 200));
+			}, 150));
+			// Never stuck (a download starts a page load that never comes): it finishes anyway.
+			timers.push(setTimeout(function () {
+				tallportProgress.done();
+			}, 10000));
+		},
+		done: function () {
+			if (status === null) {
+				return;
+			}
+			clear();
+			var shown = element && element.isConnected && status > 0;
+			status = null;
+			if (!shown) {
+				return;
+			}
+			var bar = element.querySelector('.bar');
+			bar.style.transform = 'translate3d(0, 0, 0)';
+			timers.push(setTimeout(function () {
+				bar.style.opacity = '0';
+				timers.push(setTimeout(function () {
+					element.remove();
+				}, 250));
+			}, 200));
+		}
+	};
+})();
+document.addEventListener('DOMContentLoaded', function () {
+	var content = document.getElementById('app-content');
+	if (!content) {
+		return;
+	}
+	// The pane is replaced on wire:navigate: watched through the body, its own attribute only.
+	new MutationObserver(function (mutations) {
+		mutations.forEach(function (mutation) {
+			if (mutation.target.id !== 'app-content') {
+				return;
+			}
+			if (mutation.target.getAttribute('aria-busy') === 'true') {
+				tallportProgress.start();
+			} else {
+				tallportProgress.done();
+			}
+		});
+	}).observe(document.body, {attributes: true, attributeFilter: ['aria-busy'], subtree: true});
+});
+document.addEventListener('livewire:navigated', function () {
+	tallportProgress.done();
+});
+// Another page loading the regular way.
+window.addEventListener('beforeunload', function () {
+	tallportProgress.start();
+});
+window.addEventListener('pageshow', function (event) {
+	if (event.persisted) {
+		tallportProgress.done();
+	}
+});
+
 // Settings' search (partials/app_sidebar): the settings pages whose names, or what's on
 // them (data-search), have every word typed; Return opens the first.
 (function () {

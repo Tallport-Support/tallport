@@ -3193,3 +3193,8 @@ a.disabled:focus {
 .text-warning {
     color: var(--f-warning);
 }
+
+/* The progress bar along the top (wire:navigate's, and tallportProgress in public/js/tallport.js): the accent. */
+body.fruit-ui {
+    --livewire-progress-bar-color: var(--f-accent);
+}
