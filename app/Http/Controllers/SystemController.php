@@ -133,6 +133,10 @@ class SystemController extends Controller
             'tallport:fetch-emails' => 'tallport:fetch-emails',
             \Helper::getWorkerIdentifier() => 'queue:work',
         ];
+        // Mailboxes delivered by the mail server only: nothing is fetched.
+        if (!\App\Mailbox::anyFetched()) {
+            unset($commands_list['tallport:fetch-emails']);
+        }
         if (\App\Ai\Settings::isConfigured()) {
             $commands_list[\Helper::getWorkerIdentifier(\App\Console\Kernel::AI_WORKER)] = 'queue:work (AI)';
         }

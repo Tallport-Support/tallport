@@ -46,6 +46,12 @@ class FetchMonitor extends Command
     {
         $now = time();
 
+        if (!\App\Mailbox::anyFetched()) {
+            $this->line('['.date('Y-m-d H:i:s').'] No mailbox is fetched');
+
+            return;
+        }
+
         $options = \Option::getOptions([
             'alert_fetch_period',
             'fetch_emails_last_successful_run',

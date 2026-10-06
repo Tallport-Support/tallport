@@ -105,7 +105,15 @@ class ConsoleCommandsTest extends FeatureTestCase
         $admin = $this->createAdmin(['email' => 'boss@example.org']);
         $this->setOption('alert_fetch', true);
         $this->setOption('alert_recipients', 'oncall@example.org');
+        $this->setOption('fetch_emails_last_successful_run', time() - 3600);
 
+        // No mailbox is fetched (none, or delivered by the mail server): nothing to monitor.
+        $mailbox = $this->createMailbox([], ['in_protocol' => \App\Mailbox::IN_PROTOCOL_MAIL_SERVER]);
+        $this->assertStringContainsString('No mailbox is fetched', $this->runCommand('tallport:fetch-monitor'));
+        $this->assertCount(0, $this->sentEmails());
+
+        $this->createMailbox([], ['in_protocol' => \App\Mailbox::IN_PROTOCOL_IMAP, 'in_server' => 'imap.example.org', 'in_port' => 993, 'in_username' => 'support', 'in_password' => 'secret']);
+        $this->setOption('fetch_emails_last_successful_run', null);
         $this->assertStringContainsString('Fetching has not been configured yet', $this->runCommand('tallport:fetch-monitor'));
 
         // Last successful fetch an hour ago: over the 15 minute alert period.
@@ -132,6 +140,7 @@ class ConsoleCommandsTest extends FeatureTestCase
     public function testFetchMonitorDoesNotAlertWhenAlertsAreOff()
     {
         $this->createAdmin();
+        $this->createMailbox([], ['in_protocol' => \App\Mailbox::IN_PROTOCOL_IMAP, 'in_server' => 'imap.example.org', 'in_port' => 993, 'in_username' => 'support', 'in_password' => 'secret']);
         $this->setOption('fetch_emails_last_successful_run', time() - 3600);
 
         $this->assertStringContainsString('There are some problems fetching emails', $this->runCommand('tallport:fetch-monitor'));

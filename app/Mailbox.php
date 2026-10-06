@@ -477,6 +477,17 @@ class Mailbox extends Model
     }
 
     /**
+     * Whether any active mailbox is fetched (IMAP, POP3 or a module's way): if
+     * none, fetching isn't monitored (System Status, tallport:fetch-monitor).
+     */
+    public static function anyFetched()
+    {
+        return self::get()->contains(function ($mailbox) {
+            return $mailbox->isActive() && $mailbox->isInActive() && !$mailbox->isDeliveredByMailServer();
+        });
+    }
+
+    /**
      * The mail server delivers the mailbox's email; nothing to fetch.
      */
     public function isDeliveredByMailServer()

@@ -170,6 +170,10 @@ class SettingsAndSystemTest extends FeatureTestCase
         $this->actingAs($this->admin)->get(route('system'))->assertOk()
             ->assertSee('lazy-placeholder', false)->assertDontSee('tallport:fetch-emails');
 
+        // Fetching is listed while a mailbox is fetched.
+        Livewire::withoutLazyLoading();
+        Livewire::actingAs($this->admin)->test(SystemStatus::class)->assertDontSee('tallport:fetch-emails');
+        $this->createMailbox([], ['in_protocol' => \App\Mailbox::IN_PROTOCOL_IMAP, 'in_server' => 'imap.example.org', 'in_port' => 993, 'in_username' => 'support', 'in_password' => 'secret']);
         Livewire::withoutLazyLoading();
         Livewire::actingAs($this->admin)->test(SystemStatus::class)->assertSee('tallport:fetch-emails');
 
