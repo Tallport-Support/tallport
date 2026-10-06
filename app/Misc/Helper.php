@@ -2817,6 +2817,19 @@ class Helper
         return $url;
     }*/
 
+    /**
+     * The stylesheets of the app's layout (layouts/app), in order: style.css last, to redefine styles.
+     */
+    public static function layoutStylesheets()
+    {
+        $styles = ['/css/fonts.css', '/vendor/fruitui/core.compat.css', '/vendor/fruitui/layout.compat.css', '/vendor/fruitui/editor.compat.css', '/css/style.css'];
+        if (self::isLocaleRtl()) {
+            $styles[] = '/css/style-rtl.css';
+        }
+
+        return \Eventy::filter('stylesheets', $styles);
+    }
+
     public static function isLocaleRtl(): bool
     {
         return in_array(app()->getLocale(), config("app.locales_rtl") ?? []);

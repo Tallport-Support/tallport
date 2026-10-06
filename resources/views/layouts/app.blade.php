@@ -24,12 +24,8 @@
     {{-- style.css must be the last to able to redefine styles --}}
     @php
         try {
-            $styles= array('/css/fonts.css', '/vendor/fruitui/core.compat.css', '/vendor/fruitui/layout.compat.css', '/vendor/fruitui/editor.compat.css', '/css/style.css' );
-            if (Helper::isLocaleRtl()) {
-                $styles[] = '/css/style-rtl.css';
-            }
     @endphp
-    {!! Minify::stylesheet(\Eventy::filter('stylesheets', $styles)) !!}
+    {!! Minify::stylesheet(Helper::layoutStylesheets()) !!}
     @php
         } catch (\Exception $e) {
             // Try...catch is needed to catch errors when activating a module and public symlink not created for module.

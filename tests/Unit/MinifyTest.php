@@ -68,6 +68,17 @@ class MinifyTest extends TestCase
         $this->assertSame('<script src="/js/a.js" defer="defer"></script>'.PHP_EOL, (string) $this->minify('local')->javascript('/js/a.js', ['defer']));
     }
 
+    /**
+     * The build's URL, as the page links it (a conversation opened in place compares it with
+     * the page's); none where minifying is off.
+     */
+    public function testBuildUrl()
+    {
+        $styles = $this->minify()->stylesheet(['/css/a.css', '/css/b.css']);
+        $this->assertStringContainsString('href="'.$styles->url().'"', (string) $styles);
+        $this->assertNull($this->minify('testing')->stylesheet(['/css/a.css'])->url());
+    }
+
     public function testStylesheetBuild()
     {
         $html = (string) $this->minify()->stylesheet(['/css/a.css', '/css/b.css']);

@@ -68,6 +68,14 @@ class Minify
         return $this;
     }
 
+    /**
+     * The build file's URL; null where minifying is off (the files are linked one by one).
+     */
+    public function url()
+    {
+        return $this->minifyHere() ? ($this->config[$this->type.'_url_path'] ?? $this->config[$this->type.'_build_path']).$this->build() : null;
+    }
+
     public function __toString()
     {
         $base_url = $this->full_url ? request()->root() : '';

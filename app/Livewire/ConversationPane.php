@@ -70,14 +70,21 @@ class ConversationPane extends Component
         \App\Misc\Gravatar::request($conversation->customer, $conversation->customer_email);
         \Eventy::action('conversation.view.start', $conversation, request());
 
-        // The page around it follows (public/js/conversations.js).
+        // The page around it follows (public/js/conversations.js); loaded anew if its styles
+        // changed since (an update), so the new markup doesn't meet the old styles.
         $customer = $conversation->customer_cached;
+        try {
+            $styles = \Minify::stylesheet(\Helper::layoutStylesheets())->url();
+        } catch (\Exception $e) {
+            $styles = null;
+        }
         $this->dispatch('conversation-opened',
             id: $conversation->id,
             mailbox_id: $conversation->mailbox_id,
             folder_id: $this->folder_id,
             url: route('conversations.view', ['id' => $conversation->id, 'folder_id' => $this->folder_id]),
             title: '#'.$conversation->number.' '.$conversation->getSubject().($customer ? ' - '.$customer->getFullName(true) : ''),
+            styles: $styles,
         );
     }
 

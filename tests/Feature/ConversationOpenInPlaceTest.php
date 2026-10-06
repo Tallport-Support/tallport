@@ -49,7 +49,9 @@ class ConversationOpenInPlaceTest extends FeatureTestCase
             ->assertSee('Broken zipper')
             ->dispatch('conversation-open', id: $second->id, folder_id: $first->folder_id)
             ->assertSee('Lost parcel')->assertDontSee('Broken zipper')
-            ->assertDispatched('conversation-opened', id: $second->id, url: route('conversations.view', ['id' => $second->id, 'folder_id' => $first->folder_id]));
+            ->assertDispatched('conversation-opened', id: $second->id, url: route('conversations.view', ['id' => $second->id, 'folder_id' => $first->folder_id]))
+            // No build of the styles to compare where minifying is off (tests).
+            ->assertDispatched('conversation-opened', styles: null);
         $this->assertSame(0, \DB::table('notifications')->where('conversation_id', $second->id)->whereNull('read_at')->count());
         $this->assertSame($second->id, session('folder_conversation.'.$first->folder_id));
 

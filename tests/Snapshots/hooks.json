@@ -2460,7 +2460,7 @@
         "name": "stylesheets",
         "arguments": 1,
         "files": [
-            "resources/views/layouts/app.blade.php"
+            "app/Misc/Helper.php"
         ]
     },
     {

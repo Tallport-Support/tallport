@@ -150,6 +150,11 @@ document.addEventListener('livewire:init', function () {
 		document.body.setAttribute('data-folder_id', data.folder_id);
 		document.body.removeAttribute('data-page-url');
 		window.history.replaceState(Object.assign({}, window.history.state || {}, {tallport_conversation: {id: data.id, folder_id: data.folder_id}, tallport_folder: {folder_id: data.folder_id}}), '', data.url);
+		// The styles changed since this page was loaded (an update): the conversation loads anew.
+		if (data.styles && !document.querySelector('link[rel="stylesheet"][href="'+data.styles+'"]')) {
+			window.location.reload();
+			return;
+		}
 		// For realtime updates, the composer and modules (CustomApp, Nostr).
 		document.dispatchEvent(new CustomEvent('tallport:conversation-opened', {detail: data}));
 	});
