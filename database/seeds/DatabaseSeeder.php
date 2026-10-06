@@ -495,10 +495,10 @@ class DatabaseSeeder extends Seeder
                     $last = $samples->where('type', Thread::TYPE_CUSTOMER)->last();
                     $data['summaries'][$language] = [
                         'one_liner' => 'Sample summary: '.$conversation->subject,
-                        'summary' => "Sample summary (".$name.")\n\n"
-                            ."- Customer request: ".($first ? mb_substr(Summaries::text($first), 0, 400) : $conversation->subject)
-                            ."\n- The support team exchanged replies and internal notes."
-                            ."\n- Latest customer update: ".($last ? mb_substr(Summaries::text($last), 0, 400) : 'Awaiting a reply.'),
+                        'background' => $published->count() >= Summaries::BACKGROUND_MIN_MESSAGES
+                            ? "- Tried: ".($first ? mb_substr(Summaries::text($first), 0, 120) : $conversation->subject)
+                                ."\n- Still open: ".($last ? mb_substr(Summaries::text($last), 0, 120) : 'awaiting a reply.')
+                            : '',
                         'thread_id' => $latest,
                         'at' => now()->toDateTimeString(),
                         'seeded' => true,

@@ -10,11 +10,17 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Conversation summaries, by language, in conversations.ai_assistant:
- * {"summaries": {"en": {"one_liner", "summary", "thread_id", "at"}}}.
+ * {"summaries": {"en": {"one_liner", "background", "thread_id", "at"}}}: where the
+ * conversation stands, and for long ones what's been tried and what's open.
  * thread_id is the newest thread summarized: a newer one makes it stale.
  */
 class Summaries
 {
+    /**
+     * From this many messages and notes a summary has a background.
+     */
+    const BACKGROUND_MIN_MESSAGES = 10;
+
     /**
      * The newest threads a summary is made of.
      */
@@ -52,7 +58,9 @@ class Summaries
     {
         $summary = self::get($conversation, $language);
 
-        return !$summary || (int) ($summary['thread_id'] ?? 0) < (int) self::threads($conversation)->max('id');
+        // Made before backgrounds (a chronological "summary" instead): made again once.
+        return !$summary || !array_key_exists('background', $summary)
+            || (int) ($summary['thread_id'] ?? 0) < (int) self::threads($conversation)->max('id');
     }
 
     /**
@@ -65,7 +73,8 @@ class Summaries
             return null;
         }
 
-        $response = (new ConversationSummarizer($language))->prompt(TallportAgent::data('conversation', [
+        $with_background = self::threads($conversation)->limit(null)->count() >= self::BACKGROUND_MIN_MESSAGES;
+        $response = (new ConversationSummarizer($language, $with_background))->prompt(TallportAgent::data('conversation', [
             'subject'  => (string) $conversation->subject,
             'messages' => $threads->map(function (Thread $thread) {
                 return [
@@ -80,8 +89,8 @@ class Summaries
 
         $data = self::data($conversation);
         $data['summaries'][$language] = [
-            'one_liner' => trim((string) $response['one_liner']),
-            'summary'   => trim((string) $response['summary']),
+            'one_liner'  => trim((string) $response['one_liner']),
+            'background' => $with_background ? trim((string) ($response['background'] ?? '')) : '',
             'thread_id' => (int) $threads->last()->id,
             'at'        => now()->toDateTimeString(),
         ];

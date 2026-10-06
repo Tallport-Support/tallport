@@ -226,7 +226,7 @@ class DatabaseSeederTest extends FeatureTestCase
         $real_before = $real->fresh()->toArray();
         $threads_before = $real->threads()->orderBy('id')->get()->toArray();
         $sample = Conversation::where('id', '<>', $real->id)->first();
-        $summary = ['one_liner' => 'A real summary', 'summary' => 'Keep this text.', 'thread_id' => 0, 'at' => '2026-10-01 12:00:00'];
+        $summary = ['one_liner' => 'A real summary', 'background' => 'Keep this text.', 'thread_id' => 0, 'at' => '2026-10-01 12:00:00'];
         $sample->ai_assistant = json_encode(['summaries' => ['en' => $summary]]);
         $sample->saveQuietly();
         $thread = $sample->threads()->where('type', Thread::TYPE_CUSTOMER)->first();

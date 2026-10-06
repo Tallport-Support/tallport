@@ -62,7 +62,7 @@ class AiAssistantTest extends FeatureTestCase
 
     protected function fakeAi()
     {
-        ConversationSummarizer::fake([['one_liner' => 'Customer asks where the order is', 'summary' => "- Order is late\n- Wants an update"]]);
+        ConversationSummarizer::fake([['one_liner' => 'Customer asks where the order is', 'background' => '']]);
         ThreadTranslator::fake([['translation' => "Hello,\n\nWhere is my order?", 'same_language' => false, 'detected_language' => 'nl']]);
     }
 
@@ -200,7 +200,8 @@ class AiAssistantTest extends FeatureTestCase
 
         $this->getConversationPage($this->agent, $conversation)
             ->assertStatus(200)
-            ->assertSee('Order is late')
+            ->assertSee('ai-summary-line', false)->assertSee('<span>Customer asks where the order is</span>', false)
+            ->assertDontSee('ai-summary-line__background', false)
             ->assertSee('f-message__translation', false)
             ->assertSee('Where is my order?');
         $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id)
@@ -331,13 +332,13 @@ class AiAssistantTest extends FeatureTestCase
 
         $this->agent->ai_language = 'de';
         $this->agent->save();
-        ConversationSummarizer::fake([['one_liner' => 'Kunde fragt nach der Bestellung', 'summary' => '- Bestellung verspätet']]);
+        ConversationSummarizer::fake([['one_liner' => 'Kunde fragt nach der Bestellung', 'background' => '']]);
         ThreadTranslator::fake([['translation' => 'Wo bleibt meine Bestellung?', 'same_language' => false, 'detected_language' => 'nl']]);
 
         // The first view asks for them (queued), later views show them.
         $this->getConversationPage($this->agent, $conversation)->assertStatus(200);
         $this->getConversationPage($this->agent, $conversation)
-            ->assertSee('Bestellung verspätet')
+            ->assertSee('Kunde fragt nach der Bestellung')
             ->assertSee('Wo bleibt meine Bestellung?');
         $this->assertNotNull(Summaries::get($conversation->fresh(), 'en'));
     }
@@ -361,7 +362,7 @@ class AiAssistantTest extends FeatureTestCase
         $conversation = $this->receiveCustomerEmail();
         $this->assertFalse(Summaries::isStale($conversation->fresh(), 'en'));
 
-        ConversationSummarizer::fake([['one_liner' => 'Customer answered', 'summary' => '- New info']]);
+        ConversationSummarizer::fake([['one_liner' => 'Customer answered', 'background' => '']]);
         $this->postAjax($this->agent, '/conversation/ajax', [
             'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Our answer</p>',
         ]);
@@ -417,8 +418,36 @@ class AiAssistantTest extends FeatureTestCase
             'ai_assistant' => '{"summaries":{"en":{"one_liner":"Old one-liner","summary":"- Old summary"}}}',
         ]);
 
-        $this->getConversationPage($this->agent, $conversation)->assertStatus(200)->assertSee('Old summary');
+        // The one-liner shows; the old chronological summary doesn't, and it's made again.
+        $this->getConversationPage($this->agent, $conversation)->assertStatus(200)->assertSee('Old one-liner')->assertDontSee('Old summary');
         $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id)->assertSee('Old one-liner');
+        $this->assertTrue(Summaries::isStale($conversation->fresh(), 'en'));
+    }
+
+    /**
+     * Where it stands, always; what's been tried and what's open only for long conversations.
+     */
+    public function testBackgroundOnlyForLongConversations()
+    {
+        $this->configureAi();
+        $conversation = $this->receiveCustomerEmail();
+
+        ConversationSummarizer::fake([['one_liner' => 'Short one', 'background' => '- Should not be kept']]);
+        Summaries::summarize($conversation, 'en');
+        ConversationSummarizer::assertPrompted(fn ($prompt) => $prompt->agent->with_background === false);
+        $this->assertSame('', Summaries::get($conversation->fresh(), 'en')['background']);
+
+        for ($i = 0; $i < Summaries::BACKGROUND_MIN_MESSAGES; $i++) {
+            $this->postAjax($this->agent, '/conversation/ajax', [
+                'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Note '.$i.'</p>', 'is_note' => 1,
+            ]);
+        }
+        ConversationSummarizer::fake([['one_liner' => 'Long one', 'background' => "- Restarting did not help\n- Still open: other users"]]);
+        Summaries::summarize($conversation->fresh(), 'en');
+        ConversationSummarizer::assertPrompted(fn ($prompt) => $prompt->agent->with_background === true);
+
+        $this->getConversationPage($this->agent, $conversation)->assertStatus(200)
+            ->assertSeeInOrder(['Long one', 'Background', 'Restarting did not help', 'Still open: other users']);
     }
 
     public function testEarlierDataIsConvertedByLanguage()

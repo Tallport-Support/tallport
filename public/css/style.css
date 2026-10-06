@@ -1561,6 +1561,19 @@ a.disabled:focus {
 .ai-assistant-summary-list li:last-child {
     margin-bottom: 0;
 }
+/* The summary at the top of a conversation (conversations/partials/ai_summary). */
+.ai-summary-line {
+    padding: 10px 0;
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+}
+.ai-summary-line__background summary {
+    margin-top: 4px;
+    cursor: pointer;
+}
+.ai-summary-line__background .ai-assistant-summary-list {
+    margin-top: 4px;
+}
 /* AI Assistant's sparkles: an AI one-liner in the list. */
 .ai-assistant-icon {
     display: inline-block;
