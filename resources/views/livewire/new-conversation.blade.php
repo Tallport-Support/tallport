@@ -12,7 +12,7 @@
         App\Conversation::STATUS_PENDING => $is_phone ? __('Add Note & Pending') : __('Send & Pending'),
     ];
 @endphp
-<div id="conv-layout" class="conv-new" x-data="tallportComposer({{ (int) $conversation_id }})" x-on:input="changed($event)" x-on:change="blurred($event)" x-on:fruit-editor-upload.stop="embed($event)" x-on:keydown.enter="enter($event)">
+<div id="conv-layout" class="conv-new" x-data="tallportComposer({{ (int) $conversation_id }})" x-on:input="changed($event)" x-on:change="blurred($event)" x-on:fruit-editor-upload.stop="embed($event)" x-on:keydown.enter.capture="enter($event)">
     <div id="conv-layout-header">
         <div id="conv-toolbar" class="f-toolbar conv-header-bar conv-new-header">
             <h1 class="f-title-2">{{ __("New Conversation") }}</h1>

@@ -442,13 +442,15 @@ document.addEventListener('alpine:init', function () {
 				});
 			},
 
-			// The send keys (App\Misc\KeyboardShortcuts): Enter in the chat view, Cmd/Ctrl+Enter otherwise.
+			// The send keys (App\Misc\KeyboardShortcuts): Cmd/Ctrl+Enter, caught on the way down,
+			// before the editor takes it for a line break. In the chat view the editor sends (Enter).
 			enter: function (event) {
-				if (!event.target.closest || !event.target.closest('.f-editor')) {
+				if (chat || !event.target.closest || !event.target.closest('.f-editor')) {
 					return;
 				}
-				if (tallportSendKey(event, chat ? 'chat' : 'message')) {
+				if (tallportSendKey(event, 'message')) {
 					event.preventDefault();
+					event.stopPropagation();
 					this.submit();
 				}
 			}
