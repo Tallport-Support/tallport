@@ -140,6 +140,23 @@
             </div>
         </x-fruit::form-section>
 
+        {{-- Per mailbox: terms for every translation, and whether translated chat replies say so. --}}
+        <x-fruit::form-section :title="__('Translation')">
+            @foreach ($ai_mailboxes as $mailbox)
+                @php
+                    $ai_glossary = old('settings.aiassistant.translation_glossary.'.$mailbox->id, App\Ai\Settings::glossary($mailbox));
+                @endphp
+                <x-fruit::disclosure class="ai-translation" :title="$mailbox->name" :open="$errors->has('settings.aiassistant.translation_glossary.'.$mailbox->id)">
+                    <div class="settings-form">
+                        <x-fruit::field :label="__('Glossary')" :description="__('Terms the AI Assistant keeps as they are, or translates a certain way, one per line: a product name, or server = Server.')">
+                            <x-fruit::textarea id="ai_glossary_{{ $mailbox->id }}" name="settings[aiassistant.translation_glossary][{{ $mailbox->id }}]" rows="4" maxlength="3000">{{ $ai_glossary }}</x-fruit::textarea>
+                        </x-fruit::field>
+                        <x-fruit::checkbox name="settings[aiassistant.mailbox_translation_note][{{ $mailbox->id }}]" value="1" :checked="App\Ai\Settings::translationNote($mailbox)" :description="__('Chat replies sent translated end with “Translated automatically”, in the customer\'s language.')">{{ __('Mark Translated Replies') }}</x-fruit::checkbox>
+                    </div>
+                </x-fruit::disclosure>
+            @endforeach
+        </x-fruit::form-section>
+
         <x-fruit::form-section :title="__('Customer Context')" :footer="__('Optional, per mailbox: a URL that is sent the customer\'s email addresses when a reply is drafted, and returns JSON about the customer. Requests are signed with the secret key.')">
             @foreach ($ai_mailboxes as $mailbox)
                 @php

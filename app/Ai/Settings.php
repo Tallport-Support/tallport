@@ -260,6 +260,23 @@ class Settings
     }
 
     /**
+     * A mailbox's terms for translations: kept as they are, or translated a certain way
+     * ("server = Server"), one per line.
+     */
+    public static function glossary($mailbox)
+    {
+        return $mailbox ? trim((string) (((array) \Option::get('aiassistant.translation_glossary', []))[$mailbox->id] ?? '')) : '';
+    }
+
+    /**
+     * Whether a mailbox's translated chat replies say so, in the customer's language.
+     */
+    public static function translationNote($mailbox)
+    {
+        return $mailbox && !empty(((array) \Option::get('aiassistant.mailbox_translation_note', []))[$mailbox->id]);
+    }
+
+    /**
      * Tokens each mailbox may use per day (all AI features); 0: no limit.
      */
     public static function dailyTokens()

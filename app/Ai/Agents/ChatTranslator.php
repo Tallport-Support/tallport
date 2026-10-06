@@ -26,6 +26,7 @@ class ChatTranslator extends TallportAgent implements HasStructuredOutput
         return implode("\n", [
             'You translate a customer\'s chat messages for the support team.',
             self::dataRules(),
+            self::glossaryRule(),
             'Translate each message to: '.Settings::languageName($this->language).' ('.$this->language.').',
             'The chat\'s earlier messages are given for context only, so that the meaning, references and tone come across; do not translate them.',
             'Do not change the content, do not add information, keep the line breaks. Keep names, product names, codes, numbers and URLs as they are.',

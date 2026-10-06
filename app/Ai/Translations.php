@@ -270,7 +270,7 @@ class Translations
             // As it looks (HTML) where that fits, else as text.
             $html = self::sourceHtml($thread);
             $as_html = $html !== '' && mb_strlen($html) <= Summaries::MAX_THREAD_CHARS * 3;
-            $response = (new ThreadTranslator($language, $as_html))->prompt(TallportAgent::data('message', $as_html ? $html : $text));
+            $response = (new ThreadTranslator($language, $as_html))->prompt(trim(TallportAgent::glossary($thread->conversation->mailbox)."\n\n".TallportAgent::data('message', $as_html ? $html : $text)));
             Usage::record($response, Usage::FEATURE_TRANSLATION, $thread->conversation);
             $data['language'] = strtolower(trim((string) $response['detected_language'])) ?: ($data['language'] ?? null);
             // A chat's language: the one first detected (replies go out in it).

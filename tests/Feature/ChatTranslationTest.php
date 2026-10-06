@@ -180,6 +180,27 @@ class ChatTranslationTest extends FeatureTestCase
     }
 
     /**
+     * The mailbox's glossary goes with every translation; translated replies say so when the
+     * mailbox wants it, in the customer's language.
+     */
+    public function testGlossaryAndTranslatedNote()
+    {
+        Option::set('aiassistant.translation_glossary', [$this->mailbox->id => "12VPX\nserver = Server"]);
+        Option::set('aiassistant.mailbox_translation_note', [$this->mailbox->id => 1]);
+        Option::$cache = [];
+        ChatTranslation::setCustomerLanguage($this->conversation, 'nl');
+        ReplyTranslator::fake([['translation' => '<p>Herstart de 12VPX Server.</p>', 'same_language' => false, 'note' => 'Automatisch vertaald']]);
+
+        $this->composer()->call('previewTranslation', '<p>Please restart the 12VPX server.</p>')->assertReturned('ready')
+            ->assertSet('translation.html', '<p>Herstart de 12VPX Server.</p><p><em>(Automatisch vertaald)</em></p>');
+        ReplyTranslator::assertPrompted(fn ($prompt) => str_contains($prompt->prompt, "<glossary>") && str_contains($prompt->prompt, 'server = Server'));
+
+        $thread = $this->conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
+        Translations::translate($thread, 'en');
+        ThreadTranslator::assertPrompted(fn ($prompt) => str_contains($prompt->prompt, 'server = Server'));
+    }
+
+    /**
      * Notes, and chats in the agent's own language, aren't translated.
      */
     public function testNotesAndTheAgentsOwnLanguageAreNotTranslated()

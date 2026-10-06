@@ -107,6 +107,8 @@ class AiAssistantTest extends FeatureTestCase
             'aiassistant.daily_tokens'                    => 50000,
             'aiassistant.translations_per_customer_hour'  => 20,
             'aiassistant.mailbox_chat_translation'        => [$other->id => 1],
+            'aiassistant.translation_glossary'            => [$this->mailbox->id => " 12VPX\n", $other->id => ' '],
+            'aiassistant.mailbox_translation_note'        => [$this->mailbox->id => 1],
         ]])->assertRedirect(route('settings', ['section' => 'ai']));
 
         Option::$cache = [];
@@ -128,6 +130,10 @@ class AiAssistantTest extends FeatureTestCase
         $this->assertSame(20, Settings::translationsPerCustomerHour());
         $this->assertTrue(Settings::chatTranslation($other));
         $this->assertFalse(Settings::chatTranslation($this->mailbox));
+        $this->assertSame('12VPX', Settings::glossary($this->mailbox));
+        $this->assertSame('', Settings::glossary($other));
+        $this->assertTrue(Settings::translationNote($this->mailbox));
+        $this->assertFalse(Settings::translationNote($other));
 
         // The masked key keeps the key.
         $this->postForm($this->admin, '/app-settings/ai', ['settings' => ['aiassistant.api_key' => '******']]);

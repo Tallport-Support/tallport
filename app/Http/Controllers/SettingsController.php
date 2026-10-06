@@ -184,6 +184,7 @@ class SettingsController extends Controller
                         'settings.aiassistant\.drafts_per_day'          => 'nullable|integer|min:0|max:10000',
                         'settings.aiassistant\.daily_tokens'            => 'nullable|integer|min:0|max:1000000000',
                         'settings.aiassistant\.translations_per_customer_hour' => 'nullable|integer|min:0|max:10000',
+                        'settings.aiassistant\.translation_glossary.*'  => 'nullable|string|max:3000',
                         'settings.aiassistant\.customer_context_url.*'  => 'nullable|url:http,https|max:2048',
                         'settings.aiassistant\.customer_context_guidance.*' => 'nullable|string|max:6000',
                     ],
@@ -314,6 +315,8 @@ class SettingsController extends Controller
                     'aiassistant.mailbox_language'                => (array) Option::get('aiassistant.mailbox_language', []),
                     'aiassistant.mailbox_features_off'            => (array) Option::get('aiassistant.mailbox_features_off', []),
                     'aiassistant.mailbox_chat_translation'        => (array) Option::get('aiassistant.mailbox_chat_translation', []),
+                    'aiassistant.translation_glossary'            => (array) Option::get('aiassistant.translation_glossary', []),
+                    'aiassistant.mailbox_translation_note'        => (array) Option::get('aiassistant.mailbox_translation_note', []),
                     'aiassistant.customer_context_url'            => (array) Option::get('aiassistant.customer_context_url', []),
                     'aiassistant.customer_context_secret_key'     => (array) Option::get('aiassistant.customer_context_secret_key', []),
                     'aiassistant.customer_context_signature_header' => (array) Option::get('aiassistant.customer_context_signature_header', []),
@@ -470,6 +473,8 @@ class SettingsController extends Controller
         unset($input['aiassistant.mailbox_features_on']);
         $input['aiassistant.mailbox_features_off'] = $off;
         $input['aiassistant.mailbox_chat_translation'] = array_map('intval', array_filter((array) ($input['aiassistant.mailbox_chat_translation'] ?? [])));
+        $input['aiassistant.mailbox_translation_note'] = array_map('intval', array_filter((array) ($input['aiassistant.mailbox_translation_note'] ?? [])));
+        $input['aiassistant.translation_glossary'] = array_filter(array_map(fn ($glossary) => trim((string) $glossary), (array) ($input['aiassistant.translation_glossary'] ?? [])), 'strlen');
 
         // Customer context secrets are stored encrypted; a masked one is kept.
         $secrets = (array) Option::get('aiassistant.customer_context_secret_key', []);

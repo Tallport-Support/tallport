@@ -31,6 +31,7 @@ class ThreadTranslator extends TallportAgent implements HasStructuredOutput
         return implode("\n", [
             'You translate customer support emails for the support team.',
             self::dataRules(),
+            self::glossaryRule(),
             'Translate the message to: '.Settings::languageName($this->language).' ('.$this->language.').',
             'Do not change the content, do not add information, keep the paragraphs.',
             $this->html

@@ -91,15 +91,21 @@ class ChatTranslation
             throw new \RuntimeException(__('This mailbox has used its AI tokens for today.'));
         }
         $language = self::customerLanguage($conversation);
-        $response = (new ReplyTranslator($language))->prompt(implode("\n\n", [
+        $response = (new ReplyTranslator($language))->prompt(implode("\n\n", array_filter([
+            TallportAgent::glossary($conversation->mailbox),
             TallportAgent::data('chat', self::context($conversation)),
             TallportAgent::data('reply', $html),
-        ]));
+        ])));
         Usage::record($response, Usage::FEATURE_REPLY_TRANSLATION, $conversation, null, $user ? $user->id : null);
 
         $translation = trim((string) $response['translation']);
         if ($response['same_language'] || $translation === '') {
             return ['same' => true];
+        }
+        // "Translated automatically", in the customer's language, where the mailbox says so.
+        $note = trim(strip_tags((string) ($response['note'] ?? '')));
+        if ($note !== '' && Settings::translationNote($conversation->mailbox)) {
+            $translation .= '<p><em>('.e(trim($note, '() ')).')</em></p>';
         }
 
         return ['html' => $translation];
@@ -154,10 +160,11 @@ class ChatTranslation
         }
 
         try {
-            $response = (new ChatTranslator($language))->prompt(implode("\n\n", [
+            $response = (new ChatTranslator($language))->prompt(implode("\n\n", array_filter([
+                TallportAgent::glossary($conversation->mailbox),
                 TallportAgent::data('earlier_chat', self::context($conversation, $batch->first()->id)),
                 TallportAgent::data('messages', $batch->map(fn (Thread $thread) => ['id' => $thread->id, 'text' => Summaries::text($thread)])->all()),
-            ]));
+            ])));
         } catch (\Throwable $e) {
             \Helper::logException($e, '[AI Assistant] Translation of conversation '.$conversation->id.':');
             $batch->each(fn (Thread $thread) => Translations::failed($thread, $language, $e));

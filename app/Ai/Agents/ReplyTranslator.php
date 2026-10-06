@@ -26,11 +26,13 @@ class ReplyTranslator extends TallportAgent implements HasStructuredOutput
         return implode("\n", [
             'You translate a support agent\'s chat reply for the customer.',
             self::dataRules(),
+            self::glossaryRule(),
             'Translate the reply to: '.Settings::languageName($this->language).' ('.$this->language.').',
             'The chat\'s latest messages are given for context only, so that the reply\'s meaning, references and tone come across; do not translate or repeat them.',
             'Do not change the content, do not add information, keep the paragraphs and the tone. Keep names, product names, codes, numbers and URLs as they are.',
             'The reply is HTML. Translate only the text people read; keep every tag, attribute, link address and image exactly as it is. translation: the translated HTML, not JSON.',
             'If the reply is already in the target language, set same_language to true and leave translation empty.',
+            'note: the words "Translated automatically" in the target language (shown to the customer under the reply).',
         ]);
     }
 
@@ -39,6 +41,7 @@ class ReplyTranslator extends TallportAgent implements HasStructuredOutput
         return [
             'translation'   => $schema->string()->description('The translated reply (HTML).')->required(),
             'same_language' => $schema->boolean()->description('Whether the reply is already in the target language.')->required(),
+            'note'          => $schema->string()->description('"Translated automatically" in the target language.')->required(),
         ];
     }
 }
