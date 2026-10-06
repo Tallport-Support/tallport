@@ -60,7 +60,7 @@ Livewire 4 uses `.live.change`/`.live.blur` to send network updates on change/bl
 
 ## Laravel and single-file Livewire components
 
-The Composer service provider registers the `x-fruit::` Blade adapters. Use them inside a `.fruit-ui` scope; plain Blade usage does not require Livewire. Blade controls retain their native attributes, including `name`, `required`, `wire:model`, and action bindings. `php artisan vendor:publish --tag=fruit-views` copies the views to `resources/views/vendor/fruit` for local changes; published views take precedence.
+The Composer service provider registers the `x-fruit::` Blade adapters. Use them inside a `.fruit-ui` scope; plain Blade usage does not require Livewire. Blade controls retain their native attributes, including `name`, `required`, `wire:model`, and action bindings. Inside a component tag (`<x-fruit::…>`), Blade directives are not compiled: an attribute such as `x-on:click="clear(@js($name))"` reaches the browser as written, and the click does nothing. Echo the value instead, `x-on:click="clear({{ Js::from($name) }})"`, or bind a PHP expression with a colon (`:title="$label"`). Directives work as usual in plain elements' attributes. `php artisan vendor:publish --tag=fruit-views` copies the views to `resources/views/vendor/fruit` for local changes; published views take precedence.
 
 With Tailwind v4, declare `@layer theme, base, fruit, components, utilities;` before importing Tailwind and FruitUI, so utility classes still override FruitUI's layered component styles.
 

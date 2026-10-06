@@ -529,8 +529,17 @@
       background: var(--f-surface);
       font-size: var(--f-text-xl);
     }
+    /* The phone's mailbox list marks the current mailbox with the selection tint, focused or not:
+       its text and icon keep their own colors rather than the sidebar's white-on-accent. */
     .f-mail[data-view='mailboxes'] .f-mail__sidebar .f-sidebar__item:is([aria-current='page'], [data-current]) {
       background: var(--f-selection);
+      color: var(--f-text);
+    }
+    .f-mail[data-view='mailboxes']
+      .f-mail__sidebar
+      .f-sidebar__item:is([aria-current='page'], [data-current])
+      > .f-icon {
+      color: var(--f-accent-text);
     }
     .f-mail[data-view='mailboxes'] .f-mail__sidebar .f-icon {
       --f-icon-size: 22px;

@@ -3148,7 +3148,8 @@ img.f-avatar {
     max-width: none;
     margin-top: 12vh;
     padding: 0;
-    overflow: hidden;
+    /* Its list scrolls; the palette itself never does, even when focus moves far down the list. */
+    overflow: clip;
   }
 
 .f-command-palette__search {

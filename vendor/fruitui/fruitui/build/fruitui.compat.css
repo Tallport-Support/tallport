@@ -3144,7 +3144,8 @@ img.f-avatar {
     max-width: none;
     margin-top: 12vh;
     padding: 0;
-    overflow: hidden;
+    /* Its list scrolls; the palette itself never does, even when focus moves far down the list. */
+    overflow: clip;
   }
 
 .f-command-palette__search {
@@ -5332,7 +5333,9 @@ img.f-avatar {
     grid-template-rows: var(--f-workspace-rows, minmax(0, 1fr));
     height: var(--f-workspace-height, auto);
     min-height: var(--f-workspace-min-height, 0);
-    overflow: hidden;
+    /* Clip, not hidden: a hidden box can still be scrolled by an anchor jump, scrollIntoView or
+       focus, which would slide the toolbar row off the top. Only the panes inside scroll. */
+    overflow: clip;
     border: 1px solid var(--f-border);
     border-radius: var(--f-workspace-radius, var(--f-radius-lg));
     background: var(--f-workspace-background, var(--f-surface));
