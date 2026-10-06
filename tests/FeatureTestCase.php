@@ -37,6 +37,11 @@ abstract class FeatureTestCase extends TestCase
 
         $this->captureSentMail();
 
+        // Attachments and other files go to throwaway disks, never to the real storage.
+        foreach (['local', \App\Attachment::DISK] as $disk) {
+            \Storage::fake($disk, config('filesystems.disks.'.$disk));
+        }
+
         // A narrow window: a folder shows its list, rather than opening at a
         // conversation (ConversationsController::openFolder()).
         $this->withUnencryptedCookie('tallport_narrow', '1');
