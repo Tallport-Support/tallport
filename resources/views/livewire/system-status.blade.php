@@ -486,7 +486,7 @@
             </div>
             <footer class="f-dialog__footer">
                 <x-fruit::button x-on:click="$dispatch('fruit-dialog-close', { name: 'fetch-now' })"><span x-text="output ? @js(__('Done')) : @js(__('Cancel'))">{{ __('Cancel') }}</span></x-fruit::button>
-                <x-fruit::button type="submit" variant="primary" x-bind:disabled="running">{{ __('Fetch') }}</x-fruit::button>
+                <x-fruit::button type="submit" variant="primary" x-bind:aria-busy="running ? 'true' : null">{{ __('Fetch') }}</x-fruit::button>
             </footer>
         </form>
     </x-fruit::dialog>

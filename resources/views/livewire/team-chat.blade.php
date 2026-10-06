@@ -85,7 +85,7 @@
                 </x-slot:options>
             </x-fruit::autocomplete>
             <x-fruit::button variant="ghost" class="f-button--icon" x-on:click="$refs.files.click()" :aria-label="__('Attach Files')" :title="__('Attach Files')"><x-icon.paperclip class="f-icon" aria-hidden="true" /></x-fruit::button>
-            <x-fruit::button type="submit" variant="primary" class="f-button--icon f-composer__send" :aria-label="__('Send')" wire:loading.attr="disabled" wire:target="send,files"><x-icon.send class="f-icon" aria-hidden="true" /></x-fruit::button>
+            <x-fruit::button type="submit" variant="primary" class="f-button--icon f-composer__send" :aria-label="__('Send')" wire:loading.attr="aria-busy" wire:target="send,files"><x-icon.send class="f-icon" aria-hidden="true" /></x-fruit::button>
         </div>
         <p class="f-sr-only" id="team-room-help">{{ __('Enter to send, Shift+Enter for a new line, @ to mention a teammate.') }}</p>
         @error('body')<p class="f-error" id="team-room-error">{{ $message }}</p>@enderror

@@ -47,7 +47,7 @@
     <span class="f-toolbar__spacer"></span>
     @if (empty($send_only))
         <div class="f-button-group btn-group-send">
-            <button type="submit" class="f-button f-button--primary btn-reply-submit" wire:loading.attr="disabled" wire:target="send">{{ $send_label }}</button>
+            <button type="submit" class="f-button f-button--primary btn-reply-submit" wire:loading.attr="aria-busy" wire:target="send">{{ $send_label }}</button>
             <x-fruit::menu :title="__('More Send Options')" class="dropdown-send-status">
                 <x-slot:trigger class="f-button--primary f-button--icon" :aria-label="__('More Send Options')"><span class="f-menu__chevron" aria-hidden="true"></span></x-slot:trigger>
                 <ul class="menu-module-items">@action('conversation.prepend_send_dropdown', $conversation, $mailbox, !empty($is_new))</ul>
