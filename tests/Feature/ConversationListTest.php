@@ -64,6 +64,25 @@ class ConversationListTest extends FeatureTestCase
     }
 
     /**
+     * The conversation number in search results only (it stays through sorting, paging
+     * and realtime updates); a row with nothing to show under it has no meta line.
+     */
+    public function testNumberInSearchResultsOnly()
+    {
+        $conversation = $this->conversation('Banana question');
+        $folder = $this->folder(Folder::TYPE_UNASSIGNED);
+
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $folder])
+            ->assertSee('Banana question')->assertDontSee('conv-number')->assertDontSee('f-item-row__meta');
+
+        $results = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $folder, 'params' => ['show_number' => true]])
+            ->assertSee('<span class="conv-number">#'.$conversation->number.'</span>', false);
+        $results->call('sort', 'subject')->assertSee('<span class="conv-number">#'.$conversation->number.'</span>', false);
+        $results->call('gotoPage', 1)->assertSee('conv-number');
+        $results->dispatch('conversations-changed')->assertSee('conv-number');
+    }
+
+    /**
      * Mine shows the latest activity first (an assignment or a note counts); other folders
      * keep their own date (Waiting Since); a chosen order is remembered per kind of folder.
      */

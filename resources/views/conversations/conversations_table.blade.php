@@ -100,6 +100,9 @@
                     $conv_customer_name = ($conversation->customer_id && $conversation->customer) ? $conversation->customer->getFullName(true) : $conversation->customer_email;
                     $ai_one_liner = $conversation->search_snippet === null ? (App\Ai\Summaries::getAny($conversation, App\Ai\Settings::language($conversation->mailbox_cached, Auth::user()))['one_liner'] ?? '') : '';
                     $conv_starred = $conversation->isStarredByUser();
+                    // Not in Mine: the viewer's own.
+                    $conv_assignee = ($conversation->user_id && $folder->type != App\Folder::TYPE_MINE) ? $conversation->user : null;
+                    $conv_has_meta = !empty($params['show_number']) || $conversation->threads_count > 1 || $conv_assignee || $conversation->has_attachments || $conversation->isPhone() || !empty($viewers[$conversation->id]);
                 @endphp
                 <li class="conv-row @action('conversations_table.row_class', $conversation) @if ($conversation->isActive()) conv-active @endif @if ($conversation->isSpam()) conv-spam @endif" data-conversation_id="{{ $conversation->id }}" wire:key="conv-{{ $conversation->id }}">
                     @if (empty($no_checkboxes))
@@ -115,16 +118,18 @@
                             <x-slot:subtitle>@include('conversations/partials/badges'){{ '' }}@if ($conversation->hasChannel() && $conversation->getChannelName())<span class="f-badge conv-channel">{{ $conversation->getChannelName() }}</span> @endif{{ '' }}@action('conversations_table.before_subject', $conversation){{ $conversation->getSubject() }}@action('conversations_table.after_subject', $conversation)</x-slot:subtitle>
                         @endif
                         <x-slot:preview>@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner)<x-icon.sparkles class="f-icon ai-assistant-icon" role="img" :aria-label="__('AI Assistant')" /> {{ $ai_one_liner }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</x-slot:preview>
+                        @if ($conv_has_meta)
                         <x-slot:meta class="conv-row__meta">
-                            <span class="conv-number">#{{ $conversation->number }}</span>
+                            {{-- The number in search results only. --}}@if (!empty($params['show_number']))<span class="conv-number">#{{ $conversation->number }}</span>@endif
                             @if ($conversation->threads_count > 1)<span class="conv-counter" title="{{ __('Messages') }}"><x-icon.messages-square class="f-icon" aria-hidden="true" /> {{ $conversation->threads_count }}</span>@endif
-                            {{-- Not in Mine: the viewer's own. --}}@if ($conversation->user_id && $folder->type != App\Folder::TYPE_MINE && ($assignee = $conversation->user))<span class="conv-owner-name"><x-icon.user class="f-icon" aria-hidden="true" /> {{ $assignee->getFullName() }}</span>@endif
+                            @if ($conv_assignee)<span class="conv-owner-name"><x-icon.user class="f-icon" aria-hidden="true" /> {{ $conv_assignee->getFullName() }}</span>@endif
                             @if ($conversation->has_attachments)<x-icon.paperclip class="f-icon" :aria-label="__('Attachments')" role="img" />@endif
                             @if ($conversation->isPhone())<x-icon.phone class="f-icon" aria-hidden="true" />@endif
                             @if (!empty($viewers[$conversation->id]))
                                 <span class="viewer-badge @if (!empty($viewers[$conversation->id]['replying'])) viewer-replying @endif"><x-icon.eye class="f-icon" aria-hidden="true" /> {{ implode(', ', array_map(function ($viewer) { return __($viewer['replying'] ? ':user is replying' : ':user is viewing', ['user' => $viewer['user']->getFullName()]); }, $viewers[$conversation->id]['users'])) }}</span>
                             @endif
                         </x-slot:meta>
+                        @endif
                     </x-fruit::item-link>
                     @if (empty($no_checkboxes))
                         <x-fruit::button variant="ghost" size="small" class="f-button--icon conv-star" wire:click="star({{ $conversation->id }})" :aria-pressed="$conv_starred ? 'true' : 'false'" :aria-label="__('Star Conversation')" :title="$conv_starred ? __('Unstar Conversation') : __('Star Conversation')"><x-icon.star class="f-icon conv-star__off" aria-hidden="true" /><x-icon.star fill="currentColor" class="f-icon conv-star__on" aria-hidden="true" /></x-fruit::button>
