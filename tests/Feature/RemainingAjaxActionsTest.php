@@ -130,7 +130,10 @@ class RemainingAjaxActionsTest extends FeatureTestCase
                 ->assertSeeInOrder(['Message', 'Source', 'Headers'])
                 ->assertSee('<th scope="row">Subject</th><td>Original question</td>', false)
                 ->assertSee('Not checked')->assertSee('All Headers (')->assertSee('Copy Headers')
-                ->assertSee(route('threads.original_eml', ['thread_id' => $thread->id]), false);
+                ->assertSee(route('threads.original_eml', ['thread_id' => $thread->id]), false)
+                // From the kept email: the whole source, and no "couldn't load" notice.
+                ->assertSee('Subject: Original question')->assertDontSee('could not be loaded from mail server');
+            $this->assertStringEndsWith('/thread/'.$thread->id.'/original', route('threads.original_eml', ['thread_id' => $thread->id]));
 
             $this->actingAs($this->agent)->get(route('threads.original_eml', ['thread_id' => $thread->id]))->assertOk()
                 ->assertHeader('Content-Type', 'message/rfc822')->assertDownload('message-'.$thread->id.'.eml');

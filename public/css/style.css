@@ -2478,6 +2478,10 @@ a.disabled:focus {
 .show-original__panel {
     margin-top: 12px;
 }
+.show-original__panel:not([hidden]) {
+    display: grid;
+    gap: 12px;
+}
 /* Show Original (conversations/ajax_html/show_original): the message at the panel's width,
    the source and headers wrapped so nothing scrolls sideways (a DKIM signature is one long word). */
 .show-original__preview {
@@ -2490,7 +2494,6 @@ a.disabled:focus {
 .show-original__copy {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 8px;
 }
 .original-source {
     margin: 0;
@@ -2527,6 +2530,9 @@ a.disabled:focus {
 }
 .original-headers__all {
     margin-top: 16px;
+}
+.original-headers__all .show-original__copy {
+    margin-bottom: 8px;
 }
 /* Settings save bar: a secondary button before the primary one keeps its size
    (f-form-row stretches a first child). */

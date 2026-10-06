@@ -1371,24 +1371,40 @@ class ConversationsController extends Controller
 
         $fetched = true;
         $body_preview = $thread->body;
+        $source = $thread->getBodyOriginal();
+        // The email as it came in, kept for a while (App\Incoming\RawSources): its body, and
+        // the whole email as the source.
+        $raw_path = \App\Incoming\RawSources::path($thread);
+        $raw = is_file($raw_path) ? (string) file_get_contents($raw_path) : '';
 
         if ($thread->isCustomerMessage()) {
             $fetched = false;
-
-            // Try to fetch original body by imap.
-            $body_imap = $thread->fetchBody();
-            if ($body_imap) {
-                $fetched = true;
-                $body_preview = $body_imap;
+            if ($raw !== '') {
+                try {
+                    $message = \App\Incoming\Parser::parse($raw);
+                    $body_preview = $message->htmlBody() ?: nl2br(e((string) $message->textBody()));
+                    $source = $raw;
+                    $fetched = true;
+                } catch (\Throwable $e) {
+                    // Shown from the database below.
+                }
+            }
+            // Else from the mailbox's IMAP inbox (none when the mail server delivers it).
+            if (!$fetched && !$thread->conversation->mailbox->isDeliveredByMailServer()) {
+                $body_imap = $thread->fetchBody();
+                if ($body_imap) {
+                    $fetched = true;
+                    $body_preview = $body_imap;
+                }
             }
         }
 
         return view('conversations/ajax_html/show_original', [
             'thread' => $thread,
             'body_preview' => $body_preview,
+            'source' => $source,
             'fetched' => $fetched,
-            // The email as it came in, kept for a while (App\Incoming\RawSources).
-            'raw_kept' => is_file(\App\Incoming\RawSources::path($thread)),
+            'raw_kept' => $raw !== '',
         ]);
     }
 

@@ -26,8 +26,8 @@
         @if (!$fetched)
             <x-fruit::alert>{{ __('The original message could not be loaded from mail server, below is the latest truncated copy stored in database.') }}</x-fruit::alert>
         @endif
-        <div class="show-original__copy"><x-fruit::copy-button size="small" :value="$thread->getBodyOriginal()">{{ __('Copy Source') }}</x-fruit::copy-button></div>
-        <pre class="original-source">{{ $thread->getBodyOriginal() }}</pre>
+        <div class="show-original__copy"><x-fruit::copy-button size="small" :value="$source">{{ __('Copy Source') }}</x-fruit::copy-button></div>
+        <pre class="original-source">{{ $source }}</pre>
     </div>
 
     @if ($thread->headers)

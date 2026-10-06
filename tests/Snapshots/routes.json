@@ -2298,7 +2298,7 @@
         "methods": [
             "GET"
         ],
-        "uri": "thread/{thread_id}/original.eml",
+        "uri": "thread/{thread_id}/original",
         "name": "threads.original_eml",
         "action": "ConversationsController@originalEml",
         "middleware": [
