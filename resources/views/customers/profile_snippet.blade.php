@@ -21,54 +21,40 @@
 		<div class="customer-tags">@foreach ($channels as $channel)<x-fruit::badge>{{ $channel->getChannelName() }}</x-fruit::badge>@endforeach{{ '' }}@action('customer.tags', $customer, $conversation ?? null)</div>
 	</div>
 
-	<x-fruit::description-list class="customer-snippet__details">
-		@if (count($customer_emails))
-			<div>
-				<dt>{{ __('Email') }}</dt>
-				@foreach ($customer_emails as $email)
-					<dd class="customer-email"><a href="#" class="contact-main" title="{{ __('Copy') }}">{{ $email->email }}</a></dd>
-				@endforeach
-			</div>
-		@endif
-		@if (count($customer->getPhones()))
-			<div>
-				<dt>{{ __('Phone') }}</dt>
-				@foreach ($customer->getPhones() as $phone)
-					<dd class="customer-phone"><a href="tel:{{ $phone['value'] }}">{{ $phone['value'] }}</a>@if (!\App\Customer::isDefaultPhoneType($phone['type'])) <span class="f-muted">({{ \App\Customer::getPhoneTypeName($phone['type']) }})</span>@endif</dd>
-				@endforeach
-			</div>
-		@endif
-		@if ($customer->getWebsites())
-			<div>
-				<dt>{{ __('Website') }}</dt>
-				@foreach ($customer->getWebsites() as $website)
-					<dd><a href="{{ $website }}" target="_blank">{{ parse_url($website, PHP_URL_HOST) ?: $website }}</a></dd>
-				@endforeach
-			</div>
-		@endif
-		@if ($customer->getSocialProfiles())
-			<div>
-				<dt>{{ __('Social Profiles') }}</dt>
-				@foreach ($customer->getSocialProfiles() as $sp)
-					<dd><a href="{{ App\Customer::formatSocialProfile($sp)['value_url'] }}" target="_blank">{{ App\Customer::formatSocialProfile($sp)['type_name'] }}</a></dd>
-				@endforeach
-			</div>
-		@endif
-		@if ($location)
-			<div><dt>{{ __('Location') }}</dt><dd>{{ implode(', ', $location) }}</dd></div>
-		@endif
-		@if ($customer->address || $customer->zip)
-			<div><dt>{{ __('Address') }}</dt><dd>{{ $customer->address }}@if ($customer->address && $customer->zip), @endif{{ $customer->zip }}</dd></div>
-		@endif
-		@if ($sender_offset)
-			<div title="{{ __('From the time zone of their latest email') }}"><dt>{{ __('Local time') }}</dt><dd>{{ App\Misc\SenderTime::format(now(), $sender_offset) }} (GMT{{ $sender_offset }})</dd></div>
-		@endif
-		@if ($customer->notes)
-			<div><dt>{{ __('Notes') }}</dt><dd>{{ $customer->notes }}</dd></div>
-		@endif
-	</x-fruit::description-list>
-
-	@include('nostr/partials/customer_keys_snippet', ['keys' => App\Nostr\CustomerKey::forCustomer($customer->id)])
+	{{-- The details, each behind its icon (its name for screen readers), the Nostr devices among them. --}}
+	@php
+		$detail = fn ($label) => '<span class="f-sr-only">'.e($label).': </span>';
+		$nostr_keys = collect(App\Nostr\CustomerKey::forCustomer($customer->id))->filter(fn ($key) => $key->label);
+	@endphp
+	@if (count($customer_emails) || count($customer->getPhones()) || $customer->getWebsites() || $customer->getSocialProfiles() || $location || $customer->address || $customer->zip || $sender_offset || $customer->notes || count($nostr_keys))
+		<ul class="customer-snippet__details customer-contacts">
+			@foreach ($customer_emails as $email)
+				<li class="customer-email"><x-icon.mail class="f-icon" aria-hidden="true" />{!! $detail(__('Email')) !!}<a href="#" class="contact-main" title="{{ __('Copy') }}">{{ $email->email }}</a></li>
+			@endforeach
+			@foreach ($customer->getPhones() as $phone)
+				<li class="customer-phone"><x-icon.phone class="f-icon" aria-hidden="true" />{!! $detail(__('Phone')) !!}<span><a href="tel:{{ $phone['value'] }}">{{ $phone['value'] }}</a>@if (!\App\Customer::isDefaultPhoneType($phone['type'])) <span class="f-muted">({{ \App\Customer::getPhoneTypeName($phone['type']) }})</span>@endif</span></li>
+			@endforeach
+			@foreach ($customer->getWebsites() as $website)
+				<li><x-icon.globe class="f-icon" aria-hidden="true" />{!! $detail(__('Website')) !!}<a href="{{ $website }}" target="_blank">{{ parse_url($website, PHP_URL_HOST) ?: $website }}</a></li>
+			@endforeach
+			@foreach ($customer->getSocialProfiles() as $sp)
+				<li><x-icon.link class="f-icon" aria-hidden="true" />{!! $detail(__('Social Profiles')) !!}<a href="{{ App\Customer::formatSocialProfile($sp)['value_url'] }}" target="_blank">{{ App\Customer::formatSocialProfile($sp)['type_name'] }}</a></li>
+			@endforeach
+			@if ($location)
+				<li><x-icon.map-pin class="f-icon" aria-hidden="true" />{!! $detail(__('Location')) !!}<span>{{ implode(', ', $location) }}</span></li>
+			@endif
+			@if ($customer->address || $customer->zip)
+				<li><x-icon.house class="f-icon" aria-hidden="true" />{!! $detail(__('Address')) !!}<span>{{ $customer->address }}@if ($customer->address && $customer->zip), @endif{{ $customer->zip }}</span></li>
+			@endif
+			@if ($sender_offset)
+				<li title="{{ __('From the time zone of their latest email') }}"><x-icon.clock class="f-icon" aria-hidden="true" />{!! $detail(__('Local time')) !!}<span>{{ App\Misc\SenderTime::format(now(), $sender_offset) }} (GMT{{ $sender_offset }})</span></li>
+			@endif
+			@include('nostr/partials/customer_keys_snippet', ['keys' => $nostr_keys])
+			@if ($customer->notes)
+				<li><x-icon.file-text class="f-icon" aria-hidden="true" />{!! $detail(__('Notes')) !!}<span>{{ $customer->notes }}</span></li>
+			@endif
+		</ul>
+	@endif
 	@action('customer.profile.extra', $customer, $conversation ?? '')
 	@action('customer.profile_data', $customer, $conversation ?? '')
 </div>

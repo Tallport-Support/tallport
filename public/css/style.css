@@ -2462,12 +2462,6 @@ a.disabled:focus {
 .ai-draft-translation-body {
     white-space: pre-wrap;
 }
-.customer-contacts .nostr-key-icon {
-    display: inline-block;
-    --f-icon-size: 14px;
-    vertical-align: -2px;
-    color: var(--f-tertiary);
-}
 .nostr-keys-table td {
     vertical-align: middle;
 }
@@ -2585,6 +2579,25 @@ a.disabled:focus {
     margin: 0;
     padding: 17px 16px;
     border-top: 1px solid var(--f-border);
+}
+/* Each detail behind its icon, the values lined up. */
+.customer-contacts {
+    display: grid;
+    gap: 8px;
+    list-style: none;
+}
+.customer-contacts li {
+    display: grid;
+    grid-template-columns: 16px minmax(0, 1fr);
+    column-gap: 10px;
+    align-items: baseline;
+    line-height: 1.5;
+}
+.customer-contacts li > .f-icon {
+    --f-icon-size: 16px;
+    align-self: start;
+    margin-top: 0.15em;
+    color: var(--f-secondary);
 }
 .customer-snippet__details a {
     color: inherit;
