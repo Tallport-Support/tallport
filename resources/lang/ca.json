@@ -1581,8 +1581,6 @@
     "No queued jobs": "No hi ha tasques a la cua",
     "No failed jobs": "No hi ha tasques fallides",
     "1 attempt|:count attempts": "1 intent|:count intents",
-    "The optional :name extension is missing": "Falta l'extensió opcional :name",
-    "PCRE JIT is off": "PCRE JIT està desactivat",
     "Next attempt in :time": "Proper intent d'aquí a :time",
     "Appearance": "Aparença",
     "Light": "Clar",
@@ -1726,5 +1724,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "La tasca programada (cron) del servidor no crida Tallport. Afegiu aquesta línia al seu crontab:",
     "This log is empty.": "Aquest registre és buit.",
     "Clear :log?": "Netejar :log?",
-    "Its entries are deleted for good.": "Les seves entrades s'eliminen definitivament."
+    "Its entries are deleted for good.": "Les seves entrades s'eliminen definitivament.",
+    "Queue Worker": "Processador de la Cua",
+    "AI Queue Worker": "Processador de la Cua d'IA",
+    "Nostr Listener": "Oient de Nostr",
+    "Checks the mailboxes for new email": "Comprova si hi ha correus nous a les bústies",
+    "Sends emails and runs jobs": "Envia correus i executa tasques",
+    "Runs the AI Assistant's jobs": "Executa les tasques de l'assistent d'IA",
+    "Receives Nostr messages": "Rep missatges de Nostr",
+    "Recipient": "Destinatari",
+    "Technical Details": "Detalls Tècnics",
+    "Not sent: the reply was never queued.": "No enviat: la resposta no es va posar mai a la cua."
 }

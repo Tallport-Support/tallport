@@ -229,6 +229,10 @@ class SettingsAndSystemTest extends FeatureTestCase
         \DB::table('jobs')->where('id', $job->id)->delete();
         $failed_id = \DB::table('failed_jobs')->insertGetId(['connection' => 'database', 'queue' => 'emails', 'payload' => $job->payload, 'exception' => 'Connection refused', 'failed_at' => now()]);
         $count = \App\Http\Controllers\SystemController::cacheProblemCount();
+        // An optional extension missing needs no action: not a problem.
+        $data = \App\Http\Controllers\SystemController::statusData();
+        $data['php_extensions']['gmp'] = false;
+        $this->assertNotContains('extension', array_column(\App\Http\Controllers\SystemController::problems($data), 0));
         $this->assertGreaterThanOrEqual(1, $count);
 
         $this->actingAs($this->admin)->get(route('settings', ['section' => 'general']))->assertOk()

@@ -1484,8 +1484,6 @@
     "No queued jobs": "Nincs várakozó feladat",
     "No failed jobs": "Nincs sikertelen feladat",
     "1 attempt|:count attempts": ":count próbálkozás|:count próbálkozás",
-    "The optional :name extension is missing": "A(z) :name opcionális bővítmény hiányzik",
-    "PCRE JIT is off": "A PCRE JIT ki van kapcsolva",
     "Next attempt in :time": "Következő próbálkozás :time múlva",
     "Appearance": "Megjelenés",
     "Light": "Világos",
@@ -1631,5 +1629,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "A szerver ütemezett feladata (cron) nem hívja meg a Tallportot. Add hozzá ezt a sort a crontabjához:",
     "This log is empty.": "Ez a napló üres.",
     "Clear :log?": ":log törlése?",
-    "Its entries are deleted for good.": "A bejegyzései véglegesen törlődnek."
+    "Its entries are deleted for good.": "A bejegyzései véglegesen törlődnek.",
+    "Queue Worker": "Sorfeldolgozó",
+    "AI Queue Worker": "MI-Sorfeldolgozó",
+    "Nostr Listener": "Nostr-Figyelő",
+    "Checks the mailboxes for new email": "Új e-maileket keres a postafiókokban",
+    "Sends emails and runs jobs": "E-maileket küld és feladatokat futtat",
+    "Runs the AI Assistant's jobs": "Futtatja az MI-asszisztens feladatait",
+    "Receives Nostr messages": "Nostr-üzeneteket fogad",
+    "Recipient": "Címzett",
+    "Technical Details": "Technikai Részletek",
+    "Not sent: the reply was never queued.": "Nem lett elküldve: a válasz soha nem került a sorba."
 }

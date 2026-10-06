@@ -102,6 +102,20 @@ class ActivityLog extends Activity
 
     public static function formatColTitle($col)
     {
+        // The Logs page's own columns, in the user's language.
+        $titles = [
+            'date'         => __('Date'),
+            'type'         => __('Type'),
+            'recipient'    => __('Recipient'),
+            'status'       => __('Status'),
+            'conversation' => __('Conversation'),
+            'user'         => __('User'),
+            'customer'     => __('Customer'),
+            'details'      => __('Technical Details'),
+        ];
+        if (isset($titles[$col])) {
+            return $titles[$col];
+        }
         $col = str_replace('_', ' ', $col);
         $col = ucfirst($col);
 

@@ -1483,8 +1483,6 @@
     "No queued jobs": "Nicio sarcină în coadă",
     "No failed jobs": "Nicio sarcină eșuată",
     "1 attempt|:count attempts": "1 încercare|:count încercări|:count de încercări",
-    "The optional :name extension is missing": "Lipsește extensia opțională :name",
-    "PCRE JIT is off": "PCRE JIT este dezactivat",
     "Next attempt in :time": "Următoarea încercare peste :time",
     "Appearance": "Aspect",
     "Light": "Luminos",
@@ -1630,5 +1628,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "Sarcina programată (cron) a serverului nu apelează Tallport. Adaugă această linie în crontab-ul său:",
     "This log is empty.": "Acest jurnal este gol.",
     "Clear :log?": "Curăță :log?",
-    "Its entries are deleted for good.": "Intrările sale sunt șterse definitiv."
+    "Its entries are deleted for good.": "Intrările sale sunt șterse definitiv.",
+    "Queue Worker": "Procesator de Coadă",
+    "AI Queue Worker": "Procesator de Coadă AI",
+    "Nostr Listener": "Ascultător Nostr",
+    "Checks the mailboxes for new email": "Verifică dacă există emailuri noi în cutiile poștale",
+    "Sends emails and runs jobs": "Trimite emailuri și rulează sarcini",
+    "Runs the AI Assistant's jobs": "Rulează sarcinile asistentului AI",
+    "Receives Nostr messages": "Primește mesaje Nostr",
+    "Recipient": "Destinatar",
+    "Technical Details": "Detalii Tehnice",
+    "Not sent: the reply was never queued.": "Netrimis: răspunsul nu a fost pus niciodată în coadă."
 }

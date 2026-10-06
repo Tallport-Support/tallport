@@ -1483,8 +1483,6 @@
     "No queued jobs": "Ni opravil v čakalni vrsti",
     "No failed jobs": "Ni neuspelih opravil",
     "1 attempt|:count attempts": ":count poskus|:count poskusa|:count poskusi|:count poskusov",
-    "The optional :name extension is missing": "Manjka izbirna razširitev :name",
-    "PCRE JIT is off": "PCRE JIT je izklopljen",
     "Next attempt in :time": "Naslednji poskus čez :time",
     "Appearance": "Videz",
     "Light": "Svetlo",
@@ -1630,5 +1628,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "Načrtovano opravilo strežnika (cron) ne kliče Tallport. Dodajte to vrstico v njegov crontab:",
     "This log is empty.": "Ta dnevnik je prazen.",
     "Clear :log?": "Počistiti :log?",
-    "Its entries are deleted for good.": "Njegovi vnosi bodo trajno izbrisani."
+    "Its entries are deleted for good.": "Njegovi vnosi bodo trajno izbrisani.",
+    "Queue Worker": "Obdelovalnik Vrste",
+    "AI Queue Worker": "Obdelovalnik Vrste AI",
+    "Nostr Listener": "Poslušalec Nostr",
+    "Checks the mailboxes for new email": "Preverja, ali je v poštnih predalih nova e-pošta",
+    "Sends emails and runs jobs": "Pošilja e-pošto in izvaja opravila",
+    "Runs the AI Assistant's jobs": "Izvaja opravila pomočnika AI",
+    "Receives Nostr messages": "Prejema sporočila Nostr",
+    "Recipient": "Prejemnik",
+    "Technical Details": "Tehnične Podrobnosti",
+    "Not sent: the reply was never queued.": "Ni poslano: odgovor ni bil nikoli uvrščen v čakalno vrsto."
 }

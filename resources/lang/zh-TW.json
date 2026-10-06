@@ -1532,8 +1532,6 @@
     "No queued jobs": "沒有排入佇列的工作",
     "No failed jobs": "沒有失敗的工作",
     "1 attempt|:count attempts": ":count 次嘗試",
-    "The optional :name extension is missing": "缺少選用的 :name 擴充功能",
-    "PCRE JIT is off": "PCRE JIT 已關閉",
     "Next attempt in :time": ":time後再次嘗試",
     "Appearance": "外觀",
     "Light": "淺色",
@@ -1678,5 +1676,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "伺服器的排程工作 (cron) 沒有呼叫 Tallport。請將此行加入其 crontab：",
     "This log is empty.": "此日誌為空。",
     "Clear :log?": "清除 :log？",
-    "Its entries are deleted for good.": "其項目將被永久刪除。"
+    "Its entries are deleted for good.": "其項目將被永久刪除。",
+    "Queue Worker": "佇列處理程式",
+    "AI Queue Worker": "AI 佇列處理程式",
+    "Nostr Listener": "Nostr 監聽程式",
+    "Checks the mailboxes for new email": "檢查信箱中的新電子郵件",
+    "Sends emails and runs jobs": "寄送電子郵件並執行工作",
+    "Runs the AI Assistant's jobs": "執行 AI 助理的工作",
+    "Receives Nostr messages": "接收 Nostr 訊息",
+    "Recipient": "收件者",
+    "Technical Details": "技術詳細資料",
+    "Not sent: the reply was never queued.": "未寄出：回覆從未進入佇列。"
 }

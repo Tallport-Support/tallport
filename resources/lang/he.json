@@ -1483,8 +1483,6 @@
     "No queued jobs": "אין משימות בתור",
     "No failed jobs": "אין משימות שנכשלו",
     "1 attempt|:count attempts": "ניסיון אחד|:count ניסיונות",
-    "The optional :name extension is missing": "ההרחבה האופציונלית :name חסרה",
-    "PCRE JIT is off": "PCRE JIT כבוי",
     "Next attempt in :time": "הניסיון הבא בעוד :time",
     "Appearance": "מראה",
     "Light": "בהיר",
@@ -1630,5 +1628,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "המשימה המתוזמנת של השרת (cron) אינה קוראת ל-Tallport. הוסף את השורה הזו ל-crontab שלו:",
     "This log is empty.": "היומן הזה ריק.",
     "Clear :log?": "לנקות את :log?",
-    "Its entries are deleted for good.": "הרשומות שלו נמחקות לצמיתות."
+    "Its entries are deleted for good.": "הרשומות שלו נמחקות לצמיתות.",
+    "Queue Worker": "מעבד התור",
+    "AI Queue Worker": "מעבד התור של AI",
+    "Nostr Listener": "מאזין Nostr",
+    "Checks the mailboxes for new email": "בודק אם יש אימיילים חדשים בתיבות הדואר",
+    "Sends emails and runs jobs": "שולח אימיילים ומריץ עבודות",
+    "Runs the AI Assistant's jobs": "מריץ את העבודות של עוזר ה-AI",
+    "Receives Nostr messages": "מקבל הודעות Nostr",
+    "Recipient": "נמען",
+    "Technical Details": "פרטים טכניים",
+    "Not sent: the reply was never queued.": "לא נשלח: התשובה מעולם לא נכנסה לתור."
 }

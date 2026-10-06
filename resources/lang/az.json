@@ -1484,8 +1484,6 @@
     "No queued jobs": "Növbədə tapşırıq yoxdur",
     "No failed jobs": "Uğursuz tapşırıq yoxdur",
     "1 attempt|:count attempts": ":count cəhd",
-    "The optional :name extension is missing": "İstəyə bağlı :name genişləndirməsi yoxdur",
-    "PCRE JIT is off": "PCRE JIT söndürülüb",
     "Next attempt in :time": "Növbəti cəhd :time sonra",
     "Appearance": "Görünüş",
     "Light": "Açıq",
@@ -1631,5 +1629,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "Serverin planlaşdırılmış tapşırığı (cron) Tallport-u çağırmır. Bu sətri onun crontab-ına əlavə edin:",
     "This log is empty.": "Bu jurnal boşdur.",
     "Clear :log?": ":log təmizlənsin?",
-    "Its entries are deleted for good.": "Onun qeydləri həmişəlik silinir."
+    "Its entries are deleted for good.": "Onun qeydləri həmişəlik silinir.",
+    "Queue Worker": "Növbə İşləyicisi",
+    "AI Queue Worker": "Sİ Növbə İşləyicisi",
+    "Nostr Listener": "Nostr Dinləyicisi",
+    "Checks the mailboxes for new email": "Poçt qutularında yeni e-poçtları yoxlayır",
+    "Sends emails and runs jobs": "E-poçtları göndərir və tapşırıqları icra edir",
+    "Runs the AI Assistant's jobs": "Sİ köməkçisinin tapşırıqlarını icra edir",
+    "Receives Nostr messages": "Nostr mesajlarını qəbul edir",
+    "Recipient": "Alıcı",
+    "Technical Details": "Texniki Təfərrüatlar",
+    "Not sent: the reply was never queued.": "Göndərilmədi: cavab heç vaxt növbəyə qoyulmadı."
 }

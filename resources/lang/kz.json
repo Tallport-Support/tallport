@@ -1886,8 +1886,6 @@
     "No queued jobs": "Кезекте тапсырма жоқ",
     "No failed jobs": "Сәтсіз тапсырма жоқ",
     "1 attempt|:count attempts": ":count әрекет",
-    "The optional :name extension is missing": "Міндетті емес :name кеңейтімі жоқ",
-    "PCRE JIT is off": "PCRE JIT өшірулі",
     "Next attempt in :time": "Келесі әрекет :time кейін",
     "Appearance": "Сыртқы түрі",
     "Light": "Ашық",
@@ -2033,5 +2031,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "Сервердің жоспарланған тапсырмасы (cron) Tallport-ты шақырмайды. Осы жолды оның crontab файлына қосыңыз:",
     "This log is empty.": "Бұл журнал бос.",
     "Clear :log?": ":log тазарту керек пе?",
-    "Its entries are deleted for good.": "Оның жазбалары біржола жойылады."
+    "Its entries are deleted for good.": "Оның жазбалары біржола жойылады.",
+    "Queue Worker": "Кезек Өңдеушісі",
+    "AI Queue Worker": "ЖИ Кезек Өңдеушісі",
+    "Nostr Listener": "Nostr Тыңдаушысы",
+    "Checks the mailboxes for new email": "Пошталық жәшіктерде жаңа хаттарды тексереді",
+    "Sends emails and runs jobs": "Хаттарды жібереді және тапсырмаларды орындайды",
+    "Runs the AI Assistant's jobs": "ЖИ көмекшісінің тапсырмаларын орындайды",
+    "Receives Nostr messages": "Nostr хабарламаларын қабылдайды",
+    "Recipient": "Алушы",
+    "Technical Details": "Техникалық Мәліметтер",
+    "Not sent: the reply was never queued.": "Жіберілмеді: жауап ешқашан кезекке қойылмады."
 }

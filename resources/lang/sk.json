@@ -1483,8 +1483,6 @@
     "No queued jobs": "Žiadne úlohy vo fronte",
     "No failed jobs": "Žiadne neúspešné úlohy",
     "1 attempt|:count attempts": ":count pokus|:count pokusy|:count pokusov",
-    "The optional :name extension is missing": "Chýba voliteľné rozšírenie :name",
-    "PCRE JIT is off": "PCRE JIT je vypnutý",
     "Next attempt in :time": "Ďalší pokus o :time",
     "Appearance": "Vzhľad",
     "Light": "Svetlý",
@@ -1630,5 +1628,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "Naplánovaná úloha servera (cron) nevolá Tallport. Pridajte tento riadok do jeho crontabu:",
     "This log is empty.": "Tento log je prázdny.",
     "Clear :log?": "Vymazať :log?",
-    "Its entries are deleted for good.": "Jeho záznamy budú natrvalo odstránené."
+    "Its entries are deleted for good.": "Jeho záznamy budú natrvalo odstránené.",
+    "Queue Worker": "Spracovateľ Frontu",
+    "AI Queue Worker": "AI Spracovateľ Frontu",
+    "Nostr Listener": "Poslucháč Nostr",
+    "Checks the mailboxes for new email": "Kontroluje nové emaily v mailboxoch",
+    "Sends emails and runs jobs": "Odosiela emaily a spúšťa úlohy",
+    "Runs the AI Assistant's jobs": "Spúšťa úlohy AI asistenta",
+    "Receives Nostr messages": "Prijíma správy Nostr",
+    "Recipient": "Príjemca",
+    "Technical Details": "Technické Podrobnosti",
+    "Not sent: the reply was never queued.": "Neodoslané: odpoveď nebola nikdy zaradená do frontu."
 }

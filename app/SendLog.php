@@ -124,6 +124,26 @@ class SendLog extends Model
     /**
      * Get name of the status.
      */
+    /**
+     * The status in plain words for the Logs page, its technical message kept for Details:
+     * [status, technical details or ''].
+     */
+    public function getStatusForPeople()
+    {
+        $message = (string) $this->status_message;
+        // tallport:check-outgoing found a reply nothing was going to send.
+        if (str_starts_with($message, 'Not sent: no job is sending this reply')) {
+            return [__('Not sent: the reply was never queued.'), $this->getStatusName().'. '.$message];
+        }
+        $status = $this->getStatusName().($message !== '' ? '. '.$message : '');
+        $details = array_filter([
+            $this->status == self::STATUS_SEND_ERROR && $message !== '' ? 'Message-ID: '.$this->message_id : '',
+            $this->smtp_queue_id ? 'SMTP ID: '.$this->smtp_queue_id : '',
+        ]);
+
+        return [$status, implode('. ', $details)];
+    }
+
     public function getStatusName()
     {
         switch ($this->status) {

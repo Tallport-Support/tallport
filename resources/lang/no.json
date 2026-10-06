@@ -1488,8 +1488,6 @@
     "No queued jobs": "Ingen jobber i kø",
     "No failed jobs": "Ingen mislykkede jobber",
     "1 attempt|:count attempts": "1 forsøk|:count forsøk",
-    "The optional :name extension is missing": "Den valgfrie utvidelsen :name mangler",
-    "PCRE JIT is off": "PCRE JIT er av",
     "Next attempt in :time": "Neste forsøk om :time",
     "Appearance": "Utseende",
     "Light": "Lyst",
@@ -1635,5 +1633,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "Serverens planlagte oppgave (cron) kaller ikke Tallport. Legg til denne linjen i dens crontab:",
     "This log is empty.": "Denne loggen er tom.",
     "Clear :log?": "Tømme :log?",
-    "Its entries are deleted for good.": "Oppføringene slettes for godt."
+    "Its entries are deleted for good.": "Oppføringene slettes for godt.",
+    "Queue Worker": "Købehandler",
+    "AI Queue Worker": "AI-Købehandler",
+    "Nostr Listener": "Nostr-Lytter",
+    "Checks the mailboxes for new email": "Ser etter ny e-post i postkassene",
+    "Sends emails and runs jobs": "Sender e-post og kjører jobber",
+    "Runs the AI Assistant's jobs": "Kjører AI-assistentens jobber",
+    "Receives Nostr messages": "Mottar Nostr-meldinger",
+    "Recipient": "Mottaker",
+    "Technical Details": "Tekniske Detaljer",
+    "Not sent: the reply was never queued.": "Ikke sendt: svaret ble aldri lagt i køen."
 }

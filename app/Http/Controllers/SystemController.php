@@ -317,20 +317,11 @@ class SystemController extends Controller
         if ($data['redis_uses'] && $data['redis_error']) {
             $problems[] = ['redis', __('Redis isn\'t reachable'), 'danger', $data['redis_error']];
         }
+        // Optional extensions and PCRE JIT aren't problems: Requirements lists them.
         foreach ($data['php_extensions'] as $name => $installed) {
-            if (!$installed) {
-                $purpose = config('installer.optional.'.strtolower($name));
-                $problems[] = $purpose
-                    ? ['extension', __('The optional :name extension is missing', ['name' => $name]), 'warning', __('Needed for').': '.__($purpose)]
-                    : ['extension', __('The :name extension is missing', ['name' => $name]), 'danger', null];
+            if (!$installed && !config('installer.optional.'.strtolower($name))) {
+                $problems[] = ['extension', __('The :name extension is missing', ['name' => $name]), 'danger', null];
             }
-        }
-        $pcre_jit_off = array_keys(array_filter([
-            __('Web Server') => !\Helper::pcreJitAvailable(),
-            'tallport:receive' => (bool) \Option::get('receive_pcre_jit_off'),
-        ]));
-        if ($pcre_jit_off) {
-            $problems[] = ['extension', __('PCRE JIT is off'), 'warning', __('Needed for').': '.__('Faster text processing').' ('.implode(', ', $pcre_jit_off).')'];
         }
         foreach ($data['functions'] as $name => $available) {
             if (!$available) {

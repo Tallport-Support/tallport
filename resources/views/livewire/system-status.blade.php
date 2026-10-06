@@ -299,24 +299,34 @@
     </x-fruit::form-section>
 
     <x-fruit::form-section :title="__('Background Tasks')" id="cron">
+        @php
+            // The tasks as people know them: [name, what it does]; the command is the help's end.
+            $task_names = [
+                'tallport:fetch-emails'  => [__('Fetch Emails'), __('Checks the mailboxes for new email')],
+                'queue:work'             => [__('Queue Worker'), __('Sends emails and runs jobs')],
+                'queue:work (AI)'        => [__('AI Queue Worker'), __('Runs the AI Assistant\'s jobs')],
+                'tallport:nostr-listen'  => [__('Nostr Listener'), __('Receives Nostr messages')],
+            ];
+        @endphp
         @foreach ($commands as $command)
+            @php [$task_name, $task_purpose] = $task_names[$command['name']] ?? [$command['name'], '']; @endphp
             <div class="f-form-row">
                 <div>
-                    <span>{{ $command['name'] }}</span>
-                    <p class="f-help">
-                        @if ($command['status'] == 'success')
-                            @if (!empty($command['last_successful_run'])){{ __('Last ran :time', ['time' => $command['last_successful_run']->diffForHumans()]) }}@else{!! $command['status_text'] !!}@endif
-                        @elseif (!array_key_exists('last_run', $command))
-                            {!! $command['status_text'] !!}
-                        @elseif (empty($command['last_run']))
-                            {{ __('Hasn\'t run yet') }}
-                        @else
-                            {{ __('Last ran :time', ['time' => $command['last_run']->diffForHumans()]) }}@if (!empty($command['last_successful_run'])) · {{ __('Last success :time', ['time' => $command['last_successful_run']->diffForHumans()]) }}@endif
-                        @endif
-                    </p>
+                    <span>{{ $task_name }}</span>
+                    <p class="f-help">@if ($task_purpose){{ $task_purpose }} · @endif{{ $command['name'] }}</p>
+                    @if ($command['status'] != 'success' && !array_key_exists('last_run', $command))
+                        <p class="f-help">{!! $command['status_text'] !!}</p>
+                    @endif
                 </div>
-                <span class="f-row">
-                    @if ($command['status'] != 'success')<x-fruit::badge tone="danger">{{ __('Not running') }}</x-fruit::badge>@endif
+                <span class="f-row system-status__task-state">
+                    @if ($command['status'] == 'success')
+                        <span class="f-muted">@if (!empty($command['last_successful_run'])){{ __('Last ran :time', ['time' => $command['last_successful_run']->diffForHumans()]) }}@else{!! $command['status_text'] !!}@endif</span>
+                    @elseif (array_key_exists('last_run', $command))
+                        <span class="f-muted">@if (empty($command['last_run'])){{ __('Hasn\'t run yet') }}@else{{ __('Last ran :time', ['time' => $command['last_run']->diffForHumans()]) }}@endif</span>
+                        <x-fruit::badge tone="danger">{{ __('Not running') }}</x-fruit::badge>
+                    @else
+                        <x-fruit::badge tone="danger">{{ __('Not running') }}</x-fruit::badge>
+                    @endif
                     @if ($command['name'] == 'tallport:fetch-emails')
                         <x-fruit::button size="small" x-on:click="$dispatch('fruit-dialog-open', { name: 'fetch-now' })">{{ __('Fetch Now…') }}</x-fruit::button>
                     @endif

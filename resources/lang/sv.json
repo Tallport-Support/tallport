@@ -1484,8 +1484,6 @@
     "No queued jobs": "Inga jobb i kö",
     "No failed jobs": "Inga misslyckade jobb",
     "1 attempt|:count attempts": "1 försök|:count försök",
-    "The optional :name extension is missing": "Det valfria tillägget :name saknas",
-    "PCRE JIT is off": "PCRE JIT är avstängt",
     "Next attempt in :time": "Nästa försök om :time",
     "Appearance": "Utseende",
     "Light": "Ljust",
@@ -1631,5 +1629,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "Serverns schemalagda uppgift (cron) anropar inte Tallport. Lägg till den här raden i dess crontab:",
     "This log is empty.": "Den här loggen är tom.",
     "Clear :log?": "Rensa :log?",
-    "Its entries are deleted for good.": "Dess poster raderas permanent."
+    "Its entries are deleted for good.": "Dess poster raderas permanent.",
+    "Queue Worker": "Köhanterare",
+    "AI Queue Worker": "AI-Köhanterare",
+    "Nostr Listener": "Nostr-Lyssnare",
+    "Checks the mailboxes for new email": "Söker efter ny e-post i inkorgarna",
+    "Sends emails and runs jobs": "Skickar e-post och kör jobb",
+    "Runs the AI Assistant's jobs": "Kör AI-assistentens jobb",
+    "Receives Nostr messages": "Tar emot Nostr-meddelanden",
+    "Recipient": "Mottagare",
+    "Technical Details": "Tekniska Detaljer",
+    "Not sent: the reply was never queued.": "Inte skickat: svaret köades aldrig."
 }

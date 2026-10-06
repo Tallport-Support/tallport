@@ -101,14 +101,14 @@ class SecureController extends Controller
         } else {
             // Outgoing emails are displayed from send log
             $logs = [];
+            // The recipient once (a customer's or user's name, else the address), the status
+            // in plain words; the technical part is in the entry's Details (secure/logs).
             $cols = [
                 'date',
                 'type',
-                'email',
+                'recipient',
                 'status',
-                'message',
-                'user',
-                'customer',
+                'conversation',
             ];
 
             $activities_query = SendLog::orderBy('created_at', 'desc');
@@ -122,26 +122,16 @@ class SecureController extends Controller
                 if ($record->thread_id) {
                     $conversation = Thread::find($record->thread_id);
                 }
-
-                $status = $record->getStatusName();
-                if ($record->status_message) {
-                    $status .= '. '.$record->status_message;
-                    if ($record->status == SendLog::STATUS_SEND_ERROR) {
-                        $status .= '. Message-ID: '.$record->message_id;
-                    }
-                }
-                if ($record->smtp_queue_id) {
-                    $status .= '. SMTP ID: '.$record->smtp_queue_id;
-                }
+                [$status, $details] = $record->getStatusForPeople();
 
                 $logs[] = [
-                    'date'          => $record->created_at,
-                    'type'          => $record->getMailTypeName(),
-                    'email'         => $record->email,
-                    'status'        => $status,
-                    'message'       => $conversation,
-                    'user'          => $record->user,
-                    'customer'      => $record->customer,
+                    'date'         => $record->created_at,
+                    'type'         => $record->getMailTypeName(),
+                    'recipient'    => $record->customer ?: ($record->user ?: $record->email),
+                    'email'        => $record->email,
+                    'status'       => $status,
+                    'conversation' => $conversation,
+                    'details'      => $details,
                 ];
             }
         }

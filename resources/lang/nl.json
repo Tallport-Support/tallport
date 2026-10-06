@@ -1487,8 +1487,6 @@
     "No queued jobs": "Geen taken in de wachtrij",
     "No failed jobs": "Geen mislukte taken",
     "1 attempt|:count attempts": "1 poging|:count pogingen",
-    "The optional :name extension is missing": "De optionele extensie :name ontbreekt",
-    "PCRE JIT is off": "PCRE JIT staat uit",
     "Next attempt in :time": "Volgende poging over :time",
     "Appearance": "Weergave",
     "Light": "Licht",
@@ -1634,5 +1632,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "De geplande taak (cron) van de server roept Tallport niet aan. Voeg deze regel toe aan de crontab:",
     "This log is empty.": "Deze log is leeg.",
     "Clear :log?": ":log wissen?",
-    "Its entries are deleted for good.": "De regels worden definitief verwijderd."
+    "Its entries are deleted for good.": "De regels worden definitief verwijderd.",
+    "Queue Worker": "Wachtrijverwerker",
+    "AI Queue Worker": "AI-Wachtrijverwerker",
+    "Nostr Listener": "Nostr-Luisteraar",
+    "Checks the mailboxes for new email": "Controleert de mailboxen op nieuwe e-mail",
+    "Sends emails and runs jobs": "Verstuurt e-mails en voert opdrachten uit",
+    "Runs the AI Assistant's jobs": "Voert de opdrachten van de AI-assistent uit",
+    "Receives Nostr messages": "Ontvangt Nostr-berichten",
+    "Recipient": "Ontvanger",
+    "Technical Details": "Technische Details",
+    "Not sent: the reply was never queued.": "Niet verzonden: het antwoord is nooit in de wachtrij gezet."
 }

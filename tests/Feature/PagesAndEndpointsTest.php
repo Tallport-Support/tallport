@@ -84,6 +84,19 @@ class PagesAndEndpointsTest extends FeatureTestCase
         $this->assertSame(0, \DB::table('activity_logs')->where('log_name', \App\ActivityLog::NAME_EMAILS_FETCHING)->count());
     }
 
+    public function testOutgoingEmailsLogInPlainWords()
+    {
+        $customer = $this->createCustomer('casey@customer.example.org', ['first_name' => 'Casey', 'last_name' => 'Customer']);
+        \App\SendLog::log(null, null, 'casey@customer.example.org', \App\SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER, \App\SendLog::STATUS_SEND_ERROR, $customer->id, null, 'Not sent: no job is sending this reply (found by tallport:check-outgoing).');
+
+        // The recipient once, by name with the address as its title; the technical part in Details.
+        $this->actingAs($this->admin)->get('/app-logs/out_emails')->assertOk()
+            ->assertSeeInOrder(['Recipient', 'Status'])->assertDontSee('<th>User</th>', false)->assertDontSee('<th>Email</th>', false)
+            ->assertSee('title="casey@customer.example.org">Casey Customer</a>', false)
+            ->assertSee('<span>Not sent: the reply was never queued.</span>', false)
+            ->assertSee('Technical Details');
+    }
+
     public function testLogPagesArePaginated()
     {
         for ($i = 0; $i < 21; $i++) {

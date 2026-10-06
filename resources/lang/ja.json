@@ -1484,8 +1484,6 @@
     "No queued jobs": "キュー内のジョブはありません",
     "No failed jobs": "失敗したジョブはありません",
     "1 attempt|:count attempts": ":count 回試行",
-    "The optional :name extension is missing": "任意の :name 拡張機能がありません",
-    "PCRE JIT is off": "PCRE JIT がオフです",
     "Next attempt in :time": ":time 後に再試行",
     "Appearance": "外観",
     "Light": "ライト",
@@ -1631,5 +1629,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "サーバーのスケジュールタスク (cron) が Tallport を呼び出していません。この行を crontab に追加してください:",
     "This log is empty.": "このログは空です。",
     "Clear :log?": ":log を消去しますか？",
-    "Its entries are deleted for good.": "エントリーは完全に削除されます。"
+    "Its entries are deleted for good.": "エントリーは完全に削除されます。",
+    "Queue Worker": "キューワーカー",
+    "AI Queue Worker": "AIキューワーカー",
+    "Nostr Listener": "Nostrリスナー",
+    "Checks the mailboxes for new email": "メールボックスの新着メールを確認します",
+    "Sends emails and runs jobs": "メールを送信し、ジョブを実行します",
+    "Runs the AI Assistant's jobs": "AIアシスタントのジョブを実行します",
+    "Receives Nostr messages": "Nostrメッセージを受信します",
+    "Recipient": "受信者",
+    "Technical Details": "技術的な詳細",
+    "Not sent: the reply was never queued.": "未送信：返信がキューに入れられませんでした。"
 }

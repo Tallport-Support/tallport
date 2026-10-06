@@ -1484,8 +1484,6 @@
     "No queued jobs": "Немає завдань у черзі",
     "No failed jobs": "Немає невиконаних завдань",
     "1 attempt|:count attempts": ":count спроба|:count спроби|:count спроб",
-    "The optional :name extension is missing": "Відсутнє необов’язкове розширення :name",
-    "PCRE JIT is off": "PCRE JIT вимкнено",
     "Next attempt in :time": "Наступна спроба через :time",
     "Appearance": "Вигляд",
     "Light": "Світле",
@@ -1631,5 +1629,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "Заплановане завдання сервера (cron) не викликає Tallport. Додайте цей рядок до його crontab:",
     "This log is empty.": "Цей журнал порожній.",
     "Clear :log?": "Очистити :log?",
-    "Its entries are deleted for good.": "Його записи буде видалено назавжди."
+    "Its entries are deleted for good.": "Його записи буде видалено назавжди.",
+    "Queue Worker": "Обробник Черги",
+    "AI Queue Worker": "Обробник Черги ШІ",
+    "Nostr Listener": "Слухач Nostr",
+    "Checks the mailboxes for new email": "Перевіряє поштові скриньки на нові листи",
+    "Sends emails and runs jobs": "Надсилає листи й виконує завдання",
+    "Runs the AI Assistant's jobs": "Виконує завдання ШІ-асистента",
+    "Receives Nostr messages": "Отримує повідомлення Nostr",
+    "Recipient": "Одержувач",
+    "Technical Details": "Технічні Подробиці",
+    "Not sent: the reply was never queued.": "Не надіслано: відповідь так і не потрапила в чергу."
 }

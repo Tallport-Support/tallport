@@ -1493,8 +1493,6 @@
     "No queued jobs": "Aucune tâche en file d'attente",
     "No failed jobs": "Aucune tâche en échec",
     "1 attempt|:count attempts": ":count tentative|:count tentatives",
-    "The optional :name extension is missing": "L'extension facultative :name est absente",
-    "PCRE JIT is off": "PCRE JIT est désactivé",
     "Next attempt in :time": "Prochaine tentative dans :time",
     "Appearance": "Apparence",
     "Light": "Clair",
@@ -1640,5 +1638,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "La tâche planifiée (cron) du serveur n'appelle pas Tallport. Ajoutez cette ligne à sa crontab :",
     "This log is empty.": "Ce journal est vide.",
     "Clear :log?": "Effacer :log ?",
-    "Its entries are deleted for good.": "Ses entrées sont supprimées définitivement."
+    "Its entries are deleted for good.": "Ses entrées sont supprimées définitivement.",
+    "Queue Worker": "Traitement de la File d'Attente",
+    "AI Queue Worker": "Traitement de la File d'Attente IA",
+    "Nostr Listener": "Écoute Nostr",
+    "Checks the mailboxes for new email": "Vérifie les nouveaux emails dans les boîtes de réception",
+    "Sends emails and runs jobs": "Envoie les emails et exécute les travaux",
+    "Runs the AI Assistant's jobs": "Exécute les travaux de l'assistant IA",
+    "Receives Nostr messages": "Reçoit les messages Nostr",
+    "Recipient": "Destinataire",
+    "Technical Details": "Détails Techniques",
+    "Not sent: the reply was never queued.": "Non envoyé : la réponse n'a jamais été mise en file d'attente."
 }

@@ -1502,8 +1502,6 @@
     "No queued jobs": "Ei jonossa olevia tehtäviä",
     "No failed jobs": "Ei epäonnistuneita tehtäviä",
     "1 attempt|:count attempts": "1 yritys|:count yritystä",
-    "The optional :name extension is missing": "Valinnainen laajennus :name puuttuu",
-    "PCRE JIT is off": "PCRE JIT on pois päältä",
     "Next attempt in :time": "Seuraava yritys :time kuluttua",
     "Appearance": "Ulkoasu",
     "Light": "Vaalea",
@@ -1649,5 +1647,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "Palvelimen ajastettu tehtävä (cron) ei kutsu Tallportia. Lisää tämä rivi sen crontabiin:",
     "This log is empty.": "Tämä loki on tyhjä.",
     "Clear :log?": "Tyhjennetäänkö :log?",
-    "Its entries are deleted for good.": "Sen merkinnät poistetaan pysyvästi."
+    "Its entries are deleted for good.": "Sen merkinnät poistetaan pysyvästi.",
+    "Queue Worker": "Jonon Käsittelijä",
+    "AI Queue Worker": "Tekoälyjonon Käsittelijä",
+    "Nostr Listener": "Nostr-Kuuntelija",
+    "Checks the mailboxes for new email": "Tarkistaa postilaatikoista uudet sähköpostit",
+    "Sends emails and runs jobs": "Lähettää sähköpostit ja suorittaa työt",
+    "Runs the AI Assistant's jobs": "Suorittaa tekoälyavustajan työt",
+    "Receives Nostr messages": "Vastaanottaa Nostr-viestit",
+    "Recipient": "Vastaanottaja",
+    "Technical Details": "Tekniset Tiedot",
+    "Not sent: the reply was never queued.": "Ei lähetetty: vastausta ei koskaan lisätty jonoon."
 }

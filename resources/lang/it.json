@@ -1483,8 +1483,6 @@
     "No queued jobs": "Nessuna attività in coda",
     "No failed jobs": "Nessuna attività non riuscita",
     "1 attempt|:count attempts": "1 tentativo|:count tentativi",
-    "The optional :name extension is missing": "Manca l'estensione facoltativa :name",
-    "PCRE JIT is off": "PCRE JIT è disattivato",
     "Next attempt in :time": "Prossimo tentativo tra :time",
     "Appearance": "Aspetto",
     "Light": "Chiaro",
@@ -1630,5 +1628,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "L'attività pianificata (cron) del server non sta chiamando Tallport. Aggiungi questa riga al suo crontab:",
     "This log is empty.": "Questo log è vuoto.",
     "Clear :log?": "Pulire :log?",
-    "Its entries are deleted for good.": "Le sue voci vengono eliminate definitivamente."
+    "Its entries are deleted for good.": "Le sue voci vengono eliminate definitivamente.",
+    "Queue Worker": "Elaboratore della Coda",
+    "AI Queue Worker": "Elaboratore della Coda IA",
+    "Nostr Listener": "Ascoltatore Nostr",
+    "Checks the mailboxes for new email": "Controlla le nuove email nelle caselle postali",
+    "Sends emails and runs jobs": "Invia le email ed esegue le operazioni",
+    "Runs the AI Assistant's jobs": "Esegue le operazioni dell'assistente IA",
+    "Receives Nostr messages": "Riceve i messaggi Nostr",
+    "Recipient": "Destinatario",
+    "Technical Details": "Dettagli Tecnici",
+    "Not sent: the reply was never queued.": "Non inviata: la risposta non è mai stata messa in coda."
 }

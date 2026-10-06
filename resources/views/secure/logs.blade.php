@@ -14,6 +14,8 @@
 
 @section('content')
 @php
+    // Columns with something in them on this page.
+    $cols = array_values(array_filter($cols, fn ($col) => collect($logs)->contains(fn ($row) => isset($row[$col]) && $row[$col] !== '')));
     // The entry's long text, kept to one line here (its Details show it whole).
     $long_col = collect(['status', 'error', 'event'])->first(fn ($col) => in_array($col, $cols));
     // A cell's value as text or a link.
@@ -28,8 +30,11 @@
         if ($col == 'thread' && !is_object($value)) {
             $value = App\Thread::find($value) ?: $value;
         }
-        if ($col == 'user' || $col == 'customer') {
-            return '<a href="'.e($value->url()).'">'.e($value->getFullName(true)).'</a>';
+        if (is_object($value) && ($value instanceof App\User || $value instanceof App\Customer)) {
+            $name = $value->getFullName(true);
+            $title = !empty($row['email']) && $row['email'] != $name ? ' title="'.e($row['email']).'"' : '';
+
+            return '<a href="'.e($value->url()).'"'.$title.'>'.e($name).'</a>';
         }
         if ($col == 'date') {
             return e(App\User::dateFormat(new Illuminate\Support\Carbon($value), 'M j, H:i:s'));
@@ -71,7 +76,7 @@
                                     <header class="f-dialog__header"><h2 id="log-entry-{{ $row_index }}-title">{{ App\ActivityLog::getLogTitle($current_name) }}</h2></header>
                                     <div class="f-dialog__body">
                                         <x-fruit::description-list>
-                                            @foreach ($cols as $col)
+                                            @foreach (array_unique(array_merge($cols, ['details'])) as $col)
                                                 @if (($entry_value = $log_cell($row, $col)) !== '')
                                                     <div><dt>{{ App\ActivityLog::formatColTitle($col) }}</dt><dd>{!! $entry_value !!}</dd></div>
                                                 @endif

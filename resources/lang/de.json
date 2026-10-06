@@ -1478,8 +1478,6 @@
     "No queued jobs": "Keine Jobs in der Warteschlange",
     "No failed jobs": "Keine fehlgeschlagenen Jobs",
     "1 attempt|:count attempts": "1 Versuch|:count Versuche",
-    "The optional :name extension is missing": "Die optionale Erweiterung :name fehlt",
-    "PCRE JIT is off": "PCRE JIT ist aus",
     "Next attempt in :time": "Nächster Versuch in :time",
     "Appearance": "Erscheinungsbild",
     "Light": "Hell",
@@ -1625,5 +1623,15 @@
     "The server's scheduled task (cron) isn't calling Tallport. Add this line to its crontab:": "Die geplante Aufgabe (cron) des Servers ruft Tallport nicht auf. Fügen Sie diese Zeile zu seiner crontab hinzu:",
     "This log is empty.": "Dieses Protokoll ist leer.",
     "Clear :log?": ":log leeren?",
-    "Its entries are deleted for good.": "Die Einträge werden endgültig gelöscht."
+    "Its entries are deleted for good.": "Die Einträge werden endgültig gelöscht.",
+    "Queue Worker": "Warteschlangen-Worker",
+    "AI Queue Worker": "KI-Warteschlangen-Worker",
+    "Nostr Listener": "Nostr-Listener",
+    "Checks the mailboxes for new email": "Prüft die Postfächer auf neue E-Mails",
+    "Sends emails and runs jobs": "Sendet E-Mails und führt Aufgaben aus",
+    "Runs the AI Assistant's jobs": "Führt die Aufgaben des KI-Assistenten aus",
+    "Receives Nostr messages": "Empfängt Nostr-Nachrichten",
+    "Recipient": "Empfänger",
+    "Technical Details": "Technische Details",
+    "Not sent: the reply was never queued.": "Nicht gesendet: Die Antwort wurde nie in die Warteschlange gestellt."
 }
