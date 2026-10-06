@@ -440,6 +440,8 @@ class DatabaseSeeder extends Seeder
                         continue;
                     }
                     $reply = $replies->first()->replicate();
+                    $reply->headers = null;
+                    $reply->body_original = null;
                     $reply->created_by_user_id = $user->id;
                     $reply->body = '<p>Hi '.e($conversation->customer->first_name).',</p>'
                         .'<p>I have reviewed your conversation with the team and will help with the follow-up. '
@@ -509,6 +511,79 @@ class DatabaseSeeder extends Seeder
                     'ai_assistant_updated_at' => now(),
                 ]);
             }
+            $this->emailSources($conversation, $users);
+        }
+    }
+
+    protected function emailSources($conversation, $users)
+    {
+        if (!$conversation->isEmail() || $conversation->hasChannel()) {
+            return;
+        }
+        $references = [];
+        $previous = null;
+        foreach ($conversation->threads->sortBy('created_at') as $thread) {
+            if ($thread->state != Thread::STATE_PUBLISHED
+                || !in_array($thread->type, [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
+                || !preg_match('/^sample-'.(int) $conversation->id.'-\d+@demo\.example\.test$/D', (string) $thread->message_id)
+            ) {
+                continue;
+            }
+            $missing = [];
+            if (!$thread->body_original) {
+                $body = $thread->body;
+                if ($previous) {
+                    $body .= '<blockquote><p>On '.e($previous->created_at->toRfc2822String()).', '
+                        .e($previous->from).' wrote:</p>'.$previous->body.'</blockquote>';
+                }
+                $missing['body_original'] = '<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>'.$body.'</body></html>';
+                $thread->body_original = $missing['body_original'];
+            }
+            if (!$thread->headers) {
+                $name = $thread->type == Thread::TYPE_CUSTOMER ? $conversation->customer->getFullName()
+                    : ($users->firstWhere('id', $thread->created_by_user_id)?->getFullName() ?: $conversation->mailbox->name);
+                $email = (new \Symfony\Component\Mime\Email())
+                    ->from(new \Symfony\Component\Mime\Address($thread->from, $name))
+                    ->to(...$thread->getToArray())
+                    ->replyTo($thread->from)
+                    ->subject(($references ? 'Re: ' : '').$conversation->subject)
+                    ->date($thread->created_at)
+                    ->html($thread->body_original);
+                if ($thread->getCcArray()) {
+                    $email->cc(...$thread->getCcArray());
+                }
+                $headers = $email->getHeaders();
+                $headers->addIdHeader('Message-ID', $thread->message_id);
+                if ($references) {
+                    $headers->addIdHeader('In-Reply-To', end($references));
+                    $headers->addIdHeader('References', $references);
+                }
+                $headers->addTextHeader('X-Tallport-Sample', 'email-source-v1');
+                $headers->addPathHeader('Return-Path', $thread->from);
+                $headers->addTextHeader('Delivered-To', $thread->getToArray()[0]);
+                $headers->addTextHeader('Received', 'from smtp.demo.example.test (smtp.demo.example.test [192.0.2.10])'
+                    .' by mx.demo.example.test with ESMTPS; '.$thread->created_at->toRfc2822String());
+                $headers->addTextHeader('Received', 'from client.demo.example.test ([192.0.2.20])'
+                    .' by smtp.demo.example.test with ESMTPSA; '.$thread->created_at->copy()->subSeconds(2)->toRfc2822String());
+                $domain = substr(strrchr($thread->from, '@'), 1);
+                $headers->addTextHeader('Authentication-Results', 'mx.demo.example.test; spf=pass smtp.mailfrom='.$domain
+                    .'; dkim=none; dmarc=pass header.from='.$domain);
+                [$missing['headers']] = explode("\r\n\r\n", $email->toString(), 2);
+                $thread->headers = $missing['headers'];
+            }
+            if ($missing) {
+                DB::table('threads')->where('id', $thread->id)->update($missing);
+            }
+            // Only reconstruct sources we generated; preserve other headers and retained originals.
+            if (\App\Incoming\RawSources::retentionDays() > 0
+                && !is_file(\App\Incoming\RawSources::path($thread))
+                && \MailHelper::getHeader($thread->headers, 'X-Tallport-Sample') == 'email-source-v1'
+            ) {
+                $raw = $thread->headers."\r\n\r\n".quoted_printable_encode($thread->body_original);
+                \App\Incoming\RawSources::store($thread, \App\Incoming\Parser::parse($raw));
+            }
+            $references[] = $thread->message_id;
+            $previous = $thread;
         }
     }
 

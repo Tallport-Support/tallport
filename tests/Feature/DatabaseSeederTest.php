@@ -19,6 +19,23 @@ use Tests\FeatureTestCase;
 
 class DatabaseSeederTest extends FeatureTestCase
 {
+    protected $sample_storage;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->sample_storage = sys_get_temp_dir().'/tallport-seeder-'.uniqid();
+        mkdir($this->sample_storage.'/app', 0777, true);
+        $this->app->useStoragePath($this->sample_storage);
+        config(['app.incoming_mail_retention_days' => 30]);
+    }
+
+    protected function tearDown(): void
+    {
+        (new \Illuminate\Filesystem\Filesystem())->deleteDirectory($this->sample_storage);
+        parent::tearDown();
+    }
+
     public function testSeederFillsAllFoldersWithoutSendingMailAndIsRepeatable()
     {
         Queue::fake();
@@ -383,6 +400,112 @@ class DatabaseSeederTest extends FeatureTestCase
         $snapshot = $this->snapshot();
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
         $this->assertSame($snapshot, $this->snapshot());
+    }
+
+    public function testSeededEmailsHaveOriginalBodiesHeadersAndDownloadableSources()
+    {
+        Queue::fake();
+        Http::fake();
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+
+        foreach (Conversation::with('threads')->get() as $conversation) {
+            $previous = null;
+            $references = [];
+            foreach ($conversation->threads->sortBy('created_at') as $thread) {
+                $path = \App\Incoming\RawSources::path($thread);
+                if ($conversation->hasChannel() || $thread->type == Thread::TYPE_NOTE || $thread->state == Thread::STATE_DRAFT) {
+                    $this->assertNull($thread->headers);
+                    $this->assertNull($thread->body_original);
+                    $this->assertFileDoesNotExist($path);
+                    continue;
+                }
+                $this->assertFileExists($path);
+                $raw = file_get_contents($path);
+                $message = \App\Incoming\Parser::parse($raw);
+                $this->assertSame($thread->message_id, $message->messageId());
+                $this->assertTrue($message->date()->eq($thread->created_at));
+                $this->assertSame($thread->body_original, $message->htmlBody());
+                $this->assertStringContainsString($thread->body, $thread->body_original);
+                $this->assertStringStartsWith($thread->headers."\r\n\r\n", $raw);
+                $summary = \App\Incoming\OriginalHeaders::summary($thread->headers);
+                $this->assertStringContainsString($thread->from, $summary['From']);
+                $this->assertStringContainsString($thread->getToArray()[0], $summary['To']);
+                $this->assertSame(($previous ? 'Re: ' : '').$conversation->subject, $message->subject());
+                $this->assertSame(['spf' => 'pass', 'dkim' => 'none', 'dmarc' => 'pass'], \App\Incoming\OriginalHeaders::authentication($thread->headers));
+                $this->assertSame('smtp.demo.example.test → mx.demo.example.test', \App\Incoming\OriginalHeaders::deliveredVia($thread->headers));
+                $this->assertCount(2, array_filter(\App\Incoming\OriginalHeaders::all($thread->headers), fn ($row) => $row[0] == 'Received'));
+                if ($previous) {
+                    $this->assertSame('<'.$previous->message_id.'>', \MailHelper::getHeader($thread->headers, 'In-Reply-To'));
+                    $this->assertSame(implode(' ', $references), \MailHelper::getHeader($thread->headers, 'References'));
+                    $this->assertStringContainsString('<blockquote>', $thread->body_original);
+                } else {
+                    $this->assertEmpty(\MailHelper::getHeader($thread->headers, 'In-Reply-To'));
+                }
+                $previous = $thread;
+                $references[] = '<'.$thread->message_id.'>';
+            }
+        }
+        $thread = Thread::where('type', Thread::TYPE_CUSTOMER)->whereNotNull('headers')->first();
+        $this->actingAs(User::where('role', User::ROLE_ADMIN)->first())
+            ->get('/conversation/ajax-html/show_original?thread_id='.$thread->id)->assertOk()
+            ->assertSee('Headers')->assertSee('Authentication-Results')->assertSee('Download .eml')
+            ->assertDontSee('could not be loaded from mail server');
+        $this->get(route('threads.original_eml', ['thread_id' => $thread->id]))->assertOk()
+            ->assertDownload('message-'.$thread->id.'.eml')->assertHeader('Content-Type', 'message/rfc822');
+        Queue::assertNothingPushed();
+        Http::assertNothingSent();
+        $this->assertCount(0, $this->sentEmails());
+    }
+
+    public function testSeederBackfillsOnlyMissingSampleSourcesAndPreservesExistingMaterial()
+    {
+        config(['app.incoming_mail_retention_days' => 0]);
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $this->assertSame([], glob($this->sample_storage.'/app/incoming-mail/*.eml'));
+        $threads = Thread::whereNotNull('headers')->orderBy('id')->take(4)->get();
+        $missing = $threads[0];
+        $preserved = $threads[1];
+        $partial = $threads[2];
+        $body_only = $threads[3];
+        $non_sample = $threads[3]->replicate();
+        $non_sample->message_id = 'real-message@example.org';
+        $non_sample->headers = null;
+        $non_sample->body_original = null;
+        $non_sample->saveQuietly();
+        \DB::table('threads')->where('id', $missing->id)->update(['headers' => null, 'body_original' => null]);
+        \DB::table('threads')->where('id', $preserved->id)->update(['headers' => 'X-Existing: keep me', 'body_original' => '<p>Existing original</p>']);
+        \DB::table('threads')->where('id', $partial->id)->update(['headers' => null, 'body_original' => '<p>Preserved source body</p>']);
+        \DB::table('threads')->where('id', $body_only->id)->update(['headers' => 'X-Existing: body missing', 'body_original' => null]);
+        $preserved_before = $preserved->fresh()->toArray();
+        $non_sample_before = $non_sample->fresh()->toArray();
+        mkdir($this->sample_storage.'/app/incoming-mail');
+        file_put_contents(\App\Incoming\RawSources::path($preserved), 'Existing retained source');
+        $count = Thread::count();
+        config(['app.incoming_mail_retention_days' => 30]);
+
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+
+        $this->assertSame($count, Thread::count());
+        $this->assertNotEmpty($missing->fresh()->headers);
+        $this->assertSame($missing->updated_at->toDateTimeString(), $missing->fresh()->updated_at->toDateTimeString());
+        $this->assertNotEmpty($partial->fresh()->headers);
+        $this->assertSame('<p>Preserved source body</p>', $partial->fresh()->body_original);
+        $this->assertSame('X-Existing: body missing', $body_only->fresh()->headers);
+        $this->assertNotEmpty($body_only->fresh()->body_original);
+        $this->assertSame($preserved_before, $preserved->fresh()->toArray());
+        $this->assertSame($non_sample_before, $non_sample->fresh()->toArray());
+        $this->assertSame('Existing retained source', file_get_contents(\App\Incoming\RawSources::path($preserved)));
+        $this->assertFileDoesNotExist(\App\Incoming\RawSources::path($non_sample));
+        $files = [];
+        foreach (glob($this->sample_storage.'/app/incoming-mail/*.eml') as $path) {
+            $files[$path] = sha1_file($path);
+        }
+        $snapshot = $this->snapshot();
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $this->assertSame($snapshot, $this->snapshot());
+        foreach ($files as $path => $hash) {
+            $this->assertSame($hash, sha1_file($path));
+        }
     }
 
     private function snapshot()
