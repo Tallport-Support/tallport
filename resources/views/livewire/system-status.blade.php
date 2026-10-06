@@ -243,14 +243,14 @@
     @action('system.status.after_info_table')
 
     @php
-        $installed_extensions = array_merge(array_keys(array_filter($php_extensions)), $pcre_jit_off ? [] : ['PCRE JIT']);
+        $installed_extensions = array_keys(array_filter($php_extensions));
         $writable_paths = array_merge(array_keys(array_diff_key($permissions, $unwritable)), $public_symlink_exists ? ['public/storage'] : [], $env_is_writable ? ['.env'] : []);
         $all_paths = count($permissions) + 2;
     @endphp
     <x-fruit::form-section :title="__('Requirements')" id="requirements">
         <div class="f-form-row">
             <span>{{ __('PHP Extensions') }}</span>
-            <span class="system-status__check" title="{{ implode(', ', $installed_extensions) }}">@if (!$missing_extensions)<x-icon.circle-check class="f-icon" aria-hidden="true" /> {{ __('All :count installed', ['count' => count($installed_extensions)]) }}@else{{ __(':count of :total installed', ['count' => count($installed_extensions), 'total' => count($php_extensions)]) }}@endif</span>
+            <span class="system-status__check" title="{{ implode(', ', array_merge($installed_extensions, $pcre_jit_off ? [] : ['PCRE JIT'])) }}">@if (!$missing_extensions)<x-icon.circle-check class="f-icon" aria-hidden="true" /> {{ __('All :count installed', ['count' => count($installed_extensions)]) }}@else{{ __(':count of :total installed', ['count' => count($installed_extensions), 'total' => count($php_extensions)]) }}@endif</span>
         </div>
         @foreach ($missing_extensions as $extension_name => $optional_purpose)
             <div class="f-form-row">
