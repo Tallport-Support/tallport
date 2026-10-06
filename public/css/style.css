@@ -3192,6 +3192,8 @@ a.disabled:focus {
 }
 .conv-list__items {
     --f-item-list-padding: 0 7px 8px;
+    /* The list's scroller is around it (.split-view__list): one scrolling region, not two. */
+    overflow: visible;
 }
 .conv-list .conv-row__link {
     --f-item-row-leading-inset: 12px;
