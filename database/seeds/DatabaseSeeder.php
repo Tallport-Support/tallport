@@ -183,9 +183,47 @@ class DatabaseSeeder extends Seeder
             $this->conversation($mailbox, $folder, $users->first(), true);
         }
         $this->telegramChats($mailbox, $users);
+        $this->remoteImages($mailbox, $users);
         foreach ($mailbox->folders as $folder) {
             $folder->updateCountersNow();
         }
+    }
+
+    protected function remoteImages($mailbox, $users)
+    {
+        $existing = $mailbox->conversations()->where('type', Conversation::TYPE_EMAIL)->whereNull('channel')
+            ->where('state', Conversation::STATE_PUBLISHED)
+            ->whereIn('status', [Conversation::STATUS_ACTIVE, Conversation::STATUS_PENDING])
+            ->whereHas('threads', function ($query) {
+                $query->where('type', Thread::TYPE_CUSTOMER)->where('state', Thread::STATE_PUBLISHED)
+                    ->where('body', 'like', '%<img%');
+            })->with('threads')->get()->filter(function ($conversation) {
+                return $conversation->threads->contains(function ($thread) {
+                    return $thread->type == Thread::TYPE_CUSTOMER && $thread->state == Thread::STATE_PUBLISHED
+                        && \App\Misc\ExternalImages::block($thread->body)[1] > 0;
+                });
+            })->count();
+        $folder = $mailbox->folders()->where('type', Folder::TYPE_ASSIGNED)->first();
+        for ($i = $existing; $i < 2; $i++) {
+            $this->conversation($mailbox, $folder, $users->first(), false, null, $i == 0 ? 'banner' : 'pixel');
+        }
+    }
+
+    protected function imageCustomer()
+    {
+        $address = Email::where('email', 'images@demo.example.test')->first();
+        if ($address) {
+            return $address->customer;
+        }
+        $customer = new Customer();
+        $customer->first_name = 'Morgan';
+        $customer->last_name = 'Ellis';
+        $customer->save();
+        $address = new Email();
+        $address->email = 'images@demo.example.test';
+        $customer->emails()->save($address);
+
+        return $customer;
     }
 
     protected function telegramChats($mailbox, $users)
@@ -294,9 +332,9 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    protected function conversation($mailbox, $folder, $agent, $long = false, $telegram_customer = null)
+    protected function conversation($mailbox, $folder, $agent, $long = false, $telegram_customer = null, $remote_image = null)
     {
-        $customer = $telegram_customer ?: $this->customers[$this->sequence % $this->customers->count()];
+        $customer = $telegram_customer ?: ($remote_image ? $this->imageCustomer() : $this->customers[$this->sequence % $this->customers->count()]);
         $topics = [
             ['Help connecting my new laptop', 'I can sign in on my phone, but the connection on my new laptop stops during setup. What should I check?', 'Please install the latest client and try the nearest location. If it still fails, send us the connection log.'],
             ['A question about my latest invoice', 'Could you explain the adjustment on my latest invoice and confirm when the next payment is due?', 'The adjustment covers the additional seats for the remaining days of this billing period. Your next invoice will use the regular monthly rate.'],
@@ -306,6 +344,11 @@ class DatabaseSeeder extends Seeder
             ['Following up on yesterday’s request', 'Thank you for looking into this yesterday. Is there anything else you need from me to move this forward?', 'We have the details we need and are checking the final result. I will follow up here as soon as the review is complete.'],
         ];
         [$subject, $question, $answer] = $topics[$this->sequence % count($topics)];
+        if ($remote_image) {
+            [$subject, $question, $answer] = $remote_image == 'banner'
+                ? ['Checking the banner in our welcome email', 'Our welcome email includes a banner hosted on another server. Can you check how it appears?', 'Thanks for the example. I will check how the email displays when remote images are blocked.']
+                : ['Reviewing an email with a tracking pixel', 'This email template contains a small remote tracking image. Does your reader warn about it?', 'Yes, images hosted on other servers are blocked until the reader chooses to show them.'];
+        }
         if ($long) {
             [$subject, $question, $answer] = $topics[0];
             $subject .= ' — extended troubleshooting';
@@ -378,6 +421,11 @@ class DatabaseSeeder extends Seeder
             $thread->status = $conversation->status;
             $thread->state = $index === $draft_index ? Thread::STATE_DRAFT : Thread::STATE_PUBLISHED;
             $thread->body = '<p>'.implode('</p><p>', array_map('e', explode("\n\n", $body))).'</p>';
+            if ($remote_image && $index == 0) {
+                $thread->body .= $remote_image == 'banner'
+                    ? '<p><img src="https://images.example.invalid/demo/banner.png" width="560" height="160" alt="Sample welcome banner"></p>'
+                    : '<img src="https://images.example.invalid/demo/open.gif" width="1" height="1" alt="">';
+            }
             $thread->first = $index == 0;
             $thread->source_via = $incoming ? Thread::PERSON_CUSTOMER : Thread::PERSON_USER;
             $thread->source_type = $incoming

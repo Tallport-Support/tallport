@@ -41,7 +41,7 @@ class DatabaseSeederTest extends FeatureTestCase
         Queue::fake();
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
         $this->assertSame(3, Mailbox::count());
-        $this->assertSame(12, Customer::whereHas('emails')->count());
+        $this->assertSame(13, Customer::whereHas('emails')->count());
         foreach (Mailbox::all() as $mailbox) {
             foreach ($mailbox->folders as $folder) {
                 $user_id = $folder->user_id ?: User::orderBy('id')->first()->id;
@@ -506,6 +506,60 @@ class DatabaseSeederTest extends FeatureTestCase
         foreach ($files as $path => $hash) {
             $this->assertSame($hash, sha1_file($path));
         }
+    }
+
+    public function testSeederAddsEmailsThatShowTheRemoteImageWarning()
+    {
+        Queue::fake();
+        Http::fake();
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $agent = User::where('role', User::ROLE_ADMIN)->first();
+
+        foreach (Mailbox::all() as $mailbox) {
+            $conversations = $mailbox->conversations()->whereHas('threads', function ($query) {
+                $query->where('body', 'like', '%<img%');
+            })->get();
+            $this->assertCount(2, $conversations);
+            foreach ($conversations as $conversation) {
+                $thread = $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->where('first', true)->first();
+                $this->assertTrue(\App\Misc\ExternalImages::appliesTo($thread));
+                $this->assertSame(1, \App\Misc\ExternalImages::block($thread->body)[1]);
+                $this->assertStringContainsString('https://images.example.invalid/', $thread->body_original);
+                $source = \App\Incoming\Parser::parse(file_get_contents(\App\Incoming\RawSources::path($thread)));
+                $this->assertStringContainsString('<img src="https://images.example.invalid/', $source->htmlBody());
+                $this->actingAs($agent)->followingRedirects()->get('/conversation/'.$conversation->id)->assertOk()
+                    ->assertSee('Images from other servers are not shown.')
+                    ->assertSee('data-blocked-src="https://images.example.invalid/', false);
+            }
+        }
+        $before = $this->snapshot();
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $this->assertSame($before, $this->snapshot());
+        Queue::assertNothingPushed();
+        Http::assertNothingSent();
+        $this->assertCount(0, $this->sentEmails());
+    }
+
+    public function testSeederTopsUpRemoteImagesWithoutChangingExistingEmailsOrPreferences()
+    {
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $thread = Thread::where('type', Thread::TYPE_CUSTOMER)->where('body', 'like', '%<img%')->first();
+        $thread->body = '<p>Keep this edited message.</p><img src="/img/local.png" alt="Local image">';
+        $thread->saveQuietly();
+        $thread->customer->setMeta(\App\Misc\ExternalImages::META_KEY, 1);
+        $thread->customer->saveQuietly();
+        $before = $thread->fresh()->toArray();
+        $customer = $thread->customer->fresh()->toArray();
+        $count = Conversation::count();
+
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+
+        $this->assertSame($count + 1, Conversation::count());
+        $this->assertSame($before, $thread->fresh()->toArray());
+        $this->assertSame($customer, $thread->customer->fresh()->toArray());
+        $snapshot = $this->snapshot();
+        $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
+        $this->assertSame($snapshot, $this->snapshot());
     }
 
     private function snapshot()
