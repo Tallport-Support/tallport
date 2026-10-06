@@ -94,7 +94,8 @@
     --f-focus-ring-color: color-mix(in srgb, var(--f-accent) 75%, transparent);
   }
   /* A mark: one of the named accents identifying what something belongs to, such as a mailbox,
-     without changing the accent around it. As text-safe as accent text (--f-accent-text). */
+     without changing the accent around it. As strong as the accent (--f-accent), so a mailbox's
+     icon matches the sidebar's other icons; 3:1 on rows and the sidebar in both appearances. */
   :where([data-fruit-mark='blue']) {
     --f-mark-tint: var(--f-palette-blue);
   }
@@ -120,9 +121,6 @@
     --f-mark-tint: var(--f-palette-graphite);
   }
   :where([data-fruit-mark]) {
-    --f-mark: light-dark(
-      color-mix(in srgb, var(--f-mark-tint) 88%, black),
-      oklch(from var(--f-mark-tint) calc(l + 0.22) c h)
-    );
+    --f-mark: light-dark(var(--f-mark-tint), oklch(from var(--f-mark-tint) calc(l + 0.13) c h));
   }
 }

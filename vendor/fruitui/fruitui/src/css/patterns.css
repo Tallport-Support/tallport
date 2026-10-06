@@ -185,14 +185,16 @@
   .f-item-row:has(> .f-item-row__leading)::after {
     inset-inline-start: var(--f-item-row-leading-inset, 62px);
   }
-  /* A mark (data-fruit-mark, a named accent) says what the row belongs to, such as its mailbox: a bar
-     on the leading edge, never the only cue (the row names it too, as text). */
+  /* A mark (data-fruit-mark, a named accent) says what the row belongs to, such as its mailbox: a
+     short line beside the first two lines (the title and subtitle), never the only cue (the row
+     names it too, as text). Short and thin, so a list of marked rows doesn't become stripes. */
   .f-item-row[data-fruit-mark]::before {
     content: '';
     position: absolute;
-    inset-block: 10px;
-    inset-inline-start: 3px;
-    width: 3px;
+    inset-block-start: 16px;
+    inset-inline-start: 4px;
+    width: 2px;
+    height: min(40px, calc(100% - 32px));
     border-radius: var(--f-radius-full);
     background: var(--f-mark);
   }
@@ -1157,21 +1159,23 @@
   .f-message--continued > .f-message__body {
     margin-top: 0;
   }
-  /* Sent messages carry a bar on the leading edge: the accent for the viewer's own (mine), a
-     neutral one for a teammate's. Incoming messages stay plain. */
+  /* Sent messages carry a thin bar on the leading edge: the accent for the viewer's own (mine), a
+     neutral one for a teammate's, both softened, since it runs the message's whole length and the
+     meta names the kind too. Incoming messages stay plain. */
   .f-message--outgoing:not(.f-message--note, .f-message--generated) {
+    --f-internal-message-bar: color-mix(in srgb, var(--f-tertiary) 55%, transparent);
     padding-inline-start: var(--f-message-outgoing-inset, 14px);
   }
   .f-message--outgoing:not(.f-message--note, .f-message--generated)::before {
     position: absolute;
     inset-block: 0;
     inset-inline-start: 0;
-    border-inline-start: 3px solid var(--f-message-bar, var(--f-tertiary));
+    border-inline-start: 2px solid var(--f-message-bar, var(--f-internal-message-bar));
     border-radius: var(--f-radius-full);
     content: '';
   }
   .f-message--mine {
-    --f-message-bar: var(--f-accent);
+    --f-message-bar: color-mix(in srgb, var(--f-accent) 55%, transparent);
   }
 
   /* A conversation's history in order. Messages are set apart by a hairline and more space than
