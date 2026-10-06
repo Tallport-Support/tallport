@@ -58,7 +58,7 @@ final class ComponentContract
         'page' => ['options' => ['width' => ['narrow', 'medium', 'wide']]],
         'accent-picker' => ['roles' => ['radiogroup']],
         'disclosure' => ['roles' => ['group']],
-        'editor' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract', 'options' => ['paste' => ['rich', 'plain']]],
+        'editor' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract', 'options' => ['paste' => ['rich', 'plain'], 'layout' => ['stacked', 'inline'], 'enter' => ['newline', 'submit']]],
         'empty-state' => ['roles' => ['group', 'region']],
         'field' => ['roles' => ['group']],
         'form-section' => ['roles' => ['region', 'group']],

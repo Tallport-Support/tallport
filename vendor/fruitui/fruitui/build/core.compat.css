@@ -268,11 +268,12 @@ html.fruit-ui > body {
     cursor: not-allowed;
   }
 
-/* Plain links: the accent color with a soft underline, so links in running text are not told apart
-     by color alone; it firms up on hover. Components rendered as links remove it themselves. */
+/* Plain links: the accent as text (4.5:1 on white, grouped and secondary surfaces alike) with a soft
+     underline, so links in running text are not told apart by color alone; it firms up on hover.
+     Components rendered as links remove it themselves. */
 
 .fruit-ui :where(a) {
-    color: var(--f-accent);
+    color: var(--f-accent-text);
     text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
     text-underline-offset: 3px;
   }
@@ -3431,14 +3432,16 @@ img.f-avatar {
     color: var(--f-secondary);
   }
 
-.f-composer__field > .f-composer__send {
+.f-composer__field > :not(.f-composer__input, :has(.f-composer__input)).f-composer__send,
+  .f-composer__send {
     display: none;
     border-radius: var(--f-radius-full);
     color: var(--f-on-accent);
   }
 
 @media (pointer: coarse) {
-    .f-composer__field > .f-composer__send {
+    .f-composer__field > :not(.f-composer__input, :has(.f-composer__input)).f-composer__send,
+    .f-composer__send {
       display: inline-flex;
     }
   }

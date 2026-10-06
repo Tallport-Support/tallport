@@ -74,13 +74,15 @@
     flex: none;
     color: var(--f-secondary);
   }
-  .f-composer__field > .f-composer__send {
+  .f-composer__field > :not(.f-composer__input, :has(.f-composer__input)).f-composer__send,
+  .f-composer__send {
     display: none;
     border-radius: var(--f-radius-full);
     color: var(--f-on-accent);
   }
   @media (pointer: coarse) {
-    .f-composer__field > .f-composer__send {
+    .f-composer__field > :not(.f-composer__input, :has(.f-composer__input)).f-composer__send,
+    .f-composer__send {
       display: inline-flex;
     }
   }

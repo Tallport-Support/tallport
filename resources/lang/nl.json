@@ -1590,7 +1590,6 @@
     "No Messages Found": "Geen Berichten Gevonden",
     "Delete Team Chat Messages After": "Teamchatberichten Verwijderen Na",
     "Messages and their files, counted from when they were sent.": "Berichten en hun bestanden, gerekend vanaf het moment van verzenden.",
-    "Enter to send · Shift + Enter for a new line": "Enter om te verzenden · Shift + Enter voor een nieuwe regel",
     "Send a Chat Message": "Chatbericht Verzenden",
     "New Line in a Chat Message": "Nieuwe Regel in een Chatbericht",
     "Send a Reply or Note": "Antwoord of Notitie Verzenden",
@@ -1610,5 +1609,7 @@
     "You": "U",
     "Mail Server (Direct Delivery)": "Mailserver (Directe Aflevering)",
     "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Uw mailserver levert de e-mail van deze mailbox direct bij aankomst af bij Tallport, dus er wordt niets opgehaald. Stuur met Postfix het adres naar het transport van Tallport in \/etc\/postfix\/transport:",
-    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Enter om te verzenden, Shift+Enter voor een nieuwe regel, @ om een teamgenoot te noemen."
+    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Enter om te verzenden, Shift+Enter voor een nieuwe regel, @ om een teamgenoot te noemen.",
+    "Enter to send, Shift+Enter for a new line.": "Enter om te verzenden, Shift+Enter voor een nieuwe regel.",
+    "Message :name": "Bericht aan :name"
 }

@@ -362,6 +362,22 @@ The pane is a flex column, so the history takes the remaining height and scrolls
 </x-fruit::composer>
 ```
 
+When a chat channel supports formatting, use the editor as the field instead of a textarea: `layout="inline"` makes it the same single line, with a Formatting button (Aa) that shows the channel's formatting bar above the text, and `enter="submit"` sends on Enter.
+
+```blade
+<x-fruit::composer wire:submit="send">
+    <label class="f-sr-only" for="chat-body">Message Lena Wilson</label>
+    <x-fruit::editor id="chat-body" name="body" wire:model="body" layout="inline" enter="submit"
+        :formats="$channel->formats()" placeholder="Message Lena Wilson" aria-describedby="chat-help">
+        <x-slot:extras>
+            <x-fruit::button variant="ghost" class="f-button--icon" aria-label="Attach Files">…</x-fruit::button>
+            <x-fruit::button type="submit" variant="primary" class="f-button--icon f-composer__send" aria-label="Send">…</x-fruit::button>
+        </x-slot:extras>
+    </x-fruit::editor>
+    <p class="f-sr-only" id="chat-help">Enter to send, Shift+Enter for a new line.</p>
+</x-fruit::composer>
+```
+
 On touch screens a chat message shows its actions when tapped (it needs `tabindex="-1"` to take focus), rather than under every message. An application that swaps the whole conversation without re-rendering the history (Alpine state, say) calls `jumpToLatest({ smooth: false })` inside it; with Livewire, a new conversation renders a new history that opens at its newest message. When the history is a Livewire component's own view, give the view one root element around it: Livewire takes the first element of the output as the component's root, so a view that starts with `@if` or with the history's day threads can make the first thread the root, and later updates then morph only that thread.
 
 ## Message composers

@@ -1,4 +1,4 @@
-import { Editor, Node, mergeAttributes } from '@tiptap/core';
+import { Editor, Extension, Node, mergeAttributes } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import { bridgeControl, publishValue, fruitId } from './control-bridge.js';
 import { listenForEditorContent, EDITOR_PLUGIN } from './editor-content.js';
@@ -52,8 +52,30 @@ function extensions(formats) {
       }),
     }),
     ...(has('image') ? [Image] : []),
+    EnterSubmits,
   ];
 }
+
+/**
+ * With data-fruit-enter="submit" (a chat), Enter sends the form and Shift+Enter breaks the line;
+ * inside a list or code block Enter keeps its usual meaning. An input method composing is left alone.
+ */
+const EnterSubmits = Extension.create({
+  name: 'fruitEnterSubmits',
+  priority: 1000,
+  addKeyboardShortcuts() {
+    const submit = () => {
+      const root = this.editor.view.dom.closest('.f-editor');
+      if (root?.dataset.fruitEnter !== 'submit' || this.editor.view.composing) return false;
+      if (this.editor.isActive('listItem') || this.editor.isActive('codeBlock')) return false;
+      const form = root.querySelector('textarea[data-fruit-control]')?.form;
+      if (!form) return false;
+      form.requestSubmit();
+      return true;
+    };
+    return { Enter: submit, 'Mod-Enter': submit };
+  },
+});
 
 /** Optional integration: import fruitui/editor explicitly on your existing Alpine. */
 export default function fruitEditor(Alpine) {
@@ -62,7 +84,7 @@ export default function fruitEditor(Alpine) {
   Alpine.data('fruitEditor', () => {
     // Keep ProseMirror outside Alpine's reactive proxy.
     let editor, root, control, surface, toolbar, dispose, click, blur, stopContent, lastValue, committedValue;
-    let popover, overlay, closePopover;
+    let popover, overlay, closePopover, formatting, toggleFormatting;
     const commands = {
       bold: chain => chain.toggleBold(),
       italic: chain => chain.toggleItalic(),
@@ -196,6 +218,13 @@ export default function fruitEditor(Alpine) {
       return true;
     };
     const refresh = () => {
+      // The textarea's placeholder shows in the empty editor, and is announced as its placeholder.
+      const placeholder = control.getAttribute('placeholder');
+      if (placeholder) {
+        editor.view.dom.setAttribute('data-placeholder', placeholder);
+        editor.view.dom.setAttribute('aria-placeholder', placeholder);
+      }
+      editor.view.dom.toggleAttribute('data-empty', editor.isEmpty);
       const blocked = control.matches(':disabled') || control.readOnly;
       editor.setEditable(!blocked, false);
       editor.view.dom.tabIndex = control.matches(':disabled') ? -1 : control.tabIndex;
@@ -272,7 +301,16 @@ export default function fruitEditor(Alpine) {
           else commands[command](editor.chain().focus()).run();
         };
         toolbar.addEventListener('click', click);
-        toolbar.hidden = false;
+        // Inline (a chat's field): the formatting bar shows when its button asks for it.
+        formatting = this.$el.querySelector('[data-fruit-formatting]');
+        if (this.$el.classList.contains('f-editor--inline')) {
+          toggleFormatting = () => {
+            toolbar.hidden = !toolbar.hidden;
+            formatting.setAttribute('aria-expanded', String(!toolbar.hidden));
+          };
+          formatting?.addEventListener('click', toggleFormatting);
+          if (formatting) formatting.hidden = false;
+        } else toolbar.hidden = false;
         surface.hidden = false;
         control.hidden = true;
         refresh();
@@ -283,6 +321,8 @@ export default function fruitEditor(Alpine) {
         closePopover?.();
         this.$el.removeEventListener('focusout', blur);
         toolbar?.removeEventListener('click', click);
+        formatting?.removeEventListener('click', toggleFormatting);
+        if (formatting) formatting.hidden = true;
         editor?.destroy();
         if (control) control.hidden = false;
         if (toolbar) toolbar.hidden = true;

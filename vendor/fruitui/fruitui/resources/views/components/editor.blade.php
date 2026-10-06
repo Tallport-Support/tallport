@@ -1,7 +1,9 @@
-@props(['wrapper' => [], 'paste' => 'rich', 'formats' => null])
+@props(['wrapper' => [], 'paste' => 'rich', 'formats' => null, 'layout' => 'stacked', 'enter' => 'newline'])
 @aware(['fruitField' => null])
-@php($attributes = \FruitUI\Support\ComponentContract::control('editor', $attributes, $fruitField, ['paste' => $paste]))
+@php($attributes = \FruitUI\Support\ComponentContract::control('editor', $attributes, $fruitField, ['paste' => $paste, 'layout' => $layout, 'enter' => $enter]))
 @php($formats = \FruitUI\Support\ComponentContract::editorFormats($formats))
+@php($inline = $layout === 'inline')
+@php($toolbarId = ($attributes->get('id') ?? 'fruit-editor-'.\Illuminate\Support\Str::random(8)).'-formatting')
 <div {{ \FruitUI\Support\ComponentContract::wrapper($wrapper)->merge([
     'data-fruit-link-label' => __('Link Address'),
     'data-fruit-image-label' => __('Image Address'),
@@ -9,8 +11,9 @@
     'data-fruit-insert-label' => __('Insert'),
     'data-fruit-remove-link-label' => __('Remove Link'),
     'data-fruit-paste' => $paste,
-] + ($formats === null ? [] : ['data-fruit-formats' => implode(' ', $formats)]))->class(['f-editor']) }} x-data="fruitEditor">
-    <div class="f-editor__toolbar" wire:ignore hidden aria-label="{{ __('Text formatting') }}">
+    'data-fruit-enter' => $enter,
+] + ($formats === null ? [] : ['data-fruit-formats' => implode(' ', $formats)]))->class(['f-editor', 'f-editor--inline' => $inline]) }} x-data="fruitEditor">
+    <div class="f-editor__toolbar" id="{{ $toolbarId }}" wire:ignore hidden aria-label="{{ __('Text formatting') }}">
         @isset($toolbar)
             {{ $toolbar }}
         @else
@@ -32,12 +35,22 @@
             @endforeach
         @endforeach
         @endisset
-        @isset($extras)
+        @if (isset($extras) && !$inline)
             {{-- Application buttons after the defaults: saved replies, variables, attachments. --}}
             <span class="f-editor__separator" role="separator" aria-orientation="vertical"></span>
             {{ $extras }}
-        @endisset
+        @endif
     </div>
-    <textarea data-fruit-control {{ $attributes->class(['f-input']) }}>{{ $slot }}</textarea>
+    <textarea data-fruit-control {{ $attributes->class(['f-input']) }} @if($inline) rows="1" @endif>{{ $slot }}</textarea>
     <div class="f-editor__surface" wire:ignore hidden></div>
+    @if ($inline)
+        {{-- A chat's message field: the formatting bar shows on demand above the text, and the
+             application's buttons (Attach, saved replies, a touch-screen Send) sit at the end. --}}
+        <div class="f-editor__actions">
+            @if ($formats !== [])
+                <button class="f-button f-button--ghost f-button--icon" type="button" data-fruit-formatting aria-expanded="false" aria-controls="{{ $toolbarId }}" aria-label="{{ __('Formatting') }}" title="{{ __('Formatting') }}" hidden wire:ignore><svg class="f-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 16 2.536-7.328a1.02 1.02 1 0 1 1.928 0L22 16"/><path d="M15.697 14h5.606"/><path d="m2 16 4.039-9.69a.5.5 0 0 1 .923 0L11 16"/><path d="M3.304 13h6.392"/></svg></button>
+            @endif
+            {{ $extras ?? '' }}
+        </div>
+    @endif
 </div>

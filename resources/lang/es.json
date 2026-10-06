@@ -1588,7 +1588,6 @@
     "No Messages Found": "No se Encontraron Mensajes",
     "Delete Team Chat Messages After": "Borrar Mensajes del Chat del Equipo Después De",
     "Messages and their files, counted from when they were sent.": "Los mensajes y sus archivos, contados desde que se enviaron.",
-    "Enter to send · Shift + Enter for a new line": "Enter para enviar · Shift + Enter para una nueva línea",
     "Send a Chat Message": "Enviar un Mensaje de Chat",
     "New Line in a Chat Message": "Nueva Línea en un Mensaje de Chat",
     "Send a Reply or Note": "Enviar una Respuesta o Nota",
@@ -1608,5 +1607,7 @@
     "You": "Tú",
     "Mail Server (Direct Delivery)": "Servidor de Correo (Entrega Directa)",
     "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Tu servidor de correo entrega el correo de este buzón a Tallport en cuanto llega, así que no se rescata nada. Con Postfix, envía la dirección al transporte de Tallport en \/etc\/postfix\/transport:",
-    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Enter para enviar, Shift+Enter para una nueva línea, @ para mencionar a un compañero de equipo."
+    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Enter para enviar, Shift+Enter para una nueva línea, @ para mencionar a un compañero de equipo.",
+    "Enter to send, Shift+Enter for a new line.": "Enter para enviar, Shift+Enter para una nueva línea.",
+    "Message :name": "Mensaje para :name"
 }

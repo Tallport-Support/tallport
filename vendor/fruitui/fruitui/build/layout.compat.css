@@ -36,7 +36,9 @@
 .f-page--wide {
     --f-page-width: 1200px;
   }
-.f-page:has(> .f-page__footer) {
+/* A shown save bar carries the page's end spacing itself; without one (none, or hidden) the page
+     keeps it, so the last section never sits on the window's edge. */
+.f-page:has(> .f-page__footer:not([hidden])) {
     padding-bottom: 0;
   }
 .f-page__header {

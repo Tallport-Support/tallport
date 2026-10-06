@@ -26,11 +26,19 @@ export function listenForEditorContent(root, control, { insert, set, commit }) {
 
 /** Without the rich editor plugin, the native textarea answers the same requests. */
 export function fruitEditorFallback() {
-  let stop;
+  let stop, enter, control;
   return {
     init() {
-      const control = this.$el.querySelector('textarea[data-fruit-control]');
+      control = this.$el.querySelector('textarea[data-fruit-control]');
       if (!control) return;
+      // data-fruit-enter="submit": Enter sends, Shift+Enter breaks the line, as in the rich editor.
+      enter = event => {
+        if (event.key !== 'Enter' || event.shiftKey || event.isComposing || event.defaultPrevented) return;
+        if (this.$el.dataset.fruitEnter !== 'submit' || !control.form) return;
+        event.preventDefault();
+        control.form.requestSubmit();
+      };
+      control.addEventListener('keydown', enter);
       stop = listenForEditorContent(this.$el, control, {
         insert: html => {
           const start = control.selectionStart ?? control.value.length;
@@ -44,6 +52,7 @@ export function fruitEditorFallback() {
     },
     destroy() {
       stop?.();
+      control?.removeEventListener('keydown', enter);
     },
   };
 }

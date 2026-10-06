@@ -1588,7 +1588,6 @@
     "No Messages Found": "未找到消息",
     "Delete Team Chat Messages After": "删除团队聊天消息的期限",
     "Messages and their files, counted from when they were sent.": "消息及其文件，从发送时起计算。",
-    "Enter to send · Shift + Enter for a new line": "Enter 发送 · Shift + Enter 换行",
     "Send a Chat Message": "发送聊天消息",
     "New Line in a Chat Message": "在聊天消息中换行",
     "Send a Reply or Note": "发送回复或备注",
@@ -1608,5 +1607,7 @@
     "You": "您",
     "Mail Server (Direct Delivery)": "邮件服务器（直接投递）",
     "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "您的邮件服务器会在邮件到达时直接将此邮箱的电子邮件交给 Tallport，因此无需获取。使用 Postfix 时，请在 \/etc\/postfix\/transport 中将该地址发送到 Tallport 的 transport：",
-    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Enter 发送，Shift+Enter 换行，@ 提及团队成员。"
+    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Enter 发送，Shift+Enter 换行，@ 提及团队成员。",
+    "Enter to send, Shift+Enter for a new line.": "Enter 发送，Shift+Enter 换行。",
+    "Message :name": "给 :name 发消息"
 }

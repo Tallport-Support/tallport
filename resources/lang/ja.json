@@ -1587,7 +1587,6 @@
     "No Messages Found": "一致するメッセージはありません",
     "Delete Team Chat Messages After": "チームチャットのメッセージを削除するまでの期間",
     "Messages and their files, counted from when they were sent.": "メッセージとそのファイル。送信時から数えます。",
-    "Enter to send · Shift + Enter for a new line": "Enter で送信 · Shift + Enter で改行",
     "Send a Chat Message": "チャットメッセージを送信",
     "New Line in a Chat Message": "チャットメッセージ内で改行",
     "Send a Reply or Note": "返信または記録を送信",
@@ -1607,5 +1606,7 @@
     "You": "あなた",
     "Mail Server (Direct Delivery)": "メールサーバー（直接配信）",
     "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "メールサーバーがこのメールボックスのメールを受信と同時に Tallport へ渡すため、取得は行われません。Postfix の場合は、\/etc\/postfix\/transport でアドレスを Tallport のトランスポートに送ってください:",
-    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Enter で送信、Shift+Enter で改行、@ でチームメンバーをメンション。"
+    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Enter で送信、Shift+Enter で改行、@ でチームメンバーをメンション。",
+    "Enter to send, Shift+Enter for a new line.": "Enter で送信、Shift+Enter で改行。",
+    "Message :name": ":name へのメッセージ"
 }

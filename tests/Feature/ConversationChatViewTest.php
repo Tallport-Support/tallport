@@ -109,13 +109,13 @@ class ConversationChatViewTest extends FeatureTestCase
 
         $composer = Livewire::actingAs($this->agent->fresh())->test(ConversationComposer::class, ['conversation' => $this->conversation, 'chat' => true])
             ->assertSet('status', Conversation::STATUS_ACTIVE)
-            ->assertSeeHtml('btn-reply-submit')->assertDontSeeHtml('dropdown-send-status')->assertDontSeeHtml('name="status"');
+            ->assertSeeHtml('f-editor--inline')->assertSeeHtml('data-fruit-enter="submit"')->assertSeeHtml('f-composer__send')->assertDontSeeHtml('btn-reply-submit')->assertDontSeeHtml('dropdown-send-status')->assertDontSeeHtml('name="status"');
         $composer->set('body', '<p>On it.</p>')->call('send')->assertRedirect($this->conversation->url());
         $this->assertSame(Conversation::STATUS_ACTIVE, $this->conversation->fresh()->status);
 
         // The email view keeps the user's choices.
         Livewire::actingAs($this->agent->fresh())->test(ConversationComposer::class, ['conversation' => $this->conversation])
-            ->call('open', 'reply')->assertSet('status', Conversation::STATUS_CLOSED)->assertSeeHtml('dropdown-send-status');
+            ->call('open', 'reply')->assertSet('status', Conversation::STATUS_CLOSED)->assertSeeHtml('dropdown-send-status')->assertSeeHtml('data-fruit-enter="newline"')->assertDontSeeHtml('f-editor--inline');
     }
 
     public function testTheEditorAllowsTheChannelsFormatting()

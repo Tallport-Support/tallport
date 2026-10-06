@@ -14412,28 +14412,48 @@ var Y_ = Y.create({
 });
 function X_(e) {
 	let t = e === void 0 ? null : new Set(e.split(/\s+/).filter(Boolean)), n = (e) => !t || t.has(e), r = n("bulletList") || n("orderedList"), i = (e) => n(e) ? void 0 : !1;
-	return [R_.configure({
-		bold: i("bold"),
-		italic: i("italic"),
-		blockquote: i("blockquote"),
-		bulletList: i("bulletList"),
-		orderedList: i("orderedList"),
-		listItem: r ? void 0 : !1,
-		listKeymap: r ? void 0 : !1,
-		link: n("link") ? { openOnClick: !1 } : !1,
-		...t && {
-			heading: !1,
-			code: !1,
-			codeBlock: !1,
-			strike: !1,
-			underline: !1,
-			horizontalRule: !1
-		}
-	}), ...n("image") ? [Y_] : []];
+	return [
+		R_.configure({
+			bold: i("bold"),
+			italic: i("italic"),
+			blockquote: i("blockquote"),
+			bulletList: i("bulletList"),
+			orderedList: i("orderedList"),
+			listItem: r ? void 0 : !1,
+			listKeymap: r ? void 0 : !1,
+			link: n("link") ? { openOnClick: !1 } : !1,
+			...t && {
+				heading: !1,
+				code: !1,
+				codeBlock: !1,
+				strike: !1,
+				underline: !1,
+				horizontalRule: !1
+			}
+		}),
+		...n("image") ? [Y_] : [],
+		Z_
+	];
 }
-function Z_(e) {
+var Z_ = J.create({
+	name: "fruitEnterSubmits",
+	priority: 1e3,
+	addKeyboardShortcuts() {
+		let e = () => {
+			let e = this.editor.view.dom.closest(".f-editor");
+			if (e?.dataset.fruitEnter !== "submit" || this.editor.view.composing || this.editor.isActive("listItem") || this.editor.isActive("codeBlock")) return !1;
+			let t = e.querySelector("textarea[data-fruit-control]")?.form;
+			return t ? (t.requestSubmit(), !0) : !1;
+		};
+		return {
+			Enter: e,
+			"Mod-Enter": e
+		};
+	}
+});
+function Q_(e) {
 	e[W_] = !0, e.data("fruitEditor", () => {
-		let e, t, n, r, i, a, o, s, c, l, u, d, f, p, m = {
+		let e, t, n, r, i, a, o, s, c, l, u, d, f, p, m, h, g = {
 			bold: (e) => e.toggleBold(),
 			italic: (e) => e.toggleItalic(),
 			bulletList: (e) => e.toggleBulletList(),
@@ -14447,9 +14467,9 @@ function Z_(e) {
 				type: "image",
 				attrs: { src: "https://example.com/i.png" }
 			})
-		}, h = () => {
+		}, _ = () => {
 			u = n.value, n.dispatchEvent(new Event("change", { bubbles: !0 }));
-		}, g = (n, r) => {
+		}, ee = (n, r) => {
 			p?.();
 			let a = r === "link", o = a && e.getAttributes("link").href || "";
 			d = document.createElement("form"), d.className = "f-editor__popover", d.setAttribute("role", "dialog"), d.id = B_("fruit-editor-popover");
@@ -14461,7 +14481,7 @@ function Z_(e) {
 			if (l.className = "f-button f-button--primary f-button--small", l.type = "submit", l.textContent = J_(t, a ? "apply-label" : "insert-label", a ? "Apply" : "Insert"), d.append(c, l), a && o) {
 				let n = document.createElement("button");
 				n.className = "f-button f-button--ghost f-button--small", n.type = "button", n.textContent = J_(t, "remove-link-label", "Remove Link"), n.addEventListener("click", () => {
-					e.chain().focus().extendMarkRange("link").unsetLink().run(), h(), p(!1);
+					e.chain().focus().extendMarkRange("link").unsetLink().run(), _(), p(!1);
 				}), d.append(n);
 			}
 			d.addEventListener("submit", (t) => {
@@ -14481,19 +14501,19 @@ function Z_(e) {
 					type: "image",
 					attrs: { src: n }
 				}).run();
-				h(), p(!1);
+				_(), p(!1);
 			}), d.addEventListener("keydown", (e) => {
 				e.key === "Escape" && (e.preventDefault(), e.stopPropagation(), p(!0));
 			}), i.append(d), f = q_(d, n, { start: !0 }), f.show(), n.setAttribute("aria-expanded", "true"), p = (e) => {
 				f?.destroy(), d?.remove(), d = f = p = null, n.setAttribute("aria-expanded", "false"), e && n.focus();
 			}, c.focus();
-		}, _ = (n) => {
+		}, v = (n) => {
 			if (t.dataset.fruitPaste !== "plain") return !1;
 			let r = n.clipboardData?.getData("text/plain");
 			if (!r) return !1;
 			let i = (e) => e.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"), a = r.replace(/\r\n?/g, "\n").split(/\n{2,}/).map((e) => `<p>${i(e).replace(/\n/g, "<br>")}</p>`).join("");
 			return e.chain().focus().insertContent(a, { parseOptions: { preserveWhitespace: !1 } }).run(), !0;
-		}, ee = (t, r) => {
+		}, y = (t, r) => {
 			if (!e.schema.nodes.image) return !1;
 			let i = [...t ?? []].filter((e) => e.type.startsWith("image/"));
 			if (!i.length) return !1;
@@ -14510,21 +14530,23 @@ function Z_(e) {
 								src: t,
 								alt: n
 							}
-						}).run(), h();
+						}).run(), _();
 					}
 				}
 			});
 			return n.dispatchEvent(a), !0;
-		}, v = () => {
-			let t = n.matches(":disabled") || n.readOnly;
-			e.setEditable(!t, !1), e.view.dom.tabIndex = n.matches(":disabled") ? -1 : n.tabIndex, e.view.dom.setAttribute("aria-disabled", String(n.matches(":disabled"))), e.view.dom.setAttribute("aria-readonly", String(n.readOnly));
-			for (let n of i.querySelectorAll("[data-fruit-command]")) {
-				let r = n.dataset.fruitCommand;
-				n.disabled = t || !m[r] || !m[r](e.can().chain()).run(), ["link", "image"].includes(r) ? n.setAttribute("aria-haspopup", "dialog") : [
+		}, b = () => {
+			let t = n.getAttribute("placeholder");
+			t && (e.view.dom.setAttribute("data-placeholder", t), e.view.dom.setAttribute("aria-placeholder", t)), e.view.dom.toggleAttribute("data-empty", e.isEmpty);
+			let r = n.matches(":disabled") || n.readOnly;
+			e.setEditable(!r, !1), e.view.dom.tabIndex = n.matches(":disabled") ? -1 : n.tabIndex, e.view.dom.setAttribute("aria-disabled", String(n.matches(":disabled"))), e.view.dom.setAttribute("aria-readonly", String(n.readOnly));
+			for (let t of i.querySelectorAll("[data-fruit-command]")) {
+				let n = t.dataset.fruitCommand;
+				t.disabled = r || !g[n] || !g[n](e.can().chain()).run(), ["link", "image"].includes(n) ? t.setAttribute("aria-haspopup", "dialog") : [
 					"undo",
 					"redo",
 					"clear"
-				].includes(r) || n.setAttribute("aria-pressed", String(e.isActive(r)));
+				].includes(n) || t.setAttribute("aria-pressed", String(e.isActive(n)));
 			}
 		};
 		return {
@@ -14539,8 +14561,8 @@ function Z_(e) {
 							role: "textbox",
 							"aria-multiline": "true"
 						},
-						handlePaste: (e, t) => ee(t.clipboardData?.files, e.state.selection.from) || _(t),
-						handleDrop: (e, t) => ee(t.dataTransfer?.files, e.posAtCoords({
+						handlePaste: (e, t) => y(t.clipboardData?.files, e.state.selection.from) || v(t),
+						handleDrop: (e, t) => y(t.dataTransfer?.files, e.posAtCoords({
 							left: t.clientX,
 							top: t.clientY
 						})?.pos)
@@ -14549,10 +14571,10 @@ function Z_(e) {
 						l = e.isEmpty ? "" : e.getHTML(), H_(n, l, { commit: !1 }), e.view.dom.removeAttribute("aria-invalid");
 					},
 					onTransaction: () => {
-						e && v();
+						e && b();
 					}
 				}), a = U_(this, n, e.view.dom, (t) => {
-					n.value !== l && (e.commands.setContent(n.value, { emitUpdate: !1 }), l = u = n.value), t === "reset" && (u = n.value), v();
+					n.value !== l && (e.commands.setContent(n.value, { emitUpdate: !1 }), l = u = n.value), t === "reset" && (u = n.value), b();
 				}, {
 					presentation: r,
 					focusRoot: this.$el
@@ -14561,19 +14583,21 @@ function Z_(e) {
 				}, this.$el.addEventListener("focusout", s), c = G_(this.$el, n, {
 					insert: (t) => e.chain().focus().insertContent(t).run(),
 					set: (t) => e.commands.setContent(t, { emitUpdate: !0 }),
-					commit: h
+					commit: _
 				}), o = (t) => {
 					let n = t.target.closest("[data-fruit-command]");
-					if (!n || n.disabled || !m[n.dataset.fruitCommand]) return;
+					if (!n || n.disabled || !g[n.dataset.fruitCommand]) return;
 					let r = n.dataset.fruitCommand;
-					r === "link" || r === "image" ? g(n, r) : m[r](e.chain().focus()).run();
-				}, i.addEventListener("click", o), i.hidden = !1, r.hidden = !1, n.hidden = !0, v());
+					r === "link" || r === "image" ? ee(n, r) : g[r](e.chain().focus()).run();
+				}, i.addEventListener("click", o), m = this.$el.querySelector("[data-fruit-formatting]"), this.$el.classList.contains("f-editor--inline") ? (h = () => {
+					i.hidden = !i.hidden, m.setAttribute("aria-expanded", String(!i.hidden));
+				}, m?.addEventListener("click", h), m && (m.hidden = !1)) : i.hidden = !1, r.hidden = !1, n.hidden = !0, b());
 			},
 			destroy() {
-				a?.(), c?.(), p?.(), this.$el.removeEventListener("focusout", s), i?.removeEventListener("click", o), e?.destroy(), n && (n.hidden = !1), i && (i.hidden = !0), r && (r.hidden = !0);
+				a?.(), c?.(), p?.(), this.$el.removeEventListener("focusout", s), i?.removeEventListener("click", o), m?.removeEventListener("click", h), m && (m.hidden = !0), e?.destroy(), n && (n.hidden = !1), i && (i.hidden = !0), r && (r.hidden = !0);
 			}
 		};
 	});
 }
 //#endregion
-export { Z_ as default };
+export { Q_ as default };

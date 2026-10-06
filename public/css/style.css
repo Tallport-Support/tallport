@@ -2781,9 +2781,13 @@ a.disabled:focus {
 }
 .conv-composer-docked .conv-composer {
     --f-composer-input-min-height: 0;
-    --f-editor-min-height: 3lh;
     margin: 0;
     border-top: 1px solid var(--f-border);
+}
+/* The chat view's field (FruitUI's inline editor): a note never looks like a reply. */
+.conv-composer-docked .conv-note-block .f-editor--inline {
+    background: var(--f-note-background);
+    border-color: var(--f-note-border);
 }
 
 /* A mailbox's team chat (livewire/team-chat), as FruitUI's Support example's room:

@@ -1134,21 +1134,22 @@ function K(e, t, { insert: n, set: r, commit: i }) {
 	return () => a.abort();
 }
 function q() {
-	let e;
+	let e, t, n;
 	return {
 		init() {
-			let t = this.$el.querySelector("textarea[data-fruit-control]");
-			t && (e = K(this.$el, t, {
+			n = this.$el.querySelector("textarea[data-fruit-control]"), n && (t = (e) => {
+				e.key !== "Enter" || e.shiftKey || e.isComposing || e.defaultPrevented || this.$el.dataset.fruitEnter === "submit" && n.form && (e.preventDefault(), n.form.requestSubmit());
+			}, n.addEventListener("keydown", t), e = K(this.$el, n, {
 				insert: (e) => {
-					let n = t.selectionStart ?? t.value.length, r = t.selectionEnd ?? n;
-					p(t, t.value.slice(0, n) + e + t.value.slice(r), { commit: !1 }), t.setSelectionRange?.(n + e.length, n + e.length);
+					let t = n.selectionStart ?? n.value.length, r = n.selectionEnd ?? t;
+					p(n, n.value.slice(0, t) + e + n.value.slice(r), { commit: !1 }), n.setSelectionRange?.(t + e.length, t + e.length);
 				},
-				set: (e) => p(t, e, { commit: !1 }),
-				commit: () => t.dispatchEvent(new Event("change", { bubbles: !0 }))
+				set: (e) => p(n, e, { commit: !1 }),
+				commit: () => n.dispatchEvent(new Event("change", { bubbles: !0 }))
 			}));
 		},
 		destroy() {
-			e?.();
+			e?.(), n?.removeEventListener("keydown", t);
 		}
 	};
 }

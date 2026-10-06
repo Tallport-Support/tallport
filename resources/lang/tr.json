@@ -1587,7 +1587,6 @@
     "No Messages Found": "Mesaj Bulunamadı",
     "Delete Team Chat Messages After": "Ekip Sohbeti Mesajlarını Silme Süresi",
     "Messages and their files, counted from when they were sent.": "Mesajlar ve dosyaları, gönderildikleri andan itibaren sayılır.",
-    "Enter to send · Shift + Enter for a new line": "Göndermek için Enter · yeni satır için Shift + Enter",
     "Send a Chat Message": "Sohbet Mesajı Gönder",
     "New Line in a Chat Message": "Sohbet Mesajında Yeni Satır",
     "Send a Reply or Note": "Yanıt veya Not Gönder",
@@ -1607,5 +1606,7 @@
     "You": "Siz",
     "Mail Server (Direct Delivery)": "Posta Sunucusu (Doğrudan Teslim)",
     "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Posta sunucunuz bu posta kutusunun e-postalarını geldiği anda Tallport'a iletir, bu yüzden hiçbir şey getirilmez. Postfix ile adresi \/etc\/postfix\/transport dosyasında Tallport'un transport'una yönlendirin:",
-    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Göndermek için Enter, yeni satır için Shift+Enter, bir ekip arkadaşından bahsetmek için @."
+    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Göndermek için Enter, yeni satır için Shift+Enter, bir ekip arkadaşından bahsetmek için @.",
+    "Enter to send, Shift+Enter for a new line.": "Göndermek için Enter, yeni satır için Shift+Enter.",
+    "Message :name": ":name kişisine mesaj"
 }

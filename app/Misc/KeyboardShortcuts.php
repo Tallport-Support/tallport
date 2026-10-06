@@ -25,6 +25,14 @@ class KeyboardShortcuts
     const CHAT_NEW_LINE = 'Shift+Enter';
 
     /**
+     * What Enter does in FruitUI's editor for a kind of message: sends ("submit") or breaks the line.
+     */
+    public static function editorEnter($kind)
+    {
+        return in_array('Enter', self::SEND[$kind]) ? 'submit' : 'newline';
+    }
+
+    /**
      * A key combination as the user's keyboard labels it: "⌘ + Return", "Ctrl + Enter".
      */
     public static function label($keys, $mac)

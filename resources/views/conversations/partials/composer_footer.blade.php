@@ -2,7 +2,8 @@
      assignee, the editor menus' data and the send button: $send_label, $send_menu (status => label),
      $history (the Conversation History choice; $history_exclude, $conv_history), $is_new;
      $send_only (the chat view): just the send button, status and assignee are the toolbar's. --}}
-<div id="editor_bottom_toolbar" class="f-composer__footer conv-composer__footer">
+{{-- The chat view ($send_only): Send is in the chat field (composer_editor); the footer only carries the editor menus' data. --}}
+<div id="editor_bottom_toolbar" class="f-composer__footer conv-composer__footer" @if (!empty($send_only)) hidden @endif>
     @action('conv_editor.editor_toolbar_prepend', $mailbox, $conversation)
     @if (empty($send_only))
         <label class="conv-composer__field"><span class="editor-btm-text">{{ __('Status') }}</span>
@@ -23,8 +24,6 @@
                 @endforeach
             </select>
         </label>
-    @else
-        <span class="f-help conv-composer__hint">{{ __('Enter to send · Shift + Enter for a new line') }}</span>
     @endif
 
     <span id="saved-replies-data" class="hidden"
@@ -46,9 +45,7 @@
         data-empty="{{ __('No articles yet.') }}"></span>
 
     <span class="f-toolbar__spacer"></span>
-    @if (!empty($send_only))
-        <button type="submit" class="f-button f-button--primary btn-reply-submit" wire:loading.attr="disabled" wire:target="send">{{ $send_label }}</button>
-    @else
+    @if (empty($send_only))
         <div class="f-button-group btn-group-send">
             <button type="submit" class="f-button f-button--primary btn-reply-submit" wire:loading.attr="disabled" wire:target="send">{{ $send_label }}</button>
             <x-fruit::menu :title="__('More Send Options')" class="dropdown-send-status">
