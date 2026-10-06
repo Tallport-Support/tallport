@@ -1684,7 +1684,6 @@
     "Delete Team Chat Messages After": "Elimina els Missatges del Xat de l'Equip Després De",
     "Messages and their files, counted from when they were sent.": "Els missatges i els seus fitxers, comptats des que es van enviar.",
     "Enter to send · Shift + Enter for a new line": "Enter per enviar · Shift + Enter per a una línia nova",
-    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter per enviar · Shift + Enter per a una línia nova · @ per esmentar",
     "Send a Chat Message": "Envia un Missatge de Xat",
     "New Line in a Chat Message": "Línia Nova en un Missatge de Xat",
     "Send a Reply or Note": "Envia una Resposta o Nota",
@@ -1703,5 +1702,6 @@
     "Switch Team Chat": "Canvia de Xat de l'Equip",
     "You": "Vós",
     "Mail Server (Direct Delivery)": "Servidor de Correu (Lliurament Directe)",
-    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "El vostre servidor de correu lliura el correu d'aquesta bústia a Tallport tan bon punt arriba, així que no s'obté res. Amb Postfix, envieu l'adreça al transport de Tallport a \/etc\/postfix\/transport:"
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "El vostre servidor de correu lliura el correu d'aquesta bústia a Tallport tan bon punt arriba, així que no s'obté res. Amb Postfix, envieu l'adreça al transport de Tallport a \/etc\/postfix\/transport:",
+    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Enter per enviar, Shift+Enter per a una línia nova, @ per esmentar un membre de l'equip."
 }

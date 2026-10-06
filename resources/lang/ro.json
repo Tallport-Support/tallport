@@ -1587,7 +1587,6 @@
     "Delete Team Chat Messages After": "Șterge Mesajele din Chat-ul Echipei După",
     "Messages and their files, counted from when they were sent.": "Mesajele și fișierele lor, socotite de la trimitere.",
     "Enter to send · Shift + Enter for a new line": "Enter pentru a trimite · Shift + Enter pentru un rând nou",
-    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter pentru a trimite · Shift + Enter pentru un rând nou · @ pentru a menționa",
     "Send a Chat Message": "Trimite un Mesaj în Chat",
     "New Line in a Chat Message": "Rând Nou într-un Mesaj din Chat",
     "Send a Reply or Note": "Trimite un Răspuns sau o Notă",
@@ -1606,5 +1605,6 @@
     "Switch Team Chat": "Schimbă Chat-ul Echipei",
     "You": "Tu",
     "Mail Server (Direct Delivery)": "Server de Email (Livrare Directă)",
-    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Serverul dvs. de email predă email-urile acestei cutii poștale către Tallport imediat ce sosesc, deci nu se preia nimic. Cu Postfix, trimiteți adresa către transportul Tallport în \/etc\/postfix\/transport:"
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Serverul dvs. de email predă email-urile acestei cutii poștale către Tallport imediat ce sosesc, deci nu se preia nimic. Cu Postfix, trimiteți adresa către transportul Tallport în \/etc\/postfix\/transport:",
+    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Enter pentru a trimite, Shift+Enter pentru un rând nou, @ pentru a menționa un membru al echipei."
 }

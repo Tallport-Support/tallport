@@ -1990,7 +1990,6 @@
     "Delete Team Chat Messages After": "Команда Чаты Хабарламаларын Жою Мерзімі",
     "Messages and their files, counted from when they were sent.": "Хабарламалар мен олардың файлдары, жіберілген уақыттан бастап есептеледі.",
     "Enter to send · Shift + Enter for a new line": "Жіберу үшін Enter · жаңа жол үшін Shift + Enter",
-    "Enter to send · Shift + Enter for a new line · @ to mention": "Жіберу үшін Enter · жаңа жол үшін Shift + Enter · атап өту үшін @",
     "Send a Chat Message": "Чат Хабарламасын Жіберу",
     "New Line in a Chat Message": "Чат Хабарламасындағы Жаңа Жол",
     "Send a Reply or Note": "Жауап немесе Ескертпе Жіберу",
@@ -2009,5 +2008,6 @@
     "Switch Team Chat": "Команда Чатын Ауыстыру",
     "You": "Сіз",
     "Mail Server (Direct Delivery)": "Пошта Сервері (Тікелей Жеткізу)",
-    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Пошта серверіңіз осы пошталық жәшіктің хаттарын келген сәтте Tallport-қа береді, сондықтан ештеңе алынбайды. Postfix қолдансаңыз, \/etc\/postfix\/transport файлында мекенжайды Tallport транспортына бағыттаңыз:"
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Пошта серверіңіз осы пошталық жәшіктің хаттарын келген сәтте Tallport-қа береді, сондықтан ештеңе алынбайды. Postfix қолдансаңыз, \/etc\/postfix\/transport файлында мекенжайды Tallport транспортына бағыттаңыз:",
+    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Жіберу үшін Enter, жаңа жол үшін Shift+Enter, команда мүшесін атап өту үшін @."
 }

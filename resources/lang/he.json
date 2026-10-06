@@ -1587,7 +1587,6 @@
     "Delete Team Chat Messages After": "מחיקת הודעות צ'אט צוות לאחר",
     "Messages and their files, counted from when they were sent.": "הודעות והקבצים שלהן, נספר מרגע שליחתן.",
     "Enter to send · Shift + Enter for a new line": "Enter לשליחה · Shift + Enter לשורה חדשה",
-    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter לשליחה · Shift + Enter לשורה חדשה · @ לאזכור",
     "Send a Chat Message": "שלח הודעת צ'אט",
     "New Line in a Chat Message": "שורה חדשה בהודעת צ'אט",
     "Send a Reply or Note": "שלח תשובה או פתק",
@@ -1606,5 +1605,6 @@
     "Switch Team Chat": "החלף צ'אט צוות",
     "You": "אתה",
     "Mail Server (Direct Delivery)": "שרת דואר (מסירה ישירה)",
-    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "שרת הדואר שלך מעביר את האימיילים של תיבת דואר זו ל-Tallport ברגע שהם מגיעים, כך ששום דבר לא מאוחזר. עם Postfix, הפנה את הכתובת ל-transport של Tallport בקובץ \/etc\/postfix\/transport:"
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "שרת הדואר שלך מעביר את האימיילים של תיבת דואר זו ל-Tallport ברגע שהם מגיעים, כך ששום דבר לא מאוחזר. עם Postfix, הפנה את הכתובת ל-transport של Tallport בקובץ \/etc\/postfix\/transport:",
+    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Enter לשליחה, Shift+Enter לשורה חדשה, @ לאזכור חבר צוות."
 }

@@ -1592,7 +1592,6 @@
     "Delete Team Chat Messages After": "Slett Teamchatmeldinger Etter",
     "Messages and their files, counted from when they were sent.": "Meldinger og filene deres, regnet fra når de ble sendt.",
     "Enter to send · Shift + Enter for a new line": "Enter for å sende · Shift + Enter for ny linje",
-    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter for å sende · Shift + Enter for ny linje · @ for å nevne",
     "Send a Chat Message": "Send en Chatmelding",
     "New Line in a Chat Message": "Ny Linje i en Chatmelding",
     "Send a Reply or Note": "Send et Svar eller en Merknad",
@@ -1611,5 +1610,6 @@
     "Switch Team Chat": "Bytt Teamchat",
     "You": "Du",
     "Mail Server (Direct Delivery)": "E-postserver (Direkte Levering)",
-    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "E-postserveren din leverer e-posten til denne postkassen til Tallport straks den kommer inn, så ingenting hentes. Med Postfix sender du adressen til Tallports transport i \/etc\/postfix\/transport:"
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "E-postserveren din leverer e-posten til denne postkassen til Tallport straks den kommer inn, så ingenting hentes. Med Postfix sender du adressen til Tallports transport i \/etc\/postfix\/transport:",
+    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Enter for å sende, Shift+Enter for ny linje, @ for å nevne et teammedlem."
 }

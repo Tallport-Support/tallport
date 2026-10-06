@@ -1588,7 +1588,6 @@
     "Delete Team Chat Messages After": "Удалять Сообщения Чата Команды Через",
     "Messages and their files, counted from when they were sent.": "Сообщения и их файлы, считается с момента отправки.",
     "Enter to send · Shift + Enter for a new line": "Enter — отправить · Shift + Enter — новая строка",
-    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter — отправить · Shift + Enter — новая строка · @ — упомянуть",
     "Send a Chat Message": "Отправить Сообщение в Чате",
     "New Line in a Chat Message": "Новая Строка в Сообщении Чата",
     "Send a Reply or Note": "Отправить Ответ или Примечание",
@@ -1607,5 +1606,6 @@
     "Switch Team Chat": "Сменить Чат Команды",
     "You": "Вы",
     "Mail Server (Direct Delivery)": "Почтовый Сервер (Прямая Доставка)",
-    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Ваш почтовый сервер передаёт письма этого ящика в Tallport сразу по прибытии, поэтому ничего не нужно получать. В Postfix направьте адрес на транспорт Tallport в \/etc\/postfix\/transport:"
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Ваш почтовый сервер передаёт письма этого ящика в Tallport сразу по прибытии, поэтому ничего не нужно получать. В Postfix направьте адрес на транспорт Tallport в \/etc\/postfix\/transport:",
+    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Enter — отправить, Shift+Enter — новая строка, @ — упомянуть участника команды."
 }

@@ -61,7 +61,7 @@
         <p class="f-help team-room__no-results" x-show="query && !has($root, query)" x-cloak>{{ __('No Messages Found') }}</p>
     </x-fruit::history>
 
-    <x-fruit::composer class="team-room__composer" x-on:submit.prevent="$wire.send()">
+    <x-fruit::composer class="team-room__composer" wire:submit="send">
         @if ($files)
             <ul class="team-room__files" aria-label="{{ __('Attachments to Send') }}">
                 @foreach ($files as $file_index => $file)
@@ -70,22 +70,24 @@
             </ul>
         @endif
         @error('files.*')<x-fruit::alert tone="danger">{{ $message }}</x-fruit::alert>@enderror
+        {{-- FruitUI's chat field: one line that grows; Enter sends (App\Misc\KeyboardShortcuts), Send shows on touch screens. --}}
         <label class="f-sr-only" for="team-composer-{{ $mailbox->id }}">{{ __('Message the :mailbox Team', ['mailbox' => $mailbox->name]) }}</label>
-        <x-fruit::autocomplete trigger="@">
-            <textarea id="team-composer-{{ $mailbox->id }}" class="f-composer__input f-input team-room__input" rows="2" wire:model="body" placeholder="{{ __('Message the :mailbox Team', ['mailbox' => $mailbox->name]) }}" aria-describedby="team-room-help" x-on:keydown.enter="if (tallportSendKey($event, 'chat')) { $event.preventDefault(); $el.form.requestSubmit(); }"></textarea>
-            <x-slot:options>
-                @foreach ($members as $member)
-                    @if ($member->id != auth()->id())
-                        <option value="{{ '@'.App\TeamMessage::mentionName($member) }}">{{ $member->getFullName() }}</option>
-                    @endif
-                @endforeach
-            </x-slot:options>
-        </x-fruit::autocomplete>
-        <div class="f-composer__footer team-room__footer">
-            <span id="team-room-help" class="f-help">{{ __('Enter to send · Shift + Enter for a new line · @ to mention') }}</span>
-            <input type="file" multiple hidden x-ref="files" wire:model="files">
-            <x-fruit::button variant="ghost" class="f-button--icon team-room__attach" x-on:click="$refs.files.click()" :aria-label="__('Attach Files')" :title="__('Attach Files')"><x-icon.paperclip class="f-icon" aria-hidden="true" /></x-fruit::button>
-            <x-fruit::button type="submit" variant="primary" wire:loading.attr="disabled" wire:target="send,files"><x-icon.send class="f-icon" aria-hidden="true" />{{ __('Send') }}</x-fruit::button>
+        <input type="file" multiple hidden x-ref="files" wire:model="files">
+        <div class="f-composer__field">
+            <x-fruit::autocomplete trigger="@">
+                <x-fruit::textarea id="team-composer-{{ $mailbox->id }}" class="f-composer__input" rows="1" wire:model="body" :placeholder="__('Message the :mailbox Team', ['mailbox' => $mailbox->name])" :aria-invalid="$errors->has('body') ? 'true' : null" :aria-describedby="$errors->has('body') ? 'team-room-help team-room-error' : 'team-room-help'" x-on:keydown.enter="if (tallportSendKey($event, 'chat')) { $event.preventDefault(); $el.form.requestSubmit(); }" />
+                <x-slot:options>
+                    @foreach ($members as $member)
+                        @if ($member->id != auth()->id())
+                            <option value="{{ '@'.App\TeamMessage::mentionName($member) }}">{{ $member->getFullName() }}</option>
+                        @endif
+                    @endforeach
+                </x-slot:options>
+            </x-fruit::autocomplete>
+            <x-fruit::button variant="ghost" class="f-button--icon" x-on:click="$refs.files.click()" :aria-label="__('Attach Files')" :title="__('Attach Files')"><x-icon.paperclip class="f-icon" aria-hidden="true" /></x-fruit::button>
+            <x-fruit::button type="submit" variant="primary" class="f-button--icon f-composer__send" :aria-label="__('Send')" wire:loading.attr="disabled" wire:target="send,files"><x-icon.send class="f-icon" aria-hidden="true" /></x-fruit::button>
         </div>
+        <p class="f-sr-only" id="team-room-help">{{ __('Enter to send, Shift+Enter for a new line, @ to mention a teammate.') }}</p>
+        @error('body')<p class="f-error" id="team-room-error">{{ $message }}</p>@enderror
     </x-fruit::composer>
 </div>

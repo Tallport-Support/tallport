@@ -1588,7 +1588,6 @@
     "Delete Team Chat Messages After": "Komanda Çatı Mesajlarının Silinmə Müddəti",
     "Messages and their files, counted from when they were sent.": "Mesajlar və onların faylları, göndərildikləri vaxtdan hesablanır.",
     "Enter to send · Shift + Enter for a new line": "Göndərmək üçün Enter · yeni sətir üçün Shift + Enter",
-    "Enter to send · Shift + Enter for a new line · @ to mention": "Göndərmək üçün Enter · yeni sətir üçün Shift + Enter · qeyd etmək üçün @",
     "Send a Chat Message": "Çat Mesajı Göndər",
     "New Line in a Chat Message": "Çat Mesajında Yeni Sətir",
     "Send a Reply or Note": "Cavab və ya Qeyd Göndər",
@@ -1607,5 +1606,6 @@
     "Switch Team Chat": "Komanda Çatını Dəyiş",
     "You": "Siz",
     "Mail Server (Direct Delivery)": "Poçt Serveri (Birbaşa Çatdırılma)",
-    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Poçt serveriniz bu poçt qutusunun e-poçtlarını gəldiyi anda Tallport-a ötürür, buna görə heç nə əldə edilmir. Postfix ilə ünvanı \/etc\/postfix\/transport faylında Tallport-un transportuna yönləndirin:"
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Poçt serveriniz bu poçt qutusunun e-poçtlarını gəldiyi anda Tallport-a ötürür, buna görə heç nə əldə edilmir. Postfix ilə ünvanı \/etc\/postfix\/transport faylında Tallport-un transportuna yönləndirin:",
+    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Göndərmək üçün Enter, yeni sətir üçün Shift+Enter, komanda üzvünü qeyd etmək üçün @."
 }

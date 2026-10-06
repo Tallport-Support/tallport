@@ -1606,7 +1606,6 @@
     "Delete Team Chat Messages After": "Tiimin Chatin Viestit Poistetaan",
     "Messages and their files, counted from when they were sent.": "Viestit ja niiden tiedostot, laskettuna lähetyshetkestä.",
     "Enter to send · Shift + Enter for a new line": "Enter lähettää · Shift + Enter lisää uuden rivin",
-    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter lähettää · Shift + Enter lisää uuden rivin · @ mainitsee",
     "Send a Chat Message": "Lähetä Chat-Viesti",
     "New Line in a Chat Message": "Uusi Rivi Chat-Viestissä",
     "Send a Reply or Note": "Lähetä Vastaus tai Huomautus",
@@ -1625,5 +1624,6 @@
     "Switch Team Chat": "Vaihda Tiimin Chat",
     "You": "Sinä",
     "Mail Server (Direct Delivery)": "Postipalvelin (Suora Toimitus)",
-    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Postipalvelimesi välittää tämän postilaatikon sähköpostit Tallportille heti niiden saapuessa, joten mitään ei haeta. Postfixissa ohjaa osoite Tallportin transportiin tiedostossa \/etc\/postfix\/transport:"
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Postipalvelimesi välittää tämän postilaatikon sähköpostit Tallportille heti niiden saapuessa, joten mitään ei haeta. Postfixissa ohjaa osoite Tallportin transportiin tiedostossa \/etc\/postfix\/transport:",
+    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Enter lähettää, Shift+Enter lisää uuden rivin, @ mainitsee tiimin jäsenen."
 }

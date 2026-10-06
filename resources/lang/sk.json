@@ -1587,7 +1587,6 @@
     "Delete Team Chat Messages After": "Vymazať Správy Tímového Chatu Po",
     "Messages and their files, counted from when they were sent.": "Správy a ich súbory, počítané od ich odoslania.",
     "Enter to send · Shift + Enter for a new line": "Enter na odoslanie · Shift + Enter na nový riadok",
-    "Enter to send · Shift + Enter for a new line · @ to mention": "Enter na odoslanie · Shift + Enter na nový riadok · @ na spomenutie",
     "Send a Chat Message": "Odoslať Správu v Chate",
     "New Line in a Chat Message": "Nový Riadok v Správe v Chate",
     "Send a Reply or Note": "Odoslať Odpoveď alebo Poznámku",
@@ -1606,5 +1605,6 @@
     "Switch Team Chat": "Prepnúť Tímový Chat",
     "You": "Vy",
     "Mail Server (Direct Delivery)": "Poštový Server (Priame Doručenie)",
-    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Váš poštový server odovzdáva emaily tohto mailboxu do Tallportu hneď, ako prídu, takže sa nič nenačítava. S Postfixom nasmerujte adresu na transport Tallportu v \/etc\/postfix\/transport:"
+    "Your mail server hands this mailbox's email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport's transport in \/etc\/postfix\/transport:": "Váš poštový server odovzdáva emaily tohto mailboxu do Tallportu hneď, ako prídu, takže sa nič nenačítava. S Postfixom nasmerujte adresu na transport Tallportu v \/etc\/postfix\/transport:",
+    "Enter to send, Shift+Enter for a new line, @ to mention a teammate.": "Enter na odoslanie, Shift+Enter na nový riadok, @ na spomenutie člena tímu."
 }
