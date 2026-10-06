@@ -139,6 +139,31 @@ function editorFocus(id)
 	}
 }
 
+/**
+ * Reply, Note or Forward (the toolbar, R, N): the composer in view and its editor focused,
+ * so typing can start at once. Waits for it to open (App\Livewire\ConversationComposer)
+ * and for FruitUI's editor to start; an open one is focused right away.
+ */
+function composerFocus()
+{
+	var started = Date.now();
+	var attempt = function () {
+		var textarea = document.getElementById('body');
+		var editor = textarea ? textarea.closest('.f-editor') : null;
+		var surface = editor ? editor.querySelector('.f-editor__surface [contenteditable="true"]') : null;
+		var target = surface || (textarea && !editor ? textarea : null);
+		if (!target) {
+			if (Date.now() - started < 3000) {
+				requestAnimationFrame(attempt);
+			}
+			return;
+		}
+		(textarea.closest('.conv-action-wrapper') || target).scrollIntoView({block: 'nearest', behavior: 'smooth'});
+		target.focus({preventScroll: true});
+	};
+	requestAnimationFrame(attempt);
+}
+
 function getReplyBody()
 {
 	var body = document.getElementById('body');
