@@ -37,7 +37,9 @@ class ConversationToolbarTest extends FeatureTestCase
 
     public function testAssignsAndChangesTheStatus()
     {
-        $this->toolbar()->assertSee('data-status', false)
+        // The current status checked in the menu.
+        $this->assertMatchesRegularExpression('/aria-checked="true"[^>]*data-status="'.$this->conversation->status.'"/', $this->toolbar()->html());
+        $this->toolbar()
             ->call('assign', $this->agent->id)->assertRedirect($this->conversation->url());
         $this->assertSame($this->agent->id, $this->conversation->fresh()->user_id);
         $this->assertStringStartsWith('Assignee updated', session('flash_success_floating'));

@@ -195,12 +195,14 @@ class ConversationListTest extends FeatureTestCase
             ->set('selected', $ids)->assertSee('2 selected')
             // The same status: its dot, named; each status in the menu leads with its dot.
             ->assertSeeHtml('aria-label="Status: Active"')->assertSeeHtml('f-badge--warning conv-status-dot');
+        // ...and checked in the menu.
+        $this->assertMatchesRegularExpression('/aria-checked="true"[^>]*data-status="'.Conversation::STATUS_ACTIVE.'"/', $list->html());
 
         $first->setStatus(Conversation::STATUS_CLOSED);
         $first->save();
         $list->set('selected', [$ids[0]])->set('selected', $ids)
             // Different statuses: a ring, just "Status".
-            ->assertSeeHtml('conv-status-dot--mixed')->assertDontSeeHtml('aria-label="Status: Active"');
+            ->assertSeeHtml('conv-status-dot--mixed')->assertDontSeeHtml('aria-label="Status: Active"')->assertDontSeeHtml('aria-checked="true"');
 
         $list->call('changeStatus', Conversation::STATUS_PENDING)->assertToasted('Status updated')->assertRedirect();
         $this->assertSame([Conversation::STATUS_PENDING, Conversation::STATUS_PENDING], [$first->fresh()->status, $second->fresh()->status]);

@@ -91,15 +91,24 @@ function maybeShowConnectionRestored()
 	var menuChanged = function (menu_id, selector, value, label_class) {
 		var menu = document.getElementById(menu_id);
 		var item = menu ? menu.querySelector('['+selector+'="'+value+'"]') : null;
-		if (!item || item.getAttribute('aria-current') == 'true') {
+		// A checked choice (the status) or the current item (the assignee).
+		var radio = item && item.getAttribute('role') == 'menuitemradio';
+		if (!item || item.getAttribute(radio ? 'aria-checked' : 'aria-current') == 'true') {
 			return false;
 		}
-		menu.querySelectorAll('['+selector+'][aria-current]').forEach(function (current) {
-			current.classList.remove('active');
-			current.removeAttribute('aria-current');
-		});
-		item.classList.add('active');
-		item.setAttribute('aria-current', 'true');
+		if (radio) {
+			menu.querySelectorAll('['+selector+'][role="menuitemradio"]').forEach(function (choice) {
+				choice.setAttribute('aria-checked', 'false');
+			});
+			item.setAttribute('aria-checked', 'true');
+		} else {
+			menu.querySelectorAll('['+selector+'][aria-current]').forEach(function (current) {
+				current.classList.remove('active');
+				current.removeAttribute('aria-current');
+			});
+			item.classList.add('active');
+			item.setAttribute('aria-current', 'true');
+		}
 		var label = menu.querySelector('.conv-info-val span');
 		if (label) {
 			label.textContent = item.textContent.trim();

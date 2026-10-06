@@ -184,6 +184,21 @@ class SearchTest extends FeatureTestCase
         $this->actingAs($this->agent)->get('/search?q=%23'.$conversation->number)->assertRedirect();
     }
 
+    /**
+     * A deleted conversation among the results says so, in words, before its subject.
+     */
+    public function testDeletedConversationsAreMarked()
+    {
+        $conversation = $this->conversation('Broken zipper', 'The zipper of my winter jacket broke.');
+        $conversation->state = \App\Conversation::STATE_DELETED;
+        $conversation->save();
+        $this->ready();
+
+        $this->actingAs($this->agent)->get('/search?q=zipper')
+            ->assertOk()
+            ->assertSee('f-badge conv-deleted', false);
+    }
+
     public function testNextPagesKeepTheOrderAndExcerpts()
     {
         $body_only = $this->conversation('Hello', 'Something about a refund.');

@@ -28,7 +28,7 @@
     <x-fruit::menu :title="__('Status')" class="conv-status">
         <x-slot:trigger class="f-button--ghost f-button--icon" :aria-label="$bulk_status_label" :title="$bulk_status_label">@include('conversations/partials/status_dot', ['status' => $bulk_status])</x-slot:trigger>
         @foreach (App\Conversation::$statuses as $status => $dummy)
-            <x-fruit::menu-link href="#" :data-status="$status" wire:click.prevent="changeStatus({{ $status }})">@include('conversations/partials/status_dot', ['status' => $status]) {{ App\Conversation::statusCodeToName($status) }}</x-fruit::menu-link>
+            {{-- Checked: the status all the selected conversations share. --}}<x-fruit::menu-radio :checked="$bulk_status === $status" :data-status="$status" wire:click.prevent="changeStatus({{ $status }})">@include('conversations/partials/status_dot', ['status' => $status]) {{ App\Conversation::statusCodeToName($status) }}</x-fruit::menu-radio>
         @endforeach
     </x-fruit::menu>
     @if (Auth::user()->can('delete', new App\Conversation()))

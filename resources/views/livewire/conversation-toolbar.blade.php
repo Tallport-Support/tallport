@@ -88,7 +88,7 @@
                     <x-slot:trigger class="f-button--small" :title="__('Status').': '.$conversation->getStatusName()" :aria-label="__('Status').': '.$conversation->getStatusName()">@include('conversations/partials/status_dot', ['status' => $conversation->status]) <span class="conv-info-val"><span>{{ $conversation->getStatusName() }}</span></span></x-slot:trigger>
                     @if (!$conversation->isSpam())
                         @foreach (App\Conversation::$statuses as $status => $dummy)
-                            <x-fruit::menu-link href="#" :data-status="$status" wire:click.prevent="changeStatus({{ $status }})" :class="$conversation->status == $status ? 'active' : ''" :aria-current="$conversation->status == $status ? 'true' : null">@include('conversations/partials/status_dot', ['status' => $status]) {{ App\Conversation::statusCodeToName($status) }}</x-fruit::menu-link>
+                            <x-fruit::menu-radio :checked="$conversation->status == $status" :data-status="$status" wire:click.prevent="changeStatus({{ $status }})">@include('conversations/partials/status_dot', ['status' => $status]) {{ App\Conversation::statusCodeToName($status) }}</x-fruit::menu-radio>
                         @endforeach
                     @else
                         <x-fruit::menu-link href="#" data-status="not_spam" wire:click.prevent="changeStatus('not_spam')">{{ __('Not Spam') }}</x-fruit::menu-link>
