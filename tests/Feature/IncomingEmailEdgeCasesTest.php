@@ -59,6 +59,29 @@ class IncomingEmailEdgeCasesTest extends FeatureTestCase
         return $conversation->threads()->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])->count();
     }
 
+    // Quotes.
+
+    /**
+     * A reply to an email another system sent from this mailbox's address (not a reply to
+     * anything Tallport sent): the quote of that email is cut off all the same, in any
+     * language. A quote of someone else's email (a forward) stays.
+     */
+    public function testQuoteOfTheMailboxsOwnEmailIsCutOffInNewConversations()
+    {
+        $html = '<div dir="ltr">Hello,<br><br>Could you please tell me which device it was?<br><br>Thomas</div><br>'
+            .'<div class="gmail_quote gmail_quote_container"><div dir="ltr" class="gmail_attr">Le mar. 6 oct. 2026 à 07:16, Support &lt;'.$this->mailbox->email.'&gt; a écrit :<br></div>'
+            .'<blockquote class="gmail_quote" style="margin:0px 0px 0px 0.8ex">Your access has been suspended because we detected repeated BitTorrent traffic.</blockquote></div>';
+        $conversation = $this->receiveFromCustomer(['html' => true, 'body' => '<html><body>'.$html.'</body></html>']);
+        $body = $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first()->body;
+        $this->assertStringContainsString('which device it was', $body);
+        $this->assertStringNotContainsString('BitTorrent traffic', $body);
+
+        $forward = '<div dir="ltr">See below.</div><br><div class="gmail_quote gmail_quote_container"><div dir="ltr" class="gmail_attr">---------- Forwarded message ---------<br>From: Shop &lt;orders@shop.example.com&gt;<br></div>'
+            .'<div>Your order 1234 has shipped.</div></div>';
+        $conversation = $this->receiveFromCustomer(['html' => true, 'subject' => 'Fwd: Order', 'message_id' => 'fwd@customer.example.org', 'body' => '<html><body>'.$forward.'</body></html>']);
+        $this->assertStringContainsString('Your order 1234 has shipped.', $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first()->body);
+    }
+
     // Bounces.
 
     public function testBounceMarksReplyAsUndelivered()

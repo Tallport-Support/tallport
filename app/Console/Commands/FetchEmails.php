@@ -1800,8 +1800,12 @@ class FetchEmails extends Command
             $result = nl2br($body ?? '');
         }
 
+        // Not a reply to anything Tallport sent, but quoting an email from this mailbox
+        // (another system sent it from the mailbox's address: a reply all the same).
+        $quotes_mailbox = !$is_reply && $this->mailbox && !$user_reply_to_notification;
+
         // This is reply, we need to separate reply text from old text
-        if ($is_reply) {
+        if ($is_reply || $quotes_mailbox) {
             // Check all separators and choose the shortest reply
             $reply_bodies = [];
 
@@ -1837,6 +1841,9 @@ class FetchEmails extends Command
                 } else {
                     $parts = explode($reply_separator, $result);
                 }
+                if (count($parts) > 1 && $quotes_mailbox && !self::quotesAddress($parts, $this->mailbox->getEmails())) {
+                    continue;
+                }
                 if (count($parts) > 1) {
                     // When replying to an email notification Outlook places its reply header
                     // (<hr> + div#divRplyFwdMsg containing From/Sent/To/Subject) above the
@@ -1864,6 +1871,24 @@ class FetchEmails extends Command
         }
 
         return $result;
+    }
+
+    /**
+     * Whether the quote after a separator is of an email from one of these addresses: its
+     * attribution ("On … <support@…> wrote:", "Le … a écrit :") names one, just before the
+     * separator (Apple Mail) or at the start of the quote (Gmail, Outlook).
+     */
+    public static function quotesAddress(array $parts, array $addresses)
+    {
+        $before = mb_substr(\Helper::htmlToText($parts[0]), -400);
+        $after = mb_substr(\Helper::htmlToText($parts[1]), 0, 600);
+        foreach (array_filter($addresses) as $address) {
+            if (mb_stripos($before, $address) !== false || mb_stripos($after, $address) !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function replaceCidsWithAttachmentUrls($body, $attachments, $conversation, $prev_has_attachments)

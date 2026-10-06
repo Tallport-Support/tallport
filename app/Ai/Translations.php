@@ -242,7 +242,7 @@ class Translations
             $as_html = $html !== '' && mb_strlen($html) <= Summaries::MAX_THREAD_CHARS * 3;
             $response = (new ThreadTranslator($language, $as_html))->prompt(TallportAgent::data('message', $as_html ? $html : $text));
             $data['language'] = strtolower(trim((string) $response['detected_language'])) ?: ($data['language'] ?? null);
-            if ($response['same_language'] || trim((string) $response['translation']) === '') {
+            if ($response['same_language'] || $data['language'] === $language || trim((string) $response['translation']) === '') {
                 $data['same'] = array_values(array_unique(array_merge((array) ($data['same'] ?? []), [$language])));
             } else {
                 $data['translations'][$language] = trim((string) $response['translation']);

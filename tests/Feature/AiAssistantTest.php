@@ -280,6 +280,22 @@ class AiAssistantTest extends FeatureTestCase
     }
 
     /**
+     * A "translation" into the language the message was detected in (one quoting an
+     * email in another language, say) is no translation: the message is left as it is.
+     */
+    public function testMessageDetectedInTheTargetLanguageIsNotTranslated()
+    {
+        $this->configureAi(['aiassistant.translation_language' => 'nl']);
+        $this->fakeAi();
+        ThreadTranslator::fake([['translation' => 'Waar is mijn bestelling?', 'same_language' => false, 'detected_language' => 'nl']]);
+
+        $thread = $this->receiveCustomerEmail()->threads()->first();
+
+        $this->assertNull(Translations::get($thread, 'nl'));
+        $this->assertFalse(Translations::isMissing($thread->fresh(), 'nl'));
+    }
+
+    /**
      * A message without a translation says why.
      */
     public function testWhyAMessageIsNotTranslated()

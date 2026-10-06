@@ -34,8 +34,8 @@ class ThreadTranslator extends TallportAgent implements HasStructuredOutput
             $this->html
                 ? 'The message is HTML. Translate only the text people read; keep every tag, attribute, link address and image exactly as it is. translation: the translated HTML, not JSON.'
                 : 'translation: only the translated text, not JSON.',
-            'If the message is already entirely in the target language, set same_language to true and leave translation empty.',
-            'detected_language: the language of the message, as an ISO 639-1 code.',
+            'If the message is already in the target language, set same_language to true and leave translation empty. Judge by the text the customer wrote: ignore quoted earlier emails (and their "On ... wrote:" line), signatures, disclaimers and single words or names in other languages.',
+            'detected_language: the language the customer wrote the message in, as an ISO 639-1 code.',
         ]);
     }
 
