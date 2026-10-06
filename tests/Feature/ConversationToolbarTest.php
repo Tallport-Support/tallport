@@ -60,11 +60,13 @@ class ConversationToolbarTest extends FeatureTestCase
         // Email: the mailbox's address.
         $this->assertStringContainsString($this->mailbox->name.' · '.$this->mailbox->email, $page());
 
-        // A channel: its name instead, and no Cc/Bcc or Merge.
+        // A channel (its chat view): led by the customer's picture and name, then the
+        // channel and the mailbox; no Cc/Bcc or Merge.
         $this->conversation->channel = \App\Telegram\Telegram::CHANNEL;
         $this->conversation->save();
         $html = $page();
-        $this->assertStringContainsString($this->mailbox->name.' · Telegram', $html);
+        $this->assertStringContainsString('Telegram · '.$this->mailbox->name, $html);
+        $this->assertStringContainsString('f-avatar conv-heading__avatar', $html);
         $this->assertStringNotContainsString($this->mailbox->name.' · '.$this->mailbox->email, $html);
         $this->assertStringNotContainsString('id="toggle-cc"', $html);
         $this->assertTrue($this->conversation->hasChannel());

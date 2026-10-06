@@ -493,9 +493,10 @@
   .f-divider--start::before {
     display: none;
   }
+  /* The line takes the accent; its label the accent as text, which keeps 4.5:1 on any surface. */
   .f-divider--accent {
     --f-divider-color: var(--f-accent);
-    color: var(--f-accent);
+    color: var(--f-accent-text);
   }
 
   /* A list item can hold a leading selection checkbox and trailing controls (a star or follow

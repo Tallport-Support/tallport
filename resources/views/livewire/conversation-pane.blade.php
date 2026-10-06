@@ -7,9 +7,13 @@
         <div id="conv-layout" class="conv-chat conv-type-{{ strtolower($conversation->getTypeName()) }}">
             <header class="conv-heading conv-heading--chat">
                 <livewire:conversation-subject wire:key="subject-{{ $conversation->id }}" :conversation="$conversation" :viewers="$viewers" compact />
+                {{-- Led by the person, as in a messaging app: their picture, name, and the channel. --}}
+                @if ($customer)
+                    @include('customers/partials/avatar', ['class' => 'conv-heading__avatar'])
+                @endif
                 <p class="conv-heading__customer">@if ($customer)<strong>{{ $customer->getFullName(true) }}</strong>@endif</p>
                 @if ($conversation->hasChannel() && $conversation->getChannelName())
-                    <p class="conv-heading__mailbox"><x-icon.message-circle class="f-icon" aria-hidden="true" /><span>{{ $mailbox->name }} · {{ $conversation->getChannelName() }}</span></p>
+                    <p class="conv-heading__mailbox"><x-icon.message-circle class="f-icon" aria-hidden="true" /><span>{{ $conversation->getChannelName() }} · {{ $mailbox->name }}</span></p>
                 @else
                     <p class="conv-heading__mailbox"><x-icon.mail class="f-icon" aria-hidden="true" /><span>{{ $mailbox->name }}@if ($mailbox->email) · {{ $mailbox->email }}@endif</span></p>
                 @endif

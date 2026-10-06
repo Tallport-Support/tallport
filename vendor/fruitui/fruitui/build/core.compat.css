@@ -2326,11 +2326,16 @@ select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) {
     overflow: auto;
   }
 
+/* The icon, the text and the actions in a row. The text keeps a readable width: when the actions
+     don't fit beside it, they wrap to a row under the text instead of squeezing it to a few
+     characters per line. */
+
 .f-alert {
     --f-internal-alert-color: var(--f-accent);
     display: flex;
+    flex-wrap: wrap;
     align-items: start;
-    gap: 12px;
+    gap: 8px 12px;
     padding: 12px 14px;
     border: 1px solid var(--f-border);
     border-inline-start: 3px solid var(--f-alert-color, var(--f-internal-alert-color));
@@ -2360,7 +2365,7 @@ select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) {
 
 .f-alert__body {
     min-width: 0;
-    flex: 1;
+    flex: 1 1 min(18rem, 100% - 3rem);
     overflow-wrap: anywhere;
   }
 
@@ -2376,6 +2381,24 @@ select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    min-width: 0;
+  }
+
+/* On a narrow screen a long label wraps inside its button rather than widening the page. */
+
+.f-alert__actions > * {
+    max-width: 100%;
+  }
+
+.f-alert__actions > .f-button {
+    white-space: normal;
+    text-align: start;
+  }
+
+/* Wrapped actions line up with the text, past the icon. */
+
+.f-alert:has(> .f-alert__icon) > .f-alert__actions {
+    margin-inline-start: calc(var(--f-icon-size, 20px) + 12px);
   }
 
 .f-menu {
@@ -3132,8 +3155,19 @@ img.f-avatar {
     }
   }
 
-/* A message history read from the bottom up. Jump to Latest floats over the bottom of the scrolling
-     history once the reader has scrolled back. */
+/* A message history read from the bottom up. It sits on the grouped background, and so do the
+     typing line and composer docked below it, so a chat reads as one at a glance, apart from a
+     letter-like email thread on the plain surface. Jump to Latest floats over the bottom of the
+     scrolling history once the reader has scrolled back. */
+
+.f-history,
+  .f-history ~ .f-typing {
+    background: var(--f-history-background, var(--f-grouped-background));
+  }
+
+.f-history ~ .f-composer {
+    --f-composer-background: var(--f-history-background, var(--f-grouped-background));
+  }
 
 .f-history__latest {
     position: sticky;
@@ -3977,9 +4011,11 @@ img.f-avatar {
     display: none;
   }
 
+/* The line takes the accent; its label the accent as text, which keeps 4.5:1 on any surface. */
+
 .f-divider--accent {
     --f-divider-color: var(--f-accent);
-    color: var(--f-accent);
+    color: var(--f-accent-text);
   }
 
 /* A list item can hold a leading selection checkbox and trailing controls (a star or follow

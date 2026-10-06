@@ -489,7 +489,7 @@ a h4 {
 }
 .thread-attachments a {
     display: inline-block;
-    color: var(--f-accent);
+    color: var(--f-accent-text);
 }
 .thread-attachments a.disabled,
 .thread-attachments a.disabled:hover,
@@ -1192,12 +1192,6 @@ body.print {
 /* Notes above a message's text (a bounce, a forward, images not shown). */
 .thread-body > .f-alert {
     margin-bottom: 12px;
-}
-.external-images-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 8px;
-    margin-top: 8px;
 }
 .print .thread-body {
     margin: 0;
@@ -2609,7 +2603,7 @@ a.disabled:focus {
 }
 /* Draft with AI, in the toolbar. */
 .conv-actions .ai-draft-action {
-    color: var(--f-accent);
+    color: var(--f-accent-text);
 }
 /* The AI draft, below the composer. */
 .ai-draft-panel .f-suggestion {
@@ -2901,27 +2895,38 @@ a.disabled:focus {
 }
 .conv-heading--chat {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     column-gap: 12px;
     padding-block: 12px;
 }
+.conv-heading--chat .conv-heading__avatar {
+    --f-avatar-size: 40px;
+    --f-avatar-font-size: var(--f-text-md);
+    grid-column: 1;
+    grid-row: 1 / span 2;
+}
 .conv-heading--chat .conv-heading__overline {
-    grid-column: 2;
+    grid-column: 3;
     grid-row: 1 / span 2;
     margin: 0;
 }
 .conv-heading--chat .conv-heading__customer {
-    grid-column: 1;
+    grid-column: 2;
     grid-row: 1;
     margin: 0;
     color: var(--f-label);
-    font-size: var(--f-text-md);
+    font-size: var(--f-text-lg);
+}
+.conv-heading--chat .conv-heading__customer strong {
+    font-weight: 600;
 }
 .conv-heading--chat .conv-heading__mailbox,
 .conv-heading--chat .conv-heading__device {
-    grid-column: 1;
+    grid-column: 2;
     margin-top: 2px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
 }
 .conv-heading__device {
     color: var(--f-secondary);
@@ -2935,7 +2940,9 @@ a.disabled:focus {
 .conv-history {
     flex: 1;
 }
+/* On the chat's surface, as FruitUI's composer docked below a history (it's in another Livewire component). */
 .conv-composer-docked .conv-composer {
+    --f-composer-background: var(--f-history-background, var(--f-grouped-background));
     --f-composer-input-min-height: 0;
     margin: 0;
     border-top: 1px solid var(--f-border);
@@ -2961,7 +2968,7 @@ a.disabled:focus {
     overflow-wrap: anywhere;
 }
 .team-mention {
-    color: var(--f-accent);
+    color: var(--f-accent-text);
     font-weight: 600;
 }
 .team-room__files {
