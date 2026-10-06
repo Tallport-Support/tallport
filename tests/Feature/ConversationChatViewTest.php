@@ -92,9 +92,10 @@ class ConversationChatViewTest extends FeatureTestCase
         // Written: it stays as it is.
         $composer->set('body', '<p>Half a reply</p>')->call('open', 'note')->assertSet('mode', 'reply');
 
-        // Sent: the conversation again, without a full page load.
-        $composer->call('send')->assertRedirect();
-        $this->assertTrue($composer->effects['redirectUsingNavigate'] ?? false);
+        // Sent: no page load; the history shows it, the composer is ready for the next one.
+        $composer->call('send')->assertReturned(true)->assertNoRedirect()
+            ->assertDispatched('conversation-thread-created')->assertDispatched('fruit-editor-set')
+            ->assertSet('body', '')->assertSet('mode', 'reply');
 
         // The email view opens on request only.
         Livewire::actingAs($this->agent)->test(ConversationComposer::class, ['conversation' => $this->conversation])->assertSet('mode', '');
@@ -110,7 +111,9 @@ class ConversationChatViewTest extends FeatureTestCase
         $composer = Livewire::actingAs($this->agent->fresh())->test(ConversationComposer::class, ['conversation' => $this->conversation, 'chat' => true])
             ->assertSet('status', Conversation::STATUS_ACTIVE)
             ->assertSeeHtml('f-editor--inline')->assertSeeHtml('data-fruit-enter="submit"')->assertSeeHtml('f-composer__send')->assertDontSeeHtml('btn-reply-submit')->assertDontSeeHtml('dropdown-send-status')->assertDontSeeHtml('name="status"');
-        $composer->set('body', '<p>On it.</p>')->call('send')->assertRedirect($this->conversation->url());
+        // The text comes with the send (the browser may have cleared the editor already).
+        $composer->set('body', '')->call('send', null, '<p>On it.</p>')->assertReturned(true)->assertNoRedirect();
+        $this->assertSame('<p>On it.</p>', $this->conversation->threads()->where('type', \App\Thread::TYPE_MESSAGE)->orderBy('id', 'desc')->value('body'));
         $this->assertSame(Conversation::STATUS_ACTIVE, $this->conversation->fresh()->status);
 
         // The email view keeps the user's choices.

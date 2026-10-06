@@ -3198,3 +3198,12 @@ a.disabled:focus {
 body.fruit-ui {
     --livewire-progress-bar-color: var(--f-accent);
 }
+
+/* A message being sent (tallportComposer's showSending): shown at once, a little faded
+   until the history shows it saved; the email view's composer steps aside meanwhile. */
+.conv-sending .f-message {
+    opacity: 0.6;
+}
+.conv-action-wrapper--sent {
+    display: none;
+}

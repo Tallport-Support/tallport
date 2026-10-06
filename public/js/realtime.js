@@ -271,6 +271,10 @@ function maybeShowConnectionRestored()
 				if (!data || data.conversation_id != attr('conversation_id') || data.user_id == attr('auth_user_id')) {
 					return;
 				}
+				// A message that couldn't be sent: shown as such (and the conversation active again).
+				if (data.send_failed) {
+					Livewire.dispatch('conversation-thread-created');
+				}
 				if (data.thread_html && !document.getElementById('thread-'+data.thread_id)) {
 					Livewire.dispatch('conversation-thread-created');
 					blinkTitle('✉ '+Lang.get('messages.new_message'));

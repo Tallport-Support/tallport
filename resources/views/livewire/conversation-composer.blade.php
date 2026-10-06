@@ -9,7 +9,7 @@
     // A channel (Telegram, Nostr) has no copies or quoted history; its formats are the editor's.
     $has_channel = $conversation->hasChannel();
 @endphp
-<div class="conv-action-wrapper @if ($chat) conv-composer-docked @endif" x-data="tallportComposer({{ $conversation->id }}, @js($mode), @js($chat))" x-on:input="changed($event)" x-on:change="blurred($event)" x-on:fruit-editor-upload.stop="embed($event)" x-on:keydown.enter="enter($event)">
+<div class="conv-action-wrapper @if ($chat) conv-composer-docked @endif" x-data="tallportComposer({{ $conversation->id }}, @js($mode), @js($chat))" data-author="{{ Auth::user()->getFullName() }}" data-sending="{{ __('Sending') }}…" x-on:input="changed($event)" x-on:change="blurred($event)" x-on:fruit-editor-upload.stop="embed($event)" x-on:keydown.enter="enter($event)">
     @if ($mode)
         <div class="conv-block conv-reply-block conv-action-block @if ($mode == 'note') conv-note-block @elseif ($mode == 'forward') conv-forward-block @endif">
             <x-fruit::composer :placement="$chat ? 'bottom' : 'top'" class="form-reply conv-composer" :aria-label="$mode == 'note' ? __('Note') : ($mode == 'forward' ? __('Forward') : __('Reply'))" x-on:submit.prevent="submit()">

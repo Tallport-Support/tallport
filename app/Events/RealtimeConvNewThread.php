@@ -70,7 +70,10 @@ class RealtimeConvNewThread implements ShouldBroadcastNow
     /**
      * Helper funciton.
      */
-    public static function dispatchSelf($thread)
+    /**
+     * $extra: more for the browser, e.g. send_failed (the message couldn't be sent).
+     */
+    public static function dispatchSelf($thread, $extra = [])
     {
         if ($thread->state != Thread::STATE_PUBLISHED) {
             return;
@@ -81,7 +84,7 @@ class RealtimeConvNewThread implements ShouldBroadcastNow
             // conversation is prefetched in ThreadObserver.
             'mailbox_id'      => $thread->conversation->mailbox_id,
             //'user_id'         => $thread->created_by_user_id,
-        ];
+        ] + $extra;
         event(new \App\Events\RealtimeConvNewThread($notification_data));
     }
 

@@ -276,6 +276,8 @@ document.addEventListener('alpine:init', function () {
 			},
 
 			// Send (with a status from the send menu), after the uploads and the attachment reminder.
+			// The message shows at once (sending takes a moment, delivery longer); the chat view's
+			// field is ready for the next one right away. If it can't be saved, it's back in the editor.
 			submit: function (status) {
 				var self = this;
 				if (this.uploading.length) {
@@ -283,15 +285,88 @@ document.addEventListener('alpine:init', function () {
 				}
 				this.sync();
 				this.attachmentReminder().then(function (ok) {
-					if (ok) {
-						self.dirty = false;
-						// The chat view: back in the composer once the conversation is shown again.
-						if (chat) {
-							sessionStorageSet('tallport_chat_focus', conversation_id);
-						}
-						self.$wire.send(status === undefined ? null : status);
+					if (!ok) {
+						return;
 					}
+					self.dirty = false;
+					var html = editor() ? editor().value : '';
+					var shown = self.showSending(html);
+					if (chat) {
+						window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: ''}}));
+						editorFocus('body');
+					} else {
+						self.$root.classList.add('conv-action-wrapper--sent');
+					}
+					self.$wire.send(status === undefined ? null : status, html).then(function (sent) {
+						if (sent) {
+							// The history's render may have taken the focus: the next message.
+							if (chat && (!document.activeElement || !document.activeElement.closest('.conv-action-wrapper'))) {
+								editorFocus('body');
+							}
+							return;
+						}
+						if (shown) {
+							shown.remove();
+						}
+						self.$root.classList.remove('conv-action-wrapper--sent');
+						if (chat) {
+							window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: html}}));
+						}
+					});
 				});
+			},
+
+			// The message, shown while it's sent: at the end of the chat's history, or above the
+			// email view's messages. The history's next render replaces it.
+			showSending: function (html) {
+				var list = chat
+					? Array.prototype.slice.call(document.querySelectorAll('.conv-history .f-thread')).pop()
+					: document.getElementById('conv-layout-main');
+				if (!list || !stripTags(html).trim()) {
+					return null;
+				}
+				var item = document.createElement('li');
+				item.className = 'conv-sending';
+				var message = document.createElement('article');
+				message.className = 'f-message f-message--outgoing f-message--mine'+(chat ? '' : ' f-message--stacked')+(this.$wire.mode == 'note' ? ' f-message--note' : '');
+				message.setAttribute('aria-busy', 'true');
+				var header = document.createElement('header');
+				header.className = 'f-message__header';
+				var identity = document.createElement('span');
+				identity.className = 'f-message__identity';
+				var author = document.createElement('strong');
+				author.className = 'f-message__author';
+				author.textContent = this.$root.getAttribute('data-author') || '';
+				identity.appendChild(author);
+				var time = document.createElement('span');
+				time.className = 'f-message__time';
+				time.textContent = this.$root.getAttribute('data-sending') || '';
+				header.appendChild(identity);
+				header.appendChild(time);
+				var body = document.createElement('div');
+				body.className = 'f-message__body';
+				// The user's own editor text, without scripts or handlers.
+				var parsed = new DOMParser().parseFromString(html, 'text/html');
+				parsed.querySelectorAll('script, style, iframe, object').forEach(function (element) {
+					element.remove();
+				});
+				parsed.querySelectorAll('*').forEach(function (element) {
+					Array.prototype.slice.call(element.attributes).forEach(function (attribute) {
+						if (/^on/i.test(attribute.name)) {
+							element.removeAttribute(attribute.name);
+						}
+					});
+				});
+				body.innerHTML = parsed.body.innerHTML;
+				message.appendChild(header);
+				message.appendChild(body);
+				item.appendChild(message);
+				if (chat) {
+					list.appendChild(item);
+				} else {
+					list.insertBefore(item, list.firstChild);
+				}
+				return item;
 			},
 
 			// Text mentioning an attachment, with none attached.

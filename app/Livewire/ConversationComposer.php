@@ -272,15 +272,25 @@ class ConversationComposer extends Component
     /**
      * Sends the reply, adds the note or forwards; with a status from the send menu.
      */
-    public function send($status = null)
+    /**
+     * Sends the message: true once it's saved (delivery follows in the background, and a
+     * failure shows on the message: SendReplyToCustomer and the channels' jobs). $body: the
+     * editor's text as the browser sent it, which may clear the editor at once (the message
+     * already shows, public/js/conversations.js). The chat view stays where it is: the history
+     * shows the message, and the composer is ready for the next one.
+     */
+    public function send($status = null, $body = null)
     {
         if ($status !== null && $status !== '') {
             $this->status = (int) $status;
         }
+        if ($body !== null) {
+            $this->body = (string) $body;
+        }
         if (!$this->hasText()) {
             Fruit::toast(__('Please enter a message'), 'danger');
 
-            return;
+            return false;
         }
 
         $is_note = $this->mode == 'note';
@@ -288,12 +298,22 @@ class ConversationComposer extends Component
         if (($response['status'] ?? '') != 'success') {
             Fruit::toast($response['msg'] ?? __('Error occurred'), 'danger');
 
-            return;
+            return false;
         }
         if ($is_note) {
             $this->dispatch('composer-note-forget');
         }
-        $this->redirect($response['redirect_url'] ?? $this->conversation()->url(), navigate: $this->chat);
+        if ($this->chat) {
+            $this->resetFields($this->conversation());
+            $this->mode = 'reply';
+            $this->dispatch('fruit-editor-set', target: 'body', html: '');
+            $this->dispatch('conversation-thread-created');
+
+            return true;
+        }
+        $this->redirect($response['redirect_url'] ?? $this->conversation()->url());
+
+        return true;
     }
 
     /**
