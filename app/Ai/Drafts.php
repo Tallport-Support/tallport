@@ -76,6 +76,7 @@ class Drafts
             TallportAgent::data('documentation', $documentation['chunks']),
             TallportAgent::data('customer_context', $context['data']),
         ]));
+        Usage::record($response, Usage::FEATURE_DRAFT, $conversation);
 
         return [
             'draft'                   => trim((string) $response['draft']),

@@ -109,7 +109,8 @@ class Providers
     {
         $text = Settings::provider();
         config(['ai.providers.'.self::TEXT => self::providerConfig($text, Settings::apiKey(), Settings::baseUrl(), [
-            'text' => ['default' => Settings::model(), 'cheapest' => Settings::model(), 'smartest' => Settings::model()],
+            // Translations use the cheapest: the translation model (TallportAgent's translators).
+            'text' => ['default' => Settings::model(), 'cheapest' => Settings::translationModel(), 'smartest' => Settings::model()],
         ])]);
 
         $embeddings = Settings::embeddingProvider();

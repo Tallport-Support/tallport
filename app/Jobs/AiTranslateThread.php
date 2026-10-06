@@ -46,11 +46,15 @@ class AiTranslateThread implements ShouldQueue, ShouldBeUnique
             return;
         }
 
-        try {
-            Translations::translate($thread, $this->language);
-        } catch (\Throwable $e) {
-            \Helper::logException($e, '[AI Assistant] Translation of thread '.$thread->id.':');
-            Translations::failed($thread, $this->language, $e);
+        if ($limit = Translations::limit($thread)) {
+            Translations::limited($thread, $this->language, $limit);
+        } else {
+            try {
+                Translations::translate($thread, $this->language);
+            } catch (\Throwable $e) {
+                \Helper::logException($e, '[AI Assistant] Translation of thread '.$thread->id.':');
+                Translations::failed($thread, $this->language, $e);
+            }
         }
         // Open pages show it (or why not) in place of "Translating…".
         \App\Events\RealtimeConvNewThread::dispatchSelf($thread, ['ai_updated' => true]);
@@ -58,8 +62,15 @@ class AiTranslateThread implements ShouldQueue, ShouldBeUnique
 
     public static function request(Thread $thread, $language)
     {
-        if (Translations::isWanted($thread) && Translations::isMissing($thread, $language)) {
-            self::dispatch($thread->id, $language);
+        if (!Translations::isWanted($thread) || !Translations::isMissing($thread, $language)) {
+            return;
         }
+        // A translated chat's messages: together, a few seconds after the latest.
+        if (\App\Ai\ChatTranslation::isOn($thread->conversation)) {
+            AiTranslateChat::dispatch($thread->conversation_id, $language)->delay(now()->addSeconds(\App\Ai\ChatTranslation::BATCH_DELAY));
+
+            return;
+        }
+        self::dispatch($thread->id, $language);
     }
 }

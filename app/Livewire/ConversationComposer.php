@@ -103,6 +103,12 @@ class ConversationComposer extends Component
     public $ai_draft_translation_language = '';
 
     /**
+     * A chat reply's translation for the customer, previewed before it's sent
+     * (App\Ai\ChatTranslation): source (the agent's text), html (the translation), error.
+     */
+    public $translation = null;
+
+    /**
      * What the user types in a recipient field, for its suggestions.
      */
     public $recipient_query = '';
@@ -317,6 +323,85 @@ class ConversationComposer extends Component
     }
 
     /**
+     * Whether this chat's replies go out translated (App\Ai\ChatTranslation).
+     */
+    #[Computed]
+    public function translating()
+    {
+        return $this->chat && $this->mode == 'reply' && \App\Ai\ChatTranslation::needed($this->conversation(), auth()->user());
+    }
+
+    /**
+     * The reply translated for a preview: "ready", "error" (shown, with Send as Written),
+     * "same" (in the customer's language already: sent as it is) or "off".
+     */
+    public function previewTranslation($html)
+    {
+        if (!$this->translating()) {
+            return 'off';
+        }
+        $this->body = (string) $html;
+        if (!$this->hasText()) {
+            Fruit::toast(__('Please enter a message'), 'danger');
+
+            return 'empty';
+        }
+        @set_time_limit(180);
+        try {
+            $result = \App\Ai\ChatTranslation::translateReply($this->conversation(), $this->body, auth()->user());
+        } catch (\Throwable $e) {
+            \Helper::logException($e, '[AI Assistant] Translation of a reply in conversation '.$this->conversation_id.':');
+            $this->translation = ['source' => $this->body, 'html' => '', 'error' => mb_substr(trim($e->getMessage()) ?: get_class($e), 0, 300)];
+
+            return 'error';
+        }
+        if (!empty($result['same'])) {
+            $this->translation = null;
+
+            return 'same';
+        }
+        $this->translation = ['source' => $this->body, 'html' => $result['html'], 'error' => ''];
+
+        return 'ready';
+    }
+
+    /**
+     * Send the previewed translation, with the agent's text kept beside it: "sent", "failed",
+     * or "changed" (the text isn't the one translated: it's translated again).
+     */
+    public function sendTranslation($html)
+    {
+        if (empty($this->translation['html']) || $this->translation['source'] !== (string) $html) {
+            return 'changed';
+        }
+        $this->ai_draft_translation = \Helper::htmlToText($this->translation['source']);
+        $this->ai_draft_translation_language = \App\Ai\ChatTranslation::agentLanguage($this->conversation(), auth()->user());
+        $body = $this->translation['html'];
+        $this->translation = null;
+
+        return $this->send(null, $body) ? 'sent' : 'failed';
+    }
+
+    public function discardTranslation()
+    {
+        $this->translation = null;
+    }
+
+    /**
+     * The language replies go out in, as the agent chose (empty: not translated).
+     */
+    public function setCustomerLanguage($language)
+    {
+        $language = (string) $language;
+        if ($language !== '' && !\App\Ai\Settings::isLanguage($language)) {
+            return;
+        }
+        \App\Ai\ChatTranslation::setCustomerLanguage($this->conversation(), $language, true);
+        $this->translation = null;
+        unset($this->translating);
+    }
+
+    /**
      * Files uploaded to conversations.upload (public/js/conversations.js), or
      * brought by a saved reply.
      */
@@ -459,6 +544,7 @@ class ConversationComposer extends Component
         $this->saved_reply_id = '';
         $this->ai_draft_translation = '';
         $this->ai_draft_translation_language = '';
+        $this->translation = null;
         $this->to = array_key_exists($conversation->customer_email, $this->to_customers) ? $conversation->customer_email : (array_key_first($this->to_customers) ?? '');
         $this->to_email = '';
         $this->cc = implode("\n", $this->default_cc);

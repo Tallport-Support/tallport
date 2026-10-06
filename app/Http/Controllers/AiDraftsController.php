@@ -30,6 +30,12 @@ class AiDraftsController extends Controller
                 'msg'    => __('You have made the most drafts allowed for today.'),
             ], 429);
         }
+        if (!Settings::withinBudget($conversation->mailbox)) {
+            return response()->json([
+                'status' => 'error',
+                'msg'    => __('This mailbox has used its AI tokens for today.'),
+            ], 429);
+        }
 
         $draft_job = new DraftJob();
         $draft_job->conversation_id = $conversation->id;

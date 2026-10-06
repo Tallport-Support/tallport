@@ -182,6 +182,8 @@ class SettingsController extends Controller
                         'settings.aiassistant\.base_url'                => 'nullable|url:http,https',
                         'settings.aiassistant\.documentation\.embedding_base_url' => 'nullable|url:http,https',
                         'settings.aiassistant\.drafts_per_day'          => 'nullable|integer|min:0|max:10000',
+                        'settings.aiassistant\.daily_tokens'            => 'nullable|integer|min:0|max:1000000000',
+                        'settings.aiassistant\.translations_per_customer_hour' => 'nullable|integer|min:0|max:10000',
                         'settings.aiassistant\.customer_context_url.*'  => 'nullable|url:http,https|max:2048',
                         'settings.aiassistant\.customer_context_guidance.*' => 'nullable|string|max:6000',
                     ],
@@ -296,6 +298,9 @@ class SettingsController extends Controller
                     'aiassistant.api_key'                         => \App\Ai\Settings::apiKey(),
                     'aiassistant.base_url'                        => \App\Ai\Settings::baseUrl(),
                     'aiassistant.model'                           => Option::get('aiassistant.model', ''),
+                    'aiassistant.translation_model'               => Option::get('aiassistant.translation_model', ''),
+                    'aiassistant.daily_tokens'                    => \App\Ai\Settings::dailyTokens(),
+                    'aiassistant.translations_per_customer_hour'  => \App\Ai\Settings::translationsPerCustomerHour(),
                     'aiassistant.documentation.embedding_provider' => \App\Ai\Settings::embeddingProviderIsSame() ? 'same' : \App\Ai\Settings::embeddingProvider(),
                     'aiassistant.documentation.embedding_api_key' => \Helper::decrypt(Option::get('aiassistant.documentation.embedding_api_key', '')),
                     'aiassistant.documentation.embedding_base_url' => Option::get('aiassistant.documentation.embedding_base_url', ''),
@@ -308,6 +313,7 @@ class SettingsController extends Controller
                     'aiassistant.drafts_per_day'                  => \App\Ai\Settings::draftsPerDay(null),
                     'aiassistant.mailbox_language'                => (array) Option::get('aiassistant.mailbox_language', []),
                     'aiassistant.mailbox_features_off'            => (array) Option::get('aiassistant.mailbox_features_off', []),
+                    'aiassistant.mailbox_chat_translation'        => (array) Option::get('aiassistant.mailbox_chat_translation', []),
                     'aiassistant.customer_context_url'            => (array) Option::get('aiassistant.customer_context_url', []),
                     'aiassistant.customer_context_secret_key'     => (array) Option::get('aiassistant.customer_context_secret_key', []),
                     'aiassistant.customer_context_signature_header' => (array) Option::get('aiassistant.customer_context_signature_header', []),
@@ -424,7 +430,7 @@ class SettingsController extends Controller
                 $input[$name] = rtrim(trim($input[$name]), '/');
             }
         }
-        foreach (['aiassistant.model', 'aiassistant.documentation.embedding_model'] as $name) {
+        foreach (['aiassistant.model', 'aiassistant.translation_model', 'aiassistant.documentation.embedding_model'] as $name) {
             if (isset($input[$name])) {
                 $input[$name] = trim($input[$name]);
             }
@@ -463,6 +469,7 @@ class SettingsController extends Controller
         }
         unset($input['aiassistant.mailbox_features_on']);
         $input['aiassistant.mailbox_features_off'] = $off;
+        $input['aiassistant.mailbox_chat_translation'] = array_map('intval', array_filter((array) ($input['aiassistant.mailbox_chat_translation'] ?? [])));
 
         // Customer context secrets are stored encrypted; a masked one is kept.
         $secrets = (array) Option::get('aiassistant.customer_context_secret_key', []);

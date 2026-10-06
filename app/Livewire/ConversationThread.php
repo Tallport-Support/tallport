@@ -110,6 +110,11 @@ class ConversationThread extends Component
 
             return;
         }
+        if (!\App\Ai\Settings::withinBudget($thread->conversation->mailbox)) {
+            Fruit::toast(__('This mailbox has used its AI tokens for today.'), 'danger');
+
+            return;
+        }
         @set_time_limit(180);
         try {
             if (!\App\Ai\Translations::forceTranslate($thread, $user)) {

@@ -87,6 +87,8 @@ class Summaries
             })->all(),
         ]));
 
+        Usage::record($response, Usage::FEATURE_SUMMARY, $conversation);
+
         $data = self::data($conversation);
         $data['summaries'][$language] = [
             'one_liner'  => trim((string) $response['one_liner']),

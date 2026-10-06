@@ -354,6 +354,14 @@ class SystemController extends Controller
                 $problems[] = ['command', __(':command isn\'t running', ['command' => self::taskName($command['name'])[0]]), $just_updated ? 'warning' : 'danger', $command, null];
             }
         }
+        // Mailboxes that used their AI tokens for today: their AI Assistant waits until tomorrow.
+        if ($daily_tokens = \App\Ai\Settings::dailyTokens()) {
+            $over_budget = \App\Ai\Usage::where('created_at', '>=', now()->startOfDay())->whereNotNull('mailbox_id')
+                ->groupBy('mailbox_id')->havingRaw('SUM(input_tokens + output_tokens) >= ?', [$daily_tokens])->pluck('mailbox_id');
+            if (count($over_budget)) {
+                $problems[] = ['ai_budget', __('The AI Assistant used its tokens for today'), 'warning', \App\Mailbox::whereIn('id', $over_budget)->orderBy('name')->pluck('name')->implode(', '), __('In these mailboxes the AI Assistant is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI Assistant settings.')];
+            }
+        }
         if (count($data['failed_jobs'])) {
             $problems[] = ['failed_jobs', trans_choice('1 job failed|:count jobs failed', count($data['failed_jobs'])), 'warning', null, __('Background work that stopped with an error, such as a reply that couldn\'t be sent. Retry All runs it again; it\'s listed under Failed Jobs.')];
         }

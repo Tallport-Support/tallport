@@ -103,6 +103,10 @@ class AiAssistantTest extends FeatureTestCase
             'aiassistant.drafts_per_day'                  => 7,
             'aiassistant.mailbox_language'                => [$this->mailbox->id => 'de', $other->id => ''],
             'aiassistant.mailbox_features_on'             => [$this->mailbox->id => ['summaries' => 1]],
+            'aiassistant.translation_model'               => ' claude-cheap ',
+            'aiassistant.daily_tokens'                    => 50000,
+            'aiassistant.translations_per_customer_hour'  => 20,
+            'aiassistant.mailbox_chat_translation'        => [$other->id => 1],
         ]])->assertRedirect(route('settings', ['section' => 'ai']));
 
         Option::$cache = [];
@@ -119,6 +123,11 @@ class AiAssistantTest extends FeatureTestCase
         $this->assertTrue(Settings::enabled('summaries', $this->mailbox));
         $this->assertFalse(Settings::enabled('translations', $this->mailbox));
         $this->assertFalse(Settings::enabled('drafts', $other));
+        $this->assertSame('claude-cheap', Settings::translationModel());
+        $this->assertSame(50000, Settings::dailyTokens());
+        $this->assertSame(20, Settings::translationsPerCustomerHour());
+        $this->assertTrue(Settings::chatTranslation($other));
+        $this->assertFalse(Settings::chatTranslation($this->mailbox));
 
         // The masked key keeps the key.
         $this->postForm($this->admin, '/app-settings/ai', ['settings' => ['aiassistant.api_key' => '******']]);
@@ -262,6 +271,56 @@ class AiAssistantTest extends FeatureTestCase
             ->assertSee('<a href="https://acme.test/card"', false)
             ->assertSee('My business card')
             ->assertDontSee('alert(2)', false);
+    }
+
+    /**
+     * The tokens of each AI call are recorded, and the conversation's total is shown,
+     * quietly, in its sidebar.
+     */
+    public function testTokensUsedPerConversation()
+    {
+        $this->configureAi(['aiassistant.translation_language' => 'en']);
+        ThreadTranslator::fake([new \Laravel\Ai\Responses\StructuredTextResponse(
+            ['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'nl'], '{}',
+            new \Laravel\Ai\Responses\Data\TextUsage(1200, 34), new \Laravel\Ai\Responses\Data\Meta
+        )]);
+
+        $conversation = $this->receiveCustomerEmail();
+
+        $this->assertSame(1234, \App\Ai\Usage::forConversation($conversation));
+        $this->assertDatabaseHas('aiassistant_usage', ['conversation_id' => $conversation->id, 'mailbox_id' => $this->mailbox->id, 'customer_id' => $conversation->customer_id, 'feature' => 'translation', 'input_tokens' => 1200, 'output_tokens' => 34]);
+        $this->getConversationPage($this->agent, $conversation)->assertSee('AI Assistant: 1,234 tokens');
+    }
+
+    /**
+     * Over the mailbox's daily tokens, or the customer's translations per hour, a message
+     * isn't translated (no AI call), and says why; drafts and summaries wait too.
+     */
+    public function testLimitsKeepTheAiFromBeingCalled()
+    {
+        $this->configureAi(['aiassistant.translation_language' => 'en', 'aiassistant.daily_tokens' => 1000]);
+        $this->fakeAi();
+        \App\Ai\Usage::create(['mailbox_id' => $this->mailbox->id, 'feature' => 'summary', 'input_tokens' => 900, 'output_tokens' => 100]);
+
+        $conversation = $this->receiveCustomerEmail();
+        ThreadTranslator::assertNeverPrompted();
+        $this->getConversationPage($this->agent, $conversation)->assertSee('Not translated: this mailbox has used its AI tokens for today.');
+        $this->postAjax($this->agent, route('ai.drafts.store', ['id' => $conversation->id]), [])->assertStatus(429);
+        // System Status says which mailboxes.
+        $problems = collect(\App\Http\Controllers\SystemController::problems(\App\Http\Controllers\SystemController::statusData()))->keyBy(0);
+        $this->assertSame($this->mailbox->name, $problems['ai_budget'][3]);
+
+        // Tomorrow: translated.
+        $this->travel(1)->days();
+        $this->getConversationPage($this->agent, $conversation);
+        ThreadTranslator::assertPromptedTimes(1);
+
+        // A customer's flood: translated up to the hourly limit.
+        Option::set('aiassistant.translations_per_customer_hour', 1);
+        Option::$cache = [];
+        $flood = $this->receiveCustomerEmail("Hallo,\n\nNog een vraag.");
+        ThreadTranslator::assertPromptedTimes(1);
+        $this->getConversationPage($this->agent, $flood)->assertSee('Not translated: this customer sent more messages in the last hour than are translated.');
     }
 
     public function testMessageInTheTargetLanguageIsNotTranslated()

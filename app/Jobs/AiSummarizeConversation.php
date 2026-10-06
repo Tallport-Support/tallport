@@ -43,7 +43,9 @@ class AiSummarizeConversation implements ShouldQueue, ShouldBeUnique
     public function handle()
     {
         $conversation = Conversation::find($this->conversation_id);
-        if (!$conversation || !Summaries::isWanted($conversation) || !Summaries::isStale($conversation, $this->language)) {
+        if (!$conversation || !Summaries::isWanted($conversation) || !Summaries::isStale($conversation, $this->language)
+            || !\App\Ai\Settings::withinBudget($conversation->mailbox)
+        ) {
             return;
         }
 

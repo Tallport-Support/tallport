@@ -21,6 +21,10 @@
         <x-fruit::field :label="__('Model')" :description="__('Enter the model identifier from the selected provider.')" layout="row">
             <x-fruit::input id="ai_model" name="settings[aiassistant.model]" :value="$settings['aiassistant.model']" maxlength="255" :placeholder="App\Ai\Settings::DEFAULT_MODEL" />
         </x-fruit::field>
+
+        <x-fruit::field :label="__('Translation Model')" :description="__('Optional. A cheaper model for translations; leave blank to use the model above.')" layout="row">
+            <x-fruit::input id="ai_translation_model" name="settings[aiassistant.translation_model]" :value="$settings['aiassistant.translation_model']" maxlength="255" />
+        </x-fruit::field>
     </x-fruit::form-section>
 
     <x-fruit::form-section :title="__('Documentation')">
@@ -84,6 +88,14 @@
         <x-fruit::field :label="__('Drafts Per Day')" :description="__('Reply drafts each user can make per day, unless the user has their own limit. 0 turns drafting off.')" layout="row">
             <x-fruit::number id="ai_drafts_per_day" name="settings[aiassistant.drafts_per_day]" :value="old('settings.aiassistant.drafts_per_day', $settings['aiassistant.drafts_per_day'])" min="0" max="10000" />
         </x-fruit::field>
+
+        <x-fruit::field :label="__('Daily Tokens Per Mailbox')" :description="__('Tokens each mailbox may use per day, for all AI features. When they are used up, the AI Assistant is unavailable in that mailbox until tomorrow. 0: no limit.')" layout="row">
+            <x-fruit::number id="ai_daily_tokens" name="settings[aiassistant.daily_tokens]" :value="old('settings.aiassistant.daily_tokens', $settings['aiassistant.daily_tokens'])" min="0" max="1000000000" />
+        </x-fruit::field>
+
+        <x-fruit::field :label="__('Translations Per Customer Per Hour')" :description="__('Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.')" layout="row">
+            <x-fruit::number id="ai_translations_per_customer_hour" name="settings[aiassistant.translations_per_customer_hour]" :value="old('settings.aiassistant.translations_per_customer_hour', $settings['aiassistant.translations_per_customer_hour'])" min="0" max="10000" />
+        </x-fruit::field>
     </x-fruit::form-section>
 
     @if (count($ai_mailboxes))
@@ -97,6 +109,7 @@
                             <th>{{ __('Summaries') }}</th>
                             <th>{{ __('Translations') }}</th>
                             <th>{{ __('Drafts') }}</th>
+                            <th>{{ __('Chat Translation') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -116,6 +129,10 @@
                                         <x-fruit::checkbox name="settings[aiassistant.mailbox_features_on][{{ $mailbox->id }}][{{ $feature }}]" value="1" :checked="App\Ai\Settings::enabled($feature, $mailbox)" :aria-label="$mailbox->name.': '.$feature_name" />
                                     </td>
                                 @endforeach
+                                {{-- Chats both ways: the agent reads and writes in their language (off by default). --}}
+                                <td>
+                                    <x-fruit::checkbox name="settings[aiassistant.mailbox_chat_translation][{{ $mailbox->id }}]" value="1" :checked="App\Ai\Settings::chatTranslation($mailbox)" :aria-label="$mailbox->name.': '.__('Chat Translation')" />
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

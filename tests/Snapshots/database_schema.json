@@ -559,6 +559,94 @@
             }
         }
     },
+    "aiassistant_usage": {
+        "columns": {
+            "id": {
+                "type": "bigint(20) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "conversation_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "customer_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "feature": {
+                "type": "varchar(20)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "input_tokens": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "default": "0"
+            },
+            "output_tokens": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "default": "0"
+            },
+            "items": {
+                "type": "smallint(5) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "aiassistant_usage_conversation_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "conversation_id"
+                ]
+            },
+            "aiassistant_usage_customer_id_feature_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "customer_id",
+                    "feature",
+                    "created_at"
+                ]
+            },
+            "aiassistant_usage_mailbox_id_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id",
+                    "created_at"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
     "api_keys": {
         "columns": {
             "id": {

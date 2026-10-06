@@ -8,6 +8,10 @@
                 {{ __('Not translated: the AI Assistant took this message to be in :language already, though it detected :detected.', ['language' => App\Ai\Settings::displayName($ai_language), 'detected' => App\Ai\Settings::displayName($ai_reason[1])]) }}
             @elseif ($ai_reason[0] == 'no_text')
                 {{ __('Not translated: the message has no text.') }}
+            @elseif ($ai_reason[0] == App\Ai\Translations::LIMIT_BUDGET)
+                {{ __('Not translated: this mailbox has used its AI tokens for today.') }}
+            @elseif ($ai_reason[0] == App\Ai\Translations::LIMIT_CUSTOMER)
+                {{ __('Not translated: this customer sent more messages in the last hour than are translated.') }}
             @elseif ($ai_reason[0] == 'error')
                 {{ __('Not translated: the AI Assistant failed (:error). It tries again when the conversation is opened.', ['error' => $ai_reason[1]]) }}
             @endif

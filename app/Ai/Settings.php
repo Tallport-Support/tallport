@@ -15,6 +15,8 @@ class Settings
 
     const DEFAULT_DRAFTS_PER_DAY = 50;
 
+    const DEFAULT_TRANSLATIONS_PER_CUSTOMER_HOUR = 60;
+
     /**
      * Languages for summaries and translations (as the module offered).
      */
@@ -67,6 +69,14 @@ class Settings
     public static function model()
     {
         return trim((string) \Option::get('aiassistant.model', '')) ?: self::DEFAULT_MODEL;
+    }
+
+    /**
+     * The model for translations (often a cheaper one), else the model.
+     */
+    public static function translationModel()
+    {
+        return trim((string) \Option::get('aiassistant.translation_model', '')) ?: self::model();
     }
 
     /**
@@ -238,6 +248,42 @@ class Settings
         $off = (array) (((array) \Option::get('aiassistant.mailbox_features_off', []))[$mailbox->id] ?? []);
 
         return !in_array($feature, $off);
+    }
+
+    /**
+     * Whether a mailbox's chats are translated both ways: the agent reads and writes in their
+     * own language, the customer in theirs (off unless turned on for the mailbox).
+     */
+    public static function chatTranslation($mailbox)
+    {
+        return $mailbox && !empty(((array) \Option::get('aiassistant.mailbox_chat_translation', []))[$mailbox->id]);
+    }
+
+    /**
+     * Tokens each mailbox may use per day (all AI features); 0: no limit.
+     */
+    public static function dailyTokens()
+    {
+        return max(0, (int) \Option::get('aiassistant.daily_tokens', 0));
+    }
+
+    /**
+     * Whether a mailbox still has tokens left today; when not, the AI Assistant is
+     * unavailable there until tomorrow.
+     */
+    public static function withinBudget($mailbox)
+    {
+        $limit = self::dailyTokens();
+
+        return !$limit || !$mailbox || Usage::mailboxToday($mailbox->id) < $limit;
+    }
+
+    /**
+     * Messages of one customer translated per hour, against floods; 0: no limit.
+     */
+    public static function translationsPerCustomerHour()
+    {
+        return max(0, (int) \Option::get('aiassistant.translations_per_customer_hour', self::DEFAULT_TRANSLATIONS_PER_CUSTOMER_HOUR));
     }
 
     /**

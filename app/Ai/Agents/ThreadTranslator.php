@@ -4,11 +4,13 @@ namespace App\Ai\Agents;
 
 use App\Ai\Settings;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Laravel\Ai\Attributes\UseCheapestModel;
 use Laravel\Ai\Contracts\HasStructuredOutput;
 
 /**
  * A customer's message translated for the support team.
  */
+#[UseCheapestModel]
 class ThreadTranslator extends TallportAgent implements HasStructuredOutput
 {
     public $language;

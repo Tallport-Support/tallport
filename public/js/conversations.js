@@ -323,8 +323,14 @@ document.addEventListener('alpine:init', function () {
 					if (!ok) {
 						return;
 					}
-					self.dirty = false;
 					var html = editor() ? editor().value : '';
+					// A translated chat (App\Ai\ChatTranslation): the translation first, for a look.
+					if (self.$root.hasAttribute('data-translating') && !self.as_written) {
+						self.translate(html);
+						return;
+					}
+					self.as_written = false;
+					self.dirty = false;
 					var shown = self.showSending(html);
 					if (chat) {
 						window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: ''}}));
@@ -349,6 +355,64 @@ document.addEventListener('alpine:init', function () {
 						}
 					});
 				});
+			},
+
+			// A translated chat's reply: its translation is shown (livewire/conversation-composer); sent
+			// when the same text is sent again (Enter), or as written if it's in that language already.
+			translate: function (html) {
+				var self = this;
+				var translation = this.$wire.translation;
+				if (!stripTags(html).trim() || this.translating_now) {
+					return;
+				}
+				if (translation && translation.html && translation.source === html) {
+					this.sendPreview();
+					return;
+				}
+				this.translating_now = true;
+				this.$wire.previewTranslation(html).then(function (result) {
+					self.translating_now = false;
+					if (result == 'same') {
+						self.sendAsWritten();
+					}
+				});
+			},
+
+			retryTranslation: function () {
+				this.translate(editor() ? editor().value : '');
+			},
+
+			sendPreview: function () {
+				var self = this;
+				var html = editor() ? editor().value : '';
+				var translation = this.$wire.translation;
+				var shown = this.showSending(translation ? translation.html : html);
+				this.dirty = false;
+				window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: ''}}));
+				editorFocus('body');
+				this.$wire.sendTranslation(html).then(function (result) {
+					if (result == 'sent') {
+						return;
+					}
+					if (shown) {
+						shown.remove();
+					}
+					window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: html}}));
+					// Changed since it was translated: translated again.
+					if (result == 'changed') {
+						self.translate(html);
+					}
+				});
+			},
+
+			sendAsWritten: function () {
+				this.as_written = true;
+				this.submit();
+			},
+
+			editTranslation: function () {
+				this.$wire.discardTranslation();
+				editorFocus('body');
 			},
 
 			// The message, shown while it's sent: at the end of the chat's history, or above the

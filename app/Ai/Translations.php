@@ -56,7 +56,7 @@ class Translations
             && $thread->type == Thread::TYPE_CUSTOMER
             && $thread->state == Thread::STATE_PUBLISHED
             && $thread->conversation
-            && Settings::enabled('translations', $thread->conversation->mailbox);
+            && (Settings::enabled('translations', $thread->conversation->mailbox) || ChatTranslation::isOn($thread->conversation));
     }
 
     /**
@@ -75,7 +75,7 @@ class Translations
     /**
      * Why a message has no translation into a language, for the note under
      * it: ['same', detected language] (taken to be in the language already),
-     * ['no_text'], ['error', message], ['waiting'], or null (nothing to say:
+     * ['no_text'], ['error', message], a limit (['budget'], ['customer_limit']), ['waiting'], or null (nothing to say:
      * it is in that language).
      */
     public static function reason(Thread $thread, $language)
@@ -85,7 +85,9 @@ class Translations
             return ['no_text'];
         }
         if (isset($data['errors'][$language])) {
-            return ['error', $data['errors'][$language]];
+            $error = $data['errors'][$language];
+
+            return in_array($error, [self::LIMIT_BUDGET, self::LIMIT_CUSTOMER]) ? [$error] : ['error', $error];
         }
         if (!self::isMissing($thread, $language)) {
             $detected = $data['language'] ?? null;
@@ -128,6 +130,34 @@ class Translations
         self::save($thread, $data);
 
         return self::translate($thread, $language);
+    }
+
+    /**
+     * Limits that keep a message from being translated now (kept as its error, and tried
+     * again when someone reads it): the mailbox's tokens for today, the customer's per hour.
+     */
+    const LIMIT_BUDGET = 'budget';
+    const LIMIT_CUSTOMER = 'customer_limit';
+
+    public static function limit(Thread $thread)
+    {
+        $conversation = $thread->conversation;
+        if (!Settings::withinBudget($conversation->mailbox)) {
+            return self::LIMIT_BUDGET;
+        }
+        $per_hour = Settings::translationsPerCustomerHour();
+        if ($per_hour && $conversation->customer_id && Usage::customerTranslationsLastHour($conversation->customer_id) >= $per_hour) {
+            return self::LIMIT_CUSTOMER;
+        }
+
+        return null;
+    }
+
+    public static function limited(Thread $thread, $language, $limit)
+    {
+        $data = Summaries::data($thread);
+        $data['errors'][$language] = $limit;
+        self::save($thread, $data);
     }
 
     /**
@@ -241,7 +271,12 @@ class Translations
             $html = self::sourceHtml($thread);
             $as_html = $html !== '' && mb_strlen($html) <= Summaries::MAX_THREAD_CHARS * 3;
             $response = (new ThreadTranslator($language, $as_html))->prompt(TallportAgent::data('message', $as_html ? $html : $text));
+            Usage::record($response, Usage::FEATURE_TRANSLATION, $thread->conversation);
             $data['language'] = strtolower(trim((string) $response['detected_language'])) ?: ($data['language'] ?? null);
+            // A chat's language: the one first detected (replies go out in it).
+            if ($thread->type == Thread::TYPE_CUSTOMER && $data['language'] && Settings::isLanguage($data['language'])) {
+                ChatTranslation::setCustomerLanguage($thread->conversation, $data['language']);
+            }
             if ($response['same_language'] || $data['language'] === $language || trim((string) $response['translation']) === '') {
                 $data['same'] = array_values(array_unique(array_merge((array) ($data['same'] ?? []), [$language])));
             } else {
@@ -260,6 +295,31 @@ class Translations
         self::save($thread, $data);
 
         return $data['translations'][$language] ?? null;
+    }
+
+    /**
+     * A translation made with others (a chat's messages together, App\Ai\ChatTranslation):
+     * plain text, or null when the message is in that language already.
+     */
+    public static function store(Thread $thread, $language, $detected, $translation)
+    {
+        $data = Summaries::data($thread);
+        unset($data['errors'][$language]);
+        if (empty($data['errors'])) {
+            unset($data['errors']);
+        }
+        $data['language'] = $detected ?: ($data['language'] ?? null);
+        $translation = trim((string) $translation);
+        if ($translation === '' || $data['language'] === $language) {
+            $data['same'] = array_values(array_unique(array_merge((array) ($data['same'] ?? []), [$language])));
+        } else {
+            $data['translations'][$language] = $translation;
+            $data['html'] = array_values(array_diff((array) ($data['html'] ?? []), [$language]));
+            if (!$data['html']) {
+                unset($data['html']);
+            }
+        }
+        self::save($thread, $data);
     }
 
     protected static function save(Thread $thread, array $data)

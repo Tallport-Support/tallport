@@ -9,7 +9,7 @@
     // A channel (Telegram, Nostr) has no copies or quoted history; its formats are the editor's.
     $has_channel = $conversation->hasChannel();
 @endphp
-<div class="conv-action-wrapper @if ($chat) conv-composer-docked @endif" x-data="tallportComposer({{ $conversation->id }}, @js($mode), @js($chat))" data-author="{{ Auth::user()->getFullName() }}" data-sending="{{ __('Sending') }}…" x-on:input="changed($event)" x-on:change="blurred($event)" x-on:fruit-editor-upload.stop="embed($event)" x-on:keydown.enter.capture="enter($event)">
+<div class="conv-action-wrapper @if ($chat) conv-composer-docked @endif" x-data="tallportComposer({{ $conversation->id }}, @js($mode), @js($chat))" data-author="{{ Auth::user()->getFullName() }}" data-sending="{{ __('Sending') }}…" @if ($this->translating) data-translating @endif x-on:input="changed($event)" x-on:change="blurred($event)" x-on:fruit-editor-upload.stop="embed($event)" x-on:keydown.enter.capture="enter($event)">
     @if ($mode)
         <div class="conv-block conv-reply-block conv-action-block @if ($mode == 'note') conv-note-block @elseif ($mode == 'forward') conv-forward-block @endif">
             <x-fruit::composer :placement="$chat ? 'bottom' : 'top'" class="form-reply conv-composer" :aria-label="$mode == 'note' ? __('Note') : ($mode == 'forward' ? __('Forward') : __('Reply'))" x-on:submit.prevent="submit()">
@@ -62,6 +62,12 @@
                     <x-fruit::alert tone="warning" class="alert-switch-to-note">
                         {!! __safe_raw_html('This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.', ['%switch_start%' => '<a href="#" class="switch-to-note" wire:click.prevent="switchToNote">', '%switch_end%' => '</a>', 'user_name' => htmlspecialchars($last_thread->created_by_user->getFullName())]) !!}
                     </x-fruit::alert>
+                @endif
+
+                {{-- Chats translated both ways (App\Ai\ChatTranslation): the language replies go out in,
+                     and the reply's translation for a look before it's sent. --}}
+                @if ($chat && $mode == 'reply' && App\Ai\ChatTranslation::isOn($conversation))
+                    @include('conversations/partials/chat_translation')
                 @endif
 
                 @include('conversations/partials/composer_editor', ['formats' => $mode == 'note' ? null : $conversation->editorFormats(), 'placeholder' => $chat && $mode != 'note' && $conversation->customer ? __('Message :name', ['name' => $conversation->customer->getFullName(true)]) : null, 'draft_button' => $mode != 'note', 'inline' => $chat])
