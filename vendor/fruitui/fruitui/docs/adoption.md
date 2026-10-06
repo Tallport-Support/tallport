@@ -108,7 +108,7 @@ A page has one toast outlet: `<x-fruit::toaster />`, or in HTML `<div class="f-t
 
 ## Compatibility and upgrades
 
-Adapters require PHP 8.3+ and Laravel 13; optional Livewire integrations require Livewire 4. Laravel 11/12 and Livewire 3 are no longer supported. CI uses Testbench 11 with Laravel 13, checks PHP 8.3 and 8.5, and runs PHP contracts, packaged installation checks and actual browser/server interaction. The [workflow](../.github/workflows/test.yml) specifies the combinations; check its [latest results](https://github.com/nielspeen/fruitui/actions/workflows/test.yml) for current verification. The local environment is PHP 8.5, Laravel 13 and Livewire 4.
+Adapters require PHP 8.3+ and Laravel 13; optional Livewire integrations require Livewire 4. Laravel 11/12 and Livewire 3 are no longer supported. CI uses Testbench 11 with Laravel 13, checks PHP 8.3 and 8.5, and runs PHP contracts, packaged installation checks and actual browser/server interaction. The [workflow](../.github/workflows/test.yml) specifies the combinations; check its [latest results](https://github.com/FruitUI/fruitui/actions/workflows/test.yml) for current verification. The local environment is PHP 8.5, Laravel 13 and Livewire 4.
 
 Browser CI targets Chromium, Firefox and WebKit. Locally choose `FRUITUI_BROWSERS=chromium,firefox,webkit npm test` after installing Playwright browsers. These engines do not verify every browser's or operating system's native pickers. Unsupported custom-select styling falls back to a native picker; lack of Popover support retains the CSS-positioned disclosure/list fallback.
 

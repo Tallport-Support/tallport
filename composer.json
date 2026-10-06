@@ -14,7 +14,7 @@
         {
             "name": "fruitui",
             "type": "vcs",
-            "url": "https://github.com/nielspeen/fruitui"
+            "url": "https://github.com/FruitUI/fruitui"
         },
         {
             "type": "package",

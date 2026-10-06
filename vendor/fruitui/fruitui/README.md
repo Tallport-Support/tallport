@@ -9,7 +9,7 @@ Requires **Laravel 13 and PHP 8.3+** for the Blade adapters. Livewire is optiona
 Until it is on Packagist, require it from GitHub:
 
 ```sh
-composer config repositories.fruitui vcs https://github.com/nielspeen/fruitui
+composer config repositories.fruitui vcs https://github.com/FruitUI/fruitui
 composer require fruitui/fruitui:dev-main
 ```
 

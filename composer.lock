@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2902b8515f6672bf67bcf119cdb6b034",
+    "content-hash": "9e83c6e0c8a56ef478b844f6103f260d",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1172,13 +1172,13 @@
             "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "https://github.com/nielspeen/fruitui.git",
-                "reference": "6a0739801c0953a0831c00e883d6b332947243f6"
+                "url": "https://github.com/FruitUI/fruitui.git",
+                "reference": "e09f820aac210d089259c614a9d344f8d754eb38"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nielspeen/fruitui/zipball/6a0739801c0953a0831c00e883d6b332947243f6",
-                "reference": "6a0739801c0953a0831c00e883d6b332947243f6",
+                "url": "https://api.github.com/repos/FruitUI/fruitui/zipball/e09f820aac210d089259c614a9d344f8d754eb38",
+                "reference": "e09f820aac210d089259c614a9d344f8d754eb38",
                 "shasum": ""
             },
             "require": {
@@ -1237,10 +1237,10 @@
             ],
             "description": "CSS-first UI components for Laravel.",
             "support": {
-                "source": "https://github.com/nielspeen/fruitui/tree/main",
-                "issues": "https://github.com/nielspeen/fruitui/issues"
+                "source": "https://github.com/FruitUI/fruitui/tree/main",
+                "issues": "https://github.com/FruitUI/fruitui/issues"
             },
-            "time": "2026-10-06T11:45:53+00:00"
+            "time": "2026-10-06T11:52:28+00:00"
         },
         {
             "name": "graham-campbell/result-type",
