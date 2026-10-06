@@ -1,8 +1,8 @@
 {{-- Merge conversations into this one (a FruitUI remote dialog; tallportMerge in public/js/conversations.js). --}}
 <div class="f-stack modal-form" x-data="tallportMerge({{ $conversation->id }})">
     <x-fruit::alert tone="warning">
-        <p>{{ __('Selected conversation will be merged into the current conversation behind the popup.') }}</p>
-        <p><strong>{{ __("Merged conversations can not be unmerged.") }}</strong></p>
+        <p><strong>{{ __("Merging can't be undone.") }}</strong></p>
+        <p>{{ __('The messages of the conversations you select move into #:number, and those conversations go to Deleted.', ['number' => $conversation->number]) }}</p>
     </x-fruit::alert>
 
     <x-fruit::field :label="__('Search Conversation by Number').' (#)'" control-id="merge-conv-number">
@@ -35,8 +35,9 @@
             </ul>
         </div>
     @endif
-
-    <div class="modal-form__actions">
-        <button class="f-button f-button--primary btn-merge-conv" type="button" x-bind:disabled="!selected.length" x-on:click="merge($el)">{{ __('Merge') }}</button>
-    </div>
 </div>
+{{-- The dialog's footer (FruitUI keeps it in view while the list scrolls). --}}
+<footer class="f-dialog__footer" x-data>
+    <x-fruit::button x-on:click="$el.closest('dialog').close()">{{ __('Cancel') }}</x-fruit::button>
+    <button class="f-button f-button--primary btn-merge-conv" type="button" x-bind:disabled="!$store.merge.selected.length" x-on:click="$store.merge.merge($el)">{{ __('Merge') }}</button>
+</footer>

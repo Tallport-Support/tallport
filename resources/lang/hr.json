@@ -406,6 +406,8 @@
     "Merge": "Spoji",
     "Merge Conversations": "Spoji Razgovore",
     "Merged conversations can not be unmerged.": "Spojeni razgovori se ne mogu razdvojiti.",
+    "Merging can't be undone.": "Spajanje se ne može poništiti.",
+    "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Poruke razgovora koje odaberete premještaju se u #:number, a ti razgovori idu u „Izbrisano”.",
     "Message": "Poruka",
     "Message bounced (:link)": "Poruka odbijena (:link)",
     "Message cannot be empty": "Poruka ne može biti prazna",

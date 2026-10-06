@@ -409,6 +409,8 @@
     "Merge Conversations": "Îmbină Conversații",
     "Merge With": "Îmbină Cu",
     "Merged conversations can not be unmerged.": "Conversațiile îmbinate nu pot fi separate.",
+    "Merging can't be undone.": "Îmbinarea nu poate fi anulată.",
+    "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Mesajele conversațiilor pe care le selectezi sunt mutate în #:number, iar acele conversații ajung în „Șters”.",
     "Message": "Mesaj",
     "Message bounced (:link)": "Mesaj respins (:link)",
     "Message cannot be empty": "Mesajul nu poate fi gol",

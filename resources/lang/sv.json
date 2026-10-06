@@ -406,6 +406,8 @@
     "Merge": "Sammanfoga",
     "Merge Conversations": "Sammanfoga Konversationer",
     "Merged conversations can not be unmerged.": "Sammanfogade konversationer kan inte separeras.",
+    "Merging can't be undone.": "Sammanfogning kan inte ångras.",
+    "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Meddelandena i konversationerna du väljer flyttas till #:number, och de konversationerna hamnar i ”Raderad”.",
     "Message": "Meddelande",
     "Message bounced (:link)": "Meddelande studsade (:link)",
     "Message cannot be empty": "Meddelandet kan inte vara tomt",

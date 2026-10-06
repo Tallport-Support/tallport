@@ -409,6 +409,8 @@
     "Merge Conversations": "Beszélgetések Összevonása",
     "Merge With": "Összevonás Ezzel",
     "Merged conversations can not be unmerged.": "Az összevont beszélgetések nem választhatók szét.",
+    "Merging can't be undone.": "Az összevonás nem vonható vissza.",
+    "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "A kiválasztott beszélgetések üzenetei átkerülnek ide: #:number, maguk a beszélgetések pedig a „Törölve” mappába kerülnek.",
     "Message": "Üzenet",
     "Message bounced (:link)": "Az üzenet visszapattant (:link)",
     "Message cannot be empty": "Az üzenet nem lehet üres",

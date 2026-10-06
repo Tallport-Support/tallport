@@ -409,6 +409,8 @@
     "Merge Conversations": "Fusionner les Discussions",
     "Merge With": "Fusionner Avec",
     "Merged conversations can not be unmerged.": "Les discussions fusionnées ne peuvent plus être séparées",
+    "Merging can't be undone.": "La fusion est irréversible.",
+    "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Les messages des discussions que vous sélectionnez sont déplacés dans #:number, et ces discussions vont dans « Effacé ».",
     "Message": "Message",
     "Message bounced (:link)": "Message renvoyé (:link)",
     "Message cannot be empty": "Le message ne peut pas être vide",

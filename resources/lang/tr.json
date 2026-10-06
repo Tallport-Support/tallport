@@ -404,6 +404,8 @@
     "Merge": "Birleştir",
     "Merge Conversations": "Konuşmaları Birleştir",
     "Merged conversations can not be unmerged.": "Birleştirilen konuşmaların birleştirilmesi kaldırılamaz.",
+    "Merging can't be undone.": "Birleştirme geri alınamaz.",
+    "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Seçtiğiniz konuşmaların mesajları #:number konuşmasına taşınır ve bu konuşmalar \"Silindi\" klasörüne gider.",
     "Message": "Mesaj",
     "Message bounced (:link)": "İleti geri döndü (:link)",
     "Message cannot be empty": "Mesaj boş olamaz",

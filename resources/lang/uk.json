@@ -405,6 +405,8 @@
     "Merge": "Об'єднати",
     "Merge Conversations": "Об'єднати Розмови",
     "Merged conversations can not be unmerged.": "Об'єднані розмови не можна роз'єднати.",
+    "Merging can't be undone.": "Об'єднання не можна скасувати.",
+    "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Повідомлення вибраних вами розмов переносяться до #:number, а самі розмови потрапляють до «Видалено».",
     "Message": "Повідомлення",
     "Message bounced (:link)": "Повідомлення повернуто (:link)",
     "Message cannot be empty": "Повідомлення не може бути порожнім",

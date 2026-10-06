@@ -404,6 +404,8 @@
     "Merge": "Unir",
     "Merge Conversations": "Unir Conversas",
     "Merged conversations can not be unmerged.": "Não é possível desunir conversas unidas",
+    "Merging can't be undone.": "A união não pode ser anulada.",
+    "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "As mensagens das conversas que selecionar são movidas para #:number, e essas conversas passam para \"Eliminado\".",
     "Message": "Mensagem",
     "Message bounced (:link)": "Mensagem devolvida (:link)",
     "Message cannot be empty": "A mensagem não pode estar vazia",

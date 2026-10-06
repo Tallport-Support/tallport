@@ -409,6 +409,8 @@
     "Merge Conversations": "Sloučit Konverzace",
     "Merge With": "Sloučit S",
     "Merged conversations can not be unmerged.": "Sloučené konverzace nelze znovu odloučit.",
+    "Merging can't be undone.": "Sloučení nelze vrátit zpět.",
+    "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Zprávy vybraných konverzací se přesunou do #:number a tyto konverzace skončí ve složce „Odstraněno“.",
     "Message": "Zpráva",
     "Message bounced (:link)": "Zpráva se vrátila (:link)",
     "Message cannot be empty": "Zpráva nemůže být prázdná",

@@ -394,6 +394,8 @@
     "Merge": "Mesclar",
     "Merge Conversations": "Mesclar Conversas",
     "Merged conversations can not be unmerged.": "As conversas mescladas não podem ser desmembradas.",
+    "Merging can't be undone.": "A mesclagem não pode ser desfeita.",
+    "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "As mensagens das conversas que você selecionar são movidas para #:number, e essas conversas vão para \"Excluído\".",
     "Message": "Mensagem",
     "Message bounced (:link)": "Mensagem devolvida (:link)",
     "Message cannot be empty": "A mensagem não pode estar vazia",

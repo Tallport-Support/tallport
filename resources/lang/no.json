@@ -396,6 +396,8 @@
     "Merge": "Slå sammen",
     "Merge Conversations": "Slå Sammen Samtaler",
     "Merged conversations can not be unmerged.": "Fusjonerte samtaler kan ikke bli skilt.",
+    "Merging can't be undone.": "Sammenslåing kan ikke angres.",
+    "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Meldingene i samtalene du velger flyttes til #:number, og de samtalene havner i «Slettet».",
     "Message": "Melding",
     "Message bounced (:link)": "Melding hoppet over (:link)",
     "Message cannot be empty": "Meldingen kan ikke være tom",

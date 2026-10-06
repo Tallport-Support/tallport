@@ -409,6 +409,8 @@
     "Merge Conversations": "Unisci i Ticket",
     "Merge With": "Unisci Con",
     "Merged conversations can not be unmerged.": "I ticket uniti non posso essere separati",
+    "Merging can't be undone.": "L'unione non può essere annullata.",
+    "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "I messaggi dei ticket selezionati vengono spostati in #:number e quei ticket finiscono in \"Ticket Cancellati\".",
     "Message": "Messaggio",
     "Message bounced (:link)": "Messaggio rimbalzato (:link)",
     "Message cannot be empty": "Il messaggio non può essere vuoto",

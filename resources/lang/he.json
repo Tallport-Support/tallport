@@ -403,6 +403,8 @@
     "Merge": "מזג",
     "Merge Conversations": "מזג שיחות",
     "Merged conversations can not be unmerged.": "לא ניתן לבטל מיזוג של שיחות",
+    "Merging can't be undone.": "לא ניתן לבטל מיזוג.",
+    "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "ההודעות של השיחות שתבחר יועברו אל #:number, והשיחות האלה יעברו אל \"נמחק\".",
     "Message": "הודעה",
     "Message bounced (:link)": "ההודעה חזרה (:link)",
     "Message cannot be empty": "ההודעה לא יכולה להיות ריקה",

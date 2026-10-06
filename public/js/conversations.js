@@ -502,12 +502,33 @@ document.addEventListener('alpine:init', function () {
 		return false;
 	};
 
-	// Merge: conversations found by number, or previous ones, into this one.
+	// Merge: conversations found by number, or previous ones, into this one. The selection is
+	// in a store: the Merge button is in the dialog's footer, outside the component.
+	window.Alpine.store('merge', {
+		conversation_id: null,
+		selected: [],
+		merge: function (button) {
+			Tallport.busy(button, true);
+			Tallport.post(laroute.route('conversations.ajax'), {action: 'conversation_merge', merge_conversation_id: this.selected, conversation_id: this.conversation_id}).then(function (response) {
+				if (!reloadAfter(response)) {
+					Tallport.busy(button, false);
+				}
+			});
+		}
+	});
 	window.Alpine.data('tallportMerge', function (conversation_id) {
+		var store = window.Alpine.store('merge');
+		store.conversation_id = conversation_id;
+		store.selected = [];
 		return {
 			number: '',
 			found: [],
-			selected: [],
+			get selected() {
+				return store.selected;
+			},
+			set selected(value) {
+				store.selected = value;
+			},
 			search: function (button) {
 				var self = this;
 				Tallport.busy(button, true);
@@ -524,14 +545,6 @@ document.addEventListener('alpine:init', function () {
 					}
 					if (self.selected.indexOf(item.id) == -1) {
 						self.selected.push(item.id);
-					}
-				});
-			},
-			merge: function (button) {
-				Tallport.busy(button, true);
-				Tallport.post(laroute.route('conversations.ajax'), {action: 'conversation_merge', merge_conversation_id: this.selected, conversation_id: conversation_id}).then(function (response) {
-					if (!reloadAfter(response)) {
-						Tallport.busy(button, false);
 					}
 				});
 			}

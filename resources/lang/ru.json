@@ -394,6 +394,8 @@
     "Merge": "Объединить",
     "Merge Conversations": "Объединить Беседы",
     "Merged conversations can not be unmerged.": "Объединённые разговоры не могут быть разъединены.",
+    "Merging can't be undone.": "Объединение нельзя отменить.",
+    "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Сообщения выбранных вами бесед переносятся в #:number, а сами беседы попадают в «Удалён».",
     "Message": "Сообщение",
     "Message bounced (:link)": "Сообщение не было доставлено (:link)",
     "Message cannot be empty": "Сообщение не может быть пустым",

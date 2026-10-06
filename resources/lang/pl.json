@@ -409,6 +409,8 @@
     "Merge Conversations": "Scal Rozmowy",
     "Merge With": "Scal Z",
     "Merged conversations can not be unmerged.": "Scalone rozmowy nie mogą zostać rozdzielone.",
+    "Merging can't be undone.": "Scalenia nie można cofnąć.",
+    "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Wiadomości z wybranych rozmów zostaną przeniesione do #:number, a te rozmowy trafią do „Usunięto”.",
     "Message": "Wiadomość",
     "Message bounced (:link)": "Wiadomość odesłana (:link)",
     "Message cannot be empty": "Wiadomość nie może być pusta",
