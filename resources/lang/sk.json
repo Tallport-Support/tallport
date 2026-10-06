@@ -412,6 +412,8 @@
     "Merged conversations can not be unmerged.": "Zlúčené konverzácie nemôžu byť znovu rozdelené.",
     "Merging can't be undone.": "Zlúčenie sa nedá vrátiť späť.",
     "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Správy vybraných konverzácií sa presunú do #:number a tieto konverzácie skončia v priečinku „Vymazané“.",
+    "Found #:number": "Nájdené #:number",
+    "No conversation #:number": "Žiadna konverzácia #:number",
     "Message": "Správa",
     "Message bounced (:link)": "Vrátené emaily (:link)",
     "Message cannot be empty": "Správa nemôže byť prázdna",

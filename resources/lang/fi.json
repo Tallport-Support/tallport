@@ -397,6 +397,8 @@
     "Merged conversations can not be unmerged.": "Yhdistettyjen keskustelujen yhdistämistä ei voi purkaa.",
     "Merging can't be undone.": "Yhdistämistä ei voi perua.",
     "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Valitsemiesi keskustelujen viestit siirtyvät keskusteluun #:number, ja nämä keskustelut siirtyvät kansioon ”Poistettu”.",
+    "Found #:number": "Löytyi #:number",
+    "No conversation #:number": "Ei keskustelua #:number",
     "Message": "Viesti",
     "Message bounced (:link)": "Viesti palautui (:linkki)",
     "Message cannot be empty": "Viesti ei voi olla tyhjä",

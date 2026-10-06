@@ -398,6 +398,8 @@
     "Merged conversations can not be unmerged.": "Samengevoegde gesprekken kunnen niet worden hersteld.",
     "Merging can't be undone.": "Samenvoegen kan niet ongedaan worden gemaakt.",
     "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "De berichten van de gesprekken die u selecteert worden verplaatst naar #:number, en die gesprekken gaan naar \"Verwijderd\".",
+    "Found #:number": "#:number gevonden",
+    "No conversation #:number": "Geen gesprek #:number",
     "Message": "Bericht",
     "Message bounced (:link)": "Bericht teruggekomen (:link)",
     "Message cannot be empty": "Bericht kan niet leeg zijn",

@@ -406,6 +406,8 @@
     "Merged conversations can not be unmerged.": "Las conversaciones fusionadas no se pueden separar.",
     "Merging can't be undone.": "La fusión no se puede deshacer.",
     "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Los mensajes de las conversaciones que seleccione se mueven a #:number, y esas conversaciones pasan a \"Borrado\".",
+    "Found #:number": "Se encontró #:number",
+    "No conversation #:number": "No hay ninguna conversación #:number",
     "Message": "Mensaje",
     "Message bounced (:link)": "Mensaje rechazado (:link)",
     "Message cannot be empty": "El mensaje no puede estar vacío",

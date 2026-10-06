@@ -405,6 +405,8 @@
     "Merged conversations can not be unmerged.": "Združenih pogovorov ni mogoče razdružiti.",
     "Merging can't be undone.": "Združevanja ni mogoče razveljaviti.",
     "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Sporočila izbranih pogovorov se premaknejo v #:number, ti pogovori pa gredo v »Izbrisano«.",
+    "Found #:number": "Najdeno #:number",
+    "No conversation #:number": "Ni pogovora #:number",
     "Message": "Sporočilo",
     "Message bounced (:link)": "Sporočilo se je odbilo (:link)",
     "Message cannot be empty": "Sporočilo ne sme biti prazno",

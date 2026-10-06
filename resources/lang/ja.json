@@ -407,6 +407,8 @@
     "Merged conversations can not be unmerged.": "統合された会話を解除することはできません。",
     "Merging can't be undone.": "統合は元に戻せません。",
     "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "選択した会話のメッセージは #:number に移動し、それらの会話は「削除済み」に移動します。",
+    "Found #:number": "#:number が見つかりました",
+    "No conversation #:number": "会話 #:number はありません",
     "Message": "メッセージ",
     "Message bounced (:link)": "メッセージがバウンスしました (:link)",
     "Message cannot be empty": "メッセージを空にすることはできません",

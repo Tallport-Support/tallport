@@ -365,6 +365,8 @@
     "Merged conversations can not be unmerged.": "合併後的對話無法取消合併。",
     "Merging can't be undone.": "合併無法復原。",
     "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "所選對話的訊息將移至 #:number，這些對話則會移至「已刪除」。",
+    "Found #:number": "已找到 #:number",
+    "No conversation #:number": "沒有對話 #:number",
     "Message": "訊息",
     "Message not sent to customer": "訊息未傳送給客戶",
     "Method": "方法",

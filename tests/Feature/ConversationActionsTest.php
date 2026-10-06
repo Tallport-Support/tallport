@@ -722,6 +722,7 @@ class ConversationActionsTest extends FeatureTestCase
     public function testDialogs()
     {
         $other_mailbox = $this->createMailbox([$this->agent], ['name' => 'Sales department']);
+        $earlier = $this->receiveConversation(['subject' => 'An earlier question', 'message_id' => 'earlier@customer.example.org']);
         $conversation = $this->receiveConversation();
         $this->ajax($this->agent, ['action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Hi</p>']);
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
@@ -732,7 +733,12 @@ class ConversationActionsTest extends FeatureTestCase
         $this->actingAs($this->agent)->get($base.'send_log?thread_id='.$reply->id)
             ->assertStatus(200)->assertSee('casey@customer.example.org');
         $this->actingAs($this->agent)->get($base.'change_customer?conversation_id='.$conversation->id)->assertStatus(200);
-        $this->actingAs($this->agent)->get($base.'merge_conv?conversation_id='.$conversation->id)->assertStatus(200);
+        // Merge: the customer's earlier conversation listed once (its id, for the search to
+        // take it out while found), Merge in the dialog's footer.
+        $this->actingAs($this->agent)->get($base.'merge_conv?conversation_id='.$conversation->id)->assertStatus(200)
+            ->assertSee('An earlier question')
+            ->assertSee("JSON.parse('[\\u0022".$earlier->id."\\u0022]')", false)
+            ->assertSeeInOrder(['f-dialog__footer', 'btn-merge-conv'], false);
 
         $outsider = $this->createUser();
         $this->actingAs($outsider)->get($base.'move_conv?conversation_id='.$conversation->id)->assertStatus(403);

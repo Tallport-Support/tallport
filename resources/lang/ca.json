@@ -560,6 +560,8 @@
     "Merged conversations can not be unmerged.": "Les converses fusionades no es poden desfusionar.",
     "Merging can't be undone.": "La fusió no es pot desfer.",
     "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Els missatges de les converses que seleccioneu es mouen a #:number, i aquestes converses van a \"Eliminat\".",
+    "Found #:number": "S'ha trobat #:number",
+    "No conversation #:number": "No hi ha cap conversa #:number",
     "Message bounced (:link)": "Missatge retornat (:link)",
     "Message cannot be empty": "El missatge no pot estar buit",
     "Message has been already sent. Please discard this draft.": "El missatge ja s'ha enviat. Descarteu aquest esborrany.",

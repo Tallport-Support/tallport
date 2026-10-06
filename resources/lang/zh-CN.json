@@ -398,6 +398,8 @@
     "Merged conversations can not be unmerged.": "已合并的对话无法取消合并",
     "Merging can't be undone.": "合并无法撤销。",
     "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "所选对话的消息将移至 #:number，这些对话将移至“已删除”。",
+    "Found #:number": "已找到 #:number",
+    "No conversation #:number": "没有对话 #:number",
     "Message": "消息",
     "Message bounced (:link)": "消息被退回(:link)",
     "Message cannot be empty": "留言不能为空",

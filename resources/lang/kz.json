@@ -393,6 +393,8 @@
     "Merged conversations can not be unmerged.": "Біріктірілген әңгімелер бөлінбейді.",
     "Merging can't be undone.": "Біріктіруді болдырмау мүмкін емес.",
     "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Сіз таңдаған әңгімелердің хабарламалары #:number әңгімесіне көшіріледі, ал ол әңгімелер «Жойылды» қалтасына өтеді.",
+    "Found #:number": "#:number табылды",
+    "No conversation #:number": "#:number әңгімесі жоқ",
     "Message": "Хабарлама",
     "Message bounced (:link)": "Хабарлама жеткізілмеді (:link)",
     "Message cannot be empty": "Хабарлама бос болмауы керек",

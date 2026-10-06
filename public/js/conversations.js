@@ -516,13 +516,34 @@ document.addEventListener('alpine:init', function () {
 			});
 		}
 	});
-	window.Alpine.data('tallportMerge', function (conversation_id) {
+	// Each conversation shows once: the one just found on top (out of Previous Conversations
+	// meanwhile), others found before on top too unless they're among the previous ones.
+	window.Alpine.data('tallportMerge', function (conversation_id, previous_ids, texts) {
 		var store = window.Alpine.store('merge');
 		store.conversation_id = conversation_id;
 		store.selected = [];
+		previous_ids = (previous_ids || []).map(String);
 		return {
 			number: '',
 			found: [],
+			current: null,
+			status: '',
+			init: function () {
+				var self = this;
+				this.$watch('number', function (number) {
+					if (String(number).trim() === '') {
+						self.current = null;
+					}
+				});
+			},
+			get shown() {
+				var self = this;
+				return this.found.filter(function (item) {
+					return item.id === self.current || previous_ids.indexOf(item.id) == -1;
+				}).sort(function (a, b) {
+					return (b.id === self.current) - (a.id === self.current);
+				});
+			},
 			get selected() {
 				return store.selected;
 			},
@@ -532,14 +553,20 @@ document.addEventListener('alpine:init', function () {
 			search: function (button) {
 				var self = this;
 				Tallport.busy(button, true);
-				Tallport.post(laroute.route('conversations.ajax'), {action: 'merge_search', number: this.number, cur_conv_id: conversation_id}).then(function (response) {
+				var number = String(this.number).replace(/^#/, '').trim();
+				self.status = '';
+				Tallport.post(laroute.route('conversations.ajax'), {action: 'merge_search', number: number, cur_conv_id: conversation_id}).then(function (response) {
 					Tallport.busy(button, false);
 					if (!Tallport.isSuccess(response) || !response.conversation) {
+						self.current = null;
+						self.status = texts.none.replace(':number', number);
 						Tallport.result(response);
 						return;
 					}
 					var item = response.conversation;
 					item.id = String(item.id);
+					self.current = item.id;
+					self.status = texts.found.replace(':number', item.number);
 					if (!self.found.some(function (found) { return found.id == item.id; })) {
 						self.found.push(item);
 					}

@@ -1516,6 +1516,7 @@ class ConversationsController extends Controller
         return view('conversations/ajax_html/merge_conv', [
             'conversation' => $conversation,
             'prev_conversations' => $prev_conversations,
+            'prev_conversation_ids' => $prev_conversations ? collect($prev_conversations->items())->pluck('id')->map('strval') : [],
 
         ]);
     }

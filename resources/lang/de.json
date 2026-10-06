@@ -417,6 +417,8 @@
     "Merged conversations can not be unmerged.": "Zusammengefügte Gespräche können nicht wieder getrennt werden.",
     "Merging can't be undone.": "Das Zusammenführen kann nicht rückgängig gemacht werden.",
     "The messages of the conversations you select move into #:number, and those conversations go to Deleted.": "Die Nachrichten der von Ihnen ausgewählten Gespräche werden in #:number verschoben, und diese Gespräche kommen in den Ordner \"Gelöscht\".",
+    "Found #:number": "#:number gefunden",
+    "No conversation #:number": "Kein Gespräch #:number",
     "Message": "Nachricht",
     "Message cannot be empty": "Nachricht darf nicht leer sein",
     "Message has been already sent. Please discard this draft.": "Nachricht wurde bereits gesendet. Bitte diesen Entwurf löschen.",
