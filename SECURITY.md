@@ -3,7 +3,7 @@
 ## Reporting a vulnerability
 
 Please report vulnerabilities in Tallport privately through
-[GitHub security advisories](https://github.com/nielspeen/tallport/security/advisories/new),
+[GitHub security advisories](https://github.com/Tallport-Support/tallport/security/advisories/new),
 not in public issues.
 
 * One issue per advisory, so each can be tracked and fixed on its own.

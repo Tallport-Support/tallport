@@ -40,7 +40,7 @@ Credit for everything up to the fork goes to the FreeScout team.
 So far:
 
 * **Updates come from this repository.** The built-in updater installs the
-  latest published [Tallport release](https://github.com/nielspeen/tallport/releases)
+  latest published [Tallport release](https://github.com/Tallport-Support/tallport/releases)
   instead of FreeScout releases.
 * **Branding.** The app says Tallport, with credit to FreeScout.
 * **Current Laravel.** Laravel 13 with Symfony 7.4 and Symfony Mailer,
@@ -81,8 +81,8 @@ Tallport installs like FreeScout, so FreeScout's
 [Installation Guide](https://github.com/freescout-help-desk/freescout/wiki/Installation-Guide)
 applies, using Tallport's code instead of FreeScout's:
 
-1. Download the latest [release](https://github.com/nielspeen/tallport/releases)
-   (or `git clone https://github.com/nielspeen/tallport.git`) into your web
+1. Download the latest [release](https://github.com/Tallport-Support/tallport/releases)
+   (or `git clone https://github.com/Tallport-Support/tallport.git`) into your web
    root. `vendor/` is included, so Composer isn't needed.
 2. Point the web server at `public/`, then open the site and follow the web
    installer.
@@ -102,7 +102,7 @@ Tallport:
 
 ```bash
 cd /path/to/freescout
-RAW=https://raw.githubusercontent.com/nielspeen/tallport/main
+RAW=https://raw.githubusercontent.com/Tallport-Support/tallport/main
 sudo -u www-data curl -fsSL $RAW/config/self-update.php -o config/self-update.php
 sudo -u www-data curl -fsSL $RAW/overrides/codedge/laravel-selfupdater/src/SourceRepositoryTypes/GithubRepositoryType.php \
   -o overrides/codedge/laravel-selfupdater/src/SourceRepositoryTypes/GithubRepositoryType.php
@@ -438,7 +438,7 @@ freescout.net.
 Tallport fixes bugs that FreeScout still has (see [KNOWN_BUGS.md](KNOWN_BUGS.md)
 and the release notes). A module that happens to depend on the old, buggy
 behaviour may work differently after such a fix. If a module stops working
-properly after an update, please [open an issue](https://github.com/nielspeen/tallport/issues/new/choose)
+properly after an update, please [open an issue](https://github.com/Tallport-Support/tallport/issues/new/choose)
 naming the module and the Tallport version.
 
 ## Development
@@ -560,7 +560,7 @@ icons (needs Google Chrome and ImageMagick).
 ## Security
 
 Please report vulnerabilities privately through
-[GitHub security advisories](https://github.com/nielspeen/tallport/security/advisories/new)
+[GitHub security advisories](https://github.com/Tallport-Support/tallport/security/advisories/new)
 for this repository, not in public issues.
 
 ## License

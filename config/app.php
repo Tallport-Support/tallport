@@ -194,7 +194,7 @@ return [
     | Tallport website: product links, credits and release notes
     |-------------------------------------------------------------------------
     */
-    'tallport_url' => 'https://github.com/nielspeen/tallport',
+    'tallport_url' => 'https://github.com/Tallport-Support/tallport',
 
     /*
     |--------------------------------------------------------------------------

@@ -38,7 +38,7 @@ return [
     'repository_types' => [
         'github' => [
             'type'              => 'github',
-            'repository_vendor' => 'nielspeen',
+            'repository_vendor' => 'Tallport-Support',
             'repository_name'   => 'tallport',
             'repository_url'    => '',
             'download_path'     => storage_path().DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'updater', //env('SELF_UPDATER_DOWNLOAD_PATH', sys_get_temp_dir()),

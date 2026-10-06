@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Report a security vulnerability
-    url: https://github.com/nielspeen/tallport/security/advisories/new
+    url: https://github.com/Tallport-Support/tallport/security/advisories/new
     about: Please report security issues privately, not in a public issue.
   - name: How do I set up or use Tallport?
     url: https://github.com/freescout-help-desk/freescout/wiki

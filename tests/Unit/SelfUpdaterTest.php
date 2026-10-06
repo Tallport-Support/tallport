@@ -39,7 +39,7 @@ class SelfUpdaterTest extends TestCase
         $stack->push(Middleware::history($this->history));
 
         return new GithubRepositoryType(new Client(['handler' => $stack]), [
-            'repository_vendor' => 'nielspeen',
+            'repository_vendor' => 'Tallport-Support',
             'repository_name'   => 'tallport',
             'download_path'     => $this->download_path,
         ]);
@@ -53,7 +53,7 @@ class SelfUpdaterTest extends TestCase
 
         $this->assertSame('1.8.243.2', $repository->getVersionAvailable());
         $this->assertSame(
-            'https://api.github.com/repos/nielspeen/tallport/releases/latest',
+            'https://api.github.com/repos/Tallport-Support/tallport/releases/latest',
             (string)$this->history[0]['request']->getUri()
         );
     }
@@ -94,8 +94,8 @@ class SelfUpdaterTest extends TestCase
         $zip_file = $this->download_path.'/../'.uniqid('zipball-').'.zip';
         $zip = new \ZipArchive();
         $zip->open($zip_file, \ZipArchive::CREATE);
-        $zip->addFromString('nielspeen-tallport-abc1234/app/Marker.php', '<?php // marker');
-        $zip->addFromString('nielspeen-tallport-abc1234/artisan', '#!/usr/bin/env php');
+        $zip->addFromString('Tallport-Support-tallport-abc1234/app/Marker.php', '<?php // marker');
+        $zip->addFromString('Tallport-Support-tallport-abc1234/artisan', '#!/usr/bin/env php');
         $zip->close();
         $zip_body = file_get_contents($zip_file);
         unlink($zip_file);
@@ -109,7 +109,7 @@ class SelfUpdaterTest extends TestCase
         $repository->fetch('1.8.243.1');
 
         $this->assertSame(
-            'https://api.github.com/repos/nielspeen/tallport/zipball/refs/tags/1.8.243.1',
+            'https://api.github.com/repos/Tallport-Support/tallport/zipball/refs/tags/1.8.243.1',
             (string)$this->history[0]['request']->getUri()
         );
         // The download goes through the configured proxy, like the API calls.
