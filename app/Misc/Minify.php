@@ -138,19 +138,37 @@ class Minify
             @unlink($old);
         }
 
-        $contents = '';
-        foreach ($this->files as $file) {
-            $contents .= $this->contents($file)."\n";
+        if ($this->type == 'js') {
+            // Each file on its own; ones already minified (vendor builds) as they are: JShrink
+            // mangles a template literal inside another's ${…} (FruitUI's build has many).
+            $minified = '';
+            foreach ($this->files as $file) {
+                $contents = $this->contents($file);
+                $minified .= ($this->isMinified($file) ? $contents : \JShrink\Minifier::minify($contents)).";\n";
+            }
+        } else {
+            $contents = '';
+            foreach ($this->files as $file) {
+                $contents .= $this->contents($file)."\n";
+            }
+            $minified = (new \MatthiasMullie\Minify\CSS($contents))->minify();
         }
-        $minified = $this->type == 'js'
-            ? \JShrink\Minifier::minify($contents)
-            : (new \MatthiasMullie\Minify\CSS($contents))->minify();
 
         if (file_put_contents($dir.$filename, $minified) === false) {
             throw new \RuntimeException("File '{$dir}{$filename}' cannot be saved");
         }
 
         return $filename;
+    }
+
+    /**
+     * A script that comes minified: a vendor build or a .min.js file.
+     */
+    protected function isMinified($file)
+    {
+        $path = (string) parse_url($file, PHP_URL_PATH);
+
+        return str_starts_with(ltrim($path, '/'), 'vendor/') || str_ends_with($path, '.min.js');
     }
 
     protected function contents($file)

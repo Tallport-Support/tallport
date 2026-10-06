@@ -41,6 +41,24 @@ class MinifyTest extends TestCase
         ], $environment);
     }
 
+    /**
+     * JShrink mangles a template literal inside another's ${…}: already-minified vendor
+     * builds (FruitUI's) are joined as they are, ours are minified.
+     */
+    public function testVendorBuildsAreJoinedAsTheyAre()
+    {
+        mkdir($this->public.'/vendor/lib', 0777, true);
+        $vendor = 'var c=`f-dialog f-dialog--scroll${t===`large`?` f-dialog--large`:``}`;';
+        file_put_contents($this->public.'/vendor/lib/lib.global.js', $vendor);
+
+        $html = (string) $this->minify()->javascript(['/vendor/lib/lib.global.js', '/js/a.js']);
+        preg_match('#/js/builds/([0-9a-f]+\.js)#', $html, $m);
+        $js = file_get_contents($this->public.'/js/builds/'.$m[1]);
+
+        $this->assertStringContainsString($vendor, $js);
+        $this->assertStringNotContainsString('// greet', $js);
+    }
+
     public function testFilesOneByOneWhereMinifyingIsOff()
     {
         $this->assertSame(
