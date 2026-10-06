@@ -3043,8 +3043,13 @@ a.disabled:focus {
     --f-composer-input-min-height: 120px;
     margin: 0 0 16px;
 }
+/* A note being written or edited: note-yellow, so it never looks like a message to the customer. */
 .conv-note-block .conv-composer {
-    --f-composer-background: var(--f-surface-secondary);
+    --f-composer-background: var(--f-note-background);
+}
+.conv-note-block .f-editor {
+    border-color: var(--f-note-border);
+    background: var(--f-note-background);
 }
 .conv-composer .f-editor__toolbar .f-toolbar__spacer {
     flex: 1;

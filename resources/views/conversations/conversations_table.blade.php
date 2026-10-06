@@ -42,13 +42,13 @@
         }
 
         // Sorting.
-        $sorting = App\Conversation::getConvTableSorting();
+        $sorting = App\Conversation::getConvTableSorting(null, $folder->id ? $folder : null);
 
     @endphp
 
     @php
         $column_title_date = $folder->type == App\Folder::TYPE_CLOSED ? __("Closed") : ($folder->type == App\Folder::TYPE_DRAFTS ? __("Last Updated") : ($folder->type == App\Folder::TYPE_DELETED ? __("Deleted") : \Eventy::filter('conversations_table.column_title_date', __("Waiting Since"), $folder)));
-        $sort_titles = ['date' => $column_title_date, 'number' => __("Number"), 'subject' => __("Conversation")];
+        $sort_titles = ['date' => $column_title_date, 'activity' => __('Last Activity'), 'number' => __("Number"), 'subject' => __("Conversation")];
         $sort_by = array_key_exists($sorting['sort_by'], $sort_titles) ? $sorting['sort_by'] : 'date';
         $sort_order = $sorting['order'] ?: 'asc';
         // Rows open conversations on the list's page (split view).
@@ -94,7 +94,8 @@
             @foreach ($conversations as $conversation)
                 @php
                     $conv_target = (!empty(request()->x_embed) || !empty($params['target_blank']));
-                    $conv_waiting_since = $conversation->getWaitingSince($folder);
+                    // The time shown: what the list is sorted by (Last Activity), else the folder's own.
+                    $conv_waiting_since = $sort_by == 'activity' && $conversation->last_activity_at ? App\User::dateDiffForHumans($conversation->last_activity_at) : $conversation->getWaitingSince($folder);
                     $conv_date_title = !in_array($folder->type, [App\Folder::TYPE_CLOSED, App\Folder::TYPE_DRAFTS, App\Folder::TYPE_DELETED]) ? strip_tags(str_replace('<br/>', ' ', $conversation->getDateTitle())) : '';
                     $conv_customer_name = ($conversation->customer_id && $conversation->customer) ? $conversation->customer->getFullName(true) : $conversation->customer_email;
                     $ai_one_liner = $conversation->search_snippet === null ? (App\Ai\Summaries::getAny($conversation, App\Ai\Settings::language($conversation->mailbox_cached, Auth::user()))['one_liner'] ?? '') : '';

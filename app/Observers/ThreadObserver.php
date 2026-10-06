@@ -36,6 +36,10 @@ class ThreadObserver
         if (!in_array($thread->type, [Thread::TYPE_CUSTOMER])) {
             $conversation->user_updated_at = $now;
         }
+        // Any message, note, assignment or status change (the list's Last Activity).
+        if ($thread->state == Thread::STATE_PUBLISHED) {
+            $conversation->last_activity_at = $now;
+        }
         
         if ((in_array($thread->type, [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE]) 
                 || ($conversation->isPhone() && in_array($thread->type, [Thread::TYPE_NOTE]))
@@ -99,6 +103,10 @@ class ThreadObserver
 
     public function updated(Thread $thread)
     {
+        // A draft sent: activity now.
+        if ($thread->wasChanged('state') && $thread->state == Thread::STATE_PUBLISHED && $thread->conversation_id) {
+            \DB::table('conversations')->where('id', $thread->conversation_id)->update(['last_activity_at' => now()]);
+        }
         // Sending failed after the message showed as sent: open pages show it (realtime).
         if ($thread->wasChanged('send_status') && $thread->isSendStatusError()) {
             \App\Events\RealtimeConvNewThread::dispatchSelf($thread, ['send_failed' => true]);

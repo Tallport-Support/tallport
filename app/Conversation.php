@@ -221,7 +221,7 @@ class Conversation extends Model
     /**
      * Automatically converted into Carbon dates.
      */
-    protected $dates = ['created_at', 'updated_at', 'last_reply_at', 'closed_at', 'user_updated_at', 'expired_at', 'retention_reset_at', 'retention_hold_at'];
+    protected $dates = ['created_at', 'updated_at', 'last_reply_at', 'closed_at', 'user_updated_at', 'expired_at', 'retention_reset_at', 'retention_hold_at', 'last_activity_at'];
 
     /**
      * Attributes which are not fillable using fill() method.
@@ -2624,28 +2624,59 @@ class Conversation extends Model
         }
     }
 
-    public static function getConvTableSorting($request = null)
+    /**
+     * The list's order: the one asked for, else the user's choice for this kind of folder
+     * (App\Livewire\ConversationList::sort()), else its default: Mine by Last Activity
+     * (assignments and notes count), other folders by their own date (Waiting Since…).
+     */
+    public static function getConvTableSorting($request = null, $folder = null)
     {
         if (!$request) {
             $request = request();
         }
 
         $result = [
-            'sort_by' => 'date',
+            'sort_by' => $folder && $folder->type == Folder::TYPE_MINE ? 'activity' : 'date',
             'order' => 'desc',
         ];
 
         $result = \Eventy::filter('conversations.table_sorting', $result);
 
-        if (!empty($request->sorting['sort_by']) && !empty($request->sorting['order']) &&
-            in_array($request->sorting['sort_by'], ['subject', 'number', 'date', 'relevance']) &&
-            in_array($request->sorting['order'], ['asc', 'desc'])
-        ) {
-            $result['sort_by'] = $request->sorting['sort_by'];
-            $result['order'] = $request->sorting['order'];
+        $user = auth()->user();
+        $saved = $folder && $user ? (self::savedSorting($user)[$folder->type] ?? null) : null;
+        foreach ([$request->sorting, $saved] as $sorting) {
+            if (!empty($sorting['sort_by']) && !empty($sorting['order']) &&
+                in_array($sorting['sort_by'], self::SORT_FIELDS) &&
+                in_array($sorting['order'], ['asc', 'desc'])
+            ) {
+                $result['sort_by'] = $sorting['sort_by'];
+                $result['order'] = $sorting['order'];
+                break;
+            }
         }
 
         return $result;
+    }
+
+    /**
+     * What the list can be sorted by: the folder's own date, last activity, number, subject (or search relevance).
+     */
+    const SORT_FIELDS = ['subject', 'number', 'date', 'activity', 'relevance'];
+
+    /**
+     * The user's chosen orders: [folder type => [sort_by, order]].
+     */
+    public static function savedSorting(User $user)
+    {
+        return json_decode((string) $user->list_sorting, true) ?: [];
+    }
+
+    public static function saveSorting(User $user, $folder_type, array $sorting)
+    {
+        $saved = self::savedSorting($user);
+        $saved[$folder_type] = ['sort_by' => $sorting['sort_by'], 'order' => $sorting['order']];
+        User::where('id', $user->id)->update(['list_sorting' => json_encode($saved)]);
+        $user->list_sorting = json_encode($saved);
     }
 
     public static function search($q, $filters, $user = null, $query_conversations = null, $group_by = [])

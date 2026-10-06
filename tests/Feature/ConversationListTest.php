@@ -63,6 +63,41 @@ class ConversationListTest extends FeatureTestCase
         $list->call('filterAssignee')->assertSee('Apple question');
     }
 
+    /**
+     * Mine shows the latest activity first (an assignment or a note counts); other folders
+     * keep their own date (Waiting Since); a chosen order is remembered per kind of folder.
+     */
+    public function testMineByLastActivityAndTheChosenOrderIsRemembered()
+    {
+        $older = $this->conversation('Older question');
+        $newer = $this->conversation('Newer question');
+        $older->changeUser($this->agent->id, $this->agent);
+        $newer->changeUser($this->agent->id, $this->agent);
+        \DB::table('conversations')->where('id', $older->id)->update(['last_reply_at' => now()->subHours(14), 'last_activity_at' => now()->subHours(14)]);
+        \DB::table('conversations')->where('id', $newer->id)->update(['last_reply_at' => now()->subHour(), 'last_activity_at' => now()->subHour()]);
+
+        // A colleague's note on the older one: on top of Mine, though nobody replied.
+        $colleague = $this->createUser(['first_name' => 'Sam']);
+        $this->mailbox->users()->attach($colleague->id);
+        $this->postAjax($colleague, '/conversation/ajax', [
+            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $older->id, 'body' => '<p>Over to you</p>', 'is_note' => 1,
+        ]);
+
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_MINE)])
+            ->assertSet('sorting', ['sort_by' => 'activity', 'order' => 'desc'])
+            ->assertSeeInOrder(['Older question', 'Newer question'])->assertSee('Last Activity');
+
+        // Waiting Since there: the newer reply first; the choice is kept for Mine only.
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_MINE)])
+            ->call('sort', 'date')->assertSet('sorting', ['sort_by' => 'date', 'order' => 'desc'])
+            ->assertSeeInOrder(['Newer question', 'Older question']);
+        $this->assertSame(['sort_by' => 'date', 'order' => 'desc'], \App\Conversation::savedSorting($this->agent->fresh())[Folder::TYPE_MINE]);
+        Livewire::actingAs($this->agent->fresh())->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_MINE)])
+            ->assertSet('sorting', ['sort_by' => 'date', 'order' => 'desc']);
+        Livewire::actingAs($this->agent->fresh())->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_ASSIGNED)])
+            ->assertSet('sorting', ['sort_by' => 'date', 'order' => 'desc']);
+    }
+
     public function testMineDoesNotNameTheAssignee()
     {
         $conversation = $this->conversation('Mine question');

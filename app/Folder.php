@@ -176,8 +176,14 @@ class Folder extends Model
         }
 
         // Process columns sorting.
-        $sorting = Conversation::getConvTableSorting();
-        if (in_array($sorting['sort_by'], ['date', 'relevance'])) {
+        $sorting = Conversation::getConvTableSorting(null, $this);
+        if ($sorting['sort_by'] == 'activity') {
+            // As the folder's own date order, by the last activity instead (the status first where it groups).
+            $order_by = array_values(array_filter([
+                in_array($this->type, [self::TYPE_UNASSIGNED, self::TYPE_MINE, self::TYPE_ASSIGNED, self::TYPE_STARRED]) && $sorting['order'] == 'desc' ? ['status' => 'asc'] : null,
+                ['last_activity_at' => $sorting['order']],
+            ]));
+        } elseif (in_array($sorting['sort_by'], ['date', 'relevance'])) {
             if ($sorting['order'] != 'desc') {
                 foreach ($order_by as $block_i => $block) {
                     foreach ($block as $field => $order) {

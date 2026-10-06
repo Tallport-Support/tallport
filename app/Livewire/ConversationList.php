@@ -73,7 +73,7 @@ class ConversationList extends Component
         }
         $this->params = $params;
         $this->filter = $filter;
-        $this->sorting = Conversation::getConvTableSorting();
+        $this->sorting = Conversation::getConvTableSorting(null, $folder && $folder->id ? $folder : null);
         $this->page = $conversations && method_exists($conversations, 'currentPage') ? $conversations->currentPage() : 1;
         $this->page_param = $pageParam;
         $this->url = request()->fullUrl();
@@ -81,15 +81,20 @@ class ConversationList extends Component
 
     public function sort($sort_by)
     {
-        if (!in_array($sort_by, ['date', 'number', 'subject'])) {
+        if (!in_array($sort_by, ['date', 'activity', 'number', 'subject'])) {
             return;
         }
-        $order = 'asc';
-        if (($this->sorting['sort_by'] ?? '') == $sort_by && ($this->sorting['order'] ?? '') == 'asc') {
-            $order = 'desc';
+        // A date first newest-first; again: the other way.
+        $order = in_array($sort_by, ['date', 'activity']) ? 'desc' : 'asc';
+        if (($this->sorting['sort_by'] ?? '') == $sort_by) {
+            $order = ($this->sorting['order'] ?? '') == 'asc' ? 'desc' : 'asc';
         }
         $this->sorting = ['sort_by' => $sort_by, 'order' => $order];
         $this->selected = [];
+        // Remembered for this kind of folder.
+        if ($this->folder_id && ($folder = $this->folder())) {
+            Conversation::saveSorting(auth()->user(), $folder->type, $this->sorting);
+        }
     }
 
     public function gotoPage($page)
@@ -191,6 +196,8 @@ class ConversationList extends Component
 
             return;
         }
+        // This kind of folder's order: the user's choice, or its default.
+        $this->sorting = Conversation::getConvTableSorting(null, $folder);
         $list = ConversationsController::folderList($folder, $user);
         $this->folder_id = $folder->id;
         $this->mailbox_id = $folder->id < 0 ? AllMailboxes::MAILBOX_ID : $folder->mailbox_id;
