@@ -1,13 +1,15 @@
 @extends('layouts.app')
 
-@section('page_width', 'medium')
+@section('page_width', 'narrow')
 
-@section('title', __('System Status'))
+@section('title', __('Status'))
 
 @section('main_class', 'fruit-ui')
 
 @section('sidebar')
-    @include('system/sidebar_menu')
+    <x-page-nav :label="__('Status')">
+        <x-slot:title><h1>{{ __('Status') }}</h1></x-slot:title>
+    </x-page-nav>
 @endsection
 
 @section('content')

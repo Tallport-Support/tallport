@@ -2588,7 +2588,7 @@
         "name": "system.tools.after_content",
         "arguments": 0,
         "files": [
-            "resources/views/system/tools.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {
@@ -2596,7 +2596,7 @@
         "name": "system.tools.after_form",
         "arguments": 0,
         "files": [
-            "resources/views/system/tools.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {
@@ -2604,7 +2604,7 @@
         "name": "system.tools.after_main_buttons",
         "arguments": 0,
         "files": [
-            "resources/views/system/tools.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {
@@ -2612,7 +2612,7 @@
         "name": "system.tools.after_output",
         "arguments": 0,
         "files": [
-            "resources/views/system/tools.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {
@@ -2620,7 +2620,7 @@
         "name": "system.tools.before_form",
         "arguments": 0,
         "files": [
-            "resources/views/system/tools.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {
@@ -2628,7 +2628,7 @@
         "name": "system.tools.before_output",
         "arguments": 0,
         "files": [
-            "resources/views/system/tools.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {
@@ -2636,7 +2636,7 @@
         "name": "system.tools.fetch_emails_append",
         "arguments": 0,
         "files": [
-            "resources/views/system/tools.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {
@@ -2644,7 +2644,7 @@
         "name": "system.tools.form_append",
         "arguments": 0,
         "files": [
-            "resources/views/system/tools.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {
@@ -2652,7 +2652,7 @@
         "name": "system.tools.form_start",
         "arguments": 0,
         "files": [
-            "resources/views/system/tools.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {
@@ -2660,7 +2660,7 @@
         "name": "system.tools.main_buttons",
         "arguments": 0,
         "files": [
-            "resources/views/system/tools.blade.php"
+            "resources/views/livewire/system-status.blade.php"
         ]
     },
     {

@@ -39,7 +39,8 @@ class PagesAndEndpointsTest extends FeatureTestCase
             '/users/wizard',
             '/users/notifications/'.$this->agent->id,
             '/users/password/'.$this->admin->id,
-            '/system/tools',
+            '/system/status',
+            '/app-logs/out_emails',
             '/customers/'.$customer_id.'/merge',
             '/app-logs/app',
         ];

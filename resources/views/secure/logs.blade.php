@@ -1,80 +1,97 @@
 @extends('layouts.app')
 
+@section('page_width', 'wide')
+
 @section('title_full', __('Logs').' - '.App\ActivityLog::getLogTitle($current_name))
 
 @section('main_class', 'fruit-ui')
 
 @section('sidebar')
-    @include('system/sidebar_menu')
-    @include('secure/logs_menu')
+    <x-page-nav :label="__('Logs')">
+        <x-slot:title><h1>{{ __('Logs') }}</h1></x-slot:title>
+    </x-page-nav>
 @endsection
 
 @section('content')
-<div class="page-content">
-    <form method="post" class="page-toolbar f-row">
-        {{ csrf_field() }}
-        <h2 class="f-title-3">{{ App\ActivityLog::getLogTitle($current_name) }}</h2>
-        <div class="f-row">
-            <span class="f-muted">{{ App\User::dateFormat(new Illuminate\Support\Carbon()) }}</span>
-            @if ($current_name != App\ActivityLog::NAME_OUT_EMAILS)
-                <x-fruit::button type="submit" size="small" name="action" value="clean">{{ __('Clear Log') }}</x-fruit::button>
-            @endif
-        </div>
-    </form>
+@php
+    // The entry's long text, kept to one line here (its Details show it whole).
+    $long_col = collect(['status', 'error', 'event'])->first(fn ($col) => in_array($col, $cols));
+    // A cell's value as text or a link.
+    $log_cell = function ($row, $col) {
+        $value = $row[$col] ?? null;
+        if ($value === null || $value === '') {
+            return '';
+        }
+        if ($col == 'conversation' && is_string($value) && preg_match("/^#[0-9]+\-([0-9]+)$/", $value, $m)) {
+            $value = App\Thread::find($m[1]) ?: $value;
+        }
+        if ($col == 'thread' && !is_object($value)) {
+            $value = App\Thread::find($value) ?: $value;
+        }
+        if ($col == 'user' || $col == 'customer') {
+            return '<a href="'.e($value->url()).'">'.e($value->getFullName(true)).'</a>';
+        }
+        if ($col == 'date') {
+            return e(App\User::dateFormat(new Illuminate\Support\Carbon($value), 'M j, H:i:s'));
+        }
+        if (is_object($value) && $value instanceof App\Thread) {
+            return '<a href="'.e(route('conversations.view', ['id' => $value->conversation_id])).'#thread-'.$value->id.'" target="_blank">#'.e($value->conversation->number ?? '').'</a>';
+        }
+
+        return e($value);
+    };
+@endphp
+<div class="page-content logs-page">
+    @include('secure/logs_menu', ['clearable' => $current_name != App\ActivityLog::NAME_OUT_EMAILS && count($logs)])
 
     @if (count($logs))
         <div class="f-table__scroll">
-        <x-fruit::table id="table-logs" class="logs-table">
-            <thead>
-                <tr>
-                    @foreach ($cols as $col)
-                        <th>{{ App\ActivityLog::formatColTitle($col) }}</th>
-                    @endforeach
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($logs as $row)
+            <x-fruit::table id="table-logs" class="logs-table" :aria-label="App\ActivityLog::getLogTitle($current_name)">
+                <thead>
                     <tr>
                         @foreach ($cols as $col)
-                            <td class="break-words">
-                                @if (isset($row[$col]))
-                                    @php
-                                        if ($col == 'conversation' && preg_match("/^#[0-9]+\-([0-9]+)$/", $row[$col], $m)) {
-                                            $thread_id = $m[1] ?? '';
-                                            if ($thread_id) {
-                                                $row[$col] = App\Thread::find($thread_id) ?: $row[$col];
-                                            }
-                                        }
-                                        if ($col == 'thread') {
-                                            $row[$col] = App\Thread::find($row[$col]) ?: $row[$col];
-                                        }
-                                    @endphp
-                                    @if ($col == 'user' || $col == 'customer')
-                                        <a href="{{ $row[$col]->url() }}">{{ $row[$col]->getFullName(true) }}</a>
-                                    @elseif ($col == 'date')
-                                        {{  App\User::dateFormat(new Illuminate\Support\Carbon($row[$col]), 'M j, H:i:s') }}
-                                    @elseif (is_object($row[$col]) && get_class($row[$col]) == 'App\Thread')
-                                        <a href="{{ route('conversations.view', ['id' => $row[$col]->conversation_id]) }}#thread-{{ $row[$col]->id }}" target="_blank">#{{ $row[$col]->conversation->number }}</a>
-                                    @else
-                                        {{ $row[$col] }}
-                                    @endif
-                                @else
-                                    &nbsp;
-                                @endif
-                            </td>
+                            <th>{{ App\ActivityLog::formatColTitle($col) }}</th>
                         @endforeach
+                        <th><span class="f-sr-only">{{ __('Details') }}</span></th>
                     </tr>
-                @endforeach
-            </tbody>
-        </x-fruit::table>
+                </thead>
+                <tbody>
+                    @foreach ($logs as $row_index => $row)
+                        <tr>
+                            @foreach ($cols as $col)
+                                @if ($col == $long_col)
+                                    <td class="logs-table__long"><span>{!! $log_cell($row, $col) !!}</span></td>
+                                @else
+                                    <td>{!! $log_cell($row, $col) !!}</td>
+                                @endif
+                            @endforeach
+                            <td>
+                                <x-fruit::button variant="ghost" size="small" x-data x-on:click="$dispatch('fruit-dialog-open', { name: 'log-entry-{{ $row_index }}' })">{{ __('Details') }}</x-fruit::button>
+                                <x-fruit::dialog name="log-entry-{{ $row_index }}" aria-labelledby="log-entry-{{ $row_index }}-title">
+                                    <header class="f-dialog__header"><h2 id="log-entry-{{ $row_index }}-title">{{ App\ActivityLog::getLogTitle($current_name) }}</h2></header>
+                                    <div class="f-dialog__body">
+                                        <x-fruit::description-list>
+                                            @foreach ($cols as $col)
+                                                @if (($entry_value = $log_cell($row, $col)) !== '')
+                                                    <div><dt>{{ App\ActivityLog::formatColTitle($col) }}</dt><dd>{!! $entry_value !!}</dd></div>
+                                                @endif
+                                            @endforeach
+                                        </x-fruit::description-list>
+                                    </div>
+                                    <form method="dialog" class="f-dialog__footer"><x-fruit::button type="submit" variant="primary">{{ __('Done') }}</x-fruit::button></form>
+                                </x-fruit::dialog>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </x-fruit::table>
         </div>
 
         {{ $activities->links('fruit::pagination.default') }}
-
     @else
         <x-fruit::empty-state>
             <x-slot:icon><x-icon.file-text /></x-slot:icon>
-            {{ __('Log is empty') }}
+            {{ __('This log is empty.') }}
         </x-fruit::empty-state>
     @endif
 </div>

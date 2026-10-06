@@ -194,7 +194,7 @@ class SettingsAndSystemTest extends FeatureTestCase
         // The status page calls it out at the top; its details open in a dialog.
         Livewire::withoutLazyLoading();
         $this->actingAs($this->admin)->get(route('system'))->assertOk()
-            ->assertSeeInOrder(['need attention', '1 job failed', 'Failed Jobs'])
+            ->assertSeeInOrder(['Needs Attention', '1 job failed', 'Retry All', 'Failed Jobs'])
             ->assertSee('data-fruit-dialog-url', false)
             ->assertSee(route('system.ajax_html', ['action' => 'job_details', 'param' => $job_id]), false);
 
@@ -208,9 +208,36 @@ class SettingsAndSystemTest extends FeatureTestCase
 
     public function testSystemToolsRunCommands()
     {
-        $this->postForm($this->admin, '/system/tools', ['action' => 'clear_cache'])->assertRedirect(route('system.tools'));
-
+        // Tools are Status's Maintenance now.
+        $this->actingAs($this->admin)->get(route('system.tools'))->assertRedirect(route('system'));
+        $this->postForm($this->admin, '/system/tools', ['action' => 'clear_cache'])->assertRedirect(route('system'));
         $this->assertCommandCalled('tallport:clear-cache');
+
+        Livewire::withoutLazyLoading();
+        Livewire::actingAs($this->admin)->test(SystemStatus::class)
+            ->assertSeeInOrder(['Requirements', 'Background Tasks', 'Maintenance', 'Clear Cache', 'Update Database', 'Sign Out Everyone…'])
+            ->call('fetchNow', 2, false, true);
+        $this->assertCommandCalled('tallport:fetch-emails');
+    }
+
+    public function testStatusInTheSidebarCountsWhatNeedsAttention()
+    {
+        // A failed job that can run again.
+        dispatch(function () {
+        })->onConnection('database')->onQueue('emails');
+        $job = \DB::table('jobs')->orderBy('id', 'desc')->first();
+        \DB::table('jobs')->where('id', $job->id)->delete();
+        $failed_id = \DB::table('failed_jobs')->insertGetId(['connection' => 'database', 'queue' => 'emails', 'payload' => $job->payload, 'exception' => 'Connection refused', 'failed_at' => now()]);
+        $count = \App\Http\Controllers\SystemController::cacheProblemCount();
+        $this->assertGreaterThanOrEqual(1, $count);
+
+        $this->actingAs($this->admin)->get(route('settings', ['section' => 'general']))->assertOk()
+            ->assertSee('aria-label="'.trans_choice('Status, 1 needs attention|Status, :count need attention', $count).'"', false)
+            ->assertSee('f-badge--warning', false)->assertSee(route('logs'), false);
+
+        // Retry All: the failed jobs again.
+        $this->postForm($this->admin, '/system/action', ['action' => 'retry_all_failed_jobs'])->assertRedirect(route('system'));
+        $this->assertFalse(\DB::table('failed_jobs')->where('id', $failed_id)->exists());
     }
 
     // Modules.

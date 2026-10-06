@@ -2,25 +2,27 @@
 
 @section('title_full', __('Logs').' - '.__('App Logs'))
 
+@section('page_width', 'wide')
+
 @section('main_class', 'fruit-ui')
 
 @section('sidebar')
-    @php
-          $names = App\ActivityLog::select('log_name')->distinct()->pluck('log_name')->toArray();
-          array_unshift($names, App\ActivityLog::NAME_OUT_EMAILS);
-          array_push($names, App\ActivityLog::NAME_APP_LOGS);
-          $current_name = 'app';
-        @endphp
-    @include('system/sidebar_menu')
-    @include('secure/logs_menu')
+    <x-page-nav :label="__('Logs')">
+        <x-slot:title><h1>{{ __('Logs') }}</h1></x-slot:title>
+    </x-page-nav>
 @endsection
 
 @section('content')
     @php
         $file_query = $current_file ? ['l' => \Illuminate\Support\Facades\Crypt::encrypt($current_file)] : [];
         $level_tones = ['emergency' => 'danger', 'alert' => 'danger', 'critical' => 'danger', 'error' => 'danger', 'failed' => 'danger', 'warning' => 'warning', 'processed' => 'success'];
+        // The Log bar's choices (secure/logs_menu).
+        $names = App\ActivityLog::select('log_name')->distinct()->pluck('log_name')->toArray();
+        array_unshift($names, App\ActivityLog::NAME_OUT_EMAILS);
+        array_push($names, App\ActivityLog::NAME_APP_LOGS);
     @endphp
-    <div class="page-content app-logs">
+    <div class="page-content app-logs logs-page">
+        @include('secure/logs_menu', ['current_name' => App\ActivityLog::NAME_APP_LOGS])
         <form class="f-toolbar app-logs__toolbar" method="GET" action="">
             @if ($current_file)
                 <input type="hidden" name="l" value="{{ $file_query['l'] }}">
@@ -49,7 +51,7 @@
         @elseif (!$logs->total())
             <x-fruit::empty-state>
                 <x-slot:icon><x-icon.file-text /></x-slot:icon>
-                {{ __('No log records.') }}
+                {{ __('This log is empty.') }}
             </x-fruit::empty-state>
         @else
             <table class="f-table app-logs__table">

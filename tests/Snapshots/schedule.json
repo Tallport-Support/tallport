@@ -107,6 +107,12 @@
         "run_in_background": true
     },
     {
+        "description": "system-problem-count",
+        "expression": "*/5 * * * *",
+        "timezone": "UTC",
+        "without_overlapping": true
+    },
+    {
         "command": "artisan model:prune --model='App\\Api\\WebhookLog'",
         "expression": "0 0 * * *",
         "timezone": "UTC"

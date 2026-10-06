@@ -298,6 +298,88 @@ class SystemController extends Controller
         ];
     }
 
+    /**
+     * The sidebar's Status badge (partials/app_sidebar_settings): how many problems
+     * System Status found last; kept by the page and every few minutes (App\Console\Kernel).
+     */
+    const PROBLEM_COUNT_CACHE = 'system_problem_count';
+
+    /**
+     * What needs attention (System Status, Needs Attention): [key, problem, tone, detail],
+     * the key naming the fix the page offers.
+     */
+    public static function problems(array $data)
+    {
+        $problems = [];
+        if ($data['missing_migrations']) {
+            $problems[] = ['migrations', __('Database updates are waiting'), 'danger', implode(', ', $data['missing_migrations'])];
+        }
+        if ($data['redis_uses'] && $data['redis_error']) {
+            $problems[] = ['redis', __('Redis isn\'t reachable'), 'danger', $data['redis_error']];
+        }
+        foreach ($data['php_extensions'] as $name => $installed) {
+            if (!$installed) {
+                $purpose = config('installer.optional.'.strtolower($name));
+                $problems[] = $purpose
+                    ? ['extension', __('The optional :name extension is missing', ['name' => $name]), 'warning', __('Needed for').': '.__($purpose)]
+                    : ['extension', __('The :name extension is missing', ['name' => $name]), 'danger', null];
+            }
+        }
+        $pcre_jit_off = array_keys(array_filter([
+            __('Web Server') => !\Helper::pcreJitAvailable(),
+            'tallport:receive' => (bool) \Option::get('receive_pcre_jit_off'),
+        ]));
+        if ($pcre_jit_off) {
+            $problems[] = ['extension', __('PCRE JIT is off'), 'warning', __('Needed for').': '.__('Faster text processing').' ('.implode(', ', $pcre_jit_off).')'];
+        }
+        foreach ($data['functions'] as $name => $available) {
+            if (!$available) {
+                $problems[] = ['function', __('The :name function is missing', ['name' => $name]), 'danger', null];
+            }
+        }
+        foreach ($data['permissions'] as $path => $permission) {
+            if (!$permission['status']) {
+                $problems[] = ['permissions', __(':path isn\'t writable', ['path' => $path]), 'danger', null];
+            }
+        }
+        if ($data['non_writable_cache_file']) {
+            $problems[] = ['permissions', __('Some cache files aren\'t writable'), 'danger', $data['non_writable_cache_file']];
+        }
+        if (!$data['env_is_writable']) {
+            $problems[] = ['permissions', __(':path isn\'t writable', ['path' => '.env']), 'danger', null];
+        }
+        if (!$data['public_symlink_exists']) {
+            $problems[] = ['symlink', __('The public/storage link is missing'), 'danger', null];
+        }
+        if ($data['invalid_symlinks']) {
+            $problems[] = ['module_symlinks', __('Invalid or missing modules symlinks'), 'danger', collect($data['invalid_symlinks'])->map(fn ($to, $from) => $from.' → '.$to)->implode(', ')];
+        }
+        // Just updated: background commands restart within a minute or two.
+        $updated_at = (int) \Option::get('app_updated_at');
+        $just_updated = $updated_at && time() - $updated_at < 5 * 60;
+        foreach ($data['commands'] as $command) {
+            if ($command['status'] != 'success') {
+                $problems[] = ['command', __(':command isn\'t running', ['command' => $command['name']]), $just_updated ? 'warning' : 'danger', $command];
+            }
+        }
+        if (count($data['failed_jobs'])) {
+            $problems[] = ['failed_jobs', trans_choice('1 job failed|:count jobs failed', count($data['failed_jobs'])), 'warning', null];
+        }
+
+        return $problems;
+    }
+
+    /**
+     * Counts the problems for the sidebar's badge.
+     */
+    public static function cacheProblemCount($problems = null)
+    {
+        $count = count($problems ?? self::problems(self::statusData()));
+        \Cache::put(self::PROBLEM_COUNT_CACHE, $count, now()->addDay());
+
+        return $count;
+    }
+
     public static function updateLogPath()
     {
         return storage_path('logs/web-update.log');
@@ -340,6 +422,13 @@ class SystemController extends Controller
                 \Session::flash('flash_success_floating', __('Failed jobs deleted'));
                 break;
 
+            case 'retry_all_failed_jobs':
+                foreach (\App\FailedJob::pluck('id') as $failed_job_id) {
+                    \Artisan::call('queue:retry', ['id' => $failed_job_id]);
+                }
+                \Session::flash('flash_success_floating', __('Failed jobs restarted'));
+                break;
+
             case 'retry_failed_jobs':
                 $jobs = \App\FailedJob::where('queue', $request->failed_queue)->get();
                 foreach ($jobs as $job) {
@@ -353,18 +442,11 @@ class SystemController extends Controller
     }
 
     /**
-     * System tools.
+     * System tools: on System Status now (Maintenance, and Fetch Now in Background Tasks).
      */
     public function tools(Request $request)
     {
-        $output = \Cache::get('tools_execute_output');
-        if ($output) {
-            \Cache::forget('tools_execute_output');
-        }
-
-        return view('system/tools', [
-            'output' => $output,
-        ]);
+        return redirect()->route('system');
     }
 
     /**
@@ -404,11 +486,11 @@ class SystemController extends Controller
         unset($outputLog);
 
         if ($output) {
-            // \Session::flash does not work after BufferedOutput
+            // \Session::flash does not work after BufferedOutput; System Status shows it (Maintenance).
             \Cache::forever('tools_execute_output', $output);
         }
 
-        return redirect()->route('system.tools')->withInput($request->input());
+        return redirect()->route('system')->withInput($request->input());
     }
 
     /**

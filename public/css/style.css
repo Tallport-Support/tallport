@@ -2099,34 +2099,69 @@ a.disabled:focus {
 .app-main .fruit-ui {
     background: transparent;
 }
-.system-tools__days {
-    width: 80px;
-}
 .system-tools__output {
-    margin-top: 20px;
+    margin: 0;
     white-space: pre-wrap;
+    overflow-wrap: anywhere;
 }
+/* System Status (livewire/system-status): Needs Attention's problems, each with its icon,
+   text and fix, as in FruitUI's Settings example (Manage › Status). */
 .system-status__ok {
     display: flex;
     align-items: center;
     gap: 6px;
-}
-.system-status__ok .f-icon {
+    margin: 0;
     color: var(--f-success);
 }
-.system-status__problems ul {
-    margin: 4px 0 0;
-    padding-inline-start: 20px;
+.system-problem {
+    align-items: flex-start;
 }
-.system-status__command {
+.system-problem__main {
+    display: flex;
+    flex: 1;
+    gap: 10px;
+    min-width: 0;
+}
+.system-problem__icon {
+    flex: none;
+    margin-top: 2px;
+}
+.system-problem__icon--warning {
+    color: var(--f-warning);
+}
+.system-problem__icon--danger {
+    color: var(--f-danger);
+}
+.system-problem__body {
+    flex: 1;
+    min-width: 0;
+}
+.system-problem__body .f-help {
+    margin: 2px 0 0;
+}
+.system-problem__command {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
     margin-top: 6px;
+}
+.system-problem__command code {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-size: var(--f-text-xs);
+}
+.system-status__check {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--f-secondary);
+}
+.system-status__check .f-icon {
+    color: var(--f-success);
 }
 .system-status__attempts {
     color: var(--f-warning);
-}
-.system-status__wide {
-    flex: 1;
-    min-width: 0;
 }
 .system-status__job-actions {
     justify-content: flex-end;
@@ -2134,8 +2169,37 @@ a.disabled:focus {
 .system-status__queue {
     width: auto;
 }
+/* Logs (secure/logs, App Logs): which log in a bar, the entries' long text on one line. */
+.logs-bar {
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+.logs-bar__select {
+    width: auto;
+}
 .logs-table {
     --f-table-cell-padding: 8px 10px;
+}
+.logs-table td {
+    white-space: nowrap;
+}
+.logs-table__long {
+    width: 100%;
+    max-width: 0;
+}
+.logs-table__long > span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+@media (max-width: 700px) {
+    .logs-table__long {
+        min-width: 14rem;
+    }
 }
 .list-search {
     max-width: 500px;

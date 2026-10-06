@@ -157,6 +157,11 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping()
             ->runInBackground();
 
+        // The sidebar's System Status badge: what needs attention, counted every few minutes.
+        $schedule->call(function () {
+            \App\Http\Controllers\SystemController::cacheProblemCount();
+        })->name('system-problem-count')->everyFiveMinutes()->withoutOverlapping();
+
         // Webhook deliveries finished more than 3 days ago.
         $schedule->command('model:prune', ['--model' => [\App\Api\WebhookLog::class]])
             ->daily();

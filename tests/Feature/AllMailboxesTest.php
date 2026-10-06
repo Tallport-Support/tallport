@@ -176,15 +176,14 @@ class AllMailboxesTest extends FeatureTestCase
         $this->assertStringContainsString('app-sidebar__back', $html);
         $this->assertStringNotContainsString(route('settings', ['section' => 'general']), $html);
 
-        // Workflows, Saved Replies and Logs aren't settings: the first two are in the main
-        // sidebar, Logs is a tab of System.
+        // Workflows and Saved Replies aren't settings: they're in the main sidebar. Logs is under Manage.
         $this->assertStringNotContainsString(route('workflows'), $sidebar);
-        $this->assertStringNotContainsString(route('logs'), $sidebar);
+        $this->assertStringContainsString(route('logs'), $sidebar);
         $html = $this->actingAs($admin)->get(route('mailboxes.view', ['id' => $this->support->id]))->getContent();
         $this->assertStringContainsString('href="'.route('workflows').'"', $html);
         $this->assertMatchesRegularExpression('#href="'.preg_quote(url('/mailbox/saved-replies'), '#').'/\d+"#', $html);
         $this->assertStringNotContainsString('app-sidebar__back', $this->get(route('workflows'))->getContent());
-        $this->assertMatchesRegularExpression('#href="'.preg_quote(route('logs'), '#').'"\s+aria-current="page"#', $this->get(route('logs'))->getContent());
+        $this->assertMatchesRegularExpression('#<a aria-current="page" class="f-sidebar__item" wire:navigate="" data-search="[^"]*" href="'.preg_quote(route('logs'), '#').'">#', $this->get(route('logs'))->getContent());
         // An agent without the permission sees neither.
         $this->assertStringNotContainsString('href="'.route('workflows').'"', $this->actingAs($this->agent)->get(route('mailboxes.view', ['id' => $this->support->id]))->getContent());
 
