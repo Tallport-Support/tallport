@@ -60,12 +60,13 @@
 
     @if ($problems)
         <x-fruit::form-section :title="__('Needs Attention')" id="attention" :footer="$just_updated ? __('Tallport was updated :time. Background commands restart within a minute or two.', ['time' => \Carbon\Carbon::createFromTimestamp($updated_at)->diffForHumans()]) : null">
-            @foreach ($problems as [$problem_key, $problem_text, $problem_tone, $problem_detail])
+            @foreach ($problems as [$problem_key, $problem_text, $problem_tone, $problem_detail, $problem_explanation])
                 <div class="f-form-row system-problem">
                     <div class="system-problem__main">
                     <x-icon.triangle-alert class="f-icon system-problem__icon system-problem__icon--{{ $problem_tone }}" aria-hidden="true" />
                     <div class="system-problem__body">
                         <strong>{{ $problem_text }}</strong>
+                        @if ($problem_explanation)<p class="f-help">{{ $problem_explanation }}</p>@endif
                         @switch ($problem_key)
                             @case ('command')
                                 @if (!array_key_exists('last_run', $problem_detail))
@@ -124,7 +125,10 @@
 
     <x-fruit::form-section :title="__('Info')" id="app">
         <div class="f-form-row" id="version">
-            <span>{{ __('App Version') }}</span>
+            <div>
+                <span>{{ __('App Version') }}</span>
+                @if (!\Config::get('app.disable_updating'))<p class="f-help">{{ __('Tallport updates itself from its releases on GitHub.') }}</p>@endif
+            </div>
             <span class="f-row">
                 <span class="f-muted">{{ \Config::get('app.version') }}</span>
                 @if (!\Config::get('app.disable_updating') && !$new_version_available)
@@ -142,7 +146,7 @@
         <div class="f-form-row">
             <div>
                 <span>{{ __('Timezone') }}</span>
-                <p class="f-help">APP_TIMEZONE (.env)</p>
+                <p class="f-help">{{ __('Set by APP_TIMEZONE in the .env file') }}</p>
             </div>
             <span class="f-muted">{{ \Config::get('app.timezone') }}, GMT{{ preg_replace('#^([+-])0?(\d+)00$#', '$1$2', date('O')) }}</span>
         </div>
@@ -249,7 +253,10 @@
     @endphp
     <x-fruit::form-section :title="__('Requirements')" id="requirements">
         <div class="f-form-row">
-            <span>{{ __('PHP Extensions') }}</span>
+            <div>
+                <span>{{ __('PHP Extensions') }}</span>
+                <p class="f-help">{{ __('Parts of PHP that Tallport uses') }}</p>
+            </div>
             <span class="system-status__check" title="{{ implode(', ', array_merge($installed_extensions, $pcre_jit_off ? [] : ['PCRE JIT'])) }}">@if (!$missing_extensions)<x-icon.circle-check class="f-icon" aria-hidden="true" /> {{ __('All :count installed', ['count' => count($installed_extensions)]) }}@else{{ __(':count of :total installed', ['count' => count($installed_extensions), 'total' => count($php_extensions)]) }}@endif</span>
         </div>
         @foreach ($missing_extensions as $extension_name => $optional_purpose)
@@ -265,14 +272,17 @@
             <div class="f-form-row">
                 <div>
                     <span>PCRE JIT</span>
-                    <p class="f-help">{{ __('Needed for') }}: {{ __('Faster text processing') }} ({{ implode(', ', $pcre_jit_off) }})</p>
+                    <p class="f-help">{{ __('Speeds up text matching; Tallport works without it.') }} {{ __('Off for: :where', ['where' => implode(', ', $pcre_jit_off)]) }}</p>
                 </div>
                 <x-fruit::badge tone="warning">{{ __('Off') }}</x-fruit::badge>
             </div>
         @endif
         @action('system.status.after_php_extensions')
         <div class="f-form-row">
-            <span>{{ __('PHP Functions') }}</span>
+            <div>
+                <span>{{ __('PHP Functions') }}</span>
+                <p class="f-help">{{ __('Some hosts turn these off; Tallport needs them') }}</p>
+            </div>
             <span class="system-status__check" title="{{ implode(', ', array_keys(array_filter($functions))) }}">@if (!$missing_functions)<x-icon.circle-check class="f-icon" aria-hidden="true" /> {{ __('All :count available', ['count' => count($functions)]) }}@else{{ __(':count of :total available', ['count' => count($functions) - count($missing_functions), 'total' => count($functions)]) }}@endif</span>
         </div>
         @foreach ($missing_functions as $function_name)
@@ -299,17 +309,8 @@
     </x-fruit::form-section>
 
     <x-fruit::form-section :title="__('Background Tasks')" id="cron">
-        @php
-            // The tasks as people know them: [name, what it does]; the command is the help's end.
-            $task_names = [
-                'tallport:fetch-emails'  => [__('Fetch Emails'), __('Checks the mailboxes for new email')],
-                'queue:work'             => [__('Queue Worker'), __('Sends emails and runs jobs')],
-                'queue:work (AI)'        => [__('AI Queue Worker'), __('Runs the AI Assistant\'s jobs')],
-                'tallport:nostr-listen'  => [__('Nostr Listener'), __('Receives Nostr messages')],
-            ];
-        @endphp
         @foreach ($commands as $command)
-            @php [$task_name, $task_purpose] = $task_names[$command['name']] ?? [$command['name'], '']; @endphp
+            @php [$task_name, $task_purpose] = App\Http\Controllers\SystemController::taskName($command['name']); @endphp
             <div class="f-form-row">
                 <div>
                     <span>{{ $task_name }}</span>
@@ -343,7 +344,7 @@
 
     @action('system.status.after_cron_commands')
 
-    <x-fruit::form-section :title="__('Queued Jobs').(count($queued_jobs) ? ' · '.count($queued_jobs) : '')" id="jobs">
+    <x-fruit::form-section :title="__('Queued Jobs').(count($queued_jobs) ? ' · '.count($queued_jobs) : '')" id="jobs" :footer="count($queued_jobs) ? __('Work waiting to run, such as emails to send. Retry runs a job now; Cancel removes it, so it never runs.') : null">
         @forelse ($queued_jobs as $job)
             @php
                 $payload = $job->getPayloadDecoded();
@@ -355,7 +356,7 @@
                     <p class="f-help">
                         @if ($job_conversation)<a href="{{ route('conversations.view', ['id' => $last_thread->conversation_id]) }}#thread-{{ $last_thread->id }}" target="_blank">{{ __('Conversation') }} #{{ $job_conversation->number }}</a> · @endif{{ __('Queue') }}: {{ $job->queue }}
                         @if ($job->attempts > 0)
-                            · <span class="system-status__attempts">{{ trans_choice('1 attempt|:count attempts', $job->attempts) }}</span>
+                            · <span class="system-status__attempts">{{ trans_choice('Tried once|Tried :count times', $job->attempts) }}</span>
                             · {{ __('Next attempt in :time', ['time' => \Illuminate\Support\Carbon::make(is_numeric($job->available_at) ? '@'.$job->available_at : $job->available_at)->diffForHumans(['syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE, 'parts' => 1])]) }}
                         @endif
                     </p>
@@ -380,7 +381,10 @@
     <x-fruit::form-section :title="__('Failed Jobs').(count($failed_jobs) ? ' · '.count($failed_jobs) : '')" id="failed-jobs" :footer="count($queued_jobs) || count($failed_jobs) ? __('Queued and failed jobs are cleaned automatically once in a while. No need to worry or delete them manually.') : null">
         @if (count($failed_jobs))
             <div class="f-form-row">
-                <span class="f-muted">{{ trans_choice('1 job failed|:count jobs failed', count($failed_jobs)) }}</span>
+                <div>
+                    <span>{{ trans_choice('1 job failed|:count jobs failed', count($failed_jobs)) }}</span>
+                    <p class="f-help">{{ __('Retry runs the queue\'s failed jobs again. Delete removes them for good: what they would have sent is never sent.') }}</p>
+                </div>
                 <form action="{{ route('system.action') }}" method="POST" class="f-row">
                     {{ csrf_field() }}
                     <x-fruit::select name="failed_queue" class="system-status__queue" :aria-label="__('Queue')">
@@ -466,14 +470,17 @@
         <form x-data="{ days: 3, unseen: '1', debug: false, running: false, output: '' }" x-on:submit.prevent="running = true; output = ''; $wire.fetchNow(days, unseen == '1', debug).then((result) => { output = result || @js(__('Done')); running = false })">
             <header class="f-dialog__header"><h2 id="fetch-now-title">{{ __('Fetch Emails Now') }}</h2></header>
             <div class="f-dialog__body f-stack">
-                <x-fruit::field :label="__('Days')" control-id="fetch-now-days">
+                <x-fruit::field :label="__('Days')" control-id="fetch-now-days" :description="__('How far back to look for email')">
                     <x-fruit::number id="fetch-now-days" x-model.number="days" min="1" />
                 </x-fruit::field>
-                <x-fruit::segmented :legend="__('Messages')">
-                    <x-fruit::segment name="fetch_now_unseen" value="1" x-model="unseen" checked>{{ __('Unread Only') }}</x-fruit::segment>
-                    <x-fruit::segment name="fetch_now_unseen" value="0" x-model="unseen">{{ __('All') }}</x-fruit::segment>
-                </x-fruit::segmented>
-                <x-fruit::switch x-model="debug">{{ __('Show Debug Output') }}</x-fruit::switch>
+                <div>
+                    <x-fruit::segmented :legend="__('Messages')">
+                        <x-fruit::segment name="fetch_now_unseen" value="1" x-model="unseen" checked>{{ __('Unread Only') }}</x-fruit::segment>
+                        <x-fruit::segment name="fetch_now_unseen" value="0" x-model="unseen">{{ __('All') }}</x-fruit::segment>
+                    </x-fruit::segmented>
+                    <p class="f-help">{{ __('All also looks at email already read in the mailbox. Email already in Tallport is skipped.') }}</p>
+                </div>
+                <x-fruit::switch x-model="debug" :description="__('Adds the conversation with the mail server, for finding connection problems.')">{{ __('Show Debug Output') }}</x-fruit::switch>
                 @action('system.tools.fetch_emails_append')
                 <pre class="system-tools__output" role="status" x-show="output" x-text="output" x-cloak></pre>
             </div>

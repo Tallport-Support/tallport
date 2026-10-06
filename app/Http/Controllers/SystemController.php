@@ -305,59 +305,75 @@ class SystemController extends Controller
     const PROBLEM_COUNT_CACHE = 'system_problem_count';
 
     /**
-     * What needs attention (System Status, Needs Attention): [key, problem, tone, detail],
-     * the key naming the fix the page offers.
+     * What needs attention (System Status, Needs Attention): [key, problem, tone, detail,
+     * explanation], the key naming the fix the page offers, the explanation saying in plain
+     * words what's wrong and what the fix does.
      */
     public static function problems(array $data)
     {
         $problems = [];
         if ($data['missing_migrations']) {
-            $problems[] = ['migrations', __('Database updates are waiting'), 'danger', implode(', ', $data['missing_migrations'])];
+            $problems[] = ['migrations', __('Database updates are waiting'), 'danger', implode(', ', $data['missing_migrations']), __('The database is behind this version of Tallport. Update Database brings it up to date.')];
         }
         if ($data['redis_uses'] && $data['redis_error']) {
-            $problems[] = ['redis', __('Redis isn\'t reachable'), 'danger', $data['redis_error']];
+            $problems[] = ['redis', __('Redis isn\'t reachable'), 'danger', $data['redis_error'], __('Tallport keeps :uses in Redis and can\'t connect to it.', ['uses' => implode(', ', $data['redis_uses'])])];
         }
         // Optional extensions and PCRE JIT aren't problems: Requirements lists them.
         foreach ($data['php_extensions'] as $name => $installed) {
             if (!$installed && !config('installer.optional.'.strtolower($name))) {
-                $problems[] = ['extension', __('The :name extension is missing', ['name' => $name]), 'danger', null];
+                $problems[] = ['extension', __('The :name extension is missing', ['name' => $name]), 'danger', null, __('Tallport needs this PHP extension. Install it on the server, usually as the php-:package package.', ['package' => strtolower($name)])];
             }
         }
         foreach ($data['functions'] as $name => $available) {
             if (!$available) {
-                $problems[] = ['function', __('The :name function is missing', ['name' => $name]), 'danger', null];
+                $problems[] = ['function', __('The :name function is missing', ['name' => $name]), 'danger', null, __('Tallport needs this PHP function. It is turned off in php.ini (disable_functions).')];
             }
         }
         foreach ($data['permissions'] as $path => $permission) {
             if (!$permission['status']) {
-                $problems[] = ['permissions', __(':path isn\'t writable', ['path' => $path]), 'danger', null];
+                $problems[] = ['permissions', __(':path isn\'t writable', ['path' => $path]), 'danger', null, __('Tallport can\'t save files there. The command below gives the web server access.')];
             }
         }
         if ($data['non_writable_cache_file']) {
-            $problems[] = ['permissions', __('Some cache files aren\'t writable'), 'danger', $data['non_writable_cache_file']];
+            $problems[] = ['permissions', __('Some cache files aren\'t writable'), 'danger', $data['non_writable_cache_file'], __('Tallport can\'t save files there. The command below gives the web server access.')];
         }
         if (!$data['env_is_writable']) {
-            $problems[] = ['permissions', __(':path isn\'t writable', ['path' => '.env']), 'danger', null];
+            $problems[] = ['permissions', __(':path isn\'t writable', ['path' => '.env']), 'danger', null, __('Settings stored in .env can\'t be saved. The command below gives the web server access.')];
         }
         if (!$data['public_symlink_exists']) {
-            $problems[] = ['symlink', __('The public/storage link is missing'), 'danger', null];
+            $problems[] = ['symlink', __('The public/storage link is missing'), 'danger', null, __('Photos and other public files are served through this link. The command below creates it.')];
         }
         if ($data['invalid_symlinks']) {
-            $problems[] = ['module_symlinks', __('Invalid or missing modules symlinks'), 'danger', collect($data['invalid_symlinks'])->map(fn ($to, $from) => $from.' → '.$to)->implode(', ')];
+            $problems[] = ['module_symlinks', __('Invalid or missing modules symlinks'), 'danger', collect($data['invalid_symlinks'])->map(fn ($to, $from) => $from.' → '.$to)->implode(', '), __('Modules\' files aren\'t linked into public/modules, so their pages may not load.')];
         }
         // Just updated: background commands restart within a minute or two.
         $updated_at = (int) \Option::get('app_updated_at');
         $just_updated = $updated_at && time() - $updated_at < 5 * 60;
         foreach ($data['commands'] as $command) {
             if ($command['status'] != 'success') {
-                $problems[] = ['command', __(':command isn\'t running', ['command' => $command['name']]), $just_updated ? 'warning' : 'danger', $command];
+                $problems[] = ['command', __(':command isn\'t running', ['command' => self::taskName($command['name'])[0]]), $just_updated ? 'warning' : 'danger', $command, null];
             }
         }
         if (count($data['failed_jobs'])) {
-            $problems[] = ['failed_jobs', trans_choice('1 job failed|:count jobs failed', count($data['failed_jobs'])), 'warning', __('Background work that stopped with an error, such as a reply that couldn\'t be sent. It\'s listed under Failed Jobs.')];
+            $problems[] = ['failed_jobs', trans_choice('1 job failed|:count jobs failed', count($data['failed_jobs'])), 'warning', null, __('Background work that stopped with an error, such as a reply that couldn\'t be sent. Retry All runs it again; it\'s listed under Failed Jobs.')];
         }
 
         return $problems;
+    }
+
+    /**
+     * A background task as people know it: [name, what it does] (the command is shown beside).
+     */
+    public static function taskName($command)
+    {
+        $tasks = [
+            'tallport:fetch-emails' => [__('Fetch Emails'), __('Checks the mailboxes for new email')],
+            'queue:work'            => [__('Queue Worker'), __('Sends emails and runs jobs')],
+            'queue:work (AI)'       => [__('AI Queue Worker'), __('Runs the AI Assistant\'s jobs')],
+            'tallport:nostr-listen' => [__('Nostr Listener'), __('Receives Nostr messages')],
+        ];
+
+        return $tasks[$command] ?? [$command, ''];
     }
 
     /**

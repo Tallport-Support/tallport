@@ -242,6 +242,6 @@ class ReceiveMailTest extends FeatureTestCase
 
         $this->assertSame('1', (string) \Option::get('receive_pcre_jit_off'));
         Livewire::withoutLazyLoading();
-        $this->actingAs($admin)->get(route('system'))->assertSee('tallport:receive')->assertSee('Faster text processing');
+        $this->actingAs($admin)->get(route('system'))->assertSee('tallport:receive')->assertSee('Speeds up text matching');
     }
 }
