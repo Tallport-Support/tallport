@@ -2118,7 +2118,7 @@
     "Parts of PHP that Tallport uses": "Tallport пайдаланатын PHP бөліктері",
     "Photos and other public files are served through this link. The command below creates it.": "Фотолар мен басқа ашық файлдар осы сілтеме арқылы беріледі. Төмендегі команда оны жасайды.",
     "Retry runs the queue's failed jobs again. Delete removes them for good: what they would have sent is never sent.": "Қайталау кезектің сәтсіз тапсырмаларын қайта іске қосады. Жою оларды біржола өшіреді: олар жіберуі тиіс нәрсе ешқашан жіберілмейді.",
-    "Set by APP_TIMEZONE in the .env file": ".env файлындағы APP_TIMEZONE арқылы орнатылады",
+    "Set by :name in the .env file": ".env файлындағы :name арқылы орнатылады",
     "Settings stored in .env can't be saved. The command below gives the web server access.": ".env ішінде сақталатын баптауларды сақтау мүмкін емес. Төмендегі команда веб-серверге рұқсат береді.",
     "Some hosts turn these off; Tallport needs them": "Кейбір хостингтер оларды өшіреді; Tallport-қа олар қажет",
     "Speeds up text matching; Tallport works without it.": "Мәтінді салыстыруды жылдамдатады; Tallport онсыз да жұмыс істейді.",

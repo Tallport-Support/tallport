@@ -1718,7 +1718,7 @@
     "Parts of PHP that Tallport uses": "Partes de PHP que usa Tallport",
     "Photos and other public files are served through this link. The command below creates it.": "Las fotos y otros archivos públicos se sirven a través de este enlace. El comando de abajo lo crea.",
     "Retry runs the queue's failed jobs again. Delete removes them for good: what they would have sent is never sent.": "Reintentar vuelve a ejecutar los trabajos fallidos de la cola. Borrar los elimina para siempre: lo que habrían enviado no se envía nunca.",
-    "Set by APP_TIMEZONE in the .env file": "Definido por APP_TIMEZONE en el archivo .env",
+    "Set by :name in the .env file": "Definido por :name en el archivo .env",
     "Settings stored in .env can't be saved. The command below gives the web server access.": "La configuración guardada en .env no se puede guardar. El comando de abajo da acceso al servidor web.",
     "Some hosts turn these off; Tallport needs them": "Algunos proveedores las desactivan; Tallport las necesita",
     "Speeds up text matching; Tallport works without it.": "Acelera la búsqueda de texto; Tallport funciona sin ello.",

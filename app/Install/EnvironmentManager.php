@@ -112,11 +112,7 @@ class EnvironmentManager
         'APP_URL='.EnvFile::formatValue($request->app_url)."\n\n".
         '# Improve security'."\n".
         'SESSION_SECURE_COOKIE='.(\Helper::isHttps($request->app_url) ? 'true' : '')."\n\n".
-        '# Timezones: https://github.com/freescout-helpdesk/freescout/wiki/PHP-Timezones'."\n".
-        '# Comment it to use default timezone from php.ini'."\n".
-        'APP_TIMEZONE='.EnvFile::formatValue($request->app_timezone)."\n\n".
-        '# Default language'."\n".
-        'APP_LOCALE='.EnvFile::formatValue($request->app_locale)."\n\n".
+        // The timezone and language are saved in the database at the last step (FinalInstallManager).
         '# Database settings'."\n".
         'DB_CONNECTION='.EnvFile::formatValue($request->database_connection)."\n".
         'DB_HOST='.EnvFile::formatValue($request->database_hostname)."\n".

@@ -18,11 +18,14 @@ class InstallerTest extends FeatureTestCase
 {
     protected $dir;
     protected $storage;
+    protected $timezone;
 
     protected function setUp(): void
     {
         parent::setUp();
 
+        // The last step sets PHP's timezone to the one chosen.
+        $this->timezone = date_default_timezone_get();
         $this->dir = sys_get_temp_dir().'/tallport-installer-'.getmypid().'-'.bin2hex(random_bytes(4));
         mkdir($this->dir.'/storage', 0777, true);
         $this->storage = $this->app->storagePath();
@@ -44,6 +47,7 @@ class InstallerTest extends FeatureTestCase
     {
         $this->app->useStoragePath($this->storage);
         (new Filesystem())->deleteDirectory($this->dir);
+        date_default_timezone_set($this->timezone);
 
         parent::tearDown();
     }
@@ -91,14 +95,16 @@ class InstallerTest extends FeatureTestCase
         $env = file_get_contents($this->dir.'/.env');
         $this->assertStringContainsString("APP_URL=https://help.example.org\n", $env);
         $this->assertStringContainsString("SESSION_SECURE_COOKIE=true\n", $env);
-        $this->assertStringContainsString("APP_TIMEZONE=Europe/Amsterdam\n", $env);
-        $this->assertStringContainsString("APP_LOCALE=nl\n", $env);
+        // The timezone and language are saved in the database at the last step.
+        $this->assertStringNotContainsString('APP_TIMEZONE', $env);
+        $this->assertStringNotContainsString('APP_LOCALE', $env);
         $this->assertStringContainsString("DB_CONNECTION=sqlite\nDB_HOST=localhost\nDB_PORT=3306\nDB_DATABASE=:memory:\nDB_USERNAME=tallport\nDB_PASSWORD=\"pa ss#word\"\n", $env);
         $this->assertStringContainsString('APP_KEY='.config('app.key')."\n", $env);
         $this->assertStringNotContainsString('DB_CHARSET', $env);
         $this->assertCommandCalled('tallport:clear-cache');
         // What was entered is kept for the last step.
         $this->assertSame('owner@example.org', session('_old_input.admin_email'));
+        $this->assertSame('Europe/Amsterdam', session('_old_input.app_timezone'));
     }
 
     public function testDatabaseStepMigrates()
@@ -128,10 +134,20 @@ class InstallerTest extends FeatureTestCase
         \App\User::where('role', \App\User::ROLE_ADMIN)->delete();
         file_put_contents($this->dir.'/.env', "APP_URL=https://help.example.org\n");
 
-        $this->withSession(['_old_input' => ['admin_email' => 'owner@example.org', 'admin_password' => 'correct horse', 'admin_first_name' => 'Olivia', 'admin_last_name' => 'Owner']])
-            ->get('/install/final')->assertOk()->assertSee('owner@example.org')->assertSee('Tallport Installer successfully INSTALLED on');
+        $this->withSession(['_old_input' => ['admin_email' => 'owner@example.org', 'admin_password' => 'correct horse', 'admin_first_name' => 'Olivia', 'admin_last_name' => 'Owner',
+            'app_timezone' => 'Europe/Amsterdam', 'app_locale' => 'nl']])
+            ->get('/install/final')->assertOk()->assertSee('owner@example.org')->assertSee('Tallport Installer was succesvol GEÏNSTALLEERD op', false);
+
+        // The timezone and language from the environment step are settings, also the admin's.
+        \Option::$cache = [];
+        $this->assertSame('Europe/Amsterdam', \Option::get('timezone'));
+        $this->assertSame('nl', \Option::get('locale'));
+        $this->assertSame('Europe/Amsterdam', config('app.timezone'));
+        $this->assertSame('nl', config('app.real_locale'));
+        $this->assertStringNotContainsString('APP_TIMEZONE', file_get_contents($this->dir.'/.env'));
 
         $admin = \App\User::where('email', 'owner@example.org')->first();
+        $this->assertSame('Europe/Amsterdam', $admin->timezone);
         $this->assertSame(\App\User::ROLE_ADMIN, (int) $admin->role);
         $this->assertSame('Olivia', $admin->first_name);
         $this->assertTrue(\Hash::check('correct horse', $admin->password));

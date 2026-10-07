@@ -85,7 +85,8 @@ class SettingsControllerTest extends FeatureTestCase
         Option::$cache = [];
         $this->assertFalse((bool) Option::get('email_branding', true));
         $this->assertNotNull(Option::where('name', 'email_branding')->first(), 'Stored, not removed.');
-        $this->assertStringContainsString('APP_USER_PERMISSIONS='.base64_encode(json_encode([\App\User::PERM_DELETE_CONVERSATIONS])), $this->envFile());
+        $this->assertEquals([\App\User::PERM_DELETE_CONVERSATIONS], Option::get('user_permissions'));
+        $this->assertStringNotContainsString('APP_USER_PERMISSIONS', $this->envFile());
 
         Option::set('subscription_defaults', ['1' => ['1' => 1]]);
         $this->postForm('/app-settings/alerts', ['settings' => ['alert_recipients' => 'ops@example.org']])

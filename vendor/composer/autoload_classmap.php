@@ -269,6 +269,7 @@ return array(
     'App\\Misc\\ConversationActionButtons' => $baseDir . '/app/Misc/ConversationActionButtons.php',
     'App\\Misc\\ConversationActions' => $baseDir . '/app/Misc/ConversationActions.php',
     'App\\Misc\\CspHtmlDumper' => $baseDir . '/app/Misc/CspHtmlDumper.php',
+    'App\\Misc\\DatabaseSettings' => $baseDir . '/app/Misc/DatabaseSettings.php',
     'App\\Misc\\EmbedImages' => $baseDir . '/app/Misc/EmbedImages.php',
     'App\\Misc\\EnvFile' => $baseDir . '/app/Misc/EnvFile.php',
     'App\\Misc\\Eventy\\Action' => $baseDir . '/app/Misc/Eventy/Action.php',

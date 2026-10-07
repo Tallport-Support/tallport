@@ -174,7 +174,9 @@ class WebhooksTest extends FeatureTestCase
             ->assertSee(ApiKey::globalKey())->assertSee(Webhook::secret())->assertSee('Script')->assertSee('convo.customer.reply.created');
 
         $this->post(route('settings.save', ['section' => 'api']), ['_token' => csrf_token(), 'settings' => ['api.cors_hosts' => 'https://app.example.org']])->assertRedirect();
-        $this->assertStringContainsString('APIWEBHOOKS_CORS_HOSTS=https://app.example.org', file_get_contents($this->env_dir.'/.env.testing'));
+        \Option::$cache = [];
+        $this->assertSame('https://app.example.org', \Option::get('api.cors_hosts'));
+        $this->assertStringNotContainsString('APIWEBHOOKS_CORS_HOSTS', file_get_contents($this->env_dir.'/.env.testing'));
 
         $this->post(route('settings.api.action'), ['_token' => csrf_token(), 'action' => 'regenerate_key'])->assertRedirect();
         $this->assertMatchesRegularExpression('/APIWEBHOOKS_API_KEY_SALT=\w{10}/', file_get_contents($this->env_dir.'/.env.testing'));

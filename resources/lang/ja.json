@@ -1717,7 +1717,7 @@
     "Parts of PHP that Tallport uses": "Tallportが使用するPHPの機能",
     "Photos and other public files are served through this link. The command below creates it.": "写真やその他の公開ファイルはこのリンクを通じて提供されます。下のコマンドで作成します。",
     "Retry runs the queue's failed jobs again. Delete removes them for good: what they would have sent is never sent.": "再試行はキューの失敗したジョブを再実行します。削除はそれらを完全に削除します。送信されるはずだったものは送信されません。",
-    "Set by APP_TIMEZONE in the .env file": ".env ファイルの APP_TIMEZONE で設定",
+    "Set by :name in the .env file": ".env ファイルの :name で設定",
     "Settings stored in .env can't be saved. The command below gives the web server access.": ".env に保存される設定を保存できません。下のコマンドでウェブサーバーにアクセス権を与えます。",
     "Some hosts turn these off; Tallport needs them": "一部のホストではこれらが無効になっています。Tallportに必要です",
     "Speeds up text matching; Tallport works without it.": "テキストの照合を高速化します。Tallportはこれがなくても動作します。",

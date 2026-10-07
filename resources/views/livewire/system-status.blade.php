@@ -146,7 +146,9 @@
         <div class="f-form-row">
             <div>
                 <span>{{ __('Timezone') }}</span>
-                <p class="f-help">{{ __('Set by APP_TIMEZONE in the .env file') }}</p>
+                @if (App\Misc\DatabaseSettings::lockedByEnv('timezone'))
+                    <p class="f-help">{{ App\Misc\DatabaseSettings::lockedNote('timezone') }}</p>
+                @endif
             </div>
             <span class="f-muted">{{ \Config::get('app.timezone') }}, GMT{{ preg_replace('#^([+-])0?(\d+)00$#', '$1$2', date('O')) }}</span>
         </div>

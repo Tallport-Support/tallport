@@ -71,7 +71,8 @@ class SettingsController extends Controller
      * Parameters of the sections settings.
      *
      * If in settings parameter `env` is set, option will be saved into .env file
-     * instead of DB.
+     * instead of DB (only for modules' settings: Tallport's own are options,
+     * see App\Misc\DatabaseSettings).
      *
      * @param [type] $section [description]
      * @param string $param   [description]
@@ -276,17 +277,16 @@ class SettingsController extends Controller
                     'alert_recipients',
                     'alert_fetch',
                     'alert_fetch_period',
-                    'alert_logs',
                     'alert_logs_names',
-                    'alert_logs_period',
                     'alert_logs_fetch_min_occurrences',
                     'subscription_defaults',
                 ], [
                     'alert_logs_names'                 => [],
-                    'alert_logs'                       => config('app.alert_logs'),
-                    'alert_logs_period'                => config('app.alert_logs_period'),
                     'alert_logs_fetch_min_occurrences' => \App\Console\Commands\LogsMonitor::FETCH_ERRORS_MIN_OCCURRENCES_DEFAULT,
-                ]);
+                ]) + [
+                    'alert_logs'        => config('app.alert_logs'),
+                    'alert_logs_period' => config('app.alert_logs_period'),
+                ];
                 break;
             case 'ai':
                 $settings = [
@@ -517,6 +517,7 @@ class SettingsController extends Controller
         $request = \Eventy::filter('settings.before_save', $request, $section, $settings);
 
         $cc_required = false;
+        $restart_workers = false;
         $settings_params = $this->getSectionParams($section, 'settings');
         foreach ($settings as $i => $option_name) {
             // Do not save dummy passwords, and keep the password when the
@@ -529,7 +530,22 @@ class SettingsController extends Controller
                 continue;
             }
 
-            // Option has to be saved to .env file.
+            // Settings FreeScout kept in .env are options; the environment
+            // (.env) setting one wins, and it isn't saved then.
+            if (isset(\App\Misc\DatabaseSettings::SETTINGS[$option_name])) {
+                if (\App\Misc\DatabaseSettings::lockedByEnv($option_name)) {
+                    continue;
+                }
+                $option_value = \App\Misc\DatabaseSettings::optionValue($option_name, $request->settings[$option_name] ?? '');
+                if (Option::get($option_name, null, true, false) !== $option_value) {
+                    Option::set($option_name, $option_value);
+                    $restart_workers = true;
+                }
+                continue;
+            }
+
+            // Modules' settings with `env` (settings.section_params filter)
+            // are still saved to the .env file, as in FreeScout.
             if (!empty($settings_params[$option_name]) && !empty($settings_params[$option_name]['env'])) {
                 $env_value = $request->settings[$option_name] ?? '';
 
@@ -584,6 +600,9 @@ class SettingsController extends Controller
         // needs to get new .env parameters.
         if ($cc_required) {
             \Helper::clearCache(['--doNotGenerateVars' => true]);
+        } elseif ($restart_workers) {
+            // Queue workers read the settings when they start.
+            \Helper::queueWorkerRestart();
         }
 
         // \Helper::clearCache prevents \Session::flash() from displaying.

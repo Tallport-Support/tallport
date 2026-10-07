@@ -1035,6 +1035,7 @@ class ComposerStaticInit9e83c6e0c8a56ef478b844f6103f260d
         'App\\Misc\\ConversationActionButtons' => __DIR__ . '/../..' . '/app/Misc/ConversationActionButtons.php',
         'App\\Misc\\ConversationActions' => __DIR__ . '/../..' . '/app/Misc/ConversationActions.php',
         'App\\Misc\\CspHtmlDumper' => __DIR__ . '/../..' . '/app/Misc/CspHtmlDumper.php',
+        'App\\Misc\\DatabaseSettings' => __DIR__ . '/../..' . '/app/Misc/DatabaseSettings.php',
         'App\\Misc\\EmbedImages' => __DIR__ . '/../..' . '/app/Misc/EmbedImages.php',
         'App\\Misc\\EnvFile' => __DIR__ . '/../..' . '/app/Misc/EnvFile.php',
         'App\\Misc\\Eventy\\Action' => __DIR__ . '/../..' . '/app/Misc/Eventy/Action.php',

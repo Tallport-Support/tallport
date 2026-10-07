@@ -7,8 +7,8 @@
                 <x-fruit::input id="api_key" :value="$api_key" readonly />
             </x-fruit::field>
 
-            <x-fruit::field :label="__('Allowed CORS Hosts')" :description="__('Websites that may call the API from a browser, comma separated; * for any. Leave empty for none.')" layout="row">
-                <x-fruit::input id="api_cors_hosts" name="settings[api.cors_hosts]" :value="old('settings.api.cors_hosts', $settings['api.cors_hosts'])" placeholder="https://example.org" />
+            <x-fruit::field :label="__('Allowed CORS Hosts')" :description="trim(__('Websites that may call the API from a browser, comma separated; * for any. Leave empty for none.').' '.App\Misc\DatabaseSettings::lockedNote('api.cors_hosts'))" layout="row">
+                <x-fruit::input id="api_cors_hosts" name="settings[api.cors_hosts]" :value="old('settings.api.cors_hosts', $settings['api.cors_hosts'])" placeholder="https://example.org" :disabled="App\Misc\DatabaseSettings::lockedByEnv('api.cors_hosts')" />
             </x-fruit::field>
         </x-fruit::form-section>
 

@@ -1720,7 +1720,7 @@
     "Parts of PHP that Tallport uses": "Onderdelen van PHP die Tallport gebruikt",
     "Photos and other public files are served through this link. The command below creates it.": "Foto's en andere openbare bestanden worden via deze koppeling aangeboden. De opdracht hieronder maakt hem aan.",
     "Retry runs the queue's failed jobs again. Delete removes them for good: what they would have sent is never sent.": "Opnieuw proberen voert de mislukte taken van de wachtrij opnieuw uit. Verwijderen verwijdert ze definitief: wat ze zouden hebben verzonden, wordt nooit verzonden.",
-    "Set by APP_TIMEZONE in the .env file": "Ingesteld met APP_TIMEZONE in het .env-bestand",
+    "Set by :name in the .env file": "Ingesteld met :name in het .env-bestand",
     "Settings stored in .env can't be saved. The command below gives the web server access.": "Instellingen in .env kunnen niet worden opgeslagen. De opdracht hieronder geeft de webserver toegang.",
     "Some hosts turn these off; Tallport needs them": "Sommige hosts schakelen deze uit; Tallport heeft ze nodig",
     "Speeds up text matching; Tallport works without it.": "Versnelt het zoeken in tekst; Tallport werkt ook zonder.",

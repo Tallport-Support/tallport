@@ -1717,7 +1717,7 @@
     "Parts of PHP that Tallport uses": "Tallport'un kullandığı PHP bölümleri",
     "Photos and other public files are served through this link. The command below creates it.": "Fotoğraflar ve diğer herkese açık dosyalar bu bağlantı üzerinden sunulur. Aşağıdaki komut onu oluşturur.",
     "Retry runs the queue's failed jobs again. Delete removes them for good: what they would have sent is never sent.": "Yeniden dene, sıranın başarısız işlerini yeniden çalıştırır. Sil onları kalıcı olarak kaldırır: gönderecekleri şey asla gönderilmez.",
-    "Set by APP_TIMEZONE in the .env file": ".env dosyasındaki APP_TIMEZONE ile ayarlanır",
+    "Set by :name in the .env file": ".env dosyasındaki :name ile ayarlanır",
     "Settings stored in .env can't be saved. The command below gives the web server access.": ".env içinde saklanan ayarlar kaydedilemiyor. Aşağıdaki komut web sunucusuna erişim verir.",
     "Some hosts turn these off; Tallport needs them": "Bazı sağlayıcılar bunları kapatır; Tallport'un bunlara ihtiyacı var",
     "Speeds up text matching; Tallport works without it.": "Metin eşleştirmeyi hızlandırır; Tallport onsuz da çalışır.",

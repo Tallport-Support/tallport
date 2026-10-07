@@ -15,8 +15,8 @@
             <x-fruit::number name="settings[alert_fetch_period]" min="5" :value="old('settings.alert_fetch_period', $settings['alert_fetch_period'])" x-bind:required="alertFetch" />
         </x-fruit::field>
 
-        <x-fruit::field :label="__('Logs Monitoring')" :description="__('Send new log records by email.')" layout="row">
-            <x-fruit::switch name="settings[alert_logs]" value="1" :checked="$alert_logs" x-model="alertLogs" />
+        <x-fruit::field :label="__('Logs Monitoring')" :description="trim(__('Send new log records by email.').' '.App\Misc\DatabaseSettings::lockedNote('alert_logs'))" layout="row">
+            <x-fruit::switch name="settings[alert_logs]" value="1" :checked="$alert_logs" x-model="alertLogs" :disabled="App\Misc\DatabaseSettings::lockedByEnv('alert_logs')" />
         </x-fruit::field>
 
         <x-fruit::fieldset x-show="alertLogs">
@@ -26,8 +26,8 @@
             @endforeach
         </x-fruit::fieldset>
 
-        <x-fruit::field :label="__('Check Frequency')" layout="row" x-show="alertLogs">
-            <x-fruit::select name="settings[alert_logs_period]">
+        <x-fruit::field :label="__('Check Frequency')" :description="App\Misc\DatabaseSettings::lockedNote('alert_logs_period')" layout="row" x-show="alertLogs">
+            <x-fruit::select name="settings[alert_logs_period]" :disabled="App\Misc\DatabaseSettings::lockedByEnv('alert_logs_period')">
                 @foreach (['hour' => __('Hourly'), 'day' => __('Daily'), 'week' => __('Weekly'), 'month' => __('Monthly')] as $period => $period_name)
                     <option value="{{ $period }}" @selected(old('settings.alert_logs_period', $settings['alert_logs_period']) == $period)>{{ $period_name }}</option>
                 @endforeach

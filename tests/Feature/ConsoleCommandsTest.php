@@ -154,7 +154,7 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->assertStringContainsString('No logs to monitor selected', $this->runCommand('tallport:logs-monitor'));
 
         $this->setOption('alert_logs_names', [ActivityLog::NAME_EMAILS_SENDING]);
-        $this->setOption('alert_logs_period', 'hour');
+        config(['app.alert_logs_period' => 'hour']);
         activity()->useLog(ActivityLog::NAME_EMAILS_SENDING)->withProperties(['error' => 'SMTP connection refused'])->log('error_sending_email_to_customer');
         activity()->useLog(ActivityLog::NAME_USER)->log('login');
         // The monitor only reports records from before "now".

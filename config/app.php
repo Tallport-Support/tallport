@@ -100,6 +100,13 @@ return [
     'timezone' => env('APP_TIMEZONE', date_default_timezone_get()),
 
     /*
+    | The timezone, locale and other settings from the settings pages are saved
+    | in the database (App\Misc\DatabaseSettings puts them in this config).
+    | These variables are set in .env instead, which then wins.
+    */
+    'settings_in_env' => App\Misc\DatabaseSettings::setInEnvironment(),
+
+    /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
     |--------------------------------------------------------------------------

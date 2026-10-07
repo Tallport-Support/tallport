@@ -1764,7 +1764,7 @@
     "Parts of PHP that Tallport uses": "Tallport 使用的 PHP 元件",
     "Photos and other public files are served through this link. The command below creates it.": "照片和其他公開檔案透過此連結提供。下方的指令會建立它。",
     "Retry runs the queue's failed jobs again. Delete removes them for good: what they would have sent is never sent.": "重試會再次執行佇列中失敗的工作。刪除會永久移除它們：它們原本要傳送的內容永遠不會傳送。",
-    "Set by APP_TIMEZONE in the .env file": "由 .env 檔案中的 APP_TIMEZONE 設定",
+    "Set by :name in the .env file": "由 .env 檔案中的 :name 設定",
     "Settings stored in .env can't be saved. The command below gives the web server access.": "儲存在 .env 中的設定無法儲存。下方的指令會授予網頁伺服器存取權。",
     "Some hosts turn these off; Tallport needs them": "有些主機會停用這些；Tallport 需要它們",
     "Speeds up text matching; Tallport works without it.": "加快文字比對；沒有它 Tallport 也能運作。",

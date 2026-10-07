@@ -19,7 +19,7 @@ class LogsMonitorTest extends FeatureTestCase
 
         $this->createAdmin(['email' => 'boss@example.org']);
         $this->setOption('alert_logs_names', [ActivityLog::NAME_EMAILS_FETCHING, ActivityLog::NAME_EMAILS_SENDING]);
-        $this->setOption('alert_logs_period', 'hour');
+        config(['app.alert_logs_period' => 'hour']);
     }
 
     protected function setOption($name, $value)
@@ -89,7 +89,6 @@ class LogsMonitorTest extends FeatureTestCase
     public function testNeedsAPeriod()
     {
         config(['app.alert_logs_period' => '']);
-        $this->setOption('alert_logs_period', '');
         $this->logFetchError('Connection reset by peer');
 
         $this->assertStringContainsString('No logs monitoring period set', $this->runMonitor());

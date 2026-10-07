@@ -29,6 +29,7 @@ class FinalInstallManager
 
         $outputLog = new BufferedOutput();
 
+        $this->saveSettings();
         $this->runCommands($outputLog);
         //$this->generateKey($outputLog);
         //$this->publishVendorAssets($outputLog);
@@ -39,6 +40,23 @@ class FinalInstallManager
         }
 
         return $outputLog->fetch();
+    }
+
+    /**
+     * The timezone and language chosen at the environment step, as settings
+     * (App\Misc\DatabaseSettings), also for the admin created next.
+     */
+    private function saveSettings()
+    {
+        $timezone = (string) old('app_timezone');
+        if (in_array($timezone, timezone_identifiers_list())) {
+            \Option::set('timezone', $timezone);
+        }
+        $locale = (string) old('app_locale');
+        if (in_array($locale, config('app.locales'))) {
+            \Option::set('locale', $locale);
+        }
+        \App\Misc\DatabaseSettings::apply();
     }
 
     private static function runCommands($outputLog)

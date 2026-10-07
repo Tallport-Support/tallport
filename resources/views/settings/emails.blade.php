@@ -54,8 +54,8 @@
     </x-fruit::form-section>
 
     <x-fruit::form-section :title="__('Fetching Emails')">
-        <x-fruit::field :label="__('Fetching Interval')" layout="row">
-            <x-fruit::select name="settings[fetch_schedule]">
+        <x-fruit::field :label="__('Fetching Interval')" :description="App\Misc\DatabaseSettings::lockedNote('fetch_schedule')" layout="row">
+            <x-fruit::select name="settings[fetch_schedule]" :disabled="App\Misc\DatabaseSettings::lockedByEnv('fetch_schedule')">
                 <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_MINUTE }}" @selected(old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_MINUTE)>{{ __('Every minute') }}</option>
                 @foreach ([\MailHelper::FETCH_SCHEDULE_EVERY_TWO_MINUTES, \MailHelper::FETCH_SCHEDULE_EVERY_THREE_MINUTES, \MailHelper::FETCH_SCHEDULE_EVERY_FIVE_MINUTES, \MailHelper::FETCH_SCHEDULE_EVERY_TEN_MINUTES, \MailHelper::FETCH_SCHEDULE_EVERY_FIFTEEN_MINUTES, \MailHelper::FETCH_SCHEDULE_EVERY_THIRTY_MINUTES] as $schedule)
                     <option value="{{ $schedule }}" @selected(old('settings.fetch_schedule', $settings['fetch_schedule']) == $schedule)>{{ __('Every :number minutes', ['number' => $schedule]) }}</option>

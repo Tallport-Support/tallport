@@ -56,6 +56,25 @@ class EnvFile
     }
 
     /**
+     * Remove the line(s) defining exactly this key from an .env file.
+     *
+     * @param  string  $path
+     * @param  string  $key
+     * @return bool Whether a line was removed.
+     */
+    public static function removeVar($path, $key)
+    {
+        $contents = file_exists($path) ? file_get_contents($path) : '';
+        $pattern = '/^'.preg_quote($key, '/').'[ \t]*=.*(\r?\n|$)/m';
+
+        if (!preg_match($pattern, $contents)) {
+            return false;
+        }
+
+        return file_put_contents($path, preg_replace($pattern, '', $contents)) !== false;
+    }
+
+    /**
      * Rewrite an .env file written with FreeScout's rules in the standard
      * syntax, keeping a copy of the original. Values keep their meaning;
      * comments after unquoted values are dropped. Lines that can't be read

@@ -1716,7 +1716,7 @@
     "Parts of PHP that Tallport uses": "Deli PHP, ki jih uporablja Tallport",
     "Photos and other public files are served through this link. The command below creates it.": "Fotografije in druge javne datoteke se strežejo prek te povezave. Spodnji ukaz jo ustvari.",
     "Retry runs the queue's failed jobs again. Delete removes them for good: what they would have sent is never sent.": "Poskusi znova znova zažene neuspešna opravila čakalne vrste. Izbriši jih trajno odstrani: kar bi poslala, ni nikoli poslano.",
-    "Set by APP_TIMEZONE in the .env file": "Nastavljeno z APP_TIMEZONE v datoteki .env",
+    "Set by :name in the .env file": "Nastavljeno z :name v datoteki .env",
     "Settings stored in .env can't be saved. The command below gives the web server access.": "Nastavitev, shranjenih v .env, ni mogoče shraniti. Spodnji ukaz da spletnemu strežniku dostop.",
     "Some hosts turn these off; Tallport needs them": "Nekateri ponudniki gostovanja jih izklopijo; Tallport jih potrebuje",
     "Speeds up text matching; Tallport works without it.": "Pospeši ujemanje besedila; Tallport deluje tudi brez tega.",

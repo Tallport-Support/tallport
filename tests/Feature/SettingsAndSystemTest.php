@@ -83,11 +83,14 @@ class SettingsAndSystemTest extends FeatureTestCase
 
         $response->assertRedirect(route('settings', ['section' => 'general']));
         $this->assertSame('Tallport Inc.', Option::where('name', 'company_name')->value('value'));
-        // Standard .env syntax: unquoted where that's unambiguous (App\Misc\EnvFile).
-        $this->assertStringContainsString("APP_TIMEZONE=Europe/Amsterdam\n", $this->envFile());
-        $this->assertStringContainsString('APP_LOCALE=nl', $this->envFile());
-        $this->assertStringContainsString('APP_MAX_MESSAGE_SIZE=20', $this->envFile());
-        $this->assertCommandCalled('tallport:clear-cache');
+        // Options, not .env (App\Misc\DatabaseSettings); queue workers restart to read them.
+        Option::$cache = [];
+        $this->assertSame('Europe/Amsterdam', Option::get('timezone'));
+        $this->assertSame('nl', Option::get('locale'));
+        $this->assertSame('20', Option::get('max_message_size'));
+        $this->assertSame("APP_TIMEZONE=UTC\nAPP_LOCALE=en\n", $this->envFile());
+        $this->assertNotContains('tallport:clear-cache', array_column(\Tests\Support\StubCommand::$calls, 'name'));
+        $this->assertTrue(\App\Job::pending('default', 'App\Jobs\RestartQueueWorker')->isNotEmpty());
     }
 
     public function testSaveMailSettings()

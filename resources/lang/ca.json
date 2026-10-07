@@ -1812,7 +1812,7 @@
     "Parts of PHP that Tallport uses": "Parts de PHP que fa servir Tallport",
     "Photos and other public files are served through this link. The command below creates it.": "Les fotos i altres fitxers públics se serveixen a través d'aquest enllaç. L'ordre de sota el crea.",
     "Retry runs the queue's failed jobs again. Delete removes them for good: what they would have sent is never sent.": "Torna-ho a intentar torna a executar les tasques fallades de la cua. Elimina les suprimeix per sempre: el que haurien enviat no s'envia mai.",
-    "Set by APP_TIMEZONE in the .env file": "Definit per APP_TIMEZONE al fitxer .env",
+    "Set by :name in the .env file": "Definit per :name al fitxer .env",
     "Settings stored in .env can't be saved. The command below gives the web server access.": "La configuració desada a .env no es pot desar. L'ordre de sota dona accés al servidor web.",
     "Some hosts turn these off; Tallport needs them": "Alguns allotjaments les desactiven; Tallport les necessita",
     "Speeds up text matching; Tallport works without it.": "Accelera la cerca de text; Tallport funciona sense.",

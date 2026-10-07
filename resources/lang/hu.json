@@ -1717,7 +1717,7 @@
     "Parts of PHP that Tallport uses": "A PHP részei, amelyeket a Tallport használ",
     "Photos and other public files are served through this link. The command below creates it.": "A fotók és más nyilvános fájlok ezen a hivatkozáson keresztül érhetők el. Az alábbi parancs létrehozza.",
     "Retry runs the queue's failed jobs again. Delete removes them for good: what they would have sent is never sent.": "Az Újrapróbálás újra lefuttatja a sor sikertelen feladatait. A Törlés végleg eltávolítja őket: amit elküldtek volna, soha nem lesz elküldve.",
-    "Set by APP_TIMEZONE in the .env file": "Az .env fájl APP_TIMEZONE értéke állítja be",
+    "Set by :name in the .env file": "Az .env fájl :name értéke állítja be",
     "Settings stored in .env can't be saved. The command below gives the web server access.": "Az .env fájlban tárolt beállítások nem menthetők. Az alábbi parancs hozzáférést ad a webszervernek.",
     "Some hosts turn these off; Tallport needs them": "Egyes tárhelyszolgáltatók ezeket kikapcsolják; a Tallportnak szüksége van rájuk",
     "Speeds up text matching; Tallport works without it.": "Gyorsítja a szövegkeresést; a Tallport nélküle is működik.",

@@ -18,6 +18,9 @@ class AppServiceProvider extends ServiceProvider
         // "SQLSTATE[42000]: Syntax error or access violation: 1071 Specified key was too long; max key length is 767 bytes"
         Schema::defaultStringLength(191);
 
+        // Timezone, locale and other settings saved in the database, into config.
+        \App\Misc\DatabaseSettings::apply();
+
         // The UI uses Bootstrap 3 (the default pagination markup before Laravel 6).
         \Illuminate\Pagination\Paginator::useBootstrapThree();
 
