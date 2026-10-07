@@ -77,6 +77,34 @@ class ChatTranslationTest extends FeatureTestCase
     }
 
     /**
+     * The chat's language follows the customer: Chinese as detected ("zh" is Simplified
+     * Chinese), and another language once two messages in a row are in it (a first "/start"
+     * or "Hi" doesn't decide a chat); an agent's choice stays.
+     */
+    public function testTheChatsLanguageFollowsTheCustomer()
+    {
+        $this->assertSame('zh-Hans', \App\Ai\Settings::detectedLanguage('zh'));
+        $this->assertSame('zh-Hant', \App\Ai\Settings::detectedLanguage('zh-TW'));
+        $this->assertNull(\App\Ai\Settings::detectedLanguage('xx'));
+
+        $chat = $this->conversation;
+        ChatTranslation::setCustomerLanguage($chat, 'en');
+        $this->assertSame('en', ChatTranslation::customerLanguage($chat->fresh()));
+        ChatTranslation::setCustomerLanguage($chat, 'zh-Hans');
+        $this->assertSame('en', ChatTranslation::customerLanguage($chat->fresh()), 'One message: not yet.');
+        ChatTranslation::setCustomerLanguage($chat, 'zh-Hans');
+        $this->assertSame('zh-Hans', ChatTranslation::customerLanguage($chat->fresh()));
+        ChatTranslation::setCustomerLanguage($chat, 'en');
+        ChatTranslation::setCustomerLanguage($chat, 'zh-Hans');
+        $this->assertSame('zh-Hans', ChatTranslation::customerLanguage($chat->fresh()), 'Not two in a row.');
+
+        $this->composer()->call('setCustomerLanguage', 'ja');
+        ChatTranslation::setCustomerLanguage($chat, 'zh-Hans');
+        ChatTranslation::setCustomerLanguage($chat, 'zh-Hans');
+        $this->assertSame('ja', ChatTranslation::customerLanguage($chat->fresh()));
+    }
+
+    /**
      * A reply: its translation for a look, then sent in the chat's language with the agent's
      * text beside it; tokens counted for the conversation.
      */

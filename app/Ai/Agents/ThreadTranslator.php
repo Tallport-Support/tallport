@@ -45,7 +45,7 @@ class ThreadTranslator extends TallportAgent
                 ? 'The message is HTML. Translate only the text people read; keep every tag, attribute, link address and image exactly as it is. translation: the translated HTML itself, as a string.'
                 : 'translation: only the translated text.',
             'If the message is already in the target language, set same_language to true and leave translation empty. Judge by the text the customer wrote: ignore quoted earlier emails (and their "On ... wrote:" line), signatures, disclaimers and single words or names in other languages.',
-            'detected_language: the language the customer wrote the message in, as an ISO 639-1 code.',
+            'detected_language: the language the customer wrote the message in, as an ISO 639-1 code (for Chinese: zh-Hans or zh-Hant).',
             $this->jsonRule(),
         ]);
     }
@@ -55,7 +55,7 @@ class ThreadTranslator extends TallportAgent
         return [
             'translation'       => $schema->string()->description('The translated message.')->required(),
             'same_language'     => $schema->boolean()->description('Whether the message is already in the target language.')->required(),
-            'detected_language' => $schema->string()->description('The language of the message (ISO 639-1).')->required(),
+            'detected_language' => $schema->string()->description('The language of the message (ISO 639-1; zh-Hans or zh-Hant for Chinese).')->required(),
         ];
     }
 }

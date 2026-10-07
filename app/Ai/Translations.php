@@ -274,8 +274,8 @@ class Translations
                 trim(TallportAgent::glossary($thread->conversation->mailbox)."\n\n".TallportAgent::data('message', $as_html ? $html : $text)),
                 $thread->type == Thread::TYPE_CUSTOMER ? self::broadcaster($thread->conversation, $language, fn ($answer) => [$thread->id => [$answer['translation'] ?? '', $as_html]]) : null
             );
-            $data['language'] = strtolower(trim((string) ($answer['detected_language'] ?? ''))) ?: ($data['language'] ?? null);
-            // A chat's language: the one first detected (replies go out in it).
+            $data['language'] = Settings::detectedLanguage($answer['detected_language'] ?? '') ?: (strtolower(trim((string) ($answer['detected_language'] ?? ''))) ?: ($data['language'] ?? null));
+            // A chat's language (replies go out in it): ChatTranslation::setCustomerLanguage().
             if ($thread->type == Thread::TYPE_CUSTOMER && $data['language'] && Settings::isLanguage($data['language'])) {
                 ChatTranslation::setCustomerLanguage($thread->conversation, $data['language']);
             }

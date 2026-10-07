@@ -274,6 +274,15 @@ class Settings
         return $languages[$mailbox->id] ?? null;
     }
 
+    /**
+     * A language code an AI detected (ISO 639-1, "zh", "zh-hans", "pt-BR"), as one of the
+     * languages (zh: Simplified Chinese), or null.
+     */
+    public static function detectedLanguage($code)
+    {
+        return \App\AutoReply\AutoReplies::fromLanguageTag((string) $code, array_keys(self::LANGUAGES));
+    }
+
     public static function isLanguage($code)
     {
         return is_string($code) && isset(self::LANGUAGES[$code]);

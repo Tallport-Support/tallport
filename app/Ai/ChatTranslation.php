@@ -64,14 +64,25 @@ class ChatTranslation
 
     /**
      * The conversation's language: by an agent (empty: replies not translated), or detected in
-     * a customer's message (only the first time, so that one message in another language
-     * doesn't switch it, and never over an agent's choice).
+     * the customer's messages: the first one's, then another once two messages in a row are in
+     * it (so a "/start" or one message in another language doesn't decide it); never over an
+     * agent's choice.
      */
     public static function setCustomerLanguage(Conversation $conversation, $language, $by_user = false)
     {
+        // As stored now (the conversation may have been loaded before an agent chose).
+        $conversation->ai_assistant = DB::table('conversations')->where('id', $conversation->id)->value('ai_assistant');
         $data = Summaries::data($conversation);
-        if (!$by_user && (!empty($data['language_by']) || !self::isOn($conversation))) {
+        if (!$by_user && (($data['language_by'] ?? '') == 'user' || !self::isOn($conversation))) {
             return;
+        }
+        if (!$by_user && !empty($data['language_by'])) {
+            $pending = $data['language_next'] ?? null;
+            unset($data['language_next']);
+            if ($language !== ($data['language'] ?? null) && $language !== $pending) {
+                $data['language_next'] = (string) $language;
+                $language = $data['language'] ?? null;
+            }
         }
         $data['language'] = (string) $language;
         $data['language_by'] = $by_user ? 'user' : 'detected';
@@ -176,8 +187,8 @@ class ChatTranslation
             return $threads->all();
         }
 
-        $detected = strtolower(trim((string) ($answer['detected_language'] ?? ''))) ?: null;
-        if ($detected && Settings::isLanguage($detected)) {
+        $detected = Settings::detectedLanguage($answer['detected_language'] ?? '');
+        if ($detected) {
             self::setCustomerLanguage($conversation, $detected);
         }
         $translated = collect((array) ($answer['messages'] ?? []))->filter(fn ($message) => is_array($message))->keyBy(fn ($message) => (int) ($message['id'] ?? 0));

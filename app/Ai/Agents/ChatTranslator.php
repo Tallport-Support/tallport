@@ -38,7 +38,7 @@ class ChatTranslator extends TallportAgent
             'The chat\'s earlier messages are given for context only, so that the meaning, references and tone come across; do not translate them.',
             'Do not change the content, do not add information, keep the line breaks. Keep names, product names, codes, numbers and URLs as they are.',
             'messages: one entry per message, with its id. If a message is already in the target language, set same_language to true and leave its translation empty.',
-            'detected_language: the language the customer writes in, as an ISO 639-1 code.',
+            'detected_language: the language the customer writes in, as an ISO 639-1 code (for Chinese: zh-Hans or zh-Hant).',
             $this->jsonRule(),
         ]);
     }
@@ -51,7 +51,7 @@ class ChatTranslator extends TallportAgent
                 'translation'   => $schema->string()->required(),
                 'same_language' => $schema->boolean()->required(),
             ]))->description('The messages, translated.')->required(),
-            'detected_language' => $schema->string()->description('The language the customer writes in (ISO 639-1).')->required(),
+            'detected_language' => $schema->string()->description('The language the customer writes in (ISO 639-1; zh-Hans or zh-Hant for Chinese).')->required(),
         ];
     }
 }
