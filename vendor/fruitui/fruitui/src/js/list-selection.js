@@ -6,9 +6,10 @@
  *   range, and a plain click clears the selection before the row's own action runs.
  * - On a focused row, Shift+Up/Down extends or shrinks the selection, Cmd/Ctrl+A selects all and
  *   Escape clears.
- * - A [data-fruit-select-toggle] button whose aria-controls names the list shows the checkboxes
- *   (for touch and assistive technology); then a plain click toggles too. A checkbox reached by
- *   Tab is shown while it has focus.
+ * - The checkboxes stay out of sight and out of the Tab order: the rows and their keys select, and
+ *   screen readers still reach the checkboxes. An optional [data-fruit-select-toggle] button whose
+ *   aria-controls names the list shows them (for touch screens); then a plain click toggles too, and
+ *   Tab reaches them.
  */
 export function fruitListSelection() {
   const controller = new AbortController();
@@ -43,6 +44,12 @@ export function fruitListSelection() {
   // Server re-renders reset attributes; the selecting state survives them.
   const reflect = () => {
     if (list.hasAttribute('data-selecting') !== selecting) list.toggleAttribute('data-selecting', selecting);
+    // Outside select mode a checkbox takes no Tab stop: a row and its keys do the selecting.
+    for (const item of items()) {
+      const box = checkbox(item);
+      if (selecting && box.getAttribute('tabindex') === '-1') box.removeAttribute('tabindex');
+      else if (!selecting && box.getAttribute('tabindex') !== '-1') box.tabIndex = -1;
+    }
     for (const toggle of toggles())
       if (toggle.getAttribute('aria-pressed') !== String(selecting))
         toggle.setAttribute('aria-pressed', String(selecting));
@@ -132,12 +139,18 @@ export function fruitListSelection() {
         attributes: true,
         attributeFilter: ['data-selecting', 'aria-pressed'],
       });
+      // Rows a template or a server update adds, and tab stops a morph restores, follow the mode too.
+      observer.observe(list, { childList: true, subtree: true, attributes: true, attributeFilter: ['tabindex'] });
       reflect();
     },
     destroy() {
       controller.abort();
       observer?.disconnect();
-      list?.removeAttribute('data-selecting');
+      if (!list) return;
+      list.removeAttribute('data-selecting');
+      // Without the helper the checkboxes are the way to select again, so they take their Tab stops back.
+      for (const item of items())
+        if (checkbox(item).getAttribute('tabindex') === '-1') checkbox(item).removeAttribute('tabindex');
     },
   };
 }

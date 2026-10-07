@@ -852,6 +852,7 @@ class ComposerStaticInit2902b8515f6672bf67bcf119cdb6b034
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Conversation' => __DIR__ . '/../..' . '/app/Conversation.php',
         'App\\ConversationFolder' => __DIR__ . '/../..' . '/app/ConversationFolder.php',
+        'App\\ConversationRead' => __DIR__ . '/../..' . '/app/ConversationRead.php',
         'App\\Customer' => __DIR__ . '/../..' . '/app/Customer.php',
         'App\\CustomerChannel' => __DIR__ . '/../..' . '/app/CustomerChannel.php',
         'App\\Email' => __DIR__ . '/../..' . '/app/Email.php',

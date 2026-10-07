@@ -86,6 +86,7 @@ return array(
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Conversation' => $baseDir . '/app/Conversation.php',
     'App\\ConversationFolder' => $baseDir . '/app/ConversationFolder.php',
+    'App\\ConversationRead' => $baseDir . '/app/ConversationRead.php',
     'App\\Customer' => $baseDir . '/app/Customer.php',
     'App\\CustomerChannel' => $baseDir . '/app/CustomerChannel.php',
     'App\\Email' => $baseDir . '/app/Email.php',

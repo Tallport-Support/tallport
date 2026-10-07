@@ -157,6 +157,10 @@ function l() {
 		return !r || r.parentElement !== t || !a(r) || !o(r) ? null : !n || o(r).contains(e) ? r : null;
 	}, m = () => t.id ? [...document.querySelectorAll(`[data-fruit-select-toggle][aria-controls="${CSS.escape(t.id)}"]`)] : [], h = () => {
 		t.hasAttribute("data-selecting") !== i && t.toggleAttribute("data-selecting", i);
+		for (let e of s()) {
+			let t = a(e);
+			i && t.getAttribute("tabindex") === "-1" ? t.removeAttribute("tabindex") : !i && t.getAttribute("tabindex") !== "-1" && (t.tabIndex = -1);
+		}
 		for (let e of m()) e.getAttribute("aria-pressed") !== String(i) && e.setAttribute("aria-pressed", String(i));
 	};
 	return {
@@ -208,10 +212,18 @@ function l() {
 				subtree: !0,
 				attributes: !0,
 				attributeFilter: ["data-selecting", "aria-pressed"]
+			}), n.observe(t, {
+				childList: !0,
+				subtree: !0,
+				attributes: !0,
+				attributeFilter: ["tabindex"]
 			}), h();
 		},
 		destroy() {
-			e.abort(), n?.disconnect(), t?.removeAttribute("data-selecting");
+			if (e.abort(), n?.disconnect(), t) {
+				t.removeAttribute("data-selecting");
+				for (let e of s()) a(e).getAttribute("tabindex") === "-1" && a(e).removeAttribute("tabindex");
+			}
 		}
 	};
 }
