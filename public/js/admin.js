@@ -38,6 +38,13 @@ document.addEventListener('alpine:init', function () {
 				var value = function (selector) {
 					return self.$root.querySelector(selector).value;
 				};
+				// A customer's address to ask about: said on the field (cleared as it changes, so Save isn't held up).
+				var email = this.$root.querySelector('.ai-context-test-email');
+				if (!email.value.trim() && email.dataset.required) {
+					email.setCustomValidity(email.dataset.required);
+					email.reportValidity();
+					return;
+				}
 				Tallport.busy(button, true);
 				Tallport.post(laroute.route('ai.customer_context.test'), {
 					mailbox_id: mailbox_id,

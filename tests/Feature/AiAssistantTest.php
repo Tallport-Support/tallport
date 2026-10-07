@@ -105,13 +105,8 @@ class AiAssistantTest extends FeatureTestCase
             'aiassistant.summary_conversation_threshold'  => 50,
             'aiassistant.translation_language'            => 'nl',
             'aiassistant.drafts_per_day'                  => 7,
-            'aiassistant.mailbox_language'                => [$this->mailbox->id => 'de', $other->id => ''],
-            'aiassistant.mailbox_features_on'             => [$this->mailbox->id => ['summaries' => 1]],
             'aiassistant.daily_tokens'                    => 50000,
             'aiassistant.translations_per_customer_hour'  => 20,
-            'aiassistant.mailbox_chat_translation'        => [$other->id => 1],
-            'aiassistant.translation_glossary'            => [$this->mailbox->id => " 12VPX\n", $other->id => ' '],
-            'aiassistant.mailbox_translation_note'        => [$this->mailbox->id => 1],
         ]])->assertRedirect(route('settings', ['section' => 'ai']));
 
         Option::$cache = [];
@@ -126,19 +121,8 @@ class AiAssistantTest extends FeatureTestCase
         $this->assertSame(500, (int) Option::get('aiassistant.documentation.chunk_size'));
         $this->assertSame(10, Settings::summaryThreshold());
         $this->assertSame(7, Settings::draftsPerDay(null));
-        $this->assertSame('de', Settings::language($this->mailbox));
-        $this->assertSame('nl', Settings::language($other));
-        $this->assertTrue(Settings::enabled('summaries', $this->mailbox));
-        $this->assertFalse(Settings::enabled('translations', $this->mailbox));
-        $this->assertFalse(Settings::enabled('drafts', $other));
         $this->assertSame(50000, Settings::dailyTokens());
         $this->assertSame(20, Settings::translationsPerCustomerHour());
-        $this->assertTrue(Settings::chatTranslation($other));
-        $this->assertFalse(Settings::chatTranslation($this->mailbox));
-        $this->assertSame('12VPX', Settings::glossary($this->mailbox));
-        $this->assertSame('', Settings::glossary($other));
-        $this->assertTrue(Settings::translationNote($this->mailbox));
-        $this->assertFalse(Settings::translationNote($other));
 
         // The masked key keeps the key; a provider removed: its features use the first.
         $this->postForm($this->admin, '/app-settings/ai', ['settings' => [
@@ -150,6 +134,52 @@ class AiAssistantTest extends FeatureTestCase
         $this->assertSame(['p1'], array_keys(Settings::providers()));
         $this->assertSame(['primary' => ['p1', 'gpt-cheap'], 'backup' => null], Settings::featureModels('translations'));
         $this->assertNull(Settings::featureModels('summaries')['backup']);
+    }
+
+    /**
+     * Each mailbox's AI Assistant is on its own page (a row on the mailbox's page, and in Settings ›
+     * AI Assistant): features, language and glossary, chat translation; admins only.
+     */
+    public function testMailboxAiPage()
+    {
+        $this->configureAi(['aiassistant.translation_language' => 'nl']);
+        $page = route('mailboxes.ai', ['id' => $this->mailbox->id]);
+
+        $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $this->mailbox->id]))->assertSeeInOrder(['AI Assistant', 'On · Dutch']);
+        $this->actingAs($this->admin)->get('/app-settings/ai')->assertSee('href="'.$page.'"', false)->assertSeeInOrder([$this->mailbox->name, 'On · Dutch']);
+        $this->actingAs($this->admin)->get($page)->assertOk()
+            ->assertSee('app-sidebar__back', false)
+            ->assertSeeInOrder(['<h1>AI Assistant</h1>', 'Features', 'Summaries', 'Language', 'Default (Dutch)', 'Glossary', 'Chat Translation', 'Translate Chats', 'Mark Translated Replies', 'Customer Context'], false);
+        $this->actingAs($this->agent)->get($page)->assertForbidden();
+
+        $this->postForm($this->admin, route('mailboxes.ai.save', ['id' => $this->mailbox->id]), [
+            'features' => ['summaries' => 1], 'language' => 'de', 'glossary' => " 12VPX\n", 'chat_translation' => 1, 'translation_note' => 1,
+        ])->assertRedirect($page);
+        Option::$cache = [];
+        $this->assertSame('de', Settings::language($this->mailbox));
+        $this->assertTrue(Settings::enabled('summaries', $this->mailbox));
+        $this->assertFalse(Settings::enabled('translations', $this->mailbox));
+        $this->assertFalse(Settings::enabled('drafts', $this->mailbox));
+        $this->assertTrue(Settings::chatTranslation($this->mailbox));
+        $this->assertTrue(Settings::translationNote($this->mailbox));
+        $this->assertSame('12VPX', Settings::glossary($this->mailbox));
+
+        // Chat translation off: the note kept (its control was off); everything off: "Off".
+        $this->postForm($this->admin, route('mailboxes.ai.save', ['id' => $this->mailbox->id]), ['language' => '']);
+        Option::$cache = [];
+        $this->assertFalse(Settings::chatTranslation($this->mailbox));
+        $this->assertTrue(Settings::translationNote($this->mailbox));
+        $this->assertSame('nl', Settings::language($this->mailbox));
+        $this->assertSame('Off', Settings::mailboxSummary($this->mailbox));
+
+        // Not set up: says so, and saving changes nothing.
+        Option::set('aiassistant.api_key', '');
+        Option::$cache = [];
+        $this->actingAs($this->admin)->get($page)->assertSee('The AI Assistant isn&#039;t set up yet.', false)->assertDontSee('form="page-form"', false);
+        $this->postForm($this->admin, route('mailboxes.ai.save', ['id' => $this->mailbox->id]), ['features' => ['drafts' => 1]]);
+        Option::$cache = [];
+        $this->assertFalse(Settings::enabled('drafts', $this->mailbox));
+        $this->assertSame('Not set up', Settings::mailboxSummary($this->mailbox));
     }
 
     /**

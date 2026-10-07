@@ -185,6 +185,22 @@ class MailboxesTest extends FeatureTestCase
         $this->actingAs($this->admin)->get(route('mailboxes.auto_reply', ['id' => $mailbox->id]))->assertOk()
             ->assertSeeInOrder(['href="'.route('mailboxes.update', ['id' => $mailbox->id]).'"', 'Support', '<h1>Auto Reply</h1>'], false);
 
+        // Not connected: what it can't do yet, with a way to set it up (not on that very page); the
+        // tab that needs it says so in words too.
+        $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))
+            ->assertSee('This mailbox can&#039;t receive email yet.', false)
+            ->assertSee('Set up Fetching Emails so messages sent to '.$mailbox->email.' arrive here.')
+            ->assertSee('href="'.route('mailboxes.connection.incoming', ['id' => $mailbox->id]).'">Set Up Fetching', false);
+        $this->actingAs($this->admin)->get(route('mailboxes.connection.incoming', ['id' => $mailbox->id]))->assertDontSee('Set Up Fetching');
+        $this->actingAs($this->admin)->get(route('mailboxes.connection', ['id' => $mailbox->id]))
+            ->assertSee('Fetching Emails<span class="f-sr-only">, needs attention</span>', false);
+
+        // Workflows and Saved Replies from its row: Back to the mailbox; from the main sidebar, none.
+        $this->actingAs($this->admin)->get(route('mailboxes.workflows', ['mailbox_id' => $mailbox->id, 'from' => 'mailbox']))->assertOk()
+            ->assertSee('f-back', false)->assertSee('href="'.route('mailboxes.update', ['id' => $mailbox->id]).'"', false);
+        $this->actingAs($this->admin)->get(route('mailboxes.saved_replies', ['id' => $mailbox->id, 'from' => 'mailbox']))->assertOk()->assertSee('f-back', false);
+        $this->actingAs($this->admin)->get(route('mailboxes.workflows', ['mailbox_id' => $mailbox->id]))->assertOk()->assertDontSee('f-back', false);
+
         // Only its permissions: the list leads there, Back to the Mailboxes, no other rows.
         $this->actingAs($manager)->get(route('mailboxes'))->assertOk()->assertSee('href="'.route('mailboxes.permissions', ['id' => $mailbox->id]).'"', false);
         $this->actingAs($manager)->get(route('mailboxes.permissions', ['id' => $mailbox->id]))->assertOk()
@@ -358,7 +374,7 @@ class MailboxesTest extends FeatureTestCase
         $this->actingAs($this->admin)->get(route('mailboxes.connection.incoming', ['id' => $mailbox->id]))->assertOk()
             ->assertSee($mailbox->email.'    tallport:')->assertSee('Mail Server (Direct Delivery)');
         $this->actingAs($this->admin)->get(route('mailboxes.connection', ['id' => $mailbox->id]))
-            ->assertDontSee('Receiving emails need to be configured');
+            ->assertDontSee('This mailbox can&#039;t receive email yet.', false);
         $this->artisan('tallport:fetch-emails')->doesntExpectOutputToContain('Mailbox: '.$mailbox->name)->assertSuccessful();
     }
 

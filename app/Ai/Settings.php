@@ -343,6 +343,20 @@ class Settings
     }
 
     /**
+     * A mailbox's AI Assistant in a word (its row in Settings › Mailboxes and AI Assistant):
+     * "On · Dutch" while a feature is on, "Off", or "Not set up" for the installation.
+     */
+    public static function mailboxSummary($mailbox)
+    {
+        if (!self::isConfigured()) {
+            return __('Not set up');
+        }
+        $on = self::chatTranslation($mailbox) || collect(self::FEATURES)->contains(fn ($feature) => self::enabled($feature, $mailbox));
+
+        return $on ? __('On').' · '.self::displayName(self::language($mailbox)) : __('Off');
+    }
+
+    /**
      * Whether a mailbox's chats are translated both ways: the agent reads and writes in their
      * own language, the customer in theirs (off unless turned on for the mailbox).
      */

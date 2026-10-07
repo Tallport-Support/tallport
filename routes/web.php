@@ -169,6 +169,8 @@ Route::get('/mailbox/saved-replies/{id}/{saved_reply_id}/edit', 'SavedRepliesCon
 Route::post('/mailbox/saved-replies/{id}/save', 'SavedRepliesController@save')->name('mailboxes.saved_replies.save');
 Route::post('/mailbox/saved-replies/{id}/{saved_reply_id}/delete', 'SavedRepliesController@delete')->name('mailboxes.saved_replies.delete');
 Route::post('/saved-replies/ajax', ['uses' => 'SavedRepliesController@ajax', 'laroute' => true])->name('saved_replies.ajax');
+Route::get('/mailbox/settings/{id}/ai', 'MailboxesController@ai')->name('mailboxes.ai');
+Route::post('/mailbox/settings/{id}/ai', 'MailboxesController@aiSave')->name('mailboxes.ai.save');
 Route::get('/mailbox/settings/{id}/auto-reply', 'MailboxesController@autoReply')->name('mailboxes.auto_reply');
 Route::post('/mailbox/settings/{id}/auto-reply', 'MailboxesController@autoReplySave')->name('mailboxes.auto_reply.save');
 Route::post('/mailbox/ajax', ['uses' => 'MailboxesController@ajax', 'laroute' => true])->name('mailboxes.ajax');

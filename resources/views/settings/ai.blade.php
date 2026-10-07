@@ -128,97 +128,17 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
+    {{-- Each mailbox's language, features, chat translation and customer context are on its own page. --}}
     @if (count($ai_mailboxes))
-        <x-fruit::form-section :title="__('Mailboxes')">
-            <div>
-                <x-fruit::table class="ai-mailboxes">
-                    <thead>
-                        <tr>
-                            <th>{{ __('Mailbox') }}</th>
-                            <th>{{ __('Language') }}</th>
-                            <th>{{ __('Summaries') }}</th>
-                            <th>{{ __('Translations') }}</th>
-                            <th>{{ __('Drafts') }}</th>
-                            <th>{{ __('Chat Translation') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($ai_mailboxes as $mailbox)
-                            <tr>
-                                <td>{{ $mailbox->name }}</td>
-                                <td>
-                                    <x-fruit::select name="settings[aiassistant.mailbox_language][{{ $mailbox->id }}]" :aria-label="__('Language')">
-                                        <option value="">{{ __('Default') }}</option>
-                                        @foreach ($ai_languages as $code => $name)
-                                            <option value="{{ $code }}" @selected(($settings['aiassistant.mailbox_language'][$mailbox->id] ?? '') == $code)>{{ App\Ai\Settings::optionName($code) }}</option>
-                                        @endforeach
-                                    </x-fruit::select>
-                                </td>
-                                @foreach (array_combine(App\Ai\Settings::FEATURES, [__('Summaries'), __('Translations'), __('Drafts')]) as $feature => $feature_name)
-                                    <td>
-                                        <x-fruit::checkbox name="settings[aiassistant.mailbox_features_on][{{ $mailbox->id }}][{{ $feature }}]" value="1" :checked="App\Ai\Settings::enabled($feature, $mailbox)" :aria-label="$mailbox->name.': '.$feature_name" />
-                                    </td>
-                                @endforeach
-                                {{-- Chats both ways: the agent reads and writes in their language (off by default). --}}
-                                <td>
-                                    <x-fruit::checkbox name="settings[aiassistant.mailbox_chat_translation][{{ $mailbox->id }}]" value="1" :checked="App\Ai\Settings::chatTranslation($mailbox)" :aria-label="$mailbox->name.': '.__('Chat Translation')" />
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </x-fruit::table>
-            </div>
-        </x-fruit::form-section>
-
-        {{-- Per mailbox: terms for every translation, and whether translated chat replies say so. --}}
-        <x-fruit::form-section :title="__('Translation')">
-            @foreach ($ai_mailboxes as $mailbox)
-                @php
-                    $ai_glossary = old('settings.aiassistant.translation_glossary.'.$mailbox->id, App\Ai\Settings::glossary($mailbox));
-                @endphp
-                <x-fruit::disclosure class="ai-translation" :title="$mailbox->name" :open="$errors->has('settings.aiassistant.translation_glossary.'.$mailbox->id)">
-                    <div class="settings-form">
-                        <x-fruit::field :label="__('Glossary')" :description="__('Terms the AI Assistant keeps as they are, or translates a certain way, one per line: a product name, or server = Server.')">
-                            <x-fruit::textarea id="ai_glossary_{{ $mailbox->id }}" name="settings[aiassistant.translation_glossary][{{ $mailbox->id }}]" rows="4" maxlength="3000">{{ $ai_glossary }}</x-fruit::textarea>
-                        </x-fruit::field>
-                        <x-fruit::checkbox name="settings[aiassistant.mailbox_translation_note][{{ $mailbox->id }}]" value="1" :checked="App\Ai\Settings::translationNote($mailbox)" :description="__('Chat replies sent translated end with “Translated automatically”, in the customer\'s language.')">{{ __('Mark Translated Replies') }}</x-fruit::checkbox>
-                    </div>
-                </x-fruit::disclosure>
-            @endforeach
-        </x-fruit::form-section>
-
-        <x-fruit::form-section :title="__('Customer Context')" :footer="__('Optional, per mailbox: a URL that is sent the customer\'s email addresses when a reply is drafted, and returns JSON about the customer. Requests are signed with the secret key.')">
-            @foreach ($ai_mailboxes as $mailbox)
-                @php
-                    $ai_context = App\Ai\CustomerContext::settings($mailbox);
-                @endphp
-                <x-fruit::disclosure class="ai-customer-context" data-mailbox-id="{{ $mailbox->id }}" x-data="tallportAiContextTest({{ $mailbox->id }})" :title="$mailbox->name.($ai_context['url'] ? ' · '.$ai_context['url'] : '')" :open="$errors->has('settings.aiassistant.customer_context_url.'.$mailbox->id) || $errors->has('settings.aiassistant.customer_context_guidance.'.$mailbox->id)">
-                    <div class="settings-form">
-                        <x-fruit::field :label="__('URL')">
-                            <x-fruit::input type="url" id="ai_context_url_{{ $mailbox->id }}" class="ai-context-url" name="settings[aiassistant.customer_context_url][{{ $mailbox->id }}]" :value="old('settings.aiassistant.customer_context_url.'.$mailbox->id, $ai_context['url'])" maxlength="2048" placeholder="https://example.com/customer-context" />
-                        </x-fruit::field>
-                        <x-fruit::field :label="__('Secret Key')">
-                            <x-fruit::input type="password" id="ai_context_secret_{{ $mailbox->id }}" class="ai-context-secret" name="settings[aiassistant.customer_context_secret_key][{{ $mailbox->id }}]" :value="\Helper::safePassword($ai_context['secret_key'])" maxlength="255" autocomplete="new-password" />
-                        </x-fruit::field>
-                        <x-fruit::field :label="__('Signature Header')">
-                            <x-fruit::select id="ai_context_header_{{ $mailbox->id }}" class="ai-context-header" name="settings[aiassistant.customer_context_signature_header][{{ $mailbox->id }}]">
-                                @foreach (App\Ai\CustomerContext::HEADERS as $header)
-                                    <option value="{{ $header }}" @selected($ai_context['signature_header'] == $header)>{{ $header }}</option>
-                                @endforeach
-                            </x-fruit::select>
-                        </x-fruit::field>
-                        <x-fruit::field :label="__('Reply Guidance')" :description="__('Optional background for drafting replies: who you are, what customers buy, terminology, what fields in the customer context mean, and the reply style.')">
-                            <x-fruit::textarea id="ai_context_guidance_{{ $mailbox->id }}" name="settings[aiassistant.customer_context_guidance][{{ $mailbox->id }}]" rows="5" maxlength="6000">{{ old('settings.aiassistant.customer_context_guidance.'.$mailbox->id, $ai_context['guidance']) }}</x-fruit::textarea>
-                        </x-fruit::field>
-                        <x-fruit::field :label="__('Test')" control-id="ai_context_test_{{ $mailbox->id }}">
-                            <div class="f-input-group">
-                                <input id="ai_context_test_{{ $mailbox->id }}" type="email" class="f-input ai-context-test-email" placeholder="{{ __('Customer email address') }}">
-                                <button type="button" class="f-button ai-context-test" x-on:click="test">{{ __('Test') }}</button>
-                            </div>
-                        </x-fruit::field>
-                        <pre class="ai-context-test-result" x-show="result" x-text="result" x-cloak></pre>
-                    </div>
-                </x-fruit::disclosure>
+        <x-fruit::form-section :title="__('Mailboxes')" :footer="__('Each mailbox\'s language, features, chat translation and customer context are on its own page, under Mailboxes.')">
+            @foreach ($ai_mailboxes as $ai_mailbox)
+                <a wire:navigate href="{{ route('mailboxes.ai', ['id' => $ai_mailbox->id]) }}" class="f-form-row f-form-row--link">
+                    <span class="mailbox-row__main">
+                        <x-icon.mail class="f-icon mailbox-row__icon" :data-fruit-mark="$ai_mailbox->accent ?: 'blue'" aria-hidden="true" />
+                        <span class="mailbox-row__name">{{ $ai_mailbox->name }}</span>
+                    </span>
+                    <span class="f-form-row__value">{{ App\Ai\Settings::mailboxSummary($ai_mailbox) }}</span>
+                </a>
             @endforeach
         </x-fruit::form-section>
     @endif

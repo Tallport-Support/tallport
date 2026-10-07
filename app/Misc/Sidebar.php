@@ -20,7 +20,7 @@ class Sidebar
     public static function isSettings()
     {
         $route = (string) \Route::currentRouteName();
-        $is_settings = (bool) preg_match('#^(settings|mailboxes$|mailboxes\.(create|update|connection|permissions|auto_reply|telegram|nostr|customapp)|users|modules|logs|system)#', $route);
+        $is_settings = (bool) preg_match('#^(settings|mailboxes$|mailboxes\.(create|update|connection|permissions|auto_reply|telegram|nostr|customapp|ai)|users|modules|logs|system)#', $route);
 
         return (bool) \Eventy::filter('sidebar.is_settings', $is_settings, $route);
     }

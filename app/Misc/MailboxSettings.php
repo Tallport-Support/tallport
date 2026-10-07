@@ -39,11 +39,14 @@ class MailboxSettings
             $nostr = \App\Nostr\NostrMailbox::where('mailbox_id', $id)->where('enabled', true)->whereNotNull('pubkey')->exists();
             $pages[] = self::page('Nostr', route('mailboxes.nostr', ['id' => $id]), $nostr ? __('Connected') : __('Not set up'), routes: ['mailboxes.nostr']);
         }
+        if ($user->isAdmin()) {
+            $pages[] = self::page(__('AI Assistant'), route('mailboxes.ai', ['id' => $id]), \App\Ai\Settings::mailboxSummary($mailbox), routes: ['mailboxes.ai']);
+        }
         if (Workflow::canEdit($user, $mailbox)) {
-            $pages[] = self::page(__('Workflows'), route('mailboxes.workflows', ['mailbox_id' => $id]), (string) Workflow::where('mailbox_id', $id)->count(), routes: ['mailboxes.workflows']);
+            $pages[] = self::page(__('Workflows'), route('mailboxes.workflows', ['mailbox_id' => $id, 'from' => 'mailbox']), (string) Workflow::where('mailbox_id', $id)->count(), routes: ['mailboxes.workflows']);
         }
         if (SavedReply::canManage($user, $mailbox)) {
-            $pages[] = self::page(__('Saved Replies'), route('mailboxes.saved_replies', ['id' => $id]), (string) SavedReply::where('mailbox_id', $id)->count(), routes: ['mailboxes.saved_replies']);
+            $pages[] = self::page(__('Saved Replies'), route('mailboxes.saved_replies', ['id' => $id, 'from' => 'mailbox']), (string) SavedReply::where('mailbox_id', $id)->count(), routes: ['mailboxes.saved_replies']);
         }
 
         return $pages;

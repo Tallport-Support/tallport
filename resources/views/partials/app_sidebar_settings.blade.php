@@ -42,7 +42,7 @@
 )
     <p class="f-sidebar__heading">{{ __('Manage') }}</p>
     @if ($sidebar_user->can('viewMailboxMenu', $sidebar_user))
-        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('mailboxes/mailboxes', 'mailboxes/create', 'mailboxes/update', 'mailboxes/connection', 'mailboxes/connection_incoming', 'mailboxes/permissions', 'mailboxes/auto_reply', 'mailboxes/telegram', 'nostr/mailbox_settings')" :href="route('mailboxes')" :current="in_array($settings_route, ['mailboxes', 'mailboxes.create']) || (!empty($mailbox) && $mailbox instanceof App\Mailbox && $mailbox->id)"><x-slot:icon><x-icon.inbox class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Mailboxes') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('mailboxes/mailboxes', 'mailboxes/create', 'mailboxes/update', 'mailboxes/connection', 'mailboxes/connection_incoming', 'mailboxes/permissions', 'mailboxes/auto_reply', 'mailboxes/telegram', 'mailboxes/ai', 'nostr/mailbox_settings')" :href="route('mailboxes')" :current="in_array($settings_route, ['mailboxes', 'mailboxes.create']) || (!empty($mailbox) && $mailbox instanceof App\Mailbox && $mailbox->id)"><x-slot:icon><x-icon.inbox class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Mailboxes') }}</x-fruit::sidebar-item>
     @endif
     {{-- A mailbox's pages (mailboxes/sidebar_menu) keep Mailboxes current: they're reached from its list. --}}
     <ul class="app-sidebar__module-items">@action('menu.manage.after_mailboxes')</ul>

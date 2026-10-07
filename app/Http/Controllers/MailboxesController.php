@@ -286,6 +286,80 @@ class MailboxesController extends Controller
     }
 
     /**
+     * A mailbox's AI Assistant: its features, language and glossary, chat translation and
+     * customer context (the installation's providers and limits are in Settings › AI Assistant).
+     */
+    public function ai($id)
+    {
+        $mailbox = Mailbox::findOrFail($id);
+        if (!auth()->user()->isAdmin()) {
+            \Helper::denyAccess();
+        }
+
+        return view('mailboxes/ai', [
+            'mailbox'    => $mailbox,
+            'configured' => \App\Ai\Settings::isConfigured(),
+            'context'    => \App\Ai\CustomerContext::settings($mailbox),
+        ]);
+    }
+
+    public function aiSave($id, Request $request)
+    {
+        $mailbox = Mailbox::findOrFail($id);
+        if (!auth()->user()->isAdmin()) {
+            \Helper::denyAccess();
+        }
+        // Not set up: the page's controls are off, nothing to save.
+        if (!\App\Ai\Settings::isConfigured()) {
+            return redirect()->route('mailboxes.ai', ['id' => $id]);
+        }
+        $validator = Validator::make($request->all(), [
+            'glossary'                 => 'nullable|string|max:3000',
+            'customer_context_url'     => 'nullable|url:http,https|max:2048',
+            'customer_context_guidance' => 'nullable|string|max:6000',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('mailboxes.ai', ['id' => $id])->withErrors($validator)->withInput();
+        }
+
+        // One mailbox's entry in an option keyed by mailbox (removed when empty).
+        $set = function ($name, $value) use ($mailbox) {
+            $all = (array) \Option::get($name, []);
+            if ($value === null || $value === '' || $value === []) {
+                unset($all[$mailbox->id]);
+            } else {
+                $all[$mailbox->id] = $value;
+            }
+            \Option::set($name, $all);
+        };
+        $features = (array) $request->input('features', []);
+        $set('aiassistant.mailbox_features_off', array_values(array_filter(\App\Ai\Settings::FEATURES, fn ($feature) => empty($features[$feature]))));
+        $language = (string) $request->input('language', '');
+        $set('aiassistant.mailbox_language', \App\Ai\Settings::isLanguage($language) ? $language : '');
+        $set('aiassistant.translation_glossary', trim((string) $request->input('glossary', '')));
+        $set('aiassistant.mailbox_chat_translation', $request->boolean('chat_translation') ? 1 : '');
+        // Off controls aren't sent: what they hold is kept while their switch is off.
+        if ($request->boolean('chat_translation')) {
+            $set('aiassistant.mailbox_translation_note', $request->boolean('translation_note') ? 1 : '');
+        }
+        if (!empty($features['drafts'])) {
+            $set('aiassistant.customer_context_url', trim((string) $request->input('customer_context_url', '')));
+            $secret = (string) $request->input('customer_context_secret_key', '');
+            if (!preg_match('/^\*+$/', $secret)) {
+                $set('aiassistant.customer_context_secret_key', $secret === '' ? '' : encrypt($secret));
+            }
+            $header = (string) $request->input('customer_context_signature_header', '');
+            $set('aiassistant.customer_context_signature_header', in_array($header, \App\Ai\CustomerContext::HEADERS) ? $header : '');
+            $set('aiassistant.customer_context_guidance', trim((string) $request->input('customer_context_guidance', '')));
+        }
+        \Option::$cache = [];
+
+        \Session::flash('flash_success_floating', __('Settings updated'));
+
+        return redirect()->route('mailboxes.ai', ['id' => $id]);
+    }
+
+    /**
      * Mailbox permissions.
      */
     public function permissions($id)
@@ -667,18 +741,21 @@ class MailboxesController extends Controller
         $flashes = [];
 
         if ($mailbox && \Auth::user()->can('admin', $mailbox)) {
+            // What the mailbox can't do yet, and a way to set it up (not on that very page).
             if (Route::currentRouteName() != 'mailboxes.connection' && !$mailbox->isOutActive()) {
                 $flashes[] = [
-                    'type'      => 'warning',
-                    'text'      => __('Sending emails need to be configured for the mailbox in order to send emails to customers and support agents').' ('.__('Connection Settings').' » <a href="'.route('mailboxes.connection', ['id' => $mailbox->id]).'">'.__('Sending Emails').'</a>)',
-                    'unescaped' => true,
+                    'type'   => 'warning',
+                    'title'  => __('This mailbox can\'t send email yet.'),
+                    'text'   => __('Set up Sending Emails so replies reach customers and agents.'),
+                    'action' => ['label' => __('Set Up Sending'), 'url' => route('mailboxes.connection', ['id' => $mailbox->id])],
                 ];
             }
             if (Route::currentRouteName() != 'mailboxes.connection.incoming' && !$mailbox->isInActive()) {
                 $flashes[] = [
-                    'type'      => 'warning',
-                    'text'      => __('Receiving emails need to be configured for the mailbox in order to fetch emails from your support email address').' ('.__('Connection Settings').' » <a href="'.route('mailboxes.connection.incoming', ['id' => $mailbox->id]).'">'.__('Fetching Emails').'</a>)',
-                    'unescaped' => true,
+                    'type'   => 'warning',
+                    'title'  => __('This mailbox can\'t receive email yet.'),
+                    'text'   => __('Set up Fetching Emails so messages sent to :email arrive here.', ['email' => $mailbox->email]),
+                    'action' => ['label' => __('Set Up Fetching'), 'url' => route('mailboxes.connection.incoming', ['id' => $mailbox->id])],
                 ];
             }
         }

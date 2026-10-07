@@ -222,17 +222,19 @@ class AiDraftsTest extends FeatureTestCase
     {
         $admin = $this->createAdmin();
         $id = $this->mailbox->id;
-        $form = function (array $context) use ($id) {
-            return ['settings' => [
-                'aiassistant.mailbox_language'                => [$id => ''],
-                'aiassistant.customer_context_url'            => [$id => $context['url']],
-                'aiassistant.customer_context_secret_key'     => [$id => $context['secret']],
-                'aiassistant.customer_context_signature_header' => [$id => 'X-HELPSCOUT-SIGNATURE'],
-                'aiassistant.customer_context_guidance'       => [$id => ' Be brief. '],
-            ]];
+        // On the mailbox's AI Assistant page; only with Drafts on.
+        $form = function (array $context) {
+            return [
+                'features'                          => ['summaries' => 1, 'translations' => 1, 'drafts' => 1],
+                'customer_context_url'              => $context['url'],
+                'customer_context_secret_key'       => $context['secret'],
+                'customer_context_signature_header' => 'X-HELPSCOUT-SIGNATURE',
+                'customer_context_guidance'         => ' Be brief. ',
+            ];
         };
+        $page = route('mailboxes.ai.save', ['id' => $id]);
 
-        $this->postForm($admin, '/app-settings/ai', $form(['url' => 'https://crm.example.org/context', 'secret' => 's3cret']));
+        $this->postForm($admin, $page, $form(['url' => 'https://crm.example.org/context', 'secret' => 's3cret']));
         Option::$cache = [];
         $this->assertSame([
             'url' => 'https://crm.example.org/context', 'secret_key' => 's3cret', 'signature_header' => 'X-HELPSCOUT-SIGNATURE', 'guidance' => 'Be brief.',
@@ -240,12 +242,17 @@ class AiDraftsTest extends FeatureTestCase
         $this->assertNotSame('s3cret', Option::get('aiassistant.customer_context_secret_key')[$id]);
 
         // A masked secret is kept.
-        $this->postForm($admin, '/app-settings/ai', $form(['url' => 'https://crm.example.org/context', 'secret' => '******']));
+        $this->postForm($admin, $page, $form(['url' => 'https://crm.example.org/context', 'secret' => '******']));
         Option::$cache = [];
         $this->assertSame('s3cret', CustomerContext::settings($this->mailbox)['secret_key']);
 
-        $this->postForm($admin, '/app-settings/ai', $form(['url' => 'file:///etc/passwd', 'secret' => '']))
-            ->assertSessionHasErrors('settings.aiassistant.customer_context_url.'.$id);
+        // Drafts off: the group's off, and kept as it was.
+        $this->postForm($admin, $page, ['features' => ['summaries' => 1]]);
+        Option::$cache = [];
+        $this->assertSame('https://crm.example.org/context', CustomerContext::settings($this->mailbox)['url']);
+
+        $this->postForm($admin, $page, $form(['url' => 'file:///etc/passwd', 'secret' => '']))
+            ->assertSessionHasErrors('customer_context_url');
     }
 
     public function testCustomerContextTest()

@@ -2134,6 +2134,19 @@ a.disabled:focus {
     min-height: 36px;
     margin-bottom: 8px;
 }
+/* On a phone the mailbox's header stays one row: its address is in the field below, and Open
+   Mailbox is a small button. */
+@media (max-width: 500px) {
+    .page-nav__title > small {
+        display: none;
+    }
+    .page-nav__actions .f-button {
+        --f-button-height: 30px;
+        --f-button-padding-block: 3px;
+        --f-button-padding-inline: 12px;
+        font-size: var(--f-text-sm);
+    }
+}
 /* Back to the parent page starts the title's line: its 36px target overhangs the line rather than
    heightening the header (as FruitUI's page header does). */
 .page-nav__back {
@@ -2188,6 +2201,21 @@ a.disabled:focus {
     font-size: var(--f-text-sm);
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+/* A mailbox's AI Assistant (mailboxes/ai): its groups, off together while it isn't set up, and
+   Customer Context while Drafts is off. */
+.mailbox-ai,
+.mailbox-ai__context {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.mailbox-ai__context .f-form-section + .f-form-section__footer {
+    margin-top: -10px;
 }
 .mailbox-pages__problem {
     color: var(--f-warning);
@@ -2349,8 +2377,14 @@ a.disabled:focus {
 .connection-nav {
     margin-bottom: 20px;
 }
+/* A tab that needs attention: the icon before its label, on the label's line, at its size. */
+.f-section-nav a:has(> .connection-nav__warning) {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
 .connection-nav__warning {
-    --f-icon-size: 16px;
+    --f-icon-size: 1em;
     color: var(--f-warning);
 }
 .connection-fetch-from {
