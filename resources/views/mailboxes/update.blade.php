@@ -114,6 +114,9 @@
 
             @action('mailbox.update.after_signature', $mailbox)
 
+            {{-- Its further pages: connection, permissions, auto reply, channels, workflows and more. --}}
+            @include('mailboxes/settings_menu')
+
             @if (auth()->user()->isAdmin())
                 <x-fruit::form-section :title="__('Danger Zone')">
                     <div class="f-form-row">

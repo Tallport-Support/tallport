@@ -22,7 +22,7 @@ body.user-is-guest {
     font-size: 0.75rem;
     /*position: absolute;
     bottom: 0;*/
-    color: var(--f-tertiary);
+    color: var(--f-secondary);
     margin-bottom: 20px;
     margin-top: 20px;
     width: 100%;
@@ -2129,12 +2129,28 @@ a.disabled:focus {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-wrap: wrap;
+    /* As tall with an action button (36px) as without: the same on every level. */
+    min-height: 36px;
     margin-bottom: 8px;
+}
+/* Back to the parent page starts the title's line: its 36px target overhangs the line rather than
+   heightening the header (as FruitUI's page header does). */
+.page-nav__back {
+    display: flex;
+    flex: none;
+    margin-inline-end: -6px;
+}
+.page-nav__back > .f-back {
+    --f-back-max-width: 16rem;
+    margin-block: -6px;
+    margin-inline-start: -4px;
 }
 .page-nav__title {
     display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
-    gap: 10px;
+    gap: 2px 10px;
     flex: 1;
     min-width: 0;
 }
@@ -2144,6 +2160,37 @@ a.disabled:focus {
 }
 .page-content {
     padding: 20px;
+}
+/* Settings › Mailboxes: a row per mailbox (mailboxes/mailboxes), and a mailbox's further pages
+   (mailboxes/settings_menu). A value that needs attention is in the warning colour. */
+.mailbox-row__main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+.mailbox-row__icon {
+    color: var(--f-mark);
+}
+.mailbox-row__identity {
+    display: grid;
+    min-width: 0;
+}
+.mailbox-row__name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+.mailbox-row__address {
+    overflow: hidden;
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.mailbox-pages__problem {
+    color: var(--f-warning);
 }
 /* Settings: one column of fields, groups under headings. */
 .settings-form {

@@ -286,56 +286,6 @@ class MailboxesController extends Controller
     }
 
     /**
-     * A mailbox's name and signature, in a dialog from the sidebar's mailbox menu;
-     * the rest is on its settings pages.
-     */
-    public function quickSettings($id)
-    {
-        $mailbox = Mailbox::findOrFail($id);
-        $user = auth()->user();
-        if (!$user->can('updateSettings', $mailbox) && !$user->can('updateEmailSignature', $mailbox)) {
-            \Helper::denyAccess();
-        }
-
-        return view('mailboxes/quick_settings', [
-            'mailbox'       => $mailbox,
-            'can_rename'    => $user->isAdmin(),
-            'can_signature' => $user->can('updateEmailSignature', $mailbox),
-        ]);
-    }
-
-    public function quickSettingsSave($id, Request $request)
-    {
-        $mailbox = Mailbox::findOrFail($id);
-        $user = auth()->user();
-        if (!$user->can('updateSettings', $mailbox) && !$user->can('updateEmailSignature', $mailbox)) {
-            \Helper::denyAccess();
-        }
-
-        $rules = [];
-        if ($user->isAdmin()) {
-            $rules['name'] = 'required|string|max:40';
-        }
-        if ($user->can('updateEmailSignature', $mailbox)) {
-            $rules['signature'] = 'nullable|string';
-        }
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            return \Response::json(['status' => 'error', 'msg' => $validator->errors()->first()]);
-        }
-
-        if (isset($rules['name'])) {
-            $mailbox->name = $request->name;
-        }
-        if (isset($rules['signature'])) {
-            $mailbox->signature = Mailbox::sanitizeSignature($request->signature);
-        }
-        $mailbox->save();
-
-        return \Response::json(['status' => 'success', 'msg_success' => __('Mailbox settings saved')]);
-    }
-
-    /**
      * Mailbox permissions.
      */
     public function permissions($id)

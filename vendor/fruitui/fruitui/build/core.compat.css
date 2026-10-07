@@ -5126,7 +5126,9 @@ img.f-avatar {
     padding: var(--f-form-row-padding, 12px 14px);
   }
 
-.f-form-section__rows > * + * {
+/* A hairline above every row after the first. A <template> (Alpine's x-for, x-if) is not a row. */
+
+.f-form-section__rows > :not(template) ~ :not(template) {
     border-top: 1px solid var(--f-border);
   }
 
@@ -5140,7 +5142,7 @@ img.f-avatar {
     background: none;
   }
 
-.f-form-section__rows > .f-disclosure:not(:first-child) {
+.f-form-section__rows > :not(template) ~ .f-disclosure {
     border-top: 1px solid var(--f-border);
   }
 
@@ -5154,7 +5156,7 @@ img.f-avatar {
 
 /* A choice group's legend reads like a row label instead of sitting on the row's top edge. */
 
-.f-form-section__rows > .f-fieldset > legend {
+.f-form-section__rows > .f-fieldset > legend:not(.f-sr-only) {
     float: inline-start;
     width: 100%;
     margin-block-end: var(--f-space-2);
@@ -5186,6 +5188,71 @@ img.f-avatar {
 .f-form-row > :first-child:not(:only-child) {
     flex: 1 1 14rem;
     min-width: 0;
+  }
+
+/* A row that opens a sub-page, as settings drill down: its label, the current value at the
+     trailing edge and a chevron. A real link, so it opens in a new tab and works without script. */
+
+.f-form-row--link {
+    flex-wrap: nowrap;
+    color: var(--f-text);
+    text-decoration: none;
+  }
+
+.f-form-row--link > :first-child:not(:only-child) {
+    flex: 1 1 auto;
+  }
+
+.f-form-row__value {
+    min-width: 0;
+    margin-inline-start: auto;
+    overflow: hidden;
+    color: var(--f-secondary);
+    text-align: end;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+.f-form-row--link::after {
+    content: '';
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+    background: var(--f-tertiary);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 18 6-6-6-6'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 18 6-6-6-6'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+
+.f-form-row--link:dir(rtl)::after {
+    scale: -1 1;
+  }
+
+.f-form-row--link:hover {
+    background: var(--f-hover);
+  }
+
+.f-form-row--link:focus-visible {
+    outline-offset: calc(var(--f-focus-ring-width) * -1);
+  }
+
+/* The first and last rows follow the group's rounded corners, so their hover does too. */
+
+.f-form-section__rows > .f-form-row--link:not(:not(template) ~ *) {
+    border-start-start-radius: calc(var(--f-radius) - 1px);
+    border-start-end-radius: calc(var(--f-radius) - 1px);
+  }
+
+.f-form-section__rows > .f-form-row--link:last-child {
+    border-end-start-radius: calc(var(--f-radius) - 1px);
+    border-end-end-radius: calc(var(--f-radius) - 1px);
+  }
+
+@media (forced-colors: active) {
+    .f-form-row--link::after {
+      background: CanvasText;
+    }
   }
 
 /* Narrow sections stack text-like rows; switches and checkboxes stay at the trailing edge. */

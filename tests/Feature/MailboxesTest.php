@@ -140,33 +140,56 @@ class MailboxesTest extends FeatureTestCase
             ->assertSee('data-fruit-mark="green"', false);
     }
 
-    public function testQuickSettings()
+    /**
+     * The sidebar's mailbox menu leads to the mailbox's page in Settings › Mailboxes; someone
+     * who may only edit the signature gets there too, and changes only that.
+     */
+    public function testMailboxSettingsFromTheSidebar()
     {
-        $mailbox = $this->createMailbox([], ['name' => 'Support']);
         $agent = $this->createUser();
-        $mailbox->users()->attach($agent->id);
-
-        $this->actingAs($this->admin)->get(route('mailboxes.view', ['id' => $mailbox->id]))->assertSee(route('mailboxes.quick_settings', ['id' => $mailbox->id]), false);
-        $this->actingAs($this->admin)->get(route('mailboxes.quick_settings', ['id' => $mailbox->id]))->assertOk()
-            ->assertSee('name="name"', false)->assertSee('All Settings');
-        \Session::start();
-        $this->actingAs($this->admin)->post(route('mailboxes.quick_settings.save', ['id' => $mailbox->id]), ['_token' => csrf_token(), 'name' => 'Help Desk', 'signature' => '<p>Kind regards</p><script>x</script>'])
-            ->assertJson(['status' => 'success']);
-        $mailbox->refresh();
-        $this->assertSame('Help Desk', $mailbox->name);
-        $this->assertStringContainsString('Kind regards', $mailbox->signature);
-        $this->assertStringNotContainsString('<script', $mailbox->signature);
-        $this->actingAs($this->admin)->post(route('mailboxes.quick_settings.save', ['id' => $mailbox->id]), ['_token' => csrf_token(), 'name' => ''])
-            ->assertJson(['status' => 'error']);
-
-        $this->actingAs($agent)->get(route('mailboxes.quick_settings', ['id' => $mailbox->id]))->assertForbidden();
         $signer = $this->createUser();
-        $mailbox->users()->attach($signer->id, ['access' => json_encode([Mailbox::ACCESS_PERM_SIGNATURE])]);
-        $this->actingAs($signer)->get(route('mailboxes.quick_settings', ['id' => $mailbox->id]))->assertOk()->assertDontSee('name="name"', false);
-        $this->actingAs($signer)->post(route('mailboxes.quick_settings.save', ['id' => $mailbox->id]), ['_token' => csrf_token(), 'name' => 'Hijacked', 'signature' => '<p>Agent</p>'])
-            ->assertJson(['status' => 'success']);
-        $this->assertSame('Help Desk', $mailbox->fresh()->name);
+        $mailbox = $this->createMailbox([$agent, $signer], ['name' => 'Support']);
+        $mailbox->users()->updateExistingPivot($signer->id, ['access' => json_encode([Mailbox::ACCESS_PERM_SIGNATURE])]);
+
+        $this->actingAs($this->admin)->get(route('mailboxes.view', ['id' => $mailbox->id]))
+            ->assertSee('href="'.route('mailboxes.update', ['id' => $mailbox->id]).'"', false)->assertSee('Mailbox Settings');
+        $this->actingAs($agent)->get(route('mailboxes.view', ['id' => $mailbox->id]))->assertOk()->assertDontSee('Mailbox Settings');
+
+        $this->actingAs($signer)->get(route('mailboxes.view', ['id' => $mailbox->id]))->assertOk()->assertSee('Mailbox Settings');
+        $this->actingAs($signer)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk()->assertSee('name="signature"', false)->assertDontSee('id="name"', false);
+        $this->postForm($signer, route('mailboxes.update', ['id' => $mailbox->id]), ['name' => 'Hijacked', 'signature' => '<p>Agent</p>']);
+        $this->assertSame('Support', $mailbox->fresh()->name);
         $this->assertStringContainsString('Agent', $mailbox->fresh()->signature);
+    }
+
+    /**
+     * Settings › Mailboxes is the one place for a mailbox's settings: the list, the mailbox's page
+     * with a row (and its value) for each further page the user may open, and those pages, each
+     * with Back up a level. Nothing is added to the sidebar; Mailboxes stays current.
+     */
+    public function testMailboxSettingsInOnePlace()
+    {
+        $manager = $this->createUser();
+        $mailbox = $this->createMailbox([$manager], ['name' => 'Support']);
+        $mailbox->auto_reply_enabled = true;
+        $mailbox->save();
+        $mailbox->users()->updateExistingPivot($manager->id, ['access' => json_encode([Mailbox::ACCESS_PERM_PERMISSIONS])]);
+
+        $this->actingAs($this->admin)->get(route('mailboxes'))->assertOk()
+            ->assertSee('href="'.route('mailboxes.update', ['id' => $mailbox->id]).'"', false)->assertSee('Not set up');
+        $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk()
+            ->assertSeeInOrder(['f-back', 'Mailboxes', 'Open Mailbox'], false)
+            ->assertSeeInOrder(['Connection Settings', 'Not set up', 'Permissions', '2 people', 'Auto Reply', 'On', 'Telegram', 'Nostr', 'Workflows', 'Saved Replies'])
+            ->assertDontSee('app-sidebar__mailbox-pages', false)
+            ->assertSee('aria-current="page"', false);
+        $this->actingAs($this->admin)->get(route('mailboxes.auto_reply', ['id' => $mailbox->id]))->assertOk()
+            ->assertSeeInOrder(['href="'.route('mailboxes.update', ['id' => $mailbox->id]).'"', 'Support', '<h1>Auto Reply</h1>'], false);
+
+        // Only its permissions: the list leads there, Back to the Mailboxes, no other rows.
+        $this->actingAs($manager)->get(route('mailboxes'))->assertOk()->assertSee('href="'.route('mailboxes.permissions', ['id' => $mailbox->id]).'"', false);
+        $this->actingAs($manager)->get(route('mailboxes.permissions', ['id' => $mailbox->id]))->assertOk()
+            ->assertSeeInOrder(['href="'.route('mailboxes').'"', 'Mailboxes', '<h1>Permissions</h1>'], false);
+        $this->actingAs($manager)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertRedirect();
     }
 
     /**

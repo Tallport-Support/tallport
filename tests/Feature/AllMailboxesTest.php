@@ -168,10 +168,11 @@ class AllMailboxesTest extends FeatureTestCase
         $this->assertStringContainsString(route('users.preferences', ['id' => $admin->id]), substr($sidebar, 0, strpos($sidebar, 'app-sidebar__footer')));
         $this->assertStringNotContainsString('app-sidebar__mailbox', $sidebar);
 
-        // A mailbox's settings are under Manage > Mailboxes; an agent sees only the account.
+        // A mailbox's settings are under Manage > Mailboxes (rows on its page, not in the sidebar); an agent sees only the account.
         $html = $this->get(route('mailboxes.update', ['id' => $this->support->id]))->getContent();
         $this->assertStringContainsString('app-sidebar__back', $html);
-        $this->assertStringContainsString('<a class="f-sidebar__item" wire:navigate href="'.route('mailboxes.permissions', ['id' => $this->support->id]).'"', $html);
+        $this->assertStringContainsString('<a wire:navigate class="f-form-row f-form-row--link" href="'.route('mailboxes.permissions', ['id' => $this->support->id]).'"', $html);
+        $this->assertStringNotContainsString('<a class="f-sidebar__item" wire:navigate href="'.route('mailboxes.permissions', ['id' => $this->support->id]).'"', $html);
         $html = $this->actingAs($this->agent)->get(route('users.preferences', ['id' => $this->agent->id]))->assertOk()->getContent();
         $this->assertStringContainsString('app-sidebar__back', $html);
         $this->assertStringNotContainsString(route('settings', ['section' => 'general']), $html);

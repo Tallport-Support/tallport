@@ -49,6 +49,23 @@
     justify-content: space-between;
     gap: 8px 16px;
   }
+  /* A Back Link to the parent page, as settings drill down, starts the title's row, so the header
+     keeps its height at every level; its chevron lines up with the content's edge. */
+  .f-page__heading:has(> .f-back) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 6px;
+  }
+  /* It keeps its full 36px target but overhangs the title's line rather than heightening it. */
+  .f-page__heading > .f-back {
+    --f-back-max-width: 16rem;
+    margin-block: -6px;
+    margin-inline-start: -4px;
+  }
+  .f-page__heading:has(> .f-back) > .f-page__description {
+    flex-basis: 100%;
+  }
   .f-page__title {
     font-size: var(--f-text-2xl);
     font-weight: 700;

@@ -128,8 +128,6 @@ Route::get('/mailbox/new', 'MailboxesController@create')->name('mailboxes.create
 Route::post('/mailbox/new', 'MailboxesController@createSave');
 Route::get('/mailbox/settings/{id}', 'MailboxesController@update')->name('mailboxes.update');
 Route::post('/mailbox/settings/{id}', 'MailboxesController@updateSave')->name('mailboxes.update.save');
-Route::get('/mailbox/settings/{id}/quick', 'MailboxesController@quickSettings')->name('mailboxes.quick_settings');
-Route::post('/mailbox/settings/{id}/quick', 'MailboxesController@quickSettingsSave')->name('mailboxes.quick_settings.save');
 Route::get('/mailbox/permissions/{id}', 'MailboxesController@permissions')->name('mailboxes.permissions');
 Route::post('/mailbox/permissions/{id}', 'MailboxesController@permissionsSave')->name('mailboxes.permissions.save');
 // Knowledge base

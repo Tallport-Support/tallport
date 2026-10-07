@@ -1952,7 +1952,7 @@
         "name": "mailboxes.settings.menu",
         "arguments": 1,
         "files": [
-            "resources/views/mailboxes/settings_menu.blade.php"
+            "app/Misc/MailboxSettings.php"
         ]
     },
     {

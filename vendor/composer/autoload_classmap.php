@@ -282,6 +282,7 @@ return array(
     'App\\Misc\\KeyboardShortcuts' => $baseDir . '/app/Misc/KeyboardShortcuts.php',
     'App\\Misc\\Mail' => $baseDir . '/app/Misc/Mail.php',
     'App\\Misc\\MailManager' => $baseDir . '/app/Misc/MailManager.php',
+    'App\\Misc\\MailboxSettings' => $baseDir . '/app/Misc/MailboxSettings.php',
     'App\\Misc\\Minify' => $baseDir . '/app/Misc/Minify.php',
     'App\\Misc\\MinifyFacade' => $baseDir . '/app/Misc/MinifyFacade.php',
     'App\\Misc\\Noreply' => $baseDir . '/app/Misc/Noreply.php',
