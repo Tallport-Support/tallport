@@ -107,6 +107,22 @@ class OpenControllerTest extends FeatureTestCase
         $this->assertSame(User::INVITE_STATE_SENT, (int) $user->fresh()->invite_state);
     }
 
+    /**
+     * A photo sent with a field that fails validation isn't saved (U7).
+     */
+    public function testSetupPhotoIsNotSavedWhenAnotherFieldIsInvalid()
+    {
+        $user = $this->invitedUser();
+
+        $this->post($user->urlSetup(), $this->setupFields([
+            'password_confirmation' => 'something else',
+            'photo_url'             => UploadedFile::fake()->image('me.png', 120, 120),
+        ]))->assertSessionHasErrors('password');
+
+        $this->assertNull($user->fresh()->photo_url);
+        $this->assertSame([], \Storage::disk('local')->files(User::PHOTO_DIRECTORY));
+    }
+
     // Open tracking.
 
     public function testPixelOfAnotherConversationMarksNothing()

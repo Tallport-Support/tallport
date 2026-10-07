@@ -17,7 +17,7 @@ use Tests\FeatureTestCase;
  *
  * Commands that write outside the database or use the network are either
  * stubbed (see FeatureTestCase), given scratch paths, or left out:
- * clean-tmp (deletes in the system temp dir), module-build, module-update.
+ * clean-tmp (deletes in the system temp dir), module-update.
  */
 class ConsoleCommandsTest extends FeatureTestCase
 {
@@ -362,6 +362,34 @@ class ConsoleCommandsTest extends FeatureTestCase
         \Artisan::call('tallport:module-update', ['module_alias' => 'nosuchmodule'], $output);
         $this->assertStringContainsString('Module with the following alias not found: nosuchmodule', $output->fetch());
         rmdir($dir);
+    }
+
+    /**
+     * Building one module rebuilds only that module's routes (S13).
+     */
+    public function testModuleBuildRebuildsOnlyThatModulesRoutes()
+    {
+        $dir = sys_get_temp_dir().'/tallport-modules-'.uniqid();
+        mkdir($dir.'/Demo', 0777, true);
+        file_put_contents($dir.'/Demo/module.json', json_encode(['name' => 'Demo', 'alias' => 'demo']));
+        config(['modules.cache.enabled' => false]);
+        $this->app->instance('modules', new \App\Modules\Repository($this->app, $dir));
+        // No public symlink there, so nothing is written.
+        $this->app->usePublicPath($dir);
+
+        try {
+            $this->runCommand('tallport:module-build', ['module_alias' => 'demo']);
+        } finally {
+            unlink($dir.'/Demo/module.json');
+            rmdir($dir.'/Demo');
+            rmdir($dir);
+        }
+
+        $calls = array_values(array_filter(\Tests\Support\StubCommand::$calls, function ($call) {
+            return $call['name'] == 'tallport:module-laroute';
+        }));
+        $this->assertCount(1, $calls);
+        $this->assertStringContainsString('demo', $calls[0]['arguments']);
     }
 
     /**

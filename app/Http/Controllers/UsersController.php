@@ -212,19 +212,7 @@ class UsersController extends Controller
             'photo_url'   => __('Photo'),
         ]);
 
-        // Photo
         $validator->after(function ($validator) use ($user, $request) {
-            if ($request->hasFile('photo_url')) {
-                $path_url = $user->savePhoto($request->file('photo_url'));
-
-                if ($path_url) {
-                    $user->photo_url = $path_url;
-                } else {
-                    $invalid = true;
-                    $validator->errors()->add('photo_url', __('Error occurred processing the image. Make sure that PHP GD extension is enabled.'));
-                }
-            }
-
             // Do not allow to remove the last active administrator: disabled
             // and deleted admins can't manage anything.
             if ($user->isAdmin() && $user->isActive() && auth()->user()->isAdmin()) {
@@ -254,6 +242,20 @@ class UsersController extends Controller
             return redirect()->route('users.profile', ['id' => $id])
                         ->withErrors($validator)
                         ->withInput();
+        }
+
+        // Photo, saved once everything else is valid.
+        if ($request->hasFile('photo_url')) {
+            $path_url = $user->savePhoto($request->file('photo_url'));
+
+            if (!$path_url) {
+                $validator->errors()->add('photo_url', __('Error occurred processing the image. Make sure that PHP GD extension is enabled.'));
+
+                return redirect()->route('users.profile', ['id' => $id])
+                            ->withErrors($validator)
+                            ->withInput();
+            }
+            $user->photo_url = $path_url;
         }
 
         // Save language into session.

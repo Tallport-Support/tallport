@@ -144,12 +144,8 @@ class MailboxesController extends Controller
         }
 
         $user = auth()->user();
+        // Null for an admin who isn't connected to the mailbox.
         $mailbox_user = $user->mailboxesWithSettings()->where('mailbox_id', $id)->first();
-        if (!$mailbox_user && $user->isAdmin()) {
-            // Admin may not be connected to the mailbox yet
-            $user->mailboxes()->attach($id);
-            $mailbox_user = $user->mailboxesWithSettings()->where('mailbox_id', $id)->first();
-        }
 
         //$mailboxes = Mailbox::all()->except($id);
 

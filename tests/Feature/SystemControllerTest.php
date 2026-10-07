@@ -317,6 +317,23 @@ class SystemControllerTest extends FeatureTestCase
     }
 
     /**
+     * Run Now doesn't keep the request waiting for the queue worker (S7).
+     */
+    public function testRetryJobAnswersWithoutWaiting()
+    {
+        $job_id = \DB::table('jobs')->insertGetId([
+            'queue' => 'emails', 'payload' => '{"displayName":"App\\\\Jobs\\\\SendReplyToCustomer"}', 'attempts' => 0,
+            'reserved_at' => null, 'available_at' => time() + 3600, 'created_at' => time(),
+        ]);
+
+        $started = microtime(true);
+        $this->postForm($this->admin, route('system.action'), ['action' => 'retry_job', 'job_id' => $job_id])
+            ->assertRedirect(route('system'));
+
+        $this->assertLessThan(1, microtime(true) - $started);
+    }
+
+    /**
      * Retry for one queue's failed jobs leaves the other queues' alone.
      */
     public function testRetryFailedJobsOfOneQueue()

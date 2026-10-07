@@ -268,6 +268,19 @@ PHP;
     }
 
     /**
+     * Viewing a mailbox's settings changes nothing: an admin isn't attached to the
+     * mailbox, which would keep their access if they stopped being an admin (M7).
+     */
+    public function testViewingSettingsDoesNotAttachAnAdmin()
+    {
+        $mailbox = $this->createMailbox();
+
+        $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk();
+
+        $this->assertFalse(\DB::table('mailbox_user')->where(['mailbox_id' => $mailbox->id, 'user_id' => $this->admin->id])->exists());
+    }
+
+    /**
      * The IMAP folders to fetch are saved in the order given.
      */
     public function testIncomingSettingsSaveTheFoldersToFetch()

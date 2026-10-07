@@ -428,7 +428,6 @@ class SystemController extends Controller
 
             case 'retry_job':
                 \App\Job::findPending($request->job_id)?->runNow();
-                sleep(1);
                 \Session::flash('flash_success_floating', __('Done'));
                 break;
 

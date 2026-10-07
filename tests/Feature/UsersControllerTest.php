@@ -101,6 +101,27 @@ class UsersControllerTest extends FeatureTestCase
         $this->assertNull($agent->fresh()->job_title);
     }
 
+    /**
+     * A photo sent with a field that fails validation isn't saved, and the current
+     * photo stays (U7).
+     */
+    public function testPhotoIsNotSavedWhenAnotherFieldIsInvalid()
+    {
+        $agent = $this->createUser();
+        $this->postForm($agent, '/users/profile/'.$agent->id, $this->profile($agent, [
+            'photo_url' => UploadedFile::fake()->image('me.jpg', 400, 300),
+        ]))->assertSessionHasNoErrors();
+        $photo = $agent->fresh()->photo_url;
+
+        $this->postForm($agent, '/users/profile/'.$agent->id, $this->profile($agent, [
+            'first_name' => '',
+            'photo_url'  => UploadedFile::fake()->image('new.jpg', 400, 300),
+        ]))->assertSessionHasErrors('first_name');
+
+        $this->assertSame($photo, $agent->fresh()->photo_url);
+        $this->assertSame([User::PHOTO_DIRECTORY.'/'.$photo], \Storage::disk('local')->files(User::PHOTO_DIRECTORY));
+    }
+
     public function testEmailOfAMailboxIsRefused()
     {
         $agent = $this->createUser();

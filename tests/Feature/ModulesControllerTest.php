@@ -200,14 +200,17 @@ class ModulesControllerTest extends FeatureTestCase
     }
 
     /**
-     * An install that didn't finish leaves the module inactive, with an error. (A module
-     * without providers keeps its folder name.)
+     * An install that didn't finish leaves the module inactive, with an error, and the
+     * page reloads to show it (S6). (A module without providers keeps its folder name.)
      */
     public function testActivateThatFailsDeactivatesAgain()
     {
         $this->makeModule('tpmodule-main', ['providers' => []]);
 
-        $this->assertSame('success', $this->modulesAjax(['action' => 'activate', 'alias' => 'tpmodule'])['status']);
+        $response = $this->modulesAjax(['action' => 'activate', 'alias' => 'tpmodule']);
+
+        $this->assertSame('error', $response['status']);
+        $this->assertTrue($response['reload']);
 
         $this->assertFileExists($this->dir.'/tpmodule-main/module.json');
         $this->assertFalse($this->isActive('tpmodule'));
@@ -244,7 +247,7 @@ class ModulesControllerTest extends FeatureTestCase
         mkdir($this->dir.'/TpModule/Public');
         $this->commandPrinting('tallport:module-install', 'Configuration cached successfully.');
 
-        $this->modulesAjax(['action' => 'activate', 'alias' => 'tpmodule']);
+        $this->assertSame('error', $this->modulesAjax(['action' => 'activate', 'alias' => 'tpmodule'])['status']);
 
         $flash = \Cache::get('modules_flash');
         $this->assertSame('danger', $flash['type']);

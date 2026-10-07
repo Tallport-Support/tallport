@@ -82,7 +82,7 @@ class ModuleBuild extends Command
                 return;
             }
             $this->buildModule($module);
-            $this->call('tallport:module-laroute');
+            $this->call('tallport:module-laroute', ['module_alias' => $module->getAlias()]);
         }
     }
 

@@ -158,7 +158,9 @@ document.addEventListener('alpine:init', function () {
 		return {
 			// activate, deactivate, update
 			action: function (event, action) {
-				request(event.currentTarget, {action: action, alias: alias(event.currentTarget)});
+				request(event.currentTarget, {action: action, alias: alias(event.currentTarget)}, function (response) {
+					return response.reload;
+				});
 			},
 			remove: function (event) {
 				var button = event.currentTarget;

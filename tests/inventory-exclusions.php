@@ -12,7 +12,6 @@ $livewire = "Livewire's own route (its prefix comes from the app key); not used 
 
 return [
 
-    'command tallport:module-build'   => $modules_on_disk,
     'command tallport:module-laroute' => $modules_on_disk,
     'command module:migrate'           => $modules_on_disk,
     'command tallport:clean-tmp'      => 'cleans the real system temp dir; its logic (CleanTmp::cleanDirectory) is tested on a scratch dir',

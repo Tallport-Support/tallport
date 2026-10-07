@@ -95,23 +95,26 @@ class OpenController extends Controller
             if (User::mailboxEmailExists($request->email)) {
                 $validator->errors()->add('email', __('There is a mailbox with such email. Users and mailboxes can not have the same email addresses.'));
             }
-
-            // Photo
-            if ($request->hasFile('photo_url')) {
-                $path_url = $user->savePhoto($request->file('photo_url'));
-
-                if ($path_url) {
-                    $user->photo_url = $path_url;
-                } else {
-                    $validator->errors()->add('photo_url', __('Error occurred processing the image. Make sure that PHP GD extension is enabled.'));
-                }
-            }
         });
 
         if ($validator->fails()) {
             return redirect()->route('user_setup', ['hash' => $hash, 'invite_sent_at' => $invite_sent_at])
                         ->withErrors($validator)
                         ->withInput();
+        }
+
+        // Photo, saved once everything else is valid.
+        if ($request->hasFile('photo_url')) {
+            $path_url = $user->savePhoto($request->file('photo_url'));
+
+            if (!$path_url) {
+                $validator->errors()->add('photo_url', __('Error occurred processing the image. Make sure that PHP GD extension is enabled.'));
+
+                return redirect()->route('user_setup', ['hash' => $hash, 'invite_sent_at' => $invite_sent_at])
+                            ->withErrors($validator)
+                            ->withInput();
+            }
+            $user->photo_url = $path_url;
         }
 
         $request_data = [

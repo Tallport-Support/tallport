@@ -215,7 +215,12 @@ class ModulesController extends Controller
                         'type'      => $type,
                     ];
                     \Cache::forever('modules_flash', $flash);
-                    $response['status'] = 'success';
+                    if ($type == 'success') {
+                        $response['status'] = 'success';
+                    } else {
+                        // The page reloads to show the flash.
+                        $response['reload'] = true;
+                    }
                 }
 
                 break;

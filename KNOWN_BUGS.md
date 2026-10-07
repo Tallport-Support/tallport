@@ -24,19 +24,16 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 
 | # | Severity | Where | Bug |
 |---|---|---|---|
-| F2 | low | `app/Thread.php` :1233/:1235 vs :1258/:1274 | Hooks `conversation.created_by_customer` and `conversation.customer_replied` are fired with different numbers of arguments (see `tests/Snapshots/hooks.json`). |
 
 ## Users and login
 
 | # | Severity | Where | Bug |
 |---|---|---|---|
-| U7 | low | `UsersController::profileSave`, `OpenController::userSetupSave` | An uploaded photo is saved to disk during validation, even when another field then fails validation (the file is left unused). |
 
 ## Mailboxes (`app/Http/Controllers/MailboxesController.php`)
 
 | # | Severity | Where | Bug |
 |---|---|---|---|
-| M7 | low | `update` GET, :111 | Viewing the settings attaches an admin to `mailbox_user` as a side effect. |
 | M8 | low | `permissionsSave`, :323 | Users whose access is removed keep their personal folders. |
 
 ## Settings, system and modules
@@ -44,9 +41,6 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | # | Severity | Where | Bug |
 |---|---|---|---|
 | S2 | low | `SettingsController::processSave` | Every `env` setting of a section is written to `.env`, as an empty value when absent from the request. Intended for checkboxes (an unticked box isn't sent), and every such setting is in its section's form, so only hand-made requests that leave out a text or select field blank it. |
-| S6 | low | `ModulesController ajax activate`, :335 | Reports `status: success` even when activation failed (only the flash type says so). |
-| S7 | low | `SystemController::action retry_job` | `sleep(1)` inside the web request. |
-| S13 | low | `app/Console/Commands/ModuleBuild.php` :78 | With an alias given, calls `freescout:module-laroute` without it, so all modules' routes are rebuilt. |
 
 ## Environment and dependencies
 
