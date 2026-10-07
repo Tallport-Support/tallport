@@ -122,23 +122,6 @@ class ConversationList extends Component
         $this->selected = [];
     }
 
-    public function star($conversation_id)
-    {
-        $user = auth()->user();
-        $conversation = Conversation::find($conversation_id);
-        if (!$conversation || !$user->can('view', $conversation)) {
-            Fruit::toast(__('Not enough permissions'), 'danger');
-
-            return;
-        }
-
-        if ($conversation->isStarredByUser($user->id)) {
-            $conversation->unstar($user);
-        } else {
-            $conversation->star($user);
-        }
-    }
-
     public function assign($user_id)
     {
         Conversation::bulkChangeUser((array) $this->selected, $user_id, auth()->user());

@@ -170,20 +170,18 @@ class ConversationListTest extends FeatureTestCase
             ->assertDontSee('color: red', false);
     }
 
-    public function testStarsAConversation()
+    /**
+     * Rows have no star: a conversation is starred from its header, and found in Starred.
+     */
+    public function testRowsHaveNoStar()
     {
         $conversation = $this->conversation('Starry question');
-        $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)]);
+        $conversation->star($this->agent);
 
-        $list->call('star', $conversation->id)->assertSee('aria-pressed="true"', false);
-        $this->assertTrue($conversation->isStarredByUser($this->agent->id));
-
-        $list->call('star', $conversation->id);
-        $this->assertFalse($conversation->isStarredByUser($this->agent->id));
-
-        $outsider = $this->createUser();
-        Livewire::actingAs($outsider)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)])
-            ->assertForbidden();
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)])
+            ->assertSee('Starry question')->assertDontSee('conv-star', false)->assertDontSee('Star Conversation');
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_STARRED)])
+            ->assertSee('Starry question')->assertDontSee('conv-star', false);
     }
 
     public function testBulkActions()

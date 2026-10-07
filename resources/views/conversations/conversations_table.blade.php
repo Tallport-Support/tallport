@@ -99,7 +99,6 @@
                     $conv_date_title = !in_array($folder->type, [App\Folder::TYPE_CLOSED, App\Folder::TYPE_DRAFTS, App\Folder::TYPE_DELETED]) ? strip_tags(str_replace('<br/>', ' ', $conversation->getDateTitle())) : '';
                     $conv_customer_name = ($conversation->customer_id && $conversation->customer) ? $conversation->customer->getFullName(true) : $conversation->customer_email;
                     $ai_one_liner = $conversation->search_snippet === null ? (App\Ai\Summaries::getAny($conversation, App\Ai\Settings::language($conversation->mailbox_cached, Auth::user()))['one_liner'] ?? '') : '';
-                    $conv_starred = $conversation->isStarredByUser();
                     // Not in Mine: the viewer's own.
                     $conv_assignee = ($conversation->user_id && $folder->type != App\Folder::TYPE_MINE) ? $conversation->user : null;
                     $conv_has_meta = !empty($params['show_number']) || $conversation->threads_count > 1 || $conv_assignee || $conversation->has_attachments || $conversation->isPhone() || !empty($viewers[$conversation->id]);
@@ -131,9 +130,6 @@
                         </x-slot:meta>
                         @endif
                     </x-fruit::item-link>
-                    @if (empty($no_checkboxes))
-                        <x-fruit::button variant="ghost" size="small" class="f-button--icon conv-star" wire:click="star({{ $conversation->id }})" :aria-pressed="$conv_starred ? 'true' : 'false'" :aria-label="__('Star Conversation')" :title="$conv_starred ? __('Unstar Conversation') : __('Star Conversation')"><x-icon.star class="f-icon conv-star__off" aria-hidden="true" /><x-icon.star fill="currentColor" class="f-icon conv-star__on" aria-hidden="true" /></x-fruit::button>
-                    @endif
                 </li>
             @endforeach
         </x-fruit::item-list>
