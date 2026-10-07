@@ -30,8 +30,11 @@
             </span>
             @include('conversations/partials/editor_pickers')
             @if ($inline)
-                {{-- In the chat field: the pickers and Attach, and Send for touch screens (no Shift+Enter there). --}}
+                {{-- In the chat field: the pickers and Attach, Draft with AI (written into the field), and Send for touch screens (no Shift+Enter there). --}}
                 @action('conversation.editor_extras', $conversation, $mailbox)
+                @if (App\Ai\Drafts::allowed(Auth::user(), $conversation))
+                    <button type="button" class="f-button f-button--ghost f-button--icon ai-draft-action" x-on:click="$dispatch('ai-draft-request')" aria-label="{{ __('Draft with AI') }}" title="{{ __('Draft with AI') }}"><x-icon.sparkles class="f-icon" aria-hidden="true" /></button>
+                @endif
                 <button type="submit" class="f-button f-button--primary f-button--icon f-composer__send" aria-label="{{ __('Send') }}" title="{{ __('Send') }}" wire:loading.attr="aria-busy" wire:target="send"><x-icon.send class="f-icon" aria-hidden="true" /></button>
             @else
             @if ($formats !== [])

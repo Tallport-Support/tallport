@@ -2,7 +2,7 @@
 <div class="ai-draft-panel" x-data="tallportAiDraft(@js(route('ai.drafts.store', ['id' => $conversation->id])), @js(App\Ai\Settings::language($conversation->mailbox, Auth::user())), @js([
         'drafting' => __('Drafting…'),
         'failed'   => __('Could not draft a reply.'),
-     ]))" x-show="active" x-cloak x-on:ai-draft-request.window="request()">
+     ]), @js(['inline' => !empty($chat), 'translated' => !empty($chat) && App\Ai\ChatTranslation::needed($conversation, Auth::user())]))" x-show="active" x-cloak x-on:ai-draft-request.window="request()">
     <x-fruit::suggestion :title="__('AI Draft')" x-bind:aria-busy="busy() ? 'true' : 'false'">
         <x-slot:meta><span x-text="meta"></span></x-slot:meta>
         <x-slot:dismiss><x-fruit::button variant="ghost" class="f-button--icon" :aria-label="__('Close')" :title="__('Close')" x-on:click="close()"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button></x-slot:dismiss>

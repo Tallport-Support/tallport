@@ -115,6 +115,26 @@ class AiDraftsTest extends FeatureTestCase
         $this->requestDraft($this->agent)->assertStatus(403);
     }
 
+    /**
+     * In a chat, Draft with AI is in the chat field too and writes into it (no card); with
+     * chat translation the agent's version goes in, as it's translated on sending.
+     */
+    public function testInAChatTheDraftGoesIntoTheField()
+    {
+        $config = fn ($inline, $translated) => '{\\u0022inline\\u0022:'.($inline ? 'true' : 'false').',\\u0022translated\\u0022:'.($translated ? 'true' : 'false').'}';
+        $this->assertStringContainsString($config(false, false), $this->getConversationPage($this->agent)->getContent());
+
+        $this->conversation->channel = \App\Telegram\Telegram::CHANNEL;
+        $this->conversation->save();
+        $chat_page = $this->getConversationPage($this->agent)->getContent();
+        $this->assertStringContainsString($config(true, false), $chat_page);
+        $this->assertSame(2, substr_count($chat_page, 'ai-draft-action'), 'In the toolbar and the chat field.');
+
+        Option::set('aiassistant.mailbox_chat_translation', [$this->mailbox->id => true]);
+        \App\Ai\ChatTranslation::setCustomerLanguage($this->conversation, 'zh');
+        $this->assertStringContainsString($config(true, true), $this->getConversationPage($this->agent)->getContent());
+    }
+
     public function testUserWithoutAccessCannotDraft()
     {
         $this->requestDraft($this->createUser())->assertStatus(403);

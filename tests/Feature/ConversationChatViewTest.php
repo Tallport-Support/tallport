@@ -101,6 +101,32 @@ class ConversationChatViewTest extends FeatureTestCase
         Livewire::actingAs($this->agent)->test(ConversationComposer::class, ['conversation' => $this->conversation])->assertSet('mode', '');
     }
 
+    /**
+     * A reply being written isn't a message in a chat: its draft isn't in the history, and it's
+     * back in the composer (for the one who wrote it) when the chat opens again.
+     */
+    public function testDraftsStayInTheComposer()
+    {
+        $composer = Livewire::actingAs($this->agent)->test(ConversationComposer::class, ['conversation' => $this->conversation, 'chat' => true])
+            ->set('body', '<p>Half a reply</p>')->call('saveDraft');
+        $draft = $this->conversation->threads()->where('state', Thread::STATE_DRAFT)->first();
+        $this->assertNotNull($draft);
+
+        Livewire::actingAs($this->agent)->test(ConversationThread::class, ['conversation' => $this->conversation, 'chat' => true])
+            ->assertDontSee('Half a reply');
+        // The email view still lists it.
+        Livewire::actingAs($this->agent)->test(ConversationThread::class, ['conversation' => $this->conversation])
+            ->assertSee('Half a reply');
+
+        Livewire::actingAs($this->agent)->test(ConversationComposer::class, ['conversation' => $this->conversation->fresh(), 'chat' => true])
+            ->assertSet('thread_id', $draft->id)->assertSet('body', '<p>Half a reply</p>');
+        // Someone else's draft isn't theirs to continue.
+        $colleague = $this->createUser();
+        $this->mailbox->users()->attach($colleague->id);
+        Livewire::actingAs($colleague)->test(ConversationComposer::class, ['conversation' => $this->conversation->fresh(), 'chat' => true])
+            ->assertSet('body', '');
+    }
+
     public function testTheChatComposerOnlySends()
     {
         // A message leaves the status as it is (the toolbar's), and stays in the conversation.

@@ -769,9 +769,13 @@ document.addEventListener('alpine:init', function () {
 	 * AI Assistant reply drafts (App\Ai\Drafts): asked for by the toolbar's Draft
 	 * with AI, shown as they're written, then put into the reply (the composer).
 	 */
-	window.Alpine.data('tallportAiDraft', function (draft_url, translation_language, texts) {
+	// chat: the chat view's composer (inline: no card, the draft goes into the chat field;
+	// translated: replies are translated on send, so the agent's language goes in).
+	window.Alpine.data('tallportAiDraft', function (draft_url, translation_language, texts, chat) {
+		chat = chat || {};
 		return {
 			active: false,
+			drafting: false,
 			status: '',
 			failed: false,
 			detail: '',
@@ -811,9 +815,20 @@ document.addEventListener('alpine:init', function () {
 			},
 
 			fail: function (message, detail) {
+				this.drafting = false;
+				if (chat.inline) {
+					this.reset('');
+					Tallport.toast(message || texts.failed, 'danger');
+					return;
+				}
 				this.reset(message || texts.failed);
 				this.failed = true;
 				this.detail = detail || '';
+			},
+
+			// The chat field, as the draft is written (not when it's translated before sending).
+			setField: function (html) {
+				window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: html}}));
 			},
 
 			// The draft is written into the card as the AI writes it (server-sent events from
@@ -821,7 +836,11 @@ document.addEventListener('alpine:init', function () {
 			request: function () {
 				var self = this;
 				var meta = document.querySelector('meta[name="csrf-token"]');
-				this.active = true;
+				if (this.drafting) {
+					return;
+				}
+				this.drafting = true;
+				this.active = !chat.inline;
 				// The draft is shown below the editor: open it, as Reply does.
 				Livewire.dispatch('composer-open', {mode: 'reply'});
 				this.reset(texts.drafting);
@@ -867,15 +886,22 @@ document.addEventListener('alpine:init', function () {
 							var data = JSON.parse(event.substring(6));
 							if (data.status == 'success') {
 								finished = true;
+								self.drafting = false;
 								self.reset('');
 								self.draft = data;
 								self.meta = data.language+' · '+data.confidence;
 								self.html = markdownToHtml(data.draft);
+								if (chat.inline) {
+									self.insert();
+								}
 							} else if (data.status == 'error') {
 								finished = true;
 								self.fail(data.msg, data.detail);
 							} else if (typeof data.draft == 'string') {
 								self.html = markdownToHtml(data.draft);
+								if (chat.inline && !chat.translated) {
+									self.setField(self.html);
+								}
 							}
 						});
 						if (chunk.done) {
@@ -892,6 +918,11 @@ document.addEventListener('alpine:init', function () {
 
 			insert: function () {
 				if (!this.draft) {
+					return;
+				}
+				// Translated on send: the version in the agent's language is what they write.
+				if (chat.translated && this.draft.translation) {
+					Livewire.dispatch('composer-ai-draft', {html: markdownToHtml(this.draft.translation), translation: '', language: ''});
 					return;
 				}
 				Livewire.dispatch('composer-ai-draft', {

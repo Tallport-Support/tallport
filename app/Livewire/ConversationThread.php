@@ -159,6 +159,10 @@ class ConversationThread extends Component
         if ($this->chat && $this->initial === null) {
             $threads = $threads->reverse()->values();
         }
+        // In a chat, a reply being written stays in its composer: drafts aren't messages.
+        if ($this->chat) {
+            $threads = $threads->filter(fn ($thread) => $thread->state != \App\Thread::STATE_DRAFT)->values();
+        }
 
         return view('livewire.conversation-thread', [
             'conversation' => $conversation,

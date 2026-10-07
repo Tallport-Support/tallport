@@ -134,11 +134,18 @@ class ConversationComposer extends Component
         $this->after_send = $afterSend;
         $this->resetFields($conversation);
 
-        // A draft to continue (?show_draft=).
+        // A draft to continue (?show_draft=); in a chat, the user's own unsent reply is back
+        // in the composer (the chat doesn't show drafts).
         if (request()->show_draft) {
             $this->editDraft(request()->show_draft);
         } elseif ($this->chat) {
             $this->mode = 'reply';
+            $own_draft = Thread::where('conversation_id', $conversation->id)->where('state', Thread::STATE_DRAFT)
+                ->where('type', Thread::TYPE_MESSAGE)->where('created_by_user_id', auth()->id())
+                ->orderBy('id', 'desc')->first();
+            if ($own_draft) {
+                $this->editDraft($own_draft->id);
+            }
         }
     }
 
