@@ -120,6 +120,13 @@ class AiFastStreamingTest extends FeatureTestCase
             ['openrouter', 'anthropic/claude-sonnet-4.5', []],
             ['openrouter', 'meta-llama/llama-3.3-70b-instruct', []],
             ['anthropic', 'claude-haiku-4-5', []],
+            // OpenAI-compatible hosts: OpenAI's models, by their prefixed names, as on OpenAI.
+            ['digitalocean', 'openai-gpt-6-luna', ['reasoning_effort' => 'none']],
+            ['digitalocean', 'openai-gpt-5-mini', ['reasoning_effort' => 'minimal']],
+            ['digitalocean', 'openai-gpt-4o', []],
+            ['digitalocean', 'anthropic-claude-4.5-sonnet', []],
+            ['digitalocean', 'llama3.3-70b-instruct', []],
+            ['custom', 'gpt-5.2', ['reasoning_effort' => 'none']],
             ['together', 'openai/gpt-oss-120b', []],
             ['ollama', 'qwen3:8b', []],
         ];
@@ -202,6 +209,27 @@ class AiFastStreamingTest extends FeatureTestCase
         $this->assertSame("Hello,\n\nWhere is my order?", Translations::get($conversation->threads()->first(), 'en'));
         Http::assertSent(fn (HttpRequest $request) => $request['stream'] === true && $request['stream_options'] == ['include_usage' => true] && !isset($request['reasoning_effort']));
         $this->assertSame(325, \App\Ai\Usage::forConversation($conversation));
+    }
+
+    /**
+     * DigitalOcean's OpenAI models (openai-gpt-6-luna): the translation asks for the least
+     * reasoning, in the Chat Completions request, and the log says so.
+     */
+    public function testFastModeThroughDigitalOcean()
+    {
+        $this->useModel('digitalocean', 'openai-gpt-6-luna');
+        $answer = json_encode(['translation' => "Hello,\n\nWhere is my order?", 'same_language' => false, 'detected_language' => 'nl']);
+        $events = ['data: '.json_encode(['model' => 'openai-gpt-6-luna', 'choices' => [['index' => 0, 'delta' => ['content' => $answer]]]])];
+        $events[] = 'data: '.json_encode(['model' => 'openai-gpt-6-luna', 'choices' => [['index' => 0, 'delta' => [], 'finish_reason' => 'stop']]]);
+        $events[] = 'data: '.json_encode(['model' => 'openai-gpt-6-luna', 'choices' => [], 'usage' => ['prompt_tokens' => 300, 'completion_tokens' => 25]]);
+        $events[] = 'data: [DONE]';
+        Http::fake(['https://inference.do-ai.run/v1/chat/completions' => Http::response(implode("\n\n", $events)."\n\n", 200, ['Content-Type' => 'text/event-stream'])]);
+
+        $conversation = $this->receiveCustomerEmail();
+
+        $this->assertSame("Hello,\n\nWhere is my order?", Translations::get($conversation->threads()->first(), 'en'));
+        Http::assertSent(fn (HttpRequest $request) => ($request['reasoning_effort'] ?? null) === 'none');
+        $this->assertTrue((bool) \App\Ai\Usage::where('conversation_id', $conversation->id)->where('feature', \App\Ai\Usage::FEATURE_TRANSLATION)->value('fast'));
     }
 
     /**

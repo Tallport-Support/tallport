@@ -208,8 +208,19 @@ class Providers
                 };
 
                 return $effort ? ['reasoning' => ['effort' => $effort]] : [];
-            // Anthropic: extended thinking is off unless asked for. OpenAI-compatible servers
-            // (Together, Fireworks, Ollama, ...): too varied to send anything.
+            // OpenAI-compatible hosts (Chat Completions): OpenAI's models, named with or without a
+            // vendor prefix (DigitalOcean's "openai-gpt-6-luna", "openai/gpt-5"), get reasoning_effort
+            // as on OpenAI; others are too varied to send anything.
+            case 'digitalocean':
+            case 'together':
+            case 'fireworks':
+            case 'custom':
+                $name = preg_replace('#^openai[-/]#', '', $model);
+                $effort = self::openAiEffort($name);
+
+                return $effort ? ['reasoning_effort' => $effort] : [];
+            // Anthropic: extended thinking is off unless asked for. Local servers (Ollama, LM
+            // Studio) and Perplexity: nothing.
             default:
                 return [];
         }
