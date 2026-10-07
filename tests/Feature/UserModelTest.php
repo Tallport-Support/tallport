@@ -376,7 +376,6 @@ class UserModelTest extends FeatureTestCase
     public function testCreateWithAnEmailInUseReturnsNull()
     {
         $existing = $this->createUser();
-        \Log::shouldReceive('error')->once();
 
         $this->assertNull(User::create(['email' => $existing->email, 'password' => 'secret123']));
         $this->assertSame(1, User::where('email', $existing->email)->count());

@@ -402,6 +402,9 @@ class ConversationSearch
      */
     protected static function minTokenSize()
     {
+        if (self::$min_token_size === null && !in_array(\DB::getDriverName(), ['mysql', 'mariadb'])) {
+            self::$min_token_size = 3;
+        }
         if (self::$min_token_size === null) {
             try {
                 self::$min_token_size = (int) (\DB::selectOne("SHOW VARIABLES LIKE 'innodb_ft_min_token_size'")->Value ?? 3) ?: 3;

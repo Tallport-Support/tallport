@@ -192,7 +192,8 @@ class OutgoingMessageSender
         $results = $relays ? $client->publish($wrap, $relays) : [];
         $ok = RelayClient::anySucceeded($results);
 
-        $event = new NostrEvent();
+        // A retry sends the same message (rumor) again: its row is updated.
+        $event = NostrEvent::where('rumor_id', $rumor['id'])->where('direction', NostrEvent::DIRECTION_OUT)->first() ?: new NostrEvent();
         $event->mailbox_id = $cfg->mailbox_id;
         $event->mailbox_pubkey = $fromPubkey;
         $event->direction = NostrEvent::DIRECTION_OUT;

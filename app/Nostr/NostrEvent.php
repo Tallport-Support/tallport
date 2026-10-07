@@ -37,7 +37,8 @@ class NostrEvent extends Model
         $event->relay = $relay ? mb_substr($relay, 0, 255) : null;
         $event->status = self::STATUS_PROCESSING;
         try {
-            $event->save();
+            // In a savepoint of its own: on PostgreSQL a failed insert aborts the transaction it's in.
+            \DB::transaction(fn () => $event->save());
         } catch (\Illuminate\Database\QueryException $e) {
             return null;
         }
@@ -56,7 +57,7 @@ class NostrEvent extends Model
         }
         $this->rumor_id = $rumor_id;
         try {
-            $this->save();
+            \DB::transaction(fn () => $this->save());
         } catch (\Illuminate\Database\QueryException $e) {
             $this->rumor_id = null;
             $this->syncOriginalAttribute('rumor_id');

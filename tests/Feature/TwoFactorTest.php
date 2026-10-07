@@ -256,7 +256,8 @@ class TwoFactorTest extends FeatureTestCase
         // A row of the two_factor_authentications table.
         \ImportExistingTwoFactorData::importUser((object) [
             'user_id'        => $user->id,
-            'shared_secret'  => $binary,
+            // The module stored it base64 encoded on PostgreSQL.
+            'shared_secret'  => \DB::getDriverName() == 'pgsql' ? base64_encode($binary) : $binary,
             'enabled_at'     => '2025-01-02 03:04:05',
             'recovery_codes' => json_encode([['code' => 'USED01', 'used_at' => '2025-02-01 00:00:00'], ['code' => 'FRESH1', 'used_at' => null]]),
         ]);

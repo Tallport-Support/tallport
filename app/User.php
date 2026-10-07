@@ -1119,6 +1119,10 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
         }
 
         $user->setData($data);
+        // Checked first: on PostgreSQL a failed insert aborts the surrounding transaction.
+        if (self::where('email', $user->email)->exists()) {
+            return null;
+        }
 
         try {
             $user->save();

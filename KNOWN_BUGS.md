@@ -18,8 +18,7 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 | # | Severity | Where | Bug |
 |---|---|---|---|
 | C1 | decision | `conversation_move`, :2269 | No access check on the **target** mailbox: an agent can move a conversation into a mailbox they can't see. FreeScout documents this as intended (its SECURITY.md: "Support agents are allowed to move conversations to any mailbox, even to ones they don't have access to"); kept for now (decided 2026-09-30). |
-| C6 | low | `save_draft`, :1546 | A new-conversation draft has no customer until it is sent (recipients are kept on the draft thread; sending sets the customer, see `testSendingNewConversationDraftSetsCustomer`), so drafts show no customer name. |
-
+| C6 | decision | `save_draft`, :1546 | A new-conversation draft has no customer until it is sent (recipients are kept on the draft thread; sending sets the customer, see `testSendingNewConversationDraftSetsCustomer`), so drafts show no customer name. Kept (decided 2026-10-07): drafts autosave while typing, so linking or creating customers would leave strays and show unsent drafts on customer pages. |
 ## Incoming email (`app/Console/Commands/FetchEmails.php`)
 
 | # | Severity | Where | Bug |
@@ -34,8 +33,7 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 
 | # | Severity | Where | Bug |
 |---|---|---|---|
-| M8 | low | `permissionsSave`, :323 | Users whose access is removed keep their personal folders. |
-
+| M8 | decision | `permissionsSave`, :323 | Users whose access is removed keep their personal folders. Kept (decided 2026-10-07), as FreeScout does: a user whose access returns keeps their stars; the folders go when the user is deleted. |
 ## Settings, system and modules
 
 | # | Severity | Where | Bug |

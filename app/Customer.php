@@ -1659,6 +1659,11 @@ class Customer extends Model
         if (!$channel || !$new_channel_id) {
             return;
         }
+        // Another customer's channel ID isn't taken (checked first: on PostgreSQL a failed
+        // update aborts the surrounding transaction).
+        if (CustomerChannel::where('channel', $channel)->where('channel_id', $new_channel_id)->where('customer_id', '!=', $this->id)->exists()) {
+            return;
+        }
         try {
             CustomerChannel::where('customer_id', $this->id)
                 ->where('channel', $channel)
