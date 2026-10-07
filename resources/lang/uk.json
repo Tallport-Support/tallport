@@ -1767,5 +1767,6 @@
     "Fast": "Швидкий",
     "Last call :time · :duration": "Останній виклик: :time · :duration",
     "Last call failed :time": "Останній виклик не вдався: :time",
-    "1 failure in the last hour|:count failures in the last hour": ":count збій за останню годину|:count збої за останню годину|:count збоїв за останню годину"
+    "1 failure in the last hour|:count failures in the last hour": ":count збій за останню годину|:count збої за останню годину|:count збоїв за останню годину",
+    "Tokens (In / Out)": "Токени (Вхід / Вихід)"
 }

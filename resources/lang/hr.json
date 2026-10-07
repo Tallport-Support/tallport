@@ -1767,5 +1767,6 @@
     "Fast": "Brzo",
     "Last call :time · :duration": "Zadnji poziv: :time · :duration",
     "Last call failed :time": "Zadnji poziv nije uspio: :time",
-    "1 failure in the last hour|:count failures in the last hour": ":count neuspjeh u zadnjih sat vremena|:count neuspjeha u zadnjih sat vremena|:count neuspjeha u zadnjih sat vremena"
+    "1 failure in the last hour|:count failures in the last hour": ":count neuspjeh u zadnjih sat vremena|:count neuspjeha u zadnjih sat vremena|:count neuspjeha u zadnjih sat vremena",
+    "Tokens (In / Out)": "Tokeni (Ulaz / Izlaz)"
 }

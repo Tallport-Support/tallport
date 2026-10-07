@@ -1766,5 +1766,6 @@
     "Fast": "Rýchly",
     "Last call :time · :duration": "Posledné volanie: :time · :duration",
     "Last call failed :time": "Posledné volanie zlyhalo: :time",
-    "1 failure in the last hour|:count failures in the last hour": ":count zlyhanie za poslednú hodinu|:count zlyhania za poslednú hodinu|:count zlyhaní za poslednú hodinu"
+    "1 failure in the last hour|:count failures in the last hour": ":count zlyhanie za poslednú hodinu|:count zlyhania za poslednú hodinu|:count zlyhaní za poslednú hodinu",
+    "Tokens (In / Out)": "Tokeny (Vstup / Výstup)"
 }

@@ -15,25 +15,26 @@
 @section('content')
 {{-- Manage » Logs » AI (AiLogController): each call to a model, newest first. --}}
 <div class="page-content logs-page ai-log">
-    @include('secure/logs_menu', ['names' => App\ActivityLog::menuNames(), 'current_name' => App\ActivityLog::NAME_AI])
-    <form class="f-toolbar ai-log__filters" method="GET" action="{{ route('logs.ai') }}" x-data>
-        <x-fruit::select name="feature" :aria-label="__('Feature')" x-on:change="$el.form.submit()">
+    @section('logs_bar_filters')
+        <x-fruit::select form="ai-log-filters" name="feature" :aria-label="__('Feature')" x-on:change="$el.form.submit()">
             <option value="">{{ __('All Features') }}</option>
             @foreach ($features as $feature_option)
                 <option value="{{ $feature_option }}" @selected($feature === $feature_option)>{{ App\Ai\Usage::featureName($feature_option) }}</option>
             @endforeach
         </x-fruit::select>
-        <x-fruit::select name="outcome" :aria-label="__('Status')" x-on:change="$el.form.submit()">
+        <x-fruit::select form="ai-log-filters" name="outcome" :aria-label="__('Status')" x-on:change="$el.form.submit()">
             <option value="">{{ __('All') }}</option>
             <option value="errors" @selected($outcome == 'errors')>{{ __('Errors') }}</option>
         </x-fruit::select>
-        <x-fruit::select name="model" :aria-label="__('Model')" x-on:change="$el.form.submit()">
+        <x-fruit::select form="ai-log-filters" name="model" :aria-label="__('Model')" x-on:change="$el.form.submit()">
             <option value="">{{ __('All Models') }}</option>
             @foreach ($models as $model_option)
                 <option value="{{ $model_option }}" @selected($model === $model_option)>{{ $model_option }}</option>
             @endforeach
         </x-fruit::select>
-    </form>
+    @endsection
+    @include('secure/logs_menu', ['names' => App\ActivityLog::menuNames(), 'current_name' => App\ActivityLog::NAME_AI])
+    <form id="ai-log-filters" method="GET" action="{{ route('logs.ai') }}" hidden></form>
 
     @if ($calls->count())
         <div class="f-table__scroll">
@@ -44,7 +45,7 @@
                         <th>{{ __('Feature') }}</th>
                         <th>{{ __('Model') }}</th>
                         <th>{{ __('Duration') }}</th>
-                        <th>{{ __('Tokens') }}</th>
+                        <th>{{ __('Tokens (In / Out)') }}</th>
                         <th>{{ __('Mailbox') }}</th>
                         <th>{{ __('Conversation') }}</th>
                         <th>{{ __('Status') }}</th>
@@ -60,6 +61,8 @@
                             <td>
                                 @if ($call->model)
                                     <span class="f-muted">{{ App\Ai\Providers::PRESETS[$call->provider]['name'] ?? $call->provider }} ·</span> {{ $call->model }}
+                                @else
+                                    <span class="ai-log__none">—</span>
                                 @endif
                                 @if ($call->backup)
                                     <x-fruit::badge>{{ __('Backup') }}</x-fruit::badge>
@@ -68,8 +71,8 @@
                                     <x-fruit::badge variant="outline">{{ __('Fast') }}</x-fruit::badge>
                                 @endif
                             </td>
-                            <td>{{ App\Ai\Usage::formatDuration($call->duration_ms) }}</td>
-                            <td>@if ($call->input_tokens || $call->output_tokens){{ number_format($call->input_tokens) }} / {{ number_format($call->output_tokens) }}@endif</td>
+                            <td>@if ($call->duration_ms !== null){{ App\Ai\Usage::formatDuration($call->duration_ms) }}@else<span class="ai-log__none">—</span>@endif</td>
+                            <td>@if ($call->input_tokens || $call->output_tokens){{ number_format($call->input_tokens) }} / {{ number_format($call->output_tokens) }}@else<span class="ai-log__none">—</span>@endif</td>
                             <td>@if ($call->mailbox){{ $call->mailbox->name }}@endif</td>
                             <td>@if ($call->conversation)<a href="{{ route('conversations.view', ['id' => $call->conversation_id]) }}" target="_blank">#{{ $call->conversation->number }}</a>@endif</td>
                             {{-- The outcome, and the error on one line (whole in its Details). --}}

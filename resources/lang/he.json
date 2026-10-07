@@ -1766,5 +1766,6 @@
     "Fast": "מהיר",
     "Last call :time · :duration": "קריאה אחרונה: :time · :duration",
     "Last call failed :time": "הקריאה האחרונה נכשלה: :time",
-    "1 failure in the last hour|:count failures in the last hour": "כישלון אחד בשעה האחרונה|:count כישלונות בשעה האחרונה"
+    "1 failure in the last hour|:count failures in the last hour": "כישלון אחד בשעה האחרונה|:count כישלונות בשעה האחרונה",
+    "Tokens (In / Out)": "טוקנים (קלט / פלט)"
 }

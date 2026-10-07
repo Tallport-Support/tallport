@@ -1770,5 +1770,6 @@
     "Fast": "Snel",
     "Last call :time · :duration": "Laatste aanroep: :time · :duration",
     "Last call failed :time": "Laatste aanroep mislukt: :time",
-    "1 failure in the last hour|:count failures in the last hour": "1 fout in het afgelopen uur|:count fouten in het afgelopen uur"
+    "1 failure in the last hour|:count failures in the last hour": "1 fout in het afgelopen uur|:count fouten in het afgelopen uur",
+    "Tokens (In / Out)": "Tokens (Invoer / Uitvoer)"
 }

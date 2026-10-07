@@ -1811,5 +1811,6 @@
     "Fast": "快速",
     "Last call :time · :duration": "上次呼叫：:time · :duration",
     "Last call failed :time": "上次呼叫失敗：:time",
-    "1 failure in the last hour|:count failures in the last hour": "過去一小時 :count 次失敗"
+    "1 failure in the last hour|:count failures in the last hour": "過去一小時 :count 次失敗",
+    "Tokens (In / Out)": "Token（輸入 / 輸出）"
 }

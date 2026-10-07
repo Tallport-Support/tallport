@@ -1768,5 +1768,6 @@
     "Fast": "Rápido",
     "Last call :time · :duration": "Última llamada: :time · :duration",
     "Last call failed :time": "La última llamada falló: :time",
-    "1 failure in the last hour|:count failures in the last hour": "1 error en la última hora|:count errores en la última hora"
+    "1 failure in the last hour|:count failures in the last hour": "1 error en la última hora|:count errores en la última hora",
+    "Tokens (In / Out)": "Tokens (Entrada / Salida)"
 }

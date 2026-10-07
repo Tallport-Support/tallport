@@ -1767,5 +1767,6 @@
     "Fast": "Hızlı",
     "Last call :time · :duration": "Son çağrı: :time · :duration",
     "Last call failed :time": "Son çağrı başarısız: :time",
-    "1 failure in the last hour|:count failures in the last hour": "Son bir saatte :count hata"
+    "1 failure in the last hour|:count failures in the last hour": "Son bir saatte :count hata",
+    "Tokens (In / Out)": "Tokenler (Girdi / Çıktı)"
 }

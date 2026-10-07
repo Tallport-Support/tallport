@@ -1785,5 +1785,6 @@
     "Fast": "Nopea",
     "Last call :time · :duration": "Viimeisin kutsu: :time · :duration",
     "Last call failed :time": "Viimeisin kutsu epäonnistui: :time",
-    "1 failure in the last hour|:count failures in the last hour": "1 virhe viimeisen tunnin aikana|:count virhettä viimeisen tunnin aikana"
+    "1 failure in the last hour|:count failures in the last hour": "1 virhe viimeisen tunnin aikana|:count virhettä viimeisen tunnin aikana",
+    "Tokens (In / Out)": "Tokenit (Syöte / Tuloste)"
 }

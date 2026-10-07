@@ -1767,5 +1767,6 @@
     "Fast": "Snabb",
     "Last call :time · :duration": "Senaste anrop: :time · :duration",
     "Last call failed :time": "Senaste anropet misslyckades: :time",
-    "1 failure in the last hour|:count failures in the last hour": "1 fel senaste timmen|:count fel senaste timmen"
+    "1 failure in the last hour|:count failures in the last hour": "1 fel senaste timmen|:count fel senaste timmen",
+    "Tokens (In / Out)": "Tokens (Indata / Utdata)"
 }

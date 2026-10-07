@@ -2417,6 +2417,7 @@ h1.settings-toolbar__title {
 }
 /* Logs (secure/logs, App Logs): which log in a bar, the entries' long text on one line. */
 .logs-bar {
+    flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 16px;
     padding: 0;
@@ -2891,13 +2892,15 @@ h1.settings-toolbar__title {
     margin-top: 16px;
 }
 /* Logs » AI (secure/ai_log): filters in a row; an error on one line, whole in its Details. */
-.ai-log__filters {
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
-}
-.ai-log__filters .f-input {
+.logs-bar .f-input {
     width: auto;
+}
+.ai-log .logs-table th {
+    white-space: nowrap;
+}
+/* Not recorded (older rows). */
+.ai-log__none {
+    color: var(--f-tertiary);
 }
 .ai-log .logs-table .f-badge {
     margin-right: 4px;
