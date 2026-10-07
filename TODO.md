@@ -22,11 +22,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: the AI queue clears its in-process option cache before each job. A worker regression test warms old settings, saves a disabled feature and new glossary, then proves subsequent jobs skip the AI call and use the latest glossary when re-enabled.
 
-- [ ] **03 · P1 · Tallport — Fix the translation sanitizer's missing closure variable.**
+- [x] **03 · P1 · Tallport — Fix the translation sanitizer's missing closure variable.**
 
   Evidence: `app/Ai/Translations.php:203` captures only `&$clean`, but the image fallback at line 236 calls `$document->createTextNode()`. `$document` is undefined inside that closure. Any image reaching the branch after its unsupported source is removed causes an error instead of preserving its alternative text.
 
   Capture the document or use the node's owner document. Acceptance: add an HTML translation fixture that reaches this branch, including an image with a non-HTTP source and alternative text; assert the text survives and translation completes. Extend `AiTranslationsTest::testWhatGoesToTranslation()` coverage.
+
+  Completed: the sanitizer captures its DOM document. A regression test uses a local image URL (which survives the earlier purifier), verifies its alternative text replaces the image in the AI prompt, and completes the translation.
 
 - [ ] **04 · P1 · Tallport — Validate completed AI answers before accepting them.**
 

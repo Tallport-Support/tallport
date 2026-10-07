@@ -69,6 +69,15 @@ class AiTranslationsTest extends FeatureTestCase
         $thread->body = '<div><span style="color:red">Waar</span> <font face="Arial">blijft</font> <a href="https://shop.example.org/o/1" onclick="x()">mijn bestelling</a>?</div>';
         $this->assertSame('<div>Waar blijft <a href="https://shop.example.org/o/1">mijn bestelling</a>?</div>', Translations::sourceHtml($thread));
 
+        $thread->body = '<p>Bekijk <img src="/images/invoice.png" alt="bestelling 42"> naast <img src="https://shop.example.org/logo.png" alt="logo"></p>';
+        $this->assertSame('<p>Bekijk bestelling 42 naast <img src="https://shop.example.org/logo.png" alt="logo"></p>', Translations::sourceHtml($thread));
+
+        $saved_thread = $this->first();
+        \DB::table('threads')->where('id', $saved_thread->id)->update(['body' => $thread->body]);
+        ThreadTranslator::fake([['translation' => '<p>View order 42 beside the logo.</p>', 'same_language' => false, 'detected_language' => 'nl']]);
+        $this->assertSame('<p>View order 42 beside the logo.</p>', Translations::translate($saved_thread->fresh(), 'en'));
+        ThreadTranslator::assertPrompted(fn ($prompt) => str_contains($prompt->prompt, 'bestelling 42') && !str_contains($prompt->prompt, '/images/invoice.png'));
+
         $thread->body = '';
         $this->assertSame('', Translations::sourceHtml($thread));
     }

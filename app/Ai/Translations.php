@@ -200,7 +200,7 @@ class Translations
         if (!$root) {
             return '';
         }
-        $clean = function (\DOMNode $node) use (&$clean) {
+        $clean = function (\DOMNode $node) use (&$clean, $document) {
             foreach (iterator_to_array($node->childNodes) as $child) {
                 if ($child instanceof \DOMComment) {
                     $node->removeChild($child);
