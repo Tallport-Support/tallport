@@ -285,6 +285,28 @@ class ConversationListTest extends FeatureTestCase
             ->call('gotoPage', 1)->assertDontSeeHtml('f-context-menu');
     }
 
+    /**
+     * A row shows its status at the end of its meta line unless it's Active, and not in
+     * folders where every row has the same status.
+     */
+    public function testStatusOtherThanActiveIsShown()
+    {
+        $active = $this->conversation('Active question');
+        $pending = $this->conversation('Pending question');
+        foreach ([$active, $pending] as $conversation) {
+            $conversation->changeUser($this->agent->id, $this->agent);
+        }
+        $pending->changeStatus(Conversation::STATUS_PENDING, $this->agent);
+
+        $html = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_MINE)])->html();
+        $this->assertSame(1, substr_count($html, 'conv-row__status'));
+        $this->assertMatchesRegularExpression('#<span class="conv-row__status">.*?f-badge--warning conv-status-dot.*?Pending</span>#s', $html);
+
+        $pending->changeStatus(Conversation::STATUS_CLOSED, $this->agent);
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_CLOSED)])
+            ->assertSee('Pending question')->assertDontSeeHtml('conv-row__status');
+    }
+
     public function testAllMailboxesAndCustomerLists()
     {
         $sales = $this->createMailbox([$this->agent], ['name' => 'Sales', 'accent' => 'orange']);

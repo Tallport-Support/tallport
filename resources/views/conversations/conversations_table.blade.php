@@ -94,6 +94,8 @@
                 $row_menus = isset($selected) && empty($no_checkboxes);
                 $row_selection = $row_menus ? $conversations->whereIn('id', array_map('intval', (array) $selected)) : collect();
                 $unread_ids = App\ConversationRead::unreadIds($conversations, Auth::user());
+                // A row's status unless it's Active (most are), and not where all rows share one.
+                $show_status = !in_array($folder->type, [App\Folder::TYPE_CLOSED, App\Folder::TYPE_SPAM]);
             @endphp
             @foreach ($conversations as $conversation)
                 @php
@@ -127,10 +129,13 @@
                         <x-slot:meta class="conv-row__meta">
                             {{-- The number in search results only. --}}@if (!empty($params['show_number']))<span class="conv-number">#{{ $conversation->number }}</span>@endif
                             <span class="conv-channel" title="{{ $conv_channel_label }}">@if ($conversation->hasChannel())<x-icon.message-square class="f-icon" aria-hidden="true" />@elseif ($conversation->isPhone())<x-icon.phone class="f-icon" aria-hidden="true" />@else<x-icon.mail class="f-icon" aria-hidden="true" />@endif@if ($conversation->threads_count > 1)<span aria-hidden="true">{{ $conversation->threads_count }}</span>@endif<span class="f-sr-only">{{ $conv_channel_label }}</span></span>
-                            @if ($conv_assignee)<span class="conv-owner-name"><x-icon.user class="f-icon" aria-hidden="true" /> {{ $conv_assignee->getFullName() }}</span>@endif
+                            @if ($conv_assignee)<span class="conv-owner-name"><x-icon.user class="f-icon" aria-hidden="true" /> <span class="conv-owner-name__text">{{ $conv_assignee->getFullName() }}</span></span>@endif
                             @if ($conversation->has_attachments)<x-icon.paperclip class="f-icon" :aria-label="__('Attachments')" role="img" />@endif
                             @if (!empty($viewers[$conversation->id]))
                                 <span class="viewer-badge @if (!empty($viewers[$conversation->id]['replying'])) viewer-replying @endif"><x-icon.eye class="f-icon" aria-hidden="true" /> {{ implode(', ', array_map(function ($viewer) { return __($viewer['replying'] ? ':user is replying' : ':user is viewing', ['user' => $viewer['user']->getFullName()]); }, $viewers[$conversation->id]['users'])) }}</span>
+                            @endif
+                            @if ($show_status && (int) $conversation->status != App\Conversation::STATUS_ACTIVE)
+                                <span class="conv-row__status">@include('conversations/partials/status_dot', ['status' => (int) $conversation->status]){{ App\Conversation::statusCodeToName($conversation->status) }}</span>
                             @endif
                         </x-slot:meta>
                     </x-fruit::item-link>

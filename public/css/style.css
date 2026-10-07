@@ -2559,14 +2559,32 @@ h1.settings-toolbar__title {
 }
 .conv-row__meta {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     gap: 4px 12px;
+    min-width: 0;
+    overflow: hidden;
 }
 .conv-row__meta > span {
     display: inline-flex;
     align-items: center;
     gap: 3px;
+    flex-shrink: 0;
+}
+/* One line: the assignee's name gives way first. */
+.conv-row__meta > .conv-owner-name {
+    flex-shrink: 1;
+    min-width: 0;
+}
+.conv-owner-name__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* A status other than Active, at the end of the line (the dot as in the menus). */
+.conv-row__meta > .conv-row__status {
+    margin-inline-start: auto;
+    gap: 5px;
+    color: var(--f-secondary);
 }
 .conv-row__meta .f-icon,
 .conv-list .conv-badge {
