@@ -152,8 +152,6 @@ class WorkflowActionsTest extends FeatureTestCase
      */
     public function testSenderNameInSentEmail()
     {
-        $this->knownBug('R4');
-
         $this->mailbox->from_name = Mailbox::FROM_NAME_USER;
         $this->mailbox->save();
         $conversation = $this->conversation();
@@ -170,8 +168,6 @@ class WorkflowActionsTest extends FeatureTestCase
      */
     public function testBlankEmailBodyIsNotSent()
     {
-        $this->knownBug('W2');
-
         $conversation = $this->conversation();
 
         $this->assertFalse($this->perform('reply', ['body' => '<p> </p>'], $conversation));
@@ -436,8 +432,6 @@ class WorkflowActionsTest extends FeatureTestCase
      */
     public function testTimeBasedNotAssignedToUserIncludesUnassigned()
     {
-        $this->knownBug('W1');
-
         $mine = $this->conversation('Mine');
         $unassigned = $this->conversation('Unassigned');
         Conversation::whereIn('id', [$mine->id, $unassigned->id])->update(['created_at' => now()->subHours(3)]);

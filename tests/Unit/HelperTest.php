@@ -145,7 +145,6 @@ class HelperTest extends TestCase
      */
     public function testResizeImageKeepsBackgrounds()
     {
-        $this->knownBug('H2');
 
         foreach (['png' => 'image/png', 'gif' => 'image/gif'] as $type => $mime_type) {
             $thumb = Helper::resizeImage($this->image(20, 20, $type, false), $mime_type, 10, 10);
@@ -158,7 +157,6 @@ class HelperTest extends TestCase
      */
     public function testResizeImageRefusesWhatIsNotAnImage()
     {
-        $this->knownBug('U9');
 
         $this->assertFalse(Helper::resizeImage($this->tempFile('not an image'), 'image/png', 5, 5));
     }
@@ -213,7 +211,6 @@ class HelperTest extends TestCase
      */
     public function testLinkifyOtherProtocols()
     {
-        $this->knownBug('H3');
 
         $this->assertSame(
             'Get <a  target="_blank" href="ftp://files.example.org/a.txt">ftp://files.example.org/a.txt</a>, then write.',
@@ -491,7 +488,6 @@ class HelperTest extends TestCase
      */
     public function testIsCarbonForLaravelDates()
     {
-        $this->knownBug('H1');
         $this->assertTrue(Helper::isCarbon(now()));
     }
 
@@ -568,6 +564,18 @@ class HelperTest extends TestCase
         $this->assertSame('', Helper::checkUrlIpAndHost('http:///path'));
         $this->assertSame('', Helper::checkUrlIpAndHost('http:?query'));
         $this->assertSame('', Helper::checkUrlIpAndHost(null));
+    }
+
+    /**
+     * An IPv6 address without brackets gets them; host:port and user:password@host don't.
+     */
+    public function testNormalizeIPv6InUrl()
+    {
+        $this->assertSame('http://[2001:db8::1]/x', Helper::normalizeIPv6InUrl('http://2001:db8::1/x'));
+        $this->assertSame('https://[::1]', Helper::normalizeIPv6InUrl('https://::1'));
+        $this->assertSame('http://[::1]:8080/x', Helper::normalizeIPv6InUrl('http://[::1]:8080/x'));
+        $this->assertSame('http://127.0.0.1:8080/x', Helper::normalizeIPv6InUrl('http://127.0.0.1:8080/x'));
+        $this->assertSame('http://user:secret@example.org/x', Helper::normalizeIPv6InUrl('http://user:secret@example.org/x'));
     }
 
     public function testHexToIp()

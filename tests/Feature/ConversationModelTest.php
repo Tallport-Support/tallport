@@ -205,7 +205,6 @@ class ConversationModelTest extends FeatureTestCase
 
     public function testSetLastReplyAtAcceptsCarbon()
     {
-        $this->knownBug('C16');
 
         $conversation = new Conversation();
         $conversation->setLastReplyAt(Carbon::parse('2026-10-01 10:00:00'), Conversation::PERSON_CUSTOMER);
@@ -489,7 +488,6 @@ class ConversationModelTest extends FeatureTestCase
 
     public function testForwardingCopiesAttachmentsFromRemoteStorage()
     {
-        $this->knownBug('C17');
 
         config(['filesystems.default' => 'remote_test']);
         \Storage::fake('remote_test');

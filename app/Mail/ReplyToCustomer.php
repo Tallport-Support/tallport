@@ -103,7 +103,7 @@ class ReplyToCustomer extends Mailable
                         $from_alias_name = $aliases[$from_alias] ?? '';
 
                         // Take into account mailbox From Name setting.
-                        $mailbox_mail_from = $mailbox->getMailFrom($thread->created_by_user, $thread->conversation);
+                        $mailbox_mail_from = $mailbox->getMailFrom($thread->created_by_user, $thread->conversation, $thread);
                         if ($mailbox_mail_from['name'] == $mailbox->name && $from_alias_name) {
                             // Use name from alias.
                         } else {

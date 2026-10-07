@@ -429,8 +429,13 @@ class Runner
                 case 'user':
                     if ((int) $value == -1) {
                         $not ? $query->whereNotNull('conversations.user_id') : $query->whereNull('conversations.user_id');
+                    } elseif ($not) {
+                        // Unassigned conversations aren't assigned to X either.
+                        $query->where(function ($query) use ($value) {
+                            $query->where('conversations.user_id', '!=', (int) $value)->orWhereNull('conversations.user_id');
+                        });
                     } else {
-                        $query->where('conversations.user_id', $not ? '!=' : '=', (int) $value);
+                        $query->where('conversations.user_id', (int) $value);
                     }
                     break;
                 case 'waiting':

@@ -110,7 +110,7 @@ Route::get('/conversation/{id}', ['uses' => 'ConversationsController@view', 'lar
 Route::post('/conversation/ajax', ['uses' => 'ConversationsController@ajax', 'laroute' => true])->name('conversations.ajax');
 Route::post('/attachments/{id}/delete', ['uses' => 'AttachmentsController@delete', 'laroute' => true])->name('attachments.delete');
 Route::get('/attachments/{id}/email', 'AttachmentsController@email')->name('attachments.email');
-Route::get('/thread/{thread_id}/attachments.zip', 'AttachmentsController@download')->name('attachments.download_all');
+Route::get('/thread/{thread_id}/attachments', 'AttachmentsController@download')->name('attachments.download_all');
 Route::post('/conversation/external-images', ['uses' => 'ExternalImagesController@ajax', 'laroute' => true])->name('conversations.external_images');
 Route::post('/conversation/upload', ['uses' => 'ConversationsController@upload', 'laroute' => true])->middleware('throttle:100,1')->name('conversations.upload');
 Route::get('/mailbox/{mailbox_id}/new-ticket', 'ConversationsController@create')->name('conversations.create');

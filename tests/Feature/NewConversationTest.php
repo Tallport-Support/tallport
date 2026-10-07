@@ -114,8 +114,6 @@ class NewConversationTest extends FeatureTestCase
      */
     public function testFromAMessageWithFiles()
     {
-        $this->knownBug('C21');
-
         $file = \App\Attachment::create('terms.pdf', 'application/pdf', null, '%PDF-1.4', null, false);
         $conversation = new Conversation();
         $conversation->mailbox = $this->mailbox;

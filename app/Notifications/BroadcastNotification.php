@@ -100,19 +100,8 @@ class BroadcastNotification extends Notification implements ShouldQueue
         if (in_array(Subscription::MEDIUM_EMAIL, $mediums)) {
             $web_notifications_info = [];
 
-            // Get last reply or note of the conversation to display it's text
-            $last_thread_body = '';
-            $last_thread = Thread::where('conversation_id', $conversation->id)
-                // Select must contain all fields from orderBy() to avoid:
-                // General error: 3065 Expression #1 of ORDER BY clause is not in SELECT
-                ->select(['body', 'created_at'])
-                ->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE, Thread::TYPE_NOTE])
-                ->orderBy('created_at')
-                ->first();
-
-            if ($last_thread) {
-                $last_thread_body = $last_thread->body;
-            }
+            // The new message's text, as WebsiteNotification shows it.
+            $last_thread_body = $thread->body;
 
             //$db_notification->id = 'dummy';
             $web_notifications_info['notification'] = $db_notification;

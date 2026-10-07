@@ -242,7 +242,7 @@ class ConversationsController extends Controller
             }
         }
 
-        $threads = $conversation->threads()->orderBy('created_at', 'desc')->get();
+        $threads = $conversation->threads()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->get();
 
         // Get To for new conversation.
         $new_conv_to = [];
@@ -270,7 +270,7 @@ class ConversationsController extends Controller
                                     ->where('status', '!=', Conversation::STATUS_SPAM)
                                     ->where('state', Conversation::STATE_PUBLISHED)
                                     //->limit(self::PREV_CONVERSATIONS_LIMIT)
-                                    ->orderBy('created_at', 'desc')
+                                    ->orderBy('created_at', 'desc')->orderBy('id', 'desc')
                                     ->paginate(self::PREV_CONVERSATIONS_LIMIT);
         }
 
@@ -1261,7 +1261,7 @@ class ConversationsController extends Controller
                             ->where('status', '!=', Conversation::STATUS_SPAM)
                             ->where('state', Conversation::STATE_PUBLISHED)
                             //->limit(self::PREV_CONVERSATIONS_LIMIT)
-                            ->orderBy('created_at', 'desc')
+                            ->orderBy('created_at', 'desc')->orderBy('id', 'desc')
                             ->paginate(self::PREV_CONVERSATIONS_LIMIT);
                     }
 
@@ -1331,7 +1331,7 @@ class ConversationsController extends Controller
 
         // Get send log
         $log_records = SendLog::where('thread_id', $thread_id)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'desc')->orderBy('id', 'desc')
             ->get();
 
         $customers_log = [];
@@ -1511,7 +1511,7 @@ class ConversationsController extends Controller
                                     ->where('id', '<>', $conversation->id)
                                     ->where('status', '!=', Conversation::STATUS_SPAM)
                                     ->where('state', Conversation::STATE_PUBLISHED)
-                                    ->orderBy('created_at', 'desc')
+                                    ->orderBy('created_at', 'desc')->orderBy('id', 'desc')
                                     ->paginate(500);
         }
 
@@ -2285,7 +2285,8 @@ class ConversationsController extends Controller
                 if ($show_view_link) {
                     $flash_text = __(':%tag_start%' . $identifier . ' added:%tag_end% :%view_start%View:%a_end%', $flash_vars);
                 } else {
-                    $flash_text = '<strong>'.__('%identifier% added', ['%identifier%' => $identifier]).'</strong>';
+                    // The translations keep FreeScout's %identifier%, which __() doesn't fill in.
+                    $flash_text = '<strong>'.str_replace('%identifier%', e($identifier), __('%identifier% added')).'</strong>';
                 }
             } elseif ($is_note) {
                 $flash_type = 'warning';
@@ -3142,7 +3143,7 @@ class ConversationsController extends Controller
         $last_thread = $conversation->threads()
             ->where('id', '<>', $thread->id)
             ->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'desc')->orderBy('id', 'desc')
             ->first();
 
         $folder_id = $conversation->folder_id;

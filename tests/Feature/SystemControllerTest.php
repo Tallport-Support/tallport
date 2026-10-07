@@ -187,8 +187,6 @@ class SystemControllerTest extends FeatureTestCase
      */
     public function testCommandLastSuccessfulRunShowsItsOwnDate()
     {
-        $this->knownBug('S14');
-
         $last_run = Carbon::parse('2026-10-01 09:00:00')->getTimestamp();
         $last_successful_run = Carbon::parse('2026-10-01 09:30:00')->getTimestamp();
         Option::set('queue_work_last_run', $last_run);
@@ -304,8 +302,6 @@ class SystemControllerTest extends FeatureTestCase
      */
     public function testRetryJobRunsADelayedJobNow()
     {
-        $this->knownBug('S15');
-
         $job_id = \DB::table('jobs')->insertGetId([
             'queue' => 'emails', 'payload' => '{"displayName":"App\\\\Jobs\\\\SendReplyToCustomer"}', 'attempts' => 0,
             'reserved_at' => null, 'available_at' => time() + 3600, 'created_at' => time(),

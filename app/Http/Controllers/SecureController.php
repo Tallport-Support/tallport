@@ -61,7 +61,7 @@ class SecureController extends Controller
         $name = '';
 
         if (!empty($request->name)) {
-            $activities = ActivityLog::inLog($request->name)->orderBy('created_at', 'desc')->paginate($page_size);
+            $activities = ActivityLog::inLog($request->name)->orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate($page_size);
             $name = $request->name;
         } elseif (count($names)) {
             $name = ActivityLog::NAME_OUT_EMAILS;
@@ -111,7 +111,7 @@ class SecureController extends Controller
                 'conversation',
             ];
 
-            $activities_query = SendLog::orderBy('created_at', 'desc');
+            $activities_query = SendLog::orderBy('created_at', 'desc')->orderBy('id', 'desc');
             if ($request->get('thread_id')) {
                 $activities_query->where('thread_id', $request->get('thread_id'));
             }

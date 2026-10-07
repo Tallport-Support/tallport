@@ -273,8 +273,6 @@ PHP;
      */
     public function testEmptyTokenResponseIsAnError()
     {
-        $this->knownBug('M11');
-
         $this->startProxy('login.microsoftonline.com', [[503, '']]);
 
         $token_data = \MailHelper::oauthGetAccessToken(\MailHelper::OAUTH_PROVIDER_MICROSOFT, ['client_id' => 'client-1', 'client_secret' => 'secret-1', 'code' => 'auth-code']);

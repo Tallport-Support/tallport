@@ -224,7 +224,7 @@ class SystemController extends Controller
             $date_text = '?';
             $last_successful_run = Option::get($option_name.'_last_successful_run');
             if ($last_successful_run) {
-                $date_ = Carbon::createFromTimestamp($last_successful_run);
+                $date = Carbon::createFromTimestamp($last_successful_run);
                 $date_text = User::dateFormat($date);
             }
             $status_texts[] = __h('Last successful run:').' '.htmlspecialchars($date_text);

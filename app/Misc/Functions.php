@@ -20,8 +20,8 @@ if (! function_exists('__j')) {
     function __h($key, $replace = [], $locale = null, $escape_replacements = false)
     {
         if ($escape_replacements) {
-            foreach ($replace as $key => $value) {
-                $replace[$key] = htmlspecialchars($value);
+            foreach ($replace as $name => $value) {
+                $replace[$name] = htmlspecialchars($value);
             }
         }
         return __(htmlspecialchars($key), $replace, $locale);

@@ -87,7 +87,7 @@ class Module extends \Nwidart\Modules\Laravel\Module
     {
         try {
             parent::registerProviders();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->registerError($e);
         }
     }
@@ -99,7 +99,7 @@ class Module extends \Nwidart\Modules\Laravel\Module
     {
         try {
             parent::registerFiles();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->registerError($e);
         }
     }
@@ -108,7 +108,7 @@ class Module extends \Nwidart\Modules\Laravel\Module
      * Let the modules.register_error filter handle a failed registration
      * (AppServiceProvider deactivates the module); rethrow if it doesn't.
      *
-     * @param  \Exception  $e
+     * @param  \Throwable  $e
      */
     protected function registerError($e)
     {

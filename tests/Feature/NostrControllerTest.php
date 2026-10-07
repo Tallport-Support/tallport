@@ -220,8 +220,6 @@ class NostrControllerTest extends FeatureTestCase
 
     public function testCustomerKeysFollowLimitedVisibility()
     {
-        $this->knownBug('K4');
-
         config(['app.limit_user_customer_visibility' => true]);
         $elsewhere = $this->createMailbox([], ['name' => 'Elsewhere']);
         $this->receiveEmail($elsewhere, $this->makeEmail(['from' => 'sam@customer.example.org', 'to' => $elsewhere->email]));

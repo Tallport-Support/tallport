@@ -25,7 +25,8 @@ class SendReplyToCustomer
     {
         $conversation = $event->conversation;
 
-        $main_customer_email = $conversation->customer->getMainEmail();
+        // Custom conversations (made by modules) may have no customer.
+        $main_customer_email = $conversation->customer ? $conversation->customer->getMainEmail() : '';
 
         // Do not send email if this is a Phone conversation and customer has no email.
         if ($conversation->isPhone()) {
@@ -126,7 +127,12 @@ class SendReplyToCustomer
             }
         }
 
-        \App\Jobs\SendReplyToCustomer::dispatch($conversation, $replies, $recipient_customer)
+        // No customer to email.
+        if (!$recipient_customer) {
+            return;
+        }
+
+        \App\Jobs\SendReplyToCustomer::dispatch($conversation, $replies, $recipient_customer, $mailbox_change_history)
             ->delay($delay)
             ->onQueue('emails');
     }

@@ -983,7 +983,7 @@ class Thread extends Model
             $thread->setBcc($data['bcc']);
         }
         if (isset($data['first'])) {
-            $thread->from = $data['first'];
+            $thread->first = $data['first'];
         }
         if (isset($data['source_via'])) {
             $thread->source_via = $data['source_via'];
@@ -1558,6 +1558,18 @@ class Thread extends Model
         return \Helper::parseDateToCarbon($data->date);
     }
 
+    /**
+     * Convert a UTC date string (as the API gives) into a date in the server time zone.
+     */
+    public static function utcStringToServerDate($value)
+    {
+        try {
+            return \Carbon\Carbon::parse($value, 'UTC')->setTimezone(config('app.timezone'));
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
     public function getActionTypeName()
     {
         if (!$this->action_type) {
@@ -1566,7 +1578,7 @@ class Thread extends Model
 
         $action_types = \Eventy::filter('thread.action_types', self::$action_types);
 
-        return self::$action_types[$this->action_type] ?? '';
+        return $action_types[$this->action_type] ?? '';
     }
 
     public function isCustomerMessage()

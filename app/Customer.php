@@ -1060,7 +1060,7 @@ class Customer extends Model
             $this->addPhone($data['phone']);
         }
         foreach ($data as $key => $value) {
-            if (!in_array($key, $this->json_fields) && $key != 'emails') {
+            if (!in_array($key, $this->json_fields) && $key != 'emails' && $key != 'country') {
                 continue;
             }
             if ($key == 'phones') {
@@ -1089,7 +1089,7 @@ class Customer extends Model
                 $this->setSocialProfiles($value);
                 $result = true;
             }
-            if ($key == 'country') {
+            if ($key == 'country' && $this->country) {
                 if (array_search($this->country, Customer::$countries)) {
                     $this->country = array_search($this->country, Customer::$countries);
                 }
@@ -1280,7 +1280,7 @@ class Customer extends Model
             return $this->email;
         } elseif ($main_email = $this->getMainEmail()) {
             return $main_email;
-        } elseif ($phones = $this->getPhones() && !empty($phones[0]['value'])) {
+        } elseif (($phones = $this->getPhones()) && !empty($phones[0]['value'])) {
             return $phones[0]['value'];
         }
 

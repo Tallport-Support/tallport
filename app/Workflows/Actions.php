@@ -120,7 +120,7 @@ class Actions
             case 'note':
                 $email = self::email($value);
                 $body = trim((string) ($email['body'] ?? ''));
-                if (strip_tags($body, '<img>') === '' || $conversation->hasChannel() && $row['type'] != 'note') {
+                if (trim(strip_tags($body, '<img>')) === '' || $conversation->hasChannel() && $row['type'] != 'note') {
                     return false;
                 }
                 $meta = [self::META_WORKFLOW => $workflow->id];
@@ -264,7 +264,7 @@ class Actions
                 $user_ids[] = $conversation->user_id;
             } elseif ($value == 'last_user') {
                 $user_ids[] = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)
-                    ->where('created_by_user_id', '!=', $robot->id)->orderBy('created_at', 'desc')->value('created_by_user_id');
+                    ->where('created_by_user_id', '!=', $robot->id)->orderBy('created_at', 'desc')->orderBy('id', 'desc')->value('created_by_user_id');
             } elseif (is_numeric($value)) {
                 $user_ids[] = (int) $value;
             }
@@ -276,7 +276,7 @@ class Actions
         if (!$users) {
             return false;
         }
-        $threads = $conversation->threads()->orderBy('created_at', 'desc')->get();
+        $threads = $conversation->threads()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->get();
         \App\Jobs\SendNotificationToUsers::dispatch(collect($users), $conversation, $threads)->onQueue('emails');
 
         return true;

@@ -282,6 +282,7 @@ class NostrController extends Controller
     public function customerKeys($id)
     {
         $customer = Customer::findOrFail($id);
+        $this->authorize('view', $customer);
 
         return view('nostr/customer_keys', [
             'customer' => $customer,
@@ -292,6 +293,7 @@ class NostrController extends Controller
     public function customerKeysSave($id, Request $request)
     {
         $customer = Customer::findOrFail($id);
+        $this->authorize('view', $customer);
         $action = $request->input('action');
 
         if ($action === 'add') {

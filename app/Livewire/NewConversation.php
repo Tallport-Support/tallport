@@ -131,6 +131,8 @@ class NewConversation extends Component
         $this->phone = (string) $phone;
         $this->to_email = (string) (reset($toEmail) ?: '');
 
+        // Livewire has filled the property with the models: the composer's arrays replace them.
+        $this->attachments = [];
         foreach ($attachments as $attachment) {
             $this->attachments[] = [
                 'id'    => encrypt($attachment->id),
@@ -375,7 +377,7 @@ class NewConversation extends Component
                 ->where('id', '<>', (int) $this->conversation_id)
                 ->where('status', '!=', Conversation::STATUS_SPAM)
                 ->where('state', Conversation::STATE_PUBLISHED)
-                ->orderBy('created_at', 'desc')
+                ->orderBy('created_at', 'desc')->orderBy('id', 'desc')
                 ->paginate(ConversationsController::PREV_CONVERSATIONS_LIMIT);
         } else {
             $customer = null;

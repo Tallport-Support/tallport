@@ -51,12 +51,14 @@ class SendReplyToCustomer implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($conversation, $threads, $customer)
+    public function __construct($conversation, $threads, $customer, $mailbox_change_history = [])
     {
         $this->conversation = $conversation;
         $this->threads = $threads;
         // Recipient.
         $this->customer = $customer;
+        // Reply id => the mailbox it was written in (its signature).
+        $this->mailbox_change_history = $mailbox_change_history;
     }
 
     /**
@@ -290,10 +292,10 @@ class SendReplyToCustomer implements ShouldQueue
         $headers['Message-ID'] = $this->message_id;
 
         // https://github.com/freescout-help-desk/freescout/issues/5121
-        if ($this->customer->id == $this->conversation->customer_id) {
+        if ($this->customer && $this->customer->id == $this->conversation->customer_id) {
             $this->customer_email = $this->conversation->customer_email;
         } else {
-            $this->customer_email = $this->last_thread->getToArray()[0] ?: $this->conversation->customer_email;
+            $this->customer_email = ($this->last_thread->getToArray()[0] ?? '') ?: $this->conversation->customer_email;
         }
 
         // For phone conversations we may need to get customer email.

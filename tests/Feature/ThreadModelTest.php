@@ -346,7 +346,6 @@ class ThreadModelTest extends FeatureTestCase
 
     public function testCreateMarksTheFirstThread()
     {
-        $this->knownBug('C18');
 
         $thread = Thread::create($this->conversation(), Thread::TYPE_MESSAGE, '<p>Hi</p>', [
             'from'  => 'support@example.org',
@@ -403,7 +402,6 @@ class ThreadModelTest extends FeatureTestCase
 
     public function testCreateExtendedKeepsTheDateOfImportedThreads()
     {
-        $this->knownBug('C20');
 
         $thread = Thread::createExtended([
             'type'        => Thread::TYPE_CUSTOMER,
@@ -543,7 +541,6 @@ class ThreadModelTest extends FeatureTestCase
 
     public function testActionTypeNameIncludesTypesAddedByModules()
     {
-        $this->knownBug('C19');
 
         \Eventy::addFilter('thread.action_types', function ($action_types) {
             $action_types[150] = 'module-action';

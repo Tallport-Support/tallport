@@ -234,8 +234,6 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
      */
     public function testCustomConversation()
     {
-        $this->knownBug('C22');
-
         \Eventy::addFilter('conversation.custom.identifier', function () {
             return 'Ticket';
         }, 20, 2);

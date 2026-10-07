@@ -40,7 +40,7 @@ class SenderTime
         $thread = $conversation->threads()
             ->where('type', Thread::TYPE_CUSTOMER)
             ->whereNotNull('headers')
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'desc')->orderBy('id', 'desc')
             ->first();
         $sent_at = $thread ? self::sentAt($thread) : null;
 

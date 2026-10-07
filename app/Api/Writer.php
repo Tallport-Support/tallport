@@ -332,6 +332,8 @@ class Writer
         }
 
         $previous_status = $conversation->status;
+        // Not the first thread of a new conversation.
+        $had_threads = $conversation->threads_count > 0;
         $thread = Thread::createExtended([
             'type'               => $type,
             'body'               => $text,
@@ -362,7 +364,7 @@ class Writer
                 $conversation->closed_by_user_id = $user->id;
                 $conversation->closed_at = now();
                 $conversation->save();
-                if ($previous_status != $status && $conversation->threads_count > 1) {
+                if ($previous_status != $status && $had_threads) {
                     \Eventy::action('conversation.status_changed', $conversation, $user, true, $previous_status);
                 }
             }

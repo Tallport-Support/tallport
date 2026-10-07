@@ -75,7 +75,7 @@ class Incoming
         $conversation = Conversation::where('mailbox_id', $mailbox->id)
             ->where('customer_id', $customer->id)
             ->where('channel', Telegram::CHANNEL)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'desc')->orderBy('id', 'desc')
             ->first();
         $thread = [
             'type'        => Thread::TYPE_CUSTOMER,

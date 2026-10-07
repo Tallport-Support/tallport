@@ -200,8 +200,6 @@ class RealtimePayloadsTest extends FeatureTestCase
      */
     public function testNotificationPreviewsTheNewMessage()
     {
-        $this->knownBug('R3');
-
         [$conversation, $payloads] = $this->notifiedReply();
 
         $html = $payloads[0]['data']['web']['html'];

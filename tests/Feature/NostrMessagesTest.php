@@ -247,7 +247,7 @@ class NostrMessagesTest extends FeatureTestCase
 
         $attachment = $thread->attachments()->first();
         $this->assertSame($plain, $attachment->getFileContents());
-        $this->assertMatchesRegularExpression('/^nostr-file-[0-9a-f]{8}\.bin$/', $attachment->file_name);
+        $this->assertMatchesRegularExpression('/^nostr-file-[0-9a-f]{8}\.txt$/', $attachment->file_name);
         $this->assertContains('file hash does not match the x tag, continuing', $this->log);
 
         // Encrypted, with the hash of something else.
@@ -257,6 +257,24 @@ class NostrMessagesTest extends FeatureTestCase
         $this->assertSame($plain, $thread->attachments()->first()->getFileContents());
         $this->assertSame('notes.txt', $thread->attachments()->first()->file_name);
         $this->assertContains('encrypted file hash does not match the x tag, continuing', $this->log);
+    }
+
+    /**
+     * A file sent without a name gets one with the extension of its type.
+     */
+    public function testFileWithoutANameKeepsItsTypesExtension()
+    {
+        Http::fake([self::FILE_HOST.'/download*' => Http::response('png data'), self::FILE_HOST.'/blob*' => Http::response('data')]);
+
+        $thread = $this->handler->handleGiftWrap($this->cfg, $this->wrap(['kind' => 15, 'content' => self::FILE_HOST.'/download?id=2', 'tags' => [
+            ['p', $this->cfg->pubkey], ['file-type', 'image/png'],
+        ]])[0]);
+        $this->assertMatchesRegularExpression('/^nostr-file-[0-9a-f]{8}\.png$/', $thread->attachments()->first()->file_name);
+
+        $thread = $this->handler->handleGiftWrap($this->cfg, $this->wrap(['kind' => 15, 'content' => self::FILE_HOST.'/blob', 'tags' => [
+            ['p', $this->cfg->pubkey], ['file-type', 'application/x-unknown-type'],
+        ]])[0]);
+        $this->assertMatchesRegularExpression('/^nostr-file-[0-9a-f]{8}\.bin$/', $thread->attachments()->first()->file_name);
     }
 
     public function testFilesAreNotFetchedFromPrivateAddressesAfterARedirect()

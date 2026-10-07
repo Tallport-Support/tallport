@@ -212,8 +212,6 @@ class ModuleSystemTest extends FeatureTestCase
      */
     public function testMissingProviderClass()
     {
-        $this->knownBug('S18');
-
         config(['modules.cache.enabled' => false]);
         $this->makeModuleJson(['Modules\\TpModule\\Providers\\MissingProvider']);
         $module = (new Repository($this->app, $this->dir))->findByAlias('tpmodule');

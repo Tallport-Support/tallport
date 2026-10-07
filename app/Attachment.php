@@ -251,7 +251,7 @@ class Attachment extends Model
      */
     public static function typeNameToInt($type_name)
     {
-        if (!empty(self::$types[$type_name])) {
+        if (isset(self::$types[$type_name])) {
             return self::$types[$type_name];
         } else {
             return self::TYPE_OTHER;
@@ -428,7 +428,7 @@ class Attachment extends Model
                 $conversation = $attachment->thread->conversation;
                 foreach ($conversation->threads as $thread) {
                     if ($thread->has_attachments) {
-                        break 2;
+                        continue 2;
                     }
                 }
                 $conversation->has_attachments = false;

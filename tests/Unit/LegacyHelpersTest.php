@@ -78,7 +78,6 @@ class LegacyHelpersTest extends TestCase
      */
     public function testArrayPrependWithoutKey()
     {
-        $this->knownBug('H5');
 
         $this->assertSame([0, 1, 2], array_prepend([1, 2], 0));
     }
@@ -138,7 +137,6 @@ class LegacyHelpersTest extends TestCase
      */
     public function testTranslationForHtmlWithEscapedReplacements()
     {
-        $this->knownBug('H4');
         $this->assertSame('&lt;b&gt;Casey&lt;/b&gt; and Sam', __h(':name and :other', ['name' => '<b>Casey</b>', 'other' => 'Sam'], null, true));
     }
 

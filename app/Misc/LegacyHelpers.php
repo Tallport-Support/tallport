@@ -175,6 +175,10 @@ if (! function_exists('array_prepend')) {
      */
     function array_prepend($array, $value, $key = null)
     {
+        if (is_null($key)) {
+            return Arr::prepend($array, $value);
+        }
+
         return Arr::prepend($array, $value, $key);
     }
 }

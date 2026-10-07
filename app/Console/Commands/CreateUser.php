@@ -41,7 +41,7 @@ class CreateUser extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return int 0 when the user was created
      */
     public function handle()
     {
@@ -58,7 +58,7 @@ class CreateUser extends Command
         if ($user->role) {
             if (!in_array($user->role, User::$roles)) {
                 $this->error('Invalid role');
-                return false;
+                return self::FAILURE;
             }
         } else {
             $user->role = $this->ask('User role (admin/user)', 'admin');
@@ -76,7 +76,7 @@ class CreateUser extends Command
         if ($user->email) {
             if (!filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
                 $this->error('Invalid email address');
-                return false;
+                return self::FAILURE;
             }
         } else {
             $user->email = $this->ask('User email address');
@@ -98,16 +98,16 @@ class CreateUser extends Command
             } catch (\Exception $e) {
                 $this->line($e->getMessage());
                 $this->error('User already exists.');
-                return false;
+                return self::FAILURE;
             }
         } else {
             $this->line('User not created.');
 
-            return false;
+            return self::FAILURE;
         }
 
         $this->info('User created with id: '.$user->id);
 
-        return true;
+        return self::SUCCESS;
     }
 }

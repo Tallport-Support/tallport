@@ -877,27 +877,23 @@ class Helper
      */
     public static function resizeImage($file, $mime_type, $thumb_width, $thumb_height, $transparency = false)
     {
-        list($width, $height) = getimagesize($file);
-        if (!$width) {
+        $size = @getimagesize($file);
+        if (!$size || !$size[0] || !$size[1]) {
             return false;
         }
+        list($width, $height) = $size;
 
         if (preg_match('/png/i', $mime_type)) {
-            $src = imagecreatefrompng($file);
-
-            if (!$transparency) {
-                $kek = imagecolorallocate($src, 255, 255, 255);
-                imagefill($src, 0, 0, $kek);
-            }
+            $src = @imagecreatefrompng($file);
         } elseif (preg_match('/gif/i', $mime_type)) {
-            $src = imagecreatefromgif($file);
-
-            $kek = imagecolorallocate($src, 255, 255, 255);
-            imagefill($src, 0, 0, $kek);
+            $src = @imagecreatefromgif($file);
         } elseif (preg_match('/bmp/i', $mime_type)) {
-            $src = imagecreatefrombmp($file);
+            $src = @imagecreatefrombmp($file);
         } else {
-            $src = imagecreatefromjpeg($file);
+            $src = @imagecreatefromjpeg($file);
+        }
+        if (!$src) {
+            return false;
         }
 
         $original_aspect = $width / $height;
@@ -919,6 +915,9 @@ class Helper
         if ($transparency && preg_match('/png/i', $mime_type)) {
             imagealphablending($thumb, false);
             imagesavealpha($thumb, true);
+        } else {
+            // Transparent parts become white.
+            imagefill($thumb, 0, 0, imagecolorallocate($thumb, 255, 255, 255));
         }
         // Resize and crop
         imagecopyresampled(
@@ -1826,7 +1825,7 @@ class Helper
                     }, $value) ?: $value;
                     break;
                 default:
-                    $value = preg_replace_callback('~' . preg_quote($protocol, '~') . '://([^\s<]+?)(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
+                    $value = preg_replace_callback('~' . preg_quote($protocol, '~') . '://([^\s<]+)(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
                         $href = self::encodeQuotes("$protocol://{$match[1]}", ENT_QUOTES, 'UTF-8');
                         $link_text = self::encodeQuotes("$protocol://{$match[1]}", ENT_QUOTES, 'UTF-8');
                         return '<' . array_push($links, "<a $attr href=\"{$href}\">{$link_text}</a>") . '>';
@@ -2367,7 +2366,14 @@ class Helper
 
         $pattern = '/^(https?:\/\/)([^\/?#]+:[^\/?#]+)([\/?#]+|$)/';
 
-        return preg_replace($pattern, '$1[$2]$3', $url);
+        // An IPv6 address has at least two colons; host:port and user:password@host are left as they are.
+        return preg_replace_callback($pattern, function ($match) {
+            if (substr_count($match[2], ':') < 2 || strpos($match[2], '@') !== false) {
+                return $match[0];
+            }
+
+            return $match[1].'['.$match[2].']'.$match[3];
+        }, $url);
     }
 
     // Get next redicred URL.
@@ -3366,10 +3372,7 @@ class Helper
 
     public static function isCarbon($date)
     {
-        if (!is_object($date)) {
-            return false;
-        }
-        return get_class($date) == 'Carbon\Carbon';
+        return $date instanceof \Carbon\Carbon;
     }
 
     public static function hashEquals($known_string, $string_to_check)

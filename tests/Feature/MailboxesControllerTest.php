@@ -528,8 +528,6 @@ PHP;
      */
     public function testOauthWithAnUnknownProvider()
     {
-        $this->knownBug('M10');
-
         $mailbox = $this->oauthMailbox();
 
         $this->actingAs($this->admin)->get(route('mailboxes.oauth', ['id' => $mailbox->id, 'in_out' => 'in', 'provider' => 'unknown-provider']))

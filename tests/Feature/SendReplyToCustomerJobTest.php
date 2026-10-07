@@ -268,8 +268,6 @@ class SendReplyToCustomerJobTest extends FeatureTestCase
      */
     public function testQuotedReplyKeepsTheSignatureOfItsMailbox()
     {
-        $this->knownBug('R2');
-
         config(['app.email_conv_history' => 'full']);
         $this->mailbox->signature = 'Regards, the Shop';
         $this->mailbox->save();
@@ -572,8 +570,6 @@ class SendReplyToCustomerJobTest extends FeatureTestCase
      */
     public function testRecipientIsLookedUpWhenNoCustomerIsGiven()
     {
-        $this->knownBug('R1');
-
         [$conversation, $reply] = $this->conversationWithQueuedReply();
 
         (new SendReplyToCustomer($conversation, $this->threadsOf($conversation), null))->handle();

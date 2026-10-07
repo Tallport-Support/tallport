@@ -67,6 +67,12 @@ class FetchEmails extends Command
     public $extra_import = [];
 
     /**
+     * Whether the message being saved is a bounce: its thread is marked before the
+     * new-conversation events, so the auto reply skips it (saveBounceData() adds the rest).
+     */
+    protected $saving_bounce = false;
+
+    /**
      * Whether the last processMessage() failed (as opposed to saving the
      * email, or skipping it on purpose): tallport:receive tells the mail
      * server to try again.
@@ -219,12 +225,14 @@ class FetchEmails extends Command
         if ($debug) {
             ob_start();
         }
-        
-        $this->fetch($mailbox);
 
-        if ($debug) {
-            $debug_log = ob_get_contents();
-            ob_end_clean();
+        try {
+            $this->fetch($mailbox);
+        } finally {
+            if ($debug) {
+                $debug_log = ob_get_contents();
+                ob_end_clean();
+            }
         }
 
         return $debug_log;
@@ -234,7 +242,7 @@ class FetchEmails extends Command
     {
         $no_charset = false;
 
-        $client = \MailHelper::getMailboxClient($mailbox);
+        $client = \MailHelper::getMailboxClient($mailbox, (bool) $this->option('debug'));
 
         // Connect to the Server.
         try {
@@ -375,7 +383,7 @@ class FetchEmails extends Command
 
                 if ($last_error && !\Str::startsWith($last_error, 'Mailbox is empty')) {
                     // Throw exception for INBOX only
-                    if ($folder->name == 'INBOX' && !$messages) {
+                    if ($folder->name == 'INBOX' && !count($messages)) {
                         throw new \Exception($last_error, 1);
                     } else {
                         $this->error('['.date('Y-m-d H:i:s').'] '.$last_error);
@@ -1103,6 +1111,7 @@ class FetchEmails extends Command
                     $new_thread = $this->saveUserNote($data['message_id'], $data['prev_thread'], $note_user, $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['body'], $data['attachments'], ($data['message'] ? $data['message']->getHeader() : $incoming->headers()), $data['date']);
                 } else {
                     // SendAutoReply listener will check bounce flag and will not send an auto reply if this is an auto responder.
+                    $this->saving_bounce = $message_from_customer && $is_bounce;
                     $new_thread = $this->saveCustomerThread($mailbox, $data['message_id'], $data['prev_thread'], $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['subject'], $data['body'], $data['attachments'], ($data['message'] ? $data['message']->getHeader() : $incoming->headers()), $data['date']);
                 }
             } else {
@@ -1382,6 +1391,10 @@ class FetchEmails extends Command
         if ($new) {
             $thread->first = true;
         }
+        if ($this->saving_bounce) {
+            $thread->updateSendStatusData(['is_bounce' => true]);
+            $this->saving_bounce = false;
+        }
         try {
             $thread->save();
         } catch (\Exception $e) {
@@ -1409,7 +1422,7 @@ class FetchEmails extends Command
             }
         }
 
-        $new_body = Thread::replaceBase64ImagesWithAttachments($thread->body);
+        $new_body = $this->replaceBase64Images($thread);
         if ($new_body != $thread->body) {
             $thread->body = $new_body;
             $body_changed = true;
@@ -1478,7 +1491,7 @@ class FetchEmails extends Command
         // Determine assignee.
         switch ($mailbox->ticket_assignee) {
             case Mailbox::TICKET_ASSIGNEE_ANYONE:
-                $conversation->user_id = Conversation::USER_UNASSIGNED;
+                $conversation->user_id = null;
                 break;
             case Mailbox::TICKET_ASSIGNEE_REPLYING_UNASSIGNED:
                 if (!$conversation->user_id) {
@@ -1564,7 +1577,7 @@ class FetchEmails extends Command
             }
         }
 
-        $new_body = Thread::replaceBase64ImagesWithAttachments($thread->body);
+        $new_body = $this->replaceBase64Images($thread);
         if ($new_body != $thread->body) {
             $thread->body = $new_body;
             $body_changed = true;
@@ -1654,7 +1667,7 @@ class FetchEmails extends Command
             }
         }
 
-        $new_body = Thread::replaceBase64ImagesWithAttachments($thread->body);
+        $new_body = $this->replaceBase64Images($thread);
         if ($new_body != $thread->body) {
             $thread->body = $new_body;
             $body_changed = true;
@@ -1947,6 +1960,28 @@ class FetchEmails extends Command
         }
 
         return $body;
+    }
+
+    /**
+     * Replace base64 images in the thread's body with embedded attachments,
+     * which belong to the thread (so they are deleted with it).
+     *
+     * @return string
+     */
+    public function replaceBase64Images($thread)
+    {
+        $new_body = Thread::replaceBase64ImagesWithAttachments($thread->body);
+
+        if ($new_body != $thread->body) {
+            preg_match_all('#\?id=(\d+)&token=#', $thread->body ?? '', $old_ids);
+            preg_match_all('#\?id=(\d+)&token=#', $new_body, $new_ids);
+            $attachment_ids = array_diff($new_ids[1], $old_ids[1]);
+            if ($attachment_ids) {
+                Attachment::whereIn('id', $attachment_ids)->whereNull('thread_id')->update(['thread_id' => $thread->id]);
+            }
+        }
+
+        return $new_body;
     }
 
     /**

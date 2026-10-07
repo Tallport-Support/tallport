@@ -483,10 +483,7 @@ class IncomingMessageHandler
         if ($name !== '' && $name !== '.' && strpos($name, '.') > 0) {
             return $name;
         }
-        $ext = 'bin';
-        if (class_exists('\Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser')) {
-            $ext = \Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser::getInstance()->guess($mime) ?: 'bin';
-        }
+        $ext = \Symfony\Component\Mime\MimeTypes::getDefault()->getExtensions((string) $mime)[0] ?? 'bin';
 
         return 'nostr-file-'.substr($id ?: md5($url), 0, 8).'.'.$ext;
     }

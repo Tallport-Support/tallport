@@ -155,7 +155,7 @@ class ConversationThread extends Component
     public function render()
     {
         $conversation = $this->conversation();
-        $threads = $this->initial ?? \Eventy::filter('conversation.view.threads', $conversation->threads()->orderBy('created_at', 'desc')->get());
+        $threads = $this->initial ?? \Eventy::filter('conversation.view.threads', $conversation->threads()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->get());
         if ($this->chat && $this->initial === null) {
             $threads = $threads->reverse()->values();
         }

@@ -343,8 +343,6 @@ PHP;
      */
     public function testInboxErrorFailsTheRun()
     {
-        $this->knownBug('F4');
-
         $port = $this->startServer(['INBOX' => [3 => $this->message(3, 'In the inbox')]], ['INBOX:UID SEARCH' => 'Server busy']);
         $this->imapMailbox($port, ['email' => 'fetched@example.org']);
 
@@ -489,8 +487,6 @@ PHP;
      */
     public function testDebugShowsImapCommands()
     {
-        $this->knownBug('F5');
-
         $port = $this->startServer(['INBOX' => []]);
         $this->imapMailbox($port, ['email' => 'fetched@example.org']);
 
@@ -505,8 +501,6 @@ PHP;
      */
     public function testDebugWithFailingMailboxEndsOutputBuffering()
     {
-        $this->knownBug('F6');
-
         $this->imapMailbox(1, ['email' => 'unreachable@example.org']);
         $level = ob_get_level();
 

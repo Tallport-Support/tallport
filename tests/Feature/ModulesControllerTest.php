@@ -124,8 +124,7 @@ class ModulesControllerTest extends FeatureTestCase
         for ($i = 0; $i < 100 && !@fsockopen('127.0.0.1', $port); $i++) {
             usleep(20000);
         }
-        // Helper::normalizeIPv6InUrl() takes host:port for an IPv6 address: the port is whitelisted too.
-        config(['app.remote_host_white_list' => '127.0.0.1,127.0.0.1:'.$port]);
+        config(['app.remote_host_white_list' => '127.0.0.1']);
         // Tests send requests through a proxy that doesn't exist; the only URLs this test
         // requests are the local server's.
         config(['app.proxy' => '']);
@@ -321,8 +320,6 @@ class ModulesControllerTest extends FeatureTestCase
      */
     public function testFailedDownloadLeavesNoEmptyMessage()
     {
-        $this->knownBug('S16');
-
         $this->makeModule('TpModule', ['latestVersionZipUrl' => 'http://127.0.0.1:1/tpmodule.zip']);
 
         $this->modulesAjax(['action' => 'update', 'alias' => 'tpmodule']);

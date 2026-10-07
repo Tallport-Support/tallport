@@ -290,7 +290,7 @@ class ModulesController extends Controller
                 }
 
                 // Install updated module.
-                if ($update_result['output'] || $update_result['status']) {
+                if (!$update_result['download_error']) {
 
                     $type = 'danger';
                     $msg = $update_result['msg'];

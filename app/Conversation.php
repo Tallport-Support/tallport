@@ -405,7 +405,7 @@ class Conversation extends Model
         return $this->threads()
             ->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
             ->where('state', Thread::STATE_PUBLISHED)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'desc')->orderBy('id', 'desc')
             ->get();
     }
 
@@ -417,7 +417,7 @@ class Conversation extends Model
     public function getThreads($skip = null, $take = null, $types = [], $states = [Thread::STATE_PUBLISHED])
     {
         $query = $this->threads()
-            ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'desc')->orderBy('id', 'desc');
 
         if (count($states) == 1 && !empty($states[0])) {
             $query->where('state', $states[0]);
@@ -444,7 +444,7 @@ class Conversation extends Model
     public function getFirstThread()
     {
         return $this->threads()
-            ->orderBy('created_at', 'asc')
+            ->orderBy('created_at', 'asc')->orderBy('id', 'asc')
             ->first();
     }
 
@@ -464,7 +464,7 @@ class Conversation extends Model
         return $this->threads()
             ->whereIn('type', $types)
             ->where('state', Thread::STATE_PUBLISHED)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'desc')->orderBy('id', 'desc')
             ->first();
     }
 
@@ -475,7 +475,7 @@ class Conversation extends Model
     {
         $query = $this->threads()
             ->where('state', Thread::STATE_PUBLISHED)
-            ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'desc')->orderBy('id', 'desc');
         if ($types) {
             if (count($types) == 1 && $types[0]) {
                 $query->where('type', $types[0]);
@@ -511,7 +511,7 @@ class Conversation extends Model
     public function setLastReplyAt($value, $new_last_reply_from)
     {
         if (\Helper::isCarbon($value)) {
-            $value = $date->format('Y-m-d H:i:s');
+            $value = $value->format('Y-m-d H:i:s');
         }
         if (config('app.waiting_since_as_first_unanswered_customer_message')) {
             // Treat Waiting Since column as "Time of the first unanswered customer message"
@@ -2383,7 +2383,7 @@ class Conversation extends Model
                             );
                         } else {
                             // File in remote storage.
-                            $content_stream = $this->getFileStream();
+                            $content_stream = $attachment->getFileStream();
                         }
 
                         $file_info = Attachment::saveFileToDisk($new_attachment, $new_attachment->file_name, $content_stream, $attachment_file);
@@ -2896,7 +2896,7 @@ class Conversation extends Model
                 $query->where('subtype', null)
                     ->orWhere('subtype', '!=', Thread::SUBTYPE_FORWARD);
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'desc')->orderBy('id', 'desc')
             ->first();
 
         if ($thread) {

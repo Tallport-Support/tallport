@@ -2283,7 +2283,7 @@
         "methods": [
             "GET"
         ],
-        "uri": "thread/{thread_id}/attachments.zip",
+        "uri": "thread/{thread_id}/attachments",
         "name": "attachments.download_all",
         "action": "AttachmentsController@download",
         "middleware": [

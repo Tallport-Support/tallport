@@ -129,7 +129,6 @@ class AttachmentModelTest extends FeatureTestCase
      */
     public function testTypeNameToIntText()
     {
-        $this->knownBug('C24');
 
         $this->assertSame(Attachment::TYPE_TEXT, Attachment::typeNameToInt('text'));
     }
@@ -199,7 +198,6 @@ class AttachmentModelTest extends FeatureTestCase
      */
     public function testDeleteAttachmentsOfSeveralMessages()
     {
-        $this->knownBug('C25');
 
         [$conversation, $first, $second] = $this->conversationWithTwoFilesMessages();
 

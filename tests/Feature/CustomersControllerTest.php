@@ -70,7 +70,6 @@ class CustomersControllerTest extends FeatureTestCase
 
     public function testBrokenImageIsRejected()
     {
-        $this->knownBug('U9');
 
         $customer = $this->createCustomer('robin@customer.example.org', ['first_name' => 'Robin']);
         // A GIF signature and nothing an image library can read.
@@ -152,6 +151,12 @@ class CustomersControllerTest extends FeatureTestCase
         $sam->first_name = 'Sam';
         $sam->last_name = 'Other';
         $sam->save();
+        // A phone conversation has no address: it goes along when Sam is left without one.
+        $phone = $conversation->replicate();
+        $phone->type = \App\Conversation::TYPE_PHONE;
+        $phone->customer_email = null;
+        $phone->number = $conversation->number + 1;
+        $phone->save();
 
         $response = $this->saveProfile($this->agent, $robin, [
             'first_name' => 'Robin',
@@ -168,6 +173,7 @@ class CustomersControllerTest extends FeatureTestCase
         $conversation->refresh();
         $this->assertSame($robin->id, $conversation->customer_id);
         $this->assertSame('sam@customer.example.org', $conversation->customer_email);
+        $this->assertSame($robin->id, $phone->fresh()->customer_id);
         $line_item = $conversation->threads()->where('type', Thread::TYPE_LINEITEM)->where('action_type', Thread::ACTION_TYPE_CUSTOMER_CHANGED)->first();
         $this->assertNotNull($line_item);
         $this->assertSame($this->agent->id, $line_item->created_by_user_id);
@@ -201,8 +207,6 @@ class CustomersControllerTest extends FeatureTestCase
 
     public function testMovingOneEmailLeavesTheOtherCustomersOtherConversations()
     {
-        $this->knownBug('K3');
-
         $robin = $this->createCustomer('robin@customer.example.org', ['first_name' => 'Robin']);
         $first = $this->receiveFrom('Sam Other <sam@customer.example.org>', 'From the first address');
         $sam = Customer::find($first->customer_id);

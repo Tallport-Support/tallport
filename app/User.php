@@ -1286,9 +1286,9 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
     public function getInitials($length = 2)
     {
         if ($length == 2) {
-            return strtoupper(mb_substr($this->first_name, 0, 1)).strtoupper(mb_substr($this->last_name, 0, 1));
+            return mb_strtoupper(mb_substr($this->first_name, 0, 1)).mb_strtoupper(mb_substr($this->last_name, 0, 1));
         } else {
-            return strtoupper(mb_substr($this->first_name, 0, 1));
+            return mb_strtoupper(mb_substr($this->first_name, 0, 1));
         }
     }
 

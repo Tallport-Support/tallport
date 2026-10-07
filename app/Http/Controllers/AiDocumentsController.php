@@ -202,7 +202,7 @@ class AiDocumentsController extends Controller
         if (!empty($data['public_url']) && !isset($errors['public_url']) && !Document::isHttpUrl(trim($data['public_url']))) {
             $errors['public_url'] = ['Public URL must be a valid http or https URL.'];
         }
-        if (!empty($data['canonical_locale']) && !in_array(trim($data['canonical_locale']), Document::SUPPORTED_LOCALES)) {
+        if (!empty($data['canonical_locale']) && is_string($data['canonical_locale']) && !in_array(trim($data['canonical_locale']), Document::SUPPORTED_LOCALES)) {
             $errors['canonical_locale'] = ['Canonical locale must be one of: '.implode(', ', Document::SUPPORTED_LOCALES).'.'];
         }
         if (isset($data['enabled']) && filter_var($data['enabled'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === null) {

@@ -345,8 +345,6 @@ class ConversationPageDataTest extends FeatureTestCase
      */
     public function testNewConversationFromAThreadWithAttachments()
     {
-        $this->knownBug('C21');
-
         $conversation = $this->receiveConversation();
         $thread = $conversation->threads()->first();
         $this->storedAttachment($thread);

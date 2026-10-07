@@ -145,8 +145,8 @@ class Job extends Model
     public function runNow()
     {
         if (!$this->redis_key) {
-            $this->available_at = time();
-            return $this->save();
+            // A Unix time, as the queue expects ($dates would save a date string).
+            return (bool) $this->newQuery()->whereKey($this->getKey())->update(['available_at' => time()]);
         }
         $connection = \Queue::connection();
         if (str_ends_with($this->redis_key, ':delayed') && $connection->getConnection()->zrem($this->redis_key, $this->payload)) {

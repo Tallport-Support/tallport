@@ -107,7 +107,6 @@ class AttachmentsControllerTest extends FeatureTestCase
      */
     public function testZipUrlHasNoFileExtension()
     {
-        $this->knownBug('C23');
         $thread = $this->threadWithFiles([['notes.txt', 'text/plain', 'Notes']]);
         $url = route('attachments.download_all', ['thread_id' => $thread->id]);
 

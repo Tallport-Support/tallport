@@ -211,7 +211,6 @@ class SettingsControllerTest extends FeatureTestCase
      */
     public function testTestEmailFailureWithoutAMessage()
     {
-        $this->knownBug('R5');
         $this->failSending('');
 
         $this->postAjax($this->admin, '/app-settings/ajax', ['action' => 'send_test', 'to' => 'me@example.org'])

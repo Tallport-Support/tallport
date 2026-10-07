@@ -71,7 +71,7 @@ class ConversationActions
             // Find previous status in threads
             $new_status = $conversation
                 ->threads()
-                ->orderBy('created_at', 'desc')
+                ->orderBy('created_at', 'desc')->orderBy('id', 'desc')
                 ->where('status', '!=', Thread::STATUS_SPAM)
                 ->where('type', Thread::TYPE_LINEITEM)
                 ->where('action_type', Thread::ACTION_TYPE_STATUS_CHANGED)

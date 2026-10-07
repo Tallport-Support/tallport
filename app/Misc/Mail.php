@@ -183,8 +183,9 @@ class Mail
      * @param App\Mailbox $mailbox
      * @param App\User $user_from
      * @param App\Conversation $conversation
+     * @param App\Thread $thread The thread being sent (a workflow's sender name).
      */
-    public static function setMailDriver($mailbox = null, $user_from = null, $conversation = null)
+    public static function setMailDriver($mailbox = null, $user_from = null, $conversation = null, $thread = null)
     {
         if ($mailbox) {
             // Configure mail driver according to Mailbox settings.
@@ -219,7 +220,7 @@ class Mail
             }
 
             \Config::set('mail.driver', $mailbox->getMailDriverName());
-            \Config::set('mail.from', $mailbox->getMailFrom($user_from, $conversation));
+            \Config::set('mail.from', $mailbox->getMailFrom($user_from, $conversation, $thread));
 
             // SMTP.
             if ($mailbox->out_method == Mailbox::OUT_METHOD_SMTP) {
@@ -456,6 +457,7 @@ class Mail
             'msg' => '',
             'log' => '',
         ];
+        $failed = false;
 
         if ($mailbox) {
             // Configure mail driver according to Mailbox settings
@@ -468,6 +470,7 @@ class Mail
                 \Mail::to([$to])->send(new \App\Mail\Test($mailbox));
             } catch (\Exception $e) {
                 // We come here in case SMTP server unavailable for example
+                $failed = true;
                 $status_message = $e->getMessage();
                 $smtp_log = self::getSmtpLog($e);
             }
@@ -483,12 +486,13 @@ class Mail
                     ->send(new \App\Mail\Test());
             } catch (\Exception $e) {
                 // We come here in case SMTP server unavailable for example
+                $failed = true;
                 $status_message = $e->getMessage();
                 $smtp_log = self::getSmtpLog($e);
             }
         }
 
-        if (\Mail::failures() || $status_message) {
+        if (\Mail::failures() || $failed) {
             SendLog::log(null, null, $to, SendLog::MAIL_TYPE_TEST, SendLog::STATUS_SEND_ERROR, null, null, $status_message);
             if ($status_message) {
                 $result['msg'] = $status_message;
@@ -838,7 +842,7 @@ class Mail
      * Get client for fetching emails.
      *
      * @param  bool  $debug  The webklex 6 client prints the IMAP conversation
-     *                       (with the emails): only for the connection test.
+     *                       (with the emails): for the connection test and --debug.
      */
     public static function getMailboxClient($mailbox, $debug = false)
     {
@@ -1113,6 +1117,7 @@ class Mail
     public static function oauthGetAuthorizationUrl($provider_code, $params)
     {
         $args = [];
+        $url = '';
 
         switch ($provider_code) {
 
@@ -1209,11 +1214,11 @@ class Mail
                         //$token_data['id_token'] = $result['id_token'];
                         $token_data['issued_on'] = now()->toDateTimeString();
                         $token_data['expires_in'] = $result['expires_in'];
-                    } elseif ($response) {
-                        $token_data['error'] = $response;
                     } else {
-                        $token_data['error'] = 'Response code: '.curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                        $token_data['error'] = $response;
                     }
+                } else {
+                    $token_data['error'] = curl_error($curl) ?: 'Response code: '.curl_getinfo($curl, CURLINFO_HTTP_CODE);
                 }
                 
                 if (PHP_VERSION_ID < 80000) {
@@ -1267,11 +1272,11 @@ class Mail
                         //$token_data['id_token'] = $result['id_token'];
                         $token_data['issued_on'] = now()->toDateTimeString();
                         $token_data['expires_in'] = $result['expires_in'];
-                    } elseif ($response) {
-                        $token_data['error'] = $response;
                     } else {
-                        $token_data['error'] = 'Response code: '.curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                        $token_data['error'] = $response;
                     }
+                } else {
+                    $token_data['error'] = curl_error($curl) ?: 'Response code: '.curl_getinfo($curl, CURLINFO_HTTP_CODE);
                 }
                 if (PHP_VERSION_ID < 80000) {
                     curl_close($curl);

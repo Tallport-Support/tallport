@@ -321,8 +321,6 @@ class NotificationAndAutoReplyJobsTest extends FeatureTestCase
      */
     public function testAutoReplyIsNotSentToBounces()
     {
-        $this->knownBug('F3');
-
         $this->enableAutoReply();
 
         $conversation = $this->receiveCustomerEmail(['from' => 'MAILER-DAEMON@mail.customer.example.org', 'subject' => 'Undelivered Mail Returned to Sender']);

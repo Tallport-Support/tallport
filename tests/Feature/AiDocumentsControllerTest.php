@@ -104,8 +104,6 @@ class AiDocumentsControllerTest extends FeatureTestCase
 
     public function testApiRefusesANonStringLocale()
     {
-        $this->knownBug('S17');
-
         $this->api(['identifier' => 'faq', 'content' => 'Answers.', 'canonical_locale' => ['en']])
             ->assertStatus(422)
             ->assertJsonPath('errors.canonical_locale.0', 'Canonical locale must be a string of 10 characters or fewer.');

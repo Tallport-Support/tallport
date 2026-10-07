@@ -525,14 +525,18 @@ class UsersController extends Controller
                 }
 
                 if (!$response['msg']) {
-                    $reset_result = Password::broker()->sendResetLink(
-                        //['id' => $request->user_id]
-                        ['id' => $request->user_id]
-                    );
+                    try {
+                        $reset_result = Password::broker()->sendResetLink(
+                            ['id' => $request->user_id]
+                        );
 
-                    if ($reset_result == Password::RESET_LINK_SENT) {
-                        $response['status'] = 'success';
-                        $response['msg_success'] = __('Password reset email has been sent');
+                        if ($reset_result == Password::RESET_LINK_SENT) {
+                            $response['status'] = 'success';
+                            $response['msg_success'] = __('Password reset email has been sent');
+                        }
+                    } catch (\Exception $e) {
+                        // Admin is allowed to see exceptions.
+                        $response['msg'] = $e->getMessage().' — '.__('Check mail settings in "Manage » Settings » Mail Settings"');
                     }
                 }
                 break;

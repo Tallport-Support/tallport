@@ -67,7 +67,6 @@ class CustomerModelTest extends FeatureTestCase
 
     public function testEmailOrPhoneShowsThePhoneOfACustomerWithoutEmail()
     {
-        $this->knownBug('K1');
 
         $customer = Customer::createWithoutEmail(['first_name' => 'Pat', 'phones' => [['value' => '+1 555 0100', 'type' => Customer::PHONE_TYPE_MOBILE]]]);
 
@@ -235,7 +234,6 @@ class CustomerModelTest extends FeatureTestCase
 
     public function testSetDataTurnsCountryNamesIntoCodes()
     {
-        $this->knownBug('K2');
 
         $customer = new Customer();
         $customer->setData(['country' => 'Germany']);

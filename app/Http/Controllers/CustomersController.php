@@ -196,8 +196,13 @@ class CustomersController extends Controller
 
         // Update customer_id in all conversations added to the current customer.
         foreach ($new_emails_change_customer as $new_email) {
-            if ($new_email->customer_id) {
+            if ($new_email->customer_id && !Email::where('customer_id', $new_email->customer_id)->exists()) {
+                // The other customer's only address: all their conversations (phone ones too).
                 $conversations_to_change_customer = Conversation::where('customer_id', $new_email->customer_id)->get();
+            } elseif ($new_email->customer_id) {
+                // They keep other addresses: only this one's conversations.
+                $conversations_to_change_customer = Conversation::where('customer_id', $new_email->customer_id)
+                    ->where('customer_email', $new_email->email)->get();
             } else {
                 // This does not work for phone conversations.
                 $conversations_to_change_customer = Conversation::where('customer_email', $new_email->email)->get();
@@ -259,7 +264,7 @@ class CustomersController extends Controller
         $query = $customer->conversations()
             ->where('customer_id', $customer->id)
             ->whereIn('mailbox_id', auth()->user()->mailboxesIdsCanView())
-            ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'desc')->orderBy('id', 'desc');
 
         $user = auth()->user();
 

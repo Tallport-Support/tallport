@@ -89,7 +89,6 @@ class UsersControllerTest extends FeatureTestCase
 
     public function testBrokenImageIsRejected()
     {
-        $this->knownBug('U9');
 
         $agent = $this->createUser();
 
@@ -224,8 +223,6 @@ class UsersControllerTest extends FeatureTestCase
 
     public function testResetLinkThatCantBeSentIsAnError()
     {
-        $this->knownBug('U10');
-
         $agent = $this->createUser();
         $this->failMailSending();
 

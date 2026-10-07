@@ -650,7 +650,6 @@ class ConsoleCommandsTest extends FeatureTestCase
      */
     public function testCreateUserExitCodes()
     {
-        $this->knownBug('U11');
         $options = ['--role' => 'user', '--firstName' => 'Exit', '--lastName' => 'Code', '--password' => 'secret-password', '--no-interaction' => true];
 
         $this->assertSame(0, \Artisan::call('tallport:create-user', $options + ['--email' => 'exit-code@example.org']));

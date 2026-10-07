@@ -314,7 +314,6 @@ class UserModelTest extends FeatureTestCase
      */
     public function testSavePhotoRefusesWhatIsNotAnImage()
     {
-        $this->knownBug('U9');
 
         $user = $this->createUser();
         $file = UploadedFile::fake()->createWithContent('me.png', 'not an image');
@@ -435,7 +434,6 @@ class UserModelTest extends FeatureTestCase
      */
     public function testInitialsOfNonAsciiNames()
     {
-        $this->knownBug('U8');
 
         $user = $this->createUser(['first_name' => 'élodie', 'last_name' => 'ødegaard']);
 

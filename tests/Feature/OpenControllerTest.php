@@ -98,7 +98,6 @@ class OpenControllerTest extends FeatureTestCase
 
     public function testSetupWithBrokenPhotoIsRefused()
     {
-        $this->knownBug('U9');
 
         $user = $this->invitedUser();
 

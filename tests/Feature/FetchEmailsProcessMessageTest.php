@@ -337,6 +337,22 @@ class FetchEmailsProcessMessageTest extends FeatureTestCase
         $this->assertStringContainsString($attachment->url(), $thread->body);
     }
 
+    /**
+     * A base64 image's attachment belongs to its thread, so it is deleted
+     * with the conversation.
+     */
+    public function testBase64ImageIsDeletedWithTheConversation()
+    {
+        [$conversation] = $this->receiveFromCustomer(['html' => true, 'body' => '<html><body><img src="data:image/png;base64,'.self::PNG.'"></body></html>']);
+        $attachment = Attachment::where('mime_type', 'image/png')->where('embedded', true)->first();
+
+        $this->assertEquals($conversation->threads()->first()->id, $attachment->thread_id);
+
+        $conversation->deleteForever();
+
+        $this->assertNull(Attachment::find($attachment->id));
+    }
+
     // Modules.
 
     public function testModuleCanSkipCustomerEmail()
@@ -443,8 +459,6 @@ class FetchEmailsProcessMessageTest extends FeatureTestCase
      */
     public function testEmailedReplyUnassignsWhenAnyoneIsAssignee()
     {
-        $this->knownBug('F7');
-
         [$conversation, $notification] = $this->notificationForAgent();
         $this->mailbox->ticket_assignee = Mailbox::TICKET_ASSIGNEE_ANYONE;
         $this->mailbox->save();
@@ -515,7 +529,9 @@ class FetchEmailsProcessMessageTest extends FeatureTestCase
         $this->assertStringNotContainsString('cid:logo', $note->body);
         $this->assertStringNotContainsString('base64', $note->body);
         $this->assertTrue((bool) $note->has_attachments);
-        $this->assertSame(['invoice.pdf', 'logo.png'], Attachment::where('thread_id', $note->id)->orderBy('file_name')->pluck('file_name')->all());
+        $file_names = Attachment::where('thread_id', $note->id)->orderBy('file_name')->pluck('file_name')->all();
+        $this->assertCount(3, $file_names, 'The files and the base64 image.');
+        $this->assertSame(['invoice.pdf', 'logo.png'], array_slice($file_names, 1));
         $this->assertTrue((bool) $conversation->fresh()->has_attachments);
         $this->assertCount(0, $this->sentEmailsTo('casey@customer.example.org'));
     }

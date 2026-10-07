@@ -630,7 +630,7 @@ class Mailbox extends Model
             return false;
         }
         $filter = \Eventy::filter('mailbox.user_has_access', -1, $this, $user);
-        if ($filter != -1) {
+        if ($filter !== -1) {
             return (bool)$filter;
         } elseif ($user && $user->isAdmin()) {
             return true;

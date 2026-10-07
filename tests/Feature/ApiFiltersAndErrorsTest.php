@@ -349,8 +349,6 @@ class ApiFiltersAndErrorsTest extends FeatureTestCase
      */
     public function testTheFirstReplyThatClosesIsAStatusChange()
     {
-        $this->knownBug('W3');
-
         $changes = [];
         \Eventy::addAction('conversation.status_changed', function ($conversation) use (&$changes) {
             $changes[] = $conversation->id;

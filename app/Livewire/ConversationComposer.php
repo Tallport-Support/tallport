@@ -628,7 +628,7 @@ class ConversationComposer extends Component
             }
         }
 
-        $threads = $conversation->threads()->orderBy('created_at', 'desc')->limit(1)->get();
+        $threads = $conversation->threads()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->limit(1)->get();
 
         return view('livewire.conversation-composer', [
             'conversation' => $conversation,

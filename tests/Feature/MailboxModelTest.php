@@ -160,7 +160,6 @@ class MailboxModelTest extends FeatureTestCase
      */
     public function testModuleCanGrantAccess()
     {
-        $this->knownBug('M9');
 
         $stranger = $this->createUser();
         $mailbox = $this->createMailbox();

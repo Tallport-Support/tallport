@@ -178,7 +178,6 @@ class HelperFeatureTest extends FeatureTestCase
         $this->receiveEmail($mailbox, $this->makeEmail(['from' => 'casey@customer.example.org', 'to' => $mailbox->email]));
         $conversation = Conversation::where('mailbox_id', $mailbox->id)->first();
 
-        $this->knownBug('C16');
         $conversation->setLastReplyAt(\Carbon\Carbon::parse('2024-05-01 10:00:00'), Conversation::PERSON_CUSTOMER);
         $this->assertSame('2024-05-01 10:00:00', $conversation->last_reply_at->format('Y-m-d H:i:s'));
     }
