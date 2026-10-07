@@ -1752,5 +1752,19 @@
     "Reopen": "Znovu Otevřít",
     "Mark as Read": "Označit jako Přečtené",
     "Mark as Unread": "Označit jako Nepřečtené",
-    "Unread": "Nepřečtené"
+    "Unread": "Nepřečtené",
+    "Reply Translations": "Překlady Odpovědí",
+    "Succeeded": "Úspěšné",
+    "Failed, Backup Tried": "Selhalo, Zkoušen Záložní",
+    "Fast Mode Refused": "Rychlý Režim Odmítnut",
+    "All Features": "Všechny Funkce",
+    "All Models": "Všechny Modely",
+    "Errors": "Chyby",
+    "Duration": "Doba Trvání",
+    "Tokens": "Tokeny",
+    "Backup": "Záložní",
+    "Fast": "Rychlý",
+    "Last call :time · :duration": "Poslední volání: :time · :duration",
+    "Last call failed :time": "Poslední volání selhalo: :time",
+    "1 failure in the last hour|:count failures in the last hour": ":count selhání za poslední hodinu|:count selhání za poslední hodinu|:count selhání za poslední hodinu"
 }

@@ -344,6 +344,8 @@ class Retention
             'activity_log'  => \DB::table('activity_logs')->where('created_at', '<', now()->subDays(self::get('retention_activity_log_days'))),
             'failed_jobs'   => \DB::table('failed_jobs')->where('failed_at', '<', now()->subDays(self::FAILED_JOBS_DAYS)),
             'telegram'      => \DB::table('telegram_updates')->where('created_at', '<', now()->subDays(self::TELEGRAM_UPDATES_DAYS)),
+            // The AI log: what no budget or conversation's token count needs (Usage::expiredLog()).
+            'ai_log'        => \App\Ai\Usage::expiredLog(),
         ];
         $counts = [];
         foreach ($queries as $name => $query) {

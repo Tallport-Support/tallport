@@ -1757,5 +1757,19 @@
     "Reopen": "Gjenåpne",
     "Mark as Read": "Merk som Lest",
     "Mark as Unread": "Merk som Ulest",
-    "Unread": "Ulest"
+    "Unread": "Ulest",
+    "Reply Translations": "Svaroversettelser",
+    "Succeeded": "Vellykket",
+    "Failed, Backup Tried": "Mislyktes, Reserve Prøvd",
+    "Fast Mode Refused": "Hurtigmodus Avvist",
+    "All Features": "Alle Funksjoner",
+    "All Models": "Alle Modeller",
+    "Errors": "Feil",
+    "Duration": "Varighet",
+    "Tokens": "Tokens",
+    "Backup": "Reserve",
+    "Fast": "Rask",
+    "Last call :time · :duration": "Siste kall: :time · :duration",
+    "Last call failed :time": "Siste kall mislyktes: :time",
+    "1 failure in the last hour|:count failures in the last hour": "1 feil siste time|:count feil siste time"
 }

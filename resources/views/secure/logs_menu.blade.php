@@ -5,7 +5,7 @@
     <label class="f-label" for="logs-name">{{ __('Log') }}</label>
     <select id="logs-name" class="f-input logs-bar__select" x-on:change="Livewire.navigate($el.value)">
         @foreach ($names as $name)
-            <option value="{{ $name == App\ActivityLog::NAME_APP_LOGS ? route('logs.app') : route('logs', ['name' => $name]) }}" @selected($current_name == $name)>{{ App\ActivityLog::getLogTitle($name) }}</option>
+            <option value="{{ App\ActivityLog::logUrl($name) }}" @selected($current_name == $name)>{{ App\ActivityLog::getLogTitle($name) }}</option>
         @endforeach
     </select>
     <span class="f-toolbar__spacer"></span>

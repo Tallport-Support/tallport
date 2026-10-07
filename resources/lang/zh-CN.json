@@ -1754,5 +1754,19 @@
     "Reopen": "重新打开",
     "Mark as Read": "标记为已读",
     "Mark as Unread": "标记为未读",
-    "Unread": "未读"
+    "Unread": "未读",
+    "Reply Translations": "回复翻译",
+    "Succeeded": "成功",
+    "Failed, Backup Tried": "失败，已尝试备用",
+    "Fast Mode Refused": "快速模式被拒绝",
+    "All Features": "所有功能",
+    "All Models": "所有模型",
+    "Errors": "错误",
+    "Duration": "耗时",
+    "Tokens": "Token",
+    "Backup": "备用",
+    "Fast": "快速",
+    "Last call :time · :duration": "上次调用：:time · :duration",
+    "Last call failed :time": "上次调用失败：:time",
+    "1 failure in the last hour|:count failures in the last hour": "过去一小时 :count 次失败"
 }

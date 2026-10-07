@@ -12,6 +12,8 @@ class ActivityLog extends Activity
     const NAME_EMAILS_FETCHING = 'fetch_errors';
     const NAME_SYSTEM = 'system';
     const NAME_APP_LOGS = 'app';
+    // The AI log (App\Ai\Usage), shown like the others.
+    const NAME_AI = 'ai';
 
     public static $available_logs = [
         self::NAME_USER,
@@ -95,6 +97,8 @@ class ActivityLog extends Activity
                 return __('System');
             case self::NAME_APP_LOGS:
                 return __('App Logs');
+            case self::NAME_AI:
+                return __('AI');
             default:
                 return ucwords(str_replace('_', ' ', $log_name));
         }
@@ -120,6 +124,29 @@ class ActivityLog extends Activity
         $col = ucfirst($col);
 
         return $col;
+    }
+
+    /**
+     * The logs in the Logs page's bar: outgoing emails, the activity logs, App Logs and AI.
+     */
+    public static function menuNames()
+    {
+        return array_merge([self::NAME_OUT_EMAILS], self::getLogNames(), [self::NAME_APP_LOGS, self::NAME_AI]);
+    }
+
+    /**
+     * The Logs page's address for a log: App Logs and the AI log have their own.
+     */
+    public static function logUrl($log_name)
+    {
+        switch ($log_name) {
+            case self::NAME_APP_LOGS:
+                return route('logs.app');
+            case self::NAME_AI:
+                return route('logs.ai');
+            default:
+                return route('logs', ['name' => $log_name]);
+        }
     }
 
     /**

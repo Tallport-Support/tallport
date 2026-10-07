@@ -2151,5 +2151,19 @@
     "Reopen": "Қайта Ашу",
     "Mark as Read": "Оқылған Деп Белгілеу",
     "Mark as Unread": "Оқылмаған Деп Белгілеу",
-    "Unread": "Оқылмаған"
+    "Unread": "Оқылмаған",
+    "Reply Translations": "Жауап Аудармалары",
+    "Succeeded": "Сәтті",
+    "Failed, Backup Tried": "Сәтсіз, Қосалқысы Сыналды",
+    "Fast Mode Refused": "Жылдам Режим Қабылданбады",
+    "All Features": "Барлық Функциялар",
+    "All Models": "Барлық Модельдер",
+    "Errors": "Қателер",
+    "Duration": "Ұзақтығы",
+    "Tokens": "Токендер",
+    "Backup": "Қосалқы",
+    "Fast": "Жылдам",
+    "Last call :time · :duration": "Соңғы шақыру: :time · :duration",
+    "Last call failed :time": "Соңғы шақыру сәтсіз: :time",
+    "1 failure in the last hour|:count failures in the last hour": "Соңғы сағатта :count сәтсіздік"
 }

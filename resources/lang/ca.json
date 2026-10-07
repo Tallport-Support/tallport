@@ -1846,5 +1846,19 @@
     "Reopen": "Reobre",
     "Mark as Read": "Marca com a Llegit",
     "Mark as Unread": "Marca com a No Llegit",
-    "Unread": "No Llegit"
+    "Unread": "No Llegit",
+    "Reply Translations": "Traduccions de Respostes",
+    "Succeeded": "Correcte",
+    "Failed, Backup Tried": "Fallat, Provat el de Reserva",
+    "Fast Mode Refused": "Mode Ràpid Rebutjat",
+    "All Features": "Totes les Funcions",
+    "All Models": "Tots els Models",
+    "Errors": "Errors",
+    "Duration": "Durada",
+    "Tokens": "Tokens",
+    "Backup": "Reserva",
+    "Fast": "Ràpid",
+    "Last call :time · :duration": "Darrera crida: :time · :duration",
+    "Last call failed :time": "La darrera crida ha fallat: :time",
+    "1 failure in the last hour|:count failures in the last hour": "1 error en l'última hora|:count errors en l'última hora"
 }

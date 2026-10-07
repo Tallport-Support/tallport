@@ -356,7 +356,7 @@ class SystemController extends Controller
         }
         // Mailboxes that used their AI tokens for today: their AI Assistant waits until tomorrow.
         if ($daily_tokens = \App\Ai\Settings::dailyTokens()) {
-            $over_budget = \App\Ai\Usage::where('created_at', '>=', now()->startOfDay())->whereNotNull('mailbox_id')
+            $over_budget = \App\Ai\Usage::succeeded()->where('created_at', '>=', now()->startOfDay())->whereNotNull('mailbox_id')
                 ->groupBy('mailbox_id')->havingRaw('SUM(input_tokens + output_tokens) >= ?', [$daily_tokens])->pluck('mailbox_id');
             if (count($over_budget)) {
                 $problems[] = ['ai_budget', __('The AI used its tokens for today'), 'warning', \App\Mailbox::whereIn('id', $over_budget)->orderBy('name')->pluck('name')->implode(', '), __('In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.')];

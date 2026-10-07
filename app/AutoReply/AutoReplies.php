@@ -137,8 +137,7 @@ class AutoReplies
             return [null, true];
         }
         try {
-            $response = (new LanguageRecognizer($others))->prompt(TallportAgent::data('message', mb_substr($detector->prepareText($text), 0, self::MAX_TEXT)));
-            \App\Ai\Usage::record($response, \App\Ai\Usage::FEATURE_LANGUAGE, null, $mailbox ? $mailbox->id : null);
+            $response = (new LanguageRecognizer($others))->recordFor(\App\Ai\Usage::FEATURE_LANGUAGE, null, $mailbox ? $mailbox->id : null)->prompt(TallportAgent::data('message', mb_substr($detector->prepareText($text), 0, self::MAX_TEXT)));
             $code = (string) $response['language'];
         } catch (\Throwable $e) {
             \Helper::logException($e, '[Auto Reply] Language not recognised'.($mailbox ? ' (mailbox '.$mailbox->id.')' : '').':');

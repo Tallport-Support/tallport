@@ -1798,5 +1798,18 @@
     "Assign to Me": "指派給我",
     "Mark as Read": "標記為已讀",
     "Mark as Unread": "標記為未讀",
-    "Unread": "未讀"
+    "Unread": "未讀",
+    "Reply Translations": "回覆翻譯",
+    "Succeeded": "成功",
+    "Failed, Backup Tried": "失敗，已嘗試備用",
+    "Fast Mode Refused": "快速模式遭拒",
+    "All Features": "所有功能",
+    "All Models": "所有模型",
+    "Errors": "錯誤",
+    "Duration": "耗時",
+    "Tokens": "Token",
+    "Fast": "快速",
+    "Last call :time · :duration": "上次呼叫：:time · :duration",
+    "Last call failed :time": "上次呼叫失敗：:time",
+    "1 failure in the last hour|:count failures in the last hour": "過去一小時 :count 次失敗"
 }

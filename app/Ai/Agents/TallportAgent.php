@@ -5,6 +5,8 @@ namespace App\Ai\Agents;
 use App\Ai\PartialJson;
 use App\Ai\Providers;
 use App\Ai\Settings;
+use App\Ai\Usage;
+use App\Conversation;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\JsonSchema\JsonSchemaTypeFactory;
 use Laravel\Ai\Contracts\Agent;
@@ -39,6 +41,22 @@ abstract class TallportAgent implements Agent, HasProviderOptions
      * it gets the fast options, and whether its answer has started.
      */
     protected $attempt = null;
+
+    /**
+     * What the agent's calls are recorded for (Usage, recordFor()).
+     */
+    protected $usage = [];
+
+    /**
+     * Record the agent's calls (Usage: tokens and the AI log) for a feature (Usage::FEATURE_*),
+     * conversation or mailbox, user, and messages translated.
+     */
+    public function recordFor($feature, ?Conversation $conversation = null, $mailbox_id = null, $user_id = null, $items = 1)
+    {
+        $this->usage = [$feature, $conversation, $mailbox_id, $user_id, $items];
+
+        return $this;
+    }
 
     /**
      * The feature whose models the agent uses (Settings::MODEL_FEATURES).
@@ -86,7 +104,7 @@ abstract class TallportAgent implements Agent, HasProviderOptions
             return $this->promptWith($prompt, $attachments, $provider, $model, $timeout);
         }
 
-        return $this->withAttempts(fn ($name, $attempt_model) => $this->promptWith($prompt, $attachments, $name, $attempt_model, $timeout));
+        return $this->withAttempts(false, fn ($name, $attempt_model) => $this->promptWith($prompt, $attachments, $name, $attempt_model, $timeout));
     }
 
     /**
@@ -98,7 +116,7 @@ abstract class TallportAgent implements Agent, HasProviderOptions
      */
     public function streamJson($prompt, ?callable $on_answer = null)
     {
-        return $this->withAttempts(function ($name, $model) use ($prompt, $on_answer) {
+        return $this->withAttempts(true, function ($name, $model) use ($prompt, $on_answer) {
             $response = $this->streamWith($prompt, [], $name, $model);
             $text = '';
             foreach ($response as $event) {
@@ -123,9 +141,9 @@ abstract class TallportAgent implements Agent, HasProviderOptions
     /**
      * Run a call with each of the feature's models in turn until one works. A model that refuses
      * the fast options (HTTP 400 or 422 before answering) is called again without them, and
-     * without them from then on (Providers::fastRejected()).
+     * without them from then on (Providers::fastRejected()). Each call is recorded (Usage).
      */
-    protected function withAttempts(\Closure $run)
+    protected function withAttempts($streamed, \Closure $run)
     {
         Providers::configure();
         $attempts = Settings::attempts($this->feature());
@@ -135,32 +153,61 @@ abstract class TallportAgent implements Agent, HasProviderOptions
         $providers = Settings::providers();
         try {
             foreach ($attempts as $i => [$name, $attempt_model]) {
-                $provider = $providers[Providers::idFromName($name)]['provider'] ?? null;
+                $provider_id = Providers::idFromName($name);
+                $provider = $providers[$provider_id]['provider'] ?? null;
                 $fast = $this->fast() && Providers::fastOptions($provider, $attempt_model) && !Providers::fastRejected($name, $attempt_model);
-                $this->attempt = ['provider' => $provider, 'model' => $attempt_model, 'fast' => $fast, 'started' => false];
+                $this->attempt = ['provider_id' => $provider_id, 'provider' => $provider, 'model' => $attempt_model, 'backup' => $i > 0, 'streamed' => $streamed, 'fast' => $fast, 'started' => false, 'at' => hrtime(true)];
                 try {
                     try {
-                        return $run($name, $attempt_model);
+                        $result = $run($name, $attempt_model);
                     } catch (RequestException $e) {
                         if (!$fast || $this->attempt['started'] || !in_array($e->response->status(), [400, 422])) {
                             throw $e;
                         }
                         \Helper::logException($e, '[AI] '.$attempt_model.' refused the fast options ('.$this->feature().'), trying without them:');
+                        $this->recordAttempt(Usage::STATUS_FAST_REFUSED, null, $e);
                         Providers::rememberFastRejected($name, $attempt_model);
                         $this->attempt['fast'] = false;
+                        $this->attempt['at'] = hrtime(true);
 
-                        return $run($name, $attempt_model);
+                        $result = $run($name, $attempt_model);
                     }
                 } catch (\Throwable $e) {
-                    if ($i == count($attempts) - 1) {
+                    $last = $i == count($attempts) - 1;
+                    $this->recordAttempt($last ? Usage::STATUS_FAILED : Usage::STATUS_FAILED_THEN_BACKUP, null, $e);
+                    if ($last) {
                         throw $e;
                     }
                     \Helper::logException($e, '[AI] '.$attempt_model.' failed ('.$this->feature().'), trying the backup:');
+                    continue;
                 }
+                $this->recordAttempt(Usage::STATUS_OK, is_array($result) ? $result[1] : $result);
+
+                return $result;
             }
         } finally {
             $this->attempt = null;
         }
+    }
+
+    /**
+     * Record the call to the model being tried (Usage): its tokens when it worked, else its error.
+     */
+    protected function recordAttempt($status, $response = null, ?\Throwable $e = null)
+    {
+        [$feature, $conversation, $mailbox_id, $user_id, $items] = $this->usage + [Usage::SETTING_FEATURES[$this->feature()][0] ?? $this->feature(), null, null, null, 1];
+
+        Usage::record($response, $feature, $conversation, $mailbox_id, $user_id, $items, [
+            'status'      => $status,
+            'provider_id' => $this->attempt['provider_id'],
+            'provider'    => $this->attempt['provider'],
+            'model'       => mb_substr((string) $this->attempt['model'], 0, 191),
+            'backup'      => $this->attempt['backup'],
+            'fast'        => $this->attempt['fast'],
+            'streamed'    => $this->attempt['streamed'],
+            'duration_ms' => (int) round((hrtime(true) - $this->attempt['at']) / 1e6),
+            'error'       => $e ? $e->getMessage() : null,
+        ]);
     }
 
     /**

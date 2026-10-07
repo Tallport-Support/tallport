@@ -1756,5 +1756,19 @@
     "Reopen": "Heropenen",
     "Mark as Read": "Als Gelezen Markeren",
     "Mark as Unread": "Als Ongelezen Markeren",
-    "Unread": "Ongelezen"
+    "Unread": "Ongelezen",
+    "Reply Translations": "Antwoordvertalingen",
+    "Succeeded": "Gelukt",
+    "Failed, Backup Tried": "Mislukt, Back-up Geprobeerd",
+    "Fast Mode Refused": "Snelle Modus Geweigerd",
+    "All Features": "Alle Functies",
+    "All Models": "Alle Modellen",
+    "Errors": "Fouten",
+    "Duration": "Duur",
+    "Tokens": "Tokens",
+    "Backup": "Back-up",
+    "Fast": "Snel",
+    "Last call :time · :duration": "Laatste aanroep: :time · :duration",
+    "Last call failed :time": "Laatste aanroep mislukt: :time",
+    "1 failure in the last hour|:count failures in the last hour": "1 fout in het afgelopen uur|:count fouten in het afgelopen uur"
 }

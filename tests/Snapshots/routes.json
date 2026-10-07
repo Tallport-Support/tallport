@@ -532,6 +532,22 @@
         "methods": [
             "GET"
         ],
+        "uri": "app-logs/ai",
+        "name": "logs.ai",
+        "action": "AiLogController@index",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "app-logs/app",
         "name": "logs.app",
         "action": "AppLogsController@index",

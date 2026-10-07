@@ -1753,5 +1753,19 @@
     "Reopen": "Reabrir",
     "Mark as Read": "Marcar como Lida",
     "Mark as Unread": "Marcar como Não Lida",
-    "Unread": "Não Lida"
+    "Unread": "Não Lida",
+    "Reply Translations": "Traduções de Respostas",
+    "Succeeded": "Sucesso",
+    "Failed, Backup Tried": "Falhou, Reserva Tentada",
+    "Fast Mode Refused": "Modo Rápido Recusado",
+    "All Features": "Todas as Funções",
+    "All Models": "Todos os Modelos",
+    "Errors": "Erros",
+    "Duration": "Duração",
+    "Tokens": "Tokens",
+    "Backup": "Reserva",
+    "Fast": "Rápido",
+    "Last call :time · :duration": "Última chamada: :time · :duration",
+    "Last call failed :time": "Última chamada falhou: :time",
+    "1 failure in the last hour|:count failures in the last hour": "{1} 1 falha na última hora|[0,*] :count falhas na última hora"
 }

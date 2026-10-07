@@ -1752,5 +1752,19 @@
     "Reopen": "Otwórz Ponownie",
     "Mark as Read": "Oznacz jako Przeczytane",
     "Mark as Unread": "Oznacz jako Nieprzeczytane",
-    "Unread": "Nieprzeczytane"
+    "Unread": "Nieprzeczytane",
+    "Reply Translations": "Tłumaczenia Odpowiedzi",
+    "Succeeded": "Powodzenie",
+    "Failed, Backup Tried": "Błąd, Wypróbowano Zapasowy",
+    "Fast Mode Refused": "Tryb Szybki Odrzucony",
+    "All Features": "Wszystkie Funkcje",
+    "All Models": "Wszystkie Modele",
+    "Errors": "Błędy",
+    "Duration": "Czas Trwania",
+    "Tokens": "Tokeny",
+    "Backup": "Zapasowy",
+    "Fast": "Szybki",
+    "Last call :time · :duration": "Ostatnie wywołanie: :time · :duration",
+    "Last call failed :time": "Ostatnie wywołanie nie powiodło się: :time",
+    "1 failure in the last hour|:count failures in the last hour": ":count błąd w ostatniej godzinie|:count błędy w ostatniej godzinie|:count błędów w ostatniej godzinie"
 }

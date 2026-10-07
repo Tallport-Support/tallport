@@ -1753,5 +1753,19 @@
     "Reopen": "Yeniden Aç",
     "Mark as Read": "Okundu Olarak İşaretle",
     "Mark as Unread": "Okunmadı Olarak İşaretle",
-    "Unread": "Okunmamış"
+    "Unread": "Okunmamış",
+    "Reply Translations": "Yanıt Çevirileri",
+    "Succeeded": "Başarılı",
+    "Failed, Backup Tried": "Başarısız, Yedek Denendi",
+    "Fast Mode Refused": "Hızlı Mod Reddedildi",
+    "All Features": "Tüm Özellikler",
+    "All Models": "Tüm Modeller",
+    "Errors": "Hatalar",
+    "Duration": "Süre",
+    "Tokens": "Tokenler",
+    "Backup": "Yedek",
+    "Fast": "Hızlı",
+    "Last call :time · :duration": "Son çağrı: :time · :duration",
+    "Last call failed :time": "Son çağrı başarısız: :time",
+    "1 failure in the last hour|:count failures in the last hour": "Son bir saatte :count hata"
 }

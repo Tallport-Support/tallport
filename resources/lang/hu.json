@@ -1753,5 +1753,19 @@
     "Reopen": "Újranyitás",
     "Mark as Read": "Megjelölés Olvasottként",
     "Mark as Unread": "Megjelölés Olvasatlanként",
-    "Unread": "Olvasatlan"
+    "Unread": "Olvasatlan",
+    "Reply Translations": "Válaszfordítások",
+    "Succeeded": "Sikeres",
+    "Failed, Backup Tried": "Sikertelen, Tartalék Kipróbálva",
+    "Fast Mode Refused": "Gyors Mód Elutasítva",
+    "All Features": "Összes Funkció",
+    "All Models": "Összes Modell",
+    "Errors": "Hibák",
+    "Duration": "Időtartam",
+    "Tokens": "Tokenek",
+    "Backup": "Tartalék",
+    "Fast": "Gyors",
+    "Last call :time · :duration": "Utolsó hívás: :time · :duration",
+    "Last call failed :time": "Az utolsó hívás sikertelen: :time",
+    "1 failure in the last hour|:count failures in the last hour": ":count hiba az elmúlt órában|:count hiba az elmúlt órában"
 }

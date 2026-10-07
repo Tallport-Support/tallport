@@ -1753,5 +1753,19 @@
     "Reopen": "Yenidən Aç",
     "Mark as Read": "Oxunmuş Kimi İşarələ",
     "Mark as Unread": "Oxunmamış Kimi İşarələ",
-    "Unread": "Oxunmamış"
+    "Unread": "Oxunmamış",
+    "Reply Translations": "Cavab Tərcümələri",
+    "Succeeded": "Uğurlu",
+    "Failed, Backup Tried": "Uğursuz, Ehtiyat Sınandı",
+    "Fast Mode Refused": "Sürətli Rejim Rədd Edildi",
+    "All Features": "Bütün Funksiyalar",
+    "All Models": "Bütün Modellər",
+    "Errors": "Xətalar",
+    "Duration": "Müddət",
+    "Tokens": "Tokenlər",
+    "Backup": "Ehtiyat",
+    "Fast": "Sürətli",
+    "Last call :time · :duration": "Son çağırış: :time · :duration",
+    "Last call failed :time": "Son çağırış uğursuz oldu: :time",
+    "1 failure in the last hour|:count failures in the last hour": ":count uğursuzluq son bir saatda"
 }

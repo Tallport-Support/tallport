@@ -270,11 +270,10 @@ class Translations
             // As it looks (HTML) where that fits, else as text.
             $html = self::sourceHtml($thread);
             $as_html = $html !== '' && mb_strlen($html) <= Summaries::MAX_THREAD_CHARS * 3;
-            [$answer, $response] = (new ThreadTranslator($language, $as_html))->streamJson(
+            [$answer] = (new ThreadTranslator($language, $as_html))->recordFor(Usage::FEATURE_TRANSLATION, $thread->conversation)->streamJson(
                 trim(TallportAgent::glossary($thread->conversation->mailbox)."\n\n".TallportAgent::data('message', $as_html ? $html : $text)),
                 $thread->type == Thread::TYPE_CUSTOMER ? self::broadcaster($thread->conversation, $language, fn ($answer) => [$thread->id => [$answer['translation'] ?? '', $as_html]]) : null
             );
-            Usage::record($response, Usage::FEATURE_TRANSLATION, $thread->conversation);
             $data['language'] = strtolower(trim((string) ($answer['detected_language'] ?? ''))) ?: ($data['language'] ?? null);
             // A chat's language: the one first detected (replies go out in it).
             if ($thread->type == Thread::TYPE_CUSTOMER && $data['language'] && Settings::isLanguage($data['language'])) {

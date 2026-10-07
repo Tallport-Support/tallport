@@ -17,9 +17,7 @@
         $file_query = $current_file ? ['l' => \Illuminate\Support\Facades\Crypt::encrypt($current_file)] : [];
         $level_tones = ['emergency' => 'danger', 'alert' => 'danger', 'critical' => 'danger', 'error' => 'danger', 'failed' => 'danger', 'warning' => 'warning', 'processed' => 'success'];
         // The Log bar's choices (secure/logs_menu).
-        $names = App\ActivityLog::select('log_name')->distinct()->pluck('log_name')->toArray();
-        array_unshift($names, App\ActivityLog::NAME_OUT_EMAILS);
-        array_push($names, App\ActivityLog::NAME_APP_LOGS);
+        $names = App\ActivityLog::menuNames();
     @endphp
     <div class="page-content app-logs logs-page">
         @include('secure/logs_menu', ['current_name' => App\ActivityLog::NAME_APP_LOGS])

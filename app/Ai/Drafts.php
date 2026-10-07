@@ -60,7 +60,7 @@ class Drafts
         $documentation = self::documentation($conversation, trim($conversation->subject."\n".$latest_text), $locale);
         $context = CustomerContext::forConversation($conversation);
 
-        [$answer, $response] = (new ReplyDrafter($language))->streamJson(implode("\n\n", [
+        [$answer] = (new ReplyDrafter($language))->recordFor(Usage::FEATURE_DRAFT, $conversation)->streamJson(implode("\n\n", [
             TallportAgent::data('conversation', [
                 'subject'  => (string) $conversation->subject,
                 'customer' => ['name' => $conversation->customer ? $conversation->customer->getFullName(true, true) : '', 'email' => $conversation->customer_email],
@@ -77,7 +77,6 @@ class Drafts
             TallportAgent::data('documentation', $documentation['chunks']),
             TallportAgent::data('customer_context', $context['data']),
         ]), $on_draft ? fn ($answer) => $on_draft((string) ($answer['draft'] ?? '')) : null);
-        Usage::record($response, Usage::FEATURE_DRAFT, $conversation);
 
         return [
             'draft'                   => trim((string) ($answer['draft'] ?? '')),

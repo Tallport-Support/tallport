@@ -611,6 +611,61 @@
                 "type": "timestamp",
                 "nullable": true,
                 "default": "NULL"
+            },
+            "status": {
+                "type": "varchar(20)",
+                "nullable": false,
+                "default": "'ok'",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "provider_id": {
+                "type": "varchar(20)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "provider": {
+                "type": "varchar(30)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "model": {
+                "type": "varchar(191)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "backup": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "fast": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "streamed": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "duration_ms": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "error": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {
@@ -619,6 +674,13 @@
                 "type": "BTREE",
                 "columns": [
                     "conversation_id"
+                ]
+            },
+            "aiassistant_usage_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "created_at"
                 ]
             },
             "aiassistant_usage_customer_id_feature_created_at_index": {
@@ -635,6 +697,14 @@
                 "type": "BTREE",
                 "columns": [
                     "mailbox_id",
+                    "created_at"
+                ]
+            },
+            "aiassistant_usage_status_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "status",
                     "created_at"
                 ]
             },

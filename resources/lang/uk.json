@@ -1753,5 +1753,19 @@
     "Reopen": "Відкрити Знову",
     "Mark as Read": "Позначити як Прочитану",
     "Mark as Unread": "Позначити як Непрочитану",
-    "Unread": "Непрочитана"
+    "Unread": "Непрочитана",
+    "Reply Translations": "Переклади Відповідей",
+    "Succeeded": "Успішно",
+    "Failed, Backup Tried": "Помилка, Спробувано Резервну",
+    "Fast Mode Refused": "Швидкий Режим Відхилено",
+    "All Features": "Усі Функції",
+    "All Models": "Усі Моделі",
+    "Errors": "Помилки",
+    "Duration": "Тривалість",
+    "Tokens": "Токени",
+    "Backup": "Резервна",
+    "Fast": "Швидкий",
+    "Last call :time · :duration": "Останній виклик: :time · :duration",
+    "Last call failed :time": "Останній виклик не вдався: :time",
+    "1 failure in the last hour|:count failures in the last hour": ":count збій за останню годину|:count збої за останню годину|:count збоїв за останню годину"
 }

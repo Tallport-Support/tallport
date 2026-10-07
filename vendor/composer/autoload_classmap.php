@@ -118,6 +118,7 @@ return array(
     'App\\Foundation\\Application' => $baseDir . '/app/Foundation/Application.php',
     'App\\Http\\Controllers\\AiDocumentsController' => $baseDir . '/app/Http/Controllers/AiDocumentsController.php',
     'App\\Http\\Controllers\\AiDraftsController' => $baseDir . '/app/Http/Controllers/AiDraftsController.php',
+    'App\\Http\\Controllers\\AiLogController' => $baseDir . '/app/Http/Controllers/AiLogController.php',
     'App\\Http\\Controllers\\AllMailboxesController' => $baseDir . '/app/Http/Controllers/AllMailboxesController.php',
     'App\\Http\\Controllers\\ApiKeysController' => $baseDir . '/app/Http/Controllers/ApiKeysController.php',
     'App\\Http\\Controllers\\ApiSettingsController' => $baseDir . '/app/Http/Controllers/ApiSettingsController.php',

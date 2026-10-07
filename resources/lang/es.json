@@ -1754,5 +1754,19 @@
     "Reopen": "Reabrir",
     "Mark as Read": "Marcar como Leído",
     "Mark as Unread": "Marcar como No Leído",
-    "Unread": "No Leído"
+    "Unread": "No Leído",
+    "Reply Translations": "Traducciones de Respuestas",
+    "Succeeded": "Correcto",
+    "Failed, Backup Tried": "Error, Respaldo Probado",
+    "Fast Mode Refused": "Modo Rápido Rechazado",
+    "All Features": "Todas las Funciones",
+    "All Models": "Todos los Modelos",
+    "Errors": "Errores",
+    "Duration": "Duración",
+    "Tokens": "Tokens",
+    "Backup": "Respaldo",
+    "Fast": "Rápido",
+    "Last call :time · :duration": "Última llamada: :time · :duration",
+    "Last call failed :time": "La última llamada falló: :time",
+    "1 failure in the last hour|:count failures in the last hour": "1 error en la última hora|:count errores en la última hora"
 }

@@ -48,6 +48,10 @@
                                         </x-fruit::select>
                                         <x-fruit::input name="settings[aiassistant.models][{{ $feature }}][{{ $slot }}][model]" :value="$feature_models[$slot][1] ?? ''" maxlength="255" :aria-label="$feature_name.': '.($slot == 'primary' ? __('Primary Model') : __('Backup Model'))" :placeholder="$slot == 'primary' ? App\Ai\Settings::DEFAULT_MODEL : ''" />
                                     </div>
+                                    {{-- How its last calls went (the AI log). --}}
+                                    @if (!empty($feature_models[$slot]) && ($model_status = App\Ai\Usage::modelStatus($feature, ...$feature_models[$slot])))
+                                        <a wire:navigate href="{{ route('logs.ai', array_filter(['model' => $feature_models[$slot][1], 'outcome' => $model_status['failing'] ? 'errors' : null])) }}" @class(['ai-model-status', 'ai-model-status--failing' => $model_status['failing']])>{{ $model_status['text'] }}</a>
+                                    @endif
                                 </td>
                             @endforeach
                         </tr>

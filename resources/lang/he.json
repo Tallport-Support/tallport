@@ -1752,5 +1752,19 @@
     "Reopen": "פתח מחדש",
     "Mark as Read": "סמן כנקרא",
     "Mark as Unread": "סמן כלא נקרא",
-    "Unread": "לא נקרא"
+    "Unread": "לא נקרא",
+    "Reply Translations": "תרגומי תשובות",
+    "Succeeded": "הצליח",
+    "Failed, Backup Tried": "נכשל, נוסה הגיבוי",
+    "Fast Mode Refused": "המצב המהיר נדחה",
+    "All Features": "כל התכונות",
+    "All Models": "כל המודלים",
+    "Errors": "שגיאות",
+    "Duration": "משך",
+    "Tokens": "טוקנים",
+    "Backup": "גיבוי",
+    "Fast": "מהיר",
+    "Last call :time · :duration": "קריאה אחרונה: :time · :duration",
+    "Last call failed :time": "הקריאה האחרונה נכשלה: :time",
+    "1 failure in the last hour|:count failures in the last hour": "כישלון אחד בשעה האחרונה|:count כישלונות בשעה האחרונה"
 }

@@ -1747,5 +1747,19 @@
     "Reopen": "Wieder Öffnen",
     "Mark as Read": "Als Gelesen Markieren",
     "Mark as Unread": "Als Ungelesen Markieren",
-    "Unread": "Ungelesen"
+    "Unread": "Ungelesen",
+    "Reply Translations": "Antwortübersetzungen",
+    "Succeeded": "Erfolgreich",
+    "Failed, Backup Tried": "Fehlgeschlagen, Ersatz Versucht",
+    "Fast Mode Refused": "Schnellmodus Abgelehnt",
+    "All Features": "Alle Funktionen",
+    "All Models": "Alle Modelle",
+    "Errors": "Fehler",
+    "Duration": "Dauer",
+    "Tokens": "Tokens",
+    "Backup": "Ersatz",
+    "Fast": "Schnell",
+    "Last call :time · :duration": "Letzter Aufruf: :time · :duration",
+    "Last call failed :time": "Letzter Aufruf fehlgeschlagen: :time",
+    "1 failure in the last hour|:count failures in the last hour": "1 Fehler in der letzten Stunde|:count Fehler in der letzten Stunde"
 }

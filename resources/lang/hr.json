@@ -1753,5 +1753,19 @@
     "Reopen": "Ponovno Otvori",
     "Mark as Read": "Označi kao Pročitano",
     "Mark as Unread": "Označi kao Nepročitano",
-    "Unread": "Nepročitano"
+    "Unread": "Nepročitano",
+    "Reply Translations": "Prijevodi Odgovora",
+    "Succeeded": "Uspjelo",
+    "Failed, Backup Tried": "Neuspjelo, Isproban Rezervni",
+    "Fast Mode Refused": "Brzi Način Odbijen",
+    "All Features": "Sve Značajke",
+    "All Models": "Svi Modeli",
+    "Errors": "Pogreške",
+    "Duration": "Trajanje",
+    "Tokens": "Tokeni",
+    "Backup": "Rezervni",
+    "Fast": "Brzo",
+    "Last call :time · :duration": "Zadnji poziv: :time · :duration",
+    "Last call failed :time": "Zadnji poziv nije uspio: :time",
+    "1 failure in the last hour|:count failures in the last hour": ":count neuspjeh u zadnjih sat vremena|:count neuspjeha u zadnjih sat vremena|:count neuspjeha u zadnjih sat vremena"
 }

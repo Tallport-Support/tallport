@@ -1752,5 +1752,19 @@
     "Reopen": "Redeschide",
     "Mark as Read": "Marchează Ca Citită",
     "Mark as Unread": "Marchează Ca Necitită",
-    "Unread": "Necitită"
+    "Unread": "Necitită",
+    "Reply Translations": "Traduceri ale Răspunsurilor",
+    "Succeeded": "Reușit",
+    "Failed, Backup Tried": "Eșuat, Rezerva Încercată",
+    "Fast Mode Refused": "Modul Rapid Refuzat",
+    "All Features": "Toate Funcțiile",
+    "All Models": "Toate Modelele",
+    "Errors": "Erori",
+    "Duration": "Durată",
+    "Tokens": "Tokenuri",
+    "Backup": "Rezervă",
+    "Fast": "Rapid",
+    "Last call :time · :duration": "Ultimul apel: :time · :duration",
+    "Last call failed :time": "Ultimul apel a eșuat: :time",
+    "1 failure in the last hour|:count failures in the last hour": "1 eșec în ultima oră|:count eșecuri în ultima oră|:count de eșecuri în ultima oră"
 }

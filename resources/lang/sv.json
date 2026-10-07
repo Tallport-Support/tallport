@@ -1753,5 +1753,19 @@
     "Reopen": "Öppna Igen",
     "Mark as Read": "Markera som Läst",
     "Mark as Unread": "Markera som Oläst",
-    "Unread": "Oläst"
+    "Unread": "Oläst",
+    "Reply Translations": "Svarsöversättningar",
+    "Succeeded": "Lyckades",
+    "Failed, Backup Tried": "Misslyckades, Reserv Provad",
+    "Fast Mode Refused": "Snabbläge Nekat",
+    "All Features": "Alla Funktioner",
+    "All Models": "Alla Modeller",
+    "Errors": "Fel",
+    "Duration": "Varaktighet",
+    "Tokens": "Tokens",
+    "Backup": "Reserv",
+    "Fast": "Snabb",
+    "Last call :time · :duration": "Senaste anrop: :time · :duration",
+    "Last call failed :time": "Senaste anropet misslyckades: :time",
+    "1 failure in the last hour|:count failures in the last hour": "1 fel senaste timmen|:count fel senaste timmen"
 }

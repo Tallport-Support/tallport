@@ -201,6 +201,7 @@ class Helper
             'logs' => [
                 'logs',
                 'logs.app',
+                'logs.ai',
             ],
             'workflows' => [
                 'workflows',

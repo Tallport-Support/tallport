@@ -2890,6 +2890,34 @@ h1.settings-toolbar__title {
 .app-logs__actions {
     margin-top: 16px;
 }
+/* Logs » AI (secure/ai_log): filters in a row; an error on one line, whole in its Details. */
+.ai-log__filters {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.ai-log__filters .f-input {
+    width: auto;
+}
+.ai-log .logs-table .f-badge {
+    margin-right: 4px;
+}
+.ai-log__error {
+    overflow-wrap: anywhere;
+}
+/* Settings » AI: a model's last calls under it (Usage::modelStatus()). */
+.ai-model-status {
+    display: block;
+    margin-top: 4px;
+    font-size: var(--f-text-xs);
+    color: var(--f-secondary);
+}
+.ai-model-status:not(:hover) {
+    text-decoration: none;
+}
+.ai-model-status--failing {
+    color: var(--f-danger);
+}
 /* The list pane's toolbar title, as in FruitUI's Support example. */
 .app-list-title {
     min-width: 0;

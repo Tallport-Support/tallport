@@ -74,7 +74,7 @@ class Summaries
         }
 
         $with_background = self::threads($conversation)->limit(null)->count() >= self::BACKGROUND_MIN_MESSAGES;
-        $response = (new ConversationSummarizer($language, $with_background))->prompt(TallportAgent::data('conversation', [
+        $response = (new ConversationSummarizer($language, $with_background))->recordFor(Usage::FEATURE_SUMMARY, $conversation)->prompt(TallportAgent::data('conversation', [
             'subject'  => (string) $conversation->subject,
             'messages' => $threads->map(function (Thread $thread) {
                 return [
@@ -86,8 +86,6 @@ class Summaries
                 ];
             })->all(),
         ]));
-
-        Usage::record($response, Usage::FEATURE_SUMMARY, $conversation);
 
         $data = self::data($conversation);
         $data['summaries'][$language] = [

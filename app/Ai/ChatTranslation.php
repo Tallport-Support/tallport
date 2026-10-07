@@ -91,12 +91,11 @@ class ChatTranslation
             throw new \RuntimeException(__('This mailbox has used its AI tokens for today.'));
         }
         $language = self::customerLanguage($conversation);
-        [$answer, $response] = (new ReplyTranslator($language))->streamJson(implode("\n\n", array_filter([
+        [$answer] = (new ReplyTranslator($language))->recordFor(Usage::FEATURE_REPLY_TRANSLATION, $conversation, null, $user ? $user->id : null)->streamJson(implode("\n\n", array_filter([
             TallportAgent::glossary($conversation->mailbox),
             TallportAgent::data('chat', self::context($conversation)),
             TallportAgent::data('reply', $html),
         ])), $on_translation ? fn ($answer) => $on_translation((string) ($answer['translation'] ?? '')) : null);
-        Usage::record($response, Usage::FEATURE_REPLY_TRANSLATION, $conversation, null, $user ? $user->id : null);
 
         $translation = trim((string) ($answer['translation'] ?? ''));
         if (!empty($answer['same_language']) || $translation === '') {
@@ -162,7 +161,7 @@ class ChatTranslation
         try {
             // Open pages show the translations as they're written.
             $ids = $batch->pluck('id')->all();
-            [$answer, $response] = (new ChatTranslator($language))->streamJson(implode("\n\n", array_filter([
+            [$answer] = (new ChatTranslator($language))->recordFor(Usage::FEATURE_TRANSLATION, $conversation, null, null, count($batch))->streamJson(implode("\n\n", array_filter([
                 TallportAgent::glossary($conversation->mailbox),
                 TallportAgent::data('earlier_chat', self::context($conversation, $batch->first()->id)),
                 TallportAgent::data('messages', $batch->map(fn (Thread $thread) => ['id' => $thread->id, 'text' => Summaries::text($thread)])->all()),
@@ -176,7 +175,6 @@ class ChatTranslation
 
             return $threads->all();
         }
-        Usage::record($response, Usage::FEATURE_TRANSLATION, $conversation, null, null, count($batch));
 
         $detected = strtolower(trim((string) ($answer['detected_language'] ?? ''))) ?: null;
         if ($detected && Settings::isLanguage($detected)) {

@@ -1752,5 +1752,19 @@
     "Reopen": "Znova Odpri",
     "Mark as Read": "Označi kot Prebrano",
     "Mark as Unread": "Označi kot Neprebrano",
-    "Unread": "Neprebrano"
+    "Unread": "Neprebrano",
+    "Reply Translations": "Prevodi Odgovorov",
+    "Succeeded": "Uspelo",
+    "Failed, Backup Tried": "Ni Uspelo, Preizkušen Rezervni",
+    "Fast Mode Refused": "Hitri Način Zavrnjen",
+    "All Features": "Vse Funkcije",
+    "All Models": "Vsi Modeli",
+    "Errors": "Napake",
+    "Duration": "Trajanje",
+    "Tokens": "Žetoni",
+    "Backup": "Rezervni",
+    "Fast": "Hitro",
+    "Last call :time · :duration": "Zadnji klic: :time · :duration",
+    "Last call failed :time": "Zadnji klic ni uspel: :time",
+    "1 failure in the last hour|:count failures in the last hour": ":count napaka v zadnji uri|:count napaki v zadnji uri|:count napake v zadnji uri|:count napak v zadnji uri"
 }

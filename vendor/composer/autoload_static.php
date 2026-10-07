@@ -884,6 +884,7 @@ class ComposerStaticInit9e83c6e0c8a56ef478b844f6103f260d
         'App\\Foundation\\Application' => __DIR__ . '/../..' . '/app/Foundation/Application.php',
         'App\\Http\\Controllers\\AiDocumentsController' => __DIR__ . '/../..' . '/app/Http/Controllers/AiDocumentsController.php',
         'App\\Http\\Controllers\\AiDraftsController' => __DIR__ . '/../..' . '/app/Http/Controllers/AiDraftsController.php',
+        'App\\Http\\Controllers\\AiLogController' => __DIR__ . '/../..' . '/app/Http/Controllers/AiLogController.php',
         'App\\Http\\Controllers\\AllMailboxesController' => __DIR__ . '/../..' . '/app/Http/Controllers/AllMailboxesController.php',
         'App\\Http\\Controllers\\ApiKeysController' => __DIR__ . '/../..' . '/app/Http/Controllers/ApiKeysController.php',
         'App\\Http\\Controllers\\ApiSettingsController' => __DIR__ . '/../..' . '/app/Http/Controllers/ApiSettingsController.php',

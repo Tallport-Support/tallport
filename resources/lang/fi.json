@@ -1771,5 +1771,19 @@
     "Reopen": "Avaa Uudelleen",
     "Mark as Read": "Merkitse Luetuksi",
     "Mark as Unread": "Merkitse Lukemattomaksi",
-    "Unread": "Lukematon"
+    "Unread": "Lukematon",
+    "Reply Translations": "Vastausten Käännökset",
+    "Succeeded": "Onnistui",
+    "Failed, Backup Tried": "Epäonnistui, Varaa Kokeiltu",
+    "Fast Mode Refused": "Nopea Tila Hylätty",
+    "All Features": "Kaikki Toiminnot",
+    "All Models": "Kaikki Mallit",
+    "Errors": "Virheet",
+    "Duration": "Kesto",
+    "Tokens": "Tokenit",
+    "Backup": "Vara",
+    "Fast": "Nopea",
+    "Last call :time · :duration": "Viimeisin kutsu: :time · :duration",
+    "Last call failed :time": "Viimeisin kutsu epäonnistui: :time",
+    "1 failure in the last hour|:count failures in the last hour": "1 virhe viimeisen tunnin aikana|:count virhettä viimeisen tunnin aikana"
 }
