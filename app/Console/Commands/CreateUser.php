@@ -93,6 +93,10 @@ class CreateUser extends Command
                 $user->invite_state = User::INVITE_STATE_ACTIVATED;
             }
 
+            if (User::where('email', $user->email)->exists()) {
+                $this->error('User already exists.');
+                return self::FAILURE;
+            }
             try {
                 $user->save();
             } catch (\Exception $e) {

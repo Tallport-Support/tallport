@@ -427,7 +427,10 @@ class ConversationsController extends Controller
     public static function markNotificationsRead($conversation, $user, $notification_id = null)
     {
         if ($notification_id) {
-            $user->unreadNotifications()->where('id', $notification_id)->update(['read_at' => now()]);
+            // Notification IDs are UUIDs (PostgreSQL refuses anything else in the query).
+            if (\Str::isUuid($notification_id)) {
+                $user->unreadNotifications()->where('id', $notification_id)->update(['read_at' => now()]);
+            }
             $user->clearWebsiteNotificationsCache();
 
             return;
@@ -1864,7 +1867,8 @@ class ConversationsController extends Controller
 
             $prev_status = $conversation->status;
 
-            $conversation->status = $request_status ?: $conversation->status;
+            // A new conversation sent without a status is active (none would be saved as 0).
+            $conversation->status = $request_status ?: ($conversation->status ?: Conversation::STATUS_ACTIVE);
 
             if (($prev_status != $conversation->status || $is_create)
                 && $conversation->isClosed()
@@ -2455,7 +2459,7 @@ class ConversationsController extends Controller
 
                 $conversation->type = $type;
                 $conversation->state = Conversation::STATE_DRAFT;
-                $conversation->status = $request->status;
+                $conversation->status = (int) $request->status ?: Conversation::STATUS_ACTIVE;
                 $conversation->subject = $request->subject;
                 $conversation->setPreview($request->body);
                 if ($attachments_info['has_attachments']) {
@@ -3076,7 +3080,8 @@ class ConversationsController extends Controller
     {
         foreach ($attachments_list as $i => $attachment_id) {
             $attachment_id_decrypted = \Helper::decrypt($attachment_id);
-            if ($attachment_id_decrypted == $attachment_id) {
+            // Not encrypted by us: decrypt() gives '' (PostgreSQL refuses it as an ID).
+            if ($attachment_id_decrypted == $attachment_id || !is_numeric($attachment_id_decrypted)) {
                 unset($attachments_list[$i]);
             } else {
                 $attachments_list[$i] = $attachment_id_decrypted;

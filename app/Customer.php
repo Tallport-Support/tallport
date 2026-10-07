@@ -1636,7 +1636,9 @@ class Customer extends Model
 
         if ($customer_channel) {
             // Update channel_id.
-            if ($customer_channel->channel_id != $channel_id) {
+            if ($customer_channel->channel_id != $channel_id
+                && !CustomerChannel::where('channel', $channel)->where('channel_id', $channel_id)->exists()
+            ) {
                 try {
                     $customer_channel->channel_id = $channel_id;
                     $customer_channel->save();

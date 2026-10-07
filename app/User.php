@@ -1392,14 +1392,8 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
 
     public function followConversation($conversation_id)
     {
-        try {
-            $follower = new Follower();
-            $follower->conversation_id = $conversation_id;
-            $follower->user_id = $this->id;
-            $follower->save();
-        } catch (\Exception $e) {
-            // Already exists
-        }
+        // Ignored when already following (a failed insert would abort a PostgreSQL transaction).
+        Follower::insertOrIgnore(['conversation_id' => $conversation_id, 'user_id' => $this->id]);
     }
 
     // If there will be some issues, extra "robot" field

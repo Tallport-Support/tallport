@@ -52,6 +52,11 @@ class Module extends Model
     public static function setActive($alias, $active, $save = true)
     {
         $module = self::getByAliasOrCreate($alias);
+        // A row added since the modules were cached (checked first: on PostgreSQL a failed
+        // insert aborts the surrounding transaction).
+        if (!$module->exists && $save) {
+            $module = self::where('alias', $alias)->first() ?: $module;
+        }
         $module->active = $active;
         if ($save) {
             try {

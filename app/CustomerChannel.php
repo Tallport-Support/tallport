@@ -27,6 +27,10 @@ class CustomerChannel extends Model
 
     public static function create($customer_id, $channel, $channel_id)
     {
+        // Checked first: on PostgreSQL a failed insert aborts the surrounding transaction.
+        if (self::where('channel', $channel)->where('channel_id', $channel_id)->exists()) {
+            return null;
+        }
         try {
             $customer_channel = new self();
             $customer_channel->customer_id = $customer_id;

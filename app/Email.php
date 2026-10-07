@@ -82,6 +82,10 @@ class Email extends Model
 
     public static function create($email, $customer_id, $type = self::TYPE_WORK)
     {
+        // Checked first: on PostgreSQL a failed insert aborts the surrounding transaction.
+        if (self::where('email', $email)->exists()) {
+            return null;
+        }
         try {
             $email_obj = new Email();
             $email_obj->email = $email;

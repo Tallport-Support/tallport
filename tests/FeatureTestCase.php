@@ -48,6 +48,9 @@ abstract class FeatureTestCase extends TestCase
 
         $this->captureSentMail();
 
+        // Requests that set a time limit for themselves (set_time_limit()) don't limit the test run.
+        set_time_limit(0);
+
         // Nothing an earlier test cached by ID is kept: its rows were rolled back, and SQLite
         // gives the IDs out again.
         \Option::$cache = [];

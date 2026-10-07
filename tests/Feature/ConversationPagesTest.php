@@ -134,6 +134,8 @@ class ConversationPagesTest extends FeatureTestCase
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
         $this->assertNotNull($conversation);
         $this->assertSame('Your invoice', $conversation->subject);
+        // Sent without a status: active (not 0).
+        $this->assertEquals(Conversation::STATUS_ACTIVE, $conversation->status);
         $this->assertSame('new.customer@customer.example.org', $conversation->customer_email);
         $this->assertEquals($this->agent->id, $conversation->created_by_user_id);
         $this->assertEquals(Conversation::SOURCE_TYPE_WEB, $conversation->source_type);

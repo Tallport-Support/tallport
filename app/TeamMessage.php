@@ -121,7 +121,8 @@ class TeamMessage extends Model
             ->where('team_messages.user_id', '!=', $user->id)
             ->whereRaw('team_messages.id > COALESCE('.self::READS_TABLE.'.last_read_id, 0)')
             ->groupBy('team_messages.mailbox_id')
-            ->pluck(\DB::raw('COUNT(*)'), 'team_messages.mailbox_id')
+            ->selectRaw('COUNT(*) AS unread, team_messages.mailbox_id')
+            ->pluck('unread', 'mailbox_id')
             ->map('intval')
             ->all();
     }

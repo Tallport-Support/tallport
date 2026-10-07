@@ -296,18 +296,19 @@ class ConversationPageDataTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
         $other = $this->receiveConversation(['from' => 'robin@customer.example.org', 'subject' => 'Other']);
-        foreach (['n-this', 'n-other'] as $id) {
+        $ids = ['this' => (string) \Illuminate\Support\Str::uuid(), 'other' => (string) \Illuminate\Support\Str::uuid()];
+        foreach ($ids as $key => $id) {
             \DB::table('notifications')->insert([
                 'id' => $id, 'type' => 'App\Notifications\WebsiteNotification', 'notifiable_type' => 'App\User',
-                'notifiable_id' => $this->agent->id, 'data' => '{}', 'conversation_id' => $id == 'n-this' ? $conversation->id : $other->id,
+                'notifiable_id' => $this->agent->id, 'data' => '{}', 'conversation_id' => $key == 'this' ? $conversation->id : $other->id,
                 'created_at' => now(), 'updated_at' => now(),
             ]);
         }
 
-        $this->actingAs($this->agent)->get($conversation->url().'&mark_as_read=n-other')->assertOk();
+        $this->actingAs($this->agent)->get($conversation->url().'&mark_as_read='.$ids['other'])->assertOk();
 
-        $this->assertNotNull(\DB::table('notifications')->where('id', 'n-other')->value('read_at'));
-        $this->assertNull(\DB::table('notifications')->where('id', 'n-this')->value('read_at'));
+        $this->assertNotNull(\DB::table('notifications')->where('id', $ids['other'])->value('read_at'));
+        $this->assertNull(\DB::table('notifications')->where('id', $ids['this'])->value('read_at'));
     }
 
     // New conversation page.
