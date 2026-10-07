@@ -630,6 +630,36 @@ class FetchEmailsProcessMessageTest extends FeatureTestCase
         $this->assertStringNotContainsString('Old', $body);
     }
 
+    /**
+     * NetEase/Coremail mail (163.com, 126.com, yeah.net) quotes in its own ways; only the
+     * customer's text is kept, without the CoremailReplyPreprocess module.
+     *
+     * @dataProvider coremailReplies
+     */
+    public function testCoremailQuotesAreCutOff($body, $is_html)
+    {
+        \Eventy::removeAllFilters('fetch_emails.separate_reply.preprocess_body');
+
+        $reply = (new FetchEmails())->separateReply($body, $is_html, true);
+
+        $this->assertStringContainsString('已经搞定了，谢谢', $reply);
+        $this->assertStringNotContainsString('Quoted answer', $reply);
+        $this->assertStringNotContainsString('回复的原邮件', $reply);
+        $this->assertStringNotContainsString('写道', $reply);
+    }
+
+    public static function coremailReplies()
+    {
+        $card = '<div style="margin-bottom:1em;font-size:12px"><table><tr><td>发件人</td><td>Support &lt;support@example.org&gt;</td></tr><tr><td>主题</td><td>Re: Question</td></tr></table></div><div>Quoted answer</div>';
+
+        return [
+            'Mail Master' => ['<div>已经搞定了，谢谢</div><div class="ntes-mailmaster-quote" style="padding-top: 1px"><div style="margin-top: 2em">---- 回复的原邮件 ----</div>'.$card.'</div>', true],
+            'Mail Master, more classes' => ['<div>已经搞定了，谢谢</div><div class="J-reply ntes-mailmaster-quote" style="padding-top: 1px"><div style="margin:2em 0 1em">---- 回复的原邮件 ----</div>'.$card.'</div>', true],
+            'Webmail' => ['<div>已经搞定了，谢谢</div><div id="divNeteaseMailCard"></div><p>在 2026-10-03 18:28:31，"Support" &lt;support@example.org&gt; 写道：</p><blockquote id="isReplyContent" style="PADDING-LEFT: 1ex"><div>Quoted answer</div></blockquote>', true],
+            'Plain text' => ["已经搞定了，谢谢\n\n---- Replied Message ----\n| From | Support<support@example.org> |\n| Date | 10/03/2026 15:42 |\n| To | casey@example.org |\n| Subject | Re: Question |\nQuoted answer", false],
+        ];
+    }
+
     public function testEncodedAttachmentName()
     {
         $command = new FetchEmails();

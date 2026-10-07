@@ -102,6 +102,13 @@ class Mail
         'yahoo_quoted_', // Yahoo, full: <div id=3D"ydp6h4f5c59yahoo_quoted_2937493705"
         '------------------ 原始邮件 ------------------', // QQ
         '------------------ Original ------------------', // QQ English
+        // NetEase/Coremail (163.com, 126.com, yeah.net): Mail Master's quote container, its
+        // plain-text heading, and the webmail's "在 <date>，<name> 写道：" line before its quote.
+        'regex:/<div[^>]+class="[^"]*\bntes-mailmaster-quote\b/',
+        '---- 回复的原邮件 ----',
+        '---- Replied Message ----',
+        'regex:/<p>\s*在[^<]{1,300}写道：\s*<\/p>\s*<blockquote id="isReplyContent"/',
+        '<blockquote id="isReplyContent"',
         '<div id=3D"divRplyFwdMsg" dir=', // Outlook
         '<div id="divRplyFwdMsg" dir=', // Outlook
         'regex:/<hr[^>]*>\s*<div[^>]+id="divRplyFwdMsg"/', // Outlook
