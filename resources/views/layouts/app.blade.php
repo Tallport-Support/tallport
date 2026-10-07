@@ -51,7 +51,11 @@
             @php
                 $has_list = trim($__env->yieldContent('list')) !== '';
                 $has_list_toolbar = trim($__env->yieldContent('list_toolbar')) !== '';
-                $has_toolbar = trim($__env->yieldContent('toolbar')) !== '';
+                // Settings: one bar for every page, as the pane's toolbar (Back on nested pages, the title,
+                // the page's actions; x-page-nav sends them, else the page's title).
+                $is_settings = App\Misc\Sidebar::isSettings();
+                $settings_bar = $is_settings ? trim($__env->yieldPushContent('settings_bar')) : '';
+                $has_toolbar = $is_settings || trim($__env->yieldContent('toolbar')) !== '';
                 $has_inspector = trim($__env->yieldContent('inspector')) !== '';
             @endphp
             <x-fruit::workspace frame="fill" :style="\App\Misc\Helper::columnWidthsStyle()" class="app-workspace {{ $__env->yieldContent('split_class') }}" :aria-label="\Config::get('app.name')" :data-list="$has_list ? '' : null" :data-inspector="$has_inspector ? '' : null">
@@ -76,22 +80,18 @@
                     </section>
                 @endif
 
-                @if ($has_toolbar)
+                @if ($is_settings)
+                    <header class="f-toolbar app-workspace__toolbar settings-toolbar">
+                        @if ($settings_bar !== '')
+                            {!! $settings_bar !!}
+                        @else
+                            <h1 class="settings-toolbar__title">@yield('title')</h1>
+                        @endif
+                    </header>
+                @elseif ($has_toolbar)
                     <header class="f-toolbar app-workspace__toolbar">@yield('toolbar')</header>
                 @endif
                 <main id="app-content" class="f-pane f-pane--column app-workspace__content app-main @yield('main_class') @if (!$has_toolbar) app-workspace__pane--full @endif">
-                    {{-- Settings' one bar over the pane: Back on nested pages, the title, the page's actions
-                         (x-page-nav sends them; else the page's title). The same height on every page. --}}
-                    @if (App\Misc\Sidebar::isSettings())
-                        @php $settings_bar = trim($__env->yieldPushContent('settings_bar')); @endphp
-                        <header class="f-toolbar settings-toolbar">
-                            @if ($settings_bar !== '')
-                                {!! $settings_bar !!}
-                            @else
-                                <h1 class="settings-toolbar__title">@yield('title')</h1>
-                            @endif
-                        </header>
-                    @endif
                     <div class="f-pane__scroll" id="app-content-scroll">
                         @if (($browser_check = \Helper::checkBrowser()) && $browser_check['msg'])
                             <x-fruit::alert tone="danger">{{ $browser_check["msg"] }}</x-fruit::alert>

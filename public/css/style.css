@@ -2137,13 +2137,9 @@ a.disabled:focus {
 /* Settings' bar over the content pane (layouts/app; x-page-nav fills it): the pane's full width on
    the toolbar material with its hairline, one height on every page (a 36px button fits), Back
    (nested pages), the title at headline size, a spacer, the actions as small buttons. */
+/* The pane's toolbar row: as tall as the sidebar's header, so their hairlines meet. */
 .settings-toolbar {
-    flex: none;
-    min-height: 52px;
-    /* 7 + 36 (Back, a button) + 8 + the 1px hairline: 52. */
-    padding-block: 7px 8px;
     gap: 6px;
-    border-bottom: 1px solid var(--f-border);
 }
 .settings-toolbar__title {
     display: flex;
@@ -2184,6 +2180,13 @@ h1.settings-toolbar__title {
     padding-top: 0;
 }
 @media (max-width: 500px) {
+    /* Under the app bar on a phone: 7 + 36 (Back, a button) + 8 + the 1px hairline: 52. */
+    .app-workspace__toolbar.settings-toolbar {
+        box-sizing: border-box;
+        height: 52px;
+        min-height: 52px;
+        padding-block: 7px 8px;
+    }
     .settings-toolbar > .f-back {
         --f-back-max-width: 10rem;
     }
