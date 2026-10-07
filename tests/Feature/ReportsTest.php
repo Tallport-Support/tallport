@@ -260,4 +260,81 @@ class ReportsTest extends FeatureTestCase
             ->assertOk()->assertJsonPath('metrics.replies.value', 0)->assertJsonPath('filters.from', '2020-01-01');
         $this->json('GET', '/api/reports/satisfaction', [], ['X-FreeScout-API-Key' => ApiKey::globalKey()])->assertStatus(400);
     }
+
+    public function testEveryPeriod()
+    {
+        $today = CarbonImmutable::create(2026, 3, 18, 0, 0, 0, 'UTC');
+        $dates = fn ($period) => array_map(fn ($day) => $day->format('Y-m-d'), Report::periodDates($period, $today));
+
+        $this->assertSame(['2026-03-18', '2026-03-18'], $dates('today'));
+        $this->assertSame(['2026-03-17', '2026-03-17'], $dates('yesterday'));
+        $this->assertSame(['2026-03-01', '2026-03-18'], $dates('this_month'));
+        $this->assertSame(['2026-01-01', '2026-03-18'], $dates('this_year'));
+        $this->assertSame(['2025-01-01', '2025-12-31'], $dates('last_year'));
+        $this->assertSame(['2026-02-17', '2026-03-18'], $dates('anything else'));
+
+        // Custom: the other way round is put right; a date that isn't one, the default.
+        $report = new ConversationsReport($this->admin, ['period' => 'custom', 'from' => '2026-02-10', 'to' => '2026-01-01']);
+        $this->assertSame(['2026-01-01', '2026-02-10'], [$report->filters['from'], $report->filters['to']]);
+        $this->assertNull(Report::parseDate('2026-1-1', 'UTC'));
+        $this->assertNull(Report::parseDate('yesterday', 'UTC'));
+    }
+
+    /**
+     * A long period is charted by month too; the chart can show messages instead of new
+     * conversations; without conversations there's no busiest day.
+     */
+    public function testMonthsMessagesAndAQuietPeriod()
+    {
+        $report = new ConversationsReport($this->admin, ['period' => 'custom', 'from' => '2026-01-01', 'to' => '2026-03-31']);
+        $this->assertSame(['d', 'w', 'm'], $report->groupBys());
+        $chart = $report->chart(['group_by' => 'm'], ['new_conv' => 'New'], ['2026-01-05 10:00:00', '2026-01-20 10:00:00', '2026-03-31 10:00:00'], []);
+        $this->assertSame([2, 0, 1], $chart['datasets'][0]['data']);
+        $this->assertSame(['Jan 2026', 'Feb 2026', 'Mar 2026'], $chart['labels']);
+
+        $data = (new ConversationsReport($this->admin, ['period' => 'last_7']))->data(['type' => 'messages']);
+        $this->assertSame('messages', $data['chart']['type']);
+        $this->assertNull($data['metrics']['busy_day']['value']);
+    }
+
+    /**
+     * Per mailbox: how long closed conversations took (the median).
+     */
+    public function testResolutionTimePerMailbox()
+    {
+        $start = Carbon::now('UTC')->subDays(2)->setTime(9, 0);
+        $quick = $this->conversation($this->support, $start);
+        $slow = $this->conversation($this->support, $start);
+        $this->close($quick, $start->copy()->addHours(2), $this->admin);
+        $this->close($slow, $start->copy()->addHours(4), $this->admin);
+        $other = $this->conversation($this->sales, $start, 'sam@customer.example.org');
+        $this->close($other, $start->copy()->addHour(), $this->admin);
+
+        $table = collect((new ConversationsReport($this->admin, ['period' => 'last_7']))->data()['table_mailboxes'])->keyBy('name');
+
+        $this->assertSame(3 * 3600, $table['Support']['resolution_time']);
+        $this->assertSame(3600, $table['Sales']['resolution_time']);
+        $this->assertSame(2, $table['Support']['closed']);
+    }
+
+    /**
+     * Replies by the Workflow user aren't the team's: not counted.
+     */
+    public function testWorkflowRepliesAreNotCounted()
+    {
+        $start = Carbon::now('UTC')->subDays(2)->setTime(9, 0);
+        $conversation = $this->conversation($this->support, $start);
+        // Not one an earlier test made (rolled back).
+        (new \ReflectionProperty(\App\Workflows\Runner::class, 'robot'))->setValue(null, null);
+        $robot = \App\Workflows\Runner::robot();
+        $this->thread($conversation, $start->copy()->addMinutes(5), $robot);
+        $reply = $this->thread($conversation, $start->copy()->addHour(), $this->agent);
+
+        Replies::update([$conversation->id]);
+        Replies::update([]);
+
+        $rows = \DB::table(Replies::TABLE)->where('conversation_id', $conversation->id)->get();
+        $this->assertSame([$reply->id], $rows->pluck('thread_id')->map('intval')->all());
+        $this->assertSame(3600, (int) $rows[0]->response_time);
+    }
 }

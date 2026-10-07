@@ -153,6 +153,11 @@ class ReceiveMailTest extends FeatureTestCase
         \Option::set(\App\Incoming\ReceiveFailures::OPTION, ['old' => time() - 8 * 86400, 'new' => time() - 3600]);
 
         $this->assertSame(['new'], array_keys(\App\Incoming\ReceiveFailures::all()));
+
+        // Whatever else is stored: none.
+        \Option::set(\App\Incoming\ReceiveFailures::OPTION, 'garbled');
+        \Option::$cache = [];
+        $this->assertSame([], \App\Incoming\ReceiveFailures::all());
     }
 
     public function testReceivingTwiceSavesOnce()

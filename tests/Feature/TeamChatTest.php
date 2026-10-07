@@ -206,4 +206,28 @@ class TeamChatTest extends FeatureTestCase
         $this->assertSame(0, TeamMessage::where('mailbox_id', $this->mailbox->id)->count());
         $this->assertSame(0, Attachment::where('team_message_id', $message->id)->count());
     }
+
+    /**
+     * A message arriving while the room is open is read; Details follow; a file can be
+     * taken off before sending, and nothing to send sends nothing.
+     */
+    public function testWhileTheRoomIsOpen()
+    {
+        $chat = Livewire::actingAs($this->bob)->test(TeamChat::class, ['mailbox' => $this->mailbox]);
+        $details = Livewire::actingAs($this->bob)->test(\App\Livewire\TeamChatDetails::class, ['mailbox' => $this->mailbox]);
+        $message = TeamMessage::create(['mailbox_id' => $this->mailbox->id, 'user_id' => $this->ann->id, 'body' => 'Lunch?']);
+        $this->assertSame([$this->mailbox->id => 1], TeamMessage::unreadCounts($this->bob, [$this->mailbox->id]));
+
+        $chat->dispatch('team-message-created')->assertSee('Lunch?');
+        $this->assertSame([], TeamMessage::unreadCounts($this->bob, [$this->mailbox->id]));
+        $message->pinned_at = now();
+        $message->save();
+        $details->dispatch('team-chat-changed')->assertSee('Lunch?');
+
+        $chat->set('files', [UploadedFile::fake()->createWithContent('a.txt', 'a'), UploadedFile::fake()->createWithContent('b.txt', 'b')])
+            ->call('removeFile', 0);
+        $this->assertSame(['b.txt'], array_map(fn ($file) => $file->getClientOriginalName(), $chat->get('files')));
+        $chat->call('removeFile', 0)->set('body', '  ')->call('send');
+        $this->assertSame(1, TeamMessage::where('mailbox_id', $this->mailbox->id)->count());
+    }
 }

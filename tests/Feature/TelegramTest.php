@@ -451,4 +451,112 @@ class TelegramTest extends FeatureTestCase
             ->assertExitCode(0);
         $this->assertSame(SendLog::STATUS_SEND_ERROR, (int) $reply->fresh()->send_status);
     }
+
+    // Less common messages and failures.
+
+    protected function telegramLog()
+    {
+        return \App\ActivityLog::where('log_name', Telegram::LOG)->orderBy('id')->pluck('description')->all();
+    }
+
+    public function testNewCustomersProfilePhotoIsSaved()
+    {
+        $image = imagecreatetruecolor(4, 4);
+        ob_start();
+        imagepng($image);
+        $png = ob_get_clean();
+        $this->fakeTelegram([
+            'getUserProfilePhotos' => $this->ok(['total_count' => 1, 'photos' => [[['file_id' => 'p-small'], ['file_id' => 'p-large']]]]),
+            'file' => Http::response($png),
+        ]);
+
+        $this->postUpdate($this->update());
+
+        $customer = $this->conversation()->customer;
+        $this->assertNotEmpty($customer->photo_url);
+        $this->assertTrue(\Storage::disk('local')->exists(Customer::PHOTO_DIRECTORY.'/'.$customer->photo_url));
+        $this->assertSame('p-large', $this->sentTo('getFile')->last()['file_id']);
+    }
+
+    public function testFailedProfilePhotoIsOnlyLogged()
+    {
+        $this->fakeTelegram(['getUserProfilePhotos' => $this->ok(['total_count' => 1, 'photos' => [[['file_id' => 'gone']]]]), 'getFile' => $this->ok(['file_id' => 'gone'])]);
+
+        $this->postUpdate($this->update())->assertStatus(200);
+
+        $this->assertNull($this->conversation()->customer->photo_url);
+        $this->assertContains('('.$this->mailbox->name.') Profile photo of Telegram user 555 not saved: The file is not available.', $this->telegramLog());
+    }
+
+    public function testFileThatCanNotBeDownloadedIsNoted()
+    {
+        $this->fakeTelegram(['file' => Http::response('', 404)]);
+
+        $this->postUpdate($this->update(['text' => null, 'document' => ['file_id' => 'doc', 'file_name' => 'report.pdf']]));
+
+        $this->assertStringContainsString('A file could not be downloaded from Telegram: report.pdf (Could not download the file: HTTP 404)', html_entity_decode($this->conversation()->threads()->first()->body));
+    }
+
+    public function testFileWithoutCaptionIsNamedInTheBody()
+    {
+        $this->postUpdate($this->update(['text' => null, 'document' => ['file_id' => 'doc', 'file_name' => 'log & trace.txt']]));
+
+        $thread = $this->conversation()->threads()->first();
+        $this->assertSame('log &amp; trace.txt', $thread->body);
+        $this->assertSame('log & trace.txt', $this->conversation()->subject);
+    }
+
+    public function testVenueAndUnsupportedMessages()
+    {
+        $this->postUpdate($this->update(['text' => null, 'venue' => ['title' => 'Café <Noord>', 'address' => 'Dam 1, Amsterdam'], 'location' => ['latitude' => 52.37, 'longitude' => 4.89]]));
+        $this->assertStringStartsWith('Café &lt;Noord&gt;, Dam 1, Amsterdam', $this->conversation()->threads()->first()->body);
+
+        $this->postUpdate($this->update(['text' => null, 'sticker' => ['emoji' => '👍']]))->assertStatus(200);
+        $this->assertSame(1, $this->conversation()->threads()->count());
+        $this->assertStringContainsString('Message of a type Tallport does not take (message_id, date, chat, from, text, sticker) from Telegram user 555 ignored.', implode("\n", $this->telegramLog()));
+    }
+
+    public function testKnownCustomerGetsTheirTelegramUsername()
+    {
+        $this->postUpdate($this->update(['from' => ['id' => 555, 'is_bot' => false, 'first_name' => 'Casey']]));
+        $customer = $this->conversation()->customer;
+        $this->assertSame([], $customer->getSocialProfiles());
+
+        $this->postUpdate($this->update());
+        $this->postUpdate($this->update());
+
+        $profiles = $customer->fresh()->getSocialProfiles();
+        $this->assertCount(1, $profiles);
+        $this->assertSame('caseylee', $profiles[0]['value']);
+    }
+
+    public function testStartAutoReplyThatFailsIsLogged()
+    {
+        Telegram::saveSettings($this->mailbox, ['auto_reply' => 'Welcome!', 'ignore_start' => true]);
+        $this->fakeTelegram(['sendMessage' => $this->error(403, 'Forbidden: bot was blocked by the user')]);
+
+        $this->postUpdate($this->update(['text' => '/start']))->assertStatus(200);
+
+        $this->assertContains('('.$this->mailbox->name.') Auto reply to /start not sent: Forbidden: bot was blocked by the user', $this->telegramLog());
+    }
+
+    public function testClientNeedsATokenAndHidesIt()
+    {
+        $this->expectExceptionMessage('The bot token is not set.');
+        try {
+            (new \App\Telegram\Client(''))->getMe();
+        } finally {
+            Http::swap(new \Illuminate\Http\Client\Factory());
+            Http::fake(function () {
+                throw new \Illuminate\Http\Client\ConnectionException('cURL error 7: Failed to connect to api.telegram.org/bot'.self::TOKEN.'/getMe');
+            });
+            try {
+                (new \App\Telegram\Client(self::TOKEN))->getMe();
+                $this->fail('A failed connection must throw.');
+            } catch (\App\Telegram\TelegramException $e) {
+                $this->assertStringNotContainsString(self::TOKEN, $e->getMessage());
+                $this->assertStringContainsString('Failed to connect', $e->getMessage());
+            }
+        }
+    }
 }

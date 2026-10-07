@@ -335,4 +335,48 @@ class ConversationListTest extends FeatureTestCase
         $this->postAjax($this->createUser(), '/conversation/ajax', ['action' => 'viewed', 'conversation_id' => $conversation->id])
             ->assertJson(['status' => 'error']);
     }
+
+    /**
+     * Embedded (x_embed), rows open in a new tab, also after the list changes.
+     */
+    public function testEmbeddedRowsOpenInANewTab()
+    {
+        $this->conversation('Embedded question');
+
+        Livewire::withQueryParams(['x_embed' => 1])->actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)])
+            ->assertSet('params.target_blank', true)
+            ->call('sort', 'subject')->assertSeeHtml('target="_blank"');
+    }
+
+    /**
+     * Another page keeps the page's address in step (its page parameter).
+     */
+    public function testPagesKeepTheAddress()
+    {
+        $this->conversation('Paged question');
+
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED), 'pageParam' => 'list_page'])
+            ->call('gotoPage', 0)->assertSet('page', 1)
+            ->call('gotoPage', 2)->assertSet('page', 2)->assertSet('selected', []);
+        $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED), 'pageParam' => 'list_page'])
+            ->call('gotoPage', 2);
+        $this->assertStringContainsString('url.searchParams.set("list_page", 2)', $list->effects['xjs'][0]['expression']);
+    }
+
+    public function testAnUnknownStatusOrSortChangesNothing()
+    {
+        $conversation = $this->conversation('Question');
+
+        $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)]);
+        $sorting = $list->get('sorting');
+        $list->call('sort', 'customer')->assertSet('sorting', $sorting);
+        $list
+            ->set('selected', [(string) $conversation->id])->call('changeStatus', 99)->assertToasted('Incorrect status', 'danger')->assertNoRedirect();
+        $this->assertSame(Conversation::STATUS_ACTIVE, $conversation->fresh()->status);
+    }
+
+    public function testSignedOutUsersGetNothing()
+    {
+        Livewire::test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)])->assertUnauthorized();
+    }
 }

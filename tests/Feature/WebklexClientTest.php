@@ -109,4 +109,27 @@ class WebklexClientTest extends FeatureTestCase
         $this->assertSame('Hi!', \App\Incoming\Parser::parse($message->rawSource())->attachments()[0]->getContent());
         $this->assertTrue($message->setFlag(['Seen']));
     }
+
+    /**
+     * Calls the fetch code makes go to webklex; errors are thrown, not collected
+     * (getLastError() and getErrors() are the old client's).
+     */
+    public function testClientCallsGoToWebklex()
+    {
+        $webklex = Mockery::mock(\Webklex\PHPIMAP\Client::class);
+        $webklex->shouldReceive('isConnected')->once()->andReturn(true);
+        $folders = new \Webklex\PHPIMAP\Support\FolderCollection();
+        $connection = Mockery::mock(\Webklex\PHPIMAP\Connection\Protocols\ProtocolInterface::class);
+        $webklex->shouldReceive('getFolders')->once()->andReturn($folders);
+        $webklex->shouldReceive('openFolder')->with('INBOX')->once()->andReturn(['exists' => 3]);
+        $webklex->shouldReceive('getConnection')->once()->andReturn($connection);
+        $client = new ImapClient($webklex);
+
+        $this->assertTrue($client->isConnected());
+        $this->assertSame($folders, $client->getFolders());
+        $this->assertSame(['exists' => 3], $client->openFolder('INBOX'));
+        $this->assertSame($connection, $client->getConnection());
+        $this->assertSame('', $client->getLastError());
+        $this->assertSame([], $client->getErrors());
+    }
 }

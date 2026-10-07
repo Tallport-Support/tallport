@@ -11,11 +11,8 @@ $oauth = 'OAuth flow with Microsoft/Google servers';
 $livewire = "Livewire's own route (its prefix comes from the app key); not used by a Tallport page yet";
 
 return [
-    'ajax ModulesController@ajax update'     => $network,
-    'ajax ModulesController@ajax update_all' => $network,
 
     'command tallport:module-build'   => $modules_on_disk,
-    'command tallport:module-install' => $modules_on_disk,
     'command tallport:module-laroute' => $modules_on_disk,
     'command module:migrate'           => $modules_on_disk,
     'command tallport:clean-tmp'      => 'cleans the real system temp dir; its logic (CleanTmp::cleanDirectory) is tested on a scratch dir',
@@ -31,9 +28,6 @@ return [
     'route GET livewire-0607dabf/preview-file/{filename}' => $livewire,
     'route POST livewire-0607dabf/upload-file' => $livewire,
 
-    'route GET mailbox/oauth'                                     => $oauth,
-    'route GET mailbox/oauth/{id}/{in_out}/{provider}'            => $oauth,
-    'route GET mailbox/oauth-disconnect/{id}/{in_out}/{provider}' => $oauth,
 
 
     // Route::redirect('/home') registers every verb; GET is tested.

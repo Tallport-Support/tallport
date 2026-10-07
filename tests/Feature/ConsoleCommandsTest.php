@@ -607,4 +607,81 @@ class ConsoleCommandsTest extends FeatureTestCase
 
         $this->assertCount(0, $this->sentEmails());
     }
+
+    // Less common paths.
+
+    public function testCheckConvViewersSkipsWhatIsNotAViewer()
+    {
+        $this->runCommand('tallport:check-conv-viewers');
+        $this->assertNull(\Cache::get('conv_view'));
+
+        $fresh = ['t' => Carbon::now()->subSeconds(5)->format('Y-m-d H:i:s'), 'r' => 1];
+        \Cache::put('conv_view', [7 => 'broken', 8 => [1 => ['t' => 'no replying flag'], 2 => $fresh]], 20);
+
+        $this->runCommand('tallport:check-conv-viewers');
+
+        $this->assertEquals([7 => 'broken', 8 => [1 => ['t' => 'no replying flag'], 2 => $fresh]], \Cache::get('conv_view'));
+    }
+
+    public function testCreateUserAsksForWhatIsMissing()
+    {
+        $this->artisan('tallport:create-user')
+            ->expectsQuestion('User role (admin/user)', 'owner')
+            ->expectsOutput('Invalid role')
+            ->expectsQuestion('Please enter valid role', 'user')
+            ->expectsQuestion('User first name', 'Asked')
+            ->expectsQuestion('User last name', 'Agent')
+            ->expectsQuestion('User email address', 'not-an-email')
+            ->expectsOutput('Incorrect email address')
+            ->expectsQuestion('Please enter valid email address', 'asked-agent@example.org')
+            ->expectsQuestion('User password', 'asked-password')
+            ->expectsConfirmation('Do you want to create the user?', 'yes')
+            ->expectsOutputToContain('User created with id: ')
+            ->run();
+
+        $user = User::where('email', 'asked-agent@example.org')->first();
+        $this->assertSame(User::ROLE_USER, (int) $user->role);
+        $this->assertSame('Asked', $user->first_name);
+        $this->assertTrue(\Hash::check('asked-password', $user->password));
+    }
+
+    /**
+     * Scripts can tell from the exit code whether the user was created.
+     */
+    public function testCreateUserExitCodes()
+    {
+        $this->knownBug('U11');
+        $options = ['--role' => 'user', '--firstName' => 'Exit', '--lastName' => 'Code', '--password' => 'secret-password', '--no-interaction' => true];
+
+        $this->assertSame(0, \Artisan::call('tallport:create-user', $options + ['--email' => 'exit-code@example.org']));
+        $this->assertNotSame(0, \Artisan::call('tallport:create-user', $options + ['--email' => 'exit-code@example.org']));
+        $this->assertNotSame(0, \Artisan::call('tallport:create-user', $options + ['--email' => 'not-an-email']));
+    }
+
+    public function testAutoReplyLanguageNeedsAConversationOrText()
+    {
+        $this->artisan('tallport:auto-reply-language', ['conversation' => 999999])
+            ->expectsOutput('Conversation not found: 999999')
+            ->assertExitCode(1);
+        $this->artisan('tallport:auto-reply-language')
+            ->expectsOutput('Pass a conversation ID or --text="..."')
+            ->assertExitCode(1);
+    }
+
+    public function testRetentionOffOnlyCleansLogs()
+    {
+        $this->setOption('retention_enabled', false);
+
+        $output = $this->runCommand('tallport:retention');
+
+        $this->assertStringContainsString('Retention is off (Settings » Retention): logs only.', $output);
+    }
+
+    public function testParseEmlListsAttachments()
+    {
+        $output = $this->runCommand('tallport:parse-eml', ['file' => base_path('tests/Messages/webklex/inline_attachment.eml')]);
+
+        $this->assertStringContainsString("Attachments: \n", $output);
+        $this->assertMatchesRegularExpression('/^— .+ \(embedded\)$/mu', $output);
+    }
 }

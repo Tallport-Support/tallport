@@ -22,6 +22,14 @@ return [
         'wss://purplepag.es',
     ],
 
+    // Well-known relays Diagnostics (tallport:nostr-diagnose, the mailbox's Diagnose) checks
+    // besides the mailbox's own: senders may deliver there when they can't find our DM relay list.
+    'diagnose_relays' => [
+        'wss://relay.damus.io',
+        'wss://relay.snort.social',
+        'wss://offchain.pub',
+    ],
+
     // Days of silence after which a new message opens a new conversation.
     'reopen_days' => 30,
 

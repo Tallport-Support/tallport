@@ -288,4 +288,35 @@ class TwoFactorTest extends FeatureTestCase
 
         $this->assertFalse((bool) DB::table('modules')->where('alias', 'twofactorauth')->value('active'));
     }
+
+    /**
+     * Guessing the password in place is limited: after five wrong tries, even
+     * the right one waits.
+     */
+    public function testThePasswordGateLimitsAttempts()
+    {
+        $user = $this->createUser(['password' => \Hash::make('secret-password')]);
+        \Illuminate\Support\Facades\RateLimiter::clear('password-gate:'.$user->id);
+        $gate = \Livewire\Livewire::actingAs($user)->test(\App\Livewire\PasswordGate::class);
+        for ($i = 0; $i < 5; $i++) {
+            $gate->set('password', 'wrong')->call('confirm')->assertHasErrors('password');
+        }
+
+        $gate->set('password', 'secret-password')->call('confirm')->assertNoRedirect();
+        $this->assertStringStartsWith('Too many attempts.', $gate->errors()->first('password'));
+        $this->assertFalse(\App\Auth\PasswordConfirmation::isRecent());
+        \Illuminate\Support\Facades\RateLimiter::clear('password-gate:'.$user->id);
+    }
+
+    /**
+     * A remembered-device cookie that isn't one (made up, or another user's) still asks for the code.
+     */
+    public function testUnknownDeviceCookieAsksForTheCode()
+    {
+        $user = $this->userWithTwoFactor();
+
+        $this->withCookie(TrustedDevices::cookieName($user), 'made-up-token');
+        $this->logIn()->assertRedirect(route('two-factor.login'));
+        $this->assertGuest();
+    }
 }

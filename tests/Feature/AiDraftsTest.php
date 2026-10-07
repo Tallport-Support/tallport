@@ -308,4 +308,74 @@ class AiDraftsTest extends FeatureTestCase
         $this->assertSame($encrypted, $secrets[2]);
         $this->assertSame('', $secrets[3]);
     }
+
+    // Documentation and customer context, when they aren't there.
+
+    /**
+     * The documentation in the customer's language: the one detected when their message
+     * was translated, else told by its script (Korean, Japanese, Chinese), else English.
+     */
+    public function testDocumentationInTheCustomersLanguage()
+    {
+        $document = new Document();
+        $document->forceFill(['mailbox_id' => $this->mailbox->id, 'title' => 'Android app', 'source_url' => 'https://docs.example.org/en/android', 'source_type' => 'url', 'localized_urls' => Document::localizedUrlsFor('https://docs.example.org/en/android'), 'content' => 'Restart the Android app.'])->save();
+        Documents::index($document);
+        $thread = $this->conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
+        $url = function ($body, $language = null) use ($thread) {
+            \DB::table('threads')->where('id', $thread->id)->update(['body' => $body, 'ai_assistant' => $language ? json_encode(['language' => $language]) : null]);
+            ReplyDrafter::fake([$this->draft()]);
+
+            return \App\Ai\Drafts::draft($this->conversation->fresh(), 'en')['retrieved_documents'][0]['url'];
+        };
+
+        $this->assertSame('https://docs.example.org/ko/android', $url('Android 앱이 시작되지 않아요'));
+        $this->assertSame('https://docs.example.org/ja/android', $url('Android アプリが起動しません'));
+        $this->assertSame('https://docs.example.org/zh/android', $url('Android 应用无法启动'));
+        $this->assertSame('https://docs.example.org/en/android', $url('Mijn Android app start niet.'));
+        $this->assertSame('https://docs.example.org/ja/android', $url('Mijn Android app start niet.', 'ja'));
+        $this->assertSame([], Document::localizedUrlsFor('https://docs.example.org/android'), 'Without /en/: no other languages.');
+    }
+
+    public function testDraftWithoutDocumentation()
+    {
+        Embeddings::fake(function () {
+            throw new \RuntimeException('Embeddings down');
+        });
+        $this->assertSame('failed: Embeddings down', \App\Ai\Drafts::draft($this->conversation, 'en')['documentation_status']);
+
+        Option::set('aiassistant.providers', [['id' => 'p1', 'provider' => 'anthropic', 'api_key' => encrypt('sk-ant'), 'base_url' => '']]);
+        Option::$cache = [];
+        ReplyDrafter::fake([$this->draft()]);
+        $draft = \App\Ai\Drafts::draft($this->conversation, 'en');
+        $this->assertSame('disabled', $draft['documentation_status']);
+        $this->assertSame([], $draft['retrieved_documents']);
+    }
+
+    /**
+     * The customer context service failing: the draft is made without it, and says why.
+     * A long answer goes to the AI in part.
+     */
+    public function testCustomerContextFailures()
+    {
+        $status = function ($url, $response = null) {
+            Option::set('aiassistant.customer_context_url', [$this->mailbox->id => $url]);
+            Option::$cache = [];
+            Http::swap(new \Illuminate\Http\Client\Factory());
+            Http::fake(['https://crm.example.org/*' => $response]);
+
+            return CustomerContext::forConversation($this->conversation);
+        };
+
+        $this->assertSame('disabled', $status('')['status']);
+        $this->assertSame('failed: HTTP error: 500', $status('https://crm.example.org/context', Http::response(['error' => 'down'], 500))['status']);
+        $this->assertSame('failed: JSON response is too large', $status('https://crm.example.org/context', Http::response('"'.str_repeat('x', CustomerContext::MAX_RESPONSE_BYTES).'"'))['status']);
+        $this->assertSame('failed: Invalid JSON response', $status('https://crm.example.org/context', Http::response('<html>'))['status']);
+        $this->assertSame('failed: The customer context URL must be an http or https URL', $status('ftp://crm.example.org/context')['status']);
+        Http::assertNothingSent();
+
+        $context = $status('https://crm.example.org/context', Http::response(['notes' => str_repeat('n', CustomerContext::MAX_PROMPT_CHARS)]));
+        $this->assertSame('available', $context['status']);
+        $this->assertTrue($context['data']['truncated']);
+        $this->assertSame(CustomerContext::MAX_PROMPT_CHARS, mb_strlen($context['data']['json_excerpt']));
+    }
 }

@@ -68,4 +68,19 @@ class AuthHooksTest extends FeatureTestCase
 
         $this->assertSame(['users'], $calls);
     }
+
+    /**
+     * A module can refuse a login with its own errors (login.custom_check).
+     */
+    public function testModuleCanRefuseALogin()
+    {
+        $this->createUser(['email' => 'agent@example.org', 'password' => \Hash::make('local-password')]);
+        $this->addHook('filter', 'login.custom_check', function ($errors, $request) {
+            return $request->input('email') == 'agent@example.org' ? ['email' => 'Logins are closed for maintenance.'] : $errors;
+        }, 2);
+
+        $this->postLogin('agent@example.org', 'local-password')->assertSessionHasErrors(['email' => 'Logins are closed for maintenance.']);
+
+        $this->assertGuest();
+    }
 }

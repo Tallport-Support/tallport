@@ -657,4 +657,43 @@ class AiAssistantTest extends FeatureTestCase
         );
         $this->assertNull(\AddAiAssistantColumns::translations('{"translations":{}}', 'nl'));
     }
+
+    /**
+     * Providers as stored: one without an ID, or with one taken, is left out; an
+     * OpenAI-compatible one gets its address (trailing slash dropped).
+     */
+    public function testProvidersAsStored()
+    {
+        Option::set('aiassistant.providers', [
+            ['id' => 'P-1', 'provider' => 'custom', 'api_key' => '', 'base_url' => 'https://llm.example.org/v1/'],
+            ['id' => 'p1', 'provider' => 'openai', 'api_key' => encrypt('sk-dup'), 'base_url' => ''],
+            ['id' => '', 'provider' => 'openai', 'api_key' => encrypt('sk-none'), 'base_url' => ''],
+            ['id' => 'p2', 'provider' => 'openai', 'api_key' => encrypt('sk-two'), 'base_url' => ''],
+        ]);
+        Option::$cache = [];
+
+        $this->assertSame(['p1', 'p2'], array_keys(Settings::providers()));
+        $this->assertSame('custom', Settings::providers()['p1']['provider']);
+
+        \App\Ai\Providers::configure();
+        $this->assertSame('https://llm.example.org/v1', config('ai.providers.tallport-p1.url'));
+        $this->assertSame('none', config('ai.providers.tallport-p1.key'), 'No key needed.');
+        $this->assertArrayNotHasKey('url', config('ai.providers.tallport-p2'), 'Its driver knows its address.');
+    }
+
+    public function testSmallThings()
+    {
+        // A code intl doesn't know: shown as it is.
+        $this->assertSame('xx', Settings::displayName('xx'));
+        $this->assertFalse(Settings::enabled('summaries', null), 'No mailbox, no features.');
+
+        // Nothing to summarize.
+        $conversation = $this->receiveCustomerEmail();
+        Thread::where('conversation_id', $conversation->id)->update(['state' => Thread::STATE_DRAFT]);
+        $this->assertNull(Summaries::summarize($conversation, 'en'));
+
+        // A response without usage: nothing recorded.
+        $this->assertNull(\App\Ai\Usage::record(new \stdClass(), \App\Ai\Usage::FEATURE_TRANSLATION, $conversation));
+        $this->assertSame(0, \App\Ai\Usage::where('conversation_id', $conversation->id)->count());
+    }
 }

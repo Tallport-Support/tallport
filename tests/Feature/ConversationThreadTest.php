@@ -80,4 +80,34 @@ class ConversationThreadTest extends FeatureTestCase
         $this->actingAs($this->admin)->get('/conversation/'.$this->conversation->id.'?folder_id='.$this->conversation->folder_id)
             ->assertSee('folder_id='.$this->conversation->folder_id.'&amp;print_thread_id='.$note->id, false);
     }
+
+    /**
+     * A reply that failed is sent again from its message (Retry); a message
+     * of another conversation isn't found.
+     */
+    public function testRetriesAFailedReply()
+    {
+        $this->postAjax($this->admin, '/conversation/ajax', [
+            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $this->conversation->id, 'body' => '<p>Our answer</p>',
+        ]);
+        $reply = $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
+        \DB::table('jobs')->where('queue', 'emails')->delete();
+        $reply->send_status = \App\SendLog::STATUS_SEND_ERROR;
+        $reply->updateSendStatusData(['msg' => '550 Mailbox unavailable']);
+        $reply->save();
+
+        $sent = count($this->sentEmailsTo('casey@customer.example.org'));
+
+        $this->thread()->call('retry', $reply->id)->assertNotDispatched('fruit-toast');
+
+        $this->assertCount($sent + 1, $this->sentEmailsTo('casey@customer.example.org'));
+        $reply->refresh();
+        $this->assertSame(\App\SendLog::STATUS_ACCEPTED, (int) $reply->send_status);
+        $this->assertSame('', $reply->getSendStatusData()['msg'] ?? '');
+
+        $other = $this->createMailbox([$this->admin]);
+        $this->receiveEmail($other, $this->makeEmail(['from' => 'pat@customer.example.org', 'to' => $other->email]));
+        $elsewhere = Conversation::where('mailbox_id', $other->id)->first()->threads()->first();
+        $this->thread()->call('retry', $elsewhere->id)->assertToasted('Thread not found', 'danger');
+    }
 }

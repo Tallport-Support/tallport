@@ -215,4 +215,22 @@ class WebhooksTest extends FeatureTestCase
         \App\Workflows\Runner::runManual($workflow, [$conversation], $this->agent);
         $this->assertSame($conversation->id, $this->sent()['custom.vip']['id']);
     }
+
+    /**
+     * A webhook's recent deliveries are listed under it: the status, green when delivered.
+     */
+    public function testRecentDeliveriesAreListed()
+    {
+        $webhook = $this->webhook(['convo.created']);
+        foreach ([[200, true, 1, ''], [500, false, 3, 'Response status code: 500']] as [$status, $finished, $attempts, $error]) {
+            $log = new WebhookLog();
+            $log->forceFill(['webhook_id' => $webhook->id, 'event' => 'convo.created', 'status_code' => $status, 'finished' => $finished, 'attempts' => $attempts, 'error' => $error])->save();
+        }
+
+        $html = $this->actingAs($this->admin)->get(route('settings', ['section' => 'api']))->assertOk()
+            ->assertSee('Failed deliveries (2)')->assertSee('Response status code: 500')->assertSee('3 / '.Webhook::MAX_ATTEMPTS)->getContent();
+        $this->assertMatchesRegularExpression('/f-badge--success[^>]*>\s*200/', $html);
+        $this->assertMatchesRegularExpression('/f-badge--danger[^>]*>\s*500/', $html);
+        $this->assertSame($webhook->id, WebhookLog::first()->webhook->id);
+    }
 }

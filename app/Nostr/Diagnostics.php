@@ -11,10 +11,6 @@ use App\Nostr\NostrMailbox;
  */
 class Diagnostics
 {
-    // Well known relays checked in addition to the mailbox's own, because senders may
-    // have delivered there when they could not find our DM relay list.
-    const EXTRA_RELAYS = ['wss://relay.damus.io', 'wss://relay.snort.social', 'wss://offchain.pub'];
-
     /**
      * Logs what happens (optional).
      *
@@ -38,7 +34,7 @@ class Diagnostics
     public function run(NostrMailbox $cfg, $perRelayTimeout = 6)
     {
         $pubkeys = $cfg->getAllPubkeys();
-        $relays = array_values(array_unique(array_merge($cfg->getInboxRelays(), $cfg->getAnnounceRelays(), self::EXTRA_RELAYS)));
+        $relays = array_values(array_unique(array_merge($cfg->getInboxRelays(), $cfg->getAnnounceRelays(), (array) config('nostr.diagnose_relays', []))));
         $since = time() - (int) config('nostr.lookback', 3 * 86400);
         $client = new RelayClient(RelayClient::authSignerForKey($cfg->getPrivateKey()), $this->logger);
 

@@ -39,6 +39,7 @@ class HeaderTextTest extends TestCase
             'different charsets'        => ['=?ISO-8859-1?Q?Gr=FC=DFe?= =?UTF-8?Q?Caf=C3=A9?=', 'GrüßeCafé'],
             'spaces and ? in q text'    => ['=?ISO-8859-1?Q?Vorgang 538336029: M=F6chten Sie Ihre E-Mail-Adresse =E4ndern??=', 'Vorgang 538336029: Möchten Sie Ihre E-Mail-Adresse ändern?'],
             'unknown charset'           => ['=?X-IAS-German?B?U3VibWl0IHlvdXIgdGF4IHJlZnVuZA==?=', 'Submit your tax refund'],
+            'charset only iconv knows'  => ['=?MACINTOSH?Q?Caf=8E?=', 'Café'],
             'rfc 2231 language'         => ['=?UTF-8*en?Q?Caf=C3=A9?=', 'Café'],
             'raw utf-8'                 => ['Grüße', 'Grüße'],
             'raw windows-1252'          => ["Gr\xFC\xDFe", 'Grüße'],

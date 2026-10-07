@@ -139,4 +139,116 @@ class ModuleSystemTest extends FeatureTestCase
             ->assertSee("TpModule couldn't be checked for updates:")
             ->assertDontSee('There are updates available');
     }
+
+    /**
+     * What modules call on the repository: active modules (cached), their
+     * options with defaults from their config, their public path.
+     */
+    public function testRepositoryHelpersForModules()
+    {
+        config(['modules.cache.enabled' => false, 'tpmodule.options' => ['color' => ['default' => 'blue'], 'size' => []]]);
+        $modules = $this->makeModule();
+
+        $this->assertSame([], $modules->getActive());
+        $this->assertFalse($modules->isActive('tpmodule'));
+        \App\Module::setActive('tpmodule', true);
+        \App\Module::$modules = null;
+        $this->assertFalse($modules->isActive('tpmodule'), 'Remembered for the request.');
+        $this->assertTrue($modules->isActive('tpmodule', false));
+        $this->assertSame(['TpModule'], array_keys($modules->getActive()));
+
+        $this->assertSame('blue', $modules->getOption('TpModule', 'color'));
+        $this->assertFalse($modules->getOption('TpModule', 'size'));
+        $this->assertSame('red', $modules->getOption('TpModule', 'color', 'red'), 'A default given wins over the config.');
+        $modules->setOption('TpModule', 'color', 'green');
+        $this->assertSame('green', $modules->getOption('tpmodule', 'color'));
+        $this->assertSame('/modules/tpmodule', $modules->getPublicPath('tpmodule'));
+    }
+
+    public function testModuleActivationAndOfficialAuthors()
+    {
+        config(['modules.cache.enabled' => false, 'app.freescout_url' => 'https://freescout.net']);
+        $module = $this->makeModule()->findByAlias('tpmodule');
+
+        $module->setActive(true);
+        \App\Module::$modules = null;
+        $this->assertTrue((bool) \App\Module::isActive('tpmodule'));
+
+        $this->assertFalse($module->isOfficial());
+        $module->json()->set('authorUrl', 'https://freescout.net/modules');
+        $this->assertTrue($module->isOfficial());
+    }
+
+    /**
+     * A module whose provider fails: the error is handed to modules.register_error,
+     * which keeps it from breaking the page; one it doesn't handle is thrown.
+     */
+    public function testProviderErrors()
+    {
+        $module = $this->moduleWithProvider('ThrowingProvider', 'throw new \\RuntimeException(\'Provider failed\');');
+        $handled = [];
+        \Eventy::addFilter('modules.register_error', function ($exception, $module) use (&$handled) {
+            $handled[] = [$module->getAlias(), $exception->getMessage()];
+
+            return $exception;
+        }, 5, 2);
+
+        $module->registerProviders();
+        $this->assertSame([['tpmodule', 'Provider failed']], $handled);
+
+        $post = $_POST;
+        $_POST = ['action' => 'save'];
+        try {
+            $this->expectExceptionMessage('Provider failed');
+            $module->registerProviders();
+        } finally {
+            $_POST = $post;
+        }
+    }
+
+    /**
+     * A provider class that isn't there (a module half updated) is a failed
+     * registration too, not a broken page.
+     */
+    public function testMissingProviderClass()
+    {
+        $this->knownBug('S18');
+
+        config(['modules.cache.enabled' => false]);
+        $this->makeModuleJson(['Modules\\TpModule\\Providers\\MissingProvider']);
+        $module = (new Repository($this->app, $this->dir))->findByAlias('tpmodule');
+        $handled = [];
+        \Eventy::addFilter('modules.register_error', function ($exception, $module) use (&$handled) {
+            $handled[] = $module->getAlias();
+
+            return $exception;
+        }, 5, 2);
+
+        $module->registerProviders();
+
+        $this->assertSame(['tpmodule'], $handled);
+    }
+
+    protected function makeModuleJson(array $providers)
+    {
+        file_put_contents($this->dir.'/TpModule/module.json', json_encode([
+            'name' => 'TpModule', 'alias' => 'tpmodule', 'version' => '1.0.0', 'active' => 1, 'order' => 0,
+            'providers' => $providers, 'aliases' => new \stdClass(), 'files' => [], 'requires' => [],
+        ]));
+    }
+
+    /**
+     * The module with a provider whose register() runs $code (a class unique to this run).
+     */
+    protected function moduleWithProvider($name, $code)
+    {
+        config(['modules.cache.enabled' => false]);
+        $class = $name.uniqid();
+        $file = $this->dir.'/TpModule/'.$class.'.php';
+        file_put_contents($file, "<?php\nnamespace Modules\\TpModule\\Providers;\nclass $class extends \\Illuminate\\Support\\ServiceProvider\n{\n    public function register()\n    {\n        $code\n    }\n}\n");
+        require $file;
+        $this->makeModuleJson(['Modules\\TpModule\\Providers\\'.$class]);
+
+        return (new Repository($this->app, $this->dir))->findByAlias('tpmodule');
+    }
 }

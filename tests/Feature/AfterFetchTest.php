@@ -29,6 +29,11 @@ class AfterFetchTest extends FeatureTestCase
 
     protected $mailbox;
 
+    /**
+     * Whether the fake server has the folder to move to.
+     */
+    protected $folder_exists = true;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -92,8 +97,8 @@ class AfterFetchTest extends FeatureTestCase
                 return ($this->response)('EXPUNGE');
             }
         };
-        $client = new class($connection) {
-            public function __construct(public $connection)
+        $client = new class($connection, $test) {
+            public function __construct(public $connection, public $test)
             {
             }
 
@@ -108,11 +113,16 @@ class AfterFetchTest extends FeatureTestCase
 
             public function getFolderByPath($path)
             {
-                return (object) ['path' => $path];
+                return $this->test->folderExists() ? (object) ['path' => $path] : null;
             }
         };
 
         return new FetchedMessage("Message-ID: <a@example.org>\r\nSubject: Hi\r\n\r\nHello", $client, 'INBOX', 7);
+    }
+
+    public function folderExists()
+    {
+        return $this->folder_exists;
     }
 
     protected function setAction($action, $folder = '')
@@ -218,5 +228,29 @@ class AfterFetchTest extends FeatureTestCase
         \AfterFetch::importSettings($this->mailbox);
 
         $this->assertSame(['action' => AfterFetch::MOVE, 'folder' => 'Done'], AfterFetch::settings($this->mailbox->fresh()));
+    }
+
+    /**
+     * Moved to the folder it was fetched from: nothing to do. A folder that isn't there: said so.
+     */
+    public function testMovedWhereItIsOrNowhere()
+    {
+        $this->setAction(AfterFetch::MOVE, 'INBOX');
+        $this->assertNull(AfterFetch::apply($this->fetched(), $this->mailbox));
+        $this->assertSame([], $this->commands);
+
+        $this->setAction(AfterFetch::MOVE, 'Archive');
+        $this->folder_exists = false;
+        $this->assertSame('IMAP folder not found on the mail server: Archive', AfterFetch::apply($this->fetched(), $this->mailbox));
+        $this->assertSame([], $this->commands);
+    }
+
+    /**
+     * A raw message's date: its Date header, or now when that isn't a date.
+     */
+    public function testRawMessageDate()
+    {
+        $this->assertSame('2024-03-01 10:00:00', (new FetchedMessage("Date: Fri, 01 Mar 2024 10:00:00 +0000\r\n\r\nHi"))->getDate()->setTimezone('UTC')->format('Y-m-d H:i:s'));
+        $this->assertTrue((new FetchedMessage("Date: not a date\r\n\r\nHi"))->getDate()->isToday());
     }
 }

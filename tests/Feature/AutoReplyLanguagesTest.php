@@ -325,4 +325,49 @@ class AutoReplyLanguagesTest extends FeatureTestCase
         $this->assertStringContainsString('(8.5.0+)', $html);
         $this->assertStringContainsString('Simplified and Traditional Chinese auto replies', $html);
     }
+
+    public function testRecognisingATextsLanguage()
+    {
+        LanguageRecognizer::fake()->preventStrayPrompts();
+
+        $this->assertNull(AutoReplies::recognize('12345 !!!', ['ja', 'de']), 'No letters: nothing to go by.');
+        $this->assertSame('ja', AutoReplies::recognize('アプリが起動しません。', ['ja', 'de']));
+        $this->assertNull(AutoReplies::recognize('你好，我的软件无法连接。', ['ja', 'de']), 'Chinese, without a Chinese version.');
+        $this->assertNull(AutoReplies::recognize('Meine App startet nicht.', ['ja']), 'Only Chinese, Japanese or Korean versions: no AI.');
+        LanguageRecognizer::assertNeverPrompted();
+    }
+
+    public function testMoreLanguageTags()
+    {
+        $languages = ['el-polyton', 'ms-Arab', 'en'];
+
+        $this->assertSame('el-polyton', AutoReplies::fromLanguageTag('el', $languages));
+        $this->assertSame('ms-Arab', AutoReplies::fromLanguageTag('ms-MY', $languages));
+    }
+
+    /**
+     * The text a language is told from: the subject, also when the message is empty.
+     */
+    public function testAnEmptyMessage()
+    {
+        $this->receiveEmail($this->mailbox, $this->makeEmail(['from' => 'casey@customer.example.org', 'to' => $this->mailbox->email, 'subject' => 'お問い合わせ', 'body' => '']));
+        $conversation = \App\Conversation::where('mailbox_id', $this->mailbox->id)->first();
+        \App\Thread::where('conversation_id', $conversation->id)->update(['body' => '']);
+
+        $this->assertSame('お問い合わせ', trim(AutoReplies::text($conversation)));
+    }
+
+    /**
+     * Choices are remembered for the request, but not without end.
+     */
+    public function testChoicesRememberedForARequestAreLimited()
+    {
+        $this->version('ja', 'お問い合わせありがとうございます');
+        $chosen = new \ReflectionProperty(AutoReplies::class, 'chosen');
+        $chosen->setValue(null, array_fill(1000, 101, null));
+        $this->receiveEmail($this->mailbox, $this->makeEmail(['from' => 'casey@customer.example.org', 'to' => $this->mailbox->email, 'subject' => 'Help', 'body' => 'アプリが起動しません。']));
+        $conversation = \App\Conversation::where('mailbox_id', $this->mailbox->id)->first();
+
+        $this->assertSame([$conversation->id => 'ja'], $chosen->getValue());
+    }
 }

@@ -126,4 +126,34 @@ class ConversationOpenInPlaceTest extends FeatureTestCase
             ->dispatch('folder-open', folder_id: $this->createMailbox()->folders()->first()->id)
             ->assertSet('folder_id', $unassigned->folder_id);
     }
+
+    /**
+     * The toolbar follows a folder opened in place; a folder the user can't
+     * see, or an empty one, leaves it as it is. All Mailboxes' folders count too.
+     */
+    public function testTheToolbarFollowsAnotherFolder()
+    {
+        $unassigned = $this->conversation('Broken zipper', 'casey@customer.example.org');
+        $mine = $this->conversation('Lost parcel', 'sam@customer.example.org');
+        $mine->user_id = $this->agent->id;
+        $mine->save();
+        $this->mailbox->updateFoldersCounters();
+        $mine_folder = $this->mailbox->folders()->where('type', Folder::TYPE_MINE)->where('user_id', $this->agent->id)->first();
+        $closed_folder = $this->mailbox->folders()->where('type', Folder::TYPE_CLOSED)->first();
+
+        $toolbar = Livewire::actingAs($this->agent)->test(ConversationToolbar::class, ['conversation' => $unassigned, 'folder' => $unassigned->folder])
+            ->dispatch('folder-open', folder_id: $mine_folder->id)
+            ->assertSet('conversation_id', $mine->id)->assertSet('folder_id', $mine_folder->id);
+        $toolbar->dispatch('folder-open', folder_id: $closed_folder->id)->assertSet('conversation_id', $mine->id);
+        $toolbar->dispatch('folder-open', folder_id: $this->createMailbox()->folders()->first()->id)->assertSet('folder_id', $mine_folder->id);
+
+        // All Mailboxes' Mine (with a second mailbox).
+        $this->createMailbox([$this->agent], ['name' => 'Sales']);
+        $all_mine = \App\Misc\AllMailboxes::folder($this->agent, -Folder::TYPE_MINE);
+        $toolbar->dispatch('folder-open', folder_id: $all_mine->id, conversation_id: $mine->id)->assertSet('folder_id', $all_mine->id);
+
+        // The list's toolbar: not someone else's folder.
+        Livewire::actingAs($this->agent)->test(ConversationListToolbar::class, ['folder' => $unassigned->folder])
+            ->dispatch('folder-open', folder_id: $this->createMailbox()->folders()->first()->id)->assertSet('folder_id', $unassigned->folder_id);
+    }
 }

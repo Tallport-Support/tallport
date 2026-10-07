@@ -249,4 +249,89 @@ class AiDocumentsTest extends FeatureTestCase
         Option::set('aiassistant.provider', 'anthropic');
         $this->artisan('tallport:ai-index-documents')->expectsOutputToContain('nothing to index')->assertExitCode(0);
     }
+
+    // Fetching and indexing, when it doesn't work out.
+
+    /**
+     * Only public pages are fetched, also after a redirect; a page too large or
+     * empty is refused; without a title the page's address names it.
+     */
+    public function testFetchingPages()
+    {
+        $error = function ($url) {
+            try {
+                Documents::fetch($url);
+            } catch (\Exception $e) {
+                return $e->getMessage();
+            }
+
+            return null;
+        };
+
+        $this->assertSame('Only public http and https URLs can be fetched.', $error('http://127.0.0.1/en/admin'));
+        $this->fakePages(['https://93.184.215.14/en/moved.md' => Http::response('', 302, ['Location' => 'http://127.0.0.1/en/secret.md'])]);
+        $this->assertSame('Only public http and https URLs can be fetched.', $error('https://93.184.215.14/en/moved'));
+        Http::assertNotSent(fn ($request) => str_contains($request->url(), '127.0.0.1'));
+
+        $this->fakePages([
+            'https://93.184.215.14/en/huge.md'  => Http::response(str_repeat('x', Documents::MAX_DOCUMENT_BYTES + 1)),
+            'https://93.184.215.14/en/empty.md' => Http::response(" \n"),
+            'https://93.184.215.14/en/getting-started_guide.md' => Http::response('Just text.'),
+        ]);
+        $this->assertSame('Unable to fetch Markdown: larger than '.Documents::MAX_DOCUMENT_BYTES.' bytes', $error('https://93.184.215.14/en/huge'));
+        $this->assertSame('Unable to fetch Markdown: empty response', $error('https://93.184.215.14/en/empty'));
+        $this->assertSame('Getting Started Guide', Documents::fetch('https://93.184.215.14/en/getting-started_guide')['title']);
+    }
+
+    public function testIndexingFailuresAreKept()
+    {
+        $document = new Document();
+        $document->forceFill(['mailbox_id' => $this->mailbox->id, 'title' => 'Empty', 'source_url' => 'api://empty', 'source_type' => 'api', 'content' => "---\ntitle: Empty\n---\n"])->save();
+        try {
+            Documents::index($document);
+            $this->fail('Indexed nothing.');
+        } catch (\Exception $e) {
+            $this->assertSame('Document has no indexable content', $e->getMessage());
+        }
+        $this->assertSame(Document::STATUS_FAILED, $document->fresh()->status);
+        $this->assertSame('Document has no indexable content', $document->fresh()->last_error);
+
+        // The provider answering with too few embeddings.
+        Embeddings::fake(fn ($prompt) => [[1.0, 0.0, 0.1]]);
+        $this->expectExceptionMessage('Embeddings count does not match chunk count');
+        Documents::embed(['One', 'Two']);
+    }
+
+    public function testEmbeddingsNeedAProviderThatMakesThem()
+    {
+        Option::set('aiassistant.providers', [['id' => 'p1', 'provider' => 'anthropic', 'api_key' => encrypt('sk-ant'), 'base_url' => '']]);
+        Option::set('aiassistant.embedding_provider', 'p1');
+        Option::$cache = [];
+
+        $this->assertFalse(Documents::available());
+        $this->expectExceptionMessage('The embedding provider does not support embeddings');
+        Documents::embed(['Android']);
+    }
+
+    /**
+     * Paragraphs of only spaces are skipped; a long paragraph closes the chunk before it.
+     */
+    public function testChunksAroundLongParagraphs()
+    {
+        $chunks = Documents::chunks("Intro.\n\n   \n\n".str_repeat('y', 600)."\n\nOutro.", 500, 0);
+
+        $this->assertSame(['Intro.', str_repeat('y', 500), str_repeat('y', 100), 'Outro.'], $chunks);
+    }
+
+    public function testSearchOrdersByScoreAndNeedsAQuestion()
+    {
+        $this->addDocument();
+        $second = new Document();
+        $second->forceFill(['mailbox_id' => $this->mailbox->id, 'title' => 'Android invoices', 'source_url' => 'api://invoices', 'source_type' => 'api', 'content' => 'Invoices in the Android app.'])->save();
+        Documents::index($second);
+
+        $this->assertSame(['Android invoices', 'Android setup'], array_column(Documents::search($this->mailbox->id, 'Android invoice'), 'title'));
+        $this->assertSame(['Android setup', 'Android invoices'], array_column(Documents::search($this->mailbox->id, 'Android'), 'title'));
+        $this->assertSame([], Documents::search($this->mailbox->id, '  '));
+    }
 }

@@ -46,6 +46,7 @@ abstract class FeatureTestCase extends TestCase
             [\App\AutoReply\AutoReplies::class, 'chosen'], [\App\Workflows\Runner::class, 'last_threads']] as [$class, $property]) {
             (new \ReflectionProperty($class, $property))->setValue(null, []);
         }
+        (new \ReflectionProperty(\App\Workflows\Runner::class, 'robot'))->setValue(null, null);
 
         // Attachments and other files go to throwaway disks, never to the real storage.
         foreach (['local', \App\Attachment::DISK] as $disk) {

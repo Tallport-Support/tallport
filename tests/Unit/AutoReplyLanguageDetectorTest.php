@@ -185,4 +185,25 @@ class AutoReplyLanguageDetectorTest extends TestCase
         // Characters both use: Simplified.
         $this->assertSame('zh-Hans', $detector->chineseVariant('中文'));
     }
+
+    public function testCountingInvalidUtf8CountsNothing()
+    {
+        $counts = $this->detector()->countScripts("\xB1\x31 \xFF");
+
+        $this->assertSame(0, $counts['letters']);
+        $this->assertSame(0, $counts['hangul']);
+        $this->assertSame(0, $counts['kana']);
+    }
+
+    /**
+     * Neither clearly Korean nor clearly Japanese, and no Chinese characters: the
+     * script with more characters.
+     */
+    public function testKanaAndHangulWithoutAClearWinner()
+    {
+        $undecided = $this->detector(['min_hangul_ratio' => 0.99, 'katakana_only_ratio' => 0.99]);
+
+        $this->assertSame('ja', $undecided->detect('アイウエ한한한'));
+        $this->assertSame('ko', $undecided->detect('アイ한한한'));
+    }
 }

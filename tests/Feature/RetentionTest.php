@@ -251,4 +251,64 @@ class RetentionTest extends FeatureTestCase
 
         Livewire::actingAs($this->createUser())->test(\App\Livewire\RetentionPreview::class)->assertForbidden();
     }
+
+    /**
+     * Past the maximum age, a customer writing again doesn't bring a conversation back.
+     */
+    public function testTooOldToBeRestored()
+    {
+        $old = $this->conversation('casey@customer.example.org', 100);
+        $recent = $this->conversation('casey@customer.example.org', 30);
+        Retention::expire();
+        \Option::set('retention_max_age_years', 7);
+        $this->assertNotNull($old->fresh()->expired_at);
+        $this->assertNotNull($recent->fresh()->expired_at);
+
+        Retention::customerContacted($old->customer);
+        Retention::customerContacted(null);
+
+        $this->assertNotNull($old->fresh()->expired_at, 'Over 7 years old.');
+        $this->assertNull($recent->fresh()->expired_at);
+    }
+
+    /**
+     * Attachment files no attachment points to go; those it points to stay.
+     */
+    public function testAttachmentFilesNoRecordPointsTo()
+    {
+        \Storage::fake('local');
+        \Storage::fake(\App\Attachment::getDiskName());
+        $conversation = $this->conversation('casey@customer.example.org', 1);
+        $attachment = \App\Attachment::create('kept.txt', 'text/plain', null, 'kept', null, false, $conversation->threads()->first()->id);
+        $disk = \Storage::disk(\App\Attachment::getDiskName());
+        $kept = $attachment->getStorageFilePath();
+        $orphan = \App\Attachment::DIRECTORY.'/9/9/9/orphan.txt';
+        $disk->put($orphan, 'x');
+        foreach ([$kept, $orphan] as $file) {
+            touch($disk->path($file), now()->subDays(2)->getTimestamp());
+        }
+
+        $this->assertSame(1, Retention::sweepFiles(true), 'A dry run counts.');
+        $this->assertTrue($disk->exists($orphan));
+        $this->assertSame(1, Retention::sweepFiles());
+        $this->assertFalse($disk->exists($orphan));
+        $this->assertTrue($disk->exists($kept));
+    }
+
+    /**
+     * System Status: what waits to be deleted for good, and when the first goes.
+     */
+    public function testWhatWaitsIsShown()
+    {
+        $this->assertSame(['count' => 0, 'next' => null], Retention::pending());
+        $conversation = $this->conversation('casey@customer.example.org', 30);
+        Retention::expire();
+        $expired_at = $conversation->fresh()->expired_at;
+
+        $pending = Retention::pending();
+        $this->assertSame(1, $pending['count']);
+        $this->assertSame($expired_at->copy()->addDays(Retention::get('retention_grace_days'))->format('Y-m-d'), $pending['next']->format('Y-m-d'));
+        \Livewire\Livewire::withoutLazyLoading();
+        \Livewire\Livewire::actingAs($this->admin)->test(\App\Livewire\SystemStatus::class)->assertSee('1 waiting, the first to be deleted on');
+    }
 }

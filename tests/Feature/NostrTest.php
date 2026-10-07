@@ -391,7 +391,9 @@ class NostrTest extends FeatureTestCase
         $this->setUpNostr();
 
         $this->artisan('tallport:nostr-announce')->assertExitCode(0);
-        $this->artisan('tallport:nostr-diagnose')->assertExitCode(0);
+        // Only the mailbox's (unreachable) relays, not the public ones it also asks.
+        config(['nostr.diagnose_relays' => []]);
+        $this->artisan('tallport:nostr-diagnose')->assertExitCode(0)->expectsOutputToContain('failed');
         $this->artisan('tallport:nostr-listen', ['--once' => true])->assertExitCode(0);
     }
 }

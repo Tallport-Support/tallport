@@ -50,4 +50,13 @@ class ModuleJsonTest extends TestCase
 
         $this->assertSame('From the manifest', $json->get('name'));
     }
+
+    public function testBrokenJsonSaysWhichFile()
+    {
+        file_put_contents($this->file, '{"name": ');
+
+        $this->expectException(\Nwidart\Modules\Exceptions\InvalidJsonException::class);
+        $this->expectExceptionMessage('Error processing file: '.$this->file);
+        (new Json($this->file))->getAttributes();
+    }
 }

@@ -46,4 +46,10 @@ class IncomingAttachmentTest extends TestCase
         $this->expectException(\BadMethodCallException::class);
         $attachment->getExtension();
     }
+
+    public function testNamesForAttachmentsWithoutOne()
+    {
+        $this->assertSame('calendar.ics', \App\Incoming\Attachment::fallbackName("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nSUMMARY:Call\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n"));
+        $this->assertSame(substr(md5('plain'), 0, 8), \App\Incoming\Attachment::fallbackName('plain'));
+    }
 }
