@@ -340,7 +340,7 @@ class SettingsController extends Controller
             'general' => ['title' => __('General'), 'icon' => 'cog', 'order' => 100],
             'emails'  => ['title' => __('Mail Settings'), 'icon' => 'transfer', 'order' => 200],
             'alerts'  => ['title' => __('Alerts'), 'icon' => 'bell', 'order' => 300],
-            'ai'      => ['title' => __('AI Assistant'), 'icon' => 'ai', 'order' => 400],
+            'ai'      => ['title' => __('AI'), 'icon' => 'ai', 'order' => 400],
             'api'     => ['title' => __('API & Webhooks'), 'icon' => 'transfer', 'order' => 600],
             'retention' => ['title' => __('Retention'), 'icon' => 'archive', 'order' => 620],
             'branding' => ['title' => __('Appearance'), 'icon' => 'adjust', 'order' => 650],

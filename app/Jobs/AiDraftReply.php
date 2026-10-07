@@ -50,7 +50,7 @@ class AiDraftReply implements ShouldQueue
             $draft_job->error_type = get_class($e);
             $draft_job->error_message = __('Could not draft a reply.');
             $draft_job->error_detail = mb_substr($e->getMessage(), 0, 2000);
-            \Helper::logException($e, '[AI Assistant] Draft for conversation #'.$draft_job->conversation_id.':');
+            \Helper::logException($e, '[AI] Draft for conversation #'.$draft_job->conversation_id.':');
         }
         $draft_job->completed_at = now();
         $draft_job->save();

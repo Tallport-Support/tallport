@@ -145,13 +145,13 @@ class AiAssistantTest extends FeatureTestCase
         $this->configureAi(['aiassistant.translation_language' => 'nl']);
         $page = route('mailboxes.ai', ['id' => $this->mailbox->id]);
 
-        $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $this->mailbox->id]))->assertSeeInOrder(['AI Assistant', 'On · Dutch']);
+        $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $this->mailbox->id]))->assertSeeInOrder(['AI', 'On · Dutch']);
         $this->actingAs($this->admin)->get('/app-settings/ai')->assertSee('href="'.$page.'"', false)->assertSeeInOrder([$this->mailbox->name, 'On · Dutch']);
         $this->actingAs($this->admin)->get($page)->assertOk()
             ->assertSee('app-sidebar__back', false)
             ->assertSee('aria-current="page"', false)
             ->assertSee('ai-context-test-status', false)
-            ->assertSeeInOrder(['<h1>AI Assistant</h1>', 'Features', 'Summaries', 'Language', 'Default (Dutch)', 'Glossary', 'Chat Translation', 'Translate Chats', 'Mark Translated Replies', 'Customer Context'], false);
+            ->assertSeeInOrder(['<h1>AI</h1>', 'Features', 'Summaries', 'Language', 'Default (Dutch)', 'Glossary', 'Chat Translation', 'Translate Chats', 'Mark Translated Replies', 'Customer Context'], false);
         $this->actingAs($this->agent)->get($page)->assertForbidden();
 
         $this->postForm($this->admin, route('mailboxes.ai.save', ['id' => $this->mailbox->id]), [
@@ -177,7 +177,7 @@ class AiAssistantTest extends FeatureTestCase
         // Not set up: says so, and saving changes nothing.
         Option::set('aiassistant.api_key', '');
         Option::$cache = [];
-        $this->actingAs($this->admin)->get($page)->assertSee('The AI Assistant isn&#039;t set up yet.', false)->assertDontSee('form="page-form"', false);
+        $this->actingAs($this->admin)->get($page)->assertSee('AI isn&#039;t set up yet.', false)->assertDontSee('form="page-form"', false);
         $this->postForm($this->admin, route('mailboxes.ai.save', ['id' => $this->mailbox->id]), ['features' => ['drafts' => 1]]);
         Option::$cache = [];
         $this->assertFalse(Settings::enabled('drafts', $this->mailbox));
@@ -373,7 +373,7 @@ class AiAssistantTest extends FeatureTestCase
 
         $this->assertSame(1234, \App\Ai\Usage::forConversation($conversation));
         $this->assertDatabaseHas('aiassistant_usage', ['conversation_id' => $conversation->id, 'mailbox_id' => $this->mailbox->id, 'customer_id' => $conversation->customer_id, 'feature' => 'translation', 'input_tokens' => 1200, 'output_tokens' => 34]);
-        $this->getConversationPage($this->agent, $conversation)->assertSee('AI Assistant: 1,234 tokens');
+        $this->getConversationPage($this->agent, $conversation)->assertSee('AI: 1,234 tokens');
     }
 
     /**
@@ -450,7 +450,7 @@ class AiAssistantTest extends FeatureTestCase
         ThreadTranslator::fake([['translation' => '', 'same_language' => true, 'detected_language' => 'nl']]);
         $conversation = $this->receiveCustomerEmail();
         $this->getConversationPage($this->agent, $conversation)
-            ->assertSee('Not translated: the AI Assistant took this message to be in English already, though it detected Dutch.');
+            ->assertSee('Not translated: the AI took this message to be in English already, though it detected Dutch.');
 
         // Failed: tried again when opened.
         ThreadTranslator::fake(function () {
@@ -460,7 +460,7 @@ class AiAssistantTest extends FeatureTestCase
         $thread = $conversation->threads()->first();
         $this->assertSame(['error', 'Rate limit reached'], Translations::reason($thread->fresh(), 'en'));
         $this->getConversationPage($this->agent, $conversation)
-            ->assertSee('Not translated: the AI Assistant failed (Rate limit reached). It tries again when the conversation is opened.');
+            ->assertSee('Not translated: the AI failed (Rate limit reached). It tries again when the conversation is opened.');
         ThreadTranslator::fake([['translation' => 'Another question.', 'same_language' => false, 'detected_language' => 'nl']]);
         $this->getConversationPage($this->agent, $conversation);
         $this->getConversationPage($this->agent, $conversation)->assertSee('Another question.')->assertDontSee('Not translated');
@@ -595,7 +595,7 @@ class AiAssistantTest extends FeatureTestCase
         $thread = $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
 
         $this->getConversationPage($this->agent, $conversation)->assertStatus(200)
-            ->assertSee('ai-translation-waiting', false)->assertDontSee('Waiting for the AI Assistant');
+            ->assertSee('ai-translation-waiting', false)->assertDontSee('Waiting for the AI');
 
         $broadcast = [];
         \Event::listen(\App\Events\RealtimeConvNewThread::class, function ($event) use (&$broadcast) {

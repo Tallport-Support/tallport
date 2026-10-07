@@ -129,7 +129,7 @@
                 </x-fruit::field>
             </x-fruit::form-section>
 
-            <x-fruit::form-section :title="__('AI Assistant')">
+            <x-fruit::form-section :title="__('AI')">
                 <x-fruit::field :label="__('AI Language')" :description="__('The language of AI summaries and translations.')" layout="row">
                     <x-fruit::select id="ai_language" name="ai_language">
                         <option value="">{{ __('Default') }}</option>
@@ -140,7 +140,7 @@
                 </x-fruit::field>
 
                 @if (Auth::user()->isAdmin())
-                    <x-fruit::field :label="__('AI Drafts Per Day')" :description="__('Leave blank to use the limit in the AI Assistant settings. 0 turns drafting off.')" layout="row">
+                    <x-fruit::field :label="__('AI Drafts Per Day')" :description="__('Leave blank to use the limit in the AI settings. 0 turns drafting off.')" layout="row">
                         <x-fruit::number id="ai_drafts_per_day" name="ai_drafts_per_day" :value="old('ai_drafts_per_day', $user->ai_drafts_per_day)" min="0" max="10000" :placeholder="App\Ai\Settings::draftsPerDay(null)" />
                     </x-fruit::field>
                 @endif

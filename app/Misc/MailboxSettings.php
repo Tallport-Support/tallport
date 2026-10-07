@@ -40,7 +40,7 @@ class MailboxSettings
             $pages[] = self::page('Nostr', route('mailboxes.nostr', ['id' => $id]), $nostr ? __('Connected') : __('Not set up'), routes: ['mailboxes.nostr']);
         }
         if ($user->isAdmin()) {
-            $pages[] = self::page(__('AI Assistant'), route('mailboxes.ai', ['id' => $id]), \App\Ai\Settings::mailboxSummary($mailbox), routes: ['mailboxes.ai']);
+            $pages[] = self::page(__('AI'), route('mailboxes.ai', ['id' => $id]), \App\Ai\Settings::mailboxSummary($mailbox), routes: ['mailboxes.ai']);
         }
         if (Workflow::canEdit($user, $mailbox)) {
             $pages[] = self::page(__('Workflows'), route('mailboxes.workflows', ['mailbox_id' => $id, 'from' => 'mailbox']), (string) Workflow::where('mailbox_id', $id)->count(), routes: ['mailboxes.workflows']);

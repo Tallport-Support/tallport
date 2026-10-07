@@ -10,7 +10,7 @@
 @section('sidebar')
     <x-page-nav>
         <x-slot:title>
-            <x-fruit::back-link href="{{ route('settings', ['section' => 'ai']) }}">{{ __('AI Assistant') }}</x-fruit::back-link>
+            <x-fruit::back-link href="{{ route('settings', ['section' => 'ai']) }}">{{ __('AI') }}</x-fruit::back-link>
             <h1>{{ __('Documentation') }}</h1>
         </x-slot:title>
     </x-page-nav>

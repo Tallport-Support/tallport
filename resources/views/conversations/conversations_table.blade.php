@@ -116,7 +116,7 @@
                         @if (empty($no_customer))
                             <x-slot:subtitle>@include('conversations/partials/badges'){{ '' }}@if ($conversation->hasChannel() && $conversation->getChannelName())<span class="f-badge conv-channel">{{ $conversation->getChannelName() }}</span> @endif{{ '' }}@action('conversations_table.before_subject', $conversation){{ $conversation->getSubject() }}@action('conversations_table.after_subject', $conversation)</x-slot:subtitle>
                         @endif
-                        <x-slot:preview>@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner)<x-icon.sparkles class="f-icon ai-assistant-icon" role="img" :aria-label="__('AI Assistant')" /> {{ $ai_one_liner }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</x-slot:preview>
+                        <x-slot:preview>@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner)<x-icon.sparkles class="f-icon ai-assistant-icon" role="img" :aria-label="__('AI')" /> {{ $ai_one_liner }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</x-slot:preview>
                         @if ($conv_has_meta)
                         <x-slot:meta class="conv-row__meta">
                             {{-- The number in search results only. --}}@if (!empty($params['show_number']))<span class="conv-number">#{{ $conversation->number }}</span>@endif

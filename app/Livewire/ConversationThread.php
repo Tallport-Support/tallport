@@ -118,10 +118,10 @@ class ConversationThread extends Component
         @set_time_limit(180);
         try {
             if (!\App\Ai\Translations::forceTranslate($thread, $user)) {
-                Fruit::toast(__('The AI Assistant took this message to be in :language already.', ['language' => \App\Ai\Settings::displayName(\App\Ai\Settings::language($thread->conversation->mailbox, $user))]));
+                Fruit::toast(__('The AI took this message to be in :language already.', ['language' => \App\Ai\Settings::displayName(\App\Ai\Settings::language($thread->conversation->mailbox, $user))]));
             }
         } catch (\Throwable $e) {
-            \Helper::logException($e, '[AI Assistant] Translation of thread '.$thread->id.':');
+            \Helper::logException($e, '[AI] Translation of thread '.$thread->id.':');
             Fruit::toast(__('Could not translate the message: :error', ['error' => $e->getMessage()]), 'danger');
         }
     }

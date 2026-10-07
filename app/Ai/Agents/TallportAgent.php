@@ -59,7 +59,7 @@ abstract class TallportAgent implements Agent
                 if ($i == count($attempts) - 1) {
                     throw $e;
                 }
-                \Helper::logException($e, '[AI Assistant] '.$attempt_model.' failed ('.$this->feature().'), trying the backup:');
+                \Helper::logException($e, '[AI] '.$attempt_model.' failed ('.$this->feature().'), trying the backup:');
             }
         }
     }

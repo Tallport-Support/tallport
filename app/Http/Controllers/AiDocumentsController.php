@@ -164,7 +164,7 @@ class AiDocumentsController extends Controller
                     ? ['status' => 'indexed', 'message' => Documents::index($document).' chunks']
                     : ['status' => 'skipped', 'message' => 'Document is unchanged'];
             } catch (\Throwable $e) {
-                \Helper::logException($e, '[AI Assistant] Documentation API, document #'.$document->id.':');
+                \Helper::logException($e, '[AI] Documentation API, document #'.$document->id.':');
 
                 return response()->json([
                     'status'   => 'error',

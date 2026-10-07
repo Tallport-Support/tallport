@@ -2,7 +2,7 @@
 
 @section('page_width', 'narrow')
 
-@section('title_full', __('AI Assistant').' - '.$mailbox->name)
+@section('title_full', __('AI').' - '.$mailbox->name)
 
 @section('body_attrs')@parent data-mailbox_id="{{ $mailbox->id }}"@endsection
 
@@ -23,8 +23,8 @@
 
         @unless ($configured)
             <x-fruit::alert tone="info">
-                {{ __('The AI Assistant isn\'t set up yet.') }}
-                <x-slot:actions><a wire:navigate class="f-button f-button--small" href="{{ route('settings', ['section' => 'ai']) }}">{{ __('Set Up the AI Assistant') }}</a></x-slot:actions>
+                {{ __('AI isn\'t set up yet.') }}
+                <x-slot:actions><a wire:navigate class="f-button f-button--small" href="{{ route('settings', ['section' => 'ai']) }}">{{ __('Set Up AI') }}</a></x-slot:actions>
             </x-fruit::alert>
         @endunless
 
@@ -108,7 +108,7 @@
                             </template>
                         </div>
                     </x-fruit::form-section>
-                    <p class="f-form-section__footer mailbox-ai__context-footer" x-text="drafts ? @js(__('When drafting a reply, the assistant asks this URL about the customer, signed with the key, and uses the answer.')) : @js(__('Used when drafting replies. Turn on Drafts to use it.'))"></p>
+                    <p class="f-form-section__footer mailbox-ai__context-footer" x-text="drafts ? @js(__('When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.')) : @js(__('Used when drafting replies. Turn on Drafts to use it.'))"></p>
                 </fieldset>
             </fieldset>
         </form>

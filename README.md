@@ -26,7 +26,7 @@ Credit for everything up to the fork goes to the FreeScout team.
 * [Incoming email sources and re-importing](#incoming-email-sources-and-re-importing)
 * [Receiving email from a mail server](#receiving-email-from-a-mail-server)
 * [Two-factor authentication and passkeys](#two-factor-authentication-and-passkeys)
-* [AI Assistant](#ai-assistant)
+* [AI](#ai)
 * [Telegram](#telegram)
 * [Nostr](#nostr)
 * [Auto replies in languages](#auto-replies-in-languages)
@@ -305,13 +305,14 @@ lost their phone.
 Passkeys belong to the address in `APP_URL`: they only work on that address,
 over HTTPS.
 
-## AI Assistant
+## AI
 
-Set up under Manage » Settings » AI Assistant: choose a provider (OpenAI,
+Set up under Manage » Settings » AI: add one or more providers (OpenAI,
 Anthropic, Gemini, OpenRouter, Mistral, a local Ollama or LM Studio, any
-OpenAI-compatible service, ...), enter its API key and a model. Until a
-provider is set up, nothing is sent to one. Requests go through
-[Laravel AI](https://github.com/laravel/ai).
+OpenAI-compatible service, ...) with their API keys, then choose each
+feature's model, and optionally a backup model that's used when the first
+one fails. Until a provider is set up, nothing is sent to one. Requests go
+through [Laravel AI](https://github.com/laravel/ai).
 
 * **Summaries.** Conversations with more messages than the "Summary Start"
   setting get a summary above the threads and a one-line summary in the
@@ -324,9 +325,17 @@ provider is set up, nothing is sent to one. Requests go through
   customer context. Each user can make a limited number of drafts per day
   (in the settings, and per user on their profile; 0 turns drafting off).
 
+* **Chat translation.** Per mailbox, Telegram and Nostr chats can be
+  translated both ways: agents read and write in their own language, and see
+  a reply's translation before it goes out (or send it as written).
+
 Summaries and translations are in the installation's language, unless a
-mailbox (in the AI Assistant settings) or a user (on their profile) has its
-own. Each feature can be turned off per mailbox.
+mailbox or a user (on their profile) has its own. Each mailbox's AI page
+(Settings » Mailboxes » the mailbox » AI) turns its features on or off and
+holds its language, translation glossary, chat translation and customer
+context. A daily token budget per mailbox and a limit on translations per
+customer per hour keep costs in check; each conversation's sidebar shows the
+tokens it used.
 
 **Documentation** (Manage Documentation, on the settings page) is what drafts
 are based on: pages added by URL are fetched as Markdown (the URL plus `.md`)
@@ -420,7 +429,7 @@ A mailbox's auto reply (mailbox settings » Auto Reply) can have versions in
 other languages: customers get the one in their language, everyone else the
 default. Chinese, Japanese and Korean are recognised from the characters used
 (Simplified and Traditional Chinese apart, with PHP's intl extension); other
-languages by the [AI Assistant](#ai-assistant), when it is set up. A
+languages by [AI](#ai), when it is set up. A
 customer's language is remembered for 4 hours, so several emails in a row get
 the same auto reply. To see what
 a conversation was recognised as: `php artisan tallport:auto-reply-language

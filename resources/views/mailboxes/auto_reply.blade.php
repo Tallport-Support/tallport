@@ -17,7 +17,7 @@
         <form id="page-form" class="settings-form" method="POST" action="">
             {{ csrf_field() }}
 
-            <x-fruit::form-section :title="__('Auto Reply')" :footer="__('Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI Assistant (when it is set up).').' '.__('Auto replies don\'t include your mailbox signature, so be sure to add your contact information if necessary.')">
+            <x-fruit::form-section :title="__('Auto Reply')" :footer="__('Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI (when it is set up).').' '.__('Auto replies don\'t include your mailbox signature, so be sure to add your contact information if necessary.')">
                 <x-fruit::field :label="__('Enable Auto Reply')" layout="row">
                     <x-fruit::switch id="auto_reply_enabled" name="auto_reply_enabled" value="1" :checked="(bool) old('auto_reply_enabled', $mailbox->auto_reply_enabled)" />
                     <x-slot:description>{{ strip_tags(str_replace('<br/>', ' ', __('When a customer emails this mailbox, application can send an auto reply to the customer immediately.<br/><br/>Only one auto reply is sent per new conversation.'))) }}</x-slot:description>

@@ -359,7 +359,7 @@ class SystemController extends Controller
             $over_budget = \App\Ai\Usage::where('created_at', '>=', now()->startOfDay())->whereNotNull('mailbox_id')
                 ->groupBy('mailbox_id')->havingRaw('SUM(input_tokens + output_tokens) >= ?', [$daily_tokens])->pluck('mailbox_id');
             if (count($over_budget)) {
-                $problems[] = ['ai_budget', __('The AI Assistant used its tokens for today'), 'warning', \App\Mailbox::whereIn('id', $over_budget)->orderBy('name')->pluck('name')->implode(', '), __('In these mailboxes the AI Assistant is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI Assistant settings.')];
+                $problems[] = ['ai_budget', __('The AI used its tokens for today'), 'warning', \App\Mailbox::whereIn('id', $over_budget)->orderBy('name')->pluck('name')->implode(', '), __('In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.')];
             }
         }
         if (count($data['failed_jobs'])) {
@@ -377,7 +377,7 @@ class SystemController extends Controller
         $tasks = [
             'tallport:fetch-emails' => [__('Fetch Emails'), __('Checks the mailboxes for new email')],
             'queue:work'            => [__('Queue Worker'), __('Sends emails and runs jobs')],
-            'queue:work (AI)'       => [__('AI Queue Worker'), __('Runs the AI Assistant\'s jobs')],
+            'queue:work (AI)'       => [__('AI Queue Worker'), __('Runs the AI\'s jobs')],
             'tallport:nostr-listen' => [__('Nostr Listener'), __('Receives Nostr messages')],
         ];
 

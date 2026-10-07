@@ -119,7 +119,7 @@
             <x-fruit::number id="ai_drafts_per_day" name="settings[aiassistant.drafts_per_day]" :value="old('settings.aiassistant.drafts_per_day', $settings['aiassistant.drafts_per_day'])" min="0" max="10000" />
         </x-fruit::field>
 
-        <x-fruit::field :label="__('Daily Tokens Per Mailbox')" :description="__('Tokens each mailbox may use per day, for all AI features. When they are used up, the AI Assistant is unavailable in that mailbox until tomorrow. 0: no limit.')" layout="row">
+        <x-fruit::field :label="__('Daily Tokens Per Mailbox')" :description="__('Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.')" layout="row">
             <x-fruit::number id="ai_daily_tokens" name="settings[aiassistant.daily_tokens]" :value="old('settings.aiassistant.daily_tokens', $settings['aiassistant.daily_tokens'])" min="0" max="1000000000" />
         </x-fruit::field>
 

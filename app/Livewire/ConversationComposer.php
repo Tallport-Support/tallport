@@ -350,7 +350,7 @@ class ConversationComposer extends Component
         try {
             $result = \App\Ai\ChatTranslation::translateReply($this->conversation(), $this->body, auth()->user());
         } catch (\Throwable $e) {
-            \Helper::logException($e, '[AI Assistant] Translation of a reply in conversation '.$this->conversation_id.':');
+            \Helper::logException($e, '[AI] Translation of a reply in conversation '.$this->conversation_id.':');
             $this->translation = ['source' => $this->body, 'html' => '', 'error' => mb_substr(trim($e->getMessage()) ?: get_class($e), 0, 300)];
 
             return 'error';

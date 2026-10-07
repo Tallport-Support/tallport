@@ -166,7 +166,7 @@ class ChatTranslation
                 TallportAgent::data('messages', $batch->map(fn (Thread $thread) => ['id' => $thread->id, 'text' => Summaries::text($thread)])->all()),
             ])));
         } catch (\Throwable $e) {
-            \Helper::logException($e, '[AI Assistant] Translation of conversation '.$conversation->id.':');
+            \Helper::logException($e, '[AI] Translation of conversation '.$conversation->id.':');
             $batch->each(fn (Thread $thread) => Translations::failed($thread, $language, $e));
 
             return $threads->all();
@@ -181,7 +181,7 @@ class ChatTranslation
         foreach ($batch as $thread) {
             $message = $translated[$thread->id] ?? null;
             if (!$message) {
-                Translations::failed($thread, $language, new \RuntimeException(__('The AI Assistant left this message out.')));
+                Translations::failed($thread, $language, new \RuntimeException(__('The AI left this message out.')));
                 continue;
             }
             Translations::store($thread, $language, $detected, !empty($message['same_language']) ? null : ($message['translation'] ?? ''));

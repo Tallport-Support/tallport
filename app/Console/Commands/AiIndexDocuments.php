@@ -23,7 +23,7 @@ class AiIndexDocuments extends Command
      *
      * @var string
      */
-    protected $description = 'Index the AI Assistant documentation that is new or has changed';
+    protected $description = 'Index the AI documentation that is new or has changed';
 
     /**
      * Execute the console command.
