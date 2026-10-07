@@ -1,5 +1,31 @@
 <?php
 
+$queue_default = env('QUEUE_CONNECTION', env('QUEUE_DRIVER', 'database'));
+
+$database = [
+    'driver'      => 'database',
+    'table'       => 'jobs',
+    'queue'       => 'default',
+    // Retry after does not work as delay between retry attempts.
+    'retry_after' => 3660,
+];
+
+$beanstalkd = [
+    'driver'      => 'beanstalkd',
+    'host'        => 'localhost',
+    'queue'       => 'default',
+    'retry_after' => 3660,
+];
+
+$redis = [
+    'driver'       => 'redis',
+    'connection'   => env('REDIS_QUEUE_CONNECTION', 'default'),
+    'queue'        => env('REDIS_QUEUE', 'default'),
+    'retry_after'  => max(3660, (int) env('REDIS_QUEUE_RETRY_AFTER', 3660)),
+    'block_for'    => null,
+    'after_commit' => false,
+];
+
 return [
 
     /*
@@ -17,7 +43,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', env('QUEUE_DRIVER', 'database')),
+    'default' => $queue_default,
 
     /*
     |--------------------------------------------------------------------------
@@ -36,20 +62,13 @@ return [
             'driver' => 'sync',
         ],
 
-        'database' => [
-            'driver'      => 'database',
-            'table'       => 'jobs',
-            'queue'       => 'default',
-            // Retry after does not work as delay between retry attempts.
-            'retry_after' => 90,
-        ],
+        'database'        => $database,
+        'database_emails' => array_replace($database, ['retry_after' => 360]),
+        'database_ai'     => array_replace($database, ['retry_after' => 960]),
 
-        'beanstalkd' => [
-            'driver'      => 'beanstalkd',
-            'host'        => 'localhost',
-            'queue'       => 'default',
-            'retry_after' => 90,
-        ],
+        'beanstalkd'        => $beanstalkd,
+        'beanstalkd_emails' => array_replace($beanstalkd, ['retry_after' => 360]),
+        'beanstalkd_ai'     => array_replace($beanstalkd, ['retry_after' => 960]),
 
         'sqs' => [
             'driver' => 'sqs',
@@ -60,14 +79,9 @@ return [
             'region' => env('SQS_REGION', 'us-east-1'),
         ],
 
-        'redis' => [
-            'driver'       => 'redis',
-            'connection'   => env('REDIS_QUEUE_CONNECTION', 'default'),
-            'queue'        => env('REDIS_QUEUE', 'default'),
-            'retry_after'  => (int) env('REDIS_QUEUE_RETRY_AFTER', 90),
-            'block_for'    => null,
-            'after_commit' => false,
-        ],
+        'redis'        => $redis,
+        'redis_emails' => array_replace($redis, ['retry_after' => 360]),
+        'redis_ai'     => array_replace($redis, ['retry_after' => 960]),
 
     ],
 

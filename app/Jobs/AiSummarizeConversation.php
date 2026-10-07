@@ -30,6 +30,7 @@ class AiSummarizeConversation implements ShouldQueue, ShouldBeUnique
 
     public function __construct($conversation_id, $language)
     {
+        $this->onConnection(\Helper::queueConnection('ai'));
         $this->onQueue('ai');
         $this->conversation_id = $conversation_id;
         $this->language = $language;

@@ -53,6 +53,7 @@ class SendReplyToCustomer implements ShouldQueue
      */
     public function __construct($conversation, $threads, $customer, $mailbox_change_history = [])
     {
+        $this->onConnection(\Helper::queueConnection('emails'));
         $this->conversation = $conversation;
         $this->threads = $threads;
         // Recipient.

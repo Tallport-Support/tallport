@@ -29,6 +29,7 @@ class SendReplyToNostr implements ShouldQueue
     public function __construct($thread_id)
     {
         $this->thread_id = $thread_id;
+        $this->onConnection(\Helper::queueConnection('emails'));
         $this->onQueue('emails');
     }
 

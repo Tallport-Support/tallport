@@ -357,10 +357,31 @@ the secret key: the `X-FREESCOUT-SIGNATURE` header (or
 Summaries, translations and indexing run in the queue, in a worker of
 their own, so that slow AI requests don't hold up email; a draft is written
 while the agent waits, and shows as it's written. The scheduler starts the
-worker next to the main one once a provider is set up, so the cron job from
-[Requirements](#requirements) is all it needs; System » Status shows it as
-"queue:work (AI)". If you run queue workers yourself instead, have one
-process the `ai` queue.
+AI worker next to the main and mail workers once a provider is set up, so the
+cron job from [Requirements](#requirements) is all it needs; System » Status
+shows all three workers separately.
+
+If you run queue workers yourself, process `default`, `emails` and `ai`
+separately. For `QUEUE_CONNECTION=database`, use `database` for `default`,
+`database_emails` for `emails`, and `database_ai` for `ai` (the Redis and
+Beanstalkd connection names follow the same pattern):
+
+```bash
+php artisan queue:work database --queue=default --timeout=1800
+php artisan queue:work database_emails --queue=emails --timeout=300
+php artisan queue:work database_ai --queue=ai --timeout=900
+```
+
+The workflow job can override the default worker timeout to 3,600 seconds.
+The connections share queue
+storage, so existing queued jobs do not need to be moved. Jobs dispatched by
+modules to `emails` also use the five-minute worker limit. An older queued
+mail job with a longer explicit timeout fails before running; update that
+module to fit the limit before retrying it.
+
+With SQS, configure each queue's visibility timeout in AWS to more than
+3,600 seconds for `default`, 300 for `emails`, and 900 for `ai`. Laravel's
+`retry_after` setting does not control SQS visibility.
 
 ## Telegram
 

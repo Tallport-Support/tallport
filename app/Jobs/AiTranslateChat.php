@@ -34,6 +34,7 @@ class AiTranslateChat implements ShouldQueue, ShouldBeUniqueUntilProcessing
     {
         $this->conversation_id = $conversation_id;
         $this->language = $language;
+        $this->onConnection(\Helper::queueConnection('ai'));
         $this->onQueue('ai');
     }
 

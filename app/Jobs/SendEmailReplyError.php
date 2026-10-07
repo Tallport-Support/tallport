@@ -41,6 +41,7 @@ class SendEmailReplyError implements ShouldQueue
      */
     public function __construct($from, $user, $mailbox, $text = null)
     {
+        $this->onConnection(\Helper::queueConnection('emails'));
         $this->from = $from;
         $this->user = $user;
         $this->mailbox = $mailbox;

@@ -48,7 +48,7 @@ class RedisTest extends FeatureTestCase
     protected function clearRedisQueues()
     {
         $redis = \Queue::connection('redis');
-        foreach (['emails', 'default'] as $queue) {
+        foreach (['emails', 'default', 'ai'] as $queue) {
             $redis->clear($queue);
         }
     }
@@ -80,6 +80,31 @@ class RedisTest extends FeatureTestCase
 
         $this->assertCount(1, $this->sentEmailsTo('casey@customer.example.org'));
         $this->assertNull($reply->getQueuedJobId());
+    }
+
+    public function testMailReservationOutlastsTheWorkerTimeout()
+    {
+        $queue = \Queue::connection('redis_emails');
+        $queue->push(new \App\Jobs\SendAlert('alert'), '', 'emails');
+
+        $running = $queue->pop('emails');
+        $this->assertNotNull($running);
+        $this->assertNull($queue->pop('emails'));
+        $job = Job::findPending($running->uuid());
+        $this->assertEqualsWithDelta(time(), $job->reserved_at->getTimestamp(), 1);
+
+        $reserved_key = $queue->getQueue('emails').':reserved';
+        $reserved_payload = $queue->getConnection()->zrange($reserved_key, 0, 0)[0];
+        $queue->getConnection()->zadd($reserved_key, time() - 1, $reserved_payload);
+        $this->assertNotNull($queue->pop('emails'));
+    }
+
+    public function testModuleMailJobTimeoutIsCappedInRedis()
+    {
+        \Queue::connection('redis')->push(new \App\Jobs\ApplyWorkflow(1), '', 'emails');
+
+        $job = Job::pending('emails', \App\Jobs\ApplyWorkflow::class)->first();
+        $this->assertSame(300, $job->getPayloadDecoded()['timeout']);
     }
 
     public function testUndoCancelsTheReplyInRedis()

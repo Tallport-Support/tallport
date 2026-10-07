@@ -29,6 +29,7 @@ class AiTranslateThread implements ShouldQueue, ShouldBeUnique
 
     public function __construct($thread_id, $language)
     {
+        $this->onConnection(\Helper::queueConnection('ai'));
         $this->onQueue('ai');
         $this->thread_id = $thread_id;
         $this->language = $language;

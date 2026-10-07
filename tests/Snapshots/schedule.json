@@ -124,7 +124,13 @@
         "without_overlapping": true
     },
     {
-        "command": "artisan queue:work --queue='emails,default,19ff979146ebd75537d441930bf1d469' --sleep=1 --tries=1 --timeout=1800",
+        "command": "artisan queue:work --queue='default,19ff979146ebd75537d441930bf1d469' --sleep=1 --tries=1 --timeout=1800",
+        "expression": "* * * * *",
+        "timezone": "UTC",
+        "without_overlapping": true
+    },
+    {
+        "command": "artisan queue:work 'sync' --queue='emails,e9f836afda02683c4c25aa2938b96c29' --sleep=1 --tries=1 --timeout=300",
         "expression": "* * * * *",
         "timezone": "UTC",
         "without_overlapping": true

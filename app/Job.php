@@ -92,10 +92,14 @@ class Job extends Model
                 return \Str::between($key, 'queues:', ':');
             })->unique()->all();
         }
-        $retry_after = (int) config('queue.connections.'.$connection->getConnectionName().'.retry_after', 90);
-
         $jobs = collect();
         foreach ($queues as $name) {
+            $queue_connection = match ($name) {
+                'emails' => \Helper::queueConnection('emails'),
+                'ai' => \Helper::queueConnection('ai'),
+                default => $connection->getConnectionName(),
+            };
+            $retry_after = (int) config('queue.connections.'.$queue_connection.'.retry_after', 90);
             $key = $connection->getQueue($name);
             $members = [$key => array_fill_keys($redis->lrange($key, 0, -1), null)];
             foreach ([':delayed', ':reserved'] as $set) {

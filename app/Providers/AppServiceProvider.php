@@ -14,6 +14,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // A job's own timeout overrides queue:work --timeout. Cap mail jobs
+        // before dispatch so module jobs cannot outlive the mail reservation.
+        \Illuminate\Support\Facades\Queue::createPayloadUsing(function ($connection, $queue, $payload) {
+            if ($queue == 'emails' || $queue == 'queues:emails' || $queue == 'queues:{emails}' || str_ends_with($queue, '/emails')) {
+                $timeout = (int) ($payload['timeout'] ?? 300);
+
+                return ['timeout' => $timeout > 0 ? min($timeout, 300) : 300];
+            }
+
+            return [];
+        });
+        // Jobs queued before this limit was added still have their old payload.
+        \Illuminate\Support\Facades\Queue::before(function (\Illuminate\Queue\Events\JobProcessing $event) {
+            $timeout = $event->job->timeout();
+            if ($event->job->getQueue() == 'emails' && $timeout !== null && ($timeout < 1 || $timeout > 300)) {
+                $event->job->fail(new \RuntimeException('The emails queue limits jobs to 300 seconds.'));
+            }
+        });
+
         // To avoid MySQL error in packages:
         // "SQLSTATE[42000]: Syntax error or access violation: 1071 Specified key was too long; max key length is 767 bytes"
         Schema::defaultStringLength(191);

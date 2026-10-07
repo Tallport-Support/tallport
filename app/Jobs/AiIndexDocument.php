@@ -32,6 +32,7 @@ class AiIndexDocument implements ShouldQueue, ShouldBeUnique
 
     public function __construct($document_id, $fetch = false, $force = false)
     {
+        $this->onConnection(\Helper::queueConnection('ai'));
         $this->onQueue('ai');
         $this->document_id = $document_id;
         $this->fetch = $fetch;

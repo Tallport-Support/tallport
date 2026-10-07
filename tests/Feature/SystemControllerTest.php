@@ -121,12 +121,21 @@ class SystemControllerTest extends FeatureTestCase
      */
     public function testRunningCommandIsFound()
     {
-        $this->startProcess('artisan queue:work --queue=emails,default,'.\Helper::getWorkerIdentifier());
+        $this->startProcess('artisan queue:work --queue=default,'.\Helper::getWorkerIdentifier());
 
         $queue_work = $this->command(SystemController::statusData(), 'queue:work');
 
         $this->assertSame('success', $queue_work['status']);
         $this->assertSame('Running', $queue_work['status_text']);
+    }
+
+    public function testMailWorkerIsReportedSeparately()
+    {
+        $this->startProcess('artisan queue:work database_emails --queue=emails,'.\Helper::getWorkerIdentifier(\App\Console\Kernel::EMAIL_WORKER));
+
+        $mail_worker = $this->command(SystemController::statusData(), 'queue:work (Mail)');
+        $this->assertSame('success', $mail_worker['status']);
+        $this->assertSame('Running', $mail_worker['status_text']);
     }
 
     /**
@@ -152,8 +161,8 @@ class SystemControllerTest extends FeatureTestCase
     public function testQueueWorkerRunningTwiceIsRestarted()
     {
         $identifier = \Helper::getWorkerIdentifier();
-        $this->startProcess('artisan queue:work --queue=emails,default,'.$identifier);
-        $this->startProcess('artisan queue:work --queue=emails,default,'.$identifier);
+        $this->startProcess('artisan queue:work --queue=default,'.$identifier);
+        $this->startProcess('artisan queue:work --queue=default,'.$identifier);
         \Cache::forget('illuminate:queue:restart');
 
         $queue_work = $this->command(SystemController::statusData(), 'queue:work');

@@ -178,4 +178,23 @@ class ScheduleTest extends FeatureTestCase
         \Option::$cache = [];
         $this->assertSame(1, $ai_worker());
     }
+
+    public function testWorkersUseSeparateQueuesAndReservations()
+    {
+        config(['queue.default' => 'database']);
+        $workers = $this->schedule()->filter(fn ($event) => str_contains((string) $event->command, 'queue:work'));
+        $this->assertCount(2, $workers);
+
+        $main = $workers->first(fn ($event) => str_contains($event->command, \Helper::getWorkerIdentifier()));
+        $mail = $workers->first(fn ($event) => str_contains($event->command, \Helper::getWorkerIdentifier(\App\Console\Kernel::EMAIL_WORKER)));
+        $this->assertStringContainsString("--queue='default,", $main->command);
+        $this->assertStringContainsString("queue:work 'database_emails' --queue='emails,", $mail->command);
+        $this->assertStringContainsString('--timeout=300', $mail->command);
+
+        foreach (['database', 'beanstalkd', 'redis'] as $driver) {
+            $this->assertGreaterThan(3600, config('queue.connections.'.$driver.'.retry_after'));
+            $this->assertGreaterThan(300, config('queue.connections.'.$driver.'_emails.retry_after'));
+            $this->assertGreaterThan(900, config('queue.connections.'.$driver.'_ai.retry_after'));
+        }
+    }
 }

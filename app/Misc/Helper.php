@@ -1865,6 +1865,17 @@ class Helper
     }
 
     /**
+     * Queue-specific connections share the default backend and storage.
+     */
+    public static function queueConnection($queue)
+    {
+        $default = config('queue.default');
+        $separate = $default.'_'.$queue;
+
+        return config('queue.connections.'.$separate) ? $separate : $default;
+    }
+
+    /**
      * Get pids of the specified processes.
      */
     public static function getRunningProcesses($search = '')

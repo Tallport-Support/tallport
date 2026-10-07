@@ -132,6 +132,7 @@ class SystemController extends Controller
         $commands_list = [
             'tallport:fetch-emails' => 'tallport:fetch-emails',
             \Helper::getWorkerIdentifier() => 'queue:work',
+            \Helper::getWorkerIdentifier(\App\Console\Kernel::EMAIL_WORKER) => 'queue:work (Mail)',
         ];
         // Mailboxes delivered by the mail server only: nothing is fetched.
         if (!\App\Mailbox::anyFetched()) {
@@ -376,7 +377,8 @@ class SystemController extends Controller
     {
         $tasks = [
             'tallport:fetch-emails' => [__('Fetch Emails'), __('Checks the mailboxes for new email')],
-            'queue:work'            => [__('Queue Worker'), __('Sends emails and runs jobs')],
+            'queue:work'            => [__('Queue Worker'), __('Background Jobs')],
+            'queue:work (Mail)'     => [__('Queue Worker'), __('Sending Emails')],
             'queue:work (AI)'       => [__('AI Queue Worker'), __('Runs the AI\'s jobs')],
             'tallport:nostr-listen' => [__('Nostr Listener'), __('Receives Nostr messages')],
         ];

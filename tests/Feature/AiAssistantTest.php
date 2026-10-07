@@ -586,6 +586,7 @@ class AiAssistantTest extends FeatureTestCase
 
     public function testAiWorkerRunsOnceConfigured()
     {
+        config(['queue.default' => 'database']);
         $workers = function () {
             $schedule = new \Illuminate\Console\Scheduling\Schedule();
             $method = new \ReflectionMethod(\App\Console\Kernel::class, 'schedule');
@@ -596,13 +597,13 @@ class AiAssistantTest extends FeatureTestCase
             })->values();
         };
 
-        $this->assertCount(1, $workers());
+        $this->assertCount(2, $workers());
         Livewire::withoutLazyLoading();
         $this->actingAs($this->admin)->get('/system/status')->assertDontSee('queue:work (AI)');
 
         $this->configureAi();
-        $this->assertCount(2, $workers());
-        $this->assertStringContainsString("--queue='ai,".\Helper::getWorkerIdentifier(\App\Console\Kernel::AI_WORKER)."'", $workers()[1]);
+        $this->assertCount(3, $workers());
+        $this->assertStringContainsString("queue:work 'database_ai' --queue='ai,".\Helper::getWorkerIdentifier(\App\Console\Kernel::AI_WORKER)."'", $workers()[2]);
         Livewire::withoutLazyLoading();
         $this->actingAs($this->admin)->get('/system/status')->assertSee('queue:work (AI)');
     }

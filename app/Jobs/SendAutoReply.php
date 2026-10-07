@@ -38,6 +38,7 @@ class SendAutoReply implements ShouldQueue
      */
     public function __construct($conversation, $thread, $mailbox, $customer)
     {
+        $this->onConnection(\Helper::queueConnection('emails'));
         $this->conversation = $conversation;
         $this->thread = $thread;
         $this->mailbox = $mailbox;

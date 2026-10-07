@@ -38,6 +38,7 @@ class SendAlert implements ShouldQueue
      */
     public function __construct($text, $title = '')
     {
+        $this->onConnection(\Helper::queueConnection('emails'));
         $this->text = $text;
         $this->title = $title;
     }

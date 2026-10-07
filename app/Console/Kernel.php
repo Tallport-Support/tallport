@@ -15,6 +15,8 @@ class Kernel extends ConsoleKernel
      */
     const AI_WORKER = 'ai-worker';
 
+    const EMAIL_WORKER = 'email-worker';
+
     /**
      * The Artisan commands provided by your application.
      *
@@ -267,13 +269,18 @@ class Kernel extends ConsoleKernel
         $queue_work_params['--queue'] .= ','.\Helper::getWorkerIdentifier();
         $this->scheduleQueueWorker($schedule, $queue_work_params, \Helper::getWorkerIdentifier(), 'queue-jobs.log');
 
-        // A second worker for the AI Assistant's jobs, so that slow AI
-        // requests don't hold up emails.
+        $email_identifier = \Helper::getWorkerIdentifier(self::EMAIL_WORKER);
+        $email_work_params = Config('app.queue_work_email_params');
+        $email_work_params['--queue'] .= ','.$email_identifier;
+        $this->scheduleQueueWorker($schedule, array_merge([\Helper::queueConnection('emails')], $email_work_params), $email_identifier, 'queue-email-jobs.log');
+
+        // AI work has its own worker so that slow provider calls don't hold up
+        // other jobs.
         if (\App\Ai\Settings::isConfigured()) {
             $ai_identifier = \Helper::getWorkerIdentifier(self::AI_WORKER);
             $ai_work_params = Config('app.queue_work_ai_params');
             $ai_work_params['--queue'] .= ','.$ai_identifier;
-            $this->scheduleQueueWorker($schedule, $ai_work_params, $ai_identifier, 'queue-ai-jobs.log');
+            $this->scheduleQueueWorker($schedule, array_merge([\Helper::queueConnection('ai')], $ai_work_params), $ai_identifier, 'queue-ai-jobs.log');
         }
     }
 
