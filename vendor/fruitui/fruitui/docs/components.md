@@ -195,6 +195,7 @@ Apply layout overrides for the available row width when composing side-by-side c
 | `--f-item-row-padding` | `14px 12px`; row padding. |
 | `--f-item-row-leading-inset` | `62px` when a leading cue exists, otherwise `12px`; content and separator start inset. |
 | `--f-item-row-radius` | `9px`; row corner radius. |
+| `--f-item-row-subtitle-lines` | `1`; lines the subtitle (a subject) may take before it ends with an ellipsis. Support uses 2. |
 | `--f-item-separator-end` | `12px`; trailing separator inset. |
 | `--f-item-current-background`, `--f-item-current-hover` | Current-row surface and hover appearance. |
 | `--f-item-current-color`, `--f-item-current-secondary`, `--f-item-current-unread`, `--f-item-current-mark`, `--f-item-current-border` | Current-row text, supporting text, unread cue, mark, and separator appearance. |
@@ -524,6 +525,8 @@ A Menu whose trigger is text, a pull-down button, shows a chevron after it: Blad
 A context menu holds commands for the element it sits in: put it inside a list item, message or card, after the content. A secondary click opens it at the pointer; Shift+F10 or the context-menu key opens it below the focused control. It uses the same Menu Items, Checkboxes, Radios, Links, Separators and Groups as Menu, with the same arrows, Home/End and typeahead. Escape or Tab closes it and returns focus; activating a command closes it too. While it is open, its target carries `data-fruit-context-open` and an accent outline.
 
 Context menus are hidden by nature, so offer every command somewhere visible as well: a toolbar, a Menu, or the selection bar. Without JavaScript the browser's own context menu remains.
+
+In a list with multiple selection, a context menu on a selected item acts on the whole selection, as mail apps do; say so in its label ("Actions for 3 conversations"). On any other item it acts on that item alone and leaves the selection as it is. A command that toggles (Mark as Read or Unread, Close or Reopen) names what it will do to the one item, or the selection bar's own wording for several. The Support example's conversation rows show it.
 
 ```blade
 <li wire:key="ticket-{{ $ticket->id }}">

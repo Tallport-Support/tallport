@@ -268,12 +268,15 @@
     color: var(--f-secondary);
     font-size: var(--f-text-xs);
   }
+  /* The subject: one line by default; --f-item-row-subtitle-lines allows more, ending with an
+     ellipsis, so a subject that tells a whole story never takes the row. */
   .f-item-row__subtitle {
-    display: block;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--f-item-row-subtitle-lines, 1);
     margin-top: 3px;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
     font-size: var(--f-text-base);
     font-weight: 500;
   }
