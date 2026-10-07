@@ -2906,8 +2906,19 @@ a.disabled:focus {
     text-decoration: none;
     overflow-wrap: anywhere;
 }
-.customer-snippet__details a.contact-main {
-    color: var(--f-accent);
+/* The customer's address: a click copies it. Looks like the link it used to be. */
+.customer-snippet__details .contact-main {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--f-accent-text);
+    font: inherit;
+    text-align: start;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+}
+.customer-snippet__details .contact-main:hover {
+    text-decoration: underline;
 }
 .inspector-section {
     padding: 17px 16px 5px;

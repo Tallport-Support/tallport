@@ -25,7 +25,7 @@
 	@if (count($customer_emails) || count($customer->getPhones()) || $customer->getWebsites() || $customer->getSocialProfiles() || $location || $customer->address || $customer->zip || $sender_offset || $customer->notes || count($nostr_keys))
 		<ul class="customer-snippet__details customer-contacts">
 			@foreach ($customer_emails as $email)
-				<li class="customer-email"><x-icon.mail class="f-icon" aria-hidden="true" />{!! $detail(__('Email')) !!}<a href="#" class="contact-main" title="{{ __('Copy') }}">{{ $email->email }}</a></li>
+				<li class="customer-email"><x-icon.mail class="f-icon" aria-hidden="true" />{!! $detail(__('Email')) !!}{{-- Copied on a click (said in a toast). --}}<button type="button" class="contact-main" title="{{ __('Copy') }}" aria-label="{{ __('Copy') }}: {{ $email->email }}" x-data x-on:click="copyToClipboard(@js($email->email)); Tallport.toast(@js(__('Copied')))">{{ $email->email }}</button></li>
 			@endforeach
 			@foreach ($customer->getPhones() as $phone)
 				<li class="customer-phone"><x-icon.phone class="f-icon" aria-hidden="true" />{!! $detail(__('Phone')) !!}<span><a href="tel:{{ $phone['value'] }}">{{ $phone['value'] }}</a>@if (!\App\Customer::isDefaultPhoneType($phone['type'])) <span class="f-muted">({{ \App\Customer::getPhoneTypeName($phone['type']) }})</span>@endif</span></li>

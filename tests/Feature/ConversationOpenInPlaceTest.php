@@ -57,8 +57,10 @@ class ConversationOpenInPlaceTest extends FeatureTestCase
 
         Livewire::actingAs($this->agent)->test(ConversationToolbar::class, ['conversation' => $first])
             ->dispatch('conversation-open', id: $second->id)->assertSet('conversation_id', $second->id);
+        // The customer's address copies on a click.
         Livewire::actingAs($this->agent)->test(ConversationInspector::class, ['conversation' => $first])
             ->assertSee('casey@customer.example.org')
+            ->assertSeeHtml('aria-label="Copy: casey@customer.example.org" x-data x-on:click="copyToClipboard(')
             ->dispatch('conversation-open', id: $second->id)->assertSee('sam@customer.example.org');
 
         // Someone else's conversation: nothing changes.
