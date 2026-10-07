@@ -35,6 +35,17 @@ abstract class FeatureTestCase extends TestCase
     {
         parent::setUp();
 
+        // Files written at runtime (raw sources, fake disks, temp files) go to a folder of this
+        // test's own, never to the installation's storage or another test run's.
+        $storage = sys_get_temp_dir().'/tallport-test-storage-'.getmypid().'-'.uniqid();
+        foreach (['app/public', 'logs', 'framework/cache'] as $folder) {
+            mkdir($storage.'/'.$folder, 0777, true);
+        }
+        $this->app->useStoragePath($storage);
+        $this->beforeApplicationDestroyed(function () use ($storage) {
+            (new \Illuminate\Filesystem\Filesystem())->deleteDirectory($storage);
+        });
+
         $this->captureSentMail();
 
         // Nothing an earlier test cached by ID is kept: its rows were rolled back, and SQLite
