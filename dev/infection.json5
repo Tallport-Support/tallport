@@ -1,0 +1,20 @@
+{
+    // Mutation testing: php dev/vendor/bin/infection -c dev/infection.json5 --filter=app/Conversation.php
+    // (pcov is used for the initial coverage run; tests run on in-memory SQLite, so --threads is safe).
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": ["../app"]
+    },
+    "phpUnit": {
+        "configDir": "..",
+        "customPath": "vendor/bin/phpunit"
+    },
+    "tmpDir": "../coverage/infection",
+    "logs": {
+        "text": "../coverage/infection/infection.log",
+        "summary": "../coverage/infection/summary.log"
+    },
+    "mutators": {
+        "@default": true
+    }
+}

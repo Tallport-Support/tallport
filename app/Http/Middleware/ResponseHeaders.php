@@ -16,6 +16,9 @@ class ResponseHeaders
         $this->removeUnwantedHeaders($this->unwanted_headers);
 
         $response = $next($request);
+        foreach ($this->unwanted_headers as $header) {
+            $response->headers->remove($header);
+        }
 
         // Secure headers.
         //$response->headers->set('Referrer-Policy', 'no-referrer-when-downgrade');
@@ -40,6 +43,10 @@ class ResponseHeaders
 
     private function removeUnwantedHeaders($headerList)
     {
+        // PHP's own (X-Powered-By): only while headers can still be changed.
+        if (headers_sent()) {
+            return;
+        }
         foreach ($headerList as $header) {
             header_remove($header);
         }
