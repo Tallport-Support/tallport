@@ -554,14 +554,14 @@
         "element": "`button type=button`, fixed button role.",
         "state": "Native disabled state; caller-owned aria-current=true identifies the open conversation.",
         "keyboard": "Tab focuses; Enter/Space invokes. Optional arrow-key navigation belongs to the application.",
-        "options": "`variant`: quiet (default), filled. Default/title slot: identity; leading: optional decorative identity cue; trailing: time; subtitle, preview, meta: noninteractive content; the subtitle takes one line, or `--f-item-row-subtitle-lines`, and the preview two, each ending with an ellipsis. `mark`: a named accent (`Fruit::ACCENTS`) for what the row belongs to, such as its mailbox, drawn as a bar on the leading edge; it requires `mark-label` (the mailbox's name), rendered as screen reader text, so color is never the only cue. Attributes and action bindings go to the button."
+        "options": "`variant`: quiet (default), filled. Default/title slot: identity; leading: optional decorative identity cue; trailing: time; subtitle, preview, meta: noninteractive content; the subtitle takes one line, or `--f-item-row-subtitle-lines`, and the preview two, each ending with an ellipsis. `mark`: a named accent (`Fruit::ACCENTS`) for what the row belongs to, such as its mailbox, drawn as a bar on the leading edge; it requires `mark-label` (the mailbox's name), rendered as screen reader text, so color is never the only cue. `unread`: boolean; an accent dot after the time and \"Unread\" (translated, or `unread-label`) for screen readers. Attributes and action bindings go to the button."
       },
       "item-link": {
         "purpose": "Go to one item, such as a conversation or ticket, as a real link.",
         "element": "`a` with a required href; same classes, slots and states as Item Row.",
         "state": "`current` marks the open item with aria-current=page; the current row styling applies.",
         "keyboard": "Tab focuses; Enter follows the link. New tabs, middle clicks and no-JavaScript navigation work natively.",
-        "options": "`variant`: quiet (default), filled. `current`: boolean. `href`, `target` and other link attributes, including wire:navigate. Slots, `mark` and `mark-label` as Item Row."
+        "options": "`variant`: quiet (default), filled. `current`: boolean. `href`, `target` and other link attributes, including wire:navigate. Slots, `mark`, `mark-label`, `unread` and `unread-label` as Item Row."
       }
     }
   },

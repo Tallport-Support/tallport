@@ -3,6 +3,7 @@
 <span class="f-item-row__top">
     <span class="f-item-row__title">{{ $title ?? $slot }}</span>
     @isset($trailing)<span {{ $trailing->attributes->class(['f-item-row__time']) }}>{{ $trailing }}</span>@endisset
+    @if (!empty($unreadLabel))<span class="f-item-row__unread" aria-hidden="true"></span><span class="f-sr-only">{{ $unreadLabel }}</span>@endif
 </span>
 @isset($subtitle)<span {{ $subtitle->attributes->class(['f-item-row__subtitle']) }}>{{ $subtitle }}</span>@endisset
 @isset($preview)<span {{ $preview->attributes->class(['f-item-row__preview']) }}>{{ $preview }}</span>@endisset

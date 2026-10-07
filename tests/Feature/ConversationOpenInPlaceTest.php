@@ -51,7 +51,13 @@ class ConversationOpenInPlaceTest extends FeatureTestCase
             ->assertSee('Lost parcel')->assertDontSee('Broken zipper')
             ->assertDispatched('conversation-opened', id: $second->id, url: route('conversations.view', ['id' => $second->id, 'folder_id' => $first->folder_id]))
             // No build of the styles to compare where minifying is off (tests).
-            ->assertDispatched('conversation-opened', styles: null);
+            ->assertDispatched('conversation-opened', styles: null)
+            // It was unread: the list follows (its dot goes).
+            ->assertDispatched('conversations-changed');
+        $this->assertSame([], \App\ConversationRead::unreadIds([$second], $this->agent));
+        // Read already: nothing for the list.
+        $pane->dispatch('conversation-open', id: $first->id, folder_id: $first->folder_id);
+        $pane->dispatch('conversation-open', id: $second->id, folder_id: $first->folder_id)->assertNotDispatched('conversations-changed');
         $this->assertSame(0, \DB::table('notifications')->where('conversation_id', $second->id)->whereNull('read_at')->count());
         $this->assertSame($second->id, session('folder_conversation.'.$first->folder_id));
 

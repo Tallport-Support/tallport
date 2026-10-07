@@ -115,7 +115,7 @@
                         <x-fruit::checkbox class="conv-checkbox" :id="'cb-'.$conversation->id" :name="'cb_'.$conversation->id" :value="$conversation->id" wire:model.live="selected"><span class="f-sr-only">{{ __('Select Conversation') }}: {{ $conversation->getSubject() }}</span></x-fruit::checkbox>
                     @endif
                     {{-- Across mailboxes: a bar in the mailbox's color instead of its name (the sidebar's icons are the legend). --}}
-                    <x-fruit::item-link :href="$conversation->url(null, null, $list_params)" :current="$current_conversation_id == $conversation->id" :target="$conv_target ? '_blank' : null" class="conv-row__link"
+                    <x-fruit::item-link :href="$conversation->url(null, null, $list_params)" :current="$current_conversation_id == $conversation->id" :unread="in_array($conversation->id, $unread_ids)" :target="$conv_target ? '_blank' : null" class="conv-row__link"
                         :mark="!empty($params['show_mailbox']) ? ($conversation->mailbox_cached->accent ?: 'blue') : null"
                         :mark-label="!empty($params['show_mailbox']) ? __(':name mailbox', ['name' => $conversation->mailbox_cached->name]) : null">
                         <x-slot:title :title="$conversation->customer_email">@if (empty($no_customer)){{ $conv_customer_name }}@else{{ $conversation->getSubject() }}@endif</x-slot:title>

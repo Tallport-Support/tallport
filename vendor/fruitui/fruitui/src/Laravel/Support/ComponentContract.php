@@ -453,6 +453,22 @@ final class ComponentContract
         return $mark;
     }
 
+    /**
+     * An unread row's screen reader text (the view passes the translated "Unread" unless the caller
+     * names it), or null when the row is read. The dot itself is decorative.
+     */
+    public static function unread(mixed $unread, mixed $label): ?string
+    {
+        if (! is_bool($unread)) {
+            throw new InvalidArgumentException('FruitUI unread must be a boolean.');
+        }
+        if (! is_string($label) || trim($label) === '') {
+            throw new InvalidArgumentException('FruitUI unread-label must be text, such as "Unread".');
+        }
+
+        return $unread ? $label : null;
+    }
+
     /** An accent picker's checked accent must be one of FruitUI's named accents. */
     public static function accentPicker(mixed $value, ComponentAttributeBag $attributes): void
     {

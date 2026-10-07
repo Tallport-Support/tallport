@@ -92,9 +92,12 @@ class ConversationReadTest extends FeatureTestCase
         $second = $this->conversation('Second question');
         $folder = $this->mailbox->folders()->where('type', Folder::TYPE_UNASSIGNED)->first();
 
+        // The dot, and Unread for screen readers.
         $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $folder])
-            ->assertSeeHtml('wire:click="rowRead('.$first->id.', 1)"');
+            ->assertSeeHtml('wire:click="rowRead('.$first->id.', 1)"')->assertSeeHtml('<span class="f-item-row__unread" aria-hidden="true"></span><span class="f-sr-only">Unread</span>');
+        $this->assertSame(2, substr_count($list->html(), 'f-item-row__unread'));
         $list->call('rowRead', $first->id, 1)->assertSeeHtml('wire:click="rowRead('.$first->id.', 0)"');
+        $this->assertSame(1, substr_count($list->html(), 'f-item-row__unread'));
         $this->assertFalse($this->unread($first, $this->agent));
         $this->assertTrue($this->unread($second, $this->agent));
 

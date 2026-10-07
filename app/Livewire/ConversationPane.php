@@ -65,7 +65,12 @@ class ConversationPane extends Component
         }
         $user = auth()->user();
         ConversationsController::markNotificationsRead($conversation, $user);
+        // Read now: an unread row in the list loses its dot.
+        $was_unread = (bool) \App\ConversationRead::unreadIds([$conversation], $user);
         \App\ConversationRead::markRead($conversation->id, $user);
+        if ($was_unread) {
+            $this->dispatch('conversations-changed');
+        }
         session()->put('folder_conversation.'.$this->folder_id, $conversation->id);
         \App\Events\RealtimeConvView::dispatchSelf($conversation->id, $user, false);
         \App\Misc\Gravatar::request($conversation->customer, $conversation->customer_email);
