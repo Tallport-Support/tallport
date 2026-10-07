@@ -393,7 +393,8 @@ class ConversationSearch
     public static function withAttachmentNamed($name)
     {
         return Thread::join('attachments', 'attachments.thread_id', '=', 'threads.id')
-            ->where('attachments.file_name', 'like', '%'.addcslashes(trim((string) $name), '%_\\').'%')
+            // Case-insensitive everywhere (ilike on PostgreSQL), with an escape character every database honours.
+            ->whereRaw(\DB::getTablePrefix().'attachments.file_name '.\Helper::sqlLikeOperator()." ? escape '!'", ['%'.\App\Job::likeEscape(trim((string) $name)).'%'])
             ->select('threads.conversation_id');
     }
 
