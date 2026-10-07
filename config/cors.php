@@ -20,7 +20,7 @@ return [
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['Content-Type', 'Authorization', 'X-FreeScout-API-Key'],
+    'allowed_headers' => ['Content-Type', 'Authorization', 'X-Tallport-API-Key', 'X-FreeScout-API-Key'],
 
     'exposed_headers' => ['Resource-ID'],
 

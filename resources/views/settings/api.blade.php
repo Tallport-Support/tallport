@@ -3,7 +3,7 @@
         {{ csrf_field() }}
 
         <x-fruit::form-section :title="__('API')">
-            <x-fruit::field :label="__('API Key')" :description="__('The global key may do everything, in every mailbox. Users can make keys that act as themselves in their profile (API Keys).').' '.__('Send the key in the X-FreeScout-API-Key header.')" layout="row">
+            <x-fruit::field :label="__('API Key')" :description="__('The global key may do everything, in every mailbox. Users can make keys that act as themselves in their profile (API Keys).').' '.__('Send the key in the X-Tallport-API-Key header.')" layout="row">
                 <x-fruit::input id="api_key" :value="$api_key" readonly />
             </x-fruit::field>
 
@@ -60,7 +60,7 @@
         @endif
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Webhooks')" :footer="__('Events are sent as a POST with the conversation or customer as JSON (as the API returns it). The X-FreeScout-Event header names the event; X-FreeScout-Signature is the base64 HMAC-SHA1 of the body with the secret key below. Failed deliveries are tried again for about an hour and a half.')">
+    <x-fruit::form-section :title="__('Webhooks')" :footer="__('Events are sent as a POST with the conversation or customer as JSON (as the API returns it). The X-Tallport-Event header names the event; X-Tallport-Signature is the base64 HMAC-SHA1 of the body with the secret key below. Failed deliveries are tried again for about an hour and a half.')">
         <x-fruit::field :label="__('Secret Key')" layout="row">
             <x-fruit::input id="webhook_secret" :value="$webhook_secret" readonly />
         </x-fruit::field>

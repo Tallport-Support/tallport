@@ -26,7 +26,7 @@ class Test extends Mailable
         \MailHelper::prepareMailable($this);
         
         $this->withSymfonyMessage(function ($message) {
-            $message->getHeaders()->addTextHeader('X-FreeScout-Mail-Type', 'test.mailbox');
+            $message->getHeaders()->addTextHeader('X-Tallport-Mail-Type', 'test.mailbox');
 
             return $message;
         });

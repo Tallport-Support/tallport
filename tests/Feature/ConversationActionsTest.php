@@ -120,7 +120,7 @@ class ConversationActionsTest extends FeatureTestCase
 
         $notifications = $this->sentEmailsTo($colleague->email);
         $this->assertCount(1, $notifications);
-        $this->assertSame('user.notification', $notifications[0]->getHeaders()->get('X-FreeScout-Mail-Type')->getFieldBody());
+        $this->assertSame('user.notification', $notifications[0]->getHeaders()->get('X-Tallport-Mail-Type')->getFieldBody());
         $this->assertStringContainsString('Needs a specialist', $notifications[0]->getSubject());
         $this->assertCount(0, $this->sentEmailsTo('casey@customer.example.org'));
     }

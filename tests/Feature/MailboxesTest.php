@@ -423,7 +423,7 @@ class MailboxesTest extends FeatureTestCase
         $this->assertSame('success', $response->json()['status'], json_encode($response->json()));
         $emails = $this->sentEmailsTo('me@example.org');
         $this->assertCount(1, $emails);
-        $this->assertSame('test.mailbox', $emails[0]->getHeaders()->get('X-FreeScout-Mail-Type')->getFieldBody());
+        $this->assertSame('test.mailbox', $emails[0]->getHeaders()->get('X-Tallport-Mail-Type')->getFieldBody());
         $this->assertSame([$mailbox->email], array_keys($emails[0]->getFrom()));
         $this->assertEquals(SendLog::MAIL_TYPE_TEST, SendLog::where('email', 'me@example.org')->value('mail_type'));
     }

@@ -17,14 +17,14 @@ class MessageHeadersTest extends TestCase
             'Message-ID'            => 'fs-reply-7-abc@example.org',
             'In-Reply-To'           => '<first@customer.example.org>',
             'References'            => '<first@customer.example.org> <second@customer.example.org>',
-            'X-FreeScout-Mail-Type' => 'customer.message',
+            'X-Tallport-Mail-Type' => 'customer.message',
         ]);
         $headers = $message->getHeaders();
 
         $this->assertSame('<fs-reply-7-abc@example.org>', $headers->get('Message-ID')->getBodyAsString());
         $this->assertSame('<first@customer.example.org>', $headers->get('In-Reply-To')->getBodyAsString());
         $this->assertSame('<first@customer.example.org> <second@customer.example.org>', $headers->get('References')->getBodyAsString());
-        $this->assertSame('customer.message', $headers->get('X-FreeScout-Mail-Type')->getBodyAsString());
+        $this->assertSame('customer.message', $headers->get('X-Tallport-Mail-Type')->getBodyAsString());
     }
 
     public function testMalformedIdsFromOtherClientsAreLeftOut()

@@ -97,6 +97,9 @@ class SendWebhook implements ShouldQueue
         try {
             $response = Http::withOptions(\Helper::setGuzzleDefaultOptions(['timeout' => 30, 'connect_timeout' => 10]))
                 ->withHeaders([
+                    'X-Tallport-Event'      => $event,
+                    'X-Tallport-Signature'  => Webhook::sign($body),
+                    // The names integrations made for FreeScout check.
                     'X-FreeScout-Event'     => $event,
                     'X-FreeScout-Signature' => Webhook::sign($body),
                 ])

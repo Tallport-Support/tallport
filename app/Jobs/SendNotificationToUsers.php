@@ -91,7 +91,8 @@ class SendNotificationToUsers implements ShouldQueue
         // All notification for the same conversation has same dummy Message-ID
         $prev_message_id = \App\Misc\Mail::MESSAGE_ID_PREFIX_NOTIFICATION_IN_REPLY.'-'.$this->conversation->id.'-'.md5($this->conversation->id).'@'.$mailbox->getEmailDomain();
         $headers['In-Reply-To'] = '<'.$prev_message_id.'>';
-        $headers['References'] = '<'.$prev_message_id.'>';
+        // Also the one notifications had before (FS_), so agents' mail apps keep one thread.
+        $headers['References'] = '<'.str_replace('TP_', \App\Misc\Mail::LEGACY_MESSAGE_ID_PREFIX, $prev_message_id).'> <'.$prev_message_id.'>';
         // https://github.com/freescout-helpdesk/freescout/issues/2488
         $headers['X-Auto-Response-Suppress'] = 'All';
 
@@ -152,7 +153,7 @@ class SendNotificationToUsers implements ShouldQueue
             // Set user language
             app()->setLocale($user->getLocale());
 
-            $headers['X-FreeScout-Mail-Type'] = 'user.notification';
+            $headers['X-Tallport-Mail-Type'] = 'user.notification';
             $headers = \Eventy::filter('jobs.send_reply_to_customer.headers', $headers, $user, $mailbox, $this->conversation, $this->threads, $from);
 
             $exception = null;

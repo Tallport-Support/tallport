@@ -162,6 +162,31 @@ class SendReplyToCustomerJobTest extends FeatureTestCase
         $this->assertSame(0x80, ord($child[0]) & 0x80);
     }
 
+    /**
+     * Replies go out with Tallport's Message-ID and mail type; a customer's reply to an email
+     * sent before (FreeScout's FS_ prefix) still finds its conversation.
+     */
+    public function testTallportMessageIdsAndRepliesToOldOnes()
+    {
+        $conversation = $this->receiveConversation();
+        $reply = $this->reply($conversation, '<p>Our answer</p>');
+        $email = $this->sentEmailsTo('casey@customer.example.org')[0];
+        $this->assertStringStartsWith('TP_reply-'.$reply->id.'-', $reply->getMessageId());
+        $this->assertSame('<'.$reply->getMessageId().'>', $email->getHeaders()->get('Message-ID')->getFieldBody());
+        $this->assertSame('customer.message', $email->getHeaders()->get('X-Tallport-Mail-Type')->getFieldBody());
+        $this->assertNull($email->getHeaders()->get('X-FreeScout-Mail-Type'));
+
+        $this->receiveEmail($this->mailbox, $this->makeEmail([
+            'from'        => 'casey@customer.example.org',
+            'to'          => $this->mailbox->email,
+            'subject'     => 'A different subject',
+            'message_id'  => 'later@customer.example.org',
+            'in_reply_to' => str_replace('TP_reply-', 'FS_reply-', $reply->getMessageId()),
+        ]));
+        $this->assertSame(1, \App\Conversation::where('mailbox_id', $this->mailbox->id)->count());
+        $this->assertSame(3, $conversation->threads()->count());
+    }
+
     public function testReferencesListsEarlierMessagesOldestFirst()
     {
         $conversation = $this->receiveConversation(['message_id' => 'first@customer.example.org']);

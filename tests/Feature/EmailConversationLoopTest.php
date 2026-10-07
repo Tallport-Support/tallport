@@ -104,11 +104,11 @@ class EmailConversationLoopTest extends FeatureTestCase
         // Threading: the reply has FreeScout's own Message-ID and points back
         // at the customer's email, so mail clients group them.
         $domain = explode('@', $this->mailbox->email)[1];
-        $expected_message_id = 'FS_reply-'.$reply->id.'-'.\MailHelper::getMessageIdHash($reply->id).'@'.$domain;
+        $expected_message_id = 'TP_reply-'.$reply->id.'-'.\MailHelper::getMessageIdHash($reply->id).'@'.$domain;
         $this->assertSame($expected_message_id, $email->getId());
         $this->assertSame('<first@customer.example.org>', $email->getHeaders()->get('In-Reply-To')->getFieldBody());
         $this->assertStringContainsString('<first@customer.example.org>', $email->getHeaders()->get('References')->getFieldBody());
-        $this->assertSame('customer.message', $email->getHeaders()->get('X-FreeScout-Mail-Type')->getFieldBody());
+        $this->assertSame('customer.message', $email->getHeaders()->get('X-Tallport-Mail-Type')->getFieldBody());
 
         $log = SendLog::where('thread_id', $reply->id)->first();
         $this->assertNotNull($log, 'The send was not logged.');
@@ -257,7 +257,7 @@ class EmailConversationLoopTest extends FeatureTestCase
         $this->assertCount(1, $notifications, 'The agent should get one notification.');
         $notification = $notifications[0];
 
-        $this->assertSame('user.notification', $notification->getHeaders()->get('X-FreeScout-Mail-Type')->getFieldBody());
+        $this->assertSame('user.notification', $notification->getHeaders()->get('X-Tallport-Mail-Type')->getFieldBody());
         $this->assertSame('[#'.$conversation->number.'] Question about my order', $notification->getSubject());
         $this->assertStringContainsString('Can you send it by express instead?', $notification->getBody());
 
@@ -266,7 +266,7 @@ class EmailConversationLoopTest extends FeatureTestCase
         $answer = Thread::where('message_id', 'second@customer.example.org')->first();
         $domain = explode('@', $this->mailbox->email)[1];
         $this->assertSame(
-            'FS_notify-'.$answer->id.'-'.$this->agent->id.'-'.\MailHelper::getMessageIdHash($answer->id).'@'.$domain,
+            'TP_notify-'.$answer->id.'-'.$this->agent->id.'-'.\MailHelper::getMessageIdHash($answer->id).'@'.$domain,
             $notification->getId()
         );
     }
@@ -320,7 +320,7 @@ class EmailConversationLoopTest extends FeatureTestCase
 
         $thread = Thread::where('message_id', 'first@customer.example.org')->first();
         $domain = explode('@', $this->mailbox->email)[1];
-        $this->assertSame('FS_autoreply-'.$thread->id.'-'.\MailHelper::getMessageIdHash($thread->id).'@'.$domain, $emails[0]->getId());
+        $this->assertSame('TP_autoreply-'.$thread->id.'-'.\MailHelper::getMessageIdHash($thread->id).'@'.$domain, $emails[0]->getId());
     }
 
     public function testAutoReplyIsNotSentForAnswers()

@@ -16,7 +16,7 @@
 
         <x-password-gate :description="__('API keys need your password again.')">
         <div class="settings-form settings-form--wide">
-            <p class="f-help">{{ __('A key lets a program use the REST API as you: it sees and does what you can, in the mailboxes you choose. Send it in the X-FreeScout-API-Key header.') }}</p>
+            <p class="f-help">{{ __('A key lets a program use the REST API as you: it sees and does what you can, in the mailboxes you choose. Send it in the X-Tallport-API-Key header.') }}</p>
 
             @if ($new_key)
                 <x-fruit::alert tone="success">

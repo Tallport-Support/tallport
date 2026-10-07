@@ -22,16 +22,25 @@ class Mail
      * Message-IDs should not match Spam Assasin patters.
      * https://github.com/freescout-help-desk/freescout/issues/5245
      */
-    const MESSAGE_ID_PREFIX_NOTIFICATION = 'FS_notify';
-    const MESSAGE_ID_PREFIX_NOTIFICATION_IN_REPLY = 'FS_conversation';
-    const MESSAGE_ID_PREFIX_REPLY_TO_CUSTOMER = 'FS_reply';
-    const MESSAGE_ID_PREFIX_AUTO_REPLY = 'FS_autoreply';
+    const MESSAGE_ID_PREFIX_NOTIFICATION = 'TP_notify';
+    const MESSAGE_ID_PREFIX_NOTIFICATION_IN_REPLY = 'TP_conversation';
+    const MESSAGE_ID_PREFIX_REPLY_TO_CUSTOMER = 'TP_reply';
+    const MESSAGE_ID_PREFIX_AUTO_REPLY = 'TP_autoreply';
+
+    /**
+     * The prefix emails sent before Tallport used: replies to them are still recognised.
+     */
+    const LEGACY_MESSAGE_ID_PREFIX = 'FS_';
 
     public static $all_message_id_prefixes = [
         self::MESSAGE_ID_PREFIX_NOTIFICATION,
         self::MESSAGE_ID_PREFIX_NOTIFICATION_IN_REPLY,
         self::MESSAGE_ID_PREFIX_REPLY_TO_CUSTOMER,
         self::MESSAGE_ID_PREFIX_AUTO_REPLY,
+        'FS_notify',
+        'FS_conversation',
+        'FS_reply',
+        'FS_autoreply',
     ];
 
     /**

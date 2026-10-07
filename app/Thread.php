@@ -1629,7 +1629,7 @@ class Thread extends Model
     }
 
     // For customer messages: returns Message-ID from headers (if message_id is artificial).
-    // For user threads: hashed 'FS_reply_' prefixed message ID.
+    // For user threads: hashed 'TP_reply' prefixed message ID (FS_reply before Tallport).
     public function getMessageId($mailbox = null)
     {
         if ($this->isCustomerMessage()) {

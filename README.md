@@ -183,8 +183,9 @@ indexes everything again.
 Settings » API & Webhooks shows the global API key (it may do everything)
 and the webhooks. Users make their own keys in their profile (API Keys): a
 key acts as its user, read only or read and write, in the mailboxes chosen.
-Send the key in the `X-FreeScout-API-Key` header (or as `api_key`, a Bearer
-token, or the Basic user name).
+Send the key in the `X-Tallport-API-Key` header (FreeScout's
+`X-FreeScout-API-Key` works too), or as `api_key`, a Bearer token, or the Basic
+user name.
 
 * `GET/POST /api/conversations`, `GET/PUT/DELETE /api/conversations/{id}`,
   `POST /api/conversations/{id}/threads` (customer replies, agent replies,
@@ -200,9 +201,10 @@ token, or the Basic user name).
 Lists take `page` and `pageSize` (50, at most 1000) and return
 `{"_embedded": {...}, "page": {...}}`; dates are UTC
 (`2026-10-03T09:15:00Z`). Webhooks POST the conversation or customer as the
-API returns it, with the event in `X-FreeScout-Event` and the base64
+API returns it, with the event in `X-Tallport-Event` and the base64
 HMAC-SHA1 of the body (keyed with the secret shown in the settings) in
-`X-FreeScout-Signature`. Events: `convo.created`, `convo.assigned`,
+`X-Tallport-Signature` (also sent as `X-FreeScout-Event` and
+`X-FreeScout-Signature`, for integrations made for FreeScout). Events: `convo.created`, `convo.assigned`,
 `convo.status`, `convo.moved`, `convo.customer.reply.created`,
 `convo.agent.reply.created`, `convo.note.created`, `convo.deleted`,
 `convo.deleted_forever`, `convo.restored`, `customer.created`,

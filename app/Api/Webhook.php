@@ -64,7 +64,7 @@ class Webhook extends Model
     }
 
     /**
-     * X-FreeScout-Signature: base64 of the HMAC-SHA1 of the body.
+     * X-Tallport-Signature (and X-FreeScout-Signature): base64 of the HMAC-SHA1 of the body.
      */
     public static function sign($body)
     {

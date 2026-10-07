@@ -98,7 +98,9 @@ class WebhooksTest extends FeatureTestCase
         Http::assertSent(function (Request $request) {
             return $request->method() == 'POST'
                 && $request->header('Content-Type')[0] == 'application/json'
-                && $request->header('X-FreeScout-Signature')[0] === base64_encode(hash_hmac('sha1', $request->body(), md5(config('app.key').'webhook_key'), true));
+                && $request->header('X-FreeScout-Signature')[0] === base64_encode(hash_hmac('sha1', $request->body(), md5(config('app.key').'webhook_key'), true))
+                && $request->header('X-Tallport-Signature')[0] === $request->header('X-FreeScout-Signature')[0]
+                && $request->header('X-Tallport-Event')[0] === $request->header('X-FreeScout-Event')[0];
         });
         $this->assertSame('', (string) Webhook::first()->last_run_error);
 

@@ -1175,10 +1175,10 @@ class FetchEmails extends Command
         }
     }
 
-    // Get prefix as regex (for backward compatibility).
+    // Get prefix as regex (for backward compatibility): Tallport's, FreeScout's (FS_), or none.
     public function formatMessageIdPrefix($prefix)
     {
-        return str_replace('FS_', '(?:FS_)?', $prefix);
+        return str_replace('TP_', '(?:TP_|'.\MailHelper::LEGACY_MESSAGE_ID_PREFIX.')?', $prefix);
     }
 
     // Try to get "From:" from body.

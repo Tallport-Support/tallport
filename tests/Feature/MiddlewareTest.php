@@ -209,6 +209,8 @@ class MiddlewareTest extends FeatureTestCase
         $this->json('GET', '/api/mailboxes', [], ['X-FreeScout-API-Key' => ApiKey::globalKey()])
             ->assertStatus(403)->assertExactJson(['message' => 'Forbidden']);
         $this->json('GET', '/api/users', [], ['X-FreeScout-API-Key' => ApiKey::globalKey()])->assertOk();
+        // Tallport's own name for the header too.
+        $this->json('GET', '/api/users', [], ['X-Tallport-API-Key' => ApiKey::globalKey()])->assertOk();
     }
 
     // CanInstall: the installer closes once installed.
