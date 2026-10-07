@@ -26,6 +26,11 @@ class LanguageRecognizer extends TallportAgent implements HasStructuredOutput
         return 'language';
     }
 
+    public function fast(): bool
+    {
+        return true;
+    }
+
     public function instructions(): string
     {
         $choices = array_map(function ($code) {

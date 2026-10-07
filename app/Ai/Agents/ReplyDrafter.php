@@ -4,12 +4,11 @@ namespace App\Ai\Agents;
 
 use App\Ai\Settings;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
-use Laravel\Ai\Contracts\HasStructuredOutput;
 
 /**
  * A draft reply to the customer, for a support agent to edit and send.
  */
-class ReplyDrafter extends TallportAgent implements HasStructuredOutput
+class ReplyDrafter extends TallportAgent
 {
     /**
      * The language the agent reads the translation of the draft in.
@@ -46,6 +45,7 @@ class ReplyDrafter extends TallportAgent implements HasStructuredOutput
             'If the answer is uncertain or the documentation is insufficient, say in staff_notes what the agent should check instead of pretending.',
             'confidence: how well the draft is grounded in the conversation, documentation, guidance and customer context.',
             'Keep the tone concise, friendly and direct. Do not add a signature: the agent\'s signature is added when sending.',
+            $this->jsonRule(),
         ]);
     }
 

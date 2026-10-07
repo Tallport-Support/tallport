@@ -4,13 +4,12 @@ namespace App\Ai\Agents;
 
 use App\Ai\Settings;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
-use Laravel\Ai\Contracts\HasStructuredOutput;
 
 /**
  * An agent's chat reply translated into the customer's language (App\Ai\ChatTranslation),
  * with the chat's latest messages for context.
  */
-class ReplyTranslator extends TallportAgent implements HasStructuredOutput
+class ReplyTranslator extends TallportAgent
 {
     public $language;
 
@@ -24,6 +23,11 @@ class ReplyTranslator extends TallportAgent implements HasStructuredOutput
         return 'translations';
     }
 
+    public function fast(): bool
+    {
+        return true;
+    }
+
     public function instructions(): string
     {
         return implode("\n", [
@@ -33,9 +37,10 @@ class ReplyTranslator extends TallportAgent implements HasStructuredOutput
             'Translate the reply to: '.Settings::languageName($this->language).' ('.$this->language.').',
             'The chat\'s latest messages are given for context only, so that the reply\'s meaning, references and tone come across; do not translate or repeat them.',
             'Do not change the content, do not add information, keep the paragraphs and the tone. Keep names, product names, codes, numbers and URLs as they are.',
-            'The reply is HTML. Translate only the text people read; keep every tag, attribute, link address and image exactly as it is. translation: the translated HTML, not JSON.',
+            'The reply is HTML. Translate only the text people read; keep every tag, attribute, link address and image exactly as it is. translation: the translated HTML itself, as a string.',
             'If the reply is already in the target language, set same_language to true and leave translation empty.',
             'note: the words "Translated automatically" in the target language (shown to the customer under the reply).',
+            $this->jsonRule(),
         ]);
     }
 

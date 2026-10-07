@@ -767,7 +767,7 @@ document.addEventListener('alpine:init', function () {
 
 	/**
 	 * AI Assistant reply drafts (App\Ai\Drafts): asked for by the toolbar's Draft
-	 * with AI, polled until ready, then put into the reply (the composer).
+	 * with AI, shown as they're written, then put into the reply (the composer).
 	 */
 	window.Alpine.data('tallportAiDraft', function (draft_url, translation_language, texts) {
 		return {
@@ -778,27 +778,23 @@ document.addEventListener('alpine:init', function () {
 			meta: '',
 			html: '',
 			draft: null,
-			slow: false,
-			timer: null,
 
 			reset: function (status) {
-				clearTimeout(this.timer);
 				this.status = status || '';
 				this.failed = false;
 				this.detail = '';
 				this.meta = '';
 				this.html = '';
 				this.draft = null;
-				this.slow = false;
 			},
 
-			// Waiting for the draft: the card shows a placeholder.
+			// Waiting for the draft to start: the card shows a placeholder.
 			busy: function () {
-				return !this.draft && !this.failed;
+				return !this.draft && !this.failed && !this.html;
 			},
 
 			tone: function () {
-				return this.slow ? 'warning' : (this.failed ? 'danger' : 'working');
+				return this.failed ? 'danger' : 'working';
 			},
 
 			host: function (url) {
@@ -820,48 +816,78 @@ document.addEventListener('alpine:init', function () {
 				this.detail = detail || '';
 			},
 
+			// The draft is written into the card as the AI writes it (server-sent events from
+			// AiDraftsController::store()), then its translation and details.
 			request: function () {
 				var self = this;
+				var meta = document.querySelector('meta[name="csrf-token"]');
 				this.active = true;
 				// The draft is shown below the editor: open it, as Reply does.
 				Livewire.dispatch('composer-open', {mode: 'reply'});
-				this.reset(texts.queued);
-				Tallport.post(draft_url, {}).then(function (response) {
-					if (Tallport.isSuccess(response) && response.poll_url) {
-						self.poll(response.poll_url, 1);
-					} else {
-						self.fail(response && response.msg);
+				this.reset(texts.drafting);
+				fetch(draft_url, {
+					method: 'POST',
+					credentials: 'same-origin',
+					headers: {
+						'X-CSRF-TOKEN': meta ? meta.getAttribute('content') : '',
+						'X-Requested-With': 'XMLHttpRequest',
+						'Accept': 'text/event-stream, application/json'
+					}
+				}).then(function (response) {
+					// Refused (limits, permissions): JSON.
+					if ((response.headers.get('Content-Type') || '').indexOf('text/event-stream') == -1) {
+						return response.json().catch(function () {
+							return {};
+						}).then(function (result) {
+							self.fail(result.msg);
+						});
+					}
+					return self.read(response.body.getReader());
+				}).catch(function () {
+					if (!self.draft) {
+						self.fail();
 					}
 				});
 			},
 
-			poll: function (url, attempt) {
+			read: function (reader) {
 				var self = this;
-				fetch(url, {credentials: 'same-origin', headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'}})
-					.then(function (response) {
-						return response.json();
-					})
-					.then(function (response) {
-						if (response.status != 'success') {
-							self.fail(response.msg, response.detail);
-						} else if (response.draft_status == 'completed') {
-							self.reset('');
-							self.draft = response;
-							self.meta = response.language+' · '+response.confidence;
-							self.html = markdownToHtml(response.draft);
-						} else if (attempt >= 180) {
-							self.fail(texts.slow);
-							self.slow = true;
-						} else {
-							self.status = response.draft_status == 'running' ? texts.drafting : texts.queued;
-							self.timer = setTimeout(function () {
-								self.poll(url, attempt + 1);
-							}, 2000);
+				var decoder = new TextDecoder();
+				var buffer = '';
+				var finished = false;
+				var next = function () {
+					return reader.read().then(function (chunk) {
+						buffer += decoder.decode(chunk.value || new Uint8Array(), {stream: !chunk.done});
+						var events = buffer.split('\n\n');
+						buffer = chunk.done ? '' : events.pop();
+						events.forEach(function (event) {
+							if (event.indexOf('data: ') !== 0) {
+								return;
+							}
+							var data = JSON.parse(event.substring(6));
+							if (data.status == 'success') {
+								finished = true;
+								self.reset('');
+								self.draft = data;
+								self.meta = data.language+' · '+data.confidence;
+								self.html = markdownToHtml(data.draft);
+							} else if (data.status == 'error') {
+								finished = true;
+								self.fail(data.msg, data.detail);
+							} else if (typeof data.draft == 'string') {
+								self.html = markdownToHtml(data.draft);
+							}
+						});
+						if (chunk.done) {
+							if (!finished) {
+								self.fail();
+							}
+							return;
 						}
-					})
-					.catch(function () {
-						self.fail();
+						return next();
 					});
+				};
+				return next();
 			},
 
 			insert: function () {

@@ -80,6 +80,21 @@ class AiDraftsTest extends FeatureTestCase
         return $this->actingAs($user)->postJson('/ai-assistant/conversations/'.$this->conversation->id.'/draft-reply', ['_token' => csrf_token()]);
     }
 
+    /**
+     * A draft written into the browser: its server-sent events (the draft so far, then the
+     * draft and its details or the error).
+     */
+    protected function draftEvents($user)
+    {
+        $response = $this->requestDraft($user)->assertStatus(200)->assertHeader('Content-Type', 'text/event-stream; charset=utf-8');
+
+        return array_map(function ($event) {
+            $this->assertStringStartsWith('data: ', $event);
+
+            return json_decode(substr($event, 6), true);
+        }, array_values(array_filter(explode("\n\n", $response->streamedContent()))));
+    }
+
     protected function postForm($user, $uri, array $data)
     {
         \Session::start();
@@ -89,7 +104,7 @@ class AiDraftsTest extends FeatureTestCase
 
     public function testButtonOnlyWhereDraftingIsAllowed()
     {
-        $this->getConversationPage($this->agent)->assertSee('ai-draft-action')->assertSee('tallportAiDraft', false)->assertSee('Waiting in the queue…');
+        $this->getConversationPage($this->agent)->assertSee('ai-draft-action')->assertSee('tallportAiDraft', false)->assertSee('Drafting…');
 
         Option::set('aiassistant.drafts_per_day', 0);
         $this->getConversationPage($this->agent)->assertDontSee('ai-draft-action');
@@ -106,42 +121,69 @@ class AiDraftsTest extends FeatureTestCase
         ReplyDrafter::assertNeverPrompted();
     }
 
-    public function testDraftIsMadeAndFetchedByItsUser()
+    /**
+     * The draft is written into the browser as the AI writes it, then its translation and details.
+     */
+    public function testDraftIsWrittenAsItIsMade()
     {
         $this->postAjax($this->agent, '/conversation/ajax', [
             'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $this->conversation->id,
             'body' => '<p>Secret internal note</p>', 'is_note' => 1,
         ]);
 
-        $response = $this->requestDraft($this->agent)->assertStatus(200)->assertJson(['status' => 'success']);
-        $poll_url = $response->json('poll_url');
+        $this->freezeTime();
+        $events = $this->draftEvents($this->agent);
 
         ReplyDrafter::assertPrompted(function ($prompt) {
             return str_contains($prompt->prompt, 'Mijn Android app start niet.')
                 && !str_contains($prompt->prompt, 'Secret internal note')
                 && $prompt->agent->language == 'en';
         });
-
-        $this->actingAs($this->agent)->getJson($poll_url)->assertJson([
+        // The draft so far (its start; the rest comes within 0.1 s, so it's held back).
+        $this->assertSame(['draft' => 'Hallo'], $events[0]);
+        $this->assertCount(2, $events);
+        $this->assertEquals([
             'status'               => 'success',
             'draft_status'         => DraftJob::STATUS_COMPLETED,
+            'draft'                => "Hallo Casey,\n\n- Herstart de app\n- **Update** Android",
             'translation'          => "Hello Casey,\n\n- Restart the app\n- Update Android",
             'translation_language' => 'en',
+            'language'             => 'nl',
+            'confidence'           => 'medium',
             'documentation_urls'   => ['https://docs.example.org/android'],
             'staff_notes'          => ['Check the app version.'],
             'documentation_status' => 'no_matches',
-        ]);
+        ], array_diff_key($events[1], array_flip(['retrieved_documents', 'customer_context_status'])));
+        // Kept, for the drafts per day.
+        $draft_job = DraftJob::where('user_id', $this->agent->id)->first();
+        $this->assertSame(DraftJob::STATUS_COMPLETED, $draft_job->status);
+        $this->assertSame('medium', $draft_job->result['confidence']);
+        $this->assertDatabaseHas('aiassistant_usage', ['conversation_id' => $this->conversation->id, 'feature' => 'draft']);
+    }
 
-        $this->actingAs($this->createAdmin())->getJson($poll_url)->assertStatus(403);
+    /**
+     * An answer that isn't the JSON asked for: the backup model writes the draft (shown again from the start).
+     */
+    public function testDraftFromTheBackupWhenThePrimaryFails()
+    {
+        Option::set('aiassistant.providers', [
+            ['id' => 'p1', 'provider' => 'openai', 'api_key' => encrypt('sk-test'), 'base_url' => ''],
+            ['id' => 'p2', 'provider' => 'anthropic', 'api_key' => encrypt('sk-ant'), 'base_url' => ''],
+        ]);
+        Option::set('aiassistant.models', ['drafts' => ['primary' => ['provider' => 'p1', 'model' => 'gpt-5-mini'], 'backup' => ['provider' => 'p2', 'model' => 'claude-haiku-4-5']]]);
+        Option::$cache = [];
+        ReplyDrafter::fake(fn ($prompt, $attachments, $provider, $model) => $model == 'gpt-5-mini' ? 'Sorry, here is your draft: Hallo' : $this->draft(['draft' => 'Hallo van de backup']));
+
+        $events = $this->draftEvents($this->agent);
+
+        $this->assertSame('Hallo van de backup', end($events)['draft']);
+        ReplyDrafter::assertPromptedTimes(2);
     }
 
     public function testAiJobsHaveTheirOwnQueues()
     {
         \Queue::fake();
         Option::set('aiassistant.mailbox_features_off', []);
-
-        $this->requestDraft($this->agent);
-        \Queue::assertPushedOn('ai-drafts', \App\Jobs\AiDraftReply::class);
 
         \App\Jobs\AiSummarizeConversation::request($this->conversation, 'en');
         \Queue::assertPushedOn('ai', \App\Jobs\AiSummarizeConversation::class);
@@ -156,8 +198,9 @@ class AiDraftsTest extends FeatureTestCase
         $this->agent->ai_drafts_per_day = 1;
         $this->agent->save();
 
-        $this->requestDraft($this->agent)->assertStatus(200);
-        $this->requestDraft($this->agent)->assertStatus(429);
+        $this->draftEvents($this->agent);
+        $this->requestDraft($this->agent)->assertStatus(429)->assertJson(['msg' => 'You have made the most drafts allowed for today.']);
+        ReplyDrafter::assertPromptedTimes(1);
     }
 
     public function testFailedDraftIsReported()
@@ -166,13 +209,14 @@ class AiDraftsTest extends FeatureTestCase
             throw new \RuntimeException('Provider down');
         });
 
-        $poll_url = $this->requestDraft($this->agent)->json('poll_url');
-
-        $this->actingAs($this->agent)->getJson($poll_url)->assertJson([
+        $error = [
             'status'       => 'error',
             'draft_status' => DraftJob::STATUS_FAILED,
+            'msg'          => 'Could not draft a reply.',
             'detail'       => 'Provider down',
-        ]);
+        ];
+        $this->assertSame([$error], $this->draftEvents($this->agent));
+        $this->assertSame(DraftJob::STATUS_FAILED, DraftJob::where('user_id', $this->agent->id)->first()->status);
     }
 
     public function testDraftUsesDocumentationAndCustomerContext()
@@ -186,7 +230,7 @@ class AiDraftsTest extends FeatureTestCase
         Option::set('aiassistant.customer_context_guidance', [$this->mailbox->id => 'We sell apps.']);
         Http::fake(['https://crm.example.org/*' => Http::response(['plan' => 'Pro'])]);
 
-        $poll_url = $this->requestDraft($this->agent)->json('poll_url');
+        $events = $this->draftEvents($this->agent);
 
         Http::assertSent(function (HttpRequest $request) {
             return $request->hasHeader('X-FREESCOUT-SIGNATURE', base64_encode(hash_hmac('sha1', $request->body(), 's3cret', true)))
@@ -197,11 +241,10 @@ class AiDraftsTest extends FeatureTestCase
                 && str_contains($prompt->prompt, '"plan": "Pro"')
                 && str_contains($prompt->prompt, 'We sell apps.');
         });
-        $this->actingAs($this->agent)->getJson($poll_url)->assertJson([
-            'documentation_status'    => 'available',
-            'customer_context_status' => 'available',
-            'retrieved_documents'     => [['title' => 'Android app', 'url' => 'https://docs.example.org/en/android']],
-        ]);
+        $draft = end($events);
+        $this->assertSame('available', $draft['documentation_status']);
+        $this->assertSame('available', $draft['customer_context_status']);
+        $this->assertSame(['Android app', 'https://docs.example.org/en/android'], [$draft['retrieved_documents'][0]['title'], $draft['retrieved_documents'][0]['url']]);
     }
 
     public function testReplyFromDraftKeepsTheTranslation()

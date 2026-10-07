@@ -83,15 +83,18 @@ class ChatTranslationTest extends FeatureTestCase
     public function testAReplyGoesOutTranslatedAfterAPreview()
     {
         ChatTranslation::setCustomerLanguage($this->conversation, 'nl');
-        ReplyTranslator::fake([new \Laravel\Ai\Responses\StructuredTextResponse(
-            ['translation' => '<p>Ik zoek het voor u uit.</p>', 'same_language' => false], '{}',
+        ReplyTranslator::fake([new \Laravel\Ai\Responses\TextResponse(
+            json_encode(['translation' => '<p>Ik zoek het voor u uit.</p>', 'same_language' => false, 'note' => '']),
             new \Laravel\Ai\Responses\Data\TextUsage(300, 20), new \Laravel\Ai\Responses\Data\Meta
         )]);
+        // The translation shown as it's written (Livewire's stream): its start, the rest within 0.1 s.
+        $this->freezeTime();
 
         $composer = $this->composer()->assertSet('translating', true)
-            ->assertSee('Translate Replies Into')
-            ->call('previewTranslation', '<p>I will look into it.</p>')->assertReturned('ready')
-            ->assertSee('Ik zoek het voor u uit.')->assertSee('Sent in Dutch');
+            ->assertSee('Translate Replies Into')->assertSee('wire:stream.replace="translation"', false);
+        $streamed = $this->streamed(fn () => $composer->call('previewTranslation', '<p>I will look into it.</p>'));
+        $composer->assertReturned('ready')->assertSee('Ik zoek het voor u uit.')->assertSee('Sent in Dutch');
+        $this->assertSame([['type' => 'directive', 'content' => '<p>Ik', 'mode' => 'replace', 'name' => 'translation']], $streamed);
         ReplyTranslator::assertPrompted(fn ($prompt) => str_contains($prompt->prompt, 'Waar blijft mijn bestelling?') && str_contains($prompt->prompt, 'I will look into it.'));
 
         // Changed since: translated again first.
@@ -151,10 +154,10 @@ class ChatTranslationTest extends FeatureTestCase
         $burst = collect(['Hallo?', 'Is daar iemand?', 'Het pakket is nog niet aangekomen.'])
             ->map(fn ($text) => Thread::create($this->conversation, Thread::TYPE_CUSTOMER, $text, ['customer_id' => $this->conversation->customer_id, 'source_via' => Thread::PERSON_CUSTOMER, 'source_type' => Thread::SOURCE_TYPE_WEB]));
 
-        \App\Ai\Agents\ChatTranslator::fake([new \Laravel\Ai\Responses\StructuredTextResponse([
+        \App\Ai\Agents\ChatTranslator::fake([new \Laravel\Ai\Responses\TextResponse(json_encode([
             'messages' => $burst->map(fn ($thread, $i) => ['id' => $thread->id, 'translation' => ['Hello?', 'Is anyone there?', 'The parcel has not arrived yet.'][$i], 'same_language' => false])->all(),
             'detected_language' => 'nl',
-        ], '{}', new \Laravel\Ai\Responses\Data\TextUsage(400, 30), new \Laravel\Ai\Responses\Data\Meta)]);
+        ]), new \Laravel\Ai\Responses\Data\TextUsage(400, 30), new \Laravel\Ai\Responses\Data\Meta)]);
         (new \App\Jobs\AiTranslateChat($this->conversation->id, 'en'))->handle();
 
         \App\Ai\Agents\ChatTranslator::assertPromptedTimes(1);
@@ -191,7 +194,9 @@ class ChatTranslationTest extends FeatureTestCase
         ChatTranslation::setCustomerLanguage($this->conversation, 'nl');
         ReplyTranslator::fake([['translation' => '<p>Herstart de 12VPX Server.</p>', 'same_language' => false, 'note' => 'Automatisch vertaald']]);
 
-        $this->composer()->call('previewTranslation', '<p>Please restart the 12VPX server.</p>')->assertReturned('ready')
+        $composer = $this->composer();
+        $this->streamed(fn () => $composer->call('previewTranslation', '<p>Please restart the 12VPX server.</p>'));
+        $composer->assertReturned('ready')
             ->assertSet('translation.html', '<p>Herstart de 12VPX Server.</p><p><em>(Automatisch vertaald)</em></p>');
         ReplyTranslator::assertPrompted(fn ($prompt) => str_contains($prompt->prompt, "<glossary>") && str_contains($prompt->prompt, 'server = Server'));
 

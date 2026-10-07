@@ -1,9 +1,7 @@
 {{-- AI Assistant: a reply draft (App\Ai\Drafts), asked for by the toolbar's Draft with AI (tallportAiDraft in public/js/conversations.js). --}}
 <div class="ai-draft-panel" x-data="tallportAiDraft(@js(route('ai.drafts.store', ['id' => $conversation->id])), @js(App\Ai\Settings::language($conversation->mailbox, Auth::user())), @js([
-        'queued'   => __('Waiting in the queue…'),
         'drafting' => __('Drafting…'),
         'failed'   => __('Could not draft a reply.'),
-        'slow'     => __('The draft is taking long. Check that the queue is running, or try again.'),
      ]))" x-show="active" x-cloak x-on:ai-draft-request.window="request()">
     <x-fruit::suggestion :title="__('AI Draft')" x-bind:aria-busy="busy() ? 'true' : 'false'">
         <x-slot:meta><span x-text="meta"></span></x-slot:meta>

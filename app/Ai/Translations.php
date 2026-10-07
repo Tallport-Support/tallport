@@ -270,17 +270,20 @@ class Translations
             // As it looks (HTML) where that fits, else as text.
             $html = self::sourceHtml($thread);
             $as_html = $html !== '' && mb_strlen($html) <= Summaries::MAX_THREAD_CHARS * 3;
-            $response = (new ThreadTranslator($language, $as_html))->prompt(trim(TallportAgent::glossary($thread->conversation->mailbox)."\n\n".TallportAgent::data('message', $as_html ? $html : $text)));
+            [$answer, $response] = (new ThreadTranslator($language, $as_html))->streamJson(
+                trim(TallportAgent::glossary($thread->conversation->mailbox)."\n\n".TallportAgent::data('message', $as_html ? $html : $text)),
+                $thread->type == Thread::TYPE_CUSTOMER ? self::broadcaster($thread->conversation, $language, fn ($answer) => [$thread->id => [$answer['translation'] ?? '', $as_html]]) : null
+            );
             Usage::record($response, Usage::FEATURE_TRANSLATION, $thread->conversation);
-            $data['language'] = strtolower(trim((string) $response['detected_language'])) ?: ($data['language'] ?? null);
+            $data['language'] = strtolower(trim((string) ($answer['detected_language'] ?? ''))) ?: ($data['language'] ?? null);
             // A chat's language: the one first detected (replies go out in it).
             if ($thread->type == Thread::TYPE_CUSTOMER && $data['language'] && Settings::isLanguage($data['language'])) {
                 ChatTranslation::setCustomerLanguage($thread->conversation, $data['language']);
             }
-            if ($response['same_language'] || $data['language'] === $language || trim((string) $response['translation']) === '') {
+            if (!empty($answer['same_language']) || $data['language'] === $language || trim((string) ($answer['translation'] ?? '')) === '') {
                 $data['same'] = array_values(array_unique(array_merge((array) ($data['same'] ?? []), [$language])));
             } else {
-                $data['translations'][$language] = trim((string) $response['translation']);
+                $data['translations'][$language] = trim((string) $answer['translation']);
                 $data['html'] = array_values(array_diff((array) ($data['html'] ?? []), [$language]));
                 if ($as_html) {
                     $data['html'][] = $language;
@@ -295,6 +298,28 @@ class Translations
         self::save($thread, $data);
 
         return $data['translations'][$language] ?? null;
+    }
+
+    /**
+     * Translations being written are passed on to open conversations at most this often (seconds;
+     * they poll every few seconds, every second while translations come in: public/js/realtime.js).
+     */
+    const STREAM_INTERVAL = 0.5;
+
+    /**
+     * Pass translations on as they're written (RealtimeConvTranslating), throttled: for
+     * TallportAgent::streamJson(). $translations: the answer so far => thread_id => [text, html].
+     */
+    public static function broadcaster(\App\Conversation $conversation, $language, callable $translations)
+    {
+        $throttle = new StreamThrottle(self::STREAM_INTERVAL);
+
+        return function ($answer) use ($conversation, $language, $translations, $throttle) {
+            $written = array_filter($translations($answer), fn ($translation) => trim((string) $translation[0]) !== '');
+            if ($written && $throttle->ready()) {
+                \App\Events\RealtimeConvTranslating::dispatchSelf($conversation, $language, $written);
+            }
+        };
     }
 
     /**

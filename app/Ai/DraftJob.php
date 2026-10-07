@@ -5,8 +5,8 @@ namespace App\Ai;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * A reply draft asked for by a user: made by a queued job, then fetched by
- * the user's browser.
+ * A reply draft asked for by a user (AiDraftsController::store()): how it went, and what
+ * counts against the user's drafts per day.
  */
 class DraftJob extends Model
 {

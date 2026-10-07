@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Ai\DraftJob;
 use App\Conversation;
 use App\Thread;
 use App\User;
@@ -38,48 +37,6 @@ class BackgroundJobsEdgeCasesTest extends FeatureTestCase
     }
 
     // Jobs.
-
-    public function testDraftJobThatIsNotPendingIsLeftAlone()
-    {
-        $conversation = $this->receiveConversation();
-        $draft_job = new DraftJob();
-        $draft_job->conversation_id = $conversation->id;
-        $draft_job->user_id = $this->agent->id;
-        $draft_job->status = DraftJob::STATUS_COMPLETED;
-        $draft_job->save();
-
-        (new \App\Jobs\AiDraftReply($draft_job->id, 'en'))->handle();
-        (new \App\Jobs\AiDraftReply(999999, 'en'))->handle();
-
-        $this->assertSame(DraftJob::STATUS_COMPLETED, $draft_job->fresh()->status);
-        $this->assertNull($draft_job->fresh()->started_at);
-    }
-
-    public function testDraftJobThatGaveUpIsMarkedFailed()
-    {
-        $conversation = $this->receiveConversation();
-        $draft_jobs = [];
-        foreach ([DraftJob::STATUS_RUNNING, DraftJob::STATUS_COMPLETED] as $status) {
-            $draft_job = new DraftJob();
-            $draft_job->conversation_id = $conversation->id;
-            $draft_job->user_id = $this->agent->id;
-            $draft_job->status = $status;
-            $draft_job->save();
-            $draft_jobs[$status] = $draft_job;
-        }
-
-        foreach ($draft_jobs as $draft_job) {
-            (new \App\Jobs\AiDraftReply($draft_job->id, 'en'))->failed(new \RuntimeException('Worker timed out'));
-        }
-
-        $failed = $draft_jobs[DraftJob::STATUS_RUNNING]->fresh();
-        $this->assertSame(DraftJob::STATUS_FAILED, $failed->status);
-        $this->assertSame('RuntimeException', $failed->error_type);
-        $this->assertSame('Could not draft a reply.', $failed->error_message);
-        $this->assertSame('Worker timed out', $failed->error_detail);
-        $this->assertNotNull($failed->completed_at);
-        $this->assertSame(DraftJob::STATUS_COMPLETED, $draft_jobs[DraftJob::STATUS_COMPLETED]->fresh()->status, 'A finished draft stays as it is.');
-    }
 
     public function testFailingNostrTaskIsLogged()
     {

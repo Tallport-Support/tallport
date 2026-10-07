@@ -4,13 +4,12 @@ namespace App\Ai\Agents;
 
 use App\Ai\Settings;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
-use Laravel\Ai\Contracts\HasStructuredOutput;
 
 /**
  * A customer's latest chat messages translated for the support team together (App\Ai\ChatTranslation),
  * with the chat's earlier messages for context.
  */
-class ChatTranslator extends TallportAgent implements HasStructuredOutput
+class ChatTranslator extends TallportAgent
 {
     public $language;
 
@@ -24,6 +23,11 @@ class ChatTranslator extends TallportAgent implements HasStructuredOutput
         return 'translations';
     }
 
+    public function fast(): bool
+    {
+        return true;
+    }
+
     public function instructions(): string
     {
         return implode("\n", [
@@ -35,6 +39,7 @@ class ChatTranslator extends TallportAgent implements HasStructuredOutput
             'Do not change the content, do not add information, keep the line breaks. Keep names, product names, codes, numbers and URLs as they are.',
             'messages: one entry per message, with its id. If a message is already in the target language, set same_language to true and leave its translation empty.',
             'detected_language: the language the customer writes in, as an ISO 639-1 code.',
+            $this->jsonRule(),
         ]);
     }
 

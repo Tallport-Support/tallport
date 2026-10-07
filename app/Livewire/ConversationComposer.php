@@ -332,6 +332,11 @@ class ConversationComposer extends Component
     }
 
     /**
+     * A reply's translation being written is shown at most this often (seconds).
+     */
+    const STREAM_INTERVAL = 0.1;
+
+    /**
      * The reply translated for a preview: "ready", "error" (shown, with Send as Written),
      * "same" (in the customer's language already: sent as it is) or "off".
      */
@@ -347,8 +352,16 @@ class ConversationComposer extends Component
             return 'empty';
         }
         @set_time_limit(180);
+        // Shown as it's written (wire:stream in conversations/partials/chat_translation).
+        $throttle = new \App\Ai\StreamThrottle(self::STREAM_INTERVAL);
+        $stream = function ($translation) use ($throttle) {
+            if (trim($translation) !== '' && $throttle->ready()) {
+                // A tag still being written is left out.
+                $this->stream(content: safe_raw_html(preg_replace('/<[^>]*$/', '', $translation)), replace: true, name: 'translation');
+            }
+        };
         try {
-            $result = \App\Ai\ChatTranslation::translateReply($this->conversation(), $this->body, auth()->user());
+            $result = \App\Ai\ChatTranslation::translateReply($this->conversation(), $this->body, auth()->user(), $stream);
         } catch (\Throwable $e) {
             \Helper::logException($e, '[AI] Translation of a reply in conversation '.$this->conversation_id.':');
             $this->translation = ['source' => $this->body, 'html' => '', 'error' => mb_substr(trim($e->getMessage()) ?: get_class($e), 0, 300)];

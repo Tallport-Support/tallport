@@ -40,9 +40,10 @@ class Drafts
     }
 
     /**
-     * Make a draft. $language: the language the user reads its translation in.
+     * Make a draft. $language: the language the user reads its translation in. $on_draft: the
+     * draft so far (Markdown), as it's written.
      */
-    public static function draft(Conversation $conversation, $language)
+    public static function draft(Conversation $conversation, $language, ?callable $on_draft = null)
     {
         $threads = $conversation->threads()
             ->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
@@ -59,7 +60,7 @@ class Drafts
         $documentation = self::documentation($conversation, trim($conversation->subject."\n".$latest_text), $locale);
         $context = CustomerContext::forConversation($conversation);
 
-        $response = (new ReplyDrafter($language))->prompt(implode("\n\n", [
+        [$answer, $response] = (new ReplyDrafter($language))->streamJson(implode("\n\n", [
             TallportAgent::data('conversation', [
                 'subject'  => (string) $conversation->subject,
                 'customer' => ['name' => $conversation->customer ? $conversation->customer->getFullName(true, true) : '', 'email' => $conversation->customer_email],
@@ -75,17 +76,17 @@ class Drafts
             TallportAgent::data('mailbox_guidance', $context['guidance']),
             TallportAgent::data('documentation', $documentation['chunks']),
             TallportAgent::data('customer_context', $context['data']),
-        ]));
+        ]), $on_draft ? fn ($answer) => $on_draft((string) ($answer['draft'] ?? '')) : null);
         Usage::record($response, Usage::FEATURE_DRAFT, $conversation);
 
         return [
-            'draft'                   => trim((string) $response['draft']),
-            'translation'             => trim((string) $response['translation']),
+            'draft'                   => trim((string) ($answer['draft'] ?? '')),
+            'translation'             => trim((string) ($answer['translation'] ?? '')),
             'translation_language'    => $language,
-            'language'                => (string) $response['language'],
-            'confidence'              => in_array($response['confidence'], ['low', 'medium', 'high']) ? $response['confidence'] : 'low',
-            'documentation_urls'      => array_values(array_filter((array) $response['documentation_urls'], [Document::class, 'isHttpUrl'])),
-            'staff_notes'             => array_values(array_map('strval', (array) $response['staff_notes'])),
+            'language'                => (string) ($answer['language'] ?? ''),
+            'confidence'              => in_array($answer['confidence'] ?? null, ['low', 'medium', 'high']) ? $answer['confidence'] : 'low',
+            'documentation_urls'      => array_values(array_filter(array_filter((array) ($answer['documentation_urls'] ?? []), 'is_string'), [Document::class, 'isHttpUrl'])),
+            'staff_notes'             => array_values(array_map('strval', array_filter((array) ($answer['staff_notes'] ?? []), 'is_scalar'))),
             'retrieved_documents'     => $documentation['chunks'],
             'documentation_status'    => $documentation['status'],
             'customer_context_status' => $context['status'],

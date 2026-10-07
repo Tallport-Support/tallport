@@ -83,27 +83,27 @@ class ChatTranslation
     /**
      * An agent's reply (HTML) in the customer's language: ['html' => translation], or
      * ['same' => true] when it's in that language already. Throws when the AI fails or the
-     * mailbox's tokens are used up.
+     * mailbox's tokens are used up. $on_translation: the translation so far, as it's written.
      */
-    public static function translateReply(Conversation $conversation, $html, $user)
+    public static function translateReply(Conversation $conversation, $html, $user, ?callable $on_translation = null)
     {
         if (!Settings::withinBudget($conversation->mailbox)) {
             throw new \RuntimeException(__('This mailbox has used its AI tokens for today.'));
         }
         $language = self::customerLanguage($conversation);
-        $response = (new ReplyTranslator($language))->prompt(implode("\n\n", array_filter([
+        [$answer, $response] = (new ReplyTranslator($language))->streamJson(implode("\n\n", array_filter([
             TallportAgent::glossary($conversation->mailbox),
             TallportAgent::data('chat', self::context($conversation)),
             TallportAgent::data('reply', $html),
-        ])));
+        ])), $on_translation ? fn ($answer) => $on_translation((string) ($answer['translation'] ?? '')) : null);
         Usage::record($response, Usage::FEATURE_REPLY_TRANSLATION, $conversation, null, $user ? $user->id : null);
 
-        $translation = trim((string) $response['translation']);
-        if ($response['same_language'] || $translation === '') {
+        $translation = trim((string) ($answer['translation'] ?? ''));
+        if (!empty($answer['same_language']) || $translation === '') {
             return ['same' => true];
         }
         // "Translated automatically", in the customer's language, where the mailbox says so.
-        $note = trim(strip_tags((string) ($response['note'] ?? '')));
+        $note = trim(strip_tags((string) ($answer['note'] ?? '')));
         if ($note !== '' && Settings::translationNote($conversation->mailbox)) {
             $translation .= '<p><em>('.e(trim($note, '() ')).')</em></p>';
         }
@@ -160,11 +160,16 @@ class ChatTranslation
         }
 
         try {
-            $response = (new ChatTranslator($language))->prompt(implode("\n\n", array_filter([
+            // Open pages show the translations as they're written.
+            $ids = $batch->pluck('id')->all();
+            [$answer, $response] = (new ChatTranslator($language))->streamJson(implode("\n\n", array_filter([
                 TallportAgent::glossary($conversation->mailbox),
                 TallportAgent::data('earlier_chat', self::context($conversation, $batch->first()->id)),
                 TallportAgent::data('messages', $batch->map(fn (Thread $thread) => ['id' => $thread->id, 'text' => Summaries::text($thread)])->all()),
-            ])));
+            ])), Translations::broadcaster($conversation, $language, fn ($answer) => collect((array) ($answer['messages'] ?? []))
+                ->filter(fn ($message) => is_array($message) && in_array((int) ($message['id'] ?? 0), $ids) && empty($message['same_language']))
+                ->mapWithKeys(fn ($message) => [(int) $message['id'] => [(string) ($message['translation'] ?? ''), false]])
+                ->all()));
         } catch (\Throwable $e) {
             \Helper::logException($e, '[AI] Translation of conversation '.$conversation->id.':');
             $batch->each(fn (Thread $thread) => Translations::failed($thread, $language, $e));
@@ -173,11 +178,11 @@ class ChatTranslation
         }
         Usage::record($response, Usage::FEATURE_TRANSLATION, $conversation, null, null, count($batch));
 
-        $detected = strtolower(trim((string) $response['detected_language'])) ?: null;
+        $detected = strtolower(trim((string) ($answer['detected_language'] ?? ''))) ?: null;
         if ($detected && Settings::isLanguage($detected)) {
             self::setCustomerLanguage($conversation, $detected);
         }
-        $translated = collect((array) $response['messages'])->keyBy(fn ($message) => (int) ($message['id'] ?? 0));
+        $translated = collect((array) ($answer['messages'] ?? []))->filter(fn ($message) => is_array($message))->keyBy(fn ($message) => (int) ($message['id'] ?? 0));
         foreach ($batch as $thread) {
             $message = $translated[$thread->id] ?? null;
             if (!$message) {

@@ -266,6 +266,32 @@ function maybeShowConnectionRestored()
 			}
 		});
 
+		// Customers' messages being translated (App\Events\RealtimeConvTranslating): the
+		// translation so far in place of "Translating…" (the finished one follows, ai_updated),
+		// polled every second while they come in.
+		var translating_at = {};
+		var translating_poll = null;
+		var showTranslating = function (data) {
+			if (!data || data.conversation_id != attr('conversation_id') || !data.translations) {
+				return;
+			}
+			data.translations.forEach(function (translation) {
+				var waiting = document.querySelector('#thread-'+translation.thread_id+' .ai-translation-waiting');
+				if (!waiting || (translating_at[translation.thread_id] || 0) > data.at) {
+					return;
+				}
+				translating_at[translation.thread_id] = data.at;
+				waiting.removeAttribute('role');
+				waiting.setAttribute('aria-busy', 'true');
+				waiting.classList.add('ai-translation-waiting--writing');
+				waiting.innerHTML = translation.content;
+			});
+			clearTimeout(translating_poll);
+			translating_poll = setTimeout(function () {
+				poly.fetchNow();
+			}, 1000);
+		};
+
 		// The open conversation: new messages, and its assignee and status. Subscribed for
 		// each conversation opened, also after wire:navigate (the page changes, the
 		// connection stays).
@@ -306,10 +332,11 @@ function maybeShowConnectionRestored()
 						trigger.setAttribute('title', prefix+': '+name);
 					}
 				}
-			});
+			}).on('App\\Events\\RealtimeConvTranslating', showTranslating);
 		};
 		subscribeConversation();
 		document.addEventListener('livewire:navigated', subscribeConversation);
+
 		// Opened in place (public/js/conversations.js).
 		document.addEventListener('tallport:conversation-opened', subscribeConversation);
 

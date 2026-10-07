@@ -352,12 +352,13 @@ the secret key: the `X-FREESCOUT-SIGNATURE` header (or
 `X-HELPSCOUT-SIGNATURE`) is the Base64 HMAC-SHA1 of the request body.
 "Reply Guidance" tells the drafts about your business and style.
 
-Summaries, translations, drafts and indexing run in the queue, in a worker
-of their own (drafts first), so that slow AI requests don't hold up email.
-The scheduler starts it next to the main worker once a provider is set up,
-so the cron job from [Requirements](#requirements) is all it needs; System
-» Status shows it as "queue:work (AI)". If you run queue workers yourself
-instead, have one process the `ai-drafts,ai` queues.
+Summaries, translations and indexing run in the queue, in a worker of
+their own, so that slow AI requests don't hold up email; a draft is written
+while the agent waits, and shows as it's written. The scheduler starts the
+worker next to the main one once a provider is set up, so the cron job from
+[Requirements](#requirements) is all it needs; System » Status shows it as
+"queue:work (AI)". If you run queue workers yourself instead, have one
+process the `ai` queue.
 
 ## Telegram
 

@@ -4,12 +4,11 @@ namespace App\Ai\Agents;
 
 use App\Ai\Settings;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
-use Laravel\Ai\Contracts\HasStructuredOutput;
 
 /**
  * A customer's message translated for the support team.
  */
-class ThreadTranslator extends TallportAgent implements HasStructuredOutput
+class ThreadTranslator extends TallportAgent
 {
     public $language;
 
@@ -29,6 +28,11 @@ class ThreadTranslator extends TallportAgent implements HasStructuredOutput
         return 'translations';
     }
 
+    public function fast(): bool
+    {
+        return true;
+    }
+
     public function instructions(): string
     {
         return implode("\n", [
@@ -38,10 +42,11 @@ class ThreadTranslator extends TallportAgent implements HasStructuredOutput
             'Translate the message to: '.Settings::languageName($this->language).' ('.$this->language.').',
             'Do not change the content, do not add information, keep the paragraphs.',
             $this->html
-                ? 'The message is HTML. Translate only the text people read; keep every tag, attribute, link address and image exactly as it is. translation: the translated HTML, not JSON.'
-                : 'translation: only the translated text, not JSON.',
+                ? 'The message is HTML. Translate only the text people read; keep every tag, attribute, link address and image exactly as it is. translation: the translated HTML itself, as a string.'
+                : 'translation: only the translated text.',
             'If the message is already in the target language, set same_language to true and leave translation empty. Judge by the text the customer wrote: ignore quoted earlier emails (and their "On ... wrote:" line), signatures, disclaimers and single words or names in other languages.',
             'detected_language: the language the customer wrote the message in, as an ISO 639-1 code.',
+            $this->jsonRule(),
         ]);
     }
 

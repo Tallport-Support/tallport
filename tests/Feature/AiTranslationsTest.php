@@ -246,7 +246,8 @@ class AiTranslationsTest extends FeatureTestCase
 
         $composer->call('previewTranslation', '<p> </p>')->assertReturned('empty')->assertToasted('Please enter a message', 'danger');
         \App\Ai\Agents\ReplyTranslator::assertNeverPrompted();
-        $composer->call('previewTranslation', '<p>Thanks</p>')->assertReturned('ready')->assertSet('translation.html', '<p>Bedankt</p>')
+        $this->assertSame([['type' => 'directive', 'content' => '<p>Bedankt</p>', 'mode' => 'replace', 'name' => 'translation']], $this->streamed(fn () => $composer->call('previewTranslation', '<p>Thanks</p>')));
+        $composer->assertReturned('ready')->assertSet('translation.html', '<p>Bedankt</p>')
             ->call('discardTranslation')->assertSet('translation', null);
 
         $composer->call('setCustomerLanguage', 'klingon');

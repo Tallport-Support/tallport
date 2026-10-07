@@ -17,6 +17,8 @@
 
     <div aria-live="polite">
         <p class="f-help conv-translation-busy" wire:loading.flex wire:target="previewTranslation"><x-fruit::spinner /> {{ __('Translating…') }}</p>
+        {{-- The translation as it's written (ConversationComposer::previewTranslation()). --}}
+        <div class="conv-translation-preview__text f-prose" dir="auto" aria-hidden="true" wire:loading.block wire:target="previewTranslation" wire:stream.replace="translation"></div>
         @if ($translation)
             @if ($translation['error'])
                 <x-fruit::alert tone="warning" class="conv-translation-preview">

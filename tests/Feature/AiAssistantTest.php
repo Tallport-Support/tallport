@@ -364,12 +364,13 @@ class AiAssistantTest extends FeatureTestCase
     public function testTokensUsedPerConversation()
     {
         $this->configureAi(['aiassistant.translation_language' => 'en']);
-        ThreadTranslator::fake([new \Laravel\Ai\Responses\StructuredTextResponse(
-            ['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'nl'], '{}',
+        ThreadTranslator::fake([new \Laravel\Ai\Responses\TextResponse(
+            json_encode(['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'nl']),
             new \Laravel\Ai\Responses\Data\TextUsage(1200, 34), new \Laravel\Ai\Responses\Data\Meta
         )]);
 
         $conversation = $this->receiveCustomerEmail();
+        $this->assertSame('Where is my order?', Translations::get($conversation->threads()->first(), 'en'));
 
         $this->assertSame(1234, \App\Ai\Usage::forConversation($conversation));
         $this->assertDatabaseHas('aiassistant_usage', ['conversation_id' => $conversation->id, 'mailbox_id' => $this->mailbox->id, 'customer_id' => $conversation->customer_id, 'feature' => 'translation', 'input_tokens' => 1200, 'output_tokens' => 34]);
@@ -563,7 +564,7 @@ class AiAssistantTest extends FeatureTestCase
 
         $this->configureAi();
         $this->assertCount(2, $workers());
-        $this->assertStringContainsString("--queue='ai-drafts,ai,".\Helper::getWorkerIdentifier(\App\Console\Kernel::AI_WORKER)."'", $workers()[1]);
+        $this->assertStringContainsString("--queue='ai,".\Helper::getWorkerIdentifier(\App\Console\Kernel::AI_WORKER)."'", $workers()[1]);
         Livewire::withoutLazyLoading();
         $this->actingAs($this->admin)->get('/system/status')->assertSee('queue:work (AI)');
     }

@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Ai\DraftJob;
 use App\Conversation;
 use App\KbArticle;
 use App\Telegram\Telegram;
@@ -62,22 +61,6 @@ class HttpControllerEdgeCasesTest extends FeatureTestCase
         $this->assertSame(0, KbArticle::where('title', 'Mine')->count());
 
         $this->postAjax($this->agent, route('kb.ajax'), ['action' => 'nonsense'])->assertJson(['status' => 'error', 'msg' => 'Unknown action']);
-    }
-
-    // AI drafts.
-
-    public function testDraftStillBeingMade()
-    {
-        $conversation = $this->conversation($this->mailbox, 'Question');
-        $draft_job = new DraftJob();
-        $draft_job->conversation_id = $conversation->id;
-        $draft_job->user_id = $this->agent->id;
-        $draft_job->status = DraftJob::STATUS_RUNNING;
-        $draft_job->save();
-
-        $this->actingAs($this->agent)->getJson(route('ai.drafts.show', ['id' => $draft_job->id]))
-            ->assertExactJson(['status' => 'success', 'draft_status' => DraftJob::STATUS_RUNNING]);
-        $this->actingAs($this->createUser())->getJson(route('ai.drafts.show', ['id' => $draft_job->id]))->assertForbidden();
     }
 
     public function testCustomerContextServerUnreachable()

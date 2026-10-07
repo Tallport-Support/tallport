@@ -6,17 +6,22 @@ use App\Ai\CustomerContext;
 use App\Ai\DraftJob;
 use App\Ai\Drafts;
 use App\Ai\Settings;
+use App\Ai\StreamThrottle;
 use App\Conversation;
-use App\Jobs\AiDraftReply;
 use App\Mailbox;
 use Illuminate\Http\Request;
 
 /**
- * AI Assistant reply drafts: asked for in a conversation, made by a queued
- * job and fetched by the browser until done.
+ * AI Assistant reply drafts: asked for in a conversation, and written into the browser as the
+ * AI writes them (server-sent events).
  */
 class AiDraftsController extends Controller
 {
+    /**
+     * The draft so far is sent at most this often (seconds).
+     */
+    const STREAM_INTERVAL = 0.1;
+
     public function store($id)
     {
         $conversation = Conversation::findOrFail($id);
@@ -37,41 +42,53 @@ class AiDraftsController extends Controller
             ], 429);
         }
 
+        // Kept for the user's drafts per day, with how it went.
         $draft_job = new DraftJob();
         $draft_job->conversation_id = $conversation->id;
         $draft_job->user_id = $user->id;
-        $draft_job->status = DraftJob::STATUS_PENDING;
+        $draft_job->status = DraftJob::STATUS_RUNNING;
+        $draft_job->started_at = now();
         $draft_job->save();
+        $language = Settings::language($conversation->mailbox, $user);
 
-        AiDraftReply::dispatch($draft_job->id, Settings::language($conversation->mailbox, $user));
+        // Events: {"draft": the draft so far}, then the draft and its details ("status": "success"), or the error.
+        return response()->stream(function () use ($draft_job, $conversation, $language) {
+            // Finished (and kept) also when the user leaves.
+            ignore_user_abort(true);
+            @set_time_limit(240);
+            $send = function (array $data) {
+                echo 'data: '.json_encode($data, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE)."\n\n";
+                if (ob_get_level() > 0) {
+                    ob_flush();
+                }
+                flush();
+            };
+            $throttle = new StreamThrottle(self::STREAM_INTERVAL);
+            try {
+                $draft_job->result = Drafts::draft($conversation, $language, function ($draft) use ($send, $throttle) {
+                    if (trim($draft) !== '' && $throttle->ready()) {
+                        $send(['draft' => $draft]);
+                    }
+                });
+                $draft_job->status = DraftJob::STATUS_COMPLETED;
+            } catch (\Throwable $e) {
+                $draft_job->status = DraftJob::STATUS_FAILED;
+                $draft_job->error_type = get_class($e);
+                $draft_job->error_message = __('Could not draft a reply.');
+                $draft_job->error_detail = mb_substr($e->getMessage(), 0, 2000);
+                \Helper::logException($e, '[AI] Draft for conversation #'.$draft_job->conversation_id.':');
+            }
+            $draft_job->completed_at = now();
+            $draft_job->save();
 
-        return response()->json([
-            'status'       => 'success',
-            'draft_status' => $draft_job->fresh()->status,
-            'poll_url'     => route('ai.drafts.show', ['id' => $draft_job->id]),
+            $send($draft_job->status == DraftJob::STATUS_COMPLETED
+                ? ['status' => 'success', 'draft_status' => $draft_job->status] + (array) $draft_job->result
+                : ['status' => 'error', 'draft_status' => $draft_job->status, 'msg' => $draft_job->error_message, 'detail' => $draft_job->error_detail]);
+        }, 200, [
+            'Content-Type'      => 'text/event-stream',
+            'Cache-Control'     => 'no-cache, no-transform',
+            'X-Accel-Buffering' => 'no',
         ]);
-    }
-
-    public function show($id)
-    {
-        $draft_job = DraftJob::findOrFail($id);
-        if ($draft_job->user_id != auth()->id()) {
-            abort(403);
-        }
-
-        if ($draft_job->status == DraftJob::STATUS_COMPLETED) {
-            return response()->json(['status' => 'success', 'draft_status' => $draft_job->status] + (array) $draft_job->result);
-        }
-        if ($draft_job->status == DraftJob::STATUS_FAILED) {
-            return response()->json([
-                'status'       => 'error',
-                'draft_status' => $draft_job->status,
-                'msg'          => $draft_job->error_message ?: __('Could not draft a reply.'),
-                'detail'       => $draft_job->error_detail,
-            ]);
-        }
-
-        return response()->json(['status' => 'success', 'draft_status' => $draft_job->status]);
     }
 
     /**

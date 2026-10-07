@@ -267,8 +267,8 @@ class Kernel extends ConsoleKernel
         $queue_work_params['--queue'] .= ','.\Helper::getWorkerIdentifier();
         $this->scheduleQueueWorker($schedule, $queue_work_params, \Helper::getWorkerIdentifier(), 'queue-jobs.log');
 
-        // A second worker for the AI Assistant's jobs (drafts first), so
-        // that slow AI requests don't hold up emails, nor drafts the rest.
+        // A second worker for the AI Assistant's jobs, so that slow AI
+        // requests don't hold up emails.
         if (\App\Ai\Settings::isConfigured()) {
             $ai_identifier = \Helper::getWorkerIdentifier(self::AI_WORKER);
             $ai_work_params = Config('app.queue_work_ai_params');

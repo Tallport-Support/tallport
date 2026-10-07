@@ -224,7 +224,7 @@ return [
     */
     'queue_work_params' => ['--queue' => 'emails,default', '--sleep' => '1', '--tries' => '1', '--timeout' => '1800'],
     // The AI Assistant's worker (runs once a provider is set up): drafts first.
-    'queue_work_ai_params' => ['--queue' => 'ai-drafts,ai', '--sleep' => '3', '--tries' => '1', '--timeout' => '900'],
+    'queue_work_ai_params' => ['--queue' => 'ai', '--sleep' => '3', '--tries' => '1', '--timeout' => '900'],
 
     /*
     |--------------------------------------------------------------------------

@@ -148,6 +148,137 @@ class Providers
         return self::TEXT.'-'.$id;
     }
 
+    /**
+     * The id of a provider set up in the settings, from laravel/ai's name for it (textName()).
+     */
+    public static function idFromName($name)
+    {
+        return str_starts_with((string) $name, self::TEXT.'-') ? substr($name, strlen(self::TEXT) + 1) : null;
+    }
+
+    /**
+     * Request options that keep a model's reasoning to the least it allows ("fast mode", for
+     * simple work such as translations: TallportAgent::fast()), by provider (PRESETS) and model;
+     * [] where a model has none. A model fails a request with an option it doesn't take, so only
+     * models known to take it get it (and one that refuses it anyway is called without it from
+     * then on: fastRejected()). Never a paid priority tier (OpenAI service_tier, Anthropic speed).
+     */
+    public static function fastOptions($provider, $model)
+    {
+        $model = strtolower(trim((string) $model));
+        switch ($provider) {
+            // OpenAI (Responses API): reasoning.effort, the least each reasoning model takes.
+            case 'openai':
+                $effort = self::openAiEffort($model);
+
+                return $effort ? ['reasoning' => ['effort' => $effort]] : [];
+            // Gemini (Interactions API): generation_config.thinking_level; "minimal" where a model
+            // has it, else "low" (Gemini 3 Pro, 3.7/3.8 Flash, 2.5 Pro and Flash). Thinking can't be off.
+            case 'gemini':
+                $level = self::geminiThinkingLevel($model);
+
+                return $level ? ['generation_config' => ['thinking_level' => $level]] : [];
+            // xAI (Responses API): reasoning.effort on the Grok models that take it; others refuse it.
+            case 'xai':
+                $effort = self::xaiEffort($model);
+
+                return $effort ? ['reasoning' => ['effort' => $effort]] : [];
+            // Groq: reasoning_effort; Qwen 3 can skip reasoning, GPT-OSS reasons least at "low".
+            case 'groq':
+                if (str_contains($model, 'qwen3') || str_contains($model, 'qwen-3')) {
+                    return ['reasoning_effort' => 'none'];
+                }
+
+                return str_contains($model, 'gpt-oss') && !str_contains($model, 'safeguard') ? ['reasoning_effort' => 'low'] : [];
+            // Mistral: reasoning_effort "none" on the models with adjustable reasoning (Medium 3.5, Small 4).
+            case 'mistral':
+                return preg_match('/^mistral-(medium-3[.-]5|small-4|medium-latest|small-latest)/', $model) ? ['reasoning_effort' => 'none'] : [];
+            // DeepSeek V4 thinks unless told not to; deepseek-chat doesn't think, deepseek-reasoner always does.
+            case 'deepseek':
+                return str_starts_with($model, 'deepseek-v4') ? ['thinking' => ['type' => 'disabled']] : [];
+            // OpenRouter: its reasoning.effort, passed on to the model's provider: as for OpenAI, Gemini
+            // and xAI models (others, e.g. Claude, would start reasoning when given an effort).
+            case 'openrouter':
+                [$vendor, $name] = array_pad(explode('/', $model, 2), 2, '');
+                $effort = match ($vendor) {
+                    'openai' => self::openAiEffort($name),
+                    'google' => self::geminiThinkingLevel($name),
+                    'x-ai'   => self::xaiEffort($name),
+                    default  => null,
+                };
+
+                return $effort ? ['reasoning' => ['effort' => $effort]] : [];
+            // Anthropic: extended thinking is off unless asked for. OpenAI-compatible servers
+            // (Together, Fireworks, Ollama, ...): too varied to send anything.
+            default:
+                return [];
+        }
+    }
+
+    /**
+     * GPT-5: "minimal"; GPT-5.1 and later, GPT-6: "none"; o3 and o4-mini: "low". Chat, Codex and
+     * Pro models take none of these, non-reasoning models (GPT-4.1, GPT-4o) no effort at all.
+     */
+    protected static function openAiEffort($model)
+    {
+        if (preg_match('/-(chat|codex|pro|search|audio|realtime|deep-research)\b/', $model)) {
+            return null;
+        }
+        if (preg_match('/^gpt-5(-mini|-nano)?(-\d{4}-\d{2}-\d{2})?$/', $model)) {
+            return 'minimal';
+        }
+        if (preg_match('/^gpt-(5\.\d+|6)/', $model)) {
+            return 'none';
+        }
+
+        return preg_match('/^(o3|o4-mini)(-mini)?(-\d{4}-\d{2}-\d{2})?$/', $model) ? 'low' : null;
+    }
+
+    protected static function geminiThinkingLevel($model)
+    {
+        if (!str_starts_with($model, 'gemini-') || preg_match('/image|tts|embedding|audio|live/', $model)) {
+            return null;
+        }
+
+        return preg_match('/^gemini-(2\.5-flash-lite|3-flash|3\.5-flash|3\.6-flash)/', $model) ? 'minimal' : 'low';
+    }
+
+    /**
+     * Grok 4.3: "none"; Grok 4.5 and later: "low" (their least); Grok 3 Mini: "low". Other Grok
+     * models (Grok 4, 4.1 Fast, 4.20, Code) refuse the parameter.
+     */
+    protected static function xaiEffort($model)
+    {
+        if (str_contains($model, 'multi-agent') || str_contains($model, 'non-reasoning')) {
+            return null;
+        }
+        if (preg_match('/^grok-4\.3(\D|$)/', $model)) {
+            return 'none';
+        }
+
+        return preg_match('/^grok-(4\.[5-9](\D|$)|[5-9](\D|$)|3-mini)/', $model) ? 'low' : null;
+    }
+
+    /**
+     * A model refused the fast options (HTTP 400/422): it's called without them for a while.
+     */
+    const FAST_REJECTED_DAYS = 30;
+
+    public static function fastRejected($name, $model)
+    {
+        return (bool) \Cache::get(self::fastRejectedKey($name, $model));
+    }
+
+    public static function rememberFastRejected($name, $model)
+    {
+        \Cache::put(self::fastRejectedKey($name, $model), true, now()->addDays(self::FAST_REJECTED_DAYS));
+    }
+
+    protected static function fastRejectedKey($name, $model)
+    {
+        return 'ai_fast_rejected_'.md5($name.'|'.$model);
+    }
+
     protected static function providerConfig($provider, $key, $base_url, array $models)
     {
         $preset = self::PRESETS[$provider];
@@ -159,6 +290,10 @@ class Providers
         // Native drivers know their URL; OpenAI-compatible ones need one.
         if ($base_url || $preset['driver'] == 'openai-compatible') {
             $config['url'] = rtrim($base_url ?: $preset['base_url'], '/');
+        }
+        // Streamed answers' tokens (the usage and budgets), which these servers send when asked.
+        if ($preset['driver'] == 'openai-compatible') {
+            $config['stream_options'] = ['include_usage' => true];
         }
 
         return $config;

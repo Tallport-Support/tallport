@@ -122,4 +122,25 @@ abstract class FeatureTestCase extends TestCase
             'X-Requested-With' => 'XMLHttpRequest',
         ]);
     }
+
+    /**
+     * What a Livewire call streamed to the browser (wire:stream): type, content, mode and name of each.
+     */
+    protected function streamed(callable $call)
+    {
+        $output = '';
+        ob_start(function ($buffer) use (&$output) {
+            $output .= $buffer;
+
+            return '';
+        });
+        try {
+            $call();
+        } finally {
+            ob_end_clean();
+        }
+        preg_match_all('/\{"stream":true.*?"endStream":true\}/', $output, $matches);
+
+        return array_map(fn ($json) => array_intersect_key(json_decode($json, true)['body'], array_flip(['type', 'content', 'mode', 'name'])), $matches[0]);
+    }
 }
