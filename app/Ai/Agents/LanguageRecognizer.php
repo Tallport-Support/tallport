@@ -21,6 +21,11 @@ class LanguageRecognizer extends TallportAgent implements HasStructuredOutput
         $this->languages = array_values($languages);
     }
 
+    public function feature(): string
+    {
+        return 'language';
+    }
+
     public function instructions(): string
     {
         $choices = array_map(function ($code) {

@@ -107,11 +107,17 @@ class Providers
      */
     public static function configure()
     {
-        $text = Settings::provider();
-        config(['ai.providers.'.self::TEXT => self::providerConfig($text, Settings::apiKey(), Settings::baseUrl(), [
-            // Translations use the cheapest: the translation model (TallportAgent's translators).
-            'text' => ['default' => Settings::model(), 'cheapest' => Settings::translationModel(), 'smartest' => Settings::model()],
-        ])]);
+        // Each provider set up; the agents name the provider and model to use (TallportAgent::prompt()).
+        foreach (Settings::providers() as $id => $provider) {
+            config(['ai.providers.'.self::textName($id) => self::providerConfig($provider['provider'], \Helper::decrypt($provider['api_key']), $provider['base_url'], [
+                'text' => ['default' => Settings::DEFAULT_MODEL],
+            ])]);
+            Ai::forgetInstance(self::textName($id));
+        }
+        // The first, for anything that names no provider.
+        if ($first = array_key_first(Settings::providers())) {
+            config(['ai.providers.'.self::TEXT => config('ai.providers.'.self::textName($first))]);
+        }
 
         $embeddings = Settings::embeddingProvider();
         config(['ai.providers.'.self::EMBEDDINGS => self::providerConfig($embeddings, Settings::embeddingApiKey(), Settings::embeddingBaseUrl(), [
@@ -122,6 +128,24 @@ class Providers
 
         Ai::forgetInstance(self::TEXT);
         Ai::forgetInstance(self::EMBEDDINGS);
+    }
+
+    /**
+     * A provider set up, as people tell it apart: its name, and its address when it isn't the usual.
+     */
+    public static function label(array $provider)
+    {
+        $host = $provider['base_url'] ? parse_url($provider['base_url'], PHP_URL_HOST) : '';
+
+        return self::PRESETS[$provider['provider']]['name'].($host ? ' · '.$host : '');
+    }
+
+    /**
+     * laravel/ai's name for a provider set up in the settings.
+     */
+    public static function textName($id)
+    {
+        return self::TEXT.'-'.$id;
     }
 
     protected static function providerConfig($provider, $key, $base_url, array $models)

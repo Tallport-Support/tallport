@@ -23,6 +23,11 @@ class ConversationSummarizer extends TallportAgent implements HasStructuredOutpu
         $this->with_background = (bool) $with_background;
     }
 
+    public function feature(): string
+    {
+        return 'summaries';
+    }
+
     public function instructions(): string
     {
         return implode("\n", [

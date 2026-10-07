@@ -1,30 +1,60 @@
 <form class="settings-form" method="POST" action="" id="ai_settings_form">
     {{ csrf_field() }}
 
-    <x-fruit::form-section :title="__('Provider')">
-        <x-fruit::field :label="__('Provider')" layout="row">
-            <x-fruit::select name="settings[aiassistant.provider]" class="ai-provider" id="ai_provider" data-base-url="#ai_base_url" x-data x-on:change="document.querySelector($el.dataset.baseUrl).placeholder = $el.selectedOptions[0].dataset.baseUrl">
-                @foreach (App\Ai\Providers::PRESETS as $provider => $preset)
-                    <option value="{{ $provider }}" data-base-url="{{ $preset['base_url'] }}" @selected($settings['aiassistant.provider'] == $provider)>{{ $preset['name'] }}</option>
-                @endforeach
-            </x-fruit::select>
-        </x-fruit::field>
+    {{-- The providers set up (App\Ai\Settings::providers()); a new one added with Add Provider. --}}
+    <x-fruit::form-section :title="__('Providers')" :footer="__('API keys: leave the masked value unchanged to keep the current key. Some local providers do not require a key.')">
+        @foreach ($ai_providers as $provider_id => $ai_provider)
+            <x-fruit::disclosure class="ai-provider-block" :title="App\Ai\Providers::label($ai_provider)">
+                @include('settings/partials/ai_provider', ['field' => 'settings[aiassistant.providers]['.$provider_id.']', 'ai_provider' => $ai_provider])
+                <x-fruit::checkbox name="settings[aiassistant.providers][{{ $provider_id }}][remove]" value="1" :description="__('Features using it switch to the first provider.')">{{ __('Remove This Provider') }}</x-fruit::checkbox>
+            </x-fruit::disclosure>
+        @endforeach
+        <div x-data="{ adding: false }">
+            <x-fruit::button size="small" x-show="!adding" x-on:click="adding = true; $nextTick(() => $root.querySelector('select')?.focus())">{{ __('Add Provider') }}</x-fruit::button>
+            <template x-if="adding">
+                <div class="ai-provider-new">
+                    @include('settings/partials/ai_provider', ['field' => 'settings[aiassistant.providers][new]', 'ai_provider' => ['provider' => 'openai', 'api_key' => '', 'base_url' => '']])
+                </div>
+            </template>
+        </div>
+    </x-fruit::form-section>
 
-        <x-fruit::field :label="__('API Key')" :description="__('Leave the masked value unchanged to keep the current key. Some local providers do not require a key.')" layout="row">
-            <x-fruit::input type="password" id="ai_api_key" name="settings[aiassistant.api_key]" :value="\Helper::safePassword($settings['aiassistant.api_key'])" autocomplete="new-password" />
-        </x-fruit::field>
-
-        <x-fruit::field :label="__('Base URL')" :description="__('Optional. Leave blank to use the selected provider default.')" layout="row">
-            <x-fruit::input type="url" id="ai_base_url" name="settings[aiassistant.base_url]" :value="old('settings.aiassistant.base_url', $settings['aiassistant.base_url'])" :placeholder="App\Ai\Providers::PRESETS[$settings['aiassistant.provider']]['base_url']" />
-        </x-fruit::field>
-
-        <x-fruit::field :label="__('Model')" :description="__('Enter the model identifier from the selected provider.')" layout="row">
-            <x-fruit::input id="ai_model" name="settings[aiassistant.model]" :value="$settings['aiassistant.model']" maxlength="255" :placeholder="App\Ai\Settings::DEFAULT_MODEL" />
-        </x-fruit::field>
-
-        <x-fruit::field :label="__('Translation Model')" :description="__('Optional. A cheaper model for translations; leave blank to use the model above.')" layout="row">
-            <x-fruit::input id="ai_translation_model" name="settings[aiassistant.translation_model]" :value="$settings['aiassistant.translation_model']" maxlength="255" />
-        </x-fruit::field>
+    {{-- Each feature's model: the primary, and a backup tried when the primary fails. --}}
+    <x-fruit::form-section :title="__('Models')" :footer="__('When the primary model fails (unreachable, out of credit, a wrong key or model), the backup is used.')">
+        <div>
+            <x-fruit::table class="ai-models">
+                <thead>
+                    <tr>
+                        <th>{{ __('Feature') }}</th>
+                        <th>{{ __('Primary Model') }}</th>
+                        <th>{{ __('Backup Model') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($ai_features as $feature => $feature_name)
+                        @php $feature_models = App\Ai\Settings::featureModels($feature); @endphp
+                        <tr>
+                            <td>{{ $feature_name }}</td>
+                            @foreach (['primary', 'backup'] as $slot)
+                                <td>
+                                    <div class="ai-model-choice">
+                                        <x-fruit::select name="settings[aiassistant.models][{{ $feature }}][{{ $slot }}][provider]" :aria-label="$feature_name.': '.($slot == 'primary' ? __('Primary Model') : __('Backup Model')).' · '.__('Provider')">
+                                            @if ($slot == 'backup')
+                                                <option value="">{{ __('None') }}</option>
+                                            @endif
+                                            @foreach ($ai_providers as $provider_id => $ai_provider)
+                                                <option value="{{ $provider_id }}" @selected(($feature_models[$slot][0] ?? '') === $provider_id)>{{ App\Ai\Providers::label($ai_provider) }}</option>
+                                            @endforeach
+                                        </x-fruit::select>
+                                        <x-fruit::input name="settings[aiassistant.models][{{ $feature }}][{{ $slot }}][model]" :value="$feature_models[$slot][1] ?? ''" maxlength="255" :aria-label="$feature_name.': '.($slot == 'primary' ? __('Primary Model') : __('Backup Model'))" :placeholder="$slot == 'primary' ? App\Ai\Settings::DEFAULT_MODEL : ''" />
+                                    </div>
+                                </td>
+                            @endforeach
+                        </tr>
+                    @endforeach
+                </tbody>
+            </x-fruit::table>
+        </div>
     </x-fruit::form-section>
 
     <x-fruit::form-section :title="__('Documentation')">

@@ -92,10 +92,14 @@ class AiAssistantTest extends FeatureTestCase
         $other = $this->createMailbox();
 
         $this->postForm($this->admin, '/app-settings/ai', ['settings' => [
-            'aiassistant.provider'                        => 'Anthropic',
-            'aiassistant.api_key'                         => 'sk-secret',
-            'aiassistant.base_url'                        => 'https://ai.example.org/v1/',
-            'aiassistant.model'                           => ' claude-test ',
+            'aiassistant.providers'                       => [
+                'p1'  => ['provider' => 'Anthropic', 'api_key' => 'sk-secret', 'base_url' => 'https://ai.example.org/v1/'],
+                'new' => ['provider' => 'openai', 'api_key' => 'sk-two', 'base_url' => ''],
+            ],
+            'aiassistant.models'                          => [
+                'summaries'    => ['primary' => ['provider' => 'p1', 'model' => ' claude-test '], 'backup' => ['provider' => 'p2', 'model' => 'gpt-backup']],
+                'translations' => ['primary' => ['provider' => 'p2', 'model' => 'gpt-cheap'], 'backup' => ['provider' => '', 'model' => 'ignored']],
+            ],
             'aiassistant.documentation.embedding_provider' => 'same',
             'aiassistant.documentation.chunk_size'        => 99,
             'aiassistant.summary_conversation_threshold'  => 50,
@@ -103,7 +107,6 @@ class AiAssistantTest extends FeatureTestCase
             'aiassistant.drafts_per_day'                  => 7,
             'aiassistant.mailbox_language'                => [$this->mailbox->id => 'de', $other->id => ''],
             'aiassistant.mailbox_features_on'             => [$this->mailbox->id => ['summaries' => 1]],
-            'aiassistant.translation_model'               => ' claude-cheap ',
             'aiassistant.daily_tokens'                    => 50000,
             'aiassistant.translations_per_customer_hour'  => 20,
             'aiassistant.mailbox_chat_translation'        => [$other->id => 1],
@@ -112,11 +115,14 @@ class AiAssistantTest extends FeatureTestCase
         ]])->assertRedirect(route('settings', ['section' => 'ai']));
 
         Option::$cache = [];
+        $this->assertSame(['p1', 'p2'], array_keys(Settings::providers()));
         $this->assertSame('anthropic', Settings::provider());
         $this->assertSame('sk-secret', Settings::apiKey());
-        $this->assertNotSame('sk-secret', Option::get('aiassistant.api_key'));
+        $this->assertNotSame('sk-secret', Option::get('aiassistant.providers')[0]['api_key']);
         $this->assertSame('https://ai.example.org/v1', Settings::baseUrl());
-        $this->assertSame('claude-test', Settings::model());
+        $this->assertSame(['primary' => ['p1', 'claude-test'], 'backup' => ['p2', 'gpt-backup']], Settings::featureModels('summaries'));
+        $this->assertSame(['primary' => ['p2', 'gpt-cheap'], 'backup' => null], Settings::featureModels('translations'));
+        $this->assertSame([['tallport-p1', 'claude-test'], ['tallport-p2', 'gpt-backup']], Settings::attempts('summaries'));
         $this->assertSame(500, (int) Option::get('aiassistant.documentation.chunk_size'));
         $this->assertSame(10, Settings::summaryThreshold());
         $this->assertSame(7, Settings::draftsPerDay(null));
@@ -125,7 +131,6 @@ class AiAssistantTest extends FeatureTestCase
         $this->assertTrue(Settings::enabled('summaries', $this->mailbox));
         $this->assertFalse(Settings::enabled('translations', $this->mailbox));
         $this->assertFalse(Settings::enabled('drafts', $other));
-        $this->assertSame('claude-cheap', Settings::translationModel());
         $this->assertSame(50000, Settings::dailyTokens());
         $this->assertSame(20, Settings::translationsPerCustomerHour());
         $this->assertTrue(Settings::chatTranslation($other));
@@ -135,16 +140,57 @@ class AiAssistantTest extends FeatureTestCase
         $this->assertTrue(Settings::translationNote($this->mailbox));
         $this->assertFalse(Settings::translationNote($other));
 
-        // The masked key keeps the key.
-        $this->postForm($this->admin, '/app-settings/ai', ['settings' => ['aiassistant.api_key' => '******']]);
+        // The masked key keeps the key; a provider removed: its features use the first.
+        $this->postForm($this->admin, '/app-settings/ai', ['settings' => [
+            'aiassistant.providers' => ['p1' => ['provider' => 'anthropic', 'api_key' => '******'], 'p2' => ['provider' => 'openai', 'api_key' => '******', 'remove' => 1]],
+            'aiassistant.models'    => Option::get('aiassistant.models'),
+        ]]);
         Option::$cache = [];
         $this->assertSame('sk-secret', Settings::apiKey());
+        $this->assertSame(['p1'], array_keys(Settings::providers()));
+        $this->assertSame(['primary' => ['p1', 'gpt-cheap'], 'backup' => null], Settings::featureModels('translations'));
+        $this->assertNull(Settings::featureModels('summaries')['backup']);
+    }
+
+    /**
+     * A feature's primary model failing (for any reason): its backup answers.
+     */
+    public function testTheBackupModelAnswersWhenThePrimaryFails()
+    {
+        Option::set('aiassistant.providers', [
+            ['id' => 'p1', 'provider' => 'openai', 'api_key' => encrypt('sk-one'), 'base_url' => ''],
+            ['id' => 'p2', 'provider' => 'anthropic', 'api_key' => encrypt('sk-two'), 'base_url' => ''],
+        ]);
+        Option::set('aiassistant.models', ['translations' => ['primary' => ['provider' => 'p1', 'model' => 'gpt-x'], 'backup' => ['provider' => 'p2', 'model' => 'claude-y']]]);
+        Option::$cache = [];
+        $calls = 0;
+        ThreadTranslator::fake(function () use (&$calls) {
+            if (++$calls == 1) {
+                throw new \RuntimeException('Incorrect API key provided');
+            }
+
+            return ['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'nl'];
+        });
+
+        $thread = $this->receiveCustomerEmail()->threads()->first();
+
+        $this->assertSame(2, $calls);
+        $this->assertSame('Where is my order?', Translations::get($thread, 'en'));
+
+        // No backup: the failure shows.
+        Option::set('aiassistant.models', ['translations' => ['primary' => ['provider' => 'p1', 'model' => 'gpt-x']]]);
+        Option::$cache = [];
+        ThreadTranslator::fake(function () {
+            throw new \RuntimeException('Incorrect API key provided');
+        });
+        $other = $this->receiveCustomerEmail("Hallo,\n\nNog iets.")->threads()->first();
+        $this->assertSame(['error', 'Incorrect API key provided'], Translations::reason($other, 'en'));
     }
 
     public function testSettingsRejectNonHttpUrls()
     {
-        $this->postForm($this->admin, '/app-settings/ai', ['settings' => ['aiassistant.base_url' => 'javascript:alert(1)']])
-            ->assertSessionHasErrors('settings.aiassistant.base_url');
+        $this->postForm($this->admin, '/app-settings/ai', ['settings' => ['aiassistant.providers' => ['p1' => ['provider' => 'openai', 'base_url' => 'javascript:alert(1)']]]])
+            ->assertSessionHasErrors('settings.aiassistant.providers.0.base_url');
     }
 
     public function testLanguageFromUserElseMailboxElseInstallation()

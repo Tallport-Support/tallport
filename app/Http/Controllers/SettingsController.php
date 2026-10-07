@@ -177,9 +177,11 @@ class SettingsController extends Controller
                     'template_vars' => [
                         'ai_languages' => \App\Ai\Settings::displayNames(),
                         'ai_mailboxes' => \App\Mailbox::orderBy('name')->get(),
+                        'ai_providers' => \App\Ai\Settings::providers(),
+                        'ai_features'  => array_combine(\App\Ai\Settings::MODEL_FEATURES, [__('Summaries'), __('Translations'), __('Drafts'), __('Language Detection')]),
                     ],
                     'validator_rules' => [
-                        'settings.aiassistant\.base_url'                => 'nullable|url:http,https',
+                        'settings.aiassistant\.providers.*.base_url'    => 'nullable|url:http,https',
                         'settings.aiassistant\.documentation\.embedding_base_url' => 'nullable|url:http,https',
                         'settings.aiassistant\.drafts_per_day'          => 'nullable|integer|min:0|max:10000',
                         'settings.aiassistant\.daily_tokens'            => 'nullable|integer|min:0|max:1000000000',
@@ -189,10 +191,6 @@ class SettingsController extends Controller
                         'settings.aiassistant\.customer_context_guidance.*' => 'nullable|string|max:6000',
                     ],
                     'settings' => [
-                        'aiassistant.api_key' => [
-                            'safe_password' => true,
-                            'encrypt'       => true,
-                        ],
                         'aiassistant.documentation.embedding_api_key' => [
                             'safe_password' => true,
                             'encrypt'       => true,
@@ -295,11 +293,8 @@ class SettingsController extends Controller
                 break;
             case 'ai':
                 $settings = [
-                    'aiassistant.provider'                        => \App\Ai\Settings::provider(),
-                    'aiassistant.api_key'                         => \App\Ai\Settings::apiKey(),
-                    'aiassistant.base_url'                        => \App\Ai\Settings::baseUrl(),
-                    'aiassistant.model'                           => Option::get('aiassistant.model', ''),
-                    'aiassistant.translation_model'               => Option::get('aiassistant.translation_model', ''),
+                    'aiassistant.providers'                       => \App\Ai\Settings::providers(),
+                    'aiassistant.models'                          => (array) Option::get('aiassistant.models', []),
                     'aiassistant.daily_tokens'                    => \App\Ai\Settings::dailyTokens(),
                     'aiassistant.translations_per_customer_hour'  => \App\Ai\Settings::translationsPerCustomerHour(),
                     'aiassistant.documentation.embedding_provider' => \App\Ai\Settings::embeddingProviderIsSame() ? 'same' : \App\Ai\Settings::embeddingProvider(),
@@ -422,24 +417,84 @@ class SettingsController extends Controller
     }
 
     /**
+     * The AI providers as stored: a masked key keeps the key, removed ones go, a new one
+     * (with a key, or keyless) gets the next id; at least one is kept.
+     */
+    protected function normalizeAiProviders(array $input)
+    {
+        $current = \App\Ai\Settings::providers();
+        $providers = [];
+        foreach ($input as $id => $provider) {
+            $provider = (array) $provider;
+            if (!empty($provider['remove']) && count($input) > 1) {
+                continue;
+            }
+            $key = (string) ($provider['api_key'] ?? '');
+            $entry = [
+                'provider' => \App\Ai\Providers::normalize($provider['provider'] ?? 'openai'),
+                'api_key'  => isset($current[$id]) && preg_match('/^\*+$/', $key) ? $current[$id]['api_key'] : ($key === '' ? '' : encrypt($key)),
+                'base_url' => rtrim(trim((string) ($provider['base_url'] ?? '')), '/'),
+            ];
+            if (!isset($current[$id])) {
+                // Added: only with what it needs.
+                if ($entry['api_key'] === '' && \App\Ai\Providers::PRESETS[$entry['provider']]['requires_api_key']) {
+                    continue;
+                }
+                $id = 'p'.(max(array_map(fn ($id) => (int) substr($id, 1), array_merge(array_keys($current), array_keys($providers), ['p0']))) + 1);
+            }
+            $providers[$id] = ['id' => $id] + $entry;
+        }
+
+        return array_values($providers ?: $current);
+    }
+
+    /**
+     * Each feature's models as stored: a primary (on a provider that's set up, else the first),
+     * and a backup only when complete.
+     */
+    protected function normalizeAiModels(array $input, array $providers)
+    {
+        $ids = array_column($providers, 'id');
+        $models = [];
+        foreach (\App\Ai\Settings::MODEL_FEATURES as $feature) {
+            foreach (['primary', 'backup'] as $slot) {
+                $model = (array) ($input[$feature][$slot] ?? []);
+                $provider = (string) ($model['provider'] ?? '');
+                $name = trim((string) ($model['model'] ?? ''));
+                if ($slot == 'primary') {
+                    $models[$feature][$slot] = [
+                        'provider' => in_array($provider, $ids) ? $provider : ($ids[0] ?? ''),
+                        'model'    => $name ?: \App\Ai\Settings::DEFAULT_MODEL,
+                    ];
+                } elseif (in_array($provider, $ids) && $name !== '') {
+                    $models[$feature][$slot] = ['provider' => $provider, 'model' => $name];
+                }
+            }
+        }
+
+        return $models;
+    }
+
+    /**
      * AI Assistant settings as stored: trimmed, within bounds, and the
      * per-mailbox feature checkboxes as the features turned off.
      */
     protected function normalizeAiSettings(Request $request)
     {
         $input = (array) $request->settings;
-        foreach (['aiassistant.base_url', 'aiassistant.documentation.embedding_base_url'] as $name) {
+        foreach (['aiassistant.documentation.embedding_base_url'] as $name) {
             if (isset($input[$name])) {
                 $input[$name] = rtrim(trim($input[$name]), '/');
             }
         }
-        foreach (['aiassistant.model', 'aiassistant.translation_model', 'aiassistant.documentation.embedding_model'] as $name) {
+        foreach (['aiassistant.documentation.embedding_model'] as $name) {
             if (isset($input[$name])) {
                 $input[$name] = trim($input[$name]);
             }
         }
-        if (isset($input['aiassistant.provider'])) {
-            $input['aiassistant.provider'] = \App\Ai\Providers::normalize($input['aiassistant.provider']);
+        if (isset($input['aiassistant.providers'])) {
+            $input['aiassistant.providers'] = $this->normalizeAiProviders((array) $input['aiassistant.providers']);
+            $input['aiassistant.models'] = $this->normalizeAiModels((array) ($input['aiassistant.models'] ?? []), $input['aiassistant.providers']);
         }
         if (isset($input['aiassistant.documentation.embedding_provider']) && $input['aiassistant.documentation.embedding_provider'] != 'same') {
             $input['aiassistant.documentation.embedding_provider'] = \App\Ai\Providers::normalize($input['aiassistant.documentation.embedding_provider']);

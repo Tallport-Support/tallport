@@ -21,6 +21,11 @@ class ReplyDrafter extends TallportAgent implements HasStructuredOutput
         $this->language = $language;
     }
 
+    public function feature(): string
+    {
+        return 'drafts';
+    }
+
     public function instructions(): string
     {
         return implode("\n", [

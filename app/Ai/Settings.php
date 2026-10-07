@@ -51,32 +51,118 @@ class Settings
         'zh-Hant'    => '繁體中文',
     ];
 
+    /**
+     * The AI features, each with a primary model and an optional backup (aiassistant.models):
+     * tried in turn when one fails (Agents\TallportAgent::prompt()).
+     */
+    const MODEL_FEATURES = ['summaries', 'translations', 'drafts', 'language'];
+
+    /**
+     * The providers set up (aiassistant.providers): id, provider (a Providers::PRESETS key),
+     * api_key (encrypted), base_url. Before there were several: the one provider of the
+     * aiassistant.provider, api_key and base_url options.
+     */
+    public static function providers()
+    {
+        $providers = \Option::get('aiassistant.providers', null);
+        if (!is_array($providers)) {
+            $providers = [
+                [
+                    'id'       => 'p1',
+                    'provider' => \Option::get('aiassistant.provider', 'openai'),
+                    'api_key'  => \Option::get('aiassistant.api_key', ''),
+                    'base_url' => \Option::get('aiassistant.base_url', ''),
+                ],
+            ];
+        }
+        $result = [];
+        foreach ($providers as $provider) {
+            $id = preg_replace('/[^a-z0-9]/', '', strtolower((string) ($provider['id'] ?? '')));
+            if ($id === '' || isset($result[$id])) {
+                continue;
+            }
+            $result[$id] = [
+                'id'       => $id,
+                'provider' => Providers::normalize($provider['provider'] ?? 'openai'),
+                'api_key'  => (string) ($provider['api_key'] ?? ''),
+                'base_url' => rtrim(trim((string) ($provider['base_url'] ?? '')), '/'),
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Whether a provider can be used: an API key where one is needed.
+     */
+    public static function providerUsable(array $provider)
+    {
+        return (string) \Helper::decrypt($provider['api_key']) !== '' || !Providers::PRESETS[$provider['provider']]['requires_api_key'];
+    }
+
+    /**
+     * The first provider (the one before there were several; embeddings' "same").
+     */
+    protected static function firstProvider()
+    {
+        return array_values(self::providers())[0] ?? ['id' => 'p1', 'provider' => 'openai', 'api_key' => '', 'base_url' => ''];
+    }
+
     public static function provider()
     {
-        return Providers::normalize(\Option::get('aiassistant.provider', 'openai'));
+        return self::firstProvider()['provider'];
     }
 
     public static function apiKey()
     {
-        return (string) \Helper::decrypt(\Option::get('aiassistant.api_key', ''));
+        return (string) \Helper::decrypt(self::firstProvider()['api_key']);
     }
 
     public static function baseUrl()
     {
-        return rtrim(trim((string) \Option::get('aiassistant.base_url', '')), '/');
-    }
-
-    public static function model()
-    {
-        return trim((string) \Option::get('aiassistant.model', '')) ?: self::DEFAULT_MODEL;
+        return self::firstProvider()['base_url'];
     }
 
     /**
-     * The model for translations (often a cheaper one), else the model.
+     * A feature's models as set: ['primary' => [provider id, model], 'backup' => ... or null].
+     * Before: the aiassistant.model (translations: aiassistant.translation_model) of the one provider.
      */
-    public static function translationModel()
+    public static function featureModels($feature)
     {
-        return trim((string) \Option::get('aiassistant.translation_model', '')) ?: self::model();
+        $models = (array) (((array) \Option::get('aiassistant.models', []))[$feature] ?? []);
+        $first = self::firstProvider()['id'];
+        $old = trim((string) \Option::get('aiassistant.model', '')) ?: self::DEFAULT_MODEL;
+        if ($feature == 'translations') {
+            $old = trim((string) \Option::get('aiassistant.translation_model', '')) ?: $old;
+        }
+        $pick = function ($model) {
+            $model = (array) $model;
+            $provider = (string) ($model['provider'] ?? '');
+            $name = trim((string) ($model['model'] ?? ''));
+
+            return $provider !== '' && $name !== '' ? [$provider, $name] : null;
+        };
+
+        return [
+            'primary' => $pick($models['primary'] ?? null) ?? [$first, $old],
+            'backup'  => $pick($models['backup'] ?? null),
+        ];
+    }
+
+    /**
+     * The models to try for a feature, in turn: [laravel/ai provider name, model], usable ones only.
+     */
+    public static function attempts($feature)
+    {
+        $providers = self::providers();
+        $attempts = [];
+        foreach (array_filter(self::featureModels($feature)) as [$id, $model]) {
+            if (isset($providers[$id]) && self::providerUsable($providers[$id])) {
+                $attempts[] = [Providers::textName($id), $model];
+            }
+        }
+
+        return $attempts;
     }
 
     /**
@@ -84,7 +170,13 @@ class Settings
      */
     public static function isConfigured()
     {
-        return self::apiKey() !== '' || !Providers::PRESETS[self::provider()]['requires_api_key'];
+        foreach (self::providers() as $provider) {
+            if (self::providerUsable($provider)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static function embeddingProvider()

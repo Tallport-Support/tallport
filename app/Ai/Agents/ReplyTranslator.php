@@ -4,14 +4,12 @@ namespace App\Ai\Agents;
 
 use App\Ai\Settings;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
-use Laravel\Ai\Attributes\UseCheapestModel;
 use Laravel\Ai\Contracts\HasStructuredOutput;
 
 /**
  * An agent's chat reply translated into the customer's language (App\Ai\ChatTranslation),
  * with the chat's latest messages for context.
  */
-#[UseCheapestModel]
 class ReplyTranslator extends TallportAgent implements HasStructuredOutput
 {
     public $language;
@@ -19,6 +17,11 @@ class ReplyTranslator extends TallportAgent implements HasStructuredOutput
     public function __construct($language)
     {
         $this->language = $language;
+    }
+
+    public function feature(): string
+    {
+        return 'translations';
     }
 
     public function instructions(): string
