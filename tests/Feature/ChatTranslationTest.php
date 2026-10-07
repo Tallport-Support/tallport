@@ -149,7 +149,7 @@ class ChatTranslationTest extends FeatureTestCase
         $first = $this->conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
         Translations::translate($first, 'en');
         $burst = collect(['Hallo?', 'Is daar iemand?', 'Het pakket is nog niet aangekomen.'])
-            ->map(fn ($text) => Thread::create($this->conversation, Thread::TYPE_CUSTOMER, $text, ['customer_id' => $this->conversation->customer_id, 'source_via' => Thread::PERSON_CUSTOMER]));
+            ->map(fn ($text) => Thread::create($this->conversation, Thread::TYPE_CUSTOMER, $text, ['customer_id' => $this->conversation->customer_id, 'source_via' => Thread::PERSON_CUSTOMER, 'source_type' => Thread::SOURCE_TYPE_WEB]));
 
         \App\Ai\Agents\ChatTranslator::fake([new \Laravel\Ai\Responses\StructuredTextResponse([
             'messages' => $burst->map(fn ($thread, $i) => ['id' => $thread->id, 'translation' => ['Hello?', 'Is anyone there?', 'The parcel has not arrived yet.'][$i], 'same_language' => false])->all(),
@@ -165,14 +165,14 @@ class ChatTranslationTest extends FeatureTestCase
         // Over the customer's messages per hour: the latest translated, the earlier ones say why.
         Option::set('aiassistant.translations_per_customer_hour', 6);
         Option::$cache = [];
-        $more = collect(['Een', 'Twee', 'Drie'])->map(fn ($text) => Thread::create($this->conversation, Thread::TYPE_CUSTOMER, $text, ['customer_id' => $this->conversation->customer_id, 'source_via' => Thread::PERSON_CUSTOMER]));
+        $more = collect(['Een', 'Twee', 'Drie'])->map(fn ($text) => Thread::create($this->conversation, Thread::TYPE_CUSTOMER, $text, ['customer_id' => $this->conversation->customer_id, 'source_via' => Thread::PERSON_CUSTOMER, 'source_type' => Thread::SOURCE_TYPE_WEB]));
         \App\Ai\Agents\ChatTranslator::fake(fn () => ['messages' => [['id' => $more->last()->id, 'translation' => 'Three', 'same_language' => false]], 'detected_language' => 'nl']);
         \App\Jobs\AiTranslateChat::dispatch($this->conversation->id, 'en');
         $this->assertSame('Three', Translations::get($more->last()->fresh(), 'en'));
         $this->assertSame(['customer_limit'], Translations::reason($more->first()->fresh(), 'en'));
 
         // A chat's new message: the chat's translation, a few seconds later.
-        $next = Thread::create($this->conversation, Thread::TYPE_CUSTOMER, 'Vier', ['customer_id' => $this->conversation->customer_id, 'source_via' => Thread::PERSON_CUSTOMER]);
+        $next = Thread::create($this->conversation, Thread::TYPE_CUSTOMER, 'Vier', ['customer_id' => $this->conversation->customer_id, 'source_via' => Thread::PERSON_CUSTOMER, 'source_type' => Thread::SOURCE_TYPE_WEB]);
         \Illuminate\Support\Facades\Queue::fake();
         \App\Jobs\AiTranslateThread::request($next, 'en');
         \Illuminate\Support\Facades\Queue::assertPushed(\App\Jobs\AiTranslateChat::class, fn ($job) => $job->conversation_id == $this->conversation->id && $job->delay);

@@ -368,6 +368,8 @@ class NostrTest extends FeatureTestCase
         $line->action_type = Thread::ACTION_TYPE_NOSTR_AUTO_REPLY;
         $line->body = 'Thanks, we will get back to you.';
         $line->state = Thread::STATE_PUBLISHED;
+        $line->source_via = Thread::PERSON_USER;
+        $line->source_type = Thread::SOURCE_TYPE_WEB;
         $line->save();
         $this->assertSame('System sent the Nostr auto reply: "Thanks, we will get back to you."', html_entity_decode($line->getActionText('', true)));
     }

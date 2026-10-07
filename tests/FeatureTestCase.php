@@ -37,6 +37,16 @@ abstract class FeatureTestCase extends TestCase
 
         $this->captureSentMail();
 
+        // Nothing an earlier test cached by ID is kept: its rows were rolled back, and SQLite
+        // gives the IDs out again.
+        \Option::$cache = [];
+        \App\Conversation::$starred_conversation_ids = [];
+        \App\Misc\Helper::$memory_cache = [];
+        foreach ([[\App\Misc\ExternalImages::class, 'blocked'], [\App\Nostr\NostrEvent::class, 'senders'],
+            [\App\AutoReply\AutoReplies::class, 'chosen'], [\App\Workflows\Runner::class, 'last_threads']] as [$class, $property]) {
+            (new \ReflectionProperty($class, $property))->setValue(null, []);
+        }
+
         // Attachments and other files go to throwaway disks, never to the real storage.
         foreach (['local', \App\Attachment::DISK] as $disk) {
             \Storage::fake($disk, config('filesystems.disks.'.$disk));

@@ -94,7 +94,11 @@ class ReplySendingTest extends FeatureTestCase
      */
     protected function backdate(Conversation $conversation)
     {
-        $conversation->threads()->update(['created_at' => \DB::raw('created_at - INTERVAL 20 MINUTE')]);
+        foreach ($conversation->threads as $thread) {
+            $thread->timestamps = false;
+            $thread->created_at = $thread->created_at->subMinutes(20);
+            $thread->saveQuietly();
+        }
     }
 
     protected function runQueue()

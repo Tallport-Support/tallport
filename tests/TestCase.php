@@ -15,6 +15,11 @@ abstract class TestCase extends BaseTestCase
     protected static $database_migrated = false;
 
     /**
+     * The in-memory database, kept from test to test.
+     */
+    protected static $memory_pdo;
+
+    /**
      * Rebuild the database once per run, right after the application is
      * created and before traits like DatabaseTransactions start a transaction
      * (schema changes would commit it).
@@ -23,11 +28,18 @@ abstract class TestCase extends BaseTestCase
     {
         parent::refreshApplication();
 
-        // Tests run in a separate process (@runInSeparateProcess) use the
-        // database the main process already rebuilt.
-        if (!static::$database_migrated && !$this->isInIsolation()) {
+        // In memory: one database for the run, handed to each test's application (a test in a
+        // separate process, @runInSeparateProcess, builds its own).
+        $connection = $this->app['db']->connection();
+        if (static::$database_migrated && static::$memory_pdo) {
+            $connection->setPdo(static::$memory_pdo)->setReadPdo(static::$memory_pdo);
+        }
+        if (!static::$database_migrated) {
             $this->app[Kernel::class]->call('migrate:fresh', ['--force' => true]);
             static::$database_migrated = true;
+            if ($connection->getDatabaseName() == ':memory:') {
+                static::$memory_pdo = $connection->getPdo();
+            }
         }
     }
 }

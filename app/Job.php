@@ -43,17 +43,26 @@ class Job extends Model
         if ($queue) {
             $query->where('queue', $queue);
         }
+        // An explicit escape character: only MySQL treats backslashes (JSON has them) as one.
         if ($display_name) {
-            $query->where('payload', 'like', '%"displayName":"'.str_replace('\\', '\\\\\\\\', $display_name).'"%');
+            $query->whereRaw("payload like ? escape '!'", ['%'.self::likeEscape('"displayName":'.json_encode($display_name)).'%']);
         }
         if ($contains) {
-            $query->where('payload', 'like', '%'.addcslashes($contains, '%_\\').'%');
+            $query->whereRaw("payload like ? escape '!'", ['%'.self::likeEscape($contains).'%']);
         }
         if ($limit) {
             $query->limit($limit);
         }
 
         return $query->get();
+    }
+
+    /**
+     * Text for a LIKE pattern with ESCAPE '!' (portable: only MySQL escapes with backslashes).
+     */
+    public static function likeEscape($text)
+    {
+        return str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $text);
     }
 
     /**

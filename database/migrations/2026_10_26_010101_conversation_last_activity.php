@@ -17,7 +17,9 @@ class ConversationLastActivity extends Migration
             $table->index(['mailbox_id', 'last_activity_at']);
         });
         // What's known so far: the last message, or the team's last action.
-        \DB::statement('UPDATE conversations SET last_activity_at = GREATEST(COALESCE(last_reply_at, created_at), COALESCE(user_updated_at, created_at))');
+        // SQLite (tests) calls GREATEST max.
+        $greatest = \DB::getDriverName() == 'sqlite' ? 'MAX' : 'GREATEST';
+        \DB::statement('UPDATE conversations SET last_activity_at = '.$greatest.'(COALESCE(last_reply_at, created_at), COALESCE(user_updated_at, created_at))');
 
         Schema::table('users', function (Blueprint $table) {
             $table->text('list_sorting')->nullable();

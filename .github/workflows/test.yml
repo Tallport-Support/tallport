@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    name: PHP ${{ matrix.php }}, MariaDB ${{ matrix.mariadb }}
+    name: PHP ${{ matrix.php }}, ${{ matrix.db }}
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -15,6 +15,9 @@ jobs:
         # Production runs PHP 8.5 with the imap extension (PECL) on MariaDB.
         php: ['8.5']
         mariadb: ['11.8']
+        # The suite on in-memory SQLite (its default) and on MariaDB; the MariaDB-only
+        # tests (Tests\Concerns\UsesMariaDB) run in both.
+        db: ['sqlite', 'mysql']
 
     services:
       mariadb:
@@ -48,7 +51,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: mysql, mbstring, xml, imap, zip, gd, curl, intl, json, redis
+          extensions: mysql, sqlite3, pdo_sqlite, mbstring, xml, imap, zip, gd, curl, intl, json, redis
           coverage: none
           tools: composer
 
@@ -61,6 +64,7 @@ jobs:
       - name: Run tests
         env:
           DB_TEST_HOST: 127.0.0.1
+          DB_TEST_DRIVER: ${{ matrix.db }}
         run: ./test.sh
 
       # Snapshots depend on the environment (e.g. libxml2): on failure, make

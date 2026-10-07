@@ -330,7 +330,7 @@ class CustomersController extends Controller
             if ($request->search_by == 'all' || $request->search_by == 'name') {
                 $query->orWhere('first_name', 'like', '%'.$q.'%')
                     ->orWhere('last_name', 'like', '%'.$q.'%')
-                    ->orWhere(\Helper::isPgSql() ? \DB::raw('(first_name || \' \' || last_name)') : \DB::raw('CONCAT(first_name, " ", last_name)'), 'like', '%'.$q.'%');
+                    ->orWhere(!\Helper::isMySql() ? \DB::raw('(first_name || \' \' || last_name)') : \DB::raw('CONCAT(first_name, " ", last_name)'), 'like', '%'.$q.'%');
             }
             if ($request->search_by == 'phone') {
                 $phone_numeric = \Helper::phoneToNumeric($q);

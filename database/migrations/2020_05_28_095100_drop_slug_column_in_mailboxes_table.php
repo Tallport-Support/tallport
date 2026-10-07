@@ -15,7 +15,8 @@ class DropSlugColumnInMailboxesTable extends Migration
     {
         // slug field is not used.
         Schema::table('mailboxes', function (Blueprint $table) {
-            // Index is dropped automatically.
+            // MySQL drops the index with the column; SQLite needs it dropped first.
+            $table->dropUnique(['slug']);
             $table->dropColumn('slug');
         });
     }

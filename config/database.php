@@ -2,6 +2,45 @@
 
 use Illuminate\Support\Str;
 
+// The test suite's database (DB_TEST_DRIVER): in-memory SQLite by default, or MariaDB or
+// PostgreSQL to run it on those. Tests of what only MariaDB does (Tests\Concerns\UsesMariaDB)
+// always use testing_mariadb.
+$testing = [
+    'sqlite' => [
+        'driver'                  => 'sqlite',
+        'database'                => ':memory:',
+        'prefix'                  => env('DB_TABLE_PREFIX', ''),
+        'foreign_key_constraints' => false,
+    ],
+    'mysql' => [
+        'driver'         => 'mysql',
+        //'url'            => env('DB_TEST_DATABASE_URL'),
+        'host'           => env('DB_TEST_HOST', '127.0.0.1'),
+        'database'       => env('DB_TEST_DATABASE', 'freescout-test'),
+        'username'       => env('DB_TEST_USERNAME', 'freescout-test'),
+        'password'       => env('DB_TEST_PASSWORD', 'freescout-test'),
+        //'port'           => env('DB_TEST_PORT', '3306'),
+        'charset'        => 'utf8mb4',
+        'collation'      => 'utf8mb4_unicode_ci',
+        'prefix'         => env('DB_TABLE_PREFIX', ''),
+        //'prefix_indexes' => true,
+        'strict'         => false,
+        'engine'      => null,
+    ],
+    'pgsql' => [
+        'driver'   => 'pgsql',
+        'host'     => 'localhost',
+        'port'     => '5432',
+        'database' => 'freescout-test',
+        'username' => env('DB_TEST_USERNAME', 'freescout-test'),
+        'password' => env('DB_TEST_PASSWORD', 'freescout-test'),
+        'charset'  => 'utf8',
+        'prefix'   => env('DB_TABLE_PREFIX', ''),
+        'schema'   => 'public',
+        'sslmode'  => 'prefer',
+    ],
+];
+
 return [
 
     /*
@@ -63,34 +102,9 @@ return [
             ], function($value) { return $value !== null; }) : [],
         ],
 
-        'testing' => [
-            'driver'         => 'mysql',
-            //'url'            => env('DB_TEST_DATABASE_URL'),
-            'host'           => env('DB_TEST_HOST', '127.0.0.1'),
-            'database'       => env('DB_TEST_DATABASE', 'freescout-test'),
-            'username'       => env('DB_TEST_USERNAME', 'freescout-test'),
-            'password'       => env('DB_TEST_PASSWORD', 'freescout-test'),
-            //'port'           => env('DB_TEST_PORT', '3306'),
-            'charset'        => 'utf8mb4',
-            'collation'      => 'utf8mb4_unicode_ci',
-            'prefix'         => env('DB_TABLE_PREFIX', ''),
-            //'prefix_indexes' => true,
-            'strict'         => false,
-            'engine'      => null,
-        ],
-
-        'testing_pgsql' => [
-            'driver'   => 'pgsql',
-            'host'     => 'localhost',
-            'port'     => '5432',
-            'database' => 'freescout-test',
-            'username' => env('DB_TEST_USERNAME', 'freescout-test'),
-            'password' => env('DB_TEST_PASSWORD', 'freescout-test'),
-            'charset'  => 'utf8',
-            'prefix'   => env('DB_TABLE_PREFIX', ''),
-            'schema'   => 'public',
-            'sslmode'  => 'prefer',
-        ],
+        'testing'         => $testing[env('DB_TEST_DRIVER', 'sqlite')],
+        'testing_mariadb' => $testing['mysql'],
+        'testing_pgsql'   => $testing['pgsql'],
 
         'pgsql' => [
             'driver'   => 'pgsql',

@@ -440,7 +440,11 @@ class TelegramTest extends FeatureTestCase
     {
         $reply = $this->reply();
         \DB::table('jobs')->where('queue', 'emails')->delete();
-        $reply->conversation->threads()->update(['created_at' => \DB::raw('created_at - INTERVAL 20 MINUTE')]);
+        foreach ($reply->conversation->threads as $thread) {
+            $thread->timestamps = false;
+            $thread->created_at = $thread->created_at->subMinutes(20);
+            $thread->saveQuietly();
+        }
 
         $this->artisan('tallport:check-outgoing', ['--fix' => true])
             ->expectsOutputToContain('thread '.$reply->id)

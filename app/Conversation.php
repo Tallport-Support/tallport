@@ -2740,7 +2740,7 @@ class Conversation extends Model
                     //->orWhere('conversations.id', $q_int)
 					->orWhere('customers.first_name', $like_op, $like)
                     ->orWhere('customers.last_name', $like_op, $like)
-                    ->orWhere(\Helper::isPgSql() ? \DB::raw('('.\DB::getTablePrefix().'customers.first_name || \' \' || '.\DB::getTablePrefix().'customers.last_name)') : \DB::raw('CONCAT('.\DB::getTablePrefix().'customers.first_name, " ", '.\DB::getTablePrefix().'customers.last_name)'), $like_op, $like)
+                    ->orWhere(!\Helper::isMySql() ? \DB::raw('('.\DB::getTablePrefix().'customers.first_name || \' \' || '.\DB::getTablePrefix().'customers.last_name)') : \DB::raw('CONCAT('.\DB::getTablePrefix().'customers.first_name, " ", '.\DB::getTablePrefix().'customers.last_name)'), $like_op, $like)
                     ->orWhere('threads.body', $like_op, $like)
                     ->orWhere('threads.from', $like_op, $like)
                     ->orWhere('threads.to', $like_op, $like)

@@ -1743,7 +1743,7 @@ class Thread extends Model
         }
 
         return $model::where('queue', 'emails')
-            ->where('payload', 'like', '%"displayName":"App\\\\\\\\Jobs\\\\\\\\'.$class.'"%;i:'.$this->id.';%')
+            ->whereRaw("payload like ? escape '!'", ['%'.\App\Job::likeEscape('"displayName":'.json_encode('App\\Jobs\\'.$class)).'%'.\App\Job::likeEscape(';i:'.$this->id.';').'%'])
             ->get();
     }
 

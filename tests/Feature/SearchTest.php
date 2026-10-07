@@ -18,6 +18,8 @@ use Tests\FeatureTestCase;
  */
 class SearchTest extends FeatureTestCase
 {
+    use \Tests\Concerns\UsesMariaDB;
+
     protected $agent;
     protected $mailbox;
 

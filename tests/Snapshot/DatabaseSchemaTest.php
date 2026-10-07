@@ -7,13 +7,14 @@ use Tests\Concerns\AssertsSnapshots;
 use Tests\TestCase;
 
 /**
- * The database schema produced by running all migrations. Read from
+ * The database schema produced by running all migrations, on MariaDB as in production. Read from
  * information_schema rather than SHOW CREATE TABLE, so it doesn't depend on
  * how a particular server version formats its DDL.
  */
 class DatabaseSchemaTest extends TestCase
 {
     use AssertsSnapshots;
+    use \Tests\Concerns\UsesMariaDB;
 
     public function testSchema()
     {
