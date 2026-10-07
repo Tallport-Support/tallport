@@ -1740,5 +1740,19 @@
     "Last Activity": "Utolsó Tevékenység",
     ":name mailbox": ":name postafiók",
     "Color": "Szín",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Megjelöli ennek a postafióknak a beszélgetéseit a több postafiókot átfogó nézetekben, valamint az ikonját az oldalsávban."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Megjelöli ennek a postafióknak a beszélgetéseit a több postafiókot átfogó nézetekben, valamint az ikonját az oldalsávban.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count üzenet",
+    "Actions for :count conversation|Actions for :count conversations": "Műveletek :count beszélgetéshez",
+    "Conversation Actions": "Beszélgetés Műveletei",
+    "Open in New Tab": "Megnyitás Új Lapon",
+    "Copy Link": "Hivatkozás Másolása",
+    "Star": "Csillagozás",
+    "Unstar": "Csillagozás Megszüntetése",
+    "Unstarred": "Csillagozás megszüntetve",
+    "Star or Unstar": "Csillagozás vagy Csillagozás Megszüntetése",
+    "Assign to Me": "Hozzárendelés Magamhoz",
+    "Reopen": "Újranyitás",
+    "Mark as Read": "Megjelölés Olvasottként",
+    "Mark as Unread": "Megjelölés Olvasatlanként",
+    "Unread": "Olvasatlan"
 }

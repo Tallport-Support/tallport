@@ -105,8 +105,13 @@ class ConversationToolbarTest extends FeatureTestCase
         $heading = Livewire::actingAs($this->agent)->test(ConversationSubject::class, ['conversation' => $this->conversation])
             ->assertSee('Broken zipper')->assertSee('aria-pressed="false"', false);
 
-        $heading->call('star')->assertSee('aria-pressed="true"', false);
+        // The sidebar's Starred count follows (public/js/tallport.js).
+        $starred = $this->mailbox->folders()->where('type', \App\Folder::TYPE_STARRED)->where('user_id', $this->agent->id)->first();
+        $heading->call('star')->assertSee('aria-pressed="true"', false)->assertToasted('Starred')
+            ->assertDispatched('folder-count', folder_id: $starred->id, count: 1);
         $this->assertTrue($this->conversation->isStarredByUser($this->agent->id));
+        $heading->call('star')->assertToasted('Unstarred')->assertDispatched('folder-count', folder_id: $starred->id, count: 0);
+        $heading->call('star');
 
         $heading->call('saveSubject', 'Zipper replaced')->assertSee('Zipper replaced');
         $this->assertSame('Zipper replaced', $this->conversation->fresh()->subject);

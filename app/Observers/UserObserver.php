@@ -41,6 +41,7 @@ class UserObserver
     public function deleting(User $user)
     {
         $user->folders()->delete();
-        Follower::whereIn('user_id', $user->id)->delete();
+        Follower::where('user_id', $user->id)->delete();
+        \App\ConversationRead::where('user_id', $user->id)->delete();
     }
 }

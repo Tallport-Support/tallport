@@ -62,6 +62,7 @@ class ConversationsController extends Controller
         $prefetchable = (bool) $request->header('X-Livewire-Navigate');
         if (!$prefetchable) {
             self::markNotificationsRead($conversation, $user, $request->mark_as_read);
+            \App\ConversationRead::markRead($conversation->id, $user);
         }
 
         // Detect folder and redirect if needed
@@ -733,6 +734,7 @@ class ConversationsController extends Controller
                     break;
                 }
                 self::markNotificationsRead($conversation, $user, $request->mark_as_read);
+                \App\ConversationRead::markRead($conversation->id, $user);
                 // openFolder() checks it's still in the folder.
                 if ((int) $request->folder_id) {
                     session()->put('folder_conversation.'.(int) $request->folder_id, $conversation->id);

@@ -1743,5 +1743,19 @@
     "Last Activity": "Laatste Activiteit",
     ":name mailbox": "Mailbox :name",
     "Color": "Kleur",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Markeert de gesprekken van deze mailbox in overzichten van meerdere mailboxen en het pictogram in de zijbalk."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Markeert de gesprekken van deze mailbox in overzichten van meerdere mailboxen en het pictogram in de zijbalk.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count bericht|:channel, :count berichten",
+    "Actions for :count conversation|Actions for :count conversations": "Acties voor :count gesprek|Acties voor :count gesprekken",
+    "Conversation Actions": "Gespreksacties",
+    "Open in New Tab": "In Nieuw Tabblad Openen",
+    "Copy Link": "Link Kopiëren",
+    "Star": "Met Ster Markeren",
+    "Unstar": "Ster Verwijderen",
+    "Unstarred": "Ster verwijderd",
+    "Star or Unstar": "Ster Toevoegen of Verwijderen",
+    "Assign to Me": "Aan Mij Toewijzen",
+    "Reopen": "Heropenen",
+    "Mark as Read": "Als Gelezen Markeren",
+    "Mark as Unread": "Als Ongelezen Markeren",
+    "Unread": "Ongelezen"
 }

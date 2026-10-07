@@ -65,7 +65,7 @@ class ConversationListTest extends FeatureTestCase
 
     /**
      * The conversation number in search results only (it stays through sorting, paging
-     * and realtime updates); a row with nothing to show under it has no meta line.
+     * and realtime updates).
      */
     public function testNumberInSearchResultsOnly()
     {
@@ -73,7 +73,7 @@ class ConversationListTest extends FeatureTestCase
         $folder = $this->folder(Folder::TYPE_UNASSIGNED);
 
         Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $folder])
-            ->assertSee('Banana question')->assertDontSee('conv-number')->assertDontSee('f-item-row__meta');
+            ->assertSee('Banana question')->assertDontSee('conv-number');
 
         $results = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $folder, 'params' => ['show_number' => true]])
             ->assertSee('<span class="conv-number">#'.$conversation->number.'</span>', false);
@@ -216,6 +216,73 @@ class ConversationListTest extends FeatureTestCase
         Livewire::actingAs($admin)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)])
             ->set('selected', $ids)->call('delete')->assertToasted('Conversations deleted');
         $this->assertSame(Conversation::STATE_DELETED, $first->fresh()->state);
+    }
+
+    /**
+     * Each row's channel leads its meta line: an icon, the number of messages when there's
+     * more than one, and both named for screen readers.
+     */
+    public function testChannelToken()
+    {
+        $email = $this->conversation('Email question');
+        $chat = $this->conversation('Chat question');
+        $chat->channel = \App\Telegram\Telegram::CHANNEL;
+        $chat->threads_count = 6;
+        $chat->save();
+        $phone = $this->conversation('Phone question');
+        $phone->type = Conversation::TYPE_PHONE;
+        $phone->save();
+
+        $html = preg_replace('/<!--\[if (BLOCK|ENDBLOCK)\]><!\[endif\]-->/', '', Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)])->html());
+        $this->assertStringContainsString('<span class="conv-channel" title="Email, 1 message"><svg', $html);
+        $this->assertStringContainsString('<span class="f-sr-only">Email, 1 message</span>', $html);
+        $this->assertStringContainsString('title="Telegram, 6 messages"', $html);
+        $this->assertStringContainsString('<span aria-hidden="true">6</span><span class="f-sr-only">Telegram, 6 messages</span>', $html);
+        $this->assertStringContainsString('<span class="f-sr-only">Phone, 1 message</span>', $html);
+        // No badge for the channel any more.
+        $this->assertStringNotContainsString('f-badge conv-channel', $html);
+    }
+
+    /**
+     * A row's context menu: on a row alone, on a selected row (the whole selection), and on a
+     * row outside the selection (that row, the selection kept).
+     */
+    public function testRowMenu()
+    {
+        $first = $this->conversation('First question');
+        $second = $this->conversation('Second question');
+        $third = $this->conversation('Third question');
+        $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)]);
+        $list->assertSeeHtml('aria-label="Conversation Actions"')
+            ->assertSeeInOrder(['Open in New Tab', 'Copy Link', 'Star', 'Assign to Me', 'Close'])->assertDontSee('Actions for');
+
+        $list->call('rowStar', $first->id, 1)->assertToasted('Starred')->assertRedirect();
+        $this->assertTrue($first->isStarredByUser($this->agent->id));
+        $this->assertFalse($second->isStarredByUser($this->agent->id));
+
+        // A selected row: the selection; toggles decided once (Star: not all are starred).
+        $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)])
+            ->set('selected', [(string) $first->id, (string) $second->id])
+            ->assertSeeHtml('aria-label="Actions for 2 conversations"')
+            ->assertSeeHtml('wire:click="rowStar('.$first->id.', 1)"')->assertSeeHtml('wire:click="rowStar('.$second->id.', 1)"')->assertSeeHtml('copyToClipboard('.\Illuminate\Support\Js::from($third->url()).')');
+        $list->call('rowStar', $second->id, 1);
+        $this->assertTrue($second->isStarredByUser($this->agent->id));
+        $this->assertFalse($third->isStarredByUser($this->agent->id));
+
+        $list->set('selected', [(string) $first->id, (string) $second->id])->call('rowClose', $first->id, 1)->assertToasted('Status updated');
+        $this->assertSame([Conversation::STATUS_CLOSED, Conversation::STATUS_CLOSED, Conversation::STATUS_ACTIVE], [$first->fresh()->status, $second->fresh()->status, $third->fresh()->status]);
+
+        // A row outside the selection: that row alone; the selection stays.
+        $list->set('selected', [(string) $first->id, (string) $second->id])->call('rowAssignToMe', $third->id)->assertToasted('Assignee updated')
+            ->assertSet('selected', [(string) $first->id, (string) $second->id]);
+        $this->assertSame([null, $this->agent->id], [$first->fresh()->user_id, $third->fresh()->user_id]);
+        $list->set('selected', [])->call('rowStar', $first->id, 0)->call('rowClose', $third->id, 0);
+        $this->assertFalse($first->isStarredByUser($this->agent->id));
+        $this->assertTrue($second->isStarredByUser($this->agent->id));
+
+        // Not in lists without selection (a customer's conversations).
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['filter' => ['customer_id' => $first->customer_id], 'params' => ['no_checkboxes' => 1, 'no_customer' => 1]])
+            ->call('gotoPage', 1)->assertDontSeeHtml('f-context-menu');
     }
 
     public function testAllMailboxesAndCustomerLists()

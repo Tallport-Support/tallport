@@ -2139,5 +2139,18 @@
     "Download .eml": ".eml Жүктеп Алу",
     "Background": "Контекст",
     ":name mailbox": "Пошталық жәшік :name",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Бірнеше пошталық жәшікті қамтитын көріністерде осы пошталық жәшіктің тикеттерін және бүйірлік панельдегі оның иконкасын белгілейді."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Бірнеше пошталық жәшікті қамтитын көріністерде осы пошталық жәшіктің тикеттерін және бүйірлік панельдегі оның иконкасын белгілейді.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count хабарлама",
+    "Actions for :count conversation|Actions for :count conversations": ":count тикет үшін әрекеттер",
+    "Conversation Actions": "Тикет Әрекеттері",
+    "Open in New Tab": "Жаңа Қойындыда Ашу",
+    "Star": "Жұлдызшамен Белгілеу",
+    "Unstar": "Жұлдызшаны Алып Тастау",
+    "Unstarred": "Жұлдызша алынды",
+    "Star or Unstar": "Жұлдызшамен Белгілеу немесе Алып Тастау",
+    "Assign to Me": "Маған Тағайындау",
+    "Reopen": "Қайта Ашу",
+    "Mark as Read": "Оқылған Деп Белгілеу",
+    "Mark as Unread": "Оқылмаған Деп Белгілеу",
+    "Unread": "Оқылмаған"
 }

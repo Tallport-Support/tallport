@@ -1740,5 +1740,19 @@
     "Last Activity": "Posljednja Aktivnost",
     ":name mailbox": "Poštanski sandučić :name",
     "Color": "Boja",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Označava razgovore ovog poštanskog sandučića u prikazima više poštanskih sandučića i njegovu ikonu na bočnoj traci."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Označava razgovore ovog poštanskog sandučića u prikazima više poštanskih sandučića i njegovu ikonu na bočnoj traci.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count poruka|:channel, :count poruke|:channel, :count poruka",
+    "Actions for :count conversation|Actions for :count conversations": "Radnje za :count razgovor|Radnje za :count razgovora|Radnje za :count razgovora",
+    "Conversation Actions": "Radnje Razgovora",
+    "Open in New Tab": "Otvori u Novoj Kartici",
+    "Copy Link": "Kopiraj Poveznicu",
+    "Star": "Označi Zvjezdicom",
+    "Unstar": "Ukloni Zvjezdicu",
+    "Unstarred": "Zvjezdica uklonjena",
+    "Star or Unstar": "Označi ili Ukloni Zvjezdicu",
+    "Assign to Me": "Dodijeli Meni",
+    "Reopen": "Ponovno Otvori",
+    "Mark as Read": "Označi kao Pročitano",
+    "Mark as Unread": "Označi kao Nepročitano",
+    "Unread": "Nepročitano"
 }

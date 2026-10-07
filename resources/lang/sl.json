@@ -1739,5 +1739,19 @@
     "Last Activity": "Zadnja Aktivnost",
     ":name mailbox": "Poštni predal :name",
     "Color": "Barva",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Označi pogovore tega poštnega predala v pogledih več poštnih predalov in njegovo ikono v stranski vrstici."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Označi pogovore tega poštnega predala v pogledih več poštnih predalov in njegovo ikono v stranski vrstici.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count sporočilo|:channel, :count sporočili|:channel, :count sporočila|:channel, :count sporočil",
+    "Actions for :count conversation|Actions for :count conversations": "Dejanja za :count pogovor|Dejanja za :count pogovora|Dejanja za :count pogovore|Dejanja za :count pogovorov",
+    "Conversation Actions": "Dejanja Pogovora",
+    "Open in New Tab": "Odpri v Novem Zavihku",
+    "Copy Link": "Kopiraj Povezavo",
+    "Star": "Označi z Zvezdico",
+    "Unstar": "Odstrani Zvezdico",
+    "Unstarred": "Zvezdica odstranjena",
+    "Star or Unstar": "Dodaj ali Odstrani Zvezdico",
+    "Assign to Me": "Dodeli Meni",
+    "Reopen": "Znova Odpri",
+    "Mark as Read": "Označi kot Prebrano",
+    "Mark as Unread": "Označi kot Neprebrano",
+    "Unread": "Neprebrano"
 }

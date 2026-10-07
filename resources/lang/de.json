@@ -1734,5 +1734,19 @@
     "Last Activity": "Letzte Aktivität",
     ":name mailbox": "Postfach :name",
     "Color": "Farbe",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Kennzeichnet die Gespräche dieses Postfachs in postfachübergreifenden Ansichten und sein Symbol in der Seitenleiste."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Kennzeichnet die Gespräche dieses Postfachs in postfachübergreifenden Ansichten und sein Symbol in der Seitenleiste.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count Nachricht|:channel, :count Nachrichten",
+    "Actions for :count conversation|Actions for :count conversations": "Aktionen für :count Gespräch|Aktionen für :count Gespräche",
+    "Conversation Actions": "Gesprächsaktionen",
+    "Open in New Tab": "In Neuem Tab Öffnen",
+    "Copy Link": "Link Kopieren",
+    "Star": "Mit Stern Versehen",
+    "Unstar": "Stern Entfernen",
+    "Unstarred": "Stern entfernt",
+    "Star or Unstar": "Stern Setzen oder Entfernen",
+    "Assign to Me": "Mir Zuweisen",
+    "Reopen": "Wieder Öffnen",
+    "Mark as Read": "Als Gelesen Markieren",
+    "Mark as Unread": "Als Ungelesen Markieren",
+    "Unread": "Ungelesen"
 }

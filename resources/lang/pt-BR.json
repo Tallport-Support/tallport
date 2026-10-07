@@ -1742,5 +1742,19 @@
     "Last Activity": "Última Atividade",
     ":name mailbox": "Caixa de correio :name",
     "Color": "Cor",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Marca as conversas desta caixa de correio nas visualizações de várias caixas de correio e o seu ícone na barra lateral."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Marca as conversas desta caixa de correio nas visualizações de várias caixas de correio e o seu ícone na barra lateral.",
+    ":channel, :count message|:channel, :count messages": "{1} :channel, :count mensagem|[0,*] :channel, :count mensagens",
+    "Actions for :count conversation|Actions for :count conversations": "{1} Ações para :count conversa|[0,*] Ações para :count conversas",
+    "Conversation Actions": "Ações da Conversa",
+    "Open in New Tab": "Abrir em Nova Aba",
+    "Copy Link": "Copiar Link",
+    "Star": "Marcar com Estrela",
+    "Unstar": "Remover Estrela",
+    "Unstarred": "Estrela removida",
+    "Star or Unstar": "Marcar ou Remover Estrela",
+    "Assign to Me": "Atribuir a Mim",
+    "Reopen": "Reabrir",
+    "Mark as Read": "Marcar como Lida",
+    "Mark as Unread": "Marcar como Não Lida",
+    "Unread": "Não Lida"
 }

@@ -1739,5 +1739,19 @@
     "Last Activity": "פעילות אחרונה",
     ":name mailbox": "תיבת הדואר :name",
     "Color": "צבע",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "מסמן את השיחות של תיבת דואר זו בתצוגות של כמה תיבות דואר ואת הסמל שלה בסרגל הצד."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "מסמן את השיחות של תיבת דואר זו בתצוגות של כמה תיבות דואר ואת הסמל שלה בסרגל הצד.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count הודעה|:channel, :count הודעות",
+    "Actions for :count conversation|Actions for :count conversations": "פעולות עבור :count שיחה|פעולות עבור :count שיחות",
+    "Conversation Actions": "פעולות שיחה",
+    "Open in New Tab": "פתח בכרטיסייה חדשה",
+    "Copy Link": "העתק קישור",
+    "Star": "סמן בכוכב",
+    "Unstar": "הסר כוכב",
+    "Unstarred": "הכוכב הוסר",
+    "Star or Unstar": "סמן בכוכב או הסר כוכב",
+    "Assign to Me": "הקצה אליי",
+    "Reopen": "פתח מחדש",
+    "Mark as Read": "סמן כנקרא",
+    "Mark as Unread": "סמן כלא נקרא",
+    "Unread": "לא נקרא"
 }

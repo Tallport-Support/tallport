@@ -16,6 +16,7 @@
             [__('Status').': '.__('Closed'), ['S', 'C']],
             [__('Status').': '.__('Spam'), ['S', 'S']],
             [__('Status').': '.__('Not Spam'), ['S', 'N']],
+            [__('Star or Unstar'), ['*']],
             [__('Follow'), ['O']],
             [__('Merge'), ['M']],
             [__('Move'), ['V']],

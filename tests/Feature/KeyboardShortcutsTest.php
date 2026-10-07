@@ -45,6 +45,19 @@ class KeyboardShortcutsTest extends FeatureTestCase
             ->assertSeeInOrder(['Send a Chat Message', '<kbd>Return</kbd>', '<kbd>⇧</kbd><kbd>Return</kbd>', '<kbd>⌘</kbd><kbd>Return</kbd>'], false);
     }
 
+    /**
+     * * stars or unstars the open conversation (public/js/shortcuts.js clicks the header's star).
+     */
+    public function testTheSheetShowsTheStarKey()
+    {
+        $user = $this->createUser();
+        $mailbox = $this->createMailbox([$user]);
+
+        $this->actingAs($user)->get(route('mailboxes.view', ['id' => $mailbox->id]))
+            ->assertSeeInOrder(['Star or Unstar', '<kbd>*</kbd>'], false);
+        $this->assertStringContainsString("key == '*'", file_get_contents(public_path('js/shortcuts.js')));
+    }
+
     public function testNoreplyPatternsFromTheEnvironmentFile()
     {
         require_once base_path('database/migrations/2026_10_11_010101_add_keyboard_shortcuts_column_to_users_table.php');

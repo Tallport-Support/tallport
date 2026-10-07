@@ -1739,5 +1739,19 @@
     "Last Activity": "Ultima Activitate",
     ":name mailbox": "Cutia poștală :name",
     "Color": "Culoare",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Marchează conversațiile acestei cutii poștale în vizualizările care cuprind mai multe cutii poștale și pictograma ei din bara laterală."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Marchează conversațiile acestei cutii poștale în vizualizările care cuprind mai multe cutii poștale și pictograma ei din bara laterală.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count mesaj|:channel, :count mesaje|:channel, :count de mesaje",
+    "Actions for :count conversation|Actions for :count conversations": "Acțiuni pentru :count conversație|Acțiuni pentru :count conversații|Acțiuni pentru :count de conversații",
+    "Conversation Actions": "Acțiunile Conversației",
+    "Open in New Tab": "Deschide într-o Filă Nouă",
+    "Copy Link": "Copiază Linkul",
+    "Star": "Marchează Ca Favorită",
+    "Unstar": "Scoate din Favorite",
+    "Unstarred": "Scoasă din favorite",
+    "Star or Unstar": "Marchează Ca Favorită sau Scoate din Favorite",
+    "Assign to Me": "Atribuie Mie",
+    "Reopen": "Redeschide",
+    "Mark as Read": "Marchează Ca Citită",
+    "Mark as Unread": "Marchează Ca Necitită",
+    "Unread": "Necitită"
 }

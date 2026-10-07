@@ -848,6 +848,40 @@
             }
         }
     },
+    "conversation_reads": {
+        "columns": {
+            "user_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "conversation_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "thread_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "conversation_reads_conversation_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "conversation_id"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "user_id",
+                    "conversation_id"
+                ]
+            }
+        }
+    },
     "conversation_search": {
         "columns": {
             "conversation_id": {

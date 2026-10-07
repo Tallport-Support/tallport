@@ -1758,5 +1758,19 @@
     "Last Activity": "Viimeisin Toiminta",
     ":name mailbox": "Postilaatikko :name",
     "Color": "Väri",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Merkitsee tämän postilaatikon keskustelut useamman postilaatikon näkymissä ja sen kuvakkeen sivupalkissa."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Merkitsee tämän postilaatikon keskustelut useamman postilaatikon näkymissä ja sen kuvakkeen sivupalkissa.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count viesti|:channel, :count viestiä",
+    "Actions for :count conversation|Actions for :count conversations": "Toiminnot :count keskustelulle|Toiminnot :count keskustelulle",
+    "Conversation Actions": "Keskustelun Toiminnot",
+    "Open in New Tab": "Avaa Uudessa Välilehdessä",
+    "Copy Link": "Kopioi Linkki",
+    "Star": "Merkitse",
+    "Unstar": "Poista Merkintä",
+    "Unstarred": "Merkintä poistettu",
+    "Star or Unstar": "Merkitse tai Poista Merkintä",
+    "Assign to Me": "Määritä Minulle",
+    "Reopen": "Avaa Uudelleen",
+    "Mark as Read": "Merkitse Luetuksi",
+    "Mark as Unread": "Merkitse Lukemattomaksi",
+    "Unread": "Lukematon"
 }

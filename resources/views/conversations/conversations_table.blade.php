@@ -58,7 +58,7 @@
     @endphp
     <section class="table-conversations conv-list @if (!empty($params['show_mailbox']))show-mailbox @endif" aria-label="{{ __('Conversations') }}" data-page="{{ method_exists($conversations, 'currentPage') ? $conversations->currentPage() : (int) request()->get('page', 1) }}" @if ($folder->id) data-folder_id="{{ $folder->id }}" data-mailbox_id="{{ $list_mailbox_id }}" @endif>
         {{-- The list header: view tools, or while conversations are selected, the selection bar in their place.
-             Cmd/Ctrl+click and Shift+click select rows; Select shows the checkboxes for touch. --}}
+             Cmd/Ctrl+click, Shift+click, Shift+arrows and Cmd/Ctrl+A select rows. --}}
         <x-fruit::list-header class="conv-list__header">
             <x-fruit::menu :title="__('Sort By')" class="conv-list__sort">
                 <x-slot:trigger class="f-button--ghost f-button--small">{{ $sort_titles[$sort_by] }} {{ $sort_order == 'desc' ? '↑' : '↓' }}</x-slot:trigger>
@@ -81,8 +81,6 @@
                 </x-fruit::menu>
             @endif
             @if (empty($no_checkboxes))
-                <span class="f-toolbar__spacer"></span>
-                <x-fruit::button variant="ghost" size="small" data-fruit-select-toggle aria-controls="conversations" aria-pressed="false">{{ __('Select') }}</x-fruit::button>
                 <x-slot:selection>
                     @include('conversations/partials/bulk_actions')
                 </x-slot:selection>
@@ -91,6 +89,12 @@
 
         <div class="f-pane__scroll split-view__list">
         <x-fruit::item-list class="conv-list__items" :id="empty($no_checkboxes) ? 'conversations' : null" :selection="empty($no_checkboxes) ? 'multiple' : 'none'" :aria-label="__('Conversations')">
+            @php
+                // The rows' menus (App\Livewire\ConversationList only): a selected row's acts on the selection.
+                $row_menus = isset($selected) && empty($no_checkboxes);
+                $row_selection = $row_menus ? $conversations->whereIn('id', array_map('intval', (array) $selected)) : collect();
+                $unread_ids = App\ConversationRead::unreadIds($conversations, Auth::user());
+            @endphp
             @foreach ($conversations as $conversation)
                 @php
                     $conv_target = (!empty(request()->x_embed) || !empty($params['target_blank']));
@@ -101,7 +105,10 @@
                     $ai_one_liner = $conversation->search_snippet === null ? (App\Ai\Summaries::getAny($conversation, App\Ai\Settings::language($conversation->mailbox_cached, Auth::user()))['one_liner'] ?? '') : '';
                     // Not in Mine: the viewer's own.
                     $conv_assignee = ($conversation->user_id && $folder->type != App\Folder::TYPE_MINE) ? $conversation->user : null;
-                    $conv_has_meta = !empty($params['show_number']) || $conversation->threads_count > 1 || $conv_assignee || $conversation->has_attachments || $conversation->isPhone() || !empty($viewers[$conversation->id]);
+                    // The channel's token: its icon, and the number of messages when there's more than one.
+                    $conv_channel = $conversation->hasChannel() ? ($conversation->getChannelName() ?: __('Chat')) : ($conversation->isPhone() ? __('Phone') : __('Email'));
+                    $conv_menu_rows = $row_selection->contains('id', $conversation->id) ? $row_selection : collect([$conversation]);
+                    $conv_channel_label = trans_choice(':channel, :count message|:channel, :count messages', $conversation->threads_count, ['channel' => $conv_channel]);
                 @endphp
                 <li class="conv-row @action('conversations_table.row_class', $conversation) @if ($conversation->isActive()) conv-active @endif @if ($conversation->isSpam()) conv-spam @endif" data-conversation_id="{{ $conversation->id }}" wire:key="conv-{{ $conversation->id }}">
                     @if (empty($no_checkboxes))
@@ -114,22 +121,36 @@
                         <x-slot:title :title="$conversation->customer_email">@if (empty($no_customer)){{ $conv_customer_name }}@else{{ $conversation->getSubject() }}@endif</x-slot:title>
                         <x-slot:trailing :title="$conv_date_title ?: null">{{ $conv_waiting_since }}</x-slot:trailing>
                         @if (empty($no_customer))
-                            <x-slot:subtitle>@include('conversations/partials/badges'){{ '' }}@if ($conversation->hasChannel() && $conversation->getChannelName())<span class="f-badge conv-channel">{{ $conversation->getChannelName() }}</span> @endif{{ '' }}@action('conversations_table.before_subject', $conversation){{ $conversation->getSubject() }}@action('conversations_table.after_subject', $conversation)</x-slot:subtitle>
+                            <x-slot:subtitle>@include('conversations/partials/badges'){{ '' }}@action('conversations_table.before_subject', $conversation){{ $conversation->getSubject() }}@action('conversations_table.after_subject', $conversation)</x-slot:subtitle>
                         @endif
-                        <x-slot:preview>@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner)<x-icon.sparkles class="f-icon ai-assistant-icon" role="img" :aria-label="__('AI')" /> {{ $ai_one_liner }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</x-slot:preview>
-                        @if ($conv_has_meta)
+                        <x-slot:preview>@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner){{ $ai_one_liner }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</x-slot:preview>
                         <x-slot:meta class="conv-row__meta">
                             {{-- The number in search results only. --}}@if (!empty($params['show_number']))<span class="conv-number">#{{ $conversation->number }}</span>@endif
-                            @if ($conversation->threads_count > 1)<span class="conv-counter" title="{{ __('Messages') }}"><x-icon.messages-square class="f-icon" aria-hidden="true" /> {{ $conversation->threads_count }}</span>@endif
+                            <span class="conv-channel" title="{{ $conv_channel_label }}">@if ($conversation->hasChannel())<x-icon.message-square class="f-icon" aria-hidden="true" />@elseif ($conversation->isPhone())<x-icon.phone class="f-icon" aria-hidden="true" />@else<x-icon.mail class="f-icon" aria-hidden="true" />@endif@if ($conversation->threads_count > 1)<span aria-hidden="true">{{ $conversation->threads_count }}</span>@endif<span class="f-sr-only">{{ $conv_channel_label }}</span></span>
                             @if ($conv_assignee)<span class="conv-owner-name"><x-icon.user class="f-icon" aria-hidden="true" /> {{ $conv_assignee->getFullName() }}</span>@endif
                             @if ($conversation->has_attachments)<x-icon.paperclip class="f-icon" :aria-label="__('Attachments')" role="img" />@endif
-                            @if ($conversation->isPhone())<x-icon.phone class="f-icon" aria-hidden="true" />@endif
                             @if (!empty($viewers[$conversation->id]))
                                 <span class="viewer-badge @if (!empty($viewers[$conversation->id]['replying'])) viewer-replying @endif"><x-icon.eye class="f-icon" aria-hidden="true" /> {{ implode(', ', array_map(function ($viewer) { return __($viewer['replying'] ? ':user is replying' : ':user is viewing', ['user' => $viewer['user']->getFullName()]); }, $viewers[$conversation->id]['users'])) }}</span>
                             @endif
                         </x-slot:meta>
-                        @endif
                     </x-fruit::item-link>
+                    @if ($row_menus)
+                        {{-- The selection bar and the conversation's toolbar have the same commands. Keyed by what it acts on, so its label follows. --}}
+                        <x-fruit::context-menu wire:key="conv-menu-{{ $conversation->id }}-{{ $conv_menu_rows->pluck('id')->implode('-') }}"
+                            :title="count($conv_menu_rows) > 1 ? trans_choice('Actions for :count conversation|Actions for :count conversations', count($conv_menu_rows)) : __('Conversation Actions')">
+                            <x-fruit::menu-link :href="$conversation->url()" target="_blank">{{ __('Open in New Tab') }}</x-fruit::menu-link>
+                            <x-fruit::menu-item x-on:click="copyToClipboard({{ \Illuminate\Support\Js::from($conversation->url()) }}); Tallport.toast({{ \Illuminate\Support\Js::from(__('Copied')) }})">{{ __('Copy Link') }}</x-fruit::menu-item>
+                            <x-fruit::menu-separator />
+                            @php $conv_menu_read = $conv_menu_rows->contains(fn ($row) => in_array($row->id, $unread_ids)); @endphp
+                            <x-fruit::menu-item wire:click="rowRead({{ $conversation->id }}, {{ $conv_menu_read ? 1 : 0 }})">{{ $conv_menu_read ? __('Mark as Read') : __('Mark as Unread') }}</x-fruit::menu-item>
+                            @php $conv_menu_star = !$conv_menu_rows->every(fn ($row) => $row->isStarredByUser()); @endphp
+                            <x-fruit::menu-item wire:click="rowStar({{ $conversation->id }}, {{ $conv_menu_star ? 1 : 0 }})">{{ $conv_menu_star ? __('Star') : __('Unstar') }}</x-fruit::menu-item>
+                            <x-fruit::menu-item wire:click="rowAssignToMe({{ $conversation->id }})">{{ __('Assign to Me') }}</x-fruit::menu-item>
+                            <x-fruit::menu-separator />
+                            @php $conv_menu_close = !$conv_menu_rows->every(fn ($row) => $row->status == App\Conversation::STATUS_CLOSED); @endphp
+                            <x-fruit::menu-item wire:click="rowClose({{ $conversation->id }}, {{ $conv_menu_close ? 1 : 0 }})">{{ $conv_menu_close ? __('Close') : __('Reopen') }}</x-fruit::menu-item>
+                        </x-fruit::context-menu>
+                    @endif
                 </li>
             @endforeach
         </x-fruit::item-list>

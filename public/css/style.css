@@ -2583,9 +2583,6 @@ h1.settings-toolbar__title {
 .conv-list .viewer-badge.viewer-replying {
     color: var(--f-danger);
 }
-.conv-list .conv-channel {
-    margin-inline-end: 4px;
-}
 .conv-star .conv-star__on,
 .conv-star[aria-pressed="true"] .conv-star__off {
     display: none;
@@ -3476,11 +3473,12 @@ h1.settings-toolbar__title {
 }
 .conv-list .conv-row__link {
     --f-item-row-leading-inset: 12px;
+    /* Subjects: at most two lines. */
+    --f-item-row-subtitle-lines: 2;
 }
 .conv-list .f-item-row__subtitle {
     margin-top: 4px;
     line-height: 1.45;
-    white-space: normal;
 }
 .conv-list .f-item-row__preview {
     margin-top: 4px;

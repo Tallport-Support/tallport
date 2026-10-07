@@ -1740,5 +1740,19 @@
     "Last Activity": "Senaste Aktivitet",
     ":name mailbox": "Brevlåda :name",
     "Color": "Färg",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Markerar den här brevlådans konversationer i vyer över flera brevlådor och dess ikon i sidofältet."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Markerar den här brevlådans konversationer i vyer över flera brevlådor och dess ikon i sidofältet.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count meddelande|:channel, :count meddelanden",
+    "Actions for :count conversation|Actions for :count conversations": "Åtgärder för :count konversation|Åtgärder för :count konversationer",
+    "Conversation Actions": "Konversationsåtgärder",
+    "Open in New Tab": "Öppna i Ny Flik",
+    "Copy Link": "Kopiera Länk",
+    "Star": "Stjärnmärk",
+    "Unstar": "Ta Bort Stjärnmärkning",
+    "Unstarred": "Stjärnmärkning borttagen",
+    "Star or Unstar": "Stjärnmärk eller Ta Bort Stjärnmärkning",
+    "Assign to Me": "Tilldela till Mig",
+    "Reopen": "Öppna Igen",
+    "Mark as Read": "Markera som Läst",
+    "Mark as Unread": "Markera som Oläst",
+    "Unread": "Oläst"
 }

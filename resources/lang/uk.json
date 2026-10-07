@@ -1740,5 +1740,19 @@
     "Last Activity": "Остання Активність",
     ":name mailbox": "Поштова скринька :name",
     "Color": "Колір",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Позначає розмови цієї поштової скриньки в поданнях кількох поштових скриньок та її значок на бічній панелі."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Позначає розмови цієї поштової скриньки в поданнях кількох поштових скриньок та її значок на бічній панелі.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count повідомлення|:channel, :count повідомлення|:channel, :count повідомлень",
+    "Actions for :count conversation|Actions for :count conversations": "Дії для :count розмови|Дії для :count розмов|Дії для :count розмов",
+    "Conversation Actions": "Дії з Розмовою",
+    "Open in New Tab": "Відкрити в Новій Вкладці",
+    "Copy Link": "Копіювати Посилання",
+    "Star": "Позначити Зірочкою",
+    "Unstar": "Зняти Зірочку",
+    "Unstarred": "Зірочку знято",
+    "Star or Unstar": "Позначити Зірочкою або Зняти",
+    "Assign to Me": "Призначити Мені",
+    "Reopen": "Відкрити Знову",
+    "Mark as Read": "Позначити як Прочитану",
+    "Mark as Unread": "Позначити як Непрочитану",
+    "Unread": "Непрочитана"
 }

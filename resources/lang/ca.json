@@ -1833,5 +1833,19 @@
     "Download .eml": "Descarrega .eml",
     "Last Activity": "Darrera Activitat",
     ":name mailbox": "Bústia :name",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Marca les converses d'aquesta bústia a les vistes de diverses bústies i la seva icona a la barra lateral."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Marca les converses d'aquesta bústia a les vistes de diverses bústies i la seva icona a la barra lateral.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count missatge|:channel, :count missatges",
+    "Actions for :count conversation|Actions for :count conversations": "Accions per a :count conversa|Accions per a :count converses",
+    "Conversation Actions": "Accions de la Conversa",
+    "Open in New Tab": "Obre en una Pestanya Nova",
+    "Copy Link": "Copia l'Enllaç",
+    "Star": "Destaca",
+    "Unstar": "Treu el Destacat",
+    "Unstarred": "S'ha tret el destacat",
+    "Star or Unstar": "Destaca o Treu el Destacat",
+    "Assign to Me": "Assigna-me-la",
+    "Reopen": "Reobre",
+    "Mark as Read": "Marca com a Llegit",
+    "Mark as Unread": "Marca com a No Llegit",
+    "Unread": "No Llegit"
 }

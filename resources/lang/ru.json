@@ -1740,5 +1740,19 @@
     "Last Activity": "Последняя Активность",
     ":name mailbox": "Ящик :name",
     "Color": "Цвет",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Отмечает тикеты этого ящика в представлениях нескольких ящиков и его значок на боковой панели."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Отмечает тикеты этого ящика в представлениях нескольких ящиков и его значок на боковой панели.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count сообщение|:channel, :count сообщения|:channel, :count сообщений",
+    "Actions for :count conversation|Actions for :count conversations": "Действия для :count тикета|Действия для :count тикетов|Действия для :count тикетов",
+    "Conversation Actions": "Действия с Тикетом",
+    "Open in New Tab": "Открыть в Новой Вкладке",
+    "Copy Link": "Копировать Ссылку",
+    "Star": "Отметить Звёздочкой",
+    "Unstar": "Убрать Звёздочку",
+    "Unstarred": "Звёздочка убрана",
+    "Star or Unstar": "Отметить или Убрать Звёздочку",
+    "Assign to Me": "Назначить Мне",
+    "Reopen": "Открыть Повторно",
+    "Mark as Read": "Отметить как Прочитанный",
+    "Mark as Unread": "Отметить как Непрочитанный",
+    "Unread": "Непрочитанный"
 }

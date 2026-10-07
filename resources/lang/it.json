@@ -1739,5 +1739,19 @@
     "Last Activity": "Ultima Attività",
     ":name mailbox": "Casella postale :name",
     "Color": "Colore",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Contrassegna i ticket di questa casella postale nelle viste che includono più caselle postali e la sua icona nella barra laterale."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Contrassegna i ticket di questa casella postale nelle viste che includono più caselle postali e la sua icona nella barra laterale.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count messaggio|:channel, :count messaggi",
+    "Actions for :count conversation|Actions for :count conversations": "Azioni per :count ticket|Azioni per :count ticket",
+    "Conversation Actions": "Azioni del Ticket",
+    "Open in New Tab": "Apri in una Nuova Scheda",
+    "Copy Link": "Copia Link",
+    "Star": "Contrassegna",
+    "Unstar": "Rimuovi Contrassegno",
+    "Unstarred": "Contrassegno rimosso",
+    "Star or Unstar": "Contrassegna o Rimuovi Contrassegno",
+    "Assign to Me": "Assegna a Me",
+    "Reopen": "Riapri",
+    "Mark as Read": "Segna come Letto",
+    "Mark as Unread": "Segna come Non Letto",
+    "Unread": "Non Letto"
 }

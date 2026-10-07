@@ -183,6 +183,24 @@ document.addEventListener('submit', function (event) {
 		button.setAttribute('aria-busy', 'true');
 	}
 });
+// A folder's count changed (a star: App\Livewire\ConversationSubject::star()): its badge in the sidebar.
+window.addEventListener('folder-count', function (event) {
+	document.querySelectorAll('.app-folder-link[data-folder_id="'+event.detail.folder_id+'"]').forEach(function (link) {
+		var badge = link.querySelector('.active-count');
+		link.setAttribute('data-active-count', event.detail.count);
+		if (!event.detail.count) {
+			badge && badge.remove();
+		} else if (badge) {
+			badge.textContent = event.detail.count;
+		} else {
+			badge = document.createElement('span');
+			badge.className = 'f-badge active-count';
+			badge.textContent = event.detail.count;
+			link.appendChild(badge);
+		}
+	});
+});
+
 // Back to a page from the browser's cache: nothing is busy any more.
 window.addEventListener('pageshow', function (event) {
 	if (event.persisted) {

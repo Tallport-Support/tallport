@@ -65,6 +65,7 @@ class ConversationPane extends Component
         }
         $user = auth()->user();
         ConversationsController::markNotificationsRead($conversation, $user);
+        \App\ConversationRead::markRead($conversation->id, $user);
         session()->put('folder_conversation.'.$this->folder_id, $conversation->id);
         \App\Events\RealtimeConvView::dispatchSelf($conversation->id, $user, false);
         \App\Misc\Gravatar::request($conversation->customer, $conversation->customer_email);

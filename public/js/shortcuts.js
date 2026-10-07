@@ -58,6 +58,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			return;
 		}
 
+		// * (typed with Shift on most keyboards): star or unstar the open conversation.
+		if (key == '*' && !typing && !document.querySelector('dialog[open]') && !fsApplyFilter('shortcuts.ignore_target', false, {target: target})) {
+			if (click('.conv-star', true)) {
+				e.preventDefault();
+			}
+			return;
+		}
+
 		var status_menu = document.getElementById('conv-status');
 		var status_open = status_menu && status_menu.open;
 		if (!status_open && (e.shiftKey || typing || document.querySelector('dialog[open]') || fsApplyFilter('shortcuts.ignore_target', false, {target: target}))) {

@@ -1741,5 +1741,19 @@
     "Last Activity": "Última Actividad",
     ":name mailbox": "Correo :name",
     "Color": "Color",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Marca las conversaciones de este correo en las vistas de varios correos y su icono en la barra lateral."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Marca las conversaciones de este correo en las vistas de varios correos y su icono en la barra lateral.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count mensaje|:channel, :count mensajes",
+    "Actions for :count conversation|Actions for :count conversations": "Acciones para :count conversación|Acciones para :count conversaciones",
+    "Conversation Actions": "Acciones de la Conversación",
+    "Open in New Tab": "Abrir en una Pestaña Nueva",
+    "Copy Link": "Copiar Enlace",
+    "Star": "Destacar",
+    "Unstar": "Quitar Destacado",
+    "Unstarred": "Sin destacar",
+    "Star or Unstar": "Destacar o Quitar Destacado",
+    "Assign to Me": "Asignarme",
+    "Reopen": "Reabrir",
+    "Mark as Read": "Marcar como Leído",
+    "Mark as Unread": "Marcar como No Leído",
+    "Unread": "No Leído"
 }

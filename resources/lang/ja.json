@@ -1740,5 +1740,19 @@
     "Last Activity": "最終アクティビティ",
     ":name mailbox": ":name メールボックス",
     "Color": "色",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "複数のメールボックスにまたがるビューでこのメールボックスの会話を示し、サイドバーのアイコンにも使われます。"
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "複数のメールボックスにまたがるビューでこのメールボックスの会話を示し、サイドバーのアイコンにも使われます。",
+    ":channel, :count message|:channel, :count messages": ":channel、メッセージ :count 件",
+    "Actions for :count conversation|Actions for :count conversations": ":count 件の会話のアクション",
+    "Conversation Actions": "会話のアクション",
+    "Open in New Tab": "新しいタブで開く",
+    "Copy Link": "リンクをコピー",
+    "Star": "ピン止め",
+    "Unstar": "ピン止め解除",
+    "Unstarred": "ピン止めを解除しました",
+    "Star or Unstar": "ピン止めまたは解除",
+    "Assign to Me": "自分に割り当て",
+    "Reopen": "再開",
+    "Mark as Read": "既読にする",
+    "Mark as Unread": "未読にする",
+    "Unread": "未読"
 }

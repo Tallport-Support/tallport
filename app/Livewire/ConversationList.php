@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Conversation;
+use App\ConversationRead;
 use App\Folder;
 use App\Http\Controllers\ConversationsController;
 use App\Mailbox;
@@ -139,6 +140,73 @@ class ConversationList extends Component
         Conversation::bulkChangeStatus((array) $this->selected, $status, auth()->user());
 
         $this->reload(__('Status updated'));
+    }
+
+    /**
+     * A row's menu (conversations_table): stars or unstars the row, or the selection it's in.
+     */
+    public function rowStar($id, $star)
+    {
+        $user = auth()->user();
+        foreach (Conversation::findMany($this->rowTargets($id)) as $conversation) {
+            if (!$user->can('view', $conversation) || $conversation->isStarredByUser($user->id) == (bool) $star) {
+                continue;
+            }
+            $star ? $conversation->star($user) : $conversation->unstar($user);
+        }
+
+        $this->reload($star ? __('Starred') : __('Unstarred'));
+    }
+
+    /**
+     * A row's menu: marks the row, or the selection it's in, as read or unread.
+     */
+    public function rowRead($id, $read)
+    {
+        $this->markRead($read, $this->rowTargets($id));
+    }
+
+    /**
+     * Marks the selected conversations (or the ones given) as read or unread; unread stays
+     * until the conversation is opened again.
+     */
+    public function markRead($read, $ids = null)
+    {
+        $user = auth()->user();
+        $ids = Conversation::findMany($ids ?? array_map('intval', (array) $this->selected))
+            ->filter(fn ($conversation) => $user->can('view', $conversation))->pluck('id')->all();
+        $read ? ConversationRead::markRead($ids, $user) : ConversationRead::markUnread($ids, $user);
+    }
+
+    /**
+     * A row's menu: assigns the row, or the selection it's in, to the user.
+     */
+    public function rowAssignToMe($id)
+    {
+        Conversation::bulkChangeUser($this->rowTargets($id), auth()->id(), auth()->user());
+
+        $this->reload(__('Assignee updated'));
+    }
+
+    /**
+     * A row's menu: closes or reopens the row, or the selection it's in.
+     */
+    public function rowClose($id, $close)
+    {
+        Conversation::bulkChangeStatus($this->rowTargets($id), $close ? Conversation::STATUS_CLOSED : Conversation::STATUS_ACTIVE, auth()->user());
+
+        $this->reload(__('Status updated'));
+    }
+
+    /**
+     * What a row's menu acts on: the selection when the row is in it, else the row alone
+     * (the selection stays as it is).
+     */
+    protected function rowTargets($id)
+    {
+        $selected = array_map('intval', (array) $this->selected);
+
+        return in_array((int) $id, $selected) ? $selected : [(int) $id];
     }
 
     public function delete()

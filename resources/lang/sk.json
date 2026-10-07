@@ -1739,5 +1739,19 @@
     "Last Activity": "Posledná Aktivita",
     ":name mailbox": "Mailbox :name",
     "Color": "Farba",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Označuje konverzácie tohto mailboxu v zobrazeniach naprieč mailboxmi a jeho ikonu na bočnom paneli."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Označuje konverzácie tohto mailboxu v zobrazeniach naprieč mailboxmi a jeho ikonu na bočnom paneli.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count správa|:channel, :count správy|:channel, :count správ",
+    "Actions for :count conversation|Actions for :count conversations": "Akcie pre :count konverzáciu|Akcie pre :count konverzácie|Akcie pre :count konverzácií",
+    "Conversation Actions": "Akcie Konverzácie",
+    "Open in New Tab": "Otvoriť na Novej Karte",
+    "Copy Link": "Kopírovať Odkaz",
+    "Star": "Označiť Hviezdičkou",
+    "Unstar": "Odstrániť Hviezdičku",
+    "Unstarred": "Hviezdička odstránená",
+    "Star or Unstar": "Označiť alebo Odstrániť Hviezdičku",
+    "Assign to Me": "Priradiť Mne",
+    "Reopen": "Znovu Otvoriť",
+    "Mark as Read": "Označiť ako Prečítané",
+    "Mark as Unread": "Označiť ako Neprečítané",
+    "Unread": "Neprečítané"
 }

@@ -1739,5 +1739,19 @@
     "Last Activity": "Ostatnia Aktywność",
     ":name mailbox": "Skrzynka pocztowa :name",
     "Color": "Kolor",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Oznacza rozmowy tej skrzynki pocztowej w widokach obejmujących wiele skrzynek oraz jej ikonę na pasku bocznym."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Oznacza rozmowy tej skrzynki pocztowej w widokach obejmujących wiele skrzynek oraz jej ikonę na pasku bocznym.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count wiadomość|:channel, :count wiadomości|:channel, :count wiadomości",
+    "Actions for :count conversation|Actions for :count conversations": "Akcje dla :count rozmowy|Akcje dla :count rozmów|Akcje dla :count rozmów",
+    "Conversation Actions": "Akcje Rozmowy",
+    "Open in New Tab": "Otwórz w Nowej Karcie",
+    "Copy Link": "Kopiuj Link",
+    "Star": "Oznacz Gwiazdką",
+    "Unstar": "Odznacz Gwiazdkę",
+    "Unstarred": "Usunięto gwiazdkę",
+    "Star or Unstar": "Oznacz lub Odznacz Gwiazdkę",
+    "Assign to Me": "Przypisz do Mnie",
+    "Reopen": "Otwórz Ponownie",
+    "Mark as Read": "Oznacz jako Przeczytane",
+    "Mark as Unread": "Oznacz jako Nieprzeczytane",
+    "Unread": "Nieprzeczytane"
 }

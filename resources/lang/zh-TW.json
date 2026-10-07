@@ -1786,5 +1786,18 @@
     "Background": "背景",
     ":name mailbox": ":name 信箱",
     "Color": "顏色",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "在跨信箱檢視中標示此信箱的對話，並用於側邊欄中的信箱圖示。"
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "在跨信箱檢視中標示此信箱的對話，並用於側邊欄中的信箱圖示。",
+    ":channel, :count message|:channel, :count messages": ":channel，:count 則訊息",
+    "Actions for :count conversation|Actions for :count conversations": ":count 個對話的動作",
+    "Conversation Actions": "對話動作",
+    "Open in New Tab": "在新分頁中開啟",
+    "Copy Link": "複製連結",
+    "Star": "加星號",
+    "Unstar": "取消星號",
+    "Unstarred": "已取消星號",
+    "Star or Unstar": "加星號或取消星號",
+    "Assign to Me": "指派給我",
+    "Mark as Read": "標記為已讀",
+    "Mark as Unread": "標記為未讀",
+    "Unread": "未讀"
 }

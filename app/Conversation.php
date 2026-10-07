@@ -2236,6 +2236,7 @@ class Conversation extends Model
 
             // Delete followers.
             Follower::whereIn('conversation_id', $ids)->delete();
+            ConversationRead::whereIn('conversation_id', $ids)->delete();
 
             // Out of the search index.
             try {

@@ -1740,5 +1740,19 @@
     "Last Activity": "Son Fəaliyyət",
     ":name mailbox": ":name poçt qutusu",
     "Color": "Rəng",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Bu poçt qutusunun söhbətlərini bir neçə poçt qutusunu əhatə edən görünüşlərdə, ikonunu isə yan paneldə işarələyir."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Bu poçt qutusunun söhbətlərini bir neçə poçt qutusunu əhatə edən görünüşlərdə, ikonunu isə yan paneldə işarələyir.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count mesaj",
+    "Actions for :count conversation|Actions for :count conversations": ":count söhbət üçün əməliyyatlar",
+    "Conversation Actions": "Söhbət Əməliyyatları",
+    "Open in New Tab": "Yeni Tabda Aç",
+    "Copy Link": "Linki Kopyala",
+    "Star": "Ulduzla",
+    "Unstar": "Ulduzu Götür",
+    "Unstarred": "Ulduz götürüldü",
+    "Star or Unstar": "Ulduzla və ya Ulduzu Götür",
+    "Assign to Me": "Mənə Təyin Et",
+    "Reopen": "Yenidən Aç",
+    "Mark as Read": "Oxunmuş Kimi İşarələ",
+    "Mark as Unread": "Oxunmamış Kimi İşarələ",
+    "Unread": "Oxunmamış"
 }

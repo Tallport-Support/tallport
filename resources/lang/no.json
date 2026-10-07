@@ -1744,5 +1744,19 @@
     "Last Activity": "Siste Aktivitet",
     ":name mailbox": "Postkasse :name",
     "Color": "Farge",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Markerer samtalene i denne postkassen i visninger på tvers av postkasser og ikonet dens i sidefeltet."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Markerer samtalene i denne postkassen i visninger på tvers av postkasser og ikonet dens i sidefeltet.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count melding|:channel, :count meldinger",
+    "Actions for :count conversation|Actions for :count conversations": "Handlinger for :count samtale|Handlinger for :count samtaler",
+    "Conversation Actions": "Samtalehandlinger",
+    "Open in New Tab": "Åpne i Ny Fane",
+    "Copy Link": "Kopier Lenke",
+    "Star": "Stjernemarker",
+    "Unstar": "Fjern Stjerne",
+    "Unstarred": "Stjerne fjernet",
+    "Star or Unstar": "Stjernemarker eller Fjern Stjerne",
+    "Assign to Me": "Tildel til Meg",
+    "Reopen": "Gjenåpne",
+    "Mark as Read": "Merk som Lest",
+    "Mark as Unread": "Merk som Ulest",
+    "Unread": "Ulest"
 }

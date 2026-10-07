@@ -1741,5 +1741,19 @@
     "Last Activity": "最后活动",
     ":name mailbox": ":name 邮箱",
     "Color": "颜色",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "在跨邮箱视图中标记此邮箱的对话，并用于侧边栏中的邮箱图标。"
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "在跨邮箱视图中标记此邮箱的对话，并用于侧边栏中的邮箱图标。",
+    ":channel, :count message|:channel, :count messages": ":channel，:count 条消息",
+    "Actions for :count conversation|Actions for :count conversations": ":count 个对话的操作",
+    "Conversation Actions": "对话操作",
+    "Open in New Tab": "在新标签页中打开",
+    "Copy Link": "复制链接",
+    "Star": "加星标",
+    "Unstar": "取消星标",
+    "Unstarred": "已取消星标",
+    "Star or Unstar": "加星标或取消星标",
+    "Assign to Me": "分配给我",
+    "Reopen": "重新打开",
+    "Mark as Read": "标记为已读",
+    "Mark as Unread": "标记为未读",
+    "Unread": "未读"
 }

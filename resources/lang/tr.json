@@ -1740,5 +1740,19 @@
     "Last Activity": "Son Etkinlik",
     ":name mailbox": ":name posta kutusu",
     "Color": "Renk",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Bu posta kutusunun konuşmalarını birden fazla posta kutusunu kapsayan görünümlerde, simgesini ise kenar çubuğunda işaretler."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Bu posta kutusunun konuşmalarını birden fazla posta kutusunu kapsayan görünümlerde, simgesini ise kenar çubuğunda işaretler.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count mesaj",
+    "Actions for :count conversation|Actions for :count conversations": ":count konuşma için eylemler",
+    "Conversation Actions": "Konuşma Eylemleri",
+    "Open in New Tab": "Yeni Sekmede Aç",
+    "Copy Link": "Bağlantıyı Kopyala",
+    "Star": "Önemli Olarak İşaretle",
+    "Unstar": "Önemli İşaretini Kaldır",
+    "Unstarred": "Önemli işareti kaldırıldı",
+    "Star or Unstar": "Önemli Olarak İşaretle veya Kaldır",
+    "Assign to Me": "Bana Ata",
+    "Reopen": "Yeniden Aç",
+    "Mark as Read": "Okundu Olarak İşaretle",
+    "Mark as Unread": "Okunmadı Olarak İşaretle",
+    "Unread": "Okunmamış"
 }

@@ -1749,5 +1749,19 @@
     "Last Activity": "Dernière Activité",
     ":name mailbox": "Boîte de réception :name",
     "Color": "Couleur",
-    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Identifie les conversations de cette boîte de réception dans les vues regroupant plusieurs boîtes de réception, ainsi que son icône dans la barre latérale."
+    "Marks this mailbox's conversations in views across mailboxes and its icon in the sidebar.": "Identifie les conversations de cette boîte de réception dans les vues regroupant plusieurs boîtes de réception, ainsi que son icône dans la barre latérale.",
+    ":channel, :count message|:channel, :count messages": ":channel, :count message|:channel, :count messages",
+    "Actions for :count conversation|Actions for :count conversations": "Actions pour :count conversation|Actions pour :count conversations",
+    "Conversation Actions": "Actions de la Conversation",
+    "Open in New Tab": "Ouvrir dans un Nouvel Onglet",
+    "Copy Link": "Copier le Lien",
+    "Star": "Mettre en Favori",
+    "Unstar": "Retirer des Favoris",
+    "Unstarred": "Retiré des favoris",
+    "Star or Unstar": "Ajouter ou Retirer des Favoris",
+    "Assign to Me": "M'Assigner",
+    "Reopen": "Rouvrir",
+    "Mark as Read": "Marquer comme Lu",
+    "Mark as Unread": "Marquer comme Non Lu",
+    "Unread": "Non Lu"
 }
