@@ -190,7 +190,7 @@
                 <div class="thread-meta" x-data="{ original: false }">
                     <span class="f-footnote f-muted">{{ __("Edited by :whom :when", ['whom' => $thread->getEditedByUserName(), 'when' => App\User::dateDiffForHumansWithHours($thread->edited_at)]) }}</span>
                     <a href="#" class="f-footnote thread-original-show" x-show="!original" x-on:click.prevent="original = true">{{ __("Show Original") }}</a><a href="#" class="f-footnote thread-original-hide" x-show="original" x-cloak x-on:click.prevent="original = false">{{ __("Hide") }}</a>
-                    <div class="thread-original f-prose" x-show="original" x-cloak>{!! safe_raw_html($thread->getCleanBodyOriginal()) !!}</div>
+                    <div class="thread-original f-prose" x-show="original" x-cloak>{!! safe_raw_html(App\Misc\ExternalImages::original($thread)) !!}</div>
                 </div>
             @endif
             @if (!$thread_is_draft)

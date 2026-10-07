@@ -149,6 +149,16 @@ class ExternalImages
         }, 20, 2);
     }
 
+    /**
+     * A thread's original body (Show Original), blocked the same way.
+     */
+    public static function original(Thread $thread)
+    {
+        $html = $thread->getCleanBodyOriginal();
+
+        return self::appliesTo($thread) ? self::block($html)[0] : $html;
+    }
+
     protected static function checked(Thread $thread, $body = null)
     {
         if (!isset(self::$blocked[$thread->id]) || $body !== null) {

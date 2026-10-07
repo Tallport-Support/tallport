@@ -19,7 +19,6 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 |---|---|---|---|
 | C1 | decision | `conversation_move`, :2269 | No access check on the **target** mailbox: an agent can move a conversation into a mailbox they can't see. FreeScout documents this as intended (its SECURITY.md: "Support agents are allowed to move conversations to any mailbox, even to ones they don't have access to"); kept for now (decided 2026-09-30). |
 | C6 | low | `save_draft`, :1546 | A new-conversation draft has no customer until it is sent (recipients are kept on the draft thread; sending sets the customer, see `testSendingNewConversationDraftSetsCustomer`), so drafts show no customer name. |
-| C15 | security | `resources/views/conversations/partials/thread.blade.php`, `thread-original` | The hidden original-body section renders remote image URLs without applying `ExternalImages`, allowing images to load despite the blocked-image warning. Affects stored original bodies and quoted images in them. Covered by `ExternalImagesTest::testOriginalBodiesDoNotLoadBlockedRemoteImages`, marked incomplete until fixed. |
 
 ## Incoming email (`app/Console/Commands/FetchEmails.php`)
 

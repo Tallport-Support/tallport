@@ -15,7 +15,6 @@ class ExternalImagesTest extends FeatureTestCase
 {
     public function testOriginalBodiesDoNotLoadBlockedRemoteImages()
     {
-        $this->knownBug('C15');
         $agent = $this->createUser();
         $mailbox = $this->createMailbox([$agent]);
         $this->receiveEmail($mailbox, $this->makeEmail([
@@ -30,6 +29,11 @@ class ExternalImagesTest extends FeatureTestCase
         $this->actingAs($agent)->followingRedirects()->get('/conversation/'.$conversation->id)->assertOk()
             ->assertSee('Images from other servers are not shown.')
             ->assertDontSee('<img src="https://tracker.example/p.gif"', false);
+
+        // Shown for the message: in the original too.
+        $thread->setMeta(\App\Misc\ExternalImages::META_KEY, 1);
+        $thread->saveQuietly();
+        $this->assertStringContainsString('<img src="https://tracker.example/p.gif"', \App\Misc\ExternalImages::original($thread->fresh()));
     }
 
     public function testWhatIsBlocked()
