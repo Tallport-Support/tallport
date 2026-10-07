@@ -75,6 +75,11 @@ class AiDraftsController extends Controller
     }
 
     /**
+     * A test's answer shown up to this much (Settings › Mailboxes › AI Assistant).
+     */
+    const TEST_BODY_BYTES = 4096;
+
+    /**
      * Send a test request to a mailbox's customer context URL (admins).
      */
     public function testCustomerContext(Request $request)
@@ -90,6 +95,7 @@ class AiDraftsController extends Controller
         $settings = CustomerContext::settings($mailbox);
         $secret = (string) $request->secret_key;
 
+        $started = microtime(true);
         try {
             $result = CustomerContext::test($mailbox, $request->email, [
                 'url'              => $request->url,
@@ -99,6 +105,13 @@ class AiDraftsController extends Controller
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'msg' => $e->getMessage()]);
         }
+        // How long and how much, and the start of a long answer.
+        $result['ms'] = (int) round((microtime(true) - $started) * 1000);
+        $result['bytes'] = strlen($result['body']);
+        if ($result['bytes'] > self::TEST_BODY_BYTES) {
+            $result['body'] = mb_strcut($result['body'], 0, self::TEST_BODY_BYTES).'…';
+        }
+        unset($result['payload']);
 
         return response()->json(['status' => 'success'] + $result);
     }

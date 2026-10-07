@@ -928,7 +928,7 @@
         "element": "Native nav, navigation role.",
         "state": "Child links own href and aria-current=page.",
         "keyboard": "Native link keyboard behavior.",
-        "options": "Accessible label; independent link content slot."
+        "options": "Accessible label; independent link content slot. A link may lead with an `f-icon` (sized to the text, on the label's line, so the tab keeps its height), such as a warning that the page needs attention; name its meaning in `f-sr-only` text."
       }
     }
   },

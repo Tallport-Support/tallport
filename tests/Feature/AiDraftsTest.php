@@ -218,6 +218,22 @@ class AiDraftsTest extends FeatureTestCase
 
     // Customer context settings.
 
+    /**
+     * A test's long answer is shown in part: the first 4 KB.
+     */
+    public function testCustomerContextTestShowsALongAnswerInPart()
+    {
+        $admin = $this->createAdmin();
+        Http::fake(['https://crm.example.org/*' => Http::response(str_repeat('x', 10000), 500)]);
+
+        $response = $this->postAjax($admin, '/ai-assistant/customer-context/test', [
+            'mailbox_id' => $this->mailbox->id, 'email' => 'casey@customer.example.org', 'url' => 'https://crm.example.org/context', 'secret_key' => 'k',
+        ]);
+        $this->assertSame(500, $response->json('http_status'));
+        $this->assertSame(10000, $response->json('bytes'));
+        $this->assertSame(str_repeat('x', 4096).'…', $response->json('body'));
+    }
+
     public function testCustomerContextSettings()
     {
         $admin = $this->createAdmin();
@@ -266,6 +282,9 @@ class AiDraftsTest extends FeatureTestCase
         $this->assertSame('success', $response->json('status'));
         $this->assertSame(200, $response->json('http_status'));
         $this->assertSame('{"plan":"Pro"}', $response->json('body'));
+        $this->assertSame(14, $response->json('bytes'));
+        $this->assertIsInt($response->json('ms'));
+        $this->assertNull($response->json('payload'));
         Http::assertSent(function (HttpRequest $request) {
             return $request['test'] === true && $request->hasHeader('X-FREESCOUT-SIGNATURE');
         });

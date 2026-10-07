@@ -90,7 +90,23 @@
                                 <button type="button" class="f-button ai-context-test" x-on:click="test">{{ __('Test') }}</button>
                             </div>
                         </x-fruit::field>
-                        <pre class="ai-context-test-result" role="status" aria-label="{{ __('Test result') }}" x-show="result" x-text="result" x-cloak></pre>
+                        {{-- The answer: a status line (announced), then the response, an error's under Show Response. --}}
+                        <div class="ai-context-test-result">
+                            <p class="ai-context-test-status" role="status" x-bind:class="result && !result.ok && 'ai-context-test-status--error'"
+                                data-success="{{ __(':status · :size in :time ms') }}" data-failure="{{ __('HTTP :status · The URL answered with an error.') }}">
+                                <template x-if="result"><span class="ai-context-test-status__line">
+                                    <x-icon.circle-check class="f-icon" aria-hidden="true" x-show="result.ok" />
+                                    <x-icon.triangle-alert class="f-icon" aria-hidden="true" x-show="!result.ok" />
+                                    <span x-text="result.line"></span>
+                                </span></template>
+                            </p>
+                            <template x-if="result && result.body">
+                                <details class="ai-context-test-response" x-bind:open="result.ok">
+                                    <summary>{{ __('Show Response') }}</summary>
+                                    <pre tabindex="0" aria-label="{{ __('Test result') }}" x-text="result.body"></pre>
+                                </details>
+                            </template>
+                        </div>
                     </x-fruit::form-section>
                     <p class="f-form-section__footer mailbox-ai__context-footer" x-text="drafts ? @js(__('When drafting a reply, the assistant asks this URL about the customer, signed with the key, and uses the answer.')) : @js(__('Used when drafting replies. Turn on Drafts to use it.'))"></p>
                 </fieldset>

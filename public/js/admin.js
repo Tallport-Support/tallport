@@ -31,7 +31,7 @@ document.addEventListener('alpine:init', function () {
 	// Settings » AI Assistant: a mailbox's customer context, sent a test request with the settings shown.
 	window.Alpine.data('tallportAiContextTest', function (mailbox_id) {
 		return {
-			result: '',
+			result: null,
 			test: function (event) {
 				var self = this;
 				var button = event.currentTarget;
@@ -45,6 +45,10 @@ document.addEventListener('alpine:init', function () {
 					email.reportValidity();
 					return;
 				}
+				var texts = this.$root.querySelector('.ai-context-test-status').dataset;
+				var size = function (bytes) {
+					return bytes < 1024 ? bytes + ' B' : (bytes / 1024).toFixed(1) + ' KB';
+				};
 				Tallport.busy(button, true);
 				Tallport.post(laroute.route('ai.customer_context.test'), {
 					mailbox_id: mailbox_id,
@@ -54,9 +58,17 @@ document.addEventListener('alpine:init', function () {
 					signature_header: value('.ai-context-header')
 				}).then(function (response) {
 					Tallport.busy(button, false);
-					self.result = Tallport.isSuccess(response)
-						? 'HTTP ' + response.http_status + '\n' + response.signature_header + ': ' + response.signature + '\n\n' + response.body
-						: (response.msg || Lang.get('messages.error_occurred'));
+					// A status line, then the answer (an error's collapsed).
+					if (!Tallport.isSuccess(response)) {
+						self.result = {ok: false, line: response.msg || Lang.get('messages.error_occurred'), body: ''};
+						return;
+					}
+					var ok = response.http_status >= 200 && response.http_status < 300;
+					self.result = {
+						ok: ok,
+						line: (ok ? texts.success : texts.failure).replace(':status', response.http_status).replace(':size', size(response.bytes)).replace(':time', response.ms),
+						body: response.signature_header + ': ' + response.signature + '\n\n' + response.body
+					};
 				});
 			}
 		};

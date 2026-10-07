@@ -2565,13 +2565,20 @@
     gap: 4px;
     border-bottom: 1px solid var(--f-border);
   }
+  /* A link may lead with an icon, such as a warning that the page needs attention: it sits on the
+     label's line at the text's size, so the tab keeps its height. */
   .f-section-nav a {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     padding: 10px 12px;
     border-radius: var(--f-radius-sm) var(--f-radius-sm) 0 0;
     color: var(--f-secondary);
     text-decoration: none;
     font-size: var(--f-text-base);
+  }
+  .f-section-nav a > .f-icon {
+    --f-icon-size: 1em;
   }
   .f-section-nav a:hover {
     background: var(--f-hover);
