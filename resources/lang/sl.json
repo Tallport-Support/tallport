@@ -1767,5 +1767,7 @@
     "Last call :time · :duration": "Zadnji klic: :time · :duration",
     "Last call failed :time": "Zadnji klic ni uspel: :time",
     "1 failure in the last hour|:count failures in the last hour": ":count napaka v zadnji uri|:count napaki v zadnji uri|:count napake v zadnji uri|:count napak v zadnji uri",
-    "Tokens (In / Out)": "Žetoni (Vhod / Izhod)"
+    "Tokens (In / Out)": "Žetoni (Vhod / Izhod)",
+    "Sent to the customer in :language": "Poslano stranki v jeziku: :language",
+    "As sent to the customer": "Kot je bilo poslano stranki"
 }

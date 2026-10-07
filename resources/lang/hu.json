@@ -1768,5 +1768,7 @@
     "Last call :time · :duration": "Utolsó hívás: :time · :duration",
     "Last call failed :time": "Az utolsó hívás sikertelen: :time",
     "1 failure in the last hour|:count failures in the last hour": ":count hiba az elmúlt órában|:count hiba az elmúlt órában",
-    "Tokens (In / Out)": "Tokenek (Bemenet / Kimenet)"
+    "Tokens (In / Out)": "Tokenek (Bemenet / Kimenet)",
+    "Sent to the customer in :language": "Elküldve az ügyfélnek, nyelv: :language",
+    "As sent to the customer": "Ahogy az ügyfél megkapta"
 }

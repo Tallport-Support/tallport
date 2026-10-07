@@ -1769,5 +1769,7 @@
     "Last call :time · :duration": "Última llamada: :time · :duration",
     "Last call failed :time": "La última llamada falló: :time",
     "1 failure in the last hour|:count failures in the last hour": "1 error en la última hora|:count errores en la última hora",
-    "Tokens (In / Out)": "Tokens (Entrada / Salida)"
+    "Tokens (In / Out)": "Tokens (Entrada / Salida)",
+    "Sent to the customer in :language": "Enviado al cliente en :language",
+    "As sent to the customer": "Tal como se envió al cliente"
 }

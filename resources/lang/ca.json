@@ -1861,5 +1861,7 @@
     "Last call :time · :duration": "Darrera crida: :time · :duration",
     "Last call failed :time": "La darrera crida ha fallat: :time",
     "1 failure in the last hour|:count failures in the last hour": "1 error en l'última hora|:count errors en l'última hora",
-    "Tokens (In / Out)": "Tokens (Entrada / Sortida)"
+    "Tokens (In / Out)": "Tokens (Entrada / Sortida)",
+    "Sent to the customer in :language": "Enviat al client en :language",
+    "As sent to the customer": "Tal com s'ha enviat al client"
 }

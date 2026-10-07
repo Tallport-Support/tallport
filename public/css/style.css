@@ -3610,6 +3610,13 @@ body.fruit-ui {
 }
 
 /* A translation on its way, in the translation's card (conversations/partials/thread). */
+/* A reply sent translated: what the customer received, under its label. */
+.ai-sent-in {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+}
 .ai-translation-waiting {
     display: inline-flex;
     align-items: center;

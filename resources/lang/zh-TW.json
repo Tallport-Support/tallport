@@ -1812,5 +1812,7 @@
     "Last call :time · :duration": "上次呼叫：:time · :duration",
     "Last call failed :time": "上次呼叫失敗：:time",
     "1 failure in the last hour|:count failures in the last hour": "過去一小時 :count 次失敗",
-    "Tokens (In / Out)": "Token（輸入 / 輸出）"
+    "Tokens (In / Out)": "Token（輸入 / 輸出）",
+    "Sent to the customer in :language": "已以:language傳送給客戶",
+    "As sent to the customer": "傳送給客戶的版本"
 }

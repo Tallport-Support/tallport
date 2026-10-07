@@ -1767,5 +1767,7 @@
     "Last call :time · :duration": "Poslední volání: :time · :duration",
     "Last call failed :time": "Poslední volání selhalo: :time",
     "1 failure in the last hour|:count failures in the last hour": ":count selhání za poslední hodinu|:count selhání za poslední hodinu|:count selhání za poslední hodinu",
-    "Tokens (In / Out)": "Tokeny (Vstup / Výstup)"
+    "Tokens (In / Out)": "Tokeny (Vstup / Výstup)",
+    "Sent to the customer in :language": "Odesláno zákazníkovi v jazyce: :language",
+    "As sent to the customer": "Jak bylo odesláno zákazníkovi"
 }

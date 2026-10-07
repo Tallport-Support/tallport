@@ -1771,5 +1771,7 @@
     "Last call :time · :duration": "Laatste aanroep: :time · :duration",
     "Last call failed :time": "Laatste aanroep mislukt: :time",
     "1 failure in the last hour|:count failures in the last hour": "1 fout in het afgelopen uur|:count fouten in het afgelopen uur",
-    "Tokens (In / Out)": "Tokens (Invoer / Uitvoer)"
+    "Tokens (In / Out)": "Tokens (Invoer / Uitvoer)",
+    "Sent to the customer in :language": "Naar de klant verzonden in het :language",
+    "As sent to the customer": "Zoals naar de klant verzonden"
 }

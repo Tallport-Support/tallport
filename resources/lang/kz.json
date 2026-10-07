@@ -2166,5 +2166,7 @@
     "Last call :time · :duration": "Соңғы шақыру: :time · :duration",
     "Last call failed :time": "Соңғы шақыру сәтсіз: :time",
     "1 failure in the last hour|:count failures in the last hour": "Соңғы сағатта :count сәтсіздік",
-    "Tokens (In / Out)": "Токендер (Кіріс / Шығыс)"
+    "Tokens (In / Out)": "Токендер (Кіріс / Шығыс)",
+    "Sent to the customer in :language": "Клиентке жіберілген тіл: :language",
+    "As sent to the customer": "Клиентке жіберілген нұсқа"
 }

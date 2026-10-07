@@ -1786,5 +1786,7 @@
     "Last call :time · :duration": "Viimeisin kutsu: :time · :duration",
     "Last call failed :time": "Viimeisin kutsu epäonnistui: :time",
     "1 failure in the last hour|:count failures in the last hour": "1 virhe viimeisen tunnin aikana|:count virhettä viimeisen tunnin aikana",
-    "Tokens (In / Out)": "Tokenit (Syöte / Tuloste)"
+    "Tokens (In / Out)": "Tokenit (Syöte / Tuloste)",
+    "Sent to the customer in :language": "Lähetetty asiakkaalle kielellä: :language",
+    "As sent to the customer": "Asiakkaalle lähetetty versio"
 }

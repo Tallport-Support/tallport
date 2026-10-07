@@ -46,10 +46,18 @@
 
         // AI Assistant: the message's translation.
         ['wanted' => $ai_translation_wanted, 'language' => $ai_language, 'translation' => $ai_translation] = App\Ai\Translations::forThread($thread, Auth::user());
+        // A reply written (or read as a draft) in the viewer's language and sent translated: what
+        // was written is the message, the version sent goes beside it.
+        $ai_data = $ai_translation && $thread->type == App\Thread::TYPE_MESSAGE ? App\Ai\Summaries::data($thread) : [];
+        // (Replies kept before written_in was recorded: their translation was never detected.)
+        $ai_written = $ai_data && ($ai_data['written_in'] ?? (empty($ai_data['language']) ? $ai_language : null)) === $ai_language;
+        $ai_sent_in = $ai_written ? ($ai_data['sent_in'] ?? $ai_data['language'] ?? null) : null;
     @endphp
     {{-- The chat view ($chat): name, meta and time on one line, the body beside the avatar. --}}
-    <x-fruit::message :layout="empty($chat) ? 'stacked' : 'inline'" :continued="!empty($continued) && !empty($chat)" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" :mine="$thread->type == App\Thread::TYPE_MESSAGE && $thread->created_by_user_id == Auth::user()->id" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()" :lang="$ai_translation ? (App\Ai\Summaries::data($thread)['language'] ?? null) : null">
-        @if ($ai_translation)
+    <x-fruit::message :layout="empty($chat) ? 'stacked' : 'inline'" :continued="!empty($continued) && !empty($chat)" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" :mine="$thread->type == App\Thread::TYPE_MESSAGE && $thread->created_by_user_id == Auth::user()->id" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()" :lang="$ai_written ? $ai_language : ($ai_translation ? (App\Ai\Summaries::data($thread)['language'] ?? null) : null)">
+        @if ($ai_written)
+            <x-slot:translation :lang="$ai_sent_in"><span class="ai-sent-in">{{ $ai_sent_in ? __('Sent to the customer in :language', ['language' => App\Ai\Settings::displayName($ai_sent_in)]) : __('As sent to the customer') }}</span>{!! safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox)) !!}</x-slot:translation>
+        @elseif ($ai_translation)
             {{-- The translation below the message, in the user's language. --}}
             <x-slot:translation :lang="$ai_language">@include('conversations/partials/ai_translation')</x-slot:translation>
         @elseif ($ai_translation_wanted && $thread->type == App\Thread::TYPE_CUSTOMER && (App\Ai\Translations::reason($thread, $ai_language)[0] ?? '') == 'waiting')
@@ -181,6 +189,8 @@
             <div class="thread-content f-prose" dir="auto">
                 @if ($thread_is_draft)
                     {!! safe_raw_html($thread->getCleanBody()) !!}
+                @elseif ($ai_written)
+                    {!! nl2br(e($ai_translation)) !!}
                 @else
                     {!! safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox)) !!}
                 @endif

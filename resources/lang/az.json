@@ -1768,5 +1768,7 @@
     "Last call :time · :duration": "Son çağırış: :time · :duration",
     "Last call failed :time": "Son çağırış uğursuz oldu: :time",
     "1 failure in the last hour|:count failures in the last hour": ":count uğursuzluq son bir saatda",
-    "Tokens (In / Out)": "Tokenlər (Giriş / Çıxış)"
+    "Tokens (In / Out)": "Tokenlər (Giriş / Çıxış)",
+    "Sent to the customer in :language": "Müştəriyə :language dilində göndərildi",
+    "As sent to the customer": "Müştəriyə göndərildiyi kimi"
 }

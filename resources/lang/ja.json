@@ -1768,5 +1768,7 @@
     "Last call :time · :duration": "最終呼び出し: :time · :duration",
     "Last call failed :time": "最終呼び出し失敗: :time",
     "1 failure in the last hour|:count failures in the last hour": "過去1時間に :count 件の失敗",
-    "Tokens (In / Out)": "トークン（入力 / 出力）"
+    "Tokens (In / Out)": "トークン（入力 / 出力）",
+    "Sent to the customer in :language": "顧客に:languageで送信済み",
+    "As sent to the customer": "顧客に送信された内容"
 }

@@ -1772,5 +1772,7 @@
     "Last call :time · :duration": "Siste kall: :time · :duration",
     "Last call failed :time": "Siste kall mislyktes: :time",
     "1 failure in the last hour|:count failures in the last hour": "1 feil siste time|:count feil siste time",
-    "Tokens (In / Out)": "Tokens (Inndata / Utdata)"
+    "Tokens (In / Out)": "Tokens (Inndata / Utdata)",
+    "Sent to the customer in :language": "Sendt til kunden på :language",
+    "As sent to the customer": "Slik det ble sendt til kunden"
 }

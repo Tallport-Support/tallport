@@ -1777,5 +1777,7 @@
     "Last call :time · :duration": "Dernier appel : :time · :duration",
     "Last call failed :time": "Échec du dernier appel : :time",
     "1 failure in the last hour|:count failures in the last hour": ":count échec au cours de la dernière heure|:count échecs au cours de la dernière heure",
-    "Tokens (In / Out)": "Jetons (Entrée / Sortie)"
+    "Tokens (In / Out)": "Jetons (Entrée / Sortie)",
+    "Sent to the customer in :language": "Envoyé au client en :language",
+    "As sent to the customer": "Tel qu'envoyé au client"
 }

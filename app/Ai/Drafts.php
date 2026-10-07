@@ -159,6 +159,10 @@ class Drafts
         }
         $data = Summaries::data($thread);
         $data['translations'][$language] = mb_substr($translation, 0, 20000);
+        // The agent's own version (written, or read in the draft): shown as the message, the
+        // version sent beside it (conversations/partials/thread).
+        $data['written_in'] = $language;
+        $data['sent_in'] = $data['sent_in'] ?? ChatTranslation::customerLanguage($thread->conversation);
         $thread->ai_assistant = json_encode($data, JSON_UNESCAPED_UNICODE);
         $thread->ai_assistant_updated_at = now();
     }

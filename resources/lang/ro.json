@@ -1767,5 +1767,7 @@
     "Last call :time · :duration": "Ultimul apel: :time · :duration",
     "Last call failed :time": "Ultimul apel a eșuat: :time",
     "1 failure in the last hour|:count failures in the last hour": "1 eșec în ultima oră|:count eșecuri în ultima oră|:count de eșecuri în ultima oră",
-    "Tokens (In / Out)": "Tokenuri (Intrare / Ieșire)"
+    "Tokens (In / Out)": "Tokenuri (Intrare / Ieșire)",
+    "Sent to the customer in :language": "Trimis clientului în :language",
+    "As sent to the customer": "Așa cum a fost trimis clientului"
 }

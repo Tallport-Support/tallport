@@ -104,6 +104,10 @@ class ChatTranslationTest extends FeatureTestCase
         $reply = $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $this->assertStringContainsString('Ik zoek het voor u uit.', $reply->body);
         $this->assertSame('I will look into it.', Translations::get($reply, 'en'));
+
+        // Shown as written: the agent's text is the message, what the customer got beside it.
+        $html = $this->actingAs($this->agent)->followingRedirects()->get($this->conversation->url())->getContent();
+        $this->assertMatchesRegularExpression('#class="ai-sent-in">Sent to the customer in Dutch</span>.*?Ik zoek het voor u uit\..*?thread-content[^>]*>(?:\s|<!--.*?-->)*I will look into it\.#s', $html);
         $this->assertSame(320, (int) \App\Ai\Usage::where('conversation_id', $this->conversation->id)->where('feature', 'reply_translation')->sum(\DB::raw('input_tokens + output_tokens')));
     }
 
