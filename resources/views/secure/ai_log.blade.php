@@ -67,8 +67,11 @@
                                 @if ($call->backup)
                                     <x-fruit::badge>{{ __('Backup') }}</x-fruit::badge>
                                 @endif
-                                @if ($call->fast)
+                                @if ($call->fast_tier)
                                     <x-fruit::badge variant="outline">{{ __('Fast') }}</x-fruit::badge>
+                                @endif
+                                @if ($call->fast)
+                                    <x-fruit::badge variant="outline">{{ __('Less Reasoning') }}</x-fruit::badge>
                                 @endif
                             </td>
                             <td>@if ($call->duration_ms !== null){{ App\Ai\Usage::formatDuration($call->duration_ms) }}@else<span class="ai-log__none">—</span>@endif</td>

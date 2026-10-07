@@ -143,6 +143,22 @@ class AiLogTest extends FeatureTestCase
     }
 
     /**
+     * The log tells less reasoning (the fast options) and fast mode (the faster tier) apart, and
+     * their refusals.
+     */
+    public function testLogShowsLessReasoningAndFastMode()
+    {
+        $this->logCall(['provider' => 'openai', 'model' => 'gpt-reasoning', 'fast' => true]);
+        $this->logCall(['provider' => 'openai', 'model' => 'gpt-tier', 'fast_tier' => true, 'status' => Usage::STATUS_FAST_TIER_REFUSED, 'error' => 'service_tier']);
+        $this->logCall(['provider' => 'openai', 'model' => 'gpt-plain', 'status' => Usage::STATUS_FAST_REFUSED]);
+
+        $this->actingAs($this->admin)->get(route('logs.ai'))->assertOk()
+            ->assertSeeInOrder(['gpt-plain', 'Less Reasoning Refused', 'gpt-tier', 'Fast</', 'Fast Mode Refused', 'gpt-reasoning', 'Less Reasoning</', 'Succeeded'], false);
+        $this->assertSame(['Fast Mode Refused', 'warning'], Usage::where('model', 'gpt-tier')->first()->statusName());
+        $this->assertNull(Usage::modelStatus('translations', null, 'gpt-plain'), 'Refusals are not the model\'s last call.');
+    }
+
+    /**
      * Failed calls have no tokens and translated no messages: the daily budget, the customer's
      * hourly cap, the sidebar's tokens and System Status count as before.
      */

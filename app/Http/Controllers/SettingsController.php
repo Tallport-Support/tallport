@@ -418,10 +418,12 @@ class SettingsController extends Controller
                 continue;
             }
             $key = (string) ($provider['api_key'] ?? '');
+            $preset = \App\Ai\Providers::normalize($provider['provider'] ?? 'openai');
             $entry = [
-                'provider' => \App\Ai\Providers::normalize($provider['provider'] ?? 'openai'),
-                'api_key'  => isset($current[$id]) && preg_match('/^\*+$/', $key) ? $current[$id]['api_key'] : ($key === '' ? '' : encrypt($key)),
-                'base_url' => rtrim(trim((string) ($provider['base_url'] ?? '')), '/'),
+                'provider'  => $preset,
+                'api_key'   => isset($current[$id]) && preg_match('/^\*+$/', $key) ? $current[$id]['api_key'] : ($key === '' ? '' : encrypt($key)),
+                'base_url'  => rtrim(trim((string) ($provider['base_url'] ?? '')), '/'),
+                'fast_mode' => !empty($provider['fast_mode']) && \App\Ai\Providers::hasFastTier($preset),
             ];
             if (!isset($current[$id])) {
                 // Added: only with what it needs.

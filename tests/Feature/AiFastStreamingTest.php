@@ -39,9 +39,9 @@ class AiFastStreamingTest extends FeatureTestCase
     /**
      * One provider, its model for every feature; translations into English, no summaries.
      */
-    protected function useModel($provider, $model, $base_url = '')
+    protected function useModel($provider, $model, $base_url = '', $fast_mode = false)
     {
-        Option::set('aiassistant.providers', [['id' => 'p1', 'provider' => $provider, 'api_key' => encrypt('sk-test'), 'base_url' => $base_url]]);
+        Option::set('aiassistant.providers', [['id' => 'p1', 'provider' => $provider, 'api_key' => encrypt('sk-test'), 'base_url' => $base_url, 'fast_mode' => $fast_mode]]);
         Option::set('aiassistant.models', array_fill_keys(['summaries', 'translations', 'drafts', 'language'], ['primary' => ['provider' => 'p1', 'model' => $model]]));
         Option::set('aiassistant.translation_language', 'en');
         Option::set('aiassistant.mailbox_features_off', [$this->mailbox->id => ['summaries']]);
@@ -191,6 +191,151 @@ class AiFastStreamingTest extends FeatureTestCase
     }
 
     /**
+     * Fast mode (the provider's faster, pricier tier): OpenAI's priority processing, Anthropic's
+     * fast mode, and OpenAI's models on the OpenAI-compatible hosts that serve them.
+     */
+    public function testFastTierOptionsByProviderAndModel()
+    {
+        $priority = ['service_tier' => 'priority'];
+        $cases = [
+            ['openai', 'gpt-5-mini', $priority],
+            ['openai', 'gpt-4.1', $priority],
+            ['anthropic', 'claude-opus-4-6', ['speed' => 'fast']],
+            ['digitalocean', 'openai-gpt-6-luna', $priority],
+            ['digitalocean', 'openai-gpt-4o', $priority],
+            ['digitalocean', 'anthropic-claude-4.5-sonnet', []],
+            ['digitalocean', 'llama3.3-70b-instruct', []],
+            ['custom', 'gpt-5.2', $priority],
+            ['custom', 'openai/o4-mini', $priority],
+            ['custom', 'openai/gpt-oss-120b', []],
+            ['together', 'openai/gpt-oss-120b', []],
+            ['gemini', 'gemini-3-flash-preview', []],
+            ['xai', 'grok-4.3', []],
+        ];
+        foreach ($cases as [$provider, $model, $options]) {
+            $this->assertSame($options, Providers::fastTierOptions($provider, $model), $provider.' '.$model);
+        }
+        $this->assertSame(['openai', 'anthropic', 'digitalocean', 'custom'], array_keys(array_filter(array_map([Providers::class, 'hasFastTier'], array_combine(array_keys(Providers::PRESETS), array_keys(Providers::PRESETS))))));
+    }
+
+    /**
+     * With the provider's fast mode on, the translation agents ask for the faster tier, besides
+     * the least reasoning; summaries don't. Off (the default): no tier.
+     */
+    public function testFastModeGoesInTheRequestOfTranslationsWhenSwitchedOn()
+    {
+        $this->useModel('openai', 'gpt-5-mini', '', true);
+        Http::fake(['https://api.openai.com/v1/responses' => Http::sequence()
+            ->pushResponse($this->openAiResponse(['language' => 'de']))
+            ->pushResponse($this->openAiResponse(['one_liner' => 'Casey asks', 'background' => '']))
+            ->pushResponse($this->openAiResponse(['language' => 'de']))]);
+
+        (new LanguageRecognizer(['de', 'nl']))->recordFor(\App\Ai\Usage::FEATURE_LANGUAGE, null, $this->mailbox->id)->prompt('Hallo');
+        (new ConversationSummarizer('en'))->prompt('A conversation');
+        $this->useModel('openai', 'gpt-5-mini');
+        (new LanguageRecognizer(['de', 'nl']))->prompt('Hallo');
+
+        $requests = Http::recorded()->map(fn ($pair) => $pair[0]->data())->values();
+        $this->assertSame('priority', $requests[0]['service_tier']);
+        $this->assertSame(['effort' => 'minimal'], $requests[0]['reasoning']);
+        $this->assertArrayNotHasKey('service_tier', $requests[1]);
+        $this->assertArrayNotHasKey('reasoning', $requests[1]);
+        $this->assertArrayNotHasKey('service_tier', $requests[2]);
+        $this->assertSame(['effort' => 'minimal'], $requests[2]['reasoning']);
+        $call = \App\Ai\Usage::orderBy('id')->first();
+        $this->assertSame([true, true], [$call->fast, $call->fast_tier]);
+    }
+
+    /**
+     * Anthropic: speed "fast" and its beta header, besides laravel/ai's own beta; neither when off.
+     */
+    public function testAnthropicFastMode()
+    {
+        $answer = Http::response([
+            'id' => 'msg_1', 'type' => 'message', 'role' => 'assistant', 'model' => 'claude-opus-4-6', 'stop_reason' => 'end_turn',
+            'content' => [['type' => 'text', 'text' => json_encode(['language' => 'de'])]],
+            'usage'   => ['input_tokens' => 10, 'output_tokens' => 2],
+        ]);
+        Http::fake(['https://api.anthropic.com/v1/messages' => Http::sequence()->pushResponse($answer)->pushResponse($answer)->pushResponse($answer)])->preventStrayRequests();
+
+        $this->useModel('anthropic', 'claude-opus-4-6', '', true);
+        $this->assertSame('de', (new LanguageRecognizer(['de', 'nl']))->prompt('Hallo')['language']);
+        (new ConversationSummarizer('en'))->prompt('A conversation');
+        $this->useModel('anthropic', 'claude-opus-4-6');
+        (new LanguageRecognizer(['de', 'nl']))->prompt('Hallo');
+
+        $requests = Http::recorded()->map(fn ($pair) => $pair[0])->values();
+        $this->assertSame('fast', $requests[0]['speed']);
+        $this->assertSame(['web-fetch-2025-09-10,fast-mode-2026-02-01'], $requests[0]->header('anthropic-beta'));
+        $this->assertArrayNotHasKey('speed', $requests[1]->data());
+        $this->assertArrayNotHasKey('speed', $requests[2]->data());
+        $this->assertSame(['web-fetch-2025-09-10'], $requests[2]->header('anthropic-beta'));
+    }
+
+    /**
+     * A model that refuses fast mode (HTTP 400) is called again without it, keeping the least
+     * reasoning, and without it from then on; the log says which was refused.
+     */
+    public function testAModelThatRefusesFastModeIsCalledWithoutIt()
+    {
+        $this->useModel('openai', 'gpt-5-mini', '', true);
+        Http::fake(['https://api.openai.com/v1/responses' => Http::sequence()
+            ->push(['error' => ['message' => "Unsupported value: 'service_tier' does not support 'priority' with this model.", 'type' => 'invalid_request_error']], 400)
+            ->pushResponse($this->openAiResponse(['language' => 'de']))
+            ->pushResponse($this->openAiResponse(['language' => 'nl']))]);
+
+        (new LanguageRecognizer(['de', 'nl']))->recordFor(\App\Ai\Usage::FEATURE_LANGUAGE, null, $this->mailbox->id)->prompt('Hallo');
+        (new LanguageRecognizer(['de', 'nl']))->prompt('Hoi');
+
+        $requests = Http::recorded()->map(fn ($pair) => $pair[0]->data())->values();
+        $this->assertCount(3, $requests);
+        $this->assertSame('priority', $requests[0]['service_tier']);
+        foreach ([1, 2] as $i) {
+            $this->assertArrayNotHasKey('service_tier', $requests[$i]);
+            $this->assertSame(['effort' => 'minimal'], $requests[$i]['reasoning']);
+        }
+        $this->assertTrue(Providers::fastTierRejected(Providers::textName('p1'), 'gpt-5-mini'));
+        $this->assertFalse(Providers::fastRejected(Providers::textName('p1'), 'gpt-5-mini'));
+        [$refused, $ok] = \App\Ai\Usage::orderBy('id')->get()->all();
+        $this->assertSame([\App\Ai\Usage::STATUS_FAST_TIER_REFUSED, true, true], [$refused->status, $refused->fast, $refused->fast_tier]);
+        $this->assertSame([\App\Ai\Usage::STATUS_OK, true, false], [$ok->status, $ok->fast, $ok->fast_tier]);
+    }
+
+    /**
+     * Both refused, the error not saying which: fast mode is dropped first, then the least
+     * reasoning; each refusal is remembered and logged on its own. A reasoning error drops only that.
+     */
+    public function testEachRefusedOptionIsDroppedOnItsOwn()
+    {
+        $this->useModel('openai', 'gpt-5-mini', '', true);
+        Http::fake(['https://api.openai.com/v1/responses' => Http::sequence()
+            ->push(['error' => ['message' => 'Bad request', 'type' => 'invalid_request_error']], 400)
+            ->push(['error' => ['message' => 'Bad request', 'type' => 'invalid_request_error']], 400)
+            ->pushResponse($this->openAiResponse(['language' => 'de']))
+            ->push(['error' => ['message' => "Unsupported value: 'none' for reasoning.effort", 'type' => 'invalid_request_error']], 400)
+            ->pushResponse($this->openAiResponse(['language' => 'de']))]);
+
+        (new LanguageRecognizer(['de', 'nl']))->prompt('Hallo');
+
+        $requests = Http::recorded()->map(fn ($pair) => $pair[0]->data())->values();
+        $this->assertSame([true, true], [isset($requests[0]['service_tier']), isset($requests[0]['reasoning'])]);
+        $this->assertSame([false, true], [isset($requests[1]['service_tier']), isset($requests[1]['reasoning'])]);
+        $this->assertSame([false, false], [isset($requests[2]['service_tier']), isset($requests[2]['reasoning'])]);
+        $this->assertSame([\App\Ai\Usage::STATUS_FAST_TIER_REFUSED, \App\Ai\Usage::STATUS_FAST_REFUSED, \App\Ai\Usage::STATUS_OK], \App\Ai\Usage::orderBy('id')->pluck('status')->all());
+
+        // Another model, its error about the reasoning: fast mode is kept.
+        \App\Ai\Usage::query()->delete();
+        $this->useModel('openai', 'gpt-5.1', '', true);
+
+        (new LanguageRecognizer(['de', 'nl']))->prompt('Hallo');
+
+        $last = Http::recorded()->map(fn ($pair) => $pair[0]->data())->last();
+        $this->assertSame([true, false], [isset($last['service_tier']), isset($last['reasoning'])]);
+        $this->assertSame([\App\Ai\Usage::STATUS_FAST_REFUSED, \App\Ai\Usage::STATUS_OK], \App\Ai\Usage::orderBy('id')->pluck('status')->all());
+        $this->assertFalse(Providers::fastTierRejected(Providers::textName('p1'), 'gpt-5.1'));
+    }
+
+    /**
      * A streamed translation through an OpenAI-compatible server (its HTTP API faked): the
      * server is asked for the stream's tokens, which count as usual.
      */
@@ -228,8 +373,15 @@ class AiFastStreamingTest extends FeatureTestCase
         $conversation = $this->receiveCustomerEmail();
 
         $this->assertSame("Hello,\n\nWhere is my order?", Translations::get($conversation->threads()->first(), 'en'));
-        Http::assertSent(fn (HttpRequest $request) => ($request['reasoning_effort'] ?? null) === 'none');
+        Http::assertSent(fn (HttpRequest $request) => ($request['reasoning_effort'] ?? null) === 'none' && !isset($request['service_tier']));
         $this->assertTrue((bool) \App\Ai\Usage::where('conversation_id', $conversation->id)->where('feature', \App\Ai\Usage::FEATURE_TRANSLATION)->value('fast'));
+
+        // Its fast mode on: priority processing too.
+        $this->useModel('digitalocean', 'openai-gpt-6-luna', '', true);
+        $conversation = $this->receiveCustomerEmail("Hallo,\n\nNog iets.");
+
+        Http::assertSent(fn (HttpRequest $request) => ($request['reasoning_effort'] ?? null) === 'none' && ($request['service_tier'] ?? null) === 'priority');
+        $this->assertTrue((bool) \App\Ai\Usage::where('conversation_id', $conversation->id)->where('feature', \App\Ai\Usage::FEATURE_TRANSLATION)->value('fast_tier'));
     }
 
     /**

@@ -111,7 +111,7 @@ class Providers
         foreach (Settings::providers() as $id => $provider) {
             config(['ai.providers.'.self::textName($id) => self::providerConfig($provider['provider'], \Helper::decrypt($provider['api_key']), $provider['base_url'], [
                 'text' => ['default' => Settings::DEFAULT_MODEL],
-            ])]);
+            ], $provider['fast_mode'])]);
             Ai::forgetInstance(self::textName($id));
         }
         // The first, for anything that names no provider.
@@ -161,7 +161,7 @@ class Providers
      * simple work such as translations: TallportAgent::fast()), by provider (PRESETS) and model;
      * [] where a model has none. A model fails a request with an option it doesn't take, so only
      * models known to take it get it (and one that refuses it anyway is called without it from
-     * then on: fastRejected()). Never a paid priority tier (OpenAI service_tier, Anthropic speed).
+     * then on: fastRejected()). Never a paid priority tier: that's fast mode (fastTierOptions()).
      */
     public static function fastOptions($provider, $model)
     {
@@ -271,7 +271,64 @@ class Providers
     }
 
     /**
-     * A model refused the fast options (HTTP 400/422): it's called without them for a while.
+     * The providers with a faster, pricier serving tier (fast mode, a switch on each provider
+     * set up): OpenAI's priority processing, Anthropic's fast mode, and OpenAI's models on the
+     * OpenAI-compatible hosts that serve them. True: for all of the provider's models.
+     */
+    const FAST_TIER = [
+        'openai'       => true,
+        'anthropic'    => true,
+        'digitalocean' => false,
+        'custom'       => false,
+    ];
+
+    /**
+     * Anthropic's beta for fast mode, sent besides laravel/ai's default one.
+     */
+    const ANTHROPIC_FAST_BETA = 'fast-mode-2026-02-01';
+
+    public static function hasFastTier($provider)
+    {
+        return isset(self::FAST_TIER[$provider]);
+    }
+
+    /**
+     * The switch's description in a provider's settings.
+     */
+    public static function fastTierDescription($provider)
+    {
+        return !empty(self::FAST_TIER[$provider])
+            ? __('Faster answers for translations, at a higher price per token (OpenAI priority processing, Anthropic fast mode).')
+            : __('Faster answers for translations with OpenAI\'s models, at a higher price per token (priority processing). Other models are not affected.');
+    }
+
+    /**
+     * Request options for the provider's faster, pricier tier (fast mode, when its switch is on),
+     * for the translation agents (TallportAgent::fast()), together with fastOptions(). Anthropic
+     * also needs its beta (providerConfig()); only some Claude models have it, and a model that
+     * refuses it is called without it from then on (fastTierRejected()).
+     */
+    public static function fastTierOptions($provider, $model)
+    {
+        $model = strtolower(trim((string) $model));
+        switch ($provider) {
+            case 'openai':
+                return ['service_tier' => 'priority'];
+            case 'anthropic':
+                return ['speed' => 'fast'];
+            // OpenAI's models, by name as in fastOptions() (GPT-OSS isn't served by OpenAI).
+            case 'digitalocean':
+            case 'custom':
+                $name = preg_replace('#^openai[-/]#', '', $model);
+
+                return preg_match('/^(gpt-|o\d|chatgpt-)/', $name) && !str_starts_with($name, 'gpt-oss') ? ['service_tier' => 'priority'] : [];
+            default:
+                return [];
+        }
+    }
+
+    /**
+     * A model refused the fast options or fast mode (HTTP 400/422): it's called without them for a while.
      */
     const FAST_REJECTED_DAYS = 30;
 
@@ -290,7 +347,17 @@ class Providers
         return 'ai_fast_rejected_'.md5($name.'|'.$model);
     }
 
-    protected static function providerConfig($provider, $key, $base_url, array $models)
+    public static function fastTierRejected($name, $model)
+    {
+        return (bool) \Cache::get('ai_fast_tier_rejected_'.md5($name.'|'.$model));
+    }
+
+    public static function rememberFastTierRejected($name, $model)
+    {
+        \Cache::put('ai_fast_tier_rejected_'.md5($name.'|'.$model), true, now()->addDays(self::FAST_REJECTED_DAYS));
+    }
+
+    protected static function providerConfig($provider, $key, $base_url, array $models, $fast_mode = false)
     {
         $preset = self::PRESETS[$provider];
         $config = [
@@ -305,6 +372,10 @@ class Providers
         // Streamed answers' tokens (the usage and budgets), which these servers send when asked.
         if ($preset['driver'] == 'openai-compatible') {
             $config['stream_options'] = ['include_usage' => true];
+        }
+        // Anthropic's fast mode is a beta (fastTierOptions()); laravel/ai's own beta kept.
+        if ($fast_mode && $provider == 'anthropic') {
+            $config['anthropic_beta'] = 'web-fetch-2025-09-10,'.self::ANTHROPIC_FAST_BETA;
         }
 
         return $config;

@@ -33,8 +33,10 @@ class Usage extends Model
     const STATUS_FAILED = 'failed';
     // Failed, the backup model was tried next.
     const STATUS_FAILED_THEN_BACKUP = 'failed_then_backup';
-    // The model refused the fast options and was called again without them.
+    // The model refused the fast options (less reasoning) and was called again without them.
     const STATUS_FAST_REFUSED = 'fast_refused';
+    // The model refused fast mode (the provider's faster tier) and was called again without it.
+    const STATUS_FAST_TIER_REFUSED = 'fast_tier_refused';
 
     const ERROR_LENGTH = 1000;
 
@@ -50,9 +52,10 @@ class Usage extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'backup'   => 'boolean',
-        'fast'     => 'boolean',
-        'streamed' => 'boolean',
+        'backup'    => 'boolean',
+        'fast'      => 'boolean',
+        'fast_tier' => 'boolean',
+        'streamed'  => 'boolean',
     ];
 
     public function mailbox()
@@ -68,7 +71,7 @@ class Usage extends Model
     /**
      * Record a call: a response's tokens (laravel/ai's $response->usage), for a conversation or a
      * mailbox, and $call: how it went (TallportAgent: provider_id, provider, model, backup, fast,
-     * streamed, duration_ms, status, error). Without either, nothing.
+     * fast_tier, streamed, duration_ms, status, error). Without either, nothing.
      */
     public static function record($response, $feature, ?Conversation $conversation = null, $mailbox_id = null, $user_id = null, $items = 1, array $call = [])
     {
@@ -194,7 +197,8 @@ class Usage extends Model
             self::STATUS_OK                 => [__('Succeeded'), 'success'],
             self::STATUS_FAILED             => [__('Failed'), 'danger'],
             self::STATUS_FAILED_THEN_BACKUP => [__('Failed, Backup Tried'), 'warning'],
-            self::STATUS_FAST_REFUSED       => [__('Fast Mode Refused'), 'warning'],
+            self::STATUS_FAST_REFUSED       => [__('Less Reasoning Refused'), 'warning'],
+            self::STATUS_FAST_TIER_REFUSED  => [__('Fast Mode Refused'), 'warning'],
         ][$this->status] ?? [$this->status, 'neutral'];
     }
 
@@ -222,7 +226,7 @@ class Usage extends Model
         $calls = self::whereIn('feature', self::SETTING_FEATURES[$setting_feature] ?? [$setting_feature])
             ->where('provider_id', $provider_id)
             ->where('model', $model)
-            ->where('status', '!=', self::STATUS_FAST_REFUSED);
+            ->whereNotIn('status', [self::STATUS_FAST_REFUSED, self::STATUS_FAST_TIER_REFUSED]);
         $last = (clone $calls)->orderBy('id', 'desc')->first();
         if (!$last) {
             return null;

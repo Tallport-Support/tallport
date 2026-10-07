@@ -650,6 +650,11 @@
                 "nullable": false,
                 "default": "0"
             },
+            "fast_tier": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
             "streamed": {
                 "type": "tinyint(1)",
                 "nullable": false,

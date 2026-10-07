@@ -219,6 +219,44 @@ class AiAssistantTest extends FeatureTestCase
         $this->assertSame(['error', 'Incorrect API key provided'], Translations::reason($other, 'en'));
     }
 
+    /**
+     * Each provider's fast mode: a switch only where the provider has a faster tier, off unless
+     * switched on (also for providers saved before it existed).
+     */
+    public function testFastModeSwitch()
+    {
+        Option::set('aiassistant.providers', [
+            ['id' => 'p1', 'provider' => 'openai', 'api_key' => encrypt('sk-one'), 'base_url' => ''],
+            ['id' => 'p2', 'provider' => 'gemini', 'api_key' => encrypt('sk-two'), 'base_url' => ''],
+            ['id' => 'p3', 'provider' => 'digitalocean', 'api_key' => encrypt('sk-three'), 'base_url' => ''],
+        ]);
+        Option::$cache = [];
+        $this->assertSame([false, false, false], array_column(Settings::providers(), 'fast_mode'));
+
+        $page = $this->actingAs($this->admin)->get('/app-settings/ai')->assertOk();
+        // Every row has the switch, shown for the provider chosen in it (so changing it in the form
+        // shows or hides it); a row without a fast tier never saves it (below).
+        $page->assertSee('settings[aiassistant.providers][p1][fast_mode]', false)
+            ->assertSee('settings[aiassistant.providers][p3][fast_mode]', false)
+            ->assertSee('x-show="JSON.parse(\'[\u0022openai\u0022,\u0022anthropic\u0022]\').includes(preset)"', false)
+            ->assertSee('Faster answers for translations, at a higher price per token (OpenAI priority processing, Anthropic fast mode).')
+            ->assertSee('Faster answers for translations with OpenAI&#039;s models', false)
+            ->assertSeeInOrder(['Google Gemini', 'DigitalOcean', 'Fast Mode']);
+
+        $this->postForm($this->admin, '/app-settings/ai', ['settings' => [
+            'aiassistant.providers' => [
+                'p1' => ['provider' => 'openai', 'api_key' => '******', 'fast_mode' => 1],
+                'p2' => ['provider' => 'gemini', 'api_key' => '******', 'fast_mode' => 1],
+                'p3' => ['provider' => 'digitalocean', 'api_key' => '******'],
+            ],
+            'aiassistant.models' => Option::get('aiassistant.models', []),
+        ]]);
+        Option::$cache = [];
+        $this->assertSame(['p1' => true, 'p2' => false, 'p3' => false], array_map(fn ($provider) => $provider['fast_mode'], Settings::providers()));
+        $this->assertSame([true, false, false], array_column(Option::get('aiassistant.providers'), 'fast_mode'));
+        $this->actingAs($this->admin)->get('/app-settings/ai')->assertSee('name="settings[aiassistant.providers][p1][fast_mode]" value="1" checked', false);
+    }
+
     public function testSettingsRejectNonHttpUrls()
     {
         $this->postForm($this->admin, '/app-settings/ai', ['settings' => ['aiassistant.providers' => ['p1' => ['provider' => 'openai', 'base_url' => 'javascript:alert(1)']]]])

@@ -38,7 +38,7 @@ abstract class TallportAgent implements Agent, HasProviderOptions
 
     /**
      * The model being tried (withAttempts()): its provider (Providers::PRESETS), name, whether
-     * it gets the fast options, and whether its answer has started.
+     * it gets the fast options and fast mode (fast_tier), and whether its answer has started.
      */
     protected $attempt = null;
 
@@ -67,7 +67,8 @@ abstract class TallportAgent implements Agent, HasProviderOptions
     }
 
     /**
-     * Simple work (translations): the models reason as little as they allow (Providers::fastOptions()).
+     * Simple work (translations): the models reason as little as they allow (Providers::fastOptions()),
+     * and use the provider's faster tier when its fast mode is on (Providers::fastTierOptions()).
      */
     public function fast(): bool
     {
@@ -82,16 +83,23 @@ abstract class TallportAgent implements Agent, HasProviderOptions
     }
 
     /**
-     * The fast options for the model being tried ($provider: laravel/ai's driver, or the name of
-     * an OpenAI-compatible one; the setting's provider says which preset it is).
+     * The fast options and fast mode for the model being tried ($provider: laravel/ai's driver, or
+     * the name of an OpenAI-compatible one; the setting's provider says which preset it is).
      */
     public function providerOptions(Lab|string $provider): array
     {
-        if (empty($this->attempt['fast']) || $provider === '') {
+        if (!$this->attempt || $provider === '') {
             return [];
         }
+        $options = [];
+        if ($this->attempt['fast']) {
+            $options = Providers::fastOptions($this->attempt['provider'], $this->attempt['model']);
+        }
+        if ($this->attempt['fast_tier']) {
+            $options = array_merge($options, Providers::fastTierOptions($this->attempt['provider'], $this->attempt['model']));
+        }
 
-        return Providers::fastOptions($this->attempt['provider'], $this->attempt['model']);
+        return $options;
     }
 
     /**
@@ -140,8 +148,9 @@ abstract class TallportAgent implements Agent, HasProviderOptions
 
     /**
      * Run a call with each of the feature's models in turn until one works. A model that refuses
-     * the fast options (HTTP 400 or 422 before answering) is called again without them, and
-     * without them from then on (Providers::fastRejected()). Each call is recorded (Usage).
+     * the fast options or fast mode (HTTP 400 or 422 before answering) is called again without
+     * the one refused (refusedOption()), and without it from then on (Providers::fastRejected(),
+     * fastTierRejected()). Each call is recorded (Usage).
      */
     protected function withAttempts($streamed, \Closure $run)
     {
@@ -156,21 +165,30 @@ abstract class TallportAgent implements Agent, HasProviderOptions
                 $provider_id = Providers::idFromName($name);
                 $provider = $providers[$provider_id]['provider'] ?? null;
                 $fast = $this->fast() && Providers::fastOptions($provider, $attempt_model) && !Providers::fastRejected($name, $attempt_model);
-                $this->attempt = ['provider_id' => $provider_id, 'provider' => $provider, 'model' => $attempt_model, 'backup' => $i > 0, 'streamed' => $streamed, 'fast' => $fast, 'started' => false, 'at' => hrtime(true)];
+                $fast_tier = $this->fast() && !empty($providers[$provider_id]['fast_mode']) && Providers::fastTierOptions($provider, $attempt_model) && !Providers::fastTierRejected($name, $attempt_model);
+                $this->attempt = ['provider_id' => $provider_id, 'provider' => $provider, 'model' => $attempt_model, 'backup' => $i > 0, 'streamed' => $streamed, 'fast' => $fast, 'fast_tier' => $fast_tier, 'started' => false, 'at' => hrtime(true)];
                 try {
-                    try {
-                        $result = $run($name, $attempt_model);
-                    } catch (RequestException $e) {
-                        if (!$fast || $this->attempt['started'] || !in_array($e->response->status(), [400, 422])) {
-                            throw $e;
+                    while (true) {
+                        try {
+                            $result = $run($name, $attempt_model);
+                            break;
+                        } catch (RequestException $e) {
+                            $refused = $this->attempt['started'] || !in_array($e->response->status(), [400, 422]) ? null : $this->refusedOption($e);
+                            if (!$refused) {
+                                throw $e;
+                            }
+                            if ($refused == 'fast_tier') {
+                                \Helper::logException($e, '[AI] '.$attempt_model.' refused fast mode ('.$this->feature().'), trying without it:');
+                                $this->recordAttempt(Usage::STATUS_FAST_TIER_REFUSED, null, $e);
+                                Providers::rememberFastTierRejected($name, $attempt_model);
+                            } else {
+                                \Helper::logException($e, '[AI] '.$attempt_model.' refused the fast options ('.$this->feature().'), trying without them:');
+                                $this->recordAttempt(Usage::STATUS_FAST_REFUSED, null, $e);
+                                Providers::rememberFastRejected($name, $attempt_model);
+                            }
+                            $this->attempt[$refused] = false;
+                            $this->attempt['at'] = hrtime(true);
                         }
-                        \Helper::logException($e, '[AI] '.$attempt_model.' refused the fast options ('.$this->feature().'), trying without them:');
-                        $this->recordAttempt(Usage::STATUS_FAST_REFUSED, null, $e);
-                        Providers::rememberFastRejected($name, $attempt_model);
-                        $this->attempt['fast'] = false;
-                        $this->attempt['at'] = hrtime(true);
-
-                        $result = $run($name, $attempt_model);
                     }
                 } catch (\Throwable $e) {
                     $last = $i == count($attempts) - 1;
@@ -191,6 +209,25 @@ abstract class TallportAgent implements Agent, HasProviderOptions
     }
 
     /**
+     * Which option a model refused (HTTP 400/422): fast mode ('fast_tier') or the fast options
+     * ('fast'); null when it got neither. With both, the error's words say which, else fast mode
+     * goes first (models are only given the fast options they're known to take).
+     */
+    protected function refusedOption(RequestException $e)
+    {
+        $sent = array_keys(array_filter(['fast_tier' => $this->attempt['fast_tier'], 'fast' => $this->attempt['fast']]));
+        if (count($sent) < 2) {
+            return $sent[0] ?? null;
+        }
+        $error = (string) $e->response->body();
+        if (!preg_match('/service[_ ]tier|speed|priority|fast[-_ ]mode/i', $error) && preg_match('/reasoning|effort|thinking/i', $error)) {
+            return 'fast';
+        }
+
+        return 'fast_tier';
+    }
+
+    /**
      * Record the call to the model being tried (Usage): its tokens when it worked, else its error.
      */
     protected function recordAttempt($status, $response = null, ?\Throwable $e = null)
@@ -204,6 +241,7 @@ abstract class TallportAgent implements Agent, HasProviderOptions
             'model'       => mb_substr((string) $this->attempt['model'], 0, 191),
             'backup'      => $this->attempt['backup'],
             'fast'        => $this->attempt['fast'],
+            'fast_tier'   => $this->attempt['fast_tier'],
             'streamed'    => $this->attempt['streamed'],
             'duration_ms' => (int) round((hrtime(true) - $this->attempt['at']) / 1e6),
             'error'       => $e ? $e->getMessage() : null,

@@ -59,7 +59,8 @@ class Settings
 
     /**
      * The providers set up (aiassistant.providers): id, provider (a Providers::PRESETS key),
-     * api_key (encrypted), base_url. Before there were several: the one provider of the
+     * api_key (encrypted), base_url, fast_mode (Providers::fastTierOptions(), where the
+     * provider has it; off unless switched on). Before there were several: the one provider of the
      * aiassistant.provider, api_key and base_url options.
      */
     public static function providers()
@@ -81,11 +82,13 @@ class Settings
             if ($id === '' || isset($result[$id])) {
                 continue;
             }
+            $preset = Providers::normalize($provider['provider'] ?? 'openai');
             $result[$id] = [
-                'id'       => $id,
-                'provider' => Providers::normalize($provider['provider'] ?? 'openai'),
-                'api_key'  => (string) ($provider['api_key'] ?? ''),
-                'base_url' => rtrim(trim((string) ($provider['base_url'] ?? '')), '/'),
+                'id'        => $id,
+                'provider'  => $preset,
+                'api_key'   => (string) ($provider['api_key'] ?? ''),
+                'base_url'  => rtrim(trim((string) ($provider['base_url'] ?? '')), '/'),
+                'fast_mode' => !empty($provider['fast_mode']) && Providers::hasFastTier($preset),
             ];
         }
 
@@ -105,7 +108,7 @@ class Settings
      */
     protected static function firstProvider()
     {
-        return array_values(self::providers())[0] ?? ['id' => 'p1', 'provider' => 'openai', 'api_key' => '', 'base_url' => ''];
+        return array_values(self::providers())[0] ?? ['id' => 'p1', 'provider' => 'openai', 'api_key' => '', 'base_url' => '', 'fast_mode' => false];
     }
 
     public static function provider()
