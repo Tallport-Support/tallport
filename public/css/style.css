@@ -2134,6 +2134,71 @@ a.disabled:focus {
     min-height: 36px;
     margin-bottom: 8px;
 }
+/* Settings' bar over the content pane (layouts/app; x-page-nav fills it): the pane's full width on
+   the toolbar material with its hairline, one height on every page (a 36px button fits), Back
+   (nested pages), the title at headline size, a spacer, the actions as small buttons. */
+.settings-toolbar {
+    flex: none;
+    min-height: 52px;
+    /* 7 + 36 (Back, a button) + 8 + the 1px hairline: 52. */
+    padding-block: 7px 8px;
+    gap: 6px;
+    border-bottom: 1px solid var(--f-border);
+}
+.settings-toolbar__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+.settings-toolbar__title > h1,
+h1.settings-toolbar__title {
+    margin: 0;
+    overflow: hidden;
+    font-size: var(--f-text-md);
+    font-weight: 600;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.settings-toolbar > .f-back {
+    --f-back-max-width: 16rem;
+    flex: none;
+}
+.settings-toolbar__actions {
+    display: flex;
+    flex: none;
+    gap: 6px;
+}
+.settings-toolbar__actions .f-button {
+    --f-button-height: 30px;
+    --f-button-padding-block: 3px;
+    --f-button-padding-inline: 12px;
+    font-size: var(--f-text-sm);
+}
+.settings-toolbar__open > .f-icon {
+    display: none;
+}
+/* Tabs (Connection's) at the top of the content, under the bar. */
+.page-nav--tabs {
+    padding-top: 0;
+}
+@media (max-width: 500px) {
+    .settings-toolbar > .f-back {
+        --f-back-max-width: 10rem;
+    }
+    .settings-toolbar__open {
+        --f-button-padding-inline: 0;
+        width: 30px;
+        justify-content: center;
+    }
+    .settings-toolbar__open > .f-icon {
+        display: block;
+    }
+    .settings-toolbar__open > span {
+        display: none;
+    }
+}
 /* On a phone the mailbox's header stays one row: its address is in the field below, and Open
    Mailbox is a small button. */
 @media (max-width: 500px) {

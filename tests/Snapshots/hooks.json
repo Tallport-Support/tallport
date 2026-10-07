@@ -1884,14 +1884,6 @@
         ]
     },
     {
-        "type": "action",
-        "name": "mailbox.update.dropdown.before_mailbox_name",
-        "arguments": 1,
-        "files": [
-            "resources/views/mailboxes/sidebar_menu.blade.php"
-        ]
-    },
-    {
         "type": "filter",
         "name": "mailbox.url",
         "arguments": 2,
@@ -1937,14 +1929,6 @@
         "arguments": 1,
         "files": [
             "resources/views/mailboxes/mailboxes.blade.php"
-        ]
-    },
-    {
-        "type": "filter",
-        "name": "mailboxes.menu_current_route",
-        "arguments": 1,
-        "files": [
-            "resources/views/mailboxes/sidebar_menu.blade.php"
         ]
     },
     {

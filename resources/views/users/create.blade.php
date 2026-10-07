@@ -8,6 +8,7 @@
 
 @section('sidebar')
     <x-page-nav>
+        <x-slot:back><x-fruit::back-link wire:navigate :href="route('users')">{{ __('Users') }}</x-fruit::back-link></x-slot:back>
         <x-slot:title><h1>{{ __('Create a New User') }}</h1></x-slot:title>
     </x-page-nav>
 @endsection

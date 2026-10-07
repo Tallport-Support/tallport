@@ -8,6 +8,7 @@
 
 @section('sidebar')
     <x-page-nav>
+        <x-slot:back><x-fruit::back-link wire:navigate :href="route('mailboxes')">{{ __('Mailboxes') }}</x-fruit::back-link></x-slot:back>
         <x-slot:title><h1>{{ __('Create a Mailbox') }}</h1></x-slot:title>
     </x-page-nav>
 @endsection

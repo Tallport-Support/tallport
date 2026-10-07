@@ -177,8 +177,10 @@ class MailboxesTest extends FeatureTestCase
 
         $this->actingAs($this->admin)->get(route('mailboxes'))->assertOk()
             ->assertSee('href="'.route('mailboxes.update', ['id' => $mailbox->id]).'"', false)->assertSee('Not set up');
+        // Settings' bar: Back, the mailbox's name, Open Mailbox; no switcher, no address under it.
         $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk()
-            ->assertSeeInOrder(['f-back', 'Mailboxes', 'Open Mailbox'], false)
+            ->assertSeeInOrder(['settings-toolbar', 'f-back', 'Mailboxes', '<h1>Support</h1>', 'Open Mailbox'], false)
+            ->assertDontSee('page-nav__switcher', false)
             ->assertSeeInOrder(['Connection Settings', 'Not set up', 'Permissions', '2 people', 'Auto Reply', 'On', 'Telegram', 'Nostr', 'Workflows', 'Saved Replies'])
             ->assertDontSee('app-sidebar__mailbox-pages', false)
             ->assertSee('aria-current="page"', false);

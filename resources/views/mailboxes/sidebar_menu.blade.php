@@ -1,9 +1,8 @@
-{{-- A mailbox's settings pages' header (App\Misc\MailboxSettings). Its own page: Back to the Mailboxes,
-     the mailbox (to switch), its address and a link to it. A further page: Back to the mailbox, and its name. --}}
+{{-- A mailbox's settings pages' header (App\Misc\MailboxSettings), in Settings' bar. Its own page: Back to
+     the Mailboxes, its name and a link to it. A further page: Back to the mailbox, and the page's name. --}}
 @php
     $menu_route = Route::currentRouteName();
     $menu_page_title = $menu_route == 'mailboxes.update' ? null : App\Misc\MailboxSettings::currentTitle($mailbox, Auth::user(), $menu_route);
-    $menu_mailboxes = auth()->user()->mailboxesCanView();
 @endphp
 <x-page-nav :label="__('Mailbox Settings')">
     <x-slot:back>
@@ -23,21 +22,13 @@
             <h1>{{ $menu_page_title }}</h1>
         @else
             @action('mailbox.update.before_mailbox_name', $mailbox)
-            @if (count($menu_mailboxes) > 1)
-                <x-fruit::menu :title="$mailbox->name" class="page-nav__switcher">
-                    @foreach ($menu_mailboxes as $mailbox_item)
-                        <x-fruit::menu-link :href="route(Eventy::filter('mailboxes.menu_current_route', $menu_route), ['id' => $mailbox_item->id])" :aria-current="$mailbox_item->id == $mailbox->id ? 'page' : null">@action('mailbox.update.dropdown.before_mailbox_name', $mailbox_item){{ $mailbox_item->name }}</x-fruit::menu-link>
-                    @endforeach
-                </x-fruit::menu>
-            @else
-                <h1>{{ $mailbox->name }}</h1>
-            @endif
-            <small class="f-muted">{{ $mailbox->email }}</small>
+            <h1>{{ $mailbox->name }}</h1>
         @endif
     </x-slot:title>
     @if ($menu_page_title === null)
         <x-slot:actions>
-            <a wire:navigate href="{{ route('mailboxes.view', ['id' => $mailbox->id]) }}" class="f-button">{{ __('Open Mailbox') }}</a>
+            {{-- On a phone just its icon (named, with a tooltip). --}}
+            <a wire:navigate href="{{ route('mailboxes.view', ['id' => $mailbox->id]) }}" class="f-button settings-toolbar__open" title="{{ __('Open Mailbox') }}" aria-label="{{ __('Open Mailbox') }}"><x-icon.inbox class="f-icon" aria-hidden="true" /><span>{{ __('Open Mailbox') }}</span></a>
         </x-slot:actions>
     @endif
 </x-page-nav>
