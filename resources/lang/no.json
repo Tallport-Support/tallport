@@ -1779,5 +1779,14 @@
     "1 failure in the last hour|:count failures in the last hour": "1 feil siste time|:count feil siste time",
     "Tokens (In / Out)": "Tokens (Inndata / Utdata)",
     "Sent to the customer in :language": "Sendt til kunden på :language",
-    "As sent to the customer": "Slik det ble sendt til kunden"
+    "As sent to the customer": "Slik det ble sendt til kunden",
+    "Outgoing Telegram": "Utgående Telegram-Meldinger",
+    "Outgoing Nostr": "Utgående Nostr-Meldinger",
+    "Failed, Will Retry": "Mislyktes, Prøves Igjen",
+    "Attempt": "Forsøk",
+    "Message IDs": "Meldings-ID-er",
+    "Files": "Filer",
+    "Accepted": "Godtatt",
+    ":accepted of :total": ":accepted av :total",
+    "Also used for the Outgoing Telegram log.": "Gjelder også loggen Utgående Telegram-Meldinger."
 }

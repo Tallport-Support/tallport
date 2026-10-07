@@ -1775,5 +1775,14 @@
     "1 failure in the last hour|:count failures in the last hour": ":count збій за останню годину|:count збої за останню годину|:count збоїв за останню годину",
     "Tokens (In / Out)": "Токени (Вхід / Вихід)",
     "Sent to the customer in :language": "Надіслано клієнту мовою: :language",
-    "As sent to the customer": "Як надіслано клієнту"
+    "As sent to the customer": "Як надіслано клієнту",
+    "Outgoing Telegram": "Вихідні Повідомлення Telegram",
+    "Outgoing Nostr": "Вихідні Повідомлення Nostr",
+    "Failed, Will Retry": "Помилка, Буде Повтор",
+    "Attempt": "Спроба",
+    "Message IDs": "ID Повідомлень",
+    "Files": "Файли",
+    "Accepted": "Прийнято",
+    ":accepted of :total": ":accepted з :total",
+    "Also used for the Outgoing Telegram log.": "Також стосується журналу «Вихідні Повідомлення Telegram»."
 }

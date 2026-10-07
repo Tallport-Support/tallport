@@ -1778,5 +1778,14 @@
     "1 failure in the last hour|:count failures in the last hour": "1 fout in het afgelopen uur|:count fouten in het afgelopen uur",
     "Tokens (In / Out)": "Tokens (Invoer / Uitvoer)",
     "Sent to the customer in :language": "Naar de klant verzonden in het :language",
-    "As sent to the customer": "Zoals naar de klant verzonden"
+    "As sent to the customer": "Zoals naar de klant verzonden",
+    "Outgoing Telegram": "Uitgaande Telegram-Berichten",
+    "Outgoing Nostr": "Uitgaande Nostr-Berichten",
+    "Failed, Will Retry": "Mislukt, Wordt Opnieuw Geprobeerd",
+    "Attempt": "Poging",
+    "Message IDs": "Bericht-ID's",
+    "Files": "Bestanden",
+    "Accepted": "Geaccepteerd",
+    ":accepted of :total": ":accepted van :total",
+    "Also used for the Outgoing Telegram log.": "Geldt ook voor het log Uitgaande Telegram-Berichten."
 }

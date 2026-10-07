@@ -1774,5 +1774,14 @@
     "1 failure in the last hour|:count failures in the last hour": "כישלון אחד בשעה האחרונה|:count כישלונות בשעה האחרונה",
     "Tokens (In / Out)": "טוקנים (קלט / פלט)",
     "Sent to the customer in :language": "נשלח ללקוח בשפה: :language",
-    "As sent to the customer": "כפי שנשלח ללקוח"
+    "As sent to the customer": "כפי שנשלח ללקוח",
+    "Outgoing Telegram": "טלגרם יוצא",
+    "Outgoing Nostr": "Nostr יוצא",
+    "Failed, Will Retry": "נכשל, ינסה שוב",
+    "Attempt": "ניסיון",
+    "Message IDs": "מזהי הודעות",
+    "Files": "קבצים",
+    "Accepted": "התקבל",
+    ":accepted of :total": ":accepted מתוך :total",
+    "Also used for the Outgoing Telegram log.": "חל גם על יומן טלגרם יוצא."
 }

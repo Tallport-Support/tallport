@@ -1774,5 +1774,14 @@
     "1 failure in the last hour|:count failures in the last hour": ":count błąd w ostatniej godzinie|:count błędy w ostatniej godzinie|:count błędów w ostatniej godzinie",
     "Tokens (In / Out)": "Tokeny (Wejście / Wyjście)",
     "Sent to the customer in :language": "Wysłano do klienta w języku: :language",
-    "As sent to the customer": "Tak, jak wysłano do klienta"
+    "As sent to the customer": "Tak, jak wysłano do klienta",
+    "Outgoing Telegram": "Wychodzące Wiadomości Telegram",
+    "Outgoing Nostr": "Wychodzące Wiadomości Nostr",
+    "Failed, Will Retry": "Błąd, Zostanie Ponowiony",
+    "Attempt": "Próba",
+    "Message IDs": "Identyfikatory Wiadomości",
+    "Files": "Pliki",
+    "Accepted": "Przyjęto",
+    ":accepted of :total": ":accepted z :total",
+    "Also used for the Outgoing Telegram log.": "Dotyczy też dziennika Wychodzące Wiadomości Telegram."
 }

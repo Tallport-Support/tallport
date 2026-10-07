@@ -564,6 +564,38 @@
         "methods": [
             "GET"
         ],
+        "uri": "app-logs/out_nostr",
+        "name": "logs.nostr",
+        "action": "ChannelLogsController@nostr",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "app-logs/out_telegram",
+        "name": "logs.telegram",
+        "action": "ChannelLogsController@telegram",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "app-logs/{name?}",
         "name": "logs",
         "action": "SecureController@logs",

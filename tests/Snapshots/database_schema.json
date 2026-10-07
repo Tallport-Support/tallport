@@ -2625,6 +2625,14 @@
                     "conversation_id"
                 ]
             },
+            "nostr_events_direction_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "direction",
+                    "id"
+                ]
+            },
             "nostr_events_mailbox_id_index": {
                 "unique": false,
                 "type": "BTREE",
@@ -3538,6 +3546,103 @@
                 "columns": [
                     "mailbox_id",
                     "id"
+                ]
+            }
+        }
+    },
+    "telegram_sends": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "conversation_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "thread_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "customer_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "attempt": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "1"
+            },
+            "status": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false
+            },
+            "message_ids": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "files": {
+                "type": "smallint(5) unsigned",
+                "nullable": false,
+                "default": "0"
+            },
+            "error": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            },
+            "telegram_sends_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "created_at"
+                ]
+            },
+            "telegram_sends_mailbox_id_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id",
+                    "created_at"
+                ]
+            },
+            "telegram_sends_thread_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "thread_id"
                 ]
             }
         }

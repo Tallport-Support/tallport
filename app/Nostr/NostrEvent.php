@@ -21,6 +21,16 @@ class NostrEvent extends Model
 
     protected $casts = ['event_created_at' => 'datetime'];
 
+    public function mailbox()
+    {
+        return $this->belongsTo('App\Mailbox');
+    }
+
+    public function conversation()
+    {
+        return $this->belongsTo('App\Conversation');
+    }
+
     /**
      * Reserve a wrap id before processing it. The unique index makes this atomic across
      * processes: the second claim of the same wrap fails and returns null.

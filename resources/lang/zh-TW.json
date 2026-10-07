@@ -1819,5 +1819,14 @@
     "1 failure in the last hour|:count failures in the last hour": "過去一小時 :count 次失敗",
     "Tokens (In / Out)": "Token（輸入 / 輸出）",
     "Sent to the customer in :language": "已以:language傳送給客戶",
-    "As sent to the customer": "傳送給客戶的版本"
+    "As sent to the customer": "傳送給客戶的版本",
+    "Outgoing Telegram": "外寄 Telegram",
+    "Outgoing Nostr": "外寄 Nostr",
+    "Failed, Will Retry": "失敗，將重試",
+    "Attempt": "嘗試",
+    "Message IDs": "訊息 ID",
+    "Files": "檔案",
+    "Accepted": "已接受",
+    ":accepted of :total": ":accepted / :total",
+    "Also used for the Outgoing Telegram log.": "也適用於外寄 Telegram 日誌。"
 }

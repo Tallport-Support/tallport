@@ -7,6 +7,7 @@ use App\SendLog;
 use App\Telegram\Formatter;
 use App\Telegram\Telegram;
 use App\Telegram\TelegramException;
+use App\Telegram\TelegramSend;
 use App\Thread;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -39,6 +40,11 @@ class SendReplyToTelegram implements ShouldQueue
 
     public $timeout = 300;
 
+    /**
+     * Telegram messages this try sent (Outgoing Telegram log).
+     */
+    protected $sent_message_ids = [];
+
     public function __construct($thread_id)
     {
         $this->thread_id = $thread_id;
@@ -55,6 +61,7 @@ class SendReplyToTelegram implements ShouldQueue
         }
         $conversation = $thread->conversation;
         $mailbox = $conversation->mailbox;
+        $this->sent_message_ids = [];
 
         try {
             if (!Telegram::isEnabled($mailbox)) {
@@ -77,6 +84,7 @@ class SendReplyToTelegram implements ShouldQueue
         $thread->send_status = SendLog::STATUS_ACCEPTED;
         $thread->updateSendStatusData(['msg' => '']);
         $thread->save();
+        TelegramSend::record($thread, $this->attempts(), TelegramSend::STATUS_SENT, $this->sent_message_ids);
     }
 
     protected function send(Thread $thread, $client, $chat_id)
@@ -89,6 +97,7 @@ class SendReplyToTelegram implements ShouldQueue
             $sent[] = $part;
             if (!empty($message['message_id'])) {
                 $message_ids[] = $message['message_id'];
+                $this->sent_message_ids[] = $message['message_id'];
             }
             $thread->updateSendStatusData(['telegram_sent' => $sent, 'telegram_messages' => $message_ids]);
             $thread->save();
@@ -165,7 +174,10 @@ class SendReplyToTelegram implements ShouldQueue
     {
         Telegram::log('Reply '.$thread->id.' in conversation #'.$thread->conversation->number.' not sent (try '.$this->attempts().'): '.$e->getMessage(), $thread->conversation->mailbox);
 
-        if (!$e->isPermanent() && $this->attempts() < $this->tries) {
+        $retry = !$e->isPermanent() && $this->attempts() < $this->tries;
+        TelegramSend::record($thread, $this->attempts(), $retry ? TelegramSend::STATUS_RETRYING : TelegramSend::STATUS_FAILED, $this->sent_message_ids, $e->getMessage());
+
+        if ($retry) {
             // After about 20 minutes the agent sees it hasn't been sent yet.
             if ($this->attempts() >= 3) {
                 $this->markNotSent($thread, $e->getMessage(), SendLog::STATUS_SEND_INTERMEDIATE_ERROR);
@@ -184,6 +196,7 @@ class SendReplyToTelegram implements ShouldQueue
     {
         $thread = Thread::find($this->thread_id);
         if ($thread && !$thread->isSendStatusSuccess() && $thread->send_status != SendLog::STATUS_SEND_ERROR) {
+            TelegramSend::record($thread, $this->attempts(), TelegramSend::STATUS_FAILED, $this->sent_message_ids, $e->getMessage());
             $this->markNotSent($thread, $e->getMessage(), SendLog::STATUS_SEND_ERROR);
         }
     }

@@ -1775,5 +1775,14 @@
     "1 failure in the last hour|:count failures in the last hour": ":count hiba az elmúlt órában|:count hiba az elmúlt órában",
     "Tokens (In / Out)": "Tokenek (Bemenet / Kimenet)",
     "Sent to the customer in :language": "Elküldve az ügyfélnek, nyelv: :language",
-    "As sent to the customer": "Ahogy az ügyfél megkapta"
+    "As sent to the customer": "Ahogy az ügyfél megkapta",
+    "Outgoing Telegram": "Kimenő Telegram-Üzenetek",
+    "Outgoing Nostr": "Kimenő Nostr-Üzenetek",
+    "Failed, Will Retry": "Sikertelen, Újrapróbálja",
+    "Attempt": "Próbálkozás",
+    "Message IDs": "Üzenetazonosítók",
+    "Files": "Fájlok",
+    "Accepted": "Elfogadva",
+    ":accepted of :total": ":accepted / :total",
+    "Also used for the Outgoing Telegram log.": "A Kimenő Telegram-Üzenetek naplóra is vonatkozik."
 }

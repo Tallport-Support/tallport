@@ -1774,5 +1774,14 @@
     "1 failure in the last hour|:count failures in the last hour": "1 eșec în ultima oră|:count eșecuri în ultima oră|:count de eșecuri în ultima oră",
     "Tokens (In / Out)": "Tokenuri (Intrare / Ieșire)",
     "Sent to the customer in :language": "Trimis clientului în :language",
-    "As sent to the customer": "Așa cum a fost trimis clientului"
+    "As sent to the customer": "Așa cum a fost trimis clientului",
+    "Outgoing Telegram": "Mesaje Telegram Trimise",
+    "Outgoing Nostr": "Mesaje Nostr Trimise",
+    "Failed, Will Retry": "Eșuat, Se Va Reîncerca",
+    "Attempt": "Încercare",
+    "Message IDs": "ID-uri Mesaje",
+    "Files": "Fișiere",
+    "Accepted": "Acceptat",
+    ":accepted of :total": ":accepted din :total",
+    "Also used for the Outgoing Telegram log.": "Se aplică și jurnalului Mesaje Telegram Trimise."
 }

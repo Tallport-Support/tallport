@@ -14,6 +14,9 @@ class ActivityLog extends Activity
     const NAME_APP_LOGS = 'app';
     // The AI log (App\Ai\Usage), shown like the others.
     const NAME_AI = 'ai';
+    // Replies sent to Telegram chats (App\Telegram\TelegramSend) and over Nostr (App\Nostr\NostrEvent).
+    const NAME_OUT_TELEGRAM = 'out_telegram';
+    const NAME_OUT_NOSTR = 'out_nostr';
 
     public static $available_logs = [
         self::NAME_USER,
@@ -99,6 +102,10 @@ class ActivityLog extends Activity
                 return __('App Logs');
             case self::NAME_AI:
                 return __('AI');
+            case self::NAME_OUT_TELEGRAM:
+                return __('Outgoing Telegram');
+            case self::NAME_OUT_NOSTR:
+                return __('Outgoing Nostr');
             default:
                 return ucwords(str_replace('_', ' ', $log_name));
         }
@@ -127,15 +134,24 @@ class ActivityLog extends Activity
     }
 
     /**
-     * The logs in the Logs page's bar: outgoing emails, the activity logs, App Logs and AI.
+     * The logs in the Logs page's bar: outgoing emails, Telegram and Nostr messages (once
+     * something has been sent that way), the activity logs, App Logs and AI.
      */
     public static function menuNames()
     {
-        return array_merge([self::NAME_OUT_EMAILS], self::getLogNames(), [self::NAME_APP_LOGS, self::NAME_AI]);
+        $outgoing = [self::NAME_OUT_EMAILS];
+        if (\App\Telegram\TelegramSend::exists()) {
+            $outgoing[] = self::NAME_OUT_TELEGRAM;
+        }
+        if (\App\Nostr\NostrEvent::where('direction', \App\Nostr\NostrEvent::DIRECTION_OUT)->exists()) {
+            $outgoing[] = self::NAME_OUT_NOSTR;
+        }
+
+        return array_merge($outgoing, self::getLogNames(), [self::NAME_APP_LOGS, self::NAME_AI]);
     }
 
     /**
-     * The Logs page's address for a log: App Logs and the AI log have their own.
+     * The Logs page's address for a log: App Logs, AI, Outgoing Telegram and Nostr have their own.
      */
     public static function logUrl($log_name)
     {
@@ -144,6 +160,10 @@ class ActivityLog extends Activity
                 return route('logs.app');
             case self::NAME_AI:
                 return route('logs.ai');
+            case self::NAME_OUT_TELEGRAM:
+                return route('logs.telegram');
+            case self::NAME_OUT_NOSTR:
+                return route('logs.nostr');
             default:
                 return route('logs', ['name' => $log_name]);
         }

@@ -56,7 +56,7 @@
     </x-fruit::form-section>
 
     <x-fruit::form-section :title="__('Logs')" :footer="__('Logs are cleaned up even when retention is off.')">
-        <x-fruit::field :label="__('Outgoing Emails')" layout="row">
+        <x-fruit::field :label="__('Outgoing Emails')" :description="__('Also used for the Outgoing Telegram log.')" layout="row">
             <x-fruit::select name="settings[retention_send_log_months]">{!! $retention_choice('retention_send_log_months') !!}</x-fruit::select>
         </x-fruit::field>
         <x-fruit::field :label="__('Notifications')" layout="row">

@@ -2173,5 +2173,14 @@
     "1 failure in the last hour|:count failures in the last hour": "Соңғы сағатта :count сәтсіздік",
     "Tokens (In / Out)": "Токендер (Кіріс / Шығыс)",
     "Sent to the customer in :language": "Клиентке жіберілген тіл: :language",
-    "As sent to the customer": "Клиентке жіберілген нұсқа"
+    "As sent to the customer": "Клиентке жіберілген нұсқа",
+    "Outgoing Telegram": "Шығатын Telegram Хабарламалары",
+    "Outgoing Nostr": "Шығатын Nostr Хабарламалары",
+    "Failed, Will Retry": "Сәтсіз, Қайта Әрекет Жасалады",
+    "Attempt": "Әрекет",
+    "Message IDs": "Хабарлама ID-лері",
+    "Files": "Файлдар",
+    "Accepted": "Қабылданды",
+    ":accepted of :total": ":total ішінен :accepted",
+    "Also used for the Outgoing Telegram log.": "Шығатын Telegram Хабарламалары журналына да қолданылады."
 }

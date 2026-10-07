@@ -339,13 +339,15 @@ class Retention
     public static function cleanLogs($dry_run = false)
     {
         $queries = [
-            'send_log'      => \DB::table('send_logs')->where('created_at', '<', now()->subMonths(self::get('retention_send_log_months'))),
-            'notifications' => \DB::table('notifications')->where('created_at', '<', now()->subMonths(self::get('retention_notification_months'))),
-            'activity_log'  => \DB::table('activity_logs')->where('created_at', '<', now()->subDays(self::get('retention_activity_log_days'))),
-            'failed_jobs'   => \DB::table('failed_jobs')->where('failed_at', '<', now()->subDays(self::FAILED_JOBS_DAYS)),
-            'telegram'      => \DB::table('telegram_updates')->where('created_at', '<', now()->subDays(self::TELEGRAM_UPDATES_DAYS)),
+            'send_log'       => \DB::table('send_logs')->where('created_at', '<', now()->subMonths(self::get('retention_send_log_months'))),
+            'notifications'  => \DB::table('notifications')->where('created_at', '<', now()->subMonths(self::get('retention_notification_months'))),
+            'activity_log'   => \DB::table('activity_logs')->where('created_at', '<', now()->subDays(self::get('retention_activity_log_days'))),
+            'failed_jobs'    => \DB::table('failed_jobs')->where('failed_at', '<', now()->subDays(self::FAILED_JOBS_DAYS)),
+            // Outgoing Telegram: kept as long as the email send log.
+            'telegram_sends' => \DB::table('telegram_sends')->where('created_at', '<', now()->subMonths(self::get('retention_send_log_months'))),
+            'telegram'       => \DB::table('telegram_updates')->where('created_at', '<', now()->subDays(self::TELEGRAM_UPDATES_DAYS)),
             // The AI log: what no budget or conversation's token count needs (Usage::expiredLog()).
-            'ai_log'        => \App\Ai\Usage::expiredLog(),
+            'ai_log'         => \App\Ai\Usage::expiredLog(),
         ];
         $counts = [];
         foreach ($queries as $name => $query) {

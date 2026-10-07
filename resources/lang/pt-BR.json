@@ -1777,5 +1777,14 @@
     "1 failure in the last hour|:count failures in the last hour": "{1} 1 falha na última hora|[0,*] :count falhas na última hora",
     "Tokens (In / Out)": "Tokens (Entrada / Saída)",
     "Sent to the customer in :language": "Enviada ao cliente em :language",
-    "As sent to the customer": "Como foi enviada ao cliente"
+    "As sent to the customer": "Como foi enviada ao cliente",
+    "Outgoing Telegram": "Mensagens Telegram Enviadas",
+    "Outgoing Nostr": "Mensagens Nostr Enviadas",
+    "Failed, Will Retry": "Falhou, Será Tentado Novamente",
+    "Attempt": "Tentativa",
+    "Message IDs": "IDs das Mensagens",
+    "Files": "Arquivos",
+    "Accepted": "Aceito",
+    ":accepted of :total": ":accepted de :total",
+    "Also used for the Outgoing Telegram log.": "Também vale para o registro Mensagens Telegram Enviadas."
 }

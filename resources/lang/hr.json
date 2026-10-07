@@ -1775,5 +1775,14 @@
     "1 failure in the last hour|:count failures in the last hour": ":count neuspjeh u zadnjih sat vremena|:count neuspjeha u zadnjih sat vremena|:count neuspjeha u zadnjih sat vremena",
     "Tokens (In / Out)": "Tokeni (Ulaz / Izlaz)",
     "Sent to the customer in :language": "Poslano kupcu na jeziku: :language",
-    "As sent to the customer": "Kako je poslano kupcu"
+    "As sent to the customer": "Kako je poslano kupcu",
+    "Outgoing Telegram": "Odlazne Poruke Telegram",
+    "Outgoing Nostr": "Odlazne Poruke Nostr",
+    "Failed, Will Retry": "Neuspjelo, Pokušat Će se Ponovno",
+    "Attempt": "Pokušaj",
+    "Message IDs": "ID-ovi Poruka",
+    "Files": "Datoteke",
+    "Accepted": "Prihvaćeno",
+    ":accepted of :total": ":accepted od :total",
+    "Also used for the Outgoing Telegram log.": "Vrijedi i za dnevnik Odlazne Poruke Telegram."
 }

@@ -1775,5 +1775,14 @@
     "1 failure in the last hour|:count failures in the last hour": "Son bir saatte :count hata",
     "Tokens (In / Out)": "Tokenler (Girdi / Çıktı)",
     "Sent to the customer in :language": "Müşteriye gönderildiği dil: :language",
-    "As sent to the customer": "Müşteriye gönderildiği hâliyle"
+    "As sent to the customer": "Müşteriye gönderildiği hâliyle",
+    "Outgoing Telegram": "Giden Telegram Mesajları",
+    "Outgoing Nostr": "Giden Nostr Mesajları",
+    "Failed, Will Retry": "Başarısız, Yeniden Denenecek",
+    "Attempt": "Deneme",
+    "Message IDs": "Mesaj Kimlikleri",
+    "Files": "Dosyalar",
+    "Accepted": "Kabul Edildi",
+    ":accepted of :total": ":total içinden :accepted",
+    "Also used for the Outgoing Telegram log.": "Giden Telegram Mesajları günlüğü için de geçerlidir."
 }

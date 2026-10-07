@@ -1784,5 +1784,14 @@
     "1 failure in the last hour|:count failures in the last hour": ":count échec au cours de la dernière heure|:count échecs au cours de la dernière heure",
     "Tokens (In / Out)": "Jetons (Entrée / Sortie)",
     "Sent to the customer in :language": "Envoyé au client en :language",
-    "As sent to the customer": "Tel qu'envoyé au client"
+    "As sent to the customer": "Tel qu'envoyé au client",
+    "Outgoing Telegram": "Messages Telegram Sortants",
+    "Outgoing Nostr": "Messages Nostr Sortants",
+    "Failed, Will Retry": "Échec, Nouvel Essai Prévu",
+    "Attempt": "Tentative",
+    "Message IDs": "ID des Messages",
+    "Files": "Fichiers",
+    "Accepted": "Accepté",
+    ":accepted of :total": ":accepted sur :total",
+    "Also used for the Outgoing Telegram log.": "S'applique aussi au journal Messages Telegram Sortants."
 }

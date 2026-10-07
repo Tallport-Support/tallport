@@ -296,6 +296,11 @@ class NostrTest extends FeatureTestCase
         $this->assertStringContainsString('relay', $reply->getSendStatusData()['msg']);
         $this->assertSame(Conversation::STATUS_ACTIVE, (int) $conversation->fresh()->status);
         $this->assertStringContainsString('Nostr-Relays: ', (string) $reply->headers);
+        // Outgoing Nostr: the try, with what each relay said.
+        $event = NostrEvent::where('direction', NostrEvent::DIRECTION_OUT)->sole();
+        $this->assertSame([NostrEvent::STATUS_FAILED, $reply->id, $conversation->id, $this->customer_pubkey], [$event->status, $event->thread_id, $event->conversation_id, $event->pubkey]);
+        $this->assertArrayHasKey(self::UNREACHABLE, $event->getRelays());
+        $this->assertFalse($event->getRelays()[self::UNREACHABLE]['ok']);
 
         \Session::start();
         $this->actingAs($this->agent)->get(route('conversations.undo', ['thread_id' => $reply->id, 'token' => csrf_token()]));
@@ -315,6 +320,10 @@ class NostrTest extends FeatureTestCase
 
         (new OutgoingMessageSender())->sendThread($conversation, $reply);
         $this->assertStringContainsString("Files can't be sent over Nostr", $reply->fresh()->getSendStatusData()['msg']);
+        // Nothing went to a relay; Outgoing Nostr shows the try all the same.
+        $event = NostrEvent::where('direction', NostrEvent::DIRECTION_OUT)->orderBy('id', 'desc')->first();
+        $this->assertSame([NostrEvent::STATUS_FAILED, $reply->id, $this->mailbox->id, $this->customer_pubkey, []], [$event->status, $event->thread_id, $event->mailbox_id, $event->pubkey, $event->getRelays()]);
+        $this->assertStringContainsString("Files can't be sent over Nostr", $event->error);
 
         // A module that carries files in tags.
         \Eventy::addFilter('nostr.reply_attachment_tags', function ($tags, $thread) {

@@ -1776,5 +1776,14 @@
     "1 failure in the last hour|:count failures in the last hour": "过去一小时 :count 次失败",
     "Tokens (In / Out)": "Token（输入 / 输出）",
     "Sent to the customer in :language": "已以:language发送给客户",
-    "As sent to the customer": "发送给客户的版本"
+    "As sent to the customer": "发送给客户的版本",
+    "Outgoing Telegram": "外发 Telegram",
+    "Outgoing Nostr": "外发 Nostr",
+    "Failed, Will Retry": "失败，将重试",
+    "Attempt": "尝试",
+    "Message IDs": "消息 ID",
+    "Files": "文件",
+    "Accepted": "已接受",
+    ":accepted of :total": ":accepted / :total",
+    "Also used for the Outgoing Telegram log.": "也适用于外发 Telegram 日志。"
 }

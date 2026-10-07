@@ -1775,5 +1775,14 @@
     "1 failure in the last hour|:count failures in the last hour": "過去1時間に :count 件の失敗",
     "Tokens (In / Out)": "トークン（入力 / 出力）",
     "Sent to the customer in :language": "顧客に:languageで送信済み",
-    "As sent to the customer": "顧客に送信された内容"
+    "As sent to the customer": "顧客に送信された内容",
+    "Outgoing Telegram": "送信Telegram",
+    "Outgoing Nostr": "送信Nostr",
+    "Failed, Will Retry": "失敗、再試行予定",
+    "Attempt": "試行",
+    "Message IDs": "メッセージID",
+    "Files": "ファイル",
+    "Accepted": "受理",
+    ":accepted of :total": ":total件中:accepted件",
+    "Also used for the Outgoing Telegram log.": "送信Telegramのログにも適用されます。"
 }

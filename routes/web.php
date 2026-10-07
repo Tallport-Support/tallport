@@ -57,6 +57,8 @@ if (config('app.dashboard_path')) {
 Route::get('/'.config('app.dashboard_path'), 'SecureController@dashboard')->name('dashboard');
 Route::get('/app-logs/app', ['uses' => 'AppLogsController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.app');
 Route::get('/app-logs/ai', ['uses' => 'AiLogController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.ai');
+Route::get('/app-logs/out_telegram', ['uses' => 'ChannelLogsController@telegram', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.telegram');
+Route::get('/app-logs/out_nostr', ['uses' => 'ChannelLogsController@nostr', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.nostr');
 Route::get('/app-logs/{name?}', ['uses' => 'SecureController@logs', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs');
 Route::post('/app-logs/{name?}', ['uses' => 'SecureController@logsSubmit', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.action');
 

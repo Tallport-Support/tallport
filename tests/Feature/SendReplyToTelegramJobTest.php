@@ -7,6 +7,7 @@ use App\Conversation;
 use App\Jobs\SendReplyToTelegram;
 use App\SendLog;
 use App\Telegram\Telegram;
+use App\Telegram\TelegramSend;
 use App\Thread;
 use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Support\Facades\Http;
@@ -215,5 +216,43 @@ class SendReplyToTelegramJobTest extends FeatureTestCase
         $reply->refresh();
         $this->assertNull($reply->send_status);
         $this->assertSame([], $reply->getSendStatusData()['telegram_messages']);
+    }
+
+    /**
+     * Manage » Logs » Outgoing Telegram: every try, sent (its messages and files) or failed
+     * (tried again, or for good when the bot is blocked or the job gives up).
+     */
+    public function testEachTryIsLogged()
+    {
+        $this->fakeTelegram(['sendMessage' => $this->error(502, 'Bad Gateway')]);
+        $reply = $this->reply();
+        \App\Attachment::create('steps.pdf', 'application/pdf', null, 'PDF-DATA', null, false, $reply->id);
+        $job = (new SendReplyToTelegram($reply->id))->withFakeQueueInteractions();
+        $job->handle();
+
+        $this->fakeTelegram(['sendMessage' => $this->ok(['message_id' => 71]), 'sendDocument' => $this->ok(['message_id' => 72])]);
+        $job = (new SendReplyToTelegram($reply->id))->withFakeQueueInteractions();
+        $job->job->attempts = 2;
+        $job->handle();
+
+        [$retry, $sent] = TelegramSend::orderBy('id')->get()->all();
+        $this->assertSame([TelegramSend::STATUS_RETRYING, 1, 'Bad Gateway', null, 1], [$retry->status, $retry->attempt, $retry->error, $retry->message_ids, $retry->files]);
+        $this->assertSame([TelegramSend::STATUS_SENT, 2, null, [71, 72]], [$sent->status, $sent->attempt, $sent->error, $sent->message_ids]);
+        $this->assertSame([$this->mailbox->id, $reply->conversation_id, $reply->id, $reply->conversation->customer_id], [$sent->mailbox_id, $sent->conversation_id, $sent->thread_id, $sent->customer_id]);
+
+        // Blocked by the customer: failed for good.
+        $this->fakeTelegram(['sendMessage' => $this->error(403, 'Forbidden: bot was blocked by the user')]);
+        $this->reply();
+        $blocked = Thread::where('type', Thread::TYPE_MESSAGE)->orderBy('id', 'desc')->first();
+        (new SendReplyToTelegram($blocked->id))->withFakeQueueInteractions()->handle();
+        $this->assertSame([TelegramSend::STATUS_FAILED, 'Forbidden: bot was blocked by the user', 0], TelegramSend::where('thread_id', $blocked->id)->get(['status', 'error', 'files'])->map(fn ($row) => [$row->status, $row->error, $row->files])->first());
+
+        // The job gave up (timed out): one more failure, once.
+        $this->reply();
+        $given_up = Thread::where('type', Thread::TYPE_MESSAGE)->orderBy('id', 'desc')->first();
+        $job = new SendReplyToTelegram($given_up->id);
+        $job->failed(new \Exception('Timed out'));
+        $job->failed(new \Exception('Timed out'));
+        $this->assertSame(['Timed out'], TelegramSend::where('thread_id', $given_up->id)->pluck('error')->all());
     }
 }

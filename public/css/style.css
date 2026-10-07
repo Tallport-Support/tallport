@@ -2891,21 +2891,25 @@ h1.settings-toolbar__title {
 .app-logs__actions {
     margin-top: 16px;
 }
-/* Logs » AI (secure/ai_log): filters in a row; an error on one line, whole in its Details. */
+/* Logs » AI, Outgoing Telegram and Nostr (secure/ai_log, telegram_log, nostr_log): filters in a row; an error on one line, whole in its Details. */
 .logs-bar .f-input {
     width: auto;
 }
-.ai-log .logs-table th {
+.ai-log .logs-table th,
+.channel-log .logs-table th {
     white-space: nowrap;
 }
 /* Not recorded (older rows). */
-.ai-log__none {
+.ai-log__none,
+.channel-log__none {
     color: var(--f-tertiary);
 }
-.ai-log .logs-table .f-badge {
+.ai-log .logs-table .f-badge,
+.channel-log .logs-table .f-badge {
     margin-right: 4px;
 }
-.ai-log__error {
+.ai-log__error,
+.channel-log__error {
     overflow-wrap: anywhere;
 }
 /* Settings » AI: a model's last calls under it (Usage::modelStatus()). */

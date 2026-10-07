@@ -1774,5 +1774,14 @@
     "1 failure in the last hour|:count failures in the last hour": ":count selhání za poslední hodinu|:count selhání za poslední hodinu|:count selhání za poslední hodinu",
     "Tokens (In / Out)": "Tokeny (Vstup / Výstup)",
     "Sent to the customer in :language": "Odesláno zákazníkovi v jazyce: :language",
-    "As sent to the customer": "Jak bylo odesláno zákazníkovi"
+    "As sent to the customer": "Jak bylo odesláno zákazníkovi",
+    "Outgoing Telegram": "Odchozí Zprávy Telegram",
+    "Outgoing Nostr": "Odchozí Zprávy Nostr",
+    "Failed, Will Retry": "Selhalo, Zkusí se Znovu",
+    "Attempt": "Pokus",
+    "Message IDs": "ID Zpráv",
+    "Files": "Soubory",
+    "Accepted": "Přijato",
+    ":accepted of :total": ":accepted z :total",
+    "Also used for the Outgoing Telegram log.": "Platí také pro protokol Odchozí Zprávy Telegram."
 }

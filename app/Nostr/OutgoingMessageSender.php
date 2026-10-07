@@ -24,6 +24,11 @@ class OutgoingMessageSender
      */
     protected $logger;
 
+    /**
+     * Whether this try is in nostr_events already (sendText() saved it).
+     */
+    protected $recorded = false;
+
     public function __construct(?callable $logger = null)
     {
         $this->logger = $logger;
@@ -58,6 +63,7 @@ class OutgoingMessageSender
      */
     public function sendThread(Conversation $conversation, Thread $thread)
     {
+        $this->recorded = false;
         $cfg = NostrMailbox::forMailbox($conversation->mailbox_id, false);
         if (!$cfg || !$cfg->pubkey || !$cfg->getPrivateKey()) {
             $this->fail($thread, __('Nostr is not set up for this mailbox'));
@@ -89,12 +95,12 @@ class OutgoingMessageSender
             }
             $text = $this->threadToText($thread);
         } catch (\Throwable $error) {
-            $this->fail($thread, $error->getMessage());
+            $this->fail($thread, $error->getMessage(), $pubkey);
 
             return false;
         }
         if ($text === '' && !$attachments) {
-            $this->fail($thread, __('Empty message'));
+            $this->fail($thread, __('Empty message'), $pubkey);
 
             return false;
         }
@@ -112,7 +118,7 @@ class OutgoingMessageSender
         try {
             $result = $this->sendText($cfg, $pubkey, $text, $options);
         } catch (\Throwable $error) {
-            $this->fail($thread, $error->getMessage());
+            $this->fail($thread, $error->getMessage(), $pubkey);
 
             return false;
         }
@@ -208,6 +214,7 @@ class OutgoingMessageSender
         $event->error = $ok ? null : ($relays ? mb_substr($this->summary($results), 0, 1000) : 'no relays');
         $event->event_created_at = now();
         $event->save();
+        $this->recorded = true;
 
         $this->log(sprintf('reply to %s: %s', Keys::shortNpub($pubkey), $ok ? 'delivered' : 'failed'));
 
@@ -312,9 +319,24 @@ class OutgoingMessageSender
         return implode('; ', $parts);
     }
 
-    protected function fail(Thread $thread, $message)
+    protected function fail(Thread $thread, $message, $pubkey = '')
     {
         $this->log('thread '.$thread->id.' not sent: '.$message);
+        // Not sent to any relay: the try is logged all the same (Manage » Logs » Outgoing Nostr).
+        if (!$this->recorded) {
+            $event = new NostrEvent();
+            $event->mailbox_id = $thread->conversation->mailbox_id;
+            $event->direction = NostrEvent::DIRECTION_OUT;
+            $event->pubkey = strtolower((string) $pubkey);
+            $event->kind = GiftWrap::KIND_DM;
+            $event->conversation_id = $thread->conversation_id;
+            $event->thread_id = $thread->id;
+            $event->status = NostrEvent::STATUS_FAILED;
+            $event->error = mb_substr((string) $message, 0, 1000);
+            $event->event_created_at = now();
+            $event->save();
+            $this->recorded = true;
+        }
         $thread->send_status = SendLog::STATUS_SEND_ERROR;
         $thread->updateSendStatusData(['msg' => $message]);
         $thread->save();

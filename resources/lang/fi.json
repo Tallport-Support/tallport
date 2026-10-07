@@ -1793,5 +1793,14 @@
     "1 failure in the last hour|:count failures in the last hour": "1 virhe viimeisen tunnin aikana|:count virhettä viimeisen tunnin aikana",
     "Tokens (In / Out)": "Tokenit (Syöte / Tuloste)",
     "Sent to the customer in :language": "Lähetetty asiakkaalle kielellä: :language",
-    "As sent to the customer": "Asiakkaalle lähetetty versio"
+    "As sent to the customer": "Asiakkaalle lähetetty versio",
+    "Outgoing Telegram": "Lähtevät Telegram-Viestit",
+    "Outgoing Nostr": "Lähtevät Nostr-Viestit",
+    "Failed, Will Retry": "Epäonnistui, Yritetään Uudelleen",
+    "Attempt": "Yritys",
+    "Message IDs": "Viestien Tunnukset",
+    "Files": "Tiedostot",
+    "Accepted": "Hyväksytty",
+    ":accepted of :total": ":accepted/:total",
+    "Also used for the Outgoing Telegram log.": "Koskee myös Lähtevät Telegram-Viestit -lokia."
 }
