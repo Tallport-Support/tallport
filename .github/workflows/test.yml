@@ -15,9 +15,9 @@ jobs:
         # Production runs PHP 8.5 with the imap extension (PECL) on MariaDB.
         php: ['8.5']
         mariadb: ['11.8']
-        # The suite on in-memory SQLite (its default) and on MariaDB; the MariaDB-only
-        # tests (Tests\Concerns\UsesMariaDB) run in both.
-        db: ['sqlite', 'mysql']
+        # The suite on in-memory SQLite (its default), MariaDB and PostgreSQL; the
+        # MariaDB-only tests (Tests\Concerns\UsesMariaDB) run in each.
+        db: ['sqlite', 'mysql', 'pgsql']
 
     services:
       mariadb:
@@ -31,6 +31,19 @@ jobs:
           - 3306:3306
         options: >-
           --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: freescout-test
+          POSTGRES_USER: freescout-test
+          POSTGRES_PASSWORD: freescout-test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U freescout-test"
           --health-interval=5s
           --health-timeout=5s
           --health-retries=20
@@ -51,7 +64,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: mysql, sqlite3, pdo_sqlite, mbstring, xml, imap, zip, gd, curl, intl, json, redis
+          extensions: mysql, sqlite3, pdo_sqlite, pgsql, pdo_pgsql, mbstring, xml, imap, zip, gd, curl, intl, json, redis
           coverage: none
           tools: composer
 

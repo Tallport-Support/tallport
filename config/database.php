@@ -29,9 +29,9 @@ $testing = [
     ],
     'pgsql' => [
         'driver'   => 'pgsql',
-        'host'     => 'localhost',
-        'port'     => '5432',
-        'database' => 'freescout-test',
+        'host'     => env('DB_TEST_PGSQL_HOST', '127.0.0.1'),
+        'port'     => env('DB_TEST_PGSQL_PORT', '5432'),
+        'database' => env('DB_TEST_DATABASE', 'freescout-test'),
         'username' => env('DB_TEST_USERNAME', 'freescout-test'),
         'password' => env('DB_TEST_PASSWORD', 'freescout-test'),
         'charset'  => 'utf8',
