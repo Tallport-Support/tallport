@@ -25,8 +25,12 @@ class AppServiceProvider extends ServiceProvider
 
             return [];
         });
-        // Jobs queued before this limit was added still have their old payload.
         \Illuminate\Support\Facades\Queue::before(function (\Illuminate\Queue\Events\JobProcessing $event) {
+            // Long-lived AI workers must read mailbox settings saved since their last job.
+            if ($event->job->getQueue() == 'ai') {
+                \Option::$cache = [];
+            }
+            // Jobs queued before this limit was added still have their old payload.
             $timeout = $event->job->timeout();
             if ($event->job->getQueue() == 'emails' && $timeout !== null && ($timeout < 1 || $timeout > 300)) {
                 $event->job->fail(new \RuntimeException('The emails queue limits jobs to 300 seconds.'));

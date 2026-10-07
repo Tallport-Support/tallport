@@ -184,6 +184,37 @@ class AiAssistantTest extends FeatureTestCase
         $this->assertSame('Not set up', Settings::mailboxSummary($this->mailbox));
     }
 
+    public function testMailboxAiChangesReachTheNextQueuedJob()
+    {
+        $conversation = $this->receiveCustomerEmail();
+        $thread = $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
+        $this->configureAi(['aiassistant.translation_glossary' => [$this->mailbox->id => 'Old term']]);
+        ThreadTranslator::fake([['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'nl']]);
+
+        $this->assertTrue(Settings::enabled('translations', $this->mailbox));
+        $this->assertSame('Old term', Settings::glossary($this->mailbox));
+        $worker_cache = Option::$cache;
+        $worker = app('queue.worker');
+        $queue = \Queue::connection('database_ai');
+        $save = route('mailboxes.ai.save', ['id' => $this->mailbox->id]);
+
+        $this->postForm($this->admin, $save, ['features' => ['summaries' => 1, 'drafts' => 1], 'glossary' => 'New term'])
+            ->assertRedirect(route('mailboxes.ai', ['id' => $this->mailbox->id]));
+        $this->assertFalse(Settings::enabled('translations', $this->mailbox));
+        Option::$cache = $worker_cache;
+        $queue->push(new \App\Jobs\AiTranslateThread($thread->id, 'en'), '', 'ai');
+        $worker->runNextJob('database_ai', 'ai', new \Illuminate\Queue\WorkerOptions());
+        $this->assertFalse(Settings::enabled('translations', $this->mailbox));
+        ThreadTranslator::assertNeverPrompted();
+
+        $worker_cache = Option::$cache;
+        $this->postForm($this->admin, $save, ['features' => ['summaries' => 1, 'translations' => 1, 'drafts' => 1], 'glossary' => 'Latest term']);
+        Option::$cache = $worker_cache;
+        $queue->push(new \App\Jobs\AiTranslateThread($thread->id, 'en'), '', 'ai');
+        $worker->runNextJob('database_ai', 'ai', new \Illuminate\Queue\WorkerOptions());
+        ThreadTranslator::assertPrompted(fn ($prompt) => str_contains($prompt->prompt, 'Latest term') && !str_contains($prompt->prompt, 'Old term'));
+    }
+
     /**
      * A feature's primary model failing (for any reason): its backup answers.
      */

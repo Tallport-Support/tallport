@@ -14,11 +14,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: database, Redis, and Beanstalkd now have separate `default`, `emails`, and `ai` reservations (3,660/360/960 seconds) and workers; mail jobs are capped at 300 seconds, including module payloads. Database and Redis queue tests verify reservation behavior. SQS visibility remains operator-configured as documented in `README.md`. External delivery idempotency and bounded workflow batches remain separate follow-up work.
 
-- [ ] **02 · P1 · Tallport — Apply mailbox AI changes to running workers.**
+- [x] **02 · P1 · Tallport — Apply mailbox AI changes to running workers.**
 
   Evidence: `MailboxesController::aiSave()` (`app/Http/Controllers/MailboxesController.php:302`) clears `Option::$cache` only in its own process. `app/Option.php:78` memoizes values in static memory. Unlike the installation settings path, the mailbox path does not restart workers, and there is no per-job option reset in `app/`. A worker that already read a feature switch or glossary can retain the old value.
 
   Use the existing worker restart mechanism or explicit cache invalidation between jobs. Acceptance: warm a worker's settings, disable translations/change a glossary through mailbox settings, and verify the next job respects the new values. Disabling a feature must stop subsequent external AI requests.
+
+  Completed: the AI queue clears its in-process option cache before each job. A worker regression test warms old settings, saves a disabled feature and new glossary, then proves subsequent jobs skip the AI call and use the latest glossary when re-enabled.
 
 - [ ] **03 · P1 · Tallport — Fix the translation sanitizer's missing closure variable.**
 
