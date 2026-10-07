@@ -238,12 +238,14 @@ PHP;
      */
     public function testFetchingAllSkipsEmailsFetchedBefore()
     {
+        // Built once: the same email (and Date header) on the server and received before.
+        $read_before = $this->message(3, 'Read before', ['imap' => ['flags' => ['\\Seen']]]);
         $port = $this->startServer(['INBOX' => [
-            3 => $this->message(3, 'Read before', ['imap' => ['flags' => ['\\Seen']]]),
+            3 => $read_before,
             4 => $this->message(4, 'New one'),
         ]]);
         $mailbox = $this->imapMailbox($port, ['email' => 'fetched@example.org']);
-        $this->receiveEmail($mailbox, $this->message(3, 'Read before')['raw']);
+        $this->receiveEmail($mailbox, $read_before['raw']);
 
         $output = $this->fetch(['--unseen' => '0', '--days' => '10']);
 
