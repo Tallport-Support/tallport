@@ -1825,5 +1825,6 @@
     "Delivery delayed": "Dostava zamuja",
     "Regenerate": "Ustvari Znova",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Želite ustvariti nov URL webhooka? Trenutni ne bo deloval, dokler webhooka v :provider ne posodobite z novim URL-jem.",
-    "New webhook URL made. Update it in your sending service.": "Nov URL webhooka je ustvarjen. Posodobite ga v svoji storitvi za pošiljanje."
+    "New webhook URL made. Update it in your sending service.": "Nov URL webhooka je ustvarjen. Posodobite ga v svoji storitvi za pošiljanje.",
+    "On :date, :person wrote:": ":date je :person napisal(a):"
 }

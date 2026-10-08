@@ -1826,5 +1826,6 @@
     "Delivery delayed": "Доставка задерживается",
     "Regenerate": "Создать Заново",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Создать новый URL вебхука? Текущий перестанет работать, пока вы не обновите вебхук в :provider, указав новый URL.",
-    "New webhook URL made. Update it in your sending service.": "Новый URL вебхука создан. Обновите его в своём сервисе отправки."
+    "New webhook URL made. Update it in your sending service.": "Новый URL вебхука создан. Обновите его в своём сервисе отправки.",
+    "On :date, :person wrote:": ":date, :person написал(а):"
 }

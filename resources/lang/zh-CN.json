@@ -1827,5 +1827,6 @@
     "Delivery delayed": "投递已延迟",
     "Regenerate": "重新生成",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "要生成新的 Webhook URL 吗？在你用新 URL 更新 :provider 中的 Webhook 之前，当前 URL 将无法使用。",
-    "New webhook URL made. Update it in your sending service.": "已生成新的 Webhook URL。请在你的发送服务中更新它。"
+    "New webhook URL made. Update it in your sending service.": "已生成新的 Webhook URL。请在你的发送服务中更新它。",
+    "On :date, :person wrote:": "在 :date，:person 写道："
 }

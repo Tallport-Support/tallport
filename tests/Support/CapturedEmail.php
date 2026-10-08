@@ -43,6 +43,14 @@ class CapturedEmail
         return $this->message->getHtmlBody() ?? $this->message->getTextBody();
     }
 
+    /**
+     * The plain-text body.
+     */
+    public function getTextBody()
+    {
+        return $this->message->getTextBody();
+    }
+
     public function getFrom()
     {
         return $this->addresses($this->message->getFrom());

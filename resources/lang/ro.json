@@ -1825,5 +1825,6 @@
     "Delivery delayed": "Livrare întârziată",
     "Regenerate": "Regenerează",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Creați un URL nou pentru webhook? Cel actual nu va mai funcționa până când actualizați webhook-ul în :provider cu noul URL.",
-    "New webhook URL made. Update it in your sending service.": "URL nou pentru webhook creat. Actualizați-l în serviciul de trimitere."
+    "New webhook URL made. Update it in your sending service.": "URL nou pentru webhook creat. Actualizați-l în serviciul de trimitere.",
+    "On :date, :person wrote:": "Pe :date, :person a scris:"
 }

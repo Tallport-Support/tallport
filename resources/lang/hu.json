@@ -1826,5 +1826,6 @@
     "Delivery delayed": "A kézbesítés késik",
     "Regenerate": "Újragenerálás",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Új webhook URL-t hoz létre? A jelenlegi nem fog működni, amíg nem frissíti a webhookot itt: :provider az új URL-lel.",
-    "New webhook URL made. Update it in your sending service.": "Új webhook URL létrehozva. Frissítse a küldőszolgáltatásában."
+    "New webhook URL made. Update it in your sending service.": "Új webhook URL létrehozva. Frissítse a küldőszolgáltatásában.",
+    "On :date, :person wrote:": ":date időpontban :person ezt írta:"
 }

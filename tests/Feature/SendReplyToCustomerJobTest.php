@@ -290,6 +290,29 @@ class SendReplyToCustomerJobTest extends FeatureTestCase
     }
 
     /**
+     * Replies look like other emails: no fonts, sizes or text colours of their own, and the
+     * earlier messages quoted as Gmail does ("On …, … wrote:" and a quote; "> " in plain text).
+     */
+    public function testReplyIsQuotedAsGmailDoesWithoutOwnFonts()
+    {
+        config(['app.email_conv_history' => 'full']);
+        $conversation = $this->receiveConversation(['body' => 'The very first question']);
+        $conversation->threads()->update(['created_at' => '2026-10-08 13:13:00']);
+        $this->captured_mail->flush();
+
+        $this->reply($conversation, '<p>Our answer</p>');
+
+        $email = $this->sentEmailsTo('casey@customer.example.org')[0];
+        $html = $email->getBody();
+        $this->assertDoesNotMatchRegularExpression('/font-family:(?!\s*Menlo)|font-size:(?!\s*(0px|smaller))|line-height:(?!\s*0px)/', $html);
+        $this->assertStringNotContainsString('color: #232323', $html);
+        $this->assertMatchesRegularExpression('#Our answer.*<!-- originalMessage --><div class="gmail_quote">\s*<div class="gmail_attr"\s*>On Oct 8, 2026 1:13 PM, Casey wrote:<br></div>\s*<blockquote class="gmail_quote"[^>]*>.*The very first question.*</blockquote>#s', $html);
+
+        $text = $email->getTextBody();
+        $this->assertMatchesRegularExpression('/Our answer.*\n\nOn Oct 8, 2026 1:13 PM, Casey wrote:\n> The very first question/s', $text);
+    }
+
+    /**
      * A conversation moved to another mailbox: earlier replies quoted in a
      * reply keep the signature of the mailbox they were written in.
      */

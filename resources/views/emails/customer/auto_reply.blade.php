@@ -3,22 +3,18 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
     <style>{!! safe_raw_html(\Eventy::filter('auto_reply_email.css', '')) !!}</style>
 </head>
-<body bgcolor="#ffffff">
+<body>
     <div id="{{ App\Misc\Mail::REPLY_SEPARATOR_HTML }}" class="{{ App\Misc\Mail::REPLY_SEPARATOR_HTML }}">{!! safe_raw_html(\Eventy::filter('auto_reply_email.header', '')) !!}
 
-        @if (\Helper::isLocaleRtl())
-            <div style="font-family:sans-serif; direction: rtl; unicode-bidi: plaintext; text-align: right;">
-        @else
-            <div style="font-family:sans-serif;">
-        @endif
+        <div @if (\Helper::isLocaleRtl()) style="direction: rtl; unicode-bidi: plaintext; text-align: right;" @endif>
             {!! $auto_reply_message !!}
         </div>
 
         @if (\App\Option::get('email_branding'))
             @if (\Helper::isLocaleRtl())
-                <div style="font-size:12px; line-height:18px; font-family:Arial,'Helvetica Neue',Helvetica,Tahoma,sans-serif; color: #aaaaaa; border-top: 1px solid #eeeeee; margin: 10px 0 14px 0; padding-top: 10px; direction: rtl; unicode-bidi: plaintext; text-align: right;">
+                <div style="font-size:smaller; color: #999999; border-top: 1px solid #eeeeee; margin: 10px 0 14px 0; padding-top: 10px; direction: rtl; unicode-bidi: plaintext; text-align: right;">
             @else
-                <div style="font-size:12px; line-height:18px; font-family:Arial,'Helvetica Neue',Helvetica,Tahoma,sans-serif; color: #aaaaaa; border-top: 1px solid #eeeeee;margin: 10px 0 14px 0; padding-top: 10px;">
+                <div style="font-size:smaller; color: #999999; border-top: 1px solid #eeeeee;margin: 10px 0 14px 0; padding-top: 10px;">
             @endif
                 {!! __('Support powered by :app_name — Free open source help desk & shared mailbox', ['app_name' => \Helper::productCreditHtml()]) !!}
             </div>

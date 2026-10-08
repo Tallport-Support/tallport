@@ -2224,5 +2224,6 @@
     "Delivery delayed": "Жеткізу кешігуде",
     "Regenerate": "Қайта Жасау",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Жаңа webhook URL жасау керек пе? :provider ішіндегі webhook-ты жаңа URL-мен жаңартқанша ағымдағысы жұмыс істемейді.",
-    "New webhook URL made. Update it in your sending service.": "Жаңа webhook URL жасалды. Оны жіберу қызметіңізде жаңартыңыз."
+    "New webhook URL made. Update it in your sending service.": "Жаңа webhook URL жасалды. Оны жіберу қызметіңізде жаңартыңыз.",
+    "On :date, :person wrote:": ":date күні :person жазды:"
 }

@@ -1825,5 +1825,6 @@
     "Delivery delayed": "Doručení se zpožďuje",
     "Regenerate": "Vygenerovat Znovu",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Vytvořit novou URL webhooku? Současná přestane fungovat, dokud webhook v :provider neaktualizujete novou URL.",
-    "New webhook URL made. Update it in your sending service.": "Nová URL webhooku byla vytvořena. Aktualizujte ji ve své službě pro odesílání."
+    "New webhook URL made. Update it in your sending service.": "Nová URL webhooku byla vytvořena. Aktualizujte ji ve své službě pro odesílání.",
+    "On :date, :person wrote:": "Dne :date napsal(a) :person:"
 }

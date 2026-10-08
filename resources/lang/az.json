@@ -1826,5 +1826,6 @@
     "Delivery delayed": "Çatdırılma gecikir",
     "Regenerate": "Yenidən Yarat",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Yeni webhook URL-i yaradılsın? :provider-də webhook-u yeni URL ilə yeniləyənə qədər cari URL işləməyəcək.",
-    "New webhook URL made. Update it in your sending service.": "Yeni webhook URL-i yaradıldı. Onu göndərmə xidmətinizdə yeniləyin."
+    "New webhook URL made. Update it in your sending service.": "Yeni webhook URL-i yaradıldı. Onu göndərmə xidmətinizdə yeniləyin.",
+    "On :date, :person wrote:": ":date tarixində :person yazdı:"
 }

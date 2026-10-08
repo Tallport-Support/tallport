@@ -1826,5 +1826,6 @@
     "Delivery delayed": "配信が遅延しています",
     "Regenerate": "再生成",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "新しい Webhook URL を作成しますか？ :provider の Webhook を新しい URL に更新するまで、現在の URL は機能しなくなります。",
-    "New webhook URL made. Update it in your sending service.": "新しい Webhook URL を作成しました。送信サービスで更新してください。"
+    "New webhook URL made. Update it in your sending service.": "新しい Webhook URL を作成しました。送信サービスで更新してください。",
+    "On :date, :person wrote:": ":date、:person さんは書きました:"
 }

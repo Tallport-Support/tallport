@@ -1826,5 +1826,6 @@
     "Delivery delayed": "Entrega atrasada",
     "Regenerate": "Gerar Novamente",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Criar um novo URL de webhook? O atual deixa de funcionar até atualizar o webhook no :provider com o novo URL.",
-    "New webhook URL made. Update it in your sending service.": "Novo URL de webhook criado. Atualize-o no seu serviço de envio."
+    "New webhook URL made. Update it in your sending service.": "Novo URL de webhook criado. Atualize-o no seu serviço de envio.",
+    "On :date, :person wrote:": "Em :date, :person escreveu:"
 }
