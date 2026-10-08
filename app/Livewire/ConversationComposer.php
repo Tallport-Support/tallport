@@ -371,8 +371,10 @@ class ConversationComposer extends Component
         try {
             $result = \App\Ai\ChatTranslation::translateReply($this->conversation(), $this->body, auth()->user(), $stream);
         } catch (\Throwable $e) {
-            \Helper::logException($e, '[AI] Translation of a reply in conversation '.$this->conversation_id.':');
-            $this->translation = ['source' => $this->body, 'html' => '', 'error' => mb_substr(trim($e->getMessage()) ?: get_class($e), 0, 300)];
+            $error = $e->getMessage() === __('This mailbox has used its AI tokens for today.')
+                ? $e->getMessage()
+                : \App\Ai\Errors::message($e, 'Translation of a reply in conversation '.$this->conversation_id.':');
+            $this->translation = ['source' => $this->body, 'html' => '', 'error' => $error];
 
             return 'error';
         }

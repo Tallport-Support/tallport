@@ -169,14 +169,18 @@ class AiTranslationsTest extends FeatureTestCase
             throw new \RuntimeException('Service unavailable');
         });
         ChatTranslation::translateIncoming($this->conversation, 'en');
-        $this->assertSame(['error', 'Service unavailable'], Translations::reason($this->first()->fresh(), 'en'));
-        \Log::shouldHaveReceived('error')->withArgs(fn ($message) => str_contains($message, '[AI] Translation of conversation '.$this->conversation->id.':'))->once();
+        [$kind, $message] = Translations::reason($this->first()->fresh(), 'en');
+        $this->assertSame('error', $kind);
+        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $message);
+        \Log::shouldHaveReceived('error')->withArgs(fn ($logged) => str_contains($logged, '['.substr($message, -13, 12).']') && str_contains($logged, 'Service unavailable'))->once();
 
         $second = $this->customerMessage('Hallo?');
         ChatTranslator::fake([['messages' => [['id' => $second->id, 'translation' => 'Hello?', 'same_language' => false]], 'detected_language' => 'en']]);
         ChatTranslation::translateIncoming($this->conversation, 'en');
         $this->assertSame('Hello?', Translations::get($second->fresh(), 'en'));
-        $this->assertSame(['error', 'The AI left this message out.'], Translations::reason($this->first()->fresh(), 'en'));
+        [$kind, $message] = Translations::reason($this->first()->fresh(), 'en');
+        $this->assertSame('error', $kind);
+        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $message);
     }
 
     public function testInvalidChatBatchAnswersUseTheBackupModel()
@@ -254,8 +258,9 @@ class AiTranslationsTest extends FeatureTestCase
         ThreadTranslator::fake(function () {
             throw new \RuntimeException('Service unavailable');
         });
-        $history()->call('translate', $thread->id)->assertToasted('Could not translate the message: Service unavailable', 'danger');
-        \Log::shouldHaveReceived('error')->withArgs(fn ($message) => str_contains($message, '[AI] Translation of thread '.$thread->id.':'));
+        $history()->call('translate', $thread->id)->assertDispatched('fruit-toast', fn ($name, $params) => ($params['tone'] ?? '') === 'danger'
+            && preg_match('/^Could not translate the message: Error occurred \(ID: [A-F0-9]{12}\)$/', $params['message'] ?? ''));
+        \Log::shouldHaveReceived('error')->withArgs(fn ($message) => str_contains($message, 'Translation of thread '.$thread->id.':') && str_contains($message, 'Service unavailable'));
 
         Option::set('aiassistant.daily_tokens', 1);
         Option::$cache = [];

@@ -138,8 +138,8 @@ class AiDocumentsTest extends FeatureTestCase
 
         $document = Document::first();
         $this->assertSame(Document::STATUS_FAILED, $document->status);
-        $this->assertStringContainsString('HTTP 404', $document->last_error);
-        $this->actingAs($this->admin)->get('/ai-assistant/documents')->assertSee('HTTP 404');
+        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $document->last_error);
+        $this->actingAs($this->admin)->get('/ai-assistant/documents')->assertSee($document->last_error)->assertDontSee('HTTP 404');
     }
 
     public function testDisableIndexAndDelete()
@@ -227,6 +227,29 @@ class AiDocumentsTest extends FeatureTestCase
         $this->assertSame('', Document::where('title', 'internal notes')->first()->localizedUrl('en'));
     }
 
+    public function testFailedApiIndexingKeepsOnlyAReferenceInTheResponseAndDocument()
+    {
+        $token = DocumentApiKey::issue($this->mailbox->id);
+        $key = 'embedding-secret-key-123';
+        Option::set('aiassistant.documentation.embedding_api_key', encrypt($key));
+        Option::$cache = [];
+        \Log::spy();
+        Embeddings::fake(function () use ($key, $token) {
+            throw new \RuntimeException('Provider failed: '.$key.' Authorization: Bearer '.$token);
+        });
+
+        $response = $this->api($token, ['identifier' => 'setup/android', 'content' => 'Restart the Android app.']);
+
+        $response->assertStatus(500)->assertJson(['status' => 'error', 'error' => ['type' => 'indexing_failed']]);
+        $detail = $response->json('error.detail');
+        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $detail);
+        $this->assertSame($detail, Document::where('source_identifier', Document::apiSourceIdentifier('setup/android'))->value('last_error'));
+        $this->assertStringNotContainsString($key, $response->getContent());
+        $this->assertStringNotContainsString($token, $response->getContent());
+        $reference = substr($detail, -13, 12);
+        \Log::shouldHaveReceived('error')->withArgs(fn ($message) => str_contains($message, '['.$reference.']') && str_contains($message, 'Provider failed: [redacted] Authorization: Bearer [redacted]') && !str_contains($message, $key) && !str_contains($message, $token))->once();
+    }
+
     // Command.
 
     public function testCommandFetchesChangedPagesAgain()
@@ -294,7 +317,7 @@ class AiDocumentsTest extends FeatureTestCase
             $this->assertSame('Document has no indexable content', $e->getMessage());
         }
         $this->assertSame(Document::STATUS_FAILED, $document->fresh()->status);
-        $this->assertSame('Document has no indexable content', $document->fresh()->last_error);
+        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $document->fresh()->last_error);
 
         // The provider answering with too few embeddings.
         Embeddings::fake(fn ($prompt) => [[1.0, 0.0, 0.1]]);

@@ -60,7 +60,7 @@ document.addEventListener('alpine:init', function () {
 					Tallport.busy(button, false);
 					// A status line, then the answer (an error's collapsed).
 					if (!Tallport.isSuccess(response)) {
-						self.result = {ok: false, line: response.msg || Lang.get('messages.error_occurred'), body: ''};
+						self.result = {ok: false, line: (response.http_status ? texts.failure.replace(':status', response.http_status) + ' ' : '') + (response.msg || Lang.get('messages.error_occurred')), body: ''};
 						return;
 					}
 					var ok = response.http_status >= 200 && response.http_status < 300;

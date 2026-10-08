@@ -2,6 +2,7 @@
 
 namespace App\Ai\Agents;
 
+use App\Ai\Errors;
 use App\Ai\PartialJson;
 use App\Ai\Providers;
 use App\Ai\Settings;
@@ -178,11 +179,11 @@ abstract class TallportAgent implements Agent, HasProviderOptions
                                 throw $e;
                             }
                             if ($refused == 'fast_tier') {
-                                \Helper::logException($e, '[AI] '.$attempt_model.' refused fast mode ('.$this->feature().'), trying without it:');
+                                Errors::report($e, $attempt_model.' refused fast mode ('.$this->feature().'), trying without it:');
                                 $this->recordAttempt(Usage::STATUS_FAST_TIER_REFUSED, null, $e);
                                 Providers::rememberFastTierRejected($name, $attempt_model);
                             } else {
-                                \Helper::logException($e, '[AI] '.$attempt_model.' refused the fast options ('.$this->feature().'), trying without them:');
+                                Errors::report($e, $attempt_model.' refused the fast options ('.$this->feature().'), trying without them:');
                                 $this->recordAttempt(Usage::STATUS_FAST_REFUSED, null, $e);
                                 Providers::rememberFastRejected($name, $attempt_model);
                             }
@@ -196,7 +197,7 @@ abstract class TallportAgent implements Agent, HasProviderOptions
                     if ($last) {
                         throw $e;
                     }
-                    \Helper::logException($e, '[AI] '.$attempt_model.' failed ('.$this->feature().'), trying the backup:');
+                    Errors::report($e, $attempt_model.' failed ('.$this->feature().'), trying the backup:');
                     continue;
                 }
                 $this->recordAttempt(Usage::STATUS_OK, is_array($result) ? $result[1] : $result);

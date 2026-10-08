@@ -151,7 +151,7 @@ class ChatTranslationTest extends FeatureTestCase
         });
         $composer = $this->composer()
             ->call('previewTranslation', '<p>I will look into it.</p>')->assertReturned('error')
-            ->assertSee('The reply could not be translated: Service unavailable')->assertSee('Send as Written');
+            ->assertSee('The reply could not be translated: Error occurred (ID:')->assertSee('Send as Written');
         $this->assertSame(0, $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->count());
 
         // As written: the reply as it is, no translation kept.
@@ -181,7 +181,7 @@ class ChatTranslationTest extends FeatureTestCase
         ReplyTranslator::fake([['translation' => '', 'same_language' => false, 'note' => '']]);
 
         $this->composer()->call('previewTranslation', '<p>I will look into it.</p>')->assertReturned('error')
-            ->assertSee('The AI&#039;s answer could not be read.', false);
+            ->assertSee('The reply could not be translated: Error occurred (ID:');
         $this->assertSame(0, $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->count());
 
         ReplyTranslator::fake([['translation' => '', 'same_language' => true, 'note' => '']]);

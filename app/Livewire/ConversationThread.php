@@ -121,8 +121,7 @@ class ConversationThread extends Component
                 Fruit::toast(__('The AI took this message to be in :language already.', ['language' => \App\Ai\Settings::displayName(\App\Ai\Settings::language($thread->conversation->mailbox, $user))]));
             }
         } catch (\Throwable $e) {
-            \Helper::logException($e, '[AI] Translation of thread '.$thread->id.':');
-            Fruit::toast(__('Could not translate the message: :error', ['error' => $e->getMessage()]), 'danger');
+            Fruit::toast(__('Could not translate the message: :error', ['error' => \App\Ai\Errors::message($e, 'Translation of thread '.$thread->id.':')]), 'danger');
         }
     }
 

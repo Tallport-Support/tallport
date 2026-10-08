@@ -23,6 +23,7 @@ return array(
     'App\\Ai\\Documents' => $baseDir . '/app/Ai/Documents.php',
     'App\\Ai\\DraftJob' => $baseDir . '/app/Ai/DraftJob.php',
     'App\\Ai\\Drafts' => $baseDir . '/app/Ai/Drafts.php',
+    'App\\Ai\\Errors' => $baseDir . '/app/Ai/Errors.php',
     'App\\Ai\\PartialJson' => $baseDir . '/app/Ai/PartialJson.php',
     'App\\Ai\\Providers' => $baseDir . '/app/Ai/Providers.php',
     'App\\Ai\\Settings' => $baseDir . '/app/Ai/Settings.php',

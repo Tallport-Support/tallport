@@ -38,11 +38,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: finished streamed answers now have schema and feature checks inside each provider attempt, so invalid primary answers try the backup. Empty translations require an explicit valid `same_language` result; nonempty translations are kept even when the detected language matches the target. Chat batches reject unknown or duplicate IDs, while valid entries are kept and omitted messages alone are marked failed. Partial previews remain unchanged.
 
-- [ ] **05 · P1 · Tallport — Use the AI error redactor at every output boundary.**
+- [x] **05 · P1 · Tallport — Use the AI error redactor at every output boundary.**
 
   Evidence: `app/Ai/Usage.php:104` already redacts provider secrets, but `AiDraftsController::store()` stores raw exception text and streams it to agents (`app/Http/Controllers/AiDraftsController.php:78`). `Translations::failed()`, the composer translation error, document errors, and calls to `Helper::logException()` take separate raw paths. A provider or custom endpoint can echo credentials or request content into an error.
 
   Centralize safe error rendering: localized user messages with a reference ID, and bounded, redacted diagnostic details for operators. Apply it to persistence, SSE, API responses, and logs. Acceptance: inject an exception containing the configured key and an Authorization header; neither appears in any response, saved error, or log. Preserve useful status and provider information.
+
+  Completed: AI failures now share one reference across user-visible messages, saved error fields, and bounded redacted operator logs. Draft SSE, translation and document errors, the documentation API, customer-context results, and AI exception logs use it; failed customer-context tests retain the HTTP status without returning the endpoint's body. Expected token-limit messages remain actionable. Regression tests cover configured keys and Authorization headers in responses, saved errors, and logs.
 
 - [ ] **06 · P1 · Tallport — Include saved AI drafts in deletion and retention.**
 

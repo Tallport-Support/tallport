@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Ai\Document;
 use App\Ai\Documents;
+use App\Ai\Errors;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -58,7 +59,7 @@ class AiIndexDocument implements ShouldQueue, ShouldBeUnique
             Documents::index($document, $this->force);
         } catch (\Throwable $e) {
             $document->status = Document::STATUS_FAILED;
-            $document->last_error = mb_substr($e->getMessage(), 0, 2000);
+            $document->last_error = Errors::message($e, 'Indexing document '.$document->id.':');
             $document->save();
         }
     }

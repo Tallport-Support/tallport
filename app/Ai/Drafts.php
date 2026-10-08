@@ -103,7 +103,7 @@ class Drafts
         try {
             $results = Documents::search($conversation->mailbox_id, $question, $locale);
         } catch (\Throwable $e) {
-            return ['status' => 'failed: '.$e->getMessage(), 'chunks' => []];
+            return ['status' => 'failed: '.Errors::message($e, 'Documentation search for conversation '.$conversation->id.':'), 'chunks' => []];
         }
 
         return [

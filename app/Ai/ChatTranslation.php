@@ -181,7 +181,7 @@ class ChatTranslation
                 ->mapWithKeys(fn ($message) => [(int) $message['id'] => [(string) ($message['translation'] ?? ''), false]])
                 ->all()));
         } catch (\Throwable $e) {
-            \Helper::logException($e, '[AI] Translation of conversation '.$conversation->id.':');
+            Errors::report($e, 'Translation of conversation '.$conversation->id.':');
             $batch->each(fn (Thread $thread) => Translations::failed($thread, $language, $e));
 
             return $threads->all();

@@ -185,9 +185,11 @@ class AiLogTest extends FeatureTestCase
     {
         $this->useModels();
         Option::set('aiassistant.documentation.embedding_api_key', encrypt('emb-secret-key-42'));
+        Option::set('aiassistant.customer_context_secret_key', [$this->mailbox->id => encrypt('s3cret')]);
         Option::$cache = [];
 
         $this->assertSame('Key [redacted] and [redacted] refused', Usage::redact('Key sk-two-secret-0002 and emb-secret-key-42 refused'));
+        $this->assertSame('Context [redacted] refused', Usage::redact('Context s3cret refused'));
         $this->assertSame('Authorization: Bearer [redacted] sent', Usage::redact('Authorization: Bearer abc.def-123 sent'));
         $this->assertSame('{"api_key": "[redacted]", "x-api-key":"[redacted]"} ?key=[redacted]&model=gpt-4.1-nano', Usage::redact('{"api_key": "plain", "x-api-key":"zzz"} ?key=AIzaSyA1b2c3&model=gpt-4.1-nano'));
         $this->assertSame('Incorrect API key provided: [redacted]. Model claude-sonnet-4-5-20250929 at [redacted]', Usage::redact('Incorrect API key provided: sk-proj-Ab12******************xY9z. Model claude-sonnet-4-5-20250929 at xai-0123456789abcdefABCDEF'));

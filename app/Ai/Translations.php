@@ -166,7 +166,7 @@ class Translations
     public static function failed(Thread $thread, $language, \Throwable $e)
     {
         $data = Summaries::data($thread);
-        $data['errors'][$language] = mb_substr(trim($e->getMessage()) ?: get_class($e), 0, 300);
+        $data['errors'][$language] = Errors::message($e, 'Translation of thread '.$thread->id.':');
         self::save($thread, $data);
     }
 

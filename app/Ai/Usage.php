@@ -106,8 +106,11 @@ class Usage extends Model
         foreach (Settings::providers() as $provider) {
             $keys[] = \Helper::decrypt($provider['api_key']);
         }
+        foreach ((array) \Option::get('aiassistant.customer_context_secret_key', []) as $secret) {
+            $keys[] = \Helper::decrypt($secret);
+        }
         foreach ($keys as $key) {
-            if (is_string($key) && strlen($key) >= 8) {
+            if (is_string($key) && $key !== '') {
                 $message = str_replace($key, '[redacted]', $message);
             }
         }

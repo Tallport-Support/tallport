@@ -247,7 +247,9 @@ class AiAssistantTest extends FeatureTestCase
             throw new \RuntimeException('Incorrect API key provided');
         });
         $other = $this->receiveCustomerEmail("Hallo,\n\nNog iets.")->threads()->first();
-        $this->assertSame(['error', 'Incorrect API key provided'], Translations::reason($other, 'en'));
+        [$kind, $message] = Translations::reason($other, 'en');
+        $this->assertSame('error', $kind);
+        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $message);
     }
 
     public function testInvalidCompletedTranslationsUseTheBackupModel()
@@ -560,9 +562,11 @@ class AiAssistantTest extends FeatureTestCase
         });
         $conversation = $this->receiveCustomerEmail("Hallo,\n\nEen andere vraag.");
         $thread = $conversation->threads()->first();
-        $this->assertSame(['error', 'Rate limit reached'], Translations::reason($thread->fresh(), 'en'));
+        [$kind, $message] = Translations::reason($thread->fresh(), 'en');
+        $this->assertSame('error', $kind);
+        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $message);
         $this->getConversationPage($this->agent, $conversation)
-            ->assertSee('Not translated: the AI failed (Rate limit reached). It tries again when the conversation is opened.');
+            ->assertSee('Not translated: the AI failed ('.$message.'). It tries again when the conversation is opened.');
         ThreadTranslator::fake([['translation' => 'Another question.', 'same_language' => false, 'detected_language' => 'nl']]);
         $this->getConversationPage($this->agent, $conversation);
         $this->getConversationPage($this->agent, $conversation)->assertSee('Another question.')->assertDontSee('Not translated');

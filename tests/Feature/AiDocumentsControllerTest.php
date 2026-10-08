@@ -153,8 +153,10 @@ class AiDocumentsControllerTest extends FeatureTestCase
             'status'   => 'error',
             'message'  => 'Documentation was saved, but indexing failed.',
             'document' => ['identifier' => 'faq', 'title' => 'FAQ'],
-            'error'    => ['type' => 'indexing_failed', 'detail' => 'Embedding service is down'],
+            'error'    => ['type' => 'indexing_failed'],
         ]);
-        $this->assertNotNull(Document::first());
+        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $response->json('error.detail'));
+        $this->assertSame($response->json('error.detail'), Document::first()->last_error);
+        $this->assertStringNotContainsString('Embedding service is down', $response->getContent());
     }
 }

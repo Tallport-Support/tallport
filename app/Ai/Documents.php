@@ -158,7 +158,7 @@ class Documents
             });
         } catch (\Throwable $e) {
             $document->status = Document::STATUS_FAILED;
-            $document->last_error = mb_substr($e->getMessage(), 0, 2000);
+            $document->last_error = Errors::message($e, 'Indexing document '.$document->id.':');
             $document->save();
 
             throw $e;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Ai\Document;
 use App\Ai\DocumentApiKey;
 use App\Ai\Documents;
+use App\Ai\Errors;
 use App\Jobs\AiIndexDocument;
 use App\Mailbox;
 use Illuminate\Http\Request;
@@ -164,13 +165,11 @@ class AiDocumentsController extends Controller
                     ? ['status' => 'indexed', 'message' => Documents::index($document).' chunks']
                     : ['status' => 'skipped', 'message' => 'Document is unchanged'];
             } catch (\Throwable $e) {
-                \Helper::logException($e, '[AI] Documentation API, document #'.$document->id.':');
-
                 return response()->json([
                     'status'   => 'error',
                     'message'  => 'Documentation was saved, but indexing failed.',
                     'document' => $this->apiDocument($document->fresh()),
-                    'error'    => ['type' => 'indexing_failed', 'detail' => $e->getMessage()],
+                    'error'    => ['type' => 'indexing_failed', 'detail' => Errors::message($e, 'Documentation API, document #'.$document->id.':')],
                 ], 500);
             }
         }

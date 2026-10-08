@@ -49,7 +49,7 @@ class RealtimeConvTranslating implements ShouldBroadcastNow
         try {
             event(new self($data));
         } catch (\Throwable $e) {
-            \Helper::logException($e, '[AI] Translation of conversation '.$conversation->id.' (as it is written):');
+            \App\Ai\Errors::report($e, 'Translation of conversation '.$conversation->id.' (as it is written):');
         }
     }
 

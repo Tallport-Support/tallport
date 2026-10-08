@@ -53,7 +53,7 @@ class AiSummarizeConversation implements ShouldQueue, ShouldBeUnique
         try {
             Summaries::summarize($conversation, $this->language);
         } catch (\Throwable $e) {
-            \Helper::logException($e, '[AI] Summary of conversation #'.$conversation->number.':');
+            \App\Ai\Errors::report($e, 'Summary of conversation #'.$conversation->number.':');
 
             return;
         }

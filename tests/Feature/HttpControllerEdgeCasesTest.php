@@ -72,7 +72,8 @@ class HttpControllerEdgeCasesTest extends FeatureTestCase
         ]);
 
         $response->assertJsonPath('status', 'error');
-        $this->assertStringContainsString('Could not resolve host: crm.example.org', $response->json('msg'));
+        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $response->json('msg'));
+        $this->assertStringNotContainsString('Could not resolve host: crm.example.org', $response->getContent());
     }
 
     // App logs.

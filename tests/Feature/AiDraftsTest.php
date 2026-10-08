@@ -255,18 +255,26 @@ class AiDraftsTest extends FeatureTestCase
 
     public function testFailedDraftIsReported()
     {
-        ReplyDrafter::fake(function () {
-            throw new \RuntimeException('Provider down');
+        $key = 'sk-secret-provider-key-0001';
+        Option::set('aiassistant.providers', [['id' => 'p1', 'provider' => 'openai', 'api_key' => encrypt($key), 'base_url' => '']]);
+        Option::set('aiassistant.models', ['drafts' => ['primary' => ['provider' => 'p1', 'model' => 'gpt-x']]]);
+        Option::$cache = [];
+        \Log::spy();
+        ReplyDrafter::fake(function () use ($key) {
+            throw new \RuntimeException('Provider down: '.$key.' Authorization: Bearer opaque-token-123');
         });
 
-        $error = [
-            'status'       => 'error',
-            'draft_status' => DraftJob::STATUS_FAILED,
-            'msg'          => 'Could not draft a reply.',
-            'detail'       => 'Provider down',
-        ];
-        $this->assertSame([$error], $this->draftEvents($this->agent));
-        $this->assertSame(DraftJob::STATUS_FAILED, DraftJob::where('user_id', $this->agent->id)->first()->status);
+        [$error] = $this->draftEvents($this->agent);
+        $this->assertSame(['status' => 'error', 'draft_status' => DraftJob::STATUS_FAILED, 'msg' => 'Could not draft a reply.'], array_diff_key($error, ['detail' => true]));
+        $this->assertMatchesRegularExpression('/^ID: [A-F0-9]{12}$/', $error['detail']);
+        $draft_job = DraftJob::where('user_id', $this->agent->id)->first();
+        $this->assertSame(DraftJob::STATUS_FAILED, $draft_job->status);
+        $this->assertSame($error['detail'], $draft_job->error_detail);
+        $this->assertStringNotContainsString($key, json_encode($error).json_encode($draft_job->toArray()));
+        $this->assertStringNotContainsString('opaque-token-123', json_encode($error).json_encode($draft_job->toArray()));
+        $this->assertStringNotContainsString($key, (string) \App\Ai\Usage::orderByDesc('id')->value('error'));
+        $reference = substr($error['detail'], 4);
+        \Log::shouldHaveReceived('error')->withArgs(fn ($message) => str_contains($message, '['.$reference.']') && str_contains($message, 'Provider down: [redacted] Authorization: Bearer [redacted]') && !str_contains($message, $key) && !str_contains($message, 'opaque-token-123'));
     }
 
     public function testDraftUsesDocumentationAndCustomerContext()
@@ -317,14 +325,24 @@ class AiDraftsTest extends FeatureTestCase
     public function testCustomerContextTestShowsALongAnswerInPart()
     {
         $admin = $this->createAdmin();
-        Http::fake(['https://crm.example.org/*' => Http::response(str_repeat('x', 10000), 500)]);
+        Http::fake(['https://crm.example.org/*' => Http::response(str_repeat('x', 10000))]);
 
         $response = $this->postAjax($admin, '/ai-assistant/customer-context/test', [
             'mailbox_id' => $this->mailbox->id, 'email' => 'casey@customer.example.org', 'url' => 'https://crm.example.org/context', 'secret_key' => 'k',
         ]);
-        $this->assertSame(500, $response->json('http_status'));
+        $this->assertSame(200, $response->json('http_status'));
         $this->assertSame(10000, $response->json('bytes'));
         $this->assertSame(str_repeat('x', 4096).'…', $response->json('body'));
+
+        Http::swap(new \Illuminate\Http\Client\Factory());
+        Http::fake(['https://crm.example.org/*' => Http::response('Authorization: Bearer secret-from-error', 500)]);
+        $failed = $this->postAjax($admin, '/ai-assistant/customer-context/test', [
+            'mailbox_id' => $this->mailbox->id, 'email' => 'casey@customer.example.org', 'url' => 'https://crm.example.org/context', 'secret_key' => 'k',
+        ]);
+        $this->assertSame('error', $failed->json('status'));
+        $this->assertSame(500, $failed->json('http_status'));
+        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $failed->json('msg'));
+        $this->assertStringNotContainsString('secret-from-error', $failed->getContent());
     }
 
     public function testCustomerContextSettings()
@@ -434,7 +452,7 @@ class AiDraftsTest extends FeatureTestCase
         Embeddings::fake(function () {
             throw new \RuntimeException('Embeddings down');
         });
-        $this->assertSame('failed: Embeddings down', \App\Ai\Drafts::draft($this->conversation, 'en')['documentation_status']);
+        $this->assertMatchesRegularExpression('/^failed: Error occurred \(ID: [A-F0-9]{12}\)$/', \App\Ai\Drafts::draft($this->conversation, 'en')['documentation_status']);
 
         Option::set('aiassistant.providers', [['id' => 'p1', 'provider' => 'anthropic', 'api_key' => encrypt('sk-ant'), 'base_url' => '']]);
         Option::$cache = [];
@@ -460,10 +478,14 @@ class AiDraftsTest extends FeatureTestCase
         };
 
         $this->assertSame('disabled', $status('')['status']);
-        $this->assertSame('failed: HTTP error: 500', $status('https://crm.example.org/context', Http::response(['error' => 'down'], 500))['status']);
-        $this->assertSame('failed: JSON response is too large', $status('https://crm.example.org/context', Http::response('"'.str_repeat('x', CustomerContext::MAX_RESPONSE_BYTES).'"'))['status']);
-        $this->assertSame('failed: Invalid JSON response', $status('https://crm.example.org/context', Http::response('<html>'))['status']);
-        $this->assertSame('failed: The customer context URL must be an http or https URL', $status('ftp://crm.example.org/context')['status']);
+        foreach ([
+            $status('https://crm.example.org/context', Http::response(['error' => 'down'], 500)),
+            $status('https://crm.example.org/context', Http::response('"'.str_repeat('x', CustomerContext::MAX_RESPONSE_BYTES).'"')),
+            $status('https://crm.example.org/context', Http::response('<html>')),
+            $status('ftp://crm.example.org/context'),
+        ] as $failed) {
+            $this->assertMatchesRegularExpression('/^failed: Error occurred \(ID: [A-F0-9]{12}\)$/', $failed['status']);
+        }
         Http::assertNothingSent();
 
         $context = $status('https://crm.example.org/context', Http::response(['notes' => str_repeat('n', CustomerContext::MAX_PROMPT_CHARS)]));

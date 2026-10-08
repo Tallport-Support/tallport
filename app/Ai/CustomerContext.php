@@ -74,7 +74,7 @@ class CustomerContext
                 throw new \Exception('Invalid JSON response');
             }
         } catch (\Throwable $e) {
-            $result['status'] = 'failed: '.$e->getMessage();
+            $result['status'] = 'failed: '.Errors::message($e, 'Customer context for conversation '.$conversation->id.':');
 
             return $result;
         }
