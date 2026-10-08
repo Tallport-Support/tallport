@@ -7,7 +7,6 @@ use App\Ai\Agents\ReplyTranslator;
 use App\Ai\Agents\TallportAgent;
 use App\Conversation;
 use App\Thread;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Chats translated both ways (Manage » Settings » AI Assistant, per mailbox): the agent reads
@@ -70,25 +69,24 @@ class ChatTranslation
      */
     public static function setCustomerLanguage(Conversation $conversation, $language, $by_user = false)
     {
-        // As stored now (the conversation may have been loaded before an agent chose).
-        $conversation->ai_assistant = DB::table('conversations')->where('id', $conversation->id)->value('ai_assistant');
-        $data = Summaries::data($conversation);
-        if (!$by_user && (($data['language_by'] ?? '') == 'user' || !self::isOn($conversation))) {
-            return;
-        }
-        if (!$by_user && !empty($data['language_by'])) {
-            $pending = $data['language_next'] ?? null;
-            unset($data['language_next']);
-            if ($language !== ($data['language'] ?? null) && $language !== $pending) {
-                $data['language_next'] = (string) $language;
-                $language = $data['language'] ?? null;
+        Summaries::updateData($conversation, function ($data) use ($conversation, $language, $by_user) {
+            if (!$by_user && (($data['language_by'] ?? '') == 'user' || !self::isOn($conversation))) {
+                return null;
             }
-        }
-        $data['language'] = (string) $language;
-        $data['language_by'] = $by_user ? 'user' : 'detected';
-        // Not touching updated_at: the conversation didn't change.
-        DB::table('conversations')->where('id', $conversation->id)->update(['ai_assistant' => json_encode($data, JSON_UNESCAPED_UNICODE)]);
-        $conversation->ai_assistant = json_encode($data, JSON_UNESCAPED_UNICODE);
+            $chosen_language = $language;
+            if (!$by_user && !empty($data['language_by'])) {
+                $pending = $data['language_next'] ?? null;
+                unset($data['language_next']);
+                if ($language !== ($data['language'] ?? null) && $language !== $pending) {
+                    $data['language_next'] = (string) $language;
+                    $chosen_language = $data['language'] ?? null;
+                }
+            }
+            $data['language'] = (string) $chosen_language;
+            $data['language_by'] = $by_user ? 'user' : 'detected';
+
+            return $data;
+        }, false);
     }
 
     /**

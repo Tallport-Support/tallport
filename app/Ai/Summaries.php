@@ -87,21 +87,19 @@ class Summaries
             })->all(),
         ]));
 
-        $data = self::data($conversation);
-        $data['summaries'][$language] = [
+        $summary = [
             'one_liner'  => trim((string) $response['one_liner']),
             'background' => $with_background ? trim((string) ($response['background'] ?? '')) : '',
             'thread_id' => (int) $threads->last()->id,
             'at'        => now()->toDateTimeString(),
         ];
-        // Not touching updated_at: the conversation didn't change.
-        DB::table('conversations')->where('id', $conversation->id)->update([
-            'ai_assistant'            => json_encode($data, JSON_UNESCAPED_UNICODE),
-            'ai_assistant_updated_at' => now(),
-        ]);
-        $conversation->ai_assistant = json_encode($data, JSON_UNESCAPED_UNICODE);
+        self::updateData($conversation, function ($data) use ($language, $summary) {
+            $data['summaries'][$language] = $summary;
 
-        return $data['summaries'][$language];
+            return $data;
+        });
+
+        return $summary;
     }
 
     /**
@@ -128,5 +126,35 @@ class Summaries
         $data = json_decode((string) $model->ai_assistant, true);
 
         return is_array($data) ? $data : [];
+    }
+
+    /**
+     * Merge one AI change into the current row, after any external request has finished.
+     * A null result leaves the row alone, but refreshes the caller's model.
+     */
+    public static function updateData($model, callable $change, $touch_timestamp = true)
+    {
+        return DB::transaction(function () use ($model, $change, $touch_timestamp) {
+            $query = DB::table($model->getTable())->where('id', $model->id);
+            $row = (clone $query)->lockForUpdate()->first(['ai_assistant']);
+            if (!$row) {
+                return null;
+            }
+            $model->ai_assistant = $row->ai_assistant;
+            $data = $change(self::data($model));
+            if ($data === null) {
+                return null;
+            }
+
+            $json = json_encode($data, JSON_UNESCAPED_UNICODE);
+            $updates = ['ai_assistant' => $json];
+            if ($touch_timestamp) {
+                $updates['ai_assistant_updated_at'] = now();
+            }
+            $query->update($updates);
+            $model->ai_assistant = $json;
+
+            return $data;
+        });
     }
 }

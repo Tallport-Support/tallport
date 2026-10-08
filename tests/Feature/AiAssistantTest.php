@@ -741,6 +741,25 @@ class AiAssistantTest extends FeatureTestCase
             ->assertSeeInOrder(['Long one', 'Background', 'Restarting did not help', 'Still open: other users']);
     }
 
+    public function testSummariesInDifferentLanguagesKeepTheAgentsLanguageChoice()
+    {
+        $this->configureAi();
+        $conversation = $this->receiveCustomerEmail();
+        $stale = $conversation->fresh();
+
+        ConversationSummarizer::fake([['one_liner' => 'Order is missing', 'background' => '']]);
+        Summaries::summarize($conversation, 'en');
+        \App\Ai\ChatTranslation::setCustomerLanguage($conversation->fresh(), 'ja', true);
+        ConversationSummarizer::fake([['one_liner' => 'Bestellung fehlt', 'background' => '']]);
+        Summaries::summarize($stale, 'de');
+
+        $saved = $conversation->fresh();
+        $this->assertSame('Order is missing', Summaries::get($saved, 'en')['one_liner']);
+        $this->assertSame('Bestellung fehlt', Summaries::get($saved, 'de')['one_liner']);
+        $this->assertSame('ja', \App\Ai\ChatTranslation::customerLanguage($saved));
+        $this->assertSame('user', Summaries::data($saved)['language_by']);
+    }
+
     public function testEarlierDataIsConvertedByLanguage()
     {
         if (!class_exists('AddAiAssistantColumns')) {

@@ -5,7 +5,6 @@ namespace App\Ai;
 use App\Ai\Agents\ThreadTranslator;
 use App\Ai\Agents\TallportAgent;
 use App\Thread;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Translations of customers' messages, by language, in threads.ai_assistant:
@@ -121,13 +120,15 @@ class Translations
     public static function forceTranslate(Thread $thread, $user)
     {
         $language = Settings::language($thread->conversation->mailbox, $user);
-        $data = Summaries::data($thread);
-        $data['same'] = array_values(array_diff((array) ($data['same'] ?? []), [$language]));
-        if (!$data['same']) {
-            unset($data['same']);
-        }
-        unset($data['no_text']);
-        self::save($thread, $data);
+        Summaries::updateData($thread, function ($data) use ($language) {
+            $data['same'] = array_values(array_diff((array) ($data['same'] ?? []), [$language]));
+            if (!$data['same']) {
+                unset($data['same']);
+            }
+            unset($data['no_text']);
+
+            return $data;
+        });
 
         return self::translate($thread, $language);
     }
@@ -155,9 +156,11 @@ class Translations
 
     public static function limited(Thread $thread, $language, $limit)
     {
-        $data = Summaries::data($thread);
-        $data['errors'][$language] = $limit;
-        self::save($thread, $data);
+        Summaries::updateData($thread, function ($data) use ($language, $limit) {
+            $data['errors'][$language] = $limit;
+
+            return $data;
+        });
     }
 
     /**
@@ -165,9 +168,12 @@ class Translations
      */
     public static function failed(Thread $thread, $language, \Throwable $e)
     {
-        $data = Summaries::data($thread);
-        $data['errors'][$language] = Errors::message($e, 'Translation of thread '.$thread->id.':');
-        self::save($thread, $data);
+        $message = Errors::message($e, 'Translation of thread '.$thread->id.':');
+        Summaries::updateData($thread, function ($data) use ($language, $message) {
+            $data['errors'][$language] = $message;
+
+            return $data;
+        });
     }
 
     /**
@@ -258,14 +264,12 @@ class Translations
     public static function translate(Thread $thread, $language)
     {
         $text = Summaries::text($thread);
-        $data = Summaries::data($thread);
-        unset($data['errors'][$language]);
-        if (empty($data['errors'])) {
-            unset($data['errors']);
-        }
+        $truncated = false;
+        $as_html = false;
+        $answer = null;
         if ($text !== '') {
             if (mb_strlen(trim((string) $thread->getBodyAsText())) > Summaries::MAX_THREAD_CHARS) {
-                $data['truncated'] = true;
+                $truncated = true;
             }
             // As it looks (HTML) where that fits, else as text.
             $html = self::sourceHtml($thread);
@@ -274,11 +278,21 @@ class Translations
                 trim(TallportAgent::glossary($thread->conversation->mailbox)."\n\n".TallportAgent::data('message', $as_html ? $html : $text)),
                 $thread->type == Thread::TYPE_CUSTOMER ? self::broadcaster($thread->conversation, $language, fn ($answer) => [$thread->id => [$answer['translation'] ?? '', $as_html]]) : null
             );
-            $data['language'] = Settings::detectedLanguage($answer['detected_language'] ?? '') ?: (strtolower(trim((string) ($answer['detected_language'] ?? ''))) ?: ($data['language'] ?? null));
-            // A chat's language (replies go out in it): ChatTranslation::setCustomerLanguage().
-            if ($thread->type == Thread::TYPE_CUSTOMER && $data['language'] && Settings::isLanguage($data['language'])) {
-                ChatTranslation::setCustomerLanguage($thread->conversation, $data['language']);
+        }
+        $data = Summaries::updateData($thread, function ($data) use ($language, $text, $truncated, $as_html, $answer) {
+            unset($data['errors'][$language]);
+            if (empty($data['errors'])) {
+                unset($data['errors']);
             }
+            if ($text === '') {
+                $data['no_text'] = true;
+
+                return $data;
+            }
+            if ($truncated) {
+                $data['truncated'] = true;
+            }
+            $data['language'] = Settings::detectedLanguage($answer['detected_language'] ?? '') ?: (strtolower(trim((string) ($answer['detected_language'] ?? ''))) ?: ($data['language'] ?? null));
             if ($answer['same_language']) {
                 $data['same'] = array_values(array_unique(array_merge((array) ($data['same'] ?? []), [$language])));
             } else {
@@ -291,10 +305,14 @@ class Translations
                     unset($data['html']);
                 }
             }
-        } else {
-            $data['no_text'] = true;
+
+            return $data;
+        });
+
+        // A chat's language (replies go out in it): ChatTranslation::setCustomerLanguage().
+        if ($thread->type == Thread::TYPE_CUSTOMER && !empty($data['language']) && Settings::isLanguage($data['language'])) {
+            ChatTranslation::setCustomerLanguage($thread->conversation, $data['language']);
         }
-        self::save($thread, $data);
 
         return $data['translations'][$language] ?? null;
     }
@@ -327,35 +345,29 @@ class Translations
      */
     public static function store(Thread $thread, $language, $detected, $translation)
     {
-        $data = Summaries::data($thread);
-        unset($data['errors'][$language]);
-        if (empty($data['errors'])) {
-            unset($data['errors']);
-        }
-        $data['language'] = $detected ?: ($data['language'] ?? null);
-        if ($translation === null) {
-            $data['same'] = array_values(array_unique(array_merge((array) ($data['same'] ?? []), [$language])));
-        } else {
+        if ($translation !== null) {
             $translation = trim((string) $translation);
             if ($translation === '') {
                 throw new \RuntimeException(__('The AI\'s answer could not be read.'));
             }
-            $data['translations'][$language] = $translation;
-            $data['html'] = array_values(array_diff((array) ($data['html'] ?? []), [$language]));
-            if (!$data['html']) {
-                unset($data['html']);
-            }
         }
-        self::save($thread, $data);
-    }
+        Summaries::updateData($thread, function ($data) use ($language, $detected, $translation) {
+            unset($data['errors'][$language]);
+            if (empty($data['errors'])) {
+                unset($data['errors']);
+            }
+            $data['language'] = $detected ?: ($data['language'] ?? null);
+            if ($translation === null) {
+                $data['same'] = array_values(array_unique(array_merge((array) ($data['same'] ?? []), [$language])));
+            } else {
+                $data['translations'][$language] = $translation;
+                $data['html'] = array_values(array_diff((array) ($data['html'] ?? []), [$language]));
+                if (!$data['html']) {
+                    unset($data['html']);
+                }
+            }
 
-    protected static function save(Thread $thread, array $data)
-    {
-        // Not touching updated_at: the thread didn't change.
-        DB::table('threads')->where('id', $thread->id)->update([
-            'ai_assistant'            => json_encode($data, JSON_UNESCAPED_UNICODE),
-            'ai_assistant_updated_at' => now(),
-        ]);
-        $thread->ai_assistant = json_encode($data, JSON_UNESCAPED_UNICODE);
+            return $data;
+        });
     }
 }

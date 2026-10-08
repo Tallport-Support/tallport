@@ -104,6 +104,23 @@ class AiTranslationsTest extends FeatureTestCase
         $this->assertTrue(\App\Ai\Summaries::data($thread->fresh())['truncated']);
     }
 
+    public function testSlowTranslationKeepsAnotherLanguageAndAnAgentsLanguageChoice()
+    {
+        $thread = $this->first();
+        $conversation = $this->conversation;
+        ThreadTranslator::fake(function () use ($thread, $conversation) {
+            Translations::store($thread->fresh(), 'de', 'nl', 'Wo bleibt meine Bestellung?');
+            ChatTranslation::setCustomerLanguage($conversation->fresh(), 'ja', true);
+
+            return ['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'nl'];
+        });
+
+        $this->assertSame('Where is my order?', Translations::translate($thread, 'en'));
+        $this->assertSame('Wo bleibt meine Bestellung?', Translations::get($thread->fresh(), 'de'));
+        $this->assertSame('ja', ChatTranslation::customerLanguage($conversation->fresh()));
+        $this->assertSame('user', \App\Ai\Summaries::data($conversation->fresh())['language_by']);
+    }
+
     public function testIncomingNothingToTranslate()
     {
         ChatTranslator::fake()->preventStrayPrompts();

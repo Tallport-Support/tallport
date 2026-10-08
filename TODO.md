@@ -62,11 +62,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: reply sends lock the conversation and draft inside a transaction. Livewire composers include a unique submission key backed by a database constraint, so a repeated request returns the committed result without another send; legacy AJAX callers remain supported. Delivery and notification events run after commit. Missing or failed attachment copies abort the send, roll back its rows, clean newly written files, and retain the draft; removed files are deleted after commit. Team chat similarly rolls back a message if any attachment fails and keeps its composer for retry. Regression tests cover repeated submissions and failure recovery.
 
-- [ ] **08 · P1 · Tallport — Merge AI metadata without overwriting concurrent changes.**
+- [x] **08 · P1 · Tallport — Merge AI metadata without overwriting concurrent changes.**
 
   Evidence: `Translations::save()` (`app/Ai/Translations.php:349`), `Summaries::summarize()` (`app/Ai/Summaries.php:69`), and `ChatTranslation::setCustomerLanguage()` (`app/Ai/ChatTranslation.php:70`) replace the entire JSON column from a model snapshot. Another language's translation or an agent's language selection can be lost when a slow AI request completes later. Per-language unique jobs do not protect a shared JSON document.
 
   Perform the external request first, then reread and merge the relevant field in a short locked transaction or use an equivalent atomic update supported by the application's databases. Recheck agent-selected language precedence at commit time. Acceptance: interleave two languages and a summary with a manual language change; all independent updates survive.
+
+  Completed: thread translations, conversation summaries, and chat language choices now lock and reread the latest AI metadata just before changing their own fields. AI requests stay outside those transactions, and detected language updates recheck an agent's choice under the lock. Regression tests interleave a slow translation with another language and a manual choice, and merge summaries in two languages from stale models without losing that choice.
 
 - [ ] **09 · P1 · Tallport — Reserve AI quotas atomically and account for all supported work.**
 
