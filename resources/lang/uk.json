@@ -1821,5 +1821,10 @@
     "Webhook URL": "URL Вебхука",
     "Optional; the default transactional stream when empty.": "Необов'язково; якщо порожньо, типовий потік транзакційних листів.",
     "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "В Amazon SES надсилайте сповіщення про повернення та скарги до теми Amazon SNS і підпишіть на неї цей URL (HTTPS); підписка підтверджується автоматично.",
-    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Додайте цей URL у :provider як вебхук для повернень і скарг, щоб недоставлені відповіді позначалися."
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Додайте цей URL у :provider як вебхук для повернень і скарг, щоб недоставлені відповіді позначалися.",
+    "Reported as spam by the recipient": "Одержувач позначив як спам",
+    "Delivery delayed": "Доставка затримується",
+    "Regenerate": "Створити Заново",
+    "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Створити новий URL вебхука? Поточний перестане працювати, доки ви не оновите вебхук у :provider, вказавши новий URL.",
+    "New webhook URL made. Update it in your sending service.": "Новий URL вебхука створено. Оновіть його у своєму сервісі надсилання."
 }

@@ -1821,5 +1821,10 @@
     "Webhook URL": "Webhook URL",
     "Optional; the default transactional stream when empty.": "任意。空の場合はデフォルトのトランザクションストリーム。",
     "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "Amazon SES でバウンスと苦情の通知を Amazon SNS トピックに送信し、この URL をそのトピックにサブスクライブしてください (HTTPS)。サブスクリプションは自動的に確認されます。",
-    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": ":provider でこの URL をバウンスと苦情の Webhook として追加すると、配信されなかった返信にマークが付きます。"
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": ":provider でこの URL をバウンスと苦情の Webhook として追加すると、配信されなかった返信にマークが付きます。",
+    "Reported as spam by the recipient": "受信者がスパムとして報告しました",
+    "Delivery delayed": "配信が遅延しています",
+    "Regenerate": "再生成",
+    "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "新しい Webhook URL を作成しますか？ :provider の Webhook を新しい URL に更新するまで、現在の URL は機能しなくなります。",
+    "New webhook URL made. Update it in your sending service.": "新しい Webhook URL を作成しました。送信サービスで更新してください。"
 }

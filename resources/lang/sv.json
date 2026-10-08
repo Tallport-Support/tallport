@@ -1821,5 +1821,10 @@
     "Webhook URL": "Webhook-URL",
     "Optional; the default transactional stream when empty.": "Valfritt; tomt ger standardströmmen för transaktionsmejl.",
     "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "I Amazon SES skickar du aviseringar om studsar och klagomål till ett Amazon SNS-ämne och prenumererar denna URL på det (HTTPS); prenumerationen bekräftas automatiskt.",
-    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Lägg till denna URL som webhook för studsar och klagomål i :provider, så att svar som inte levererades markeras."
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Lägg till denna URL som webhook för studsar och klagomål i :provider, så att svar som inte levererades markeras.",
+    "Reported as spam by the recipient": "Rapporterat som skräppost av mottagaren",
+    "Delivery delayed": "Leveransen är försenad",
+    "Regenerate": "Generera Om",
+    "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Skapa en ny webhook-URL? Den nuvarande slutar fungera tills du uppdaterar webhooken i :provider med den nya URL-adressen.",
+    "New webhook URL made. Update it in your sending service.": "Ny webhook-URL skapad. Uppdatera den i din utskickstjänst."
 }

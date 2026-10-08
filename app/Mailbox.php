@@ -717,11 +717,25 @@ class Mailbox extends Model
 
     /**
      * The secret in the URLs of the mailbox's delivery webhooks
-     * (App\Http\Controllers\MailWebhooksController).
+     * (App\Http\Controllers\MailWebhooksController): the random one made
+     * by regenerateOutWebhookToken(), or else one derived from the app key.
      */
     public function getOutWebhookToken()
     {
+        $token = $this->getMeta('out_webhook_token');
+        if ($token) {
+            return (string) \Helper::decrypt($token);
+        }
+
         return substr(hash_hmac('sha256', 'mail_webhook'.$this->id, (string) config('app.key')), 0, 32);
+    }
+
+    /**
+     * A new random webhook secret: the URLs given to sending services before stop working.
+     */
+    public function regenerateOutWebhookToken()
+    {
+        $this->setMeta('out_webhook_token', \Helper::encrypt(bin2hex(random_bytes(16))));
     }
 
     /**

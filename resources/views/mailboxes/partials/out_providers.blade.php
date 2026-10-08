@@ -57,6 +57,7 @@
             <div class="f-input-group">
                 <input id="out_webhook_{{ $out_provider }}" type="text" class="f-input" value="{{ $webhook_url }}" readonly aria-describedby="out_webhook_{{ $out_provider }}-description">
                 <x-fruit::copy-button :value="$webhook_url" />
+                <x-fruit::button class="out-webhook-regenerate" x-on:click="regenerateWebhook" data-confirm="{{ __('Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.', ['provider' => App\Misc\MailProviders::NAMES[$out_provider]]) }}">{{ __('Regenerate') }}</x-fruit::button>
             </div>
         </x-fruit::field>
         @if (isset(App\Misc\MailProviders::WEBHOOK_SETTINGS[$out_provider]))

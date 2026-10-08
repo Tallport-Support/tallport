@@ -60,6 +60,7 @@
         "fetch_test",
         "imap_folders",
         "mute",
+        "regenerate_webhook",
         "send_test"
     ],
     "ModulesController@ajax": [

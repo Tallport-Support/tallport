@@ -1820,5 +1820,10 @@
     "Webhook URL": "URL Webhooku",
     "Optional; the default transactional stream when empty.": "Volitelné; pokud je prázdné, výchozí transakční proud.",
     "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "V Amazon SES posílejte oznámení o nedoručení a stížnostech do tématu Amazon SNS a přihlaste k němu tuto URL (HTTPS); odběr se potvrdí automaticky.",
-    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Přidejte tuto URL jako webhook pro nedoručené zprávy a stížnosti v :provider, aby byly nedoručené odpovědi označeny."
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Přidejte tuto URL jako webhook pro nedoručené zprávy a stížnosti v :provider, aby byly nedoručené odpovědi označeny.",
+    "Reported as spam by the recipient": "Příjemce označil jako spam",
+    "Delivery delayed": "Doručení se zpožďuje",
+    "Regenerate": "Vygenerovat Znovu",
+    "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Vytvořit novou URL webhooku? Současná přestane fungovat, dokud webhook v :provider neaktualizujete novou URL.",
+    "New webhook URL made. Update it in your sending service.": "Nová URL webhooku byla vytvořena. Aktualizujte ji ve své službě pro odesílání."
 }

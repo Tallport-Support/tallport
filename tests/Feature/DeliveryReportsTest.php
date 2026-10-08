@@ -161,6 +161,79 @@ class DeliveryReportsTest extends FeatureTestCase
     }
 
     /**
+     * A reply to the customer's email: [conversation, reply, its Message-ID].
+     */
+    protected function sentReply($from)
+    {
+        $this->mailbox->auto_reply_enabled = false;
+        $this->mailbox->save();
+        $this->receiveEmail($this->mailbox, $this->makeEmail(['from' => $from, 'to' => $this->mailbox->email]));
+        $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->orderBy('id', 'desc')->first();
+        $this->postAjax($this->agent, '/conversation/ajax', [
+            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>We sent you a new link.</p>',
+        ]);
+        $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
+        $message_id = $this->sentEmails()[count($this->sentEmails()) - 1]->getId();
+        $this->captured_mail->flush();
+
+        return [$conversation, $reply, $message_id];
+    }
+
+    /**
+     * A complaint about Tallport's own reply: it was delivered, so it isn't
+     * marked Not delivered (nor retried), but Reported as spam.
+     */
+    public function testComplaintAboutAReply()
+    {
+        [$conversation, $reply, $message_id] = $this->sentReply('Casey Jones <casey.jones@mail.example.org>');
+        $status = $reply->send_status;
+
+        $this->receiveEmail($this->mailbox, str_replace('cancel-account-reply@help.example.net', $message_id, file_get_contents(__DIR__.'/../Messages/delivery-report-arf-complaint.eml')));
+        $report = Conversation::where('mailbox_id', $this->mailbox->id)->orderBy('id', 'desc')->first();
+
+        $reply->refresh();
+        $this->assertEquals($status, $reply->send_status);
+        $this->assertSame('complaint', $reply->getSendStatusData()['complaint']['kind']);
+        $this->assertSame($report->id, $reply->getSendStatusData()['complaint']['conversation_id']);
+        $this->assertSame(1, SendLog::where('thread_id', $reply->id)->where('status', SendLog::STATUS_COMPLAINED)->where('email', 'casey.jones@mail.example.org')->count());
+        $this->viewConversation($conversation)
+            ->assertSee('Reported as spam by the recipient')
+            ->assertSee('#thread-'.$report->threads()->first()->id, false)
+            ->assertDontSee('Message not sent to customer')
+            ->assertDontSee('btn-thread-retry', false);
+    }
+
+    /**
+     * A delay of Tallport's own reply shows on it without failing it; a later bounce fails it.
+     */
+    public function testDelayOfAReplyThenBounce()
+    {
+        [$conversation, $reply, $message_id] = $this->sentReply('Robin Lee <robin.lee@gmail.example.org>');
+        $status = $reply->send_status;
+
+        $this->receiveEmail($this->mailbox, str_replace(
+            ['invoice-question-reply@help.example.net', 'alex.morgan@slow.example.org'],
+            [$message_id, 'robin.lee@gmail.example.org'],
+            file_get_contents(__DIR__.'/../Messages/delivery-report-dsn-delayed.eml')
+        ));
+
+        $reply->refresh();
+        $this->assertEquals($status, $reply->send_status);
+        $this->assertSame('delayed', $reply->getSendStatusData()['delivery_delayed']['kind']);
+        $this->assertTrue(SendLog::where('thread_id', $reply->id)->where('status', SendLog::STATUS_ACCEPTED)->where('status_message', 'like', 'Delivery delayed%')->exists());
+        $this->viewConversation($conversation)
+            ->assertSee('Delivery delayed (')
+            ->assertDontSee('Message not sent to customer');
+
+        $this->receiveEmail($this->mailbox, str_replace('TP_reply-123-0123456789abcdef@help.example.net', $message_id, file_get_contents(__DIR__.'/../Messages/delivery-report-tallport-reply.eml')));
+
+        $this->assertEquals(SendLog::STATUS_DELIVERY_ERROR, $reply->fresh()->send_status);
+        $this->viewConversation($conversation)
+            ->assertSee('Message not sent to customer')
+            ->assertDontSee('Delivery delayed (');
+    }
+
+    /**
      * A plain-text notice from a mail server.
      */
     public function testPlainTextBounce()

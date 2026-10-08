@@ -701,8 +701,8 @@ class FetchEmails extends Command
                 $attachments = $delivery_report->attachments($attachments);
 
                 // Recorded already, from the sending service's webhook (or another report): shown once.
-                $bounced_reply = $delivery_report->kind != \App\Incoming\DeliveryReport::DELAYED ? $this->findBouncedThread($bounced_message_id) : null;
-                if ($bounced_reply && \App\Misc\DeliveryReports::isRecorded($bounced_reply, $delivery_report->recipients)) {
+                $bounced_reply = $this->findBouncedThread($bounced_message_id);
+                if ($bounced_reply && \App\Misc\DeliveryReports::isRecorded($bounced_reply, $delivery_report->recipients, $delivery_report->kind)) {
                     $this->line('['.date('Y-m-d H:i:s').'] Delivery report recorded already for reply '.$bounced_reply->id.'. Skipping message.');
                     $this->setSeen($message, $mailbox);
                     return;
@@ -1283,30 +1283,14 @@ class FetchEmails extends Command
             \App\Misc\DeliveryReports::flag($status_data['delivery_report'], $new_thread);
         }
 
-        // Update status of the original message and create log record.
+        // Update status of the original message and create log records.
         if ($bounced_thread) {
-            $bounced_thread->send_status = SendLog::STATUS_DELIVERY_ERROR;
-
-            $status_data = [
-                'bounced_by_thread'       => $new_thread->id,
-                'bounced_by_conversation' => $new_thread->conversation_id,
-                // todo.
-                // 'bounce_info' => [
-                // ]
-            ];
-
-            $bounced_thread->updateSendStatusData($status_data);
-            $bounced_thread->save();
-
-            // Bounces can be soft and hard, for now log both as STATUS_DELIVERY_ERROR.
-            // One record per address it's about, which a webhook's report on it then finds
-            // (DeliveryReports::isRecorded()).
-            $log_message = $delivery_report && $delivery_report->kind == \App\Incoming\DeliveryReport::DELAYED
-                ? \App\Misc\DeliveryReports::DELAYED_LOG_MESSAGE
-                : 'Message bounced';
-            foreach ($delivery_report ? $delivery_report->recipients : [$from] as $recipient) {
-                SendLog::log($bounced_thread->id, null, $recipient, SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER, SendLog::STATUS_DELIVERY_ERROR, $bounced_thread->created_by_customer_id, null, $log_message);
-            }
+            \App\Misc\DeliveryReports::markReply(
+                $bounced_thread,
+                $delivery_report ? $status_data['delivery_report'] : ['kind' => \App\Incoming\DeliveryReport::BOUNCE, 'recipients' => [$from]],
+                SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER,
+                $new_thread
+            );
         }
     }
 

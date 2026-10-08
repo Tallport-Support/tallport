@@ -1865,5 +1865,10 @@
     "Webhook URL": "Webhook URL",
     "Optional; the default transactional stream when empty.": "選填；留空時使用預設的交易訊息串流。",
     "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "在 Amazon SES 中，將退信和投訴通知傳送到 Amazon SNS 主題，並將此 URL 訂閱到該主題（HTTPS）；訂閱會自動確認。",
-    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "在 :provider 中將此 URL 新增為退信和投訴的 Webhook，以便標記未送達的回覆。"
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "在 :provider 中將此 URL 新增為退信和投訴的 Webhook，以便標記未送達的回覆。",
+    "Reported as spam by the recipient": "收件人已將其檢舉為垃圾郵件",
+    "Delivery delayed": "傳送已延遲",
+    "Regenerate": "重新產生",
+    "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "要產生新的 Webhook URL 嗎？在你以新 URL 更新 :provider 中的 Webhook 之前，目前的 URL 將無法使用。",
+    "New webhook URL made. Update it in your sending service.": "已產生新的 Webhook URL。請在你的傳送服務中更新它。"
 }

@@ -2219,5 +2219,10 @@
     "Webhook URL": "Webhook URL",
     "Optional; the default transactional stream when empty.": "Міндетті емес; бос болса, әдепкі транзакциялық ағын.",
     "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "Amazon SES-те қайтарылған хаттар мен шағымдар туралы хабарландыруларды Amazon SNS тақырыбына жіберіп, осы URL-ді оған жазылыңыз (HTTPS); жазылым автоматты түрде расталады.",
-    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Жеткізілмеген жауаптар белгіленуі үшін осы URL-ді :provider ішінде қайтарылған хаттар мен шағымдарға арналған webhook ретінде қосыңыз."
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Жеткізілмеген жауаптар белгіленуі үшін осы URL-ді :provider ішінде қайтарылған хаттар мен шағымдарға арналған webhook ретінде қосыңыз.",
+    "Reported as spam by the recipient": "Алушы спам деп хабарлады",
+    "Delivery delayed": "Жеткізу кешігуде",
+    "Regenerate": "Қайта Жасау",
+    "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Жаңа webhook URL жасау керек пе? :provider ішіндегі webhook-ты жаңа URL-мен жаңартқанша ағымдағысы жұмыс істемейді.",
+    "New webhook URL made. Update it in your sending service.": "Жаңа webhook URL жасалды. Оны жіберу қызметіңізде жаңартыңыз."
 }

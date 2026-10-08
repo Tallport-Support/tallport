@@ -1821,5 +1821,10 @@
     "Webhook URL": "Webhook URL",
     "Optional; the default transactional stream when empty.": "Nem kötelező; üresen az alapértelmezett tranzakciós folyam.",
     "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "Az Amazon SES-ben küldje a visszapattanási és panaszértesítéseket egy Amazon SNS témába, és iratkoztassa fel rá ezt az URL-t (HTTPS); a feliratkozás automatikusan megerősítésre kerül.",
-    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Adja hozzá ezt az URL-t webhookként a visszapattanásokhoz és panaszokhoz itt: :provider, hogy a kézbesítetlen válaszok meg legyenek jelölve."
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Adja hozzá ezt az URL-t webhookként a visszapattanásokhoz és panaszokhoz itt: :provider, hogy a kézbesítetlen válaszok meg legyenek jelölve.",
+    "Reported as spam by the recipient": "A címzett spamként jelentette",
+    "Delivery delayed": "A kézbesítés késik",
+    "Regenerate": "Újragenerálás",
+    "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Új webhook URL-t hoz létre? A jelenlegi nem fog működni, amíg nem frissíti a webhookot itt: :provider az új URL-lel.",
+    "New webhook URL made. Update it in your sending service.": "Új webhook URL létrehozva. Frissítse a küldőszolgáltatásában."
 }

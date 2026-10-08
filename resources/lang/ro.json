@@ -1820,5 +1820,10 @@
     "Webhook URL": "URL Webhook",
     "Optional; the default transactional stream when empty.": "Opțional; dacă este gol, fluxul tranzacțional implicit.",
     "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "În Amazon SES, trimiteți notificările de respingeri și reclamații către un subiect Amazon SNS și abonați acest URL la el (HTTPS); abonamentul este confirmat automat.",
-    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Adăugați acest URL ca webhook pentru respingeri și reclamații în :provider, astfel încât răspunsurile care nu au fost livrate să fie marcate."
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Adăugați acest URL ca webhook pentru respingeri și reclamații în :provider, astfel încât răspunsurile care nu au fost livrate să fie marcate.",
+    "Reported as spam by the recipient": "Raportat ca spam de destinatar",
+    "Delivery delayed": "Livrare întârziată",
+    "Regenerate": "Regenerează",
+    "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Creați un URL nou pentru webhook? Cel actual nu va mai funcționa până când actualizați webhook-ul în :provider cu noul URL.",
+    "New webhook URL made. Update it in your sending service.": "URL nou pentru webhook creat. Actualizați-l în serviciul de trimitere."
 }

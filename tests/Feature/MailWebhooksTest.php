@@ -129,6 +129,87 @@ class MailWebhooksTest extends FeatureTestCase
         $this->assertSame('complaint', Email::where('email', 'casey@customer.example.org')->first()->delivery_problem['kind']);
         $this->assertTrue(SendLog::where('thread_id', $reply->id)->where('status', SendLog::STATUS_COMPLAINED)->exists());
         $this->assertNotEquals(SendLog::STATUS_DELIVERY_ERROR, $reply->fresh()->send_status, 'A complaint means it was delivered.');
+        $this->assertSame('Postmark', $reply->fresh()->getSendStatusData()['complaint']['reporter']);
+        $this->actingAs($this->agent)->followingRedirects()->get($this->conversation->url())->assertOk()
+            ->assertSee('Reported as spam by the recipient (Postmark, '.date('M j, Y').')', false)
+            ->assertDontSee('Message not sent to customer')
+            ->assertDontSee('btn-thread-retry', false);
+
+        // Sent again: recorded once.
+        $this->postWebhook('postmark', $complaint)->assertOk();
+        $this->assertSame(1, SendLog::where('thread_id', $reply->id)->where('status', SendLog::STATUS_COMPLAINED)->count());
+    }
+
+    protected function postmarkBounce($type)
+    {
+        return json_encode([
+            'RecordType' => 'Bounce', 'ID' => 43, 'Type' => $type, 'MessageID' => self::POSTMARK_ID,
+            'Email' => 'casey@customer.example.org', 'BouncedAt' => date('Y-m-d\TH:i:sP'), 'Details' => 'smtp; 451 Try again later',
+        ]);
+    }
+
+    /**
+     * A delay shows on the reply without failing it (nor flagging the address); a later bounce fails it.
+     */
+    public function testPostmarkDelayThenBounce()
+    {
+        $reply = $this->sentReply(Mailbox::OUT_METHOD_POSTMARK, ['postmark_token' => 'pm-token']);
+        $status = $reply->send_status;
+
+        $this->postWebhook('postmark', $this->postmarkBounce('SoftBounce'))->assertOk();
+        $this->postWebhook('postmark', $this->postmarkBounce('SoftBounce'))->assertOk();
+
+        $reply->refresh();
+        $this->assertEquals($status, $reply->send_status);
+        $this->assertSame('delayed', $reply->getSendStatusData()['delivery_delayed']['kind']);
+        $this->assertNull(Email::where('email', 'casey@customer.example.org')->first()->delivery_problem);
+        $this->assertSame(1, SendLog::where('thread_id', $reply->id)->where('status_message', 'like', 'Delivery delayed%')->count(), 'Recorded once.');
+        $this->actingAs($this->agent)->followingRedirects()->get($this->conversation->url())->assertOk()
+            ->assertSee('Delivery delayed (Postmark, '.date('M j, Y').')', false)
+            ->assertDontSee('Message not sent to customer');
+
+        $this->postWebhook('postmark', $this->postmarkBounce('HardBounce'))->assertOk();
+
+        $this->assertEquals(SendLog::STATUS_DELIVERY_ERROR, $reply->fresh()->send_status);
+        $this->actingAs($this->agent)->followingRedirects()->get($this->conversation->url())->assertOk()
+            ->assertSee('Message not sent to customer')
+            ->assertDontSee('Delivery delayed (Postmark', false);
+
+        // A delay after the bounce doesn't change it back.
+        SendLog::where('thread_id', $reply->id)->where('status_message', 'like', 'Delivery delayed%')->delete();
+        $this->postWebhook('postmark', $this->postmarkBounce('SoftBounce'))->assertOk();
+        $this->assertEquals(SendLog::STATUS_DELIVERY_ERROR, $reply->fresh()->send_status);
+    }
+
+    /**
+     * An admin makes a new webhook URL: the old one stops working, the new one works.
+     */
+    public function testRegeneratedWebhookUrl()
+    {
+        $admin = $this->createAdmin();
+        $reply = $this->sentReply(Mailbox::OUT_METHOD_POSTMARK, ['postmark_token' => 'pm-token']);
+        $old_url = $this->mailbox->getOutWebhookUrl('postmark');
+        $this->actingAs($admin)->get(route('mailboxes.connection', ['id' => $this->mailbox->id]))->assertOk()
+            ->assertSee(e($old_url), false)
+            ->assertSee('Regenerate');
+
+        $this->postAjax($this->agent, '/mailbox/ajax', ['action' => 'regenerate_webhook', 'mailbox_id' => $this->mailbox->id])->assertJson(['status' => 'error']);
+        $this->assertSame($old_url, $this->mailbox->fresh()->getOutWebhookUrl('postmark'), 'Admins only.');
+
+        $response = $this->postAjax($admin, '/mailbox/ajax', ['action' => 'regenerate_webhook', 'mailbox_id' => $this->mailbox->id])->assertJson(['status' => 'success']);
+        $this->mailbox->refresh();
+        $new_url = $this->mailbox->getOutWebhookUrl('postmark');
+        $this->assertNotSame($old_url, $new_url);
+        $this->assertSame($new_url, $response->json('urls.postmark'));
+        $this->actingAs($admin)->get(route('mailboxes.connection', ['id' => $this->mailbox->id]))->assertOk()
+            ->assertSee(e($new_url), false)
+            ->assertDontSee(e($old_url), false);
+
+        $bounce = $this->postmarkBounce('HardBounce');
+        $this->call('POST', $old_url, [], [], [], ['CONTENT_TYPE' => 'application/json'], $bounce)->assertStatus(403);
+        $this->assertNotEquals(SendLog::STATUS_DELIVERY_ERROR, $reply->fresh()->send_status);
+        $this->call('POST', $new_url, [], [], [], ['CONTENT_TYPE' => 'application/json'], $bounce)->assertOk();
+        $this->assertEquals(SendLog::STATUS_DELIVERY_ERROR, $reply->fresh()->send_status);
     }
 
     protected function resendRequest($secret, $type = 'email.bounced')

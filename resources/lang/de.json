@@ -1815,5 +1815,10 @@
     "Webhook URL": "Webhook-URL",
     "Optional; the default transactional stream when empty.": "Optional; leer der Standard-Transaktionsstream.",
     "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "Senden Sie in Amazon SES Benachrichtigungen über Bounces und Beschwerden an ein Amazon-SNS-Thema und abonnieren Sie diese URL darin (HTTPS); das Abonnement wird automatisch bestätigt.",
-    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Fügen Sie diese URL in :provider als Webhook für Bounces und Beschwerden hinzu, damit nicht zugestellte Antworten markiert werden."
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Fügen Sie diese URL in :provider als Webhook für Bounces und Beschwerden hinzu, damit nicht zugestellte Antworten markiert werden.",
+    "Reported as spam by the recipient": "Vom Empfänger als Spam gemeldet",
+    "Delivery delayed": "Zustellung verzögert",
+    "Regenerate": "Neu Erstellen",
+    "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Eine neue Webhook-URL erstellen? Die aktuelle funktioniert nicht mehr, bis Sie den Webhook in :provider mit der neuen URL aktualisieren.",
+    "New webhook URL made. Update it in your sending service.": "Neue Webhook-URL erstellt. Aktualisieren Sie sie in Ihrem Versanddienst."
 }

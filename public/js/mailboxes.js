@@ -106,6 +106,31 @@ document.addEventListener('alpine:init', function () {
 					}
 					Tallport.busy(button, false);
 				});
+			},
+			// A new secret in the webhook URLs: the services' webhooks need the new URL.
+			regenerateWebhook: function (event) {
+				var button = event.currentTarget;
+				Tallport.confirm({message: button.getAttribute('data-confirm'), confirm: button.textContent.trim(), tone: 'danger'}).then(function (ok) {
+					if (!ok) {
+						return;
+					}
+					Tallport.busy(button, true);
+					Tallport.post(laroute.route('mailboxes.ajax'), {
+						action: 'regenerate_webhook',
+						mailbox_id: mailbox_id
+					}).then(function (response) {
+						if (Tallport.result(response)) {
+							Object.keys(response.urls).forEach(function (provider) {
+								var input = document.getElementById('out_webhook_' + provider);
+								if (input) {
+									input.value = response.urls[provider];
+									input.parentNode.querySelector('[data-fruit-copy]').setAttribute('data-fruit-copy', response.urls[provider]);
+								}
+							});
+						}
+						Tallport.busy(button, false);
+					});
+				});
 			}
 		};
 	});

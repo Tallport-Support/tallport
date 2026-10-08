@@ -1820,5 +1820,10 @@
     "Webhook URL": "URL Webhooka",
     "Optional; the default transactional stream when empty.": "Neobvezno; če je prazno, privzeti transakcijski tok.",
     "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "V Amazon SES pošiljajte obvestila o zavrnitvah in pritožbah v temo Amazon SNS in ta URL naročite nanjo (HTTPS); naročnina se potrdi samodejno.",
-    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Dodajte ta URL kot webhook za zavrnitve in pritožbe v :provider, da bodo odgovori, ki niso bili dostavljeni, označeni."
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Dodajte ta URL kot webhook za zavrnitve in pritožbe v :provider, da bodo odgovori, ki niso bili dostavljeni, označeni.",
+    "Reported as spam by the recipient": "Prejemnik je prijavil kot neželeno",
+    "Delivery delayed": "Dostava zamuja",
+    "Regenerate": "Ustvari Znova",
+    "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Želite ustvariti nov URL webhooka? Trenutni ne bo deloval, dokler webhooka v :provider ne posodobite z novim URL-jem.",
+    "New webhook URL made. Update it in your sending service.": "Nov URL webhooka je ustvarjen. Posodobite ga v svoji storitvi za pošiljanje."
 }

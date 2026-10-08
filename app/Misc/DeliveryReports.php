@@ -25,7 +25,7 @@ class DeliveryReports
     const SAME_REPORT_HOURS = 72;
 
     /**
-     * The send log's note for a delay (the others are "Message bounced").
+     * The send log's note for a delay (the others are "Message bounced" and "Complaint").
      */
     const DELAYED_LOG_MESSAGE = 'Delivery delayed';
 
@@ -189,56 +189,127 @@ class DeliveryReports
     }
 
     /**
-     * Whether a bounce or complaint about these recipients of the sent reply
-     * (or auto reply) has been recorded within SAME_REPORT_HOURS.
+     * Whether a report of this kind about these recipients of the sent reply
+     * (or auto reply) has been recorded within SAME_REPORT_HOURS. A bounce
+     * and a suppression count as the same.
      */
-    public static function isRecorded(Thread $reply, array $recipients)
+    public static function isRecorded(Thread $reply, array $recipients, $kind = DeliveryReport::BOUNCE)
     {
-        return SendLog::where('thread_id', $reply->id)
+        $query = SendLog::where('thread_id', $reply->id)
             ->whereIn('email', $recipients)
-            ->whereIn('status', [SendLog::STATUS_DELIVERY_ERROR, SendLog::STATUS_COMPLAINED])
-            ->where(function ($query) {
-                $query->whereNull('status_message')->orWhere('status_message', '!=', self::DELAYED_LOG_MESSAGE);
-            })
-            ->where('created_at', '>=', now()->subHours(self::SAME_REPORT_HOURS))
-            ->exists();
+            ->where('created_at', '>=', now()->subHours(self::SAME_REPORT_HOURS));
+        if ($kind == DeliveryReport::DELAYED) {
+            $query->where('status', SendLog::STATUS_ACCEPTED)->where('status_message', 'like', self::DELAYED_LOG_MESSAGE.'%');
+        } else {
+            $query->where('status', $kind == DeliveryReport::COMPLAINT ? SendLog::STATUS_COMPLAINED : SendLog::STATUS_DELIVERY_ERROR);
+        }
+
+        return $query->exists();
     }
 
     /**
      * A sending service's report (its webhook, in the shape of
      * DeliveryReport::toArray()) about a sent reply or auto reply: the
-     * addresses are flagged, the send log has it, and a bounce marks the
-     * reply Not delivered. Once: false when recorded already, or a delay.
+     * addresses are flagged and the reply marked (markReply()). Once: false
+     * when recorded already.
      */
     public static function recordFromService(Thread $reply, array $report, $mail_type = SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER)
     {
-        if ($report['kind'] == DeliveryReport::DELAYED || !$report['recipients'] || self::isRecorded($reply, $report['recipients'])) {
+        if (!$report['recipients'] || self::isRecorded($reply, $report['recipients'], $report['kind'])) {
             return false;
         }
 
         self::flag($report, $reply);
-
-        $complaint = $report['kind'] == DeliveryReport::COMPLAINT;
-        foreach ($report['recipients'] as $recipient) {
-            SendLog::log(
-                $reply->id,
-                null,
-                $recipient,
-                $mail_type,
-                $complaint ? SendLog::STATUS_COMPLAINED : SendLog::STATUS_DELIVERY_ERROR,
-                $reply->created_by_customer_id,
-                null,
-                trim(($complaint ? 'Complaint' : 'Message bounced').' ('.$report['reporter'].'): '.$report['diagnostic'], ': ')
-            );
-        }
-
-        if (!$complaint) {
-            $reply->send_status = SendLog::STATUS_DELIVERY_ERROR;
-            $reply->updateSendStatusData(['delivery_problem' => $report]);
-            $reply->save();
-        }
+        self::markReply($reply, $report, $mail_type);
 
         return true;
+    }
+
+    /**
+     * Mark the sent reply (or auto reply) as a report about it says, and log
+     * it for each recipient. A bounce or suppression: Not delivered. A
+     * complaint: Reported as spam (it was delivered, so its send status
+     * stays). A delay: Delivery delayed, unless it is Not delivered already.
+     * $report_thread: the report email's thread, when it came as an email.
+     */
+    public static function markReply(Thread $reply, array $report, $mail_type = SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER, ?Thread $report_thread = null)
+    {
+        $notice = [
+            'kind'       => $report['kind'],
+            'recipients' => $report['recipients'],
+            'reason'     => $report['reason'] ?? '',
+            'reporter'   => $report['reporter'] ?? '',
+            'at'         => now()->toDateTimeString(),
+        ];
+        if ($report_thread) {
+            $notice['thread_id'] = $report_thread->id;
+            $notice['conversation_id'] = $report_thread->conversation_id;
+        }
+
+        if ($report['kind'] == DeliveryReport::COMPLAINT) {
+            $reply->updateSendStatusData(['complaint' => $notice]);
+            $status = SendLog::STATUS_COMPLAINED;
+            $log_message = 'Complaint';
+        } elseif ($report['kind'] == DeliveryReport::DELAYED) {
+            if (!$reply->isSendStatusError()) {
+                $reply->updateSendStatusData(['delivery_delayed' => $notice]);
+            }
+            $status = SendLog::STATUS_ACCEPTED;
+            $log_message = self::DELAYED_LOG_MESSAGE;
+        } else {
+            $reply->send_status = SendLog::STATUS_DELIVERY_ERROR;
+            if ($report_thread) {
+                $reply->updateSendStatusData([
+                    'bounced_by_thread'       => $report_thread->id,
+                    'bounced_by_conversation' => $report_thread->conversation_id,
+                ]);
+            } else {
+                $reply->updateSendStatusData(['delivery_problem' => $report]);
+            }
+            $status = SendLog::STATUS_DELIVERY_ERROR;
+            $log_message = 'Message bounced';
+        }
+        $reply->save();
+
+        if (!empty($report['reporter'])) {
+            $log_message .= ' ('.$report['reporter'].')';
+        }
+        if (!empty($report['diagnostic'])) {
+            $log_message .= ': '.$report['diagnostic'];
+        }
+        // One record per address it's about, which a later report on it finds (isRecorded()).
+        foreach ($report['recipients'] as $recipient) {
+            SendLog::log($reply->id, null, $recipient, $mail_type, $status, $reply->created_by_customer_id, null, $log_message);
+        }
+    }
+
+    /**
+     * A sent reply's delivery notice that isn't a failure: a complaint or a
+     * delay (markReply()): ['kind', 'text', 'details' => who reported it, when,
+     * and the report email's conversation (HTML)], or null.
+     */
+    public static function replyNotice(Thread $reply)
+    {
+        $data = $reply->getSendStatusData();
+        if (!empty($data['complaint']['kind'])) {
+            $notice = $data['complaint'];
+            $text = __('Reported as spam by the recipient');
+        } elseif (!empty($data['delivery_delayed']['kind'])) {
+            $notice = $data['delivery_delayed'];
+            $text = __('Delivery delayed');
+        } else {
+            return null;
+        }
+
+        $details = array_filter([
+            e($notice['reporter'] ?? ''),
+            e(\App\User::dateFormat($notice['at'] ?? null, 'M j, Y')),
+        ]);
+        if (!empty($notice['thread_id']) && !empty($notice['conversation_id']) && ($conversation = \App\Conversation::find($notice['conversation_id']))) {
+            $details[] = '<a href="'.route('conversations.view', ['id' => $conversation->id]).'#thread-'.$notice['thread_id'].'">#'.$conversation->number.'</a>';
+        }
+
+        return ['kind' => $notice['kind'], 'text' => $text, 'details' => implode(', ', $details)];
     }
 
     /**

@@ -1839,5 +1839,10 @@
     "Webhook URL": "Webhookin URL",
     "Optional; the default transactional stream when empty.": "Valinnainen; tyhjänä oletusarvoinen tapahtumaviestien virta.",
     "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "Lähetä Amazon SES -palvelussa palautus- ja valitusilmoitukset Amazon SNS -aiheeseen ja tilaa tämä URL siihen (HTTPS); tilaus vahvistetaan automaattisesti.",
-    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Lisää tämä URL palautusten ja valitusten webhookiksi palvelussa :provider, jotta toimittamatta jääneet vastaukset merkitään."
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Lisää tämä URL palautusten ja valitusten webhookiksi palvelussa :provider, jotta toimittamatta jääneet vastaukset merkitään.",
+    "Reported as spam by the recipient": "Vastaanottaja ilmoitti roskapostiksi",
+    "Delivery delayed": "Toimitus viivästyy",
+    "Regenerate": "Luo Uudelleen",
+    "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Luodaanko uusi webhookin URL? Nykyinen lakkaa toimimasta, kunnes päivität webhookin palvelussa :provider uudella URL-osoitteella.",
+    "New webhook URL made. Update it in your sending service.": "Uusi webhookin URL luotiin. Päivitä se lähetyspalveluusi."
 }

@@ -1821,5 +1821,10 @@
     "Webhook URL": "Webhook URL'si",
     "Optional; the default transactional stream when empty.": "İsteğe bağlı; boşsa varsayılan işlem akışı.",
     "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "Amazon SES'te geri dönme ve şikâyet bildirimlerini bir Amazon SNS konusuna gönderin ve bu URL'yi ona abone edin (HTTPS); abonelik otomatik olarak onaylanır.",
-    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Teslim edilemeyen yanıtların işaretlenmesi için bu URL'yi :provider içinde geri dönmeler ve şikâyetler için webhook olarak ekleyin."
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Teslim edilemeyen yanıtların işaretlenmesi için bu URL'yi :provider içinde geri dönmeler ve şikâyetler için webhook olarak ekleyin.",
+    "Reported as spam by the recipient": "Alıcı tarafından istenmeyen posta olarak bildirildi",
+    "Delivery delayed": "Teslimat gecikti",
+    "Regenerate": "Yeniden Oluştur",
+    "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Yeni bir webhook URL'si oluşturulsun mu? :provider içindeki webhook'u yeni URL ile güncelleyene kadar mevcut URL çalışmaz.",
+    "New webhook URL made. Update it in your sending service.": "Yeni webhook URL'si oluşturuldu. Gönderim hizmetinizde güncelleyin."
 }

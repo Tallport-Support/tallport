@@ -1100,6 +1100,29 @@ class MailboxesController extends Controller
                 }
                 break;
 
+            // A new secret in the mailbox's webhook URLs (sending services' delivery events).
+            case 'regenerate_webhook':
+                $mailbox = Mailbox::find($request->mailbox_id);
+
+                if (!$mailbox) {
+                    $response['msg'] = __('Mailbox not found');
+                } elseif (!$user->can('admin', $mailbox)) {
+                    $response['msg'] = __('Not enough permissions');
+                }
+
+                if (!$response['msg']) {
+                    $mailbox->regenerateOutWebhookToken();
+                    $mailbox->save();
+
+                    $response['urls'] = [];
+                    foreach (Mailbox::OUT_METHOD_PROVIDERS as $out_provider) {
+                        $response['urls'][$out_provider] = $mailbox->getOutWebhookUrl($out_provider);
+                    }
+                    $response['status'] = 'success';
+                    $response['msg_success'] = __('New webhook URL made. Update it in your sending service.');
+                }
+                break;
+
             // Delete mailbox
             case 'delete_mailbox':
                 $mailbox = Mailbox::find($request->mailbox_id);
