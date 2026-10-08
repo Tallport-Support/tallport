@@ -1809,5 +1809,16 @@
     "The receiving server could not be reached.": "לא ניתן היה להתחבר לשרת המקבל.",
     "The receiving server refused the email as spam or because of its rules.": "השרת המקבל דחה את האימייל כספאם או בשל הכללים שלו.",
     "The receiving server rejected the email.": "השרת המקבל דחה את האימייל.",
-    "The recipient marked the email as spam.": "הנמען סימן את האימייל כספאם."
+    "The recipient marked the email as spam.": "הנמען סימן את האימייל כספאם.",
+    "Access Key ID": "מזהה מפתח גישה",
+    "Secret Access Key": "מפתח גישה סודי",
+    "Region": "אזור",
+    "Domain": "דומיין",
+    "Server Token": "אסימון שרת",
+    "Message Stream": "זרם הודעות",
+    "Webhook Signing Key": "מפתח חתימה של Webhook",
+    "Webhook URL": "כתובת URL של Webhook",
+    "Optional; the default transactional stream when empty.": "אופציונלי; כשריק, זרם הטרנזקציות המוגדר כברירת מחדל.",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "ב-Amazon SES, שלחו התראות על החזרות ותלונות לנושא ב-Amazon SNS והרשמו את כתובת ה-URL הזו אליו (HTTPS); המינוי מאושר אוטומטית.",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "הוסיפו את כתובת ה-URL הזו כ-Webhook להחזרות ולתלונות ב-:provider, כדי שתשובות שלא נמסרו יסומנו."
 }

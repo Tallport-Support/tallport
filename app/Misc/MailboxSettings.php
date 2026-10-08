@@ -82,7 +82,8 @@ class MailboxSettings
             return [__('Not set up'), true];
         }
         $in = $mailbox->isDeliveredByMailServer() ? __('Mail Server') : strtoupper((string) $mailbox->getInProtocolName());
-        $out = [Mailbox::OUT_METHOD_PHP_MAIL => 'PHP mail()', Mailbox::OUT_METHOD_SENDMAIL => 'Sendmail', Mailbox::OUT_METHOD_SMTP => 'SMTP'][$mailbox->out_method] ?? '';
+        $out = [Mailbox::OUT_METHOD_PHP_MAIL => 'PHP mail()', Mailbox::OUT_METHOD_SENDMAIL => 'Sendmail', Mailbox::OUT_METHOD_SMTP => 'SMTP'][$mailbox->out_method]
+            ?? \App\Misc\MailProviders::NAMES[(string) $mailbox->getOutProvider()] ?? '';
 
         return [implode(' · ', array_filter([$in, $out])), false];
     }

@@ -699,6 +699,14 @@ class FetchEmails extends Command
                     $bounced_message_id = $delivery_report->originalHeaders()['message_id'] ?? null;
                 }
                 $attachments = $delivery_report->attachments($attachments);
+
+                // Recorded already, from the sending service's webhook (or another report): shown once.
+                $bounced_reply = $delivery_report->kind != \App\Incoming\DeliveryReport::DELAYED ? $this->findBouncedThread($bounced_message_id) : null;
+                if ($bounced_reply && \App\Misc\DeliveryReports::isRecorded($bounced_reply, $delivery_report->recipients)) {
+                    $this->line('['.date('Y-m-d H:i:s').'] Delivery report recorded already for reply '.$bounced_reply->id.'. Skipping message.');
+                    $this->setSeen($message, $mailbox);
+                    return;
+                }
             }
 
             // Webklex/php-imap returns object instead of a string.
@@ -817,6 +825,11 @@ class FetchEmails extends Command
                         } else {
                             // Customer replied to his own message
                             $prev_thread = Thread::where('message_id', $prev_message_id)->first();
+                            // A reply or auto reply whose Message-ID the sending service replaced
+                            // (Amazon SES, Postmark): the ID it gave is in the send log.
+                            if (!$prev_thread) {
+                                $prev_thread = SendLog::threadForProviderMessageId($prev_message_id);
+                            }
                         }
                         // An agent emailing into this thread is saved as their note further below.
                     }
@@ -1236,22 +1249,18 @@ class FetchEmails extends Command
         return Email::sanitizeEmail($email);
     }
 
+    /**
+     * The sent reply (or auto reply) a bounce is about, by its Message-ID, or null.
+     */
+    public function findBouncedThread($bounced_message_id)
+    {
+        return \App\Misc\DeliveryReports::sentThread($bounced_message_id);
+    }
+
     public function saveBounceData($new_thread, $bounced_message_id, $from, $delivery_report = null)
     {
         // Try to find bounced thread by Message-ID.
-        $bounced_thread = null;
-        if ($bounced_message_id) {
-            $prefixes = [
-                $this->formatMessageIdPrefix(\MailHelper::MESSAGE_ID_PREFIX_REPLY_TO_CUSTOMER),
-                $this->formatMessageIdPrefix(\MailHelper::MESSAGE_ID_PREFIX_AUTO_REPLY),
-            ];
-            preg_match('/^('.implode('|', $prefixes).')\-(\d+)\-([a-z0-9]+)@/', $bounced_message_id, $matches);
-            // Only with the Message-ID's hash, as for customers' replies: a made-up bounce
-            // can't mark any reply as not delivered.
-            if (!empty($matches[2]) && ($matches[3] ?? '') === \MailHelper::getMessageIdHash($matches[2])) {
-                $bounced_thread = Thread::find($matches[2]);
-            }
-        }
+        $bounced_thread = $this->findBouncedThread($bounced_message_id);
 
         $status_data = [
             'is_bounce' => true,
@@ -1290,7 +1299,14 @@ class FetchEmails extends Command
             $bounced_thread->save();
 
             // Bounces can be soft and hard, for now log both as STATUS_DELIVERY_ERROR.
-            SendLog::log($bounced_thread->id, null, $from, SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER, SendLog::STATUS_DELIVERY_ERROR, $bounced_thread->created_by_customer_id, null, 'Message bounced');
+            // One record per address it's about, which a webhook's report on it then finds
+            // (DeliveryReports::isRecorded()).
+            $log_message = $delivery_report && $delivery_report->kind == \App\Incoming\DeliveryReport::DELAYED
+                ? \App\Misc\DeliveryReports::DELAYED_LOG_MESSAGE
+                : 'Message bounced';
+            foreach ($delivery_report ? $delivery_report->recipients : [$from] as $recipient) {
+                SendLog::log($bounced_thread->id, null, $recipient, SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER, SendLog::STATUS_DELIVERY_ERROR, $bounced_thread->created_by_customer_id, null, $log_message);
+            }
         }
     }
 

@@ -1813,5 +1813,16 @@
     "The receiving server could not be reached.": "De ontvangende server was niet bereikbaar.",
     "The receiving server refused the email as spam or because of its rules.": "De ontvangende server heeft de e-mail geweigerd als spam of vanwege zijn regels.",
     "The receiving server rejected the email.": "De ontvangende server heeft de e-mail geweigerd.",
-    "The recipient marked the email as spam.": "De ontvanger heeft de e-mail als spam gemarkeerd."
+    "The recipient marked the email as spam.": "De ontvanger heeft de e-mail als spam gemarkeerd.",
+    "Access Key ID": "Toegangssleutel-ID",
+    "Secret Access Key": "Geheime Toegangssleutel",
+    "Region": "Regio",
+    "Domain": "Domein",
+    "Server Token": "Servertoken",
+    "Message Stream": "Berichtenstroom",
+    "Webhook Signing Key": "Webhook-Ondertekeningssleutel",
+    "Webhook URL": "Webhook-URL",
+    "Optional; the default transactional stream when empty.": "Optioneel; leeg de standaard transactionele stroom.",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "Stuur in Amazon SES meldingen van bounces en klachten naar een Amazon SNS-onderwerp en abonneer deze URL daarop (HTTPS); het abonnement wordt automatisch bevestigd.",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Voeg deze URL in :provider toe als webhook voor bounces en klachten, zodat antwoorden die niet zijn afgeleverd worden gemarkeerd."
 }

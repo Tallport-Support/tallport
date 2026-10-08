@@ -1809,5 +1809,16 @@
     "The receiving server could not be reached.": "Serverul destinatar nu a putut fi contactat.",
     "The receiving server refused the email as spam or because of its rules.": "Serverul destinatar a refuzat emailul ca spam sau din cauza regulilor sale.",
     "The receiving server rejected the email.": "Serverul destinatar a refuzat emailul.",
-    "The recipient marked the email as spam.": "Destinatarul a marcat emailul ca spam."
+    "The recipient marked the email as spam.": "Destinatarul a marcat emailul ca spam.",
+    "Access Key ID": "ID Cheie de Acces",
+    "Secret Access Key": "Cheie de Acces Secretă",
+    "Region": "Regiune",
+    "Domain": "Domeniu",
+    "Server Token": "Token Server",
+    "Message Stream": "Flux de Mesaje",
+    "Webhook Signing Key": "Cheie de Semnare Webhook",
+    "Webhook URL": "URL Webhook",
+    "Optional; the default transactional stream when empty.": "Opțional; dacă este gol, fluxul tranzacțional implicit.",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "În Amazon SES, trimiteți notificările de respingeri și reclamații către un subiect Amazon SNS și abonați acest URL la el (HTTPS); abonamentul este confirmat automat.",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Adăugați acest URL ca webhook pentru respingeri și reclamații în :provider, astfel încât răspunsurile care nu au fost livrate să fie marcate."
 }

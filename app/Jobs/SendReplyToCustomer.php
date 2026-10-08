@@ -366,7 +366,8 @@ class SendReplyToCustomer implements ShouldQueue
         $reply_mail = new ReplyToCustomer($this->conversation, $this->threads, $headers, $mailbox, $subject, $threads_count, $this->mailbox_change_history);
 
         $smtp_queue_id = null;
-        
+        $provider_message_id = null;
+
         try {
             $sent_message = Mail::to($to)
                 ->cc($cc_array)
@@ -378,6 +379,8 @@ class SendReplyToCustomer implements ShouldQueue
 
             // https://github.com/freescout-helpdesk/freescout/issues/3330
             $smtp_queue_id = SwiftGetSmtpQueueId::fromSentMessage($sent_message);
+            // The sending service's Message-ID (or ID), which the customer's reply and delivery reports refer to.
+            $provider_message_id = \App\Misc\MailProviders::sentMessageId($sent_message);
         } catch (\Throwable $e) {
             // We come here in case SMTP server unavailable for example
             if ($this->attempts() == 1) {
@@ -450,7 +453,7 @@ class SendReplyToCustomer implements ShouldQueue
         // long enough for the worker to be killed.
         // Laravel tells us exactly what email addresses failed
         $this->failures = Mail::failures();
-        $this->saveToSendLog('', $smtp_queue_id);
+        $this->saveToSendLog('', $smtp_queue_id, $provider_message_id);
 
         // Clean error message if email finally has been sent.
         if ($this->last_thread->send_status == SendLog::STATUS_SEND_ERROR) {
@@ -719,7 +722,7 @@ class SendReplyToCustomer implements ShouldQueue
     /**
      * Save emails to send log.
      */
-    public function saveToSendLog($error_message = '', $smtp_queue_id = '')
+    public function saveToSendLog($error_message = '', $smtp_queue_id = '', $provider_message_id = null)
     {
         foreach ($this->recipients as $recipient) {
             if (in_array($recipient, $this->failures)) {
@@ -734,7 +737,7 @@ class SendReplyToCustomer implements ShouldQueue
             } else {
                 $customer_id = null;
             }
-            SendLog::log($this->last_thread->id, $this->message_id, $recipient, SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER, $status, $customer_id, null, $status_message, $smtp_queue_id);
+            SendLog::log($this->last_thread->id, $this->message_id, $recipient, SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER, $status, $customer_id, null, $status_message, $smtp_queue_id, $provider_message_id);
         }
     }
 

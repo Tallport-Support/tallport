@@ -17,6 +17,8 @@ use Tests\FeatureTestCase;
  */
 class SendReplyToCustomerJobTest extends FeatureTestCase
 {
+    use \Tests\Concerns\FakesMailProviders;
+
     /**
      * An Outlook conversation index from 2023 (tests/Messages/webklex/multipart_without_body.eml).
      */
@@ -736,6 +738,32 @@ PHP;
         $this->assertStringContainsString('Message-ID: <'.$reply->getMessageId().'>', $saved);
         $this->assertStringContainsString('Our answer', quoted_printable_decode($saved));
         $this->assertSame('', \MailHelper::$smtp_mime_message, 'The saved message is forgotten.');
+    }
+
+    /**
+     * Sent by a sending service's API (Resend): saved to the Sent folder all the same.
+     */
+    public function testReplySentByAnApiIsSavedToTheImapSentFolder()
+    {
+        [$process, $pipes, $port] = $this->startImapServer();
+        try {
+            $this->useImapSentFolder($port);
+            [$conversation, $reply] = $this->conversationWithQueuedReply();
+            $this->fakeMailProviders();
+            $this->useMailProvider($this->mailbox, \App\Mailbox::OUT_METHOD_RESEND, ['resend_key' => 're_test']);
+
+            (new SendReplyToCustomer($conversation, $this->threadsOf($conversation), $conversation->customer))->handle();
+            gc_collect_cycles();
+        } finally {
+            proc_terminate($process);
+            $output = stream_get_contents($pipes[1]);
+            proc_close($process);
+        }
+
+        $this->assertCount(1, $this->provider_requests);
+        $this->assertMatchesRegularExpression('/^APPEND Sent (\S+)$/m', $output);
+        preg_match('/^APPEND Sent (\S+)$/m', $output, $m);
+        $this->assertStringContainsString('Message-ID: <'.$reply->getMessageId().'>', base64_decode($m[1]));
     }
 
     /**

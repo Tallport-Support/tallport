@@ -1810,5 +1810,16 @@
     "The receiving server could not be reached.": "Qəbul edən serverə qoşulmaq mümkün olmadı.",
     "The receiving server refused the email as spam or because of its rules.": "Qəbul edən server e-poçtu spam kimi və ya öz qaydalarına görə rədd etdi.",
     "The receiving server rejected the email.": "Qəbul edən server e-poçtu rədd etdi.",
-    "The recipient marked the email as spam.": "Alıcı e-poçtu spam kimi qeyd etdi."
+    "The recipient marked the email as spam.": "Alıcı e-poçtu spam kimi qeyd etdi.",
+    "Access Key ID": "Giriş Açarı ID",
+    "Secret Access Key": "Gizli Giriş Açarı",
+    "Region": "Region",
+    "Domain": "Domen",
+    "Server Token": "Server Tokeni",
+    "Message Stream": "Mesaj Axını",
+    "Webhook Signing Key": "Webhook İmza Açarı",
+    "Webhook URL": "Webhook URL",
+    "Optional; the default transactional stream when empty.": "İstəyə bağlı; boş olduqda standart tranzaksiya axını.",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "Amazon SES-də geri qayıtma və şikayət bildirişlərini Amazon SNS mövzusuna göndərin və bu URL-i ona abunə edin (HTTPS); abunəlik avtomatik təsdiqlənir.",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Bu URL-i :provider-də geri qayıtmalar və şikayətlər üçün webhook kimi əlavə edin ki, çatdırılmayan cavablar qeyd olunsun."
 }

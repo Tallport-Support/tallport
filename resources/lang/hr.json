@@ -1810,5 +1810,16 @@
     "The receiving server could not be reached.": "Poslužitelj primatelja nije dostupan.",
     "The receiving server refused the email as spam or because of its rules.": "Poslužitelj primatelja odbio je e-mail kao neželjenu poštu ili zbog svojih pravila.",
     "The receiving server rejected the email.": "Poslužitelj primatelja odbio je e-mail.",
-    "The recipient marked the email as spam.": "Primatelj je označio e-mail kao neželjenu poštu."
+    "The recipient marked the email as spam.": "Primatelj je označio e-mail kao neželjenu poštu.",
+    "Access Key ID": "ID Pristupnog Ključa",
+    "Secret Access Key": "Tajni Pristupni Ključ",
+    "Region": "Regija",
+    "Domain": "Domena",
+    "Server Token": "Token Poslužitelja",
+    "Message Stream": "Tok Poruka",
+    "Webhook Signing Key": "Ključ za Potpisivanje Webhooka",
+    "Webhook URL": "URL Webhooka",
+    "Optional; the default transactional stream when empty.": "Neobavezno; ako je prazno, zadani transakcijski tok.",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "U Amazon SES-u šaljite obavijesti o odbijenim porukama i pritužbama na Amazon SNS temu i pretplatite ovaj URL na nju (HTTPS); pretplata se potvrđuje automatski.",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Dodajte ovaj URL kao webhook za odbijene poruke i pritužbe u :provider, kako bi se označili odgovori koji nisu isporučeni."
 }

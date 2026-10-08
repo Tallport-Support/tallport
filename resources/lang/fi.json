@@ -1828,5 +1828,16 @@
     "The receiving server could not be reached.": "Vastaanottavaan palvelimeen ei saatu yhteyttä.",
     "The receiving server refused the email as spam or because of its rules.": "Vastaanottava palvelin hylkäsi sähköpostin roskapostina tai sääntöjensä vuoksi.",
     "The receiving server rejected the email.": "Vastaanottava palvelin hylkäsi sähköpostin.",
-    "The recipient marked the email as spam.": "Vastaanottaja merkitsi sähköpostin roskapostiksi."
+    "The recipient marked the email as spam.": "Vastaanottaja merkitsi sähköpostin roskapostiksi.",
+    "Access Key ID": "Pääsyavaimen Tunnus",
+    "Secret Access Key": "Salainen Pääsyavain",
+    "Region": "Alue",
+    "Domain": "Verkkotunnus",
+    "Server Token": "Palvelimen Tunnus",
+    "Message Stream": "Viestivirta",
+    "Webhook Signing Key": "Webhookin Allekirjoitusavain",
+    "Webhook URL": "Webhookin URL",
+    "Optional; the default transactional stream when empty.": "Valinnainen; tyhjänä oletusarvoinen tapahtumaviestien virta.",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "Lähetä Amazon SES -palvelussa palautus- ja valitusilmoitukset Amazon SNS -aiheeseen ja tilaa tämä URL siihen (HTTPS); tilaus vahvistetaan automaattisesti.",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Lisää tämä URL palautusten ja valitusten webhookiksi palvelussa :provider, jotta toimittamatta jääneet vastaukset merkitään."
 }

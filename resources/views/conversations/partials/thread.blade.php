@@ -144,6 +144,9 @@
                     ({!! __safe_raw_html('Message bounced (:link)', [
                     'link' => '<a href="'.route('conversations.view', ['id' => $send_status_data['bounced_by_conversation']]).'#thread-id='.$send_status_data['bounced_by_thread'].'">#'.$bounced_by_conversation->number.'</a>'
                     ]) !!})
+                @elseif (!empty($send_status_data['delivery_problem']['kind']))
+                    {{-- Reported by the sending service's webhook (App\Misc\DeliveryReports::recordFromService()). --}}
+                    ({!! safe_raw_html(App\Misc\DeliveryReports::headline($send_status_data['delivery_problem']['kind'], e(implode(', ', (array) ($send_status_data['delivery_problem']['recipients'] ?? []))))) !!}: {{ App\Misc\DeliveryReports::reasonText($send_status_data['delivery_problem']['reason'] ?? '') }})
                 @endif
                 @if ($thread->canRetrySend())
                     <x-fruit::button variant="ghost" class="btn-thread-retry" wire:click="retry({{ $thread->id }})">{{ __('Retry') }}</x-fruit::button>

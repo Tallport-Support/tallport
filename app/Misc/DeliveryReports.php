@@ -5,6 +5,7 @@ namespace App\Misc;
 use App\Email;
 use App\Http\Controllers\AttachmentsController;
 use App\Incoming\DeliveryReport;
+use App\SendLog;
 use App\Thread;
 
 /**
@@ -16,6 +17,18 @@ use App\Thread;
  */
 class DeliveryReports
 {
+    /**
+     * How long a report on a sent email's recipient counts as the same report,
+     * whether it came as an email or from the sending service's webhook
+     * (Amazon SES sends both): recorded and shown once.
+     */
+    const SAME_REPORT_HOURS = 72;
+
+    /**
+     * The send log's note for a delay (the others are "Message bounced").
+     */
+    const DELAYED_LOG_MESSAGE = 'Delivery delayed';
+
     /**
      * A thread's delivery report, or null.
      */
@@ -150,6 +163,82 @@ class DeliveryReports
             ];
             $email->save();
         }
+    }
+
+    /**
+     * The sent reply (or, for an auto reply, the customer's message) an email
+     * with this Message-ID was, or null. Tallport's own Message-ID only with
+     * its hash, so that a made-up report can't mark any reply; else the ID the
+     * sending service gave it (SendLog::threadForProviderMessageId()).
+     */
+    public static function sentThread($message_id)
+    {
+        $message_id = trim((string) $message_id, " <>\t");
+        if ($message_id === '') {
+            return null;
+        }
+        $prefixes = [];
+        foreach ([\MailHelper::MESSAGE_ID_PREFIX_REPLY_TO_CUSTOMER, \MailHelper::MESSAGE_ID_PREFIX_AUTO_REPLY] as $prefix) {
+            $prefixes[] = str_replace('TP_', '(?:TP_|'.\MailHelper::LEGACY_MESSAGE_ID_PREFIX.')?', $prefix);
+        }
+        if (preg_match('/^('.implode('|', $prefixes).')\-(\d+)\-([a-z0-9]+)@/', $message_id, $matches)) {
+            return $matches[3] === \MailHelper::getMessageIdHash($matches[2]) ? Thread::find($matches[2]) : null;
+        }
+
+        return SendLog::threadForProviderMessageId($message_id);
+    }
+
+    /**
+     * Whether a bounce or complaint about these recipients of the sent reply
+     * (or auto reply) has been recorded within SAME_REPORT_HOURS.
+     */
+    public static function isRecorded(Thread $reply, array $recipients)
+    {
+        return SendLog::where('thread_id', $reply->id)
+            ->whereIn('email', $recipients)
+            ->whereIn('status', [SendLog::STATUS_DELIVERY_ERROR, SendLog::STATUS_COMPLAINED])
+            ->where(function ($query) {
+                $query->whereNull('status_message')->orWhere('status_message', '!=', self::DELAYED_LOG_MESSAGE);
+            })
+            ->where('created_at', '>=', now()->subHours(self::SAME_REPORT_HOURS))
+            ->exists();
+    }
+
+    /**
+     * A sending service's report (its webhook, in the shape of
+     * DeliveryReport::toArray()) about a sent reply or auto reply: the
+     * addresses are flagged, the send log has it, and a bounce marks the
+     * reply Not delivered. Once: false when recorded already, or a delay.
+     */
+    public static function recordFromService(Thread $reply, array $report, $mail_type = SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER)
+    {
+        if ($report['kind'] == DeliveryReport::DELAYED || !$report['recipients'] || self::isRecorded($reply, $report['recipients'])) {
+            return false;
+        }
+
+        self::flag($report, $reply);
+
+        $complaint = $report['kind'] == DeliveryReport::COMPLAINT;
+        foreach ($report['recipients'] as $recipient) {
+            SendLog::log(
+                $reply->id,
+                null,
+                $recipient,
+                $mail_type,
+                $complaint ? SendLog::STATUS_COMPLAINED : SendLog::STATUS_DELIVERY_ERROR,
+                $reply->created_by_customer_id,
+                null,
+                trim(($complaint ? 'Complaint' : 'Message bounced').' ('.$report['reporter'].'): '.$report['diagnostic'], ': ')
+            );
+        }
+
+        if (!$complaint) {
+            $reply->send_status = SendLog::STATUS_DELIVERY_ERROR;
+            $reply->updateSendStatusData(['delivery_problem' => $report]);
+            $reply->save();
+        }
+
+        return true;
     }
 
     /**

@@ -43,6 +43,58 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
+    {{-- Sending services' APIs (App\Misc\MailProviders). --}}
+    @php
+        $mail_api_value = fn ($name) => old('settings.mail_'.$name, $settings['mail_'.$name] ?? '');
+        $mail_api_secret = fn ($name) => old('settings.mail_'.$name, \Helper::safePassword($settings['mail_'.$name] ?? ''));
+    @endphp
+    <x-fruit::form-section title="Amazon SES" x-show="driver == 'ses'">
+        <x-fruit::field :label="__('Access Key ID')" layout="row">
+            <x-fruit::input name="settings[mail_ses_key]" :value="$mail_api_value('ses_key')" maxlength="128" autocomplete="off" />
+        </x-fruit::field>
+        <x-fruit::field :label="__('Secret Access Key')" layout="row">
+            <x-fruit::input type="password" name="settings[mail_ses_secret]" :value="$mail_api_secret('ses_secret')" maxlength="255" autocomplete="new-password" />
+        </x-fruit::field>
+        <x-fruit::field :label="__('Region')" layout="row">
+            <x-fruit::select name="settings[mail_ses_region]">
+                @foreach (App\Misc\MailProviders::SES_REGIONS as $region)
+                    <option value="{{ $region }}" @selected(($mail_api_value('ses_region') ?: 'us-east-1') == $region)>{{ $region }}</option>
+                @endforeach
+            </x-fruit::select>
+        </x-fruit::field>
+    </x-fruit::form-section>
+
+    <x-fruit::form-section title="Mailgun" x-show="driver == 'mailgun'">
+        <x-fruit::field :label="__('Domain')" layout="row">
+            <x-fruit::input name="settings[mail_mailgun_domain]" :value="$mail_api_value('mailgun_domain')" maxlength="255" autocomplete="off" />
+        </x-fruit::field>
+        <x-fruit::field :label="__('API Key')" layout="row">
+            <x-fruit::input type="password" name="settings[mail_mailgun_secret]" :value="$mail_api_secret('mailgun_secret')" maxlength="255" autocomplete="new-password" />
+        </x-fruit::field>
+        <x-fruit::field :label="__('Region')" layout="row">
+            <x-fruit::select name="settings[mail_mailgun_region]">
+                @foreach (App\Misc\MailProviders::MAILGUN_REGIONS as $region => $region_name)
+                    <option value="{{ $region }}" @selected(($mail_api_value('mailgun_region') ?: 'us') == $region)>{{ $region_name }}</option>
+                @endforeach
+            </x-fruit::select>
+        </x-fruit::field>
+    </x-fruit::form-section>
+
+    <x-fruit::form-section title="Postmark" x-show="driver == 'postmark'">
+        <x-fruit::field :label="__('Server Token')" layout="row">
+            <x-fruit::input type="password" name="settings[mail_postmark_token]" :value="$mail_api_secret('postmark_token')" maxlength="255" autocomplete="new-password" />
+        </x-fruit::field>
+        <x-fruit::field :label="__('Message Stream')" :description="__('Optional; the default transactional stream when empty.')" layout="row">
+            <x-fruit::input name="settings[mail_postmark_stream]" :value="$mail_api_value('postmark_stream')" maxlength="100" placeholder="outbound" autocomplete="off" />
+        </x-fruit::field>
+    </x-fruit::form-section>
+
+    <x-fruit::form-section title="Resend" x-show="driver == 'resend'">
+        <x-fruit::field :label="__('API Key')" layout="row">
+            <x-fruit::input type="password" name="settings[mail_resend_key]" :value="$mail_api_secret('resend_key')" maxlength="255" autocomplete="new-password" />
+        </x-fruit::field>
+    </x-fruit::form-section>
+
     <x-fruit::form-section :title="__('Send Test')" x-data="tallportMailSettings">
         <x-fruit::field :label="__('Send Test To')" :description="__('Make sure to save settings before testing.')" control-id="send_test" layout="row">
             <div class="f-input-group">

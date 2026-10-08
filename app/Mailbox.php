@@ -56,8 +56,21 @@ class Mailbox extends Model
     const OUT_METHOD_PHP_MAIL = 1;
     const OUT_METHOD_SENDMAIL = 2;
     const OUT_METHOD_SMTP = 3;
-    //const OUT_METHOD_GMAIL = 3; // todo
-    // todo: mailgun, sendgrid, mandrill, etc
+    // Sending services' APIs (App\Misc\MailProviders).
+    const OUT_METHOD_SES = 4;
+    const OUT_METHOD_MAILGUN = 5;
+    const OUT_METHOD_POSTMARK = 6;
+    const OUT_METHOD_RESEND = 7;
+
+    /**
+     * Outgoing methods that are a sending service's API: method => provider.
+     */
+    const OUT_METHOD_PROVIDERS = [
+        self::OUT_METHOD_SES      => \App\Misc\MailProviders::SES,
+        self::OUT_METHOD_MAILGUN  => \App\Misc\MailProviders::MAILGUN,
+        self::OUT_METHOD_POSTMARK => \App\Misc\MailProviders::POSTMARK,
+        self::OUT_METHOD_RESEND   => \App\Misc\MailProviders::RESEND,
+    ];
 
     /**
      * Outgoing encryption.
@@ -519,6 +532,9 @@ class Mailbox extends Model
      */
     public function isOutActive()
     {
+        if ($this->getOutProvider()) {
+            return \App\Misc\MailProviders::isConfigured($this->getOutProvider(), \App\Misc\MailProviders::mailboxSettings($this));
+        }
         if ($this->out_method != self::OUT_METHOD_PHP_MAIL && $this->out_method != self::OUT_METHOD_SENDMAIL
             && (!$this->out_server /*|| !$this->out_username || !$this->out_password*/)
         ) {
@@ -686,8 +702,34 @@ class Mailbox extends Model
                 return 'smtp';
 
             default:
-                return 'mail';
+                return $this->getOutProvider() ?: 'mail';
         }
+    }
+
+    /**
+     * The sending service whose API the mailbox sends through
+     * (App\Misc\MailProviders), or null.
+     */
+    public function getOutProvider()
+    {
+        return self::OUT_METHOD_PROVIDERS[(int) $this->out_method] ?? null;
+    }
+
+    /**
+     * The secret in the URLs of the mailbox's delivery webhooks
+     * (App\Http\Controllers\MailWebhooksController).
+     */
+    public function getOutWebhookToken()
+    {
+        return substr(hash_hmac('sha256', 'mail_webhook'.$this->id, (string) config('app.key')), 0, 32);
+    }
+
+    /**
+     * Where a sending service sends the mailbox's delivery events (bounces, complaints).
+     */
+    public function getOutWebhookUrl($provider)
+    {
+        return route('mail.webhook', ['provider' => $provider, 'mailbox_id' => $this->id, 'token' => $this->getOutWebhookToken()]);
     }
 
     /**

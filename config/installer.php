@@ -41,6 +41,8 @@ return [
             'cURL',
             'DOM',
             'libxml',
+            // Sending through Amazon SES (async-aws).
+            'SimpleXML',
             'ctype',
             //'pcntl',
             // We keep it as optional, as it's only used to translate dates.

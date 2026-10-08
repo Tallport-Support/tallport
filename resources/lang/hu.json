@@ -1810,5 +1810,16 @@
     "The receiving server could not be reached.": "A fogadó szerver nem volt elérhető.",
     "The receiving server refused the email as spam or because of its rules.": "A fogadó szerver spamként vagy a szabályai miatt elutasította az e-mailt.",
     "The receiving server rejected the email.": "A fogadó szerver elutasította az e-mailt.",
-    "The recipient marked the email as spam.": "A címzett spamként jelölte meg az e-mailt."
+    "The recipient marked the email as spam.": "A címzett spamként jelölte meg az e-mailt.",
+    "Access Key ID": "Hozzáférési Kulcs Azonosító",
+    "Secret Access Key": "Titkos Hozzáférési Kulcs",
+    "Region": "Régió",
+    "Domain": "Domain",
+    "Server Token": "Szerver Token",
+    "Message Stream": "Üzenetfolyam",
+    "Webhook Signing Key": "Webhook Aláírókulcs",
+    "Webhook URL": "Webhook URL",
+    "Optional; the default transactional stream when empty.": "Nem kötelező; üresen az alapértelmezett tranzakciós folyam.",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "Az Amazon SES-ben küldje a visszapattanási és panaszértesítéseket egy Amazon SNS témába, és iratkoztassa fel rá ezt az URL-t (HTTPS); a feliratkozás automatikusan megerősítésre kerül.",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Adja hozzá ezt az URL-t webhookként a visszapattanásokhoz és panaszokhoz itt: :provider, hogy a kézbesítetlen válaszok meg legyenek jelölve."
 }

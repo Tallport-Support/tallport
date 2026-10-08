@@ -1811,5 +1811,16 @@
     "The receiving server could not be reached.": "无法连接到接收服务器。",
     "The receiving server refused the email as spam or because of its rules.": "接收服务器将邮件视为垃圾邮件或根据其规则拒绝了邮件。",
     "The receiving server rejected the email.": "接收服务器拒绝了邮件。",
-    "The recipient marked the email as spam.": "收件人将邮件标记为垃圾邮件。"
+    "The recipient marked the email as spam.": "收件人将邮件标记为垃圾邮件。",
+    "Access Key ID": "访问密钥 ID",
+    "Secret Access Key": "私有访问密钥",
+    "Region": "区域",
+    "Domain": "域名",
+    "Server Token": "服务器令牌",
+    "Message Stream": "消息流",
+    "Webhook Signing Key": "Webhook 签名密钥",
+    "Webhook URL": "Webhook URL",
+    "Optional; the default transactional stream when empty.": "可选；留空时使用默认的事务消息流。",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "在 Amazon SES 中，将退信和投诉通知发送到 Amazon SNS 主题，并将此 URL 订阅到该主题（HTTPS）；订阅会自动确认。",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "在 :provider 中将此 URL 添加为退信和投诉的 Webhook，以便标记未送达的回复。"
 }

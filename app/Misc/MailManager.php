@@ -3,14 +3,20 @@
 namespace App\Misc;
 
 use Illuminate\Mail\MailManager as BaseMailManager;
+use Symfony\Component\Mailer\Bridge\Amazon\Transport\SesTransportFactory;
+use Symfony\Component\Mailer\Bridge\Mailgun\Transport\MailgunTransportFactory;
+use Symfony\Component\Mailer\Bridge\Postmark\Transport\PostmarkTransportFactory;
+use Symfony\Component\Mailer\Bridge\Resend\Transport\ResendTransportFactory;
 use Symfony\Component\Mailer\Transport\Dsn;
 use Symfony\Component\Mailer\Transport\Smtp\Auth\XOAuth2Authenticator;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransportFactory;
 use Symfony\Component\Mailer\Transport\Smtp\Stream\SocketStream;
 
 /**
- * Laravel's mail manager with FreeScout's SMTP settings and PHP's mail()
- * function for the "mail" driver. Installed by AppServiceProvider.
+ * Laravel's mail manager with FreeScout's SMTP settings, PHP's mail()
+ * function for the "mail" driver, and sending services' APIs (Symfony's
+ * transports, App\Misc\MailProviders: config mail.ses, mail.mailgun,
+ * mail.postmark, mail.resend). Installed by AppServiceProvider.
  */
 class MailManager extends BaseMailManager
 {
@@ -77,5 +83,88 @@ class MailManager extends BaseMailManager
     protected function createMailTransport()
     {
         return new PhpMailTransport;
+    }
+
+    /**
+     * Amazon SES by its API (raw email, so the headers are kept as they are),
+     * without the AWS SDK.
+     *
+     * @return \Symfony\Component\Mailer\Transport\TransportInterface
+     */
+    protected function createSesTransport(array $config)
+    {
+        $ses = $config['ses'] ?? [];
+
+        return (new SesTransportFactory(null, $this->providerHttpClient()))->create(new Dsn(
+            'ses+https',
+            'default',
+            $ses['key'] ?? '',
+            $ses['secret'] ?? '',
+            null,
+            ['region' => $ses['region'] ?? 'us-east-1']
+        ));
+    }
+
+    /**
+     * Mailgun by its API (raw email).
+     *
+     * @return \Symfony\Component\Mailer\Transport\TransportInterface
+     */
+    protected function createMailgunTransport(array $config)
+    {
+        $mailgun = $config['mailgun'] ?? [];
+
+        return (new MailgunTransportFactory(null, $this->providerHttpClient()))->create(new Dsn(
+            'mailgun+https',
+            'default',
+            $mailgun['secret'] ?? '',
+            $mailgun['domain'] ?? '',
+            null,
+            ['region' => $mailgun['region'] ?? 'us']
+        ));
+    }
+
+    /**
+     * Postmark by its API, in the message stream set (else the default one).
+     *
+     * @return \Symfony\Component\Mailer\Transport\TransportInterface
+     */
+    protected function createPostmarkTransport(array $config)
+    {
+        $postmark = $config['postmark'] ?? [];
+
+        return (new PostmarkTransportFactory(null, $this->providerHttpClient()))->create(new Dsn(
+            'postmark+api',
+            'default',
+            $postmark['token'] ?? '',
+            null,
+            null,
+            !empty($postmark['message_stream']) ? ['message_stream' => $postmark['message_stream']] : []
+        ));
+    }
+
+    /**
+     * Resend by its API, without Resend's SDK.
+     *
+     * @return \Symfony\Component\Mailer\Transport\TransportInterface
+     */
+    protected function createResendTransport(array $config)
+    {
+        return (new ResendTransportFactory(null, $this->providerHttpClient()))->create(new Dsn(
+            'resend+api',
+            'default',
+            $config['resend']['key'] ?? ''
+        ));
+    }
+
+    /**
+     * The HTTP client for sending services: one bound as "mail.http_client"
+     * (tests), else Symfony's default.
+     *
+     * @return \Symfony\Contracts\HttpClient\HttpClientInterface|null
+     */
+    protected function providerHttpClient()
+    {
+        return $this->app->bound('mail.http_client') ? $this->app->make('mail.http_client') : null;
     }
 }

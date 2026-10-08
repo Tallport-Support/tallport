@@ -2208,5 +2208,16 @@
     "The receiving server could not be reached.": "Алушы серверге қосылу мүмкін болмады.",
     "The receiving server refused the email as spam or because of its rules.": "Алушы сервер хатты спам ретінде немесе өз ережелеріне байланысты қабылдамады.",
     "The receiving server rejected the email.": "Алушы сервер хатты қабылдамады.",
-    "The recipient marked the email as spam.": "Алушы хатты спам деп белгіледі."
+    "The recipient marked the email as spam.": "Алушы хатты спам деп белгіледі.",
+    "Access Key ID": "Кіру Кілтінің ID",
+    "Secret Access Key": "Құпия Кіру Кілті",
+    "Region": "Аймақ",
+    "Domain": "Домен",
+    "Server Token": "Сервер Токені",
+    "Message Stream": "Хабарлар Ағыны",
+    "Webhook Signing Key": "Webhook Қолтаңба Кілті",
+    "Webhook URL": "Webhook URL",
+    "Optional; the default transactional stream when empty.": "Міндетті емес; бос болса, әдепкі транзакциялық ағын.",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "Amazon SES-те қайтарылған хаттар мен шағымдар туралы хабарландыруларды Amazon SNS тақырыбына жіберіп, осы URL-ді оған жазылыңыз (HTTPS); жазылым автоматты түрде расталады.",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Жеткізілмеген жауаптар белгіленуі үшін осы URL-ді :provider ішінде қайтарылған хаттар мен шағымдарға арналған webhook ретінде қосыңыз."
 }

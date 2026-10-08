@@ -1394,6 +1394,22 @@
         "methods": [
             "POST"
         ],
+        "uri": "mail/webhook/{provider}/{mailbox_id}/{token}",
+        "name": "mail.webhook",
+        "action": "MailWebhooksController@webhook",
+        "middleware": [
+            "open",
+            "throttle:120,1"
+        ],
+        "where": {
+            "id": "[0-9]+",
+            "provider": "ses|mailgun|postmark|resend"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
         "uri": "mailbox/ajax",
         "name": "mailboxes.ajax",
         "action": "MailboxesController@ajax",

@@ -1810,5 +1810,16 @@
     "The receiving server could not be reached.": "Не удалось связаться с сервером получателя.",
     "The receiving server refused the email as spam or because of its rules.": "Сервер получателя отклонил письмо как спам или по своим правилам.",
     "The receiving server rejected the email.": "Сервер получателя отклонил письмо.",
-    "The recipient marked the email as spam.": "Получатель пометил письмо как спам."
+    "The recipient marked the email as spam.": "Получатель пометил письмо как спам.",
+    "Access Key ID": "ID Ключа Доступа",
+    "Secret Access Key": "Секретный Ключ Доступа",
+    "Region": "Регион",
+    "Domain": "Домен",
+    "Server Token": "Токен Сервера",
+    "Message Stream": "Поток Сообщений",
+    "Webhook Signing Key": "Ключ Подписи Вебхука",
+    "Webhook URL": "URL Вебхука",
+    "Optional; the default transactional stream when empty.": "Необязательно; если пусто, поток транзакционных писем по умолчанию.",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "В Amazon SES отправляйте уведомления о возвратах и жалобах в тему Amazon SNS и подпишите на неё этот URL (HTTPS); подписка подтверждается автоматически.",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Добавьте этот URL в :provider как вебхук для возвратов и жалоб, чтобы недоставленные ответы отмечались."
 }

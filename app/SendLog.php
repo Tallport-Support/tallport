@@ -94,7 +94,7 @@ class SendLog extends Model
     /**
      * Save log record.
      */
-    public static function log($thread_id, $message_id, $email, $mail_type, $status, $customer_id = null, $user_id = null, $status_message = null, $smtp_queue_id = null)
+    public static function log($thread_id, $message_id, $email, $mail_type, $status, $customer_id = null, $user_id = null, $status_message = null, $smtp_queue_id = null, $provider_message_id = null)
     {
         // Sanitize status message - remove SMTP username and password.
         $status_message = \MailHelper::sanitizeSmtpStatusMessage($status_message);
@@ -111,6 +111,9 @@ class SendLog extends Model
         if ($smtp_queue_id) {
             $send_log->smtp_queue_id = $smtp_queue_id;
         }
+        if ($provider_message_id) {
+            $send_log->provider_message_id = mb_substr($provider_message_id, 0, 191);
+        }
         try {
             $send_log->save();
         } catch (\Exception $e) {
@@ -119,6 +122,33 @@ class SendLog extends Model
         }
 
         return true;
+    }
+
+    /**
+     * The sent reply or auto reply a sending service's ID refers to: a
+     * Message-ID a reply or delivery report names (SES and Postmark put
+     * theirs before the @, with a domain of their own), or the ID their
+     * webhooks send. Null if none.
+     */
+    public static function threadForProviderMessageId($message_id)
+    {
+        $message_id = trim((string) $message_id, " <>\t");
+        if ($message_id === '') {
+            return null;
+        }
+        $ids = [$message_id];
+        $local = strstr($message_id, '@', true);
+        // Only an ID long enough not to be anyone else's.
+        if ($local !== false && strlen($local) >= 20) {
+            $ids[] = $local;
+        }
+        $send_log = self::whereIn('provider_message_id', $ids)
+            ->whereIn('mail_type', [self::MAIL_TYPE_EMAIL_TO_CUSTOMER, self::MAIL_TYPE_AUTO_REPLY])
+            ->whereNotNull('thread_id')
+            ->orderBy('id', 'desc')
+            ->first();
+
+        return $send_log ? $send_log->thread : null;
     }
 
     /**
@@ -139,6 +169,7 @@ class SendLog extends Model
         $details = array_filter([
             $this->status == self::STATUS_SEND_ERROR && $message !== '' ? 'Message-ID: '.$this->message_id : '',
             $this->smtp_queue_id ? 'SMTP ID: '.$this->smtp_queue_id : '',
+            $this->provider_message_id ? 'Provider ID: '.$this->provider_message_id : '',
         ]);
 
         return [$status, implode('. ', $details)];

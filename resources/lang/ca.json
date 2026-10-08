@@ -1902,5 +1902,16 @@
     "The receiving server could not be reached.": "No s'ha pogut contactar amb el servidor de destinació.",
     "The receiving server refused the email as spam or because of its rules.": "El servidor de destinació ha rebutjat el correu com a correu brossa o per les seves regles.",
     "The receiving server rejected the email.": "El servidor de destinació ha rebutjat el correu.",
-    "The recipient marked the email as spam.": "El destinatari ha marcat el correu com a correu brossa."
+    "The recipient marked the email as spam.": "El destinatari ha marcat el correu com a correu brossa.",
+    "Access Key ID": "ID de Clau d'Accés",
+    "Secret Access Key": "Clau d'Accés Secreta",
+    "Region": "Regió",
+    "Domain": "Domini",
+    "Server Token": "Testimoni del Servidor",
+    "Message Stream": "Flux de Missatges",
+    "Webhook Signing Key": "Clau de Signatura del Webhook",
+    "Webhook URL": "URL del Webhook",
+    "Optional; the default transactional stream when empty.": "Opcional; si és buit, el flux transaccional per defecte.",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "A Amazon SES, envieu les notificacions de rebots i queixes a un tema d'Amazon SNS i subscriviu-hi aquest URL (HTTPS); la subscripció es confirma automàticament.",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Afegiu aquest URL com a webhook per a rebots i queixes a :provider, perquè es marquin les respostes que no s'han lliurat."
 }

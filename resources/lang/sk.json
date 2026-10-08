@@ -1809,5 +1809,16 @@
     "The receiving server could not be reached.": "Prijímajúci server nebol dostupný.",
     "The receiving server refused the email as spam or because of its rules.": "Prijímajúci server odmietol email ako spam alebo pre svoje pravidlá.",
     "The receiving server rejected the email.": "Prijímajúci server email odmietol.",
-    "The recipient marked the email as spam.": "Príjemca označil email ako spam."
+    "The recipient marked the email as spam.": "Príjemca označil email ako spam.",
+    "Access Key ID": "ID Prístupového Kľúča",
+    "Secret Access Key": "Tajný Prístupový Kľúč",
+    "Region": "Oblasť",
+    "Domain": "Doména",
+    "Server Token": "Token Servera",
+    "Message Stream": "Prúd Správ",
+    "Webhook Signing Key": "Podpisový Kľúč Webhooku",
+    "Webhook URL": "URL Webhooku",
+    "Optional; the default transactional stream when empty.": "Voliteľné; ak je prázdne, predvolený transakčný prúd.",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "V Amazon SES posielajte oznámenia o nedoručení a sťažnostiach do témy Amazon SNS a prihláste na ňu túto URL (HTTPS); odber sa potvrdí automaticky.",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Pridajte túto URL ako webhook pre nedoručené správy a sťažnosti v :provider, aby sa nedoručené odpovede označili."
 }

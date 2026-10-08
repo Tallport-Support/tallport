@@ -32,6 +32,9 @@
                     <x-fruit::radio name="out_method" :value="App\Mailbox::OUT_METHOD_PHP_MAIL" id="out_method_{{ App\Mailbox::OUT_METHOD_PHP_MAIL }}" :checked="$mailbox->out_method == App\Mailbox::OUT_METHOD_PHP_MAIL">{{ __("PHP's mail() function") }}</x-fruit::radio>
                     <x-fruit::radio name="out_method" :value="App\Mailbox::OUT_METHOD_SENDMAIL" id="out_method_{{ App\Mailbox::OUT_METHOD_SENDMAIL }}" :checked="$mailbox->out_method == App\Mailbox::OUT_METHOD_SENDMAIL">{{ __("Sendmail") }}</x-fruit::radio>
                     <x-fruit::radio name="out_method" :value="App\Mailbox::OUT_METHOD_SMTP" id="out_method_{{ App\Mailbox::OUT_METHOD_SMTP }}" :checked="$mailbox->out_method == App\Mailbox::OUT_METHOD_SMTP">{{ __("SMTP") }}</x-fruit::radio>
+                    @foreach (App\Mailbox::OUT_METHOD_PROVIDERS as $out_method => $out_provider)
+                        <x-fruit::radio name="out_method" :value="$out_method" id="out_method_{{ $out_method }}" :checked="$mailbox->out_method == $out_method">{{ App\Misc\MailProviders::NAMES[$out_provider] }}</x-fruit::radio>
+                    @endforeach
                 </x-fruit::fieldset>
                 <p id="out_method_{{ App\Mailbox::OUT_METHOD_SENDMAIL }}_options" class="f-help out_method_options @if ($mailbox->out_method != App\Mailbox::OUT_METHOD_SENDMAIL) hidden @endif">
                     <strong>{{ __("PHP sendmail path:") }}</strong> {{ $sendmail_path }}
@@ -115,6 +118,8 @@
                     </x-fruit::select>
                 </x-fruit::field>
             </x-fruit::form-section>
+
+            @include('mailboxes/partials/out_providers')
 
             <x-fruit::form-section :title="__('Test')">
                 <x-fruit::field :label="__('Send Test To')" :description="__('Make sure to save settings before testing.')" control-id="send_test" layout="row">

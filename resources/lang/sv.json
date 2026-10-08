@@ -1810,5 +1810,16 @@
     "The receiving server could not be reached.": "Den mottagande servern kunde inte nås.",
     "The receiving server refused the email as spam or because of its rules.": "Den mottagande servern avvisade e-postmeddelandet som skräppost eller på grund av sina regler.",
     "The receiving server rejected the email.": "Den mottagande servern avvisade e-postmeddelandet.",
-    "The recipient marked the email as spam.": "Mottagaren markerade e-postmeddelandet som skräppost."
+    "The recipient marked the email as spam.": "Mottagaren markerade e-postmeddelandet som skräppost.",
+    "Access Key ID": "Åtkomstnyckel-ID",
+    "Secret Access Key": "Hemlig Åtkomstnyckel",
+    "Region": "Region",
+    "Domain": "Domän",
+    "Server Token": "Servertoken",
+    "Message Stream": "Meddelandeström",
+    "Webhook Signing Key": "Signeringsnyckel för Webhook",
+    "Webhook URL": "Webhook-URL",
+    "Optional; the default transactional stream when empty.": "Valfritt; tomt ger standardströmmen för transaktionsmejl.",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "I Amazon SES skickar du aviseringar om studsar och klagomål till ett Amazon SNS-ämne och prenumererar denna URL på det (HTTPS); prenumerationen bekräftas automatiskt.",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Lägg till denna URL som webhook för studsar och klagomål i :provider, så att svar som inte levererades markeras."
 }

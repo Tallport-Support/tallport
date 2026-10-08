@@ -3447,6 +3447,13 @@
                 "default": "NULL",
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
+            },
+            "provider_message_id": {
+                "type": "varchar(191)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {
@@ -3471,6 +3478,13 @@
                 "type": "BTREE",
                 "columns": [
                     "message_id(191)"
+                ]
+            },
+            "send_logs_provider_message_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "provider_message_id"
                 ]
             },
             "send_logs_thread_id_index": {

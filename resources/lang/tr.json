@@ -1810,5 +1810,16 @@
     "The receiving server could not be reached.": "Alıcı sunucuya ulaşılamadı.",
     "The receiving server refused the email as spam or because of its rules.": "Alıcı sunucu e-postayı istenmeyen posta olarak veya kuralları nedeniyle reddetti.",
     "The receiving server rejected the email.": "Alıcı sunucu e-postayı reddetti.",
-    "The recipient marked the email as spam.": "Alıcı e-postayı istenmeyen posta olarak işaretledi."
+    "The recipient marked the email as spam.": "Alıcı e-postayı istenmeyen posta olarak işaretledi.",
+    "Access Key ID": "Erişim Anahtarı Kimliği",
+    "Secret Access Key": "Gizli Erişim Anahtarı",
+    "Region": "Bölge",
+    "Domain": "Alan Adı",
+    "Server Token": "Sunucu Belirteci",
+    "Message Stream": "Mesaj Akışı",
+    "Webhook Signing Key": "Webhook İmzalama Anahtarı",
+    "Webhook URL": "Webhook URL'si",
+    "Optional; the default transactional stream when empty.": "İsteğe bağlı; boşsa varsayılan işlem akışı.",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "Amazon SES'te geri dönme ve şikâyet bildirimlerini bir Amazon SNS konusuna gönderin ve bu URL'yi ona abone edin (HTTPS); abonelik otomatik olarak onaylanır.",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Teslim edilemeyen yanıtların işaretlenmesi için bu URL'yi :provider içinde geri dönmeler ve şikâyetler için webhook olarak ekleyin."
 }

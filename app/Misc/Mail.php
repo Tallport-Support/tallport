@@ -258,6 +258,11 @@ class Mail
                 }
                 \Config::set('mail.encryption', $mailbox->getOutEncryptionName());
             }
+
+            // A sending service's API.
+            if ($mailbox->getOutProvider()) {
+                \Config::set('mail.'.$mailbox->getOutProvider(), MailProviders::mailConfig($mailbox->getOutProvider(), MailProviders::mailboxSettings($mailbox)));
+            }
         } else {
             // Use default settings
             \Config::set('mail.driver', \Config::get('mail.driver'));
@@ -319,6 +324,11 @@ class Mail
                 \Config::set('mail.password', \Helper::decrypt(Option::get('mail_password')));
             }
             \Config::set('mail.encryption', Option::get('mail_encryption'));
+        }
+
+        // A sending service's API.
+        if (MailProviders::isProvider(\Config::get('mail.driver'))) {
+            \Config::set('mail.'.\Config::get('mail.driver'), MailProviders::mailConfig(\Config::get('mail.driver'), MailProviders::systemSettings()));
         }
 
         self::reapplyMailConfig();

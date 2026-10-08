@@ -498,6 +498,27 @@ class MailboxesController extends Controller
             }
         }
 
+        // A sending service's API: its settings, a secret left as it is (asterisks) kept.
+        $out_provider = Mailbox::OUT_METHOD_PROVIDERS[(int) $request->out_method] ?? null;
+        if ($out_provider) {
+            $input = (array) $request->input('out_api', []);
+            $stored = \App\Misc\MailProviders::mailboxSettings($mailbox);
+            foreach (\App\Misc\MailProviders::secretNames() as $name) {
+                if (\Helper::isSafePassword($input[$name] ?? '')) {
+                    $input[$name] = $stored[$name] ?? '';
+                }
+            }
+            $validator = Validator::make(['out_api' => $input], \App\Misc\MailProviders::rules($out_provider, 'out_api.'));
+            if ($validator->fails()) {
+                return redirect()->route('mailboxes.connection', ['id' => $id])
+                            ->withErrors($validator)
+                            ->withInput();
+            }
+        }
+        if ($request->has('out_api')) {
+            \App\Misc\MailProviders::saveMailboxSettings($mailbox, (array) $request->input('out_api', []));
+        }
+
         // Do not save dummy password.
         if (preg_match("/^\*+$/", $request->out_password ?? '')) {
             $params = $request->except(['out_password']);

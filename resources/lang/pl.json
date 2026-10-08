@@ -1809,5 +1809,16 @@
     "The receiving server could not be reached.": "Nie udało się połączyć z serwerem odbiorcy.",
     "The receiving server refused the email as spam or because of its rules.": "Serwer odbiorcy odrzucił e-mail jako spam lub z powodu swoich reguł.",
     "The receiving server rejected the email.": "Serwer odbiorcy odrzucił e-mail.",
-    "The recipient marked the email as spam.": "Odbiorca oznaczył e-mail jako spam."
+    "The recipient marked the email as spam.": "Odbiorca oznaczył e-mail jako spam.",
+    "Access Key ID": "Identyfikator Klucza Dostępu",
+    "Secret Access Key": "Tajny Klucz Dostępu",
+    "Region": "Region",
+    "Domain": "Domena",
+    "Server Token": "Token Serwera",
+    "Message Stream": "Strumień Wiadomości",
+    "Webhook Signing Key": "Klucz Podpisu Webhooka",
+    "Webhook URL": "Adres URL Webhooka",
+    "Optional; the default transactional stream when empty.": "Opcjonalnie; gdy puste, domyślny strumień transakcyjny.",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "W Amazon SES wysyłaj powiadomienia o odbiciach i skargach do tematu Amazon SNS i zasubskrybuj w nim ten adres URL (HTTPS); subskrypcja zostanie potwierdzona automatycznie.",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": "Dodaj ten adres URL jako webhook dla odbić i skarg w :provider, aby odpowiedzi, które nie zostały dostarczone, były oznaczane."
 }

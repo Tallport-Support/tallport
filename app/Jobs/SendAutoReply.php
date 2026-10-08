@@ -92,9 +92,12 @@ class SendAutoReply implements ShouldQueue
             }
         }
 
+        $provider_message_id = null;
         try {
-            Mail::to([['name' => $this->customer->getFullName(), 'email' => $customer_email]])
+            $sent_message = Mail::to([['name' => $this->customer->getFullName(), 'email' => $customer_email]])
                 ->send(new AutoReply($this->conversation, $this->mailbox, $this->customer, $headers, $from_alias));
+            // The sending service's Message-ID (or ID), which the customer's reply refers to.
+            $provider_message_id = \App\Misc\MailProviders::sentMessageId($sent_message);
         } catch (\Exception $e) {
             // We come here in case SMTP server unavailable for example
             activity()
@@ -132,7 +135,7 @@ class SendAutoReply implements ShouldQueue
                 $customer_id = null;
             }
 
-            SendLog::log($this->thread->id, $message_id, $recipient, SendLog::MAIL_TYPE_AUTO_REPLY, $status, $customer_id, null, $status_message);
+            SendLog::log($this->thread->id, $message_id, $recipient, SendLog::MAIL_TYPE_AUTO_REPLY, $status, $customer_id, null, $status_message, null, $provider_message_id);
         }
 
         if ($exception) {

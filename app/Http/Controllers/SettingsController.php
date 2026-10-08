@@ -92,13 +92,13 @@ class SettingsController extends Controller
                             'mail'     => __("PHP's mail() function"),
                             'sendmail' => __('Sendmail'),
                             'smtp'     => 'SMTP',
-                        ],
+                        ] + \App\Misc\MailProviders::NAMES,
                     ],
                     'validator_rules' => [
                         'settings.mail_host' => 'safehost',
                         'settings.mail_from' => 'required|email',
-                    ],
-                    'settings' => [
+                    ] + \App\Misc\MailProviders::systemRules(),
+                    'settings' => \App\Misc\MailProviders::systemSettingsParams() + [
                         'fetch_schedule' => [
                             'env' => 'APP_FETCH_SCHEDULE',
                         ],
@@ -268,6 +268,11 @@ class SettingsController extends Controller
                     'mail_password'   => \Helper::decrypt(Option::get('mail_password', \Config::get('mail.password'))),
                     'mail_encryption' => Option::get('mail_encryption', \Config::get('mail.encryption')),
                     'noreply_emails'  => implode("\n", \App\Misc\Noreply::customPatterns()),
+                ];
+                foreach (\App\Misc\MailProviders::systemSettings() as $name => $value) {
+                    $settings['mail_'.$name] = $value;
+                }
+                $settings += [
                     'fetch_schedule'  => config('app.fetch_schedule'),
                     //'use_mail_date_on_fetching'             => config('app.use_mail_date_on_fetching'),
                 ];

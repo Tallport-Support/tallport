@@ -1810,5 +1810,16 @@
     "The receiving server could not be reached.": "受信サーバーに接続できませんでした。",
     "The receiving server refused the email as spam or because of its rules.": "受信サーバーがメールをスパムとして、またはそのルールにより拒否しました。",
     "The receiving server rejected the email.": "受信サーバーがメールを拒否しました。",
-    "The recipient marked the email as spam.": "受信者がメールをスパムとして報告しました。"
+    "The recipient marked the email as spam.": "受信者がメールをスパムとして報告しました。",
+    "Access Key ID": "アクセスキー ID",
+    "Secret Access Key": "シークレットアクセスキー",
+    "Region": "リージョン",
+    "Domain": "ドメイン",
+    "Server Token": "サーバートークン",
+    "Message Stream": "メッセージストリーム",
+    "Webhook Signing Key": "Webhook 署名キー",
+    "Webhook URL": "Webhook URL",
+    "Optional; the default transactional stream when empty.": "任意。空の場合はデフォルトのトランザクションストリーム。",
+    "In Amazon SES, send bounce and complaint notifications to an Amazon SNS topic and subscribe this URL to it (HTTPS); the subscription is confirmed automatically.": "Amazon SES でバウンスと苦情の通知を Amazon SNS トピックに送信し、この URL をそのトピックにサブスクライブしてください (HTTPS)。サブスクリプションは自動的に確認されます。",
+    "Add this URL as a webhook for bounces and complaints in :provider, so that replies that were not delivered are marked.": ":provider でこの URL をバウンスと苦情の Webhook として追加すると、配信されなかった返信にマークが付きます。"
 }
