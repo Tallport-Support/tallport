@@ -648,6 +648,23 @@ class FetchEmailsProcessMessageTest extends FeatureTestCase
         $this->assertStringNotContainsString('写道', $reply);
     }
 
+    /**
+     * China Mobile's 139.com webmail: its quote after <hr id="replySplit"> (the 原始邮件 line in it
+     * has non-breaking spaces, so QQ's separator doesn't match).
+     */
+    public function testMail139QuoteIsCutOff()
+    {
+        $body = '<div style="color: #000000;">您好，</div><div>非常感谢</div><div id="signContainer"></div><hr id="replySplit">'
+            .'<div id="reply139content"><div id="mainReplyContent"><div>------------------&nbsp;原始邮件&nbsp;------------------</div>'
+            .'<div><b>发件人:</b>&nbsp;Support &lt;support@example.org&gt;</div><div>Quoted answer</div></div></div>';
+
+        $reply = (new FetchEmails())->separateReply($body, true, true);
+
+        $this->assertStringContainsString('非常感谢', $reply);
+        $this->assertStringNotContainsString('原始邮件', $reply);
+        $this->assertStringNotContainsString('Quoted answer', $reply);
+    }
+
     public static function coremailReplies()
     {
         $card = '<div style="margin-bottom:1em;font-size:12px"><table><tr><td>发件人</td><td>Support &lt;support@example.org&gt;</td></tr><tr><td>主题</td><td>Re: Question</td></tr></table></div><div>Quoted answer</div>';

@@ -101,6 +101,9 @@ class Mail
         '<div name="quote" ',
         'yahoo_quoted_', // Yahoo, full: <div id=3D"ydp6h4f5c59yahoo_quoted_2937493705"
         '------------------ 原始邮件 ------------------', // QQ
+        // China Mobile's 139.com webmail: the line above its quote, and its container.
+        '<hr id="replySplit"',
+        '<div id="reply139content"',
         '------------------ Original ------------------', // QQ English
         // NetEase/Coremail (163.com, 126.com, yeah.net): Mail Master's quote container, its
         // plain-text heading, and the webmail's "在 <date>，<name> 写道：" line before its quote.

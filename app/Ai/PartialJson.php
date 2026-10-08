@@ -141,6 +141,26 @@ class PartialJson
             $decoded = $start !== false && $end > $start ? json_decode(substr($text, $start, $end - $start + 1), true) : null;
         }
 
-        return is_array($decoded) ? $decoded : null;
+        return is_array($decoded) ? self::unwrapStrings($decoded) : null;
+    }
+
+    /**
+     * A value the model encoded twice ("\"Hello,\\n…\"": quotes and \n escapes in the text):
+     * the string inside it.
+     */
+    protected static function unwrapStrings(array $decoded)
+    {
+        foreach ($decoded as $key => $value) {
+            if (is_array($value)) {
+                $decoded[$key] = self::unwrapStrings($value);
+            } elseif (is_string($value) && strlen($value) > 1 && $value[0] == '"' && substr(rtrim($value), -1) == '"') {
+                $inner = json_decode(rtrim($value));
+                if (is_string($inner)) {
+                    $decoded[$key] = $inner;
+                }
+            }
+        }
+
+        return $decoded;
     }
 }
