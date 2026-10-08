@@ -5,7 +5,7 @@
             "subject": "Mail delivery failed",
             "type": 1,
             "status": 1,
-            "customer_email": "mailer-daemon@sslproxy01.your-server.de",
+            "customer_email": "ding@ding.de",
             "cc": "[\"demo@foo.de\"]",
             "bcc": null,
             "threads": [
@@ -19,15 +19,9 @@
                     "headers": "834890aae8f9776b507e4155634f5053",
                     "attachments": [
                         {
-                            "file_name": "79bcb4b5",
-                            "mime_type": "text/plain",
-                            "size": 267,
-                            "embedded": false
-                        },
-                        {
-                            "file_name": "RFC822.eml",
+                            "file_name": "Test.eml",
                             "mime_type": "message/rfc822",
-                            "size": 776,
+                            "size": 778,
                             "embedded": false
                         }
                     ]

@@ -1,0 +1,157 @@
+Return-Path: <SRS0=9XU2=6h=amazonses.com=no-reply@shop.example.com>
+Received: from relay.example.net (relay.example.net [192.0.2.17])
+	by help.example.net (Postfix) with ESMTPS id 799338012F
+	for <support@help.example.net>; Thu, 08 Oct 2026 01:04:02 +0000 (UTC)
+X-Forwarded-To: support@help.example.net
+X-Forwarded-For: support@shop.example.com support@help.example.net
+Received: from a14-97.smtp-out.amazonses.com (192.0.2.97)
+        by relay.example.net (relay) id BRbnfiRZCF7o
+        for <support@shop.example.com>; Thu, 08 Oct 2026 01:04:01 +0000
+Authentication-Results: relay.example.net;
+	dkim=pass header.d=amazonses.com header.s=224i4yxa5dv7c2xz3womw6peuasteono header.b=rl9Kr/GJ;
+	dmarc=pass header.from=email-abuse.amazonses.com policy.dmarc=quarantine;
+	spf=pass (relay.example.net: domain of no-reply@amazonses.com designates 192.0.2.97 as permitted sender) smtp.mailfrom=no-reply@amazonses.com;
+	arc=none smtp.remote-ip=192.0.2.97
+Date: Thu, 8 Oct 2026 01:04:00 +0000
+From: complaints@email-abuse.amazonses.com
+To: Example Shop <support@shop.example.com>
+Message-ID: <010001a11909e281-aeba2a46-f8bf-465d-a2f8-000000000001-000000@email.amazonses.com>
+Subject: Email Feedback Report (Complaint)
+MIME-Version: 1.0
+Content-Type: multipart/report; boundary=--boundary-335984580.1791421440678;
+	report-type=feedback-report
+Feedback-ID: ::1.us-east-1.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=:AmazonSES
+X-SES-Outgoing: 2026.10.08-192.0.2.97
+
+----boundary-335984580.1791421440678
+Content-Type: text/plain; charset=us-ascii;
+Content-Transfer-Encoding: 7bit
+
+Amazon SES did not send the message to this address because it is on the suppression list for your account. For more information about removing addresses from the suppression list, see the Amazon SES Developer Guide at https://docs.aws.amazon.com/ses/latest/dg/sending-email-suppression-list.html
+----boundary-335984580.1791421440678
+Content-Type: message/feedback-report
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+Feedback-Type: abuse
+User-Agent: Simple Email Service - SES
+Version: 0.1
+Received-Date: Thu, 08 Oct 26 01:04:00 UTC
+Original-Mail-From: "Example Shop" <support@shop.example.com>
+Original-Rcpt-To: [jamie.doe@customer.example.org]
+Source-IP: 198.51.100.7
+
+----boundary-335984580.1791421440678
+Content-Type: message/rfc822
+Content-Disposition: inline
+
+From: Example Shop <support@shop.example.com>
+To: jamie.doe@customer.example.org
+Subject: Payment Confirmation for Your Example Shop Service
+Message-ID: <010001a11909e1a3-4ce1a1b5-4a65-4876-be19-000000000002-000000@email.amazonses.com>
+MIME-Version: 1.0
+Date: Thu, 08 Oct 2026 01:03:59 +0000
+Content-Type: multipart/mixed; boundary=XQWuN9NV
+
+--XQWuN9NV
+Content-Type: multipart/alternative; boundary=WzW1n1KP
+
+--WzW1n1KP
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Dear Jamie,
+
+We are pleased to confirm that we have received your paym=
+ent for your Example Shop service. Here are the details of your payment:
+
+Invo=
+ice Number: 100001\
+Amount Paid: USD $10.00\
+Payment Date: 2026-10-08=
+
+=20
+Your service continues to be active and we're glad to have you with =
+us.
+
+Example Shop Team
+
+
+--WzW1n1KP
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.=
+w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns=3D"http://www.w3.org/1999/xhtml" style=3D"font-family: -apple-s=
+ystem, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, san=
+s-serif; width: 100%; font-size: 16px; line-height: 1.5;">
+    <head>
+        <meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-sc=
+ale=3D1.0">
+        <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DU=
+TF-8">
+    </head>
+    <body style=3D"font-family: -apple-system, BlinkMacSystemFont, 'Segoe U=
+I', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+<div>
+        <table class=3D"wrapper" width=3D"100%" cellspacing=3D"0" role=3D"pr=
+esentation" style=3D"width: 100%;">
+            <tr>
+    <td>
+        <table role=3D"presentation" width=3D"100%" border=3D"0" cellspacin=
+g=3D"4" cellpadding=3D"0" bgcolor=3D"#083866" style=3D"border-radius: 4px; =
+background: linear-gradient(85deg, #081846 0%, #0257AB 90%, #0257AB 100%);">
+            <tr>
+                <td align=3D"center">
+                    <p style=3D"padding: 0px 20px; font-size: 20px; color: =
+#ffffff;"><font color=3D"white">Example Shop</font></p>
+                </td>
+                <!-- Right column: login button -->
+                <td align=3D"right" valign=3D"middle" style=3D"padding-righ=
+t: 10px;">
+                    <a href=3D"https://shop.example.com/en/login" style=3D"=
+padding: 0px 10px; font-size: 14px; color: #ffffff;">Sign in</a>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+            <tr>
+                <td class=3D"body" style=3D"max-width: 570px;">
+                    <p style=3D"font-size: 16px;">Dear Jamie,</p>
+<p style=3D"font-size: 16px;">We are pleased to confirm that we have receiv=
+ed your payment for your Example Shop service. Here are the details of your=
+ payment:</p>
+<p style=3D"font-size: 16px;">Invoice Number: 100001<br>
+Amount Paid: USD $10.00<br>
+Payment Date: 2026-10-08</p>
+<p style=3D"font-size: 16px;">Your service continues to be active and we're=
+ glad to have you with us.</p>
+<p style=3D"font-size: 16px;">Example Shop Team</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    =C2=A0
+                </td>
+            </tr>
+        </table>
+</div>
+    </body>
+</html>
+
+--WzW1n1KP--
+
+--XQWuN9NV
+Content-Type: application/pdf; name=Invoice-100001.pdf
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; name=Invoice-100001.pdf;
+
+JVBERi0xLjQKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqCjIgMCBv
+Ymo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iagozIDAgb2JqPDwvVHlw
+ZS9QYWdlL1BhcmVudCAyIDAgUi9NZWRpYUJveFswIDAgMjAwIDIwMF0+PmVuZG9iagp0cmFpbGVy
+PDwvUm9vdCAxIDAgUj4+CiUlRU9GCg==
+--XQWuN9NV--
+
+----boundary-335984580.1791421440678--

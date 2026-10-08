@@ -1666,6 +1666,13 @@
                 "type": "tinyint(3) unsigned",
                 "nullable": false,
                 "default": "1"
+            },
+            "delivery_problem": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {

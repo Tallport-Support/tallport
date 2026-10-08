@@ -1,0 +1,25 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Delayed Mail (still being retried)",
+            "type": 1,
+            "status": 1,
+            "customer_email": "alex.morgan@slow.example.org",
+            "cc": "[\"support@help.example.net\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "mailer-daemon@out.shop.example.com",
+                    "to": "[\"support@help.example.net\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "This is the mail system at host out.shop.example.com.<br />\r\n<br />\r\n####################################################################<br />\r\n# THIS IS A WARNING ONLY.  YOU DO NOT NEED TO RESEND YOUR MESSAGE. #<br />\r\n####################################################################<br />\r\n<br />\r\nYour message could not be delivered for more than 4 hour(s).<br />\r\nIt will be retried until it is 5 day(s) old.<br />\r\n<br />\r\n                   The mail system<br />\r\n<br />\r\n&lt;alex.morgan@slow.example.org&gt;: connect to mail.slow.example.org[192.0.2.60]:25:<br />\r\n    Connection timed out",
+                    "headers": "d0553ff4e3b85567d78591094e302906",
+                    "attachments": []
+                }
+            ]
+        }
+    ]
+}

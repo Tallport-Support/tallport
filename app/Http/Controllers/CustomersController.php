@@ -470,6 +470,18 @@ class CustomersController extends Controller
                 }
                 break;
 
+            // An address emails couldn't reach: cleared by an agent who sees the customer.
+            case 'clear_delivery_problem':
+                $email = Email::find((int) $request->email_id);
+                if (!$email || !$email->customer || !$user->can('view', $email->customer)) {
+                    $response['msg'] = __('Not enough permissions');
+                    break;
+                }
+                $email->delivery_problem = null;
+                $email->save();
+                $response['status'] = 'success';
+                break;
+
             // Conversations navigation
             case 'customers_pagination':
             

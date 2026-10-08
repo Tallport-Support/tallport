@@ -73,6 +73,14 @@ class FetchEmails extends Command
     protected $saving_bounce = false;
 
     /**
+     * A delivery report's recipient (App\Incoming\DeliveryReport): its new conversation
+     * is about them; the mail server or service that reported it stays the message's sender.
+     *
+     * @var \App\Incoming\Address|null
+     */
+    protected $saving_for_recipient = null;
+
+    /**
      * Whether the last processMessage() failed (as opposed to saving the
      * email, or skipping it on purpose): tallport:receive tells the mail
      * server to try again.
@@ -681,6 +689,18 @@ class FetchEmails extends Command
                 }
             }
 
+            // Delivery reports (bounces, delays, complaints, suppression notices): which email
+            // failed, to whom and why. Their files are the original email and its attachments.
+            $delivery_report = \App\Incoming\DeliveryReport::read($incoming, $is_bounce);
+            if ($delivery_report) {
+                $this->line('['.date('Y-m-d H:i:s').'] Delivery report detected: '.$delivery_report->kind.' for '.implode(', ', $delivery_report->recipients));
+                $is_bounce = true;
+                if (!$bounced_message_id) {
+                    $bounced_message_id = $delivery_report->originalHeaders()['message_id'] ?? null;
+                }
+                $attachments = $delivery_report->attachments($attachments);
+            }
+
             // Webklex/php-imap returns object instead of a string.
             $subject = $incoming->subject();
 
@@ -1112,6 +1132,11 @@ class FetchEmails extends Command
                 } else {
                     // SendAutoReply listener will check bounce flag and will not send an auto reply if this is an auto responder.
                     $this->saving_bounce = $message_from_customer && $is_bounce;
+                    if ($delivery_report) {
+                        $recipients = array_filter($delivery_report->recipientAddresses(), fn ($address) => !in_array($address->mail, $mailbox->getEmails()));
+                        $this->createCustomers($recipients, []);
+                        $this->saving_for_recipient = reset($recipients) ?: null;
+                    }
                     $new_thread = $this->saveCustomerThread($mailbox, $data['message_id'], $data['prev_thread'], $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['subject'], $data['body'], $data['attachments'], ($data['message'] ? $data['message']->getHeader() : $incoming->headers()), $data['date']);
                 }
             } else {
@@ -1162,7 +1187,7 @@ class FetchEmails extends Command
 
                 // If it was a bounce message, save bounce data.
                 if ($message_from_customer && $is_bounce) {
-                    $this->saveBounceData($new_thread, $bounced_message_id, $from);
+                    $this->saveBounceData($new_thread, $bounced_message_id, $from, $delivery_report);
                 }
             } else {
                 $this->last_message_failed = true;
@@ -1211,7 +1236,7 @@ class FetchEmails extends Command
         return Email::sanitizeEmail($email);
     }
 
-    public function saveBounceData($new_thread, $bounced_message_id, $from)
+    public function saveBounceData($new_thread, $bounced_message_id, $from, $delivery_report = null)
     {
         // Try to find bounced thread by Message-ID.
         $bounced_thread = null;
@@ -1220,8 +1245,10 @@ class FetchEmails extends Command
                 $this->formatMessageIdPrefix(\MailHelper::MESSAGE_ID_PREFIX_REPLY_TO_CUSTOMER),
                 $this->formatMessageIdPrefix(\MailHelper::MESSAGE_ID_PREFIX_AUTO_REPLY),
             ];
-            preg_match('/^('.implode('|', $prefixes).')\-(\d+)\-/', $bounced_message_id, $matches);
-            if (!empty($matches[2])) {
+            preg_match('/^('.implode('|', $prefixes).')\-(\d+)\-([a-z0-9]+)@/', $bounced_message_id, $matches);
+            // Only with the Message-ID's hash, as for customers' replies: a made-up bounce
+            // can't mark any reply as not delivered.
+            if (!empty($matches[2]) && ($matches[3] ?? '') === \MailHelper::getMessageIdHash($matches[2])) {
                 $bounced_thread = Thread::find($matches[2]);
             }
         }
@@ -1233,9 +1260,19 @@ class FetchEmails extends Command
             $status_data['bounce_for_thread'] = $bounced_thread->id;
             $status_data['bounce_for_conversation'] = $bounced_thread->conversation_id;
         }
+        if ($delivery_report) {
+            $status_data['delivery_report'] = $delivery_report->toArray();
+            $status_data['status_code'] = $delivery_report->status;
+            $status_data['diagnostic_code'] = $status_data['delivery_report']['diagnostic'];
+        }
 
         $new_thread->updateSendStatusData($status_data);
         $new_thread->save();
+
+        // The addresses emails couldn't reach.
+        if ($delivery_report) {
+            \App\Misc\DeliveryReports::flag($status_data['delivery_report'], $new_thread);
+        }
 
         // Update status of the original message and create log record.
         if ($bounced_thread) {
@@ -1301,6 +1338,14 @@ class FetchEmails extends Command
 
         // Customers are created before with email and name
         $customer = Customer::create($from);
+        // A delivery report's new conversation is about its recipient.
+        $conversation_customer = $customer;
+        $conversation_customer_email = $from;
+        if ($this->saving_for_recipient && !$prev_thread && ($recipient_customer = Customer::create($this->saving_for_recipient->mail))) {
+            $conversation_customer = $recipient_customer;
+            $conversation_customer_email = $this->saving_for_recipient->mail;
+        }
+        $this->saving_for_recipient = null;
         if ($prev_thread) {
             $conversation = $prev_thread->conversation;
 
@@ -1328,7 +1373,7 @@ class FetchEmails extends Command
             $conversation->subject = $subject;
             $conversation->setPreview($body);
             $conversation->mailbox_id = $mailbox->id;
-            $conversation->customer_id = $customer->id;
+            $conversation->customer_id = $conversation_customer->id;
             $conversation->created_by_customer_id = $customer->id;
             $conversation->source_via = Conversation::PERSON_CUSTOMER;
             $conversation->source_type = Conversation::SOURCE_TYPE_EMAIL;
@@ -1350,7 +1395,7 @@ class FetchEmails extends Command
         if ($bcc) {
             $conversation->setBcc($bcc);
         }
-        $conversation->customer_email = $from;
+        $conversation->customer_email = $conversation_customer_email;
         // Reply from customer makes conversation active.
         // If conversation is marked as Spam the status does not change.
         // https://github.com/freescout-help-desk/freescout/issues/5005

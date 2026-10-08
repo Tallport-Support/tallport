@@ -1,0 +1,32 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Delivery Status Notification (Failure)",
+            "type": 1,
+            "status": 1,
+            "customer_email": "robin.lee@gmail.example.org",
+            "cc": "[\"support@help.example.net\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "mailer-daemon@googlemail.com",
+                    "to": "[\"support@help.example.net\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "<h2>Address not found</h2><p>Your message wasn't delivered to <a style=\"color:#212121;text-decoration:none\"><b>robin.lee@gmail.example.org</b></a> because the address couldn't be found, or is unable to receive mail.</p><p><b>The response was:</b></p><p>The email account that you tried to reach does not exist. Please try double-checking the recipient's email address for typos or unnecessary spaces.</p>",
+                    "headers": "17f82d9fc158eb453b98802d57e40d15",
+                    "attachments": [
+                        {
+                            "file_name": "Re_Password_reset_does_not_arrive.eml",
+                            "mime_type": "message/rfc822",
+                            "size": 548,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

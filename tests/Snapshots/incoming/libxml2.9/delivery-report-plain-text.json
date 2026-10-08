@@ -1,0 +1,32 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "failure notice",
+            "type": 1,
+            "status": 1,
+            "customer_email": "lee.smith@customer.example.org",
+            "cc": "[\"support@help.example.net\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "mailer-daemon@mail.example.net",
+                    "to": "[\"support@help.example.net\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "Hi. This is the qmail-send program at mail.example.net.<br />\r\nI&#039;m afraid I wasn&#039;t able to deliver your message to the following addresses.<br />\r\nThis is a permanent error; I&#039;ve given up. Sorry it didn&#039;t work out.<br />\r\n<br />\r\n&lt;lee.smith@customer.example.org&gt;:<br />\r\n192.0.2.25 does not like recipient.<br />\r\nRemote host said: 552 5.2.2 &lt;lee.smith@customer.example.org&gt;: Mailbox full, over quota<br />\r\nGiving up on 192.0.2.25.<br />\r\n<br />\r\n--- Below this line is a copy of the message.<br />\r\n<br />\r\nReturn-Path: &lt;support@help.example.net&gt;<br />\r\nReceived: (qmail 12340 invoked from network); 8 Oct 2026 06:45:10 -0000<br />\r\nFrom: Support &lt;support@help.example.net&gt;<br />\r\nTo: lee.smith@customer.example.org<br />\r\nSubject: Re: Your subscription<br />\r\nMessage-ID: &lt;subscription-reply@help.example.net&gt;<br />\r\nDate: Thu, 08 Oct 2026 06:45:09 +0000<br />\r\nMIME-Version: 1.0<br />\r\nContent-Type: text/plain; charset=utf-8<br />\r\n<br />\r\nHello Lee,<br />\r\n<br />\r\nYour subscription has been renewed.<br />\r\n<br />\r\nSupport",
+                    "headers": "29d5a43b6d516cec928f7335a7b9b3ca",
+                    "attachments": [
+                        {
+                            "file_name": "Re_Your_subscription.eml",
+                            "mime_type": "message/rfc822",
+                            "size": 436,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

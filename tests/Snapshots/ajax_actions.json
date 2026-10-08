@@ -38,6 +38,7 @@
         "show_original"
     ],
     "CustomersController@ajax": [
+        "clear_delivery_problem",
         "create",
         "customers_pagination"
     ],

@@ -1,0 +1,55 @@
+Return-Path: <>
+Received: from feedback.mail.example.org (feedback.mail.example.org [192.0.2.90])
+	by help.example.net (Postfix) with ESMTPS id 6E7F8800E7
+	for <support@help.example.net>; Thu, 08 Oct 2026 11:20:05 +0000 (UTC)
+Date: Thu, 08 Oct 2026 11:20:04 +0000
+From: Example Mail Feedback Loop <staff@feedback.mail.example.org>
+To: support@help.example.net
+Subject: complaint about message from 192.0.2.10
+Message-ID: <fbl-20261008-0001@feedback.mail.example.org>
+MIME-Version: 1.0
+Content-Type: multipart/report; report-type=feedback-report;
+	boundary="part1_13d.2e68ed54_boundary"
+
+--part1_13d.2e68ed54_boundary
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+
+This is an email abuse report for an email message received from IP
+192.0.2.10 on Thu, 08 Oct 2026 10:02:44 +0000.
+For more information about this format please see
+https://www.rfc-editor.org/rfc/rfc5965.
+
+--part1_13d.2e68ed54_boundary
+Content-Type: message/feedback-report
+
+Feedback-Type: abuse
+User-Agent: ExampleMailFBL/1.0
+Version: 1
+Original-Mail-From: <support@help.example.net>
+Original-Rcpt-To: <casey.jones@mail.example.org>
+Arrival-Date: Thu, 08 Oct 2026 10:02:44 +0000
+Reporting-MTA: dns; mail.example.org
+Source-IP: 192.0.2.10
+Authentication-Results: mail.example.org; spf=pass smtp.mailfrom=help.example.net
+Reported-Domain: help.example.net
+
+--part1_13d.2e68ed54_boundary
+Content-Type: message/rfc822
+Content-Disposition: inline
+
+From: Support <support@help.example.net>
+To: Casey Jones <casey.jones@mail.example.org>
+Subject: Re: Cancel my account
+Message-ID: <cancel-account-reply@help.example.net>
+Date: Thu, 08 Oct 2026 10:02:40 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Hello Casey,
+
+Your account has been cancelled. We're sorry to see you go.
+
+Support
+
+--part1_13d.2e68ed54_boundary--

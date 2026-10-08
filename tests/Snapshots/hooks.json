@@ -2750,6 +2750,7 @@
         "arguments": 4,
         "files": [
             "app/Http/Controllers/ExternalImagesController.php",
+            "resources/views/conversations/partials/delivery_report.blade.php",
             "resources/views/conversations/partials/thread.blade.php"
         ]
     },

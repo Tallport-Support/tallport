@@ -1,0 +1,38 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Undelivered Mail Returned to Sender",
+            "type": 1,
+            "status": 1,
+            "customer_email": "sam.taylor@customer.example.org",
+            "cc": "[\"orders@shop.example.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "mailer-daemon@mx.customer.example.org",
+                    "to": "[\"orders@shop.example.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "This is the mail system at host mx.customer.example.org.<br />\r\n<br />\r\nI&#039;m sorry to have to inform you that your message could not<br />\r\nbe delivered to one or more recipients. It&#039;s attached below.<br />\r\n<br />\r\nFor further assistance, please send mail to postmaster.<br />\r\n<br />\r\nIf you do so, please include this problem report. You can<br />\r\ndelete your own text from the attached returned message.<br />\r\n<br />\r\n                   The mail system<br />\r\n<br />\r\n&lt;sam.taylor@customer.example.org&gt;: host mail.customer.example.org[192.0.2.41]<br />\r\n    said: 550 5.1.1 &lt;sam.taylor@customer.example.org&gt;: Recipient address<br />\r\n    rejected: User unknown in virtual mailbox table (in reply to RCPT TO<br />\r\n    command)",
+                    "headers": "9afa3b5f704fff3c83aabf862783ba95",
+                    "attachments": [
+                        {
+                            "file_name": "Your_order_1001_has_shipped.eml",
+                            "mime_type": "message/rfc822",
+                            "size": 993,
+                            "embedded": false
+                        },
+                        {
+                            "file_name": "tracking-1001.txt",
+                            "mime_type": "text/plain",
+                            "size": 51,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

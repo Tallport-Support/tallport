@@ -55,6 +55,9 @@
                         @foreach ($noreply as $noreply_email)
                             <x-fruit::alert tone="warning" class="noreply-alert">{!! __safe_raw_html(':email looks like an address that does not read replies.', ['email' => '<strong>'.e($noreply_email).'</strong>']) !!}</x-fruit::alert>
                         @endforeach
+                        @foreach ($delivery_problems as $problem_email => $delivery_problem)
+                            <x-fruit::alert tone="warning" class="delivery-problem-alert">{{ App\Misc\DeliveryReports::warningText($problem_email, $delivery_problem) }}</x-fruit::alert>
+                        @endforeach
                     </div>
                 @endif
 

@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Conversation;
 use App\Http\Controllers\ConversationsController;
 use App\Mailbox;
+use App\Misc\DeliveryReports;
 use App\Misc\Noreply;
 use App\Thread;
 use FruitUI\Fruit;
@@ -639,13 +640,17 @@ class ConversationComposer extends Component
 
         // Addresses that do not read replies.
         $noreply = [];
+        // And addresses emails failed to reach (To and Cc): a warning, sending still works.
+        $delivery_problems = [];
         if ($this->mode && $this->mode != 'note') {
-            $recipients = array_merge($this->mode == 'forward' ? Fruit::tokens($this->to_email) : [$this->to ?: $conversation->customer_email], Fruit::tokens($this->cc), Fruit::tokens($this->bcc));
+            $to_cc = array_merge($this->mode == 'forward' ? Fruit::tokens($this->to_email) : [$this->to ?: $conversation->customer_email], Fruit::tokens($this->cc));
+            $recipients = array_merge($to_cc, Fruit::tokens($this->bcc));
             foreach (array_unique(array_filter($recipients)) as $email) {
                 if (Noreply::isNoreply($email)) {
                     $noreply[] = $email;
                 }
             }
+            $delivery_problems = DeliveryReports::flagged($to_cc);
         }
 
         $threads = $conversation->threads()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->limit(1)->get();
@@ -654,6 +659,7 @@ class ConversationComposer extends Component
             'conversation' => $conversation,
             'mailbox'      => $mailbox,
             'noreply'      => $noreply,
+            'delivery_problems' => $delivery_problems,
             'last_thread'  => $threads->first(),
         ]);
     }

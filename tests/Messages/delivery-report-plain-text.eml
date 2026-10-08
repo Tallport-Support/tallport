@@ -1,0 +1,38 @@
+Return-Path: <>
+Received: from mail.example.net (mail.example.net [192.0.2.80])
+	by help.example.net (Postfix) with ESMTP id 3A4B5800D6
+	for <support@help.example.net>; Thu, 08 Oct 2026 06:45:12 +0000 (UTC)
+Date: 8 Oct 2026 06:45:11 -0000
+From: MAILER-DAEMON@mail.example.net
+To: support@help.example.net
+Subject: failure notice
+Message-ID: <20261008064511.12345.qmail@mail.example.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+
+Hi. This is the qmail-send program at mail.example.net.
+I'm afraid I wasn't able to deliver your message to the following addresses.
+This is a permanent error; I've given up. Sorry it didn't work out.
+
+<lee.smith@customer.example.org>:
+192.0.2.25 does not like recipient.
+Remote host said: 552 5.2.2 <lee.smith@customer.example.org>: Mailbox full, over quota
+Giving up on 192.0.2.25.
+
+--- Below this line is a copy of the message.
+
+Return-Path: <support@help.example.net>
+Received: (qmail 12340 invoked from network); 8 Oct 2026 06:45:10 -0000
+From: Support <support@help.example.net>
+To: lee.smith@customer.example.org
+Subject: Re: Your subscription
+Message-ID: <subscription-reply@help.example.net>
+Date: Thu, 08 Oct 2026 06:45:09 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Hello Lee,
+
+Your subscription has been renewed.
+
+Support

@@ -1,0 +1,79 @@
+Return-Path: <>
+Received: from mail-sor-f69.google.com (mail-sor-f69.google.com [192.0.2.70])
+	by help.example.net (Postfix) with ESMTPS id 1F2E3800C5
+	for <support@help.example.net>; Wed, 07 Oct 2026 08:00:03 +0000 (UTC)
+Date: Wed, 07 Oct 2026 01:00:02 -0700 (PDT)
+From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+To: support@help.example.net
+Auto-Submitted: auto-replied
+Subject: Delivery Status Notification (Failure)
+References: <TP_reply-123-0123456789abcdef@help.example.net>
+In-Reply-To: <TP_reply-123-0123456789abcdef@help.example.net>
+X-Failed-Recipients: robin.lee@gmail.example.org
+Message-ID: <6a1b2c3d.050a0220.1f2e3d.0001.GMR@mx.google.com>
+MIME-Version: 1.0
+Content-Type: multipart/report; boundary="000000000000a1b2c3d4e5f60708"; report-type=delivery-status
+
+--000000000000a1b2c3d4e5f60708
+Content-Type: multipart/related; boundary="000000000000a1b2c3d4e5f60709"
+
+--000000000000a1b2c3d4e5f60709
+Content-Type: multipart/alternative; boundary="000000000000a1b2c3d4e5f6070a"
+
+--000000000000a1b2c3d4e5f6070a
+Content-Type: text/plain; charset="UTF-8"
+
+
+** Address not found **
+
+Your message wasn't delivered to robin.lee@gmail.example.org because the address couldn't be found, or is unable to receive mail.
+
+The response was:
+
+The email account that you tried to reach does not exist. Please try double-checking the recipient's email address for typos or unnecessary spaces.
+
+--000000000000a1b2c3d4e5f6070a
+Content-Type: text/html; charset="UTF-8"
+
+<html><head></head><body><h2>Address not found</h2><p>Your message wasn't delivered to <a style="color:#212121;text-decoration:none"><b>robin.lee@gmail.example.org</b></a> because the address couldn't be found, or is unable to receive mail.</p><p><b>The response was:</b></p><p>The email account that you tried to reach does not exist. Please try double-checking the recipient's email address for typos or unnecessary spaces.</p></body></html>
+
+--000000000000a1b2c3d4e5f6070a--
+
+--000000000000a1b2c3d4e5f60709--
+
+--000000000000a1b2c3d4e5f60708
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; googlemail.com
+Received-From-MTA: dns; help.example.net
+Arrival-Date: Wed, 07 Oct 2026 01:00:01 -0700 (PDT)
+X-Original-Message-ID: <TP_reply-123-0123456789abcdef@help.example.net>
+
+Final-Recipient: rfc822; robin.lee@gmail.example.org
+Action: failed
+Status: 5.1.1
+Remote-MTA: dns; gmail-smtp-in.l.google.com. (192.0.2.71, the server for the domain gmail.example.org.)
+Diagnostic-Code: smtp; 550-5.1.1 The email account that you tried to reach does not exist. Please try
+ 550-5.1.1 double-checking the recipient's email address for typos or
+ 550-5.1.1 unnecessary spaces. For more information, go to
+ 550 5.1.1  https://support.google.com/mail/?p=NoSuchUser a1b2c3d4e5f6.7 - gsmtp
+Last-Attempt-Date: Wed, 07 Oct 2026 01:00:02 -0700 (PDT)
+
+--000000000000a1b2c3d4e5f60708
+Content-Type: message/rfc822
+
+From: Support <support@help.example.net>
+To: Robin Lee <robin.lee@gmail.example.org>
+Subject: Re: Password reset does not arrive
+Message-ID: <TP_reply-123-0123456789abcdef@help.example.net>
+In-Reply-To: <robin-question@gmail.example.org>
+References: <robin-question@gmail.example.org>
+Date: Wed, 07 Oct 2026 08:00:00 +0000
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<div>Hello Robin,</div><div><br></div><div>We sent you a new link. Please c=
+heck your spam folder too.</div>
+
+--000000000000a1b2c3d4e5f60708--

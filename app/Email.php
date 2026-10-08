@@ -33,6 +33,13 @@ class Email extends Model
      */
     protected $guarded = ['id', 'customer_id'];
 
+    /**
+     * delivery_problem: emails to the address failed (App\Misc\DeliveryReports::flag()).
+     */
+    protected $casts = [
+        'delivery_problem' => 'array',
+    ];
+
     public function __construct(array $attributes = [])
     {
         if (!empty($attributes['email'])) {

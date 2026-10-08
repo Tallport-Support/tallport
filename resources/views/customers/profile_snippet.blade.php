@@ -26,6 +26,17 @@
 		<ul class="customer-snippet__details customer-contacts">
 			@foreach ($customer_emails as $email)
 				<li class="customer-email"><x-icon.mail class="f-icon" aria-hidden="true" />{!! $detail(__('Email')) !!}{{-- Copied on a click (said in a toast). --}}<button type="button" class="contact-main" title="{{ __('Copy') }}" aria-label="{{ __('Copy') }}: {{ $email->email }}" x-data x-on:click="copyToClipboard(@js($email->email)); Tallport.toast(@js(__('Copied')))">{{ $email->email }}</button></li>
+				@if (!empty($email->delivery_problem['kind']))
+					{{-- Emails to it failed (App\Misc\DeliveryReports), until cleared. --}}
+					<li class="customer-delivery-problem" x-data>
+						<x-icon.triangle-alert class="f-icon" aria-hidden="true" />
+						<span><span class="customer-delivery-problem__text" title="{{ App\Misc\DeliveryReports::reasonText($email->delivery_problem['reason'] ?? '') }}">{{ App\Misc\DeliveryReports::flagText($email->delivery_problem) }}</span>
+						@unless (\Helper::isPrint())
+							<x-fruit::button variant="ghost" size="small" class="customer-delivery-problem__clear" :aria-label="__('Clear').': '.App\Misc\DeliveryReports::flagText($email->delivery_problem)" x-on:click="Tallport.busy($el, true); Tallport.post(laroute.route('customers.ajax'), {action: 'clear_delivery_problem', email_id: {{ $email->id }}}).then(response => Tallport.isSuccess(response) ? $root.remove() : (Tallport.busy($el, false), Tallport.result(response)))">{{ __('Clear') }}</x-fruit::button>
+						@endunless
+						</span>
+					</li>
+				@endif
 			@endforeach
 			@foreach ($customer->getPhones() as $phone)
 				<li class="customer-phone"><x-icon.phone class="f-icon" aria-hidden="true" />{!! $detail(__('Phone')) !!}<span><a href="tel:{{ $phone['value'] }}">{{ $phone['value'] }}</a>@if (!\App\Customer::isDefaultPhoneType($phone['type'])) <span class="f-muted">({{ \App\Customer::getPhoneTypeName($phone['type']) }})</span>@endif</span></li>

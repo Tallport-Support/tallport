@@ -1,0 +1,38 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "Email Feedback Report (Complaint)",
+            "type": 1,
+            "status": 1,
+            "customer_email": "jamie.doe@customer.example.org",
+            "cc": "[\"support@shop.example.com\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "complaints@email-abuse.amazonses.com",
+                    "to": "[\"support@shop.example.com\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "Amazon SES did not send the message to this address because it is on the suppression list for your account. For more information about removing addresses from the suppression list, see the Amazon SES Developer Guide at https://docs.aws.amazon.com/ses/latest/dg/sending-email-suppression-list.html",
+                    "headers": "d71a5c186d6a636c90b5018caf36362c",
+                    "attachments": [
+                        {
+                            "file_name": "Payment_Confirmation_for_Your_Example_Shop_Service.eml",
+                            "mime_type": "message/rfc822",
+                            "size": 3863,
+                            "embedded": false
+                        },
+                        {
+                            "file_name": "Invoice-100001.pdf",
+                            "mime_type": "application/pdf",
+                            "size": 193,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,32 @@
+{
+    "error": null,
+    "conversations": [
+        {
+            "subject": "complaint about message from 192.0.2.10",
+            "type": 1,
+            "status": 1,
+            "customer_email": "casey.jones@mail.example.org",
+            "cc": "[\"support@help.example.net\"]",
+            "bcc": null,
+            "threads": [
+                {
+                    "type": 1,
+                    "from": "staff@feedback.mail.example.org",
+                    "to": "[\"support@help.example.net\"]",
+                    "cc": null,
+                    "bcc": null,
+                    "body": "This is an email abuse report for an email message received from IP<br />\r\n192.0.2.10 on Thu, 08 Oct 2026 10:02:44 +0000.<br />\r\nFor more information about this format please see<br />\r\nhttps://www.rfc-editor.org/rfc/rfc5965.",
+                    "headers": "84aefe82c8b80413953a4747764b576e",
+                    "attachments": [
+                        {
+                            "file_name": "Re_Cancel_my_account.eml",
+                            "mime_type": "message/rfc822",
+                            "size": 364,
+                            "embedded": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

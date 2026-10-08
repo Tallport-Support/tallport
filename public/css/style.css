@@ -3019,6 +3019,14 @@ h1.settings-toolbar__title {
     margin-top: 0.15em;
     color: var(--f-secondary);
 }
+/* A delivery report's original email (conversations/partials/delivery_report): its headers side by side. */
+.delivery-report__original .f-description-list {
+    --f-description-columns: repeat(auto-fit, minmax(12rem, 1fr));
+}
+/* An address emails couldn't reach (App\Misc\DeliveryReports), under it. */
+.customer-contacts .customer-delivery-problem > .f-icon {
+    color: var(--f-warning);
+}
 .customer-snippet__details a {
     color: inherit;
     text-decoration: none;

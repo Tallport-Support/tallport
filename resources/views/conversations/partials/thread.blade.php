@@ -33,6 +33,8 @@
             $thread_initials = mb_strtoupper(mb_substr((string) $thread_person->getMainEmail(), 0, 1));
         }
         $send_status_data = $thread_is_draft ? null : $thread->getSendStatusData();
+        // A bounce, delay, complaint or suppression notice: shown as such (partials/delivery_report).
+        $delivery_report = $thread_is_draft || !empty($chat) ? null : App\Misc\DeliveryReports::forThread($thread);
 
         // $older_thread: the one before it (partials/threads).
         $show_status = !$older_thread || ($thread->status != App\Thread::STATUS_NOCHANGE && $thread->status != $older_thread->status);
@@ -99,11 +101,13 @@
                 // Highlight "From" field if "From" header is different from "Reply-To".
                 $from_header = $thread->isCustomerMessage() ? $thread->getFromIfDifferentFromReplyTo($customer ?? null) : '';
                 // The thread's actual author may differ from the customer the conversation is currently attributed to.
-                $owner_mismatch = $thread->isCustomerMessage() && isset($conversation) && $thread->customer_id != $conversation->customer_id;
+                // (A delivery report's conversation is about the recipient, not its sender.)
+                $owner_mismatch = $thread->isCustomerMessage() && isset($conversation) && $thread->customer_id != $conversation->customer_id && !$delivery_report;
                 $show_from = !App\Nostr\Nostr::isNostr($conversation) && (($thread->isUserMessage() && $thread->from && array_key_exists($thread->from, $mailbox->getAliases()))
                     || ($thread->isCustomerMessage() && isset($customer) && count($customer->emails) > 1)
                     || !empty($from_header)
-                    || $owner_mismatch);
+                    || $owner_mismatch
+                    || $delivery_report);
                 $show_to = ($thread->isForward()
                     || $loop->last
                     || ($thread->type == App\Thread::TYPE_CUSTOMER && count($thread->getToArray($mailbox->getEmails())))
@@ -151,7 +155,9 @@
 
         @action('thread.after_header', $thread, $loop, $threads, $conversation, $mailbox)
         <div class="thread-body">
-            @if (!empty($send_status_data['is_bounce']))
+            @if ($delivery_report)
+                @include('conversations/partials/delivery_report')
+            @elseif (!empty($send_status_data['is_bounce']))
                 <x-fruit::alert tone="warning">
                     @if (empty($send_status_data['bounce_for_thread']) || empty($send_status_data['bounce_for_conversation']))
                         {{ __('This is a bounce message.') }}
@@ -186,15 +192,18 @@
             @include('conversations/partials/ai_translation_note')
             @action('thread.before_body', $thread, $loop, $threads, $conversation, $mailbox)
 
-            <div class="thread-content f-prose" dir="auto">
-                @if ($thread_is_draft)
-                    {!! safe_raw_html($thread->getCleanBody()) !!}
-                @elseif ($ai_written)
-                    {!! nl2br(e($ai_translation)) !!}
-                @else
-                    {!! safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox)) !!}
-                @endif
-            </div>
+            {{-- A delivery report's own text is in its Delivery Report disclosure. --}}
+            @unless ($delivery_report)
+                <div class="thread-content f-prose" dir="auto">
+                    @if ($thread_is_draft)
+                        {!! safe_raw_html($thread->getCleanBody()) !!}
+                    @elseif ($ai_written)
+                        {!! nl2br(e($ai_translation)) !!}
+                    @else
+                        {!! safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox)) !!}
+                    @endif
+                </div>
+            @endunless
 
             @if ($thread->body_original)
                 <div class="thread-meta" x-data="{ original: false }">

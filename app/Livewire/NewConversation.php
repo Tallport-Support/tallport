@@ -6,6 +6,7 @@ use App\Conversation;
 use App\Customer;
 use App\Http\Controllers\ConversationsController;
 use App\Mailbox;
+use App\Misc\DeliveryReports;
 use App\Misc\Noreply;
 use App\Thread;
 use FruitUI\Fruit;
@@ -384,12 +385,15 @@ class NewConversation extends Component
         }
 
         $noreply = [];
+        // And addresses emails failed to reach (To and Cc): a warning, sending still works.
+        $delivery_problems = [];
         if ($this->type != Conversation::TYPE_PHONE) {
             foreach (array_unique(array_merge($recipients, Fruit::tokens($this->cc), Fruit::tokens($this->bcc))) as $address) {
                 if (Noreply::isNoreply($address)) {
                     $noreply[] = $address;
                 }
             }
+            $delivery_problems = DeliveryReports::flagged(array_merge($recipients, Fruit::tokens($this->cc)));
         }
 
         return view('livewire.new-conversation', [
@@ -399,6 +403,7 @@ class NewConversation extends Component
             'prev_conversations' => $prev_conversations,
             'recipients'         => $recipients,
             'noreply'            => $noreply,
+            'delivery_problems'  => $delivery_problems,
         ]);
     }
 }
