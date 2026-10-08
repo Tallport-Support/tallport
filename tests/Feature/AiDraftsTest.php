@@ -181,6 +181,47 @@ class AiDraftsTest extends FeatureTestCase
         $this->assertDatabaseHas('aiassistant_usage', ['conversation_id' => $this->conversation->id, 'feature' => 'draft']);
     }
 
+    public function testAnInProgressDraftCannotRestoreDataAfterConversationDeletion()
+    {
+        ReplyDrafter::fake(function () {
+            $this->conversation->deleteForever();
+
+            return $this->draft(['draft' => 'Private reply']);
+        });
+
+        $events = $this->draftEvents($this->agent);
+        $this->assertSame('Private reply', end($events)['draft']);
+
+        $draft_job = DraftJob::where('user_id', $this->agent->id)->first();
+        $this->assertSame(1, DraftJob::countToday($this->agent));
+        $this->assertSame(DraftJob::STATUS_DELETED, $draft_job->status);
+        $this->assertNull($draft_job->conversation_id);
+        $this->assertNull($draft_job->result);
+        $this->assertNull($draft_job->error_message);
+        $this->assertNull($draft_job->error_detail);
+    }
+
+    public function testDraftCreatedJustAfterConversationDeletionKeepsOnlyTheQuotaCount()
+    {
+        DraftJob::creating(function () {
+            $this->conversation->deleteForever();
+        });
+        try {
+            $events = $this->draftEvents($this->agent);
+        } finally {
+            DraftJob::flushEventListeners();
+        }
+
+        $this->assertSame('success', end($events)['status']);
+        $draft_job = DraftJob::where('user_id', $this->agent->id)->first();
+        $this->assertSame(1, DraftJob::countToday($this->agent));
+        $this->assertSame(DraftJob::STATUS_DELETED, $draft_job->status);
+        $this->assertNull($draft_job->conversation_id);
+        $this->assertNull($draft_job->result);
+        $this->assertNull($draft_job->error_message);
+        $this->assertNull($draft_job->error_detail);
+    }
+
     /**
      * An answer that isn't the JSON asked for: the backup model writes the draft (shown again from the start).
      */

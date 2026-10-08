@@ -46,11 +46,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: AI failures now share one reference across user-visible messages, saved error fields, and bounded redacted operator logs. Draft SSE, translation and document errors, the documentation API, customer-context results, and AI exception logs use it; failed customer-context tests retain the HTTP status without returning the endpoint's body. Expected token-limit messages remain actionable. Regression tests cover configured keys and Authorization headers in responses, saved errors, and logs.
 
-- [ ] **06 · P1 · Tallport — Include saved AI drafts in deletion and retention.**
+- [x] **06 · P1 · Tallport — Include saved AI drafts in deletion and retention.**
 
   Evidence: `aiassistant_draft_jobs` stores full results and errors without a foreign-key cascade (`database/migrations/2026_10_04_010103_create_ai_draft_jobs_table.php:16`). `Drafts::draft()` includes the generated reply and retrieved document excerpts in that result. `Conversation::deleteConversationsForever()` and `Retention::cleanLogs()` do not remove these records; application references to `DraftJob` only create or count them.
 
   Delete associated draft results when a conversation is permanently deleted, and define a bounded lifetime for remaining draft payloads. Keep only the minimal counters needed for today's quota. Acceptance: permanently delete a conversation with a completed draft and verify the reply, excerpts, and error payloads are gone; normal retention must preserve the intended quota behavior.
+
+  Completed: permanent conversation deletion removes older draft rows and clears today's rows of the conversation link, result, errors, and other draft metadata while preserving their quota count. An in-progress draft cannot write its result back after deletion, even when its quota row is inserted late. The daily retention run deletes rows from previous days, including undated rows, even when conversation retention is off. Regression tests cover deletion, quota counts, cleanup, and both timing windows.
 
 - [ ] **07 · P1 · Tallport — Make sending a reply one atomic, repeatable operation.**
 

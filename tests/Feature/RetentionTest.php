@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Ai\DraftJob;
 use App\Conversation;
 use App\Customer;
 use App\Folder;
@@ -133,6 +134,31 @@ class RetentionTest extends FeatureTestCase
         \DB::table('send_logs')->insert(['thread_id' => $thread->id, 'email' => 'casey@customer.example.org', 'mail_type' => 1, 'status' => 1, 'created_at' => now(), 'updated_at' => now()]);
         \DB::table('notifications')->insert(['id' => (string) \Illuminate\Support\Str::uuid(), 'type' => 'x', 'notifiable_id' => $this->admin->id, 'notifiable_type' => \App\User::class, 'data' => '{}', 'conversation_id' => $conversation->id, 'created_at' => now(), 'updated_at' => now()]);
         \DB::table('report_replies')->insert(['thread_id' => $thread->id, 'conversation_id' => $conversation->id, 'user_id' => $this->admin->id, 'replied_at' => now()]);
+        $completed_draft = new DraftJob();
+        $completed_draft->conversation_id = $conversation->id;
+        $completed_draft->user_id = $this->admin->id;
+        $completed_draft->status = DraftJob::STATUS_COMPLETED;
+        $completed_draft->locale = 'en';
+        $completed_draft->document_limit = 3;
+        $completed_draft->result = ['draft' => 'Private reply', 'retrieved_documents' => [['excerpt' => 'Private excerpt']]];
+        $completed_draft->started_at = now();
+        $completed_draft->completed_at = now();
+        $completed_draft->save();
+        $failed_draft = new DraftJob();
+        $failed_draft->conversation_id = $conversation->id;
+        $failed_draft->user_id = $this->admin->id;
+        $failed_draft->status = DraftJob::STATUS_FAILED;
+        $failed_draft->error_type = \RuntimeException::class;
+        $failed_draft->error_message = 'Private error';
+        $failed_draft->error_detail = 'Private detail';
+        $failed_draft->save();
+        $old_draft = new DraftJob();
+        $old_draft->conversation_id = $conversation->id;
+        $old_draft->user_id = $this->admin->id;
+        $old_draft->status = DraftJob::STATUS_COMPLETED;
+        $old_draft->result = ['draft' => 'Old private reply'];
+        $old_draft->save();
+        DraftJob::whereKey($old_draft->id)->update(['created_at' => now()->subDay()]);
 
         Retention::expire();
         Retention::deleteExpired();
@@ -145,6 +171,22 @@ class RetentionTest extends FeatureTestCase
         $this->assertSame(0, \DB::table('send_logs')->where('thread_id', $thread->id)->count());
         $this->assertSame(0, \DB::table('notifications')->where('conversation_id', $conversation->id)->count());
         $this->assertSame(0, \DB::table('report_replies')->where('conversation_id', $conversation->id)->count());
+        $this->assertNull($old_draft->fresh(), 'An earlier day no longer needs a quota row.');
+        $this->assertSame(2, DraftJob::countToday($this->admin));
+        $this->assertSame(0, DraftJob::where('conversation_id', $conversation->id)->count());
+        foreach ([$completed_draft, $failed_draft] as $draft) {
+            $draft = $draft->fresh();
+            $this->assertSame(DraftJob::STATUS_DELETED, $draft->status);
+            $this->assertNull($draft->conversation_id);
+            $this->assertNull($draft->locale);
+            $this->assertSame(0, $draft->document_limit);
+            $this->assertNull($draft->result);
+            $this->assertNull($draft->error_type);
+            $this->assertNull($draft->error_message);
+            $this->assertNull($draft->error_detail);
+            $this->assertNull($draft->started_at);
+            $this->assertNull($draft->completed_at);
+        }
     }
 
     public function testTrashSpamAndCustomersWithoutConversations()
@@ -181,10 +223,37 @@ class RetentionTest extends FeatureTestCase
         $old = $this->conversation('casey@customer.example.org', 30);
         \DB::table('activity_logs')->insert(['log_name' => 'system', 'description' => 'old', 'created_at' => now()->subDays(100), 'updated_at' => now()]);
         \DB::table('failed_jobs')->insert(['connection' => 'database', 'queue' => 'default', 'payload' => '{}', 'exception' => 'x', 'failed_at' => now()->subDays(40)]);
+        $today_draft = new DraftJob();
+        $today_draft->conversation_id = $old->id;
+        $today_draft->user_id = $this->admin->id;
+        $today_draft->status = DraftJob::STATUS_COMPLETED;
+        $today_draft->result = ['draft' => 'Today'];
+        $today_draft->save();
+        $yesterday_draft = new DraftJob();
+        $yesterday_draft->conversation_id = $old->id;
+        $yesterday_draft->user_id = $this->admin->id;
+        $yesterday_draft->status = DraftJob::STATUS_COMPLETED;
+        $yesterday_draft->result = ['draft' => 'Yesterday'];
+        $yesterday_draft->save();
+        DraftJob::whereKey($yesterday_draft->id)->update(['created_at' => now()->subDay()]);
+        $undated_draft = new DraftJob();
+        $undated_draft->conversation_id = $old->id;
+        $undated_draft->user_id = $this->admin->id;
+        $undated_draft->status = DraftJob::STATUS_COMPLETED;
+        $undated_draft->result = ['draft' => 'Undated'];
+        $undated_draft->save();
+        DraftJob::whereKey($undated_draft->id)->update(['created_at' => null]);
 
+        $this->assertSame(2, Retention::run(true)['logs']['ai_drafts']);
+        $this->assertSame(1, DraftJob::countToday($this->admin));
         $counts = Retention::run();
         $this->assertSame(1, $counts['logs']['activity_log']);
         $this->assertSame(1, $counts['logs']['failed_jobs']);
+        $this->assertSame(2, $counts['logs']['ai_drafts']);
+        $this->assertNull($yesterday_draft->fresh());
+        $this->assertNull($undated_draft->fresh());
+        $this->assertSame(['draft' => 'Today'], $today_draft->fresh()->result);
+        $this->assertSame(1, DraftJob::countToday($this->admin));
         $this->assertArrayNotHasKey('expired', $counts);
         $this->assertNull($old->fresh()->expired_at);
     }

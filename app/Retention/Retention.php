@@ -348,6 +348,8 @@ class Retention
             'telegram'       => \DB::table('telegram_updates')->where('created_at', '<', now()->subDays(self::TELEGRAM_UPDATES_DAYS)),
             // The AI log: what no budget or conversation's token count needs (Usage::expiredLog()).
             'ai_log'         => \App\Ai\Usage::expiredLog(),
+            // Draft results are only needed until the user's daily quota resets.
+            'ai_drafts'      => \App\Ai\DraftJob::where('created_at', '<', now()->startOfDay())->orWhereNull('created_at'),
         ];
         $counts = [];
         foreach ($queries as $name => $query) {

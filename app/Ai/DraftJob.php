@@ -14,6 +14,7 @@ class DraftJob extends Model
     const STATUS_RUNNING = 'running';
     const STATUS_COMPLETED = 'completed';
     const STATUS_FAILED = 'failed';
+    const STATUS_DELETED = 'deleted';
 
     protected $table = 'aiassistant_draft_jobs';
 
@@ -29,5 +30,29 @@ class DraftJob extends Model
     public static function countToday($user)
     {
         return self::where('user_id', $user->id)->where('created_at', '>=', now()->startOfDay())->count();
+    }
+
+    /**
+     * Remove drafts for deleted conversations, keeping only today's quota rows.
+     */
+    public static function forgetConversations($conversation_ids)
+    {
+        $today = now()->startOfDay();
+        self::whereIn('conversation_id', $conversation_ids)->where(function ($query) use ($today) {
+            $query->where('created_at', '<', $today)->orWhereNull('created_at');
+        })->delete();
+
+        self::whereIn('conversation_id', $conversation_ids)->update([
+            'conversation_id' => null,
+            'status'          => self::STATUS_DELETED,
+            'locale'          => null,
+            'document_limit'  => 0,
+            'result'          => null,
+            'error_type'      => null,
+            'error_message'   => null,
+            'error_detail'    => null,
+            'started_at'      => null,
+            'completed_at'    => null,
+        ]);
     }
 }

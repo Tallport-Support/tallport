@@ -79,7 +79,14 @@ class AiDraftsController extends Controller
                 $draft_job->error_detail = __('ID').': '.Errors::report($e, 'Draft for conversation #'.$draft_job->conversation_id.':');
             }
             $draft_job->completed_at = now();
-            $draft_job->save();
+            // Save only while the conversation and this draft's link still exist.
+            // Deletion may have happened even before this row was inserted.
+            $saved = DraftJob::whereKey($draft_job->id)->where('conversation_id', $conversation->id)
+                ->whereIn('conversation_id', Conversation::whereKey($conversation->id)->select('id'))
+                ->update($draft_job->getDirty());
+            if (!$saved) {
+                DraftJob::forgetConversations([$conversation->id]);
+            }
 
             $send($draft_job->status == DraftJob::STATUS_COMPLETED
                 ? ['status' => 'success', 'draft_status' => $draft_job->status] + (array) $draft_job->result

@@ -2247,6 +2247,7 @@ class Conversation extends Model
 
             // Delete conversations.
             Conversation::whereIn('id', $ids)->delete();
+            \App\Ai\DraftJob::forgetConversations($ids);
 
             // Delete links to folders.
             ConversationFolder::whereIn('conversation_id', $ids)->delete();
