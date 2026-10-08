@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Attachment;
 use App\Mailbox;
 use App\TeamMessage;
+use FruitUI\Fruit;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -92,17 +93,38 @@ class TeamChat extends Component
             return;
         }
         $user = auth()->user();
-        $message = TeamMessage::create(['mailbox_id' => $mailbox->id, 'user_id' => $user->id, 'body' => $body]);
-        // Files are stored encrypted, as the text (OpenController::downloadAttachment() decrypts them).
-        foreach ($this->files as $file) {
-            $mime_type = $file->getMimeType();
-            $file_name = \Helper::sanitizeUploadedFileName($file->getClientOriginalName(), $file, null, $mime_type);
-            $attachment = Attachment::create($file_name, $mime_type, null, \Crypt::encryptString($file->get()), null, false, null, $user->id);
-            if ($attachment) {
-                $attachment->team_message_id = $message->id;
-                $attachment->size = $file->getSize();
-                $attachment->save();
+        $saved_files = [];
+        try {
+            $message = \DB::transaction(function () use ($mailbox, $user, $body, &$saved_files) {
+                $message = TeamMessage::create(['mailbox_id' => $mailbox->id, 'user_id' => $user->id, 'body' => $body]);
+                // Files are stored encrypted, as the text (OpenController::downloadAttachment() decrypts them).
+                foreach ($this->files as $file) {
+                    $mime_type = $file->getMimeType();
+                    $file_name = \Helper::sanitizeUploadedFileName($file->getClientOriginalName(), $file, null, $mime_type);
+                    $attachment = Attachment::create($file_name, $mime_type, null, \Crypt::encryptString($file->get()), null, false, null, $user->id);
+                    if (!$attachment || !$attachment->fileExists()) {
+                        throw new \RuntimeException('Could not store team chat attachment.');
+                    }
+                    $saved_files[] = $attachment->getStorageFilePath();
+                    $attachment->team_message_id = $message->id;
+                    $attachment->size = $file->getSize();
+                    $attachment->save();
+                }
+
+                return $message;
+            });
+        } catch (\Throwable $e) {
+            foreach ($saved_files as $path) {
+                try {
+                    Attachment::getDisk()->delete($path);
+                } catch (\Throwable $cleanup_error) {
+                    \Helper::logException($cleanup_error, '[TeamChat::send()]');
+                }
             }
+            \Helper::logException($e, '[TeamChat::send()]');
+            Fruit::toast(__('Error occurred. Please try again later.'), 'danger');
+
+            return;
         }
         $this->body = '';
         $this->files = [];

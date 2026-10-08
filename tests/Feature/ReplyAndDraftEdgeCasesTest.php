@@ -113,6 +113,92 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         $this->assertCount(1, $this->sentEmailsTo('casey@customer.example.org'));
     }
 
+    public function testRetryingTheSameDraftSubmissionDoesNotSendAgain()
+    {
+        $conversation = $this->receiveConversation();
+        $draft = $this->replyDraft($conversation);
+        $data = [
+            'conversation_id' => $conversation->id,
+            'thread_id' => $draft->id,
+            'submission_key' => '28a3434c-9281-4a03-9912-cfcd96d680b1',
+            'body' => '<p>Answer</p>',
+        ];
+
+        $this->assertSuccess($this->ajax('send_reply', $data));
+        $this->assertSuccess($this->ajax('send_reply', $data));
+        $this->assertSame(1, $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->count());
+        $this->assertCount(1, $this->sentEmailsTo('casey@customer.example.org'));
+    }
+
+    public function testRetryingANewConversationSubmissionDoesNotCreateAnotherConversation()
+    {
+        $data = [
+            'is_create' => 1,
+            'to' => ['casey@customer.example.org'],
+            'subject' => 'A new question',
+            'submission_key' => 'd08b16e8-bff9-4cb2-8746-040e273e1cdd',
+            'body' => '<p>Answer</p>',
+        ];
+
+        $this->assertSuccess($this->ajax('send_reply', $data));
+        $this->assertSuccess($this->ajax('send_reply', $data));
+        $this->assertSame(1, Conversation::where('mailbox_id', $this->mailbox->id)->count());
+        $this->assertCount(1, $this->sentEmailsTo('casey@customer.example.org'));
+    }
+
+    public function testMissingReplyAttachmentKeepsDraftAndDoesNotNotify()
+    {
+        \Storage::fake(Attachment::getDiskName());
+        $conversation = $this->receiveConversation();
+        $draft = $this->replyDraft($conversation);
+        [$attachment, $encrypted_id] = $this->upload();
+        Attachment::getDisk()->delete($attachment->getStorageFilePath());
+
+        $this->assertError('Error occurred. Please try again later.', $this->ajax('send_reply', [
+            'conversation_id' => $conversation->id,
+            'thread_id' => $draft->id,
+            'body' => '<p>Answer</p>',
+            'attachments' => [$encrypted_id],
+            'attachments_all' => [$encrypted_id],
+        ]));
+        $this->assertSame(Thread::STATE_DRAFT, $draft->fresh()->state);
+        $this->assertSame(2, $conversation->threads()->count());
+        $this->assertCount(0, $this->sentEmailsTo('casey@customer.example.org'));
+    }
+
+    public function testFailureAfterSavingReplyDataRollsBackAndRemovesEmbeddedFiles()
+    {
+        \Storage::fake(Attachment::getDiskName());
+        $conversation = $this->receiveConversation();
+        $draft = $this->replyDraft($conversation);
+        $body = '<p>Answer <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/nXcAAAAASUVORK5CYII="></p>';
+        [$removed_attachment, $encrypted_id] = $this->upload();
+        $saw_embedded_file = false;
+
+        \Eventy::addAction('thread.before_save_from_request', $fail_save = function () use (&$saw_embedded_file) {
+            $embedded = Attachment::where('embedded', true)->first();
+            $saw_embedded_file = $embedded && $embedded->fileExists();
+            throw new \RuntimeException('Simulated save failure');
+        });
+        try {
+            $this->assertError('Error occurred. Please try again later.', $this->ajax('send_reply', [
+                'conversation_id' => $conversation->id,
+                'thread_id' => $draft->id,
+                'body' => $body,
+                'attachments_all' => [$encrypted_id],
+            ]));
+        } finally {
+            \Eventy::removeAction('thread.before_save_from_request', $fail_save);
+        }
+
+        $this->assertTrue($saw_embedded_file);
+        $this->assertSame(Thread::STATE_DRAFT, $draft->fresh()->state);
+        $this->assertSame(2, $conversation->threads()->count());
+        $this->assertNotNull($removed_attachment->fresh());
+        $this->assertSame([$removed_attachment->getStorageFilePath()], Attachment::getDisk()->allFiles(Attachment::DIRECTORY));
+        $this->assertCount(0, $this->sentEmailsTo('casey@customer.example.org'));
+    }
+
     public function testANewConversationNeedsAValidRecipient()
     {
         $response = $this->ajax('send_reply', ['is_create' => 1, 'to' => ['not-an-email'], 'subject' => 'Hello', 'body' => '<p>Hi</p>']);

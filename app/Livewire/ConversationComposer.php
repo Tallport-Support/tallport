@@ -70,6 +70,9 @@ class ConversationComposer extends Component
      */
     public $thread_id = null;
 
+    #[Locked]
+    public $submission_key;
+
     public $from_alias = '';
 
     /**
@@ -516,6 +519,7 @@ class ConversationComposer extends Component
             'mailbox_id'      => $conversation->mailbox_id,
             'saved_reply_id'  => $this->saved_reply_id,
             'thread_id'       => $this->thread_id,
+            'submission_key'  => $this->submission_key,
             'is_note'         => $this->mode == 'note' ? 1 : '',
             'subtype'         => $this->mode == 'forward' ? Thread::SUBTYPE_FORWARD : '',
             'conv_history'    => $this->conv_history,
@@ -562,6 +566,7 @@ class ConversationComposer extends Component
         $user = auth()->user();
 
         $this->thread_id = null;
+        $this->submission_key = (string) \Illuminate\Support\Str::uuid();
         $this->body = '';
         $this->attachments = [];
         $this->saved_reply_id = '';

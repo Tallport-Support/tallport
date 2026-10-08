@@ -3890,6 +3890,13 @@
                 "type": "timestamp",
                 "nullable": true,
                 "default": "NULL"
+            },
+            "submission_key": {
+                "type": "char(36)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {
@@ -3945,6 +3952,13 @@
                 "type": "BTREE",
                 "columns": [
                     "message_id(191)"
+                ]
+            },
+            "threads_submission_key_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "submission_key"
                 ]
             },
             "threads_type_state_created_at_index": {

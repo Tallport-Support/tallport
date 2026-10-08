@@ -207,6 +207,33 @@ class TeamChatTest extends FeatureTestCase
         $this->assertSame(0, Attachment::where('team_message_id', $message->id)->count());
     }
 
+    public function testAnAttachmentFailureKeepsTheTeamChatComposerForRetry()
+    {
+        $chat = Livewire::actingAs($this->ann)->test(TeamChat::class, ['mailbox' => $this->mailbox]);
+        $created = 0;
+        $fail_second_attachment = function () use (&$created) {
+            if (++$created == 2) {
+                throw new \RuntimeException('Disk write failed');
+            }
+        };
+        \Eventy::addAction('attachment.created', $fail_second_attachment);
+
+        try {
+            $chat->set('body', '@Bob Please check this.')
+                ->set('files', [UploadedFile::fake()->createWithContent('a.txt', 'a'), UploadedFile::fake()->createWithContent('b.txt', 'b')])
+                ->call('send')->assertToasted('Error occurred. Please try again later.', 'danger')
+                ->assertSet('body', '@Bob Please check this.');
+        } finally {
+            \Eventy::removeAction('attachment.created', $fail_second_attachment);
+        }
+
+        $this->assertCount(2, $chat->get('files'));
+        $this->assertSame(0, TeamMessage::where('mailbox_id', $this->mailbox->id)->count());
+        $this->assertSame(0, Attachment::whereNotNull('team_message_id')->count());
+        $this->assertSame([], Attachment::getDisk()->allFiles(Attachment::DIRECTORY));
+        $this->assertSame(0, $this->bob->notifications()->count());
+    }
+
     /**
      * A message arriving while the room is open is read; Details follow; a file can be
      * taken off before sending, and nothing to send sends nothing.

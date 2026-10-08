@@ -54,11 +54,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: permanent conversation deletion removes older draft rows and clears today's rows of the conversation link, result, errors, and other draft metadata while preserving their quota count. An in-progress draft cannot write its result back after deletion, even when its quota row is inserted late. The daily retention run deletes rows from previous days, including undated rows, even when conversation retention is off. Regression tests cover deletion, quota counts, cleanup, and both timing windows.
 
-- [ ] **07 · P1 · Tallport — Make sending a reply one atomic, repeatable operation.**
+- [x] **07 · P1 · Tallport — Make sending a reply one atomic, repeatable operation.**
 
   Evidence: `ConversationsController::ajaxSendReply()` (`app/Http/Controllers/ConversationsController.php:1590`) checks draft state, writes conversations and threads, attaches files, and dispatches events through separate steps without a surrounding transaction or atomic draft claim. Two concurrent submissions can both pass the “already sent” check. Failure after an early write can leave partial state. `TeamChat::send()` similarly persists the message before all its attachments succeed.
 
   Establish a transaction around each database operation, atomically claim the draft/submission, and dispatch external effects after commit. Handle file failures explicitly because a database rollback cannot undo storage writes. Retain hook names and arguments. Acceptance: two concurrent sends produce one logical reply; failure during attachment persistence leaves a recoverable draft or a clearly reported partial failure, with no premature notification.
+
+  Completed: reply sends lock the conversation and draft inside a transaction. Livewire composers include a unique submission key backed by a database constraint, so a repeated request returns the committed result without another send; legacy AJAX callers remain supported. Delivery and notification events run after commit. Missing or failed attachment copies abort the send, roll back its rows, clean newly written files, and retain the draft; removed files are deleted after commit. Team chat similarly rolls back a message if any attachment fails and keeps its composer for retry. Regression tests cover repeated submissions and failure recovery.
 
 - [ ] **08 · P1 · Tallport — Merge AI metadata without overwriting concurrent changes.**
 

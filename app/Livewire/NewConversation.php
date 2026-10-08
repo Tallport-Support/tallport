@@ -58,6 +58,9 @@ class NewConversation extends Component
 
     public $thread_id;
 
+    #[Locked]
+    public $submission_key;
+
     public $customer_id;
 
     public $from_alias = '';
@@ -104,6 +107,7 @@ class NewConversation extends Component
 
     public function mount($conversation, $mailbox, $thread = null, $to = [], $name = [], $phone = '', $toEmail = [], $attachments = [], $fromAliases = [], $fromAlias = '', $afterSend = null)
     {
+        $this->submission_key = (string) \Illuminate\Support\Str::uuid();
         $this->mailbox_id = $mailbox->id;
         $this->conversation_id = $conversation->id;
         $this->number = $conversation->number;
@@ -325,6 +329,7 @@ class NewConversation extends Component
             'is_phone'               => $is_phone ? 1 : '',
             'type'                   => $this->type,
             'thread_id'              => $this->thread_id,
+            'submission_key'         => $this->submission_key,
             'customer_id'            => $this->customer_id,
             'is_create'              => 1,
             'saved_reply_id'         => $this->saved_reply_id,

@@ -41,6 +41,26 @@ class AttachmentModelTest extends FeatureTestCase
         $this->assertSame(0, Attachment::count());
     }
 
+    public function testCreateRemovesItsRowWhenSavingFails()
+    {
+        $fail = function () {
+            throw new \RuntimeException('Simulated attachment failure');
+        };
+        \Eventy::addAction('attachment.created', $fail);
+        try {
+            try {
+                Attachment::create('failed.txt', 'text/plain', null, 'content', null);
+                $this->fail('The attachment should not have been saved.');
+            } catch (\RuntimeException $e) {
+                $this->assertSame('Simulated attachment failure', $e->getMessage());
+            }
+        } finally {
+            \Eventy::removeAction('attachment.created', $fail);
+        }
+
+        $this->assertSame(0, Attachment::count());
+    }
+
     /**
      * A mime type that repeats itself (FreeScout #3048) is cut to one.
      */
@@ -215,6 +235,20 @@ class AttachmentModelTest extends FeatureTestCase
         Attachment::getDisk()->delete($attachment->getStorageFilePath());
 
         $this->assertNull($attachment->duplicate());
+        $this->assertSame(1, Attachment::count());
+    }
+
+    public function testStrictDuplicateMissingFileFailsWithoutCreatingARow()
+    {
+        $attachment = Attachment::create('gone.txt', 'text/plain', null, 'gone', null);
+        Attachment::getDisk()->delete($attachment->getStorageFilePath());
+
+        try {
+            $attachment->duplicate(null, true);
+            $this->fail('The missing file should prevent the copy.');
+        } catch (\RuntimeException $e) {
+            $this->assertSame('Attachment file is missing.', $e->getMessage());
+        }
         $this->assertSame(1, Attachment::count());
     }
 

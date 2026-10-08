@@ -130,13 +130,24 @@ class Attachment extends Model
         $attachment->type = $type;
         $attachment->embedded = $embedded;
         $attachment->token_type = self::TOKEN_TYPE_SHA256;
-        $attachment->save();
+        $file_info = [];
+        try {
+            $attachment->save();
 
-        $file_info = self::saveFileToDisk($attachment, $file_name, $content, $uploaded_file);
+            $file_info = self::saveFileToDisk($attachment, $file_name, $content, $uploaded_file);
 
-        $attachment->file_dir = $file_info['file_dir'];
-        $attachment->size = self::getDisk()->size($file_info['file_path']);
-        $attachment->save();
+            $attachment->file_dir = $file_info['file_dir'];
+            $attachment->size = self::getDisk()->size($file_info['file_path']);
+            $attachment->save();
+        } catch (\Throwable $e) {
+            if (!empty($file_info['file_path'])) {
+                self::getDisk()->delete($file_info['file_path']);
+            }
+            if ($attachment->id) {
+                self::whereKey($attachment->id)->delete();
+            }
+            throw $e;
+        }
 
         return $attachment;
     }
@@ -173,7 +184,12 @@ class Attachment extends Model
         // $content may be a stream resource rather than a string; the SVG sanitizer needs
         // actual string content, so let it re-read the just-written file in that case instead
         // of treating the resource as file content.
-        \Helper::sanitizeUploadedFileData($file_path, is_resource($content) ? null : $content);
+        try {
+            \Helper::sanitizeUploadedFileData($file_path, is_resource($content) ? null : $content);
+        } catch (\Throwable $e) {
+            self::getDisk()->delete($file_path);
+            throw $e;
+        }
 
         return [
             'file_dir'  => $file_dir,
@@ -441,9 +457,12 @@ class Attachment extends Model
     /**
      * Create a copy of the attachment and it's file.
      */
-    public function duplicate($thread_id = null)
+    public function duplicate($thread_id = null, $throw_on_failure = false)
     {
         if (!$this->fileExists()) {
+            if ($throw_on_failure) {
+                throw new \RuntimeException('Attachment file is missing.');
+            }
             return null;
         }
 
@@ -453,6 +472,7 @@ class Attachment extends Model
 
         $new_attachment->save();
 
+        $file_info = [];
         try {
             $content_stream = '';
             $attachment_file = null;
@@ -473,7 +493,19 @@ class Attachment extends Model
                 $new_attachment->file_dir = $file_info['file_dir'];
                 $new_attachment->save();
             }
-        } catch (\Exception $e) {
+            if ($throw_on_failure && !$new_attachment->fileExists()) {
+                throw new \RuntimeException('Could not copy attachment file.');
+            }
+        } catch (\Throwable $e) {
+            if ($throw_on_failure) {
+                if (!empty($file_info['file_path'])) {
+                    self::getDisk()->delete($file_info['file_path']);
+                }
+                throw $e;
+            }
+            if (!$e instanceof \Exception) {
+                throw $e;
+            }
             \Helper::logException($e);
         }
 
