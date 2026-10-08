@@ -7,7 +7,7 @@
 @if ($ai_translation)
     {{-- As the message looks (links, images, a business card), made safe like the message; older translations are text. --}}
     @if (App\Ai\Translations::isHtml($thread, $ai_language) && preg_match('/<[a-z][^>]*>/i', $ai_translation))
-        <div class="ai-translation-html">{!! safe_raw_html($ai_translation) !!}</div>
+        <div class="ai-translation-html">{!! App\Misc\EmailColors::neutral(safe_raw_html($ai_translation)) !!}</div>
     @else
         {!! nl2br(e($ai_translation)) !!}
     @endif

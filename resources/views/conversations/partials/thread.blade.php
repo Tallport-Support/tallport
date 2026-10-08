@@ -58,7 +58,7 @@
     {{-- The chat view ($chat): name, meta and time on one line, the body beside the avatar. --}}
     <x-fruit::message :layout="empty($chat) ? 'stacked' : 'inline'" :continued="!empty($continued) && !empty($chat)" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" :mine="$thread->type == App\Thread::TYPE_MESSAGE && $thread->created_by_user_id == Auth::user()->id" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()" :lang="$ai_written ? $ai_language : ($ai_translation ? (App\Ai\Summaries::data($thread)['language'] ?? null) : null)">
         @if ($ai_written)
-            <x-slot:translation :lang="$ai_sent_in"><span class="ai-sent-in">{{ $ai_sent_in ? __('Sent to the customer in :language', ['language' => App\Ai\Settings::displayName($ai_sent_in)]) : __('As sent to the customer') }}</span>{!! safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox)) !!}</x-slot:translation>
+            <x-slot:translation :lang="$ai_sent_in"><span class="ai-sent-in">{{ $ai_sent_in ? __('Sent to the customer in :language', ['language' => App\Ai\Settings::displayName($ai_sent_in)]) : __('As sent to the customer') }}</span>{!! App\Misc\EmailColors::neutral(safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox))) !!}</x-slot:translation>
         @elseif ($ai_translation)
             {{-- The translation below the message, in the user's language. --}}
             <x-slot:translation :lang="$ai_language">@include('conversations/partials/ai_translation')</x-slot:translation>
@@ -205,11 +205,11 @@
             @unless ($delivery_report)
                 <div class="thread-content f-prose" dir="auto">
                     @if ($thread_is_draft)
-                        {!! safe_raw_html($thread->getCleanBody()) !!}
+                        {!! App\Misc\EmailColors::neutral(safe_raw_html($thread->getCleanBody())) !!}
                     @elseif ($ai_written)
                         {!! nl2br(e($ai_translation)) !!}
                     @else
-                        {!! safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox)) !!}
+                        {!! App\Misc\EmailColors::neutral(safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox))) !!}
                     @endif
                 </div>
             @endunless
@@ -218,7 +218,7 @@
                 <div class="thread-meta" x-data="{ original: false }">
                     <span class="f-footnote f-muted">{{ __("Edited by :whom :when", ['whom' => $thread->getEditedByUserName(), 'when' => App\User::dateDiffForHumansWithHours($thread->edited_at)]) }}</span>
                     <a href="#" class="f-footnote thread-original-show" x-show="!original" x-on:click.prevent="original = true">{{ __("Show Original") }}</a><a href="#" class="f-footnote thread-original-hide" x-show="original" x-cloak x-on:click.prevent="original = false">{{ __("Hide") }}</a>
-                    <div class="thread-original f-prose" x-show="original" x-cloak>{!! safe_raw_html(App\Misc\ExternalImages::original($thread)) !!}</div>
+                    <div class="thread-original f-prose" x-show="original" x-cloak>{!! App\Misc\EmailColors::neutral(safe_raw_html(App\Misc\ExternalImages::original($thread))) !!}</div>
                 </div>
             @endif
             @if (!$thread_is_draft)

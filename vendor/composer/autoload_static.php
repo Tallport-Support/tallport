@@ -1099,6 +1099,7 @@ class ComposerStaticInit4bed6e813a5c8d513c131bb2c6cbcbb7
         'App\\Misc\\CspHtmlDumper' => __DIR__ . '/../..' . '/app/Misc/CspHtmlDumper.php',
         'App\\Misc\\DatabaseSettings' => __DIR__ . '/../..' . '/app/Misc/DatabaseSettings.php',
         'App\\Misc\\DeliveryReports' => __DIR__ . '/../..' . '/app/Misc/DeliveryReports.php',
+        'App\\Misc\\EmailColors' => __DIR__ . '/../..' . '/app/Misc/EmailColors.php',
         'App\\Misc\\EmbedImages' => __DIR__ . '/../..' . '/app/Misc/EmbedImages.php',
         'App\\Misc\\EnvFile' => __DIR__ . '/../..' . '/app/Misc/EnvFile.php',
         'App\\Misc\\Eventy\\Action' => __DIR__ . '/../..' . '/app/Misc/Eventy/Action.php',

@@ -278,6 +278,7 @@ return array(
     'App\\Misc\\CspHtmlDumper' => $baseDir . '/app/Misc/CspHtmlDumper.php',
     'App\\Misc\\DatabaseSettings' => $baseDir . '/app/Misc/DatabaseSettings.php',
     'App\\Misc\\DeliveryReports' => $baseDir . '/app/Misc/DeliveryReports.php',
+    'App\\Misc\\EmailColors' => $baseDir . '/app/Misc/EmailColors.php',
     'App\\Misc\\EmbedImages' => $baseDir . '/app/Misc/EmbedImages.php',
     'App\\Misc\\EnvFile' => $baseDir . '/app/Misc/EnvFile.php',
     'App\\Misc\\Eventy\\Action' => $baseDir . '/app/Misc/Eventy/Action.php',

@@ -66,7 +66,7 @@
             </x-fruit::description-list>
             @if ($report_original_body)
                 <hr>
-                <div class="thread-content f-prose delivery-report__original-body" dir="auto">{!! $report_original_body['html'] !!}</div>
+                <div class="thread-content f-prose delivery-report__original-body" dir="auto">{!! App\Misc\EmailColors::neutral($report_original_body['html']) !!}</div>
                 @if (count($report_original_body['attachments']))
                     <div class="f-row">
                         @foreach ($report_original_body['attachments'] as $report_attachment)
@@ -84,7 +84,7 @@
 
     <x-fruit::disclosure :title="__('Delivery Report')" class="delivery-report__text">
         <div class="thread-content f-prose" dir="auto">
-            {!! safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox)) !!}
+            {!! App\Misc\EmailColors::neutral(safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox))) !!}
         </div>
         @if (!empty($delivery_report['details']))
             <pre class="delivery-report__details" tabindex="0" role="region" aria-label="{{ __('Delivery Report') }}">{{ $delivery_report['details'] }}</pre>
