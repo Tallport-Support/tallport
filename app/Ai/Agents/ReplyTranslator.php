@@ -52,4 +52,9 @@ class ReplyTranslator extends TallportAgent
             'note'          => $schema->string()->description('"Translated automatically" in the target language.')->required(),
         ];
     }
+
+    protected function validAnswer(array $answer)
+    {
+        return $this->validTranslation($answer);
+    }
 }

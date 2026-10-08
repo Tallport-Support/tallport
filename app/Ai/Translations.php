@@ -279,7 +279,7 @@ class Translations
             if ($thread->type == Thread::TYPE_CUSTOMER && $data['language'] && Settings::isLanguage($data['language'])) {
                 ChatTranslation::setCustomerLanguage($thread->conversation, $data['language']);
             }
-            if (!empty($answer['same_language']) || $data['language'] === $language || trim((string) ($answer['translation'] ?? '')) === '') {
+            if ($answer['same_language']) {
                 $data['same'] = array_values(array_unique(array_merge((array) ($data['same'] ?? []), [$language])));
             } else {
                 $data['translations'][$language] = trim((string) $answer['translation']);
@@ -333,10 +333,13 @@ class Translations
             unset($data['errors']);
         }
         $data['language'] = $detected ?: ($data['language'] ?? null);
-        $translation = trim((string) $translation);
-        if ($translation === '' || $data['language'] === $language) {
+        if ($translation === null) {
             $data['same'] = array_values(array_unique(array_merge((array) ($data['same'] ?? []), [$language])));
         } else {
+            $translation = trim((string) $translation);
+            if ($translation === '') {
+                throw new \RuntimeException(__('The AI\'s answer could not be read.'));
+            }
             $data['translations'][$language] = $translation;
             $data['html'] = array_values(array_diff((array) ($data['html'] ?? []), [$language]));
             if (!$data['html']) {

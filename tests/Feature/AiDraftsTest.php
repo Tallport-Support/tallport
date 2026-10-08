@@ -200,6 +200,36 @@ class AiDraftsTest extends FeatureTestCase
         ReplyDrafter::assertPromptedTimes(2);
     }
 
+    public function testInvalidCompletedDraftsUseTheBackupModel()
+    {
+        Option::set('aiassistant.providers', [
+            ['id' => 'p1', 'provider' => 'openai', 'api_key' => encrypt('sk-test'), 'base_url' => ''],
+            ['id' => 'p2', 'provider' => 'anthropic', 'api_key' => encrypt('sk-ant'), 'base_url' => ''],
+        ]);
+        Option::set('aiassistant.models', ['drafts' => ['primary' => ['provider' => 'p1', 'model' => 'gpt-5-mini'], 'backup' => ['provider' => 'p2', 'model' => 'claude-haiku-4-5']]]);
+        Option::$cache = [];
+        $valid = $this->draft();
+        $invalid = [
+            $this->draft(['documentation_urls' => [42]]),
+            $this->draft(['confidence' => 'certain']),
+            $this->draft(['staff_notes' => 'Check the app version.']),
+            $this->draft(['draft' => '  ']),
+            $this->draft(['language' => '']),
+        ];
+
+        foreach ($invalid as $bad_answer) {
+            $calls = 0;
+            ReplyDrafter::fake(function () use (&$calls, $bad_answer, $valid) {
+                return ++$calls == 1 ? $bad_answer : $valid;
+            });
+
+            [$answer] = (new ReplyDrafter('en'))->streamJson('Draft a reply');
+
+            $this->assertSame($valid, $answer);
+            $this->assertSame(2, $calls);
+        }
+    }
+
     public function testAiJobsHaveTheirOwnQueues()
     {
         \Queue::fake();

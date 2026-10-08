@@ -250,6 +250,39 @@ class AiAssistantTest extends FeatureTestCase
         $this->assertSame(['error', 'Incorrect API key provided'], Translations::reason($other, 'en'));
     }
 
+    public function testInvalidCompletedTranslationsUseTheBackupModel()
+    {
+        Option::set('aiassistant.providers', [
+            ['id' => 'p1', 'provider' => 'openai', 'api_key' => encrypt('sk-one'), 'base_url' => ''],
+            ['id' => 'p2', 'provider' => 'anthropic', 'api_key' => encrypt('sk-two'), 'base_url' => ''],
+        ]);
+        Option::set('aiassistant.models', ['translations' => ['primary' => ['provider' => 'p1', 'model' => 'gpt-x'], 'backup' => ['provider' => 'p2', 'model' => 'claude-y']]]);
+        Option::$cache = [];
+        $valid = ['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'nl'];
+        $invalid = [
+            '{}',
+            '[]',
+            json_encode(['translation' => 'Hello', 'same_language' => false]),
+            json_encode(['translation' => 'Hello', 'same_language' => 'false', 'detected_language' => 'nl']),
+            json_encode(['translation' => ['Hello'], 'same_language' => false, 'detected_language' => 'nl']),
+            json_encode(['translation' => '', 'same_language' => false, 'detected_language' => 'nl']),
+            json_encode(['translation' => 'Hello', 'same_language' => true, 'detected_language' => 'nl']),
+            json_encode(['translation' => 'Hello', 'same_language' => false, 'detected_language' => '']),
+        ];
+
+        foreach ($invalid as $bad_answer) {
+            $calls = 0;
+            ThreadTranslator::fake(function () use (&$calls, $bad_answer, $valid) {
+                return ++$calls == 1 ? $bad_answer : $valid;
+            });
+
+            [$answer] = (new ThreadTranslator('en'))->streamJson('Hallo');
+
+            $this->assertSame($valid, $answer, $bad_answer);
+            $this->assertSame(2, $calls, $bad_answer);
+        }
+    }
+
     /**
      * Each provider's fast mode: a switch only where the provider has a faster tier, off unless
      * switched on (also for providers saved before it existed).
@@ -493,10 +526,9 @@ class AiAssistantTest extends FeatureTestCase
     }
 
     /**
-     * A "translation" into the language the message was detected in (one quoting an
-     * email in another language, say) is no translation: the message is left as it is.
+     * A nonempty translation is kept even if the detected language matches the target.
      */
-    public function testMessageDetectedInTheTargetLanguageIsNotTranslated()
+    public function testMessageDetectedInTheTargetLanguageKeepsItsTranslation()
     {
         $this->configureAi(['aiassistant.translation_language' => 'nl']);
         $this->fakeAi();
@@ -504,7 +536,7 @@ class AiAssistantTest extends FeatureTestCase
 
         $thread = $this->receiveCustomerEmail()->threads()->first();
 
-        $this->assertNull(Translations::get($thread, 'nl'));
+        $this->assertSame('Waar is mijn bestelling?', Translations::get($thread, 'nl'));
         $this->assertFalse(Translations::isMissing($thread->fresh(), 'nl'));
     }
 

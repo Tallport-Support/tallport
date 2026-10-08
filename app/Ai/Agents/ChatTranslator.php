@@ -13,9 +13,12 @@ class ChatTranslator extends TallportAgent
 {
     public $language;
 
-    public function __construct($language)
+    public $message_ids;
+
+    public function __construct($language, array $message_ids = [])
     {
         $this->language = $language;
+        $this->message_ids = $message_ids;
     }
 
     public function feature(): string
@@ -53,5 +56,22 @@ class ChatTranslator extends TallportAgent
             ]))->description('The messages, translated.')->required(),
             'detected_language' => $schema->string()->description('The language the customer writes in (ISO 639-1; zh-Hans or zh-Hant for Chinese).')->required(),
         ];
+    }
+
+    protected function validAnswer(array $answer)
+    {
+        if (trim($answer['detected_language']) === '') {
+            return false;
+        }
+        $seen = [];
+        foreach ($answer['messages'] as $message) {
+            $id = $message['id'];
+            if (!in_array($id, $this->message_ids, true) || isset($seen[$id]) || !$this->validTranslation($message)) {
+                return false;
+            }
+            $seen[$id] = true;
+        }
+
+        return true;
     }
 }

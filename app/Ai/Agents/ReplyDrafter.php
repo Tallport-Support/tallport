@@ -60,4 +60,9 @@ class ReplyDrafter extends TallportAgent
             'staff_notes'        => $schema->array()->items($schema->string())->description('Notes for the agent to check before sending.')->required(),
         ];
     }
+
+    protected function validAnswer(array $answer)
+    {
+        return trim($answer['draft']) !== '' && trim($answer['language']) !== '';
+    }
 }

@@ -173,10 +173,57 @@ class AiTranslationsTest extends FeatureTestCase
         \Log::shouldHaveReceived('error')->withArgs(fn ($message) => str_contains($message, '[AI] Translation of conversation '.$this->conversation->id.':'))->once();
 
         $second = $this->customerMessage('Hallo?');
-        ChatTranslator::fake([['messages' => [['id' => $second->id, 'translation' => 'Hello?', 'same_language' => false]], 'detected_language' => 'nl']]);
+        ChatTranslator::fake([['messages' => [['id' => $second->id, 'translation' => 'Hello?', 'same_language' => false]], 'detected_language' => 'en']]);
         ChatTranslation::translateIncoming($this->conversation, 'en');
         $this->assertSame('Hello?', Translations::get($second->fresh(), 'en'));
         $this->assertSame(['error', 'The AI left this message out.'], Translations::reason($this->first()->fresh(), 'en'));
+    }
+
+    public function testInvalidChatBatchAnswersUseTheBackupModel()
+    {
+        $first_id = $this->first()->id;
+        $second_id = $this->customerMessage('Hallo?')->id;
+        Option::set('aiassistant.providers', [
+            ['id' => 'p1', 'provider' => 'openai', 'api_key' => encrypt('sk-one'), 'base_url' => ''],
+            ['id' => 'p2', 'provider' => 'anthropic', 'api_key' => encrypt('sk-two'), 'base_url' => ''],
+        ]);
+        Option::set('aiassistant.models', ['translations' => ['primary' => ['provider' => 'p1', 'model' => 'gpt-x'], 'backup' => ['provider' => 'p2', 'model' => 'claude-y']]]);
+        Option::$cache = [];
+        $valid = ['messages' => [
+            ['id' => $first_id, 'translation' => '', 'same_language' => true],
+            ['id' => $second_id, 'translation' => 'Hello?', 'same_language' => false],
+        ], 'detected_language' => 'nl'];
+        $invalid = [
+            [['id' => $second_id + 100, 'translation' => 'Wrong message', 'same_language' => false]],
+            [['id' => $first_id, 'translation' => 'Hello', 'same_language' => false], ['id' => $first_id, 'translation' => 'Hello again', 'same_language' => false]],
+            [['id' => (string) $first_id, 'translation' => 'Hello', 'same_language' => false]],
+            [['id' => $first_id, 'translation' => '', 'same_language' => false]],
+            [['id' => $first_id, 'translation' => 'Hello', 'same_language' => true]],
+        ];
+
+        foreach ($invalid as $messages) {
+            $calls = 0;
+            ChatTranslator::fake(function () use (&$calls, $messages, $valid) {
+                return ++$calls == 1 ? ['messages' => $messages, 'detected_language' => 'nl'] : $valid;
+            });
+
+            [$answer] = (new ChatTranslator('en', [$first_id, $second_id]))->streamJson('Translate the messages');
+
+            $this->assertSame($valid, $answer);
+            $this->assertSame(2, $calls);
+        }
+
+        // One omitted message does not discard its valid sibling or call the backup.
+        $partial = ['messages' => [$valid['messages'][1]], 'detected_language' => 'nl'];
+        $calls = 0;
+        ChatTranslator::fake(function () use (&$calls, $partial) {
+            $calls++;
+
+            return $partial;
+        });
+        [$answer] = (new ChatTranslator('en', [$first_id, $second_id]))->streamJson('Translate the messages');
+        $this->assertSame($partial, $answer);
+        $this->assertSame(1, $calls);
     }
 
     /**
@@ -251,7 +298,7 @@ class AiTranslationsTest extends FeatureTestCase
     {
         ChatTranslation::setCustomerLanguage($this->conversation, 'nl');
         $composer = Livewire::actingAs($this->agent)->test(ConversationComposer::class, ['conversation' => $this->conversation->fresh(), 'chat' => true]);
-        \App\Ai\Agents\ReplyTranslator::fake([['translation' => '<p>Bedankt</p>', 'same_language' => false]]);
+        \App\Ai\Agents\ReplyTranslator::fake([['translation' => '<p>Bedankt</p>', 'same_language' => false, 'note' => '']]);
 
         $composer->call('previewTranslation', '<p> </p>')->assertReturned('empty')->assertToasted('Please enter a message', 'danger');
         \App\Ai\Agents\ReplyTranslator::assertNeverPrompted();

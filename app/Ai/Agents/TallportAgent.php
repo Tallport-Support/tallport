@@ -138,7 +138,7 @@ abstract class TallportAgent implements Agent, HasProviderOptions
                 }
             }
             $answer = PartialJson::decodeComplete($text);
-            if ($answer === null) {
+            if ($answer === null || !$this->matchesSchema($answer, $this->answerSchema()) || !$this->validAnswer($answer)) {
                 throw new \RuntimeException(__('The AI\'s answer could not be read.'));
             }
 
@@ -253,11 +253,75 @@ abstract class TallportAgent implements Agent, HasProviderOptions
      */
     protected function jsonRule()
     {
+        return 'Answer with only a JSON object in this JSON schema, its keys in this order (no Markdown code fence, nothing before or after it):'."\n"
+            .json_encode($this->answerSchema(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    }
+
+    protected function answerSchema()
+    {
         $schema = (new ObjectSchema($this->schema(new JsonSchemaTypeFactory)))->toSchema();
         unset($schema['name']);
 
-        return 'Answer with only a JSON object in this JSON schema, its keys in this order (no Markdown code fence, nothing before or after it):'."\n"
-            .json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return $schema;
+    }
+
+    /**
+     * The streamed JSON is only instructed to follow the schema; check the finished answer.
+     */
+    protected function matchesSchema($value, array $schema)
+    {
+        $type = $schema['type'] ?? null;
+        if ($type == 'object') {
+            if (!is_array($value) || ($value !== [] && array_is_list($value))) {
+                return false;
+            }
+            foreach ($schema['required'] ?? [] as $key) {
+                if (!array_key_exists($key, $value)) {
+                    return false;
+                }
+            }
+            foreach ($value as $key => $item) {
+                if (!isset($schema['properties'][$key])) {
+                    if (($schema['additionalProperties'] ?? true) === false) {
+                        return false;
+                    }
+                } elseif (!$this->matchesSchema($item, $schema['properties'][$key])) {
+                    return false;
+                }
+            }
+        } elseif ($type == 'array') {
+            if (!is_array($value) || !array_is_list($value)) {
+                return false;
+            }
+            foreach ($value as $item) {
+                if (isset($schema['items']) && !$this->matchesSchema($item, $schema['items'])) {
+                    return false;
+                }
+            }
+        } elseif (!match ($type) {
+            'string' => is_string($value),
+            'boolean' => is_bool($value),
+            'integer' => is_int($value),
+            'number' => is_int($value) || is_float($value),
+            default => false,
+        }) {
+            return false;
+        }
+
+        return !isset($schema['enum']) || in_array($value, $schema['enum'], true);
+    }
+
+    /**
+     * Requirements beyond field shapes, such as a translation needing text.
+     */
+    protected function validAnswer(array $answer)
+    {
+        return true;
+    }
+
+    protected function validTranslation(array $answer)
+    {
+        return $answer['same_language'] ? trim($answer['translation']) === '' : trim($answer['translation']) !== '';
     }
 
     public function timeout()

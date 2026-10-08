@@ -171,8 +171,21 @@ class ChatTranslationTest extends FeatureTestCase
         // In Dutch already: sent as written (the browser sends it).
         Option::set('aiassistant.daily_tokens', 0);
         Option::$cache = [];
-        ReplyTranslator::fake([['translation' => '', 'same_language' => true]]);
+        ReplyTranslator::fake([['translation' => '', 'same_language' => true, 'note' => '']]);
         $this->composer()->call('previewTranslation', '<p>Bedankt!</p>')->assertReturned('same')->assertSet('translation', null);
+    }
+
+    public function testAnEmptyTranslationCannotBeMistakenForTheSameLanguage()
+    {
+        ChatTranslation::setCustomerLanguage($this->conversation, 'nl');
+        ReplyTranslator::fake([['translation' => '', 'same_language' => false, 'note' => '']]);
+
+        $this->composer()->call('previewTranslation', '<p>I will look into it.</p>')->assertReturned('error')
+            ->assertSee('The AI&#039;s answer could not be read.', false);
+        $this->assertSame(0, $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->count());
+
+        ReplyTranslator::fake([['translation' => '', 'same_language' => true, 'note' => '']]);
+        $this->composer()->call('previewTranslation', '<p>Bedankt!</p>')->assertReturned('same');
     }
 
     /**

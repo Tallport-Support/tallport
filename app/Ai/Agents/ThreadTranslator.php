@@ -58,4 +58,9 @@ class ThreadTranslator extends TallportAgent
             'detected_language' => $schema->string()->description('The language of the message (ISO 639-1; zh-Hans or zh-Hant for Chinese).')->required(),
         ];
     }
+
+    protected function validAnswer(array $answer)
+    {
+        return $this->validTranslation($answer) && trim($answer['detected_language']) !== '';
+    }
 }

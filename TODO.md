@@ -30,11 +30,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: the sanitizer captures its DOM document. A regression test uses a local image URL (which survives the earlier purifier), verifies its alternative text replaces the image in the AI prompt, and completes the translation.
 
-- [ ] **04 · P1 · Tallport — Validate completed AI answers before accepting them.**
+- [x] **04 · P1 · Tallport — Validate completed AI answers before accepting them.**
 
   Evidence: `TallportAgent::streamJson()` (`app/Ai/Agents/TallportAgent.php:125`) accepts anything `PartialJson::decodeComplete()` returns as an array. The schema is supplied as instructions, but is not enforced on the completed answer. `{}` or `[]` therefore counts as a successful call. `Translations::translate()` and `ChatTranslation::translateReply()` interpret an empty translation as “same language,” which can silently suppress a translation or permit the original reply.
 
   Keep partial parsing for previews, then validate the complete object's fields, types, booleans, and feature-specific requirements inside the provider-attempt boundary. Missing output must fail or try the backup; only an explicit, valid same-language result may bypass translation. Acceptance: cover empty objects/arrays, missing fields, string booleans, wrong field types, and invalid batch message IDs, alongside valid same-language answers.
+
+  Completed: finished streamed answers now have schema and feature checks inside each provider attempt, so invalid primary answers try the backup. Empty translations require an explicit valid `same_language` result; nonempty translations are kept even when the detected language matches the target. Chat batches reject unknown or duplicate IDs, while valid entries are kept and omitted messages alone are marked failed. Partial previews remain unchanged.
 
 - [ ] **05 · P1 · Tallport — Use the AI error redactor at every output boundary.**
 
