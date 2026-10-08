@@ -42,14 +42,13 @@ class AiDraftsController extends Controller
                 'msg'    => __('This mailbox has used its AI tokens for today.'),
             ], 429);
         }
+        if (!($draft_job = DraftJob::reserve($user, $conversation))) {
+            return response()->json([
+                'status' => 'error',
+                'msg'    => __('You have made the most drafts allowed for today.'),
+            ], 429);
+        }
 
-        // Kept for the user's drafts per day, with how it went.
-        $draft_job = new DraftJob();
-        $draft_job->conversation_id = $conversation->id;
-        $draft_job->user_id = $user->id;
-        $draft_job->status = DraftJob::STATUS_RUNNING;
-        $draft_job->started_at = now();
-        $draft_job->save();
         $language = Settings::language($conversation->mailbox, $user);
 
         // Events: {"draft": the draft so far}, then the draft and its details ("status": "success"), or the error.

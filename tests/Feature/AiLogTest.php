@@ -13,7 +13,7 @@ use Tests\FeatureTestCase;
 
 /**
  * The AI log (App\Ai\Usage, Manage » Logs » AI): every call to a model is recorded, failed ones
- * too, without counting towards the budgets; errors without keys; each model's last calls on
+ * too, with unknown usage preserved; errors without keys; each model's last calls on
  * Settings » AI; old rows cleaned up. Providers are faked.
  */
 class AiLogTest extends FeatureTestCase
@@ -92,7 +92,8 @@ class AiLogTest extends FeatureTestCase
         $this->assertSame(Usage::STATUS_FAILED_THEN_BACKUP, $failed->status);
         $this->assertSame(['p1', 'openai', 'gpt-x', false, true], [$failed->provider_id, $failed->provider, $failed->model, $failed->backup, $failed->streamed]);
         $this->assertSame('Incorrect API key provided: [redacted]', $failed->error);
-        $this->assertSame(0, $failed->input_tokens + $failed->output_tokens);
+        $this->assertNull($failed->input_tokens);
+        $this->assertNull($failed->output_tokens);
         $this->assertNotNull($failed->duration_ms);
 
         $this->assertSame(Usage::STATUS_OK, $ok->status);
@@ -176,6 +177,35 @@ class AiLogTest extends FeatureTestCase
         Option::set('aiassistant.daily_tokens', 1000);
         Option::$cache = [];
         $this->assertFalse(\App\Ai\Settings::withinBudget($this->mailbox));
+    }
+
+    public function testAnActiveCallClaimsTheLastMailboxTokens()
+    {
+        Option::set('aiassistant.daily_tokens', 10);
+
+        [$reservation, $limit] = Usage::reserve($this->mailbox->id, null, 0, 10);
+        $this->assertNull($limit);
+        $this->assertSame(10, Usage::mailboxToday($this->mailbox->id));
+        $this->assertFalse(\App\Ai\Settings::withinBudget($this->mailbox));
+        $this->assertSame([null, 'budget'], Usage::reserve($this->mailbox->id, null, 0, 10));
+
+        Usage::releaseReservation($reservation);
+        $this->assertSame(0, Usage::mailboxToday($this->mailbox->id));
+        $this->assertTrue(\App\Ai\Settings::withinBudget($this->mailbox));
+    }
+
+    public function testAnActiveTranslationClaimsTheCustomersHourlyAllowance()
+    {
+        $conversation = $this->conversation();
+        Option::set('aiassistant.translations_per_customer_hour', 2);
+
+        [$reservation, $limit] = Usage::reserve($this->mailbox->id, $conversation->customer_id, 2);
+        $this->assertNull($limit);
+        $this->assertSame(2, Usage::customerTranslationsLastHour($conversation->customer_id));
+        $this->assertSame([null, 'customer'], Usage::reserve($this->mailbox->id, $conversation->customer_id, 1));
+
+        Usage::releaseReservation($reservation);
+        $this->assertSame(0, Usage::customerTranslationsLastHour($conversation->customer_id));
     }
 
     /**

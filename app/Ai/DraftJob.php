@@ -33,6 +33,28 @@ class DraftJob extends Model
     }
 
     /**
+     * Claim a user's daily draft allowance while holding the user's row lock.
+     */
+    public static function reserve($user, $conversation)
+    {
+        return \DB::transaction(function () use ($user, $conversation) {
+            $locked_user = \App\User::whereKey($user->id)->lockForUpdate()->firstOrFail();
+            if (self::countToday($locked_user) >= Settings::draftsPerDay($locked_user)) {
+                return null;
+            }
+
+            $draft_job = new self();
+            $draft_job->conversation_id = $conversation->id;
+            $draft_job->user_id = $locked_user->id;
+            $draft_job->status = self::STATUS_RUNNING;
+            $draft_job->started_at = now();
+            $draft_job->save();
+
+            return $draft_job;
+        });
+    }
+
+    /**
      * Remove drafts for deleted conversations, keeping only today's quota rows.
      */
     public static function forgetConversations($conversation_ids)

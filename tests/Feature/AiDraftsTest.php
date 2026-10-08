@@ -294,6 +294,20 @@ class AiDraftsTest extends FeatureTestCase
         ReplyDrafter::assertPromptedTimes(1);
     }
 
+    public function testRunningDraftClaimsTheLastDailyAllowance()
+    {
+        $this->agent->ai_drafts_per_day = 1;
+        $this->agent->save();
+
+        $first = DraftJob::reserve($this->agent, $this->conversation);
+
+        $this->assertSame(DraftJob::STATUS_RUNNING, $first->status);
+        $this->assertNull(DraftJob::reserve($this->agent, $this->conversation));
+        $this->requestDraft($this->agent)->assertStatus(429);
+        $this->assertSame(1, DraftJob::countToday($this->agent));
+        ReplyDrafter::assertNeverPrompted();
+    }
+
     public function testFailedDraftIsReported()
     {
         $key = 'sk-secret-provider-key-0001';

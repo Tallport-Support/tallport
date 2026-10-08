@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * One AI call (aiassistant_usage): its tokens (what a conversation cost, and what the daily
  * budget and hourly caps count), and for the AI log (Manage » Logs » AI) its provider, model,
- * duration and outcome. Failed calls are recorded too, without tokens; only succeeded ones count.
+ * duration and outcome. Calls without reported tokens keep them unknown, not zero.
  */
 class Usage extends Model
 {
@@ -76,6 +76,8 @@ class Usage extends Model
     public static function record($response, $feature, ?Conversation $conversation = null, $mailbox_id = null, $user_id = null, $items = 1, array $call = [])
     {
         $usage = $response->usage ?? null;
+        // Some gateways produce an empty usage object when the provider reported no counts.
+        $known = $usage && ($usage->inputTokens || $usage->outputTokens);
         if (!$usage && !$call) {
             return null;
         }
@@ -89,8 +91,8 @@ class Usage extends Model
             'customer_id'     => $conversation ? $conversation->customer_id : null,
             'user_id'         => $user_id,
             'feature'         => $feature,
-            'input_tokens'    => $usage ? (int) $usage->inputTokens : 0,
-            'output_tokens'   => $usage ? (int) $usage->outputTokens : 0,
+            'input_tokens'    => $known ? (int) $usage->inputTokens : null,
+            'output_tokens'   => $known ? (int) $usage->outputTokens : null,
             'items'           => max(1, (int) $items),
         ], $call));
     }
@@ -132,7 +134,7 @@ class Usage extends Model
     }
 
     /**
-     * Calls that worked: the ones with tokens, which the budgets and caps count.
+     * Calls that worked, including ones whose token counts were not reported.
      */
     public function scopeSucceeded($query)
     {
@@ -144,7 +146,7 @@ class Usage extends Model
      */
     public static function forConversation(Conversation $conversation)
     {
-        return (int) self::succeeded()->where('conversation_id', $conversation->id)->sum(\DB::raw('input_tokens + output_tokens'));
+        return (int) self::succeeded()->where('conversation_id', $conversation->id)->sum(\DB::raw('COALESCE(input_tokens, 0) + COALESCE(output_tokens, 0)'));
     }
 
     /**
@@ -152,7 +154,11 @@ class Usage extends Model
      */
     public static function mailboxToday($mailbox_id)
     {
-        return (int) self::succeeded()->where('mailbox_id', $mailbox_id)->where('created_at', '>=', now()->startOfDay())->sum(\DB::raw('input_tokens + output_tokens'));
+        $recorded = self::succeeded()->where('mailbox_id', $mailbox_id)->where('created_at', '>=', now()->startOfDay())
+            ->sum(\DB::raw('COALESCE(input_tokens, 0) + COALESCE(output_tokens, 0)'));
+        $reserved = \DB::table('aiassistant_reservations')->where('mailbox_id', $mailbox_id)->where('created_at', '>=', now()->startOfDay())->sum('tokens');
+
+        return (int) ($recorded + $reserved);
     }
 
     /**
@@ -160,7 +166,72 @@ class Usage extends Model
      */
     public static function customerTranslationsLastHour($customer_id)
     {
-        return (int) self::succeeded()->where('customer_id', $customer_id)->where('feature', self::FEATURE_TRANSLATION)->where('created_at', '>=', now()->subHour())->sum('items');
+        $translated = self::succeeded()->where('customer_id', $customer_id)->where('feature', self::FEATURE_TRANSLATION)
+            ->where('created_at', '>=', now()->subHour())->sum('items');
+        $reserved = \DB::table('aiassistant_reservations')->where('customer_id', $customer_id)->where('created_at', '>=', now()->subHour())->sum('items');
+
+        return (int) ($translated + $reserved);
+    }
+
+    /**
+     * Reserve daily tokens and hourly customer messages before starting an AI request.
+     * The mailbox and customer rows serialize claims even when there are no earlier usage rows.
+     * Returns [reservation ID, limit reached], with nulls when no limit is configured.
+     */
+    public static function reserve($mailbox_id, $customer_id = null, $items = 0, $token_estimate = null)
+    {
+        $daily_limit = Settings::dailyTokens();
+        $hourly_limit = Settings::translationsPerCustomerHour();
+        if ((!$mailbox_id || !$daily_limit) && (!$customer_id || !$hourly_limit || !$items)) {
+            return [null, null];
+        }
+
+        return \DB::transaction(function () use ($mailbox_id, $customer_id, $items, $token_estimate, $daily_limit, $hourly_limit) {
+            $tokens = 0;
+            if ($mailbox_id && $daily_limit) {
+                \DB::table('mailboxes')->where('id', $mailbox_id)->lockForUpdate()->first();
+                $remaining = $daily_limit - self::mailboxToday($mailbox_id);
+                if ($remaining <= 0) {
+                    return [null, 'budget'];
+                }
+                $tokens = min($remaining, max(1, (int) ($token_estimate ?? $remaining)));
+            }
+            $reserved_items = 0;
+            if ($customer_id && $hourly_limit && $items) {
+                \DB::table('customers')->where('id', $customer_id)->lockForUpdate()->first();
+                if (self::customerTranslationsLastHour($customer_id) + $items > $hourly_limit) {
+                    return [null, 'customer'];
+                }
+                $reserved_items = $items;
+            }
+
+            $id = \DB::table('aiassistant_reservations')->insertGetId([
+                'mailbox_id'  => $mailbox_id,
+                'customer_id' => $customer_id,
+                'tokens'      => $tokens,
+                'items'       => $reserved_items,
+                'created_at'  => now(),
+            ]);
+
+            return [$id, null];
+        }, 3);
+    }
+
+    /**
+     * A completed or rejected call releases its claim. Unknown billable usage keeps the token
+     * claim until the daily reset; customer messages only count after a successful translation.
+     */
+    public static function releaseReservation($id, $unknown = false)
+    {
+        if (!$id) {
+            return;
+        }
+        if ($unknown) {
+            \DB::table('aiassistant_reservations')->where('id', $id)->where('tokens', '>', 0)->update(['items' => 0]);
+            \DB::table('aiassistant_reservations')->where('id', $id)->where('tokens', 0)->delete();
+        } else {
+            \DB::table('aiassistant_reservations')->where('id', $id)->delete();
+        }
     }
 
     /**

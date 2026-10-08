@@ -560,6 +560,64 @@
             }
         }
     },
+    "aiassistant_reservations": {
+        "columns": {
+            "id": {
+                "type": "bigint(20) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "customer_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "tokens": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "default": "0"
+            },
+            "items": {
+                "type": "smallint(5) unsigned",
+                "nullable": false,
+                "default": "0"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": false
+            }
+        },
+        "indexes": {
+            "aiassistant_reservations_customer_id_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "customer_id",
+                    "created_at"
+                ]
+            },
+            "aiassistant_reservations_mailbox_id_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id",
+                    "created_at"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
     "aiassistant_usage": {
         "columns": {
             "id": {
@@ -595,13 +653,13 @@
             },
             "input_tokens": {
                 "type": "int(10) unsigned",
-                "nullable": false,
-                "default": "0"
+                "nullable": true,
+                "default": "NULL"
             },
             "output_tokens": {
                 "type": "int(10) unsigned",
-                "nullable": false,
-                "default": "0"
+                "nullable": true,
+                "default": "NULL"
             },
             "items": {
                 "type": "smallint(5) unsigned",
