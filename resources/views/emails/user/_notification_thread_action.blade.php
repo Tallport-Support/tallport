@@ -1,18 +1,9 @@
 @if ($thread->type == App\Thread::TYPE_NOTE)
-    <span style="color:#e6b216">
-        {!! __h(':person added a note', ['person' => '<strong style="color:#000000;">'.htmlspecialchars($thread->getCreatedBy()->getFullName(true)).'</strong>']) !!}
+    <span>
+        {!! __h(':person added a note', ['person' => '<strong>'.htmlspecialchars($thread->getCreatedBy()->getFullName(true)).'</strong>']) !!}
     </span>
 @else
-    @if ($thread->type == App\Thread::TYPE_MESSAGE)
-        @php
-            $action_color = config('app.colors')['text_user'];
-        @endphp
-    @else
-        @php
-            $action_color = config('app.colors')['text_customer'];
-        @endphp
-    @endif
-    <span style="color:{{ $action_color }}">
+    <span>
         @if ($thread->isForwarded())
             @php $trans_text = __(':person forwarded a conversation :forward_parent_conversation_number') @endphp
         @elseif ($loop->last)
@@ -21,7 +12,7 @@
             @php $trans_text = __(':person replied') @endphp
         @endif
         @php
-            $trans_params = ['person' => '<strong style="color:#000000;">'.htmlspecialchars($thread->getCreatedBy()->getFullName(true)).'</strong>'];
+            $trans_params = ['person' => '<strong>'.htmlspecialchars($thread->getCreatedBy()->getFullName(true)).'</strong>'];
             // Highlight sender when From is different from Reply-To.
             if ($thread->isCustomerMessage() &&
                 ($from_header = $thread->getFromIfDifferentFromReplyTo($customer ?? null))
