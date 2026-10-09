@@ -20,8 +20,8 @@ class ReplySeparationTest extends TestCase
         parent::setUp();
 
         // separateReply() parses HTML with DOMDocument. libxml2 up to 2.13 wraps
-        // leading bare text in <p>, which these expectations (and production)
-        // assume; the HTML5 parser in libxml2 2.14+ doesn't.
+        // leading bare text in <p>, which these expectations assume;
+        // the HTML5 parser in libxml2 2.14+ doesn't.
         if (LIBXML_VERSION >= 21400) {
             $this->markTestSkipped('Expectations assume libxml2 < 2.14, this is '.LIBXML_DOTTED_VERSION.'.');
         }

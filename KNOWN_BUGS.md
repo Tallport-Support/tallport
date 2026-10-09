@@ -43,5 +43,5 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 
 | # | Severity | Where | Bug |
 |---|---|---|---|
-| E3 | medium | PHP 8.4+ | Without the PECL `imap` extension, Webklex's fallback header parser gets `Date` empty, miscounts headers and keeps quotes in names (tests marked `@requires extension imap`). Production (PHP 8.3) has imap. |
-| E4 | low | libxml2 2.14+ | `DOMDocument::loadHTML` no longer wraps bare text in `<p>`, changing reply separation output. Production has 2.9.14. |
+| E3 | medium | PHP without `imap` | Webklex's fallback header parser differs from the `imap` extension on dates, header counts, and quoted names. On 2026-10-09, the PHP 8.5.4 test CLI had `imap`, so its `@requires extension imap` tests ran; this entry's no-`imap` behavior was not rechecked. Check each installation's extensions before assuming it is affected. |
+| E4 | low | libxml2 2.14+ | `DOMDocument::loadHTML` no longer wraps bare text in `<p>`, changing reply separation output. On 2026-10-09, the test CLI used libxml2 2.15.2 and the two `ReplySeparationTest` cases skipped at 2.14+; their expected output was not verified. Check each installation's libxml2 version before assuming it is unaffected. |

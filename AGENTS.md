@@ -10,13 +10,17 @@
 
 - Run tests with `./test.sh`. It accepts phpunit arguments, e.g. `./test.sh --filter=testName` or `./test.sh tests/Feature/SomeTest.php`.
 - Run the narrowest set of tests that covers the change, and rerun a test after each change to it.
-- Before finishing, run the full suite with `./test.sh` (no arguments). It also checks the code style (phpcs) and runs the inventory check.
+- Before finishing, run the full suite with `./test.sh` (no arguments). It also checks code style (PHPCS), static analysis (PHPStan), and the inventory.
 
 === .ai/tallport rules ===
 
 # Tallport
 
 Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Laravel 13. Production runs MariaDB. The minimum PHP version is 8.5 (`require.php` and `config.platform.php` in composer.json), so PHP 8.5 features may be used.
+
+## Domain skills
+
+Use the relevant skill in `.agents/skills/` whenever working in its domain.
 
 ## Keep changes small
 
@@ -68,9 +72,9 @@ Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Lara
 
 ## Testing
 
-- Run tests with `./test.sh`, never `php artisan test` or `vendor/bin/phpunit`. The script installs the dev tools and uses the `testing` database connection (MariaDB database `freescout-test`).
+- Run tests with `./test.sh`, never `php artisan test` or `vendor/bin/phpunit`. The script installs the dev tools. The `testing` connection uses in-memory SQLite by default; `DB_TEST_DRIVER=mysql ./test.sh` runs the suite on MariaDB. Tests using `Tests\Concerns\UsesMariaDB` always use the separate `testing_mariadb` connection and skip when its `freescout-test` database is unavailable. See `test.sh` for setup and connection overrides.
 - Use `./test.sh --filter=SomeTest` or `./test.sh tests/Feature/SomeTest.php` while working. Run the full `./test.sh` with no arguments before finishing.
-- The full run also checks that every route, ajax action, console command and job is exercised by a test or listed in `tests/inventory-exclusions.php`. New endpoints and commands need a test.
+- The full run checks PHPCS, PHPStan, PHPUnit, and whether every route, ajax action, console command and job is exercised by a test or listed in `tests/inventory-exclusions.php`. New endpoints and commands need a test. Component tests exercise Team Chat file handling, but do not exercise Livewire's browser upload HTTP route; its inventory exclusion documents that boundary.
 - Feature tests extend `Tests\FeatureTestCase`. It provides:
   - transactions;
   - captured outgoing mail (`Tests\Support\CapturedEmail`);
@@ -81,7 +85,7 @@ Tallport is a fork of the FreeScout help desk, upgraded from Laravel 5.5 to Lara
 
 ## Releases and production
 
-- Releases are made with `./release.sh <version> -m "notes"` from main. It runs the full `./test.sh` (code style, tests, inventory) and releases without waiting for CI; CI runs on the push and reports failures afterwards. Installations pick releases up through the built-in updater.
+- Releases are made with `./release.sh <version> -m "notes"` from main. It rebuilds and checks committed dependencies and published assets, audits Composer projects, and runs the MariaDB checks and full suite before publishing; CI reports on the push afterwards. `SKIP_TESTS=1 SKIP_TESTS_REASON="reason"` skips tests only and records the reason in the release notes. Installations pick releases up through the built-in updater.
 - After an update, `php artisan tallport:after-app-update` must run from the command line.
 - After changing `.env` or config, run `php artisan tallport:clear-cache`.
 
@@ -98,10 +102,6 @@ This application is a Laravel application running on PHP 8.5. You are an expert 
 Before relying on a package's API, confirm its installed version:
 - PHP packages: run `composer show --direct` to list direct dependencies with versions, or `composer show <vendor/package>` for a single package.
 - JS packages: check `package.json` for the installed versions.
-
-## Skills Activation
-
-This project has domain-specific skills available in `**/skills/**`. You MUST activate the relevant skill whenever you work in that domain—don't wait until you're stuck.
 
 ## Conventions
 

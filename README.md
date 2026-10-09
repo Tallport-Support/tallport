@@ -476,8 +476,8 @@ naming the module and the Tallport version.
 
 ## Development
 
-What you need: PHP 8.x with the extensions above, Composer, a MariaDB
-server, and the [GitHub CLI](https://cli.github.com/) (`gh`) for releases.
+What you need: PHP 8.5 with the extensions above, Composer, a MariaDB
+server for the production database checks, and the [GitHub CLI](https://cli.github.com/) (`gh`) for releases.
 
 After cloning, run `composer install`. It leaves the committed `vendor/` as
 it is and installs the development tools into the ignored `dev/vendor` and
@@ -499,7 +499,9 @@ result.
 
 ### Tests
 
-The tests use their own database. Create it once, as a MariaDB admin:
+The default test suite uses in-memory SQLite. Some schema and search tests
+always use a separate MariaDB database, and a full MariaDB run needs it too.
+Create that database once, as a MariaDB admin:
 
 ```sql
 CREATE DATABASE `freescout-test` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -510,8 +512,9 @@ GRANT ALL ON `freescout-test`.* TO 'freescout-test'@'localhost';
 Then:
 
 ```bash
-./test.sh                      # everything, plus the inventory check
-./test.sh --filter Branding    # just some tests
+./test.sh                              # SQLite, available MariaDB-specific tests, style, analysis, inventory
+./test.sh --filter Branding            # focused PHPUnit tests
+DB_TEST_DRIVER=mysql ./test.sh         # full suite on MariaDB, as in releases
 ```
 
 * Test tools (PHPUnit and friends) live in their own Composer project in
@@ -531,8 +534,9 @@ Then:
   the intended behaviour call `$this->knownBug('C12')` and show up as
   incomplete until the bug is fixed.
 
-CI runs the tests on every push and pull request with PHP 8.5 and MariaDB,
-and checks code style with PHP_CodeSniffer using the rules in `phpcs.xml`
+CI runs the tests on every push and pull request with PHP 8.5 on SQLite,
+MariaDB, and PostgreSQL, with MariaDB-specific tests in each job. It checks
+code style with PHP_CodeSniffer using the rules in `phpcs.xml`
 (`.github/workflows/test.yml`; run `phpcs` locally to check before
 pushing). It also publishes a coverage report for every push to `main`
 (`coverage.yml`).

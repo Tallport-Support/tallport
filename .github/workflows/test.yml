@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Production runs PHP 8.5 with the imap extension (PECL) on MariaDB.
+        # Test PHP 8.5 with the imap extension (PECL); MariaDB is the production database.
         php: ['8.5']
         mariadb: ['11.8']
         # The suite on in-memory SQLite (its default), MariaDB and PostgreSQL; the

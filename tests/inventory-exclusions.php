@@ -8,7 +8,7 @@
 $network = 'downloads modules from their own addresses';
 $modules_on_disk = 'builds, installs or migrates modules in Modules/ and public/modules, which tests must not touch';
 $oauth = 'OAuth flow with Microsoft/Google servers';
-$livewire = "Livewire's own route (its prefix comes from the app key); not used by a Tallport page yet";
+$livewire = "Livewire's framework route (its prefix comes from the app key); component tests do not request it directly";
 
 return [
 
@@ -25,7 +25,7 @@ return [
     'route GET livewire-0607dabf/livewire.min.js' => $livewire,
     'route GET livewire-0607dabf/livewire.min.js.map' => $livewire,
     'route GET livewire-0607dabf/preview-file/{filename}' => $livewire,
-    'route POST livewire-0607dabf/upload-file' => $livewire,
+    'route POST livewire-0607dabf/upload-file' => "Team Chat uses this Livewire upload route; component tests cover sending files, not the browser's upload HTTP request",
 
 
 

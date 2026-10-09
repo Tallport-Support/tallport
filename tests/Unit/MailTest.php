@@ -8,7 +8,7 @@ use Tests\TestCase;
 class MailTest extends TestCase
 {
     /**
-     * Expectations match the imap extension, as used in production. Without it
+     * Expectations match the imap extension. Without it
      * Webklex falls back to its own header parser, which differs.
      *
      * @requires extension imap
