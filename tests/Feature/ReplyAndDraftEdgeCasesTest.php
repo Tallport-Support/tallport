@@ -350,7 +350,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         $this->assertStringContainsString('Ticket added', session('flash_warning_floating'));
 
         $this->assertSuccess($this->ajax('send_reply', ['type' => Conversation::TYPE_CUSTOM, 'is_create' => 1, 'subject' => 'Internal', 'body' => '<p>Custom 2</p>', 'after_send' => MailboxUser::AFTER_SEND_STAY]));
-        $this->assertSame('<strong>Ticket added</strong>', session('flash_warning_floating'));
+        $this->assertSame('Ticket added', session('flash_warning_floating'));
 
         \Eventy::removeAllFilters('conversation.custom.identifier');
         $conversations = Conversation::where('mailbox_id', $this->mailbox->id)->get();
@@ -365,13 +365,13 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         $conversation = $this->receiveConversation();
 
         $this->assertSuccess($this->ajax('send_reply', ['conversation_id' => $conversation->id, 'is_note' => 1, 'body' => '<p>Note</p>', 'after_send' => MailboxUser::AFTER_SEND_STAY]));
-        $this->assertSame('<strong>Note added</strong>', session('flash_warning_floating'));
+        $this->assertSame('Note added', session('flash_warning_floating'));
 
         $this->assertSuccess($this->ajax('send_reply', [
             'type' => Conversation::TYPE_PHONE, 'is_create' => 1, 'is_note' => 1, 'name' => 'Kim Caller',
             'subject' => 'Called', 'body' => '<p>Called.</p>', 'after_send' => MailboxUser::AFTER_SEND_STAY,
         ]));
-        $this->assertSame('<strong>Conversation created</strong>', session('flash_warning_floating'));
+        $this->assertSame('Conversation created', session('flash_warning_floating'));
     }
 
     public function testForwardToTwoPeopleWithAFile()
@@ -577,7 +577,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
         $thread = $conversation->threads()->first();
 
-        $response = $this->actingAs($this->agent)->get('/conversation/undo-reply/'.$thread->id.'/'.csrf_token());
+        $response = $this->actingAs($this->agent)->post(route('conversations.undo.submit', ['thread_id' => $thread->id]), ['_token' => csrf_token()]);
 
         $conversation->refresh();
         $response->assertRedirect($conversation->url(null, null, ['show_draft' => $thread->id]));
@@ -596,7 +596,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         $forward_id = $note->getMeta(Thread::META_FORWARD_CHILD_CONVERSATION_ID);
         $this->assertNotNull(Conversation::find($forward_id));
 
-        $this->actingAs($this->agent)->get('/conversation/undo-reply/'.$note->id.'/'.csrf_token())->assertRedirect();
+        $this->actingAs($this->agent)->post(route('conversations.undo.submit', ['thread_id' => $note->id]), ['_token' => csrf_token()])->assertRedirect();
 
         $this->assertNull(Conversation::find($forward_id));
         $this->assertSame(0, Thread::where('conversation_id', $forward_id)->count());

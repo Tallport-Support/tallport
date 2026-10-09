@@ -126,11 +126,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: sending and draft operations live in `ConversationReplies`, and list queries live in `ConversationListQuery`. AJAX actions retain their signatures and hook arguments; Livewire passes isolated fields and the actor without changing the global request. Search sorting and pagination use the list's request, and regression tests cover independent draft and list inputs.
 
-- [ ] **16 · P2 · Tallport — Use state-changing HTTP methods for user commands.**
+- [x] **16 · P2 · Tallport — Use state-changing HTTP methods for user commands.**
 
   Evidence: `routes/web.php` registers GET routes for undoing a reply, cloning a conversation, and disconnecting mailbox OAuth. Their implementations perform writes and use tokens in URLs. Existing token and authorization checks matter, but they do not make GET a safe read or keep tokens out of URL history/logs.
 
   Move mutations to CSRF-protected POST/DELETE actions. Preserve named integration entry points where needed by making GET display a confirmation or redirect without performing the mutation. Acceptance: merely visiting or prefetching a link cannot cancel a reply or disconnect a mailbox; unauthorized and invalid-CSRF mutations fail, and the current UI actions still work.
+
+  Completed: undo, cloning, and OAuth disconnect submit CSRF-protected POST forms. The former GET URLs remain named for module compatibility but return 405 without changing state, even if a token appears in the query. FruitUI's toast now presents a one-click Undo form only for the remaining undo window; unauthorized and invalid-token POSTs are covered by tests.
 
 - [ ] **17 · P2 · Tallport with FruitUI — Make older team messages reachable.**
 

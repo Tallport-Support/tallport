@@ -454,8 +454,8 @@
         "purpose": "Announce short results sent by the application.",
         "element": "`div role=status` with `aria-live` (polite, or assertive for danger), `f-toast` presentation.",
         "state": "fruitToast owns the message and its timing; hidden while empty.",
-        "keyboard": "No focus transfer; hover or focus within pauses dismissal.",
-        "options": "`duration`: milliseconds (default 4000, 0 keeps it until replaced); danger toasts stay twice as long. `message`: initial text; defaults to the flashed `fruit-toast` session value. `tone`: the initial tone, neutral (default), success or danger; defaults to the flashed `fruit-toast-tone`. Receives `fruit-toast` window events `{ message, tone }`, including Fruit::toast($message, tone:) and $toast(message, { tone }). Success and danger lead with an icon (`data-tone`); danger is announced assertively. No slot."
+        "keyboard": "No focus transfer; hover or focus within pauses dismissal. An optional action keeps its native button or link keyboard behavior.",
+        "options": "`duration`: milliseconds (default 4000, 0 keeps it until replaced); danger toasts stay twice as long. `message`: initial text; defaults to the flashed `fruit-toast` session value. `tone`: the initial tone, neutral (default), success or danger; defaults to the flashed `fruit-toast-tone`. Receives `fruit-toast` window events `{ message, tone }`, including Fruit::toast($message, tone:) and $toast(message, { tone }). Success and danger lead with an icon (`data-tone`); danger is announced assertively. Optional `action` slot: an independent native control shown only with the initial server-rendered message, never with later event notices."
       }
     }
   },

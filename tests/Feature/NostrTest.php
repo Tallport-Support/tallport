@@ -275,7 +275,7 @@ class NostrTest extends FeatureTestCase
         $this->assertFalse($event->getRelays()[self::UNREACHABLE]['ok']);
 
         \Session::start();
-        $this->actingAs($this->agent)->get(route('conversations.undo', ['thread_id' => $reply->id, 'token' => csrf_token()]));
+        $this->actingAs($this->agent)->post(route('conversations.undo.submit', ['thread_id' => $reply->id]), ['_token' => csrf_token()]);
         $this->assertSame(Thread::STATE_PUBLISHED, (int) $reply->fresh()->state);
 
         // Retry queues it again.

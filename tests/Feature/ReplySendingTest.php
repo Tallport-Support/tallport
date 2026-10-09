@@ -210,7 +210,7 @@ class ReplySendingTest extends FeatureTestCase
         [$conversation, $reply] = $this->queuedReplyInClosedConversation();
         \Session::start();
 
-        $this->actingAs($this->agent)->get('/conversation/undo-reply/'.$reply->id.'/'.csrf_token());
+        $this->actingAs($this->agent)->post(route('conversations.undo.submit', ['thread_id' => $reply->id]), ['_token' => csrf_token()]);
 
         $this->assertSame(Thread::STATE_DRAFT, (int) $reply->fresh()->state);
         $this->assertSame(0, \DB::table('jobs')->where('queue', 'emails')->count(), 'The job is cancelled, so sending the draft again sends it once.');

@@ -810,6 +810,21 @@
     },
     {
         "methods": [
+            "POST"
+        ],
+        "uri": "conversation/undo-reply/{thread_id}",
+        "name": "conversations.undo.submit",
+        "action": "ConversationsController@undoReply",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
             "GET"
         ],
         "uri": "conversation/undo-reply/{thread_id}/{token}",
@@ -1574,6 +1589,21 @@
     },
     {
         "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/oauth-disconnect/{id}/{in_out}/{provider}",
+        "name": "mailboxes.oauth_disconnect.submit",
+        "action": "MailboxesController@oauthDisconnect",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
             "GET"
         ],
         "uri": "mailbox/oauth/{id}/{in_out}/{provider}",
@@ -1926,6 +1956,21 @@
         "uri": "mailbox/{id}/{folder_id}",
         "name": "mailboxes.view.folder",
         "action": "MailboxesController@view",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{mailbox_id}/clone-ticket/{from_thread_id}",
+        "name": "conversations.clone_conversation.submit",
+        "action": "ConversationsController@cloneConversation",
         "middleware": [
             "web",
             "auth"

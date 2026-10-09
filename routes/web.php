@@ -117,12 +117,14 @@ Route::post('/conversation/external-images', ['uses' => 'ExternalImagesControlle
 Route::post('/conversation/upload', ['uses' => 'ConversationsController@upload', 'laroute' => true])->middleware('throttle:100,1')->name('conversations.upload');
 Route::get('/mailbox/{mailbox_id}/new-ticket', 'ConversationsController@create')->name('conversations.create');
 Route::get('/mailbox/{mailbox_id}/clone-ticket/{from_thread_id}/{token}', 'ConversationsController@cloneConversation')->name('conversations.clone_conversation');
+Route::post('/mailbox/{mailbox_id}/clone-ticket/{from_thread_id}', 'ConversationsController@cloneConversation')->name('conversations.clone_conversation.submit');
 //Route::get('/conversation/draft/{id}', 'ConversationsController@draft')->name('conversations.draft');
 Route::get('/conversation/ajax-html/{action}', ['uses' => 'ConversationsController@ajaxHtml', 'laroute' => true])->name('conversations.ajax_html');
 // No extension in the address: web servers may serve those as files (the name comes with the download).
 Route::get('/thread/{thread_id}/original', 'ConversationsController@originalEml')->name('threads.original_eml');
 Route::get('/search', 'ConversationsController@search')->name('conversations.search');
 Route::get('/conversation/undo-reply/{thread_id}/{token}', 'ConversationsController@undoReply')->name('conversations.undo');
+Route::post('/conversation/undo-reply/{thread_id}', 'ConversationsController@undoReply')->name('conversations.undo.submit');
 
 // Mailboxes
 Route::get('/mailboxes', ['uses' => 'MailboxesController@mailboxes', 'laroute' => true])->name('mailboxes');
@@ -179,6 +181,7 @@ Route::post('/mailbox/ajax', ['uses' => 'MailboxesController@ajax', 'laroute' =>
 Route::get('/mailbox/oauth/{id}/{in_out}/{provider}', ['uses' => 'MailboxesController@oauth'])->name('mailboxes.oauth');
 Route::get('/mailbox/oauth', ['uses' => 'MailboxesController@oauth'])->name('mailboxes.oauth_callback');
 Route::get('/mailbox/oauth-disconnect/{id}/{in_out}/{provider}', ['uses' => 'MailboxesController@oauthDisconnect'])->name('mailboxes.oauth_disconnect');
+Route::post('/mailbox/oauth-disconnect/{id}/{in_out}/{provider}', ['uses' => 'MailboxesController@oauthDisconnect'])->name('mailboxes.oauth_disconnect.submit');
 
 // Customers
 Route::get('/customers/{id}/edit', 'CustomersController@update')->name('customers.update');

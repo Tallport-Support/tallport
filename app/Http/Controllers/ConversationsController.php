@@ -576,10 +576,16 @@ class ConversationsController extends Controller
     /**
      * Clone conversation.
      */
-    public function cloneConversation(Request $request, $mailbox_id, $from_thread_id, $token)
+    public function cloneConversation(Request $request, $mailbox_id, $from_thread_id)
     {
+        abort_unless($request->isMethod('post'), 405);
+
         $mailbox = Mailbox::findOrFail($mailbox_id);
         $this->authorize('view', $mailbox);
+
+        if (!\Helper::hashEquals(csrf_token(), $request->input('_token'))) {
+            throw new \Illuminate\Session\TokenMismatchException;
+        }
 
         if (!empty($from_thread_id)) {
             $orig_thread = Thread::find($from_thread_id);
@@ -587,11 +593,6 @@ class ConversationsController extends Controller
             if ($orig_thread) {
                 $orign_conv = $orig_thread->conversation;
                 $this->authorize('view', $orign_conv);
-
-                if (csrf_token() != $token) {
-                    \Session::flash('flash_error_floating', __('Not enough permissions'));
-                    return redirect()->away($orign_conv->url($orign_conv->folder_id));
-                }
 
 		        // $thread = $orig_thread->replicate();
 		        // $thread->id = '';
@@ -1839,8 +1840,14 @@ class ConversationsController extends Controller
     /**
      * Undo reply.
      */
-    public function undoReply(Request $request, $thread_id, $token)
+    public function undoReply(Request $request, $thread_id)
     {
+        abort_unless($request->isMethod('post'), 405);
+
+        if (!\Helper::hashEquals(csrf_token(), $request->input('_token'))) {
+            throw new \Illuminate\Session\TokenMismatchException;
+        }
+
         $thread = Thread::findOrFail($thread_id);
 
         if (!$thread) {
@@ -1855,12 +1862,6 @@ class ConversationsController extends Controller
         }
 
         $this->authorize('view', $conversation);
-
-        if (csrf_token() != $token) {
-            //return throw new \Illuminate\Session\TokenMismatchException;
-            \Session::flash('flash_error_floating', __('Sending can not be undone'));
-            return redirect()->away($conversation->url($conversation->folder_id));
-        }
 
         // Check undo timeout; Nostr replies are sent right away.
         if ((int) $thread->created_at->diffInSeconds(now(), true) > Conversation::UNDO_TIMOUT

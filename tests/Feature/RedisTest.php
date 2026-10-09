@@ -112,7 +112,7 @@ class RedisTest extends FeatureTestCase
         [, $reply] = $this->queuedReply();
         \Session::start();
 
-        $this->actingAs($this->agent)->get('/conversation/undo-reply/'.$reply->id.'/'.csrf_token());
+        $this->actingAs($this->agent)->post(route('conversations.undo.submit', ['thread_id' => $reply->id]), ['_token' => csrf_token()]);
 
         $this->assertSame(Thread::STATE_DRAFT, (int) $reply->fresh()->state);
         $this->assertNull($reply->getQueuedJobId());

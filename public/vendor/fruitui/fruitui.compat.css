@@ -1064,6 +1064,12 @@ textarea.f-input {
     border-color: color-mix(in srgb, var(--f-danger) 45%, var(--f-border));
   }
 
+.f-toast__action {
+    display: inline-flex;
+    margin-inline-start: var(--f-space-3);
+    vertical-align: middle;
+  }
+
 @media (pointer: coarse) {
     .f-button,
     .f-input:not([multiple]):not([size]) {

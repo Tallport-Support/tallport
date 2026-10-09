@@ -382,7 +382,7 @@ class ConversationPageDataTest extends FeatureTestCase
         $this->storedAttachment($thread);
         \Session::start();
 
-        $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id.'/clone-ticket/'.$thread->id.'/'.csrf_token())->assertRedirect();
+        $this->actingAs($this->agent)->post(route('conversations.clone_conversation.submit', ['mailbox_id' => $this->mailbox->id, 'from_thread_id' => $thread->id]), ['_token' => csrf_token()])->assertRedirect();
 
         $this->assertSame(2, Attachment::where('file_name', 'notes.txt')->count());
         $copy = Attachment::where('file_name', 'notes.txt')->where('thread_id', '!=', $thread->id)->first();
@@ -393,9 +393,9 @@ class ConversationPageDataTest extends FeatureTestCase
     {
         \Session::start();
 
-        $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id.'/clone-ticket/999999/'.csrf_token())
+        $this->actingAs($this->agent)->post(route('conversations.clone_conversation.submit', ['mailbox_id' => $this->mailbox->id, 'from_thread_id' => 999999]), ['_token' => csrf_token()])
             ->assertRedirect($this->mailbox->url());
-        $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id.'/clone-ticket/0/'.csrf_token())
+        $this->actingAs($this->agent)->post(route('conversations.clone_conversation.submit', ['mailbox_id' => $this->mailbox->id, 'from_thread_id' => 0]), ['_token' => csrf_token()])
             ->assertRedirect($this->mailbox->url());
         $this->assertSame(0, Conversation::count());
     }

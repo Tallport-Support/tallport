@@ -54,7 +54,19 @@ class ConversationExtrasTest extends FeatureTestCase
         $reply = $this->reply($conversation);
         \Session::start();
 
-        $response = $this->actingAs($this->agent)->get('/conversation/undo-reply/'.$reply->id.'/'.csrf_token());
+        $this->assertSame($reply->id, session('flash_undo_floating')['thread_id']);
+        $toast_response = $this->actingAs($this->agent)->get($conversation->url())->assertOk()
+            ->assertSee('action="'.route('conversations.undo.submit', ['thread_id' => $reply->id]).'"', false)
+            ->assertDontSee('undo-reply/'.$reply->id.'/'.csrf_token(), false);
+        $this->assertSame(1, preg_match('/&quot;duration&quot;:(\d+)/', $toast_response->getContent(), $duration));
+        $this->assertGreaterThan(0, (int) $duration[1]);
+        $this->assertLessThanOrEqual(Conversation::UNDO_TIMOUT * 1000, (int) $duration[1]);
+
+        $this->actingAs($this->agent)->get(route('conversations.undo', ['thread_id' => $reply->id, 'token' => csrf_token()]))->assertStatus(405);
+        $this->actingAs($this->agent)->get(route('conversations.undo', ['thread_id' => $reply->id, 'token' => csrf_token()]).'?_token='.csrf_token())->assertStatus(405);
+        $this->assertSame(Thread::STATE_PUBLISHED, (int) $reply->fresh()->state);
+
+        $response = $this->actingAs($this->agent)->post(route('conversations.undo.submit', ['thread_id' => $reply->id]), ['_token' => csrf_token()]);
 
         $response->assertRedirect();
         $this->assertEquals(Thread::STATE_DRAFT, $reply->fresh()->state);
@@ -67,12 +79,11 @@ class ConversationExtrasTest extends FeatureTestCase
         $reply = $this->reply($conversation);
 
         \Session::start();
-        $this->actingAs($this->agent)->get('/conversation/undo-reply/'.$reply->id.'/wrong-token');
-        $this->assertSame('Sending can not be undone', session('flash_error_floating'));
+        $this->actingAs($this->agent)->post(route('conversations.undo.submit', ['thread_id' => $reply->id]), ['_token' => 'wrong-token'])->assertStatus(419);
         $this->assertEquals(Thread::STATE_PUBLISHED, $reply->fresh()->state);
 
         \DB::table('threads')->where('id', $reply->id)->update(['created_at' => now()->subMinutes(10)]);
-        $this->actingAs($this->agent)->get('/conversation/undo-reply/'.$reply->id.'/'.csrf_token());
+        $this->actingAs($this->agent)->post(route('conversations.undo.submit', ['thread_id' => $reply->id]), ['_token' => csrf_token()]);
         $this->assertEquals(Thread::STATE_PUBLISHED, $reply->fresh()->state, 'Too late to undo.');
     }
 
@@ -83,7 +94,7 @@ class ConversationExtrasTest extends FeatureTestCase
         $colleague = $this->createUser();
         $this->mailbox->users()->attach($colleague->id);
 
-        $response = $this->actingAs($colleague)->get('/conversation/undo-reply/'.$reply->id.'/'.csrf_token());
+        $response = $this->actingAs($colleague)->post(route('conversations.undo.submit', ['thread_id' => $reply->id]), ['_token' => csrf_token()]);
 
         $response->assertRedirect();
         $this->assertSame('Sending can not be undone', session('flash_error_floating'));
@@ -98,7 +109,17 @@ class ConversationExtrasTest extends FeatureTestCase
         $thread = $conversation->threads()->first();
         \Session::start();
 
-        $response = $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id.'/clone-ticket/'.$thread->id.'/'.csrf_token());
+        $this->actingAs($this->agent)->get($conversation->url())->assertOk()
+            ->assertSee('action="'.route('conversations.clone_conversation.submit', [
+                'mailbox_id' => $this->mailbox->id,
+                'from_thread_id' => $thread->id,
+            ]).'"', false);
+
+        $this->actingAs($this->agent)->get(route('conversations.clone_conversation', ['mailbox_id' => $this->mailbox->id, 'from_thread_id' => $thread->id, 'token' => csrf_token()]))->assertStatus(405);
+        $this->actingAs($this->agent)->get(route('conversations.clone_conversation', ['mailbox_id' => $this->mailbox->id, 'from_thread_id' => $thread->id, 'token' => csrf_token()]).'?_token='.csrf_token())->assertStatus(405);
+        $this->assertSame(1, Conversation::where('mailbox_id', $this->mailbox->id)->count());
+
+        $response = $this->actingAs($this->agent)->post(route('conversations.clone_conversation.submit', ['mailbox_id' => $this->mailbox->id, 'from_thread_id' => $thread->id]), ['_token' => csrf_token()]);
 
         $response->assertRedirect();
         $clone = Conversation::where('mailbox_id', $this->mailbox->id)->where('id', '!=', $conversation->id)->first();
@@ -114,7 +135,20 @@ class ConversationExtrasTest extends FeatureTestCase
         $conversation = $this->receiveConversation();
 
         \Session::start();
-        $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id.'/clone-ticket/'.$conversation->threads()->first()->id.'/wrong-token');
+        $this->actingAs($this->agent)->post(route('conversations.clone_conversation.submit', ['mailbox_id' => $this->mailbox->id, 'from_thread_id' => $conversation->threads()->first()->id]), ['_token' => 'wrong-token'])->assertStatus(419);
+
+        $this->assertSame(1, Conversation::where('mailbox_id', $this->mailbox->id)->count());
+    }
+
+    public function testUserOutsideMailboxCannotCloneConversation()
+    {
+        $conversation = $this->receiveConversation();
+        $outsider = $this->createUser();
+
+        $this->actingAs($outsider)->post(route('conversations.clone_conversation.submit', [
+            'mailbox_id' => $this->mailbox->id,
+            'from_thread_id' => $conversation->threads()->first()->id,
+        ]), ['_token' => csrf_token()])->assertForbidden();
 
         $this->assertSame(1, Conversation::where('mailbox_id', $this->mailbox->id)->count());
     }

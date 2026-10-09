@@ -13,7 +13,7 @@ export function toast(message, { tone = 'neutral' } = {}) {
  * The toast outlet: shows one message at a time from fruit-toast events, pauses while hovered or
  * focused, and uses the top layer where supported so open modal dialogs do not cover it.
  */
-export function fruitToast({ duration = 4000, message = null, tone = 'neutral' } = {}) {
+export function fruitToast({ duration = 4000, message = null, tone = 'neutral', action = false } = {}) {
   if (!Number.isFinite(duration) || duration < 0)
     throw new Error('FruitUI Toast duration must be a nonnegative number of milliseconds.');
   let timer,
@@ -28,6 +28,7 @@ export function fruitToast({ duration = 4000, message = null, tone = 'neutral' }
   const lifetime = tone => (tone === 'danger' ? duration * 2 : duration);
   return {
     notice: '',
+    showAction: false,
     init() {
       const options = { signal: controller.signal };
       if (this.$el.classList.contains('f-toast') && typeof this.$el.showPopover === 'function')
@@ -41,9 +42,9 @@ export function fruitToast({ duration = 4000, message = null, tone = 'neutral' }
       for (const name of ['mouseenter', 'focusin']) this.$el.addEventListener(name, () => this.pauseNotice(), options);
       for (const name of ['mouseleave', 'focusout'])
         this.$el.addEventListener(name, () => this.resumeNotice(), options);
-      if (message) this.notify(message, tone);
+      if (message) this.notify(message, tone, action);
     },
-    notify(text, tone = 'neutral') {
+    notify(text, tone = 'neutral', action = false) {
       clear();
       if (!TONES.includes(tone)) tone = 'neutral';
       // The live region's politeness changes before its text, so screen readers announce errors at once.
@@ -51,6 +52,7 @@ export function fruitToast({ duration = 4000, message = null, tone = 'neutral' }
       if (tone === 'neutral') delete this.$el.dataset.tone;
       else this.$el.dataset.tone = tone;
       this.notice = String(text);
+      this.showAction = Boolean(action && this.notice);
       remaining = lifetime(tone);
       if (this.$el.popover) {
         // Reopen so the toast stacks above anything that entered the top layer since.
@@ -62,6 +64,7 @@ export function fruitToast({ duration = 4000, message = null, tone = 'neutral' }
     dismissNotice() {
       clear();
       this.notice = '';
+      this.showAction = false;
       remaining = 0;
       if (this.$el.popover && this.$el.matches(':popover-open')) this.$el.hidePopover();
     },

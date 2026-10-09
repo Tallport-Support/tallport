@@ -1335,6 +1335,8 @@ class MailboxesController extends Controller
 
     public function oauthDisconnect(Request $request)
     {
+        abort_unless($request->isMethod('post'), 405);
+
         $mailbox_id = $request->id ?? '';
         $provider = $request->provider ?? '';
         $in_out = $request->in_out ?? 'in';
@@ -1342,7 +1344,7 @@ class MailboxesController extends Controller
         $mailbox = Mailbox::findOrFail($mailbox_id);
         $this->authorize('admin', $mailbox);
         
-        if (!\Helper::hashEquals(csrf_token(), $request->token)) {
+        if (!\Helper::hashEquals(csrf_token(), $request->input('_token'))) {
             throw new \Illuminate\Session\TokenMismatchException;
         }
 

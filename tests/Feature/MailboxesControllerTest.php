@@ -601,19 +601,31 @@ PHP;
     {
         $mailbox = $this->oauthMailbox();
         $mailbox->setMetaParam('oauth', ['provider' => 'ms', 'a_token' => 'access', 'r_token' => 'refresh'], true);
-        $url = function ($in_out, $provider, $token) use ($mailbox) {
-            return route('mailboxes.oauth_disconnect', ['id' => $mailbox->id, 'in_out' => $in_out, 'provider' => $provider, 'token' => $token]);
+        $url = function ($in_out, $provider) use ($mailbox) {
+            return route('mailboxes.oauth_disconnect.submit', ['id' => $mailbox->id, 'in_out' => $in_out, 'provider' => $provider]);
         };
 
         \Session::start();
-        $this->actingAs($this->admin)->get($url('in', 'ms', 'wrong-token'))->assertStatus(419);
+        $this->actingAs($this->admin)->get(route('mailboxes.oauth_disconnect', ['id' => $mailbox->id, 'in_out' => 'in', 'provider' => 'ms', 'token' => csrf_token()]))->assertStatus(405);
+        $this->actingAs($this->admin)->get(route('mailboxes.oauth_disconnect', ['id' => $mailbox->id, 'in_out' => 'in', 'provider' => 'ms']).'?_token='.csrf_token())->assertStatus(405);
         $this->assertTrue($mailbox->fresh()->oauthEnabled());
 
-        $this->actingAs($this->admin)->get($url('in', 'ms', csrf_token()))
+        $this->actingAs($this->createUser())->post($url('in', 'ms'), ['_token' => csrf_token()])->assertForbidden();
+        $this->assertTrue($mailbox->fresh()->oauthEnabled());
+
+        $this->actingAs($this->admin)->get(route('mailboxes.connection.incoming', ['id' => $mailbox->id]))
+            ->assertOk()
+            ->assertSee('action="'.$url('in', 'ms').'"', false)
+            ->assertSee('form="oauth-disconnect"', false);
+
+        $this->actingAs($this->admin)->post($url('in', 'ms'), ['_token' => 'wrong-token'])->assertStatus(419);
+        $this->assertTrue($mailbox->fresh()->oauthEnabled());
+
+        $this->actingAs($this->admin)->post($url('in', 'ms'), ['_token' => csrf_token()])
             ->assertRedirect('https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri='.urlencode(route('mailboxes.connection.incoming', ['id' => $mailbox->id])));
         $this->assertFalse($mailbox->fresh()->oauthEnabled());
 
-        $this->actingAs($this->admin)->get($url('out', 'gw', csrf_token()))
+        $this->actingAs($this->admin)->post($url('out', 'gw'), ['_token' => csrf_token()])
             ->assertRedirect(route('mailboxes.connection', ['id' => $mailbox->id]));
     }
 }

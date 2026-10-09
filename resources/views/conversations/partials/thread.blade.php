@@ -256,7 +256,10 @@
                         @endif
                         <x-fruit::menu-link :href="route('conversations.create', ['mailbox_id' => $mailbox->id]).'?from_thread_id='.$thread->id" class="new-conv">{{ __("New Conversation") }}</x-fruit::menu-link>
                         @if ($thread->isCustomerMessage())
-                            <x-fruit::menu-link :href="route('conversations.clone_conversation', ['mailbox_id' => $mailbox->id, 'from_thread_id' => $thread->id, 'token' => csrf_token()])" class="new-conv">{{ __("Clone Conversation") }}</x-fruit::menu-link>
+                            <form method="POST" action="{{ route('conversations.clone_conversation.submit', ['mailbox_id' => $mailbox->id, 'from_thread_id' => $thread->id]) }}">
+                                @csrf
+                                <button type="submit" role="menuitem" class="f-menu-item new-conv">{{ __("Clone Conversation") }}</button>
+                            </form>
                         @endif
                         <ul class="menu-module-items">@action('thread.menu', $thread)</ul>
                         @if (Auth::user()->isAdmin())

@@ -19,7 +19,7 @@ These use native markup and existing controls. A CSS composition does not requir
 | Sidebar | Arrange navigation links/buttons and optional native disclosure groups with `f-sidebar`; Blade `x-fruit::sidebar`, `sidebar-group` and `sidebar-item` (links). | `details` owns open; links/buttons own actions and `aria-current=page`. Native Tab, Enter/Space. | Header (workspace) and footer (account) identity lockups, heading, item, nested item (automatic inside a group), identity text, count badge, decorative chevron. `mark` (`data-fruit-mark`, a named accent) colors an item's or group's icon as the legend for marked Item Rows. Tokens: `--f-sidebar-identity-gap`, `--f-sidebar-header-padding`, `--f-sidebar-footer-padding`, `--f-sidebar-item-indent`. No navigation data model. |
 | Toolbar | Arrange actions in a div/header with `f-toolbar`. | No added state or keyboard behavior. | Group independent controls with `f-toolbar__group`; flexible space with `f-toolbar__spacer`. |
 | Badge | Present a count or short label in `span.f-badge`; Blade `x-fruit::badge`. | No value, interaction, or added keyboard behavior. | Text content; scoped semantic tokens for appearance. |
-| Toast | Announce a short result on one `div.f-toast` outlet: `x-fruit::toaster` in Blade, or `x-data="fruitToast"` with `x-show`/`x-text="notice"` in HTML. | The outlet owns one message and its timing; hover and focus pause it. Announced through `role=status`; no focus transfer. | Send messages with `Fruit::toast()` on the server, `$toast()` in Alpine, or `toast()` from `fruitui/alpine`, with an optional `tone` (success, danger); see [server feedback](#server-feedback-dialogs-toasts-and-confirmations). |
+| Toast | Announce a short result on one `div.f-toast` outlet: `x-fruit::toaster` in Blade, or `x-data="fruitToast"` with `x-show`/`x-text="notice"` in HTML. | The outlet owns one message and its timing; hover and focus pause it. Announced through `role=status`; no focus transfer. An optional initial action keeps its native control behavior. | Send messages with `Fruit::toast()` on the server, `$toast()` in Alpine, or `toast()` from `fruitui/alpine`, with an optional `tone` (success, danger). The Blade `action` slot appears only with the initial message; see [server feedback](#server-feedback-dialogs-toasts-and-confirmations). |
 | Confirmation | Ask before an action from script on one `dialog.f-confirm` outlet: `x-fruit::confirmer` in Blade, or `x-data="fruitConfirmer"` in HTML. | The outlet owns the question and its open state; requests wait their turn. `role=alertdialog`; a danger question focuses Cancel, others the action; Escape cancels. | Ask with `$confirm({ title, message, confirm, tone })` or `confirm()` from `fruitui/alpine`; it resolves true or false. See [asking before an action](#asking-before-an-action). |
 | Row / Stack | Arrange independent children with `f-row` or `f-stack`. | No owned state or keyboard behavior. | Content and controls; shared spacing tokens. |
 | Muted text | Apply secondary text color with `f-muted`. | Native content semantics; no state or keyboard behavior. | Shared secondary token, automatically light/dark. |
@@ -909,6 +909,21 @@ Put one `<x-fruit::toaster />` in the layout (in HTML, one element with `x-data=
 
 A toast has a `tone`: neutral (default), `success` or `danger`. Success and danger lead with an icon, so the tone never depends on color alone; a danger toast is announced assertively and stays twice as long. Pass it as `Fruit::toast($message, tone: 'danger')`, `$toast('Could not connect.', { tone: 'danger' })` or the event's `tone`. For an error the reader must act on, use an Alert in place or a Dialog instead.
 
+An initial server-rendered toast may include one independent native action, such as Undo. Put its button or link in the `action` slot and set a duration that fits the action's lifetime. Later `fruit-toast` events replace the message and hide the initial action; events cannot attach controls.
+
+```blade
+<x-fruit::toaster message="Reply queued." :duration="15000" tone="success">
+    <x-slot:action>
+        <form method="POST" action="/replies/42/undo">
+            @csrf
+            <x-fruit::button type="submit" variant="ghost" size="small">Undo</x-fruit::button>
+        </form>
+    </x-slot:action>
+</x-fruit::toaster>
+```
+
+For plain HTML, put the message in a child `<span x-text="notice">` and the control in `<div class="f-toast__action" x-show="showAction">`; initialize `fruitToast({ message: 'Reply queued.', duration: 15000, action: true })`. The same native form handles submission.
+
 ### Asking before an action
 
 Put one `<x-fruit::confirmer />` in the layout too (in HTML, one `dialog.f-dialog.f-confirm` with `x-data="fruitConfirmer"`; see the gallery). Then ask from script; the answer is a promise of true or false:
@@ -1062,4 +1077,3 @@ Settings screens use a sidebar of categories beside a light grey content area (`
     </footer>
 </form>
 ```
-

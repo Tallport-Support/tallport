@@ -80,7 +80,7 @@
                                      – <a href="{{ route('mailboxes.oauth', ['id' => $mailbox->id, 'provider' => \MailHelper::OAUTH_PROVIDER_MICROSOFT, 'in_out' => 'out']) }}" target="_blank">{{ __('Connect') }}</a>
                                 @endif
                             @elseif ($mailbox->isOauthProvider(\MailHelper::OAUTH_PROVIDER_MICROSOFT) && $out_oauth_enabled)
-                                 – <a href="{{ route('mailboxes.oauth_disconnect', ['id' => $mailbox->id, 'provider' => \MailHelper::OAUTH_PROVIDER_MICROSOFT, 'in_out' => 'out', 'token' => csrf_token()]) }}">{{ __('Disconnect') }}</a>
+                                 – <x-fruit::button type="submit" form="oauth-disconnect" variant="ghost" size="small">{{ __('Disconnect') }}</x-fruit::button>
                             @endif
                             (<a href="{{ config('app.freescout_repo') }}/wiki/Connect-FreeScout-to-Microsoft-365-Exchange-via-oAuth" target="_blank">{{ __('Help') }}</a>)
                         </p>
@@ -95,7 +95,7 @@
                                      – <a href="{{ route('mailboxes.oauth', ['id' => $mailbox->id, 'provider' => \MailHelper::OAUTH_PROVIDER_GOOGLE, 'in_out' => 'out']) }}" target="_blank">{{ __('Connect') }}</a>
                                 @endif
                             @elseif ($mailbox->isOauthProvider(\MailHelper::OAUTH_PROVIDER_GOOGLE) && $out_oauth_enabled)
-                                 – <a href="{{ route('mailboxes.oauth_disconnect', ['id' => $mailbox->id, 'provider' => \MailHelper::OAUTH_PROVIDER_GOOGLE, 'in_out' => 'out', 'token' => csrf_token()]) }}">{{ __('Disconnect') }}</a>
+                                 – <x-fruit::button type="submit" form="oauth-disconnect" variant="ghost" size="small">{{ __('Disconnect') }}</x-fruit::button>
                             @endif
                             (<a href="{{ config('app.freescout_repo') }}/wiki/Connect-FreeScout-to-Google-Workspace" target="_blank">{{ __('Help') }}</a>)
                         </p>
@@ -132,6 +132,9 @@
             </x-fruit::form-section>
 
         </form>
+        @if ($out_oauth_enabled)
+            <form id="oauth-disconnect" method="POST" action="{{ route('mailboxes.oauth_disconnect.submit', ['id' => $mailbox->id, 'provider' => $active_oauth_provider, 'in_out' => 'out']) }}">@csrf</form>
+        @endif
     </div>
 @endsection
 

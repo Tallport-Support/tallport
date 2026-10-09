@@ -359,7 +359,7 @@ class TelegramTest extends FeatureTestCase
         $this->assertTrue($reply->fresh()->isSendStatusSuccess());
 
         \Session::start();
-        $this->actingAs($this->agent)->get(route('conversations.undo', ['thread_id' => $reply->id, 'token' => csrf_token()]))->assertRedirect();
+        $this->actingAs($this->agent)->post(route('conversations.undo.submit', ['thread_id' => $reply->id]), ['_token' => csrf_token()])->assertRedirect();
 
         $this->assertEquals([71, 72], $this->sentTo('deleteMessage')->pluck('message_id')->all());
         $this->assertSame('555', (string) $this->sentTo('deleteMessage')->first()['chat_id']);
@@ -372,7 +372,7 @@ class TelegramTest extends FeatureTestCase
     {
         $reply = $this->reply();
         \Session::start();
-        $this->actingAs($this->agent)->get(route('conversations.undo', ['thread_id' => $reply->id, 'token' => csrf_token()]));
+        $this->actingAs($this->agent)->post(route('conversations.undo.submit', ['thread_id' => $reply->id]), ['_token' => csrf_token()]);
 
         $this->runQueue();
 

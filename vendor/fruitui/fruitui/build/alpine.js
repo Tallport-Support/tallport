@@ -11,34 +11,35 @@ function t(t, { tone: n = "neutral" } = {}) {
 		tone: n
 	} }));
 }
-function n({ duration: t = 4e3, message: n = null, tone: r = "neutral" } = {}) {
+function n({ duration: t = 4e3, message: n = null, tone: r = "neutral", action: i = !1 } = {}) {
 	if (!Number.isFinite(t) || t < 0) throw Error("FruitUI Toast duration must be a nonnegative number of milliseconds.");
-	let i, a, o = t, s = new AbortController(), c = () => {
-		clearTimeout(i), i = void 0;
-	}, l = (e) => e === "danger" ? t * 2 : t;
+	let a, o, s = t, c = new AbortController(), l = () => {
+		clearTimeout(a), a = void 0;
+	}, u = (e) => e === "danger" ? t * 2 : t;
 	return {
 		notice: "",
+		showAction: !1,
 		init() {
-			let e = { signal: s.signal };
+			let e = { signal: c.signal };
 			this.$el.classList.contains("f-toast") && typeof this.$el.showPopover == "function" && (this.$el.popover = "manual"), this.$el.setAttribute("aria-live", "polite"), window.addEventListener("fruit-toast", (e) => this.notify(e.detail?.message ?? "", e.detail?.tone), e);
 			for (let t of ["mouseenter", "focusin"]) this.$el.addEventListener(t, () => this.pauseNotice(), e);
 			for (let t of ["mouseleave", "focusout"]) this.$el.addEventListener(t, () => this.resumeNotice(), e);
-			n && this.notify(n, r);
+			n && this.notify(n, r, i);
 		},
-		notify(t, n = "neutral") {
-			c(), e.includes(n) || (n = "neutral"), this.$el.setAttribute("aria-live", n === "danger" ? "assertive" : "polite"), n === "neutral" ? delete this.$el.dataset.tone : this.$el.dataset.tone = n, this.notice = String(t), o = l(n), this.$el.popover && (this.$el.matches(":popover-open") && this.$el.hidePopover(), this.$el.showPopover()), this.resumeNotice();
+		notify(t, n = "neutral", r = !1) {
+			l(), e.includes(n) || (n = "neutral"), this.$el.setAttribute("aria-live", n === "danger" ? "assertive" : "polite"), n === "neutral" ? delete this.$el.dataset.tone : this.$el.dataset.tone = n, this.notice = String(t), this.showAction = !!(r && this.notice), s = u(n), this.$el.popover && (this.$el.matches(":popover-open") && this.$el.hidePopover(), this.$el.showPopover()), this.resumeNotice();
 		},
 		dismissNotice() {
-			c(), this.notice = "", o = 0, this.$el.popover && this.$el.matches(":popover-open") && this.$el.hidePopover();
+			l(), this.notice = "", this.showAction = !1, s = 0, this.$el.popover && this.$el.matches(":popover-open") && this.$el.hidePopover();
 		},
 		pauseNotice() {
-			i !== void 0 && (o = Math.max(0, o - (performance.now() - a)), c());
+			a !== void 0 && (s = Math.max(0, s - (performance.now() - o)), l());
 		},
 		resumeNotice() {
-			this.notice && t && i === void 0 && (a = performance.now(), i = setTimeout(() => this.dismissNotice(), o));
+			this.notice && t && a === void 0 && (o = performance.now(), a = setTimeout(() => this.dismissNotice(), s));
 		},
 		destroy() {
-			c(), s.abort();
+			l(), c.abort();
 		}
 	};
 }

@@ -830,42 +830,29 @@ class ConversationReplies
                 $show_view_link = false;
             }
 
-            $flash_vars = ['%tag_start%' => '<strong>', '%tag_end%' => '</strong>', '%view_start%' => '&nbsp;<a href="'.$conversation->url().'">', '%a_end%' => '</a>&nbsp;', '%undo_start%' => '&nbsp;<a href="'.route('conversations.undo', ['thread_id' => $thread->id, 'token' => csrf_token()]).'" class="text-danger">'];
-
             if ($is_phone) {
                 $flash_type = 'warning';
-                if ($show_view_link) {
-                    $flash_text = __(':%tag_start%Conversation created:%tag_end% :%view_start%View:%a_end% or :%undo_start%Undo:%a_end%', $flash_vars);
-                } else {
-                    $flash_text = '<strong>'.__('Conversation created').'</strong>';
-                }
+                $flash_text = __('Conversation created');
             } elseif ($is_custom) {
                 $flash_type = 'warning';
                 $identifier = \Eventy::filter('conversation.custom.identifier', __('Custom conversation'), $request);
-                if ($show_view_link) {
-                    $flash_text = __(':%tag_start%' . $identifier . ' added:%tag_end% :%view_start%View:%a_end%', $flash_vars);
-                } else {
-                    // The translations keep FreeScout's %identifier%, which __() doesn't fill in.
-                    $flash_text = '<strong>'.str_replace('%identifier%', e($identifier), __('%identifier% added')).'</strong>';
-                }
+                // The translations keep FreeScout's %identifier%, which __() doesn't fill in.
+                $flash_text = str_replace('%identifier%', e($identifier), __('%identifier% added'));
             } elseif ($is_note) {
                 $flash_type = 'warning';
-                if ($show_view_link) {
-                    $flash_text = __(':%tag_start%Note added:%tag_end% :%view_start%View:%a_end%', $flash_vars);
-                } else {
-                    $flash_text = '<strong>'.__('Note added').'</strong>';
-                }
+                $flash_text = __('Note added');
             } else {
                 $flash_type = 'success';
-                if ($show_view_link) {
-                    $flash_text = __(':%tag_start%Email Sent:%tag_end% :%view_start%View:%a_end% or :%undo_start%Undo:%a_end%', $flash_vars);
-                } else {
-                    $flash_text = __(':%tag_start%Email Sent:%tag_end% :%undo_start%Undo:%a_end%', $flash_vars);
-                }
+                $flash_text = __('Message sent');
             }
 
             if ($can_undo) {
                 \Session::flash('flash_'.$flash_type.'_floating', $flash_text);
+                \Session::flash('flash_undo_floating', [
+                    'thread_id' => $thread->id,
+                    'text' => $flash_text,
+                    'expires_at' => $thread->created_at->copy()->addSeconds(Conversation::UNDO_TIMOUT)->timestamp,
+                ]);
             } elseif ($sent_right_away) {
                 \Session::flash('flash_success_floating', '<strong>'.__('Message sent').'</strong>'.($show_view_link ? ' &nbsp;<a href="'.$conversation->url().'">'.__('View').'</a>' : ''));
             }
