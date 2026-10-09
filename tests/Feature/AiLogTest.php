@@ -141,7 +141,7 @@ class AiLogTest extends FeatureTestCase
             'usage'  => ['input_tokens' => 10, 'output_tokens' => 2],
         ]);
         Http::fake(['https://api.openai.com/v1/responses' => Http::sequence()
-            ->push(['error' => ['message' => "Unsupported value: 'minimal'", 'type' => 'invalid_request_error']], 400)
+            ->push(['error' => ['message' => "Unsupported value: 'minimal'", 'type' => 'invalid_request_error', 'param' => 'reasoning.effort']], 400)
             ->pushResponse($answer)])->preventStrayRequests();
 
         (new LanguageRecognizer(['de', 'nl']))->recordFor(Usage::FEATURE_LANGUAGE, null, $this->mailbox->id)->prompt('Hallo');

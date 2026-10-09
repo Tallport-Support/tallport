@@ -175,7 +175,7 @@ class AiFastStreamingTest extends FeatureTestCase
     {
         $this->useModel('openai', 'gpt-5-mini');
         Http::fake(['https://api.openai.com/v1/responses' => Http::sequence()
-            ->push(['error' => ['message' => "Unsupported value: 'minimal'", 'type' => 'invalid_request_error']], 400)
+            ->push(['error' => ['message' => "Unsupported value: 'minimal'", 'type' => 'invalid_request_error', 'param' => 'reasoning.effort', 'code' => 'unsupported_value']], 400)
             ->pushResponse($this->openAiResponse(['language' => 'de']))
             ->pushResponse($this->openAiResponse(['language' => 'nl']))]);
 
@@ -188,6 +188,81 @@ class AiFastStreamingTest extends FeatureTestCase
         $this->assertArrayNotHasKey('reasoning', $requests[1]);
         $this->assertArrayNotHasKey('reasoning', $requests[2]);
         $this->assertTrue(Providers::fastRejected(Providers::textName('p1'), 'gpt-5-mini'));
+    }
+
+    public function testAContextLengthErrorDoesNotDisableFastOptions()
+    {
+        $this->useModel('openai', 'gpt-5-mini');
+        Http::fake(['https://api.openai.com/v1/responses' => Http::response([
+            'error' => ['message' => 'This model has a maximum context length of 128000 tokens.', 'type' => 'invalid_request_error', 'code' => 'context_length_exceeded'],
+        ], 400)])->preventStrayRequests();
+
+        try {
+            (new LanguageRecognizer(['de', 'nl']))->prompt('A long request');
+            $this->fail('The unrelated request error should be returned to the caller.');
+        } catch (\Illuminate\Http\Client\RequestException $e) {
+            $this->assertSame(400, $e->response->status());
+        }
+
+        $requests = Http::recorded()->map(fn ($pair) => $pair[0]->data())->values();
+        $this->assertCount(1, $requests);
+        $this->assertArrayHasKey('reasoning', $requests[0]);
+        $this->assertFalse(Providers::fastRejected(Providers::textName('p1'), 'gpt-5-mini'));
+        $this->assertSame([\App\Ai\Usage::STATUS_FAILED], \App\Ai\Usage::pluck('status')->all());
+    }
+
+    public function testAnUnidentifiedBadRequestDoesNotDisableEitherOption()
+    {
+        $this->useModel('openai', 'gpt-5-mini', '', true);
+        Http::fake(['https://api.openai.com/v1/responses' => Http::response([
+            'error' => ['message' => 'Bad request', 'type' => 'invalid_request_error'],
+        ], 400)])->preventStrayRequests();
+
+        try {
+            (new LanguageRecognizer(['de', 'nl']))->prompt('Hallo');
+            $this->fail('An unidentified request error should not change the options.');
+        } catch (\Illuminate\Http\Client\RequestException $e) {
+            $this->assertSame(400, $e->response->status());
+        }
+
+        $requests = Http::recorded()->map(fn ($pair) => $pair[0]->data())->values();
+        $this->assertCount(1, $requests);
+        $this->assertSame('priority', $requests[0]['service_tier']);
+        $this->assertArrayHasKey('reasoning', $requests[0]);
+        $this->assertFalse(Providers::fastRejected(Providers::textName('p1'), 'gpt-5-mini'));
+        $this->assertFalse(Providers::fastTierRejected(Providers::textName('p1'), 'gpt-5-mini'));
+    }
+
+    public function testAnInvalidModelNameDoesNotDisableFastOptions()
+    {
+        $this->useModel('openai', 'gpt-5-mini');
+        Http::fake(['https://api.openai.com/v1/responses' => Http::response([
+            'error' => ['message' => 'Invalid model gpt-reasoning-not-found', 'type' => 'invalid_request_error'],
+        ], 400)])->preventStrayRequests();
+
+        try {
+            (new LanguageRecognizer(['de', 'nl']))->prompt('Hallo');
+            $this->fail('A model error should not change the fast options.');
+        } catch (\Illuminate\Http\Client\RequestException $e) {
+            $this->assertSame(400, $e->response->status());
+        }
+
+        $this->assertCount(1, Http::recorded());
+        $this->assertFalse(Providers::fastRejected(Providers::textName('p1'), 'gpt-5-mini'));
+    }
+
+    public function testChangingTheEndpointDoesNotKeepAnOldOptionRejection()
+    {
+        $this->useModel('custom', 'gpt-5.2', 'https://first.example.com/v1', true);
+        $name = Providers::textName('p1');
+        Providers::rememberFastRejected($name, 'gpt-5.2');
+        Providers::rememberFastTierRejected($name, 'gpt-5.2');
+        $this->assertTrue(Providers::fastRejected($name, 'gpt-5.2'));
+        $this->assertTrue(Providers::fastTierRejected($name, 'gpt-5.2'));
+
+        $this->useModel('custom', 'gpt-5.2', 'https://second.example.com/v1', true);
+        $this->assertFalse(Providers::fastRejected($name, 'gpt-5.2'));
+        $this->assertFalse(Providers::fastTierRejected($name, 'gpt-5.2'));
     }
 
     /**
@@ -272,6 +347,25 @@ class AiFastStreamingTest extends FeatureTestCase
         $this->assertSame(['web-fetch-2025-09-10'], $requests[2]->header('anthropic-beta'));
     }
 
+    public function testAProviderCanNameAFastModeRefusalInItsMessage()
+    {
+        $this->useModel('anthropic', 'claude-opus-4-6', '', true);
+        Http::fake(['https://api.anthropic.com/v1/messages' => Http::sequence()
+            ->push(['type' => 'error', 'error' => ['type' => 'invalid_request_error', 'message' => 'speed: fast is not supported for this model']], 400)
+            ->pushResponse(Http::response([
+                'id' => 'msg_1', 'type' => 'message', 'role' => 'assistant', 'model' => 'claude-opus-4-6', 'stop_reason' => 'end_turn',
+                'content' => [['type' => 'text', 'text' => json_encode(['language' => 'de'])]],
+                'usage' => ['input_tokens' => 10, 'output_tokens' => 2],
+            ]))])->preventStrayRequests();
+
+        $this->assertSame('de', (new LanguageRecognizer(['de', 'nl']))->prompt('Hallo')['language']);
+        $requests = Http::recorded()->map(fn ($pair) => $pair[0]->data())->values();
+        $this->assertCount(2, $requests);
+        $this->assertSame('fast', $requests[0]['speed']);
+        $this->assertArrayNotHasKey('speed', $requests[1]);
+        $this->assertTrue(Providers::fastTierRejected(Providers::textName('p1'), 'claude-opus-4-6'));
+    }
+
     /**
      * A model that refuses fast mode (HTTP 400) is called again without it, keeping the least
      * reasoning, and without it from then on; the log says which was refused.
@@ -280,7 +374,7 @@ class AiFastStreamingTest extends FeatureTestCase
     {
         $this->useModel('openai', 'gpt-5-mini', '', true);
         Http::fake(['https://api.openai.com/v1/responses' => Http::sequence()
-            ->push(['error' => ['message' => "Unsupported value: 'service_tier' does not support 'priority' with this model.", 'type' => 'invalid_request_error']], 400)
+            ->push(['error' => ['message' => "Unsupported value: 'service_tier' does not support 'priority' with this model.", 'type' => 'invalid_request_error', 'param' => 'service_tier']], 400)
             ->pushResponse($this->openAiResponse(['language' => 'de']))
             ->pushResponse($this->openAiResponse(['language' => 'nl']))]);
 
@@ -302,17 +396,16 @@ class AiFastStreamingTest extends FeatureTestCase
     }
 
     /**
-     * Both refused, the error not saying which: fast mode is dropped first, then the least
-     * reasoning; each refusal is remembered and logged on its own. A reasoning error drops only that.
+     * Each named option refusal drops only that option, even when both were sent.
      */
     public function testEachRefusedOptionIsDroppedOnItsOwn()
     {
         $this->useModel('openai', 'gpt-5-mini', '', true);
         Http::fake(['https://api.openai.com/v1/responses' => Http::sequence()
-            ->push(['error' => ['message' => 'Bad request', 'type' => 'invalid_request_error']], 400)
-            ->push(['error' => ['message' => 'Bad request', 'type' => 'invalid_request_error']], 400)
+            ->push(['error' => ['message' => 'Unsupported service_tier', 'type' => 'invalid_request_error', 'param' => 'service_tier']], 400)
+            ->push(['error' => ['message' => 'Unsupported reasoning.effort', 'type' => 'invalid_request_error', 'param' => 'reasoning.effort']], 422)
             ->pushResponse($this->openAiResponse(['language' => 'de']))
-            ->push(['error' => ['message' => "Unsupported value: 'none' for reasoning.effort", 'type' => 'invalid_request_error']], 400)
+            ->push(['error' => ['message' => "Unsupported value: 'none' for reasoning.effort", 'type' => 'invalid_request_error', 'param' => 'reasoning.effort']], 400)
             ->pushResponse($this->openAiResponse(['language' => 'de']))]);
 
         (new LanguageRecognizer(['de', 'nl']))->prompt('Hallo');

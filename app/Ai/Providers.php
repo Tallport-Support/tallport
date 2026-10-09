@@ -328,7 +328,7 @@ class Providers
     }
 
     /**
-     * A model refused the fast options or fast mode (HTTP 400/422): it's called without them for a while.
+     * A model refused the fast options or fast mode: it's called without them for a while.
      */
     const FAST_REJECTED_DAYS = 30;
 
@@ -344,17 +344,27 @@ class Providers
 
     protected static function fastRejectedKey($name, $model)
     {
-        return 'ai_fast_rejected_'.md5($name.'|'.$model);
+        return self::rejectionKey('ai_fast_rejected_', $name, $model);
     }
 
     public static function fastTierRejected($name, $model)
     {
-        return (bool) \Cache::get('ai_fast_tier_rejected_'.md5($name.'|'.$model));
+        return (bool) \Cache::get(self::rejectionKey('ai_fast_tier_rejected_', $name, $model));
     }
 
     public static function rememberFastTierRejected($name, $model)
     {
-        \Cache::put('ai_fast_tier_rejected_'.md5($name.'|'.$model), true, now()->addDays(self::FAST_REJECTED_DAYS));
+        \Cache::put(self::rejectionKey('ai_fast_tier_rejected_', $name, $model), true, now()->addDays(self::FAST_REJECTED_DAYS));
+    }
+
+    protected static function rejectionKey($prefix, $name, $model)
+    {
+        $provider_id = self::idFromName($name);
+        $provider = Settings::providers()[$provider_id] ?? [];
+        $preset = $provider['provider'] ?? '';
+        $url = ($provider['base_url'] ?? '') ?: (self::PRESETS[$preset]['base_url'] ?? '');
+
+        return $prefix.md5(serialize([$name, $model, $preset, $url, $provider['api_key'] ?? '']));
     }
 
     protected static function providerConfig($provider, $key, $base_url, array $models, $fast_mode = false)

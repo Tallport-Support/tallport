@@ -110,11 +110,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: paragraph overlap now shrinks to fit the remaining chunk space, including multibyte text and full-size next paragraphs. Retrieval loads only the chunk and document fields it uses and keeps at most the requested best results while scanning. Existing vectors are left in place to avoid an unbudgeted bulk embedding run; documents receive the corrected split when next indexed. Search storage remains unchanged, so an architecture benchmark was not needed.
 
-- [ ] **14 · P2 · Tallport — Distinguish refused AI options from unrelated request errors.**
+- [x] **14 · P2 · Tallport — Distinguish refused AI options from unrelated request errors.**
 
   Evidence: `TallportAgent::refusedOption()` (`app/Ai/Agents/TallportAgent.php:216`) treats any 400/422 response as an option refusal when only one option was sent. Context-length, payload-validation, and other errors can therefore disable a supported option. Rejection cache keys in `app/Ai/Providers.php:345` identify only the configured provider ID and model, so editing that provider's endpoint can inherit an obsolete rejection.
 
   Recognize supported provider error codes/parameters before caching a capability rejection; keep uncertain errors as ordinary failures. Include a configuration revision in the cache identity or clear rejection entries on provider edits. Acceptance: a context-length error does not disable fast mode; an actual refusal retries once without the refused option; endpoint changes do not retain stale capability decisions.
+
+  Completed: only errors that identify a refused fast option or tier by parameter or explicit message trigger a retry and temporary rejection cache entry. Unrelated and ambiguous 400/422 responses remain ordinary failures. Rejection keys include the provider type, effective endpoint and credential configuration, so editing an endpoint or key discards old capability decisions.
 
 - [ ] **15 · P2 · Tallport — Extract shared conversation operations out of HTTP controllers.**
 

@@ -233,22 +233,51 @@ abstract class TallportAgent implements Agent, HasProviderOptions
     }
 
     /**
-     * Which option a model refused (HTTP 400/422): fast mode ('fast_tier') or the fast options
-     * ('fast'); null when it got neither. With both, the error's words say which, else fast mode
-     * goes first (models are only given the fast options they're known to take).
+     * Only disable an option when the provider identifies it as the refused parameter.
      */
     protected function refusedOption(RequestException $e)
     {
         $sent = array_keys(array_filter(['fast_tier' => $this->attempt['fast_tier'], 'fast' => $this->attempt['fast']]));
-        if (count($sent) < 2) {
-            return $sent[0] ?? null;
-        }
-        $error = (string) $e->response->body();
-        if (!preg_match('/service[_ ]tier|speed|priority|fast[-_ ]mode/i', $error) && preg_match('/reasoning|effort|thinking/i', $error)) {
-            return 'fast';
+        if (!$sent) {
+            return null;
         }
 
-        return 'fast_tier';
+        $payload = $e->response->json();
+        $error = is_array($payload) ? ($payload['error'] ?? $payload) : null;
+        $message = is_array($error) ? ($error['message'] ?? '') : (is_string($error) ? $error : $e->response->body());
+        $parameter = is_array($error) ? ($error['param'] ?? '') : '';
+        $code = is_array($error) ? ($error['code'] ?? '') : '';
+        $type = is_array($error) ? ($error['type'] ?? $error['status'] ?? '') : '';
+        $message = is_string($message) ? substr($message, 0, 2000) : '';
+        $parameter = is_string($parameter) ? $parameter : '';
+        $code = is_string($code) ? strtolower($code) : '';
+        $type = is_string($type) ? strtolower($type) : '';
+        if (in_array($code, ['context_length_exceeded', 'model_context_window_exceeded', 'input_too_long'])) {
+            return null;
+        }
+        $refusal = preg_match('/unsupported|not supported|unavailable|not available|unknown|unrecognized|invalid|not allowed|not permitted|must be|no such field/i', $message)
+            || in_array($code, ['unsupported_value', 'unsupported_parameter', 'unsupported_option', 'unknown_parameter', 'parameter_unknown', 'invalid_parameter', 'invalid_value'])
+            || ($parameter !== '' && in_array($type, ['invalid_request_error', 'invalid_argument']));
+        if (!$refusal) {
+            return null;
+        }
+
+        if ($parameter !== '') {
+            $tier = preg_match('/(?:^|[.\[ ])(?:service_tier|serviceTier|speed|fast_mode|fastMode)(?:$|[.\] ])/i', $parameter);
+            $fast = preg_match('/(?:^|[.\[ ])(?:reasoning(?:[._]effort)?|reasoning_effort|thinking(?:[._](?:level|config|type))?|thinking_level|thinkingLevel)(?:$|[.\] ])/i', $parameter);
+        } else {
+            $tier = preg_match('/\bservice[_ .-]?tier\b|\bspeed\s*[:=]|\bpriority (?:processing|tier)\b|\bfast[-_ ]mode\b/i', $message);
+            $fast = preg_match('/\breasoning[._ ]effort\b|\bthinking[_ .]?(?:level|config|type)\b|\bthinking\s*[:=]/i', $message);
+        }
+        $matches = [];
+        if ($tier && in_array('fast_tier', $sent)) {
+            $matches[] = 'fast_tier';
+        }
+        if ($fast && in_array('fast', $sent)) {
+            $matches[] = 'fast';
+        }
+
+        return count($matches) === 1 ? $matches[0] : null;
     }
 
     /**
