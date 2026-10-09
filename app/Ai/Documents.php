@@ -349,7 +349,8 @@ class Documents
                 continue;
             }
             $chunks[] = $current;
-            $tail = $overlap ? trim(mb_substr($current, -$overlap)) : '';
+            $available_overlap = max(0, $size - mb_strlen($paragraph) - 2);
+            $tail = $overlap && $available_overlap ? trim(mb_substr($current, -min($overlap, $available_overlap))) : '';
             $current = $tail !== '' ? $tail."\n\n".$paragraph : $paragraph;
         }
         if ($current !== '') {
@@ -372,35 +373,44 @@ class Documents
         $query = self::embed([$question], $deadline)[0];
         $locale = in_array($locale, Document::SUPPORTED_LOCALES) ? $locale : Document::CANONICAL_LOCALE;
         $fingerprint = self::embeddingFingerprint();
+        $limit = max(1, (int) ($limit ?? Settings::retrievalLimit()));
 
         $results = [];
-        DocumentChunk::with('document')
+        DocumentChunk::select(['id', 'document_id', 'content', 'embedding'])
+            ->with('document:id,title,source_url,localized_urls')
             ->where('embedding_model', Settings::embeddingModel())
             ->whereHas('document', function ($q) use ($mailbox_id, $fingerprint) {
                 $q->where('mailbox_id', $mailbox_id)->where('enabled', true)->where('status', Document::STATUS_INDEXED)
                     ->where('embedding_fingerprint', $fingerprint);
             })
             ->orderBy('id')
-            ->chunk(200, function ($chunks) use (&$results, $query, $locale) {
+            ->chunk(200, function ($chunks) use (&$results, $query, $locale, $limit) {
                 foreach ($chunks as $chunk) {
                     $score = self::similarity($query, (array) $chunk->embedding);
                     if ($score >= self::MIN_SIMILARITY) {
-                        $results[] = [
+                        if (count($results) >= $limit && $score <= $results[count($results) - 1]['score']) {
+                            continue;
+                        }
+                        $result = [
                             'score'       => $score,
                             'document_id' => $chunk->document_id,
                             'title'       => $chunk->document->title,
                             'url'         => $chunk->document->localizedUrl($locale),
                             'content'     => $chunk->content,
                         ];
+                        $position = 0;
+                        while ($position < count($results) && $results[$position]['score'] >= $score) {
+                            $position++;
+                        }
+                        array_splice($results, $position, 0, [$result]);
+                        if (count($results) > $limit) {
+                            array_pop($results);
+                        }
                     }
                 }
             });
 
-        usort($results, function ($a, $b) {
-            return $b['score'] <=> $a['score'];
-        });
-
-        return array_slice($results, 0, $limit ?: Settings::retrievalLimit());
+        return $results;
     }
 
     /**

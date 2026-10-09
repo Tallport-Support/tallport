@@ -79,12 +79,28 @@ class AiDocumentsTest extends FeatureTestCase
         $this->assertCount(3, $chunks);
         $this->assertStringNotContainsString('title:', $chunks[0]);
         foreach ($chunks as $chunk) {
-            $this->assertLessThanOrEqual(500 + 50 + 2, mb_strlen($chunk));
+            $this->assertLessThanOrEqual(500, mb_strlen($chunk));
         }
 
         // A paragraph longer than a chunk is cut.
         $this->assertCount(3, Documents::chunks(str_repeat('x', 1200), 500, 0));
         $this->assertSame([], Documents::chunks("---\ntitle: Empty\n---\n", 500, 0));
+    }
+
+    public function testOverlapNeverPushesTheNextParagraphBeyondTheChunkSize()
+    {
+        $first = str_repeat('界', 450);
+        $second = str_repeat('語', 450);
+        $chunks = Documents::chunks($first."\n\n".$second, 500, 100);
+
+        $this->assertCount(2, $chunks);
+        $this->assertSame($first, $chunks[0]);
+        $this->assertSame(str_repeat('界', 48)."\n\n".$second, $chunks[1]);
+        $this->assertSame(500, mb_strlen($chunks[1]));
+
+        $full_paragraph = str_repeat('語', 500);
+        $chunks = Documents::chunks($first."\n\n".$full_paragraph, 500, 100);
+        $this->assertSame([$first, $full_paragraph], $chunks);
     }
 
     public function testSimilarity()
@@ -503,7 +519,9 @@ class AiDocumentsTest extends FeatureTestCase
         Documents::index($second);
 
         $this->assertSame(['Android invoices', 'Android setup'], array_column(Documents::search($this->mailbox->id, 'Android invoice'), 'title'));
+        $this->assertSame(['Android invoices'], array_column(Documents::search($this->mailbox->id, 'Android invoice', 'en', 1), 'title'));
         $this->assertSame(['Android setup', 'Android invoices'], array_column(Documents::search($this->mailbox->id, 'Android'), 'title'));
+        $this->assertSame(['Android setup'], array_column(Documents::search($this->mailbox->id, 'Android', 'en', 1), 'title'));
         $this->assertSame([], Documents::search($this->mailbox->id, '  '));
     }
 }

@@ -102,11 +102,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: the documentation API queues indexing, returns HTTP 202 with a status URL, and exposes mailbox-scoped status polling. Content revisions guard chunk replacement and late failures; changed content and embedding settings queue fresh jobs. Search excludes vectors from older provider, endpoint, model, dimension, or chunk configurations. Settings saves and app updates enqueue stale documents, including pre-migration records.
 
-- [ ] **13 · P2 · Tallport — Enforce chunk limits and keep retrieval memory bounded.**
+- [x] **13 · P2 · Tallport — Enforce chunk limits and keep retrieval memory bounded.**
 
   Evidence: `Documents::chunks()` (`app/Ai/Documents.php:196`) prepends overlap to the next paragraph without checking the combined size. With size 500, overlap 100, and two 450-character paragraphs, the second chunk becomes 552 characters. `Documents::search()` fetches chunks in batches but accumulates every qualifying result before sorting, and eager-loads complete documents including their content.
 
   Enforce the size contract after adding overlap, select only document fields retrieval needs, and retain only the best requested results while scanning. Keep MariaDB support; a new vector service is not a prerequisite. Acceptance: boundary cases always fit the configured chunk size and preserve content, while retrieval memory stays bounded as the document collection grows. Benchmark before changing the search storage architecture.
+
+  Completed: paragraph overlap now shrinks to fit the remaining chunk space, including multibyte text and full-size next paragraphs. Retrieval loads only the chunk and document fields it uses and keeps at most the requested best results while scanning. Existing vectors are left in place to avoid an unbudgeted bulk embedding run; documents receive the corrected split when next indexed. Search storage remains unchanged, so an architecture benchmark was not needed.
 
 - [ ] **14 · P2 · Tallport — Distinguish refused AI options from unrelated request errors.**
 
