@@ -146,17 +146,20 @@ class PartialJson
 
     /**
      * A value the model encoded twice ("\"Hello,\\n…\"": quotes and \n escapes in the text):
-     * the string inside it.
+     * the string inside it, also when the model left quotes in it unescaped.
      */
     protected static function unwrapStrings(array $decoded)
     {
         foreach ($decoded as $key => $value) {
             if (is_array($value)) {
                 $decoded[$key] = self::unwrapStrings($value);
-            } elseif (is_string($value) && strlen($value) > 1 && $value[0] == '"' && substr(rtrim($value), -1) == '"') {
-                $inner = json_decode(rtrim($value));
+            } elseif (is_string($value) && strlen(trim($value)) > 1 && trim($value)[0] == '"' && substr(trim($value), -1) == '"') {
+                $inner = json_decode(trim($value));
                 if (is_string($inner)) {
                     $decoded[$key] = $inner;
+                } elseif (preg_match('/\\\\[n"]/', $value)) {
+                    // Not quite JSON (an HTML attribute's quotes left unescaped): its escapes undone.
+                    $decoded[$key] = preg_replace_callback('/\\\\(["\\\\\/bfnrt]|u[0-9a-fA-F]{4})/', fn ($m) => json_decode('"\\'.$m[1].'"'), substr(trim($value), 1, -1));
                 }
             }
         }

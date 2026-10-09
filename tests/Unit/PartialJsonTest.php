@@ -46,6 +46,9 @@ class PartialJsonTest extends TestCase
         // A value encoded twice by the model: the text inside it, without quotes and \n escapes.
         $twice = json_encode(['translation' => json_encode("<div>Hello,</div>\n<div>Thanks</div>"), 'same_language' => false]);
         $this->assertSame(['translation' => "<div>Hello,</div>\n<div>Thanks</div>", 'same_language' => false], PartialJson::decodeComplete($twice));
+        // Also when the model left an HTML attribute's quotes unescaped inside it.
+        $loose = json_encode(['translation' => "\n\"\\n<p>I don't see it.</p>\\n<img src=\"https://example.org/a.png\">\\n\\\"Quoted\\\"\\n\"\n"]);
+        $this->assertSame(['translation' => "\n<p>I don't see it.</p>\n<img src=\"https://example.org/a.png\">\n\"Quoted\"\n"], PartialJson::decodeComplete($loose));
         // Text that only happens to be quoted stays.
         $this->assertSame(['note' => '"Quoted" and more'], PartialJson::decodeComplete('{"note": "\\"Quoted\\" and more"}'));
     }

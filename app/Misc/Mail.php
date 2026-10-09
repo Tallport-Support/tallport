@@ -105,6 +105,9 @@ class Mail
         '<hr id="replySplit"',
         '<div id="reply139content"',
         '------------------ Original ------------------', // QQ English
+        // QQ Mail's newer quote: an "Original" (原始邮件) line above a From/Sent Time table, also in plain text.
+        'regex:/<div[^>]*contenteditable="false"[^>]*>\s*<div[^>]*>\s*(Original|原始邮件|原始郵件)\s*<\/div>/u',
+        'regex:/^[ \t]*(Original|原始邮件|原始郵件)[ \t]*(\s|<br\s*\/?>)+(From|发件人|寄件者)[:：]/mu',
         // NetEase/Coremail (163.com, 126.com, yeah.net): Mail Master's quote container, its
         // plain-text heading, and the webmail's "在 <date>，<name> 写道：" line before its quote.
         'regex:/<div[^>]+class="[^"]*\bntes-mailmaster-quote\b/',

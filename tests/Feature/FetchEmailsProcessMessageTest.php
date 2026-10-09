@@ -665,6 +665,36 @@ class FetchEmailsProcessMessageTest extends FeatureTestCase
         $this->assertStringNotContainsString('Quoted answer', $reply);
     }
 
+    /**
+     * QQ Mail's newer quote: an "Original" line above a From/Sent Time table (in plain text too).
+     *
+     * @dataProvider qqReplies
+     */
+    public function testQqOriginalQuoteIsCutOff($body, $is_html)
+    {
+        $reply = (new FetchEmails())->separateReply($body, $is_html, true);
+
+        $this->assertStringContainsString('没有看到', $reply);
+        $this->assertStringNotContainsString('Original', $reply);
+        $this->assertStringNotContainsString('原始邮件', $reply);
+        $this->assertStringNotContainsString('Quoted answer', $reply);
+    }
+
+    public static function qqReplies()
+    {
+        $table = '<table data-uneditable="true" style="line-height: 20px;"><tbody><tr><td><div><span>From:</span><span>Support</span> <span>&lt;support@example.org&gt;</span></div><div><span>Sent Time:</span><span>Oct 9, 2026 10:01</span></div></td></tr></tbody></table><div><br></div><div>Quoted answer</div>';
+
+        return [
+            'English' => [
+                '<p><span>没有看到你说的 <b>Change Payment Method</b>.</span></p><div><br></div><article style="line-height: 1.43;"><div style="display:flex;align-items:center;padding-top:8px" contenteditable="false">'
+                ."\n        ".'<div style="color:#959DA6;font-size:12px;line-height:30px">Original</div>'."\n        ".'<hr style="flex-grow:1">'."\n      ".'</div>'.$table.'</article>',
+                true,
+            ],
+            'Chinese' => ['<p>没有看到</p><article><div style="display:flex" contenteditable="false"><div style="color:#959DA6">原始邮件</div><hr></div>'.$table.'</article>', true],
+            'Plain text' => ["没有看到你说的 Change Payment Method.\r\n\r\nyanglei\r\n\r\n         Original\r\n         \r\n       \r\nFrom:Support <support@example.org>\r\nSent Time:Oct 9, 2026 10:01\r\n\r\nQuoted answer", false],
+        ];
+    }
+
     public static function coremailReplies()
     {
         $card = '<div style="margin-bottom:1em;font-size:12px"><table><tr><td>发件人</td><td>Support &lt;support@example.org&gt;</td></tr><tr><td>主题</td><td>Re: Question</td></tr></table></div><div>Quoted answer</div>';
