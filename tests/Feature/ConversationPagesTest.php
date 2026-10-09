@@ -110,6 +110,22 @@ class ConversationPagesTest extends FeatureTestCase
         $response->assertRedirect('/login');
     }
 
+    public function testExpiredDialogSessionReturnsToTheCurrentPageAfterLogin()
+    {
+        $fragment = '/conversation/ajax-html/merge_conv?conversation_id=1';
+        $page = '/mailbox/'.$this->mailbox->id;
+
+        $this->withHeaders(['Accept' => 'text/html', 'X-Requested-With' => 'XMLHttpRequest'])
+            ->get($fragment)->assertRedirect(route('login'));
+        $this->assertSame(url($fragment), session('url.intended'));
+
+        $this->get($page)->assertRedirect(route('login'));
+        $this->assertSame(url($page), session('url.intended'));
+
+        $this->actingAs($this->agent)->get($page)
+            ->assertSee('<meta name="login-url" content="'.route('login').'">', false);
+    }
+
     public function testNewConversationPageRenders()
     {
         $this->getPage($this->agent, '/mailbox/'.$this->mailbox->id.'/new-ticket')

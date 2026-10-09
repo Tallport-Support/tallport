@@ -336,8 +336,9 @@ function y({ title: e, html: t, url: n, size: r = "medium", trigger: i = null } 
 		}));
 	}, y = async () => {
 		o.setAttribute("aria-busy", "true"), o.replaceChildren(...v());
+		let e = null, t = "network";
 		try {
-			let e = await fetch(n, {
+			let r = await fetch(n, {
 				headers: {
 					Accept: "text/html",
 					"X-Requested-With": "XMLHttpRequest"
@@ -345,23 +346,33 @@ function y({ title: e, html: t, url: n, size: r = "medium", trigger: i = null } 
 				credentials: "same-origin",
 				signal: c.signal
 			});
-			if (!e.ok) throw Error(`FruitUI dialog could not load ${n}: ${e.status}.`);
-			let t = await e.text();
-			a.isConnected && m(t);
-		} catch (e) {
+			if (e = {
+				url: r.url,
+				status: r.status,
+				redirected: r.redirected,
+				contentType: r.headers.get("content-type")
+			}, !r.ok) throw t = "http", Error(`FruitUI dialog could not load ${n}: ${r.status}.`);
+			if (r.redirected) throw t = "redirect", Error(`FruitUI dialog redirected ${n} to ${r.url}.`);
+			if (!/^text\/html(?:\s*;|$)/i.test(e.contentType ?? "")) throw t = "content-type", Error(`FruitUI dialog expected HTML from ${n}.`);
+			let i = await r.text();
+			if (/^\s*(?:<!doctype\s+html\b|<html(?:\s|>))/i.test(i)) throw t = "document", Error(`FruitUI dialog received a full document from ${n}.`);
+			a.isConnected && m(i);
+		} catch (r) {
 			if (c.signal.aborted) return;
 			o.removeAttribute("aria-busy");
-			let t = document.createElement("p");
-			t.className = "f-error", t.setAttribute("role", "alert"), t.textContent = g("error-message", "Could not load this content.");
-			let r = document.createElement("button");
-			r.type = "button", r.className = "f-button", r.textContent = g("retry-label", "Try Again"), r.addEventListener("click", y);
-			let i = document.createElement("div");
-			i.append(r), o.replaceChildren(t, i), a.dispatchEvent(new CustomEvent("fruit-dialog-error", {
+			let i = document.createElement("p");
+			i.className = "f-error", i.setAttribute("role", "alert"), i.textContent = g("error-message", "Could not load this content.");
+			let s = document.createElement("button");
+			s.type = "button", s.className = "f-button", s.textContent = g("retry-label", "Try Again"), s.addEventListener("click", y);
+			let l = document.createElement("div");
+			l.append(s), o.replaceChildren(i, l), a.dispatchEvent(new CustomEvent("fruit-dialog-error", {
 				bubbles: !0,
 				detail: {
 					dialog: a,
 					url: n,
-					error: e
+					error: r,
+					reason: t,
+					response: e
 				}
 			}));
 		}

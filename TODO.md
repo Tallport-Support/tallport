@@ -150,11 +150,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: the viewport no longer limits zoom. Image, document, email, audio and video previews use the attachment filename as their accessible name, and the viewer's actions wrap on narrow screens. A browser check of Tallport-rendered test data covered the workspace, chat composer, inspector and dialogs at narrow widths and enlarged text, in light and dark appearances; Enter opened a preview, Escape closed it and returned focus.
 
-- [ ] **19 · P2 · FruitUI — Handle expired sessions and unexpected dialog responses.**
+- [x] **19 · P2 · FruitUI — Handle expired sessions and unexpected dialog responses.**
 
   Evidence: `../fruitui/src/js/remote-dialog.js`, `dialog()`/`load()`, accepts any successful response as HTML, including a followed login redirect or an unexpected JSON response. Tallport callers depend on `dialog.loaded.then(...)` to initialize controls, so an unrelated document can be treated as successfully loaded dialog content. The existing network-error Retry and close handling should be retained.
 
-  Validate the response type and provide a host hook for authentication redirects and other unexpected destinations. Let Tallport navigate to login explicitly when its session expires. Implement the reusable contract in FruitUI, then update Tallport's integration and published build. Acceptance: offline/retry/close behavior continues to work, JSON is not inserted as HTML, and an expired session never silently embeds the full login page as dialog content. This finding is from source inspection; browser behavior still needs verification.
+  Validate the response type and provide a host hook for authentication redirects and other unexpected destinations. Let Tallport navigate to login explicitly when its session expires. Implement the reusable contract in FruitUI, then update Tallport's integration and published build. Acceptance: offline/retry/close behavior continues to work, JSON is not inserted as HTML, and an expired session never silently embeds the full login page as dialog content.
+
+  Completed: FruitUI rejects redirected, non-HTML and full-document responses, and its error event exposes the reason and final response URL without changing Retry or close behavior. Tallport reloads the current page when a dialog request reaches its login route, so Laravel records the full page as the post-login destination. Browser tests cover JSON, login redirects, full documents and network retry; Tallport's Composer lock, committed vendor and published assets use the updated FruitUI build.
 
 - [ ] **20 · P2 · Tallport — Add a focused static correctness check alongside PHPCS.**
 
@@ -164,7 +166,7 @@ This is a source review of the application, with deeper inspection of AI, conver
 
 - [ ] **21 · P2 · Tallport — Bring release-only guarantees into the local release check.**
 
-  Evidence: `release.sh` runs `./test.sh` and publishes before CI finishes. The vendor reconstruction check exists only in `.github/workflows/test.yml`. The local test run can skip environment-dependent tests, and it does not perform dependency auditing. The review's `composer audit --locked --format=json` reported no advisories, but returned exit code 2 for abandoned `doctrine/cache`, required through Doctrine DBAL as well as a direct development constraint.
+  Evidence: `release.sh` runs `./test.sh` and publishes before CI finishes. The vendor reconstruction check exists only in `.github/workflows/test.yml`. The local test run can skip environment-dependent tests, and it does not perform dependency auditing. A fresh `composer audit --locked --format=json` on 2026-10-09 reports three medium advisories for `enshrined/svg-sanitize` 0.22.0 ([stored XSS](https://github.com/advisories/GHSA-9rjx-3jch-6vjf), [nesting DoS](https://github.com/advisories/GHSA-m9xh-6747-9r6f), [DTD DoS](https://github.com/advisories/GHSA-v383-3rw5-q8rf)) and flags abandoned `doctrine/cache`, required through Doctrine DBAL as well as a direct development constraint.
 
   Preserve the chosen local release workflow, but run its critical guarantees before publication: reconstruct dependencies in an isolated checkout, verify committed vendor and published assets, require the production database checks in release mode, and audit dependencies. Resolve or explicitly time-bound the abandoned dependency's replacement path with module/schema compatibility checks. Acceptance: stale vendor/assets or unavailable required services block a normal release before upload, while an emergency bypass remains explicit and auditable.
 

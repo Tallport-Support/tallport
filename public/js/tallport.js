@@ -113,6 +113,20 @@ window.Tallport = (function () {
 	return {csrf: csrf, post: post, isSuccess: isSuccess, toast: toast, result: result, busy: busy, confirm: confirm};
 })();
 
+document.addEventListener('fruit-dialog-error', function (event) {
+	var response = event.detail.response;
+	var login = document.querySelector('meta[name="login-url"]');
+	if (event.detail.reason != 'redirect' || !response || !login) {
+		return;
+	}
+	var destination = new URL(response.url, window.location.href);
+	var loginUrl = new URL(login.content, window.location.href);
+	if (destination.origin == loginUrl.origin && destination.pathname == loginUrl.pathname) {
+		// A full-page request replaces Laravel's intended fragment URL with this page.
+		window.location.reload();
+	}
+});
+
 /**
  * wire:navigate (the app's own links): the next page is swapped in, with
  * Livewire's progress bar; folders and conversations are fetched on hover

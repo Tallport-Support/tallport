@@ -8,6 +8,9 @@
     
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @if (Auth::check())
+        <meta name="login-url" content="{{ route('login') }}">
+    @endif
     {!! \Helper::cspMetaTag() !!}
     @php $app_name = \Eventy::filter('layout.title.name', config('app.name', 'Tallport')); @endphp
     <title>@if ($__env->yieldContent('title_full'))@yield('title_full') @elseif ($__env->yieldContent('title'))@yield('title') - {{ $app_name }} @else{{ $app_name }}@endif</title>

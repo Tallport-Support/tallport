@@ -68,14 +68,37 @@ export function dialog({ title, html, url, size = 'medium', trigger = null } = {
   const load = async () => {
     body.setAttribute('aria-busy', 'true');
     body.replaceChildren(...loading());
+    let responseInfo = null;
+    let reason = 'network';
     try {
       const response = await fetch(url, {
         headers: { Accept: 'text/html', 'X-Requested-With': 'XMLHttpRequest' },
         credentials: 'same-origin',
         signal: controller.signal,
       });
-      if (!response.ok) throw new Error(`FruitUI dialog could not load ${url}: ${response.status}.`);
+      responseInfo = {
+        url: response.url,
+        status: response.status,
+        redirected: response.redirected,
+        contentType: response.headers.get('content-type'),
+      };
+      if (!response.ok) {
+        reason = 'http';
+        throw new Error(`FruitUI dialog could not load ${url}: ${response.status}.`);
+      }
+      if (response.redirected) {
+        reason = 'redirect';
+        throw new Error(`FruitUI dialog redirected ${url} to ${response.url}.`);
+      }
+      if (!/^text\/html(?:\s*;|$)/i.test(responseInfo.contentType ?? '')) {
+        reason = 'content-type';
+        throw new Error(`FruitUI dialog expected HTML from ${url}.`);
+      }
       const text = await response.text();
+      if (/^\s*(?:<!doctype\s+html\b|<html(?:\s|>))/i.test(text)) {
+        reason = 'document';
+        throw new Error(`FruitUI dialog received a full document from ${url}.`);
+      }
       if (element.isConnected) fill(text);
     } catch (error) {
       if (controller.signal.aborted) return;
@@ -93,7 +116,10 @@ export function dialog({ title, html, url, size = 'medium', trigger = null } = {
       actions.append(retry);
       body.replaceChildren(message, actions);
       element.dispatchEvent(
-        new CustomEvent('fruit-dialog-error', { bubbles: true, detail: { dialog: element, url, error } }),
+        new CustomEvent('fruit-dialog-error', {
+          bubbles: true,
+          detail: { dialog: element, url, error, reason, response: responseInfo },
+        }),
       );
     }
   };
