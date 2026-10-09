@@ -578,20 +578,39 @@ function E({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280,
 //#endregion
 //#region src/js/history.js
 function ee({ threshold: e = 160 } = {}) {
-	let t, n, r, i, a, o, s, c = !0, l = 0, u = () => t.scrollHeight - t.scrollTop - t.clientHeight;
+	let t, n, r, i, a, o, s, c = !0, l = 0, u = !1, d = () => t.scrollHeight - t.scrollTop - t.clientHeight;
 	return {
 		awayFromLatest: !1,
 		init() {
 			t = this.$el, s = () => {
-				t.scrollTop !== l && (c = u() < 24), c && (t.scrollTop = t.scrollHeight), l = t.scrollTop;
+				u || (t.scrollTop !== l && (c = d() < 24), c && (t.scrollTop = t.scrollHeight), l = t.scrollTop);
 			}, a = () => {
-				t.scrollTop !== l && (c = u() < 24, this.awayFromLatest = u() > e, l = t.scrollTop);
+				t.scrollTop !== l && (c = d() < 24, this.awayFromLatest = d() > e, l = t.scrollTop);
 			}, o = () => this.jumpToLatest({ smooth: !1 }), r = new ResizeObserver(s), r.observe(t);
 			for (let e of t.children) r.observe(e);
 			i = new MutationObserver((e) => {
 				for (let t of e) for (let e of t.addedNodes) e.nodeType === 1 && r.observe(e);
 				s();
 			}), i.observe(t, { childList: !0 }), t.addEventListener("scroll", a, { passive: !0 }), n = t.parentElement?.closest(".f-pane") ?? t.parentElement, n?.addEventListener("submit", o), s();
+		},
+		async preservePosition(n) {
+			let r = t.getBoundingClientRect(), i = [...t.querySelectorAll("[data-fruit-history-anchor]")].find((e) => e.getBoundingClientRect().bottom > r.top), a = i?.getAttribute("data-fruit-history-anchor"), o = i?.getBoundingClientRect().top - r.top;
+			c = !1, u = !0;
+			try {
+				return await n();
+			} finally {
+				if (await new Promise((e) => requestAnimationFrame(e)), a != null) {
+					let e = [...t.querySelectorAll("[data-fruit-history-anchor]")].find((e) => e.getAttribute("data-fruit-history-anchor") === a);
+					e && (t.scrollTop += e.getBoundingClientRect().top - r.top - o);
+				}
+				u = !1, l = t.scrollTop, this.awayFromLatest = d() > e;
+			}
+		},
+		requestLatest() {
+			t.dispatchEvent(new CustomEvent("fruit-history-latest", {
+				bubbles: !0,
+				cancelable: !0
+			})) && this.jumpToLatest({ focus: !0 });
 		},
 		jumpToLatest({ focus: e = !1, smooth: n = !0 } = {}) {
 			c = !0, this.awayFromLatest = !1;

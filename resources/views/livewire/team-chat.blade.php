@@ -2,8 +2,23 @@
 {{-- Sending (a submit) takes the history to the newest message (FruitUI's history). The bar's
      search (mailboxes/team_chat) filters the messages shown here, in the browser: the text is
      stored encrypted. --}}
-<div class="team-room" x-data="{ query: '', has: (element, query) => [...element.querySelectorAll('li[data-search]')].some((item) => item.dataset.search.includes(query)) }" x-on:team-search.window="query = $event.detail.trim().toLocaleLowerCase()">
-    <x-fruit::history :aria-label="__(':mailbox Team Chat', ['mailbox' => $mailbox->name])" class="team-room__history">
+<div class="team-room" x-data="{
+        query: '',
+        lastReadId: {{ (int) $last_read_id }},
+        has: (element, query) => [...element.querySelectorAll('li[data-search]')].some((item) => item.dataset.search.includes(query)),
+        readVisible() {
+            let history = this.$el.querySelector('.team-room__history');
+            if (!history || history.dataset.hasNewer === '1' || history.scrollHeight - history.scrollTop - history.clientHeight >= 24) return;
+            let id = Number(history.dataset.lastId);
+            if (!id || id <= this.lastReadId) return;
+            this.lastReadId = id;
+            this.$wire.markSeenThrough(id).catch(() => { this.lastReadId = 0 });
+        }
+    }" x-on:team-search.window="query = $event.detail.trim().toLocaleLowerCase()" x-on:team-chat-read-visible="readVisible()" x-on:team-chat-refreshed.window="$nextTick(() => requestAnimationFrame(() => readVisible()))" x-on:team-chat-focus.window="query = ''; let search = document.querySelector('.team-room__search'); if (search) search.value = ''; $nextTick(() => { let message = document.getElementById('team-message-' + $event.detail.id); if (message) { message.scrollIntoView({ block: 'center' }); message.focus({ preventScroll: true }); } })">
+    <x-fruit::history :aria-label="__(':mailbox Team Chat', ['mailbox' => $mailbox->name])" class="team-room__history" wire:key="team-chat-history" :data-has-newer="$has_newer ? '1' : '0'" :data-last-id="$last_id" x-on:scroll.debounce.200ms="$dispatch('team-chat-read-visible')" x-on:fruit-history-latest="if ($el.dataset.hasNewer === '1') { $event.preventDefault(); $wire.showLatest().then(() => { jumpToLatest({ focus: true }); $dispatch('team-chat-read-visible') }) }">
+        @if ($has_older)
+            <div class="team-room__pager"><x-fruit::button variant="ghost" size="small" x-on:click="preservePosition(() => $wire.loadOlder())" wire:loading.attr="disabled" wire:target="loadOlder">{{ __('Load older messages') }}</x-fruit::button></div>
+        @endif
         @forelse ($sections as $section_key => $section)
             <div class="team-room__section" wire:key="team-section-{{ $section_key }}" x-show="!query || has($el, query)">
             @if ($section['new'])
@@ -17,7 +32,7 @@
                         $team_message = $item['message'];
                         $team_author = $team_message->user;
                     @endphp
-                    <li wire:key="team-message-{{ $team_message->id }}" data-search="{{ mb_strtolower(($team_author ? $team_author->getFullName() : '').' '.$team_message->body.' '.$team_message->attachments->pluck('file_name')->implode(' ')) }}" x-show="!query || $el.dataset.search.includes(query)">
+                    <li wire:key="team-message-{{ $team_message->id }}" data-fruit-history-anchor="{{ $team_message->id }}" data-search="{{ mb_strtolower(($team_author ? $team_author->getFullName() : '').' '.$team_message->body.' '.$team_message->attachments->pluck('file_name')->implode(' ')) }}" x-show="!query || $el.dataset.search.includes(query)">
                         @php $team_author_name = $team_author ? $team_author->getFullName() : ''; @endphp
                         <x-fruit::message :continued="$item['continued']" id="team-message-{{ $team_message->id }}" tabindex="-1" data-team-message="{{ $team_message->id }}" :datetime="$team_message->created_at->toIso8601String()" :aria-label="$team_message->pinned_at ? __('Message from :name, pinned', ['name' => $team_author_name]) : __('Message from :name', ['name' => $team_author_name])">
                             <x-slot:avatar>
@@ -58,7 +73,10 @@
                 {{ __('Everyone who works in :mailbox can read and write here.', ['mailbox' => $mailbox->name]) }}
             </x-fruit::empty-state>
         @endforelse
-        <p class="f-help team-room__no-results" x-show="query && !has($root, query)" x-cloak>{{ __('No Messages Found') }}</p>
+        @if ($has_newer)
+            <div class="team-room__pager"><x-fruit::button variant="ghost" size="small" x-on:click="preservePosition(() => $wire.loadNewer())" wire:loading.attr="disabled" wire:target="loadNewer">{{ __('Load newer messages') }}</x-fruit::button></div>
+        @endif
+        <p class="f-help team-room__no-results" x-show="query && !has($root, query)" x-cloak>{{ __('No matches in loaded messages') }}</p>
     </x-fruit::history>
 
     <x-fruit::composer class="team-room__composer" wire:submit="send">

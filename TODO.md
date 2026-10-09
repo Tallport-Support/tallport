@@ -134,11 +134,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: undo, cloning, and OAuth disconnect submit CSRF-protected POST forms. The former GET URLs remain named for module compatibility but return 405 without changing state, even if a token appears in the query. FruitUI's toast now presents a one-click Undo form only for the remaining undo window; unauthorized and invalid-token POSTs are covered by tests.
 
-- [ ] **17 · P2 · Tallport with FruitUI — Make older team messages reachable.**
+- [x] **17 · P2 · Tallport with FruitUI — Make older team messages reachable.**
 
   Evidence: `TeamChat::render()` loads only the last 300 messages (`app/Livewire/TeamChat.php:27`), with no older-page action. Search filters only that rendered DOM. `TeamChatDetails` lists all pinned messages, while `resources/views/livewire/team-chat-details.blade.php:29` only scrolls if the target already exists. A sufficiently old pinned message therefore has a button that does nothing.
 
   Add bounded history loading and a server-authorized jump that loads the target message before focusing it. State the search scope accurately; provide an intentional strategy for older encrypted history instead of reporting a complete-looking “No Messages Found.” Preserve the reader's position through prepends using FruitUI's history behavior. Acceptance: with more than 300 messages, an old pin opens, older messages can be read, and loading history does not jump a reader to the bottom.
+
+  Completed: the room pages through bounded history, pinned links load and focus older messages, and search labels say they cover loaded messages. FruitUI preserves the reader's position while paging. New arrivals remain unread while the reader is away from the latest messages; reaching the latest messages acknowledges them and updates the sidebar count.
 
 - [ ] **18 · P2 · Tallport — Restore zoom and name attachment previews.**
 

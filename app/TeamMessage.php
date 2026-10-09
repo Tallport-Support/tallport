@@ -96,12 +96,14 @@ class TeamMessage extends Model
     }
 
     /**
-     * The user has read the room up to its newest message.
+     * Record the user's highest read message, without moving the marker backwards.
      */
-    public static function markRead($mailbox_id, $user_id)
+    public static function markRead($mailbox_id, $user_id, $through_id = null)
     {
-        $last_id = (int) self::where('mailbox_id', $mailbox_id)->max('id');
-        \DB::table(self::READS_TABLE)->updateOrInsert(['mailbox_id' => $mailbox_id, 'user_id' => $user_id], ['last_read_id' => $last_id]);
+        $last_id = $through_id === null ? (int) self::where('mailbox_id', $mailbox_id)->max('id') : (int) $through_id;
+        \DB::table(self::READS_TABLE)->insertOrIgnore(['mailbox_id' => $mailbox_id, 'user_id' => $user_id, 'last_read_id' => $last_id]);
+        \DB::table(self::READS_TABLE)->where('mailbox_id', $mailbox_id)->where('user_id', $user_id)
+            ->where('last_read_id', '<', $last_id)->update(['last_read_id' => $last_id]);
     }
 
     /**

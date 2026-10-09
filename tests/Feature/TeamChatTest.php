@@ -36,7 +36,7 @@ class TeamChatTest extends FeatureTestCase
     public function testTheRoomIsForThoseWhoSeeTheMailbox()
     {
         $this->actingAs($this->ann)->get(route('mailboxes.team_chat', ['id' => $this->mailbox->id]))->assertOk()
-            ->assertSee('Support Team')->assertSee('Ann, Bob')->assertSee('aria-label="Search Messages"', false)->assertSee('team-room', false)
+            ->assertSee('Support Team')->assertSee('Ann, Bob')->assertSee('aria-label="Search loaded messages"', false)->assertSee('team-room', false)
             ->assertSee('data-fruit-trigger="@"', false)->assertSee('<option value="@Bob">Bob Ray</option>', false);
 
         $outsider = $this->createUser();
@@ -85,6 +85,82 @@ class TeamChatTest extends FeatureTestCase
         Livewire::actingAs($this->ann)->test(TeamChat::class, ['mailbox' => $this->mailbox])->call('togglePin', $second->id);
         $this->assertNull($second->fresh()->pinned_at);
         $this->assertStringContainsString('f-message--continued', Livewire::actingAs($this->ann)->test(TeamChat::class, ['mailbox' => $this->mailbox])->html());
+    }
+
+    public function testOlderMessagesAndPinsOpenInABoundedWindow()
+    {
+        $old = TeamMessage::create(['mailbox_id' => $this->mailbox->id, 'user_id' => $this->ann->id, 'body' => 'historic-exclusive', 'pinned_at' => now()]);
+        $rows = [];
+        for ($i = 1; $i < 620; $i++) {
+            $rows[] = [
+                'mailbox_id' => $this->mailbox->id,
+                'user_id' => $this->ann->id,
+                'body' => \Crypt::encryptString($i == 619 ? 'latest-exclusive' : 'Middle '.$i),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+        \DB::table('team_messages')->insert($rows);
+
+        $chat = Livewire::actingAs($this->bob)->test(TeamChat::class, ['mailbox' => $this->mailbox]);
+        $chat->assertDontSee('historic-exclusive')->assertSee('latest-exclusive')->assertSee('Load older messages');
+        $this->assertSame(300, substr_count($chat->html(), 'data-fruit-history-anchor='));
+
+        $chat->call('loadOlder')->assertDontSee('latest-exclusive')->assertSee('Load newer messages');
+        $this->assertSame(300, substr_count($chat->html(), 'data-fruit-history-anchor='));
+        $chat->call('loadOlder')->call('loadOlder')->call('loadOlder')->assertSee('historic-exclusive')->assertDontSee('Middle 300');
+        $this->assertLessThanOrEqual(300, substr_count($chat->html(), 'data-fruit-history-anchor='));
+        $chat->call('loadNewer')->assertSee('Middle 300')->assertDontSee('historic-exclusive');
+
+        $chat->call('showLatest')->assertSee('latest-exclusive')->assertDontSee('historic-exclusive');
+        $chat->call('jumpTo', $old->id)->assertSee('historic-exclusive')->assertDontSee('latest-exclusive')
+            ->assertDispatched('team-chat-focus', id: $old->id);
+        $details = Livewire::actingAs($this->bob)->test(\App\Livewire\TeamChatDetails::class, ['mailbox' => $this->mailbox]);
+        $details->assertSee('historic-exclusive')->assertSeeHtml("'team-chat-jump', { id: {$old->id} }");
+    }
+
+    public function testPinnedJumpCannotOpenAnotherMailboxMessage()
+    {
+        $other = $this->createMailbox([$this->ann]);
+        $foreign = TeamMessage::create(['mailbox_id' => $other->id, 'user_id' => $this->ann->id, 'body' => 'private message', 'pinned_at' => now()]);
+
+        Livewire::actingAs($this->bob)->test(TeamChat::class, ['mailbox' => $this->mailbox])
+            ->call('jumpTo', $foreign->id)->assertNotFound();
+        Livewire::actingAs($this->bob)->test(TeamChat::class, ['mailbox' => $this->mailbox])
+            ->call('markSeenThrough', $foreign->id)->assertNotFound();
+    }
+
+    public function testNewMessagesStayUnreadUntilTheVisibleLatestWindowIsAcknowledged()
+    {
+        $chat = Livewire::actingAs($this->bob)->test(TeamChat::class, ['mailbox' => $this->mailbox]);
+        $first = TeamMessage::create(['mailbox_id' => $this->mailbox->id, 'user_id' => $this->ann->id, 'body' => '@Bob first']);
+        $second = TeamMessage::create(['mailbox_id' => $this->mailbox->id, 'user_id' => $this->ann->id, 'body' => '@Bob second']);
+        $this->bob->notify(new TeamMentionNotification($first));
+        $this->bob->notify(new TeamMentionNotification($second));
+
+        $chat->dispatch('team-message-created')->assertDispatched('team-chat-refreshed')->assertSee('second');
+        $this->assertSame([$this->mailbox->id => 2], TeamMessage::unreadCounts($this->bob, [$this->mailbox->id]));
+        $chat->call('markSeenThrough', $first->id)->assertDispatched('team-chat-unread', unread: 1);
+        $this->assertSame([$this->mailbox->id => 1], TeamMessage::unreadCounts($this->bob, [$this->mailbox->id]));
+        $this->assertSame([$second->id], $this->bob->unreadNotifications()->get()->pluck('data.team_message_id')->all());
+        $chat->call('markSeenThrough', $second->id)->assertDispatched('team-chat-unread', unread: 0)
+            ->call('markSeenThrough', $first->id);
+        $this->assertSame([], TeamMessage::unreadCounts($this->bob, [$this->mailbox->id]));
+        $this->assertSame(0, $this->bob->unreadNotifications()->count());
+    }
+
+    public function testAnOlderWindowDoesNotAcknowledgeNewMessages()
+    {
+        for ($i = 0; $i < 301; $i++) {
+            TeamMessage::create(['mailbox_id' => $this->mailbox->id, 'user_id' => $this->ann->id, 'body' => 'Earlier '.$i]);
+        }
+        $chat = Livewire::actingAs($this->bob)->test(TeamChat::class, ['mailbox' => $this->mailbox])->call('loadOlder');
+        $new = TeamMessage::create(['mailbox_id' => $this->mailbox->id, 'user_id' => $this->ann->id, 'body' => 'Unseen arrival']);
+
+        $chat->dispatch('team-message-created')->assertDontSee('Unseen arrival')->call('markSeenThrough', $new->id);
+        $this->assertSame([$this->mailbox->id => 1], TeamMessage::unreadCounts($this->bob, [$this->mailbox->id]));
+        $chat->call('showLatest')->assertSee('Unseen arrival')->call('markSeenThrough', $new->id);
+        $this->assertSame([], TeamMessage::unreadCounts($this->bob, [$this->mailbox->id]));
     }
 
     public function testMessagesAreStoredEncrypted()
@@ -235,7 +311,7 @@ class TeamChatTest extends FeatureTestCase
     }
 
     /**
-     * A message arriving while the room is open is read; Details follow; a file can be
+     * An arrival waits for visible acknowledgement; Details follow; a file can be
      * taken off before sending, and nothing to send sends nothing.
      */
     public function testWhileTheRoomIsOpen()
@@ -246,6 +322,8 @@ class TeamChatTest extends FeatureTestCase
         $this->assertSame([$this->mailbox->id => 1], TeamMessage::unreadCounts($this->bob, [$this->mailbox->id]));
 
         $chat->dispatch('team-message-created')->assertSee('Lunch?');
+        $this->assertSame([$this->mailbox->id => 1], TeamMessage::unreadCounts($this->bob, [$this->mailbox->id]));
+        $chat->call('markSeenThrough', $message->id);
         $this->assertSame([], TeamMessage::unreadCounts($this->bob, [$this->mailbox->id]));
         $message->pinned_at = now();
         $message->save();

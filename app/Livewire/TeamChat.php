@@ -8,6 +8,7 @@ use App\TeamMessage;
 use FruitUI\Fruit;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Renderless;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -23,9 +24,10 @@ class TeamChat extends Component
     use WithFileUploads;
 
     /**
-     * How many of the latest messages the room shows.
+     * How many messages the room keeps in its visible history, and how far each page moves.
      */
     const SHOWN = 300;
+    const PAGE = 100;
 
     #[Locked]
     public $mailbox_id;
@@ -35,6 +37,12 @@ class TeamChat extends Component
      */
     #[Locked]
     public $first_new_id = 0;
+
+    /**
+     * The newest message in an older window; zero follows the latest messages.
+     */
+    #[Locked]
+    public $window_end_id = 0;
 
     public $body = '';
 
@@ -53,12 +61,24 @@ class TeamChat extends Component
     }
 
     /**
-     * A new message in the room (realtime): shown, and read.
+     * A new message in the room (realtime): show it; the browser reports when it is visible.
      */
     #[On('team-message-created')]
     public function refresh()
     {
-        $this->markRead();
+        $this->dispatch('team-chat-refreshed');
+    }
+
+    #[Renderless]
+    public function markSeenThrough($id)
+    {
+        $mailbox = $this->mailbox();
+        if ($this->window_end_id) {
+            return;
+        }
+        $message = TeamMessage::where('mailbox_id', $mailbox->id)->findOrFail($id);
+        $this->markRead($message->id);
+        $this->dispatch('team-chat-unread', unread: TeamMessage::unreadTotal(auth()->user()));
     }
 
     /**
@@ -72,6 +92,48 @@ class TeamChat extends Component
         $message->save();
         $this->dispatch('team-chat-changed');
         \App\Events\RealtimeTeamMessage::dispatchSelf($message);
+    }
+
+    public function loadOlder()
+    {
+        $mailbox = $this->mailbox();
+        $query = TeamMessage::where('mailbox_id', $mailbox->id);
+        if ($this->window_end_id) {
+            $query->where('id', '<=', $this->window_end_id);
+        }
+        $ids = $query->orderBy('id', 'desc')->limit(self::SHOWN)->pluck('id');
+        if ($ids->count() == self::SHOWN && TeamMessage::where('mailbox_id', $mailbox->id)->where('id', '<', $ids->last())->exists()) {
+            $this->window_end_id = $ids[self::PAGE];
+        }
+    }
+
+    public function loadNewer()
+    {
+        $mailbox = $this->mailbox();
+        if (!$this->window_end_id) {
+            return;
+        }
+        $ids = TeamMessage::where('mailbox_id', $mailbox->id)->where('id', '>', $this->window_end_id)
+            ->orderBy('id')->limit(self::PAGE)->pluck('id');
+        $this->window_end_id = $ids->count() == self::PAGE && TeamMessage::where('mailbox_id', $mailbox->id)->where('id', '>', $ids->last())->exists()
+            ? $ids->last() : 0;
+    }
+
+    public function showLatest()
+    {
+        $this->mailbox();
+        $this->window_end_id = 0;
+    }
+
+    #[On('team-chat-jump')]
+    public function jumpTo($id)
+    {
+        $mailbox = $this->mailbox();
+        $message = TeamMessage::where('mailbox_id', $mailbox->id)->whereNotNull('pinned_at')->findOrFail($id);
+        $newer = TeamMessage::where('mailbox_id', $mailbox->id)->where('id', '>', $message->id)
+            ->orderBy('id')->limit(intdiv(self::SHOWN, 2))->pluck('id');
+        $this->window_end_id = $newer->count() == intdiv(self::SHOWN, 2) ? $newer->last() : 0;
+        $this->dispatch('team-chat-focus', id: $message->id);
     }
 
     public function removeFile($index)
@@ -129,6 +191,7 @@ class TeamChat extends Component
         $this->body = '';
         $this->files = [];
         $this->first_new_id = 0;
+        $this->window_end_id = 0;
         $this->markRead();
 
         // Mentioned teammates are notified; everyone's room and unread count follow.
@@ -143,13 +206,21 @@ class TeamChat extends Component
         \Eventy::action('team_chat.message_created', $message);
     }
 
-    protected function markRead()
+    protected function markRead($through_id = null)
     {
         $user = auth()->user();
-        TeamMessage::markRead($this->mailbox_id, $user->id);
+        TeamMessage::markRead($this->mailbox_id, $user->id, $through_id);
         // Mentions in this room: seen.
-        $marked = $user->unreadNotifications()->where('type', \App\Notifications\TeamMentionNotification::class)
-            ->where('data', 'like', '%"mailbox_id":'.(int) $this->mailbox_id.',%')->update(['read_at' => now()]);
+        $mentions = $user->unreadNotifications()->where('type', \App\Notifications\TeamMentionNotification::class)
+            ->where('data', 'like', '%"mailbox_id":'.(int) $this->mailbox_id.',%');
+        if ($through_id !== null) {
+            $ids = $mentions->get(['id', 'data'])->filter(function ($notification) use ($through_id) {
+                return !empty($notification->data['team_message_id']) && $notification->data['team_message_id'] <= $through_id;
+            })->pluck('id');
+            $marked = $ids->isNotEmpty() ? $user->unreadNotifications()->whereIn('id', $ids)->update(['read_at' => now()]) : 0;
+        } else {
+            $marked = $mentions->update(['read_at' => now()]);
+        }
         if ($marked) {
             $user->clearWebsiteNotificationsCache();
         }
@@ -168,8 +239,19 @@ class TeamChat extends Component
         $mailbox = $this->mailbox();
         $user = auth()->user();
         $members = TeamMessage::members($mailbox);
-        $messages = TeamMessage::where('mailbox_id', $mailbox->id)->with(['user', 'attachments'])
-            ->orderBy('id', 'desc')->limit(self::SHOWN)->get()->reverse()->values();
+        $query = TeamMessage::where('mailbox_id', $mailbox->id)->with(['user', 'attachments']);
+        if ($this->window_end_id) {
+            $query->where('id', '<=', $this->window_end_id);
+        }
+        $messages = $query->orderBy('id', 'desc')->limit(self::SHOWN)->get()->reverse()->values();
+        if ($messages->isEmpty() && $this->window_end_id) {
+            $this->window_end_id = 0;
+            $messages = TeamMessage::where('mailbox_id', $mailbox->id)->with(['user', 'attachments'])
+                ->orderBy('id', 'desc')->limit(self::SHOWN)->get()->reverse()->values();
+        }
+        $has_older = $messages->isNotEmpty() && TeamMessage::where('mailbox_id', $mailbox->id)->where('id', '<', $messages->first()->id)->exists();
+        $has_newer = $this->window_end_id && $messages->isNotEmpty()
+            && TeamMessage::where('mailbox_id', $mailbox->id)->where('id', '>', $messages->last()->id)->exists();
 
         // Sections: a day each, and "New" from the first new message on.
         $sections = [];
@@ -194,9 +276,13 @@ class TeamChat extends Component
         }
 
         return view('livewire.team-chat', [
-            'mailbox'  => $mailbox,
-            'members'  => $members,
-            'sections' => $sections,
+            'mailbox'   => $mailbox,
+            'members'   => $members,
+            'sections'  => $sections,
+            'has_older' => $has_older,
+            'has_newer' => $has_newer,
+            'last_id'   => $messages->isNotEmpty() ? $messages->last()->id : 0,
+            'last_read_id' => TeamMessage::lastReadId($mailbox->id, $user->id),
         ]);
     }
 }

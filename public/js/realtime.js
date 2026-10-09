@@ -29,6 +29,23 @@ function maybeShowConnectionRestored()
 	var attr = function (name) {
 		return document.body.getAttribute('data-'+name);
 	};
+	var setTeamChatUnread = function (unread) {
+		var link = document.querySelector('.app-team-chat-link');
+		var badge = link && link.querySelector('.app-team-chat-badge');
+		if (!badge || typeof unread == 'undefined') {
+			return;
+		}
+		badge.textContent = unread;
+		badge.hidden = !unread;
+		if (unread) {
+			link.setAttribute('aria-label', link.getAttribute('data-label-unread').replace(':count', unread));
+		} else {
+			link.removeAttribute('aria-label');
+		}
+	};
+	window.addEventListener('team-chat-unread', function (event) {
+		setTeamChatUnread(event.detail.unread);
+	});
 
 	// The tab's title blinks until the window gets focus (a new message in the open conversation).
 	var title_timer = null;
@@ -383,22 +400,11 @@ function maybeShowConnectionRestored()
 					if (!data || data.mailbox_id != folders_mailbox_id) {
 						return;
 					}
-					// The open room shows it (and reads it); elsewhere the unread count follows.
+					// The open room may be showing older messages, so its unread count still follows.
 					if (attr('team_chat') == folders_mailbox_id) {
 						Livewire.dispatch('team-message-created');
-						return;
 					}
-					var link = document.querySelector('.app-team-chat-link');
-					var badge = link && link.querySelector('.app-team-chat-badge');
-					if (badge && typeof data.unread != 'undefined') {
-						badge.textContent = data.unread;
-						badge.hidden = !data.unread;
-						if (data.unread) {
-							link.setAttribute('aria-label', link.getAttribute('data-label-unread').replace(':count', data.unread));
-						} else {
-							link.removeAttribute('aria-label');
-						}
-					}
+					setTeamChatUnread(data.unread);
 				});
 			});
 		};

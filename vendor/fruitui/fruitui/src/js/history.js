@@ -10,12 +10,14 @@ export function fruitHistory({ threshold = 160 } = {}) {
   // Following the newest message, and the scroll position this helper last saw.
   let following = true;
   let top = 0;
+  let preserving = false;
   const distance = () => scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;
   return {
     awayFromLatest: false,
     init() {
       scroller = this.$el;
       stick = () => {
+        if (preserving) return;
         // A scroll not seen yet (scrollIntoView, then growth in the same frame) decides first.
         if (scroller.scrollTop !== top) following = distance() < 24;
         if (following) scroller.scrollTop = scroller.scrollHeight;
@@ -42,6 +44,37 @@ export function fruitHistory({ threshold = 160 } = {}) {
       pane = scroller.parentElement?.closest('.f-pane') ?? scroller.parentElement;
       pane?.addEventListener('submit', submit);
       stick();
+    },
+    /** Keep the first visible anchored message in place while an action replaces a bounded window. */
+    async preservePosition(action) {
+      const viewport = scroller.getBoundingClientRect();
+      const anchor = [...scroller.querySelectorAll('[data-fruit-history-anchor]')].find(
+        element => element.getBoundingClientRect().bottom > viewport.top,
+      );
+      const key = anchor?.getAttribute('data-fruit-history-anchor');
+      const offset = anchor?.getBoundingClientRect().top - viewport.top;
+      following = false;
+      preserving = true;
+      try {
+        return await action();
+      } finally {
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        if (key !== undefined && key !== null) {
+          const current = [...scroller.querySelectorAll('[data-fruit-history-anchor]')].find(
+            element => element.getAttribute('data-fruit-history-anchor') === key,
+          );
+          if (current) scroller.scrollTop += current.getBoundingClientRect().top - viewport.top - offset;
+        }
+        preserving = false;
+        top = scroller.scrollTop;
+        this.awayFromLatest = distance() > threshold;
+      }
+    },
+    /** Let a host load its actual latest page before this control scrolls there. */
+    requestLatest() {
+      if (scroller.dispatchEvent(new CustomEvent('fruit-history-latest', { bubbles: true, cancelable: true }))) {
+        this.jumpToLatest({ focus: true });
+      }
     },
     /** Return to the newest message; with focus, move focus there too (the button that asked hides). */
     jumpToLatest({ focus = false, smooth = true } = {}) {

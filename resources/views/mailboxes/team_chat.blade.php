@@ -28,7 +28,7 @@
     </div>
     <span class="f-toolbar__spacer"></span>
     {{-- Filters the messages in the room (livewire/team-chat), in the browser. --}}
-    <x-fruit::search :label="__('Search Messages')" :placeholder="__('Search')" class="team-room__search" x-data x-on:input="$dispatch('team-search', $event.target.value)" />
+    <x-fruit::search :label="__('Search loaded messages')" :placeholder="__('Search loaded messages')" class="team-room__search" x-data x-on:input="$dispatch('team-search', $event.target.value)" />
     {{-- Narrow: the details in place of the room. --}}
     <button type="button" class="f-button f-button--ghost f-button--icon app-inspector-toggle" x-data x-on:click="$el.closest('.app-workspace').dataset.view = 'inspector'; $nextTick(() => document.querySelector('.app-inspector-back')?.focus())" aria-controls="app-inspector" aria-label="{{ __('Show Chat Details') }}" title="{{ __('Show Chat Details') }}"><x-icon.info class="f-icon" aria-hidden="true" /></button>
 @endsection
