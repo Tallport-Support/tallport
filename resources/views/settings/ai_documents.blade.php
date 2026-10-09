@@ -102,7 +102,7 @@
                         </td>
                         <td>{{ $document->mailbox ? $document->mailbox->name : '#'.$document->mailbox_id }}</td>
                         <td>
-                            @if ($document->status == App\Ai\Document::STATUS_INDEXED)
+                            @if ($document->status == App\Ai\Document::STATUS_INDEXED && $document->embedding_fingerprint == $embedding_fingerprint)
                                 <x-fruit::badge tone="success">{{ __('Indexed') }}</x-fruit::badge>
                             @elseif ($document->status == App\Ai\Document::STATUS_FAILED)
                                 <x-fruit::badge tone="danger">{{ __('Failed') }}</x-fruit::badge>

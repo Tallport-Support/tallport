@@ -301,6 +301,20 @@
                 "type": "timestamp",
                 "nullable": true,
                 "default": "NULL"
+            },
+            "content_generation": {
+                "type": "varchar(36)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "embedding_fingerprint": {
+                "type": "varchar(64)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {

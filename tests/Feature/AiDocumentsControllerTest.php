@@ -117,7 +117,7 @@ class AiDocumentsControllerTest extends FeatureTestCase
             'content'        => '# Setup',
             'public_url'     => 'https://93.184.215.14/en/setup',
             'localized_urls' => ['ja' => 'https://93.184.215.14/ja/setup', 'zh' => '', 'ko' => null],
-        ])->assertStatus(201);
+        ])->assertStatus(202);
 
         $document = Document::first();
         $this->assertSame(['ja' => 'https://93.184.215.14/ja/setup'], $document->localized_urls);
@@ -143,20 +143,37 @@ class AiDocumentsControllerTest extends FeatureTestCase
 
     public function testApiReportsFailedIndexing()
     {
+        Bus::fake([AiIndexDocument::class]);
         Embeddings::fake(function () {
             throw new \RuntimeException('Embedding service is down');
         });
 
         $response = $this->api(['identifier' => 'faq', 'content' => '# FAQ']);
 
-        $response->assertStatus(500)->assertJson([
-            'status'   => 'error',
-            'message'  => 'Documentation was saved, but indexing failed.',
-            'document' => ['identifier' => 'faq', 'title' => 'FAQ'],
-            'error'    => ['type' => 'indexing_failed'],
-        ]);
-        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $response->json('error.detail'));
-        $this->assertSame($response->json('error.detail'), Document::first()->last_error);
-        $this->assertStringNotContainsString('Embedding service is down', $response->getContent());
+        $response->assertStatus(202)->assertJsonPath('indexing.status', 'queued');
+        Bus::assertDispatched(AiIndexDocument::class, function ($job) {
+            $job->handle();
+
+            return true;
+        });
+
+        $status = $this->withHeaders(['Authorization' => 'Bearer '.$this->token])->getJson($response->json('status_url'));
+        $status->assertOk()->assertJsonPath('document.status', Document::STATUS_FAILED);
+        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $status->json('document.last_error'));
+        $this->assertStringNotContainsString('Embedding service is down', $status->getContent());
+    }
+
+    public function testApiStatusIsPrivateToTheMailbox()
+    {
+        $document = $this->document('private');
+        $other_mailbox = $this->createMailbox();
+        $other_token = DocumentApiKey::issue($other_mailbox->id);
+        $url = route('ai.documents.api.show', ['id' => $document->id]);
+
+        $this->getJson($url)->assertStatus(401);
+        $this->withHeaders(['Authorization' => 'Bearer '.$other_token])->getJson($url)->assertStatus(404);
+        $this->withHeaders(['Authorization' => 'Bearer '.$this->token])->getJson($url)
+            ->assertOk()->assertJsonPath('document.id', $document->id)
+            ->assertJsonMissingPath('document.content');
     }
 }

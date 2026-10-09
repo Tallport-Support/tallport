@@ -3,8 +3,13 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\SettingsController;
+use App\Ai\Document;
+use App\Ai\Documents;
+use App\Jobs\AiIndexDocument;
 use App\Option;
 use App\SendLog;
+use Illuminate\Support\Facades\Bus;
+use Laravel\Ai\Embeddings;
 use Tests\FeatureTestCase;
 
 /**
@@ -117,6 +122,32 @@ class SettingsControllerTest extends FeatureTestCase
         $this->postForm('/app-settings/ai', ['settings' => ['aiassistant.documentation.embedding_provider' => 'no-such-provider']]);
         Option::$cache = [];
         $this->assertSame('openai', Option::get('aiassistant.documentation.embedding_provider'));
+    }
+
+    public function testChangingEmbeddingSettingsQueuesExistingDocumentsAgain()
+    {
+        Option::set('aiassistant.api_key', encrypt('sk-test'));
+        $mailbox = $this->createMailbox();
+        $document = new Document();
+        $document->mailbox_id = $mailbox->id;
+        $document->title = 'Guide';
+        $document->source_type = Document::SOURCE_TYPE_API;
+        $document->source_url = 'api://guide';
+        $document->enabled = true;
+        $document->setContent('Android guide.');
+        $document->save();
+        Embeddings::fake(fn ($prompt) => array_fill(0, count($prompt->inputs), [1.0, 0.0, 0.1]));
+        Documents::index($document);
+        $old_fingerprint = $document->fresh()->embedding_fingerprint;
+        Bus::fake([AiIndexDocument::class]);
+
+        $this->postForm('/app-settings/ai', ['settings' => [
+            'aiassistant.documentation.embedding_base_url' => 'https://embed.example.org/v1/',
+        ]])->assertSessionHasNoErrors()->assertRedirect(route('settings', ['section' => 'ai']));
+
+        $this->assertNotSame($old_fingerprint, Documents::embeddingFingerprint());
+        $this->assertSame(Document::STATUS_PENDING, $document->fresh()->status);
+        Bus::assertDispatched(AiIndexDocument::class, fn ($job) => $job->document_id == $document->id);
     }
 
     /**

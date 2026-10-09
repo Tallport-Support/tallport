@@ -47,18 +47,23 @@ class AiIndexDocuments extends Command
         foreach ($documents->get() as $document) {
             try {
                 if ($this->option('fetch') && $document->source_type == Document::SOURCE_TYPE_URL) {
-                    Documents::refetch($document);
+                    try {
+                        Documents::refetch($document);
+                    } catch (\Throwable $e) {
+                        Documents::failIfCurrent($document->id, $document->content_generation, Documents::embeddingFingerprint(), $e);
+
+                        throw $e;
+                    }
                 }
                 if (!$this->option('force') && !Documents::needsIndexing($document)) {
                     continue;
                 }
                 $count = Documents::index($document, true);
-                $this->line('#'.$document->id.' '.$document->title.': '.$count.' chunks');
+                if ($count !== null) {
+                    $this->line('#'.$document->id.' '.$document->title.': '.$count.' chunks');
+                }
             } catch (\Throwable $e) {
                 $failed = true;
-                $document->status = Document::STATUS_FAILED;
-                $document->last_error = mb_substr($e->getMessage(), 0, 2000);
-                $document->save();
                 $this->error('#'.$document->id.' '.$document->title.': '.$e->getMessage());
             }
         }

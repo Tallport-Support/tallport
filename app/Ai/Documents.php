@@ -119,14 +119,37 @@ class Documents
      */
     public static function refetch(Document $document, ?float $deadline = null)
     {
+        $generation = $document->content_generation;
+        $source_url = $document->source_url;
         $markdown = self::fetch($document->source_url, $deadline);
-        if ($markdown['hash'] !== $document->content_hash) {
-            $document->title = mb_substr($markdown['title'], 0, 191);
-            $document->content = $markdown['content'];
-            $document->content_hash = $markdown['hash'];
-            $document->status = Document::STATUS_PENDING;
-            $document->save();
-        }
+        \DB::transaction(function () use ($document, $generation, $source_url, $markdown) {
+            $current = Document::whereKey($document->id)->lockForUpdate()->first();
+            if (!$current || !$current->enabled || $current->content_generation !== $generation || $current->source_url !== $source_url) {
+                return;
+            }
+            if ($current->setContent($markdown['content'])) {
+                $current->title = mb_substr($markdown['title'], 0, 191);
+                $current->save();
+            }
+        });
+        $document->refresh();
+    }
+
+    /**
+     * The provider, endpoint, model, dimensions and chunking used to make vectors.
+     */
+    public static function embeddingFingerprint()
+    {
+        $provider = Settings::embeddingProvider();
+
+        return hash('sha256', json_encode([
+            'provider' => $provider,
+            'endpoint' => Settings::embeddingBaseUrl() ?: Providers::PRESETS[$provider]['base_url'],
+            'model' => Settings::embeddingModel(),
+            'dimensions' => config('ai.providers.'.Providers::EMBEDDINGS.'.models.embeddings.dimensions'),
+            'chunk_size' => Settings::chunkSize(),
+            'chunk_overlap' => Settings::chunkOverlap(),
+        ], JSON_THROW_ON_ERROR));
     }
 
     /**
@@ -135,7 +158,30 @@ class Documents
     public static function needsIndexing(Document $document)
     {
         return $document->status !== Document::STATUS_INDEXED
+            || $document->embedding_fingerprint !== self::embeddingFingerprint()
             || !$document->chunks()->where('embedding_model', Settings::embeddingModel())->exists();
+    }
+
+    /**
+     * Queue existing documents whose vectors belong to an older embedding space.
+     */
+    public static function queueStale()
+    {
+        if (!self::available()) {
+            return;
+        }
+
+        $fingerprint = self::embeddingFingerprint();
+        Document::where('enabled', true)->where(function ($query) use ($fingerprint) {
+            $query->whereNull('embedding_fingerprint')->orWhere('embedding_fingerprint', '!=', $fingerprint);
+        })->chunkById(100, function ($documents) {
+            foreach ($documents as $document) {
+                $document->status = Document::STATUS_PENDING;
+                $document->last_error = null;
+                $document->save();
+                \App\Jobs\AiIndexDocument::dispatch($document->id);
+            }
+        });
     }
 
     /**
@@ -144,10 +190,17 @@ class Documents
     public static function index(Document $document, $force = false, ?float $deadline = null)
     {
         $deadline = $deadline ?? microtime(true) + 180;
+        $document = $document->fresh();
+        if (!$document || !$document->enabled) {
+            return null;
+        }
         if (!$force && !self::needsIndexing($document)) {
             return $document->chunks()->count();
         }
 
+        $generation = $document->content_generation;
+        $content_hash = $document->content_hash;
+        $fingerprint = self::embeddingFingerprint();
         try {
             $chunks = self::chunks((string) $document->content, Settings::chunkSize(), Settings::chunkOverlap());
             if (!$chunks) {
@@ -156,10 +209,18 @@ class Documents
             $embeddings = self::embed($chunks, $deadline);
             $model = Settings::embeddingModel();
 
-            \DB::transaction(function () use ($document, $chunks, $embeddings, $model) {
-                $document->chunks()->delete();
+            // Workers cache options between requests; see the latest settings before commit.
+            \Option::$cache = [];
+            $committed = \DB::transaction(function () use ($document, $generation, $content_hash, $fingerprint, $chunks, $embeddings, $model) {
+                $current = Document::whereKey($document->id)->lockForUpdate()->first();
+                if (!$current || !$current->enabled || $current->content_generation !== $generation
+                    || $current->content_hash !== $content_hash || self::embeddingFingerprint() !== $fingerprint) {
+                    return false;
+                }
+
+                $current->chunks()->delete();
                 foreach ($chunks as $i => $chunk) {
-                    $document->chunks()->create([
+                    $current->chunks()->create([
                         'chunk_index'     => $i,
                         'content'         => $chunk,
                         'content_hash'    => hash('sha256', $chunk),
@@ -168,20 +229,60 @@ class Documents
                         'embedding_model' => $model,
                     ]);
                 }
-                $document->status = Document::STATUS_INDEXED;
-                $document->last_indexed_at = now();
-                $document->last_error = null;
-                $document->save();
+                $current->status = Document::STATUS_INDEXED;
+                $current->embedding_fingerprint = $fingerprint;
+                $current->last_indexed_at = now();
+                $current->last_error = null;
+                $current->save();
+
+                return true;
             });
         } catch (\Throwable $e) {
-            $document->status = Document::STATUS_FAILED;
-            $document->last_error = Errors::message($e, 'Indexing document '.$document->id.':');
-            $document->save();
+            self::failIfCurrent($document->id, $generation, $fingerprint, $e);
 
             throw $e;
         }
 
+        if (!$committed) {
+            self::queueCurrent($document->id);
+
+            return null;
+        }
+
         return count($chunks);
+    }
+
+    /**
+     * A late error must not replace a newer document's indexing state.
+     */
+    public static function failIfCurrent($document_id, $generation, $fingerprint, \Throwable $error, $pending_only = false)
+    {
+        \Option::$cache = [];
+        $current = \DB::transaction(function () use ($document_id, $generation, $fingerprint, $error, $pending_only) {
+            $document = Document::whereKey($document_id)->lockForUpdate()->first();
+            if (!$document || !$document->enabled || ($pending_only && $document->status !== Document::STATUS_PENDING)) {
+                return null;
+            }
+            if ($document->content_generation !== $generation || self::embeddingFingerprint() !== $fingerprint) {
+                return $document->id;
+            }
+
+            $document->status = Document::STATUS_FAILED;
+            $document->last_error = Errors::message($error, 'Indexing document '.$document->id.':');
+            $document->save();
+
+            return null;
+        });
+        if ($current) {
+            self::queueCurrent($current);
+        }
+    }
+
+    protected static function queueCurrent($document_id)
+    {
+        if (self::available() && Document::whereKey($document_id)->where('enabled', true)->exists()) {
+            \App\Jobs\AiIndexDocument::dispatch($document_id);
+        }
     }
 
     /**
@@ -201,7 +302,7 @@ class Documents
             if ($remaining < 1) {
                 throw new \RuntimeException('AI document deadline exceeded');
             }
-            $response = Embeddings::for($batch)->timeout(min(120, $remaining))->generate(Providers::EMBEDDINGS, Settings::embeddingModel());
+            $response = Embeddings::for($batch)->cache(0)->timeout(min(120, $remaining))->generate(Providers::EMBEDDINGS, Settings::embeddingModel());
             if (count($response->embeddings) !== count($batch)) {
                 throw new \Exception('Embeddings count does not match chunk count');
             }
@@ -270,12 +371,14 @@ class Documents
         }
         $query = self::embed([$question], $deadline)[0];
         $locale = in_array($locale, Document::SUPPORTED_LOCALES) ? $locale : Document::CANONICAL_LOCALE;
+        $fingerprint = self::embeddingFingerprint();
 
         $results = [];
         DocumentChunk::with('document')
             ->where('embedding_model', Settings::embeddingModel())
-            ->whereHas('document', function ($q) use ($mailbox_id) {
-                $q->where('mailbox_id', $mailbox_id)->where('enabled', true)->where('status', Document::STATUS_INDEXED);
+            ->whereHas('document', function ($q) use ($mailbox_id, $fingerprint) {
+                $q->where('mailbox_id', $mailbox_id)->where('enabled', true)->where('status', Document::STATUS_INDEXED)
+                    ->where('embedding_fingerprint', $fingerprint);
             })
             ->orderBy('id')
             ->chunk(200, function ($chunks) use (&$results, $query, $locale) {

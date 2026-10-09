@@ -135,20 +135,15 @@ class KbArticle extends Model
             return;
         }
         $content = $this->documentContent();
-        $hash = hash('sha256', $content);
         foreach ($mailbox_ids as $mailbox_id) {
             $document = Document::firstOrNew(['mailbox_id' => $mailbox_id, 'source_identifier' => $identifier]);
             $document->source_type = self::DOCUMENT_SOURCE_TYPE;
             $document->source_url = 'kb://'.$this->id;
             $document->title = mb_substr($this->title, 0, 191);
             $document->enabled = true;
-            if ($document->content_hash !== $hash) {
-                $document->content = $content;
-                $document->content_hash = $hash;
-                $document->status = Document::STATUS_PENDING;
-            }
+            $document->setContent($content);
             $document->save();
-            if ($document->status != Document::STATUS_INDEXED && \App\Ai\Settings::isConfigured() && \App\Ai\Documents::available()) {
+            if (\App\Ai\Documents::needsIndexing($document) && \App\Ai\Settings::isConfigured() && \App\Ai\Documents::available()) {
                 \App\Jobs\AiIndexDocument::dispatch($document->id);
             }
         }

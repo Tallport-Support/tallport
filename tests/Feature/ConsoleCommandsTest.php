@@ -3,12 +3,15 @@
 namespace Tests\Feature;
 
 use App\ActivityLog;
+use App\Ai\Document;
 use App\Conversation;
 use App\Folder;
 use App\Option;
 use App\SendLog;
 use App\User;
+use App\Jobs\AiIndexDocument;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Bus;
 use Tests\FeatureTestCase;
 
 /**
@@ -278,9 +281,21 @@ class ConsoleCommandsTest extends FeatureTestCase
 
     public function testAfterAppUpdateAndBuildRunTheirSteps()
     {
+        $document = new Document();
+        $document->mailbox_id = $this->createMailbox()->id;
+        $document->source_type = Document::SOURCE_TYPE_API;
+        $document->source_url = 'api://guide';
+        $document->title = 'Guide';
+        $document->enabled = true;
+        $document->setContent('Android guide.');
+        $document->save();
+        Bus::fake([AiIndexDocument::class]);
+
         $this->runCommand('tallport:after-app-update');
         $this->assertCommandCalled('tallport:clear-cache');
         $this->assertCommandCalled('migrate');
+        $this->assertSame(Document::STATUS_PENDING, $document->fresh()->status);
+        Bus::assertDispatched(AiIndexDocument::class, fn ($job) => $job->document_id == $document->id);
 
         $this->runCommand('tallport:build');
         $this->assertCommandCalled('tallport:generate-vars');

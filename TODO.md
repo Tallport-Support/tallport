@@ -94,11 +94,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: AI document and customer-context responses stop at their byte limits during transfer; customer-context requests do not follow redirects; document fetches pin checked public addresses on each redirect. Admin-configured customer-context URLs remain valid for private integrations. Nostr kind 15 URL-based file messages and API `fileUrl` attachments are rejected, while Nostr inline tags and API inline `data` attachments remain supported. Photo savers already decode image bytes and re-encode them as JPEG. Address checks for remote photo URLs still matter before image validation, since validation happens only after fetching the URL.
 
-- [ ] **12 · P2 · Tallport — Queue document indexing and commit only the generation that was indexed.**
+- [x] **12 · P2 · Tallport — Queue document indexing and commit only the generation that was indexed.**
 
   Evidence: `AiDocumentsController::api()` calls `Documents::index()` synchronously (`app/Http/Controllers/AiDocumentsController.php:164`), despite an existing `AiIndexDocument` job. Indexing can perform multiple 120-second embedding requests. `Documents::index()` later replaces chunks and marks the document indexed without checking whether its content changed during those requests. Chunks identify their embedding space only by model name, so changing an endpoint/provider under the same model name can reuse incompatible vectors.
 
   Accept and queue work, expose its status, and compare the content generation before replacing chunks. Record an embedding configuration fingerprint including provider/endpoint, model, and relevant dimensional settings. Schedule a fresh generation if content changed while work was running. Acceptance: slow indexing does not occupy the ingestion request; an old result never marks newer content indexed; changing embedding configuration invalidates the affected index.
+
+  Completed: the documentation API queues indexing, returns HTTP 202 with a status URL, and exposes mailbox-scoped status polling. Content revisions guard chunk replacement and late failures; changed content and embedding settings queue fresh jobs. Search excludes vectors from older provider, endpoint, model, dimension, or chunk configurations. Settings saves and app updates enqueue stale documents, including pre-migration records.
 
 - [ ] **13 · P2 · Tallport — Enforce chunk limits and keep retrieval memory bounded.**
 

@@ -60,6 +60,8 @@ class AfterAppUpdate extends Command
         }
         $this->call('queue:restart');
 
+        \App\Ai\Documents::queueStale();
+
         // System Status says for a while that stopped commands are expected to restart.
         \Option::set('app_updated_at', time());
 

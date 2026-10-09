@@ -523,6 +523,8 @@ class SettingsController extends Controller
 
         $request = \Eventy::filter('settings.before_save', $request, $section, $settings);
 
+        $embedding_fingerprint = $section == 'ai' ? \App\Ai\Documents::embeddingFingerprint() : null;
+
         $cc_required = false;
         $restart_workers = false;
         $settings_params = $this->getSectionParams($section, 'settings');
@@ -610,6 +612,11 @@ class SettingsController extends Controller
         } elseif ($restart_workers) {
             // Queue workers read the settings when they start.
             \Helper::queueWorkerRestart();
+        }
+
+        if ($embedding_fingerprint !== null && $embedding_fingerprint !== \App\Ai\Documents::embeddingFingerprint()
+            && \App\Ai\Documents::available()) {
+            \App\Ai\Documents::queueStale();
         }
 
         // \Helper::clearCache prevents \Session::flash() from displaying.

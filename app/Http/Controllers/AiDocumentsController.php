@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Ai\Document;
 use App\Ai\DocumentApiKey;
 use App\Ai\Documents;
-use App\Ai\Errors;
 use App\Jobs\AiIndexDocument;
 use App\Mailbox;
 use Illuminate\Http\Request;
@@ -24,6 +23,7 @@ class AiDocumentsController extends Controller
             'documents' => Document::with('mailbox')->withCount('chunks')->orderBy('mailbox_id')->orderBy('title')->get(),
             'mailboxes' => Mailbox::orderBy('name')->get(),
             'api_keys'  => DocumentApiKey::all()->keyBy('mailbox_id'),
+            'embedding_fingerprint' => Documents::embeddingFingerprint(),
         ]);
     }
 
@@ -108,15 +108,10 @@ class AiDocumentsController extends Controller
 
     /**
      * Push a document (Markdown) for a mailbox: Authorization: Bearer <key>.
-     * The document is indexed right away.
      */
     public function api(Request $request)
     {
-        $token = trim((string) $request->header('Authorization'));
-        if (stripos($token, 'Bearer ') === 0) {
-            $token = trim(substr($token, 7));
-        }
-        $api_key = DocumentApiKey::findByToken($token);
+        [$api_key, $token] = $this->apiKey($request);
         if (!$api_key) {
             return response()->json(['status' => 'error', 'message' => $token === '' ? 'Missing Authorization bearer token.' : 'Invalid Authorization bearer token.'], 401);
         }
@@ -145,12 +140,7 @@ class AiDocumentsController extends Controller
         $document->localized_urls = $this->localizedUrls($data, $public_url);
         $document->enabled = !array_key_exists('enabled', $data) || filter_var($data['enabled'], FILTER_VALIDATE_BOOLEAN);
         $document->metadata = ['api_identifier' => $identifier, 'submitted_at' => now()->toDateTimeString(), 'has_public_url' => (bool) $public_url];
-        $content_changed = $document->content_hash !== hash('sha256', $content);
-        $document->content = $content;
-        $document->content_hash = hash('sha256', $content);
-        if ($created || $content_changed) {
-            $document->status = Document::STATUS_PENDING;
-        }
+        $document->setContent($content);
         $document->save();
 
         $api_key->last_used_at = now();
@@ -160,17 +150,11 @@ class AiDocumentsController extends Controller
         if (!Documents::available()) {
             $indexing = ['status' => 'skipped', 'message' => 'The embedding provider does not support embeddings'];
         } elseif ($document->enabled) {
-            try {
-                $indexing = Documents::needsIndexing($document)
-                    ? ['status' => 'indexed', 'message' => Documents::index($document).' chunks']
-                    : ['status' => 'skipped', 'message' => 'Document is unchanged'];
-            } catch (\Throwable $e) {
-                return response()->json([
-                    'status'   => 'error',
-                    'message'  => 'Documentation was saved, but indexing failed.',
-                    'document' => $this->apiDocument($document->fresh()),
-                    'error'    => ['type' => 'indexing_failed', 'detail' => Errors::message($e, 'Documentation API, document #'.$document->id.':')],
-                ], 500);
+            if (Documents::needsIndexing($document)) {
+                AiIndexDocument::dispatch($document->id);
+                $indexing = ['status' => 'queued', 'message' => 'Documentation is being indexed'];
+            } else {
+                $indexing = ['status' => 'skipped', 'message' => 'Document is unchanged'];
             }
         }
 
@@ -179,7 +163,39 @@ class AiDocumentsController extends Controller
             'message'  => $created ? 'Documentation created.' : 'Documentation updated.',
             'document' => $this->apiDocument($document->fresh()),
             'indexing' => $indexing,
-        ], $created ? ($indexing['status'] == 'skipped' ? 202 : 201) : 200);
+            'status_url' => route('ai.documents.api.show', ['id' => $document->id]),
+        ], $indexing['status'] == 'queued' || $created ? 202 : 200);
+    }
+
+    /**
+     * Poll a queued document without exposing another mailbox's documents.
+     */
+    public function apiShow(Request $request, $id)
+    {
+        [$api_key, $token] = $this->apiKey($request);
+        if (!$api_key) {
+            return response()->json(['status' => 'error', 'message' => $token === '' ? 'Missing Authorization bearer token.' : 'Invalid Authorization bearer token.'], 401);
+        }
+
+        $document = Document::where('mailbox_id', $api_key->mailbox_id)->find($id);
+        if (!$document) {
+            return response()->json(['status' => 'error', 'message' => 'Document not found.'], 404);
+        }
+
+        $api_key->last_used_at = now();
+        $api_key->save();
+
+        return response()->json(['status' => 'success', 'document' => $this->apiDocument($document)]);
+    }
+
+    protected function apiKey(Request $request)
+    {
+        $token = trim((string) $request->header('Authorization'));
+        if (stripos($token, 'Bearer ') === 0) {
+            $token = trim(substr($token, 7));
+        }
+
+        return [DocumentApiKey::findByToken($token), $token];
     }
 
     protected function apiErrors(array $data)
@@ -249,7 +265,9 @@ class AiDocumentsController extends Controller
             'identifier'      => $document->metadata['api_identifier'] ?? null,
             'source_type'     => $document->source_type,
             'source_url'      => $document->isPrivate() ? null : $document->source_url,
-            'status'          => $document->status,
+            'status'          => $document->status == Document::STATUS_INDEXED && $document->embedding_fingerprint !== Documents::embeddingFingerprint()
+                ? Document::STATUS_PENDING : $document->status,
+            'enabled'         => $document->enabled,
             'chunks_count'    => $document->chunks()->count(),
             'content_hash'    => $document->content_hash,
             'last_indexed_at' => $document->last_indexed_at ? $document->last_indexed_at->toDateTimeString() : null,

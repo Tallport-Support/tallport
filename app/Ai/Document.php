@@ -46,6 +46,25 @@ class Document extends Model
         return $this->hasMany(DocumentChunk::class, 'document_id');
     }
 
+    /**
+     * A changed body is a new generation, even if it later matches an older one.
+     */
+    public function setContent($content)
+    {
+        $hash = hash('sha256', $content);
+        if ($this->content_hash === $hash) {
+            return false;
+        }
+
+        $this->content = $content;
+        $this->content_hash = $hash;
+        $this->content_generation = (string) \Str::uuid();
+        $this->status = self::STATUS_PENDING;
+        $this->last_error = null;
+
+        return true;
+    }
+
     public function isPrivate()
     {
         return str_starts_with((string) $this->source_url, 'api://') || str_starts_with((string) $this->source_url, 'kb://');

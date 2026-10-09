@@ -5,7 +5,9 @@ namespace Tests\Feature;
 use App\Ai\Document;
 use App\Ai\DocumentApiKey;
 use App\Ai\Documents;
+use App\Jobs\AiIndexDocument;
 use App\Option;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Laravel\Ai\Embeddings;
 use Tests\FeatureTestCase;
@@ -222,16 +224,25 @@ class AiDocumentsTest extends FeatureTestCase
             ->assertStatus(422)
             ->assertJsonValidationErrors(['identifier', 'content', 'public_url'], 'errors');
 
+        Bus::fake([AiIndexDocument::class]);
         $response = $this->api($token, [
             'identifier' => 'setup/android',
             'content'    => "# Android setup\n\nOpen the app on Android.",
             'public_url' => 'https://93.184.215.14/en/setup/android',
         ]);
-        $response->assertStatus(201)->assertJson([
+        $response->assertStatus(202)->assertJson([
             'status'   => 'success',
-            'document' => ['title' => 'Android setup', 'identifier' => 'setup/android', 'status' => 'indexed', 'chunks_count' => 1],
-            'indexing' => ['status' => 'indexed'],
+            'document' => ['title' => 'Android setup', 'identifier' => 'setup/android', 'status' => 'pending', 'chunks_count' => 0],
+            'indexing' => ['status' => 'queued'],
         ]);
+        $document = Document::find($response->json('document.id'));
+        $this->assertSame(route('ai.documents.api.show', ['id' => $document->id]), $response->json('status_url'));
+        Bus::assertDispatchedTimes(AiIndexDocument::class, 1);
+        $this->withHeaders(['Authorization' => 'Bearer '.$token])->getJson($response->json('status_url'))
+            ->assertOk()->assertJsonPath('document.status', 'pending');
+        Bus::dispatched(AiIndexDocument::class)->first()->handle();
+        $this->withHeaders(['Authorization' => 'Bearer '.$token])->getJson($response->json('status_url'))
+            ->assertOk()->assertJsonPath('document.status', 'indexed')->assertJsonPath('document.chunks_count', 1);
 
         // The same again: unchanged.
         $this->api($token, ['identifier' => 'setup/android', 'content' => "# Android setup\n\nOpen the app on Android.", 'public_url' => 'https://93.184.215.14/en/setup/android'])
@@ -240,7 +251,7 @@ class AiDocumentsTest extends FeatureTestCase
 
         // Without a public URL: private.
         $this->api($token, ['identifier' => 'internal notes', 'content' => 'Invoices are sent monthly.'])
-            ->assertStatus(201)
+            ->assertStatus(202)
             ->assertJson(['document' => ['source_url' => null]]);
         $this->assertSame('', Document::where('title', 'internal notes')->first()->localizedUrl('en'));
     }
@@ -256,16 +267,72 @@ class AiDocumentsTest extends FeatureTestCase
             throw new \RuntimeException('Provider failed: '.$key.' Authorization: Bearer '.$token);
         });
 
+        Bus::fake([AiIndexDocument::class]);
         $response = $this->api($token, ['identifier' => 'setup/android', 'content' => 'Restart the Android app.']);
+        $response->assertStatus(202)->assertJsonPath('indexing.status', 'queued');
+        Bus::dispatched(AiIndexDocument::class)->first()->handle();
 
-        $response->assertStatus(500)->assertJson(['status' => 'error', 'error' => ['type' => 'indexing_failed']]);
-        $detail = $response->json('error.detail');
+        $status = $this->withHeaders(['Authorization' => 'Bearer '.$token])->getJson($response->json('status_url'));
+        $status->assertOk()->assertJsonPath('document.status', 'failed');
+        $detail = $status->json('document.last_error');
         $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $detail);
         $this->assertSame($detail, Document::where('source_identifier', Document::apiSourceIdentifier('setup/android'))->value('last_error'));
         $this->assertStringNotContainsString($key, $response->getContent());
         $this->assertStringNotContainsString($token, $response->getContent());
+        $this->assertStringNotContainsString($key, $status->getContent());
+        $this->assertStringNotContainsString($token, $status->getContent());
         $reference = substr($detail, -13, 12);
         \Log::shouldHaveReceived('error')->withArgs(fn ($message) => str_contains($message, '['.$reference.']') && str_contains($message, 'Provider failed: [redacted] Authorization: Bearer [redacted]') && !str_contains($message, $key) && !str_contains($message, $token))->once();
+    }
+
+    public function testAnOlderIndexingJobCannotCommitAfterTheContentChanges()
+    {
+        $token = DocumentApiKey::issue($this->mailbox->id);
+        Bus::fake([AiIndexDocument::class]);
+        $response = $this->api($token, ['identifier' => 'guide', 'content' => 'Android guide.']);
+        $document = Document::find($response->json('document.id'));
+        $first_generation = $document->content_generation;
+        $changed = false;
+
+        Embeddings::fake(function ($prompt) use ($document, &$changed) {
+            if (!$changed) {
+                $changed = true;
+                $current = $document->fresh();
+                $current->setContent('Invoices guide.');
+                $current->save();
+                $current->setContent('Android guide.');
+                $current->save();
+                AiIndexDocument::dispatch($document->id);
+            }
+
+            return array_fill(0, count($prompt->inputs), [1.0, 0.0, 0.1]);
+        });
+
+        Bus::dispatched(AiIndexDocument::class)->first()->handle();
+        $this->assertNotSame($first_generation, $document->fresh()->content_generation);
+        $this->assertSame(Document::STATUS_PENDING, $document->fresh()->status);
+        $this->assertSame(0, $document->chunks()->count());
+        Bus::dispatched(AiIndexDocument::class)->last()->handle();
+        $this->assertSame(Document::STATUS_INDEXED, $document->fresh()->status);
+        $this->assertSame('Android guide.', $document->chunks()->first()->content);
+    }
+
+    public function testChangedEmbeddingConfigurationExcludesOldVectorsUntilReindexing()
+    {
+        $document = $this->addDocument();
+        $old_fingerprint = $document->fresh()->embedding_fingerprint;
+        $this->assertNotEmpty(Documents::search($this->mailbox->id, 'Android'));
+
+        Option::set('aiassistant.documentation.embedding_base_url', 'https://embed.example.org/v1');
+        Option::$cache = [];
+
+        $this->assertNotSame($old_fingerprint, Documents::embeddingFingerprint());
+        $this->assertTrue(Documents::needsIndexing($document->fresh()));
+        $this->assertSame([], Documents::search($this->mailbox->id, 'Android'));
+
+        Documents::index($document);
+        $this->assertSame(Documents::embeddingFingerprint(), $document->fresh()->embedding_fingerprint);
+        $this->assertNotEmpty(Documents::search($this->mailbox->id, 'Android'));
     }
 
     // Command.

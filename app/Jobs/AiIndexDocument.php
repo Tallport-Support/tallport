@@ -4,9 +4,8 @@ namespace App\Jobs;
 
 use App\Ai\Document;
 use App\Ai\Documents;
-use App\Ai\Errors;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -15,7 +14,7 @@ use Illuminate\Queue\InteractsWithQueue;
  * Fetch (URL documents) and index a document for the AI Assistant. A
  * failure is shown with the document.
  */
-class AiIndexDocument implements ShouldQueue, ShouldBeUnique
+class AiIndexDocument implements ShouldQueue, ShouldBeUniqueUntilProcessing
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
@@ -24,6 +23,10 @@ class AiIndexDocument implements ShouldQueue, ShouldBeUnique
     public $fetch;
 
     public $force;
+
+    public $content_generation;
+
+    public $embedding_fingerprint;
 
     public $tries = 1;
 
@@ -38,6 +41,8 @@ class AiIndexDocument implements ShouldQueue, ShouldBeUnique
         $this->document_id = $document_id;
         $this->fetch = $fetch;
         $this->force = $force;
+        $this->content_generation = Document::whereKey($document_id)->value('content_generation');
+        $this->embedding_fingerprint = Documents::embeddingFingerprint();
     }
 
     public function uniqueId()
@@ -53,27 +58,24 @@ class AiIndexDocument implements ShouldQueue, ShouldBeUnique
             return;
         }
 
-        try {
-            if ($this->fetch && $document->source_type == Document::SOURCE_TYPE_URL) {
+        if ($this->fetch && $document->source_type == Document::SOURCE_TYPE_URL) {
+            try {
                 Documents::refetch($document, $deadline);
+            } catch (\Throwable $e) {
+                Documents::failIfCurrent($document->id, $this->content_generation, $this->embedding_fingerprint, $e);
+
+                return;
             }
+        }
+        try {
             Documents::index($document, $this->force, $deadline);
         } catch (\Throwable $e) {
-            $document->status = Document::STATUS_FAILED;
-            $document->last_error = Errors::message($e, 'Indexing document '.$document->id.':');
-            $document->save();
+            // Documents::index() has recorded the failure if it still applies.
         }
     }
 
     public function failed(\Throwable $e)
     {
-        $document = Document::find($this->document_id);
-        if (!$document || $document->status != Document::STATUS_PENDING) {
-            return;
-        }
-
-        $document->status = Document::STATUS_FAILED;
-        $document->last_error = Errors::message($e, 'Indexing document '.$document->id.':');
-        $document->save();
+        Documents::failIfCurrent($this->document_id, $this->content_generation, $this->embedding_fingerprint, $e, true);
     }
 }

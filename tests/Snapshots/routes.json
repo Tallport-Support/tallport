@@ -45,6 +45,21 @@
     },
     {
         "methods": [
+            "GET"
+        ],
+        "uri": "ai-assistant/api/documents/{id}",
+        "name": "ai.documents.api.show",
+        "action": "AiDocumentsController@apiShow",
+        "middleware": [
+            "open",
+            "throttle:60,1"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
             "POST"
         ],
         "uri": "ai-assistant/conversations/{id}/draft-reply",
