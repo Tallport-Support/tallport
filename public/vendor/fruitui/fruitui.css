@@ -4869,17 +4869,20 @@
     outline-offset: calc(var(--f-focus-ring-width) * -1);
   }
   /* Overlay the existing divider, so adding resizing never consumes a grid track.
-     Inert without the optional helper; applications hide handles in compact views. */
+     Inert without the optional helper; applications hide handles in compact views.
+     The handle lies on the far side of the line: a scroll area's scrollbar sits at its own end,
+     against the line, so a handle across the line would take drags meant for that scrollbar.
+     The line stays draggable along its whole length. */
   .f-splitter {
     display: none;
     position: absolute;
     grid-column: var(--f-splitter-column, 1) / span 1;
-    grid-row: 1 / -1;
+    grid-row: var(--f-splitter-rows, 1 / -1);
     inset-block: 0;
     align-self: stretch;
     justify-self: end;
     width: 10px;
-    margin-inline-end: -5px;
+    margin-inline-end: -10px;
     z-index: 5;
     cursor: col-resize;
     touch-action: none;
@@ -4889,15 +4892,18 @@
   }
   .f-splitter[data-edge='start'] {
     justify-self: start;
-    margin-inline: -5px 0;
+    margin-inline: 0;
   }
+  /* Keyboard focus shows the line itself, centered on the divider: the handle's focus indicator. It
+     reaches past the handle's edge, so it never takes the pointer. */
   .f-splitter::after {
     content: '';
     position: absolute;
     inset-block: 0;
-    inset-inline-start: 4px;
-    width: 2px;
+    inset-inline-start: -2px;
+    width: 3px;
     background: transparent;
+    pointer-events: none;
   }
   /* The col-resize cursor tells a pointer it can drag; keyboard focus shows the divider line. A drag
      keeps focus on the handle (data-pointer) without it, until a key is pressed. */
@@ -4905,9 +4911,6 @@
     background: var(--f-accent);
   }
   .f-splitter:focus-visible {
-    outline-offset: calc(var(--f-focus-ring-width) * -1);
-  }
-  .f-splitter[data-pointer]:focus-visible {
     outline: none;
   }
   .f-workspace[data-resizing] {

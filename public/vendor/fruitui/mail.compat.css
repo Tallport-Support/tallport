@@ -147,6 +147,8 @@
   }
 .f-mail__list-splitter {
     --f-splitter-column: 2;
+    /* The toolbar spans the list and the reader, so the divider, and its handle, start below it. */
+    --f-splitter-rows: 2 / -1;
   }
 .f-mail[data-sidebar='hidden'] .f-mail__sidebar-splitter {
     display: none;
