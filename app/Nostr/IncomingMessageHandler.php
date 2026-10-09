@@ -89,7 +89,7 @@ class IncomingMessageHandler
         if ($cfg->hasPubkey($pubkey)) {
             return $this->finish($claim, NostrEvent::STATUS_OK, 'own message');
         }
-        if (!in_array($kind, [GiftWrap::KIND_DM, GiftWrap::KIND_FILE])) {
+        if ($kind !== GiftWrap::KIND_DM) {
             $this->log('unsupported kind '.$kind.' from '.Keys::shortNpub($pubkey));
 
             return $this->finish($claim, NostrEvent::STATUS_FAILED, 'unsupported kind');
@@ -102,16 +102,10 @@ class IncomingMessageHandler
 
         list($customer, $customerIsNew) = $this->findOrCreateCustomer($pubkey);
 
-        $attachments = [];
-        if ($kind === GiftWrap::KIND_FILE) {
-            $attachments = $this->downloadFile($rumor);
-            $text = $this->fileMessageText($rumor, $attachments);
-        } else {
-            // Modules may read files from the message's tags (an app's own formats).
-            $message = \Eventy::filter('nostr.incoming_message', ['text' => trim($rumor['content']), 'attachments' => []], $rumor, $cfg);
-            $text = (string) ($message['text'] ?? '');
-            $attachments = (array) ($message['attachments'] ?? []);
-        }
+        // Modules may read inline files from the message's tags (an app's own formats).
+        $message = \Eventy::filter('nostr.incoming_message', ['text' => trim($rumor['content']), 'attachments' => []], $rumor, $cfg);
+        $text = (string) ($message['text'] ?? '');
+        $attachments = (array) ($message['attachments'] ?? []);
         $body = $this->textToHtml($text);
         if ($body === '') {
             $body = '<i>'.__('(empty message)').'</i>';
@@ -198,7 +192,7 @@ class IncomingMessageHandler
             \App\Jobs\NostrTask::dispatch('fetch_profile', [$customer->id, $pubkey, $cfg->id]);
         }
 
-        $this->log(sprintf('%s from %s -> conversation #%s (%s)', $kind === GiftWrap::KIND_FILE ? 'file' : 'message',
+        $this->log(sprintf('message from %s -> conversation #%s (%s)',
         Keys::shortNpub($pubkey), $conversation->number, $new ? 'new' : 'reopened'));
 
         return $thread;
@@ -351,141 +345,6 @@ class IncomingMessageHandler
         }
 
         return nl2br($html);
-    }
-
-    /**
-     * Download and decrypt a kind 15 file message.
-     *
-     * @return array attachments in the format Thread::createExtended() accepts
-     */
-    public function downloadFile(array $rumor)
-    {
-        $url = trim($rumor['content']);
-        if (!preg_match('#^https?://#i', $url)) {
-            return [];
-        }
-        $algorithm = strtolower((string) EventBuilder::firstTag($rumor, 'encryption-algorithm'));
-        $mime = (string) EventBuilder::firstTag($rumor, 'file-type') ?: 'application/octet-stream';
-        $hash = strtolower((string) EventBuilder::firstTag($rumor, 'x'));
-        $size = (int) EventBuilder::firstTag($rumor, 'size');
-        $max = (int) config('nostr.max_attachment_size', 25 * 1024 * 1024);
-
-        if ($size > $max) {
-            $this->log('file too large: '.$size.' bytes');
-
-            return [];
-        }
-
-        $data = $this->download($url, $max);
-        if ($data === null) {
-            $this->log('could not download '.$url);
-
-            return [];
-        }
-
-        if ($algorithm && $algorithm !== 'none') {
-            if ($algorithm !== 'aes-gcm') {
-                $this->log('unsupported file encryption: '.$algorithm);
-
-                return [];
-            }
-            $key = @hex2bin((string) EventBuilder::firstTag($rumor, 'decryption-key'));
-            $nonce = @hex2bin((string) EventBuilder::firstTag($rumor, 'decryption-nonce'));
-            if (!$key || !$nonce || strlen($data) <= 16) {
-                $this->log('file message has no usable decryption key');
-
-                return [];
-            }
-            if ($hash && hash('sha256', $data) !== $hash) {
-                $this->log('encrypted file hash does not match the x tag, continuing');
-            }
-            $cipher = strlen($key) === 16 ? 'aes-128-gcm' : 'aes-256-gcm';
-            $plain = openssl_decrypt(substr($data, 0, -16), $cipher, $key, OPENSSL_RAW_DATA, $nonce, substr($data, -16));
-            if ($plain === false) {
-                $this->log('could not decrypt file from '.$url);
-
-                return [];
-            }
-            $data = $plain;
-        } elseif ($hash && hash('sha256', $data) !== $hash) {
-            $this->log('file hash does not match the x tag, continuing');
-        }
-
-        return [[
-            'file_name' => $this->fileName($url, $mime, $rumor['id'] ?? ''),
-            'mime_type' => $mime,
-            'data' => base64_encode($data),
-        ],];
-    }
-
-    protected function fileMessageText(array $rumor, array $attachments)
-    {
-        if ($attachments) {
-            return __('Sent a file').': '.$attachments[0]['file_name'];
-        }
-
-        return __('Sent an encrypted file that could not be retrieved').': '.trim($rumor['content']);
-    }
-
-    /**
-     * Download a file a customer sent (public addresses only).
-     *
-     * @return string|null file contents
-     */
-    protected function download($url, $max)
-    {
-        try {
-            // A customer's URL: only public http(s) addresses.
-            if (!preg_match('#^https?://#i', (string) $url) || !\Helper::checkUrlIpAndHost($url)) {
-                return null;
-            }
-            $response = \Illuminate\Support\Facades\Http::withOptions(\Helper::setGuzzleDefaultOptions([
-                'timeout'         => 60,
-                'connect_timeout' => 10,
-                'stream'          => true,
-                'allow_redirects' => [
-                    'max'         => 5,
-                    'protocols'   => ['http', 'https'],
-                    'on_redirect' => function ($request, $response, $uri) {
-                        if (!\Helper::checkUrlIpAndHost((string) $uri)) {
-                            throw new \Exception('Redirected to a non-public address');
-                        }
-                    },
-                ],
-            ]))->withUserAgent('Tallport-Nostr')->get($url);
-            if ($response->status() !== 200) {
-                return null;
-            }
-            if ((int) $response->header('Content-Length') > $max) {
-                return null;
-            }
-            $body = $response->toPsrResponse()->getBody();
-            $data = '';
-            while (!$body->eof()) {
-                $data .= $body->read(65536);
-                if (strlen($data) > $max) {
-                    return null;
-                }
-            }
-
-            return $data;
-        } catch (\Throwable $e) {
-            $this->log('download failed: '.$e->getMessage());
-
-            return null;
-        }
-    }
-
-    protected function fileName($url, $mime, $id = '')
-    {
-        $name = basename((string) parse_url($url, PHP_URL_PATH));
-        $name = preg_replace('/[^A-Za-z0-9._-]/', '_', $name);
-        if ($name !== '' && $name !== '.' && strpos($name, '.') > 0) {
-            return $name;
-        }
-        $ext = \Symfony\Component\Mime\MimeTypes::getDefault()->getExtensions((string) $mime)[0] ?? 'bin';
-
-        return 'nostr-file-'.substr($id ?: md5($url), 0, 8).'.'.$ext;
     }
 
     protected function log($message)

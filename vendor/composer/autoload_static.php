@@ -845,6 +845,7 @@ class ComposerStaticInit4bed6e813a5c8d513c131bb2c6cbcbb7
         'App\\Ai\\DraftJob' => __DIR__ . '/../..' . '/app/Ai/DraftJob.php',
         'App\\Ai\\Drafts' => __DIR__ . '/../..' . '/app/Ai/Drafts.php',
         'App\\Ai\\Errors' => __DIR__ . '/../..' . '/app/Ai/Errors.php',
+        'App\\Ai\\OutboundHttp' => __DIR__ . '/../..' . '/app/Ai/OutboundHttp.php',
         'App\\Ai\\PartialJson' => __DIR__ . '/../..' . '/app/Ai/PartialJson.php',
         'App\\Ai\\Providers' => __DIR__ . '/../..' . '/app/Ai/Providers.php',
         'App\\Ai\\Settings' => __DIR__ . '/../..' . '/app/Ai/Settings.php',

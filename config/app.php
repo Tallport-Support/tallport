@@ -472,18 +472,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | When proxy is specified, all requests to external resources are made vie this proxy.
-    |
-    | Enter your proxy address in .env file if freescout.net is not available from your server
-    | (access to freescout.net is required to obtain official modules).
-    |
-    | Example: https://123.45.67.89:4321
-    |--------------------------------------------------------------------------
-    */
-    'proxy' => env('APP_PROXY', ''),
-
-    /*
-    |--------------------------------------------------------------------------
     | Custom headers to add to all outgoing emails.
     | https://github.com/freescout-helpdesk/freescout/issues/2546#issuecomment-1380414908
     |--------------------------------------------------------------------------

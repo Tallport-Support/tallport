@@ -66,9 +66,6 @@ class CustomerContext
             if ($response['http_status'] < 200 || $response['http_status'] >= 300) {
                 throw new \Exception('HTTP error: '.$response['http_status']);
             }
-            if (strlen($response['body']) > self::MAX_RESPONSE_BYTES) {
-                throw new \Exception('JSON response is too large');
-            }
             $data = json_decode($response['body'], true);
             if (!is_array($data)) {
                 throw new \Exception('Invalid JSON response');
@@ -147,19 +144,32 @@ class CustomerContext
         if ($remaining < 1) {
             throw new \RuntimeException('AI draft deadline exceeded');
         }
-        $response = Http::withOptions(\Helper::setGuzzleDefaultOptions([
-            'timeout'         => min(15, $remaining),
-            'connect_timeout' => min(5, $remaining),
-            'allow_redirects' => ['max' => 3, 'protocols' => ['http', 'https']],
-        ]))
-            ->withUserAgent('Tallport-AI-Assistant')
-            ->withHeaders([$header => $signature, 'Accept' => 'application/json'])
-            ->withBody($json, 'application/json')
-            ->post($settings['url']);
+        $limited = OutboundHttp::limitedResponseOptions(self::MAX_RESPONSE_BYTES, $too_large);
+        try {
+            $response = Http::withOptions(\Helper::setGuzzleDefaultOptions(array_merge([
+                'timeout'         => min(15, $remaining),
+                'connect_timeout' => min(5, $remaining),
+                'allow_redirects' => false,
+            ], $limited)))
+                ->withUserAgent('Tallport-AI-Assistant')
+                ->withHeaders([$header => $signature, 'Accept' => 'application/json', 'Accept-Encoding' => 'identity'])
+                ->withBody($json, 'application/json')
+                ->post($settings['url']);
+        } catch (\Throwable $e) {
+            if ($too_large) {
+                throw new \RuntimeException('JSON response is too large', 0, $e);
+            }
+            throw $e;
+        }
+
+        $body = $response->body();
+        if (strlen($body) > self::MAX_RESPONSE_BYTES) {
+            throw new \RuntimeException('JSON response is too large');
+        }
 
         return [
             'http_status'      => $response->status(),
-            'body'             => $response->body(),
+            'body'             => $body,
             'payload'          => $json,
             'signature_header' => $header,
             'signature'        => $signature,

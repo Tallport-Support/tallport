@@ -490,6 +490,45 @@ class AiDraftsTest extends FeatureTestCase
         $this->assertSame(403, $this->postAjax($this->agent, '/ai-assistant/customer-context/test', ['mailbox_id' => $this->mailbox->id])->status());
     }
 
+    public function testCustomerContextDoesNotForwardSignedPayloadOnRedirect()
+    {
+        $admin = $this->createAdmin();
+        Http::fake(function ($request, $options) {
+            $this->assertFalse($options['allow_redirects']);
+            $this->assertTrue($request->hasHeader('X-FREESCOUT-SIGNATURE'));
+
+            return Http::response('', 307, ['Location' => 'https://other.example.org/collect']);
+        });
+
+        $response = $this->postAjax($admin, '/ai-assistant/customer-context/test', [
+            'mailbox_id' => $this->mailbox->id, 'email' => 'casey@customer.example.org', 'url' => 'https://crm.example.org/context', 'secret_key' => 'k',
+        ]);
+
+        $this->assertSame('error', $response->json('status'));
+        $this->assertSame(307, $response->json('http_status'));
+        Http::assertSentCount(1);
+        Http::assertNotSent(fn ($request) => str_contains($request->url(), 'other.example.org'));
+    }
+
+    public function testCustomerContextTransferStopsAtByteLimit()
+    {
+        $admin = $this->createAdmin();
+        Http::fake(function ($request, $options) {
+            $this->assertSame('identity', $request->header('Accept-Encoding')[0]);
+            $this->assertFalse(($options['progress'])(0, CustomerContext::MAX_RESPONSE_BYTES, 0, 0));
+            $this->assertTrue(($options['progress'])(0, CustomerContext::MAX_RESPONSE_BYTES + 1, 0, 0));
+
+            throw new \RuntimeException('Transfer aborted');
+        });
+
+        $response = $this->postAjax($admin, '/ai-assistant/customer-context/test', [
+            'mailbox_id' => $this->mailbox->id, 'email' => 'casey@customer.example.org', 'url' => 'https://crm.example.org/context', 'secret_key' => 'k',
+        ]);
+
+        $this->assertSame('error', $response->json('status'));
+        $this->assertMatchesRegularExpression('/^Error occurred \\(ID: [A-F0-9]{12}\\)$/', $response->json('msg'));
+    }
+
     public function testPlainTextSecretsAreEncrypted()
     {
         if (!class_exists('CreateAiDraftJobsTable')) {

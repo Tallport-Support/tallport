@@ -11,8 +11,7 @@ use Tests\FeatureTestCase;
  * getting them with the authorization code, and refreshing an expired one
  * before sending or fetching.
  *
- * The token endpoints are reached with curl through config('app.proxy'),
- * here a local proxy that answers in place of Microsoft and Google.
+ * A local proxy answers curl's token requests in place of Microsoft and Google.
  */
 class MailHelperOauthTest extends FeatureTestCase
 {
@@ -22,6 +21,8 @@ class MailHelperOauthTest extends FeatureTestCase
 
     protected $tmp_files = [];
 
+    protected $previous_https_proxy;
+
     protected function tearDown(): void
     {
         if ($this->proxy) {
@@ -30,6 +31,9 @@ class MailHelperOauthTest extends FeatureTestCase
         }
         foreach ($this->tmp_files as $file) {
             @unlink($file);
+        }
+        if ($this->previous_https_proxy !== null) {
+            putenv($this->previous_https_proxy === false ? 'https_proxy' : 'https_proxy='.$this->previous_https_proxy);
         }
 
         parent::tearDown();
@@ -88,7 +92,9 @@ PHP;
         $this->proxy = proc_open([PHP_BINARY, '-r', $code, '--', $pem, json_encode($responses)], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $this->proxy_pipes);
         $port = (int) fgets($this->proxy_pipes[1]);
 
-        config(['app.proxy' => 'http://127.0.0.1:'.$port, 'app.curl_ssl_verifypeer' => false]);
+        $this->previous_https_proxy = getenv('https_proxy');
+        putenv('https_proxy=http://127.0.0.1:'.$port);
+        config(['app.curl_ssl_verifypeer' => false]);
     }
 
     /**

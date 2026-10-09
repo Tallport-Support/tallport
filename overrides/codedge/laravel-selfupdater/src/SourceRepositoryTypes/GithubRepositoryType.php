@@ -325,15 +325,14 @@ class GithubRepositoryType extends AbstractRepositoryType implements SourceRepos
     }
 
     /**
-     * Download the release zip through the proxy. The total timeout for API
-     * calls is left out: the zip is large, and slow servers need longer.
+     * The total timeout for API calls is left out: the zip is large, and slow
+     * servers need longer.
      */
     protected function downloadRelease(Client $client, $source, $storagePath)
     {
         return $client->request('GET', $source, [
             'sink'            => $storagePath,
             'connect_timeout' => config('app.curl_connect_timeout'),
-            'proxy'           => config('app.proxy'),
         ]);
     }
 
@@ -345,7 +344,6 @@ class GithubRepositoryType extends AbstractRepositoryType implements SourceRepos
             ],
             'timeout' => config('app.curl_timeout'),
             'connect_timeout' => config('app.curl_connect_timeout'),
-            'proxy' => config('app.proxy'),
         ];
     }
 

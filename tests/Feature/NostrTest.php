@@ -16,7 +16,6 @@ use App\Nostr\NostrMailbox;
 use App\Nostr\OutgoingMessageSender;
 use App\SendLog;
 use App\Thread;
-use Illuminate\Support\Facades\Http;
 use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
@@ -230,33 +229,6 @@ class NostrTest extends FeatureTestCase
         $customer->fresh()->mergeWith($duplicate);
         $this->assertSame($customer->id, CustomerKey::byPubkey($duplicate_key)->customer_id);
         $this->assertSame(1, CustomerChannel::where('customer_id', $customer->id)->where('channel', 90)->count());
-    }
-
-    public function testEncryptedFilesAreDownloadedSafely()
-    {
-        $cfg = $this->setUpNostr();
-        $plain = random_bytes(1000);
-        $key = random_bytes(32);
-        $nonce = random_bytes(12);
-        $tag = '';
-        $encrypted = openssl_encrypt($plain, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $nonce, $tag).$tag;
-        Http::fake(['https://93.184.215.14/*' => Http::response($encrypted)]);
-        $file_tags = function ($url) use ($key, $nonce, $encrypted) {
-            return [['file-type', 'image/png'], ['encryption-algorithm', 'aes-gcm'], ['decryption-key', bin2hex($key)], ['decryption-nonce', bin2hex($nonce)], ['x', hash('sha256', $encrypted)], ['size', (string) strlen($encrypted)]];
-        };
-
-        $thread = $this->receive($cfg, 'https://93.184.215.14/f.bin', $file_tags(''), 15);
-        $attachment = $thread->attachments()->first();
-        $this->assertSame('image/png', $attachment->mime_type);
-        $this->assertSame($plain, $attachment->getFileContents());
-        $this->assertStringContainsString('Sent a file', $thread->body);
-
-        // A private address is not fetched.
-        $thread = $this->receive($cfg, 'http://127.0.0.1/secret.bin', $file_tags(''), 15);
-        $this->assertStringContainsString('could not be retrieved', $thread->body);
-        Http::assertNotSent(function ($request) {
-            return str_contains($request->url(), '127.0.0.1');
-        });
     }
 
     public function testEmailAutoReplyIsNotSentToNostrCustomers()

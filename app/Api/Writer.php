@@ -273,11 +273,30 @@ class Writer
     }
 
     /**
+     * API attachments must include their contents instead of a remote URL.
+     */
+    public static function attachmentUrlError($data)
+    {
+        foreach ((array) self::get($data, 'attachments', []) as $attachment) {
+            $url = self::get($attachment, 'fileUrl');
+            if ($url !== null && $url !== '') {
+                return ['Attachment URLs are not supported; send the file in `data`', 'attachments.fileUrl', 400];
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Add a customer reply, agent reply or note to a conversation, as the
      * app does.
      */
     public static function createThread(Conversation $conversation, $data, ApiAccess $access)
     {
+        if ($error = self::attachmentUrlError($data)) {
+            return [null, $error];
+        }
+
         $type = self::code(Thread::$types, self::get($data, 'type'), null);
         if (!$type) {
             return [null, ['`type` parameter is required', 'type', 400]];
@@ -327,7 +346,6 @@ class Writer
                 'file_name' => self::get($attachment, 'fileName'),
                 'mime_type' => self::get($attachment, 'mimeType'),
                 'data'      => self::get($attachment, 'data'),
-                'file_url'  => self::get($attachment, 'fileUrl'),
             ];
         }
 

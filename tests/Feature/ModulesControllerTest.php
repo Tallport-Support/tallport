@@ -125,10 +125,6 @@ class ModulesControllerTest extends FeatureTestCase
             usleep(20000);
         }
         config(['app.remote_host_white_list' => '127.0.0.1']);
-        // Tests send requests through a proxy that doesn't exist; the only URLs this test
-        // requests are the local server's.
-        config(['app.proxy' => '']);
-
         return 'http://127.0.0.1:'.$port;
     }
 

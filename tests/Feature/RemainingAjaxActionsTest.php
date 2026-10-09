@@ -224,8 +224,10 @@ class RemainingAjaxActionsTest extends FeatureTestCase
 
     // System and modules.
 
-    public function testCheckForUpdatesWithoutNetwork()
+    public function testCheckForUpdatesReportsFailure()
     {
+        \Updater::shouldReceive('getVersionAvailable')->once()->andThrow(new \RuntimeException('Update service unavailable'));
+
         $response = $this->postAjax($this->admin, '/system/ajax', ['action' => 'check_updates'])->json();
 
         $this->assertSame('error', $response['status']);

@@ -3,6 +3,9 @@
 namespace App\Ai;
 
 use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Handler\CurlHandler;
+use GuzzleHttp\Psr7\UriResolver;
+use GuzzleHttp\Psr7\Utils;
 use Laravel\Ai\Embeddings;
 
 /**
@@ -38,27 +41,36 @@ class Documents
     public static function fetch($url, ?float $deadline = null)
     {
         $markdown_url = Document::markdownUrlFor($url);
-        if (!Document::isHttpUrl($markdown_url) || !\Helper::checkUrlIpAndHost($markdown_url)) {
-            throw new \Exception(__('Only public http and https URLs can be fetched.'));
-        }
+        $url = $markdown_url;
+        for ($redirects = 0; $redirects <= 5; $redirects++) {
+            $connection = OutboundHttp::connectionOptions($url);
+            $remaining = $deadline === null ? 30 : (int) floor($deadline - microtime(true));
+            if ($remaining < 1) {
+                throw new \RuntimeException('AI document deadline exceeded');
+            }
+            $limited = OutboundHttp::limitedResponseOptions(self::MAX_DOCUMENT_BYTES, $too_large);
+            try {
+                $response = Http::withOptions(\Helper::setGuzzleDefaultOptions(array_merge([
+                    'timeout'         => min(30, $remaining),
+                    'connect_timeout' => min(10, $remaining),
+                    'allow_redirects' => false,
+                ], $connection, $limited)))->setHandler(new CurlHandler())
+                    ->withUserAgent('Tallport-AI-Assistant')->withHeaders(['Accept-Encoding' => 'identity'])->get($url);
+            } catch (\Throwable $e) {
+                if ($too_large) {
+                    throw new \Exception('Unable to fetch Markdown: larger than '.self::MAX_DOCUMENT_BYTES.' bytes', 0, $e);
+                }
+                throw $e;
+            }
 
-        $remaining = $deadline === null ? 30 : (int) floor($deadline - microtime(true));
-        if ($remaining < 1) {
-            throw new \RuntimeException('AI document deadline exceeded');
+            if (!in_array($response->status(), [301, 302, 303, 307, 308]) || !$response->header('Location')) {
+                break;
+            }
+            if ($redirects === 5) {
+                throw new \RuntimeException('Too many document redirects');
+            }
+            $url = (string) UriResolver::resolve(Utils::uriFor($url), Utils::uriFor($response->header('Location')));
         }
-        $response = Http::withOptions(\Helper::setGuzzleDefaultOptions([
-            'timeout'         => min(30, $remaining),
-            'connect_timeout' => min(10, $remaining),
-            'allow_redirects' => [
-                'max'         => 5,
-                'protocols'   => ['http', 'https'],
-                'on_redirect' => function ($request, $response, $uri) {
-                    if (!\Helper::checkUrlIpAndHost((string) $uri)) {
-                        throw new \Exception(__('Only public http and https URLs can be fetched.'));
-                    }
-                },
-            ],
-        ]))->withUserAgent('Tallport-AI-Assistant')->get($markdown_url);
 
         if (!$response->successful()) {
             throw new \Exception('Unable to fetch Markdown: HTTP '.$response->status());

@@ -24,7 +24,7 @@ use Tests\FeatureTestCase;
 
 /**
  * Nostr messages that don't make a normal conversation (broken, duplicate,
- * own or legacy ones, files that can't be fetched), replies that can't be
+ * own or legacy ones, URL-based files), replies that can't be
  * sent, the listener's status on the settings page and relays' size limits.
  * No relay is reachable here.
  */
@@ -33,7 +33,7 @@ class NostrMessagesTest extends FeatureTestCase
     const UNREACHABLE = 'ws://127.0.0.1:1';
 
     /**
-     * A public address (no DNS lookup needed) for files customers send.
+     * A URL sent in an unsupported file message.
      */
     const FILE_HOST = 'https://93.184.215.14';
 
@@ -190,103 +190,20 @@ class NostrMessagesTest extends FeatureTestCase
         $this->assertMatchesRegularExpression('#<td>1 <small class="f-muted">\(last [A-Z][a-z]{2} \d{1,2}, \d{4}\)</small></td>#', $html);
     }
 
-    // Files.
+    // URL-based file messages.
 
-    /**
-     * A kind 15 file message whose file can't be used: the conversation
-     * still gets a message saying so, and why is logged.
-     *
-     * @dataProvider unusableFiles
-     */
-    public function testFilesThatCanNotBeUsed($content, array $tags, $response, $log)
+    public function testFileMessageUrlsAreRejectedWithoutFetchingThem()
     {
-        config(['nostr.max_attachment_size' => 1000]);
-        Http::fake([self::FILE_HOST.'/*' => $response === 'refused' ? function () {
-            throw new \Illuminate\Http\Client\ConnectionException('Connection refused');
-        } : Http::response(...$response)]);
+        Http::fake();
 
-        $thread = $this->handler->handleGiftWrap($this->cfg, $this->wrap(['kind' => 15, 'content' => $content, 'tags' => array_merge([['p', $this->cfg->pubkey]], $tags)])[0]);
+        [$wrap] = $this->wrap(['kind' => GiftWrap::KIND_FILE, 'content' => self::FILE_HOST.'/file.bin']);
 
-        $this->assertSame(0, $thread->attachments()->count());
-        $this->assertStringContainsString('Sent an encrypted file that could not be retrieved', $thread->body);
-        if ($log !== null) {
-            $this->assertContains($log, $this->log);
-        }
-    }
-
-    public static function unusableFiles()
-    {
-        $url = self::FILE_HOST.'/file.bin';
-        $aes = [['encryption-algorithm', 'aes-gcm'], ['decryption-key', str_repeat('ab', 32)], ['decryption-nonce', str_repeat('cd', 12)]];
-
-        return [
-            'not a web address' => ['blossom:abc', [], ['x'], null],
-            'too large as stated' => [$url, [['size', '5000']], ['x'], 'file too large: 5000 bytes'],
-            'unknown encryption' => [$url, [['encryption-algorithm', 'aes-cbc']], ['data'], 'unsupported file encryption: aes-cbc'],
-            'no key' => [$url, [['encryption-algorithm', 'aes-gcm']], [str_repeat('x', 40)], 'file message has no usable decryption key'],
-            'wrong key' => [$url, $aes, [str_repeat('x', 40)], 'could not decrypt file from '.$url],
-            'not found' => [$url, [], ['gone', 404], 'could not download '.$url],
-            'too large as served' => [$url, [], ['x', 200, ['Content-Length' => '5000']], 'could not download '.$url],
-            'too large in fact' => [$url, [], [str_repeat('x', 1500)], 'could not download '.$url],
-            'connection failed' => [$url, [], 'refused', 'download failed: Connection refused'],
-        ];
-    }
-
-    public function testFilesWithAWrongHashAreKept()
-    {
-        $plain = 'plain file';
-        $key = random_bytes(16);
-        $nonce = random_bytes(12);
-        $tag = '';
-        $encrypted = openssl_encrypt($plain, 'aes-128-gcm', $key, OPENSSL_RAW_DATA, $nonce, $tag).$tag;
-        Http::fake([self::FILE_HOST.'/download*' => Http::response($plain), self::FILE_HOST.'/notes.txt' => Http::response($encrypted)]);
-
-        $thread = $this->handler->handleGiftWrap($this->cfg, $this->wrap(['kind' => 15, 'content' => self::FILE_HOST.'/download?id=1', 'tags' => [
-            ['p', $this->cfg->pubkey], ['file-type', 'text/plain'], ['x', str_repeat('0', 64)],
-        ]])[0]);
-
-        $attachment = $thread->attachments()->first();
-        $this->assertSame($plain, $attachment->getFileContents());
-        $this->assertMatchesRegularExpression('/^nostr-file-[0-9a-f]{8}\.txt$/', $attachment->file_name);
-        $this->assertContains('file hash does not match the x tag, continuing', $this->log);
-
-        // Encrypted, with the hash of something else.
-        $thread = $this->handler->handleGiftWrap($this->cfg, $this->wrap(['kind' => 15, 'content' => self::FILE_HOST.'/notes.txt', 'tags' => [
-            ['p', $this->cfg->pubkey], ['encryption-algorithm', 'aes-gcm'], ['decryption-key', bin2hex($key)], ['decryption-nonce', bin2hex($nonce)], ['x', str_repeat('0', 64)],
-        ]])[0]);
-        $this->assertSame($plain, $thread->attachments()->first()->getFileContents());
-        $this->assertSame('notes.txt', $thread->attachments()->first()->file_name);
-        $this->assertContains('encrypted file hash does not match the x tag, continuing', $this->log);
-    }
-
-    /**
-     * A file sent without a name gets one with the extension of its type.
-     */
-    public function testFileWithoutANameKeepsItsTypesExtension()
-    {
-        Http::fake([self::FILE_HOST.'/download*' => Http::response('png data'), self::FILE_HOST.'/blob*' => Http::response('data')]);
-
-        $thread = $this->handler->handleGiftWrap($this->cfg, $this->wrap(['kind' => 15, 'content' => self::FILE_HOST.'/download?id=2', 'tags' => [
-            ['p', $this->cfg->pubkey], ['file-type', 'image/png'],
-        ]])[0]);
-        $this->assertMatchesRegularExpression('/^nostr-file-[0-9a-f]{8}\.png$/', $thread->attachments()->first()->file_name);
-
-        $thread = $this->handler->handleGiftWrap($this->cfg, $this->wrap(['kind' => 15, 'content' => self::FILE_HOST.'/blob', 'tags' => [
-            ['p', $this->cfg->pubkey], ['file-type', 'application/x-unknown-type'],
-        ]])[0]);
-        $this->assertMatchesRegularExpression('/^nostr-file-[0-9a-f]{8}\.bin$/', $thread->attachments()->first()->file_name);
-    }
-
-    public function testFilesAreNotFetchedFromPrivateAddressesAfterARedirect()
-    {
-        Http::fake([self::FILE_HOST.'/*' => Http::response('', 302, ['Location' => 'http://127.0.0.1/secret'])]);
-
-        $thread = $this->handler->handleGiftWrap($this->cfg, $this->wrap(['kind' => 15, 'content' => self::FILE_HOST.'/f.bin'])[0]);
-
-        $this->assertStringContainsString('could not be retrieved', $thread->body);
-        Http::assertNotSent(function ($request) {
-            return str_contains($request->url(), '127.0.0.1');
-        });
+        $this->assertNull($this->handler->handleGiftWrap($this->cfg, $wrap));
+        $event = $this->recorded($wrap);
+        $this->assertSame(NostrEvent::STATUS_FAILED, $event->status);
+        $this->assertSame('unsupported kind', $event->error);
+        $this->assertSame(0, Conversation::where('mailbox_id', $this->cfg->mailbox_id)->count());
+        Http::assertNothingSent();
     }
 
     // Replies that can't be sent.

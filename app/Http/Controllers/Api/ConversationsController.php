@@ -134,6 +134,11 @@ class ConversationsController extends ApiController
         if (!is_array($threads) || !array_is_list($threads)) {
             return $this->error('`threads` must be an array of threads', 'threads');
         }
+        foreach ($threads as $thread_data) {
+            if ($error = Writer::attachmentUrlError($thread_data)) {
+                return $this->writerError($error);
+            }
+        }
 
         $mailbox = \Eventy::filter('api.mailbox.find', Mailbox::find($this->param($request, 'mailboxId')), $request);
         if (!$mailbox) {

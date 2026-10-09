@@ -324,6 +324,52 @@ class AiDocumentsTest extends FeatureTestCase
         $this->assertSame('Getting Started Guide', Documents::fetch('https://93.184.215.14/en/getting-started_guide')['title']);
     }
 
+    public function testDocumentRedirectsUseNewCheckedConnections()
+    {
+        config(['app.remote_host_white_list' => 'localhost,127.0.0.1,::1']);
+        $requests = [];
+        Http::fake(function ($request, $options) use (&$requests) {
+            $requests[] = [$request->url(), $options['allow_redirects'], $options['proxy'], $options['curl'][CURLOPT_RESOLVE][0]];
+
+            return str_contains($request->url(), 'moved.md')
+                ? Http::response('', 302, ['Location' => '/target.md'])
+                : Http::response('# Target');
+        });
+
+        $this->assertSame('# Target', Documents::fetch('http://localhost/moved')['content']);
+        $this->assertCount(2, $requests);
+        $this->assertSame(['http://localhost/moved.md', false, ''], array_slice($requests[0], 0, 3));
+        $this->assertSame(['http://localhost/target.md', false, ''], array_slice($requests[1], 0, 3));
+        $this->assertMatchesRegularExpression('/^localhost:80:(127\\.0\\.0\\.1|\\[::1\\])$/', $requests[0][3]);
+        $this->assertSame($requests[0][3], $requests[1][3]);
+    }
+
+    public function testDocumentTransferStopsAtByteLimit()
+    {
+        Http::fake(function ($request, $options) {
+            $this->assertSame('identity', $request->header('Accept-Encoding')[0]);
+            $this->assertFalse(($options['progress'])(0, Documents::MAX_DOCUMENT_BYTES, 0, 0));
+            $this->assertTrue(($options['progress'])(0, Documents::MAX_DOCUMENT_BYTES + 1, 0, 0));
+
+            throw new \RuntimeException('Transfer aborted');
+        });
+
+        $this->expectExceptionMessage('Unable to fetch Markdown: larger than '.Documents::MAX_DOCUMENT_BYTES.' bytes');
+        Documents::fetch('https://93.184.215.14/en/large');
+    }
+
+    public function testDocumentRejectsOversizedContentLengthBeforeBody()
+    {
+        Http::fake(function ($request, $options) {
+            ($options['on_headers'])(new \GuzzleHttp\Psr7\Response(200, ['Content-Length' => (string) (Documents::MAX_DOCUMENT_BYTES + 1)]));
+
+            $this->fail('The response should be rejected before receiving its body.');
+        });
+
+        $this->expectExceptionMessage('Unable to fetch Markdown: larger than '.Documents::MAX_DOCUMENT_BYTES.' bytes');
+        Documents::fetch('https://93.184.215.14/en/large');
+    }
+
     public function testIndexingFailuresAreKept()
     {
         $document = new Document();

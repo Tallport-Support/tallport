@@ -7,6 +7,7 @@ use App\Conversation;
 use App\Customer;
 use App\Thread;
 use App\User;
+use Illuminate\Support\Facades\Http;
 use Tests\FeatureTestCase;
 
 /**
@@ -143,6 +144,34 @@ class ApiTest extends FeatureTestCase
         $this->api('POST', '/conversations', ['type' => 'email', 'mailboxId' => $this->mailbox->id, 'subject' => 'x', 'customer' => ['email' => 'b@b.example'], 'threads' => [['type' => 'message', 'text' => 'x']]])
             ->assertStatus(400)->assertJsonPath('_embedded.errors.0.message', '`user` parameter is required');
         $this->assertSame(1, Conversation::where('subject', 'x')->count() + 1, 'A conversation without threads is removed.');
+    }
+
+    public function testRemoteAttachmentUrlsAreRejected()
+    {
+        Http::fake();
+
+        $this->api('POST', '/conversations', [
+            'type' => 'email', 'mailboxId' => $this->mailbox->id, 'subject' => 'Remote attachment',
+            'customer' => ['email' => 'remote-attachment@example.org'],
+            'threads' => [
+                ['type' => 'customer', 'text' => 'A valid message'],
+                ['type' => 'customer', 'text' => 'A file', 'attachments' => [
+                    ['fileName' => 'file.txt', 'mimeType' => 'text/plain', 'fileUrl' => 'https://example.org/file.txt'],
+                ]],
+            ],
+        ])->assertStatus(400)->assertJsonPath('_embedded.errors.0.message', 'Attachment URLs are not supported; send the file in `data`');
+        $this->assertSame(0, Conversation::where('subject', 'Remote attachment')->count());
+        $this->assertNull(Customer::getByEmail('remote-attachment@example.org'));
+
+        $conversation = $this->conversation();
+        $thread_count = $conversation->threads()->count();
+        $this->api('POST', '/conversations/'.$conversation->id.'/threads', [
+            'type' => 'customer', 'text' => 'A file', 'attachments' => [
+                ['fileName' => 'file.txt', 'mimeType' => 'text/plain', 'file_url' => 'https://example.org/file.txt'],
+            ],
+        ])->assertStatus(400)->assertJsonPath('_embedded.errors.0.message', 'Attachment URLs are not supported; send the file in `data`');
+        $this->assertSame($thread_count, $conversation->threads()->count());
+        Http::assertNothingSent();
     }
 
     public function testReplyAndNote()
