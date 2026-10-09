@@ -8,6 +8,7 @@ use App\Ai\Providers;
 use App\Ai\Settings;
 use App\Ai\Usage;
 use App\Conversation;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\JsonSchema\JsonSchemaTypeFactory;
 use Laravel\Ai\Contracts\Agent;
@@ -21,6 +22,9 @@ use Laravel\Ai\Approvals\Decisions;
 use Laravel\Ai\Promptable;
 use Laravel\Ai\Responses\StreamableAgentResponse;
 use Laravel\Ai\Streaming\Events\TextDelta;
+use Laravel\Ai\Exceptions\AiException;
+use Laravel\Ai\Exceptions\FailoverableException;
+use Laravel\Ai\Exceptions\StreamErrorException;
 
 /**
  * An AI Assistant agent (laravel/ai): its feature's models from Manage » Settings » AI Assistant,
@@ -104,16 +108,15 @@ abstract class TallportAgent implements Agent, HasProviderOptions
     }
 
     /**
-     * Prompt the feature's primary model; when it fails for any reason (unreachable, out of
-     * credit, a wrong key or model), the backup.
+     * Prompt the feature's primary model, then its backup for provider failures.
      */
     public function prompt(AgentInput|UserMessage|Decisions|string $prompt, array $attachments = [], Lab|array|string|null $provider = null, ?string $model = null, ?int $timeout = null): AgentResponse
     {
         if ($provider !== null) {
-            return $this->promptWith($prompt, $attachments, $provider, $model, $timeout);
+            return $this->promptWith($prompt, $attachments, $provider, $model, min($timeout ?? $this->timeout(), $this->timeout()));
         }
 
-        return $this->withAttempts(false, fn ($name, $attempt_model) => $this->promptWith($prompt, $attachments, $name, $attempt_model, $timeout));
+        return $this->withAttempts(false, fn ($name, $attempt_model, $remaining) => $this->promptWith($prompt, $attachments, $name, $attempt_model, $timeout === null ? $remaining : min($timeout, $remaining)));
     }
 
     /**
@@ -123,10 +126,11 @@ abstract class TallportAgent implements Agent, HasProviderOptions
      *
      * @return array [the answer, the finished response (its usage)]
      */
-    public function streamJson($prompt, ?callable $on_answer = null)
+    public function streamJson($prompt, ?callable $on_answer = null, ?float $deadline = null)
     {
-        return $this->withAttempts(true, function ($name, $model) use ($prompt, $on_answer) {
-            $response = $this->streamWith($prompt, [], $name, $model);
+        return $this->withAttempts(true, function ($name, $model, $remaining) use ($prompt, $on_answer) {
+            $response = $this->streamWith($prompt, [], $name, $model, $remaining);
+            $this->attempt['response'] = $response;
             $text = '';
             foreach ($response as $event) {
                 if (!$event instanceof TextDelta) {
@@ -135,16 +139,22 @@ abstract class TallportAgent implements Agent, HasProviderOptions
                 $text .= $event->delta;
                 $this->attempt['started'] = true;
                 if ($on_answer) {
-                    $on_answer(PartialJson::decode($text));
+                    try {
+                        $on_answer(PartialJson::decode($text));
+                    } catch (\Throwable $e) {
+                        $this->attempt['local_failure'] = true;
+                        throw $e;
+                    }
                 }
             }
             $answer = PartialJson::decodeComplete($text);
             if ($answer === null || !$this->matchesSchema($answer, $this->answerSchema()) || !$this->validAnswer($answer)) {
+                $this->attempt['invalid_answer'] = true;
                 throw new \RuntimeException(__('The AI\'s answer could not be read.'));
             }
 
             return [$answer, $response];
-        });
+        }, $deadline);
     }
 
     /**
@@ -153,8 +163,9 @@ abstract class TallportAgent implements Agent, HasProviderOptions
      * the one refused (refusedOption()), and without it from then on (Providers::fastRejected(),
      * fastTierRejected()). Each call is recorded (Usage).
      */
-    protected function withAttempts($streamed, \Closure $run)
+    protected function withAttempts($streamed, \Closure $run, ?float $deadline = null)
     {
+        $deadline = min($deadline ?? INF, microtime(true) + $this->timeout());
         Providers::configure();
         $attempts = Settings::attempts($this->feature());
         if (!$attempts) {
@@ -163,15 +174,24 @@ abstract class TallportAgent implements Agent, HasProviderOptions
         $providers = Settings::providers();
         try {
             foreach ($attempts as $i => [$name, $attempt_model]) {
+                // The primary gets at most half the remaining time when there is a backup.
+                $model_deadline = $i < count($attempts) - 1
+                    ? microtime(true) + max(1, ($deadline - microtime(true)) / 2)
+                    : $deadline;
                 $provider_id = Providers::idFromName($name);
                 $provider = $providers[$provider_id]['provider'] ?? null;
                 $fast = $this->fast() && Providers::fastOptions($provider, $attempt_model) && !Providers::fastRejected($name, $attempt_model);
                 $fast_tier = $this->fast() && !empty($providers[$provider_id]['fast_mode']) && Providers::fastTierOptions($provider, $attempt_model) && !Providers::fastTierRejected($name, $attempt_model);
-                $this->attempt = ['provider_id' => $provider_id, 'provider' => $provider, 'model' => $attempt_model, 'backup' => $i > 0, 'streamed' => $streamed, 'fast' => $fast, 'fast_tier' => $fast_tier, 'started' => false, 'at' => hrtime(true)];
+                $this->attempt = ['provider_id' => $provider_id, 'provider' => $provider, 'model' => $attempt_model, 'backup' => $i > 0, 'streamed' => $streamed, 'fast' => $fast, 'fast_tier' => $fast_tier, 'started' => false, 'invalid_answer' => false, 'local_failure' => false, 'timed_out' => false, 'at' => hrtime(true)];
                 try {
                     while (true) {
                         try {
-                            $result = $run($name, $attempt_model);
+                            $remaining = (int) floor(min($deadline, $model_deadline) - microtime(true));
+                            if ($remaining < 1) {
+                                $this->attempt['timed_out'] = true;
+                                throw new \RuntimeException(__('The AI\'s answer could not be read.'));
+                            }
+                            $result = $run($name, $attempt_model, $remaining);
                             break;
                         } catch (RequestException $e) {
                             $refused = $this->attempt['started'] || !in_array($e->response->status(), [400, 422]) ? null : $this->refusedOption($e);
@@ -192,8 +212,11 @@ abstract class TallportAgent implements Agent, HasProviderOptions
                         }
                     }
                 } catch (\Throwable $e) {
-                    $last = $i == count($attempts) - 1;
-                    $this->recordAttempt($last ? Usage::STATUS_FAILED : Usage::STATUS_FAILED_THEN_BACKUP, null, $e);
+                    $retryable = !$this->attempt['local_failure'] && ($this->attempt['timed_out'] || $this->attempt['invalid_answer'] || $e instanceof RequestException
+                        || $e instanceof ConnectionException || $e instanceof FailoverableException
+                        || $e instanceof StreamErrorException || get_class($e) === AiException::class);
+                    $last = !$retryable || $i == count($attempts) - 1 || $deadline - microtime(true) < 1;
+                    $this->recordAttempt($last ? Usage::STATUS_FAILED : Usage::STATUS_FAILED_THEN_BACKUP, $this->attempt['response'] ?? null, $e);
                     if ($last) {
                         throw $e;
                     }
@@ -327,7 +350,7 @@ abstract class TallportAgent implements Agent, HasProviderOptions
 
     public function timeout()
     {
-        return 180;
+        return 120;
     }
 
     public function maxTokens()

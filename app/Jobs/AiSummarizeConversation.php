@@ -64,6 +64,14 @@ class AiSummarizeConversation implements ShouldQueue, ShouldBeUnique
         }
     }
 
+    public function failed(\Throwable $e)
+    {
+        $conversation = Conversation::find($this->conversation_id);
+        if ($conversation && Summaries::isWanted($conversation) && Summaries::isStale($conversation, $this->language)) {
+            \App\Ai\Errors::report($e, 'Summary of conversation #'.$conversation->number.':');
+        }
+    }
+
     /**
      * Queue a summary, a minute later so that it covers quick follow-ups.
      */

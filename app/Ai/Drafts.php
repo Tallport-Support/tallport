@@ -43,8 +43,9 @@ class Drafts
      * Make a draft. $language: the language the user reads its translation in. $on_draft: the
      * draft so far (Markdown), as it's written.
      */
-    public static function draft(Conversation $conversation, $language, ?callable $on_draft = null)
+    public static function draft(Conversation $conversation, $language, ?callable $on_draft = null, ?float $deadline = null)
     {
+        $deadline = $deadline ?? microtime(true) + 120;
         $threads = $conversation->threads()
             ->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
             ->where('state', Thread::STATE_PUBLISHED)
@@ -57,8 +58,8 @@ class Drafts
         $latest_text = $latest ? self::text($latest) : '';
         $locale = self::documentationLocale($latest, $latest_text);
 
-        $documentation = self::documentation($conversation, trim($conversation->subject."\n".$latest_text), $locale);
-        $context = CustomerContext::forConversation($conversation);
+        $documentation = self::documentation($conversation, trim($conversation->subject."\n".$latest_text), $locale, $deadline);
+        $context = CustomerContext::forConversation($conversation, $deadline);
 
         [$answer] = (new ReplyDrafter($language))->recordFor(Usage::FEATURE_DRAFT, $conversation)->streamJson(implode("\n\n", [
             TallportAgent::data('conversation', [
@@ -76,7 +77,7 @@ class Drafts
             TallportAgent::data('mailbox_guidance', $context['guidance']),
             TallportAgent::data('documentation', $documentation['chunks']),
             TallportAgent::data('customer_context', $context['data']),
-        ]), $on_draft ? fn ($answer) => $on_draft((string) ($answer['draft'] ?? '')) : null);
+        ]), $on_draft ? fn ($answer) => $on_draft((string) ($answer['draft'] ?? '')) : null, $deadline);
 
         return [
             'draft'                   => trim((string) ($answer['draft'] ?? '')),
@@ -95,13 +96,13 @@ class Drafts
     /**
      * The mailbox's documentation most like the question: [status, chunks].
      */
-    protected static function documentation(Conversation $conversation, $question, $locale)
+    protected static function documentation(Conversation $conversation, $question, $locale, $deadline)
     {
         if (!Documents::available()) {
             return ['status' => 'disabled', 'chunks' => []];
         }
         try {
-            $results = Documents::search($conversation->mailbox_id, $question, $locale);
+            $results = Documents::search($conversation->mailbox_id, $question, $locale, null, $deadline);
         } catch (\Throwable $e) {
             return ['status' => 'failed: '.Errors::message($e, 'Documentation search for conversation '.$conversation->id.':'), 'chunks' => []];
         }

@@ -70,6 +70,15 @@ class AiLogTest extends FeatureTestCase
         return Usage::create($attributes + ['mailbox_id' => $this->mailbox->id, 'feature' => Usage::FEATURE_TRANSLATION]);
     }
 
+    public function testReportedTokensFromFailedCallsCountAgainstTheDailyBudget()
+    {
+        $conversation = $this->conversation();
+        $this->logCall(['conversation_id' => $conversation->id, 'status' => Usage::STATUS_FAILED, 'input_tokens' => 40, 'output_tokens' => 10]);
+
+        $this->assertSame(50, Usage::forConversation($conversation));
+        $this->assertSame(50, Usage::mailboxToday($this->mailbox->id));
+    }
+
     public function testEveryCallIsRecordedThePrimaryFailingAndTheBackup()
     {
         $conversation = $this->conversation();
@@ -77,7 +86,7 @@ class AiLogTest extends FeatureTestCase
         $calls = 0;
         ThreadTranslator::fake(function () use (&$calls) {
             if (++$calls == 1) {
-                throw new \RuntimeException('Incorrect API key provided: sk-one-secret-0001');
+                throw new \Laravel\Ai\Exceptions\ProviderConnectionException('Incorrect API key provided: sk-one-secret-0001');
             }
 
             return new \Laravel\Ai\Responses\TextResponse(

@@ -227,6 +227,22 @@ class ChatTranslationTest extends FeatureTestCase
         \Illuminate\Support\Facades\Queue::assertNotPushed(\App\Jobs\AiTranslateThread::class);
     }
 
+    public function testTerminalChatTranslationFailureReplacesWaitingMessages()
+    {
+        $first = Thread::create($this->conversation, Thread::TYPE_CUSTOMER, 'Nieuwe vraag', [
+            'customer_id' => $this->conversation->customer_id, 'source_via' => Thread::PERSON_CUSTOMER, 'source_type' => Thread::SOURCE_TYPE_WEB,
+        ]);
+        $second = Thread::create($this->conversation, Thread::TYPE_CUSTOMER, 'Nog een vraag', [
+            'customer_id' => $this->conversation->customer_id, 'source_via' => Thread::PERSON_CUSTOMER, 'source_type' => Thread::SOURCE_TYPE_WEB,
+        ]);
+
+        (new \App\Jobs\AiTranslateChat($this->conversation->id, 'en'))->failed(new \RuntimeException('Worker timed out'));
+
+        $this->assertSame('error', Translations::reason($first->fresh(), 'en')[0]);
+        $this->assertSame('error', Translations::reason($second->fresh(), 'en')[0]);
+        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', Translations::reason($second->fresh(), 'en')[1]);
+    }
+
     /**
      * The mailbox's glossary goes with every translation; translated replies say so when the
      * mailbox wants it, in the customer's language.

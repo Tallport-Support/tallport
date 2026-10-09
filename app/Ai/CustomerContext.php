@@ -44,7 +44,7 @@ class CustomerContext
     /**
      * For a draft: [status, data, guidance].
      */
-    public static function forConversation(Conversation $conversation)
+    public static function forConversation(Conversation $conversation, ?float $deadline = null)
     {
         $settings = self::settings($conversation->mailbox);
         $result = [
@@ -62,7 +62,7 @@ class CustomerContext
                 'number'         => (int) $conversation->number,
                 'subject'        => $conversation->subject,
                 'customer_email' => $conversation->customer_email,
-            ]));
+            ]), $deadline);
             if ($response['http_status'] < 200 || $response['http_status'] >= 300) {
                 throw new \Exception('HTTP error: '.$response['http_status']);
             }
@@ -134,7 +134,7 @@ class CustomerContext
     /**
      * POST the payload as JSON, signed: base64 HMAC-SHA1 of the body.
      */
-    protected static function post(array $settings, array $payload)
+    protected static function post(array $settings, array $payload, ?float $deadline = null)
     {
         if (!Document::isHttpUrl($settings['url'] ?? '')) {
             throw new \Exception('The customer context URL must be an http or https URL');
@@ -143,9 +143,13 @@ class CustomerContext
         $header = in_array($settings['signature_header'] ?? '', self::HEADERS) ? $settings['signature_header'] : self::HEADERS[0];
         $signature = base64_encode(hash_hmac('sha1', $json, (string) ($settings['secret_key'] ?? ''), true));
 
+        $remaining = $deadline === null ? 15 : (int) floor($deadline - microtime(true));
+        if ($remaining < 1) {
+            throw new \RuntimeException('AI draft deadline exceeded');
+        }
         $response = Http::withOptions(\Helper::setGuzzleDefaultOptions([
-            'timeout'         => 15,
-            'connect_timeout' => 5,
+            'timeout'         => min(15, $remaining),
+            'connect_timeout' => min(5, $remaining),
             'allow_redirects' => ['max' => 3, 'protocols' => ['http', 'https']],
         ]))
             ->withUserAgent('Tallport-AI-Assistant')

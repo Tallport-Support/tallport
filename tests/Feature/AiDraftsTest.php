@@ -308,6 +308,35 @@ class AiDraftsTest extends FeatureTestCase
         ReplyDrafter::assertNeverPrompted();
     }
 
+    public function testInterruptedDraftIsMarkedFailedWithoutChangingRecentWork()
+    {
+        $old = DraftJob::reserve($this->agent, $this->conversation);
+        \DB::table('aiassistant_draft_jobs')->where('id', $old->id)->update(['started_at' => now()->subMinutes(10)]);
+        $recent = DraftJob::reserve($this->agent, $this->conversation);
+
+        $this->assertSame(1, DraftJob::failAbandoned(now()->subMinutes(5)));
+        $this->assertSame(DraftJob::STATUS_FAILED, $old->fresh()->status);
+        $this->assertSame('interrupted', $old->fresh()->error_type);
+        $this->assertMatchesRegularExpression('/^ID: [A-F0-9]{12}$/', $old->fresh()->error_detail);
+        $this->assertSame(DraftJob::STATUS_RUNNING, $recent->fresh()->status);
+        $this->assertSame(0, DraftJob::failAbandoned(now()->subMinutes(5)));
+    }
+
+    public function testAnInterruptedDraftCannotBeCompletedByALateStream()
+    {
+        ReplyDrafter::fake(function () {
+            \DB::table('aiassistant_draft_jobs')->where('user_id', $this->agent->id)->update(['started_at' => now()->subMinutes(10)]);
+            DraftJob::failAbandoned(now()->subMinutes(5));
+
+            return $this->draft();
+        });
+
+        $events = $this->draftEvents($this->agent);
+
+        $this->assertSame('error', end($events)['status']);
+        $this->assertSame(DraftJob::STATUS_FAILED, DraftJob::where('user_id', $this->agent->id)->value('status'));
+    }
+
     public function testFailedDraftIsReported()
     {
         $key = 'sk-secret-provider-key-0001';

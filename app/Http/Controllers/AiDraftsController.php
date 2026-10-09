@@ -55,7 +55,7 @@ class AiDraftsController extends Controller
         return response()->stream(function () use ($draft_job, $conversation, $language) {
             // Finished (and kept) also when the user leaves.
             ignore_user_abort(true);
-            @set_time_limit(240);
+            @set_time_limit(150);
             $send = function (array $data) {
                 echo 'data: '.json_encode($data, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE)."\n\n";
                 if (ob_get_level() > 0) {
@@ -69,7 +69,7 @@ class AiDraftsController extends Controller
                     if (trim($draft) !== '' && $throttle->ready()) {
                         $send(['draft' => $draft]);
                     }
-                });
+                }, microtime(true) + 120);
                 $draft_job->status = DraftJob::STATUS_COMPLETED;
             } catch (\Throwable $e) {
                 $draft_job->status = DraftJob::STATUS_FAILED;
@@ -80,11 +80,15 @@ class AiDraftsController extends Controller
             $draft_job->completed_at = now();
             // Save only while the conversation and this draft's link still exist.
             // Deletion may have happened even before this row was inserted.
-            $saved = DraftJob::whereKey($draft_job->id)->where('conversation_id', $conversation->id)
+            $saved = DraftJob::whereKey($draft_job->id)->where('status', DraftJob::STATUS_RUNNING)->where('conversation_id', $conversation->id)
                 ->whereIn('conversation_id', Conversation::whereKey($conversation->id)->select('id'))
                 ->update($draft_job->getDirty());
             if (!$saved) {
-                DraftJob::forgetConversations([$conversation->id]);
+                if (DraftJob::whereKey($draft_job->id)->where('status', DraftJob::STATUS_FAILED)->exists()) {
+                    $draft_job->refresh();
+                } else {
+                    DraftJob::forgetConversations([$conversation->id]);
+                }
             }
 
             $send($draft_job->status == DraftJob::STATUS_COMPLETED

@@ -27,7 +27,7 @@ class AiIndexDocument implements ShouldQueue, ShouldBeUnique
 
     public $tries = 1;
 
-    public $timeout = 600;
+    public $timeout = 240;
 
     public $uniqueFor = 900;
 
@@ -47,6 +47,7 @@ class AiIndexDocument implements ShouldQueue, ShouldBeUnique
 
     public function handle()
     {
+        $deadline = microtime(true) + 180;
         $document = Document::find($this->document_id);
         if (!$document || !$document->enabled || !Documents::available()) {
             return;
@@ -54,13 +55,25 @@ class AiIndexDocument implements ShouldQueue, ShouldBeUnique
 
         try {
             if ($this->fetch && $document->source_type == Document::SOURCE_TYPE_URL) {
-                Documents::refetch($document);
+                Documents::refetch($document, $deadline);
             }
-            Documents::index($document, $this->force);
+            Documents::index($document, $this->force, $deadline);
         } catch (\Throwable $e) {
             $document->status = Document::STATUS_FAILED;
             $document->last_error = Errors::message($e, 'Indexing document '.$document->id.':');
             $document->save();
         }
+    }
+
+    public function failed(\Throwable $e)
+    {
+        $document = Document::find($this->document_id);
+        if (!$document || $document->status != Document::STATUS_PENDING) {
+            return;
+        }
+
+        $document->status = Document::STATUS_FAILED;
+        $document->last_error = Errors::message($e, 'Indexing document '.$document->id.':');
+        $document->save();
     }
 }

@@ -146,7 +146,7 @@ class Usage extends Model
      */
     public static function forConversation(Conversation $conversation)
     {
-        return (int) self::succeeded()->where('conversation_id', $conversation->id)->sum(\DB::raw('COALESCE(input_tokens, 0) + COALESCE(output_tokens, 0)'));
+        return (int) self::where('conversation_id', $conversation->id)->sum(\DB::raw('COALESCE(input_tokens, 0) + COALESCE(output_tokens, 0)'));
     }
 
     /**
@@ -154,7 +154,7 @@ class Usage extends Model
      */
     public static function mailboxToday($mailbox_id)
     {
-        $recorded = self::succeeded()->where('mailbox_id', $mailbox_id)->where('created_at', '>=', now()->startOfDay())
+        $recorded = self::where('mailbox_id', $mailbox_id)->where('created_at', '>=', now()->startOfDay())
             ->sum(\DB::raw('COALESCE(input_tokens, 0) + COALESCE(output_tokens, 0)'));
         $reserved = \DB::table('aiassistant_reservations')->where('mailbox_id', $mailbox_id)->where('created_at', '>=', now()->startOfDay())->sum('tokens');
 

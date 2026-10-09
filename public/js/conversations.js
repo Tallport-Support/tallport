@@ -836,6 +836,7 @@ document.addEventListener('alpine:init', function () {
 			request: function () {
 				var self = this;
 				var meta = document.querySelector('meta[name="csrf-token"]');
+				var controller = new AbortController();
 				if (this.drafting) {
 					return;
 				}
@@ -844,8 +845,12 @@ document.addEventListener('alpine:init', function () {
 				// The draft is shown below the editor: open it, as Reply does.
 				Livewire.dispatch('composer-open', {mode: 'reply'});
 				this.reset(texts.drafting);
+				var timer = setTimeout(function () {
+					controller.abort();
+				}, 165000);
 				fetch(draft_url, {
 					method: 'POST',
+					signal: controller.signal,
 					credentials: 'same-origin',
 					headers: {
 						'X-CSRF-TOKEN': meta ? meta.getAttribute('content') : '',
@@ -866,6 +871,8 @@ document.addEventListener('alpine:init', function () {
 					if (!self.draft) {
 						self.fail();
 					}
+				}).finally(function () {
+					clearTimeout(timer);
 				});
 			},
 

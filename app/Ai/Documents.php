@@ -35,16 +35,20 @@ class Documents
     /**
      * A page's Markdown (its URL plus .md): content, title and hash.
      */
-    public static function fetch($url)
+    public static function fetch($url, ?float $deadline = null)
     {
         $markdown_url = Document::markdownUrlFor($url);
         if (!Document::isHttpUrl($markdown_url) || !\Helper::checkUrlIpAndHost($markdown_url)) {
             throw new \Exception(__('Only public http and https URLs can be fetched.'));
         }
 
+        $remaining = $deadline === null ? 30 : (int) floor($deadline - microtime(true));
+        if ($remaining < 1) {
+            throw new \RuntimeException('AI document deadline exceeded');
+        }
         $response = Http::withOptions(\Helper::setGuzzleDefaultOptions([
-            'timeout'         => 30,
-            'connect_timeout' => 10,
+            'timeout'         => min(30, $remaining),
+            'connect_timeout' => min(10, $remaining),
             'allow_redirects' => [
                 'max'         => 5,
                 'protocols'   => ['http', 'https'],
@@ -101,9 +105,9 @@ class Documents
     /**
      * Fetch a URL document again: a changed one is to be indexed again.
      */
-    public static function refetch(Document $document)
+    public static function refetch(Document $document, ?float $deadline = null)
     {
-        $markdown = self::fetch($document->source_url);
+        $markdown = self::fetch($document->source_url, $deadline);
         if ($markdown['hash'] !== $document->content_hash) {
             $document->title = mb_substr($markdown['title'], 0, 191);
             $document->content = $markdown['content'];
@@ -125,8 +129,9 @@ class Documents
     /**
      * Chunk and embed a document's content. Returns the number of chunks.
      */
-    public static function index(Document $document, $force = false)
+    public static function index(Document $document, $force = false, ?float $deadline = null)
     {
+        $deadline = $deadline ?? microtime(true) + 180;
         if (!$force && !self::needsIndexing($document)) {
             return $document->chunks()->count();
         }
@@ -136,7 +141,7 @@ class Documents
             if (!$chunks) {
                 throw new \Exception('Document has no indexable content');
             }
-            $embeddings = self::embed($chunks);
+            $embeddings = self::embed($chunks, $deadline);
             $model = Settings::embeddingModel();
 
             \DB::transaction(function () use ($document, $chunks, $embeddings, $model) {
@@ -170,8 +175,9 @@ class Documents
     /**
      * Embeddings of texts, in batches.
      */
-    public static function embed(array $texts)
+    public static function embed(array $texts, ?float $deadline = null)
     {
+        $deadline = $deadline ?? microtime(true) + 120;
         if (!self::available()) {
             throw new \Exception('The embedding provider does not support embeddings');
         }
@@ -179,7 +185,11 @@ class Documents
 
         $embeddings = [];
         foreach (array_chunk(array_values($texts), self::EMBEDDING_BATCH) as $batch) {
-            $response = Embeddings::for($batch)->timeout(120)->generate(Providers::EMBEDDINGS, Settings::embeddingModel());
+            $remaining = (int) floor($deadline - microtime(true));
+            if ($remaining < 1) {
+                throw new \RuntimeException('AI document deadline exceeded');
+            }
+            $response = Embeddings::for($batch)->timeout(min(120, $remaining))->generate(Providers::EMBEDDINGS, Settings::embeddingModel());
             if (count($response->embeddings) !== count($batch)) {
                 throw new \Exception('Embeddings count does not match chunk count');
             }
@@ -240,13 +250,13 @@ class Documents
      * The mailbox's chunks most similar to a question, best first:
      * [score, document_id, title, url, content].
      */
-    public static function search($mailbox_id, $question, $locale = Document::CANONICAL_LOCALE, $limit = null)
+    public static function search($mailbox_id, $question, $locale = Document::CANONICAL_LOCALE, $limit = null, ?float $deadline = null)
     {
         $question = trim((string) $question);
         if ($question === '') {
             return [];
         }
-        $query = self::embed([$question])[0];
+        $query = self::embed([$question], $deadline)[0];
         $locale = in_array($locale, Document::SUPPORTED_LOCALES) ? $locale : Document::CANONICAL_LOCALE;
 
         $results = [];

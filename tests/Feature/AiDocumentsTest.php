@@ -92,6 +92,24 @@ class AiDocumentsTest extends FeatureTestCase
         $this->assertSame(0.0, Documents::similarity([1, 0], [1, 0, 0]));
     }
 
+    public function testExpiredEmbeddingDeadlineDoesNotStartAnotherBatch()
+    {
+        $calls = 0;
+        Embeddings::fake(function () use (&$calls) {
+            $calls++;
+
+            return [[1.0, 0.0, 0.1]];
+        });
+
+        try {
+            Documents::embed(['Android'], microtime(true) - 1);
+            $this->fail('The expired deadline should stop before the embedding call.');
+        } catch (\RuntimeException $e) {
+            $this->assertSame('AI document deadline exceeded', $e->getMessage());
+        }
+        $this->assertSame(0, $calls);
+    }
+
     public function testTitleFromFrontMatterOrHeading()
     {
         $this->assertSame('Setup', Documents::title("---\ntitle: \"Setup\"\n---\n# Other"));
@@ -323,6 +341,24 @@ class AiDocumentsTest extends FeatureTestCase
         Embeddings::fake(fn ($prompt) => [[1.0, 0.0, 0.1]]);
         $this->expectExceptionMessage('Embeddings count does not match chunk count');
         Documents::embed(['One', 'Two']);
+    }
+
+    public function testTerminalIndexingFailureDoesNotOverwriteAnIndexedDocument()
+    {
+        $document = new Document();
+        $document->forceFill(['mailbox_id' => $this->mailbox->id, 'title' => 'Guide', 'source_url' => 'api://guide', 'source_type' => 'api', 'content' => 'Guide.'])->save();
+        $job = new \App\Jobs\AiIndexDocument($document->id);
+
+        $job->failed(new \RuntimeException('Worker timed out'));
+        $this->assertSame(Document::STATUS_FAILED, $document->fresh()->status);
+        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $document->fresh()->last_error);
+
+        $document->status = Document::STATUS_INDEXED;
+        $document->last_error = null;
+        $document->save();
+        $job->failed(new \RuntimeException('A late failure'));
+        $this->assertSame(Document::STATUS_INDEXED, $document->fresh()->status);
+        $this->assertNull($document->fresh()->last_error);
     }
 
     public function testEmbeddingsNeedAProviderThatMakesThem()

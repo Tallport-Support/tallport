@@ -216,7 +216,7 @@ class AiAssistantTest extends FeatureTestCase
     }
 
     /**
-     * A feature's primary model failing (for any reason): its backup answers.
+     * A provider failure on the primary: its backup answers.
      */
     public function testTheBackupModelAnswersWhenThePrimaryFails()
     {
@@ -229,7 +229,7 @@ class AiAssistantTest extends FeatureTestCase
         $calls = 0;
         ThreadTranslator::fake(function () use (&$calls) {
             if (++$calls == 1) {
-                throw new \RuntimeException('Incorrect API key provided');
+                throw new \Laravel\Ai\Exceptions\ProviderConnectionException('Incorrect API key provided');
             }
 
             return ['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'nl'];
@@ -250,6 +250,46 @@ class AiAssistantTest extends FeatureTestCase
         [$kind, $message] = Translations::reason($other, 'en');
         $this->assertSame('error', $kind);
         $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $message);
+    }
+
+    public function testLocalStreamCallbackFailureStopsBeforeTheBackup()
+    {
+        Option::set('aiassistant.providers', [
+            ['id' => 'p1', 'provider' => 'openai', 'api_key' => encrypt('sk-one'), 'base_url' => ''],
+            ['id' => 'p2', 'provider' => 'anthropic', 'api_key' => encrypt('sk-two'), 'base_url' => ''],
+        ]);
+        Option::set('aiassistant.models', ['translations' => ['primary' => ['provider' => 'p1', 'model' => 'gpt-x'], 'backup' => ['provider' => 'p2', 'model' => 'claude-y']]]);
+        Option::$cache = [];
+        $calls = 0;
+        ThreadTranslator::fake(function () use (&$calls) {
+            $calls++;
+
+            return ['translation' => 'Hello', 'same_language' => false, 'detected_language' => 'nl'];
+        });
+
+        try {
+            (new ThreadTranslator('en'))->streamJson('Hallo', function () {
+                throw new \RuntimeException('Local callback failed');
+            });
+            $this->fail('The callback failure should propagate.');
+        } catch (\RuntimeException $e) {
+            $this->assertSame('Local callback failed', $e->getMessage());
+        }
+        $this->assertSame(1, $calls);
+    }
+
+    public function testExpiredDeadlineDoesNotStartAModelCall()
+    {
+        $this->configureAi();
+        ThreadTranslator::fake()->preventStrayPrompts();
+
+        try {
+            (new ThreadTranslator('en'))->streamJson('Hallo', null, microtime(true) - 1);
+            $this->fail('The expired deadline should stop before the provider call.');
+        } catch (\RuntimeException $e) {
+            $this->assertSame("The AI's answer could not be read.", $e->getMessage());
+        }
+        ThreadTranslator::assertNeverPrompted();
     }
 
     public function testInvalidCompletedTranslationsUseTheBackupModel()
@@ -713,6 +753,32 @@ class AiAssistantTest extends FeatureTestCase
 
         $this->assertContains($thread->id, array_column(array_filter($broadcast, fn ($data) => !empty($data['ai_updated'])), 'thread_id'));
         $this->getConversationPage($this->agent, $conversation)->assertSee('Where is my order?')->assertDontSee('ai-translation-waiting', false);
+    }
+
+    public function testTerminalTranslationFailureReplacesWaitingState()
+    {
+        $conversation = $this->receiveCustomerEmail();
+        $this->configureAi();
+        $thread = $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
+
+        (new \App\Jobs\AiTranslateThread($thread->id, 'en'))->failed(new \RuntimeException('Worker timed out'));
+
+        $reason = Translations::reason($thread->fresh(), 'en');
+        $this->assertSame('error', $reason[0]);
+        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $reason[1]);
+        $this->getConversationPage($this->agent, $conversation)->assertSee('Not translated: the AI failed')->assertDontSee('ai-translation-waiting', false);
+    }
+
+    public function testTerminalSummaryFailureIsReported()
+    {
+        $conversation = $this->receiveCustomerEmail();
+        $this->configureAi();
+        \Log::spy();
+
+        (new \App\Jobs\AiSummarizeConversation($conversation->id, 'en'))->failed(new \RuntimeException('Worker timed out'));
+
+        \Log::shouldHaveReceived('error')->withArgs(fn ($message) => str_contains($message, 'Summary of conversation #'.$conversation->number)
+            && str_contains($message, 'Worker timed out'));
     }
 
     /**

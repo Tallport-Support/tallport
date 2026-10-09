@@ -76,11 +76,15 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Atomically reserve draft/customer allowances and budget capacity, then reconcile known usage. Define whether embeddings belong to that budget and make the implementation and wording agree. Preserve unknown usage as unknown when the provider cannot report it. Acceptance: concurrent callers cannot all consume the final allowance; rejection, failure, and recovery release or reconcile reservations predictably.
 
-- [ ] **10 · P2 · Tallport — Bound the entire AI operation and recover interrupted work.**
+  Groundwork: draft allowance claims are atomic; a reservation table and lock-based token/customer claims exist but are not yet wired into AI calls. Reported tokens from failed calls now count toward daily usage. Unknown usage must retain a conservative claim through the daily reset, including failed or interrupted calls, so an unreported failure cannot silently free billable capacity.
+
+- [x] **10 · P2 · Tallport — Bound the entire AI operation and recover interrupted work.**
 
   Evidence: each agent attempt may take 180 seconds (`TallportAgent::timeout()`), with retries for options and a backup model. Translation jobs allow 240 seconds; draft SSE calls request a 240-second PHP limit. Drafting can also fetch customer context and embed a query first. Catch blocks cannot reliably repair state when a worker/process is forcibly terminated, and the AI jobs have no `failed()` cleanup.
 
   Give the whole operation a deadline, pass its remaining time to attempts, and leave room to persist completion/failure. Classify transport/model failures separately from local callback/programming failures before retrying. Add terminal failure handling and reconciliation of abandoned `running` drafts. Acceptance: a slow primary still leaves a bounded opportunity for backup; forced termination eventually produces a visible, retryable outcome without an indefinite loading state.
+
+  Completed: text generation and drafting have a two-minute operation budget, with the primary limited to half when a backup is configured. Draft context and documentation calls use the same deadline; document indexing has a three-minute deadline and a four-minute worker limit. Provider failures and invalid answers can use the backup, while local callback errors stop. Queue failure hooks report terminal translation, summary, and indexing errors; a minute-by-minute sweep fails interrupted drafts after three minutes, and the browser stops waiting after 165 seconds. Failed and interrupted drafts still count toward the day's draft allowance.
 
 - [ ] **11 · P2 · Tallport — Enforce external request boundaries during transfer.**
 

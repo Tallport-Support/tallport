@@ -117,6 +117,11 @@ class Kernel extends ConsoleKernel
             ->dailyAt('03:40')
             ->withoutOverlapping();
 
+        // A killed PHP stream cannot mark its draft failed itself.
+        $schedule->call(function () {
+            \App\Ai\DraftJob::failAbandoned(now()->subMinutes(3));
+        })->name('ai-drafts-recover')->everyMinute()->withoutOverlapping();
+
         // Check if user finished viewing conversation.
         $schedule->command('tallport:check-conv-viewers')
             ->everyMinute()

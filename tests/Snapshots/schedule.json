@@ -52,6 +52,12 @@
         "without_overlapping": true
     },
     {
+        "description": "ai-drafts-recover",
+        "expression": "* * * * *",
+        "timezone": "UTC",
+        "without_overlapping": true
+    },
+    {
         "command": "artisan tallport:check-conv-viewers",
         "expression": "* * * * *",
         "timezone": "UTC",

@@ -55,6 +55,32 @@ class DraftJob extends Model
     }
 
     /**
+     * Finish drafts whose stream ended without running its cleanup (for example, a killed PHP
+     * process). The conditional update cannot replace a result saved by a finishing stream.
+     */
+    public static function failAbandoned($before)
+    {
+        $failed = 0;
+        self::where('status', self::STATUS_RUNNING)->where('started_at', '<', $before)->orderBy('id')->pluck('id')
+            ->each(function ($id) use ($before, &$failed) {
+                $reference = strtoupper(bin2hex(random_bytes(6)));
+                $updated = self::whereKey($id)->where('status', self::STATUS_RUNNING)->where('started_at', '<', $before)->update([
+                    'status'        => self::STATUS_FAILED,
+                    'error_type'    => 'interrupted',
+                    'error_message' => __('Could not draft a reply.'),
+                    'error_detail'  => __('ID').': '.$reference,
+                    'completed_at'  => now(),
+                ]);
+                if ($updated) {
+                    \Log::error('[AI] ['.$reference.'] Draft #'.$id.' was interrupted.');
+                    $failed++;
+                }
+            });
+
+        return $failed;
+    }
+
+    /**
      * Remove drafts for deleted conversations, keeping only today's quota rows.
      */
     public static function forgetConversations($conversation_ids)

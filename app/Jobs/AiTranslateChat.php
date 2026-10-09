@@ -3,7 +3,9 @@
 namespace App\Jobs;
 
 use App\Ai\ChatTranslation;
+use App\Ai\Translations;
 use App\Conversation;
+use App\Thread;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -53,6 +55,24 @@ class AiTranslateChat implements ShouldQueue, ShouldBeUniqueUntilProcessing
         // Open pages show them (or why not) in place of "Translating…".
         if ($threads) {
             \App\Events\RealtimeConvNewThread::dispatchSelf(collect($threads)->sortBy('id')->last(), ['ai_updated' => true]);
+        }
+    }
+
+    public function failed(\Throwable $e)
+    {
+        $conversation = Conversation::find($this->conversation_id);
+        if (!$conversation || !ChatTranslation::isOn($conversation)) {
+            return;
+        }
+
+        $threads = $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->where('state', Thread::STATE_PUBLISHED)
+            ->orderBy('id', 'desc')->limit(ChatTranslation::BATCH_MESSAGES)->get()
+            ->filter(fn (Thread $thread) => Translations::isMissing($thread, $this->language));
+        foreach ($threads as $thread) {
+            Translations::failed($thread, $this->language, $e);
+        }
+        if ($threads->isNotEmpty()) {
+            \App\Events\RealtimeConvNewThread::dispatchSelf($threads->first(), ['ai_updated' => true]);
         }
     }
 }

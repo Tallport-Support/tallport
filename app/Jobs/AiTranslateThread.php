@@ -60,6 +60,17 @@ class AiTranslateThread implements ShouldQueue, ShouldBeUnique
         \App\Events\RealtimeConvNewThread::dispatchSelf($thread, ['ai_updated' => true]);
     }
 
+    public function failed(\Throwable $e)
+    {
+        $thread = Thread::find($this->thread_id);
+        if (!$thread || !Translations::isWanted($thread) || !Translations::isMissing($thread, $this->language)) {
+            return;
+        }
+
+        Translations::failed($thread, $this->language, $e);
+        \App\Events\RealtimeConvNewThread::dispatchSelf($thread, ['ai_updated' => true]);
+    }
+
     public static function request(Thread $thread, $language)
     {
         if (!Translations::isWanted($thread) || !Translations::isMissing($thread, $language)) {
