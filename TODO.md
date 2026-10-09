@@ -158,11 +158,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: FruitUI rejects redirected, non-HTML and full-document responses, and its error event exposes the reason and final response URL without changing Retry or close behavior. Tallport reloads the current page when a dialog request reaches its login route, so Laravel records the full page as the post-login destination. Browser tests cover JSON, login redirects, full documents and network retry; Tallport's Composer lock, committed vendor and published assets use the updated FruitUI build.
 
-- [ ] **20 · P2 · Tallport — Add a focused static correctness check alongside PHPCS.**
+- [x] **20 · P2 · Tallport — Add a focused static correctness check alongside PHPCS.**
 
-  Evidence: `./test.sh` runs style, PHPUnit, and inventory checks, but no static type/data-flow analysis. Item 03 is an example of an undefined variable that survived that combination. Existing AI tests cover many transport cases but omit the failing sanitizer branch and completed-result shapes described above.
+  Evidence at review: `./test.sh` ran style, PHPUnit, and inventory checks, but no static type/data-flow analysis. Item 03 was an undefined variable that survived that combination. The sanitizer and completed-result regressions have since been covered by `AiTranslationsTest` and `AiAssistantTest`.
 
   Introduce PHP-native analysis in the separate development tool project, subject to dependency approval, starting with AI and newly extracted operations. Baseline legacy compatibility code narrowly; do not add types to overridden framework/module methods to satisfy a tool. Add behavior tests for the failures in this review using existing builders and PHPUnit conventions. Acceptance: an undefined closure variable fails checks before release, and the new regressions fail against the old behavior. Inventory coverage remains an entry-point check, not a substitute for failure-path assertions.
+
+  Completed: approved PHPStan 2.3 is installed only in `dev/` and runs after PHPCS in the full `./test.sh`. Level 0 covers AI, incoming mail, retention, and Telegram, with one exact exception for `TallportAgent::schema()`, which its concrete agents implement. A temporary reproduction of item 03's missing closure capture fails with `variable.undefined`. The existing sanitizer and invalid completed-result tests pass; the full run passed with 2,210 tests, 43,664 assertions, two skipped, and zero missing inventory items.
 
 - [ ] **21 · P2 · Tallport — Bring release-only guarantees into the local release check.**
 

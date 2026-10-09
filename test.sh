@@ -42,5 +42,6 @@ export TALLPORT_EXERCISED_LOG="$PWD/coverage/exercised.log"
 : > "$TALLPORT_EXERCISED_LOG"
 
 php dev/vendor/bin/phpcs -q
+php dev/vendor/bin/phpstan analyse --configuration=dev/phpstan.neon --no-progress --memory-limit=1G
 php dev/vendor/bin/phpunit
 php tests/inventory.php "$TALLPORT_EXERCISED_LOG"

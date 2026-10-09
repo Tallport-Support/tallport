@@ -1,0 +1,17 @@
+parameters:
+    level: 0
+    paths:
+        - ../app/Ai
+        - ../app/Incoming
+        - ../app/Retention
+        - ../app/Telegram
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+    ignoreErrors:
+        # Concrete agents define schema(), but the streamed base does not implement
+        # HasStructuredOutput because the SDK does not stream structured answers.
+        -
+            message: '#^Call to an undefined method .*TallportAgent::schema\(\)\.$#'
+            identifier: method.notFound
+            path: ../app/Ai/Agents/TallportAgent.php
+            count: 1
