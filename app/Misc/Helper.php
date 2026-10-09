@@ -56,6 +56,7 @@ class Helper
     const EXCEPTION_UNSAFE_URL = 10000;
     const EXCEPTION_NOT_ALLOWED_FILE_EXTENSION = 10001;
     const EXCEPTION_NOT_ALLOWED_FILE_MIME_TYPE = 10002;
+    const EXCEPTION_INVALID_SVG = 10003;
 
     public static $csp_nonce = null;
 
@@ -1942,17 +1943,18 @@ class Helper
         return self::uploadedFilePath($file_name);
     }
 
-    public static function sanitizeUploadedFileData($file_path, $content = null)
+    public static function sanitizeUploadedFileData($file_path, $content = null, $disk_name = null)
     {
         // Remove <script>, href="", iframe, etc from SVG files.
         // Any image can be interpreted as SVG by browser,
         // so checking extension is not enough.
-        if (Storage::exists($file_path)
-            && (Storage::mimeType($file_path) == 'image/svg+xml'
+        $disk = Storage::disk($disk_name ?: config('filesystems.default'));
+        if ($disk->exists($file_path)
+            && ($disk->mimeType($file_path) == 'image/svg+xml'
                 || strtolower(pathinfo($file_path, PATHINFO_EXTENSION)) == 'svg')
         ) {
             if (!$content) {
-                $content = Storage::get($file_path);
+                $content = $disk->get($file_path);
             }
             if ($content) {
                 // Remove comments from SVG content.
@@ -1961,11 +1963,11 @@ class Helper
 
                 $svg_sanitizer = new \enshrined\svgSanitize\Sanitizer();
                 $clean_content = $svg_sanitizer->sanitize($content);
-                // If XML parsing fails, remove <script> tags. Other attributes will be protected by CSP.
-                if (!$clean_content)  {
-                    $clean_content = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $content);
+                if (!$clean_content) {
+                    $disk->delete($file_path);
+                    throw new \Exception(__('Unsupported file type'), self::EXCEPTION_INVALID_SVG);
                 }
-                Storage::put($file_path, $clean_content);
+                $disk->put($file_path, $clean_content);
             }
         }
     }

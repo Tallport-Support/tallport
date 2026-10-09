@@ -60,7 +60,7 @@
         "codedge/laravel-selfupdater": "dev-customized",
         "doctrine/dbal": "^3.5",
         "egulias/email-validator": "4.*",
-        "enshrined/svg-sanitize": "0.22.0",
+        "enshrined/svg-sanitize": "^1.0",
         "fruitui/fruitui": "dev-main",
         "html2text/html2text": "4.1.0",
         "javoscript/laravel-macroable-models": "1.0.7",
@@ -109,7 +109,6 @@
         "guzzlehttp/guzzle": "8.0.1",
         "tedivm/jshrink": "1.4.0",
         "nikic/php-parser": "^5.0",
-        "doctrine/cache": "^2.0",
         "psr/container": "^1.1.1"
     },
     "autoload": {

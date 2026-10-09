@@ -580,9 +580,12 @@ patched copy of webklex/php-imap 4.1.1 instead).
 ./release.sh 1.9.0 "What changed"      # for significant changes
 ```
 
-It only releases a commit that is pushed to `main` and passed CI, then
-creates the GitHub release that installations update to. The notes go at
-the top of the release, above GitHub's list of changes.
+It checks the committed dependencies and published assets in an isolated
+checkout, audits dependencies, and runs the full suite on MariaDB before
+publishing. CI reports on the push afterwards. The notes go at the top of
+the release, above GitHub's list of changes. In an emergency,
+`SKIP_TESTS=1 SKIP_TESTS_REASON="reason" ./release.sh ...` skips tests only;
+the reason is recorded in the release notes, and dependency checks still run.
 
 ### Logo and icons
 

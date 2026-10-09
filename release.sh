@@ -20,9 +20,9 @@
 # This bumps 'version' in config/app.php only; 'compatibility_version' is the
 # FreeScout version for FreeScout modules and is changed by hand.
 #
-# The release is checked here, not by waiting for CI: the full ./test.sh (code
-# style, tests, inventory) must pass. CI still runs on the push and reports
-# afterwards (GitHub notifies about a failed run).
+# The release is checked here, not by waiting for CI: dependencies, published
+# assets, MariaDB tests and the full ./test.sh must pass before publication.
+# SKIP_TESTS=1 SKIP_TESTS_REASON="..." skips tests only in an emergency.
 
 set -euo pipefail
 
@@ -110,12 +110,38 @@ if ! git merge-base --is-ancestor origin/main HEAD; then
     exit 1
 fi
 
-# Release what our own checks pass. SKIP_TESTS=1 ./release.sh skips them in an emergency.
+if [ "${SKIP_TESTS:-}" = "1" ] && [ -z "${SKIP_TESTS_REASON:-}" ]; then
+    echo "SKIP_TESTS=1 requires SKIP_TESTS_REASON for the release notes" >&2
+    exit 1
+fi
+
+# Dependency integrity and audits cannot be skipped by SKIP_TESTS.
+echo "Checking release dependencies and published assets"
+if ! ./release-check.sh > /tmp/tallport-release-check.log 2>&1; then
+    tail -30 /tmp/tallport-release-check.log >&2
+    echo "Release checks failed: see /tmp/tallport-release-check.log" >&2
+    exit 1
+fi
+tail -5 /tmp/tallport-release-check.log
+
 if [ "${SKIP_TESTS:-}" = "1" ]; then
-    echo "WARNING: releasing without running the tests (SKIP_TESTS=1)" >&2
+    echo "WARNING: releasing without running the tests (SKIP_TESTS=1): $SKIP_TESTS_REASON" >&2
+    bypass_note="Tests skipped for this release: $SKIP_TESTS_REASON"
+    if [ -n "$notes" ]; then
+        notes="$notes"$'\n\n'"$bypass_note"
+    else
+        notes="$bypass_note"
+    fi
 else
-    echo "Running ./test.sh"
-    if ! ./test.sh > /tmp/tallport-release-tests.log 2>&1; then
+    echo "Running MariaDB schema and search checks"
+    if ! DB_TEST_DRIVER=mysql ./test.sh --filter='DatabaseSchemaTest|SearchTest' --fail-on-skipped > /tmp/tallport-release-db-tests.log 2>&1; then
+        tail -30 /tmp/tallport-release-db-tests.log >&2
+        echo "MariaDB checks failed: see /tmp/tallport-release-db-tests.log" >&2
+        exit 1
+    fi
+
+    echo "Running ./test.sh on MariaDB"
+    if ! DB_TEST_DRIVER=mysql ./test.sh > /tmp/tallport-release-tests.log 2>&1; then
         tail -30 /tmp/tallport-release-tests.log >&2
         echo "Tests failed: see /tmp/tallport-release-tests.log" >&2
         exit 1

@@ -99,6 +99,24 @@ class FetchEmailsProcessMessageTest extends FeatureTestCase
             ."--mixed--";
     }
 
+    public function testEmailWithUnsafeSvgKeepsMessageAndOtherAttachment()
+    {
+        $svg = '<!DOCTYPE svg [<!ENTITY Tab "#">]><svg xmlns="http://www.w3.org/2000/svg"><a href="&Tab;javascript:alert(1)"/></svg>';
+        $body = "--mixed\nContent-Type: text/plain; charset=UTF-8\n\nSee the attached files.\n"
+            ."--mixed\nContent-Type: image/svg+xml; name=\"unsafe.svg\"\nContent-Disposition: attachment; filename=\"unsafe.svg\"\nContent-Transfer-Encoding: base64\n\n".base64_encode($svg)."\n"
+            ."--mixed\nContent-Type: text/plain; name=\"safe.txt\"\nContent-Disposition: attachment; filename=\"safe.txt\"\nContent-Transfer-Encoding: base64\n\n".base64_encode('safe')."\n"
+            ."--mixed--";
+
+        [$conversation] = $this->receiveFromCustomer([
+            'headers' => ['Content-Type' => 'multipart/mixed; boundary="mixed"'],
+            'body'    => $body,
+        ]);
+
+        $this->assertNotNull($conversation);
+        $this->assertStringContainsString('See the attached files.', $conversation->threads()->first()->body);
+        $this->assertSame(['safe.txt'], Attachment::where('thread_id', $conversation->threads()->first()->id)->pluck('file_name')->all());
+    }
+
     // Message-IDs.
 
     /**

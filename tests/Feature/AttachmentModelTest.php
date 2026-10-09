@@ -41,6 +41,27 @@ class AttachmentModelTest extends FeatureTestCase
         $this->assertSame(0, Attachment::count());
     }
 
+    public function testCreateRejectsUnsafeSvgWithoutKeepingItsRowOrFile()
+    {
+        $svg = '<!DOCTYPE svg [<!ENTITY Tab "#">]><svg xmlns="http://www.w3.org/2000/svg"><a href="&Tab;javascript:alert(1)"/></svg>';
+
+        $this->assertFalse(Attachment::create('unsafe.svg', 'image/svg+xml', null, $svg, null));
+        $this->assertSame(0, Attachment::count());
+        $this->assertSame([], Attachment::getDisk()->allFiles(Attachment::DIRECTORY));
+    }
+
+    public function testCreateSanitizesSvgOnAttachmentDisk()
+    {
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script><circle r="5" onload="alert(2)"/></svg>';
+
+        $attachment = Attachment::create('logo.svg', 'image/svg+xml', null, $svg, null);
+        $stored = $attachment->getFileContents();
+
+        $this->assertStringContainsString('<circle', $stored);
+        $this->assertStringNotContainsString('script', $stored);
+        $this->assertStringNotContainsString('onload', $stored);
+    }
+
     public function testCreateRemovesItsRowWhenSavingFails()
     {
         $fail = function () {

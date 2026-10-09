@@ -166,11 +166,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: approved PHPStan 2.3 is installed only in `dev/` and runs after PHPCS in the full `./test.sh`. Level 0 covers AI, incoming mail, retention, and Telegram, with one exact exception for `TallportAgent::schema()`, which its concrete agents implement. A temporary reproduction of item 03's missing closure capture fails with `variable.undefined`. The existing sanitizer and invalid completed-result tests pass; the full run passed with 2,210 tests, 43,664 assertions, two skipped, and zero missing inventory items.
 
-- [ ] **21 · P2 · Tallport — Bring release-only guarantees into the local release check.**
+- [x] **21 · P2 · Tallport — Bring release-only guarantees into the local release check.**
 
   Evidence: `release.sh` runs `./test.sh` and publishes before CI finishes. The vendor reconstruction check exists only in `.github/workflows/test.yml`. The local test run can skip environment-dependent tests, and it does not perform dependency auditing. A fresh `composer audit --locked --format=json` on 2026-10-09 reports three medium advisories for `enshrined/svg-sanitize` 0.22.0 ([stored XSS](https://github.com/advisories/GHSA-9rjx-3jch-6vjf), [nesting DoS](https://github.com/advisories/GHSA-m9xh-6747-9r6f), [DTD DoS](https://github.com/advisories/GHSA-v383-3rw5-q8rf)) and flags abandoned `doctrine/cache`, required through Doctrine DBAL as well as a direct development constraint.
 
   Preserve the chosen local release workflow, but run its critical guarantees before publication: reconstruct dependencies in an isolated checkout, verify committed vendor and published assets, require the production database checks in release mode, and audit dependencies. Resolve or explicitly time-bound the abandoned dependency's replacement path with module/schema compatibility checks. Acceptance: stale vendor/assets or unavailable required services block a normal release before upload, while an emergency bypass remains explicit and auditable.
+
+  Completed: `release-check.sh` reconstructs `vendor/` in an isolated checkout, compares published FruitUI and Livewire assets, and audits the root and both development Composer projects before release. The normal release runs the MariaDB schema/search checks and full MariaDB suite; `SKIP_TESTS=1` requires a reason in the release notes and skips tests only. Upgraded `enshrined/svg-sanitize` to 1.0.0 and Doctrine DBAL to 3.10.6, removed abandoned `doctrine/cache`, and rejected SVGs the sanitizer cannot clean while retaining the rest of incoming emails. The rebuild and audits passed; the full MariaDB suite passed with 2,214 tests, 43,676 assertions, two skipped, and zero missing inventory items.
 
 - [ ] **22 · P2 · Tallport — Reconcile contributor guidance with the executable project.**
 

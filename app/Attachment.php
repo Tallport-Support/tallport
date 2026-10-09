@@ -146,6 +146,11 @@ class Attachment extends Model
             if ($attachment->id) {
                 self::whereKey($attachment->id)->delete();
             }
+            if ($e->getCode() == \Helper::EXCEPTION_INVALID_SVG) {
+                \Log::warning('Rejected unsafe SVG attachment', ['file_name' => $file_name, 'thread_id' => $thread_id]);
+
+                return false;
+            }
             throw $e;
         }
 
@@ -185,7 +190,7 @@ class Attachment extends Model
         // actual string content, so let it re-read the just-written file in that case instead
         // of treating the resource as file content.
         try {
-            \Helper::sanitizeUploadedFileData($file_path, is_resource($content) ? null : $content);
+            \Helper::sanitizeUploadedFileData($file_path, is_resource($content) ? null : $content, self::getDiskName());
         } catch (\Throwable $e) {
             self::getDisk()->delete($file_path);
             throw $e;

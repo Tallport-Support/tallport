@@ -98,16 +98,33 @@ class HelperFeatureTest extends FeatureTestCase
         }
     }
 
+    public function testUploadedSvgDoesNotKeepDtdEntityReferences()
+    {
+        $svg = '<!DOCTYPE svg [<!ENTITY Tab "#">]><svg xmlns="http://www.w3.org/2000/svg"><a href="&Tab;javascript:alert(1)"><circle r="5"/></a></svg>';
+
+        try {
+            Helper::uploadFile(UploadedFile::fake()->createWithContent('logo.svg', $svg), ['svg']);
+            $this->fail('An unsafe SVG was accepted.');
+        } catch (\Exception $e) {
+            $this->assertSame(Helper::EXCEPTION_INVALID_SVG, $e->getCode());
+        }
+        $this->assertSame([], \Storage::files('uploads'));
+    }
+
     /**
-     * An SVG that isn't well-formed XML still loses its script blocks.
+     * An SVG that isn't well-formed XML is removed.
      */
     public function testSanitizeBrokenSvg()
     {
         \Storage::put('uploads/broken.svg', '<svg><script>alert(1)</script><g>');
 
-        Helper::sanitizeUploadedFileData('uploads/broken.svg');
-
-        $this->assertSame('<svg><g>', \Storage::get('uploads/broken.svg'));
+        try {
+            Helper::sanitizeUploadedFileData('uploads/broken.svg');
+            $this->fail('A broken SVG was accepted.');
+        } catch (\Exception $e) {
+            $this->assertSame(Helper::EXCEPTION_INVALID_SVG, $e->getCode());
+        }
+        $this->assertFalse(\Storage::exists('uploads/broken.svg'));
 
         \Storage::put('uploads/note.txt', '<script>alert(1)</script>');
         Helper::sanitizeUploadedFileData('uploads/note.txt');
