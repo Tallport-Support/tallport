@@ -61,7 +61,7 @@ class Attachment extends Model
     /**
      * Save attachment to file and database.
      */
-    public static function create($file_name, $mime_type, $type, $content, $uploaded_file, $embedded = false, $thread_id = null, $user_id = null, $upload_mode = \Helper::UPLOAD_MODE_DEFAULT)
+    public static function create($file_name, $mime_type, $type, $content, $uploaded_file, $embedded = false, $thread_id = null, $user_id = null, $upload_mode = \Helper::UPLOAD_MODE_DEFAULT, $content_encrypted = false)
     {
         if (!$content && !$uploaded_file) {
             return false;
@@ -134,7 +134,7 @@ class Attachment extends Model
         try {
             $attachment->save();
 
-            $file_info = self::saveFileToDisk($attachment, $file_name, $content, $uploaded_file);
+            $file_info = self::saveFileToDisk($attachment, $file_name, $content, $uploaded_file, $content_encrypted);
 
             $attachment->file_dir = $file_info['file_dir'];
             $attachment->size = self::getDisk()->size($file_info['file_path']);
@@ -161,7 +161,7 @@ class Attachment extends Model
      * Save file to the disk and return file_dir.
      * $content may be a resource pointing to the file in remote storage.
      */
-    public static function saveFileToDisk($attachment, $file_name, $content, $uploaded_file)
+    public static function saveFileToDisk($attachment, $file_name, $content, $uploaded_file, $content_encrypted = false)
     {
         // Save file from content or copy file.
         // We have to keep file name as is, so if file exists we create extra folder.
@@ -176,6 +176,10 @@ class Attachment extends Model
 
         $file_dir .= $i.DIRECTORY_SEPARATOR;
 
+        if ($content_encrypted && ($attachment->mime_type == 'image/svg+xml' || strtolower(pathinfo($file_name, PATHINFO_EXTENSION)) == 'svg')) {
+            $content = \Crypt::encryptString(\Helper::sanitizeSvgContent(\Crypt::decryptString($content)));
+        }
+
         try {
             if ($uploaded_file) {
                 $uploaded_file->storeAs(self::DIRECTORY.DIRECTORY_SEPARATOR.$file_dir, $file_name, self::getDiskName());
@@ -189,11 +193,13 @@ class Attachment extends Model
         // $content may be a stream resource rather than a string; the SVG sanitizer needs
         // actual string content, so let it re-read the just-written file in that case instead
         // of treating the resource as file content.
-        try {
-            \Helper::sanitizeUploadedFileData($file_path, is_resource($content) ? null : $content, self::getDiskName());
-        } catch (\Throwable $e) {
-            self::getDisk()->delete($file_path);
-            throw $e;
+        if (!$content_encrypted) {
+            try {
+                \Helper::sanitizeUploadedFileData($file_path, is_resource($content) ? null : $content, self::getDiskName());
+            } catch (\Throwable $e) {
+                self::getDisk()->delete($file_path);
+                throw $e;
+            }
         }
 
         return [

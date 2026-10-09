@@ -163,7 +163,7 @@ class TeamChat extends Component
                 foreach ($this->files as $file) {
                     $mime_type = $file->getMimeType();
                     $file_name = \Helper::sanitizeUploadedFileName($file->getClientOriginalName(), $file, null, $mime_type);
-                    $attachment = Attachment::create($file_name, $mime_type, null, \Crypt::encryptString($file->get()), null, false, null, $user->id);
+                    $attachment = Attachment::create($file_name, $mime_type, null, \Crypt::encryptString($file->get()), null, false, null, $user->id, \Helper::UPLOAD_MODE_DEFAULT, true);
                     if (!$attachment || !$attachment->fileExists()) {
                         throw new \RuntimeException('Could not store team chat attachment.');
                     }

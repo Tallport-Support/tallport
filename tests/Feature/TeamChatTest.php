@@ -283,6 +283,34 @@ class TeamChatTest extends FeatureTestCase
         $this->assertSame(0, Attachment::where('team_message_id', $message->id)->count());
     }
 
+    public function testSvgFileIsSanitizedBeforeEncryption()
+    {
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script><circle r="5" onload="alert(2)"/></svg>';
+
+        Livewire::actingAs($this->ann)->test(TeamChat::class, ['mailbox' => $this->mailbox])
+            ->set('files', [UploadedFile::fake()->createWithContent('logo.svg', $svg)])->call('send');
+
+        $attachment = TeamMessage::where('mailbox_id', $this->mailbox->id)->first()->attachments->first();
+        $this->assertNotNull($attachment);
+        $response = $this->get($attachment->url());
+        $response->assertOk();
+        $this->assertStringContainsString('<circle', $response->getContent());
+        $this->assertStringNotContainsString('script', $response->getContent());
+        $this->assertStringNotContainsString('onload', $response->getContent());
+    }
+
+    public function testUnsafeSvgDoesNotSendTeamMessage()
+    {
+        $svg = '<!DOCTYPE svg [<!ENTITY Tab "#">]><svg xmlns="http://www.w3.org/2000/svg"><a href="&Tab;javascript:alert(1)"/></svg>';
+
+        Livewire::actingAs($this->ann)->test(TeamChat::class, ['mailbox' => $this->mailbox])
+            ->set('body', 'See file')->set('files', [UploadedFile::fake()->createWithContent('unsafe.svg', $svg)])
+            ->call('send')->assertToasted('Error occurred. Please try again later.', 'danger');
+
+        $this->assertSame(0, TeamMessage::where('mailbox_id', $this->mailbox->id)->count());
+        $this->assertSame(0, Attachment::whereNotNull('team_message_id')->count());
+    }
+
     public function testAnAttachmentFailureKeepsTheTeamChatComposerForRetry()
     {
         $chat = Livewire::actingAs($this->ann)->test(TeamChat::class, ['mailbox' => $this->mailbox]);

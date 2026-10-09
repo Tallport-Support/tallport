@@ -1953,23 +1953,32 @@ class Helper
             && ($disk->mimeType($file_path) == 'image/svg+xml'
                 || strtolower(pathinfo($file_path, PATHINFO_EXTENSION)) == 'svg')
         ) {
-            if (!$content) {
+            if ($content === null) {
                 $content = $disk->get($file_path);
             }
-            if ($content) {
-                // Remove comments from SVG content.
-                // https://github.com/freescout-help-desk/freescout/security/advisories/GHSA-cvr8-cw5c-5pfw
-                $content = preg_replace('/<!--(.|\s)*?-->/', '', $content);
-
-                $svg_sanitizer = new \enshrined\svgSanitize\Sanitizer();
-                $clean_content = $svg_sanitizer->sanitize($content);
-                if (!$clean_content) {
-                    $disk->delete($file_path);
-                    throw new \Exception(__('Unsupported file type'), self::EXCEPTION_INVALID_SVG);
-                }
-                $disk->put($file_path, $clean_content);
+            try {
+                $clean_content = self::sanitizeSvgContent($content);
+            } catch (\Throwable $e) {
+                $disk->delete($file_path);
+                throw $e;
             }
+            $disk->put($file_path, $clean_content);
         }
+    }
+
+    public static function sanitizeSvgContent($content)
+    {
+        // Remove comments from SVG content.
+        // https://github.com/freescout-help-desk/freescout/security/advisories/GHSA-cvr8-cw5c-5pfw
+        $content = preg_replace('/<!--(.|\s)*?-->/', '', $content);
+
+        $svg_sanitizer = new \enshrined\svgSanitize\Sanitizer();
+        $clean_content = $svg_sanitizer->sanitize($content);
+        if (!$clean_content) {
+            throw new \Exception(__('Unsupported file type'), self::EXCEPTION_INVALID_SVG);
+        }
+
+        return $clean_content;
     }
 
     public static function uploadedFileRemove($name)
