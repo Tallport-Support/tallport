@@ -142,11 +142,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: the room pages through bounded history, pinned links load and focus older messages, and search labels say they cover loaded messages. FruitUI preserves the reader's position while paging. New arrivals remain unread while the reader is away from the latest messages; reaching the latest messages acknowledges them and updates the sidebar count.
 
-- [ ] **18 · P2 · Tallport — Restore zoom and name attachment previews.**
+- [x] **18 · P2 · Tallport — Restore zoom and name attachment previews.**
 
   Evidence: `resources/views/layouts/app.blade.php:6` sets `maximum-scale=1`. `public/js/attachments.js` creates PDF/text/email iframes without a title and gives preview images empty alternative text. These are application integration issues; FruitUI already supplies the surrounding dialog semantics.
 
   Remove the zoom restriction and give each preview an accessible name derived from its filename/type. Check the actual workspace, composer, dialogs, and inspector at increased text/zoom sizes, in both system appearances, with keyboard navigation. Acceptance: zoom remains available, controls remain reachable, and assistive technology can identify the embedded document. [W3C viewport guidance](https://www.w3.org/WAI/standards-guidelines/act/rules/b4f0c3/).
+
+  Completed: the viewport no longer limits zoom. Image, document, email, audio and video previews use the attachment filename as their accessible name, and the viewer's actions wrap on narrow screens. A browser check of Tallport-rendered test data covered the workspace, chat composer, inspector and dialogs at narrow widths and enlarged text, in light and dark appearances; Enter opened a preview, Escape closed it and returned focus.
 
 - [ ] **19 · P2 · FruitUI — Handle expired sessions and unexpected dialog responses.**
 

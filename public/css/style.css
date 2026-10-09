@@ -1112,6 +1112,9 @@ a h4 {
 .attachment-viewer audio {
     width: 100%;
 }
+.attachment-viewer__footer {
+    flex-wrap: wrap;
+}
 /* A message's file: only holds the viewer's data for its FruitUI attachment. */
 .conv-attachment {
     display: contents;

@@ -1,6 +1,6 @@
 {{-- A message's files, as FruitUI attachments with Delete among their actions: they open in the viewer (public/js/attachments.js). --}}
 @foreach ($thread->attachments as $attachment)
-    <span class="conv-attachment" data-attachment-id="{{ $attachment->id }}" data-mime="{{ $attachment->mime_type }}" @if (App\Http\Controllers\AttachmentsController::isEmail($attachment)) data-email-url="{{ route('attachments.email', ['id' => $attachment->id]) }}" @endif>
+    <span class="conv-attachment" data-attachment-id="{{ $attachment->id }}" data-mime="{{ $attachment->mime_type }}" data-file-name="{{ $attachment->file_name }}" @if (App\Http\Controllers\AttachmentsController::isEmail($attachment)) data-email-url="{{ route('attachments.email', ['id' => $attachment->id]) }}" @endif>
         <x-fruit::attachment :href="$attachment->url()" class="attachment-link" target="_blank">
             <x-slot:leading><x-icon.paperclip class="f-icon" aria-hidden="true" /></x-slot:leading>
             {{ $attachment->file_name }}

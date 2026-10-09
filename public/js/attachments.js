@@ -44,24 +44,27 @@
 		return '';
 	};
 
-	var media = function (item) {
+	var media = function (item, name) {
 		var url = item.querySelector('.attachment-link').getAttribute('href');
 		var element;
 		switch (kind(item)) {
 			case 'image':
 				element = document.createElement('img');
-				element.alt = '';
+				element.alt = name;
 				break;
 			case 'frame':
 				element = document.createElement('iframe');
+				element.title = name;
 				break;
 			case 'email':
 				element = document.createElement('iframe');
+				element.title = name;
 				element.setAttribute('sandbox', 'allow-popups allow-downloads');
 				url = item.getAttribute('data-email-url');
 				break;
 			default:
 				element = document.createElement(kind(item));
+				element.setAttribute('aria-label', name);
 				element.controls = true;
 		}
 		element.src = url;
@@ -74,13 +77,13 @@
 		var index = list.findIndex(function (other) {
 			return other.getAttribute('data-attachment-id') == item.getAttribute('data-attachment-id');
 		});
-		var name = (link.querySelector('.f-attachment__body') || link).firstChild.textContent.trim() || link.textContent.trim();
+		var name = item.getAttribute('data-file-name') || (link.querySelector('.f-attachment__body') || link).firstChild.textContent.trim() || link.textContent.trim();
 
 		var body = document.createElement('div');
 		body.className = 'attachment-viewer';
-		body.appendChild(media(item));
+		body.appendChild(media(item, name));
 		var footer = document.createElement('footer');
-		footer.className = 'f-dialog__footer';
+		footer.className = 'f-dialog__footer attachment-viewer__footer';
 		footer.innerHTML = '<button type="button" class="f-button attachment-viewer__prev"></button>'
 			+'<button type="button" class="f-button attachment-viewer__next"></button>'
 			+'<span class="f-toolbar__spacer"></span>'
