@@ -235,7 +235,7 @@ class AllMailboxes
             return self::isAllMailboxes($request->mailbox_id) ? self::folder($user, $request->folder_id) : $folder;
         }, 20, 4);
         \Eventy::addFilter('folder.conversations_query', function ($query, $folder, $user_id) {
-            if (self::isAllMailboxes(request()->mailbox_id) && $folder->id < 0) {
+            if ($folder->id < 0) {
                 return self::query($folder, User::find($user_id));
             }
 

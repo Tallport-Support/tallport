@@ -7,6 +7,7 @@ use App\Conversation;
 use App\Customer;
 use App\Http\Controllers\ConversationsController;
 use App\MailboxUser;
+use App\Misc\ConversationReplies;
 use App\Thread;
 use App\User;
 use Illuminate\Http\Request;
@@ -99,6 +100,27 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         $this->assertError('Incorrect thread', $this->ajax('send_reply', ['conversation_id' => $conversation->id, 'thread_id' => $draft->id, 'body' => '<p>Hi</p>']));
         $this->assertError('Incorrect thread', $this->ajax('save_draft', ['conversation_id' => $conversation->id, 'thread_id' => $draft->id, 'body' => '<p>Hi</p>']));
         $this->assertEquals(Thread::STATE_DRAFT, $draft->fresh()->state);
+    }
+
+    public function testSavingADraftUsesOnlyItsOwnFields()
+    {
+        $conversation = $this->receiveConversation();
+        $other = $this->receiveConversation(['from' => 'robin@customer.example.org']);
+        $other_draft = $this->replyDraft($other);
+        request()->merge(['conversation_id' => $other->id, 'thread_id' => $other_draft->id, 'body' => '<p>Other draft</p>']);
+
+        $response = app(ConversationReplies::class)->saveDraft([
+            'mailbox_id' => $this->mailbox->id,
+            'conversation_id' => $conversation->id,
+            'body' => '<p>This draft</p>',
+        ], $this->agent);
+
+        $this->assertSuccess($response);
+        $this->assertNotSame($other_draft->id, $response['thread_id']);
+        $this->assertSame('<p>This draft</p>', Thread::find($response['thread_id'])->body);
+        $this->assertSame('<p>Not sent yet</p>', $other_draft->fresh()->body);
+        $this->assertSame($other_draft->id, request()->thread_id);
+        $this->assertSame('<p>Other draft</p>', request()->body);
     }
 
     public function testADraftSentElsewhereIsNotSentOrSavedAgain()

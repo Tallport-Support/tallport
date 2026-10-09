@@ -344,16 +344,16 @@ class ConversationActions
             switch ($after_send) {
                 case MailboxUser::AFTER_SEND_STAY:
                 default:
-                    $redirect_url = $conversation->url();
+                    $redirect_url = $conversation->url(null, null, [], $request);
                     break;
                 case MailboxUser::AFTER_SEND_NEXT:
                     // We need to get not any next conversation, but ACTIVE next conversation.
-                    $redirect_url = $conversation->urlNext(Conversation::getFolderParam(), Conversation::STATUS_ACTIVE, true);
+                    $redirect_url = $conversation->urlNext(Conversation::getFolderParam($request), Conversation::STATUS_ACTIVE, true, $request);
                     break;
             }
         } else {
             // If something went wrong and after_send not set, just show the reply
-            $redirect_url = $conversation->url();
+            $redirect_url = $conversation->url(null, null, [], $request);
         }
 
         return $redirect_url;

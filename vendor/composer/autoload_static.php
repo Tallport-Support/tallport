@@ -1097,6 +1097,8 @@ class ComposerStaticInit4bed6e813a5c8d513c131bb2c6cbcbb7
         'App\\Misc\\Branding' => __DIR__ . '/../..' . '/app/Misc/Branding.php',
         'App\\Misc\\ConversationActionButtons' => __DIR__ . '/../..' . '/app/Misc/ConversationActionButtons.php',
         'App\\Misc\\ConversationActions' => __DIR__ . '/../..' . '/app/Misc/ConversationActions.php',
+        'App\\Misc\\ConversationListQuery' => __DIR__ . '/../..' . '/app/Misc/ConversationListQuery.php',
+        'App\\Misc\\ConversationReplies' => __DIR__ . '/../..' . '/app/Misc/ConversationReplies.php',
         'App\\Misc\\CspHtmlDumper' => __DIR__ . '/../..' . '/app/Misc/CspHtmlDumper.php',
         'App\\Misc\\DatabaseSettings' => __DIR__ . '/../..' . '/app/Misc/DatabaseSettings.php',
         'App\\Misc\\DeliveryReports' => __DIR__ . '/../..' . '/app/Misc/DeliveryReports.php',

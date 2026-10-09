@@ -4,8 +4,8 @@ namespace App\Livewire;
 
 use App\Conversation;
 use App\Customer;
-use App\Http\Controllers\ConversationsController;
 use App\Mailbox;
+use App\Misc\ConversationReplies;
 use App\Misc\DeliveryReports;
 use App\Misc\Noreply;
 use App\Thread;
@@ -18,9 +18,8 @@ use Livewire\Component;
 /**
  * A new conversation: an email to customers, or a phone conversation noted
  * down. Its draft is saved as the user writes (it gets a number and an address
- * then). Sending and drafts go through the conversation ajax actions' code
- * (ConversationsController::ajaxSendReply() and alike) with the fields the
- * form posted; the browser side is the composer's (tallportComposer in
+ * then). Sending and drafts share ConversationReplies with the conversation
+ * AJAX actions. The browser side is the composer's (tallportComposer in
  * public/js/conversations.js).
  */
 class NewConversation extends Component
@@ -199,7 +198,7 @@ class NewConversation extends Component
             return;
         }
 
-        $response = $this->call('ajaxSaveDraft');
+        $response = $this->call('saveDraft');
         if (($response['status'] ?? '') != 'success') {
             Fruit::toast($response['msg'] ?? __('Error occurred'), 'danger');
 
@@ -219,8 +218,7 @@ class NewConversation extends Component
     #[On('composer-discard-draft')]
     public function discard()
     {
-        request()->merge(['thread_id' => $this->thread_id, 'from_thread_id' => $this->from_thread_id]);
-        $response = app(ConversationsController::class)->ajaxDiscardDraft(request(), ['status' => 'error', 'msg' => ''], auth()->user());
+        $response = app(ConversationReplies::class)->discardDraft(['thread_id' => $this->thread_id, 'from_thread_id' => $this->from_thread_id], auth()->user());
         if (($response['status'] ?? '') != 'success') {
             Fruit::toast($response['msg'] ?? __('Error occurred'), 'danger');
 
@@ -240,7 +238,7 @@ class NewConversation extends Component
             return;
         }
 
-        $response = $this->call('ajaxSendReply');
+        $response = $this->call('sendReply');
         if (($response['status'] ?? '') != 'success') {
             Fruit::toast($response['msg'] ?? __('Error occurred'), 'danger');
 
@@ -316,7 +314,7 @@ class NewConversation extends Component
     }
 
     /**
-     * Runs a conversation ajax action's code with the fields the form posted.
+     * Runs a reply operation with the fields the form posted.
      */
     protected function call($method)
     {
@@ -353,9 +351,9 @@ class NewConversation extends Component
             $fields['bcc'] = Fruit::tokens($this->bcc);
             $fields['multiple_conversations'] = $this->multiple_conversations ? 1 : '';
         }
-        request()->merge($fields);
+        $replies = app(ConversationReplies::class);
 
-        return app(ConversationsController::class)->$method(request(), ['status' => 'error', 'msg' => ''], auth()->user());
+        return $replies->$method($fields, auth()->user());
     }
 
     public function render()
@@ -384,7 +382,7 @@ class NewConversation extends Component
                 ->where('status', '!=', Conversation::STATUS_SPAM)
                 ->where('state', Conversation::STATE_PUBLISHED)
                 ->orderBy('created_at', 'desc')->orderBy('id', 'desc')
-                ->paginate(ConversationsController::PREV_CONVERSATIONS_LIMIT);
+                ->paginate(Conversation::PREV_CONVERSATIONS_LIMIT);
         } else {
             $customer = null;
         }

@@ -6,6 +6,7 @@ use App\Conversation;
 use App\Folder;
 use App\Livewire\ConversationList;
 use App\Misc\AllMailboxes;
+use App\Misc\ConversationListQuery;
 use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
@@ -61,6 +62,29 @@ class ConversationListTest extends FeatureTestCase
 
         $list->call('filterAssignee', $sam->id)->assertSee('Banana question')->assertDontSee('Apple question');
         $list->call('filterAssignee')->assertSee('Apple question');
+    }
+
+    public function testOneListQueryDoesNotChangeAnothersParameters()
+    {
+        $first = $this->conversation('First question');
+        $second = $this->conversation('Second question');
+        $sam = $this->createUser();
+        $kim = $this->createUser();
+        $this->mailbox->users()->attach([$sam->id, $kim->id]);
+        $first->changeUser($sam->id, $this->agent);
+        $second->changeUser($kim->id, $this->agent);
+        $folder = $this->folder(Folder::TYPE_ASSIGNED);
+        $this->actingAs($this->agent);
+        request()->merge(['folder_id' => 0, 'params' => ['user_id' => $sam->id]]);
+
+        $query = app(ConversationListQuery::class);
+        $sam_list = $query->listConversations(['folder_id' => $folder->id, 'params' => ['user_id' => $sam->id], 'page' => 1], $this->agent);
+        $kim_list = $query->listConversations(['folder_id' => $folder->id, 'params' => ['user_id' => $kim->id], 'page' => 1], $this->agent);
+
+        $this->assertSame([$first->id], $sam_list['conversations']->pluck('id')->all());
+        $this->assertSame([$second->id], $kim_list['conversations']->pluck('id')->all());
+        $this->assertSame(['user_id' => $sam->id], request()->params);
+        $this->assertSame(0, request()->folder_id);
     }
 
     /**

@@ -161,7 +161,7 @@
         "name": "attachments.embedded.check_size",
         "arguments": 1,
         "files": [
-            "app/Http/Controllers/ConversationsController.php"
+            "app/Misc/ConversationReplies.php"
         ]
     },
     {
@@ -425,7 +425,7 @@
         "name": "conversation.created_by_user_can_undo",
         "arguments": 2,
         "files": [
-            "app/Http/Controllers/ConversationsController.php",
+            "app/Misc/ConversationReplies.php",
             "app/Thread.php"
         ]
     },
@@ -434,7 +434,7 @@
         "name": "conversation.custom.identifier",
         "arguments": 2,
         "files": [
-            "app/Http/Controllers/ConversationsController.php"
+            "app/Misc/ConversationReplies.php"
         ]
     },
     {
@@ -442,7 +442,7 @@
         "name": "conversation.custom.validation_rules",
         "arguments": 2,
         "files": [
-            "app/Http/Controllers/ConversationsController.php"
+            "app/Misc/ConversationReplies.php"
         ]
     },
     {
@@ -575,7 +575,7 @@
         "files": [
             "app/Console/Commands/FetchEmails.php",
             "app/Conversation.php",
-            "app/Http/Controllers/ConversationsController.php",
+            "app/Misc/ConversationReplies.php",
             "app/Thread.php"
         ]
     },
@@ -616,7 +616,7 @@
         "name": "conversation.send_reply_save",
         "arguments": 2,
         "files": [
-            "app/Http/Controllers/ConversationsController.php"
+            "app/Misc/ConversationReplies.php"
         ]
     },
     {
@@ -657,8 +657,8 @@
         "arguments": 3,
         "files": [
             "app/Conversation.php",
-            "app/Http/Controllers/ConversationsController.php",
-            "app/Misc/ConversationActions.php"
+            "app/Misc/ConversationActions.php",
+            "app/Misc/ConversationReplies.php"
         ]
     },
     {
@@ -669,7 +669,7 @@
             "app/Api/Writer.php",
             "app/Console/Commands/FetchEmails.php",
             "app/Conversation.php",
-            "app/Http/Controllers/ConversationsController.php"
+            "app/Misc/ConversationReplies.php"
         ]
     },
     {
@@ -718,7 +718,7 @@
         "arguments": 3,
         "files": [
             "app/Conversation.php",
-            "app/Http/Controllers/ConversationsController.php"
+            "app/Misc/ConversationReplies.php"
         ]
     },
     {
@@ -734,7 +734,7 @@
         "name": "conversation.user_forwarded_can_undo",
         "arguments": 4,
         "files": [
-            "app/Http/Controllers/ConversationsController.php"
+            "app/Misc/ConversationReplies.php"
         ]
     },
     {
@@ -751,7 +751,7 @@
         "name": "conversation.user_replied_can_undo",
         "arguments": 2,
         "files": [
-            "app/Http/Controllers/ConversationsController.php",
+            "app/Misc/ConversationReplies.php",
             "app/Thread.php"
         ]
     },
@@ -794,7 +794,7 @@
         "name": "conversations.ajax_pagination_folder",
         "arguments": 4,
         "files": [
-            "app/Http/Controllers/ConversationsController.php"
+            "app/Misc/ConversationListQuery.php"
         ]
     },
     {
@@ -2268,7 +2268,7 @@
         "name": "search.conversations.perform",
         "arguments": 4,
         "files": [
-            "app/Http/Controllers/ConversationsController.php"
+            "app/Misc/ConversationListQuery.php"
         ]
     },
     {
@@ -2300,7 +2300,7 @@
         "name": "search.filters",
         "arguments": 3,
         "files": [
-            "app/Http/Controllers/ConversationsController.php"
+            "app/Misc/ConversationListQuery.php"
         ]
     },
     {
@@ -2348,7 +2348,7 @@
         "name": "send_reply.before_save_forwarded_thread",
         "arguments": 2,
         "files": [
-            "app/Http/Controllers/ConversationsController.php"
+            "app/Misc/ConversationReplies.php"
         ]
     },
     {
@@ -2741,7 +2741,7 @@
         "name": "thread.before_save_from_request",
         "arguments": 2,
         "files": [
-            "app/Http/Controllers/ConversationsController.php"
+            "app/Misc/ConversationReplies.php"
         ]
     },
     {

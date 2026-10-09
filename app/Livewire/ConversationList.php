@@ -5,9 +5,9 @@ namespace App\Livewire;
 use App\Conversation;
 use App\ConversationRead;
 use App\Folder;
-use App\Http\Controllers\ConversationsController;
 use App\Mailbox;
 use App\Misc\AllMailboxes;
+use App\Misc\ConversationListQuery;
 use FruitUI\Fruit;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
@@ -249,11 +249,11 @@ class ConversationList extends Component
         }
         // This kind of folder's order: the user's choice, or its default.
         $this->sorting = Conversation::getConvTableSorting(null, $folder);
-        $list = ConversationsController::folderList($folder, $user);
+        $list = app(ConversationListQuery::class)->folderList($folder, $user);
         $this->folder_id = $folder->id;
         $this->mailbox_id = $folder->id < 0 ? AllMailboxes::MAILBOX_ID : $folder->mailbox_id;
         $this->params = array_intersect_key($this->params, ['target_blank' => 1]) + $list['params']
-            + ['current_conversation_id' => $conversation_id ?: ConversationsController::folderConversationId($folder, $user)];
+            + ['current_conversation_id' => $conversation_id ?: app(ConversationListQuery::class)->folderConversationId($folder, $user)];
         $this->filter = [];
         $this->page = 1;
         $this->selected = [];
@@ -290,16 +290,14 @@ class ConversationList extends Component
             'conversations_filter' => $this->filter['f'] ?? $this->filter,
         ];
         if (!$this->initial) {
-            // The list's query reads these from the request, as the ajax action did.
-            request()->merge([
+            $list = app(ConversationListQuery::class)->listConversations([
                 'mailbox_id' => $this->mailbox_id,
                 'folder_id'  => $this->folder_id,
                 'filter'     => $this->filter,
                 'params'     => $this->params,
                 'sorting'    => $this->sorting,
                 'page'       => $this->page,
-            ]);
-            $list = app(ConversationsController::class)->listConversations(request(), $user);
+            ], $user);
             if (!empty($list['msg'])) {
                 abort(403, $list['msg']);
             }

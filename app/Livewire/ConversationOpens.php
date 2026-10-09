@@ -4,8 +4,8 @@ namespace App\Livewire;
 
 use App\Conversation;
 use App\Folder;
-use App\Http\Controllers\ConversationsController;
 use App\Misc\AllMailboxes;
+use App\Misc\ConversationListQuery;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 
@@ -51,7 +51,7 @@ trait ConversationOpens
 
             return null;
         }
-        $conversation_id = $conversation_id ?: ConversationsController::folderConversationId($folder, auth()->user());
+        $conversation_id = $conversation_id ?: app(ConversationListQuery::class)->folderConversationId($folder, auth()->user());
         if (!$conversation_id) {
             $this->skipRender();
 

@@ -2,7 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Http\Controllers\ConversationsController;
+use App\Misc\ConversationListQuery;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -38,7 +38,7 @@ class ConversationListToolbar extends Component
     {
         $folder = ConversationOpens::findFolder($this->folder_id);
         abort_unless($folder, 403);
-        $list = ConversationsController::folderList($folder, auth()->user());
+        $list = app(ConversationListQuery::class)->folderList($folder, auth()->user());
 
         return view('livewire.conversation-list-toolbar', [
             'folder'        => $folder,

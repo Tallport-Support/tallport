@@ -218,6 +218,11 @@ class Conversation extends Model
     const DEFAULT_LIST_SIZE = 50;
 
     /**
+     * Earlier conversations shown beside a customer or a forwarded thread.
+     */
+    const PREV_CONVERSATIONS_LIMIT = 5;
+
+    /**
      * Cache of the conversations starred by user.
      *
      * @var array
@@ -970,14 +975,14 @@ class Conversation extends Model
     /**
      * Get URL of the next conversation.
      */
-    public function urlNext($folder_id = null, $status = null, $prev_if_no_next = false)
+    public function urlNext($folder_id = null, $status = null, $prev_if_no_next = false, $request = null)
     {
         $next_conversation = $this->getNearby('next', $folder_id, $status, $prev_if_no_next);
         if ($next_conversation) {
-            $url = $next_conversation->url();
+            $url = $next_conversation->url(null, null, [], $request);
         } else {
             // Show folder
-            $url = route('mailboxes.view.folder', ['id' => $this->mailbox_id, 'folder_id' => $this->getCurrentFolder($this->folder_id)]);
+            $url = route('mailboxes.view.folder', ['id' => $this->mailbox_id, 'folder_id' => $this->getCurrentFolder($this->folder_id, $request)]);
         }
 
         return $url;
@@ -1126,10 +1131,10 @@ class Conversation extends Model
      *
      * @return string
      */
-    public function url($folder_id = null, $thread_id = null, $params = [])
+    public function url($folder_id = null, $thread_id = null, $params = [], $request = null)
     {
         if (!$folder_id) {
-            $folder_id = $this->getCurrentFolder();
+            $folder_id = $this->getCurrentFolder(null, $request);
         }
         return self::conversationUrl($this->id, $folder_id, $thread_id, $params);
     }
@@ -1181,9 +1186,9 @@ class Conversation extends Model
     /**
      * Get folder ID from request or use the default one.
      */
-    public function getCurrentFolder($default_folder_id = null)
+    public function getCurrentFolder($default_folder_id = null, $request = null)
     {
-        $folder_id = self::getFolderParam();
+        $folder_id = self::getFolderParam($request);
         if ($folder_id) {
             return $folder_id;
         }
@@ -1194,12 +1199,13 @@ class Conversation extends Model
         }
     }
 
-    public static function getFolderParam()
+    public static function getFolderParam($request = null)
     {
-        if (!empty(request()->folder_id)) {
-            return request()->folder_id;
-        } elseif (!empty(request()->input('folder_id'))) {
-            return request()->input('folder_id');
+        $request = $request ?: request();
+        if (!empty($request->folder_id)) {
+            return $request->folder_id;
+        } elseif (!empty($request->input('folder_id'))) {
+            return $request->input('folder_id');
         }
 
         return '';
@@ -2692,7 +2698,7 @@ class Conversation extends Model
         $user->list_sorting = json_encode($saved);
     }
 
-    public static function search($q, $filters, $user = null, $query_conversations = null, $group_by = [])
+    public static function search($q, $filters, $user = null, $query_conversations = null, $group_by = [], $request = null)
     {
         $mailbox_ids = [];
 
@@ -2828,7 +2834,7 @@ class Conversation extends Model
 
         $query_conversations = \Eventy::filter('search.conversations.apply_filters', $query_conversations, $filters, $q);
 
-        $sorting = Conversation::getConvTableSorting();
+        $sorting = Conversation::getConvTableSorting($request);
         if (in_array($sorting['sort_by'], ['date', 'relevance'])) {
             $sorting['sort_by'] = 'last_reply_at';
         }

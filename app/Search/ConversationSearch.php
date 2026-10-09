@@ -47,7 +47,7 @@ class ConversationSearch
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public static function query($q, $filters, $user, ?SearchQuery $search = null)
+    public static function query($q, $filters, $user, ?SearchQuery $search = null, $request = null)
     {
         $search = $search ?: SearchQuery::parse($q);
         $t = Indexer::TABLE;
@@ -68,7 +68,7 @@ class ConversationSearch
 
         $query = \Eventy::filter('search.conversations.apply_filters', $query, $filters, $q);
 
-        $sorting = Conversation::getConvTableSorting();
+        $sorting = Conversation::getConvTableSorting($request);
         if ($sorting['sort_by'] == 'relevance' && $search->number() !== null) {
             $query->orderByRaw(\DB::getTablePrefix().'conversations.'.Conversation::numberFieldName().' = ? DESC', [$search->number()]);
         }
@@ -86,10 +86,10 @@ class ConversationSearch
     /**
      * A page of results, each with its excerpt (search_snippet).
      */
-    public static function paginate($q, $filters, $user, $per_page = Conversation::DEFAULT_LIST_SIZE)
+    public static function paginate($q, $filters, $user, $per_page = Conversation::DEFAULT_LIST_SIZE, $request = null)
     {
         $search = SearchQuery::parse($q);
-        $conversations = self::query($q, $filters, $user, $search)->paginate($per_page);
+        $conversations = self::query($q, $filters, $user, $search, $request)->paginate($per_page, ['*'], 'page', $request?->page);
         self::addSnippets($conversations, $search);
 
         return $conversations;

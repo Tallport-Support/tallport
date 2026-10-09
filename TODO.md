@@ -118,11 +118,13 @@ This is a source review of the application, with deeper inspection of AI, conver
 
   Completed: only errors that identify a refused fast option or tier by parameter or explicit message trigger a retry and temporary rejection cache entry. Unrelated and ambiguous 400/422 responses remain ordinary failures. Rejection keys include the provider type, effective endpoint and credential configuration, so editing an endpoint or key discards old capability decisions.
 
-- [ ] **15 · P2 · Tallport — Extract shared conversation operations out of HTTP controllers.**
+- [x] **15 · P2 · Tallport — Extract shared conversation operations out of HTTP controllers.**
 
   Evidence: `ConversationComposer`, `NewConversation`, and `ConversationList` mutate the global request and invoke controller methods directly, for example `app/Livewire/ConversationComposer.php:535` and `app/Livewire/ConversationList.php:294`. This makes dependencies implicit and couples Livewire behavior to AJAX transport details. Bundled component requests also share mutable request state.
 
   Follow the existing `App\Misc\ConversationActions` precedent: extract sending, draft persistence, and list querying incrementally, with explicit input and actor arguments. Controllers and Livewire components should adapt their inputs to the same operation. Keep existing AJAX actions and module hooks. Acceptance: both entry points have the same validation, permissions, effects, and errors; one component's parameters cannot change another component's result.
+
+  Completed: sending and draft operations live in `ConversationReplies`, and list queries live in `ConversationListQuery`. AJAX actions retain their signatures and hook arguments; Livewire passes isolated fields and the actor without changing the global request. Search sorting and pagination use the list's request, and regression tests cover independent draft and list inputs.
 
 - [ ] **16 · P2 · Tallport — Use state-changing HTTP methods for user commands.**
 

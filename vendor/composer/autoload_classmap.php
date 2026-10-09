@@ -276,6 +276,8 @@ return array(
     'App\\Misc\\Branding' => $baseDir . '/app/Misc/Branding.php',
     'App\\Misc\\ConversationActionButtons' => $baseDir . '/app/Misc/ConversationActionButtons.php',
     'App\\Misc\\ConversationActions' => $baseDir . '/app/Misc/ConversationActions.php',
+    'App\\Misc\\ConversationListQuery' => $baseDir . '/app/Misc/ConversationListQuery.php',
+    'App\\Misc\\ConversationReplies' => $baseDir . '/app/Misc/ConversationReplies.php',
     'App\\Misc\\CspHtmlDumper' => $baseDir . '/app/Misc/CspHtmlDumper.php',
     'App\\Misc\\DatabaseSettings' => $baseDir . '/app/Misc/DatabaseSettings.php',
     'App\\Misc\\DeliveryReports' => $baseDir . '/app/Misc/DeliveryReports.php',
