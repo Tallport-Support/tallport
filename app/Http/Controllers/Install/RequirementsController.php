@@ -43,6 +43,7 @@ class RequirementsController extends Controller
             $optional[$extension] = ['enabled' => \Helper::extensionEnabled($extension), 'purpose' => $purpose];
         }
         $optional['PCRE JIT'] = ['enabled' => \Helper::pcreJitAvailable(), 'purpose' => 'Faster text processing'];
+        $optional['ImageMagick (HEIC)'] = ['enabled' => (bool) \App\Misc\AttachmentImages::detectConverter(), 'purpose' => 'iPhone photos shown without the browser converting them'];
 
         return view('vendor.installer.requirements', compact('requirements', 'phpSupportInfo', 'optional'));
     }

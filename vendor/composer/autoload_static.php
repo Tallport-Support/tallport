@@ -1090,6 +1090,7 @@ class ComposerStaticInitfc9b7b2ca15b4d1aba40fc18ae3b6e13
         'App\\MailboxAutoReply' => __DIR__ . '/../..' . '/app/MailboxAutoReply.php',
         'App\\MailboxUser' => __DIR__ . '/../..' . '/app/MailboxUser.php',
         'App\\Misc\\AllMailboxes' => __DIR__ . '/../..' . '/app/Misc/AllMailboxes.php',
+        'App\\Misc\\AttachmentImages' => __DIR__ . '/../..' . '/app/Misc/AttachmentImages.php',
         'App\\Misc\\Branding' => __DIR__ . '/../..' . '/app/Misc/Branding.php',
         'App\\Misc\\ConversationActionButtons' => __DIR__ . '/../..' . '/app/Misc/ConversationActionButtons.php',
         'App\\Misc\\ConversationActions' => __DIR__ . '/../..' . '/app/Misc/ConversationActions.php',

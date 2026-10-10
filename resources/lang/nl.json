@@ -1847,5 +1847,9 @@
     "Messages in these languages are shown as written.": "Berichten in deze talen worden getoond zoals ze geschreven zijn.",
     "Replies in these languages are sent as written.": "Antwoorden in deze talen worden verzonden zoals ze geschreven zijn.",
     "also reads :languages": "leest ook :languages",
-    "Reads :languages": "Leest :languages"
+    "Reads :languages": "Leest :languages",
+    "HEIC Images": "HEIC-Afbeeldingen",
+    "iPhone photos are converted on the server by ImageMagick with HEIC support. Without it, browsers decode them, which is slower.": "iPhone-foto's worden op de server omgezet door ImageMagick met HEIC-ondersteuning. Zonder ImageMagick decoderen browsers ze zelf, wat trager is.",
+    "Converted on the server": "Omgezet op de server",
+    "iPhone photos shown without the browser converting them": "iPhone-foto's tonen zonder dat de browser ze omzet"
 }

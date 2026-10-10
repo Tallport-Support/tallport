@@ -1844,5 +1844,9 @@
     "Messages in these languages are shown as written.": "Az ezeken a nyelveken írt üzenetek fordítás nélkül jelennek meg.",
     "Replies in these languages are sent as written.": "Az ezeken a nyelveken írt válaszok fordítás nélkül mennek el.",
     "also reads :languages": "olvas még: :languages",
-    "Reads :languages": "Olvas: :languages"
+    "Reads :languages": "Olvas: :languages",
+    "HEIC Images": "HEIC Képek",
+    "iPhone photos are converted on the server by ImageMagick with HEIC support. Without it, browsers decode them, which is slower.": "Az iPhone-fotókat a szerveren a HEIC-támogatással rendelkező ImageMagick alakítja át. Nélküle a böngészők dekódolják őket, ami lassabb.",
+    "Converted on the server": "A szerveren alakítva",
+    "iPhone photos shown without the browser converting them": "iPhone-fotók megjelenítése böngészős átalakítás nélkül"
 }

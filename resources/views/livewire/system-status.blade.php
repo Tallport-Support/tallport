@@ -279,6 +279,17 @@
                 <x-fruit::badge tone="warning">{{ __('Off') }}</x-fruit::badge>
             </div>
         @endif
+        <div class="f-form-row">
+            <div>
+                <span>{{ __('HEIC Images') }} {{ __('(optional)') }}</span>
+                <p class="f-help">{{ __('iPhone photos are converted on the server by ImageMagick with HEIC support. Without it, browsers decode them, which is slower.') }}</p>
+            </div>
+            @if ($heic_converter)
+                <span class="system-status__check" title="{{ $heic_converter }}"><x-icon.circle-check class="f-icon" aria-hidden="true" /> {{ __('Converted on the server') }}</span>
+            @else
+                <x-fruit::badge tone="warning">{{ __('Not found') }}</x-fruit::badge>
+            @endif
+        </div>
         @action('system.status.after_php_extensions')
         <div class="f-form-row">
             <div>

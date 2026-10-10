@@ -1844,5 +1844,9 @@
     "Messages in these languages are shown as written.": "Повідомлення цими мовами показуються без перекладу.",
     "Replies in these languages are sent as written.": "Відповіді цими мовами надсилаються без перекладу.",
     "also reads :languages": "також читає: :languages",
-    "Reads :languages": "Читає: :languages"
+    "Reads :languages": "Читає: :languages",
+    "HEIC Images": "Зображення HEIC",
+    "iPhone photos are converted on the server by ImageMagick with HEIC support. Without it, browsers decode them, which is slower.": "Фотографії з iPhone перетворюються на сервері за допомогою ImageMagick з підтримкою HEIC. Без нього їх декодують браузери, що повільніше.",
+    "Converted on the server": "Перетворюються на сервері",
+    "iPhone photos shown without the browser converting them": "Фотографії з iPhone показуються без перетворення в браузері"
 }

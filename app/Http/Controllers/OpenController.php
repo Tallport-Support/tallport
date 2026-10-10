@@ -200,6 +200,50 @@ class OpenController extends Controller
     }
 
     /**
+     * An image attachment's thumbnail (App\Misc\AttachmentImages), with the attachment's token.
+     */
+    public function attachmentThumbnail(Request $request, $id)
+    {
+        $attachment = $this->tokenAttachment($request, $id);
+
+        return $this->attachmentImage($attachment, \App\Misc\AttachmentImages::thumbnail($attachment));
+    }
+
+    /**
+     * A HEIC photo converted to JPEG for the viewer; downloading gives the original.
+     */
+    public function attachmentConverted(Request $request, $id)
+    {
+        $attachment = $this->tokenAttachment($request, $id);
+
+        return $this->attachmentImage($attachment, \App\Misc\AttachmentImages::converted($attachment));
+    }
+
+    protected function tokenAttachment(Request $request, $id)
+    {
+        $attachment = Attachment::findOrFail($id);
+        if (!\Helper::hashEquals($attachment->getToken(), (string) $request->query('token', ''))) {
+            \Helper::denyAccess();
+        }
+
+        return $attachment;
+    }
+
+    protected function attachmentImage(Attachment $attachment, $path)
+    {
+        if (!$path) {
+            abort(404);
+        }
+
+        // Made once per attachment and never changed: browsers keep them a month.
+        return Attachment::getDisk()->response($path, pathinfo($attachment->file_name, PATHINFO_FILENAME).'.jpg', [
+            'Content-Type'           => 'image/jpeg',
+            'Cache-Control'          => 'private, max-age=2592000',
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
+    }
+
+    /**
      * Download an attachment.
      */
     public function downloadAttachment($dir_1, $dir_2, $dir_3, $file_name, Request $request)

@@ -1,8 +1,18 @@
-{{-- A message's files, as FruitUI attachments with Delete among their actions: they open in the viewer (public/js/attachments.js). --}}
+{{-- A message's files, as FruitUI attachments with Delete among their actions: they open in the viewer (public/js/attachments.js).
+     Images show a thumbnail (App\Misc\AttachmentImages); HEIC photos without a server converter get theirs from the browser. --}}
 @foreach ($thread->attachments as $attachment)
-    <span class="conv-attachment" data-attachment-id="{{ $attachment->id }}" data-mime="{{ $attachment->mime_type }}" data-file-name="{{ $attachment->file_name }}" @if (App\Http\Controllers\AttachmentsController::isEmail($attachment)) data-email-url="{{ route('attachments.email', ['id' => $attachment->id]) }}" @endif>
+    @php
+        $attachment_thumbnail = App\Misc\AttachmentImages::hasThumbnail($attachment);
+        $attachment_heic = App\Misc\AttachmentImages::isHeic($attachment);
+        $attachment_converted_url = $attachment_heic ? App\Misc\AttachmentImages::convertedUrl($attachment) : null;
+    @endphp
+    <span @class(['conv-attachment', 'conv-attachment--thumbnail' => $attachment_thumbnail]) data-attachment-id="{{ $attachment->id }}" data-mime="{{ $attachment->mime_type }}" data-file-name="{{ $attachment->file_name }}" @if (App\Http\Controllers\AttachmentsController::isEmail($attachment)) data-email-url="{{ route('attachments.email', ['id' => $attachment->id]) }}" @endif @if ($attachment_heic) data-heic @endif @if ($attachment_converted_url) data-converted-url="{{ $attachment_converted_url }}" @endif>
         <x-fruit::attachment :href="$attachment->url()" class="attachment-link" target="_blank">
-            <x-slot:leading><x-icon.paperclip class="f-icon" aria-hidden="true" /></x-slot:leading>
+            @if ($attachment_thumbnail)
+                <x-slot:leading class="attachment-thumbnail"><x-icon.paperclip class="f-icon attachment-thumbnail__icon" aria-hidden="true" /><img @if (!$attachment_heic || $attachment_converted_url) src="{{ App\Misc\AttachmentImages::thumbnailUrl($attachment) }}" @endif alt="{{ $attachment->file_name }}" loading="lazy" decoding="async"></x-slot:leading>
+            @else
+                <x-slot:leading><x-icon.paperclip class="f-icon" aria-hidden="true" /></x-slot:leading>
+            @endif
             {{ $attachment->file_name }}
             <x-slot:detail>{{ $attachment->getSizeName() }}</x-slot:detail>
             @if (Auth::user() && App\Http\Controllers\AttachmentsController::canDelete(Auth::user()))

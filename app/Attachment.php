@@ -429,7 +429,7 @@ class Attachment extends Model
     {
         // Delete from disk
         foreach ($attachments as $attachment) {
-            self::getDisk()->delete($attachment->getStorageFilePath());
+            self::getDisk()->delete(array_merge([$attachment->getStorageFilePath()], \App\Misc\AttachmentImages::paths($attachment)));
         }
 
         // Delete from DB

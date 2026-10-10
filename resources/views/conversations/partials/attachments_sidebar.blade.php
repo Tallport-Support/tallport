@@ -14,7 +14,7 @@
         <h3>{{ __('Attachments') }} <span class="f-muted">{{ count($sidebar_attachments) }}</span></h3>
         <ul class="sidebar-block-list attachments-list">
             @foreach ($sidebar_attachments as $attachment)
-                <li data-attachment-id="{{ $attachment->id }}" data-mime="{{ $attachment->mime_type }}" data-file-name="{{ $attachment->file_name }}" @if (App\Http\Controllers\AttachmentsController::isEmail($attachment)) data-email-url="{{ route('attachments.email', ['id' => $attachment->id]) }}" @endif>
+                <li data-attachment-id="{{ $attachment->id }}" data-mime="{{ $attachment->mime_type }}" data-file-name="{{ $attachment->file_name }}" @if (App\Http\Controllers\AttachmentsController::isEmail($attachment)) data-email-url="{{ route('attachments.email', ['id' => $attachment->id]) }}" @endif @if (App\Misc\AttachmentImages::isHeic($attachment)) data-heic @endif @if ($converted_url = App\Misc\AttachmentImages::convertedUrl($attachment)) data-converted-url="{{ $converted_url }}" @endif>
                     <a href="{{ $attachment->url() }}" target="_blank" class="attachment-link"><x-icon.paperclip class="f-icon" aria-hidden="true" /><span>{{ $attachment->file_name }} <span class="f-muted">({{ $attachment->getSizeName() }})</span></span></a>
                 </li>
             @endforeach

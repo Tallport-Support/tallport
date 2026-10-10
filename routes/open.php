@@ -13,6 +13,9 @@
 
 // Download attachments
 Route::get('/storage/attachment/{dir_1}/{dir_2}/{dir_3}/{file_name}', 'OpenController@downloadAttachment')->name('attachment.download');
+// An image attachment's thumbnail, and a HEIC photo as JPEG (by the attachment's token)
+Route::get('/attachments/{id}/thumbnail', 'OpenController@attachmentThumbnail')->where('id', '[0-9]+')->name('attachments.thumbnail');
+Route::get('/attachments/{id}/converted', 'OpenController@attachmentConverted')->where('id', '[0-9]+')->name('attachments.converted');
 // Open tracking
 Route::get('/thread/read/{conversation_id}/{thread_id}/{hash}', 'OpenController@setThreadAsRead')->name('open_tracking.set_read');
 // AI Assistant documentation pushed by websites (key per mailbox)

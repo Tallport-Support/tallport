@@ -875,7 +875,9 @@ class Helper
     }
 
     /**
-     * Resize image without using Intervention package.
+     * Resize image without using Intervention package: cropped to the size, JPEG
+     * photos turned upright. Without a width, the height is kept (never enlarged)
+     * and the width follows, up to twice the height.
      */
     public static function resizeImage($file, $mime_type, $thumb_width, $thumb_height, $transparency = false)
     {
@@ -891,11 +893,34 @@ class Helper
             $src = @imagecreatefromgif($file);
         } elseif (preg_match('/bmp/i', $mime_type)) {
             $src = @imagecreatefrombmp($file);
+        } elseif (preg_match('/webp/i', $mime_type)) {
+            $src = @imagecreatefromwebp($file);
         } else {
             $src = @imagecreatefromjpeg($file);
         }
         if (!$src) {
             return false;
+        }
+
+        // EXIF orientation of camera photos.
+        if (function_exists('exif_read_data') && !preg_match('/png|gif|bmp|webp/i', $mime_type)) {
+            $exif = @exif_read_data($file);
+            $orientation = (int) ($exif['Orientation'] ?? 1);
+            if (in_array($orientation, [3, 5, 6, 7, 8])) {
+                $src = imagerotate($src, [3 => 180, 5 => -90, 6 => -90, 7 => 90, 8 => 90][$orientation], 0);
+            }
+            if (in_array($orientation, [2, 5, 7])) {
+                imageflip($src, IMG_FLIP_HORIZONTAL);
+            } elseif ($orientation == 4) {
+                imageflip($src, IMG_FLIP_VERTICAL);
+            }
+            $width = imagesx($src);
+            $height = imagesy($src);
+        }
+
+        if (!$thumb_width) {
+            $thumb_height = min($thumb_height, $height);
+            $thumb_width = max(1, min((int) round($width * $thumb_height / $height), $thumb_height * 2));
         }
 
         $original_aspect = $width / $height;
@@ -3121,7 +3146,8 @@ class Helper
         //  frame-src https://recaptcha.net; connect-src https://recaptcha.net;
         //  The frame-ancestors is ignored when delivered via a meta element.
         //  "data:" in framce-src: https://github.com/freescout-help-desk/freescout/issues/5630
-        $csp = "base-uri 'none'; default-src 'self' ".self::sanitizeCsp($script_domains)."; img-src * 'self' data:; font-src * 'self' data:; style-src * 'self' 'unsafe-inline'; form-action 'self' ".self::sanitizeCsp(\Eventy::filter('csp.form_action', ''), true)."; frame-src * 'self' data:; script-src 'self' 'nonce-".$nonce."' 'unsafe-eval' "
+        //  "blob:" in worker-src: heic2any decodes HEIC photos in a worker (public/js/attachments.js).
+        $csp = "base-uri 'none'; default-src 'self' ".self::sanitizeCsp($script_domains)."; worker-src 'self' blob:; img-src * 'self' data:; font-src * 'self' data:; style-src * 'self' 'unsafe-inline'; form-action 'self' ".self::sanitizeCsp(\Eventy::filter('csp.form_action', ''), true)."; frame-src * 'self' data:; script-src 'self' 'nonce-".$nonce."' 'unsafe-eval' "
             .self::sanitizeCsp($script_src).";"
             .self::sanitizeCsp(config('app.csp_custom').self::sanitizeCsp(\Eventy::filter('csp.custom', '')));
 

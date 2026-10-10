@@ -1845,5 +1845,9 @@
     "Messages in these languages are shown as written.": "这些语言的消息按原文显示。",
     "Replies in these languages are sent as written.": "这些语言的回复按原文发送。",
     "also reads :languages": "也能读：:languages",
-    "Reads :languages": "能读：:languages"
+    "Reads :languages": "能读：:languages",
+    "HEIC Images": "HEIC 图片",
+    "iPhone photos are converted on the server by ImageMagick with HEIC support. Without it, browsers decode them, which is slower.": "iPhone 照片由服务器上支持 HEIC 的 ImageMagick 转换。没有它时由浏览器解码，速度较慢。",
+    "Converted on the server": "在服务器上转换",
+    "iPhone photos shown without the browser converting them": "无需浏览器转换即可显示 iPhone 照片"
 }

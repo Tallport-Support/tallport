@@ -42,6 +42,8 @@ class SystemStatus extends Component
         SystemController::cacheProblemCount($data['problems']);
         // The last Maintenance action's output (SystemController::toolsExecute()).
         $data['tools_output'] = \Cache::pull('tools_execute_output');
+        // Optional: HEIC photos converted on the server (checked anew here).
+        $data['heic_converter'] = \App\Misc\AttachmentImages::converter(true);
 
         return view('livewire/system-status', $data);
     }

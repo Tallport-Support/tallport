@@ -65,7 +65,7 @@ class InstallerTest extends FeatureTestCase
     public function testPagesBeforeTheDatabase()
     {
         $this->get('/install')->assertOk()->assertSee('/install/requirements');
-        $this->get('/install/requirements')->assertOk()->assertSee('OpenSSL')->assertSee('PCRE JIT')->assertSee(PHP_VERSION);
+        $this->get('/install/requirements')->assertOk()->assertSee('OpenSSL')->assertSee('PCRE JIT')->assertSee('ImageMagick (HEIC)')->assertSee(PHP_VERSION);
         $this->get('/install/environment')->assertOk();
 
         // The first look creates an empty .env.

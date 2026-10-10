@@ -274,6 +274,7 @@ return array(
     'App\\MailboxAutoReply' => $baseDir . '/app/MailboxAutoReply.php',
     'App\\MailboxUser' => $baseDir . '/app/MailboxUser.php',
     'App\\Misc\\AllMailboxes' => $baseDir . '/app/Misc/AllMailboxes.php',
+    'App\\Misc\\AttachmentImages' => $baseDir . '/app/Misc/AttachmentImages.php',
     'App\\Misc\\Branding' => $baseDir . '/app/Misc/Branding.php',
     'App\\Misc\\ConversationActionButtons' => $baseDir . '/app/Misc/ConversationActionButtons.php',
     'App\\Misc\\ConversationActions' => $baseDir . '/app/Misc/ConversationActions.php',
