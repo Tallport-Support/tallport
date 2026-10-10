@@ -37,29 +37,7 @@ Credit for everything up to the fork goes to the FreeScout team.
 
 ## Changes from FreeScout
 
-Tallport does everything FreeScout does, with these built in:
-
-* **AI Assistant:** conversation summaries, and reply drafts based on your
-  own documentation (OpenAI, Anthropic, Gemini and others).
-* **Translation both ways:** agents read and write in their own language,
-  and customers get replies in theirs, by email and chat.
-* **Workflows** that act on conversations automatically or with one click.
-* **Reports** on volume and on response and resolution times.
-* **Knowledge Base** articles for the team, ready to insert in replies.
-* **Fast search** that finds every word and shows the best matches first.
-* **All Mailboxes:** every mailbox's conversations together.
-* **Telegram and Nostr:** customers chat with a mailbox.
-* **Sending through Amazon SES, Mailgun, Postmark or Resend**, as well as
-  SMTP.
-* **Auto replies in the customer's language.**
-* **Team Chat:** a chat room for each mailbox's team.
-* **Two-factor sign-in and passkeys.**
-* **REST API and webhooks.**
-* **Data retention** that deletes old conversations on a schedule, with
-  legal hold.
-* **Your own look:** logos, accent colours and email branding.
-
-And it adds:
+Compared with FreeScout and its modules, Tallport adds:
 
 * **A new interface** that is fast, clean and light or dark with your system.
 * **Instant navigation:** conversations and folders open in place.
