@@ -3249,6 +3249,11 @@ h1.settings-toolbar__title {
     margin: 0;
     border-top: 1px solid var(--f-border);
 }
+/* No recipient rows above the chat's field: the composer's padding is its space. */
+.conv-composer-docked .conv-reply-body,
+.conv-composer-docked .conv-note-block .conv-reply-body {
+    margin-top: 0;
+}
 /* The chat view's field (FruitUI's inline editor): a note never looks like a reply. */
 .conv-composer-docked .conv-note-block .f-editor--inline {
     background: var(--f-note-background);
