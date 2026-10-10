@@ -62,6 +62,11 @@ class Customer extends Model
      */
     const PHOTO_TYPE_UKNOWN = 1;
     const PHOTO_TYPE_GRAVATAR = 2;
+    /**
+     * Looked up online (App\Misc\CustomerPhotos: Gravatar, Unavatar…); the
+     * value of PHOTO_TYPE_GRAVATAR, which modules may use.
+     */
+    const PHOTO_TYPE_LOOKED_UP = 2;
     const PHOTO_TYPE_TWITTER = 3;
     const PHOTO_TYPE_FACEBOOK = 4;
     const PHOTO_TYPE_GOOGLEPROFILE = 5;

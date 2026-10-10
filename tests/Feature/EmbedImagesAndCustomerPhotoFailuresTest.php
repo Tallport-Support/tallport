@@ -3,18 +3,18 @@
 namespace Tests\Feature;
 
 use App\Customer;
+use App\Misc\CustomerPhotos;
 use App\Misc\EmbedImages;
-use App\Misc\Gravatar;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\Mime\Email;
 use Tests\FeatureTestCase;
 
 /**
- * When embedding images in an email or fetching a Gravatar goes wrong, the
- * email is sent with links and the Gravatar is asked for again later.
+ * When embedding images in an email or looking up a customer photo goes
+ * wrong, the email is sent with links and the photo is asked for again later.
  */
-class EmbedImagesAndGravatarFailuresTest extends FeatureTestCase
+class EmbedImagesAndCustomerPhotoFailuresTest extends FeatureTestCase
 {
     const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
 
@@ -67,24 +67,25 @@ class EmbedImagesAndGravatarFailuresTest extends FeatureTestCase
      * Customers with their own photo keep it; a failed request is tried again
      * for the next email.
      */
-    public function testGravatarNotDueOrUnreachable()
+    public function testCustomerPhotoNotDueOrUnreachable()
     {
         Http::fake(function () {
             throw new ConnectionException('Connection timed out');
         });
+        \Option::set(CustomerPhotos::OPTION, 'gravatar');
         $customer = $this->createCustomer('casey@customer.example.org');
 
         $customer->photo_url = 'own.jpg';
         $customer->photo_type = Customer::PHOTO_TYPE_UKNOWN;
-        $this->assertFalse(Gravatar::fetch($customer, 'casey@customer.example.org'));
+        $this->assertFalse(CustomerPhotos::fetch($customer, 'casey@customer.example.org'));
         Http::assertNothingSent();
 
         $customer->photo_url = null;
         \Log::shouldReceive('error')->once()->withArgs(function ($message) {
             return str_contains($message, '[Gravatar]') && str_contains($message, 'Connection timed out');
         });
-        $this->assertFalse(Gravatar::fetch($customer, 'casey@customer.example.org'));
-        $this->assertNull($customer->fresh()->getMeta(Gravatar::META), 'Asked again next time.');
-        $this->assertTrue(Gravatar::isDue($customer->fresh()));
+        $this->assertFalse(CustomerPhotos::fetch($customer, 'casey@customer.example.org'));
+        $this->assertNull($customer->fresh()->getMeta(CustomerPhotos::META), 'Asked again next time.');
+        $this->assertTrue(CustomerPhotos::isDue($customer->fresh()));
     }
 }

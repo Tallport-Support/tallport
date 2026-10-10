@@ -89,7 +89,7 @@ class CustomersController extends Controller
 
                 if ($path_url) {
                     $customer->photo_url = $path_url;
-                    // Their own: not replaced or removed with Gravatar photos.
+                    // Their own: not replaced or removed with photos looked up online.
                     $customer->photo_type = Customer::PHOTO_TYPE_UKNOWN;
                 } else {
                     $validator->errors()->add('photo_url', __('Error occurred processing the image. Make sure that PHP GD extension is enabled.'));

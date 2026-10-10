@@ -135,9 +135,9 @@
         "arguments": {},
         "options": {}
     },
-    "tallport:clean-gravatars": {
-        "class": "App\\Console\\Commands\\CleanGravatars",
-        "description": "Remove customer photos from Gravatar older than 90 days",
+    "tallport:clean-customer-photos": {
+        "class": "App\\Console\\Commands\\CleanCustomerPhotos",
+        "description": "Remove customer photos looked up online older than 90 days",
         "arguments": {},
         "options": {}
     },

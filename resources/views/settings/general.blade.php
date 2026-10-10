@@ -2,8 +2,9 @@
     $locked = fn ($option) => App\Misc\DatabaseSettings::lockedByEnv($option);
     $locked_note = fn ($option) => App\Misc\DatabaseSettings::lockedNote($option);
     $custom_number = old('settings.custom_number', $settings['custom_number'] ? 'true' : 'false') === 'true';
+    $customer_photos = old('settings.customer_photos', $settings['customer_photos']);
 @endphp
-<form id="page-form" class="settings-form" method="POST" action="" x-data="{ customNumber: @js($custom_number) }">
+<form id="page-form" class="settings-form" method="POST" action="" x-data="{ customNumber: @js($custom_number), customerPhotos: @js($customer_photos) }">
     {{ csrf_field() }}
 
     <x-fruit::form-section :title="__('General')">
@@ -68,15 +69,20 @@
             <x-fruit::switch name="settings[open_tracking]" value="1" :checked="(bool) old('settings.open_tracking', $settings['open_tracking'])" />
         </x-fruit::field>
 
-        <x-fruit::field :label="__('Customer Photos')" :description="__('From Gravatar, for customers without a photo. Gravatar receives a hash of their email address.')" layout="row">
-            <x-fruit::switch name="settings[customer_gravatar]" value="1" :checked="(bool) old('settings.customer_gravatar', $settings['customer_gravatar'])" />
+        <x-fruit::field :label="__('Customer Photos')" :description="__('For customers without a photo of their own. Gravatar receives a hash of their email address; Unavatar receives the address itself.')" layout="row">
+            <x-fruit::select name="settings[customer_photos]" x-model="customerPhotos">
+                <option value="{{ App\Misc\CustomerPhotos::NONE }}" @selected($customer_photos == App\Misc\CustomerPhotos::NONE)>{{ __('None') }}</option>
+                @foreach (App\Misc\CustomerPhotos::SERVICES as $photo_service => $photo_service_name)
+                    <option value="{{ $photo_service }}" @selected($customer_photos == $photo_service)>{{ $photo_service_name }}</option>
+                @endforeach
+            </x-fruit::select>
         </x-fruit::field>
 
         {{-- Gravatar's generated images (robots, patterns…), or initials. --}}
-        <x-fruit::field :label="__('Without a Gravatar')" layout="row">
+        <x-fruit::field :label="__('Without a Photo')" layout="row" x-show="customerPhotos != 'none'">
             <x-fruit::select name="settings[customer_gravatar_default]">
                 <option value="">{{ __('Initials') }}</option>
-                @foreach (App\Misc\Gravatar::DEFAULTS as $gravatar_default => $gravatar_default_name)
+                @foreach (App\Misc\CustomerPhotos::DEFAULTS as $gravatar_default => $gravatar_default_name)
                     <option value="{{ $gravatar_default }}" @selected(old('settings.customer_gravatar_default', $settings['customer_gravatar_default']) == $gravatar_default)>{{ $gravatar_default_name }}</option>
                 @endforeach
             </x-fruit::select>

@@ -86,8 +86,8 @@ class ConversationsController extends Controller
 
         // Other users see who is viewing (polycast conview), modules that it's opened.
         \App\Events\RealtimeConvView::dispatchSelf($conversation->id, $user, false);
-        // The customer's photo from Gravatar, when there's none (any more).
-        \App\Misc\Gravatar::request($conversation->customer, $conversation->customer_email);
+        // The customer's photo looked up online, when there's none (any more).
+        \App\Misc\CustomerPhotos::request($conversation->customer, $conversation->customer_email);
         \Eventy::action('conversation.view.start', $conversation, $request);
 
         // The folder's conversations beside the conversation (split view).

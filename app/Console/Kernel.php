@@ -139,7 +139,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('tallport:clean-tmp')
             ->daily();
 
-        $schedule->command('tallport:clean-gravatars')
+        $schedule->command('tallport:clean-customer-photos')
             ->dailyAt('04:10');
 
         // Search: index what the requests and jobs didn't (new installations,

@@ -72,7 +72,7 @@ class AppServiceProvider extends ServiceProvider
         \App\Misc\ExternalImages::listen();
         \App\Misc\Branding::listen();
         \App\Reports\Replies::listen();
-        \App\Misc\Gravatar::listen();
+        \App\Misc\CustomerPhotos::listen();
         \App\Retention\Retention::listen();
         \App\Workflows\Runner::listen();
         \App\KbArticle::listen();

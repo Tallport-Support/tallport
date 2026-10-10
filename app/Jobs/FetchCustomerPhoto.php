@@ -3,16 +3,16 @@
 namespace App\Jobs;
 
 use App\Customer;
-use App\Misc\Gravatar;
+use App\Misc\CustomerPhotos;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 
 /**
- * A customer's photo from Gravatar.
+ * A customer's photo, looked up online (Gravatar, Unavatar…).
  */
-class FetchGravatar implements ShouldQueue
+class FetchCustomerPhoto implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
@@ -31,8 +31,8 @@ class FetchGravatar implements ShouldQueue
     public function handle()
     {
         $customer = Customer::find($this->customer_id);
-        if ($customer && Gravatar::isEnabled()) {
-            Gravatar::fetch($customer, $this->email);
+        if ($customer && CustomerPhotos::isEnabled()) {
+            CustomerPhotos::fetch($customer, $this->email);
         }
     }
 }

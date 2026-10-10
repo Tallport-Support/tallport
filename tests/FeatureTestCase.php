@@ -62,6 +62,10 @@ abstract class FeatureTestCase extends TestCase
         }
         (new \ReflectionProperty(\App\Workflows\Runner::class, 'robot'))->setValue(null, null);
 
+        // No customer photos looked up online (Gravatar unless set) but in
+        // the tests about them.
+        \Option::set(\App\Misc\CustomerPhotos::OPTION, \App\Misc\CustomerPhotos::NONE);
+
         // Attachments and other files go to throwaway disks, never to the real storage.
         foreach (['local', \App\Attachment::DISK] as $disk) {
             \Storage::fake($disk, config('filesystems.disks.'.$disk));

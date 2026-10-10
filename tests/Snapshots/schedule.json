@@ -81,7 +81,7 @@
         "timezone": "UTC"
     },
     {
-        "command": "artisan tallport:clean-gravatars",
+        "command": "artisan tallport:clean-customer-photos",
         "expression": "10 4 * * *",
         "timezone": "UTC"
     },

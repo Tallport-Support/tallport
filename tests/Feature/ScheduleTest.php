@@ -47,7 +47,7 @@ class ScheduleTest extends FeatureTestCase
             ['tallport:retention', null, '20 3 * * *'],
             ['tallport:retention', '--sweep-files', '50 3 * * 0'],
             ['tallport:clean-tmp', null, '0 0 * * *'],
-            ['tallport:clean-gravatars', null, '10 4 * * *'],
+            ['tallport:clean-customer-photos', null, '10 4 * * *'],
             ['tallport:search-index', null, '* * * * *'],
             ['tallport:search-index', '--prune', '0 0 * * *'],
             ['tallport:report-replies', null, '* * * * *'],

@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 
 /**
- * Customer photos from Gravatar are built in (App\Misc\Gravatar, a setting):
+ * Customer photos from Gravatar are built in (a setting, now App\Misc\CustomerPhotos):
  * on where a module did it, which is switched off.
  */
 class CustomerGravatar extends Migration
@@ -12,7 +12,7 @@ class CustomerGravatar extends Migration
     {
         try {
             if (\App\Module::isActive('customerdataenrichment')) {
-                \Option::set(\App\Misc\Gravatar::OPTION, true);
+                \Option::set('customer_gravatar', true);
                 \App\Module::setActive('customerdataenrichment', false);
             }
         } catch (\Throwable $e) {
