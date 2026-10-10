@@ -107,6 +107,7 @@ class ThreadObserver
     public function deleting(Thread $thread)
     {
         \Eventy::action('thread.deleting', $thread);
+        \App\Incoming\RawSources::deleteByThreadIds([$thread->id]);
     }
 
     public function updated(Thread $thread)

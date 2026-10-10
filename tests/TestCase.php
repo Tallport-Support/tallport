@@ -60,7 +60,18 @@ abstract class TestCase extends BaseTestCase
             $connection->setPdo(static::$memory_pdo)->setReadPdo(static::$memory_pdo);
         }
         if (!static::$database_migrated) {
-            $this->app[Kernel::class]->call('migrate:fresh', ['--force' => true]);
+            // Migrations that move files (e.g. incoming-mail into thread_sources) see an empty
+            // storage folder of their own, never the installation's.
+            $storage = $this->app->storagePath();
+            $migration_storage = sys_get_temp_dir().'/tallport-test-migrate-'.getmypid().'-'.uniqid();
+            mkdir($migration_storage.'/logs', 0777, true);
+            $this->app->useStoragePath($migration_storage);
+            try {
+                $this->app[Kernel::class]->call('migrate:fresh', ['--force' => true]);
+            } finally {
+                $this->app->useStoragePath($storage);
+                (new \Illuminate\Filesystem\Filesystem())->deleteDirectory($migration_storage);
+            }
             static::$database_migrated = true;
             if ($connection->getDatabaseName() == ':memory:') {
                 static::$memory_pdo = $connection->getPdo();

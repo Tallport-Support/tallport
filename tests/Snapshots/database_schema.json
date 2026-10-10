@@ -4269,6 +4269,32 @@
             }
         }
     },
+    "thread_sources": {
+        "columns": {
+            "thread_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "source": {
+                "type": "longblob",
+                "nullable": false
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "thread_id"
+                ]
+            }
+        },
+        "foreign_keys": {
+            "thread_sources_thread_id_foreign": [
+                "thread_id -> threads.id"
+            ]
+        }
+    },
     "threads": {
         "columns": {
             "id": {

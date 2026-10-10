@@ -714,7 +714,7 @@
     "Test email": "Correu de prova",
     "The :module_name module has been deactivated due to an error: :error_message": "El mòdul :module_name s'ha desactivat degut a un error: :error_message",
     "The new password is the same as the old password.": "La nova contrasenya és la mateixa que l'antiga.",
-    "The original message could not be loaded from mail server, below is the latest truncated copy stored in database.": "No s'ha pogut carregar el missatge original del servidor de correu; a continuació es mostra la còpia truncada més recent emmagatzemada a la base de dades.",
+    "The original email was not stored, below is the shortened copy saved in the database.": "El correu original no s'ha desat; a continuació es mostra la còpia escurçada desada a la base de dades.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "L'adreça electrònica indicada pertany a un client d'una bústia no accessible.",
     "There are no conversations here": "No hi ha converses aquí",
     "There are updates available": "Hi ha actualitzacions disponibles",

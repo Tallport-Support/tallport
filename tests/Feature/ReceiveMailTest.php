@@ -179,30 +179,15 @@ class ReceiveMailTest extends FeatureTestCase
         $this->artisan('tallport:receive', ['file' => $file])->assertExitCode(75);
     }
 
-    public function testRawSourceIsKeptAndCleanedUp()
+    public function testRawSourceIsKeptInTheDatabase()
     {
-        config(['app.incoming_mail_retention_days' => 30]);
         $raw = str_replace("\n", "\r\n", str_replace("\r\n", "\n", file_get_contents($file = $this->eml())));
 
         $this->artisan('tallport:receive', ['file' => $file])->assertExitCode(0);
 
         $thread = Thread::where('message_id', 'receive-1@customer.example')->first();
-        $this->assertSame($raw, file_get_contents(RawSources::path($thread)));
-
-        // Older than the retention period: removed by tallport:clean-tmp.
-        touch(RawSources::path($thread), time() - 31 * 86400);
-        $this->assertSame(1, RawSources::clean());
-        $this->assertFileDoesNotExist(RawSources::path($thread));
-    }
-
-    public function testNoRawSourceWhenRetentionIsOff()
-    {
-        config(['app.incoming_mail_retention_days' => 0]);
-
-        $this->artisan('tallport:receive', ['file' => $this->eml()])->assertExitCode(0);
-
-        $thread = Thread::where('message_id', 'receive-1@customer.example')->first();
-        $this->assertFileDoesNotExist(RawSources::path($thread));
+        $this->assertSame($raw, RawSources::get($thread));
+        $this->assertDirectoryDoesNotExist($this->storage.'/app/incoming-mail');
     }
 
     /**
@@ -222,6 +207,8 @@ class ReceiveMailTest extends FeatureTestCase
 
         $this->assertSame(1, Thread::where('message_id', 'receive-1@customer.example')->count());
         $this->assertSame(1, Conversation::where('mailbox_id', $this->mailbox->id)->count());
+        // The deleted thread's source went with it.
+        $this->assertSame(1, \DB::table(RawSources::TABLE)->count());
     }
 
     public function testFailureBeforeTheCommandAsksTheMailServerToTryAgain()

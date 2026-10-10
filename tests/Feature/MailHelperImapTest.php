@@ -7,8 +7,8 @@ use Carbon\Carbon;
 use Tests\FeatureTestCase;
 
 /**
- * Finding an email on the IMAP server by its Message-ID (Show Original,
- * Thread::fetchBody()), against a local IMAP server started per test.
+ * Finding an email on the IMAP server by its Message-ID
+ * (Thread::fetchBody()), against a local IMAP server started per test.
  */
 class MailHelperImapTest extends FeatureTestCase
 {

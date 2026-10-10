@@ -17,14 +17,14 @@
 
     <div role="tabpanel" id="tab_preview_{{ $tabs_unique }}" aria-labelledby="tab_preview_{{ $tabs_unique }}_tab" class="show-original__panel">
         @if (!$fetched)
-            <x-fruit::alert>{{ __('The original message could not be loaded from mail server, below is the latest truncated copy stored in database.') }} (<a href="{{ config('app.freescout_repo') }}/wiki/FAQ#why-does-show-original-window-shows-truncated-message-without-previous-history" target="_blank">{{ __('read more') }}</a>)</x-fruit::alert>
+            <x-fruit::alert>{{ __('The original email was not stored, below is the shortened copy saved in the database.') }}</x-fruit::alert>
         @endif
         <iframe sandbox="" srcdoc="{!! safe_raw_html(str_replace('"', '&quot;', $body_preview)) !!}" frameborder="0" class="preview-iframe show-original__preview" title="{{ __('Message') }}"></iframe>
     </div>
 
     <div role="tabpanel" id="tab_body_{{ $tabs_unique }}" aria-labelledby="tab_body_{{ $tabs_unique }}_tab" class="show-original__panel" hidden>
         @if (!$fetched)
-            <x-fruit::alert>{{ __('The original message could not be loaded from mail server, below is the latest truncated copy stored in database.') }}</x-fruit::alert>
+            <x-fruit::alert>{{ __('The original email was not stored, below is the shortened copy saved in the database.') }}</x-fruit::alert>
         @endif
         <div class="show-original__copy"><x-fruit::copy-button size="small" :value="$source">{{ __('Copy Source') }}</x-fruit::copy-button></div>
         <pre class="original-source">{{ $source }}</pre>

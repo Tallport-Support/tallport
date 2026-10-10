@@ -116,36 +116,37 @@ class RemainingAjaxActionsTest extends FeatureTestCase
 
     public function testShowOriginalSummarisesHeadersAndOffersTheEml()
     {
-        $storage = sys_get_temp_dir().'/tallport-storage-'.uniqid();
-        mkdir($storage.'/app', 0777, true);
-        $this->app->useStoragePath($storage);
-        config(['app.incoming_mail_retention_days' => 30]);
-        try {
-            $conversation = $this->receiveConversation(['subject' => 'Original question']);
-            $thread = $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
-            $base = '/conversation/ajax-html/';
+        $raw = preg_replace("/\r?\n/", "\r\n", $this->makeEmail([
+            'from' => 'Casey Customer <casey@customer.example.org>', 'to' => $this->mailbox->email, 'subject' => 'Original question',
+            'body' => "Caf\xC3\xA9 \xE2\x80\x94 the whole email",
+        ]));
+        $this->receiveEmail($this->mailbox, $raw);
+        $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->orderBy('id', 'desc')->first();
+        $thread = $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
+        $base = '/conversation/ajax-html/';
 
-            // Message, Source, Headers: a summary, then every header; Download .eml while it's kept.
-            $this->actingAs($this->agent)->get($base.'show_original?thread_id='.$thread->id)->assertOk()
-                ->assertSeeInOrder(['Message', 'Source', 'Headers'])
-                ->assertSee('<th scope="row">Subject</th><td>Original question</td>', false)
-                ->assertSee('Not checked')->assertSee('All Headers (')->assertSee('Copy Headers')
-                ->assertSee(route('threads.original_eml', ['thread_id' => $thread->id]), false)
-                // From the kept email: the whole source, and no "couldn't load" notice.
-                ->assertSee('Subject: Original question')->assertDontSee('could not be loaded from mail server');
-            $this->assertStringEndsWith('/thread/'.$thread->id.'/original', route('threads.original_eml', ['thread_id' => $thread->id]));
+        // Message, Source, Headers: a summary, then every header; Download .eml.
+        $this->actingAs($this->agent)->get($base.'show_original?thread_id='.$thread->id)->assertOk()
+            ->assertSeeInOrder(['Message', 'Source', 'Headers'])
+            ->assertSee('<th scope="row">Subject</th><td>Original question</td>', false)
+            ->assertSee('Not checked')->assertSee('All Headers (')->assertSee('Copy Headers')
+            ->assertSee(route('threads.original_eml', ['thread_id' => $thread->id]), false)
+            // From the stored email: the whole source, and no "not stored" notice.
+            ->assertSee('Subject: Original question')->assertDontSee('The original email was not stored');
+        $this->assertStringEndsWith('/thread/'.$thread->id.'/original', route('threads.original_eml', ['thread_id' => $thread->id]));
 
-            $this->actingAs($this->agent)->get(route('threads.original_eml', ['thread_id' => $thread->id]))->assertOk()
-                ->assertHeader('Content-Type', 'message/rfc822')->assertDownload('message-'.$thread->id.'.eml');
-            $this->actingAs($this->createUser())->get(route('threads.original_eml', ['thread_id' => $thread->id]))->assertForbidden();
+        // The email exactly as it came in.
+        $response = $this->actingAs($this->agent)->get(route('threads.original_eml', ['thread_id' => $thread->id]))->assertOk()
+            ->assertHeader('Content-Type', 'message/rfc822')->assertDownload('message-'.$thread->id.'.eml');
+        $this->assertSame($raw, $response->getContent());
+        $this->actingAs($this->createUser())->get(route('threads.original_eml', ['thread_id' => $thread->id]))->assertForbidden();
+        $this->actingAs($this->agent)->get(route('threads.original_eml', ['thread_id' => 999999]))->assertNotFound();
 
-            // No longer kept: no download.
-            unlink(\App\Incoming\RawSources::path($thread));
-            $this->actingAs($this->agent)->get(route('threads.original_eml', ['thread_id' => $thread->id]))->assertNotFound();
-            $this->actingAs($this->agent)->get($base.'show_original?thread_id='.$thread->id)->assertDontSee('Download .eml');
-        } finally {
-            (new \Illuminate\Filesystem\Filesystem())->deleteDirectory($storage);
-        }
+        // Not stored (older threads): no download, the saved copy with a notice.
+        \App\Incoming\RawSources::deleteByThreadIds([$thread->id]);
+        $this->actingAs($this->agent)->get(route('threads.original_eml', ['thread_id' => $thread->id]))->assertNotFound();
+        $this->actingAs($this->agent)->get($base.'show_original?thread_id='.$thread->id)->assertOk()
+            ->assertDontSee('Download .eml')->assertSee('The original email was not stored');
     }
 
     // Customers.

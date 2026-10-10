@@ -585,7 +585,7 @@
     "Test email": "Testmejl",
     "The :module_name module has been deactivated due to an error: :error_message": "Modulen :module_name har avaktiverats på grund av ett fel: :error_message",
     "The new password is the same as the old password.": "Det nya lösenordet är samma som det gamla.",
-    "The original message could not be loaded from mail server, below is the latest truncated copy stored in database.": "Det ursprungliga meddelandet kunde inte laddas från mejlservern, nedan är den senaste förkortade kopian som sparats i databasen.",
+    "The original email was not stored, below is the shortened copy saved in the database.": "Det ursprungliga mejlet sparades inte, nedan är den förkortade kopian som sparats i databasen.",
     "There are no conversations here": "Det finns inga ärenden här",
     "There are updates available": "Det finns uppdateringar tillgängliga",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Det finns en brevlåda med denna mejladress. Användare och brevlådor kan inte ha samma mejladresser.",

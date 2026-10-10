@@ -1288,14 +1288,13 @@ class ConversationsController extends Controller
         $fetched = true;
         $body_preview = $thread->body;
         $source = $thread->getBodyOriginal();
-        // The email as it came in, kept for a while (App\Incoming\RawSources): its body, and
-        // the whole email as the source.
-        $raw_path = \App\Incoming\RawSources::path($thread);
-        $raw = is_file($raw_path) ? (string) file_get_contents($raw_path) : '';
+        // The email as it came in (App\Incoming\RawSources): its body, and the whole
+        // email as the source.
+        $raw = \App\Incoming\RawSources::get($thread);
 
         if ($thread->isCustomerMessage()) {
             $fetched = false;
-            if ($raw !== '') {
+            if ($raw !== null) {
                 try {
                     $message = \App\Incoming\Parser::parse($raw);
                     $body_preview = $message->htmlBody() ?: nl2br(e((string) $message->textBody()));
@@ -1305,14 +1304,6 @@ class ConversationsController extends Controller
                     // Shown from the database below.
                 }
             }
-            // Else from the mailbox's IMAP inbox (none when the mail server delivers it).
-            if (!$fetched && !$thread->conversation->mailbox->isDeliveredByMailServer()) {
-                $body_imap = $thread->fetchBody();
-                if ($body_imap) {
-                    $fetched = true;
-                    $body_preview = $body_imap;
-                }
-            }
         }
 
         return view('conversations/ajax_html/show_original', [
@@ -1320,12 +1311,12 @@ class ConversationsController extends Controller
             'body_preview' => $body_preview,
             'source' => $source,
             'fetched' => $fetched,
-            'raw_kept' => $raw !== '',
+            'raw_kept' => $raw !== null,
         ]);
     }
 
     /**
-     * Show Original's Download .eml: the email as it came in, while it's kept (App\Incoming\RawSources).
+     * Show Original's Download .eml: the email as it came in (App\Incoming\RawSources).
      */
     public function originalEml($thread_id)
     {
@@ -1333,12 +1324,15 @@ class ConversationsController extends Controller
         if (!auth()->user()->can('view', $thread->conversation)) {
             abort(403);
         }
-        $path = \App\Incoming\RawSources::path($thread);
-        if (!is_file($path)) {
+        $raw = \App\Incoming\RawSources::get($thread);
+        if ($raw === null) {
             abort(404);
         }
 
-        return response()->download($path, 'message-'.$thread->id.'.eml', ['Content-Type' => 'message/rfc822']);
+        return response($raw, 200, [
+            'Content-Type'        => 'message/rfc822',
+            'Content-Disposition' => 'attachment; filename="message-'.$thread->id.'.eml"',
+        ]);
     }
 
     /**

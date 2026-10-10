@@ -585,7 +585,7 @@
     "Test email": "Testna e-poruka",
     "The :module_name module has been deactivated due to an error: :error_message": "Modul :module_name je deaktiviran zbog greške: :error_message",
     "The new password is the same as the old password.": "Nova lozinka je ista kao i stara lozinka.",
-    "The original message could not be loaded from mail server, below is the latest truncated copy stored in database.": "Originalna poruka nije mogla biti učitana s mail servera, ispod je najnovija skraćena kopija pohranjena u bazi podataka.",
+    "The original email was not stored, below is the shortened copy saved in the database.": "Izvorna e-poruka nije pohranjena, ispod je skraćena kopija pohranjena u bazi podataka.",
     "There are no conversations here": "Ovdje nema razgovora",
     "There are updates available": "Dostupna su ažuriranja",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Postoji poštanski sandučić s tom e-mail adresom. Korisnici i poštanski sandučići ne mogu imati iste e-mail adrese.",

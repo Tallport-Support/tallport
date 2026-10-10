@@ -710,7 +710,7 @@
     "Invalid or missing modules symlinks": "Қате немесе жоқ модульдер сілтемелері",
     "Max. Message Size": "Макс. Хабар Көлемі",
     "Message is too large — :info. Please shorten your message or remove some attachments.": "Хабар тым үлкен — :info. Хабарды қысқартыңыз немесе кейбір тіркемелерді жойыңыз.",
-    "The original message could not be loaded from mail server, below is the latest truncated copy stored in database.": "Бастапқы хабар пошта серверінен жүктелмеді, төменде дерекқорда сақталған соңғы қысқартылған нұсқа көрсетілген.",
+    "The original email was not stored, below is the shortened copy saved in the database.": "Бастапқы хат сақталмаған, төменде дерекқорда сақталған қысқартылған нұсқа көрсетілген.",
     "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "Шығатын пошта кезегін өңдеуде проблема бар — әкімші :%a_begin%Жүйе күйі:%a_end% және :%a_begin_recommendations%Ұсыныстар:%a_end% тексеруі тиіс.",
     "View Details": "Мәліметтерді Қарау",
     ":%a_begin%End-User Portal Module:%a_end% is required.": ":%a_begin%Соңғы пайдаланушы порталы модулі:%a_end% қажет.",

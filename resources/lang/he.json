@@ -583,7 +583,7 @@
     "Test email": "אימייל בדיקה",
     "The :module_name module has been deactivated due to an error: :error_message": "המודול :module_name הושבת עקב שגיאה: :error_message",
     "The new password is the same as the old password.": "הסיסמה החדשה זהה לסיסמה הישנה.",
-    "The original message could not be loaded from mail server, below is the latest truncated copy stored in database.": "לא ניתן היה לטעון את ההודעה המקורית משרת הדואר, להלן העותק החתוך האחרון המאוחסן במסד הנתונים.",
+    "The original email was not stored, below is the shortened copy saved in the database.": "הדוא\"ל המקורי לא נשמר, להלן העותק המקוצר השמור במסד הנתונים.",
     "There are no conversations here": "אין כאן שיחות",
     "There are updates available": "יש עדכונים זמינים",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "יש תיבת דואר עם אימייל כזה. למשתמשים ולתיבות דואר לא יכולות להיות אותן כתובות אימייל.",

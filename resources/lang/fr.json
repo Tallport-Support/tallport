@@ -590,7 +590,7 @@
     "Test email": "E-mail de test",
     "The :module_name module has been deactivated due to an error: :error_message": "Le module :module_name a été désactivé en raison d'une erreur : :error_message",
     "The new password is the same as the old password.": "Le nouveau mot de passe est le même que l'ancien mot de passe.",
-    "The original message could not be loaded from mail server, below is the latest truncated copy stored in database.": "Le message original n'a pas pu être chargé depuis le serveur de messagerie ; vous trouverez ci-dessous la dernière copie tronquée enregistrée dans la base de données.",
+    "The original email was not stored, below is the shortened copy saved in the database.": "L'e-mail original n'a pas été conservé ; vous trouverez ci-dessous la copie abrégée enregistrée dans la base de données.",
     "There are no conversations here": "Il n'y a pas de conversations ici",
     "There are updates available": "Il y a des mises à jour disponibles",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Il y a une boîte mail avec cet e-mail. Les utilisateurs et les boîtes aux lettres ne peuvent pas avoir les mêmes adresses e-mail.",

@@ -578,7 +578,7 @@
     "Test email": "Testisähköposti",
     "The :module_name module has been deactivated due to an error: :error_message": ":module_name moduuli on poistettu käytöstä virheen vuoksi: :error_message",
     "The new password is the same as the old password.": "Uusi salasana on sama kuin vanha salasana.",
-    "The original message could not be loaded from mail server, below is the latest truncated copy stored in database.": "Alkuperäistä viestiä ei voitu ladata sähköpostipalvelimelta, alla on tietokantaan tallennettu viimeisin lyhennetty kopio.",
+    "The original email was not stored, below is the shortened copy saved in the database.": "Alkuperäistä sähköpostia ei tallennettu, alla on tietokantaan tallennettu lyhennetty kopio.",
     "There are no conversations here": "Täällä ei ole keskusteluja",
     "There are updates available": "Päivityksiä saatavilla",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Postilaatikko tällä sähköpostilla on jo olemassa. Käyttäjällä ja postilaatikolla ei voi olla samaa sähköpostiosoitetta.",

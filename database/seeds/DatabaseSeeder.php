@@ -622,9 +622,8 @@ class DatabaseSeeder extends Seeder
             if ($missing) {
                 DB::table('threads')->where('id', $thread->id)->update($missing);
             }
-            // Only reconstruct sources we generated; preserve other headers and retained originals.
-            if (\App\Incoming\RawSources::retentionDays() > 0
-                && !is_file(\App\Incoming\RawSources::path($thread))
+            // Only reconstruct sources we generated; preserve other headers and stored originals.
+            if (\App\Incoming\RawSources::get($thread) === null
                 && \MailHelper::getHeader($thread->headers, 'X-Tallport-Sample') == 'email-source-v1'
             ) {
                 $raw = $thread->headers."\r\n\r\n".quoted_printable_encode($thread->body_original);

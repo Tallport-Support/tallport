@@ -27,7 +27,6 @@ class DatabaseSeederTest extends FeatureTestCase
         $this->sample_storage = sys_get_temp_dir().'/tallport-seeder-'.uniqid();
         mkdir($this->sample_storage.'/app', 0777, true);
         $this->app->useStoragePath($this->sample_storage);
-        config(['app.incoming_mail_retention_days' => 30]);
     }
 
     protected function tearDown(): void
@@ -414,15 +413,14 @@ class DatabaseSeederTest extends FeatureTestCase
             $previous = null;
             $references = [];
             foreach ($conversation->threads->sortBy('created_at') as $thread) {
-                $path = \App\Incoming\RawSources::path($thread);
+                $raw = \App\Incoming\RawSources::get($thread);
                 if ($conversation->hasChannel() || $thread->type == Thread::TYPE_NOTE || $thread->state == Thread::STATE_DRAFT) {
                     $this->assertNull($thread->headers);
                     $this->assertNull($thread->body_original);
-                    $this->assertFileDoesNotExist($path);
+                    $this->assertNull($raw);
                     continue;
                 }
-                $this->assertFileExists($path);
-                $raw = file_get_contents($path);
+                $this->assertNotNull($raw);
                 $message = \App\Incoming\Parser::parse($raw);
                 $this->assertSame($thread->message_id, $message->messageId());
                 $this->assertTrue($message->date()->eq($thread->created_at));
@@ -451,7 +449,7 @@ class DatabaseSeederTest extends FeatureTestCase
         $this->actingAs(User::where('role', User::ROLE_ADMIN)->first())
             ->get('/conversation/ajax-html/show_original?thread_id='.$thread->id)->assertOk()
             ->assertSee('Headers')->assertSee('Authentication-Results')->assertSee('Download .eml')
-            ->assertDontSee('could not be loaded from mail server');
+            ->assertDontSee('The original email was not stored');
         $this->get(route('threads.original_eml', ['thread_id' => $thread->id]))->assertOk()
             ->assertDownload('message-'.$thread->id.'.eml')->assertHeader('Content-Type', 'message/rfc822');
         Queue::assertNothingPushed();
@@ -461,9 +459,9 @@ class DatabaseSeederTest extends FeatureTestCase
 
     public function testSeederBackfillsOnlyMissingSampleSourcesAndPreservesExistingMaterial()
     {
-        config(['app.incoming_mail_retention_days' => 0]);
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
-        $this->assertSame([], glob($this->sample_storage.'/app/incoming-mail/*.eml'));
+        // Sources missing, as in databases seeded before they were stored.
+        \DB::table(\App\Incoming\RawSources::TABLE)->delete();
         $threads = Thread::whereNotNull('headers')->orderBy('id')->take(4)->get();
         $missing = $threads[0];
         $preserved = $threads[1];
@@ -480,10 +478,8 @@ class DatabaseSeederTest extends FeatureTestCase
         \DB::table('threads')->where('id', $body_only->id)->update(['headers' => 'X-Existing: body missing', 'body_original' => null]);
         $preserved_before = $preserved->fresh()->toArray();
         $non_sample_before = $non_sample->fresh()->toArray();
-        mkdir($this->sample_storage.'/app/incoming-mail');
-        file_put_contents(\App\Incoming\RawSources::path($preserved), 'Existing retained source');
+        \App\Incoming\RawSources::put($preserved->id, 'Existing stored source');
         $count = Thread::count();
-        config(['app.incoming_mail_retention_days' => 30]);
 
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
 
@@ -496,18 +492,15 @@ class DatabaseSeederTest extends FeatureTestCase
         $this->assertNotEmpty($body_only->fresh()->body_original);
         $this->assertSame($preserved_before, $preserved->fresh()->toArray());
         $this->assertSame($non_sample_before, $non_sample->fresh()->toArray());
-        $this->assertSame('Existing retained source', file_get_contents(\App\Incoming\RawSources::path($preserved)));
-        $this->assertFileDoesNotExist(\App\Incoming\RawSources::path($non_sample));
-        $files = [];
-        foreach (glob($this->sample_storage.'/app/incoming-mail/*.eml') as $path) {
-            $files[$path] = sha1_file($path);
-        }
+        $this->assertSame('Existing stored source', \App\Incoming\RawSources::get($preserved));
+        $this->assertNull(\App\Incoming\RawSources::get($non_sample));
+        $this->assertNotNull(\App\Incoming\RawSources::get($missing));
+        $sources = \DB::table(\App\Incoming\RawSources::TABLE)->orderBy('thread_id')->pluck('thread_id')->all();
         $snapshot = $this->snapshot();
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
         $this->assertSame($snapshot, $this->snapshot());
-        foreach ($files as $path => $hash) {
-            $this->assertSame($hash, sha1_file($path));
-        }
+        $this->assertSame($sources, \DB::table(\App\Incoming\RawSources::TABLE)->orderBy('thread_id')->pluck('thread_id')->all());
+        $this->assertSame('Existing stored source', \App\Incoming\RawSources::get($preserved));
     }
 
     public function testSeederAddsEmailsThatShowTheRemoteImageWarning()
@@ -527,7 +520,7 @@ class DatabaseSeederTest extends FeatureTestCase
                 $this->assertTrue(\App\Misc\ExternalImages::appliesTo($thread));
                 $this->assertSame(1, \App\Misc\ExternalImages::block($thread->body)[1]);
                 $this->assertStringContainsString('https://images.example.invalid/', $thread->body_original);
-                $source = \App\Incoming\Parser::parse(file_get_contents(\App\Incoming\RawSources::path($thread)));
+                $source = \App\Incoming\Parser::parse(\App\Incoming\RawSources::get($thread));
                 $this->assertStringContainsString('<img src="https://images.example.invalid/', $source->htmlBody());
                 $this->actingAs($agent)->followingRedirects()->get('/conversation/'.$conversation->id)->assertOk()
                     ->assertSee('Images from other servers are not shown.')

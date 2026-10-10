@@ -589,7 +589,7 @@
     "Test email": "Testovací e-mail",
     "The :module_name module has been deactivated due to an error: :error_message": "Modul :module_name byl deaktivován z důvodu chyby: :error_message",
     "The new password is the same as the old password.": "Nové heslo je stejné jako staré heslo.",
-    "The original message could not be loaded from mail server, below is the latest truncated copy stored in database.": "Původní zprávu se nepodařilo načíst z poštovního serveru, níže je uvedena nejnovější zkrácená kopie uložená v databázi.",
+    "The original email was not stored, below is the shortened copy saved in the database.": "Původní e-mail nebyl uložen, níže je zkrácená kopie uložená v databázi.",
     "There are no conversations here": "Nejsou zde žádné konverzace",
     "There are updates available": "K dispozici jsou aktualizace",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Existuje schránka s takovými e-maily. Uživatelé a poštovní schránky nemohou mít stejné e-mailové adresy.",

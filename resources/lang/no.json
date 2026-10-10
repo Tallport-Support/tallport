@@ -579,7 +579,7 @@
     "Test email": "Test e-post",
     "The :module_name module has been deactivated due to an error: :error_message": "Modulen :module_name har blitt deaktivert på grunn av en feil: :error_message",
     "The new password is the same as the old password.": "Det nye passordet er det samme som det gamle passordet.",
-    "The original message could not be loaded from mail server, below is the latest truncated copy stored in database.": "Den opprinnelige meldingen kunne ikke lastes fra e-postserveren. Nedenfor er den nyeste forkortede kopien lagret i databasen.",
+    "The original email was not stored, below is the shortened copy saved in the database.": "Den opprinnelige e-posten ble ikke lagret. Nedenfor er den forkortede kopien som er lagret i databasen.",
     "There are no conversations here": "Det er ingen samtaler her",
     "There are updates available": "Det er oppdateringer tilgjengelig",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Det finnes en postkasse med denne e-postadressen. Brukere og postkasser kan ikke ha samme e-postadresse.",

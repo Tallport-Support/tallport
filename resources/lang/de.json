@@ -594,7 +594,7 @@
     "Test email": "Test-E-Mail",
     "The :module_name module has been deactivated due to an error: :error_message": "Das :module_name Modul wurde auf Grund des folgenden Fehlers deaktiviert : :error_message",
     "The new password is the same as the old password.": "Das neue Passwort ist das gleiche wie das alte.",
-    "The original message could not be loaded from mail server, below is the latest truncated copy stored in database.": "Die original Nachricht kann nicht vom Server geladen werden, nachfolgend finden Sie die letzte - in der Datenbank gespeicherte Kopie.",
+    "The original email was not stored, below is the shortened copy saved in the database.": "Die Original-E-Mail wurde nicht gespeichert, nachfolgend finden Sie die gekürzte Kopie aus der Datenbank.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Die angegebene E-Mail gehört einem Kunden mit einem nicht zugänglichen Postfach.",
     "There are no conversations here": "Hier gibt es keine Konversationen",
     "There are updates available": "Es sind Aktualisierungen verfügbar",

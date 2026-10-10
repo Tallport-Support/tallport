@@ -2204,8 +2204,9 @@ class Conversation extends Model
             $thread_ids = Thread::whereIn('conversation_id', $ids)->pluck('id')->toArray();
             Attachment::deleteByThreadIds($thread_ids);
 
-            // What else is kept about them: delivery logs, notifications, report figures,
-            // workflow runs, Nostr events.
+            // What else is kept about them: email sources, delivery logs, notifications,
+            // report figures, workflow runs, Nostr events.
+            \App\Incoming\RawSources::deleteByThreadIds($thread_ids);
             for ($j = 0; $j < ceil(count($thread_ids) / \Helper::IN_LIMIT); $j++) {
                 \DB::table('send_logs')->whereIn('thread_id', array_slice($thread_ids, $j * \Helper::IN_LIMIT, \Helper::IN_LIMIT))->delete();
             }

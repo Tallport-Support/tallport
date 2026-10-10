@@ -52,6 +52,7 @@ class ConversationObserver
      */
     public function deleting(Conversation $conversation)
     {
+        \App\Incoming\RawSources::deleteByThreadIds($conversation->threads()->pluck('id')->all());
         $conversation->threads()->delete();
         $conversation->followers()->delete();
 

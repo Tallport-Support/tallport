@@ -583,7 +583,7 @@
     "Test email": "Test email",
     "The :module_name module has been deactivated due to an error: :error_message": ":module_name modülü bir hata nedeniyle devre dışı bırakıldı: :error_message",
     "The new password is the same as the old password.": "Yeni parola eski parolayla aynıdır.",
-    "The original message could not be loaded from mail server, below is the latest truncated copy stored in database.": "Orijinal mesaj posta sunucusundan yüklenemedi, aşağıda veritabanında saklanan en son kesilmiş kopya bulunmaktadır.",
+    "The original email was not stored, below is the shortened copy saved in the database.": "Orijinal e-posta saklanmadı, aşağıda veritabanında kayıtlı kısaltılmış kopya bulunmaktadır.",
     "There are no conversations here": "Burada hiç konuşma yok",
     "There are updates available": "Mevcut güncellemeler var",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Böyle bir e-posta içeren bir posta kutusu var. Kullanıcılar ve posta kutuları aynı e-posta adreslerine sahip olamaz.",

@@ -589,7 +589,7 @@
     "Test email": "Testează email",
     "The :module_name module has been deactivated due to an error: :error_message": "Modulul :module_name a fost dezactivat din cauza unei erori. :error_message",
     "The new password is the same as the old password.": "Parola nouă este la fel ca cea veche.",
-    "The original message could not be loaded from mail server, below is the latest truncated copy stored in database.": "Mesajul original nu a putut fi încărcat de pe serverul de mail, mai jos este cea mai recentă copie stocată în baza de date.",
+    "The original email was not stored, below is the shortened copy saved in the database.": "E-mailul original nu a fost păstrat, mai jos este copia scurtată salvată în baza de date.",
     "There are no conversations here": "Nu există conversații aici",
     "There are updates available": "Există actualizări disponibile",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Există o cutie poștală cu un astfel de email. Utilizatorii și căsuțele poștale nu pot avea aceleași adrese de email.",

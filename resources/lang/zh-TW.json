@@ -472,7 +472,7 @@
     "System Alert": "系統警示",
     "System Emails": "系統電子郵件",
     "System Status": "系統狀態",
-    "The original message could not be loaded from mail server, below is the latest truncated copy stored in database.": "無法從郵件伺服器載入原始訊息，以下是資料庫中儲存的最新截斷副本。",
+    "The original email was not stored, below is the shortened copy saved in the database.": "原始郵件未被保存，以下是資料庫中儲存的截斷副本。",
     "There are no conversations here": "此處沒有對話",
     "There are updates available": "有可用的更新",
     "There is a new conversation": "有新對話",

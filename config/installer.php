@@ -46,6 +46,8 @@ return [
             // Sending through Amazon SES (async-aws).
             'SimpleXML',
             'ctype',
+            // Incoming emails' sources, stored compressed (App\Incoming\RawSources).
+            'zlib',
             //'pcntl',
             // We keep it as optional, as it's only used to translate dates.
             //'intl',

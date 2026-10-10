@@ -22,8 +22,6 @@
     <env name="REDIS_DB" value="15"/>
     <env name="REDIS_CACHE_DB" value="14"/>
     <env name="REDIS_PREFIX" value="tallport-test-"/>
-    <!-- Tests that keep raw sources of incoming email use a temporary folder. -->
-    <env name="APP_INCOMING_MAIL_RETENTION_DAYS" value="0"/>
     <env name="APP_TWO_FACTOR_REQUIRED" value="false"/>
     <env name="APP_KEY" value="base64:dGFsbHBvcnQtdGVzdC1rZXktMzItYnl0ZXMtbG9uZyE="/>
   </php>

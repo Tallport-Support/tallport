@@ -579,7 +579,7 @@
     "Test email": "测试电子邮件",
     "The :module_name module has been deactivated due to an error: :error_message": "由于错误::module_name 模块已被停用: :error_message",
     "The new password is the same as the old password.": "新密码与旧密码相同。",
-    "The original message could not be loaded from mail server, below is the latest truncated copy stored in database.": "无法从邮件服务器加载原始邮件，下面是数据库中存储的最新截断副本。",
+    "The original email was not stored, below is the shortened copy saved in the database.": "原始邮件未被保存，下面是数据库中保存的截断副本。",
     "There are no conversations here": "这里没有对话",
     "There are updates available": "有可用更新",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "有一个邮箱有这样的电子邮件。用户和邮箱不能有相同的电子邮件地址。",

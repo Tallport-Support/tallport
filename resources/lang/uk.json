@@ -584,7 +584,7 @@
     "Test email": "Тестовий лист",
     "The :module_name module has been deactivated due to an error: :error_message": "Модуль :module_name було деактивовано через помилку: :error_message",
     "The new password is the same as the old password.": "Новий пароль збігається зі старим.",
-    "The original message could not be loaded from mail server, below is the latest truncated copy stored in database.": "Не вдалося завантажити оригінальне повідомлення з поштового сервера, нижче наведено останню скорочену копію, збережену в базі даних.",
+    "The original email was not stored, below is the shortened copy saved in the database.": "Оригінальний лист не збережено, нижче наведено скорочену копію, збережену в базі даних.",
     "There are no conversations here": "Тут немає розмов",
     "There are updates available": "Доступні оновлення",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Існує поштова скринька з такою електронною адресою. Користувачі та поштові скриньки не можуть мати однакові електронні адреси.",

@@ -230,16 +230,15 @@ deliveries are tried again up to 10 times.
 
 ## Incoming email sources and re-importing
 
-Tallport keeps the raw source of each incoming email for 30 days, in
-`storage/app/incoming-mail/<thread id>.eml` (set
-`APP_INCOMING_MAIL_RETENTION_DAYS` in `.env`; 0 turns it off). The daily
-`tallport:clean-tmp` removes older ones.
+Tallport keeps the raw source of each incoming email in the database, for
+as long as its conversation exists. Show Original shows it, and its
+Download .eml button saves it as a file.
 
 To import an email file, for example to re-import a message that was saved
-wrongly after deleting its conversation for good:
+wrongly: download its .eml, delete its conversation for good, and run:
 
 ```bash
-sudo -u www-data php artisan tallport:receive storage/app/incoming-mail/1234.eml
+sudo -u www-data php artisan tallport:receive message-1234.eml
 ```
 
 The mailbox is found from the recipients, or given with

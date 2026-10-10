@@ -387,14 +387,14 @@ class ConversationAjaxEdgeCasesTest extends FeatureTestCase
 
     public function testShowOriginalOfACustomerMessageWithoutTheEmailShowsTheSavedBody()
     {
-        $this->mailbox->in_protocol = \App\Mailbox::IN_PROTOCOL_MAIL_SERVER;
-        $this->mailbox->save();
         $conversation = $this->receiveConversation(['body' => 'Saved body text']);
         $thread = $conversation->threads()->first();
+        // Received before sources were stored.
+        \App\Incoming\RawSources::deleteByThreadIds([$thread->id]);
 
         $response = $this->actingAs($this->agent)->get('/conversation/ajax-html/show_original?thread_id='.$thread->id);
 
-        $response->assertOk()->assertSee('Saved body text');
+        $response->assertOk()->assertSee('Saved body text')->assertSee('The original email was not stored');
         $this->assertFalse($response->viewData('fetched'));
         $this->assertFalse($response->viewData('raw_kept'));
     }
