@@ -50,13 +50,32 @@ Compared with FreeScout and its modules, Tallport adds:
 
 ## Requirements
 
-* PHP 8.5 or newer with the `mbstring`, `xml`, `zip`, `gd`, `curl`, `intl`
-  and `mysql` extensions, and `imap` (from PECL since PHP 8.4) for POP3
-  mailboxes
-* MariaDB (tested with 11.8)
-* Nginx or Apache
-* A cron job running `php artisan schedule:run` every minute (fetches
+* **PHP 8.5 or newer**, with these extensions: `openssl`, `pdo_mysql`,
+  `mbstring`, `tokenizer`, `json`, `xml`, `dom`, `libxml`, `simplexml`,
+  `gd`, `fileinfo`, `zip`, `iconv`, `curl`, `ctype`, and `pcntl` for
+  command-line PHP
+* **PHP functions** that some hosts disable must be allowed: `shell_exec`,
+  `proc_open`, `fpassthru`, `symlink`, `dns_get_record`, `inet_pton` and
+  `pcntl_signal`, and the `ps` command must be available
+* **MariaDB** (tested with 11.8)
+* **Nginx or Apache**
+* **Writable folders:** `storage/`, `bootstrap/cache/`, `public/css/builds/`,
+  `public/js/builds/`, `public/modules/` and `Modules/`
+* **A cron job** running `php artisan schedule:run` every minute (fetches
   mail and runs the queue)
+
+Optional:
+
+* `opcache`: much faster pages
+* `intl`: dates in each user's language, and Simplified and Traditional
+  Chinese auto replies
+* `redis`: Redis for the cache, sessions or queue
+* `gmp` (or else `bcmath`): Nostr; `gmp` is faster
+* `imap` (from PECL since PHP 8.4): POP3 mailboxes
+* ImageMagick that can read HEIC: iPhone photos converted on the server
+  (otherwise browsers decode them)
+
+The installer and System » Status check all of these.
 
 Tallport is tested on PHP 8.5 and MariaDB. FreeScout also supports older
 PHP versions, MySQL and PostgreSQL; Tallport may still work there, but
