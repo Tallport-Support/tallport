@@ -39,21 +39,14 @@ Credit for everything up to the fork goes to the FreeScout team.
 
 Compared with FreeScout and its modules, Tallport adds:
 
-* **A new interface** that is fast, clean and light or dark with your system.
-* **Instant navigation:** conversations and folders open in place.
-* **Chats that look like chats**, with the newest message at the bottom.
-* **Unread markers** and sorting by last activity.
-* **Mailbox colours**, so you can tell mailboxes apart at a glance.
-* **Clear delivery reports:** bounces shown on the message they belong to,
-  delivery confirmations kept out of the inbox.
-* **Image thumbnails**, including iPhone photos.
-* **The customer at a glance:** their local time and language.
-* **Replies that look like ordinary email.**
-* **Receiving email straight from your mail server**, without a mailbox to
-  fetch from.
-* **A clear status page** that says what needs attention and how to fix it.
-* **Up to date and tested:** current Laravel and dependencies, numerous bugs
-  fixed, and a large automated test suite.
+* **Two-way translation:** agents and customers each write in their own
+  language, by email and chat.
+* **AI summaries:** where a conversation stands, at a glance.
+* **Delivery reports:** bounces and delivery problems shown on the message
+  they belong to.
+* **A modern interface**, in light and dark.
+* **Up to date and tested:** current Laravel, numerous bugs fixed, and a
+  large automated test suite.
 
 ## Requirements
 
