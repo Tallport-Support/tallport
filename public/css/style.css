@@ -2098,6 +2098,21 @@ h1.settings-toolbar__title {
 .system-status__queue {
     width: auto;
 }
+/* System Status's Files (livewire/system-file-check): each group's paths in a disclosure. */
+.system-files__group {
+    align-items: flex-start;
+}
+.system-files__group .f-disclosure {
+    flex: 1;
+    min-width: 0;
+}
+.system-files__list {
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--f-text-xs);
+    overflow-wrap: anywhere;
+}
 /* Logs (secure/logs, App Logs): which log in a bar, the entries' long text on one line. */
 .logs-bar {
     flex-wrap: wrap;

@@ -496,6 +496,8 @@
     @endif
     @action('system.tools.after_content')
 
+    <livewire:system-file-check />
+
     {{-- Fetch Emails Now (Background Tasks): the command's output in the dialog. --}}
     <x-fruit::dialog name="fetch-now" aria-labelledby="fetch-now-title">
         <form x-data="{ days: 3, unseen: '1', debug: false, running: false, output: '' }" x-on:submit.prevent="running = true; output = ''; $wire.fetchNow(days, unseen == '1', debug).then((result) => { output = result || @js(__('Done')); running = false })">

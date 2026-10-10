@@ -2506,6 +2506,14 @@
         ]
     },
     {
+        "type": "filter",
+        "name": "system.file_check.ignored_paths",
+        "arguments": 1,
+        "files": [
+            "app/Misc/FileCheck.php"
+        ]
+    },
+    {
         "type": "action",
         "name": "system.status.after_background_jobs",
         "arguments": 0,

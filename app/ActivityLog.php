@@ -43,6 +43,7 @@ class ActivityLog extends Activity
     const DESCRIPTION_EMAILS_FETCHING_ERROR = 'error_fetching_email';
     const DESCRIPTION_SYSTEM_ERROR = 'system_error';
     const DESCRIPTION_USER_DELETED = 'user_deleted';
+    const DESCRIPTION_SYSTEM_FILES_DELETED = 'files_deleted';
 
     public function getEventDescription()
     {
@@ -77,6 +78,8 @@ class ActivityLog extends Activity
                 return __('System error');
             case self::DESCRIPTION_USER_DELETED:
                 return __('Deleted user');
+            case self::DESCRIPTION_SYSTEM_FILES_DELETED:
+                return __('Deleted leftover files');
             default:
                 return $this->description;
                 break;

@@ -6,6 +6,9 @@ set -euo pipefail
 cd "$(dirname "$0")"
 source_dir=$PWD
 
+# The files earlier releases shipped (System > Status > Files deletes them as leftovers).
+php dev/removed-files.php --check
+
 checkout_dir=$(mktemp -d "${TMPDIR:-/tmp}/tallport-release-check.XXXXXX")
 cleanup() {
     if [ -d "$checkout_dir/source" ]; then
