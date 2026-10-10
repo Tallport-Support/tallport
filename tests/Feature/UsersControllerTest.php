@@ -8,7 +8,7 @@ use Illuminate\Http\UploadedFile;
 use Tests\FeatureTestCase;
 
 /**
- * UsersController: profile details (photo, language, admin-only fields),
+ * UsersController: profile details (photo, admin-only fields),
  * the permissions and notifications pages of deleted users, invites that
  * can't be sent, and the ajax actions' error answers.
  */
@@ -36,8 +36,6 @@ class UsersControllerTest extends FeatureTestCase
             'first_name'  => $user->first_name,
             'last_name'   => $user->last_name,
             'email'       => $user->email,
-            'timezone'    => 'Europe/Amsterdam',
-            'time_format' => User::TIME_FORMAT_24,
         ], $data);
     }
 
@@ -134,21 +132,19 @@ class UsersControllerTest extends FeatureTestCase
         $this->assertNotSame('support@example.org', $agent->fresh()->email);
     }
 
-    public function testOwnLanguageIsUsedRightAway()
+    public function testLanguageTimezoneAndTimeFormatAreNotSetThroughTheProfile()
     {
-        $agent = $this->createUser();
+        // They're the user's own preferences (users/preferences), not an admin's to change.
+        $other = $this->createUser(['locale' => 'nl', 'timezone' => 'Europe/Amsterdam', 'time_format' => User::TIME_FORMAT_24]);
+        $this->postForm($this->admin, '/users/profile/'.$other->id, $this->profile($other, [
+            'locale' => 'de', 'timezone' => 'UTC', 'time_format' => User::TIME_FORMAT_12,
+        ]))->assertSessionHasNoErrors();
 
-        $this->postForm($agent, '/users/profile/'.$agent->id, $this->profile($agent, ['locale' => 'nl']))->assertSessionHasNoErrors();
-
-        $this->assertSame('nl', session('user_locale'));
-        $this->assertSame('nl', $agent->fresh()->locale);
-
-        // Someone else's language is theirs only.
-        $other = $this->createUser();
-        \Session::forget('user_locale');
-        $this->postForm($this->admin, '/users/profile/'.$other->id, $this->profile($other, ['locale' => 'de']));
-        $this->assertSame('nl', session('user_locale'));
-        $this->assertSame('de', $other->fresh()->locale);
+        $other->refresh();
+        $this->assertSame('nl', $other->locale);
+        $this->assertSame('Europe/Amsterdam', $other->timezone);
+        $this->assertSame(User::TIME_FORMAT_24, (int) $other->time_format);
+        $this->assertNull(session('user_locale'));
     }
 
     public function testPasswordAndTypeCantBeSetThroughTheProfile()

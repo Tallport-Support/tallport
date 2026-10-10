@@ -410,11 +410,19 @@ class AiAssistantTest extends FeatureTestCase
 
     public function testUserSetsLanguagesTheyReadAndAdminSetsDraftLimit()
     {
-        $data = ['first_name' => 'Agent', 'email' => $this->agent->email, 'timezone' => 'UTC', 'time_format' => 2, 'languages_shown' => 1];
+        $data = ['first_name' => 'Agent', 'email' => $this->agent->email];
+        $preferences = '/users/preferences/'.$this->agent->id;
 
-        $this->actingAs($this->agent)->get('/users/profile/'.$this->agent->id)
+        // Their own preference; the limit is the admin's, on the profile.
+        $this->actingAs($this->agent)->get($preferences)
             ->assertSee('No Translation Needed')->assertSee('name="languages[]"', false)->assertDontSee('AI Language');
-        $this->postForm($this->agent, '/users/profile/'.$this->agent->id, $data + ['languages' => ['nl', 'zh-Hans'], 'ai_drafts_per_day' => 999]);
+        $this->actingAs($this->agent)->get('/users/profile/'.$this->agent->id)
+            ->assertDontSee('name="languages[]"', false)->assertDontSee('AI Drafts Per Day');
+        $this->actingAs($this->admin)->get('/users/profile/'.$this->agent->id)
+            ->assertSee('AI Drafts Per Day')->assertDontSee('name="languages[]"', false);
+
+        $this->postForm($this->agent, $preferences, ['languages_shown' => 1, 'languages' => ['nl', 'zh-Hans']])->assertSessionHasNoErrors();
+        $this->postForm($this->agent, '/users/profile/'.$this->agent->id, $data + ['ai_drafts_per_day' => 999]);
         $this->agent->refresh();
         $this->assertSame(['nl', 'zh-Hans'], $this->agent->languages);
         $this->assertNull($this->agent->ai_drafts_per_day);
@@ -424,10 +432,13 @@ class AiAssistantTest extends FeatureTestCase
 
         $this->postForm($this->admin, '/users/profile/'.$this->agent->id, $data + ['ai_drafts_per_day' => 0]);
         $this->agent->refresh();
-        $this->assertNull($this->agent->languages);
+        $this->assertSame(['nl', 'zh-Hans'], $this->agent->languages, 'The profile leaves them alone.');
         $this->assertSame(0, Settings::draftsPerDay($this->agent));
 
-        $this->postForm($this->agent, '/users/profile/'.$this->agent->id, $data + ['languages' => ['xx']])
+        $this->postForm($this->agent, $preferences, ['languages_shown' => 1]);
+        $this->assertNull($this->agent->fresh()->languages);
+
+        $this->postForm($this->agent, $preferences, ['languages_shown' => 1, 'languages' => ['xx']])
             ->assertSessionHasErrors('languages.0');
     }
 

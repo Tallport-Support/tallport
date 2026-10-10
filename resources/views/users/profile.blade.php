@@ -47,6 +47,12 @@
                     @if (!$user->isAdmin() && Auth::user()->isAdmin())
                         <x-fruit::checkbox id="only_assigned_tickets" name="only_assigned_tickets" value="1" :checked="(bool) old('only_assigned_tickets', $user->hasPermission(\App\User::PERM_ONLY_ASSIGNED_TICKETS))">{{ $user->getUserPermissionName(\App\User::PERM_ONLY_ASSIGNED_TICKETS) }}</x-fruit::checkbox>
                     @endif
+
+                    @if (auth()->user()->isAdmin())
+                        <x-fruit::field :label="__('AI Drafts Per Day')" :description="__('Leave blank to use the limit in the AI settings. 0 turns drafting off.')" layout="row">
+                            <x-fruit::number id="ai_drafts_per_day" name="ai_drafts_per_day" :value="old('ai_drafts_per_day', $user->ai_drafts_per_day)" min="0" max="10000" :placeholder="App\Ai\Settings::draftsPerDay(null)" />
+                        </x-fruit::field>
+                    @endif
                 </x-fruit::form-section>
             @endif
 
@@ -102,49 +108,6 @@
                 <x-fruit::field :label="$user->photo_url ? __('Replace Photo') : __('Photo')" :description="__('Image will be re-sized to :dimensions. JPG, GIF, PNG accepted.', ['dimensions' => config('app.user_photo_size').'x'.config('app.user_photo_size')])" layout="row">
                     <x-fruit::file id="photo_url" name="photo_url" />
                 </x-fruit::field>
-            </x-fruit::form-section>
-
-            <x-fruit::form-section :title="__('General')">
-                <x-fruit::field :label="__('Language')" layout="row">
-                    <x-fruit::select id="locale" name="locale">
-                        @include('partials/locale_options', ['selected' => old('locale', $user->getLocale())])
-                    </x-fruit::select>
-                </x-fruit::field>
-
-                <x-fruit::field :label="__('Timezone')" layout="row">
-                    <x-fruit::select id="timezone" name="timezone" required>
-                        @include('partials/timezone_options', ['current_timezone' => old('timezone', $user->timezone)])
-                    </x-fruit::select>
-                </x-fruit::field>
-
-                <x-fruit::fieldset>
-                    <legend>{{ __('Time Format') }}</legend>
-                    <x-fruit::radio id="12hour" name="time_format" :value="App\User::TIME_FORMAT_12" :checked="old('time_format', $user->time_format) == App\User::TIME_FORMAT_12">{{ __('12-hour clock (e.g. 2:13pm)') }}</x-fruit::radio>
-                    <x-fruit::radio id="24hour" name="time_format" :value="App\User::TIME_FORMAT_24" :checked="old('time_format', $user->time_format) == App\User::TIME_FORMAT_24 || !$user->time_format">{{ __('24-hour clock (e.g. 14:13)') }}</x-fruit::radio>
-                </x-fruit::fieldset>
-
-                <x-fruit::field :label="__('Keyboard Shortcuts')" :description="__('On (press ? to see them)')" layout="row">
-                    <input type="hidden" name="keyboard_shortcuts_shown" value="1">
-                    <x-fruit::switch id="keyboard_shortcuts" name="keyboard_shortcuts" value="1" :checked="$user->hasKeyboardShortcuts()" />
-                </x-fruit::field>
-            </x-fruit::form-section>
-
-            <x-fruit::form-section :title="__('AI')">
-                {{-- Summaries and translations are in the user's language (above); these aren't translated. --}}
-                <x-fruit::field :label="__('No Translation Needed')" :description="__('Messages in these languages are shown as written.')" layout="row">
-                    <input type="hidden" name="languages_shown" value="1">
-                    <x-fruit::select id="languages" name="languages[]" multiple size="6">
-                        @foreach (App\Ai\Settings::displayNames() as $code => $name)
-                            <option value="{{ $code }}" @selected(in_array($code, (array) old('languages', $user->languages)))>{{ App\Ai\Settings::optionName($code) }}</option>
-                        @endforeach
-                    </x-fruit::select>
-                </x-fruit::field>
-
-                @if (Auth::user()->isAdmin())
-                    <x-fruit::field :label="__('AI Drafts Per Day')" :description="__('Leave blank to use the limit in the AI settings. 0 turns drafting off.')" layout="row">
-                        <x-fruit::number id="ai_drafts_per_day" name="ai_drafts_per_day" :value="old('ai_drafts_per_day', $user->ai_drafts_per_day)" min="0" max="10000" :placeholder="App\Ai\Settings::draftsPerDay(null)" />
-                    </x-fruit::field>
-                @endif
             </x-fruit::form-section>
 
             @if (Auth::user()->can('delete', $user))

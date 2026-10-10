@@ -201,12 +201,8 @@ class UsersController extends Controller
             //'emails'      => 'max:100',
             'job_title'   => 'max:100',
             'phone'       => 'max:60',
-            'timezone'    => 'required|string|max:255',
-            'time_format' => 'required',
             'role'        => ['nullable', Rule::in(array_keys(User::$roles))],
             'photo_url'   => 'nullable|image|mimes:jpeg,png,jpg,gif',
-            'languages'   => 'nullable|array',
-            'languages.*' => [Rule::in(array_keys(\App\Ai\Settings::LANGUAGES))],
             'ai_drafts_per_day' => 'nullable|integer|min:0|max:10000',
         ]);
         $validator->setAttributeNames([
@@ -259,11 +255,6 @@ class UsersController extends Controller
             $user->photo_url = $path_url;
         }
 
-        // Save language into session.
-        if ($auth_user->id == $id && $request->locale) {
-            session()->put('user_locale', $request->locale);
-        }
-
         $request_data = $request->all();
 
         if (isset($request_data['photo_url'])) {
@@ -299,9 +290,13 @@ class UsersController extends Controller
             'email',
             'only_assigned_tickets',
         ];
+        // Language, timezone and time format are the user's own (preferencesSave).
         $nonfillable_fields = [
             'type',
             'password',
+            'locale',
+            'timezone',
+            'time_format',
         ];
         if (!$auth_user->isAdmin()) {
             foreach ($admin_fields as $field) {
@@ -318,12 +313,6 @@ class UsersController extends Controller
 
         $user->setData($request_data);
 
-        if ($request->exists('languages_shown')) {
-            $user->languages = array_values(array_unique((array) $request->languages)) ?: null;
-        }
-        if ($request->exists('keyboard_shortcuts_shown')) {
-            $user->keyboard_shortcuts = (bool) $request->keyboard_shortcuts;
-        }
         if ($auth_user->isAdmin() && $request->exists('ai_drafts_per_day')) {
             $user->ai_drafts_per_day = is_numeric($request->ai_drafts_per_day) ? (int) $request->ai_drafts_per_day : null;
         }
@@ -638,8 +627,9 @@ class UsersController extends Controller
     }
 
     /**
-     * The user's own preferences: the status of a reply, where to go after sending,
-     * the accent and how each channel's conversations look.
+     * The user's own preferences: language, timezone, time format, keyboard shortcuts,
+     * the status of a reply, where to go after sending, how each channel's conversations
+     * look, the languages that aren't translated and the accent.
      */
     public function preferences($id)
     {
@@ -664,7 +654,30 @@ class UsersController extends Controller
             'accent'       => ['nullable', \Illuminate\Validation\Rule::in(\FruitUI\Fruit::ACCENTS)],
             'conversation_views'   => 'nullable|array',
             'conversation_views.*' => 'in:'.User::VIEW_EMAIL.','.User::VIEW_CHAT,
+            'locale'       => ['nullable', Rule::in(config('app.locales'))],
+            'timezone'     => 'nullable|string|max:255',
+            'time_format'  => ['nullable', Rule::in([User::TIME_FORMAT_12, User::TIME_FORMAT_24])],
+            'languages'    => 'nullable|array',
+            'languages.*'  => [Rule::in(array_keys(\App\Ai\Settings::LANGUAGES))],
         ]);
+        if ($request->filled('locale')) {
+            $user->locale = $request->locale;
+            // Used right away (Localize middleware).
+            session()->put('user_locale', $user->locale);
+            \Helper::setLocale($user->locale);
+        }
+        if ($request->filled('timezone')) {
+            $user->timezone = \Helper::stripTags($request->timezone);
+        }
+        if ($request->filled('time_format')) {
+            $user->time_format = (int) $request->time_format;
+        }
+        if ($request->exists('keyboard_shortcuts_shown')) {
+            $user->keyboard_shortcuts = (bool) $request->keyboard_shortcuts;
+        }
+        if ($request->exists('languages_shown')) {
+            $user->languages = array_values(array_unique((array) $request->languages)) ?: null;
+        }
         $user->reply_status = $request->reply_status ?: null;
         $user->after_send = $request->after_send ?: null;
         // Off: the installation's accent (Settings » Appearance).

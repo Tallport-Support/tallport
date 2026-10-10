@@ -63,7 +63,7 @@
         @endforeach
     </div>
     <form class="f-dialog__footer keyboard-shortcuts__footer" method="dialog">
-        <a href="{{ route('users.profile', ['id' => Auth::user()->id]) }}#keyboard_shortcuts" class="f-help">{{ __('Turn them off in your profile.') }}</a>
+        <a href="{{ route('users.preferences', ['id' => Auth::user()->id]) }}#keyboard_shortcuts" class="f-help">{{ __('Turn them off in your preferences.') }}</a>
         <x-fruit::button type="submit" variant="primary" autofocus>{{ __('Done') }}</x-fruit::button>
     </form>
 </x-fruit::dialog>

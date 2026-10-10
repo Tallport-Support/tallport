@@ -10,8 +10,9 @@ use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
- * A user's own preferences: the status a reply leaves and where the user goes
- * after sending, for every mailbox; the accent; each channel's conversation view.
+ * A user's own preferences: language, timezone, time format and keyboard shortcuts;
+ * the status a reply leaves and where the user goes after sending, for every mailbox;
+ * the accent; each channel's conversation view.
  */
 class UserPreferencesTest extends FeatureTestCase
 {
@@ -59,6 +60,42 @@ class UserPreferencesTest extends FeatureTestCase
         $this->assertNull($agent->fresh()->reply_status);
         $this->assertSame(Conversation::STATUS_PENDING, $agent->fresh()->replyStatus());
         $this->assertSame(MailboxUser::AFTER_SEND_NEXT, (int) $agent->fresh()->afterSend());
+    }
+
+    public function testLanguageTimezoneAndTimeFormat()
+    {
+        $agent = $this->createUser(['locale' => 'en', 'timezone' => 'Europe/Amsterdam', 'time_format' => User::TIME_FORMAT_24]);
+
+        // On the preferences, not the profile.
+        $this->actingAs($agent)->get(route('users.preferences', ['id' => $agent->id]))->assertOk()
+            ->assertSee('name="locale"', false)->assertSee('name="timezone"', false)->assertSee('name="time_format"', false)
+            ->assertSee('name="keyboard_shortcuts"', false)->assertSee('name="languages[]"', false);
+        $this->actingAs($agent)->get(route('users.profile', ['id' => $agent->id]))->assertOk()
+            ->assertDontSee('name="locale"', false)->assertDontSee('name="timezone"', false)->assertDontSee('name="time_format"', false)
+            ->assertDontSee('name="keyboard_shortcuts"', false)->assertDontSee('name="languages[]"', false);
+        // Settings' search finds them on Preferences.
+        $keywords = \App\Misc\Sidebar::settingsKeywords('users/preferences');
+        foreach (['language', 'timezone', 'keyboard shortcuts', 'no translation needed'] as $keyword) {
+            $this->assertStringContainsString($keyword, $keywords);
+        }
+
+        \Session::start();
+        $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), [
+            '_token' => csrf_token(), 'locale' => 'nl', 'timezone' => 'America/New_York', 'time_format' => User::TIME_FORMAT_12,
+        ])->assertRedirect(route('users.preferences', ['id' => $agent->id]))->assertSessionHasNoErrors();
+        $agent->refresh();
+        $this->assertSame('nl', $agent->locale);
+        $this->assertSame('America/New_York', $agent->timezone);
+        $this->assertSame(User::TIME_FORMAT_12, (int) $agent->time_format);
+        // The new language right away.
+        $this->assertSame('nl', session('user_locale'));
+        $this->assertSame('Instellingen bijgewerkt', session('flash_success_floating'));
+        $this->actingAs($agent->fresh())->get(route('users.preferences', ['id' => $agent->id]))->assertSee('Voorkeuren');
+
+        $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), [
+            '_token' => csrf_token(), 'locale' => 'xx', 'time_format' => 7,
+        ])->assertSessionHasErrors(['locale', 'time_format']);
+        $this->assertSame('nl', $agent->fresh()->locale);
     }
 
     public function testConversationViewPerChannel()

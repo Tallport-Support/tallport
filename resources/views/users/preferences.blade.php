@@ -15,6 +15,31 @@
         <form id="page-form" class="settings-form" method="POST" action="{{ route('users.preferences.save', ['id' => $user->id]) }}">
             {{ csrf_field() }}
 
+            <x-fruit::form-section :title="__('General')">
+                <x-fruit::field :label="__('Language')" layout="row">
+                    <x-fruit::select id="locale" name="locale">
+                        @include('partials/locale_options', ['selected' => old('locale', $user->getLocale())])
+                    </x-fruit::select>
+                </x-fruit::field>
+
+                <x-fruit::field :label="__('Timezone')" layout="row">
+                    <x-fruit::select id="timezone" name="timezone" required>
+                        @include('partials/timezone_options', ['current_timezone' => old('timezone', $user->timezone)])
+                    </x-fruit::select>
+                </x-fruit::field>
+
+                <x-fruit::fieldset>
+                    <legend>{{ __('Time Format') }}</legend>
+                    <x-fruit::radio id="12hour" name="time_format" :value="App\User::TIME_FORMAT_12" :checked="old('time_format', $user->time_format) == App\User::TIME_FORMAT_12">{{ __('12-hour clock (e.g. 2:13pm)') }}</x-fruit::radio>
+                    <x-fruit::radio id="24hour" name="time_format" :value="App\User::TIME_FORMAT_24" :checked="old('time_format', $user->time_format) == App\User::TIME_FORMAT_24 || !$user->time_format">{{ __('24-hour clock (e.g. 14:13)') }}</x-fruit::radio>
+                </x-fruit::fieldset>
+
+                <x-fruit::field :label="__('Keyboard Shortcuts')" :description="__('On (press ? to see them)')" layout="row">
+                    <input type="hidden" name="keyboard_shortcuts_shown" value="1">
+                    <x-fruit::switch id="keyboard_shortcuts" name="keyboard_shortcuts" value="1" :checked="$user->hasKeyboardShortcuts()" />
+                </x-fruit::field>
+            </x-fruit::form-section>
+
             {{-- Unset: Pending after a reply, then the next active conversation. --}}
             <x-fruit::form-section :title="__('Replies')">
                 <x-fruit::field :label="__('Status After a Reply')" layout="row">
@@ -45,6 +70,18 @@
                         </x-fruit::segmented>
                     </div>
                 @endforeach
+            </x-fruit::form-section>
+
+            <x-fruit::form-section :title="__('Translation')">
+                {{-- Summaries and translations are in the user's language (General); these aren't translated. --}}
+                <x-fruit::field :label="__('No Translation Needed')" :description="__('Messages in these languages are shown as written.')" layout="row">
+                    <input type="hidden" name="languages_shown" value="1">
+                    <x-fruit::select id="languages" name="languages[]" multiple size="6">
+                        @foreach (App\Ai\Settings::displayNames() as $code => $name)
+                            <option value="{{ $code }}" @selected(in_array($code, (array) old('languages', $user->languages)))>{{ App\Ai\Settings::optionName($code) }}</option>
+                        @endforeach
+                    </x-fruit::select>
+                </x-fruit::field>
             </x-fruit::form-section>
 
             {{-- The accent: the installation's (Settings » Appearance) unless one is chosen here; previewed when picked. --}}
