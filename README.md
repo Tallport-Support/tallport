@@ -75,7 +75,8 @@ Optional:
 * ImageMagick that can read HEIC: iPhone photos converted on the server
   (otherwise browsers decode them)
 
-The installer and System » Status check all of these.
+The installer and System » Status check the extensions, functions, folders
+and ImageMagick.
 
 Tallport is tested on PHP 8.5 and MariaDB. FreeScout also supports older
 PHP versions, MySQL and PostgreSQL; Tallport may still work there, but
