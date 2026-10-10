@@ -108,19 +108,6 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--f-text);
 }
 
-.dropdown-menu {
-    border-radius: 5px;
-}
-.dropdown-menu>li>a {
-	padding-top: 7px;
-	padding-bottom: 7px;
-}
-.dropdown-menu a.disabled,
-.dropdown-menu a.disabled:hover {
-    color: var(--f-tertiary);
-    background-color: transparent;
-}
-
 /**
  * Forms
  */
@@ -129,29 +116,6 @@ input.disabled {
 }
 label.disabled {
     color: var(--f-tertiary);
-}
-label.checkbox,
-label.radio {
-    cursor: pointer;
-}
-.controls>.checkbox:first-child,
-.controls>.radio:first-child {
-    padding-top: 5px;
-}
-.checkbox.inline,
-.radio.inline {
-    display: inline-block;
-    margin-bottom: 0;
-    padding-top: 5px;
-    vertical-align: middle;
-    font-size: 0.8375rem;
-}
-.checkbox,
-.radio {
-    min-height: 18px;
-    padding-left: 22px;
-    padding-right: 7px;
-    position: relative;
 }
 .has-error.help-block {
     color: var(--f-danger);
@@ -239,10 +203,6 @@ a h4 {
     overflow: hidden;
     position: relative;
     text-transform: uppercase;
-}
-.card.no-img h4,
-.card.no-img p {
-    margin-left: 0;
 }
 
 .dash-cards {
@@ -386,11 +346,6 @@ a h4 {
     display: none;
 }
 
-.conv-top-block {
-    border-top: 1px solid var(--f-border);
-    padding: 10px 20px;
-}
-
 .conv-subj-editor,
 .conv-subj-editing > h2 {
     display: none;
@@ -462,41 +417,6 @@ a h4 {
     display: flex;
 }
 
-.thread-type-new {
-    height: 40px;
-    background: color-mix(in srgb, var(--f-accent) 12%, transparent);
-    text-align: center;
-}
-.thread-type-new .thread {
-    display: none;
-}
-
-.thread-attachments {
-    position: relative;
-}
-.thread-attachments ul {
-    padding-inline-start: 23px;
-    list-style: none;
-}
-.thread-attachments li {
-    display: inline-block;
-    position: relative;
-    margin: 8px 4px 8px 0;
-    padding: 4px 10px;
-    border-radius: var(--f-radius-xs);
-    background: var(--f-surface-secondary);
-    line-height: 1;
-}
-.thread-attachments a {
-    display: inline-block;
-    color: var(--f-accent-text);
-}
-.thread-attachments a.disabled,
-.thread-attachments a.disabled:hover,
-.thread-attachments a.disabled:focus {
-    color: var(--f-tertiary);
-    cursor: default;
-}
 .thread-editor-container {
     padding: 20px;
 }
@@ -513,10 +433,6 @@ a h4 {
     margin-top: 10px;
     padding-inline-start: 13px;
     border-inline-start: 3px solid var(--f-border);
-}
-.thread-text {
-    color: var(--f-text);
-    line-height: 1.5;
 }
 .thread-content	img {
     max-width: 100%;
@@ -570,16 +486,8 @@ a h4 {
     cursor: pointer;
 }
 @media (max-width:700px) {
-    .conv-info .dropdown-menu {
-        right: 0!important;
-        left: auto!important;
-    }
     .conv-actions .conv-action {
         padding: 18px 10px 9px;
-    }
-
-    .conv-top-block {
-        padding: 10px 13px;
     }
     .conv-info {
         margin-right: 6px;
@@ -594,20 +502,12 @@ a h4 {
         font-size: 1.0625rem;
     }
 
-    .thread-to-first,
-    .thread-type {
-        display: none;
-    }
     /*.thread-type-note .thread-body,
     .thread-type-message .thread-body {
         border-radius: 0;
         margin: 0 -17px 0 -3px;
         padding-left: 10px;
     }*/
-    .thread-info {
-        max-width: 32%;
-    }
-
     .conv-new-form {
         padding-top: 0;
     }
@@ -617,11 +517,6 @@ a h4 {
 }
 @media (max-width:991px) {
     .conv-attachment .conv-star {
-        display: none;
-    }
-}
-@media (min-width:992px) {
-    .conv-thread-count .conv-star {
         display: none;
     }
 }
@@ -657,81 +552,22 @@ a h4 {
 .alerts {
     flex: none;
 }
-.alerts .alert {
-    margin-bottom: 0;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
 
 .table-header {
     font-size: 0.875rem;
 }
 
-.modal .close {
-    opacity: 0.7;
-}
 /**
  * Attachments
  */
-.attachments-upload {
-    display: none;
-    clear: both;
-    /*margin-right: -15px;
-    margin-left: -15px;*/
-}
-.attachments-upload img {
-    margin-right: 3px;
-}
-.attachments-upload.thread-attachments ul {
-    margin-bottom: 0;
-    padding-left: 0;
-}
-.attachments-upload.thread-attachments li {
-    margin-bottom: 0;
-}
 .attachment-loaded img,
 .attachment-loaded .ellipsis {
     display: none;
 }
 
 /**
- * Change customer
- */
-.customer-not-found-title {
-    display: none;
-}
-.customer-not-found .customer-not-found-title {
-    display: block;
-}
-.customer-not-found .customer-create-title {
-    display: none;
-}
-
-/*.select2-with-loader .select2-selection__rendered {
-    padding-right: 30px;
-}
-.select2-with-loader.loading .select2-selection__rendered:after {
-    content: "";
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    background: url('/img/loader-tiny.gif') 50% 50% no-repeat transparent;
-    right: 10px;
-    top: 50%;
-    transform: translate(0,-50%);
-}*/
-
-/**
  * Website notifications
  */
-.web-notifications .dropdown-menu {
-    min-width: 270px;
-    max-width: 460px;
-    min-height: 208px;
-    max-height: inherit;
-    width: 460px;
-    padding: 0;
-}
 .web-notifications-list {
     overflow-y: auto;
     list-style: none;
@@ -836,17 +672,6 @@ a h4 {
     -o-text-overflow: ellipsis!important;
     text-overflow: ellipsis!important;
     white-space: nowrap!important;
-}
-.web-notifications .dropdown-toggle.has-unread:after {
-    content: "";
-    background-color: #ff734c;
-    /*border: 2px solid #fff;*/
-    border-radius: 50%;
-    width: 10px;
-    height: 10px;
-    position: absolute;
-    right: 11px;
-    top: 12px;
 }
 
 /**
@@ -1192,18 +1017,8 @@ a h4 {
 }*/
 
 /**
- * Panel
+ * Sortable
  */
-.panel-sortable .handle {
-    cursor: move;
-    position: absolute;
-    left: 19px;
-    padding: 6px 10px;
-    color: var(--f-tertiary);
-}
-.panel.panel-sortable {
-    background-color: var(--f-surface);
-}
 .sortable-placeholder {
     border: 1px dashed var(--f-border);
     margin-top: 5px;
@@ -1220,12 +1035,8 @@ body.print {
 .print #conv-layout-customer,
 .print .footer,
 .print #conv-toolbar,
-.print .conv-top-block,
 .print .thread-type-draft,
 .print .thread-options,
-.print .thread-to-first,
-.print .thread-status,
-.print .thread-photo,
 .print .conv-star,
 .print .thread-type-lineitem,
 .print .sidebar-2col {
@@ -1236,7 +1047,6 @@ body.print {
     display: block;
     float: none;
 }
-.print .thread-header,
 .print #conv-layout-header,
 .print #conv-layout-main {
     float: none;
@@ -1245,9 +1055,6 @@ body.print {
 .print .thread {
     background-color: var(--f-surface) !important;
     box-shadow: none !important;
-}
-.print .thread .thread-person {
-    color: var(--f-text);
 }
 /* Notes above a message's text (a bounce, a forward, images not shown). */
 .thread-body > .f-alert {
@@ -1269,11 +1076,6 @@ body.print {
 /**
  * Misc
  */
-.label {
-    font-size: 0.8375rem;
-    font-weight: normal;
-    padding-top: 2px;
-}
 .banner {
     text-align: center;
     margin-top: 30px;
@@ -1308,23 +1110,6 @@ body.print {
 .section-search {
     line-height: inherit;
 }
-.help-icon {
-    color: var(--f-tertiary);
-    cursor: pointer;
-    display: inline-block;
-    font-size: 0.9375rem;
-    top: 3px;
-}
-a.help-icon:focus,
-a.help-icon:hover {
-    color: var(--f-tertiary);
-    text-decoration: none;
-}
-.popover {
-    color:var(--f-secondary);
-    font-size: 0.8375rem;
-    z-index: 1040;
-}
 .block-help {
     color: var(--f-tertiary);
     display: block;
@@ -1344,14 +1129,6 @@ a.help-icon:hover {
     font-weight: bold;
 }
 .link-black:hover {
-    text-decoration: underline;
-}
-.help-link,
-.help-link:hover,
-.help-link:focus {
-    color: var(--f-tertiary)!important;
-}
-.help-link:hover {
     text-decoration: underline;
 }
 
@@ -1386,18 +1163,6 @@ a.help-icon:hover {
     text-overflow: ellipsis!important;
     white-space: nowrap!important;
 }
-#loader-main {
-    position: fixed;
-    display: none;
-    left: 0px;
-    top: 0px;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-    background: url('../../img/loader-main.gif') 50% 50% no-repeat var(--f-surface);
-    opacity: 0.60;
-    filter: alpha(opacity=60); /* For IE8 and earlier */
-}
 a.text-danger,
 a.text-danger:hover,
 a.text-danger:focus {
@@ -1409,23 +1174,6 @@ a.selected:focus {
     color: var(--f-tertiary);
     text-decoration: none;
 }
-.break-words {
-    /* These are technically the same, but use both */
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-
-    -ms-word-break: break-all;
-    /* This is the dangerous one in WebKit, as it breaks things wherever */
-    word-break: break-all;
-    /* Instead use this non-standard one: */
-    word-break: break-word;
-
-    /* Adds a hyphen where the word breaks, if supported (No Blink) */
-    -ms-hyphens: auto;
-    -moz-hyphens: auto;
-    -webkit-hyphens: auto;
-    hyphens: auto;
-}
 .nowrap {
     white-space: nowrap;
 }
@@ -1435,10 +1183,6 @@ a.disabled:focus {
     color: #7abce4;
     text-decoration: none;
     cursor: default;
-}
-.pre-wrap {
-    word-wrap: break-word;
-    white-space: pre-wrap;
 }
 #user-photo-delete {
     line-height: 25px;
@@ -1455,12 +1199,6 @@ a.disabled:focus {
     white-space: -o-pre-wrap;    /* Opera 7 */
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
-.badge.success {
-    background-color: #53b961;
-}
-.badge.danger {
-    background-color: #d43f3a;
-}
 
 .inline-block {
     display: inline-block;
@@ -1468,18 +1206,6 @@ a.disabled:focus {
 .hover-shade:hover {
     -webkit-box-shadow:0 0 13px rgba(0,0,0,.2);
     box-shadow:0 0 13px rgba(0,0,0,.2);
-}
-.dropdown-menu > li > span {
-    display: block;
-    padding: 3px 20px;
-    clear: both;
-    font-weight: normal;
-    line-height: 1.42857143;
-    cursor: default;
-}
-.jobs-list {
-    max-height: 300px;
-    overflow-y: scroll;
 }
 .photo-sm .person-photo {
     border-radius: 50%;
@@ -1493,46 +1219,11 @@ a.disabled:focus {
     width: 100%;
     min-height: 50vh;
 }
-.tab-body {
-    margin-top: -1px;
-    padding: 10px;
-    border: 1px solid var(--f-border);
-}
 .clickable {
     cursor: pointer;
 }
 .smaller {
     font-size: 0.7em;
-}
-@-moz-keyframes spin {
-  from {
-    -moz-transform: rotate(0deg);
-  }
-  to {
-    -moz-transform: rotate(360deg);
-  }
-}
-@-webkit-keyframes spin {
-  from {
-    -webkit-transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(360deg);
-  }
-}
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-.user-admin-badge {
-    position: absolute;
-    top: 0;
-    right: 7px;
-    color: var(--f-tertiary);
 }
 .conv-tags {
     float: left;
@@ -1590,26 +1281,6 @@ a.disabled:focus {
 #send_test_log,
 #fetch_test_log {
     max-height: 200px;
-}
-@-webkit-keyframes spin {
-    0% {
-        -webkit-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-    100% {
-        -webkit-transform: rotate(359deg);
-        transform: rotate(359deg);
-    }
-}
-@keyframes spin {
-    0% {
-        -webkit-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-    100% {
-        -webkit-transform: rotate(359deg);
-        transform: rotate(359deg);
-    }
 }
 
 @media (max-width: 350px) {
@@ -2539,9 +2210,6 @@ h1.settings-toolbar__title {
     flex: 1;
     max-width: 320px;
 }
-.nostr-days {
-    max-width: 220px;
-}
 .nostr-delete-key > summary {
     list-style: none;
 }
@@ -2657,14 +2325,6 @@ h1.settings-toolbar__title {
 #app-list .flash-alert {
     margin: 0 12px 12px;
 }
-/* Confirmation dialogs (showModalConfirm and alike): Cancel, then the action. */
-.modal .text-center > .form-group {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 0;
-}
 /* Tabs that modules add as list items. */
 .page-nav .f-section-nav > li {
     display: contents;
@@ -2706,15 +2366,6 @@ h1.settings-toolbar__title {
     padding: 2px;
     border-radius: var(--f-radius-sm);
     background: var(--f-surface-secondary);
-}
-.conv-switch .conv-switch-button {
-    border-color: transparent;
-    background: transparent;
-    box-shadow: none;
-}
-.conv-switch .conv-switch-button.active {
-    background: var(--f-surface);
-    box-shadow: var(--f-control-shadow, 0 1px 2px rgb(0 0 0 / 10%));
 }
 .conv-new-form .conv-block {
     margin-top: 16px;

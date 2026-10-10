@@ -166,8 +166,6 @@
         @endif
     </div>
 
-    <div id="loader-main"></div>
-
     @include('partials/floating_flash_messages')
 
     @yield('body_bottom')

@@ -1,7 +1,3 @@
-body.locale-fa {
-    font-family: yekan;
-}
-
 .conv-next-prev {
     vertical-align: middle;
     margin-left: 0!important;
@@ -13,31 +9,8 @@ body.locale-fa {
     float: left;
 }
 
-#conv-layout-customer .customer-photo-container {
-    float: left;
-}
-
-.customer-extra {
-    position: relative;
-}
-
-.customer-social-profiles {
-    right: 92px;
-    left: auto;
-}
-
 ul.sidebar-block-list {
     padding-right: 0;
-}
-
-.thread-photo {
-    left: 0;
-}
-
-.checkbox,
-.radio {
-    padding-left: 7px;
-    padding-right: 22px;
 }
 
 .person-photo-auto {
@@ -52,11 +25,6 @@ ul.sidebar-block-list {
 .conv-new .conv-info {
     float: left;
     margin: 0px 0px 0 20px;
-}
-
-.conv-new #conv-toolbar h2 {
-    padding: 0 20px 0 20px;
-    float: right;
 }
 
 .btn-group-send {
@@ -82,63 +50,11 @@ ul.sidebar-block-list {
     padding-right: 0;
 }
 
-.table.table-conversations th.conv-customer {
-    padding-right: 0;
-}
-
-.table.table-conversations th {
-    padding: 4px 13px 1px 14px;
-}
-
-thead .conv-cb label {
-    top: -9px;
-    right: -12px;
-}
-
-.table-conversations .conv-number i {
-    float: right;
-    margin-left: 2px;
-    margin-right: 0;
-}
-
-.conv-sort {
-    position: relative;
-    left: -1px;
-    top: 1px;
-}
-
-.table-conversations .conv-fader {
-    left: 0;
-    right: inherit;
-    background: linear-gradient(to left, rgba(255, 255, 255, 0), #fff);
-}
-
 #conv-layout-customer {
     height: 0;
 }
 
 @media (max-width: 1000px) {
-    .conv-customer a,
-    .conv-date a {
-        padding: 11px 0 0 8px !important;
-        float: left;
-    }
-    .conv-subject {
-        position: absolute !important;
-        top: 24px;
-        padding-right: 2px !important;
-        padding-left: 20px !important;
-    }
-    .conv-thread-count {
-        position: absolute;
-        left: 0;
-        right: inherit;
-    }
-    .conv-thread-count a,
-    .conv-thread-count .conv-star {
-        padding-left: 6px !important;
-        padding-right: inherit;
-    }
     .conv-totals {
         text-align: right;
     }
@@ -175,21 +91,12 @@ thead .conv-cb label {
     margin: 0 66px 0 0;
 }
 
-.user-admin-badge {
-    left: 7px !important;
-    right: auto;
-}
-
 .module-card {
     margin: 0 0 18px 18px;
 }
 
 .module-card img{
     float: right;
-}
-
-.module-card .label {
-    float: left;
 }
 
 .module-wrap {
@@ -205,15 +112,6 @@ thead .conv-cb label {
     }
     .module-wrap {
         margin-right: 0;
-    }
-    .module-card h4 {
-        margin-top: 10px;
-        text-align: center;
-    }
-    .module-card .label {
-        display: block;
-        margin-top: 3px;
-        float: none;
     }
     .card, .dash-card {
         width: 100%;
