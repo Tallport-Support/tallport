@@ -381,6 +381,55 @@
       opacity: 1;
     }
   }
+  /* An image attachment shows the picture itself: the thumbnail on top, its name and size below,
+     both truncated to the picture's width. The image is decorative (alt=""): the name names the
+     link. Its actions float over the picture's top corner. */
+  .f-attachment.f-attachment--thumbnail {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    width: min-content;
+    max-width: 100%;
+    padding: 6px;
+  }
+  .f-attachment__thumbnail img {
+    display: block;
+    width: auto;
+    min-width: 6rem;
+    max-width: var(--f-attachment-thumbnail-max-width, 18rem);
+    height: var(--f-attachment-thumbnail-height, 10rem);
+    object-fit: cover;
+    border-radius: max(calc(var(--f-radius) - 6px), 2px);
+    background: var(--f-surface);
+    /* A hairline keeps a light picture's edge on a light card. */
+    outline: 1px solid var(--f-border);
+    outline-offset: -1px;
+  }
+  .f-attachment--thumbnail > .f-attachment__body {
+    width: 0;
+    min-width: 100%;
+    padding: 0 4px 2px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .f-attachment--thumbnail .f-attachment__detail {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .f-attachment__frame:has(> .f-attachment--thumbnail) {
+    position: relative;
+  }
+  .f-attachment__frame > .f-attachment--thumbnail ~ .f-attachment__actions {
+    position: absolute;
+    inset-block-start: 12px;
+    inset-inline-end: 12px;
+    padding: 0;
+    border-radius: var(--f-radius-sm);
+    background: var(--f-surface);
+    box-shadow: var(--f-control-shadow);
+  }
+
   /* In a message, attachments are compact cards that fit their name, side by side. */
   .f-message__attachments {
     display: flex;

@@ -577,7 +577,7 @@
         "element": "`a`, native link role with required href or client href binding.",
         "state": "Native URL and optional download attribute; no owned application state.",
         "keyboard": "Tab focuses; Enter follows the link.",
-        "options": "Native link attributes. Default slot: file label; leading/trailing: decorative icons; detail: file description; actions: controls such as Remove or Preview (a labelled group). With actions, `f-attachment__frame` draws the link and the actions as one card, showing the actions on hover or focus, and always on touch screens. In a Message's `attachments` slot, attachments are compact cards side by side."
+        "options": "Native link attributes. Default slot: file label; leading/trailing: decorative icons; detail: file description; actions: controls such as Remove or Preview (a labelled group). With actions, `f-attachment__frame` draws the link and the actions as one card, showing the actions on hover or focus, and always on touch screens. `thumbnail`: an image file shows as itself, in place of the leading and trailing slots: an `img` with `alt=\"\"` (the name names the link), 160px tall (`--f-attachment-thumbnail-height`) and up to 18rem wide, the name and detail truncated to its width below, and the actions over its top corner (`f-attachment--thumbnail`, `f-attachment__thumbnail`). In a Message's `attachments` slot, attachments are compact cards side by side."
       }
     }
   },

@@ -114,11 +114,11 @@
 		});
 	};
 
-	// A thumbnail that can't be shown: the plain row instead.
+	// A thumbnail that can't be shown: a paperclip in its place.
 	var thumbnailFailed = function (img) {
 		var item = img.closest('.conv-attachment--thumbnail');
 		if (item) {
-			item.classList.remove('conv-attachment--thumbnail');
+			item.classList.add('conv-attachment--failed');
 		}
 	};
 

@@ -215,6 +215,17 @@ Mail and Chat use a native `a.f-attachment`. The caller supplies the file URL an
 </x-fruit::attachment>
 ```
 
+An image shows as itself: put an `img` in the `thumbnail` slot instead of a leading icon. The card stacks the picture (160px tall, `--f-attachment-thumbnail-height`, up to 18rem wide) above its name and size, both truncated to the picture's width, and an `actions` slot floats over the picture's top corner. Give the image `alt=""`: the name already names the link, so a description would be read twice. Give it `width` and `height` (and `loading="lazy"`) so cards keep their size while images load. In HTML, add `f-attachment--thumbnail` to the link and wrap the image in `span.f-attachment__thumbnail`.
+
+```blade
+<x-fruit::attachment :href="$attachment->url" download>
+    {{ $attachment->name }}
+    <x-slot:detail>{{ $attachment->size }}</x-slot:detail>
+    <x-slot:thumbnail><img src="{{ $attachment->thumbnailUrl }}" alt="" width="256" height="160" loading="lazy"></x-slot:thumbnail>
+    <x-slot:actions><x-fruit::button variant="ghost" class="f-button--icon" aria-label="Remove {{ $attachment->name }}">…</x-fruit::button></x-slot:actions>
+</x-fruit::attachment>
+```
+
 HTML uses `f-attachment__body`, `f-attachment__detail`, and optional `f-attachment__leading` / `f-attachment__trailing` children. `--f-attachment-gap` and `--f-attachment-padding` adjust spacing. File actions remain native link actions.
 
 All four examples use `f-empty-state` for empty results. It owns no filter state and does not automatically announce itself or move focus. Add appropriate native heading structure and independent recovery actions:

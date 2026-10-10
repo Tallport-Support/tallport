@@ -177,7 +177,7 @@ class AttachmentImagesTest extends FeatureTestCase
         $html = $this->actingAs($this->agent)->followingRedirects()->get('/conversation/'.$thread->conversation_id)->assertOk()->getContent();
 
         $this->assertSame(1, substr_count($html, 'conv-attachment--thumbnail'));
-        $this->assertMatchesRegularExpression('#<img\s+src="'.preg_quote(e(AttachmentImages::thumbnailUrl($attachments['screenshot.png'])), '#').'"\s+alt="screenshot.png"#', $html);
+        $this->assertMatchesRegularExpression('#<img\s+src="'.preg_quote(e(AttachmentImages::thumbnailUrl($attachments['screenshot.png'])), '#').'"\s+alt=""#', $html);
         $this->assertStringNotContainsString(e(AttachmentImages::thumbnailUrl($attachments['invoice.pdf'])), $html);
         $this->assertStringContainsString('invoice.pdf', $html);
     }
@@ -244,7 +244,7 @@ class AttachmentImagesTest extends FeatureTestCase
         $html = $this->actingAs($this->agent)->followingRedirects()->get('/conversation/'.$thread->conversation_id)->assertOk()->getContent();
         $this->assertStringContainsString('data-heic', $html);
         $this->assertStringNotContainsString('data-converted-url', $html);
-        $this->assertMatchesRegularExpression('#<img\s+alt="IMG_0001.heic"#', $html);
+        $this->assertMatchesRegularExpression('#f-attachment__thumbnail[^>]*>.*?<img\s+alt=""#s', $html);
     }
 
     public function testRealHeicConversion()

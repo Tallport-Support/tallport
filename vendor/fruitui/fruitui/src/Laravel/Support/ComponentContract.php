@@ -469,6 +469,15 @@ final class ComponentContract
         return $unread ? $label : null;
     }
 
+    /** A thumbnail shows the file itself, so it takes the place of the leading icon and trailing cue. */
+    public static function attachment(bool $thumbnail, bool $leading, bool $trailing, ComponentAttributeBag $attributes): void
+    {
+        self::validate('attachment', $attributes);
+        if ($thumbnail && ($leading || $trailing)) {
+            throw new InvalidArgumentException('FruitUI attachment thumbnail replaces the leading and trailing slots; put commands in the actions slot.');
+        }
+    }
+
     /** An accent picker's checked accent must be one of FruitUI's named accents. */
     public static function accentPicker(mixed $value, ComponentAttributeBag $attributes): void
     {

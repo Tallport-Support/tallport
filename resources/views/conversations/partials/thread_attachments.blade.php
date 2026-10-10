@@ -8,8 +8,9 @@
     @endphp
     <span @class(['conv-attachment', 'conv-attachment--thumbnail' => $attachment_thumbnail]) data-attachment-id="{{ $attachment->id }}" data-mime="{{ $attachment->mime_type }}" data-file-name="{{ $attachment->file_name }}" @if (App\Http\Controllers\AttachmentsController::isEmail($attachment)) data-email-url="{{ route('attachments.email', ['id' => $attachment->id]) }}" @endif @if ($attachment_heic) data-heic @endif @if ($attachment_converted_url) data-converted-url="{{ $attachment_converted_url }}" @endif>
         <x-fruit::attachment :href="$attachment->url()" class="attachment-link" target="_blank">
+            {{-- The name names the link: the picture's alt stays empty. One that can't be shown leaves a paperclip in its place. --}}
             @if ($attachment_thumbnail)
-                <x-slot:leading class="attachment-thumbnail"><x-icon.paperclip class="f-icon attachment-thumbnail__icon" aria-hidden="true" /><img @if (!$attachment_heic || $attachment_converted_url) src="{{ App\Misc\AttachmentImages::thumbnailUrl($attachment) }}" @endif alt="{{ $attachment->file_name }}" loading="lazy" decoding="async"></x-slot:leading>
+                <x-slot:thumbnail class="attachment-thumbnail"><x-icon.paperclip class="f-icon attachment-thumbnail__icon" aria-hidden="true" /><img @if (!$attachment_heic || $attachment_converted_url) src="{{ App\Misc\AttachmentImages::thumbnailUrl($attachment) }}" @endif alt="" width="256" height="160" loading="lazy" decoding="async"></x-slot:thumbnail>
             @else
                 <x-slot:leading><x-icon.paperclip class="f-icon" aria-hidden="true" /></x-slot:leading>
             @endif
