@@ -467,6 +467,10 @@ class ConsoleCommandsTest extends FeatureTestCase
 
         $this->assertStringContainsString('PHP Version', $output);
         $this->assertStringContainsString('PHP Extensions', $output);
+        // The PDO driver of the database in use, not all of them.
+        $this->assertSame('pdo_'.str_replace('mariadb', 'mysql', \DB::getDriverName()), \Helper::pdoExtension());
+        $this->assertStringContainsString(\Helper::pdoExtension().'.', $output);
+        $this->assertStringNotContainsString('pdo_mysql / pdo_pgsql', $output);
     }
 
     /**

@@ -31,7 +31,8 @@ class RequirementsChecker
                     {
                         $results['requirements'][$type][$requirement] = true;
 
-                        if (!extension_loaded($requirement))
+                        // "a / b": one of them.
+                        if (!array_filter(array_map('trim', explode('/', $requirement)), 'extension_loaded'))
                         {
                             $results['requirements'][$type][$requirement] = false;
 

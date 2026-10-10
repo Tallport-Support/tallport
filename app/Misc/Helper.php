@@ -2923,6 +2923,10 @@ class Helper
         $required_extensions = array_merge($required_extensions, array_keys(\Config::get('installer.optional', [])));
 
         foreach ($required_extensions as $extension_name) {
+            if (str_starts_with($extension_name, 'pdo_') && str_contains($extension_name, '/')) {
+                // The PDO driver of the database Tallport uses.
+                $extension_name = self::pdoExtension() ?? $extension_name;
+            }
             $alternatives = explode('/', $extension_name);
             if ($alternatives) {
                 foreach ($alternatives as $alternative) {
@@ -2945,6 +2949,16 @@ class Helper
         $php_extensions['pcntl (console PHP)'] = $pcntl_enabled;
 
         return $php_extensions;
+    }
+
+    /**
+     * The PDO extension of the configured database (pdo_mysql, pdo_pgsql or pdo_sqlite).
+     */
+    public static function pdoExtension()
+    {
+        $driver = config('database.connections.'.config('database.default').'.driver');
+
+        return ['mysql' => 'pdo_mysql', 'mariadb' => 'pdo_mysql', 'pgsql' => 'pdo_pgsql', 'sqlite' => 'pdo_sqlite'][$driver] ?? null;
     }
 
     public static function checkRequiredFunctions()

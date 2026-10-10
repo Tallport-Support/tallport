@@ -55,6 +55,33 @@ class SearchQueryTest extends TestCase
         $this->assertFalse(SearchQuery::isIndexable('服务'), 'No spaces between words.');
     }
 
+    /**
+     * PostgreSQL's tsquery and SQLite's FTS5 syntax, with the same meaning as MariaDB's.
+     */
+    public function testFullTextSyntaxOfOtherDatabases()
+    {
+        $term = function ($text, $phrase = false, $exclude = false) {
+            return ['text' => $text, 'phrase' => $phrase, 'exclude' => $exclude, 'field' => null];
+        };
+        $this->assertSame('refund:*', SearchQuery::tsqueryTerm($term('Refund')));
+        $this->assertSame('refund:*A', SearchQuery::tsqueryTerm($term('refund'), 'A'));
+        $this->assertSame('!(refund)', SearchQuery::tsqueryTerm($term('refund', false, true)));
+        $this->assertSame('(winter:B <-> jacket:B)', SearchQuery::tsqueryTerm($term('winter jacket', true), 'B'));
+        $this->assertSame('(robin <-> buyer <-> example)', SearchQuery::tsqueryTerm($term('robin@buyer.example')));
+        $this->assertSame('(don <-> t)', SearchQuery::tsqueryTerm($term('don\'t"&|!:*(')), 'Operators typed are not passed on.');
+        $this->assertSame(['foo', 'bar', '0'], SearchQuery::words('Foo_bar 0'));
+        if (class_exists(\Normalizer::class)) {
+            $this->assertSame(['creme', 'brulee'], SearchQuery::words('Crème Brûlée'), 'Without accents.');
+        }
+
+        $this->assertSame('"refund"*', SearchQuery::fts5Term($term('Refund')));
+        $this->assertSame('subject : "winter jacket"', SearchQuery::fts5Term($term('winter jacket', true), 'subject'));
+        $this->assertSame('("refund"* AND "don t") NOT "invoice" NOT "robin buyer"', SearchQuery::fts5Query([
+            $term('refund'), $term('invoice', false, true), $term('don\'t"*'), $term('robin@buyer', false, true),
+        ]));
+        $this->assertSame('(people : "robin"*)', SearchQuery::fts5Query([$term('robin')], 'people'));
+    }
+
     public function testSnippet()
     {
         $terms = SearchQuery::parse('jacket "winter coat"')->terms;

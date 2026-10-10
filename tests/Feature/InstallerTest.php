@@ -56,8 +56,8 @@ class InstallerTest extends FeatureTestCase
     {
         return array_merge([
             'app_url' => 'http://help.example.org', 'app_force_https' => 'true', 'app_timezone' => 'Europe/Amsterdam', 'app_locale' => 'nl',
-            'database_connection' => 'sqlite', 'database_hostname' => 'localhost', 'database_port' => '3306', 'database_name' => ':memory:',
-            'database_username' => 'tallport', 'database_password' => 'pa ss#word',
+            'database_connection' => 'sqlite', 'database_hostname' => '', 'database_port' => '', 'database_name' => $this->dir.'/help desk.sqlite',
+            'database_username' => '', 'database_password' => '',
             'admin_email' => 'owner@example.org', 'admin_first_name' => 'Olivia', 'admin_last_name' => 'Owner', 'admin_password' => 'correct horse',
         ], $data);
     }
@@ -65,12 +65,13 @@ class InstallerTest extends FeatureTestCase
     public function testPagesBeforeTheDatabase()
     {
         $this->get('/install')->assertOk()->assertSee('/install/requirements');
-        $this->get('/install/requirements')->assertOk()->assertSee('OpenSSL')->assertSee('PCRE JIT')->assertSee('ImageMagick (HEIC)')->assertSee(PHP_VERSION);
+        $this->get('/install/requirements')->assertOk()->assertSee('OpenSSL')->assertSee('pdo_mysql / pdo_pgsql / pdo_sqlite')->assertSee('PCRE JIT')->assertSee('ImageMagick (HEIC)')->assertSee(PHP_VERSION);
         $this->get('/install/environment')->assertOk();
 
         // The first look creates an empty .env.
         $this->assertFileDoesNotExist($this->dir.'/.env');
-        $this->get('/install/environment/wizard')->assertOk()->assertSee('app_url');
+        $this->get('/install/environment/wizard')->assertOk()->assertSee('app_url')
+            ->assertSee('<option value="sqlite"', false)->assertSee('data-sqlite-path="'.$this->dir.'/storage/app/database.sqlite"', false);
         $this->assertSame('', file_get_contents($this->dir.'/.env'));
 
         $this->post('/install/environment/saveClassic', ['envConfig' => "APP_URL=https://help.example.org\n"])
@@ -86,7 +87,7 @@ class InstallerTest extends FeatureTestCase
         $this->assertSame('', file_get_contents($this->dir.'/.env'));
 
         // A database that doesn't answer.
-        $this->post('/install/environment/saveWizard', $this->wizard(['database_connection' => 'mysql', 'database_hostname' => '127.0.0.1', 'database_port' => '1', 'database_name' => 'tallport']))
+        $this->post('/install/environment/saveWizard', $this->wizard(['database_connection' => 'mysql', 'database_hostname' => '127.0.0.1', 'database_port' => '1', 'database_name' => 'tallport', 'database_username' => 'tallport', 'database_password' => 'secret']))
             ->assertOk()->assertSee('Could not establish database connection')->assertSee('Database Host: Please check entered value.');
         $this->assertSame('', file_get_contents($this->dir.'/.env'));
 
@@ -98,13 +99,50 @@ class InstallerTest extends FeatureTestCase
         // The timezone and language are saved in the database at the last step.
         $this->assertStringNotContainsString('APP_TIMEZONE', $env);
         $this->assertStringNotContainsString('APP_LOCALE', $env);
-        $this->assertStringContainsString("DB_CONNECTION=sqlite\nDB_HOST=localhost\nDB_PORT=3306\nDB_DATABASE=:memory:\nDB_USERNAME=tallport\nDB_PASSWORD=\"pa ss#word\"\n", $env);
+        // SQLite: only the database file, created.
+        $this->assertStringContainsString("DB_CONNECTION=sqlite\nDB_DATABASE=\"".$this->dir."/help desk.sqlite\"\n\n", $env);
+        $this->assertFileExists($this->dir.'/help desk.sqlite');
         $this->assertStringContainsString('APP_KEY='.config('app.key')."\n", $env);
         $this->assertStringNotContainsString('DB_CHARSET', $env);
         $this->assertCommandCalled('tallport:clear-cache');
         // What was entered is kept for the last step.
         $this->assertSame('owner@example.org', session('_old_input.admin_email'));
         $this->assertSame('Europe/Amsterdam', session('_old_input.app_timezone'));
+    }
+
+    /**
+     * SQLite: a full path, in a writable folder that updates don't replace.
+     */
+    public function testSqliteFileIsChecked()
+    {
+        $error = function ($path) {
+            return $this->post('/install/environment/saveWizard', $this->wizard(['database_name' => $path]))
+                ->assertOk()->assertSee('Database Name: Please check entered value.')->assertDontSee('Database Host: Please check entered value.');
+        };
+
+        $error('tallport.sqlite')->assertSee('Enter the full path of the database file.');
+        $error(base_path('database/tallport.sqlite'))->assertSee('Updates replace Tallport', false);
+        $this->assertFileDoesNotExist(base_path('database/tallport.sqlite'));
+        $error($this->dir.'/missing/tallport.sqlite')->assertSee('doesn&#039;t exist or isn&#039;t writable', false);
+        $this->assertSame('', file_get_contents($this->dir.'/.env'));
+
+        // A server's settings are needed for the others.
+        $this->post('/install/environment/saveWizard', $this->wizard(['database_connection' => 'pgsql']))
+            ->assertOk()->assertSee('The database hostname field is required unless database connection is in sqlite.');
+    }
+
+    /**
+     * PostgreSQL (and MariaDB / MySQL): the server's settings.
+     */
+    public function testServerSettingsAreWritten()
+    {
+        $request = \Illuminate\Http\Request::create('/', 'POST', $this->wizard([
+            'database_connection' => 'pgsql', 'database_hostname' => 'db.example.org', 'database_port' => '5432', 'database_name' => 'tallport',
+            'database_username' => 'tallport', 'database_password' => 'pa ss#word',
+        ]));
+        $this->app->make(EnvironmentManager::class)->saveFileWizard($request);
+
+        $this->assertStringContainsString("DB_CONNECTION=pgsql\nDB_HOST=db.example.org\nDB_PORT=5432\nDB_DATABASE=tallport\nDB_USERNAME=tallport\nDB_PASSWORD=\"pa ss#word\"\n", file_get_contents($this->dir.'/.env'));
     }
 
     public function testDatabaseStepMigrates()

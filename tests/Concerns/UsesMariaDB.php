@@ -5,7 +5,7 @@ namespace Tests\Concerns;
 use Illuminate\Contracts\Console\Kernel;
 
 /**
- * For tests of what only MariaDB does (its full-text index, production's exact schema): the
+ * For tests on MariaDB, production's database (its full-text search, its exact schema): the
  * class runs on the testing_mariadb connection instead of in-memory SQLite, and is skipped
  * when that database isn't there (see test.sh for creating it).
  */

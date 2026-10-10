@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Str;
 
-// The test suite's database (DB_TEST_DRIVER): in-memory SQLite by default, or MariaDB or
-// PostgreSQL to run it on those. Tests of what only MariaDB does (Tests\Concerns\UsesMariaDB)
+// The test suite's database (DB_TEST_DRIVER): in-memory SQLite by default, or mysql (MariaDB,
+// or MySQL) or pgsql (PostgreSQL) to run it on those. Tests of what only MariaDB does (Tests\Concerns\UsesMariaDB)
 // always use testing_mariadb.
 $testing = [
     'sqlite' => [
@@ -19,7 +19,7 @@ $testing = [
         'database'       => env('DB_TEST_DATABASE', 'freescout-test'),
         'username'       => env('DB_TEST_USERNAME', 'freescout-test'),
         'password'       => env('DB_TEST_PASSWORD', 'freescout-test'),
-        //'port'           => env('DB_TEST_PORT', '3306'),
+        'port'           => env('DB_TEST_PORT', '3306'),
         'charset'        => 'utf8mb4',
         'collation'      => 'utf8mb4_unicode_ci',
         'prefix'         => env('DB_TABLE_PREFIX', ''),
@@ -75,9 +75,13 @@ return [
     'connections' => [
 
         'sqlite' => [
-            'driver'   => 'sqlite',
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
-            'prefix'   => env('DB_TABLE_PREFIX', ''),
+            'driver'       => 'sqlite',
+            // Not in database/: updates replace that folder.
+            'database'     => env('DB_DATABASE', storage_path('app/database.sqlite')),
+            'prefix'       => env('DB_TABLE_PREFIX', ''),
+            // The web server and background commands write at the same time.
+            'busy_timeout' => 10000,
+            'journal_mode' => 'wal',
         ],
 
         'mysql' => [
@@ -103,7 +107,8 @@ return [
         ],
 
         'testing'         => $testing[env('DB_TEST_DRIVER', 'sqlite')],
-        'testing_mariadb' => $testing['mysql'],
+        // MariaDB also when the suite runs on MySQL (DB_TEST_PORT).
+        'testing_mariadb' => ['port' => env('DB_TEST_MARIADB_PORT', '3306')] + $testing['mysql'],
         'testing_pgsql'   => $testing['pgsql'],
 
         'pgsql' => [

@@ -15,9 +15,14 @@ jobs:
         # Test PHP 8.5 with the imap extension (PECL); MariaDB is the production database.
         php: ['8.5']
         mariadb: ['11.8']
-        # The suite on in-memory SQLite (its default), MariaDB and PostgreSQL; the
-        # MariaDB-only tests (Tests\Concerns\UsesMariaDB) run in each.
+        # The suite on in-memory SQLite (its default), MariaDB, MySQL and PostgreSQL;
+        # the MariaDB-only tests (Tests\Concerns\UsesMariaDB) run in each, on MariaDB.
         db: ['sqlite', 'mysql', 'pgsql']
+        include:
+          # MySQL 8.4 LTS: the mysql driver (DB_TEST_DRIVER=mysql) on MySQL's port.
+          - php: '8.5'
+            mariadb: '11.8'
+            db: 'mysql-8.4'
 
     services:
       mariadb:
@@ -31,6 +36,20 @@ jobs:
           - 3306:3306
         options: >-
           --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: freescout-test
+          MYSQL_USER: freescout-test
+          MYSQL_PASSWORD: freescout-test
+        ports:
+          - 3307:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
           --health-interval=5s
           --health-timeout=5s
           --health-retries=20
@@ -77,7 +96,8 @@ jobs:
       - name: Run tests
         env:
           DB_TEST_HOST: 127.0.0.1
-          DB_TEST_DRIVER: ${{ matrix.db }}
+          DB_TEST_DRIVER: ${{ matrix.db == 'mysql-8.4' && 'mysql' || matrix.db }}
+          DB_TEST_PORT: ${{ matrix.db == 'mysql-8.4' && '3307' || '3306' }}
         run: ./test.sh
 
       # Snapshots depend on the environment (e.g. libxml2): on failure, make

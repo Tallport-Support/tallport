@@ -176,7 +176,7 @@ class DatabaseSeeder extends Seeder
                     ->where('state', Thread::STATE_PUBLISHED);
             }, '>=', 20)
             ->whereHas('threads', function ($query) {
-                $query->where('state', Thread::STATE_PUBLISHED)->whereRaw((\DB::getDriverName() == 'mysql' ? 'CHAR_LENGTH' : 'LENGTH').'(body) >= 1000');
+                $query->where('state', Thread::STATE_PUBLISHED)->whereRaw((\DB::getDriverName() != 'sqlite' ? 'CHAR_LENGTH' : 'LENGTH').'(body) >= 1000');
             })->count();
         $folder = $mailbox->folders()->where('type', Folder::TYPE_ASSIGNED)->first();
         for ($i = $long_count; $i < self::LONG_SAMPLES; $i++) {

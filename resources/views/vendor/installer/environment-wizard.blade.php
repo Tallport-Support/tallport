@@ -65,15 +65,20 @@
                 </div>
             </div>
             <div class="tab" id="tab2content">
+                @php
+                    $database_connection = old('database_connection', env('DB_CONNECTION', 'mysql'));
+                    // SQLite: outside the folders updates replace.
+                    $sqlite_path = storage_path('app/database.sqlite');
+                @endphp
 
                 <div class="form-group {{ $errors->has('database_connection') ? ' has-error ' : '' }}">
                     <label for="database_connection">
                         {{ trans('installer_messages.environment.wizard.form.db_connection_label') }}
                     </label>
-                    <select name="database_connection" id="database_connection">
-                        <option value="mysql" @if (old('database_connection', env('DB_CONNECTION', 'mysql')) == 'mysql') selected @endif>MySQL</option>
-                        <option value="pgsql" @if (old('database_connection', env('DB_CONNECTION')) == 'pgsql') selected @endif>PostgreSQL</option>
-                        {{--<option value="sqlite" @if (old('database_connection', env('DB_CONNECTION')) == 'sqlite') selected @endif>SQLite</option>--}}
+                    <select name="database_connection" id="database_connection" onchange="changeDatabase(this.value)" data-sqlite-path="{{ $sqlite_path }}">
+                        <option value="mysql" @if ($database_connection == 'mysql') selected @endif>MariaDB / MySQL</option>
+                        <option value="pgsql" @if ($database_connection == 'pgsql') selected @endif>PostgreSQL</option>
+                        <option value="sqlite" @if ($database_connection == 'sqlite') selected @endif>SQLite</option>
                         {{--<option value="sqlsrv" @if (old('database_connection', env('DB_CONNECTION')) == 'sqlsrv') selected @endif>SQL Server</option>--}}
                     </select>
                     @if ($errors->has('database_connection'))
@@ -84,6 +89,7 @@
                     @endif
                 </div>
 
+                <div id="database_server" @if ($database_connection == 'sqlite') style="display: none" @endif>
                 <div class="form-group {{ $errors->has('database_hostname') ? ' has-error ' : '' }}">
                     <label for="database_hostname">
                         {{ trans('installer_messages.environment.wizard.form.db_host_label') }}
@@ -101,7 +107,7 @@
                     <label for="database_port">
                         Port
                     </label>
-                    <input type="number" name="database_port" id="database_port" value="{{ old('database_port', env('DB_PORT', '3306')) }}" />
+                    <input type="number" name="database_port" id="database_port" value="{{ old('database_port', env('DB_PORT', $database_connection == 'pgsql' ? '5432' : '3306')) }}" />
                     @if ($errors->has('database_port'))
                         <span class="error-block">
                             <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -114,7 +120,8 @@
                     <label for="database_name">
                         {{ trans('installer_messages.environment.wizard.form.db_name_label') }}
                     </label>
-                    <input type="text" name="database_name" id="database_name" value="{{ old('database_name', env('DB_DATABASE')) }}" />
+                    <input type="text" name="database_name" id="database_name" value="{{ old('database_name', env('DB_DATABASE', $database_connection == 'sqlite' ? $sqlite_path : '')) }}" />
+                    <span id="database_file_help" style="color: #AAAAAA; position: relative; top: -5px; @if ($database_connection != 'sqlite') display: none; @endif">(SQLite: the full path of the database file, created if it isn't there. Keep it in storage/app or outside Tallport's folder: updates replace the others.)</span>
                     @if ($errors->has('database_name'))
                         <span class="error-block">
                             <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -148,6 +155,7 @@
                             {{ $errors->first('database_password') }}
                         </span>
                     @endif
+                </div>
                 </div>
 
                 <div class="buttons">
@@ -274,6 +282,22 @@
         }
         function showDatabaseSettings() {
             document.getElementById('tab2').checked = true;
+        }
+        // SQLite needs only a file; MariaDB / MySQL and PostgreSQL a server.
+        function changeDatabase(driver) {
+            var sqlite_path = document.getElementById('database_connection').getAttribute('data-sqlite-path');
+            var name = document.getElementById('database_name');
+            var port = document.getElementById('database_port');
+            document.getElementById('database_server').style.display = driver == 'sqlite' ? 'none' : '';
+            document.getElementById('database_file_help').style.display = driver == 'sqlite' ? '' : 'none';
+            if (driver == 'sqlite' && name.value == '') {
+                name.value = sqlite_path;
+            } else if (driver != 'sqlite' && name.value == sqlite_path) {
+                name.value = '';
+            }
+            if (port.value == '3306' || port.value == '5432') {
+                port.value = driver == 'pgsql' ? '5432' : '3306';
+            }
         }
         function showApplicationSettings() {
             document.getElementById('tab3').checked = true;

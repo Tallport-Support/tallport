@@ -12,14 +12,13 @@ use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
- * Conversation search on the full-text index. MariaDB's full-text index
- * only sees committed rows, so these tests don't run in a transaction:
- * they empty the tables afterwards.
+ * Conversation search on the full-text index, on the suite's database
+ * (SearchMariaDBTest: on MariaDB too). MariaDB's and MySQL's full-text
+ * indexes only see committed rows, so there these tests don't run in a
+ * transaction: they empty the tables afterwards.
  */
 class SearchTest extends FeatureTestCase
 {
-    use \Tests\Concerns\UsesMariaDB;
-
     protected $agent;
     protected $mailbox;
 
@@ -38,6 +37,12 @@ class SearchTest extends FeatureTestCase
      */
     public function beginDatabaseTransaction()
     {
+        if (Indexer::driver() != 'mysql') {
+            // PostgreSQL's and SQLite's indexes see the transaction's rows.
+            parent::beginDatabaseTransaction();
+
+            return;
+        }
         $this->beforeApplicationDestroyed(function () {
             \DB::statement('SET FOREIGN_KEY_CHECKS = 0');
             foreach (\DB::select('SHOW TABLES') as $table) {
@@ -110,6 +115,37 @@ class SearchTest extends FeatureTestCase
         $this->assertSame([], $this->search('od'), 'Short words from the start of a word.');
         $this->assertSame([$chinese->id], $this->search('服务'), 'Text without spaces between words.');
         $this->assertSame([$chinese->id], $this->search('vpn 费用'));
+    }
+
+    public function testAccentsDontMatter()
+    {
+        $dessert = $this->conversation('Crème brûlée', 'Un café, s\'il vous plaît.');
+        $this->ready();
+
+        $this->assertSame([$dessert->id], $this->search('creme cafe'));
+        $this->assertSame([$dessert->id], $this->search('BRÛLÉE'));
+    }
+
+    /**
+     * PostgreSQL and SQLite after the update that brought their index:
+     * existing rows are indexed again, and searches wait for that.
+     */
+    public function testIndexAddedToExistingRows()
+    {
+        $conversation = $this->conversation('Broken zipper', 'My jacket broke.');
+        $this->ready();
+
+        if (!class_exists(\SearchIndexOnPostgresqlAndSqlite::class)) {
+            require database_path('migrations/2026_11_10_010101_search_index_on_postgresql_and_sqlite.php');
+        }
+        $migration = new \SearchIndexOnPostgresqlAndSqlite();
+        $migration->down();
+        $migration->up();
+        \Option::$cache = [];
+
+        $this->assertSame(Indexer::driver() == 'mysql', ConversationSearch::available());
+        $this->ready();
+        $this->assertSame([$conversation->id], $this->search('jacket'));
     }
 
     public function testBestMatchesFirst()
@@ -265,7 +301,8 @@ class SearchTest extends FeatureTestCase
 
         $admin = $this->createAdmin();
         Livewire::withoutLazyLoading();
-        Livewire::actingAs($admin)->test(SystemStatus::class)->assertSee('Search Index');
+        $html = Livewire::actingAs($admin)->test(SystemStatus::class)->assertSee('Search Index')->html();
+        $this->assertMatchesRegularExpression('#(MariaDB|MySQL|PostgreSQL|SQLite) \d+\.\d+#', $html, 'The database and its version.');
     }
 
     public function testCustomerSearchMatchesEveryWord()

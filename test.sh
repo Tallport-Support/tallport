@@ -6,11 +6,13 @@
 #
 # Test tools are installed into dev/vendor (see dev/composer.json). Tests run
 # on an in-memory SQLite database (the "testing" connection, config/database.php),
-# built at the start of each run. The few that need MariaDB (Tests\Concerns\UsesMariaDB:
-# the full-text search, production's schema) use the "testing_mariadb" connection and
-# are skipped without it: by default database, user and password "freescout-test" on
-# 127.0.0.1; override with DB_TEST_HOST, DB_TEST_DATABASE, DB_TEST_USERNAME and
-# DB_TEST_PASSWORD. To create that database (as a MySQL/MariaDB admin):
+# built at the start of each run; DB_TEST_DRIVER=mysql or pgsql runs it on MariaDB or
+# MySQL (DB_TEST_PORT) or PostgreSQL instead. The few that need MariaDB
+# (Tests\Concerns\UsesMariaDB: the search on MariaDB, production's schema) use the
+# "testing_mariadb" connection and are skipped without it: by default database, user and
+# password "freescout-test" on 127.0.0.1; override with DB_TEST_HOST, DB_TEST_MARIADB_PORT,
+# DB_TEST_DATABASE, DB_TEST_USERNAME and DB_TEST_PASSWORD. To create that database (as a
+# MySQL/MariaDB admin):
 #
 #   CREATE DATABASE `freescout-test` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 #   CREATE USER 'freescout-test'@'localhost' IDENTIFIED BY 'freescout-test';

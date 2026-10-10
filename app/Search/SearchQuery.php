@@ -152,4 +152,66 @@ class SearchQuery
 
         return $sign.'"'.implode(' ', $tokens).'"';
     }
+
+    /**
+     * A text's words as the PostgreSQL index keeps them: in lower case,
+     * without accents (with the intl extension), split at anything but
+     * letters and digits.
+     */
+    public static function words($text)
+    {
+        $text = mb_strtolower((string) $text);
+        if (class_exists(\Normalizer::class) && ($decomposed = \Normalizer::normalize($text, \Normalizer::FORM_D)) !== false) {
+            $text = preg_replace('/\p{Mn}+/u', '', $decomposed);
+        }
+
+        return array_values(array_filter(preg_split('/[^\p{L}\p{N}]+/u', $text) ?: [], 'strlen'));
+    }
+
+    /**
+     * A term in PostgreSQL's tsquery syntax, in the column with $weight
+     * (A subject, B people, C recipients; any when empty), as booleanTerm().
+     */
+    public static function tsqueryTerm($term, $weight = '')
+    {
+        $words = self::words($term['text']);
+        if (count($words) == 1 && !$term['phrase'] && !$term['exclude']) {
+            return $words[0].':*'.$weight;
+        }
+        $words = array_map(function ($word) use ($weight) {
+            return $word.($weight ? ':'.$weight : '');
+        }, $words);
+
+        return ($term['exclude'] ? '!' : '').'('.implode(' <-> ', $words).')';
+    }
+
+    /**
+     * A term in SQLite's FTS5 syntax, in $column (any when empty), as
+     * booleanTerm(); fts5Query() adds AND and NOT.
+     */
+    public static function fts5Term($term, $column = '')
+    {
+        $tokens = self::tokens($term['text']);
+        $query = ($column ? $column.' : ' : '').'"'.implode(' ', $tokens).'"';
+
+        return $query.(count($tokens) == 1 && !$term['phrase'] && !$term['exclude'] ? '*' : '');
+    }
+
+    /**
+     * Terms in SQLite's FTS5 syntax: all of them, none of the excluded ones.
+     */
+    public static function fts5Query($terms, $column = '')
+    {
+        $positive = [];
+        $negative = '';
+        foreach ($terms as $term) {
+            if ($term['exclude']) {
+                $negative .= ' NOT '.self::fts5Term($term, $column);
+            } else {
+                $positive[] = self::fts5Term($term, $column);
+            }
+        }
+
+        return '('.implode(' AND ', $positive).')'.$negative;
+    }
 }

@@ -137,11 +137,15 @@ class EnvironmentController extends Controller
             }
         } catch (\Exception $e) {
             $validator->getMessageBag()->add('general', 'Could not establish database connection: '.$e->getMessage());
-            $validator->getMessageBag()->add('database_hostname', 'Database Host: Please check entered value.');
-            $validator->getMessageBag()->add('database_port', 'Database Port: Please check entered value.');
+            if ($request->database_connection != 'sqlite') {
+                $validator->getMessageBag()->add('database_hostname', 'Database Host: Please check entered value.');
+                $validator->getMessageBag()->add('database_port', 'Database Port: Please check entered value.');
+            }
             $validator->getMessageBag()->add('database_name', 'Database Name: Please check entered value.');
-            $validator->getMessageBag()->add('database_username', 'Database User Name: Please check entered value.');
-            $validator->getMessageBag()->add('database_password', 'Database Password: Please check entered value.');
+            if ($request->database_connection != 'sqlite') {
+                $validator->getMessageBag()->add('database_username', 'Database User Name: Please check entered value.');
+                $validator->getMessageBag()->add('database_password', 'Database Password: Please check entered value.');
+            }
             $errors = $validator->errors();
 
             // We have to write request to session again, as saveFileWizard() clears the cache and session
@@ -179,8 +183,40 @@ class EnvironmentController extends Controller
             // 'prefix'    => '',
         ]);
 
+        if ($driver == 'sqlite') {
+            // Only the file: with a host Laravel looks for a server.
+            $this->createSqliteFile($request->database_name);
+            $params = array_diff_key($params, array_flip(['host', 'port', 'username', 'password']));
+        }
+
         $params_hash = md5(json_encode($params));
         \Config::set('database.connections.install'.$params_hash, $params);
         \DB::connection('install'.$params_hash)->getPdo();
+    }
+
+    /**
+     * SQLite: the database file, created when it isn't there. Its folder must
+     * be writable too (SQLite writes its journal next to it), and not one
+     * that updates replace.
+     */
+    public function createSqliteFile($path)
+    {
+        $path = (string) $path;
+        if (!preg_match('#^(/|[a-z]:[\\\\/])#i', $path)) {
+            throw new \Exception('Enter the full path of the database file.');
+        }
+        $folder = dirname($path);
+        if (str_starts_with($path, base_path().DIRECTORY_SEPARATOR) && !str_starts_with($path, storage_path('app').DIRECTORY_SEPARATOR)) {
+            throw new \Exception('Updates replace Tallport\'s folders: keep the database file in '.storage_path('app').' or outside '.base_path().'.');
+        }
+        if (!is_dir($folder) || !is_writable($folder)) {
+            throw new \Exception('The folder '.$folder.' doesn\'t exist or isn\'t writable.');
+        }
+        if (!file_exists($path)) {
+            touch($path);
+        }
+        if (!is_writable($path)) {
+            throw new \Exception('The file '.$path.' isn\'t writable.');
+        }
     }
 }

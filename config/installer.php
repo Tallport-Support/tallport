@@ -29,6 +29,8 @@ return [
         'php' => [
             'OpenSSL',
             'PDO',
+            // The database's PDO driver (System Status: the configured database's).
+            'pdo_mysql / pdo_pgsql / pdo_sqlite',
             'Mbstring',
             'Tokenizer',
             'JSON',
@@ -104,12 +106,13 @@ return [
                 // // ],
                 // 'app_log_level'         => 'required|string|max:50',
                 'app_url'               => 'required|url',
-                'database_connection'   => 'required|string|max:1000',
-                'database_hostname'     => 'required|string|max:1000',
-                'database_port'         => 'required|numeric',
+                'database_connection'   => 'required|in:mysql,pgsql,sqlite',
+                // SQLite: only the database file (database_name).
+                'database_hostname'     => 'required_unless:database_connection,sqlite|nullable|string|max:1000',
+                'database_port'         => 'required_unless:database_connection,sqlite|nullable|numeric',
                 'database_name'         => 'required|string|max:1000',
-                'database_username'     => 'required|string|max:1000',
-                'database_password'     => 'required|string|max:1000',
+                'database_username'     => 'required_unless:database_connection,sqlite|nullable|string|max:1000',
+                'database_password'     => 'required_unless:database_connection,sqlite|nullable|string|max:1000',
                 'admin_email'           => 'required|email',
                 'admin_first_name'      => 'required|string|max:20',
                 'admin_last_name'       => 'required|string|max:30',

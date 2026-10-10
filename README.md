@@ -8,7 +8,8 @@
 
 Tallport is a self-hosted help desk and shared mailbox: customer email
 arrives in shared mailboxes, agents reply, assign, add notes and follow up,
-and customers just see email. It's a PHP (Laravel) application for MariaDB.
+and customers just see email. It's a PHP (Laravel) application for MariaDB,
+MySQL, PostgreSQL or SQLite.
 
 Tallport is a fork of [FreeScout](https://github.com/freescout-help-desk/freescout),
 starting from FreeScout 1.8.243 (September 2026). The fork exists to move
@@ -50,14 +51,16 @@ Compared with FreeScout and its modules, Tallport adds:
 
 ## Requirements
 
-* **PHP 8.5 or newer**, with these extensions: `openssl`, `pdo_mysql`,
+* **PHP 8.5 or newer**, with these extensions: `openssl`, `pdo` and the PDO
+  driver of your database (`pdo_mysql`, `pdo_pgsql` or `pdo_sqlite`),
   `mbstring`, `tokenizer`, `json`, `xml`, `dom`, `libxml`, `simplexml`,
   `gd`, `fileinfo`, `zip`, `iconv`, `curl`, `ctype`, and `pcntl` for
   command-line PHP
 * **PHP functions** that some hosts disable must be allowed: `shell_exec`,
   `proc_open`, `fpassthru`, `symlink`, `dns_get_record`, `inet_pton` and
   `pcntl_signal`, and the `ps` command must be available
-* **MariaDB** (tested with 11.8)
+* **A database:** MariaDB (tested with 11.8; recommended), MySQL
+  (tested with 8.4), PostgreSQL (tested with 17) or SQLite
 * **Nginx or Apache**
 * **Writable folders:** `storage/`, `bootstrap/cache/`, `public/css/builds/`,
   `public/js/builds/`, `public/modules/` and `Modules/`
@@ -78,9 +81,10 @@ Optional:
 The installer and System » Status check the extensions, functions, folders
 and ImageMagick.
 
-Tallport is tested on PHP 8.5 and MariaDB. FreeScout also supports older
-PHP versions, MySQL and PostgreSQL; Tallport may still work there, but
-isn't tested on them.
+Every change is tested on PHP 8.5 with MariaDB, MySQL, PostgreSQL and
+SQLite. SQLite needs no database server and suits small installations; with
+several busy agents, choose one of the others, since SQLite handles only one
+write at a time.
 
 ## Installing
 
@@ -165,7 +169,8 @@ use.
 
 ## Search
 
-Conversation search uses a MariaDB full-text index (`conversation_search`):
+Conversation search uses a full-text index (`conversation_search`), on every
+database:
 every word must be somewhere in the conversation (in any message, note,
 subject, name or address), best matches come first, and each result shows
 the text around the words found. The search box understands:
@@ -178,8 +183,8 @@ the text around the words found. The search box understands:
   (a file name), `after:2026-01-31`, `before:2026-03-01`.
 * `#123` opens conversation 123.
 
-Words shorter than three letters and Chinese, Japanese or Thai text are
-matched in the indexed text too, more slowly. After installing or updating,
+Chinese, Japanese or Thai text (and on MariaDB and MySQL, words shorter
+than three letters) are matched in the indexed text too, more slowly. After installing or updating,
 `tallport:search-index` (run by the scheduler every minute) indexes the
 existing conversations; until it is done, search works as before and System
 » Status shows the progress. `php artisan tallport:search-index --rebuild`
@@ -542,7 +547,7 @@ DB_TEST_DRIVER=mysql ./test.sh         # full suite on MariaDB, as in releases
   incomplete until the bug is fixed.
 
 CI runs the tests on every push and pull request with PHP 8.5 on SQLite,
-MariaDB, and PostgreSQL, with MariaDB-specific tests in each job. It checks
+MariaDB, MySQL and PostgreSQL, with MariaDB-specific tests in each job. It checks
 code style with PHP_CodeSniffer using the rules in `phpcs.xml`
 (`.github/workflows/test.yml`; run `phpcs` locally to check before
 pushing). It also publishes a coverage report for every push to `main`

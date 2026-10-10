@@ -108,7 +108,7 @@ class ConversationSearch
         $boolean = [];
         $like = [];
         foreach ($search->terms as $term) {
-            if (SearchQuery::isIndexable($term['text'], $min_length)) {
+            if (SearchQuery::isIndexable($term['text'], $min_length) && (Indexer::driver() != 'pgsql' || SearchQuery::words($term['text']))) {
                 $boolean[(string) $term['field']][] = $term;
             } else {
                 $like[] = $term;
@@ -118,41 +118,51 @@ class ConversationSearch
         $score = null;
         $conditions = function ($where) use ($boolean, $like, $t, &$score) {
             foreach ($boolean as $field => $terms) {
-                $columns = self::columns($t, $field);
+                $match = self::matchSql($t, $field);
                 $positive = array_filter($terms, function ($term) {
                     return !$term['exclude'];
                 });
                 if ($positive) {
-                    $against = implode(' ', array_map([SearchQuery::class, 'booleanTerm'], $terms));
-                    $where->whereRaw('MATCH ('.$columns.') AGAINST (? IN BOOLEAN MODE)', [$against]);
+                    $where->whereRaw($match, [self::fullTextQuery($terms, $field)]);
                     if ($field === '') {
-                        $positive_against = implode(' ', array_map([SearchQuery::class, 'booleanTerm'], $positive));
-                        $score = [
-                            '(MATCH ('.$t.'.subject) AGAINST (? IN BOOLEAN MODE) * '.self::SUBJECT_WEIGHT.' + MATCH ('.$columns.') AGAINST (? IN BOOLEAN MODE))',
-                            [$positive_against, $positive_against],
-                        ];
+                        $score = Indexer::driver() == 'mysql'
+                            ? [
+                                '(MATCH ('.$t.'.subject) AGAINST (? IN BOOLEAN MODE) * '.self::SUBJECT_WEIGHT.' + MATCH ('.self::columns($t, $field).') AGAINST (? IN BOOLEAN MODE))',
+                                [self::fullTextQuery($positive, $field), self::fullTextQuery($positive, $field)],
+                            ]
+                            : [self::scoreSql($t), [self::fullTextQuery($positive, $field)]];
                     } elseif (!$score) {
-                        $score = ['MATCH ('.$columns.') AGAINST (? IN BOOLEAN MODE)', [$against]];
+                        $score = Indexer::driver() == 'mysql'
+                            ? ['MATCH ('.self::columns($t, $field).') AGAINST (? IN BOOLEAN MODE)', [self::fullTextQuery($terms, $field)]]
+                            : [self::scoreSql($t), [self::fullTextQuery($positive, $field)]];
                     }
                 } else {
                     foreach ($terms as $term) {
-                        $where->whereRaw('NOT MATCH ('.$columns.') AGAINST (? IN BOOLEAN MODE)', [substr(SearchQuery::booleanTerm($term), 1)]);
+                        // The words exactly, as a phrase.
+                        $where->whereRaw('NOT ('.$match.')', [self::fullTextQuery([['exclude' => false, 'phrase' => true] + $term], $field)]);
                     }
                 }
             }
             foreach ($like as $term) {
-                // Short words from the start of a word; Chinese, Japanese... anywhere.
-                $no_spaces = preg_match(SearchQuery::NO_SPACES, $term['text']);
-                $pattern = $no_spaces
-                    ? '%'.addcslashes(mb_strtolower($term['text']), '%_\\').'%'
-                    : '(?<![[:alnum:]_])'.implode('\\s+', array_map('preg_quote', explode(' ', $term['text'])));
                 $columns = self::COLUMNS[(string) $term['field']];
                 $method = $term['exclude'] ? 'whereNot' : 'where';
-                $where->$method(function ($any) use ($columns, $pattern, $no_spaces) {
-                    foreach ($columns as $column) {
-                        $any->orWhere(Indexer::TABLE.'.'.$column, $no_spaces ? 'like' : 'regexp', $pattern);
-                    }
-                });
+                if (preg_match(SearchQuery::NO_SPACES, $term['text']) || Indexer::driver() != 'mysql') {
+                    // Chinese, Japanese... anywhere (and what PostgreSQL and SQLite don't index).
+                    $pattern = '%'.\App\Job::likeEscape(mb_strtolower($term['text'])).'%';
+                    $where->$method(function ($any) use ($columns, $pattern) {
+                        foreach ($columns as $column) {
+                            $any->orWhereRaw(\DB::getTablePrefix().Indexer::TABLE.'.'.$column.' '.\Helper::sqlLikeOperator()." ? escape '!'", [$pattern]);
+                        }
+                    });
+                } else {
+                    // Short words from the start of a word.
+                    $pattern = '(?<![[:alnum:]_])'.implode('\\s+', array_map('preg_quote', explode(' ', $term['text'])));
+                    $where->$method(function ($any) use ($columns, $pattern) {
+                        foreach ($columns as $column) {
+                            $any->orWhere(Indexer::TABLE.'.'.$column, 'regexp', $pattern);
+                        }
+                    });
+                }
             }
         };
 
@@ -188,6 +198,59 @@ class ConversationSearch
         });
 
         return $score;
+    }
+
+    /**
+     * SQL that is true for rows matching the full-text query (one binding)
+     * in the field's columns.
+     */
+    protected static function matchSql($t, $field)
+    {
+        switch (Indexer::driver()) {
+            case 'pgsql':
+                return $t.".search_vector @@ to_tsquery('simple', CAST(? AS text))";
+            case 'sqlite':
+                $fts = \DB::getTablePrefix().Indexer::FTS_TABLE;
+
+                return $t.'.conversation_id IN (SELECT rowid FROM '.$fts.' WHERE '.$fts.' MATCH ?)';
+            default:
+                return 'MATCH ('.self::columns($t, $field).') AGAINST (? IN BOOLEAN MODE)';
+        }
+    }
+
+    /**
+     * PostgreSQL and SQLite: a row's relevance for a full-text query (one
+     * binding), the subject counting more.
+     */
+    protected static function scoreSql($t)
+    {
+        if (Indexer::driver() == 'pgsql') {
+            // Weights of D (content), C (recipients), B (people) and A (subject), as on MariaDB.
+            return "ts_rank('{0.1, 0.1, 0.1, ".(0.1 * (self::SUBJECT_WEIGHT + 1))."}', ".$t.".search_vector, to_tsquery('simple', CAST(? AS text)))";
+        }
+        $fts = \DB::getTablePrefix().Indexer::FTS_TABLE;
+
+        // bm25() is lower for better matches; weights of subject, people, recipients and content.
+        return '(SELECT -bm25('.$fts.', '.(self::SUBJECT_WEIGHT + 1).', 1, 1, 1) FROM '.$fts.' WHERE '.$fts.' MATCH ? AND rowid = '.$t.'.conversation_id)';
+    }
+
+    /**
+     * Terms as a full-text query in the database's syntax, in the field's columns.
+     */
+    protected static function fullTextQuery($terms, $field)
+    {
+        switch (Indexer::driver()) {
+            case 'pgsql':
+                $weight = Indexer::WEIGHTS[$field] ?? '';
+
+                return implode(' & ', array_map(function ($term) use ($weight) {
+                    return SearchQuery::tsqueryTerm($term, $weight);
+                }, $terms));
+            case 'sqlite':
+                return SearchQuery::fts5Query($terms, $field);
+            default:
+                return implode(' ', array_map([SearchQuery::class, 'booleanTerm'], $terms));
+        }
     }
 
     protected static function columns($table, $field)
@@ -280,7 +343,7 @@ class ConversationSearch
             $query->whereIn('conversations.state', $filters['state']);
         }
         if (!empty($filters['subject'])) {
-            $query->where('conversations.subject', 'like', '%'.mb_strtolower($filters['subject']).'%');
+            $query->where('conversations.subject', \Helper::sqlLikeOperator(), '%'.mb_strtolower($filters['subject']).'%');
         }
         if (!empty($filters['attachments'])) {
             $query->where('conversations.has_attachments', $filters['attachments'] == 'yes');
@@ -292,7 +355,7 @@ class ConversationSearch
             $query->whereIn('conversations.id', self::withAttachmentNamed($filters['attachment name']));
         }
         if (!empty($filters['body'])) {
-            $query->where(Indexer::TABLE.'.content', 'like', '%'.addcslashes(mb_strtolower($filters['body']), '%_\\').'%');
+            $query->whereRaw(\DB::getTablePrefix().Indexer::TABLE.'.content '.\Helper::sqlLikeOperator()." ? escape '!'", ['%'.\App\Job::likeEscape(mb_strtolower($filters['body'])).'%']);
         }
         if (!empty($filters['number'])) {
             $query->where('conversations.'.Conversation::numberFieldName(), $filters['number']);
@@ -403,8 +466,9 @@ class ConversationSearch
      */
     protected static function minTokenSize()
     {
-        if (self::$min_token_size === null && !in_array(\DB::getDriverName(), ['mysql', 'mariadb'])) {
-            self::$min_token_size = 3;
+        if (Indexer::driver() != 'mysql') {
+            // PostgreSQL and SQLite index words of any length.
+            return 1;
         }
         if (self::$min_token_size === null) {
             try {

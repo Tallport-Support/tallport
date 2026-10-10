@@ -115,11 +115,12 @@ class EnvironmentManager
         // The timezone and language are saved in the database at the last step (FinalInstallManager).
         '# Database settings'."\n".
         'DB_CONNECTION='.EnvFile::formatValue($request->database_connection)."\n".
-        'DB_HOST='.EnvFile::formatValue($request->database_hostname)."\n".
-        'DB_PORT='.EnvFile::formatValue($request->database_port)."\n".
+        // SQLite: only the database file.
+        ($request->database_connection != 'sqlite' ? 'DB_HOST='.EnvFile::formatValue($request->database_hostname)."\n".
+        'DB_PORT='.EnvFile::formatValue($request->database_port)."\n" : '').
         'DB_DATABASE='.EnvFile::formatValue($request->database_name)."\n".
-        'DB_USERNAME='.EnvFile::formatValue($request->database_username)."\n".
-        'DB_PASSWORD='.EnvFile::formatValue($request->database_password)."\n".
+        ($request->database_connection != 'sqlite' ? 'DB_USERNAME='.EnvFile::formatValue($request->database_username)."\n".
+        'DB_PASSWORD='.EnvFile::formatValue($request->database_password)."\n" : '').
         (!empty($request->database_charset) ? 'DB_CHARSET='.EnvFile::formatValue($request->database_charset)."\n" : '').
         (!empty($request->database_collation) ? 'DB_COLLATION='.EnvFile::formatValue($request->database_collation)."\n" : '').
         "\n".

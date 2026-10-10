@@ -22,7 +22,8 @@
     $db_driver = \DB::connection()->getPDO()->getAttribute(\PDO::ATTR_DRIVER_NAME);
     $db_version = (string) \DB::connection()->getPDO()->getAttribute(\PDO::ATTR_SERVER_VERSION);
     $db_name = str_contains(strtolower($db_version), 'mariadb') ? 'MariaDB' : (['mysql' => 'MySQL', 'pgsql' => 'PostgreSQL', 'sqlite' => 'SQLite'][$db_driver] ?? ucfirst($db_driver));
-    $db_version = preg_match('#(\d+\.\d+\.\d+)#', $db_version, $db_m) ? $db_m[1] : $db_version;
+    // Older MariaDB reports "5.5.5-10.11.6-MariaDB"; PostgreSQL "17.2 (Debian 17.2-1)".
+    $db_version = preg_match('#(\d+\.\d+(?:\.\d+)?)#', preg_replace('#^5\.5\.5-#', '', $db_version), $db_m) ? $db_m[1] : $db_version;
     $size_label = fn ($size) => preg_replace('#^(\d+)\s*([KMG])$#i', '$1 $2B', trim((string) $size));
 
     // Just updated: background commands restart within a minute or two.

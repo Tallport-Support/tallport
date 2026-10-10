@@ -20,6 +20,21 @@ class Indexer
     const TABLE = 'conversation_search';
 
     /**
+     * SQLite: the FTS5 table over TABLE.
+     */
+    const FTS_TABLE = 'conversation_search_fts';
+
+    /**
+     * PostgreSQL: the weight of each column's words (search_vector).
+     */
+    const WEIGHTS = [
+        'subject'    => 'A',
+        'people'     => 'B',
+        'recipients' => 'C',
+        'content'    => 'D',
+    ];
+
+    /**
      * Largest text kept per conversation (bytes).
      */
     const CONTENT_LIMIT = 4 * 1024 * 1024;
@@ -154,6 +169,11 @@ class Indexer
         }
         if ($rows) {
             \DB::table(self::TABLE)->upsert($rows, ['conversation_id'], ['subject', 'people', 'recipients', 'content', 'indexed_at']);
+            if (self::driver() == 'pgsql') {
+                foreach ($rows as $row) {
+                    self::updateVector($row);
+                }
+            }
         }
         $missing = array_diff($conversation_ids, $conversations->pluck('id')->all());
         if ($missing) {
@@ -161,6 +181,40 @@ class Indexer
         }
 
         return count($rows);
+    }
+
+    /**
+     * PostgreSQL: a row's words, weighted by column. A tsvector is at most
+     * 1 MB: when the words don't fit, only the start of the content is used.
+     */
+    protected static function updateVector($row)
+    {
+        $vector = [];
+        foreach (self::WEIGHTS as $column => $weight) {
+            $vector[] = "setweight(to_tsvector('simple', CAST(? AS text)), '".$weight."')";
+        }
+        $sql = 'UPDATE '.\DB::getTablePrefix().self::TABLE.' SET search_vector = '.implode(' || ', $vector).' WHERE conversation_id = ?';
+
+        foreach ([self::CONTENT_LIMIT, 256 * 1024] as $limit) {
+            $bindings = [];
+            foreach (array_keys(self::WEIGHTS) as $column) {
+                $bindings[] = implode(' ', SearchQuery::words($column == 'content' ? mb_strcut($row[$column], 0, $limit) : $row[$column]));
+            }
+            $bindings[] = $row['conversation_id'];
+            try {
+                // In a transaction of its own: an error doesn't end the caller's.
+                \DB::transaction(function () use ($sql, $bindings) {
+                    \DB::update($sql, $bindings);
+                });
+
+                return;
+            } catch (\Illuminate\Database\QueryException $e) {
+                // "string is too long for tsvector": try again with less.
+                $error = $e;
+            }
+        }
+
+        throw $error;
     }
 
     /**
@@ -306,11 +360,30 @@ class Indexer
     }
 
     /**
-     * Whether searches use the index: it is complete, on MariaDB or MySQL.
+     * The database: mysql (also MariaDB), pgsql or sqlite.
+     */
+    public static function driver()
+    {
+        $driver = \DB::getDriverName();
+
+        return $driver == 'mariadb' ? 'mysql' : $driver;
+    }
+
+    /**
+     * Whether the database has a full-text index: MariaDB and MySQL
+     * (FULLTEXT), PostgreSQL (tsvector) and SQLite (FTS5).
+     */
+    public static function supported()
+    {
+        return in_array(self::driver(), ['mysql', 'pgsql', 'sqlite']);
+    }
+
+    /**
+     * Whether searches use the index: it is complete, on a database that has one.
      */
     public static function isReady()
     {
-        return in_array(\DB::getDriverName(), ['mysql', 'mariadb']) && \Option::get(self::READY_OPTION);
+        return self::supported() && \Option::get(self::READY_OPTION);
     }
 
     /**

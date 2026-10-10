@@ -110,9 +110,9 @@ class SystemController extends Controller
             }
         }
 
-        // Search index (MariaDB / MySQL).
+        // Search index.
         $search_index = null;
-        if (in_array(\DB::getDriverName(), ['mysql', 'mariadb'])) {
+        if (\App\Search\Indexer::supported()) {
             try {
                 $search_index = \App\Search\Indexer::progress();
             } catch (\Throwable $e) {
