@@ -43,10 +43,13 @@
             @action('conversation.editor_extras', $conversation, $mailbox)
             {{-- Saved shows in the spacer, which has no width of its own: it never wraps the toolbar. --}}
             <span class="f-toolbar__spacer draft-saved"><span role="status" x-text="saved ? @js(__('Saved')) : ''"></span></span>
+            {{-- Save Draft and Discard move together when the toolbar wraps. --}}
+            <span class="composer-draft-actions">
             @if ($draft_button)
                 <button type="button" class="f-button f-button--ghost f-button--icon note-btn-save-draft" aria-label="{{ __('Save Draft') }}" title="{{ __('Save Draft') }}" x-on:click="save(true)"><x-icon.check class="f-icon" aria-hidden="true" /></button>
             @endif
             <button type="button" class="f-button f-button--ghost f-button--icon note-btn-discard" aria-label="{{ __('Discard') }}" title="{{ __('Discard') }}" x-on:click="discard()"><x-icon.trash-2 class="f-icon" aria-hidden="true" /></button>
+            </span>
             @endif
         </x-slot:extras>
     </x-editor>

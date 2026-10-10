@@ -120,6 +120,32 @@
     min-height: 0;
     max-height: var(--f-editor-max-height, 160px);
   }
+/* In a composer, the message is written on the composer itself, as its textarea is (f-composer__input):
+     no box, the text on the composer's edges, and the caret shows where typing goes. The toolbar's
+     icons line up with the text, their buttons' padding outside it, and a line divides them. */
+.f-composer .f-editor:not(.f-editor--inline) {
+    border-color: transparent;
+    border-radius: 0;
+    background: transparent;
+  }
+.f-composer .f-editor:not(.f-editor--inline):focus-within,
+  .f-composer .f-editor:not(.f-editor--inline) > textarea:focus-visible {
+    outline: none;
+  }
+.f-composer .f-editor:not(.f-editor--inline) > .f-editor__toolbar {
+    margin-inline: -6px;
+    padding-inline: 0;
+    border-bottom: 0;
+  }
+.f-composer .f-editor:not(.f-editor--inline) > .f-editor__surface {
+    --f-editor-padding-inline: 0px;
+    border-top: 1px solid var(--f-border);
+  }
+.f-composer .f-editor:not(.f-editor--inline) > textarea {
+    padding-inline: 0;
+    background: transparent;
+    box-shadow: none;
+  }
 .f-editor__actions {
     display: flex;
     align-items: center;

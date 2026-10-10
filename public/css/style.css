@@ -3389,12 +3389,16 @@ h1.settings-toolbar__title {
 .conv-note-block .conv-composer {
     --f-composer-background: var(--f-note-background);
 }
-.conv-note-block .f-editor {
+.thread-editor-container.conv-note-block .f-editor {
     border-color: var(--f-note-border);
     background: var(--f-note-background);
 }
 .conv-composer .f-editor__toolbar .f-toolbar__spacer {
     flex: 1;
+}
+.composer-draft-actions {
+    display: inline-flex;
+    gap: inherit;
 }
 .conv-composer__footer {
     flex-wrap: wrap;
