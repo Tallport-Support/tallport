@@ -48,6 +48,10 @@ Compared with FreeScout and its modules, Tallport adds:
 * **A modern interface**, in light and dark.
 * **Up to date and tested:** current Laravel, numerous bugs fixed, and a
   large automated test suite.
+* **Retention management:** enforce timely deletion of older conversations
+  and inactive customers.
+  **Multi-channel:** interact with customers through e-mail, Telegram and
+  Nostr.
 
 ## Requirements
 
