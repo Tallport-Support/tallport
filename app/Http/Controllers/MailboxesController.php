@@ -334,8 +334,9 @@ class MailboxesController extends Controller
         $set('aiassistant.mailbox_language', \App\Ai\Settings::isLanguage($language) ? $language : '');
         $set('aiassistant.translation_glossary', trim((string) $request->input('glossary', '')));
         $set('aiassistant.mailbox_chat_translation', $request->boolean('chat_translation') ? 1 : '');
+        $set('aiassistant.mailbox_email_translation', $request->boolean('email_translation') ? 1 : '');
         // Off controls aren't sent: what they hold is kept while their switch is off.
-        if ($request->boolean('chat_translation')) {
+        if ($request->boolean('chat_translation') || $request->boolean('email_translation')) {
             $set('aiassistant.mailbox_translation_note', $request->boolean('translation_note') ? 1 : '');
         }
         if (!empty($features['drafts'])) {

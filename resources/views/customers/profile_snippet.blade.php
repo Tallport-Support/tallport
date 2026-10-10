@@ -25,12 +25,13 @@
 	@php
 		// Their language and those they read besides (replies in them aren't translated).
 		$reads = implode(', ', array_map(fn ($code) => App\Ai\Settings::displayName($code), array_diff((array) $customer->languages, [$customer->language])));
-		$languages = implode(' · ', array_filter([
-			$customer->language ? App\Ai\Settings::displayName($customer->language) : '',
-			$reads !== '' ? ($customer->language ? __('also reads :languages', ['languages' => $reads]) : __('Reads :languages', ['languages' => $reads])) : '',
-		]));
+		$reads = $reads !== '' ? ($customer->language ? __('also reads :languages', ['languages' => $reads]) : __('Reads :languages', ['languages' => $reads])) : '';
+		$languages = implode(' · ', array_filter([$customer->language ? App\Ai\Settings::displayName($customer->language) : '', $reads]));
+		// In a conversation, agents who may edit the customer set it here (replies are translated
+		// into it, App\Ai\ChatTranslation); "Detect Automatically": from their next message.
+		$set_language = !empty($conversation) && App\Ai\Settings::isConfigured() && !\Helper::isPrint() && Auth::check() && Auth::user()->can('view', $customer);
 	@endphp
-	@if (count($customer_emails) || count($customer->getPhones()) || $customer->getWebsites() || $customer->getSocialProfiles() || $location || $customer->address || $customer->zip || $sender_offset || $languages !== '' || $customer->notes || count($nostr_keys))
+	@if (count($customer_emails) || count($customer->getPhones()) || $customer->getWebsites() || $customer->getSocialProfiles() || $location || $customer->address || $customer->zip || $sender_offset || $languages !== '' || $set_language || $customer->notes || count($nostr_keys))
 		<ul class="customer-snippet__details customer-contacts">
 			@foreach ($customer_emails as $email)
 				<li class="customer-email"><x-icon.mail class="f-icon" aria-hidden="true" />{!! $detail(__('Email')) !!}{{-- Copied on a click (said in a toast). --}}<button type="button" class="contact-main" title="{{ __('Copy') }}" aria-label="{{ __('Copy') }}: {{ $email->email }}" x-data x-on:click="copyToClipboard(@js($email->email)); Tallport.toast(@js(__('Copied')))">{{ $email->email }}</button></li>
@@ -64,7 +65,22 @@
 			@if ($sender_offset)
 				<li title="{{ __('From the time zone of their latest email') }}"><x-icon.clock class="f-icon" aria-hidden="true" />{!! $detail(__('Local time')) !!}<span>{{ App\Misc\SenderTime::format(now(), $sender_offset) }} (GMT{{ $sender_offset }})</span></li>
 			@endif
-			@if ($languages !== '')
+			@if ($set_language)
+				<li class="customer-language" x-data>
+					<x-icon.languages class="f-icon" aria-hidden="true" />
+					<span>
+						<x-fruit::select class="customer-language__select" :aria-label="__('Language')" x-on:change="Tallport.post(laroute.route('customers.ajax'), {action: 'set_language', customer_id: {{ $customer->id }}, language: $el.value}).then(response => Tallport.isSuccess(response) ? Livewire.dispatch('customer-language-changed') : Tallport.result(response))">
+							<option value="">{{ __('Detect Automatically') }}</option>
+							@foreach (App\Ai\Settings::displayNames() as $code => $name)
+								<option value="{{ $code }}" @selected($customer->language === $code)>{{ App\Ai\Settings::optionName($code) }}</option>
+							@endforeach
+						</x-fruit::select>
+						@if ($reads !== '')
+							· {{ $reads }}
+						@endif
+					</span>
+				</li>
+			@elseif ($languages !== '')
 				<li class="customer-language"><x-icon.languages class="f-icon" aria-hidden="true" />{!! $detail(__('Language')) !!}<span>{{ $languages }}</span></li>
 			@endif
 			@include('nostr/partials/customer_keys_snippet', ['keys' => $nostr_keys])

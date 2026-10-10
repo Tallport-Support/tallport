@@ -1010,33 +1010,15 @@ a h4 {
     gap: 8px;
     margin: 0 0 8px;
 }
-/* A translated chat's composer (conversations/partials/chat_translation): the language replies
-   go out in, and the reply's translation before it's sent, like a translation card. */
-.conv-chat-translation {
-    display: grid;
-    gap: 8px;
+/* A translated conversation's composer (conversations/partials/chat_translation): the reply's
+   translation before it's sent, like a translation card. Empty until one is on its way: only
+   what shows takes room. */
+.conv-chat-translation > * {
     margin: 0 0 8px;
-}
-.conv-chat-translation__language {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--f-secondary);
-    font-size: var(--f-text-sm);
-}
-.conv-chat-translation__language .f-icon {
-    --f-icon-size: 14px;
-}
-.conv-chat-translation__language .f-input {
-    width: auto;
-    min-height: 0;
-    padding-block: 2px;
-    font-size: var(--f-text-sm);
 }
 .conv-translation-busy {
     align-items: center;
     gap: 8px;
-    margin: 0;
 }
 .conv-translation-preview--ready {
     display: grid;
@@ -3034,6 +3016,14 @@ h1.settings-toolbar__title {
     color: inherit;
     text-decoration: none;
     overflow-wrap: anywhere;
+}
+/* Their language (the conversation's sidebar): a compact select in the line. */
+.customer-contacts .customer-language__select {
+    width: auto;
+    max-width: 100%;
+    min-height: 0;
+    padding-block: 2px;
+    font-size: var(--f-text-sm);
 }
 /* The customer's address: a click copies it. Looks like the link it used to be. */
 .customer-snippet__details .contact-main {

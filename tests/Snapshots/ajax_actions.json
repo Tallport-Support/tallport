@@ -40,7 +40,8 @@
     "CustomersController@ajax": [
         "clear_delivery_problem",
         "create",
-        "customers_pagination"
+        "customers_pagination",
+        "set_language"
     ],
     "CustomersController@ajaxSearch": [
         "email",

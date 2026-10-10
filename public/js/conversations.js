@@ -324,8 +324,10 @@ document.addEventListener('alpine:init', function () {
 						return;
 					}
 					var html = editor() ? editor().value : '';
-					// A translated chat (App\Ai\ChatTranslation): the translation first, for a look.
+					// A translated conversation (App\Ai\ChatTranslation): the translation first, for a
+					// look; sent later with the status chosen now.
 					if (self.$root.hasAttribute('data-translating') && !self.as_written) {
+						self.send_status = status;
 						self.translate(html);
 						return;
 					}
@@ -357,7 +359,7 @@ document.addEventListener('alpine:init', function () {
 				});
 			},
 
-			// A translated chat's reply: its translation is shown (livewire/conversation-composer); sent
+			// A translated conversation's reply: its translation is shown (livewire/conversation-composer); sent
 			// when the same text is sent again (Enter), or as written if it's in that language already.
 			translate: function (html) {
 				var self = this;
@@ -388,16 +390,23 @@ document.addEventListener('alpine:init', function () {
 				var translation = this.$wire.translation;
 				var shown = this.showSending(translation ? translation.html : html);
 				this.dirty = false;
-				window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: ''}}));
-				editorFocus('body');
-				this.$wire.sendTranslation(html).then(function (result) {
+				if (chat) {
+					window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: ''}}));
+					editorFocus('body');
+				} else {
+					this.$root.classList.add('conv-action-wrapper--sent');
+				}
+				this.$wire.sendTranslation(html, this.send_status === undefined ? null : this.send_status).then(function (result) {
 					if (result == 'sent') {
 						return;
 					}
 					if (shown) {
 						shown.remove();
 					}
-					window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: html}}));
+					self.$root.classList.remove('conv-action-wrapper--sent');
+					if (chat) {
+						window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: html}}));
+					}
 					// Changed since it was translated: translated again.
 					if (result == 'changed') {
 						self.translate(html);
@@ -407,7 +416,7 @@ document.addEventListener('alpine:init', function () {
 
 			sendAsWritten: function () {
 				this.as_written = true;
-				this.submit();
+				this.submit(this.send_status);
 			},
 
 			editTranslation: function () {

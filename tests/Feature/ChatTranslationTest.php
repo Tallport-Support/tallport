@@ -60,7 +60,7 @@ class ChatTranslationTest extends FeatureTestCase
 
     /**
      * The customer's language: the first detected in their messages, kept on their profile and
-     * not switched by a later one; the agent's choice (the composer's) over it.
+     * not switched by a later one; the composer has no choice of its own (the profile's is it).
      */
     public function testTheCustomersLanguage()
     {
@@ -78,12 +78,9 @@ class ChatTranslationTest extends FeatureTestCase
         Translations::translate($thread, 'fr');
         $this->assertSame('nl', ChatTranslation::customerLanguage($this->conversation->fresh()), 'Detected once, not overwritten.');
 
-        // The composer: no "Not Translated"; the agent's choice is the customer's language.
-        $this->composer()->assertSee('Translate Replies Into')->assertDontSee('Not Translated')
-            ->call('setCustomerLanguage', '')->call('setCustomerLanguage', 'klingon');
-        $this->assertSame('nl', ChatTranslation::customerLanguage($this->conversation->fresh()));
-        $this->composer()->call('setCustomerLanguage', 'ja');
-        $this->assertSame('ja', $this->conversation->customer->fresh()->language);
+        // The composer: no language picker; the customer's profile says it.
+        $this->composer()->assertSet('translating', true)->assertDontSee('Translate Replies Into')->assertDontSee('Not Translated')
+            ->assertSee('conv-chat-translation', false);
 
         // Off for the mailbox: not translated.
         Option::set('aiassistant.mailbox_chat_translation', []);
@@ -129,7 +126,7 @@ class ChatTranslationTest extends FeatureTestCase
         $this->freezeTime();
 
         $composer = $this->composer()->assertSet('translating', true)
-            ->assertSee('Translate Replies Into')->assertSee('wire:stream.replace="translation"', false);
+            ->assertSee('wire:stream.replace="translation"', false);
         $streamed = $this->streamed(fn () => $composer->call('previewTranslation', '<p>I will look into it.</p>'));
         $composer->assertReturned('ready')->assertSee('Ik zoek het voor u uit.')->assertSee('Sent in Dutch');
         $this->assertSame([['type' => 'directive', 'content' => '<p>Ik', 'mode' => 'replace', 'name' => 'translation']], $streamed);

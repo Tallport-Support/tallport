@@ -10,10 +10,12 @@ use App\Customer;
 use App\Thread;
 
 /**
- * Chats translated both ways (Manage » Settings » AI Assistant, per mailbox): the agent reads
- * the customer's messages in their own language (App\Ai\Translations) and writes replies in it,
- * which go to the customer in the customer's language after a preview
- * (livewire/conversation-composer). "Send as Written" sends a reply as it is.
+ * Conversations translated both ways, chats and emails (switched on separately per mailbox,
+ * in the mailbox's AI settings): the agent reads the customer's messages in their own language
+ * (App\Ai\Translations) and writes replies in it, which go to the customer in the customer's
+ * language after a preview (livewire/conversation-composer). "Send as Written" sends a reply as
+ * it is. Only a reply's text is translated: an email's signature and quoted history are added
+ * when it's sent, as they are, and its subject stays the conversation's.
  *
  * The customer's language is on their profile (customers.language): the one first detected in
  * their messages, or as an agent set it.
@@ -21,15 +23,26 @@ use App\Thread;
 class ChatTranslation
 {
     /**
-     * The chat's latest messages sent along for context (and at most this much text).
+     * The conversation's latest messages sent along for context (and at most this much text).
      */
     const CONTEXT_MESSAGES = 10;
 
     const CONTEXT_CHARS = 3000;
 
+    /**
+     * Whether the conversation is translated: a chat (Telegram, Nostr) where the mailbox
+     * translates chats, an email conversation where it translates emails.
+     */
     public static function isOn(Conversation $conversation)
     {
-        return $conversation->hasChannel() && Settings::isConfigured() && Settings::chatTranslation($conversation->mailbox);
+        if (!Settings::isConfigured()) {
+            return false;
+        }
+        if ($conversation->hasChannel()) {
+            return Settings::chatTranslation($conversation->mailbox);
+        }
+
+        return $conversation->type == Conversation::TYPE_EMAIL && Settings::emailTranslation($conversation->mailbox);
     }
 
     /**
@@ -49,7 +62,7 @@ class ChatTranslation
     }
 
     /**
-     * Whether the agent's replies are translated: on for the chat, and the customer's
+     * Whether the agent's replies are translated: on for the conversation, and the customer's
      * language known and the agent's not one the customer reads.
      */
     public static function needed(Conversation $conversation, $user)
@@ -97,7 +110,7 @@ class ChatTranslation
         $language = self::customerLanguage($conversation);
         [$answer] = (new ReplyTranslator($language))->recordFor(Usage::FEATURE_REPLY_TRANSLATION, $conversation, null, $user ? $user->id : null)->streamJson(implode("\n\n", array_filter([
             TallportAgent::glossary($conversation->mailbox),
-            TallportAgent::data('chat', self::context($conversation)),
+            TallportAgent::data('conversation', self::context($conversation)),
             TallportAgent::data('reply', $html),
         ])), $on_translation ? fn ($answer) => $on_translation((string) ($answer['translation'] ?? '')) : null);
 
@@ -196,8 +209,10 @@ class ChatTranslation
     }
 
     /**
-     * The chat's latest messages (oldest first, notes left out), for the translation's
-     * context; those before a message, if given.
+     * The conversation's latest messages (oldest first, notes left out), for the translation's
+     * context; those before a message, if given. An email's quoted history is left out: a
+     * customer's reply is cut where the quote starts when it's fetched
+     * (FetchEmails::separateReply()), an agent's gets it only when it's sent.
      */
     public static function context(Conversation $conversation, $before_id = null)
     {

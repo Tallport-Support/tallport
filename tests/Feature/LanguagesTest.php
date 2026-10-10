@@ -173,24 +173,32 @@ class LanguagesTest extends FeatureTestCase
     }
 
     /**
-     * The sidebar: the customer's language, and those they read besides.
+     * The sidebar: the customer's language, set there (a select), and those they read besides;
+     * printed, as text.
      */
     public function testTheSidebarShowsTheCustomersLanguages()
     {
         $conversation = $this->receive();
-        $this->page($this->agent, $conversation)->assertSee('<li class="customer-language">', false)->assertSee('Dutch');
+        $this->page($this->agent, $conversation)->assertSee('<li class="customer-language" x-data>', false)
+            ->assertSee('<option value="nl" selected>', false);
 
         $conversation->customer->languages = ['en', 'de'];
         $conversation->customer->save();
-        $this->page($this->agent, $conversation)->assertSee('Dutch · also reads English, German');
+        $this->page($this->agent, $conversation)->assertSee('· also reads English, German');
+        \Cache::store('array')->flush();
+        $this->actingAs($this->agent)->get(route('conversations.view', ['id' => $conversation->id, 'print' => 1]))
+            ->assertSee('Dutch · also reads English, German')->assertDontSee('customer-language__select', false);
 
         $conversation->customer->language = null;
         $conversation->customer->save();
-        $this->page($this->agent, $conversation)->assertSee('Reads English, German');
+        $this->page($this->agent, $conversation)->assertSee('Reads English, German')->assertSee('Detect Automatically');
 
+        // Printed, none: no line.
         $conversation->customer->languages = null;
         $conversation->customer->save();
-        $this->page($this->agent, $conversation)->assertDontSee('<li class="customer-language">', false);
+        \Cache::store('array')->flush();
+        $this->actingAs($this->agent)->get(route('conversations.view', ['id' => $conversation->id, 'print' => 1]))
+            ->assertDontSee('<li class="customer-language"', false);
     }
 
     /**

@@ -67,9 +67,9 @@
                     </x-fruit::alert>
                 @endif
 
-                {{-- Chats translated both ways (App\Ai\ChatTranslation): the language replies go out in,
-                     and the reply's translation for a look before it's sent. --}}
-                @if ($chat && $mode == 'reply' && App\Ai\ChatTranslation::isOn($conversation))
+                {{-- Chats and emails translated both ways (App\Ai\ChatTranslation): a reply's translation
+                     for a look before it's sent; not a forward's (for others) or a note's. --}}
+                @if ($mode == 'reply' && App\Ai\ChatTranslation::isOn($conversation))
                     @include('conversations/partials/chat_translation')
                 @endif
 

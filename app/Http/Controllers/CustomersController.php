@@ -491,6 +491,24 @@ class CustomersController extends Controller
                 $response['status'] = 'success';
                 break;
 
+            // Their language, set in the conversation's sidebar (replies are translated into it,
+            // App\Ai\ChatTranslation); none: detected from their next message.
+            case 'set_language':
+                $customer = Customer::find((int) $request->customer_id);
+                if (!$customer || !$user->can('view', $customer)) {
+                    $response['msg'] = __('Not enough permissions');
+                    break;
+                }
+                $language = (string) $request->language;
+                if ($language !== '' && !\App\Ai\Settings::isLanguage($language)) {
+                    $response['msg'] = __('Error occurred');
+                    break;
+                }
+                $customer->language = $language ?: null;
+                $customer->save();
+                $response['status'] = 'success';
+                break;
+
             // Conversations navigation
             case 'customers_pagination':
             

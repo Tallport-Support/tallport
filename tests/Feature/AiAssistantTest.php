@@ -157,7 +157,7 @@ class AiAssistantTest extends FeatureTestCase
             ->assertSee('app-sidebar__back', false)
             ->assertSee('aria-current="page"', false)
             ->assertSee('ai-context-test-status', false)
-            ->assertSeeInOrder(['<h1>AI</h1>', 'Features', 'Summaries', 'Language', 'Default (Dutch)', 'Glossary', 'Chat Translation', 'Translate Chats', 'Mark Translated Replies', 'Customer Context'], false);
+            ->assertSeeInOrder(['<h1>AI</h1>', 'Features', 'Summaries', 'Language', 'Default (Dutch)', 'Glossary', 'Translation', 'Translate Chats', 'Translate Emails', 'Mark Translated Replies', 'Customer Context'], false);
         $this->actingAs($this->agent)->get($page)->assertForbidden();
 
         $this->postForm($this->admin, route('mailboxes.ai.save', ['id' => $this->mailbox->id]), [

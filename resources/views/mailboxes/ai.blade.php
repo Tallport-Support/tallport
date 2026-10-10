@@ -16,6 +16,7 @@
     @php
         $ai_features_on = collect(App\Ai\Settings::FEATURES)->mapWithKeys(fn ($feature) => [$feature => App\Ai\Settings::enabled($feature, $mailbox)]);
         $ai_chat = App\Ai\Settings::chatTranslation($mailbox);
+        $ai_email = App\Ai\Settings::emailTranslation($mailbox);
         $ai_language = ((array) Option::get('aiassistant.mailbox_language', []))[$mailbox->id] ?? '';
     @endphp
     <div class="page-content">
@@ -29,7 +30,7 @@
         @endunless
 
         {{-- A mailbox's AI Assistant (MailboxesController::ai()); the installation's providers, models and limits are in Settings › AI Assistant. --}}
-        <form id="page-form" class="settings-form" method="POST" action="{{ route('mailboxes.ai.save', ['id' => $mailbox->id]) }}" x-data="{ drafts: @js($ai_features_on['drafts']), chat: @js($ai_chat) }">
+        <form id="page-form" class="settings-form" method="POST" action="{{ route('mailboxes.ai.save', ['id' => $mailbox->id]) }}" x-data="{ drafts: @js($ai_features_on['drafts']), chat: @js($ai_chat), email: @js($ai_email) }">
             {{ csrf_field() }}
             <fieldset class="mailbox-ai" @disabled(!$configured)>
                 <x-fruit::form-section :title="__('Features')">
@@ -58,11 +59,14 @@
                     </x-fruit::field>
                 </x-fruit::form-section>
 
-                <x-fruit::form-section :title="__('Chat Translation')">
+                <x-fruit::form-section :title="__('Translation')">
                     <x-fruit::field :label="__('Translate Chats')" :description="__('Telegram and Nostr chats, both ways: agents read and write in their own language, and see a reply\'s translation before it\'s sent.')" layout="row">
                         <x-fruit::switch name="chat_translation" value="1" :checked="$ai_chat" x-on:change="chat = $el.checked" />
                     </x-fruit::field>
-                    <x-fruit::checkbox name="translation_note" value="1" :checked="App\Ai\Settings::translationNote($mailbox)" x-bind:disabled="!chat" :description="__('Chat replies sent translated end with “Translated automatically”, in the customer\'s language.')">{{ __('Mark Translated Replies') }}</x-fruit::checkbox>
+                    <x-fruit::field :label="__('Translate Emails')" :description="__('Email conversations, both ways: agents read and write in their own language, and see a reply\'s translation before it\'s sent.')" layout="row">
+                        <x-fruit::switch name="email_translation" value="1" :checked="$ai_email" x-on:change="email = $el.checked" />
+                    </x-fruit::field>
+                    <x-fruit::checkbox name="translation_note" value="1" :checked="App\Ai\Settings::translationNote($mailbox)" x-bind:disabled="!chat && !email" :description="__('Replies sent translated end with “Translated automatically”, in the customer\'s language.')">{{ __('Mark Translated Replies') }}</x-fruit::checkbox>
                 </x-fruit::form-section>
 
                 {{-- Only drafts use it: off while Drafts is. --}}

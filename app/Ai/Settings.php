@@ -392,7 +392,7 @@ class Settings
         if (!self::isConfigured()) {
             return __('Not set up');
         }
-        $on = self::chatTranslation($mailbox) || collect(self::FEATURES)->contains(fn ($feature) => self::enabled($feature, $mailbox));
+        $on = self::chatTranslation($mailbox) || self::emailTranslation($mailbox) || collect(self::FEATURES)->contains(fn ($feature) => self::enabled($feature, $mailbox));
 
         return $on ? __('On').' · '.self::displayName(self::language($mailbox)) : __('Off');
     }
@@ -407,6 +407,15 @@ class Settings
     }
 
     /**
+     * Whether a mailbox's email conversations are translated both ways, like its chats (off
+     * unless turned on for the mailbox).
+     */
+    public static function emailTranslation($mailbox)
+    {
+        return $mailbox && !empty(((array) \Option::get('aiassistant.mailbox_email_translation', []))[$mailbox->id]);
+    }
+
+    /**
      * A mailbox's terms for translations: kept as they are, or translated a certain way
      * ("server = Server"), one per line.
      */
@@ -416,7 +425,7 @@ class Settings
     }
 
     /**
-     * Whether a mailbox's translated chat replies say so, in the customer's language.
+     * Whether a mailbox's translated replies (chats and emails) say so, in the customer's language.
      */
     public static function translationNote($mailbox)
     {

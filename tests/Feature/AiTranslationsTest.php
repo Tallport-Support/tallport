@@ -313,8 +313,7 @@ class AiTranslationsTest extends FeatureTestCase
     }
 
     /**
-     * The composer's translation: an empty reply isn't translated; a preview can be dropped;
-     * a language that isn't one isn't set.
+     * The composer's translation: an empty reply isn't translated; a preview can be dropped.
      */
     public function testTheComposersTranslation()
     {
@@ -327,10 +326,5 @@ class AiTranslationsTest extends FeatureTestCase
         $this->assertSame([['type' => 'directive', 'content' => '<p>Bedankt</p>', 'mode' => 'replace', 'name' => 'translation']], $this->streamed(fn () => $composer->call('previewTranslation', '<p>Thanks</p>')));
         $composer->assertReturned('ready')->assertSet('translation.html', '<p>Bedankt</p>')
             ->call('discardTranslation')->assertSet('translation', null);
-
-        $composer->call('setCustomerLanguage', 'klingon');
-        $this->assertSame('nl', ChatTranslation::customerLanguage($this->conversation->fresh()));
-        $composer->call('setCustomerLanguage', 'de');
-        $this->assertSame('de', ChatTranslation::customerLanguage($this->conversation->fresh()));
     }
 }

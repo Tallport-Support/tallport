@@ -106,8 +106,8 @@ class ConversationComposer extends Component
     public $ai_draft_translation_language = '';
 
     /**
-     * A chat reply's translation for the customer, previewed before it's sent
-     * (App\Ai\ChatTranslation): source (the agent's text), html (the translation), error.
+     * A reply's translation for the customer (a chat's or an email's), previewed before it's
+     * sent (App\Ai\ChatTranslation): source (the agent's text), html (the translation), error.
      */
     public $translation = null;
 
@@ -332,12 +332,13 @@ class ConversationComposer extends Component
     }
 
     /**
-     * Whether this chat's replies go out translated (App\Ai\ChatTranslation).
+     * Whether this reply goes out translated (App\Ai\ChatTranslation): a chat's or an email's,
+     * not a forward (for others) or a note.
      */
     #[Computed]
     public function translating()
     {
-        return $this->chat && $this->mode == 'reply' && \App\Ai\ChatTranslation::needed($this->conversation(), auth()->user());
+        return $this->mode == 'reply' && \App\Ai\ChatTranslation::needed($this->conversation(), auth()->user());
     }
 
     /**
@@ -390,10 +391,11 @@ class ConversationComposer extends Component
     }
 
     /**
-     * Send the previewed translation, with the agent's text kept beside it: "sent", "failed",
-     * or "changed" (the text isn't the one translated: it's translated again).
+     * Send the previewed translation, with the agent's text kept beside it, and the status from
+     * the send menu if one was chosen: "sent", "failed", or "changed" (the text isn't the one
+     * translated: it's translated again).
      */
-    public function sendTranslation($html)
+    public function sendTranslation($html, $status = null)
     {
         if (empty($this->translation['html']) || $this->translation['source'] !== (string) $html) {
             return 'changed';
@@ -403,7 +405,7 @@ class ConversationComposer extends Component
         $body = $this->translation['html'];
         $this->translation = null;
 
-        return $this->send(null, $body) ? 'sent' : 'failed';
+        return $this->send($status, $body) ? 'sent' : 'failed';
     }
 
     public function discardTranslation()
@@ -412,15 +414,12 @@ class ConversationComposer extends Component
     }
 
     /**
-     * The language replies go out in, as the agent chose: the customer's (their profile's).
+     * The customer's language was changed (the sidebar, customers/profile_snippet): a preview
+     * in the one before is dropped, and the next is in the new one.
      */
-    public function setCustomerLanguage($language)
+    #[On('customer-language-changed')]
+    public function customerLanguageChanged()
     {
-        $language = (string) $language;
-        if (!\App\Ai\Settings::isLanguage($language)) {
-            return;
-        }
-        \App\Ai\ChatTranslation::setCustomerLanguage($this->conversation()->customer, $language, true);
         $this->translation = null;
         unset($this->translating);
     }

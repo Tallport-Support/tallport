@@ -77,7 +77,7 @@ class AiTranslateThread implements ShouldQueue, ShouldBeUnique
             return;
         }
         // A translated chat's messages: together, a few seconds after the latest.
-        if (\App\Ai\ChatTranslation::isOn($thread->conversation)) {
+        if ($thread->conversation->hasChannel() && \App\Ai\ChatTranslation::isOn($thread->conversation)) {
             AiTranslateChat::dispatch($thread->conversation_id, $language)->delay(now()->addSeconds(\App\Ai\ChatTranslation::BATCH_DELAY));
 
             return;
