@@ -66,7 +66,17 @@ class RealtimeConvTranslating implements ShouldBroadcastNow
         ) {
             return [];
         }
-        foreach ((array) ($payload->translations ?? []) as $translation) {
+        // Not for messages the user reads as written (App\Ai\Translations::forThread()).
+        $threads = \App\Thread::whereIn('id', array_map(fn ($translation) => (int) ($translation->thread_id ?? 0), (array) ($payload->translations ?? [])))->get()->keyBy('id');
+        $payload->translations = array_values(array_filter((array) ($payload->translations ?? []), function ($translation) use ($threads, $user, $payload) {
+            $thread = $threads[(int) ($translation->thread_id ?? 0)] ?? null;
+
+            return $thread && !\App\Ai\Translations::readAsWritten($thread, $user, $payload->language);
+        }));
+        if (!$payload->translations) {
+            return [];
+        }
+        foreach ($payload->translations as $translation) {
             $text = (string) ($translation->text ?? '');
             // A tag still being written is left out.
             $translation->content = !empty($translation->html)

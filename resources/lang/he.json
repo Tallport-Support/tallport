@@ -1835,5 +1835,12 @@
     "Delivered": "נמסר",
     "Delivered to :recipient": "נמסר אל :recipient",
     "Delivery notice for :link": "הודעת מסירה עבור :link",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "שרת הדואר או תיבת הדואר של הנמען אישרו שהדואר האלקטרוני הגיע."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "שרת הדואר או תיבת הדואר של הנמען אישרו שהדואר האלקטרוני הגיע.",
+    "Languages": "שפות",
+    "Detect Automatically": "זיהוי אוטומטי",
+    "No Translation Needed": "ללא צורך בתרגום",
+    "Messages in these languages are shown as written.": "הודעות בשפות אלה מוצגות כפי שנכתבו.",
+    "Replies in these languages are sent as written.": "תשובות בשפות אלה נשלחות כפי שנכתבו.",
+    "also reads :languages": "קורא/ת גם :languages",
+    "Reads :languages": "קורא/ת :languages"
 }

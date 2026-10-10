@@ -32,6 +32,26 @@
             </x-fruit::field>
         </x-fruit::form-section>
 
+        {{-- Replies are translated into their language (App\Ai\ChatTranslation); none: detected in their first message. --}}
+        <x-fruit::form-section :title="__('Languages')">
+            <x-fruit::field :label="__('Language')" layout="row">
+                <x-fruit::select id="language" name="language">
+                    <option value="">{{ __('Detect Automatically') }}</option>
+                    @foreach (App\Ai\Settings::displayNames() as $code => $name)
+                        <option value="{{ $code }}" @selected(old('language', $customer->language) == $code)>{{ App\Ai\Settings::optionName($code) }}</option>
+                    @endforeach
+                </x-fruit::select>
+            </x-fruit::field>
+
+            <x-fruit::field :label="__('No Translation Needed')" :description="__('Replies in these languages are sent as written.')" layout="row">
+                <x-fruit::select id="languages" name="languages[]" multiple size="6">
+                    @foreach (App\Ai\Settings::displayNames() as $code => $name)
+                        <option value="{{ $code }}" @selected(in_array($code, (array) old('languages', $customer->languages)))>{{ App\Ai\Settings::optionName($code) }}</option>
+                    @endforeach
+                </x-fruit::select>
+            </x-fruit::field>
+        </x-fruit::form-section>
+
         @if (Auth::user()->isAdmin())
             {{-- Retention (Settings » Retention) never deletes a customer on legal hold, nor their conversations. --}}
             <x-fruit::form-section :title="__('Retention')">

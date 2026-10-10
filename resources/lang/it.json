@@ -1835,5 +1835,12 @@
     "Delivered": "Consegnato",
     "Delivered to :recipient": "Consegnato a :recipient",
     "Delivery notice for :link": "Avviso di consegna per :link",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "Il server di posta o la casella del destinatario ha confermato che l'email è arrivata."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Il server di posta o la casella del destinatario ha confermato che l'email è arrivata.",
+    "Languages": "Lingue",
+    "Detect Automatically": "Rileva Automaticamente",
+    "No Translation Needed": "Nessuna Traduzione Necessaria",
+    "Messages in these languages are shown as written.": "I messaggi in queste lingue vengono mostrati così come sono scritti.",
+    "Replies in these languages are sent as written.": "Le risposte in queste lingue vengono inviate così come sono scritte.",
+    "also reads :languages": "legge anche :languages",
+    "Reads :languages": "Legge :languages"
 }

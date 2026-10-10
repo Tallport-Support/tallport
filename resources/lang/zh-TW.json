@@ -1880,5 +1880,12 @@
     "Delivered": "已送達",
     "Delivered to :recipient": "已送達 :recipient",
     "Delivery notice for :link": ":link 的送達通知",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "收件人的郵件伺服器或信箱已確認郵件送達。"
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "收件人的郵件伺服器或信箱已確認郵件送達。",
+    "Languages": "語言",
+    "Detect Automatically": "自動偵測",
+    "No Translation Needed": "無需翻譯",
+    "Messages in these languages are shown as written.": "這些語言的訊息會依原文顯示。",
+    "Replies in these languages are sent as written.": "這些語言的回覆會依原文傳送。",
+    "also reads :languages": "也能讀：:languages",
+    "Reads :languages": "能讀：:languages"
 }

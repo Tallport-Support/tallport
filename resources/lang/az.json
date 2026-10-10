@@ -1836,5 +1836,12 @@
     "Delivered": "Çatdırıldı",
     "Delivered to :recipient": ":recipient ünvanına çatdırıldı",
     "Delivery notice for :link": ":link üçün çatdırılma bildirişi",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "Alıcının poçt serveri və ya poçt qutusu e-poçtun çatdığını təsdiqlədi."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Alıcının poçt serveri və ya poçt qutusu e-poçtun çatdığını təsdiqlədi.",
+    "Languages": "Dillər",
+    "Detect Automatically": "Avtomatik Müəyyən Et",
+    "No Translation Needed": "Tərcümə Tələb Olunmur",
+    "Messages in these languages are shown as written.": "Bu dillərdəki mesajlar yazıldığı kimi göstərilir.",
+    "Replies in these languages are sent as written.": "Bu dillərdəki cavablar yazıldığı kimi göndərilir.",
+    "also reads :languages": "həmçinin oxuduğu: :languages",
+    "Reads :languages": "Oxuduğu: :languages"
 }

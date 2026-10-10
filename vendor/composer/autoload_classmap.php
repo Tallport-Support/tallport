@@ -206,6 +206,7 @@ return array(
     'App\\Install\\PermissionsChecker' => $baseDir . '/app/Install/PermissionsChecker.php',
     'App\\Install\\RequirementsChecker' => $baseDir . '/app/Install/RequirementsChecker.php',
     'App\\Job' => $baseDir . '/app/Job.php',
+    'App\\Jobs\\AiDetectCustomerLanguage' => $baseDir . '/app/Jobs/AiDetectCustomerLanguage.php',
     'App\\Jobs\\AiIndexDocument' => $baseDir . '/app/Jobs/AiIndexDocument.php',
     'App\\Jobs\\AiSummarizeConversation' => $baseDir . '/app/Jobs/AiSummarizeConversation.php',
     'App\\Jobs\\AiTranslateChat' => $baseDir . '/app/Jobs/AiTranslateChat.php',

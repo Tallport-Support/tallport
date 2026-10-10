@@ -1836,5 +1836,12 @@
     "Delivered": "Teslim Edildi",
     "Delivered to :recipient": ":recipient adresine teslim edildi",
     "Delivery notice for :link": ":link için teslim bildirimi",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "Alıcının e-posta sunucusu veya posta kutusu e-postanın ulaştığını onayladı."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Alıcının e-posta sunucusu veya posta kutusu e-postanın ulaştığını onayladı.",
+    "Languages": "Diller",
+    "Detect Automatically": "Otomatik Algıla",
+    "No Translation Needed": "Çeviri Gerekmez",
+    "Messages in these languages are shown as written.": "Bu dillerdeki mesajlar yazıldığı gibi gösterilir.",
+    "Replies in these languages are sent as written.": "Bu dillerdeki yanıtlar yazıldığı gibi gönderilir.",
+    "also reads :languages": "ayrıca okuduğu: :languages",
+    "Reads :languages": "Okuduğu: :languages"
 }

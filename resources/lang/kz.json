@@ -2233,5 +2233,11 @@
     "Delivered": "Жеткізілді",
     "Delivered to :recipient": ":recipient адресіне жеткізілді",
     "Delivery notice for :link": ":link үшін жеткізу туралы хабарлама",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "Алушының пошта сервері немесе пошта жәшігі хаттың келгенін растады."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Алушының пошта сервері немесе пошта жәшігі хаттың келгенін растады.",
+    "Detect Automatically": "Автоматты Түрде Анықтау",
+    "No Translation Needed": "Аударма Қажет Емес",
+    "Messages in these languages are shown as written.": "Осы тілдердегі хабарламалар жазылғандай көрсетіледі.",
+    "Replies in these languages are sent as written.": "Осы тілдердегі жауаптар жазылғандай жіберіледі.",
+    "also reads :languages": "сондай-ақ оқиды: :languages",
+    "Reads :languages": "Оқиды: :languages"
 }

@@ -1835,5 +1835,12 @@
     "Delivered": "Livrat",
     "Delivered to :recipient": "Livrat către :recipient",
     "Delivery notice for :link": "Notificare de livrare pentru :link",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "Serverul de e-mail sau căsuța poștală a destinatarului a confirmat că e-mailul a ajuns."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Serverul de e-mail sau căsuța poștală a destinatarului a confirmat că e-mailul a ajuns.",
+    "Languages": "Limbi",
+    "Detect Automatically": "Detectează Automat",
+    "No Translation Needed": "Fără Nevoie de Traducere",
+    "Messages in these languages are shown as written.": "Mesajele în aceste limbi sunt afișate așa cum au fost scrise.",
+    "Replies in these languages are sent as written.": "Răspunsurile în aceste limbi sunt trimise așa cum au fost scrise.",
+    "also reads :languages": "citește și :languages",
+    "Reads :languages": "Citește :languages"
 }

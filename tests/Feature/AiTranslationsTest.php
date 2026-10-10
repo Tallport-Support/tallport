@@ -108,9 +108,10 @@ class AiTranslationsTest extends FeatureTestCase
     {
         $thread = $this->first();
         $conversation = $this->conversation;
+        $this->assertNull($thread->customer->language);
         ThreadTranslator::fake(function () use ($thread, $conversation) {
             Translations::store($thread->fresh(), 'de', 'nl', 'Wo bleibt meine Bestellung?');
-            ChatTranslation::setCustomerLanguage($conversation->fresh(), 'ja', true);
+            ChatTranslation::setCustomerLanguage($conversation->fresh()->customer, 'ja', true);
 
             return ['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'nl'];
         });
@@ -118,7 +119,6 @@ class AiTranslationsTest extends FeatureTestCase
         $this->assertSame('Where is my order?', Translations::translate($thread, 'en'));
         $this->assertSame('Wo bleibt meine Bestellung?', Translations::get($thread->fresh(), 'de'));
         $this->assertSame('ja', ChatTranslation::customerLanguage($conversation->fresh()));
-        $this->assertSame('user', \App\Ai\Summaries::data($conversation->fresh())['language_by']);
     }
 
     public function testIncomingNothingToTranslate()
@@ -318,7 +318,7 @@ class AiTranslationsTest extends FeatureTestCase
      */
     public function testTheComposersTranslation()
     {
-        ChatTranslation::setCustomerLanguage($this->conversation, 'nl');
+        ChatTranslation::setCustomerLanguage($this->conversation->customer, 'nl', true);
         $composer = Livewire::actingAs($this->agent)->test(ConversationComposer::class, ['conversation' => $this->conversation->fresh(), 'chat' => true]);
         \App\Ai\Agents\ReplyTranslator::fake([['translation' => '<p>Bedankt</p>', 'same_language' => false, 'note' => '']]);
 

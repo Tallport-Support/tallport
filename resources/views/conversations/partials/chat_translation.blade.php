@@ -8,7 +8,9 @@
         <x-icon.languages class="f-icon" aria-hidden="true" />
         <span>{{ __('Translate Replies Into') }}</span>
         <select class="f-input" wire:change="setCustomerLanguage($event.target.value)">
-            <option value="" @selected(!$chat_language)>{{ __('Not Translated') }}</option>
+            @if (!$chat_language)
+                <option value="" selected disabled></option>
+            @endif
             @foreach (App\Ai\Settings::displayNames() as $code => $name)
                 <option value="{{ $code }}" @selected($chat_language === $code)>{{ App\Ai\Settings::optionName($code) }}</option>
             @endforeach

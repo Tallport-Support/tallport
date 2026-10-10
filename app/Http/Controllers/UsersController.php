@@ -205,7 +205,8 @@ class UsersController extends Controller
             'time_format' => 'required',
             'role'        => ['nullable', Rule::in(array_keys(User::$roles))],
             'photo_url'   => 'nullable|image|mimes:jpeg,png,jpg,gif',
-            'ai_language' => ['nullable', Rule::in(array_keys(\App\Ai\Settings::LANGUAGES))],
+            'languages'   => 'nullable|array',
+            'languages.*' => [Rule::in(array_keys(\App\Ai\Settings::LANGUAGES))],
             'ai_drafts_per_day' => 'nullable|integer|min:0|max:10000',
         ]);
         $validator->setAttributeNames([
@@ -317,8 +318,8 @@ class UsersController extends Controller
 
         $user->setData($request_data);
 
-        if ($request->exists('ai_language')) {
-            $user->ai_language = $request->ai_language ?: null;
+        if ($request->exists('languages_shown')) {
+            $user->languages = array_values(array_unique((array) $request->languages)) ?: null;
         }
         if ($request->exists('keyboard_shortcuts_shown')) {
             $user->keyboard_shortcuts = (bool) $request->keyboard_shortcuts;

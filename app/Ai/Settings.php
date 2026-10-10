@@ -18,18 +18,24 @@ class Settings
     const DEFAULT_TRANSLATIONS_PER_CUSTOMER_HOUR = 60;
 
     /**
-     * Languages for summaries and translations (as the module offered).
+     * Languages for summaries and translations (as the module offered, and
+     * one for each language of the interface: fromLocale()).
      */
     const LANGUAGES = [
         'en'         => 'English',
+        'az'         => 'Azərbaycan dili',
         'ms-Arab'    => 'Bahasa Melayu (Arab)',
         'ms-Latn'    => 'Bahasa Melayu (Latin)',
+        'ca'         => 'Català',
+        'cs'         => 'Čeština',
         'de'         => 'Deutsch',
         'es'         => 'Español',
         'fr'         => 'Français',
         'el-monoton' => 'Ελληνικά (μονοτονικό)',
         'el-polyton' => 'Ελληνικά (πολυτονικό)',
+        'hr'         => 'Hrvatski',
         'it'         => 'Italiano',
+        'hu'         => 'Magyar',
         'mt'         => 'Malti',
         'nl'         => 'Nederlands',
         'no'         => 'Norsk',
@@ -39,12 +45,15 @@ class Settings
         'ro'         => 'Română',
         'sk'         => 'Slovenčina',
         'sl'         => 'Slovenščina',
+        'fi'         => 'Suomi',
         'sv'         => 'Svenska',
         'th'         => 'ไทย',
         'tr'         => 'Türkçe',
         'uk'         => 'Українська',
         'vi'         => 'Tiếng Việt',
         'ru'         => 'Русский',
+        'kk'         => 'Қазақ тілі',
+        'he'         => 'עברית',
         'ja'         => '日本語',
         'ko'         => '한국어',
         'zh-Hans'    => '简体中文',
@@ -245,19 +254,39 @@ class Settings
     }
 
     /**
-     * The language summaries and translations are in: the user's, else the
-     * mailbox's, else the installation's.
+     * The language summaries and translations are in: for a user, their own
+     * (the language of their interface); else the mailbox's, else the
+     * installation's.
      */
     public static function language($mailbox = null, $user = null)
     {
-        if ($user && self::isLanguage($user->ai_language)) {
-            return $user->ai_language;
+        if ($user) {
+            return self::fromLocale($user->getLocale());
         }
         if ($mailbox && self::isLanguage($code = self::mailboxLanguage($mailbox))) {
             return $code;
         }
 
         return self::defaultLanguage();
+    }
+
+    /**
+     * The language of an interface locale (config('app.locales')).
+     */
+    public static function fromLocale($locale)
+    {
+        $code = ['zh-CN' => 'zh-Hans', 'zh-TW' => 'zh-Hant', 'kz' => 'kk'][$locale] ?? $locale;
+
+        return self::isLanguage($code) ? $code : self::DEFAULT_LANGUAGE;
+    }
+
+    /**
+     * Whether a user reads a language as it is written: their own, or one of
+     * those they need no translation of (users.languages).
+     */
+    public static function reads($user, $code)
+    {
+        return $user && $code && ($code === self::language(null, $user) || in_array($code, (array) $user->languages, true));
     }
 
     public static function defaultLanguage()

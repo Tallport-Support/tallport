@@ -1835,5 +1835,12 @@
     "Delivered": "Dostavljeno",
     "Delivered to :recipient": "Dostavljeno na :recipient",
     "Delivery notice for :link": "Obvestilo o dostavi za :link",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "Poštni strežnik ali poštni predal prejemnika je potrdil, da je e-pošta prispela."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Poštni strežnik ali poštni predal prejemnika je potrdil, da je e-pošta prispela.",
+    "Languages": "Jeziki",
+    "Detect Automatically": "Samodejno Zaznaj",
+    "No Translation Needed": "Prevod Ni Potreben",
+    "Messages in these languages are shown as written.": "Sporočila v teh jezikih so prikazana tako, kot so napisana.",
+    "Replies in these languages are sent as written.": "Odgovori v teh jezikih so poslani tako, kot so napisani.",
+    "also reads :languages": "bere tudi: :languages",
+    "Reads :languages": "Bere: :languages"
 }

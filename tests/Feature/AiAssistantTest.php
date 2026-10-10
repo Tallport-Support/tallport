@@ -377,34 +377,58 @@ class AiAssistantTest extends FeatureTestCase
 
     public function testLanguageFromUserElseMailboxElseInstallation()
     {
-        $this->assertSame('en', Settings::language($this->mailbox, $this->agent));
+        $this->assertSame('en', Settings::language($this->mailbox));
 
         Option::set('aiassistant.translation_language', 'fr');
-        $this->assertSame('fr', Settings::language($this->mailbox, $this->agent));
+        $this->assertSame('fr', Settings::language($this->mailbox));
 
         Option::set('aiassistant.mailbox_language', [$this->mailbox->id => 'de']);
-        $this->assertSame('de', Settings::language($this->mailbox, $this->agent));
+        $this->assertSame('de', Settings::language($this->mailbox));
 
-        $this->agent->ai_language = 'ja';
+        // A user's: the language of their interface.
+        $this->assertSame('en', Settings::language($this->mailbox, $this->agent));
+        $this->agent->locale = 'ja';
         $this->assertSame('ja', Settings::language($this->mailbox, $this->agent));
+        $this->agent->locale = 'zh-TW';
+        $this->assertSame('zh-Hant', Settings::language($this->mailbox, $this->agent));
+        $this->agent->locale = 'kz';
+        $this->assertSame('kk', Settings::language($this->mailbox, $this->agent));
     }
 
-    public function testUserSetsOwnLanguageAndAdminSetsDraftLimit()
+    /**
+     * Every language of the interface is one to translate into.
+     */
+    public function testEveryLocaleHasALanguage()
     {
-        $data = ['first_name' => 'Agent', 'email' => $this->agent->email, 'timezone' => 'UTC', 'time_format' => 2];
+        foreach (config('app.locales') as $locale) {
+            $this->assertTrue(Settings::isLanguage(Settings::fromLocale($locale)), $locale);
+            $this->assertTrue($locale == 'en' || Settings::fromLocale($locale) != 'en', $locale);
+        }
+        $this->assertSame('zh-Hans', Settings::fromLocale('zh-CN'));
+        $this->assertSame('en', Settings::fromLocale('xx'));
+    }
 
-        $this->postForm($this->agent, '/users/profile/'.$this->agent->id, $data + ['ai_language' => 'nl', 'ai_drafts_per_day' => 999]);
+    public function testUserSetsLanguagesTheyReadAndAdminSetsDraftLimit()
+    {
+        $data = ['first_name' => 'Agent', 'email' => $this->agent->email, 'timezone' => 'UTC', 'time_format' => 2, 'languages_shown' => 1];
+
+        $this->actingAs($this->agent)->get('/users/profile/'.$this->agent->id)
+            ->assertSee('No Translation Needed')->assertSee('name="languages[]"', false)->assertDontSee('AI Language');
+        $this->postForm($this->agent, '/users/profile/'.$this->agent->id, $data + ['languages' => ['nl', 'zh-Hans'], 'ai_drafts_per_day' => 999]);
         $this->agent->refresh();
-        $this->assertSame('nl', $this->agent->ai_language);
+        $this->assertSame(['nl', 'zh-Hans'], $this->agent->languages);
         $this->assertNull($this->agent->ai_drafts_per_day);
+        $this->assertTrue(Settings::reads($this->agent, 'nl'));
+        $this->assertTrue(Settings::reads($this->agent, 'en'));
+        $this->assertFalse(Settings::reads($this->agent, 'de'));
 
-        $this->postForm($this->admin, '/users/profile/'.$this->agent->id, $data + ['ai_language' => '', 'ai_drafts_per_day' => 0]);
+        $this->postForm($this->admin, '/users/profile/'.$this->agent->id, $data + ['ai_drafts_per_day' => 0]);
         $this->agent->refresh();
-        $this->assertNull($this->agent->ai_language);
+        $this->assertNull($this->agent->languages);
         $this->assertSame(0, Settings::draftsPerDay($this->agent));
 
-        $this->postForm($this->agent, '/users/profile/'.$this->agent->id, $data + ['ai_language' => 'xx'])
-            ->assertSessionHasErrors('ai_language');
+        $this->postForm($this->agent, '/users/profile/'.$this->agent->id, $data + ['languages' => ['xx']])
+            ->assertSessionHasErrors('languages.0');
     }
 
     // Summaries and translations.
@@ -566,6 +590,8 @@ class AiAssistantTest extends FeatureTestCase
         $this->configureAi(['aiassistant.translation_language' => 'nl']);
         $this->fakeAi();
         ThreadTranslator::fake([['translation' => '', 'same_language' => true, 'detected_language' => 'nl']]);
+        $this->agent->locale = 'nl';
+        $this->agent->save();
 
         $conversation = $this->receiveCustomerEmail();
         $thread = $conversation->threads()->first();
@@ -644,7 +670,7 @@ class AiAssistantTest extends FeatureTestCase
         $this->fakeAi();
         $conversation = $this->receiveCustomerEmail();
 
-        $this->agent->ai_language = 'de';
+        $this->agent->locale = 'de';
         $this->agent->save();
         ConversationSummarizer::fake([['one_liner' => 'Kunde fragt nach der Bestellung', 'background' => '']]);
         ThreadTranslator::fake([['translation' => 'Wo bleibt meine Bestellung?', 'same_language' => false, 'detected_language' => 'nl']]);
@@ -816,7 +842,7 @@ class AiAssistantTest extends FeatureTestCase
             ->assertSeeInOrder(['Long one', 'Background', 'Restarting did not help', 'Still open: other users']);
     }
 
-    public function testSummariesInDifferentLanguagesKeepTheAgentsLanguageChoice()
+    public function testSummariesInDifferentLanguagesAreKeptTogether()
     {
         $this->configureAi();
         $conversation = $this->receiveCustomerEmail();
@@ -824,15 +850,12 @@ class AiAssistantTest extends FeatureTestCase
 
         ConversationSummarizer::fake([['one_liner' => 'Order is missing', 'background' => '']]);
         Summaries::summarize($conversation, 'en');
-        \App\Ai\ChatTranslation::setCustomerLanguage($conversation->fresh(), 'ja', true);
         ConversationSummarizer::fake([['one_liner' => 'Bestellung fehlt', 'background' => '']]);
         Summaries::summarize($stale, 'de');
 
         $saved = $conversation->fresh();
         $this->assertSame('Order is missing', Summaries::get($saved, 'en')['one_liner']);
         $this->assertSame('Bestellung fehlt', Summaries::get($saved, 'de')['one_liner']);
-        $this->assertSame('ja', \App\Ai\ChatTranslation::customerLanguage($saved));
-        $this->assertSame('user', Summaries::data($saved)['language_by']);
     }
 
     public function testEarlierDataIsConvertedByLanguage()

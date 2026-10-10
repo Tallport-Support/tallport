@@ -6,6 +6,7 @@ use App\Conversation;
 use App\Customer;
 use App\Email;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Validator;
 
 class CustomersController extends Controller
@@ -72,6 +73,9 @@ class CustomersController extends Controller
             //'emails.1'   => 'nullable|email|required_without:first_name',
             'emails.*'   => 'nullable|email|distinct|required_without:first_name',
             'photo_url'   => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'language'    => ['nullable', Rule::in(array_keys(\App\Ai\Settings::LANGUAGES))],
+            'languages'   => 'nullable|array',
+            'languages.*' => [Rule::in(array_keys(\App\Ai\Settings::LANGUAGES))],
         ]);
         $validator->setAttributeNames([
             'photo_url'   => __('Photo'),
@@ -186,6 +190,11 @@ class CustomersController extends Controller
         }
 
         $customer->setData($request_data);
+        // Their languages (the form's Language section; a module's form may leave them out).
+        if ($request->exists('language')) {
+            $customer->language = $request->language ?: null;
+            $customer->languages = array_values(array_unique((array) $request->languages)) ?: null;
+        }
         // Websites
         // if (!empty($request->websites)) {
         //     $customer->setWebsites($request->websites);

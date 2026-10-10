@@ -1927,5 +1927,12 @@
     "Delivered": "Lliurat",
     "Delivered to :recipient": "Lliurat a :recipient",
     "Delivery notice for :link": "Avís de lliurament per a :link",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "El servidor de correu o la bústia del destinatari ha confirmat que el correu electrònic ha arribat."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "El servidor de correu o la bústia del destinatari ha confirmat que el correu electrònic ha arribat.",
+    "Languages": "Idiomes",
+    "Detect Automatically": "Detecta Automàticament",
+    "No Translation Needed": "No Cal Traduir",
+    "Messages in these languages are shown as written.": "Els missatges en aquests idiomes es mostren tal com estan escrits.",
+    "Replies in these languages are sent as written.": "Les respostes en aquests idiomes s'envien tal com estan escrites.",
+    "also reads :languages": "també llegeix :languages",
+    "Reads :languages": "Llegeix :languages"
 }

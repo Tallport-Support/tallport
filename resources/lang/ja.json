@@ -1836,5 +1836,12 @@
     "Delivered": "配信済み",
     "Delivered to :recipient": ":recipient に配信されました",
     "Delivery notice for :link": ":link の配信通知",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "受信者のメールサーバーまたはメールボックスが、メールの到着を確認しました。"
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "受信者のメールサーバーまたはメールボックスが、メールの到着を確認しました。",
+    "Languages": "言語",
+    "Detect Automatically": "自動検出",
+    "No Translation Needed": "翻訳不要",
+    "Messages in these languages are shown as written.": "これらの言語のメッセージは原文のまま表示されます。",
+    "Replies in these languages are sent as written.": "これらの言語の返信は原文のまま送信されます。",
+    "also reads :languages": "ほかに読める言語: :languages",
+    "Reads :languages": "読める言語: :languages"
 }

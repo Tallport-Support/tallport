@@ -1839,5 +1839,12 @@
     "Delivered": "Afgeleverd",
     "Delivered to :recipient": "Afgeleverd aan :recipient",
     "Delivery notice for :link": "Afleverbericht voor :link",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "De mailserver of mailbox van de ontvanger heeft bevestigd dat de e-mail is aangekomen."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "De mailserver of mailbox van de ontvanger heeft bevestigd dat de e-mail is aangekomen.",
+    "Languages": "Talen",
+    "Detect Automatically": "Automatisch Herkennen",
+    "No Translation Needed": "Geen Vertaling Nodig",
+    "Messages in these languages are shown as written.": "Berichten in deze talen worden getoond zoals ze geschreven zijn.",
+    "Replies in these languages are sent as written.": "Antwoorden in deze talen worden verzonden zoals ze geschreven zijn.",
+    "also reads :languages": "leest ook :languages",
+    "Reads :languages": "Leest :languages"
 }

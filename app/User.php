@@ -147,6 +147,8 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
     protected $casts = [
         'permissions'             => 'array',
         'two_factor_confirmed_at' => 'datetime',
+        // Languages read as written: not translated (App\Ai\Settings::reads()).
+        'languages'               => 'array',
     ];
     
     public function __construct(array $attributes = array())

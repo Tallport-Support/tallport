@@ -1836,5 +1836,12 @@
     "Delivered": "Levererad",
     "Delivered to :recipient": "Levererad till :recipient",
     "Delivery notice for :link": "Leveransavisering för :link",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "Mottagarens e-postserver eller brevlåda bekräftade att e-postmeddelandet kom fram."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Mottagarens e-postserver eller brevlåda bekräftade att e-postmeddelandet kom fram.",
+    "Languages": "Språk",
+    "Detect Automatically": "Identifiera Automatiskt",
+    "No Translation Needed": "Ingen Översättning Behövs",
+    "Messages in these languages are shown as written.": "Meddelanden på dessa språk visas som de skrevs.",
+    "Replies in these languages are sent as written.": "Svar på dessa språk skickas som de skrevs.",
+    "also reads :languages": "läser även :languages",
+    "Reads :languages": "Läser :languages"
 }

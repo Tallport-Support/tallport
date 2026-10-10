@@ -446,6 +446,8 @@ class Customer extends Model
         // Retention (App\Retention\Retention).
         'last_contact_at'   => 'datetime',
         'retention_hold_at' => 'datetime',
+        // Languages read besides their own (language): replies in them aren't translated.
+        'languages'         => 'array',
     ];
 
     /**

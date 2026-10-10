@@ -1854,5 +1854,12 @@
     "Delivered": "Toimitettu",
     "Delivered to :recipient": "Toimitettu osoitteeseen :recipient",
     "Delivery notice for :link": "Toimitusilmoitus kohteelle :link",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "Vastaanottajan sähköpostipalvelin tai postilaatikko vahvisti, että sähköposti saapui."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Vastaanottajan sähköpostipalvelin tai postilaatikko vahvisti, että sähköposti saapui.",
+    "Languages": "Kielet",
+    "Detect Automatically": "Tunnista Automaattisesti",
+    "No Translation Needed": "Ei Käännöstä Tarvita",
+    "Messages in these languages are shown as written.": "Näillä kielillä kirjoitetut viestit näytetään sellaisinaan.",
+    "Replies in these languages are sent as written.": "Näillä kielillä kirjoitetut vastaukset lähetetään sellaisinaan.",
+    "also reads :languages": "lukee myös: :languages",
+    "Reads :languages": "Lukee: :languages"
 }

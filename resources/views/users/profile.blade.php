@@ -130,11 +130,12 @@
             </x-fruit::form-section>
 
             <x-fruit::form-section :title="__('AI')">
-                <x-fruit::field :label="__('AI Language')" :description="__('The language of AI summaries and translations.')" layout="row">
-                    <x-fruit::select id="ai_language" name="ai_language">
-                        <option value="">{{ __('Default') }}</option>
+                {{-- Summaries and translations are in the user's language (above); these aren't translated. --}}
+                <x-fruit::field :label="__('No Translation Needed')" :description="__('Messages in these languages are shown as written.')" layout="row">
+                    <input type="hidden" name="languages_shown" value="1">
+                    <x-fruit::select id="languages" name="languages[]" multiple size="6">
                         @foreach (App\Ai\Settings::displayNames() as $code => $name)
-                            <option value="{{ $code }}" @selected(old('ai_language', $user->ai_language) == $code)>{{ App\Ai\Settings::optionName($code) }}</option>
+                            <option value="{{ $code }}" @selected(in_array($code, (array) old('languages', $user->languages)))>{{ App\Ai\Settings::optionName($code) }}</option>
                         @endforeach
                     </x-fruit::select>
                 </x-fruit::field>

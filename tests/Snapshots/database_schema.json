@@ -1691,6 +1691,20 @@
                 "type": "int(10) unsigned",
                 "nullable": true,
                 "default": "NULL"
+            },
+            "language": {
+                "type": "varchar(20)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "languages": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {
@@ -4292,13 +4306,6 @@
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
             },
-            "ai_language": {
-                "type": "varchar(20)",
-                "nullable": true,
-                "default": "NULL",
-                "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci"
-            },
             "ai_drafts_per_day": {
                 "type": "smallint(5) unsigned",
                 "nullable": true,
@@ -4339,6 +4346,13 @@
                 "default": "NULL"
             },
             "list_sorting": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "languages": {
                 "type": "text",
                 "nullable": true,
                 "default": "NULL",

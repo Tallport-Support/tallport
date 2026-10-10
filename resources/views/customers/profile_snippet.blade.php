@@ -22,7 +22,15 @@
 		$detail = fn ($label) => '<span class="f-sr-only">'.e($label).': </span>';
 		$nostr_keys = collect(App\Nostr\CustomerKey::forCustomer($customer->id))->filter(fn ($key) => $key->label);
 	@endphp
-	@if (count($customer_emails) || count($customer->getPhones()) || $customer->getWebsites() || $customer->getSocialProfiles() || $location || $customer->address || $customer->zip || $sender_offset || $customer->notes || count($nostr_keys))
+	@php
+		// Their language and those they read besides (replies in them aren't translated).
+		$reads = implode(', ', array_map(fn ($code) => App\Ai\Settings::displayName($code), array_diff((array) $customer->languages, [$customer->language])));
+		$languages = implode(' · ', array_filter([
+			$customer->language ? App\Ai\Settings::displayName($customer->language) : '',
+			$reads !== '' ? ($customer->language ? __('also reads :languages', ['languages' => $reads]) : __('Reads :languages', ['languages' => $reads])) : '',
+		]));
+	@endphp
+	@if (count($customer_emails) || count($customer->getPhones()) || $customer->getWebsites() || $customer->getSocialProfiles() || $location || $customer->address || $customer->zip || $sender_offset || $languages !== '' || $customer->notes || count($nostr_keys))
 		<ul class="customer-snippet__details customer-contacts">
 			@foreach ($customer_emails as $email)
 				<li class="customer-email"><x-icon.mail class="f-icon" aria-hidden="true" />{!! $detail(__('Email')) !!}{{-- Copied on a click (said in a toast). --}}<button type="button" class="contact-main" title="{{ __('Copy') }}" aria-label="{{ __('Copy') }}: {{ $email->email }}" x-data x-on:click="copyToClipboard(@js($email->email)); Tallport.toast(@js(__('Copied')))">{{ $email->email }}</button></li>
@@ -55,6 +63,9 @@
 			@endif
 			@if ($sender_offset)
 				<li title="{{ __('From the time zone of their latest email') }}"><x-icon.clock class="f-icon" aria-hidden="true" />{!! $detail(__('Local time')) !!}<span>{{ App\Misc\SenderTime::format(now(), $sender_offset) }} (GMT{{ $sender_offset }})</span></li>
+			@endif
+			@if ($languages !== '')
+				<li class="customer-language"><x-icon.languages class="f-icon" aria-hidden="true" />{!! $detail(__('Language')) !!}<span>{{ $languages }}</span></li>
 			@endif
 			@include('nostr/partials/customer_keys_snippet', ['keys' => $nostr_keys])
 			@if ($customer->notes)

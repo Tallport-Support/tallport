@@ -14,8 +14,9 @@ use App\Thread;
  * Auto replies in languages: a mailbox's auto reply (the default) and its
  * versions in other languages. A conversation gets the version in the
  * customer's language: Chinese, Japanese and Korean are recognised from the
- * writing system, other languages by the AI Assistant when it is set up.
- * A customer's language is remembered for a few hours.
+ * writing system, other languages by the AI Assistant when it is set up;
+ * the customer's own language (their profile's) where there is a version in
+ * it. A customer's language is remembered for a few hours.
  */
 class AutoReplies
 {
@@ -76,7 +77,11 @@ class AutoReplies
         }
         $languages = self::versions($mailbox, true)->keys()->all();
         $language = null;
-        if ($languages) {
+        // The customer's language (their profile's) where there is a version in it.
+        $customer_language = $conversation->customer->language ?? null;
+        if ($customer_language && in_array($customer_language, $languages)) {
+            $language = $customer_language;
+        } elseif ($languages) {
             $key = 'auto_reply_language.'.$mailbox->id.'.'.$conversation->customer_id;
             $remembered = $conversation->customer_id ? \Cache::get($key) : null;
             if ($remembered !== null && ($remembered === '' || in_array($remembered, $languages))) {

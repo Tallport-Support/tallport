@@ -1835,5 +1835,12 @@
     "Delivered": "Doručené",
     "Delivered to :recipient": "Doručené na :recipient",
     "Delivery notice for :link": "Oznámenie o doručení pre :link",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "Poštový server alebo schránka príjemcu potvrdili, že e-mail dorazil."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Poštový server alebo schránka príjemcu potvrdili, že e-mail dorazil.",
+    "Languages": "Jazyky",
+    "Detect Automatically": "Rozpoznať Automaticky",
+    "No Translation Needed": "Bez Potreby Prekladu",
+    "Messages in these languages are shown as written.": "Správy v týchto jazykoch sa zobrazujú tak, ako boli napísané.",
+    "Replies in these languages are sent as written.": "Odpovede v týchto jazykoch sa odosielajú bez prekladu.",
+    "also reads :languages": "číta aj: :languages",
+    "Reads :languages": "Číta: :languages"
 }

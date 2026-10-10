@@ -1836,5 +1836,12 @@
     "Delivered": "Kézbesítve",
     "Delivered to :recipient": "Kézbesítve ide: :recipient",
     "Delivery notice for :link": "Kézbesítési értesítés ehhez: :link",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "A címzett levelezőszervere vagy postafiókja megerősítette, hogy az e-mail megérkezett."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "A címzett levelezőszervere vagy postafiókja megerősítette, hogy az e-mail megérkezett.",
+    "Languages": "Nyelvek",
+    "Detect Automatically": "Automatikus Felismerés",
+    "No Translation Needed": "Nem Kell Fordítani",
+    "Messages in these languages are shown as written.": "Az ezeken a nyelveken írt üzenetek fordítás nélkül jelennek meg.",
+    "Replies in these languages are sent as written.": "Az ezeken a nyelveken írt válaszok fordítás nélkül mennek el.",
+    "also reads :languages": "olvas még: :languages",
+    "Reads :languages": "Olvas: :languages"
 }

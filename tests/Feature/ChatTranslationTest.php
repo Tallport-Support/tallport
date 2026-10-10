@@ -50,58 +50,68 @@ class ChatTranslationTest extends FeatureTestCase
         return Livewire::actingAs($this->agent)->test(ConversationComposer::class, ['conversation' => $this->conversation->fresh(), 'chat' => true]);
     }
 
-    /**
-     * The chat's language: the first detected in the customer's messages, not switched by a
-     * later one, and the agent's choice over both (empty: replies go out as written).
-     */
-    public function testTheChatsLanguage()
+    protected function setCustomerLanguage($language, array $languages = [])
     {
+        $customer = $this->conversation->customer;
+        $customer->language = $language;
+        $customer->languages = $languages ?: null;
+        $customer->save();
+    }
+
+    /**
+     * The customer's language: the first detected in their messages, kept on their profile and
+     * not switched by a later one; the agent's choice (the composer's) over it.
+     */
+    public function testTheCustomersLanguage()
+    {
+        $this->assertSame('nl', ChatTranslation::customerLanguage($this->conversation->fresh()), 'From the email\'s translation.');
+        $this->setCustomerLanguage(null);
+        $this->assertNull(ChatTranslation::customerLanguage($this->conversation->fresh()));
+        $this->assertFalse(ChatTranslation::needed($this->conversation->fresh(), $this->agent));
+
         $thread = $this->conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
         Translations::translate($thread, 'en');
-        $this->assertSame('nl', ChatTranslation::customerLanguage($this->conversation->fresh()));
+        $this->assertSame('nl', $this->conversation->customer->fresh()->language);
         $this->assertTrue(ChatTranslation::needed($this->conversation->fresh(), $this->agent));
 
-        ChatTranslation::setCustomerLanguage($this->conversation->fresh(), 'de');
-        $this->assertSame('nl', ChatTranslation::customerLanguage($this->conversation->fresh()));
+        ThreadTranslator::fake(fn () => ['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'de']);
+        Translations::translate($thread, 'fr');
+        $this->assertSame('nl', ChatTranslation::customerLanguage($this->conversation->fresh()), 'Detected once, not overwritten.');
 
-        $this->composer()->call('setCustomerLanguage', '');
-        $this->assertFalse(ChatTranslation::needed($this->conversation->fresh(), $this->agent));
-        Translations::translate($thread, 'en');
-        $this->assertSame('', ChatTranslation::customerLanguage($this->conversation->fresh()));
+        // The composer: no "Not Translated"; the agent's choice is the customer's language.
+        $this->composer()->assertSee('Translate Replies Into')->assertDontSee('Not Translated')
+            ->call('setCustomerLanguage', '')->call('setCustomerLanguage', 'klingon');
+        $this->assertSame('nl', ChatTranslation::customerLanguage($this->conversation->fresh()));
+        $this->composer()->call('setCustomerLanguage', 'ja');
+        $this->assertSame('ja', $this->conversation->customer->fresh()->language);
 
         // Off for the mailbox: not translated.
-        $this->composer()->call('setCustomerLanguage', 'nl');
         Option::set('aiassistant.mailbox_chat_translation', []);
         Option::$cache = [];
         $this->assertFalse(ChatTranslation::needed($this->conversation->fresh(), $this->agent));
     }
 
     /**
-     * The chat's language follows the customer: Chinese as detected ("zh" is Simplified
-     * Chinese), and another language once two messages in a row are in it (a first "/start"
-     * or "Hi" doesn't decide a chat); an agent's choice stays.
+     * Replies aren't translated when the customer reads the agent's language: their own, or
+     * one of those they need no translation of; the agent's language is their interface's.
      */
-    public function testTheChatsLanguageFollowsTheCustomer()
+    public function testRepliesAreNotTranslatedWhenTheCustomerReadsTheAgentsLanguage()
     {
         $this->assertSame('zh-Hans', \App\Ai\Settings::detectedLanguage('zh'));
         $this->assertSame('zh-Hant', \App\Ai\Settings::detectedLanguage('zh-TW'));
         $this->assertNull(\App\Ai\Settings::detectedLanguage('xx'));
 
-        $chat = $this->conversation;
-        ChatTranslation::setCustomerLanguage($chat, 'en');
-        $this->assertSame('en', ChatTranslation::customerLanguage($chat->fresh()));
-        ChatTranslation::setCustomerLanguage($chat, 'zh-Hans');
-        $this->assertSame('en', ChatTranslation::customerLanguage($chat->fresh()), 'One message: not yet.');
-        ChatTranslation::setCustomerLanguage($chat, 'zh-Hans');
-        $this->assertSame('zh-Hans', ChatTranslation::customerLanguage($chat->fresh()));
-        ChatTranslation::setCustomerLanguage($chat, 'en');
-        ChatTranslation::setCustomerLanguage($chat, 'zh-Hans');
-        $this->assertSame('zh-Hans', ChatTranslation::customerLanguage($chat->fresh()), 'Not two in a row.');
+        $this->setCustomerLanguage('nl');
+        $this->assertTrue(ChatTranslation::needed($this->conversation->fresh(), $this->agent));
+        $this->setCustomerLanguage('nl', ['en', 'de']);
+        $this->assertFalse(ChatTranslation::needed($this->conversation->fresh(), $this->agent));
+        $this->composer()->assertSet('translating', false);
 
-        $this->composer()->call('setCustomerLanguage', 'ja');
-        ChatTranslation::setCustomerLanguage($chat, 'zh-Hans');
-        ChatTranslation::setCustomerLanguage($chat, 'zh-Hans');
-        $this->assertSame('ja', ChatTranslation::customerLanguage($chat->fresh()));
+        $this->agent->locale = 'fr';
+        $this->agent->save();
+        $this->assertTrue(ChatTranslation::needed($this->conversation->fresh(), $this->agent));
+        $this->agent->locale = 'nl';
+        $this->assertFalse(ChatTranslation::needed($this->conversation->fresh(), $this->agent));
     }
 
     /**
@@ -110,7 +120,7 @@ class ChatTranslationTest extends FeatureTestCase
      */
     public function testAReplyGoesOutTranslatedAfterAPreview()
     {
-        ChatTranslation::setCustomerLanguage($this->conversation, 'nl');
+        $this->setCustomerLanguage('nl');
         ReplyTranslator::fake([new \Laravel\Ai\Responses\TextResponse(
             json_encode(['translation' => '<p>Ik zoek het voor u uit.</p>', 'same_language' => false, 'note' => '']),
             new \Laravel\Ai\Responses\Data\TextUsage(300, 20), new \Laravel\Ai\Responses\Data\Meta
@@ -145,7 +155,7 @@ class ChatTranslationTest extends FeatureTestCase
      */
     public function testWhenTheAiFailsTheReplyCanBeSentAsWritten()
     {
-        ChatTranslation::setCustomerLanguage($this->conversation, 'nl');
+        $this->setCustomerLanguage('nl');
         ReplyTranslator::fake(function () {
             throw new \RuntimeException('Service unavailable');
         });
@@ -177,7 +187,7 @@ class ChatTranslationTest extends FeatureTestCase
 
     public function testAnEmptyTranslationCannotBeMistakenForTheSameLanguage()
     {
-        ChatTranslation::setCustomerLanguage($this->conversation, 'nl');
+        $this->setCustomerLanguage('nl');
         ReplyTranslator::fake([['translation' => '', 'same_language' => false, 'note' => '']]);
 
         $this->composer()->call('previewTranslation', '<p>I will look into it.</p>')->assertReturned('error')
@@ -252,7 +262,7 @@ class ChatTranslationTest extends FeatureTestCase
         Option::set('aiassistant.translation_glossary', [$this->mailbox->id => "12VPX\nserver = Server"]);
         Option::set('aiassistant.mailbox_translation_note', [$this->mailbox->id => 1]);
         Option::$cache = [];
-        ChatTranslation::setCustomerLanguage($this->conversation, 'nl');
+        $this->setCustomerLanguage('nl');
         ReplyTranslator::fake([['translation' => '<p>Herstart de 12VPX Server.</p>', 'same_language' => false, 'note' => 'Automatisch vertaald']]);
 
         $composer = $this->composer();
@@ -271,11 +281,11 @@ class ChatTranslationTest extends FeatureTestCase
      */
     public function testNotesAndTheAgentsOwnLanguageAreNotTranslated()
     {
-        ChatTranslation::setCustomerLanguage($this->conversation, 'nl');
+        $this->setCustomerLanguage('nl');
         $this->composer()->call('switchToNote')->assertSet('translating', false)
             ->call('previewTranslation', '<p>Internal</p>')->assertReturned('off');
 
-        ChatTranslation::setCustomerLanguage($this->conversation->fresh(), 'en', true);
+        $this->setCustomerLanguage('en');
         $this->composer()->assertSet('translating', false)->assertDontSee('data-translating', false);
     }
 }

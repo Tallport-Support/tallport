@@ -1022,6 +1022,7 @@ class ComposerStaticInitfc9b7b2ca15b4d1aba40fc18ae3b6e13
         'App\\Install\\PermissionsChecker' => __DIR__ . '/../..' . '/app/Install/PermissionsChecker.php',
         'App\\Install\\RequirementsChecker' => __DIR__ . '/../..' . '/app/Install/RequirementsChecker.php',
         'App\\Job' => __DIR__ . '/../..' . '/app/Job.php',
+        'App\\Jobs\\AiDetectCustomerLanguage' => __DIR__ . '/../..' . '/app/Jobs/AiDetectCustomerLanguage.php',
         'App\\Jobs\\AiIndexDocument' => __DIR__ . '/../..' . '/app/Jobs/AiIndexDocument.php',
         'App\\Jobs\\AiSummarizeConversation' => __DIR__ . '/../..' . '/app/Jobs/AiSummarizeConversation.php',
         'App\\Jobs\\AiTranslateChat' => __DIR__ . '/../..' . '/app/Jobs/AiTranslateChat.php',

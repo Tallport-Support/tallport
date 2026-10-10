@@ -1835,5 +1835,12 @@
     "Delivered": "Doręczono",
     "Delivered to :recipient": "Doręczono do :recipient",
     "Delivery notice for :link": "Powiadomienie o doręczeniu dla :link",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "Serwer poczty lub skrzynka odbiorcy potwierdziły, że e-mail dotarł."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Serwer poczty lub skrzynka odbiorcy potwierdziły, że e-mail dotarł.",
+    "Languages": "Języki",
+    "Detect Automatically": "Wykryj Automatycznie",
+    "No Translation Needed": "Bez Potrzeby Tłumaczenia",
+    "Messages in these languages are shown as written.": "Wiadomości w tych językach są wyświetlane bez tłumaczenia.",
+    "Replies in these languages are sent as written.": "Odpowiedzi w tych językach są wysyłane bez tłumaczenia.",
+    "also reads :languages": "czyta też: :languages",
+    "Reads :languages": "Czyta: :languages"
 }

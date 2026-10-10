@@ -1840,5 +1840,12 @@
     "Delivered": "Levert",
     "Delivered to :recipient": "Levert til :recipient",
     "Delivery notice for :link": "Leveringsvarsel for :link",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "Mottakerens e-postserver eller postboks bekreftet at e-posten kom frem."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Mottakerens e-postserver eller postboks bekreftet at e-posten kom frem.",
+    "Languages": "Språk",
+    "Detect Automatically": "Oppdag Automatisk",
+    "No Translation Needed": "Ingen Oversettelse Nødvendig",
+    "Messages in these languages are shown as written.": "Meldinger på disse språkene vises slik de ble skrevet.",
+    "Replies in these languages are sent as written.": "Svar på disse språkene sendes slik de ble skrevet.",
+    "also reads :languages": "leser også :languages",
+    "Reads :languages": "Leser :languages"
 }

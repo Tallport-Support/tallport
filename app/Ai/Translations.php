@@ -10,6 +10,7 @@ use App\Thread;
  * Translations of customers' messages, by language, in threads.ai_assistant:
  * {"language": "nl", "translations": {"en": "..."}, "same": ["nl"]}.
  * "same": languages the message is already in (no translation needed).
+ * "forced": languages it was translated into on request (shown even to users who read it).
  * Why there is none is kept too: "no_text" (nothing to translate),
  * "errors" (by language, until it works), "truncated" (only the start).
  */
@@ -25,28 +26,50 @@ class Translations
     /**
      * A message's translation for the user reading it: a customer's message, or a
      * reply made from a draft with the draft's translation. Asks for a missing one.
+     * Not for a customer's message in a language the user reads, unless they asked.
      *
      * @return array wanted (bool), language (the user's), translation (or null)
      */
     public static function forThread(Thread $thread, $user)
     {
         $result = ['wanted' => false, 'language' => null, 'translation' => null];
+        $language = $thread->conversation ? Settings::language($thread->conversation->mailbox, $user) : null;
+        $as_written = self::readAsWritten($thread, $user, $language);
         // Also a message translated on request (forceTranslate()) where translations are off.
         $requested = in_array($thread->type, [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE]) && $thread->ai_assistant && $thread->conversation
-            && self::get($thread, Settings::language($thread->conversation->mailbox, $user));
-        if ($thread->state == Thread::STATE_DRAFT
+            && !$as_written && self::get($thread, $language);
+        if ($thread->state == Thread::STATE_DRAFT || $as_written
             || !(($thread->type == Thread::TYPE_CUSTOMER && self::isWanted($thread)) || ($thread->type == Thread::TYPE_MESSAGE && $thread->ai_assistant) || $requested)
         ) {
             return $result;
         }
         $result['wanted'] = true;
-        $result['language'] = Settings::language($thread->conversation->mailbox, $user);
+        $result['language'] = $language;
         $result['translation'] = self::get($thread, $result['language']);
         if ($thread->type == Thread::TYPE_CUSTOMER && self::isMissing($thread, $result['language'])) {
             \App\Jobs\AiTranslateThread::request($thread, $result['language']);
         }
 
         return $result;
+    }
+
+    /**
+     * The language a customer's message is in: as detected, else the customer's.
+     */
+    public static function messageLanguage(Thread $thread)
+    {
+        return Summaries::data($thread)['language'] ?? ($thread->customer->language ?? null);
+    }
+
+    /**
+     * Whether a user reads a customer's message as it is written: in their own language or one
+     * they need no translation of, and not translated for them on request (forceTranslate()).
+     */
+    public static function readAsWritten(Thread $thread, $user, $language)
+    {
+        return $user && $thread->type == Thread::TYPE_CUSTOMER
+            && Settings::reads($user, self::messageLanguage($thread))
+            && !in_array($language, (array) (Summaries::data($thread)['forced'] ?? []), true);
     }
 
     public static function isWanted(Thread $thread)
@@ -108,7 +131,7 @@ class Translations
             && $thread->state == Thread::STATE_PUBLISHED
             && in_array($thread->type, [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
             && $thread->conversation
-            && !self::get($thread, Settings::language($thread->conversation->mailbox, $user));
+            && (!self::get($thread, $language = Settings::language($thread->conversation->mailbox, $user)) || self::readAsWritten($thread, $user, $language));
     }
 
     /**
@@ -121,6 +144,8 @@ class Translations
     {
         $language = Settings::language($thread->conversation->mailbox, $user);
         Summaries::updateData($thread, function ($data) use ($language) {
+            // Shown in a language the user reads too (readAsWritten()).
+            $data['forced'] = array_values(array_unique(array_merge((array) ($data['forced'] ?? []), [$language])));
             $data['same'] = array_values(array_diff((array) ($data['same'] ?? []), [$language]));
             if (!$data['same']) {
                 unset($data['same']);
@@ -309,9 +334,9 @@ class Translations
             return $data;
         });
 
-        // A chat's language (replies go out in it): ChatTranslation::setCustomerLanguage().
-        if ($thread->type == Thread::TYPE_CUSTOMER && !empty($data['language']) && Settings::isLanguage($data['language'])) {
-            ChatTranslation::setCustomerLanguage($thread->conversation, $data['language']);
+        // The customer's language, while they have none (replies go out in it).
+        if ($thread->type == Thread::TYPE_CUSTOMER && !$thread->isBounce()) {
+            ChatTranslation::setCustomerLanguage($thread->customer, $data['language'] ?? null);
         }
 
         return $data['translations'][$language] ?? null;

@@ -1836,5 +1836,12 @@
     "Delivered": "Доставлено",
     "Delivered to :recipient": "Доставлено на :recipient",
     "Delivery notice for :link": "Сповіщення про доставку для :link",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "Поштовий сервер або поштова скринька одержувача підтвердили, що лист надійшов."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Поштовий сервер або поштова скринька одержувача підтвердили, що лист надійшов.",
+    "Languages": "Мови",
+    "Detect Automatically": "Визначати Автоматично",
+    "No Translation Needed": "Переклад Не Потрібен",
+    "Messages in these languages are shown as written.": "Повідомлення цими мовами показуються без перекладу.",
+    "Replies in these languages are sent as written.": "Відповіді цими мовами надсилаються без перекладу.",
+    "also reads :languages": "також читає: :languages",
+    "Reads :languages": "Читає: :languages"
 }

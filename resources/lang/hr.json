@@ -1836,5 +1836,12 @@
     "Delivered": "Isporučeno",
     "Delivered to :recipient": "Isporučeno na :recipient",
     "Delivery notice for :link": "Obavijest o isporuci za :link",
-    "The recipient's mail server or mailbox confirmed that the email arrived.": "Poslužitelj e-pošte ili poštanski sandučić primatelja potvrdio je da je e-poruka stigla."
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Poslužitelj e-pošte ili poštanski sandučić primatelja potvrdio je da je e-poruka stigla.",
+    "Languages": "Jezici",
+    "Detect Automatically": "Prepoznaj Automatski",
+    "No Translation Needed": "Prijevod Nije Potreban",
+    "Messages in these languages are shown as written.": "Poruke na ovim jezicima prikazuju se onako kako su napisane.",
+    "Replies in these languages are sent as written.": "Odgovori na ovim jezicima šalju se bez prijevoda.",
+    "also reads :languages": "čita i: :languages",
+    "Reads :languages": "Čita: :languages"
 }

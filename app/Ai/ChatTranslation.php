@@ -6,16 +6,17 @@ use App\Ai\Agents\ChatTranslator;
 use App\Ai\Agents\ReplyTranslator;
 use App\Ai\Agents\TallportAgent;
 use App\Conversation;
+use App\Customer;
 use App\Thread;
 
 /**
  * Chats translated both ways (Manage » Settings » AI Assistant, per mailbox): the agent reads
  * the customer's messages in their own language (App\Ai\Translations) and writes replies in it,
- * which go to the customer in the conversation's language after a preview
+ * which go to the customer in the customer's language after a preview
  * (livewire/conversation-composer). "Send as Written" sends a reply as it is.
  *
- * The conversation's language is the one first detected in the customer's messages, kept in
- * conversations.ai_assistant ("language", "language_by": detected, or user when an agent chose it; an empty language: not translated).
+ * The customer's language is on their profile (customers.language): the one first detected in
+ * their messages, or as an agent set it.
  */
 class ChatTranslation
 {
@@ -32,11 +33,11 @@ class ChatTranslation
     }
 
     /**
-     * The language the customer writes in (and replies go out in), if known.
+     * The language the customer reads (replies go out in it), from their profile, if known.
      */
     public static function customerLanguage(Conversation $conversation)
     {
-        return Summaries::data($conversation)['language'] ?? null;
+        return $conversation->customer->language ?? null;
     }
 
     /**
@@ -49,7 +50,7 @@ class ChatTranslation
 
     /**
      * Whether the agent's replies are translated: on for the chat, and the customer's
-     * language known and not the agent's.
+     * language known and the agent's not one the customer reads.
      */
     public static function needed(Conversation $conversation, $user)
     {
@@ -57,36 +58,30 @@ class ChatTranslation
             return false;
         }
         $language = self::customerLanguage($conversation);
+        $agent_language = self::agentLanguage($conversation, $user);
 
-        return $language && $language !== self::agentLanguage($conversation, $user);
+        return $language && $language !== $agent_language && !in_array($agent_language, (array) $conversation->customer->languages, true);
     }
 
     /**
-     * The conversation's language: by an agent (empty: replies not translated), or detected in
-     * the customer's messages: the first one's, then another once two messages in a row are in
-     * it (so a "/start" or one message in another language doesn't decide it); never over an
-     * agent's choice.
+     * The customer's language (their profile's): as an agent chose it, or as detected in their
+     * message, kept only while they have none.
      */
-    public static function setCustomerLanguage(Conversation $conversation, $language, $by_user = false)
+    public static function setCustomerLanguage($customer, $language, $by_user = false)
     {
-        Summaries::updateData($conversation, function ($data) use ($conversation, $language, $by_user) {
-            if (!$by_user && (($data['language_by'] ?? '') == 'user' || !self::isOn($conversation))) {
-                return null;
-            }
-            $chosen_language = $language;
-            if (!$by_user && !empty($data['language_by'])) {
-                $pending = $data['language_next'] ?? null;
-                unset($data['language_next']);
-                if ($language !== ($data['language'] ?? null) && $language !== $pending) {
-                    $data['language_next'] = (string) $language;
-                    $chosen_language = $data['language'] ?? null;
-                }
-            }
-            $data['language'] = (string) $chosen_language;
-            $data['language_by'] = $by_user ? 'user' : 'detected';
+        if (!$customer || !Settings::isLanguage($language) || (!$by_user && $customer->language)) {
+            return;
+        }
+        if (!$by_user) {
+            // Another detection (a message at the same time) may have been first.
+            Customer::where('id', $customer->id)->whereNull('language')->update(['language' => $language]);
+            $customer->language = Customer::where('id', $customer->id)->value('language');
+            $customer->syncOriginalAttribute('language');
 
-            return $data;
-        }, false);
+            return;
+        }
+        $customer->language = $language;
+        $customer->save();
     }
 
     /**
@@ -186,9 +181,7 @@ class ChatTranslation
         }
 
         $detected = Settings::detectedLanguage($answer['detected_language'] ?? '');
-        if ($detected) {
-            self::setCustomerLanguage($conversation, $detected);
-        }
+        self::setCustomerLanguage($conversation->customer, $detected);
         $translated = collect((array) ($answer['messages'] ?? []))->filter(fn ($message) => is_array($message))->keyBy(fn ($message) => (int) ($message['id'] ?? 0));
         foreach ($batch as $thread) {
             $message = $translated[$thread->id] ?? null;

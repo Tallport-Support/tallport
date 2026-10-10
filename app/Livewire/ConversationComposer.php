@@ -412,15 +412,15 @@ class ConversationComposer extends Component
     }
 
     /**
-     * The language replies go out in, as the agent chose (empty: not translated).
+     * The language replies go out in, as the agent chose: the customer's (their profile's).
      */
     public function setCustomerLanguage($language)
     {
         $language = (string) $language;
-        if ($language !== '' && !\App\Ai\Settings::isLanguage($language)) {
+        if (!\App\Ai\Settings::isLanguage($language)) {
             return;
         }
-        \App\Ai\ChatTranslation::setCustomerLanguage($this->conversation(), $language, true);
+        \App\Ai\ChatTranslation::setCustomerLanguage($this->conversation()->customer, $language, true);
         $this->translation = null;
         unset($this->translating);
     }

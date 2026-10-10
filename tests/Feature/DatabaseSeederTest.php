@@ -202,13 +202,15 @@ class DatabaseSeederTest extends FeatureTestCase
                 (new \App\Jobs\AiTranslateThread($thread->id, $language))->handle();
             }
         }
+        // (The samples are in English: shown translated to an agent who reads another language.)
+        $agent->locale = 'de';
         $this->actingAs($agent);
         $thread = Thread::where('type', Thread::TYPE_CUSTOMER)->first();
         $html = view('conversations.partials.ai_translation', [
             'thread' => $thread,
             'conversation' => $thread->conversation,
         ])->render();
-        $this->assertStringContainsString('Sample translation (English)', $html);
+        $this->assertStringContainsString('Sample translation (Deutsch)', $html);
         $before = $this->snapshot();
         $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
         $this->assertSame($before, $this->snapshot());

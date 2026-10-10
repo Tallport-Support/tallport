@@ -131,7 +131,7 @@ class AiDraftsTest extends FeatureTestCase
         $this->assertSame(2, substr_count($chat_page, 'ai-draft-action'), 'In the toolbar and the chat field.');
 
         Option::set('aiassistant.mailbox_chat_translation', [$this->mailbox->id => true]);
-        \App\Ai\ChatTranslation::setCustomerLanguage($this->conversation, 'zh');
+        \App\Ai\ChatTranslation::setCustomerLanguage($this->conversation->customer, 'zh-Hans', true);
         $this->assertStringContainsString($config(true, true), $this->getConversationPage($this->agent)->getContent());
     }
 
