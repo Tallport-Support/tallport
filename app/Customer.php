@@ -1372,6 +1372,8 @@ class Customer extends Model
 
         $this->save();
 
+        \App\Matrix\MatrixRoom::where('customer_id', $customer2->id)->update(['customer_id' => $this->id]);
+
         // Nostr keys go with the customer.
         \App\Nostr\CustomerKey::where('customer_id', $customer2->id)->update(['customer_id' => $this->id]);
         CustomerChannel::where('customer_id', $customer2->id)->where('channel', \App\Nostr\Nostr::channel())->delete();

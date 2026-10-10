@@ -36,7 +36,10 @@ class NostrTask implements ShouldQueue
 
     public function handle()
     {
+        $cfg = null;
         try {
+            $cfg_id = $this->params[$this->task === 'announce' ? 0 : ($this->task === 'auto_reply' ? 1 : 2)] ?? null;
+            $cfg = $cfg_id ? NostrMailbox::find($cfg_id) : null;
             switch ($this->task) {
                 case 'auto_reply':
                     (new OutgoingMessageSender(Nostr::logger()))->sendAutoReply(...$this->params);
@@ -45,13 +48,13 @@ class NostrTask implements ShouldQueue
                     Nostr::fetchProfile(...$this->params);
                     break;
                 case 'announce':
-                    $cfg = NostrMailbox::find($this->params[0]);
                     if ($cfg) {
                         (new Announcer(Nostr::logger()))->announce($cfg);
                     }
                     break;
             }
         } catch (\Throwable $e) {
+            \App\Misc\ChatLog::failure('nostr', $cfg ? $cfg->mailbox_id : null, $this->task === 'auto_reply' ? 'send' : 'connection', $e);
             \Log::error('[Nostr] '.$this->task.' failed: '.$e->getMessage(), ['exception' => $e]);
         }
     }

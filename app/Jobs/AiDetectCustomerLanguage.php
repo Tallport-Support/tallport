@@ -67,6 +67,7 @@ class AiDetectCustomerLanguage implements ShouldQueue, ShouldBeUnique
     protected static function wanted(Thread $thread)
     {
         return Settings::isConfigured()
+            && !$thread->getMeta('chat_pending')
             && $thread->type == Thread::TYPE_CUSTOMER
             && $thread->state == Thread::STATE_PUBLISHED
             && $thread->conversation

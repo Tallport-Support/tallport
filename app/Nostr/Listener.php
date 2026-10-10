@@ -230,6 +230,7 @@ class Listener
                         $count++;
                     }
                 } catch (\Throwable $e) {
+                    \App\Misc\ChatLog::failure('nostr', $cfg->mailbox_id, 'receive', $e);
                     $this->log('error handling event: '.$e->getMessage());
                     \Log::error('[Nostr] '.$e->getMessage(), ['exception' => $e]);
                 }
@@ -369,6 +370,7 @@ class Listener
             $client = new Client($state['url']);
         } catch (\Throwable $e) {
             $state['error'] = $e->getMessage();
+            \App\Misc\ChatLog::failure('nostr', $state['cfg']->mailbox_id, 'connection', $e, ['relay' => $state['url']]);
             $this->log('invalid relay '.$state['url'].': '.$e->getMessage());
             $state['retry_at'] = time() + self::MAX_BACKOFF;
 
@@ -441,6 +443,7 @@ class Listener
             $state['sub'] = 'fs'.bin2hex(random_bytes(6));
             $state['client']->send(RelayClient::encode(['REQ', $state['sub'], $this->filter($state['cfg'])]));
         } catch (\Throwable $e) {
+            \App\Misc\ChatLog::failure('nostr', $state['cfg']->mailbox_id, 'connection', $e, ['relay' => $state['url']]);
             $this->log('could not subscribe on '.$state['url'].': '.$e->getMessage());
         }
     }
@@ -488,6 +491,7 @@ class Listener
                         $this->log('authenticated with '.$state['url']);
                         $this->subscribe($key);
                     } else {
+                        \App\Misc\ChatLog::record('nostr', $state['cfg']->mailbox_id, 'connection', 'failed', 'Relay authentication rejected.', ['relay' => $state['url']]);
                         $this->log('authentication rejected by '.$state['url'].': '.($data[3] ?? ''));
                     }
                 }
@@ -529,6 +533,7 @@ class Listener
             $state['auth_event_id'] = $event['id'];
             $state['client']->send(RelayClient::encode(['AUTH', $event]));
         } catch (\Throwable $e) {
+            \App\Misc\ChatLog::failure('nostr', $state['cfg']->mailbox_id, 'connection', $e, ['relay' => $state['url']]);
             $this->log('could not authenticate with '.$state['url'].': '.$e->getMessage());
         }
     }
@@ -543,6 +548,7 @@ class Listener
                 $this->handler->handleGiftWrap($state['cfg'], $event, $state['url']);
             });
         } catch (\Throwable $e) {
+            \App\Misc\ChatLog::failure('nostr', $state['cfg']->mailbox_id, 'receive', $e);
             $this->log('error handling event '.substr($event['id'] ?? '', 0, 8).': '.$e->getMessage());
             \Log::error('[Nostr] '.$e->getMessage(), ['exception' => $e]);
         }
@@ -576,6 +582,7 @@ class Listener
         $state['opened'] = false;
         $state['sub'] = null;
         $state['error'] = mb_substr((string) $error, 0, 300);
+        \App\Misc\ChatLog::record('nostr', $state['cfg']->mailbox_id, 'connection', 'failed', 'Relay connection lost.', ['relay' => $state['url']]);
         $this->log('connection to '.$state['url'].' lost: '.$error);
         $this->scheduleReconnect($key);
     }

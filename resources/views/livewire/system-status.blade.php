@@ -322,6 +322,23 @@
         @action('system.status.after_permissions')
     </x-fruit::form-section>
 
+    @if ($matrix_mailboxes->isNotEmpty())
+        <x-fruit::form-section title="Matrix">
+            @foreach ($matrix_mailboxes as $identity)
+                <div class="f-form-row">
+                    <div>
+                        <a href="{{ route('mailboxes.matrix', ['id' => $identity->mailbox_id]) }}">{{ $identity->mailbox->name }}</a>
+                        <p class="f-help">{{ $identity->user_id }}</p>
+                        <p class="f-help">{{ __('Last successful sync') }}: {{ $identity->last_synced_at ? $identity->last_synced_at->diffForHumans() : __('Never') }}</p>
+                        @if ($identity->status === 'verification')<p class="f-help">{{ __('This device is unverified. You can still send and receive messages.') }}</p>@endif
+                        @if ($identity->error)<p class="f-help">{{ __('Check the Matrix connection and device verification.') }}</p>@endif
+                    </div>
+                    <x-fruit::badge :tone="$identity->isVerified() && !$identity->error ? 'success' : 'warning'">{{ $identity->status === 'disabled' ? __('Disabled') : ($identity->isReady() ? __('Connected') : __('Verify this device')) }}</x-fruit::badge>
+                </div>
+            @endforeach
+        </x-fruit::form-section>
+    @endif
+
     <x-fruit::form-section :title="__('Background Tasks')" id="cron">
         @foreach ($commands as $command)
             @php [$task_name, $task_purpose] = App\Http\Controllers\SystemController::taskName($command['name']); @endphp

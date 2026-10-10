@@ -693,7 +693,7 @@ class ConversationReplies
                 }
 
                 // Nostr replies are sent right away.
-                $sent_right_away = !$is_note && \App\Nostr\Nostr::isNostr($conversation);
+                $sent_right_away = !$is_note && (\App\Nostr\Nostr::isNostr($conversation) || \App\Matrix\Matrix::isMatrix($conversation));
                 if ($sent_right_away) {
                     $can_undo = false;
                 }

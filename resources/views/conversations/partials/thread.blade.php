@@ -81,6 +81,8 @@
                 @if ($thread->customer_cached)
                     @if (\Helper::isPrint()){{ $thread->customer_cached->getFullName(true) }}@else<a href="{{ $thread->customer_cached->url() }}">{{ $thread->customer_cached->getFullName(true) }}</a>@endif
                 @endif
+            @elseif ($thread->getMeta('chat_external_sender'))
+                {{ $thread->getActionPerson() }}
             @else
                 @if (\Helper::isPrint() || !$thread->created_by_user_cached){{ $thread->created_by_user_cached ? $thread->created_by_user_cached->getFullName() : '' }}@else<a href="{{ $thread->created_by_user_cached->url() }}">{{ $thread->created_by_user_cached->getFullName() }}</a>@endif
             @endif

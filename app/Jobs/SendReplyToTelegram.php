@@ -159,7 +159,7 @@ class SendReplyToTelegram implements ShouldQueue
                 try {
                     Telegram::client($conversation->mailbox)->deleteMessage($chat_id, $message_id);
                 } catch (TelegramException $e) {
-                    Telegram::log('Undo: message '.$message_id.' of reply '.$thread->id.' not deleted: '.$e->getMessage(), $conversation->mailbox);
+                    Telegram::log('Undo: message '.$message_id.' of reply '.$thread->id.' not deleted: '.$e->getMessage(), $conversation->mailbox, 'failed', 'send');
                 }
             }
         }
@@ -169,7 +169,7 @@ class SendReplyToTelegram implements ShouldQueue
 
     protected function failedTry(Thread $thread, TelegramException $e)
     {
-        Telegram::log('Reply '.$thread->id.' in conversation #'.$thread->conversation->number.' not sent (try '.$this->attempts().'): '.$e->getMessage(), $thread->conversation->mailbox);
+        Telegram::log('Reply '.$thread->id.' in conversation #'.$thread->conversation->number.' not sent (try '.$this->attempts().'): '.$e->getMessage(), $thread->conversation->mailbox, 'failed', 'send');
 
         $retry = !$e->isPermanent() && $this->attempts() < $this->tries;
         TelegramSend::record($thread, $this->attempts(), $retry ? TelegramSend::STATUS_RETRYING : TelegramSend::STATUS_FAILED, $this->sent_message_ids, $e->getMessage());

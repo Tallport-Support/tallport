@@ -1501,6 +1501,8 @@ class Conversation extends Model
      */
     public function moveToMailbox($mailbox, $user)
     {
+        abort_if(\App\Matrix\Matrix::isMatrix($this) && (int) $mailbox->id !== (int) $this->mailbox_id, 422);
+
         $prev_mailbox = clone $this->mailbox;
 
         // Make conversation Unassigned if current assignee does not have
@@ -1593,6 +1595,11 @@ class Conversation extends Model
      */
     public function mergeConversations($second_conversation, $user)
     {
+        if (\App\Matrix\Matrix::isMatrix($this) || \App\Matrix\Matrix::isMatrix($second_conversation)) {
+            abort_unless((int) $this->mailbox_id === (int) $second_conversation->mailbox_id
+                && $this->getMeta('matrix') && $this->getMeta('matrix') === $second_conversation->getMeta('matrix'), 422);
+        }
+
         // Do not allow to merge with self.
         if ($second_conversation->id == $this->id) {
             return false;
@@ -2214,6 +2221,7 @@ class Conversation extends Model
             \DB::table('report_replies')->whereIn('conversation_id', $ids)->delete();
             \DB::table('conversation_workflow')->whereIn('conversation_id', $ids)->delete();
             \DB::table('nostr_events')->whereIn('conversation_id', $ids)->delete();
+            \DB::table('matrix_events')->whereIn('conversation_id', $ids)->update(['payload' => null, 'status' => 'deleted']);
 
             // Collect folders IDs.
             $folder_ids = array_merge($folder_ids, ConversationFolder::whereIn('conversation_id', $ids)

@@ -10,6 +10,64 @@ and hash functions for cryptographic primitives; do not implement those
 primitives ourselves. The difficult part is implementing the standard Olm and
 Megolm protocols correctly. Prove that part works before building the channel.
 
+## Implementation status
+
+The client is implemented in `app/Matrix`, with mailbox settings under **Chat >
+Matrix**. It uses the existing scheduler and mail queue, shared
+`ChatConversations`/`ChatDelivery`, and the normal conversation screen. There is
+no added runtime dependency. Chat channels share their log reader and diagnostic
+writer, with separate Telegram, Nostr and Matrix pages under **Manage > Logs**.
+Existing delivery records are read directly; diagnostics use the existing
+activity log storage and retention. The migration has been applied to the local
+installation; other installations need the usual application-update migrations.
+
+Automated verification covers independent Olm/Megolm/SAS reference fixtures,
+SQLite and MariaDB persistence, initial-history exclusion, resumable timeline
+gaps, replay rejection, delayed room keys, encrypted attachments, exact send
+retries, changed device trust, room membership, account binding, device reset,
+password handling and settings authorization. Setup also covers new-account
+cross-signing, existing identities, interrupted key uploads, shorthand input,
+checking homeserver capabilities before showing credentials, and sending and
+receiving with an unverified Tallport device. The reference peer was official
+libolm at commit `6d4b5b07887821a95b144091c8497d09d377f985`, built outside the
+repository. Only its public test transcripts are committed in
+`tests/Fixtures/matrix/libolm.json`; Tallport does not load libolm or use FFI.
+The reference exchange included 257 Megolm messages in each direction, ratchet
+boundary exports through the 32-bit limit, Olm replies/out-of-order messages,
+and decimal SAS/MAC values.
+
+Validation run:
+
+- `./test.sh`: style and static analysis pass; 2,391 tests, 51,093 assertions,
+  two skips. Inventory: 340 items, 323 exercised, 17 existing exclusions,
+  zero missing.
+- `DB_TEST_DRIVER=mysql ./test.sh --filter=Matrix`: 61 tests, 426 assertions.
+- MariaDB channel-log and Telegram receive checks: 11 tests, 126 assertions.
+- Schema snapshot: only the four Matrix tables added; existing tables unchanged.
+
+**Live acceptance is pending.** The supplied test homeserver,
+`https://m.wanwire.com`, advertises password login and Matrix versions through
+v1.12. A mailbox account has logged in and published its device keys locally;
+it remains unverified. Live customer message exchange has not been checked.
+Complete the following with an independent Matrix client before treating the
+channel as ready for production:
+
+- Connect a new mailbox account directly, without initializing it in another
+  client. Connect an already initialized account and optionally verify its
+  Tallport device by comparing the three numbers. Confirm it can exchange messages
+  before verification and that the warning clears after cross-signing.
+- Exchange encrypted text and files in both directions, including a customer
+  with multiple devices. Check ordinary rooms too.
+- Restart workers, send while Tallport is offline, then check catch-up,
+  missing-key recovery and failed-send retries without duplicates.
+- Check device removal, a newly verified customer device, group invitations,
+  disable/enable, disconnect/reconnect and replacing a device.
+- Record the client and homeserver versions/results here. Review the custom
+  crypto and key-sharing paths before production use.
+
+A human must compare the SAS values in both clients. Reference interoperability
+and mocked HTTP tests do not substitute for this live check.
+
 ## Scope
 
 - One account and one persistent Tallport device per mailbox. Different
@@ -45,18 +103,25 @@ customer and each agent's browser.
 Add **Mailbox Settings > Matrix**, using the existing FruitUI Blade/form pattern
 and mailbox settings authorization.
 
-1. Enter the HTTPS homeserver URL, full Matrix ID and password. Supplying the
-   server explicitly avoids automatic discovery in this first version.
-2. Check `/versions` and the advertised `/login` flows. Support
-   `m.login.password`; keep the returned user ID, device ID and access token.
+1. Enter the homeserver domain or HTTPS URL. A domain uses HTTPS. Check
+   `/versions` and the advertised `/login` flows before showing credentials;
+   require Matrix v1.11 and `m.login.password`. Supplying the server explicitly
+   avoids automatic discovery in this first version.
+2. Then show username and password. Accept a short username, resolved by that
+   homeserver, or a full Matrix ID. Keep the canonical returned user ID, device
+   ID and access token. Changing the homeserver requires checking it again.
    Discard the password immediately, including on validation failures: never
    flash it back, log it or put it in a queued job.
 3. Initialize and upload the device's encryption keys. If refresh tokens are
    issued, store and rotate them with the access token. Authentication failure
    pauses the channel and asks the administrator to reconnect.
-4. Verify the Tallport device from an existing trusted client for this account
-   before marking encrypted messaging ready; see below. Recommend a dedicated
-   support account, initialized in Element before connecting it here.
+4. If the account has no cross-signing identity, create its master and
+   self-signing keys, publish them, and sign the Tallport device. Persist private
+   keys encrypted before publishing, and reuse them on retries and device
+   replacement. Otherwise preserve the existing identity and allow the device
+   to operate unverified, with a warning. Verification from a trusted client is
+   optional. Re-query the signature chain before marking the device verified;
+   connection and message processing do not require that status.
 5. Show the Matrix ID, device fingerprint, connection/verification status,
    last successful sync and actionable errors. Offer enable/disable, reconnect
    and disconnect. Disabling preserves the device and keys; disconnecting
@@ -156,7 +221,8 @@ session/message-index bindings to their original event ID so a second event
 cannot replay the same ciphertext. Keep protocol identifiers case-sensitive
 on MariaDB as well as SQLite/PostgreSQL.
 
-Use existing customer channel lookup with the full `@user:server` ID. Never
+Resolve customers by the full `@user:server` ID through the room mappings and
+their case-sensitive identity hashes. Never
 identify a customer by display name or an unverified email address. Preserve
 room/customer associations through customer merges, including rooms belonging
 to different Matrix IDs. Reply routing always comes from the conversation's
@@ -184,7 +250,7 @@ to home-written curve arithmetic.
 - **Encoding and keys:** strict binary parsing, unpadded base64, canonical JSON
   signing and signature validation. Keep signing keys separate from agreement
   keys. [Matrix signing formats](https://spec.matrix.org/latest/appendices/#signing-json)
-- **Olm:** account identity keys, signed one-time/fallback keys, inbound and
+- **Olm:** account identity keys, signed one-time keys, inbound and
   outbound session establishment, pre-key messages and the double ratchet.
   Handle out-of-order messages with bounded skipped-key storage; reject invalid
   keys, MACs, counters and oversized input before committing new state.
@@ -212,26 +278,36 @@ to home-written curve arithmetic.
 
 ### Verification and missing keys
 
-Include one verification method: `m.sas.v1`, using the decimal comparison and
+For an existing identity whose private signing keys Tallport does not hold,
+include one verification method: `m.sas.v1`, using the decimal comparison and
 current MAC algorithm. Limit the UI to verifying Tallport with another device
 on the same account. Check commitments, exact keys, transaction/device binding,
 MACs, cancellation and expiry; only complete after explicit user comparison.
 The existing trusted client can cross-sign the Tallport device. Re-query and
-check that signature chain before showing it as ready. Keep verification
+check that signature chain before showing it as verified. An unverified
+Tallport device can send and receive ordinary and encrypted messages; show a
+small warning alongside its connected status. Keep verification
 responsive by requesting short syncs while this settings flow is open.
 
-Read and validate public cross-signing chains. Pin a customer's initially seen
-master identity as trust-on-first-use, without labelling the customer as manually
-verified. Accept its correctly cross-signed devices; pause on identity changes,
-reused device IDs with changed keys, or unsigned devices, with a clear reason.
+Read and validate public cross-signing chains. Pin initially seen account
+identities as trust-on-first-use, without labelling them as manually verified.
+Trust Tallport's own device by matching its published keys to the local keys;
+it does not need a cross-signature to operate. Accept other devices with valid
+cross-signatures; pause on identity changes, reused device IDs with changed
+keys, or other unsigned devices, with a clear reason.
 Allow an administrator to acknowledge an identity change after checking the
 displayed fingerprints; discard the old outgoing sessions before resuming.
 Do not silently trust replacements or bypass a peer's refusal to share keys.
 This deliberately excludes accounts/devices without the required trust setup.
 [Device verification and cross-signing](https://spec.matrix.org/latest/client-server-api/#device-verification)
 
-Do not implement cross-signing identity creation, secret storage, QR verification
-or server-side key backup. The existing client manages the account's identity.
+Create cross-signing identities only for accounts without one. Never replace
+an existing identity during connection, including when a key upload requests
+interactive authentication after the initial query. Matrix v1.11 permits the
+first upload without that challenge. Retain Tallport-owned account signing keys
+across device resets and disconnects; back them up with the database and app key.
+Do not implement user-signing keys, secret storage, QR verification or
+server-side key backup.
 For a missing room key, retain the encrypted event, show a pending/unavailable
 message and retry when its key arrives. Support bounded key requests to the
 original sender and safe re-sharing of our own outbound keys only to devices
@@ -251,7 +327,7 @@ job per enabled mailbox each minute, using classic `/sync` with an immediate
 response. Incoming delivery can therefore take about a minute plus queue time.
 Replies dispatch immediately. No new daemon or service is needed.
 
-Sync, sending, verification and account changes share a lock per Matrix identity.
+Sync, sending, verification and account changes share a lock per mailbox.
 Use a lock store shared by all workers, with the job timeout shorter than the
 lock lifetime and queue reservation. Database transactions and unique indexes
 provide durable correctness as well as that worker lock.

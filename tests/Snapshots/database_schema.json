@@ -2441,6 +2441,486 @@
             }
         }
     },
+    "matrix_crypto": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "matrix_mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "kind": {
+                "type": "varchar(32)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "key_hash": {
+                "type": "char(64)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "value": {
+                "type": "longtext",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "matrix_crypto_identity_key": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "matrix_mailbox_id",
+                    "kind",
+                    "key_hash"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        },
+        "foreign_keys": {
+            "matrix_crypto_matrix_mailbox_id_foreign": [
+                "matrix_mailbox_id -> matrix_mailboxes.id"
+            ]
+        }
+    },
+    "matrix_events": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "matrix_mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "kind": {
+                "type": "varchar(32)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "local_key": {
+                "type": "char(64)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "room_id": {
+                "type": "varchar(191)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "remote_id": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "remote_hash": {
+                "type": "char(64)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "replay_hash": {
+                "type": "char(64)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "transaction_id": {
+                "type": "varchar(64)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "thread_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "conversation_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "payload": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "status": {
+                "type": "varchar(32)",
+                "nullable": false,
+                "default": "'pending'",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "sort_order": {
+                "type": "varchar(64)",
+                "nullable": false,
+                "default": "''",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "attempts": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "default": "0"
+            },
+            "retry_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "matrix_events_conversation_id_foreign": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "conversation_id"
+                ]
+            },
+            "matrix_events_matrix_mailbox_id_kind_status_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "matrix_mailbox_id",
+                    "kind",
+                    "status"
+                ]
+            },
+            "matrix_events_matrix_mailbox_id_local_key_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "matrix_mailbox_id",
+                    "local_key"
+                ]
+            },
+            "matrix_events_matrix_mailbox_id_remote_hash_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "matrix_mailbox_id",
+                    "remote_hash"
+                ]
+            },
+            "matrix_events_matrix_mailbox_id_replay_hash_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "matrix_mailbox_id",
+                    "replay_hash"
+                ]
+            },
+            "matrix_events_thread_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "thread_id"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        },
+        "foreign_keys": {
+            "matrix_events_conversation_id_foreign": [
+                "conversation_id -> conversations.id"
+            ],
+            "matrix_events_matrix_mailbox_id_foreign": [
+                "matrix_mailbox_id -> matrix_mailboxes.id"
+            ],
+            "matrix_events_thread_id_foreign": [
+                "thread_id -> threads.id"
+            ]
+        }
+    },
+    "matrix_mailboxes": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "active_mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "homeserver": {
+                "type": "varchar(1024)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "user_id": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "user_hash": {
+                "type": "char(64)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "device_id": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "status": {
+                "type": "varchar(32)",
+                "nullable": false,
+                "default": "'verification'",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "credentials": {
+                "type": "longtext",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "sync_token": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "sync_sequence": {
+                "type": "bigint(20) unsigned",
+                "nullable": false,
+                "default": "0"
+            },
+            "error": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "last_synced_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "matrix_mailboxes_active_mailbox_id_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "active_mailbox_id"
+                ]
+            },
+            "matrix_mailboxes_mailbox_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id"
+                ]
+            },
+            "matrix_mailboxes_user_hash_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "user_hash"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        },
+        "foreign_keys": {
+            "matrix_mailboxes_mailbox_id_foreign": [
+                "mailbox_id -> mailboxes.id"
+            ]
+        }
+    },
+    "matrix_rooms": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "matrix_mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "room_id": {
+                "type": "varchar(191)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "room_hash": {
+                "type": "char(64)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "customer_user_id": {
+                "type": "varchar(191)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "customer_hash": {
+                "type": "char(64)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "customer_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "conversation_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "state": {
+                "type": "longtext",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "matrix_rooms_conversation_id_foreign": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "conversation_id"
+                ]
+            },
+            "matrix_rooms_customer_hash_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "customer_hash"
+                ]
+            },
+            "matrix_rooms_customer_id_foreign": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "customer_id"
+                ]
+            },
+            "matrix_rooms_matrix_mailbox_id_room_hash_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "matrix_mailbox_id",
+                    "room_hash"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        },
+        "foreign_keys": {
+            "matrix_rooms_conversation_id_foreign": [
+                "conversation_id -> conversations.id"
+            ],
+            "matrix_rooms_customer_id_foreign": [
+                "customer_id -> customers.id"
+            ],
+            "matrix_rooms_matrix_mailbox_id_foreign": [
+                "matrix_mailbox_id -> matrix_mailboxes.id"
+            ]
+        }
+    },
     "migrations": {
         "columns": {
             "id": {

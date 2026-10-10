@@ -172,6 +172,8 @@ class TelegramTest extends FeatureTestCase
         $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/telegram', ['enabled' => 1, 'token' => 'wrong'])
             ->assertSessionHas('flash_error_floating', 'Telegram: Unauthorized');
         $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/telegram')->assertSee('Unauthorized');
+        $entry = \App\ActivityLog::where('log_name', 'telegram')->where('properties->status', 'failed')->firstOrFail();
+        $this->assertSame('connection', $entry->properties['type']);
     }
 
     public function testExistingBotsAreConnectedByTheUpdate()
@@ -205,6 +207,9 @@ class TelegramTest extends FeatureTestCase
         $this->assertSame('Hello, my app <does not> work', $conversation->subject);
         $thread = $conversation->threads()->first();
         $this->assertSame('Hello, my app &lt;does not&gt; work', $thread->body);
+        $entry = \App\ActivityLog::where('log_name', 'telegram')->where('properties->status', 'succeeded')->firstOrFail();
+        $this->assertSame($thread->id, $entry->properties['details']['thread_id']);
+        $this->assertStringNotContainsString('Hello, my app', $entry->toJson());
 
         $customer = $conversation->customer;
         $this->assertSame('Casey Lee', $customer->getFullName());
@@ -332,6 +337,8 @@ class TelegramTest extends FeatureTestCase
         $update = $this->update();
 
         $this->postUpdate($update)->assertStatus(500);
+        $entry = \App\ActivityLog::where('log_name', 'telegram')->where('properties->status', 'failed')->firstOrFail();
+        $this->assertSame('receive', $entry->properties['type']);
         $this->assertSame(0, \DB::table('telegram_updates')->where('update_id', $update['update_id'])->count());
     }
 
@@ -470,7 +477,7 @@ class TelegramTest extends FeatureTestCase
 
     protected function telegramLog()
     {
-        return \App\ActivityLog::where('log_name', Telegram::LOG)->orderBy('id')->pluck('description')->all();
+        return \App\ActivityLog::where('log_name', Telegram::LOG)->where('properties->status', '!=', 'succeeded')->orderBy('id')->pluck('description')->all();
     }
 
     public function testNewCustomersProfilePhotoIsSaved()

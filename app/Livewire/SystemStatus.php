@@ -45,6 +45,9 @@ class SystemStatus extends Component
         // Optional: HEIC photos converted on the server (checked anew here).
         $data['heic_converter'] = \App\Misc\AttachmentImages::converter(true);
 
+        $data['matrix_mailboxes'] = \Schema::hasTable('matrix_mailboxes')
+            ? \App\Matrix\MatrixMailbox::with('mailbox')->whereNotNull('active_mailbox_id')->get() : collect();
+
         return view('livewire/system-status', $data);
     }
 }

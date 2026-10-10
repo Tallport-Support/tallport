@@ -86,14 +86,22 @@ class ThreadObserver
         //     \Eventy::action('thread.created', $thread);
         // }
 
-        // Real time for user notifications is sent using events.
-        if ($thread->type == Thread::TYPE_CUSTOMER 
-            || ($thread->type == Thread::TYPE_MESSAGE && $thread->state == Thread::STATE_DRAFT)
-        ) {
-            Conversation::refreshConversations($conversation, $thread);
+        $notify = function () use ($thread, $conversation) {
+            // Real time for user notifications is sent using events.
+            if ($thread->type == Thread::TYPE_CUSTOMER
+                || ($thread->type == Thread::TYPE_MESSAGE && $thread->state == Thread::STATE_DRAFT)
+            ) {
+                Conversation::refreshConversations($conversation, $thread);
+            }
+
+            \Eventy::action('thread.created', $thread);
+        };
+        if (\App\Matrix\Matrix::isMatrix($conversation)) {
+            \DB::afterCommit($notify);
+        } else {
+            $notify();
         }
 
-        \Eventy::action('thread.created', $thread);
     }
 
     public function deleting(Thread $thread)

@@ -106,7 +106,7 @@ class SendReplyToTelegramJobTest extends FeatureTestCase
 
     protected function telegramLog()
     {
-        return ActivityLog::where('log_name', Telegram::LOG)->pluck('description')->all();
+        return ActivityLog::where('log_name', Telegram::LOG)->where('properties->status', '!=', 'succeeded')->pluck('description')->all();
     }
 
     public function testCustomerWithoutTelegramChatIsNotSentTo()

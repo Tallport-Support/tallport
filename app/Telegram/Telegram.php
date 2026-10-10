@@ -115,8 +115,8 @@ class Telegram
         self::client($mailbox)->setWebhook(self::webhookUrl($mailbox), self::webhookSecret($mailbox));
     }
 
-    public static function log($message, ?Mailbox $mailbox = null)
+    public static function log($message, ?Mailbox $mailbox = null, $status = 'info', $type = 'receive')
     {
-        \Helper::log(self::LOG, ($mailbox ? '('.$mailbox->name.') ' : '').$message);
+        \App\Misc\ChatLog::record('telegram', $mailbox ? $mailbox->id : null, $type, $status, ($mailbox ? '('.$mailbox->name.') ' : '').$message);
     }
 }

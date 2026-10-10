@@ -54,7 +54,7 @@ class TelegramController extends Controller
             // Telegram sends it again later.
             DB::table('telegram_updates')->where('mailbox_id', $mailbox->id)->where('update_id', (int) $update['update_id'])->delete();
             \Helper::logException($e, '[Telegram] Update '.$update['update_id'].' for mailbox '.$mailbox->id.':');
-            Telegram::log('Update '.$update['update_id'].' not processed, Telegram will send it again: '.$e->getMessage(), $mailbox);
+            \App\Misc\ChatLog::failure('telegram', $mailbox->id, 'receive', $e);
 
             return response()->json(['ok' => false], 500);
         }
@@ -76,6 +76,7 @@ class TelegramController extends Controller
                 $bot = $client->getMe();
                 $webhook = $client->getWebhookInfo();
             } catch (TelegramException $e) {
+                \App\Misc\ChatLog::failure('telegram', $mailbox->id, 'connection', $e);
                 $error = $e->getMessage();
             }
         }
@@ -132,6 +133,7 @@ class TelegramController extends Controller
                 (new \App\Telegram\Client($before['token']))->deleteWebhook();
             }
         } catch (TelegramException $e) {
+            \App\Misc\ChatLog::failure('telegram', $mailbox->id, 'connection', $e);
             \Session::flash('flash_error_floating', __('Telegram').': '.$e->getMessage());
 
             return redirect()->route('mailboxes.telegram', ['id' => $mailbox->id]);

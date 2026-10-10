@@ -46,6 +46,12 @@
         "without_overlapping": true
     },
     {
+        "description": "matrix-sync",
+        "expression": "* * * * *",
+        "timezone": "UTC",
+        "without_overlapping": true
+    },
+    {
         "command": "artisan tallport:ai-index-documents --fetch",
         "expression": "40 3 * * *",
         "timezone": "UTC",

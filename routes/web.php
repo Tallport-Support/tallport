@@ -59,6 +59,7 @@ Route::get('/app-logs/app', ['uses' => 'AppLogsController@index', 'middleware' =
 Route::get('/app-logs/ai', ['uses' => 'AiLogController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.ai');
 Route::get('/app-logs/out_telegram', ['uses' => 'ChannelLogsController@telegram', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.telegram');
 Route::get('/app-logs/out_nostr', ['uses' => 'ChannelLogsController@nostr', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.nostr');
+Route::get('/app-logs/out_matrix', ['uses' => 'ChannelLogsController@matrix', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.matrix');
 Route::get('/app-logs/{name?}', ['uses' => 'SecureController@logs', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs');
 Route::post('/app-logs/{name?}', ['uses' => 'SecureController@logsSubmit', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.action');
 
@@ -73,6 +74,7 @@ Route::get('/mailbox/{id}/telegram', ['uses' => 'TelegramController@settings', '
 Route::post('/mailbox/{id}/telegram', ['uses' => 'TelegramController@settingsSave', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.telegram.save');
 
 // Nostr
+Route::get('/mailbox/settings/{id}/matrix', ['uses' => 'MatrixController@mailboxSettings', 'middleware' => ['auth']])->name('mailboxes.matrix');
 Route::get('/mailbox/settings/{id}/nostr', ['uses' => 'NostrController@mailboxSettings', 'middleware' => ['auth']])->name('mailboxes.nostr');
 Route::post('/mailbox/settings/{id}/nostr', ['uses' => 'NostrController@mailboxSettingsSave', 'middleware' => ['auth']])->name('mailboxes.nostr.save');
 Route::get('/customers/{id}/nostr', ['uses' => 'NostrController@customerKeys', 'middleware' => ['auth']])->name('customers.nostr');

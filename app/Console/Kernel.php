@@ -112,6 +112,11 @@ class Kernel extends ConsoleKernel
         // The mailboxes' Nostr profiles and relay lists.
         $schedule->command('tallport:nostr-announce')->dailyAt('04:30')->withoutOverlapping();
 
+        $schedule->call(function () {
+            \App\Matrix\MatrixMailbox::whereNotNull('active_mailbox_id')->whereIn('status', ['ready', 'verification'])
+                ->eachById(fn ($identity) => \App\Jobs\SyncMatrixMailbox::dispatch($identity->id));
+        })->name('matrix-sync')->everyMinute()->withoutOverlapping();
+
         // AI Assistant documentation: pick up changes to documented pages.
         $schedule->command('tallport:ai-index-documents', ['--fetch'])
             ->dailyAt('03:40')

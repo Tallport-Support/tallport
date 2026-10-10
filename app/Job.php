@@ -243,6 +243,7 @@ class Job extends Model
                 'App\Jobs\SendReplyToCustomer',
                 'App\Jobs\SendReplyToTelegram',
                 'App\Jobs\SendReplyToNostr',
+                'App\Jobs\SendReplyToMatrix',
                 'App\Jobs\SendNotificationToUsers',
                 'App\Jobs\SendAutoReply',
                 'App\Jobs\SendAlert',

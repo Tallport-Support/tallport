@@ -17,6 +17,7 @@ class ActivityLog extends Activity
     // Replies sent to Telegram chats (App\Telegram\TelegramSend) and over Nostr (App\Nostr\NostrEvent).
     const NAME_OUT_TELEGRAM = 'out_telegram';
     const NAME_OUT_NOSTR = 'out_nostr';
+    const NAME_OUT_MATRIX = 'out_matrix';
 
     public static $available_logs = [
         self::NAME_USER,
@@ -103,9 +104,11 @@ class ActivityLog extends Activity
             case self::NAME_AI:
                 return __('AI');
             case self::NAME_OUT_TELEGRAM:
-                return __('Outgoing Telegram');
+                return __('Telegram');
             case self::NAME_OUT_NOSTR:
-                return __('Outgoing Nostr');
+                return __('Nostr');
+            case self::NAME_OUT_MATRIX:
+                return 'Matrix';
             default:
                 return ucwords(str_replace('_', ' ', $log_name));
         }
@@ -134,20 +137,17 @@ class ActivityLog extends Activity
     }
 
     /**
-     * The logs in the Logs page's bar: outgoing emails, Telegram and Nostr messages (once
-     * something has been sent that way), the activity logs, App Logs and AI.
+     * The logs in the Logs page's bar. Chat channels are visible even before their first message.
      */
     public static function menuNames()
     {
-        $outgoing = [self::NAME_OUT_EMAILS];
-        if (\App\Telegram\TelegramSend::exists()) {
-            $outgoing[] = self::NAME_OUT_TELEGRAM;
-        }
-        if (\App\Nostr\NostrEvent::where('direction', \App\Nostr\NostrEvent::DIRECTION_OUT)->exists()) {
-            $outgoing[] = self::NAME_OUT_NOSTR;
-        }
+        $channels = ['telegram', 'nostr', 'matrix'];
 
-        return array_merge($outgoing, self::getLogNames(), [self::NAME_APP_LOGS, self::NAME_AI]);
+        return array_merge(
+            [self::NAME_OUT_EMAILS, self::NAME_OUT_TELEGRAM, self::NAME_OUT_NOSTR, self::NAME_OUT_MATRIX],
+            array_values(array_diff(self::getLogNames(), $channels)),
+            [self::NAME_APP_LOGS, self::NAME_AI]
+        );
     }
 
     /**
@@ -164,6 +164,8 @@ class ActivityLog extends Activity
                 return route('logs.telegram');
             case self::NAME_OUT_NOSTR:
                 return route('logs.nostr');
+            case self::NAME_OUT_MATRIX:
+                return route('logs.matrix');
             default:
                 return route('logs', ['name' => $log_name]);
         }

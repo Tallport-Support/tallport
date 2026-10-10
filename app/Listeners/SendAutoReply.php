@@ -49,7 +49,7 @@ class SendAutoReply
             }
 
             // Telegram and Nostr have their own auto reply, not by email.
-            if (in_array((int) $conversation->channel, [\App\Telegram\Telegram::CHANNEL, \App\Nostr\Nostr::channel()])) {
+            if (in_array((int) $conversation->channel, [\App\Telegram\Telegram::CHANNEL, \App\Nostr\Nostr::channel(), \App\Matrix\Matrix::CHANNEL])) {
                 return;
             }
 

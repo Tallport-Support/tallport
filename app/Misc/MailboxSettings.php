@@ -36,6 +36,8 @@ class MailboxSettings
             if ($user->isAdmin()) {
                 $pages[] = self::page(__('Telegram'), route('mailboxes.telegram', ['id' => $id]), \App\Telegram\Telegram::isEnabled($mailbox) ? __('Connected') : __('Not set up'), routes: ['mailboxes.telegram'], chat: true);
             }
+            $matrix = \App\Matrix\MatrixMailbox::forMailbox($id);
+            $pages[] = self::page('Matrix', route('mailboxes.matrix', ['id' => $id]), $matrix && $matrix->isReady() ? __('Connected') : __('Not set up'), routes: ['mailboxes.matrix'], chat: true);
             $nostr = \App\Nostr\NostrMailbox::where('mailbox_id', $id)->where('enabled', true)->whereNotNull('pubkey')->exists();
             $pages[] = self::page('Nostr', route('mailboxes.nostr', ['id' => $id]), $nostr ? __('Connected') : __('Not set up'), routes: ['mailboxes.nostr'], chat: true);
         }

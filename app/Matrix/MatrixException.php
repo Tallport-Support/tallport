@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Matrix;
+
+class MatrixException extends \RuntimeException
+{
+    public $retry_after;
+
+    public function __construct($message, $code = 0, $retry_after = 0)
+    {
+        parent::__construct($message, $code);
+        $this->retry_after = $retry_after;
+    }
+}

@@ -11,6 +11,17 @@ use App\Thread;
  */
 class ChatDelivery
 {
+    public static function plainText(Thread $thread)
+    {
+        $text = HtmlToText::convert($thread->body);
+        foreach ($thread->all_attachments as $attachment) {
+            $url = $attachment->url();
+            $text = str_replace([' ('.$url.')', $url], '', $text);
+        }
+
+        return trim($text);
+    }
+
     /**
      * The channel checks its own delivery record before sending this reply.
      */

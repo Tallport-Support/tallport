@@ -68,4 +68,56 @@ class ChatConversations
 
         return Conversation::create($conversation_data, [$message], $customer);
     }
+    public static function receiveMailboxReply($conversation, Customer $customer, array $conversation_data, array $message, $sender)
+    {
+        $message['type'] = Thread::TYPE_MESSAGE;
+        $message['external_chat_sender'] = $sender;
+        $message['after_commit'] = true;
+        if ($conversation) {
+            return ['conversation' => $conversation, 'thread' => Thread::createExtended($message, $conversation, $customer)];
+        }
+        $conversation_data['type'] = Conversation::TYPE_EMAIL;
+
+        return Conversation::create($conversation_data, [$message], $customer);
+    }
+
+    public static function updatePending(Thread $thread, $body)
+    {
+        if ($thread->body !== $body) {
+            $thread->body = $body;
+            $thread->save();
+        }
+    }
+
+    public static function resolvePending(Thread $thread, $body, array $attachments = [])
+    {
+        $conversation = $thread->conversation;
+        foreach ($attachments as $attachment) {
+            $file = \App\Attachment::create($attachment['file_name'], $attachment['mime_type'], null,
+            base64_decode($attachment['data']), null, false, $thread->id);
+            if ($file) {
+                $thread->has_attachments = true;
+                $conversation->has_attachments = true;
+            }
+        }
+        $thread->body = $body;
+        $thread->setMeta('chat_pending', false);
+        $thread->save();
+        if ((int) $conversation->threads()->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])->max('id') === (int) $thread->id) {
+            $conversation->setPreview($body);
+        }
+        $conversation->save();
+        \DB::afterCommit(function () use ($conversation, $thread) {
+            if ($thread->isCustomerMessage()) {
+                if ($thread->first) {
+                    event(new \App\Events\CustomerCreatedConversation($conversation, $thread));
+                    \Eventy::action('conversation.created_by_customer', $conversation, $thread, $conversation->customer);
+                } else {
+                    event(new \App\Events\CustomerReplied($conversation, $thread));
+                    \Eventy::action('conversation.customer_replied', $conversation, $thread, $conversation->customer);
+                }
+            }
+            Conversation::refreshConversations($conversation, $thread);
+        });
+    }
 }

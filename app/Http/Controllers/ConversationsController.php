@@ -1812,7 +1812,7 @@ class ConversationsController extends Controller
 
         // Check undo timeout; Nostr replies are sent right away.
         if ((int) $thread->created_at->diffInSeconds(now(), true) > Conversation::UNDO_TIMOUT
-            || ($thread->type == Thread::TYPE_MESSAGE && \App\Nostr\Nostr::isNostr($conversation))
+            || ($thread->type == Thread::TYPE_MESSAGE && (\App\Nostr\Nostr::isNostr($conversation) || \App\Matrix\Matrix::isMatrix($conversation)))
         ) {
             \Session::flash('flash_error_floating', __('Sending can not be undone'));
             return redirect()->away($conversation->url($conversation->folder_id));

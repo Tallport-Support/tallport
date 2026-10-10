@@ -579,6 +579,22 @@
         "methods": [
             "GET"
         ],
+        "uri": "app-logs/out_matrix",
+        "name": "logs.matrix",
+        "action": "ChannelLogsController@matrix",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "app-logs/out_nostr",
         "name": "logs.nostr",
         "action": "ChannelLogsController@nostr",
@@ -1832,6 +1848,21 @@
         "uri": "mailbox/settings/{id}/auto-reply",
         "name": "mailboxes.auto_reply.save",
         "action": "MailboxesController@autoReplySave",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/settings/{id}/matrix",
+        "name": "mailboxes.matrix",
+        "action": "MatrixController@mailboxSettings",
         "middleware": [
             "web",
             "auth"

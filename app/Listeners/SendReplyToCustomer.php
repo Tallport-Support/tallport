@@ -100,6 +100,13 @@ class SendReplyToCustomer
             return;
         }
 
+        if (\App\Matrix\Matrix::isMatrix($conversation)) {
+            if (!$thread->getMeta('chat_external_sender')) {
+                \App\Jobs\SendReplyToMatrix::dispatch($thread->id);
+            }
+            return;
+        }
+
         // Modules' channels.
         if ($conversation->hasChannel()) {
             \Helper::backgroundAction('chat_conversation.send_reply', [$conversation, $replies, $conversation->customer], now()->addSeconds(Conversation::UNDO_TIMOUT));

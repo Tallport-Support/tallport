@@ -59,6 +59,7 @@ class Incoming
                     'data'      => base64_encode($contents),
                 ];
             } catch (TelegramException $e) {
+                \App\Misc\ChatLog::failure('telegram', $mailbox->id, 'receive', $e);
                 $body .= '<p><em>'.htmlspecialchars(__('A file could not be downloaded from Telegram').': '.($file['file_name'] ?: $file['type']).' ('.$e->getMessage().')').'</em></p>';
             }
         }
@@ -73,7 +74,7 @@ class Incoming
         $customer = self::customer($mailbox, $client, $message['from']);
 
         $conversation = ChatConversations::latest($mailbox, $customer, Telegram::CHANNEL);
-        ChatConversations::receive($conversation, $customer, [
+        $received = ChatConversations::receive($conversation, $customer, [
             'subject'     => self::subject($text, $body),
             'mailbox_id'  => $mailbox->id,
             'source_type' => Conversation::SOURCE_TYPE_WEB,
@@ -82,6 +83,10 @@ class Incoming
             'body'        => $body,
             'attachments' => $attachments,
         ]);
+
+        if (!empty($received['thread'])) {
+            \App\Misc\ChatLog::record('telegram', $mailbox->id, 'receive', 'succeeded', '', ['event_id' => $message['message_id'] ?? null, 'thread_id' => $received['thread']->id]);
+        }
 
         if ($is_start) {
             self::autoReply($client, $chat_id, Telegram::autoReply($settings, $message['from']['language_code'] ?? ''), $mailbox);
@@ -210,7 +215,7 @@ class Incoming
             }
         } catch (\Throwable $e) {
             // The photo is a nicety.
-            Telegram::log('Profile photo of Telegram user '.$user_id.' not saved: '.$e->getMessage(), $mailbox);
+            Telegram::log('Profile photo of Telegram user '.$user_id.' not saved: '.$e->getMessage(), $mailbox, 'failed', 'receive');
         }
     }
 
@@ -222,7 +227,7 @@ class Incoming
         try {
             $client->sendMessage($chat_id, $text);
         } catch (TelegramException $e) {
-            Telegram::log('Auto reply to /start not sent: '.$e->getMessage(), $mailbox);
+            Telegram::log('Auto reply to /start not sent: '.$e->getMessage(), $mailbox, 'failed', 'send');
         }
     }
 }

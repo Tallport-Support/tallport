@@ -75,6 +75,7 @@ class Translations
     public static function isWanted(Thread $thread)
     {
         return Settings::isConfigured()
+            && !$thread->getMeta('chat_pending')
             && $thread->type == Thread::TYPE_CUSTOMER
             && $thread->state == Thread::STATE_PUBLISHED
             && $thread->conversation
@@ -86,6 +87,10 @@ class Translations
      */
     public static function isMissing(Thread $thread, $language)
     {
+        if ($thread->getMeta('chat_pending')) {
+            return false;
+        }
+
         $data = Summaries::data($thread);
 
         return !isset($data['translations'][$language])
@@ -142,6 +147,10 @@ class Translations
      */
     public static function forceTranslate(Thread $thread, $user)
     {
+        if ($thread->getMeta('chat_pending')) {
+            return null;
+        }
+
         $language = Settings::language($thread->conversation->mailbox, $user);
         Summaries::updateData($thread, function ($data) use ($language) {
             // Shown in a language the user reads too (readAsWritten()).

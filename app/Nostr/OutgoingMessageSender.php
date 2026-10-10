@@ -270,14 +270,7 @@ class OutgoingMessageSender
      */
     public function threadToText(Thread $thread)
     {
-        $text = HtmlToText::convert($thread->body);
-        foreach ($thread->all_attachments as $attachment) {
-            // Linked images and editor-created attachment links must not export storage URLs.
-            $url = $attachment->url();
-            $text = str_replace([' ('.$url.')', $url], '', $text);
-        }
-
-        return trim($text);
+        return ChatDelivery::plainText($thread);
     }
 
     /**

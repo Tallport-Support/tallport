@@ -54,7 +54,7 @@ class CheckOutgoing extends Command
                 })
                 // Telegram and Nostr replies: accepted by Telegram, or a relay.
                 ->orWhere(function ($query) {
-                    $query->whereIn('conversations.channel', [\App\Telegram\Telegram::CHANNEL, \App\Nostr\Nostr::channel()])
+                    $query->whereIn('conversations.channel', [\App\Telegram\Telegram::CHANNEL, \App\Nostr\Nostr::channel(), \App\Matrix\Matrix::CHANNEL])
                         ->where(function ($query) {
                             $query->whereNull('threads.send_status')
                                 ->orWhere('threads.send_status', '!=', SendLog::STATUS_ACCEPTED);

@@ -76,7 +76,7 @@ class ChannelLogsTest extends FeatureTestCase
 
     public function testOutgoingTelegramLog()
     {
-        $this->actingAs($this->admin)->get(route('logs'))->assertOk()->assertDontSee(route('logs.telegram'));
+        $this->actingAs($this->admin)->get(route('logs'))->assertOk()->assertSee(route('logs.telegram'));
 
         $conversation = $this->conversation($this->mailbox);
         $conversation->customer->setSocialProfiles([['type' => Customer::SOCIAL_TYPE_TELEGRAM, 'value' => 'casey_lee']]);
@@ -88,9 +88,9 @@ class ChannelLogsTest extends FeatureTestCase
 
         $this->actingAs($this->createUser())->get(route('logs.telegram'))->assertStatus(403);
         $this->actingAs($this->admin)->get(route('logs.telegram'))->assertOk()
-            ->assertSeeInOrder(['Other Desk', 'Failed, Will Retry', 'Bad Gateway', 'Bot Desk', 'Casey Lee', '@casey_lee', 'Failed', 'END', 'Bot Desk', '71, 72', 'Succeeded'])
+            ->assertSeeInOrder(['Other Desk', 'Failed, Will Retry', 'Bad Gateway', 'Bot Desk', 'Casey Lee', '@casey_lee', 'Failed', 'END', 'Bot Desk', 'Succeeded', '71, 72'])
             ->assertSee(route('conversations.view', ['id' => $conversation->id]), false)
-            ->assertSee('telegram-send-', false)
+            ->assertSee('channel-delivery-', false)
             ->assertSee('value="'.route('logs.telegram').'"', false);
 
         $this->get(route('logs.telegram', ['outcome' => 'failed']))->assertOk()->assertSee('Bad Gateway')->assertSee('blocked')->assertDontSee('71, 72');
@@ -104,7 +104,7 @@ class ChannelLogsTest extends FeatureTestCase
 
     public function testOutgoingNostrLog()
     {
-        $this->actingAs($this->admin)->get(route('logs.ai'))->assertOk()->assertDontSee(route('logs.nostr'));
+        $this->actingAs($this->admin)->get(route('logs.ai'))->assertOk()->assertSee(route('logs.nostr'));
 
         $conversation = $this->conversation($this->mailbox);
         $sent = $this->nostrEvent($conversation, ['relays' => json_encode([
@@ -114,16 +114,16 @@ class ChannelLogsTest extends FeatureTestCase
         $this->nostrEvent($conversation, ['status' => NostrEvent::STATUS_FAILED, 'thread_id' => null, 'error' => 'no relays']);
         $other = $this->conversation($this->other_mailbox);
         $this->nostrEvent($other, ['status' => NostrEvent::STATUS_FAILED, 'pubkey' => '', 'error' => 'The customer has no Nostr public key']);
-        // Incoming messages are not in it.
+        // Incoming messages share the same channel log.
         $this->nostrEvent($conversation, ['direction' => NostrEvent::DIRECTION_IN, 'relay' => 'wss://incoming.example.org']);
 
         $this->actingAs($this->createUser())->get(route('logs.nostr'))->assertStatus(403);
         $this->actingAs($this->admin)->get(route('logs.nostr'))->assertOk()
-            ->assertSeeInOrder(['Other Desk', 'Casey Lee', 'Failed', 'no Nostr public key', 'Bot Desk', 'Auto Reply', 'Failed', 'no relays', 'Bot Desk', Keys::shortNpub($sent->pubkey), '1 of 2', 'Succeeded'])
+            ->assertSeeInOrder(['Other Desk', 'Casey Lee', 'Failed', 'no Nostr public key', 'Bot Desk', 'Failed', 'no relays', 'Auto Reply', 'Bot Desk', Keys::shortNpub($sent->pubkey), 'Succeeded', '1 of 2'])
             ->assertSeeInOrder(['wss://one.example.org', 'Accepted', 'wss://two.example.org', 'Failed: blocked: rate-limited'])
             ->assertSee(Keys::npub($sent->pubkey))
             ->assertSee(route('conversations.view', ['id' => $conversation->id]), false)
-            ->assertDontSee('incoming.example.org');
+            ->assertSee('incoming.example.org');
 
         $this->get(route('logs.nostr', ['outcome' => 'failed']))->assertOk()->assertSee('no relays')->assertDontSee('1 of 2');
         $this->get(route('logs.nostr', ['mailbox_id' => $this->mailbox->id]))->assertOk()->assertSee('1 of 2')->assertDontSee('no Nostr public key');
@@ -143,5 +143,67 @@ class ChannelLogsTest extends FeatureTestCase
         $this->assertSame(1, Retention::cleanLogs(true)['telegram_sends']);
         $this->assertSame(1, Retention::run()['logs']['telegram_sends']);
         $this->assertSame([$kept->id], TelegramSend::pluck('id')->all());
+    }
+
+    /** @dataProvider channels */
+    public function testDiagnosticsStayInTheirChannelAndCanBeFiltered($channel)
+    {
+        \App\Misc\ChatLog::record($channel, $this->mailbox->id, 'connection', 'failed', 'Connection <script>failed</script>', ['code' => 503, 'password' => 'private-password', 'relay' => 'wss://user:private-password@relay.example.org/path?token=private-password']);
+        \App\Misc\ChatLog::record($channel, $this->other_mailbox->id, 'receive', 'info', 'Other mailbox notice');
+        \App\Misc\ChatLog::record($channel === 'matrix' ? 'telegram' : 'matrix', $this->mailbox->id, 'connection', 'failed', 'Different channel failure');
+        $this->actingAs($this->createUser())->get(route('logs.'.$channel))->assertForbidden();
+        $this->actingAs($this->admin)->get(route('logs.'.$channel))
+            ->assertOk()->assertSee('Connection &lt;script&gt;failed&lt;/script&gt;', false)
+            ->assertSee('Other mailbox notice')->assertDontSee('Different channel failure')->assertDontSee('private-password');
+        $this->get(route('logs.'.$channel, ['outcome' => 'failed']))->assertOk()
+            ->assertSee('Connection &lt;script&gt;failed&lt;/script&gt;', false)->assertDontSee('Other mailbox notice');
+        $this->get(route('logs.'.$channel, ['mailbox_id' => $this->other_mailbox->id]))->assertOk()
+            ->assertSee('Other mailbox notice')->assertDontSee('Connection &lt;script&gt;failed&lt;/script&gt;', false);
+        $this->assertStringNotContainsString('private-password', ActivityLog::where('log_name', $channel)->get()->toJson());
+    }
+
+    public static function channels()
+    {
+        return [['telegram'], ['nostr'], ['matrix']];
+    }
+
+    public function testMatrixLogShowsDeliveryAndSyncFailuresWithoutDecryptingMessagePayloads()
+    {
+        $identity = \App\Matrix\MatrixMailbox::create(['mailbox_id' => $this->mailbox->id, 'active_mailbox_id' => $this->mailbox->id,
+            'homeserver' => 'https://matrix.example.org', 'user_id' => '@support:example.org', 'user_hash' => hash('sha256', '@support:example.org'),
+            'device_id' => 'TALLPORT', 'status' => 'verification', 'credentials' => ['access_token' => 'secret-token']]);
+        $conversation = $this->conversation($this->mailbox);
+        $event = \App\Matrix\MatrixEvent::outgoing($identity->id, 'reply', 'outgoing', [], '!room:example.org', $conversation->threads()->first()->id);
+        $event->status = 'sent';
+        $event->remote_id = '$sent-message';
+        $event->save();
+        \DB::table('matrix_events')->where('id', $event->id)->update(['payload' => 'undecryptable-message-secret']);
+        \Illuminate\Support\Facades\Http::preventStrayRequests();
+        \Illuminate\Support\Facades\Http::fake(['https://matrix.example.org/*' => \Illuminate\Support\Facades\Http::response(['errcode' => 'M_UNKNOWN', 'error' => 'private-response-body'], 503)]);
+        \App\Jobs\SyncMatrixMailbox::dispatchSync($identity->id);
+        $this->actingAs($this->admin)->get(route('logs.matrix'))->assertOk()
+            ->assertSee('Connection')->assertSee('M_UNKNOWN')->assertSee('$sent-message')->assertSee('Succeeded')
+            ->assertSee(route('conversations.view', ['id' => $conversation->id]), false)
+            ->assertDontSee('secret-token')->assertDontSee('private-response-body')->assertDontSee('undecryptable-message-secret');
+        $this->get(route('logs.matrix', ['outcome' => 'failed']))->assertOk()->assertSee('M_UNKNOWN')->assertDontSee('$sent-message');
+        $this->assertSame('failed', ActivityLog::where('log_name', 'matrix')->firstOrFail()->properties['status']);
+    }
+
+    public function testMixedHistoryPaginatesWithoutDroppingOrRepeatingEntries()
+    {
+        $conversation = $this->conversation($this->mailbox);
+        $this->telegramSend($conversation, ['message_ids' => [987654], 'created_at' => now()->subHour()]);
+        for ($i = 0; $i < 50; $i++) {
+            \App\Misc\ChatLog::record('telegram', $this->mailbox->id, 'connection', 'failed', 'Recent connection failure');
+        }
+        $this->actingAs($this->admin)->get(route('logs.telegram'))->assertOk()->assertSee('Recent connection failure')->assertDontSee('987654');
+        $this->get(route('logs.telegram', ['page' => 2, 'outcome' => '']))->assertOk()->assertSee('987654')->assertDontSee('Recent connection failure');
+    }
+
+    public function testUnexpectedExceptionsDoNotExposeTheirMessagesInDiagnostics()
+    {
+        \App\Misc\ChatLog::failure('nostr', $this->mailbox->id, 'receive', new \RuntimeException('secret-private-key-and-message', 42));
+        $this->actingAs($this->admin)->get(route('logs.nostr'))->assertOk()
+            ->assertSee('RuntimeException')->assertSee('42')->assertSee('Receive')->assertDontSee('secret-private-key-and-message');
     }
 }

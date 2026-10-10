@@ -30,6 +30,7 @@ Credit for everything up to the fork goes to the FreeScout team.
 * [AI](#ai)
 * [Telegram](#telegram)
 * [Nostr](#nostr)
+* [Matrix](#matrix)
 * [Auto replies in languages](#auto-replies-in-languages)
 * [Modules](#modules)
 * [Development](#development)
@@ -401,7 +402,7 @@ With SQS, configure each queue's visibility timeout in AWS to more than
 
 ## Chat settings
 
-The mailbox's **Chat** section holds the settings shared by Telegram and Nostr,
+The mailbox's **Chat** section holds the settings shared by Telegram, Nostr and Matrix,
 with links to each channel's connection settings. The reopen window (default
 30 days) determines how long an inactive conversation can be continued, even
 if it is still open. A separate option starts a new conversation when a customer
@@ -473,6 +474,36 @@ PHP extension makes encryption faster; without it `bcmath` is used.
 Modules can extend the channel with the `nostr.incoming_message`,
 `nostr.rumor_tags`, `nostr.reply_attachment_tags`, `nostr.header_tags` and
 `nostr.message_source` filters.
+
+## Matrix
+
+Each mailbox can connect its own Matrix account under **Chat > Matrix**. Enter
+the homeserver domain or HTTPS URL first. Tallport checks support before asking
+for a username (short or full Matrix ID) and password. New accounts initialize
+encryption directly in Tallport. For an existing encryption identity whose keys
+Tallport does not hold, the device works unverified with a warning. Optionally
+verify it from a trusted Matrix client by comparing all three numbers. Password login and Matrix v1.11 or newer are
+required; SSO-only accounts are not supported.
+
+Tallport accepts private one-to-one invitations, receives text and files, and
+sends replies from the normal conversation screen. Encrypted rooms use our PHP
+Olm/Megolm implementation with Sodium and OpenSSL. Replies send immediately;
+incoming messages use the scheduler and mail queue, normally within a minute.
+Chat policies are shared with Telegram and Nostr. **Manage > Logs** has separate
+Telegram, Nostr and Matrix logs, with the same mailbox and failure filters.
+They include delivery history and connection/receive diagnostics.
+Groups, old history import,
+Matrix key backups, reactions, edits and calls are outside this version.
+
+**Disable** pauses the account and retains its device. **Disconnect** logs out
+that device; reconnecting creates a new device, signed with the account keys
+Tallport holds, or usable unverified until optionally verified from another client. Back up the database
+and Tallport encryption key together. After restoring an older backup, use
+**Reset device** before reconnecting; received-message keys are retained.
+Decrypted messages and files use Tallport's normal storage and permissions.
+
+Live Matrix client interoperability checks are still pending. See [MATRIX.md](MATRIX.md)
+for the implementation and acceptance status.
 
 ## Auto replies in languages
 

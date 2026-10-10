@@ -408,6 +408,7 @@
         "arguments": 3,
         "files": [
             "app/Console/Commands/FetchEmails.php",
+            "app/Misc/ChatConversations.php",
             "app/Thread.php"
         ]
     },
@@ -459,6 +460,7 @@
         "arguments": 3,
         "files": [
             "app/Console/Commands/FetchEmails.php",
+            "app/Misc/ChatConversations.php",
             "app/Thread.php"
         ]
     },

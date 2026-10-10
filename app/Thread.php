@@ -632,6 +632,9 @@ class Thread extends Model
      */
     public function getActionPerson($conversation_number = '')
     {
+        if ($this->getMeta('chat_external_sender')) {
+            return $this->getMeta('chat_external_sender').' ('.__('External mailbox reply').')';
+        }
         $person = '';
 
         if ($this->type == self::TYPE_CUSTOMER) {
@@ -1041,7 +1044,8 @@ class Thread extends Model
             return false;
             //return $this->getErrorResponse('`customer` parameter is required', 'customer');
         }
-        if (($data['type'] == Thread::TYPE_MESSAGE || $data['type'] == Thread::TYPE_NOTE) && empty($user_id)) {
+        $external_chat = $data['type'] == Thread::TYPE_MESSAGE && !empty($data['external_chat_sender']) && $conversation->hasChannel();
+        if (($data['type'] == Thread::TYPE_MESSAGE || $data['type'] == Thread::TYPE_NOTE) && empty($user_id) && !$external_chat) {
             return false;
             //return $this->getErrorResponse('`user` parameter is required', 'user');
         }
@@ -1068,6 +1072,12 @@ class Thread extends Model
         $thread->state = $data['state'] ?? Thread::STATE_PUBLISHED;
         $thread->customer_id = $customer->id ?? $conversation->customer_id ?? null;
         $thread->body = $data['body'];
+        if ($external_chat) {
+            $thread->setMeta('chat_external_sender', $data['external_chat_sender']);
+        }
+        if (!empty($data['chat_pending'])) {
+            $thread->setMeta('chat_pending', true);
+        }
         if (!$is_customer) {
             $thread->setTo([$customer->getMainEmail()]);
         }
@@ -1264,40 +1274,52 @@ class Thread extends Model
             $conversation->mailbox->updateFoldersCounters();
         }
 
-        // Events.
+        $dispatch = function () use ($new, $is_customer, $conversation, $thread, $customer, $data, $external_chat) {
+            if ($external_chat || !empty($data['chat_pending'])) {
+                Conversation::refreshConversations($conversation, $thread);
 
-        // Conversation customer changed
-        // Not used anywhere
-        // if ($prev_customer_id) {
-        //     event(new ConversationCustomerChanged($conversation, $prev_customer_id, $prev_customer_email, null, $customer));
-        // }
+                return;
+            }
+            // Events.
     
-        if ($new) {
-            if ($is_customer) {
-                event(new CustomerCreatedConversation($conversation, $thread));
-                \Eventy::action('conversation.created_by_customer', $conversation, $thread, $customer);
+            // Conversation customer changed
+            // Not used anywhere
+            // if ($prev_customer_id) {
+            //     event(new ConversationCustomerChanged($conversation, $prev_customer_id, $prev_customer_email, null, $customer));
+            // }
+
+            if ($new) {
+                if ($is_customer) {
+                    event(new CustomerCreatedConversation($conversation, $thread));
+                    \Eventy::action('conversation.created_by_customer', $conversation, $thread, $customer);
+                } else {
+                    // New conversation.
+                    event(new UserCreatedConversation($conversation, $thread));
+                    \Eventy::action('conversation.created_by_user_can_undo', $conversation, $thread);
+                    // After Conversation::UNDO_TIMOUT period trigger final event.
+                    \Helper::backgroundAction('conversation.created_by_user', [$conversation, $thread], now()->addSeconds(Conversation::UNDO_TIMOUT));
+                }
+            } elseif ($data['type'] == Thread::TYPE_NOTE) {
+                // Note.
+                event(new UserAddedNote($conversation, $thread));
+                \Eventy::action('conversation.note_added', $conversation, $thread);
             } else {
-                // New conversation.
-                event(new UserCreatedConversation($conversation, $thread));
-                \Eventy::action('conversation.created_by_user_can_undo', $conversation, $thread);
-                // After Conversation::UNDO_TIMOUT period trigger final event.
-                \Helper::backgroundAction('conversation.created_by_user', [$conversation, $thread], now()->addSeconds(Conversation::UNDO_TIMOUT));
+                // Reply.
+                if ($is_customer) {
+                    event(new CustomerReplied($conversation, $thread));
+                    \Eventy::action('conversation.customer_replied', $conversation, $thread, $customer);
+                } else {
+                    event(new UserReplied($conversation, $thread));
+                    \Eventy::action('conversation.user_replied_can_undo', $conversation, $thread);
+                    // After Conversation::UNDO_TIMOUT period trigger final event.
+                    \Helper::backgroundAction('conversation.user_replied', [$conversation, $thread], now()->addSeconds(Conversation::UNDO_TIMOUT));
+                }
             }
-        } elseif ($data['type'] == Thread::TYPE_NOTE) {
-            // Note.
-            event(new UserAddedNote($conversation, $thread));
-            \Eventy::action('conversation.note_added', $conversation, $thread);
+        };
+        if (!empty($data['after_commit'])) {
+            \DB::afterCommit($dispatch);
         } else {
-            // Reply.
-            if ($is_customer) {
-                event(new CustomerReplied($conversation, $thread));
-                \Eventy::action('conversation.customer_replied', $conversation, $thread, $customer);
-            } else {
-                event(new UserReplied($conversation, $thread));
-                \Eventy::action('conversation.user_replied_can_undo', $conversation, $thread);
-                // After Conversation::UNDO_TIMOUT period trigger final event.
-                \Helper::backgroundAction('conversation.user_replied', [$conversation, $thread], now()->addSeconds(Conversation::UNDO_TIMOUT));
-            }
+            $dispatch();
         }
 
         return $thread;
@@ -1735,7 +1757,7 @@ class Thread extends Model
         }
 
         // A reply to Telegram or Nostr.
-        foreach (['SendReplyToTelegram', 'SendReplyToNostr'] as $class) {
+        foreach (['SendReplyToTelegram', 'SendReplyToNostr', 'SendReplyToMatrix'] as $class) {
             $jobs = $this->findSendJobs($model, $class);
             foreach ($jobs as $job) {
                 $command = \App\Job::getPayloadCommand($job->getPayloadDecoded());

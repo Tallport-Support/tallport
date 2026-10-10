@@ -816,6 +816,8 @@ class NostrRelayTest extends FeatureTestCase
         $this->assertSame(['AUTH', 'c1'], $this->relayReport());
         $this->assertSame(['CLOSE', 'REQ'], $this->relayReport());
         $this->assertContains('authentication rejected by '.$url.': restricted: not you', $log);
+        $this->assertTrue(\App\ActivityLog::where('log_name', 'nostr')->where('subject_id', $cfg->mailbox_id)
+            ->where('description', 'Relay authentication rejected.')->where('properties->status', 'failed')->exists());
         $this->assertContains('subscription closed by '.$url.': auth-required: still', $log);
         $this->assertNotContains('subscription closed by '.$url.': auth-required: not yours', $log);
         $this->assertSame('connection closed by relay', $state('error'));
@@ -965,6 +967,8 @@ class NostrRelayTest extends FeatureTestCase
         $handler->failures = [new \RuntimeException('handler broke')];
         $listener->call('onMessage', $key, json_encode(['EVENT', 'sub1', $wrap]));
         $this->assertContains('error handling event '.substr($wrap['id'], 0, 8).': handler broke', $log);
+        $this->assertTrue(\App\ActivityLog::where('log_name', 'nostr')->where('subject_id', $cfg->mailbox_id)
+            ->where('properties->type', 'receive')->where('properties->status', 'failed')->exists());
         $this->assertSame(1, $listener->get('connections')[$key]['events']);
 
         $listener->call('onMessage', $key, json_encode(['EVENT', 'sub1', $legacy]));
