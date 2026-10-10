@@ -305,7 +305,7 @@ class ConversationPageDataTest extends FeatureTestCase
             ]);
         }
 
-        $this->actingAs($this->agent)->get($conversation->url().'&mark_as_read='.$ids['other'])->assertOk();
+        $this->actingAs($this->agent)->get($conversation->url().'?mark_as_read='.$ids['other'])->assertOk();
 
         $this->assertNotNull(\DB::table('notifications')->where('id', $ids['other'])->value('read_at'));
         $this->assertNull(\DB::table('notifications')->where('id', $ids['this'])->value('read_at'));

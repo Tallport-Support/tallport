@@ -81,7 +81,7 @@ class ConversationPagesTest extends FeatureTestCase
         preg_match_all('/<a [^>]*conv-row__link[^>]*>/', $response->getContent(), $rows);
         $current = array_values(array_filter($rows[0], fn ($row) => str_contains($row, 'aria-current="page"')));
         $this->assertCount(1, $current);
-        $this->assertStringContainsString('/conversation/'.$first->id.'?', $current[0]);
+        $this->assertStringContainsString('href="'.url('/conversation/'.$first->id).'"', $current[0], 'No folder in the URL.');
     }
 
     public function testUserWithoutAccessCannotSeeMailboxOrConversation()

@@ -24,8 +24,6 @@ class ConversationInspector extends Component
     {
         $conversation = Conversation::find($this->conversation_id);
         abort_unless($conversation && auth()->user()->can('view', $conversation), 403);
-        // Its parts read the folder from the request, as on the page.
-        request()->merge(['folder_id' => $this->folder_id]);
         $data = ConversationsController::pageData($conversation, $this->openedFolder(), auth()->user());
 
         return view('livewire.conversation-inspector', [

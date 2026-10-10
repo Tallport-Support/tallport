@@ -346,7 +346,7 @@ class EmailConversationLoopTest extends FeatureTestCase
         ]);
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
 
-        $response = $this->actingAs($this->agent)->get('/conversation/'.$conversation->id.'?folder_id='.$conversation->folder_id);
+        $response = $this->actingAs($this->agent)->get('/conversation/'.$conversation->id);
 
         $response->assertStatus(200);
         $response->assertSee('Question about my order');

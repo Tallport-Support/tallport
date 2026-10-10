@@ -316,14 +316,17 @@ class ConversationAjaxEdgeCasesTest extends FeatureTestCase
         $second = $this->receiveConversation(['subject' => 'Second', 'from' => 'robin@customer.example.org']);
         $unassigned = $this->folder(Folder::TYPE_UNASSIGNED);
 
-        $response = $this->postAjax($this->agent, '/conversation/ajax?folder_id='.$unassigned->id, ['action' => 'conversation_move', 'conversation_id' => $first->id, 'mailbox_id' => $sales->id])->json();
+        $response = $this->ajax($this->agent, ['action' => 'conversation_move', 'conversation_id' => $first->id, 'mailbox_id' => $sales->id]);
         $this->assertSuccess($response);
         $this->assertSame(route('mailboxes.view.folder', ['id' => $this->mailbox->id, 'folder_id' => $unassigned->id]), $response['redirect_url']);
         $this->assertEquals($sales->id, $first->fresh()->mailbox_id);
 
+        // Working in All Mailboxes: back there.
+        $this->createMailbox([$this->agent], ['name' => 'Billing']);
+        $this->actingAs($this->agent)->get(route('mailboxes.all', ['folder_id' => -Folder::TYPE_UNASSIGNED]));
         $response = $this->ajax($this->agent, ['action' => 'conversation_move', 'conversation_id' => $second->id, 'mailbox_id' => $sales->id]);
         $this->assertSuccess($response);
-        $this->assertSame(route('mailboxes.view', ['id' => $this->mailbox->id]), $response['redirect_url']);
+        $this->assertSame(route('mailboxes.all', ['folder_id' => -Folder::TYPE_UNASSIGNED]), $response['redirect_url']);
     }
 
     // Merge.

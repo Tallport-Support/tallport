@@ -188,9 +188,9 @@ class RealtimePayloadsTest extends FeatureTestCase
         $this->assertSame('App\Notifications\BroadcastNotification', $payloads[0]['payload']['type']);
         $data = $payloads[0]['data'];
         $this->assertStringContainsString('Casey Customer replied to conversation #'.$conversation->number, $data['web']['html']);
-        $this->assertStringContainsString('/conversation/'.$conversation->id.'?', $data['web']['html']);
+        $this->assertStringContainsString('/conversation/'.$conversation->id.'#thread-', $data['web']['html']);
         $this->assertStringContainsString('Casey Customer replied', $data['browser']['text']);
-        $this->assertStringStartsWith(url('/conversation/'.$conversation->id.'?'), $data['browser']['url']);
+        $this->assertStringStartsWith(url('/conversation/'.$conversation->id.'#'), $data['browser']['url']);
         $this->assertStringEndsWith('#thread-'.$reply->id, $data['browser']['url']);
     }
 

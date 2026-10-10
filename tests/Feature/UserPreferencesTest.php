@@ -39,7 +39,7 @@ class UserPreferencesTest extends FeatureTestCase
         $composer = Livewire::actingAs($agent)->test(ConversationComposer::class, ['conversation' => $conversation])
             ->call('open', 'reply')->assertSet('status', Conversation::STATUS_CLOSED)->assertSee('Send &amp; Close', false);
         $composer->set('body', '<p>Fixed.</p>')->call('send')->assertRedirect();
-        $this->assertStringContainsString('/conversation/'.$conversation->id.'?', $composer->effects['redirect']);
+        $this->assertSame(url('/conversation/'.$conversation->id), $composer->effects['redirect']);
         $this->assertSame(Conversation::STATUS_CLOSED, $conversation->fresh()->status);
 
         // An accent of one's own, else the installation's.

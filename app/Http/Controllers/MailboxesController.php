@@ -736,6 +736,7 @@ class MailboxesController extends Controller
         }
 
         $this->authorize('view', $folder);
+        \App\Misc\Sidebar::select($folder);
 
         $query_conversations = Conversation::getQueryByFolder($folder, $user->id);
         $conversations = $folder->queryAddOrderBy($query_conversations)->paginate(

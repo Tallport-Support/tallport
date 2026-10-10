@@ -108,16 +108,91 @@ class Sidebar
     }
 
     /**
-     * The mailbox and folder a page is in (All Mailboxes: its ID), or nulls.
+     * The session's key for the mailbox the user works in (select()).
+     */
+    const SCOPE = 'sidebar_mailbox_id';
+
+    /**
+     * The user selected a folder (its page, or opened in place): its mailbox, or
+     * All Mailboxes, is where they work from now on. It stays so whatever happens
+     * next (opening, replying to, moving or deleting conversations, other pages)
+     * until they select a folder elsewhere. Kept in the session, not in URLs.
+     */
+    public static function select(Folder $folder)
+    {
+        session()->put(self::SCOPE, $folder->id < 0 ? AllMailboxes::MAILBOX_ID : (int) $folder->mailbox_id);
+    }
+
+    /**
+     * The mailbox the user works in (select()): its ID, AllMailboxes::MAILBOX_ID,
+     * or null before they select a folder (or when they no longer have it).
+     */
+    public static function scope(?User $user = null)
+    {
+        $user = $user ?: auth()->user();
+        $mailbox_id = (int) session()->get(self::SCOPE);
+        if (!$user || !$mailbox_id) {
+            return null;
+        }
+        if (AllMailboxes::isAllMailboxes($mailbox_id)) {
+            return AllMailboxes::isAvailable($user) ? $mailbox_id : null;
+        }
+
+        return in_array($mailbox_id, $user->mailboxesIdsCanView()) ? $mailbox_id : null;
+    }
+
+    /**
+     * The folder a conversation is shown in: its own (Mine when it's the user's),
+     * or All Mailboxes' of that kind when the user works there.
+     */
+    public static function conversationFolder(\App\Conversation $conversation, ?User $user = null)
+    {
+        $user = $user ?: auth()->user();
+        $folder = null;
+        if ($user && $conversation->user_id == $user->id) {
+            $folder = $conversation->mailbox->folders()->where('type', Folder::TYPE_MINE)->where('user_id', $user->id)->first();
+        }
+        $folder = $folder ?: $conversation->folder;
+        if ($folder && AllMailboxes::isAllMailboxes(self::scope($user)) && in_array($folder->type, AllMailboxes::TYPES)) {
+            return AllMailboxes::folder($user, -$folder->type) ?: $folder;
+        }
+
+        return $folder;
+    }
+
+    /**
+     * Where the user goes back to (after deleting a conversation, for example): this
+     * folder (null: the mailbox's first) in the mailbox they work in. In All Mailboxes,
+     * its folder of that kind; in another mailbox, that mailbox.
+     */
+    public static function folderUrl(?Folder $folder, $mailbox_id = null)
+    {
+        $scope = self::scope();
+        $mailbox_id = $folder ? $folder->mailbox_id : $mailbox_id;
+        if (AllMailboxes::isAllMailboxes($scope)) {
+            $type = $folder && in_array($folder->type, AllMailboxes::TYPES) ? $folder->type : Folder::TYPE_UNASSIGNED;
+
+            return route('mailboxes.all', ['folder_id' => -$type]);
+        }
+        if ($scope && $scope != $mailbox_id) {
+            return route('mailboxes.view', ['id' => $scope]);
+        }
+
+        return $folder ? $folder->url($folder->mailbox_id) : route('mailboxes.view', ['id' => $mailbox_id]);
+    }
+
+    /**
+     * The mailbox and folder the sidebar shows as current (All Mailboxes: its
+     * ID): the mailbox the user works in, with the page's folder if it is there;
+     * before they select a folder, the page's; or nulls.
      */
     public static function current(array $view_data)
     {
         $mailbox = $view_data['mailbox'] ?? null;
         $folder = $view_data['folder'] ?? null;
-        if ($folder && $folder->id < 0) {
-            return [AllMailboxes::MAILBOX_ID, $folder->id];
-        }
+        $folder_mailbox_id = $folder && $folder->id < 0 ? AllMailboxes::MAILBOX_ID : ($folder && $folder->id ? $folder->mailbox_id : ($mailbox instanceof Mailbox ? $mailbox->id : null));
+        $scope = self::scope() ?: $folder_mailbox_id;
 
-        return [$mailbox instanceof Mailbox ? $mailbox->id : null, $folder ? $folder->id : null];
+        return [$scope, $folder && $folder->id && $folder_mailbox_id == $scope ? $folder->id : null];
     }
 }

@@ -206,7 +206,7 @@ class ConversationActions
             return ['msg' => __('Only deleted conversations can be deleted forever.')];
         }
 
-        $folder_id = $conversation->getCurrentFolder();
+        $folder = $conversation->folder;
 
         if ($forever) {
             $mailbox = $conversation->mailbox;
@@ -219,7 +219,8 @@ class ConversationActions
 
         \Session::flash('flash_success_floating', __('Conversation deleted'));
 
-        return ['status' => 'success', 'redirect_url' => route('mailboxes.view.folder', ['id' => $conversation->mailbox_id, 'folder_id' => $folder_id])];
+        // Back to the selected folder.
+        return ['status' => 'success', 'redirect_url' => \App\Misc\Sidebar::folderUrl($folder, $conversation->mailbox_id)];
     }
 
     public static function changeSubject($conversation, $subject, $user)
@@ -337,7 +338,7 @@ class ConversationActions
 
         // When creating a new conversation.
         if (!empty($request->is_create) && $after_send != MailboxUser::AFTER_SEND_STAY) {
-            return route('mailboxes.view.folder', ['id' => $conversation->mailbox_id, 'folder_id' => $conversation->folder_id]);
+            return \App\Misc\Sidebar::folderUrl($conversation->folder, $conversation->mailbox_id);
         }
 
         if (!empty($after_send)) {
@@ -348,7 +349,7 @@ class ConversationActions
                     break;
                 case MailboxUser::AFTER_SEND_NEXT:
                     // We need to get not any next conversation, but ACTIVE next conversation.
-                    $redirect_url = $conversation->urlNext(Conversation::getFolderParam($request), Conversation::STATUS_ACTIVE, true, $request);
+                    $redirect_url = $conversation->urlNext($conversation->getCurrentFolder(), Conversation::STATUS_ACTIVE, true, $request);
                     break;
             }
         } else {

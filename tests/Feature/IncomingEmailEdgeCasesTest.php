@@ -263,7 +263,7 @@ class IncomingEmailEdgeCasesTest extends FeatureTestCase
         $this->assertEquals($customer_id, $conversation->customer_id);
         $this->assertCount(0, $this->sentEmailsTo('casey@customer.example.org'), 'Nothing is sent to the customer.');
 
-        $this->actingAs($this->agent)->get('/conversation/'.$conversation->id.'?folder_id='.$conversation->folder_id)->assertStatus(200)->assertSee($body);
+        $this->actingAs($this->agent)->get('/conversation/'.$conversation->id)->assertStatus(200)->assertSee($body);
     }
 
     // Agents forwarding customer email in.

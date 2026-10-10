@@ -51,6 +51,8 @@ trait ConversationOpens
 
             return null;
         }
+        // The user works in its mailbox now (App\Misc\Sidebar).
+        \App\Misc\Sidebar::select($folder);
         $conversation_id = $conversation_id ?: app(ConversationListQuery::class)->folderConversationId($folder, auth()->user());
         if (!$conversation_id) {
             $this->skipRender();
@@ -93,20 +95,15 @@ trait ConversationOpens
     }
 
     /**
-     * The folder a conversation is shown in: the one it was opened from, if it's there.
+     * The folder a conversation is shown in, in the mailbox the user works in
+     * (App\Misc\Sidebar::conversationFolder()). $folder_id (where it was
+     * opened from) is ignored.
      */
     public static function openedFolderId(Conversation $conversation, $folder_id)
     {
-        $user = auth()->user();
-        if ((int) $folder_id < 0 && AllMailboxes::isAvailable($user)) {
-            return (int) $folder_id;
-        }
-        $folder = $folder_id ? $conversation->mailbox->folders()->where('folders.id', $folder_id)->first() : null;
-        if ($folder && $conversation->isInFolderAllowed($folder)) {
-            return $folder->id;
-        }
+        $folder = \App\Misc\Sidebar::conversationFolder($conversation);
 
-        return $conversation->folder_id;
+        return $folder ? $folder->id : $conversation->folder_id;
     }
 
     protected function openedFolder()

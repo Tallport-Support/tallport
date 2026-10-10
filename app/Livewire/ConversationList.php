@@ -247,6 +247,8 @@ class ConversationList extends Component
 
             return;
         }
+        // The user works in its mailbox now (App\Misc\Sidebar).
+        \App\Misc\Sidebar::select($folder);
         // This kind of folder's order: the user's choice, or its default.
         $this->sorting = Conversation::getConvTableSorting(null, $folder);
         $list = app(ConversationListQuery::class)->folderList($folder, $user);

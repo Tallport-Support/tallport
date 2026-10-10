@@ -77,8 +77,8 @@ class ConversationThreadTest extends FeatureTestCase
     public function testLinksKeepThePageAddress()
     {
         $note = $this->note('<p>A note</p>');
-        $this->actingAs($this->admin)->get('/conversation/'.$this->conversation->id.'?folder_id='.$this->conversation->folder_id)
-            ->assertSee('folder_id='.$this->conversation->folder_id.'&amp;print_thread_id='.$note->id, false);
+        $this->actingAs($this->admin)->get('/conversation/'.$this->conversation->id.'?search=parcel')
+            ->assertSee('search=parcel&amp;print_thread_id='.$note->id, false);
     }
 
     /**

@@ -49,7 +49,7 @@ class ConversationOpenInPlaceTest extends FeatureTestCase
             ->assertSee('Broken zipper')
             ->dispatch('conversation-open', id: $second->id, folder_id: $first->folder_id)
             ->assertSee('Lost parcel')->assertDontSee('Broken zipper')
-            ->assertDispatched('conversation-opened', id: $second->id, url: route('conversations.view', ['id' => $second->id, 'folder_id' => $first->folder_id]))
+            ->assertDispatched('conversation-opened', id: $second->id, url: route('conversations.view', ['id' => $second->id]))
             // No build of the styles to compare where minifying is off (tests).
             ->assertDispatched('conversation-opened', styles: null)
             // It was unread: the list follows (its dot goes).

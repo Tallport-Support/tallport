@@ -1196,8 +1196,7 @@ class ConversationReplies
 
             if ($conversation->state == Conversation::STATE_DRAFT) {
                 // New conversation draft being discarded
-                $folder_id = $conversation->getCurrentFolder(null, $request);
-                $response['redirect_url'] = route('mailboxes.view.folder', ['id' => $conversation->mailbox_id, 'folder_id' => $folder_id]);
+                $response['redirect_url'] = \App\Misc\Sidebar::folderUrl($conversation->folder, $conversation->mailbox_id);
 
                 $mailbox = $conversation->mailbox;
 

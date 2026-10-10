@@ -982,7 +982,7 @@ class Conversation extends Model
             $url = $next_conversation->url(null, null, [], $request);
         } else {
             // Show folder
-            $url = route('mailboxes.view.folder', ['id' => $this->mailbox_id, 'folder_id' => $this->getCurrentFolder($this->folder_id, $request)]);
+            $url = \App\Misc\Sidebar::folderUrl($this->folder, $this->mailbox_id);
         }
 
         return $url;
@@ -998,7 +998,7 @@ class Conversation extends Model
             $url = $prev_conversation->url();
         } else {
             // Show folder
-            $url = route('mailboxes.view.folder', ['id' => $this->mailbox_id, 'folder_id' => $this->getCurrentFolder($this->folder_id)]);
+            $url = \App\Misc\Sidebar::folderUrl($this->folder, $this->mailbox_id);
         }
 
         return $url;
@@ -1127,16 +1127,14 @@ class Conversation extends Model
     }
 
     /**
-     * Get conversation URL.
+     * Get conversation URL. The folder it is shown in follows from the mailbox
+     * the user works in (App\Misc\Sidebar), not from the URL: $folder_id is ignored.
      *
      * @return string
      */
     public function url($folder_id = null, $thread_id = null, $params = [], $request = null)
     {
-        if (!$folder_id) {
-            $folder_id = $this->getCurrentFolder(null, $request);
-        }
-        return self::conversationUrl($this->id, $folder_id, $thread_id, $params);
+        return self::conversationUrl($this->id, null, $thread_id, $params);
     }
 
     /**
@@ -1150,9 +1148,8 @@ class Conversation extends Model
      */
     public static function conversationUrl($id, $folder_id = null, $thread_id = null, $params = [])
     {
-        $params = array_merge($params, ['id' => $id]);
-
-        $params['folder_id'] = $folder_id;
+        // Its folder follows from the mailbox the user works in (App\Misc\Sidebar), not URLs.
+        $params = array_merge(array_diff_key($params, ['folder_id' => 1]), ['id' => $id]);
 
         $url = route('conversations.view', $params);
 
@@ -1188,9 +1185,9 @@ class Conversation extends Model
      */
     public function getCurrentFolder($default_folder_id = null, $request = null)
     {
-        $folder_id = self::getFolderParam($request);
-        if ($folder_id) {
-            return $folder_id;
+        $folder = \App\Misc\Sidebar::conversationFolder($this);
+        if ($folder) {
+            return $folder->id;
         }
         if ($this->folder_id) {
             return $this->folder_id;
@@ -1199,15 +1196,12 @@ class Conversation extends Model
         }
     }
 
+    /**
+     * Folders aren't in URLs any more: the one a conversation is shown in follows
+     * from the mailbox the user works in (getCurrentFolder(), App\Misc\Sidebar).
+     */
     public static function getFolderParam($request = null)
     {
-        $request = $request ?: request();
-        if (!empty($request->folder_id)) {
-            return $request->folder_id;
-        } elseif (!empty($request->input('folder_id'))) {
-            return $request->input('folder_id');
-        }
-
         return '';
     }
 

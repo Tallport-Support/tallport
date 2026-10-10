@@ -300,8 +300,12 @@ class ConversationModelTest extends FeatureTestCase
         $this->assertFalse($conversation->isInFolderAllowed($others_mine));
         $this->assertFalse($conversation->isInFolderAllowed($starred));
 
+        // Shown in Mine when it's the user's, else its own folder.
+        $this->assertEquals($mine->id, $conversation->getCurrentFolder(123));
+        $conversation->user_id = null;
         $this->assertEquals($conversation->folder_id, $conversation->getCurrentFolder(123));
         $conversation->folder_id = null;
+        $conversation->unsetRelation('folder');
         $this->assertSame(123, $conversation->getCurrentFolder(123));
     }
 

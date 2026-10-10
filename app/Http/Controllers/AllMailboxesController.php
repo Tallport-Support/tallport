@@ -29,6 +29,7 @@ class AllMailboxesController extends Controller
         if (!$folder) {
             abort(404);
         }
+        \App\Misc\Sidebar::select($folder);
 
         $query = AllMailboxes::query($folder, $user);
         $conversations = $folder->queryAddOrderBy($query)->paginate(Conversation::DEFAULT_LIST_SIZE, ['*'], 'page', $request->get('page'));

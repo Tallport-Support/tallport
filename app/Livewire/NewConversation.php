@@ -224,7 +224,7 @@ class NewConversation extends Component
 
             return;
         }
-        $this->redirect($response['redirect_url'] ?? Mailbox::find($this->mailbox_id)->url());
+        $this->redirect($response['redirect_url'] ?? \App\Misc\Sidebar::folderUrl(null, $this->mailbox_id));
     }
 
     public function send($status = null)
@@ -244,7 +244,7 @@ class NewConversation extends Component
 
             return;
         }
-        $this->redirect($response['redirect_url'] ?? Mailbox::find($this->mailbox_id)->url());
+        $this->redirect($response['redirect_url'] ?? \App\Misc\Sidebar::folderUrl(null, $this->mailbox_id));
     }
 
     #[On('composer-attach')]

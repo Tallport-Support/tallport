@@ -65,66 +65,17 @@ class ConversationsController extends Controller
             \App\ConversationRead::markRead($conversation->id, $user);
         }
 
-        // Detect folder and redirect if needed
-        $folder = null;
-        // Opened from All Mailboxes: it stays there.
-        if ((int) Conversation::getFolderParam() < 0 && \App\Misc\AllMailboxes::isAvailable($user)) {
-            $folder = \App\Misc\AllMailboxes::folder($user, Conversation::getFolderParam());
-        }
-        if (!$folder && Conversation::getFolderParam()) {
-            $folder = $conversation->mailbox->folders()->where('folders.id', Conversation::getFolderParam())->first();
-
-            // Pass some params when redirecting.
-            $params = [];
-            if (!empty($request->show_draft)) {
-                $params['show_draft'] = $request->show_draft;
-            }
-
-            if ($folder) {
-                // Check if conversation can be located in the passed folder_id
-                if (!$conversation->isInFolderAllowed($folder)) {
-
-                    // Without reflash green flash will not be displayed on assignee change
-                    \Session::reflash();
-                    //$request->session()->reflash();
-                    return redirect()->away($conversation->url($conversation->folder_id, null, $params));
-                }
-                // If conversation assigned to user, select Mine folder instead of Assigned
-                if ($folder->type == Folder::TYPE_ASSIGNED && $conversation->user_id == $user->id) {
-                    $folder = $conversation->mailbox->folders()
-                        ->where('type', Folder::TYPE_MINE)
-                        ->where('user_id', $user->id)
-                        ->first();
-
-                    \Session::reflash();
-
-                    // A user may have no Mine folder in this mailbox (e.g. admins / non-members),
-                    // so the lookup above can return null. Fall back to the conversation's own
-                    // folder instead of throwing "Attempt to read property id on null".
-                    return redirect()->away($conversation->url($folder ? $folder->id : $conversation->folder_id, null, $params));
-                }
-            }
-        }
-
-        // Add folder if empty
-        if (!$folder) {
-            if ($conversation->user_id == $user->id) {
-                $folder = $conversation->mailbox->folders()
-                    ->where('type', Folder::TYPE_MINE)
-                    ->where('user_id', $user->id)
-                    ->first();
-            } else {
-                $folder = $conversation->folder;
-            }
-
+        // Its folder follows from the mailbox the user works in (App\Misc\Sidebar),
+        // which stays as it is. Not in the URL (older links have it).
+        if ($request->query('folder_id') !== null && !$request->attributes->get('folder_opened')) {
             \Session::reflash();
 
-            // The Mine-folder lookup (or $conversation->folder) can be null; fall back to folder_id.
-            return redirect()->away($conversation->url($folder ? $folder->id : $conversation->folder_id));
+            return redirect()->away($conversation->url(null, null, $request->except('folder_id')));
         }
+        $folder = \App\Misc\Sidebar::conversationFolder($conversation, $user) ?: new Folder();
 
         // Opening the folder again comes back here (openFolder()).
-        if (!$prefetchable) {
+        if (!$prefetchable && $folder->id) {
             session()->put('folder_conversation.'.$folder->id, $conversation->id);
         }
 
@@ -472,7 +423,7 @@ class ConversationsController extends Controller
             $conversation_id = $conversations->first()->id;
         }
 
-        $request->merge(['folder_id' => $folder->id]);
+        $request->attributes->set('folder_opened', true);
 
         return app(self::class)->view($request, $conversation_id);
     }
@@ -654,10 +605,10 @@ class ConversationsController extends Controller
 
                 return redirect()->away($conversation->url());
             } else {
-                return redirect()->away($mailbox->url());
+                return redirect()->away(\App\Misc\Sidebar::folderUrl(null, $mailbox->id));
             }
         } else {
-            return redirect()->away($mailbox->url());
+            return redirect()->away(\App\Misc\Sidebar::folderUrl(null, $mailbox->id));
         }
     }
 
@@ -703,8 +654,8 @@ class ConversationsController extends Controller
                 self::markNotificationsRead($conversation, $user, $request->mark_as_read);
                 \App\ConversationRead::markRead($conversation->id, $user);
                 // openFolder() checks it's still in the folder.
-                if ((int) $request->folder_id) {
-                    session()->put('folder_conversation.'.(int) $request->folder_id, $conversation->id);
+                if ($shown_in = \App\Misc\Sidebar::conversationFolder($conversation, $user)) {
+                    session()->put('folder_conversation.'.$shown_in->id, $conversation->id);
                 }
                 $response['status'] = 'success';
                 break;
@@ -1094,19 +1045,15 @@ class ConversationsController extends Controller
                 }
 
                 if (!$response['msg']) {
-                    $prev_folder_id = Conversation::getFolderParam();
                     $prev_mailbox_id = $conversation->mailbox_id;
+                    $prev_folder = $conversation->folder;
 
                     $conversation->moveToMailbox($mailbox, $user);
 
                     // If user does not have access to the new mailbox,
-                    // redirect to the previous mailbox.
+                    // back to the folder it was in.
                     if (!$mailbox->userHasAccess($user->id)) {
-                        if (!empty($prev_folder_id)) {
-                            $response['redirect_url'] = route('mailboxes.view.folder', ['id' => $prev_mailbox_id, 'folder_id' => $prev_folder_id]);
-                        } else {
-                            $response['redirect_url'] = route('mailboxes.view', ['id' => $prev_mailbox_id]);
-                        }
+                        $response['redirect_url'] = \App\Misc\Sidebar::folderUrl($prev_folder, $prev_mailbox_id);
                     }
 
                     $response['status'] = 'success';

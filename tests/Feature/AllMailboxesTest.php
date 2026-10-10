@@ -78,17 +78,61 @@ class AllMailboxesTest extends FeatureTestCase
         Conversation::where('id', $older->id)->update(['last_reply_at' => now()->subHour()]);
         $folder_id = -Folder::TYPE_UNASSIGNED;
 
-        $page = $this->actingAs($this->agent)->get($newer->url($folder_id))->assertOk();
+        // Working in All Mailboxes (its folder selected), conversations stay there.
+        $this->actingAs($this->agent)->get(route('mailboxes.all', ['folder_id' => $folder_id]))->assertOk();
+        $page = $this->get($newer->url())->assertOk();
         $html = $page->getContent();
         $this->assertMatchesRegularExpression('#aria-current="page"\s+data-folder_id="'.$folder_id.'" data-mailbox_id="-1"#', $html);
         $this->assertDoesNotMatchRegularExpression('#data-mailbox_id="'.$this->sales->id.'"\s+open#', $html);
         // Older and newer across the mailboxes, still in All Mailboxes.
-        $page->assertSee('href="'.$older->url($folder_id).'" class="f-button f-button--ghost f-button--icon" title="Older"', false);
-        $this->get($older->url($folder_id))->assertOk()->assertSee('href="'.$newer->url($folder_id).'" class="f-button f-button--ghost f-button--icon" title="Newer"', false);
+        $page->assertSee('href="'.$older->url().'" class="f-button f-button--ghost f-button--icon" title="Older"', false);
+        $this->get($older->url())->assertOk()->assertSee('href="'.$newer->url().'" class="f-button f-button--ghost f-button--icon" title="Newer"', false);
 
         // Back to the list after an action.
         $this->get(route('mailboxes.view.folder', ['id' => $this->sales->id, 'folder_id' => $folder_id]))
             ->assertRedirect(route('mailboxes.all', ['folder_id' => $folder_id]));
+    }
+
+    /**
+     * The mailbox the user works in is the one whose folder they selected: deleting,
+     * assigning or opening conversations (from a notification, of another mailbox)
+     * doesn't change it, only selecting a folder elsewhere does. Not in URLs.
+     */
+    public function testWorkingMailboxStaysUntilAnotherFolderIsSelected()
+    {
+        $support = $this->conversation($this->support, 'Support question');
+        $sales = $this->conversation($this->sales, 'Sales question');
+        $unassigned = -Folder::TYPE_UNASSIGNED;
+        $current = fn ($html, $folder_id, $mailbox_id) => $this->assertMatchesRegularExpression('#aria-current="page"\s+data-folder_id="'.$folder_id.'"( data-mailbox_id="'.$mailbox_id.'")?#', $html);
+
+        $this->actingAs($this->agent)->get(route('mailboxes.all', ['folder_id' => $unassigned]))->assertOk();
+
+        // A conversation of a mailbox, opened from a link: All Mailboxes stays current.
+        $html = $this->get($sales->url())->assertOk()->getContent();
+        $current($html, $unassigned, -1);
+        $this->assertDoesNotMatchRegularExpression('#data-mailbox_id="'.$this->sales->id.'"\s+open#', $html);
+
+        // Assigned to the user: All Mailboxes' Mine.
+        $support->changeUser($this->agent->id, $this->agent);
+        $current($this->get($support->url())->assertOk()->getContent(), -Folder::TYPE_MINE, -1);
+
+        // Deleted: back to All Mailboxes.
+        $this->agent->permissions = [User::PERM_DELETE_CONVERSATIONS => true];
+        $this->agent->save();
+        \Livewire\Livewire::actingAs($this->agent)->test(\App\Livewire\ConversationToolbar::class, ['conversation' => $sales])
+            ->call('delete')->assertRedirect(route('mailboxes.all', ['folder_id' => $unassigned]));
+
+        // A folder of Support selected: Support it is, even for a conversation of Sales.
+        $support_unassigned = $this->support->folders()->where('type', Folder::TYPE_UNASSIGNED)->first();
+        $this->get($support_unassigned->url($this->support->id))->assertOk();
+        $other = $this->conversation($this->sales, 'Another sales question');
+        $html = $this->get($other->url())->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('#data-mailbox_id="'.$this->support->id.'"\s+open#', $html);
+        $this->assertDoesNotMatchRegularExpression('#data-mailbox_id="'.$this->sales->id.'"\s+open#', $html);
+        $this->assertStringNotContainsString('aria-current="page" data-folder_id', $html, 'No folder of Support has it.');
+
+        // Old links with a folder: without it.
+        $this->get($other->url().'?folder_id='.$unassigned)->assertRedirect($other->url());
     }
 
     public function testMineAssignedStarredSent()

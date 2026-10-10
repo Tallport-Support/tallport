@@ -88,7 +88,7 @@ class ConversationPane extends Component
             id: $conversation->id,
             mailbox_id: $conversation->mailbox_id,
             folder_id: $this->folder_id,
-            url: route('conversations.view', ['id' => $conversation->id, 'folder_id' => $this->folder_id]),
+            url: route('conversations.view', ['id' => $conversation->id]),
             title: '#'.$conversation->number.' '.$conversation->getSubject().($customer ? ' - '.$customer->getFullName(true) : ''),
             styles: $styles,
         );
@@ -98,8 +98,6 @@ class ConversationPane extends Component
     {
         $conversation = Conversation::find($this->conversation_id);
         abort_unless($conversation && auth()->user()->can('view', $conversation), 403);
-        // Its parts read the folder from the request, as on the page.
-        request()->merge(['folder_id' => $this->folder_id]);
         $user = auth()->user();
 
         return view('livewire.conversation-pane', ConversationsController::pageData($conversation, $this->openedFolder(), $user) + [
