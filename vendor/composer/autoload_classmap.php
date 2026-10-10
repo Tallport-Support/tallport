@@ -276,6 +276,8 @@ return array(
     'App\\Misc\\AllMailboxes' => $baseDir . '/app/Misc/AllMailboxes.php',
     'App\\Misc\\AttachmentImages' => $baseDir . '/app/Misc/AttachmentImages.php',
     'App\\Misc\\Branding' => $baseDir . '/app/Misc/Branding.php',
+    'App\\Misc\\ChatConversations' => $baseDir . '/app/Misc/ChatConversations.php',
+    'App\\Misc\\ChatDelivery' => $baseDir . '/app/Misc/ChatDelivery.php',
     'App\\Misc\\ConversationActionButtons' => $baseDir . '/app/Misc/ConversationActionButtons.php',
     'App\\Misc\\ConversationActions' => $baseDir . '/app/Misc/ConversationActions.php',
     'App\\Misc\\ConversationListQuery' => $baseDir . '/app/Misc/ConversationListQuery.php',

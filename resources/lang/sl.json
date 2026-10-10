@@ -1850,5 +1850,6 @@
     "iPhone photos shown without the browser converting them": "Fotografije iz iPhona prikazane brez pretvorbe v brskalniku",
     "Reply to :name": "Odgovor za :name",
     "Add a message": "Dodajte sporočilo",
-    "Note for your team": "Opomba za vašo ekipo"
+    "Note for your team": "Opomba za vašo ekipo",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "Novo sporočilo nadaljuje zadnji pogovor v klepetu, če je bil dejaven v tem številu dni; sicer se začne nov pogovor."
 }

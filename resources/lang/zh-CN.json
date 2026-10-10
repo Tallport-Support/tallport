@@ -1852,5 +1852,6 @@
     "iPhone photos shown without the browser converting them": "无需浏览器转换即可显示 iPhone 照片",
     "Reply to :name": "回复 :name",
     "Add a message": "添加留言",
-    "Note for your team": "给团队的备注"
+    "Note for your team": "给团队的备注",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "如果最近的聊天会话在此天数内有过活动，新消息将继续该会话；否则将开始新会话。"
 }

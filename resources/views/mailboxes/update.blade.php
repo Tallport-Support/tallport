@@ -74,8 +74,6 @@
                             <option value="{{ App\Mailbox::TICKET_ASSIGNEE_REPLYING }}" @selected(old('ticket_assignee', $mailbox->ticket_assignee) == App\Mailbox::TICKET_ASSIGNEE_REPLYING)>{{ __('Person Replying') }}</option>
                         </x-fruit::select>
                     </x-fruit::field>
-
-                    <x-fruit::checkbox id="chat_start_new" name="chat_start_new" value="1" :checked="(bool) old('chat_start_new', $mailbox->getMeta('chat_start_new'))">{{ __('Start a new conversation when receiving a reply to the closed / deleted Chat conversation') }}</x-fruit::checkbox>
                 </x-fruit::form-section>
             @endif
 

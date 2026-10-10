@@ -321,13 +321,6 @@
 
                 <h2 class="settings-form__heading">{{ __('Conversations') }}</h2>
 
-                <x-fruit::field :label="__('Reopen Window')" :description="__('A new message reopens the customer\'s latest Nostr conversation if it had activity within this many days; otherwise a new conversation is started.')" control-id="nostr_reopen_days">
-                    <div class="f-input-group nostr-days">
-                        <input type="number" id="nostr_reopen_days" name="reopen_days" class="f-input" value="{{ old('reopen_days', $cfg->reopen_days ?: 30) }}" min="1" max="3650" aria-describedby="nostr_reopen_days-description">
-                        <span class="f-input-group__addon">{{ __('days') }}</span>
-                    </div>
-                </x-fruit::field>
-
                 <x-fruit::switch name="auto_reply_enabled" value="1" id="nostr_auto_reply_enabled" :checked="(bool) old('auto_reply_enabled', $cfg->auto_reply_enabled)" :description="__('Sent once when a new conversation is started, not when an existing one is reopened.')">{{ __('Auto reply') }}</x-fruit::switch>
 
                 <x-fruit::field :label="__('Auto Reply Text')" :description="__('Plain text. Nostr messages have no formatting.')">

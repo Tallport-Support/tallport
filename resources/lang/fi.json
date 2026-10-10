@@ -1869,5 +1869,6 @@
     "iPhone photos shown without the browser converting them": "iPhone-kuvat näytetään ilman, että selain muuntaa niitä",
     "Reply to :name": "Vastaa: :name",
     "Add a message": "Lisää viesti",
-    "Note for your team": "Muistiinpano tiimillesi"
+    "Note for your team": "Muistiinpano tiimillesi",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "Uusi viesti jatkaa viimeisintä chat-keskustelua, jos siinä on ollut toimintaa näin monen päivän kuluessa; muuten aloitetaan uusi keskustelu."
 }

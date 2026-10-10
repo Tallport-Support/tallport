@@ -2,10 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Misc\ChatDelivery;
 use App\Nostr\Nostr;
 use App\Nostr\NostrEvent;
 use App\Nostr\OutgoingMessageSender;
-use App\Thread;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -35,10 +35,8 @@ class SendReplyToNostr implements ShouldQueue
 
     public function handle()
     {
-        $thread = Thread::find($this->thread_id);
-        if (!$thread || $thread->state != Thread::STATE_PUBLISHED || $thread->type != Thread::TYPE_MESSAGE
-            || NostrEvent::sentForThread($thread->id)
-        ) {
+        $thread = ChatDelivery::findReply($this->thread_id);
+        if (!$thread || NostrEvent::sentForThread($thread->id)) {
             return;
         }
 

@@ -34,10 +34,10 @@ class MailboxSettings
                 $pages[] = self::page(__('Auto Reply'), route('mailboxes.auto_reply', ['id' => $id]), $mailbox->auto_reply_enabled ? __('On') : __('Off'), routes: ['mailboxes.auto_reply']);
             }
             if ($user->isAdmin()) {
-                $pages[] = self::page(__('Telegram'), route('mailboxes.telegram', ['id' => $id]), \App\Telegram\Telegram::isEnabled($mailbox) ? __('Connected') : __('Not set up'), routes: ['mailboxes.telegram']);
+                $pages[] = self::page(__('Telegram'), route('mailboxes.telegram', ['id' => $id]), \App\Telegram\Telegram::isEnabled($mailbox) ? __('Connected') : __('Not set up'), routes: ['mailboxes.telegram'], chat: true);
             }
             $nostr = \App\Nostr\NostrMailbox::where('mailbox_id', $id)->where('enabled', true)->whereNotNull('pubkey')->exists();
-            $pages[] = self::page('Nostr', route('mailboxes.nostr', ['id' => $id]), $nostr ? __('Connected') : __('Not set up'), routes: ['mailboxes.nostr']);
+            $pages[] = self::page('Nostr', route('mailboxes.nostr', ['id' => $id]), $nostr ? __('Connected') : __('Not set up'), routes: ['mailboxes.nostr'], chat: true);
         }
         if ($user->isAdmin()) {
             $pages[] = self::page(__('AI'), route('mailboxes.ai', ['id' => $id]), \App\Ai\Settings::mailboxSummary($mailbox), routes: ['mailboxes.ai']);
@@ -120,8 +120,8 @@ class MailboxSettings
         return (string) ob_get_clean();
     }
 
-    protected static function page($label, $url, $value = null, $problem = false, array $routes = [])
+    protected static function page($label, $url, $value = null, $problem = false, array $routes = [], $chat = false)
     {
-        return ['label' => $label, 'url' => $url, 'value' => $value, 'problem' => $problem, 'routes' => $routes];
+        return ['label' => $label, 'url' => $url, 'value' => $value, 'problem' => $problem, 'routes' => $routes, 'chat' => $chat];
     }
 }

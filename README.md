@@ -399,13 +399,25 @@ With SQS, configure each queue's visibility timeout in AWS to more than
 3,600 seconds for `default`, 300 for `emails`, and 900 for `ai`. Laravel's
 `retry_after` setting does not control SQS visibility.
 
+## Chat settings
+
+The mailbox's **Chat** section holds the settings shared by Telegram and Nostr,
+with links to each channel's connection settings. The reopen window (default
+30 days) determines how long an inactive conversation can be continued, even
+if it is still open. A separate option starts a new conversation when a customer
+replies to a closed or deleted chat; otherwise the reply reopens or restores it.
+Both channels select the latest conversation by creation date, with ID breaking
+ties. Failed delivery reopens published conversations, leaving spam and deleted
+conversations alone. Existing Nostr reopen windows become mailbox-wide settings
+on upgrade.
+
 ## Telegram
 
 A mailbox can have a Telegram bot: messages customers send the bot become
 chat conversations in the mailbox, and agents' replies are sent back on
 Telegram, with their formatting (bold, italic, links, lists) and files.
 Create a bot with [@BotFather](https://t.me/BotFather), then enter its token
-under the mailbox's settings » Telegram and turn it on. The page shows the
+under the mailbox's settings » Chat » Telegram and turn it on. The page shows the
 bot and whether it is receiving messages.
 
 * Customers are recognised by their Telegram account. A customer whose
@@ -428,7 +440,7 @@ reachable from the internet over HTTPS.
 Customers can write to a mailbox from any [Nostr](https://nostr.com) client
 that supports private direct messages (NIP-17). Their messages become chat
 conversations, and replies go back end-to-end encrypted. Set it up under the
-mailbox's settings » Nostr: generate a keypair (or import an `nsec`), check
+mailbox's settings » Chat » Nostr: generate a keypair (or import an `nsec`), check
 the relays, fill in the public profile and turn it on. Share the mailbox's
 `npub` or its NIP-05 address with customers.
 
@@ -444,8 +456,7 @@ the relays, fill in the public profile and turn it on. Share the mailbox's
 * **Customers** are created from their key (name and picture from their
   profile). A customer can have several keys, with labels; they are listed on
   the customer's Nostr tab and follow a customer merge.
-* A message reopens the customer's latest Nostr conversation if it was active
-  within the reopen window (default 30 days); otherwise a new one starts.
+* Conversation continuation follows the mailbox's shared Chat settings.
 * **Replies** are sent right away and can't be undone. A reply no relay
   accepts is shown as not sent, with Retry, and the conversation is reopened.
   Replies with files are refused unless a module carries files for your

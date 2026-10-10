@@ -1851,5 +1851,6 @@
     "iPhone photos shown without the browser converting them": "iPhone-fotók megjelenítése böngészős átalakítás nélkül",
     "Reply to :name": "Válasz neki: :name",
     "Add a message": "Üzenet hozzáadása",
-    "Note for your team": "Jegyzet a csapatnak"
+    "Note for your team": "Jegyzet a csapatnak",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "Az új üzenet a legutóbbi csevegést folytatja, ha abban ennyi napon belül volt aktivitás; ellenkező esetben új beszélgetés indul."
 }

@@ -2247,5 +2247,6 @@
     "iPhone photos shown without the browser converting them": "iPhone фотосуреттері браузер түрлендірмей-ақ көрсетіледі",
     "Reply to :name": ":name үшін жауап",
     "Add a message": "Хабарлама қосыңыз",
-    "Note for your team": "Командаңызға арналған жазба"
+    "Note for your team": "Командаңызға арналған жазба",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "Соңғы чат әңгімесінде осы күндер саны ішінде белсенділік болса, жаңа хабарлама сол әңгімені жалғастырады; әйтпесе жаңа әңгіме басталады."
 }

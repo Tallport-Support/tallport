@@ -240,6 +240,20 @@ class TelegramTest extends FeatureTestCase
         $this->assertCount(2, $this->sentTo('sendMessage'));
     }
 
+    public function testMailboxChatWindowStartsANewConversationAfterInactivity()
+    {
+        $this->mailbox->setMetaParam('chat_reopen_days', 7, true);
+        $this->postUpdate($this->update())->assertOk();
+        $conversation = $this->conversation();
+        $conversation->last_reply_at = now()->subDays(8);
+        $conversation->save();
+
+        $this->postUpdate($this->update(['text' => 'A new question']))->assertOk();
+
+        $this->assertSame(2, Conversation::where('mailbox_id', $this->mailbox->id)->count());
+        $this->assertSame(1, $conversation->threads()->count());
+    }
+
     public function testFilesAreSavedWithTheMessage()
     {
         $this->postUpdate($this->update([

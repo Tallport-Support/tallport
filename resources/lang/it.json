@@ -1850,5 +1850,6 @@
     "iPhone photos shown without the browser converting them": "Foto di iPhone mostrate senza che il browser debba convertirle",
     "Reply to :name": "Rispondi a :name",
     "Add a message": "Aggiungi un messaggio",
-    "Note for your team": "Nota per il tuo team"
+    "Note for your team": "Nota per il tuo team",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "Un nuovo messaggio continua l’ultima conversazione in chat se è stata attiva entro questo numero di giorni; altrimenti viene avviata una nuova conversazione."
 }

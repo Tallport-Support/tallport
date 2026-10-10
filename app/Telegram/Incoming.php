@@ -5,7 +5,7 @@ namespace App\Telegram;
 use App\Conversation;
 use App\Customer;
 use App\Mailbox;
-use App\Thread;
+use App\Misc\ChatConversations;
 
 /**
  * Updates from a mailbox's bot: a customer's message (or its edited
@@ -72,28 +72,16 @@ class Incoming
 
         $customer = self::customer($mailbox, $client, $message['from']);
 
-        $conversation = Conversation::where('mailbox_id', $mailbox->id)
-            ->where('customer_id', $customer->id)
-            ->where('channel', Telegram::CHANNEL)
-            ->orderBy('created_at', 'desc')->orderBy('id', 'desc')
-            ->first();
-        $thread = [
-            'type'        => Thread::TYPE_CUSTOMER,
-            'customer_id' => $customer->id,
+        $conversation = ChatConversations::latest($mailbox, $customer, Telegram::CHANNEL);
+        ChatConversations::receive($conversation, $customer, [
+            'subject'     => self::subject($text, $body),
+            'mailbox_id'  => $mailbox->id,
+            'source_type' => Conversation::SOURCE_TYPE_WEB,
+            'channel'     => Telegram::CHANNEL,
+        ], [
             'body'        => $body,
             'attachments' => $attachments,
-        ];
-        if ($conversation && !$conversation->chatShouldStartNew($mailbox)) {
-            Thread::createExtended($thread, $conversation, $customer);
-        } else {
-            Conversation::create([
-                'type'        => Conversation::TYPE_EMAIL,
-                'subject'     => self::subject($text, $body),
-                'mailbox_id'  => $mailbox->id,
-                'source_type' => Conversation::SOURCE_TYPE_WEB,
-                'channel'     => Telegram::CHANNEL,
-            ], [$thread], $customer);
-        }
+        ]);
 
         if ($is_start) {
             self::autoReply($client, $chat_id, Telegram::autoReply($settings, $message['from']['language_code'] ?? ''), $mailbox);

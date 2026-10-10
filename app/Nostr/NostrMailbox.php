@@ -40,7 +40,6 @@ class NostrMailbox extends Model
             $row->mailbox_id = $mailbox_id;
             $row->setInboxRelays(config('nostr.default_inbox_relays', []));
             $row->setAnnounceRelays(config('nostr.default_announce_relays', []));
-            $row->reopen_days = config('nostr.reopen_days', 30);
         }
 
         return $row;

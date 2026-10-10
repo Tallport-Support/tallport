@@ -220,7 +220,6 @@ class NostrController extends Controller
             'nip05' => strtolower(trim((string) $request->input('nip05', ''))),
             'auto_reply_enabled' => (bool) $request->input('auto_reply_enabled'),
             'auto_reply_text' => trim((string) $request->input('auto_reply_text', '')),
-            'reopen_days' => (int) $request->input('reopen_days', 30),
         ];
 
         $validator = Validator::make($input, [
@@ -231,7 +230,6 @@ class NostrController extends Controller
             'profile_name' => 'nullable|string|max:255',
             'profile_picture' => 'nullable|url|max:1024',
             'nip05' => ['nullable', 'regex:/^[a-z0-9._-]+@([a-z0-9-]+\.)+[a-z]{2,}$/', 'max:255'],
-            'reopen_days' => 'required|integer|min:1|max:3650',
         ]);
         $validator->after(function ($validator) use ($input, $cfg) {
             if ($input['enabled'] && !$cfg->pubkey) {
@@ -262,7 +260,6 @@ class NostrController extends Controller
         $cfg->nip05 = $input['nip05'] ?: null;
         $cfg->auto_reply_enabled = $input['auto_reply_enabled'];
         $cfg->auto_reply_text = $input['auto_reply_text'] ?: null;
-        $cfg->reopen_days = $input['reopen_days'];
         $cfg->save();
 
         \Session::flash('flash_success_floating', __('Settings updated'));

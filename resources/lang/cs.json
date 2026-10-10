@@ -1850,5 +1850,6 @@
     "iPhone photos shown without the browser converting them": "Fotografie z iPhonu zobrazené bez převodu v prohlížeči",
     "Reply to :name": "Odpovědět :name",
     "Add a message": "Přidejte zprávu",
-    "Note for your team": "Poznámka pro váš tým"
+    "Note for your team": "Poznámka pro váš tým",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "Nová zpráva pokračuje v poslední chatové konverzaci, pokud v ní během tohoto počtu dní proběhla aktivita; jinak se zahájí nová konverzace."
 }

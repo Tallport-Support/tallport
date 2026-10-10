@@ -196,8 +196,9 @@ class MailboxesController extends Controller
                 'from_name'        => 'required|integer',
                 'from_name_custom' => 'nullable|string|max:128',
                 'ticket_assignee'  => 'required|integer',
+                'chat_reopen_days' => 'sometimes|required|integer|min:1|max:3650',
                 'accent'           => ['nullable', \Illuminate\Validation\Rule::in(\FruitUI\Fruit::ACCENTS)],
-            ]);
+            ], [], ['chat_reopen_days' => __('Reopen Window')]);
 
             //event(new Registered($user = $this->create($request->all())));
             if (Mailbox::userEmailExists($request->email)) {
@@ -261,12 +262,15 @@ class MailboxesController extends Controller
             }
         }
 
-        // Chat: Start a new conversation when receiving a reply to the closed / deleted Chat conversation.
+        // Shared conversation policy for all chat channels.
         if ($can_update_settings) {
             if (!empty($request->chat_start_new)) {
                 $mailbox->setMetaParam('chat_start_new', true);
             } else {
                 $mailbox->removeMetaParam('chat_start_new');
+            }
+            if ($request->has('chat_reopen_days')) {
+                $mailbox->setMetaParam('chat_reopen_days', (int) $request->input('chat_reopen_days'));
             }
         }
 

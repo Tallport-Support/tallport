@@ -1942,5 +1942,6 @@
     "iPhone photos shown without the browser converting them": "Fotos d'iPhone mostrades sense que el navegador les hagi de convertir",
     "Reply to :name": "Respon a :name",
     "Add a message": "Afegiu un missatge",
-    "Note for your team": "Nota per al vostre equip"
+    "Note for your team": "Nota per al vostre equip",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "Un missatge nou continua la conversa de xat més recent si ha tingut activitat durant aquest nombre de dies; en cas contrari, es crea una conversa nova."
 }

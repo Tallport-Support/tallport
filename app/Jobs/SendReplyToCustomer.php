@@ -707,16 +707,7 @@ class SendReplyToCustomer implements ShouldQueue
      */
     public static function reopenConversation($conversation)
     {
-        $conversation = $conversation ? $conversation->fresh() : null;
-        if (!$conversation || $conversation->isActive() || $conversation->isSpam()
-            || $conversation->state != \App\Conversation::STATE_PUBLISHED
-        ) {
-            return;
-        }
-
-        $conversation->setStatus(\App\Conversation::STATUS_ACTIVE);
-        $conversation->save();
-        $conversation->mailbox->updateFoldersCounters();
+        \App\Misc\ChatDelivery::reopenConversation($conversation);
     }
 
     /**

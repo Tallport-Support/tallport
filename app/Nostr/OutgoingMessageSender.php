@@ -3,6 +3,7 @@
 namespace App\Nostr;
 
 use App\Conversation;
+use App\Misc\ChatDelivery;
 use App\SendLog;
 use App\Thread;
 use App\Nostr\CustomerKey;
@@ -125,8 +126,7 @@ class OutgoingMessageSender
 
         $thread->headers = $this->headersFor($result, $cfg, $pubkey, $last);
         if ($result['ok']) {
-            $thread->send_status = SendLog::STATUS_ACCEPTED;
-            $thread->save();
+            ChatDelivery::recordStatus($thread, SendLog::STATUS_ACCEPTED);
         } else {
             $this->fail($thread, __('Could not deliver the message to any relay').': '.$this->summary($result['results']));
         }
@@ -337,15 +337,9 @@ class OutgoingMessageSender
             $event->save();
             $this->recorded = true;
         }
-        $thread->send_status = SendLog::STATUS_SEND_ERROR;
-        $thread->updateSendStatusData(['msg' => $message]);
-        $thread->save();
+        ChatDelivery::recordStatus($thread, SendLog::STATUS_SEND_ERROR, ['msg' => $message]);
 
-        // The agent may have closed the ticket after this reply was queued.
-        $conversation = $thread->conversation()->first();
-        if ($conversation && !$conversation->isActive()) {
-            $conversation->changeStatus(Conversation::STATUS_ACTIVE);
-        }
+        ChatDelivery::reopenConversation($thread->conversation);
     }
 
     protected function log($message)

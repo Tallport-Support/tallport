@@ -4,6 +4,7 @@ namespace App\Nostr;
 
 use App\Conversation;
 use App\Customer;
+use App\Misc\ChatConversations;
 use App\Thread;
 use Illuminate\Support\Carbon;
 use App\Nostr\CustomerKey;
@@ -119,30 +120,20 @@ class IncomingMessageHandler
             $subject = __('Nostr message');
         }
 
-        $threadData = [
-            'type' => Thread::TYPE_CUSTOMER,
-            'body' => $body,
-            'customer_id' => $customer->id,
-            'attachments' => $attachments,
-        ];
-
         $conversation = $this->findOpenConversation($cfg, $customer);
         $new = !$conversation;
-
-        if ($conversation) {
-            $thread = Thread::createExtended($threadData, $conversation, $customer);
-        } else {
-            $result = Conversation::create([
-                'type' => Conversation::TYPE_EMAIL,
-                'subject' => $subject,
-                'mailbox_id' => $cfg->mailbox_id,
-                'source_type' => Conversation::SOURCE_TYPE_API,
-                'channel' => config('nostr.channel'),
-                'status' => Conversation::STATUS_ACTIVE,
-            ], [$threadData], $customer);
-            $conversation = $result['conversation'] ?? null;
-            $thread = $result['thread'] ?? null;
-        }
+        $result = ChatConversations::receive($conversation, $customer, [
+            'subject' => $subject,
+            'mailbox_id' => $cfg->mailbox_id,
+            'source_type' => Conversation::SOURCE_TYPE_API,
+            'channel' => config('nostr.channel'),
+            'status' => Conversation::STATUS_ACTIVE,
+        ], [
+            'body' => $body,
+            'attachments' => $attachments,
+        ]);
+        $conversation = $result['conversation'] ?? null;
+        $thread = $result['thread'] ?? null;
 
         if (!$thread || !$conversation) {
             $this->log('could not create a thread for message from '.Keys::shortNpub($pubkey));
@@ -299,33 +290,7 @@ class IncomingMessageHandler
      */
     public function findOpenConversation(NostrMailbox $cfg, Customer $customer)
     {
-        $days = (int) $cfg->reopen_days ?: (int) config('nostr.reopen_days', 30);
-
-        $conversation = Conversation::where('mailbox_id', $cfg->mailbox_id)
-            ->where('customer_id', $customer->id)
-            ->where('channel', config('nostr.channel'))
-            ->where('state', '!=', Conversation::STATE_DELETED)
-            ->orderBy('id', 'desc')
-            ->first();
-
-        if (!$conversation) {
-            return null;
-        }
-        // FreeScout's own chat rule ("start a new conversation when the previous one is closed"),
-        // shared with the other chat channels.
-        if ($conversation->chatShouldStartNew($conversation->mailbox)) {
-            return null;
-        }
-
-        $last = $conversation->last_reply_at ?: $conversation->created_at;
-        if ($last && !($last instanceof \DateTimeInterface)) {
-            $last = Carbon::parse($last);
-        }
-        if ($last && $last->lt(now()->subDays($days))) {
-            return null;
-        }
-
-        return $conversation;
+        return ChatConversations::latest($cfg->mailbox()->first(), $customer, config('nostr.channel'));
     }
 
     /**

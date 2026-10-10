@@ -1851,5 +1851,6 @@
     "iPhone photos shown without the browser converting them": "iPhone fotoğrafları tarayıcı dönüştürmeden gösterilir",
     "Reply to :name": ":name kişisine yanıt",
     "Add a message": "Bir mesaj ekleyin",
-    "Note for your team": "Ekibiniz için not"
+    "Note for your team": "Ekibiniz için not",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "Son sohbet bu gün sayısı içinde etkin olmuşsa yeni mesaj o sohbeti devam ettirir; aksi takdirde yeni bir sohbet başlatılır."
 }

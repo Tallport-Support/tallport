@@ -1851,5 +1851,6 @@
     "iPhone photos shown without the browser converting them": "Фотографії з iPhone показуються без перетворення в браузері",
     "Reply to :name": "Відповідь для :name",
     "Add a message": "Додайте повідомлення",
-    "Note for your team": "Нотатка для команди"
+    "Note for your team": "Нотатка для команди",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "Нове повідомлення продовжує останню розмову в чаті, якщо в ній була активність протягом указаної кількості днів; інакше починається нова розмова."
 }

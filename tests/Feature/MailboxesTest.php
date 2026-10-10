@@ -113,6 +113,68 @@ class MailboxesTest extends FeatureTestCase
         $this->assertStringContainsString('Kind regards', $mailbox->signature);
     }
 
+    public function testChatSettingsAndChannelLinksAreTogether()
+    {
+        $mailbox = $this->createMailbox();
+        $this->postForm($this->admin, route('mailboxes.update', ['id' => $mailbox->id]), $this->settingsFields($mailbox, [
+            'chat_reopen_days' => '14', 'chat_start_new' => '1',
+        ]))->assertSessionHasNoErrors()->assertRedirect();
+        $this->assertSame(14, $mailbox->fresh()->getMeta('chat_reopen_days'));
+        $this->assertTrue($mailbox->fresh()->getMeta('chat_start_new'));
+
+        $response = $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk();
+        $document = new \DOMDocument();
+        $document->loadHTML($response->getContent(), LIBXML_NOERROR | LIBXML_NOWARNING);
+        $xpath = new \DOMXPath($document);
+        $this->assertSame('14', $xpath->evaluate('string(//*[@id="chat"]//input[@name="chat_reopen_days"]/@value)'));
+        $this->assertSame(1, $xpath->query('//*[@id="chat"]//input[@name="chat_start_new"]')->length);
+        foreach (['mailboxes.telegram', 'mailboxes.nostr'] as $route) {
+            $links = $xpath->query('//*[@id="chat"]//a[@href="'.route($route, ['id' => $mailbox->id]).'"]');
+            $this->assertSame(1, $links->length);
+        }
+    }
+
+    /**
+     * @dataProvider invalidChatWindows
+     */
+    public function testChatWindowMustBeAWholeNumberOfDaysWithinBounds($value)
+    {
+        $mailbox = $this->createMailbox();
+        $mailbox->setMetaParam('chat_reopen_days', 14, true);
+        $this->postForm($this->admin, route('mailboxes.update', ['id' => $mailbox->id]), $this->settingsFields($mailbox, [
+            'chat_reopen_days' => $value,
+        ]))->assertSessionHasErrors('chat_reopen_days');
+        $this->assertSame(14, $mailbox->fresh()->getMeta('chat_reopen_days'));
+    }
+
+    public static function invalidChatWindows()
+    {
+        return [[''], ['0'], ['3651'], ['1.5'], ['several']];
+    }
+
+    public function testNostrChatWindowMigrationPreservesMailboxSettingsAndDoesNotOverwriteSharedValues()
+    {
+        $mailbox = $this->createMailbox();
+        $mailbox->setMetaParam('chat_start_new', true, true);
+        $configured = $this->createMailbox();
+        $configured->setMetaParam('chat_reopen_days', 14, true);
+        foreach ([$mailbox, $configured] as $item) {
+            $nostr = \App\Nostr\NostrMailbox::forMailbox($item->id);
+            $nostr->reopen_days = 45;
+            $nostr->save();
+        }
+        require_once database_path('migrations/2026_11_12_010101_move_nostr_chat_window_to_mailboxes.php');
+        $migration = new \MoveNostrChatWindowToMailboxes();
+
+        $migration->up();
+        $migration->up();
+
+        $this->assertSame(45, $mailbox->fresh()->getMeta('chat_reopen_days'));
+        $this->assertTrue($mailbox->fresh()->getMeta('chat_start_new'));
+        $this->assertSame(14, $configured->fresh()->getMeta('chat_reopen_days'));
+        $this->assertSame(30, \App\Misc\ChatConversations::reopenDays($this->createMailbox()));
+    }
+
     /**
      * The sidebar's Mailbox Settings: name and signature in a dialog. An agent with the
      * signature permission changes only the signature; others may not open it.
@@ -156,10 +218,13 @@ class MailboxesTest extends FeatureTestCase
         $this->actingAs($agent)->get(route('mailboxes.view', ['id' => $mailbox->id]))->assertOk()->assertDontSee('Mailbox Settings');
 
         $this->actingAs($signer)->get(route('mailboxes.view', ['id' => $mailbox->id]))->assertOk()->assertSee('Mailbox Settings');
-        $this->actingAs($signer)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk()->assertSee('name="signature"', false)->assertDontSee('id="name"', false);
-        $this->postForm($signer, route('mailboxes.update', ['id' => $mailbox->id]), ['name' => 'Hijacked', 'signature' => '<p>Agent</p>']);
+        $this->actingAs($signer)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk()->assertSee('name="signature"', false)->assertDontSee('id="name"', false)
+            ->assertDontSee('name="chat_reopen_days"', false);
+        $this->postForm($signer, route('mailboxes.update', ['id' => $mailbox->id]), ['name' => 'Hijacked', 'signature' => '<p>Agent</p>', 'chat_reopen_days' => 7, 'chat_start_new' => 1]);
         $this->assertSame('Support', $mailbox->fresh()->name);
         $this->assertStringContainsString('Agent', $mailbox->fresh()->signature);
+        $this->assertNull($mailbox->fresh()->getMeta('chat_reopen_days'));
+        $this->assertNull($mailbox->fresh()->getMeta('chat_start_new'));
     }
 
     /**
@@ -181,7 +246,7 @@ class MailboxesTest extends FeatureTestCase
         $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk()
             ->assertSeeInOrder(['settings-toolbar', 'f-back', 'Mailboxes', '<h1>Support</h1>', 'Open Mailbox'], false)
             ->assertDontSee('page-nav__switcher', false)
-            ->assertSeeInOrder(['Connection Settings', 'Not set up', 'Permissions', '2 people', 'Auto Reply', 'On', 'Telegram', 'Nostr', 'Workflows', 'Saved Replies'])
+            ->assertSeeInOrder(['Reopen Window', 'Telegram', 'Nostr', 'Connection Settings', 'Not set up', 'Permissions', '2 people', 'Auto Reply', 'On', 'Workflows', 'Saved Replies'])
             ->assertDontSee('app-sidebar__mailbox-pages', false)
             ->assertSee('aria-current="page"', false);
         $this->actingAs($this->admin)->get(route('mailboxes.auto_reply', ['id' => $mailbox->id]))->assertOk()

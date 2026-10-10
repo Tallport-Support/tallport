@@ -1854,5 +1854,6 @@
     "iPhone photos shown without the browser converting them": "iPhone-foto's tonen zonder dat de browser ze omzet",
     "Reply to :name": "Antwoord aan :name",
     "Add a message": "Voeg een bericht toe",
-    "Note for your team": "Notitie voor uw team"
+    "Note for your team": "Notitie voor uw team",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "Een nieuw bericht zet het laatste chatgesprek voort als daarin binnen dit aantal dagen activiteit was; anders wordt een nieuw gesprek gestart."
 }

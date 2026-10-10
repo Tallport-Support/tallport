@@ -30,9 +30,6 @@ return [
         'wss://offchain.pub',
     ],
 
-    // Days of silence after which a new message opens a new conversation.
-    'reopen_days' => 30,
-
     // How long one tallport:nostr-listen process lives before the scheduler replaces it (seconds).
     'listener_lifetime' => 1200,
 

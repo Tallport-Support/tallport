@@ -1855,5 +1855,6 @@
     "iPhone photos shown without the browser converting them": "iPhone-bilder vises uten at nettleseren må konvertere dem",
     "Reply to :name": "Svar til :name",
     "Add a message": "Legg til en melding",
-    "Note for your team": "Notat til teamet ditt"
+    "Note for your team": "Notat til teamet ditt",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "En ny melding fortsetter den siste chatsamtalen hvis den har hatt aktivitet i løpet av dette antallet dager. Ellers startes en ny samtale."
 }

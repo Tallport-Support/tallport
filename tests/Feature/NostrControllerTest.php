@@ -175,11 +175,14 @@ class NostrControllerTest extends FeatureTestCase
         $this->assertFalse((bool) $this->config()->auto_reply_enabled);
 
         Bus::fake([NostrTask::class]);
+        $this->mailbox->setMetaParam('chat_reopen_days', 14, true);
         $this->saveSettings(['enabled' => '0', 'auto_reply_enabled' => '1', 'auto_reply_text' => 'We will answer soon.', 'reopen_days' => '7'])
             ->assertSessionHasNoErrors();
         $cfg = $this->config();
         $this->assertSame('We will answer soon.', $cfg->auto_reply_text);
-        $this->assertSame(7, (int) $cfg->reopen_days);
+        $this->assertSame(14, $this->mailbox->fresh()->getMeta('chat_reopen_days'));
+        $this->actingAs($this->admin)->get(route('mailboxes.nostr', ['id' => $this->mailbox->id]))
+            ->assertOk()->assertDontSee('name="reopen_days"', false);
         Bus::assertNotDispatched(NostrTask::class, 'Disabled: nothing is announced.');
     }
 

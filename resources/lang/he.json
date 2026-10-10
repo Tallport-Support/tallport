@@ -1850,5 +1850,6 @@
     "iPhone photos shown without the browser converting them": "תמונות iPhone מוצגות בלי שהדפדפן ימיר אותן",
     "Reply to :name": "תשובה ל-:name",
     "Add a message": "הוסיפו הודעה",
-    "Note for your team": "הערה לצוות שלך"
+    "Note for your team": "הערה לצוות שלך",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "הודעה חדשה ממשיכה את שיחת הצ׳אט האחרונה אם הייתה בה פעילות במהלך מספר הימים הזה; אחרת נפתחת שיחה חדשה."
 }

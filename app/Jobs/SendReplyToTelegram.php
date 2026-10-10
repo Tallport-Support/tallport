@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Attachment;
+use App\Misc\ChatDelivery;
 use App\SendLog;
 use App\Telegram\Formatter;
 use App\Telegram\Telegram;
@@ -54,9 +55,9 @@ class SendReplyToTelegram implements ShouldQueue
 
     public function handle()
     {
-        $thread = Thread::find($this->thread_id);
+        $thread = ChatDelivery::findReply($this->thread_id);
         // Undone (a draft again), deleted or sent already.
-        if (!$thread || $thread->state != Thread::STATE_PUBLISHED || $thread->type != Thread::TYPE_MESSAGE || $thread->isSendStatusSuccess()) {
+        if (!$thread || $thread->isSendStatusSuccess()) {
             return;
         }
         $conversation = $thread->conversation;
@@ -81,9 +82,7 @@ class SendReplyToTelegram implements ShouldQueue
             return;
         }
 
-        $thread->send_status = SendLog::STATUS_ACCEPTED;
-        $thread->updateSendStatusData(['msg' => '']);
-        $thread->save();
+        ChatDelivery::recordStatus($thread, SendLog::STATUS_ACCEPTED, ['msg' => '']);
         TelegramSend::record($thread, $this->attempts(), TelegramSend::STATUS_SENT, $this->sent_message_ids);
     }
 
@@ -165,9 +164,7 @@ class SendReplyToTelegram implements ShouldQueue
             }
         }
 
-        $thread->send_status = null;
-        $thread->updateSendStatusData(['msg' => '', 'telegram_sent' => [], 'telegram_messages' => []]);
-        $thread->save();
+        ChatDelivery::recordStatus($thread, null, ['msg' => '', 'telegram_sent' => [], 'telegram_messages' => []]);
     }
 
     protected function failedTry(Thread $thread, TelegramException $e)
@@ -203,9 +200,7 @@ class SendReplyToTelegram implements ShouldQueue
 
     protected function markNotSent(Thread $thread, $message, $status)
     {
-        $thread->send_status = $status;
-        $thread->updateSendStatusData(['msg' => $message]);
-        $thread->save();
-        SendReplyToCustomer::reopenConversation($thread->conversation);
+        ChatDelivery::recordStatus($thread, $status, ['msg' => $message]);
+        ChatDelivery::reopenConversation($thread->conversation);
     }
 }

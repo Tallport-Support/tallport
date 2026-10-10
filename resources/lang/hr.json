@@ -1851,5 +1851,6 @@
     "iPhone photos shown without the browser converting them": "Fotografije s iPhonea prikazane bez pretvaranja u pregledniku",
     "Reply to :name": "Odgovor za :name",
     "Add a message": "Dodajte poruku",
-    "Note for your team": "Bilješka za vaš tim"
+    "Note for your team": "Bilješka za vaš tim",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "Nova poruka nastavlja posljednji razgovor u chatu ako je u njemu bilo aktivnosti unutar ovog broja dana; u suprotnom se započinje novi razgovor."
 }

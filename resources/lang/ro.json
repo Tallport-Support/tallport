@@ -1850,5 +1850,6 @@
     "iPhone photos shown without the browser converting them": "Fotografii de pe iPhone afișate fără ca browserul să le convertească",
     "Reply to :name": "Răspuns pentru :name",
     "Add a message": "Adaugă un mesaj",
-    "Note for your team": "Notă pentru echipa ta"
+    "Note for your team": "Notă pentru echipa ta",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "Un mesaj nou continuă ultima conversație prin chat dacă aceasta a avut activitate în acest număr de zile; în caz contrar, se începe o conversație nouă."
 }

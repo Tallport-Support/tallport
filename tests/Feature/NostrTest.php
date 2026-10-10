@@ -176,6 +176,7 @@ class NostrTest extends FeatureTestCase
     public function testDuplicatesNextMessagesAndReopenWindow()
     {
         $cfg = $this->setUpNostr();
+        $this->mailbox->setMetaParam('chat_reopen_days', 7, true);
         [$wrap, $rumor] = GiftWrap::wrap(['kind' => 14, 'content' => 'First', 'tags' => [['p', $cfg->pubkey]], 'created_at' => time() - 5], $this->customer_private, $cfg->pubkey);
         [$wrap2] = GiftWrap::wrap($rumor + ['kind' => 14], $this->customer_private, $cfg->pubkey);
         $handler = new IncomingMessageHandler();
@@ -190,7 +191,7 @@ class NostrTest extends FeatureTestCase
         $this->assertSame($conversation->id, $next->conversation_id);
         $this->assertSame(Conversation::STATUS_ACTIVE, (int) $conversation->fresh()->status);
 
-        Conversation::where('id', $conversation->id)->update(['last_reply_at' => now()->subDays(31)]);
+        Conversation::where('id', $conversation->id)->update(['last_reply_at' => now()->subDays(8)]);
         $this->assertNotSame($conversation->id, $this->receive($cfg, 'Months later')->conversation_id);
 
         // Someone else's message and other kinds are left out.

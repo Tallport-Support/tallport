@@ -1851,5 +1851,6 @@
     "iPhone photos shown without the browser converting them": "iPhoneの写真をブラウザで変換せずに表示",
     "Reply to :name": ":name への返信",
     "Add a message": "メッセージを追加",
-    "Note for your team": "チーム向けのメモ"
+    "Note for your team": "チーム向けのメモ",
+    "A new message continues the latest chat conversation if it had activity within this many days; otherwise a new conversation is started.": "この日数以内にやり取りがあった場合、新しいメッセージは最新のチャット会話を続けます。それ以外の場合は新しい会話を開始します。"
 }
