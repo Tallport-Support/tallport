@@ -1012,8 +1012,18 @@ a h4 {
 }
 /* A translated conversation's composer (conversations/partials/chat_translation): the reply's
    translation before it's sent, like a translation card. Empty until one is on its way: only
-   what shows takes room. */
+   what shows takes room. In an email's composer it sits between the recipient rows and the
+   editor, as far below the To row's line as the editor's toolbar icons are without it; the
+   editor's own margin is the space below. */
 .conv-chat-translation > * {
+    margin: 26px 0 0;
+}
+/* The translation as it's written, under "Translating…" (both show while it's on its way). */
+.conv-chat-translation > .conv-translation-busy + .conv-translation-preview__text {
+    margin-top: 8px;
+}
+/* The chat view: above the field, the composer's padding is the space above it. */
+.conv-composer-docked .conv-chat-translation > * {
     margin: 0 0 8px;
 }
 .conv-translation-busy {
