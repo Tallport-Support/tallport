@@ -48,7 +48,7 @@ class ChatLog
 
     public static function page($channel, $outcome, $mailbox_id)
     {
-        $activity = ActivityLog::query()->where('log_name', $channel)
+        $activity = ActivityLog::query()->whereIn('log_name', [$channel, 'chat_'.$channel])
             ->select(['id', 'created_at', 'subject_id as mailbox_id', 'properties->status as outcome'])->selectRaw("'activity' as source");
         if ($channel === 'telegram') {
             $delivery = TelegramSend::query()->select(['id', 'created_at', 'mailbox_id'])
@@ -81,7 +81,7 @@ class ChatLog
         }
         // The encrypted Matrix payload is never needed to display a log.
         $deliveries = $deliveries->get($channel === 'matrix' ? ['id', 'kind', 'status', 'attempts', 'thread_id', 'conversation_id', 'remote_id', 'transaction_id', 'room_id'] : ['*'])->keyBy('id');
-        $thread_ids = $activities->map(fn ($entry) => $entry->properties['details']['thread_id'] ?? null);
+        $thread_ids = $activities->toBase()->map(fn ($entry) => $entry->properties['details']['thread_id'] ?? null);
         if ($channel === 'matrix') {
             $thread_ids = $thread_ids->merge($deliveries->pluck('thread_id'));
         }

@@ -141,7 +141,7 @@ class ActivityLog extends Activity
      */
     public static function menuNames()
     {
-        $channels = ['telegram', 'nostr', 'matrix'];
+        $channels = ['telegram', 'nostr', 'matrix', 'chat_telegram', 'chat_nostr', 'chat_matrix'];
 
         return array_merge(
             [self::NAME_OUT_EMAILS, self::NAME_OUT_TELEGRAM, self::NAME_OUT_NOSTR, self::NAME_OUT_MATRIX],

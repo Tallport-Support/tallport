@@ -162,6 +162,19 @@ class ChannelLogsTest extends FeatureTestCase
         $this->assertStringNotContainsString('private-password', ActivityLog::where('log_name', $channel)->get()->toJson());
     }
 
+    /** @dataProvider channels */
+    public function testEarlierDiagnosticNamesAppearInOneChannelLog($channel)
+    {
+        \App\Misc\ChatLog::record($channel, $this->mailbox->id, 'connection', 'failed', 'Earlier diagnostic');
+        ActivityLog::where('log_name', $channel)->update(['log_name' => 'chat_'.$channel]);
+        \App\Misc\ChatLog::record($channel, $this->mailbox->id, 'connection', 'failed', 'Current diagnostic');
+        $this->actingAs($this->admin)->get(route('logs.'.$channel, ['outcome' => 'failed', 'mailbox_id' => $this->mailbox->id]))
+            ->assertOk()->assertSee('Earlier diagnostic')->assertSee('Current diagnostic')->assertDontSee('Chat '.ucfirst($channel));
+        $this->assertSame(1, count(array_filter(ActivityLog::menuNames(), fn ($name) => $name === 'out_'.$channel)));
+        $this->assertNotContains('chat_'.$channel, ActivityLog::menuNames());
+        $this->assertSame(2, ActivityLog::whereIn('log_name', [$channel, 'chat_'.$channel])->count());
+    }
+
     public static function channels()
     {
         return [['telegram'], ['nostr'], ['matrix']];
@@ -178,6 +191,7 @@ class ChannelLogsTest extends FeatureTestCase
         $event->remote_id = '$sent-message';
         $event->save();
         \DB::table('matrix_events')->where('id', $event->id)->update(['payload' => 'undecryptable-message-secret']);
+        $this->actingAs($this->admin)->get(route('logs.matrix'))->assertOk()->assertSee('$sent-message');
         \Illuminate\Support\Facades\Http::preventStrayRequests();
         \Illuminate\Support\Facades\Http::fake(['https://matrix.example.org/*' => \Illuminate\Support\Facades\Http::response(['errcode' => 'M_UNKNOWN', 'error' => 'private-response-body'], 503)]);
         \App\Jobs\SyncMatrixMailbox::dispatchSync($identity->id);
