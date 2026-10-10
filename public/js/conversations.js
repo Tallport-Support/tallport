@@ -240,6 +240,19 @@ document.addEventListener('alpine:init', function () {
 				this.listeners.push(Livewire.on('composer-note-forget', function () {
 					self.forgetNote();
 				}));
+				// The editor stays when the mode changes (Reply, Note, Forward): its placeholder follows.
+				this.$wire.$watch('mode', function (mode) {
+					var body = self.$root.querySelector('.conv-reply-body[data-placeholders]');
+					var text = body && (JSON.parse(body.getAttribute('data-placeholders'))[mode || 'reply'] || '');
+					if (text) {
+						body.querySelectorAll('textarea, .tiptap').forEach(function (field) {
+							field.setAttribute(field.tagName == 'TEXTAREA' ? 'placeholder' : 'data-placeholder', text);
+							if (field.tagName != 'TEXTAREA') {
+								field.setAttribute('aria-placeholder', text);
+							}
+						});
+					}
+				});
 			},
 
 			destroy: function () {

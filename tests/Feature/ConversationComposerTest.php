@@ -52,6 +52,17 @@ class ConversationComposerTest extends FeatureTestCase
         $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id.'/new-ticket')->assertSee('Send &amp; Close', false);
     }
 
+    /**
+     * The empty field says who it's for, by mode; all of them go along for a switch in place.
+     */
+    public function testTheFieldsPlaceholder()
+    {
+        $placeholders = 'data-placeholders="'.e(json_encode(['reply' => 'Reply to Casey Customer', 'note' => 'Note for your team', 'forward' => 'Add a message'])).'"';
+        $this->composer()->call('open', 'reply')->assertSee('placeholder="Reply to Casey Customer"', false)->assertSee($placeholders, false);
+        $this->composer()->call('open', 'note')->assertSee('placeholder="Note for your team"', false);
+        $this->composer()->call('open', 'forward')->assertSee('placeholder="Add a message"', false);
+    }
+
     public function testSendsAReplyWithCc()
     {
         $this->composer()->call('open', 'reply')->call('send')->assertToasted('Please enter a message', 'danger');

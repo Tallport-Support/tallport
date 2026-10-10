@@ -1848,5 +1848,8 @@
     "HEIC Images": "Изображения HEIC",
     "iPhone photos are converted on the server by ImageMagick with HEIC support. Without it, browsers decode them, which is slower.": "Фотографии с iPhone преобразуются на сервере с помощью ImageMagick с поддержкой HEIC. Без него их декодируют браузеры, что медленнее.",
     "Converted on the server": "Преобразуются на сервере",
-    "iPhone photos shown without the browser converting them": "Фотографии с iPhone показываются без преобразования в браузере"
+    "iPhone photos shown without the browser converting them": "Фотографии с iPhone показываются без преобразования в браузере",
+    "Reply to :name": "Ответ для :name",
+    "Add a message": "Добавьте сообщение",
+    "Note for your team": "Заметка для команды"
 }

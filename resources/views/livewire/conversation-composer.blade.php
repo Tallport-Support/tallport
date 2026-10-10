@@ -73,7 +73,16 @@
                     @include('conversations/partials/chat_translation')
                 @endif
 
-                @include('conversations/partials/composer_editor', ['formats' => $mode == 'note' ? null : $conversation->editorFormats(), 'placeholder' => $chat && $mode != 'note' && $conversation->customer ? __('Message :name', ['name' => $conversation->customer->getFullName(true)]) : null, 'draft_button' => $mode != 'note', 'inline' => $chat])
+                {{-- What goes in the empty field, by mode: who it's for (tallportComposer swaps it when the mode changes). --}}
+                @php
+                    $customer_name = $conversation->customer ? $conversation->customer->getFullName(true) : '';
+                    $placeholders = [
+                        'reply'   => $customer_name === '' ? __('Reply') : ($chat ? __('Message :name', ['name' => $customer_name]) : __('Reply to :name', ['name' => $customer_name])),
+                        'note'    => __('Note for your team'),
+                        'forward' => __('Add a message'),
+                    ];
+                @endphp
+                @include('conversations/partials/composer_editor', ['formats' => $mode == 'note' ? null : $conversation->editorFormats(), 'placeholder' => $placeholders[$mode] ?? $placeholders['reply'], 'placeholders' => $placeholders, 'draft_button' => $mode != 'note', 'inline' => $chat])
 
                 @include('conversations/partials/composer_footer', [
                     'send_label'      => $mode == 'note' ? __('Add Note') : ($mode == 'forward' ? __('Forward') : ($chat ? __('Send') : ($send_labels[$status][0] ?? __('Send Reply')))),

@@ -1892,5 +1892,8 @@
     "HEIC Images": "HEIC 圖片",
     "iPhone photos are converted on the server by ImageMagick with HEIC support. Without it, browsers decode them, which is slower.": "iPhone 照片由伺服器上支援 HEIC 的 ImageMagick 轉換。沒有它時由瀏覽器解碼，速度較慢。",
     "Converted on the server": "在伺服器上轉換",
-    "iPhone photos shown without the browser converting them": "無需瀏覽器轉換即可顯示 iPhone 照片"
+    "iPhone photos shown without the browser converting them": "無需瀏覽器轉換即可顯示 iPhone 照片",
+    "Reply to :name": "回覆 :name",
+    "Add a message": "新增訊息",
+    "Note for your team": "給團隊的備註"
 }

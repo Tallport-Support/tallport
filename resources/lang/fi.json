@@ -1866,5 +1866,8 @@
     "HEIC Images": "HEIC-Kuvat",
     "iPhone photos are converted on the server by ImageMagick with HEIC support. Without it, browsers decode them, which is slower.": "iPhone-kuvat muunnetaan palvelimella ImageMagickilla, jossa on HEIC-tuki. Ilman sitä selaimet purkavat ne itse, mikä on hitaampaa.",
     "Converted on the server": "Muunnetaan palvelimella",
-    "iPhone photos shown without the browser converting them": "iPhone-kuvat näytetään ilman, että selain muuntaa niitä"
+    "iPhone photos shown without the browser converting them": "iPhone-kuvat näytetään ilman, että selain muuntaa niitä",
+    "Reply to :name": "Vastaa: :name",
+    "Add a message": "Lisää viesti",
+    "Note for your team": "Muistiinpano tiimillesi"
 }
