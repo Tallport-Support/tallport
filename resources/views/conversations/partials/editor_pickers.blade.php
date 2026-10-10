@@ -1,5 +1,6 @@
 {{-- The reply editor's pickers: saved replies and knowledge base articles, each
-     a searchable list in a FruitUI floating disclosure (public/js/saved_replies.js, kb.js). --}}
+     a searchable list in a FruitUI floating disclosure (public/js/saved_replies.js, kb.js);
+     in the chat field ($inline, docked at the bottom) they open above it. --}}
 @php
     $picker_replies = App\SavedReply::forEditor($mailbox, Auth::user());
     $picker_path = [];
@@ -12,7 +13,7 @@
     }
     $picker_articles = App\Http\Controllers\KnowledgeBaseController::forEditor($mailbox->id);
 @endphp
-<x-fruit::floating-disclosure class="editor-picker saved-replies-picker" x-data="{ q: '' }" x-on:toggle="if ($el.open) { q = ''; $nextTick(() => $el.querySelector('input[type=search]').focus()) }">
+<x-fruit::floating-disclosure :placement="empty($inline) ? 'below' : 'above'" class="editor-picker saved-replies-picker" x-data="{ q: '' }" x-on:toggle="if ($el.open) { q = ''; $nextTick(() => $el.querySelector('input[type=search]').focus()) }">
     <x-slot:trigger class="f-button f-button--ghost f-button--icon" :aria-label="__('Saved Replies')" :title="__('Saved Replies')"><x-icon.message-square-text class="f-icon" aria-hidden="true" /></x-slot:trigger>
     <x-fruit::search x-model="q" :label="__('Search')" :placeholder="__('Search').'…'" />
     <ul class="editor-picker__list">
@@ -41,7 +42,7 @@
 </x-fruit::floating-disclosure>
 
 @if (count($picker_articles))
-    <x-fruit::floating-disclosure class="editor-picker kb-picker" x-data="{ q: '' }" x-on:toggle="if ($el.open) { q = ''; $nextTick(() => $el.querySelector('input[type=search]').focus()) }">
+    <x-fruit::floating-disclosure :placement="empty($inline) ? 'below' : 'above'" class="editor-picker kb-picker" x-data="{ q: '' }" x-on:toggle="if ($el.open) { q = ''; $nextTick(() => $el.querySelector('input[type=search]').focus()) }">
         <x-slot:trigger class="f-button f-button--ghost f-button--icon" :aria-label="__('Knowledge Base')" :title="__('Knowledge Base')"><x-icon.book-open class="f-icon" aria-hidden="true" /></x-slot:trigger>
         <x-fruit::search x-model="q" :label="__('Search')" :placeholder="__('Search').'…'" />
         <ul class="editor-picker__list">

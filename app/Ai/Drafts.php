@@ -41,7 +41,7 @@ class Drafts
 
     /**
      * Make a draft. $language: the language the user reads its translation in. $on_draft: the
-     * draft so far (Markdown), as it's written.
+     * draft so far (Markdown), as it's written, and its translation so far.
      */
     public static function draft(Conversation $conversation, $language, ?callable $on_draft = null, ?float $deadline = null)
     {
@@ -77,7 +77,7 @@ class Drafts
             TallportAgent::data('mailbox_guidance', $context['guidance']),
             TallportAgent::data('documentation', $documentation['chunks']),
             TallportAgent::data('customer_context', $context['data']),
-        ]), $on_draft ? fn ($answer) => $on_draft((string) ($answer['draft'] ?? '')) : null, $deadline);
+        ]), $on_draft ? fn ($answer) => $on_draft((string) ($answer['draft'] ?? ''), (string) ($answer['translation'] ?? '')) : null, $deadline);
 
         return [
             'draft'                   => trim((string) ($answer['draft'] ?? '')),

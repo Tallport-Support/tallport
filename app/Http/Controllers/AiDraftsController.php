@@ -51,7 +51,8 @@ class AiDraftsController extends Controller
 
         $language = Settings::language($conversation->mailbox, $user);
 
-        // Events: {"draft": the draft so far}, then the draft and its details ("status": "success"), or the error.
+        // Events: {"draft": the draft so far, "translation": its translation so far, once it's begun},
+        // then the draft and its details ("status": "success"), or the error.
         return response()->stream(function () use ($draft_job, $conversation, $language) {
             // Finished (and kept) also when the user leaves.
             ignore_user_abort(true);
@@ -65,9 +66,9 @@ class AiDraftsController extends Controller
             };
             $throttle = new StreamThrottle(self::STREAM_INTERVAL);
             try {
-                $draft_job->result = Drafts::draft($conversation, $language, function ($draft) use ($send, $throttle) {
+                $draft_job->result = Drafts::draft($conversation, $language, function ($draft, $translation = '') use ($send, $throttle) {
                     if (trim($draft) !== '' && $throttle->ready()) {
-                        $send(['draft' => $draft]);
+                        $send(['draft' => $draft] + (trim($translation) !== '' ? ['translation' => $translation] : []));
                     }
                 }, microtime(true) + 120);
                 $draft_job->status = DraftJob::STATUS_COMPLETED;

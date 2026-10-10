@@ -141,6 +141,15 @@
     --f-editor-padding-inline: 0px;
     border-top: 1px solid var(--f-border);
   }
+/* It grows as the composer's textarea does: up to half the window's height, all of it on a phone. */
+.f-composer .f-editor:not(.f-editor--inline) .tiptap {
+    max-height: var(--f-editor-max-height, var(--f-composer-input-max-height, 50dvh));
+  }
+@media (max-width: 600px), (max-height: 500px) {
+    .f-composer .f-editor:not(.f-editor--inline) .tiptap {
+      max-height: var(--f-editor-max-height, var(--f-composer-input-max-height, 100dvh));
+    }
+  }
 .f-composer .f-editor:not(.f-editor--inline) > textarea {
     padding-inline: 0;
     background: transparent;

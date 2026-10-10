@@ -791,8 +791,8 @@ document.addEventListener('alpine:init', function () {
 	 * AI Assistant reply drafts (App\Ai\Drafts): asked for by the toolbar's Draft
 	 * with AI, shown as they're written, then put into the reply (the composer).
 	 */
-	// chat: the chat view's composer (inline: no card, the draft goes into the chat field;
-	// translated: replies are translated on send, so the agent's language goes in).
+	// chat: the chat view's composer (inline: no card, the draft is written into the chat field,
+	// which is locked meanwhile; translated: replies are translated on send, so the agent's language goes in).
 	window.Alpine.data('tallportAiDraft', function (draft_url, translation_language, texts, chat) {
 		chat = chat || {};
 		return {
@@ -839,7 +839,12 @@ document.addEventListener('alpine:init', function () {
 			fail: function (message, detail) {
 				this.drafting = false;
 				if (chat.inline) {
+					// What was in the field before goes back.
+					if (this.written) {
+						this.setField(this.before);
+					}
 					this.reset('');
+					this.lock(false);
 					Tallport.toast(message || texts.failed, 'danger');
 					return;
 				}
@@ -848,9 +853,31 @@ document.addEventListener('alpine:init', function () {
 				this.detail = detail || '';
 			},
 
-			// The chat field, as the draft is written (not when it's translated before sending).
+			// The chat field, as the draft is written.
 			setField: function (html) {
 				window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: html}}));
+			},
+
+			// The chat field (the editor and its buttons) while the draft is written: inert, as the
+			// AI writes into it (FruitUI's editor takes no content while readonly or disabled), and
+			// Draft with AI busy. Unlocked, the cursor goes to the end of the text.
+			lock: function (on) {
+				var field = this.$root.closest('.conv-action-wrapper');
+				field = field ? field.querySelector('.conv-reply-body') : null;
+				if (field) {
+					field.inert = on;
+					if (on) {
+						field.setAttribute('aria-busy', 'true');
+					} else {
+						field.removeAttribute('aria-busy');
+					}
+				}
+				document.querySelectorAll('.ai-draft-action').forEach(function (button) {
+					Tallport.busy(button, on);
+				});
+				if (!on) {
+					editorFocus('body', true);
+				}
 			},
 
 			// The draft is written into the card as the AI writes it (server-sent events from
@@ -864,6 +891,12 @@ document.addEventListener('alpine:init', function () {
 				}
 				this.drafting = true;
 				this.active = !chat.inline;
+				if (chat.inline) {
+					var field = document.getElementById('body');
+					this.before = field ? field.value : '';
+					this.written = false;
+					this.lock(true);
+				}
 				// The draft is shown below the editor: open it, as Reply does.
 				Livewire.dispatch('composer-open', {mode: 'reply'});
 				this.reset(texts.drafting);
@@ -921,15 +954,20 @@ document.addEventListener('alpine:init', function () {
 								self.meta = data.language+' · '+data.confidence;
 								self.html = markdownToHtml(data.draft);
 								if (chat.inline) {
-									self.insert();
+									self.insert().finally(function () {
+										self.lock(false);
+									});
 								}
 							} else if (data.status == 'error') {
 								finished = true;
 								self.fail(data.msg, data.detail);
 							} else if (typeof data.draft == 'string') {
 								self.html = markdownToHtml(data.draft);
-								if (chat.inline && !chat.translated) {
-									self.setField(self.html);
+								// Translated on send: its translation, once it's being written.
+								var written = chat.translated ? data.translation : data.draft;
+								if (chat.inline && typeof written == 'string') {
+									self.written = true;
+									self.setField(markdownToHtml(written));
 								}
 							}
 						});
@@ -945,20 +983,16 @@ document.addEventListener('alpine:init', function () {
 				return next();
 			},
 
+			// Into the reply (ConversationComposer::aiDraft()): done when the composer has it.
 			insert: function () {
 				if (!this.draft) {
-					return;
+					return Promise.resolve();
 				}
 				// Translated on send: the version in the agent's language is what they write.
 				if (chat.translated && this.draft.translation) {
-					Livewire.dispatch('composer-ai-draft', {html: markdownToHtml(this.draft.translation), translation: '', language: ''});
-					return;
+					return this.$wire.aiDraft(markdownToHtml(this.draft.translation), '', '');
 				}
-				Livewire.dispatch('composer-ai-draft', {
-					html: markdownToHtml(this.draft.draft),
-					translation: this.draft.translation || '',
-					language: this.draft.translation ? translation_language : ''
-				});
+				return this.$wire.aiDraft(markdownToHtml(this.draft.draft), this.draft.translation || '', this.draft.translation ? translation_language : '');
 			}
 		};
 	});

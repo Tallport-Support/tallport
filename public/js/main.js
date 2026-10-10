@@ -127,15 +127,26 @@ function editorInsert(id, html)
 	window.dispatchEvent(new CustomEvent('fruit-editor-insert', {detail: {target: String(id).replace('#', ''), html: html}}));
 }
 
-function editorFocus(id)
+// at_end: the cursor after the text.
+function editorFocus(id, at_end)
 {
 	var textarea = document.getElementById(String(id).replace('#', ''));
 	var editor = textarea ? textarea.closest('.f-editor') : null;
 	var surface = editor ? editor.querySelector('.f-editor__surface [contenteditable="true"]') : null;
 	if (surface) {
 		surface.focus();
+		if (at_end) {
+			var range = document.createRange();
+			range.selectNodeContents(surface);
+			range.collapse(false);
+			window.getSelection().removeAllRanges();
+			window.getSelection().addRange(range);
+		}
 	} else if (textarea) {
 		textarea.focus();
+		if (at_end) {
+			textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+		}
 	}
 }
 

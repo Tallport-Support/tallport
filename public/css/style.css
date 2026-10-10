@@ -3270,6 +3270,12 @@ h1.settings-toolbar__title {
     border-color: var(--f-note-border);
 }
 
+/* While Draft with AI writes into the chat's field, the field is inert (tallportAiDraft's lock()):
+   its buttons look disabled, as FruitUI's do, and the text being written stays readable. */
+.conv-composer-docked .conv-reply-body[inert] .f-button:not([aria-busy="true"]) {
+    opacity: 0.45;
+}
+
 /* A mailbox's team chat (livewire/team-chat), as FruitUI's Support example's room:
    the messages and the composer in one readable column. */
 .team-room__history {

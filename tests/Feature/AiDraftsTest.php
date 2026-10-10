@@ -181,6 +181,30 @@ class AiDraftsTest extends FeatureTestCase
         $this->assertDatabaseHas('aiassistant_usage', ['conversation_id' => $this->conversation->id, 'feature' => 'draft']);
     }
 
+    /**
+     * Its translation is written too, after the draft (a chat translated on sending shows it in the field).
+     */
+    public function testTranslationIsWrittenAsItIsMade()
+    {
+        // Each moment a second later: every piece is passed on.
+        $clock = now();
+        \Illuminate\Support\Carbon::setTestNow(function () use (&$clock) {
+            return $clock = $clock->copy()->addSecond();
+        });
+        $events = $this->draftEvents($this->agent);
+        \Illuminate\Support\Carbon::setTestNow();
+
+        $partial = array_slice($events, 0, -1);
+        $translated = array_values(array_filter($partial, fn ($event) => isset($event['translation'])));
+        $this->assertNotEmpty($translated);
+        $this->assertArrayNotHasKey('translation', $partial[0]);
+        foreach ($translated as $event) {
+            $this->assertSame("Hallo Casey,\n\n- Herstart de app\n- **Update** Android", $event['draft']);
+            $this->assertStringStartsWith($event['translation'], "Hello Casey,\n\n- Restart the app\n- Update Android");
+        }
+        $this->assertSame('success', end($events)['status']);
+    }
+
     public function testAnInProgressDraftCannotRestoreDataAfterConversationDeletion()
     {
         ReplyDrafter::fake(function () {

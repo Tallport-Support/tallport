@@ -3470,9 +3470,10 @@ img.f-avatar {
 
 /* The message is written on the composer itself, as in a mail app: no box of its own, the text on
      the composer's edges (the thread's edges), and the caret shows where typing goes. It grows with
-     its lines up to the limit, without a resize handle. An error shows in its message, not as a red
-     box. The transparent border still draws in forced colors. These selectors also outrank the
-     textarea's own in the compatibility styles. */
+     its lines, without a resize handle, up to half the window's height, so the thread stays in view;
+     on a phone (narrow, or turned on its side) up to all of it. An error shows in its message, not
+     as a red box. The transparent border still draws in forced colors. These selectors also outrank
+     the textarea's own in the compatibility styles. */
 
 textarea.f-composer__input,
   .f-composer__input[aria-invalid='true'] {
@@ -3483,7 +3484,7 @@ textarea.f-composer__input,
 .f-composer__input {
     display: block;
     min-height: var(--f-composer-input-min-height, 82px);
-    max-height: var(--f-composer-input-max-height, 160px);
+    max-height: var(--f-composer-input-max-height, 50dvh);
     padding-inline: 0;
     border-radius: 0;
     background: transparent;
@@ -3495,6 +3496,12 @@ textarea.f-composer__input,
 
 .f-composer__input:focus-visible {
     outline: none;
+  }
+
+@media (max-width: 600px), (max-height: 500px) {
+    .f-composer__input {
+      max-height: var(--f-composer-input-max-height, 100dvh);
+    }
   }
 
 .f-composer__header,
@@ -3547,6 +3554,7 @@ textarea.f-composer__input,
 
 .f-composer__field .f-composer__input {
     min-height: 0;
+    max-height: var(--f-composer-input-max-height, 160px);
     padding-block: 6px;
     border: 0;
   }
@@ -5888,6 +5896,15 @@ textarea.f-composer__input,
 .f-composer .f-editor:not(.f-editor--inline) > .f-editor__surface {
     --f-editor-padding-inline: 0px;
     border-top: 1px solid var(--f-border);
+  }
+/* It grows as the composer's textarea does: up to half the window's height, all of it on a phone. */
+.f-composer .f-editor:not(.f-editor--inline) .tiptap {
+    max-height: var(--f-editor-max-height, var(--f-composer-input-max-height, 50dvh));
+  }
+@media (max-width: 600px), (max-height: 500px) {
+    .f-composer .f-editor:not(.f-editor--inline) .tiptap {
+      max-height: var(--f-editor-max-height, var(--f-composer-input-max-height, 100dvh));
+    }
   }
 .f-composer .f-editor:not(.f-editor--inline) > textarea {
     padding-inline: 0;

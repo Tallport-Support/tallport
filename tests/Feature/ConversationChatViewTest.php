@@ -136,7 +136,9 @@ class ConversationChatViewTest extends FeatureTestCase
 
         $composer = Livewire::actingAs($this->agent->fresh())->test(ConversationComposer::class, ['conversation' => $this->conversation, 'chat' => true])
             ->assertSet('status', Conversation::STATUS_ACTIVE)
-            ->assertSeeHtml('f-editor--inline')->assertSeeHtml('data-fruit-enter="submit"')->assertSeeHtml('f-composer__send')->assertDontSeeHtml('btn-reply-submit')->assertDontSeeHtml('dropdown-send-status')->assertDontSeeHtml('name="status"');
+            ->assertSeeHtml('f-editor--inline')->assertSeeHtml('data-fruit-enter="submit"')->assertSeeHtml('f-composer__send')->assertDontSeeHtml('btn-reply-submit')
+            // The pickers open above the field, docked at the bottom, not below it.
+            ->assertSeeHtml('f-floating-disclosure--above editor-picker saved-replies-picker')->assertDontSeeHtml('dropdown-send-status')->assertDontSeeHtml('name="status"');
         // The text comes with the send (the browser may have cleared the editor already).
         $composer->set('body', '')->call('send', null, '<p>On it.</p>')->assertReturned(true)->assertNoRedirect();
         $this->assertSame('<p>On it.</p>', $this->conversation->threads()->where('type', \App\Thread::TYPE_MESSAGE)->orderBy('id', 'desc')->value('body'));
@@ -144,7 +146,7 @@ class ConversationChatViewTest extends FeatureTestCase
 
         // The email view keeps the user's choices.
         Livewire::actingAs($this->agent->fresh())->test(ConversationComposer::class, ['conversation' => $this->conversation])
-            ->call('open', 'reply')->assertSet('status', Conversation::STATUS_CLOSED)->assertSeeHtml('dropdown-send-status')->assertSeeHtml('data-fruit-enter="newline"')->assertDontSeeHtml('f-editor--inline');
+            ->call('open', 'reply')->assertSet('status', Conversation::STATUS_CLOSED)->assertSeeHtml('dropdown-send-status')->assertSeeHtml('data-fruit-enter="newline"')->assertDontSeeHtml('f-editor--inline')->assertDontSeeHtml('f-floating-disclosure--above');
     }
 
     public function testTheEditorAllowsTheChannelsFormatting()
@@ -179,6 +181,8 @@ class ConversationChatViewTest extends FeatureTestCase
 
         $html = Livewire::actingAs($this->agent)->test(ConversationThread::class, ['conversation' => $this->conversation, 'chat' => true])->html();
         $this->assertSame(1, substr_count($html, 'f-message--continued'));
+        // The time shows once per run: none on hover beside the continued message.
+        $this->assertSame(1, substr_count($html, 'class="thread-date"'));
 
         // Not after a gap.
         $second->created_at = $first->created_at->copy()->addMinutes(10);

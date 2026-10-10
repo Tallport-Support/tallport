@@ -461,7 +461,7 @@ class ConversationComposer extends Component
     }
 
     /**
-     * An AI draft goes in a reply, with its translation (public/js/main.js aiDraftsInit()).
+     * An AI draft goes in a reply, with its translation (tallportAiDraft in public/js/conversations.js).
      */
     #[On('composer-ai-draft')]
     public function aiDraft($html, $translation = '', $language = '')

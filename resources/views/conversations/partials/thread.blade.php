@@ -160,7 +160,10 @@
                 <x-fruit::button variant="ghost" :data-fruit-dialog-url="route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" :data-fruit-dialog-title="__('Outgoing Emails')" data-fruit-dialog-size="large">{{ __('View log') }}</x-fruit::button>
             </x-slot:status>
         @endif
-        <x-slot:time>@action('thread.info.prepend', $thread)<a href="#thread-{{ $thread->id }}" class="thread-date" title="{{ $thread_date_title }}">{{ $thread_date }}</a></x-slot:time>
+        {{-- Not on a chat message that continues the one above: FruitUI would show it on hover, over the message. --}}
+        @if (empty($continued) || empty($chat))
+            <x-slot:time>@action('thread.info.prepend', $thread)<a href="#thread-{{ $thread->id }}" class="thread-date" title="{{ $thread_date_title }}">{{ $thread_date }}</a></x-slot:time>
+        @endif
 
         @action('thread.after_header', $thread, $loop, $threads, $conversation, $mailbox)
         <div class="thread-body">
