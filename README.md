@@ -37,29 +37,52 @@ Credit for everything up to the fork goes to the FreeScout team.
 
 ## Changes from FreeScout
 
-So far:
+Everything FreeScout does, plus:
 
-* **Updates come from this repository.** The built-in updater installs the
-  latest published [Tallport release](https://github.com/Tallport-Support/tallport/releases)
-  instead of FreeScout releases.
-* **Branding.** The app says Tallport, with credit to FreeScout.
-* **Current Laravel.** Laravel 13 with Symfony 7.4 and Symfony Mailer,
-  instead of Laravel 5.5 with SwiftMailer. Laravel 5.5 behaviour that
-  FreeScout modules rely on is kept (e.g. `route()` parameters, the `Input`
-  facade, `Event::fire()`, the `str_*`/`array_*` helpers).
-* **Incoming email** is fetched and read with webklex/php-imap 6 and
-  Tallport's own code instead of FreeScout's patched copy of an old version,
-  and can also be [received straight from the mail server](#receiving-email-from-a-mail-server).
-* **Faster conversations with large messages** and many bug fixes (see
-  [KNOWN_BUGS.md](KNOWN_BUGS.md) for what's left).
-* **A test suite.** About 420 tests (feature, unit and snapshot tests) run
-  on every push, covering the email conversation loop, every route, ajax
-  action, artisan command and queued job. See [Development](#development).
-* **Known bugs are listed** in [KNOWN_BUGS.md](KNOWN_BUGS.md): bugs found
-  while writing the tests, most of them present in FreeScout too.
+**Built in**
 
-Planned next: replacing the FreeScout modules Tallport installations depend
-on with Tallport features.
+* **AI Assistant:** conversation summaries, and reply drafts based on your
+  own documentation (OpenAI, Anthropic, Gemini and others).
+* **Translation both ways:** agents read and write in their own language,
+  and customers get replies in theirs, by email and chat.
+* **Workflows** that act on conversations automatically or with one click.
+* **Reports** on volume and on response and resolution times.
+* **Knowledge Base** articles for the team, ready to insert in replies.
+* **Fast search** that finds every word and shows the best matches first.
+* **Auto replies in the customer's language.**
+* **Two-factor sign-in and passkeys.**
+* **REST API and webhooks.**
+
+**More ways to reach you**
+
+* **Telegram and Nostr:** customers chat with a mailbox, and those
+  conversations look and work like chats.
+* **Sending through Amazon SES, Mailgun, Postmark or Resend**, as well as
+  SMTP, and receiving email straight from your mail server.
+
+**A better inbox**
+
+* **A new interface** that is fast, clean and light or dark with your system.
+* **All Mailboxes:** every mailbox's conversations together, each in its
+  mailbox's colour.
+* **Instant navigation:** conversations and folders open in place.
+* **Unread markers** and sorting by last activity.
+* **Team Chat:** an encrypted chat room for each mailbox's team.
+* **Clear delivery reports:** bounces shown on the message they belong to,
+  delivery confirmations kept out of the inbox.
+* **Image thumbnails**, including iPhone photos.
+* **The customer at a glance:** their local time and language.
+* **Replies that look like ordinary email.**
+
+**Easier to run**
+
+* **Data retention** that deletes old conversations on a schedule, with
+  legal hold.
+* **A clear status page** that says what needs attention and how to fix it.
+* **Your own look:** logos, accent colours and email branding.
+* **One-click updates.**
+* **Up to date and tested:** current Laravel and dependencies, numerous bugs
+  fixed, and a large automated test suite.
 
 ## Requirements
 
