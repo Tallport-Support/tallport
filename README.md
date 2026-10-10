@@ -50,7 +50,7 @@ Compared with FreeScout and its modules, Tallport adds:
   large automated test suite.
 * **Retention management:** enforce timely deletion of older conversations
   and inactive customers.
-  **Multi-channel:** interact with customers through e-mail, Telegram and
+* **Multi-channel:** interact with customers through e-mail, Telegram and
   Nostr.
 
 ## Requirements
