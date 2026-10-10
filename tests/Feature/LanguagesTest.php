@@ -179,6 +179,12 @@ class LanguagesTest extends FeatureTestCase
     public function testTheSidebarShowsTheCustomersLanguages()
     {
         $conversation = $this->receive();
+        // Not translated: their language isn't shown.
+        $this->page($this->agent, $conversation)->assertDontSee('<li class="customer-language"', false)->assertDontSee('customer-language__select', false);
+
+        Option::set('aiassistant.mailbox_email_translation', [$this->mailbox->id => 1]);
+        Option::$cache = [];
+        \Cache::store('array')->flush();
         $this->page($this->agent, $conversation)->assertSee('<li class="customer-language" x-data>', false)
             ->assertSee('<option value="nl" selected>', false);
 

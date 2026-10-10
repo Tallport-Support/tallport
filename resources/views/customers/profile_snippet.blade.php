@@ -29,7 +29,11 @@
 		$languages = implode(' · ', array_filter([$customer->language ? App\Ai\Settings::displayName($customer->language) : '', $reads]));
 		// In a conversation, agents who may edit the customer set it here (replies are translated
 		// into it, App\Ai\ChatTranslation); "Detect Automatically": from their next message.
-		$set_language = !empty($conversation) && App\Ai\Settings::isConfigured() && !\Helper::isPrint() && Auth::check() && Auth::user()->can('view', $customer);
+		// Beside a conversation only where it's translated (App\Ai\ChatTranslation::isOn()): elsewhere it isn't used.
+		if (!empty($conversation) && !App\Ai\ChatTranslation::isOn($conversation)) {
+			$languages = '';
+		}
+		$set_language = !empty($conversation) && App\Ai\ChatTranslation::isOn($conversation) && !\Helper::isPrint() && Auth::check() && Auth::user()->can('view', $customer);
 	@endphp
 	@if (count($customer_emails) || count($customer->getPhones()) || $customer->getWebsites() || $customer->getSocialProfiles() || $location || $customer->address || $customer->zip || $sender_offset || $languages !== '' || $set_language || $customer->notes || count($nostr_keys))
 		<ul class="customer-snippet__details customer-contacts">
