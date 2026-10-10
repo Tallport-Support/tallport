@@ -1880,5 +1880,12 @@
     "Unsupported Matrix message type.": "Tipo de mensagem Matrix não suportado.",
     "Check the homeserver address. Password login and Matrix v1.11 or newer are required.": "Verifique o endereço do servidor Matrix. São necessários início de sessão com palavra-passe e Matrix v1.11 ou posterior.",
     "This device is unverified. You can still send and receive messages.": "Este dispositivo não foi verificado. Pode continuar a enviar e receber mensagens.",
-    "Receive": "Receber"
+    "Receive": "Receber",
+    "Could not reach the Matrix homeserver. Check the connection and try again.": "Não foi possível contactar o servidor Matrix. Verifique a ligação e tente novamente.",
+    "The Matrix account has been deactivated. Contact the homeserver administrator.": "A conta Matrix foi desativada. Contacte o administrador do servidor.",
+    "The homeserver is rate limiting requests. Wait a moment and try again.": "O servidor está a limitar os pedidos. Aguarde um momento e tente novamente.",
+    "The Matrix homeserver could not complete the request. Try again later.": "O servidor Matrix não conseguiu concluir o pedido. Tente novamente mais tarde.",
+    "The homeserver rejected the login. Check the Matrix account and password.": "O servidor rejeitou o início de sessão. Verifique a conta Matrix e a palavra-passe.",
+    "The Matrix session is no longer valid. Sign in again.": "A sessão Matrix já não é válida. Inicie sessão novamente.",
+    "The Matrix homeserver rejected the request.": "O servidor Matrix rejeitou o pedido."
 }

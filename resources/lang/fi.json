@@ -1898,5 +1898,12 @@
     "Unsupported Matrix message type.": "Matrix-viestin tyyppiä ei tueta.",
     "Check the homeserver address. Password login and Matrix v1.11 or newer are required.": "Tarkista kotipalvelimen osoite. Salasanakirjautuminen ja Matrix v1.11 tai uudempi vaaditaan.",
     "This device is unverified. You can still send and receive messages.": "Tätä laitetta ei ole vahvistettu. Voit silti lähettää ja vastaanottaa viestejä.",
-    "Receive": "Vastaanota"
+    "Receive": "Vastaanota",
+    "Could not reach the Matrix homeserver. Check the connection and try again.": "Matrix-palvelimeen ei saatu yhteyttä. Tarkista yhteys ja yritä uudelleen.",
+    "The Matrix account has been deactivated. Contact the homeserver administrator.": "Matrix-tili on poistettu käytöstä. Ota yhteyttä palvelimen ylläpitäjään.",
+    "The homeserver is rate limiting requests. Wait a moment and try again.": "Palvelin rajoittaa pyyntöjen määrää. Odota hetki ja yritä uudelleen.",
+    "The Matrix homeserver could not complete the request. Try again later.": "Matrix-palvelin ei voinut suorittaa pyyntöä. Yritä myöhemmin uudelleen.",
+    "The homeserver rejected the login. Check the Matrix account and password.": "Palvelin hylkäsi kirjautumisen. Tarkista Matrix-tili ja salasana.",
+    "The Matrix session is no longer valid. Sign in again.": "Matrix-istunto ei ole enää voimassa. Kirjaudu uudelleen.",
+    "The Matrix homeserver rejected the request.": "Matrix-palvelin hylkäsi pyynnön."
 }

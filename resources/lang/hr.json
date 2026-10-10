@@ -1880,5 +1880,12 @@
     "Unsupported Matrix message type.": "Nepodržana vrsta Matrix poruke.",
     "Check the homeserver address. Password login and Matrix v1.11 or newer are required.": "Provjerite adresu Matrix poslužitelja. Potrebni su prijava lozinkom i Matrix v1.11 ili noviji.",
     "This device is unverified. You can still send and receive messages.": "Ovaj uređaj nije verificiran. I dalje možete slati i primati poruke.",
-    "Receive": "Prijem"
+    "Receive": "Prijem",
+    "Could not reach the Matrix homeserver. Check the connection and try again.": "Nije moguće povezati se s Matrix poslužiteljem. Provjerite vezu i pokušajte ponovno.",
+    "The Matrix account has been deactivated. Contact the homeserver administrator.": "Matrix račun je deaktiviran. Obratite se administratoru poslužitelja.",
+    "The homeserver is rate limiting requests. Wait a moment and try again.": "Poslužitelj ograničava broj zahtjeva. Pričekajte trenutak i pokušajte ponovno.",
+    "The Matrix homeserver could not complete the request. Try again later.": "Matrix poslužitelj nije mogao dovršiti zahtjev. Pokušajte ponovno kasnije.",
+    "The homeserver rejected the login. Check the Matrix account and password.": "Poslužitelj je odbio prijavu. Provjerite Matrix račun i lozinku.",
+    "The Matrix session is no longer valid. Sign in again.": "Matrix sesija više nije valjana. Prijavite se ponovno.",
+    "The Matrix homeserver rejected the request.": "Matrix poslužitelj odbio je zahtjev."
 }

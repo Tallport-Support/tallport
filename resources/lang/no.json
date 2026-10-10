@@ -1884,5 +1884,12 @@
     "Unsupported Matrix message type.": "Matrix-meldingstypen støttes ikke.",
     "Check the homeserver address. Password login and Matrix v1.11 or newer are required.": "Kontroller hjemmeserveradressen. Passordinnlogging og Matrix v1.11 eller nyere kreves.",
     "This device is unverified. You can still send and receive messages.": "Denne enheten er ikke bekreftet. Du kan fortsatt sende og motta meldinger.",
-    "Receive": "Motta"
+    "Receive": "Motta",
+    "Could not reach the Matrix homeserver. Check the connection and try again.": "Kunne ikke nå Matrix-serveren. Kontroller tilkoblingen og prøv igjen.",
+    "The Matrix account has been deactivated. Contact the homeserver administrator.": "Matrix-kontoen er deaktivert. Kontakt serveradministratoren.",
+    "The homeserver is rate limiting requests. Wait a moment and try again.": "Serveren begrenser antall forespørsler. Vent litt og prøv igjen.",
+    "The Matrix homeserver could not complete the request. Try again later.": "Matrix-serveren kunne ikke fullføre forespørselen. Prøv igjen senere.",
+    "The homeserver rejected the login. Check the Matrix account and password.": "Serveren avviste innloggingen. Kontroller Matrix-kontoen og passordet.",
+    "The Matrix session is no longer valid. Sign in again.": "Matrix-økten er ikke lenger gyldig. Logg inn igjen.",
+    "The Matrix homeserver rejected the request.": "Matrix-serveren avviste forespørselen."
 }

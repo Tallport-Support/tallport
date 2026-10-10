@@ -41,7 +41,7 @@ class SyncMatrixMailbox implements ShouldQueue, ShouldBeUnique
             (new Syncer())->run($identity);
         } catch (\Throwable $e) {
             \App\Misc\ChatLog::failure('matrix', $identity->mailbox_id, 'connection', $e);
-            $identity->error = $e instanceof \App\Matrix\MatrixException ? $e->getMessage() : 'Matrix sync could not complete.';
+            $identity->error = $e instanceof \App\Matrix\MatrixException ? ($e->user_message ?: $e->getMessage()) : 'Matrix sync could not complete.';
             if ($e->getCode() === 401) {
                 $identity->status = 'login';
             }

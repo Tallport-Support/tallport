@@ -1880,5 +1880,12 @@
     "Unsupported Matrix message type.": "Неподдерживаемый тип сообщения Matrix.",
     "Check the homeserver address. Password login and Matrix v1.11 or newer are required.": "Проверьте адрес сервера Matrix. Требуются вход по паролю и Matrix v1.11 или новее.",
     "This device is unverified. You can still send and receive messages.": "Это устройство не подтверждено. Вы по-прежнему можете отправлять и получать сообщения.",
-    "Receive": "Получение"
+    "Receive": "Получение",
+    "Could not reach the Matrix homeserver. Check the connection and try again.": "Не удалось связаться с сервером Matrix. Проверьте соединение и повторите попытку.",
+    "The Matrix account has been deactivated. Contact the homeserver administrator.": "Учётная запись Matrix деактивирована. Обратитесь к администратору сервера.",
+    "The homeserver is rate limiting requests. Wait a moment and try again.": "Сервер ограничивает частоту запросов. Подождите немного и повторите попытку.",
+    "The Matrix homeserver could not complete the request. Try again later.": "Сервер Matrix не смог выполнить запрос. Повторите попытку позже.",
+    "The homeserver rejected the login. Check the Matrix account and password.": "Сервер отклонил вход. Проверьте учётную запись Matrix и пароль.",
+    "The Matrix session is no longer valid. Sign in again.": "Сеанс Matrix больше не действителен. Войдите снова.",
+    "The Matrix homeserver rejected the request.": "Сервер Matrix отклонил запрос."
 }

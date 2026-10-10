@@ -200,6 +200,9 @@ class MatrixSettings extends Component
             \Log::error('Matrix settings failed.', ['mailbox_id' => $this->mailbox_id, 'exception' => get_class($e), 'code' => $e->getCode(),
                 'reason' => $e instanceof \App\Matrix\MatrixException ? $e->getMessage() : 'Matrix cryptographic validation failed.']);
             $this->error = $e->getCode() === \Helper::EXCEPTION_UNSAFE_URL ? $e->getMessage() : true;
+            if ($e instanceof \App\Matrix\MatrixException && $e->user_message) {
+                $this->error = $e->user_message;
+            }
             if ($e->getCode() === 401) {
                 MatrixMailbox::where('active_mailbox_id', $this->mailbox_id)->update(['status' => 'login']);
             }

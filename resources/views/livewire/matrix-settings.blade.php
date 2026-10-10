@@ -1,7 +1,15 @@
 <div class="settings-form f-stack" @if ($identity && in_array($identity->status, ['ready', 'verification'])) wire:poll.5s="poll" @endif>
     <p class="f-help">{{ __('Use a Matrix account for private customer chats, including encrypted messages.') }}</p>
     @if ($error || ($identity && $identity->error))
-        <x-fruit::alert tone="danger">{{ is_string($error) ? $error : ((!$identity || $identity->status === 'login') && !$checked_homeserver ? __('Check the homeserver address. Password login and Matrix v1.11 or newer are required.') : __('Check the Matrix connection and device verification.')) }}</x-fruit::alert>
+        <x-fruit::alert tone="danger">
+            @if (is_string($error))
+                {{ $error }}
+            @elseif (!$error && $identity && $identity->error)
+                {{ $identity->error }}
+            @else
+                {{ (!$identity || $identity->status === 'login') && !$checked_homeserver ? __('Check the homeserver address. Password login and Matrix v1.11 or newer are required.') : __('Check the Matrix connection and device verification.') }}
+            @endif
+        </x-fruit::alert>
     @endif
     @if (!$identity || $identity->status === 'login')
         @if (!$checked_homeserver)
@@ -12,7 +20,7 @@
                 <x-fruit::button type="submit" variant="primary" wire:loading.attr="disabled">{{ __('Next') }}</x-fruit::button>
             </form>
         @else
-            <form x-data="{ password: '' }" x-on:submit.prevent="$wire.connect(password); password = ''" class="f-stack" wire:key="matrix-login">
+            <form x-data="{ password: '' }" x-on:submit.prevent="$wire.connect(password)" class="f-stack" wire:key="matrix-login">
                 <div class="f-stack">
                     <span>{{ $checked_homeserver }}</span>
                     <x-fruit::button type="button" wire:click="changeHomeserver" wire:loading.attr="disabled">{{ __('Change') }}</x-fruit::button>

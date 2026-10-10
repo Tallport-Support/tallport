@@ -1880,5 +1880,12 @@
     "Unsupported Matrix message type.": "Desteklenmeyen Matrix mesaj türü.",
     "Check the homeserver address. Password login and Matrix v1.11 or newer are required.": "Ana sunucu adresini kontrol edin. Parolayla giriş ve Matrix v1.11 veya üzeri gereklidir.",
     "This device is unverified. You can still send and receive messages.": "Bu cihaz doğrulanmamış. Mesaj göndermeye ve almaya devam edebilirsiniz.",
-    "Receive": "Alma"
+    "Receive": "Alma",
+    "Could not reach the Matrix homeserver. Check the connection and try again.": "Matrix sunucusuna ulaşılamadı. Bağlantıyı kontrol edip tekrar deneyin.",
+    "The Matrix account has been deactivated. Contact the homeserver administrator.": "Matrix hesabı devre dışı bırakılmış. Sunucu yöneticisiyle iletişime geçin.",
+    "The homeserver is rate limiting requests. Wait a moment and try again.": "Sunucu istek sayısını sınırlıyor. Biraz bekleyip tekrar deneyin.",
+    "The Matrix homeserver could not complete the request. Try again later.": "Matrix sunucusu isteği tamamlayamadı. Daha sonra tekrar deneyin.",
+    "The homeserver rejected the login. Check the Matrix account and password.": "Sunucu oturum açma isteğini reddetti. Matrix hesabını ve parolayı kontrol edin.",
+    "The Matrix session is no longer valid. Sign in again.": "Matrix oturumu artık geçerli değil. Yeniden oturum açın.",
+    "The Matrix homeserver rejected the request.": "Matrix sunucusu isteği reddetti."
 }

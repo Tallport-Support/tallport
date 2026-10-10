@@ -1924,5 +1924,12 @@
     "Unsupported Matrix message type.": "不支援的 Matrix 訊息類型。",
     "Check the homeserver address. Password login and Matrix v1.11 or newer are required.": "請檢查主伺服器位址。需要支援密碼登入及 Matrix v1.11 或更新版本。",
     "This device is unverified. You can still send and receive messages.": "此裝置尚未驗證。您仍可傳送和接收訊息。",
-    "Receive": "接收"
+    "Receive": "接收",
+    "Could not reach the Matrix homeserver. Check the connection and try again.": "無法連線至 Matrix 主伺服器。請檢查連線並重試。",
+    "The Matrix account has been deactivated. Contact the homeserver administrator.": "Matrix 帳戶已停用。請聯絡主伺服器管理員。",
+    "The homeserver is rate limiting requests. Wait a moment and try again.": "主伺服器正在限制請求頻率。請稍候再試。",
+    "The Matrix homeserver could not complete the request. Try again later.": "Matrix 主伺服器無法完成請求。請稍後再試。",
+    "The homeserver rejected the login. Check the Matrix account and password.": "主伺服器拒絕了登入。請檢查 Matrix 帳戶和密碼。",
+    "The Matrix session is no longer valid. Sign in again.": "Matrix 工作階段已失效。請重新登入。",
+    "The Matrix homeserver rejected the request.": "Matrix 主伺服器拒絕了請求。"
 }

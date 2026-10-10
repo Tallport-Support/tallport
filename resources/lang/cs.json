@@ -1879,5 +1879,12 @@
     "Unsupported Matrix message type.": "Nepodporovaný typ zprávy Matrix.",
     "Check the homeserver address. Password login and Matrix v1.11 or newer are required.": "Zkontrolujte adresu serveru Matrix. Je vyžadováno přihlášení heslem a Matrix v1.11 nebo novější.",
     "This device is unverified. You can still send and receive messages.": "Toto zařízení není ověřeno. Zprávy můžete i nadále odesílat a přijímat.",
-    "Receive": "Příjem"
+    "Receive": "Příjem",
+    "Could not reach the Matrix homeserver. Check the connection and try again.": "Nepodařilo se spojit se serverem Matrix. Zkontrolujte připojení a zkuste to znovu.",
+    "The Matrix account has been deactivated. Contact the homeserver administrator.": "Účet Matrix byl deaktivován. Kontaktujte správce serveru.",
+    "The homeserver is rate limiting requests. Wait a moment and try again.": "Server omezuje počet požadavků. Chvíli počkejte a zkuste to znovu.",
+    "The Matrix homeserver could not complete the request. Try again later.": "Server Matrix nemohl dokončit požadavek. Zkuste to později.",
+    "The homeserver rejected the login. Check the Matrix account and password.": "Server odmítl přihlášení. Zkontrolujte účet Matrix a heslo.",
+    "The Matrix session is no longer valid. Sign in again.": "Relace Matrix již není platná. Přihlaste se znovu.",
+    "The Matrix homeserver rejected the request.": "Server Matrix odmítl požadavek."
 }

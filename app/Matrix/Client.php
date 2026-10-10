@@ -109,7 +109,7 @@ class Client
         } catch (\Throwable $e) {
             preg_match('/\bcURL error (\d{1,3}):/', $e->getMessage(), $curl_error);
             \Log::error('Matrix transport failed.', ['method' => $method, 'path' => $path, 'exception' => get_class($e), 'curl_error' => isset($curl_error[1]) ? (int) $curl_error[1] : null]);
-            throw new MatrixException('Matrix request failed.');
+            throw new MatrixException('Matrix request failed.', 0, 0, __('Could not reach the Matrix homeserver. Check the connection and try again.'));
         }
         if (strlen($response->body()) > $limit) {
             throw new MatrixException('Matrix response is too large.');
@@ -118,7 +118,17 @@ class Client
             $code = $response->json('errcode');
             $code = is_string($code) && preg_match('/\AM_[A-Z_]{1,64}\z/D', $code) ? $code : 'HTTP '.$response->status();
             \Log::error('Matrix request failed.', ['method' => $method, 'path' => $path, 'status' => $response->status(), 'code' => $code]);
-            throw new MatrixException('Matrix '.$code.'.', $response->status(), min(3600, max(0, (int) ceil(($response->json('retry_after_ms') ?? 0) / 1000))));
+            $message = match (true) {
+                $code === 'M_USER_DEACTIVATED' => __('The Matrix account has been deactivated. Contact the homeserver administrator.'),
+                $response->status() === 429 => __('The homeserver is rate limiting requests. Wait a moment and try again.'),
+                $response->status() >= 500 => __('The Matrix homeserver could not complete the request. Try again later.'),
+                $method === 'POST' && $path === '/_matrix/client/v3/login' && $code === 'M_FORBIDDEN'
+                    => __('The homeserver rejected the login. Check the Matrix account and password.'),
+                in_array($code, ['M_UNKNOWN_TOKEN', 'M_MISSING_TOKEN'], true) => __('The Matrix session is no longer valid. Sign in again.'),
+                default => __('The Matrix homeserver rejected the request.'),
+            };
+            $details = str_starts_with($code, 'M_') ? 'HTTP '.$response->status().', '.$code : $code;
+            throw new MatrixException('Matrix '.$code.'.', $response->status(), min(3600, max(0, (int) ceil(($response->json('retry_after_ms') ?? 0) / 1000))), $message.' ('.$details.')');
         }
 
         return $response->body();
