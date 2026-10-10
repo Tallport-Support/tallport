@@ -83,11 +83,6 @@ class NostrEvent extends Model
         return self::where('wrap_id', $wrap_id)->exists();
     }
 
-    public static function seenRumor($rumor_id)
-    {
-        return self::where('rumor_id', $rumor_id)->exists();
-    }
-
     /**
      * Latest incoming message of a conversation: tells which key to reply to.
      */

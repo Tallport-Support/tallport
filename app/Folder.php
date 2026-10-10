@@ -31,20 +31,6 @@ class Folder extends Model
         self::TYPE_DELETED    => 'Deleted',
     ];
 
-    /**
-     * https://glyphicons.bootstrapcheatsheets.com/.
-     */
-    public static $type_icons = [
-        self::TYPE_UNASSIGNED => 'folder-open',
-        self::TYPE_MINE       => 'hand-right',
-        self::TYPE_DRAFTS     => 'duplicate',
-        self::TYPE_ASSIGNED   => 'user',
-        self::TYPE_CLOSED     => 'lock', // lock
-        self::TYPE_SPAM       => 'ban-circle',
-        self::TYPE_DELETED    => 'trash',
-        self::TYPE_STARRED    => 'star',
-    ];
-
     // Public non-user specific mailbox types
     public static $public_types = [
         self::TYPE_UNASSIGNED,
@@ -129,7 +115,7 @@ class Folder extends Model
 
     public function getTypeIcon()
     {
-        return \Eventy::filter('folder.type_icon', self::$type_icons[$this->type] ?? '', $this);
+        return \Eventy::filter('folder.type_icon', '', $this);
     }
 
     /**

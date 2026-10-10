@@ -28,8 +28,3 @@ $loader = require __DIR__.'/../vendor/autoload.php';
 
 // The Tests namespace is not part of the committed autoloader.
 $loader->addPsr4('Tests\\', __DIR__.'/');
-
-// Laravel 5.5 testing classes patched for PHP 8.4+ and PHPUnit 9 (string
-// assertions). These are only used by tests, so they live here rather than in
-// overrides/, which would need the committed autoloader to be regenerated.
-require_once __DIR__.'/Overrides/laravel/framework/src/Illuminate/Foundation/Testing/TestResponse.php';

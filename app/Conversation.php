@@ -345,14 +345,6 @@ class Conversation extends Model
     }
 
     /**
-     * Folders containing starred conversations.
-     */
-    public function extraFolders()
-    {
-        return $this->belongsTo('App\Customer');
-    }
-
-    /**
      * Get user who created the conversations.
      */
     public function created_by_user()

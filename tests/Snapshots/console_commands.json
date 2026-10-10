@@ -141,24 +141,6 @@
         "arguments": {},
         "options": {}
     },
-    "tallport:clean-notifications-table": {
-        "class": "App\\Console\\Commands\\CleanNotificationsTable",
-        "aliases": [
-            "freescout:clean-notifications-table"
-        ],
-        "description": "Delete old read records from notifications table.",
-        "arguments": {},
-        "options": {}
-    },
-    "tallport:clean-send-log": {
-        "class": "App\\Console\\Commands\\CleanSendLog",
-        "aliases": [
-            "freescout:clean-send-log"
-        ],
-        "description": "Delete old records from send log.",
-        "arguments": {},
-        "options": {}
-    },
     "tallport:clean-tmp": {
         "class": "App\\Console\\Commands\\CleanTmp",
         "aliases": [

@@ -113,8 +113,7 @@
     },
     "autoload": {
         "classmap": [
-            "database/seeds",
-            "database/factories"
+            "database/seeds"
         ],
         "files": [
             "app/Misc/Functions.php",

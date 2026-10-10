@@ -93,7 +93,6 @@ Route::get('/users/wizard', 'UsersController@create')->name('users.create');
 Route::post('/users/wizard', 'UsersController@createSave');
 Route::get('/users/profile/{id}', 'UsersController@profile')->name('users.profile');
 Route::post('/users/profile/{id}', 'UsersController@profileSave')->name('users.profile.save');
-Route::post('/users/permissions/{id}', 'UsersController@permissionsSave');
 Route::get('/users/permissions/{id}', 'UsersController@permissions')->name('users.permissions');
 Route::post('/users/permissions/{id}', 'UsersController@permissionsSave')->name('users.permissions.save');
 Route::get('/users/notifications/{id}', 'UsersController@notifications')->name('users.notifications');

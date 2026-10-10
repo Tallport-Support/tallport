@@ -165,7 +165,6 @@ class Helper
             'mailboxes.view.folder',
             'conversations.view',
             'conversations.create',
-            'conversations.draft',
             //'conversations.search',
         ],
         'kb' => [

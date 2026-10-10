@@ -109,11 +109,6 @@ class PolycastBroadcaster extends Broadcaster
         // ]]);
     }
 
-    public function isDeferred()
-    {
-        return false;
-    }
-
     /*
      * Created as there was an error:
      * "Call to undefined method App\Broadcasting\Broadcasters\PolycastBroadcaster::channel()"

@@ -172,15 +172,4 @@ return [
     */
     'installedAlreadyAction' => 'route',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Updater Enabled
-    |--------------------------------------------------------------------------
-    | Can the application run the '/update' route with the migrations.
-    | The default option is set to False if none is present.
-    | Boolean value
-    |
-    */
-    'updaterEnabled' => 'false',
-
 ];

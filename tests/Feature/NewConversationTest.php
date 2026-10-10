@@ -72,11 +72,11 @@ class NewConversationTest extends FeatureTestCase
     {
         $existing = $this->createCustomer('robin@customer.example.org', ['first_name' => 'Robin', 'last_name' => 'Buyer']);
 
-        $form = $this->form()->call('switchType', Conversation::TYPE_PHONE)->assertSee('Customer Name')
+        $form = $this->form()->set('type', Conversation::TYPE_PHONE)->assertSee('Customer Name')
             ->set('name_query', 'Robin')->assertSee('Robin Buyer');
         $form->call('chooseCustomer', $existing->id)->assertSet('customer_id', $existing->id)->assertSet('to_email', 'robin@customer.example.org');
 
-        $this->form()->call('switchType', Conversation::TYPE_PHONE)->set('name_query', 'Kim Caller')->set('phone', '+31 20 555 0199')
+        $this->form()->set('type', Conversation::TYPE_PHONE)->set('name_query', 'Kim Caller')->set('phone', '+31 20 555 0199')
             ->set('subject', 'Called about a refund')->set('body', '<p>Wants a refund.</p>')->call('send')->assertRedirect();
 
         $customer = Customer::where('first_name', 'Kim')->where('last_name', 'Caller')->first();
@@ -174,11 +174,11 @@ class NewConversationTest extends FeatureTestCase
         $customer->setPhones([['value' => '+31 20 555 0100', 'type' => \App\Customer::PHONE_TYPE_WORK]]);
         $customer->save();
 
-        $form = $this->form()->call('switchType', Conversation::TYPE_PHONE)->call('chooseCustomer', $customer->id)
+        $form = $this->form()->set('type', Conversation::TYPE_PHONE)->call('chooseCustomer', $customer->id)
             ->assertSet('phone', '+31 20 555 0100')->assertSet('name_query', 'Robin Buyer');
 
         // A phone typed already stays; no such customer: nothing changes.
-        $this->form()->call('switchType', Conversation::TYPE_PHONE)->set('phone', '+31 6 1234 5678')->call('chooseCustomer', $customer->id)
+        $this->form()->set('type', Conversation::TYPE_PHONE)->set('phone', '+31 6 1234 5678')->call('chooseCustomer', $customer->id)
             ->assertSet('phone', '+31 6 1234 5678');
         $form->call('chooseCustomer', 999999)->assertSet('customer_id', $customer->id);
 

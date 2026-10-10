@@ -29,26 +29,12 @@ class Mailbox extends Model
     const FROM_NAME_CUSTOM = 3;
 
     /**
-     * Default Status: when you reply to a message, this status will be set by default (also applies to email integration).
-     */
-    const TICKET_STATUS_ACTIVE = 1;
-    const TICKET_STATUS_PENDING = 2;
-    const TICKET_STATUS_CLOSED = 3;
-    const TICKET_STATUS_KEEP_CURRENT = 0;
-
-    /**
      * Default Assignee.
      */
     const TICKET_ASSIGNEE_ANYONE = 1;
     const TICKET_ASSIGNEE_REPLYING_UNASSIGNED = 2;
     const TICKET_ASSIGNEE_REPLYING = 3;
     const TICKET_ASSIGNEE_KEEP_CURRENT = 0;
-
-    /**
-     * Email Template.
-     */
-    const TEMPLATE_FANCY = 1;
-    const TEMPLATE_PLAIN = 2;
 
     /**
      * Outgoing method. Must be listed in getMailDriverName.

@@ -24,9 +24,9 @@ class CreateMailboxesTable extends Migration
             $table->string('aliases', 255)->nullable();
             $table->unsignedTinyInteger('from_name')->default(Mailbox::FROM_NAME_MAILBOX);
             $table->string('from_name_custom', 128)->nullable();
-            $table->unsignedTinyInteger('ticket_status')->default(Mailbox::TICKET_STATUS_PENDING);
+            $table->unsignedTinyInteger('ticket_status')->default(2); // Pending
             $table->unsignedTinyInteger('ticket_assignee')->default(Mailbox::TICKET_ASSIGNEE_REPLYING_UNASSIGNED);
-            $table->unsignedTinyInteger('template')->default(Mailbox::TEMPLATE_FANCY);
+            $table->unsignedTinyInteger('template')->default(1); // Fancy
             $table->text('signature')->nullable();
             $table->unsignedTinyInteger('out_method')->default(Mailbox::OUT_METHOD_PHP_MAIL);
             $table->string('out_server', 255)->nullable();

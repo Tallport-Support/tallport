@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 /**
  * Tallport's decoding of header text (RFC 2047 encoded words), including
- * the broken encodings FreeScout collected in MailHelper::decodeSubject().
+ * the broken encodings FreeScout collected in its MailHelper::decodeSubject().
  */
 class HeaderTextTest extends TestCase
 {
@@ -36,6 +36,8 @@ class HeaderTextTest extends TestCase
             'base64 text split'         => ['=?UTF-8?B?R3LDvM?= =?UTF-8?B?OfZQ==?=', 'Grüße'],
             'iso-2022-jp'               => ['=?ISO-2022-JP?B?GyRCJDRDbUo4PiZJSiRyS1xGfCQqRk8kMSQ3JF4kORsoQg==?=', 'ご注文商品を本日お届けします'],
             'iso-2022-jp base64 split'  => ['=?iso-2022-jp?B?IBskQiFaSEcyPDpuQ?= =?iso-2022-jp?B?C4wTU1qIVs3Mkp2JSIlLyU3JSItahsoQg==?=', ' 【版下作成依頼】群峰アクシア㈱'],
+            'iso-2022-jp with ascii runs' => ['=?iso-2022-jp?B?GyRCIXlCaBsoQjEzMhskQjlmISEhViUsITwlRyVzGyhCJhskQiUoJS8lOSVGJWolIiFXQGxMZ0U5JE4kPyRhJE4jURsoQiYbJEIjQSU1JW0lcyEhIVo3bjQpJSglLyU5JUYlaiUiISYlbyE8JS8hWxsoQg==?=', '☆第132号　「ガーデン&エクステリア」専門店のためのＱ&Ａサロン　【月刊エクステリア・ワーク】'],
+            'ks_c_5601-1987'            => ['=?ks_c_5601-1987?B?vsiz58fPvLy/5A==?=', '안녕하세요'],
             'different charsets'        => ['=?ISO-8859-1?Q?Gr=FC=DFe?= =?UTF-8?Q?Caf=C3=A9?=', 'GrüßeCafé'],
             'spaces and ? in q text'    => ['=?ISO-8859-1?Q?Vorgang 538336029: M=F6chten Sie Ihre E-Mail-Adresse =E4ndern??=', 'Vorgang 538336029: Möchten Sie Ihre E-Mail-Adresse ändern?'],
             'unknown charset'           => ['=?X-IAS-German?B?U3VibWl0IHlvdXIgdGF4IHJlZnVuZA==?=', 'Submit your tax refund'],

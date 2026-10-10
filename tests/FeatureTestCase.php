@@ -114,7 +114,7 @@ abstract class FeatureTestCase extends TestCase
     /**
      * POST to an ajax endpoint the way the frontend does.
      *
-     * @return \Illuminate\Foundation\Testing\TestResponse
+     * @return \Illuminate\Testing\TestResponse
      */
     protected function postAjax($user, $uri, array $data)
     {

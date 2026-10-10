@@ -121,7 +121,6 @@ return [
     'locale'          => env('APP_LOCALE', 'en'),
     'locales'         => ['en', 'az', 'ca', 'zh-CN', 'zh-TW', 'hr', 'cs', 'nl', 'fi', 'fr', 'de', 'he', 'hu', 'it', 'ja', 'kz', 'no', 'pl', 'pt-PT', 'pt-BR', 'ro', 'ru', 'es', 'sk', 'sl', 'sv', 'tr', 'uk'],
     'locales_rtl'     => ['he'],
-    'default_locale'  => 'en',
 
     /*
     | app()->setLocale() in Localize middleware also changes config('app.locale'),
@@ -159,35 +158,10 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Logging Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure the log settings for your application. Out of
-    | the box, Laravel uses the Monolog PHP logging library. This gives
-    | you a variety of powerful log handlers / formatters to utilize.
-    |
-    | Available Settings: "single", "daily", "syslog", "errorlog"
-    |
-    */
-
-    'log' => env('APP_LOG', 'daily'), // by default logs for 5 days are kept
-
-    'log_level' => env('APP_LOG_LEVEL', 'error'),
-
-    /*
-    |--------------------------------------------------------------------------
     | FreeScout website
     |-------------------------------------------------------------------------
     */
     'freescout_url' => 'https://freescout.net',
-
-    /*
-    |--------------------------------------------------------------------------
-    | FreeScout API
-    |-------------------------------------------------------------------------
-    */
-    'freescout_api' => 'https://api.freescout.net/wp-json/',
-    'freescout_alt_api' => 'https://cdn.freescout.net/wp-json/',
 
     /*
     |--------------------------------------------------------------------------
@@ -202,13 +176,6 @@ return [
     |-------------------------------------------------------------------------
     */
     'tallport_url' => 'https://github.com/Tallport-Support/tallport',
-
-    /*
-    |--------------------------------------------------------------------------
-    | FreeScout email
-    |-------------------------------------------------------------------------
-    */
-    'freescout_email' => 'support@freescout.net',
 
     /*
     |--------------------------------------------------------------------------
@@ -409,15 +376,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Don't add quotes around date in the SINCE IMAP instruction on fetching.
-    | https://github.com/freescout-help-desk/freescout/issues/4175
-    |
-    |-------------------------------------------------------------------------
-    */
-    'since_without_quotes_on_fetching'    => env('APP_SINCE_WITHOUT_QUOTES_ON_FETCHING', false),
-
-    /*
-    |--------------------------------------------------------------------------
     | Emails are fetched in bunches. The larger the bunch's size the more chances
     | to face "Allowed memory size exhausted" error. The smaller its size the more
     | connections are made to the mail server and the more time fetching takes.
@@ -487,9 +445,6 @@ return [
     'curl_timeout'         => env('APP_CURL_TIMEOUT', 40),
     // Should be set for Guzzle. Curl has default CURLOPT_CONNECTTIMEOUT=30 sec.
     'curl_connect_timeout' => env('APP_CURL_CONNECTION_TIMEOUT', 30),
-    // CloudFlare may block requests without user agent.
-    // Need to be set for curl. Guzzle sends it's own user agent: GuzzleHttp/6.3.3 curl/7.58.0 PHP/8.2.5
-    'curl_user_agent'      => env('APP_CURL_USER_AGENT', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 7_1_4) AppleWebKit/603.26 (KHTML, like Gecko) Chrome/55.0.3544.220 Safari/534'),
     // Should be set for curl and Guzzle.
     'curl_ssl_verifypeer'  => env('APP_CURL_SSL_VERIFYPEER', true),
 

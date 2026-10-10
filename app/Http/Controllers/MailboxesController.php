@@ -906,23 +906,6 @@ class MailboxesController extends Controller
         return redirect()->route('mailboxes.auto_reply', ['id' => $id])->with('auto_reply_language', $active_language);
     }
 
-    /**
-     * Auto reply settings.
-     */
-    public function emailSignature($id)
-    {
-        $mailbox = Mailbox::findOrFail($id);
-        $this->authorize('updateAutoReply', $mailbox);
-
-        if (!$mailbox->auto_reply_subject) {
-            $mailbox->auto_reply_subject = 'Re: {%subject%}';
-        }
-
-        return view('mailboxes/email_signature', [
-            'mailbox' => $mailbox,
-        ]);
-    }
-
 
     /**
      * Users ajax controller.

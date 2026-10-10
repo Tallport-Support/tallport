@@ -115,7 +115,7 @@ class NostrMessagesTest extends FeatureTestCase
         $this->assertNull($this->handler->handleGiftWrap($this->cfg, $second));
         $this->assertSame(NostrEvent::STATUS_OK, $this->recorded($second)->status);
         $this->assertSame('duplicate', $this->recorded($second)->error);
-        $this->assertTrue(NostrEvent::seenRumor($rumor['id']));
+        $this->assertTrue(NostrEvent::where('rumor_id', $rumor['id'])->exists());
 
         // A copy of what the mailbox sent itself (clients wrap one for the sender too).
         [$own] = $this->wrap([], $this->cfg->getPrivateKey());

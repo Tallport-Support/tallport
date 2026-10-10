@@ -5,33 +5,12 @@ namespace Tests\Unit;
 use Tests\TestCase;
 
 /**
- * Helpers used when reading incoming mail: MIME-encoded subjects,
- * auto-responder detection, Message-ID hashes and markers, dates in the
- * formats mail servers actually send, and small formatting utilities.
+ * Helpers used when reading incoming mail: auto-responder detection,
+ * Message-ID hashes and markers, dates in the formats mail servers actually
+ * send, and small formatting utilities.
  */
 class MailParsingHelpersTest extends TestCase
 {
-    /**
-     * @dataProvider encodedSubjects
-     */
-    public function testDecodeSubject($encoded, $decoded)
-    {
-        $this->assertSame($decoded, \MailHelper::decodeSubject($encoded));
-    }
-
-    public function encodedSubjects()
-    {
-        return [
-            'plain'             => ['Question about my order', 'Question about my order'],
-            'base64 utf-8'      => ['=?UTF-8?B?R3LDvMOfZSBhdXMgTcO8bmNoZW4=?=', 'Grüße aus München'],
-            'quoted-printable'  => ['=?UTF-8?Q?Caf=C3=A9_order?=', 'Café order'],
-            'split over parts'  => ['=?UTF-8?B?R3LDvMOf?= =?UTF-8?B?ZQ==?=', 'Grüße'],
-            'folded'            => ["=?UTF-8?Q?Caf=C3=A9?=\r\n =?UTF-8?Q?_order?=", 'Café order'],
-            'mixed with plain'  => ['Re: =?UTF-8?Q?Caf=C3=A9?= order', 'Re: Café order'],
-            'iso-8859-1'        => ['=?ISO-8859-1?Q?Gr=FC=DFe?=', 'Grüße'],
-        ];
-    }
-
     /**
      * @dataProvider autoResponderHeaders
      */

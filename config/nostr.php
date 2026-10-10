@@ -37,9 +37,6 @@ return [
     // so subscriptions look this far back (seconds). Duplicates are ignored.
     'lookback' => 3 * 86400,
 
-    // Largest encrypted file (kind 15) that is downloaded and attached.
-    'max_attachment_size' => 25 * 1024 * 1024,
-
     // Timeouts in seconds for synchronous relay operations.
     'publish_timeout' => 10,
     'fetch_timeout' => 6,

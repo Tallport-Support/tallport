@@ -36,30 +36,6 @@ class OutgoingMessageSender
     }
 
     /**
-     * Send a reply (the first of the replies) if it hasn't been yet.
-     *
-     * @param Conversation $conversation
-     * @param \Illuminate\Support\Collection $replies threads, the one to send first
-     *
-     * @return bool|null true when delivered, false when failed, null when not applicable
-     */
-    public function handleSendReply($conversation, $replies)
-    {
-        if (!$conversation || (int) $conversation->channel !== (int) config('nostr.channel')) {
-            return null;
-        }
-        $thread = $replies ? $replies->first() : null;
-        if (!$thread || $thread->type != Thread::TYPE_MESSAGE) {
-            return null;
-        }
-        if (NostrEvent::sentForThread($thread->id)) {
-            return true;
-        }
-
-        return $this->sendThread($conversation, $thread);
-    }
-
-    /**
      * Send one agent reply to the customer key that wrote last.
      */
     public function sendThread(Conversation $conversation, Thread $thread)

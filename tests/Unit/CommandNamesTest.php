@@ -15,8 +15,8 @@ class CommandNamesTest extends TestCase
      * The commands FreeScout had.
      */
     const FREESCOUT_COMMANDS = [
-        'after-app-update', 'build', 'check-conv-viewers', 'check-requirements', 'clean-notifications-table',
-        'clean-send-log', 'clean-tmp', 'clear-cache', 'create-user', 'fetch-emails', 'fetch-monitor',
+        'after-app-update', 'build', 'check-conv-viewers', 'check-requirements',
+        'clean-tmp', 'clear-cache', 'create-user', 'fetch-emails', 'fetch-monitor',
         'generate-vars', 'logout-users', 'logs-monitor', 'module-build',
         'module-install', 'module-laroute', 'module-update', 'parse-eml', 'send-monitor', 'update',
         'update-folder-counters',

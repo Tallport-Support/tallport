@@ -45,42 +45,6 @@ class ConsoleCommandsTest extends FeatureTestCase
         Option::$cache = [];
     }
 
-    // Cleanups.
-
-    public function testCleanSendLogDeletesRecordsOlderThanSixMonths()
-    {
-        $old = SendLog::log(null, 'old@example.org', 'old@example.org', SendLog::MAIL_TYPE_TEST, SendLog::STATUS_ACCEPTED);
-        $recent = SendLog::log(null, 'new@example.org', 'new@example.org', SendLog::MAIL_TYPE_TEST, SendLog::STATUS_ACCEPTED);
-        \DB::table('send_logs')->where('email', 'old@example.org')->update(['created_at' => Carbon::now()->subMonths(7)]);
-        \DB::table('send_logs')->where('email', 'new@example.org')->update(['created_at' => Carbon::now()->subMonths(5)]);
-
-        $output = $this->runCommand('tallport:clean-send-log');
-
-        $this->assertStringContainsString('Deleted send logs', $output);
-        $this->assertSame(['new@example.org'], SendLog::whereIn('email', ['old@example.org', 'new@example.org'])->pluck('email')->all());
-    }
-
-    public function testCleanNotificationsDeletesOnlyOldReadOnes()
-    {
-        $user = $this->createUser();
-        $insert = function ($id, $read_at, $created_at) use ($user) {
-            \DB::table('notifications')->insert([
-                'id' => $id, 'type' => 'App\\Notifications\\WebsiteNotification', 'notifiable_id' => $user->id,
-                'notifiable_type' => User::class, 'data' => '{}', 'read_at' => $read_at, 'created_at' => $created_at, 'updated_at' => $created_at,
-            ]);
-        };
-        $insert('00000000-0000-0000-0000-000000000001', Carbon::now()->subMonths(7), Carbon::now()->subMonths(7));
-        $insert('00000000-0000-0000-0000-000000000002', null, Carbon::now()->subMonths(7));
-        $insert('00000000-0000-0000-0000-000000000003', Carbon::now()->subMonth(), Carbon::now()->subMonth());
-
-        $this->runCommand('tallport:clean-notifications-table');
-
-        $this->assertEquals(
-            ['00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000003'],
-            \DB::table('notifications')->where('notifiable_id', $user->id)->orderBy('id')->pluck('id')->all()
-        );
-    }
-
     // Monitors.
 
     public function testSendMonitorFlagsStuckReplies()

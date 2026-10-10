@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use App\Mailbox;
 use App\Thread;
 use App\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 /**
@@ -14,8 +13,6 @@ use Tests\TestCase;
  */
 class MessageIdAssasinTest extends TestCase
 {
-    use WithFaker;
-
     // Spam Assasin regexes.
     // https://svn.apache.org/repos/asf/spamassassin/branches/jm_re2c_hacks/rules/20_head_tests.cf
     public $assasin_regexes = [
@@ -44,7 +41,7 @@ class MessageIdAssasinTest extends TestCase
         $mailbox = new Mailbox();
         $mailbox->email = 'test@example.org';
         $thread = new Thread();
-        $thread->id = $this->faker->unique()->randomDigit;
+        $thread->id = 7;
         $thread->type = Thread::TYPE_MESSAGE;
 
         $message_id = $thread->getMessageId($mailbox);

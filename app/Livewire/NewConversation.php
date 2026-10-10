@@ -156,11 +156,6 @@ class NewConversation extends Component
         }
     }
 
-    public function switchType($type)
-    {
-        $this->type = $type == Conversation::TYPE_PHONE ? Conversation::TYPE_PHONE : Conversation::TYPE_EMAIL;
-    }
-
     /**
      * A phone conversation's customer, chosen from the suggestions.
      */

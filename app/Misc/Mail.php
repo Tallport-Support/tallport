@@ -140,25 +140,6 @@ class Mail
     ];
 
     /**
-     * Used to substitue encoding during mail body decoding
-     * via iconv() or mb_convert_encoding().
-     * https://github.com/freescout-help-desk/freescout/issues/4282
-     */
-    public static $encoding_substitution = [
-        'iso-2022-jp' => 'iso-2022-jp-ms',
-        'gb2312' => 'gb18030',
-    ];
-
-    /**
-     * Used when decoding mime strings.
-     */
-    public static $mime_encoding_substitution = [
-        'iso-2022-jp' => 'iso-2022-jp-ms',
-        'ks_c_5601-1987' => 'cp949',
-        //'gb2312' => 'gb18030',
-    ];
-
-    /**
      * md5 of the last applied mail config.
      */
     public static $last_mail_config_hash = '';
@@ -652,44 +633,6 @@ class Mail
     public static function sendAlertMail($text, $title = '')
     {
         \App\Jobs\SendAlert::dispatch($text, $title)->onQueue('emails');
-    }
-
-    /**
-     * Send email to developers team.
-     */
-    public static function sendEmailToDevs($subject, $body, $attachments = [], $from_user = null)
-    {
-        // Configure mail driver according to Mailbox settings
-        \MailHelper::setSystemMailDriver();
-
-        $status_message = '';
-
-        try {
-            \Mail::raw($body, function ($message) use ($subject, $attachments, $from_user) {
-                $message
-                    ->subject($subject)
-                    ->to(\Config::get('app.freescout_email'));
-                if ($attachments) {
-                    foreach ($attachments as $attachment) {
-                        $message->attach($attachment);
-                    }
-                }
-                // Set user as Reply-To
-                if ($from_user) {
-                    $message->replyTo($from_user->email, $from_user->getFullName());
-                }
-            });
-        } catch (\Exception $e) {
-            \Log::error(\Helper::formatException($e));
-            // We come here in case SMTP server unavailable for example
-            return false;
-        }
-
-        if (\Mail::failures()) {
-            return false;
-        } else {
-            return true;
-        }
     }
 
     /**
@@ -1443,127 +1386,6 @@ class Mail
         }
     }
 
-    /**
-     * This function is used to decode email subjects and attachment names in Webklex libraries.
-     */
-    public static function decodeSubject($subject)
-    {
-        // Sometimes trying to decode non-encoded strings leads
-        // to loosing accents.
-        // https://github.com/freescout-help-desk/freescout/issues/4506
-        if (!strstr($subject, '=?')) {
-            return $subject;
-        }
-        // Remove new lines as iconv_mime_decode() may loose a part separated by new line:
-        // =?utf-8?Q?Gesch=C3=A4ftskonto?= erstellen =?utf-8?Q?f=C3=BCr?=
-        //  249143
-        $subject = preg_replace("/[\r\n]/", '', $subject);
-        // https://github.com/freescout-helpdesk/freescout/issues/3185
-        //$subject = str_ireplace('=?iso-2022-jp?', '=?iso-2022-jp-ms?', $subject);
-        $subject = self::substituteMimeEncoding($subject);
-
-        // Sometimes imap_utf8() can't decode the subject, for example:
-        // =?iso-2022-jp?B?GyRCIXlCaBsoQjEzMhskQjlmISEhViUsITwlRyVzGyhCJhskQiUoJS8lOSVGJWolIiFXQGxMZ0U5JE4kPyRhJE4jURsoQiYbJEIjQSU1JW0lcyEhIVo3bjQpJSglLyU5JUYlaiUiISYlbyE8JS8hWxsoQg==?=
-        // and sometimes iconv_mime_decode() can't decode the subject.
-        // So we are using both.
-        // 
-        // We are trying iconv_mime_decode() first because imap_utf8()
-        // decodes umlauts into two symbols:
-        // https://github.com/freescout-helpdesk/freescout/issues/2965
-
-        // Sometimes subject is split into parts and each part is base63 encoded.
-        // And sometimes it's first encoded and after that split.
-        // https://github.com/freescout-helpdesk/freescout/issues/3066      
-
-        // Step 1. Abnormal way - text is encoded and split into parts.
-  
-        // Only one type of encoding should be used.
-        preg_match_all("/(=\?[^\?]+\?[BQ]\?)([^\?]+)(\?=)/i", $subject, $m);
-        $encodings = $m[1] ?? [];
-        array_walk($encodings, function ($value) {
-            $value = strtolower($value);
-        });
-        $one_encoding = count(array_unique($encodings)) == 1;
-
-        if ($one_encoding) {
-            // First try to join all lines and parts.
-            // Keep in mind that there can be non-encoded parts also:
-            // =?utf-8?Q?Gesch=C3=A4ftskonto?= erstellen =?utf-8?Q?f=C3=BCr?=
-            preg_match_all("/(=\?[^\?]+\?[BQ]\?)([^\?]+)(\?=)[\r\n\t ]*/i", $subject, $m);
-
-            $joined_parts = '';
-            if (count($m[1]) > 1 && !empty($m[2]) && !preg_match("/[\r\n\t ]+[^=]/i", $subject)) {
-                // Example: GyRCQGlNVTtZRTkhIT4uTlMbKEI=
-                $joined_parts = $m[1][0].implode('', $m[2]).$m[3][0];
-
-                // Base64 and URL encoded string can't contain "=" in the middle
-                // https://stackoverflow.com/questions/6916805/why-does-a-base64-encoded-string-have-an-sign-at-the-end
-                $has_equal_in_the_middle = preg_match("#=+([^$\? =])#", $joined_parts);
-
-                if (!$has_equal_in_the_middle) {
-                    $subject_decoded = iconv_mime_decode($joined_parts, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, "UTF-8");
-
-                    if ($subject_decoded 
-                        && trim($subject_decoded) != trim($joined_parts)
-                        && trim($subject_decoded) != trim(rtrim($joined_parts, '='))
-                        && !self::isNotYetFullyDecoded($subject_decoded)
-                    ) {
-                        return $subject_decoded;
-                    }
-
-                    // Try imap_utf8().
-                    // =?iso-2022-jp?B?IBskQiFaSEcyPDpuQ?= =?iso-2022-jp?B?C4wTU1qIVs3Mkp2JSIlLyU3JSItahsoQg==?=
-                    $subject_decoded = self::imapUtf8($joined_parts);
-
-                    if ($subject_decoded 
-                        && trim($subject_decoded) != trim($joined_parts)
-                        && trim($subject_decoded) != trim(rtrim($joined_parts, '='))
-                        && !self::isNotYetFullyDecoded($subject_decoded)
-                    ) {
-                        return $subject_decoded;
-                    }
-                }
-            }
-        }
-
-        // Step 2. Standard way - each part is encoded separately.
-
-        // iconv_mime_decode() can't decode:
-        // =?iso-2022-jp?B?IBskQiFaSEcyPDpuQC4wTU1qIVs3Mkp2JSIlLyU3JSItahsoQg==?=
-        $subject_decoded = \Helper::iconvMimeDecode($subject);
-
-        // Sometimes iconv_mime_decode() can't decode some parts of the subject:
-        // =?iso-2022-jp?B?IBskQiFaSEcyPDpuQC4wTU1qIVs3Mkp2JSIlLyU3JSItahsoQg==?=
-        // =?iso-2022-jp?B?GyRCQGlNVTtZRTkhIT4uTlMbKEI=?=
-        if (self::isNotYetFullyDecoded($subject_decoded)) {
-            $subject_decoded = self::imapUtf8($subject);
-        }
-
-        // All previous functions could not decode text.
-        // mb_decode_mimeheader() properly decodes umlauts into one unice symbol.
-        // But we use mb_decode_mimeheader() as a last resort as it may garble some symbols.
-        // Example: =?ISO-8859-1?Q?Vorgang 538336029: M=F6chten Sie Ihre E-Mail-Adresse =E4ndern??=
-        if (self::isNotYetFullyDecoded($subject_decoded)) {
-            $subject_decoded = mb_decode_mimeheader($subject);
-        }
-
-        if (!$subject_decoded) {
-            $subject_decoded = $subject;
-        }
-
-        return $subject_decoded;
-    }
-
-    public static function isNotYetFullyDecoded($subject_decoded)
-    {
-        // https://stackoverflow.com/questions/15276191/why-does-a-diamond-with-a-questionmark-in-it-appear-in-my-html
-        $invalid_utf_symbols = ['�'];
-
-        return preg_match_all("/=\?[^\?]+\?[BQ]\?/i", $subject_decoded)
-            || !mb_check_encoding($subject_decoded, 'UTF-8')
-            || \Str::contains($subject_decoded, $invalid_utf_symbols);
-    }
-
     public static function getHashedReplySeparator($message_id)
     {
         $separator = \MailHelper::REPLY_SEPARATOR_HTML;
@@ -1594,54 +1416,6 @@ class Mail
             preg_replace("/\r?\n/", "\r\n", $content),
             \Webklex\PHPIMAP\Config::make(['options' => ['fallback_date' => 'now']])
         );
-    }
-
-    // Substitue encoding during mail body decoding.
-    // https://github.com/freescout-help-desk/freescout/issues/4282
-    public static function substituteEncoding($encoding)
-    {
-        $encoding = strtolower($encoding);
-
-        if (!empty(self::$encoding_substitution[$encoding])) {
-            return self::$encoding_substitution[$encoding];
-        } else {
-            return $encoding;
-        }
-    }
-
-    public static function substituteMimeEncoding($string)
-    {
-        foreach (self::$mime_encoding_substitution as $from => $into) {
-            $string = str_ireplace('=?'.$from.'?', '=?'.$into.'?', $string);
-        }
-        return $string;
-    }
-
-    /**
-     * Remove quotes surrounding a display name in an email address.
-     *
-     * In `From: "Tatiana Ivanova" <ti@example.org>` the quotes are just
-     * a delimiter of the quoted-string, they are not a part of the name itself:
-     * https://datatracker.ietf.org/doc/html/rfc5322#section-3.2.4
-     */
-    public static function unquotePersonalName($name)
-    {
-        $name = trim((string)$name);
-
-        if (strlen($name) < 2 || !\Str::startsWith($name, '"') || !\Str::endsWith($name, '"')) {
-            return $name;
-        }
-
-        $unquoted = substr($name, 1, -1);
-
-        // Make sure that it's a single quoted-string and not something like
-        // `"Foo" bar "Baz"` - all quotes inside have to be escaped.
-        if (!preg_match('/^(?:[^"\\\\]|\\\\.)*$/s', $unquoted)) {
-            return $name;
-        }
-
-        // Unescape quoted-pairs: \" => " and \\ => \
-        return trim(preg_replace('/\\\\(.)/s', '$1', $unquoted));
     }
 
     public static function isFsMessageId($message_id)
