@@ -107,7 +107,7 @@
         "element": "`select`; native combobox or listbox role.",
         "state": "Native scalar or multiple selection and validation.",
         "keyboard": "Native browser selection keyboard behavior; CSS adds no handlers.",
-        "options": "Native select attributes, including multiple/size. Slot: option/optgroup elements. CSS enhances supporting desktop pickers; touch/unsupported browsers retain system rendering."
+        "options": "Native select attributes, including multiple/size. `control-size`: regular (default), small (`f-input--small`, as tall as a small button, for a select inline in a row of details or a toolbar); it is not `size`, which stays the native list box rows. Slot: option/optgroup elements. CSS enhances supporting desktop pickers; touch/unsupported browsers retain system rendering."
       }
     }
   },

@@ -3017,13 +3017,10 @@ h1.settings-toolbar__title {
     text-decoration: none;
     overflow-wrap: anywhere;
 }
-/* Their language (the conversation's sidebar): a compact select in the line. */
+/* Their language (the conversation's sidebar): a small select in the line. */
 .customer-contacts .customer-language__select {
     width: auto;
     max-width: 100%;
-    min-height: 0;
-    padding-block: 2px;
-    font-size: var(--f-text-sm);
 }
 /* The customer's address: a click copies it. Looks like the link it used to be. */
 .customer-snippet__details .contact-main {

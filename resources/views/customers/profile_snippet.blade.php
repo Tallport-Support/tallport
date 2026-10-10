@@ -69,7 +69,7 @@
 				<li class="customer-language" x-data>
 					<x-icon.languages class="f-icon" aria-hidden="true" />
 					<span>
-						<x-fruit::select class="customer-language__select" :aria-label="__('Language')" x-on:change="Tallport.post(laroute.route('customers.ajax'), {action: 'set_language', customer_id: {{ $customer->id }}, language: $el.value}).then(response => Tallport.isSuccess(response) ? Livewire.dispatch('customer-language-changed') : Tallport.result(response))">
+						<x-fruit::select class="customer-language__select" control-size="small" :aria-label="__('Language')" x-on:change="Tallport.post(laroute.route('customers.ajax'), {action: 'set_language', customer_id: {{ $customer->id }}, language: $el.value}).then(response => Tallport.isSuccess(response) ? Livewire.dispatch('customer-language-changed') : Tallport.result(response))">
 							<option value="">{{ __('Detect Automatically') }}</option>
 							@foreach (App\Ai\Settings::displayNames() as $code => $name)
 								<option value="{{ $code }}" @selected($customer->language === $code)>{{ App\Ai\Settings::optionName($code) }}</option>

@@ -604,6 +604,13 @@
   textarea.f-input {
     resize: vertical;
   }
+  /* A small select, as tall as a small button: inline in a row of details or a toolbar. */
+  .f-input--small {
+    --f-control-height: 30px;
+    --f-control-padding-block: 3px;
+    --f-control-padding-inline: 10px;
+    --f-control-font-size: var(--f-text-sm);
+  }
   .f-help {
     color: var(--f-secondary);
     font-size: var(--f-text-sm);
