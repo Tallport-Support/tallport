@@ -37,9 +37,7 @@ Credit for everything up to the fork goes to the FreeScout team.
 
 ## Changes from FreeScout
 
-Everything FreeScout does, plus:
-
-**Built in**
+Tallport does everything FreeScout does, with these built in:
 
 * **AI Assistant:** conversation summaries, and reply drafts based on your
   own documentation (OpenAI, Anthropic, Gemini and others).
@@ -49,38 +47,33 @@ Everything FreeScout does, plus:
 * **Reports** on volume and on response and resolution times.
 * **Knowledge Base** articles for the team, ready to insert in replies.
 * **Fast search** that finds every word and shows the best matches first.
+* **All Mailboxes:** every mailbox's conversations together.
+* **Telegram and Nostr:** customers chat with a mailbox.
+* **Sending through Amazon SES, Mailgun, Postmark or Resend**, as well as
+  SMTP.
 * **Auto replies in the customer's language.**
+* **Team Chat:** a chat room for each mailbox's team.
 * **Two-factor sign-in and passkeys.**
 * **REST API and webhooks.**
+* **Data retention** that deletes old conversations on a schedule, with
+  legal hold.
+* **Your own look:** logos, accent colours and email branding.
 
-**More ways to reach you**
-
-* **Telegram and Nostr:** customers chat with a mailbox, and those
-  conversations look and work like chats.
-* **Sending through Amazon SES, Mailgun, Postmark or Resend**, as well as
-  SMTP, and receiving email straight from your mail server.
-
-**A better inbox**
+And it adds:
 
 * **A new interface** that is fast, clean and light or dark with your system.
-* **All Mailboxes:** every mailbox's conversations together, each in its
-  mailbox's colour.
 * **Instant navigation:** conversations and folders open in place.
+* **Chats that look like chats**, with the newest message at the bottom.
 * **Unread markers** and sorting by last activity.
-* **Team Chat:** an encrypted chat room for each mailbox's team.
+* **Mailbox colours**, so you can tell mailboxes apart at a glance.
 * **Clear delivery reports:** bounces shown on the message they belong to,
   delivery confirmations kept out of the inbox.
 * **Image thumbnails**, including iPhone photos.
 * **The customer at a glance:** their local time and language.
 * **Replies that look like ordinary email.**
-
-**Easier to run**
-
-* **Data retention** that deletes old conversations on a schedule, with
-  legal hold.
+* **Receiving email straight from your mail server**, without a mailbox to
+  fetch from.
 * **A clear status page** that says what needs attention and how to fix it.
-* **Your own look:** logos, accent colours and email branding.
-* **One-click updates.**
 * **Up to date and tested:** current Laravel and dependencies, numerous bugs
   fixed, and a large automated test suite.
 
