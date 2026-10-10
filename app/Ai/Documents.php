@@ -206,7 +206,7 @@ class Documents
             if (!$chunks) {
                 throw new \Exception('Document has no indexable content');
             }
-            $embeddings = self::embed($chunks, $deadline);
+            $embeddings = self::embed($chunks, $deadline, $document->mailbox_id);
             $model = Settings::embeddingModel();
 
             // Workers cache options between requests; see the latest settings before commit.
@@ -288,7 +288,7 @@ class Documents
     /**
      * Embeddings of texts, in batches.
      */
-    public static function embed(array $texts, ?float $deadline = null)
+    public static function embed(array $texts, ?float $deadline = null, $mailbox_id = null)
     {
         $deadline = $deadline ?? microtime(true) + 120;
         if (!self::available()) {
@@ -302,11 +302,37 @@ class Documents
             if ($remaining < 1) {
                 throw new \RuntimeException('AI document deadline exceeded');
             }
-            $response = Embeddings::for($batch)->cache(0)->timeout(min(120, $remaining))->generate(Providers::EMBEDDINGS, Settings::embeddingModel());
-            if (count($response->embeddings) !== count($batch)) {
-                throw new \Exception('Embeddings count does not match chunk count');
+            [$reservation_id, $limit] = Usage::reserve($mailbox_id);
+            if ($limit) {
+                throw new \RuntimeException(__('This mailbox has used its AI tokens for today.'));
             }
-            array_push($embeddings, ...$response->embeddings);
+            $response = null;
+            $error = null;
+            $reported = false;
+            $started = hrtime(true);
+            try {
+                $response = Embeddings::for($batch)->cache(0)->timeout(min(120, $remaining))->generate(Providers::EMBEDDINGS, Settings::embeddingModel());
+                if (count($response->embeddings) !== count($batch)) {
+                    throw new \Exception('Embeddings count does not match chunk count');
+                }
+                array_push($embeddings, ...$response->embeddings);
+            } catch (\Throwable $e) {
+                $error = $e;
+                throw $e;
+            } finally {
+                try {
+                    $record = Usage::record($response, Usage::FEATURE_EMBEDDING, null, $mailbox_id, null, count($batch), [
+                        'status'      => $error ? Usage::STATUS_FAILED : Usage::STATUS_OK,
+                        'provider'    => Settings::embeddingProvider(),
+                        'model'       => mb_substr(Settings::embeddingModel(), 0, 191),
+                        'duration_ms' => (int) round((hrtime(true) - $started) / 1e6),
+                        'error'       => $error ? $error->getMessage() : null,
+                    ]);
+                    $reported = $record && $record->input_tokens !== null;
+                } finally {
+                    Usage::releaseReservation($reservation_id, !$reported);
+                }
+            }
         }
 
         return $embeddings;
@@ -370,7 +396,7 @@ class Documents
         if ($question === '') {
             return [];
         }
-        $query = self::embed([$question], $deadline)[0];
+        $query = self::embed([$question], $deadline, $mailbox_id)[0];
         $locale = in_array($locale, Document::SUPPORTED_LOCALES) ? $locale : Document::CANONICAL_LOCALE;
         $fingerprint = self::embeddingFingerprint();
         $limit = max(1, (int) ($limit ?? Settings::retrievalLimit()));

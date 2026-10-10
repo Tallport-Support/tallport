@@ -172,6 +172,16 @@ abstract class TallportAgent implements Agent, HasProviderOptions
             throw new \RuntimeException(__('No AI model is set up for this.'));
         }
         $providers = Settings::providers();
+        [$feature, $conversation, $mailbox_id, , $items] = $this->usage + [Usage::SETTING_FEATURES[$this->feature()][0] ?? $this->feature(), null, null, null, 1];
+        $mailbox_id = $conversation ? $conversation->mailbox_id : $mailbox_id;
+        $customer_id = $feature == Usage::FEATURE_TRANSLATION && $conversation ? $conversation->customer_id : null;
+        [$reservation_id, $limit] = Usage::reserve($mailbox_id, $customer_id, $feature == Usage::FEATURE_TRANSLATION ? $items : 0);
+        if ($limit) {
+            throw new \RuntimeException($limit == 'budget'
+                ? __('This mailbox has used its AI tokens for today.')
+                : __('Not translated: this customer sent more messages in the last hour than are translated.'));
+        }
+        $unreported_calls = 0;
         try {
             foreach ($attempts as $i => [$name, $attempt_model]) {
                 // The primary gets at most half the remaining time when there is a backup.
@@ -191,6 +201,7 @@ abstract class TallportAgent implements Agent, HasProviderOptions
                                 $this->attempt['timed_out'] = true;
                                 throw new \RuntimeException(__('The AI\'s answer could not be read.'));
                             }
+                            $unreported_calls++;
                             $result = $run($name, $attempt_model, $remaining);
                             break;
                         } catch (RequestException $e) {
@@ -200,11 +211,15 @@ abstract class TallportAgent implements Agent, HasProviderOptions
                             }
                             if ($refused == 'fast_tier') {
                                 Errors::report($e, $attempt_model.' refused fast mode ('.$this->feature().'), trying without it:');
-                                $this->recordAttempt(Usage::STATUS_FAST_TIER_REFUSED, null, $e);
+                                if ($this->recordAttempt(Usage::STATUS_FAST_TIER_REFUSED, null, $e)) {
+                                    $unreported_calls--;
+                                }
                                 Providers::rememberFastTierRejected($name, $attempt_model);
                             } else {
                                 Errors::report($e, $attempt_model.' refused the fast options ('.$this->feature().'), trying without them:');
-                                $this->recordAttempt(Usage::STATUS_FAST_REFUSED, null, $e);
+                                if ($this->recordAttempt(Usage::STATUS_FAST_REFUSED, null, $e)) {
+                                    $unreported_calls--;
+                                }
                                 Providers::rememberFastRejected($name, $attempt_model);
                             }
                             $this->attempt[$refused] = false;
@@ -216,19 +231,24 @@ abstract class TallportAgent implements Agent, HasProviderOptions
                         || $e instanceof ConnectionException || $e instanceof FailoverableException
                         || $e instanceof StreamErrorException || get_class($e) === AiException::class);
                     $last = !$retryable || $i == count($attempts) - 1 || $deadline - microtime(true) < 1;
-                    $this->recordAttempt($last ? Usage::STATUS_FAILED : Usage::STATUS_FAILED_THEN_BACKUP, $this->attempt['response'] ?? null, $e);
+                    if ($this->recordAttempt($last ? Usage::STATUS_FAILED : Usage::STATUS_FAILED_THEN_BACKUP, $this->attempt['response'] ?? null, $e) && $unreported_calls) {
+                        $unreported_calls--;
+                    }
                     if ($last) {
                         throw $e;
                     }
                     Errors::report($e, $attempt_model.' failed ('.$this->feature().'), trying the backup:');
                     continue;
                 }
-                $this->recordAttempt(Usage::STATUS_OK, is_array($result) ? $result[1] : $result);
+                if ($this->recordAttempt(Usage::STATUS_OK, is_array($result) ? $result[1] : $result)) {
+                    $unreported_calls--;
+                }
 
                 return $result;
             }
         } finally {
             $this->attempt = null;
+            Usage::releaseReservation($reservation_id, $unreported_calls > 0);
         }
     }
 
@@ -287,7 +307,7 @@ abstract class TallportAgent implements Agent, HasProviderOptions
     {
         [$feature, $conversation, $mailbox_id, $user_id, $items] = $this->usage + [Usage::SETTING_FEATURES[$this->feature()][0] ?? $this->feature(), null, null, null, 1];
 
-        Usage::record($response, $feature, $conversation, $mailbox_id, $user_id, $items, [
+        $record = Usage::record($response, $feature, $conversation, $mailbox_id, $user_id, $items, [
             'status'      => $status,
             'provider_id' => $this->attempt['provider_id'],
             'provider'    => $this->attempt['provider'],
@@ -299,6 +319,8 @@ abstract class TallportAgent implements Agent, HasProviderOptions
             'duration_ms' => (int) round((hrtime(true) - $this->attempt['at']) / 1e6),
             'error'       => $e ? $e->getMessage() : null,
         ]);
+
+        return $record && $record->input_tokens !== null;
     }
 
     /**

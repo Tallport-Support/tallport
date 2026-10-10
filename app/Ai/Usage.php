@@ -17,6 +17,7 @@ class Usage extends Model
     const FEATURE_SUMMARY = 'summary';
     const FEATURE_DRAFT = 'draft';
     const FEATURE_LANGUAGE = 'language';
+    const FEATURE_EMBEDDING = 'embedding';
 
     /**
      * The calls of each feature in the settings (Settings::MODEL_FEATURES).
@@ -194,7 +195,10 @@ class Usage extends Model
                 if ($remaining <= 0) {
                     return [null, 'budget'];
                 }
-                $tokens = min($remaining, max(1, (int) ($token_estimate ?? $remaining)));
+                $tokens = max(1, (int) ($token_estimate ?? $remaining));
+                if ($tokens > $remaining) {
+                    return [null, 'budget'];
+                }
             }
             $reserved_items = 0;
             if ($customer_id && $hourly_limit && $items) {
@@ -259,6 +263,7 @@ class Usage extends Model
             self::FEATURE_SUMMARY           => __('Summaries'),
             self::FEATURE_DRAFT             => __('Drafts'),
             self::FEATURE_LANGUAGE          => __('Language Detection'),
+            self::FEATURE_EMBEDDING         => __('Documentation'),
         ][$feature] ?? $feature;
     }
 

@@ -355,10 +355,17 @@ class SystemController extends Controller
                 $problems[] = ['command', __(':command isn\'t running', ['command' => self::taskName($command['name'])[0]]), $just_updated ? 'warning' : 'danger', $command, null];
             }
         }
-        // Mailboxes that used their AI tokens for today: their AI Assistant waits until tomorrow.
+        // Count reported tokens from every outcome, and claims older than the maximum AI operation.
         if ($daily_tokens = \App\Ai\Settings::dailyTokens()) {
-            $over_budget = \App\Ai\Usage::succeeded()->where('created_at', '>=', now()->startOfDay())->whereNotNull('mailbox_id')
-                ->groupBy('mailbox_id')->havingRaw('SUM(input_tokens + output_tokens) >= ?', [$daily_tokens])->pluck('mailbox_id');
+            $used = \App\Ai\Usage::where('created_at', '>=', now()->startOfDay())->whereNotNull('mailbox_id')
+                ->selectRaw('mailbox_id, SUM(COALESCE(input_tokens, 0) + COALESCE(output_tokens, 0)) AS tokens')
+                ->groupBy('mailbox_id')->pluck('tokens', 'mailbox_id');
+            $held = \DB::table('aiassistant_reservations')->where('created_at', '>=', now()->startOfDay())
+                ->where('created_at', '<', now()->subMinutes(4))->whereNotNull('mailbox_id')
+                ->selectRaw('mailbox_id, SUM(tokens) AS tokens')->groupBy('mailbox_id')->pluck('tokens', 'mailbox_id');
+            $over_budget = $used->keys()->merge($held->keys())->unique()->filter(function ($mailbox_id) use ($used, $held, $daily_tokens) {
+                return (int) ($used[$mailbox_id] ?? 0) + (int) ($held[$mailbox_id] ?? 0) >= $daily_tokens;
+            });
             if (count($over_budget)) {
                 $problems[] = ['ai_budget', __('The AI used its tokens for today'), 'warning', \App\Mailbox::whereIn('id', $over_budget)->orderBy('name')->pluck('name')->implode(', '), __('In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.')];
             }

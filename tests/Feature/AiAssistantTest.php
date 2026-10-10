@@ -62,8 +62,14 @@ class AiAssistantTest extends FeatureTestCase
 
     protected function fakeAi()
     {
-        ConversationSummarizer::fake([['one_liner' => 'Customer asks where the order is', 'background' => '']]);
-        ThreadTranslator::fake([['translation' => "Hello,\n\nWhere is my order?", 'same_language' => false, 'detected_language' => 'nl']]);
+        $summary = ['one_liner' => 'Customer asks where the order is', 'background' => ''];
+        $translation = ['translation' => "Hello,\n\nWhere is my order?", 'same_language' => false, 'detected_language' => 'nl'];
+        ConversationSummarizer::fake(fn () => new \Laravel\Ai\Responses\StructuredTextResponse(
+            $summary, json_encode($summary), new \Laravel\Ai\Responses\Data\TextUsage(1, 1), new \Laravel\Ai\Responses\Data\Meta
+        ));
+        ThreadTranslator::fake(fn () => new \Laravel\Ai\Responses\StructuredTextResponse(
+            $translation, json_encode($translation), new \Laravel\Ai\Responses\Data\TextUsage(1, 1), new \Laravel\Ai\Responses\Data\Meta
+        ));
     }
 
     protected function getConversationPage($user, Conversation $conversation)
@@ -541,6 +547,9 @@ class AiAssistantTest extends FeatureTestCase
 
         // Tomorrow: translated.
         $this->travel(1)->days();
+        $this->assertSame(0, \App\Ai\Usage::mailboxToday($this->mailbox->id));
+        $this->assertTrue(Settings::withinBudget($this->mailbox));
+        $this->assertNull(Translations::limit($conversation->threads()->first()));
         $this->getConversationPage($this->agent, $conversation);
         ThreadTranslator::assertPromptedTimes(1);
 

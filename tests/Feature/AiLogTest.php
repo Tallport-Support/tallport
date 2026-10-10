@@ -169,8 +169,8 @@ class AiLogTest extends FeatureTestCase
     }
 
     /**
-     * Failed calls have no tokens and translated no messages: the daily budget, the customer's
-     * hourly cap, the sidebar's tokens and System Status count as before.
+     * Failed calls without reported tokens translated no messages. A standalone log row
+     * cannot claim unreported tokens; provider attempts reserve them before calling.
      */
     public function testFailedCallsDontCountTowardsBudgetsAndCaps()
     {
@@ -215,6 +215,111 @@ class AiLogTest extends FeatureTestCase
 
         Usage::releaseReservation($reservation);
         $this->assertSame(0, Usage::customerTranslationsLastHour($conversation->customer_id));
+    }
+
+    public function testAgentClaimsBudgetAndCustomerAllowanceBeforeCallingProvider()
+    {
+        $conversation = $this->conversation();
+        $this->useModels(false);
+        Option::set('aiassistant.daily_tokens', 20);
+        Option::set('aiassistant.translations_per_customer_hour', 1);
+        ThreadTranslator::fake(function () use ($conversation) {
+            $this->assertSame(20, Usage::mailboxToday($this->mailbox->id));
+            $this->assertSame(1, Usage::customerTranslationsLastHour($conversation->customer_id));
+            $this->assertSame([null, 'budget'], Usage::reserve($this->mailbox->id));
+
+            return new \Laravel\Ai\Responses\TextResponse(
+                json_encode(['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'nl']),
+                new \Laravel\Ai\Responses\Data\TextUsage(4, 1), new \Laravel\Ai\Responses\Data\Meta
+            );
+        });
+
+        $this->translate($conversation);
+
+        $this->assertSame(5, Usage::mailboxToday($this->mailbox->id));
+        $this->assertSame(1, Usage::customerTranslationsLastHour($conversation->customer_id));
+        $this->assertSame(0, \DB::table('aiassistant_reservations')->count());
+    }
+
+    public function testFailedCallWithUnknownUsageKeepsItsBudgetClaim()
+    {
+        $conversation = $this->conversation();
+        $this->useModels(false);
+        Option::set('aiassistant.daily_tokens', 20);
+        ThreadTranslator::fake(function () {
+            throw new \RuntimeException('No usage reported');
+        });
+
+        try {
+            $this->translate($conversation);
+            $this->fail('The provider failed.');
+        } catch (\RuntimeException $e) {
+            $this->assertSame('No usage reported', $e->getMessage());
+        }
+
+        $this->assertSame(20, Usage::mailboxToday($this->mailbox->id));
+        $this->assertNull(Usage::where('conversation_id', $conversation->id)->first()->input_tokens);
+        $this->assertSame(1, \DB::table('aiassistant_reservations')->count());
+        $this->assertSame([null, 'budget'], Usage::reserve($this->mailbox->id));
+
+        $this->travel(1)->days();
+        $this->assertSame(0, Usage::mailboxToday($this->mailbox->id));
+        $this->assertNotNull(Usage::reserve($this->mailbox->id)[0]);
+    }
+
+    public function testAnUnknownPrimaryAttemptKeepsItsClaimAfterReportedBackupUsage()
+    {
+        $conversation = $this->conversation();
+        $this->useModels();
+        Option::set('aiassistant.daily_tokens', 20);
+        $calls = 0;
+        ThreadTranslator::fake(function () use (&$calls) {
+            if (++$calls === 1) {
+                throw new \Laravel\Ai\Exceptions\ProviderConnectionException('Primary unavailable');
+            }
+
+            return new \Laravel\Ai\Responses\TextResponse(
+                json_encode(['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'nl']),
+                new \Laravel\Ai\Responses\Data\TextUsage(4, 1), new \Laravel\Ai\Responses\Data\Meta
+            );
+        });
+
+        $this->translate($conversation);
+
+        $this->assertSame(2, $calls);
+        $this->assertSame(25, Usage::mailboxToday($this->mailbox->id));
+        $this->assertSame(5, Usage::forConversation($conversation));
+        $this->assertSame([null, 'budget'], Usage::reserve($this->mailbox->id));
+        $this->assertSame(1, \DB::table('aiassistant_reservations')->count());
+    }
+
+    public function testSystemStatusShowsHeldClaimsAndReportedFailedTokens()
+    {
+        Option::set('aiassistant.daily_tokens', 20);
+        $this->logCall(['status' => Usage::STATUS_FAILED, 'input_tokens' => 5, 'output_tokens' => 0]);
+        [$reservation, $limit] = Usage::reserve($this->mailbox->id, null, 0, 15);
+        $this->assertNull($limit);
+
+        $problems = collect(\App\Http\Controllers\SystemController::problems(\App\Http\Controllers\SystemController::statusData()))->keyBy(0);
+        $this->assertFalse($problems->has('ai_budget'), 'An active call may release its claim.');
+
+        $this->travel(5)->minutes();
+        $problems = collect(\App\Http\Controllers\SystemController::problems(\App\Http\Controllers\SystemController::statusData()))->keyBy(0);
+        $this->assertSame($this->mailbox->name, $problems['ai_budget'][3]);
+
+        Usage::releaseReservation($reservation);
+        $this->logCall(['status' => Usage::STATUS_FAILED, 'input_tokens' => 15, 'output_tokens' => 0]);
+        $problems = collect(\App\Http\Controllers\SystemController::problems(\App\Http\Controllers\SystemController::statusData()))->keyBy(0);
+        $this->assertSame($this->mailbox->name, $problems['ai_budget'][3]);
+    }
+
+    public function testReservationRejectsAnEstimateLargerThanRemainingBudget()
+    {
+        Option::set('aiassistant.daily_tokens', 10);
+        $this->logCall(['input_tokens' => 7, 'output_tokens' => 0, 'status' => Usage::STATUS_OK]);
+
+        $this->assertSame([null, 'budget'], Usage::reserve($this->mailbox->id, null, 0, 4));
+        $this->assertSame(0, \DB::table('aiassistant_reservations')->count());
     }
 
     /**

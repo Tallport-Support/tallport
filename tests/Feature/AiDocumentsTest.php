@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Ai\Document;
 use App\Ai\DocumentApiKey;
 use App\Ai\Documents;
+use App\Ai\Usage;
 use App\Jobs\AiIndexDocument;
 use App\Option;
 use Illuminate\Support\Facades\Bus;
@@ -126,6 +127,61 @@ class AiDocumentsTest extends FeatureTestCase
             $this->assertSame('AI document deadline exceeded', $e->getMessage());
         }
         $this->assertSame(0, $calls);
+    }
+
+    public function testIndexAndSearchEmbeddingsClaimAndRecordMailboxTokens()
+    {
+        Option::set('aiassistant.daily_tokens', 20);
+        $calls = 0;
+        Embeddings::fake(function ($prompt) use (&$calls) {
+            $calls++;
+            $this->assertSame(20, Usage::mailboxToday($this->mailbox->id));
+            $this->assertSame([null, 'budget'], Usage::reserve($this->mailbox->id));
+
+            return new \Laravel\Ai\Responses\EmbeddingsResponse(
+                array_fill(0, count($prompt->inputs), [1.0, 0.0, 0.1]),
+                new \Laravel\Ai\Responses\Data\Usage(7),
+                new \Laravel\Ai\Responses\Data\Meta('openai', 'text-embedding-3-small')
+            );
+        });
+
+        $this->addDocument();
+        $this->assertCount(1, Documents::search($this->mailbox->id, 'Android'));
+
+        $this->assertSame(2, $calls);
+        $this->assertSame(14, Usage::mailboxToday($this->mailbox->id));
+        $this->assertSame(0, \DB::table('aiassistant_reservations')->count());
+        $this->assertSame(2, Usage::where('mailbox_id', $this->mailbox->id)->where('feature', Usage::FEATURE_EMBEDDING)
+            ->where('status', Usage::STATUS_OK)->where('input_tokens', 7)->count());
+    }
+
+    public function testFailedEmbeddingWithUnknownUsageKeepsItsClaim()
+    {
+        Option::set('aiassistant.daily_tokens', 10);
+        $calls = 0;
+        Embeddings::fake(function () use (&$calls) {
+            $calls++;
+            throw new \RuntimeException('No embedding usage reported');
+        });
+
+        try {
+            Documents::embed(['Android'], null, $this->mailbox->id);
+            $this->fail('The embedding call failed.');
+        } catch (\RuntimeException $e) {
+            $this->assertSame('No embedding usage reported', $e->getMessage());
+        }
+
+        $this->assertSame(10, Usage::mailboxToday($this->mailbox->id));
+        $this->assertSame(1, \DB::table('aiassistant_reservations')->count());
+        $this->assertDatabaseHas('aiassistant_usage', ['mailbox_id' => $this->mailbox->id, 'feature' => Usage::FEATURE_EMBEDDING,
+            'status' => Usage::STATUS_FAILED, 'input_tokens' => null, 'output_tokens' => null]);
+        try {
+            Documents::embed(['Android'], null, $this->mailbox->id);
+            $this->fail('The budget claim should block another embedding call.');
+        } catch (\RuntimeException $e) {
+            $this->assertSame(__('This mailbox has used its AI tokens for today.'), $e->getMessage());
+        }
+        $this->assertSame(1, $calls);
     }
 
     public function testTitleFromFrontMatterOrHeading()
