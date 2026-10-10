@@ -25,13 +25,18 @@ export function fruitPopup(popup, anchor, { stretch = false, above = false, poin
     if (stretch) popup.style.width = `${Math.min(rect.width, width - 16)}px`;
     const size = popup.getBoundingClientRect();
     // A point anchor (a context menu) opens toward the inline end from the pointer.
-    const x = point
+    const aligned = point
       ? isRtl(point)
         ? rect.left - size.width
         : rect.left
       : stretch || isRtl(anchor) !== start
         ? rect.left
         : rect.right - size.width;
+    // A panel that would cross the viewport's edge lines up with the trigger's other side instead, when
+    // it fits there: a button at the start of a sidebar's footer opens toward the end, beside it.
+    const fits = value => value >= left + 8 && value + size.width <= left + width - 8;
+    const x =
+      point || stretch || fits(aligned) ? aligned : ([rect.left, rect.right - size.width].find(fits) ?? aligned);
     const below = top + height - rect.bottom - 8,
       before = rect.top - top - 8;
     const placeAbove = (above && before >= size.height) || (below < size.height && before > below);

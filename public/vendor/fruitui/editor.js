@@ -14367,10 +14367,10 @@ function q_(e, t, { stretch: n = !1, above: r = !1, point: i = null, start: a = 
 		if (!c || !o) return;
 		let s = t.getBoundingClientRect(), l = window.visualViewport, u = l?.offsetLeft || 0, d = l?.offsetTop || 0, f = l?.width || window.innerWidth, p = l?.height || window.innerHeight;
 		e.style.position = "fixed", e.style.inset = "auto", e.style.margin = "0", e.style.transform = "none", e.style.maxWidth = `${Math.max(0, f - 16)}px`, e.style.maxHeight = `${Math.max(40, p - 16)}px`, e.style.overflowY = "auto", n && (e.style.width = `${Math.min(s.width, f - 16)}px`);
-		let m = e.getBoundingClientRect(), h = i ? K_(i) ? s.left - m.width : s.left : n || K_(t) !== a ? s.left : s.right - m.width, g = d + p - s.bottom - 8, _ = s.top - d - 8, ee = r && _ >= m.height || g < m.height && _ > g, v = ee ? _ : g;
-		e.style.maxHeight = `${Math.max(40, v)}px`;
-		let y = e.getBoundingClientRect().height;
-		e.style.left = `${Math.max(u + 8, Math.min(h, u + f - m.width - 8))}px`, e.style.top = `${Math.max(d + 8, Math.min(ee ? s.top - y - 4 : s.bottom + 4, d + p - y - 8))}px`;
+		let m = e.getBoundingClientRect(), h = i ? K_(i) ? s.left - m.width : s.left : n || K_(t) !== a ? s.left : s.right - m.width, g = (e) => e >= u + 8 && e + m.width <= u + f - 8, _ = i || n || g(h) ? h : [s.left, s.right - m.width].find(g) ?? h, ee = d + p - s.bottom - 8, v = s.top - d - 8, y = r && v >= m.height || ee < m.height && v > ee, b = y ? v : ee;
+		e.style.maxHeight = `${Math.max(40, b)}px`;
+		let x = e.getBoundingClientRect().height;
+		e.style.left = `${Math.max(u + 8, Math.min(_, u + f - m.width - 8))}px`, e.style.top = `${Math.max(d + 8, Math.min(y ? s.top - x - 4 : s.bottom + 4, d + p - x - 8))}px`;
 	}, u = () => {
 		c = !0, o && (e.popover = "manual"), o && !e.matches(":popover-open") && e.showPopover(), l();
 	}, d = () => {

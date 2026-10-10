@@ -689,7 +689,7 @@
         "element": "`details` with native summary.",
         "state": "Native open state; optional fruitFloatingDisclosure dismissal.",
         "keyboard": "Enter/Space toggles summary; optional Escape closes and returns focus; outside pointer closes without moving focus.",
-        "options": "`placement`: below (default), above. `title`: fallback summary text; trigger slot: summary content/attributes; content slot or default: supporting content and independent actions. Native details attrs; caller opts into helper. No menu/listbox role or focus trap."
+        "options": "`placement`: below (default), above. `title`: fallback summary text; trigger slot: summary content/attributes; content slot or default: supporting content and independent actions. Native details attrs; caller opts into helper (`x-data=\"fruitFloatingDisclosure\"`): then the panel floats above the page, inside the window, lined up with the trigger's end, or with its start when the end would cross the window's edge (a button at the start of a sidebar's footer); without it, the panel lines up with the trigger's end. No menu/listbox role or focus trap."
       }
     }
   },
@@ -744,7 +744,7 @@
         "element": "`details`/`summary` with child menu.",
         "state": "Native open state; helper owns focus and dismissal.",
         "keyboard": "Enter/Space/Down/Up opens; arrows, Home/End, typeahead; Escape closes; Tab leaves.",
-        "options": "Title; trigger and menu-item content slots. A title trigger shows a pull-down chevron; a custom trigger adds `<span class=\"f-menu__chevron\" aria-hidden=\"true\">` when it shows text, and omits it for an icon-only button. Fixed fruitMenu helper; application state on parent."
+        "options": "Title; trigger and menu-item content slots. A title trigger shows a pull-down chevron; a custom trigger adds `<span class=\"f-menu__chevron\" aria-hidden=\"true\">` when it shows text, and omits it for an icon-only button. Fixed fruitMenu helper; application state on parent. The menu floats above the page, inside the window, lined up with the trigger's end, or with its start when the end would cross the window's edge."
       }
     }
   },
