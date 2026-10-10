@@ -48,15 +48,10 @@ class SsrfProtectionsTest extends TestCase
 
     public function testCheckUrlIpAndHostAllowsPublicHostname(): void
     {
-        // Resolved through DNS, so only meaningful where example.org resolves to
-        // its public address; some sandboxes map it into a reserved range.
-        $ip = gethostbyname('example.org');
-        if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)
-            || strpos($ip, '198.18.') === 0 || strpos($ip, '198.19.') === 0
-        ) {
-            $this->markTestSkipped('example.org does not resolve to a public address here ('.$ip.').');
-        }
-
         $this->assertEquals('https://example.org', \Helper::checkUrlIpAndHost('https://example.org'));
+
+        // A name that resolves to an internal address is refused.
+        \Helper::$resolver = fn ($host) => ['10.0.0.5'];
+        $this->assertEquals('', \Helper::checkUrlIpAndHost('https://intranet.example.org'));
     }
 }

@@ -2307,27 +2307,10 @@ class Helper
         // Check only if host name is passed in URL.
         if (!self::isValidIp($host)) {
 
-            // Sanitize host IP address.
-            $remote_host_ip = gethostbyname($host);
-            if ($remote_host_ip && !in_array($remote_host_ip, $hosts_to_check)) {
-                $hosts_to_check[] = $remote_host_ip;
-            }
-
-            // Resolve DNS records.
-            $dns_records = [];
-            try {
-                $dns_records = dns_get_record($host, DNS_A | DNS_AAAA);
-            } catch (\Exception $e) {
-                // Do nothing.
-            }
-            if ($dns_records) {
-                foreach ($dns_records as $dns_record) {
-                    if (!empty($dns_record['ip']) && !in_array($dns_record['ip'], $hosts_to_check)) {
-                        $hosts_to_check[] = $dns_record['ip'];
-                    }
-                    if (!empty($dns_record['ipv6']) && !in_array($dns_record['ipv6'], $hosts_to_check)) {
-                        $hosts_to_check[] = $dns_record['ipv6'];
-                    }
+            // The addresses it resolves to.
+            foreach (self::resolveHost($host) as $address) {
+                if (!in_array($address, $hosts_to_check)) {
+                    $hosts_to_check[] = $address;
                 }
             }
         }
@@ -2913,6 +2896,32 @@ class Helper
         }
 
         return extension_loaded($name);
+    }
+
+    /**
+     * Resolves host names for the checks against requests to internal addresses (tests
+     * replace it, so they never ask DNS): a callable taking the host, returning its addresses.
+     */
+    public static $resolver = null;
+
+    /**
+     * The IP addresses a host name resolves to (A and AAAA records, and the system's resolver).
+     */
+    public static function resolveHost($host)
+    {
+        if (self::$resolver) {
+            return (self::$resolver)($host);
+        }
+        $addresses = [gethostbyname($host)];
+        try {
+            foreach (dns_get_record($host, DNS_A | DNS_AAAA) ?: [] as $record) {
+                $addresses[] = $record['ip'] ?? $record['ipv6'] ?? null;
+            }
+        } catch (\Throwable $e) {
+            // Only the system's resolver then.
+        }
+
+        return array_values(array_unique(array_filter($addresses, fn ($address) => filter_var($address, FILTER_VALIDATE_IP))));
     }
 
     public static function checkRequiredExtensions()

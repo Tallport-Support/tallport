@@ -10,6 +10,31 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
 
     /**
+     * Host names resolve here, never through DNS (a VPN's DNS may answer anything): localhost
+     * to the loopback address, other names to a public one. A test may set its own.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        \Helper::$resolver = function ($host) {
+            // Numeric forms ("2130706433", "127.0.1", "0x7f.1") are converted without DNS.
+            if (preg_match('/^(0x[0-9a-f]*|\d+)(\.(0x[0-9a-f]*|\d+))*$/i', $host)) {
+                return array_filter([gethostbyname($host)], fn ($address) => filter_var($address, FILTER_VALIDATE_IP));
+            }
+
+            return in_array(strtolower($host), ['localhost', 'localhost.localdomain']) ? ['127.0.0.1'] : ['93.184.215.14'];
+        };
+    }
+
+    protected function tearDown(): void
+    {
+        \Helper::$resolver = null;
+
+        parent::tearDown();
+    }
+
+    /**
      * Whether the test database has been rebuilt in this run.
      */
     protected static $database_migrated = false;

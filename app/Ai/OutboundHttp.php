@@ -23,12 +23,7 @@ class OutboundHttp
             return ['proxy' => ''];
         }
 
-        $addresses = [];
-        foreach (dns_get_record($host, DNS_A | DNS_AAAA) ?: [] as $record) {
-            $addresses[] = $record['ip'] ?? $record['ipv6'] ?? null;
-        }
-        $addresses[] = gethostbyname($host);
-        $addresses = array_values(array_unique(array_filter($addresses, fn ($address) => filter_var($address, FILTER_VALIDATE_IP))));
+        $addresses = \Helper::resolveHost($host);
         if (!$addresses) {
             throw new \RuntimeException('Unable to resolve external host');
         }
