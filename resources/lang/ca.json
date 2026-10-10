@@ -1923,5 +1923,9 @@
     "Regenerate": "Regenera",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Voleu crear un URL de webhook nou? L'actual deixarà de funcionar fins que actualitzeu el webhook a :provider amb l'URL nou.",
     "New webhook URL made. Update it in your sending service.": "S'ha creat un URL de webhook nou. Actualitzeu-lo al vostre servei d'enviament.",
-    "On :date, :person wrote:": "El :date, :person va escriure:"
+    "On :date, :person wrote:": "El :date, :person va escriure:",
+    "Delivered": "Lliurat",
+    "Delivered to :recipient": "Lliurat a :recipient",
+    "Delivery notice for :link": "Avís de lliurament per a :link",
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "El servidor de correu o la bústia del destinatari ha confirmat que el correu electrònic ha arribat."
 }

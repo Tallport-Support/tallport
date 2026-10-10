@@ -35,7 +35,7 @@ class SendAutoReply
             $thread = $conversation->threads()->first();
 
             // Do not send auto reply to auto responders.
-            if ($thread->isAutoResponder()) {
+            if ($thread->isAutoResponder() || \MailHelper::isAutoReplySubject($conversation->subject)) {
                 return;
             }
             // Do not send auto replies to bounces.

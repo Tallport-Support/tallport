@@ -1850,5 +1850,9 @@
     "Regenerate": "Luo Uudelleen",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Luodaanko uusi webhookin URL? Nykyinen lakkaa toimimasta, kunnes päivität webhookin palvelussa :provider uudella URL-osoitteella.",
     "New webhook URL made. Update it in your sending service.": "Uusi webhookin URL luotiin. Päivitä se lähetyspalveluusi.",
-    "On :date, :person wrote:": ":date :person kirjoitti:"
+    "On :date, :person wrote:": ":date :person kirjoitti:",
+    "Delivered": "Toimitettu",
+    "Delivered to :recipient": "Toimitettu osoitteeseen :recipient",
+    "Delivery notice for :link": "Toimitusilmoitus kohteelle :link",
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Vastaanottajan sähköpostipalvelin tai postilaatikko vahvisti, että sähköposti saapui."
 }

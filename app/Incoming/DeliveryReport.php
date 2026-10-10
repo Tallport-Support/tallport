@@ -4,9 +4,11 @@ namespace App\Incoming;
 
 /**
  * What a delivery report says: a bounce or delay (RFC 3464 DSN, or a mail
- * server's plain-text notice), a complaint (RFC 5965 ARF feedback report) or a
- * sending service's suppression notice (Amazon SES). Which email failed, to
- * whom, why, and the original email. Only reads; FetchEmails saves it.
+ * server's plain-text notice), a complaint (RFC 5965 ARF feedback report), a
+ * sending service's suppression notice (Amazon SES), or a delivery notice (a
+ * DSN reporting success, or an auto reply: "your email has been received").
+ * Which email it is about, to whom, why, and the original email. Only reads;
+ * FetchEmails saves it.
  */
 class DeliveryReport
 {
@@ -14,12 +16,13 @@ class DeliveryReport
     const DELAYED = 'delayed';
     const COMPLAINT = 'complaint';
     const SUPPRESSED = 'suppressed';
+    const DELIVERED = 'delivered';
 
     /**
      * Reasons in words (DeliveryReports::reasonText()), from the status code
      * (RFC 3463) or the server's words.
      */
-    const REASONS = ['unknown_address', 'unknown_domain', 'mailbox_full', 'mailbox_disabled', 'too_large', 'blocked', 'unreachable', 'delayed', 'complaint', 'suppressed', 'rejected'];
+    const REASONS = ['unknown_address', 'unknown_domain', 'mailbox_full', 'mailbox_disabled', 'too_large', 'blocked', 'unreachable', 'delayed', 'complaint', 'suppressed', 'delivered', 'rejected'];
 
     /**
      * Sending services and mail providers recognised by the report's sender or
@@ -49,13 +52,18 @@ class DeliveryReport
     const ARF_TYPE = 'message/feedback-report';
 
     /**
+     * What a mail server's plain-text notice says when an email failed or is delayed.
+     */
+    const FAILURE_WORDS = '/permanent|given up|giving up|could not be delivered|wasn\'t able to deliver|undeliver|failed|failure|delayed|will be retried|will retry|still trying|not yet been delivered|warning only/i';
+
+    /**
      * Lines before the copy of the original in a plain-text bounce
      * (qmail, Exim, and others).
      */
     const COPY_MARKER = '/^[ \t]*-{2,}[^\n]*(copy of the message|original message|header of the original|undelivered message)[^\n]*$/im';
 
     /**
-     * bounce, delayed, complaint or suppressed.
+     * bounce, delayed, complaint, suppressed or delivered.
      *
      * @var string
      */
@@ -118,9 +126,11 @@ class DeliveryReport
     public $original_complete = false;
 
     /**
-     * Read a delivery report, or null if the message isn't one (or reports
-     * success). A plain-text notice without a report part is only read when
-     * the message is known to be a bounce ($is_bounce: from a mail server).
+     * Read a delivery report, or null if the message isn't one. A plain-text
+     * notice without a report part is only read when the message is known to
+     * be a bounce ($is_bounce: from a mail server); an auto reply is a delivery
+     * notice, unless a mail server's reads as a failure (some mark bounces as
+     * auto replies).
      */
     public static function read(IncomingMessage $message, $is_bounce = false): ?self
     {
@@ -144,12 +154,15 @@ class DeliveryReport
             $fields = $report->readDeliveryStatus($dsn);
         } elseif ($arf !== null) {
             $fields = $report->readFeedbackReport($arf);
+        } elseif (self::isAutoReply($message) && !($is_bounce && preg_match(self::FAILURE_WORDS, $text))) {
+            $fields = $report->readAutoReply($message, $text);
         } elseif ($is_bounce) {
             $fields = $report->readText($message, $text);
         } else {
             return null;
         }
-        if (!$report->kind || !$report->recipients) {
+        // A delivery notice is one even if it doesn't say whose (FetchEmails takes the reply's).
+        if (!$report->kind || (!$report->recipients && $report->kind != self::DELIVERED)) {
             return null;
         }
 
@@ -171,7 +184,7 @@ class DeliveryReport
         $this->details = trim($dsn);
         $blocks = preg_split('/\r?\n[ \t]*\r?\n/', trim($dsn));
         $fields = HeaderText::all(array_shift($blocks));
-        $failed = $delayed = [];
+        $failed = $delayed = $delivered = [];
         foreach ($blocks as $block) {
             $recipient_fields = HeaderText::all($block);
             $recipient = self::address($recipient_fields['final_recipient'] ?? $recipient_fields['original_recipient'] ?? '');
@@ -189,6 +202,8 @@ class DeliveryReport
                 $failed[] = $recipient_fields;
             } elseif ($action == 'delayed') {
                 $delayed[] = $recipient_fields;
+            } elseif (in_array($action, ['delivered', 'relayed', 'expanded'])) {
+                $delivered[] = $recipient_fields;
             }
         }
 
@@ -198,6 +213,10 @@ class DeliveryReport
             $this->recipients = array_values(array_unique(array_column($problems, 'address')));
             $this->status = $problems[0]['status'];
             $this->diagnostic = self::diagnostic($problems[0]['diagnostic_code'] ?? '');
+        } elseif ($delivered) {
+            $this->kind = self::DELIVERED;
+            $this->recipients = array_values(array_unique(array_column($delivered, 'address')));
+            $this->status = $delivered[0]['status'];
         }
 
         return $fields;
@@ -230,6 +249,49 @@ class DeliveryReport
         $this->recipients = array_values(array_unique(array_filter($this->recipients)));
 
         return $fields;
+    }
+
+    /**
+     * An auto reply: Auto-Submitted: auto-replied (RFC 3834), the headers some
+     * mail services use instead (X-Autoreply, X-QQ-AUTO-REPLY), or an auto
+     * reply's subject when the headers were lost on the way (Amazon SES passes
+     * auto replies on From its MAILER-DAEMON without them).
+     */
+    public static function isAutoReply(IncomingMessage $message)
+    {
+        $headers = $message->headers();
+
+        return preg_match('/^auto-replied\b/i', trim((string) HeaderText::value($headers, 'Auto-Submitted')))
+            || HeaderText::value($headers, 'X-Autoreply') !== null
+            || HeaderText::value($headers, 'X-Autorespond') !== null
+            || strtolower(trim((string) HeaderText::value($headers, 'X-QQ-AUTO-REPLY'))) == 'true'
+            || \MailHelper::isAutoReplySubject($message->subject());
+    }
+
+    /**
+     * An auto reply: the email arrived. Whose mailbox replied: the sender, or
+     * the address it names when a mail server passed it on.
+     */
+    protected function readAutoReply(IncomingMessage $message, $text)
+    {
+        $this->kind = self::DELIVERED;
+        foreach ($message->from() as $address) {
+            if (!preg_match('/^(postmaster|mailer-daemon)@/i', $address->mail)) {
+                $this->recipients[] = strtolower($address->mail);
+            }
+        }
+        if (!$this->recipients) {
+            $ignore = array_map(fn ($address) => strtolower($address->mail), array_merge($message->from(), $message->to()));
+            preg_match_all('/[A-Za-z0-9._%+\'=-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/', $text, $m);
+            foreach ($m[0] as $mail) {
+                if (!in_array(strtolower($mail), $ignore)) {
+                    $this->recipients[] = strtolower($mail);
+                }
+            }
+        }
+        $this->recipients = array_values(array_unique($this->recipients));
+
+        return [];
     }
 
     /**
@@ -388,7 +450,7 @@ class DeliveryReport
      */
     public static function reason($kind, $status, $diagnostic)
     {
-        if ($kind == self::COMPLAINT || $kind == self::SUPPRESSED) {
+        if ($kind == self::COMPLAINT || $kind == self::SUPPRESSED || $kind == self::DELIVERED) {
             return $kind;
         }
         $detail = preg_replace('/^[245]\./', '', (string) $status);

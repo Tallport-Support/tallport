@@ -1,4 +1,4 @@
-{{-- A delivery report (App\Misc\DeliveryReports): which email failed, to whom and why, then the original email and the report itself, collapsed. --}}
+{{-- A delivery report (App\Misc\DeliveryReports): which email failed (or arrived), to whom and why, then the original email and the report itself, collapsed. --}}
 @php
     $report_kind = $delivery_report['kind'];
     $report_recipients = [];
@@ -22,9 +22,11 @@
     $report_original_body = App\Misc\DeliveryReports::originalBody($thread);
 @endphp
 <div class="f-stack delivery-report-block">
-    <x-fruit::alert :tone="$report_kind == App\Incoming\DeliveryReport::DELAYED ? 'warning' : 'danger'" class="delivery-report" :data-kind="$report_kind">
+    <x-fruit::alert :tone="match ($report_kind) { App\Incoming\DeliveryReport::DELIVERED => 'success', App\Incoming\DeliveryReport::DELAYED => 'warning', default => 'danger' }" class="delivery-report" :data-kind="$report_kind">
         <x-slot:icon>
-            @if ($report_kind == App\Incoming\DeliveryReport::DELAYED)
+            @if ($report_kind == App\Incoming\DeliveryReport::DELIVERED)
+                <x-icon.mail-check class="f-icon" />
+            @elseif ($report_kind == App\Incoming\DeliveryReport::DELAYED)
                 <x-icon.clock class="f-icon" />
             @elseif ($report_kind == App\Incoming\DeliveryReport::COMPLAINT)
                 <x-icon.flag class="f-icon" />
@@ -50,9 +52,8 @@
             </p>
         @endif
         @if (!empty($send_status_data['bounce_for_thread']) && !empty($send_status_data['bounce_for_conversation']) && ($bounce_for_conversation = App\Conversation::find($send_status_data['bounce_for_conversation'])))
-            <p class="f-footnote delivery-report__reply">{!! __safe_raw_html('This is a bounce message for :link', [
-                'link' => '<a href="'.route('conversations.view', ['id' => $send_status_data['bounce_for_conversation']]).'#thread-'.$send_status_data['bounce_for_thread'].'">#'.$bounce_for_conversation->number.'</a>'
-            ]) !!}</p>
+            @php($report_for_link = '<a href="'.route('conversations.view', ['id' => $send_status_data['bounce_for_conversation']]).'#thread-'.$send_status_data['bounce_for_thread'].'">#'.$bounce_for_conversation->number.'</a>')
+            <p class="f-footnote delivery-report__reply">{!! $report_kind == App\Incoming\DeliveryReport::DELIVERED ? __safe_raw_html('Delivery notice for :link', ['link' => $report_for_link]) : __safe_raw_html('This is a bounce message for :link', ['link' => $report_for_link]) !!}</p>
         @endif
     </x-fruit::alert>
 

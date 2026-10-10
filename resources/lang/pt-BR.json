@@ -1834,5 +1834,9 @@
     "Regenerate": "Gerar Novamente",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Criar uma nova URL de webhook? A atual deixará de funcionar até que você atualize o webhook no :provider com a nova URL.",
     "New webhook URL made. Update it in your sending service.": "Nova URL de webhook criada. Atualize-a no seu serviço de envio.",
-    "On :date, :person wrote:": "Em :date, :person escreveu:"
+    "On :date, :person wrote:": "Em :date, :person escreveu:",
+    "Delivered": "Entregue",
+    "Delivered to :recipient": "Entregue para :recipient",
+    "Delivery notice for :link": "Aviso de entrega para :link",
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "O servidor de e-mail ou a caixa de entrada do destinatário confirmou que o e-mail chegou."
 }

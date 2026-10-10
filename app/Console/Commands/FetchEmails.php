@@ -73,6 +73,14 @@ class FetchEmails extends Command
     protected $saving_bounce = false;
 
     /**
+     * Saving a delivery notice (DeliveryReport::DELIVERED): its conversation
+     * starts closed, out of the inbox, and nobody is notified.
+     *
+     * @var bool
+     */
+    protected $saving_delivery_notice = false;
+
+    /**
      * A delivery report's recipient (App\Incoming\DeliveryReport): its new conversation
      * is about them; the mail server or service that reported it stays the message's sender.
      *
@@ -689,19 +697,25 @@ class FetchEmails extends Command
                 }
             }
 
-            // Delivery reports (bounces, delays, complaints, suppression notices): which email
-            // failed, to whom and why. Their files are the original email and its attachments.
+            // Delivery reports (bounces, delays, complaints, suppression notices, delivery
+            // notices): which email they are about, to whom and why. Their files are the
+            // original email and its attachments.
             $delivery_report = \App\Incoming\DeliveryReport::read($incoming, $is_bounce);
+            $is_delivery_notice = $delivery_report && $delivery_report->kind == \App\Incoming\DeliveryReport::DELIVERED;
             if ($delivery_report) {
                 $this->line('['.date('Y-m-d H:i:s').'] Delivery report detected: '.$delivery_report->kind.' for '.implode(', ', $delivery_report->recipients));
-                $is_bounce = true;
+                $is_bounce = !$is_delivery_notice;
                 if (!$bounced_message_id) {
-                    $bounced_message_id = $delivery_report->originalHeaders()['message_id'] ?? null;
+                    // An auto reply is about the email it replies to.
+                    $bounced_message_id = $delivery_report->originalHeaders()['message_id'] ?? ($is_delivery_notice ? $in_reply_to : null);
                 }
                 $attachments = $delivery_report->attachments($attachments);
 
                 // Recorded already, from the sending service's webhook (or another report): shown once.
                 $bounced_reply = $this->findBouncedThread($bounced_message_id);
+                if ($bounced_reply && !$delivery_report->recipients) {
+                    $delivery_report->recipients = array_map('strtolower', $bounced_reply->getToArray());
+                }
                 if ($bounced_reply && \App\Misc\DeliveryReports::isRecorded($bounced_reply, $delivery_report->recipients, $delivery_report->kind)) {
                     $this->line('['.date('Y-m-d H:i:s').'] Delivery report recorded already for reply '.$bounced_reply->id.'. Skipping message.');
                     $this->setSeen($message, $mailbox);
@@ -783,7 +797,8 @@ class FetchEmails extends Command
                     // Message from Customer or User replied to his reply to notification
                     $this->line('['.date('Y-m-d H:i:s').'] Message from: Customer');
 
-                    if (!$is_bounce) {
+                    // Reports aren't replies: they start their own conversation.
+                    if (!$is_bounce && !$is_delivery_notice) {
                         
                         $prev_thread_id = '';
 
@@ -1145,6 +1160,7 @@ class FetchEmails extends Command
                 } else {
                     // SendAutoReply listener will check bounce flag and will not send an auto reply if this is an auto responder.
                     $this->saving_bounce = $message_from_customer && $is_bounce;
+                    $this->saving_delivery_notice = $is_delivery_notice;
                     if ($delivery_report) {
                         $recipients = array_filter($delivery_report->recipientAddresses(), fn ($address) => !in_array($address->mail, $mailbox->getEmails()));
                         $this->createCustomers($recipients, []);
@@ -1198,8 +1214,8 @@ class FetchEmails extends Command
                 $this->line('['.date('Y-m-d H:i:s').'] Thread successfully created: '.$new_thread->id);
                 \App\Incoming\RawSources::store($new_thread, $incoming);
 
-                // If it was a bounce message, save bounce data.
-                if ($message_from_customer && $is_bounce) {
+                // If it was a bounce message (or a delivery notice), save bounce data.
+                if ($message_from_customer && ($is_bounce || $is_delivery_notice)) {
                     $this->saveBounceData($new_thread, $bounced_message_id, $from, $delivery_report);
                 }
             } else {
@@ -1263,7 +1279,7 @@ class FetchEmails extends Command
         $bounced_thread = $this->findBouncedThread($bounced_message_id);
 
         $status_data = [
-            'is_bounce' => true,
+            'is_bounce' => !$delivery_report || $delivery_report->kind != \App\Incoming\DeliveryReport::DELIVERED,
         ];
         if ($bounced_thread) {
             $status_data['bounce_for_thread'] = $bounced_thread->id;
@@ -1399,7 +1415,9 @@ class FetchEmails extends Command
         // Reply from customer makes conversation active.
         // If conversation is marked as Spam the status does not change.
         // https://github.com/freescout-help-desk/freescout/issues/5005
-        if (!$conversation->isActive() && !$conversation->isSpam()) {
+        if ($this->saving_delivery_notice) {
+            $conversation->status = Conversation::STATUS_CLOSED;
+        } elseif (!$conversation->isActive() && !$conversation->isSpam()) {
             $conversation->status = \Eventy::filter('conversation.status_changing', Conversation::STATUS_ACTIVE, $conversation);
         }
 
@@ -1489,11 +1507,18 @@ class FetchEmails extends Command
         // Update folders counters
         $conversation->mailbox->updateFoldersCounters();
 
+        // A delivery notice notifies nobody and gets no auto reply (the events' listeners).
+        $quiet = $this->saving_delivery_notice;
+        $this->saving_delivery_notice = false;
         if ($new) {
-            event(new CustomerCreatedConversation($conversation, $thread));
+            if (!$quiet) {
+                event(new CustomerCreatedConversation($conversation, $thread));
+            }
             \Eventy::action('conversation.created_by_customer', $conversation, $thread, $customer);
         } else {
-            event(new CustomerReplied($conversation, $thread));
+            if (!$quiet) {
+                event(new CustomerReplied($conversation, $thread));
+            }
             \Eventy::action('conversation.customer_replied', $conversation, $thread, $customer);
         }
 

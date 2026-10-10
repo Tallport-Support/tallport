@@ -1835,5 +1835,9 @@
     "Regenerate": "Opnieuw Genereren",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Een nieuwe webhook-URL maken? De huidige werkt niet meer totdat je de webhook in :provider bijwerkt met de nieuwe URL.",
     "New webhook URL made. Update it in your sending service.": "Nieuwe webhook-URL gemaakt. Werk deze bij in je verzenddienst.",
-    "On :date, :person wrote:": "Op :date schreef :person:"
+    "On :date, :person wrote:": "Op :date schreef :person:",
+    "Delivered": "Afgeleverd",
+    "Delivered to :recipient": "Afgeleverd aan :recipient",
+    "Delivery notice for :link": "Afleverbericht voor :link",
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "De mailserver of mailbox van de ontvanger heeft bevestigd dat de e-mail is aangekomen."
 }

@@ -160,13 +160,36 @@ class DeliveryReportTest extends TestCase
     }
 
     /**
-     * A DSN that reports success isn't about a problem.
+     * A DSN that reports success is a delivery notice.
      */
-    public function testSuccessfulDeliveryIsNotAProblem()
+    public function testSuccessfulDeliveryIsADeliveryNotice()
     {
         $raw = str_replace('Action: failed', 'Action: delivered', file_get_contents(__DIR__.'/../Messages/delivery-report-dsn-bounce.eml'));
+        $report = DeliveryReport::read(Parser::parse($raw), true);
 
-        $this->assertNull(DeliveryReport::read(Parser::parse($raw), true));
+        $this->assertSame(DeliveryReport::DELIVERED, $report->kind);
+        $this->assertSame('delivered', $report->reason);
+    }
+
+    /**
+     * An auto reply is a delivery notice, by its headers or its subject; a mail
+     * server's bounce that calls itself an auto reply is still a bounce.
+     */
+    public function testAutoReplyIsADeliveryNotice()
+    {
+        $auto_reply = fn ($headers, $subject = 'Re: Your subscription') => Parser::parse($headers."From: Lee Smith <lee.smith@customer.example.org>\r\nTo: support@help.example.net\r\nSubject: ".$subject."\r\nMessage-ID: <auto@customer.example.org>\r\nContent-Type: text/plain; charset=utf-8\r\n\r\nI am away until Monday.\r\n");
+
+        foreach (["Auto-Submitted: auto-replied\r\n", "X-Autoreply: yes\r\n", "X-QQ-AUTO-REPLY: true\r\n"] as $header) {
+            $report = DeliveryReport::read($auto_reply($header));
+            $this->assertSame(DeliveryReport::DELIVERED, $report->kind, $header);
+            $this->assertSame(['lee.smith@customer.example.org'], $report->recipients);
+        }
+        $this->assertSame(DeliveryReport::DELIVERED, DeliveryReport::read($auto_reply('', 'Automatic reply: Your subscription'))->kind);
+        $this->assertNull(DeliveryReport::read($auto_reply('Auto-Submitted: auto-generated'."\r\n")), 'Other automatic email is not about delivery.');
+        $this->assertNull(DeliveryReport::read($auto_reply('')));
+
+        $bounce = "Auto-Submitted: auto-replied\r\n".file_get_contents(__DIR__.'/../Messages/delivery-report-plain-text.eml');
+        $this->assertSame(DeliveryReport::BOUNCE, DeliveryReport::read(Parser::parse($bounce), true)->kind);
     }
 
     /**

@@ -742,6 +742,7 @@ class Mail
             'x-autoreply'    => '',
             'x-autorespond'  => '',
             'x-autoresponder'  => '',
+            'x-qq-auto-reply'  => ['true'],
             'auto-submitted' => '', // this can be auto-replied, auto-generated, etc.
             'delivered-to' => ['autoresponder'],
             'precedence' => ['auto_reply', 'bulk', 'junk', 'list'],
@@ -775,6 +776,15 @@ class Mail
         }
 
         return false;
+    }
+
+    /**
+     * An auto reply's subject: "Automatic reply: …", "（自动回复）Re：…" and the like,
+     * for auto replies that have lost their headers on the way.
+     */
+    public static function isAutoReplySubject($subject)
+    {
+        return (bool) preg_match('/^[\s\p{P}]*(auto(matic)?[ -]?(reply|response)|out of (the )?office|automatische antwort|réponse automatique|respuesta automática|risposta automatica|automatisch antwoord|resposta automática|自动回复|自動回覆|自動回復|自動返信)/iu', (string) $subject);
     }
 
     /**

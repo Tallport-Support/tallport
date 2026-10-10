@@ -1831,5 +1831,9 @@
     "Regenerate": "Regenerează",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Creați un URL nou pentru webhook? Cel actual nu va mai funcționa până când actualizați webhook-ul în :provider cu noul URL.",
     "New webhook URL made. Update it in your sending service.": "URL nou pentru webhook creat. Actualizați-l în serviciul de trimitere.",
-    "On :date, :person wrote:": "Pe :date, :person a scris:"
+    "On :date, :person wrote:": "Pe :date, :person a scris:",
+    "Delivered": "Livrat",
+    "Delivered to :recipient": "Livrat către :recipient",
+    "Delivery notice for :link": "Notificare de livrare pentru :link",
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Serverul de e-mail sau căsuța poștală a destinatarului a confirmat că e-mailul a ajuns."
 }

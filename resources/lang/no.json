@@ -1836,5 +1836,9 @@
     "Regenerate": "Generer På Nytt",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Lage en ny webhook-URL? Den nåværende slutter å virke til du oppdaterer webhooken i :provider med den nye URL-en.",
     "New webhook URL made. Update it in your sending service.": "Ny webhook-URL laget. Oppdater den i utsendingstjenesten din.",
-    "On :date, :person wrote:": ":date skrev :person:"
+    "On :date, :person wrote:": ":date skrev :person:",
+    "Delivered": "Levert",
+    "Delivered to :recipient": "Levert til :recipient",
+    "Delivery notice for :link": "Leveringsvarsel for :link",
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Mottakerens e-postserver eller postboks bekreftet at e-posten kom frem."
 }

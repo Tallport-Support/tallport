@@ -1831,5 +1831,9 @@
     "Regenerate": "Vygenerovať Znova",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Vytvoriť novú URL webhooku? Súčasná prestane fungovať, kým webhook v :provider neaktualizujete novou URL.",
     "New webhook URL made. Update it in your sending service.": "Nová URL webhooku bola vytvorená. Aktualizujte ju vo svojej službe na odosielanie.",
-    "On :date, :person wrote:": "Dňa :date napísal(a) :person:"
+    "On :date, :person wrote:": "Dňa :date napísal(a) :person:",
+    "Delivered": "Doručené",
+    "Delivered to :recipient": "Doručené na :recipient",
+    "Delivery notice for :link": "Oznámenie o doručení pre :link",
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Poštový server alebo schránka príjemcu potvrdili, že e-mail dorazil."
 }

@@ -1831,5 +1831,9 @@
     "Regenerate": "יצירה מחדש",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "ליצור כתובת URL חדשה ל-Webhook? הכתובת הנוכחית תפסיק לעבוד עד שתעדכנו את ה-Webhook ב-:provider עם הכתובת החדשה.",
     "New webhook URL made. Update it in your sending service.": "נוצרה כתובת URL חדשה ל-Webhook. עדכנו אותה בשירות השליחה שלכם.",
-    "On :date, :person wrote:": "ב-:date, :person כתב/ה:"
+    "On :date, :person wrote:": "ב-:date, :person כתב/ה:",
+    "Delivered": "נמסר",
+    "Delivered to :recipient": "נמסר אל :recipient",
+    "Delivery notice for :link": "הודעת מסירה עבור :link",
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "שרת הדואר או תיבת הדואר של הנמען אישרו שהדואר האלקטרוני הגיע."
 }

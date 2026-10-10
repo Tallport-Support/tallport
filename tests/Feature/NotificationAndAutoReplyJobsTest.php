@@ -347,14 +347,14 @@ class NotificationAndAutoReplyJobsTest extends FeatureTestCase
     public function testAutoRepliesStopForRepeatedSubjects()
     {
         $this->enableAutoReply();
-        $this->receiveCustomerEmail(['subject' => 'Out of office', 'message_id' => 'one@customer.example.org']);
+        $this->receiveCustomerEmail(['subject' => 'Where is my order', 'message_id' => 'one@customer.example.org']);
         $this->receiveCustomerEmail(['subject' => 'Something else', 'message_id' => 'two@customer.example.org']);
         $this->assertCount(2, $this->autoRepliesTo('casey@customer.example.org'));
 
         $this->receiveCustomerEmail(['subject' => 'Yet another question', 'message_id' => 'three@customer.example.org']);
         $this->assertCount(3, $this->autoRepliesTo('casey@customer.example.org'), 'A new subject is still answered.');
 
-        $this->receiveCustomerEmail(['subject' => 'Out of office', 'message_id' => 'four@customer.example.org']);
+        $this->receiveCustomerEmail(['subject' => 'Where is my order', 'message_id' => 'four@customer.example.org']);
         $this->assertCount(3, $this->autoRepliesTo('casey@customer.example.org'), 'A repeated subject is not.');
     }
 

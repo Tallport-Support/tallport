@@ -1832,5 +1832,9 @@
     "Regenerate": "Создать Заново",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Создать новый URL вебхука? Текущий перестанет работать, пока вы не обновите вебхук в :provider, указав новый URL.",
     "New webhook URL made. Update it in your sending service.": "Новый URL вебхука создан. Обновите его в своём сервисе отправки.",
-    "On :date, :person wrote:": ":date, :person написал(а):"
+    "On :date, :person wrote:": ":date, :person написал(а):",
+    "Delivered": "Доставлено",
+    "Delivered to :recipient": "Доставлено на :recipient",
+    "Delivery notice for :link": "Уведомление о доставке для :link",
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Почтовый сервер или почтовый ящик получателя подтвердил, что письмо пришло."
 }

@@ -349,6 +349,84 @@ class IncomingEmailEdgeCasesTest extends FeatureTestCase
         $this->assertCount(0, $this->sentEmailsTo('casey@customer.example.org'), 'No auto-reply loop.');
     }
 
+    /**
+     * @dataProvider autoReplyHeaders
+     */
+    public function testNoAutoReplyToAutoResponderHeaders($header, $value)
+    {
+        $this->mailbox->auto_reply_enabled = true;
+        $this->mailbox->auto_reply_subject = 'We got your message';
+        $this->mailbox->auto_reply_message = 'Thanks!';
+        $this->mailbox->save();
+
+        $this->receiveFromCustomer(['headers' => [$header => $value]]);
+
+        $this->assertSame(Conversation::STATUS_CLOSED, Conversation::where('mailbox_id', $this->mailbox->id)->first()->status, 'The email is still saved, as a delivery notice.');
+        $this->assertCount(0, $this->sentEmailsTo('casey@customer.example.org'), 'No auto-reply loop.');
+    }
+
+    public static function autoReplyHeaders()
+    {
+        return [
+            'Auto-Submitted' => ['Auto-Submitted', 'auto-replied'],
+            'X-Autoreply'    => ['X-Autoreply', 'yes'],
+            'QQ Mail'        => ['X-QQ-AUTO-REPLY', 'true'],
+        ];
+    }
+
+    // Delivery notices.
+
+    /**
+     * Amazon SES passes on a recipient's auto reply From its MAILER-DAEMON, without
+     * auto reply headers: only the subject tells. It is a delivery notice, not a bounce:
+     * the reply shows Delivered, and the notice is kept closed, out of the inbox, with
+     * no notifications or auto reply.
+     */
+    public function testAutoReplyFromMailerDaemonIsADeliveryNotice()
+    {
+        $conversation = $this->receiveFromCustomer();
+        $this->postAjax($this->agent, '/conversation/ajax', [
+            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Answer</p>', 'status' => Conversation::STATUS_PENDING,
+        ]);
+        $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
+        $reply_id = $this->sentEmailsTo('casey@customer.example.org')[0]->getId();
+        $this->captured_mail->flush();
+        $this->mailbox->auto_reply_enabled = true;
+        $this->mailbox->auto_reply_subject = 'We got your message';
+        $this->mailbox->auto_reply_message = 'Thanks!';
+        $this->mailbox->save();
+
+        $this->receiveEmail($this->mailbox, $this->makeEmail([
+            'from'        => 'MAILER-DAEMON@amazonses.com',
+            'to'          => $this->mailbox->email,
+            'subject'     => '=?utf-8?B?'.base64_encode('（自动回复）Re：Question about my order').'?=',
+            'in_reply_to' => $reply_id,
+            'body'        => "您的来信已收到，我会尽快回信。\n\n------------------ 来自 casey@customer.example.org 的自动回复",
+        ]));
+
+        $thread = Thread::where('body', 'like', '%您的来信已收到%')->first();
+        $this->assertNotNull($thread, 'The email is saved.');
+        $this->assertFalse($thread->isBounce());
+        $this->assertSame('delivered', $thread->getSendStatusData()['delivery_report']['kind']);
+        $this->assertSame(['casey@customer.example.org'], $thread->getSendStatusData()['delivery_report']['recipients']);
+        $this->assertNotEquals($conversation->id, $thread->conversation_id, 'Not added to the conversation.');
+        $this->assertEquals(Conversation::STATUS_CLOSED, $thread->conversation->status, 'Not in the inbox.');
+        $this->assertNotEquals(Conversation::STATUS_ACTIVE, $conversation->fresh()->status, 'The conversation stays as it was.');
+
+        $reply->refresh();
+        $this->assertSame('delivered', $reply->getSendStatusData()['delivered']['kind']);
+        $this->assertSame($thread->id, $reply->getSendStatusData()['delivered']['thread_id']);
+        $this->assertTrue(SendLog::where('thread_id', $reply->id)->where('status', SendLog::STATUS_DELIVERY_SUCCESS)->exists());
+        $this->assertSame(0, SendLog::where('status', SendLog::STATUS_DELIVERY_ERROR)->count(), 'Nobody is marked undeliverable.');
+        $this->assertNull(\App\Email::where('email', 'casey@customer.example.org')->first()->delivery_problem);
+        $this->assertCount(0, $this->sentEmails(), 'No auto reply or notification.');
+
+        $this->actingAs($this->agent)->followingRedirects()->get(route('conversations.view', ['id' => $conversation->id]))
+            ->assertSee('thread-delivery-notice', false)->assertSee(__('Delivered'));
+        $this->actingAs($this->agent)->followingRedirects()->get(route('conversations.view', ['id' => $thread->conversation_id]))
+            ->assertSee('data-kind="delivered"', false)->assertSee('#'.$conversation->number, false);
+    }
+
     public function testCustomerNameFromEncodedHeader()
     {
         $conversation = $this->receiveFromCustomer([

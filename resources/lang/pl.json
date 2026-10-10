@@ -1831,5 +1831,9 @@
     "Regenerate": "Wygeneruj Ponownie",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Utworzyć nowy adres URL webhooka? Obecny przestanie działać, dopóki nie zaktualizujesz webhooka w :provider nowym adresem URL.",
     "New webhook URL made. Update it in your sending service.": "Utworzono nowy adres URL webhooka. Zaktualizuj go w swojej usłudze wysyłki.",
-    "On :date, :person wrote:": "W dniu :date :person napisał(a):"
+    "On :date, :person wrote:": "W dniu :date :person napisał(a):",
+    "Delivered": "Doręczono",
+    "Delivered to :recipient": "Doręczono do :recipient",
+    "Delivery notice for :link": "Powiadomienie o doręczeniu dla :link",
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Serwer poczty lub skrzynka odbiorcy potwierdziły, że e-mail dotarł."
 }

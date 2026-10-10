@@ -2229,5 +2229,9 @@
     "Regenerate": "Қайта Жасау",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Жаңа webhook URL жасау керек пе? :provider ішіндегі webhook-ты жаңа URL-мен жаңартқанша ағымдағысы жұмыс істемейді.",
     "New webhook URL made. Update it in your sending service.": "Жаңа webhook URL жасалды. Оны жіберу қызметіңізде жаңартыңыз.",
-    "On :date, :person wrote:": ":date күні :person жазды:"
+    "On :date, :person wrote:": ":date күні :person жазды:",
+    "Delivered": "Жеткізілді",
+    "Delivered to :recipient": ":recipient адресіне жеткізілді",
+    "Delivery notice for :link": ":link үшін жеткізу туралы хабарлама",
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Алушының пошта сервері немесе пошта жәшігі хаттың келгенін растады."
 }

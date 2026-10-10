@@ -1833,5 +1833,9 @@
     "Regenerate": "重新生成",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "要生成新的 Webhook URL 吗？在你用新 URL 更新 :provider 中的 Webhook 之前，当前 URL 将无法使用。",
     "New webhook URL made. Update it in your sending service.": "已生成新的 Webhook URL。请在你的发送服务中更新它。",
-    "On :date, :person wrote:": "在 :date，:person 写道："
+    "On :date, :person wrote:": "在 :date，:person 写道：",
+    "Delivered": "已送达",
+    "Delivered to :recipient": "已送达 :recipient",
+    "Delivery notice for :link": ":link 的送达通知",
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "收件人的邮件服务器或邮箱已确认邮件送达。"
 }

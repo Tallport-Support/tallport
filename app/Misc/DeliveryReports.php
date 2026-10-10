@@ -9,7 +9,7 @@ use App\SendLog;
 use App\Thread;
 
 /**
- * Delivery reports (bounces, delays, complaints, suppression notices) in the
+ * Delivery reports (bounces, delays, complaints, suppression notices, delivery notices) in the
  * conversation: what a report thread says (send_status_data's delivery_report,
  * App\Incoming\DeliveryReport::toArray()), and the addresses emails couldn't
  * reach (emails.delivery_problem), which the customer's profile shows and the
@@ -36,7 +36,7 @@ class DeliveryReports
     {
         $report = $thread->getSendStatusData()['delivery_report'] ?? null;
 
-        return is_array($report) && !empty($report['kind']) && !empty($report['recipients']) ? $report : null;
+        return is_array($report) && !empty($report['kind']) && (!empty($report['recipients']) || $report['kind'] == DeliveryReport::DELIVERED) ? $report : null;
     }
 
     /**
@@ -51,6 +51,8 @@ class DeliveryReports
                 return __('Complaint from :recipient', ['recipient' => $recipient_html]);
             case DeliveryReport::SUPPRESSED:
                 return __('Not sent to :recipient', ['recipient' => $recipient_html]);
+            case DeliveryReport::DELIVERED:
+                return $recipient_html !== '' ? __('Delivered to :recipient', ['recipient' => $recipient_html]) : __('Delivered');
             default:
                 return __('Not delivered to :recipient', ['recipient' => $recipient_html]);
         }
@@ -104,6 +106,8 @@ class DeliveryReports
                 return __('Complaint');
             case DeliveryReport::SUPPRESSED:
                 return __('Suppressed');
+            case DeliveryReport::DELIVERED:
+                return __('Delivered');
             default:
                 return __('Not Delivered');
         }
@@ -135,17 +139,20 @@ class DeliveryReports
                 return __('The recipient marked the email as spam.');
             case 'suppressed':
                 return __('The address is on the sending service\'s suppression list after an earlier bounce or complaint, so the email was not sent.');
+            case 'delivered':
+                return __('The recipient\'s mail server or mailbox confirmed that the email arrived.');
             default:
                 return __('The receiving server rejected the email.');
         }
     }
 
     /**
-     * Mark the report's addresses as not reached. A delay isn't: the email may still arrive.
+     * Mark the report's addresses as not reached. A delay isn't: the email may
+     * still arrive; nor is a delivery notice.
      */
     public static function flag(array $report, Thread $thread)
     {
-        if ($report['kind'] == DeliveryReport::DELAYED) {
+        if (in_array($report['kind'], [DeliveryReport::DELAYED, DeliveryReport::DELIVERED])) {
             return;
         }
         foreach ($report['recipients'] as $recipient) {
@@ -200,6 +207,8 @@ class DeliveryReports
             ->where('created_at', '>=', now()->subHours(self::SAME_REPORT_HOURS));
         if ($kind == DeliveryReport::DELAYED) {
             $query->where('status', SendLog::STATUS_ACCEPTED)->where('status_message', 'like', self::DELAYED_LOG_MESSAGE.'%');
+        } elseif ($kind == DeliveryReport::DELIVERED) {
+            $query->where('status', SendLog::STATUS_DELIVERY_SUCCESS);
         } else {
             $query->where('status', $kind == DeliveryReport::COMPLAINT ? SendLog::STATUS_COMPLAINED : SendLog::STATUS_DELIVERY_ERROR);
         }
@@ -230,6 +239,7 @@ class DeliveryReports
      * it for each recipient. A bounce or suppression: Not delivered. A
      * complaint: Reported as spam (it was delivered, so its send status
      * stays). A delay: Delivery delayed, unless it is Not delivered already.
+     * A delivery notice: Delivered, unless it is Not delivered already.
      * $report_thread: the report email's thread, when it came as an email.
      */
     public static function markReply(Thread $reply, array $report, $mail_type = SendLog::MAIL_TYPE_EMAIL_TO_CUSTOMER, ?Thread $report_thread = null)
@@ -256,6 +266,12 @@ class DeliveryReports
             }
             $status = SendLog::STATUS_ACCEPTED;
             $log_message = self::DELAYED_LOG_MESSAGE;
+        } elseif ($report['kind'] == DeliveryReport::DELIVERED) {
+            if (!$reply->isSendStatusError()) {
+                $reply->updateSendStatusData(['delivered' => $notice]);
+            }
+            $status = SendLog::STATUS_DELIVERY_SUCCESS;
+            $log_message = 'Delivered';
         } else {
             $reply->send_status = SendLog::STATUS_DELIVERY_ERROR;
             if ($report_thread) {
@@ -284,9 +300,9 @@ class DeliveryReports
     }
 
     /**
-     * A sent reply's delivery notice that isn't a failure: a complaint or a
-     * delay (markReply()): ['kind', 'text', 'details' => who reported it, when,
-     * and the report email's conversation (HTML)], or null.
+     * A sent reply's delivery notice that isn't a failure: a complaint, a
+     * delivery or a delay (markReply()): ['kind', 'text', 'details' => who
+     * reported it, when, and the report email's conversation (HTML)], or null.
      */
     public static function replyNotice(Thread $reply)
     {
@@ -294,6 +310,9 @@ class DeliveryReports
         if (!empty($data['complaint']['kind'])) {
             $notice = $data['complaint'];
             $text = __('Reported as spam by the recipient');
+        } elseif (!empty($data['delivered']['kind'])) {
+            $notice = $data['delivered'];
+            $text = __('Delivered');
         } elseif (!empty($data['delivery_delayed']['kind'])) {
             $notice = $data['delivery_delayed'];
             $text = __('Delivery delayed');

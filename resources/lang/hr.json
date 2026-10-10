@@ -1832,5 +1832,9 @@
     "Regenerate": "Ponovno Generiraj",
     "Make a new webhook URL? The current one stops working until you update the webhook in :provider with the new URL.": "Izraditi novi URL webhooka? Trenutačni prestaje raditi dok ne ažurirate webhook u :provider novim URL-om.",
     "New webhook URL made. Update it in your sending service.": "Izrađen je novi URL webhooka. Ažurirajte ga u svojoj usluzi za slanje.",
-    "On :date, :person wrote:": ":date, :person je napisao/la:"
+    "On :date, :person wrote:": ":date, :person je napisao/la:",
+    "Delivered": "Isporučeno",
+    "Delivered to :recipient": "Isporučeno na :recipient",
+    "Delivery notice for :link": "Obavijest o isporuci za :link",
+    "The recipient's mail server or mailbox confirmed that the email arrived.": "Poslužitelj e-pošte ili poštanski sandučić primatelja potvrdio je da je e-poruka stigla."
 }
