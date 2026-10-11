@@ -23,10 +23,12 @@ cp composer.json composer.lock "$checkout_dir/source/"
 (
     cd "$checkout_dir/source"
 
-    rm -rf vendor
+    # vendor/ as committed, against a fresh install without its empty folders (git keeps none).
+    mv vendor ../vendor-committed
     composer install --ignore-platform-reqs --no-interaction --no-progress
+    find vendor -type d -empty -delete
 
-    if ! diff -qr "$source_dir/vendor" vendor; then
+    if ! diff -qr ../vendor-committed vendor; then
         echo "Committed vendor/ differs from composer install" >&2
         exit 1
     fi
