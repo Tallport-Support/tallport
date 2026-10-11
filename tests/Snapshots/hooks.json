@@ -260,10 +260,8 @@
         "arguments": 1,
         "files": [
             "app/CustomerChannel.php",
-            "app/Http/Controllers/UsersController.php",
             "app/Reports/Report.php",
-            "app/Workflows/Conditions.php",
-            "resources/views/users/preferences.blade.php"
+            "app/Workflows/Conditions.php"
         ]
     },
     {

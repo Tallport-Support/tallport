@@ -13,7 +13,7 @@ use Tests\FeatureTestCase;
 /**
  * A user's own preferences: language, timezone, time format and keyboard shortcuts;
  * the status a reply leaves and where the user goes after sending, for every mailbox;
- * the accent; each channel's conversation view.
+ * the accent.
  */
 class UserPreferencesTest extends FeatureTestCase
 {
@@ -141,30 +141,5 @@ class UserPreferencesTest extends FeatureTestCase
             '_token' => csrf_token(), 'locale' => 'xx', 'time_format' => 7,
         ])->assertSessionHasErrors(['locale', 'time_format']);
         $this->assertSame('nl', $agent->fresh()->locale);
-    }
-
-    public function testConversationViewPerChannel()
-    {
-        $agent = $this->createUser();
-        $telegram = \App\Telegram\Telegram::CHANNEL;
-
-        // Defaults: email as email, channels as chats.
-        $this->assertSame(User::VIEW_EMAIL, $agent->conversationView());
-        $this->assertSame(User::VIEW_CHAT, $agent->conversationView($telegram));
-        $this->actingAs($agent)->get(route('users.preferences', ['id' => $agent->id]))->assertOk()
-            ->assertSee('Conversation View')->assertSee('name="conversation_views['.$telegram.']"', false);
-
-        \Session::start();
-        $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), [
-            '_token' => csrf_token(), 'conversation_views' => ['email' => User::VIEW_CHAT, $telegram => User::VIEW_EMAIL, 12345 => User::VIEW_CHAT],
-        ])->assertSessionHasNoErrors();
-        $agent->refresh();
-        $this->assertSame(User::VIEW_CHAT, $agent->conversationView());
-        $this->assertSame(User::VIEW_EMAIL, $agent->conversationView($telegram));
-        $this->assertArrayNotHasKey(12345, json_decode($agent->conversation_views, true), 'Only known channels are kept.');
-
-        $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), [
-            '_token' => csrf_token(), 'conversation_views' => ['email' => 'columns'],
-        ])->assertSessionHasErrors('conversation_views.email');
     }
 }

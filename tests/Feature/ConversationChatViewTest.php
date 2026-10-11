@@ -7,12 +7,11 @@ use App\Livewire\ConversationComposer;
 use App\Livewire\ConversationThread;
 use App\Telegram\Telegram;
 use App\Thread;
-use App\User;
 use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
- * The chat view of a conversation (the user's Conversation View for its channel):
+ * The chat view of a channel's conversation (Telegram, Nostr; email shows as email):
  * the history oldest first under day dividers, the composer docked and open.
  */
 class ConversationChatViewTest extends FeatureTestCase
@@ -33,21 +32,17 @@ class ConversationChatViewTest extends FeatureTestCase
         $this->conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
     }
 
-    public function testTheViewFollowsTheUsersChoiceForTheChannel()
+    public function testEmailShowsAsEmailAndChannelsAsChats()
     {
         // Email: the email view.
         $this->actingAs($this->agent)->get($this->conversation->url())->assertOk()
             ->assertDontSee('conv-chat ', false)->assertSee('conv-heading__top', false);
 
-        // Telegram: the chat view, unless the user chose the email view.
+        // Telegram: the chat view.
         $this->conversation->channel = Telegram::CHANNEL;
         $this->conversation->save();
         $this->actingAs($this->agent)->get($this->conversation->url())->assertOk()
             ->assertSee('conv-chat ', false)->assertSee('f-history', false)->assertSee('conv-composer-docked', false);
-
-        $this->agent->conversation_views = json_encode([Telegram::CHANNEL => User::VIEW_EMAIL]);
-        $this->agent->save();
-        $this->actingAs($this->agent->fresh())->get($this->conversation->url())->assertOk()->assertDontSee('conv-chat ', false);
     }
 
     public function testTheHistoryRunsOldestFirstUnderDayDividers()

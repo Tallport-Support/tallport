@@ -12,6 +12,11 @@ Use the relevant skill in `.agents/skills/` whenever working in its domain.
 - Match the surrounding code: FreeScout style, comment density, naming, the `\Helper`/`\Eventy` facades and global helpers it already uses.
 - Tooling stays PHP/Laravel-native. No Node-based test tools (no TypeScript, no Playwright).
 
+## Purposely opinionated
+
+- For most things there is a right way; Tallport does it that way instead of offering a setting. Email shows as email, chats as chats.
+- Add a setting only when people genuinely work differently, and keep its options few. Every setting confuses people and allows combinations that don't work and aren't tested.
+
 ## Dependencies and vendor/
 
 - `vendor/` is committed and ships with every release. It must equal what `composer install --ignore-platform-reqs` produces, which a CI job checks. Never edit files in `vendor/`. The root composer.json must not have development-only packages, because they would end up in `vendor/`.

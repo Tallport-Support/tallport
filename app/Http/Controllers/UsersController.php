@@ -651,8 +651,6 @@ class UsersController extends Controller
             'reply_status' => 'nullable|in:'.implode(',', array_keys(\App\Conversation::$statuses)),
             'stay_in_conversation' => 'nullable|boolean',
             'accent'       => ['nullable', \Illuminate\Validation\Rule::in(\FruitUI\Fruit::ACCENTS)],
-            'conversation_views'   => 'nullable|array',
-            'conversation_views.*' => 'in:'.User::VIEW_EMAIL.','.User::VIEW_CHAT,
             'locale'       => ['nullable', Rule::in(config('app.locales'))],
             'timezone'     => 'nullable|string|max:255',
             'time_format'  => ['nullable', Rule::in([User::TIME_FORMAT_12, User::TIME_FORMAT_24])],
@@ -681,9 +679,6 @@ class UsersController extends Controller
         $user->stay_in_conversation = (bool) $request->stay_in_conversation;
         // Off: the installation's accent (Settings » Appearance).
         $user->accent = $request->filled('accent_default') ? null : ($request->accent ?: null);
-        // Per channel: email ("email") and the channels Tallport and modules have.
-        $channels = array_merge(['email'], array_map('strval', array_keys(\Eventy::filter('channels.list', []))));
-        $user->conversation_views = json_encode(array_intersect_key((array) $request->conversation_views, array_flip($channels))) ?: null;
         $user->save();
 
         \Session::flash('flash_success_floating', __('Settings updated'));

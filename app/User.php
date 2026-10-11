@@ -31,12 +31,6 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
 
     public $rememberCacheDriver = 'array';
 
-    /**
-     * Views of a conversation (conversationView()).
-     */
-    const VIEW_EMAIL = 'email';
-    const VIEW_CHAT = 'chat';
-
     const PHOTO_DIRECTORY = 'users';
     const PHOTO_QUALITY = 77;
 
@@ -331,22 +325,6 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
         } else {
             return $query->get();
         }
-    }
-
-    /**
-     * How the user views a channel's conversations (users/preferences): the email
-     * view for email, the chat view for channels (Telegram, Nostr), unless chosen
-     * otherwise. $channel: the channel's code, or null for email.
-     */
-    public function conversationView($channel = null)
-    {
-        $views = json_decode((string) $this->conversation_views, true) ?: [];
-        $view = $views[$channel ? (string) $channel : 'email'] ?? null;
-        if (in_array($view, [self::VIEW_EMAIL, self::VIEW_CHAT], true)) {
-            return $view;
-        }
-
-        return $channel ? self::VIEW_CHAT : self::VIEW_EMAIL;
     }
 
     /**

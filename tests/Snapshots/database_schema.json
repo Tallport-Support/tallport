@@ -4778,13 +4778,6 @@
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
             },
-            "conversation_views": {
-                "type": "text",
-                "nullable": true,
-                "default": "NULL",
-                "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci"
-            },
             "team_chat_mailbox_id": {
                 "type": "int(10) unsigned",
                 "nullable": true,

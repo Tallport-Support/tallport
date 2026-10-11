@@ -1473,8 +1473,6 @@
     "In the List": "Na Liście",
     "then": "potem",
     "Replace Photo": "Zastąp Zdjęcie",
-    "Conversation View": "Widok Rozmowy",
-    "How conversations from each channel look: as emails, or as a chat with the newest message at the bottom.": "Jak wyglądają rozmowy z każdego kanału: jako e-maile lub jako czat z najnowszą wiadomością na dole.",
     "Much faster pages: PHP keeps its compiled code in memory": "Znacznie szybsze strony: PHP przechowuje skompilowany kod w pamięci",
     "Faster Nostr encryption (bcmath is used without it)": "Szybsze szyfrowanie Nostr (bez niego używany jest bcmath)",
     "Nostr, when gmp is missing": "Nostr, gdy brakuje gmp",

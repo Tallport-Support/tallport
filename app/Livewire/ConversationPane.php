@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Conversation;
 use App\Http\Controllers\ConversationsController;
-use App\User;
 use Livewire\Component;
 
 /**
@@ -101,7 +100,8 @@ class ConversationPane extends Component
         $user = auth()->user();
 
         return view('livewire.conversation-pane', ConversationsController::pageData($conversation, $this->openedFolder(), $user) + [
-            'chat_view' => !request()->input('print') && $user->conversationView($conversation->channel ?: null) == User::VIEW_CHAT,
+            // Email as email, channels (Telegram, Nostr) as chats.
+            'chat_view' => !request()->input('print') && $conversation->hasChannel(),
         ]);
     }
 }
