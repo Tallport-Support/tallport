@@ -434,6 +434,18 @@ a h4 {
 .thread-content	img {
     max-width: 100%;
 }
+/* In an email, pre only keeps the sender's line breaks and spacing: no code box, and long
+   lines wrap rather than scroll (as mail programs show it). */
+.thread-content pre,
+.thread-original pre {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    font-size: inherit;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
 .conv-new #conv-toolbar {
     padding: 12px 20px;
     border-bottom: 1px solid var(--f-border);
