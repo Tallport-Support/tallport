@@ -369,14 +369,8 @@ class SystemControllerTest extends FeatureTestCase
      */
     public function testToolsRunTheirCommands()
     {
-        $this->postForm($this->admin, route('system.tools.action'), ['action' => 'fetch_emails', 'days' => '3', 'unseen' => '1', 'debug' => '0'])
+        $this->postForm($this->admin, route('system.tools.action'), ['action' => 'migrate_db'])
             ->assertRedirect(route('system'));
-        $fetch = collect(\Tests\Support\StubCommand::$calls)->firstWhere('name', 'tallport:fetch-emails');
-        $this->assertStringContainsString('--days=3', $fetch['arguments']);
-        $this->assertStringContainsString('--unseen=1', $fetch['arguments']);
-        $this->assertStringContainsString('--debug=0', $fetch['arguments']);
-
-        $this->postForm($this->admin, route('system.tools.action'), ['action' => 'migrate_db']);
         $this->assertStringContainsString('--force', collect(\Tests\Support\StubCommand::$calls)->firstWhere('name', 'migrate')['arguments']);
 
         $this->postForm($this->admin, route('system.tools.action'), ['action' => 'logout_users']);

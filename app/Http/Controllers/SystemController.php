@@ -488,14 +488,6 @@ class SystemController extends Controller
                 \Artisan::call('tallport:clear-cache', [], $outputLog);
                 break;
 
-            case 'fetch_emails':
-                $params = [];
-                $params['--days'] = (int)$request->days;
-                $params['--unseen'] = (int)$request->unseen;
-                $params['--debug'] = (int)$request->debug;
-                \Artisan::call('tallport:fetch-emails', $params, $outputLog);
-                break;
-
             case 'migrate_db':
                 \Artisan::call('migrate', ['--force' => true], $outputLog);
                 break;

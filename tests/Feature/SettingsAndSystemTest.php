@@ -220,7 +220,10 @@ class SettingsAndSystemTest extends FeatureTestCase
         Livewire::actingAs($this->admin)->test(SystemStatus::class)
             ->assertSeeInOrder(['Requirements', 'Background Tasks', 'Maintenance', 'Clear Cache', 'Update Database', 'Sign Out Everyone…'])
             ->call('fetchNow', 2, false, true);
-        $this->assertCommandCalled('tallport:fetch-emails');
+        $fetch = collect(\Tests\Support\StubCommand::$calls)->firstWhere('name', 'tallport:fetch-emails');
+        $this->assertStringContainsString('--days=2', $fetch['arguments']);
+        $this->assertStringContainsString('--unseen=0', $fetch['arguments']);
+        $this->assertStringContainsString('--debug=1', $fetch['arguments']);
     }
 
     public function testStatusInTheSidebarCountsWhatNeedsAttention()
