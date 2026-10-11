@@ -81,7 +81,6 @@ class Thread extends Model
      * Subtypes (for notes mostly)
      */
     const SUBTYPE_FORWARD = 1;
-    const SUBTYPE_PHONE = 2;
 
     /**
      * Statuses (code must be equal to conversations statuses).
@@ -105,16 +104,10 @@ class Thread extends Model
      */
     const STATE_DRAFT = 1;
     const STATE_PUBLISHED = 2;
-    const STATE_HIDDEN = 3;
-    // A state of review means the thread has been stopped by Traffic Cop and is waiting
-    // to be confirmed (or discarded) by the person that created the thread.
-    const STATE_REVIEW = 4;
 
     public static $states = [
         self::STATE_DRAFT     => 'draft',
         self::STATE_PUBLISHED => 'published',
-        self::STATE_HIDDEN    => 'hidden',
-        self::STATE_REVIEW    => 'review',
     ];
 
     /**
@@ -129,13 +122,6 @@ class Thread extends Model
     const ACTION_TYPE_MOVED_FROM_MAILBOX = 3;
     // Another conversation was merged with this conversation
     const ACTION_TYPE_MERGED = 4;
-    // The conversation was imported (no email notifications were sent)
-    const ACTION_TYPE_IMPORTED = 5;
-    //  A workflow was run on this conversation (either automatic or manual)
-    // const ACTION_TYPE_WORKFLOW_MANUAL = 6;
-    // const ACTION_TYPE_WORKFLOW_AUTO = 7;
-    // The ticket was imported from an external Service
-    const ACTION_TYPE_IMPORTED_EXTERNAL = 8;
     // Conversation customer changed
     const ACTION_TYPE_CUSTOMER_CHANGED = 9;
     // The ticket was deleted
@@ -156,10 +142,6 @@ class Thread extends Model
         self::ACTION_TYPE_USER_CHANGED            => 'changed-ticket-assignee',
         self::ACTION_TYPE_MOVED_FROM_MAILBOX      => 'moved-from-mailbox',
         self::ACTION_TYPE_MERGED                  => 'merged',
-        self::ACTION_TYPE_IMPORTED                => 'imported',
-        // self::ACTION_TYPE_WORKFLOW_MANUAL         => 'manual-workflow',
-        // self::ACTION_TYPE_WORKFLOW_AUTO           => 'automatic-workflow',
-        self::ACTION_TYPE_IMPORTED_EXTERNAL       => 'imported-external',
         self::ACTION_TYPE_CUSTOMER_CHANGED        => 'changed-ticket-customer',
         self::ACTION_TYPE_DELETED_TICKET          => 'deleted-ticket',
         self::ACTION_TYPE_RESTORE_TICKET          => 'restore-ticket',
