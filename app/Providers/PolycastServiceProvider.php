@@ -38,11 +38,6 @@ class PolycastServiceProvider extends ServiceProvider
         // });
 
         // $this->publishes([
-        //     __DIR__.'/../dist/js/polycast.js' => public_path('vendor/polycast/polycast.js'),
-        //     __DIR__.'/../dist/js/polycast.min.js' => public_path('vendor/polycast/polycast.min.js'),
-        // ], 'public');
-
-        // $this->publishes([
         //     __DIR__.'/../migrations/' => database_path('migrations')
         // ], 'migrations');
 

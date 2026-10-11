@@ -2858,7 +2858,7 @@ class Helper
      */
     public static function layoutStylesheets()
     {
-        $styles = ['/css/fonts.css', '/vendor/fruitui/core.compat.css', '/vendor/fruitui/layout.compat.css', '/vendor/fruitui/editor.compat.css', '/css/style.css'];
+        $styles = ['/vendor/fruitui/core.compat.css', '/vendor/fruitui/layout.compat.css', '/vendor/fruitui/editor.compat.css', '/css/style.css'];
         if (self::isLocaleRtl()) {
             $styles[] = '/css/style-rtl.css';
         }

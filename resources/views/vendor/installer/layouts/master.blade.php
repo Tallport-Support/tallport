@@ -6,7 +6,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>@if (trim($__env->yieldContent('template_title')))@yield('template_title') | @endif {{ trans('installer_messages.title') }}</title>
-        <link href="{{ \Helper::getSubdirectory(true, true) }}css/fonts.css" rel="stylesheet"/>
         <link href="{{ \Helper::getSubdirectory(true, true) }}installer/css/fontawesome.css" rel="stylesheet"/>
         <link href="{{ \Helper::getSubdirectory(true, true) }}installer/css/style.min.css" rel="stylesheet"/>
         @yield('style')

@@ -12,7 +12,7 @@
             html, body {
                 background-color: #fff;
                 color: #a3b2c2;
-                font-family: "Liberation Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-family: -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', sans-serif;
                 font-weight: 100;
                 height: 100vh;
                 margin: 0;

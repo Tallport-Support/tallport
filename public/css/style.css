@@ -117,9 +117,6 @@ input.disabled {
 label.disabled {
     color: var(--f-tertiary);
 }
-.has-error.help-block {
-    color: var(--f-danger);
-}
 
 /**
  * Cards
