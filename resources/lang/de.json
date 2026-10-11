@@ -1797,5 +1797,9 @@
     "When a Conversation Moves": "Wenn ein Gespräch Verschoben Wird",
     "Stay in Folder": "Im Ordner Bleiben",
     "Stay in Conversation": "Im Gespräch Bleiben",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Im Ordner Bleiben öffnet das nächste Gespräch in dem Ordner, in dem Sie sind."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Im Ordner Bleiben öffnet das nächste Gespräch in dem Ordner, in dem Sie sind.",
+    "Allowed": "Erlaubt",
+    "Not Allowed": "Nicht Erlaubt",
+    "Default (Allowed)": "Standard (Erlaubt)",
+    "Default (Not Allowed)": "Standard (Nicht Erlaubt)"
 }

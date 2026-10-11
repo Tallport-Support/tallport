@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "Gdy Rozmowa Zostanie Przeniesiona",
     "Stay in Folder": "Zostań w Folderze",
     "Stay in Conversation": "Zostań w Rozmowie",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Zostań w Folderze otwiera następną rozmowę w folderze, w którym Państwo są."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Zostań w Folderze otwiera następną rozmowę w folderze, w którym Państwo są.",
+    "Allowed": "Dozwolone",
+    "Not Allowed": "Niedozwolone",
+    "Default (Allowed)": "Domyślnie (Dozwolone)",
+    "Default (Not Allowed)": "Domyślnie (Niedozwolone)"
 }

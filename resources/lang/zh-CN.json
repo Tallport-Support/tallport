@@ -1802,5 +1802,9 @@
     "When a Conversation Moves": "对话移动时",
     "Stay in Folder": "留在文件夹",
     "Stay in Conversation": "留在对话",
-    "Stay in Folder opens the next conversation in the folder you are in.": "“留在文件夹”会打开您所在文件夹中的下一个对话。"
+    "Stay in Folder opens the next conversation in the folder you are in.": "“留在文件夹”会打开您所在文件夹中的下一个对话。",
+    "Allowed": "允许",
+    "Not Allowed": "不允许",
+    "Default (Allowed)": "默认（允许）",
+    "Default (Not Allowed)": "默认（不允许）"
 }

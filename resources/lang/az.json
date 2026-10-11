@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "Söhbət Köçürüldükdə",
     "Stay in Folder": "Qovluqda Qal",
     "Stay in Conversation": "Söhbətdə Qal",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Qovluqda Qal olduğunuz qovluqdakı növbəti söhbəti açır."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Qovluqda Qal olduğunuz qovluqdakı növbəti söhbəti açır.",
+    "Allowed": "İcazə Verilir",
+    "Not Allowed": "İcazə Verilmir",
+    "Default (Allowed)": "Standart (İcazə Verilir)",
+    "Default (Not Allowed)": "Standart (İcazə Verilmir)"
 }

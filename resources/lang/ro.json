@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "Când o Conversație Este Mutată",
     "Stay in Folder": "Rămâi în Folder",
     "Stay in Conversation": "Rămâi în Conversație",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Rămâi în Folder deschide următoarea conversație din folderul în care vă aflați."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Rămâi în Folder deschide următoarea conversație din folderul în care vă aflați.",
+    "Allowed": "Permis",
+    "Not Allowed": "Nepermis",
+    "Default (Allowed)": "Prestabilit (Permis)",
+    "Default (Not Allowed)": "Prestabilit (Nepermis)"
 }

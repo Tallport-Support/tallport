@@ -1808,5 +1808,9 @@
     "When a Conversation Moves": "Quand une Conversation Est Déplacée",
     "Stay in Folder": "Rester dans le Dossier",
     "Stay in Conversation": "Rester dans la Conversation",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Rester dans le Dossier ouvre la conversation suivante du dossier où vous êtes."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Rester dans le Dossier ouvre la conversation suivante du dossier où vous êtes.",
+    "Allowed": "Autorisé",
+    "Not Allowed": "Non Autorisé",
+    "Default (Allowed)": "Par Défaut (Autorisé)",
+    "Default (Not Allowed)": "Par Défaut (Non Autorisé)"
 }

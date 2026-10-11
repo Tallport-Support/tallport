@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "Als een Gesprek Wordt Verplaatst",
     "Stay in Folder": "In Map Blijven",
     "Stay in Conversation": "In Gesprek Blijven",
-    "Stay in Folder opens the next conversation in the folder you are in.": "In Map Blijven opent het volgende gesprek in de map waarin u zich bevindt."
+    "Stay in Folder opens the next conversation in the folder you are in.": "In Map Blijven opent het volgende gesprek in de map waarin u zich bevindt.",
+    "Allowed": "Toegestaan",
+    "Not Allowed": "Niet Toegestaan",
+    "Default (Allowed)": "Standaard (Toegestaan)",
+    "Default (Not Allowed)": "Standaard (Niet Toegestaan)"
 }

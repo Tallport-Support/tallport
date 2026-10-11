@@ -384,18 +384,17 @@ class UsersController extends Controller
         $user->mailboxes()->sync($request->mailboxes ?: []);
         $user->syncPersonalFolders($request->mailboxes);
 
-        // Save permissions.
-        $user_permissions = $request->user_permissions ?? [];
+        // Save permissions: Allowed (1) and Not Allowed (0) are the user's own,
+        // Default ("") follows Settings » General.
+        $user_permissions = (array) $request->input('user_permissions', []);
         // Keep permissions this page doesn't show, e.g. "only assigned
         // tickets", which is set on the profile page.
         $permissions = array_diff_key($user->permissions ?: [], array_flip(User::getUserPermissionsList()));
 
         foreach (User::getUserPermissionsList() as $permission_id) {
-            $new_has_permission = in_array($permission_id, $user_permissions);
-
-            if ($user->hasPermission($permission_id, false) != $new_has_permission) {
-                $permissions[$permission_id] = (int)(bool)$new_has_permission;
-                $save_user = true;
+            $value = (string) ($user_permissions[$permission_id] ?? '');
+            if ($value === '1' || $value === '0') {
+                $permissions[$permission_id] = (int) $value;
             }
         }
         $user->permissions = $permissions;

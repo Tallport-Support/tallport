@@ -35,9 +35,17 @@
             @endif
 
             @if (!$user->isAdmin())
+                {{-- Each permission: the user's own, or the default (Settings » General). --}}
                 <x-fruit::form-section :title="__('User Permissions')">
                     @foreach (App\User::getUserPermissionsList() as $permission_id)
-                        <x-fruit::checkbox name="user_permissions[]" :value="$permission_id" id="user_permission_{{ $permission_id }}" :checked="$user->hasPermission($permission_id)">@if ($user->hasPermission($permission_id, false) != $user->hasPermission($permission_id))<strong>{{ App\User::getUserPermissionName($permission_id) }}</strong>@else{{ App\User::getUserPermissionName($permission_id) }}@endif</x-fruit::checkbox>
+                        @php $own_permission = $user->permissions[$permission_id] ?? null; @endphp
+                        <x-fruit::field :label="App\User::getUserPermissionName($permission_id)" layout="row">
+                            <x-fruit::select id="user_permission_{{ $permission_id }}" name="user_permissions[{{ $permission_id }}]">
+                                <option value="">{{ $user->hasPermission($permission_id, false) ? __('Default (Allowed)') : __('Default (Not Allowed)') }}</option>
+                                <option value="1" @if ($own_permission !== null && $own_permission) selected @endif>{{ __('Allowed') }}</option>
+                                <option value="0" @if ($own_permission !== null && !$own_permission) selected @endif>{{ __('Not Allowed') }}</option>
+                            </x-fruit::select>
+                        </x-fruit::field>
                     @endforeach
                 </x-fruit::form-section>
             @endif

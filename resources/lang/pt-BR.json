@@ -1802,5 +1802,9 @@
     "When a Conversation Moves": "Quando uma Conversa É Movida",
     "Stay in Folder": "Ficar na Pasta",
     "Stay in Conversation": "Ficar na Conversa",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Ficar na Pasta abre a próxima conversa da pasta em que você está."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Ficar na Pasta abre a próxima conversa da pasta em que você está.",
+    "Allowed": "Permitido",
+    "Not Allowed": "Não Permitido",
+    "Default (Allowed)": "Padrão (Permitido)",
+    "Default (Not Allowed)": "Padrão (Não Permitido)"
 }

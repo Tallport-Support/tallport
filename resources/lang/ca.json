@@ -1893,5 +1893,9 @@
     "When a Conversation Moves": "Quan Es Mou Una Conversa",
     "Stay in Folder": "Quedar-se a la Carpeta",
     "Stay in Conversation": "Quedar-se a la Conversa",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Quedar-se a la Carpeta obre la conversa següent de la carpeta on sou."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Quedar-se a la Carpeta obre la conversa següent de la carpeta on sou.",
+    "Allowed": "Permès",
+    "Not Allowed": "No Permès",
+    "Default (Allowed)": "Per Defecte (Permès)",
+    "Default (Not Allowed)": "Per Defecte (No Permès)"
 }

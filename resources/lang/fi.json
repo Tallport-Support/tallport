@@ -1817,5 +1817,9 @@
     "When a Conversation Moves": "Kun Keskustelu Siirtyy",
     "Stay in Folder": "Pysy Kansiossa",
     "Stay in Conversation": "Pysy Keskustelussa",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Pysy Kansiossa avaa seuraavan keskustelun kansiossa, jossa olet."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Pysy Kansiossa avaa seuraavan keskustelun kansiossa, jossa olet.",
+    "Allowed": "Sallittu",
+    "Not Allowed": "Ei Sallittu",
+    "Default (Allowed)": "Oletus (Sallittu)",
+    "Default (Not Allowed)": "Oletus (Ei Sallittu)"
 }

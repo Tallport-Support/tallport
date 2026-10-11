@@ -1846,5 +1846,9 @@
     "When a Conversation Moves": "對話移動時",
     "Stay in Folder": "留在資料夾",
     "Stay in Conversation": "留在對話",
-    "Stay in Folder opens the next conversation in the folder you are in.": "「留在資料夾」會開啟您所在資料夾中的下一個對話。"
+    "Stay in Folder opens the next conversation in the folder you are in.": "「留在資料夾」會開啟您所在資料夾中的下一個對話。",
+    "Allowed": "允許",
+    "Not Allowed": "不允許",
+    "Default (Allowed)": "預設（允許）",
+    "Default (Not Allowed)": "預設（不允許）"
 }

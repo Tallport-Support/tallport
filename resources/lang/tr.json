@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "Bir Görüşme Taşındığında",
     "Stay in Folder": "Klasörde Kal",
     "Stay in Conversation": "Görüşmede Kal",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Klasörde Kal, bulunduğunuz klasördeki sonraki görüşmeyi açar."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Klasörde Kal, bulunduğunuz klasördeki sonraki görüşmeyi açar.",
+    "Allowed": "İzin Verilir",
+    "Not Allowed": "İzin Verilmez",
+    "Default (Allowed)": "Varsayılan (İzin Verilir)",
+    "Default (Not Allowed)": "Varsayılan (İzin Verilmez)"
 }

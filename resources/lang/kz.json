@@ -2195,5 +2195,9 @@
     "When a Conversation Moves": "Тикет Жылжытылғанда",
     "Stay in Folder": "Қалтада Қалу",
     "Stay in Conversation": "Тикетте Қалу",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Қалтада Қалу сіз тұрған қалтадағы келесі тикетті ашады."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Қалтада Қалу сіз тұрған қалтадағы келесі тикетті ашады.",
+    "Allowed": "Рұқсат Етілген",
+    "Not Allowed": "Рұқсат Етілмеген",
+    "Default (Allowed)": "Әдепкі (Рұқсат Етілген)",
+    "Default (Not Allowed)": "Әдепкі (Рұқсат Етілмеген)"
 }

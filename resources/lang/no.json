@@ -1804,5 +1804,9 @@
     "When a Conversation Moves": "Når en Samtale Flyttes",
     "Stay in Folder": "Bli i Mappen",
     "Stay in Conversation": "Bli i Samtalen",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Bli i Mappen åpner neste samtale i mappen du er i."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Bli i Mappen åpner neste samtale i mappen du er i.",
+    "Allowed": "Tillatt",
+    "Not Allowed": "Ikke Tillatt",
+    "Default (Allowed)": "Standard (Tillatt)",
+    "Default (Not Allowed)": "Standard (Ikke Tillatt)"
 }

@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "Když se Konverzace Přesune",
     "Stay in Folder": "Zůstat ve Složce",
     "Stay in Conversation": "Zůstat v Konverzaci",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Zůstat ve Složce otevře další konverzaci ve složce, ve které jste."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Zůstat ve Složce otevře další konverzaci ve složce, ve které jste.",
+    "Allowed": "Povoleno",
+    "Not Allowed": "Nepovoleno",
+    "Default (Allowed)": "Výchozí (Povoleno)",
+    "Default (Not Allowed)": "Výchozí (Nepovoleno)"
 }

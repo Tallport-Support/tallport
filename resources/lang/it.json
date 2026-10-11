@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "Quando un Ticket Viene Spostato",
     "Stay in Folder": "Resta nella Cartella",
     "Stay in Conversation": "Resta nel Ticket",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Resta nella Cartella apre il ticket successivo della cartella in cui si trova."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Resta nella Cartella apre il ticket successivo della cartella in cui si trova.",
+    "Allowed": "Consentito",
+    "Not Allowed": "Non Consentito",
+    "Default (Allowed)": "Predefinito (Consentito)",
+    "Default (Not Allowed)": "Predefinito (Non Consentito)"
 }

@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "Kada se Razgovor Premjesti",
     "Stay in Folder": "Ostani u Mapi",
     "Stay in Conversation": "Ostani u Razgovoru",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Ostani u Mapi otvara sljedeći razgovor u mapi u kojoj ste."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Ostani u Mapi otvara sljedeći razgovor u mapi u kojoj ste.",
+    "Allowed": "Dopušteno",
+    "Not Allowed": "Nije Dopušteno",
+    "Default (Allowed)": "Zadano (Dopušteno)",
+    "Default (Not Allowed)": "Zadano (Nije Dopušteno)"
 }

@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "כאשר שיחה עוברת",
     "Stay in Folder": "להישאר בתיקייה",
     "Stay in Conversation": "להישאר בשיחה",
-    "Stay in Folder opens the next conversation in the folder you are in.": "להישאר בתיקייה פותח את השיחה הבאה בתיקייה שבה אתם נמצאים."
+    "Stay in Folder opens the next conversation in the folder you are in.": "להישאר בתיקייה פותח את השיחה הבאה בתיקייה שבה אתם נמצאים.",
+    "Allowed": "מותר",
+    "Not Allowed": "אסור",
+    "Default (Allowed)": "ברירת מחדל (מותר)",
+    "Default (Not Allowed)": "ברירת מחדל (אסור)"
 }

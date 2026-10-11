@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "När en Konversation Flyttas",
     "Stay in Folder": "Stanna i Mappen",
     "Stay in Conversation": "Stanna i Konversationen",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Stanna i Mappen öppnar nästa konversation i mappen du är i."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Stanna i Mappen öppnar nästa konversation i mappen du är i.",
+    "Allowed": "Tillåtet",
+    "Not Allowed": "Inte Tillåtet",
+    "Default (Allowed)": "Standard (Tillåtet)",
+    "Default (Not Allowed)": "Standard (Inte Tillåtet)"
 }

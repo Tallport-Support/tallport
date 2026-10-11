@@ -371,7 +371,7 @@ class UsersTest extends FeatureTestCase
 
         $response = $this->postForm($this->admin, '/users/permissions/'.$agent->id, [
             'mailboxes'        => [$this->mailbox->id],
-            'user_permissions' => [User::PERM_DELETE_CONVERSATIONS],
+            'user_permissions' => [User::PERM_DELETE_CONVERSATIONS => '1', User::PERM_EDIT_USERS => ''],
         ]);
 
         $response->assertRedirect(route('users.permissions', ['id' => $agent->id]));
@@ -379,6 +379,48 @@ class UsersTest extends FeatureTestCase
         $this->assertEquals([$this->mailbox->id], $agent->mailboxes()->pluck('mailboxes.id')->all());
         $this->assertTrue($agent->hasPermission(User::PERM_DELETE_CONVERSATIONS));
         $this->assertFalse($agent->hasPermission(User::PERM_EDIT_USERS));
+
+        $this->actingAs($agent)->get('/users/permissions/'.$agent->id)->assertStatus(403);
+    }
+
+    /**
+     * Allowed and Not Allowed stay the user's own, whatever the default (Settings » General)
+     * was or becomes; Default follows it.
+     */
+    public function testOwnPermissionsOutlastTheDefault()
+    {
+        $agent = $this->createUser();
+        $defaults = fn (...$permissions) => config(['app.user_permissions' => base64_encode(json_encode($permissions))]);
+        $defaults(User::PERM_EDIT_KB, User::PERM_DELETE_CONVERSATIONS);
+
+        $this->actingAs($this->admin)->get('/users/permissions/'.$agent->id)->assertOk()
+            ->assertSee('Default (Allowed)')->assertSee('Default (Not Allowed)');
+
+        // Allowed though it's the default too; Not Allowed against it; Default.
+        $this->postForm($this->admin, '/users/permissions/'.$agent->id, [
+            'mailboxes'        => [$this->mailbox->id],
+            'user_permissions' => [User::PERM_EDIT_KB => '1', User::PERM_DELETE_CONVERSATIONS => '0', User::PERM_EDIT_SAVED_REPLIES => ''],
+        ]);
+        $permissions = $agent->fresh()->permissions;
+        ksort($permissions);
+        $this->assertSame([User::PERM_DELETE_CONVERSATIONS => 0, User::PERM_EDIT_KB => 1], $permissions);
+        $agent->refresh();
+
+        $defaults(User::PERM_EDIT_SAVED_REPLIES);
+        $this->assertTrue($agent->hasPermission(User::PERM_EDIT_KB));
+        $this->assertFalse($agent->hasPermission(User::PERM_DELETE_CONVERSATIONS));
+        $this->assertTrue($agent->hasPermission(User::PERM_EDIT_SAVED_REPLIES));
+
+        // Shown as chosen.
+        $html = $this->actingAs($this->admin)->get('/users/permissions/'.$agent->id)->getContent();
+        $this->assertMatchesRegularExpression('#name="user_permissions\['.User::PERM_EDIT_KB.'\]".*?<option value="1"\s+selected#s', $html);
+        $this->assertMatchesRegularExpression('#name="user_permissions\['.User::PERM_DELETE_CONVERSATIONS.'\]".*?<option value="0"\s+selected#s', $html);
+
+        // Back to Default.
+        $this->postForm($this->admin, '/users/permissions/'.$agent->id, [
+            'mailboxes' => [$this->mailbox->id], 'user_permissions' => [User::PERM_EDIT_KB => ''],
+        ]);
+        $this->assertFalse($agent->fresh()->hasPermission(User::PERM_EDIT_KB));
 
         $this->actingAs($agent)->get('/users/permissions/'.$agent->id)->assertStatus(403);
     }
@@ -397,7 +439,7 @@ class UsersTest extends FeatureTestCase
 
         $this->postForm($this->admin, '/users/permissions/'.$agent->id, [
             'mailboxes'        => [$this->mailbox->id],
-            'user_permissions' => [User::PERM_DELETE_CONVERSATIONS],
+            'user_permissions' => [User::PERM_DELETE_CONVERSATIONS => '1'],
         ]);
 
         $agent = $agent->fresh();

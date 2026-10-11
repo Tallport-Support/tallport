@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "Когда Тикет Перемещается",
     "Stay in Folder": "Остаться в Папке",
     "Stay in Conversation": "Остаться в Тикете",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Остаться в Папке открывает следующий тикет в папке, где вы находитесь."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Остаться в Папке открывает следующий тикет в папке, где вы находитесь.",
+    "Allowed": "Разрешено",
+    "Not Allowed": "Не Разрешено",
+    "Default (Allowed)": "По Умолчанию (Разрешено)",
+    "Default (Not Allowed)": "По Умолчанию (Не Разрешено)"
 }

@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "Amikor egy Beszélgetés Áthelyeződik",
     "Stay in Folder": "Maradás a Mappában",
     "Stay in Conversation": "Maradás a Beszélgetésben",
-    "Stay in Folder opens the next conversation in the folder you are in.": "A Maradás a Mappában a jelenlegi mappa következő beszélgetését nyitja meg."
+    "Stay in Folder opens the next conversation in the folder you are in.": "A Maradás a Mappában a jelenlegi mappa következő beszélgetését nyitja meg.",
+    "Allowed": "Engedélyezett",
+    "Not Allowed": "Nem Engedélyezett",
+    "Default (Allowed)": "Alapértelmezett (Engedélyezett)",
+    "Default (Not Allowed)": "Alapértelmezett (Nem Engedélyezett)"
 }

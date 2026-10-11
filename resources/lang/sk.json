@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "Keď sa Konverzácia Presunie",
     "Stay in Folder": "Zostať v Priečinku",
     "Stay in Conversation": "Zostať v Konverzácii",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Zostať v Priečinku otvorí ďalšiu konverzáciu v priečinku, v ktorom ste."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Zostať v Priečinku otvorí ďalšiu konverzáciu v priečinku, v ktorom ste.",
+    "Allowed": "Povolené",
+    "Not Allowed": "Nepovolené",
+    "Default (Allowed)": "Predvolené (Povolené)",
+    "Default (Not Allowed)": "Predvolené (Nepovolené)"
 }

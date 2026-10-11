@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "会話が移動したとき",
     "Stay in Folder": "フォルダーにとどまる",
     "Stay in Conversation": "会話にとどまる",
-    "Stay in Folder opens the next conversation in the folder you are in.": "「フォルダーにとどまる」では、今いるフォルダーの次の会話が開きます。"
+    "Stay in Folder opens the next conversation in the folder you are in.": "「フォルダーにとどまる」では、今いるフォルダーの次の会話が開きます。",
+    "Allowed": "許可",
+    "Not Allowed": "許可しない",
+    "Default (Allowed)": "デフォルト（許可）",
+    "Default (Not Allowed)": "デフォルト（許可しない）"
 }

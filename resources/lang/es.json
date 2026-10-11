@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "Cuando una Conversación se Mueve",
     "Stay in Folder": "Quedarse en la Carpeta",
     "Stay in Conversation": "Quedarse en la Conversación",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Quedarse en la Carpeta abre la siguiente conversación de la carpeta en la que está."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Quedarse en la Carpeta abre la siguiente conversación de la carpeta en la que está.",
+    "Allowed": "Permitido",
+    "Not Allowed": "No Permitido",
+    "Default (Allowed)": "Predeterminado (Permitido)",
+    "Default (Not Allowed)": "Predeterminado (No Permitido)"
 }

@@ -1801,5 +1801,9 @@
     "When a Conversation Moves": "Коли Розмову Переміщено",
     "Stay in Folder": "Залишитися в Папці",
     "Stay in Conversation": "Залишитися в Розмові",
-    "Stay in Folder opens the next conversation in the folder you are in.": "Залишитися в Папці відкриває наступну розмову в папці, де ви перебуваєте."
+    "Stay in Folder opens the next conversation in the folder you are in.": "Залишитися в Папці відкриває наступну розмову в папці, де ви перебуваєте.",
+    "Allowed": "Дозволено",
+    "Not Allowed": "Не Дозволено",
+    "Default (Allowed)": "За Замовчуванням (Дозволено)",
+    "Default (Not Allowed)": "За Замовчуванням (Не Дозволено)"
 }
