@@ -43,9 +43,6 @@ class NewConversation extends Component
     public $from_thread_id;
 
     #[Locked]
-    public $after_send;
-
-    #[Locked]
     public $from_aliases = [];
 
     /**
@@ -104,14 +101,13 @@ class NewConversation extends Component
 
     public $name_query = '';
 
-    public function mount($conversation, $mailbox, $thread = null, $to = [], $name = [], $phone = '', $toEmail = [], $attachments = [], $fromAliases = [], $fromAlias = '', $afterSend = null)
+    public function mount($conversation, $mailbox, $thread = null, $to = [], $name = [], $phone = '', $toEmail = [], $attachments = [], $fromAliases = [], $fromAlias = '')
     {
         $this->submission_key = (string) \Illuminate\Support\Str::uuid();
         $this->mailbox_id = $mailbox->id;
         $this->conversation_id = $conversation->id;
         $this->number = $conversation->number;
         $this->from_thread_id = request()->from_thread_id;
-        $this->after_send = $afterSend;
         $this->from_aliases = $fromAliases;
         $this->from_alias = $fromAlias && $fromAlias != $mailbox->email ? $fromAlias : '';
 
@@ -330,7 +326,6 @@ class NewConversation extends Component
             'body'                   => $this->body,
             'status'                 => $this->status,
             'user_id'                => $this->user_id,
-            'after_send'             => $this->after_send,
             'attachments'            => $attachment_ids,
             'attachments_all'        => $attachment_ids,
             'embeds'                 => array_column(array_filter($this->attachments, fn ($attachment) => !empty($attachment['embed'])), 'id'),

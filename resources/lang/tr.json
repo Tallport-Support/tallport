@@ -67,7 +67,6 @@
     "Administrator has not configured mailbox connection settings yet.": "Yönetici, posta kutusu bağlantı ayarlarını henüz yapılandırmadı.",
     "Administrators have access to all mailboxes and are not listed here.": "Yöneticilerin tüm posta kutularına erişimi vardır ve burada listelenmezler.",
     "After": "Sonra",
-    "After Sending": "Gönderdikten Sonra",
     "Age": "Yaş",
     "Alert email": "Uyarı e-postası",
     "Alerts": "Uyarılar",
@@ -398,7 +397,6 @@
     "Newer": "Daha yeni",
     "Next Conversation #": "Sonraki Konuşma #",
     "Next Page": "Sonraki Sayfa",
-    "Next active conversation": "Sonraki aktif görüşme",
     "No": "Hayır",
     "No customers found": "Müşteri bulunamadı",
     "No customers found. Would you like to create one?": "Müşteri bulunamadı. Bir tane oluşturmak ister misiniz?",
@@ -1425,7 +1423,6 @@
     "Replies": "Yanıtlar",
     "Status After a Reply": "Yanıttan Sonraki Durum",
     "After sending": "Gönderdikten sonra",
-    "Stay on the conversation": "Konuşmada kal",
     "You have unsaved changes.": "Kaydedilmemiş değişiklikleriniz var.",
     "Inbox": "Gelen kutusu",
     "Can't use cron?": "Cron kullanamıyor musunuz?",
@@ -1802,5 +1799,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Bu sohbet artık mesajlaşma hizmetinde kullanılamıyor. Buradan yanıt veremez veya yeniden açamazsınız. Not eklemeye devam edebilirsiniz.",
     "Date Sent": "Gönderilme Tarihi",
     "Received: :date": "Alındı: :date",
-    "Sent: :date": "Gönderildi: :date"
+    "Sent: :date": "Gönderildi: :date",
+    "When a Conversation Moves": "Bir Görüşme Taşındığında",
+    "Stay in Folder": "Klasörde Kal",
+    "Stay in Conversation": "Görüşmede Kal",
+    "Stay in Folder opens the next conversation in the folder you are in.": "Klasörde Kal, bulunduğunuz klasördeki sonraki görüşmeyi açar."
 }

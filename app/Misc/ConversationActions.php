@@ -4,7 +4,6 @@ namespace App\Misc;
 
 use App\Conversation;
 use App\Follower;
-use App\User;
 use App\Thread;
 
 /**
@@ -34,22 +33,17 @@ class ConversationActions
             return ['msg' => __('Not enough permissions')];
         }
 
-        // Determine redirect
-        // Must be done before updating current conversation's status or assignee.
-        $redirect_same_page = false;
-        if ($new_user_id == $user->id || $request->x_embed == 1) {
-            // If user assigned conversation to himself, stay on the current page
-            $redirect_url = $conversation->url();
-            $redirect_same_page = true;
-        } else {
-            $redirect_url = self::redirectUrl($request, $conversation, $user);
-        }
+        // Taking it means working on it: the user stays on it, as in an embedded page.
+        $redirect = $new_user_id == $user->id || $request->x_embed == 1
+            ? fn () => $conversation->url()
+            : self::redirect($conversation, $user);
 
         $conversation->changeUser($new_user_id, $user);
+        $redirect_url = $redirect();
 
         // Flash
         $flash_message = __('Assignee updated');
-        if (!$redirect_same_page || $redirect_url != $conversation->url()) {
+        if ($redirect_url != $conversation->url()) {
             $flash_message .= ' &nbsp;<a href="'.$conversation->url().'">'.__('View').'</a>';
         }
         \Session::flash('flash_success_floating', $flash_message);
@@ -95,22 +89,14 @@ class ConversationActions
             return ['msg' => ChatConversations::unavailableMessage()];
         }
 
-        // Determine redirect
-        // Must be done before updating current conversation's status or assignee.
-        $redirect_same_page = false;
-        if ($status == 'not_spam' || $request->x_embed == 1) {
-            // Stay on the current page
-            $redirect_url = $conversation->url();
-            $redirect_same_page = true;
-        } else {
-            $redirect_url = self::redirectUrl($request, $conversation, $user);
-        }
+        $redirect = $request->x_embed == 1 ? fn () => $conversation->url() : self::redirect($conversation, $user);
 
         $conversation->changeStatus($new_status, $user);
+        $redirect_url = $redirect();
 
         // Flash
         $flash_message = __('Status updated');
-        if (!$redirect_same_page || $redirect_url != $conversation->url()) {
+        if ($redirect_url != $conversation->url()) {
             $flash_message .= ' &nbsp;<a href="'.$conversation->url().'">'.__('View').'</a>';
         }
         \Session::flash('flash_success_floating', $flash_message);
@@ -329,40 +315,35 @@ class ConversationActions
     }
 
     /**
-     * Where the user goes after replying or changing a conversation: the
-     * conversation or the next active conversation (the user's
-     * preference, or after_send in the request).
+     * Where the user goes after replying to or changing a conversation. It's decided before
+     * the change, while the conversation is still in its folder: the closure returned gives
+     * the URL once the change is made. When the conversation left the folder the user is in,
+     * they stay in the conversation or in the folder, at its next active conversation (their
+     * preference, users.stay_in_conversation); else they stay on it. A new conversation: it,
+     * or its folder.
      */
-    public static function redirectUrl($request, $conversation, $user)
+    public static function redirect($conversation, $user, $is_create = false)
     {
-        if (!empty($request->after_send)) {
-            $after_send = $request->after_send;
-        } else {
-            // The user's preference (users/preferences).
-            $after_send = $user->afterSend();
+        $stay_in_conversation = (bool) $user->stay_in_conversation;
+
+        if ($is_create) {
+            return fn () => $stay_in_conversation ? $conversation->url() : \App\Misc\Sidebar::folderUrl($conversation->folder, $conversation->mailbox_id);
         }
 
-        // When creating a new conversation.
-        if (!empty($request->is_create) && $after_send != User::AFTER_SEND_STAY) {
-            return \App\Misc\Sidebar::folderUrl($conversation->folder, $conversation->mailbox_id);
+        $folder = \App\Misc\Sidebar::conversationFolder($conversation, $user) ?: $conversation->folder;
+        $next_url = null;
+        if (!$stay_in_conversation) {
+            $next = $conversation->getNearby('next', $folder->id, Conversation::STATUS_ACTIVE, true);
+            $next_url = $next ? $next->url() : \App\Misc\Sidebar::folderUrl($folder, $conversation->mailbox_id);
         }
 
-        if (!empty($after_send)) {
-            switch ($after_send) {
-                case User::AFTER_SEND_STAY:
-                default:
-                    $redirect_url = $conversation->url(null, null, [], $request);
-                    break;
-                case User::AFTER_SEND_NEXT:
-                    // We need to get not any next conversation, but ACTIVE next conversation.
-                    $redirect_url = $conversation->urlNext($conversation->getCurrentFolder(), Conversation::STATUS_ACTIVE, true, $request);
-                    break;
+        return function () use ($conversation, $user, $folder, $next_url) {
+            $moved = \App\Misc\Sidebar::conversationFolder($conversation->fresh() ?: $conversation, $user)?->id != $folder->id;
+            if ($next_url && $moved) {
+                return $next_url;
             }
-        } else {
-            // If something went wrong and after_send not set, just show the reply
-            $redirect_url = $conversation->url(null, null, [], $request);
-        }
 
-        return $redirect_url;
+            return $conversation->url();
+        };
     }
 }

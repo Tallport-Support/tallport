@@ -68,7 +68,6 @@
     "Administrator has not configured mailbox connection settings yet.": "管理者はまだメールボックスの接続設定を行っていません。",
     "Administrators have access to all mailboxes and are not listed here.": "管理者はすべてのメールボックスにアクセスでき、ここには表示されません。",
     "After": "以後",
-    "After Sending": "送信後",
     "Age": "年齢",
     "Alert email": "警告メール",
     "Alerts": "警告",
@@ -399,7 +398,6 @@
     "Newer": "新しい",
     "Next Conversation #": "次の会話 #",
     "Next Page": "次ページ",
-    "Next active conversation": "次のアクティブな会話",
     "No": "いいえ",
     "No customers found": "見つかったお客様はいません",
     "No customers found. Would you like to create one?": "お客様が見つかりませんでした。作成してみませんか？",
@@ -1425,7 +1423,6 @@
     "Replies": "返信",
     "Status After a Reply": "返信後のステータス",
     "After sending": "送信後",
-    "Stay on the conversation": "会話にとどまる",
     "You have unsaved changes.": "保存されていない変更があります。",
     "Inbox": "受信トレイ",
     "Can't use cron?": "cron を使用できませんか？",
@@ -1802,5 +1799,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "このチャットはメッセージサービスで利用できなくなりました。ここから返信したり再開したりすることはできません。メモは引き続き追加できます。",
     "Date Sent": "送信日時",
     "Received: :date": "受信：:date",
-    "Sent: :date": "送信：:date"
+    "Sent: :date": "送信：:date",
+    "When a Conversation Moves": "会話が移動したとき",
+    "Stay in Folder": "フォルダーにとどまる",
+    "Stay in Conversation": "会話にとどまる",
+    "Stay in Folder opens the next conversation in the folder you are in.": "「フォルダーにとどまる」では、今いるフォルダーの次の会話が開きます。"
 }

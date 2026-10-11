@@ -37,12 +37,6 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
     const VIEW_EMAIL = 'email';
     const VIEW_CHAT = 'chat';
 
-    /**
-     * Where the user goes after sending (users.after_send, afterSend()).
-     */
-    const AFTER_SEND_STAY = 1;
-    const AFTER_SEND_NEXT = 2;
-
     const PHOTO_DIRECTORY = 'users';
     const PHOTO_QUALITY = 77;
 
@@ -153,6 +147,8 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
         'two_factor_confirmed_at' => 'datetime',
         // Languages read as written: not translated (App\Ai\Settings::reads()).
         'languages'               => 'array',
+        // When a conversation leaves the folder they're in: they stay in it, or in the folder.
+        'stay_in_conversation'    => 'boolean',
     ];
     
     public function __construct(array $attributes = array())
@@ -335,15 +331,6 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
         } else {
             return $query->get();
         }
-    }
-
-    /**
-     * Where the user goes after replying or changing a conversation: the
-     * user's preference (self::AFTER_SEND_*), the next active one unless set.
-     */
-    public function afterSend()
-    {
-        return $this->after_send ?: self::AFTER_SEND_NEXT;
     }
 
     /**

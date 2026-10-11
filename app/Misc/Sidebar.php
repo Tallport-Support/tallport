@@ -142,14 +142,16 @@ class Sidebar
     }
 
     /**
-     * The folder a conversation is shown in: its own (Mine when it's the user's),
-     * or All Mailboxes' of that kind when the user works there.
+     * The folder a conversation is shown in: its own (Mine when it's the user's and open,
+     * as Mine lists), or All Mailboxes' of that kind when the user works there.
      */
     public static function conversationFolder(\App\Conversation $conversation, ?User $user = null)
     {
         $user = $user ?: auth()->user();
         $folder = null;
-        if ($user && $conversation->user_id == $user->id) {
+        if ($user && $conversation->user_id == $user->id && $conversation->state == \App\Conversation::STATE_PUBLISHED
+            && in_array($conversation->status, [\App\Conversation::STATUS_ACTIVE, \App\Conversation::STATUS_PENDING])
+        ) {
             $folder = $conversation->mailbox->folders()->where('type', Folder::TYPE_MINE)->where('user_id', $user->id)->first();
         }
         $folder = $folder ?: $conversation->folder;

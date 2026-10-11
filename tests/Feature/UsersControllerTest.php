@@ -281,8 +281,8 @@ class UsersControllerTest extends FeatureTestCase
     {
         $agent = $this->createUser();
 
-        $this->postForm($this->admin, '/users/preferences/'.$agent->id, ['after_send' => \App\User::AFTER_SEND_NEXT])->assertStatus(403);
-        $this->assertNull($agent->fresh()->after_send);
+        $this->postForm($this->admin, '/users/preferences/'.$agent->id, ['stay_in_conversation' => 1])->assertStatus(403);
+        $this->assertFalse($agent->fresh()->stay_in_conversation);
     }
 
     public function testNewPasswordMustDiffer()

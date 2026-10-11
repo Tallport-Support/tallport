@@ -15,7 +15,6 @@ use App\Events\UserCreatedThreadDraft;
 use App\Events\UserReplied;
 use App\Folder;
 use App\Mailbox;
-use App\User;
 use App\Thread;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\InputBag;
@@ -51,11 +50,6 @@ class ConversationReplies
         $request->replace($input);
 
         return $request;
-    }
-
-    public function getRedirectUrl($request, $conversation, $user)
-    {
-        return ConversationActions::redirectUrl($request, $conversation, $user);
     }
 
     private function sendReplyRequest(Request $request, $response, $user)
@@ -286,12 +280,9 @@ class ConversationReplies
                     }
                 }
 
-                // Determine redirect.
-                // Must be done before updating current conversation's status or assignee.
-                // Redirect URL for new no saved yet conversation is determined below.
-                if (!$new) {
-                    $response['redirect_url'] = $this->getRedirectUrl($request, $conversation, $user);
-                }
+                // Where the user goes: decided before the status or assignee changes (a new
+                // conversation's, not saved yet, below).
+                $redirect = $new ? null : ConversationActions::redirect($conversation, $user, !empty($request->is_create));
 
                 // Conversation
                 $now = date('Y-m-d H:i:s');
@@ -478,10 +469,8 @@ class ConversationReplies
                 }
                 $conversation->save();
 
-                // Redirect URL for new not saved yet conversation must be determined here.
-                if ($new) {
-                    $response['redirect_url'] = $this->getRedirectUrl($request, $conversation, $user);
-                }
+                $redirect = $redirect ?: ConversationActions::redirect($conversation, $user, !empty($request->is_create));
+                $response['redirect_url'] = $redirect();
 
                 // Fire events
                 \Eventy::action('conversation.send_reply_save', $conversation, $request);
@@ -833,10 +822,7 @@ class ConversationReplies
             }
 
             // Compose flash message.
-            $show_view_link = true;
-            if (!empty($request->after_send) && $request->after_send == User::AFTER_SEND_STAY) {
-                $show_view_link = false;
-            }
+            $show_view_link = ($response['redirect_url'] ?? null) != $conversation->url();
 
             if ($is_phone) {
                 $flash_type = 'warning';
@@ -882,7 +868,7 @@ class ConversationReplies
             && $user->can('view', $conversation)
         ) {
             $response['status'] = 'success';
-            $response['redirect_url'] = $this->getRedirectUrl($request, $conversation, $user);
+            $response['redirect_url'] = ConversationActions::redirect($conversation, $user, !empty($request->is_create))();
         } else {
             $response['msg'] = __('Message has been already sent. Please discard this draft.');
         }

@@ -131,7 +131,6 @@ class ConversationChatViewTest extends FeatureTestCase
     {
         // A message leaves the status as it is (the toolbar's), and stays in the conversation.
         $this->agent->reply_status = Conversation::STATUS_CLOSED;
-        $this->agent->after_send = \App\User::AFTER_SEND_NEXT;
         $this->agent->save();
 
         $composer = Livewire::actingAs($this->agent->fresh())->test(ConversationComposer::class, ['conversation' => $this->conversation, 'chat' => true])

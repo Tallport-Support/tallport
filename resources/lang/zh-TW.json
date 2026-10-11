@@ -142,7 +142,6 @@
     "Administrator has not configured mailbox connection settings yet.": "管理員尚未設定信箱連線設定。",
     "Administrators have access to all mailboxes and are not listed here.": "管理員可存取所有信箱，不在此處列出。",
     "After": "之後",
-    "After Sending": "傳送後",
     "Age": "年齡",
     "Aliases": "別名",
     "Aliases are other email addresses that also forward to your mailbox address. Separate each email with a comma.": "別名是其他也會轉寄至您信箱地址的電子郵件地址，請以逗號分隔每個電子郵件。",
@@ -352,7 +351,6 @@
     "Newer": "較新",
     "Next Conversation #": "下一個對話 #",
     "Next Page": "下一頁",
-    "Next active conversation": "下一個進行中的對話",
     "No": "否",
     "No customers found": "未找到客戶",
     "No customers found. Would you like to create one?": "未找到客戶，是否要建立一個？",
@@ -1474,7 +1472,6 @@
     "Replies": "回覆",
     "Status After a Reply": "回覆後的狀態",
     "After sending": "傳送後",
-    "Stay on the conversation": "留在此對話",
     "You have unsaved changes.": "您有未儲存的變更。",
     "Inbox": "收件匣",
     "Can't use cron?": "無法使用 cron？",
@@ -1847,5 +1844,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "此聊天在訊息服務中已無法使用。您無法在此回覆或重新開啟聊天，但仍可新增備註。",
     "Date Sent": "傳送日期",
     "Received: :date": "接收：:date",
-    "Sent: :date": "傳送：:date"
+    "Sent: :date": "傳送：:date",
+    "When a Conversation Moves": "對話移動時",
+    "Stay in Folder": "留在資料夾",
+    "Stay in Conversation": "留在對話",
+    "Stay in Folder opens the next conversation in the folder you are in.": "「留在資料夾」會開啟您所在資料夾中的下一個對話。"
 }

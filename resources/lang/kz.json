@@ -69,7 +69,6 @@
     "Administrator has not configured mailbox connection settings yet.": "Администратор пошта жәшігінің қосылу параметрлерін әлі конфигурациялаған жоқ.",
     "Administrators have access to all mailboxes and are not listed here.": "Администраторлар барлық пошта жәшіктеріне қол жеткізе алады және мұнда тізімделмеген.",
     "After": "Кейін",
-    "After Sending": "Жібергеннен Кейін",
     "Age": "Жасы",
     "Alert email": "Ескерту хаты",
     "Alerts": "Ескертулер",
@@ -388,7 +387,6 @@
     "Newer": "Жаңарақ",
     "Next Conversation #": "Келесі Тикет Нөмірі #",
     "Next Page": "Келесі Бет",
-    "Next active conversation": "Келесі белсенді тикет",
     "No": "Жоқ",
     "No customers found": "Клиенттер табылмады",
     "No customers found. Would you like to create one?": "Клиенттер табылмады. Жаңа клиент жасағыңыз келе ме?",
@@ -1823,7 +1821,6 @@
     "Replies": "Жауаптар",
     "Status After a Reply": "Жауаптан Кейінгі Күй",
     "After sending": "Жібергеннен кейін",
-    "Stay on the conversation": "Тикетте қалу",
     "You have unsaved changes.": "Сізде сақталмаған өзгерістер бар.",
     "Inbox": "Кіріс жәшігі",
     "Can't use cron?": "Cron қолдана алмайсыз ба?",
@@ -2196,5 +2193,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Бұл чат хабар алмасу қызметінде енді қолжетімді емес. Мұнда жауап беру немесе оны қайта ашу мүмкін емес. Әлі де ескертпелер қоса аласыз.",
     "Date Sent": "Жіберілген Күні",
     "Received: :date": "Алынды: :date",
-    "Sent: :date": "Жіберілді: :date"
+    "Sent: :date": "Жіберілді: :date",
+    "When a Conversation Moves": "Тикет Жылжытылғанда",
+    "Stay in Folder": "Қалтада Қалу",
+    "Stay in Conversation": "Тикетте Қалу",
+    "Stay in Folder opens the next conversation in the folder you are in.": "Қалтада Қалу сіз тұрған қалтадағы келесі тикетті ашады."
 }

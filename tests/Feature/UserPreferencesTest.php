@@ -4,7 +4,9 @@ namespace Tests\Feature;
 
 use App\Conversation;
 use App\Livewire\ConversationComposer;
+use App\Misc\ConversationActions;
 use App\User;
+use Illuminate\Http\Request;
 use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
@@ -25,17 +27,17 @@ class UserPreferencesTest extends FeatureTestCase
         $conversation = Conversation::where('mailbox_id', $mailbox->id)->first();
 
         $this->actingAs($agent)->get(route('users.preferences', ['id' => $agent->id]))->assertOk()
-            ->assertSee('Status After a Reply')->assertSee('Next active conversation');
+            ->assertSee('Status After a Reply')->assertSee('When a Conversation Moves')->assertSee('Stay in Folder');
         $this->actingAs($agent)->get(route('users.preferences', ['id' => $this->createUser()->id]))->assertForbidden();
 
         \Session::start();
         $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), [
-            '_token' => csrf_token(), 'reply_status' => Conversation::STATUS_CLOSED, 'after_send' => User::AFTER_SEND_STAY,
+            '_token' => csrf_token(), 'reply_status' => Conversation::STATUS_CLOSED, 'stay_in_conversation' => 1,
         ])->assertRedirect(route('users.preferences', ['id' => $agent->id]));
         $agent->refresh();
         $this->assertSame(Conversation::STATUS_CLOSED, (int) $agent->reply_status);
 
-        // The reply: Send & Close, then this conversation again, closed.
+        // The reply: Send & Close, then this conversation again, closed (in Closed: stayed in).
         $composer = Livewire::actingAs($agent)->test(ConversationComposer::class, ['conversation' => $conversation])
             ->call('open', 'reply')->assertSet('status', Conversation::STATUS_CLOSED)->assertSee('Send &amp; Close', false);
         $composer->set('body', '<p>Fixed.</p>')->call('send')->assertRedirect();
@@ -52,13 +54,57 @@ class UserPreferencesTest extends FeatureTestCase
         $this->actingAs($agent->fresh())->get(route('users.preferences', ['id' => $agent->id]))->assertSee('data-fruit-accent="green"', false);
         $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), ['_token' => csrf_token(), 'accent' => 'neon'])->assertSessionHasErrors('accent');
 
-        // Unset: Pending, then the next active conversation.
+        // Unset: Pending, and staying in the folder.
         $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), [
-            '_token' => csrf_token(), 'reply_status' => '', 'after_send' => '',
+            '_token' => csrf_token(), 'reply_status' => '', 'stay_in_conversation' => '',
         ]);
         $this->assertNull($agent->fresh()->reply_status);
         $this->assertSame(Conversation::STATUS_PENDING, $agent->fresh()->replyStatus());
-        $this->assertSame(User::AFTER_SEND_NEXT, (int) $agent->fresh()->afterSend());
+        $this->assertFalse($agent->fresh()->stay_in_conversation);
+    }
+
+    /**
+     * Only a conversation leaving the folder the user is in takes them away from it: to the
+     * folder's next conversation (Stay in Folder, the default), or along with it (Stay in Conversation).
+     */
+    public function testWhenAConversationMoves()
+    {
+        $agent = $this->createUser();
+        $colleague = $this->createUser();
+        $mailbox = $this->createMailbox([$agent, $colleague]);
+        foreach (['Broken zipper', 'Late parcel'] as $subject) {
+            $this->receiveEmail($mailbox, $this->makeEmail(['from' => 'casey@customer.example.org', 'to' => $mailbox->email, 'subject' => $subject]));
+        }
+        $zipper = Conversation::where('subject', 'Broken zipper')->first();
+        $parcel = Conversation::where('subject', 'Late parcel')->first();
+        $unassigned = $mailbox->folders()->where('type', \App\Folder::TYPE_UNASSIGNED)->first();
+        $this->actingAs($agent);
+
+        // Pending, then a reply: still in Unassigned, so the agent stays on it.
+        $result = ConversationActions::changeStatus($parcel, Conversation::STATUS_PENDING, $agent, new Request());
+        $this->assertSame($parcel->url(), $result['redirect_url']);
+        $response = $this->sendReply($agent, ['mailbox_id' => $mailbox->id, 'conversation_id' => $parcel->id, 'body' => '<p>On its way.</p>', 'status' => Conversation::STATUS_PENDING]);
+        $this->assertSame($parcel->url(), $response['redirect_url']);
+
+        // Assigned to a colleague, it leaves Unassigned: the next one there.
+        $result = ConversationActions::changeUser($parcel->fresh(), $colleague->id, $agent, new Request());
+        $this->assertSame($zipper->url(), $result['redirect_url']);
+
+        // Taking one is working on it: the agent stays on it, though it moved to Mine.
+        $result = ConversationActions::changeUser($zipper, $agent->id, $agent, new Request());
+        $this->assertSame($zipper->url(), $result['redirect_url']);
+
+        // Sent and closed, the last one in Mine: the folder.
+        $mine = $mailbox->folders()->where('type', \App\Folder::TYPE_MINE)->where('user_id', $agent->id)->first();
+        $response = $this->sendReply($agent, ['mailbox_id' => $mailbox->id, 'conversation_id' => $zipper->id, 'body' => '<p>Fixed.</p>', 'status' => Conversation::STATUS_CLOSED]);
+        $this->assertSame($mine->url($mailbox->id), $response['redirect_url']);
+
+        // Staying in the conversation: along with it, back to Unassigned.
+        $agent->stay_in_conversation = true;
+        $agent->save();
+        $result = ConversationActions::changeUser($parcel->fresh(), -1, $agent, new Request());
+        $this->assertSame($parcel->url(), $result['redirect_url']);
+        $this->assertSame($unassigned->id, $parcel->fresh()->folder_id);
     }
 
     public function testLanguageTimezoneAndTimeFormat()

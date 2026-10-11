@@ -67,7 +67,6 @@
     "Administrator has not configured mailbox connection settings yet.": "O administrador ainda não configurou as definições de conexão da caixa de correio.",
     "Administrators have access to all mailboxes and are not listed here.": "Os administradores têm acesso a todas as caixas de correio e não estão listados aqui.",
     "After": "Depois",
-    "After Sending": "Após o Envio",
     "Age": "Idade",
     "Alert email": "Email de alerta",
     "Alerts": "Alertas",
@@ -398,7 +397,6 @@
     "Newer": "Mais recente",
     "Next Conversation #": "Próxima Conversa #",
     "Next Page": "Próxima Página",
-    "Next active conversation": "Próxima conversa ativa",
     "No": "Não",
     "No customers found": "Nenhum cliente encontrado",
     "No customers found. Would you like to create one?": "Nenhum cliente encontrado. Gostaria de criar um?",
@@ -1425,7 +1423,6 @@
     "Replies": "Respostas",
     "Status After a Reply": "Estado Após uma Resposta",
     "After sending": "Depois de enviar",
-    "Stay on the conversation": "Ficar na conversa",
     "You have unsaved changes.": "Tem alterações não guardadas.",
     "Inbox": "Caixa de entrada",
     "Can't use cron?": "Não pode usar o cron?",
@@ -1802,5 +1799,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Esta conversa já não está disponível no serviço de mensagens. Não pode responder nem reabri-la aqui. Pode continuar a adicionar notas.",
     "Date Sent": "Data de Envio",
     "Received: :date": "Recebido: :date",
-    "Sent: :date": "Enviado: :date"
+    "Sent: :date": "Enviado: :date",
+    "When a Conversation Moves": "Quando uma Conversa É Movida",
+    "Stay in Folder": "Ficar na Pasta",
+    "Stay in Conversation": "Ficar na Conversa",
+    "Stay in Folder opens the next conversation in the folder you are in.": "Ficar na Pasta abre a conversa seguinte da pasta em que se encontra."
 }

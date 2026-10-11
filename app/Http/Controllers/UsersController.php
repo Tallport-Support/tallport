@@ -649,7 +649,7 @@ class UsersController extends Controller
 
         $request->validate([
             'reply_status' => 'nullable|in:'.implode(',', array_keys(\App\Conversation::$statuses)),
-            'after_send'   => 'nullable|in:'.implode(',', [\App\User::AFTER_SEND_STAY, \App\User::AFTER_SEND_NEXT]),
+            'stay_in_conversation' => 'nullable|boolean',
             'accent'       => ['nullable', \Illuminate\Validation\Rule::in(\FruitUI\Fruit::ACCENTS)],
             'conversation_views'   => 'nullable|array',
             'conversation_views.*' => 'in:'.User::VIEW_EMAIL.','.User::VIEW_CHAT,
@@ -678,7 +678,7 @@ class UsersController extends Controller
             $user->languages = array_values(array_unique((array) $request->languages)) ?: null;
         }
         $user->reply_status = $request->reply_status ?: null;
-        $user->after_send = $request->after_send ?: null;
+        $user->stay_in_conversation = (bool) $request->stay_in_conversation;
         // Off: the installation's accent (Settings » Appearance).
         $user->accent = $request->filled('accent_default') ? null : ($request->accent ?: null);
         // Per channel: email ("email") and the channels Tallport and modules have.

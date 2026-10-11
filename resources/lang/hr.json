@@ -68,7 +68,6 @@
     "Administrator has not configured mailbox connection settings yet.": "Administrator još nije konfigurirao postavke veze poštanskog sandučića.",
     "Administrators have access to all mailboxes and are not listed here.": "Administratori imaju pristup svim poštanskim sandučićima i nisu navedeni ovdje.",
     "After": "Nakon",
-    "After Sending": "Nakon Slanja",
     "Age": "Dob",
     "Alert email": "E-mail upozorenja",
     "Alerts": "Upozorenja",
@@ -400,7 +399,6 @@
     "Newer": "Novije",
     "Next Conversation #": "Sljedeća Konverzacija #",
     "Next Page": "Sljedeća Stranica",
-    "Next active conversation": "Sljedeća aktivna konverzacija",
     "No": "Ne",
     "No customers found": "Nije pronađen nijedan kupac",
     "No customers found. Would you like to create one?": "Nije pronađen nijedan kupac. Želite li kreirati novog?",
@@ -1425,7 +1423,6 @@
     "Replies": "Odgovori",
     "Status After a Reply": "Status Nakon Odgovora",
     "After sending": "Nakon slanja",
-    "Stay on the conversation": "Ostani u razgovoru",
     "You have unsaved changes.": "Imate nespremljene promjene.",
     "Inbox": "Pristigla pošta",
     "Can't use cron?": "Ne možete koristiti cron?",
@@ -1802,5 +1799,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Ovaj razgovor više nije dostupan na servisu za poruke. Ovdje ne možete odgovoriti niti ga ponovno otvoriti. I dalje možete dodavati bilješke.",
     "Date Sent": "Datum Slanja",
     "Received: :date": "Primljeno: :date",
-    "Sent: :date": "Poslano: :date"
+    "Sent: :date": "Poslano: :date",
+    "When a Conversation Moves": "Kada se Razgovor Premjesti",
+    "Stay in Folder": "Ostani u Mapi",
+    "Stay in Conversation": "Ostani u Razgovoru",
+    "Stay in Folder opens the next conversation in the folder you are in.": "Ostani u Mapi otvara sljedeći razgovor u mapi u kojoj ste."
 }

@@ -68,7 +68,6 @@
     "Administrator has not configured mailbox connection settings yet.": "Administrator nie skonfigurował jeszcze ustawień połączenia ze skrzynką pocztową.",
     "Administrators have access to all mailboxes and are not listed here.": "Administratorzy mają dostęp do wszystkich skrzynek pocztowych i nie zostali tu wyszczególnieni.",
     "After": "Po",
-    "After Sending": "Po Wysłaniu",
     "Age": "Wiek",
     "Alert email": "E-mail z ostrzeżeniem",
     "Alerts": "Ostrzeżenia",
@@ -403,7 +402,6 @@
     "Newer": "Nowsza",
     "Next Conversation #": "Następna Rozmowa#",
     "Next Page": "Następna Strona",
-    "Next active conversation": "Następna aktywna rozmowa",
     "No": "Nie",
     "No customers found": "Nie znaleziono klientów",
     "No customers found. Would you like to create one?": "Nie znaleziono klientów. Czy chcesz utworzyć?",
@@ -1425,7 +1423,6 @@
     "Replies": "Odpowiedzi",
     "Status After a Reply": "Status po Odpowiedzi",
     "After sending": "Po wysłaniu",
-    "Stay on the conversation": "Zostań przy rozmowie",
     "You have unsaved changes.": "Masz niezapisane zmiany.",
     "Inbox": "Skrzynka odbiorcza",
     "Can't use cron?": "Nie możesz użyć crona?",
@@ -1802,5 +1799,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Ten czat nie jest już dostępny w komunikatorze. Nie możesz tutaj odpowiedzieć ani otworzyć go ponownie. Nadal możesz dodawać notatki.",
     "Date Sent": "Data Wysłania",
     "Received: :date": "Odebrano: :date",
-    "Sent: :date": "Wysłano: :date"
+    "Sent: :date": "Wysłano: :date",
+    "When a Conversation Moves": "Gdy Rozmowa Zostanie Przeniesiona",
+    "Stay in Folder": "Zostań w Folderze",
+    "Stay in Conversation": "Zostań w Rozmowie",
+    "Stay in Folder opens the next conversation in the folder you are in.": "Zostań w Folderze otwiera następną rozmowę w folderze, w którym Państwo są."
 }

@@ -67,7 +67,6 @@
     "Administrator has not configured mailbox connection settings yet.": "Der Administrator hat noch keine Verbindungseinstellungen für das E-Mail-Postfach konfiguriert.",
     "Administrators have access to all mailboxes and are not listed here.": "Administratoren haben Zugriff auf alle Postfächer und sind hier deshalb nicht aufgelistet.",
     "After": "Nach",
-    "After Sending": "Nach dem Senden",
     "Age": "Alter",
     "Alert email": "Benachrichtigungs-E-Mail",
     "Alerts": "Benachrichtigungen",
@@ -407,7 +406,6 @@
     "Newer": "Aktueller",
     "Next Conversation #": "Nächstes Gespräch #",
     "Next Page": "Nächste Seite",
-    "Next active conversation": "Nächstes aktives Gespräch",
     "No": "Nein",
     "No customers found": "Keine Kunden gefunden",
     "No customers found. Would you like to create one?": "Keine Kunden gefunden. Möchten Sie einen erstellen?",
@@ -1421,7 +1419,6 @@
     "Replies": "Antworten",
     "Status After a Reply": "Status nach einer Antwort",
     "After sending": "Nach dem Senden",
-    "Stay on the conversation": "Beim Gespräch bleiben",
     "You have unsaved changes.": "Sie haben ungespeicherte Änderungen.",
     "Inbox": "Posteingang",
     "Can't use cron?": "Kein Cron verfügbar?",
@@ -1798,5 +1795,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Dieser Chat ist beim Nachrichtendienst nicht mehr verfügbar. Sie können hier nicht antworten oder ihn wieder öffnen. Sie können weiterhin Notizen hinzufügen.",
     "Date Sent": "Sendedatum",
     "Received: :date": "Empfangen: :date",
-    "Sent: :date": "Gesendet: :date"
+    "Sent: :date": "Gesendet: :date",
+    "When a Conversation Moves": "Wenn ein Gespräch Verschoben Wird",
+    "Stay in Folder": "Im Ordner Bleiben",
+    "Stay in Conversation": "Im Gespräch Bleiben",
+    "Stay in Folder opens the next conversation in the folder you are in.": "Im Ordner Bleiben öffnet das nächste Gespräch in dem Ordner, in dem Sie sind."
 }

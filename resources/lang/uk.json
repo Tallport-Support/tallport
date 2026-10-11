@@ -68,7 +68,6 @@
     "Administrator has not configured mailbox connection settings yet.": "Адміністратор ще не налаштував параметри підключення поштової скриньки.",
     "Administrators have access to all mailboxes and are not listed here.": "Адміністратори мають доступ до всіх поштових скриньок і тому не вказані тут.",
     "After": "Після",
-    "After Sending": "Після Відправлення",
     "Age": "Вік",
     "Alert email": "Сповіщення електронною поштою",
     "Alerts": "Сповіщення",
@@ -399,7 +398,6 @@
     "Newer": "Новіше",
     "Next Conversation #": "Наступна Розмова #",
     "Next Page": "Наступна Сторінка",
-    "Next active conversation": "Наступна активна розмова",
     "No": "Ні",
     "No customers found": "Клієнтів не знайдено",
     "No customers found. Would you like to create one?": "Клієнтів не знайдено. Хочете створити одного?",
@@ -1425,7 +1423,6 @@
     "Replies": "Відповіді",
     "Status After a Reply": "Статус Після Відповіді",
     "After sending": "Після надсилання",
-    "Stay on the conversation": "Залишитися в розмові",
     "You have unsaved changes.": "У вас є незбережені зміни.",
     "Inbox": "Вхідні",
     "Can't use cron?": "Не можете використовувати cron?",
@@ -1802,5 +1799,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Цей чат більше недоступний у сервісі обміну повідомленнями. Тут не можна відповісти або відкрити його знову. Ви все ще можете додавати нотатки.",
     "Date Sent": "Дата Надсилання",
     "Received: :date": "Отримано: :date",
-    "Sent: :date": "Надіслано: :date"
+    "Sent: :date": "Надіслано: :date",
+    "When a Conversation Moves": "Коли Розмову Переміщено",
+    "Stay in Folder": "Залишитися в Папці",
+    "Stay in Conversation": "Залишитися в Розмові",
+    "Stay in Folder opens the next conversation in the folder you are in.": "Залишитися в Папці відкриває наступну розмову в папці, де ви перебуваєте."
 }

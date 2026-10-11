@@ -67,7 +67,6 @@
     "Administrator has not configured mailbox connection settings yet.": "Администратор ещё не настроил параметры подключения почтового ящика.",
     "Administrators have access to all mailboxes and are not listed here.": "Администраторы имеют доступ ко всем почтовым ящикам и не перечислены здесь.",
     "After": "После",
-    "After Sending": "После Отправки",
     "Age": "Возраст",
     "Alert email": "Письмо-оповещение",
     "Alerts": "Оповещения",
@@ -391,7 +390,6 @@
     "Newer": "Новее",
     "Next Conversation #": "Номер # Следующего Тикета",
     "Next Page": "Следующая Страница",
-    "Next active conversation": "Следующий активный тикет",
     "No": "Нет",
     "No customers found": "Не найдено клиентов",
     "No customers found. Would you like to create one?": "Не найдено клиентов. Хотите создать клиента?",
@@ -1425,7 +1423,6 @@
     "Replies": "Ответы",
     "Status After a Reply": "Статус После Ответа",
     "After sending": "После отправки",
-    "Stay on the conversation": "Остаться в тикете",
     "You have unsaved changes.": "У вас есть несохранённые изменения.",
     "Inbox": "Входящие",
     "Can't use cron?": "Не можете использовать cron?",
@@ -1802,5 +1799,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Этот чат больше недоступен в сервисе обмена сообщениями. Здесь нельзя ответить или открыть его заново. Вы по-прежнему можете добавлять заметки.",
     "Date Sent": "Дата Отправки",
     "Received: :date": "Получено: :date",
-    "Sent: :date": "Отправлено: :date"
+    "Sent: :date": "Отправлено: :date",
+    "When a Conversation Moves": "Когда Тикет Перемещается",
+    "Stay in Folder": "Остаться в Папке",
+    "Stay in Conversation": "Остаться в Тикете",
+    "Stay in Folder opens the next conversation in the folder you are in.": "Остаться в Папке открывает следующий тикет в папке, где вы находитесь."
 }

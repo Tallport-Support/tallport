@@ -40,16 +40,13 @@ class ConversationComposer extends Component
 
     /**
      * The customer's addresses to reply to (email => label), the mailbox's
-     * aliases to send from (email => name) and the user's after-send setting.
+     * aliases to send from (email => name).
      */
     #[Locked]
     public $to_customers = [];
 
     #[Locked]
     public $from_aliases = [];
-
-    #[Locked]
-    public $after_send;
 
     /**
      * The chat view: the composer stays open below the history, a reply unless
@@ -122,7 +119,7 @@ class ConversationComposer extends Component
     #[Locked]
     public $default_cc = [];
 
-    public function mount($conversation, $toCustomers = [], $cc = [], $fromAliases = [], $fromAlias = '', $afterSend = null, $chat = false)
+    public function mount($conversation, $toCustomers = [], $cc = [], $fromAliases = [], $fromAlias = '', $chat = false)
     {
         $this->chat = (bool) $chat;
         $this->conversation_id = $conversation->id;
@@ -134,7 +131,6 @@ class ConversationComposer extends Component
         $this->default_cc = array_values($cc ?: []);
         $this->from_aliases = $fromAliases;
         $this->from_alias = $fromAlias && $fromAlias != $conversation->mailbox->email ? $fromAlias : '';
-        $this->after_send = $afterSend;
         $this->resetFields($conversation);
 
         // A draft to continue (?show_draft=); in a chat, the user's own unsent reply is back
@@ -526,8 +522,6 @@ class ConversationComposer extends Component
             'body'            => $this->body,
             'status'          => $this->status,
             'user_id'         => $this->user_id,
-            // The chat view stays in the conversation.
-            'after_send'      => $this->chat ? \App\User::AFTER_SEND_STAY : $this->after_send,
             'attachments'     => $attachment_ids,
             'attachments_all' => $attachment_ids,
             'embeds'          => array_column(array_filter($this->attachments, fn ($attachment) => !empty($attachment['embed'])), 'id'),

@@ -40,7 +40,7 @@
                 </x-fruit::field>
             </x-fruit::form-section>
 
-            {{-- Unset: Pending after a reply, then the next active conversation. --}}
+            {{-- Unset: Pending after a reply. --}}
             <x-fruit::form-section :title="__('Replies')">
                 <x-fruit::field :label="__('Status After a Reply')" layout="row">
                     <x-fruit::select id="reply_status" name="reply_status">
@@ -50,10 +50,10 @@
                     </x-fruit::select>
                 </x-fruit::field>
 
-                <x-fruit::field :label="__('After Sending')" layout="row">
-                    <x-fruit::select id="after_send" name="after_send">
-                        <option value="{{ App\User::AFTER_SEND_STAY }}" @if (old('after_send', $user->afterSend()) == App\User::AFTER_SEND_STAY) selected @endif>{{ __('Stay on the conversation') }}</option>
-                        <option value="{{ App\User::AFTER_SEND_NEXT }}" @if (old('after_send', $user->afterSend()) == App\User::AFTER_SEND_NEXT) selected @endif>{{ __('Next active conversation') }}</option>
+                <x-fruit::field :label="__('When a Conversation Moves')" :description="__('Stay in Folder opens the next conversation in the folder you are in.')" layout="row">
+                    <x-fruit::select id="stay_in_conversation" name="stay_in_conversation">
+                        <option value="0" @if (!old('stay_in_conversation', $user->stay_in_conversation)) selected @endif>{{ __('Stay in Folder') }}</option>
+                        <option value="1" @if (old('stay_in_conversation', $user->stay_in_conversation)) selected @endif>{{ __('Stay in Conversation') }}</option>
                     </x-fruit::select>
                 </x-fruit::field>
             </x-fruit::form-section>

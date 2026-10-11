@@ -4771,11 +4771,6 @@
                 "nullable": true,
                 "default": "NULL"
             },
-            "after_send": {
-                "type": "tinyint(3) unsigned",
-                "nullable": true,
-                "default": "NULL"
-            },
             "accent": {
                 "type": "varchar(16)",
                 "nullable": true,
@@ -4808,6 +4803,11 @@
                 "default": "NULL",
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
+            },
+            "stay_in_conversation": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
             }
         },
         "indexes": {

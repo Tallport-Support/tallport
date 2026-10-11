@@ -345,7 +345,9 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         $this->assertSuccess($this->replies('sendReply', ['type' => Conversation::TYPE_CUSTOM, 'is_create' => 1, 'subject' => 'Internal', 'body' => '<p>Custom</p>']));
         $this->assertStringContainsString('Ticket added', session('flash_warning_floating'));
 
-        $this->assertSuccess($this->replies('sendReply', ['type' => Conversation::TYPE_CUSTOM, 'is_create' => 1, 'subject' => 'Internal', 'body' => '<p>Custom 2</p>', 'after_send' => User::AFTER_SEND_STAY]));
+        $this->agent->stay_in_conversation = true;
+        $this->agent->save();
+        $this->assertSuccess($this->replies('sendReply', ['type' => Conversation::TYPE_CUSTOM, 'is_create' => 1, 'subject' => 'Internal', 'body' => '<p>Custom 2</p>']));
         $this->assertSame('Ticket added', session('flash_warning_floating'));
 
         \Eventy::removeAllFilters('conversation.custom.identifier');
@@ -359,13 +361,15 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
     public function testStayingAfterANoteOrAPhoneConversation()
     {
         $conversation = $this->receiveConversation();
+        $this->agent->stay_in_conversation = true;
+        $this->agent->save();
 
-        $this->assertSuccess($this->replies('sendReply', ['conversation_id' => $conversation->id, 'is_note' => 1, 'body' => '<p>Note</p>', 'after_send' => User::AFTER_SEND_STAY]));
+        $this->assertSuccess($this->replies('sendReply', ['conversation_id' => $conversation->id, 'is_note' => 1, 'body' => '<p>Note</p>']));
         $this->assertSame('Note added', session('flash_warning_floating'));
 
         $this->assertSuccess($this->replies('sendReply', [
             'type' => Conversation::TYPE_PHONE, 'is_create' => 1, 'is_note' => 1, 'name' => 'Kim Caller',
-            'subject' => 'Called', 'body' => '<p>Called.</p>', 'after_send' => User::AFTER_SEND_STAY,
+            'subject' => 'Called', 'body' => '<p>Called.</p>',
         ]));
         $this->assertSame('Conversation created', session('flash_warning_floating'));
     }

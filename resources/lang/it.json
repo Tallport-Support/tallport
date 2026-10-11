@@ -68,7 +68,6 @@
     "Administrator has not configured mailbox connection settings yet.": "L'amministratore non ha ancora configurato le impostazioni di connessione alla casella postale",
     "Administrators have access to all mailboxes and are not listed here.": "Gli amministratori hanno accesso a tutte le caselle postali e non sono elencati qui",
     "After": "Dopo",
-    "After Sending": "Dopo l'Invio",
     "Age": "Età",
     "Alert email": "Email di avviso",
     "Alerts": "Avvisi",
@@ -403,7 +402,6 @@
     "Newer": "Più recente",
     "Next Conversation #": "Ticket Successivo #",
     "Next Page": "Pagina Successiva",
-    "Next active conversation": "Ticket attivo successivo",
     "No": "No",
     "No customers found": "Nessun cliente trovato",
     "No customers found. Would you like to create one?": "Nessun cliente trovato. Ti piacerebbe crearne uno?",
@@ -1425,7 +1423,6 @@
     "Replies": "Risposte",
     "Status After a Reply": "Stato Dopo una Risposta",
     "After sending": "Dopo l'invio",
-    "Stay on the conversation": "Resta sul ticket",
     "You have unsaved changes.": "Hai modifiche non salvate.",
     "Inbox": "Posta in arrivo",
     "Can't use cron?": "Non puoi usare cron?",
@@ -1802,5 +1799,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Questa chat non è più disponibile sul servizio di messaggistica. Non puoi rispondere né riaprirla da qui. Puoi ancora aggiungere note.",
     "Date Sent": "Data di Invio",
     "Received: :date": "Ricevuto: :date",
-    "Sent: :date": "Inviato: :date"
+    "Sent: :date": "Inviato: :date",
+    "When a Conversation Moves": "Quando un Ticket Viene Spostato",
+    "Stay in Folder": "Resta nella Cartella",
+    "Stay in Conversation": "Resta nel Ticket",
+    "Stay in Folder opens the next conversation in the folder you are in.": "Resta nella Cartella apre il ticket successivo della cartella in cui si trova."
 }

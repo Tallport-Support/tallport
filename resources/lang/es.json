@@ -67,7 +67,6 @@
     "Administrator has not configured mailbox connection settings yet.": "El administrador aún no ha configurado los ajustes de conexión a las cuentas de correo.",
     "Administrators have access to all mailboxes and are not listed here.": "Los administradores tienen acceso a todas las cuentas de correo y no están listados aquí.",
     "After": "Después",
-    "After Sending": "Después de Enviar",
     "Age": "Edad",
     "Alert email": "Correo de alerta",
     "Alerts": "Alertas",
@@ -397,7 +396,6 @@
     "Newer": "Más reciente",
     "Next Conversation #": "Siguiente Conversación #",
     "Next Page": "Página Siguiente",
-    "Next active conversation": "Siguiente conversación activa",
     "No": "No",
     "No customers found": "No se encontraron clientes",
     "No customers found. Would you like to create one?": "No se encontraron clientes. ¿Quieres crear uno?",
@@ -1425,7 +1423,6 @@
     "Replies": "Respuestas",
     "Status After a Reply": "Estado Tras una Respuesta",
     "After sending": "Después de enviar",
-    "Stay on the conversation": "Quedarse en la conversación",
     "You have unsaved changes.": "Tiene cambios sin guardar.",
     "Inbox": "Bandeja de entrada",
     "Can't use cron?": "¿No puede usar cron?",
@@ -1802,5 +1799,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Este chat ya no está disponible en el servicio de mensajería. No puede responder ni volver a abrirlo desde aquí. Puede seguir añadiendo notas.",
     "Date Sent": "Fecha de Envío",
     "Received: :date": "Recibido: :date",
-    "Sent: :date": "Enviado: :date"
+    "Sent: :date": "Enviado: :date",
+    "When a Conversation Moves": "Cuando una Conversación se Mueve",
+    "Stay in Folder": "Quedarse en la Carpeta",
+    "Stay in Conversation": "Quedarse en la Conversación",
+    "Stay in Folder opens the next conversation in the folder you are in.": "Quedarse en la Carpeta abre la siguiente conversación de la carpeta en la que está."
 }

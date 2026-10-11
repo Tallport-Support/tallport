@@ -68,7 +68,6 @@
     "Administrator has not configured mailbox connection settings yet.": "Administrátor ešte nenakonfiguroval nastavenia pripojenia mailboxu.",
     "Administrators have access to all mailboxes and are not listed here.": "Administrátori majú prístup ku všetkým mailboxom a nie sú tu uvedení.",
     "After": "Po",
-    "After Sending": "Po Odoslaní",
     "Age": "Vek",
     "Alert email": "Email upozornenia",
     "Alerts": "Upozornenia",
@@ -404,7 +403,6 @@
     "Newer": "Novšie",
     "Next Conversation #": "Ďalšia Konverzácia #",
     "Next Page": "Ďalšia Stránka",
-    "Next active conversation": "Ďalšia aktívna konverzácia",
     "No": "Nie",
     "No customers found": "Neboli nájdení žiadni zákazníci",
     "No customers found. Would you like to create one?": "Neboli nájdení žiadni zákazníci. Želáte si vytvoriť zákazníka?",
@@ -1425,7 +1423,6 @@
     "Replies": "Odpovede",
     "Status After a Reply": "Stav po Odpovedi",
     "After sending": "Po odoslaní",
-    "Stay on the conversation": "Zostať pri konverzácii",
     "You have unsaved changes.": "Máte neuložené zmeny.",
     "Inbox": "Doručená pošta",
     "Can't use cron?": "Nemôžete použiť cron?",
@@ -1802,5 +1799,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Tento chat už nie je v službe na zasielanie správ dostupný. Tu nemôžete odpovedať ani ho znova otvoriť. Stále môžete pridávať poznámky.",
     "Date Sent": "Dátum Odoslania",
     "Received: :date": "Prijaté: :date",
-    "Sent: :date": "Odoslané: :date"
+    "Sent: :date": "Odoslané: :date",
+    "When a Conversation Moves": "Keď sa Konverzácia Presunie",
+    "Stay in Folder": "Zostať v Priečinku",
+    "Stay in Conversation": "Zostať v Konverzácii",
+    "Stay in Folder opens the next conversation in the folder you are in.": "Zostať v Priečinku otvorí ďalšiu konverzáciu v priečinku, v ktorom ste."
 }

@@ -99,8 +99,6 @@ class ConversationsController extends Controller
         $mailbox = $conversation->mailbox;
         $customer = $conversation->customer_cached;
 
-        $after_send = $user->afterSend();
-
         // Detect customers and emails to which user can reply
         $to_customers = [];
         // Add all customer emails
@@ -336,7 +334,6 @@ class ConversationsController extends Controller
             'threads'            => \Eventy::filter('conversation.view.threads', $threads),
             'folder'             => $folder,
             'folders'            => $conversation->mailbox->getAssesibleFolders(),
-            'after_send'         => $after_send,
             'to'                 => $new_conv_to,
             'to_customers'       => $to_customers,
             'prev_conversations' => $prev_conversations,
@@ -427,9 +424,6 @@ class ConversationsController extends Controller
 
         $folder = $mailbox->folders()->where('type', Folder::TYPE_DRAFTS)->first();
 
-        // todo: use $user->mailboxSettings()
-        $after_send = auth()->user()->afterSend();
-
         // Create conversation from thread
         $thread = null;
         $attachments = [];
@@ -492,7 +486,6 @@ class ConversationsController extends Controller
             'mailbox'      => $mailbox,
             'folder'       => $folder,
             'folders'      => $mailbox->getAssesibleFolders(),
-            'after_send'   => $after_send,
             'to'           => $to,
             'from_aliases' => $mailbox->getAliases(true, true),
             'attachments'  => $attachments,
@@ -1105,14 +1098,6 @@ class ConversationsController extends Controller
             'prev_conversation_ids' => $prev_conversations ? collect($prev_conversations->items())->pluck('id')->map('strval') : [],
 
         ]);
-    }
-
-    /**
-     * Get redirect URL after performing an action.
-     */
-    public function getRedirectUrl($request, $conversation, $user)
-    {
-        return \App\Misc\ConversationActions::redirectUrl($request, $conversation, $user);
     }
 
     /**

@@ -21,7 +21,6 @@
         :attachments="$attachments ?? []"
         :from-aliases="$from_aliases ?? []"
         :from-alias="$from_alias ?? ''"
-        :after-send="$after_send ?? null"
     />
     @action('new_conversation_form.after', $conversation)
 @endsection

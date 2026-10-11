@@ -28,7 +28,7 @@
             @action('conversation.before_threads', $conversation)
             <livewire:conversation-thread wire:key="thread-{{ $conversation->id }}" :conversation="$conversation" :threads="$threads->reverse()->values()" chat />
             @action('conversation.after_threads', $conversation)
-            <livewire:conversation-composer wire:key="composer-{{ $conversation->id }}" :conversation="$conversation" :to-customers="$to_customers" :cc="$cc" :from-aliases="$from_aliases" :from-alias="$from_alias" :after-send="$after_send" chat />
+            <livewire:conversation-composer wire:key="composer-{{ $conversation->id }}" :conversation="$conversation" :to-customers="$to_customers" :cc="$cc" :from-aliases="$from_aliases" :from-alias="$from_alias" chat />
         </div>
     @else
         <div id="conv-layout" class="conv-type-{{ strtolower($conversation->getTypeName()) }}">
@@ -48,7 +48,7 @@
                         @action('conversation.after_subject', $conversation, $mailbox)
                     </header>
                     @action('conversation.after_subject_block', $conversation, $mailbox)
-                    <livewire:conversation-composer wire:key="composer-{{ $conversation->id }}" :conversation="$conversation" :to-customers="$to_customers" :cc="$cc" :from-aliases="$from_aliases" :from-alias="$from_alias" :after-send="$after_send" />
+                    <livewire:conversation-composer wire:key="composer-{{ $conversation->id }}" :conversation="$conversation" :to-customers="$to_customers" :cc="$cc" :from-aliases="$from_aliases" :from-alias="$from_alias" />
                 </div>
             </div>
 

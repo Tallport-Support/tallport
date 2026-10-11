@@ -59,7 +59,6 @@
     "Admin": "Administrador",
     "Administrator": "Administrador",
     "Administrators": "Administradors",
-    "After Sending": "Després d'Enviar",
     "All": "Tot",
     "All conversations": "Totes les converses",
     "Allow to reply from aliases": "Permet respondre des d'àlies",
@@ -188,7 +187,6 @@
     "New Conversation": "Nova Conversa",
     "New Mailbox": "Nova Bústia",
     "New message": "Nou missatge",
-    "Next active conversation": "Propera conversa activa",
     "No": "No",
     "None": "Cap",
     "Note": "Nota",
@@ -1523,7 +1521,6 @@
     "Replies": "Respostes",
     "Status After a Reply": "Estat Després d'Una Resposta",
     "After sending": "Després d'enviar",
-    "Stay on the conversation": "Queda't a la conversa",
     "You have unsaved changes.": "Teniu canvis sense desar.",
     "Can't use cron?": "No podeu fer servir cron?",
     "Redis isn't reachable": "No es pot connectar amb Redis",
@@ -1894,5 +1891,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Aquest xat ja no està disponible al servei de missatgeria. No hi podeu respondre ni reobrir-lo des d’aquí. Encara hi podeu afegir notes.",
     "Date Sent": "Data d'Enviament",
     "Received: :date": "Rebut: :date",
-    "Sent: :date": "Enviat: :date"
+    "Sent: :date": "Enviat: :date",
+    "When a Conversation Moves": "Quan Es Mou Una Conversa",
+    "Stay in Folder": "Quedar-se a la Carpeta",
+    "Stay in Conversation": "Quedar-se a la Conversa",
+    "Stay in Folder opens the next conversation in the folder you are in.": "Quedar-se a la Carpeta obre la conversa següent de la carpeta on sou."
 }

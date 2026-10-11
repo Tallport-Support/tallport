@@ -68,7 +68,6 @@
     "Administrator has not configured mailbox connection settings yet.": "המנהל עדיין לא הגדיר את הגדרות החיבור לתיבת הדואר.",
     "Administrators have access to all mailboxes and are not listed here.": "למנהלים יש גישה לכל תיבות הדואר והם אינם מופיעים כאן.",
     "After": "אחרי",
-    "After Sending": "לאחר השליחה",
     "Age": "גיל",
     "Alert email": "אימייל התראה",
     "Alerts": "התראות",
@@ -398,7 +397,6 @@
     "Newer": "חדש יותר",
     "Next Conversation #": "מספר השיחה הבא",
     "Next Page": "עמוד הבא",
-    "Next active conversation": "השיחה הפעילה הבאה",
     "No": "לא",
     "No customers found": "לא נמצאו לקוחות",
     "No customers found. Would you like to create one?": "לא נמצאו לקוחות. האם תרצה ליצור אחד?",
@@ -1425,7 +1423,6 @@
     "Replies": "תשובות",
     "Status After a Reply": "סטטוס אחרי תשובה",
     "After sending": "אחרי השליחה",
-    "Stay on the conversation": "להישאר בשיחה",
     "You have unsaved changes.": "יש לך שינויים שלא נשמרו.",
     "Inbox": "דואר נכנס",
     "Can't use cron?": "לא ניתן להשתמש ב-cron?",
@@ -1802,5 +1799,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "השיחה הזו אינה זמינה עוד בשירות ההודעות. לא ניתן להשיב או לפתוח אותה מחדש כאן. עדיין ניתן להוסיף הערות.",
     "Date Sent": "תאריך שליחה",
     "Received: :date": "התקבל: :date",
-    "Sent: :date": "נשלח: :date"
+    "Sent: :date": "נשלח: :date",
+    "When a Conversation Moves": "כאשר שיחה עוברת",
+    "Stay in Folder": "להישאר בתיקייה",
+    "Stay in Conversation": "להישאר בשיחה",
+    "Stay in Folder opens the next conversation in the folder you are in.": "להישאר בתיקייה פותח את השיחה הבאה בתיקייה שבה אתם נמצאים."
 }

@@ -68,7 +68,6 @@
     "Administrator has not configured mailbox connection settings yet.": "Administratorul nu a configurat încă setările căsuței poștale.",
     "Administrators have access to all mailboxes and are not listed here.": "Administratorii au acces la toate căsuțele poștale și nu sunt enumerați aici.",
     "After": "După",
-    "After Sending": "După Trimitere",
     "Age": "Vârstă",
     "Alert email": "Alertă email",
     "Alerts": "Alerte",
@@ -403,7 +402,6 @@
     "Newer": "Mai nou",
     "Next Conversation #": "Următoarea Conversație #",
     "Next Page": "Următoarea Pagină",
-    "Next active conversation": "Următoarea conversație activă",
     "No": "Nu",
     "No customers found": "Nu s-au găsit clienți",
     "No customers found. Would you like to create one?": "Nu s-au găsit clienți. Doriți să creați unul?",
@@ -1425,7 +1423,6 @@
     "Replies": "Răspunsuri",
     "Status After a Reply": "Starea După Un Răspuns",
     "After sending": "După trimitere",
-    "Stay on the conversation": "Rămâi la conversație",
     "You have unsaved changes.": "Aveți modificări nesalvate.",
     "Inbox": "Inbox",
     "Can't use cron?": "Nu puteți folosi cron?",
@@ -1802,5 +1799,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Această conversație nu mai este disponibilă în serviciul de mesagerie. Nu puteți răspunde sau redeschide conversația de aici. Puteți adăuga în continuare note.",
     "Date Sent": "Data Trimiterii",
     "Received: :date": "Primit: :date",
-    "Sent: :date": "Trimis: :date"
+    "Sent: :date": "Trimis: :date",
+    "When a Conversation Moves": "Când o Conversație Este Mutată",
+    "Stay in Folder": "Rămâi în Folder",
+    "Stay in Conversation": "Rămâi în Conversație",
+    "Stay in Folder opens the next conversation in the folder you are in.": "Rămâi în Folder deschide următoarea conversație din folderul în care vă aflați."
 }

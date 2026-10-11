@@ -68,7 +68,6 @@
     "Administrator has not configured mailbox connection settings yet.": "Järjestelmänvalvoja ei ole vielä määrittänyt postilaatikon yhteysasetuksia.",
     "Administrators have access to all mailboxes and are not listed here.": "Järjestelmänvalvojilla on pääsy kaikkiin postilaatikoihin, eikä niitä ole lueteltu tässä.",
     "After": "Jälkeen",
-    "After Sending": "Lähettämisen Jälkeen",
     "Age": "Ikä",
     "Alert email": "Varoitussähköposti",
     "Alerts": "Hälytykset",
@@ -391,7 +390,6 @@
     "Newer": "Uudempi",
     "Next Conversation #": "Seuraava Keskustelu #",
     "Next Page": "Seuraava Sivu",
-    "Next active conversation": "Seuraava aktiivinen keskustelu",
     "No": "Ei",
     "No customers found": "Asiakkaita ei löytynyt",
     "No customers found. Would you like to create one?": "Asiakkaita ei löytynyt. Haluaisitko luoda sellaisen?",
@@ -1441,7 +1439,6 @@
     "Replies": "Vastaukset",
     "Status After a Reply": "Tila Vastauksen Jälkeen",
     "After sending": "Lähettämisen jälkeen",
-    "Stay on the conversation": "Pysy keskustelussa",
     "You have unsaved changes.": "Sinulla on tallentamattomia muutoksia.",
     "Inbox": "Saapuneet",
     "Can't use cron?": "Etkö voi käyttää cronia?",
@@ -1818,5 +1815,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Tämä keskustelu ei ole enää käytettävissä viestipalvelussa. Et voi vastata siihen tai avata sitä uudelleen täällä. Voit edelleen lisätä muistiinpanoja.",
     "Date Sent": "Lähetyspäivä",
     "Received: :date": "Vastaanotettu: :date",
-    "Sent: :date": "Lähetetty: :date"
+    "Sent: :date": "Lähetetty: :date",
+    "When a Conversation Moves": "Kun Keskustelu Siirtyy",
+    "Stay in Folder": "Pysy Kansiossa",
+    "Stay in Conversation": "Pysy Keskustelussa",
+    "Stay in Folder opens the next conversation in the folder you are in.": "Pysy Kansiossa avaa seuraavan keskustelun kansiossa, jossa olet."
 }

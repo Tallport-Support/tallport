@@ -67,7 +67,6 @@
     "Administrator has not configured mailbox connection settings yet.": "Administrator heeft nog geen mailbox-verbindingsinstellingen geconfigureerd.",
     "Administrators have access to all mailboxes and are not listed here.": "Administrators hebben toegang tot alle mailboxen en worden hier niet vermeld.",
     "After": "Na",
-    "After Sending": "Na Versturen",
     "Age": "Leeftijd",
     "Alert email": "E-mail alert",
     "Alerts": "Waarschuwingen",
@@ -392,7 +391,6 @@
     "Newer": "Nieuwer",
     "Next Conversation #": "Volgend Gesprek #",
     "Next Page": "Volgende Pagina",
-    "Next active conversation": "Volgend actieve gesprek",
     "No": "Nee",
     "No customers found": "Geen klanten gevonden",
     "No customers found. Would you like to create one?": "Geen klanten gevonden. Wilt u er een aanmaken?",
@@ -1425,7 +1423,6 @@
     "Replies": "Antwoorden",
     "Status After a Reply": "Status Na een Antwoord",
     "After sending": "Na het verzenden",
-    "Stay on the conversation": "Bij het gesprek blijven",
     "You have unsaved changes.": "U hebt niet-opgeslagen wijzigingen.",
     "Inbox": "Inbox",
     "Can't use cron?": "Kunt u cron niet gebruiken?",
@@ -1802,5 +1799,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Deze chat is niet meer beschikbaar op de berichtendienst. U kunt hier niet antwoorden of de chat heropenen. U kunt nog wel notities toevoegen.",
     "Date Sent": "Verzenddatum",
     "Received: :date": "Ontvangen: :date",
-    "Sent: :date": "Verzonden: :date"
+    "Sent: :date": "Verzonden: :date",
+    "When a Conversation Moves": "Als een Gesprek Wordt Verplaatst",
+    "Stay in Folder": "In Map Blijven",
+    "Stay in Conversation": "In Gesprek Blijven",
+    "Stay in Folder opens the next conversation in the folder you are in.": "In Map Blijven opent het volgende gesprek in de map waarin u zich bevindt."
 }

@@ -69,7 +69,6 @@
     "Administrator has not configured mailbox connection settings yet.": "L'administrateur n'a pas encore configuré la connexion à la boîte de réception.",
     "Administrators have access to all mailboxes and are not listed here.": "Les administrateurs ont accès à toutes les boîtes aux lettres et ne sont pas répertoriés ici.",
     "After": "Après",
-    "After Sending": "Après l'Envoi",
     "Age": "Âge",
     "Alert email": "Alerte email",
     "Alerts": "Alertes",
@@ -403,7 +402,6 @@
     "Newer": "Plus récent",
     "Next Conversation #": "Prochain Numéro de Conversation",
     "Next Page": "Page Suivante",
-    "Next active conversation": "Conversation active suivante",
     "No": "Non",
     "No customers found": "Aucun client trouvé",
     "No customers found. Would you like to create one?": "Aucun client trouvé. Souhaitez-vous en créer un?",
@@ -1432,7 +1430,6 @@
     "Replies": "Réponses",
     "Status After a Reply": "Statut Après une Réponse",
     "After sending": "Après l'envoi",
-    "Stay on the conversation": "Rester sur la conversation",
     "You have unsaved changes.": "Vous avez des modifications non enregistrées.",
     "Inbox": "Boîte de réception",
     "Can't use cron?": "Vous ne pouvez pas utiliser cron ?",
@@ -1809,5 +1806,9 @@
     "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Cette discussion n’est plus disponible sur le service de messagerie. Vous ne pouvez pas y répondre ni la rouvrir ici. Vous pouvez toujours ajouter des notes.",
     "Date Sent": "Date d'Envoi",
     "Received: :date": "Reçu : :date",
-    "Sent: :date": "Envoyé : :date"
+    "Sent: :date": "Envoyé : :date",
+    "When a Conversation Moves": "Quand une Conversation Est Déplacée",
+    "Stay in Folder": "Rester dans le Dossier",
+    "Stay in Conversation": "Rester dans la Conversation",
+    "Stay in Folder opens the next conversation in the folder you are in.": "Rester dans le Dossier ouvre la conversation suivante du dossier où vous êtes."
 }
