@@ -96,6 +96,9 @@ class SelfUpdaterTest extends TestCase
         $zip->open($zip_file, \ZipArchive::CREATE);
         $zip->addFromString('Tallport-Support-tallport-abc1234/app/Marker.php', '<?php // marker');
         $zip->addFromString('Tallport-Support-tallport-abc1234/artisan', '#!/usr/bin/env php');
+        $zip->addFromString('Tallport-Support-tallport-abc1234/.htaccess', 'rules');
+        $zip->addFromString('Tallport-Support-tallport-abc1234/.github/ISSUE_TEMPLATE/bug_report.md', 'bug');
+        $zip->addFromString('Tallport-Support-tallport-abc1234/.agents/skills/x/SKILL.md', 'skill');
         $zip->close();
         $zip_body = file_get_contents($zip_file);
         unlink($zip_file);
@@ -113,5 +116,9 @@ class SelfUpdaterTest extends TestCase
         $this->assertArrayNotHasKey('proxy', $this->history[0]['options']);
         $this->assertFileExists($this->download_path.'/1.8.243.1/app/Marker.php');
         $this->assertFileExists($this->download_path.'/1.8.243.1/artisan');
+        $this->assertFileExists($this->download_path.'/1.8.243.1/.htaccess');
+        // The dot folders aren't installed, and their files never end up at the top.
+        $this->assertFileDoesNotExist($this->download_path.'/1.8.243.1/bug_report.md');
+        $this->assertFileDoesNotExist($this->download_path.'/1.8.243.1/SKILL.md');
     }
 }

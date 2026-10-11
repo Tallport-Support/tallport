@@ -47,6 +47,12 @@ class FileCheck
      */
     public $removed_files;
 
+    /**
+     * Files in the release's folders whose names start with a dot: file name => their
+     * blob SHA-1s. Updaters before 2.30.3 put copies of them at the top.
+     */
+    protected $dot_folder_files = [];
+
     public function __construct($base_path = null, $version = null, $removed_files = null)
     {
         $this->base_path = rtrim($base_path ?: base_path(), '/');
@@ -116,6 +122,12 @@ class FileCheck
     public function scan()
     {
         $release = $this->releaseFiles();
+        $this->dot_folder_files = [];
+        foreach ($release as $path => $sha) {
+            if (self::inDotFolder($path)) {
+                $this->dot_folder_files[basename($path)][] = $sha;
+            }
+        }
         // Also what the repository has but the zipball doesn't (CHANGELOG.md in a git checkout).
         $ignored = array_merge($this->ignoredPaths(), $this->exportIgnorePatterns());
         $result = ['version' => $this->version, 'unexpected' => [], 'changed' => [], 'missing' => [], 'leftovers' => []];
@@ -186,11 +198,16 @@ class FileCheck
 
     /**
      * A file an earlier release shipped, byte for byte, inside the
-     * installation's folder (no symlink on the way).
+     * installation's folder (no symlink on the way); or, at the top, a copy of a
+     * file in one of the release's dot folders.
      */
     public function isLeftover($path)
     {
-        if (empty($this->removed_files[$path]) || str_contains('/'.$path.'/', '/../')) {
+        $shas = $this->removed_files[$path] ?? [];
+        if (!str_contains($path, '/')) {
+            $shas = array_merge($shas, $this->dot_folder_files[$path] ?? []);
+        }
+        if (!$shas || str_contains('/'.$path.'/', '/../')) {
             return false;
         }
         $file = $this->base_path.'/'.$path;
@@ -200,7 +217,7 @@ class FileCheck
             return false;
         }
 
-        return in_array(self::blobSha($file), $this->removed_files[$path], true);
+        return in_array(self::blobSha($file), $shas, true);
     }
 
     /**

@@ -131,6 +131,29 @@ class FileCheckTest extends FeatureTestCase
         $this->assertSame(['public/.htaccess'], $result['unexpected']);
     }
 
+    /**
+     * Updaters before 2.30.3 put the files of the dot folders at the top: unchanged copies
+     * are leftovers, edited ones and real files at the top are kept.
+     */
+    public function testCopiesOfDotFolderFilesAtTheTopAreLeftovers()
+    {
+        $this->fakeRelease(['artisan' => 'artisan', '.github/ISSUE_TEMPLATE/bug_report.md' => 'bug', '.agents/skills/a/SKILL.md' => 'skill a', '.agents/skills/b/SKILL.md' => 'skill b']);
+        $this->putFile('artisan', 'artisan');
+        $this->putFile('bug_report.md', 'bug');
+        $this->putFile('SKILL.md', 'skill b');
+        $this->putFile('style.md', 'not from a dot folder');
+        $this->putFile('public/bug_report.md', 'bug');
+
+        $result = $this->fileCheck()->scan();
+        $this->assertSame(['SKILL.md', 'bug_report.md'], $result['leftovers']);
+
+        $this->fileCheck()->deleteLeftovers();
+        $this->assertFileDoesNotExist($this->dir.'/bug_report.md');
+        $this->assertFileDoesNotExist($this->dir.'/SKILL.md');
+        $this->assertFileExists($this->dir.'/style.md');
+        $this->assertFileExists($this->dir.'/public/bug_report.md');
+    }
+
     public function testModulesCanIgnorePaths()
     {
         $this->fakeRelease(['artisan' => 'artisan']);

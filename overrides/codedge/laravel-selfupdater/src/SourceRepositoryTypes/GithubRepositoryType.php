@@ -232,7 +232,9 @@ class GithubRepositoryType extends AbstractRepositoryType implements SourceRepos
             File::moveDirectory($directory, $storagePath.'/'.$releaseName.'/'.File::name($directory));
         }
 
-        $files = File::allFiles($subDirName[0], true);
+        // The files at the top only: those in the folders whose names start with a dot (.github,
+        // .claude) aren't installed, and moving them here would put them all at the top.
+        $files = File::files($subDirName[0], true);
         foreach ($files as $file) { /* @var \SplFileInfo $file */
             File::move($file->getRealPath(), $storagePath.'/'.$releaseName.'/'.$file->getFilename());
         }
