@@ -16,7 +16,6 @@ class LogLabelsTest extends TestCase
         return [
             [ActivityLog::DESCRIPTION_USER_LOGIN, 'Logged in'],
             [ActivityLog::DESCRIPTION_USER_LOGOUT, 'Logged out'],
-            [ActivityLog::DESCRIPTION_USER_REGISTER, 'Registered'],
             [ActivityLog::DESCRIPTION_USER_LOCKED, 'Locked out'],
             [ActivityLog::DESCRIPTION_USER_LOGIN_FAILED, 'Failed login'],
             [ActivityLog::DESCRIPTION_USER_PASSWORD_RESET, 'Reset password'],

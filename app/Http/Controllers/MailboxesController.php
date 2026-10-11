@@ -73,8 +73,6 @@ class MailboxesController extends Controller
             'name'  => 'required|string|max:40',
         ]);
 
-        // //event(new Registered($user = $this->create($request->all())));
-
         if (Mailbox::userEmailExists($request->email)) {
             $invalid = true;
             $validator->errors()->add('email', __('There is a user with such email. Users and mailboxes can not have the same email addresses.'));
@@ -200,7 +198,6 @@ class MailboxesController extends Controller
                 'accent'           => ['nullable', \Illuminate\Validation\Rule::in(\FruitUI\Fruit::ACCENTS)],
             ], [], ['chat_reopen_days' => __('Reopen Window')]);
 
-            //event(new Registered($user = $this->create($request->all())));
             if (Mailbox::userEmailExists($request->email)) {
                 $invalid = true;
                 $validator->errors()->add('email', __('There is a user with such email. Users and mailboxes can not have the same email addresses.'));
