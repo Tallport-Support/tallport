@@ -686,7 +686,6 @@
     "none": "ei mitään",
     "on :date": "päällä :date",
     "Or Enter Mailbox Email": "Tai Kirjoita Postilaatikon Sähköpostiosoite",
-    "read more": "lue lisää",
     "total conversations": "keskusteluja yhteensä",
     "via": "kautta",
     "you": "sinä",
@@ -733,7 +732,6 @@
     "The only active administrator can not be disabled.": "Ainoaa aktiivista järjestelmänvalvojaa ei voi poistaa käytöstä.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Annettu sähköpostiosoite kuuluu asiakkaalle postilaatikossa, johon sinulla ei ole pääsyä.",
     "The user is disabled or deleted.": "Käyttäjä on poistettu käytöstä tai poistettu.",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "Lähtevän postijonon käsittelyssä on ongelma — järjestelmänvalvojan tulee tarkistaa :%a_begin%Järjestelmän tila:%a_end% ja :%a_begin_recommendations%Suositukset:%a_end%",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Päivittäminen on poistettu käytöstä (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "Käyttäjä näkee vain hänelle määrätyt keskustelut",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Sinulla ei ole enää pääsyä keskusteluun, johon vastasit. Ota yhteyttä järjestelmänvalvojaan.",
@@ -1823,5 +1821,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport näkee kävijöiden omat IP-osoitteet. Pidä Cloudflaressa Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) pois päältä: se estää tavallisia pyyntöjä, kuten vastauksia. Kytke Rocket Loader pois päältä: Tallportin Content Security Policy estää sen uudelleenkirjoittamat skriptit. Cloudflaren loki estetyistä pyynnöistä on kohdassa Security » Events.",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Pyynnöissä on Cloudflaren otsakkeet, mutta ne eivät tule Cloudflaren osoitteista, joten Tallport ohittaa niissä olevan kävijän IP-osoitteen. Onko Cloudflaren ja Tallportin välissä toinen välityspalvelin?",
     "Visitor IPs Detected": "Kävijöiden IP-osoitteet Tunnistettu",
-    "Visitor IPs Unknown": "Kävijöiden IP-osoitteet Tuntemattomia"
+    "Visitor IPs Unknown": "Kävijöiden IP-osoitteet Tuntemattomia",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport ei voinut luoda niitä itse. Suorita tämä verkkopalvelimen käyttäjänä:",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Lähteviä sähköposteja ei lähetetä — järjestelmänvalvojan tulee tarkistaa :%a_begin%Järjestelmän Tila:%a_end%"
 }

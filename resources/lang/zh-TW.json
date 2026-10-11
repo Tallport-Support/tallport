@@ -526,7 +526,6 @@
     "close": "關閉",
     "none": "無",
     "Or Enter Mailbox Email": "或輸入信箱電子郵件",
-    "read more": "閱讀更多",
     "you": "您",
     "\":name\" module successfully Deactivated!": "「:name」模組已成功停用！",
     "\":name\" module successfully activated!": "「:name」模組已成功啟用！",
@@ -708,7 +707,6 @@
     "The :module_name module has been deactivated due to an error: :error_message": ":module_name 模組因發生錯誤而已停用：:error_message",
     "The new password is the same as the old password.": "新密碼與舊密碼相同。",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "已有信箱使用此電子郵件地址。使用者和信箱不能使用相同的電子郵件地址。",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "處理對外郵件佇列時發生問題 — 管理員應檢查 :%a_begin%系統狀態:%a_end% 和 :%a_begin_recommendations%建議事項:%a_end%",
     "There is a user with such email. Users and mailboxes can not have the same email addresses.": "已有使用者使用此電子郵件地址。使用者和信箱不能使用相同的電子郵件地址。",
     "These folders must be writable by web server user (:user).": "這些資料夾必須允許網頁伺服器使用者 (:user) 寫入。",
     "Third-Party": "第三方",
@@ -1852,5 +1850,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport 能看到訪客自己的 IP 位址。在 Cloudflare 中，請保持 Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) 關閉：它會攔截回覆等一般請求。請關閉 Rocket Loader：Tallport 的 Content Security Policy 會攔截它改寫的指令碼。Cloudflare 的攔截請求記錄位於 Security » Events。",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "請求帶有 Cloudflare 的標頭，但並非來自 Cloudflare 的位址，因此 Tallport 會忽略其中的訪客 IP 位址。Cloudflare 與 Tallport 之間是否還有其他代理？",
     "Visitor IPs Detected": "已識別訪客 IP",
-    "Visitor IPs Unknown": "訪客 IP 未知"
+    "Visitor IPs Unknown": "訪客 IP 未知",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport 無法自行建立它們。請以網頁伺服器的使用者身分執行：",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "對外郵件未能寄出 — 管理員應檢查 :%a_begin%系統狀態:%a_end%"
 }

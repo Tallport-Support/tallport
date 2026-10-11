@@ -587,7 +587,6 @@
     "There are updates available": "K dispozícii sú aktualizácie",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Existuje mailbox s takým emailom. Používatelia a mailboxy nemôžu mať rovnaké emailové adresy.",
     "There is a new conversation": "Je tu nová konverzácia",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "Vyskytol sa problém so spracovaním fronty odchádzajúcej pošty — administrátor by mal skontrolovať :%a_begin%Stav systému:%a_end% a :%a_begin_recommendations%Odporúčania:%a_end%",
     "There is a user with such email. Users and mailboxes can not have the same email addresses.": "Existuje používateľ s takým emailom. Používatelia a mailboxy nemôžu mať rovnaké emailové adresy.",
     "There were no send attempts yet": "Zatiaľ neboli žiadne pokusy o odoslanie",
     "These folders must be writable by web server user (:user).": "Tieto priečinky musia byť zapisovateľné používateľom webového servera (:user).",
@@ -698,7 +697,6 @@
     "none": "žiadne",
     "on :date": "dňa :date",
     "Or Enter Mailbox Email": "Alebo Zadajte Emailovú Schránku",
-    "read more": "čítať viac",
     "via": "cez",
     "you": "Vy",
     "yourself": "seba",
@@ -1807,5 +1805,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport vidí vlastné IP adresy návštevníkov. V Cloudflare nechajte Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) vypnutý: blokuje bežné požiadavky, napríklad odpovede. Vypnite Rocket Loader: Content Security Policy Tallportu blokuje skripty, ktoré prepisuje. Záznam zablokovaných požiadaviek Cloudflare nájdete v Security » Events.",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Požiadavky nesú hlavičky Cloudflare, ale neprichádzajú z adries Cloudflare, takže Tallport IP adresu návštevníka v nich ignoruje. Je medzi Cloudflare a Tallportom ďalšie proxy?",
     "Visitor IPs Detected": "IP Návštevníkov Zistené",
-    "Visitor IPs Unknown": "IP Návštevníkov Neznáme"
+    "Visitor IPs Unknown": "IP Návštevníkov Neznáme",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport ich nedokázal vytvoriť sám. Spustite toto ako používateľ webového servera:",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Odchádzajúce e-maily sa neodosielajú — administrátor by mal skontrolovať :%a_begin%Stav Systému:%a_end%"
 }

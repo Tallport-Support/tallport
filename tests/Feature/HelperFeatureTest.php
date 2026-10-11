@@ -145,7 +145,7 @@ class HelperFeatureTest extends FeatureTestCase
         $this->assertSame('warning', $flashes[0]['type']);
         $this->assertTrue($flashes[0]['unescaped']);
         $this->assertStringContainsString('<a href="'.route('system').'#cron" target="_blank">System Status</a>', $flashes[0]['text']);
-        $this->assertStringContainsString('/wiki/Background-Jobs', $flashes[0]['text']);
+        $this->assertStringNotContainsString('/wiki/', $flashes[0]['text']);
     }
 
     /**

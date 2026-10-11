@@ -698,7 +698,6 @@
     "none": "aucun",
     "on :date": "le :date",
     "Or Enter Mailbox Email": "Ou Entrez l'E-Mail de la Boîte aux Lettres",
-    "read more": "en savoir plus",
     "via": "via",
     "you": "Moi",
     "yourself": "moi-même",
@@ -725,7 +724,6 @@
     "The only active administrator can not be disabled.": "Le seul administrateur actif ne peut pas être désactivé.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "L'adresse e-mail indiquée appartient à un client d'une boîte de réception inaccessible.",
     "The user is disabled or deleted.": "L'utilisateur est désactivé ou supprimé.",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "Un problème est survenu lors du traitement de la file d'attente des e-mails sortants — un administrateur doit vérifier :%a_begin%État du système:%a_end% et :%a_begin_recommendations%Recommandations:%a_end%",
     "Updating is disabled (APP_DISABLE_UPDATING).": "La mise à jour est désactivée (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "L'utilisateur ne voit que les conversations qui lui sont assignées",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Vous n'avez plus accès à la conversation à laquelle vous avez répondu. Veuillez contacter votre administrateur.",
@@ -1814,5 +1812,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport voit les adresses IP réelles des visiteurs. Dans Cloudflare, laissez le Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) désactivé : il bloque des requêtes ordinaires comme les réponses. Désactivez Rocket Loader : la Content Security Policy de Tallport bloque les scripts qu'il réécrit. Le journal des requêtes bloquées de Cloudflare se trouve dans Security » Events.",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Les requêtes portent les en-têtes de Cloudflare mais ne viennent pas des adresses de Cloudflare, donc Tallport ignore l'adresse IP du visiteur qu'elles contiennent. Y a-t-il un autre proxy entre Cloudflare et Tallport ?",
     "Visitor IPs Detected": "IP des Visiteurs Détectées",
-    "Visitor IPs Unknown": "IP des Visiteurs Inconnues"
+    "Visitor IPs Unknown": "IP des Visiteurs Inconnues",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport n'a pas pu les créer lui-même. Exécutez ceci en tant qu'utilisateur du serveur web :",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Les e-mails sortants ne sont pas envoyés — un administrateur doit vérifier :%a_begin%État du Système:%a_end%"
 }

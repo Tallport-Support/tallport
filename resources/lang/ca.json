@@ -709,7 +709,6 @@
     "There are updates available": "Hi ha actualitzacions disponibles",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Ja existeix una bústia amb aquest correu. Els usuaris i les bústies no poden tenir les mateixes adreces de correu.",
     "There is a new conversation": "Hi ha una nova conversa",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "Hi ha un problema processant la cua de correus sortints — un administrador hauria de comprovar :%a_begin%l'estat del sistema:%a_end% i :%a_begin_recommendations%les recomanacions:%a_end%",
     "There is a user with such email. Users and mailboxes can not have the same email addresses.": "Ja existeix un usuari amb aquest correu. Els usuaris i les bústies no poden tenir les mateixes adreces de correu.",
     "There were no send attempts yet": "Encara no hi ha intents d'enviament",
     "These folders must be writable by web server user (:user).": "Aquestes carpetes han de tenir permisos d'escriptura per a l'usuari del servidor web (:user).",
@@ -818,7 +817,6 @@
     "on :date": "el :date",
     "Or Enter Mailbox Email": "O Introduïu el Correu de la Bústia",
     "pending": "pendent",
-    "read more": "llegir més",
     "spam": "correu brossa",
     "via": "via",
     "you": "tu",
@@ -1899,5 +1897,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport veu les adreces IP pròpies dels visitants. A Cloudflare, deixeu desactivat el Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules): bloqueja peticions normals com ara les respostes. Desactiveu Rocket Loader: la Content Security Policy de Tallport bloqueja els scripts que reescriu. El registre de peticions bloquejades de Cloudflare és a Security » Events.",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Les peticions porten capçaleres de Cloudflare però no vénen de les adreces de Cloudflare, així que Tallport ignora l'adreça IP del visitant que contenen. Hi ha un altre proxy entre Cloudflare i Tallport?",
     "Visitor IPs Detected": "IP dels Visitants Detectades",
-    "Visitor IPs Unknown": "IP dels Visitants Desconegudes"
+    "Visitor IPs Unknown": "IP dels Visitants Desconegudes",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport no els ha pogut crear. Executeu això com a usuari del servidor web:",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "El correu sortint no s'està enviant — un administrador hauria de comprovar :%a_begin%Estat del Sistema:%a_end%"
 }

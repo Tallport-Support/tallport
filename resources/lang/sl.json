@@ -681,7 +681,6 @@
     "none": "brez",
     "on :date": "dne :date",
     "Or Enter Mailbox Email": "Ali Vnesi E-Pošto Poštnega Predala",
-    "read more": "preberi več",
     "via": "prek",
     "you": "vi",
     "yourself": "sebe",
@@ -717,7 +716,6 @@
     "The only active administrator can not be disabled.": "Edinega aktivnega administratorja ni mogoče onemogočiti.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Navedeni e-poštni naslov pripada stranki iz nedostopnega poštnega predala.",
     "The user is disabled or deleted.": "Uporabnik je onemogočen ali izbrisan.",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "Pri obdelavi čakalne vrste odhodne pošte je prišlo do težave — administrator naj preveri :%a_begin%Stanje sistema:%a_end% in :%a_begin_recommendations%Priporočila:%a_end%",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Posodabljanje je onemogočeno (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "Uporabnik vidi samo dodeljene pogovore",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Do pogovora, na katerega si odgovoril\/-a, nimaš več dostopa. Obrni se na administratorja.",
@@ -1807,5 +1805,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport vidi lastne naslove IP obiskovalcev. V Cloudflaru pustite Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) izklopljen: blokira običajne zahteve, kot so odgovori. Izklopite Rocket Loader: Tallportova Content Security Policy blokira skripte, ki jih prepiše. Cloudflarov dnevnik blokiranih zahtev je v Security » Events.",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Zahteve vsebujejo Cloudflarove glave, vendar ne prihajajo s Cloudflarovih naslovov, zato Tallport prezre naslov IP obiskovalca v njih. Ali je med Cloudflarom in Tallportom še en posrednik?",
     "Visitor IPs Detected": "Naslovi IP Obiskovalcev Zaznani",
-    "Visitor IPs Unknown": "Naslovi IP Obiskovalcev Neznani"
+    "Visitor IPs Unknown": "Naslovi IP Obiskovalcev Neznani",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport jih ni mogel ustvariti sam. To zaženite kot uporabnik spletnega strežnika:",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Odhodna e-pošta se ne pošilja — administrator naj preveri :%a_begin%Stanje Sistema:%a_end%"
 }

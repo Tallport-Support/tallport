@@ -77,7 +77,7 @@
                                 @break
                             @case ('permissions')
                                 @if ($problem_detail)<p class="f-help">{{ $problem_detail }}</p>@endif
-                                <p class="f-help">{{ __('Run the following command') }} (<a href="{{ config('app.freescout_repo') }}/wiki/Installation-Guide#6-configuring-web-server" target="_blank">{{ __('read more') }}</a>):</p>
+                                <p class="f-help">{{ __('Run the following command') }}:</p>
                                 <div class="system-problem__command"><code>{{ $chown_command }}</code><x-fruit::copy-button :value="$chown_command" /></div>
                                 @break
                             @case ('symlink')
@@ -85,7 +85,8 @@
                                 <div class="system-problem__command"><code>ln -s storage/app/public public/storage</code><x-fruit::copy-button value="ln -s storage/app/public public/storage" /></div>
                                 @break
                             @case ('module_symlinks')
-                                <p class="f-help">{{ $problem_detail }} (<a href="{{ config('app.freescout_repo') }}/wiki/FreeScout-Modules#-invalid-or-missing-modules-symlinks-error" target="_blank">{{ __('read more') }}</a>)</p>
+                                <p class="f-help">{{ $problem_detail }}</p>
+                                @include('modules/partials/module_install_command')
                                 @break
                             @default
                                 @if ($problem_detail)<p class="f-help">{{ $problem_detail }}</p>@endif

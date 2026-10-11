@@ -580,7 +580,6 @@
     "There are updates available": "Mevcut güncellemeler var",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Böyle bir e-posta içeren bir posta kutusu var. Kullanıcılar ve posta kutuları aynı e-posta adreslerine sahip olamaz.",
     "There is a new conversation": "Yeni bir konuşma var",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "Giden posta kuyruğu işlenirken bir sorun oluştu — bir yönetici :%a_begin%Sistem Durumu:%a_end% ve :%a_begin_recommendations%Öneriler:%a_end% sayfalarını kontrol etmelidir",
     "There is a user with such email. Users and mailboxes can not have the same email addresses.": "Böyle bir e-postaya sahip bir kullanıcı var. Kullanıcılar ve posta kutuları aynı e-posta adreslerine sahip olamaz.",
     "There were no send attempts yet": "Henüz gönderme girişimi olmadı",
     "These folders must be writable by web server user (:user).": "Bu klasörler web sunucusu kullanıcısı (:user) tarafından yazılabilir olmalıdır.",
@@ -691,7 +690,6 @@
     "none": "Hiçbiri",
     "on :date": ":date tarihinde",
     "Or Enter Mailbox Email": "Veya Posta Kutusu E-Postasını Girin",
-    "read more": "devamını oku",
     "via": "üzerinden",
     "you": "sen",
     "yourself": "kendine",
@@ -1807,5 +1805,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport ziyaretçilerin kendi IP adreslerini görüyor. Cloudflare'de Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) kapalı kalsın: yanıtlar gibi sıradan istekleri engeller. Rocket Loader'ı kapatın: Tallport'un Content Security Policy'si onun yeniden yazdığı betikleri engeller. Cloudflare'in engellenen istekler günlüğü Security » Events altındadır.",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "İstekler Cloudflare başlıkları taşıyor ancak Cloudflare adreslerinden gelmiyor, bu yüzden Tallport içlerindeki ziyaretçi IP adresini yok sayıyor. Cloudflare ile Tallport arasında başka bir proxy var mı?",
     "Visitor IPs Detected": "Ziyaretçi IP'leri Algılandı",
-    "Visitor IPs Unknown": "Ziyaretçi IP'leri Bilinmiyor"
+    "Visitor IPs Unknown": "Ziyaretçi IP'leri Bilinmiyor",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport bunları kendisi oluşturamadı. Bunu web sunucusunun kullanıcısı olarak çalıştırın:",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Giden e-postalar gönderilmiyor — bir yönetici :%a_begin%Sistem Durumu:%a_end% sayfasını kontrol etmelidir"
 }

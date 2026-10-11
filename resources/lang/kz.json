@@ -679,7 +679,6 @@
     "none": "ештеңе",
     "on :date": ":date",
     "Or Enter Mailbox Email": "Немесе Почталық Жәшіктің Электрондық Поштасын Енгізіңіз",
-    "read more": "Толығырақ оқыңыз",
     "via": "арқылы",
     "you": "сіз",
     "yourself": "өзіңіз",
@@ -697,7 +696,6 @@
     "Max. Message Size": "Макс. Хабар Көлемі",
     "Message is too large — :info. Please shorten your message or remove some attachments.": "Хабар тым үлкен — :info. Хабарды қысқартыңыз немесе кейбір тіркемелерді жойыңыз.",
     "The original email was not stored, below is the shortened copy saved in the database.": "Бастапқы хат сақталмаған, төменде дерекқорда сақталған қысқартылған нұсқа көрсетілген.",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "Шығатын пошта кезегін өңдеуде проблема бар — әкімші :%a_begin%Жүйе күйі:%a_end% және :%a_begin_recommendations%Ұсыныстар:%a_end% тексеруі тиіс.",
     "View Details": "Мәліметтерді Қарау",
     ":%a_begin%End-User Portal Module:%a_end% is required.": ":%a_begin%Соңғы пайдаланушы порталы модулі:%a_end% қажет.",
     "After making updates in the settings you need to update the code on your website.": "Параметрлерді жаңартқаннан кейін веб-сайттағы кодты жаңарту қажет.",
@@ -2201,5 +2199,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport келушілердің өз IP мекенжайларын көреді. Cloudflare-де Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) өшірулі қалсын: ол жауаптар сияқты қарапайым сұрауларды бұғаттайды. Rocket Loader-ді өшіріңіз: Tallport-тың Content Security Policy-і ол қайта жазған скрипттерді бұғаттайды. Cloudflare-дің бұғатталған сұраулар журналы Security » Events бөлімінде.",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Сұрауларда Cloudflare тақырыптары бар, бірақ олар Cloudflare мекенжайларынан келмейді, сондықтан Tallport олардағы келушінің IP мекенжайын елемейді. Cloudflare мен Tallport арасында басқа прокси бар ма?",
     "Visitor IPs Detected": "Келушілердің IP Анықталды",
-    "Visitor IPs Unknown": "Келушілердің IP Белгісіз"
+    "Visitor IPs Unknown": "Келушілердің IP Белгісіз",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport оларды өзі жасай алмады. Мұны веб-сервер пайдаланушысы ретінде іске қосыңыз:",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Шығыс электрондық хаттар жіберілмей жатыр — әкімші :%a_begin%Жүйенің Күйі:%a_end% тексеруі тиіс"
 }

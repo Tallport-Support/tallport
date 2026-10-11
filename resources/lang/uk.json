@@ -581,7 +581,6 @@
     "There are updates available": "Доступні оновлення",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Існує поштова скринька з такою електронною адресою. Користувачі та поштові скриньки не можуть мати однакові електронні адреси.",
     "There is a new conversation": "Є нова розмова",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "Виникла проблема з обробкою черги вихідної пошти — адміністратор повинен перевірити :%a_begin%Статус системи:%a_end% та :%a_begin_recommendations%Рекомендації:%a_end%",
     "There is a user with such email. Users and mailboxes can not have the same email addresses.": "Існує користувач з такою електронною адресою. Користувачі та поштові скриньки не можуть мати однакові електронні адреси.",
     "There were no send attempts yet": "Ще не було спроб надіслати",
     "These folders must be writable by web server user (:user).": "Ці папки повинні бути доступні для запису користувачем веб-сервера (:user).",
@@ -691,7 +690,6 @@
     "none": "жоден",
     "on :date": "на :date",
     "Or Enter Mailbox Email": "Або Введіть Електронну Адресу Поштової Скриньки",
-    "read more": "читати далі",
     "via": "через",
     "you": "ви",
     "yourself": "себе",
@@ -1807,5 +1805,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport бачить власні IP-адреси відвідувачів. У Cloudflare залиште Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) вимкненим: він блокує звичайні запити, наприклад відповіді. Вимкніть Rocket Loader: Content Security Policy Tallport блокує переписані ним скрипти. Журнал заблокованих запитів Cloudflare знаходиться в Security » Events.",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Запити містять заголовки Cloudflare, але надходять не з адрес Cloudflare, тому Tallport ігнорує вказану в них IP-адресу відвідувача. Чи є ще один проксі між Cloudflare і Tallport?",
     "Visitor IPs Detected": "IP Відвідувачів Визначено",
-    "Visitor IPs Unknown": "IP Відвідувачів Невідомі"
+    "Visitor IPs Unknown": "IP Відвідувачів Невідомі",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport не зміг створити їх сам. Виконайте це від імені користувача вебсервера:",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Вихідна пошта не надсилається — адміністратор повинен перевірити :%a_begin%Статус Системи:%a_end%"
 }

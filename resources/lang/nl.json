@@ -575,7 +575,6 @@
     "There are updates available": "Er zijn updates beschikbaar",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Er bestaat een mailbox met dit e-mailadres. Gebruikers en mailboxen kunnen niet hetzelfde e-mailadres hebben.",
     "There is a new conversation": "Er is een nieuw gesprek",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "Er is een probleem bij het verwerken van de uitgaande mailwachtrij — een beheerder moet :%a_begin%Systeemstatus:%a_end% en :%a_begin_recommendations%Aanbevelingen:%a_end% controleren.",
     "There is a user with such email. Users and mailboxes can not have the same email addresses.": "Er bestaat een gebruiker met dit e-mailadres. Gebruikers en mailboxen kunnen niet hetzelfde e-mailadres hebben.",
     "There were no send attempts yet": "Er waren nog geen verzendpogingen",
     "These folders must be writable by web server user (:user).": "Deze mappen moeten beschrijfbaar zijn door de webservergebruiker (:user).",
@@ -686,7 +685,6 @@
     "none": "geen",
     "on :date": "op :date",
     "Or Enter Mailbox Email": "Of Voer E-Mail van de Mailbox In",
-    "read more": "lees meer",
     "via": "via",
     "you": "u",
     "yourself": "uzelf",
@@ -1807,5 +1805,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport ziet de eigen IP-adressen van bezoekers. Laat in Cloudflare de Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) uit: die blokkeert gewone verzoeken zoals antwoorden. Zet Rocket Loader uit: de Content Security Policy van Tallport blokkeert de scripts die het herschrijft. Het logboek van geblokkeerde verzoeken van Cloudflare staat onder Security » Events.",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Verzoeken bevatten headers van Cloudflare maar komen niet van de adressen van Cloudflare, dus Tallport negeert het IP-adres van de bezoeker daarin. Zit er nog een proxy tussen Cloudflare en Tallport?",
     "Visitor IPs Detected": "IP's van Bezoekers Herkend",
-    "Visitor IPs Unknown": "IP's van Bezoekers Onbekend"
+    "Visitor IPs Unknown": "IP's van Bezoekers Onbekend",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport kon ze niet zelf aanmaken. Voer dit uit als de gebruiker van de webserver:",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Uitgaande e-mail wordt niet verzonden — een beheerder moet :%a_begin%Systeemstatus:%a_end% controleren"
 }

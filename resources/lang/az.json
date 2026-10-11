@@ -580,7 +580,6 @@
     "There are updates available": "Mövcud yeniləmələr var",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Bu e-poçt ünvanı ilə artıq poçt qutusu mövcuddur. İstifadəçilər və poçt qutuları eyni e-poçt ünvanına malik ola bilməz.",
     "There is a new conversation": "Yeni söhbət var",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "Göndərilən poçt növbəsinin işlənməsində problem var — administrator :%a_begin%Sistem Statusu:%a_end% və :%a_begin_recommendations%Tövsiyələr:%a_end% bölmələrini yoxlamalıdır",
     "There is a user with such email. Users and mailboxes can not have the same email addresses.": "Bu e-poçt ünvanı ilə istifadəçi artıq mövcuddur. İstifadəçilər və poçt qutuları eyni e-poçt ünvanına malik ola bilməz.",
     "There were no send attempts yet": "Hələ heç bir göndərmə cəhdi olmayıb",
     "These folders must be writable by web server user (:user).": "Bu qovluqlar veb server istifadəçisi (:user) tərəfindən yazıla bilən olmalıdır.",
@@ -691,7 +690,6 @@
     "none": "heç biri",
     "on :date": ":date tarixində",
     "Or Enter Mailbox Email": "Və ya Poçt Qutusu E-Poçtunu Daxil Edin",
-    "read more": "daha çox oxu",
     "via": "vasitəsilə",
     "you": "siz",
     "yourself": "özünüz",
@@ -1807,5 +1805,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport ziyarətçilərin öz IP ünvanlarını görür. Cloudflare-də Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) söndürülmüş qalsın: o, cavablar kimi adi sorğuları bloklayır. Rocket Loader-i söndürün: Tallport-un Content Security Policy-si onun dəyişdirdiyi skriptləri bloklayır. Cloudflare-in bloklanmış sorğular jurnalı Security » Events bölməsindədir.",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Sorğular Cloudflare başlıqlarını daşıyır, lakin Cloudflare ünvanlarından gəlmir, ona görə Tallport onlardakı ziyarətçi IP ünvanına məhəl qoymur. Cloudflare ilə Tallport arasında başqa proksi varmı?",
     "Visitor IPs Detected": "Ziyarətçi IP-ləri Müəyyən Edilib",
-    "Visitor IPs Unknown": "Ziyarətçi IP-ləri Naməlumdur"
+    "Visitor IPs Unknown": "Ziyarətçi IP-ləri Naməlumdur",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport onları özü yarada bilmədi. Bunu veb serverin istifadəçisi kimi işə salın:",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Gedən e-poçtlar göndərilmir — administrator :%a_begin%Sistem Statusu:%a_end% bölməsini yoxlamalıdır"
 }

@@ -690,7 +690,6 @@
     "none": "ללא",
     "on :date": "ב-:date",
     "Or Enter Mailbox Email": "או הזן אימייל של תיבת דואר",
-    "read more": "קרא עוד",
     "via": "דרך",
     "you": "אתה",
     "yourself": "לעצמך",
@@ -717,7 +716,6 @@
     "The only active administrator can not be disabled.": "לא ניתן להשבית את המנהל הפעיל היחיד.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "כתובת האימייל שצוינה שייכת ללקוח מתיבת דואר שאין לך גישה אליה.",
     "The user is disabled or deleted.": "המשתמש מושבת או נמחק.",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "יש בעיה בעיבוד תור הדואר היוצא — על מנהל לבדוק את :%a_begin%סטטוס מערכת:%a_end% ואת :%a_begin_recommendations%ההמלצות:%a_end%",
     "Updating is disabled (APP_DISABLE_UPDATING).": "העדכון מושבת (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "המשתמש יכול לראות רק שיחות שהוקצו לו",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "אין לך עוד גישה לשיחה שהגבת אליה. אנא פנה למנהל המערכת.",
@@ -1807,5 +1805,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport רואה את כתובות ה-IP של המבקרים עצמם. ב-Cloudflare השאירו את Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) כבוי: הוא חוסם בקשות רגילות כמו תגובות. כבו את Rocket Loader: מדיניות אבטחת התוכן (Content Security Policy) של Tallport חוסמת את הסקריפטים שהוא משכתב. יומן הבקשות החסומות של Cloudflare נמצא ב-Security » Events.",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "הבקשות נושאות כותרות של Cloudflare אך אינן מגיעות מכתובות של Cloudflare, ולכן Tallport מתעלם מכתובת ה-IP של המבקר שבהן. האם יש פרוקסי נוסף בין Cloudflare ל-Tallport?",
     "Visitor IPs Detected": "כתובות IP של מבקרים זוהו",
-    "Visitor IPs Unknown": "כתובות IP של מבקרים לא ידועות"
+    "Visitor IPs Unknown": "כתובות IP של מבקרים לא ידועות",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport לא הצליח ליצור אותם בעצמו. הריצו את זה כמשתמש של שרת האינטרנט:",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "דואר יוצא אינו נשלח — על מנהל לבדוק את :%a_begin%סטטוס מערכת:%a_end%"
 }

@@ -576,7 +576,6 @@
     "There are updates available": "有可用更新",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "有一个邮箱有这样的电子邮件。用户和邮箱不能有相同的电子邮件地址。",
     "There is a new conversation": "有新对话",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "处理外发邮件队列时出现问题 — 管理员应检查:%a_begin%系统状态:%a_end% 和:%a_begin_recommendations%建议:%a_end%",
     "There is a user with such email. Users and mailboxes can not have the same email addresses.": "有一个用户有这样的电子邮件。用户和邮箱不能有相同的电子邮件地址。",
     "There were no send attempts yet": "还没有发送尝试",
     "These folders must be writable by web server user (:user).": "这些文件夹必须可由 Web 服务器用户(:user)写入。",
@@ -688,7 +687,6 @@
     "none": "没有",
     "on :date": "在:date",
     "Or Enter Mailbox Email": "或输入邮箱邮箱",
-    "read more": "查看更多",
     "via": "通过",
     "you": "你",
     "yourself": "你自己",
@@ -1808,5 +1806,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport 能看到访客自己的 IP 地址。在 Cloudflare 中，请保持 Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) 关闭：它会拦截回复等普通请求。请关闭 Rocket Loader：Tallport 的 Content Security Policy 会拦截它改写的脚本。Cloudflare 的拦截请求日志位于 Security » Events。",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "请求带有 Cloudflare 的标头，但并非来自 Cloudflare 的地址，因此 Tallport 会忽略其中的访客 IP 地址。Cloudflare 和 Tallport 之间是否还有其他代理？",
     "Visitor IPs Detected": "已识别访客 IP",
-    "Visitor IPs Unknown": "访客 IP 未知"
+    "Visitor IPs Unknown": "访客 IP 未知",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport 无法自行创建它们。请以 Web 服务器的用户身份运行：",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "外发邮件未能发送 — 管理员应检查 :%a_begin%系统状况:%a_end%"
 }

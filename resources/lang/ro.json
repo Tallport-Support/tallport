@@ -586,7 +586,6 @@
     "There are updates available": "Există actualizări disponibile",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Există o cutie poștală cu un astfel de email. Utilizatorii și căsuțele poștale nu pot avea aceleași adrese de email.",
     "There is a new conversation": "Există o conversație nouă",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "Există o problemă la procesarea cozii de email-uri de ieșire — un admin ar trebui să verifice :%a_begin%Statusul Sistemului:%a_end% și :%a_begin_recommendations%Recomandările:%a_end%",
     "There is a user with such email. Users and mailboxes can not have the same email addresses.": "Există un utilizator cu un astfel de email. Utilizatorii și căsuțele poștale nu pot avea aceleași adrese de email.",
     "There were no send attempts yet": "Nu au existat încercări de trimitere",
     "These folders must be writable by web server user (:user).": "Aceste foldere trebuie să fie scrise de către utilizatorul serverului web (:user).",
@@ -697,7 +696,6 @@
     "none": "nimeni",
     "on :date": "pe :date",
     "Or Enter Mailbox Email": "Sau Introduceți Adresa de E-Mail a Căsuței Poștale",
-    "read more": "citește mai mult",
     "via": "prin",
     "you": "Tu",
     "yourself": "Tu",
@@ -1807,5 +1805,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport vede adresele IP proprii ale vizitatorilor. În Cloudflare, lăsați Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) dezactivat: blochează cereri obișnuite, cum ar fi răspunsurile. Dezactivați Rocket Loader: Content Security Policy a Tallport blochează scripturile pe care le rescrie. Jurnalul Cloudflare cu cererile blocate se află în Security » Events.",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Cererile au antete Cloudflare, dar nu vin de la adresele Cloudflare, așa că Tallport ignoră adresa IP a vizitatorului din ele. Există un alt proxy între Cloudflare și Tallport?",
     "Visitor IPs Detected": "IP-urile Vizitatorilor Detectate",
-    "Visitor IPs Unknown": "IP-urile Vizitatorilor Necunoscute"
+    "Visitor IPs Unknown": "IP-urile Vizitatorilor Necunoscute",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport nu le-a putut crea singur. Rulați aceasta ca utilizatorul serverului web:",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "E-mailurile de ieșire nu sunt trimise — un administrator ar trebui să verifice :%a_begin%Status Sistem:%a_end%"
 }

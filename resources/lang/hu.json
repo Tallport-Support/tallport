@@ -585,7 +585,6 @@
     "There are updates available": "Frissítések érhetők el",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "Van már ilyen e-mail címmel postafiók. A felhasználók és postafiókok nem használhatják ugyanazt az e-mail címet.",
     "There is a new conversation": "Új beszélgetés érkezett",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "Probléma van a kimenő levelek sorának feldolgozásával — egy adminisztrátornak ellenőriznie kell a :%a_begin%Rendszer állapotát:%a_end% és a :%a_begin_recommendations%Javaslatokat:%a_end%",
     "There is a user with such email. Users and mailboxes can not have the same email addresses.": "Van már ilyen e-mail címmel felhasználó. A felhasználók és postafiókok nem használhatják ugyanazt az e-mail címet.",
     "There were no send attempts yet": "Még nem történt küldési kísérlet",
     "These folders must be writable by web server user (:user).": "Ezeknek a mappáknak írhatónak kell lenniük a webszerver felhasználó (:user) számára.",
@@ -696,7 +695,6 @@
     "none": "nincs",
     "on :date": ":date-kor",
     "Or Enter Mailbox Email": "Vagy Add Meg a Postafiók E-Mail Címét",
-    "read more": "tovább olvasom",
     "via": "keresztül",
     "you": "te",
     "yourself": "magad",
@@ -1807,5 +1805,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "A Tallport látja a látogatók saját IP-címét. A Cloudflare-ben hagyja kikapcsolva a Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) beállítást: blokkol olyan szokásos kéréseket, mint a válaszok. Kapcsolja ki a Rocket Loadert: a Tallport Content Security Policy-ja blokkolja az általa átírt szkripteket. A Cloudflare blokkolt kéréseinek naplója a Security » Events alatt található.",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "A kérések Cloudflare-fejléceket tartalmaznak, de nem a Cloudflare címeiről érkeznek, ezért a Tallport figyelmen kívül hagyja a bennük lévő látogatói IP-címet. Van egy másik proxy a Cloudflare és a Tallport között?",
     "Visitor IPs Detected": "Látogatói IP-k Felismerve",
-    "Visitor IPs Unknown": "Látogatói IP-k Ismeretlenek"
+    "Visitor IPs Unknown": "Látogatói IP-k Ismeretlenek",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "A Tallport nem tudta maga létrehozni őket. Futtassa ezt a webszerver felhasználójaként:",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "A kimenő e-mailek nem mennek ki — egy adminisztrátornak ellenőriznie kell: :%a_begin%Rendszer Állapota:%a_end%"
 }

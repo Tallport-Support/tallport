@@ -140,6 +140,17 @@ class SystemControllerTest extends FeatureTestCase
         }
     }
 
+    /**
+     * Modules' links Tallport couldn't create: the command that does, not FreeScout's wiki.
+     */
+    public function testModuleSymlinksHelp()
+    {
+        $html = view('modules/partials/invalid_symlinks', ['invalid_symlinks' => ['/public/modules/demo' => '/Modules/Demo/Public']])->render();
+
+        $this->assertStringContainsString('artisan tallport:module-install', $html);
+        $this->assertStringNotContainsString('/wiki/', $html);
+    }
+
     public function testRunningCommandIsFound()
     {
         $this->startProcess('artisan queue:work --queue=default,'.\Helper::getWorkerIdentifier());

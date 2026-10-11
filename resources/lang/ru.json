@@ -681,7 +681,6 @@
     "none": "ничего",
     "on :date": ":date",
     "Or Enter Mailbox Email": "Или Введите Электронный Адрес Ящика",
-    "read more": "Подробнее",
     "via": "через",
     "you": "вы",
     "yourself": "себе",
@@ -716,7 +715,6 @@
     "The original email was not stored, below is the shortened copy saved in the database.": "Исходное письмо не сохранено. Ниже приведена сокращённая копия, сохранённая в базе данных.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Указанный адрес эл. почты принадлежит клиенту из недоступного ящика.",
     "The user is disabled or deleted.": "Агент отключён или удалён.",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "Возникла проблема при обработке очереди исходящей почты — администратору следует проверить :%a_begin%Статус системы:%a_end% и :%a_begin_recommendations%Рекомендации:%a_end%",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Обновление отключено (APP_DISABLE_UPDATING).",
     "User can see only assigned conversations": "Агент видит только назначенные ему тикеты",
     "View Details": "Подробнее",
@@ -1807,5 +1805,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport видит собственные IP-адреса посетителей. В Cloudflare оставьте Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) выключенным: он блокирует обычные запросы, например ответы. Отключите Rocket Loader: Content Security Policy Tallport блокирует переписанные им скрипты. Журнал заблокированных запросов Cloudflare находится в Security » Events.",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Запросы содержат заголовки Cloudflare, но приходят не с адресов Cloudflare, поэтому Tallport игнорирует указанный в них IP-адрес посетителя. Есть ли ещё один прокси между Cloudflare и Tallport?",
     "Visitor IPs Detected": "IP Посетителей Определены",
-    "Visitor IPs Unknown": "IP Посетителей Неизвестны"
+    "Visitor IPs Unknown": "IP Посетителей Неизвестны",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport не смог создать их сам. Выполните это от имени пользователя веб-сервера:",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Исходящая почта не отправляется — администратору следует проверить :%a_begin%Статус Системы:%a_end%"
 }

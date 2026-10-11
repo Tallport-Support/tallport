@@ -581,7 +581,6 @@
     "There are updates available": "利用可能なアップデートがあります",
     "There is a mailbox with such email. Users and mailboxes can not have the same email addresses.": "このようなメールが入ったメールボックスがあります。ユーザーのメールアドレスと同じメールボックスを作成することはできません。",
     "There is a new conversation": "新しい会話があります",
-    "There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%": "送信メール キューの処理に問題があります。管理者は :%a_begin%システムステータス:%a_end% および :%a_begin_recommendations%推奨事項:%a_end% を確認する必要があります。",
     "There is a user with such email. Users and mailboxes can not have the same email addresses.": "このようなメールが入ったメールボックスがあります。ユーザーのメールアドレスと同じメールボックスを作成することはできません。",
     "There were no send attempts yet": "まだ送信は試していません",
     "These folders must be writable by web server user (:user).": "これらのフォルダは、ウェブサーバーのユーザー(:user)が書き込み可能でなければなりません。",
@@ -692,7 +691,6 @@
     "none": "None",
     "on :date": "オン :date",
     "Or Enter Mailbox Email": "またはメールボックスのメールアドレスを入力してください",
-    "read more": "続きを読む",
     "via": "経由",
     "you": "あなた",
     "yourself": "自分自身",
@@ -1807,5 +1805,7 @@
     "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport は訪問者自身の IP アドレスを認識しています。Cloudflare では Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) をオフのままにしてください。返信などの通常のリクエストをブロックします。Rocket Loader をオフにしてください。Tallport の Content Security Policy が、書き換えられたスクリプトをブロックします。Cloudflare のブロックされたリクエストのログは Security » Events にあります。",
     "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "リクエストに Cloudflare のヘッダーが含まれていますが、Cloudflare のアドレスから来ていないため、Tallport はその中の訪問者の IP アドレスを無視します。Cloudflare と Tallport の間に別のプロキシがありますか？",
     "Visitor IPs Detected": "訪問者の IP を検出",
-    "Visitor IPs Unknown": "訪問者の IP は不明"
+    "Visitor IPs Unknown": "訪問者の IP は不明",
+    "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport はこれらを作成できませんでした。Web サーバーのユーザーとして次を実行してください：",
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "送信メールが送信されていません。管理者は :%a_begin%システムステータス:%a_end% を確認してください"
 }
