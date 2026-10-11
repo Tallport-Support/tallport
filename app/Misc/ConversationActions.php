@@ -4,7 +4,7 @@ namespace App\Misc;
 
 use App\Conversation;
 use App\Follower;
-use App\MailboxUser;
+use App\User;
 use App\Thread;
 
 /**
@@ -344,17 +344,17 @@ class ConversationActions
         }
 
         // When creating a new conversation.
-        if (!empty($request->is_create) && $after_send != MailboxUser::AFTER_SEND_STAY) {
+        if (!empty($request->is_create) && $after_send != User::AFTER_SEND_STAY) {
             return \App\Misc\Sidebar::folderUrl($conversation->folder, $conversation->mailbox_id);
         }
 
         if (!empty($after_send)) {
             switch ($after_send) {
-                case MailboxUser::AFTER_SEND_STAY:
+                case User::AFTER_SEND_STAY:
                 default:
                     $redirect_url = $conversation->url(null, null, [], $request);
                     break;
-                case MailboxUser::AFTER_SEND_NEXT:
+                case User::AFTER_SEND_NEXT:
                     // We need to get not any next conversation, but ACTIVE next conversation.
                     $redirect_url = $conversation->urlNext($conversation->getCurrentFolder(), Conversation::STATUS_ACTIVE, true, $request);
                     break;

@@ -257,7 +257,6 @@ class Mailbox extends Model
     public function usersWithSettings()
     {
         return $this->belongsToMany('App\User')->as('settings')
-            ->withPivot('after_send')
             ->withPivot('hide')
             ->withPivot('mute')
             ->withPivot('access');
@@ -836,7 +835,6 @@ class Mailbox extends Model
     public static function getDummySettings()
     {
         $settings = new \StdClass();
-        $settings->after_send = MailboxUser::AFTER_SEND_NEXT;
         $settings->hide = false;
         $settings->mute = false;
         $settings->access = [];
@@ -848,7 +846,6 @@ class Mailbox extends Model
     {
         $settings = $this->getUserSettings($user_id);
 
-        $this->after_send = $settings->after_send;
         $this->hide = $settings->hide;
         $this->mute = $settings->mute;
         $this->access = $settings->access;

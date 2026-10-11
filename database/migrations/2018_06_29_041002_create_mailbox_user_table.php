@@ -1,6 +1,5 @@
 <?php
 
-use App\MailboxUser;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +17,7 @@ class CreateMailboxUserTable extends Migration
             $table->increments('id');
             $table->integer('mailbox_id');
             $table->integer('user_id');
-            $table->unsignedTinyInteger('after_send')->default(MailboxUser::AFTER_SEND_NEXT);
+            $table->unsignedTinyInteger('after_send')->default(2);
 
             // Indexes
             $table->unique(['user_id', 'mailbox_id']);

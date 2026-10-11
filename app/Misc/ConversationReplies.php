@@ -15,7 +15,7 @@ use App\Events\UserCreatedThreadDraft;
 use App\Events\UserReplied;
 use App\Folder;
 use App\Mailbox;
-use App\MailboxUser;
+use App\User;
 use App\Thread;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\InputBag;
@@ -834,7 +834,7 @@ class ConversationReplies
 
             // Compose flash message.
             $show_view_link = true;
-            if (!empty($request->after_send) && $request->after_send == MailboxUser::AFTER_SEND_STAY) {
+            if (!empty($request->after_send) && $request->after_send == User::AFTER_SEND_STAY) {
                 $show_view_link = false;
             }
 

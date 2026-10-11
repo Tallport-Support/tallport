@@ -37,6 +37,12 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
     const VIEW_EMAIL = 'email';
     const VIEW_CHAT = 'chat';
 
+    /**
+     * Where the user goes after sending (users.after_send, afterSend()).
+     */
+    const AFTER_SEND_STAY = 1;
+    const AFTER_SEND_NEXT = 2;
+
     const PHOTO_DIRECTORY = 'users';
     const PHOTO_QUALITY = 77;
 
@@ -188,7 +194,6 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
     public function mailboxesWithSettings()
     {
         return $this->belongsToMany('App\Mailbox')->as('settings')
-            ->withPivot('after_send')
             ->withPivot('hide')
             ->withPivot('mute')
             ->withPivot('access');
@@ -336,11 +341,11 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
 
     /**
      * Where the user goes after replying or changing a conversation: the
-     * user's preference (MailboxUser::AFTER_SEND_*), the next active one unless set.
+     * user's preference (self::AFTER_SEND_*), the next active one unless set.
      */
     public function afterSend()
     {
-        return $this->after_send ?: MailboxUser::AFTER_SEND_NEXT;
+        return $this->after_send ?: self::AFTER_SEND_NEXT;
     }
 
     /**

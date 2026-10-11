@@ -6,7 +6,6 @@ use App\Attachment;
 use App\Conversation;
 use App\Customer;
 use App\Http\Controllers\ConversationsController;
-use App\MailboxUser;
 use App\Misc\ConversationReplies;
 use App\Thread;
 use App\User;
@@ -349,7 +348,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         $this->assertSuccess($this->ajax('send_reply', ['type' => Conversation::TYPE_CUSTOM, 'is_create' => 1, 'subject' => 'Internal', 'body' => '<p>Custom</p>']));
         $this->assertStringContainsString('Ticket added', session('flash_warning_floating'));
 
-        $this->assertSuccess($this->ajax('send_reply', ['type' => Conversation::TYPE_CUSTOM, 'is_create' => 1, 'subject' => 'Internal', 'body' => '<p>Custom 2</p>', 'after_send' => MailboxUser::AFTER_SEND_STAY]));
+        $this->assertSuccess($this->ajax('send_reply', ['type' => Conversation::TYPE_CUSTOM, 'is_create' => 1, 'subject' => 'Internal', 'body' => '<p>Custom 2</p>', 'after_send' => User::AFTER_SEND_STAY]));
         $this->assertSame('Ticket added', session('flash_warning_floating'));
 
         \Eventy::removeAllFilters('conversation.custom.identifier');
@@ -364,12 +363,12 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
 
-        $this->assertSuccess($this->ajax('send_reply', ['conversation_id' => $conversation->id, 'is_note' => 1, 'body' => '<p>Note</p>', 'after_send' => MailboxUser::AFTER_SEND_STAY]));
+        $this->assertSuccess($this->ajax('send_reply', ['conversation_id' => $conversation->id, 'is_note' => 1, 'body' => '<p>Note</p>', 'after_send' => User::AFTER_SEND_STAY]));
         $this->assertSame('Note added', session('flash_warning_floating'));
 
         $this->assertSuccess($this->ajax('send_reply', [
             'type' => Conversation::TYPE_PHONE, 'is_create' => 1, 'is_note' => 1, 'name' => 'Kim Caller',
-            'subject' => 'Called', 'body' => '<p>Called.</p>', 'after_send' => MailboxUser::AFTER_SEND_STAY,
+            'subject' => 'Called', 'body' => '<p>Called.</p>', 'after_send' => User::AFTER_SEND_STAY,
         ]));
         $this->assertSame('Conversation created', session('flash_warning_floating'));
     }

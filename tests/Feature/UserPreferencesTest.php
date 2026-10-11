@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Conversation;
 use App\Livewire\ConversationComposer;
-use App\MailboxUser;
 use App\User;
 use Livewire\Livewire;
 use Tests\FeatureTestCase;
@@ -31,7 +30,7 @@ class UserPreferencesTest extends FeatureTestCase
 
         \Session::start();
         $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), [
-            '_token' => csrf_token(), 'reply_status' => Conversation::STATUS_CLOSED, 'after_send' => MailboxUser::AFTER_SEND_STAY,
+            '_token' => csrf_token(), 'reply_status' => Conversation::STATUS_CLOSED, 'after_send' => User::AFTER_SEND_STAY,
         ])->assertRedirect(route('users.preferences', ['id' => $agent->id]));
         $agent->refresh();
         $this->assertSame(Conversation::STATUS_CLOSED, (int) $agent->reply_status);
@@ -59,7 +58,7 @@ class UserPreferencesTest extends FeatureTestCase
         ]);
         $this->assertNull($agent->fresh()->reply_status);
         $this->assertSame(Conversation::STATUS_PENDING, $agent->fresh()->replyStatus());
-        $this->assertSame(MailboxUser::AFTER_SEND_NEXT, (int) $agent->fresh()->afterSend());
+        $this->assertSame(User::AFTER_SEND_NEXT, (int) $agent->fresh()->afterSend());
     }
 
     public function testLanguageTimezoneAndTimeFormat()

@@ -650,7 +650,7 @@ class UsersController extends Controller
 
         $request->validate([
             'reply_status' => 'nullable|in:'.implode(',', array_keys(\App\Conversation::$statuses)),
-            'after_send'   => 'nullable|in:'.implode(',', [\App\MailboxUser::AFTER_SEND_STAY, \App\MailboxUser::AFTER_SEND_NEXT]),
+            'after_send'   => 'nullable|in:'.implode(',', [\App\User::AFTER_SEND_STAY, \App\User::AFTER_SEND_NEXT]),
             'accent'       => ['nullable', \Illuminate\Validation\Rule::in(\FruitUI\Fruit::ACCENTS)],
             'conversation_views'   => 'nullable|array',
             'conversation_views.*' => 'in:'.User::VIEW_EMAIL.','.User::VIEW_CHAT,

@@ -196,13 +196,13 @@ PHP;
 
     /**
      * Saving the people who may use a mailbox keeps the admins' own settings for it
-     * (muted, after sending), only setting whether it's hidden for them.
+     * (muted), only setting whether it's hidden for them.
      */
     public function testPermissionsKeepAdminsOwnSettings()
     {
         $agent = $this->createUser();
         $mailbox = $this->createMailbox([$this->admin, $agent]);
-        $mailbox->users()->updateExistingPivot($this->admin->id, ['mute' => 1, 'after_send' => \App\MailboxUser::AFTER_SEND_STAY]);
+        $mailbox->users()->updateExistingPivot($this->admin->id, ['mute' => 1]);
 
         $this->postForm($this->admin, route('mailboxes.permissions.save', ['id' => $mailbox->id]), [
             'users'    => [$agent->id],
@@ -211,7 +211,6 @@ PHP;
 
         $row = \DB::table('mailbox_user')->where(['mailbox_id' => $mailbox->id, 'user_id' => $this->admin->id])->first();
         $this->assertEquals(1, $row->mute);
-        $this->assertEquals(\App\MailboxUser::AFTER_SEND_STAY, $row->after_send);
         $this->assertEquals(1, $row->hide);
         $this->assertTrue($mailbox->userHasAccess($agent->id));
     }

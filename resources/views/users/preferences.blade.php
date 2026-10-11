@@ -52,8 +52,8 @@
 
                 <x-fruit::field :label="__('After Sending')" layout="row">
                     <x-fruit::select id="after_send" name="after_send">
-                        <option value="{{ App\MailboxUser::AFTER_SEND_STAY }}" @if (old('after_send', $user->afterSend()) == App\MailboxUser::AFTER_SEND_STAY) selected @endif>{{ __('Stay on the conversation') }}</option>
-                        <option value="{{ App\MailboxUser::AFTER_SEND_NEXT }}" @if (old('after_send', $user->afterSend()) == App\MailboxUser::AFTER_SEND_NEXT) selected @endif>{{ __('Next active conversation') }}</option>
+                        <option value="{{ App\User::AFTER_SEND_STAY }}" @if (old('after_send', $user->afterSend()) == App\User::AFTER_SEND_STAY) selected @endif>{{ __('Stay on the conversation') }}</option>
+                        <option value="{{ App\User::AFTER_SEND_NEXT }}" @if (old('after_send', $user->afterSend()) == App\User::AFTER_SEND_NEXT) selected @endif>{{ __('Next active conversation') }}</option>
                     </x-fruit::select>
                 </x-fruit::field>
             </x-fruit::form-section>

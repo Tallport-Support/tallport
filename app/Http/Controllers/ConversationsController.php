@@ -114,7 +114,6 @@ class ConversationsController extends Controller
         $mailbox = $conversation->mailbox;
         $customer = $conversation->customer_cached;
 
-        //$after_send = $conversation->mailbox->getUserSettings($user->id)->after_send;
         $after_send = $user->afterSend();
 
         // Detect customers and emails to which user can reply

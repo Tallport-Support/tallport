@@ -11,17 +11,11 @@ class MailboxUser extends Model
     // This is obligatory.
     public $rememberCacheDriver = 'array';
     
-    // Action after sending a message
-    const AFTER_SEND_STAY = 1;
-    const AFTER_SEND_NEXT = 2;
-    const AFTER_SEND_FOLDER = 3;
-
     protected $table = 'mailbox_user';
 
     public $timestamps = false;
 
     public static $pivot_settings = [
-        'after_send',
         'hide',
         'mute',
         'access',

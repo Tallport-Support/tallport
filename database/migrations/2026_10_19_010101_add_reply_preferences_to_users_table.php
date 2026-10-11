@@ -31,11 +31,12 @@ class AddReplyPreferencesToUsersTable extends Migration
             ->get();
         foreach ($choices->groupBy('user_id') as $user_id => $user_choices) {
             $after_send = (int) $user_choices->first()->after_send;
-            // Back to the folder is gone (the list stays beside the conversation): stay.
-            if ($after_send == \App\MailboxUser::AFTER_SEND_FOLDER) {
-                $after_send = \App\MailboxUser::AFTER_SEND_STAY;
+            // 1 stay, 2 next, 3 back to the folder, which is gone (the list stays beside the
+            // conversation): stay.
+            if ($after_send == 3) {
+                $after_send = 1;
             }
-            if ($after_send && $after_send != \App\MailboxUser::AFTER_SEND_NEXT) {
+            if ($after_send && $after_send != 2) {
                 \DB::table('users')->where('id', $user_id)->whereNull('after_send')->update(['after_send' => $after_send]);
             }
         }

@@ -527,7 +527,7 @@ class ConversationComposer extends Component
             'status'          => $this->status,
             'user_id'         => $this->user_id,
             // The chat view stays in the conversation.
-            'after_send'      => $this->chat ? \App\MailboxUser::AFTER_SEND_STAY : $this->after_send,
+            'after_send'      => $this->chat ? \App\User::AFTER_SEND_STAY : $this->after_send,
             'attachments'     => $attachment_ids,
             'attachments_all' => $attachment_ids,
             'embeds'          => array_column(array_filter($this->attachments, fn ($attachment) => !empty($attachment['embed'])), 'id'),

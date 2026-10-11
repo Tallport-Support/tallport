@@ -281,7 +281,7 @@ class UsersControllerTest extends FeatureTestCase
     {
         $agent = $this->createUser();
 
-        $this->postForm($this->admin, '/users/preferences/'.$agent->id, ['after_send' => \App\MailboxUser::AFTER_SEND_NEXT])->assertStatus(403);
+        $this->postForm($this->admin, '/users/preferences/'.$agent->id, ['after_send' => \App\User::AFTER_SEND_NEXT])->assertStatus(403);
         $this->assertNull($agent->fresh()->after_send);
     }
 
