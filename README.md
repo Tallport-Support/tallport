@@ -259,7 +259,7 @@ tallport  unix  -       n       n       -       -       pipe
 
 Postfix may run the command where PHP can't use PCRE's JIT (it may not allocate
 executable memory there). Tallport notices at the start and carries on without
-it, quietly; System » Status shows when that happened.
+it, quietly: for one email at a time it makes little difference.
 
 and in `/etc/postfix/main.cf` deliver one recipient at a time and send the
 mailboxes' addresses (or their whole domain) to it:

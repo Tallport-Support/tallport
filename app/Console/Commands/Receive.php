@@ -50,17 +50,6 @@ class Receive extends Command
 
             return self::EX_NOINPUT;
         }
-        // Shown on System » Status: the mail server may run this command where
-        // PCRE's JIT fails (bootstrap/app.php's test). Turned off on purpose
-        // (php -d pcre.jit=0, as the README suggests) isn't a problem.
-        try {
-            $jit_off = !\Helper::$pcre_jit_available;
-            if ($jit_off != (bool) \Option::get('receive_pcre_jit_off')) {
-                $jit_off ? \Option::set('receive_pcre_jit_off', 1) : \Option::remove('receive_pcre_jit_off');
-            }
-        } catch (\Throwable $e) {
-            // The database may be down: the email is still tried below.
-        }
         if (!str_contains($raw, "\r\n")) {
             $raw = str_replace("\n", "\r\n", $raw);
         }

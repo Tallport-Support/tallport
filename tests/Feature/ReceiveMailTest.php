@@ -242,24 +242,18 @@ class ReceiveMailTest extends FeatureTestCase
         $this->assertSame(1, $kernel->handle(new \Symfony\Component\Console\Input\ArgvInput(['artisan', 'tallport:no-such-command']), $output));
     }
 
-    public function testStatusShowsWhereThePcreJitIsOff()
+    /**
+     * Where the mail server's PHP can't use PCRE's JIT, the email is saved without it,
+     * and System » Status doesn't list it: one email per process gains little from it.
+     */
+    public function testReceivesWithoutThePcreJit()
     {
-        $admin = $this->createAdmin();
-        Livewire::withoutLazyLoading();
-        $this->actingAs($admin)->get(route('system'))->assertSee('PCRE JIT');
-
         \App\Misc\Helper::$pcre_jit_available = false;
         $this->artisan('tallport:receive', ['file' => $this->eml()])->assertExitCode(0);
         \App\Misc\Helper::$pcre_jit_available = true;
+        $this->assertSame(1, \App\Conversation::count());
 
-        $this->assertSame('1', (string) \Option::get('receive_pcre_jit_off'));
         Livewire::withoutLazyLoading();
-        $this->actingAs($admin)->get(route('system'))->assertSee('tallport:receive')->assertSee('Speeds up text matching');
-
-        // Turned off on purpose (php -d pcre.jit=0, as the README suggests): not reported.
-        ini_set('pcre.jit', '0');
-        $this->artisan('tallport:receive', ['file' => $this->eml()])->assertExitCode(0);
-        ini_set('pcre.jit', '1');
-        $this->assertFalse((bool) \Option::get('receive_pcre_jit_off'));
+        $this->actingAs($this->createAdmin())->get(route('system'))->assertOk()->assertDontSee('PCRE JIT');
     }
 }

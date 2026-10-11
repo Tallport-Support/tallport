@@ -8,10 +8,6 @@
             $missing_extensions[$extension_name] = config('installer.optional.'.strtolower($extension_name));
         }
     }
-    $pcre_jit_off = array_keys(array_filter([
-        __('Web Server') => !\Helper::pcreJitAvailable(),
-        'tallport:receive' => (bool) \Option::get('receive_pcre_jit_off'),
-    ]));
     $missing_functions = array_keys(array_filter($functions, fn ($status) => !$status));
     $unwritable = array_filter($permissions, fn ($perm) => !$perm['status']);
     $chown_command = 'sudo chown -R www-data:www-data '.base_path();
@@ -260,7 +256,7 @@
                 <span>{{ __('PHP Extensions') }}</span>
                 <p class="f-help">{{ __('Parts of PHP that Tallport uses') }}</p>
             </div>
-            <span class="system-status__check" title="{{ implode(', ', array_merge($installed_extensions, $pcre_jit_off ? [] : ['PCRE JIT'])) }}">@if (!$missing_extensions)<x-icon.circle-check class="f-icon" aria-hidden="true" /> {{ __('All :count installed', ['count' => count($installed_extensions)]) }}@else{{ __(':count of :total installed', ['count' => count($installed_extensions), 'total' => count($php_extensions)]) }}@endif</span>
+            <span class="system-status__check" title="{{ implode(', ', $installed_extensions) }}">@if (!$missing_extensions)<x-icon.circle-check class="f-icon" aria-hidden="true" /> {{ __('All :count installed', ['count' => count($installed_extensions)]) }}@else{{ __(':count of :total installed', ['count' => count($installed_extensions), 'total' => count($php_extensions)]) }}@endif</span>
         </div>
         @foreach ($missing_extensions as $extension_name => $optional_purpose)
             <div class="f-form-row">
@@ -271,15 +267,6 @@
                 <x-fruit::badge :tone="$optional_purpose ? 'warning' : 'danger'">{{ __('Not found') }}</x-fruit::badge>
             </div>
         @endforeach
-        @if ($pcre_jit_off)
-            <div class="f-form-row">
-                <div>
-                    <span>PCRE JIT</span>
-                    <p class="f-help">{{ __('Speeds up text matching; Tallport works without it.') }} {{ __('Off for: :where', ['where' => implode(', ', $pcre_jit_off)]) }}</p>
-                </div>
-                <x-fruit::badge tone="warning">{{ __('Off') }}</x-fruit::badge>
-            </div>
-        @endif
         <div class="f-form-row">
             <div>
                 <span>{{ __('HEIC Images') }} {{ __('(optional)') }}</span>
