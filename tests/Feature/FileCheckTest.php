@@ -114,6 +114,23 @@ class FileCheckTest extends FeatureTestCase
         Http::assertSentCount(1);
     }
 
+    /**
+     * The updater doesn't install the folders at the top whose names start with a dot
+     * (.github, .claude), so they're neither missing nor unexpected; dot files are checked.
+     */
+    public function testDotFoldersAtTheTopAreNotChecked()
+    {
+        $this->fakeRelease(['artisan' => 'artisan', '.htaccess' => 'rules', '.github/workflows/ci.yml' => 'ci', '.claude/settings.json' => '{}']);
+        $this->putFile('artisan', 'artisan');
+        $this->putFile('.cursor/rules.md', 'local');
+        $this->putFile('public/.htaccess', 'rules');
+
+        $result = $this->fileCheck()->scan();
+
+        $this->assertSame(['.htaccess'], $result['missing']);
+        $this->assertSame(['public/.htaccess'], $result['unexpected']);
+    }
+
     public function testModulesCanIgnorePaths()
     {
         $this->fakeRelease(['artisan' => 'artisan']);

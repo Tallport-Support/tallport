@@ -136,7 +136,7 @@ class FileCheck
             }
         }
         foreach ($release as $path => $sha) {
-            if (!isset($on_disk[$path]) && !self::matches($path, $ignored)) {
+            if (!isset($on_disk[$path]) && !self::matches($path, $ignored) && !self::inDotFolder($path)) {
                 $result['missing'][] = $path;
             }
         }
@@ -220,7 +220,9 @@ class FileCheck
         $base_length = strlen($this->base_path) + 1;
         $directory = new \RecursiveDirectoryIterator($this->base_path, \FilesystemIterator::SKIP_DOTS);
         $filter = new \RecursiveCallbackFilterIterator($directory, function ($file) use ($base_length, $ignored) {
-            return !self::matches(substr($file->getPathname(), $base_length), $ignored);
+            $path = substr($file->getPathname(), $base_length);
+
+            return !self::matches($path, $ignored) && !self::inDotFolder($path.($file->isDir() ? '/' : ''));
         });
 
         $paths = [];
@@ -230,6 +232,15 @@ class FileCheck
         sort($paths);
 
         return $paths;
+    }
+
+    /**
+     * In a folder at the top whose name starts with a dot (.github, .claude): the
+     * updater doesn't install those (Symfony Finder leaves hidden folders out).
+     */
+    public static function inDotFolder($path)
+    {
+        return str_starts_with($path, '.') && str_contains($path, '/');
     }
 
     /**
