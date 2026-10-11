@@ -465,9 +465,8 @@ class Conversation extends Model
     }
 
     /**
-     * When "waiting_since_as_first_unanswered_customer_message" mode is enabled,
-     * the $last_reply_at field does not store time of each customer reply,
-     * But "last_customer_reply_at" always stores the time of the last customer reply.
+     * The time of the last customer reply (last_customer_reply_at, or last_reply_at
+     * when the customer replied last before that column was kept).
      */
     public function getLastCustomerReplyAt()
     {
@@ -483,24 +482,15 @@ class Conversation extends Model
         }
     }
 
-    // Takes into account "app.waiting_since_as_first_unanswered_customer_message".
-    // And also also sets "last_customer_reply_at".
-    // $this->last_reply_from MUST store previous value.
+    /**
+     * The time of the last reply, and of the last customer reply when it's the customer's.
+     */
     public function setLastReplyAt($value, $new_last_reply_from)
     {
         if (\Helper::isCarbon($value)) {
             $value = $value->format('Y-m-d H:i:s');
         }
-        if (config('app.waiting_since_as_first_unanswered_customer_message')) {
-            // Treat Waiting Since column as "Time of the first unanswered customer message"
-            // instead of "Time of the last customer activity".
-            // https://github.com/freescout-help-desk/freescout/issues/5225
-            if ($this->last_reply_from != Conversation::PERSON_CUSTOMER) {
-                $this->last_reply_at = $value;
-            }
-        } else {
-            $this->last_reply_at = $value;
-        }
+        $this->last_reply_at = $value;
 
         // "last_customer_reply_at" always stores the time of the last customer reply.
         if ($new_last_reply_from == Conversation::PERSON_CUSTOMER) {

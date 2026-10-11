@@ -182,24 +182,23 @@ class ConversationModelTest extends FeatureTestCase
         $this->assertDateTime('2026-10-01 08:00:00', $conversation->getLastCustomerReplyAt());
     }
 
-    public function testWaitingSinceCanBeTheFirstUnansweredCustomerMessage()
+    /**
+     * The last reply is the last reply, also when the customer writes again.
+     */
+    public function testLastReplyIsAlwaysTheLastReply()
     {
-        config(['app.waiting_since_as_first_unanswered_customer_message' => true]);
-
         $conversation = new Conversation();
         $conversation->last_reply_from = Conversation::PERSON_CUSTOMER;
         $conversation->last_reply_at = '2026-10-01 09:00:00';
 
-        // The customer writes again: still waiting since the first message.
         $conversation->setLastReplyAt('2026-10-01 10:00:00', Conversation::PERSON_CUSTOMER);
-        $this->assertDateTime('2026-10-01 09:00:00', $conversation->last_reply_at);
+        $this->assertDateTime('2026-10-01 10:00:00', $conversation->last_reply_at);
         $this->assertDateTime('2026-10-01 10:00:00', $conversation->last_customer_reply_at);
 
-        // After an agent's reply the next customer message starts the wait.
-        $conversation->last_reply_from = Conversation::PERSON_USER;
-        $conversation->setLastReplyAt('2026-10-01 11:00:00', Conversation::PERSON_CUSTOMER);
+        // An agent's reply doesn't change the customer's last reply.
+        $conversation->setLastReplyAt('2026-10-01 11:00:00', Conversation::PERSON_USER);
         $this->assertDateTime('2026-10-01 11:00:00', $conversation->last_reply_at);
-        $this->assertDateTime('2026-10-01 11:00:00', $conversation->last_customer_reply_at);
+        $this->assertDateTime('2026-10-01 10:00:00', $conversation->last_customer_reply_at);
     }
 
     public function testSetLastReplyAtAcceptsCarbon()
