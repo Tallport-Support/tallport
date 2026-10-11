@@ -36,6 +36,10 @@ class SendReplyToMatrix implements ShouldQueue
             (new Outgoing())->send($thread);
         } catch (\Throwable $e) {
             \App\Misc\ChatLog::failure('matrix', $thread->conversation->mailbox_id, 'send', $e);
+            if ($thread->conversation->fresh()->isChatUnavailable()) {
+                ChatDelivery::recordStatus($thread, SendLog::STATUS_SEND_ERROR, ['msg' => \App\Misc\ChatConversations::unavailableMessage()]);
+                return;
+            }
             ChatDelivery::recordStatus($thread, SendLog::STATUS_SEND_ERROR, ['msg' => __('Matrix reply failed. Check the connection and verification, then retry.')]);
             ChatDelivery::reopenConversation($thread->conversation);
             if ($e instanceof \App\Matrix\MatrixException && $e->retry_after > 0 && $this->job) {

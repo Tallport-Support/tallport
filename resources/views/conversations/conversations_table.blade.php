@@ -153,7 +153,9 @@
                             <x-fruit::menu-item wire:click="rowAssignToMe({{ $conversation->id }})">{{ __('Assign to Me') }}</x-fruit::menu-item>
                             <x-fruit::menu-separator />
                             @php $conv_menu_close = !$conv_menu_rows->every(fn ($row) => $row->status == App\Conversation::STATUS_CLOSED); @endphp
-                            <x-fruit::menu-item wire:click="rowClose({{ $conversation->id }}, {{ $conv_menu_close ? 1 : 0 }})">{{ $conv_menu_close ? __('Close') : __('Reopen') }}</x-fruit::menu-item>
+                            @if ($conv_menu_close || !$conv_menu_rows->every(fn ($row) => $row->isChatUnavailable()))
+                                <x-fruit::menu-item wire:click="rowClose({{ $conversation->id }}, {{ $conv_menu_close ? 1 : 0 }})">{{ $conv_menu_close ? __('Close') : __('Reopen') }}</x-fruit::menu-item>
+                            @endif
                         </x-fruit::context-menu>
                     @endif
                 </li>

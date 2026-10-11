@@ -31,6 +31,12 @@ class ChatDelivery
         if (!$thread || $thread->state != Thread::STATE_PUBLISHED || $thread->type != Thread::TYPE_MESSAGE) {
             return null;
         }
+        if ($thread->conversation->isChatUnavailable()) {
+            if (!$thread->isSendStatusSuccess()) {
+                self::recordStatus($thread, \App\SendLog::STATUS_SEND_ERROR, ['msg' => ChatConversations::unavailableMessage()]);
+            }
+            return null;
+        }
 
         return $thread;
     }
@@ -54,7 +60,7 @@ class ChatDelivery
     public static function reopenConversation($conversation)
     {
         $conversation = $conversation ? $conversation->fresh() : null;
-        if (!$conversation || $conversation->isActive() || $conversation->isSpam()
+        if (!$conversation || $conversation->isChatUnavailable() || $conversation->isActive() || $conversation->isSpam()
             || $conversation->state != Conversation::STATE_PUBLISHED
         ) {
             return;

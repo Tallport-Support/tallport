@@ -1810,5 +1810,6 @@
     "GitHub's limit on requests from this server was reached. Try again later.": "Osiągnięto limit zapytań GitHub z tego serwera. Spróbuj ponownie później.",
     "GitHub sent an error (:status).": "GitHub zwrócił błąd (:status).",
     "GitHub sent an incomplete file list.": "GitHub przesłał niekompletną listę plików.",
-    "Deleted leftover files": "Usunięto pozostałe pliki"
+    "Deleted leftover files": "Usunięto pozostałe pliki",
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Ten czat nie jest już dostępny w komunikatorze. Nie możesz tutaj odpowiedzieć ani otworzyć go ponownie. Nadal możesz dodawać notatki."
 }

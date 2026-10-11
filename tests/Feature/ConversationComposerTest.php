@@ -52,6 +52,23 @@ class ConversationComposerTest extends FeatureTestCase
         $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id.'/new-ticket')->assertSee('Send &amp; Close', false);
     }
 
+    public function testUnavailableChatShowsAnExplanationAndAllowsOnlyANoteComposer()
+    {
+        $this->conversation->channel = \App\Matrix\Matrix::CHANNEL;
+        $this->conversation->save();
+        \App\Misc\ChatConversations::markUnavailable($this->conversation);
+        $this->conversation->refresh();
+        $this->composer()->call('open', 'reply')
+            ->assertSee(\App\Misc\ChatConversations::unavailableMessage())->assertDontSee('btn-reply-submit', false)
+            ->call('switchToNote')->assertSet('mode', 'note')->assertSee('btn-reply-submit', false)
+            ->assertDontSee('Add Note &amp; Active', false);
+        $actions = \App\Misc\ConversationActionButtons::getActions($this->conversation, $this->agent, $this->mailbox);
+        $this->assertArrayNotHasKey('reply', $actions);
+        \Livewire\Livewire::actingAs($this->agent)->test(\App\Livewire\ConversationToolbar::class, ['conversation' => $this->conversation])
+            ->assertDontSee('changeStatus('.Conversation::STATUS_ACTIVE.')', false)
+            ->assertDontSee('changeStatus('.Conversation::STATUS_PENDING.')', false);
+    }
+
     /**
      * The empty field says who it's for, by mode; all of them go along for a switch in place.
      */

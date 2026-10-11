@@ -62,6 +62,13 @@ class SendReplyToCustomer
             return;
         }
 
+        if ($conversation->fresh()->isChatUnavailable()) {
+            if (!$thread->isSendStatusSuccess()) {
+                \App\Misc\ChatDelivery::recordStatus($thread, \App\SendLog::STATUS_SEND_ERROR, ['msg' => \App\Misc\ChatConversations::unavailableMessage()]);
+            }
+            return;
+        }
+
         // In order to show proper signature.
         // https://github.com/freescout-help-desk/freescout/issues/5419
         $mailbox_change_history = [];

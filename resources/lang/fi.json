@@ -1826,5 +1826,6 @@
     "GitHub's limit on requests from this server was reached. Try again later.": "GitHubin pyyntöraja tältä palvelimelta täyttyi. Yritä myöhemmin uudelleen.",
     "GitHub sent an error (:status).": "GitHub palautti virheen (:status).",
     "GitHub sent an incomplete file list.": "GitHub lähetti puutteellisen tiedostoluettelon.",
-    "Deleted leftover files": "Jäännöstiedostot poistettu"
+    "Deleted leftover files": "Jäännöstiedostot poistettu",
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Tämä keskustelu ei ole enää käytettävissä viestipalvelussa. Et voi vastata siihen tai avata sitä uudelleen täällä. Voit edelleen lisätä muistiinpanoja."
 }

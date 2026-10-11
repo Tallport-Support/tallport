@@ -1810,5 +1810,6 @@
     "GitHub's limit on requests from this server was reached. Try again later.": "Dosežena je omejitev zahtev GitHuba s tega strežnika. Poskusite znova pozneje.",
     "GitHub sent an error (:status).": "GitHub je vrnil napako (:status).",
     "GitHub sent an incomplete file list.": "GitHub je poslal nepopoln seznam datotek.",
-    "Deleted leftover files": "Preostale datoteke izbrisane"
+    "Deleted leftover files": "Preostale datoteke izbrisane",
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Ta klepet v storitvi za sporočanje ni več na voljo. Tukaj ne morete odgovoriti ali ga znova odpreti. Še vedno lahko dodajate opombe."
 }

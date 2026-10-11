@@ -1706,7 +1706,7 @@ class Thread extends Model
 
     public function canRetrySend()
     {
-        if ($this->isSendStatusSuccess()) {
+        if ($this->isSendStatusSuccess() || ($this->conversation && $this->conversation->isChatUnavailable())) {
             return false;
         }
         // A failed job is retried. Without one (never queued, or cleaned up

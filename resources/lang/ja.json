@@ -1810,5 +1810,6 @@
     "GitHub's limit on requests from this server was reached. Try again later.": "このサーバーからの GitHub へのリクエスト上限に達しました。しばらくしてから再度お試しください。",
     "GitHub sent an error (:status).": "GitHub がエラーを返しました（:status）。",
     "GitHub sent an incomplete file list.": "GitHub から不完全なファイル一覧が届きました。",
-    "Deleted leftover files": "残存ファイルを削除しました"
+    "Deleted leftover files": "残存ファイルを削除しました",
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "このチャットはメッセージサービスで利用できなくなりました。ここから返信したり再開したりすることはできません。メモは引き続き追加できます。"
 }

@@ -712,6 +712,10 @@ class Conversation extends Model
     {
         $status = \Eventy::filter('conversation.set_status', $status, $this);
 
+        if ($this->isChatUnavailable() && in_array(self::toMainStatus($status), [self::STATUS_ACTIVE, self::STATUS_PENDING])) {
+            $status = self::STATUS_CLOSED;
+        }
+
         $this->attributes['status'] = $status;
     }
 
@@ -2083,8 +2087,16 @@ class Conversation extends Model
         \Eventy::action('conversation.state_changed', $this, $user, $prev_state);
     }
 
+    public function isChatUnavailable()
+    {
+        return $this->hasChannel() && (bool) $this->getMeta('chat_unavailable');
+    }
+
     public function changeStatus($new_status, $user = null, $create_thread = true)
     {
+        if ($this->isChatUnavailable() && in_array(self::toMainStatus($new_status), [self::STATUS_ACTIVE, self::STATUS_PENDING])) {
+            return;
+        }
         if (!array_key_exists((int)$new_status, self::$statuses)) {
             return;
         }

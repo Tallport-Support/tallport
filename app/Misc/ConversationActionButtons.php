@@ -22,7 +22,7 @@ class ConversationActionButtons
                             'label'          => __('Reply'),
                             'permission'     => function ($conversation) {
                                     return ( ! $conversation->isPhone() || ( $conversation->customer && $conversation->customer->getMainEmail() ) )
-                                           && \Eventy::filter('conversation.reply_button.enabled', true, $conversation);
+                                           && !$conversation->isChatUnavailable() && \Eventy::filter('conversation.reply_button.enabled', true, $conversation);
                             },
                             'class'          => 'conv-reply',
                             'fixed_location' => true,

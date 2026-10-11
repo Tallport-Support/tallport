@@ -1810,5 +1810,6 @@
     "GitHub's limit on requests from this server was reached. Try again later.": "Bol dosiahnutý limit požiadaviek GitHubu z tohto servera. Skúste to neskôr.",
     "GitHub sent an error (:status).": "GitHub vrátil chybu (:status).",
     "GitHub sent an incomplete file list.": "GitHub poslal neúplný zoznam súborov.",
-    "Deleted leftover files": "Pozostatky súborov odstránené"
+    "Deleted leftover files": "Pozostatky súborov odstránené",
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Tento chat už nie je v službe na zasielanie správ dostupný. Tu nemôžete odpovedať ani ho znova otvoriť. Stále môžete pridávať poznámky."
 }

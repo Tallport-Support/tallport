@@ -1810,5 +1810,6 @@
     "GitHub's limit on requests from this server was reached. Try again later.": "S-a atins limita de cereri GitHub pentru acest server. Încearcă din nou mai târziu.",
     "GitHub sent an error (:status).": "GitHub a returnat o eroare (:status).",
     "GitHub sent an incomplete file list.": "GitHub a trimis o listă de fișiere incompletă.",
-    "Deleted leftover files": "Fișiere rămase șterse"
+    "Deleted leftover files": "Fișiere rămase șterse",
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Această conversație nu mai este disponibilă în serviciul de mesagerie. Nu puteți răspunde sau redeschide conversația de aici. Puteți adăuga în continuare note."
 }

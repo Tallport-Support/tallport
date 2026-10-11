@@ -92,6 +92,9 @@ class ConversationActions
         if (!in_array((int) $new_status, array_keys(Conversation::$statuses))) {
             return ['msg' => __('Incorrect status')];
         }
+        if ($conversation->isChatUnavailable() && in_array(Conversation::toMainStatus($new_status), [Conversation::STATUS_ACTIVE, Conversation::STATUS_PENDING])) {
+            return ['msg' => ChatConversations::unavailableMessage()];
+        }
 
         // Determine redirect
         // Must be done before updating current conversation's status or assignee.
@@ -300,6 +303,10 @@ class ConversationActions
         }
         if (!$user->can('view', $thread->conversation)) {
             return ['msg' => __('Not enough permissions')];
+        }
+
+        if ($thread->conversation->isChatUnavailable()) {
+            return ['msg' => ChatConversations::unavailableMessage()];
         }
 
         $job_id = $thread->getFailedJobId();

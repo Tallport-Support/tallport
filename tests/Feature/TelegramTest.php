@@ -414,7 +414,7 @@ class TelegramTest extends FeatureTestCase
         $this->assertTrue($reply->fresh()->isSendStatusSuccess());
     }
 
-    public function testBlockedBotShowsReplyNotSentAndReopens()
+    public function testBlockedBotClosesTheChatAndOldRepliesCannotBeRetried()
     {
         $this->fakeTelegram(['sendMessage' => $this->error(403, 'Forbidden: bot was blocked by the user')]);
         $reply = $this->reply();
@@ -426,16 +426,25 @@ class TelegramTest extends FeatureTestCase
 
         $reply = $reply->fresh();
         $this->assertSame(SendLog::STATUS_SEND_ERROR, (int) $reply->send_status);
-        $this->assertSame('Forbidden: bot was blocked by the user', $reply->getSendStatusData()['msg']);
-        $this->assertSame(Conversation::STATUS_ACTIVE, (int) $conversation->fresh()->status);
-        $this->assertNotNull($reply->getFailedJobId());
+        $this->assertSame(\App\Misc\ChatConversations::unavailableMessage(), $reply->getSendStatusData()['msg']);
+        $this->assertSame(Conversation::STATUS_CLOSED, (int) $conversation->fresh()->status);
+        $this->assertTrue($conversation->fresh()->isChatUnavailable());
+        $this->assertNull($reply->getFailedJobId());
 
-        // Retry, once the customer unblocked the bot.
+        // Unblocking does not resurrect an old failed reply.
         $this->fakeTelegram();
         config(['queue.default' => 'sync']);
-        $this->assertSame('success', $this->postAjax($this->agent, '/conversation/ajax', ['action' => 'retry_send', 'thread_id' => $reply->id])->json()['status']);
+        $this->postAjax($this->agent, '/conversation/ajax', ['action' => 'retry_send', 'thread_id' => $reply->id])
+            ->assertJson(['msg' => \App\Misc\ChatConversations::unavailableMessage()]);
         $this->runQueue();
-        $this->assertTrue($reply->fresh()->isSendStatusSuccess());
+        $this->assertFalse($reply->fresh()->isSendStatusSuccess());
+        $this->assertCount(0, $this->sentTo('sendMessage'));
+
+        $this->postUpdate($this->update(['text' => 'I can chat again']))->assertOk();
+        $new_conversation = $this->conversation();
+        $this->assertNotSame($conversation->id, $new_conversation->id);
+        $this->assertFalse($new_conversation->isChatUnavailable());
+        $this->assertSame(Conversation::STATUS_CLOSED, (int) $conversation->fresh()->status);
     }
 
     public function testTemporaryErrorIsRetriedWithoutRepeatingParts()

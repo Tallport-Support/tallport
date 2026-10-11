@@ -86,6 +86,14 @@ class ConversationReplies
             $is_note = true;
         }
 
+        if (!$response['msg'] && $conversation && $conversation->isChatUnavailable() && !$is_note && (int) $request->subtype !== Thread::SUBTYPE_FORWARD) {
+            $response['msg'] = ChatConversations::unavailableMessage();
+            return $response;
+        }
+        if ($conversation && $conversation->isChatUnavailable()) {
+            $request->merge(['status' => $conversation->status]);
+        }
+
         // Conversation type.
         $type = Conversation::TYPE_EMAIL;
         if (!empty($request->type)) {

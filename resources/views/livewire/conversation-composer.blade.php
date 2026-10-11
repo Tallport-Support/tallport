@@ -8,9 +8,18 @@
     $label_index = $mode == 'note' ? 1 : ($mode == 'forward' ? 2 : 0);
     // A channel (Telegram, Nostr) has no copies or quoted history; its formats are the editor's.
     $has_channel = $conversation->hasChannel();
+    if ($conversation->isChatUnavailable()) {
+        $send_labels = [App\Conversation::STATUS_CLOSED => $send_labels[App\Conversation::STATUS_CLOSED]];
+    }
 @endphp
 <div class="conv-action-wrapper @if ($chat) conv-composer-docked @endif" x-data="tallportComposer({{ $conversation->id }}, @js($mode), @js($chat))" data-author="{{ Auth::user()->getFullName() }}" data-sending="{{ __('Sending') }}…" @if ($this->translating) data-translating @endif x-on:input="changed($event)" x-on:change="blurred($event)" x-on:fruit-editor-upload.stop="embed($event)" x-on:keydown.enter.capture="enter($event)">
-    @if ($mode)
+    @if ($conversation->isChatUnavailable())
+        <x-fruit::alert tone="warning">{{ App\Misc\ChatConversations::unavailableMessage() }}</x-fruit::alert>
+        @if ($mode != 'note')
+            <x-fruit::button wire:click="switchToNote">{{ __('Add Note') }}</x-fruit::button>
+        @endif
+    @endif
+    @if ($mode && ($mode != 'reply' || !$conversation->isChatUnavailable()))
         <div class="conv-block conv-reply-block conv-action-block @if ($mode == 'note') conv-note-block @elseif ($mode == 'forward') conv-forward-block @endif">
             <x-fruit::composer :placement="$chat ? 'bottom' : 'top'" class="form-reply conv-composer" :aria-label="$mode == 'note' ? __('Note') : ($mode == 'forward' ? __('Forward') : __('Reply'))" x-on:submit.prevent="submit()">
                 @if ($mode != 'note' && !($chat && $has_channel))
@@ -95,7 +104,7 @@
         </div>
     @endif
     <span id="attachment-reminder" class="hidden" data-phrases="{{ json_encode(App\Http\Controllers\AttachmentsController::reminderPhrases()) }}" data-message="{{ __('You mentioned :phrase but there is no attachment. Send anyway?') }}" data-send="{{ __('Send Anyway') }}"></span>
-    @if (App\Ai\Drafts::allowed(Auth::user(), $conversation))
+    @if (!$conversation->isChatUnavailable() && App\Ai\Drafts::allowed(Auth::user(), $conversation))
         <div wire:ignore>@include('conversations/partials/ai_draft_panel')</div>
     @endif
     @action('reply_form.after', $conversation)

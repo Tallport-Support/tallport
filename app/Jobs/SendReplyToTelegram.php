@@ -171,6 +171,13 @@ class SendReplyToTelegram implements ShouldQueue
     {
         Telegram::log('Reply '.$thread->id.' in conversation #'.$thread->conversation->number.' not sent (try '.$this->attempts().'): '.$e->getMessage(), $thread->conversation->mailbox, 'failed', 'send');
 
+        if ($e->getCode() === 403 && preg_match('/\b(user is deactivated|bot was blocked by the user)\b/i', $e->getMessage())) {
+            \App\Misc\ChatConversations::markUnavailable($thread->conversation);
+            TelegramSend::record($thread, $this->attempts(), TelegramSend::STATUS_FAILED, $this->sent_message_ids, $e->getMessage());
+            ChatDelivery::recordStatus($thread, SendLog::STATUS_SEND_ERROR, ['msg' => \App\Misc\ChatConversations::unavailableMessage()]);
+            return;
+        }
+
         $retry = !$e->isPermanent() && $this->attempts() < $this->tries;
         TelegramSend::record($thread, $this->attempts(), $retry ? TelegramSend::STATUS_RETRYING : TelegramSend::STATUS_FAILED, $this->sent_message_ids, $e->getMessage());
 

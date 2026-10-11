@@ -1810,5 +1810,6 @@
     "GitHub's limit on requests from this server was reached. Try again later.": "השרת הזה הגיע למגבלת הבקשות של GitHub. נסה שוב מאוחר יותר.",
     "GitHub sent an error (:status).": "GitHub החזיר שגיאה (:status).",
     "GitHub sent an incomplete file list.": "GitHub שלח רשימת קבצים חלקית.",
-    "Deleted leftover files": "נמחקו קבצים שנותרו"
+    "Deleted leftover files": "נמחקו קבצים שנותרו",
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "השיחה הזו אינה זמינה עוד בשירות ההודעות. לא ניתן להשיב או לפתוח אותה מחדש כאן. עדיין ניתן להוסיף הערות."
 }

@@ -1902,5 +1902,6 @@
     "GitHub's limit on requests from this server was reached. Try again later.": "S'ha arribat al límit de GitHub per a sol·licituds des d'aquest servidor. Torneu-ho a provar més tard.",
     "GitHub sent an error (:status).": "GitHub ha retornat un error (:status).",
     "GitHub sent an incomplete file list.": "GitHub ha enviat una llista de fitxers incompleta.",
-    "Deleted leftover files": "Fitxers sobrants eliminats"
+    "Deleted leftover files": "Fitxers sobrants eliminats",
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Aquest xat ja no està disponible al servei de missatgeria. No hi podeu respondre ni reobrir-lo des d’aquí. Encara hi podeu afegir notes."
 }

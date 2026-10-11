@@ -1810,5 +1810,6 @@
     "GitHub's limit on requests from this server was reached. Try again later.": "GitHubs gräns för förfrågningar från den här servern har nåtts. Försök igen senare.",
     "GitHub sent an error (:status).": "GitHub svarade med ett fel (:status).",
     "GitHub sent an incomplete file list.": "GitHub skickade en ofullständig fillista.",
-    "Deleted leftover files": "Kvarlämnade filer borttagna"
+    "Deleted leftover files": "Kvarlämnade filer borttagna",
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Den här chatten är inte längre tillgänglig i meddelandetjänsten. Du kan inte svara eller öppna den igen här. Du kan fortfarande lägga till anteckningar."
 }

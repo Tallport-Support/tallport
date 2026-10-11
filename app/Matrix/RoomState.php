@@ -6,7 +6,17 @@ class RoomState
 {
     public static function refresh(MatrixMailbox $identity, MatrixRoom $room)
     {
-        $events = $identity->client()->call('GET', 'v3/rooms/'.rawurlencode($room->room_id).'/state');
+        try {
+            $events = $identity->client()->call('GET', 'v3/rooms/'.rawurlencode($room->room_id).'/state');
+        } catch (MatrixException $e) {
+            if ($e->getCode() === 403) {
+                $joined = $identity->client()->call('GET', 'v3/joined_rooms');
+                if (is_array($joined['joined_rooms'] ?? null) && !in_array($room->room_id, $joined['joined_rooms'], true)) {
+                    self::unavailable($room);
+                }
+            }
+            throw $e;
+        }
         self::apply($identity, $room, $events, true);
 
         return $room;
@@ -57,5 +67,22 @@ class RoomState
             && (!isset($state['encryption']) || ($state['encryption']['algorithm'] ?? null) === 'm.megolm.v1.aes-sha2');
         $room->state = $state;
         $room->save();
+        foreach ([$identity->user_id, $room->customer_user_id] as $user) {
+            if ($user && in_array($state['members'][$user] ?? null, ['leave', 'ban'], true)) {
+                self::unavailable($room);
+                break;
+            }
+        }
+    }
+
+    public static function unavailable(MatrixRoom $room)
+    {
+        $state = $room->state;
+        $state['supported'] = false;
+        $room->state = $state;
+        $room->save();
+        MatrixEvent::where('matrix_mailbox_id', $room->matrix_mailbox_id)->where('room_id', $room->room_id)
+            ->whereIn('kind', ['outgoing', 'to_device'])->where('status', 'pending')->update(['status' => 'cancelled']);
+        \App\Misc\ChatConversations::markUnavailable($room->conversation);
     }
 }

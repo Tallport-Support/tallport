@@ -1855,5 +1855,6 @@
     "GitHub's limit on requests from this server was reached. Try again later.": "此伺服器對 GitHub 的請求已達上限。請稍後再試。",
     "GitHub sent an error (:status).": "GitHub 傳回了錯誤（:status）。",
     "GitHub sent an incomplete file list.": "GitHub 傳送的檔案清單不完整。",
-    "Deleted leftover files": "已刪除殘留檔案"
+    "Deleted leftover files": "已刪除殘留檔案",
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "此聊天在訊息服務中已無法使用。您無法在此回覆或重新開啟聊天，但仍可新增備註。"
 }

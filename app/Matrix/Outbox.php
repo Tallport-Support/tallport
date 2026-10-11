@@ -18,6 +18,7 @@ class Outbox
 
     public static function deliver(MatrixMailbox $identity, MatrixEvent $event)
     {
+        $event->refresh();
         if ($event->status !== 'pending') {
             return;
         }

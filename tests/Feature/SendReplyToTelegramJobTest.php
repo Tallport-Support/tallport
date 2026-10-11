@@ -104,6 +104,36 @@ class SendReplyToTelegramJobTest extends FeatureTestCase
         return $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
     }
 
+    /** @dataProvider unavailableRecipients */
+    public function testOnlyExplicitRecipientFailuresCloseTheChat($code, $description, $unavailable)
+    {
+        $reply = $this->reply();
+        $this->fakeTelegram(['sendMessage' => $this->error($code, $description)]);
+        $job = (new SendReplyToTelegram($reply->id))->withFakeQueueInteractions();
+        $job->handle();
+        $this->assertSame($unavailable, $reply->conversation->fresh()->isChatUnavailable());
+        $this->assertCount(1, $this->sentTo('sendMessage'));
+        if ($unavailable) {
+            $this->assertSame(Conversation::STATUS_CLOSED, (int) $reply->conversation->fresh()->status);
+            $job->assertNotReleased()->assertNotFailed();
+            $job->handle();
+            $this->assertCount(1, $this->sentTo('sendMessage'));
+        }
+    }
+
+    public static function unavailableRecipients()
+    {
+        return [
+            'deleted account' => [403, 'Forbidden: user is deactivated', true],
+            'blocked bot' => [403, 'Forbidden: bot was blocked by the user', true],
+            'invalid bot credentials' => [401, 'Unauthorized', false],
+            'malformed message' => [400, 'Bad Request: message is too long', false],
+            'rate limit' => [429, 'Too Many Requests', false],
+            'server failure' => [502, 'Bad Gateway', false],
+            'other permission error' => [403, 'Forbidden: not enough rights to send photos', false],
+        ];
+    }
+
     protected function telegramLog()
     {
         return ActivityLog::where('log_name', Telegram::LOG)->where('properties->status', '!=', 'succeeded')->pluck('description')->all();

@@ -1813,5 +1813,6 @@
     "GitHub's limit on requests from this server was reached. Try again later.": "GitHubs grense for forespørsler fra denne serveren er nådd. Prøv igjen senere.",
     "GitHub sent an error (:status).": "GitHub svarte med en feil (:status).",
     "GitHub sent an incomplete file list.": "GitHub sendte en ufullstendig filliste.",
-    "Deleted leftover files": "Gjenværende filer slettet"
+    "Deleted leftover files": "Gjenværende filer slettet",
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Denne chatten er ikke lenger tilgjengelig på meldingstjenesten. Du kan ikke svare eller åpne den igjen her. Du kan fortsatt legge til notater."
 }

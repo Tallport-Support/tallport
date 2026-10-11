@@ -1810,5 +1810,6 @@
     "GitHub's limit on requests from this server was reached. Try again later.": "Bu serverdən GitHub-a sorğu limiti dolub. Bir az sonra yenidən cəhd edin.",
     "GitHub sent an error (:status).": "GitHub xəta qaytardı (:status).",
     "GitHub sent an incomplete file list.": "GitHub natamam fayl siyahısı göndərdi.",
-    "Deleted leftover files": "Qalıq fayllar silindi"
+    "Deleted leftover files": "Qalıq fayllar silindi",
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Bu söhbət artıq mesajlaşma xidmətində mövcud deyil. Burada cavab verə və ya söhbəti yenidən aça bilməzsiniz. Hələ də qeydlər əlavə edə bilərsiniz."
 }

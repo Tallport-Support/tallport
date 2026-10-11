@@ -56,6 +56,61 @@ class ChatDeliveryTest extends FeatureTestCase
         $this->assertSame(['telegram_sent' => ['text0'], 'telegram_messages' => [71], 'msg' => 'Try again'], $reply->getSendStatusData());
     }
 
+    /** @dataProvider unavailableChannels */
+    public function testUnavailableChatsCannotSendRetryReopenOrContinueButKeepNotes($channel)
+    {
+        $conversation = $this->conversation($channel === 'nostr' ? config('nostr.channel') : $channel);
+        $admin = $this->createAdmin();
+        $reply = Thread::create($conversation, Thread::TYPE_MESSAGE, 'Pending reply', ['source_via' => Thread::PERSON_USER, 'source_type' => Thread::SOURCE_TYPE_WEB]);
+        \App\Misc\ChatConversations::markUnavailable($conversation);
+        $conversation->refresh();
+        $this->assertTrue($conversation->isChatUnavailable());
+        $this->assertSame(Conversation::STATUS_CLOSED, (int) $conversation->status);
+        ChatDelivery::reopenConversation($conversation);
+        Conversation::bulkChangeStatus([$conversation->id], Conversation::STATUS_ACTIVE, $admin);
+        $conversation->status = Conversation::STATUS_PENDING;
+        $conversation->save();
+        $this->assertSame(Conversation::STATUS_CLOSED, (int) $conversation->fresh()->status);
+        $this->assertFalse(\App\Misc\ChatConversations::canContinue($conversation, $conversation->mailbox));
+        $this->assertNull(ChatDelivery::findReply($reply->id));
+        $this->assertSame(SendLog::STATUS_SEND_ERROR, (int) $reply->fresh()->send_status);
+        $this->assertFalse($reply->fresh()->canRetrySend());
+        $message = \App\Misc\ChatConversations::unavailableMessage();
+        $this->assertSame(['msg' => $message], \App\Misc\ConversationActions::retrySend($reply->fresh(), $admin));
+        $this->postAjax($admin, '/conversation/ajax', ['action' => 'conversation_change_status', 'conversation_id' => $conversation->id, 'status' => Conversation::STATUS_ACTIVE])->assertJson(['msg' => $message]);
+        $fields = ['action' => 'send_reply', 'mailbox_id' => $conversation->mailbox_id, 'conversation_id' => $conversation->id, 'body' => 'Blocked reply'];
+        $this->postAjax($admin, '/conversation/ajax', $fields)->assertJson(['status' => 'error', 'msg' => $message]);
+        $this->assertSame(0, $conversation->threads()->where('body', 'Blocked reply')->count());
+        $this->postAjax($admin, '/conversation/ajax', array_merge($fields, ['is_note' => 1, 'body' => 'Internal note', 'status' => Conversation::STATUS_ACTIVE]))->assertJson(['status' => 'success']);
+        $this->assertSame(1, $conversation->threads()->where('type', Thread::TYPE_NOTE)->where('body', 'Internal note')->count());
+        $this->assertSame(Conversation::STATUS_CLOSED, (int) $conversation->threads()->where('type', Thread::TYPE_NOTE)->where('body', 'Internal note')->value('status'));
+        $this->assertSame(Conversation::STATUS_CLOSED, (int) $conversation->fresh()->status);
+    }
+
+    public static function unavailableChannels()
+    {
+        return ['telegram' => [Telegram::CHANNEL], 'nostr' => ['nostr'], 'matrix' => [\App\Matrix\Matrix::CHANNEL]];
+    }
+
+    public function testUnavailableFlagDoesNotCloseEmailConversations()
+    {
+        $conversation = $this->conversation(null);
+        \App\Misc\ChatConversations::markUnavailable($conversation);
+        $this->assertFalse($conversation->fresh()->isChatUnavailable());
+        $this->assertSame(Conversation::STATUS_ACTIVE, (int) $conversation->fresh()->status);
+    }
+
+    public function testClosingAChatDoesNotChangePreviouslySuccessfulDelivery()
+    {
+        $conversation = $this->conversation();
+        $reply = Thread::create($conversation, Thread::TYPE_MESSAGE, 'Delivered', ['source_via' => Thread::PERSON_USER, 'source_type' => Thread::SOURCE_TYPE_WEB]);
+        ChatDelivery::recordStatus($reply, SendLog::STATUS_ACCEPTED);
+        \App\Misc\ChatConversations::markUnavailable($conversation);
+        $this->assertNull(ChatDelivery::findReply($reply->id));
+        (new \App\Listeners\SendReplyToCustomer())->handle(new \App\Events\UserReplied($conversation, $reply->fresh()));
+        $this->assertSame(SendLog::STATUS_ACCEPTED, (int) $reply->fresh()->send_status);
+    }
+
     /**
      * @dataProvider conversationStates
      */

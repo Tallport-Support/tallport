@@ -26,7 +26,7 @@
             @endif
         @endforeach
 
-        @if (App\Ai\Drafts::allowed(Auth::user(), $conversation))
+        @if (!$conversation->isChatUnavailable() && App\Ai\Drafts::allowed(Auth::user(), $conversation))
             <button type="button" class="f-button f-button--ghost f-button--icon conv-action ai-draft-action" x-on:click="$dispatch('ai-draft-request')" title="{{ __('Draft with AI') }}" aria-label="{{ __('Draft with AI') }}"><x-icon.sparkles class="f-icon" aria-hidden="true" /></button>
         @endif
 
@@ -88,6 +88,7 @@
                     <x-slot:trigger class="f-button--small" :title="__('Status').': '.$conversation->getStatusName()" :aria-label="__('Status').': '.$conversation->getStatusName()">@include('conversations/partials/status_dot', ['status' => $conversation->status]) <span class="conv-info-val"><span>{{ $conversation->getStatusName() }}</span></span></x-slot:trigger>
                     @if (!$conversation->isSpam())
                         @foreach (App\Conversation::$statuses as $status => $dummy)
+                            @continue($conversation->isChatUnavailable() && in_array(App\Conversation::toMainStatus($status), [App\Conversation::STATUS_ACTIVE, App\Conversation::STATUS_PENDING]))
                             <x-fruit::menu-radio :checked="$conversation->status == $status" :data-status="$status" wire:click.prevent="changeStatus({{ $status }})">@include('conversations/partials/status_dot', ['status' => $status]) {{ App\Conversation::statusCodeToName($status) }}</x-fruit::menu-radio>
                         @endforeach
                     @else

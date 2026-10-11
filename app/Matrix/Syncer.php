@@ -82,10 +82,7 @@ class Syncer
         foreach ($batch['response']['rooms']['leave'] ?? [] as $id => $data) {
             $room = MatrixRoom::forRoom($identity->id, $id);
             if ($room->exists) {
-                $state = $room->state;
-                $state['supported'] = false;
-                $room->state = $state;
-                $room->save();
+                RoomState::unavailable($room);
             }
         }
         foreach ($batch['response']['rooms']['invite'] ?? [] as $id => $data) {

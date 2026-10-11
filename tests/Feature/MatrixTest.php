@@ -306,6 +306,86 @@ class MatrixTest extends FeatureTestCase
         $this->assertSame(self::PEER, $room->customer_user_id);
     }
 
+    /** @dataProvider roomAccessFailures */
+    public function testOnlyConfirmedLostRoomAccessClosesTheChatAndStopsDeliveryRetries($status, $joined, $unavailable)
+    {
+        [$identity] = $this->identity();
+        $room = MatrixRoom::forRoom($identity->id, self::ROOM);
+        RoomState::apply($identity, $room, $this->state(false));
+        $conversation = Conversation::create(['type' => Conversation::TYPE_EMAIL, 'subject' => 'Support', 'source_type' => Conversation::SOURCE_TYPE_API,
+            'mailbox_id' => $identity->mailbox_id, 'channel' => Matrix::CHANNEL], [['type' => Thread::TYPE_CUSTOMER, 'body' => 'Question']], $this->createCustomer())['conversation'];
+        $conversation->setMeta('matrix', ['identity' => $identity->id, 'room' => self::ROOM], true);
+        $room->conversation_id = $conversation->id;
+        $room->save();
+        $reply = Thread::create($conversation, Thread::TYPE_MESSAGE, 'Answer', ['source_via' => Thread::PERSON_USER, 'source_type' => Thread::SOURCE_TYPE_WEB]);
+        Http::fake([
+            self::HOME.'/_matrix/client/v3/rooms/'.rawurlencode(self::ROOM).'/state' => Http::response(['errcode' => $status === 403 ? 'M_FORBIDDEN' : 'M_UNKNOWN'], $status),
+            self::HOME.'/_matrix/client/v3/joined_rooms' => Http::response($joined),
+        ]);
+        $job = (new \App\Jobs\SendReplyToMatrix($reply->id))->withFakeQueueInteractions();
+        try {
+            $job->handle();
+            $this->assertTrue($unavailable, 'A temporary failure should still retry.');
+        } catch (MatrixException $e) {
+            $this->assertFalse($unavailable, 'A closed chat should stop retrying.');
+        }
+        $this->assertSame($unavailable, $conversation->fresh()->isChatUnavailable());
+        $this->assertSame($unavailable ? Conversation::STATUS_CLOSED : Conversation::STATUS_ACTIVE, (int) $conversation->fresh()->status);
+        Http::assertSentCount($status === 403 ? 2 : 1);
+        Http::assertNotSent(fn ($request) => $request->method() !== 'GET');
+        if ($unavailable) {
+            $this->assertFalse($reply->fresh()->canRetrySend());
+            $job->assertNotReleased()->assertNotFailed();
+            $job->handle();
+            Http::assertSentCount(2);
+        }
+    }
+
+    public static function roomAccessFailures()
+    {
+        return [
+            'membership lost' => [403, ['joined_rooms' => []], true],
+            'still joined' => [403, ['joined_rooms' => [self::ROOM]], false],
+            'unknown membership' => [403, [], false],
+            'expired login' => [401, [], false],
+            'temporary server failure' => [503, [], false],
+        ];
+    }
+
+    /** @dataProvider departedMembers */
+    public function testSyncClosesAChatWhenEitherParticipantLeavesTheRoom($customer_left)
+    {
+        [$identity] = $this->identity();
+        $room = MatrixRoom::forRoom($identity->id, self::ROOM);
+        RoomState::apply($identity, $room, $this->state(false));
+        $conversation = Conversation::create(['type' => Conversation::TYPE_EMAIL, 'subject' => 'Support', 'source_type' => Conversation::SOURCE_TYPE_API,
+            'mailbox_id' => $identity->mailbox_id, 'channel' => Matrix::CHANNEL], [['type' => Thread::TYPE_CUSTOMER, 'body' => 'Question']], $this->createCustomer())['conversation'];
+        $room->conversation_id = $conversation->id;
+        $room->save();
+        $response = $customer_left
+            ? $this->batch('left', [], [], [['type' => 'm.room.member', 'state_key' => self::PEER, 'content' => ['membership' => 'leave']]])
+            : ['next_batch' => 'left', 'device_one_time_keys_count' => ['signed_curve25519' => 50], 'rooms' => ['leave' => [self::ROOM => ['timeline' => ['events' => []]]]]];
+        $pending = [];
+        foreach (['outgoing', 'to_device'] as $kind) {
+            $pending[] = MatrixEvent::outgoing($identity->id, 'pending-'.$kind, $kind, ['type' => 'm.room.encrypted', 'messages' => []], self::ROOM);
+        }
+        Http::fake([self::HOME.'/_matrix/client/v3/sync*' => Http::response($response)]);
+        (new Syncer())->run($identity);
+        $this->assertTrue($conversation->fresh()->isChatUnavailable());
+        $this->assertSame(Conversation::STATUS_CLOSED, (int) $conversation->fresh()->status);
+        $this->assertFalse($room->fresh()->state['supported']);
+        $this->assertSame(2, MatrixEvent::where('room_id', self::ROOM)->where('status', 'cancelled')->count());
+        foreach ($pending as $event) {
+            \App\Matrix\Outbox::deliver($identity, $event);
+        }
+        Http::assertSentCount(1);
+    }
+
+    public static function departedMembers()
+    {
+        return ['mailbox left' => [false], 'customer left' => [true]];
+    }
+
     public function testLimitedTimelineResumesAcrossRunsBeforeAdvancingItsCursor()
     {
         [$identity] = $this->identity();

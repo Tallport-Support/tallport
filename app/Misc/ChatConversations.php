@@ -14,6 +14,29 @@ use Illuminate\Support\Carbon;
  */
 class ChatConversations
 {
+    public static function unavailableMessage()
+    {
+        return __('This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.');
+    }
+
+    public static function markUnavailable($conversation)
+    {
+        $conversation = $conversation ? $conversation->fresh() : null;
+        if (!$conversation || !$conversation->hasChannel() || $conversation->isChatUnavailable()) {
+            return;
+        }
+        $conversation->setMeta('chat_unavailable', true);
+        if (!$conversation->isSpam()) {
+            $conversation->setStatus(Conversation::STATUS_CLOSED);
+        }
+        $conversation->save();
+        $conversation->mailbox->updateFoldersCounters();
+        $thread = $conversation->threads()->orderBy('id', 'desc')->first();
+        if ($thread) {
+            \DB::afterCommit(fn () => Conversation::refreshConversations($conversation, $thread));
+        }
+    }
+
     /**
      * All chat channels use the mailbox's conversation policy.
      */
@@ -37,7 +60,7 @@ class ChatConversations
      */
     public static function canContinue($conversation, Mailbox $mailbox)
     {
-        if (!$conversation || $conversation->chatShouldStartNew($mailbox)) {
+        if (!$conversation || $conversation->isChatUnavailable() || $conversation->chatShouldStartNew($mailbox)) {
             return false;
         }
         $last = $conversation->last_reply_at ?: $conversation->created_at;

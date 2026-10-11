@@ -2204,5 +2204,6 @@
     "GitHub's limit on requests from this server was reached. Try again later.": "Осы серверден GitHub-қа сұраулар шегіне жетті. Кейінірек қайталап көріңіз.",
     "GitHub sent an error (:status).": "GitHub қате қайтарды (:status).",
     "GitHub sent an incomplete file list.": "GitHub толық емес файлдар тізімін жіберді.",
-    "Deleted leftover files": "Қалдық файлдар жойылды"
+    "Deleted leftover files": "Қалдық файлдар жойылды",
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Бұл чат хабар алмасу қызметінде енді қолжетімді емес. Мұнда жауап беру немесе оны қайта ашу мүмкін емес. Әлі де ескертпелер қоса аласыз."
 }
