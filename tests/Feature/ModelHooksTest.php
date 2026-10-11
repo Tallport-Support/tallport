@@ -53,9 +53,12 @@ class ModelHooksTest extends FeatureTestCase
         $this->assertNull(Conversation::find(999999));
     }
 
-    public function testTheMailDateCanBeTheTimeOfAFetchedMessage()
+    /**
+     * A fetched email is received when it's fetched; its Date header is kept
+     * apart as the date sent.
+     */
+    public function testAFetchedMessageIsReceivedNowAndKeepsItsDateSent()
     {
-        config(['app.use_mail_date_on_fetching' => true]);
         $mailbox = $this->createMailbox();
         $date = now()->subDays(3)->startOfMinute();
 
@@ -66,9 +69,12 @@ class ModelHooksTest extends FeatureTestCase
         ]));
 
         $conversation = Conversation::where('mailbox_id', $mailbox->id)->first();
-        $this->assertSame($date->format('Y-m-d H:i:s'), $conversation->threads()->first()->created_at->format('Y-m-d H:i:s'));
-        $this->assertSame($date->format('Y-m-d H:i:s'), $conversation->last_reply_at->format('Y-m-d H:i:s'));
-        $this->assertSame($date->format('Y-m-d H:i:s'), \Carbon\Carbon::parse($conversation->last_activity_at)->format('Y-m-d H:i:s'));
+        $thread = $conversation->threads()->first();
+        $this->assertLessThan(60, abs(now()->diffInSeconds($thread->created_at)));
+        $this->assertLessThan(60, abs(now()->diffInSeconds($conversation->last_reply_at)));
+        $this->assertLessThan(60, abs(now()->diffInSeconds(\Carbon\Carbon::parse($conversation->last_activity_at))));
+        $this->assertSame($date->format('Y-m-d H:i:s'), $thread->sent_at->format('Y-m-d H:i:s'));
+        $this->assertSame($date->format('Y-m-d H:i:s'), $conversation->last_sent_at->format('Y-m-d H:i:s'));
     }
 
     public function testSendLogKeepsTheSmtpQueueIdAndThread()

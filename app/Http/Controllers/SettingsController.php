@@ -106,9 +106,6 @@ class SettingsController extends Controller
                             'safe_password' => true,
                             'encrypt' => true,
                         ],
-                        // 'use_mail_date_on_fetching' => [
-                        //     'env' => 'APP_USE_MAIL_DATE_ON_FETCHING',
-                        // ],
                     ],
                 ];
                 break;
@@ -273,7 +270,6 @@ class SettingsController extends Controller
                 }
                 $settings += [
                     'fetch_schedule'  => config('app.fetch_schedule'),
-                    //'use_mail_date_on_fetching'             => config('app.use_mail_date_on_fetching'),
                 ];
                 break;
             case 'alerts':

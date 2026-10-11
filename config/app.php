@@ -348,14 +348,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Use date from mail header on fetching.
-    |
-    |-------------------------------------------------------------------------
-    */
-    'use_mail_date_on_fetching'    => env('APP_USE_MAIL_DATE_ON_FETCHING', false),
-
-    /*
-    |--------------------------------------------------------------------------
     | Emails are fetched in bunches. The larger the bunch's size the more chances
     | to face "Allowed memory size exhausted" error. The smaller its size the more
     | connections are made to the mail server and the more time fetching takes.

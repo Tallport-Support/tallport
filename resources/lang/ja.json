@@ -1799,5 +1799,8 @@
     "GitHub sent an error (:status).": "GitHub がエラーを返しました（:status）。",
     "GitHub sent an incomplete file list.": "GitHub から不完全なファイル一覧が届きました。",
     "Deleted leftover files": "残存ファイルを削除しました",
-    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "このチャットはメッセージサービスで利用できなくなりました。ここから返信したり再開したりすることはできません。メモは引き続き追加できます。"
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "このチャットはメッセージサービスで利用できなくなりました。ここから返信したり再開したりすることはできません。メモは引き続き追加できます。",
+    "Date Sent": "送信日時",
+    "Received: :date": "受信：:date",
+    "Sent: :date": "送信：:date"
 }

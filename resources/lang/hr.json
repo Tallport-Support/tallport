@@ -1799,5 +1799,8 @@
     "GitHub sent an error (:status).": "GitHub je vratio pogrešku (:status).",
     "GitHub sent an incomplete file list.": "GitHub je poslao nepotpun popis datoteka.",
     "Deleted leftover files": "Preostale datoteke izbrisane",
-    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Ovaj razgovor više nije dostupan na servisu za poruke. Ovdje ne možete odgovoriti niti ga ponovno otvoriti. I dalje možete dodavati bilješke."
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Ovaj razgovor više nije dostupan na servisu za poruke. Ovdje ne možete odgovoriti niti ga ponovno otvoriti. I dalje možete dodavati bilješke.",
+    "Date Sent": "Datum Slanja",
+    "Received: :date": "Primljeno: :date",
+    "Sent: :date": "Poslano: :date"
 }

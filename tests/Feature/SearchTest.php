@@ -162,6 +162,28 @@ class SearchTest extends FeatureTestCase
         $this->assertSame([$body_only->id, $subject->id], collect(ConversationSearch::paginate('refund', [], $this->agent)->items())->pluck('id')->all(), 'Sorted by date when asked.');
     }
 
+    /**
+     * Search results sorted in the list by date sent or last activity, with
+     * and without the full-text index.
+     */
+    public function testSortedByDateSentOrLastActivity()
+    {
+        $sent_early = $this->conversation('Refund one', 'A refund please.');
+        $sent_late = $this->conversation('Refund two', 'A refund please.');
+        \DB::table('conversations')->where('id', $sent_early->id)->update(['last_sent_at' => now()->subDays(3), 'last_activity_at' => now()->subDays(2)]);
+        \DB::table('conversations')->where('id', $sent_late->id)->update(['last_sent_at' => now()->subHour(), 'last_activity_at' => now()]);
+        $list = fn () => Livewire::actingAs($this->agent)->test(\App\Livewire\ConversationList::class, ['filter' => ['q' => 'refund', 'f' => []]]);
+
+        foreach ([false, true] as $indexed) {
+            if ($indexed) {
+                $this->ready();
+            }
+            $list()->call('sort', 'sent')->assertSeeInOrder(['Refund two', 'Refund one'])
+                ->call('sort', 'sent')->assertSeeInOrder(['Refund one', 'Refund two'])
+                ->call('sort', 'activity')->assertSeeInOrder(['Refund two', 'Refund one']);
+        }
+    }
+
     public function testNumberFirst()
     {
         $first = $this->conversation('First', 'Nothing here.');

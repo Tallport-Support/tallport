@@ -76,7 +76,7 @@ class ConversationSearch
             $query->orderByRaw($score[0].' DESC', $score[1]);
             $query->orderBy('conversations.last_reply_at', 'desc');
         } else {
-            $sort_by = in_array($sorting['sort_by'], ['date', 'relevance']) ? 'last_reply_at' : $sorting['sort_by'];
+            $sort_by = in_array($sorting['sort_by'], ['date', 'relevance']) ? 'last_reply_at' : (Conversation::SORT_COLUMNS[$sorting['sort_by']] ?? $sorting['sort_by']);
             $query->orderBy('conversations.'.$sort_by, $sorting['order']);
         }
 

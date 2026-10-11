@@ -1799,5 +1799,8 @@
     "GitHub sent an error (:status).": "A GitHub hibát adott vissza (:status).",
     "GitHub sent an incomplete file list.": "A GitHub hiányos fájllistát küldött.",
     "Deleted leftover files": "Maradványfájlok törölve",
-    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Ez a beszélgetés már nem érhető el az üzenetküldő szolgáltatásban. Itt nem válaszolhat rá, és nem nyithatja meg újra. Jegyzeteket továbbra is hozzáadhat."
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Ez a beszélgetés már nem érhető el az üzenetküldő szolgáltatásban. Itt nem válaszolhat rá, és nem nyithatja meg újra. Jegyzeteket továbbra is hozzáadhat.",
+    "Date Sent": "Küldés Dátuma",
+    "Received: :date": "Fogadva: :date",
+    "Sent: :date": "Elküldve: :date"
 }

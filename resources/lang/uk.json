@@ -1799,5 +1799,8 @@
     "GitHub sent an error (:status).": "GitHub повернув помилку (:status).",
     "GitHub sent an incomplete file list.": "GitHub надіслав неповний список файлів.",
     "Deleted leftover files": "Видалено залишкові файли",
-    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Цей чат більше недоступний у сервісі обміну повідомленнями. Тут не можна відповісти або відкрити його знову. Ви все ще можете додавати нотатки."
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Цей чат більше недоступний у сервісі обміну повідомленнями. Тут не можна відповісти або відкрити його знову. Ви все ще можете додавати нотатки.",
+    "Date Sent": "Дата Надсилання",
+    "Received: :date": "Отримано: :date",
+    "Sent: :date": "Надіслано: :date"
 }

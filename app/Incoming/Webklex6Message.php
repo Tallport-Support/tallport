@@ -3,6 +3,7 @@
 namespace App\Incoming;
 
 use Webklex\PHPIMAP\Config;
+use Webklex\PHPIMAP\Header;
 use Webklex\PHPIMAP\Message;
 
 /**
@@ -132,10 +133,22 @@ class Webklex6Message implements IncomingMessage
         });
     }
 
+    /**
+     * The Date header (when the sender sent it), or null without a valid one: never
+     * the time of receiving, which the message's own fallback_date would give.
+     */
     public function date(): ?\Carbon\Carbon
     {
         return $this->cached('date', function () {
-            $date = $this->message->get('date');
+            $value = HeaderText::value($this->headers(), 'Date');
+            if ($value === null || $value === '') {
+                return null;
+            }
+            try {
+                $date = (new Header('Date: '.$value."\r\n", Config::make([])))->get('date');
+            } catch (\Throwable $e) {
+                return null;
+            }
 
             return $date->count() ? $date->toDate() : null;
         });

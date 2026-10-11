@@ -459,11 +459,13 @@ class ConversationReplies
                     }
                     $conversation->setBcc($request->bcc);
                     $conversation->last_reply_at = $now;
+                    $conversation->last_sent_at = $now;
                     $conversation->last_reply_from = Conversation::PERSON_USER;
                     $conversation->user_updated_at = $now;
                 }
                 if ($conversation->isPhone() && $is_note) {
                     $conversation->last_reply_at = $now;
+                    $conversation->last_sent_at = $now;
                     $conversation->last_reply_from = Conversation::PERSON_USER;
                 }
                 $conversation->updateFolder();
@@ -573,6 +575,7 @@ class ConversationReplies
                         $forwarded_conversation->setCc(Conversation::sanitizeEmails($request->cc));
                         $forwarded_conversation->setBcc($request->bcc);
                         $forwarded_conversation->last_reply_at = $now;
+                        $forwarded_conversation->last_sent_at = $now;
                         $forwarded_conversation->last_reply_from = Conversation::PERSON_USER;
                         $forwarded_conversation->user_updated_at = $now;
                         if ($attachments_info['has_attachments']) {

@@ -306,21 +306,103 @@ class FetchEmailsProcessMessageTest extends FeatureTestCase
     }
 
     /**
-     * With app.use_mail_date_on_fetching, threads get the email's date.
+     * An email's Date header is its date sent, kept apart from when it's
+     * received (fetched): customer emails, agents' emailed replies and notes.
      */
-    public function testMailDateIsUsedWhenConfigured()
+    public function testDateSentIsKeptApartFromTheTimeReceived()
     {
-        config(['app.use_mail_date_on_fetching' => true]);
-        [$conversation] = $this->receiveFromCustomer(['date' => 'Mon, 05 Oct 2026 08:30:00 +0000']);
+        $sent = now()->subDays(3)->startOfMinute();
+        [$conversation] = $this->receiveFromCustomer(['date' => $sent->format('r')]);
         $reply_id = $this->replyInUi($conversation);
-        $this->receiveFromCustomer(['message_id' => 'second@customer.example.org', 'in_reply_to' => $reply_id, 'date' => 'Mon, 05 Oct 2026 09:00:00 +0000', 'body' => 'Follow-up question']);
+        $this->receiveFromCustomer(['message_id' => 'second@customer.example.org', 'in_reply_to' => $reply_id, 'date' => $sent->copy()->addMinutes(30)->format('r'), 'body' => 'Follow-up question']);
         $notification = $this->sentEmailsTo($this->agent->email)[0];
 
-        $this->agentRepliesByEmail($notification, ['date' => 'Mon, 05 Oct 2026 10:15:00 +0000']);
+        $this->agentRepliesByEmail($notification, ['message_id' => 'agent-answer@agent.example.org', 'date' => $sent->copy()->addHour()->format('r')]);
+        $this->assertSame($sent->copy()->addHour()->format('Y-m-d H:i:s'), $conversation->fresh()->last_sent_at->format('Y-m-d H:i:s'));
+        // A reply to the agent's own email: a note.
+        $this->agentRepliesByEmail($notification, ['in_reply_to' => 'agent-answer@agent.example.org', 'date' => $sent->copy()->addHours(2)->format('r'), 'body' => 'Note to self']);
 
-        $this->assertSame('2026-10-05 08:30:00', $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->orderBy('id')->first()->created_at->setTimezone('UTC')->format('Y-m-d H:i:s'));
-        $agent_reply = $conversation->threads()->where('created_by_user_id', $this->agent->id)->where('source_type', Thread::SOURCE_TYPE_EMAIL)->first();
-        $this->assertSame('2026-10-05 10:15:00', $agent_reply->created_at->setTimezone('UTC')->format('Y-m-d H:i:s'));
+        $customer = $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->orderBy('id')->first();
+        $agent_reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->where('source_type', Thread::SOURCE_TYPE_EMAIL)->first();
+        $note = $conversation->threads()->where('type', Thread::TYPE_NOTE)->first();
+        $ui_reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->where('source_type', Thread::SOURCE_TYPE_WEB)->first();
+        $this->assertSame($sent->format('Y-m-d H:i:s'), $customer->sent_at->format('Y-m-d H:i:s'));
+        $this->assertSame($sent->copy()->addHour()->format('Y-m-d H:i:s'), $agent_reply->sent_at->format('Y-m-d H:i:s'));
+        $this->assertSame($sent->copy()->addHours(2)->format('Y-m-d H:i:s'), $note->sent_at->format('Y-m-d H:i:s'));
+        $this->assertNull($ui_reply->sent_at);
+        // Received now, all of them.
+        foreach ([$customer, $agent_reply, $note] as $thread) {
+            $this->assertLessThan(60, abs(now()->diffInSeconds($thread->created_at)));
+        }
+        $conversation = $conversation->fresh();
+        $this->assertLessThan(60, abs(now()->diffInSeconds($conversation->last_reply_at)));
+        // The note isn't a reply: the agent's emailed reply is still the last one sent.
+        $this->assertSame($sent->copy()->addHour()->format('Y-m-d H:i:s'), $conversation->last_sent_at->format('Y-m-d H:i:s'));
+    }
+
+    /**
+     * A Date in the future is taken as the time received; without one, the
+     * date sent is unknown and the conversation's is the time received.
+     */
+    public function testDateSentInTheFutureOrMissing()
+    {
+        [$conversation] = $this->receiveFromCustomer(['date' => now()->addDays(2)->format('r')]);
+        $thread = $conversation->threads()->first();
+        $this->assertSame($thread->created_at->format('Y-m-d H:i:s'), $thread->sent_at->format('Y-m-d H:i:s'));
+
+        $output = $this->receiveEmail($this->mailbox, preg_replace('/^Date: .*\r\n/m', '', $this->makeEmail([
+            'from' => 'Robin Customer <robin@customer.example.org>', 'to' => $this->mailbox->email, 'subject' => 'No date',
+        ])));
+        $conversation = Conversation::where('subject', 'No date')->first();
+        $this->assertNotNull($conversation, $output);
+        $thread = $conversation->threads()->first();
+        $this->assertNull($thread->sent_at);
+        $this->assertSame($thread->created_at->format('Y-m-d H:i:s'), $conversation->last_sent_at->format('Y-m-d H:i:s'));
+
+        // A Date header that isn't a date: no date sent, never the time received.
+        $this->receiveEmail($this->mailbox, preg_replace('/^Date: .*\r\n/m', "Date: not a date\r\n", $this->makeEmail([
+            'from' => 'Sam Customer <sam@customer.example.org>', 'to' => $this->mailbox->email, 'subject' => 'Bad date',
+        ])));
+        $this->assertNull(Conversation::where('subject', 'Bad date')->first()->threads()->first()->sent_at);
+    }
+
+    /**
+     * The conversation's last date sent: a reply written here is sent when
+     * it's created; undoing it brings back the customer email's.
+     */
+    public function testLastDateSentFollowsRepliesAndUndo()
+    {
+        $sent = now()->subDays(3)->startOfMinute();
+        [$conversation] = $this->receiveFromCustomer(['date' => $sent->format('r')]);
+        $this->assertSame($sent->format('Y-m-d H:i:s'), $conversation->last_sent_at->format('Y-m-d H:i:s'));
+
+        $this->replyInUi($conversation);
+        $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
+        $this->assertSame($reply->created_at->format('Y-m-d H:i:s'), $conversation->fresh()->last_sent_at->format('Y-m-d H:i:s'));
+
+        \Session::start();
+        $this->actingAs($this->agent)->post(route('conversations.undo.submit', ['thread_id' => $reply->id]), ['_token' => csrf_token()]);
+        $this->assertSame(Thread::STATE_DRAFT, (int) $reply->fresh()->state);
+        $this->assertSame($sent->format('Y-m-d H:i:s'), $conversation->fresh()->last_sent_at->format('Y-m-d H:i:s'));
+    }
+
+    /**
+     * A thread's time shows when it was sent too, when that's a while before
+     * it was received.
+     */
+    public function testThreadTimeShowsTheDateSentWhenItDiffers()
+    {
+        [$conversation] = $this->receiveFromCustomer(['date' => now()->subDays(3)->format('r')]);
+        $thread = $conversation->threads()->first();
+        $both = e(__('Received: :date', ['date' => \App\User::dateFormat($thread->created_at)])."\n".__('Sent: :date', ['date' => \App\User::dateFormat($thread->sent_at)]));
+
+        $this->actingAs($this->agent)->followingRedirects()->get(route('conversations.view', ['id' => $conversation->id]))
+            ->assertSee('title="'.$both.'"', false);
+
+        [$conversation] = $this->receiveFromCustomer(['message_id' => 'now@customer.example.org', 'subject' => 'Just sent', 'date' => now()->format('r')]);
+        $this->actingAs($this->agent)->followingRedirects()->get(route('conversations.view', ['id' => $conversation->id]))
+            ->assertSee('title="'.e(\App\User::dateFormat($conversation->threads()->first()->created_at)).'"', false)
+            ->assertDontSee(e(__('Received: :date', ['date' => ''])), false);
     }
 
     /**

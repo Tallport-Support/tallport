@@ -1,6 +1,10 @@
 @php
     $thread_date_title = App\User::dateFormat($thread->created_at);
     $thread_date = \Helper::isPrint() ? $thread_date_title : App\User::dateDiffForHumans($thread->created_at);
+    // An email sent a while before it was received: both.
+    if ($thread->sent_at && abs($thread->sent_at->diffInSeconds($thread->created_at)) > 60) {
+        $thread_date_title = __('Received: :date', ['date' => $thread_date_title])."\n".__('Sent: :date', ['date' => App\User::dateFormat($thread->sent_at)]);
+    }
 @endphp
 {{-- One entry of the conversation's history (x-fruit::thread): an event, or a message from the customer (incoming) or the team (outgoing). --}}
 <li wire:key="thread-{{ $thread->id }}">

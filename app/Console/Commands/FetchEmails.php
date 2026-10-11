@@ -1083,6 +1083,8 @@ class FetchEmails extends Command
             if (!$date || $date->greaterThan($now)) {
                 $date = $now;
             }
+            // When the sender sent it (unknown without a Date header); kept apart from when it's received.
+            $sent_at = $incoming->date() ? $date : null;
 
             $data = \Eventy::filter('fetch_emails.data_to_save', [
                 'mailbox'     => $mailbox,
@@ -1156,7 +1158,7 @@ class FetchEmails extends Command
                     $this->setSeen($message, $mailbox);
                     return;
                 } elseif ($note_user) {
-                    $new_thread = $this->saveUserNote($data['message_id'], $data['prev_thread'], $note_user, $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['body'], $data['attachments'], ($data['message'] ? $data['message']->getHeader() : $incoming->headers()), $data['date']);
+                    $new_thread = $this->saveUserNote($data['message_id'], $data['prev_thread'], $note_user, $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['body'], $data['attachments'], ($data['message'] ? $data['message']->getHeader() : $incoming->headers()), $sent_at);
                 } else {
                     // SendAutoReply listener will check bounce flag and will not send an auto reply if this is an auto responder.
                     $this->saving_bounce = $message_from_customer && $is_bounce;
@@ -1166,7 +1168,7 @@ class FetchEmails extends Command
                         $this->createCustomers($recipients, []);
                         $this->saving_for_recipient = reset($recipients) ?: null;
                     }
-                    $new_thread = $this->saveCustomerThread($mailbox, $data['message_id'], $data['prev_thread'], $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['subject'], $data['body'], $data['attachments'], ($data['message'] ? $data['message']->getHeader() : $incoming->headers()), $data['date']);
+                    $new_thread = $this->saveCustomerThread($mailbox, $data['message_id'], $data['prev_thread'], $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['subject'], $data['body'], $data['attachments'], ($data['message'] ? $data['message']->getHeader() : $incoming->headers()), $sent_at);
                 }
             } else {
                 // SAVE SUPPORT AGENT MESSAGE.
@@ -1201,7 +1203,7 @@ class FetchEmails extends Command
                 }
 
                 if (\Eventy::filter('fetch_emails.should_save_thread', true, $data) !== false) {
-                    $new_thread = $this->saveUserThread($data['mailbox'], $data['message_id'], $data['prev_thread'], $data['user'], $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['body'], $data['attachments'], ($data['message'] ? $data['message']->getHeader() : $incoming->headers()), $data['date']);
+                    $new_thread = $this->saveUserThread($data['mailbox'], $data['message_id'], $data['prev_thread'], $data['user'], $data['from'], $data['to'], $data['cc'], $data['bcc'], $data['body'], $data['attachments'], ($data['message'] ? $data['message']->getHeader() : $incoming->headers()), $sent_at);
                 } else {
                     $this->line('['.date('Y-m-d H:i:s').'] Hook fetch_emails.should_save_thread returned false. Skipping message.');
                     $this->setSeen($message, $mailbox);
@@ -1334,21 +1336,15 @@ class FetchEmails extends Command
 
     /**
      * Save email from customer as thread.
+     * $sent_at: its Date header, or null; it's received now.
      */
-    public function saveCustomerThread($mailbox, $message_id, $prev_thread, $from, $to, $cc, $bcc, $subject, $body, $attachments, $headers, $date)
+    public function saveCustomerThread($mailbox, $message_id, $prev_thread, $from, $to, $cc, $bcc, $subject, $body, $attachments, $headers, $sent_at = null)
     {
-        // Fetch date & time setting.
-        $use_mail_date_on_fetching = config('app.use_mail_date_on_fetching');
-
         // Find conversation.
         $new = false;
         $conversation = null;
         $prev_customer_id = null;
-        if ($use_mail_date_on_fetching) {
-            $now = $date->format('Y-m-d H:i:s');
-        } else {
-            $now = date('Y-m-d H:i:s');
-        }
+        $now = date('Y-m-d H:i:s');
         $conv_cc = $cc;
         //$prev_conv_cc = $conv_cc;
 
@@ -1422,6 +1418,7 @@ class FetchEmails extends Command
         }
 
         $conversation->setLastReplyAt($now, Conversation::PERSON_CUSTOMER);
+        $conversation->last_sent_at = $sent_at ?: $now;
         $conversation->last_reply_from = Conversation::PERSON_CUSTOMER;
         // Reply from customer to deleted conversation should undelete it.
         if ($conversation->state == Conversation::STATE_DELETED) {
@@ -1451,6 +1448,7 @@ class FetchEmails extends Command
         $thread->created_by_customer_id = $customer->id;
         $thread->created_at = $now;
         $thread->updated_at = $now;
+        $thread->sent_at = $sent_at;
         if ($new) {
             $thread->first = true;
         }
@@ -1543,18 +1541,12 @@ class FetchEmails extends Command
 
     /**
      * Save email reply from user as thread.
+     * $sent_at: its Date header, or null; it's received now.
      */
-    public function saveUserThread($mailbox, $message_id, $prev_thread, $user, $from, $to, $cc, $bcc, $body, $attachments, $headers, $date)
+    public function saveUserThread($mailbox, $message_id, $prev_thread, $user, $from, $to, $cc, $bcc, $body, $attachments, $headers, $sent_at = null)
     {
-        // fetch time setting.
-        $use_mail_date_on_fetching = config('app.use_mail_date_on_fetching');
-
         $conversation = null;
-        if ($use_mail_date_on_fetching) {
-            $now = $date;
-        } else {
-            $now = date('Y-m-d H:i:s');
-        }
+        $now = date('Y-m-d H:i:s');
         $user_id = $user->id;
 
         $conversation = $prev_thread->conversation;
@@ -1595,6 +1587,7 @@ class FetchEmails extends Command
             \Eventy::action('conversation.status_changed', $conversation, $user, true, $prev_status);
         }
         $conversation->last_reply_at = $now;
+        $conversation->last_sent_at = $sent_at ?: $now;
         $conversation->last_reply_from = Conversation::PERSON_USER;
         $conversation->user_updated_at = $now;
         // Set folder id
@@ -1630,6 +1623,7 @@ class FetchEmails extends Command
         $thread->created_by_user_id = $user_id;
         $thread->created_at = $now;
         $thread->updated_at = $now;
+        $thread->sent_at = $sent_at;
         $thread->save();
 
         $body_changed = false;
@@ -1689,10 +1683,11 @@ class FetchEmails extends Command
     /**
      * Save an email from a user as their note in the conversation.
      * Nothing is sent to the customer.
+     * $sent_at: its Date header, or null; it's received now.
      */
-    public function saveUserNote($message_id, $prev_thread, $user, $from, $to, $cc, $bcc, $body, $attachments, $headers, $date)
+    public function saveUserNote($message_id, $prev_thread, $user, $from, $to, $cc, $bcc, $body, $attachments, $headers, $sent_at = null)
     {
-        $now = config('app.use_mail_date_on_fetching') ? $date : date('Y-m-d H:i:s');
+        $now = date('Y-m-d H:i:s');
 
         $conversation = $prev_thread->conversation;
 
@@ -1721,6 +1716,7 @@ class FetchEmails extends Command
         $thread->created_by_user_id = $user->id;
         $thread->created_at = $now;
         $thread->updated_at = $now;
+        $thread->sent_at = $sent_at;
         $thread->save();
 
         $body_changed = false;

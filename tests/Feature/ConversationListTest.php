@@ -141,6 +141,36 @@ class ConversationListTest extends FeatureTestCase
             ->assertSet('sorting', ['sort_by' => 'date', 'order' => 'desc']);
     }
 
+    /**
+     * Date Sent: the latest message's Date header (newest first, then the
+     * other way), its time on the rows; remembered like the other orders.
+     */
+    public function testSortsByDateSent()
+    {
+        $this->receiveEmail($this->mailbox, $this->makeEmail([
+            'from' => 'casey@customer.example.org', 'to' => $this->mailbox->email, 'subject' => 'Sent late', 'date' => now()->subHour()->format('r'),
+        ]));
+        $this->receiveEmail($this->mailbox, $this->makeEmail([
+            'from' => 'casey@customer.example.org', 'to' => $this->mailbox->email, 'subject' => 'Sent early', 'date' => now()->subDays(3)->format('r'),
+        ]));
+        // Received in the other order.
+        \DB::table('conversations')->where('subject', 'Sent late')->update(['last_reply_at' => now()->subDay()]);
+        $folder = $this->folder(Folder::TYPE_UNASSIGNED);
+
+        $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $folder])
+            ->assertSeeInOrder(['Sent early', 'Sent late'])
+            ->call('sort', 'sent')->assertSet('sorting', ['sort_by' => 'sent', 'order' => 'desc'])
+            ->assertSeeInOrder(['Date Sent', 'Sent late', 'Sent early'])
+            ->assertSee(\App\User::dateDiffForHumans(now()->subDays(3)));
+        $this->assertSame(['sort_by' => 'sent', 'order' => 'desc'], Conversation::savedSorting($this->agent->fresh())[Folder::TYPE_UNASSIGNED]);
+        $list->call('sort', 'sent')->assertSet('sorting', ['sort_by' => 'sent', 'order' => 'asc'])
+            ->assertSeeInOrder(['Sent early', 'Sent late']);
+
+        Livewire::actingAs($this->agent->fresh())->test(ConversationList::class, ['folder' => $folder])
+            ->assertSet('sorting', ['sort_by' => 'sent', 'order' => 'asc'])
+            ->assertSeeInOrder(['Sent early', 'Sent late']);
+    }
+
     public function testMineDoesNotNameTheAssignee()
     {
         $conversation = $this->conversation('Mine question');

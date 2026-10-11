@@ -1464,6 +1464,7 @@ class ConversationsController extends Controller
             $conversation->setCc($last_thread->cc);
             $conversation->setBcc($last_thread->bcc);
             $conversation->last_reply_at = $last_thread->created_at;
+            $conversation->last_sent_at = $last_thread->sent_at ?: $last_thread->created_at;
             $conversation->last_reply_from = $last_thread->source_via;
             $conversation->user_updated_at = date('Y-m-d H:i:s');
         }

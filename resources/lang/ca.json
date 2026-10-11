@@ -1891,5 +1891,8 @@
     "GitHub sent an error (:status).": "GitHub ha retornat un error (:status).",
     "GitHub sent an incomplete file list.": "GitHub ha enviat una llista de fitxers incompleta.",
     "Deleted leftover files": "Fitxers sobrants eliminats",
-    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Aquest xat ja no està disponible al servei de missatgeria. No hi podeu respondre ni reobrir-lo des d’aquí. Encara hi podeu afegir notes."
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Aquest xat ja no està disponible al servei de missatgeria. No hi podeu respondre ni reobrir-lo des d’aquí. Encara hi podeu afegir notes.",
+    "Date Sent": "Data d'Enviament",
+    "Received: :date": "Rebut: :date",
+    "Sent: :date": "Enviat: :date"
 }

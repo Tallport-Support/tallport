@@ -86,11 +86,11 @@ class ConversationList extends Component
 
     public function sort($sort_by)
     {
-        if (!in_array($sort_by, ['date', 'activity', 'number', 'subject'])) {
+        if (!in_array($sort_by, ['date', 'activity', 'sent', 'number', 'subject'])) {
             return;
         }
         // A date first newest-first; again: the other way.
-        $order = in_array($sort_by, ['date', 'activity']) ? 'desc' : 'asc';
+        $order = in_array($sort_by, ['date', 'activity', 'sent']) ? 'desc' : 'asc';
         if (($this->sorting['sort_by'] ?? '') == $sort_by) {
             $order = ($this->sorting['order'] ?? '') == 'asc' ? 'desc' : 'asc';
         }

@@ -54,6 +54,26 @@ class ReceiveMailTest extends FeatureTestCase
         $this->assertStringContainsString('Hello from a pipe', $conversation->threads()->first()->body);
     }
 
+    /**
+     * Received directly: received now, with its Date header as the date sent.
+     */
+    public function testReceivedDirectlyKeepsItsDateSent()
+    {
+        $sent = now()->subDays(2)->startOfMinute();
+        $file = $this->storage.'/dated.eml';
+        file_put_contents($file, $this->makeEmail([
+            'from' => 'casey@customer.example', 'to' => 'support@receive.example', 'subject' => 'Sent earlier', 'date' => $sent->format('r'),
+        ]));
+
+        $this->artisan('tallport:receive', ['file' => $file])->assertExitCode(0);
+
+        $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
+        $thread = $conversation->threads()->first();
+        $this->assertSame($sent->format('Y-m-d H:i:s'), $thread->sent_at->format('Y-m-d H:i:s'));
+        $this->assertSame($sent->format('Y-m-d H:i:s'), $conversation->last_sent_at->format('Y-m-d H:i:s'));
+        $this->assertLessThan(60, abs(now()->diffInSeconds($thread->created_at)));
+    }
+
     public function testReceiveWithMailboxOption()
     {
         $this->artisan('tallport:receive', ['file' => $this->eml('someone@else.example'), '--mailbox' => (string) $this->mailbox->id])

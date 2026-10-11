@@ -1800,5 +1800,8 @@
     "GitHub sent an error (:status).": "O GitHub retornou um erro (:status).",
     "GitHub sent an incomplete file list.": "O GitHub enviou uma lista de arquivos incompleta.",
     "Deleted leftover files": "Arquivos remanescentes excluídos",
-    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Esta conversa não está mais disponível no serviço de mensagens. Você não pode responder nem reabri-la aqui. Ainda pode adicionar notas."
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Esta conversa não está mais disponível no serviço de mensagens. Você não pode responder nem reabri-la aqui. Ainda pode adicionar notas.",
+    "Date Sent": "Data de Envio",
+    "Received: :date": "Recebido: :date",
+    "Sent: :date": "Enviado: :date"
 }

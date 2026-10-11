@@ -21,15 +21,8 @@ class ThreadObserver
             return;
         }
 
-        // Fetch date & time setting.
-        $use_mail_date_on_fetching = config('app.use_mail_date_on_fetching');
+        $now = date('Y-m-d H:i:s');
 
-        if ($use_mail_date_on_fetching) {
-            $now = $thread->created_at->format('Y-m-d H:i:s');
-        } else {
-            $now = date('Y-m-d H:i:s');
-        }
-        
         if (!in_array($thread->type, [Thread::TYPE_LINEITEM, Thread::TYPE_NOTE]) && $thread->state == Thread::STATE_PUBLISHED) {
             $conversation->threads_count++;
         }
@@ -53,6 +46,8 @@ class ThreadObserver
             // $conversation->bcc = $thread->bcc;
 
             $conversation->setLastReplyAt($now, $thread->source_via);
+            // Its Date header for an email, else now.
+            $conversation->last_sent_at = $thread->sent_at ?: $now;
             // "last_reply_from" may be already set at this stage (by FetchEmails for example).
             $conversation->last_reply_from = $thread->source_via;
         }

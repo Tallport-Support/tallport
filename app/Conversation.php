@@ -228,7 +228,7 @@ class Conversation extends Model
     /**
      * Automatically converted into Carbon dates.
      */
-    protected $dates = ['created_at', 'updated_at', 'last_reply_at', 'closed_at', 'user_updated_at', 'expired_at', 'retention_reset_at', 'retention_hold_at', 'last_activity_at'];
+    protected $dates = ['created_at', 'updated_at', 'last_reply_at', 'closed_at', 'user_updated_at', 'expired_at', 'retention_reset_at', 'retention_hold_at', 'last_activity_at', 'last_sent_at'];
 
     /**
      * Attributes which are not fillable using fill() method.
@@ -2175,6 +2175,7 @@ class Conversation extends Model
         $forwarded_conversation->setCc(array_merge(Conversation::sanitizeEmails($data['cc'] ?? []), [$to]));
         $forwarded_conversation->setBcc($data['bcc'] ?? []);
         $forwarded_conversation->last_reply_at = $now;
+        $forwarded_conversation->last_sent_at = $now;
         $forwarded_conversation->last_reply_from = Conversation::PERSON_USER;
         $forwarded_conversation->user_updated_at = $now;
         $forwarded_conversation->updateFolder();
@@ -2517,9 +2518,14 @@ class Conversation extends Model
     }
 
     /**
-     * What the list can be sorted by: the folder's own date, last activity, number, subject (or search relevance).
+     * What the list can be sorted by: the folder's own date, last activity, date sent, number, subject (or search relevance).
      */
-    const SORT_FIELDS = ['subject', 'number', 'date', 'activity', 'relevance'];
+    const SORT_FIELDS = ['subject', 'number', 'date', 'activity', 'sent', 'relevance'];
+
+    /**
+     * The column of each order that isn't the folder's own date (or a column itself).
+     */
+    const SORT_COLUMNS = ['activity' => 'last_activity_at', 'sent' => 'last_sent_at'];
 
     /**
      * The user's chosen orders: [folder type => [sort_by, order]].
@@ -2677,7 +2683,7 @@ class Conversation extends Model
         if (in_array($sorting['sort_by'], ['date', 'relevance'])) {
             $sorting['sort_by'] = 'last_reply_at';
         }
-        $query_conversations->orderBy($sorting['sort_by'], $sorting['order']);
+        $query_conversations->orderBy(self::SORT_COLUMNS[$sorting['sort_by']] ?? $sorting['sort_by'], $sorting['order']);
 
         return $query_conversations;
     }

@@ -188,6 +188,7 @@ class Thread extends Model
         'updated_at',
         'deleted_at',
         'edited_at',
+        'sent_at',
     ];
 
     protected $casts = [
@@ -1165,6 +1166,7 @@ class Thread extends Model
 
         if ($thread->isReply()) {
             $conversation->last_reply_at = $now;
+            $conversation->last_sent_at = $now;
             if ($is_customer) {
                 $conversation->last_reply_from = Conversation::PERSON_CUSTOMER;
 

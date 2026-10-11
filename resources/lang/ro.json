@@ -1799,5 +1799,8 @@
     "GitHub sent an error (:status).": "GitHub a returnat o eroare (:status).",
     "GitHub sent an incomplete file list.": "GitHub a trimis o listă de fișiere incompletă.",
     "Deleted leftover files": "Fișiere rămase șterse",
-    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Această conversație nu mai este disponibilă în serviciul de mesagerie. Nu puteți răspunde sau redeschide conversația de aici. Puteți adăuga în continuare note."
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Această conversație nu mai este disponibilă în serviciul de mesagerie. Nu puteți răspunde sau redeschide conversația de aici. Puteți adăuga în continuare note.",
+    "Date Sent": "Data Trimiterii",
+    "Received: :date": "Primit: :date",
+    "Sent: :date": "Trimis: :date"
 }

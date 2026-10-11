@@ -1799,5 +1799,8 @@
     "GitHub sent an error (:status).": "GitHub vrátil chybu (:status).",
     "GitHub sent an incomplete file list.": "GitHub poslal neúplný zoznam súborov.",
     "Deleted leftover files": "Pozostatky súborov odstránené",
-    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Tento chat už nie je v službe na zasielanie správ dostupný. Tu nemôžete odpovedať ani ho znova otvoriť. Stále môžete pridávať poznámky."
+    "This chat is no longer available on the messaging service. You cannot reply or reopen it here. You can still add notes.": "Tento chat už nie je v službe na zasielanie správ dostupný. Tu nemôžete odpovedať ani ho znova otvoriť. Stále môžete pridávať poznámky.",
+    "Date Sent": "Dátum Odoslania",
+    "Received: :date": "Prijaté: :date",
+    "Sent: :date": "Odoslané: :date"
 }

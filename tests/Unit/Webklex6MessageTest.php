@@ -68,10 +68,19 @@ class Webklex6MessageTest extends TestCase
         $this->assertSame('MyPlain', $message->textBody());
     }
 
-    public function testInvalidDateIsTheTimeOfReceiving()
+    /**
+     * The date is when the sender sent it: none for an invalid or missing Date header
+     * (FetchEmails then uses the time of receiving for the times it saves).
+     */
+    public function testInvalidOrMissingDateIsNoDate()
     {
         $message = new Webklex6Message("From: a@example.org\r\nDate: %date_raw_header%\r\nSubject: Hi\r\n\r\nBody");
+        $this->assertNull($message->date());
+        $this->assertSame('Body', trim($message->textBody()));
 
-        $this->assertEqualsWithDelta(time(), $message->date()->timestamp, 5);
+        $this->assertNull((new Webklex6Message("From: a@example.org\r\nSubject: Hi\r\n\r\nBody"))->date());
+
+        $message = new Webklex6Message("From: a@example.org\r\nDate: Mon, 05 Oct 2026 08:30:00 +0200\r\nSubject: Hi\r\n\r\nBody");
+        $this->assertSame('2026-10-05 06:30:00', $message->date()->setTimezone('UTC')->format('Y-m-d H:i:s'));
     }
 }
