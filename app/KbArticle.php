@@ -21,6 +21,12 @@ class KbArticle extends Model
      */
     const DOCUMENT_SOURCE_TYPE = 'kb';
 
+    /**
+     * Seconds after a save that its documents are indexed: saving again meanwhile
+     * changes nothing but the text that waiting job indexes.
+     */
+    const INDEX_DELAY = 1800;
+
     protected static function boot()
     {
         parent::boot();
@@ -144,7 +150,10 @@ class KbArticle extends Model
             $document->setContent($content);
             $document->save();
             if (\App\Ai\Documents::needsIndexing($document) && \App\Ai\Settings::isConfigured() && \App\Ai\Documents::available()) {
-                \App\Jobs\AiIndexDocument::dispatch($document->id);
+                $job = new \App\Jobs\AiIndexDocument($document->id);
+                // Further saves find this job waiting until it runs.
+                $job->uniqueFor = self::INDEX_DELAY + 900;
+                dispatch($job->delay(now()->addSeconds(self::INDEX_DELAY)));
             }
         }
     }

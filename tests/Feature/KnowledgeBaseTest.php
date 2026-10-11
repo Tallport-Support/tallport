@@ -110,4 +110,27 @@ class KnowledgeBaseTest extends FeatureTestCase
         $article->delete();
         $this->assertSame(0, Document::where('source_identifier', 'kb:'.$article->id)->count());
     }
+
+    /**
+     * Saved often while writing: indexed once, half an hour after the first save, with the latest text.
+     */
+    public function testAiAssistantIndexesHalfAnHourAfterSaving()
+    {
+        \App\Option::set('aiassistant.api_key', encrypt('sk-test'));
+        \Illuminate\Support\Facades\Queue::fake();
+
+        $article = new KbArticle();
+        $article->title = 'Refunds';
+        $article->body = '<p>Refunds take 5 days.</p>';
+        $article->mailbox_id = $this->support->id;
+        $article->save();
+        $article->body = '<p>Refunds take 3 days.</p>';
+        $article->save();
+
+        \Illuminate\Support\Facades\Queue::assertPushed(\App\Jobs\AiIndexDocument::class, 1);
+        \Illuminate\Support\Facades\Queue::assertPushed(\App\Jobs\AiIndexDocument::class, function ($job) {
+            return $job->delay->diffInSeconds(now(), true) > KbArticle::INDEX_DELAY - 60;
+        });
+        $this->assertStringContainsString('3 days', Document::where('source_identifier', 'kb:'.$article->id)->value('content'));
+    }
 }
