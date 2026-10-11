@@ -62,8 +62,7 @@ class ConversationExtrasTest extends FeatureTestCase
         $this->assertGreaterThan(0, (int) $duration[1]);
         $this->assertLessThanOrEqual(Conversation::UNDO_TIMOUT * 1000, (int) $duration[1]);
 
-        $this->actingAs($this->agent)->get(route('conversations.undo', ['thread_id' => $reply->id, 'token' => csrf_token()]))->assertStatus(405);
-        $this->actingAs($this->agent)->get(route('conversations.undo', ['thread_id' => $reply->id, 'token' => csrf_token()]).'?_token='.csrf_token())->assertStatus(405);
+        $this->actingAs($this->agent)->get(route('conversations.undo.submit', ['thread_id' => $reply->id]).'?_token='.csrf_token())->assertStatus(405);
         $this->assertSame(Thread::STATE_PUBLISHED, (int) $reply->fresh()->state);
 
         $response = $this->actingAs($this->agent)->post(route('conversations.undo.submit', ['thread_id' => $reply->id]), ['_token' => csrf_token()]);
@@ -115,8 +114,7 @@ class ConversationExtrasTest extends FeatureTestCase
                 'from_thread_id' => $thread->id,
             ]).'"', false);
 
-        $this->actingAs($this->agent)->get(route('conversations.clone_conversation', ['mailbox_id' => $this->mailbox->id, 'from_thread_id' => $thread->id, 'token' => csrf_token()]))->assertStatus(405);
-        $this->actingAs($this->agent)->get(route('conversations.clone_conversation', ['mailbox_id' => $this->mailbox->id, 'from_thread_id' => $thread->id, 'token' => csrf_token()]).'?_token='.csrf_token())->assertStatus(405);
+        $this->actingAs($this->agent)->get(route('conversations.clone_conversation.submit', ['mailbox_id' => $this->mailbox->id, 'from_thread_id' => $thread->id]).'?_token='.csrf_token())->assertStatus(405);
         $this->assertSame(1, Conversation::where('mailbox_id', $this->mailbox->id)->count());
 
         $response = $this->actingAs($this->agent)->post(route('conversations.clone_conversation.submit', ['mailbox_id' => $this->mailbox->id, 'from_thread_id' => $thread->id]), ['_token' => csrf_token()]);

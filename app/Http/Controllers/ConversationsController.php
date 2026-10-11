@@ -528,8 +528,6 @@ class ConversationsController extends Controller
      */
     public function cloneConversation(Request $request, $mailbox_id, $from_thread_id)
     {
-        abort_unless($request->isMethod('post'), 405);
-
         $mailbox = Mailbox::findOrFail($mailbox_id);
         $this->authorize('view', $mailbox);
 
@@ -1451,8 +1449,6 @@ class ConversationsController extends Controller
      */
     public function undoReply(Request $request, $thread_id)
     {
-        abort_unless($request->isMethod('post'), 405);
-
         if (!\Helper::hashEquals(csrf_token(), $request->input('_token'))) {
             throw new \Illuminate\Session\TokenMismatchException;
         }

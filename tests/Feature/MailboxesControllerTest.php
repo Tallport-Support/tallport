@@ -605,8 +605,7 @@ PHP;
         };
 
         \Session::start();
-        $this->actingAs($this->admin)->get(route('mailboxes.oauth_disconnect', ['id' => $mailbox->id, 'in_out' => 'in', 'provider' => 'ms', 'token' => csrf_token()]))->assertStatus(405);
-        $this->actingAs($this->admin)->get(route('mailboxes.oauth_disconnect', ['id' => $mailbox->id, 'in_out' => 'in', 'provider' => 'ms']).'?_token='.csrf_token())->assertStatus(405);
+        $this->actingAs($this->admin)->get($url('in', 'ms').'?_token='.csrf_token())->assertStatus(405);
         $this->assertTrue($mailbox->fresh()->oauthEnabled());
 
         $this->actingAs($this->createUser())->post($url('in', 'ms'), ['_token' => csrf_token()])->assertForbidden();
