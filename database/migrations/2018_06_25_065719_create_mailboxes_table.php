@@ -46,7 +46,7 @@ class CreateMailboxesTable extends Migration
             // todo
             $table->boolean('office_hours_enabled')->default(false);
             $table->boolean('ratings')->default(false);
-            $table->unsignedTinyInteger('ratings_placement')->default(Mailbox::RATINGS_PLACEMENT_ABOVE);
+            $table->unsignedTinyInteger('ratings_placement')->default(1);
             $table->text('ratings_text')->nullable();
             // todo: translate ratings
             $table->timestamps();

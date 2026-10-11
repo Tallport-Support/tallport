@@ -56,9 +56,6 @@ class ThreadObserver
             // "last_reply_from" may be already set at this stage (by FetchEmails for example).
             $conversation->last_reply_from = $thread->source_via;
         }
-        if ($conversation->source_via == Conversation::PERSON_CUSTOMER) {
-            $conversation->read_by_user = false;
-        }
 
         // Update preview.
         if (in_array($thread->type, [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE, Thread::TYPE_NOTE])

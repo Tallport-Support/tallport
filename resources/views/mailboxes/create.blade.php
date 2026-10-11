@@ -28,15 +28,6 @@
             <x-fruit::field :label="__('Mailbox Name')" layout="row">
                 <x-fruit::input id="name" name="name" :value="old('name')" maxlength="40" required />
             </x-fruit::field>
-
-            @if (\Module::isActive('satratings'))
-                <x-fruit::field :label="__('Satisfaction Ratings')" layout="row">
-                    <x-fruit::select id="ratings" name="ratings" required>
-                        <option value="1" @selected((int) old('ratings'))>{{ __('On') }}</option>
-                        <option value="0" @selected((int) old('ratings'))>{{ __('Off') }}</option>
-                    </x-fruit::select>
-                </x-fruit::field>
-            @endif
         </x-fruit::form-section>
 
         <x-fruit::form-section :title="__('Users')">

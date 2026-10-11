@@ -64,8 +64,6 @@
 
             @if (Auth::user()->can('updateSettings', $mailbox))
                 <x-fruit::form-section :title="__('Conversations')">
-                    @action('mailbox.update.after_ticket_status', $mailbox)
-
                     <x-fruit::field :label="__('Default Assignee')" layout="row">
                         <x-fruit::select id="ticket_assignee" name="ticket_assignee" required>
                             <option value="{{ App\Mailbox::TICKET_ASSIGNEE_KEEP_CURRENT }}" @selected(old('ticket_assignee', $mailbox->ticket_assignee) == App\Mailbox::TICKET_ASSIGNEE_KEEP_CURRENT)>{{ __('Keep Current') }}</option>

@@ -56,7 +56,7 @@ class NostrControllerTest extends FeatureTestCase
     {
         return $this->settings(array_merge([
             'action' => 'save', 'enabled' => '1', 'inbox_relays' => self::UNREACHABLE, 'announce_relays' => '',
-            'profile_name' => 'Support', 'auto_reply_enabled' => '0', 'auto_reply_text' => '', 'reopen_days' => '30',
+            'profile_name' => 'Support', 'auto_reply_enabled' => '0', 'auto_reply_text' => '',
         ], $data));
     }
 

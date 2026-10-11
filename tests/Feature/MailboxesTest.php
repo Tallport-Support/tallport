@@ -38,7 +38,6 @@ class MailboxesTest extends FeatureTestCase
             'name'            => $mailbox->name,
             'email'           => $mailbox->email,
             'from_name'       => Mailbox::FROM_NAME_MAILBOX,
-            'ticket_status'   => Conversation::STATUS_ACTIVE,
             'ticket_assignee' => Mailbox::TICKET_ASSIGNEE_ANYONE,
         ], $changes);
     }
@@ -150,29 +149,6 @@ class MailboxesTest extends FeatureTestCase
     public static function invalidChatWindows()
     {
         return [[''], ['0'], ['3651'], ['1.5'], ['several']];
-    }
-
-    public function testNostrChatWindowMigrationPreservesMailboxSettingsAndDoesNotOverwriteSharedValues()
-    {
-        $mailbox = $this->createMailbox();
-        $mailbox->setMetaParam('chat_start_new', true, true);
-        $configured = $this->createMailbox();
-        $configured->setMetaParam('chat_reopen_days', 14, true);
-        foreach ([$mailbox, $configured] as $item) {
-            $nostr = \App\Nostr\NostrMailbox::forMailbox($item->id);
-            $nostr->reopen_days = 45;
-            $nostr->save();
-        }
-        require_once database_path('migrations/2026_11_12_010101_move_nostr_chat_window_to_mailboxes.php');
-        $migration = new \MoveNostrChatWindowToMailboxes();
-
-        $migration->up();
-        $migration->up();
-
-        $this->assertSame(45, $mailbox->fresh()->getMeta('chat_reopen_days'));
-        $this->assertTrue($mailbox->fresh()->getMeta('chat_start_new'));
-        $this->assertSame(14, $configured->fresh()->getMeta('chat_reopen_days'));
-        $this->assertSame(30, \App\Misc\ChatConversations::reopenDays($this->createMailbox()));
     }
 
     /**

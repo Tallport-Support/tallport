@@ -176,4 +176,28 @@ class SubscriptionTest extends FeatureTestCase
         // Only line items: the newest.
         $this->assertSame($status_changed->id, Subscription::chooseThread([$status_changed])->id);
     }
+
+    /**
+     * There is no mobile channel: the migration that drops the unused columns
+     * also removes FreeScout's mobile subscriptions (medium 3), and the
+     * notifications page has no Mobile column.
+     */
+    public function testMobileSubscriptionsAreRemoved()
+    {
+        $this->subscribe($this->agent, Subscription::EVENT_NEW_CONVERSATION, 3);
+        \Option::set('subscription_defaults', [Subscription::MEDIUM_EMAIL => [Subscription::EVENT_NEW_CONVERSATION], 3 => [Subscription::EVENT_NEW_CONVERSATION]]);
+
+        require_once database_path('migrations/2026_11_16_010101_drop_unused_columns.php');
+        (new \DropUnusedColumns())->up();
+
+        $this->assertSame(0, Subscription::where('medium', 3)->count());
+        $this->assertTrue(Subscription::where(['user_id' => $this->agent->id, 'medium' => Subscription::MEDIUM_EMAIL])->exists());
+        $this->assertEquals([Subscription::MEDIUM_EMAIL => [Subscription::EVENT_NEW_CONVERSATION]], \Option::get('subscription_defaults'));
+
+        $this->actingAs($this->agent)->get('/users/notifications/'.$this->agent->id)
+            ->assertOk()
+            ->assertSee('name="subscriptions['.Subscription::MEDIUM_BROWSER.'][]"', false)
+            ->assertDontSee('subscriptions-mobile', false)
+            ->assertDontSee('name="subscriptions[3][]"', false);
+    }
 }

@@ -94,7 +94,6 @@ class DraftJob extends Model
             'conversation_id' => null,
             'status'          => self::STATUS_DELETED,
             'locale'          => null,
-            'document_limit'  => 0,
             'result'          => null,
             'error_type'      => null,
             'error_message'   => null,

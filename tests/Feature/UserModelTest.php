@@ -193,7 +193,7 @@ class UserModelTest extends FeatureTestCase
 
     public function testPermissionNames()
     {
-        $this->assertSame('Users are allowed to manage tags', User::getUserPermissionName(User::PERM_EDIT_TAGS));
+        $this->assertSame('Users are allowed to manage workflows', User::getUserPermissionName(User::PERM_EDIT_WORKFLOWS));
         $this->assertSame('', User::getUserPermissionName(1001));
 
         \Eventy::addFilter('user_permissions.name', function ($name, $permission) {
@@ -326,29 +326,29 @@ class UserModelTest extends FeatureTestCase
     {
         $user = $this->createUser();
 
-        $user->addPermission(User::PERM_EDIT_TAGS);
-        $this->assertTrue($user->fresh()->hasPermission(User::PERM_EDIT_TAGS));
+        $user->addPermission(User::PERM_EDIT_SAVED_REPLIES);
+        $this->assertTrue($user->fresh()->hasPermission(User::PERM_EDIT_SAVED_REPLIES));
 
-        $user->removePermission(User::PERM_EDIT_TAGS);
-        $this->assertFalse($user->fresh()->hasPermission(User::PERM_EDIT_TAGS));
+        $user->removePermission(User::PERM_EDIT_SAVED_REPLIES);
+        $this->assertFalse($user->fresh()->hasPermission(User::PERM_EDIT_SAVED_REPLIES));
 
-        $user->addPermission(User::PERM_EDIT_TAGS, false);
-        $this->assertTrue($user->hasPermission(User::PERM_EDIT_TAGS));
-        $this->assertFalse($user->fresh()->hasPermission(User::PERM_EDIT_TAGS), 'Not saved when asked not to.');
+        $user->addPermission(User::PERM_EDIT_SAVED_REPLIES, false);
+        $this->assertTrue($user->hasPermission(User::PERM_EDIT_SAVED_REPLIES));
+        $this->assertFalse($user->fresh()->hasPermission(User::PERM_EDIT_SAVED_REPLIES), 'Not saved when asked not to.');
     }
 
     public function testGlobalPermissionsApplyUnlessTheUserHasOwn()
     {
-        config(['app.user_permissions' => base64_encode(json_encode([User::PERM_EDIT_TAGS, User::PERM_ACCESS_REPORTS]))]);
-        $this->assertSame([User::PERM_EDIT_TAGS, User::PERM_ACCESS_REPORTS], User::getGlobalUserPermissions());
+        config(['app.user_permissions' => base64_encode(json_encode([User::PERM_EDIT_SAVED_REPLIES, User::PERM_ACCESS_REPORTS]))]);
+        $this->assertSame([User::PERM_EDIT_SAVED_REPLIES, User::PERM_ACCESS_REPORTS], User::getGlobalUserPermissions());
 
         $user = $this->createUser();
-        $this->assertTrue($user->hasPermission(User::PERM_EDIT_TAGS));
+        $this->assertTrue($user->hasPermission(User::PERM_EDIT_SAVED_REPLIES));
         $this->assertFalse($user->hasPermission(User::PERM_EDIT_USERS));
 
-        $restricted = $this->createUser(['permissions' => [User::PERM_EDIT_TAGS => 0]]);
-        $this->assertFalse($restricted->hasPermission(User::PERM_EDIT_TAGS), 'The user\'s own setting wins.');
-        $this->assertTrue($restricted->hasPermission(User::PERM_EDIT_TAGS, false));
+        $restricted = $this->createUser(['permissions' => [User::PERM_EDIT_SAVED_REPLIES => 0]]);
+        $this->assertFalse($restricted->hasPermission(User::PERM_EDIT_SAVED_REPLIES), 'The user\'s own setting wins.');
+        $this->assertTrue($restricted->hasPermission(User::PERM_EDIT_SAVED_REPLIES, false));
 
         config(['app.user_permissions' => base64_encode('not json')]);
         $this->assertSame([], User::getGlobalUserPermissions());

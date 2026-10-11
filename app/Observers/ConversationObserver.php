@@ -13,10 +13,6 @@ class ConversationObserver
      */
     public function creating(Conversation $conversation)
     {
-        if ($conversation->source_via == Conversation::PERSON_USER) {
-            $conversation->read_by_user = true;
-        }
-
         $conversation->subject = mb_substr($conversation->subject ?? '', 0, Conversation::SUBJECT_MAXLENGTH);
         if (!$conversation->last_activity_at) {
             $conversation->last_activity_at = now();

@@ -153,7 +153,6 @@ class SettingsController extends Controller
                         'logs' => \App\ActivityLog::getAvailableLogs(),
                         'person' => null,
                         'subscriptions' => $subscriptions,
-                        'mobile_available' => \Eventy::filter('notifications.mobile_available', false),
                     ],
                     'settings' => [
                         'alert_logs' => [

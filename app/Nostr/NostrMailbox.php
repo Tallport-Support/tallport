@@ -15,7 +15,7 @@ class NostrMailbox extends Model
     protected $fillable = [
         'mailbox_id', 'enabled', 'inbox_relays', 'announce_relays',
         'profile_name', 'profile_about', 'profile_picture', 'nip05',
-        'auto_reply_enabled', 'auto_reply_text', 'reopen_days',
+        'auto_reply_enabled', 'auto_reply_text',
     ];
 
     protected $casts = [

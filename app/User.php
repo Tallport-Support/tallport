@@ -100,12 +100,12 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
      * User permissions.
      * Core permissions have IDs below 100.
      * Permissions in custom modules should use IDs above 1000.
+     * IDs 4 and 5 (FreeScout's tags and custom folders permissions) may still
+     * be stored for users; don't reuse them.
      */
     const PERM_DELETE_CONVERSATIONS = 1;
     const PERM_EDIT_CONVERSATIONS   = 2;
     const PERM_EDIT_SAVED_REPLIES   = 3;
-    const PERM_EDIT_TAGS            = 4;
-    const PERM_EDIT_CUSTOM_FOLDERS  = 5;
     const PERM_EDIT_WORKFLOWS       = 6;
     const PERM_EDIT_KB              = 7;
     const PERM_ACCESS_REPORTS       = 8;
@@ -116,8 +116,6 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
         self::PERM_DELETE_CONVERSATIONS,
         self::PERM_EDIT_CONVERSATIONS,
         self::PERM_EDIT_SAVED_REPLIES,
-        self::PERM_EDIT_TAGS,
-        self::PERM_EDIT_CUSTOM_FOLDERS,
         self::PERM_EDIT_WORKFLOWS,
         self::PERM_EDIT_KB,
         self::PERM_ACCESS_REPORTS,
@@ -754,8 +752,6 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
             self::PERM_DELETE_CONVERSATIONS => __('Users are allowed to delete conversations'),
             self::PERM_EDIT_CONVERSATIONS   => __('Users are allowed to edit own notes/replies'),
             self::PERM_EDIT_SAVED_REPLIES   => __('Users are allowed to edit/delete saved replies'),
-            self::PERM_EDIT_TAGS            => __('Users are allowed to manage tags'),
-            self::PERM_EDIT_CUSTOM_FOLDERS  => __('Users are allowed to manage custom folders'),
             self::PERM_EDIT_WORKFLOWS       => __('Users are allowed to manage workflows'),
             self::PERM_EDIT_KB              => __('Users are allowed to manage the knowledge base'),
             self::PERM_ACCESS_REPORTS       => __('Users are allowed to access reports'),

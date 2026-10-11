@@ -1847,14 +1847,6 @@
     },
     {
         "type": "action",
-        "name": "mailbox.update.after_ticket_status",
-        "arguments": 1,
-        "files": [
-            "resources/views/mailboxes/update.blade.php"
-        ]
-    },
-    {
-        "type": "action",
         "name": "mailbox.update.before_mailbox_name",
         "arguments": 1,
         "files": [
@@ -2091,15 +2083,6 @@
         "arguments": 2,
         "files": [
             "app/Nostr/OutgoingMessageSender.php"
-        ]
-    },
-    {
-        "type": "filter",
-        "name": "notifications.mobile_available",
-        "arguments": 1,
-        "files": [
-            "app/Http/Controllers/SettingsController.php",
-            "app/Http/Controllers/UsersController.php"
         ]
     },
     {

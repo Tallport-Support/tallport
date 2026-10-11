@@ -139,7 +139,6 @@ class RetentionTest extends FeatureTestCase
         $completed_draft->user_id = $this->admin->id;
         $completed_draft->status = DraftJob::STATUS_COMPLETED;
         $completed_draft->locale = 'en';
-        $completed_draft->document_limit = 3;
         $completed_draft->result = ['draft' => 'Private reply', 'retrieved_documents' => [['excerpt' => 'Private excerpt']]];
         $completed_draft->started_at = now();
         $completed_draft->completed_at = now();
@@ -179,7 +178,6 @@ class RetentionTest extends FeatureTestCase
             $this->assertSame(DraftJob::STATUS_DELETED, $draft->status);
             $this->assertNull($draft->conversation_id);
             $this->assertNull($draft->locale);
-            $this->assertSame(0, $draft->document_limit);
             $this->assertNull($draft->result);
             $this->assertNull($draft->error_type);
             $this->assertNull($draft->error_message);

@@ -406,11 +406,6 @@
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
             },
-            "document_limit": {
-                "type": "tinyint(3) unsigned",
-                "nullable": false,
-                "default": "0"
-            },
             "result": {
                 "type": "longtext",
                 "nullable": true,
@@ -1304,11 +1299,6 @@
                 "nullable": true,
                 "default": "NULL"
             },
-            "read_by_user": {
-                "type": "tinyint(1)",
-                "nullable": false,
-                "default": "0"
-            },
             "created_at": {
                 "type": "timestamp",
                 "nullable": true,
@@ -1904,11 +1894,6 @@
             "user_id": {
                 "type": "int(11)",
                 "nullable": false
-            },
-            "added_by_user_id": {
-                "type": "int(11)",
-                "nullable": true,
-                "default": "NULL"
             }
         },
         "indexes": {
@@ -2221,20 +2206,10 @@
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
             },
-            "ticket_status": {
-                "type": "tinyint(3) unsigned",
-                "nullable": false,
-                "default": "2"
-            },
             "ticket_assignee": {
                 "type": "tinyint(3) unsigned",
                 "nullable": false,
                 "default": "2"
-            },
-            "template": {
-                "type": "tinyint(3) unsigned",
-                "nullable": false,
-                "default": "1"
             },
             "signature": {
                 "type": "text",
@@ -2328,28 +2303,6 @@
                 "collation": "utf8mb4_unicode_ci"
             },
             "auto_reply_message": {
-                "type": "text",
-                "nullable": true,
-                "default": "NULL",
-                "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci"
-            },
-            "office_hours_enabled": {
-                "type": "tinyint(1)",
-                "nullable": false,
-                "default": "0"
-            },
-            "ratings": {
-                "type": "tinyint(1)",
-                "nullable": false,
-                "default": "0"
-            },
-            "ratings_placement": {
-                "type": "tinyint(3) unsigned",
-                "nullable": false,
-                "default": "1"
-            },
-            "ratings_text": {
                 "type": "text",
                 "nullable": true,
                 "default": "NULL",
@@ -2966,13 +2919,6 @@
                 "type": "tinyint(1)",
                 "nullable": false,
                 "default": "0"
-            },
-            "license": {
-                "type": "text",
-                "nullable": true,
-                "default": "NULL",
-                "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {
@@ -3397,11 +3343,6 @@
                 "default": "NULL",
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
-            },
-            "reopen_days": {
-                "type": "smallint(5) unsigned",
-                "nullable": false,
-                "default": "30"
             },
             "last_announced_at": {
                 "type": "datetime",
@@ -4765,16 +4706,6 @@
                 "type": "tinyint(3) unsigned",
                 "nullable": false,
                 "default": "2"
-            },
-            "enable_kb_shortcuts": {
-                "type": "tinyint(1)",
-                "nullable": false,
-                "default": "1"
-            },
-            "locked": {
-                "type": "tinyint(1)",
-                "nullable": false,
-                "default": "0"
             },
             "remember_token": {
                 "type": "varchar(100)",

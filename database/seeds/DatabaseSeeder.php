@@ -376,7 +376,6 @@ class DatabaseSeeder extends Seeder
         $conversation->source_type = $telegram_customer ? Conversation::SOURCE_TYPE_WEB : Conversation::SOURCE_TYPE_EMAIL;
         $conversation->imported = true;
         $conversation->threads_count = 3;
-        $conversation->read_by_user = $this->sequence % 2 == 0;
         $conversation->created_at = $started;
         $conversation->updated_at = $started->copy()->addHours(2);
         $conversation->last_reply_at = $started->copy()->addMinutes(80);

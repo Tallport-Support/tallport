@@ -66,7 +66,7 @@ class NostrTest extends FeatureTestCase
         $this->postForm($this->admin, $this->settingsUrl(), array_merge([
             'action' => 'save', 'enabled' => '1', 'inbox_relays' => self::UNREACHABLE, 'announce_relays' => self::UNREACHABLE,
             'profile_name' => 'Test Support', 'profile_about' => '', 'profile_picture' => '', 'nip05' => '',
-            'auto_reply_enabled' => '0', 'auto_reply_text' => '', 'reopen_days' => '30',
+            'auto_reply_enabled' => '0', 'auto_reply_text' => '',
         ], $settings));
 
         return NostrMailbox::forMailbox($this->mailbox->id, false);
@@ -95,7 +95,7 @@ class NostrTest extends FeatureTestCase
         $this->assertSame('support@example.com', $cfg->nip05);
 
         // Enabling needs relays.
-        $this->postForm($this->admin, $this->settingsUrl(), ['action' => 'save', 'enabled' => '1', 'inbox_relays' => '', 'reopen_days' => '30'])
+        $this->postForm($this->admin, $this->settingsUrl(), ['action' => 'save', 'enabled' => '1', 'inbox_relays' => ''])
             ->assertSessionHasErrors('inbox_relays');
 
         $this->actingAs($this->admin)->get($this->settingsUrl())->assertSee($cfg->getNpub())->assertSee('https://example.com/.well-known/nostr.json');
