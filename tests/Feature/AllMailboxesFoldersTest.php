@@ -106,13 +106,4 @@ class AllMailboxesFoldersTest extends FeatureTestCase
         $this->assertNull(Conversation::find($theirs->id));
         $this->assertNotNull(Conversation::find($other->id));
     }
-
-    public function testSentFolderIcon()
-    {
-        $agent = $this->createUser();
-        $this->support->users()->attach($agent->id);
-
-        $this->assertSame('send', AllMailboxes::folder($agent, -AllMailboxes::TYPE_SENT)->getTypeIcon());
-        $this->assertNotSame('send', AllMailboxes::folder($agent, -Folder::TYPE_DRAFTS)->getTypeIcon());
-    }
 }

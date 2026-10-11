@@ -397,12 +397,6 @@ class Thread extends Model
         return $this->getCleanBody($this->body_original);
     }
 
-    // Get "to" as array.
-    public function getTo($exclude_array = [])
-    {
-        return $this->getToArray($exclude_array);
-    }
-
     /**
      * Get thread recipients.
      *
@@ -411,11 +405,6 @@ class Thread extends Model
     public function getToArray($exclude_array = [])
     {
         return \App\Misc\Helper::jsonToArray($this->to, $exclude_array);
-    }
-
-    public function getToString($exclude_array = [])
-    {
-        return implode(', ', $this->getToArray($exclude_array));
     }
 
     /**
@@ -446,11 +435,6 @@ class Thread extends Model
         return \App\Misc\Helper::jsonToArray($this->cc, $exclude_array);
     }
 
-    public function getCcString($exclude_array = [])
-    {
-        return implode(', ', $this->getCcArray($exclude_array));
-    }
-
     /**
      * Get thread BCC recipients.
      *
@@ -459,11 +443,6 @@ class Thread extends Model
     public function getBccArray($exclude_array = [])
     {
         return \App\Misc\Helper::jsonToArray($this->bcc, $exclude_array);
-    }
-
-    public function getBccString($exclude_array = [])
-    {
-        return implode(', ', $this->getBccArray($exclude_array));
     }
 
     /**

@@ -386,16 +386,6 @@ class Mailbox extends Model
     }
 
     /**
-     * Get folder by it's type.
-     */
-    public function getFolderByType($type)
-    {
-        return $this->folders()
-            ->where('type', $type)
-            ->first();
-    }
-
-    /**
      * Get folders available for the current user.
      */
     public function getAssesibleFolders()
@@ -933,26 +923,6 @@ class Mailbox extends Model
         }
 
         return $list;
-    }
-
-    /**
-     * Get all active & connected mailboxes.
-     *
-     * @return [type] [description]
-     */
-    public static function getActiveMailboxes()
-    {
-        $active = [];
-
-        // It is more effective to retrive all mailboxes and filter them in PHP.
-        $mailboxes = self::all();
-        foreach ($mailboxes as $mailbox) {
-            if ($mailbox->isActive() && $mailbox->isConnected()) {
-                $active[] = $mailbox;
-            }
-        }
-
-        return $active;
     }
 
     /**

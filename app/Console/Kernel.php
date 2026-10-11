@@ -22,10 +22,7 @@ class Kernel extends ConsoleKernel
      *
      * @var array
      */
-    protected $commands = [
-        // It is not clear what for this array
-        //\App\Console\Commands\CreateUser::class,
-    ];
+    protected $commands = [];
 
     /**
      * Mail servers bounce an email when tallport:receive exits with anything

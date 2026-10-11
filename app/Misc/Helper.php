@@ -61,16 +61,6 @@ class Helper
     public static $csp_nonce = null;
 
     /**
-     * Stores list of global entities (for caching).
-     */
-    public static $global_entities = [];
-
-    /**
-     * Flat allowing not to include datepicker JS and CSS twice.
-     */
-    public static $datepicker_included = false;
-
-    /**
      * Cache isConsole() result.
      */
     public static $is_console = null;
@@ -613,16 +603,6 @@ class Helper
         }
     }
 
-    public static function setGlobalEntity($name, $entity)
-    {
-        self::$global_entities[$name] = $entity;
-    }
-
-    public static function getGlobalEntity($name)
-    {
-        return self::$global_entities[$name] ?? null;
-    }
-
     /**
      * Strip all tags, double spaces, etc to show HTML as text.
      * Differences from strip_tags():
@@ -791,18 +771,6 @@ class Helper
     }
 
     /**
-     * Check if passed route name equals to the current one.
-     */
-    public static function isCurrentRoute($route_name)
-    {
-        if (\Request::route()->getName() == $route_name) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Check if menu item is selected.
      * Each menu item has a mnemonic name.
      */
@@ -862,15 +830,6 @@ class Helper
         }
 
         return false;
-    }
-
-    public static function menuSelectedHtml($menu_item_name)
-    {
-        if (self::isMenuSelected($menu_item_name)) {
-            return 'active';
-        } else {
-            return '';
-        }
     }
 
     /**
@@ -983,11 +942,6 @@ class Helper
     public static function getDomain()
     {
         return parse_url(\Config::get('app.url'), PHP_URL_HOST);
-    }
-
-    public static function getPrivateStorage()
-    {
-        return \Storage::disk('local');
     }
 
     public static function getPublicStorage()
@@ -1227,18 +1181,6 @@ class Helper
     }
 
     /**
-     * Log exception to activity log.
-     */
-    public static function logExceptionToActivityLog($e, $log_name, $description, $properties = [])
-    {
-        $properties['error'] = self::formatException($e);
-        activity()
-            ->withProperties($properties)
-            ->useLog($log_name)
-            ->log($description);
-    }
-
-    /**
      * Check if folder is writable.
      *
      * @param [type] $path [description]
@@ -1340,11 +1282,6 @@ class Helper
         return config('app.locales');
     }
 
-    public static function getAppLocale()
-    {
-        return config('app.locale');
-    }
-
     /**
      *  app()->setLocale() in Localize middleware also changes config('app.locale'),
      *  so we are keeping real app locale in real_locale parameter.
@@ -1400,21 +1337,6 @@ class Helper
         $text = preg_replace("/\s+$/u", '', $text);
 
         return $text;
-    }
-
-    /**
-     * Unicode escape sequences like “\u00ed” to proper UTF-8 encoded characters.
-     *
-     * @param  [type] $text [description]
-     * @return [type]       [description]
-     */
-    public static function entities2utf8($text)
-    {
-        try {
-            return json_decode('"'.str_replace('"', '\\"', $text).'"');
-        } catch (\Exception $e) {
-            return $text;
-        }
     }
 
     /**
@@ -1524,71 +1446,6 @@ class Helper
         if (!$job_exists) {
             \App\Jobs\RestartQueueWorker::dispatch()->onQueue('default');
         }
-    }
-
-    /**
-     * UTF-8 split text into parts with max. length.
-     */
-    public static function strSplitKeepWords($str, $max_length = 75)
-    {
-        $space = html_entity_decode('&nbsp;');
-
-        $str = strtr($str, [
-            '、' => '、'.$space,
-            '。' => '。'.$space,
-            // '.' => '.'.$space,
-            // ',' => ','.$space,
-            //':' => ':'.$space,
-            // '—' => '—'.$space,
-            // '।' => '।'.$space,
-        ]);
-
-        $array_words = explode($space, $str);
-
-        $currentLength = 0;
-
-        $index = 0;
-
-        $array_output = [''];
-
-        foreach ($array_words as $word) {
-            // +1 because the word will receive back the space in the end that it loses in explode()
-            $wordLength = strlen($word) + 1;
-
-            if (($currentLength + $wordLength) <= $max_length) {
-                $array_output[$index] .= $word . ' ';
-
-                $currentLength += $wordLength;
-            } else {
-                $index += 1;
-
-                $currentLength = $wordLength;
-
-                $array_output[$index] = $word;
-            }
-        }
-
-        return $array_output;
-    }
-
-    /**
-     * Replace new line with doble <br />.
-     */
-    public static function nl2brDouble($text)
-    {
-        return str_replace('<br />', '<br /><br />', nl2br($text));
-    }
-
-    /**
-     * Decode \u00ed.
-     */
-    public static function decodeUnicode($str)
-    {
-        $str = preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', function ($match) {
-            return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
-        }, $str);
-
-        return $str;
     }
 
     /**
@@ -1814,16 +1671,6 @@ class Helper
     }
 
     /**
-     * Generates unique ID of the application.
-     */
-    public static function getAppIdentifier()
-    {
-        $identifier = md5(config('app.key').parse_url(config('app.url'), PHP_URL_HOST));
-
-        return $identifier;
-    }
-
-    /**
      * Get identifier for queue:work
      */
     public static function getWorkerIdentifier($salt = '')
@@ -1962,22 +1809,6 @@ class Helper
         return \Storage::url('uploads/'.$name);
     }
 
-    public static function addSessionError($text, $key = 'default')
-    {
-        $errors = \Session::get('errors', new \Illuminate\Support\ViewErrorBag);
-
-        if (! $errors instanceof \Illuminate\Support\ViewErrorBag) {
-            $errors = new \Illuminate\Support\ViewErrorBag;
-        }
-
-        $message_bag = new \Illuminate\Support\MessageBag;
-        $message_bag->add($key, $text);
-
-        \Session::flash(
-            'errors', $errors->put('default', $message_bag)
-        );
-    }
-
     public static function addFloatingFlash($text, $type = 'danger', $role = '')
     {
         $flashes = \Session::get('flashes_floating', []);
@@ -1989,13 +1820,6 @@ class Helper
         ];
 
         \Session::flash('flashes_floating', $flashes);
-    }
-
-    // Show floating flash message.
-    // Type: success, warning, error
-    public static function floatingFlash($text, $type = 'success')
-    {
-        \Session::flash('flash_'.$type.'_floating', $text);
     }
 
     public static function isMySql()
@@ -2023,14 +1847,6 @@ class Helper
         );
     }
 
-    // PostgreSQL truncates string if it contains \u0000 symbol starting from this symbol.
-    // https://stackoverflow.com/questions/31671634/handling-unicode-sequences-in-postgresql
-    // https://github.com/freescout-helpdesk/freescout/issues/3485
-    public static function sqlSanitizeString($string)
-    {
-        return str_replace(json_decode('"\u0000"'), "", $string);
-    }
-
     public static function humanFileSize($size, $unit = "")
     {
         if ((!$unit && $size >= 1<<30) || $unit == "GB") {
@@ -2048,11 +1864,6 @@ class Helper
     public static function isPrint()
     {
         return (bool)app('request')->input('print');
-    }
-
-    public static function isDev()
-    {
-        return config('app.env') != 'production';
     }
 
     public static function substrUnicode($str, $s, $l = null)
@@ -2561,21 +2372,6 @@ class Helper
         return 'fs-'.substr(md5(config('app.key').'temp_prefix'), 0, 8).'_';
     }
 
-    // Keep in mind that $uploaded_file->getClientMimeType() returns
-    // incorrect mime type for images: application/octet-stream
-    public static function downloadRemoteFileAsTmpFile($uri, $follow_redirects = true)
-    {
-        $file_path = self::downloadRemoteFileAsTmp($uri, $follow_redirects);
-        if ($file_path) {
-            return new \Illuminate\Http\UploadedFile(
-                $file_path, basename($file_path),
-                null, null, true
-            );
-        } else {
-            return null;
-        }
-    }
-
     public static function sanitizeUploadedFileName($file_name, $uploaded_file = null, $contents = null, $mime_type = '', $upload_mode = self::UPLOAD_MODE_DEFAULT, $allowed_exts = [])
     {
         $pdf_mime_types = [
@@ -2648,31 +2444,12 @@ class Helper
         return $file_name;
     }
 
-    public static function remoteFileName($file_url)
-    {
-        return preg_replace("/\?.*/", '', basename($file_url));
-    }
-
-    public static function binaryDataMimeType($data)
-    {
-        $finfo = new \finfo(FILEINFO_MIME_TYPE);
-        return $finfo->buffer($data);
-    }
-
     /**
      * https://php.watch/versions/8.0/deprecated-reflectionparameter-methods
      */
     public static function getClass($param)
     {
         return $param->getType() && !$param->getType()->isBuiltin() ? new \ReflectionClass(method_exists($param->getType(), 'getName') ? $param->getType()->getName() : $param->getClass()->name) : null;
-    }
-
-    /**
-     * https://php.watch/versions/8.0/deprecated-reflectionparameter-methods
-     */
-    public static function getClassName($param)
-    {
-        return $param->getType() && !$param->getType()->isBuiltin() ? method_exists($param->getType(), 'getName') ? $param->getType()->getName() : $param->getClass()->name : null;
     }
 
     public static function getWebCronHash()
@@ -2944,23 +2721,6 @@ class Helper
         return self::$is_console;
     }
 
-    public static function isCron()
-    {
-        if (!self::isConsole()) {
-            return false;
-        }
-        if (php_sapi_name() == 'cli') {   
-            if (isset($_SERVER['TERM'])) {   
-                return false;
-            } else {   
-                return true;
-            }   
-        } else { 
-            // The script was run from a webserver, or something else.
-            return false;
-        }
-    }
-
     /**
      * Show a warning when background jobs sending emails
      * are not processed for some time, or incoming email from the mail
@@ -3192,14 +2952,6 @@ class Helper
         }
     }
 
-    // Correct format: 2023-12-14 19:21
-    // Datepicker with enableTime option enabled
-    // may return value in different format on iOS Safari: 2023-12-14T11:25
-    public static function sanitizeDatepickerDatetime($datetime)
-    {
-        return str_replace('T', ' ', $datetime);
-    }
-
     // To catch possible exception: shell_exec(): Unable to execute
     // Return string or false.
     public static function shellExec($command)
@@ -3210,11 +2962,6 @@ class Helper
             self::logException($e, '\Helper::shellExec() - ');
             return false;
         }
-    }
-
-    public static function startsiWith($text, $string)
-    {
-        return (stripos($text, $string) === 0);
     }
 
     // The iconv_mime_decode() may throw an error even with ICONV_MIME_DECODE_CONTINUE_ON_ERROR.
@@ -3353,34 +3100,6 @@ class Helper
         return Email::sanitizeEmail($email);
     }
 
-    public static function createCarbonDateFromFormat($string, $format = 'Y-m-d H:i:s')
-    {
-        if (empty($string)) {
-            return null;
-        }
-        if ($format == 'Y-m-d H:i:s') {
-            // PostgreSQL adds fractions and a time zone to timestamps.
-            $string = substr($string, 0, 19);
-        }
-        try {
-            return Carbon::createFromFormat($format, $string);
-        } catch (\Exception $e) {
-            return null;
-        }
-    }
-
-    public static function carbonDateParse($string)
-    {
-        if (empty($string)) {
-            return null;
-        }
-        try {
-            return Carbon::parse($string);
-        } catch (\Exception $e) {
-            return null;
-        }
-    }
-
     public static function isCarbon($date)
     {
         return $date instanceof \Carbon\Carbon;
@@ -3389,19 +3108,6 @@ class Helper
     public static function hashEquals($known_string, $string_to_check)
     {
         return hash_equals((string)$known_string, (string)$string_to_check);
-    }
-
-    public static function curlClose($ch)
-    {
-        try {
-            if (PHP_VERSION_ID >= 80000) {
-                unset($ch);
-            } else {
-                curl_close($ch);
-            }
-        } catch (\Exception $e) {
-            // Do nothing.
-        }
     }
 
     public static function memoryCacheEnabled()

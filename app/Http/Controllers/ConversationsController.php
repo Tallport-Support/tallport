@@ -5,23 +5,12 @@ namespace App\Http\Controllers;
 use App\Attachment;
 use App\Conversation;
 use App\Customer;
-use App\Email;
-use App\Events\ConversationStatusChanged;
-use App\Events\ConversationUserChanged;
-use App\Events\UserAddedNote;
-use App\Events\UserCreatedConversation;
-use App\Events\UserCreatedConversationDraft;
-use App\Events\UserCreatedThreadDraft;
-use App\Events\UserReplied;
 use App\Folder;
-use App\Job;
 use App\Mailbox;
-use App\MailboxUser;
 use App\SendLog;
 use App\Thread;
 use App\User;
 use Illuminate\Http\Request;
-use Validator;
 
 class ConversationsController extends Controller
 {
@@ -48,10 +37,6 @@ class ConversationsController extends Controller
         $mailbox = $conversation->mailbox;
         $customer = $conversation->customer_cached;
         $user = auth()->user();
-
-        // To let other parts of the app easily access.
-        \Helper::setGlobalEntity('conversation', $conversation);
-        \Helper::setGlobalEntity('mailbox', $mailbox);
 
         if ($user->isAdmin()) {
             $mailbox->fetchUserSettings($user->id);
@@ -403,15 +388,6 @@ class ConversationsController extends Controller
      * The conversation is shown at the folder's URL, without a redirect (one request
      * instead of two); the page then shows its own URL (data-page-url, tallport.js).
      */
-    /**
-     * The conversation a folder opens at (openFolder()), for opening it in place
-     * (App\Livewire\ConversationOpens); null when it has none. Once per request.
-     */
-    public static function folderConversationId($folder, $user)
-    {
-        return app(\App\Misc\ConversationListQuery::class)->folderConversationId($folder, $user);
-    }
-
     public static function openFolder(Request $request, $folder, $query, $conversations)
     {
         if (!count($conversations) || $request->filled('page') || $request->cookie('tallport_narrow')) {
@@ -1424,27 +1400,6 @@ class ConversationsController extends Controller
     }
 
     /**
-     * Filter conversations according to the request.
-     */
-    public function conversationsFilterQuery($request, $user)
-    {
-        return app(\App\Misc\ConversationListQuery::class)->conversationsFilterQuery($request, $user);
-    }
-
-    /**
-     * Process attachments on reply, new conversation, saving draft and forwarding.
-     */
-    public function processReplyAttachments($request, $thread_id = null, $delete_removed = true)
-    {
-        return app(\App\Misc\ConversationReplies::class)->processReplyAttachments($request, $thread_id, $delete_removed);
-    }
-
-    public function decodeAttachmentsIds($attachments_list)
-    {
-        return app(\App\Misc\ConversationReplies::class)->decodeAttachmentsIds($attachments_list);
-    }
-
-    /**
      * Undo reply.
      */
     public function undoReply(Request $request, $thread_id)
@@ -1539,18 +1494,5 @@ class ConversationsController extends Controller
         Conversation::updatePreview($conversation->id);
 
         return redirect()->away($conversation->url($folder_id, null, ['show_draft' => $thread->id]));
-    }
-
-    /**
-     * Find or create customer when creating a Phone conversation.
-     */
-    public function processPhoneCustomer($request, $user)
-    {
-        return app(\App\Misc\ConversationReplies::class)->processPhoneCustomer($request, $user);
-    }
-
-    public function getUndoTimeout($can_undo)
-    {
-        return app(\App\Misc\ConversationReplies::class)->getUndoTimeout($can_undo);
     }
 }

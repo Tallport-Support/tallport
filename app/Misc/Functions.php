@@ -1,19 +1,6 @@
 <?php
 
-if (! function_exists('__j')) {
-    /**
-     * Translate the given message and prepare it for using in JS.
-     */
-    function __j($key, $replace = [], $locale = null)
-    {
-        $text = __($key, $replace, $locale);
-
-        return strtr($text, [
-            '"' => '&quot;',
-            "'" => '&#039;',
-        ]);
-    }
-
+if (! function_exists('__h')) {
     /**
      * Translates and escapes the text for using in HTML.
      */

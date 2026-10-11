@@ -505,22 +505,6 @@ class Customer extends Model
     }
 
     /**
-     * Get emails as string.
-     */
-    public function getEmailsAsArray()
-    {
-        return self::getCustomerEmailsAsArray($this->id);
-    }
-
-    /**
-     * Get emails as string.
-     */
-    public static function getCustomerEmailsAsArray($customer_id)
-    {
-        return Email::select('email')->where('customer_id', $customer_id)->pluck('email')->toArray();
-    }
-
-    /**
      * Check if the customer has an email address among his emails.
      */
     public function hasEmail($email_address)
@@ -677,11 +661,6 @@ class Customer extends Model
         }
     }
 
-    public function getMainPhoneValue()
-    {
-        return $this->getMainPhoneNumber();
-    }
-
     public function getMainPhoneNumber()
     {
         $phones = $this->getPhones();
@@ -816,12 +795,6 @@ class Customer extends Model
         } else {
             return [];
         }
-    }
-
-    public function getMainWebsite()
-    {
-        $websites = $this->getWebsites();
-        return $websites[0] ?? '';
     }
 
     /**
@@ -1613,15 +1586,6 @@ class Customer extends Model
         return (self::PHONE_TYPE_WORK == $code);
     }
 
-    // Method does not check if the customer
-    // has conversations.
-    public function deleteCustomer()
-    {
-        // Delete emails.
-        Email::where('customer_id', $this->id)->delete();
-        $this->delete();
-    }
-
     public function getChannels()
     {
         if (!$this->channel || !$this->channel_id) {
@@ -1659,26 +1623,6 @@ class Customer extends Model
         } else {
             // Create.
             return CustomerChannel::create($this->id, $channel, $channel_id);
-        }
-    }
-
-    // Each customer can have only one record for specific CHANNEL in CustomerChannel table.
-    public function updateChannelId($channel, $new_channel_id)
-    {
-        if (!$channel || !$new_channel_id) {
-            return;
-        }
-        // Another customer's channel ID isn't taken (checked first: on PostgreSQL a failed
-        // update aborts the surrounding transaction).
-        if (CustomerChannel::where('channel', $channel)->where('channel_id', $new_channel_id)->where('customer_id', '!=', $this->id)->exists()) {
-            return;
-        }
-        try {
-            CustomerChannel::where('customer_id', $this->id)
-                ->where('channel', $channel)
-                ->update(['channel_id' => $new_channel_id]);
-        } catch (\Exception $e) {
-            // Do nothing.
         }
     }
 

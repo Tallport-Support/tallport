@@ -148,7 +148,6 @@ class ConversationModelTest extends FeatureTestCase
             [$draft->id, $lineitem->id, $reply->id, $note->id, $customer->id],
             $this->ids($conversation->getThreads(null, null, [], [Thread::STATE_DRAFT, Thread::STATE_PUBLISHED]))
         );
-        $this->assertSame($customer->id, $conversation->getFirstThread()->id);
         $this->assertSame($note->id, $conversation->getLastThread([Thread::TYPE_NOTE])->id);
         $this->assertSame($reply->id, $conversation->getLastThread([Thread::TYPE_MESSAGE, Thread::TYPE_CUSTOMER])->id);
     }
@@ -293,12 +292,6 @@ class ConversationModelTest extends FeatureTestCase
         $this->actingAs($this->agent);
 
         $mine = $this->mailbox->folders()->where('type', Folder::TYPE_MINE)->where('user_id', $this->agent->id)->first();
-        $others_mine = $this->mailbox->folders()->where('type', Folder::TYPE_MINE)->where('user_id', $other->id)->first();
-        $starred = $this->mailbox->folders()->where('type', Folder::TYPE_STARRED)->where('user_id', $this->agent->id)->first();
-
-        $this->assertTrue($conversation->isInFolderAllowed($mine));
-        $this->assertFalse($conversation->isInFolderAllowed($others_mine));
-        $this->assertFalse($conversation->isInFolderAllowed($starred));
 
         // Shown in Mine when it's the user's, else its own folder.
         $this->assertEquals($mine->id, $conversation->getCurrentFolder(123));

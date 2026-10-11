@@ -1,8 +1,6 @@
 /**
  * Tallport's shared browser helpers, without jQuery: requests to the app's
  * ajax endpoints, and feedback through FruitUI (toasts, busy buttons).
- * Screens moving off jQuery use these instead of fsAjax(), showAjaxResult()
- * and showFloatingAlert().
  */
 window.Tallport = (function () {
 	function csrf() {
@@ -38,7 +36,7 @@ window.Tallport = (function () {
 
 	/**
 	 * POST to an ajax endpoint; resolves with its JSON. Conversation requests
-	 * carry the folder (as fsAjax did), embedded pages keep x_embed.
+	 * carry the folder, embedded pages keep x_embed.
 	 */
 	function post(url, data) {
 		var target = new URL(url, window.location.href);

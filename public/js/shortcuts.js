@@ -1,7 +1,5 @@
 /**
  * Keyboard shortcuts (a user can turn them off in the profile); ? lists them.
- * Other code can make an element ignore them with the shortcuts.ignore_target
- * filter.
  */
 document.addEventListener('DOMContentLoaded', function() {
 	if (document.body.getAttribute('data-keyboard-shortcuts') != '1') {
@@ -59,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 
 		// * (typed with Shift on most keyboards): star or unstar the open conversation.
-		if (key == '*' && !typing && !document.querySelector('dialog[open]') && !fsApplyFilter('shortcuts.ignore_target', false, {target: target})) {
+		if (key == '*' && !typing && !document.querySelector('dialog[open]')) {
 			if (click('.conv-star', true)) {
 				e.preventDefault();
 			}
@@ -68,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		var status_menu = document.getElementById('conv-status');
 		var status_open = status_menu && status_menu.open;
-		if (!status_open && (e.shiftKey || typing || document.querySelector('dialog[open]') || fsApplyFilter('shortcuts.ignore_target', false, {target: target}))) {
+		if (!status_open && (e.shiftKey || typing || document.querySelector('dialog[open]'))) {
 			return;
 		}
 
@@ -97,12 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
 					break;
 				case 'v':
 					done = click('[data-fruit-dialog-url][href*="move_conv"]');
-					break;
-				case 'w':
-					done = click('[data-modal-on-show="initRunWorkflow"]');
-					break;
-				case 't':
-					done = click('.conv-add-tags');
 					break;
 				case 'o':
 					// Follow (not unfollow).

@@ -6,7 +6,7 @@
 #   resources/brand/generate-icons.sh
 #
 # Needs Google Chrome (to render SVG and text exactly as browsers do) and
-# ImageMagick (to downsize the small favicons and build favicon.ico).
+# ImageMagick (to downsize the favicon and build favicon.ico).
 
 set -euo pipefail
 
@@ -61,19 +61,14 @@ wordmark() {
 <div style=\"font-size: ${tag}px; color: $GREY; letter-spacing: 0.02em\">Help Desk &amp; Shared Mailbox</div>" "$3"
 }
 
-icon public/img/logo-icon-150.png 150 "$BLUE" 1
 icon public/img/logo-icon-white-300.png 300 '#FFFFFF' 0.7 "$BLUE"
 icon public/apple-touch-icon.png 180 "$BLUE" 0.78 '#FFFFFF'
 icon public/android-chrome-192x192.png 192 "$BLUE" 1
 icon public/android-chrome-256x256.png 256 "$BLUE" 1
-icon public/mstile-150x150.png 270 "$BLUE" 0.5
 wordmark public/img/logo-300.png 300 '#FFFFFF'
-wordmark public/img/logo-600.png 600 transparent
 
-# Favicons: render large, then downsize.
+# The favicon: render large, then downsize.
 icon "$work/favicon-256.png" 256 "$BLUE" 1
-convert "$work/favicon-256.png" -resize 16x16 public/favicon.png
-convert "$work/favicon-256.png" -resize 16x16 public/favicon.gif
 convert "$work/favicon-256.png" -define icon:auto-resize=48,32,16 public/favicon.ico
 
 # Safari pinned tab: a single-colour SVG (Safari applies the colour).

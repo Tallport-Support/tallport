@@ -11,9 +11,6 @@ document.addEventListener('alpine:init', function () {
 	 */
 	window.Alpine.data('tallportMailboxUpdate', function (from_name_custom) {
 		return {
-			init: function () {
-				fsDoAction('mailbox.update_init');
-			},
 			fromNameChanged: function (event) {
 				var container = document.getElementById('from_name_custom_container');
 				if (container) {

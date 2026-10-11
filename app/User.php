@@ -845,17 +845,6 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
     }
 
     /**
-     * Generate and set password.
-     */
-    public function setPassword($password = null)
-    {
-        if ($password === null) {
-            $password = $this->generateRandomPassword();
-        }
-        $this->password = Hash::make($password);
-    }
-
-    /**
      * Generate and set invite_hash.
      */
     public function setInviteHash()
@@ -1104,17 +1093,6 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
     }
 
     /**
-     * Todo: implement super admin role.
-     * For now we return just first admin.
-     *
-     * @return [type] [description]
-     */
-    public static function getSuperAdmin()
-    {
-        return self::nonDeleted()->where('role', self::ROLE_ADMIN)->first();
-    }
-
-    /**
      * Create user.
      */
     public static function create($data, $options = [])
@@ -1303,11 +1281,6 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
         }
     }
 
-    public static function findNonDeleted($id, $extended = false)
-    {
-        return User::nonDeleted($extended)->where('id', $id)->first();
-    }
-
     /**
      * The users a list of conversations can be filtered by: those assignable in
      * the mailbox, or in every mailbox the user can view, and the user.
@@ -1405,13 +1378,6 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
     {
         // Ignored when already following (a failed insert would abort a PostgreSQL transaction).
         Follower::insertOrIgnore(['conversation_id' => $conversation_id, 'user_id' => $this->id]);
-    }
-
-    // If there will be some issues, extra "robot" field
-    // may need to be added to Users table.
-    public static function getRobotsCondition()
-    {
-        return User::where('type', User::TYPE_ROBOT);
     }
 
     // Truncate fields to their max lengths to avoid PostgreSQL error:

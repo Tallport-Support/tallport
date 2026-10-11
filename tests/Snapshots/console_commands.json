@@ -126,15 +126,6 @@
             }
         }
     },
-    "tallport:check-requirements": {
-        "class": "App\\Console\\Commands\\CheckRequirements",
-        "aliases": [
-            "freescout:check-requirements"
-        ],
-        "description": "Check console version of PHP",
-        "arguments": {},
-        "options": {}
-    },
     "tallport:clean-customer-photos": {
         "class": "App\\Console\\Commands\\CleanCustomerPhotos",
         "description": "Remove customer photos looked up online older than 90 days",
@@ -163,31 +154,6 @@
             },
             "doNotGenerateVars": {
                 "value": "none"
-            }
-        }
-    },
-    "tallport:create-user": {
-        "class": "App\\Console\\Commands\\CreateUser",
-        "aliases": [
-            "freescout:create-user"
-        ],
-        "description": "Create a new user",
-        "arguments": {},
-        "options": {
-            "role": {
-                "value": "optional"
-            },
-            "firstName": {
-                "value": "optional"
-            },
-            "lastName": {
-                "value": "optional"
-            },
-            "email": {
-                "value": "optional"
-            },
-            "password": {
-                "value": "optional"
             }
         }
     },
@@ -257,21 +223,6 @@
         "arguments": {},
         "options": {}
     },
-    "tallport:module-build": {
-        "class": "App\\Console\\Commands\\ModuleBuild",
-        "aliases": [
-            "freescout:module-build"
-        ],
-        "description": "Build module or all modules (if module_alias is empty)",
-        "arguments": {
-            "module_alias": {
-                "required": false,
-                "array": false,
-                "default": null
-            }
-        },
-        "options": {}
-    },
     "tallport:module-install": {
         "class": "App\\Console\\Commands\\ModuleInstall",
         "aliases": [
@@ -293,21 +244,6 @@
             "freescout:module-laroute"
         ],
         "description": "Generate a laravel routes JS-file for a module or all modules (if module_alias is empty)",
-        "arguments": {
-            "module_alias": {
-                "required": false,
-                "array": false,
-                "default": null
-            }
-        },
-        "options": {}
-    },
-    "tallport:module-update": {
-        "class": "App\\Console\\Commands\\ModuleUpdate",
-        "aliases": [
-            "freescout:module-update"
-        ],
-        "description": "Update all modules or a single module (if module_alias is set)",
         "arguments": {
             "module_alias": {
                 "required": false,
@@ -349,21 +285,6 @@
                 "value": "optional"
             }
         }
-    },
-    "tallport:parse-eml": {
-        "class": "App\\Console\\Commands\\ParseEml",
-        "aliases": [
-            "freescout:parse-eml"
-        ],
-        "description": "Show how Tallport reads an email file",
-        "arguments": {
-            "file": {
-                "required": false,
-                "array": false,
-                "default": null
-            }
-        },
-        "options": {}
     },
     "tallport:receive": {
         "class": "App\\Console\\Commands\\Receive",

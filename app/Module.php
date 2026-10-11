@@ -140,11 +140,6 @@ class Module extends Model
         return $module;
     }
 
-    public static function normalizeAlias($alias)
-    {
-        return trim(strtolower($alias));
-    }
-
     public static function getByAlias($alias)
     {
         $modules = self::getCached();

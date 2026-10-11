@@ -523,14 +523,6 @@
     },
     {
         "type": "filter",
-        "name": "conversation.is_in_folder_allowed",
-        "arguments": 3,
-        "files": [
-            "app/Conversation.php"
-        ]
-    },
-    {
-        "type": "filter",
         "name": "conversation.is_user_assignee",
         "arguments": 3,
         "files": [
@@ -1352,14 +1344,6 @@
         "arguments": 3,
         "files": [
             "app/Conversation.php"
-        ]
-    },
-    {
-        "type": "filter",
-        "name": "folder.type_icon",
-        "arguments": 2,
-        "files": [
-            "app/Folder.php"
         ]
     },
     {

@@ -218,10 +218,6 @@ class AllMailboxes
             return $folder->type == self::TYPE_SENT ? 'Sent' : $name;
         }, 20, 2);
 
-        \Eventy::addFilter('folder.type_icon', function ($icon, $folder) {
-            return $folder->type == self::TYPE_SENT ? 'send' : $icon;
-        }, 20, 2);
-
         \Eventy::addFilter('folder.conversations_order_by', function ($order_by, $type) {
             return $type == self::TYPE_SENT ? [['last_user_reply_at' => 'desc']] : $order_by;
         }, 20, 2);

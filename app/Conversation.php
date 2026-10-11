@@ -92,8 +92,6 @@ class Conversation extends Model
         self::STATUS_SPAM    => 'spam',
         //self::STATUS_OPEN => 'open',
     ];
-    
-    public static $standard_statuses = [];
 
     // Just to improve performance.
     public static $status_names = [];
@@ -113,7 +111,7 @@ class Conversation extends Model
 
     /**
      * The status dots' tones (conversations/partials/status_dot): Active, Pending and
-     * Closed told apart, unlike $status_classes (kept as they were for modules).
+     * Closed told apart, unlike $status_classes.
      */
     const STATUS_TONES = [
         self::STATUS_ACTIVE  => 'success',
@@ -128,13 +126,6 @@ class Conversation extends Model
         self::STATUS_CLOSED  => 'grey',
         self::STATUS_SPAM    => 'danger',
         //self::STATUS_OPEN => 'folder-open',
-    ];
-
-    public static $status_colors = [
-        self::STATUS_ACTIVE  => '#6ac27b',
-        self::STATUS_PENDING => '#8b98a6',
-        self::STATUS_CLOSED  => '#6b6b6b',
-        self::STATUS_SPAM    => '#de6864',
     ];
 
     /**
@@ -436,16 +427,6 @@ class Conversation extends Model
     }
 
     /**
-     * Get first thread of the conversation.
-     */
-    public function getFirstThread()
-    {
-        return $this->threads()
-            ->orderBy('created_at', 'asc')->orderBy('id', 'asc')
-            ->first();
-    }
-
-    /**
      * Get last reply by customer or support agent.
      *
      * @param bool $last [description]
@@ -725,28 +706,9 @@ class Conversation extends Model
         return self::toMainStatus($this->status);
     }
 
-    public static function isStandardStatus($status)
-    {
-        return is_numeric($status) && (int)$status < 10;
-    }
-
     public static function toMainStatus($status)
     {
         return (int)substr($status.'', 0, 1);
-    }
-
-    public static function compareStatus($status, $status_list)
-    {
-        if (is_array($status_list)) {
-            return in_array(self::toMainStatus($status), $status_list);
-        } else {
-            return self::toMainStatus($status) == (int)$status_list;
-        }
-    }
-
-    public function hasStatus($list)
-    {
-        return in_array($this->getMainStatus(), $list);
     }
 
     /**
@@ -771,26 +733,6 @@ class Conversation extends Model
         }
     }
 
-    // Override self::$statuses.
-    public static function setStatuses($statuses)
-    {
-        self::$statuses = $statuses;
-    }
-
-    public static function getStatuses($exclude_ids = [])
-    {
-        $statuses = self::$statuses;
-        if (count($exclude_ids)) {
-            $statuses = array_diff_key($statuses, array_flip($exclude_ids));
-        }
-        return $statuses;
-    }
-
-    public static function getStandardStatuses()
-    {
-        return self::$standard_statuses ?: self::$statuses;
-    }
-
     // Returns array of status ids as keys and names as values.
     public static function getStatusesWithNames($exclude_ids = [])
     {
@@ -807,28 +749,6 @@ class Conversation extends Model
     public static function statusCode($status_id)
     {
         return self::$statuses[$status_id] ?? '';
-    }
-
-    public function getStatusIcon()
-    {
-        return self::$status_icons[$this->getMainStatus()].'';
-    }
-
-    public static function statusIcon($status)
-    {
-        //return \Eventy::filter('conversation.get_status_icon', self::$status_icons[$this->getStatus()], $this).'';
-        return self::$status_icons[self::toMainStatus($status)].'';
-    }
-
-    public function getStatusClass()
-    {
-        //return \Eventy::filter('conversation.get_status_class', self::$status_classes[$this->getStatus()], $this).'';
-        return self::$status_classes[$this->getMainStatus()].'';
-    }
-
-    public static function statusClass($status)
-    {
-        return self::$status_classes[self::toMainStatus($status)].'';
     }
 
     /**
@@ -1156,21 +1076,6 @@ class Conversation extends Model
         return $url;
     }
 
-    /**
-     * Get CSS color of the status.
-     *
-     * @return string
-     */
-    public function getStatusColor()
-    {
-        return self::$status_colors[$this->getMainStatus()].'';
-    }
-
-    public function statusColor($status)
-    {
-        return self::$status_colors[self::toMainStatus($status)].'';
-    }
-
     public static function statusName($status)
     {
         return self::statusCodeToName($status);
@@ -1199,28 +1104,6 @@ class Conversation extends Model
     public static function getFolderParam($request = null)
     {
         return '';
-    }
-
-    /**
-     * Check if conversation can be in the folder.
-     */
-    public function isInFolderAllowed($folder)
-    {
-        if (in_array($folder->type, Folder::$public_types)) {
-            return $folder->id == $this->folder_id;
-        } elseif ($folder->type == Folder::TYPE_MINE) {
-            $user = auth()->user();
-            if ($user && $user->id == $folder->user_id && $this->user_id == $user->id) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            // todo: check ConversationFolder here
-            return \Eventy::filter('conversation.is_in_folder_allowed', false, $folder, $this);
-        }
-
-        return false;
     }
 
     /**
@@ -1741,35 +1624,6 @@ class Conversation extends Model
         }
     }
 
-    /**
-     * Load mailboxes.
-     */
-    public static function loadMailboxes($conversations)
-    {
-        $ids = $conversations->pluck('mailbox_id')->unique()->toArray();
-        if (!$ids) {
-            return;
-        }
-
-        $mailboxes = Mailbox::whereIn('id', $ids)->get();
-        if (!$mailboxes) {
-            return;
-        }
-
-        foreach ($conversations as $conversation) {
-            if (empty($conversation->mailbox_id)) {
-                continue;
-            }
-            foreach ($mailboxes as $mailbox) {
-                if ($mailbox->id == $conversation->mailbox_id) {
-                    $conversation->mailbox = $mailbox;
-
-                    continue 2;
-                }
-            }
-        }
-    }
-
     public function getSubject()
     {
         if ($this->subject) {
@@ -1958,14 +1812,6 @@ class Conversation extends Model
     }
 
     /**
-     * Is it as custom conversation.
-     */
-    public function isCustom()
-    {
-        return ($this->type == self::TYPE_CUSTOM);
-    }
-
-    /**
      * Whether the conversation came through a messaging channel (Telegram, Nostr,
      * modules' channels) rather than email: the channel decides how replies are
      * sent and what they can contain.
@@ -2071,20 +1917,6 @@ class Conversation extends Model
         $this->save();
 
         \Eventy::action('conversation.subject_changed', $this, $user, $prev_subject);
-    }
-
-    public function changeState($new_state, $user = null)
-    {
-        if (!array_key_exists($new_state, self::$states)) {
-            return;
-        }
-        
-        $prev_state = $this->state;
-
-        $this->state = $new_state;
-        $this->save();
-
-        \Eventy::action('conversation.state_changed', $this, $user, $prev_state);
     }
 
     public function isChatUnavailable()

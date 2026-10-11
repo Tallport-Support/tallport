@@ -117,14 +117,6 @@ class LegacyHelpersTest extends TestCase
     }
 
     /**
-     * __j(): a translation safe inside a quoted JavaScript string.
-     */
-    public function testTranslationForJavascript()
-    {
-        $this->assertSame('Casey&#039;s &quot;draft&quot;', __j(':name\'s "draft"', ['name' => 'Casey']));
-    }
-
-    /**
      * __h(): a translation with the text escaped for HTML.
      */
     public function testTranslationForHtml()

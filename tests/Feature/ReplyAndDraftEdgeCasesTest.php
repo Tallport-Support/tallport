@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Attachment;
 use App\Conversation;
 use App\Customer;
-use App\Http\Controllers\ConversationsController;
 use App\Misc\ConversationReplies;
 use App\Thread;
 use App\User;
@@ -83,7 +82,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
 
     protected function phoneCustomer(array $data, $user = null)
     {
-        return app(ConversationsController::class)->processPhoneCustomer(new Request($data), $user ?: $this->agent);
+        return app(ConversationReplies::class)->processPhoneCustomer(new Request($data), $user ?: $this->agent);
     }
 
     // Sending: problems.

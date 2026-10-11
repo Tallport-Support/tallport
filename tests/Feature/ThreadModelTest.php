@@ -69,22 +69,22 @@ class ThreadModelTest extends FeatureTestCase
         return $thread;
     }
 
-    public function testRecipientListsAsStringsWithoutExcludedAddresses()
+    public function testRecipientListsWithoutExcludedAddresses()
     {
         $thread = new Thread();
         $thread->setTo(['casey@customer.example.org', 'pat@customer.example.org', 'casey@customer.example.org']);
         $thread->setCc('kim@customer.example.org, lee@customer.example.org');
         $thread->setBcc(['boss@example.org']);
 
-        $this->assertSame(['casey@customer.example.org', 'pat@customer.example.org'], $thread->getTo());
-        $this->assertSame('pat@customer.example.org', $thread->getToString(['casey@customer.example.org']));
-        $this->assertSame('kim@customer.example.org, lee@customer.example.org', $thread->getCcString());
-        $this->assertSame('lee@customer.example.org', $thread->getCcString(['kim@customer.example.org']));
-        $this->assertSame('boss@example.org', $thread->getBccString());
+        $this->assertSame(['casey@customer.example.org', 'pat@customer.example.org'], $thread->getToArray());
+        $this->assertSame(['pat@customer.example.org'], array_values($thread->getToArray(['casey@customer.example.org'])));
+        $this->assertSame(['kim@customer.example.org', 'lee@customer.example.org'], $thread->getCcArray());
+        $this->assertSame(['lee@customer.example.org'], array_values($thread->getCcArray(['kim@customer.example.org'])));
+        $this->assertSame(['boss@example.org'], $thread->getBccArray());
 
         $thread->setBcc([]);
         $this->assertNull($thread->bcc);
-        $this->assertSame('', $thread->getBccString());
+        $this->assertSame([], $thread->getBccArray());
     }
 
     public function testMainStatusFollowsTheConversationStatuses()

@@ -113,11 +113,6 @@ class Folder extends Model
         }
     }
 
-    public function getTypeIcon()
-    {
-        return \Eventy::filter('folder.type_icon', '', $this);
-    }
-
     /**
      * Get order by array.
      *

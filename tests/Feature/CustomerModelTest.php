@@ -14,13 +14,12 @@ use Tests\FeatureTestCase;
  */
 class CustomerModelTest extends FeatureTestCase
 {
-    public function testEmailsAsArray()
+    public function testAddEmail()
     {
         $customer = $this->createCustomer('casey@customer.example.org');
         $customer->addEmail('casey.home@customer.example.org');
 
-        $this->assertEqualsCanonicalizing(['casey@customer.example.org', 'casey.home@customer.example.org'], $customer->getEmailsAsArray());
-        $this->assertSame([], Customer::getCustomerEmailsAsArray(999999));
+        $this->assertEqualsCanonicalizing(['casey@customer.example.org', 'casey.home@customer.example.org'], $this->emailsOf($customer));
     }
 
     public function testNames()
@@ -96,8 +95,8 @@ class CustomerModelTest extends FeatureTestCase
         $casey->syncEmails(['casey@customer.example.org', 'pat@customer.example.org', 'not an email', 'casey.new@customer.example.org']);
 
         $this->assertEqualsCanonicalizing(['casey@customer.example.org', 'pat@customer.example.org', 'casey.new@customer.example.org'],
-        Customer::getCustomerEmailsAsArray($casey->id));
-        $this->assertSame([], Customer::getCustomerEmailsAsArray($pat->id));
+        $this->emailsOf($casey));
+        $this->assertSame([], $this->emailsOf($pat));
         $this->assertNull(Email::where('email', 'casey.old@customer.example.org')->first());
 
         // An address a conversation was sent from gets a customer of its own.
@@ -113,13 +112,13 @@ class CustomerModelTest extends FeatureTestCase
         $casey = $this->createCustomer('casey@customer.example.org');
 
         $this->assertFalse($casey->addEmail('pat@customer.example.org', true));
-        $this->assertSame(['casey@customer.example.org'], $casey->getEmailsAsArray());
+        $this->assertSame(['casey@customer.example.org'], $this->emailsOf($casey));
     }
 
     public function testPhones()
     {
         $customer = new Customer();
-        $this->assertSame('', $customer->getMainPhoneValue());
+        $this->assertSame('', $customer->getMainPhoneNumber());
 
         $customer->addPhone('+1 555 0100');
         $customer->addPhone(['value' => '+1 555 0199', 'type' => Customer::PHONE_TYPE_HOME]);
@@ -131,7 +130,6 @@ class CustomerModelTest extends FeatureTestCase
             ['value' => '+1 555 0199', 'type' => Customer::PHONE_TYPE_HOME, 'n' => '15550199'],
             ['value' => '+1 555 0123', 'type' => Customer::PHONE_TYPE_WORK, 'n' => '15550123'],
         ], $customer->getPhones());
-        $this->assertSame('+1 555 0100', $customer->getMainPhoneValue());
         $this->assertSame('+1 555 0100', $customer->getMainPhoneNumber());
 
         $this->assertTrue(Customer::isDefaultPhoneType(Customer::PHONE_TYPE_WORK));
@@ -141,14 +139,11 @@ class CustomerModelTest extends FeatureTestCase
     public function testWebsites()
     {
         $customer = new Customer();
-        $this->assertSame('', $customer->getMainWebsite());
-
         $customer->setWebsites(['example.org', ['value' => 'https://shop.example.org'], 'http://', '', 'example.org']);
         $customer->addWebsite(['value' => 'blog.example.org']);
         $customer->addWebsite('https://shop.example.org');
 
         $this->assertSame(['http://example.org', 'https://shop.example.org', 'http://blog.example.org'], array_values($customer->getWebsites()));
-        $this->assertSame('http://example.org', $customer->getMainWebsite());
     }
 
     public function testSocialProfiles()
@@ -196,10 +191,11 @@ class CustomerModelTest extends FeatureTestCase
         foreach (['string' => 'casey@customer.example.org', 'array' => ['value' => 'casey@customer.example.org', 'type' => Email::TYPE_HOME]] as $form => $listed) {
             $customer = Customer::create('casey@customer.example.org', ['first_name' => 'Casey', 'emails' => [$listed, 'casey.'.$form.'@customer.example.org']]);
 
-            $this->assertEqualsCanonicalizing(['casey@customer.example.org', 'casey.'.$form.'@customer.example.org'], $customer->getEmailsAsArray());
+            $this->assertEqualsCanonicalizing(['casey@customer.example.org', 'casey.'.$form.'@customer.example.org'], $this->emailsOf($customer));
             $this->assertSame(1, Email::where('email', 'casey@customer.example.org')->count());
 
-            $customer->deleteCustomer();
+            $customer->emails()->delete();
+            $customer->delete();
         }
     }
 
@@ -221,13 +217,13 @@ class CustomerModelTest extends FeatureTestCase
         $this->assertSame('+1 555 0100', $customer->getMainPhoneNumber());
         $this->assertSame(['http://example.org'], $customer->getWebsites());
         $this->assertSame([['value' => 'casey', 'type' => Customer::SOCIAL_TYPE_TWITTER]], $customer->getSocialProfiles());
-        $this->assertSame(['casey@customer.example.org'], $customer->getEmailsAsArray());
+        $this->assertSame(['casey@customer.example.org'], $this->emailsOf($customer));
 
         $customer->setData(['phones' => ['value' => '+1 555 0199', 'type' => Customer::PHONE_TYPE_HOME], 'notes' => 'Kept'], false);
         $this->assertSame(['+1 555 0100', '+1 555 0199'], array_column($customer->getPhones(), 'value'));
         $this->assertSame('Long-time customer', $customer->notes);
 
-        $this->assertSame(['casey@customer.example.org'], $customer->fresh()->getEmailsAsArray());
+        $this->assertSame(['casey@customer.example.org'], $this->emailsOf($customer));
         $customer->setData(['notes' => 'Saved'], true, true);
         $this->assertSame('Saved', $customer->fresh()->notes);
     }
@@ -296,7 +292,7 @@ class CustomerModelTest extends FeatureTestCase
             ['value' => 'casey', 'type' => Customer::SOCIAL_TYPE_TWITTER],
             ['value' => 'pat', 'type' => Customer::SOCIAL_TYPE_TWITTER],
         ], $casey->getSocialProfiles());
-        $this->assertEqualsCanonicalizing(['casey@customer.example.org', 'pat@customer.example.org'], $casey->getEmailsAsArray());
+        $this->assertEqualsCanonicalizing(['casey@customer.example.org', 'pat@customer.example.org'], $this->emailsOf($casey));
     }
 
     public function testMergeTypeValueListsSkipsIncompleteAndExistingEntries()
@@ -367,11 +363,7 @@ class CustomerModelTest extends FeatureTestCase
         $this->assertSame('pigeon-2', $customer->getChannelId(77));
         $this->assertNull($customer->addChannel(77, 'pigeon-2'));
 
-        $customer->updateChannelId(77, 'pigeon-3');
-        $customer->updateChannelId(77, '');
-        $customer->updateChannelId(null, 'pigeon-4');
-        $this->assertSame('pigeon-3', $customer->getChannelId(77));
-        $this->assertSame($customer->id, Customer::getCustomerByChannel(77, 'pigeon-3')->id);
+        $this->assertSame($customer->id, Customer::getCustomerByChannel(77, 'pigeon-2')->id);
         $this->assertCount(1, $customer->getChannels());
     }
 
@@ -383,7 +375,6 @@ class CustomerModelTest extends FeatureTestCase
         $pat->addChannel(77, 'pigeon-2');
 
         $pat->addChannel(77, 'pigeon-1');
-        $pat->updateChannelId(77, 'pigeon-1');
 
         $this->assertSame('pigeon-2', $pat->getChannelId(77));
         $this->assertSame($casey->id, Customer::getCustomerByChannel(77, 'pigeon-1')->id);
@@ -399,13 +390,11 @@ class CustomerModelTest extends FeatureTestCase
         $this->assertSame([$casey->id], $found->pluck('id')->values()->all());
     }
 
-    public function testDeleteCustomerDeletesItsEmails()
+    /**
+     * The customer's email addresses.
+     */
+    private function emailsOf(Customer $customer)
     {
-        $customer = $this->createCustomer('casey@customer.example.org');
-
-        $customer->deleteCustomer();
-
-        $this->assertNull(Customer::find($customer->id));
-        $this->assertSame(0, Email::where('email', 'casey@customer.example.org')->count());
+        return Email::where('customer_id', $customer->id)->pluck('email')->all();
     }
 }

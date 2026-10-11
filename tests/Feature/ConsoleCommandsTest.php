@@ -8,7 +8,6 @@ use App\Conversation;
 use App\Folder;
 use App\Option;
 use App\SendLog;
-use App\User;
 use App\Jobs\AiIndexDocument;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Bus;
@@ -20,7 +19,7 @@ use Tests\FeatureTestCase;
  *
  * Commands that write outside the database or use the network are either
  * stubbed (see FeatureTestCase), given scratch paths, or left out:
- * clean-tmp (deletes in the system temp dir), module-update.
+ * clean-tmp (deletes in the system temp dir).
  */
 class ConsoleCommandsTest extends FeatureTestCase
 {
@@ -175,74 +174,6 @@ class ConsoleCommandsTest extends FeatureTestCase
 
     // Admin commands.
 
-    public function testCreateUser()
-    {
-        $output = $this->runCommand('tallport:create-user', [
-            '--role' => 'admin', '--firstName' => 'Cli', '--lastName' => 'Admin',
-            '--email' => 'cli-admin@example.org', '--password' => 'cli-password', '--no-interaction' => true,
-        ]);
-
-        $user = User::where('email', 'cli-admin@example.org')->first();
-        $this->assertStringContainsString('User created with id: '.$user->id, $output);
-        $this->assertEquals(User::ROLE_ADMIN, $user->role);
-        $this->assertEquals(User::INVITE_STATE_ACTIVATED, $user->invite_state);
-        $this->assertTrue(\Hash::check('cli-password', $user->password));
-    }
-
-    /**
-     * Answering "no" creates nothing and says so (S14).
-     */
-    public function testCreateUserDeclined()
-    {
-        $command = $this->app->make(\App\Console\Commands\CreateUser::class);
-        $command->setLaravel($this->app);
-        $tester = new \Symfony\Component\Console\Tester\CommandTester($command);
-        $tester->setInputs(['no']);
-
-        $tester->execute([
-            '--role' => 'user', '--firstName' => 'Cli', '--lastName' => 'User',
-            '--email' => 'declined@example.org', '--password' => 'cli-password',
-        ]);
-
-        $this->assertStringContainsString('User not created', $tester->getDisplay());
-        $this->assertStringNotContainsString('User created', $tester->getDisplay());
-        $this->assertNull(User::where('email', 'declined@example.org')->first());
-    }
-
-    public function testCreateUserValidation()
-    {
-        $options = ['--firstName' => 'Cli', '--lastName' => 'User', '--password' => 'cli-password', '--no-interaction' => true];
-
-        $this->assertStringContainsString('Invalid role', $this->runCommand('tallport:create-user', $options + ['--role' => 'owner', '--email' => 'a@example.org']));
-        $this->assertStringContainsString('Invalid email address', $this->runCommand('tallport:create-user', $options + ['--role' => 'user', '--email' => 'not-an-email']));
-
-        $existing = $this->createUser();
-        $this->assertStringContainsString('User already exists', $this->runCommand('tallport:create-user', $options + ['--role' => 'user', '--email' => $existing->email]));
-        $this->assertSame(0, User::whereIn('email', ['a@example.org', 'not-an-email'])->count());
-    }
-
-    public function testParseEml()
-    {
-        $storage = sys_get_temp_dir().'/tallport-storage-'.uniqid();
-        mkdir($storage.'/logs', 0777, true);
-        copy(base_path('tests/Messages/message-6.eml'), $storage.'/logs/email.eml');
-        $this->app->useStoragePath($storage);
-
-        try {
-            $output = $this->runCommand('tallport:parse-eml');
-        } finally {
-            unlink($storage.'/logs/email.eml');
-            rmdir($storage.'/logs');
-            rmdir($storage);
-        }
-
-        $this->assertStringContainsString('Subject:', $output);
-        $this->assertStringContainsString('7f9b1a39-536b-47de-a7c3-22aab4aa0964@example.com', $output);
-
-        $output = $this->runCommand('tallport:parse-eml', ['file' => base_path('tests/Messages/webklex/plain.eml')]);
-        $this->assertStringContainsString('"mail":"from@someone.com"', $output);
-    }
-
     public function testAfterAppUpdateAndBuildRunTheirSteps()
     {
         $document = new Document();
@@ -324,54 +255,6 @@ class ConsoleCommandsTest extends FeatureTestCase
     }
 
     /**
-     * module-update asks only the modules' own latestVersionUrl, never FreeScout's
-     * directory: with none to ask, all modules are up to date.
-     */
-    public function testModuleUpdateAsksOnlyTheModules()
-    {
-        $dir = sys_get_temp_dir().'/tallport-modules-'.uniqid();
-        mkdir($dir);
-        $this->app->instance('modules', new \App\Modules\Repository($this->app, $dir));
-
-        // It runs cache:clear itself, which replaces Artisan::output().
-        $output = new \Symfony\Component\Console\Output\BufferedOutput();
-        \Artisan::call('tallport:module-update', [], $output);
-        $this->assertStringContainsString('All modules are up-to-date', $output->fetch());
-
-        \Artisan::call('tallport:module-update', ['module_alias' => 'nosuchmodule'], $output);
-        $this->assertStringContainsString('Module with the following alias not found: nosuchmodule', $output->fetch());
-        rmdir($dir);
-    }
-
-    /**
-     * Building one module rebuilds only that module's routes (S13).
-     */
-    public function testModuleBuildRebuildsOnlyThatModulesRoutes()
-    {
-        $dir = sys_get_temp_dir().'/tallport-modules-'.uniqid();
-        mkdir($dir.'/Demo', 0777, true);
-        file_put_contents($dir.'/Demo/module.json', json_encode(['name' => 'Demo', 'alias' => 'demo']));
-        config(['modules.cache.enabled' => false]);
-        $this->app->instance('modules', new \App\Modules\Repository($this->app, $dir));
-        // No public symlink there, so nothing is written.
-        $this->app->usePublicPath($dir);
-
-        try {
-            $this->runCommand('tallport:module-build', ['module_alias' => 'demo']);
-        } finally {
-            unlink($dir.'/Demo/module.json');
-            rmdir($dir.'/Demo');
-            rmdir($dir);
-        }
-
-        $calls = array_values(array_filter(\Tests\Support\StubCommand::$calls, function ($call) {
-            return $call['name'] == 'tallport:module-laroute';
-        }));
-        $this->assertCount(1, $calls);
-        $this->assertStringContainsString('demo', $calls[0]['arguments']);
-    }
-
-    /**
      * clean-tmp may only remove FreeScout's own temp files and SwiftMailer's
      * cache directories, never other programs' files (S11).
      */
@@ -423,18 +306,6 @@ class ConsoleCommandsTest extends FeatureTestCase
             'other-program-file',
             'project', 'project/'.$hex(5), 'project/'.$hex(5).'/body',
         ], $left);
-    }
-
-    public function testCheckRequirements()
-    {
-        $output = $this->runCommand('tallport:check-requirements');
-
-        $this->assertStringContainsString('PHP Version', $output);
-        $this->assertStringContainsString('PHP Extensions', $output);
-        // The PDO driver of the database in use, not all of them.
-        $this->assertSame('pdo_'.str_replace('mariadb', 'mysql', \DB::getDriverName()), \Helper::pdoExtension());
-        $this->assertStringContainsString(\Helper::pdoExtension().'.', $output);
-        $this->assertStringNotContainsString('pdo_mysql / pdo_pgsql', $output);
     }
 
     /**
@@ -634,40 +505,6 @@ class ConsoleCommandsTest extends FeatureTestCase
         $this->assertEquals([7 => 'broken', 8 => [1 => ['t' => 'no replying flag'], 2 => $fresh]], \Cache::get('conv_view'));
     }
 
-    public function testCreateUserAsksForWhatIsMissing()
-    {
-        $this->artisan('tallport:create-user')
-            ->expectsQuestion('User role (admin/user)', 'owner')
-            ->expectsOutput('Invalid role')
-            ->expectsQuestion('Please enter valid role', 'user')
-            ->expectsQuestion('User first name', 'Asked')
-            ->expectsQuestion('User last name', 'Agent')
-            ->expectsQuestion('User email address', 'not-an-email')
-            ->expectsOutput('Incorrect email address')
-            ->expectsQuestion('Please enter valid email address', 'asked-agent@example.org')
-            ->expectsQuestion('User password', 'asked-password')
-            ->expectsConfirmation('Do you want to create the user?', 'yes')
-            ->expectsOutputToContain('User created with id: ')
-            ->run();
-
-        $user = User::where('email', 'asked-agent@example.org')->first();
-        $this->assertSame(User::ROLE_USER, (int) $user->role);
-        $this->assertSame('Asked', $user->first_name);
-        $this->assertTrue(\Hash::check('asked-password', $user->password));
-    }
-
-    /**
-     * Scripts can tell from the exit code whether the user was created.
-     */
-    public function testCreateUserExitCodes()
-    {
-        $options = ['--role' => 'user', '--firstName' => 'Exit', '--lastName' => 'Code', '--password' => 'secret-password', '--no-interaction' => true];
-
-        $this->assertSame(0, \Artisan::call('tallport:create-user', $options + ['--email' => 'exit-code@example.org']));
-        $this->assertNotSame(0, \Artisan::call('tallport:create-user', $options + ['--email' => 'exit-code@example.org']));
-        $this->assertNotSame(0, \Artisan::call('tallport:create-user', $options + ['--email' => 'not-an-email']));
-    }
-
     public function testAutoReplyLanguageNeedsAConversationOrText()
     {
         $this->artisan('tallport:auto-reply-language', ['conversation' => 999999])
@@ -685,13 +522,5 @@ class ConsoleCommandsTest extends FeatureTestCase
         $output = $this->runCommand('tallport:retention');
 
         $this->assertStringContainsString('Retention is off (Settings » Retention): logs only.', $output);
-    }
-
-    public function testParseEmlListsAttachments()
-    {
-        $output = $this->runCommand('tallport:parse-eml', ['file' => base_path('tests/Messages/webklex/inline_attachment.eml')]);
-
-        $this->assertStringContainsString("Attachments: \n", $output);
-        $this->assertMatchesRegularExpression('/^— .+ \(embedded\)$/mu', $output);
     }
 }
