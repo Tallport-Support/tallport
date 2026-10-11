@@ -75,6 +75,10 @@ class ConversationList extends Component
         $this->params = $params;
         $this->filter = $filter;
         $this->sorting = Conversation::getConvTableSorting(null, $folder && $folder->id ? $folder : null);
+        // Search results: best matches first on every page, as on the first, unless sorted.
+        if (isset($filter['q']) && empty(request()->sorting) && \App\Search\SearchQuery::parse((string) $filter['q'])->hasTerms()) {
+            $this->sorting = ['sort_by' => 'relevance', 'order' => 'desc'];
+        }
         $this->page = $conversations && method_exists($conversations, 'currentPage') ? $conversations->currentPage() : 1;
         $this->page_param = $pageParam;
         $this->url = request()->fullUrl();

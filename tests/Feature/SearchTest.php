@@ -247,7 +247,6 @@ class SearchTest extends FeatureTestCase
 
     public function testNextPagesKeepTheOrder()
     {
-        $this->knownBug('C26');
         $body_only = $this->conversation('Hello', 'Something about a refund.');
         $this->conversation('Refund request', 'Please help with a refund.');
         $body_only->last_reply_at = now()->addHour();

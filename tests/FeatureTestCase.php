@@ -57,7 +57,7 @@ abstract class FeatureTestCase extends TestCase
         \App\Conversation::$starred_conversation_ids = [];
         \App\Misc\Helper::$memory_cache = [];
         foreach ([[\App\Misc\ExternalImages::class, 'blocked'], [\App\Nostr\NostrEvent::class, 'senders'],
-            [\App\AutoReply\AutoReplies::class, 'chosen'], [\App\Workflows\Runner::class, 'last_threads']] as [$class, $property]) {
+            [\App\AutoReply\AutoReplies::class, 'chosen'], [\App\Workflows\Runner::class, 'last_threads'], [\App\Search\Indexer::class, 'pending']] as [$class, $property]) {
             (new \ReflectionProperty($class, $property))->setValue(null, []);
         }
         (new \ReflectionProperty(\App\Workflows\Runner::class, 'robot'))->setValue(null, null);
