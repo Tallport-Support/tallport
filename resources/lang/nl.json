@@ -1803,5 +1803,9 @@
     "Allowed": "Toegestaan",
     "Not Allowed": "Niet Toegestaan",
     "Default (Allowed)": "Standaard (Toegestaan)",
-    "Default (Not Allowed)": "Standaard (Niet Toegestaan)"
+    "Default (Not Allowed)": "Standaard (Niet Toegestaan)",
+    "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport ziet de eigen IP-adressen van bezoekers. Laat in Cloudflare de Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) uit: die blokkeert gewone verzoeken zoals antwoorden. Zet Rocket Loader uit: de Content Security Policy van Tallport blokkeert de scripts die het herschrijft. Het logboek van geblokkeerde verzoeken van Cloudflare staat onder Security » Events.",
+    "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Verzoeken bevatten headers van Cloudflare maar komen niet van de adressen van Cloudflare, dus Tallport negeert het IP-adres van de bezoeker daarin. Zit er nog een proxy tussen Cloudflare en Tallport?",
+    "Visitor IPs Detected": "IP's van Bezoekers Herkend",
+    "Visitor IPs Unknown": "IP's van Bezoekers Onbekend"
 }

@@ -1803,5 +1803,9 @@
     "Allowed": "許可",
     "Not Allowed": "許可しない",
     "Default (Allowed)": "デフォルト（許可）",
-    "Default (Not Allowed)": "デフォルト（許可しない）"
+    "Default (Not Allowed)": "デフォルト（許可しない）",
+    "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport は訪問者自身の IP アドレスを認識しています。Cloudflare では Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) をオフのままにしてください。返信などの通常のリクエストをブロックします。Rocket Loader をオフにしてください。Tallport の Content Security Policy が、書き換えられたスクリプトをブロックします。Cloudflare のブロックされたリクエストのログは Security » Events にあります。",
+    "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "リクエストに Cloudflare のヘッダーが含まれていますが、Cloudflare のアドレスから来ていないため、Tallport はその中の訪問者の IP アドレスを無視します。Cloudflare と Tallport の間に別のプロキシがありますか？",
+    "Visitor IPs Detected": "訪問者の IP を検出",
+    "Visitor IPs Unknown": "訪問者の IP は不明"
 }

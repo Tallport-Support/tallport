@@ -2197,5 +2197,9 @@
     "Allowed": "Рұқсат Етілген",
     "Not Allowed": "Рұқсат Етілмеген",
     "Default (Allowed)": "Әдепкі (Рұқсат Етілген)",
-    "Default (Not Allowed)": "Әдепкі (Рұқсат Етілмеген)"
+    "Default (Not Allowed)": "Әдепкі (Рұқсат Етілмеген)",
+    "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport келушілердің өз IP мекенжайларын көреді. Cloudflare-де Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) өшірулі қалсын: ол жауаптар сияқты қарапайым сұрауларды бұғаттайды. Rocket Loader-ді өшіріңіз: Tallport-тың Content Security Policy-і ол қайта жазған скрипттерді бұғаттайды. Cloudflare-дің бұғатталған сұраулар журналы Security » Events бөлімінде.",
+    "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Сұрауларда Cloudflare тақырыптары бар, бірақ олар Cloudflare мекенжайларынан келмейді, сондықтан Tallport олардағы келушінің IP мекенжайын елемейді. Cloudflare мен Tallport арасында басқа прокси бар ма?",
+    "Visitor IPs Detected": "Келушілердің IP Анықталды",
+    "Visitor IPs Unknown": "Келушілердің IP Белгісіз"
 }

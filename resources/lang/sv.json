@@ -1803,5 +1803,9 @@
     "Allowed": "Tillåtet",
     "Not Allowed": "Inte Tillåtet",
     "Default (Allowed)": "Standard (Tillåtet)",
-    "Default (Not Allowed)": "Standard (Inte Tillåtet)"
+    "Default (Not Allowed)": "Standard (Inte Tillåtet)",
+    "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport ser besökarnas egna IP-adresser. Låt Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) vara avstängd i Cloudflare: den blockerar vanliga förfrågningar som svar. Stäng av Rocket Loader: Tallports Content Security Policy blockerar skripten den skriver om. Cloudflares logg över blockerade förfrågningar finns under Security » Events.",
+    "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Förfrågningarna har Cloudflares rubriker men kommer inte från Cloudflares adresser, så Tallport bortser från besökarens IP-adress i dem. Finns det en annan proxy mellan Cloudflare och Tallport?",
+    "Visitor IPs Detected": "Besökares IP-adresser Identifierade",
+    "Visitor IPs Unknown": "Besökares IP-adresser Okända"
 }

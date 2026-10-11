@@ -1810,5 +1810,9 @@
     "Allowed": "Autorisé",
     "Not Allowed": "Non Autorisé",
     "Default (Allowed)": "Par Défaut (Autorisé)",
-    "Default (Not Allowed)": "Par Défaut (Non Autorisé)"
+    "Default (Not Allowed)": "Par Défaut (Non Autorisé)",
+    "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport voit les adresses IP réelles des visiteurs. Dans Cloudflare, laissez le Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) désactivé : il bloque des requêtes ordinaires comme les réponses. Désactivez Rocket Loader : la Content Security Policy de Tallport bloque les scripts qu'il réécrit. Le journal des requêtes bloquées de Cloudflare se trouve dans Security » Events.",
+    "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Les requêtes portent les en-têtes de Cloudflare mais ne viennent pas des adresses de Cloudflare, donc Tallport ignore l'adresse IP du visiteur qu'elles contiennent. Y a-t-il un autre proxy entre Cloudflare et Tallport ?",
+    "Visitor IPs Detected": "IP des Visiteurs Détectées",
+    "Visitor IPs Unknown": "IP des Visiteurs Inconnues"
 }

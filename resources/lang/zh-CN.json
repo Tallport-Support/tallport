@@ -1804,5 +1804,9 @@
     "Allowed": "允许",
     "Not Allowed": "不允许",
     "Default (Allowed)": "默认（允许）",
-    "Default (Not Allowed)": "默认（不允许）"
+    "Default (Not Allowed)": "默认（不允许）",
+    "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport 能看到访客自己的 IP 地址。在 Cloudflare 中，请保持 Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) 关闭：它会拦截回复等普通请求。请关闭 Rocket Loader：Tallport 的 Content Security Policy 会拦截它改写的脚本。Cloudflare 的拦截请求日志位于 Security » Events。",
+    "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "请求带有 Cloudflare 的标头，但并非来自 Cloudflare 的地址，因此 Tallport 会忽略其中的访客 IP 地址。Cloudflare 和 Tallport 之间是否还有其他代理？",
+    "Visitor IPs Detected": "已识别访客 IP",
+    "Visitor IPs Unknown": "访客 IP 未知"
 }

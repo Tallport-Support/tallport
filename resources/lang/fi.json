@@ -1819,5 +1819,9 @@
     "Allowed": "Sallittu",
     "Not Allowed": "Ei Sallittu",
     "Default (Allowed)": "Oletus (Sallittu)",
-    "Default (Not Allowed)": "Oletus (Ei Sallittu)"
+    "Default (Not Allowed)": "Oletus (Ei Sallittu)",
+    "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport näkee kävijöiden omat IP-osoitteet. Pidä Cloudflaressa Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) pois päältä: se estää tavallisia pyyntöjä, kuten vastauksia. Kytke Rocket Loader pois päältä: Tallportin Content Security Policy estää sen uudelleenkirjoittamat skriptit. Cloudflaren loki estetyistä pyynnöistä on kohdassa Security » Events.",
+    "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Pyynnöissä on Cloudflaren otsakkeet, mutta ne eivät tule Cloudflaren osoitteista, joten Tallport ohittaa niissä olevan kävijän IP-osoitteen. Onko Cloudflaren ja Tallportin välissä toinen välityspalvelin?",
+    "Visitor IPs Detected": "Kävijöiden IP-osoitteet Tunnistettu",
+    "Visitor IPs Unknown": "Kävijöiden IP-osoitteet Tuntemattomia"
 }

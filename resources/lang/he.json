@@ -1803,5 +1803,9 @@
     "Allowed": "מותר",
     "Not Allowed": "אסור",
     "Default (Allowed)": "ברירת מחדל (מותר)",
-    "Default (Not Allowed)": "ברירת מחדל (אסור)"
+    "Default (Not Allowed)": "ברירת מחדל (אסור)",
+    "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport רואה את כתובות ה-IP של המבקרים עצמם. ב-Cloudflare השאירו את Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) כבוי: הוא חוסם בקשות רגילות כמו תגובות. כבו את Rocket Loader: מדיניות אבטחת התוכן (Content Security Policy) של Tallport חוסמת את הסקריפטים שהוא משכתב. יומן הבקשות החסומות של Cloudflare נמצא ב-Security » Events.",
+    "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "הבקשות נושאות כותרות של Cloudflare אך אינן מגיעות מכתובות של Cloudflare, ולכן Tallport מתעלם מכתובת ה-IP של המבקר שבהן. האם יש פרוקסי נוסף בין Cloudflare ל-Tallport?",
+    "Visitor IPs Detected": "כתובות IP של מבקרים זוהו",
+    "Visitor IPs Unknown": "כתובות IP של מבקרים לא ידועות"
 }

@@ -165,14 +165,22 @@
                 <x-fruit::badge tone="warning" x-show="!https" x-cloak>HTTP</x-fruit::badge>
             </span>
         </div>
+        {{-- Visitors' IPs come from Cloudflare's header when the request comes from Cloudflare (App\Http\Middleware\HttpsAndCloudflareIp). --}}
         @if (\Helper::detectCloudFlare())
             <div class="f-form-row">
-                <span>Proxy</span>
-                <span class="f-row">
-                    <span class="f-muted">CloudFlare</span>
-                    @if (!config('app.cloudflare_is_used'))<x-fruit::badge tone="warning">CloudFlare</x-fruit::badge>@endif
-                    <a href="{{ config('app.freescout_repo') }}/wiki/Installation-Guide#103-cloudflare" target="_blank">{{ __('read more') }}</a>
-                </span>
+                <div>
+                    <span>Cloudflare</span>
+                    @if (App\Http\Middleware\HttpsAndCloudflareIp::$visitor_ip_from_cloudflare)
+                        <p class="f-help">{{ __('Tallport sees visitors\' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport\'s Content Security Policy blocks the scripts it rewrites. Cloudflare\'s log of blocked requests is in Security » Events.') }}</p>
+                    @else
+                        <p class="f-help">{{ __('Requests carry Cloudflare\'s headers but don\'t come from Cloudflare\'s addresses, so Tallport ignores the visitor\'s IP address in them. Is there another proxy between Cloudflare and Tallport?') }}</p>
+                    @endif
+                </div>
+                @if (App\Http\Middleware\HttpsAndCloudflareIp::$visitor_ip_from_cloudflare)
+                    <span class="system-status__check"><x-icon.circle-check class="f-icon" aria-hidden="true" /> {{ __('Visitor IPs Detected') }}</span>
+                @else
+                    <x-fruit::badge tone="warning">{{ __('Visitor IPs Unknown') }}</x-fruit::badge>
+                @endif
             </div>
         @endif
         <div class="f-form-row" id="db">

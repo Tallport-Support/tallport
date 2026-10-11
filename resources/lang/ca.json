@@ -1895,5 +1895,9 @@
     "Allowed": "Permès",
     "Not Allowed": "No Permès",
     "Default (Allowed)": "Per Defecte (Permès)",
-    "Default (Not Allowed)": "Per Defecte (No Permès)"
+    "Default (Not Allowed)": "Per Defecte (No Permès)",
+    "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport veu les adreces IP pròpies dels visitants. A Cloudflare, deixeu desactivat el Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules): bloqueja peticions normals com ara les respostes. Desactiveu Rocket Loader: la Content Security Policy de Tallport bloqueja els scripts que reescriu. El registre de peticions bloquejades de Cloudflare és a Security » Events.",
+    "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Les peticions porten capçaleres de Cloudflare però no vénen de les adreces de Cloudflare, així que Tallport ignora l'adreça IP del visitant que contenen. Hi ha un altre proxy entre Cloudflare i Tallport?",
+    "Visitor IPs Detected": "IP dels Visitants Detectades",
+    "Visitor IPs Unknown": "IP dels Visitants Desconegudes"
 }

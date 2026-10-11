@@ -54,20 +54,26 @@ class HttpsAndCloudflareIpTest extends TestCase
         $this->assertSame(HttpsAndCloudflareIp::class, $middleware[0]);
     }
 
-    public function testCloudflareIpWhenEnabled()
+    /**
+     * From Cloudflare (its addresses), the visitor's IP is in CF-Connecting-IP.
+     */
+    public function testCloudflareIpFromCloudflare()
     {
-        config(['app.cloudflare_is_used' => true]);
-
-        $this->assertSame('203.0.113.9', $this->handle(['HTTP_CF_CONNECTING_IP' => '203.0.113.9'])['ip']);
+        $this->assertSame('203.0.113.9', $this->handle(['REMOTE_ADDR' => '162.158.1.20', 'HTTP_CF_CONNECTING_IP' => '203.0.113.9'])['ip']);
         $this->assertSame('203.0.113.9', $_SERVER['REMOTE_ADDR']);
-        $this->assertSame('10.0.0.5', $this->handle(['HTTP_CF_CONNECTING_IP' => '<script>'])['ip']);
+        $this->assertTrue(HttpsAndCloudflareIp::$visitor_ip_from_cloudflare);
+        $this->assertSame('2001:db8::7', $this->handle(['REMOTE_ADDR' => '2606:4700::1', 'HTTP_CF_CONNECTING_IP' => '2001:db8::7'])['ip']);
+        $this->assertSame('162.158.1.20', $this->handle(['REMOTE_ADDR' => '162.158.1.20', 'HTTP_CF_CONNECTING_IP' => '<script>'])['ip']);
     }
 
-    public function testCloudflareHeaderIgnoredWhenDisabled()
+    /**
+     * From anywhere else, the header could be anyone's: ignored.
+     */
+    public function testCloudflareHeaderIgnoredFromElsewhere()
     {
-        config(['app.cloudflare_is_used' => false]);
-
         $this->assertSame('10.0.0.5', $this->handle(['HTTP_CF_CONNECTING_IP' => '203.0.113.9'])['ip']);
+        $this->assertSame('198.51.100.4', $this->handle(['REMOTE_ADDR' => '198.51.100.4', 'HTTP_CF_CONNECTING_IP' => '203.0.113.9'])['ip']);
+        $this->assertFalse(HttpsAndCloudflareIp::$visitor_ip_from_cloudflare);
     }
 
     public function testSameSiteNoneCookiesAreSecure()

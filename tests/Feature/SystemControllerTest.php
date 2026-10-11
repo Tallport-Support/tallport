@@ -119,6 +119,27 @@ class SystemControllerTest extends FeatureTestCase
     /**
      * One queue worker running for this installation: Running.
      */
+    /**
+     * Behind Cloudflare: its notes, and whether the visitor's IP is known (only from Cloudflare's addresses).
+     */
+    public function testCloudflare()
+    {
+        $server = $_SERVER;
+        $_SERVER['HTTP_CF_RAY'] = '8a1b2c3d4e5f6a7b-AMS';
+        try {
+            \Livewire\Livewire::withoutLazyLoading();
+            $this->actingAs($this->admin)->withServerVariables(['REMOTE_ADDR' => '162.158.1.20', 'HTTP_CF_CONNECTING_IP' => '203.0.113.9'])
+                ->get(route('system'))->assertOk()->assertSee('Visitor IPs Detected')->assertSee('Rocket Loader')
+                ->assertDontSee('#103-cloudflare', false);
+
+            \Livewire\Livewire::withoutLazyLoading();
+            $this->actingAs($this->admin)->withServerVariables(['REMOTE_ADDR' => '198.51.100.4', 'HTTP_CF_CONNECTING_IP' => '203.0.113.9'])
+                ->get(route('system'))->assertOk()->assertSee('Visitor IPs Unknown')->assertDontSee('Rocket Loader');
+        } finally {
+            $_SERVER = $server;
+        }
+    }
+
     public function testRunningCommandIsFound()
     {
         $this->startProcess('artisan queue:work --queue=default,'.\Helper::getWorkerIdentifier());

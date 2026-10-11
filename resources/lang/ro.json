@@ -1803,5 +1803,9 @@
     "Allowed": "Permis",
     "Not Allowed": "Nepermis",
     "Default (Allowed)": "Prestabilit (Permis)",
-    "Default (Not Allowed)": "Prestabilit (Nepermis)"
+    "Default (Not Allowed)": "Prestabilit (Nepermis)",
+    "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport vede adresele IP proprii ale vizitatorilor. În Cloudflare, lăsați Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) dezactivat: blochează cereri obișnuite, cum ar fi răspunsurile. Dezactivați Rocket Loader: Content Security Policy a Tallport blochează scripturile pe care le rescrie. Jurnalul Cloudflare cu cererile blocate se află în Security » Events.",
+    "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Cererile au antete Cloudflare, dar nu vin de la adresele Cloudflare, așa că Tallport ignoră adresa IP a vizitatorului din ele. Există un alt proxy între Cloudflare și Tallport?",
+    "Visitor IPs Detected": "IP-urile Vizitatorilor Detectate",
+    "Visitor IPs Unknown": "IP-urile Vizitatorilor Necunoscute"
 }

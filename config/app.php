@@ -479,13 +479,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Let the application know that CloudFlare is used (for proper client IP detection).
-    |-------------------------------------------------------------------------
-    */
-    'cloudflare_is_used'    => env('APP_CLOUDFLARE_IS_USED', false),
-
-    /*
-    |--------------------------------------------------------------------------
     | When this option is enabled you may see an extra text below customer's replies, for example:
     |     On Thu, Jan 4, 2024 at 8:41 AM John Doe | Demo <test@example.org> wrote:
     | No other reply separators are used in this case.

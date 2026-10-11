@@ -1803,5 +1803,9 @@
     "Allowed": "Engedélyezett",
     "Not Allowed": "Nem Engedélyezett",
     "Default (Allowed)": "Alapértelmezett (Engedélyezett)",
-    "Default (Not Allowed)": "Alapértelmezett (Nem Engedélyezett)"
+    "Default (Not Allowed)": "Alapértelmezett (Nem Engedélyezett)",
+    "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "A Tallport látja a látogatók saját IP-címét. A Cloudflare-ben hagyja kikapcsolva a Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) beállítást: blokkol olyan szokásos kéréseket, mint a válaszok. Kapcsolja ki a Rocket Loadert: a Tallport Content Security Policy-ja blokkolja az általa átírt szkripteket. A Cloudflare blokkolt kéréseinek naplója a Security » Events alatt található.",
+    "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "A kérések Cloudflare-fejléceket tartalmaznak, de nem a Cloudflare címeiről érkeznek, ezért a Tallport figyelmen kívül hagyja a bennük lévő látogatói IP-címet. Van egy másik proxy a Cloudflare és a Tallport között?",
+    "Visitor IPs Detected": "Látogatói IP-k Felismerve",
+    "Visitor IPs Unknown": "Látogatói IP-k Ismeretlenek"
 }

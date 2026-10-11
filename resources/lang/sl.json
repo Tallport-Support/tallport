@@ -1803,5 +1803,9 @@
     "Allowed": "Dovoljeno",
     "Not Allowed": "Ni Dovoljeno",
     "Default (Allowed)": "Privzeto (Dovoljeno)",
-    "Default (Not Allowed)": "Privzeto (Ni Dovoljeno)"
+    "Default (Not Allowed)": "Privzeto (Ni Dovoljeno)",
+    "Tallport sees visitors' own IP addresses. In Cloudflare, leave the Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) off: it blocks ordinary requests such as replies. Turn Rocket Loader off: Tallport's Content Security Policy blocks the scripts it rewrites. Cloudflare's log of blocked requests is in Security » Events.": "Tallport vidi lastne naslove IP obiskovalcev. V Cloudflaru pustite Cloudflare OWASP Core Ruleset (Security » WAF » Managed Rules) izklopljen: blokira običajne zahteve, kot so odgovori. Izklopite Rocket Loader: Tallportova Content Security Policy blokira skripte, ki jih prepiše. Cloudflarov dnevnik blokiranih zahtev je v Security » Events.",
+    "Requests carry Cloudflare's headers but don't come from Cloudflare's addresses, so Tallport ignores the visitor's IP address in them. Is there another proxy between Cloudflare and Tallport?": "Zahteve vsebujejo Cloudflarove glave, vendar ne prihajajo s Cloudflarovih naslovov, zato Tallport prezre naslov IP obiskovalca v njih. Ali je med Cloudflarom in Tallportom še en posrednik?",
+    "Visitor IPs Detected": "Naslovi IP Obiskovalcev Zaznani",
+    "Visitor IPs Unknown": "Naslovi IP Obiskovalcev Neznani"
 }
