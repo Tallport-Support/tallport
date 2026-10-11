@@ -985,64 +985,6 @@ class Helper
         return parse_url(\Config::get('app.url'), PHP_URL_HOST);
     }
 
-    /**
-     * Create zip archive.
-     * Source example: public/files/*
-     * File name example: test.zip.
-     * storage_path without app/
-     */
-    /**
-     * Zip the files matching $source (folders recursively, without hidden
-     * files) into storage/app/$storage_file_path (default "zipper/$file_name"),
-     * under $folder in the archive.
-     *
-     * @return string|false Path of the archive.
-     */
-    public static function createZipArchive($source, $file_name, $folder = '', $storage_file_path = '')
-    {
-        if (!$source || !$file_name) {
-            return false;
-        }
-
-        if (!$storage_file_path) {
-            $storage_file_path = 'zipper'.DIRECTORY_SEPARATOR.$file_name;
-        }
-        $dest_path = storage_path().DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.$storage_file_path;
-        if (!is_dir(dirname($dest_path))) {
-            mkdir(dirname($dest_path), 0755, true);
-        }
-
-        $zip = new \ZipArchive();
-        if ($zip->open($dest_path, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
-            throw new \Exception('Could not create archive '.$dest_path);
-        }
-        $prefix = $folder !== '' ? trim($folder, '/').'/' : '';
-
-        foreach (glob($source) ?: [] as $path) {
-            if (is_file($path)) {
-                $zip->addFile($path, $prefix.basename($path));
-                continue;
-            }
-            $files = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS)
-            );
-            foreach ($files as $file) {
-                $relative = str_replace('\\', '/', substr($file->getPathname(), strlen($path) + 1));
-                // Hidden files and folders are left out.
-                if (!$file->isFile() || preg_match('#(^|/)\.#', $relative)) {
-                    continue;
-                }
-                $zip->addFile($file->getPathname(), $prefix.$relative);
-            }
-        }
-
-        if (!$zip->close()) {
-            throw new \Exception('Could not write archive '.$dest_path);
-        }
-
-        return $dest_path;
-    }
-
     public static function getPrivateStorage()
     {
         return \Storage::disk('local');

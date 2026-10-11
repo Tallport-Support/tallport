@@ -6,9 +6,8 @@ use Illuminate\Filesystem\Filesystem;
 use Tests\TestCase;
 
 /**
- * Zip archives: the translations download (Helper::createZipArchive) and
- * module installation (Helper::unzip), which must never write outside the
- * Modules folder.
+ * Zip archives: module installation (Helper::unzip), which must never write
+ * outside the Modules folder.
  */
 class ZipTest extends TestCase
 {
@@ -24,8 +23,6 @@ class ZipTest extends TestCase
     protected function tearDown(): void
     {
         (new Filesystem())->deleteDirectory($this->dir);
-        (new Filesystem())->delete(storage_path('app/tallport-test/test.zip'));
-        @rmdir(storage_path('app/tallport-test'));
         parent::tearDown();
     }
 
@@ -40,35 +37,6 @@ class ZipTest extends TestCase
         $zip->close();
 
         return $path;
-    }
-
-    /**
-     * The layout chumper/zipper produced: the folder's contents under $folder,
-     * without hidden files.
-     */
-    public function testCreateZipArchiveLayout()
-    {
-        $lang = $this->dir.'/lang';
-        mkdir($lang.'/en', 0777, true);
-        mkdir($lang.'/nl/sub', 0777, true);
-        mkdir($lang.'/.hidden');
-        file_put_contents($lang.'/en/messages.php', 'a');
-        file_put_contents($lang.'/nl/sub/x.php', 'b');
-        file_put_contents($lang.'/nl.json', 'c');
-        file_put_contents($lang.'/.hidden/h', 'd');
-        file_put_contents($lang.'/.dotfile', 'e');
-
-        $path = \Helper::createZipArchive($lang, 'test.zip', 'lang', 'tallport-test/test.zip');
-
-        $zip = new \ZipArchive();
-        $zip->open($path);
-        $names = [];
-        for ($i = 0; $i < $zip->numFiles; $i++) {
-            $names[] = $zip->getNameIndex($i);
-        }
-        sort($names);
-        $this->assertSame(['lang/en/messages.php', 'lang/nl.json', 'lang/nl/sub/x.php'], $names);
-        $this->assertSame('b', $zip->getFromName('lang/nl/sub/x.php'));
     }
 
     public function testUnzipModule()
