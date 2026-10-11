@@ -611,7 +611,6 @@
     "This password is incorrect.": "Questa password non è corretta",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Questa risposta andrà al cliente. :%switch_start%Passa a note:%switch_end% se stai rispondendo a :user_name.",
     "This text will be added to the beginning of each email reply sent to a customer.": "Questo testo verrà aggiunto all'inizio di ogni risposta email inviata a un cliente",
-    "Thread is not in a draft state": "Il thread non è in uno stato di bozza",
     "Thread not found": "Thread non trovato",
     "Time Format": "Formato Ora",
     "Timezone": "Fuso orario",

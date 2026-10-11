@@ -10,8 +10,8 @@ use Tests\FeatureTestCase;
 
 /**
  * The open conversation's composer (App\Livewire\ConversationComposer):
- * replies, notes, forwards and drafts, sent through the conversation ajax
- * actions' code.
+ * replies, notes, forwards and drafts, sent through
+ * App\Misc\ConversationReplies.
  */
 class ConversationComposerTest extends FeatureTestCase
 {

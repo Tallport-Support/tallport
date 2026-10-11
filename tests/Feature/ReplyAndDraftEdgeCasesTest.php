@@ -13,8 +13,8 @@ use Illuminate\Http\Request;
 use Tests\FeatureTestCase;
 
 /**
- * Sending and saving drafts (the send_reply, save_draft and discard_draft
- * actions behind the composers) on their less common paths: stale or foreign
+ * Sending and saving drafts (App\Misc\ConversationReplies, behind the
+ * composers) on their less common paths: stale or foreign
  * drafts, size limits, attachments, forwarding and sending to several
  * people, custom and phone conversations, undoing, and finding the customer
  * of a phone conversation.
@@ -44,14 +44,12 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         return Conversation::where('mailbox_id', $mailbox->id)->orderBy('id', 'desc')->first();
     }
 
-    protected function ajax($action, array $data, $user = null)
+    /**
+     * Send, save or discard (sendReply, saveDraft or discardDraft) in this mailbox.
+     */
+    protected function replies($method, array $data, $user = null)
     {
-        $response = $this->postAjax($user ?: $this->agent, '/conversation/ajax', array_merge([
-            'action'     => $action,
-            'mailbox_id' => $this->mailbox->id,
-        ], $data));
-
-        return $response->json();
+        return $this->$method($user ?: $this->agent, array_merge(['mailbox_id' => $this->mailbox->id], $data));
     }
 
     protected function assertSuccess(array $response)
@@ -77,7 +75,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
 
     protected function replyDraft(Conversation $conversation, $body = '<p>Not sent yet</p>')
     {
-        $response = $this->ajax('save_draft', ['conversation_id' => $conversation->id, 'body' => $body]);
+        $response = $this->replies('saveDraft', ['conversation_id' => $conversation->id, 'body' => $body]);
         $this->assertSuccess($response);
 
         return Thread::find($response['thread_id']);
@@ -96,8 +94,8 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         $other = $this->receiveConversation(['from' => 'robin@customer.example.org']);
         $draft = $this->replyDraft($other);
 
-        $this->assertError('Incorrect thread', $this->ajax('send_reply', ['conversation_id' => $conversation->id, 'thread_id' => $draft->id, 'body' => '<p>Hi</p>']));
-        $this->assertError('Incorrect thread', $this->ajax('save_draft', ['conversation_id' => $conversation->id, 'thread_id' => $draft->id, 'body' => '<p>Hi</p>']));
+        $this->assertError('Incorrect thread', $this->replies('sendReply', ['conversation_id' => $conversation->id, 'thread_id' => $draft->id, 'body' => '<p>Hi</p>']));
+        $this->assertError('Incorrect thread', $this->replies('saveDraft', ['conversation_id' => $conversation->id, 'thread_id' => $draft->id, 'body' => '<p>Hi</p>']));
         $this->assertEquals(Thread::STATE_DRAFT, $draft->fresh()->state);
     }
 
@@ -126,11 +124,11 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
         $draft = $this->replyDraft($conversation);
-        $this->assertSuccess($this->ajax('send_reply', ['conversation_id' => $conversation->id, 'thread_id' => $draft->id, 'body' => '<p>Sent</p>']));
+        $this->assertSuccess($this->replies('sendReply', ['conversation_id' => $conversation->id, 'thread_id' => $draft->id, 'body' => '<p>Sent</p>']));
 
         $message = 'Message has been already sent. Please discard this draft.';
-        $this->assertError($message, $this->ajax('send_reply', ['conversation_id' => $conversation->id, 'thread_id' => $draft->id, 'body' => '<p>Again</p>']));
-        $this->assertError($message, $this->ajax('save_draft', ['conversation_id' => $conversation->id, 'thread_id' => $draft->id, 'body' => '<p>Again</p>']));
+        $this->assertError($message, $this->replies('sendReply', ['conversation_id' => $conversation->id, 'thread_id' => $draft->id, 'body' => '<p>Again</p>']));
+        $this->assertError($message, $this->replies('saveDraft', ['conversation_id' => $conversation->id, 'thread_id' => $draft->id, 'body' => '<p>Again</p>']));
         $this->assertCount(1, $this->sentEmailsTo('casey@customer.example.org'));
     }
 
@@ -145,8 +143,8 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
             'body' => '<p>Answer</p>',
         ];
 
-        $this->assertSuccess($this->ajax('send_reply', $data));
-        $this->assertSuccess($this->ajax('send_reply', $data));
+        $this->assertSuccess($this->replies('sendReply', $data));
+        $this->assertSuccess($this->replies('sendReply', $data));
         $this->assertSame(1, $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->count());
         $this->assertCount(1, $this->sentEmailsTo('casey@customer.example.org'));
     }
@@ -161,8 +159,8 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
             'body' => '<p>Answer</p>',
         ];
 
-        $this->assertSuccess($this->ajax('send_reply', $data));
-        $this->assertSuccess($this->ajax('send_reply', $data));
+        $this->assertSuccess($this->replies('sendReply', $data));
+        $this->assertSuccess($this->replies('sendReply', $data));
         $this->assertSame(1, Conversation::where('mailbox_id', $this->mailbox->id)->count());
         $this->assertCount(1, $this->sentEmailsTo('casey@customer.example.org'));
     }
@@ -175,7 +173,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         [$attachment, $encrypted_id] = $this->upload();
         Attachment::getDisk()->delete($attachment->getStorageFilePath());
 
-        $this->assertError('Error occurred. Please try again later.', $this->ajax('send_reply', [
+        $this->assertError('Error occurred. Please try again later.', $this->replies('sendReply', [
             'conversation_id' => $conversation->id,
             'thread_id' => $draft->id,
             'body' => '<p>Answer</p>',
@@ -202,7 +200,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
             throw new \RuntimeException('Simulated save failure');
         });
         try {
-            $this->assertError('Error occurred. Please try again later.', $this->ajax('send_reply', [
+            $this->assertError('Error occurred. Please try again later.', $this->replies('sendReply', [
                 'conversation_id' => $conversation->id,
                 'thread_id' => $draft->id,
                 'body' => $body,
@@ -222,7 +220,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
 
     public function testANewConversationNeedsAValidRecipient()
     {
-        $response = $this->ajax('send_reply', ['is_create' => 1, 'to' => ['not-an-email'], 'subject' => 'Hello', 'body' => '<p>Hi</p>']);
+        $response = $this->replies('sendReply', ['is_create' => 1, 'to' => ['not-an-email'], 'subject' => 'Hello', 'body' => '<p>Hi</p>']);
 
         $this->assertError('Incorrect recipients', $response);
         $this->assertSame(0, Conversation::where('mailbox_id', $this->mailbox->id)->count());
@@ -237,14 +235,14 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         // Images in the text are sent in the email too (App\Misc\EmbedImages): they count.
         [, $image] = $this->upload('image.png', str_repeat('a', 800 * 1024), true);
 
-        $this->assertSuccess($this->ajax('send_reply', ['conversation_id' => $conversation->id, 'body' => '<p>Small file</p>', 'attachments' => [$small]]));
+        $this->assertSuccess($this->replies('sendReply', ['conversation_id' => $conversation->id, 'body' => '<p>Small file</p>', 'attachments' => [$small]]));
 
         $message = 'Message is too large — Max. Message Size: 1 MB. Please shorten your message or remove some attachments.';
-        $this->assertError($message, $this->ajax('send_reply', ['conversation_id' => $conversation->id, 'body' => '<p>Big file</p>', 'attachments' => [$big]]));
-        $this->assertError($message, $this->ajax('send_reply', ['conversation_id' => $conversation->id, 'body' => '<p>Big image</p>', 'embeds' => [$image]]));
-        $this->assertError($message, $this->ajax('send_reply', ['conversation_id' => $conversation->id, 'body' => str_repeat('<p>Long text</p>', 60000)]));
+        $this->assertError($message, $this->replies('sendReply', ['conversation_id' => $conversation->id, 'body' => '<p>Big file</p>', 'attachments' => [$big]]));
+        $this->assertError($message, $this->replies('sendReply', ['conversation_id' => $conversation->id, 'body' => '<p>Big image</p>', 'embeds' => [$image]]));
+        $this->assertError($message, $this->replies('sendReply', ['conversation_id' => $conversation->id, 'body' => str_repeat('<p>Long text</p>', 60000)]));
         // Notes aren't sent.
-        $this->assertSuccess($this->ajax('send_reply', ['conversation_id' => $conversation->id, 'is_note' => 1, 'body' => '<p>Big file</p>', 'attachments' => [$big]]));
+        $this->assertSuccess($this->replies('sendReply', ['conversation_id' => $conversation->id, 'is_note' => 1, 'body' => '<p>Big file</p>', 'attachments' => [$big]]));
         $this->assertCount(1, $this->sentEmailsTo('casey@customer.example.org'));
     }
 
@@ -254,9 +252,9 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         $this->mailbox->users()->attach($limited->id);
         $conversation = $this->receiveConversation();
 
-        $this->assertError('Not enough permissions', $this->ajax('send_reply', ['conversation_id' => $conversation->id, 'body' => '<p>Hi</p>'], $limited));
-        $this->assertError('Not enough permissions', $this->ajax('save_draft', ['conversation_id' => $conversation->id, 'body' => '<p>Hi</p>'], $limited));
-        $this->assertError('Not enough permissions', $this->ajax('save_draft', ['conversation_id' => $conversation->id, 'body' => '<p>Hi</p>'], $this->createUser()));
+        $this->assertError('Not enough permissions', $this->replies('sendReply', ['conversation_id' => $conversation->id, 'body' => '<p>Hi</p>'], $limited));
+        $this->assertError('Not enough permissions', $this->replies('saveDraft', ['conversation_id' => $conversation->id, 'body' => '<p>Hi</p>'], $limited));
+        $this->assertError('Not enough permissions', $this->replies('saveDraft', ['conversation_id' => $conversation->id, 'body' => '<p>Hi</p>'], $this->createUser()));
         $this->assertSame(1, $conversation->threads()->count());
     }
 
@@ -266,7 +264,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
 
-        $this->assertSuccess($this->ajax('send_reply', [
+        $this->assertSuccess($this->replies('sendReply', [
             'conversation_id' => $conversation->id,
             'to'              => 'casey@work.example.org',
             'from_alias'      => 'sales@example.org',
@@ -286,7 +284,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
 
-        $this->assertSuccess($this->ajax('send_reply', ['conversation_id' => $conversation->id, 'type' => Conversation::TYPE_PHONE, 'is_note' => 1, 'body' => '<p>Called them.</p>']));
+        $this->assertSuccess($this->replies('sendReply', ['conversation_id' => $conversation->id, 'type' => Conversation::TYPE_PHONE, 'is_note' => 1, 'body' => '<p>Called them.</p>']));
 
         $this->assertTrue($conversation->fresh()->isPhone());
         $this->assertCount(0, $this->sentEmails());
@@ -294,14 +292,14 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
 
     public function testReplyingToAPhoneConversationMakesItAnEmailConversation()
     {
-        $this->assertSuccess($this->ajax('send_reply', [
+        $this->assertSuccess($this->replies('sendReply', [
             'type' => Conversation::TYPE_PHONE, 'is_create' => 1, 'is_note' => 1,
             'name' => 'Kim Caller', 'to_email' => 'kim@customer.example.org', 'subject' => 'Called', 'body' => '<p>Called us.</p>',
         ]));
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
         $this->assertTrue($conversation->isPhone());
 
-        $this->assertSuccess($this->ajax('send_reply', ['conversation_id' => $conversation->id, 'body' => '<p>As discussed.</p>']));
+        $this->assertSuccess($this->replies('sendReply', ['conversation_id' => $conversation->id, 'body' => '<p>As discussed.</p>']));
 
         $conversation->refresh();
         $this->assertSame(Conversation::TYPE_EMAIL, (int) $conversation->type);
@@ -316,20 +314,20 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         $hidden = $this->receiveConversation(['from' => 'robin@customer.example.org'], $other_mailbox)->customer;
 
         $data = ['type' => Conversation::TYPE_PHONE, 'is_create' => 1, 'is_note' => 1, 'name' => (string) $hidden->id, 'subject' => 'Called', 'body' => '<p>Called.</p>'];
-        $this->assertError('Inaccessible customer', $this->ajax('send_reply', $data));
-        $this->assertError('Inaccessible customer', $this->ajax('save_draft', $data));
+        $this->assertError('Inaccessible customer', $this->replies('sendReply', $data));
+        $this->assertError('Inaccessible customer', $this->replies('saveDraft', $data));
         $this->assertSame(0, Conversation::where('mailbox_id', $this->mailbox->id)->count());
     }
 
     public function testCustomConversationNeedsABody()
     {
-        $this->assertError('The body field is required.', $this->ajax('send_reply', ['type' => Conversation::TYPE_CUSTOM, 'is_create' => 1, 'body' => '']));
+        $this->assertError('The body field is required.', $this->replies('sendReply', ['type' => Conversation::TYPE_CUSTOM, 'is_create' => 1, 'body' => '']));
 
         // Modules set the fields it needs.
         \Eventy::addFilter('conversation.custom.validation_rules', function ($rules) {
             return $rules + ['subject' => 'required|string'];
         }, 20, 2);
-        $response = $this->ajax('send_reply', ['type' => Conversation::TYPE_CUSTOM, 'is_create' => 1, 'body' => '<p>Custom</p>']);
+        $response = $this->replies('sendReply', ['type' => Conversation::TYPE_CUSTOM, 'is_create' => 1, 'body' => '<p>Custom</p>']);
         \Eventy::removeAllFilters('conversation.custom.validation_rules');
 
         $this->assertError('The subject field is required.', $response);
@@ -345,10 +343,10 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
             return 'Ticket';
         }, 20, 2);
 
-        $this->assertSuccess($this->ajax('send_reply', ['type' => Conversation::TYPE_CUSTOM, 'is_create' => 1, 'subject' => 'Internal', 'body' => '<p>Custom</p>']));
+        $this->assertSuccess($this->replies('sendReply', ['type' => Conversation::TYPE_CUSTOM, 'is_create' => 1, 'subject' => 'Internal', 'body' => '<p>Custom</p>']));
         $this->assertStringContainsString('Ticket added', session('flash_warning_floating'));
 
-        $this->assertSuccess($this->ajax('send_reply', ['type' => Conversation::TYPE_CUSTOM, 'is_create' => 1, 'subject' => 'Internal', 'body' => '<p>Custom 2</p>', 'after_send' => User::AFTER_SEND_STAY]));
+        $this->assertSuccess($this->replies('sendReply', ['type' => Conversation::TYPE_CUSTOM, 'is_create' => 1, 'subject' => 'Internal', 'body' => '<p>Custom 2</p>', 'after_send' => User::AFTER_SEND_STAY]));
         $this->assertSame('Ticket added', session('flash_warning_floating'));
 
         \Eventy::removeAllFilters('conversation.custom.identifier');
@@ -363,10 +361,10 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
 
-        $this->assertSuccess($this->ajax('send_reply', ['conversation_id' => $conversation->id, 'is_note' => 1, 'body' => '<p>Note</p>', 'after_send' => User::AFTER_SEND_STAY]));
+        $this->assertSuccess($this->replies('sendReply', ['conversation_id' => $conversation->id, 'is_note' => 1, 'body' => '<p>Note</p>', 'after_send' => User::AFTER_SEND_STAY]));
         $this->assertSame('Note added', session('flash_warning_floating'));
 
-        $this->assertSuccess($this->ajax('send_reply', [
+        $this->assertSuccess($this->replies('sendReply', [
             'type' => Conversation::TYPE_PHONE, 'is_create' => 1, 'is_note' => 1, 'name' => 'Kim Caller',
             'subject' => 'Called', 'body' => '<p>Called.</p>', 'after_send' => User::AFTER_SEND_STAY,
         ]));
@@ -378,7 +376,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         $conversation = $this->receiveConversation();
         [, $file] = $this->upload();
 
-        $this->assertSuccess($this->ajax('send_reply', [
+        $this->assertSuccess($this->replies('sendReply', [
             'conversation_id' => $conversation->id,
             'subtype'         => Thread::SUBTYPE_FORWARD,
             'to_email'        => ['robin@customer.example.org', 'pat@customer.example.org'],
@@ -410,7 +408,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         $casey->addEmail('casey@work.example.org', true);
         [, $file] = $this->upload();
 
-        $this->assertSuccess($this->ajax('send_reply', [
+        $this->assertSuccess($this->replies('sendReply', [
             'is_create'              => 1,
             'multiple_conversations' => 1,
             'to'                     => ['robin@customer.example.org', 'casey@customer.example.org', 'casey@work.example.org'],
@@ -433,9 +431,9 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
     public function testADraftLikeTheReplyJustSentIsNotSaved()
     {
         $conversation = $this->receiveConversation();
-        $this->assertSuccess($this->ajax('send_reply', ['conversation_id' => $conversation->id, 'body' => '<p>Answer</p>']));
+        $this->assertSuccess($this->replies('sendReply', ['conversation_id' => $conversation->id, 'body' => '<p>Answer</p>']));
 
-        $this->assertError("You've already sent this message just recently.", $this->ajax('save_draft', ['conversation_id' => $conversation->id, 'body' => '<p>Answer</p>']));
+        $this->assertError("You've already sent this message just recently.", $this->replies('saveDraft', ['conversation_id' => $conversation->id, 'body' => '<p>Answer</p>']));
         $this->assertSame(0, $conversation->threads()->where('state', Thread::STATE_DRAFT)->count());
     }
 
@@ -443,7 +441,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
 
-        $response = $this->ajax('save_draft', ['conversation_id' => $conversation->id, 'is_create' => 1, 'to' => ['casey@customer.example.org'], 'body' => '<p>Draft</p>']);
+        $response = $this->replies('saveDraft', ['conversation_id' => $conversation->id, 'is_create' => 1, 'to' => ['casey@customer.example.org'], 'body' => '<p>Draft</p>']);
 
         $this->assertError('Message has been already sent. Please discard this draft.', $response);
         $this->assertSame(Conversation::STATE_PUBLISHED, (int) $conversation->fresh()->state);
@@ -453,7 +451,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
     {
         [$attachment, $file] = $this->upload();
 
-        $response = $this->ajax('save_draft', [
+        $response = $this->replies('saveDraft', [
             'is_create' => 1, 'to' => ['robin@customer.example.org', 'pat@customer.example.org'], 'cc' => ['boss@customer.example.org'],
             'subject'   => 'Draft', 'body' => '<p>Draft</p>', 'attachments' => [$file], 'attachments_all' => [$file],
         ]);
@@ -473,7 +471,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
 
-        $response = $this->ajax('save_draft', ['conversation_id' => $conversation->id, 'to' => 'casey@work.example.org', 'body' => '<p>Draft</p>']);
+        $response = $this->replies('saveDraft', ['conversation_id' => $conversation->id, 'to' => 'casey@work.example.org', 'body' => '<p>Draft</p>']);
 
         $this->assertSuccess($response);
         $this->assertSame(['casey@work.example.org'], Thread::find($response['thread_id'])->getToArray());
@@ -481,7 +479,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
 
     public function testNoteDraftOfANewConversation()
     {
-        $response = $this->ajax('save_draft', ['is_create' => 1, 'is_note' => 1, 'to' => ['robin@customer.example.org'], 'subject' => 'Draft', 'body' => '<p>Note</p>']);
+        $response = $this->replies('saveDraft', ['is_create' => 1, 'is_note' => 1, 'to' => ['robin@customer.example.org'], 'subject' => 'Draft', 'body' => '<p>Note</p>']);
 
         $this->assertSuccess($response);
         $this->assertSame(Thread::TYPE_NOTE, (int) Thread::find($response['thread_id'])->type);
@@ -489,7 +487,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
 
     public function testPhoneConversationDraft()
     {
-        $response = $this->ajax('save_draft', [
+        $response = $this->replies('saveDraft', [
             'is_create' => 1, 'type' => Conversation::TYPE_PHONE, 'name' => 'Kim Caller', 'phone' => '+31 20 555 0199',
             'to_email'  => 'kim@customer.example.org', 'subject' => 'Called', 'body' => '<p>Called</p>',
         ]);
@@ -505,7 +503,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
     public function testForwardDraftAndOneEditedByAColleague()
     {
         $conversation = $this->receiveConversation();
-        $response = $this->ajax('save_draft', [
+        $response = $this->replies('saveDraft', [
             'conversation_id' => $conversation->id, 'subtype' => Thread::SUBTYPE_FORWARD, 'to_email' => 'robin@customer.example.org', 'body' => '<p>FYI</p>',
         ]);
         $this->assertSuccess($response);
@@ -516,7 +514,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
 
         $colleague = $this->createUser();
         $this->mailbox->users()->attach($colleague->id);
-        $this->assertSuccess($this->ajax('save_draft', ['conversation_id' => $conversation->id, 'thread_id' => $draft->id, 'to_email' => 'robin@customer.example.org', 'body' => '<p>FYI, edited</p>'], $colleague));
+        $this->assertSuccess($this->replies('saveDraft', ['conversation_id' => $conversation->id, 'thread_id' => $draft->id, 'to_email' => 'robin@customer.example.org', 'body' => '<p>FYI, edited</p>'], $colleague));
 
         $draft->refresh();
         $this->assertEquals($colleague->id, $draft->edited_by_user_id);
@@ -532,7 +530,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         [$image, $image_id] = $this->upload('image.png', 'png', true);
         $foreign = Attachment::create('foreign.txt', 'text/plain', null, 'Other', null, false, $conversation->threads()->first()->id);
 
-        $response = $this->ajax('save_draft', [
+        $response = $this->replies('saveDraft', [
             'conversation_id' => $conversation->id,
             'body'            => '<p>Draft</p>',
             'attachments'     => [$kept_id, 'not-encrypted'],
@@ -553,7 +551,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
 
-        $response = $this->ajax('discard_draft', ['thread_id' => '', 'from_thread_id' => $conversation->threads()->first()->id]);
+        $response = $this->replies('discardDraft', ['thread_id' => '', 'from_thread_id' => $conversation->threads()->first()->id]);
 
         $this->assertSuccess($response);
         $this->assertSame(route('conversations.view', ['id' => $conversation->id]), $response['redirect_url']);
@@ -564,7 +562,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
         $conversation = $this->receiveConversation();
         $draft = $this->replyDraft($conversation);
 
-        $this->assertError('Not enough permissions', $this->ajax('discard_draft', ['thread_id' => $draft->id], $this->createUser()));
+        $this->assertError('Not enough permissions', $this->replies('discardDraft', ['thread_id' => $draft->id], $this->createUser()));
         $this->assertNotNull(Thread::find($draft->id));
     }
 
@@ -572,7 +570,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
 
     public function testUndoingANewConversationMakesItADraftAgain()
     {
-        $this->assertSuccess($this->ajax('send_reply', ['is_create' => 1, 'to' => ['robin@customer.example.org'], 'subject' => 'Hello', 'body' => '<p>Hi</p>']));
+        $this->assertSuccess($this->replies('sendReply', ['is_create' => 1, 'to' => ['robin@customer.example.org'], 'subject' => 'Hello', 'body' => '<p>Hi</p>']));
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
         $thread = $conversation->threads()->first();
 
@@ -588,7 +586,7 @@ class ReplyAndDraftEdgeCasesTest extends FeatureTestCase
     public function testUndoingAForwardRemovesTheForwardedConversation()
     {
         $conversation = $this->receiveConversation();
-        $this->assertSuccess($this->ajax('send_reply', [
+        $this->assertSuccess($this->replies('sendReply', [
             'conversation_id' => $conversation->id, 'subtype' => Thread::SUBTYPE_FORWARD, 'to_email' => ['robin@customer.example.org'], 'body' => '<p>FYI</p>',
         ]));
         $note = $conversation->threads()->where('type', Thread::TYPE_NOTE)->first();

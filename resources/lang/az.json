@@ -605,7 +605,6 @@
     "This password is incorrect.": "Bu parol yanlışdır.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Bu cavab müştəriyə göndəriləcək. Əgər :user_name-a cavab verirsinizsə, :%switch_start%qeydə keçin:%switch_end%.",
     "This text will be added to the beginning of each email reply sent to a customer.": "Bu mətn müştəriyə göndərilən hər e-poçt cavabının əvvəlinə əlavə olunacaq.",
-    "Thread is not in a draft state": "Yazışma qaralama vəziyyətində deyil",
     "Thread not found": "Yazışma tapılmadı",
     "Time Format": "Vaxt Formatı",
     "Timezone": "Saat qurşağı",

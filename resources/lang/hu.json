@@ -610,7 +610,6 @@
     "This password is incorrect.": "Ez a jelszó helytelen.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Ez a válasz az ügyfélhez fog menni. :%switch_start%Válts megjegyzésre:%switch_end%, ha :user_name-nek válaszolsz.",
     "This text will be added to the beginning of each email reply sent to a customer.": "Ez a szöveg kerül minden, az ügyfélnek küldött e-mail válasz elejére.",
-    "Thread is not in a draft state": "A szál nincs piszkozat állapotban",
     "Thread not found": "A szál nem található",
     "Time Format": "Időformátum",
     "Timezone": "Időzóna",

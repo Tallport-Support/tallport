@@ -32,8 +32,8 @@ class ConversationThreadTest extends FeatureTestCase
 
     protected function note($body)
     {
-        $this->postAjax($this->admin, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $this->conversation->id,
+        $this->sendReply($this->admin, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $this->conversation->id,
             'body'   => $body, 'is_note' => 1,
         ]);
 
@@ -87,8 +87,8 @@ class ConversationThreadTest extends FeatureTestCase
      */
     public function testRetriesAFailedReply()
     {
-        $this->postAjax($this->admin, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $this->conversation->id, 'body' => '<p>Our answer</p>',
+        $this->sendReply($this->admin, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $this->conversation->id, 'body' => '<p>Our answer</p>',
         ]);
         $reply = $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         \DB::table('jobs')->where('queue', 'emails')->delete();

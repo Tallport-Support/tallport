@@ -43,8 +43,8 @@ class IncomingEmailEdgeCasesTest extends FeatureTestCase
     protected function notificationForAgent()
     {
         $conversation = $this->receiveFromCustomer(['message_id' => 'first@customer.example.org']);
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Answer</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Answer</p>',
         ]);
         $reply_id = $this->sentEmailsTo('casey@customer.example.org')[0]->getId();
         $this->receiveFromCustomer(['message_id' => 'second@customer.example.org', 'in_reply_to' => $reply_id, 'body' => 'Follow-up question']);
@@ -87,8 +87,8 @@ class IncomingEmailEdgeCasesTest extends FeatureTestCase
     public function testBounceMarksReplyAsUndelivered()
     {
         $conversation = $this->receiveFromCustomer();
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Answer</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Answer</p>',
         ]);
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $reply_id = $this->sentEmailsTo('casey@customer.example.org')[0]->getId();
@@ -205,8 +205,8 @@ class IncomingEmailEdgeCasesTest extends FeatureTestCase
     public function testAgentAnsweringOwnUiReplyByEmailAddsNote()
     {
         $conversation = $this->receiveFromCustomer();
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>First answer</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>First answer</p>',
         ]);
         $reply_id = $this->sentEmailsTo('casey@customer.example.org')[0]->getId();
         $this->captured_mail->flush();
@@ -385,8 +385,8 @@ class IncomingEmailEdgeCasesTest extends FeatureTestCase
     public function testAutoReplyFromMailerDaemonIsADeliveryNotice()
     {
         $conversation = $this->receiveFromCustomer();
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Answer</p>', 'status' => Conversation::STATUS_PENDING,
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Answer</p>', 'status' => Conversation::STATUS_PENDING,
         ]);
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $reply_id = $this->sentEmailsTo('casey@customer.example.org')[0]->getId();

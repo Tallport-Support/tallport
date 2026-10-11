@@ -599,7 +599,6 @@
     "This password is incorrect.": "Esta senha está incorreta.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Esta resposta irá para o cliente. :%switch_start%Switch para uma nota:%switch_end% se você estiver respondendo para :user_name.",
     "This text will be added to the beginning of each email reply sent to a customer.": "Este texto será adicionado ao início de cada resposta de e-mail enviada a um cliente.",
-    "Thread is not in a draft state": "O tópico não está em rascunho",
     "Thread not found": "Tópico não encontrado",
     "Time Format": "Formato de Hora",
     "Timezone": "Fuso horário",

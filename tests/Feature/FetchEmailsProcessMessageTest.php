@@ -50,8 +50,8 @@ class FetchEmailsProcessMessageTest extends FeatureTestCase
      */
     protected function replyInUi(Conversation $conversation)
     {
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $conversation->mailbox_id, 'conversation_id' => $conversation->id, 'body' => '<p>Answer</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $conversation->mailbox_id, 'conversation_id' => $conversation->id, 'body' => '<p>Answer</p>',
         ]);
         $reply_id = $this->sentEmailsTo($conversation->customer_email)[0]->getId();
         $this->captured_mail->flush();

@@ -122,8 +122,8 @@ class ConversationListTest extends FeatureTestCase
         // A colleague's note on the older one: on top of Mine, though nobody replied.
         $colleague = $this->createUser(['first_name' => 'Sam']);
         $this->mailbox->users()->attach($colleague->id);
-        $this->postAjax($colleague, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $older->id, 'body' => '<p>Over to you</p>', 'is_note' => 1,
+        $this->sendReply($colleague, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $older->id, 'body' => '<p>Over to you</p>', 'is_note' => 1,
         ]);
 
         Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_MINE)])

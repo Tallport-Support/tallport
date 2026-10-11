@@ -500,7 +500,7 @@ class UsersTest extends FeatureTestCase
         $this->mailbox->syncPersonalFolders([$agent->id]);
         $this->receiveEmail($this->mailbox, $this->makeEmail(['from' => 'casey@customer.example.org', 'to' => $this->mailbox->email]));
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
-        $this->postAjax($agent, '/conversation/ajax', ['action' => 'conversation_change_user', 'conversation_id' => $conversation->id, 'user_id' => $agent->id]);
+        \App\Misc\ConversationActions::changeUser($conversation, $agent->id, $agent, request());
         $email = $agent->email;
 
         $response = $this->postAjax($this->admin, '/users/ajax', ['action' => 'delete_user', 'user_id' => $agent->id]);
@@ -531,7 +531,7 @@ class UsersTest extends FeatureTestCase
         foreach (['first', 'second'] as $n) {
             $this->receiveEmail($this->mailbox, $this->makeEmail(['from' => $n.'@customer.example.org', 'to' => $this->mailbox->email, 'subject' => $n]));
             $conversation = \App\Conversation::where('mailbox_id', $this->mailbox->id)->where('subject', $n)->first();
-            $this->postAjax($leaving, '/conversation/ajax', ['action' => 'conversation_change_user', 'conversation_id' => $conversation->id, 'user_id' => $leaving->id]);
+            \App\Misc\ConversationActions::changeUser($conversation, $leaving->id, $leaving, request());
             $conversations[] = $conversation;
         }
 
@@ -541,7 +541,7 @@ class UsersTest extends FeatureTestCase
 
         $staying = $this->createUser();
         $this->mailbox->users()->attach($staying->id);
-        $this->postAjax($staying, '/conversation/ajax', ['action' => 'conversation_change_user', 'conversation_id' => $conversations[0]->id, 'user_id' => $staying->id]);
+        \App\Misc\ConversationActions::changeUser($conversations[0]->fresh(), $staying->id, $staying, request());
         $this->postAjax($this->admin, '/users/ajax', ['action' => 'delete_user', 'user_id' => $staying->id, 'assign_user' => [$this->mailbox->id => $colleague->id]]);
         $this->assertEquals($colleague->id, $conversations[0]->fresh()->user_id);
     }

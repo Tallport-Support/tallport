@@ -95,8 +95,8 @@ class SendReplyToTelegramJobTest extends FeatureTestCase
             ]);
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->orderBy('id', 'desc')->first();
         config(['queue.default' => 'database']);
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => $body,
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => $body,
         ]);
         config(['queue.default' => 'sync']);
         \DB::table('jobs')->where('queue', 'emails')->delete();

@@ -138,14 +138,13 @@ class ConversationPageDataTest extends FeatureTestCase
     public function testADraftWithoutCustomerFindsItByItsRecipient()
     {
         $robin = $this->createCustomer('robin@customer.example.org', ['first_name' => 'Robin']);
-        $response = $this->postAjax($this->agent, '/conversation/ajax', [
-            'action'     => 'save_draft',
+        $response = $this->saveDraft($this->agent, [
             'mailbox_id' => $this->mailbox->id,
             'is_create'  => 1,
             'to'         => ['robin@customer.example.org'],
             'subject'    => 'Draft',
             'body'       => '<p>Draft</p>',
-        ])->json();
+        ]);
         $conversation = Conversation::find($response['conversation_id']);
         $this->assertNull($conversation->customer_id);
 
@@ -198,13 +197,12 @@ class ConversationPageDataTest extends FeatureTestCase
         $this->mailbox->aliases_reply = true;
         $this->mailbox->save();
         $conversation = $this->receiveConversation();
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action'          => 'send_reply',
+        $this->assertSame('success', $this->sendReply($this->agent, [
             'mailbox_id'      => $this->mailbox->id,
             'conversation_id' => $conversation->id,
             'body'            => '<p>Answer</p>',
             'from_alias'      => 'sales@example.org',
-        ])->assertJson(['status' => 'success']);
+        ])['status']);
 
         $this->assertSame('sales@example.org', $this->pageData($conversation)['from_alias']);
     }
@@ -219,9 +217,9 @@ class ConversationPageDataTest extends FeatureTestCase
 
         $this->mailbox->aliases = 'sales@example.org';
         $this->mailbox->save();
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Answer</p>',
-        ])->assertJson(['status' => 'success']);
+        $this->assertSame('success', $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Answer</p>',
+        ])['status']);
 
         $this->assertSame('', $this->pageData($conversation)['from_alias']);
     }
@@ -231,10 +229,10 @@ class ConversationPageDataTest extends FeatureTestCase
         $this->mailbox->aliases = 'sales@example.org';
         $this->mailbox->aliases_reply = true;
         $this->mailbox->save();
-        $response = $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'save_draft', 'mailbox_id' => $this->mailbox->id, 'is_create' => 1,
+        $response = $this->saveDraft($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'is_create' => 1,
             'to'     => ['robin@customer.example.org'], 'subject' => 'Draft', 'body' => '<p>Draft</p>', 'from_alias' => 'sales@example.org',
-        ])->json();
+        ]);
 
         $this->assertSame('sales@example.org', $this->pageData(Conversation::find($response['conversation_id']))['from_alias']);
     }
@@ -281,10 +279,10 @@ class ConversationPageDataTest extends FeatureTestCase
 
     public function testADraftOpensInTheNewConversationForm()
     {
-        $response = $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'save_draft', 'mailbox_id' => $this->mailbox->id, 'is_create' => 1,
+        $response = $this->saveDraft($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'is_create' => 1,
             'to'     => ['robin@customer.example.org'], 'subject' => 'Unfinished', 'body' => '<p>Draft</p>',
-        ])->json();
+        ]);
         $conversation = Conversation::find($response['conversation_id']);
 
         $page = $this->actingAs($this->agent)->get($conversation->url());

@@ -595,7 +595,6 @@
     "This password is incorrect.": "To geslo ni pravilno.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Ta odgovor bo poslan stranki. :%switch_start%Preklopi na opombo:%switch_end%, če odgovarjaš uporabniku :user_name.",
     "This text will be added to the beginning of each email reply sent to a customer.": "To besedilo bo dodano na začetek vsakega e-poštnega odgovora stranki.",
-    "Thread is not in a draft state": "Nit ni v stanju osnutka",
     "Thread not found": "Nit ni najdena",
     "Time Format": "Oblika Časa",
     "Timezone": "Časovni pas",

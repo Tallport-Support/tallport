@@ -607,7 +607,6 @@
     "This password is incorrect.": "Ova lozinka nije ispravna.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Ovaj odgovor će ići kupcu. :%switch_start%Prebaci na bilješku:%switch_end% ako odgovarate :user_name.",
     "This text will be added to the beginning of each email reply sent to a customer.": "Ovaj tekst će biti dodan na početak svakog e-mail odgovora poslanog kupcu.",
-    "Thread is not in a draft state": "Nit nije u stanju skice",
     "Thread not found": "Nit nije pronađena",
     "Time Format": "Format Vremena",
     "Timezone": "Vremenska zona",

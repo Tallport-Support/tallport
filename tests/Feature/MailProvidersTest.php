@@ -62,12 +62,11 @@ class MailProvidersTest extends FeatureTestCase
 
     protected function reply(Conversation $conversation, $body = '<p>Our answer</p>')
     {
-        $response = $this->postAjax($this->agent, '/conversation/ajax', [
-            'action'          => 'send_reply',
+        $response = $this->sendReply($this->agent, [
             'mailbox_id'      => $this->mailbox->id,
             'conversation_id' => $conversation->id,
             'body'            => $body,
-        ])->json();
+        ]);
         $this->assertSame('success', $response['status'], json_encode($response));
 
         return $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->orderBy('id', 'desc')->first();

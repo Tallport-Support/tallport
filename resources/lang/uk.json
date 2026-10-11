@@ -606,7 +606,6 @@
     "This password is incorrect.": "Цей пароль неправильний.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Ця відповідь надійде клієнту. :%switch_start%Переключитися на нотатку:%switch_end%, якщо ви відповідаєте :user_name.",
     "This text will be added to the beginning of each email reply sent to a customer.": "Цей текст буде додано на початок кожної відповіді електронною поштою, надісланої клієнту.",
-    "Thread is not in a draft state": "Обговорення не в стані чернетки",
     "Thread not found": "Обговорення не знайдено",
     "Time Format": "Формат Часу",
     "Timezone": "Часовий пояс",

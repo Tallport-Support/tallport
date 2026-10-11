@@ -1,4 +1,4 @@
-{{-- A message edited in place: the thread list's (App\Livewire\ConversationThread) and the load_edit_thread ajax action's. --}}
+{{-- A message edited in place, in the thread list (App\Livewire\ConversationThread). --}}
 <div class="thread-editor-container @if ($thread->type == \App\Thread::TYPE_NOTE) conv-note-block @endif" data-thread_id="{{ $thread->id }}">
     <x-editor class="thread-editor" :id="'thread-editor-'.$thread->id" rows="8" :aria-label="__('Message')" :upload-url="route('conversations.upload')">{{ \Helper::stripDangerousTags($thread->body) }}</x-editor>
 

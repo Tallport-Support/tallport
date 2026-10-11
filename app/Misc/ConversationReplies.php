@@ -22,32 +22,29 @@ use Symfony\Component\HttpFoundation\InputBag;
 use Validator;
 
 /**
- * Sending replies and creating, saving or discarding conversation drafts.
- * HTTP and Livewire pass the same fields and actor to these operations.
+ * Sending replies and creating, saving or discarding conversation drafts:
+ * the composers' (App\Livewire\ConversationComposer, NewConversation) fields
+ * and actor.
  */
 class ConversationReplies
 {
-    public function sendReply($input, $user, $response = ['status' => 'error', 'msg' => ''], $context = null)
+    public function sendReply($input, $user)
     {
-        return $this->sendReplyRequest($this->requestFor($input, $context), $response, $user);
+        return $this->sendReplyRequest($this->requestFor($input), ['status' => 'error', 'msg' => ''], $user);
     }
 
-    public function saveDraft($input, $user, $response = ['status' => 'error', 'msg' => ''], $context = null)
+    public function saveDraft($input, $user)
     {
-        return $this->saveDraftRequest($this->requestFor($input, $context), $response, $user);
+        return $this->saveDraftRequest($this->requestFor($input), ['status' => 'error', 'msg' => ''], $user);
     }
 
-    public function discardDraft($input, $user, $response = ['status' => 'error', 'msg' => ''], $context = null)
+    public function discardDraft($input, $user)
     {
-        return $this->discardDraftRequest($this->requestFor($input, $context), $response, $user);
+        return $this->discardDraftRequest($this->requestFor($input), ['status' => 'error', 'msg' => ''], $user);
     }
 
-    private function requestFor($input, $context)
+    private function requestFor($input)
     {
-        if ($context) {
-            return $context;
-        }
-
         $request = Request::createFrom(request());
         $request->query->replace([]);
         $request->setJson(new InputBag());
@@ -815,7 +812,7 @@ class ConversationReplies
                         return $this->alreadySubmittedReply($request, $response, $user, $submitted);
                     }
                 }
-                \Helper::logException($e, '[ConversationsController::ajaxSendReply()]');
+                \Helper::logException($e, '[ConversationReplies::sendReply()]');
                 $response['msg'] = __('Error occurred. Please try again later.');
 
                 return $response;
@@ -825,7 +822,7 @@ class ConversationReplies
                 try {
                     Attachment::getDisk()->delete($path);
                 } catch (\Throwable $e) {
-                    \Helper::logException($e, '[ConversationsController::ajaxSendReply()]');
+                    \Helper::logException($e, '[ConversationReplies::sendReply()]');
                 }
             }
             foreach ($deferred_events as $dispatch) {

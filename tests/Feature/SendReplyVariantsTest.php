@@ -38,10 +38,9 @@ class SendReplyVariantsTest extends FeatureTestCase
 
     protected function send(array $data)
     {
-        return $this->postAjax($this->agent, '/conversation/ajax', array_merge([
-            'action'     => 'send_reply',
+        return $this->sendReply($this->agent, array_merge([
             'mailbox_id' => $this->mailbox->id,
-        ], $data))->json();
+        ], $data));
     }
 
     protected function assertSuccess(array $response)

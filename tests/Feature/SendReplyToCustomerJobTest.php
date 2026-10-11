@@ -48,12 +48,11 @@ class SendReplyToCustomerJobTest extends FeatureTestCase
 
     protected function reply(Conversation $conversation, $body, array $data = [])
     {
-        $response = $this->postAjax($this->agent, '/conversation/ajax', array_merge([
-            'action'          => 'send_reply',
+        $response = $this->sendReply($this->agent, array_merge([
             'mailbox_id'      => $this->mailbox->id,
             'conversation_id' => $conversation->id,
             'body'            => $body,
-        ], $data))->json();
+        ], $data));
         $this->assertSame('success', $response['status'], json_encode($response));
 
         return $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->orderBy('id', 'desc')->first();
@@ -329,9 +328,9 @@ class SendReplyToCustomerJobTest extends FeatureTestCase
         $conversation->fresh()->moveToMailbox($warehouse, $this->agent);
         $this->captured_mail->flush();
 
-        $response = $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $warehouse->id, 'conversation_id' => $conversation->id, 'body' => '<p>Second answer</p>',
-        ])->json();
+        $response = $this->sendReply($this->agent, [
+            'mailbox_id' => $warehouse->id, 'conversation_id' => $conversation->id, 'body' => '<p>Second answer</p>',
+        ]);
         $this->assertSame('success', $response['status'], json_encode($response));
 
         $body = $this->sentEmailsTo('casey@customer.example.org')[0]->getBody();
@@ -354,14 +353,14 @@ class SendReplyToCustomerJobTest extends FeatureTestCase
         $conversation->fresh()->moveToMailbox($warehouse, $this->agent);
 
         config(['queue.default' => 'database']);
-        $response = $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $warehouse->id, 'conversation_id' => $conversation->id,
+        $response = $this->sendReply($this->agent, [
+            'mailbox_id' => $warehouse->id, 'conversation_id' => $conversation->id,
             'subtype' => Thread::SUBTYPE_FORWARD, 'to_email' => ['claims@partner.example.org'], 'body' => '<p>Please check this shipment.</p>',
-        ])->json();
+        ]);
         $this->assertSame('success', $response['status'], json_encode($response));
         // Answered in the original conversation before the forward is sent.
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $warehouse->id, 'conversation_id' => $conversation->id, 'body' => '<p>We are checking with the warehouse.</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $warehouse->id, 'conversation_id' => $conversation->id, 'body' => '<p>We are checking with the warehouse.</p>',
         ]);
         $later_reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->orderBy('id', 'desc')->first();
         $later_reply->created_at = $later_reply->created_at->addMinute();

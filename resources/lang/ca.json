@@ -738,7 +738,6 @@
     "This password is incorrect.": "Aquesta contrasenya és incorrecta.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Aquesta resposta anirà al client. :%switch_start%Canvieu a una nota:%switch_end% si esteu responent a :user_name.",
     "This text will be added to the beginning of each email reply sent to a customer.": "Aquest text s'afegirà al principi de cada resposta de correu enviada a un client.",
-    "Thread is not in a draft state": "El fil no és en estat d'esborrany",
     "Thread not found": "Fil no trobat",
     "Time": "Hora",
     "Time Zone": "Zona horària",

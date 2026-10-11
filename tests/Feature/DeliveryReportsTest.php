@@ -96,8 +96,8 @@ class DeliveryReportsTest extends FeatureTestCase
         $this->mailbox->save();
         $this->receiveEmail($this->mailbox, $this->makeEmail(['from' => 'Robin Lee <robin.lee@gmail.example.org>', 'to' => $this->mailbox->email]));
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>We sent you a new link.</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>We sent you a new link.</p>',
         ]);
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $reply_id = $this->sentEmailsTo('robin.lee@gmail.example.org')[0]->getId();
@@ -134,8 +134,8 @@ class DeliveryReportsTest extends FeatureTestCase
         $this->mailbox->save();
         $this->receiveEmail($this->mailbox, $this->makeEmail(['from' => 'Robin Lee <robin.lee@gmail.example.org>', 'to' => $this->mailbox->email]));
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>We sent you a new link.</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>We sent you a new link.</p>',
         ]);
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $raw = str_replace('TP_reply-123-0123456789abcdef@help.example.net', 'TP_reply-'.$reply->id.'-0123456789abcdef@help.example.net', file_get_contents(__DIR__.'/../Messages/delivery-report-tallport-reply.eml'));
@@ -169,8 +169,8 @@ class DeliveryReportsTest extends FeatureTestCase
         $this->mailbox->save();
         $this->receiveEmail($this->mailbox, $this->makeEmail(['from' => $from, 'to' => $this->mailbox->email]));
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->orderBy('id', 'desc')->first();
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>We sent you a new link.</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>We sent you a new link.</p>',
         ]);
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $message_id = $this->sentEmails()[count($this->sentEmails()) - 1]->getId();

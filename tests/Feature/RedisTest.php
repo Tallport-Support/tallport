@@ -59,8 +59,8 @@ class RedisTest extends FeatureTestCase
             'from' => 'Casey Customer <casey@customer.example.org>', 'to' => $this->mailbox->email, 'subject' => 'Question',
         ]));
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->orderBy('id', 'desc')->first();
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Our answer</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Our answer</p>',
         ]);
 
         return [$conversation, $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first()];

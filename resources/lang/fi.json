@@ -599,7 +599,6 @@
     "This password is incorrect.": "Tämä salasana on virheellinen.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Tämä vastaus menee asiakkaalle. :%switch_start%Vaihda huomautukseen:%switch_end% jos vastaat :user_name.",
     "This text will be added to the beginning of each email reply sent to a customer.": "Tämä teksti lisätään jokaisen asiakkaalle lähetettävän sähköpostivastauksen alkuun.",
-    "Thread is not in a draft state": "Keskustelu ei ole luonnostilassa",
     "Thread not found": "Keskustelua ei löydy",
     "Time Format": "Ajan Muoto",
     "Timezone": "Aikavyöhyke",

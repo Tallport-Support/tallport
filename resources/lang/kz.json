@@ -594,7 +594,6 @@
     "This password is incorrect.": "Бұл пароль дұрыс емес.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Бұл жауап клиентке жіберіледі. :%switch_start% Егер сіз :user_name -ге жауап беріп жатсаңыз, жазбаға ауысыңыз :%switch_end%.",
     "This text will be added to the beginning of each email reply sent to a customer.": "Бұл мәтін клиенттерге жіберілетін әрбір электрондық хаттың басына қосылады.",
-    "Thread is not in a draft state": "Тізбек черновик күйінде емес",
     "Thread not found": "Тізбек табылмады",
     "Time Format": "Уақыт Форматы",
     "Timezone": "Уақыт белдеуі",

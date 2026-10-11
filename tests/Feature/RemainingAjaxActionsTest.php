@@ -3,6 +3,10 @@
 namespace Tests\Feature;
 
 use App\Conversation;
+use App\Folder;
+use App\Livewire\ConversationList;
+use App\Livewire\ConversationThread;
+use App\Misc\ConversationActions;
 use App\Thread;
 use App\User;
 use Illuminate\Http\UploadedFile;
@@ -40,71 +44,52 @@ class RemainingAjaxActionsTest extends FeatureTestCase
         return Conversation::where('mailbox_id', $this->mailbox->id)->orderBy('id', 'desc')->first();
     }
 
-    protected function conversationAjax($user, array $data)
-    {
-        return $this->postAjax($user, '/conversation/ajax', $data)->json();
-    }
-
     // Conversations.
 
     public function testBulkDelete()
     {
         $first = $this->receiveConversation(['subject' => 'First']);
         $second = $this->receiveConversation(['subject' => 'Second', 'from' => 'other@customer.example.org']);
+        $list = fn ($user, $type) => Livewire::actingAs($user)->test(ConversationList::class, ['folder' => $this->mailbox->folders()->where('type', $type)->first()]);
 
-        $this->assertSame('Not enough permissions', $this->conversationAjax($this->agent, ['action' => 'bulk_delete_conversation', 'conversation_id' => [$first->id]])['msg']);
+        $list($this->agent, Folder::TYPE_UNASSIGNED)->set('selected', [$first->id])->call('delete')->assertToasted('Not enough permissions', 'danger');
 
-        $this->assertSame('success', $this->conversationAjax($this->admin, ['action' => 'bulk_delete_conversation', 'conversation_id' => [$first->id, $second->id]])['status']);
+        $list($this->admin, Folder::TYPE_UNASSIGNED)->set('selected', [$first->id, $second->id])->call('delete')->assertToasted('Conversations deleted');
         $this->assertEquals([Conversation::STATE_DELETED, Conversation::STATE_DELETED], Conversation::whereIn('id', [$first->id, $second->id])->pluck('state')->all());
 
         // Deleting what's already deleted removes it for good.
-        $this->conversationAjax($this->admin, ['action' => 'bulk_delete_conversation', 'conversation_id' => [$first->id]]);
+        $list($this->admin, Folder::TYPE_DELETED)->set('selected', [$first->id])->call('delete');
         $this->assertNull(Conversation::find($first->id));
     }
 
-    public function testLoadAttachmentsForForwarding()
-    {
-        Storage::fake('local_app');
-        $boundary = 'b1';
-        $conversation = $this->receiveConversation([
-            'headers' => ['Content-Type' => 'multipart/mixed; boundary="'.$boundary.'"'],
-            'body'    => "--$boundary\nContent-Type: text/plain\n\nSee attached.\n--$boundary\nContent-Type: text/plain; name=\"notes.txt\"\nContent-Disposition: attachment; filename=\"notes.txt\"\nContent-Transfer-Encoding: base64\n\n".base64_encode('Some notes')."\n--$boundary--",
-        ]);
-
-        $response = $this->conversationAjax($this->agent, ['action' => 'load_attachments', 'conversation_id' => $conversation->id]);
-
-        $this->assertSame('success', $response['status']);
-        $this->assertSame(['notes.txt'], array_column($response['data']['attachments'], 'name'));
-    }
-
-    public function testEditThreadDialog()
+    public function testEditThreadEditor()
     {
         $conversation = $this->receiveConversation(['body' => 'Original text']);
         $thread = $conversation->threads()->first();
 
-        $response = $this->conversationAjax($this->admin, ['action' => 'load_edit_thread', 'thread_id' => $thread->id]);
-
-        $this->assertSame('success', $response['status']);
-        $this->assertStringContainsString('Original text', $response['html']);
-        $this->assertSame('Not enough permissions', $this->conversationAjax($this->createUser(), ['action' => 'load_edit_thread', 'thread_id' => $thread->id])['msg']);
+        Livewire::actingAs($this->admin)->test(ConversationThread::class, ['conversation' => $conversation])
+            ->call('edit', $thread->id)->assertSet('editing', $thread->id)->assertSee('thread-editor-'.$thread->id, false)->assertSee('Original text');
+        // Agents may not edit others' notes.
+        $this->sendReply($this->admin, ['mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Admin note</p>', 'is_note' => 1]);
+        $note = $conversation->threads()->where('type', Thread::TYPE_NOTE)->first();
+        Livewire::actingAs($this->agent)->test(ConversationThread::class, ['conversation' => $conversation])
+            ->call('edit', $note->id)->assertSet('editing', null);
     }
 
     public function testRetrySendWithoutFailedJob()
     {
         $conversation = $this->receiveConversation();
-        $this->conversationAjax($this->agent, ['action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Hi</p>']);
+        $this->sendReply($this->agent, ['mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Hi</p>']);
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
 
-        $response = $this->conversationAjax($this->agent, ['action' => 'retry_send', 'thread_id' => $reply->id]);
-
-        $this->assertSame('error', $response['status'], 'Nothing failed, so nothing to retry.');
-        $this->assertSame('Not enough permissions', $this->conversationAjax($this->createUser(), ['action' => 'retry_send', 'thread_id' => $reply->id])['msg']);
+        $this->assertSame([], ConversationActions::retrySend($reply, $this->agent), 'Nothing failed, so nothing to retry.');
+        $this->assertSame('Not enough permissions', ConversationActions::retrySend($reply, $this->createUser())['msg']);
     }
 
     public function testMoreDialogs()
     {
         $conversation = $this->receiveConversation();
-        $this->conversationAjax($this->agent, ['action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Visible reply</p>']);
+        $this->sendReply($this->agent, ['mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Visible reply</p>']);
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $base = '/conversation/ajax-html/';
 

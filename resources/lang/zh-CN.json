@@ -601,7 +601,6 @@
     "This password is incorrect.": "该密码不正确。",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "该回复将发送给客户。:%switch_start%如果您要回复:user_name，请切换到 note:%switch_end%。",
     "This text will be added to the beginning of each email reply sent to a customer.": "此文本将添加到发送给客户的每封电子邮件回复的开头。",
-    "Thread is not in a draft state": "线程不处于草稿状态",
     "Thread not found": "未找到主题",
     "Time Format": "时间格式",
     "Timezone": "时区",

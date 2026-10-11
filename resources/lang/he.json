@@ -604,7 +604,6 @@
     "This password is incorrect.": "סיסמה זו שגויה.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "תשובה זו תועבר ללקוח. :%switch_start%עבור לפתק:%switch_end% אם אתה משיב ל :user_name.",
     "This text will be added to the beginning of each email reply sent to a customer.": "טקסט זה יתווסף לתחילת כל תשובת דוא\"ל שנשלחה ללקוח.",
-    "Thread is not in a draft state": "השרשור אינו במצב טיוטה",
     "Thread not found": "השרשור לא נמצא",
     "Time Format": "פורמט זמן",
     "Timezone": "אזור זמן",

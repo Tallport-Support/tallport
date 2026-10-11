@@ -146,8 +146,8 @@ class AiDraftsTest extends FeatureTestCase
      */
     public function testDraftIsWrittenAsItIsMade()
     {
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $this->conversation->id,
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $this->conversation->id,
             'body' => '<p>Secret internal note</p>', 'is_note' => 1,
         ]);
 
@@ -415,8 +415,8 @@ class AiDraftsTest extends FeatureTestCase
 
     public function testReplyFromDraftKeepsTheTranslation()
     {
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $this->conversation->id,
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $this->conversation->id,
             'body'   => '<p>Hallo Casey</p>', 'ai_draft_translation' => 'Hello <b>Casey</b>', 'ai_draft_translation_language' => 'en',
         ]);
 

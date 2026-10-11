@@ -77,11 +77,11 @@ class ChatDeliveryTest extends FeatureTestCase
         $this->assertFalse($reply->fresh()->canRetrySend());
         $message = \App\Misc\ChatConversations::unavailableMessage();
         $this->assertSame(['msg' => $message], \App\Misc\ConversationActions::retrySend($reply->fresh(), $admin));
-        $this->postAjax($admin, '/conversation/ajax', ['action' => 'conversation_change_status', 'conversation_id' => $conversation->id, 'status' => Conversation::STATUS_ACTIVE])->assertJson(['msg' => $message]);
-        $fields = ['action' => 'send_reply', 'mailbox_id' => $conversation->mailbox_id, 'conversation_id' => $conversation->id, 'body' => 'Blocked reply'];
-        $this->postAjax($admin, '/conversation/ajax', $fields)->assertJson(['status' => 'error', 'msg' => $message]);
+        $this->assertSame(['msg' => $message], \App\Misc\ConversationActions::changeStatus($conversation->fresh(), Conversation::STATUS_ACTIVE, $admin, request()));
+        $fields = ['mailbox_id' => $conversation->mailbox_id, 'conversation_id' => $conversation->id, 'body' => 'Blocked reply'];
+        $this->assertSame(['status' => 'error', 'msg' => $message], $this->sendReply($admin, $fields));
         $this->assertSame(0, $conversation->threads()->where('body', 'Blocked reply')->count());
-        $this->postAjax($admin, '/conversation/ajax', array_merge($fields, ['is_note' => 1, 'body' => 'Internal note', 'status' => Conversation::STATUS_ACTIVE]))->assertJson(['status' => 'success']);
+        $this->assertSame('success', $this->sendReply($admin, array_merge($fields, ['is_note' => 1, 'body' => 'Internal note', 'status' => Conversation::STATUS_ACTIVE]))['status']);
         $this->assertSame(1, $conversation->threads()->where('type', Thread::TYPE_NOTE)->where('body', 'Internal note')->count());
         $this->assertSame(Conversation::STATUS_CLOSED, (int) $conversation->threads()->where('type', Thread::TYPE_NOTE)->where('body', 'Internal note')->value('status'));
         $this->assertSame(Conversation::STATUS_CLOSED, (int) $conversation->fresh()->status);

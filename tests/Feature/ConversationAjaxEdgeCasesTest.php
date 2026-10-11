@@ -5,16 +5,20 @@ namespace Tests\Feature;
 use App\Attachment;
 use App\Conversation;
 use App\Folder;
+use App\Livewire\ConversationComposer;
+use App\Livewire\ConversationList;
+use App\Livewire\ConversationThread;
 use App\SendLog;
 use App\Thread;
 use App\User;
 use Illuminate\Http\UploadedFile;
+use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
- * The conversation ajax actions and dialogs when something is missing or not
- * allowed, and their less common paths: drafts with files, emptying folders,
- * moving by mailbox address, the send log of notifications.
+ * The conversation ajax actions, dialogs and page components when something
+ * is missing or not allowed, and their less common paths: drafts with files,
+ * emptying folders, moving by mailbox address, the send log of notifications.
  */
 class ConversationAjaxEdgeCasesTest extends FeatureTestCase
 {
@@ -59,8 +63,8 @@ class ConversationAjaxEdgeCasesTest extends FeatureTestCase
 
     protected function replyDraft(Conversation $conversation)
     {
-        $response = $this->ajax($this->agent, [
-            'action' => 'save_draft', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Not sent yet</p>',
+        $response = $this->saveDraft($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Not sent yet</p>',
         ]);
         $this->assertSuccess($response);
 
@@ -78,6 +82,11 @@ class ConversationAjaxEdgeCasesTest extends FeatureTestCase
         return $attachment;
     }
 
+    protected function composer(Conversation $conversation)
+    {
+        return Livewire::actingAs($this->agent)->test(ConversationComposer::class, ['conversation' => $conversation]);
+    }
+
     protected function folder($type, $mailbox = null)
     {
         return ($mailbox ?: $this->mailbox)->folders()->where('type', $type)->first();
@@ -85,55 +94,30 @@ class ConversationAjaxEdgeCasesTest extends FeatureTestCase
 
     // Drafts.
 
-    public function testLoadDraft()
+    public function testEditDraft()
     {
         $conversation = $this->receiveConversation();
         $draft = $this->replyDraft($conversation);
         $this->attach($draft);
 
-        $response = $this->ajax($this->agent, ['action' => 'load_draft', 'thread_id' => $draft->id]);
+        $composer = $this->composer($conversation)->call('editDraft', $draft->id)
+            ->assertSet('thread_id', $draft->id)->assertSet('mode', 'reply')
+            ->assertSet('body', '<p>Not sent yet</p>')->assertSet('to', 'casey@customer.example.org');
 
-        $this->assertSuccess($response);
-        $this->assertSame($draft->id, $response['data']['thread_id']);
-        $this->assertSame('<p>Not sent yet</p>', $response['data']['body']);
-        $this->assertSame('casey@customer.example.org', $response['data']['to']);
-        $this->assertSame(0, $response['data']['is_forward']);
-        $this->assertSame(['notes.txt'], array_column($response['data']['attachments'], 'name'));
-        $this->assertSame(Attachment::where('thread_id', $draft->id)->value('id'), decrypt($response['data']['attachments'][0]['id']));
+        $this->assertSame(['notes.txt'], array_column($composer->get('attachments'), 'name'));
+        $this->assertSame(Attachment::where('thread_id', $draft->id)->value('id'), decrypt($composer->get('attachments')[0]['id']));
     }
 
-    public function testLoadDraftProblems()
+    /**
+     * Only the conversation's own drafts are continued.
+     */
+    public function testEditDraftProblems()
     {
         $conversation = $this->receiveConversation();
-        $draft = $this->replyDraft($conversation);
+        $other_draft = $this->replyDraft($this->receiveConversation(['from' => 'robin@customer.example.org']));
 
-        $this->assertError('Thread not found', $this->ajax($this->agent, ['action' => 'load_draft', 'thread_id' => 999999]));
-        $this->assertError('Thread is not in a draft state', $this->ajax($this->agent, ['action' => 'load_draft', 'thread_id' => $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->value('id')]));
-        $this->assertError('Not enough permissions', $this->ajax($this->createUser(), ['action' => 'load_draft', 'thread_id' => $draft->id]));
-    }
-
-    // Attachments.
-
-    public function testLoadAttachmentsProblems()
-    {
-        $conversation = $this->receiveConversation();
-
-        $this->assertError('Conversation not found', $this->ajax($this->agent, ['action' => 'load_attachments', 'conversation_id' => 999999]));
-        $this->assertError('Not enough permissions', $this->ajax($this->createUser(), ['action' => 'load_attachments', 'conversation_id' => $conversation->id]));
-    }
-
-    public function testForwardingGetsCopiesOfTheAttachments()
-    {
-        $conversation = $this->receiveConversation();
-        $original = $this->attach($conversation->threads()->first());
-
-        $response = $this->ajax($this->agent, ['action' => 'load_attachments', 'conversation_id' => $conversation->id, 'is_forwarding' => 'true']);
-
-        $this->assertSuccess($response);
-        $copy = Attachment::find(decrypt($response['data']['attachments'][0]['id']));
-        $this->assertNotEquals($original->id, $copy->id);
-        $this->assertSame('notes.txt', $copy->file_name);
-        $this->assertNull($copy->thread_id);
+        $this->composer($conversation)->call('editDraft', 999999)->assertToasted('Thread not found', 'danger')->assertSet('thread_id', null);
+        $this->composer($conversation)->call('editDraft', $other_draft->id)->assertToasted('Thread not found', 'danger')->assertSet('thread_id', null);
     }
 
     public function testUploadWithoutAFile()
@@ -189,42 +173,29 @@ class ConversationAjaxEdgeCasesTest extends FeatureTestCase
         $this->assertNull(session('user_created_customer'));
     }
 
-    public function testCustomerSidebarProblems()
-    {
-        $conversation = $this->receiveConversation();
-        $other_mailbox = $this->createMailbox();
-        $this->receiveConversation(['from' => 'robin@customer.example.org'], $other_mailbox);
+    // Star, edit.
 
-        $this->assertError('Customer not found', $this->ajax($this->agent, ['action' => 'load_customer_info', 'customer_email' => 'nobody@customer.example.org', 'mailbox_id' => $this->mailbox->id]));
-        $this->assertError('Not enough permissions', $this->ajax($this->agent, ['action' => 'load_customer_info', 'customer_email' => 'casey@customer.example.org', 'mailbox_id' => $other_mailbox->id]));
-
-        config(['app.limit_user_customer_visibility' => true]);
-        $this->assertError('Not enough permissions', $this->ajax($this->agent, ['action' => 'load_customer_info', 'customer_email' => 'robin@customer.example.org', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id]));
-    }
-
-    // Star, edit, bulk status.
-
+    /**
+     * A row's star (the list's menu) leaves conversations the user can't see alone.
+     */
     public function testStarProblems()
     {
-        $conversation = $this->receiveConversation();
+        $limited = $this->createUser(['permissions' => [User::PERM_ONLY_ASSIGNED_TICKETS => true]]);
+        $this->mailbox->users()->attach($limited->id);
+        $this->mailbox->syncPersonalFolders([$this->agent->id, $limited->id]);
+        $not_theirs = $this->receiveConversation();
 
-        $this->assertError('Conversation not found', $this->ajax($this->agent, ['action' => 'star_conversation', 'conversation_id' => 999999, 'sub_action' => 'star']));
-        $this->assertError('Not enough permissions', $this->ajax($this->createUser(), ['action' => 'star_conversation', 'conversation_id' => $conversation->id, 'sub_action' => 'star']));
+        Livewire::actingAs($limited)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)])->call('rowStar', $not_theirs->id, true);
+
+        $this->assertFalse($not_theirs->isStarredByUser($limited->id));
     }
 
-    public function testLoadEditThreadOfAMissingThread()
-    {
-        $this->assertError('Thread not found', $this->ajax($this->agent, ['action' => 'load_edit_thread', 'thread_id' => 999999]));
-    }
-
-    public function testBulkStatusMustBeKnown()
+    public function testEditingAMissingThread()
     {
         $conversation = $this->receiveConversation();
 
-        $response = $this->ajax($this->agent, ['action' => 'bulk_conversation_change_status', 'conversation_id' => [$conversation->id], 'status' => 99]);
-
-        $this->assertError('Incorrect status', $response);
-        $this->assertEquals(Conversation::STATUS_ACTIVE, $conversation->fresh()->status);
+        Livewire::actingAs($this->agent)->test(ConversationThread::class, ['conversation' => $conversation])
+            ->call('edit', 999999)->assertSet('editing', null);
     }
 
     // Empty folder.

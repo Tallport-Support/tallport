@@ -605,7 +605,6 @@
     "This password is incorrect.": "Bu şifre yanlış.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Bu cevap müşteriye gidecektir. :%switch_start% Bir not geçin :%switch_end% :user_name 'e yanıt veriyorsanız.",
     "This text will be added to the beginning of each email reply sent to a customer.": "Bu metin, müşteriye gönderilen her e-posta yanıtının başına eklenecektir.",
-    "Thread is not in a draft state": "Konu taslak durumunda değil",
     "Thread not found": "Konu bulunamadı",
     "Time Format": "Zaman Formatı",
     "Timezone": "Saat dilimi",

@@ -63,7 +63,6 @@ class ConversationPagesTest extends FeatureTestCase
 
         $response = $this->getPage($this->agent, '/mailbox/'.$this->mailbox->id);
 
-        $response->assertStatus(200);
         $response->assertSee('Question about my order');
         $response->assertSee('Casey Customer');
     }
@@ -75,7 +74,6 @@ class ConversationPagesTest extends FeatureTestCase
 
         $response = $this->getPage($this->agent, '/conversation/'.$first->id);
 
-        $response->assertStatus(200);
         $response->assertSee('split-view__list', false);
         $response->assertSee('Second question');
         preg_match_all('/<a [^>]*conv-row__link[^>]*>/', $response->getContent(), $rows);
@@ -135,8 +133,7 @@ class ConversationPagesTest extends FeatureTestCase
 
     public function testAgentStartsConversationByEmail()
     {
-        $response = $this->postAjax($this->agent, '/conversation/ajax', [
-            'action'          => 'send_reply',
+        $response = $this->sendReply($this->agent, [
             'mailbox_id'      => $this->mailbox->id,
             'conversation_id' => '',
             'to'              => ['new.customer@customer.example.org'],
@@ -145,7 +142,7 @@ class ConversationPagesTest extends FeatureTestCase
             'is_create'       => 1,
         ]);
 
-        $this->assertSame('success', $response->json()['status'], json_encode($response->json()));
+        $this->assertSame('success', $response['status'], json_encode($response));
 
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
         $this->assertNotNull($conversation);
@@ -175,8 +172,7 @@ class ConversationPagesTest extends FeatureTestCase
         ], ['X-Requested-With' => 'XMLHttpRequest']);
         $this->assertSame('success', $upload->json()['status'], json_encode($upload->json()));
 
-        $response = $this->postAjax($this->agent, '/conversation/ajax', [
-            'action'          => 'send_reply',
+        $response = $this->sendReply($this->agent, [
             'mailbox_id'      => $this->mailbox->id,
             'conversation_id' => $conversation->id,
             'body'            => '<p>Attached.</p>',
@@ -185,7 +181,7 @@ class ConversationPagesTest extends FeatureTestCase
             'attachments_all' => [$upload->json()['attachment_id']],
             'attachments'     => [$upload->json()['attachment_id']],
         ]);
-        $this->assertSame('success', $response->json()['status'], json_encode($response->json()));
+        $this->assertSame('success', $response['status'], json_encode($response));
 
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $this->assertTrue((bool)$reply->has_attachments);

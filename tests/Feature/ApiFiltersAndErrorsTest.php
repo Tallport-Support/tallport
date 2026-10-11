@@ -313,10 +313,10 @@ class ApiFiltersAndErrorsTest extends FeatureTestCase
      */
     public function testWhoCreatedAConversation()
     {
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'to' => ['casey@customer.example.org'],
+        $this->assertSame('success', $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'to' => ['casey@customer.example.org'],
             'subject' => 'Started by us', 'body' => '<p>Hello</p>', 'is_create' => 1,
-        ])->assertJsonPath('status', 'success');
+        ])['status']);
         $conversation = Conversation::where('subject', 'Started by us')->first();
 
         $this->api('GET', '/conversations/'.$conversation->id)->assertJsonPath('createdBy.id', $this->agent->id)->assertJsonPath('createdBy.type', 'user');

@@ -18,7 +18,7 @@ use Livewire\Component;
  * conversation), search results or a customer's conversations.
  *
  * It keeps what the list shows and renders conversations/conversations_table
- * with the queries and hooks of the conversations_pagination ajax action.
+ * with the queries and hooks of App\Misc\ConversationListQuery.
  */
 class ConversationList extends Component
 {

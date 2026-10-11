@@ -606,7 +606,6 @@
     "This password is incorrect.": "このパスワードは間違っています。",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "この返信は顧客に送られます。 :%switch_start% :user_name に返信している場合は、ノート :%switch_end% に切り替えます。",
     "This text will be added to the beginning of each email reply sent to a customer.": "このテキストは、お客様に送信された各メールの返信の冒頭に追加されます。",
-    "Thread is not in a draft state": "スレッドは下書き状態ではありません",
     "Thread not found": "スレッドが見つかりません",
     "Time Format": "時間フォーマット",
     "Timezone": "タイムゾーン",

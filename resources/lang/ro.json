@@ -611,7 +611,6 @@
     "This password is incorrect.": "Această parolă este incorectă.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Acest răspuns va fi trimis către client. :%switch_start%Schimbă către o notă:%switch_end% dacă răspunzi la :user_name.",
     "This text will be added to the beginning of each email reply sent to a customer.": "Acest text va fi adăugat la începutul fiecărui răspuns prin e-mail trimis unui client.",
-    "Thread is not in a draft state": "Topicul nu este într-o stare de schiță",
     "Thread not found": "Topicul nu a fost găsit",
     "Time Format": "Format Oră",
     "Timezone": "Fus orar",

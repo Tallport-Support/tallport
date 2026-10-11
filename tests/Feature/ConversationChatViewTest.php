@@ -55,8 +55,8 @@ class ConversationChatViewTest extends FeatureTestCase
         $first = $this->conversation->threads()->first();
         $first->created_at = now()->subDays(3);
         $first->save();
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $this->conversation->id,
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $this->conversation->id,
             'body'   => '<p>Checked the logs.</p>', 'is_note' => 1,
         ]);
         $reply = $this->conversation->threads()->where('type', Thread::TYPE_NOTE)->orderBy('id', 'desc')->first();

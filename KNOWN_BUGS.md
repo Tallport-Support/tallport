@@ -19,6 +19,7 @@ guess: **security** (permission gaps), **high** (data loss or wrong data),
 |---|---|---|---|
 | C1 | decision | `conversation_move`, :2269 | No access check on the **target** mailbox: an agent can move a conversation into a mailbox they can't see. FreeScout documents this as intended (its SECURITY.md: "Support agents are allowed to move conversations to any mailbox, even to ones they don't have access to"); kept for now (decided 2026-09-30). |
 | C6 | decision | `save_draft`, :1546 | A new-conversation draft has no customer until it is sent (recipients are kept on the draft thread; sending sets the customer, see `testSendingNewConversationDraftSetsCustomer`), so drafts show no customer name. Kept (decided 2026-10-07): drafts autosave while typing, so linking or creating customers would leave strays and show unsent drafts on customer pages. |
+| C26 | low | `App\Livewire\ConversationList::mount()` | Search results lose their best-match-first order on another page or after a re-render: the list keeps the default sorting (date), so `ConversationListQuery::searchQuery()` doesn't sort by relevance as the first page (`ConversationsController::search()`) does. See `SearchTest::testNextPagesKeepTheOrder`. |
 ## Incoming email (`app/Console/Commands/FetchEmails.php`)
 
 | # | Severity | Where | Bug |

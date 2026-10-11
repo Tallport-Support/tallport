@@ -39,8 +39,8 @@ class ConversationExtrasTest extends FeatureTestCase
 
     protected function reply(Conversation $conversation, $user = null)
     {
-        $this->postAjax($user ?: $this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Oops, wrong answer</p>',
+        $this->sendReply($user ?: $this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Oops, wrong answer</p>',
         ]);
 
         return $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->orderBy('id', 'desc')->first();

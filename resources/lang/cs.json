@@ -611,7 +611,6 @@
     "This password is incorrect.": "Toto heslo je nesprávné.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Tato odpověď bude zaslána zákazníkovi. :%switch_start%Přepněte na poznámku:%switch_end%, pokud odpovídáte na :person_name.",
     "This text will be added to the beginning of each email reply sent to a customer.": "Tento text bude přidán na začátek každé e-mailové odpovědi zaslané zákazníkovi.",
-    "Thread is not in a draft state": "Vlákno není ve stavu konceptu",
     "Thread not found": "Vlákno nebylo nalezeno",
     "Time Format": "Časový Formát",
     "Timezone": "Časové pásmo",

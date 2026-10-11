@@ -36,10 +36,10 @@ class AllMailboxesFoldersTest extends FeatureTestCase
 
     protected function draft($user, $mailbox, $subject)
     {
-        $saved = $this->postAjax($user, '/conversation/ajax', [
-            'action' => 'save_draft', 'mailbox_id' => $mailbox->id, 'is_create' => 1, 'status' => Conversation::STATUS_ACTIVE,
+        $saved = $this->saveDraft($user, [
+            'mailbox_id' => $mailbox->id, 'is_create' => 1, 'status' => Conversation::STATUS_ACTIVE,
             'to' => ['new.customer@customer.example.org'], 'subject' => $subject, 'body' => '<p>Not finished</p>',
-        ])->json();
+        ]);
 
         return Conversation::find($saved['conversation_id']);
     }

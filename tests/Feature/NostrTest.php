@@ -257,8 +257,8 @@ class NostrTest extends FeatureTestCase
         $conversation->setStatus(Conversation::STATUS_CLOSED);
         $conversation->save();
 
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id,
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id,
             'body' => '<p>We are <b>on it</b>.</p>', 'status' => Conversation::STATUS_CLOSED,
         ]);
         $this->assertStringNotContainsString('Undo', (string) session('flash_success_floating'));
@@ -280,7 +280,7 @@ class NostrTest extends FeatureTestCase
         $this->assertSame(Thread::STATE_PUBLISHED, (int) $reply->fresh()->state);
 
         // Retry queues it again.
-        $this->assertSame('success', $this->postAjax($this->agent, '/conversation/ajax', ['action' => 'retry_send', 'thread_id' => $reply->id])->json('status'));
+        $this->assertSame('success', \App\Misc\ConversationActions::retrySend($reply->fresh(), $this->agent)['status']);
     }
 
     public function testRepliesWithFilesNeedAModule()

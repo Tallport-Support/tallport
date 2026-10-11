@@ -596,7 +596,6 @@
     "This password is incorrect.": "Этот неверный пароль.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Этот ответ будет отправлен клиенту. :%switch_start%Переключитесь на примечание:%switch_end%, если вы отвечаете :user_name.",
     "This text will be added to the beginning of each email reply sent to a customer.": "Этот текст будет добавляться в начало каждого письма, отправляемого клиентам.",
-    "Thread is not in a draft state": "Сообщение не в состоянии черновика",
     "Thread not found": "Сообщение не найдено",
     "Time Format": "Формат Времени",
     "Timezone": "Часовой пояс",

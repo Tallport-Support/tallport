@@ -29,7 +29,7 @@ class EmailAppearanceTest extends FeatureTestCase
         $mailbox = $this->createMailbox([$agent], ['name' => 'Shop Support']);
         $this->receiveEmail($mailbox, $this->makeEmail(['from' => 'Casey Customer <casey@customer.example.org>', 'to' => $mailbox->email, 'subject' => 'Question about my order', 'body' => 'Where is my order?']));
         $conversation = Conversation::where('mailbox_id', $mailbox->id)->first();
-        $response = $this->postAjax($agent, '/conversation/ajax', ['action' => 'send_reply', 'mailbox_id' => $mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Checking with the warehouse</p>', 'is_note' => 1])->json();
+        $response = $this->sendReply($agent, ['mailbox_id' => $mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Checking with the warehouse</p>', 'is_note' => 1]);
         $this->assertSame('success', $response['status'], json_encode($response));
         $this->captured_mail->flush();
 

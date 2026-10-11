@@ -52,8 +52,8 @@ class MailWebhooksTest extends FeatureTestCase
             'subject' => 'Question about my order',
         ]));
         $this->conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $this->conversation->id, 'body' => '<p>Our answer</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $this->conversation->id, 'body' => '<p>Our answer</p>',
         ]);
 
         return $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();

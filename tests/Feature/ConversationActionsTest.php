@@ -4,14 +4,21 @@ namespace Tests\Feature;
 
 use App\Conversation;
 use App\Folder;
+use App\Livewire\ConversationComposer;
+use App\Livewire\ConversationInspector;
+use App\Livewire\ConversationList;
+use App\Livewire\ConversationSubject;
+use App\Misc\ConversationActions;
 use App\Thread;
 use App\User;
+use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
- * What agents do to conversations from the UI, through the ajax endpoint:
- * assign, change status, delete and restore, star, follow, rename, move,
- * merge, bulk actions, drafts, and editing or deleting threads.
+ * What agents do to conversations from the UI (App\Misc\ConversationActions,
+ * the Livewire components and the ajax endpoint): assign, change status,
+ * delete and restore, star, follow, rename, move, merge, bulk actions,
+ * drafts, and editing or deleting threads.
  */
 class ConversationActionsTest extends FeatureTestCase
 {
@@ -42,6 +49,16 @@ class ConversationActionsTest extends FeatureTestCase
         return $this->postAjax($user, '/conversation/ajax', $data)->json();
     }
 
+    /**
+     * The mailbox's Unassigned list (App\Livewire\ConversationList), for the bulk actions.
+     */
+    protected function folderList()
+    {
+        $folder = Folder::where('mailbox_id', $this->mailbox->id)->where('type', Folder::TYPE_UNASSIGNED)->first();
+
+        return Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $folder]);
+    }
+
     protected function folderType(Conversation $conversation)
     {
         return Folder::find($conversation->fresh()->folder_id)->type;
@@ -63,29 +80,17 @@ class ConversationActionsTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
 
-        $response = $this->ajax($this->agent, [
-            'action'          => 'conversation_change_user',
-            'conversation_id' => $conversation->id,
-            'user_id'         => $this->agent->id,
-        ]);
+        $response = ConversationActions::changeUser($conversation->fresh(), $this->agent->id, $this->agent, request());
         $this->assertSuccess($response);
         $this->assertSame('Assignee updated', $response['msg']);
         $this->assertEquals($this->agent->id, $conversation->fresh()->user_id);
         $this->assertEquals(Folder::TYPE_ASSIGNED, $this->folderType($conversation));
         $this->assertEquals(Thread::ACTION_TYPE_USER_CHANGED, $this->lastLineItem($conversation)->action_type);
 
-        $again = $this->ajax($this->agent, [
-            'action'          => 'conversation_change_user',
-            'conversation_id' => $conversation->id,
-            'user_id'         => $this->agent->id,
-        ]);
+        $again = ConversationActions::changeUser($conversation->fresh(), $this->agent->id, $this->agent, request());
         $this->assertSame('Assignee already set', $again['msg']);
 
-        $this->assertSuccess($this->ajax($this->agent, [
-            'action'          => 'conversation_change_user',
-            'conversation_id' => $conversation->id,
-            'user_id'         => -1,
-        ]));
+        $this->assertSuccess(ConversationActions::changeUser($conversation->fresh(), -1, $this->agent, request()));
         $this->assertNull($conversation->fresh()->user_id);
         $this->assertEquals(Folder::TYPE_UNASSIGNED, $this->folderType($conversation));
     }
@@ -95,11 +100,7 @@ class ConversationActionsTest extends FeatureTestCase
         $conversation = $this->receiveConversation();
         $outsider = $this->createUser();
 
-        $response = $this->ajax($this->agent, [
-            'action'          => 'conversation_change_user',
-            'conversation_id' => $conversation->id,
-            'user_id'         => $outsider->id,
-        ]);
+        $response = ConversationActions::changeUser($conversation->fresh(), $outsider->id, $this->agent, request());
 
         $this->assertSame('Not enough permissions', $response['msg']);
         $this->assertNull($conversation->fresh()->user_id);
@@ -112,11 +113,9 @@ class ConversationActionsTest extends FeatureTestCase
         $this->mailbox->syncPersonalFolders([$this->agent->id, $colleague->id]);
         $conversation = $this->receiveConversation(['subject' => 'Needs a specialist']);
 
-        $this->ajax($this->agent, [
-            'action'          => 'conversation_change_user',
-            'conversation_id' => $conversation->id,
-            'user_id'         => $colleague->id,
-        ]);
+        ConversationActions::changeUser($conversation->fresh(), $colleague->id, $this->agent, request());
+        // At the end of the request (App\Http\Middleware\TerminateHandler).
+        \App\Subscription::processEvents();
 
         $notifications = $this->sentEmailsTo($colleague->email);
         $this->assertCount(1, $notifications);
@@ -131,11 +130,7 @@ class ConversationActionsTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
 
-        $this->assertSuccess($this->ajax($this->agent, [
-            'action'          => 'conversation_change_status',
-            'conversation_id' => $conversation->id,
-            'status'          => Conversation::STATUS_CLOSED,
-        ]));
+        $this->assertSuccess(ConversationActions::changeStatus($conversation->fresh(), Conversation::STATUS_CLOSED, $this->agent, request()));
         $closed = $conversation->fresh();
         $this->assertEquals(Conversation::STATUS_CLOSED, $closed->status);
         $this->assertEquals($this->agent->id, $closed->closed_by_user_id);
@@ -145,18 +140,10 @@ class ConversationActionsTest extends FeatureTestCase
         $this->assertEquals(Thread::ACTION_TYPE_STATUS_CHANGED, $line_item->action_type);
         $this->assertEquals(Conversation::STATUS_CLOSED, $line_item->status);
 
-        $again = $this->ajax($this->agent, [
-            'action'          => 'conversation_change_status',
-            'conversation_id' => $conversation->id,
-            'status'          => Conversation::STATUS_CLOSED,
-        ]);
+        $again = ConversationActions::changeStatus($conversation->fresh(), Conversation::STATUS_CLOSED, $this->agent, request());
         $this->assertSame('Status already set', $again['msg']);
 
-        $this->assertSuccess($this->ajax($this->agent, [
-            'action'          => 'conversation_change_status',
-            'conversation_id' => $conversation->id,
-            'status'          => Conversation::STATUS_ACTIVE,
-        ]));
+        $this->assertSuccess(ConversationActions::changeStatus($conversation->fresh(), Conversation::STATUS_ACTIVE, $this->agent, request()));
         $this->assertEquals(Conversation::STATUS_ACTIVE, $conversation->fresh()->status);
         $this->assertEquals(Folder::TYPE_UNASSIGNED, $this->folderType($conversation));
     }
@@ -165,11 +152,7 @@ class ConversationActionsTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
 
-        $response = $this->ajax($this->agent, [
-            'action'          => 'conversation_change_status',
-            'conversation_id' => $conversation->id,
-            'status'          => 99,
-        ]);
+        $response = ConversationActions::changeStatus($conversation->fresh(), 99, $this->agent, request());
 
         $this->assertSame('Incorrect status', $response['msg']);
         $this->assertEquals(Conversation::STATUS_ACTIVE, $conversation->fresh()->status);
@@ -178,25 +161,13 @@ class ConversationActionsTest extends FeatureTestCase
     public function testSpamAndNotSpam()
     {
         $conversation = $this->receiveConversation();
-        $this->ajax($this->agent, [
-            'action'          => 'conversation_change_status',
-            'conversation_id' => $conversation->id,
-            'status'          => Conversation::STATUS_PENDING,
-        ]);
+        ConversationActions::changeStatus($conversation->fresh(), Conversation::STATUS_PENDING, $this->agent, request());
 
-        $this->assertSuccess($this->ajax($this->agent, [
-            'action'          => 'conversation_change_status',
-            'conversation_id' => $conversation->id,
-            'status'          => Conversation::STATUS_SPAM,
-        ]));
+        $this->assertSuccess(ConversationActions::changeStatus($conversation->fresh(), Conversation::STATUS_SPAM, $this->agent, request()));
         $this->assertEquals(Folder::TYPE_SPAM, $this->folderType($conversation));
 
         // "Not spam" restores the status it had before.
-        $this->assertSuccess($this->ajax($this->agent, [
-            'action'          => 'conversation_change_status',
-            'conversation_id' => $conversation->id,
-            'status'          => 'not_spam',
-        ]));
+        $this->assertSuccess(ConversationActions::changeStatus($conversation->fresh(), 'not_spam', $this->agent, request()));
         $this->assertEquals(Conversation::STATUS_PENDING, $conversation->fresh()->status);
         $this->assertEquals(Folder::TYPE_UNASSIGNED, $this->folderType($conversation));
     }
@@ -205,11 +176,7 @@ class ConversationActionsTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
 
-        $response = $this->ajax($this->createUser(), [
-            'action'          => 'conversation_change_status',
-            'conversation_id' => $conversation->id,
-            'status'          => Conversation::STATUS_CLOSED,
-        ]);
+        $response = ConversationActions::changeStatus($conversation->fresh(), Conversation::STATUS_CLOSED, $this->createUser(), request());
 
         $this->assertSame('Not enough permissions', $response['msg']);
         $this->assertEquals(Conversation::STATUS_ACTIVE, $conversation->fresh()->status);
@@ -221,7 +188,7 @@ class ConversationActionsTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
 
-        $response = $this->ajax($this->agent, ['action' => 'delete_conversation', 'conversation_id' => $conversation->id]);
+        $response = ConversationActions::delete($conversation->fresh(), $this->agent);
 
         $this->assertSame('Not enough permissions', $response['msg']);
         $this->assertEquals(Conversation::STATE_PUBLISHED, $conversation->fresh()->state);
@@ -235,20 +202,20 @@ class ConversationActionsTest extends FeatureTestCase
         $thread_ids = $conversation->threads()->pluck('id')->all();
 
         // Deleting moves it to the Deleted folder.
-        $this->assertSuccess($this->ajax($deleter, ['action' => 'delete_conversation', 'conversation_id' => $conversation->id]));
+        $this->assertSuccess(ConversationActions::delete($conversation->fresh(), $deleter));
         $this->assertEquals(Conversation::STATE_DELETED, $conversation->fresh()->state);
         $this->assertEquals(Folder::TYPE_DELETED, $this->folderType($conversation));
         $this->assertEquals(Thread::ACTION_TYPE_DELETED_TICKET, $this->lastLineItem($conversation)->action_type);
 
-        $this->assertSuccess($this->ajax($deleter, ['action' => 'restore_conversation', 'conversation_id' => $conversation->id]));
+        $this->assertSuccess(ConversationActions::restore($conversation->fresh(), $deleter));
         $this->assertEquals(Conversation::STATE_PUBLISHED, $conversation->fresh()->state);
         $this->assertEquals(Folder::TYPE_UNASSIGNED, $this->folderType($conversation));
         $this->assertEquals(Thread::ACTION_TYPE_RESTORE_TICKET, $this->lastLineItem($conversation)->action_type);
 
         // Deleting forever only works from the Deleted folder.
-        $this->assertSuccess($this->ajax($deleter, ['action' => 'delete_conversation', 'conversation_id' => $conversation->id]));
-        $this->assertSuccess($this->ajax($deleter, ['action' => 'delete_conversation_forever', 'conversation_id' => $conversation->id]));
-        $this->assertNull(Conversation::find($conversation->id));
+        $this->assertSuccess(ConversationActions::delete($conversation->fresh(), $deleter));
+        $this->assertSuccess(ConversationActions::delete($conversation->fresh(), $deleter, true));
+        $this->assertNull($conversation->fresh());
         $this->assertSame(0, Thread::whereIn('id', $thread_ids)->count());
     }
 
@@ -261,10 +228,10 @@ class ConversationActionsTest extends FeatureTestCase
         $admin = $this->createAdmin();
         $conversation = $this->receiveConversation();
 
-        $response = $this->ajax($admin, ['action' => 'delete_conversation_forever', 'conversation_id' => $conversation->id]);
+        $response = ConversationActions::delete($conversation->fresh(), $admin, true);
 
-        $this->assertSame('error', $response['status']);
-        $this->assertNotNull(Conversation::find($conversation->id));
+        $this->assertSame(['msg' => 'Only deleted conversations can be deleted forever.'], $response);
+        $this->assertNotNull($conversation->fresh());
     }
 
     public function testEmptyDeletedFolder()
@@ -272,7 +239,7 @@ class ConversationActionsTest extends FeatureTestCase
         $admin = $this->createAdmin();
         $deleted = $this->receiveConversation(['subject' => 'To be deleted']);
         $kept = $this->receiveConversation(['subject' => 'To be kept', 'from' => 'other@customer.example.org']);
-        $this->ajax($admin, ['action' => 'delete_conversation', 'conversation_id' => $deleted->id]);
+        ConversationActions::delete($deleted->fresh(), $admin);
         $deleted_folder = Folder::where('mailbox_id', $this->mailbox->id)->where('type', Folder::TYPE_DELETED)->first();
         $unassigned_folder = Folder::where('mailbox_id', $this->mailbox->id)->where('type', Folder::TYPE_UNASSIGNED)->first();
 
@@ -280,8 +247,8 @@ class ConversationActionsTest extends FeatureTestCase
         $this->assertSame('Folder not found', $refused['msg'], 'Only Deleted and Spam can be emptied.');
 
         $this->assertSuccess($this->ajax($admin, ['action' => 'empty_folder', 'folder_id' => $deleted_folder->id]));
-        $this->assertNull(Conversation::find($deleted->id));
-        $this->assertNotNull(Conversation::find($kept->id));
+        $this->assertNull($deleted->fresh());
+        $this->assertNotNull($kept->fresh());
     }
 
     // Personal: star and follow.
@@ -292,11 +259,12 @@ class ConversationActionsTest extends FeatureTestCase
         $starred = Folder::where('mailbox_id', $this->mailbox->id)
             ->where('type', Folder::TYPE_STARRED)->where('user_id', $this->agent->id)->first();
 
-        $this->assertSuccess($this->ajax($this->agent, ['action' => 'star_conversation', 'conversation_id' => $conversation->id, 'sub_action' => 'star']));
+        $heading = Livewire::actingAs($this->agent)->test(ConversationSubject::class, ['conversation' => $conversation]);
+        $heading->call('star');
         $this->assertTrue(\DB::table('conversation_folder')->where(['conversation_id' => $conversation->id, 'folder_id' => $starred->id])->exists());
         $this->assertEquals(Folder::TYPE_UNASSIGNED, $this->folderType($conversation), 'Starring does not move the conversation.');
 
-        $this->assertSuccess($this->ajax($this->agent, ['action' => 'star_conversation', 'conversation_id' => $conversation->id, 'sub_action' => 'unstar']));
+        $heading->call('star');
         $this->assertFalse(\DB::table('conversation_folder')->where(['conversation_id' => $conversation->id, 'folder_id' => $starred->id])->exists());
     }
 
@@ -304,11 +272,11 @@ class ConversationActionsTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
 
-        $follow = $this->ajax($this->agent, ['action' => 'follow', 'conversation_id' => $conversation->id]);
+        $follow = ConversationActions::follow($conversation->fresh(), $this->agent, true);
         $this->assertSame('Following', $follow['msg_success']);
         $this->assertTrue(\DB::table('followers')->where(['conversation_id' => $conversation->id, 'user_id' => $this->agent->id])->exists());
 
-        $unfollow = $this->ajax($this->agent, ['action' => 'unfollow', 'conversation_id' => $conversation->id]);
+        $unfollow = ConversationActions::follow($conversation->fresh(), $this->agent, false);
         $this->assertSame('Unfollowed', $unfollow['msg_success']);
         $this->assertFalse(\DB::table('followers')->where(['conversation_id' => $conversation->id, 'user_id' => $this->agent->id])->exists());
     }
@@ -319,11 +287,11 @@ class ConversationActionsTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation(['subject' => 'Old subject']);
 
-        $this->assertSuccess($this->ajax($this->agent, ['action' => 'update_subject', 'conversation_id' => $conversation->id, 'value' => '  New subject ']));
+        $this->assertSuccess(ConversationActions::changeSubject($conversation->fresh(), '  New subject ', $this->agent));
         $this->assertSame('New subject', $conversation->fresh()->subject);
 
-        $empty = $this->ajax($this->agent, ['action' => 'update_subject', 'conversation_id' => $conversation->id, 'value' => '   ']);
-        $this->assertSame('error', $empty['status']);
+        $empty = ConversationActions::changeSubject($conversation->fresh(), '   ', $this->agent);
+        $this->assertSame([], $empty, 'Nothing to do.');
         $this->assertSame('New subject', $conversation->fresh()->subject);
     }
 
@@ -354,7 +322,7 @@ class ConversationActionsTest extends FeatureTestCase
         $this->mailbox->users()->attach($colleague->id);
         $other_mailbox = $this->createMailbox([$this->agent], ['name' => 'Sales']);
         $conversation = $this->receiveConversation();
-        $this->ajax($this->agent, ['action' => 'conversation_change_user', 'conversation_id' => $conversation->id, 'user_id' => $colleague->id]);
+        ConversationActions::changeUser($conversation->fresh(), $colleague->id, $this->agent, request());
 
         $this->ajax($this->agent, ['action' => 'conversation_move', 'conversation_id' => $conversation->id, 'mailbox_id' => $other_mailbox->id]);
 
@@ -406,9 +374,9 @@ class ConversationActionsTest extends FeatureTestCase
         $conversation = $this->receiveConversation();
         $threads = $conversation->threads()->count();
 
-        $response = $this->ajax($admin, ['action' => 'restore_conversation', 'conversation_id' => $conversation->id]);
+        $response = ConversationActions::restore($conversation->fresh(), $admin);
 
-        $this->assertSame('error', $response['status'], 'Nothing to restore (C8).');
+        $this->assertSame(['msg' => 'Only deleted conversations can be restored.'], $response, 'Nothing to restore (C8).');
         $this->assertSame($threads, $conversation->threads()->count(), 'No "restored" line item.');
     }
 
@@ -417,15 +385,15 @@ class ConversationActionsTest extends FeatureTestCase
         $conversation = $this->receiveConversation();
         $threads = $conversation->threads()->count();
 
-        $this->ajax($this->agent, ['action' => 'bulk_conversation_change_status', 'conversation_id' => [$conversation->id], 'status' => Conversation::STATUS_ACTIVE]);
-        $this->ajax($this->agent, ['action' => 'bulk_conversation_change_user', 'conversation_id' => [$conversation->id], 'user_id' => -1]);
+        $this->folderList()->set('selected', [$conversation->id])->call('changeStatus', Conversation::STATUS_ACTIVE);
+        $this->folderList()->set('selected', [$conversation->id])->call('assign', -1);
 
         $this->assertSame($threads, $conversation->threads()->count(), 'No line items for changes that didn\'t happen (C9).');
     }
 
     public function testEditingMissingThread()
     {
-        $this->assertSame('Thread not found', $this->ajax($this->createAdmin(), ['action' => 'save_edit_thread', 'thread_id' => 999999, 'body' => '<p>x</p>'])['msg']);
+        $this->assertSame('Thread not found', ConversationActions::editThread(Thread::find(999999), '<p>x</p>', $this->createAdmin())['msg']);
     }
 
     // Bulk actions from the folder list.
@@ -436,10 +404,10 @@ class ConversationActionsTest extends FeatureTestCase
         $second = $this->receiveConversation(['subject' => 'Second', 'from' => 'other@customer.example.org']);
         $ids = [$first->id, $second->id];
 
-        $this->assertSuccess($this->ajax($this->agent, ['action' => 'bulk_conversation_change_status', 'conversation_id' => $ids, 'status' => Conversation::STATUS_CLOSED]));
+        $this->folderList()->set('selected', $ids)->call('changeStatus', Conversation::STATUS_CLOSED)->assertRedirect();
         $this->assertEquals([Conversation::STATUS_CLOSED, Conversation::STATUS_CLOSED], Conversation::whereIn('id', $ids)->pluck('status')->all());
 
-        $this->assertSuccess($this->ajax($this->agent, ['action' => 'bulk_conversation_change_user', 'conversation_id' => $ids, 'user_id' => $this->agent->id]));
+        $this->folderList()->set('selected', $ids)->call('assign', $this->agent->id)->assertRedirect();
         $this->assertEquals([$this->agent->id, $this->agent->id], Conversation::whereIn('id', $ids)->pluck('user_id')->all());
     }
 
@@ -449,7 +417,7 @@ class ConversationActionsTest extends FeatureTestCase
         $mine = $this->receiveConversation();
         $not_mine = $this->receiveConversation([], $other_mailbox);
 
-        $this->ajax($this->agent, ['action' => 'bulk_conversation_change_status', 'conversation_id' => [$mine->id, $not_mine->id], 'status' => Conversation::STATUS_CLOSED]);
+        $this->folderList()->set('selected', [$mine->id, $not_mine->id])->call('changeStatus', Conversation::STATUS_CLOSED);
 
         $this->assertEquals(Conversation::STATUS_CLOSED, $mine->fresh()->status);
         $this->assertEquals(Conversation::STATUS_ACTIVE, $not_mine->fresh()->status);
@@ -461,8 +429,7 @@ class ConversationActionsTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation();
 
-        $saved = $this->ajax($this->agent, [
-            'action'          => 'save_draft',
+        $saved = $this->saveDraft($this->agent, [
             'mailbox_id'      => $this->mailbox->id,
             'conversation_id' => $conversation->id,
             'status'          => Conversation::STATUS_ACTIVE,
@@ -475,13 +442,11 @@ class ConversationActionsTest extends FeatureTestCase
         $this->assertTrue(\DB::table('conversation_folder')->where(['conversation_id' => $conversation->id, 'folder_id' => $drafts_folder->id])->exists());
         $this->assertCount(0, $this->sentEmailsTo('casey@customer.example.org'), 'Drafts are not sent.');
 
-        $loaded = $this->ajax($this->agent, ['action' => 'load_draft', 'thread_id' => $draft->id]);
-        $this->assertSuccess($loaded);
-        $this->assertStringContainsString('Draft answer', $loaded['data']['body']);
+        Livewire::actingAs($this->agent)->test(ConversationComposer::class, ['conversation' => $conversation])
+            ->call('editDraft', $draft->id)->assertSet('thread_id', $draft->id)->assertSet('body', '<p>Draft answer</p>');
 
         // Sending publishes the draft instead of adding a second reply.
-        $this->assertSuccess($this->ajax($this->agent, [
-            'action'          => 'send_reply',
+        $this->assertSuccess($this->sendReply($this->agent, [
             'mailbox_id'      => $this->mailbox->id,
             'conversation_id' => $conversation->id,
             'thread_id'       => $draft->id,
@@ -496,24 +461,22 @@ class ConversationActionsTest extends FeatureTestCase
     public function testDiscardReplyDraft()
     {
         $conversation = $this->receiveConversation();
-        $saved = $this->ajax($this->agent, [
-            'action'          => 'save_draft',
+        $saved = $this->saveDraft($this->agent, [
             'mailbox_id'      => $this->mailbox->id,
             'conversation_id' => $conversation->id,
             'status'          => Conversation::STATUS_ACTIVE,
             'body'            => '<p>Draft answer</p>',
         ]);
 
-        $this->assertSuccess($this->ajax($this->agent, ['action' => 'discard_draft', 'thread_id' => $saved['thread_id']]));
+        $this->assertSuccess($this->discardDraft($this->agent, ['thread_id' => $saved['thread_id']]));
 
         $this->assertNull(Thread::find($saved['thread_id']));
-        $this->assertNotNull(Conversation::find($conversation->id), 'Discarding a reply draft keeps the conversation.');
+        $this->assertNotNull($conversation->fresh(), 'Discarding a reply draft keeps the conversation.');
     }
 
     public function testNewConversationDraftIsDiscardedCompletely()
     {
-        $saved = $this->ajax($this->agent, [
-            'action'     => 'save_draft',
+        $saved = $this->saveDraft($this->agent, [
             'mailbox_id' => $this->mailbox->id,
             'is_create'  => 1,
             'status'     => Conversation::STATUS_ACTIVE,
@@ -526,9 +489,9 @@ class ConversationActionsTest extends FeatureTestCase
         $this->assertEquals(Conversation::STATE_DRAFT, $conversation->state);
         $this->assertEquals(Folder::TYPE_DRAFTS, $this->folderType($conversation));
 
-        $this->assertSuccess($this->ajax($this->agent, ['action' => 'discard_draft', 'thread_id' => $saved['thread_id']]));
+        $this->assertSuccess($this->discardDraft($this->agent, ['thread_id' => $saved['thread_id']]));
 
-        $this->assertNull(Conversation::find($conversation->id));
+        $this->assertNull($conversation->fresh());
     }
 
     /**
@@ -537,8 +500,7 @@ class ConversationActionsTest extends FeatureTestCase
      */
     public function testSendingNewConversationDraftSetsCustomer()
     {
-        $saved = $this->ajax($this->agent, [
-            'action'     => 'save_draft',
+        $saved = $this->saveDraft($this->agent, [
             'mailbox_id' => $this->mailbox->id,
             'is_create'  => 1,
             'status'     => Conversation::STATUS_ACTIVE,
@@ -547,8 +509,7 @@ class ConversationActionsTest extends FeatureTestCase
             'body'       => '<p>Almost done</p>',
         ]);
 
-        $this->assertSuccess($this->ajax($this->agent, [
-            'action'          => 'send_reply',
+        $this->assertSuccess($this->sendReply($this->agent, [
             'mailbox_id'      => $this->mailbox->id,
             'conversation_id' => $saved['conversation_id'],
             'thread_id'       => $saved['thread_id'],
@@ -573,7 +534,7 @@ class ConversationActionsTest extends FeatureTestCase
         $conversation = $this->receiveConversation(['body' => 'My phone number is 555-1234.']);
         $thread = $conversation->threads()->first();
 
-        $response = $this->ajax($admin, ['action' => 'save_edit_thread', 'thread_id' => $thread->id, 'body' => '<p>My phone number is [removed].</p>']);
+        $response = ConversationActions::editThread($thread->fresh(), '<p>My phone number is [removed].</p>', $admin);
 
         $this->assertSuccess($response);
         $thread->refresh();
@@ -585,36 +546,36 @@ class ConversationActionsTest extends FeatureTestCase
     public function testEditingOwnNoteNeedsPermission()
     {
         $conversation = $this->receiveConversation();
-        $this->ajax($this->agent, [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id,
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id,
             'body'   => '<p>My note</p>', 'is_note' => 1,
         ]);
         $note = $conversation->threads()->where('type', Thread::TYPE_NOTE)->first();
 
-        $refused = $this->ajax($this->agent, ['action' => 'save_edit_thread', 'thread_id' => $note->id, 'body' => '<p>Edited</p>']);
+        $refused = ConversationActions::editThread($note->fresh(), '<p>Edited</p>', $this->agent);
         $this->assertSame('Not enough permissions', $refused['msg']);
 
         $this->agent->permissions = [User::PERM_EDIT_CONVERSATIONS => true];
         $this->agent->save();
-        $this->assertSuccess($this->ajax($this->agent, ['action' => 'save_edit_thread', 'thread_id' => $note->id, 'body' => '<p>Edited</p>']));
+        $this->assertSuccess(ConversationActions::editThread($note->fresh(), '<p>Edited</p>', $this->agent));
         $this->assertStringContainsString('Edited', $note->fresh()->body);
     }
 
     public function testOnlyOwnNotesCanBeDeleted()
     {
         $conversation = $this->receiveConversation();
-        $this->ajax($this->agent, [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id,
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id,
             'body'   => '<p>My note</p>', 'is_note' => 1,
         ]);
         $note = $conversation->threads()->where('type', Thread::TYPE_NOTE)->first();
         $customer_thread = $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
 
-        $this->assertSame('Thread not found', $this->ajax($this->agent, ['action' => 'delete_thread', 'thread_id' => $customer_thread->id])['msg']);
-        $this->assertSame('Not enough permissions', $this->ajax($this->createAdmin(), ['action' => 'delete_thread', 'thread_id' => $note->id])['msg']);
+        $this->assertSame('Thread not found', ConversationActions::deleteNote($customer_thread->fresh(), $this->agent)['msg']);
+        $this->assertSame('Not enough permissions', ConversationActions::deleteNote($note->fresh(), $this->createAdmin())['msg']);
 
-        $this->assertSuccess($this->ajax($this->agent, ['action' => 'delete_thread', 'thread_id' => $note->id]));
-        $this->assertNull(Thread::find($note->id));
+        $this->assertSuccess(ConversationActions::deleteNote($note->fresh(), $this->agent));
+        $this->assertNull($note->fresh());
     }
 
     // Customer.
@@ -641,9 +602,7 @@ class ConversationActionsTest extends FeatureTestCase
      */
     public function testMissingConversationIsReported()
     {
-        $this->assertSame('Conversation not found', $this->ajax($this->agent, [
-            'action' => 'conversation_change_status', 'conversation_id' => 999999, 'status' => 'not_spam',
-        ])['msg']);
+        $this->assertSame('Conversation not found', ConversationActions::changeStatus(Conversation::find(999999), 'not_spam', $this->agent, request())['msg']);
         $this->assertSame('Conversation not found', $this->ajax($this->agent, [
             'action' => 'conversation_change_customer', 'conversation_id' => 999999, 'customer_email' => 'nobody-known@customer.example.org',
         ])['msg']);
@@ -674,35 +633,22 @@ class ConversationActionsTest extends FeatureTestCase
         $this->receiveConversation(['subject' => 'Listed conversation']);
         $folder = Folder::where('mailbox_id', $this->mailbox->id)->where('type', Folder::TYPE_UNASSIGNED)->first();
 
-        $response = $this->ajax($this->agent, ['action' => 'conversations_pagination', 'folder_id' => $folder->id, 'page' => 1]);
-
-        $this->assertSame('', $response['msg']);
-        $this->assertStringContainsString('Listed conversation', $response['html']);
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $folder])
+            ->call('gotoPage', 1)->assertSee('Listed conversation');
     }
 
     public function testFolderPaginationRefusesInaccessibleFolder()
     {
         $folder = Folder::where('mailbox_id', $this->mailbox->id)->where('type', Folder::TYPE_UNASSIGNED)->first();
 
-        $response = $this->ajax($this->createUser(), ['action' => 'conversations_pagination', 'folder_id' => $folder->id, 'page' => 1]);
-
-        $this->assertSame('Not enough permissions', $response['msg']);
-        $this->assertSame('error', $response['status'], 'An error is not a success (C7).');
+        Livewire::actingAs($this->createUser())->test(ConversationList::class, ['folder' => $folder])->assertForbidden();
     }
 
     public function testCustomerSidebar()
     {
         $conversation = $this->receiveConversation();
 
-        $response = $this->ajax($this->agent, [
-            'action'          => 'load_customer_info',
-            'customer_email'  => 'casey@customer.example.org',
-            'mailbox_id'      => $this->mailbox->id,
-            'conversation_id' => $conversation->id,
-        ]);
-
-        $this->assertSuccess($response);
-        $this->assertStringContainsString('Casey Customer', $response['html']);
+        Livewire::actingAs($this->agent)->test(ConversationInspector::class, ['conversation' => $conversation])->assertSee('Casey Customer');
     }
 
     public function testMergeSearch()
@@ -724,7 +670,7 @@ class ConversationActionsTest extends FeatureTestCase
         $other_mailbox = $this->createMailbox([$this->agent], ['name' => 'Sales department']);
         $earlier = $this->receiveConversation(['subject' => 'An earlier question', 'message_id' => 'earlier@customer.example.org']);
         $conversation = $this->receiveConversation();
-        $this->ajax($this->agent, ['action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Hi</p>']);
+        $this->sendReply($this->agent, ['mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Hi</p>']);
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $base = '/conversation/ajax-html/';
 

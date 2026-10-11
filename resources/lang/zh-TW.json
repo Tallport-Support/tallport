@@ -730,7 +730,6 @@
     "This number is not visible to customers. It is only used to track conversations within :app_name": "此號碼對客戶不可見。它僅用於在 :app_name 中追蹤對話",
     "This password is incorrect.": "此密碼不正確。",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "此回覆將傳送給客戶。如果您是在回覆 :user_name，請 :%switch_start%切換為備註:%switch_end%。",
-    "Thread is not in a draft state": "討論串不在草稿狀態",
     "Thread not found": "找不到討論串",
     "To one of :person's conversations": ":person 的其中一個對話",
     "To send system emails via webmail providers (Gmail, Yahoo, etc) use only SMTP method and make sure that SMTP username is equal to the mailbox email address (:%mailbox_email%), otherwise webmail provider won't send emails.": "透過網頁郵件服務（Gmail、Yahoo 等）傳送系統電子郵件時，請僅使用 SMTP 方式，並確認 SMTP 使用者名稱與信箱電子郵件地址 (:%mailbox_email%) 相同，否則網頁郵件服務將不會傳送電子郵件。",

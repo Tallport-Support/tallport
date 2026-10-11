@@ -57,12 +57,9 @@ class AllMailboxesTest extends FeatureTestCase
         $this->assertMatchesRegularExpression('#<details class="f-sidebar__group app-sidebar__mailbox" data-mailbox_id="'.$this->sales->id.'"\s*>#', $html);
 
         // Next pages.
-        $page = $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'conversations_pagination', 'mailbox_id' => AllMailboxes::MAILBOX_ID, 'folder_id' => -Folder::TYPE_UNASSIGNED, 'page' => 1,
-            'params' => ['show_mailbox' => 1],
-        ]);
-        $this->assertStringContainsString('Sales question', $page->json('html'));
-        $this->assertStringContainsString('Support question', $page->json('html'));
+        \Livewire\Livewire::actingAs($this->agent)->test(\App\Livewire\ConversationList::class, [
+            'folder' => AllMailboxes::folder($this->agent, -Folder::TYPE_UNASSIGNED), 'params' => ['show_mailbox' => 1],
+        ])->call('gotoPage', 1)->assertSee('Sales question')->assertSee('Support question');
 
         // In a mailbox, the tree has it open.
         $this->assertMatchesRegularExpression('#data-mailbox_id="'.$this->sales->id.'"\s+open\s*>#', $this->get(route('mailboxes.view', ['id' => $this->sales->id]))->assertOk()->getContent());
@@ -143,8 +140,8 @@ class AllMailboxesTest extends FeatureTestCase
         $theirs = $this->conversation($this->sales, 'Theirs');
         $mine->changeUser($this->agent->id, $this->agent);
         $theirs->changeUser($colleague->id, $this->agent);
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->sales->id, 'conversation_id' => $theirs->id, 'body' => '<p>Answer</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->sales->id, 'conversation_id' => $theirs->id, 'body' => '<p>Answer</p>',
         ]);
         Conversation::find($mine->id)->star($this->agent);
         $this->assertSame(1, Thread::where('conversation_id', $theirs->id)->where('type', Thread::TYPE_MESSAGE)->count(), 'The reply was sent.');

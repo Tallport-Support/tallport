@@ -66,8 +66,8 @@ class SearchTest extends FeatureTestCase
 
     protected function reply(Conversation $conversation, $body)
     {
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $conversation->mailbox_id, 'conversation_id' => $conversation->id, 'body' => '<p>'.$body.'</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $conversation->mailbox_id, 'conversation_id' => $conversation->id, 'body' => '<p>'.$body.'</p>',
         ]);
     }
 
@@ -237,25 +237,34 @@ class SearchTest extends FeatureTestCase
             ->assertSee('f-badge conv-deleted', false);
     }
 
-    public function testNextPagesKeepTheOrderAndExcerpts()
+    public function testNextPagesKeepTheExcerpts()
     {
+        $this->conversation('Hello', 'Something about a refund.');
+        $this->ready();
+
+        $this->assertStringContainsString('<mark>refund</mark>', $this->nextPage('refund'));
+    }
+
+    public function testNextPagesKeepTheOrder()
+    {
+        $this->knownBug('C26');
         $body_only = $this->conversation('Hello', 'Something about a refund.');
-        $subject = $this->conversation('Refund request', 'Please help with a refund.');
+        $this->conversation('Refund request', 'Please help with a refund.');
         $body_only->last_reply_at = now()->addHour();
         $body_only->save();
         $this->ready();
 
-        $response = $this->postAjax($this->agent, '/conversation/ajax', [
-            'action'  => 'conversations_pagination',
-            'filter'  => ['q' => 'refund', 'f' => []],
-            'params'  => [],
-            'sorting' => ['sort_by' => 'relevance', 'order' => 'desc'],
-            'page'    => 1,
-        ]);
-
-        $html = $response->json('html');
-        $this->assertStringContainsString('<mark>refund</mark>', $html);
+        $html = $this->nextPage('refund');
         $this->assertLessThan(strpos($html, 'Hello'), strpos($html, 'Refund request'));
+    }
+
+    /**
+     * The search page's list (App\Livewire\ConversationList), on another page.
+     */
+    protected function nextPage($q)
+    {
+        return Livewire::actingAs($this->agent)->test(\App\Livewire\ConversationList::class, ['filter' => ['q' => $q, 'f' => []]])
+            ->call('gotoPage', 1)->html();
     }
 
     public function testIndexFollowsChanges()

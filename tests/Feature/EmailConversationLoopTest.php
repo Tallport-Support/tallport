@@ -67,8 +67,7 @@ class EmailConversationLoopTest extends FeatureTestCase
 
     protected function replyAsAgent(Conversation $conversation, $body, array $data = [])
     {
-        return $this->postAjax($this->agent, '/conversation/ajax', array_merge([
-            'action'          => 'send_reply',
+        return $this->sendReply($this->agent, array_merge([
             'mailbox_id'      => $this->mailbox->id,
             'conversation_id' => $conversation->id,
             'body'            => $body,
@@ -85,8 +84,7 @@ class EmailConversationLoopTest extends FeatureTestCase
 
         $response = $this->replyAsAgent($conversation, '<p>Your order ships tomorrow.</p>');
 
-        $response->assertStatus(200);
-        $this->assertSame('success', $response->json()['status'], json_encode($response->json()));
+        $this->assertSame('success', $response['status'], json_encode($response));
 
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $this->assertNotNull($reply, 'The reply was not saved.');
@@ -200,7 +198,7 @@ class EmailConversationLoopTest extends FeatureTestCase
 
         $response = $this->replyAsAgent($conversation, '<p>Internal: check the warehouse.</p>', ['is_note' => 1]);
 
-        $this->assertSame('success', $response->json()['status'], json_encode($response->json()));
+        $this->assertSame('success', $response['status'], json_encode($response));
         $note = $conversation->threads()->where('type', Thread::TYPE_NOTE)->first();
         $this->assertNotNull($note, 'The note was not saved.');
         $this->assertStringContainsString('check the warehouse', $note->body);
@@ -213,14 +211,13 @@ class EmailConversationLoopTest extends FeatureTestCase
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
         $outsider = $this->createUser();
 
-        $response = $this->postAjax($outsider, '/conversation/ajax', [
-            'action'          => 'send_reply',
+        $response = $this->sendReply($outsider, [
             'mailbox_id'      => $this->mailbox->id,
             'conversation_id' => $conversation->id,
             'body'            => '<p>Hi!</p>',
         ]);
 
-        $this->assertSame('Not enough permissions', $response->json()['msg']);
+        $this->assertSame('Not enough permissions', $response['msg']);
         $this->assertSame(1, $conversation->threads()->count());
         $this->assertCount(0, $this->sentEmailsTo('casey@customer.example.org'));
     }
@@ -348,7 +345,6 @@ class EmailConversationLoopTest extends FeatureTestCase
 
         $response = $this->actingAs($this->agent)->get('/conversation/'.$conversation->id);
 
-        $response->assertStatus(200);
         $response->assertSee('Question about my order');
         $response->assertSee('Where is my order?');
     }

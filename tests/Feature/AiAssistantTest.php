@@ -714,8 +714,8 @@ class AiAssistantTest extends FeatureTestCase
         $this->assertFalse(Summaries::isStale($conversation->fresh(), 'en'));
 
         ConversationSummarizer::fake([['one_liner' => 'Customer answered', 'background' => '']]);
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Our answer</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Our answer</p>',
         ]);
 
         $conversation->refresh();
@@ -841,8 +841,8 @@ class AiAssistantTest extends FeatureTestCase
         $this->assertSame('', Summaries::get($conversation->fresh(), 'en')['background']);
 
         for ($i = 0; $i < Summaries::BACKGROUND_MIN_MESSAGES; $i++) {
-            $this->postAjax($this->agent, '/conversation/ajax', [
-                'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Note '.$i.'</p>', 'is_note' => 1,
+            $this->sendReply($this->agent, [
+                'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Note '.$i.'</p>', 'is_note' => 1,
             ]);
         }
         ConversationSummarizer::fake([['one_liner' => 'Long one', 'background' => "- Restarting did not help\n- Still open: other users"]]);

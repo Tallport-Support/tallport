@@ -607,7 +607,6 @@
     "This password is incorrect.": "Det här lösenordet är felaktigt.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Detta svar kommer att gå till kunden. :%switch_start%Switch to a note:%switch_end% om du svarar till :user_name.",
     "This text will be added to the beginning of each email reply sent to a customer.": "Denna text kommer att läggas till i början av varje mejlsvar som skickas till en kund.",
-    "Thread is not in a draft state": "Tråden är inte i ett utkastsläge",
     "Thread not found": "Tråden hittades inte",
     "Time Format": "Tidsformat",
     "Timezone": "Tidszon",

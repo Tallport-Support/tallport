@@ -30,8 +30,8 @@ class ReplySendingTest extends FeatureTestCase
             'from' => 'Casey Customer <casey@customer.example.org>', 'to' => $this->mailbox->email, 'subject' => 'Question',
         ]));
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->orderBy('id', 'desc')->first();
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Our answer</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Our answer</p>',
         ]);
 
         return [$conversation, $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first()];
@@ -75,8 +75,8 @@ class ReplySendingTest extends FeatureTestCase
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->orderBy('id', 'desc')->first();
 
         config(['queue.default' => 'database']);
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Our answer</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Our answer</p>',
         ]);
         \DB::table('jobs')->where('queue', 'emails')->where('payload', 'not like', '%SendReplyToCustomer%')->delete();
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
@@ -320,7 +320,7 @@ class ReplySendingTest extends FeatureTestCase
         $this->assertSame(1, SendLog::where('thread_id', $reply->id)->count());
 
         // Retry queues the reply again (there is no failed job).
-        $this->assertSame('success', $this->postAjax($this->agent, '/conversation/ajax', ['action' => 'retry_send', 'thread_id' => $reply->id])->json()['status']);
+        $this->assertSame('success', \App\Misc\ConversationActions::retrySend($reply->fresh(), $this->agent)['status']);
         $this->runQueue();
 
         $this->assertCount(1, $this->sentEmailsTo('casey@customer.example.org'));
@@ -405,8 +405,8 @@ class ReplySendingTest extends FeatureTestCase
         $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
         \Log::spy();
 
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Our answer</p>',
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Our answer</p>',
         ]);
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
 
@@ -438,7 +438,7 @@ class ReplySendingTest extends FeatureTestCase
         $this->captured_mail->flush();
         SendLog::where('thread_id', $reply->id)->delete();
 
-        $response = $this->postAjax($this->agent, '/conversation/ajax', ['action' => 'retry_send', 'thread_id' => $reply->id])->json();
+        $response = \App\Misc\ConversationActions::retrySend($reply->fresh(), $this->agent);
         $this->assertSame('success', $response['status']);
         $this->artisan('queue:work', ['connection' => 'database', '--queue' => 'emails', '--once' => true]);
 

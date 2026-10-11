@@ -49,8 +49,8 @@ class EmbedImagesTest extends FeatureTestCase
         $conversation = Conversation::where('mailbox_id', $mailbox->id)->first();
         $image = Attachment::create('chart.png', 'image/png', null, base64_decode(self::PNG), null, true);
 
-        $this->postAjax($agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $mailbox->id, 'conversation_id' => $conversation->id,
+        $this->sendReply($agent, [
+            'mailbox_id' => $mailbox->id, 'conversation_id' => $conversation->id,
             'body' => '<p>Here: <img src="'.$image->url().'"></p>',
         ]);
 

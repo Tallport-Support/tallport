@@ -128,8 +128,8 @@ class TelegramTest extends FeatureTestCase
         $this->postUpdate($this->update());
         $conversation = $this->conversation();
         config(['queue.default' => 'database']);
-        $this->postAjax($this->agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => $body,
+        $this->sendReply($this->agent, [
+            'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => $body,
         ]);
 
         return $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
@@ -434,8 +434,7 @@ class TelegramTest extends FeatureTestCase
         // Unblocking does not resurrect an old failed reply.
         $this->fakeTelegram();
         config(['queue.default' => 'sync']);
-        $this->postAjax($this->agent, '/conversation/ajax', ['action' => 'retry_send', 'thread_id' => $reply->id])
-            ->assertJson(['msg' => \App\Misc\ChatConversations::unavailableMessage()]);
+        $this->assertSame(['msg' => \App\Misc\ChatConversations::unavailableMessage()], \App\Misc\ConversationActions::retrySend($reply->fresh(), $this->agent));
         $this->runQueue();
         $this->assertFalse($reply->fresh()->isSendStatusSuccess());
         $this->assertCount(0, $this->sentTo('sendMessage'));

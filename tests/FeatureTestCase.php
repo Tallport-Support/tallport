@@ -128,6 +128,50 @@ abstract class FeatureTestCase extends TestCase
     }
 
     /**
+     * Send a reply, note, forward or new conversation as the composers do
+     * (App\Misc\ConversationReplies, which ConversationComposer and
+     * NewConversation call with their fields).
+     *
+     * @return array The result: status, msg, thread_id, redirect_url, …
+     */
+    protected function sendReply($user, array $fields)
+    {
+        return $this->conversationReplies('sendReply', $user, $fields);
+    }
+
+    /**
+     * Save a draft as the composers do (see sendReply()).
+     *
+     * @return array
+     */
+    protected function saveDraft($user, array $fields)
+    {
+        return $this->conversationReplies('saveDraft', $user, $fields);
+    }
+
+    /**
+     * Discard a draft as the composers do (see sendReply()).
+     *
+     * @return array
+     */
+    protected function discardDraft($user, array $fields)
+    {
+        return $this->conversationReplies('discardDraft', $user, $fields);
+    }
+
+    private function conversationReplies($method, $user, array $fields)
+    {
+        \Session::start();
+        $this->actingAs($user);
+
+        $result = app(\App\Misc\ConversationReplies::class)->$method($fields, $user);
+        // The notifications, as at the end of a request (App\Http\Middleware\TerminateHandler).
+        \App\Subscription::processEvents();
+
+        return $result;
+    }
+
+    /**
      * What a Livewire call streamed to the browser (wire:stream): type, content, mode and name of each.
      */
     protected function streamed(callable $call)

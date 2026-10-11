@@ -601,7 +601,6 @@
     "This password is incorrect.": "Dette passordet er feil.",
     "This reply will go to the customer. :%switch_start%Switch to a note:%switch_end% if you are replying to :user_name.": "Dette svaret vil bli sendt til kunden. :%switch_start%Bytt til en notat:%switch_end% hvis du svarer til :user_name.",
     "This text will be added to the beginning of each email reply sent to a customer.": "Denne teksten vil bli lagt til i begynnelsen av hvert e-post svar sendt til en kunde.",
-    "Thread is not in a draft state": "Tråden er ikke i utkaststilstand.",
     "Thread not found": "Tråd ikke funnet.",
     "Time Format": "Tidsformat",
     "Timezone": "Tidssone",

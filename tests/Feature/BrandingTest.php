@@ -45,8 +45,8 @@ class BrandingTest extends FeatureTestCase
         $this->receiveEmail($mailbox, $this->makeEmail(['from' => 'casey@customer.example.org', 'to' => $mailbox->email]));
         $conversation = Conversation::where('mailbox_id', $mailbox->id)->first();
 
-        $this->postAjax($agent, '/conversation/ajax', [
-            'action' => 'send_reply', 'mailbox_id' => $mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Hi</p>',
+        $this->sendReply($agent, [
+            'mailbox_id' => $mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Hi</p>',
         ]);
 
         $body = $this->sentEmailsTo('casey@customer.example.org')[0]->getBody();

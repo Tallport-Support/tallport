@@ -10,11 +10,10 @@ use App\Thread;
 /**
  * What a user does to a conversation from its page: assign, change the status,
  * restore, follow, delete and change the subject; edit a message, delete a
- * note and send a failed reply again. Used by the conversation ajax actions
- * and the page's Livewire components.
+ * note and send a failed reply again. Used by the page's Livewire components.
  *
- * Each returns the ajax response's fields: msg (an error), or status success
- * with redirect_url or msg_success where the action has them.
+ * Each returns msg (an error), or status success with redirect_url or
+ * msg_success where the action has them.
  */
 class ConversationActions
 {
