@@ -44,6 +44,7 @@
                 {{ __('This log is empty.') }}
             </x-fruit::empty-state>
         @else
+            <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ __('App Logs') }}">
             <table class="f-table app-logs__table">
                 <thead>
                     <tr>
@@ -61,10 +62,10 @@
                     @foreach ($logs as $log)
                         <tr>
                             @if ($standardFormat)
-                                <td><span class="f-badge f-badge--{{ $level_tones[$log['level']] ?? 'neutral' }}">{{ ucfirst($log['level']) }}</span></td>
+                                <td data-label="{{ __('Level') }}"><span class="f-badge f-badge--{{ $level_tones[$log['level']] ?? 'neutral' }}">{{ ucfirst($log['level']) }}</span></td>
                             @endif
-                            <td class="app-logs__date">{{ $log['date'] }}</td>
-                            <td class="app-logs__text">
+                            <th scope="row" class="app-logs__date">{{ $log['date'] }}</th>
+                            <td class="app-logs__text" data-label="{{ __('Message') }}">
                                 @if ($standardFormat && $log['context'])<span class="f-muted">{{ $log['context'] }}</span> @endif{{ $log['text'] }}
                                 @if (isset($log['in_file']))
                                     <br/>{{ $log['in_file'] }}
@@ -80,6 +81,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
             {{ $logs->links('fruit::pagination.default') }}
         @endif
 

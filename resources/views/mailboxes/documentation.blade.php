@@ -73,21 +73,23 @@
             </x-fruit::form-section>
         </div>
 
-        <h3 class="settings-form__heading">{{ __('Pages') }}</h3>
-
+        {{-- Search and the indexing buttons on one line (wrapping on a phone), then the pages: narrow (a drill-down
+             level, a phone), each row stacks as a record (FruitUI's f-table__scroll). --}}
+        <section class="f-stack" aria-labelledby="documentation-pages" x-data="{ q: '', matches(text) { return !this.q || text.includes(this.q.trim().toLowerCase()) } }">
+            <h3 class="f-form-section__title" id="documentation-pages">{{ __('Pages') }}</h3>
         @if (count($documents))
-            <form method="POST" action="{{ route('mailboxes.documentation.action', ['id' => $mailbox->id]) }}" class="f-row ai-documents__actions">
-                {{ csrf_field() }}
-                <input type="hidden" name="action" value="index">
-                <x-fruit::button type="submit">{{ __('Fetch and Index Changes') }}</x-fruit::button>
-                <x-fruit::button type="submit" variant="ghost" name="force" value="1" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim()}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Index all documentation again? This makes new embeddings for every page.') }}">{{ __('Index All Again') }}</x-fruit::button>
-            </form>
+            <div class="f-row">
+                @if (count($documents) > 1)
+                    <x-fruit::search id="search-documents" :wrapper="['class' => 'ai-documents__search']" x-model="q" :label="__('Search')" :placeholder="__('Search')" />
+                @endif
+                <form method="POST" action="{{ route('mailboxes.documentation.action', ['id' => $mailbox->id]) }}" class="f-row">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="action" value="index">
+                    <x-fruit::button type="submit">{{ __('Fetch and Index Changes') }}</x-fruit::button>
+                    <x-fruit::button type="submit" variant="ghost" name="force" value="1" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim()}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Index all documentation again? This makes new embeddings for every page.') }}">{{ __('Index All Again') }}</x-fruit::button>
+                </form>
+            </div>
 
-            {{-- Narrow (a drill-down level, a phone): each row stacks as a record (FruitUI's f-table__scroll). --}}
-            <div x-data="{ q: '', matches(text) { return !this.q || text.includes(this.q.trim().toLowerCase()) } }">
-            @if (count($documents) > 1)
-                <x-fruit::search id="search-documents" x-model="q" :label="__('Search')" :placeholder="__('Search')" />
-            @endif
             <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ __('Documentation') }}">
             <x-fruit::table>
                 <thead>
@@ -150,34 +152,42 @@
                 </tbody>
             </x-fruit::table>
             </div>
-            </div>
         @else
             <p class="f-muted">{{ __('No documentation has been added yet.') }}</p>
         @endif
+        </section>
 
-        <h3 class="settings-form__heading">{{ __('Documentation API') }}</h3>
-
-        <p class="f-help">{{ __('Websites and build jobs can push Markdown pages into a mailbox\'s documentation with the mailbox\'s API key.') }}</p>
-
-        <form method="POST" action="{{ route('mailboxes.documentation.action', ['id' => $mailbox->id]) }}" class="f-row ai-documents__actions">
-            {{ csrf_field() }}
-            @if ($api_key)
-                <code>{{ $api_key->key_preview }}</code>
-                <span class="f-muted">{{ __('Last Used') }}: {{ $api_key->last_used_at ? App\User::dateFormat($api_key->last_used_at) : '–' }}</span>
-                <x-fruit::button type="submit" size="small" name="action" value="issue_key" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Make a new API key? Websites using the current key stop working.') }}">{{ __('New Key') }}</x-fruit::button>
-                <x-fruit::button type="submit" size="small" variant="danger" name="action" value="revoke_key" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Revoke this API key? Websites using it stop working.') }}">{{ __('Revoke') }}</x-fruit::button>
-            @else
-                <x-fruit::button type="submit" size="small" name="action" value="issue_key">{{ __('Make Key') }}</x-fruit::button>
-            @endif
-        </form>
-
-        <pre>curl -X POST "{{ route('ai.documents.api') }}" \
-      -H "Authorization: Bearer YOUR_MAILBOX_KEY" \
-      -H "Content-Type: application/json" \
-      -d '{
-        "identifier": "setup/android",
-        "content": "# Android setup\n\nMarkdown...",
-        "public_url": "https://docs.example.com/en/setup/android"
-      }'</pre>
+        @php
+            $api_example = 'curl -X POST "'.route('ai.documents.api').'" \\
+  -H "Authorization: Bearer YOUR_MAILBOX_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d \'{
+    "identifier": "setup/android",
+    "content": "# Android setup\\n\\nMarkdown...",
+    "public_url": "https://docs.example.com/en/setup/android"
+  }\'';
+        @endphp
+        <x-fruit::form-section :title="__('Documentation API')" :level="3" :footer="__('Websites and build jobs can push Markdown pages into a mailbox\'s documentation with the mailbox\'s API key.')">
+            <form class="f-form-row" method="POST" action="{{ route('mailboxes.documentation.action', ['id' => $mailbox->id]) }}">
+                {{ csrf_field() }}
+                @if ($api_key)
+                    <div>
+                        <code>{{ $api_key->key_preview }}</code>
+                        <p class="f-help">{{ __('Last Used') }}: {{ $api_key->last_used_at ? App\User::dateFormat($api_key->last_used_at) : '–' }}</p>
+                    </div>
+                    <div class="f-row">
+                        <x-fruit::button type="submit" size="small" name="action" value="issue_key" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Make a new API key? Websites using the current key stop working.') }}">{{ __('New Key') }}</x-fruit::button>
+                        <x-fruit::button type="submit" size="small" variant="danger" name="action" value="revoke_key" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Revoke this API key? Websites using it stop working.') }}">{{ __('Revoke') }}</x-fruit::button>
+                    </div>
+                @else
+                    <span>{{ __('API Key') }}</span>
+                    <x-fruit::button type="submit" size="small" name="action" value="issue_key">{{ __('Make Key') }}</x-fruit::button>
+                @endif
+            </form>
+            <div class="f-form-row">
+                <pre>{{ $api_example }}</pre>
+                <x-fruit::copy-button size="small" :value="$api_example">{{ __('Copy') }}</x-fruit::copy-button>
+            </div>
+        </x-fruit::form-section>
     </div>
 @endsection

@@ -29,8 +29,8 @@
     <form id="ai-log-filters" method="GET" action="{{ route('logs.ai') }}" hidden></form>
 
     @if ($calls->count())
-        <div class="f-table__scroll">
-            <x-fruit::table id="table-ai-log" class="logs-table" :aria-label="__('AI')">
+        <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ __('AI') }}">
+            <x-fruit::table id="table-ai-log" class="logs-table">
                 <thead>
                     <tr>
                         <th>{{ __('Date') }}</th>
@@ -48,9 +48,9 @@
                     @foreach ($calls as $call)
                         @php [$status_name, $status_tone] = $call->statusName(); @endphp
                         <tr>
-                            <td>{{ App\User::dateFormat($call->created_at, 'M j, H:i:s') }}</td>
-                            <td>{{ App\Ai\Usage::featureName($call->feature) }}</td>
-                            <td>
+                            <th scope="row">{{ App\User::dateFormat($call->created_at, 'M j, H:i:s') }}</th>
+                            <td data-label="{{ __('Feature') }}">{{ App\Ai\Usage::featureName($call->feature) }}</td>
+                            <td data-label="{{ __('Model') }}">
                                 @if ($call->model)
                                     <span class="f-muted">{{ App\Ai\Providers::PRESETS[$call->provider]['name'] ?? $call->provider }} ·</span> {{ $call->model }}
                                 @else
@@ -66,12 +66,12 @@
                                     <x-fruit::badge variant="outline">{{ __('Less Reasoning') }}</x-fruit::badge>
                                 @endif
                             </td>
-                            <td>@if ($call->duration_ms !== null){{ App\Ai\Usage::formatDuration($call->duration_ms) }}@else<span class="ai-log__none">—</span>@endif</td>
-                            <td>@if ($call->input_tokens || $call->output_tokens){{ number_format($call->input_tokens) }} / {{ number_format($call->output_tokens) }}@else<span class="ai-log__none">—</span>@endif</td>
-                            <td>@if ($call->mailbox){{ $call->mailbox->name }}@endif</td>
-                            <td>@if ($call->conversation)<a href="{{ route('conversations.view', ['id' => $call->conversation_id]) }}" target="_blank">#{{ $call->conversation->number }}</a>@endif</td>
+                            <td data-label="{{ __('Duration') }}">@if ($call->duration_ms !== null){{ App\Ai\Usage::formatDuration($call->duration_ms) }}@else<span class="ai-log__none">—</span>@endif</td>
+                            <td data-label="{{ __('Tokens (In / Out)') }}">@if ($call->input_tokens || $call->output_tokens){{ number_format($call->input_tokens) }} / {{ number_format($call->output_tokens) }}@else<span class="ai-log__none">—</span>@endif</td>
+                            <td data-label="{{ __('Mailbox') }}">@if ($call->mailbox){{ $call->mailbox->name }}@endif</td>
+                            <td data-label="{{ __('Conversation') }}">@if ($call->conversation)<a href="{{ route('conversations.view', ['id' => $call->conversation_id]) }}" target="_blank">#{{ $call->conversation->number }}</a>@endif</td>
                             {{-- The outcome, and the error on one line (whole in its Details). --}}
-                            <td class="logs-table__long"><span><x-fruit::badge :tone="$status_tone">{{ $status_name }}</x-fruit::badge> <span class="f-muted">{{ $call->error }}</span></span></td>
+                            <td class="logs-table__long" data-label="{{ __('Status') }}"><span><x-fruit::badge :tone="$status_tone">{{ $status_name }}</x-fruit::badge> <span class="f-muted">{{ $call->error }}</span></span></td>
                             <td>
                                 @if ((string) $call->error !== '')
                                     <x-fruit::button variant="ghost" size="small" x-data x-on:click="$dispatch('fruit-dialog-open', { name: 'ai-call-{{ $call->id }}' })">{{ __('Details') }}</x-fruit::button>

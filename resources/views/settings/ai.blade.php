@@ -21,7 +21,7 @@
 
     {{-- Each feature's model: the primary, and a backup tried when the primary fails. --}}
     <x-fruit::form-section :title="__('Models')" :level="3" :footer="__('When the primary model fails (unreachable, out of credit, a wrong key or model), the backup is used.')">
-        <div>
+        <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ __('Models') }}">
             <x-fruit::table class="ai-models">
                 <thead>
                     <tr>
@@ -34,9 +34,9 @@
                     @foreach ($ai_features as $feature => $feature_name)
                         @php $feature_models = App\Ai\Settings::featureModels($feature); @endphp
                         <tr>
-                            <td>{{ $feature_name }}</td>
+                            <th scope="row">{{ $feature_name }}</th>
                             @foreach (['primary', 'backup'] as $slot)
-                                <td>
+                                <td data-label="{{ $slot == 'primary' ? __('Primary Model') : __('Backup Model') }}">
                                     <div class="ai-model-choice">
                                         <x-fruit::select name="settings[aiassistant.models][{{ $feature }}][{{ $slot }}][provider]" :aria-label="$feature_name.': '.($slot == 'primary' ? __('Primary Model') : __('Backup Model')).' · '.__('Provider')">
                                             @if ($slot == 'backup')

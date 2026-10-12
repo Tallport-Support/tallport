@@ -50,6 +50,7 @@
                 @php $logs = $webhook->logs()->orderBy('id', 'desc')->limit(20)->get(); @endphp
                 @if (count($logs))
                     <x-fruit::disclosure :title="__('Failed deliveries').' ('.count($logs).')'">
+                        <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ __('Failed deliveries') }}">
                         <x-fruit::table>
                             <thead>
                                 <tr>
@@ -63,15 +64,16 @@
                             <tbody>
                                 @foreach ($logs as $log)
                                     <tr>
-                                        <td>{{ App\User::dateFormat($log->updated_at) }}</td>
-                                        <td><code>{{ $log->event }}</code></td>
-                                        <td><x-fruit::badge :tone="$log->isSuccess() ? 'success' : 'danger'">{{ $log->status_code ?: '—' }}</x-fruit::badge></td>
-                                        <td>{{ $log->error }}</td>
-                                        <td>@if ($log->finished){{ $log->attempts }}@else{{ $log->attempts }} / {{ App\Api\Webhook::MAX_ATTEMPTS }}@endif</td>
+                                        <th scope="row">{{ App\User::dateFormat($log->updated_at) }}</th>
+                                        <td data-label="{{ __('Event') }}"><code>{{ $log->event }}</code></td>
+                                        <td data-label="{{ __('Status') }}"><x-fruit::badge :tone="$log->isSuccess() ? 'success' : 'danger'">{{ $log->status_code ?: '—' }}</x-fruit::badge></td>
+                                        <td data-label="{{ __('Error') }}">{{ $log->error }}</td>
+                                        <td data-label="{{ __('Attempts') }}">@if ($log->finished){{ $log->attempts }}@else{{ $log->attempts }} / {{ App\Api\Webhook::MAX_ATTEMPTS }}@endif</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </x-fruit::table>
+                        </div>
                     </x-fruit::disclosure>
                 @endif
             @else

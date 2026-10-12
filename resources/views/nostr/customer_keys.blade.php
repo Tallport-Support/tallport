@@ -27,6 +27,7 @@
         <div class="settings-form settings-form--wide">
             <x-fruit::form-section :title="__('Nostr')" :footer="__('Messages from any of these public keys are added to this customer\'s Nostr conversations. Replies go to the key that wrote last.')">
                 @if (count($keys))
+                    <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ __('Nostr') }}">
                     <table class="f-table nostr-keys-table">
                         <thead>
                             <tr>
@@ -40,7 +41,7 @@
                         <tbody>
                             @foreach ($keys as $key)
                                 <tr>
-                                    <td>
+                                    <td data-label="{{ __('Label') }}">
                                         <form method="POST" action="{{ route('customers.nostr.save', ['id' => $customer->id]) }}">
                                             {{ csrf_field() }}
                                             <input type="hidden" name="action" value="label">
@@ -51,12 +52,12 @@
                                             </div>
                                         </form>
                                     </td>
-                                    <td>
+                                    <th scope="row">
                                         <code title="{{ $key->pubkey }}">{{ $key->getNpub() }}</code>
                                         @if ($key->getDisplayName())<br><small class="f-muted">{{ $key->getDisplayName() }}</small>@endif
-                                    </td>
-                                    <td>{{ $key->source }}</td>
-                                    <td>{{ $key->last_seen_at ? App\User::dateFormat($key->last_seen_at) : '' }}</td>
+                                    </th>
+                                    <td data-label="{{ __('Source') }}">{{ $key->source }}</td>
+                                    <td data-label="{{ __('Last message') }}">{{ $key->last_seen_at ? App\User::dateFormat($key->last_seen_at) : '' }}</td>
                                     <td>
                                         <form method="POST" action="{{ route('customers.nostr.save', ['id' => $customer->id]) }}" x-data @submit.prevent="Tallport.confirm({ message: @js(__('Remove this key from the customer?')), confirm: @js(__('Remove')), tone: 'danger' }).then(ok => ok && $el.submit())">
                                             {{ csrf_field() }}
@@ -69,6 +70,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    </div>
                 @else
                     <p class="f-help">{{ __('No Nostr public keys are linked to this customer yet.') }}</p>
                 @endif

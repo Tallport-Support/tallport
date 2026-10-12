@@ -15,7 +15,7 @@
         <x-fruit::page width="medium">
             <form method="POST" action="{{ route('users.notifications.save', ['id' => $user->id]) }}" class="user-subscriptions" x-on:change="Tallport.autoSave($el)">
                 {{ csrf_field() }}
-                <div class="f-table__scroll">
+                <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ __('Notifications') }}">
                     @include('users/subscriptions_table')
                 </div>
             </form>

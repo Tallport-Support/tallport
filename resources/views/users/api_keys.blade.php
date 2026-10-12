@@ -23,6 +23,7 @@
 
                 @if (count($keys))
                     <x-fruit::form-section :title="__('API Keys')" :level="3">
+                        <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ __('API Keys') }}">
                         <x-fruit::table>
                             <thead>
                                 <tr>
@@ -37,11 +38,11 @@
                             <tbody>
                                 @foreach ($keys as $key)
                                     <tr>
-                                        <td>{{ $key->name }}</td>
-                                        <td><code>…{{ $key->token_preview }}</code></td>
-                                        <td>@if ($key->canWrite()){{ __('Read and write') }}@else{{ __('Read only') }}@endif</td>
-                                        <td>@if ($key->mailboxes){{ $mailboxes->whereIn('id', $key->mailboxes)->pluck('name')->implode(' | ') }}@else{{ __('All') }}@endif</td>
-                                        <td>@if ($key->last_used_at){{ App\User::dateFormat($key->last_used_at) }}@else{{ __('Never') }}@endif</td>
+                                        <th scope="row">{{ $key->name }}</th>
+                                        <td data-label="{{ __('Key') }}"><code>…{{ $key->token_preview }}</code></td>
+                                        <td data-label="{{ __('Access') }}">@if ($key->canWrite()){{ __('Read and write') }}@else{{ __('Read only') }}@endif</td>
+                                        <td data-label="{{ __('Mailboxes') }}">@if ($key->mailboxes){{ $mailboxes->whereIn('id', $key->mailboxes)->pluck('name')->implode(' | ') }}@else{{ __('All') }}@endif</td>
+                                        <td data-label="{{ __('Last used') }}">@if ($key->last_used_at){{ App\User::dateFormat($key->last_used_at) }}@else{{ __('Never') }}@endif</td>
                                         <td>
                                             <form method="POST" action="{{ route('users.api_keys.action', ['id' => $user->id]) }}" x-data @submit.prevent="Tallport.confirm({ message: @js(__('Revoke this API key?')), confirm: @js(__('Revoke')), tone: 'danger' }).then(ok => ok && $el.submit())">
                                                 {{ csrf_field() }}
@@ -54,6 +55,7 @@
                                 @endforeach
                             </tbody>
                         </x-fruit::table>
+                        </div>
                     </x-fruit::form-section>
                 @endif
 

@@ -74,7 +74,7 @@
                 @endif
 
                 @if ($lstate != 'disabled' && count($listener['relays']))
-                    <div class="f-table__scroll">
+                    <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ __('Listener') }}">
                         <x-fruit::table class="nostr-table">
                             <thead>
                                 <tr>
@@ -91,10 +91,10 @@
                                         $rlabel = ['connected' => ['success', __('connected')], 'connecting' => ['warning', __('connecting')], 'reconnecting' => ['warning', __('reconnecting')], 'none' => ['neutral', __('not connected')]][$rstate] ?? ['neutral', $rstate];
                                     @endphp
                                     <tr>
-                                        <td><code>{{ $url }}</code></td>
-                                        <td><x-fruit::badge :tone="$rlabel[0]">{{ $rlabel[1] }}</x-fruit::badge> @if ($rstate == 'connected' && !empty($relay['since']))<small class="f-muted">{{ __('since') }} {{ $ago($relay['since']) }}</small>@endif</td>
-                                        <td>{{ (int) ($relay['events'] ?? 0) }}@if (!empty($relay['last_event_at'])) <small class="f-muted">({{ __('last') }} {{ $ago($relay['last_event_at']) }})</small>@endif</td>
-                                        <td>
+                                        <th scope="row"><code>{{ $url }}</code></th>
+                                        <td data-label="{{ __('Connection') }}"><x-fruit::badge :tone="$rlabel[0]">{{ $rlabel[1] }}</x-fruit::badge> @if ($rstate == 'connected' && !empty($relay['since']))<small class="f-muted">{{ __('since') }} {{ $ago($relay['since']) }}</small>@endif</td>
+                                        <td data-label="{{ __('Messages') }}">{{ (int) ($relay['events'] ?? 0) }}@if (!empty($relay['last_event_at'])) <small class="f-muted">({{ __('last') }} {{ $ago($relay['last_event_at']) }})</small>@endif</td>
+                                        <td data-label="{{ __('Details') }}">
                                             @if ($rstate == 'connected')
                                                 {{ !empty($relay['caught_up']) ? __('subscribed') : __('waiting for the relay') }}{{ !empty($relay['authed']) ? ', '.__('authenticated') : '' }}
                                             @elseif ($rstate == 'reconnecting')
@@ -127,7 +127,7 @@
                 @endif
 
                 @if (!empty($diagnose['relays']))
-                    <div class="f-table__scroll">
+                    <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ __('Check Relays') }}">
                         <x-fruit::table class="nostr-table">
                             <thead>
                                 <tr>
@@ -142,12 +142,12 @@
                             <tbody>
                                 @foreach ($diagnose['relays'] as $url => $row)
                                     <tr>
-                                        <td><code>{{ $url }}</code>@if (!empty($row['inbox'])) <small class="f-muted">{{ __('inbox') }}</small>@endif</td>
-                                        <td>@if ($row['ok'])<x-fruit::badge tone="success">{{ __('ok') }}</x-fruit::badge>@else<x-fruit::badge tone="danger">{{ __('failed') }}</x-fruit::badge> <small class="f-error nostr-inline">{{ $row['error'] }}</small>@endif</td>
-                                        <td>{{ $row['wraps'] }}@if ($row['unseen_wraps']) <x-fruit::badge tone="warning">{{ __(':n not yet received', ['n' => $row['unseen_wraps']]) }}</x-fruit::badge>@endif</td>
-                                        <td>{{ $row['legacy'] }}</td>
-                                        <td>{{ $row['profile'] ? __('found') : __('missing') }}</td>
-                                        <td>@if ($row['dm_relays'] === null){{ __('missing') }}@else<small>{{ implode(' ', $row['dm_relays']) }}</small>@endif</td>
+                                        <th scope="row"><code>{{ $url }}</code>@if (!empty($row['inbox'])) <small class="f-muted">{{ __('inbox') }}</small>@endif</th>
+                                        <td data-label="{{ __('Connection') }}">@if ($row['ok'])<x-fruit::badge tone="success">{{ __('ok') }}</x-fruit::badge>@else<x-fruit::badge tone="danger">{{ __('failed') }}</x-fruit::badge> <small class="f-error nostr-inline">{{ $row['error'] }}</small>@endif</td>
+                                        <td data-label="{{ __('Gift wraps (3 days)') }}">{{ $row['wraps'] }}@if ($row['unseen_wraps']) <x-fruit::badge tone="warning">{{ __(':n not yet received', ['n' => $row['unseen_wraps']]) }}</x-fruit::badge>@endif</td>
+                                        <td data-label="{{ __('Legacy NIP-04') }}">{{ $row['legacy'] }}</td>
+                                        <td data-label="{{ __('Profile') }}">{{ $row['profile'] ? __('found') : __('missing') }}</td>
+                                        <td data-label="{{ __('DM relay list') }}">@if ($row['dm_relays'] === null){{ __('missing') }}@else<small>{{ implode(' ', $row['dm_relays']) }}</small>@endif</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -196,7 +196,7 @@
                 </p>
 
                 @if (count($retired_keys))
-                    <div class="f-table__scroll">
+                    <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ __('Keys') }}">
                         <x-fruit::table class="nostr-table">
                             <thead>
                                 <tr>
@@ -210,10 +210,10 @@
                             <tbody>
                                 @foreach ($retired_keys as $key)
                                     <tr>
-                                        <td><code title="{{ $key->pubkey }}">{{ $key->getNpub() }}</code></td>
-                                        <td>{{ $key->key_created_at ? App\User::dateFormat($key->key_created_at, 'M j, Y') : '' }}</td>
-                                        <td>{{ $key->retired_at ? App\User::dateFormat($key->retired_at, 'M j, Y') : '' }}</td>
-                                        <td>{{ $key->getMessageCount() }}@if ($key->getLastMessageAt()) <small class="f-muted">({{ __('last') }} {{ App\User::dateFormat(\Illuminate\Support\Carbon::parse($key->getLastMessageAt()), 'M j, Y') }})</small>@endif</td>
+                                        <th scope="row"><code title="{{ $key->pubkey }}">{{ $key->getNpub() }}</code></th>
+                                        <td data-label="{{ __('Used') }}">{{ $key->key_created_at ? App\User::dateFormat($key->key_created_at, 'M j, Y') : '' }}</td>
+                                        <td data-label="{{ __('Retired') }}">{{ $key->retired_at ? App\User::dateFormat($key->retired_at, 'M j, Y') : '' }}</td>
+                                        <td data-label="{{ __('Messages') }}">{{ $key->getMessageCount() }}@if ($key->getLastMessageAt()) <small class="f-muted">({{ __('last') }} {{ App\User::dateFormat(\Illuminate\Support\Carbon::parse($key->getLastMessageAt()), 'M j, Y') }})</small>@endif</td>
                                         <td>
                                             <details class="nostr-delete-key">
                                                 <summary class="f-button f-button--small">{{ __('Delete…') }}</summary>

@@ -27,7 +27,7 @@
             @action('mailbox.permissions.before_access_settings', $mailbox, $mailbox_users, $managers)
 
             <x-fruit::form-section :title="__('Access Settings')" :level="3">
-                <div class="f-table__scroll">
+                <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ __('Access Settings') }}">
                     <x-fruit::table class="mailbox-access-table">
                         <thead>
                             <tr>
@@ -41,15 +41,15 @@
                         <tbody>
                             @foreach ($managers as $mailbox_user)
                                 <tr>
-                                    <td>
+                                    <th scope="row">
                                         {{ $mailbox_user->getFullName() }}
                                         @if ($mailbox_user->isAdmin())
                                             <x-fruit::badge tone="accent">{{ __('Administrator') }}</x-fruit::badge>
                                         @endif
-                                    </td>
-                                    <td><input type="checkbox" class="f-check" name="managers[{{ $mailbox_user->id }}][hide]" value="1" aria-label="{{ $mailbox_user->getFullName() }}: {{ __('Hide from Assign list') }}" @if (!empty($mailbox_user->hide)) checked="checked" @endif></td>
+                                    </th>
+                                    <td data-label="{{ __('Hide from Assign list') }}"><input type="checkbox" class="f-check" name="managers[{{ $mailbox_user->id }}][hide]" value="1" aria-label="{{ $mailbox_user->getFullName() }}: {{ __('Hide from Assign list') }}" @if (!empty($mailbox_user->hide)) checked="checked" @endif></td>
                                     @foreach (\App\Mailbox::$access_permissions as $perm)
-                                        <td>
+                                        <td data-label="{{ \App\Mailbox::getAccessPermissionName($perm) }}">
                                             @if (!$mailbox_user->isAdmin())
                                                 <input type="checkbox" class="f-check" name="managers[{{ $mailbox_user->id }}][access][{{ $perm }}]" value="{{ $perm }}" aria-label="{{ $mailbox_user->getFullName() }}: {{ \App\Mailbox::getAccessPermissionName($perm) }}" @if (!empty($mailbox_user->access) && in_array($perm, json_decode($mailbox_user->access))) checked="checked" @endif @if (Auth::id() == $mailbox_user->id && !Auth::user()->isAdmin()) disabled @endif/>
                                             @else

@@ -84,6 +84,8 @@
       min-width: 0;
       padding: 0;
       border: 0;
+      /* A long address breaks rather than reach past the edge. */
+      overflow-wrap: anywhere;
     }
     .f-table > :is(tbody, tfoot) > tr::after {
       content: '';

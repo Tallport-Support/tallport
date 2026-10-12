@@ -44,7 +44,7 @@
     </x-fruit::form-section>
 
     <x-fruit::form-section :title="__('Default Subscriptions For New Users')" :level="3">
-        <div>
+        <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ __('Default Subscriptions For New Users') }}">
             @include('users/subscriptions_table', ['subscriptions_formname' => 'settings[subscription_defaults]'])
         </div>
     </x-fruit::form-section>

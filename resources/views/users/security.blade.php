@@ -108,6 +108,7 @@
                     <p class="f-help">{{ __('Sign in with a fingerprint, face or device PIN instead of the password and code.') }}</p>
 
                     @if (count($passkeys))
+                        <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ __('Passkeys') }}">
                         <x-fruit::table>
                             <thead>
                                 <tr>
@@ -120,9 +121,9 @@
                             <tbody>
                                 @foreach ($passkeys as $passkey)
                                     <tr>
-                                        <td>{{ $passkey->name }}</td>
-                                        <td>{{ App\User::dateFormat($passkey->created_at, 'M j, Y') }}</td>
-                                        <td>{{ $passkey->last_used_at ? App\User::dateFormat($passkey->last_used_at, 'M j, Y H:i') : __('Never') }}</td>
+                                        <th scope="row">{{ $passkey->name }}</th>
+                                        <td data-label="{{ __('Added') }}">{{ App\User::dateFormat($passkey->created_at, 'M j, Y') }}</td>
+                                        <td data-label="{{ __('Last used') }}">{{ $passkey->last_used_at ? App\User::dateFormat($passkey->last_used_at, 'M j, Y H:i') : __('Never') }}</td>
                                         <td>
                                             @if ($own)
                                                 <form method="POST" action="{{ route('passkey.destroy', ['passkey' => $passkey->id]) }}">
@@ -136,6 +137,7 @@
                                 @endforeach
                             </tbody>
                         </x-fruit::table>
+                        </div>
                     @endif
 
                     @if ($own)

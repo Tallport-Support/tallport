@@ -42,8 +42,8 @@
     @include('secure/logs_menu', ['clearable' => $current_name != App\ActivityLog::NAME_OUT_EMAILS && count($logs)])
 
     @if (count($logs))
-        <div class="f-table__scroll">
-            <x-fruit::table id="table-logs" class="logs-table" :aria-label="App\ActivityLog::getLogTitle($current_name)">
+        <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ App\ActivityLog::getLogTitle($current_name) }}">
+            <x-fruit::table id="table-logs" class="logs-table">
                 <thead>
                     <tr>
                         @foreach ($cols as $col)
@@ -56,10 +56,12 @@
                     @foreach ($logs as $row_index => $row)
                         <tr>
                             @foreach ($cols as $col)
-                                @if ($col == $long_col)
-                                    <td class="logs-table__long"><span>{!! $log_cell($row, $col) !!}</span></td>
+                                @if ($loop->first)
+                                    <th scope="row">{!! $log_cell($row, $col) !!}</th>
+                                @elseif ($col == $long_col)
+                                    <td class="logs-table__long" data-label="{{ App\ActivityLog::formatColTitle($col) }}"><span>{!! $log_cell($row, $col) !!}</span></td>
                                 @else
-                                    <td>{!! $log_cell($row, $col) !!}</td>
+                                    <td data-label="{{ App\ActivityLog::formatColTitle($col) }}">{!! $log_cell($row, $col) !!}</td>
                                 @endif
                             @endforeach
                             <td>

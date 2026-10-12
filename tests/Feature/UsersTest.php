@@ -515,7 +515,7 @@ class UsersTest extends FeatureTestCase
         // Each checkbox named by its column and row, as a screen reader reads it.
         $this->actingAs($agent)->get(route('own.notifications'))
             ->assertSee('<span id="subs-medium-email">Email</span>', false)
-            ->assertSee('<td id="subs-event-'.Subscription::EVENT_NEW_CONVERSATION.'">There is a new conversation</td>', false)
+            ->assertSee('<th scope="row" id="subs-event-'.Subscription::EVENT_NEW_CONVERSATION.'">There is a new conversation</th>', false)
             ->assertSee('aria-labelledby="subs-medium-browser subs-event-'.Subscription::EVENT_NEW_CONVERSATION.'"', false);
 
         // Nobody sets another person's.

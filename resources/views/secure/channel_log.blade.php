@@ -19,8 +19,8 @@
     @include('secure/logs_menu', ['names' => App\ActivityLog::menuNames(), 'current_name' => 'out_'.$channel])
     <form id="channel-log-filters" method="GET" action="{{ route('logs.'.$channel) }}" hidden></form>
     @if ($entries->count())
-        <div class="f-table__scroll">
-            <x-fruit::table class="logs-table" :aria-label="ucfirst($channel)">
+        <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ ucfirst($channel) }}">
+            <x-fruit::table class="logs-table">
                 <thead><tr>
                     <th>{{ __('Date') }}</th><th>{{ __('Mailbox') }}</th><th>{{ __('Conversation') }}</th>
                     <th>{{ __('Customer') }}</th><th>{{ __('Type') }}</th><th>{{ __('Status') }}</th><th>{{ __('Details') }}</th>
@@ -28,12 +28,12 @@
                 <tbody>
                     @foreach ($entries as $entry)
                         <tr>
-                            <td>{{ App\User::dateFormat($entry['date'], 'M j, H:i:s') }}</td>
-                            <td>{{ $entry['mailbox']->name ?? '—' }}</td>
-                            <td>@if ($entry['conversation'])<a href="{{ route('conversations.view', ['id' => $entry['conversation']->id]) }}">#{{ $entry['conversation']->number }}</a>@else — @endif</td>
-                            <td>{{ $entry['customer'] }}</td>
-                            <td>{{ $entry['type'] }}</td>
-                            <td class="logs-table__long"><span><x-fruit::badge :tone="$entry['tone']">{{ $entry['status'] }}</x-fruit::badge> <span class="f-muted">{{ $entry['message'] }}</span></span></td>
+                            <th scope="row">{{ App\User::dateFormat($entry['date'], 'M j, H:i:s') }}</th>
+                            <td data-label="{{ __('Mailbox') }}">{{ $entry['mailbox']->name ?? '—' }}</td>
+                            <td data-label="{{ __('Conversation') }}">@if ($entry['conversation'])<a href="{{ route('conversations.view', ['id' => $entry['conversation']->id]) }}">#{{ $entry['conversation']->number }}</a>@else — @endif</td>
+                            <td data-label="{{ __('Customer') }}">{{ $entry['customer'] }}</td>
+                            <td data-label="{{ __('Type') }}">{{ $entry['type'] }}</td>
+                            <td class="logs-table__long" data-label="{{ __('Status') }}"><span><x-fruit::badge :tone="$entry['tone']">{{ $entry['status'] }}</x-fruit::badge> <span class="f-muted">{{ $entry['message'] }}</span></span></td>
                             <td>
                                 @if ($entry['details'] || $entry['message'])
                                     <x-fruit::button variant="ghost" size="small" x-data x-on:click="$dispatch('fruit-dialog-open', { name: 'channel-{{ $entry['key'] }}' })">{{ __('Details') }}</x-fruit::button>

@@ -3044,6 +3044,8 @@
       min-width: 0;
       padding: 0;
       border: 0;
+      /* A long address breaks rather than reach past the edge. */
+      overflow-wrap: anywhere;
     }
     .f-table > :is(tbody, tfoot) > tr::after {
       content: '';
@@ -4592,6 +4594,24 @@
   /* A hairline above every row after the first. A <template> (Alpine's x-for, x-if) is not a row, nor
      is a row filtered out with hidden. */
   .f-form-section__rows > :not(template, [hidden]) ~ :not(template, [hidden]) {
+    border-top: 1px solid var(--f-border);
+  }
+  /* A form inside the group (an add form beside settings that save as they change, say) is no row of
+     its own: its fields are the group's rows, with the same padding and hairlines. Hidden inputs,
+     such as a CSRF token, are not rows. */
+  .f-form-section__rows > form {
+    display: grid;
+    padding: 0;
+  }
+  .f-form-section__rows > form > * {
+    min-width: 0;
+    margin: 0;
+    padding: var(--f-form-row-padding, 12px 14px);
+  }
+  .f-form-section__rows
+    > form
+    > :not(template, [hidden], input[type='hidden'])
+    ~ :not(template, [hidden], input[type='hidden']) {
     border-top: 1px solid var(--f-border);
   }
   /* A Disclosure row: its summary is the row and its content continues beneath, without a box of

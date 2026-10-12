@@ -434,6 +434,19 @@ a h4 {
 .thread-content	img {
     max-width: 100%;
 }
+/* A mailbox's AI documentation (mailboxes/documentation): its blocks spaced as the page's. */
+.ai-documents {
+    display: grid;
+    gap: var(--f-page-gap, 24px);
+}
+.ai-documents__search {
+    flex: 1 1 16rem;
+}
+/* No sideways scrolling: preformatted text (commands, logs, sources) wraps its long lines. */
+.fruit-ui pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
 /* In an email, pre only keeps the sender's line breaks and spacing: no code box, and long
    lines wrap rather than scroll (as mail programs show it). */
 .thread-content pre,
@@ -2098,22 +2111,25 @@ h1.settings-toolbar__title {
 .logs-table {
     --f-table-cell-padding: 8px 10px;
 }
-.logs-table td {
-    white-space: nowrap;
-}
-.logs-table__long {
-    width: 100%;
-    max-width: 0;
-}
-.logs-table__long > span {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-@media (max-width: 700px) {
+/* A wide table: one line per entry, the long text cut short. Narrow, entries stack as records (FruitUI's
+   f-table__scroll) and wrap. */
+@container fruit-table (width >= 40rem) {
+    .logs-table td {
+        white-space: nowrap;
+    }
     .logs-table__long {
-        min-width: 14rem;
+        width: 100%;
+        max-width: 0;
+    }
+    .logs-table__long > span {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .ai-log .logs-table th,
+    .channel-log .logs-table th {
+        white-space: nowrap;
     }
 }
 .list-search {
@@ -2542,10 +2558,6 @@ h1.settings-toolbar__title {
 /* Logs » AI, Outgoing Telegram and Nostr (secure/ai_log, telegram_log, nostr_log): filters in a row; an error on one line, whole in its Details. */
 .logs-bar .f-input {
     width: auto;
-}
-.ai-log .logs-table th,
-.channel-log .logs-table th {
-    white-space: nowrap;
 }
 /* Not recorded (older rows). */
 .ai-log__none,
