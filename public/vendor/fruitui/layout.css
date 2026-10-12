@@ -335,10 +335,10 @@
   }
 
   /* Drill-down: levels side by side, each opened from a row of the level before, as settings drill
-     down. Earlier levels are a phone's width and the deepest takes the rest. Where they don't all
-     fit, the deepest levels show and the first of them leads back with its Back Link; a phone shows
-     one. CSS alone decides, at any depth: nothing to reapply after a Livewire morph.
-     The breakpoints assume 18rem levels beside a deepest level of at least 24rem. */
+     down. Earlier levels are a large phone's width (27.5rem, 440px) and the deepest takes the rest,
+     at least as much. Where they don't all fit, the deepest levels show and the first of them leads
+     back with its Back Link; a phone shows one. CSS alone decides, at any depth: nothing to reapply
+     after a Livewire morph. The breakpoints assume these widths, and 230px for a Sidebar level. */
   .f-drilldown {
     container: fruit-drilldown / inline-size;
     display: flex;
@@ -352,11 +352,10 @@
   /* Levels hold grouped settings, so they sit on the grouped background (the sidebar keeps its own). */
   .f-drilldown__column {
     --f-page-background: var(--f-grouped-background);
-    container-type: inline-size;
     display: flex;
     flex: none;
     flex-direction: column;
-    width: 18rem;
+    width: 27.5rem;
     min-width: 0;
     min-height: 0;
     border-inline-end: 1px solid var(--f-border);
@@ -416,7 +415,7 @@
   }
   /* One level fits: the deepest. An optional level (shown beside its parent where there's room,
      such as the first page beside a list nothing is chosen from yet) gives way to its parent. */
-  @container fruit-drilldown (width < 42rem) {
+  @container fruit-drilldown (width < 55rem) {
     .f-drilldown__column:not(:nth-last-child(1 of .f-drilldown__column:not(.f-drilldown__column--optional))) {
       display: none;
     }
@@ -431,7 +430,7 @@
       display: inline-flex;
     }
   }
-  @container fruit-drilldown (42rem <= width < 60rem) {
+  @container fruit-drilldown (55rem <= width < 82.5rem) {
     .f-drilldown__column:not(:nth-last-child(-n + 2 of .f-drilldown__column)) {
       display: none;
     }
@@ -439,7 +438,7 @@
       display: inline-flex;
     }
   }
-  @container fruit-drilldown (60rem <= width < 78rem) {
+  @container fruit-drilldown (82.5rem <= width < 110rem) {
     .f-drilldown__column:not(:nth-last-child(-n + 3 of .f-drilldown__column)) {
       display: none;
     }
@@ -447,7 +446,7 @@
       display: inline-flex;
     }
   }
-  @container fruit-drilldown (78rem <= width < 96rem) {
+  @container fruit-drilldown (110rem <= width < 137.5rem) {
     .f-drilldown__column:not(:nth-last-child(-n + 4 of .f-drilldown__column)) {
       display: none;
     }
@@ -455,7 +454,7 @@
       display: inline-flex;
     }
   }
-  @container fruit-drilldown (96rem <= width < 114rem) {
+  @container fruit-drilldown (137.5rem <= width < 165rem) {
     .f-drilldown__column:not(:nth-last-child(-n + 5 of .f-drilldown__column)) {
       display: none;
     }
@@ -464,12 +463,80 @@
     }
   }
   /* Six levels at most share even the widest window; deeper paths keep leading back. */
-  @container fruit-drilldown (width >= 114rem) {
+  @container fruit-drilldown (width >= 165rem) {
     .f-drilldown__column:not(:nth-last-child(-n + 6 of .f-drilldown__column)) {
       display: none;
     }
     .f-drilldown__column:nth-last-child(6 of .f-drilldown__column) > .f-drilldown__header > .f-back {
       display: inline-flex;
+    }
+  }
+  /* A Sidebar level counts at its own width (230px), not a phone's: the path from the sidebar
+     shows whole as soon as it fits, a level sooner than the levels above count. */
+  @container fruit-drilldown (width >= 41.875rem) {
+    .f-drilldown:has(> .f-sidebar.f-drilldown__column:nth-last-child(2 of .f-drilldown__column))
+      > .f-drilldown__column {
+      display: flex;
+    }
+    .f-drilldown:has(> .f-sidebar.f-drilldown__column:nth-last-child(2 of .f-drilldown__column))
+      > .f-drilldown__column
+      > .f-drilldown__header
+      > .f-back {
+      display: none;
+    }
+    .f-drilldown:has(> .f-sidebar.f-drilldown__column:nth-last-child(2 of .f-drilldown__column))
+      > .f-sidebar.f-drilldown__column {
+      flex: none;
+      width: var(--f-sidebar-width, 230px);
+      border-inline-end: 1px solid var(--f-border);
+    }
+  }
+  @container fruit-drilldown (width >= 69.375rem) {
+    .f-drilldown:has(> .f-sidebar.f-drilldown__column:nth-last-child(3 of .f-drilldown__column))
+      > .f-drilldown__column {
+      display: flex;
+    }
+    .f-drilldown:has(> .f-sidebar.f-drilldown__column:nth-last-child(3 of .f-drilldown__column))
+      > .f-drilldown__column
+      > .f-drilldown__header
+      > .f-back {
+      display: none;
+    }
+  }
+  @container fruit-drilldown (width >= 96.875rem) {
+    .f-drilldown:has(> .f-sidebar.f-drilldown__column:nth-last-child(4 of .f-drilldown__column))
+      > .f-drilldown__column {
+      display: flex;
+    }
+    .f-drilldown:has(> .f-sidebar.f-drilldown__column:nth-last-child(4 of .f-drilldown__column))
+      > .f-drilldown__column
+      > .f-drilldown__header
+      > .f-back {
+      display: none;
+    }
+  }
+  @container fruit-drilldown (width >= 124.375rem) {
+    .f-drilldown:has(> .f-sidebar.f-drilldown__column:nth-last-child(5 of .f-drilldown__column))
+      > .f-drilldown__column {
+      display: flex;
+    }
+    .f-drilldown:has(> .f-sidebar.f-drilldown__column:nth-last-child(5 of .f-drilldown__column))
+      > .f-drilldown__column
+      > .f-drilldown__header
+      > .f-back {
+      display: none;
+    }
+  }
+  @container fruit-drilldown (width >= 151.875rem) {
+    .f-drilldown:has(> .f-sidebar.f-drilldown__column:nth-last-child(6 of .f-drilldown__column))
+      > .f-drilldown__column {
+      display: flex;
+    }
+    .f-drilldown:has(> .f-sidebar.f-drilldown__column:nth-last-child(6 of .f-drilldown__column))
+      > .f-drilldown__column
+      > .f-drilldown__header
+      > .f-back {
+      display: none;
     }
   }
 
