@@ -296,6 +296,11 @@ class UsersTest extends FeatureTestCase
 
         // Oneself in Users: like anyone, marked, with what would lock one out turned off.
         $this->actingAs($this->admin)->get(route('users'))->assertOk()->assertSee('(You)');
+        $current = fn ($href, $value) => '#<a (?=[^>]*href="'.preg_quote($href, '#').'")[^>]*aria-current="'.$value.'"#';
+        $this->assertMatchesRegularExpression($current(route('users'), 'true'), $this->actingAs($this->admin)->get(route('users.profile', ['id' => $this->admin->id]))->getContent());
+        // Profile › Change Your Password: Profile leads there.
+        $this->assertMatchesRegularExpression($current(route('own.profile'), 'true'), $this->actingAs($this->admin)->get(route('own.password'))->getContent());
+        $this->assertMatchesRegularExpression($current(route('own.profile'), 'page'), $this->actingAs($this->admin)->get(route('own.profile'))->getContent());
         $this->actingAs($this->admin)->get(route('users.profile', ['id' => $this->admin->id]))->assertOk()
             ->assertSee('>Users</h2>', false)->assertSee("You can't change your own role.")->assertSee("You can't turn off your own sign-in.")
             ->assertSee("You can't remove yourself.")->assertSee(route('own.profile'), false)
