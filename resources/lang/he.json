@@ -1819,5 +1819,10 @@
     "Reply Editor": "עורך תשובות",
     "Rich Text": "טקסט מעוצב",
     "Notes, saved replies and other texts are always written in Markdown.": "הערות, תשובות שמורות וטקסטים אחרים נכתבים תמיד ב-Markdown.",
-    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "למאגרים פרטיים: אסימון שיכול לקרוא אותם (מפורט, או קלאסי עם ההרשאה repo)."
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "למאגרים פרטיים: אסימון שיכול לקרוא אותם (מפורט, או קלאסי עם ההרשאה repo).",
+    "Owner": "בעלים",
+    "All Others": "כל האחרים",
+    "Remove this token?": "להסיר את האסימון הזה?",
+    "Not a GitHub account or organization name.": "זה אינו שם של חשבון או ארגון ב-GitHub.",
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "כל אסימון מיועד לבעלים אחד, החשבון או הארגון שבקישורים; אסימון ללא בעלים מיועד לכל האחרים."
 }

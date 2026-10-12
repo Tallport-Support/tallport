@@ -1835,5 +1835,10 @@
     "Reply Editor": "Vastauseditori",
     "Rich Text": "Muotoiltu Teksti",
     "Notes, saved replies and other texts are always written in Markdown.": "Muistiinpanot, tallennetut vastaukset ja muut tekstit kirjoitetaan aina Markdownilla.",
-    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Yksityisille repositorioille: tunnus, joka voi lukea ne (tarkasti rajattu tai perinteinen repo-oikeudella)."
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Yksityisille repositorioille: tunnus, joka voi lukea ne (tarkasti rajattu tai perinteinen repo-oikeudella).",
+    "Owner": "Omistaja",
+    "All Others": "Kaikki Muut",
+    "Remove this token?": "Poistetaanko tämä tunnus?",
+    "Not a GitHub account or organization name.": "Ei GitHub-tilin tai -organisaation nimi.",
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Jokainen tunnus on yhdelle omistajalle, linkkien tilille tai organisaatiolle; tunnus ilman omistajaa on kaikille muille."
 }

@@ -1819,5 +1819,10 @@
     "Reply Editor": "Svarsredigerare",
     "Rich Text": "Formaterad Text",
     "Notes, saved replies and other texts are always written in Markdown.": "Anteckningar, sparade svar och andra texter skrivs alltid i Markdown.",
-    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "För privata repon: en token som kan läsa dem (detaljerad, eller klassisk med repo-behörighet)."
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "För privata repon: en token som kan läsa dem (detaljerad, eller klassisk med repo-behörighet).",
+    "Owner": "Ägare",
+    "All Others": "Alla Andra",
+    "Remove this token?": "Ta bort den här token?",
+    "Not a GitHub account or organization name.": "Inte ett namn på ett GitHub-konto eller en organisation.",
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Varje token är för en ägare, kontot eller organisationen i länkarna; en token utan ägare är för alla andra."
 }

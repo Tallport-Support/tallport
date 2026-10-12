@@ -456,15 +456,18 @@ class AiDocumentsTest extends FeatureTestCase
         $this->fakePages($pages);
     }
 
-    public function testPrivateGitHubFileIsReadWithTheMailboxToken()
+    /**
+     * A repository is read with its owner's token, else the one for other owners; no other is tried.
+     */
+    public function testPrivateGitHubFileIsReadWithItsOwnersToken()
     {
-        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'github_token', 'github_token' => 'github_pat_secret'])->assertRedirect($this->pageUrl());
-        $this->assertSame('github_pat_secret', GitHub::token($this->mailbox->id));
-        $this->assertStringNotContainsString('github_pat_secret', json_encode(Option::get('aiassistant.github_token')));
-        $this->actingAs($this->admin)->get($this->pageUrl())->assertDontSee('github_pat_secret');
-        // The masked token shown keeps it.
-        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'github_token', 'github_token' => '********']);
-        $this->assertSame('github_pat_secret', GitHub::token($this->mailbox->id));
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'github_token', 'github_owner' => 'Acme', 'github_token' => 'github_pat_acme'])->assertRedirect($this->pageUrl());
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'github_token', 'github_owner' => '', 'github_token' => 'ghp_classic_others']);
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'github_token', 'github_owner' => 'not/valid', 'github_token' => 'x'])->assertSessionHasErrors('github_owner');
+        $this->assertSame(['acme' => 'github_pat_acme', '' => 'ghp_classic_others'], GitHub::tokens($this->mailbox->id));
+        $this->assertStringNotContainsString('github_pat_acme', json_encode(Option::get('aiassistant.github_token')));
+        // Shown by owner, the token's kind and last characters only.
+        $this->actingAs($this->admin)->get($this->pageUrl())->assertDontSee('github_pat_acme')->assertSeeInOrder(['acme', 'github_pat_…acme', 'All Others', 'ghp_…hers']);
 
         $this->fakeGitHub(['guides/setup.md' => "# Setup\n\nOpen the app on Android."]);
         $this->postForm($this->admin, $this->pageUrl(), ['action' => 'add', 'urls' => 'https://github.com/acme/docs/blob/main/guides/setup.md']);
@@ -476,12 +479,17 @@ class AiDocumentsTest extends FeatureTestCase
         // Never linked for customers.
         $this->assertTrue($document->isPrivate());
         $this->assertSame('', $document->localizedUrl('en'));
-        Http::assertSent(fn ($request) => $request->hasHeader('Authorization', 'Bearer github_pat_secret'));
+        Http::assertSent(fn ($request) => $request->hasHeader('Authorization', 'Bearer github_pat_acme'));
+        Http::assertNotSent(fn ($request) => $request->hasHeader('Authorization', 'Bearer ghp_classic_others'));
         Http::assertNotSent(fn ($request) => $request->hasHeader('Authorization') && !str_starts_with($request->url(), 'https://api.github.com/'));
+        $this->assertSame('ghp_classic_others', GitHub::tokenFor('someone-else', $this->mailbox->id));
 
-        // Without a token, nothing is sent with the requests; another mailbox has none.
-        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'github_token', 'github_token' => '']);
-        $this->assertSame('', GitHub::token($this->mailbox->id));
+        // Removed one by one; the token saved before owners is for all of them.
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'remove_github_token', 'github_owner' => 'acme']);
+        $this->assertSame(['' => 'ghp_classic_others'], GitHub::tokens($this->mailbox->id));
+        Option::set('aiassistant.github_token', [$this->mailbox->id => encrypt('github_pat_old')]);
+        $this->assertSame('github_pat_old', GitHub::tokenFor('acme', $this->mailbox->id));
+        $this->assertSame('', GitHub::tokenFor('acme', $this->createMailbox()->id));
     }
 
     public function testGitHubFolderAddsItsMarkdownFilesAndKeepsThemInStep()

@@ -37,7 +37,7 @@ class AiDocumentsController extends Controller
             'documents'    => $listed,
             'files'        => $files,
             'api_key'      => DocumentApiKey::where('mailbox_id', $mailbox->id)->first(),
-            'github_token' => GitHub::token($mailbox->id),
+            'github_tokens' => GitHub::tokens($mailbox->id),
             'embedding_fingerprint' => Documents::embeddingFingerprint(),
         ]);
     }
@@ -112,18 +112,25 @@ class AiDocumentsController extends Controller
                 break;
 
             case 'github_token':
-                // Asterisks are the saved token, shown masked.
+                // For an owner (the account or organization in the links), or blank for the others.
+                $owner = strtolower(trim((string) $request->input('github_owner', '')));
                 $token = trim((string) $request->input('github_token', ''));
-                if (!preg_match('/^\*+$/', $token)) {
-                    $tokens = (array) \Option::get('aiassistant.github_token', []);
-                    if ($token === '') {
-                        unset($tokens[$mailbox->id]);
-                    } else {
-                        $tokens[$mailbox->id] = encrypt($token);
-                    }
-                    \Option::set('aiassistant.github_token', $tokens);
+                if ($owner !== '' && !preg_match('/^[a-z0-9][a-z0-9-]{0,38}$/', $owner)) {
+                    return back()->withInput()->withErrors(['github_owner' => __('Not a GitHub account or organization name.')]);
                 }
-                \Session::flash('flash_success_floating', __('Saved'));
+                if ($token !== '') {
+                    // Replaces the owner's token, if it had one.
+                    $tokens = GitHub::tokens($mailbox->id);
+                    $tokens[$owner] = $token;
+                    GitHub::setTokens($mailbox->id, $tokens);
+                    \Session::flash('flash_success_floating', __('Saved'));
+                }
+                break;
+
+            case 'remove_github_token':
+                $tokens = GitHub::tokens($mailbox->id);
+                unset($tokens[strtolower((string) $request->github_owner)]);
+                GitHub::setTokens($mailbox->id, $tokens);
                 break;
 
             case 'issue_key':

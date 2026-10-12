@@ -1819,5 +1819,10 @@
     "Reply Editor": "Antwoordeditor",
     "Rich Text": "Opgemaakte Tekst",
     "Notes, saved replies and other texts are always written in Markdown.": "Notities, opgeslagen antwoorden en andere teksten worden altijd in Markdown geschreven.",
-    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Voor privérepository's: een token dat ze kan lezen (fine-grained, of classic met de repo-scope)."
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Voor privérepository's: een token dat ze kan lezen (fine-grained, of classic met de repo-scope).",
+    "Owner": "Eigenaar",
+    "All Others": "Alle Andere",
+    "Remove this token?": "Dit token verwijderen?",
+    "Not a GitHub account or organization name.": "Geen naam van een GitHub-account of -organisatie.",
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Elk token is voor een eigenaar, het account of de organisatie in de links; een token zonder eigenaar is voor alle andere."
 }

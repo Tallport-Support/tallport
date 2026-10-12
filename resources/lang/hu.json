@@ -1819,5 +1819,10 @@
     "Reply Editor": "Válaszszerkesztő",
     "Rich Text": "Formázott Szöveg",
     "Notes, saved replies and other texts are always written in Markdown.": "A jegyzetek, a mentett válaszok és a többi szöveg mindig Markdownban készül.",
-    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Privát tárolókhoz: egy token, amely olvasni tudja őket (finomhangolt, vagy klasszikus repo hatókörrel)."
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Privát tárolókhoz: egy token, amely olvasni tudja őket (finomhangolt, vagy klasszikus repo hatókörrel).",
+    "Owner": "Tulajdonos",
+    "All Others": "Összes Többi",
+    "Remove this token?": "Eltávolítja ezt a tokent?",
+    "Not a GitHub account or organization name.": "Ez nem GitHub-fiók vagy -szervezet neve.",
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Minden token egy tulajdonosé, a hivatkozásokban szereplő fióké vagy szervezeté; a tulajdonos nélküli token az összes többié."
 }

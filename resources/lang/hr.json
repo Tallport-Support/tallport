@@ -1819,5 +1819,10 @@
     "Reply Editor": "Uređivač Odgovora",
     "Rich Text": "Oblikovani Tekst",
     "Notes, saved replies and other texts are always written in Markdown.": "Bilješke, spremljeni odgovori i ostali tekstovi uvijek se pišu u Markdownu.",
-    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Za privatne repozitorije: token koji ih može čitati (precizno ograničen ili klasični s opsegom repo)."
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Za privatne repozitorije: token koji ih može čitati (precizno ograničen ili klasični s opsegom repo).",
+    "Owner": "Vlasnik",
+    "All Others": "Svi Ostali",
+    "Remove this token?": "Ukloniti ovaj token?",
+    "Not a GitHub account or organization name.": "Nije naziv GitHub računa ili organizacije.",
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Svaki token je za jednog vlasnika, račun ili organizaciju u poveznicama; token bez vlasnika je za sve ostale."
 }

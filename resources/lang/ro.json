@@ -1819,5 +1819,10 @@
     "Reply Editor": "Editor de Răspunsuri",
     "Rich Text": "Text Formatat",
     "Notes, saved replies and other texts are always written in Markdown.": "Notele, răspunsurile salvate și celelalte texte sunt scrise întotdeauna în Markdown.",
-    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Pentru depozitele private: un token care le poate citi (cu permisiuni detaliate sau clasic cu domeniul repo)."
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Pentru depozitele private: un token care le poate citi (cu permisiuni detaliate sau clasic cu domeniul repo).",
+    "Owner": "Proprietar",
+    "All Others": "Toți Ceilalți",
+    "Remove this token?": "Eliminați acest token?",
+    "Not a GitHub account or organization name.": "Nu este numele unui cont sau al unei organizații GitHub.",
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Fiecare token este pentru un proprietar, contul sau organizația din linkuri; un token fără proprietar este pentru toți ceilalți."
 }

@@ -2213,5 +2213,10 @@
     "Reply Editor": "Жауап Редакторы",
     "Rich Text": "Пішімделген Мәтін",
     "Notes, saved replies and other texts are always written in Markdown.": "Ескертпелер, сақталған жауаптар және басқа мәтіндер әрқашан Markdown-да жазылады.",
-    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Жеке репозиторийлер үшін: оларды оқи алатын токен (нақты бапталған немесе repo рұқсаты бар классикалық)."
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Жеке репозиторийлер үшін: оларды оқи алатын токен (нақты бапталған немесе repo рұқсаты бар классикалық).",
+    "Owner": "Иесі",
+    "All Others": "Қалғандарының Бәрі",
+    "Remove this token?": "Бұл токенді жою керек пе?",
+    "Not a GitHub account or organization name.": "GitHub тіркелгісінің немесе ұйымының атауы емес.",
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Әр токен бір иеге арналған: сілтемелердегі тіркелгі немесе ұйым; иесі жоқ токен қалғандарының бәріне арналған."
 }

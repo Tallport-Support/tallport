@@ -1911,5 +1911,10 @@
     "Reply Editor": "Editor de Respostes",
     "Rich Text": "Text Enriquit",
     "Notes, saved replies and other texts are always written in Markdown.": "Les notes, les respostes desades i els altres textos sempre s'escriuen en Markdown.",
-    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Per a repositoris privats: un testimoni que els pugui llegir (detallat, o clàssic amb l'abast repo)."
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Per a repositoris privats: un testimoni que els pugui llegir (detallat, o clàssic amb l'abast repo).",
+    "Owner": "Propietari",
+    "All Others": "Tots els Altres",
+    "Remove this token?": "Voleu suprimir aquest testimoni?",
+    "Not a GitHub account or organization name.": "No és un nom de compte ni d'organització de GitHub.",
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Cada testimoni és per a un propietari, el compte o l'organització dels enllaços; un testimoni sense propietari és per a tots els altres."
 }

@@ -44,20 +44,33 @@
                 </footer>
             </form>
 
-            {{-- Saved with its button, not as it changes: a slip of the keyboard would lose the token. --}}
-            <form class="settings-form" method="POST" action="{{ route('mailboxes.documentation.action', ['id' => $mailbox->id]) }}">
-                {{ csrf_field() }}
-                <input type="hidden" name="action" value="github_token">
-                <x-fruit::form-section title="GitHub" :level="3">
-                    <x-fruit::field :label="__('GitHub Access Token')" :description="__('For private repositories: a token that can read them (fine-grained, or classic with the repo scope).')" layout="row">
-                        <x-fruit::input type="password" id="github_token" name="github_token" :value="\Helper::safePassword($github_token)" maxlength="255" autocomplete="new-password" />
+            {{-- Tokens are added with their button and removed one by one: a slip of the keyboard loses none.
+                 Each is for an owner, the one without for the others (App\Ai\GitHub). --}}
+            <x-fruit::form-section title="GitHub" :level="3" :footer="__('For private repositories: a token that can read them (fine-grained, or classic with the repo scope).').' '.__('Each token is for an owner, the account or organization in the links; a token without an owner is for all others.')">
+                @foreach ($github_tokens as $owner => $token)
+                    <form class="f-form-row" method="POST" action="{{ route('mailboxes.documentation.action', ['id' => $mailbox->id]) }}">
+                        {{ csrf_field() }}
+                        <input type="hidden" name="github_owner" value="{{ $owner }}">
+                        <span>{{ $owner !== '' ? $owner : __('All Others') }}</span>
+                        {{-- The kind of token (its prefix) and its last characters, to tell them apart. --}}
+                        <span class="f-form-row__value"><code>{{ preg_match('/^(github_pat_|gh[a-z]_)/', $token, $prefix) ? $prefix[1] : '' }}…{{ mb_substr($token, -4) }}</code>
+                            <x-fruit::button type="submit" size="small" variant="danger" name="action" value="remove_github_token" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Remove this token?') }}">{{ __('Remove') }}</x-fruit::button></span>
+                    </form>
+                @endforeach
+                <form method="POST" action="{{ route('mailboxes.documentation.action', ['id' => $mailbox->id]) }}">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="action" value="github_token">
+                    <x-fruit::field :label="__('Owner')" layout="row">
+                        <x-fruit::input id="github_owner" name="github_owner" :value="old('github_owner')" maxlength="39" :placeholder="__('All Others')" />
                     </x-fruit::field>
-                </x-fruit::form-section>
-
-                <footer class="f-form-row settings-form__actions">
-                    <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
-                </footer>
-            </form>
+                    <x-fruit::field :label="__('GitHub Access Token')" layout="row">
+                        <div class="f-input-group">
+                            <x-fruit::input type="password" id="github_token" name="github_token" maxlength="255" autocomplete="new-password" required />
+                            <x-fruit::button type="submit">{{ __('Add') }}</x-fruit::button>
+                        </div>
+                    </x-fruit::field>
+                </form>
+            </x-fruit::form-section>
         </div>
 
         <h3 class="settings-form__heading">{{ __('Pages') }}</h3>

@@ -1819,5 +1819,10 @@
     "Reply Editor": "Cavab Redaktoru",
     "Rich Text": "Formatlı Mətn",
     "Notes, saved replies and other texts are always written in Markdown.": "Qeydlər, saxlanılmış cavablar və digər mətnlər həmişə Markdown ilə yazılır.",
-    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Şəxsi repozitoriyalar üçün: onları oxuya bilən token (dəqiq tənzimlənmiş, və ya repo icazəsi olan klassik)."
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Şəxsi repozitoriyalar üçün: onları oxuya bilən token (dəqiq tənzimlənmiş, və ya repo icazəsi olan klassik).",
+    "Owner": "Sahib",
+    "All Others": "Bütün Digərləri",
+    "Remove this token?": "Bu token silinsin?",
+    "Not a GitHub account or organization name.": "GitHub hesabı və ya təşkilat adı deyil.",
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Hər token bir sahib üçündür: keçidlərdəki hesab və ya təşkilat; sahibi olmayan token bütün digərləri üçündür."
 }

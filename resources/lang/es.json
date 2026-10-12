@@ -1819,5 +1819,10 @@
     "Reply Editor": "Editor de Respuestas",
     "Rich Text": "Texto Enriquecido",
     "Notes, saved replies and other texts are always written in Markdown.": "Las notas, las respuestas guardadas y los demás textos siempre se escriben en Markdown.",
-    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Para repositorios privados: un token que pueda leerlos (detallado, o clásico con el ámbito repo)."
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Para repositorios privados: un token que pueda leerlos (detallado, o clásico con el ámbito repo).",
+    "Owner": "Propietario",
+    "All Others": "Todos los Demás",
+    "Remove this token?": "¿Quitar este token?",
+    "Not a GitHub account or organization name.": "No es un nombre de cuenta ni de organización de GitHub.",
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Cada token es para un propietario, la cuenta u organización de los enlaces; un token sin propietario es para todos los demás."
 }

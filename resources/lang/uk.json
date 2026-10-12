@@ -1819,5 +1819,10 @@
     "Reply Editor": "Редактор Відповідей",
     "Rich Text": "Форматований Текст",
     "Notes, saved replies and other texts are always written in Markdown.": "Нотатки, збережені відповіді та інші тексти завжди пишуться в Markdown.",
-    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Для приватних репозиторіїв: токен, який може їх читати (детальний або класичний з областю repo)."
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Для приватних репозиторіїв: токен, який може їх читати (детальний або класичний з областю repo).",
+    "Owner": "Власник",
+    "All Others": "Усі Інші",
+    "Remove this token?": "Видалити цей токен?",
+    "Not a GitHub account or organization name.": "Це не ім'я облікового запису чи організації GitHub.",
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Кожен токен — для одного власника, облікового запису чи організації з посилань; токен без власника — для всіх інших."
 }

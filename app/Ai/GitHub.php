@@ -6,9 +6,10 @@ use Illuminate\Support\Facades\Http;
 
 /**
  * Documentation in GitHub repositories, read through GitHub's API: a file's
- * Markdown, and the Markdown files in a folder. A mailbox's access token
- * (aiassistant.github_token) reads private repositories; it is sent to
- * api.github.com only.
+ * Markdown, and the Markdown files in a folder. A mailbox's access tokens
+ * (aiassistant.github_token) read private repositories: each is for an owner
+ * (the account or organization in the link; a fine-grained token covers one),
+ * one without an owner for the others. They are sent to api.github.com only.
  */
 class GitHub
 {
@@ -52,13 +53,54 @@ class GitHub
     }
 
     /**
-     * The mailbox's access token, or ''.
+     * The mailbox's access tokens by owner (lowercase; '' for the other owners).
      */
-    public static function token($mailbox_id)
+    public static function tokens($mailbox_id)
     {
-        $encrypted = ((array) \Option::get('aiassistant.github_token', []))[$mailbox_id] ?? '';
+        $stored = ((array) \Option::get('aiassistant.github_token', []))[$mailbox_id] ?? [];
+        // One token for every owner, before tokens had owners.
+        if (!is_array($stored)) {
+            $stored = ['' => $stored];
+        }
+        $tokens = [];
+        foreach ($stored as $owner => $encrypted) {
+            $token = (string) \Helper::decrypt($encrypted);
+            if ($token !== '') {
+                $tokens[(string) $owner] = $token;
+            }
+        }
 
-        return (string) \Helper::decrypt($encrypted);
+        return $tokens;
+    }
+
+    /**
+     * Stores the mailbox's access tokens by owner, encrypted.
+     */
+    public static function setTokens($mailbox_id, array $tokens)
+    {
+        $all = (array) \Option::get('aiassistant.github_token', []);
+        $stored = [];
+        foreach ($tokens as $owner => $token) {
+            if (trim((string) $token) !== '') {
+                $stored[strtolower(trim((string) $owner))] = encrypt(trim((string) $token));
+            }
+        }
+        if ($stored) {
+            $all[$mailbox_id] = $stored;
+        } else {
+            unset($all[$mailbox_id]);
+        }
+        \Option::set('aiassistant.github_token', $all);
+    }
+
+    /**
+     * The token for a repository's owner: its own, else the one for other owners, else none.
+     */
+    public static function tokenFor($owner, $mailbox_id)
+    {
+        $tokens = self::tokens($mailbox_id);
+
+        return $tokens[strtolower($owner)] ?? $tokens[''] ?? '';
     }
 
     /**
@@ -71,7 +113,7 @@ class GitHub
             .'?ref='.rawurlencode($link['ref'] ?? $repository['default_branch']);
         $limited = OutboundHttp::limitedResponseOptions(Documents::MAX_DOCUMENT_BYTES, $too_large);
         try {
-            $response = self::get($link, $path, $mailbox_id, $deadline, 'application/vnd.github.raw', $limited);
+            $response = self::get($link, $path, $repository['token'], $deadline, 'application/vnd.github.raw', $limited);
         } catch (\Throwable $e) {
             if ($too_large) {
                 throw new \Exception('Unable to fetch Markdown: larger than '.Documents::MAX_DOCUMENT_BYTES.' bytes', 0, $e);
@@ -89,7 +131,7 @@ class GitHub
     {
         $repository = self::repository($link, $mailbox_id, $deadline);
         $ref = $link['ref'] ?? $repository['default_branch'];
-        $response = self::get($link, 'git/trees/'.rawurlencode($ref).'?recursive=1', $mailbox_id, $deadline);
+        $response = self::get($link, 'git/trees/'.rawurlencode($ref).'?recursive=1', $repository['token'], $deadline);
         if (!is_array($response->json('tree'))) {
             throw new \RuntimeException(__('GitHub sent an error (:status).', ['status' => $response->status()]));
         }
@@ -115,26 +157,27 @@ class GitHub
     }
 
     /**
-     * The repository's default branch and whether it is private.
+     * The repository's default branch, whether it is private, and the token that reads it.
      */
     protected static function repository(array $link, $mailbox_id, ?float $deadline)
     {
-        $response = self::get($link, '', $mailbox_id, $deadline);
+        $token = self::tokenFor($link['owner'], $mailbox_id);
+        $response = self::get($link, '', $token, $deadline);
 
         return [
             'default_branch' => (string) ($response->json('default_branch') ?: 'main'),
             'private'        => (bool) $response->json('private'),
+            'token'          => $token,
         ];
     }
 
-    protected static function get(array $link, $path, $mailbox_id, ?float $deadline, $accept = 'application/vnd.github+json', array $options = [])
+    protected static function get(array $link, $path, $token, ?float $deadline, $accept = 'application/vnd.github+json', array $options = [])
     {
         $remaining = $deadline === null ? 30 : (int) floor($deadline - microtime(true));
         if ($remaining < 1) {
             throw new \RuntimeException('AI document deadline exceeded');
         }
         $headers = ['Accept' => $accept, 'X-GitHub-Api-Version' => '2022-11-28', 'Accept-Encoding' => 'identity'];
-        $token = self::token($mailbox_id);
         if ($token !== '') {
             $headers['Authorization'] = 'Bearer '.$token;
         }

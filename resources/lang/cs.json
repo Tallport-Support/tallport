@@ -1819,5 +1819,10 @@
     "Reply Editor": "Editor Odpovědí",
     "Rich Text": "Formátovaný Text",
     "Notes, saved replies and other texts are always written in Markdown.": "Poznámky, uložené odpovědi a další texty se vždy píší v Markdownu.",
-    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Pro soukromé repozitáře: token, který je může číst (jemně nastavený, nebo klasický s oprávněním repo)."
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Pro soukromé repozitáře: token, který je může číst (jemně nastavený, nebo klasický s oprávněním repo).",
+    "Owner": "Vlastník",
+    "All Others": "Všichni Ostatní",
+    "Remove this token?": "Odebrat tento token?",
+    "Not a GitHub account or organization name.": "Není to název účtu ani organizace na GitHubu.",
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Každý token je pro jednoho vlastníka, účet nebo organizaci v odkazech; token bez vlastníka je pro všechny ostatní."
 }

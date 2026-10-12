@@ -1819,5 +1819,10 @@
     "Reply Editor": "返信エディタ",
     "Rich Text": "リッチテキスト",
     "Notes, saved replies and other texts are always written in Markdown.": "メモ、保存済みの返信、その他のテキストは常に Markdown で書きます。",
-    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "プライベートリポジトリ用：それらを読み取れるトークン（Fine-grained、または repo スコープ付きのクラシック）。"
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "プライベートリポジトリ用：それらを読み取れるトークン（Fine-grained、または repo スコープ付きのクラシック）。",
+    "Owner": "所有者",
+    "All Others": "その他すべて",
+    "Remove this token?": "このトークンを削除しますか？",
+    "Not a GitHub account or organization name.": "GitHub のアカウント名または組織名ではありません。",
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "各トークンは 1 つの所有者（リンク内のアカウントまたは組織）用です。所有者のないトークンはその他すべてに使われます。"
 }
