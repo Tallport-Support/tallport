@@ -1802,5 +1802,6 @@
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Odchádzajúce e-maily sa neodosielajú — administrátor by mal skontrolovať :%a_begin%Stav Systému:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "Správcovia otvárajú všetky schránky bez ohľadu na výber.",
     "1 mailbox|:count mailboxes": ":count schránka|:count schránky|:count schránok",
-    "No matching users": "Žiadni zodpovedajúci používatelia"
+    "No matching users": "Žiadni zodpovedajúci používatelia",
+    "value": "hodnota"
 }

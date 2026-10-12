@@ -1802,5 +1802,6 @@
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "El correo saliente no se está enviando — un administrador debería comprobar :%a_begin%Estado del Sistema:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "Los administradores abren todos los buzones, sean cuales sean los elegidos.",
     "1 mailbox|:count mailboxes": "1 buzón|:count buzones",
-    "No matching users": "Ningún usuario coincide"
+    "No matching users": "Ningún usuario coincide",
+    "value": "valor"
 }

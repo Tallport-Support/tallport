@@ -111,14 +111,18 @@ window.Tallport = (function () {
 	/**
 	 * A settings form saved as it changes, with no Save button: the whole form, posted to its
 	 * action once the changes settle, so what modules add to it is saved too. A file is sent once.
-	 * The response may ask for a reload, for a change the whole page shows (the language).
+	 * A refused change says why on its field's row (as x-fruit::field shows a server error), and
+	 * the saved value stays; the response may ask for a reload, for a change the whole page shows.
 	 */
 	function autoSave(form) {
 		clearTimeout(form.tallportAutoSave);
 		form.tallportAutoSave = setTimeout(function () {
 			post(form.action || window.location.href, new FormData(form)).then(function (response) {
+				clearFieldErrors(form);
 				if (!isSuccess(response)) {
-					result(response);
+					if (!showFieldErrors(form, response && response.errors)) {
+						result(response);
+					}
 				} else if (response.reload) {
 					window.location.reload();
 				} else {
@@ -128,6 +132,52 @@ window.Tallport = (function () {
 				}
 			});
 		}, 300);
+	}
+
+	// A control's name as a validation key: settings[a.b][c] -> settings.a.b.c
+	function errorKey(name) {
+		return name.replace(/\[\]$/, '').replace(/\]\[|\[/g, '.').replace(/\]/g, '');
+	}
+
+	function clearFieldErrors(form) {
+		form.querySelectorAll('[data-tallport-error]').forEach(function (error) {
+			var control = form.querySelector('[aria-describedby~="' + error.id + '"]');
+			if (control) {
+				control.removeAttribute('aria-invalid');
+				var ids = control.getAttribute('aria-describedby').split(' ').filter(function (id) {
+					return id && id != error.id;
+				});
+				ids.length ? control.setAttribute('aria-describedby', ids.join(' ')) : control.removeAttribute('aria-describedby');
+			}
+			error.remove();
+		});
+	}
+
+	// Each error on its control's row; false when one has no control (then the toast says it).
+	function showFieldErrors(form, errors) {
+		if (!errors || typeof errors != 'object') {
+			return false;
+		}
+		var all_shown = true;
+		Object.keys(errors).forEach(function (key, i) {
+			var control = Array.prototype.find.call(form.elements, function (element) {
+				return element.name && errorKey(element.name) == key;
+			});
+			if (!control) {
+				all_shown = false;
+				return;
+			}
+			var error = document.createElement('p');
+			error.className = 'f-error';
+			error.id = 'tallport-error-' + Date.now() + '-' + i;
+			error.setAttribute('data-tallport-error', '');
+			error.textContent = [].concat(errors[key])[0];
+			var field = control.closest('.f-field');
+			field ? field.appendChild(error) : control.insertAdjacentElement('afterend', error);
+			control.setAttribute('aria-invalid', 'true');
+			control.setAttribute('aria-describedby', ((control.getAttribute('aria-describedby') || '') + ' ' + error.id).trim());
+		});
+		return all_shown;
 	}
 
 	return {csrf: csrf, post: post, isSuccess: isSuccess, toast: toast, result: result, busy: busy, confirm: confirm, autoSave: autoSave};

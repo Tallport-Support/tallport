@@ -141,8 +141,10 @@ class SettingsControllerTest extends FeatureTestCase
         $this->assertSame('Saved Inc.', Option::get('company_name'));
         $this->assertNull(session('flash_success_floating'), 'Nothing to show on the next page.');
 
+        // Said on the field's row (its control found by the key), beside its label.
         $this->postAjax($this->admin, '/app-settings/ai', ['settings' => ['aiassistant.drafts_per_day' => 'many']])
-            ->assertStatus(422)->assertJsonPath('status', 'error');
+            ->assertStatus(422)->assertJsonPath('status', 'error')
+            ->assertJsonPath('errors', ['settings.aiassistant.drafts_per_day' => ['The value must be an integer.']]);
 
         // A provider added: the page reloads, so the form's new provider isn't sent again.
         $this->postAjax($this->admin, '/app-settings/ai', ['settings' => ['aiassistant.providers' => [

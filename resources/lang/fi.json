@@ -1818,5 +1818,6 @@
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Lähteviä sähköposteja ei lähetetä — järjestelmänvalvojan tulee tarkistaa :%a_begin%Järjestelmän Tila:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "Ylläpitäjät avaavat kaikki postilaatikot valinnasta riippumatta.",
     "1 mailbox|:count mailboxes": "1 postilaatikko|:count postilaatikkoa",
-    "No matching users": "Ei vastaavia käyttäjiä"
+    "No matching users": "Ei vastaavia käyttäjiä",
+    "value": "arvo"
 }

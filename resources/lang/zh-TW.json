@@ -1847,5 +1847,6 @@
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "對外郵件未能寄出 — 管理員應檢查 :%a_begin%系統狀態:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "無論選擇了哪些信箱，管理員都能開啟所有信箱。",
     "1 mailbox|:count mailboxes": ":count 個信箱",
-    "No matching users": "沒有符合的使用者"
+    "No matching users": "沒有符合的使用者",
+    "value": "值"
 }

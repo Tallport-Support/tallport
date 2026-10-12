@@ -1803,5 +1803,6 @@
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "外发邮件未能发送 — 管理员应检查 :%a_begin%系统状况:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "无论选择了哪些邮箱，管理员都能打开所有邮箱。",
     "1 mailbox|:count mailboxes": ":count 个邮箱",
-    "No matching users": "没有匹配的用户"
+    "No matching users": "没有匹配的用户",
+    "value": "值"
 }

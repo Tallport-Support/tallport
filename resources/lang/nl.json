@@ -1802,5 +1802,6 @@
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Uitgaande e-mail wordt niet verzonden — een beheerder moet :%a_begin%Systeemstatus:%a_end% controleren",
     "Administrators open every mailbox, whichever are chosen.": "Beheerders openen elke mailbox, welke er ook gekozen zijn.",
     "1 mailbox|:count mailboxes": "1 mailbox|:count mailboxen",
-    "No matching users": "Geen overeenkomende gebruikers"
+    "No matching users": "Geen overeenkomende gebruikers",
+    "value": "waarde"
 }

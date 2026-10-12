@@ -1802,5 +1802,6 @@
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Gedən e-poçtlar göndərilmir — administrator :%a_begin%Sistem Statusu:%a_end% bölməsini yoxlamalıdır",
     "Administrators open every mailbox, whichever are chosen.": "Administratorlar hansılar seçilməsindən asılı olmayaraq bütün poçt qutularını açır.",
     "1 mailbox|:count mailboxes": ":count poçt qutusu",
-    "No matching users": "Uyğun istifadəçi yoxdur"
+    "No matching users": "Uyğun istifadəçi yoxdur",
+    "value": "dəyər"
 }

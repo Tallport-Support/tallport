@@ -1802,5 +1802,6 @@
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Poczta wychodząca nie jest wysyłana — administrator powinien sprawdzić :%a_begin%Status Systemu:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "Administratorzy otwierają każdą skrzynkę, niezależnie od wyboru.",
     "1 mailbox|:count mailboxes": ":count skrzynka|:count skrzynki|:count skrzynek",
-    "No matching users": "Brak pasujących użytkowników"
+    "No matching users": "Brak pasujących użytkowników",
+    "value": "wartość"
 }

@@ -500,6 +500,12 @@ class UsersTest extends FeatureTestCase
         $this->actingAs($agent)->get('/users/notifications/'.$agent->id)->assertOk()
             ->assertSee('Tallport.autoSave($el)', false)->assertDontSee('Save Notifications')->assertDontSee('>Users</h2>', false);
 
+        // Each checkbox named by its column and row, as a screen reader reads it.
+        $this->actingAs($agent)->get('/users/notifications/'.$agent->id)
+            ->assertSee('<span id="subs-medium-email">Email</span>', false)
+            ->assertSee('<td id="subs-event-'.Subscription::EVENT_NEW_CONVERSATION.'">There is a new conversation</td>', false)
+            ->assertSee('aria-labelledby="subs-medium-browser subs-event-'.Subscription::EVENT_NEW_CONVERSATION.'"', false);
+
         // Someone else's: Users, the person, then Notifications.
         $this->actingAs($this->admin)->get('/users/notifications/'.$agent->id)->assertOk()
             ->assertSeeInOrder(['>Users</h2>', '>'.e($agent->getFullName()).'</h2>', '>Notifications</h2>'], false);

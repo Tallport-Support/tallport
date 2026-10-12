@@ -1798,5 +1798,6 @@
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Ausgehende E-Mails werden nicht gesendet — ein Administrator sollte :%a_begin%System Status:%a_end% prüfen",
     "Administrators open every mailbox, whichever are chosen.": "Administratoren öffnen jedes Postfach, unabhängig von der Auswahl.",
     "1 mailbox|:count mailboxes": "1 Postfach|:count Postfächer",
-    "No matching users": "Keine passenden Benutzer"
+    "No matching users": "Keine passenden Benutzer",
+    "value": "Wert"
 }

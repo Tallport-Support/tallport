@@ -2196,5 +2196,6 @@
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Шығыс электрондық хаттар жіберілмей жатыр — әкімші :%a_begin%Жүйенің Күйі:%a_end% тексеруі тиіс",
     "Administrators open every mailbox, whichever are chosen.": "Әкімшілер таңдауға қарамастан барлық пошта жәшіктерін ашады.",
     "1 mailbox|:count mailboxes": ":count пошта жәшігі",
-    "No matching users": "Сәйкес пайдаланушылар жоқ"
+    "No matching users": "Сәйкес пайдаланушылар жоқ",
+    "value": "мән"
 }

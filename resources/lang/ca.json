@@ -1894,5 +1894,6 @@
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "El correu sortint no s'està enviant — un administrador hauria de comprovar :%a_begin%Estat del Sistema:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "Els administradors obren totes les bústies, siguin quines siguin les escollides.",
     "1 mailbox|:count mailboxes": "1 bústia|:count bústies",
-    "No matching users": "Cap usuari coincident"
+    "No matching users": "Cap usuari coincident",
+    "value": "valor"
 }

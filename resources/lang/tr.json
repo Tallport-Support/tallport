@@ -1802,5 +1802,6 @@
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Giden e-postalar gönderilmiyor — bir yönetici :%a_begin%Sistem Durumu:%a_end% sayfasını kontrol etmelidir",
     "Administrators open every mailbox, whichever are chosen.": "Yöneticiler, seçimden bağımsız olarak tüm posta kutularını açar.",
     "1 mailbox|:count mailboxes": ":count posta kutusu",
-    "No matching users": "Eşleşen kullanıcı yok"
+    "No matching users": "Eşleşen kullanıcı yok",
+    "value": "değer"
 }

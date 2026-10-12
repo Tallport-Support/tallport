@@ -1802,5 +1802,6 @@
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Utgående e-post skickas inte — en administratör bör kontrollera :%a_begin%Systemstatus:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "Administratörer öppnar alla brevlådor, oavsett vilka som är valda.",
     "1 mailbox|:count mailboxes": "1 brevlåda|:count brevlådor",
-    "No matching users": "Inga matchande användare"
+    "No matching users": "Inga matchande användare",
+    "value": "värde"
 }

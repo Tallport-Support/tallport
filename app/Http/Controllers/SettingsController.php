@@ -52,7 +52,11 @@ class SettingsController extends Controller
         $rules = $this->getSectionParams($section, 'validator_rules');
 
         if (!empty($rules)) {
-            return Validator::make(request()->all(), $rules);
+            // Shown on the field's row, beside its label: "The value must be at least 0."
+            $keys = array_keys($rules);
+            $keys = array_merge($keys, array_map(fn ($key) => str_replace('\\.', '.', $key), $keys));
+
+            return Validator::make(request()->all(), $rules)->setAttributeNames(array_fill_keys($keys, __('value')));
         }
     }
 

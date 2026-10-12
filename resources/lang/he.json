@@ -1802,5 +1802,6 @@
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "דואר יוצא אינו נשלח — על מנהל לבדוק את :%a_begin%סטטוס מערכת:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "מנהלים פותחים כל תיבת דואר, בלי קשר לאלו שנבחרו.",
     "1 mailbox|:count mailboxes": "תיבת דואר אחת|:count תיבות דואר",
-    "No matching users": "אין משתמשים תואמים"
+    "No matching users": "אין משתמשים תואמים",
+    "value": "ערך"
 }
