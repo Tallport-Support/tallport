@@ -12,7 +12,8 @@ use Livewire\WithFileUploads;
 
 /**
  * A user's profile (Settings › Users › the user, and the user's own Profile): account fields for
- * admins and the profile itself. Every change is saved as it's made, once it passes; one that
+ * admins and the profile itself; as a person's level, also the rows to their other pages and the
+ * account's actions. Every change is saved as it's made, once it passes; one that
  * doesn't shows why on its row and leaves the saved value as it was.
  */
 class UserProfile extends Component
@@ -32,6 +33,19 @@ class UserProfile extends Component
     #[Locked]
     public $user_id;
 
+    /**
+     * As a person's level (users/columns/user): who they are, a row for each of their pages, and the
+     * account's actions; one's own Profile has just the fields.
+     */
+    #[Locked]
+    public $rows = true;
+
+    /**
+     * The page whose row is current (security, permissions, notifications), if any.
+     */
+    #[Locked]
+    public $section;
+
     public $role;
     public $disabled = false;
     public $only_assigned = false;
@@ -44,9 +58,11 @@ class UserProfile extends Component
     public $phone = '';
     public $photo;
 
-    public function mount($user)
+    public function mount($user, $rows = true, $section = null)
     {
         $this->user_id = $user->id;
+        $this->rows = (bool) $rows;
+        $this->section = $section;
         $user = $this->user();
         $this->role = (string) $user->role;
         $this->disabled = $user->status == User::STATUS_DISABLED;
@@ -102,7 +118,7 @@ class UserProfile extends Component
         $user = $this->user();
         $auth_user = auth()->user();
         if (in_array($property, self::ADMIN_FIELDS) && !$auth_user->isAdmin()) {
-            $this->mount($user);
+            $this->mount($user, $this->rows, $this->section);
 
             return;
         }

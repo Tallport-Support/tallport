@@ -1,21 +1,17 @@
 @extends('layouts.app')
 
-@section('page_width', 'narrow')
+@section('title', __('Preferences'))
 
 @section('title_full', __('Preferences').' - '.$user->getFullName())
 
-@section('main_class', 'fruit-ui')
-
-@section('sidebar')
-    @include('users/sidebar_menu')
-@endsection
-
-@section('content')
-    <div class="page-content">
-        <form id="page-form" class="settings-form" method="POST" action="{{ route('users.preferences.save', ['id' => $user->id]) }}">
+{{-- A level beside the sidebar; saved as it changes, the whole form. --}}
+@section('drilldown')
+<x-fruit::drilldown-column :title="__('Preferences')" id="user-preferences">
+    <x-fruit::page width="narrow">
+        <form class="settings-form" method="POST" action="{{ route('users.preferences.save', ['id' => $user->id]) }}" x-data="tallportAutoSave" x-on:change="save()">
             {{ csrf_field() }}
 
-            <x-fruit::form-section :title="__('General')">
+            <x-fruit::form-section :title="__('General')" :level="3">
                 <x-fruit::field :label="__('Language')" layout="row">
                     <x-fruit::select id="locale" name="locale">
                         @include('partials/locale_options', ['selected' => old('locale', $user->getLocale())])
@@ -41,7 +37,7 @@
             </x-fruit::form-section>
 
             {{-- Unset: Pending after a reply. --}}
-            <x-fruit::form-section :title="__('Replies')">
+            <x-fruit::form-section :title="__('Replies')" :level="3">
                 <x-fruit::field :label="__('Status After a Reply')" layout="row">
                     <x-fruit::select id="reply_status" name="reply_status">
                         @foreach ([App\Conversation::STATUS_ACTIVE, App\Conversation::STATUS_PENDING, App\Conversation::STATUS_CLOSED] as $status)
@@ -58,7 +54,7 @@
                 </x-fruit::field>
             </x-fruit::form-section>
 
-            <x-fruit::form-section :title="__('Translation')">
+            <x-fruit::form-section :title="__('Translation')" :level="3">
                 {{-- Summaries and translations are in the user's language (General); these aren't translated. --}}
                 <x-fruit::field :label="__('No Translation Needed')" :description="__('Messages in these languages are shown as written.')" layout="row">
                     <input type="hidden" name="languages_shown" value="1">
@@ -71,7 +67,7 @@
             </x-fruit::form-section>
 
             {{-- The accent: the installation's (Settings » Appearance) unless one is chosen here; previewed when picked. --}}
-            <x-fruit::form-section :title="__('Appearance')" x-data="{ installation: {{ $user->accent ? 'false' : 'true' }} }">
+            <x-fruit::form-section :title="__('Appearance')" :level="3" x-data="{ installation: {{ $user->accent ? 'false' : 'true' }} }">
                 <x-fruit::field :label="__('Use the Installation Default')" layout="row">
                     <x-fruit::switch name="accent_default" value="1" :checked="!$user->accent" x-model="installation" x-on:change="if (installation) document.documentElement.dataset.fruitAccent = {{ \Illuminate\Support\Js::from(App\Misc\Branding::accent()) }}" />
                 </x-fruit::field>
@@ -82,9 +78,6 @@
             </x-fruit::form-section>
 
         </form>
-    </div>
-@endsection
-
-@section('page_footer')
-    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
+    </x-fruit::page>
+</x-fruit::drilldown-column>
 @endsection

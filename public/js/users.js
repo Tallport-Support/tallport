@@ -78,6 +78,9 @@ document.addEventListener('alpine:init', function () {
 					Tallport.post(form.action, new FormData(form)).then(function (response) {
 						if (!Tallport.isSuccess(response)) {
 							Tallport.result(response);
+						} else if (response.reload) {
+							// A change the whole page shows, such as the language.
+							window.location.reload();
 						}
 					});
 				}, 300);

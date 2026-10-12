@@ -2895,7 +2895,7 @@
         "name": "user.profile.menu.after_profile",
         "arguments": 1,
         "files": [
-            "resources/views/users/columns/user.blade.php",
+            "resources/views/livewire/user-profile.blade.php",
             "resources/views/users/sidebar_menu.blade.php"
         ]
     },

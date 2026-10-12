@@ -273,7 +273,7 @@ class UsersTest extends FeatureTestCase
 
         // Your own pages: each on its own, titled by the page, reached from the account menu.
         $this->actingAs($this->admin)->get(route('users.preferences', ['id' => $this->admin->id]))->assertOk()
-            ->assertSee('<h1>Preferences</h1>', false)
+            ->assertSee('>Preferences</h2>', false)->assertDontSee('page-form', false)
             ->assertSee(route('users.security', ['id' => $this->admin->id]), false)
             ->assertDontSee(route('users.permissions', ['id' => $this->admin->id]), false)
             ->assertDontSee('New User');

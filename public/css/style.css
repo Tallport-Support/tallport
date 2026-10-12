@@ -1702,11 +1702,6 @@ a.disabled:focus {
         transition: none;
     }
 }
-/* A Livewire component's root inside a level's page (livewire/user-profile): its sections are the
-   page's, spaced like the rest. */
-.user-profile {
-    display: contents;
-}
 /* A person in a settings row (users/columns): their photo, then the name over the email address. */
 .users-row__person {
     display: flex;

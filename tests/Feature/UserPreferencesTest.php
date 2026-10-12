@@ -137,6 +137,11 @@ class UserPreferencesTest extends FeatureTestCase
         $this->assertSame('Instellingen bijgewerkt', session('flash_success_floating'));
         $this->actingAs($agent->fresh())->get(route('users.preferences', ['id' => $agent->id]))->assertSee('Voorkeuren');
 
+        // Saved as it changes, in the background: a new language reloads the page, nothing else does.
+        $this->assertTrue($this->postAjax($agent->fresh(), route('users.preferences.save', ['id' => $agent->id]), ['locale' => 'de'])->json('reload'));
+        $this->assertFalse($this->postAjax($agent->fresh(), route('users.preferences.save', ['id' => $agent->id]), ['locale' => 'de', 'time_format' => User::TIME_FORMAT_12])->json('reload'));
+        $this->postAjax($agent->fresh(), route('users.preferences.save', ['id' => $agent->id]), ['locale' => 'nl']);
+
         $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), [
             '_token' => csrf_token(), 'locale' => 'xx', 'time_format' => 7,
         ])->assertSessionHasErrors(['locale', 'time_format']);

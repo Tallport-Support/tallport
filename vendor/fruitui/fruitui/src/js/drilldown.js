@@ -9,10 +9,27 @@ const levels = root =>
   );
 
 /**
- * Keeps focus in view as a Drill-Down's levels change, whoever changes them (Alpine, a Livewire
- * morph). The row that opened a level keeps focus while it's still shown. Where focus went out of
- * view, it moves to the deepest level's title; going back, to the row that leads where you were.
- * Other updates, such as a morph after a field's change, leave focus alone.
+ * Each level shows the row that leads to the next one: a current row scrolled out of its level's view
+ * (a long list after a page load) comes to the middle of the level. Only the level scrolls, not the page.
+ */
+const revealCurrentRows = root => {
+  for (const level of root.querySelectorAll('.f-drilldown__column')) {
+    const row = level.querySelector('a[aria-current]:not([aria-current="false"])');
+    const scroller = row?.closest('.f-pane__scroll, .f-pane--scroll');
+    if (!scroller || !level.contains(scroller) || !visible(row)) continue;
+    const view = scroller.getBoundingClientRect();
+    const box = row.getBoundingClientRect();
+    if (box.top >= view.top && box.bottom <= view.bottom) continue;
+    scroller.scrollTop += box.top + box.height / 2 - (view.top + view.height / 2);
+  }
+};
+
+/**
+ * Keeps each level's current row in view, also after a page load, and focus in view as a
+ * Drill-Down's levels change, whoever changes them (Alpine, a Livewire morph). The row that opened a
+ * level keeps focus while it's still shown. Where focus went out of view, it moves to the deepest
+ * level's title; going back, to the row that leads where you were. Other updates, such as a morph
+ * after a field's change, leave focus alone.
  */
 export function fruitDrilldown() {
   let observer, frame;
@@ -28,6 +45,7 @@ export function fruitDrilldown() {
         const next = JSON.stringify([path, levels(root)]);
         if (next === state) return;
         state = next;
+        revealCurrentRows(root);
         const active = document.activeElement;
         if (active && active !== document.body && (!root.contains(active) || visible(active))) return;
         // Back: the open path got shorter along the same way.
@@ -39,6 +57,7 @@ export function fruitDrilldown() {
         const title = [...root.querySelectorAll('.f-drilldown__title')].filter(visible).at(-1);
         (back ? (row ?? title) : (title ?? row))?.focus({ preventScroll: true });
       };
+      requestAnimationFrame(() => revealCurrentRows(root));
       observer = new MutationObserver(() => {
         frame ??= requestAnimationFrame(settle);
       });

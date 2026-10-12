@@ -455,8 +455,13 @@ class UsersController extends Controller
         $user->stay_in_conversation = (bool) $request->stay_in_conversation;
         // Off: the installation's accent (Settings » Appearance).
         $user->accent = $request->filled('accent_default') ? null : ($request->accent ?: null);
+        $relocalized = $user->isDirty('locale');
         $user->save();
 
+        // Saved as it changes (users/preferences): a new language shows on a reload.
+        if ($request->ajax()) {
+            return response()->json(['status' => 'success', 'reload' => $relocalized]);
+        }
         \Session::flash('flash_success_floating', __('Settings updated'));
 
         return redirect()->route('users.preferences', ['id' => $id]);

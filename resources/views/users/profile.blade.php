@@ -9,9 +9,7 @@
 @section('drilldown')
     @if ($user->id == Auth::id())
         <x-fruit::drilldown-column :title="__('Profile')" id="user">
-            <x-fruit::page width="narrow">
-                <livewire:user-profile :user="$user" />
-            </x-fruit::page>
+            <livewire:user-profile :user="$user" :rows="false" />
         </x-fruit::drilldown-column>
     @else
         @include('users/columns/users')

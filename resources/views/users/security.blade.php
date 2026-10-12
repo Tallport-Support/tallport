@@ -23,7 +23,7 @@
                     <x-fruit::alert tone="warning">{{ __('Two-factor authentication is required. Turn it on to continue.') }}</x-fruit::alert>
                 @endif
 
-                <x-fruit::form-section :title="__('Two-Factor Authentication')">
+                <x-fruit::form-section :title="__('Two-Factor Authentication')" :level="3">
                     <div class="f-form-row">
                         <p class="f-help">{{ __('After the password, a code from an authenticator app on a phone is asked for.') }}</p>
                         @if ($user->hasEnabledTwoFactorAuthentication())
@@ -104,7 +104,7 @@
                     @endif
                 </x-fruit::form-section>
 
-                <x-fruit::form-section :title="__('Passkeys')">
+                <x-fruit::form-section :title="__('Passkeys')" :level="3">
                     <p class="f-help">{{ __('Sign in with a fingerprint, face or device PIN instead of the password and code.') }}</p>
 
                     @if (count($passkeys))
