@@ -754,6 +754,7 @@ class MailboxesController extends Controller
             'folders'       => $folders,
             'folder'        => $folder,
             'conversations' => $conversations,
+            'sidebar_counts' => \App\Misc\Sidebar::unreadCounts($user),
         ]);
     }
 

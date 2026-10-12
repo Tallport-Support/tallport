@@ -4,6 +4,10 @@ namespace App\Misc;
 
 use App\Folder;
 use App\Mailbox;
+use App\Conversation;
+use App\ConversationFolder;
+use App\ConversationRead;
+use App\Thread;
 use App\User;
 
 /**
@@ -72,14 +76,14 @@ class Sidebar
      * The folders shown: Deleted only with something in it (or when open),
      * Drafts only with drafts.
      */
-    public static function visibleFolders($folders, $current_folder_id = null)
+    public static function visibleFolders($folders, $current_folder_id = null, $unread_counts = [])
     {
-        return $folders->filter(function ($folder) use ($current_folder_id) {
+        return $folders->filter(function ($folder) use ($current_folder_id, $unread_counts) {
             if ($folder->id == $current_folder_id) {
                 return true;
             }
             if ($folder->type == Folder::TYPE_DELETED || $folder->type == Folder::TYPE_DRAFTS) {
-                return (bool) $folder->total_count;
+                return (bool) ($folder->total_count || ($unread_counts[$folder->id] ?? 0));
             }
 
             return true;
@@ -92,6 +96,96 @@ class Sidebar
     public static function count(Folder $folder, $folders)
     {
         return $folder->type == Folder::TYPE_SPAM ? (int) $folder->total_count : (int) $folder->getCount($folders);
+    }
+
+    /**
+     * Unread message counts for the user's folders and mailbox headings.
+     */
+    public static function unreadCounts(User $user)
+    {
+        $mailbox_ids = $user->mailboxesIdsCanView();
+        if (!$mailbox_ids) {
+            return ['folders' => [], 'mailboxes' => []];
+        }
+
+        $folders = Folder::whereIn('mailbox_id', $mailbox_ids)
+            ->where(function ($query) use ($user) {
+                $query->whereIn('type', \Eventy::filter('mailbox.folders.public_types', Folder::$public_types))
+                    ->orWhere(function ($query) use ($user) {
+                        $query->whereIn('type', Folder::$personal_types)->where('user_id', $user->id);
+                    });
+            })->get();
+        $folder_by_id = $folders->keyBy('id');
+        $folder_by_mailbox_type = [];
+        $counts = [];
+        $mailbox_counts = array_fill_keys($mailbox_ids, 0);
+        foreach ($folders as $folder) {
+            $folder_by_mailbox_type[$folder->mailbox_id][$folder->type] = $folder->id;
+            $counts[$folder->id] = 0;
+        }
+
+        $unread = ConversationRead::unreadMessageCounts($user)->keyBy('id');
+        foreach ($unread as $conversation) {
+            $count = (int) $conversation->unread_count;
+            $mailbox_counts[$conversation->mailbox_id] += $count;
+            $folder = $folder_by_id->get($conversation->folder_id);
+            if ($folder && (($folder->type == Folder::TYPE_DELETED && $conversation->state == Conversation::STATE_DELETED)
+                || ($folder->type != Folder::TYPE_DELETED && $conversation->state == Conversation::STATE_PUBLISHED))
+                && ($folder->type != Folder::TYPE_ASSIGNED || $conversation->user_id != $user->id)
+                && !in_array($folder->type, [Folder::TYPE_MINE, Folder::TYPE_STARRED, Folder::TYPE_DRAFTS])
+            ) {
+                $counts[$folder->id] += $count;
+            }
+            if ($conversation->state == Conversation::STATE_PUBLISHED && $conversation->user_id == $user->id
+                && in_array($conversation->status, [Conversation::STATUS_ACTIVE, Conversation::STATUS_PENDING])
+            ) {
+                $mine_id = $folder_by_mailbox_type[$conversation->mailbox_id][Folder::TYPE_MINE] ?? null;
+                if ($mine_id) {
+                    $counts[$mine_id] += $count;
+                }
+            }
+        }
+
+        $indirect_ids = $folders->whereIn('type', [Folder::TYPE_STARRED, Folder::TYPE_DRAFTS])->pluck('id')->all();
+        $all_starred = 0;
+        foreach (array_chunk($unread->keys()->all(), 500) as $conversation_ids) {
+            if ($indirect_ids) {
+                foreach (ConversationFolder::whereIn('folder_id', $indirect_ids)->whereIn('conversation_id', $conversation_ids)->get() as $link) {
+                    $conversation = $unread->get($link->conversation_id);
+                    if ($conversation) {
+                        $counts[$link->folder_id] += (int) $conversation->unread_count;
+                        if ($folder_by_id->get($link->folder_id)->type == Folder::TYPE_STARRED && $conversation->state == Conversation::STATE_PUBLISHED) {
+                            $all_starred += (int) $conversation->unread_count;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (AllMailboxes::isAvailable($user)) {
+            $sent = 0;
+            foreach (array_chunk($unread->keys()->all(), 500) as $conversation_ids) {
+                $sent_ids = Thread::whereIn('conversation_id', $conversation_ids)
+                    ->where('type', Thread::TYPE_MESSAGE)->where('created_by_user_id', $user->id)
+                    ->distinct()->pluck('conversation_id');
+                foreach ($sent_ids as $conversation_id) {
+                    if ($unread[$conversation_id]->state == Conversation::STATE_PUBLISHED) {
+                        $sent += (int) $unread[$conversation_id]->unread_count;
+                    }
+                }
+            }
+            foreach (AllMailboxes::TYPES as $type) {
+                if ($type == AllMailboxes::TYPE_SENT) {
+                    $counts[-$type] = $sent;
+                } elseif ($type == Folder::TYPE_STARRED) {
+                    $counts[-$type] = $all_starred;
+                } else {
+                    $counts[-$type] = $folders->where('type', $type)->sum(fn ($folder) => $counts[$folder->id]);
+                }
+            }
+        }
+
+        return ['folders' => $counts, 'mailboxes' => $mailbox_counts];
     }
 
     /**

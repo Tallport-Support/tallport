@@ -180,6 +180,9 @@ class ConversationList extends Component
         $ids = Conversation::findMany($ids ?? array_map('intval', (array) $this->selected))
             ->filter(fn ($conversation) => $user->can('view', $conversation))->pluck('id')->all();
         $read ? ConversationRead::markRead($ids, $user) : ConversationRead::markUnread($ids, $user);
+        if ($ids) {
+            $this->dispatch('sidebar-counts', counts: \App\Misc\Sidebar::unreadCounts($user));
+        }
     }
 
     /**

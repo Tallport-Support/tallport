@@ -3,8 +3,8 @@
 namespace App\Livewire;
 
 use App\Conversation;
-use App\Folder;
 use App\Misc\ConversationActions;
+use App\Misc\Sidebar;
 use FruitUI\Fruit;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
@@ -37,8 +37,7 @@ class ConversationSubject extends Component
     }
 
     /**
-     * Stars or unstars the conversation (the button, or *): the sidebar's Starred count
-     * follows (public/js/tallport.js).
+     * Stars or unstars the conversation (the button, or *).
      */
     public function star()
     {
@@ -50,10 +49,7 @@ class ConversationSubject extends Component
         } else {
             $conversation->unstar($user);
         }
-        $folder = Folder::where('mailbox_id', $conversation->mailbox_id)->where('type', Folder::TYPE_STARRED)->where('user_id', $user->id)->first();
-        if ($folder) {
-            $this->dispatch('folder-count', folder_id: $folder->id, count: (int) $folder->total_count);
-        }
+        $this->dispatch('sidebar-counts', counts: Sidebar::unreadCounts($user));
         Fruit::toast($starred ? __('Starred') : __('Unstarred'));
     }
 

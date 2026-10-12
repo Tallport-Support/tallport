@@ -618,7 +618,11 @@ class ConversationsController extends Controller
                     break;
                 }
                 self::markNotificationsRead($conversation, $user, $request->mark_as_read);
+                $was_unread = (bool) \App\ConversationRead::unreadIds([$conversation], $user);
                 \App\ConversationRead::markRead($conversation->id, $user);
+                if ($was_unread) {
+                    $response['sidebar_counts'] = \App\Misc\Sidebar::unreadCounts($user);
+                }
                 // openFolder() checks it's still in the folder.
                 if ($shown_in = \App\Misc\Sidebar::conversationFolder($conversation, $user)) {
                     session()->put('folder_conversation.'.$shown_in->id, $conversation->id);

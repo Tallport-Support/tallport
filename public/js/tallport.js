@@ -267,22 +267,50 @@ document.addEventListener('submit', function (event) {
 		button.setAttribute('aria-busy', 'true');
 	}
 });
-// A folder's count changed (a star: App\Livewire\ConversationSubject::star()): its badge in the sidebar.
-window.addEventListener('folder-count', function (event) {
-	document.querySelectorAll('.app-folder-link[data-folder_id="'+event.detail.folder_id+'"]').forEach(function (link) {
-		var badge = link.querySelector('.active-count');
-		link.setAttribute('data-active-count', event.detail.count);
-		if (!event.detail.count) {
-			badge && badge.remove();
-		} else if (badge) {
-			badge.textContent = event.detail.count;
+// Counts are per user: a new message, a read, or a star can change several folders.
+window.tallportSidebarCounts = function (counts) {
+	function badge(parent, selector, className, count) {
+		var element = parent.querySelector(selector);
+		if (!count) {
+			element && element.remove();
+		} else if (element) {
+			element.textContent = count;
 		} else {
-			badge = document.createElement('span');
-			badge.className = 'f-badge active-count';
-			badge.textContent = event.detail.count;
-			link.appendChild(badge);
+			element = document.createElement('span');
+			element.className = className;
+			element.textContent = count;
+			parent.insertBefore(element, parent.querySelector('.f-sidebar__chevron'));
 		}
+	}
+	document.querySelectorAll('.app-folder-link[data-folder_id]').forEach(function (link) {
+		var count = parseInt((counts.folders || {})[link.getAttribute('data-folder_id')] || 0);
+		link.setAttribute('data-unread-count', count);
+		if (count) {
+			link.setAttribute('aria-label', link.getAttribute('data-label-unread').replace(':count', count));
+		} else {
+			link.removeAttribute('aria-label');
+		}
+		badge(link, '.active-count', 'f-badge active-count', count);
 	});
+	document.querySelectorAll('.app-sidebar__mailbox[data-mailbox_id]').forEach(function (group) {
+		var summary = group.querySelector('summary');
+		var count = parseInt((counts.mailboxes || {})[group.getAttribute('data-mailbox_id')] || 0);
+		summary.setAttribute('data-unread-count', count);
+		if (count) {
+			summary.setAttribute('aria-label', summary.getAttribute('data-label-unread').replace(':count', count));
+		} else {
+			summary.removeAttribute('aria-label');
+		}
+		badge(summary, '.app-sidebar__mailbox-count', 'f-badge app-sidebar__mailbox-count', count);
+	});
+	var current = document.querySelector('.app-folder-link[aria-current="page"]');
+	if (current && !document.body.getAttribute('data-conversation_id')) {
+		var count = parseInt(current.getAttribute('data-unread-count') || 0);
+		document.title = (count ? '('+count+') ' : '')+document.title.replace(/^\(\d+\) /, '');
+	}
+};
+window.addEventListener('sidebar-counts', function (event) {
+	window.tallportSidebarCounts(event.detail.counts);
 });
 
 // Back to a page from the browser's cache: nothing is busy any more.

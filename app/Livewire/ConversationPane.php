@@ -69,6 +69,7 @@ class ConversationPane extends Component
         \App\ConversationRead::markRead($conversation->id, $user);
         if ($was_unread) {
             $this->dispatch('conversations-changed');
+            $this->dispatch('sidebar-counts', counts: \App\Misc\Sidebar::unreadCounts($user));
         }
         session()->put('folder_conversation.'.$this->folder_id, $conversation->id);
         \App\Events\RealtimeConvView::dispatchSelf($conversation->id, $user, false);

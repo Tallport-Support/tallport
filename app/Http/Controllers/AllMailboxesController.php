@@ -43,6 +43,7 @@ class AllMailboxesController extends Controller
             'folder'        => $folder,
             'conversations' => $conversations,
             'params'        => ['show_mailbox' => true],
+            'sidebar_counts' => \App\Misc\Sidebar::unreadCounts($user),
         ]);
     }
 }

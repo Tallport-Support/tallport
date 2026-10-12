@@ -4,6 +4,7 @@
     [$sidebar_mailbox_id, $sidebar_folder_id] = App\Misc\Sidebar::current(['mailbox' => $mailbox ?? null, 'folder' => $folder ?? null]);
     $sidebar_all = App\Misc\AllMailboxes::isAvailable($sidebar_user);
     $sidebar_mailboxes = App\Misc\Sidebar::mailboxes($sidebar_user);
+    $sidebar_counts = $sidebar_counts ?? (App\Misc\Sidebar::isSettings() ? ['folders' => [], 'mailboxes' => []] : App\Misc\Sidebar::unreadCounts($sidebar_user));
     // The mailbox "New Conversation" (shortcut) is for: the current one, else the first.
     $sidebar_new_mailbox_id = collect($sidebar_mailboxes)->pluck(0)->pluck('id')->contains($sidebar_mailbox_id) ? $sidebar_mailbox_id : ($sidebar_mailboxes[0][0]->id ?? null);
 @endphp
@@ -43,10 +44,9 @@
     @if ($sidebar_all)
         <p class="f-sidebar__heading">{{ __('All Mailboxes') }}</p>
         @php $all_folders = App\Misc\AllMailboxes::folders($sidebar_user); @endphp
-        @foreach (App\Misc\Sidebar::visibleFolders($all_folders, $sidebar_mailbox_id == App\Misc\AllMailboxes::MAILBOX_ID ? $sidebar_folder_id : null) as $sidebar_folder)
-            @php $sidebar_count = App\Misc\Sidebar::count($sidebar_folder, $all_folders); @endphp
-            <a href="{{ route('mailboxes.all', ['folder_id' => $sidebar_folder->id]) }}" class="f-sidebar__item app-folder-link" @if ($sidebar_mailbox_id == App\Misc\AllMailboxes::MAILBOX_ID && $sidebar_folder_id == $sidebar_folder->id) aria-current="page" @endif data-folder_id="{{ $sidebar_folder->id }}" data-mailbox_id="{{ App\Misc\AllMailboxes::MAILBOX_ID }}"><x-dynamic-component :component="App\Misc\Sidebar::folderIcon($sidebar_folder)" class="f-icon" aria-hidden="true" /><span class="f-sidebar__identity">{{ $sidebar_folder->getTypeName() }}</span>@if ($sidebar_count)<span class="f-badge active-count">{{ $sidebar_count }}</span>@endif</a>
-        @endforeach
+        <div class="app-sidebar__folders" data-mailbox_id="{{ App\Misc\AllMailboxes::MAILBOX_ID }}">
+            @include('partials/app_sidebar_folders', ['sidebar_mailbox' => App\Misc\AllMailboxes::mailbox(), 'sidebar_folders' => $all_folders, 'sidebar_current_folder_id' => $sidebar_mailbox_id == App\Misc\AllMailboxes::MAILBOX_ID ? $sidebar_folder_id : null])
+        </div>
     @endif
 
     <p class="f-sidebar__heading">{{ $sidebar_all ? __('Mailboxes') : __('Mailbox') }}</p>
@@ -54,10 +54,10 @@
         @php
             $sidebar_is_current = $sidebar_mailbox_id == $sidebar_mailbox->id;
             $sidebar_muted = (bool) $sidebar_user->mailboxSettings($sidebar_mailbox->id)->mute;
-            $sidebar_open_count = $sidebar_folders->whereIn('type', [App\Folder::TYPE_UNASSIGNED, App\Folder::TYPE_MINE])->sum(fn ($item) => $item->getCount($sidebar_folders));
+            $sidebar_open_count = $sidebar_counts['mailboxes'][$sidebar_mailbox->id] ?? 0;
         @endphp
         <details class="f-sidebar__group app-sidebar__mailbox" data-mailbox_id="{{ $sidebar_mailbox->id }}" @if ($sidebar_is_current || (!$sidebar_all && count($sidebar_mailboxes) == 1)) open @endif>
-            <summary class="f-sidebar__item" data-fruit-mark="{{ $sidebar_mailbox->accent ?: 'blue' }}">
+            <summary class="f-sidebar__item" data-fruit-mark="{{ $sidebar_mailbox->accent ?: 'blue' }}" @if ($sidebar_open_count) aria-label="{{ __(':mailbox, :count unread', ['mailbox' => $sidebar_mailbox->name, 'count' => $sidebar_open_count]) }}" @endif data-label-unread="{{ __(':mailbox, :count unread', ['mailbox' => $sidebar_mailbox->name, 'count' => ':count']) }}" data-unread-count="{{ $sidebar_open_count }}">
                 @if ($sidebar_mailbox->isArchived())<x-icon.lock class="f-icon" aria-hidden="true" />@else<x-icon.mail class="f-icon" aria-hidden="true" />@endif
                 <span class="f-sidebar__identity mailbox-name">
                     @if (count($sidebar_mailboxes) == 1)
@@ -72,7 +72,7 @@
                         @action('menu.mailbox.after_name', $sidebar_mailbox)
                     @endif
                 </span>
-                @if ($sidebar_open_count)<span class="f-badge">{{ $sidebar_open_count }}</span>@endif
+                @if ($sidebar_open_count)<span class="f-badge app-sidebar__mailbox-count">{{ $sidebar_open_count }}</span>@endif
                 <svg class="f-icon f-sidebar__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>
             </summary>
             <div class="app-sidebar__folders" data-mailbox_id="{{ $sidebar_mailbox->id }}">

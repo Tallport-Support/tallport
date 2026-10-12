@@ -117,9 +117,26 @@ class RealtimePayloadsTest extends FeatureTestCase
         $payload = $payloads[0]['payload'];
         $this->assertSame($this->mailbox->id, $payload['mailbox_id']);
         $this->assertStringContainsString(route('mailboxes.view', ['id' => $this->mailbox->id]), $payload['folders_html']);
+        $unassigned = $this->mailbox->folders()->where('type', \App\Folder::TYPE_UNASSIGNED)->first();
+        $this->assertSame(1, $payload['sidebar_counts']['folders'][$unassigned->id]);
+        $this->assertSame(1, $payload['sidebar_counts']['mailboxes'][$this->mailbox->id]);
+        $this->assertStringContainsString('data-folder_id="'.$unassigned->id.'" data-unread-count="1"', $payload['folders_html']);
 
         $payloads = $this->payloadsOf($this->poll($this->outsider, ['mailbox.'.$this->mailbox->id => [$event]]), $event);
         $this->assertSame([], $payloads[0]['payload']);
+    }
+
+    public function testMailboxPayloadAlsoRefreshesAllMailboxes()
+    {
+        $this->createMailbox([$this->agent], ['name' => 'Sales']);
+        $this->receiveCustomerEmail();
+        $event = 'App\\Events\\RealtimeMailboxNewThread';
+
+        $payloads = $this->payloadsOf($this->poll($this->agent, ['mailbox.'.$this->mailbox->id => [$event]]), $event);
+        $payload = $payloads[0]['payload'];
+
+        $this->assertSame(1, $payload['sidebar_counts']['folders'][-\App\Folder::TYPE_UNASSIGNED]);
+        $this->assertStringContainsString('data-folder_id="-1" data-mailbox_id="-1" data-unread-count="1"', $payload['all_folders_html']);
     }
 
     public function testOthersSeeWhoIsViewingAndReplying()

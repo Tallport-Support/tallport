@@ -134,6 +134,16 @@ function maybeShowConnectionRestored()
 		return true;
 	};
 
+	var markCurrentFolder = function () {
+		document.querySelectorAll('.app-sidebar__folders a[data-folder_id]').forEach(function (item) {
+			if (item.getAttribute('data-folder_id') == attr('folder_id')) {
+				item.setAttribute('aria-current', 'page');
+			} else {
+				item.removeAttribute('aria-current');
+			}
+		});
+	};
+
 	// After missed events: what could have changed, refreshed (also a page that was
 	// prefetched a while before it was shown: tallport.js).
 	var catchUp = window.tallportCatchUp = function () {
@@ -150,12 +160,24 @@ function maybeShowConnectionRestored()
 			return response.ok ? response.text() : '';
 		}).then(function (html) {
 			var page = new DOMParser().parseFromString(html, 'text/html');
+			if (!page.querySelector('.app-sidebar__folders[data-mailbox_id]')) {
+				return;
+			}
 			page.querySelectorAll('.app-sidebar__folders[data-mailbox_id]').forEach(function (fresh) {
 				var folders = document.querySelector('.app-sidebar__folders[data-mailbox_id="'+fresh.getAttribute('data-mailbox_id')+'"]');
 				if (folders) {
 					folders.innerHTML = fresh.innerHTML;
 				}
 			});
+			var counts = {folders: {}, mailboxes: {}};
+			page.querySelectorAll('.app-folder-link[data-folder_id]').forEach(function (link) {
+				counts.folders[link.getAttribute('data-folder_id')] = parseInt(link.getAttribute('data-unread-count') || 0);
+			});
+			page.querySelectorAll('.app-sidebar__mailbox[data-mailbox_id]').forEach(function (group) {
+				counts.mailboxes[group.getAttribute('data-mailbox_id')] = parseInt(group.querySelector('summary').getAttribute('data-unread-count') || 0);
+			});
+			markCurrentFolder();
+			window.tallportSidebarCounts(counts);
 			var fresh = page.querySelector('.app-team-chat-link');
 			var link = document.querySelector('.app-team-chat-link');
 			if (fresh && link) {
@@ -242,6 +264,23 @@ function maybeShowConnectionRestored()
 		document.addEventListener('visibilitychange', pollIfIdle);
 		window.addEventListener('online', pollIfIdle);
 		window.addEventListener('focus', pollIfIdle);
+		// Reads in another tab have no mailbox event; refresh when this tab returns.
+		var away = false;
+		var refreshOnReturn = function () {
+			if (away && document.visibilityState == 'visible') {
+				away = false;
+				catchUp();
+			}
+		};
+		window.addEventListener('blur', function () { away = true; });
+		document.addEventListener('visibilitychange', function () {
+			if (document.visibilityState == 'hidden') {
+				away = true;
+			} else {
+				refreshOnReturn();
+			}
+		});
+		window.addEventListener('focus', refreshOnReturn);
 
 		// Notifications: in the menu (tallportNotifications) and from the browser.
 		poly.subscribe('private-App.User.'+user_id).on('App\\Events\\RealtimeBroadcastNotificationCreated', function (data, event) {
@@ -362,6 +401,9 @@ function maybeShowConnectionRestored()
 		var subscribed_mailboxes = {};
 		var subscribeMailboxes = function () {
 			document.querySelectorAll('.app-sidebar__folders[data-mailbox_id]').forEach(function (element) {
+				if (parseInt(element.getAttribute('data-mailbox_id')) < 0) {
+					return;
+				}
 				if (subscribed_mailboxes[element.getAttribute('data-mailbox_id')]) {
 					return;
 				}
@@ -375,20 +417,14 @@ function maybeShowConnectionRestored()
 					var folders = document.querySelector('.app-sidebar__folders[data-mailbox_id="'+folders_mailbox_id+'"]');
 					if (folders && data.folders_html) {
 						folders.innerHTML = data.folders_html;
-						// The open folder stays marked (it may have been opened in place).
-						folders.querySelectorAll('a[data-folder_id]').forEach(function (item) {
-							if (item.getAttribute('data-folder_id') == attr('folder_id')) {
-								item.setAttribute('aria-current', 'page');
-							} else {
-								item.removeAttribute('aria-current');
-							}
-						});
-						// The open folder's number of active conversations in the page title.
-						var current = folders.querySelector(':scope > [aria-current="page"]');
-						if (current && !attr('conversation_id')) {
-							var count = parseInt(current.getAttribute('data-active-count'));
-							document.title = (count > 0 ? '('+count+') ' : '')+document.title.replace(/^\(\d+\) /, '');
-						}
+					}
+					var all_folders = document.querySelector('.app-sidebar__folders[data-mailbox_id="-1"]');
+					if (all_folders && data.all_folders_html) {
+						all_folders.innerHTML = data.all_folders_html;
+					}
+					markCurrentFolder();
+					if (data.sidebar_counts) {
+						window.tallportSidebarCounts(data.sidebar_counts);
 					}
 					// The list of this mailbox, or of All Mailboxes; not while conversations are selected.
 					var list = document.querySelector('.table-conversations');

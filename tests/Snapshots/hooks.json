@@ -1720,7 +1720,8 @@
         "arguments": 1,
         "files": [
             "app/Mailbox.php",
-            "app/Misc/AllMailboxes.php"
+            "app/Misc/AllMailboxes.php",
+            "app/Misc/Sidebar.php"
         ]
     },
     {

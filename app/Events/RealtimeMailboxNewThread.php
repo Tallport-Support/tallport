@@ -104,11 +104,28 @@ class RealtimeMailboxNewThread implements ShouldBroadcastNow
             'mailbox' => $mailbox,
         ];
 
+        $counts_key = 'realtime_sidebar_counts_'.$user->id;
+        $payload->sidebar_counts = request()->attributes->get($counts_key);
+        if (!$payload->sidebar_counts) {
+            $payload->sidebar_counts = \App\Misc\Sidebar::unreadCounts($user);
+            request()->attributes->set($counts_key, $payload->sidebar_counts);
+        }
+
         $payload->folders_html = \View::make('partials/app_sidebar_folders')->with([
             'sidebar_mailbox'           => $mailbox,
             'sidebar_folders'           => $template_data['folders'],
             'sidebar_current_folder_id' => $folder->mailbox_id == $mailbox->id ? $folder->id : null,
+            'sidebar_counts'            => $payload->sidebar_counts,
         ])->render();
+
+        if (\App\Misc\AllMailboxes::isAvailable($user)) {
+            $payload->all_folders_html = \View::make('partials/app_sidebar_folders')->with([
+                'sidebar_mailbox'           => \App\Misc\AllMailboxes::mailbox(),
+                'sidebar_folders'           => \App\Misc\AllMailboxes::folders($user),
+                'sidebar_current_folder_id' => null,
+                'sidebar_counts'            => $payload->sidebar_counts,
+            ])->render();
+        }
 
         return $payload;
     }

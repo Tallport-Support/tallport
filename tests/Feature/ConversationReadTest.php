@@ -6,6 +6,7 @@ use App\Conversation;
 use App\ConversationRead;
 use App\Folder;
 use App\Livewire\ConversationList;
+use App\Misc\Sidebar;
 use App\Thread;
 use Livewire\Livewire;
 use Tests\FeatureTestCase;
@@ -53,7 +54,9 @@ class ConversationReadTest extends FeatureTestCase
         $this->assertTrue($this->unread($conversation, $this->teammate));
 
         // Shown after wire:navigate.
-        $this->postAjax($this->teammate, '/conversation/ajax', ['action' => 'viewed', 'conversation_id' => $conversation->id])->assertJson(['status' => 'success']);
+        $viewed = $this->postAjax($this->teammate, '/conversation/ajax', ['action' => 'viewed', 'conversation_id' => $conversation->id])->assertJson(['status' => 'success']);
+        $unassigned = $this->mailbox->folders()->where('type', Folder::TYPE_UNASSIGNED)->first();
+        $this->assertSame(0, $viewed->json('sidebar_counts.folders.'.$unassigned->id));
         $this->assertFalse($this->unread($conversation, $this->teammate));
     }
 
@@ -80,6 +83,96 @@ class ConversationReadTest extends FeatureTestCase
         \Option::set(ConversationRead::OPTION_READ_UP_TO, (int) Thread::max('id'));
 
         $this->assertFalse($this->unread($conversation, $this->agent));
+        $this->assertSame([], ConversationRead::unreadMessageCounts($this->agent)->all());
+    }
+
+    public function testSidebarCountsUnreadMessagesForEachUserAndMailbox()
+    {
+        $conversation = $this->conversation();
+        $unassigned = $this->mailbox->folders()->where('type', Folder::TYPE_UNASSIGNED)->first();
+        ConversationRead::markRead($conversation->id, $this->agent);
+
+        $conversation->createUserThread($this->teammate, 'First update.');
+        $conversation->createUserThread($this->teammate, 'Second update.');
+        $this->assertSame(2, Sidebar::unreadCounts($this->agent)['folders'][$unassigned->id]);
+        $this->assertSame(1, Sidebar::unreadCounts($this->teammate)['folders'][$unassigned->id], 'A user does not count their own replies.');
+
+        $second_mailbox = $this->createMailbox([$this->agent]);
+        $this->receiveEmail($second_mailbox, $this->makeEmail([
+            'from' => 'other@customer.example.org', 'to' => $second_mailbox->email, 'subject' => 'Other question',
+        ]));
+        $counts = Sidebar::unreadCounts($this->agent);
+        $this->assertSame(3, $counts['folders'][-Folder::TYPE_UNASSIGNED]);
+        $this->assertSame(2, $counts['mailboxes'][$this->mailbox->id]);
+        $this->assertSame(1, $counts['mailboxes'][$second_mailbox->id]);
+
+        $html = $this->actingAs($this->agent)->get('/?dashboard=1')->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('#aria-label="Unassigned, 2 unread"\s+data-label-unread="Unassigned, :count unread"#', $html);
+        $this->assertMatchesRegularExpression('#data-folder_id="'.$unassigned->id.'" data-unread-count="2">.*?<span class="f-badge active-count">2</span>#s', $html);
+        $this->assertMatchesRegularExpression('#data-folder_id="-1" data-mailbox_id="-1" data-unread-count="3">.*?<span class="f-badge active-count">3</span>#s', $html);
+
+        ConversationRead::markUnread($conversation->id, $this->agent);
+        $this->assertSame(3, Sidebar::unreadCounts($this->agent)['folders'][$unassigned->id], 'Marking the conversation unread marks its messages unread.');
+        $this->get($conversation->url())->assertOk();
+        $this->assertSame(0, Sidebar::unreadCounts($this->agent)['folders'][$unassigned->id]);
+    }
+
+    public function testSidebarMovesUnreadMessagesWithTheirConversation()
+    {
+        $conversation = $this->conversation();
+        $folder_ids = $this->mailbox->folders()->whereIn('type', [Folder::TYPE_UNASSIGNED, Folder::TYPE_MINE, Folder::TYPE_ASSIGNED, Folder::TYPE_STARRED, Folder::TYPE_CLOSED, Folder::TYPE_DELETED])->get()
+            ->filter(fn ($folder) => !$folder->user_id || $folder->user_id == $this->agent->id)
+            ->pluck('id', 'type');
+
+        $conversation->changeUser($this->agent->id, $this->agent);
+        $counts = Sidebar::unreadCounts($this->agent);
+        $this->assertSame(0, $counts['folders'][$folder_ids[Folder::TYPE_UNASSIGNED]]);
+        $this->assertSame(1, $counts['folders'][$folder_ids[Folder::TYPE_MINE]]);
+        $this->assertSame(0, $counts['folders'][$folder_ids[Folder::TYPE_ASSIGNED]]);
+
+        $conversation->star($this->agent);
+        $this->assertSame(1, Sidebar::unreadCounts($this->agent)['folders'][$folder_ids[Folder::TYPE_STARRED]]);
+
+        $conversation->changeStatus(Conversation::STATUS_CLOSED, $this->agent);
+        $counts = Sidebar::unreadCounts($this->agent);
+        $this->assertSame(0, $counts['folders'][$folder_ids[Folder::TYPE_MINE]]);
+        $this->assertSame(1, $counts['folders'][$folder_ids[Folder::TYPE_CLOSED]]);
+        $this->assertSame(1, $counts['mailboxes'][$this->mailbox->id]);
+
+        $conversation->deleteToFolder($this->agent);
+        $counts = Sidebar::unreadCounts($this->agent);
+        $this->assertSame(0, $counts['folders'][$folder_ids[Folder::TYPE_CLOSED]]);
+        $this->assertSame(1, $counts['folders'][$folder_ids[Folder::TYPE_DELETED]]);
+        $this->assertSame(1, $counts['folders'][$folder_ids[Folder::TYPE_STARRED]], 'The mailbox Starred list includes deleted conversations.');
+        Folder::whereKey($folder_ids[Folder::TYPE_DELETED])->update(['total_count' => 0]);
+        $this->assertStringContainsString('data-folder_id="'.$folder_ids[Folder::TYPE_DELETED].'"', $this->actingAs($this->agent)->get('/?dashboard=1')->assertOk()->getContent(), 'An unread folder stays visible before background totals catch up.');
+    }
+
+    public function testStarredDraftsAndSentCountUnreadMessagesWithoutDuplicatingTheMailboxTotal()
+    {
+        $this->createMailbox([$this->agent]);
+        $conversation = $this->conversation();
+        $conversation->createUserThread($this->agent, 'My reply.');
+        ConversationRead::markRead($conversation->id, $this->agent);
+        $conversation->createUserThread($this->teammate, 'New note.', ['type' => Thread::TYPE_NOTE]);
+        $conversation->star($this->agent);
+        $conversation->addToFolder(Folder::TYPE_DRAFTS);
+
+        $starred = $this->mailbox->folders()->where('type', Folder::TYPE_STARRED)->where('user_id', $this->agent->id)->first();
+        $drafts = $this->mailbox->folders()->where('type', Folder::TYPE_DRAFTS)->first();
+        $counts = Sidebar::unreadCounts($this->agent);
+
+        $this->assertSame(1, $counts['folders'][$starred->id]);
+        $this->assertSame(1, $counts['folders'][$drafts->id]);
+        $this->assertSame(1, $counts['folders'][-Folder::TYPE_STARRED]);
+        $this->assertSame(1, $counts['folders'][-Folder::TYPE_DRAFTS]);
+        $this->assertSame(1, $counts['folders'][-\App\Misc\AllMailboxes::TYPE_SENT]);
+        $this->assertSame(1, $counts['mailboxes'][$this->mailbox->id]);
+
+        $conversation->deleteToFolder($this->agent);
+        $counts = Sidebar::unreadCounts($this->agent);
+        $this->assertSame(1, $counts['folders'][$starred->id]);
+        $this->assertSame(0, $counts['folders'][-Folder::TYPE_STARRED], 'All Mailboxes Starred excludes deleted conversations.');
     }
 
     /**
@@ -96,7 +189,7 @@ class ConversationReadTest extends FeatureTestCase
         $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $folder])
             ->assertSeeHtml('wire:click="rowRead('.$first->id.', 1)"')->assertSeeHtml('<span class="f-item-row__unread" aria-hidden="true"></span><span class="f-sr-only">Unread</span>');
         $this->assertSame(2, substr_count($list->html(), 'f-item-row__unread'));
-        $list->call('rowRead', $first->id, 1)->assertSeeHtml('wire:click="rowRead('.$first->id.', 0)"');
+        $list->call('rowRead', $first->id, 1)->assertSeeHtml('wire:click="rowRead('.$first->id.', 0)"')->assertDispatched('sidebar-counts');
         $this->assertSame(1, substr_count($list->html(), 'f-item-row__unread'));
         $this->assertFalse($this->unread($first, $this->agent));
         $this->assertTrue($this->unread($second, $this->agent));

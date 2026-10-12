@@ -89,4 +89,46 @@ class ConversationRead extends Model
 
         return $unread;
     }
+
+    /**
+     * Unread messages in each conversation the user can access, for the sidebar.
+     * A conversation marked unread has a null marker: all its messages are unread.
+     */
+    public static function unreadMessageCounts($user)
+    {
+        $mailbox_ids = $user->mailboxesIdsCanView();
+        if (!$mailbox_ids) {
+            return collect();
+        }
+
+        $read_up_to = (int) \Option::get(self::OPTION_READ_UP_TO, 0);
+        $query = \DB::table('threads')
+            ->join('conversations', 'conversations.id', '=', 'threads.conversation_id')
+            ->leftJoin('conversation_reads', function ($join) use ($user) {
+                $join->on('conversation_reads.conversation_id', '=', 'conversations.id')
+                    ->where('conversation_reads.user_id', $user->id);
+            })
+            ->whereIn('conversations.mailbox_id', $mailbox_ids)
+            ->whereIn('conversations.state', [Conversation::STATE_PUBLISHED, Conversation::STATE_DELETED, Conversation::STATE_DRAFT])
+            ->whereIn('threads.type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE, Thread::TYPE_NOTE])
+            ->where('threads.state', Thread::STATE_PUBLISHED)
+            ->where(function ($query) use ($user) {
+                $query->whereNull('threads.created_by_user_id')->orWhere('threads.created_by_user_id', '!=', $user->id);
+            })
+            ->where(function ($query) use ($read_up_to) {
+                $query->where('threads.id', '>', $read_up_to)
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('conversation_reads.conversation_id')->whereNull('conversation_reads.thread_id');
+                    });
+            })
+            ->whereRaw('threads.id > case when conversation_reads.conversation_id is not null and conversation_reads.thread_id is null then 0 else coalesce(conversation_reads.thread_id, ?) end', [$read_up_to]);
+
+        if ($user->canSeeOnlyAssignedConversations()) {
+            $query->where('conversations.user_id', $user->id);
+        }
+
+        return $query->selectRaw('conversations.id, conversations.mailbox_id, conversations.folder_id, conversations.user_id, conversations.status, conversations.state, count(*) as unread_count')
+            ->groupBy('conversations.id', 'conversations.mailbox_id', 'conversations.folder_id', 'conversations.user_id', 'conversations.status', 'conversations.state')
+            ->get();
+    }
 }

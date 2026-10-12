@@ -183,6 +183,10 @@ document.addEventListener('livewire:navigated', function () {
 			conversation_id: document.body.getAttribute('data-conversation_id'),
 			folder_id: params.get('folder_id') || '',
 			mark_as_read: params.get('mark_as_read') || ''
+		}).then(function (response) {
+			if (response.sidebar_counts) {
+				window.dispatchEvent(new CustomEvent('sidebar-counts', {detail: {counts: response.sidebar_counts}}));
+			}
 		});
 	}
 	// After a message sent in the chat view, the next one can be typed right away.

@@ -53,7 +53,7 @@ class AllMailboxesTest extends FeatureTestCase
         // Each mailbox below All Mailboxes, folded.
         $html = $response->getContent();
         $this->assertLessThan(strpos($html, 'data-mailbox_id="'.$this->support->id.'"'), strpos($html, 'data-mailbox_id="-1"'));
-        $this->assertMatchesRegularExpression('#data-folder_id="-1" data-mailbox_id="-1">.*?<span class="f-badge active-count">2</span>#s', $html, 'Unassigned counts both mailboxes.');
+        $this->assertMatchesRegularExpression('#data-folder_id="-1" data-mailbox_id="-1" data-unread-count="2">.*?<span class="f-badge active-count">2</span>#s', $html, 'Unassigned has two unread messages.');
         $this->assertMatchesRegularExpression('#<details class="f-sidebar__group app-sidebar__mailbox" data-mailbox_id="'.$this->sales->id.'"\s*>#', $html);
 
         // Next pages.
@@ -79,7 +79,7 @@ class AllMailboxesTest extends FeatureTestCase
         $this->actingAs($this->agent)->get(route('mailboxes.all', ['folder_id' => $folder_id]))->assertOk();
         $page = $this->get($newer->url())->assertOk();
         $html = $page->getContent();
-        $this->assertMatchesRegularExpression('#aria-current="page"\s+data-folder_id="'.$folder_id.'" data-mailbox_id="-1"#', $html);
+        $this->assertMatchesRegularExpression('#aria-current="page"[^>]*data-folder_id="'.$folder_id.'" data-mailbox_id="-1"#', $html);
         $this->assertDoesNotMatchRegularExpression('#data-mailbox_id="'.$this->sales->id.'"\s+open#', $html);
         // Older and newer across the mailboxes, still in All Mailboxes.
         $page->assertSee('href="'.$older->url().'" class="f-button f-button--ghost f-button--icon" title="Older"', false);
@@ -100,7 +100,7 @@ class AllMailboxesTest extends FeatureTestCase
         $support = $this->conversation($this->support, 'Support question');
         $sales = $this->conversation($this->sales, 'Sales question');
         $unassigned = -Folder::TYPE_UNASSIGNED;
-        $current = fn ($html, $folder_id, $mailbox_id) => $this->assertMatchesRegularExpression('#aria-current="page"\s+data-folder_id="'.$folder_id.'"( data-mailbox_id="'.$mailbox_id.'")?#', $html);
+        $current = fn ($html, $folder_id, $mailbox_id) => $this->assertMatchesRegularExpression('#aria-current="page"[^>]*data-folder_id="'.$folder_id.'"( data-mailbox_id="'.$mailbox_id.'")?#', $html);
 
         $this->actingAs($this->agent)->get(route('mailboxes.all', ['folder_id' => $unassigned]))->assertOk();
 
@@ -126,7 +126,7 @@ class AllMailboxesTest extends FeatureTestCase
         $html = $this->get($other->url())->assertOk()->getContent();
         $this->assertMatchesRegularExpression('#data-mailbox_id="'.$this->support->id.'"\s+open#', $html);
         $this->assertDoesNotMatchRegularExpression('#data-mailbox_id="'.$this->sales->id.'"\s+open#', $html);
-        $this->assertStringNotContainsString('aria-current="page" data-folder_id', $html, 'No folder of Support has it.');
+        $this->assertDoesNotMatchRegularExpression('#class="f-sidebar__item app-folder-link"[^>]*aria-current="page"[^>]*data-folder_id="[0-9]+"#', $html, 'No folder of Support has it.');
 
         // Old links with a folder: without it.
         $this->get($other->url().'?folder_id='.$unassigned)->assertRedirect($other->url());

@@ -3,8 +3,8 @@
 @section('body_attrs')@parent data-mailbox_id="{{ $mailbox->id }}"@endsection
 @section('body_attrs')@parent data-folder_id="{{ $folder->id }}"@endsection
 
-@if ($folder->active_count)
-    @section('title', '('.(int)$folder->getCount().') '.$folder->getTypeName().' - '.$mailbox->name)
+@if ($sidebar_counts['folders'][$folder->id] ?? 0)
+    @section('title', '('.$sidebar_counts['folders'][$folder->id].') '.$folder->getTypeName().' - '.$mailbox->name)
 @else
     @section('title', $folder->getTypeName().' - '.$mailbox->name)
 @endif
