@@ -1,23 +1,17 @@
-@extends('layouts.app')
+@extends('mailboxes/layout_page')
 
 @section('page_width', 'narrow')
 
 @section('title_full', __('Auto Reply').' - '.$mailbox->name)
 
-@section('main_class', 'fruit-ui')
-
-@section('sidebar')
-    @include('mailboxes/sidebar_menu')
-@endsection
-
 @section('content')
     <div class="page-content">
         @include('partials/flash_messages')
 
-        <form id="page-form" class="settings-form" method="POST" action="">
+        <form id="page-form" class="settings-form" method="POST" action="" x-on:change="Tallport.autoSave($el)">
             {{ csrf_field() }}
 
-            <x-fruit::form-section :title="__('Auto Reply')" :footer="__('Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI (when it is set up).').' '.__('Auto replies don\'t include your mailbox signature, so be sure to add your contact information if necessary.')">
+            <x-fruit::form-section :title="__('Auto Reply')" :level="3" :footer="__('Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI (when it is set up).').' '.__('Auto replies don\'t include your mailbox signature, so be sure to add your contact information if necessary.')">
                 <x-fruit::field :label="__('Enable Auto Reply')" layout="row">
                     <x-fruit::switch id="auto_reply_enabled" name="auto_reply_enabled" value="1" :checked="(bool) old('auto_reply_enabled', $mailbox->auto_reply_enabled)" />
                     <x-slot:description>{{ strip_tags(str_replace('<br/>', ' ', __('When a customer emails this mailbox, application can send an auto reply to the customer immediately.<br/><br/>Only one auto reply is sent per new conversation.'))) }}</x-slot:description>
@@ -79,8 +73,4 @@
         </form>
     </div>
 
-@endsection
-
-@section('page_footer')
-    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
 @endsection

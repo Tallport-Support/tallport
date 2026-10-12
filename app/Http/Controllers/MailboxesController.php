@@ -30,19 +30,7 @@ class MailboxesController extends Controller
      */
     public function mailboxes()
     {
-        $user = auth()->user();
-
-        $mailboxes = $user->mailboxesCanView();
-
-        if (!\Eventy::filter('user.can_view_mailbox_menu', false, $user)) {
-            foreach ($mailboxes as $i => $mailbox) {
-                if (!$user->canManageMailbox($mailbox)) {
-                    $mailboxes->forget($i);
-                }
-            }
-        }
-
-        return view('mailboxes/mailboxes', ['mailboxes' => $mailboxes]);
+        return view('mailboxes/mailboxes');
     }
 
     /**
@@ -205,9 +193,9 @@ class MailboxesController extends Controller
             $validator = \Eventy::filter('mailbox.settings_validator', $validator, $mailbox, $request);
 
             if ($invalid || count($validator->errors()) || $validator->fails()) {
-                return redirect()->route('mailboxes.update', ['id' => $id])
+                return $this->savedResponse(redirect()->route('mailboxes.update', ['id' => $id])
                             ->withErrors($validator)
-                            ->withInput();
+                            ->withInput(), $validator);
             }
 
             $allowed_fields = [
@@ -230,9 +218,9 @@ class MailboxesController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return redirect()->route('mailboxes.update', ['id' => $id])
+                return $this->savedResponse(redirect()->route('mailboxes.update', ['id' => $id])
                     ->withErrors($validator)
-                    ->withInput();
+                    ->withInput(), $validator);
             }
             $allowed_fields[] = 'signature';
         }
@@ -276,9 +264,11 @@ class MailboxesController extends Controller
 
         $mailbox->save();
 
-        \Session::flash('flash_success_floating', __('Mailbox settings saved'));
+        if (!$request->ajax()) {
+            \Session::flash('flash_success_floating', __('Mailbox settings saved'));
+        }
 
-        return redirect()->route('mailboxes.update', ['id' => $id]);
+        return $this->savedResponse(redirect()->route('mailboxes.update', ['id' => $id]));
     }
 
     /**
@@ -315,7 +305,7 @@ class MailboxesController extends Controller
             'customer_context_guidance' => 'nullable|string|max:6000',
         ]);
         if ($validator->fails()) {
-            return redirect()->route('mailboxes.ai', ['id' => $id])->withErrors($validator)->withInput();
+            return $this->savedResponse(redirect()->route('mailboxes.ai', ['id' => $id])->withErrors($validator)->withInput(), $validator);
         }
 
         // One mailbox's entry in an option keyed by mailbox (removed when empty).
@@ -351,9 +341,11 @@ class MailboxesController extends Controller
         }
         \Option::$cache = [];
 
-        \Session::flash('flash_success_floating', __('Settings updated'));
+        if (!$request->ajax()) {
+            \Session::flash('flash_success_floating', __('Settings updated'));
+        }
 
-        return redirect()->route('mailboxes.ai', ['id' => $id]);
+        return $this->savedResponse(redirect()->route('mailboxes.ai', ['id' => $id]));
     }
 
     /**
@@ -459,9 +451,11 @@ class MailboxesController extends Controller
             $mailbox_with_settings->settings->save();
         }
 
-        \Session::flash('flash_success_floating', __('Mailbox permissions saved!'));
+        if (!$request->ajax()) {
+            \Session::flash('flash_success_floating', __('Mailbox permissions saved!'));
+        }
 
-        return redirect()->route('mailboxes.permissions', ['id' => $id]);
+        return $this->savedResponse(redirect()->route('mailboxes.permissions', ['id' => $id]));
     }
 
     /**
@@ -493,9 +487,9 @@ class MailboxesController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return redirect()->route('mailboxes.connection', ['id' => $id])
+                return $this->savedResponse(redirect()->route('mailboxes.connection', ['id' => $id])
                             ->withErrors($validator)
-                            ->withInput();
+                            ->withInput(), $validator);
             }
         }
 
@@ -511,9 +505,9 @@ class MailboxesController extends Controller
             }
             $validator = Validator::make(['out_api' => $input], \App\Misc\MailProviders::rules($out_provider, 'out_api.'));
             if ($validator->fails()) {
-                return redirect()->route('mailboxes.connection', ['id' => $id])
+                return $this->savedResponse(redirect()->route('mailboxes.connection', ['id' => $id])
                             ->withErrors($validator)
-                            ->withInput();
+                            ->withInput(), $validator);
             }
         }
         if ($request->has('out_api')) {
@@ -539,6 +533,8 @@ class MailboxesController extends Controller
         ]);
 
         $mailbox->fill($params);
+        // Saved as it changes: workers restart only for settings that did.
+        $changed = $mailbox->isDirty();
         $mailbox->save();
 
         if (!empty($request->send_test_to)) {
@@ -546,11 +542,15 @@ class MailboxesController extends Controller
         }
 
         // Sometimes background job continues to use old connection settings.
-        \Helper::queueWorkerRestart();
+        if ($changed) {
+            \Helper::queueWorkerRestart();
+        }
 
-        \Session::flash('flash_success_floating', __('Connection settings saved!'));
+        if (!$request->ajax()) {
+            \Session::flash('flash_success_floating', __('Connection settings saved!'));
+        }
 
-        return redirect()->route('mailboxes.connection', ['id' => $id]);
+        return $this->savedResponse(redirect()->route('mailboxes.connection', ['id' => $id]));
     }
 
     /**
@@ -616,9 +616,9 @@ class MailboxesController extends Controller
         });
 
         if ($validator->fails()) {
-            return redirect()->route('mailboxes.connection.incoming', ['id' => $id])
+            return $this->savedResponse(redirect()->route('mailboxes.connection.incoming', ['id' => $id])
                         ->withErrors($validator)
-                        ->withInput();
+                        ->withInput(), $validator);
         }
 
         // Checkboxes
@@ -663,9 +663,11 @@ class MailboxesController extends Controller
 
         $mailbox->save();
 
-        \Session::flash('flash_success_floating', __('Connection settings saved!'));
+        if (!$request->ajax()) {
+            \Session::flash('flash_success_floating', __('Connection settings saved!'));
+        }
 
-        return redirect()->route('mailboxes.connection.incoming', ['id' => $id]);
+        return $this->savedResponse(redirect()->route('mailboxes.connection.incoming', ['id' => $id]));
     }
 
     /**
@@ -853,10 +855,10 @@ class MailboxesController extends Controller
                     }
                 }
 
-                return redirect()->route('mailboxes.auto_reply', ['id' => $id])
+                return $this->savedResponse(redirect()->route('mailboxes.auto_reply', ['id' => $id])
                             ->withErrors($validator)
                             ->withInput()
-                            ->with('auto_reply_language', $failed_language);
+                            ->with('auto_reply_language', $failed_language), $validator);
             }
         }
 
@@ -897,9 +899,11 @@ class MailboxesController extends Controller
 
         $mailbox->save();
 
-        \Session::flash('flash_success_floating', __('Auto Reply status saved'));
+        if (!$request->ajax()) {
+            \Session::flash('flash_success_floating', __('Auto Reply status saved'));
+        }
 
-        return redirect()->route('mailboxes.auto_reply', ['id' => $id])->with('auto_reply_language', $active_language);
+        return $this->savedResponse(redirect()->route('mailboxes.auto_reply', ['id' => $id])->with('auto_reply_language', $active_language));
     }
 
 

@@ -1,16 +1,10 @@
-@extends('layouts.app')
+@extends('mailboxes/layout_page')
 
 @section('page_width', 'narrow')
 
 @section('title_full', __('AI').' - '.$mailbox->name)
 
 @section('body_attrs')@parent data-mailbox_id="{{ $mailbox->id }}"@endsection
-
-@section('main_class', 'fruit-ui')
-
-@section('sidebar')
-    @include('mailboxes/sidebar_menu')
-@endsection
 
 @section('content')
     @php
@@ -30,10 +24,10 @@
         @endunless
 
         {{-- A mailbox's AI Assistant (MailboxesController::ai()); the installation's providers, models and limits are in Settings › AI Assistant. --}}
-        <form id="page-form" class="settings-form" method="POST" action="{{ route('mailboxes.ai.save', ['id' => $mailbox->id]) }}" x-data="{ drafts: @js($ai_features_on['drafts']), chat: @js($ai_chat), email: @js($ai_email) }">
+        <form id="page-form" class="settings-form" method="POST" action="{{ route('mailboxes.ai.save', ['id' => $mailbox->id]) }}" x-data="{ drafts: @js($ai_features_on['drafts']), chat: @js($ai_chat), email: @js($ai_email) }" x-on:change="Tallport.autoSave($el)">
             {{ csrf_field() }}
             <fieldset class="mailbox-ai" @disabled(!$configured)>
-                <x-fruit::form-section :title="__('Features')">
+                <x-fruit::form-section :title="__('Features')" :level="3">
                     <x-fruit::field :label="__('Summaries')" :description="__('A short summary at the top of each conversation.')" layout="row">
                         <x-fruit::switch name="features[summaries]" value="1" :checked="$ai_features_on['summaries']" />
                     </x-fruit::field>
@@ -45,7 +39,7 @@
                     </x-fruit::field>
                 </x-fruit::form-section>
 
-                <x-fruit::form-section :title="__('Language')">
+                <x-fruit::form-section :title="__('Language')" :level="3">
                     <x-fruit::field :label="__('Language')" :description="__('Summaries and translations use this language, unless an agent has chosen their own.')" layout="row">
                         <x-fruit::select name="language">
                             <option value="">{{ __('Default (:language)', ['language' => App\Ai\Settings::displayName(App\Ai\Settings::defaultLanguage())]) }}</option>
@@ -59,7 +53,7 @@
                     </x-fruit::field>
                 </x-fruit::form-section>
 
-                <x-fruit::form-section :title="__('Translation')">
+                <x-fruit::form-section :title="__('Translation')" :level="3">
                     <x-fruit::field :label="__('Translate Chats')" :description="__('Telegram and Nostr chats, both ways: agents read and write in their own language, and see a reply\'s translation before it\'s sent.')" layout="row">
                         <x-fruit::switch name="chat_translation" value="1" :checked="$ai_chat" x-on:change="chat = $el.checked" />
                     </x-fruit::field>
@@ -71,7 +65,7 @@
 
                 {{-- Only drafts use it: off while Drafts is. --}}
                 <fieldset class="mailbox-ai__context" x-bind:disabled="!drafts" x-data="tallportAiContextTest({{ $mailbox->id }})">
-                    <x-fruit::form-section :title="__('Customer Context')">
+                    <x-fruit::form-section :title="__('Customer Context')" :level="3">
                         <x-fruit::field :label="__('URL')" layout="row">
                             <x-fruit::input type="url" class="ai-context-url" name="customer_context_url" :value="old('customer_context_url', $context['url'])" maxlength="2048" placeholder="https://example.com/customer-context" />
                         </x-fruit::field>
@@ -118,9 +112,3 @@
         </form>
     </div>
 @endsection
-
-@if ($configured)
-    @section('page_footer')
-        <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
-    @endsection
-@endif

@@ -55,6 +55,19 @@ class MailboxSettings
     }
 
     /**
+     * The mailboxes in Settings › Mailboxes for the user: those they may manage.
+     */
+    public static function listFor(User $user)
+    {
+        $mailboxes = $user->mailboxesCanView();
+        if (!\Eventy::filter('user.can_view_mailbox_menu', false, $user)) {
+            $mailboxes = $mailboxes->filter(fn ($mailbox) => $user->canManageMailbox($mailbox));
+        }
+
+        return $mailboxes;
+    }
+
+    /**
      * Whether the user may open the mailbox's own page (mailboxes/update).
      */
     public static function canOpenMailbox(Mailbox $mailbox, User $user)

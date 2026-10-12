@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('mailboxes/layout_page')
 
 @section('page_width', 'narrow')
 
@@ -6,22 +6,16 @@
 
 @section('body_attrs')@parent data-mailbox_id="{{ $mailbox->id }}"@endsection
 
-@section('main_class', 'fruit-ui')
-
-@section('sidebar')
-    @include('mailboxes/sidebar_menu')
-@endsection
-
 @section('content')
     <div class="page-content">
         @include('mailboxes/connection_menu')
 
         @include('partials/flash_messages')
 
-        <form class="settings-form" method="POST" action="" id="form-fetching" x-data="tallportMailboxIncoming({{ $mailbox->id }})" x-on:change="changed" x-on:keyup="changed">
+        <form class="settings-form" method="POST" action="" id="form-fetching" x-data="tallportMailboxIncoming({{ $mailbox->id }})" x-on:change="changed; Tallport.autoSave($el)" x-on:keyup="changed">
             {{ csrf_field() }}
 
-            <x-fruit::form-section :title="__('Fetching Emails')">
+            <x-fruit::form-section :title="__('Fetching Emails')" :level="3">
                 <div class="f-form-row">
                     <span class="f-label">{{ __('Status') }}</span>
                     @if ($mailbox->isInActive())
@@ -48,12 +42,12 @@
             </x-fruit::form-section>
 
             {{-- Delivered by the mail server (tallport:receive, see README): nothing to fetch. --}}
-            <x-fruit::form-section :title="__('Mail Server (Direct Delivery)')" data-in-protocol="{{ App\Mailbox::IN_PROTOCOL_MAIL_SERVER }}">
+            <x-fruit::form-section :title="__('Mail Server (Direct Delivery)')" :level="3" data-in-protocol="{{ App\Mailbox::IN_PROTOCOL_MAIL_SERVER }}">
                 <p class="f-help">{{ __('Your mail server hands this mailbox\'s email to Tallport as it arrives, so nothing is fetched. With Postfix, send the address to Tallport\'s transport in /etc/postfix/transport:') }}</p>
                 <pre class="connection-transport">{{ $mailbox->email }}    tallport:</pre>
             </x-fruit::form-section>
 
-            <x-fruit::form-section :title="__('Server')" data-in-protocol="default">
+            <x-fruit::form-section :title="__('Server')" :level="3" data-in-protocol="default">
                 <x-fruit::field :label="__('Server')" layout="row">
                     <x-fruit::input id="in_server" name="in_server" :value="old('in_server', $mailbox->in_server)" maxlength="255" />
                 </x-fruit::field>
@@ -165,7 +159,7 @@
 
             @action('mailbox.connection_incoming.after_default_settings', $mailbox)
 
-            <x-fruit::form-section :title="__('Test')" data-in-protocol="default">
+            <x-fruit::form-section :title="__('Test')" :level="3" data-in-protocol="default">
                 <div class="f-form-row">
                     <p class="f-help">{{ __("Make sure to save settings before checking connection.") }}</p>
                     <button type="button" class="f-button" id="check-connection" x-ref="check" x-on:click="checkConnection" @if (!$mailbox->isOutActive()) disabled="disabled" @endif>{{ __('Check Connection') }}</button>
@@ -178,8 +172,4 @@
             <form id="oauth-disconnect" method="POST" action="{{ route('mailboxes.oauth_disconnect.submit', ['id' => $mailbox->id, 'provider' => $active_oauth_provider, 'in_out' => 'in']) }}">@csrf</form>
         @endif
     </div>
-@endsection
-
-@section('page_footer')
-    <x-fruit::button type="submit" form="form-fetching" variant="primary">{{ __('Save Settings') }}</x-fruit::button>
 @endsection

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('mailboxes/layout_page')
 
 @section('page_width', 'narrow')
 
@@ -6,26 +6,20 @@
 
 @section('body_attrs')@parent data-mailbox_id="{{ $mailbox->id }}"@endsection
 
-@section('main_class', 'fruit-ui')
-
-@section('sidebar')
-    @include('mailboxes/sidebar_menu')
-@endsection
-
 @section('content')
     <div class="page-content">
         @include('mailboxes/connection_menu')
 
         @include('partials/flash_messages')
 
-        <form id="page-form" class="settings-form" method="POST" action="" x-data="tallportMailboxConnection({{ $mailbox->id }}, {{ App\Mailbox::OUT_METHOD_SMTP }})" x-on:change="methodChanged">
+        <form id="page-form" class="settings-form" method="POST" action="" x-data="tallportMailboxConnection({{ $mailbox->id }}, {{ App\Mailbox::OUT_METHOD_SMTP }})" x-on:change="methodChanged; Tallport.autoSave($el)">
             {{ csrf_field() }}
 
             <p class="f-help">
                 {{ __("To send system emails via webmail providers (Gmail, Yahoo, etc) use only SMTP method and make sure that SMTP username is equal to the mailbox email address (:%mailbox_email%), otherwise webmail provider won't send emails.", ['%mailbox_email%' => $mailbox->email]) }}
             </p>
 
-            <x-fruit::form-section :title="__('Sending Emails')">
+            <x-fruit::form-section :title="__('Sending Emails')" :level="3">
                 <x-fruit::fieldset>
                     <legend>{{ __('Method') }}</legend>
                     <x-fruit::radio name="out_method" :value="App\Mailbox::OUT_METHOD_PHP_MAIL" id="out_method_{{ App\Mailbox::OUT_METHOD_PHP_MAIL }}" :checked="$mailbox->out_method == App\Mailbox::OUT_METHOD_PHP_MAIL">{{ __("PHP's mail() function") }}</x-fruit::radio>
@@ -40,7 +34,7 @@
                 </p>
             </x-fruit::form-section>
 
-            <x-fruit::form-section :title="__('SMTP')" id="out_method_{{ App\Mailbox::OUT_METHOD_SMTP }}_options" :class="'out_method_options'.($mailbox->out_method != App\Mailbox::OUT_METHOD_SMTP ? ' hidden' : '')">
+            <x-fruit::form-section :title="__('SMTP')" :level="3" id="out_method_{{ App\Mailbox::OUT_METHOD_SMTP }}_options" :class="'out_method_options'.($mailbox->out_method != App\Mailbox::OUT_METHOD_SMTP ? ' hidden' : '')">
                 <x-fruit::field :label="__('SMTP Server')" layout="row">
                     <x-fruit::input id="out_server" name="out_server" :value="old('out_server', $mailbox->out_server)" maxlength="255" :required="$mailbox->out_method == App\Mailbox::OUT_METHOD_SMTP" data-smtp-required="true" />
                 </x-fruit::field>
@@ -113,7 +107,7 @@
 
             @include('mailboxes/partials/out_providers')
 
-            <x-fruit::form-section :title="__('Test')">
+            <x-fruit::form-section :title="__('Test')" :level="3">
                 <x-fruit::field :label="__('Send Test To')" :description="__('Make sure to save settings before testing.')" control-id="send_test" layout="row">
                     <div class="f-input-group">
                         <input id="send_test" type="email" class="f-input" name="send_test_to" value="{{ old('email', \App\Option::get('send_test_to', $mailbox->email)) }}" maxlength="128" aria-describedby="send_test-description" @if (!$mailbox->isOutActive()) disabled="disabled" @endif>
@@ -128,8 +122,4 @@
             <form id="oauth-disconnect" method="POST" action="{{ route('mailboxes.oauth_disconnect.submit', ['id' => $mailbox->id, 'provider' => $active_oauth_provider, 'in_out' => 'out']) }}">@csrf</form>
         @endif
     </div>
-@endsection
-
-@section('page_footer')
-    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save Settings') }}</x-fruit::button>
 @endsection

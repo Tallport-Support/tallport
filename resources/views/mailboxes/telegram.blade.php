@@ -1,14 +1,8 @@
-@extends('layouts.app')
+@extends('mailboxes/layout_page')
 
 @section('page_width', 'narrow')
 
 @section('title_full', __('Telegram').' - '.$mailbox->name)
-
-@section('main_class', 'fruit-ui')
-
-@section('sidebar')
-    @include('mailboxes/sidebar_menu')
-@endsection
 
 @section('content')
     <div class="page-content">
@@ -41,10 +35,10 @@
                 </x-fruit::alert>
             @endif
 
-            <form id="page-form" class="settings-form" method="POST" action="{{ route('mailboxes.telegram.save', ['id' => $mailbox->id]) }}">
+            <form id="page-form" class="settings-form" method="POST" action="{{ route('mailboxes.telegram.save', ['id' => $mailbox->id]) }}" x-on:change="Tallport.autoSave($el)">
                 {{ csrf_field() }}
 
-                <x-fruit::form-section :title="__('Bot')">
+                <x-fruit::form-section :title="__('Bot')" :level="3">
                     <x-fruit::field :label="__('Enabled')" layout="row">
                         <x-fruit::switch id="telegram_enabled" name="enabled" value="1" :checked="(bool) old('enabled', $settings['enabled'])" />
                     </x-fruit::field>
@@ -56,7 +50,7 @@
                     <x-fruit::checkbox name="ignore_start" value="1" id="telegram_ignore_start" :checked="(bool) old('ignore_start', $settings['ignore_start'])">{{ __('Don\'t add the /start message to conversations') }}</x-fruit::checkbox>
                 </x-fruit::form-section>
 
-                <x-fruit::form-section :title="__('Auto Reply')" :footer="__('Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.')">
+                <x-fruit::form-section :title="__('Auto Reply')" :level="3" :footer="__('Sent when a customer starts the bot (/start), in the language of their Telegram app if you add it here.')">
                     <div x-data="fruitTabs">
                         <x-fruit::tabs :aria-label="__('Language')">
                             <x-fruit::tab id="telegram_auto_reply_default_tab" aria-controls="telegram_auto_reply_default" :aria-selected="$active_language ? 'false' : 'true'">{{ __('Default') }}</x-fruit::tab>
@@ -92,8 +86,4 @@
             </form>
         </div>
     </div>
-@endsection
-
-@section('page_footer')
-    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
 @endsection

@@ -121,12 +121,21 @@ class TelegramController extends Controller
             'ignore_start' => (bool) $request->input('ignore_start'),
         ];
         if ($settings['enabled'] && $token === '') {
+            if ($request->ajax()) {
+                return response()->json(['status' => 'error', 'msg' => __('Enter the bot token from @BotFather.'), 'errors' => ['token' => [__('Enter the bot token from @BotFather.')]]], 422);
+            }
+
             return back()->withInput()->withErrors(['token' => __('Enter the bot token from @BotFather.')]);
         }
         Telegram::saveSettings($mailbox, $settings);
 
+        // Saved as it changes (in the background): Telegram is asked only when the bot or its being on
+        // changed; a form sent the usual way connects it again.
+        $reconnect = !$request->ajax() || $settings['enabled'] != $before['enabled'] || $settings['token'] !== $before['token'];
         try {
-            if ($settings['enabled']) {
+            if (!$reconnect) {
+                // Nothing to tell Telegram.
+            } elseif ($settings['enabled']) {
                 Telegram::client($mailbox)->getMe();
                 Telegram::registerWebhook($mailbox);
             } elseif ($before['enabled'] && $before['token'] !== '') {
@@ -134,13 +143,18 @@ class TelegramController extends Controller
             }
         } catch (TelegramException $e) {
             \App\Misc\ChatLog::failure('telegram', $mailbox->id, 'connection', $e);
+            if ($request->ajax()) {
+                return response()->json(['status' => 'error', 'msg' => __('Telegram').': '.$e->getMessage()]);
+            }
             \Session::flash('flash_error_floating', __('Telegram').': '.$e->getMessage());
 
             return redirect()->route('mailboxes.telegram', ['id' => $mailbox->id]);
         }
 
-        \Session::flash('flash_success_floating', __('Settings updated'));
+        if (!$request->ajax()) {
+            \Session::flash('flash_success_floating', __('Settings updated'));
+        }
 
-        return redirect()->route('mailboxes.telegram', ['id' => $mailbox->id]);
+        return $this->savedResponse(redirect()->route('mailboxes.telegram', ['id' => $mailbox->id]));
     }
 }

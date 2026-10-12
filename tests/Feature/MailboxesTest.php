@@ -216,17 +216,22 @@ class MailboxesTest extends FeatureTestCase
         $mailbox->save();
         $mailbox->users()->updateExistingPivot($manager->id, ['access' => json_encode([Mailbox::ACCESS_PERM_PERMISSIONS])]);
 
+        $current = fn ($href, $value) => '#<a (?=[^>]*href="'.preg_quote($href, '#').'")[^>]*aria-current="'.$value.'"#';
         $this->actingAs($this->admin)->get(route('mailboxes'))->assertOk()
             ->assertSee('href="'.route('mailboxes.update', ['id' => $mailbox->id]).'"', false)->assertSee('Not set up');
-        // Settings' bar: Back, the mailbox's name, Open Mailbox; no switcher, no address under it.
-        $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk()
-            ->assertSeeInOrder(['settings-toolbar', 'f-back', 'Mailboxes', '<h1>Support</h1>', 'Open Mailbox'], false)
+        // Levels: the Mailboxes, then the mailbox (Open Mailbox, its settings, a row for each further page).
+        $html = $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk()
+            ->assertSeeInOrder(['>Mailboxes</h2>', '>Support</h2>', 'Open Mailbox'], false)
             ->assertDontSee('page-nav__switcher', false)
             ->assertSeeInOrder(['Reopen Window', 'Telegram', 'Nostr', 'Connection Settings', 'Not set up', 'Permissions', '2 people', 'Auto Reply', 'On', 'Workflows', 'Saved Replies'])
-            ->assertDontSee('app-sidebar__mailbox-pages', false)
-            ->assertSee('aria-current="page"', false);
-        $this->actingAs($this->admin)->get(route('mailboxes.auto_reply', ['id' => $mailbox->id]))->assertOk()
-            ->assertSeeInOrder(['href="'.route('mailboxes.update', ['id' => $mailbox->id]).'"', 'Support', '<h1>Auto Reply</h1>'], false);
+            ->assertDontSee('app-sidebar__mailbox-pages', false)->assertDontSee('form="page-form"', false)
+            ->assertSee('Tallport.autoSave($el)', false)->getContent();
+        $this->assertMatchesRegularExpression($current(route('mailboxes.update', ['id' => $mailbox->id]), 'page'), $html);
+        // A further page: a level beside the mailbox, its row there current.
+        $html = $this->actingAs($this->admin)->get(route('mailboxes.auto_reply', ['id' => $mailbox->id]))->assertOk()
+            ->assertSeeInOrder(['>Mailboxes</h2>', '>Support</h2>', '>Auto Reply</h2>'], false)->getContent();
+        $this->assertMatchesRegularExpression($current(route('mailboxes.update', ['id' => $mailbox->id]), 'true'), $html);
+        $this->assertMatchesRegularExpression($current(route('mailboxes.auto_reply', ['id' => $mailbox->id]), 'page'), $html);
 
         // Not connected: what it can't do yet, with a way to set it up (not on that very page); the
         // tab that needs it says so in words too.
@@ -247,8 +252,31 @@ class MailboxesTest extends FeatureTestCase
         // Only its permissions: the list leads there, Back to the Mailboxes, no other rows.
         $this->actingAs($manager)->get(route('mailboxes'))->assertOk()->assertSee('href="'.route('mailboxes.permissions', ['id' => $mailbox->id]).'"', false);
         $this->actingAs($manager)->get(route('mailboxes.permissions', ['id' => $mailbox->id]))->assertOk()
-            ->assertSeeInOrder(['href="'.route('mailboxes').'"', 'Mailboxes', '<h1>Permissions</h1>'], false);
+            ->assertSeeInOrder(['>Mailboxes</h2>', '>Permissions</h2>'], false)->assertDontSee('>Support</h2>', false);
         $this->actingAs($manager)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertRedirect();
+    }
+
+    /**
+     * A mailbox's settings save as they change, in the background: what's wrong is said (on the
+     * field's row), nothing saved then; workers restart only for connection settings that changed.
+     */
+    public function testSettingsSaveAsTheyChange()
+    {
+        $mailbox = $this->createMailbox([], ['name' => 'Support']);
+
+        $this->postAjax($this->admin, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox, ['name' => 'Help']))
+            ->assertOk()->assertJson(['status' => 'success']);
+        $this->assertSame('Help', $mailbox->fresh()->name);
+        $this->postAjax($this->admin, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox->fresh(), ['email' => 'not an address']))
+            ->assertStatus(422)->assertJsonValidationErrors('email');
+        $this->assertNotSame('not an address', $mailbox->fresh()->email);
+        $this->assertNull(session('flash_success_floating'));
+
+        $connection = ['out_method' => Mailbox::OUT_METHOD_PHP_MAIL, 'out_server' => '', 'out_port' => '', 'out_encryption' => Mailbox::OUT_ENCRYPTION_NONE];
+        $this->postAjax($this->admin, route('mailboxes.connection.save', ['id' => $mailbox->id]), $connection)->assertJson(['status' => 'success']);
+        \Cache::forget('illuminate:queue:restart');
+        $this->postAjax($this->admin, route('mailboxes.connection.save', ['id' => $mailbox->id]), $connection)->assertJson(['status' => 'success']);
+        $this->assertFalse(\Cache::has('illuminate:queue:restart'), 'Nothing changed: the workers keep running.');
     }
 
     /**

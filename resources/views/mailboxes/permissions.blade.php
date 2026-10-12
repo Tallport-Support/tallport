@@ -1,23 +1,17 @@
-@extends('layouts.app')
+@extends('mailboxes/layout_page')
 
 @section('page_width', 'wide')
 
 @section('title_full', __('Mailbox Permissions').' - '.$mailbox->name)
 
-@section('main_class', 'fruit-ui')
-
-@section('sidebar')
-    @include('mailboxes/sidebar_menu')
-@endsection
-
 @section('content')
     <div class="page-content">
         @include('partials/flash_messages')
 
-        <form id="page-form" method="POST" action="" class="settings-form settings-form--wide">
+        <form id="page-form" method="POST" action="" class="settings-form settings-form--wide" x-on:change="Tallport.autoSave($el)">
             {{ csrf_field() }}
 
-            <x-fruit::form-section :title="__('Users')" :footer="__('Administrators have access to all mailboxes and are not listed here.')">
+            <x-fruit::form-section :title="__('Users')" :level="3" :footer="__('Administrators have access to all mailboxes and are not listed here.')">
                 <x-fruit::fieldset id="permissions-fields">
                     <legend>{{ __('Selected Users have access to this mailbox:') }}</legend>
                     @foreach ($users as $perm_user)
@@ -32,7 +26,7 @@
 
             @action('mailbox.permissions.before_access_settings', $mailbox, $mailbox_users, $managers)
 
-            <x-fruit::form-section :title="__('Access Settings')">
+            <x-fruit::form-section :title="__('Access Settings')" :level="3">
                 <div class="f-table__scroll">
                     <x-fruit::table class="mailbox-access-table">
                         <thead>
@@ -72,8 +66,4 @@
 
         </form>
     </div>
-@endsection
-
-@section('page_footer')
-    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
 @endsection
