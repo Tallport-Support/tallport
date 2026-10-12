@@ -57,7 +57,7 @@
                 <x-slot:badge class="f-badge--warning">{{ $settings_problems }}</x-slot:badge>
             @endif
         </x-fruit::sidebar-item>
-        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('secure/logs')" :href="route('logs')" :current="str_starts_with((string) $settings_route, 'logs')"><x-slot:icon><x-icon.file-text class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Logs') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('secure/logs')" :href="route('logs')" :aria-current="str_starts_with((string) $settings_route, 'logs') ? 'true' : null"><x-slot:icon><x-icon.file-text class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Logs') }}</x-fruit::sidebar-item>
     @endif
     <ul class="app-sidebar__module-items">@action('menu.manage.append')</ul>
 @endif

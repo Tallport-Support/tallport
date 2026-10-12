@@ -77,6 +77,11 @@ class ChannelLogsTest extends FeatureTestCase
     public function testOutgoingTelegramLog()
     {
         $this->actingAs($this->admin)->get(route('logs'))->assertOk()->assertSee(route('logs.telegram'));
+        // The Logs, then the open log beside them, its row current.
+        $html = $this->get(route('logs.telegram'))->assertOk()
+            ->assertSeeInOrder(['>Logs</h2>', '>'.e(\App\ActivityLog::getLogTitle(\App\ActivityLog::NAME_OUT_TELEGRAM)).'</h2>'], false)->getContent();
+        $this->assertMatchesRegularExpression('#<a (?=[^>]*href="'.preg_quote(route('logs.telegram'), '#').'")[^>]*aria-current="page"#', $html);
+        $this->assertMatchesRegularExpression('#<a (?=[^>]*href="'.preg_quote(route('logs'), '#').'")[^>]*aria-current="true"#', $html, 'The sidebar leads there.');
 
         $conversation = $this->conversation($this->mailbox);
         $conversation->customer->setSocialProfiles([['type' => Customer::SOCIAL_TYPE_TELEGRAM, 'value' => 'casey_lee']]);
@@ -91,14 +96,14 @@ class ChannelLogsTest extends FeatureTestCase
             ->assertSeeInOrder(['Other Desk', 'Failed, Will Retry', 'Bad Gateway', 'Bot Desk', 'Casey Lee', '@casey_lee', 'Failed', 'END', 'Bot Desk', 'Succeeded', '71, 72'])
             ->assertSee(route('conversations.view', ['id' => $conversation->id]), false)
             ->assertSee('channel-delivery-', false)
-            ->assertSee('value="'.route('logs.telegram').'"', false);
+            ->assertSee('href="'.route('logs.telegram').'"', false);
 
         $this->get(route('logs.telegram', ['outcome' => 'failed']))->assertOk()->assertSee('Bad Gateway')->assertSee('blocked')->assertDontSee('71, 72');
         $this->get(route('logs.telegram', ['mailbox_id' => $this->other_mailbox->id]))->assertOk()->assertSee('Bad Gateway')->assertDontSee('blocked');
         $this->get(route('logs.telegram', ['mailbox_id' => 999999]))->assertOk()->assertSee('This log is empty.');
 
         // In the Log menu of the other logs, under Outgoing Emails.
-        $this->get(route('logs'))->assertOk()->assertSeeInOrder(['Outgoing Emails', 'value="'.route('logs.telegram').'"'], false);
+        $this->get(route('logs'))->assertOk()->assertSeeInOrder(['Outgoing Emails', 'href="'.route('logs.telegram').'"'], false);
         $this->assertSame(['out_emails', 'out_telegram'], array_slice(ActivityLog::menuNames(), 0, 2));
     }
 
@@ -128,7 +133,7 @@ class ChannelLogsTest extends FeatureTestCase
         $this->get(route('logs.nostr', ['outcome' => 'failed']))->assertOk()->assertSee('no relays')->assertDontSee('1 of 2');
         $this->get(route('logs.nostr', ['mailbox_id' => $this->mailbox->id]))->assertOk()->assertSee('1 of 2')->assertDontSee('no Nostr public key');
 
-        $this->get(route('logs.ai'))->assertOk()->assertSee('value="'.route('logs.nostr').'"', false);
+        $this->get(route('logs.ai'))->assertOk()->assertSee('href="'.route('logs.nostr').'"', false);
     }
 
     /**

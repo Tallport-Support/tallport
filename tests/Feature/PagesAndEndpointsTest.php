@@ -50,6 +50,9 @@ class PagesAndEndpointsTest extends FeatureTestCase
             $this->actingAs($this->admin)->get($page)->assertStatus(200);
         }
         $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/'.$closed->id)->assertSee('Listed');
+        // Status and Modules: each a level beside the settings sidebar.
+        $this->actingAs($this->admin)->get('/system/status')->assertSee('f-drilldown', false)->assertSee('>Status</h2>', false);
+        $this->actingAs($this->admin)->get('/modules/list')->assertSee('f-drilldown', false)->assertSee('>Modules</h2>', false);
     }
 
     public function testGuestPages()

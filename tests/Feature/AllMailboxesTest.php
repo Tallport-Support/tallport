@@ -225,7 +225,7 @@ class AllMailboxesTest extends FeatureTestCase
         $this->assertStringContainsString('href="'.route('workflows').'"', $html);
         $this->assertMatchesRegularExpression('#href="'.preg_quote(url('/mailbox/saved-replies'), '#').'/\d+"#', $html);
         $this->assertStringNotContainsString('app-sidebar__back', $this->get(route('workflows'))->getContent());
-        $this->assertMatchesRegularExpression('#<a aria-current="page" class="f-sidebar__item" wire:navigate="" data-search="[^"]*" href="'.preg_quote(route('logs'), '#').'">#', $this->get(route('logs'))->getContent());
+        $this->assertMatchesRegularExpression('#<a (?=[^>]*href="'.preg_quote(route('logs'), '#').'")[^>]*aria-current="true"#', $this->get(route('logs'))->getContent());
         // An agent without the permission sees neither.
         $this->assertStringNotContainsString('href="'.route('workflows').'"', $this->actingAs($this->agent)->get(route('mailboxes.view', ['id' => $this->support->id]))->getContent());
 

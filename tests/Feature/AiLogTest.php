@@ -356,7 +356,7 @@ class AiLogTest extends FeatureTestCase
             ->assertSee(route('conversations.view', ['id' => $conversation->id]), false)
             ->assertSee('ai-call-', false)
             ->assertSee('END')
-            ->assertSee('value="'.route('logs.ai').'"', false);
+            ->assertSee('href="'.route('logs.ai').'"', false);
 
         $this->get(route('logs.ai', ['outcome' => 'errors']))->assertOk()->assertSee('claude-y')->assertDontSee('1,200 / 34');
         $this->get(route('logs.ai', ['feature' => Usage::FEATURE_SUMMARY]))->assertOk()->assertSee('1,200 / 34')->assertDontSee('Overloaded');
@@ -364,7 +364,7 @@ class AiLogTest extends FeatureTestCase
         $this->get(route('logs.ai', ['model' => 'none']))->assertOk()->assertSee('This log is empty.');
 
         // The other logs offer it too.
-        $this->get(route('logs'))->assertOk()->assertSee('value="'.route('logs.ai').'"', false);
+        $this->get(route('logs'))->assertOk()->assertSee('href="'.route('logs.ai').'"', false);
     }
 
     /**

@@ -63,7 +63,8 @@ class SecureController extends Controller
         if (!empty($request->name)) {
             $activities = ActivityLog::inLog($request->name)->orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate($page_size);
             $name = $request->name;
-        } elseif (count($names)) {
+        } else {
+            // The first log (a level beside the Logs: one is always open).
             $name = ActivityLog::NAME_OUT_EMAILS;
             // $activities = ActivityLog::inLog($names[0])->orderBy('created_at', 'desc')->paginate($page_size);
             // $name = $names[0];

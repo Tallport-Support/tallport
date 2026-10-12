@@ -1,12 +1,7 @@
-@extends('layouts.app')
-@section('page_width', 'wide')
+@extends('secure/layout_log')
+
+@section('log_name', 'out_'.$channel)
 @section('title_full', __('Logs').' - '.ucfirst($channel))
-@section('main_class', 'fruit-ui')
-@section('sidebar')
-    <x-page-nav :label="__('Logs')">
-        <x-slot:title><h1>{{ __('Logs') }}</h1></x-slot:title>
-    </x-page-nav>
-@endsection
 @section('content')
 <div class="page-content logs-page channel-log">
     @section('logs_bar_filters')

@@ -1,12 +1,8 @@
-@extends('layouts.app')
+@extends('layouts/level')
 
 @section('title', __('Modules'))
 
-@section('main_class', 'fruit-ui')
-
-@section('sidebar')
-    @include('modules/sidebar_menu')
-@endsection
+@section('page_width', 'medium')
 
 @section('content')
 <div class="page-content" x-data="tallportModules">
