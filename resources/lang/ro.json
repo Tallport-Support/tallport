@@ -1811,5 +1811,9 @@
     "You can't remove yourself.": "Nu vă puteți elimina pe dvs. înșivă.",
     "Your Profile": "Profilul Dvs.",
     "Password, two-factor, notifications": "Parolă, doi factori, notificări",
-    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Ce setați pentru dvs. se află la Profil și Notificări, ca pentru toată lumea."
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Ce setați pentru dvs. se află la Profil și Notificări, ca pentru toată lumea.",
+    "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "Linkurile GitHub sunt citite din depozit. Un link către un dosar sau depozit adaugă fiecare fișier Markdown din el și menține lista la zi.",
+    "GitHub Access Token": "Token de Acces GitHub",
+    "For private repositories: a fine-grained token with read-only access to their contents.": "Pentru depozitele private: un token cu permisiuni detaliate și acces doar pentru citire la conținutul lor.",
+    "Delete this folder and its pages from the documentation?": "Ștergeți acest dosar și paginile sale din documentație?"
 }

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Ai\Document;
 use App\Ai\DocumentApiKey;
 use App\Ai\Documents;
+use App\Ai\GitHub;
 use App\Ai\Usage;
 use App\Jobs\AiIndexDocument;
 use App\Option;
@@ -58,11 +59,16 @@ class AiDocumentsTest extends FeatureTestCase
     protected function addDocument($markdown = "# Android setup\n\nOpen the app on Android.")
     {
         $this->fakePages(['https://93.184.215.14/en/android.md' => Http::response($markdown)]);
-        $this->postForm($this->admin, '/ai-assistant/documents', [
-            'action' => 'add', 'mailbox_id' => $this->mailbox->id, 'urls' => "https://93.184.215.14/en/android\n",
-        ])->assertRedirect(route('ai.documents'));
+        $this->postForm($this->admin, $this->pageUrl(), [
+            'action' => 'add', 'urls' => "https://93.184.215.14/en/android\n",
+        ])->assertRedirect($this->pageUrl());
 
         return Document::where('mailbox_id', $this->mailbox->id)->first();
+    }
+
+    protected function pageUrl()
+    {
+        return route('mailboxes.documentation', ['id' => $this->mailbox->id]);
     }
 
     protected function api($token, array $data)
@@ -194,11 +200,21 @@ class AiDocumentsTest extends FeatureTestCase
 
     public function testPageRendersForAdminsOnly()
     {
-        // A level beside AI, its row there current.
-        $this->actingAs($this->admin)->get('/ai-assistant/documents')->assertStatus(200)->assertSee('Documentation API')
-            ->assertSeeInOrder(['>AI</h2>', 'Manage Documentation', '>Documentation</h2>'], false);
-        $this->actingAs($this->createUser())->get('/ai-assistant/documents')->assertStatus(403);
-        $this->actingAs($this->admin)->get('/app-settings/ai')->assertSee(route('ai.documents'))->assertSee('0 pages')->assertDontSee('>Documentation</h2>', false);
+        // A level beside the mailbox, its row there current; Settings › AI doesn't list pages.
+        $this->actingAs($this->admin)->get($this->pageUrl())->assertStatus(200)->assertSee('Documentation API')
+            ->assertSeeInOrder(['>'.$this->mailbox->name.'</h2>', $this->pageUrl(), '0 pages', '>Documentation</h2>'], false);
+        $this->actingAs($this->createUser())->get($this->pageUrl())->assertStatus(403);
+        $this->actingAs($this->admin)->get('/app-settings/ai')->assertDontSee($this->pageUrl())->assertDontSee('Manage Documentation');
+    }
+
+    public function testDocumentsOfAnotherMailboxCannotBeChanged()
+    {
+        $document = $this->addDocument();
+        $other = $this->createMailbox();
+
+        $this->postForm($this->admin, route('mailboxes.documentation.action', ['id' => $other->id]), ['action' => 'delete', 'document_id' => $document->id])->assertStatus(404);
+        $this->assertNotNull($document->fresh());
+        $this->actingAs($this->admin)->get(route('mailboxes.documentation', ['id' => $other->id]))->assertDontSee('93.184.215.14/en/android');
     }
 
     public function testAddedPageIsFetchedAndIndexed()
@@ -211,13 +227,13 @@ class AiDocumentsTest extends FeatureTestCase
         $this->assertSame(1, $document->chunks()->count());
         $this->assertEquals([1, 0, 0.1], $document->chunks()->first()->embedding);
 
-        $this->actingAs($this->admin)->get('/ai-assistant/documents')->assertSee('Android setup');
+        $this->actingAs($this->admin)->get($this->pageUrl())->assertSee('Android setup');
     }
 
     public function testOnlyHttpUrlsCanBeAdded()
     {
-        $this->postForm($this->admin, '/ai-assistant/documents', [
-            'action' => 'add', 'mailbox_id' => $this->mailbox->id, 'urls' => "javascript:alert(1)\nfile:///etc/passwd",
+        $this->postForm($this->admin, $this->pageUrl(), [
+            'action' => 'add', 'urls' => "javascript:alert(1)\nfile:///etc/passwd",
         ])->assertSessionHasErrors('urls');
 
         $this->assertSame(0, Document::count());
@@ -226,35 +242,35 @@ class AiDocumentsTest extends FeatureTestCase
     public function testFailedFetchIsShown()
     {
         $this->fakePages([]);
-        $this->postForm($this->admin, '/ai-assistant/documents', [
-            'action' => 'add', 'mailbox_id' => $this->mailbox->id, 'urls' => 'https://93.184.215.14/en/missing',
+        $this->postForm($this->admin, $this->pageUrl(), [
+            'action' => 'add', 'urls' => 'https://93.184.215.14/en/missing',
         ]);
 
         $document = Document::first();
         $this->assertSame(Document::STATUS_FAILED, $document->status);
         $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $document->last_error);
-        $this->actingAs($this->admin)->get('/ai-assistant/documents')->assertSee($document->last_error)->assertDontSee('HTTP 404');
+        $this->actingAs($this->admin)->get($this->pageUrl())->assertSee($document->last_error)->assertDontSee('HTTP 404');
     }
 
     public function testDisableIndexAndDelete()
     {
         $document = $this->addDocument();
 
-        $this->postForm($this->admin, '/ai-assistant/documents', ['action' => 'toggle', 'document_id' => $document->id]);
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'toggle', 'document_id' => $document->id]);
         $this->assertFalse($document->fresh()->enabled);
-        $this->postForm($this->admin, '/ai-assistant/documents', ['action' => 'toggle', 'document_id' => $document->id]);
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'toggle', 'document_id' => $document->id]);
         $this->assertTrue($document->fresh()->enabled);
 
         // Changed page: indexed again.
         $this->fakePages(['https://93.184.215.14/en/android.md' => Http::response("# Android\n\nInvoices on Android.")]);
-        $this->postForm($this->admin, '/ai-assistant/documents', ['action' => 'index'])->assertRedirect(route('ai.documents'));
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'index'])->assertRedirect($this->pageUrl());
         $this->assertEquals([1, 1, 0.1], $document->chunks()->first()->embedding);
 
-        $this->postForm($this->admin, '/ai-assistant/documents', ['action' => 'delete', 'document_id' => $document->id]);
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'delete', 'document_id' => $document->id]);
         $this->assertNull(Document::find($document->id));
         $this->assertSame(0, \App\Ai\DocumentChunk::count());
 
-        $this->postForm($this->admin, '/ai-assistant/documents', ['action' => 'nonsense'])->assertStatus(404);
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'nonsense'])->assertStatus(404);
     }
 
     public function testSearchFindsTheMailboxesBestChunks()
@@ -277,14 +293,14 @@ class AiDocumentsTest extends FeatureTestCase
 
     public function testApiKeys()
     {
-        $this->postForm($this->admin, '/ai-assistant/documents', ['action' => 'issue_key', 'mailbox_id' => $this->mailbox->id])
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'issue_key'])
             ->assertSessionHas('ai_new_key');
         $token = session('ai_new_key')['key'];
         $this->assertStringStartsWith('fsai_', $token);
         $this->assertSame($this->mailbox->id, DocumentApiKey::findByToken($token)->mailbox_id);
         $this->assertNotSame($token, DocumentApiKey::first()->key_hash);
 
-        $this->postForm($this->admin, '/ai-assistant/documents', ['action' => 'revoke_key', 'mailbox_id' => $this->mailbox->id]);
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'revoke_key']);
         $this->assertNull(DocumentApiKey::findByToken($token));
     }
 
@@ -407,6 +423,110 @@ class AiDocumentsTest extends FeatureTestCase
         Documents::index($document);
         $this->assertSame(Documents::embeddingFingerprint(), $document->fresh()->embedding_fingerprint);
         $this->assertNotEmpty(Documents::search($this->mailbox->id, 'Android'));
+    }
+
+    // GitHub.
+
+    public function testGitHubLinks()
+    {
+        $this->assertSame(['owner' => 'acme', 'repo' => 'docs', 'type' => 'file', 'ref' => 'main', 'path' => 'guides/setup.md'], GitHub::parse('https://github.com/acme/docs/blob/main/guides/setup.md'));
+        $this->assertSame(['owner' => 'acme', 'repo' => 'docs', 'type' => 'folder', 'ref' => 'main', 'path' => 'guides'], GitHub::parse('https://github.com/acme/docs/tree/main/guides/'));
+        $this->assertSame(['owner' => 'acme', 'repo' => 'docs', 'type' => 'folder', 'ref' => null, 'path' => ''], GitHub::parse('https://github.com/acme/docs'));
+        $this->assertSame(['owner' => 'acme', 'repo' => 'docs', 'type' => 'file', 'ref' => 'v2', 'path' => 'a b.md'], GitHub::parse('https://raw.githubusercontent.com/acme/docs/v2/a%20b.md'));
+        $this->assertNull(GitHub::parse('https://github.com/acme/docs/blob/main'));
+        $this->assertNull(GitHub::parse('https://docs.example.com/en/setup'));
+        // The file is the link: .md is kept, no other languages are guessed.
+        $this->assertSame('https://github.com/acme/docs/blob/main/en/setup.md', Document::normalizeSourceUrl('https://github.com/acme/docs/blob/main/en/setup.md'));
+        $this->assertSame([], Document::localizedUrlsFor('https://github.com/acme/docs/blob/main/en/setup.md'));
+    }
+
+    /**
+     * GitHub answers for a repository: its details, a tree and files (path => Markdown).
+     */
+    protected function fakeGitHub(array $files, $private = true)
+    {
+        $tree = array_map(fn ($path) => ['path' => $path, 'type' => 'blob'], array_keys($files));
+        $tree[] = ['path' => 'guides', 'type' => 'tree'];
+        $tree[] = ['path' => 'guides/logo.png', 'type' => 'blob'];
+        $pages = ['https://api.github.com/repos/acme/docs/git/trees/main?recursive=1' => Http::response(['tree' => $tree, 'truncated' => false])];
+        foreach ($files as $path => $markdown) {
+            $pages['https://api.github.com/repos/acme/docs/contents/'.$path.'?ref=main'] = Http::response($markdown);
+        }
+        $pages['https://api.github.com/repos/acme/docs'] = Http::response(['default_branch' => 'main', 'private' => $private]);
+        $this->fakePages($pages);
+    }
+
+    public function testPrivateGitHubFileIsReadWithTheMailboxToken()
+    {
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'github_token', 'github_token' => 'github_pat_secret'])->assertRedirect($this->pageUrl());
+        $this->assertSame('github_pat_secret', GitHub::token($this->mailbox->id));
+        $this->assertStringNotContainsString('github_pat_secret', json_encode(Option::get('aiassistant.github_token')));
+        $this->actingAs($this->admin)->get($this->pageUrl())->assertDontSee('github_pat_secret');
+        // The masked token shown keeps it.
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'github_token', 'github_token' => '********']);
+        $this->assertSame('github_pat_secret', GitHub::token($this->mailbox->id));
+
+        $this->fakeGitHub(['guides/setup.md' => "# Setup\n\nOpen the app on Android."]);
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'add', 'urls' => 'https://github.com/acme/docs/blob/main/guides/setup.md']);
+
+        $document = Document::first();
+        $this->assertSame(Document::STATUS_INDEXED, $document->status);
+        $this->assertSame('Setup', $document->title);
+        $this->assertSame(1, $document->chunks()->count());
+        // Never linked for customers.
+        $this->assertTrue($document->isPrivate());
+        $this->assertSame('', $document->localizedUrl('en'));
+        Http::assertSent(fn ($request) => $request->hasHeader('Authorization', 'Bearer github_pat_secret'));
+        Http::assertNotSent(fn ($request) => $request->hasHeader('Authorization') && !str_starts_with($request->url(), 'https://api.github.com/'));
+
+        // Without a token, nothing is sent with the requests; another mailbox has none.
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'github_token', 'github_token' => '']);
+        $this->assertSame('', GitHub::token($this->mailbox->id));
+    }
+
+    public function testGitHubFolderAddsItsMarkdownFilesAndKeepsThemInStep()
+    {
+        $this->fakeGitHub([
+            'guides/android.md'       => "# Android\n\nOpen the app on Android.",
+            'guides/billing/invoices.mdx' => "# Invoices\n\nInvoices are monthly.",
+            'README.md'               => '# Not in the folder',
+        ], false);
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'add', 'urls' => 'https://github.com/acme/docs/tree/main/guides']);
+
+        $folder = Document::where('source_type', Document::SOURCE_TYPE_FOLDER)->first();
+        $this->assertSame('docs/guides', $folder->title);
+        $this->assertSame(Document::STATUS_INDEXED, $folder->status);
+        $this->assertSame(['Android', 'Invoices'], $folder->files()->sortBy('title')->pluck('title')->values()->all());
+        $this->assertSame([Document::STATUS_INDEXED], $folder->files()->pluck('status')->unique()->values()->all());
+        $this->assertFalse($folder->files()->first()->isPrivate());
+        $this->assertSame(0, $folder->chunks()->count());
+        $this->actingAs($this->admin)->get($this->pageUrl())->assertSeeInOrder(['docs/guides', '2 pages', 'Android', 'Invoices']);
+        $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $this->mailbox->id]))->assertSee('2 pages');
+
+        // A file disabled stays so; one gone from the folder is deleted.
+        $android = $folder->files()->firstWhere('title', 'Android');
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'toggle', 'document_id' => $android->id]);
+        $this->fakeGitHub(['guides/android.md' => "# Android\n\nOpen the app on Android."], false);
+        $this->artisan('tallport:ai-index-documents', ['--fetch' => true])->assertExitCode(0);
+        $this->assertSame(['Android'], $folder->files()->pluck('title')->all());
+        $this->assertFalse($android->fresh()->enabled);
+        // Embedding changes don't queue the folder itself.
+        Documents::queueStale();
+        $this->assertSame(Document::STATUS_INDEXED, $folder->fresh()->status);
+
+        // Deleted with its files.
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'delete', 'document_id' => $folder->id]);
+        $this->assertSame(0, Document::count());
+    }
+
+    public function testFailedGitHubFolderIsShown()
+    {
+        $this->fakePages(['https://api.github.com/repos/acme/docs' => Http::response(['message' => 'Not Found'], 404)]);
+        $this->postForm($this->admin, $this->pageUrl(), ['action' => 'add', 'urls' => 'https://github.com/acme/docs']);
+
+        $folder = Document::first();
+        $this->assertSame(Document::STATUS_FAILED, $folder->status);
+        $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $folder->last_error);
     }
 
     // Command.

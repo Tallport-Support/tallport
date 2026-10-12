@@ -1903,5 +1903,9 @@
     "You can't remove yourself.": "No us podeu eliminar a vós mateix.",
     "Your Profile": "El Vostre Perfil",
     "Password, two-factor, notifications": "Contrasenya, dos factors, notificacions",
-    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "El que establiu per a vós mateix és a Perfil i Notificacions, com per a tothom."
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "El que establiu per a vós mateix és a Perfil i Notificacions, com per a tothom.",
+    "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "Els enllaços de GitHub es llegeixen del repositori. Un enllaç a una carpeta o a un repositori hi afegeix cada fitxer Markdown que conté i manté la llista al dia.",
+    "GitHub Access Token": "Testimoni d'Accés de GitHub",
+    "For private repositories: a fine-grained token with read-only access to their contents.": "Per a repositoris privats: un testimoni detallat amb accés només de lectura al seu contingut.",
+    "Delete this folder and its pages from the documentation?": "Voleu suprimir aquesta carpeta i les seves pàgines de la documentació?"
 }

@@ -44,8 +44,20 @@ class AiIndexDocuments extends Command
         }
 
         $failed = false;
-        foreach ($documents->get() as $document) {
+        foreach ($documents->pluck('id') as $document_id) {
+            // Gone from its GitHub folder by now.
+            $document = Document::find($document_id);
+            if (!$document) {
+                continue;
+            }
             try {
+                // A folder's files are documents of their own.
+                if ($document->isFolder()) {
+                    if ($this->option('fetch')) {
+                        Documents::syncFolder($document);
+                    }
+                    continue;
+                }
                 if ($this->option('fetch') && $document->source_type == Document::SOURCE_TYPE_URL) {
                     try {
                         Documents::refetch($document);

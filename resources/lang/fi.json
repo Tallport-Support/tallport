@@ -1827,5 +1827,9 @@
     "You can't remove yourself.": "Et voi poistaa itseäsi.",
     "Your Profile": "Profiilisi",
     "Password, two-factor, notifications": "Salasana, kaksivaiheinen tunnistus, ilmoitukset",
-    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Itsellesi asettamasi asiat ovat Profiilissa ja Ilmoituksissa, kuten kaikilla."
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Itsellesi asettamasi asiat ovat Profiilissa ja Ilmoituksissa, kuten kaikilla.",
+    "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "GitHub-linkit luetaan repositoriosta. Linkki kansioon tai repositorioon lisää jokaisen sen Markdown-tiedoston ja pitää luettelon ajan tasalla.",
+    "GitHub Access Token": "GitHub-Käyttötunnus",
+    "For private repositories: a fine-grained token with read-only access to their contents.": "Yksityisille repositorioille: tarkasti rajattu tunnus, jolla on vain lukuoikeus niiden sisältöön.",
+    "Delete this folder and its pages from the documentation?": "Poistetaanko tämä kansio ja sen sivut dokumentaatiosta?"
 }

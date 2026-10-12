@@ -1811,5 +1811,9 @@
     "You can't remove yourself.": "Nemůžete odebrat sami sebe.",
     "Your Profile": "Váš Profil",
     "Password, two-factor, notifications": "Heslo, dvoufázové ověření, oznámení",
-    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Co si nastavujete sami, najdete v Profilu a Oznámeních, stejně jako všichni ostatní."
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Co si nastavujete sami, najdete v Profilu a Oznámeních, stejně jako všichni ostatní.",
+    "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "Odkazy na GitHub se načítají z repozitáře. Odkaz na složku nebo repozitář přidá každý soubor Markdown v něm a udržuje seznam aktuální.",
+    "GitHub Access Token": "Přístupový Token GitHub",
+    "For private repositories: a fine-grained token with read-only access to their contents.": "Pro soukromé repozitáře: jemně nastavený token s přístupem k jejich obsahu jen pro čtení.",
+    "Delete this folder and its pages from the documentation?": "Smazat tuto složku a její stránky z dokumentace?"
 }

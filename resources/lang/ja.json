@@ -1811,5 +1811,9 @@
     "You can't remove yourself.": "自分自身は削除できません。",
     "Your Profile": "あなたのプロフィール",
     "Password, two-factor, notifications": "パスワード、2 要素認証、通知",
-    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "自分用の設定は、ほかの人と同じく、プロフィールと通知にあります。"
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "自分用の設定は、ほかの人と同じく、プロフィールと通知にあります。",
+    "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "GitHub のリンクはリポジトリから読み込まれます。フォルダやリポジトリへのリンクは、その中の各 Markdown ファイルを追加し、一覧を最新の状態に保ちます。",
+    "GitHub Access Token": "GitHub アクセストークン",
+    "For private repositories: a fine-grained token with read-only access to their contents.": "プライベートリポジトリ用：内容への読み取り専用アクセス権を持つ Fine-grained トークン。",
+    "Delete this folder and its pages from the documentation?": "このフォルダとそのページをドキュメントから削除しますか？"
 }

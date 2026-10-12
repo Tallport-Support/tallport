@@ -37,6 +37,11 @@ class AiDocumentsControllerTest extends FeatureTestCase
         $this->token = DocumentApiKey::issue($this->mailbox->id);
     }
 
+    protected function pageUrl()
+    {
+        return route('mailboxes.documentation', ['id' => $this->mailbox->id]);
+    }
+
     protected function api(array $data)
     {
         return $this->withHeaders(['Authorization' => 'Bearer '.$this->token])->postJson('/ai-assistant/api/documents', $data);
@@ -64,9 +69,9 @@ class AiDocumentsControllerTest extends FeatureTestCase
         Bus::fake([AiIndexDocument::class]);
 
         \Session::start();
-        $this->actingAs($this->admin)->post('/ai-assistant/documents', [
+        $this->actingAs($this->admin)->post($this->pageUrl(), [
             '_token' => csrf_token(), 'action' => 'index', 'document_id' => $second->id, 'force' => 1,
-        ])->assertRedirect(route('ai.documents'));
+        ])->assertRedirect($this->pageUrl());
 
         Bus::assertDispatchedTimes(AiIndexDocument::class, 1);
         Bus::assertDispatched(AiIndexDocument::class, function ($job) use ($second) {

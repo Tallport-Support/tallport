@@ -16,11 +16,8 @@
             @endif
         </x-fruit::page>
     </x-fruit::drilldown-column>
-    {{-- A level beside the section: a webhook (API & Webhooks), the documentation (AI). --}}
+    {{-- A level beside the section: a webhook (API & Webhooks). --}}
     @isset($webhook)
         @include('settings/api_webhook')
-    @endisset
-    @isset($documents)
-        @include('settings/ai_documents')
     @endisset
 @endsection

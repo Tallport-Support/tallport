@@ -12,6 +12,8 @@ class Document extends Model
 {
     const SOURCE_TYPE_URL = 'url';
     const SOURCE_TYPE_API = 'api';
+    // A GitHub folder: its Markdown files are documents of their own (metadata folder_id).
+    const SOURCE_TYPE_FOLDER = 'folder';
 
     const STATUS_PENDING = 'pending';
     const STATUS_INDEXED = 'indexed';
@@ -47,6 +49,21 @@ class Document extends Model
     }
 
     /**
+     * A GitHub folder's files (metadata is text, not JSON, in every database).
+     */
+    public function files()
+    {
+        return Document::where('mailbox_id', $this->mailbox_id)->where('source_type', self::SOURCE_TYPE_URL)
+            ->where('metadata', 'like', '%"folder_id":%')->get()
+            ->filter(fn ($document) => ($document->metadata['folder_id'] ?? null) == $this->id)->values();
+    }
+
+    public function isFolder()
+    {
+        return $this->source_type == self::SOURCE_TYPE_FOLDER;
+    }
+
+    /**
      * A changed body is a new generation, even if it later matches an older one.
      */
     public function setContent($content)
@@ -67,6 +84,11 @@ class Document extends Model
 
     public function isPrivate()
     {
+        // From a private GitHub repository.
+        if (!empty($this->metadata['private'])) {
+            return true;
+        }
+
         return str_starts_with((string) $this->source_url, 'api://') || str_starts_with((string) $this->source_url, 'kb://');
     }
 
@@ -85,6 +107,11 @@ class Document extends Model
 
     public static function normalizeSourceUrl($url)
     {
+        // A GitHub link names the file itself.
+        if (GitHub::parse($url)) {
+            return rtrim(trim($url), '/');
+        }
+
         return rtrim(preg_replace('/\.md$/i', '', trim($url)), '/');
     }
 
@@ -104,7 +131,7 @@ class Document extends Model
     public static function localizedUrlsFor($url)
     {
         $url = self::normalizeSourceUrl($url);
-        if (!preg_match('#/en(/|$)#', $url)) {
+        if (GitHub::parse($url) || !preg_match('#/en(/|$)#', $url)) {
             return [];
         }
         $urls = [];

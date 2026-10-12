@@ -1811,5 +1811,9 @@
     "You can't remove yourself.": "Ne možete ukloniti sami sebe.",
     "Your Profile": "Vaš Profil",
     "Password, two-factor, notifications": "Lozinka, dvofaktorska provjera, obavijesti",
-    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Ono što postavljate za sebe nalazi se pod Profilom i Obavijestima, kao i za sve ostale."
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Ono što postavljate za sebe nalazi se pod Profilom i Obavijestima, kao i za sve ostale.",
+    "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "GitHub poveznice čitaju se iz repozitorija. Poveznica na mapu ili repozitorij dodaje svaku Markdown datoteku u njemu i održava popis ažurnim.",
+    "GitHub Access Token": "GitHub Pristupni Token",
+    "For private repositories: a fine-grained token with read-only access to their contents.": "Za privatne repozitorije: precizno ograničen token s pristupom njihovom sadržaju samo za čitanje.",
+    "Delete this folder and its pages from the documentation?": "Izbrisati ovu mapu i njezine stranice iz dokumentacije?"
 }

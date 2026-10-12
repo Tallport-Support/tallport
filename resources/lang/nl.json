@@ -1811,5 +1811,9 @@
     "You can't remove yourself.": "U kunt uzelf niet verwijderen.",
     "Your Profile": "Uw Profiel",
     "Password, two-factor, notifications": "Wachtwoord, tweestapsverificatie, meldingen",
-    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Wat u voor uzelf instelt, staat onder Profiel en Meldingen, net als voor iedereen."
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Wat u voor uzelf instelt, staat onder Profiel en Meldingen, net als voor iedereen.",
+    "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "GitHub-links worden uit de repository gelezen. Een link naar een map of repository voegt elk Markdown-bestand daarin toe en houdt de lijst bij.",
+    "GitHub Access Token": "GitHub-Toegangstoken",
+    "For private repositories: a fine-grained token with read-only access to their contents.": "Voor privérepository's: een fine-grained token met alleen-lezen-toegang tot hun inhoud.",
+    "Delete this folder and its pages from the documentation?": "Deze map en de pagina's ervan uit de documentatie verwijderen?"
 }

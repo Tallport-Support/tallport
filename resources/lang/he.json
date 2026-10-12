@@ -1811,5 +1811,9 @@
     "You can't remove yourself.": "אי אפשר להסיר את עצמך.",
     "Your Profile": "הפרופיל שלך",
     "Password, two-factor, notifications": "סיסמה, אימות דו-שלבי, התראות",
-    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "מה שמגדירים לעצמך נמצא בפרופיל ובהתראות, כמו אצל כולם."
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "מה שמגדירים לעצמך נמצא בפרופיל ובהתראות, כמו אצל כולם.",
+    "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "קישורי GitHub נקראים מהמאגר. קישור לתיקייה או למאגר מוסיף כל קובץ Markdown שבו ושומר על הרשימה מעודכנת.",
+    "GitHub Access Token": "אסימון גישה ל-GitHub",
+    "For private repositories: a fine-grained token with read-only access to their contents.": "למאגרים פרטיים: אסימון מפורט עם גישת קריאה בלבד לתוכן שלהם.",
+    "Delete this folder and its pages from the documentation?": "למחוק את התיקייה הזו ואת הדפים שלה מהתיעוד?"
 }

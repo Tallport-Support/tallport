@@ -1807,5 +1807,9 @@
     "You can't remove yourself.": "Sie können sich nicht selbst entfernen.",
     "Your Profile": "Ihr Profil",
     "Password, two-factor, notifications": "Passwort, Zwei-Faktor, Benachrichtigungen",
-    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Was Sie für sich selbst einstellen, finden Sie wie alle anderen unter Profil und Benachrichtigungen."
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Was Sie für sich selbst einstellen, finden Sie wie alle anderen unter Profil und Benachrichtigungen.",
+    "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "GitHub-Links werden aus dem Repository gelesen. Ein Link auf einen Ordner oder ein Repository fügt jede Markdown-Datei darin hinzu und hält die Liste aktuell.",
+    "GitHub Access Token": "GitHub-Zugriffstoken",
+    "For private repositories: a fine-grained token with read-only access to their contents.": "Für private Repositories: ein Fine-grained-Token mit reinem Lesezugriff auf deren Inhalte.",
+    "Delete this folder and its pages from the documentation?": "Diesen Ordner und seine Seiten aus der Dokumentation löschen?"
 }

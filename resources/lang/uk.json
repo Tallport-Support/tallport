@@ -1811,5 +1811,9 @@
     "You can't remove yourself.": "Ви не можете видалити себе.",
     "Your Profile": "Ваш Профіль",
     "Password, two-factor, notifications": "Пароль, двофакторна автентифікація, сповіщення",
-    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Те, що ви налаштовуєте для себе, знаходиться в розділах «Профіль» і «Сповіщення», як і в усіх."
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Те, що ви налаштовуєте для себе, знаходиться в розділах «Профіль» і «Сповіщення», як і в усіх.",
+    "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "Посилання на GitHub читаються з репозиторію. Посилання на папку або репозиторій додає кожен файл Markdown у ньому й підтримує список в актуальному стані.",
+    "GitHub Access Token": "Токен Доступу GitHub",
+    "For private repositories: a fine-grained token with read-only access to their contents.": "Для приватних репозиторіїв: детальний токен із доступом до їхнього вмісту лише на читання.",
+    "Delete this folder and its pages from the documentation?": "Видалити цю папку та її сторінки з документації?"
 }

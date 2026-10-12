@@ -94,38 +94,6 @@
         "methods": [
             "GET"
         ],
-        "uri": "ai-assistant/documents",
-        "name": "ai.documents",
-        "action": "AiDocumentsController@index",
-        "middleware": [
-            "web",
-            "auth",
-            "roles"
-        ],
-        "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "ai-assistant/documents",
-        "name": "ai.documents.action",
-        "action": "AiDocumentsController@action",
-        "middleware": [
-            "web",
-            "auth",
-            "roles"
-        ],
-        "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "GET"
-        ],
         "uri": "api-keys",
         "name": "own.api_keys",
         "action": "ApiKeysController@own",
@@ -1853,6 +1821,38 @@
         "middleware": [
             "web",
             "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/settings/{id}/documentation",
+        "name": "mailboxes.documentation",
+        "action": "AiDocumentsController@index",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/settings/{id}/documentation",
+        "name": "mailboxes.documentation.action",
+        "action": "AiDocumentsController@action",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
         ],
         "where": {
             "id": "[0-9]+"

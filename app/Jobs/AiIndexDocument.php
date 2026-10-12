@@ -58,6 +58,18 @@ class AiIndexDocument implements ShouldQueue, ShouldBeUniqueUntilProcessing
             return;
         }
 
+        // A folder's files are indexed as documents of their own.
+        if ($document->isFolder()) {
+            if ($this->fetch) {
+                try {
+                    Documents::syncFolder($document, $deadline);
+                } catch (\Throwable $e) {
+                    // Documents::syncFolder() has recorded the failure.
+                }
+            }
+
+            return;
+        }
         if ($this->fetch && $document->source_type == Document::SOURCE_TYPE_URL) {
             try {
                 Documents::refetch($document, $deadline);

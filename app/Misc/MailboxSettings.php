@@ -43,6 +43,7 @@ class MailboxSettings
         }
         if ($user->isAdmin()) {
             $pages[] = self::page(__('AI'), route('mailboxes.ai', ['id' => $id]), \App\Ai\Settings::mailboxSummary($mailbox), routes: ['mailboxes.ai']);
+            $pages[] = self::page(__('Documentation'), route('mailboxes.documentation', ['id' => $id]), trans_choice('1 page|:count pages', \App\Ai\Document::where('mailbox_id', $id)->where('source_type', '!=', \App\Ai\Document::SOURCE_TYPE_FOLDER)->count()), routes: ['mailboxes.documentation']);
         }
         if (Workflow::canEdit($user, $mailbox)) {
             $pages[] = self::page(__('Workflows'), route('mailboxes.workflows', ['mailbox_id' => $id, 'from' => 'mailbox']), (string) Workflow::where('mailbox_id', $id)->count(), routes: ['mailboxes.workflows']);

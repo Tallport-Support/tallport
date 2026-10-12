@@ -1811,5 +1811,9 @@
     "You can't remove yourself.": "Du kan inte ta bort dig själv.",
     "Your Profile": "Din Profil",
     "Password, two-factor, notifications": "Lösenord, tvåfaktor, aviseringar",
-    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Det du ställer in för dig själv finns under Profil och Aviseringar, som för alla."
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Det du ställer in för dig själv finns under Profil och Aviseringar, som för alla.",
+    "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "GitHub-länkar läses från repot. En länk till en mapp eller ett repo lägger till varje Markdown-fil i den och håller listan uppdaterad.",
+    "GitHub Access Token": "GitHub-Åtkomsttoken",
+    "For private repositories: a fine-grained token with read-only access to their contents.": "För privata repon: en detaljerad token med endast läsåtkomst till deras innehåll.",
+    "Delete this folder and its pages from the documentation?": "Ta bort den här mappen och dess sidor från dokumentationen?"
 }

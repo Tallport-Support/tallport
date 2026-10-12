@@ -1811,5 +1811,9 @@
     "You can't remove yourself.": "Kendinizi kaldıramazsınız.",
     "Your Profile": "Profiliniz",
     "Password, two-factor, notifications": "Parola, iki aşamalı doğrulama, bildirimler",
-    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Kendiniz için ayarladıklarınız, herkes için olduğu gibi Profil ve Bildirimler altındadır."
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Kendiniz için ayarladıklarınız, herkes için olduğu gibi Profil ve Bildirimler altındadır.",
+    "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "GitHub bağlantıları depodan okunur. Bir klasöre veya depoya bağlantı, içindeki her Markdown dosyasını ekler ve listeyi güncel tutar.",
+    "GitHub Access Token": "GitHub Erişim Belirteci",
+    "For private repositories: a fine-grained token with read-only access to their contents.": "Özel depolar için: içeriklerine yalnızca okuma erişimi olan ayrıntılı bir belirteç.",
+    "Delete this folder and its pages from the documentation?": "Bu klasör ve sayfaları belgelerden silinsin mi?"
 }

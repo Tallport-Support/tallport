@@ -101,10 +101,18 @@ class Documents
     }
 
     /**
-     * A page's Markdown (its URL plus .md): content, title and hash.
+     * A page's Markdown (its URL plus .md; a GitHub file through GitHub's API, with the
+     * mailbox's token): content, title, hash and whether it is private.
      */
-    public static function fetch($url, ?float $deadline = null)
+    public static function fetch($url, ?float $deadline = null, $mailbox_id = null)
     {
+        $github = GitHub::parse($url);
+        if ($github && $github['type'] == 'file') {
+            [$content, $private] = GitHub::fetchFile($github, $mailbox_id, $deadline);
+
+            return self::markdown($content, preg_replace('/\.(md|mdx|markdown)$/i', '', $github['path']), $private);
+        }
+
         $markdown_url = Document::markdownUrlFor($url);
         $url = $markdown_url;
         for ($redirects = 0; $redirects <= 5; $redirects++) {
@@ -140,7 +148,12 @@ class Documents
         if (!$response->successful()) {
             throw new \Exception('Unable to fetch Markdown: HTTP '.$response->status());
         }
-        $content = $response->body();
+
+        return self::markdown($response->body(), $url);
+    }
+
+    protected static function markdown($content, $url, $private = false)
+    {
         if (strlen($content) > self::MAX_DOCUMENT_BYTES) {
             throw new \Exception('Unable to fetch Markdown: larger than '.self::MAX_DOCUMENT_BYTES.' bytes');
         }
@@ -152,6 +165,7 @@ class Documents
             'content' => $content,
             'title'   => self::title($content) ?: self::titleFromUrl($url),
             'hash'    => hash('sha256', $content),
+            'private' => $private,
         ];
     }
 
@@ -186,18 +200,71 @@ class Documents
     {
         $generation = $document->content_generation;
         $source_url = $document->source_url;
-        $markdown = self::fetch($document->source_url, $deadline);
+        $markdown = self::fetch($document->source_url, $deadline, $document->mailbox_id);
         \DB::transaction(function () use ($document, $generation, $source_url, $markdown) {
             $current = Document::whereKey($document->id)->lockForUpdate()->first();
             if (!$current || !$current->enabled || $current->content_generation !== $generation || $current->source_url !== $source_url) {
                 return;
             }
+            if (!empty($current->metadata['private']) !== $markdown['private']) {
+                $current->metadata = array_merge((array) $current->metadata, ['private' => $markdown['private']]);
+            }
             if ($current->setContent($markdown['content'])) {
                 $current->title = mb_substr($markdown['title'], 0, 191);
-                $current->save();
             }
+            $current->save();
         });
         $document->refresh();
+    }
+
+    /**
+     * A GitHub folder's Markdown files become documents of their own: new ones are
+     * added and fetched, those gone are deleted (disabled ones stay disabled).
+     */
+    public static function syncFolder(Document $folder, ?float $deadline = null)
+    {
+        try {
+            [$urls, $private] = GitHub::folderFiles(GitHub::parse($folder->source_url) ?: [], $folder->mailbox_id, $deadline);
+        } catch (\Throwable $e) {
+            $folder->status = Document::STATUS_FAILED;
+            $folder->last_error = Errors::message($e, 'Syncing folder '.$folder->id.':');
+            $folder->save();
+
+            throw $e;
+        }
+
+        $files = $folder->files()->keyBy('source_url');
+        $added = [];
+        foreach ($urls as $url) {
+            $document = $files->get($url);
+            if (!$document) {
+                $document = new Document();
+                $document->mailbox_id = $folder->mailbox_id;
+                $document->source_identifier = hash('sha256', $url);
+                $document->source_type = Document::SOURCE_TYPE_URL;
+                $document->source_url = $url;
+                $document->title = mb_substr(basename((string) parse_url($url, PHP_URL_PATH)), 0, 191);
+                $document->status = Document::STATUS_PENDING;
+                $document->enabled = true;
+                $added[] = $document;
+            }
+            $document->metadata = array_merge((array) $document->metadata, ['folder_id' => $folder->id, 'private' => $private]);
+            $document->save();
+        }
+        foreach ($files->reject(fn ($document) => in_array($document->source_url, $urls)) as $gone) {
+            $gone->chunks()->delete();
+            $gone->delete();
+        }
+
+        $folder->metadata = array_merge((array) $folder->metadata, ['private' => $private]);
+        $folder->status = Document::STATUS_INDEXED;
+        $folder->last_error = null;
+        $folder->last_indexed_at = now();
+        $folder->save();
+
+        foreach ($added as $document) {
+            \App\Jobs\AiIndexDocument::dispatch($document->id, true);
+        }
     }
 
     /**
@@ -237,7 +304,7 @@ class Documents
         }
 
         $fingerprint = self::embeddingFingerprint();
-        Document::where('enabled', true)->where(function ($query) use ($fingerprint) {
+        Document::where('enabled', true)->where('source_type', '!=', Document::SOURCE_TYPE_FOLDER)->where(function ($query) use ($fingerprint) {
             $query->whereNull('embedding_fingerprint')->orWhere('embedding_fingerprint', '!=', $fingerprint);
         })->chunkById(100, function ($documents) {
             foreach ($documents as $document) {

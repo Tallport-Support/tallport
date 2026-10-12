@@ -25,6 +25,7 @@ return array(
     'App\\Ai\\DraftJob' => $baseDir . '/app/Ai/DraftJob.php',
     'App\\Ai\\Drafts' => $baseDir . '/app/Ai/Drafts.php',
     'App\\Ai\\Errors' => $baseDir . '/app/Ai/Errors.php',
+    'App\\Ai\\GitHub' => $baseDir . '/app/Ai/GitHub.php',
     'App\\Ai\\OutboundHttp' => $baseDir . '/app/Ai/OutboundHttp.php',
     'App\\Ai\\PartialJson' => $baseDir . '/app/Ai/PartialJson.php',
     'App\\Ai\\Providers' => $baseDir . '/app/Ai/Providers.php',

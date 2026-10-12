@@ -1811,5 +1811,9 @@
     "You can't remove yourself.": "Nem távolíthatja el saját magát.",
     "Your Profile": "Az Ön Profilja",
     "Password, two-factor, notifications": "Jelszó, kétlépcsős azonosítás, értesítések",
-    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Amit saját magának állít be, az a Profil és az Értesítések alatt található, ahogy mindenkinél."
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Amit saját magának állít be, az a Profil és az Értesítések alatt található, ahogy mindenkinél.",
+    "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "A GitHub-hivatkozások a tárolóból olvasódnak be. Egy mappára vagy tárolóra mutató hivatkozás hozzáadja a benne lévő összes Markdown-fájlt, és naprakészen tartja a listát.",
+    "GitHub Access Token": "GitHub Hozzáférési Token",
+    "For private repositories: a fine-grained token with read-only access to their contents.": "Privát tárolókhoz: finomhangolt token, amely csak olvasási hozzáférést ad a tartalmukhoz.",
+    "Delete this folder and its pages from the documentation?": "Törli ezt a mappát és oldalait a dokumentációból?"
 }

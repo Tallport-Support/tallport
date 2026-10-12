@@ -5,34 +5,49 @@ namespace App\Http\Controllers;
 use App\Ai\Document;
 use App\Ai\DocumentApiKey;
 use App\Ai\Documents;
+use App\Ai\GitHub;
 use App\Jobs\AiIndexDocument;
 use App\Mailbox;
 use Illuminate\Http\Request;
 
 /**
- * AI Assistant documentation (Manage » Settings » AI Assistant »
- * Documentation), and the API websites push documents to.
+ * A mailbox's AI documentation (Mailboxes › the mailbox › Documentation),
+ * and the API websites push documents to.
  */
 class AiDocumentsController extends Controller
 {
     const MAX_API_CONTENT = 1000000;
 
-    public function index()
+    public function index($id)
     {
-        // A level beside AI (settings/view).
-        return view('settings/view', (new SettingsController())->sectionData('ai') + [
-            'documents' => Document::with('mailbox')->withCount('chunks')->orderBy('mailbox_id')->orderBy('title')->get(),
-            'mailboxes' => Mailbox::orderBy('name')->get(),
-            'api_keys'  => DocumentApiKey::all()->keyBy('mailbox_id'),
+        $mailbox = Mailbox::findOrFail($id);
+        // A folder's files right after it.
+        $documents = Document::where('mailbox_id', $mailbox->id)->withCount('chunks')->orderBy('title')->get();
+        $files = $documents->groupBy(fn ($document) => (int) ($document->metadata['folder_id'] ?? 0));
+        $listed = collect();
+        foreach ($files->get(0, collect()) as $document) {
+            $listed->push($document);
+            if ($document->isFolder()) {
+                $listed = $listed->concat($files->get($document->id, collect()));
+            }
+        }
+
+        return view('mailboxes/documentation', [
+            'mailbox'      => $mailbox,
+            'documents'    => $listed,
+            'files'        => $files,
+            'api_key'      => DocumentApiKey::where('mailbox_id', $mailbox->id)->first(),
+            'github_token' => GitHub::token($mailbox->id),
             'embedding_fingerprint' => Documents::embeddingFingerprint(),
         ]);
     }
 
-    public function action(Request $request)
+    public function action($id, Request $request)
     {
+        $mailbox = Mailbox::findOrFail($id);
+        $redirect = redirect()->route('mailboxes.documentation', ['id' => $mailbox->id]);
         switch ($request->action) {
             case 'add':
-                $mailbox = Mailbox::findOrFail((int) $request->mailbox_id);
                 $urls = array_unique(array_filter(array_map([Document::class, 'normalizeSourceUrl'], preg_split('/\R+/', (string) $request->urls))));
                 $invalid = array_filter($urls, function ($url) {
                     return !Document::isHttpUrl($url) || mb_strlen($url) > 2048;
@@ -43,6 +58,7 @@ class AiDocumentsController extends Controller
                         : __('Enter at least one URL.')]);
                 }
                 foreach ($urls as $url) {
+                    $github = GitHub::parse($url);
                     $document = Document::firstOrNew([
                         'mailbox_id'        => $mailbox->id,
                         'source_identifier' => hash('sha256', $url),
@@ -50,9 +66,11 @@ class AiDocumentsController extends Controller
                     if (!$document->exists) {
                         $document->mailbox_id = $mailbox->id;
                         $document->source_identifier = hash('sha256', $url);
-                        $document->source_type = Document::SOURCE_TYPE_URL;
+                        $document->source_type = $github && $github['type'] == 'folder' ? Document::SOURCE_TYPE_FOLDER : Document::SOURCE_TYPE_URL;
                         $document->source_url = $url;
-                        $document->title = mb_substr(basename((string) parse_url($url, PHP_URL_PATH)) ?: $url, 0, 191);
+                        $document->title = mb_substr($github && $github['type'] == 'folder'
+                            ? $github['repo'].($github['path'] === '' ? '' : '/'.$github['path'])
+                            : (basename((string) parse_url($url, PHP_URL_PATH)) ?: $url), 0, 191);
                         $document->localized_urls = Document::localizedUrlsFor($url);
                         $document->status = Document::STATUS_PENDING;
                     }
@@ -64,7 +82,7 @@ class AiDocumentsController extends Controller
                 break;
 
             case 'toggle':
-                $document = Document::findOrFail((int) $request->document_id);
+                $document = Document::where('mailbox_id', $mailbox->id)->findOrFail((int) $request->document_id);
                 $document->enabled = !$document->enabled;
                 $document->save();
                 if ($document->enabled) {
@@ -73,14 +91,17 @@ class AiDocumentsController extends Controller
                 break;
 
             case 'delete':
-                $document = Document::findOrFail((int) $request->document_id);
-                $document->chunks()->delete();
-                $document->delete();
+                $document = Document::where('mailbox_id', $mailbox->id)->findOrFail((int) $request->document_id);
+                // A folder with its files.
+                foreach ($document->isFolder() ? $document->files()->push($document) : [$document] as $deleted) {
+                    $deleted->chunks()->delete();
+                    $deleted->delete();
+                }
                 \Session::flash('flash_success_floating', __('Documentation deleted.'));
                 break;
 
             case 'index':
-                $documents = Document::where('enabled', true);
+                $documents = Document::where('mailbox_id', $mailbox->id)->where('enabled', true);
                 if ($request->document_id) {
                     $documents->where('id', (int) $request->document_id);
                 }
@@ -90,13 +111,27 @@ class AiDocumentsController extends Controller
                 \Session::flash('flash_success_floating', __('Documentation is being fetched and indexed.'));
                 break;
 
+            case 'github_token':
+                // Saved as it changes; asterisks are the saved token, shown masked.
+                $token = trim((string) $request->input('github_token', ''));
+                if (!preg_match('/^\*+$/', $token)) {
+                    $tokens = (array) \Option::get('aiassistant.github_token', []);
+                    if ($token === '') {
+                        unset($tokens[$mailbox->id]);
+                    } else {
+                        $tokens[$mailbox->id] = encrypt($token);
+                    }
+                    \Option::set('aiassistant.github_token', $tokens);
+                }
+
+                return $this->savedResponse($redirect);
+
             case 'issue_key':
-                $mailbox = Mailbox::findOrFail((int) $request->mailbox_id);
                 \Session::flash('ai_new_key', ['mailbox' => $mailbox->name, 'key' => DocumentApiKey::issue($mailbox->id)]);
                 break;
 
             case 'revoke_key':
-                DocumentApiKey::where('mailbox_id', (int) $request->mailbox_id)->delete();
+                DocumentApiKey::where('mailbox_id', $mailbox->id)->delete();
                 \Session::flash('flash_success_floating', __('API key revoked.'));
                 break;
 
@@ -104,7 +139,7 @@ class AiDocumentsController extends Controller
                 abort(404);
         }
 
-        return redirect()->route('ai.documents');
+        return $redirect;
     }
 
     /**
