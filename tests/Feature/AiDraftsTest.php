@@ -95,7 +95,7 @@ class AiDraftsTest extends FeatureTestCase
             $this->assertStringStartsWith('data: ', $event);
 
             return json_decode(substr($event, 6), true);
-        }, array_values(array_filter(explode("\n\n", $response->streamedContent()))));
+        }, array_values(array_filter(explode("\n\n", $response->streamedContent()), fn ($event) => $event !== '' && !str_starts_with($event, ':'))));
         $steps = array_column(array_filter($events, fn ($event) => isset($event['step'])), 'step');
 
         return array_values(array_filter($events, fn ($event) => !isset($event['step'])));
@@ -161,6 +161,9 @@ class AiDraftsTest extends FeatureTestCase
         $events = $this->draftEvents($this->agent, $steps);
         // Each step shown as it starts.
         $this->assertSame(['documentation', 'thinking'], $steps);
+        // Reasoning models get time to think.
+        $this->assertSame(\App\Ai\Drafts::TIMEOUT, (new ReplyDrafter('en'))->timeout());
+        $this->assertGreaterThan(120, \App\Ai\Drafts::TIMEOUT);
 
         ReplyDrafter::assertPrompted(function ($prompt) {
             return str_contains($prompt->prompt, 'Mijn Android app start niet.')

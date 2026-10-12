@@ -12,6 +12,11 @@ use App\Thread;
 class Drafts
 {
     /**
+     * Seconds a draft may take, its documentation and customer details included.
+     */
+    const TIMEOUT = 240;
+
+    /**
      * The newest messages a draft is made from.
      */
     const MAX_THREADS = ConversationContext::MAX_MESSAGES;
@@ -44,13 +49,14 @@ class Drafts
      */
     public static function draft(Conversation $conversation, $language, ?callable $on_draft = null, ?float $deadline = null, ?callable $on_step = null)
     {
-        $deadline = $deadline ?? microtime(true) + 120;
+        $deadline = $deadline ?? microtime(true) + self::TIMEOUT;
         $context = ConversationContext::build($conversation, $language, false, null, $deadline, null, $on_step);
         if ($on_step) {
             $on_step('thinking');
         }
         [$answer] = (new ReplyDrafter($language))->recordFor(Usage::FEATURE_DRAFT, $conversation)->streamJson(
-            $context['prompt'], $on_draft ? fn ($answer) => $on_draft((string) ($answer['draft'] ?? ''), (string) ($answer['translation'] ?? '')) : null, $deadline
+            $context['prompt'], $on_draft ? fn ($answer) => $on_draft((string) ($answer['draft'] ?? ''), (string) ($answer['translation'] ?? '')) : null, $deadline,
+            $on_step ? fn () => $on_step('activity') : null
         );
 
         return [

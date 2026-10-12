@@ -57,7 +57,7 @@ class AiDraftsController extends Controller
         return response()->stream(function () use ($draft_job, $conversation, $language) {
             // Finished (and kept) also when the user leaves.
             ignore_user_abort(true);
-            @set_time_limit(150);
+            @set_time_limit(Drafts::TIMEOUT + 30);
             $send = function (array $data) {
                 echo 'data: '.json_encode($data, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE)."\n\n";
                 if (ob_get_level() > 0) {
@@ -66,12 +66,27 @@ class AiDraftsController extends Controller
                 flush();
             };
             $throttle = new StreamThrottle(self::STREAM_INTERVAL);
+            // The first after 15 s.
+            $heartbeat = new StreamThrottle(15);
+            $heartbeat->ready();
             try {
                 $draft_job->result = Drafts::draft($conversation, $language, function ($draft, $translation = '') use ($send, $throttle) {
                     if (trim($draft) !== '' && $throttle->ready()) {
                         $send(['draft' => $draft] + (trim($translation) !== '' ? ['translation' => $translation] : []));
                     }
-                }, microtime(true) + 120, fn ($step) => $send(['step' => $step]));
+                }, microtime(true) + Drafts::TIMEOUT, function ($step) use ($send, $heartbeat) {
+                    // While the model reasons nothing is written: a comment now and then keeps the
+                    // connection open (proxies close quiet ones); the browser ignores it.
+                    if ($step != 'activity') {
+                        $send(['step' => $step]);
+                    } elseif ($heartbeat->ready()) {
+                        echo ": keep-alive\n\n";
+                        if (ob_get_level() > 0) {
+                            ob_flush();
+                        }
+                        flush();
+                    }
+                });
                 $draft_job->status = DraftJob::STATUS_COMPLETED;
             } catch (\Throwable $e) {
                 $draft_job->status = DraftJob::STATUS_FAILED;

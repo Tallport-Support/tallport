@@ -933,7 +933,7 @@ document.addEventListener('alpine:init', function () {
 				this.reset(texts.drafting);
 				var timer = setTimeout(function () {
 					controller.abort();
-				}, 165000);
+				}, 285000);
 				fetch(draft_url, {
 					method: 'POST',
 					signal: controller.signal,

@@ -126,14 +126,18 @@ abstract class TallportAgent implements Agent, HasProviderOptions
      *
      * @return array [the answer, the finished response (its usage)]
      */
-    public function streamJson($prompt, ?callable $on_answer = null, ?float $deadline = null)
+    public function streamJson($prompt, ?callable $on_answer = null, ?float $deadline = null, ?callable $on_activity = null)
     {
-        return $this->withAttempts(true, function ($name, $model, $remaining) use ($prompt, $on_answer) {
+        return $this->withAttempts(true, function ($name, $model, $remaining) use ($prompt, $on_answer, $on_activity) {
             $started = microtime(true);
             $response = $this->streamWith($prompt, [], $name, $model, $remaining);
             $this->attempt['response'] = $response;
             $text = '';
             foreach ($response as $event) {
+                // $on_activity: anything the model sends, its reasoning too (before it writes).
+                if ($on_activity) {
+                    $on_activity();
+                }
                 if (!$event instanceof TextDelta) {
                     continue;
                 }

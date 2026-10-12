@@ -73,6 +73,14 @@ class ReplyDrafter extends TallportAgent
         ];
     }
 
+    /**
+     * Reasoning models can think for minutes before a draft (Drafts::TIMEOUT).
+     */
+    public function timeout()
+    {
+        return \App\Ai\Drafts::TIMEOUT;
+    }
+
     protected function validAnswer(array $answer)
     {
         return trim($answer['language']) !== '' && (trim($answer['draft']) !== ''
