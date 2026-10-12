@@ -4,17 +4,20 @@ import { publishValue } from './control-bridge.js';
 export const EDITOR_PLUGIN = Symbol.for('fruitui.editor');
 
 /**
- * Content requests for an Editor: fruit-editor-insert puts { html } at the cursor and
- * fruit-editor-set replaces the content with { html }. Dispatch them on (or inside) the editor, or
- * on window with { target } naming its textarea's id or name, as Livewire's dispatch() does.
+ * Content requests for an Editor: fruit-editor-insert puts its content at the cursor and
+ * fruit-editor-set replaces the content. A request carries { html }, { markdown } or both, and each
+ * editor takes the one it writes: a rich editor the HTML, one in Markdown mode the Markdown. Dispatch
+ * them on (or inside) the editor, or on window with { target } naming its textarea's id or name, as
+ * Livewire's dispatch() does.
  */
 export function listenForEditorContent(root, control, { insert, set, commit }) {
   const controller = new AbortController();
   const handle = event => {
-    const { html = '', target } = event.detail ?? {};
+    const { html, markdown, target } = event.detail ?? {};
     if (event.currentTarget === window && target !== control.id && target !== control.name) return;
     if (control.matches(':disabled') || control.readOnly) return;
-    (event.type === 'fruit-editor-set' ? set : insert)(String(html));
+    const text = value => (value === undefined || value === null ? undefined : String(value));
+    (event.type === 'fruit-editor-set' ? set : insert)({ html: text(html), markdown: text(markdown) });
     commit();
   };
   for (const type of ['fruit-editor-insert', 'fruit-editor-set']) {
@@ -24,7 +27,19 @@ export function listenForEditorContent(root, control, { insert, set, commit }) {
   return () => controller.abort();
 }
 
-/** Without the rich editor plugin, the native textarea answers the same requests. */
+/** A request's HTML as plain text, for a field that holds Markdown or plain text. */
+function plainText(html) {
+  const body = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html').body;
+  for (const line of body.querySelectorAll('br')) line.replaceWith('\n');
+  for (const block of body.querySelectorAll('p, div, li, h1, h2, h3, h4, h5, h6, blockquote, pre'))
+    block.append('\n\n');
+  return body.textContent.replace(/\n{3,}/g, '\n\n').trim();
+}
+
+/**
+ * Without the rich editor plugin, the native textarea answers the same requests: in Markdown mode with
+ * the request's Markdown (or its HTML as text), otherwise with its HTML (or its Markdown).
+ */
 export function fruitEditorFallback() {
   let stop, enter, control;
   return {
@@ -39,14 +54,19 @@ export function fruitEditorFallback() {
         control.form.requestSubmit();
       };
       control.addEventListener('keydown', enter);
+      const content = ({ html, markdown }) =>
+        this.$el.dataset.fruitMode === 'markdown'
+          ? (markdown ?? (html ? plainText(html) : ''))
+          : (html ?? markdown ?? '');
       stop = listenForEditorContent(this.$el, control, {
-        insert: html => {
+        insert: request => {
+          const text = content(request);
           const start = control.selectionStart ?? control.value.length;
           const end = control.selectionEnd ?? start;
-          publishValue(control, control.value.slice(0, start) + html + control.value.slice(end), { commit: false });
-          control.setSelectionRange?.(start + html.length, start + html.length);
+          publishValue(control, control.value.slice(0, start) + text + control.value.slice(end), { commit: false });
+          control.setSelectionRange?.(start + text.length, start + text.length);
         },
-        set: html => publishValue(control, html, { commit: false }),
+        set: request => publishValue(control, content(request), { commit: false }),
         commit: () => control.dispatchEvent(new Event('change', { bubbles: true })),
       });
     },

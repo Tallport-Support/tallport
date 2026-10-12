@@ -2,6 +2,7 @@ import { Editor, Extension, Node, mergeAttributes } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import { bridgeControl, publishValue, fruitId } from './control-bridge.js';
 import { listenForEditorContent, EDITOR_PLUGIN } from './editor-content.js';
+import { markdownEditing } from './editor-markdown.js';
 import { fruitPopup } from './popup.js';
 import { fruitMessage } from './messages.js';
 
@@ -84,7 +85,7 @@ export default function fruitEditor(Alpine) {
   Alpine.data('fruitEditor', () => {
     // Keep ProseMirror outside Alpine's reactive proxy.
     let editor, root, control, surface, toolbar, dispose, click, blur, stopContent, lastValue, committedValue;
-    let popover, overlay, closePopover, formatting, toggleFormatting;
+    let popover, overlay, closePopover, formatting, toggleFormatting, markdown;
     const commands = {
       bold: chain => chain.toggleBold(),
       italic: chain => chain.toggleItalic(),
@@ -102,11 +103,13 @@ export default function fruitEditor(Alpine) {
       committedValue = control.value;
       control.dispatchEvent(new Event('change', { bubbles: true }));
     };
-    /** A small popover by the toolbar button: one address field, then apply (and remove for links). */
-    const ask = (button, kind) => {
+    /**
+     * A small popover by the toolbar button: one address field, then apply (and remove for a link that
+     * has one). Each mode says what the address is now and what Apply and Remove do.
+     */
+    const ask = (button, kind, { current = '', apply, remove }) => {
       closePopover?.();
       const link = kind === 'link';
-      const current = link ? editor.getAttributes('link').href || '' : '';
       popover = document.createElement('form');
       popover.className = 'f-editor__popover';
       popover.setAttribute('role', 'dialog');
@@ -120,43 +123,28 @@ export default function fruitEditor(Alpine) {
       field.value = current;
       field.placeholder = 'https://';
       field.setAttribute('aria-label', label);
-      const apply = document.createElement('button');
-      apply.className = 'f-button f-button--primary f-button--small';
-      apply.type = 'submit';
-      apply.textContent = fruitMessage(root, link ? 'apply-label' : 'insert-label', link ? 'Apply' : 'Insert');
-      popover.append(field, apply);
-      if (link && current) {
-        const remove = document.createElement('button');
-        remove.className = 'f-button f-button--ghost f-button--small';
-        remove.type = 'button';
-        remove.textContent = fruitMessage(root, 'remove-link-label', 'Remove Link');
-        remove.addEventListener('click', () => {
-          editor.chain().focus().extendMarkRange('link').unsetLink().run();
-          commit();
+      const confirm = document.createElement('button');
+      confirm.className = 'f-button f-button--primary f-button--small';
+      confirm.type = 'submit';
+      confirm.textContent = fruitMessage(root, link ? 'apply-label' : 'insert-label', link ? 'Apply' : 'Insert');
+      popover.append(field, confirm);
+      if (link && current && remove) {
+        const removeButton = document.createElement('button');
+        removeButton.className = 'f-button f-button--ghost f-button--small';
+        removeButton.type = 'button';
+        removeButton.textContent = fruitMessage(root, 'remove-link-label', 'Remove Link');
+        removeButton.addEventListener('click', () => {
+          remove();
+          if (!markdown) commit();
           closePopover(false);
         });
-        popover.append(remove);
+        popover.append(removeButton);
       }
       popover.addEventListener('submit', event => {
         event.preventDefault();
         const href = field.value.trim();
-        if (link) {
-          const chain = editor.chain().focus().extendMarkRange('link');
-          if (!href) chain.unsetLink().run();
-          else if (editor.state.selection.empty && !current)
-            editor
-              .chain()
-              .focus()
-              .insertContent({ type: 'text', text: href, marks: [{ type: 'link', attrs: { href } }] })
-              .run();
-          else chain.setLink({ href }).run();
-        } else if (href)
-          editor
-            .chain()
-            .focus()
-            .insertContent({ type: 'image', attrs: { src: href } })
-            .run();
-        commit();
+        if (href || link) apply(href);
+        if (!markdown) commit();
         closePopover(false);
       });
       popover.addEventListener('keydown', event => {
@@ -178,6 +166,34 @@ export default function fruitEditor(Alpine) {
       };
       field.focus();
     };
+    /** A rich link: the address of the link at the selection, applied, inserted or removed. */
+    const askLink = button => {
+      const current = editor.getAttributes('link').href || '';
+      ask(button, 'link', {
+        current,
+        apply: href => {
+          const chain = editor.chain().focus().extendMarkRange('link');
+          if (!href) chain.unsetLink().run();
+          else if (editor.state.selection.empty && !current)
+            editor
+              .chain()
+              .focus()
+              .insertContent({ type: 'text', text: href, marks: [{ type: 'link', attrs: { href } }] })
+              .run();
+          else chain.setLink({ href }).run();
+        },
+        remove: () => editor.chain().focus().extendMarkRange('link').unsetLink().run(),
+      });
+    };
+    const askImage = button =>
+      ask(button, 'image', {
+        apply: href =>
+          editor
+            .chain()
+            .focus()
+            .insertContent({ type: 'image', attrs: { src: href } })
+            .run(),
+      });
     /** With data-fruit-paste="plain" (read on every paste), pasted formatting is dropped: text only. */
     const pastePlain = event => {
       if (root.dataset.fruitPaste !== 'plain') return false;
@@ -238,6 +254,46 @@ export default function fruitEditor(Alpine) {
           button.setAttribute('aria-pressed', String(editor.isActive(command)));
       }
     };
+    /** The formatting bar: always, or (inline, a chat's field) when its button asks for it. */
+    const showToolbar = () => {
+      formatting = root.querySelector('[data-fruit-formatting]');
+      if (root.classList.contains('f-editor--inline')) {
+        toggleFormatting = () => {
+          toolbar.hidden = !toolbar.hidden;
+          formatting.setAttribute('aria-expanded', String(!toolbar.hidden));
+        };
+        formatting?.addEventListener('click', toggleFormatting);
+        if (formatting) formatting.hidden = false;
+      } else toolbar.hidden = false;
+    };
+    /**
+     * Markdown mode: the person writes in the textarea itself, whose value is the Markdown. Pasted
+     * HTML is read into the field's formats first, so its formatting arrives as Markdown it allows.
+     */
+    const startMarkdown = () => {
+      const formats = root.dataset.fruitFormats;
+      markdown = markdownEditing({
+        root,
+        control,
+        toolbar,
+        ask,
+        images: formats === undefined || formats.split(/\s+/).includes('image'),
+        read: html => {
+          const reader = new Editor({ element: document.createElement('div'), extensions: extensions(formats) });
+          reader.commands.setContent(html, { emitUpdate: false });
+          const content = reader.getJSON();
+          reader.destroy();
+          return content;
+        },
+      });
+      // The browser's own change event commits typing and the toolbar's edits, on leaving the field.
+      stopContent = listenForEditorContent(root, control, {
+        insert: markdown.insert,
+        set: markdown.set,
+        commit: () => {},
+      });
+      showToolbar();
+    };
     return {
       init() {
         root = this.$el;
@@ -245,6 +301,7 @@ export default function fruitEditor(Alpine) {
         surface = this.$el.querySelector('.f-editor__surface');
         toolbar = this.$el.querySelector('.f-editor__toolbar');
         if (!control || !surface || !toolbar) return;
+        if (root.dataset.fruitMode === 'markdown') return startMarkdown();
         lastValue = committedValue = control.value;
         editor = new Editor({
           element: surface,
@@ -287,30 +344,24 @@ export default function fruitEditor(Alpine) {
           }
         };
         this.$el.addEventListener('focusout', blur);
-        // Saved replies, drafts and signatures: insert at the cursor or replace, then commit.
+        // Saved replies, drafts and signatures: insert at the cursor or replace, then commit. A
+        // request's HTML, or its Markdown as text when it has no HTML.
+        const content = ({ html, markdown: text }) => html ?? (text ? { type: 'text', text } : '');
         stopContent = listenForEditorContent(this.$el, control, {
-          insert: html => editor.chain().focus().insertContent(html).run(),
-          set: html => editor.commands.setContent(html, { emitUpdate: true }),
+          insert: request => editor.chain().focus().insertContent(content(request)).run(),
+          set: request => editor.commands.setContent(content(request), { emitUpdate: true }),
           commit,
         });
         click = event => {
           const button = event.target.closest('[data-fruit-command]');
           if (!button || button.disabled || !commands[button.dataset.fruitCommand]) return;
           const command = button.dataset.fruitCommand;
-          if (command === 'link' || command === 'image') ask(button, command);
+          if (command === 'link') askLink(button);
+          else if (command === 'image') askImage(button);
           else commands[command](editor.chain().focus()).run();
         };
         toolbar.addEventListener('click', click);
-        // Inline (a chat's field): the formatting bar shows when its button asks for it.
-        formatting = this.$el.querySelector('[data-fruit-formatting]');
-        if (this.$el.classList.contains('f-editor--inline')) {
-          toggleFormatting = () => {
-            toolbar.hidden = !toolbar.hidden;
-            formatting.setAttribute('aria-expanded', String(!toolbar.hidden));
-          };
-          formatting?.addEventListener('click', toggleFormatting);
-          if (formatting) formatting.hidden = false;
-        } else toolbar.hidden = false;
+        showToolbar();
         surface.hidden = false;
         control.hidden = true;
         refresh();
@@ -319,6 +370,7 @@ export default function fruitEditor(Alpine) {
         dispose?.();
         stopContent?.();
         closePopover?.();
+        markdown?.destroy();
         this.$el.removeEventListener('focusout', blur);
         toolbar?.removeEventListener('click', click);
         formatting?.removeEventListener('click', toggleFormatting);

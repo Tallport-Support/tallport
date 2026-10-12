@@ -130,10 +130,13 @@ document.addEventListener('alpine:init', function () {
 
 			// FruitUI's editor for an email's body, from the page's template.
 			mountEditor: function (container, row) {
-				var editor = document.getElementById('wf-editor-template').content.cloneNode(true);
+				// Markdown, unless the text was written in rich text before.
+				var markdown = row.email.body_markdown != null || !(row.email.body || '').trim();
+				var editor = document.getElementById(markdown ? 'wf-editor-template-markdown' : 'wf-editor-template').content.cloneNode(true);
 				var textarea = editor.querySelector('textarea');
 				textarea.id = 'wf-body-' + row.id;
-				textarea.value = row.email.body || '';
+				textarea.dataset.markdown = markdown ? '1' : '';
+				textarea.value = (markdown ? row.email.body_markdown : row.email.body) || '';
 				// After the row is in place, so that Alpine starts the editor as an added element.
 				this.$nextTick(function () {
 					container.appendChild(editor);
@@ -193,7 +196,11 @@ document.addEventListener('alpine:init', function () {
 					}
 				});
 				var body = document.getElementById('wf-body-' + row.id);
-				email.body = body ? body.value : (row.email.body || '');
+				if (body ? body.dataset.markdown : row.email.body_markdown != null) {
+					email.body_markdown = body ? body.value : row.email.body_markdown;
+				} else {
+					email.body = body ? body.value : (row.email.body || '');
+				}
 				if ((type == 'reply' || type == 'email_customer') && row.email.no_signature) {
 					email.no_signature = '1';
 				}

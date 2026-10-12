@@ -2032,6 +2032,13 @@
                 "type": "timestamp",
                 "nullable": true,
                 "default": "NULL"
+            },
+            "body_markdown": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {
@@ -2103,6 +2110,13 @@
                 "type": "timestamp",
                 "nullable": true,
                 "default": "NULL"
+            },
+            "message_markdown": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {
@@ -2379,6 +2393,20 @@
             },
             "accent": {
                 "type": "varchar(20)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "signature_markdown": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "auto_reply_message_markdown": {
+                "type": "longtext",
                 "nullable": true,
                 "default": "NULL",
                 "charset": "utf8mb4",
@@ -3802,6 +3830,13 @@
                 "type": "tinyint(1)",
                 "nullable": false,
                 "default": "0"
+            },
+            "text_markdown": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {
@@ -4457,6 +4492,13 @@
                 "type": "timestamp",
                 "nullable": true,
                 "default": "NULL"
+            },
+            "body_markdown": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {
@@ -4798,6 +4840,11 @@
                 "collation": "utf8mb4_unicode_ci"
             },
             "stay_in_conversation": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
+            },
+            "markdown_replies": {
                 "type": "tinyint(1)",
                 "nullable": false,
                 "default": "0"

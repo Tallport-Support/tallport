@@ -194,7 +194,7 @@ class MailboxesTest extends FeatureTestCase
         $this->actingAs($agent)->get(route('mailboxes.view', ['id' => $mailbox->id]))->assertOk()->assertDontSee('Mailbox Settings');
 
         $this->actingAs($signer)->get(route('mailboxes.view', ['id' => $mailbox->id]))->assertOk()->assertSee('Mailbox Settings');
-        $this->actingAs($signer)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk()->assertSee('name="signature"', false)->assertDontSee('id="name"', false)
+        $this->actingAs($signer)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk()->assertSee('name="signature_markdown"', false)->assertDontSee('id="name"', false)
             ->assertDontSee('name="chat_reopen_days"', false);
         $this->postForm($signer, route('mailboxes.update', ['id' => $mailbox->id]), ['name' => 'Hijacked', 'signature' => '<p>Agent</p>', 'chat_reopen_days' => 7, 'chat_start_new' => 1]);
         $this->assertSame('Support', $mailbox->fresh()->name);

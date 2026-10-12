@@ -30,7 +30,7 @@ function savedReplyInsert(saved_reply_id)
 		conversation_id: getGlobalAttr('conversation_id')
 	}).then(function (response) {
 		if (Tallport.result(response)) {
-			editorInsert('body', response.text || '');
+			editorInsert('body', response.text || '', response.markdown);
 			savedReplyFiles(response, response.id);
 		}
 	});
@@ -52,7 +52,7 @@ function savedReplyTemplateLoad()
 		conversation_id: getGlobalAttr('conversation_id')
 	}).then(function (response) {
 		if (Tallport.isSuccess(response) && response.text) {
-			setReplyBody(response.text);
+			setReplyBody(response.text, response.markdown);
 			savedReplyFiles(response);
 		}
 	});

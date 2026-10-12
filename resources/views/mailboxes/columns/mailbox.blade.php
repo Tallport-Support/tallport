@@ -99,7 +99,8 @@
                 @endif
 
                 <x-fruit::field :label="__('Email Signature')" class="signature-editor">
-                    <x-editor id="signature" name="signature" rows="8" vars>{{ old('signature', $mailbox->signature) }}</x-editor>
+                    @php $signature_markdown = App\Misc\Markdown::isMarkdown($mailbox->signature_markdown, $mailbox->signature); @endphp
+                    <x-editor id="signature" name="signature" rows="8" vars :markdown="$signature_markdown">{{ $signature_markdown ? old('signature_markdown', $mailbox->signature_markdown) : old('signature', $mailbox->signature) }}</x-editor>
                 </x-fruit::field>
             </x-fruit::form-section>
         @endif

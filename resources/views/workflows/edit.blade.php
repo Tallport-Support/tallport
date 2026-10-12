@@ -84,7 +84,9 @@
 
 @section('body_bottom')
     @parent
-    {{-- The email actions' body editor, cloned by tallportWorkflowEditor (public/js/workflows.js). --}}
+    {{-- The email actions' body editor, cloned by tallportWorkflowEditor (public/js/workflows.js): in
+         Markdown, or in rich text for a text written so before. --}}
+    <template id="wf-editor-template-markdown"><x-editor data-field="body" rows="6" :aria-label="__('Message')" vars markdown></x-editor></template>
     <template id="wf-editor-template"><x-editor data-field="body" rows="6" :aria-label="__('Message')" vars></x-editor></template>
 @append
 

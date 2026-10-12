@@ -84,6 +84,15 @@ class WorkflowsController extends Controller
         $type = (int) $request->type;
         $conditions = $type == Workflow::TYPE_AUTOMATIC ? Workflow::groups((string) $request->conditions) : [];
         $actions = Workflow::groups((string) $request->actions);
+        // Email and note texts written in Markdown: their HTML is what's sent.
+        foreach ($actions as $i => $group) {
+            foreach ($group as $j => $row) {
+                if (is_array($row['value'] ?? null) && isset($row['value']['body_markdown'])) {
+                    $actions[$i][$j]['value']['body_markdown'] = (string) $row['value']['body_markdown'];
+                    $actions[$i][$j]['value']['body'] = \App\Misc\Markdown::toHtml($row['value']['body_markdown']);
+                }
+            }
+        }
         $errors = self::validateWorkflow($type, $conditions, $actions, $mailbox);
         if ($errors) {
             return back()->withInput()->withErrors($errors);

@@ -3,10 +3,17 @@
     Images pasted or dropped are uploaded (public/js/editor.js); `vars` adds an
     Insert variable menu ({%customer.fullName%} and the like; modules add theirs
     through the editor.vars filter), `exclude-vars` leaves groups out; `formats`:
-    the formatting allowed (FruitUI's formats; null: all).
+    the formatting allowed (FruitUI's formats; null: all); `markdown`: written and
+    stored as Markdown (App\Misc\Markdown renders it), else rich text (HTML); in
+    Markdown the field's name ends in _markdown (versions[en][message_markdown]),
+    which is how App\Misc\Markdown::fromInput() tells them apart.
 --}}
-@props(['vars' => false, 'excludeVars' => [], 'uploadUrl' => null, 'formats' => null])
+@props(['vars' => false, 'excludeVars' => [], 'uploadUrl' => null, 'formats' => null, 'markdown' => false])
 @php
+    $editor_name = $attributes->get('name');
+    if ($markdown && $editor_name !== null) {
+        $editor_name = str_ends_with($editor_name, ']') ? substr($editor_name, 0, -1).'_markdown]' : $editor_name.'_markdown';
+    }
     $editor_vars = [];
     if ($vars) {
         $editor_vars = \Eventy::filter('editor.vars', [
@@ -49,7 +56,7 @@
         }
     }
 @endphp
-<x-fruit::editor {{ $attributes }} :formats="$formats" :wrapper="['class' => 'tallport-editor', 'data-upload-url' => $uploadUrl ?? route('uploads.upload')]">
+<x-fruit::editor {{ $attributes->except('name') }} :name="$editor_name" :mode="$markdown ? 'markdown' : 'rich'" :formats="$formats" :wrapper="['class' => 'tallport-editor', 'data-upload-url' => $uploadUrl ?? route('uploads.upload')]">
     {{ $slot }}
     @if ($editor_vars || isset($extras))
         <x-slot:extras>
@@ -60,7 +67,7 @@
                     @foreach ($editor_vars as $group => $group_vars)
                         <x-fruit::menu-group :label="$group">
                             @foreach ($group_vars as $var_name => $var_label)
-                                <x-fruit::menu-item x-on:click="$dispatch('fruit-editor-insert', { html: '{%{{ $var_name }}%}' })">{{ $var_label }}</x-fruit::menu-item>
+                                <x-fruit::menu-item x-on:click="$dispatch('fruit-editor-insert', { html: '{%{{ $var_name }}%}', markdown: '{%{{ $var_name }}%}' })">{{ $var_label }}</x-fruit::menu-item>
                             @endforeach
                         </x-fruit::menu-group>
                     @endforeach

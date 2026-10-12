@@ -419,7 +419,12 @@ class SettingsController extends Controller
             }
         }
         foreach (['branding.footer', 'branding.email_header', 'branding.email_footer'] as $name) {
-            $values[$name] = \Helper::stripDangerousTags((string) ($values[$name] ?? ''));
+            // Written in Markdown, or in rich text before (no Markdown then).
+            [$html, $markdown] = \App\Misc\Markdown::fromInput($values, $name) ?? ['', null];
+            $values[$name] = \Helper::stripDangerousTags($html);
+            if ($markdown === null) {
+                unset($values[$name.'_markdown']);
+            }
         }
         foreach (['branding.css', 'branding.email_css'] as $name) {
             $values[$name] = \App\Misc\Branding::sanitizeCss($values[$name] ?? '');

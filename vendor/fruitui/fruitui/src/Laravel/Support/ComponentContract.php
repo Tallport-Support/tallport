@@ -60,7 +60,7 @@ final class ComponentContract
         'disclosure' => ['roles' => ['group']],
         'drilldown' => ['roles' => ['group', 'region']],
         'drilldown-column' => ['roles' => ['region']],
-        'editor' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract', 'options' => ['paste' => ['rich', 'plain'], 'layout' => ['stacked', 'inline'], 'enter' => ['newline', 'submit']]],
+        'editor' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract', 'options' => ['paste' => ['rich', 'plain'], 'layout' => ['stacked', 'inline'], 'enter' => ['newline', 'submit'], 'mode' => ['rich', 'markdown']]],
         'empty-state' => ['roles' => ['group', 'region']],
         'field' => ['roles' => ['group']],
         'form-section' => ['roles' => ['region', 'group']],

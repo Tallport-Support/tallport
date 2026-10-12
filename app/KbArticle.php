@@ -107,10 +107,14 @@ class KbArticle extends Model
     }
 
     /**
-     * Its text for the AI Assistant: the title and the body, as plain text.
+     * Its text for the AI Assistant: the title and the body, its Markdown as written
+     * or else as plain text.
      */
     public function documentContent()
     {
+        if ($this->body_markdown !== null) {
+            return trim('# '.$this->title."\n\n".trim($this->body_markdown));
+        }
         $html = preg_replace('#<(style|script)\b[^>]*>.*?</\1>#is', '', (string) $this->body);
         $html = preg_replace('#<(br|/p|/div|/li|/tr|/h\d|/blockquote|/pre)\b[^>]*>#i', "\n", $html);
         $html = preg_replace('#<li\b[^>]*>#i', '- ', $html);

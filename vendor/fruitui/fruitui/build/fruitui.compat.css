@@ -6112,6 +6112,20 @@ textarea.f-composer__input,
     border: 0;
     border-radius: inherit;
   }
+/* Markdown mode: the person writes in the textarea itself, as tall as the rich editor and growing
+     with its lines, inside the editor's frame and focus ring. */
+.f-editor[data-fruit-mode='markdown']:not(.f-editor--inline) > textarea {
+    min-height: var(--f-editor-min-height, 120px);
+    max-height: var(--f-editor-max-height, 360px);
+    padding: var(--f-editor-padding-block, 12px) var(--f-editor-padding-inline, 12px);
+    background: transparent;
+    box-shadow: none;
+    field-sizing: content;
+    resize: none;
+  }
+.f-editor[data-fruit-mode='markdown'] > textarea:focus-visible {
+    outline: none;
+  }
 /* Inline: a chat's message field. One line that grows up to --f-editor-max-height, the formatting
      bar above it on demand, and the application's buttons at the end of the line. */
 .f-editor--inline {
@@ -6183,6 +6197,16 @@ textarea.f-composer__input,
     padding-inline: 0;
     background: transparent;
     box-shadow: none;
+  }
+.f-composer .f-editor[data-fruit-mode='markdown']:not(.f-editor--inline) > textarea {
+    max-height: var(--f-editor-max-height, var(--f-composer-input-max-height, 50dvh));
+    border-top: 1px solid var(--f-border);
+    border-radius: 0;
+  }
+@media (max-width: 600px), (max-height: 500px) {
+    .f-composer .f-editor[data-fruit-mode='markdown']:not(.f-editor--inline) > textarea {
+      max-height: var(--f-editor-max-height, var(--f-composer-input-max-height, 100dvh));
+    }
   }
 .f-editor__actions {
     display: flex;

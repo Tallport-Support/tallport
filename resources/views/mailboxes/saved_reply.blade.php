@@ -24,7 +24,8 @@
                 </x-fruit::field>
 
                 <x-fruit::field :label="__('Reply')" :description="__('Variables (Insert variable) are filled in for the conversation.')">
-                    <x-editor id="saved_reply_text" name="text" rows="8" vars>{{ old('text', $saved_reply->text) }}</x-editor>
+                    @php $saved_reply_markdown = App\Misc\Markdown::isMarkdown($saved_reply->text_markdown, $saved_reply->text); @endphp
+                    <x-editor id="saved_reply_text" name="text" rows="8" vars :markdown="$saved_reply_markdown">{{ $saved_reply_markdown ? old('text_markdown', $saved_reply->text_markdown) : old('text', $saved_reply->text) }}</x-editor>
                 </x-fruit::field>
 
                 <div class="f-field">

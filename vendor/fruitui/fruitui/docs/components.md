@@ -731,6 +731,19 @@ Without a bundler, link the prebuilt `editor.global.js` (published with the othe
 </x-fruit::editor>
 ```
 
+**Markdown.** `mode="markdown"` lets people write Markdown instead: the editor's textarea is where they write, and its value is the Markdown as written, so that is what `wire:model` and a form post receive. Store it as Markdown and render it to HTML on the server where it's shown or sent, with a renderer that allows only the field's `formats`, treats a single line break as a line break (league/commonmark: `renderer.soft_break` `"<br />\n"`) and strips raw HTML (`html_input` `strip`, `allow_unsafe_links` false). The same toolbar writes the syntax around the selection (`**bold**`, `*italic*`, `- ` and `1. ` lists, `> ` quotes, `[text](address)`, `![](address)`), and again takes it off; Remove Formatting strips it from the selection. Enter continues a list or quote and ends it on an empty item; with `enter="submit"` Enter sends outside a list. Pasted formatting arrives as Markdown, read through the field's `formats` first; `paste="plain"` keeps the browser's own paste. Undo is the browser's. Nothing is converted when the editor opens or the form is sent, so give it Markdown. The Settings example writes a mailbox's signature and automatic reply in Markdown, each with a preview as customers will see it.
+
+```blade
+<x-fruit::editor name="body" mode="markdown" wire:model="body" :formats="['bold', 'italic', 'link', 'bulletList']">
+    <x-slot:extras>
+        <x-fruit::menu title="Insert Variable">
+            <x-slot:trigger class="f-button--ghost">Insert Variable<span class="f-menu__chevron" aria-hidden="true"></span></x-slot:trigger>
+            <x-fruit::menu-item x-on:click="$dispatch('fruit-editor-insert', { markdown: '{%customer.firstName%}', html: '{%customer.firstName%}' })">Customer First Name</x-fruit::menu-item>
+        </x-fruit::menu>
+    </x-slot:extras>
+</x-fruit::editor>
+```
+
 **Pasted and dropped images.** When someone pastes or drops image files, the textarea dispatches a bubbling `fruit-editor-upload` event whose `detail` holds the `files` and an `insert(url, alt)` function. Upload the files, then call `insert` with each address; the image goes where it was pasted or dropped.
 
 ```blade
@@ -746,7 +759,7 @@ Without a bundler, link the prebuilt `editor.global.js` (published with the othe
 
 With Livewire, `$wire.upload('image', file, () => $wire.storeImage().then(url => insert(url)))` uploads through the component instead.
 
-**Inserting and replacing content.** Saved replies, drafts and signatures go through two events. `fruit-editor-insert` puts `{ html }` at the cursor and `fruit-editor-set` replaces the content with `{ html }`. Dispatch them from a button inside the editor (`$dispatch('fruit-editor-insert', { html })` in an app toolbar button), on the `.f-editor` element, or on `window` with `target` naming the editor's textarea `id` or `name`, as Livewire's `$this->dispatch('fruit-editor-set', target: 'reply', html: $draft)` does. Each request updates the native textarea with `input` and `change`, so `wire:model`, autosave listeners and form posts see it. Without the editor plugin the plain textarea answers the same requests.
+**Inserting and replacing content.** Saved replies, drafts and signatures go through two events. `fruit-editor-insert` puts its content at the cursor and `fruit-editor-set` replaces the content with it. A request carries `{ html }`, `{ markdown }` or both, and each editor takes the one it writes: a rich editor the HTML (Markdown alone as its text), one in Markdown mode the Markdown, inserted as it is, so placeholders such as `{%customer.first_name%}` land literally (HTML alone is read as Markdown). Replacing the content doesn't move focus. Dispatch them from a button inside the editor (`$dispatch('fruit-editor-insert', { html })` in an app toolbar button), on the `.f-editor` element, or on `window` with `target` naming the editor's textarea `id` or `name`, as Livewire's `$this->dispatch('fruit-editor-set', target: 'reply', html: $draft)` does. Each request updates the native textarea with `input` and `change`, so `wire:model`, autosave listeners and form posts see it. Without the editor plugin the plain textarea answers the same requests.
 
 ```blade
 <label for="signature">Reply Signature</label>
@@ -1102,6 +1115,7 @@ Settings screens are a [Drill-Down](#drill-down): a sidebar of categories, then 
 - **Disclosures**: an `x-fruit::disclosure` placed as a row has no box of its own; its title is the row and its content continues beneath.
 - **Actions and values**: `div.f-form-row` holds a title and help text beside a button, such as a destructive "Delete Mailbox…" in its own group at the end, which then asks for confirmation.
 - **Drilling down**: when something has settings of its own across several pages (a mailbox: Connection, Permissions, Auto Reply, and pages that modules add), keep them in one place. Its page holds the everyday settings, then a group of rows, one per further page: `a.f-form-row.f-form-row--link` with the label, the current value in `span.f-form-row__value` ("SMTP · smtp.forma.example", "3 people", "Off") and a chevron. A list of such items (Mailboxes, Users) is a group of the same rows. Each row opens its page as the next level of the Drill-Down, beside the page it came from, and stays current (`aria-current`) while it's open. Tabs, pickers that switch the item ("Jamie Park ⌄") and cards that stand for further pages all become rows of the level before. The sidebar keeps its category (Mailboxes) current at every level; don't add the open item to it. Rows scale to any number of pages and show each one's state at a glance, where tabs would wrap.
+- **Your own settings and managing people**: what a person sets for themselves (their profile, password and two-factor, preferences, notifications) is under their own pages at the top of the sidebar, with no person in the URL, the same for everyone. What an administrator decides about an account (role, whether it can sign in, mailbox access and permissions, limits, and actions such as resetting a password or removing the person) is under Users › the person, the same for every person, the administrator included. Selecting yourself there shows your account as an administrator sees it: what would lock you out (your role, your sign-in, removing yourself) is disabled and says why, and a row leads to your Profile. Administrators don't set other people's own settings, such as their notifications.
 - **Saving**: settings save each change as it's made, with no save bar. Choices (switches, checkboxes, radios, selects) save at once and text when you leave the field: Livewire's `wire:model.live` and `wire:model.live.blur`. Validate the one changed field on the server (`validateOnly()` in `updated()`) and keep it only if it passes; otherwise its Field shows why, on its row, and the saved value stays. A page may be left half-finished; each field that passed is kept. No toast confirms an ordinary change. Forms that create or send something (a new mailbox, an invitation) still submit with a button.
 
 ```blade

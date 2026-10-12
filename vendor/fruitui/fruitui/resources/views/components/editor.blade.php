@@ -1,6 +1,6 @@
-@props(['wrapper' => [], 'paste' => 'rich', 'formats' => null, 'layout' => 'stacked', 'enter' => 'newline'])
+@props(['wrapper' => [], 'paste' => 'rich', 'formats' => null, 'layout' => 'stacked', 'enter' => 'newline', 'mode' => 'rich'])
 @aware(['fruitField' => null])
-@php($attributes = \FruitUI\Support\ComponentContract::control('editor', $attributes, $fruitField, ['paste' => $paste, 'layout' => $layout, 'enter' => $enter]))
+@php($attributes = \FruitUI\Support\ComponentContract::control('editor', $attributes, $fruitField, ['paste' => $paste, 'layout' => $layout, 'enter' => $enter, 'mode' => $mode]))
 @php($formats = \FruitUI\Support\ComponentContract::editorFormats($formats))
 @php($inline = $layout === 'inline')
 @php($toolbarId = ($attributes->get('id') ?? 'fruit-editor-'.\Illuminate\Support\Str::random(8)).'-formatting')
@@ -12,7 +12,7 @@
     'data-fruit-remove-link-label' => __('Remove Link'),
     'data-fruit-paste' => $paste,
     'data-fruit-enter' => $enter,
-] + ($formats === null ? [] : ['data-fruit-formats' => implode(' ', $formats)]))->class(['f-editor', 'f-editor--inline' => $inline]) }} x-data="fruitEditor">
+] + ($formats === null ? [] : ['data-fruit-formats' => implode(' ', $formats)]) + ($mode === 'markdown' ? ['data-fruit-mode' => 'markdown'] : []))->class(['f-editor', 'f-editor--inline' => $inline]) }} x-data="fruitEditor">
     <div class="f-editor__toolbar" id="{{ $toolbarId }}" wire:ignore hidden aria-label="{{ __('Text formatting') }}">
         @isset($toolbar)
             {{ $toolbar }}

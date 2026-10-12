@@ -78,6 +78,7 @@ class KnowledgeBaseController extends Controller
             'title'    => 'required|string|max:'.KbArticle::TITLE_MAX_LENGTH,
             'category' => 'nullable|string|max:'.KbArticle::CATEGORY_MAX_LENGTH,
             'body'     => 'nullable|string',
+            'body_markdown' => 'nullable|string',
         ]);
         $mailbox_id = (int) $request->mailbox_id ?: null;
         if (($mailbox_id && !in_array($mailbox_id, $user->mailboxesIdsCanView())) || (!$mailbox_id && !$user->isAdmin())) {
@@ -86,7 +87,8 @@ class KnowledgeBaseController extends Controller
 
         $article->title = trim(strip_tags($request->title));
         $article->category = trim(strip_tags((string) $request->category)) ?: null;
-        $article->body = \Helper::stripDangerousTags((string) $request->body);
+        [$body, $article->body_markdown] = \App\Misc\Markdown::fromInput($request->all(), 'body') ?? ['', null];
+        $article->body = \Helper::stripDangerousTags($body);
         $article->mailbox_id = $mailbox_id;
         if (!$article->exists) {
             $article->created_by_user_id = $user->id;
@@ -127,6 +129,7 @@ class KnowledgeBaseController extends Controller
                     break;
                 }
                 $response['body'] = (string) $article->body;
+                $response['markdown'] = $article->body_markdown;
                 $response['status'] = 'success';
                 break;
 

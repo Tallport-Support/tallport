@@ -1214,26 +1214,40 @@ function se() {
 var J = Symbol.for("fruitui.editor");
 function ce(e, t, { insert: n, set: r, commit: i }) {
 	let a = new AbortController(), o = (e) => {
-		let { html: a = "", target: o } = e.detail ?? {};
-		(e.currentTarget !== window || o === t.id || o === t.name) && (t.matches(":disabled") || t.readOnly || ((e.type === "fruit-editor-set" ? r : n)(String(a)), i()));
+		let { html: a, markdown: o, target: s } = e.detail ?? {};
+		if (e.currentTarget === window && s !== t.id && s !== t.name || t.matches(":disabled") || t.readOnly) return;
+		let c = (e) => e == null ? void 0 : String(e);
+		(e.type === "fruit-editor-set" ? r : n)({
+			html: c(a),
+			markdown: c(o)
+		}), i();
 	};
 	for (let t of ["fruit-editor-insert", "fruit-editor-set"]) e.addEventListener(t, o, { signal: a.signal }), window.addEventListener(t, o, { signal: a.signal });
 	return () => a.abort();
 }
-function le() {
+function le(e) {
+	let t = new DOMParser().parseFromString(`<body>${e}</body>`, "text/html").body;
+	for (let e of t.querySelectorAll("br")) e.replaceWith("\n");
+	for (let e of t.querySelectorAll("p, div, li, h1, h2, h3, h4, h5, h6, blockquote, pre")) e.append("\n\n");
+	return t.textContent.replace(/\n{3,}/g, "\n\n").trim();
+}
+function ue() {
 	let e, t, n;
 	return {
 		init() {
-			n = this.$el.querySelector("textarea[data-fruit-control]"), n && (t = (e) => {
+			if (n = this.$el.querySelector("textarea[data-fruit-control]"), !n) return;
+			t = (e) => {
 				e.key !== "Enter" || e.shiftKey || e.isComposing || e.defaultPrevented || this.$el.dataset.fruitEnter === "submit" && n.form && (e.preventDefault(), n.form.requestSubmit());
-			}, n.addEventListener("keydown", t), e = ce(this.$el, n, {
+			}, n.addEventListener("keydown", t);
+			let r = ({ html: e, markdown: t }) => this.$el.dataset.fruitMode === "markdown" ? t ?? (e ? le(e) : "") : e ?? t ?? "";
+			e = ce(this.$el, n, {
 				insert: (e) => {
-					let t = n.selectionStart ?? n.value.length, r = n.selectionEnd ?? t;
-					p(n, n.value.slice(0, t) + e + n.value.slice(r), { commit: !1 }), n.setSelectionRange?.(t + e.length, t + e.length);
+					let t = r(e), i = n.selectionStart ?? n.value.length, a = n.selectionEnd ?? i;
+					p(n, n.value.slice(0, i) + t + n.value.slice(a), { commit: !1 }), n.setSelectionRange?.(i + t.length, i + t.length);
 				},
-				set: (e) => p(n, e, { commit: !1 }),
+				set: (e) => p(n, r(e), { commit: !1 }),
 				commit: () => n.dispatchEvent(new Event("change", { bubbles: !0 }))
-			}));
+			});
 		},
 		destroy() {
 			e?.(), n?.removeEventListener("keydown", t);
@@ -1242,7 +1256,7 @@ function le() {
 }
 //#endregion
 //#region src/js/selection.js
-function ue() {
+function de() {
 	let e, t, n, r, i, a, s, c, l, u = [], f = -1, h = !1, g = () => t.selectedOptions[0]?.label || "", _ = () => {
 		h = !1, l.hide(), r.hidden = !0, n.setAttribute("aria-expanded", "false"), n.removeAttribute("aria-activedescendant");
 	}, v = (e) => {
@@ -1291,7 +1305,7 @@ function ue() {
 		}
 	};
 }
-function de() {
+function fe() {
 	let e, t, n, r, i, a, s, c, l, u, d, f, h, g = [], _ = () => {
 		f && (t.hasAttribute("name") && (d = t.name.replace(/\[\]$/, ""), t.removeAttribute("name")), f.replaceChildren(...g.map((e) => {
 			let n = document.createElement("input");
@@ -1398,7 +1412,7 @@ function de() {
 		}
 	};
 }
-function fe() {
+function pe() {
 	let e, t, n = () => {
 		let t = Math.max(0, Number.parseInt(e.dataset.count ?? "0", 10) || 0), n = (e.dataset.fruitTemplate || ":count selected").split("|"), r = e.closest("[lang]")?.lang || navigator.language || "en", i = n.length > 1 && new Intl.PluralRules(r).select(t) !== "one" ? n[1] : n[0], a = e.querySelector(".f-selection-bar__count");
 		a && (a.textContent = i.trim().replace(":count", String(t))), e.hidden = t === 0;
@@ -1419,7 +1433,7 @@ function fe() {
 //#region src/js/navigation.js
 var Y = "[role=\"menuitem\"], [role=\"menuitemcheckbox\"], [role=\"menuitemradio\"]", X = (e, t) => [...e.querySelectorAll(Y)].filter((e) => t(e) && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true" && e.getClientRects().length), Z = (e, t) => {
 	e.length && e[(t + e.length) % e.length].focus();
-}, pe = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
+}, me = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
 function Q(e, t, n) {
 	let r = t.indexOf(document.activeElement);
 	return [
@@ -1427,11 +1441,11 @@ function Q(e, t, n) {
 		"ArrowUp",
 		"Home",
 		"End"
-	].includes(e.key) ? (e.preventDefault(), Z(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => pe(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
+	].includes(e.key) ? (e.preventDefault(), Z(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => me(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
 		n.search = "";
 	}, 600), !0);
 }
-function me() {
+function he() {
 	let e, t, n, r, i, a, o, s = {
 		search: "",
 		timer: null
@@ -1460,7 +1474,7 @@ function me() {
 		}
 	};
 }
-function he() {
+function ge() {
 	let e, t, n, r, i, a, o = {
 		x: 0,
 		y: 0
@@ -1503,7 +1517,7 @@ function he() {
 		}
 	};
 }
-function ge() {
+function _e() {
 	let e, t, n, r, i, a, o;
 	return {
 		init() {
@@ -1528,7 +1542,7 @@ function ge() {
 		}
 	};
 }
-function _e() {
+function ve() {
 	let e, t, n, r, i = (t) => t?.closest("[data-fruit-tabs], [x-data^=\"fruitTabs\"]") === e, a = () => [...e.querySelectorAll("[role=\"tab\"]")].filter(i), o = () => a().filter((e) => !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true"), s = (t) => {
 		for (let n of a()) {
 			let r = n === t;
@@ -1565,7 +1579,7 @@ function _e() {
 		}
 	};
 }
-function ve() {
+function ye() {
 	let e;
 	return {
 		init() {
@@ -1586,8 +1600,8 @@ function ve() {
 //#endregion
 //#region src/js/alpine.js
 var $ = !1;
-function ye(e) {
-	e[J] || e.data("fruitEditor", le), e.data("fruitToast", n), e.magic("toast", () => t), e.data("fruitConfirmer", a), e.magic("confirm", () => i), e.data("fruitCopy", c), e.data("fruitListSelection", l), e.magic("dialog", () => y), e.data("fruitCombobox", ue), e.data("fruitTokenField", de), e.data("fruitSelectionBar", fe), e.data("fruitAutocomplete", ie), e.data("fruitCommandPalette", ae), e.data("fruitDropzone", oe), e.data("fruitMenu", me), e.data("fruitDatePicker", H), e.data("fruitColorPicker", se), e.data("fruitContextMenu", he), e.data("fruitTooltip", ge), e.data("fruitTabs", _e), e.data("fruitSplitter", ee), e.data("fruitHistory", E), e.data("fruitDrilldown", te), e.data("fruitFloatingDisclosure", ve), e.data("fruitDialogModel", S), typeof window < "u" && !$ && (x(window), b(document), re(document), $ = !0);
+function be(e) {
+	e[J] || e.data("fruitEditor", ue), e.data("fruitToast", n), e.magic("toast", () => t), e.data("fruitConfirmer", a), e.magic("confirm", () => i), e.data("fruitCopy", c), e.data("fruitListSelection", l), e.magic("dialog", () => y), e.data("fruitCombobox", de), e.data("fruitTokenField", fe), e.data("fruitSelectionBar", pe), e.data("fruitAutocomplete", ie), e.data("fruitCommandPalette", ae), e.data("fruitDropzone", oe), e.data("fruitMenu", he), e.data("fruitDatePicker", H), e.data("fruitColorPicker", se), e.data("fruitContextMenu", ge), e.data("fruitTooltip", _e), e.data("fruitTabs", ve), e.data("fruitSplitter", ee), e.data("fruitHistory", E), e.data("fruitDrilldown", te), e.data("fruitFloatingDisclosure", ye), e.data("fruitDialogModel", S), typeof window < "u" && !$ && (x(window), b(document), re(document), $ = !0);
 }
 //#endregion
-export { i as confirm, ye as default, y as dialog, a as fruitConfirmer, n as fruitToast, t as toast };
+export { i as confirm, be as default, y as dialog, a as fruitConfirmer, n as fruitToast, t as toast };

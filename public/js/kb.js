@@ -8,7 +8,7 @@ function kbInsert(article_id)
 {
 	Tallport.post(laroute.route('kb.ajax'), {action: 'get', article_id: article_id}).then(function (response) {
 		if (Tallport.isSuccess(response)) {
-			editorInsert('body', response.body || '');
+			editorInsert('body', response.body || '', response.markdown);
 		} else {
 			Tallport.result(response);
 		}

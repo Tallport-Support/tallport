@@ -139,19 +139,37 @@ class SavedReply extends Model
      */
     public function render(Mailbox $mailbox, User $user, ?Conversation $conversation = null)
     {
+        // Values escaped for HTML; variables without a value stay, to be seen.
+        $text = \MailHelper::replaceMailVars((string) $this->text, self::vars($mailbox, $user, $conversation), true, false);
+
+        return \Helper::stripDangerousTags($text);
+    }
+
+    /**
+     * The Markdown as written, the variables filled in the same way (null: written in rich text).
+     */
+    public function renderMarkdown(Mailbox $mailbox, User $user, ?Conversation $conversation = null)
+    {
+        if ($this->text_markdown === null) {
+            return null;
+        }
+
+        return \MailHelper::replaceMailVars((string) $this->text_markdown, self::vars($mailbox, $user, $conversation), false, false);
+    }
+
+    protected static function vars(Mailbox $mailbox, User $user, ?Conversation $conversation)
+    {
         $customer = null;
         if ($conversation) {
             $customer = $conversation->customer ?: ($conversation->customer_email ? Customer::getByEmail($conversation->customer_email) : null);
         }
-        $text = \MailHelper::replaceMailVars((string) $this->text, [
+
+        return [
             'conversation' => $conversation,
             'mailbox'      => $mailbox,
             'customer'     => $customer,
             'user'         => $user,
-        // Values escaped for HTML; variables without a value stay, to be seen.
-        ], true, false);
-
-        return \Helper::stripDangerousTags($text);
+        ];
     }
 
     /**

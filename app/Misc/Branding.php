@@ -27,6 +27,8 @@ class Branding
         'branding.logo', 'branding.logo_dark', 'branding.banner', 'branding.banner_dark', 'branding.favicon', 'branding.accent', 'branding.title',
         'branding.footer', 'branding.css', 'branding.email_css', 'branding.email_header', 'branding.email_footer',
         'branding.widget_powered_by',
+        // Written in Markdown (App\Misc\Markdown): the texts above are rendered from them.
+        'branding.footer_markdown', 'branding.email_header_markdown', 'branding.email_footer_markdown',
     ];
 
     public static function get($name, $default = '')

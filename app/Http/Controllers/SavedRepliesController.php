@@ -50,6 +50,7 @@ class SavedRepliesController extends Controller
         $request->validate([
             'name'          => 'required|string|max:'.SavedReply::NAME_MAX_LENGTH,
             'text'          => 'nullable|string',
+            'text_markdown' => 'nullable|string',
             'files.*'       => 'file',
         ]);
         $name = trim($request->name);
@@ -68,7 +69,8 @@ class SavedRepliesController extends Controller
             $saved_reply->sort_order = (int) SavedReply::where('mailbox_id', $mailbox->id)->max('sort_order') + 1;
         }
         $saved_reply->name = $name;
-        $saved_reply->text = \Helper::stripDangerousTags((string) $request->text);
+        [$text, $saved_reply->text_markdown] = \App\Misc\Markdown::fromInput($request->all(), 'text') ?? ['', null];
+        $saved_reply->text = \Helper::stripDangerousTags($text);
         $saved_reply->parent_saved_reply_id = $parent_id;
         $saved_reply->global = (bool) $request->global;
         $saved_reply->auto_load = (bool) $request->auto_load;
@@ -135,6 +137,7 @@ class SavedRepliesController extends Controller
                 }
                 $response['id'] = $saved_reply->id;
                 $response['text'] = $saved_reply->render($mailbox, $user, $conversation);
+                $response['markdown'] = $saved_reply->renderMarkdown($mailbox, $user, $conversation);
                 $response['attachments'] = $saved_reply->copyAttachments();
                 $response['status'] = 'success';
                 break;
@@ -159,7 +162,8 @@ class SavedRepliesController extends Controller
                 $saved_reply->mailbox_id = $mailbox->id;
                 $saved_reply->user_id = $user->id;
                 $saved_reply->name = $name;
-                $saved_reply->text = \Helper::stripDangerousTags((string) $request->text);
+                [$text, $saved_reply->text_markdown] = \App\Misc\Markdown::fromInput($request->all(), 'text') ?? ['', null];
+                $saved_reply->text = \Helper::stripDangerousTags($text);
                 $saved_reply->sort_order = (int) SavedReply::where('mailbox_id', $mailbox->id)->max('sort_order') + 1;
                 $saved_reply->save();
                 $response['id'] = $saved_reply->id;

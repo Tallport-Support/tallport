@@ -19,14 +19,25 @@ function getCsrfToken()
 }
 
 // The reply editor (FruitUI's editor, by its textarea's ID).
-function editorSetContent(id, html)
+// markdown: the same content in Markdown, used by an editor in Markdown (else the HTML is).
+function editorSetContent(id, html, markdown)
 {
-	window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: String(id).replace('#', ''), html: html}}));
+	window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: editorContent(id, html, markdown)}));
 }
 
-function editorInsert(id, html)
+function editorInsert(id, html, markdown)
 {
-	window.dispatchEvent(new CustomEvent('fruit-editor-insert', {detail: {target: String(id).replace('#', ''), html: html}}));
+	window.dispatchEvent(new CustomEvent('fruit-editor-insert', {detail: editorContent(id, html, markdown)}));
+}
+
+function editorContent(id, html, markdown)
+{
+	var detail = {target: String(id).replace('#', ''), html: html};
+	if (markdown != null) {
+		detail.markdown = markdown;
+	}
+
+	return detail;
 }
 
 // at_end: the cursor after the text.
@@ -83,9 +94,9 @@ function getReplyBody()
 	return body ? body.value : '';
 }
 
-function setReplyBody(text)
+function setReplyBody(text, markdown)
 {
-	editorSetContent('body', text);
+	editorSetContent('body', text, markdown);
 }
 
 // The composer's (App\Livewire\ConversationComposer): reply, note, forward or nothing.

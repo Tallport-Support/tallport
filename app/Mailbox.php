@@ -135,14 +135,18 @@ class Mailbox extends Model
     /**
      * Default signature set when mailbox created.
      */
-    const DEFAULT_SIGNATURE = '<br><span style="color:#808080;">--<br>
-{%mailbox.name%}</span>';
+    /**
+     * A new mailbox's signature, in Markdown, and as HTML (App\Misc\Markdown).
+     */
+    const DEFAULT_SIGNATURE_MARKDOWN = "--\n{%mailbox.name%}";
+    const DEFAULT_SIGNATURE = "<p>--<br />\n{%mailbox.name%}</p>";
 
     /**
      * Default values.
      */
     protected $attributes = [
-        'signature' => self::DEFAULT_SIGNATURE,
+        'signature'          => self::DEFAULT_SIGNATURE,
+        'signature_markdown' => self::DEFAULT_SIGNATURE_MARKDOWN,
     ];
 
     protected $casts = [

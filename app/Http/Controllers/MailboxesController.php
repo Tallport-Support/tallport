@@ -214,7 +214,8 @@ class MailboxesController extends Controller
 
         if ($can_update_signature) {
             $validator = Validator::make($request->all(), [
-                'signature'        => 'nullable|string',
+                'signature'          => 'nullable|string',
+                'signature_markdown' => 'nullable|string',
             ]);
 
             if ($validator->fails()) {
@@ -258,8 +259,12 @@ class MailboxesController extends Controller
             }
         }
 
+        // Written in Markdown, or in rich text before.
+        $signature = $can_update_signature ? \App\Misc\Markdown::fromInput($request->all(), 'signature') : null;
+        if ($signature) {
+            [$mailbox->signature, $mailbox->signature_markdown] = $signature;
+        }
         // Purify signature HTML to avoid sending unsafe HTML to customers by email.
-        //$mailbox->signature = \Helper::stripDangerousTags($mailbox->signature);
         $mailbox->signature = Mailbox::sanitizeSignature($mailbox->signature);
 
         $mailbox->save();
@@ -823,25 +828,34 @@ class MailboxesController extends Controller
         $languages = \App\Ai\Settings::LANGUAGES;
         $adding = $request->filled('add_language') || $request->filled('remove_language');
 
+        // Written in Markdown (rendered), or in rich text before: [html, markdown].
+        $message = \App\Misc\Markdown::fromInput($request->all(), 'auto_reply_message') ?? ['', null];
+        $messages = [];
+        foreach ($versions as $language => $version) {
+            $messages[$language] = \App\Misc\Markdown::fromInput((array) $version, 'message') ?? ['', null];
+        }
+
         // Adding or removing a language keeps what was typed, unchecked.
         if ($request->auto_reply_enabled && !$adding) {
             $post = $request->all();
-            $post['auto_reply_message'] = strip_tags($post['auto_reply_message'] ?? '');
+            $message_field = $message[1] === null ? 'auto_reply_message' : 'auto_reply_message_markdown';
+            $post[$message_field] = strip_tags($message[0]);
             $rules = [
                 'auto_reply_subject' => 'required|string|max:128',
-                'auto_reply_message' => 'required|string',
+                $message_field       => 'required|string',
             ];
             $names = [
                 'auto_reply_subject' => __('Subject'),
-                'auto_reply_message' => __('Message'),
+                $message_field       => __('Message'),
             ];
             foreach ($versions as $language => $version) {
-                $post['versions'][$language]['message'] = strip_tags($version['message'] ?? '');
+                $version_field = $messages[$language][1] === null ? 'message' : 'message_markdown';
+                $post['versions'][$language][$version_field] = strip_tags($messages[$language][0]);
                 if (!empty($version['enabled'])) {
                     $rules['versions.'.$language.'.subject'] = 'required|string|max:255';
-                    $rules['versions.'.$language.'.message'] = 'required|string';
+                    $rules['versions.'.$language.'.'.$version_field] = 'required|string';
                     $names['versions.'.$language.'.subject'] = __('Subject');
-                    $names['versions.'.$language.'.message'] = __('Message');
+                    $names['versions.'.$language.'.'.$version_field] = __('Message');
                 }
             }
             $validator = Validator::make($post, $rules);
@@ -871,7 +885,8 @@ class MailboxesController extends Controller
             $version = \App\MailboxAutoReply::firstOrNew(['mailbox_id' => $mailbox->id, 'language' => $language]);
             $version->enabled = !empty($values['enabled']);
             $version->subject = mb_substr((string) ($values['subject'] ?? ''), 0, 255);
-            $version->message = \Helper::stripDangerousTags(\Helper::purifyHtml((string) ($values['message'] ?? '')));
+            $version->message = \Helper::stripDangerousTags(\Helper::purifyHtml($messages[$language][0]));
+            $version->message_markdown = $messages[$language][1];
             $version->save();
         }
         $active_language = null;
@@ -890,10 +905,11 @@ class MailboxesController extends Controller
         $data = [
             'auto_reply_enabled' => $request->auto_reply_enabled,
             'auto_reply_subject' => $request->auto_reply_subject,
-            'auto_reply_message' => $request->auto_reply_message,
+            'auto_reply_message' => $message[0],
         ];
 
         $mailbox->fill($data);
+        $mailbox->auto_reply_message_markdown = $message[1];
         $mailbox->auto_reply_message = \Helper::purifyHtml($mailbox->auto_reply_message);
         // To be 100% sure.
         $mailbox->auto_reply_message = \Helper::stripDangerousTags($mailbox->auto_reply_message);

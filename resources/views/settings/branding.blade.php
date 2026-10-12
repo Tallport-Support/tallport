@@ -52,7 +52,8 @@
         </x-fruit::field>
 
         <x-fruit::field :label="__('Footer')" :description="__('Instead of the copyright line at the bottom of the pages.')">
-            <x-editor id="branding_footer" name="settings[branding.footer]" rows="3">{{ old('settings.branding.footer', $settings['branding.footer']) }}</x-editor>
+            @php $branding_markdown = App\Misc\Markdown::isMarkdown($settings['branding.footer_markdown'] ?: null, $settings['branding.footer']); @endphp
+            <x-editor id="branding_footer" name="settings[branding.footer]" rows="3" :markdown="$branding_markdown">{{ $branding_markdown ? old('settings.branding.footer_markdown', $settings['branding.footer_markdown']) : old('settings.branding.footer', $settings['branding.footer']) }}</x-editor>
         </x-fruit::field>
 
         <x-fruit::field :label="__('Custom CSS')">
@@ -62,11 +63,13 @@
 
     <x-fruit::form-section :title="__('Emails to Customers')" :level="3">
         <x-fruit::field :label="__('Header')" :description="__('Above replies and auto replies.')">
-            <x-editor id="branding_email_header" name="settings[branding.email_header]" rows="3">{{ old('settings.branding.email_header', $settings['branding.email_header']) }}</x-editor>
+            @php $branding_markdown = App\Misc\Markdown::isMarkdown($settings['branding.email_header_markdown'] ?: null, $settings['branding.email_header']); @endphp
+            <x-editor id="branding_email_header" name="settings[branding.email_header]" rows="3" :markdown="$branding_markdown">{{ $branding_markdown ? old('settings.branding.email_header_markdown', $settings['branding.email_header_markdown']) : old('settings.branding.email_header', $settings['branding.email_header']) }}</x-editor>
         </x-fruit::field>
 
         <x-fruit::field :label="__('Footer')">
-            <x-editor id="branding_email_footer" name="settings[branding.email_footer]" rows="3">{{ old('settings.branding.email_footer', $settings['branding.email_footer']) }}</x-editor>
+            @php $branding_markdown = App\Misc\Markdown::isMarkdown($settings['branding.email_footer_markdown'] ?: null, $settings['branding.email_footer']); @endphp
+            <x-editor id="branding_email_footer" name="settings[branding.email_footer]" rows="3" :markdown="$branding_markdown">{{ $branding_markdown ? old('settings.branding.email_footer_markdown', $settings['branding.email_footer_markdown']) : old('settings.branding.email_footer', $settings['branding.email_footer']) }}</x-editor>
         </x-fruit::field>
 
         <x-fruit::field :label="__('Custom CSS')">
