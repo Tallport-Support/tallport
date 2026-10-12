@@ -502,7 +502,6 @@
     "Retrieve a list of available IMAP folders from the server": "Récupérer une liste des dossiers IMAP disponibles sur le serveur",
     "Retry": "Retenter",
     "Role": "Rôle",
-    "Role of the only one administrator can not be changed.": "Le rôle du seul administrateur ne peut pas être modifié.",
     "Roles": "Rôles",
     "Run Workflow": "Exécuter le Workflow",
     "Run the following command": "Exécuter la commande suivante",
@@ -713,7 +712,6 @@
     "Select Conversation": "Sélectionner la Conversation",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Ignorer les erreurs de récupération passagères (p. ex. de brèves coupures de connexion IMAP), sauf si la même erreur se produit au moins ce nombre de fois pendant l'intervalle de vérification. Indiquez 1 pour désactiver le filtrage.",
     "The conversation you replied to could not be found.": "La conversation à laquelle vous avez répondu est introuvable.",
-    "The only active administrator can not be disabled.": "Le seul administrateur actif ne peut pas être désactivé.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "L'adresse e-mail indiquée appartient à un client d'une boîte de réception inaccessible.",
     "The user is disabled or deleted.": "L'utilisateur est désactivé ou supprimé.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "La mise à jour est désactivée (APP_DISABLE_UPDATING).",
@@ -1814,5 +1812,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Supprimer le Webhook",
     "1 event|:count events": "1 événement|:count événements",
-    "1 page|:count pages": "1 page|:count pages"
+    "1 page|:count pages": "1 page|:count pages",
+    "(You)": "(Vous)",
+    "You can't change your own role.": "Vous ne pouvez pas modifier votre propre rôle.",
+    "You can't turn off your own sign-in.": "Vous ne pouvez pas désactiver votre propre connexion.",
+    "You can't remove yourself.": "Vous ne pouvez pas vous supprimer vous-même.",
+    "Your Profile": "Votre Profil",
+    "Password, two-factor, notifications": "Mot de passe, double authentification, notifications",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Ce que vous réglez pour vous-même se trouve dans Profil et Notifications, comme pour tout le monde."
 }

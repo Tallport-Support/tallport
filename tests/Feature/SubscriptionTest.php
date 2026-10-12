@@ -194,7 +194,7 @@ class SubscriptionTest extends FeatureTestCase
         $this->assertTrue(Subscription::where(['user_id' => $this->agent->id, 'medium' => Subscription::MEDIUM_EMAIL])->exists());
         $this->assertEquals([Subscription::MEDIUM_EMAIL => [Subscription::EVENT_NEW_CONVERSATION]], \Option::get('subscription_defaults'));
 
-        $this->actingAs($this->agent)->get('/users/notifications/'.$this->agent->id)
+        $this->actingAs($this->agent)->get(route('own.notifications'))
             ->assertOk()
             ->assertSee('name="subscriptions['.Subscription::MEDIUM_BROWSER.'][]"', false)
             ->assertDontSee('subscriptions-mobile', false)

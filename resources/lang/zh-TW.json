@@ -685,7 +685,6 @@
     "Recipient unsubscribed": "收件人已取消訂閱",
     "Replying to this notification will email :name": "回覆此通知將傳送電子郵件至 :name",
     "Required :app_name version": "需要 :app_name 版本",
-    "Role of the only one administrator can not be changed.": "唯一管理員的角色無法變更。",
     "Running": "執行中",
     "Send Errors": "傳送錯誤",
     "Send error": "傳送錯誤",
@@ -762,7 +761,6 @@
     "Rename \":old_path\" into \":new_path\"": "請將 \":old_path\" 重新命名為 \":new_path\"",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "忽略暫時性的收取錯誤（例如 IMAP 連線短暫中斷），除非相同錯誤在檢查頻率的時間範圍內至少發生此次數。設為 1 可停用篩選。",
     "The conversation you replied to could not be found.": "找不到您回覆的對話。",
-    "The only active administrator can not be disabled.": "無法停用唯一的啟用中管理員。",
     "The specified email belongs to a customer from an inaccessible mailbox.": "指定的電子郵件屬於您無法存取之信箱中的客戶。",
     "The user is disabled or deleted.": "此使用者已停用或已刪除。",
     "Updating is disabled (APP_DISABLE_UPDATING).": "已停用更新（APP_DISABLE_UPDATING）。",
@@ -1852,5 +1850,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "刪除 Webhook",
     "1 event|:count events": ":count 個事件",
-    "1 page|:count pages": ":count 個頁面"
+    "1 page|:count pages": ":count 個頁面",
+    "(You)": "（您）",
+    "You can't change your own role.": "您無法變更自己的角色。",
+    "You can't turn off your own sign-in.": "您無法關閉自己的登入。",
+    "You can't remove yourself.": "您無法移除自己。",
+    "Your Profile": "您的個人資料",
+    "Password, two-factor, notifications": "密碼、雙重驗證、通知",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "您為自己設定的內容位於「個人資料」和「通知」中，與所有人相同。"
 }

@@ -66,9 +66,25 @@ class UsersControllerTest extends FeatureTestCase
 
     // Profile.
 
+    /**
+     * One's own Profile, or someone managed in Settings › Users.
+     */
     protected function profileOf(User $as, User $user)
     {
-        return \Livewire\Livewire::actingAs($as)->test(\App\Livewire\UserProfile::class, ['user' => $user]);
+        return \Livewire\Livewire::actingAs($as)->test(\App\Livewire\UserProfile::class, ['user' => $user, 'mode' => $as->id == $user->id ? 'own' : 'manage']);
+    }
+
+    /**
+     * The level's page is the component's root, either way: Livewire binds its fields there (a
+     * root inside @if would leave them empty in the browser).
+     */
+    public function testTheProfilesRootIsItsPage()
+    {
+        $agent = $this->createUser();
+        foreach ([[$agent, $agent], [$this->admin, $agent]] as [$as, $user]) {
+            $html = $this->profileOf($as, $user)->html();
+            $this->assertMatchesRegularExpression('#^<div wire:[^>]*class="f-page#', $html);
+        }
     }
 
     public function testPhotoIsResizedAndSaved()
@@ -169,7 +185,7 @@ class UsersControllerTest extends FeatureTestCase
 
         $this->actingAs($this->admin)->get('/users/profile/'.$agent->id)->assertStatus(404);
         $this->actingAs($this->admin)->get('/users/permissions/'.$agent->id)->assertStatus(404);
-        $this->actingAs($this->admin)->get('/users/notifications/'.$agent->id)->assertStatus(404);
+        $this->actingAs($this->admin)->get('/users/notifications/'.$agent->id)->assertStatus(403);
     }
 
     public function testPermissionsPage()
@@ -271,7 +287,7 @@ class UsersControllerTest extends FeatureTestCase
 
         $this->postForm($agent, '/users/password/'.$agent->id, [
             'password_current' => 'old-password', 'password' => 'old-password', 'password_confirmation' => 'old-password',
-        ])->assertRedirect(route('users.password', ['id' => $agent->id]))->assertSessionHasErrors('password');
+        ])->assertRedirect(route('own.password'))->assertSessionHasErrors('password');
 
         $this->assertCount(0, $this->sentEmailsTo($agent->email));
     }

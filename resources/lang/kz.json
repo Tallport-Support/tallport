@@ -487,7 +487,6 @@
     "Retrieve a list of available IMAP folders from the server": "Серверден қолжетімді IMAP қалталардың тізімін алу",
     "Retry": "Қайталау",
     "Role": "Роль",
-    "Role of the only one administrator can not be changed.": "Жалғыз әкімшінің рөлі өзгертіле алмайды.",
     "Roles": "Рөлдер",
     "Run Workflow": "Жұмыс Үрдісін Іске Қосу",
     "Run the following command": "Келесі команданы орындау",
@@ -1204,7 +1203,6 @@
     "Start a new conversation when receiving a reply to the closed \/ deleted Chat conversation": "Жабылған \/ жойылған чат тикетіне жауап келгенде жаңа тикет ашу",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Уақытша хат алу қателерін (мысалы, IMAP байланысының қысқа үзілістерін) көрсетпеу, егер сол қате тексеру жиілігі аралығында кемінде осынша рет қайталанбаса. Сүзгілеуді өшіру үшін 1 мәнін орнатыңыз.",
     "The conversation you replied to could not be found.": "Сіз жауап берген тикет табылмады.",
-    "The only active administrator can not be disabled.": "Жалғыз белсенді администраторды өшіру мүмкін емес.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Көрсетілген эл. пошта қолжетімсіз пошталық жәшіктегі клиентке тиесілі.",
     "The user is disabled or deleted.": "Агент өшірілген немесе жойылған.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Жаңарту өшірілген (APP_DISABLE_UPDATING).",
@@ -2201,5 +2199,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Webhook-ты Жою",
     "1 event|:count events": ":count оқиға",
-    "1 page|:count pages": ":count бет"
+    "1 page|:count pages": ":count бет",
+    "(You)": "(Сіз)",
+    "You can't change your own role.": "Өз рөліңізді өзгерте алмайсыз.",
+    "You can't turn off your own sign-in.": "Өз кіруіңізді өшіре алмайсыз.",
+    "You can't remove yourself.": "Өзіңізді жоя алмайсыз.",
+    "Your Profile": "Сіздің Профиліңіз",
+    "Password, two-factor, notifications": "Құпиясөз, екі факторлы, хабарландырулар",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Өзіңіз үшін орнатқандарыңыз, барлығы сияқты, Профиль мен Хабарландыруларда."
 }

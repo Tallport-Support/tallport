@@ -502,7 +502,6 @@
     "Retrieve a list of available IMAP folders from the server": "Recuperați o listă de foldere IMAP disponibile de pe server",
     "Retry": "Reîncearcă",
     "Role": "Rol",
-    "Role of the only one administrator can not be changed.": "Rolul singurului administrator nu poate fi schimbat.",
     "Roles": "Roluri",
     "Run the following command": "Rulați următoarea comandă",
     "Running": "Rulare",
@@ -705,7 +704,6 @@
     "Select Conversation": "Selectează Conversația",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Ignoră erorile temporare de preluare (de ex. întreruperi scurte ale conexiunii IMAP), cu excepția cazului în care aceeași eroare apare de cel puțin atâtea ori în intervalul frecvenței de verificare. Setați 1 pentru a dezactiva filtrarea.",
     "The conversation you replied to could not be found.": "Conversația la care ați răspuns nu a fost găsită.",
-    "The only active administrator can not be disabled.": "Singurul administrator activ nu poate fi dezactivat.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Adresa de e-mail specificată aparține unui client dintr-o cutie poștală inaccesibilă.",
     "The user is disabled or deleted.": "Utilizatorul este dezactivat sau șters.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Actualizarea este dezactivată (APP_DISABLE_UPDATING).",
@@ -1807,5 +1805,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Șterge Webhook-ul",
     "1 event|:count events": "1 eveniment|:count evenimente|:count de evenimente",
-    "1 page|:count pages": "1 pagină|:count pagini|:count de pagini"
+    "1 page|:count pages": "1 pagină|:count pagini|:count de pagini",
+    "(You)": "(Dvs.)",
+    "You can't change your own role.": "Nu vă puteți schimba propriul rol.",
+    "You can't turn off your own sign-in.": "Nu vă puteți dezactiva propria autentificare.",
+    "You can't remove yourself.": "Nu vă puteți elimina pe dvs. înșivă.",
+    "Your Profile": "Profilul Dvs.",
+    "Password, two-factor, notifications": "Parolă, doi factori, notificări",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Ce setați pentru dvs. se află la Profil și Notificări, ca pentru toată lumea."
 }

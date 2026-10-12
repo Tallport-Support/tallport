@@ -499,7 +499,6 @@
     "Retrieve a list of available IMAP folders from the server": "Dohvati popis dostupnih IMAP mapa s poslužitelja",
     "Retry": "Pokušaj ponovno",
     "Role": "Uloga",
-    "Role of the only one administrator can not be changed.": "Uloga jedinog administratora ne može se promijeniti.",
     "Roles": "Uloge",
     "Run the following command": "Pokrenite sljedeću naredbu",
     "Running": "U tijeku",
@@ -705,7 +704,6 @@
     "Start a new conversation when receiving a reply to the closed \/ deleted Chat conversation": "Započni novi razgovor kada stigne odgovor na zatvoreni \/ izbrisani chat razgovor",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Zanemari privremene greške dohvaćanja (npr. kratke prekide IMAP veze), osim ako se ista greška pojavi barem ovoliko puta unutar intervala učestalosti provjere. Postavite na 1 za isključivanje filtriranja.",
     "The conversation you replied to could not be found.": "Razgovor na koji ste odgovorili nije pronađen.",
-    "The only active administrator can not be disabled.": "Jedini aktivni administrator ne može se onemogućiti.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Navedena e-mail adresa pripada kupcu iz nedostupnog poštanskog sandučića.",
     "The user is disabled or deleted.": "Korisnik je onemogućen ili izbrisan.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Ažuriranje je onemogućeno (APP_DISABLE_UPDATING).",
@@ -1807,5 +1805,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Izbriši Webhook",
     "1 event|:count events": ":count događaj|:count događaja|:count događaja",
-    "1 page|:count pages": ":count stranica|:count stranice|:count stranica"
+    "1 page|:count pages": ":count stranica|:count stranice|:count stranica",
+    "(You)": "(Vi)",
+    "You can't change your own role.": "Ne možete promijeniti vlastitu ulogu.",
+    "You can't turn off your own sign-in.": "Ne možete isključiti vlastitu prijavu.",
+    "You can't remove yourself.": "Ne možete ukloniti sami sebe.",
+    "Your Profile": "Vaš Profil",
+    "Password, two-factor, notifications": "Lozinka, dvofaktorska provjera, obavijesti",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Ono što postavljate za sebe nalazi se pod Profilom i Obavijestima, kao i za sve ostale."
 }

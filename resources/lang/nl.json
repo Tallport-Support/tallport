@@ -491,7 +491,6 @@
     "Retrieve a list of available IMAP folders from the server": "Haal een lijst met beschikbare IMAP-mappen op van de server",
     "Retry": "Opnieuw proberen",
     "Role": "Rol",
-    "Role of the only one administrator can not be changed.": "De rol van de enige administrator kan niet worden gewijzigd.",
     "Roles": "Rollen",
     "Run Workflow": "Workflow Uitvoeren",
     "Run the following command": "Voer het volgende commando uit",
@@ -706,7 +705,6 @@
     "Start a new conversation when receiving a reply to the closed \/ deleted Chat conversation": "Een nieuw gesprek starten bij ontvangst van een antwoord op een gesloten \/ verwijderd chatgesprek",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Tijdelijke ophaalfouten (bijv. korte onderbrekingen van de IMAP-verbinding) onderdrukken, tenzij dezelfde fout binnen het controle-interval minstens zo vaak optreedt. Stel in op 1 om het filteren uit te schakelen.",
     "The conversation you replied to could not be found.": "Het gesprek waarop u hebt geantwoord, is niet gevonden.",
-    "The only active administrator can not be disabled.": "De enige actieve administrator kan niet worden uitgeschakeld.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Het opgegeven e-mailadres hoort bij een klant uit een ontoegankelijke mailbox.",
     "The user is disabled or deleted.": "De gebruiker is uitgeschakeld of verwijderd.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Bijwerken is uitgeschakeld (APP_DISABLE_UPDATING).",
@@ -1807,5 +1805,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Webhook Verwijderen",
     "1 event|:count events": "1 gebeurtenis|:count gebeurtenissen",
-    "1 page|:count pages": "1 pagina|:count pagina's"
+    "1 page|:count pages": "1 pagina|:count pagina's",
+    "(You)": "(U)",
+    "You can't change your own role.": "U kunt uw eigen rol niet wijzigen.",
+    "You can't turn off your own sign-in.": "U kunt uw eigen aanmelding niet uitschakelen.",
+    "You can't remove yourself.": "U kunt uzelf niet verwijderen.",
+    "Your Profile": "Uw Profiel",
+    "Password, two-factor, notifications": "Wachtwoord, tweestapsverificatie, meldingen",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Wat u voor uzelf instelt, staat onder Profiel en Meldingen, net als voor iedereen."
 }

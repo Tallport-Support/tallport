@@ -502,7 +502,6 @@
     "Retrieve a list of available IMAP folders from the server": "Pobierz listę dostępnych folderów IMAP z serwera ",
     "Retry": "Spróbuj ponownie",
     "Role": "Rola",
-    "Role of the only one administrator can not be changed.": "Roli jedynego ostatniego administratora nie można zmienić.",
     "Roles": "Role",
     "Run the following command": "Wykonaj następującą komendę",
     "Running": "Działa",
@@ -705,7 +704,6 @@
     "Select Conversation": "Zaznacz Rozmowę",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Pomijaj przejściowe błędy pobierania (np. krótkie zerwania połączenia IMAP), chyba że ten sam błąd wystąpi co najmniej tyle razy w przedziale częstotliwości sprawdzania. Ustaw 1, aby wyłączyć filtrowanie.",
     "The conversation you replied to could not be found.": "Nie znaleziono rozmowy, na którą została wysłana odpowiedź.",
-    "The only active administrator can not be disabled.": "Jedynego aktywnego administratora nie można wyłączyć.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Podany adres e-mail należy do klienta z niedostępnej skrzynki pocztowej.",
     "The user is disabled or deleted.": "Użytkownik jest wyłączony lub usunięty.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Aktualizacje są wyłączone (APP_DISABLE_UPDATING).",
@@ -1807,5 +1805,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Usuń Webhook",
     "1 event|:count events": ":count zdarzenie|:count zdarzenia|:count zdarzeń",
-    "1 page|:count pages": ":count strona|:count strony|:count stron"
+    "1 page|:count pages": ":count strona|:count strony|:count stron",
+    "(You)": "(Ty)",
+    "You can't change your own role.": "Nie możesz zmienić własnej roli.",
+    "You can't turn off your own sign-in.": "Nie możesz wyłączyć własnego logowania.",
+    "You can't remove yourself.": "Nie możesz usunąć samego siebie.",
+    "Your Profile": "Twój Profil",
+    "Password, two-factor, notifications": "Hasło, uwierzytelnianie dwuskładnikowe, powiadomienia",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "To, co ustawiasz dla siebie, znajduje się w Profilu i Powiadomieniach, tak jak u wszystkich."
 }

@@ -18,7 +18,17 @@ class ApiKeysController extends Controller
 
     public function index($id)
     {
-        $user = $this->ownUser($id);
+        $this->ownUser($id);
+
+        return redirect()->route('own.api_keys');
+    }
+
+    /**
+     * One's own API keys (/api-keys).
+     */
+    public function own()
+    {
+        $user = auth()->user();
 
         return view('users/api_keys', [
             'user'      => $user,
@@ -49,7 +59,7 @@ class ApiKeysController extends Controller
                 break;
         }
 
-        return redirect()->route('users.api_keys', ['id' => $user->id]);
+        return redirect()->route('own.api_keys');
     }
 
     /**

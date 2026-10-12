@@ -414,9 +414,9 @@ class AiAssistantTest extends FeatureTestCase
         $preferences = '/users/preferences/'.$this->agent->id;
 
         // Their own preference; the limit is the admin's, on the profile.
-        $this->actingAs($this->agent)->get($preferences)
+        $this->actingAs($this->agent)->get(route('own.preferences'))
             ->assertSee('No Translation Needed')->assertSee('name="languages[]"', false)->assertDontSee('AI Language');
-        $this->actingAs($this->agent)->get('/users/profile/'.$this->agent->id)
+        $this->actingAs($this->agent)->get(route('own.profile'))
             ->assertDontSee('name="languages[]"', false)->assertDontSee('AI Drafts Per Day');
         $this->actingAs($this->admin)->get('/users/profile/'.$this->agent->id)
             ->assertSee('AI Drafts Per Day')->assertDontSee('name="languages[]"', false);

@@ -255,10 +255,13 @@ class UsersTest extends FeatureTestCase
     {
         $agent = $this->createUser(['email' => 'agent@example.org']);
 
-        Livewire::actingAs($agent)->test(UserProfile::class, ['user' => $agent])
+        // One's own Profile has no email or role to change.
+        Livewire::actingAs($agent)->test(UserProfile::class, ['user' => $agent, 'mode' => 'own'])
             ->set('first_name', 'Renamed')->set('job_title', 'Support lead')
             ->set('email', 'changed@example.org')->set('role', (string) User::ROLE_ADMIN)
             ->assertSet('email', 'agent@example.org');
+        // Nor anyone else's, without managing users.
+        Livewire::actingAs($agent)->test(UserProfile::class, ['user' => $agent, 'mode' => 'own'])->assertSeeHtml('id="email"');
 
         $agent->refresh();
         $this->assertSame('Renamed', $agent->first_name);
@@ -267,24 +270,36 @@ class UsersTest extends FeatureTestCase
         $this->assertEquals(User::ROLE_USER, $agent->role, 'Users cannot make themselves admin.');
     }
 
-    public function testOwnPagesAreInTheAccountMenuNotTabs()
+    /**
+     * One's own settings are the same for everyone, at addresses without a user id; managing
+     * someone (oneself too) is in Settings › Users. Old addresses of one's own pages lead there.
+     */
+    public function testOwnSettingsAndManagingUsersAreApart()
     {
         $agent = $this->createUser();
 
-        // Your own pages: each on its own, titled by the page, reached from the account menu.
-        $this->actingAs($this->admin)->get(route('users.preferences', ['id' => $this->admin->id]))->assertOk()
-            ->assertSee('>Preferences</h2>', false)->assertDontSee('page-form', false)
-            ->assertSee(route('users.security', ['id' => $this->admin->id]), false)
-            ->assertDontSee(route('users.permissions', ['id' => $this->admin->id]), false)
-            ->assertDontSee('New User');
-        $this->actingAs($this->admin)->get(route('users.profile', ['id' => $this->admin->id]))->assertOk()
-            ->assertSee('>Profile</h2>', false)->assertDontSee('>Users</h2>', false);
+        $this->actingAs($this->admin)->get(route('own.preferences'))->assertOk()
+            ->assertSee('>Preferences</h2>', false)->assertSee(route('own.security'), false)->assertDontSee('New User');
+        $this->actingAs($this->admin)->get(route('own.profile'))->assertOk()
+            ->assertSee('>Profile</h2>', false)->assertDontSee('>Users</h2>', false)->assertSee(route('own.password'), false)
+            ->assertDontSee('id="role"', false);
+        foreach (['users.profile' => 'own.profile', 'users.preferences' => 'own.preferences', 'users.notifications' => 'own.notifications', 'users.password' => 'own.password'] as $old => $own) {
+            $this->actingAs($agent)->get(route($old, ['id' => $agent->id]))->assertRedirect(route($own));
+        }
 
-        // Someone else's: Users, then the person with their pages.
+        // Someone else: Users, then the person, managed; no notifications of theirs to set.
         $this->actingAs($this->admin)->get(route('users.profile', ['id' => $agent->id]))->assertOk()
-            ->assertSeeInOrder(['>Users</h2>', '>'.e($agent->getFullName()).'</h2>'], false)
-            ->assertSee(route('users.permissions', ['id' => $agent->id]), false)
-            ->assertSee('New User')->assertDontSee('Save Profile');
+            ->assertSeeInOrder(['>Users</h2>', '>'.e($agent->getFullName()).'</h2>', 'Account', 'id="role"'], false)
+            ->assertSee(route('users.permissions', ['id' => $agent->id]), false)->assertSee(route('users.security', ['id' => $agent->id]), false)
+            ->assertDontSee(route('users.notifications', ['id' => $agent->id]), false)->assertDontSee('id="job_title"', false);
+        $this->actingAs($this->admin)->get(route('users.notifications', ['id' => $agent->id]))->assertForbidden();
+
+        // Oneself in Users: like anyone, marked, with what would lock one out turned off.
+        $this->actingAs($this->admin)->get(route('users'))->assertOk()->assertSee('(You)');
+        $this->actingAs($this->admin)->get(route('users.profile', ['id' => $this->admin->id]))->assertOk()
+            ->assertSee('>Users</h2>', false)->assertSee("You can't change your own role.")->assertSee("You can't turn off your own sign-in.")
+            ->assertSee("You can't remove yourself.")->assertSee(route('own.profile'), false)
+            ->assertDontSee(route('users.security', ['id' => $this->admin->id]), false)->assertDontSee('Reset Password');
     }
 
     public function testUserCannotEditSomeoneElse()
@@ -311,25 +326,17 @@ class UsersTest extends FeatureTestCase
         $this->actingAs($agent->fresh())->get('/')->assertRedirect(route('login'));
     }
 
-    public function testOnlyAdminCannotBeDemoted()
-    {
-        Livewire::actingAs($this->admin)->test(UserProfile::class, ['user' => $this->admin])
-            ->set('role', (string) User::ROLE_USER)->assertHasErrors('role')->assertSet('role', (string) User::ROLE_ADMIN);
-
-        $this->assertEquals(User::ROLE_ADMIN, $this->admin->fresh()->role);
-    }
-
     /**
-     * Disabled or deleted admins don't count: the last active admin can be
-     * neither demoted nor disabled (U2).
+     * Nobody demotes, disables or deletes themselves, so an active admin always remains (U2).
      */
-    public function testLastActiveAdminCannotBeDemotedOrDisabled()
+    public function testAdminCannotLockThemselvesOut()
     {
         $this->createAdmin(['status' => User::STATUS_DISABLED]);
 
         Livewire::actingAs($this->admin)->test(UserProfile::class, ['user' => $this->admin])
-            ->set('role', (string) User::ROLE_USER)->assertHasErrors('role')
+            ->set('role', (string) User::ROLE_USER)->assertHasErrors(['role' => "You can't change your own role."])->assertSet('role', (string) User::ROLE_ADMIN)
             ->set('disabled', true)->assertHasErrors('disabled')->assertSet('disabled', false);
+        $this->assertFalse($this->admin->can('delete', $this->admin));
 
         $admin = $this->admin->fresh();
         $this->assertEquals(User::ROLE_ADMIN, $admin->role);
@@ -484,7 +491,7 @@ class UsersTest extends FeatureTestCase
 
         $this->postForm($agent, '/users/notifications/'.$agent->id, [
             'subscriptions' => [Subscription::MEDIUM_EMAIL => [Subscription::EVENT_TYPE_NEW]],
-        ])->assertRedirect(route('users.notifications', ['id' => $agent->id]));
+        ])->assertRedirect(route('own.notifications'));
 
         $this->assertEquals(
             [[Subscription::MEDIUM_EMAIL, Subscription::EVENT_TYPE_NEW]],
@@ -497,18 +504,18 @@ class UsersTest extends FeatureTestCase
             'subscriptions' => [Subscription::MEDIUM_BROWSER => [Subscription::EVENT_TYPE_NEW]],
         ])->json('status'));
         $this->assertSame([Subscription::MEDIUM_BROWSER], Subscription::where('user_id', $agent->id)->pluck('medium')->all());
-        $this->actingAs($agent)->get('/users/notifications/'.$agent->id)->assertOk()
+        $this->actingAs($agent)->get(route('own.notifications'))->assertOk()
             ->assertSee('Tallport.autoSave($el)', false)->assertDontSee('Save Notifications')->assertDontSee('>Users</h2>', false);
 
         // Each checkbox named by its column and row, as a screen reader reads it.
-        $this->actingAs($agent)->get('/users/notifications/'.$agent->id)
+        $this->actingAs($agent)->get(route('own.notifications'))
             ->assertSee('<span id="subs-medium-email">Email</span>', false)
             ->assertSee('<td id="subs-event-'.Subscription::EVENT_NEW_CONVERSATION.'">There is a new conversation</td>', false)
             ->assertSee('aria-labelledby="subs-medium-browser subs-event-'.Subscription::EVENT_NEW_CONVERSATION.'"', false);
 
-        // Someone else's: Users, the person, then Notifications.
-        $this->actingAs($this->admin)->get('/users/notifications/'.$agent->id)->assertOk()
-            ->assertSeeInOrder(['>Users</h2>', '>'.e($agent->getFullName()).'</h2>', '>Notifications</h2>'], false);
+        // Nobody sets another person's.
+        $this->actingAs($this->admin)->get('/users/notifications/'.$agent->id)->assertForbidden();
+        $this->postForm($this->admin, '/users/notifications/'.$agent->id, ['subscriptions' => []])->assertForbidden();
     }
 
     public function testChangeOwnPassword()
@@ -522,7 +529,7 @@ class UsersTest extends FeatureTestCase
 
         $this->postForm($agent, '/users/password/'.$agent->id, [
             'password_current' => 'old-password', 'password' => 'new-password', 'password_confirmation' => 'new-password',
-        ])->assertRedirect(route('users.profile', ['id' => $agent->id]));
+        ])->assertRedirect(route('own.profile'));
         $this->assertTrue(\Hash::check('new-password', $agent->fresh()->password));
 
         $emails = $this->sentEmailsTo($agent->email);

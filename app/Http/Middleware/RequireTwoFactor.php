@@ -14,7 +14,7 @@ class RequireTwoFactor
      * What a user without two-factor authentication can still use.
      */
     const ALLOWED_ROUTES = [
-        'users.security', 'two-factor.*', 'password.confirmation',
+        'users.security', 'own.security', 'two-factor.*', 'password.confirmation',
         'passkey.*', 'logout',
     ];
 
@@ -29,7 +29,7 @@ class RequireTwoFactor
             return response()->json(['status' => 'error', 'msg' => __('Turn on two-factor authentication first.')], 403);
         }
 
-        return redirect()->route('users.security', ['id' => $user->id]);
+        return redirect()->route('own.security');
     }
 
     public static function mustTurnOn($user)

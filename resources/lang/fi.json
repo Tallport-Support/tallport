@@ -490,7 +490,6 @@
     "Retrieve a list of available IMAP folders from the server": "Hae palvelimelta luettelo käytettävissä olevista IMAP-kansioista.",
     "Retry": "Yritä uudelleen",
     "Role": "Rooli",
-    "Role of the only one administrator can not be changed.": "Ainoan järjestelmänvalvojan roolia ei voi muuttaa.",
     "Roles": "Roolit",
     "Run Workflow": "Suorita Työnkulku",
     "Run the following command": "Suorita seuraava komento",
@@ -721,7 +720,6 @@
     "Start a new conversation when receiving a reply to the closed \/ deleted Chat conversation": "Aloita uusi keskustelu, kun suljettuun \/ poistettuun chat-keskusteluun saapuu vastaus",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Ohita tilapäiset hakuvirheet (esim. lyhyet IMAP-yhteyskatkot), ellei sama virhe toistu vähintään näin monta kertaa tarkistusvälin aikana. Aseta arvoksi 1, jos haluat poistaa suodatuksen käytöstä.",
     "The conversation you replied to could not be found.": "Keskustelua, johon vastasit, ei löytynyt.",
-    "The only active administrator can not be disabled.": "Ainoaa aktiivista järjestelmänvalvojaa ei voi poistaa käytöstä.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Annettu sähköpostiosoite kuuluu asiakkaalle postilaatikossa, johon sinulla ei ole pääsyä.",
     "The user is disabled or deleted.": "Käyttäjä on poistettu käytöstä tai poistettu.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Päivittäminen on poistettu käytöstä (APP_DISABLE_UPDATING).",
@@ -1823,5 +1821,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Poista Webhook",
     "1 event|:count events": "1 tapahtuma|:count tapahtumaa",
-    "1 page|:count pages": "1 sivu|:count sivua"
+    "1 page|:count pages": "1 sivu|:count sivua",
+    "(You)": "(Sinä)",
+    "You can't change your own role.": "Et voi muuttaa omaa rooliasi.",
+    "You can't turn off your own sign-in.": "Et voi poistaa omaa kirjautumistasi käytöstä.",
+    "You can't remove yourself.": "Et voi poistaa itseäsi.",
+    "Your Profile": "Profiilisi",
+    "Password, two-factor, notifications": "Salasana, kaksivaiheinen tunnistus, ilmoitukset",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Itsellesi asettamasi asiat ovat Profiilissa ja Ilmoituksissa, kuten kaikilla."
 }

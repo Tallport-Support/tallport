@@ -490,7 +490,6 @@
     "Retrieve a list of available IMAP folders from the server": "Recuperar uma lista de pastas IMAP disponíveis no servidor",
     "Retry": "Tente novamente",
     "Role": "Função",
-    "Role of the only one administrator can not be changed.": "A função do único administrador não pode ser alterada.",
     "Roles": "Função",
     "Run Workflow": "Executar Fluxo de Trabalho",
     "Run the following command": "Execute o seguinte comando",
@@ -707,7 +706,6 @@
     "Start a new conversation when receiving a reply to the closed \/ deleted Chat conversation": "Iniciar uma nova conversa ao receber uma resposta a uma conversa de chat encerrada \/ excluída",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Ignorar erros de busca temporários (por exemplo, quedas breves da conexão IMAP), a menos que o mesmo erro ocorra pelo menos esse número de vezes dentro do intervalo da frequência de verificação. Defina como 1 para desativar a filtragem.",
     "The conversation you replied to could not be found.": "A conversa à qual você respondeu não foi encontrada.",
-    "The only active administrator can not be disabled.": "O único administrador ativo não pode ser desativado.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "O e-mail informado pertence a um cliente de uma caixa de correio inacessível.",
     "The user is disabled or deleted.": "O usuário está desativado ou excluído.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "A atualização está desativada (APP_DISABLE_UPDATING).",
@@ -1808,5 +1806,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Excluir Webhook",
     "1 event|:count events": "1 evento|:count eventos",
-    "1 page|:count pages": "1 página|:count páginas"
+    "1 page|:count pages": "1 página|:count páginas",
+    "(You)": "(Você)",
+    "You can't change your own role.": "Você não pode alterar sua própria função.",
+    "You can't turn off your own sign-in.": "Você não pode desativar seu próprio acesso.",
+    "You can't remove yourself.": "Você não pode remover a si mesmo.",
+    "Your Profile": "Seu Perfil",
+    "Password, two-factor, notifications": "Senha, dois fatores, notificações",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "O que você define para si mesmo fica em Perfil e Notificações, como para todos."
 }

@@ -498,7 +498,6 @@
     "Retrieve a list of available IMAP folders from the server": "サーバーから利用可能な IMAP フォルダーのリストを取得する",
     "Retry": "再試行",
     "Role": "役割",
-    "Role of the only one administrator can not be changed.": "唯一の管理者の役割を変更することはできません。",
     "Roles": "役割",
     "Run the following command": "次のコマンドを実行します。",
     "Running": "実行中",
@@ -705,7 +704,6 @@
     "Start a new conversation when receiving a reply to the closed \/ deleted Chat conversation": "完了／削除済みのチャット会話への返信を受信したときに新しい会話を開始する",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "一時的な取得エラー（IMAP 接続の短時間の切断など）は、確認頻度の期間内に同じエラーがこの回数以上発生しない限り通知しません。1 に設定するとフィルタリングが無効になります。",
     "The conversation you replied to could not be found.": "返信先の会話が見つかりませんでした。",
-    "The only active administrator can not be disabled.": "唯一の有効な管理者を無効にすることはできません。",
     "The specified email belongs to a customer from an inaccessible mailbox.": "指定されたメールアドレスは、アクセスできないメールボックスの顧客のものです。",
     "The user is disabled or deleted.": "このユーザーは無効化または削除されています。",
     "Updating is disabled (APP_DISABLE_UPDATING).": "アップデートは無効になっています（APP_DISABLE_UPDATING）。",
@@ -1807,5 +1805,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Webhook を削除",
     "1 event|:count events": ":count 件のイベント",
-    "1 page|:count pages": ":count ページ"
+    "1 page|:count pages": ":count ページ",
+    "(You)": "（あなた）",
+    "You can't change your own role.": "自分のロールは変更できません。",
+    "You can't turn off your own sign-in.": "自分のサインインはオフにできません。",
+    "You can't remove yourself.": "自分自身は削除できません。",
+    "Your Profile": "あなたのプロフィール",
+    "Password, two-factor, notifications": "パスワード、2 要素認証、通知",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "自分用の設定は、ほかの人と同じく、プロフィールと通知にあります。"
 }

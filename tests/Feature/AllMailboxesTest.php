@@ -206,7 +206,7 @@ class AllMailboxesTest extends FeatureTestCase
         $this->assertStringContainsString('app-sidebar__back', $html);
         $this->assertMatchesRegularExpression('#<a aria-current="page" class="f-sidebar__item" wire:navigate="" data-search="[^"]*" href="'.preg_quote(route('settings', ['section' => 'emails']), '#').'">#', $sidebar);
         $this->assertStringContainsString('app-sidebar__account-card', $sidebar);
-        $this->assertStringContainsString(route('users.preferences', ['id' => $admin->id]), substr($sidebar, 0, strpos($sidebar, 'app-sidebar__footer')));
+        $this->assertStringContainsString(route('own.preferences'), substr($sidebar, 0, strpos($sidebar, 'app-sidebar__footer')));
         $this->assertStringNotContainsString('app-sidebar__mailbox', $sidebar);
 
         // A mailbox's settings are under Manage > Mailboxes (rows on its page, not in the sidebar); an agent sees only the account.
@@ -214,7 +214,7 @@ class AllMailboxesTest extends FeatureTestCase
         $this->assertStringContainsString('app-sidebar__back', $html);
         $this->assertStringContainsString('<a wire:navigate class="f-form-row f-form-row--link" href="'.route('mailboxes.permissions', ['id' => $this->support->id]).'"', $html);
         $this->assertStringNotContainsString('<a class="f-sidebar__item" wire:navigate href="'.route('mailboxes.permissions', ['id' => $this->support->id]).'"', $html);
-        $html = $this->actingAs($this->agent)->get(route('users.preferences', ['id' => $this->agent->id]))->assertOk()->getContent();
+        $html = $this->actingAs($this->agent)->get(route('own.preferences'))->assertOk()->getContent();
         $this->assertStringContainsString('app-sidebar__back', $html);
         $this->assertStringNotContainsString(route('settings', ['section' => 'general']), $html);
 
@@ -273,7 +273,7 @@ class AllMailboxesTest extends FeatureTestCase
         $html = $this->actingAs($admin)->get(route('settings', ['section' => 'emails']))->assertOk()->getContent();
         $this->assertStringContainsString('app-settings-search', $html);
         $this->assertStringNotContainsString('action="'.route('conversations.search').'"', substr($html, strpos($html, 'id="app-sidebar"'), 4000));
-        $this->assertMatchesRegularExpression('#data-search="[^"]*accent color[^"]*" href="'.preg_quote(route('users.preferences', ['id' => $admin->id]), '#').'"#', $html);
+        $this->assertMatchesRegularExpression('#data-search="[^"]*accent color[^"]*" href="'.preg_quote(route('own.preferences'), '#').'"#', $html);
         $this->assertStringContainsString(e(\App\Misc\Sidebar::settingsKeywords('settings/retention')), $html);
 
         // Elsewhere it searches conversations.

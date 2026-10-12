@@ -128,7 +128,7 @@
         $sidebar_settings_url = $sidebar_user->isAdmin() ? route('settings')
             : ($sidebar_user->hasPermission(App\User::PERM_EDIT_USERS) ? route('users')
             : ($sidebar_user->can('viewMailboxMenu', $sidebar_user) ? route('mailboxes')
-            : route('users.profile', ['id' => $sidebar_user->id])));
+            : route('own.profile')));
     @endphp
     <x-fruit::sidebar-item wire:navigate :href="$sidebar_settings_url" class="app-sidebar__settings">
         <x-slot:icon><x-icon.settings class="f-icon" aria-hidden="true" /></x-slot:icon>

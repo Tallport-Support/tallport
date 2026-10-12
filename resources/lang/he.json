@@ -497,7 +497,6 @@
     "Retrieve a list of available IMAP folders from the server": "אחזר רשימה של תיקיות IMAP זמינות מהשרת",
     "Retry": "נסה שוב",
     "Role": "תפקיד",
-    "Role of the only one administrator can not be changed.": "לא ניתן לשנות את תפקידו של המנהל היחיד.",
     "Roles": "תפקידים",
     "Run the following command": "הרץ את הפקודה הבאה",
     "Running": "רץ",
@@ -705,7 +704,6 @@
     "Start a new conversation when receiving a reply to the closed \/ deleted Chat conversation": "התחל שיחה חדשה בעת קבלת תשובה לשיחת צ'אט סגורה \/ מחוקה",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "הסתר שגיאות אחזור זמניות (למשל ניתוקים קצרים בחיבור IMAP), אלא אם אותה שגיאה מתרחשת לפחות מספר פעמים זה בתוך חלון תדירות הבדיקה. הגדר ל-1 כדי לבטל את הסינון.",
     "The conversation you replied to could not be found.": "השיחה שהגבת אליה לא נמצאה.",
-    "The only active administrator can not be disabled.": "לא ניתן להשבית את המנהל הפעיל היחיד.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "כתובת האימייל שצוינה שייכת ללקוח מתיבת דואר שאין לך גישה אליה.",
     "The user is disabled or deleted.": "המשתמש מושבת או נמחק.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "העדכון מושבת (APP_DISABLE_UPDATING).",
@@ -1807,5 +1805,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "מחיקת Webhook",
     "1 event|:count events": "אירוע אחד|:count אירועים",
-    "1 page|:count pages": "עמוד אחד|:count עמודים"
+    "1 page|:count pages": "עמוד אחד|:count עמודים",
+    "(You)": "(את/ה)",
+    "You can't change your own role.": "אי אפשר לשנות את התפקיד שלך.",
+    "You can't turn off your own sign-in.": "אי אפשר לכבות את הכניסה שלך.",
+    "You can't remove yourself.": "אי אפשר להסיר את עצמך.",
+    "Your Profile": "הפרופיל שלך",
+    "Password, two-factor, notifications": "סיסמה, אימות דו-שלבי, התראות",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "מה שמגדירים לעצמך נמצא בפרופיל ובהתראות, כמו אצל כולם."
 }

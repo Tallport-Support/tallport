@@ -146,12 +146,24 @@ class UsersController extends Controller
         if ($user->isDeleted()) {
             abort(404);
         }
+        // Settings › Users › a person: managing them, oneself too; one's own Profile is /profile.
+        if ($user->id == auth()->id() && !auth()->user()->can('create', 'App\User')) {
+            return redirect()->route('own.profile');
+        }
 
         $this->authorize('update', $user);
 
         $users = $this->getUsersForSidebar($id);
 
-        return view('users/profile', ['user' => $user, 'users' => $users]);
+        return view('users/profile', ['user' => $user, 'users' => $users, 'own' => false]);
+    }
+
+    /**
+     * One's own Profile (/profile): what each person sets for themselves.
+     */
+    public function ownProfile()
+    {
+        return view('users/profile', ['user' => auth()->user(), 'own' => true]);
     }
 
     /**
@@ -199,7 +211,22 @@ class UsersController extends Controller
      */
     public function notifications($id)
     {
-        $user = User::findOrFail($id);
+        // One's own (/notifications): nobody sets another person's.
+        if ($id == auth()->id()) {
+            return redirect()->route('own.notifications');
+        }
+
+        return $this->notificationsPage(User::findOrFail($id));
+    }
+
+    public function ownNotifications()
+    {
+        return $this->notificationsPage(auth()->user());
+    }
+
+    protected function notificationsPage(User $user)
+    {
+        $id = $user->id;
         $this->authorize('updateNotifications', $user);
 
         if ($user->isDeleted()) {
@@ -242,7 +269,7 @@ class UsersController extends Controller
         }
         \Session::flash('flash_success_floating', __('Notifications saved successfully'));
 
-        return redirect()->route('users.notifications', ['id' => $id]);
+        return redirect()->route('own.notifications');
     }
 
     /**
@@ -408,12 +435,16 @@ class UsersController extends Controller
      */
     public function preferences($id)
     {
-        $user = auth()->user();
-        if ($user->id != $id) {
+        if (auth()->id() != $id) {
             abort(403);
         }
 
-        return view('users/preferences', ['user' => $user]);
+        return redirect()->route('own.preferences');
+    }
+
+    public function ownPreferences()
+    {
+        return view('users/preferences', ['user' => auth()->user()]);
     }
 
     public function preferencesSave($id, Request $request)
@@ -464,7 +495,7 @@ class UsersController extends Controller
         }
         \Session::flash('flash_success_floating', __('Settings updated'));
 
-        return redirect()->route('users.preferences', ['id' => $id]);
+        return redirect()->route('own.preferences');
     }
 
     /**
@@ -472,12 +503,17 @@ class UsersController extends Controller
      */
     public function password($id)
     {
-        $user = User::findOrFail($id);
-        $this->authorize('update', $user);
+        // One's own only (the current password goes with the new one).
+        if (auth()->id() != $id) {
+            abort(403);
+        }
 
-        $users = User::all()->except($id);
+        return redirect()->route('own.password');
+    }
 
-        return view('users/password', ['user' => $user, 'users' => $users]);
+    public function ownPassword()
+    {
+        return view('users/password', ['user' => auth()->user()]);
     }
 
     /**
@@ -512,7 +548,7 @@ class UsersController extends Controller
         });
 
         if ($validator->fails()) {
-            return redirect()->route('users.password', ['id' => $id])
+            return redirect()->route('own.password')
                         ->withErrors($validator)
                         ->withInput();
         }
@@ -524,6 +560,6 @@ class UsersController extends Controller
 
         \Session::flash('flash_success_floating', __('Password saved successfully!'));
 
-        return redirect()->route('users.profile', ['id' => $id]);
+        return redirect()->route('own.profile');
     }
 }

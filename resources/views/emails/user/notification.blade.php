@@ -90,7 +90,7 @@
 
 		<hr style="border:0; border-top:1px solid #cccccc; margin:1.25em 0;">
 		<div style="{{ $muted_style }}">
-			<a href="{{ \Eventy::filter('email_notification.settings_url', route('users.notifications', ['id' => $user->id]), $user) }}" style="color:#999999;">{{ __('Notification Settings') }}</a>{{ \Eventy::action('email_notification.footer_links', $mailbox, $conversation, $threads) }} - <a href="{{ \Eventy::filter('email_notification.mailbox_url', $mailbox->url(), $user) }}" style="color:#999999;">{{ $mailbox->name }}</a>
+			<a href="{{ \Eventy::filter('email_notification.settings_url', route('own.notifications'), $user) }}" style="color:#999999;">{{ __('Notification Settings') }}</a>{{ \Eventy::action('email_notification.footer_links', $mailbox, $conversation, $threads) }} - <a href="{{ \Eventy::filter('email_notification.mailbox_url', $mailbox->url(), $user) }}" style="color:#999999;">{{ $mailbox->name }}</a>
 		</div>
 
 		{{-- Addition to Message-ID header to detect relies --}}

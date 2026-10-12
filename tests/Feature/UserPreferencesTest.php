@@ -26,14 +26,14 @@ class UserPreferencesTest extends FeatureTestCase
         ]));
         $conversation = Conversation::where('mailbox_id', $mailbox->id)->first();
 
-        $this->actingAs($agent)->get(route('users.preferences', ['id' => $agent->id]))->assertOk()
+        $this->actingAs($agent)->get(route('own.preferences'))->assertOk()
             ->assertSee('Status After a Reply')->assertSee('When a Conversation Moves')->assertSee('Stay in Folder');
         $this->actingAs($agent)->get(route('users.preferences', ['id' => $this->createUser()->id]))->assertForbidden();
 
         \Session::start();
         $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), [
             '_token' => csrf_token(), 'reply_status' => Conversation::STATUS_CLOSED, 'stay_in_conversation' => 1,
-        ])->assertRedirect(route('users.preferences', ['id' => $agent->id]));
+        ])->assertRedirect(route('own.preferences'));
         $agent->refresh();
         $this->assertSame(Conversation::STATUS_CLOSED, (int) $agent->reply_status);
 
@@ -48,10 +48,10 @@ class UserPreferencesTest extends FeatureTestCase
         \Option::set('branding.accent', 'green');
         $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), ['_token' => csrf_token(), 'accent' => 'pink']);
         $this->assertSame('pink', $agent->fresh()->accent);
-        $this->actingAs($agent->fresh())->get(route('users.preferences', ['id' => $agent->id]))->assertSee('data-fruit-accent="pink"', false);
+        $this->actingAs($agent->fresh())->get(route('own.preferences'))->assertSee('data-fruit-accent="pink"', false);
         $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), ['_token' => csrf_token(), 'accent' => 'pink', 'accent_default' => 1]);
         $this->assertNull($agent->fresh()->accent);
-        $this->actingAs($agent->fresh())->get(route('users.preferences', ['id' => $agent->id]))->assertSee('data-fruit-accent="green"', false);
+        $this->actingAs($agent->fresh())->get(route('own.preferences'))->assertSee('data-fruit-accent="green"', false);
         $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), ['_token' => csrf_token(), 'accent' => 'neon'])->assertSessionHasErrors('accent');
 
         // Unset: Pending, and staying in the folder.
@@ -112,10 +112,10 @@ class UserPreferencesTest extends FeatureTestCase
         $agent = $this->createUser(['locale' => 'en', 'timezone' => 'Europe/Amsterdam', 'time_format' => User::TIME_FORMAT_24]);
 
         // On the preferences, not the profile.
-        $this->actingAs($agent)->get(route('users.preferences', ['id' => $agent->id]))->assertOk()
+        $this->actingAs($agent)->get(route('own.preferences'))->assertOk()
             ->assertSee('name="locale"', false)->assertSee('name="timezone"', false)->assertSee('name="time_format"', false)
             ->assertSee('name="keyboard_shortcuts"', false)->assertSee('name="languages[]"', false);
-        $this->actingAs($agent)->get(route('users.profile', ['id' => $agent->id]))->assertOk()
+        $this->actingAs($agent)->get(route('own.profile'))->assertOk()
             ->assertDontSee('name="locale"', false)->assertDontSee('name="timezone"', false)->assertDontSee('name="time_format"', false)
             ->assertDontSee('name="keyboard_shortcuts"', false)->assertDontSee('name="languages[]"', false);
         // Settings' search finds them on Preferences.
@@ -127,7 +127,7 @@ class UserPreferencesTest extends FeatureTestCase
         \Session::start();
         $this->actingAs($agent)->post(route('users.preferences.save', ['id' => $agent->id]), [
             '_token' => csrf_token(), 'locale' => 'nl', 'timezone' => 'America/New_York', 'time_format' => User::TIME_FORMAT_12,
-        ])->assertRedirect(route('users.preferences', ['id' => $agent->id]))->assertSessionHasNoErrors();
+        ])->assertRedirect(route('own.preferences'))->assertSessionHasNoErrors();
         $agent->refresh();
         $this->assertSame('nl', $agent->locale);
         $this->assertSame('America/New_York', $agent->timezone);
@@ -135,7 +135,7 @@ class UserPreferencesTest extends FeatureTestCase
         // The new language right away.
         $this->assertSame('nl', session('user_locale'));
         $this->assertSame('Instellingen bijgewerkt', session('flash_success_floating'));
-        $this->actingAs($agent->fresh())->get(route('users.preferences', ['id' => $agent->id]))->assertSee('Voorkeuren');
+        $this->actingAs($agent->fresh())->get(route('own.preferences'))->assertSee('Voorkeuren');
 
         // Saved as it changes, in the background: a new language reloads the page, nothing else does.
         $this->assertTrue($this->postAjax($agent->fresh(), route('users.preferences.save', ['id' => $agent->id]), ['locale' => 'de'])->json('reload'));

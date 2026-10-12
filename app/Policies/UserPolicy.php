@@ -73,14 +73,8 @@ class UserPolicy
      */
     public function updateNotifications(User $user, User $model)
     {
-        if ($user->isAdmin()
-            || $user->id == $model->id
-            || ($user->hasPermission(User::PERM_EDIT_USERS) && !$model->isAdmin())
-        ) {
-            return true;
-        } else {
-            return false;
-        }
+        // One's own: what each person sets for themselves (/notifications).
+        return $user->id == $model->id;
     }
 
     /**
@@ -93,7 +87,8 @@ class UserPolicy
      */
     public function delete(User $user, User $model)
     {
-        if ($user->isAdmin() /*|| $user->id == $model->id*/) {
+        // Not oneself: nobody would be left to sign in as them.
+        if ($user->isAdmin() && $user->id != $model->id) {
             return true;
         } else {
             return false;

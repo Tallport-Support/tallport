@@ -21,7 +21,25 @@ class UserSecurityController extends Controller
 
     public function show($id, Request $request)
     {
-        $user = User::findOrFail($id);
+        // One's own is /security; here, an admin's actions for someone else.
+        if ($id == $request->user()->id) {
+            return redirect()->route('own.security');
+        }
+
+        return $this->page(User::findOrFail($id), $request);
+    }
+
+    /**
+     * One's own Security (/security): two-factor authentication and passkeys.
+     */
+    public function own(Request $request)
+    {
+        return $this->page($request->user(), $request);
+    }
+
+    protected function page(User $user, Request $request)
+    {
+        $id = $user->id;
         $auth_user = $request->user();
         if ($auth_user->id != $user->id && !$auth_user->isAdmin()) {
             abort(403);
@@ -30,7 +48,7 @@ class UserSecurityController extends Controller
 
         return view('users/security', [
             'user'           => $user,
-            'users'          => $auth_user->isAdmin() ? User::all()->except($id) : collect(),
+            'users'          => $own ? [] : (new UsersController())->getUsersForSidebar($id),
             'own'            => $own,
             'required'       => (bool) config('app.two_factor_required'),
             'must_turn_on'   => $own && RequireTwoFactor::mustTurnOn($user),
@@ -63,7 +81,7 @@ class UserSecurityController extends Controller
 
         \Session::flash('flash_success_floating', __('Two-factor authentication and passkeys have been reset.'));
 
-        return redirect()->route('users.security', ['id' => $user->id]);
+        return redirect()->route($user->id == $request->user()->id ? 'own.security' : 'users.security', ['id' => $user->id]);
     }
 
     /**
@@ -79,6 +97,6 @@ class UserSecurityController extends Controller
 
         \Session::flash('flash_success_floating', __('Remembered devices have been forgotten.'));
 
-        return redirect()->route('users.security', ['id' => $user->id]);
+        return redirect()->route('own.security');
     }
 }

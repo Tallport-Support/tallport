@@ -490,7 +490,6 @@
     "Retrieve a list of available IMAP folders from the server": "Получить список доступных папок IMAP с сервера",
     "Retry": "Повторить",
     "Role": "Роль",
-    "Role of the only one administrator can not be changed.": "Роль единственного администратора не может быть изменена.",
     "Roles": "Роли",
     "Run the following command": "Выполнить следующую команду",
     "Running": "Работает",
@@ -703,7 +702,6 @@
     "Start a new conversation when receiving a reply to the closed \/ deleted Chat conversation": "Создавать новый тикет при получении ответа в закрытый \/ удалённый чат",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Не сообщать о временных ошибках получения писем (например, кратковременных обрывах IMAP-соединения), если одна и та же ошибка не повторилась как минимум столько раз в пределах интервала проверки. Укажите 1, чтобы отключить фильтрацию.",
     "The conversation you replied to could not be found.": "Тикет, на который вы ответили, не найден.",
-    "The only active administrator can not be disabled.": "Нельзя отключить единственного активного администратора.",
     "The original email was not stored, below is the shortened copy saved in the database.": "Исходное письмо не сохранено. Ниже приведена сокращённая копия, сохранённая в базе данных.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Указанный адрес эл. почты принадлежит клиенту из недоступного ящика.",
     "The user is disabled or deleted.": "Агент отключён или удалён.",
@@ -1807,5 +1805,12 @@
     "Webhook": "Вебхук",
     "Delete Webhook": "Удалить Вебхук",
     "1 event|:count events": ":count событие|:count события|:count событий",
-    "1 page|:count pages": ":count страница|:count страницы|:count страниц"
+    "1 page|:count pages": ":count страница|:count страницы|:count страниц",
+    "(You)": "(Вы)",
+    "You can't change your own role.": "Вы не можете изменить свою роль.",
+    "You can't turn off your own sign-in.": "Вы не можете отключить собственный вход.",
+    "You can't remove yourself.": "Вы не можете удалить себя.",
+    "Your Profile": "Ваш Профиль",
+    "Password, two-factor, notifications": "Пароль, двухфакторная аутентификация, уведомления",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "То, что вы настраиваете для себя, находится в разделах «Профиль» и «Уведомления», как и у всех."
 }

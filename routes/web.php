@@ -106,6 +106,14 @@ Route::post('/users/preferences/{id}', 'UsersController@preferencesSave')->name(
 Route::get('/users/password/{id}', 'UsersController@password')->name('users.password');
 Route::post('/users/password/{id}', 'UsersController@passwordSave')->name('users.password.save');
 Route::post('/users/ajax', ['uses' => 'UsersController@ajax', 'laroute' => true])->name('users.ajax');
+// One's own settings, the same for everyone: no user id, so they always mean "me" (the pages
+// above with one's own id lead here; Users › a person is managing them).
+Route::get('/profile', 'UsersController@ownProfile')->name('own.profile');
+Route::get('/profile/password', 'UsersController@ownPassword')->name('own.password');
+Route::get('/security', 'UserSecurityController@own')->middleware('password.confirm')->name('own.security');
+Route::get('/preferences', 'UsersController@ownPreferences')->name('own.preferences');
+Route::get('/notifications', 'UsersController@ownNotifications')->name('own.notifications');
+Route::get('/api-keys', 'ApiKeysController@own')->middleware('password.confirm')->name('own.api_keys');
 
 // Conversations
 Route::get('/conversation/{id}', ['uses' => 'ConversationsController@view', 'laroute' => true])->name('conversations.view');

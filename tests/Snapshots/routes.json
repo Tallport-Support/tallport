@@ -126,6 +126,22 @@
         "methods": [
             "GET"
         ],
+        "uri": "api-keys",
+        "name": "own.api_keys",
+        "action": "ApiKeysController@own",
+        "middleware": [
+            "web",
+            "password.confirm",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "api/conversations",
         "name": "api.conversations.index",
         "action": "Api\\ConversationsController@index",
@@ -2088,6 +2104,21 @@
     },
     {
         "methods": [
+            "GET"
+        ],
+        "uri": "notifications",
+        "name": "own.notifications",
+        "action": "UsersController@ownNotifications",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
             "POST"
         ],
         "uri": "passkeys/login",
@@ -2210,6 +2241,51 @@
         "methods": [
             "GET"
         ],
+        "uri": "preferences",
+        "name": "own.preferences",
+        "action": "UsersController@ownPreferences",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "profile",
+        "name": "own.profile",
+        "action": "UsersController@ownProfile",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "profile/password",
+        "name": "own.password",
+        "action": "UsersController@ownPassword",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "reports/conversations",
         "name": "reports.conversations",
         "action": "ReportsController@conversations",
@@ -2260,6 +2336,22 @@
         "action": "ConversationsController@search",
         "middleware": [
             "web",
+            "auth"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "security",
+        "name": "own.security",
+        "action": "UserSecurityController@own",
+        "middleware": [
+            "web",
+            "password.confirm",
             "auth"
         ],
         "where": {

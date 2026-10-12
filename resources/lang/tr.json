@@ -497,7 +497,6 @@
     "Retrieve a list of available IMAP folders from the server": "Sunucudan kullanılabilir IMAP klasörlerinin listesini alın",
     "Retry": "Yeniden dene",
     "Role": "Görev",
-    "Role of the only one administrator can not be changed.": "Tek yöneticinin rolü değiştirilemez.",
     "Roles": "Roller",
     "Run the following command": "Aşağıdaki komutu çalıştırın",
     "Running": "Koşma",
@@ -705,7 +704,6 @@
     "Start a new conversation when receiving a reply to the closed \/ deleted Chat conversation": "Kapatılmış \/ silinmiş sohbet konuşmasına yanıt geldiğinde yeni bir konuşma başlat",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Geçici getirme hatalarını (ör. kısa süreli IMAP bağlantı kopmaları), aynı hata kontrol sıklığı aralığında en az bu kadar kez oluşmadıkça gösterme. Filtrelemeyi devre dışı bırakmak için 1 olarak ayarlayın.",
     "The conversation you replied to could not be found.": "Yanıtladığınız konuşma bulunamadı.",
-    "The only active administrator can not be disabled.": "Tek aktif yönetici devre dışı bırakılamaz.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Belirtilen e-posta, erişilemeyen bir posta kutusundaki bir müşteriye ait.",
     "The user is disabled or deleted.": "Kullanıcı devre dışı bırakılmış veya silinmiş.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Güncelleme devre dışı (APP_DISABLE_UPDATING).",
@@ -1807,5 +1805,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Webhook'u Sil",
     "1 event|:count events": ":count olay",
-    "1 page|:count pages": ":count sayfa"
+    "1 page|:count pages": ":count sayfa",
+    "(You)": "(Siz)",
+    "You can't change your own role.": "Kendi rolünüzü değiştiremezsiniz.",
+    "You can't turn off your own sign-in.": "Kendi oturum açmanızı kapatamazsınız.",
+    "You can't remove yourself.": "Kendinizi kaldıramazsınız.",
+    "Your Profile": "Profiliniz",
+    "Password, two-factor, notifications": "Parola, iki aşamalı doğrulama, bildirimler",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Kendiniz için ayarladıklarınız, herkes için olduğu gibi Profil ve Bildirimler altındadır."
 }

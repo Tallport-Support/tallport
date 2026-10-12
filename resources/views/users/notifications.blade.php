@@ -8,17 +8,10 @@
     @section('body_attrs')@parent data-own_profile="true" @endsection
 @endif
 
-{{-- One's own: a level beside the sidebar. Someone else's: Settings › Users › the person › Notifications.
-     Saved as it changes, the whole form (modules add to the table: notifications_table.*). --}}
+{{-- One's own Notifications (/notifications), a level beside the sidebar; nobody sets another
+     person's. Saved as it changes, the whole form (modules add to the table: notifications_table.*). --}}
 @section('drilldown')
-    @if ($user->id != Auth::user()->id)
-        @include('users/columns/users', ['user_section' => 'notifications'])
-        @include('users/columns/user', ['user_section' => 'notifications'])
-    @endif
     <x-fruit::drilldown-column :title="__('Notifications')" id="user-notifications">
-        @if ($user->id != Auth::user()->id)
-            <x-slot:back><x-fruit::back-link :href="route('users.profile', ['id' => $user->id])" wire:navigate>{{ $user->getFullName() }}</x-fruit::back-link></x-slot:back>
-        @endif
         <x-fruit::page width="medium">
             <form method="POST" action="{{ route('users.notifications.save', ['id' => $user->id]) }}" class="user-subscriptions" x-on:change="Tallport.autoSave($el)">
                 {{ csrf_field() }}

@@ -496,7 +496,6 @@
     "Retrieve a list of available IMAP folders from the server": "Rescatar la lista de carpetas IMAP disponibles desde el servidor",
     "Retry": "Reintentar",
     "Role": "Rol",
-    "Role of the only one administrator can not be changed.": "El rol del único administrador no puede ser cambiado",
     "Roles": "Roles",
     "Run the following command": "Ejecute el siguiente comando",
     "Running": "Corriendo",
@@ -705,7 +704,6 @@
     "Start a new conversation when receiving a reply to the closed \/ deleted Chat conversation": "Iniciar una nueva conversación al recibir una respuesta a una conversación de chat cerrada o borrada",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Ignorar los errores de rescate transitorios (p. ej., breves caídas de la conexión IMAP) a menos que el mismo error se produzca al menos este número de veces dentro del intervalo de la frecuencia de búsqueda. Establezca 1 para desactivar el filtrado.",
     "The conversation you replied to could not be found.": "No se encontró la conversación a la que respondió.",
-    "The only active administrator can not be disabled.": "No se puede deshabilitar al único administrador activo.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "El correo electrónico indicado pertenece a un cliente de una cuenta de correo inaccesible.",
     "The user is disabled or deleted.": "El usuario está deshabilitado o eliminado.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "La actualización está deshabilitada (APP_DISABLE_UPDATING).",
@@ -1807,5 +1805,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Eliminar Webhook",
     "1 event|:count events": "1 evento|:count eventos",
-    "1 page|:count pages": "1 página|:count páginas"
+    "1 page|:count pages": "1 página|:count páginas",
+    "(You)": "(Usted)",
+    "You can't change your own role.": "No puede cambiar su propio rol.",
+    "You can't turn off your own sign-in.": "No puede desactivar su propio inicio de sesión.",
+    "You can't remove yourself.": "No puede eliminarse a sí mismo.",
+    "Your Profile": "Su Perfil",
+    "Password, two-factor, notifications": "Contraseña, dos factores, notificaciones",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Lo que configura para usted mismo está en Perfil y Notificaciones, como para todos."
 }

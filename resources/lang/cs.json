@@ -502,7 +502,6 @@
     "Retrieve a list of available IMAP folders from the server": "Získání seznamu dostupných složek IMAP ze serveru",
     "Retry": "Opakovat",
     "Role": "Role",
-    "Role of the only one administrator can not be changed.": "Roli jediného správce nelze změnit.",
     "Roles": "Role",
     "Run the following command": "Spusťte následující příkaz",
     "Running": "Běží",
@@ -705,7 +704,6 @@
     "Select Conversation": "Vybrat Konverzaci",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Potlačit přechodné chyby načítání (např. krátké výpadky připojení IMAP), pokud se stejná chyba nevyskytne alespoň tolikrát v rámci intervalu frekvence kontrol. Hodnotou 1 filtrování vypnete.",
     "The conversation you replied to could not be found.": "Konverzaci, na kterou jste odpověděli, se nepodařilo najít.",
-    "The only active administrator can not be disabled.": "Jediného aktivního správce nelze deaktivovat.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Zadaný e-mail patří zákazníkovi z nepřístupné schránky.",
     "The user is disabled or deleted.": "Uživatel je deaktivován nebo odstraněn.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Aktualizace jsou zakázány (APP_DISABLE_UPDATING).",
@@ -1807,5 +1805,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Smazat Webhook",
     "1 event|:count events": ":count událost|:count události|:count událostí",
-    "1 page|:count pages": ":count stránka|:count stránky|:count stránek"
+    "1 page|:count pages": ":count stránka|:count stránky|:count stránek",
+    "(You)": "(Vy)",
+    "You can't change your own role.": "Nemůžete změnit svou vlastní roli.",
+    "You can't turn off your own sign-in.": "Nemůžete vypnout své vlastní přihlášení.",
+    "You can't remove yourself.": "Nemůžete odebrat sami sebe.",
+    "Your Profile": "Váš Profil",
+    "Password, two-factor, notifications": "Heslo, dvoufázové ověření, oznámení",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Co si nastavujete sami, najdete v Profilu a Oznámeních, stejně jako všichni ostatní."
 }

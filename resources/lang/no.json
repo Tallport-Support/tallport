@@ -492,7 +492,6 @@
     "Retrieve a list of available IMAP folders from the server": "Hent en liste over tilgjengelige IMAP-mapper fra serveren",
     "Retry": "Prøv igjen",
     "Role": "Rolle",
-    "Role of the only one administrator can not be changed.": "Rollen til den eneste administratoren kan ikke endres.",
     "Roles": "Roller",
     "Run Workflow": "Kjør Arbeidsflyt",
     "Run the following command": "Kjør følgende kommando",
@@ -709,7 +708,6 @@
     "Start a new conversation when receiving a reply to the closed \/ deleted Chat conversation": "Start en ny samtale når det kommer et svar på en lukket \/ slettet chatsamtale",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Undertrykk forbigående hentefeil (f.eks. korte brudd i IMAP-tilkoblingen) med mindre den samme feilen oppstår minst så mange ganger innenfor sjekkintervallet. Sett til 1 for å slå av filtreringen.",
     "The conversation you replied to could not be found.": "Samtalen du svarte på, ble ikke funnet.",
-    "The only active administrator can not be disabled.": "Den eneste aktive administratoren kan ikke deaktiveres.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Den angitte e-postadressen tilhører en kunde fra en utilgjengelig postkasse.",
     "The user is disabled or deleted.": "Brukeren er deaktivert eller slettet.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Oppdatering er deaktivert (APP_DISABLE_UPDATING).",
@@ -1810,5 +1808,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Slett Webhook",
     "1 event|:count events": "1 hendelse|:count hendelser",
-    "1 page|:count pages": "1 side|:count sider"
+    "1 page|:count pages": "1 side|:count sider",
+    "(You)": "(Deg)",
+    "You can't change your own role.": "Du kan ikke endre din egen rolle.",
+    "You can't turn off your own sign-in.": "Du kan ikke slå av din egen pålogging.",
+    "You can't remove yourself.": "Du kan ikke fjerne deg selv.",
+    "Your Profile": "Din Profil",
+    "Password, two-factor, notifications": "Passord, tofaktor, varsler",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Det du stiller inn for deg selv, finner du under Profil og Varsler, som for alle andre."
 }

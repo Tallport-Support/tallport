@@ -19,7 +19,7 @@ class KeyboardShortcutsTest extends FeatureTestCase
             ->assertSee('data-fruit-dialog="keyboard-shortcuts"', false)
             ->assertSee('[data-fruit-dialog=keyboard-shortcuts]', false);
 
-        $this->get(route('users.preferences', ['id' => $user->id]))->assertSee('name="keyboard_shortcuts"', false);
+        $this->get(route('own.preferences'))->assertSee('name="keyboard_shortcuts"', false);
         \Session::start();
         $this->post(route('users.preferences.save', ['id' => $user->id]), [
             '_token' => csrf_token(), 'keyboard_shortcuts_shown' => 1,

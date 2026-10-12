@@ -499,7 +499,6 @@
     "Retrieve a list of available IMAP folders from the server": "Hämta en lista över tillgängliga IMAP-mappar från servern",
     "Retry": "Försök igen",
     "Role": "Roll",
-    "Role of the only one administrator can not be changed.": "Rollen för den enda administratören kan inte ändras.",
     "Roles": "Roller",
     "Run the following command": "Kör följande kommando",
     "Running": "Kör",
@@ -705,7 +704,6 @@
     "Start a new conversation when receiving a reply to the closed \/ deleted Chat conversation": "Starta en ny konversation när ett svar tas emot på en stängd \/ raderad chattkonversation",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Undertryck tillfälliga hämtningsfel (t.ex. korta avbrott i IMAP-anslutningen) om inte samma fel inträffar minst så här många gånger inom kontrollintervallet. Ange 1 för att inaktivera filtreringen.",
     "The conversation you replied to could not be found.": "Konversationen som du svarade på kunde inte hittas.",
-    "The only active administrator can not be disabled.": "Den enda aktiva administratören kan inte inaktiveras.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Den angivna e-postadressen tillhör en kund i en otillgänglig brevlåda.",
     "The user is disabled or deleted.": "Användaren är inaktiverad eller raderad.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Uppdatering är inaktiverad (APP_DISABLE_UPDATING).",
@@ -1807,5 +1805,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Ta Bort Webhook",
     "1 event|:count events": "1 händelse|:count händelser",
-    "1 page|:count pages": "1 sida|:count sidor"
+    "1 page|:count pages": "1 sida|:count sidor",
+    "(You)": "(Du)",
+    "You can't change your own role.": "Du kan inte ändra din egen roll.",
+    "You can't turn off your own sign-in.": "Du kan inte stänga av din egen inloggning.",
+    "You can't remove yourself.": "Du kan inte ta bort dig själv.",
+    "Your Profile": "Din Profil",
+    "Password, two-factor, notifications": "Lösenord, tvåfaktor, aviseringar",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Det du ställer in för dig själv finns under Profil och Aviseringar, som för alla."
 }

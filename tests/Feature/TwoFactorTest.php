@@ -126,14 +126,14 @@ class TwoFactorTest extends FeatureTestCase
         $user = $this->createUser(['email' => 'agent@example.org', 'password' => \Hash::make('secret-password')]);
         $this->logIn()->assertRedirect('/home');
 
-        $this->actingAs($user)->get('/mailbox/1')->assertRedirect(route('users.security', ['id' => $user->id]));
-        $this->actingAs($user)->get(route('users.security', ['id' => $user->id]))->assertStatus(200)
+        $this->actingAs($user)->get('/mailbox/1')->assertRedirect(route('own.security'));
+        $this->actingAs($user)->get(route('own.security'))->assertStatus(200)
             ->assertSee(__('Two-factor authentication is required. Turn it on to continue.'));
         $this->actingAs($user)->post('/conversation/ajax', ['_token' => csrf_token(), 'action' => 'x'], ['X-Requested-With' => 'XMLHttpRequest'])
             ->assertStatus(403)->assertJson(['msg' => __('Turn on two-factor authentication first.')]);
 
         $with_two_factor = $this->userWithTwoFactor(['email' => 'other@example.org']);
-        $this->actingAs($with_two_factor)->get('/users/profile/'.$with_two_factor->id)->assertStatus(200);
+        $this->actingAs($with_two_factor)->get(route('own.profile'))->assertStatus(200);
     }
 
     // Setting it up.
@@ -147,14 +147,14 @@ class TwoFactorTest extends FeatureTestCase
         $user->refresh();
         $this->assertNotNull($user->two_factor_secret);
         $this->assertFalse($user->hasEnabledTwoFactorAuthentication(), 'Not before a code confirms it.');
-        $this->get(route('users.security', ['id' => $user->id]))->assertSee('<svg', false);
+        $this->get(route('own.security'))->assertSee('<svg', false);
 
         $secret = decrypt($user->two_factor_secret);
         $this->postForm('/user/confirmed-two-factor-authentication', ['code' => $this->code($secret)])->assertRedirect();
         $this->assertTrue($user->fresh()->hasEnabledTwoFactorAuthentication());
 
         $codes = $user->fresh()->recoveryCodes();
-        $this->get(route('users.security', ['id' => $user->id, 'codes' => 1]))->assertSee($codes[0]);
+        $this->get(route('own.security', ['codes' => 1]))->assertSee($codes[0]);
 
         $this->postForm('/user/two-factor-recovery-codes', [])->assertRedirect();
         $this->assertNotSame($codes, $user->fresh()->recoveryCodes());
@@ -173,11 +173,11 @@ class TwoFactorTest extends FeatureTestCase
         $this->actingAs($user);
 
         // The page opens and asks for the password in place; its settings stay hidden.
-        $this->get(route('users.security', ['id' => $user->id]))->assertOk()
+        $this->get(route('own.security'))->assertOk()
             ->assertSee('password-gate', false)->assertDontSee(__('Two-Factor Authentication'));
         // A change made without confirming goes back to the page (scripts get an error).
-        $this->from(route('users.security', ['id' => $user->id]))->postForm(route('two-factor.enable'), [])
-            ->assertRedirect(route('users.security', ['id' => $user->id]));
+        $this->from(route('own.security'))->postForm(route('two-factor.enable'), [])
+            ->assertRedirect(route('own.security'));
         $this->assertFalse((bool) $user->fresh()->two_factor_secret);
         $this->postJson(route('users.api_keys.action', ['id' => $user->id]), ['action' => 'create'])->assertStatus(423);
 
@@ -187,7 +187,7 @@ class TwoFactorTest extends FeatureTestCase
         $gate->set('password', 'secret-password')->call('confirm')->assertHasNoErrors()->assertRedirect();
         $this->assertTrue(\App\Auth\PasswordConfirmation::isRecent());
 
-        $this->withSession(['auth.password_confirmed_at' => time()])->get(route('users.security', ['id' => $user->id]))
+        $this->withSession(['auth.password_confirmed_at' => time()])->get(route('own.security'))
             ->assertSee(__('Two-Factor Authentication'))->assertDontSee('password-gate', false);
     }
 
@@ -222,7 +222,7 @@ class TwoFactorTest extends FeatureTestCase
         $this->postJson(route('passkey.store'), ['name' => 'Laptop', 'credential' => []], ['X-CSRF-TOKEN' => csrf_token()])->assertStatus(422);
 
         $passkey = $user->passkeys()->create(['name' => 'Phone', 'credential_id' => 'abc', 'credential' => []]);
-        $this->get(route('users.security', ['id' => $user->id]))->assertSee('Phone');
+        $this->get(route('own.security'))->assertSee('Phone');
         $this->postForm(route('passkey.destroy', ['passkey' => $passkey->id]), [], 'delete')->assertRedirect();
         $this->assertSame(0, $user->passkeys()->count());
     }

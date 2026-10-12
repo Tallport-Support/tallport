@@ -506,7 +506,6 @@
     "Retrieve a list of available IMAP folders from the server": "Eine Liste der verfügbaren IMAP Ordner vom Server anfordern",
     "Retry": "Erneut probieren",
     "Role": "Rolle",
-    "Role of the only one administrator can not be changed.": "Rolle des einzigen Administrators kann nicht geändert werden.",
     "Roles": "Rollen",
     "Run the following command": "Führen Sie den folgenden Befehl aus",
     "Running": "Läuft",
@@ -702,7 +701,6 @@
     "Only deleted conversations can be restored.": "Nur gelöschte Gespräche können wiederhergestellt werden.",
     "Paste as Plain Text": "Als Reinen Text Einfügen",
     "The conversation you replied to could not be found.": "Das Gespräch, auf das Sie geantwortet haben, wurde nicht gefunden.",
-    "The only active administrator can not be disabled.": "Der einzige aktive Administrator kann nicht deaktiviert werden.",
     "The user is disabled or deleted.": "Der Benutzer ist deaktiviert oder gelöscht.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Aktualisierungen sind deaktiviert (APP_DISABLE_UPDATING).",
     "You no longer have access to the conversation you replied to. Please contact your administrator.": "Sie haben keinen Zugriff mehr auf das Gespräch, auf das Sie geantwortet haben. Bitte wenden Sie sich an Ihren Administrator.",
@@ -1803,5 +1801,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Webhook Löschen",
     "1 event|:count events": "1 Ereignis|:count Ereignisse",
-    "1 page|:count pages": "1 Seite|:count Seiten"
+    "1 page|:count pages": "1 Seite|:count Seiten",
+    "(You)": "(Sie)",
+    "You can't change your own role.": "Sie können Ihre eigene Rolle nicht ändern.",
+    "You can't turn off your own sign-in.": "Sie können Ihre eigene Anmeldung nicht ausschalten.",
+    "You can't remove yourself.": "Sie können sich nicht selbst entfernen.",
+    "Your Profile": "Ihr Profil",
+    "Password, two-factor, notifications": "Passwort, Zwei-Faktor, Benachrichtigungen",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Was Sie für sich selbst einstellen, finden Sie wie alle anderen unter Profil und Benachrichtigungen."
 }

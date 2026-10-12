@@ -498,7 +498,6 @@
     "Retrieve a list of available IMAP folders from the server": "Отримати список доступних папок IMAP з сервера",
     "Retry": "Повторити",
     "Role": "Роль",
-    "Role of the only one administrator can not be changed.": "Роль єдиного адміністратора не можна змінити.",
     "Roles": "Ролі",
     "Run the following command": "Виконайте наступну команду",
     "Running": "Виконується",
@@ -704,7 +703,6 @@
     "Start a new conversation when receiving a reply to the closed \/ deleted Chat conversation": "Починати нову розмову, якщо надходить відповідь у закритий \/ видалений чат",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Приховувати тимчасові помилки отримання (наприклад, короткочасні розриви з'єднання IMAP), якщо та сама помилка не виникла щонайменше стільки разів у межах інтервалу перевірки. Встановіть 1, щоб вимкнути фільтрацію.",
     "The conversation you replied to could not be found.": "Розмову, на яку ви відповіли, не знайдено.",
-    "The only active administrator can not be disabled.": "Неможливо вимкнути єдиного активного адміністратора.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "Вказана електронна адреса належить клієнту з недоступної поштової скриньки.",
     "The user is disabled or deleted.": "Користувача вимкнено або видалено.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "Оновлення вимкнено (APP_DISABLE_UPDATING).",
@@ -1807,5 +1805,12 @@
     "Webhook": "Вебхук",
     "Delete Webhook": "Видалити Вебхук",
     "1 event|:count events": ":count подія|:count події|:count подій",
-    "1 page|:count pages": ":count сторінка|:count сторінки|:count сторінок"
+    "1 page|:count pages": ":count сторінка|:count сторінки|:count сторінок",
+    "(You)": "(Ви)",
+    "You can't change your own role.": "Ви не можете змінити власну роль.",
+    "You can't turn off your own sign-in.": "Ви не можете вимкнути власний вхід.",
+    "You can't remove yourself.": "Ви не можете видалити себе.",
+    "Your Profile": "Ваш Профіль",
+    "Password, two-factor, notifications": "Пароль, двофакторна автентифікація, сповіщення",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Те, що ви налаштовуєте для себе, знаходиться в розділах «Профіль» і «Сповіщення», як і в усіх."
 }

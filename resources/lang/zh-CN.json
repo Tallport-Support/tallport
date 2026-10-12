@@ -492,7 +492,6 @@
     "Retrieve a list of available IMAP folders from the server": "从服务器检索可用 IMAP 文件夹的列表",
     "Retry": "重试",
     "Role": "角色",
-    "Role of the only one administrator can not be changed.": "唯一管理员的角色无法更改",
     "Roles": "角色",
     "Run Workflow": "运行工作流程",
     "Run the following command": "运行以下命令",
@@ -707,7 +706,6 @@
     "Start a new conversation when receiving a reply to the closed \/ deleted Chat conversation": "收到对已关闭\/已删除聊天对话的回复时，开始新对话",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "忽略临时性获取错误（例如 IMAP 连接短暂中断），除非同一错误在检查频率的时间窗口内至少出现此次数。设置为 1 可禁用过滤。",
     "The conversation you replied to could not be found.": "找不到您回复的对话。",
-    "The only active administrator can not be disabled.": "无法禁用唯一的活跃管理员。",
     "The specified email belongs to a customer from an inaccessible mailbox.": "指定的电子邮件属于您无权访问的邮箱中的客户。",
     "The user is disabled or deleted.": "该用户已被禁用或删除。",
     "Updating is disabled (APP_DISABLE_UPDATING).": "更新已禁用（APP_DISABLE_UPDATING）。",
@@ -1808,5 +1806,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "删除 Webhook",
     "1 event|:count events": ":count 个事件",
-    "1 page|:count pages": ":count 个页面"
+    "1 page|:count pages": ":count 个页面",
+    "(You)": "（您）",
+    "You can't change your own role.": "您不能更改自己的角色。",
+    "You can't turn off your own sign-in.": "您不能关闭自己的登录。",
+    "You can't remove yourself.": "您不能删除自己。",
+    "Your Profile": "您的个人资料",
+    "Password, two-factor, notifications": "密码、双重验证、通知",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "您为自己设置的内容位于“个人资料”和“通知”中，与所有人一样。"
 }

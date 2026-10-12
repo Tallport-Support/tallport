@@ -16,7 +16,7 @@
                         @else
                             <x-fruit::avatar>{{ mb_strtoupper(mb_substr((string) $users_item->first_name, 0, 1).mb_substr((string) $users_item->last_name, 0, 1)) }}</x-fruit::avatar>
                         @endif
-                        <span class="users-row__name">{{ $users_item->getFullName() }}<small class="f-help">@filter('users.email', $users_item->email)</small></span>
+                        <span class="users-row__name"><span>{{ $users_item->getFullName() }}@if ($users_item->id == Auth::id()) <span class="f-muted">{{ __('(You)') }}</span>@endif</span><small class="f-help">@filter('users.email', $users_item->email)</small></span>
                     </span>
                 </a>
             @endforeach

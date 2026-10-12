@@ -502,7 +502,6 @@
     "Retrieve a list of available IMAP folders from the server": "IMAP mappák listájának lekérése a szerverről",
     "Retry": "Újrapróbálás",
     "Role": "Szerepkör",
-    "Role of the only one administrator can not be changed.": "Az egyetlen adminisztrátor szerepköre nem változtatható meg.",
     "Roles": "Szerepkörök",
     "Run the following command": "Futtasd a következő parancsot",
     "Running": "Futtatás",
@@ -705,7 +704,6 @@
     "Start a new conversation when receiving a reply to the closed \/ deleted Chat conversation": "Új beszélgetés indítása, ha válasz érkezik egy lezárt \/ törölt chatbeszélgetésre",
     "Suppress transient fetch errors (e.g. brief IMAP connection drops) unless the same error occurs at least this many times within the check frequency window. Set to 1 to disable filtering.": "Az átmeneti lekérési hibák (pl. rövid IMAP-kapcsolatmegszakadások) elnyomása, kivéve ha ugyanaz a hiba legalább ennyiszer előfordul az ellenőrzési gyakoriság időablakán belül. Állítsd 1-re a szűrés kikapcsolásához.",
     "The conversation you replied to could not be found.": "A beszélgetés, amelyre válaszoltál, nem található.",
-    "The only active administrator can not be disabled.": "Az egyetlen aktív adminisztrátor nem tiltható le.",
     "The specified email belongs to a customer from an inaccessible mailbox.": "A megadott e-mail cím egy nem elérhető postafiókhoz tartozó ügyfélé.",
     "The user is disabled or deleted.": "A felhasználó le van tiltva vagy törölve lett.",
     "Updating is disabled (APP_DISABLE_UPDATING).": "A frissítés le van tiltva (APP_DISABLE_UPDATING).",
@@ -1807,5 +1805,12 @@
     "Webhook": "Webhook",
     "Delete Webhook": "Webhook Törlése",
     "1 event|:count events": "1 esemény|:count esemény",
-    "1 page|:count pages": "1 oldal|:count oldal"
+    "1 page|:count pages": "1 oldal|:count oldal",
+    "(You)": "(Ön)",
+    "You can't change your own role.": "Nem módosíthatja a saját szerepkörét.",
+    "You can't turn off your own sign-in.": "Nem kapcsolhatja ki a saját bejelentkezését.",
+    "You can't remove yourself.": "Nem távolíthatja el saját magát.",
+    "Your Profile": "Az Ön Profilja",
+    "Password, two-factor, notifications": "Jelszó, kétlépcsős azonosítás, értesítések",
+    "What you set for yourself is under Profile and Notifications, as it is for everyone.": "Amit saját magának állít be, az a Profil és az Értesítések alatt található, ahogy mindenkinél."
 }

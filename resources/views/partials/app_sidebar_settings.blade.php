@@ -2,12 +2,11 @@
      settings and Manage, each where the user may go (back to the inbox: the bar above, layouts/app). --}}
 @php
     $settings_route = Route::currentRouteName();
-    $settings_own = str_starts_with((string) $settings_route, 'users.') && request()->route('id') == $sidebar_user->id;
     $settings_section = request()->route('section') ?: 'general';
 @endphp
 
 {{-- The user's account as a card (as Apple's account in System Settings), its pages under it. --}}
-<a href="{{ route('users.profile', ['id' => $sidebar_user->id]) }}" class="f-sidebar__item app-sidebar__account-card" wire:navigate data-search="{{ __('Account') }}">
+<a href="{{ route('own.profile') }}" class="f-sidebar__item app-sidebar__account-card" wire:navigate data-search="{{ __('Account') }}">
     @if ($sidebar_user->photo_url)
         <x-fruit::avatar :src="$sidebar_user->getPhotoUrl()" class="app-sidebar__account-photo" />
     @else
@@ -16,13 +15,11 @@
     <span class="f-sidebar__identity"><strong>{{ $sidebar_user->getFullName() }}</strong><small>{{ $sidebar_user->email }}</small></span>
 </a>
 <div class="app-sidebar__account-pages" role="group" aria-label="{{ __('Account') }}">
-        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('users/profile')" :href="route('users.profile', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.profile'"><x-slot:icon><x-icon.circle-user class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Profile') }}</x-fruit::sidebar-item>
-        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('users/security', 'users/password')" :href="route('users.security', ['id' => $sidebar_user->id])" :current="$settings_own && in_array($settings_route, ['users.security', 'users.password'])"><x-slot:icon><x-icon.lock class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Security') }}</x-fruit::sidebar-item>
-        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('users/preferences')" :href="route('users.preferences', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.preferences'"><x-slot:icon><x-icon.sliders-horizontal class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Preferences') }}</x-fruit::sidebar-item>
-        @if ($sidebar_user->can('updateNotifications', $sidebar_user))
-            <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('users/notifications')" :href="route('users.notifications', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.notifications'"><x-slot:icon><x-icon.bell class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Notifications') }}</x-fruit::sidebar-item>
-        @endif
-        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('users/api_keys')" :href="route('users.api_keys', ['id' => $sidebar_user->id])" :current="$settings_own && $settings_route == 'users.api_keys'"><x-slot:icon><x-icon.key-round class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('API Keys') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('livewire/user-profile', 'users/password')" :href="route('own.profile')" :current="in_array($settings_route, ['own.profile', 'own.password'])"><x-slot:icon><x-icon.circle-user class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Profile') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('users/security')" :href="route('own.security')" :current="$settings_route == 'own.security'"><x-slot:icon><x-icon.lock class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Security') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('users/preferences')" :href="route('own.preferences')" :current="$settings_route == 'own.preferences'"><x-slot:icon><x-icon.sliders-horizontal class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Preferences') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('users/notifications')" :href="route('own.notifications')" :current="$settings_route == 'own.notifications'"><x-slot:icon><x-icon.bell class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Notifications') }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('users/api_keys')" :href="route('own.api_keys')" :current="$settings_route == 'own.api_keys'"><x-slot:icon><x-icon.key-round class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('API Keys') }}</x-fruit::sidebar-item>
     </div>
 
 @if ($sidebar_user->isAdmin())

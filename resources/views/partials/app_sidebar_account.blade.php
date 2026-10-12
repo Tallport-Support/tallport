@@ -31,7 +31,7 @@
                 <li class="web-notifications-empty">
                     <x-fruit::empty-state>
                         <x-slot:title>{{ __('Notifications will start showing up here soon') }}</x-slot:title>
-                        <a href="{{ route('users.notifications', ['id' => Auth::user()->id]) }}">{{ __('Update your notification settings') }}</a>
+                        <a href="{{ route('own.notifications') }}">{{ __('Update your notification settings') }}</a>
                     </x-fruit::empty-state>
                 </li>
             @endif
@@ -45,13 +45,13 @@
         <span class="photo-sm">@include('partials/person_photo', ['person' => Auth::user()])</span>
         <span class="app-sidebar__account-name">{{ Auth::user()->getFullName() }}@action('menu.user.name_append', Auth::user())</span>
     </x-slot:trigger>
-    <x-fruit::menu-link :href="route('users.profile', ['id' => Auth::user()->id])">{{ __('Profile') }}</x-fruit::menu-link>
-    <x-fruit::menu-link :href="route('users.security', ['id' => Auth::user()->id])">{{ __('Security') }}</x-fruit::menu-link>
-    <x-fruit::menu-link :href="route('users.preferences', ['id' => Auth::user()->id])">{{ __('Preferences') }}</x-fruit::menu-link>
+    <x-fruit::menu-link :href="route('own.profile')">{{ __('Profile') }}</x-fruit::menu-link>
+    <x-fruit::menu-link :href="route('own.security')">{{ __('Security') }}</x-fruit::menu-link>
+    <x-fruit::menu-link :href="route('own.preferences')">{{ __('Preferences') }}</x-fruit::menu-link>
     @if (Auth::user()->can('updateNotifications', Auth::user()))
-        <x-fruit::menu-link :href="route('users.notifications', ['id' => Auth::user()->id])">{{ __('Notifications') }}</x-fruit::menu-link>
+        <x-fruit::menu-link :href="route('own.notifications')">{{ __('Notifications') }}</x-fruit::menu-link>
     @endif
-    <x-fruit::menu-link :href="route('users.api_keys', ['id' => Auth::user()->id])">{{ __('API Keys') }}</x-fruit::menu-link>
+    <x-fruit::menu-link :href="route('own.api_keys')">{{ __('API Keys') }}</x-fruit::menu-link>
     <x-fruit::menu-separator />
     @if (Auth::user()->hasKeyboardShortcuts())
         <x-fruit::menu-link href="#" x-on:click.prevent="document.querySelector('[data-fruit-dialog=keyboard-shortcuts]').showModal()" shortcut="?">{{ __('Keyboard Shortcuts') }}</x-fruit::menu-link>

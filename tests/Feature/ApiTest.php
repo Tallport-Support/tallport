@@ -306,14 +306,14 @@ class ApiTest extends FeatureTestCase
     {
         $this->actingAs($this->agent)->withSession(['auth.password_confirmed_at' => time()]);
 
-        $this->get(route('users.api_keys', ['id' => $this->agent->id]))->assertOk()->assertSee('New API Key');
+        $this->get(route('own.api_keys'))->assertOk()->assertSee('New API Key');
         $this->post(route('users.api_keys.action', ['id' => $this->agent->id]), [
             'action' => 'create', 'name' => 'Zapier', 'ability' => ApiKey::ABILITY_WRITE, 'mailboxes' => [$this->mailbox->id],
         ])->assertRedirect();
         $key = ApiKey::where('user_id', $this->agent->id)->first();
         $this->assertSame('Zapier', $key->name);
         $this->assertSame([$this->mailbox->id], $key->mailboxes);
-        $this->get(route('users.api_keys', ['id' => $this->agent->id]))->assertSee('…'.$key->token_preview);
+        $this->get(route('own.api_keys'))->assertSee('…'.$key->token_preview);
 
         $this->post(route('users.api_keys.action', ['id' => $this->agent->id]), ['action' => 'revoke', 'key_id' => $key->id]);
         $this->assertNull(ApiKey::find($key->id));
