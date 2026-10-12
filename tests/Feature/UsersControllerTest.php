@@ -66,58 +66,53 @@ class UsersControllerTest extends FeatureTestCase
 
     // Profile.
 
+    protected function profileOf(User $as, User $user)
+    {
+        return \Livewire\Livewire::actingAs($as)->test(\App\Livewire\UserProfile::class, ['user' => $user]);
+    }
+
     public function testPhotoIsResizedAndSaved()
     {
         $agent = $this->createUser();
 
-        $this->postForm($agent, '/users/profile/'.$agent->id, $this->profile($agent, [
-            'photo_url' => UploadedFile::fake()->image('me.jpg', 400, 300),
-        ]))->assertRedirect(route('users.profile', ['id' => $agent->id]))->assertSessionHasNoErrors();
+        $this->profileOf($agent, $agent)->set('photo', UploadedFile::fake()->image('me.jpg', 400, 300))->assertHasNoErrors();
 
         $photo = $agent->fresh()->photo_url;
         $this->assertStringEndsWith('.jpg', $photo);
         \Storage::disk('local')->assertExists(User::PHOTO_DIRECTORY.'/'.$photo);
 
         // And removed again.
-        $response = $this->postAjax($agent, '/users/ajax', ['action' => 'delete_photo', 'user_id' => $agent->id])->json();
-        $this->assertSame('success', $response['status']);
+        $this->profileOf($agent, $agent->fresh())->call('deletePhoto');
         $this->assertSame('', $agent->fresh()->photo_url);
         \Storage::disk('local')->assertMissing(User::PHOTO_DIRECTORY.'/'.$photo);
     }
 
     public function testBrokenImageIsRejected()
     {
-
         $agent = $this->createUser();
 
-        $this->postForm($agent, '/users/profile/'.$agent->id, $this->profile($agent, [
-            'job_title' => 'Changed',
-            'photo_url' => UploadedFile::fake()->createWithContent('me.gif', 'GIF89a'),
-        ]))->assertRedirect(route('users.profile', ['id' => $agent->id]))->assertSessionHasErrors('photo_url');
+        $this->profileOf($agent, $agent)->set('photo', UploadedFile::fake()->createWithContent('me.gif', 'GIF89a'))->assertHasErrors('photo');
 
         $this->assertNull($agent->fresh()->photo_url);
-        $this->assertNull($agent->fresh()->job_title);
     }
 
     /**
-     * A photo sent with a field that fails validation isn't saved, and the current
-     * photo stays (U7).
+     * Each field is checked and saved on its own: one that fails shows why and isn't saved, and
+     * leaves the rest as they were (U7).
      */
-    public function testPhotoIsNotSavedWhenAnotherFieldIsInvalid()
+    public function testAnInvalidFieldIsNotSaved()
     {
-        $agent = $this->createUser();
-        $this->postForm($agent, '/users/profile/'.$agent->id, $this->profile($agent, [
-            'photo_url' => UploadedFile::fake()->image('me.jpg', 400, 300),
-        ]))->assertSessionHasNoErrors();
+        $agent = $this->createUser(['first_name' => 'Robin']);
+        $profile = $this->profileOf($agent, $agent)->set('photo', UploadedFile::fake()->image('me.jpg', 400, 300));
         $photo = $agent->fresh()->photo_url;
 
-        $this->postForm($agent, '/users/profile/'.$agent->id, $this->profile($agent, [
-            'first_name' => '',
-            'photo_url'  => UploadedFile::fake()->image('new.jpg', 400, 300),
-        ]))->assertSessionHasErrors('first_name');
+        $profile->set('first_name', '')->assertHasErrors('first_name')
+            ->set('job_title', 'Support lead')->assertHasNoErrors('job_title');
 
-        $this->assertSame($photo, $agent->fresh()->photo_url);
-        $this->assertSame([User::PHOTO_DIRECTORY.'/'.$photo], \Storage::disk('local')->files(User::PHOTO_DIRECTORY));
+        $agent->refresh();
+        $this->assertSame('Robin', $agent->first_name);
+        $this->assertSame('Support lead', $agent->job_title);
+        $this->assertSame($photo, $agent->photo_url);
     }
 
     public function testEmailOfAMailboxIsRefused()
@@ -125,55 +120,42 @@ class UsersControllerTest extends FeatureTestCase
         $agent = $this->createUser();
         $mailbox = $this->createMailbox([], ['email' => 'support@example.org']);
 
-        $this->postForm($this->admin, '/users/profile/'.$agent->id, $this->profile($agent, ['email' => $mailbox->email]))
-            ->assertRedirect(route('users.profile', ['id' => $agent->id]))
-            ->assertSessionHasErrors('email');
+        $this->profileOf($this->admin, $agent)->set('email', $mailbox->email)->assertHasErrors('email');
 
         $this->assertNotSame('support@example.org', $agent->fresh()->email);
     }
 
-    public function testLanguageTimezoneAndTimeFormatAreNotSetThroughTheProfile()
+    /**
+     * Language, timezone and time format are the user's own preferences (users/preferences);
+     * password and type aren't the profile's either: it has no such fields.
+     */
+    public function testOnlyTheProfilesFieldsCanBeSet()
     {
-        // They're the user's own preferences (users/preferences), not an admin's to change.
-        $other = $this->createUser(['locale' => 'nl', 'timezone' => 'Europe/Amsterdam', 'time_format' => User::TIME_FORMAT_24]);
-        $this->postForm($this->admin, '/users/profile/'.$other->id, $this->profile($other, [
-            'locale' => 'de', 'timezone' => 'UTC', 'time_format' => User::TIME_FORMAT_12,
-        ]))->assertSessionHasNoErrors();
+        $other = $this->createUser(['locale' => 'nl']);
 
-        $other->refresh();
-        $this->assertSame('nl', $other->locale);
-        $this->assertSame('Europe/Amsterdam', $other->timezone);
-        $this->assertSame(User::TIME_FORMAT_24, (int) $other->time_format);
-        $this->assertNull(session('user_locale'));
-    }
-
-    public function testPasswordAndTypeCantBeSetThroughTheProfile()
-    {
-        $agent = $this->createUser(['password' => \Hash::make('old-password')]);
-        $type = $agent->fresh()->type;
-
-        $this->postForm($this->admin, '/users/profile/'.$agent->id, $this->profile($agent, [
-            'password' => 'new-password',
-            'type'     => 99,
-        ]))->assertSessionHasNoErrors();
-
-        $agent->refresh();
-        $this->assertTrue(\Hash::check('old-password', $agent->password));
-        $this->assertSame($type, $agent->type);
+        foreach (['locale' => 'de', 'timezone' => 'UTC', 'time_format' => User::TIME_FORMAT_12, 'password' => 'new-password', 'type' => 99] as $field => $value) {
+            try {
+                $this->profileOf($this->admin, $other)->set($field, $value);
+                $this->fail($field.' was set.');
+            } catch (\Livewire\Exceptions\PublicPropertyNotFoundException $e) {
+                $this->assertStringContainsString($field, $e->getMessage());
+            }
+        }
+        $this->assertSame('nl', $other->fresh()->locale);
     }
 
     public function testAdminRestrictsUserToAssignedConversations()
     {
         $agent = $this->createUser();
 
-        $this->postForm($this->admin, '/users/profile/'.$agent->id, $this->profile($agent, ['only_assigned_tickets' => 1]))->assertSessionHasNoErrors();
+        $this->profileOf($this->admin, $agent)->set('only_assigned', true)->assertHasNoErrors();
         $this->assertTrue($agent->fresh()->canSeeOnlyAssignedConversations());
 
         // The user can't lift it.
-        $this->postForm($agent->fresh(), '/users/profile/'.$agent->id, $this->profile($agent, ['only_assigned_tickets' => 0]));
+        $this->profileOf($agent->fresh(), $agent->fresh())->set('only_assigned', false)->assertSet('only_assigned', true);
         $this->assertTrue($agent->fresh()->canSeeOnlyAssignedConversations());
 
-        $this->postForm($this->admin, '/users/profile/'.$agent->id, $this->profile($agent));
+        $this->profileOf($this->admin, $agent->fresh())->set('only_assigned', false);
         $this->assertFalse($agent->fresh()->canSeeOnlyAssignedConversations());
     }
 
@@ -252,12 +234,10 @@ class UsersControllerTest extends FeatureTestCase
 
     // Other ajax actions.
 
-    public function testPhotoAndDeleteOfUnknownUser()
+    public function testDeleteOfUnknownUser()
     {
-        foreach (['delete_photo', 'delete_user'] as $action) {
-            $response = $this->postAjax($this->admin, '/users/ajax', ['action' => $action, 'user_id' => 999999])->json();
-            $this->assertSame(['status' => 'error', 'msg' => 'User not found'], $response, $action);
-        }
+        $response = $this->postAjax($this->admin, '/users/ajax', ['action' => 'delete_user', 'user_id' => 999999])->json();
+        $this->assertSame(['status' => 'error', 'msg' => 'User not found'], $response);
     }
 
     public function testUnknownActionGoesToModules()

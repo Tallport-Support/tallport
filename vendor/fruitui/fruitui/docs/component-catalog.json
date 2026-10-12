@@ -389,7 +389,7 @@
       "sidebar-item": {
         "purpose": "Link to one application page.",
         "element": "`a`, native link role with required href or client href binding.",
-        "state": "`current` adds `aria-current=page`.",
+        "state": "`current` adds `aria-current=page`; an explicit `aria-current`, such as `true` for the section a deeper Drill-Down level is open under, is kept.",
         "keyboard": "Tab focuses; Enter follows the link.",
         "options": "`current`: boolean. `mark`: a named accent (`Fruit::ACCENTS`) for the icon, the legend for rows marked with it. Native link attributes, including `wire:navigate`. Default slot: label; `icon`: decorative artwork; `badge`: trailing count."
       }
@@ -1343,7 +1343,7 @@
         "element": "`section` labelled by its `h2`–`h4` title, with a `div` of rows and an optional footer paragraph.",
         "state": "No state; rows own their values. Each child of the rows box is one row, separated by a hairline.",
         "keyboard": "Rows keep their controls' keyboard behavior; no added keyboard model.",
-        "options": "A `title` makes it a named region. `level`: 2 (default), 3, 4. `footer`: explanatory text, or a named slot. Slot: rows, such as `x-fruit::field layout=\"row\"`, Fieldsets of choices, `div.f-form-row` for actions and values, or `a.f-form-row.f-form-row--link` for a row that opens a sub-page (its label, the current value in `f-form-row__value`, which gives way first when the row is short of room, and a chevron), as settings drill down; `aria-current` (`page` or `true`) selects the row whose page is open beside it in a Drill-Down. Without a `title` the group is unnamed, for a group of such rows under the fields above it. Put sections on `--f-grouped-background`; groups use `--f-grouped-surface`."
+        "options": "A `title` makes it a named region. `level`: 2 (default), 3, 4. `footer`: explanatory text, or a named slot. Slot: rows, such as `x-fruit::field layout=\"row\"`, Fieldsets of choices, `div.f-form-row` for actions and values, or `a.f-form-row.f-form-row--link` for a row that opens a sub-page (its label, the current value in `f-form-row__value`, which gives way first when the row is short of room, and a chevron), as settings drill down; `aria-current` (`page` or `true`) selects the row whose page is open beside it in a Drill-Down. Rows filtered out with `hidden` (not `x-show`) leave the hairlines and rounded corners to the rows shown. Without a `title` the group is unnamed, for a group of such rows under the fields above it. Put sections on `--f-grouped-background`; groups use `--f-grouped-surface`."
       }
     }
   },
@@ -1444,7 +1444,7 @@
       "drilldown": {
         "purpose": "Show levels side by side, each opened from a row of the level before, as settings drill down.",
         "element": "`div.f-drilldown`, a size container; native container, optional group/region.",
-        "state": "No state: the application renders the open path's levels in order, and marks the row leading to each next level with `aria-current` (`page` for the deepest, `true` above it). CSS alone shows the deepest levels that fit, at any depth and through Livewire morphs: earlier levels are 18rem beside a deepest level of at least 24rem, up to six at once; a phone shows one. The deepest level takes the remaining width.",
+        "state": "No state: the application renders the open path's levels in order, and marks the row leading to each next level with `aria-current` (`page` for the deepest, `true` above it). CSS alone shows the deepest levels that fit, at any depth and through Livewire morphs: earlier levels are 18rem beside a deepest level of at least 24rem, up to six at once; a phone shows one. The deepest level takes the remaining width. Levels sit on `--f-grouped-background` (a Sidebar level keeps its material), and a Page in a level starts at its edge with 16px margins, so every level's content lines up.",
         "keyboard": "Children own keyboard behavior, in document order. After navigating, applications keep focus on the row that opened a level while it's in view, else move it to the new level's title; going back, to the row that leads where you were.",
         "options": "Native attributes. Default slot: Drill-Down Columns; the first can be a Sidebar with the `f-drilldown__column` class. Inside a Workspace it fills the frame; dialogs and toasts go beside it."
       },

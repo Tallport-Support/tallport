@@ -461,7 +461,6 @@
     "Profile": "Профиль",
     "Profile Image": "Изображение Профиля",
     "Profile Photo (URL)": "Фото Профиля (URL)",
-    "Profile saved successfully": "Профиль успешно сохранён",
     "Protocol": "Протокол",
     "Published": "Опубликовано",
     "Queue": "Очередь",
@@ -1803,5 +1802,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport не смог создать их сам. Выполните это от имени пользователя веб-сервера:",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Исходящая почта не отправляется — администратору следует проверить :%a_begin%Статус Системы:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "Администраторы открывают все почтовые ящики, независимо от выбора.",
-    "1 mailbox|:count mailboxes": ":count почтовый ящик|:count почтовых ящика|:count почтовых ящиков"
+    "1 mailbox|:count mailboxes": ":count почтовый ящик|:count почтовых ящика|:count почтовых ящиков",
+    "No matching users": "Нет подходящих пользователей"
 }

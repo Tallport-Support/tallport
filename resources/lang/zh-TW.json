@@ -679,7 +679,6 @@
     "Please login to upload file": "請登入後再上傳檔案",
     "Please specify a recipient.": "請指定收件人。",
     "Please specify recipient of the test email": "請指定測試電子郵件的收件人",
-    "Profile saved successfully": "個人資料已成功儲存",
     "Published": "已發佈",
     "Recipient clicked a link in the message": "收件人點擊了訊息中的連結",
     "Recipient complained": "收件人提出投訴",
@@ -1848,5 +1847,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport 無法自行建立它們。請以網頁伺服器的使用者身分執行：",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "對外郵件未能寄出 — 管理員應檢查 :%a_begin%系統狀態:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "無論選擇了哪些信箱，管理員都能開啟所有信箱。",
-    "1 mailbox|:count mailboxes": ":count 個信箱"
+    "1 mailbox|:count mailboxes": ":count 個信箱",
+    "No matching users": "沒有符合的使用者"
 }

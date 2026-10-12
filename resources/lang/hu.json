@@ -473,7 +473,6 @@
     "Profile": "Profil",
     "Profile Image": "Profilkép",
     "Profile Photo (URL)": "Profilkép (URL)",
-    "Profile saved successfully": "Profil sikeresen mentve",
     "Protocol": "Protokoll",
     "Published": "Közzétéve",
     "Queue": "Sor",
@@ -1803,5 +1802,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "A Tallport nem tudta maga létrehozni őket. Futtassa ezt a webszerver felhasználójaként:",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "A kimenő e-mailek nem mennek ki — egy adminisztrátornak ellenőriznie kell: :%a_begin%Rendszer Állapota:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "Az adminisztrátorok minden postafiókot megnyitnak, a kiválasztástól függetlenül.",
-    "1 mailbox|:count mailboxes": "1 postafiók|:count postafiók"
+    "1 mailbox|:count mailboxes": "1 postafiók|:count postafiók",
+    "No matching users": "Nincs egyező felhasználó"
 }

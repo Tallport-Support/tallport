@@ -460,7 +460,6 @@
     "Profile": "Profil",
     "Profile Image": "Slika Profila",
     "Profile Photo (URL)": "Fotografija Profila (URL)",
-    "Profile saved successfully": "Profil je bil uspešno shranjen",
     "Protocol": "Protokol",
     "Published": "Objavljeno",
     "Queue": "Čakalna vrsta",
@@ -1803,5 +1802,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport jih ni mogel ustvariti sam. To zaženite kot uporabnik spletnega strežnika:",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Odhodna e-pošta se ne pošilja — administrator naj preveri :%a_begin%Stanje Sistema:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "Skrbniki odprejo vsak poštni predal, ne glede na izbiro.",
-    "1 mailbox|:count mailboxes": ":count poštni predal|:count poštna predala|:count poštni predali|:count poštnih predalov"
+    "1 mailbox|:count mailboxes": ":count poštni predal|:count poštna predala|:count poštni predali|:count poštnih predalov",
+    "No matching users": "Ni ujemajočih se uporabnikov"
 }

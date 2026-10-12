@@ -47,12 +47,9 @@
     {{-- A mailbox's pages (mailboxes/sidebar_menu) keep Mailboxes current: they're reached from its list. --}}
     <ul class="app-sidebar__module-items">@action('menu.manage.after_mailboxes')</ul>
     @if ($sidebar_user->isAdmin() || $sidebar_user->hasPermission(App\User::PERM_EDIT_USERS))
-        {{-- In a drill-down (layouts/app) a deeper level is open: Users leads there, current but not the page. --}}
-        @if (!empty($sidebar_column) && \App\Misc\Helper::isMenuSelected('users'))
-            <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('users/users', 'users/create', 'users/permissions')" :href="route('users')" aria-current="true"><x-slot:icon><x-icon.users class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Users') }}</x-fruit::sidebar-item>
-        @else
-            <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('users/users', 'users/create', 'users/permissions')" :href="route('users')" :current="\App\Misc\Helper::isMenuSelected('users')"><x-slot:icon><x-icon.users class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Users') }}</x-fruit::sidebar-item>
-        @endif
+        {{-- In a drill-down (layouts/app) with a person open, Users leads there: current, not the page. --}}
+        @php $users_deeper = !empty($sidebar_column) && \App\Misc\Helper::isMenuSelected('users') && $settings_route != 'users'; @endphp
+        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('users/users', 'users/create', 'users/permissions')" :href="route('users')" :aria-current="$users_deeper ? 'true' : (\App\Misc\Helper::isMenuSelected('users') ? 'page' : null)"><x-slot:icon><x-icon.users class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Users') }}</x-fruit::sidebar-item>
     @endif
     @if ($sidebar_user->isAdmin())
         <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('modules/modules')" :href="route('modules')" :current="$settings_route == 'modules'"><x-slot:icon><x-icon.puzzle class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Modules') }}</x-fruit::sidebar-item>

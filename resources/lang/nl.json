@@ -462,7 +462,6 @@
     "Profile": "Profiel",
     "Profile Image": "Profielfoto",
     "Profile Photo (URL)": "Profielfoto (URL)",
-    "Profile saved successfully": "Profiel succesvol opgeslagen",
     "Protocol": "Protocol",
     "Published": "Gepubliceerd",
     "Queue": "Wachtrij",
@@ -1803,5 +1802,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport kon ze niet zelf aanmaken. Voer dit uit als de gebruiker van de webserver:",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Uitgaande e-mail wordt niet verzonden — een beheerder moet :%a_begin%Systeemstatus:%a_end% controleren",
     "Administrators open every mailbox, whichever are chosen.": "Beheerders openen elke mailbox, welke er ook gekozen zijn.",
-    "1 mailbox|:count mailboxes": "1 mailbox|:count mailboxen"
+    "1 mailbox|:count mailboxes": "1 mailbox|:count mailboxen",
+    "No matching users": "Geen overeenkomende gebruikers"
 }

@@ -468,7 +468,6 @@
     "Profile": "Profil",
     "Profile Image": "Profil Şəkli",
     "Profile Photo (URL)": "Profil Şəkli (URL)",
-    "Profile saved successfully": "Profil uğurla yadda saxlanıldı",
     "Protocol": "Protokol",
     "Published": "Dərc edilib",
     "Queue": "Növbə",
@@ -1803,5 +1802,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport onları özü yarada bilmədi. Bunu veb serverin istifadəçisi kimi işə salın:",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Gedən e-poçtlar göndərilmir — administrator :%a_begin%Sistem Statusu:%a_end% bölməsini yoxlamalıdır",
     "Administrators open every mailbox, whichever are chosen.": "Administratorlar hansılar seçilməsindən asılı olmayaraq bütün poçt qutularını açır.",
-    "1 mailbox|:count mailboxes": ":count poçt qutusu"
+    "1 mailbox|:count mailboxes": ":count poçt qutusu",
+    "No matching users": "Uyğun istifadəçi yoxdur"
 }

@@ -92,7 +92,6 @@ Route::get('/users', ['uses' => 'UsersController@users', 'laroute' => true])->na
 Route::get('/users/wizard', 'UsersController@create')->name('users.create');
 Route::post('/users/wizard', 'UsersController@createSave');
 Route::get('/users/profile/{id}', 'UsersController@profile')->name('users.profile');
-Route::post('/users/profile/{id}', 'UsersController@profileSave')->name('users.profile.save');
 Route::get('/users/permissions/{id}', 'UsersController@permissions')->name('users.permissions');
 Route::get('/users/notifications/{id}', 'UsersController@notifications')->name('users.notifications');
 Route::post('/users/notifications/{id}', 'UsersController@notificationsSave')->name('users.notifications.save');

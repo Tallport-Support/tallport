@@ -5263,9 +5263,10 @@ textarea.f-composer__input,
     padding: var(--f-form-row-padding, 12px 14px);
   }
 
-/* A hairline above every row after the first. A <template> (Alpine's x-for, x-if) is not a row. */
+/* A hairline above every row after the first. A <template> (Alpine's x-for, x-if) is not a row, nor
+     is a row filtered out with hidden. */
 
-.f-form-section__rows > :not(template) ~ :not(template) {
+.f-form-section__rows > :not(template, [hidden]) ~ :not(template, [hidden]) {
     border-top: 1px solid var(--f-border);
   }
 
@@ -5279,7 +5280,7 @@ textarea.f-composer__input,
     background: none;
   }
 
-.f-form-section__rows > :not(template) ~ .f-disclosure {
+.f-form-section__rows > :not(template, [hidden]) ~ .f-disclosure {
     border-top: 1px solid var(--f-border);
   }
 
@@ -5401,12 +5402,12 @@ textarea.f-composer__input,
 
 /* The first and last rows follow the group's rounded corners, so their hover does too. */
 
-.f-form-section__rows > .f-form-row--link:not(:not(template) ~ *) {
+.f-form-section__rows > .f-form-row--link:not(:not(template, [hidden]) ~ *) {
     border-start-start-radius: calc(var(--f-radius) - 1px);
     border-start-end-radius: calc(var(--f-radius) - 1px);
   }
 
-.f-form-section__rows > .f-form-row--link:last-child {
+.f-form-section__rows > .f-form-row--link:not(:has(~ :not(template, [hidden]))) {
     border-end-start-radius: calc(var(--f-radius) - 1px);
     border-end-end-radius: calc(var(--f-radius) - 1px);
   }
@@ -5780,7 +5781,9 @@ textarea.f-composer__input,
 .f-workspace > .f-drilldown {
     grid-column: 1 / -1;
   }
+/* Levels hold grouped settings, so they sit on the grouped background (the sidebar keeps its own). */
 .f-drilldown__column {
+    --f-page-background: var(--f-grouped-background);
     container-type: inline-size;
     display: flex;
     flex: none;
@@ -5789,6 +5792,9 @@ textarea.f-composer__input,
     min-width: 0;
     min-height: 0;
     border-inline-end: 1px solid var(--f-border);
+  }
+.f-drilldown__column:not(.f-sidebar) {
+    background: var(--f-grouped-background);
   }
 .f-drilldown__column.f-sidebar {
     width: var(--f-sidebar-width, 230px);
@@ -5834,11 +5840,11 @@ textarea.f-composer__input,
     align-items: center;
     gap: 6px;
   }
-/* A narrow level's page keeps a phone's margins. */
-@container (width < 30rem) {
-    .f-drilldown__column .f-page {
-      --f-page-inline: var(--f-page-padding-inline, 16px);
-    }
+/* A level's page starts at the level's edge with a phone's margins, so the content of every level
+     lines up beside the one before, however wide the deepest level is. */
+.f-drilldown__column .f-page {
+    --f-page-inline: var(--f-page-padding-inline, 16px);
+    margin-inline: 0;
   }
 /* One level fits: the deepest. An optional level (shown beside its parent where there's room,
      such as the first page beside a list nothing is chosen from yet) gives way to its parent. */

@@ -473,7 +473,6 @@
     "Profile": "Profil",
     "Profile Image": "Image de Profil",
     "Profile Photo (URL)": "Photo de Profil (URL)",
-    "Profile saved successfully": "Profil enregistré avec succès",
     "Protocol": "Protocole",
     "Published": "Publié",
     "Queue": "Queue",
@@ -1810,5 +1809,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport n'a pas pu les créer lui-même. Exécutez ceci en tant qu'utilisateur du serveur web :",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Les e-mails sortants ne sont pas envoyés — un administrateur doit vérifier :%a_begin%État du Système:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "Les administrateurs ouvrent toutes les boîtes, quelles que soient celles choisies.",
-    "1 mailbox|:count mailboxes": "1 boîte|:count boîtes"
+    "1 mailbox|:count mailboxes": "1 boîte|:count boîtes",
+    "No matching users": "Aucun utilisateur correspondant"
 }

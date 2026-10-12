@@ -463,7 +463,6 @@
     "Profile": "个人资料",
     "Profile Image": "个人资料图片",
     "Profile Photo (URL)": "个人资料照片（网址）",
-    "Profile saved successfully": "个人资料已保存成功",
     "Protocol": "协议",
     "Published": "已发布",
     "Queue": "队列",
@@ -1804,5 +1803,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport 无法自行创建它们。请以 Web 服务器的用户身份运行：",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "外发邮件未能发送 — 管理员应检查 :%a_begin%系统状况:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "无论选择了哪些邮箱，管理员都能打开所有邮箱。",
-    "1 mailbox|:count mailboxes": ":count 个邮箱"
+    "1 mailbox|:count mailboxes": ":count 个邮箱",
+    "No matching users": "没有匹配的用户"
 }

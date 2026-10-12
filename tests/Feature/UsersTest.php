@@ -8,6 +8,7 @@ use App\SendLog;
 use App\Subscription;
 use App\Thread;
 use App\Livewire\UserPermissions;
+use App\Livewire\UserProfile;
 use App\User;
 use Livewire\Livewire;
 use Tests\FeatureTestCase;
@@ -244,9 +245,7 @@ class UsersTest extends FeatureTestCase
         $this->postAjax($this->admin, '/users/ajax', ['action' => 'delete_user', 'user_id' => $agent->id]);
 
         Livewire::actingAs($this->admin)->test(UserPermissions::class, ['user' => $agent])->assertStatus(404);
-        $this->postForm($this->admin, '/users/profile/'.$agent->id, [
-            'first_name' => 'Revived', 'email' => 'revived@example.org', 'timezone' => 'UTC', 'time_format' => User::TIME_FORMAT_24,
-        ])->assertStatus(404);
+        Livewire::actingAs($this->admin)->test(UserProfile::class, ['user' => $agent])->assertStatus(404);
         $this->assertSame(0, $agent->fresh()->mailboxes()->count(), 'Like the permissions page, which is 404 for deleted users (U9).');
     }
 
@@ -256,17 +255,11 @@ class UsersTest extends FeatureTestCase
     {
         $agent = $this->createUser(['email' => 'agent@example.org']);
 
-        $response = $this->postForm($agent, '/users/profile/'.$agent->id, [
-            'first_name'  => 'Renamed',
-            'last_name'   => 'Agent',
-            'email'       => 'changed@example.org',
-            'job_title'   => 'Support lead',
-            'timezone'    => 'Europe/Amsterdam',
-            'time_format' => User::TIME_FORMAT_24,
-            'role'        => User::ROLE_ADMIN,
-        ]);
+        Livewire::actingAs($agent)->test(UserProfile::class, ['user' => $agent])
+            ->set('first_name', 'Renamed')->set('job_title', 'Support lead')
+            ->set('email', 'changed@example.org')->set('role', (string) User::ROLE_ADMIN)
+            ->assertSet('email', 'agent@example.org');
 
-        $response->assertRedirect(route('users.profile', ['id' => $agent->id]));
         $agent->refresh();
         $this->assertSame('Renamed', $agent->first_name);
         $this->assertSame('Support lead', $agent->job_title);
@@ -284,11 +277,14 @@ class UsersTest extends FeatureTestCase
             ->assertSee(route('users.security', ['id' => $this->admin->id]), false)
             ->assertDontSee(route('users.permissions', ['id' => $this->admin->id]), false)
             ->assertDontSee('New User');
+        $this->actingAs($this->admin)->get(route('users.profile', ['id' => $this->admin->id]))->assertOk()
+            ->assertSee('>Profile</h2>', false)->assertDontSee('>Users</h2>', false);
 
-        // Someone else's: their name, the tabs, and Manage > Users.
+        // Someone else's: Users, then the person with their pages.
         $this->actingAs($this->admin)->get(route('users.profile', ['id' => $agent->id]))->assertOk()
+            ->assertSeeInOrder(['>Users</h2>', '>'.e($agent->getFullName()).'</h2>'], false)
             ->assertSee(route('users.permissions', ['id' => $agent->id]), false)
-            ->assertSee('New User');
+            ->assertSee('New User')->assertDontSee('Save Profile');
     }
 
     public function testUserCannotEditSomeoneElse()
@@ -297,21 +293,18 @@ class UsersTest extends FeatureTestCase
         $other = $this->createUser();
 
         $this->actingAs($agent)->get('/users/profile/'.$other->id)->assertStatus(403);
-        $this->postForm($agent, '/users/profile/'.$other->id, [
-            'first_name' => 'Hacked', 'email' => $other->email, 'timezone' => 'UTC', 'time_format' => User::TIME_FORMAT_24,
-        ])->assertStatus(403);
+        Livewire::actingAs($agent)->test(UserProfile::class, ['user' => $other])->assertStatus(403);
         $this->assertNotSame('Hacked', $other->fresh()->first_name);
     }
 
     public function testAdminPromotesAndDisablesUser()
     {
         $agent = $this->createUser();
-        $profile = ['first_name' => $agent->first_name, 'email' => $agent->email, 'timezone' => 'UTC', 'time_format' => User::TIME_FORMAT_24];
 
-        $this->postForm($this->admin, '/users/profile/'.$agent->id, $profile + ['role' => User::ROLE_ADMIN]);
+        $profile = Livewire::actingAs($this->admin)->test(UserProfile::class, ['user' => $agent])->set('role', (string) User::ROLE_ADMIN);
         $this->assertEquals(User::ROLE_ADMIN, $agent->fresh()->role);
 
-        $this->postForm($this->admin, '/users/profile/'.$agent->id, $profile + ['role' => User::ROLE_ADMIN, 'disabled' => 1]);
+        $profile->set('disabled', true);
         $this->assertEquals(User::STATUS_DISABLED, $agent->fresh()->status);
 
         // A disabled user is logged out on their next request.
@@ -320,12 +313,9 @@ class UsersTest extends FeatureTestCase
 
     public function testOnlyAdminCannotBeDemoted()
     {
-        $response = $this->postForm($this->admin, '/users/profile/'.$this->admin->id, [
-            'first_name' => $this->admin->first_name, 'email' => $this->admin->email,
-            'timezone'   => 'UTC', 'time_format' => User::TIME_FORMAT_24, 'role' => User::ROLE_USER,
-        ]);
+        Livewire::actingAs($this->admin)->test(UserProfile::class, ['user' => $this->admin])
+            ->set('role', (string) User::ROLE_USER)->assertHasErrors('role')->assertSet('role', (string) User::ROLE_ADMIN);
 
-        $response->assertSessionHasErrors('role');
         $this->assertEquals(User::ROLE_ADMIN, $this->admin->fresh()->role);
     }
 
@@ -336,15 +326,10 @@ class UsersTest extends FeatureTestCase
     public function testLastActiveAdminCannotBeDemotedOrDisabled()
     {
         $this->createAdmin(['status' => User::STATUS_DISABLED]);
-        $profile = [
-            'first_name' => $this->admin->first_name, 'email' => $this->admin->email,
-            'timezone'   => 'UTC', 'time_format' => User::TIME_FORMAT_24,
-        ];
 
-        $this->postForm($this->admin, '/users/profile/'.$this->admin->id, $profile + ['role' => User::ROLE_USER])
-            ->assertSessionHasErrors('role');
-        $this->postForm($this->admin, '/users/profile/'.$this->admin->id, $profile + ['role' => User::ROLE_ADMIN, 'disabled' => 1])
-            ->assertSessionHasErrors('disabled');
+        Livewire::actingAs($this->admin)->test(UserProfile::class, ['user' => $this->admin])
+            ->set('role', (string) User::ROLE_USER)->assertHasErrors('role')
+            ->set('disabled', true)->assertHasErrors('disabled')->assertSet('disabled', false);
 
         $admin = $this->admin->fresh();
         $this->assertEquals(User::ROLE_ADMIN, $admin->role);
@@ -355,14 +340,29 @@ class UsersTest extends FeatureTestCase
     {
         $other = $this->createAdmin();
 
-        $this->postForm($this->admin, '/users/profile/'.$other->id, [
-            'first_name' => $other->first_name, 'email' => $other->email, 'timezone' => 'UTC',
-            'time_format' => User::TIME_FORMAT_24, 'role' => User::ROLE_ADMIN, 'disabled' => 1,
-        ]);
-
-        $this->assertNull(session('errors'));
+        Livewire::actingAs($this->admin)->test(UserProfile::class, ['user' => $other])->set('disabled', true)->assertHasNoErrors();
 
         $this->assertEquals(User::STATUS_DISABLED, $other->fresh()->status);
+    }
+
+    /**
+     * Modules see a saved profile as the form used to send it (user.save_profile).
+     */
+    public function testModulesSeeTheSavedProfile()
+    {
+        $agent = $this->createUser();
+        $seen = null;
+        \Eventy::addFilter('user.save_profile', function ($user, $request) use (&$seen) {
+            $seen = [$request->first_name, $request->job_title];
+            $user->job_title = 'From a module';
+
+            return $user;
+        }, 20, 2);
+
+        Livewire::actingAs($this->admin)->test(UserProfile::class, ['user' => $agent])->set('first_name', 'Robin');
+
+        $this->assertSame(['Robin', ''], $seen);
+        $this->assertSame('From a module', $agent->fresh()->job_title);
     }
 
     // Access and settings.

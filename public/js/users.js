@@ -13,8 +13,10 @@ document.addEventListener('alpine:init', function () {
 			post: function (action, data) {
 				var form = data || new FormData();
 				form.append('action', action);
-				if (document.body.dataset.user_id) {
-					form.append('user_id', document.body.dataset.user_id);
+				// The person's level (users/columns/user), else the page.
+				var user_id = (this.$el.closest('[data-user_id]') || document.body).dataset.user_id;
+				if (user_id) {
+					form.append('user_id', user_id);
 				}
 				return Tallport.post(laroute.route('users.ajax'), form);
 			},
@@ -40,21 +42,6 @@ document.addEventListener('alpine:init', function () {
 					self.post('reset_password').then(function (response) {
 						Tallport.result(response);
 						Tallport.busy(button, false);
-					});
-				});
-			},
-			deletePhoto: function (button) {
-				var self = this;
-				Tallport.confirm({message: Lang.get('messages.confirm_delete_photo'), confirm: Lang.get('messages.delete'), tone: 'danger'}).then(function (ok) {
-					if (!ok) {
-						return;
-					}
-					Tallport.busy(button, true);
-					self.post('delete_photo').then(function () {
-						var photo = document.getElementById('user-profile-photo');
-						if (photo) {
-							photo.remove();
-						}
 					});
 				});
 			},

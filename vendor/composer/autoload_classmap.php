@@ -259,6 +259,7 @@ return array(
     'App\\Livewire\\TeamChat' => $baseDir . '/app/Livewire/TeamChat.php',
     'App\\Livewire\\TeamChatDetails' => $baseDir . '/app/Livewire/TeamChatDetails.php',
     'App\\Livewire\\UserPermissions' => $baseDir . '/app/Livewire/UserPermissions.php',
+    'App\\Livewire\\UserProfile' => $baseDir . '/app/Livewire/UserProfile.php',
     'App\\Mail\\Alert' => $baseDir . '/app/Mail/Alert.php',
     'App\\Mail\\AutoReply' => $baseDir . '/app/Mail/AutoReply.php',
     'App\\Mail\\PasswordChanged' => $baseDir . '/app/Mail/PasswordChanged.php',

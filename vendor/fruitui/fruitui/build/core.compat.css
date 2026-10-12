@@ -5267,9 +5267,10 @@ textarea.f-composer__input,
     padding: var(--f-form-row-padding, 12px 14px);
   }
 
-/* A hairline above every row after the first. A <template> (Alpine's x-for, x-if) is not a row. */
+/* A hairline above every row after the first. A <template> (Alpine's x-for, x-if) is not a row, nor
+     is a row filtered out with hidden. */
 
-.f-form-section__rows > :not(template) ~ :not(template) {
+.f-form-section__rows > :not(template, [hidden]) ~ :not(template, [hidden]) {
     border-top: 1px solid var(--f-border);
   }
 
@@ -5283,7 +5284,7 @@ textarea.f-composer__input,
     background: none;
   }
 
-.f-form-section__rows > :not(template) ~ .f-disclosure {
+.f-form-section__rows > :not(template, [hidden]) ~ .f-disclosure {
     border-top: 1px solid var(--f-border);
   }
 
@@ -5405,12 +5406,12 @@ textarea.f-composer__input,
 
 /* The first and last rows follow the group's rounded corners, so their hover does too. */
 
-.f-form-section__rows > .f-form-row--link:not(:not(template) ~ *) {
+.f-form-section__rows > .f-form-row--link:not(:not(template, [hidden]) ~ *) {
     border-start-start-radius: calc(var(--f-radius) - 1px);
     border-start-end-radius: calc(var(--f-radius) - 1px);
   }
 
-.f-form-section__rows > .f-form-row--link:last-child {
+.f-form-section__rows > .f-form-row--link:not(:has(~ :not(template, [hidden]))) {
     border-end-start-radius: calc(var(--f-radius) - 1px);
     border-end-end-radius: calc(var(--f-radius) - 1px);
   }

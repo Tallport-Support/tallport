@@ -343,7 +343,9 @@
 .f-workspace > .f-drilldown {
     grid-column: 1 / -1;
   }
+/* Levels hold grouped settings, so they sit on the grouped background (the sidebar keeps its own). */
 .f-drilldown__column {
+    --f-page-background: var(--f-grouped-background);
     container-type: inline-size;
     display: flex;
     flex: none;
@@ -352,6 +354,9 @@
     min-width: 0;
     min-height: 0;
     border-inline-end: 1px solid var(--f-border);
+  }
+.f-drilldown__column:not(.f-sidebar) {
+    background: var(--f-grouped-background);
   }
 .f-drilldown__column.f-sidebar {
     width: var(--f-sidebar-width, 230px);
@@ -397,11 +402,11 @@
     align-items: center;
     gap: 6px;
   }
-/* A narrow level's page keeps a phone's margins. */
-@container (width < 30rem) {
-    .f-drilldown__column .f-page {
-      --f-page-inline: var(--f-page-padding-inline, 16px);
-    }
+/* A level's page starts at the level's edge with a phone's margins, so the content of every level
+     lines up beside the one before, however wide the deepest level is. */
+.f-drilldown__column .f-page {
+    --f-page-inline: var(--f-page-padding-inline, 16px);
+    margin-inline: 0;
   }
 /* One level fits: the deepest. An optional level (shown beside its parent where there's room,
      such as the first page beside a list nothing is chosen from yet) gives way to its parent. */

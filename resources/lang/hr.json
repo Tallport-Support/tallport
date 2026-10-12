@@ -470,7 +470,6 @@
     "Profile": "Profil",
     "Profile Image": "Profilna Slika",
     "Profile Photo (URL)": "Profilna Fotografija (URL)",
-    "Profile saved successfully": "Profil uspješno spremljen",
     "Protocol": "Protokol",
     "Published": "Objavljeno",
     "Queue": "Red čekanja",
@@ -1803,5 +1802,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport ih nije mogao sam izraditi. Pokrenite ovo kao korisnik web poslužitelja:",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Odlazna e-pošta se ne šalje — administrator treba provjeriti :%a_begin%Status Sustava:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "Administratori otvaraju svaki pretinac, bez obzira na odabir.",
-    "1 mailbox|:count mailboxes": ":count pretinac|:count pretinca|:count pretinaca"
+    "1 mailbox|:count mailboxes": ":count pretinac|:count pretinca|:count pretinaca",
+    "No matching users": "Nema odgovarajućih korisnika"
 }

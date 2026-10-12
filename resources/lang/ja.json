@@ -469,7 +469,6 @@
     "Profile": "プロファイル",
     "Profile Image": "プロファイルイメージ",
     "Profile Photo (URL)": "プロフィール写真（URL）",
-    "Profile saved successfully": "プロファイルの保存に成功しました",
     "Protocol": "接続プロトコル",
     "Published": "公開",
     "Queue": "キュー",
@@ -1803,5 +1802,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport はこれらを作成できませんでした。Web サーバーのユーザーとして次を実行してください：",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "送信メールが送信されていません。管理者は :%a_begin%システムステータス:%a_end% を確認してください",
     "Administrators open every mailbox, whichever are chosen.": "管理者は、選択に関係なくすべてのメールボックスを開けます。",
-    "1 mailbox|:count mailboxes": ":count 件のメールボックス"
+    "1 mailbox|:count mailboxes": ":count 件のメールボックス",
+    "No matching users": "一致するユーザーはいません"
 }

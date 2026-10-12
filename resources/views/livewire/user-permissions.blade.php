@@ -1,5 +1,5 @@
 {{-- A user's permissions (App\Livewire\UserPermissions): every change is saved as it's made. --}}
-<x-fruit::page width="narrow" style="--f-page-background: var(--f-grouped-background)">
+<x-fruit::page width="narrow">
     @if (count($all_mailboxes))
         <x-fruit::form-section :title="__('Mailboxes')" :level="3" :footer="$user->isAdmin() ? __('Administrators open every mailbox, whichever are chosen.') : null">
             <x-fruit::fieldset>

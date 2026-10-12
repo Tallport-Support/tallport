@@ -2838,7 +2838,7 @@
         "name": "user.edit.before_email",
         "arguments": 1,
         "files": [
-            "resources/views/users/profile.blade.php"
+            "resources/views/livewire/user-profile.blade.php"
         ]
     },
     {
@@ -2846,7 +2846,7 @@
         "name": "user.edit.before_first_name",
         "arguments": 1,
         "files": [
-            "resources/views/users/profile.blade.php"
+            "resources/views/livewire/user-profile.blade.php"
         ]
     },
     {
@@ -2854,7 +2854,7 @@
         "name": "user.edit.before_photo",
         "arguments": 1,
         "files": [
-            "resources/views/users/profile.blade.php"
+            "resources/views/livewire/user-profile.blade.php"
         ]
     },
     {
@@ -2862,7 +2862,7 @@
         "name": "user.edit.phone_append",
         "arguments": 1,
         "files": [
-            "resources/views/users/profile.blade.php"
+            "resources/views/livewire/user-profile.blade.php"
         ]
     },
     {
@@ -2912,7 +2912,7 @@
         "name": "user.save_profile",
         "arguments": 2,
         "files": [
-            "app/Http/Controllers/UsersController.php"
+            "app/Livewire/UserProfile.php"
         ]
     },
     {
@@ -2968,8 +2968,7 @@
         "name": "users.email",
         "arguments": 1,
         "files": [
-            "resources/views/users/columns/users.blade.php",
-            "resources/views/users/users.blade.php"
+            "resources/views/users/columns/users.blade.php"
         ]
     },
     {

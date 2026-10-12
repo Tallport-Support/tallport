@@ -66,7 +66,6 @@
         "job_details"
     ],
     "UsersController@ajax": [
-        "delete_photo",
         "delete_user",
         "mark_notifications_as_read",
         "reset_password",

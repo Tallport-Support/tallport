@@ -32,17 +32,7 @@ class UsersController extends Controller
     {
         $this->authorize('create', 'App\User');
 
-        $users_query = User::nonDeleted();
-
-        // Exclude admins from list for non-admins.
-        if (!auth()->user()->isAdmin()) {
-            $users_query->where('role', User::ROLE_USER);
-        }
-
-        $users = $users_query->get();
-        $users = User::sortUsers($users);
-
-        return view('users/users', ['users' => $users]);
+        return view('users/users', ['users' => $this->getUsersForSidebar(null)]);
     }
 
     /**
@@ -164,174 +154,21 @@ class UsersController extends Controller
         return view('users/profile', ['user' => $user, 'users' => $users]);
     }
 
+    /**
+     * The people in Settings › Users (users/columns/users), for those who may manage them;
+     * non-admins don't see admins.
+     */
     public function getUsersForSidebar($except_id)
     {
-        if (auth()->user()->isAdmin()) {
-            return User::sortUsers(User::nonDeleted()->get()); // ->except($except_id);
-        } else {
+        if (!auth()->user()->can('create', 'App\User')) {
             return [];
         }
-    }
-
-    /**
-     * Handle a registration request for the application.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function profileSave($id, Request $request)
-    {
-        $invalid = false;
-
-        $user = User::findOrFail($id);
-        // Like the profile page.
-        if ($user->isDeleted()) {
-            abort(404);
-        }
-        $this->authorize('update', $user);
-
-        $auth_user = auth()->user();
-
-        // This is also present in PublicController::userSetup
-        $validator = Validator::make($request->all(), [
-            'first_name'  => 'required|string|max:20',
-            'last_name'   => 'max:30',
-            'email'       => 'required|string|email|max:100|unique:users,email,'.$id,
-            //'emails'      => 'max:100',
-            'job_title'   => 'max:100',
-            'phone'       => 'max:60',
-            'role'        => ['nullable', Rule::in(array_keys(User::$roles))],
-            'photo_url'   => 'nullable|image|mimes:jpeg,png,jpg,gif',
-            'ai_drafts_per_day' => 'nullable|integer|min:0|max:10000',
-        ]);
-        $validator->setAttributeNames([
-            'photo_url'   => __('Photo'),
-        ]);
-
-        $validator->after(function ($validator) use ($user, $request) {
-            // Do not allow to remove the last active administrator: disabled
-            // and deleted admins can't manage anything.
-            if ($user->isAdmin() && $user->isActive() && auth()->user()->isAdmin()) {
-                $other_active_admins = User::where('role', User::ROLE_ADMIN)
-                    ->where('status', User::STATUS_ACTIVE)
-                    ->where('id', '!=', $user->id)
-                    ->count();
-                if (!$other_active_admins) {
-                    if (isset($request->role) && $request->role != User::ROLE_ADMIN) {
-                        $invalid = true;
-                        $validator->errors()->add('role', __('Role of the only one administrator can not be changed.'));
-                    }
-                    if (!empty($request->disabled)) {
-                        $invalid = true;
-                        $validator->errors()->add('disabled', __('The only active administrator can not be disabled.'));
-                    }
-                }
-            }
-        });
-
-        if (User::mailboxEmailExists($request->email)) {
-            $invalid = true;
-            $validator->errors()->add('email', __('There is a mailbox with such email. Users and mailboxes can not have the same email addresses.'));
+        $users_query = User::nonDeleted();
+        if (!auth()->user()->isAdmin()) {
+            $users_query->where('role', User::ROLE_USER);
         }
 
-        if ($invalid || $validator->fails()) {
-            return redirect()->route('users.profile', ['id' => $id])
-                        ->withErrors($validator)
-                        ->withInput();
-        }
-
-        // Photo, saved once everything else is valid.
-        if ($request->hasFile('photo_url')) {
-            $path_url = $user->savePhoto($request->file('photo_url'));
-
-            if (!$path_url) {
-                $validator->errors()->add('photo_url', __('Error occurred processing the image. Make sure that PHP GD extension is enabled.'));
-
-                return redirect()->route('users.profile', ['id' => $id])
-                            ->withErrors($validator)
-                            ->withInput();
-            }
-            $user->photo_url = $path_url;
-        }
-
-        $request_data = $request->all();
-
-        if (isset($request_data['photo_url'])) {
-            unset($request_data['photo_url']);
-        }
-        if (!$auth_user->can('changeRole', $user)) {
-            unset($request_data['role']);
-        }
-        if ($user->status != User::STATUS_DELETED) {
-            if (!empty($request_data['disabled'])) {
-                $request_data['status'] = User::STATUS_DISABLED;
-            } else {
-                $request_data['status'] = User::STATUS_ACTIVE;
-            }
-        }
-
-        // Sanitize $request_data array.
-        // $allowed_fields = [
-        //     'first_name',
-        //     'last_name',
-        //     'email', 
-        //     'emails',
-        //     'job_title',
-        //     'phone',
-        //     'locale',
-        //     'timezone'
-        //     'time_format',
-        //     'photo_url',
-        // ];
-        $admin_fields = [
-            'role',
-            'status',
-            'email',
-            'only_assigned_tickets',
-        ];
-        // Language, timezone and time format are the user's own (preferencesSave).
-        $nonfillable_fields = [
-            'type',
-            'password',
-            'locale',
-            'timezone',
-            'time_format',
-        ];
-        if (!$auth_user->isAdmin()) {
-            foreach ($admin_fields as $field) {
-                if (isset($request_data[$field])) {
-                    unset($request_data[$field]);
-                }
-            }
-        }
-        foreach ($nonfillable_fields as $field) {
-            if (isset($request_data[$field])) {
-                unset($request_data[$field]);
-            }
-        }
-
-        $user->setData($request_data);
-
-        if ($auth_user->isAdmin() && $request->exists('ai_drafts_per_day')) {
-            $user->ai_drafts_per_day = is_numeric($request->ai_drafts_per_day) ? (int) $request->ai_drafts_per_day : null;
-        }
-
-        if ($auth_user->isAdmin() && !$user->isAdmin()) {
-            if (!empty($request_data['only_assigned_tickets'])) {
-                $user->addPermission(User::PERM_ONLY_ASSIGNED_TICKETS, false);
-            } else {
-                $user->removePermission(User::PERM_ONLY_ASSIGNED_TICKETS, false);
-            }
-        }
-
-        $user = \Eventy::filter('user.save_profile', $user, $request);
-
-        $user->save();
-
-        \Session::flash('flash_success_floating', __('Profile saved successfully'));
-
-        return redirect()->route('users.profile', ['id' => $id]);
+        return User::sortUsers($users_query->get());
     }
 
     /**
@@ -514,22 +351,6 @@ class UsersController extends Controller
                 break;
 
             // Delete user photo
-            case 'delete_photo':
-                $user = User::find($request->user_id);
-
-                if (!$user) {
-                    $response['msg'] = __('User not found');
-                } elseif (!$auth_user->can('update', $user)) {
-                    $response['msg'] = __('Not enough permissions');
-                }
-                if (!$response['msg']) {
-                    $user->removePhoto();
-                    $user->save();
-
-                    $response['status'] = 'success';
-                }
-                break;
-
             // Delete user
             case 'delete_user':
                 $user = User::find($request->user_id);

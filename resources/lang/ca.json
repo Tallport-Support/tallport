@@ -599,7 +599,6 @@
     "Print": "Imprimeix",
     "Processing": "Processant",
     "Profile Image": "Imatge de Perfil",
-    "Profile saved successfully": "Perfil desat correctament",
     "Protocol": "Protocol",
     "Published": "Publicat",
     "Queue": "Cua",
@@ -1895,5 +1894,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport no els ha pogut crear. Executeu això com a usuari del servidor web:",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "El correu sortint no s'està enviant — un administrador hauria de comprovar :%a_begin%Estat del Sistema:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "Els administradors obren totes les bústies, siguin quines siguin les escollides.",
-    "1 mailbox|:count mailboxes": "1 bústia|:count bústies"
+    "1 mailbox|:count mailboxes": "1 bústia|:count bústies",
+    "No matching users": "Cap usuari coincident"
 }

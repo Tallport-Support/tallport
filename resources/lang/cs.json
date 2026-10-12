@@ -473,7 +473,6 @@
     "Profile": "Profily",
     "Profile Image": "Profilový Obrázek",
     "Profile Photo (URL)": "Profilová Fotografie (URL)",
-    "Profile saved successfully": "Profil byl úspěšně uložen",
     "Protocol": "Protokol",
     "Published": "Zveřejněno",
     "Queue": "Fronta",
@@ -1803,5 +1802,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport je nedokázal vytvořit sám. Spusťte toto jako uživatel webového serveru:",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Odchozí e-maily se neodesílají — správce by měl zkontrolovat :%a_begin%Stav Systému:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "Správci otevírají všechny schránky bez ohledu na to, které jsou vybrány.",
-    "1 mailbox|:count mailboxes": ":count schránka|:count schránky|:count schránek"
+    "1 mailbox|:count mailboxes": ":count schránka|:count schránky|:count schránek",
+    "No matching users": "Žádní odpovídající uživatelé"
 }

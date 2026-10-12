@@ -36,7 +36,6 @@ var LangMessages = {
             "lost_connection": "{{ __("Lost internet connection") }}",
             "connection_restored": "{{ __("Connection restored") }}",
             "confirm_discard_draft": "{{ __("Discard this draft?") }}",
-            "confirm_delete_photo": "{{ __("Delete this photo?") }}",
             "delete": "{{ __("Delete") }}",
             "previous": "{{ __("Previous") }}",
             "next": "{{ __("Next") }}",

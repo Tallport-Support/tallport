@@ -458,7 +458,6 @@
     "Profile": "Профиль",
     "Profile Image": "Профиль Суреті",
     "Profile Photo (URL)": "Профиль Фото (URL)",
-    "Profile saved successfully": "Профиль сәтті сақталды",
     "Protocol": "Протокол",
     "Published": "Жарияланды",
     "Queue": "Кезек",
@@ -2197,5 +2196,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport оларды өзі жасай алмады. Мұны веб-сервер пайдаланушысы ретінде іске қосыңыз:",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Шығыс электрондық хаттар жіберілмей жатыр — әкімші :%a_begin%Жүйенің Күйі:%a_end% тексеруі тиіс",
     "Administrators open every mailbox, whichever are chosen.": "Әкімшілер таңдауға қарамастан барлық пошта жәшіктерін ашады.",
-    "1 mailbox|:count mailboxes": ":count пошта жәшігі"
+    "1 mailbox|:count mailboxes": ":count пошта жәшігі",
+    "No matching users": "Сәйкес пайдаланушылар жоқ"
 }

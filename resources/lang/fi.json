@@ -461,7 +461,6 @@
     "Profile": "Profiili",
     "Profile Image": "Profiilikuva",
     "Profile Photo (URL)": "Profiilikuva (URL)",
-    "Profile saved successfully": "Profiili tallennettu onnistuneesti",
     "Protocol": "Protokolla",
     "Published": "Julkaistu",
     "Queue": "Jono",
@@ -1819,5 +1818,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport ei voinut luoda niitä itse. Suorita tämä verkkopalvelimen käyttäjänä:",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Lähteviä sähköposteja ei lähetetä — järjestelmänvalvojan tulee tarkistaa :%a_begin%Järjestelmän Tila:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "Ylläpitäjät avaavat kaikki postilaatikot valinnasta riippumatta.",
-    "1 mailbox|:count mailboxes": "1 postilaatikko|:count postilaatikkoa"
+    "1 mailbox|:count mailboxes": "1 postilaatikko|:count postilaatikkoa",
+    "No matching users": "Ei vastaavia käyttäjiä"
 }

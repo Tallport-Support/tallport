@@ -362,6 +362,9 @@ Settings, and other places you go down level by level (Mailboxes › Support ›
 - **Focus**: `x-data="fruitDrilldown"` on the Drill-Down keeps focus in view as levels change, however they change (Alpine, a Livewire morph). The row that opened a level keeps focus while it's still shown; where it went out of view, focus moves to the new level's title, and going back to the row that leads where you were. Updates that don't change the levels leave focus alone.
 - **URLs**: every level is a URL (a route, or a Livewire `#[Url]` property), so each opens in a new tab, reloads where it was and works with the browser's Back. Rows are real links; with Livewire, `wire:click.prevent="$set(…)"` or `wire:navigate` opens a level without a full page load.
 - **Frame**: inside a Workspace the Drill-Down fills the frame, so `frame="fill"` makes it the whole window; dialogs and toasts go beside it in the Workspace.
+- **Surfaces and alignment**: levels sit on the grouped background, under their groups, and a Page in a level starts at the level's edge with a phone's margins, so the deepest level's form lines up with the levels beside it instead of floating in the middle of a wide window.
+- **Filtering**: a search above a level's rows filters them with `hidden` (Alpine's `x-bind:hidden`, not `x-show`), so the group's hairlines and rounded corners follow the rows still shown.
+- **Selectors**: the layout uses Selectors Level 4 (`:nth-last-child(n of S)`). A CSS minifier that rewrites it (some PHP minifiers turn `1 of .x` into `1of .x`) drops the layout; publish FruitUI's built CSS as it is.
 
 ```blade
 <x-fruit::workspace frame="fill" aria-label="Settings">

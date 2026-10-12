@@ -468,7 +468,6 @@
     "Profile": "פרופיל",
     "Profile Image": "תמונת פרופיל",
     "Profile Photo (URL)": "תמונת פרופיל (URL)",
-    "Profile saved successfully": "הפרופיל נשמר בהצלחה",
     "Protocol": "פרוטוקול",
     "Published": "פורסם",
     "Queue": "תור",
@@ -1803,5 +1802,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport לא הצליח ליצור אותם בעצמו. הריצו את זה כמשתמש של שרת האינטרנט:",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "דואר יוצא אינו נשלח — על מנהל לבדוק את :%a_begin%סטטוס מערכת:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "מנהלים פותחים כל תיבת דואר, בלי קשר לאלו שנבחרו.",
-    "1 mailbox|:count mailboxes": "תיבת דואר אחת|:count תיבות דואר"
+    "1 mailbox|:count mailboxes": "תיבת דואר אחת|:count תיבות דואר",
+    "No matching users": "אין משתמשים תואמים"
 }

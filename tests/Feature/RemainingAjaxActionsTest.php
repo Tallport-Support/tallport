@@ -160,6 +160,9 @@ class RemainingAjaxActionsTest extends FeatureTestCase
 
     // Users.
 
+    /**
+     * A photo is deleted on the profile (App\Livewire\UserProfile), by someone who may edit it.
+     */
     public function testDeletePhoto()
     {
         Storage::fake('local');
@@ -167,10 +170,11 @@ class RemainingAjaxActionsTest extends FeatureTestCase
         $this->agent->photo_url = 'photo.jpg';
         $this->agent->save();
 
-        $this->assertSame('Not enough permissions', $this->postAjax($this->createUser(), '/users/ajax', ['action' => 'delete_photo', 'user_id' => $this->agent->id])->json()['msg']);
+        \Livewire\Livewire::actingAs($this->createUser())->test(\App\Livewire\UserProfile::class, ['user' => $this->agent])->assertStatus(403);
+        Storage::assertExists('users/photo.jpg');
 
-        $this->assertSame('success', $this->postAjax($this->agent, '/users/ajax', ['action' => 'delete_photo', 'user_id' => $this->agent->id])->json()['status']);
-        $this->assertSame('', (string)$this->agent->fresh()->photo_url);
+        \Livewire\Livewire::actingAs($this->agent)->test(\App\Livewire\UserProfile::class, ['user' => $this->agent])->call('deletePhoto');
+        $this->assertSame('', (string) $this->agent->fresh()->photo_url);
         Storage::assertMissing('users/photo.jpg');
     }
 

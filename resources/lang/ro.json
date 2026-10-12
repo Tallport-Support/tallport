@@ -473,7 +473,6 @@
     "Profile": "Profil",
     "Profile Image": "Imagine de Profil",
     "Profile Photo (URL)": "Imagine de Profil (URL)",
-    "Profile saved successfully": "Profilul a fost salvat cu succes",
     "Protocol": "Protocol",
     "Published": "Publicat",
     "Queue": "Coadă",
@@ -1803,5 +1802,6 @@
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport nu le-a putut crea singur. Rulați aceasta ca utilizatorul serverului web:",
     "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "E-mailurile de ieșire nu sunt trimise — un administrator ar trebui să verifice :%a_begin%Status Sistem:%a_end%",
     "Administrators open every mailbox, whichever are chosen.": "Administratorii deschid orice cutie poștală, indiferent de cele alese.",
-    "1 mailbox|:count mailboxes": "1 cutie poștală|:count cutii poștale|:count de cutii poștale"
+    "1 mailbox|:count mailboxes": "1 cutie poștală|:count cutii poștale|:count de cutii poștale",
+    "No matching users": "Niciun utilizator potrivit"
 }
