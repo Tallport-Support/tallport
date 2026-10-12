@@ -1824,5 +1824,6 @@
     "All Others": "Svi Ostali",
     "Remove this token?": "Ukloniti ovaj token?",
     "Not a GitHub account or organization name.": "Nije naziv GitHub računa ili organizacije.",
-    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Svaki token je za jednog vlasnika, račun ili organizaciju u poveznicama; token bez vlasnika je za sve ostale."
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Svaki token je za jednog vlasnika, račun ili organizaciju u poveznicama; token bez vlasnika je za sve ostale.",
+    "The AI took too long to answer.": "Umjetnoj inteligenciji trebalo je predugo da odgovori."
 }

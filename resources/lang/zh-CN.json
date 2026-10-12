@@ -1825,5 +1825,6 @@
     "All Others": "其他所有",
     "Remove this token?": "要删除此令牌吗？",
     "Not a GitHub account or organization name.": "不是 GitHub 帐户或组织名称。",
-    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "每个令牌对应一个所有者，即链接中的帐户或组织；没有所有者的令牌用于其他所有者。"
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "每个令牌对应一个所有者，即链接中的帐户或组织；没有所有者的令牌用于其他所有者。",
+    "The AI took too long to answer.": "AI 回答用时过长。"
 }

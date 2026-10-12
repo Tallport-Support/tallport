@@ -1840,5 +1840,6 @@
     "All Others": "Kaikki Muut",
     "Remove this token?": "Poistetaanko tämä tunnus?",
     "Not a GitHub account or organization name.": "Ei GitHub-tilin tai -organisaation nimi.",
-    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Jokainen tunnus on yhdelle omistajalle, linkkien tilille tai organisaatiolle; tunnus ilman omistajaa on kaikille muille."
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Jokainen tunnus on yhdelle omistajalle, linkkien tilille tai organisaatiolle; tunnus ilman omistajaa on kaikille muille.",
+    "The AI took too long to answer.": "Tekoälyn vastaus kesti liian kauan."
 }

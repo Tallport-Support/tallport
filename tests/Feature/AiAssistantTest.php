@@ -293,7 +293,7 @@ class AiAssistantTest extends FeatureTestCase
             (new ThreadTranslator('en'))->streamJson('Hallo', null, microtime(true) - 1);
             $this->fail('The expired deadline should stop before the provider call.');
         } catch (\RuntimeException $e) {
-            $this->assertSame("The AI's answer could not be read.", $e->getMessage());
+            $this->assertSame("The AI took too long to answer.", $e->getMessage());
         }
         ThreadTranslator::assertNeverPrompted();
     }

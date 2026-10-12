@@ -1824,5 +1824,6 @@
     "All Others": "כל האחרים",
     "Remove this token?": "להסיר את האסימון הזה?",
     "Not a GitHub account or organization name.": "זה אינו שם של חשבון או ארגון ב-GitHub.",
-    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "כל אסימון מיועד לבעלים אחד, החשבון או הארגון שבקישורים; אסימון ללא בעלים מיועד לכל האחרים."
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "כל אסימון מיועד לבעלים אחד, החשבון או הארגון שבקישורים; אסימון ללא בעלים מיועד לכל האחרים.",
+    "The AI took too long to answer.": "לבינה המלאכותית לקח יותר מדי זמן לענות."
 }

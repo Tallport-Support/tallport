@@ -1824,5 +1824,6 @@
     "All Others": "Все Остальные",
     "Remove this token?": "Удалить этот токен?",
     "Not a GitHub account or organization name.": "Это не имя учётной записи или организации GitHub.",
-    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Каждый токен — для одного владельца, учётной записи или организации из ссылок; токен без владельца — для всех остальных."
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Каждый токен — для одного владельца, учётной записи или организации из ссылок; токен без владельца — для всех остальных.",
+    "The AI took too long to answer.": "ИИ отвечал слишком долго."
 }

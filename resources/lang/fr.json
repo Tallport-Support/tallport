@@ -1831,5 +1831,6 @@
     "All Others": "Tous les Autres",
     "Remove this token?": "Supprimer ce jeton ?",
     "Not a GitHub account or organization name.": "Ce n'est pas un nom de compte ou d'organisation GitHub.",
-    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Chaque jeton est pour un propriétaire, le compte ou l'organisation des liens ; un jeton sans propriétaire sert pour tous les autres."
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Chaque jeton est pour un propriétaire, le compte ou l'organisation des liens ; un jeton sans propriétaire sert pour tous les autres.",
+    "The AI took too long to answer.": "L'IA a mis trop de temps à répondre."
 }

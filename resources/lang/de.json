@@ -1820,5 +1820,6 @@
     "All Others": "Alle Anderen",
     "Remove this token?": "Dieses Token entfernen?",
     "Not a GitHub account or organization name.": "Kein Name eines GitHub-Kontos oder einer Organisation.",
-    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Jedes Token gilt für einen Eigentümer, das Konto oder die Organisation in den Links; ein Token ohne Eigentümer gilt für alle anderen."
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Jedes Token gilt für einen Eigentümer, das Konto oder die Organisation in den Links; ein Token ohne Eigentümer gilt für alle anderen.",
+    "The AI took too long to answer.": "Die KI hat zu lange für die Antwort gebraucht."
 }

@@ -1824,5 +1824,6 @@
     "All Others": "Bütün Digərləri",
     "Remove this token?": "Bu token silinsin?",
     "Not a GitHub account or organization name.": "GitHub hesabı və ya təşkilat adı deyil.",
-    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Hər token bir sahib üçündür: keçidlərdəki hesab və ya təşkilat; sahibi olmayan token bütün digərləri üçündür."
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Hər token bir sahib üçündür: keçidlərdəki hesab və ya təşkilat; sahibi olmayan token bütün digərləri üçündür.",
+    "The AI took too long to answer.": "Süni intellekt çox gec cavab verdi."
 }

@@ -1824,5 +1824,6 @@
     "All Others": "その他すべて",
     "Remove this token?": "このトークンを削除しますか？",
     "Not a GitHub account or organization name.": "GitHub のアカウント名または組織名ではありません。",
-    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "各トークンは 1 つの所有者（リンク内のアカウントまたは組織）用です。所有者のないトークンはその他すべてに使われます。"
+    "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "各トークンは 1 つの所有者（リンク内のアカウントまたは組織）用です。所有者のないトークンはその他すべてに使われます。",
+    "The AI took too long to answer.": "AI の回答に時間がかかりすぎました。"
 }

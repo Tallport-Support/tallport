@@ -129,6 +129,7 @@ abstract class TallportAgent implements Agent, HasProviderOptions
     public function streamJson($prompt, ?callable $on_answer = null, ?float $deadline = null)
     {
         return $this->withAttempts(true, function ($name, $model, $remaining) use ($prompt, $on_answer) {
+            $started = microtime(true);
             $response = $this->streamWith($prompt, [], $name, $model, $remaining);
             $this->attempt['response'] = $response;
             $text = '';
@@ -149,6 +150,11 @@ abstract class TallportAgent implements Agent, HasProviderOptions
             }
             $answer = PartialJson::decodeComplete($text);
             if ($answer === null || !$this->matchesSchema($answer, $this->answerSchema()) || !$this->validAnswer($answer)) {
+                // Cut off by the time limit, or not what was asked for.
+                if (microtime(true) - $started >= $remaining - 1) {
+                    $this->attempt['timed_out'] = true;
+                    throw new \RuntimeException(__('The AI took too long to answer.'));
+                }
                 $this->attempt['invalid_answer'] = true;
                 throw new \RuntimeException(__('The AI\'s answer could not be read.'));
             }
@@ -199,7 +205,7 @@ abstract class TallportAgent implements Agent, HasProviderOptions
                             $remaining = (int) floor(min($deadline, $model_deadline) - microtime(true));
                             if ($remaining < 1) {
                                 $this->attempt['timed_out'] = true;
-                                throw new \RuntimeException(__('The AI\'s answer could not be read.'));
+                                throw new \RuntimeException(__('The AI took too long to answer.'));
                             }
                             $unreported_calls++;
                             $result = $run($name, $attempt_model, $remaining);
