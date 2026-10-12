@@ -136,6 +136,10 @@ class ReplyToCustomer extends Mailable
 
         if ($thread->has_attachments) {
             foreach ($thread->attachments as $attachment) {
+                // In the text: it goes inline (App\Misc\EmailImages).
+                if ($attachment->embedded) {
+                    continue;
+                }
                 if (\Helper::isLocalStorage()) {
                     if ($attachment->fileExists()) {
                         $message->attach($attachment->getLocalFilePath());

@@ -1,8 +1,14 @@
 const visible = element => Boolean(element?.isConnected && element.getClientRects().length);
 
+/**
+ * The rows that lead to a level: link rows of a Form Section, Sidebar Items and Item Links. Other
+ * current links, such as a Pagination's page or a Section Nav's tab, aren't the way down.
+ */
+const leading = 'a:is(.f-form-row--link, .f-sidebar__item, .f-item-row)';
+const currentRow = `${leading}[aria-current]:not([aria-current="false"])`;
+
 /** The rows leading to the open levels, and the levels themselves: what navigating changes. */
-const openPath = root =>
-  [...root.querySelectorAll('a[aria-current]:not([aria-current="false"])')].map(row => row.getAttribute('href'));
+const openPath = root => [...root.querySelectorAll(currentRow)].map(row => row.getAttribute('href'));
 const levels = root =>
   [...root.querySelectorAll('.f-drilldown__column')].map(
     level => `${level.getAttribute('aria-labelledby')} ${level.classList.contains('f-drilldown__column--optional')}`,
@@ -14,7 +20,7 @@ const levels = root =>
  */
 const revealCurrentRows = root => {
   for (const level of root.querySelectorAll('.f-drilldown__column')) {
-    const row = level.querySelector('a[aria-current]:not([aria-current="false"])');
+    const row = level.querySelector(currentRow);
     const scroller = row?.closest('.f-pane__scroll, .f-pane--scroll');
     if (!scroller || !level.contains(scroller) || !visible(row)) continue;
     const view = scroller.getBoundingClientRect();
@@ -50,7 +56,7 @@ export function fruitDrilldown() {
         if (active && active !== document.body && (!root.contains(active) || visible(active))) return;
         // Back: the open path got shorter along the same way.
         const back = path.length < from.length && path.every((href, index) => href === from[index]);
-        const row = [...root.querySelectorAll('.f-drilldown__column a[href]')]
+        const row = [...root.querySelectorAll(`.f-drilldown__column ${leading}[href]`)]
           .filter(link => visible(link) && !link.closest('.f-drilldown__header'))
           .filter(link => from.includes(link.getAttribute('href')))
           .at(-1);

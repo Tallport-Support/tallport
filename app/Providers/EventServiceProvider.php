@@ -14,6 +14,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         'Illuminate\Mail\Events\MessageSending' => [
+            'App\Listeners\EmbedEmailImages',
             'App\Listeners\ProcessSwiftMessage',
         ],
 

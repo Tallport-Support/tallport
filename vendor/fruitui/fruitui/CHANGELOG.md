@@ -80,6 +80,7 @@ Added:
 - Form Section rows filtered out with `hidden` leave the group's hairlines and rounded corners to the rows shown, so a search can filter a list of link rows.
 - A `form` among a Form Section's rows is no row itself: its fields are the group's rows, padded and divided like the others (hidden inputs left out), so an add form inside a group isn't cramped into one row.
 - `fruitDrilldown` scrolls each level to its current row when it starts out of view, as a long list after a page load, scrolling only that level, never the page.
+- `fruitDrilldown` brings into view only rows that lead to a level (link rows, Sidebar Items, Item Links). A paginated log's current page link counted as a current row, so the log opened scrolled to its end.
 - A Sidebar Item's `aria-current` bound to null leaves `current`'s `page`, so one item can bind `aria-current` for a deeper level and still use `current`.
 - A hovered attachment (`f-attachment`, `f-attachment__frame`) shades its own surface instead of taking a translucent hover background, so its detail text keeps 4.5:1 over any background; in a hovered chat message it had fallen to 4.26:1.
 - `fruitHistory` keeps following the newest message when a re-render moves the scroll position by itself: WebKit dropped a chat's position to the top as Alpine re-rendered its messages, so the second message on stopped following. Only a scroll seen as a scroll (or with growth in the same frame) now stops following; the helper also watches changes deeper in the history.
