@@ -1818,5 +1818,6 @@
     "Delete this folder and its pages from the documentation?": "Izbrisati ovu mapu i njezine stranice iz dokumentacije?",
     "Reply Editor": "Uređivač Odgovora",
     "Rich Text": "Oblikovani Tekst",
-    "Notes, saved replies and other texts are always written in Markdown.": "Bilješke, spremljeni odgovori i ostali tekstovi uvijek se pišu u Markdownu."
+    "Notes, saved replies and other texts are always written in Markdown.": "Bilješke, spremljeni odgovori i ostali tekstovi uvijek se pišu u Markdownu.",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Za privatne repozitorije: token koji ih može čitati (precizno ograničen ili klasični s opsegom repo)."
 }

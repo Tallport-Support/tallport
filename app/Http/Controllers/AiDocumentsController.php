@@ -112,7 +112,7 @@ class AiDocumentsController extends Controller
                 break;
 
             case 'github_token':
-                // Saved as it changes; asterisks are the saved token, shown masked.
+                // Asterisks are the saved token, shown masked.
                 $token = trim((string) $request->input('github_token', ''));
                 if (!preg_match('/^\*+$/', $token)) {
                     $tokens = (array) \Option::get('aiassistant.github_token', []);
@@ -123,8 +123,8 @@ class AiDocumentsController extends Controller
                     }
                     \Option::set('aiassistant.github_token', $tokens);
                 }
-
-                return $this->savedResponse($redirect);
+                \Session::flash('flash_success_floating', __('Saved'));
+                break;
 
             case 'issue_key':
                 \Session::flash('ai_new_key', ['mailbox' => $mailbox->name, 'key' => DocumentApiKey::issue($mailbox->id)]);

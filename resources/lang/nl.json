@@ -1818,5 +1818,6 @@
     "Delete this folder and its pages from the documentation?": "Deze map en de pagina's ervan uit de documentatie verwijderen?",
     "Reply Editor": "Antwoordeditor",
     "Rich Text": "Opgemaakte Tekst",
-    "Notes, saved replies and other texts are always written in Markdown.": "Notities, opgeslagen antwoorden en andere teksten worden altijd in Markdown geschreven."
+    "Notes, saved replies and other texts are always written in Markdown.": "Notities, opgeslagen antwoorden en andere teksten worden altijd in Markdown geschreven.",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Voor privérepository's: een token dat ze kan lezen (fine-grained, of classic met de repo-scope)."
 }

@@ -1910,5 +1910,6 @@
     "Delete this folder and its pages from the documentation?": "Voleu suprimir aquesta carpeta i les seves pàgines de la documentació?",
     "Reply Editor": "Editor de Respostes",
     "Rich Text": "Text Enriquit",
-    "Notes, saved replies and other texts are always written in Markdown.": "Les notes, les respostes desades i els altres textos sempre s'escriuen en Markdown."
+    "Notes, saved replies and other texts are always written in Markdown.": "Les notes, les respostes desades i els altres textos sempre s'escriuen en Markdown.",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Per a repositoris privats: un testimoni que els pugui llegir (detallat, o clàssic amb l'abast repo)."
 }

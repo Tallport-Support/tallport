@@ -1818,5 +1818,6 @@
     "Delete this folder and its pages from the documentation?": "Удалить эту папку и её страницы из документации?",
     "Reply Editor": "Редактор Ответов",
     "Rich Text": "Форматированный Текст",
-    "Notes, saved replies and other texts are always written in Markdown.": "Заметки, сохранённые ответы и другие тексты всегда пишутся в Markdown."
+    "Notes, saved replies and other texts are always written in Markdown.": "Заметки, сохранённые ответы и другие тексты всегда пишутся в Markdown.",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Для приватных репозиториев: токен, который может их читать (детализированный или классический с областью repo)."
 }

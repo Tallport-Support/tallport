@@ -44,14 +44,19 @@
                 </footer>
             </form>
 
-            <form class="settings-form" method="POST" action="{{ route('mailboxes.documentation.action', ['id' => $mailbox->id]) }}" x-on:change="Tallport.autoSave($el)">
+            {{-- Saved with its button, not as it changes: a slip of the keyboard would lose the token. --}}
+            <form class="settings-form" method="POST" action="{{ route('mailboxes.documentation.action', ['id' => $mailbox->id]) }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="action" value="github_token">
                 <x-fruit::form-section title="GitHub" :level="3">
-                    <x-fruit::field :label="__('GitHub Access Token')" :description="__('For private repositories: a fine-grained token with read-only access to their contents.')" layout="row">
+                    <x-fruit::field :label="__('GitHub Access Token')" :description="__('For private repositories: a token that can read them (fine-grained, or classic with the repo scope).')" layout="row">
                         <x-fruit::input type="password" id="github_token" name="github_token" :value="\Helper::safePassword($github_token)" maxlength="255" autocomplete="new-password" />
                     </x-fruit::field>
                 </x-fruit::form-section>
+
+                <footer class="f-form-row settings-form__actions">
+                    <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
+                </footer>
             </form>
         </div>
 

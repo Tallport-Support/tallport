@@ -1818,5 +1818,6 @@
     "Delete this folder and its pages from the documentation?": "Ștergeți acest dosar și paginile sale din documentație?",
     "Reply Editor": "Editor de Răspunsuri",
     "Rich Text": "Text Formatat",
-    "Notes, saved replies and other texts are always written in Markdown.": "Notele, răspunsurile salvate și celelalte texte sunt scrise întotdeauna în Markdown."
+    "Notes, saved replies and other texts are always written in Markdown.": "Notele, răspunsurile salvate și celelalte texte sunt scrise întotdeauna în Markdown.",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Pentru depozitele private: un token care le poate citi (cu permisiuni detaliate sau clasic cu domeniul repo)."
 }

@@ -2212,5 +2212,6 @@
     "Delete this folder and its pages from the documentation?": "Бұл қалтаны және оның беттерін құжаттамадан жою керек пе?",
     "Reply Editor": "Жауап Редакторы",
     "Rich Text": "Пішімделген Мәтін",
-    "Notes, saved replies and other texts are always written in Markdown.": "Ескертпелер, сақталған жауаптар және басқа мәтіндер әрқашан Markdown-да жазылады."
+    "Notes, saved replies and other texts are always written in Markdown.": "Ескертпелер, сақталған жауаптар және басқа мәтіндер әрқашан Markdown-да жазылады.",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Жеке репозиторийлер үшін: оларды оқи алатын токен (нақты бапталған немесе repo рұқсаты бар классикалық)."
 }

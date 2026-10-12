@@ -1863,5 +1863,6 @@
     "Delete this folder and its pages from the documentation?": "要從文件中刪除此資料夾及其頁面嗎？",
     "Reply Editor": "回覆編輯器",
     "Rich Text": "富文字",
-    "Notes, saved replies and other texts are always written in Markdown.": "備註、已儲存的回覆和其他文字一律以 Markdown 撰寫。"
+    "Notes, saved replies and other texts are always written in Markdown.": "備註、已儲存的回覆和其他文字一律以 Markdown 撰寫。",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "用於私人儲存庫：能讀取它們的權杖（細緻權杖，或具有 repo 範圍的傳統權杖）。"
 }

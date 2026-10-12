@@ -1818,5 +1818,6 @@
     "Delete this folder and its pages from the documentation?": "Smazat tuto složku a její stránky z dokumentace?",
     "Reply Editor": "Editor Odpovědí",
     "Rich Text": "Formátovaný Text",
-    "Notes, saved replies and other texts are always written in Markdown.": "Poznámky, uložené odpovědi a další texty se vždy píší v Markdownu."
+    "Notes, saved replies and other texts are always written in Markdown.": "Poznámky, uložené odpovědi a další texty se vždy píší v Markdownu.",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Pro soukromé repozitáře: token, který je může číst (jemně nastavený, nebo klasický s oprávněním repo)."
 }

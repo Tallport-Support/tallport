@@ -1818,5 +1818,6 @@
     "Delete this folder and its pages from the documentation?": "Želite izbrisati to mapo in njene strani iz dokumentacije?",
     "Reply Editor": "Urejevalnik Odgovorov",
     "Rich Text": "Oblikovano Besedilo",
-    "Notes, saved replies and other texts are always written in Markdown.": "Opombe, shranjeni odgovori in druga besedila so vedno napisani v Markdownu."
+    "Notes, saved replies and other texts are always written in Markdown.": "Opombe, shranjeni odgovori in druga besedila so vedno napisani v Markdownu.",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Za zasebne repozitorije: žeton, ki jih lahko bere (natančno omejen ali klasičen z obsegom repo)."
 }

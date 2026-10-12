@@ -1818,5 +1818,6 @@
     "Delete this folder and its pages from the documentation?": "Ta bort den här mappen och dess sidor från dokumentationen?",
     "Reply Editor": "Svarsredigerare",
     "Rich Text": "Formaterad Text",
-    "Notes, saved replies and other texts are always written in Markdown.": "Anteckningar, sparade svar och andra texter skrivs alltid i Markdown."
+    "Notes, saved replies and other texts are always written in Markdown.": "Anteckningar, sparade svar och andra texter skrivs alltid i Markdown.",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "För privata repon: en token som kan läsa dem (detaljerad, eller klassisk med repo-behörighet)."
 }

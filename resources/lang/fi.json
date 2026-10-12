@@ -1834,5 +1834,6 @@
     "Delete this folder and its pages from the documentation?": "Poistetaanko tämä kansio ja sen sivut dokumentaatiosta?",
     "Reply Editor": "Vastauseditori",
     "Rich Text": "Muotoiltu Teksti",
-    "Notes, saved replies and other texts are always written in Markdown.": "Muistiinpanot, tallennetut vastaukset ja muut tekstit kirjoitetaan aina Markdownilla."
+    "Notes, saved replies and other texts are always written in Markdown.": "Muistiinpanot, tallennetut vastaukset ja muut tekstit kirjoitetaan aina Markdownilla.",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Yksityisille repositorioille: tunnus, joka voi lukea ne (tarkasti rajattu tai perinteinen repo-oikeudella)."
 }

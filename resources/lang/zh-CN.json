@@ -1819,5 +1819,6 @@
     "Delete this folder and its pages from the documentation?": "要从文档中删除此文件夹及其页面吗？",
     "Reply Editor": "回复编辑器",
     "Rich Text": "富文本",
-    "Notes, saved replies and other texts are always written in Markdown.": "备注、已保存的回复和其他文本始终使用 Markdown 编写。"
+    "Notes, saved replies and other texts are always written in Markdown.": "备注、已保存的回复和其他文本始终使用 Markdown 编写。",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "用于私有仓库：能够读取它们的令牌（细粒度令牌，或带有 repo 权限范围的经典令牌）。"
 }

@@ -1818,5 +1818,6 @@
     "Delete this folder and its pages from the documentation?": "Törli ezt a mappát és oldalait a dokumentációból?",
     "Reply Editor": "Válaszszerkesztő",
     "Rich Text": "Formázott Szöveg",
-    "Notes, saved replies and other texts are always written in Markdown.": "A jegyzetek, a mentett válaszok és a többi szöveg mindig Markdownban készül."
+    "Notes, saved replies and other texts are always written in Markdown.": "A jegyzetek, a mentett válaszok és a többi szöveg mindig Markdownban készül.",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Privát tárolókhoz: egy token, amely olvasni tudja őket (finomhangolt, vagy klasszikus repo hatókörrel)."
 }

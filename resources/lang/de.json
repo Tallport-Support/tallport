@@ -1814,5 +1814,6 @@
     "Delete this folder and its pages from the documentation?": "Diesen Ordner und seine Seiten aus der Dokumentation löschen?",
     "Reply Editor": "Antworteditor",
     "Rich Text": "Formatierter Text",
-    "Notes, saved replies and other texts are always written in Markdown.": "Notizen, gespeicherte Antworten und andere Texte werden immer in Markdown geschrieben."
+    "Notes, saved replies and other texts are always written in Markdown.": "Notizen, gespeicherte Antworten und andere Texte werden immer in Markdown geschrieben.",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Für private Repositories: ein Token, das sie lesen kann (Fine-grained oder klassisch mit dem Scope repo)."
 }

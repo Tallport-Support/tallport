@@ -1818,5 +1818,6 @@
     "Delete this folder and its pages from the documentation?": "למחוק את התיקייה הזו ואת הדפים שלה מהתיעוד?",
     "Reply Editor": "עורך תשובות",
     "Rich Text": "טקסט מעוצב",
-    "Notes, saved replies and other texts are always written in Markdown.": "הערות, תשובות שמורות וטקסטים אחרים נכתבים תמיד ב-Markdown."
+    "Notes, saved replies and other texts are always written in Markdown.": "הערות, תשובות שמורות וטקסטים אחרים נכתבים תמיד ב-Markdown.",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "למאגרים פרטיים: אסימון שיכול לקרוא אותם (מפורט, או קלאסי עם ההרשאה repo)."
 }

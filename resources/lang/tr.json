@@ -1818,5 +1818,6 @@
     "Delete this folder and its pages from the documentation?": "Bu klasör ve sayfaları belgelerden silinsin mi?",
     "Reply Editor": "Yanıt Düzenleyici",
     "Rich Text": "Zengin Metin",
-    "Notes, saved replies and other texts are always written in Markdown.": "Notlar, kayıtlı yanıtlar ve diğer metinler her zaman Markdown ile yazılır."
+    "Notes, saved replies and other texts are always written in Markdown.": "Notlar, kayıtlı yanıtlar ve diğer metinler her zaman Markdown ile yazılır.",
+    "For private repositories: a token that can read them (fine-grained, or classic with the repo scope).": "Özel depolar için: onları okuyabilen bir belirteç (ayrıntılı ya da repo kapsamlı klasik)."
 }
