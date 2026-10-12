@@ -1803,5 +1803,9 @@
     "Administrators open every mailbox, whichever are chosen.": "Administratorlar hansılar seçilməsindən asılı olmayaraq bütün poçt qutularını açır.",
     "1 mailbox|:count mailboxes": ":count poçt qutusu",
     "No matching users": "Uyğun istifadəçi yoxdur",
-    "value": "dəyər"
+    "value": "dəyər",
+    "Webhook": "Webhook",
+    "Delete Webhook": "Webhook-u Sil",
+    "1 event|:count events": ":count hadisə",
+    "1 page|:count pages": ":count səhifə"
 }

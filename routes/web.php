@@ -64,6 +64,7 @@ Route::get('/app-logs/{name?}', ['uses' => 'SecureController@logs', 'middleware'
 Route::post('/app-logs/{name?}', ['uses' => 'SecureController@logsSubmit', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.action');
 
 // Settings
+Route::get('/app-settings/api/webhook/{id}', ['uses' => 'ApiSettingsController@webhook', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->where('id', 'new|[0-9]+')->name('settings.api.webhook');
 Route::post('/app-settings/api/action', ['uses' => 'ApiSettingsController@action', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('settings.api.action');
 Route::post('/app-settings/ajax', ['uses' => 'SettingsController@ajax', 'middleware' => ['auth', 'roles'], 'roles' => ['admin'], 'laroute' => true])->name('settings.ajax');
 Route::get('/app-settings/{section?}', ['uses' => 'SettingsController@view', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('settings');

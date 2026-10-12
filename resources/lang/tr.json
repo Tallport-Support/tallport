@@ -1803,5 +1803,9 @@
     "Administrators open every mailbox, whichever are chosen.": "Yöneticiler, seçimden bağımsız olarak tüm posta kutularını açar.",
     "1 mailbox|:count mailboxes": ":count posta kutusu",
     "No matching users": "Eşleşen kullanıcı yok",
-    "value": "değer"
+    "value": "değer",
+    "Webhook": "Webhook",
+    "Delete Webhook": "Webhook'u Sil",
+    "1 event|:count events": ":count olay",
+    "1 page|:count pages": ":count sayfa"
 }

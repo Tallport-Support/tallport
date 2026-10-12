@@ -1803,5 +1803,9 @@
     "Administrators open every mailbox, whichever are chosen.": "Адміністратори відкривають усі поштові скриньки, незалежно від вибору.",
     "1 mailbox|:count mailboxes": ":count поштова скринька|:count поштові скриньки|:count поштових скриньок",
     "No matching users": "Немає відповідних користувачів",
-    "value": "значення"
+    "value": "значення",
+    "Webhook": "Вебхук",
+    "Delete Webhook": "Видалити Вебхук",
+    "1 event|:count events": ":count подія|:count події|:count подій",
+    "1 page|:count pages": ":count сторінка|:count сторінки|:count сторінок"
 }

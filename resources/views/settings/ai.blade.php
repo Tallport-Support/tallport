@@ -62,9 +62,7 @@
     </x-fruit::form-section>
 
     <x-fruit::form-section :title="__('Documentation')" :level="3">
-        <div class="f-form-row">
-            <a class="f-button" href="{{ route('ai.documents') }}">{{ __('Manage Documentation') }}</a>
-        </div>
+        <a class="f-form-row f-form-row--link" href="{{ route('ai.documents') }}" wire:navigate @isset($documents) aria-current="page" @endisset><span>{{ __('Manage Documentation') }}</span><span class="f-form-row__value">{{ trans_choice('1 page|:count pages', App\Ai\Document::count()) }}</span></a>
 
         @if (!App\Ai\Settings::embeddingsAvailable())
             <x-fruit::alert tone="warning">{{ __('The selected embedding provider does not support embeddings, so drafts are made without documentation. Summaries and translations are not affected.') }}</x-fruit::alert>

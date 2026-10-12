@@ -1803,5 +1803,9 @@
     "Administrators open every mailbox, whichever are chosen.": "Администраторы открывают все почтовые ящики, независимо от выбора.",
     "1 mailbox|:count mailboxes": ":count почтовый ящик|:count почтовых ящика|:count почтовых ящиков",
     "No matching users": "Нет подходящих пользователей",
-    "value": "значение"
+    "value": "значение",
+    "Webhook": "Вебхук",
+    "Delete Webhook": "Удалить Вебхук",
+    "1 event|:count events": ":count событие|:count события|:count событий",
+    "1 page|:count pages": ":count страница|:count страницы|:count страниц"
 }

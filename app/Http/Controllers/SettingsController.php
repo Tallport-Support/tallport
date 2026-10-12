@@ -28,6 +28,14 @@ class SettingsController extends Controller
      */
     public function view($section = 'general')
     {
+        return view('settings/view', $this->sectionData($section));
+    }
+
+    /**
+     * What a section's page (settings/view) shows; also beside a level of its own (a webhook).
+     */
+    public function sectionData($section)
+    {
         $settings = $this->getSectionSettings($section);
 
         if (!$settings) {
@@ -42,9 +50,8 @@ class SettingsController extends Controller
             'sections'     => $this->getSections(),
             'section_name' => $sections[$section]['title'],
         ];
-        $template_vars = $this->getTemplateVars($section, $template_vars);
 
-        return view('settings/view', $template_vars);
+        return $this->getTemplateVars($section, $template_vars);
     }
 
     public function getValidator($section)

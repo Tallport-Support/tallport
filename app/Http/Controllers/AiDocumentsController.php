@@ -19,7 +19,8 @@ class AiDocumentsController extends Controller
 
     public function index()
     {
-        return view('settings/ai_documents', [
+        // A level beside AI (settings/view).
+        return view('settings/view', (new SettingsController())->sectionData('ai') + [
             'documents' => Document::with('mailbox')->withCount('chunks')->orderBy('mailbox_id')->orderBy('title')->get(),
             'mailboxes' => Mailbox::orderBy('name')->get(),
             'api_keys'  => DocumentApiKey::all()->keyBy('mailbox_id'),

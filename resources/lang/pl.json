@@ -1803,5 +1803,9 @@
     "Administrators open every mailbox, whichever are chosen.": "Administratorzy otwierają każdą skrzynkę, niezależnie od wyboru.",
     "1 mailbox|:count mailboxes": ":count skrzynka|:count skrzynki|:count skrzynek",
     "No matching users": "Brak pasujących użytkowników",
-    "value": "wartość"
+    "value": "wartość",
+    "Webhook": "Webhook",
+    "Delete Webhook": "Usuń Webhook",
+    "1 event|:count events": ":count zdarzenie|:count zdarzenia|:count zdarzeń",
+    "1 page|:count pages": ":count strona|:count strony|:count stron"
 }

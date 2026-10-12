@@ -31,7 +31,7 @@
     @endphp
     <p class="f-sidebar__heading">{{ __('Settings') }}</p>
     @foreach (app(App\Http\Controllers\SettingsController::class)->getSections() as $settings_name => $settings_info)
-        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('settings/'.$settings_name, $settings_name == 'ai' ? 'settings/ai_documents' : '')" :href="route('settings', ['section' => $settings_name])" :current="$settings_route == 'settings' && $settings_section == $settings_name || ($settings_route == 'ai.documents' && $settings_name == 'ai')"><x-slot:icon><x-dynamic-component :component="'icon.'.($settings_icons[$settings_name] ?? 'settings')" class="f-icon" aria-hidden="true" /></x-slot:icon>{{ $settings_info['title'] }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('settings/'.$settings_name, $settings_name == 'ai' ? 'settings/ai_documents' : '')" :href="route('settings', ['section' => $settings_name])" :aria-current="$settings_route == 'settings' && $settings_section == $settings_name ? 'page' : (($settings_route == 'ai.documents' && $settings_name == 'ai') || ($settings_route == 'settings.api.webhook' && $settings_name == 'api') ? 'true' : null)"><x-slot:icon><x-dynamic-component :component="'icon.'.($settings_icons[$settings_name] ?? 'settings')" class="f-icon" aria-hidden="true" /></x-slot:icon>{{ $settings_info['title'] }}</x-fruit::sidebar-item>
     @endforeach
 @endif
 

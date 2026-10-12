@@ -1803,5 +1803,9 @@
     "Administrators open every mailbox, whichever are chosen.": "Administratori otvaraju svaki pretinac, bez obzira na odabir.",
     "1 mailbox|:count mailboxes": ":count pretinac|:count pretinca|:count pretinaca",
     "No matching users": "Nema odgovarajućih korisnika",
-    "value": "vrijednost"
+    "value": "vrijednost",
+    "Webhook": "Webhook",
+    "Delete Webhook": "Izbriši Webhook",
+    "1 event|:count events": ":count događaj|:count događaja|:count događaja",
+    "1 page|:count pages": ":count stranica|:count stranice|:count stranica"
 }

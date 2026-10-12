@@ -1806,5 +1806,9 @@
     "Administrators open every mailbox, whichever are chosen.": "Administratorer åpner alle postkasser, uansett hvilke som er valgt.",
     "1 mailbox|:count mailboxes": "1 postkasse|:count postkasser",
     "No matching users": "Ingen samsvarende brukere",
-    "value": "verdi"
+    "value": "verdi",
+    "Webhook": "Webhook",
+    "Delete Webhook": "Slett Webhook",
+    "1 event|:count events": "1 hendelse|:count hendelser",
+    "1 page|:count pages": "1 side|:count sider"
 }

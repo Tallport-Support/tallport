@@ -173,7 +173,11 @@ class WebhooksTest extends FeatureTestCase
         $key = ApiKey::generate($this->agent, 'Script', ApiKey::ABILITY_READ)[0];
 
         $this->get(route('settings', ['section' => 'api']))->assertOk()
-            ->assertSee(ApiKey::globalKey())->assertSee(Webhook::secret())->assertSee('Script')->assertSee('convo.customer.reply.created');
+            ->assertSee(ApiKey::globalKey())->assertSee(Webhook::secret())->assertSee('Script')
+            ->assertSee(route('settings.api.webhook', ['id' => 'new']), false)->assertDontSee('>Save<', false);
+        // Add Webhook opens a level of its own, beside API & Webhooks, with the events to choose.
+        $this->get(route('settings.api.webhook', ['id' => 'new']))->assertOk()
+            ->assertSeeInOrder(['>API &amp; Webhooks</h2>', '>Add Webhook</h2>'], false)->assertSee('convo.customer.reply.created');
 
         $this->post(route('settings.save', ['section' => 'api']), ['_token' => csrf_token(), 'settings' => ['api.cors_hosts' => 'https://app.example.org']])->assertRedirect();
         \Option::$cache = [];
@@ -183,10 +187,19 @@ class WebhooksTest extends FeatureTestCase
         $this->post(route('settings.api.action'), ['_token' => csrf_token(), 'action' => 'regenerate_key'])->assertRedirect();
         $this->assertMatchesRegularExpression('/APIWEBHOOKS_API_KEY_SALT=\w{10}/', file_get_contents($this->env_dir.'/.env.testing'));
 
-        $this->post(route('settings.api.action'), ['_token' => csrf_token(), 'action' => 'save_webhook', 'url' => 'https://hooks.example.org/b', 'events' => ['convo.created'], 'mailboxes' => [$this->mailbox->id]]);
+        $response = $this->post(route('settings.api.action'), ['_token' => csrf_token(), 'action' => 'save_webhook', 'url' => 'https://hooks.example.org/b', 'events' => ['convo.created'], 'mailboxes' => [$this->mailbox->id]]);
         $webhook = Webhook::first();
+        $response->assertRedirect(route('settings.api.webhook', ['id' => $webhook->id]));
         $this->assertSame([$this->mailbox->id], $webhook->mailboxes);
-        $this->post(route('settings.api.action'), ['_token' => csrf_token(), 'action' => 'save_webhook', 'webhook_id' => $webhook->id, 'url' => 'https://hooks.example.org/c', 'events' => ['convo.status']]);
+        // Its row on API & Webhooks; its level saves as it changes, in the background.
+        $html = $this->get(route('settings.api.webhook', ['id' => $webhook->id]))->assertOk()
+            ->assertSee('Tallport.autoSave($el)', false)->assertSee('Delete Webhook')->getContent();
+        $this->assertMatchesRegularExpression('#aria-current="page"\s*><span class="webhook-row__url">https://hooks.example.org/b</span><span class="f-form-row__value">1 event</span>#', $html);
+        $this->postAjax($this->admin, route('settings.api.action'), ['action' => 'save_webhook', 'webhook_id' => $webhook->id, 'url' => 'https://hooks.example.org/c', 'events' => ['convo.status']])
+            ->assertJson(['status' => 'success']);
+        $this->postAjax($this->admin, route('settings.api.action'), ['action' => 'save_webhook', 'webhook_id' => $webhook->id, 'url' => 'not a url', 'events' => ['convo.status']])
+            ->assertStatus(422)->assertJsonValidationErrors('url');
+        $this->assertSame('https://hooks.example.org/c', $webhook->fresh()->url);
         $this->assertSame(['convo.status'], $webhook->fresh()->events);
         $this->assertNull($webhook->fresh()->mailboxes);
         $this->post(route('settings.api.action'), ['_token' => csrf_token(), 'action' => 'save_webhook', 'url' => 'https://hooks.example.org/d', 'events' => ['nonsense']])->assertSessionHasErrors('events.0');
@@ -231,7 +244,7 @@ class WebhooksTest extends FeatureTestCase
             $log->forceFill(['webhook_id' => $webhook->id, 'event' => 'convo.created', 'status_code' => $status, 'finished' => $finished, 'attempts' => $attempts, 'error' => $error])->save();
         }
 
-        $html = $this->actingAs($this->admin)->get(route('settings', ['section' => 'api']))->assertOk()
+        $html = $this->actingAs($this->admin)->get(route('settings.api.webhook', ['id' => $webhook->id]))->assertOk()
             ->assertSee('Failed deliveries (2)')->assertSee('Response status code: 500')->assertSee('3 / '.Webhook::MAX_ATTEMPTS)->getContent();
         $this->assertMatchesRegularExpression('/f-badge--success[^>]*>\s*200/', $html);
         $this->assertMatchesRegularExpression('/f-badge--danger[^>]*>\s*500/', $html);

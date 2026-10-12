@@ -194,9 +194,11 @@ class AiDocumentsTest extends FeatureTestCase
 
     public function testPageRendersForAdminsOnly()
     {
-        $this->actingAs($this->admin)->get('/ai-assistant/documents')->assertStatus(200)->assertSee('Documentation API');
+        // A level beside AI, its row there current.
+        $this->actingAs($this->admin)->get('/ai-assistant/documents')->assertStatus(200)->assertSee('Documentation API')
+            ->assertSeeInOrder(['>AI</h2>', 'Manage Documentation', '>Documentation</h2>'], false);
         $this->actingAs($this->createUser())->get('/ai-assistant/documents')->assertStatus(403);
-        $this->actingAs($this->admin)->get('/app-settings/ai')->assertSee(route('ai.documents'));
+        $this->actingAs($this->admin)->get('/app-settings/ai')->assertSee(route('ai.documents'))->assertSee('0 pages')->assertDontSee('>Documentation</h2>', false);
     }
 
     public function testAddedPageIsFetchedAndIndexed()

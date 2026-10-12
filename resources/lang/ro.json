@@ -1803,5 +1803,9 @@
     "Administrators open every mailbox, whichever are chosen.": "Administratorii deschid orice cutie poștală, indiferent de cele alese.",
     "1 mailbox|:count mailboxes": "1 cutie poștală|:count cutii poștale|:count de cutii poștale",
     "No matching users": "Niciun utilizator potrivit",
-    "value": "valoare"
+    "value": "valoare",
+    "Webhook": "Webhook",
+    "Delete Webhook": "Șterge Webhook-ul",
+    "1 event|:count events": "1 eveniment|:count evenimente|:count de evenimente",
+    "1 page|:count pages": "1 pagină|:count pagini|:count de pagini"
 }

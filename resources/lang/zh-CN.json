@@ -1804,5 +1804,9 @@
     "Administrators open every mailbox, whichever are chosen.": "无论选择了哪些邮箱，管理员都能打开所有邮箱。",
     "1 mailbox|:count mailboxes": ":count 个邮箱",
     "No matching users": "没有匹配的用户",
-    "value": "值"
+    "value": "值",
+    "Webhook": "Webhook",
+    "Delete Webhook": "删除 Webhook",
+    "1 event|:count events": ":count 个事件",
+    "1 page|:count pages": ":count 个页面"
 }

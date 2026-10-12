@@ -691,6 +691,22 @@
         "methods": [
             "GET"
         ],
+        "uri": "app-settings/api/webhook/{id}",
+        "name": "settings.api.webhook",
+        "action": "ApiSettingsController@webhook",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "new|[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "app-settings/{section?}",
         "name": "settings",
         "action": "SettingsController@view",

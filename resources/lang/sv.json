@@ -1803,5 +1803,9 @@
     "Administrators open every mailbox, whichever are chosen.": "Administratörer öppnar alla brevlådor, oavsett vilka som är valda.",
     "1 mailbox|:count mailboxes": "1 brevlåda|:count brevlådor",
     "No matching users": "Inga matchande användare",
-    "value": "värde"
+    "value": "värde",
+    "Webhook": "Webhook",
+    "Delete Webhook": "Ta Bort Webhook",
+    "1 event|:count events": "1 händelse|:count händelser",
+    "1 page|:count pages": "1 sida|:count sidor"
 }

@@ -1803,5 +1803,9 @@
     "Administrators open every mailbox, whichever are chosen.": "Správcovia otvárajú všetky schránky bez ohľadu na výber.",
     "1 mailbox|:count mailboxes": ":count schránka|:count schránky|:count schránok",
     "No matching users": "Žiadni zodpovedajúci používatelia",
-    "value": "hodnota"
+    "value": "hodnota",
+    "Webhook": "Webhook",
+    "Delete Webhook": "Odstrániť Webhook",
+    "1 event|:count events": ":count udalosť|:count udalosti|:count udalostí",
+    "1 page|:count pages": ":count stránka|:count stránky|:count stránok"
 }

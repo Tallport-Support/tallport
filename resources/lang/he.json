@@ -1803,5 +1803,9 @@
     "Administrators open every mailbox, whichever are chosen.": "מנהלים פותחים כל תיבת דואר, בלי קשר לאלו שנבחרו.",
     "1 mailbox|:count mailboxes": "תיבת דואר אחת|:count תיבות דואר",
     "No matching users": "אין משתמשים תואמים",
-    "value": "ערך"
+    "value": "ערך",
+    "Webhook": "Webhook",
+    "Delete Webhook": "מחיקת Webhook",
+    "1 event|:count events": "אירוע אחד|:count אירועים",
+    "1 page|:count pages": "עמוד אחד|:count עמודים"
 }

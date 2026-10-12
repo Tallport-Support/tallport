@@ -1,8 +1,10 @@
+{{-- API & Webhooks: the API (saved as it changes), users' keys, and webhooks as rows, each opening
+     its own level (settings/api_webhook). --}}
 <div class="settings-form">
-    <form class="settings-form" method="POST" action="">
+    <form class="settings-form" method="POST" action="{{ route('settings.save', ['section' => 'api']) }}" x-on:change="Tallport.autoSave($el)">
         {{ csrf_field() }}
 
-        <x-fruit::form-section :title="__('API')">
+        <x-fruit::form-section :title="__('API')" :level="3">
             <x-fruit::field :label="__('API Key')" :description="__('The global key may do everything, in every mailbox. Users can make keys that act as themselves in their profile (API Keys).').' '.__('Send the key in the X-Tallport-API-Key header.')" layout="row">
                 <x-fruit::input id="api_key" :value="$api_key" readonly />
             </x-fruit::field>
@@ -10,15 +12,14 @@
             <x-fruit::field :label="__('Allowed CORS Hosts')" :description="trim(__('Websites that may call the API from a browser, comma separated; * for any. Leave empty for none.').' '.App\Misc\DatabaseSettings::lockedNote('api.cors_hosts'))" layout="row">
                 <x-fruit::input id="api_cors_hosts" name="settings[api.cors_hosts]" :value="old('settings.api.cors_hosts', $settings['api.cors_hosts'])" placeholder="https://example.org" :disabled="App\Misc\DatabaseSettings::lockedByEnv('api.cors_hosts')" />
             </x-fruit::field>
-        </x-fruit::form-section>
 
-        <footer class="f-form-row settings-form__actions">
-            <x-fruit::button type="submit" form="api_regenerate_form">{{ __('Generate a New API Key') }}</x-fruit::button>
-            <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
-        </footer>
+            <div class="f-form-row">
+                <x-fruit::button type="submit" form="api_regenerate_form">{{ __('Generate a New API Key') }}</x-fruit::button>
+            </div>
+        </x-fruit::form-section>
     </form>
 
-    <x-fruit::form-section :title="__('API Keys')">
+    <x-fruit::form-section :title="__('API Keys')" :level="3">
         @if (count($api_keys))
             <div>
                 <x-fruit::table>
@@ -60,90 +61,17 @@
         @endif
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Webhooks')" :footer="__('Events are sent as a POST with the conversation or customer as JSON (as the API returns it). The X-Tallport-Event header names the event; X-Tallport-Signature is the base64 HMAC-SHA1 of the body with the secret key below. Failed deliveries are tried again for about an hour and a half.')">
+    <x-fruit::form-section :title="__('Webhooks')" :level="3" :footer="__('Events are sent as a POST with the conversation or customer as JSON (as the API returns it). The X-Tallport-Event header names the event; X-Tallport-Signature is the base64 HMAC-SHA1 of the body with the secret key below. Failed deliveries are tried again for about an hour and a half.')">
         <x-fruit::field :label="__('Secret Key')" layout="row">
             <x-fruit::input id="webhook_secret" :value="$webhook_secret" readonly />
         </x-fruit::field>
+        @foreach ($webhooks as $webhook_row)
+            <a class="f-form-row f-form-row--link" href="{{ route('settings.api.webhook', ['id' => $webhook_row->id]) }}" wire:navigate @if (isset($webhook) && $webhook->id == $webhook_row->id) aria-current="page" @endif><span class="webhook-row__url">{{ $webhook_row->url }}</span><span class="f-form-row__value">{{ trans_choice('1 event|:count events', count((array) $webhook_row->events)) }}</span></a>
+        @endforeach
+        <div class="f-form-row">
+            <a class="f-button" href="{{ route('settings.api.webhook', ['id' => 'new']) }}" wire:navigate @if (isset($webhook) && !$webhook->exists) aria-current="page" @endif>{{ __('Add Webhook') }}</a>
+        </div>
     </x-fruit::form-section>
-
-    @foreach ($webhooks->push(new App\Api\Webhook()) as $webhook)
-        <form class="settings-form" method="POST" action="{{ route('settings.api.action') }}">
-            {{ csrf_field() }}
-            <input type="hidden" name="action" value="save_webhook">
-            <input type="hidden" name="webhook_id" value="{{ $webhook->id }}">
-
-            <x-fruit::form-section :title="$webhook->exists ? $webhook->url : __('Add Webhook')">
-                @if ($webhook->exists)
-                    <div class="f-form-row">
-                        <span>{{ __('Status') }}</span>
-                        <div class="f-row">
-                            @if (!$webhook->last_run_time)
-                                <x-fruit::badge>{{ __('Not used yet') }}</x-fruit::badge>
-                            @elseif ($webhook->last_run_error)
-                                <x-fruit::badge tone="danger">{{ $webhook->last_run_error }}</x-fruit::badge> <small class="f-muted">{{ App\User::dateFormat($webhook->last_run_time) }}</small>
-                            @else
-                                <x-fruit::badge tone="success">OK</x-fruit::badge> <small class="f-muted">{{ App\User::dateFormat($webhook->last_run_time) }}</small>
-                            @endif
-                        </div>
-                    </div>
-                @endif
-                <x-fruit::field :label="__('URL')" layout="row">
-                    <x-fruit::input type="url" id="webhook_url_{{ $webhook->id ?: 'new' }}" name="url" :value="$webhook->url" maxlength="255" required placeholder="https://example.org/webhook" />
-                </x-fruit::field>
-                <x-fruit::fieldset>
-                    <legend>{{ __('Events') }}</legend>
-                    @foreach ($webhook_events as $event)
-                        <x-fruit::checkbox name="events[]" :value="$event" :checked="in_array($event, (array) $webhook->events)"><code>{{ $event }}</code></x-fruit::checkbox>
-                    @endforeach
-                </x-fruit::fieldset>
-                <x-fruit::fieldset>
-                    <legend>{{ __('Mailboxes') }}</legend>
-                    @foreach ($mailboxes as $mailbox)
-                        <x-fruit::checkbox name="mailboxes[]" :value="$mailbox->id" :checked="in_array($mailbox->id, array_map('intval', (array) $webhook->mailboxes))">{{ $mailbox->name }}</x-fruit::checkbox>
-                    @endforeach
-                    <p class="f-help">{{ __('None: conversations of every mailbox. Customer events are always sent.') }}</p>
-                </x-fruit::fieldset>
-                @if ($webhook->exists)
-                    @php
-                        $logs = $webhook->logs()->orderBy('id', 'desc')->limit(20)->get();
-                    @endphp
-                    @if (count($logs))
-                        <x-fruit::disclosure :title="__('Failed deliveries').' ('.count($logs).')'">
-                            <x-fruit::table>
-                                <thead>
-                                    <tr>
-                                        <th>{{ __('Date') }}</th>
-                                        <th>{{ __('Event') }}</th>
-                                        <th>{{ __('Status') }}</th>
-                                        <th>{{ __('Error') }}</th>
-                                        <th>{{ __('Attempts') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($logs as $log)
-                                        <tr>
-                                            <td>{{ App\User::dateFormat($log->updated_at) }}</td>
-                                            <td><code>{{ $log->event }}</code></td>
-                                            <td><x-fruit::badge :tone="$log->isSuccess() ? 'success' : 'danger'">{{ $log->status_code ?: '—' }}</x-fruit::badge></td>
-                                            <td>{{ $log->error }}</td>
-                                            <td>@if ($log->finished){{ $log->attempts }}@else{{ $log->attempts }} / {{ App\Api\Webhook::MAX_ATTEMPTS }}@endif</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </x-fruit::table>
-                        </x-fruit::disclosure>
-                    @endif
-                @endif
-            </x-fruit::form-section>
-
-            <footer class="f-form-row settings-form__actions">
-                @if ($webhook->exists)
-                    <x-fruit::button type="submit" variant="danger" form="webhook_delete_{{ $webhook->id }}">{{ __('Delete') }}</x-fruit::button>
-                @endif
-                <x-fruit::button type="submit" variant="primary">@if ($webhook->exists){{ __('Save') }}@else{{ __('Add Webhook') }}@endif</x-fruit::button>
-            </footer>
-        </form>
-    @endforeach
 
     {{-- Forms that buttons above submit with their form attribute. --}}
     <div hidden>
@@ -151,15 +79,5 @@
             {{ csrf_field() }}
             <input type="hidden" name="action" value="regenerate_key">
         </form>
-
-        @foreach ($webhooks as $webhook)
-            @if ($webhook->exists)
-                <form id="webhook_delete_{{ $webhook->id }}" method="POST" action="{{ route('settings.api.action') }}" x-data x-on:submit.prevent="Tallport.confirm({message: @js(__('Delete this webhook?')), confirm: @js(__('Delete')), tone: 'danger'}).then(ok => ok && $el.submit())">
-                    {{ csrf_field() }}
-                    <input type="hidden" name="action" value="delete_webhook">
-                    <input type="hidden" name="webhook_id" value="{{ $webhook->id }}">
-                </form>
-            @endif
-        @endforeach
     </div>
 </div>

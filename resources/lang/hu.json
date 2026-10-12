@@ -1803,5 +1803,9 @@
     "Administrators open every mailbox, whichever are chosen.": "Az adminisztrátorok minden postafiókot megnyitnak, a kiválasztástól függetlenül.",
     "1 mailbox|:count mailboxes": "1 postafiók|:count postafiók",
     "No matching users": "Nincs egyező felhasználó",
-    "value": "érték"
+    "value": "érték",
+    "Webhook": "Webhook",
+    "Delete Webhook": "Webhook Törlése",
+    "1 event|:count events": "1 esemény|:count esemény",
+    "1 page|:count pages": "1 oldal|:count oldal"
 }

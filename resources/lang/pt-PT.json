@@ -1803,5 +1803,9 @@
     "Administrators open every mailbox, whichever are chosen.": "Os administradores abrem todas as caixas de correio, independentemente das escolhidas.",
     "1 mailbox|:count mailboxes": "1 caixa de correio|:count caixas de correio",
     "No matching users": "Nenhum utilizador correspondente",
-    "value": "valor"
+    "value": "valor",
+    "Webhook": "Webhook",
+    "Delete Webhook": "Eliminar Webhook",
+    "1 event|:count events": "1 evento|:count eventos",
+    "1 page|:count pages": "1 página|:count páginas"
 }

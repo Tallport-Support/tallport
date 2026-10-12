@@ -1702,6 +1702,12 @@ a.disabled:focus {
         transition: none;
     }
 }
+/* A webhook's row (settings/api): its URL, cut short with its events beside it. */
+.webhook-row__url {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 /* A person in a settings row (users/columns): their photo, then the name over the email address. */
 .users-row__person {
     display: flex;

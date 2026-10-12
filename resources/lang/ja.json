@@ -1803,5 +1803,9 @@
     "Administrators open every mailbox, whichever are chosen.": "管理者は、選択に関係なくすべてのメールボックスを開けます。",
     "1 mailbox|:count mailboxes": ":count 件のメールボックス",
     "No matching users": "一致するユーザーはいません",
-    "value": "値"
+    "value": "値",
+    "Webhook": "Webhook",
+    "Delete Webhook": "Webhook を削除",
+    "1 event|:count events": ":count 件のイベント",
+    "1 page|:count pages": ":count ページ"
 }

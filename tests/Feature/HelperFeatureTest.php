@@ -53,12 +53,14 @@ class HelperFeatureTest extends FeatureTestCase
 
         foreach ([
             route('mailboxes.matrix', ['id' => $mailbox->id]) => route('mailboxes'),
-            route('ai.documents')                             => route('settings', ['section' => 'ai']),
             route('logs.telegram')                            => route('logs'),
         ] as $page => $item) {
             $html = $this->actingAs($admin)->get($page)->assertOk()->getContent();
             $this->assertMatchesRegularExpression($current($item), $html, $page);
         }
+        // A level beside AI (its Documentation): AI leads there, current but not the page.
+        $html = $this->actingAs($admin)->get(route('ai.documents'))->assertOk()->getContent();
+        $this->assertMatchesRegularExpression($current(route('settings', ['section' => 'ai']), 'true'), $html);
         // A person's page (Users, then the person): Users leads there, current but not the page.
         $html = $this->actingAs($admin)->get(route('users.security', ['id' => $agent->id]))->assertOk()->getContent();
         $this->assertMatchesRegularExpression($current(route('users'), 'true'), $html);
