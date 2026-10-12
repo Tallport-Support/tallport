@@ -1,59 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noindex,nofollow">
 
         <title>@yield('title')</title>
 
-        <!-- Styles -->
+        {{-- FruitUI's own stylesheet only: an error page shows even when the app can't. Light and dark follow the system. --}}
+        <link rel="stylesheet" href="{{ asset('vendor/fruitui/core.compat.css') }}">
         <style>
-            html, body {
-                background-color: #fff;
-                color: #a3b2c2;
-                font-family: -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', sans-serif;
-                font-weight: 100;
-                height: 100vh;
-                margin: 0;
-            }
-
-            .full-height {
-                height: 100vh;
-            }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 36px;
-                padding: 20px;
-                font-style: italic;
-            }
-            .title small {
-                font-size: 26px;
-                font-style: normal;
+            .error-page {
+                display: grid;
+                place-items: center;
+                min-height: 100vh;
+                padding: 16px;
+                box-sizing: border-box;
             }
         </style>
     </head>
-    <body>
-        <div class="flex-center position-ref full-height">
-            <div class="content">
-                <div class="title">
-                    @yield('message')
-                </div>
+    <body class="fruit-ui">
+        <main class="error-page">
+            <div class="f-empty-state">
+                <h1 class="f-empty-state__title">@yield('message')</h1>
+                @hasSection('details')
+                    <div class="f-empty-state__description">@yield('details')</div>
+                @endif
+                @hasSection('actions')
+                    <div class="f-empty-state__actions">@yield('actions')</div>
+                @endif
             </div>
-        </div>
+        </main>
     </body>
 </html>

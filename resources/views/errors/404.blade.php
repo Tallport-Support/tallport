@@ -4,5 +4,8 @@
 
 @section('message')
     {{ __('Sorry, the page you are looking for could not be found.') }}
-    <br/><br/><small>{{ __('Go to') }} <a href="{{ \Helper::urlHome() }}">{{ __('Homepage') }}</a></small>
+@endsection
+
+@section('actions')
+    {{ __('Go to') }} <a href="{{ \Helper::urlHome() }}">{{ __('Homepage') }}</a>
 @endsection
