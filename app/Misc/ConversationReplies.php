@@ -1164,7 +1164,8 @@ class ConversationReplies
 
     private function discardDraftRequest(Request $request, $response, $user)
     {
-        $thread = Thread::find($request->thread_id);
+        // An unsaved draft has no id ("": PostgreSQL won't compare it with a number).
+        $thread = Thread::find((int) $request->thread_id);
 
         if (!$thread) {
             // Discarding nont saved yet draft
