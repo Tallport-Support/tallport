@@ -130,19 +130,4 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    {{-- Each mailbox's language, features, chat translation and customer context are on its own page. --}}
-    @if (count($ai_mailboxes))
-        <x-fruit::form-section :title="__('Mailboxes')" :level="3" :footer="__('Each mailbox\'s language, features, chat translation and customer context are on its own page, under Mailboxes.')">
-            @foreach ($ai_mailboxes as $ai_mailbox)
-                <a wire:navigate href="{{ route('mailboxes.ai', ['id' => $ai_mailbox->id]) }}" class="f-form-row f-form-row--link">
-                    <span class="mailbox-row__main">
-                        <x-icon.mail class="f-icon mailbox-row__icon" :data-fruit-mark="$ai_mailbox->accent ?: 'blue'" aria-hidden="true" />
-                        <span class="mailbox-row__name">{{ $ai_mailbox->name }}</span>
-                    </span>
-                    <span class="f-form-row__value">{{ App\Ai\Settings::mailboxSummary($ai_mailbox) }}</span>
-                </a>
-            @endforeach
-        </x-fruit::form-section>
-    @endif
-
 </form>

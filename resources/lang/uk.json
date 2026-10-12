@@ -805,7 +805,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "Під час складання відповіді ШІ запитує в цього URL дані про клієнта, підписуючи запит ключем, і використовує відповідь.",
     "Enter a customer's email address.": "Введіть електронну адресу клієнта.",
     "AI isn't set up yet.": "ШІ ще не налаштовано.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "Мова, функції, переклад чату й контекст клієнта кожної поштової скриньки — на її власній сторінці, у розділі Поштові скриньки.",
     "This mailbox can't send email yet.": "Ця поштова скринька ще не може надсилати листи.",
     "Set up Sending Emails so replies reach customers and agents.": "Налаштуйте розділ «Надсилання Листів», щоб відповіді доходили до клієнтів і користувачів.",
     "This mailbox can't receive email yet.": "Ця поштова скринька ще не може отримувати листи.",

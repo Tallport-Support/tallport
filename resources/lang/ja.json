@@ -805,7 +805,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "返信の下書き作成時に、AIはキーで署名してこのURLに顧客について問い合わせ、その回答を使用します。",
     "Enter a customer's email address.": "顧客のメールアドレスを入力してください。",
     "AI isn't set up yet.": "AIはまだ設定されていません。",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "各メールボックスの言語、機能、チャット翻訳、顧客コンテキストは、メールボックスの下にあるそれぞれのページにあります。",
     "This mailbox can't send email yet.": "このメールボックスはまだメールを送信できません。",
     "Set up Sending Emails so replies reach customers and agents.": "返信が顧客とユーザーに届くように、「メール送信」を設定してください。",
     "This mailbox can't receive email yet.": "このメールボックスはまだメールを受信できません。",

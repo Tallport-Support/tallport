@@ -805,7 +805,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "Bir yanıt taslağı hazırlanırken yapay zekâ, anahtarla imzalanmış bir istekle bu URL'ye müşteri hakkında sorar ve yanıtı kullanır.",
     "Enter a customer's email address.": "Bir müşterinin e-posta adresini girin.",
     "AI isn't set up yet.": "Yapay zekâ henüz ayarlanmamış.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "Her posta kutusunun dili, özellikleri, sohbet çevirisi ve müşteri bağlamı, Posta Kutuları altında kendi sayfasındadır.",
     "This mailbox can't send email yet.": "Bu posta kutusu henüz e-posta gönderemiyor.",
     "Set up Sending Emails so replies reach customers and agents.": "Yanıtların müşterilere ve kullanıcılara ulaşması için E-Posta Gönderme bölümünü ayarlayın.",
     "This mailbox can't receive email yet.": "Bu posta kutusu henüz e-posta alamıyor.",

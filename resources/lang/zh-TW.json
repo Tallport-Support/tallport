@@ -862,7 +862,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "起草回覆時，AI 會以金鑰簽署，向此 URL 查詢客戶資訊，並使用回傳結果。",
     "Enter a customer's email address.": "請輸入客戶的電子郵件地址。",
     "AI isn't set up yet.": "AI 尚未設定。",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "每個信箱的語言、功能、聊天翻譯和客戶脈絡都在各自的頁面上，位於信箱下。",
     "This mailbox can't send email yet.": "此信箱尚無法傳送電子郵件。",
     "Set up Sending Emails so replies reach customers and agents.": "請設定「傳送電子郵件中」，讓回覆能送達客戶和使用者。",
     "This mailbox can't receive email yet.": "此信箱尚無法接收電子郵件。",

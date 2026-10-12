@@ -807,7 +807,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "起草回复时，AI 会用密钥签名，向此 URL 查询客户信息，并使用返回结果。",
     "Enter a customer's email address.": "请输入客户的电子邮件地址。",
     "AI isn't set up yet.": "AI 尚未设置。",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "每个邮箱的语言、功能、聊天翻译和客户上下文都在其单独的页面上，位于邮箱下。",
     "This mailbox can't send email yet.": "此邮箱尚无法发送电子邮件。",
     "Set up Sending Emails so replies reach customers and agents.": "请设置“电子邮件发送中”，以便回复能送达客户和用户。",
     "This mailbox can't receive email yet.": "此邮箱尚无法接收电子邮件。",

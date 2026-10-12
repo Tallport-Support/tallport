@@ -805,7 +805,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "Cavab hazırlanarkən Sİ açarla imzalanmış sorğu ilə bu URL-dən müştəri haqqında soruşur və cavabdan istifadə edir.",
     "Enter a customer's email address.": "Müştərinin e-poçt ünvanını daxil edin.",
     "AI isn't set up yet.": "Sİ hələ qurulmayıb.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "Hər poçt qutusunun dili, funksiyaları, çat tərcüməsi və müştəri konteksti Poçt qutuları altında öz səhifəsindədir.",
     "This mailbox can't send email yet.": "Bu poçt qutusu hələ e-poçt göndərə bilmir.",
     "Set up Sending Emails so replies reach customers and agents.": "Cavabların müştərilərə və istifadəçilərə çatması üçün «E-Poçtların Göndərilməsi» bölməsini qurun.",
     "This mailbox can't receive email yet.": "Bu poçt qutusu hələ e-poçt qəbul edə bilmir.",

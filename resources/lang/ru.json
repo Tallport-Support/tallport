@@ -805,7 +805,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "При составлении ответа ИИ запрашивает у этого URL данные о клиенте, подписывая запрос ключом, и использует ответ.",
     "Enter a customer's email address.": "Введите email-адрес клиента.",
     "AI isn't set up yet.": "ИИ ещё не настроен.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "Язык, функции, перевод чата и контекст клиента каждого ящика находятся на его собственной странице, в разделе Ящики.",
     "This mailbox can't send email yet.": "Этот ящик пока не может отправлять письма.",
     "Set up Sending Emails so replies reach customers and agents.": "Настройте раздел «Отправка Писем», чтобы ответы доходили до клиентов и агентов.",
     "This mailbox can't receive email yet.": "Этот ящик пока не может получать письма.",

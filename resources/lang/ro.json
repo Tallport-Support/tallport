@@ -805,7 +805,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "La redactarea unui răspuns, AI-ul întreabă acest URL despre client, cu cererea semnată cu cheia, și folosește răspunsul.",
     "Enter a customer's email address.": "Introdu adresa de e-mail a unui client.",
     "AI isn't set up yet.": "AI-ul nu este încă configurat.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "Limba, funcțiile, traducerea chatului și contextul clientului fiecărei cutii poștale se află pe pagina proprie, la Cutii poștale.",
     "This mailbox can't send email yet.": "Această cutie poștală nu poate trimite încă email-uri.",
     "Set up Sending Emails so replies reach customers and agents.": "Configurați „Trimitere Email-Uri” pentru ca răspunsurile să ajungă la clienți și utilizatori.",
     "This mailbox can't receive email yet.": "Această cutie poștală nu poate primi încă email-uri.",

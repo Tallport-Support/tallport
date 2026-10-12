@@ -805,7 +805,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "בעת ניסוח תשובה, ה-AI שואל את כתובת ה-URL הזו על הלקוח, בבקשה חתומה במפתח, ומשתמש בתשובה.",
     "Enter a customer's email address.": "הזן את כתובת האימייל של לקוח.",
     "AI isn't set up yet.": "ה-AI עדיין לא הוגדר.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "השפה, התכונות, תרגום הצ'אט והקשר הלקוח של כל תיבת דואר נמצאים בדף משלה, תחת תיבות דואר.",
     "This mailbox can't send email yet.": "תיבת דואר זו עדיין לא יכולה לשלוח אימיילים.",
     "Set up Sending Emails so replies reach customers and agents.": "הגדר את \"שולח אימיילים\" כדי שתשובות יגיעו ללקוחות ולמשתמשים.",
     "This mailbox can't receive email yet.": "תיבת דואר זו עדיין לא יכולה לקבל אימיילים.",

@@ -88,8 +88,7 @@ class AiAssistantTest extends FeatureTestCase
     {
         $this->actingAs($this->admin)->get('/app-settings/ai')
             ->assertStatus(200)
-            ->assertSee('Embedding Provider')
-            ->assertSee($this->mailbox->name);
+            ->assertSee('Embedding Provider');
         $this->actingAs($this->agent)->get('/app-settings/ai')->assertStatus(403);
     }
 
@@ -152,7 +151,8 @@ class AiAssistantTest extends FeatureTestCase
         $page = route('mailboxes.ai', ['id' => $this->mailbox->id]);
 
         $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $this->mailbox->id]))->assertSeeInOrder(['AI', 'On · Dutch']);
-        $this->actingAs($this->admin)->get('/app-settings/ai')->assertSee('href="'.$page.'"', false)->assertSeeInOrder([$this->mailbox->name, 'On · Dutch']);
+        // Only under Mailboxes: the AI page doesn't lead to a mailbox's.
+        $this->actingAs($this->admin)->get('/app-settings/ai')->assertDontSee('href="'.$page.'"', false);
         $this->actingAs($this->admin)->get($page)->assertOk()
             ->assertSee('app-sidebar__back', false)
             ->assertSee('aria-current="page"', false)

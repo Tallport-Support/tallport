@@ -805,7 +805,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "Przy tworzeniu odpowiedzi AI pyta ten URL o klienta, z żądaniem podpisanym kluczem, i używa odpowiedzi.",
     "Enter a customer's email address.": "Wpisz adres e-mail klienta.",
     "AI isn't set up yet.": "AI nie jest jeszcze skonfigurowana.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "Język, funkcje, tłumaczenie czatu i kontekst klienta każdej skrzynki pocztowej znajdują się na jej własnej stronie, w sekcji Skrzynki pocztowe.",
     "This mailbox can't send email yet.": "Ta skrzynka pocztowa nie może jeszcze wysyłać e-maili.",
     "Set up Sending Emails so replies reach customers and agents.": "Skonfiguruj Wysyłanie Wiadomości E-Mail, aby odpowiedzi docierały do klientów i użytkowników.",
     "This mailbox can't receive email yet.": "Ta skrzynka pocztowa nie może jeszcze odbierać e-maili.",

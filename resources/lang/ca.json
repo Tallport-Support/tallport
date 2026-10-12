@@ -921,7 +921,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "En redactar una resposta, la IA pregunta a aquest URL sobre el client, amb la sol·licitud signada amb la clau, i fa servir la resposta.",
     "Enter a customer's email address.": "Introduïu l'adreça electrònica d'un client.",
     "AI isn't set up yet.": "La IA encara no està configurada.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "L'idioma, les funcions, la traducció del xat i el context del client de cada bústia són a la seva pròpia pàgina, a Bústies.",
     "This mailbox can't send email yet.": "Aquesta bústia encara no pot enviar correus.",
     "Set up Sending Emails so replies reach customers and agents.": "Configureu «Enviant Correus» perquè les respostes arribin als clients i als usuaris.",
     "This mailbox can't receive email yet.": "Aquesta bústia encara no pot rebre correus.",

@@ -800,7 +800,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "Beim Entwerfen einer Antwort fragt die KI diese URL nach dem Kunden, mit dem Schlüssel signiert, und verwendet die Antwort.",
     "Enter a customer's email address.": "Geben Sie die E-Mail-Adresse eines Kunden ein.",
     "AI isn't set up yet.": "KI ist noch nicht eingerichtet.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "Sprache, Funktionen, Chat-Übersetzung und Kundenkontext jedes Postfachs stehen auf einer eigenen Seite, unter Postfächer.",
     "This mailbox can't send email yet.": "Dieses Postfach kann noch keine E-Mails senden.",
     "Set up Sending Emails so replies reach customers and agents.": "Richten Sie „E-Mails Senden“ ein, damit Antworten Kunden und Benutzer erreichen.",
     "This mailbox can't receive email yet.": "Dieses Postfach kann noch keine E-Mails empfangen.",

@@ -805,7 +805,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "Pri sestavljanju odgovora AI vpraša ta URL o stranki, z zahtevo, podpisano s ključem, in uporabi odgovor.",
     "Enter a customer's email address.": "Vnesite e-poštni naslov stranke.",
     "AI isn't set up yet.": "AI še ni nastavljena.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "Jezik, funkcije, prevajanje klepeta in kontekst stranke vsakega poštnega predala so na njegovi lastni strani, pod Poštni predali.",
     "This mailbox can't send email yet.": "Ta poštni predal še ne more pošiljati e-pošte.",
     "Set up Sending Emails so replies reach customers and agents.": "Nastavite Pošiljanje E-Pošte, da bodo odgovori dosegli stranke in uporabnike.",
     "This mailbox can't receive email yet.": "Ta poštni predal še ne more prejemati e-pošte.",

@@ -813,7 +813,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "Lors de la rédaction d'une réponse, l'IA interroge cette URL sur le client, en signant la requête avec la clé, et utilise la réponse.",
     "Enter a customer's email address.": "Saisissez l'adresse e-mail d'un client.",
     "AI isn't set up yet.": "L'IA n'est pas encore configurée.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "La langue, les fonctionnalités, la traduction du tchat et le contexte client de chaque boîte de réception se trouvent sur sa propre page, sous Boîtes de réception.",
     "This mailbox can't send email yet.": "Cette boîte de réception ne peut pas encore envoyer d'e-mails.",
     "Set up Sending Emails so replies reach customers and agents.": "Configurez « Sending Emails » pour que les réponses parviennent aux clients et aux utilisateurs.",
     "This mailbox can't receive email yet.": "Cette boîte de réception ne peut pas encore recevoir d'e-mails.",

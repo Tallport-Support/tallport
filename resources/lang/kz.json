@@ -1302,7 +1302,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "Жауап жасағанда ЖИ кілтпен қол қойылған сұрау арқылы осы URL-ден клиент туралы сұрайды және жауапты пайдаланады.",
     "Enter a customer's email address.": "Клиенттің эл. пошта мекенжайын енгізіңіз.",
     "AI isn't set up yet.": "ЖИ әлі бапталмаған.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "Әр пошталық жәшіктің тілі, мүмкіндіктері, чат аудармасы және клиент контексті Пошталық жәшіктер бөліміндегі өз бетінде орналасқан.",
     "This mailbox can't send email yet.": "Бұл пошталық жәшік әлі хат жібере алмайды.",
     "Set up Sending Emails so replies reach customers and agents.": "Жауаптар клиенттер мен агенттерге жетуі үшін «Хаттарды Жіберу» бөлімін баптаңыз.",
     "This mailbox can't receive email yet.": "Бұл пошталық жәшік әлі хат қабылдай алмайды.",

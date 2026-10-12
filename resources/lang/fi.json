@@ -821,7 +821,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "Vastausta laadittaessa tekoäly kysyy tältä URL-osoitteelta asiakkaasta avaimella allekirjoitettuna ja käyttää vastausta.",
     "Enter a customer's email address.": "Anna asiakkaan sähköpostiosoite.",
     "AI isn't set up yet.": "Tekoälyä ei ole vielä määritetty.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "Kunkin postilaatikon kieli, toiminnot, chatin kääntäminen ja asiakkaan konteksti ovat sen omalla sivulla kohdassa Postilaatikot.",
     "This mailbox can't send email yet.": "Tämä postilaatikko ei voi vielä lähettää sähköpostia.",
     "Set up Sending Emails so replies reach customers and agents.": "Määritä ”Sähköpostien Lähettäminen”, jotta vastaukset tavoittavat asiakkaat ja käyttäjät.",
     "This mailbox can't receive email yet.": "Tämä postilaatikko ei voi vielä vastaanottaa sähköpostia.",

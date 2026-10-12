@@ -184,7 +184,6 @@ class SettingsController extends Controller
                 $params = [
                     'template_vars' => [
                         'ai_languages' => \App\Ai\Settings::displayNames(),
-                        'ai_mailboxes' => \App\Mailbox::orderBy('name')->get(),
                         'ai_providers' => \App\Ai\Settings::providers(),
                         'ai_features'  => array_combine(\App\Ai\Settings::MODEL_FEATURES, [__('Summaries'), __('Translations'), __('Drafts'), __('Language Detection')]),
                     ],

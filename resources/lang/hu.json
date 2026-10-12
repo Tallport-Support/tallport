@@ -805,7 +805,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "Válaszpiszkozat készítésekor az MI a kulccsal aláírva megkérdezi ezt az URL-t az ügyfélről, és felhasználja a választ.",
     "Enter a customer's email address.": "Add meg egy ügyfél e-mail-címét.",
     "AI isn't set up yet.": "Az MI még nincs beállítva.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "Minden postafiók nyelve, funkciói, chatfordítása és ügyfélkörnyezete a saját oldalán található, a Postafiókok alatt.",
     "This mailbox can't send email yet.": "Ez a postafiók még nem tud e-mailt küldeni.",
     "Set up Sending Emails so replies reach customers and agents.": "Állítsd be az „E-Mailek Küldése” lapot, hogy a válaszok eljussanak az ügyfelekhez és a felhasználókhoz.",
     "This mailbox can't receive email yet.": "Ez a postafiók még nem tud e-mailt fogadni.",

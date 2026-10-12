@@ -805,7 +805,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "Při vytváření odpovědi se AI zeptá této URL na zákazníka, s požadavkem podepsaným klíčem, a použije odpověď.",
     "Enter a customer's email address.": "Zadejte e-mailovou adresu zákazníka.",
     "AI isn't set up yet.": "AI ještě není nastavená.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "Jazyk, funkce, překlad chatu a kontext zákazníka každé schránky jsou na její vlastní stránce, v části Schránky.",
     "This mailbox can't send email yet.": "Tato schránka zatím nemůže odesílat e-maily.",
     "Set up Sending Emails so replies reach customers and agents.": "Nastavte Odesílání E-Mailů, aby odpovědi docházely zákazníkům i uživatelům.",
     "This mailbox can't receive email yet.": "Tato schránka zatím nemůže přijímat e-maily.",

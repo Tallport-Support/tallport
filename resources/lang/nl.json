@@ -806,7 +806,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "Bij het opstellen van een antwoord vraagt de AI deze URL naar de klant, ondertekend met de sleutel, en gebruikt het antwoord.",
     "Enter a customer's email address.": "Voer het e-mailadres van een klant in.",
     "AI isn't set up yet.": "AI is nog niet ingesteld.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "De taal, functies, chatvertaling en klantcontext van elke mailbox staan op een eigen pagina, onder Mailboxen.",
     "This mailbox can't send email yet.": "Deze mailbox kan nog geen e-mail versturen.",
     "Set up Sending Emails so replies reach customers and agents.": "Stel E-Mails Verzenden in, zodat antwoorden klanten en gebruikers bereiken.",
     "This mailbox can't receive email yet.": "Deze mailbox kan nog geen e-mail ontvangen.",

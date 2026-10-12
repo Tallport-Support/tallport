@@ -805,7 +805,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "När ett svar skrivs frågar AI den här webbadressen om kunden, signerat med nyckeln, och använder svaret.",
     "Enter a customer's email address.": "Ange en kunds e-postadress.",
     "AI isn't set up yet.": "AI är inte konfigurerad än.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "Varje inkorgs språk, funktioner, chattöversättning och kundkontext finns på en egen sida, under Inkorgar.",
     "This mailbox can't send email yet.": "Den här brevlådan kan inte skicka e-post än.",
     "Set up Sending Emails so replies reach customers and agents.": "Konfigurera ”Skickar E-Postmeddelanden” så att svar når kunder och användare.",
     "This mailbox can't receive email yet.": "Den här brevlådan kan inte ta emot e-post än.",

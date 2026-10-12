@@ -809,7 +809,6 @@
     "When drafting a reply, the AI asks this URL about the customer, signed with the key, and uses the answer.": "Når et svar utarbeides, spør AI-en denne URL-en om kunden, signert med nøkkelen, og bruker svaret.",
     "Enter a customer's email address.": "Skriv inn e-postadressen til en kunde.",
     "AI isn't set up yet.": "AI er ikke satt opp ennå.",
-    "Each mailbox's language, features, chat translation and customer context are on its own page, under Mailboxes.": "Hver postkasses språk, funksjoner, chatoversettelse og kundekontekst ligger på en egen side, under Postkasser.",
     "This mailbox can't send email yet.": "Denne postkassen kan ikke sende e-post ennå.",
     "Set up Sending Emails so replies reach customers and agents.": "Sett opp «Sender E-Poster» så svarene når frem til kunder og brukere.",
     "This mailbox can't receive email yet.": "Denne postkassen kan ikke motta e-post ennå.",
