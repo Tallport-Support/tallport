@@ -463,6 +463,7 @@ class UsersController extends Controller
             'time_format'  => ['nullable', Rule::in([User::TIME_FORMAT_12, User::TIME_FORMAT_24])],
             'languages'    => 'nullable|array',
             'languages.*'  => [Rule::in(array_keys(\App\Ai\Settings::LANGUAGES))],
+            'reply_editor' => ['nullable', Rule::in(['rich', 'markdown'])],
         ]);
         if ($request->filled('locale')) {
             $user->locale = $request->locale;
@@ -484,6 +485,9 @@ class UsersController extends Controller
         }
         $user->reply_status = $request->reply_status ?: null;
         $user->stay_in_conversation = (bool) $request->stay_in_conversation;
+        if ($request->filled('reply_editor')) {
+            $user->markdown_replies = $request->reply_editor == 'markdown';
+        }
         // Off: the installation's accent (Settings » Appearance).
         $user->accent = $request->filled('accent_default') ? null : ($request->accent ?: null);
         $relocalized = $user->isDirty('locale');

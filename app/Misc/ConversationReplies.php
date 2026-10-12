@@ -524,6 +524,8 @@ class ConversationReplies
                 $thread->edited_by_user_id = null;
                 $thread->edited_at = null;
                 $thread->body = $body;
+                // As written in Markdown (the body is rendered from it), or null for rich text.
+                $thread->body_markdown = $request->input('body_markdown');
                 $thread->setTo($to);
                 // We save CC and BCC as is and filter emails when sending replies
                 if ($is_create && !$is_multiple && count($to_array) > 1) {
@@ -1115,6 +1117,7 @@ class ConversationReplies
             }
             $thread->from = $request->from_alias ?? null;
             $thread->body = $request->body;
+            $thread->body_markdown = $request->input('body_markdown');
             $thread->setTo($to);
             // We save CC and BCC as is and filter emails when sending replies
             $thread->setCc($request->cc);

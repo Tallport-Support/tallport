@@ -94,6 +94,14 @@ function getReplyBody()
 	return body ? body.value : '';
 }
 
+// Whether the reply editor is in Markdown (FruitUI's mode="markdown").
+function replyBodyIsMarkdown()
+{
+	var body = document.getElementById('body');
+	var editor = body ? body.closest('[data-fruit-mode]') : null;
+	return !!editor && editor.getAttribute('data-fruit-mode') == 'markdown';
+}
+
 function setReplyBody(text, markdown)
 {
 	editorSetContent('body', text, markdown);

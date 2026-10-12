@@ -2209,5 +2209,8 @@
     "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "GitHub сілтемелері репозиторийден оқылады. Қалтаға немесе репозиторийге сілтеме ондағы әрбір Markdown файлын қосады және тізімді өзекті күйде ұстайды.",
     "GitHub Access Token": "GitHub Қол Жеткізу Токені",
     "For private repositories: a fine-grained token with read-only access to their contents.": "Жеке репозиторийлер үшін: олардың мазмұнына тек оқуға рұқсаты бар нақты бапталған токен.",
-    "Delete this folder and its pages from the documentation?": "Бұл қалтаны және оның беттерін құжаттамадан жою керек пе?"
+    "Delete this folder and its pages from the documentation?": "Бұл қалтаны және оның беттерін құжаттамадан жою керек пе?",
+    "Reply Editor": "Жауап Редакторы",
+    "Rich Text": "Пішімделген Мәтін",
+    "Notes, saved replies and other texts are always written in Markdown.": "Ескертпелер, сақталған жауаптар және басқа мәтіндер әрқашан Markdown-да жазылады."
 }

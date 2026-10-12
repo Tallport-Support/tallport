@@ -1815,5 +1815,8 @@
     "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "Linkurile GitHub sunt citite din depozit. Un link către un dosar sau depozit adaugă fiecare fișier Markdown din el și menține lista la zi.",
     "GitHub Access Token": "Token de Acces GitHub",
     "For private repositories: a fine-grained token with read-only access to their contents.": "Pentru depozitele private: un token cu permisiuni detaliate și acces doar pentru citire la conținutul lor.",
-    "Delete this folder and its pages from the documentation?": "Ștergeți acest dosar și paginile sale din documentație?"
+    "Delete this folder and its pages from the documentation?": "Ștergeți acest dosar și paginile sale din documentație?",
+    "Reply Editor": "Editor de Răspunsuri",
+    "Rich Text": "Text Formatat",
+    "Notes, saved replies and other texts are always written in Markdown.": "Notele, răspunsurile salvate și celelalte texte sunt scrise întotdeauna în Markdown."
 }

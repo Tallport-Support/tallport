@@ -1815,5 +1815,8 @@
     "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "GitHub bağlantıları depodan okunur. Bir klasöre veya depoya bağlantı, içindeki her Markdown dosyasını ekler ve listeyi güncel tutar.",
     "GitHub Access Token": "GitHub Erişim Belirteci",
     "For private repositories: a fine-grained token with read-only access to their contents.": "Özel depolar için: içeriklerine yalnızca okuma erişimi olan ayrıntılı bir belirteç.",
-    "Delete this folder and its pages from the documentation?": "Bu klasör ve sayfaları belgelerden silinsin mi?"
+    "Delete this folder and its pages from the documentation?": "Bu klasör ve sayfaları belgelerden silinsin mi?",
+    "Reply Editor": "Yanıt Düzenleyici",
+    "Rich Text": "Zengin Metin",
+    "Notes, saved replies and other texts are always written in Markdown.": "Notlar, kayıtlı yanıtlar ve diğer metinler her zaman Markdown ile yazılır."
 }

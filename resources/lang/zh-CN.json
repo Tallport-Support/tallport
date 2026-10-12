@@ -1816,5 +1816,8 @@
     "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "GitHub 链接从仓库中读取。指向文件夹或仓库的链接会添加其中的每个 Markdown 文件，并保持列表为最新。",
     "GitHub Access Token": "GitHub 访问令牌",
     "For private repositories: a fine-grained token with read-only access to their contents.": "用于私有仓库：对其内容只有只读权限的细粒度令牌。",
-    "Delete this folder and its pages from the documentation?": "要从文档中删除此文件夹及其页面吗？"
+    "Delete this folder and its pages from the documentation?": "要从文档中删除此文件夹及其页面吗？",
+    "Reply Editor": "回复编辑器",
+    "Rich Text": "富文本",
+    "Notes, saved replies and other texts are always written in Markdown.": "备注、已保存的回复和其他文本始终使用 Markdown 编写。"
 }

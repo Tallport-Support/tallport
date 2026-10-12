@@ -1860,5 +1860,8 @@
     "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "GitHub 連結會從儲存庫讀取。指向資料夾或儲存庫的連結會加入其中的每個 Markdown 檔案，並讓清單保持最新。",
     "GitHub Access Token": "GitHub 存取權杖",
     "For private repositories: a fine-grained token with read-only access to their contents.": "用於私人儲存庫：對其內容僅具唯讀權限的細緻權杖。",
-    "Delete this folder and its pages from the documentation?": "要從文件中刪除此資料夾及其頁面嗎？"
+    "Delete this folder and its pages from the documentation?": "要從文件中刪除此資料夾及其頁面嗎？",
+    "Reply Editor": "回覆編輯器",
+    "Rich Text": "富文字",
+    "Notes, saved replies and other texts are always written in Markdown.": "備註、已儲存的回覆和其他文字一律以 Markdown 撰寫。"
 }

@@ -1815,5 +1815,8 @@
     "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "GitHub keçidləri repozitoriyadan oxunur. Qovluğa və ya repozitoriyaya keçid onun içindəki hər Markdown faylını əlavə edir və siyahını aktual saxlayır.",
     "GitHub Access Token": "GitHub Giriş Tokeni",
     "For private repositories: a fine-grained token with read-only access to their contents.": "Şəxsi repozitoriyalar üçün: onların məzmununa yalnız oxumaq icazəsi olan dəqiq tənzimlənmiş token.",
-    "Delete this folder and its pages from the documentation?": "Bu qovluq və onun səhifələri sənədlərdən silinsin?"
+    "Delete this folder and its pages from the documentation?": "Bu qovluq və onun səhifələri sənədlərdən silinsin?",
+    "Reply Editor": "Cavab Redaktoru",
+    "Rich Text": "Formatlı Mətn",
+    "Notes, saved replies and other texts are always written in Markdown.": "Qeydlər, saxlanılmış cavablar və digər mətnlər həmişə Markdown ilə yazılır."
 }

@@ -227,7 +227,8 @@ document.addEventListener('alpine:init', function () {
 				// A note the user was writing.
 				var note = notes()[conversation_id];
 				if (!this.$wire.mode && note && note.note && stripTags(note.note).trim()) {
-					this.$wire.openNote(note.note);
+					// Notes kept before Markdown are rich text.
+					this.$wire.openNote(note.note, !!note.markdown);
 				}
 				this.timer = setInterval(function () {
 					if (self.dirty) {
@@ -314,7 +315,7 @@ document.addEventListener('alpine:init', function () {
 					}
 				});
 				if (note && stripTags(note).trim()) {
-					all[conversation_id] = {note: note, time: (new Date()).getTime()};
+					all[conversation_id] = {note: note, markdown: !!this.$wire.markdown, time: (new Date()).getTime()};
 				} else {
 					delete all[conversation_id];
 				}
@@ -370,7 +371,7 @@ document.addEventListener('alpine:init', function () {
 						}
 						self.$root.classList.remove('conv-action-wrapper--sent');
 						if (chat) {
-							window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: html}}));
+							window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: html, markdown: html}}));
 						}
 					});
 				});
@@ -422,7 +423,7 @@ document.addEventListener('alpine:init', function () {
 					}
 					self.$root.classList.remove('conv-action-wrapper--sent');
 					if (chat) {
-						window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: html}}));
+						window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: html, markdown: html}}));
 					}
 					// Changed since it was translated: translated again.
 					if (result == 'changed') {
@@ -470,19 +471,25 @@ document.addEventListener('alpine:init', function () {
 				header.appendChild(time);
 				var body = document.createElement('div');
 				body.className = 'f-message__body';
-				// The user's own editor text, without scripts or handlers.
-				var parsed = new DOMParser().parseFromString(html, 'text/html');
-				parsed.querySelectorAll('script, style, iframe, object').forEach(function (element) {
-					element.remove();
-				});
-				parsed.querySelectorAll('*').forEach(function (element) {
-					Array.prototype.slice.call(element.attributes).forEach(function (attribute) {
-						if (/^on/i.test(attribute.name)) {
-							element.removeAttribute(attribute.name);
-						}
+				if (this.$wire.markdown) {
+					// Markdown as written, until the history shows the message.
+					body.classList.add('conv-sending__markdown');
+					body.textContent = html;
+				} else {
+					// The user's own editor text, without scripts or handlers.
+					var parsed = new DOMParser().parseFromString(html, 'text/html');
+					parsed.querySelectorAll('script, style, iframe, object').forEach(function (element) {
+						element.remove();
 					});
-				});
-				body.innerHTML = parsed.body.innerHTML;
+					parsed.querySelectorAll('*').forEach(function (element) {
+						Array.prototype.slice.call(element.attributes).forEach(function (attribute) {
+							if (/^on/i.test(attribute.name)) {
+								element.removeAttribute(attribute.name);
+							}
+						});
+					});
+					body.innerHTML = parsed.body.innerHTML;
+				}
 				message.appendChild(header);
 				message.appendChild(body);
 				item.appendChild(message);

@@ -1815,5 +1815,8 @@
     "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "A GitHub-hivatkozások a tárolóból olvasódnak be. Egy mappára vagy tárolóra mutató hivatkozás hozzáadja a benne lévő összes Markdown-fájlt, és naprakészen tartja a listát.",
     "GitHub Access Token": "GitHub Hozzáférési Token",
     "For private repositories: a fine-grained token with read-only access to their contents.": "Privát tárolókhoz: finomhangolt token, amely csak olvasási hozzáférést ad a tartalmukhoz.",
-    "Delete this folder and its pages from the documentation?": "Törli ezt a mappát és oldalait a dokumentációból?"
+    "Delete this folder and its pages from the documentation?": "Törli ezt a mappát és oldalait a dokumentációból?",
+    "Reply Editor": "Válaszszerkesztő",
+    "Rich Text": "Formázott Szöveg",
+    "Notes, saved replies and other texts are always written in Markdown.": "A jegyzetek, a mentett válaszok és a többi szöveg mindig Markdownban készül."
 }

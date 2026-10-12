@@ -1,6 +1,6 @@
 {{-- The composers' files and editor (livewire/conversation-composer, livewire/new-conversation):
      $attachments, $body, $formats (the formatting allowed: null all, [] plain text), $placeholder,
-     $draft_button, $placeholders (by mode, for a composer that switches); $inline (the chat view): FruitUI's chat field, Enter sends (App\Misc\KeyboardShortcuts). --}}
+     $draft_button, $placeholders (by mode, for a composer that switches); $markdown (the component's: body is Markdown); $inline (the chat view): FruitUI's chat field, Enter sends (App\Misc\KeyboardShortcuts). --}}
 @php $inline = !empty($inline); @endphp
 @if (collect($attachments)->where('embed', false)->count())
     <ul class="conv-composer__attachments">
@@ -19,9 +19,9 @@
     <template x-for="name in uploading"><li><x-fruit::spinner /> <span x-text="name"></span></li></template>
 </ul>
 
-{{-- A new editor when the formats change (a reply's channel, a note): it reads them when it starts. --}}
-<div class="conv-reply-body" wire:ignore @if (!empty($placeholders)) data-placeholders="{{ json_encode($placeholders) }}" @endif wire:key="editor-{{ $inline ? 'inline-' : '' }}{{ $formats === null ? 'all' : (implode('-', $formats) ?: 'plain') }}">
-    <x-editor id="body" :rows="$inline ? null : 8" :layout="$inline ? 'inline' : 'stacked'" :enter="App\Misc\KeyboardShortcuts::editorEnter($inline ? 'chat' : 'message')" :formats="$formats" :paste="$formats === [] ? 'plain' : 'rich'" :upload-url="route('conversations.upload')" :aria-label="__('Message')" :aria-describedby="$inline ? 'body-help' : null" :placeholder="$placeholder ?? null">
+{{-- A new editor when the formats or Markdown change (a reply's channel, a note, a draft): it reads them when it starts. --}}
+<div class="conv-reply-body" wire:ignore @if (!empty($placeholders)) data-placeholders="{{ json_encode($placeholders) }}" @endif wire:key="editor-{{ $inline ? 'inline-' : '' }}{{ !empty($markdown) ? 'markdown-' : '' }}{{ $formats === null ? 'all' : (implode('-', $formats) ?: 'plain') }}">
+    <x-editor id="body" :markdown="!empty($markdown)" :rows="$inline ? null : 8" :layout="$inline ? 'inline' : 'stacked'" :enter="App\Misc\KeyboardShortcuts::editorEnter($inline ? 'chat' : 'message')" :formats="$formats" :paste="$formats === [] ? 'plain' : 'rich'" :upload-url="route('conversations.upload')" :aria-label="__('Message')" :aria-describedby="$inline ? 'body-help' : null" :placeholder="$placeholder ?? null">
         {{ $body }}
         <x-slot:extras>
             <span class="editor-attach">

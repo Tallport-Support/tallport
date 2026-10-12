@@ -8,12 +8,14 @@
 // The current reply as a new saved reply.
 function savedReplySaveFromReply(name, done)
 {
-	Tallport.post(laroute.route('saved_replies.ajax'), {
+	var data = {
 		action: 'save_from_reply',
 		mailbox_id: document.getElementById('saved-replies-data').getAttribute('data-mailbox_id'),
-		name: name,
-		text: getReplyBody()
-	}).then(function (response) {
+		name: name
+	};
+	// As written: Markdown, or rich text.
+	data[replyBodyIsMarkdown() ? 'text_markdown' : 'text'] = getReplyBody();
+	Tallport.post(laroute.route('saved_replies.ajax'), data).then(function (response) {
 		if (Tallport.result(response)) {
 			done();
 		}

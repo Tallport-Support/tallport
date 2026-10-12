@@ -1818,5 +1818,8 @@
     "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "GitHub-lenker leses fra repositoriet. En lenke til en mappe eller et repositorium legger til hver Markdown-fil i den og holder listen oppdatert.",
     "GitHub Access Token": "GitHub-Tilgangstoken",
     "For private repositories: a fine-grained token with read-only access to their contents.": "For private repositorier: et finmasket token med kun lesetilgang til innholdet.",
-    "Delete this folder and its pages from the documentation?": "Slette denne mappen og sidene i den fra dokumentasjonen?"
+    "Delete this folder and its pages from the documentation?": "Slette denne mappen og sidene i den fra dokumentasjonen?",
+    "Reply Editor": "Svarredigering",
+    "Rich Text": "Formatert Tekst",
+    "Notes, saved replies and other texts are always written in Markdown.": "Notater, lagrede svar og andre tekster skrives alltid i Markdown."
 }

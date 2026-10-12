@@ -1815,5 +1815,8 @@
     "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "Odkazy na GitHub se načítají z repozitáře. Odkaz na složku nebo repozitář přidá každý soubor Markdown v něm a udržuje seznam aktuální.",
     "GitHub Access Token": "Přístupový Token GitHub",
     "For private repositories: a fine-grained token with read-only access to their contents.": "Pro soukromé repozitáře: jemně nastavený token s přístupem k jejich obsahu jen pro čtení.",
-    "Delete this folder and its pages from the documentation?": "Smazat tuto složku a její stránky z dokumentace?"
+    "Delete this folder and its pages from the documentation?": "Smazat tuto složku a její stránky z dokumentace?",
+    "Reply Editor": "Editor Odpovědí",
+    "Rich Text": "Formátovaný Text",
+    "Notes, saved replies and other texts are always written in Markdown.": "Poznámky, uložené odpovědi a další texty se vždy píší v Markdownu."
 }

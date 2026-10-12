@@ -1822,5 +1822,8 @@
     "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "Les liens GitHub sont lus depuis le dépôt. Un lien vers un dossier ou un dépôt ajoute chaque fichier Markdown qu'il contient et tient la liste à jour.",
     "GitHub Access Token": "Jeton d'Accès GitHub",
     "For private repositories: a fine-grained token with read-only access to their contents.": "Pour les dépôts privés : un jeton à granularité fine avec un accès en lecture seule à leur contenu.",
-    "Delete this folder and its pages from the documentation?": "Supprimer ce dossier et ses pages de la documentation ?"
+    "Delete this folder and its pages from the documentation?": "Supprimer ce dossier et ses pages de la documentation ?",
+    "Reply Editor": "Éditeur de Réponses",
+    "Rich Text": "Texte Enrichi",
+    "Notes, saved replies and other texts are always written in Markdown.": "Les notes, les réponses enregistrées et les autres textes sont toujours rédigés en Markdown."
 }

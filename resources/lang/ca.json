@@ -1907,5 +1907,8 @@
     "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "Els enllaços de GitHub es llegeixen del repositori. Un enllaç a una carpeta o a un repositori hi afegeix cada fitxer Markdown que conté i manté la llista al dia.",
     "GitHub Access Token": "Testimoni d'Accés de GitHub",
     "For private repositories: a fine-grained token with read-only access to their contents.": "Per a repositoris privats: un testimoni detallat amb accés només de lectura al seu contingut.",
-    "Delete this folder and its pages from the documentation?": "Voleu suprimir aquesta carpeta i les seves pàgines de la documentació?"
+    "Delete this folder and its pages from the documentation?": "Voleu suprimir aquesta carpeta i les seves pàgines de la documentació?",
+    "Reply Editor": "Editor de Respostes",
+    "Rich Text": "Text Enriquit",
+    "Notes, saved replies and other texts are always written in Markdown.": "Les notes, les respostes desades i els altres textos sempre s'escriuen en Markdown."
 }

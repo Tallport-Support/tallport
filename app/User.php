@@ -143,6 +143,8 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
         'languages'               => 'array',
         // When a conversation leaves the folder they're in: they stay in it, or in the folder.
         'stay_in_conversation'    => 'boolean',
+        // Replies written in Markdown (App\Misc\Markdown), else in rich text.
+        'markdown_replies'        => 'boolean',
     ];
     
     public function __construct(array $attributes = array())

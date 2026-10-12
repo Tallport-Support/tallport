@@ -115,7 +115,7 @@ class ConversationComposerTest extends FeatureTestCase
 
     public function testAddsANoteAndForwards()
     {
-        $this->composer()->call('open', 'note')->set('body', '<p>Warranty covers it.</p>')->call('send')
+        $this->composer()->call('open', 'note')->set('body', 'Warranty covers it.')->call('send')
             ->assertDispatched('composer-note-forget')->assertRedirect();
         $this->assertSame(1, $this->conversation->threads()->where('type', Thread::TYPE_NOTE)->count());
         $this->assertCount(0, $this->sentEmailsTo('casey@customer.example.org'));

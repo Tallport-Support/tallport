@@ -86,6 +86,12 @@ class NewConversation extends Component
 
     public $body = '';
 
+    /**
+     * Whether body is Markdown (App\Misc\Markdown): as the user prefers, a draft (or a text
+     * it starts from) as it was written.
+     */
+    public $markdown = false;
+
     public $status;
 
     public $user_id;
@@ -115,7 +121,9 @@ class NewConversation extends Component
         $this->thread_id = $thread ? $thread->id : null;
         $this->customer_id = $conversation->customer_id;
         $this->subject = (string) old('subject', $conversation->subject);
-        $this->body = (string) old('body', $thread ? $thread->body : '');
+        $this->markdown = $thread && $thread->body_markdown !== null
+            || (bool) auth()->user()->markdown_replies && \App\Misc\Markdown::isMarkdown(null, $thread ? $thread->body : '');
+        $this->body = (string) old('body', $thread ? ($this->markdown ? $thread->body_markdown : $thread->body) : '');
         $this->to = implode("\n", array_keys($to ?: []));
         if (!$this->to && $thread && $thread->to && !$thread->id) {
             // A new conversation from a forwarded message: its sender.
@@ -183,7 +191,7 @@ class NewConversation extends Component
 
     public function saveDraft($force = false)
     {
-        if (!$force && !$this->thread_id && trim(strip_tags($this->body)) === '' && !$this->attachments && trim($this->to) === '') {
+        if (!$force && !$this->thread_id && trim(strip_tags($this->html())) === '' && !$this->attachments && trim($this->to) === '') {
             $this->skipRender();
 
             return;
@@ -223,7 +231,7 @@ class NewConversation extends Component
         if ($status !== null && $status !== '') {
             $this->status = (int) $status;
         }
-        if (trim(str_replace('&nbsp;', ' ', strip_tags((string) $this->body, '<img>'))) === '') {
+        if (trim(str_replace('&nbsp;', ' ', strip_tags($this->html(), '<img>'))) === '') {
             Fruit::toast(__('Please enter a message'), 'danger');
 
             return;
@@ -307,6 +315,14 @@ class NewConversation extends Component
     /**
      * Runs a reply operation with the fields the form posted.
      */
+    /**
+     * The text as HTML: Markdown rendered.
+     */
+    protected function html()
+    {
+        return $this->markdown ? \App\Misc\Markdown::toHtml($this->body) : (string) $this->body;
+    }
+
     protected function call($method)
     {
         $is_phone = $this->type == Conversation::TYPE_PHONE;
@@ -323,7 +339,8 @@ class NewConversation extends Component
             'is_create'              => 1,
             'saved_reply_id'         => $this->saved_reply_id,
             'subject'                => $this->subject,
-            'body'                   => $this->body,
+            'body'                   => $this->html(),
+            'body_markdown'          => $this->markdown ? $this->body : null,
             'status'                 => $this->status,
             'user_id'                => $this->user_id,
             'attachments'            => $attachment_ids,

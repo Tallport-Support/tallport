@@ -46,6 +46,13 @@
                     </x-fruit::select>
                 </x-fruit::field>
 
+                <x-fruit::field :label="__('Reply Editor')" :description="__('Notes, saved replies and other texts are always written in Markdown.')" layout="row">
+                    <x-fruit::select id="reply_editor" name="reply_editor">
+                        <option value="rich" @selected(old('reply_editor', $user->markdown_replies ? 'markdown' : 'rich') == 'rich')>{{ __('Rich Text') }}</option>
+                        <option value="markdown" @selected(old('reply_editor', $user->markdown_replies ? 'markdown' : 'rich') == 'markdown')>Markdown</option>
+                    </x-fruit::select>
+                </x-fruit::field>
+
                 <x-fruit::field :label="__('When a Conversation Moves')" :description="__('Stay in Folder opens the next conversation in the folder you are in.')" layout="row">
                     <x-fruit::select id="stay_in_conversation" name="stay_in_conversation">
                         <option value="0" @if (!old('stay_in_conversation', $user->stay_in_conversation)) selected @endif>{{ __('Stay in Folder') }}</option>

@@ -85,6 +85,12 @@ class ConversationComposer extends Component
 
     public $body = '';
 
+    /**
+     * Whether body is Markdown (App\Misc\Markdown): always for a note, for a reply as
+     * the user prefers, and a draft as it was written.
+     */
+    public $markdown = false;
+
     public $status;
 
     public $user_id;
@@ -162,6 +168,9 @@ class ConversationComposer extends Component
         $conversation = $this->conversation();
         $this->resetFields($conversation);
         $this->mode = $mode;
+        if ($mode == 'note') {
+            $this->markdown = true;
+        }
         // The reply template (public/js/saved_replies.js).
         $this->dispatch('composer-opened', mode: $mode);
 
@@ -183,14 +192,15 @@ class ConversationComposer extends Component
     /**
      * A note kept in the browser while it was being written.
      */
-    public function openNote($body)
+    public function openNote($body, $markdown = true)
     {
         if ($this->mode) {
             return;
         }
         $this->open('note');
         $this->body = (string) $body;
-        $this->dispatch('fruit-editor-set', target: 'body', html: $this->body);
+        $this->markdown = (bool) $markdown;
+        $this->dispatch('fruit-editor-set', target: 'body', html: $this->body, markdown: $this->body);
     }
 
     #[On('composer-edit-draft')]
@@ -214,12 +224,13 @@ class ConversationComposer extends Component
         }
         $this->cc = implode("\n", $thread->getCcArray());
         $this->bcc = implode("\n", $thread->getBccArray());
-        $this->body = (string) $thread->body;
+        $this->markdown = $thread->body_markdown !== null;
+        $this->body = (string) ($this->markdown ? $thread->body_markdown : $thread->body);
         $this->attachments = [];
         foreach ($thread->attachments as $attachment) {
             $this->attachments[] = $this->attachmentData($attachment, (bool) $attachment->embedded);
         }
-        $this->dispatch('fruit-editor-set', target: 'body', html: $this->body);
+        $this->dispatch('fruit-editor-set', target: 'body', html: $this->body, markdown: $this->body);
     }
 
     /**
@@ -367,7 +378,7 @@ class ConversationComposer extends Component
             }
         };
         try {
-            $result = \App\Ai\ChatTranslation::translateReply($this->conversation(), $this->body, auth()->user(), $stream);
+            $result = \App\Ai\ChatTranslation::translateReply($this->conversation(), $this->html(), auth()->user(), $stream);
         } catch (\Throwable $e) {
             $error = $e->getMessage() === __('This mailbox has used its AI tokens for today.')
                 ? $e->getMessage()
@@ -396,10 +407,13 @@ class ConversationComposer extends Component
         if (empty($this->translation['html']) || $this->translation['source'] !== (string) $html) {
             return 'changed';
         }
-        $this->ai_draft_translation = \Helper::htmlToText($this->translation['source']);
+        $this->body = (string) $html;
+        $this->ai_draft_translation = \Helper::htmlToText($this->html());
         $this->ai_draft_translation_language = \App\Ai\ChatTranslation::agentLanguage($this->conversation(), auth()->user());
         $body = $this->translation['html'];
         $this->translation = null;
+        // The translation is HTML.
+        $this->markdown = false;
 
         return $this->send($status, $body) ? 'sent' : 'failed';
     }
@@ -495,9 +509,12 @@ class ConversationComposer extends Component
     public function switchToNote()
     {
         $body = $this->body;
+        // The text stays as it was written: rich text too.
+        $markdown = $this->markdown;
         $this->mode = '';
         $this->open('note');
         $this->body = $body;
+        $this->markdown = $markdown;
     }
 
     /**
@@ -519,7 +536,8 @@ class ConversationComposer extends Component
             'from_alias'      => $this->from_alias,
             'cc'              => $this->mode == 'note' ? [] : Fruit::tokens($this->cc),
             'bcc'             => $this->mode == 'note' ? [] : Fruit::tokens($this->bcc),
-            'body'            => $this->body,
+            'body'            => $this->html(),
+            'body_markdown'   => $this->markdown ? $this->body : null,
             'status'          => $this->status,
             'user_id'         => $this->user_id,
             'attachments'     => $attachment_ids,
@@ -545,7 +563,19 @@ class ConversationComposer extends Component
     protected function hasText()
     {
         // Visually empty content (e.g. <p></p>) counts as empty, images do not.
-        return trim(str_replace('&nbsp;', ' ', strip_tags((string) $this->body, '<img>'))) !== '';
+        return trim(str_replace('&nbsp;', ' ', strip_tags($this->html(), '<img>'))) !== '';
+    }
+
+    /**
+     * The text as HTML: Markdown rendered with the formats the editor allows.
+     */
+    protected function html()
+    {
+        if (!$this->markdown) {
+            return (string) $this->body;
+        }
+
+        return \App\Misc\Markdown::toHtml($this->body, $this->mode == 'note' ? null : $this->conversation()->editorFormats());
     }
 
     /**
@@ -559,6 +589,7 @@ class ConversationComposer extends Component
         $this->thread_id = null;
         $this->submission_key = (string) \Illuminate\Support\Str::uuid();
         $this->body = '';
+        $this->markdown = (bool) $user->markdown_replies;
         $this->attachments = [];
         $this->saved_reply_id = '';
         $this->ai_draft_translation = '';

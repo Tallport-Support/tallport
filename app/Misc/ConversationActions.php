@@ -244,6 +244,11 @@ class ConversationActions
         if (!$thread->body_original) {
             $thread->body_original = $thread->body;
         }
+        // Edited as it was written: in Markdown (the body rendered from it), or in rich text.
+        if ($thread->body_markdown !== null) {
+            $thread->body_markdown = (string) $body;
+            $body = \App\Misc\Markdown::toHtml($body, $thread->type == Thread::TYPE_NOTE ? null : $thread->conversation->editorFormats());
+        }
         $thread->body = $body;
         $thread->edited_by_user_id = $user->id;
         $thread->edited_at = date('Y-m-d H:i:s');

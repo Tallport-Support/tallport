@@ -1815,5 +1815,8 @@
     "GitHub links are read from the repository. A link to a folder or repository adds each Markdown file in it, and keeps the list up to date.": "GitHub のリンクはリポジトリから読み込まれます。フォルダやリポジトリへのリンクは、その中の各 Markdown ファイルを追加し、一覧を最新の状態に保ちます。",
     "GitHub Access Token": "GitHub アクセストークン",
     "For private repositories: a fine-grained token with read-only access to their contents.": "プライベートリポジトリ用：内容への読み取り専用アクセス権を持つ Fine-grained トークン。",
-    "Delete this folder and its pages from the documentation?": "このフォルダとそのページをドキュメントから削除しますか？"
+    "Delete this folder and its pages from the documentation?": "このフォルダとそのページをドキュメントから削除しますか？",
+    "Reply Editor": "返信エディタ",
+    "Rich Text": "リッチテキスト",
+    "Notes, saved replies and other texts are always written in Markdown.": "メモ、保存済みの返信、その他のテキストは常に Markdown で書きます。"
 }

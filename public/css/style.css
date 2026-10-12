@@ -3290,6 +3290,10 @@ body.fruit-ui {
 .conv-sending .f-message {
     opacity: 0.6;
 }
+/* Markdown as written (public/js/conversations.js), until the history shows the message. */
+.conv-sending__markdown {
+    white-space: pre-wrap;
+}
 .conv-action-wrapper--sent {
     display: none;
 }
