@@ -492,6 +492,17 @@ class UsersTest extends FeatureTestCase
                 return [$s->medium, $s->event];
             })->all()
         );
+        // Saved as it changes: the whole form, in the background.
+        $this->assertSame('success', $this->postAjax($agent, '/users/notifications/'.$agent->id, [
+            'subscriptions' => [Subscription::MEDIUM_BROWSER => [Subscription::EVENT_TYPE_NEW]],
+        ])->json('status'));
+        $this->assertSame([Subscription::MEDIUM_BROWSER], Subscription::where('user_id', $agent->id)->pluck('medium')->all());
+        $this->actingAs($agent)->get('/users/notifications/'.$agent->id)->assertOk()
+            ->assertSee('x-data="tallportAutoSave"', false)->assertDontSee('Save Notifications')->assertDontSee('>Users</h2>', false);
+
+        // Someone else's: Users, the person, then Notifications.
+        $this->actingAs($this->admin)->get('/users/notifications/'.$agent->id)->assertOk()
+            ->assertSeeInOrder(['>Users</h2>', '>'.e($agent->getFullName()).'</h2>', '>Notifications</h2>'], false);
     }
 
     public function testChangeOwnPassword()

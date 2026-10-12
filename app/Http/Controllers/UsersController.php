@@ -236,6 +236,10 @@ class UsersController extends Controller
 
         Subscription::saveFromArray($request->subscriptions, $user->id);
 
+        // Saved as it changes (users/notifications).
+        if ($request->ajax()) {
+            return response()->json(['status' => 'success']);
+        }
         \Session::flash('flash_success_floating', __('Notifications saved successfully'));
 
         return redirect()->route('users.notifications', ['id' => $id]);

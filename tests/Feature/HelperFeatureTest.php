@@ -49,17 +49,19 @@ class HelperFeatureTest extends FeatureTestCase
         $mailbox = $this->createMailbox([$admin]);
         $agent = $this->createUser();
         // The current item's link, its attributes in any order.
-        $current = fn ($href) => '#<a (?=[^>]*href="'.preg_quote($href, '#').'")[^>]*aria-current="page"#';
+        $current = fn ($href, $value = 'page') => '#<a (?=[^>]*href="'.preg_quote($href, '#').'")[^>]*aria-current="'.$value.'"#';
 
         foreach ([
             route('mailboxes.matrix', ['id' => $mailbox->id]) => route('mailboxes'),
             route('ai.documents')                             => route('settings', ['section' => 'ai']),
             route('logs.telegram')                            => route('logs'),
-            route('users.security', ['id' => $agent->id])     => route('users'),
         ] as $page => $item) {
             $html = $this->actingAs($admin)->get($page)->assertOk()->getContent();
             $this->assertMatchesRegularExpression($current($item), $html, $page);
         }
+        // A person's page (Users, then the person): Users leads there, current but not the page.
+        $html = $this->actingAs($admin)->get(route('users.security', ['id' => $agent->id]))->assertOk()->getContent();
+        $this->assertMatchesRegularExpression($current(route('users'), 'true'), $html);
     }
 
     /**
