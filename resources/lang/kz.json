@@ -436,7 +436,6 @@
     "Password saved successfully!": "Құпиясөз сәтті сақталды!",
     "Pending": "Күту",
     "Permissions": "Рұқсаттар",
-    "Permissions saved successfully": "Рұқсаттар сәтті сақталды",
     "Person Replying": "Жауап Беруші Адам",
     "Person Replying (if Unassigned)": "Жауап беруші адам (егер тағайындалмаған болса)",
     "Phone": "Телефон",
@@ -500,7 +499,6 @@
     "Save Draft": "Черновикті Сақтау",
     "Save Notifications": "Хабарламаларды Сақтау",
     "Save Password": "Құпиясөзді Сақтау",
-    "Save Permissions": "Рұқсаттарды Сақтау",
     "Save Profile": "Профильді Сақтау",
     "Save Settings": "Орнатуларды Сақтау",
     "Saved": "Сақталған",
@@ -2197,5 +2195,7 @@
     "Visitor IPs Detected": "Келушілердің IP Анықталды",
     "Visitor IPs Unknown": "Келушілердің IP Белгісіз",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport оларды өзі жасай алмады. Мұны веб-сервер пайдаланушысы ретінде іске қосыңыз:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Шығыс электрондық хаттар жіберілмей жатыр — әкімші :%a_begin%Жүйенің Күйі:%a_end% тексеруі тиіс"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Шығыс электрондық хаттар жіберілмей жатыр — әкімші :%a_begin%Жүйенің Күйі:%a_end% тексеруі тиіс",
+    "Administrators open every mailbox, whichever are chosen.": "Әкімшілер таңдауға қарамастан барлық пошта жәшіктерін ашады.",
+    "1 mailbox|:count mailboxes": ":count пошта жәшігі"
 }

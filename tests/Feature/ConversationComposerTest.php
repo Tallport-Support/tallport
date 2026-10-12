@@ -80,6 +80,21 @@ class ConversationComposerTest extends FeatureTestCase
         $this->composer()->call('open', 'forward')->assertSee('placeholder="Add a message"', false);
     }
 
+    /**
+     * To, when it's the conversation's customer alone: a read-only token, as Cc's are; a name with a
+     * comma would split into two, so then the address alone.
+     */
+    public function testToIsAReadOnlyToken()
+    {
+        $to = '#<textarea data-fruit-control (?=[^>]*id="to")(?=[^>]*readonly)[^>]*>%s</textarea>#';
+        $this->assertMatchesRegularExpression(sprintf($to, 'Casey Customer &lt;casey@customer.example.org&gt;'), $this->composer()->call('open', 'reply')->html());
+
+        $this->conversation->customer->first_name = 'Customer, Casey';
+        $this->conversation->customer->last_name = '';
+        $this->conversation->customer->save();
+        $this->assertMatchesRegularExpression(sprintf($to, 'casey@customer.example.org'), $this->composer()->call('open', 'reply')->html());
+    }
+
     public function testSendsAReplyWithCc()
     {
         $this->composer()->call('open', 'reply')->call('send')->assertToasted('Please enter a message', 'danger');

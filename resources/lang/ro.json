@@ -451,7 +451,6 @@
     "Password saved successfully!": "Parola a fost salvată cu succes!",
     "Pending": "În așteptare",
     "Permissions": "Permisiuni",
-    "Permissions saved successfully": "Permisiunile au fost salvate cu succes",
     "Person Replying": "Persoana Care Răspunde",
     "Person Replying (if Unassigned)": "Persoana care răspunde (dacă nu este atribuită)",
     "Phone": "Telefon",
@@ -514,7 +513,6 @@
     "Save Draft": "Salvează Schița",
     "Save Notifications": "Salvează Notificările",
     "Save Password": "Salvează Parola",
-    "Save Permissions": "Salvează Permisiunile",
     "Save Profile": "Salvează Profil",
     "Save Settings": "Salvează Setări",
     "Saved": "Salvat",
@@ -1803,5 +1801,7 @@
     "Visitor IPs Detected": "IP-urile Vizitatorilor Detectate",
     "Visitor IPs Unknown": "IP-urile Vizitatorilor Necunoscute",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport nu le-a putut crea singur. Rulați aceasta ca utilizatorul serverului web:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "E-mailurile de ieșire nu sunt trimise — un administrator ar trebui să verifice :%a_begin%Status Sistem:%a_end%"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "E-mailurile de ieșire nu sunt trimise — un administrator ar trebui să verifice :%a_begin%Status Sistem:%a_end%",
+    "Administrators open every mailbox, whichever are chosen.": "Administratorii deschid orice cutie poștală, indiferent de cele alese.",
+    "1 mailbox|:count mailboxes": "1 cutie poștală|:count cutii poștale|:count de cutii poștale"
 }

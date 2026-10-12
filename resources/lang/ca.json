@@ -583,7 +583,6 @@
     "Password reset email has been sent": "S'ha enviat el correu de restabliment de contrasenya",
     "Password saved successfully!": "Contrasenya desada correctament!",
     "Permission": "Permís",
-    "Permissions saved successfully": "Permisos desats correctament",
     "Person Replying": "Persona Que Respon",
     "Person Replying (if Unassigned)": "Persona que respon (si no hi ha assignat)",
     "Please confirm your password:": "Confirmeu la vostra contrasenya:",
@@ -639,7 +638,6 @@
     "Save Changes": "Desa canvis",
     "Save Notifications": "Desa Notificacions",
     "Save Password": "Desa Contrasenya",
-    "Save Permissions": "Desa Permisos",
     "Save Profile": "Desa Perfil",
     "Save Settings": "Desa Configuració",
     "Saved reply created.": "Resposta desada creada.",
@@ -1895,5 +1893,7 @@
     "Visitor IPs Detected": "IP dels Visitants Detectades",
     "Visitor IPs Unknown": "IP dels Visitants Desconegudes",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport no els ha pogut crear. Executeu això com a usuari del servidor web:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "El correu sortint no s'està enviant — un administrador hauria de comprovar :%a_begin%Estat del Sistema:%a_end%"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "El correu sortint no s'està enviant — un administrador hauria de comprovar :%a_begin%Estat del Sistema:%a_end%",
+    "Administrators open every mailbox, whichever are chosen.": "Els administradors obren totes les bústies, siguin quines siguin les escollides.",
+    "1 mailbox|:count mailboxes": "1 bústia|:count bústies"
 }

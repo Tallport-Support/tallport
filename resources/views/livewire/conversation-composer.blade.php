@@ -45,7 +45,9 @@
                                     @endforeach
                                 </x-fruit::select>
                             @else
-                                <x-fruit::input id="to" readonly :value="$to_customers[$to] ?? ($conversation->customer ? $conversation->customer->getFullName(true).' <'.$conversation->customer_email.'>' : $conversation->customer_email)" />
+                                {{-- Read-only, as a token like Cc's: a token splits at a comma, so a name with one shows the address alone. --}}
+                                @php $to_label = $to_customers[$to] ?? ($conversation->customer ? $conversation->customer->getFullName(true).' <'.$conversation->customer_email.'>' : $conversation->customer_email); @endphp
+                                <x-fruit::token-field id="to" readonly>{{ str_contains((string) $to_label, ',') ? ($to ?: $conversation->customer_email) : $to_label }}</x-fruit::token-field>
                             @endif
                             @unless ($has_channel)
                                 <x-fruit::button variant="ghost" size="small" id="toggle-cc" x-show="!copies" aria-controls="cc-row bcc-row" aria-expanded="false" x-on:click="copies = true; $nextTick(() => $root.querySelector('#cc-row input')?.focus())">{{ __('Cc') }}/{{ __('Bcc') }}</x-fruit::button>

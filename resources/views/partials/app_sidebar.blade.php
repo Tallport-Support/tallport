@@ -7,7 +7,17 @@
     // The mailbox "New Conversation" (shortcut) is for: the current one, else the first.
     $sidebar_new_mailbox_id = collect($sidebar_mailboxes)->pluck(0)->pluck('id')->contains($sidebar_mailbox_id) ? $sidebar_mailbox_id : ($sidebar_mailboxes[0][0]->id ?? null);
 @endphp
+@if (!empty($sidebar_column))
+{{-- The first level of a drill-down (layouts/app), as FruitUI's settings example: the brand and the
+     way back to the inbox at the top, then the sidebar. --}}
+<nav class="f-pane--scroll f-sidebar f-drilldown__column app-sidebar app-sidebar--column" id="app-sidebar" aria-label="{{ __('Navigation') }}" @if (Helper::isLocaleRtl()) dir="rtl" @endif>
+    <div class="app-sidebar__brand-row">
+        @include('partials/app_sidebar_brand')
+        <x-fruit::back-link :href="url('/')" wire:navigate class="app-sidebar__back">{{ __('Inbox') }}</x-fruit::back-link>
+    </div>
+@else
 <nav class="f-pane f-pane--column f-pane--scroll f-pane--border-end f-sidebar app-sidebar" id="app-sidebar" aria-label="{{ __('Navigation') }}" @if (Helper::isLocaleRtl()) dir="rtl" @endif>
+@endif
     @if (App\Misc\Sidebar::isSettings())
         {{-- Settings' search: finds settings pages by their names and what's on them (tallport.js). --}}
         <div class="f-sidebar__header app-sidebar__header" role="search">

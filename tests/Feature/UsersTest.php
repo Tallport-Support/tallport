@@ -7,7 +7,9 @@ use App\Folder;
 use App\SendLog;
 use App\Subscription;
 use App\Thread;
+use App\Livewire\UserPermissions;
 use App\User;
+use Livewire\Livewire;
 use Tests\FeatureTestCase;
 
 /**
@@ -241,7 +243,7 @@ class UsersTest extends FeatureTestCase
         $agent = $this->createUser();
         $this->postAjax($this->admin, '/users/ajax', ['action' => 'delete_user', 'user_id' => $agent->id]);
 
-        $this->postForm($this->admin, '/users/permissions/'.$agent->id, ['mailboxes' => [$this->mailbox->id]])->assertStatus(404);
+        Livewire::actingAs($this->admin)->test(UserPermissions::class, ['user' => $agent])->assertStatus(404);
         $this->postForm($this->admin, '/users/profile/'.$agent->id, [
             'first_name' => 'Revived', 'email' => 'revived@example.org', 'timezone' => 'UTC', 'time_format' => User::TIME_FORMAT_24,
         ])->assertStatus(404);
@@ -365,22 +367,55 @@ class UsersTest extends FeatureTestCase
 
     // Access and settings.
 
+    /**
+     * Settings › Users › the person › Permissions: each change saved as it's made.
+     */
     public function testAdminSetsMailboxAccessAndPermissions()
     {
         $agent = $this->createUser();
+        $sales = $this->createMailbox([], ['name' => 'Sales']);
 
-        $response = $this->postForm($this->admin, '/users/permissions/'.$agent->id, [
-            'mailboxes'        => [$this->mailbox->id],
-            'user_permissions' => [User::PERM_DELETE_CONVERSATIONS => '1', User::PERM_EDIT_USERS => ''],
-        ]);
+        $component = Livewire::actingAs($this->admin)->test(UserPermissions::class, ['user' => $agent])
+            ->set('mailboxes', [(string) $this->mailbox->id])
+            ->set('permissions.'.User::PERM_DELETE_CONVERSATIONS, '1');
 
-        $response->assertRedirect(route('users.permissions', ['id' => $agent->id]));
         $agent->refresh();
         $this->assertEquals([$this->mailbox->id], $agent->mailboxes()->pluck('mailboxes.id')->all());
+        $this->assertTrue(Folder::where('user_id', $agent->id)->where('mailbox_id', $this->mailbox->id)->exists(), 'Its personal folders.');
         $this->assertTrue($agent->hasPermission(User::PERM_DELETE_CONVERSATIONS));
         $this->assertFalse($agent->hasPermission(User::PERM_EDIT_USERS));
 
+        // A mailbox added keeps the other's settings for the user; All and None.
+        $agent->mailboxes()->updateExistingPivot($this->mailbox->id, ['hide' => true]);
+        $component->set('mailboxes', [(string) $this->mailbox->id, (string) $sales->id]);
+        $this->assertTrue((bool) $agent->mailboxesWithSettings()->where('mailboxes.id', $this->mailbox->id)->first()->settings->hide);
+        $component->call('selectAllMailboxes', false);
+        $this->assertSame(0, $agent->mailboxes()->count());
+        $component->call('selectAllMailboxes', true)->assertSet('mailboxes', \App\Mailbox::pluck('id')->map(fn ($id) => (string) $id)->all());
+
+        // Only known permissions and values.
+        $component->set('permissions.'.User::PERM_EDIT_USERS, 'yes')->assertSet('permissions.'.User::PERM_EDIT_USERS, '');
+        $this->assertFalse($agent->fresh()->hasPermission(User::PERM_EDIT_USERS));
+
+        Livewire::actingAs($agent)->test(UserPermissions::class, ['user' => $agent])->assertStatus(403);
         $this->actingAs($agent)->get('/users/permissions/'.$agent->id)->assertStatus(403);
+    }
+
+    /**
+     * The page: Users, the person and Permissions as levels, the open rows current; no Save.
+     */
+    public function testPermissionsLevels()
+    {
+        $agent = $this->createUser(['first_name' => 'Robin', 'last_name' => 'Ray']);
+        $current = fn ($href, $value) => '#<a (?=[^>]*href="'.preg_quote($href, '#').'")[^>]*aria-current="'.$value.'"#';
+
+        $html = $this->actingAs($this->admin)->get('/users/permissions/'.$agent->id)->assertOk()
+            ->assertSee('f-drilldown', false)->assertSeeInOrder(['>Users</h2>', '>Robin Ray</h2>', '>Permissions</h2>'], false)
+            ->assertDontSee('Save Permissions')->getContent();
+        $this->assertMatchesRegularExpression($current(route('users'), 'true'), $html);
+        $this->assertMatchesRegularExpression($current(route('users.profile', ['id' => $agent->id]), 'true'), $html);
+        $this->assertMatchesRegularExpression($current(route('users.permissions', ['id' => $agent->id]), 'page'), $html);
+        $this->assertStringContainsString('0 mailboxes', $html);
     }
 
     /**
@@ -397,10 +432,10 @@ class UsersTest extends FeatureTestCase
             ->assertSee('Default (Allowed)')->assertSee('Default (Not Allowed)');
 
         // Allowed though it's the default too; Not Allowed against it; Default.
-        $this->postForm($this->admin, '/users/permissions/'.$agent->id, [
-            'mailboxes'        => [$this->mailbox->id],
-            'user_permissions' => [User::PERM_EDIT_KB => '1', User::PERM_DELETE_CONVERSATIONS => '0', User::PERM_EDIT_SAVED_REPLIES => ''],
-        ]);
+        $component = Livewire::actingAs($this->admin)->test(UserPermissions::class, ['user' => $agent])
+            ->set('permissions.'.User::PERM_EDIT_KB, '1')
+            ->set('permissions.'.User::PERM_DELETE_CONVERSATIONS, '0')
+            ->set('permissions.'.User::PERM_EDIT_SAVED_REPLIES, '');
         $permissions = $agent->fresh()->permissions;
         ksort($permissions);
         $this->assertSame([User::PERM_DELETE_CONVERSATIONS => 0, User::PERM_EDIT_KB => 1], $permissions);
@@ -412,22 +447,18 @@ class UsersTest extends FeatureTestCase
         $this->assertTrue($agent->hasPermission(User::PERM_EDIT_SAVED_REPLIES));
 
         // Shown as chosen.
-        $html = $this->actingAs($this->admin)->get('/users/permissions/'.$agent->id)->getContent();
-        $this->assertMatchesRegularExpression('#name="user_permissions\['.User::PERM_EDIT_KB.'\]".*?<option value="1"\s+selected#s', $html);
-        $this->assertMatchesRegularExpression('#name="user_permissions\['.User::PERM_DELETE_CONVERSATIONS.'\]".*?<option value="0"\s+selected#s', $html);
+        Livewire::actingAs($this->admin)->test(UserPermissions::class, ['user' => $agent->fresh()])
+            ->assertSet('permissions.'.User::PERM_EDIT_KB, '1')->assertSet('permissions.'.User::PERM_DELETE_CONVERSATIONS, '0')
+            ->assertSet('permissions.'.User::PERM_EDIT_SAVED_REPLIES, '');
 
         // Back to Default.
-        $this->postForm($this->admin, '/users/permissions/'.$agent->id, [
-            'mailboxes' => [$this->mailbox->id], 'user_permissions' => [User::PERM_EDIT_KB => ''],
-        ]);
+        $component->set('permissions.'.User::PERM_EDIT_KB, '');
         $this->assertFalse($agent->fresh()->hasPermission(User::PERM_EDIT_KB));
-
-        $this->actingAs($agent)->get('/users/permissions/'.$agent->id)->assertStatus(403);
     }
 
     /**
-     * "Only assigned tickets" is set on the profile page; saving the
-     * permissions page must not clear it (U3).
+     * "Only assigned tickets" is set on the profile page; changing permissions
+     * must not clear it (U3).
      */
     public function testSavingPermissionsKeepsOnlyAssignedRestriction()
     {
@@ -437,10 +468,8 @@ class UsersTest extends FeatureTestCase
         $unassigned = \App\Conversation::where('mailbox_id', $this->mailbox->id)->first();
         $this->actingAs($agent)->get('/conversation/'.$unassigned->id.'?folder_id='.$unassigned->folder_id)->assertStatus(403);
 
-        $this->postForm($this->admin, '/users/permissions/'.$agent->id, [
-            'mailboxes'        => [$this->mailbox->id],
-            'user_permissions' => [User::PERM_DELETE_CONVERSATIONS => '1'],
-        ]);
+        Livewire::actingAs($this->admin)->test(UserPermissions::class, ['user' => $agent])
+            ->set('permissions.'.User::PERM_DELETE_CONVERSATIONS, '1');
 
         $agent = $agent->fresh();
         $this->assertTrue($agent->hasPermission(User::PERM_DELETE_CONVERSATIONS));

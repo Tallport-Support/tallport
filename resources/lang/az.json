@@ -446,7 +446,6 @@
     "Password saved successfully!": "Parol uğurla yadda saxlanıldı!",
     "Pending": "Gözləmədə",
     "Permissions": "İcazələr",
-    "Permissions saved successfully": "İcazələr uğurla yadda saxlanıldı",
     "Person Replying": "Cavab Verən Şəxs",
     "Person Replying (if Unassigned)": "Cavab verən şəxs (təyin olunmayıbsa)",
     "Phone": "Telefon",
@@ -509,7 +508,6 @@
     "Save Draft": "Qaralamanı Yadda Saxla",
     "Save Notifications": "Bildirişləri Yadda Saxla",
     "Save Password": "Parolu Yadda Saxla",
-    "Save Permissions": "İcazələri Yadda Saxla",
     "Save Profile": "Profili Yadda Saxla",
     "Save Settings": "Parametrləri Yadda Saxla",
     "Saved": "Yadda saxlanıldı",
@@ -1803,5 +1801,7 @@
     "Visitor IPs Detected": "Ziyarətçi IP-ləri Müəyyən Edilib",
     "Visitor IPs Unknown": "Ziyarətçi IP-ləri Naməlumdur",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport onları özü yarada bilmədi. Bunu veb serverin istifadəçisi kimi işə salın:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Gedən e-poçtlar göndərilmir — administrator :%a_begin%Sistem Statusu:%a_end% bölməsini yoxlamalıdır"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Gedən e-poçtlar göndərilmir — administrator :%a_begin%Sistem Statusu:%a_end% bölməsini yoxlamalıdır",
+    "Administrators open every mailbox, whichever are chosen.": "Administratorlar hansılar seçilməsindən asılı olmayaraq bütün poçt qutularını açır.",
+    "1 mailbox|:count mailboxes": ":count poçt qutusu"
 }

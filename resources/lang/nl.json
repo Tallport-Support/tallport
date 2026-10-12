@@ -440,7 +440,6 @@
     "Password saved successfully!": "Wachtwoord succesvol opgeslagen!",
     "Pending": "In afwachting",
     "Permissions": "Rechten",
-    "Permissions saved successfully": "Rechten succesvol opgeslagen",
     "Person Replying": "Reagerende Persoon",
     "Person Replying (if Unassigned)": "Reagerende persoon (wanneer niet toegewezen)",
     "Phone": "Telefoon",
@@ -504,7 +503,6 @@
     "Save Draft": "Concept Opslaan",
     "Save Notifications": "Notificaties Opslaan",
     "Save Password": "Wachtwoord Opslaan",
-    "Save Permissions": "Rechten Opslaan",
     "Save Profile": "Profiel Opslaan",
     "Save Settings": "Instellingen Opslaan",
     "Saved": "Opgeslagen",
@@ -1803,5 +1801,7 @@
     "Visitor IPs Detected": "IP's van Bezoekers Herkend",
     "Visitor IPs Unknown": "IP's van Bezoekers Onbekend",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport kon ze niet zelf aanmaken. Voer dit uit als de gebruiker van de webserver:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Uitgaande e-mail wordt niet verzonden — een beheerder moet :%a_begin%Systeemstatus:%a_end% controleren"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Uitgaande e-mail wordt niet verzonden — een beheerder moet :%a_begin%Systeemstatus:%a_end% controleren",
+    "Administrators open every mailbox, whichever are chosen.": "Beheerders openen elke mailbox, welke er ook gekozen zijn.",
+    "1 mailbox|:count mailboxes": "1 mailbox|:count mailboxen"
 }

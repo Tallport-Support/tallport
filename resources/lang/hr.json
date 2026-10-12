@@ -448,7 +448,6 @@
     "Password saved successfully!": "Lozinka uspješno spremljena!",
     "Pending": "Na čekanju",
     "Permissions": "Dozvole",
-    "Permissions saved successfully": "Dozvole uspješno spremljene",
     "Person Replying": "Osoba Koja Odgovara",
     "Person Replying (if Unassigned)": "Osoba koja odgovara (ako nije dodijeljeno)",
     "Phone": "Telefon",
@@ -511,7 +510,6 @@
     "Save Draft": "Spremi Skicu",
     "Save Notifications": "Spremi Obavijesti",
     "Save Password": "Spremi Lozinku",
-    "Save Permissions": "Spremi Dozvole",
     "Save Profile": "Spremi Profil",
     "Save Settings": "Spremi Postavke",
     "Saved": "Spremljeno",
@@ -1803,5 +1801,7 @@
     "Visitor IPs Detected": "IP Adrese Posjetitelja Prepoznate",
     "Visitor IPs Unknown": "IP Adrese Posjetitelja Nepoznate",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport ih nije mogao sam izraditi. Pokrenite ovo kao korisnik web poslužitelja:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Odlazna e-pošta se ne šalje — administrator treba provjeriti :%a_begin%Status Sustava:%a_end%"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Odlazna e-pošta se ne šalje — administrator treba provjeriti :%a_begin%Status Sustava:%a_end%",
+    "Administrators open every mailbox, whichever are chosen.": "Administratori otvaraju svaki pretinac, bez obzira na odabir.",
+    "1 mailbox|:count mailboxes": ":count pretinac|:count pretinca|:count pretinaca"
 }

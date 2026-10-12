@@ -94,7 +94,6 @@ Route::post('/users/wizard', 'UsersController@createSave');
 Route::get('/users/profile/{id}', 'UsersController@profile')->name('users.profile');
 Route::post('/users/profile/{id}', 'UsersController@profileSave')->name('users.profile.save');
 Route::get('/users/permissions/{id}', 'UsersController@permissions')->name('users.permissions');
-Route::post('/users/permissions/{id}', 'UsersController@permissionsSave')->name('users.permissions.save');
 Route::get('/users/notifications/{id}', 'UsersController@notifications')->name('users.notifications');
 Route::post('/users/notifications/{id}', 'UsersController@notificationsSave')->name('users.notifications.save');
 Route::get('/users/api-keys/{id}', 'ApiKeysController@index')->middleware('password.confirm')->name('users.api_keys');

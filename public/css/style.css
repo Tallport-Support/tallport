@@ -1681,6 +1681,51 @@ a.disabled:focus {
         display: none;
     }
 }
+/* Settings as a drill-down (layouts/app): the sidebar is its first level, and FruitUI decides which
+   levels fit. Not the sidebar that slides in over a narrow window. */
+.app-drilldown {
+    --f-workspace-columns: minmax(0, 1fr);
+    --f-workspace-rows: minmax(0, 1fr);
+}
+.app-drilldown .f-pane__scroll,
+.app-drilldown .f-pane--scroll {
+    scrollbar-width: thin;
+}
+@container app (max-width: 900px) {
+    .app-sidebar.app-sidebar--column {
+        position: static;
+        z-index: auto;
+        width: var(--f-sidebar-width, 230px);
+        background: var(--f-material);
+        box-shadow: none;
+        transform: none;
+        transition: none;
+    }
+}
+/* A person in a settings row (users/columns): their photo, then the name over the email address. */
+.users-row__person {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+.users-row__name {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.users-row__name small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.app-sidebar__brand-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 4px 12px;
+}
 .app-sidebar__header {
     display: flex;
     flex-direction: column;

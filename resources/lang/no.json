@@ -441,7 +441,6 @@
     "Password saved successfully!": "Passord lagret!",
     "Pending": "Avventer",
     "Permissions": "Tillatelser",
-    "Permissions saved successfully": "Tillatelser lagret",
     "Person Replying": "Person Som Svarer",
     "Person Replying (if Unassigned)": "Person som svarer (hvis ikke tildelt)",
     "Phone": "Telefon",
@@ -505,7 +504,6 @@
     "Save Draft": "Lagre Utkast",
     "Save Notifications": "Lagre Varsler",
     "Save Password": "Lagre Passord",
-    "Save Permissions": "Lagre Tillatelser",
     "Save Profile": "Lagre Profil",
     "Save Settings": "Lagre Innstillinger",
     "Saved": "Lagret",
@@ -1806,5 +1804,7 @@
     "Visitor IPs Detected": "Besøkendes IP-er Gjenkjent",
     "Visitor IPs Unknown": "Besøkendes IP-er Ukjent",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport kunne ikke opprette dem selv. Kjør dette som webserverens bruker:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Utgående e-post blir ikke sendt — en administrator bør sjekke :%a_begin%Systemstatus:%a_end%"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Utgående e-post blir ikke sendt — en administrator bør sjekke :%a_begin%Systemstatus:%a_end%",
+    "Administrators open every mailbox, whichever are chosen.": "Administratorer åpner alle postkasser, uansett hvilke som er valgt.",
+    "1 mailbox|:count mailboxes": "1 postkasse|:count postkasser"
 }

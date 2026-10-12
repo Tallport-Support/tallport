@@ -448,7 +448,6 @@
     "Password saved successfully!": "Lösenord sparades framgångsrikt!",
     "Pending": "Väntar",
     "Permissions": "Behörigheter",
-    "Permissions saved successfully": "Behörigheter sparades framgångsrikt",
     "Person Replying": "Person Som Svarar",
     "Person Replying (if Unassigned)": "Person som svarar (om inte tilldelad)",
     "Phone": "Telefon",
@@ -511,7 +510,6 @@
     "Save Draft": "Spara Utkast",
     "Save Notifications": "Spara Aviseringar",
     "Save Password": "Spara Lösenord",
-    "Save Permissions": "Spara Behörigheter",
     "Save Profile": "Spara Profil",
     "Save Settings": "Spara Inställningar",
     "Saved": "Sparat",
@@ -1803,5 +1801,7 @@
     "Visitor IPs Detected": "Besökares IP-adresser Identifierade",
     "Visitor IPs Unknown": "Besökares IP-adresser Okända",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport kunde inte skapa dem själv. Kör detta som webbserverns användare:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Utgående e-post skickas inte — en administratör bör kontrollera :%a_begin%Systemstatus:%a_end%"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Utgående e-post skickas inte — en administratör bör kontrollera :%a_begin%Systemstatus:%a_end%",
+    "Administrators open every mailbox, whichever are chosen.": "Administratörer öppnar alla brevlådor, oavsett vilka som är valda.",
+    "1 mailbox|:count mailboxes": "1 brevlåda|:count brevlådor"
 }

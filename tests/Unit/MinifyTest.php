@@ -21,7 +21,7 @@ class MinifyTest extends TestCase
         mkdir($this->public.'/css', 0777, true);
         mkdir($this->public.'/js', 0777, true);
         file_put_contents($this->public.'/css/a.css', ":root {\n    --brand: #123456;\n}\n/* comment */\nbody {\n    color: var(--brand);\n    background: url(../img/bg.png);\n}\n");
-        file_put_contents($this->public.'/css/b.css', "p { margin: 0px 0px; }\n");
+        file_put_contents($this->public.'/css/b.css', "p { margin: 0px 0px; }\n.col:nth-last-child(1 of .col) { flex: 1; }\n.col:nth-child(2n + 1 of .col:not(.x)) { flex: 2; }\n");
         file_put_contents($this->public.'/js/a.js', "function hello(name) {\n    // greet\n    return 'Hello ' + name;\n}\n");
         $this->app->usePublicPath($this->public);
     }
@@ -90,6 +90,9 @@ class MinifyTest extends TestCase
         $this->assertStringContainsString('--brand:#123456', $css, 'CSS custom properties are kept.');
         $this->assertStringContainsString('var(--brand)', $css);
         $this->assertStringContainsString('url(../img/bg.png)', $css, 'URLs are not rewritten.');
+        // "of" needs its spaces, or browsers drop the rule (FruitUI's drill-down).
+        $this->assertStringContainsString('.col:nth-last-child(1 of .col){', $css);
+        $this->assertStringContainsString('.col:nth-child(2n+1 of .col:not(.x)){', $css);
         $this->assertStringContainsString('p{margin:0', $css);
     }
 

@@ -1074,6 +1074,7 @@ class ComposerStaticInitfc9b7b2ca15b4d1aba40fc18ae3b6e13
         'App\\Livewire\\SystemStatus' => __DIR__ . '/../..' . '/app/Livewire/SystemStatus.php',
         'App\\Livewire\\TeamChat' => __DIR__ . '/../..' . '/app/Livewire/TeamChat.php',
         'App\\Livewire\\TeamChatDetails' => __DIR__ . '/../..' . '/app/Livewire/TeamChatDetails.php',
+        'App\\Livewire\\UserPermissions' => __DIR__ . '/../..' . '/app/Livewire/UserPermissions.php',
         'App\\Mail\\Alert' => __DIR__ . '/../..' . '/app/Mail/Alert.php',
         'App\\Mail\\AutoReply' => __DIR__ . '/../..' . '/app/Mail/AutoReply.php',
         'App\\Mail\\PasswordChanged' => __DIR__ . '/../..' . '/app/Mail/PasswordChanged.php',

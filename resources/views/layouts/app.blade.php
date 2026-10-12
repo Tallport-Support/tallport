@@ -61,6 +61,17 @@
                 $has_toolbar = $is_settings || trim($__env->yieldContent('toolbar')) !== '';
                 $has_inspector = trim($__env->yieldContent('inspector')) !== '';
             @endphp
+            @hasSection('drilldown')
+                {{-- Settings as a drill-down (FruitUI): the sidebar, then a column per level, each opened
+                     from a row of the one before; the window shows the deepest levels that fit. --}}
+                <x-fruit::workspace frame="fill" class="app-drilldown" :aria-label="__('Settings')">
+                    <h1 class="f-sr-only">@yield('title')</h1>
+                    <x-fruit::drilldown x-data="fruitDrilldown">
+                        @include('partials/app_sidebar', ['sidebar_column' => true])
+                        @yield('drilldown')
+                    </x-fruit::drilldown>
+                </x-fruit::workspace>
+            @else
             <x-fruit::workspace frame="fill" :style="\App\Misc\Helper::columnWidthsStyle()" class="app-workspace {{ $__env->yieldContent('split_class') }}" :aria-label="\Config::get('app.name')" :data-list="$has_list ? '' : null" :data-inspector="$has_inspector ? '' : null">
                 <header class="f-toolbar app-workspace__brand">
                     <button type="button" class="f-button f-button--ghost f-button--icon app-sidebar-toggle" aria-controls="app-sidebar" aria-expanded="false" x-data x-on:click="$el.setAttribute('aria-expanded', document.body.classList.toggle('app-sidebar-open'))" aria-label="{{ __('Toggle Navigation') }}"><x-icon.menu class="f-icon" aria-hidden="true" /></button>
@@ -155,6 +166,7 @@
                     <x-fruit::splitter pane="app-inspector" flexible="app-content" variable="--f-inspector-width" :min="220" :max="380" :reserve="360" edge="start" :aria-label="__('Details')" class="app-workspace__splitter app-workspace__splitter--inspector" />
                 @endif
             </x-fruit::workspace>
+            @endif
         @else
             @if (($browser_check = \Helper::checkBrowser()) && $browser_check['msg'])
                 <x-fruit::alert tone="danger">{{ $browser_check["msg"] }}</x-fruit::alert>

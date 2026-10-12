@@ -451,7 +451,6 @@
     "Password saved successfully!": "Hasło zostało zapisane!",
     "Pending": "Oczekuje",
     "Permissions": "Uprawnienia",
-    "Permissions saved successfully": "Uprawnienia zostały zapisane",
     "Person Replying": "Odpowiadający",
     "Person Replying (if Unassigned)": "Odpowiadający (jeżeli nieprzypisany)",
     "Phone": "Telefon",
@@ -514,7 +513,6 @@
     "Save Draft": "Zapisz Szkic",
     "Save Notifications": "Zapisz Powiadomienia",
     "Save Password": "Zapisz Hasło",
-    "Save Permissions": "Zapisz Uprawnienia",
     "Save Profile": "Zapisz Profil",
     "Save Settings": "Zapisz Ustawienia",
     "Saved": "Zapisano",
@@ -1803,5 +1801,7 @@
     "Visitor IPs Detected": "Adresy IP Odwiedzających Wykryte",
     "Visitor IPs Unknown": "Adresy IP Odwiedzających Nieznane",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport nie mógł ich sam utworzyć. Uruchom to jako użytkownik serwera WWW:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Poczta wychodząca nie jest wysyłana — administrator powinien sprawdzić :%a_begin%Status Systemu:%a_end%"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Poczta wychodząca nie jest wysyłana — administrator powinien sprawdzić :%a_begin%Status Systemu:%a_end%",
+    "Administrators open every mailbox, whichever are chosen.": "Administratorzy otwierają każdą skrzynkę, niezależnie od wyboru.",
+    "1 mailbox|:count mailboxes": ":count skrzynka|:count skrzynki|:count skrzynek"
 }

@@ -441,7 +441,6 @@
     "Password saved successfully!": "密码保存成功！",
     "Pending": "待处理",
     "Permissions": "权限",
-    "Permissions saved successfully": "权限保存成功",
     "Person Replying": "回复者",
     "Person Replying (if Unassigned)": "回复者（如果未指定）",
     "Phone": "电话",
@@ -505,7 +504,6 @@
     "Save Draft": "保存草稿",
     "Save Notifications": "保存通知",
     "Save Password": "保存密码",
-    "Save Permissions": "保存权限",
     "Save Profile": "保存个人信息",
     "Save Settings": "保存设置",
     "Saved": "已保存",
@@ -1804,5 +1802,7 @@
     "Visitor IPs Detected": "已识别访客 IP",
     "Visitor IPs Unknown": "访客 IP 未知",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport 无法自行创建它们。请以 Web 服务器的用户身份运行：",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "外发邮件未能发送 — 管理员应检查 :%a_begin%系统状况:%a_end%"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "外发邮件未能发送 — 管理员应检查 :%a_begin%系统状况:%a_end%",
+    "Administrators open every mailbox, whichever are chosen.": "无论选择了哪些邮箱，管理员都能打开所有邮箱。",
+    "1 mailbox|:count mailboxes": ":count 个邮箱"
 }

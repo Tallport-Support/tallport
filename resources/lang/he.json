@@ -446,7 +446,6 @@
     "Password saved successfully!": "הסיסמה נשמרה בהצלחה!",
     "Pending": "ממתין",
     "Permissions": "הרשאות",
-    "Permissions saved successfully": "ההרשאות נשמרו בהצלחה",
     "Person Replying": "אדם משיב",
     "Person Replying (if Unassigned)": "אדם משיב (אם לא הוקצה)",
     "Phone": "טלפון",
@@ -509,7 +508,6 @@
     "Save Draft": "שמור טיוטה",
     "Save Notifications": "שמור התראות",
     "Save Password": "שמור סיסמה",
-    "Save Permissions": "שמור הרשאות",
     "Save Profile": "שמור פרופיל",
     "Save Settings": "שמור הגדרות",
     "Saved": "נשמר",
@@ -1803,5 +1801,7 @@
     "Visitor IPs Detected": "כתובות IP של מבקרים זוהו",
     "Visitor IPs Unknown": "כתובות IP של מבקרים לא ידועות",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport לא הצליח ליצור אותם בעצמו. הריצו את זה כמשתמש של שרת האינטרנט:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "דואר יוצא אינו נשלח — על מנהל לבדוק את :%a_begin%סטטוס מערכת:%a_end%"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "דואר יוצא אינו נשלח — על מנהל לבדוק את :%a_begin%סטטוס מערכת:%a_end%",
+    "Administrators open every mailbox, whichever are chosen.": "מנהלים פותחים כל תיבת דואר, בלי קשר לאלו שנבחרו.",
+    "1 mailbox|:count mailboxes": "תיבת דואר אחת|:count תיבות דואר"
 }

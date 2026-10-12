@@ -454,7 +454,6 @@
     "Password saved successfully!": "Passwort erfolgreich gespeichert!",
     "Pending": "Ausstehend",
     "Permissions": "Berechtigungen",
-    "Permissions saved successfully": "Berechtigungen erfolgreich gespeichert",
     "Person Replying": "Antwortende Person",
     "Person Replying (if Unassigned)": "Antwortende Person (wenn niemanden zugewiesen)",
     "Phone": "Telefon",
@@ -518,7 +517,6 @@
     "Save Draft": "Entwurf Speichern",
     "Save Notifications": "Benachrichtigungen Speichern",
     "Save Password": "Passwort Speichern",
-    "Save Permissions": "Berechtigung Speichern",
     "Save Profile": "Profil Speichern",
     "Save Settings": "Einstellungen Speichern",
     "Saved": "Gespeichert",
@@ -1799,5 +1797,7 @@
     "Visitor IPs Detected": "Besucher-IPs Erkannt",
     "Visitor IPs Unknown": "Besucher-IPs Unbekannt",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport konnte sie nicht selbst erstellen. Führen Sie dies als Benutzer des Webservers aus:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Ausgehende E-Mails werden nicht gesendet — ein Administrator sollte :%a_begin%System Status:%a_end% prüfen"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Ausgehende E-Mails werden nicht gesendet — ein Administrator sollte :%a_begin%System Status:%a_end% prüfen",
+    "Administrators open every mailbox, whichever are chosen.": "Administratoren öffnen jedes Postfach, unabhängig von der Auswahl.",
+    "1 mailbox|:count mailboxes": "1 Postfach|:count Postfächer"
 }

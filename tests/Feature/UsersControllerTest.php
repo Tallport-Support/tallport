@@ -201,7 +201,7 @@ class UsersControllerTest extends FeatureTestCase
             ->assertSee('Billing')
             ->assertSee('Sales');
 
-        $this->postForm($agent, '/users/permissions/'.$agent->id, ['mailboxes' => [Mailbox::where('name', 'Sales')->first()->id]])->assertStatus(403);
+        \Livewire\Livewire::actingAs($agent)->test(\App\Livewire\UserPermissions::class, ['user' => $agent])->assertStatus(403);
         $this->assertSame(['Billing'], $agent->mailboxes()->pluck('name')->all());
     }
 

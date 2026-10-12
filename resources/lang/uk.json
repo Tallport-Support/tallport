@@ -447,7 +447,6 @@
     "Password saved successfully!": "Пароль успішно збережено!",
     "Pending": "Очікує",
     "Permissions": "Дозволи",
-    "Permissions saved successfully": "Дозволи успішно збережено",
     "Person Replying": "Особа, Що Відповідає",
     "Person Replying (if Unassigned)": "Особа, що відповідає (якщо не призначено)",
     "Phone": "Телефон",
@@ -510,7 +509,6 @@
     "Save Draft": "Зберегти Чернетку",
     "Save Notifications": "Зберегти Сповіщення",
     "Save Password": "Зберегти Пароль",
-    "Save Permissions": "Зберегти Дозволи",
     "Save Profile": "Зберегти Профіль",
     "Save Settings": "Зберегти Налаштування",
     "Saved": "Збережено",
@@ -1803,5 +1801,7 @@
     "Visitor IPs Detected": "IP Відвідувачів Визначено",
     "Visitor IPs Unknown": "IP Відвідувачів Невідомі",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport не зміг створити їх сам. Виконайте це від імені користувача вебсервера:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Вихідна пошта не надсилається — адміністратор повинен перевірити :%a_begin%Статус Системи:%a_end%"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Вихідна пошта не надсилається — адміністратор повинен перевірити :%a_begin%Статус Системи:%a_end%",
+    "Administrators open every mailbox, whichever are chosen.": "Адміністратори відкривають усі поштові скриньки, незалежно від вибору.",
+    "1 mailbox|:count mailboxes": ":count поштова скринька|:count поштові скриньки|:count поштових скриньок"
 }

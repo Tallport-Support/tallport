@@ -446,7 +446,6 @@
     "Password saved successfully!": "Şifre başarıyla kaydedildi!",
     "Pending": "Beklemede",
     "Permissions": "İzinler",
-    "Permissions saved successfully": "İzinler başarıyla kaydedildi",
     "Person Replying": "Yanıtlayan Kişi",
     "Person Replying (if Unassigned)": "Yanıtlayan Kişi (Atanmamışsa)",
     "Phone": "Telefon",
@@ -509,7 +508,6 @@
     "Save Draft": "Memnuniyet Derecelendirmeleri",
     "Save Notifications": "Bildirimleri Kaydet",
     "Save Password": "Şifreyi Kaydet",
-    "Save Permissions": "İzinleri Kaydet",
     "Save Profile": "Profili Kaydet",
     "Save Settings": "Ayarları Kaydet",
     "Saved": "Kaydedildi",
@@ -1803,5 +1801,7 @@
     "Visitor IPs Detected": "Ziyaretçi IP'leri Algılandı",
     "Visitor IPs Unknown": "Ziyaretçi IP'leri Bilinmiyor",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport bunları kendisi oluşturamadı. Bunu web sunucusunun kullanıcısı olarak çalıştırın:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Giden e-postalar gönderilmiyor — bir yönetici :%a_begin%Sistem Durumu:%a_end% sayfasını kontrol etmelidir"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Giden e-postalar gönderilmiyor — bir yönetici :%a_begin%Sistem Durumu:%a_end% sayfasını kontrol etmelidir",
+    "Administrators open every mailbox, whichever are chosen.": "Yöneticiler, seçimden bağımsız olarak tüm posta kutularını açar.",
+    "1 mailbox|:count mailboxes": ":count posta kutusu"
 }

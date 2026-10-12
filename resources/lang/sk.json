@@ -452,7 +452,6 @@
     "Password saved successfully!": "Heslo úspešne zmenené!",
     "Pending": "Čaká na zákazníka",
     "Permissions": "Oprávnenia",
-    "Permissions saved successfully": "Oprávnenia úspešne uložené",
     "Person Replying": "Osoba Odpovedá",
     "Person Replying (if Unassigned)": "Osoba odpovedá (ak nepriradené)",
     "Phone": "Telefón",
@@ -515,7 +514,6 @@
     "Save Draft": "Uložiť Návrh",
     "Save Notifications": "Uložiť Notifikácie",
     "Save Password": "Uložiť Heslo",
-    "Save Permissions": "Uložiť Oprávnenia",
     "Save Profile": "Uložiť Profil",
     "Save Settings": "Uložiť Nastavenia",
     "Saved": "Uložené",
@@ -1803,5 +1801,7 @@
     "Visitor IPs Detected": "IP Návštevníkov Zistené",
     "Visitor IPs Unknown": "IP Návštevníkov Neznáme",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport ich nedokázal vytvoriť sám. Spustite toto ako používateľ webového servera:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Odchádzajúce e-maily sa neodosielajú — administrátor by mal skontrolovať :%a_begin%Stav Systému:%a_end%"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Odchádzajúce e-maily sa neodosielajú — administrátor by mal skontrolovať :%a_begin%Stav Systému:%a_end%",
+    "Administrators open every mailbox, whichever are chosen.": "Správcovia otvárajú všetky schránky bez ohľadu na výber.",
+    "1 mailbox|:count mailboxes": ":count schránka|:count schránky|:count schránok"
 }

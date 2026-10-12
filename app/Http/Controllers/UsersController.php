@@ -350,59 +350,11 @@ class UsersController extends Controller
             abort(404);
         }
 
-        $mailboxes = Mailbox::all()->sortBy('name');
-
-        $users = $this->getUsersForSidebar($id);
-
+        // The levels before it: Users and the person (App\Livewire\UserPermissions saves).
         return view('users/permissions', [
-            'user'           => $user,
-            'mailboxes'      => $mailboxes,
-            'user_mailboxes' => $user->mailboxes,
-            'users'          => $users,
+            'user'  => $user,
+            'users' => $this->getUsersForSidebar($id),
         ]);
-    }
-
-    /**
-     * Save user permissions.
-     *
-     * @param int                      $id
-     * @param \Illuminate\Http\Request $request
-     */
-    public function permissionsSave($id, Request $request)
-    {
-        $user = auth()->user();
-        if (!$user->isAdmin()) {
-            abort(403);
-        }
-
-        $user = User::findOrFail($id);
-        // Like the permissions page.
-        if ($user->isDeleted()) {
-            abort(404);
-        }
-
-        $user->mailboxes()->sync($request->mailboxes ?: []);
-        $user->syncPersonalFolders($request->mailboxes);
-
-        // Save permissions: Allowed (1) and Not Allowed (0) are the user's own,
-        // Default ("") follows Settings » General.
-        $user_permissions = (array) $request->input('user_permissions', []);
-        // Keep permissions this page doesn't show, e.g. "only assigned
-        // tickets", which is set on the profile page.
-        $permissions = array_diff_key($user->permissions ?: [], array_flip(User::getUserPermissionsList()));
-
-        foreach (User::getUserPermissionsList() as $permission_id) {
-            $value = (string) ($user_permissions[$permission_id] ?? '');
-            if ($value === '1' || $value === '0') {
-                $permissions[$permission_id] = (int) $value;
-            }
-        }
-        $user->permissions = $permissions;
-        $user->save();
-
-        \Session::flash('flash_success_floating', __('Permissions saved successfully'));
-
-        return redirect()->route('users.permissions', ['id' => $id]);
     }
 
     /**

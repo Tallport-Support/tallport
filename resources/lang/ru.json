@@ -439,7 +439,6 @@
     "Password saved successfully!": "Пароль успешно сохранён!",
     "Pending": "Отвечен",
     "Permissions": "Разрешения",
-    "Permissions saved successfully": "Разрешения успешно сохранены",
     "Person Replying": "Человек Отвечает",
     "Person Replying (if Unassigned)": "Человек отвечает (если тикет никому не назначен)",
     "Phone": "Телефон",
@@ -502,7 +501,6 @@
     "Save Draft": "Сохранить Черновик",
     "Save Notifications": "Сохранить Уведомления",
     "Save Password": "Сохранить Пароль",
-    "Save Permissions": "Сохранить Разрешения",
     "Save Profile": "Сохранить Профиль",
     "Save Settings": "Сохранить Настройки",
     "Saved": "Сохранено",
@@ -1803,5 +1801,7 @@
     "Visitor IPs Detected": "IP Посетителей Определены",
     "Visitor IPs Unknown": "IP Посетителей Неизвестны",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport не смог создать их сам. Выполните это от имени пользователя веб-сервера:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Исходящая почта не отправляется — администратору следует проверить :%a_begin%Статус Системы:%a_end%"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Исходящая почта не отправляется — администратору следует проверить :%a_begin%Статус Системы:%a_end%",
+    "Administrators open every mailbox, whichever are chosen.": "Администраторы открывают все почтовые ящики, независимо от выбора.",
+    "1 mailbox|:count mailboxes": ":count почтовый ящик|:count почтовых ящика|:count почтовых ящиков"
 }

@@ -439,7 +439,6 @@
     "Password saved successfully!": "Salasana tallennettu onnistuneesti!",
     "Pending": "Odottaa",
     "Permissions": "Käyttöoikeudet",
-    "Permissions saved successfully": "Käyttöoikeudet tallennettu onnistuneesti",
     "Person Replying": "Henkilö Vastaa",
     "Person Replying (if Unassigned)": "Henkilö Vastaa (jos ei määritetty)",
     "Phone": "Puhelin",
@@ -503,7 +502,6 @@
     "Save Draft": "Tallenna Luonnos",
     "Save Notifications": "Tallenna Ilmoitukset",
     "Save Password": "Tallenna Salasana",
-    "Save Permissions": "Tallenna Käyttöoikeudet",
     "Save Profile": "Tallenna Profiili",
     "Save Settings": "Tallenna Asetukset",
     "Saved": "Tallennettu",
@@ -1819,5 +1817,7 @@
     "Visitor IPs Detected": "Kävijöiden IP-osoitteet Tunnistettu",
     "Visitor IPs Unknown": "Kävijöiden IP-osoitteet Tuntemattomia",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport ei voinut luoda niitä itse. Suorita tämä verkkopalvelimen käyttäjänä:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Lähteviä sähköposteja ei lähetetä — järjestelmänvalvojan tulee tarkistaa :%a_begin%Järjestelmän Tila:%a_end%"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Lähteviä sähköposteja ei lähetetä — järjestelmänvalvojan tulee tarkistaa :%a_begin%Järjestelmän Tila:%a_end%",
+    "Administrators open every mailbox, whichever are chosen.": "Ylläpitäjät avaavat kaikki postilaatikot valinnasta riippumatta.",
+    "1 mailbox|:count mailboxes": "1 postilaatikko|:count postilaatikkoa"
 }

@@ -451,7 +451,6 @@
     "Password saved successfully!": "Mot de passe enregistré avec succès!",
     "Pending": "En attente",
     "Permissions": "Autorisations",
-    "Permissions saved successfully": "Autorisations enregistrées avec succès",
     "Person Replying": "Personne Qui Répond",
     "Person Replying (if Unassigned)": "Personne qui répond (si non assignée)",
     "Phone": "Téléphone",
@@ -515,7 +514,6 @@
     "Save Draft": "Enregistrer Comme Brouillon",
     "Save Notifications": "Enregistrer les Notifications",
     "Save Password": "Enregistrer le Mot de Passe",
-    "Save Permissions": "Enregistrer les Permissions",
     "Save Profile": "Enregistrer le Profil",
     "Save Settings": "Enregistrer les Préférences",
     "Saved": "Enregistré",
@@ -1810,5 +1808,7 @@
     "Visitor IPs Detected": "IP des Visiteurs Détectées",
     "Visitor IPs Unknown": "IP des Visiteurs Inconnues",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport n'a pas pu les créer lui-même. Exécutez ceci en tant qu'utilisateur du serveur web :",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Les e-mails sortants ne sont pas envoyés — un administrateur doit vérifier :%a_begin%État du Système:%a_end%"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Les e-mails sortants ne sont pas envoyés — un administrateur doit vérifier :%a_begin%État du Système:%a_end%",
+    "Administrators open every mailbox, whichever are chosen.": "Les administrateurs ouvrent toutes les boîtes, quelles que soient celles choisies.",
+    "1 mailbox|:count mailboxes": "1 boîte|:count boîtes"
 }

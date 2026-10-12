@@ -447,7 +447,6 @@
     "Password saved successfully!": "パスワードは正常に保存されました!",
     "Pending": "保留中",
     "Permissions": "権限",
-    "Permissions saved successfully": "権限の保存に成功しました",
     "Person Replying": "回答者",
     "Person Replying (if Unassigned)": "回答者（未担当の場合）",
     "Phone": "電話",
@@ -510,7 +509,6 @@
     "Save Draft": "下書き保存",
     "Save Notifications": "通知保存",
     "Save Password": "パスワード保存",
-    "Save Permissions": "権限の保存",
     "Save Profile": "プロファイル保存",
     "Save Settings": "設定の保存",
     "Saved": "保存済み",
@@ -1803,5 +1801,7 @@
     "Visitor IPs Detected": "訪問者の IP を検出",
     "Visitor IPs Unknown": "訪問者の IP は不明",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport はこれらを作成できませんでした。Web サーバーのユーザーとして次を実行してください：",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "送信メールが送信されていません。管理者は :%a_begin%システムステータス:%a_end% を確認してください"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "送信メールが送信されていません。管理者は :%a_begin%システムステータス:%a_end% を確認してください",
+    "Administrators open every mailbox, whichever are chosen.": "管理者は、選択に関係なくすべてのメールボックスを開けます。",
+    "1 mailbox|:count mailboxes": ":count 件のメールボックス"
 }

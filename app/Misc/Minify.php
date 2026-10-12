@@ -159,7 +159,11 @@ class Minify
             foreach ($this->files as $file) {
                 $contents .= $this->contents($file)."\n";
             }
+            // The minifier drops the space in ":nth-child(1 of .x)", which browsers then ignore
+            // (FruitUI's drill-down): kept as a placeholder, put back after.
+            $contents = preg_replace('/(:nth-(?:last-)?child\(\s*[^()]*?)\s+of\s+/', '$1__tallport_of__', $contents);
             $minified = (new \MatthiasMullie\Minify\CSS($contents))->minify();
+            $minified = str_replace('__tallport_of__', ' of ', $minified);
         }
 
         if (file_put_contents($dir.$filename, $minified) === false) {

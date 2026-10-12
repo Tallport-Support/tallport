@@ -419,7 +419,6 @@
     "Save Draft": "儲存草稿",
     "Save Notifications": "儲存通知設定",
     "Save Password": "儲存密碼",
-    "Save Permissions": "儲存權限",
     "Save Profile": "儲存個人資料",
     "Save Settings": "儲存設定",
     "Saved": "已儲存",
@@ -676,7 +675,6 @@
     "Password changed notification": "密碼變更通知",
     "Password reset email has been sent": "密碼重設電子郵件已傳送",
     "Password saved successfully!": "密碼已成功儲存！",
-    "Permissions saved successfully": "權限已成功儲存",
     "Please double check your password, and try again": "請再次確認您的密碼，然後重試",
     "Please login to upload file": "請登入後再上傳檔案",
     "Please specify a recipient.": "請指定收件人。",
@@ -1848,5 +1846,7 @@
     "Visitor IPs Detected": "已識別訪客 IP",
     "Visitor IPs Unknown": "訪客 IP 未知",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport 無法自行建立它們。請以網頁伺服器的使用者身分執行：",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "對外郵件未能寄出 — 管理員應檢查 :%a_begin%系統狀態:%a_end%"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "對外郵件未能寄出 — 管理員應檢查 :%a_begin%系統狀態:%a_end%",
+    "Administrators open every mailbox, whichever are chosen.": "無論選擇了哪些信箱，管理員都能開啟所有信箱。",
+    "1 mailbox|:count mailboxes": ":count 個信箱"
 }

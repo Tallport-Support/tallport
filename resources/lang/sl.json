@@ -438,7 +438,6 @@
     "Password saved successfully!": "Geslo je bilo uspešno shranjeno!",
     "Pending": "V čakanju",
     "Permissions": "Dovoljenja",
-    "Permissions saved successfully": "Dovoljenja so bila uspešno shranjena",
     "Person Replying": "Oseba, Ki Odgovarja",
     "Person Replying (if Unassigned)": "Oseba, ki odgovarja (če ni dodeljeno)",
     "Phone": "Telefon",
@@ -501,7 +500,6 @@
     "Save Draft": "Shrani Osnutek",
     "Save Notifications": "Shrani Obvestila",
     "Save Password": "Shrani Geslo",
-    "Save Permissions": "Shrani Dovoljenja",
     "Save Profile": "Shrani Profil",
     "Save Settings": "Shrani Nastavitve",
     "Saved": "Shranjeno",
@@ -1803,5 +1801,7 @@
     "Visitor IPs Detected": "Naslovi IP Obiskovalcev Zaznani",
     "Visitor IPs Unknown": "Naslovi IP Obiskovalcev Neznani",
     "Tallport couldn't create them itself. Run this as the web server's user:": "Tallport jih ni mogel ustvariti sam. To zaženite kot uporabnik spletnega strežnika:",
-    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Odhodna e-pošta se ne pošilja — administrator naj preveri :%a_begin%Stanje Sistema:%a_end%"
+    "Outgoing email isn't being sent — an admin should check :%a_begin%System Status:%a_end%": "Odhodna e-pošta se ne pošilja — administrator naj preveri :%a_begin%Stanje Sistema:%a_end%",
+    "Administrators open every mailbox, whichever are chosen.": "Skrbniki odprejo vsak poštni predal, ne glede na izbiro.",
+    "1 mailbox|:count mailboxes": ":count poštni predal|:count poštna predala|:count poštni predali|:count poštnih predalov"
 }
