@@ -83,6 +83,12 @@
                 <x-fruit::button type="submit" variant="ghost" name="force" value="1" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim()}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Index all documentation again? This makes new embeddings for every page.') }}">{{ __('Index All Again') }}</x-fruit::button>
             </form>
 
+            {{-- Narrow (a drill-down level, a phone): each row stacks as a record (FruitUI's f-table__scroll). --}}
+            <div x-data="{ q: '', matches(text) { return !this.q || text.includes(this.q.trim().toLowerCase()) } }">
+            @if (count($documents) > 1)
+                <x-fruit::search id="search-documents" x-model="q" :label="__('Search')" :placeholder="__('Search')" />
+            @endif
+            <div class="f-table__scroll" tabindex="0" role="region" aria-label="{{ __('Documentation') }}">
             <x-fruit::table>
                 <thead>
                     <tr>
@@ -98,8 +104,8 @@
                         @php
                             $in_folder = !empty($document->metadata['folder_id']);
                         @endphp
-                        <tr @class(['ai-documents__file' => $in_folder])>
-                            <td>
+                        <tr @class(['ai-documents__file' => $in_folder]) x-bind:hidden="!matches($el.dataset.search)" data-search="{{ mb_strtolower($document->title.' '.$document->source_url) }}">
+                            <th scope="row">
                                 <strong>{{ $document->title }}</strong>
                                 @if (!$document->enabled)
                                     <x-fruit::badge>{{ __('Disabled') }}</x-fruit::badge>
@@ -112,8 +118,8 @@
                                 @else
                                     {{ $document->source_url }}
                                 @endif
-                            </td>
-                            <td>
+                            </th>
+                            <td data-label="{{ __('Status') }}">
                                 @if ($document->status == App\Ai\Document::STATUS_INDEXED && ($document->isFolder() || $document->embedding_fingerprint == $embedding_fingerprint))
                                     <x-fruit::badge tone="success">{{ __('Indexed') }}</x-fruit::badge>
                                 @elseif ($document->status == App\Ai\Document::STATUS_FAILED)
@@ -123,8 +129,8 @@
                                     <x-fruit::badge>{{ __('Pending') }}</x-fruit::badge>
                                 @endif
                             </td>
-                            <td>{{ $document->isFolder() ? trans_choice('1 page|:count pages', count($files->get($document->id, []))) : $document->chunks_count }}</td>
-                            <td>{{ $document->last_indexed_at ? App\User::dateFormat($document->last_indexed_at) : '–' }}</td>
+                            <td data-label="{{ __('Chunks') }}">{{ $document->isFolder() ? trans_choice('1 page|:count pages', count($files->get($document->id, []))) : $document->chunks_count }}</td>
+                            <td data-label="{{ __('Indexed') }}">{{ $document->last_indexed_at ? App\User::dateFormat($document->last_indexed_at) : '–' }}</td>
                             <td>
                                 <form method="POST" action="{{ route('mailboxes.documentation.action', ['id' => $mailbox->id]) }}" class="f-row">
                                     {{ csrf_field() }}
@@ -143,6 +149,8 @@
                     @endforeach
                 </tbody>
             </x-fruit::table>
+            </div>
+            </div>
         @else
             <p class="f-muted">{{ __('No documentation has been added yet.') }}</p>
         @endif

@@ -513,7 +513,7 @@ Mail's phone options and Chat's reaction picker share native `.f-floating-disclo
 
 ## Native tables
 
-Admin customers and subscriptions share `.f-table` presentation. The primitive owns native table structure only; callers supply caption, colgroup, thead, tbody, tfoot and scoped row/column headers. A surrounding `.f-table__scroll` region can provide horizontal scrolling without affecting table semantics. Sorting uses independent native buttons and caller-owned `aria-sort` on headers. Selection uses independent checkboxes and optional `data-selected="true"` row presentation.
+Admin customers and subscriptions share `.f-table` presentation. The primitive owns native table structure only; callers supply caption, colgroup, thead, tbody, tfoot and scoped row/column headers. A table doesn't make people scroll sideways, where a long list would put the scrollbar at its far end: in a surrounding `.f-table__scroll` narrower than 40rem (a phone, a Drill-Down level), each row is a record. Its leading cell (the row header, else the first cell) shares the first line with unlabelled cells, such as a selection checkbox and the row's actions, and each value follows beneath, named by its cell's `data-label` (`<td data-label="Status">`); empty cells drop out. The column headings stay for screen readers, and headings with controls (sort buttons, select all) stay in view as a bar. Keep `--f-table-min-width` within 40rem, so the columns fit wherever they aren't stacked. A long list in a Drill-Down level reads even better as rows that open each record as the next level. Sorting uses independent native buttons and caller-owned `aria-sort` on headers. Selection uses independent checkboxes and optional `data-selected="true"` row presentation.
 
 ```blade
 <div class="f-table__scroll" tabindex="0" role="region" aria-label="Customers">
@@ -521,7 +521,7 @@ Admin customers and subscriptions share `.f-table` presentation. The primitive o
         <caption>Customers</caption>
         <thead><tr><th scope="col">Name</th><th scope="col">Plan</th></tr></thead>
         <tbody>@foreach ($customers as $customer)
-            <tr><th scope="row">{{ $customer->name }}</th><td>{{ $customer->plan }}</td></tr>
+            <tr><th scope="row">{{ $customer->name }}</th><td data-label="Plan">{{ $customer->plan }}</td></tr>
         @endforeach</tbody>
     </x-fruit::table>
 </div>

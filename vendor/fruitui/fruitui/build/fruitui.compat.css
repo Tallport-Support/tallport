@@ -3409,6 +3409,7 @@ img.f-avatar {
   }
 
 .f-table__scroll {
+    container: fruit-table / inline-size;
     position: relative;
     min-width: 0;
     overflow-x: auto;
@@ -3478,6 +3479,74 @@ img.f-avatar {
 
 .f-table:focus-within tbody tr[data-selected='true'] {
     background: var(--f-selection);
+  }
+
+/* Where its columns don't fit (in a scroll wrapper narrower than 40rem: a phone, a Drill-Down level)
+     a table doesn't scroll sideways: each row is a record. Its leading cell (the row header, else the
+     first cell) and cells without a label, such as a checkbox or the row's actions, share the first
+     line; the values follow beneath, each named by its cell's data-label. Column headings stay for
+     screen readers, and those with controls (sorting, select all) stay in view as a bar. */
+
+@container fruit-table (width < 40rem) {
+    .f-table,
+    .f-table > :is(thead, tbody, tfoot) {
+      display: block;
+      min-width: 0;
+    }
+    .f-table > :is(thead, tbody, tfoot) > tr {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 14px;
+      padding: var(--f-table-cell-padding, 13px 10px);
+      border-top: 1px solid var(--f-border);
+    }
+    .f-table > :is(thead, tbody, tfoot) > tr > :is(th, td) {
+      display: block;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+    }
+    .f-table > :is(tbody, tfoot) > tr::after {
+      content: '';
+      flex-basis: 100%;
+      order: 1;
+    }
+    .f-table > :is(tbody, tfoot) > tr > th[scope='row'],
+    .f-table > :is(tbody, tfoot) > tr:not(:has(> th[scope='row'])) > td:first-child {
+      flex: 1 1 0;
+      min-width: 8rem;
+    }
+    .f-table > :is(tbody, tfoot) > tr > [data-label] {
+      order: 2;
+    }
+    .f-table > :is(tbody, tfoot) > tr > :empty {
+      display: none;
+    }
+    .f-table > :is(tbody, tfoot) > tr > :last-child:not([data-label]) {
+      margin-inline-start: auto;
+    }
+    .f-table [data-label]::before {
+      content: attr(data-label);
+      /* The heading already names the cell for screen readers. */
+      content: attr(data-label) / '';
+      margin-inline-end: 6px;
+      color: var(--f-secondary);
+      font-size: var(--f-text-xs);
+    }
+    .f-table > thead > tr {
+      padding-block: var(--f-table-heading-padding, 10px);
+      border-top: 0;
+    }
+    .f-table > thead :is(th, td):not(:has(button, input, select, a)),
+    .f-table > thead:not(:has(button, input, select, a)) {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
   }
 
 @media (forced-colors: active) {

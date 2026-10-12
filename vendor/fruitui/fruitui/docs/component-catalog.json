@@ -705,7 +705,7 @@
         "element": "`table`, fixed native table role.",
         "state": "No owned sorting/selection; caller sets aria-sort on th and checkbox values.",
         "keyboard": "Tab reaches independent actions; native table reading.",
-        "options": "Native table attrs; default slot: caption, colgroup, thead, tbody, tfoot. Width, cell spacing, type tokens; caller composes a named scroll wrapper."
+        "options": "Native table attrs; default slot: caption, colgroup, thead, tbody, tfoot. Width, cell spacing, type tokens; caller composes a named `f-table__scroll` wrapper. It never scrolls sideways where it doesn't fit: in a wrapper narrower than 40rem (a phone, a Drill-Down level) each row is a record, its leading cell (the row header, else the first cell) sharing the first line with unlabelled cells such as a checkbox and actions, and each value beneath named by its cell's `data-label`; empty cells drop out. Headings stay for screen readers, and those holding controls (sorting, select all) stay in view as a bar. Keep `--f-table-min-width` within 40rem so the columns fit wherever they aren't stacked."
       }
     }
   },
