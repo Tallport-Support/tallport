@@ -135,7 +135,7 @@ export default function fruitEditor(Alpine) {
         removeButton.textContent = fruitMessage(root, 'remove-link-label', 'Remove Link');
         removeButton.addEventListener('click', () => {
           remove();
-          if (!markdown) commit();
+          commit();
           closePopover(false);
         });
         popover.append(removeButton);
@@ -144,7 +144,7 @@ export default function fruitEditor(Alpine) {
         event.preventDefault();
         const href = field.value.trim();
         if (href || link) apply(href);
-        if (!markdown) commit();
+        commit();
         closePopover(false);
       });
       popover.addEventListener('keydown', event => {
@@ -240,18 +240,23 @@ export default function fruitEditor(Alpine) {
         editor.view.dom.setAttribute('data-placeholder', placeholder);
         editor.view.dom.setAttribute('aria-placeholder', placeholder);
       }
-      editor.view.dom.toggleAttribute('data-empty', editor.isEmpty);
+      editor.view.dom.toggleAttribute('data-empty', markdown ? !markdown.value() : editor.isEmpty);
       const blocked = control.matches(':disabled') || control.readOnly;
       editor.setEditable(!blocked, false);
       editor.view.dom.tabIndex = control.matches(':disabled') ? -1 : control.tabIndex;
       editor.view.dom.setAttribute('aria-disabled', String(control.matches(':disabled')));
+      // A disabled field takes no content, so its toolbar, application buttons included, is inert.
+      toolbar.inert = control.matches(':disabled');
       editor.view.dom.setAttribute('aria-readonly', String(control.readOnly));
       for (const button of toolbar.querySelectorAll('[data-fruit-command]')) {
         const command = button.dataset.fruitCommand;
-        button.disabled = blocked || !commands[command] || !commands[command](editor.can().chain()).run();
+        const available = markdown
+          ? markdown.can(command)
+          : commands[command] && commands[command](editor.can().chain()).run();
+        button.disabled = blocked || !available;
         if (['link', 'image'].includes(command)) button.setAttribute('aria-haspopup', 'dialog');
         else if (!['undo', 'redo', 'clear'].includes(command))
-          button.setAttribute('aria-pressed', String(editor.isActive(command)));
+          button.setAttribute('aria-pressed', String(markdown ? markdown.pressed(command) : editor.isActive(command)));
       }
     };
     /** The formatting bar: always, or (inline, a chat's field) when its button asks for it. */
@@ -266,33 +271,16 @@ export default function fruitEditor(Alpine) {
         if (formatting) formatting.hidden = false;
       } else toolbar.hidden = false;
     };
-    /**
-     * Markdown mode: the person writes in the textarea itself, whose value is the Markdown. Pasted
-     * HTML is read into the field's formats first, so its formatting arrives as Markdown it allows.
-     */
-    const startMarkdown = () => {
-      const formats = root.dataset.fruitFormats;
-      markdown = markdownEditing({
-        root,
-        control,
-        toolbar,
-        ask,
-        images: formats === undefined || formats.split(/\s+/).includes('image'),
-        read: html => {
-          const reader = new Editor({ element: document.createElement('div'), extensions: extensions(formats) });
-          reader.commands.setContent(html, { emitUpdate: false });
-          const content = reader.getJSON();
-          reader.destroy();
-          return content;
-        },
+    /** HTML, such as pasted content, read into the field's formats. */
+    const readHtml = html => {
+      const reader = new Editor({
+        element: document.createElement('div'),
+        extensions: extensions(root.dataset.fruitFormats),
       });
-      // The browser's own change event commits typing and the toolbar's edits, on leaving the field.
-      stopContent = listenForEditorContent(root, control, {
-        insert: markdown.insert,
-        set: markdown.set,
-        commit: () => {},
-      });
-      showToolbar();
+      reader.commands.setContent(html, { emitUpdate: false });
+      const content = reader.getJSON();
+      reader.destroy();
+      return content;
     };
     return {
       init() {
@@ -301,21 +289,41 @@ export default function fruitEditor(Alpine) {
         surface = this.$el.querySelector('.f-editor__surface');
         toolbar = this.$el.querySelector('.f-editor__toolbar');
         if (!control || !surface || !toolbar) return;
-        if (root.dataset.fruitMode === 'markdown') return startMarkdown();
+        // Markdown mode: the Markdown as written, its syntax in view and styled (editor-markdown.js).
+        const formats = root.dataset.fruitFormats;
+        if (root.dataset.fruitMode === 'markdown')
+          markdown = markdownEditing({
+            root,
+            control,
+            ask,
+            commit,
+            read: readHtml,
+            editor: () => editor,
+            images: formats === undefined || formats.split(/\s+/).includes('image'),
+          });
         lastValue = committedValue = control.value;
         editor = new Editor({
           element: surface,
-          extensions: extensions(root.dataset.fruitFormats),
-          content: control.value,
+          extensions: markdown?.extensions ?? extensions(formats),
+          content: markdown ? markdown.content(control.value) : control.value,
+          ...markdown?.options,
           editorProps: {
-            attributes: { class: 'f-prose', role: 'textbox', 'aria-multiline': 'true' },
+            attributes: {
+              class: markdown ? 'f-editor__markdown' : 'f-prose',
+              role: 'textbox',
+              'aria-multiline': 'true',
+            },
             handlePaste: (view, event) =>
-              upload(event.clipboardData?.files, view.state.selection.from) || pastePlain(event),
-            handleDrop: (view, event) =>
-              upload(event.dataTransfer?.files, view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos),
+              markdown
+                ? markdown.paste(event)
+                : upload(event.clipboardData?.files, view.state.selection.from) || pastePlain(event),
+            handleDrop: (view, event, slice, moved) =>
+              markdown
+                ? markdown.drop(event, moved)
+                : upload(event.dataTransfer?.files, view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos),
           },
           onUpdate: () => {
-            lastValue = editor.isEmpty ? '' : editor.getHTML();
+            lastValue = markdown ? markdown.value() : editor.isEmpty ? '' : editor.getHTML();
             publishValue(control, lastValue, { commit: false });
             editor.view.dom.removeAttribute('aria-invalid');
           },
@@ -329,7 +337,9 @@ export default function fruitEditor(Alpine) {
           editor.view.dom,
           reason => {
             if (control.value !== lastValue) {
-              editor.commands.setContent(control.value, { emitUpdate: false });
+              editor.commands.setContent(markdown ? markdown.content(control.value) : control.value, {
+                emitUpdate: false,
+              });
               lastValue = committedValue = control.value;
             }
             if (reason === 'reset') committedValue = control.value;
@@ -350,13 +360,15 @@ export default function fruitEditor(Alpine) {
         stopContent = listenForEditorContent(this.$el, control, {
           insert: request => editor.chain().focus().insertContent(content(request)).run(),
           set: request => editor.commands.setContent(content(request), { emitUpdate: true }),
+          ...(markdown && { insert: markdown.insert, set: markdown.set }),
           commit,
         });
         click = event => {
           const button = event.target.closest('[data-fruit-command]');
           if (!button || button.disabled || !commands[button.dataset.fruitCommand]) return;
           const command = button.dataset.fruitCommand;
-          if (command === 'link') askLink(button);
+          if (markdown) markdown.run(command, button);
+          else if (command === 'link') askLink(button);
           else if (command === 'image') askImage(button);
           else commands[command](editor.chain().focus()).run();
         };
@@ -370,14 +382,16 @@ export default function fruitEditor(Alpine) {
         dispose?.();
         stopContent?.();
         closePopover?.();
-        markdown?.destroy();
         this.$el.removeEventListener('focusout', blur);
         toolbar?.removeEventListener('click', click);
         formatting?.removeEventListener('click', toggleFormatting);
         if (formatting) formatting.hidden = true;
         editor?.destroy();
         if (control) control.hidden = false;
-        if (toolbar) toolbar.hidden = true;
+        if (toolbar) {
+          toolbar.hidden = true;
+          toolbar.inert = false;
+        }
         if (surface) surface.hidden = true;
       },
     };

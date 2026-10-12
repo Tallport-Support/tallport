@@ -84,8 +84,73 @@
     border: 0;
     border-radius: inherit;
   }
-  /* Markdown mode: the person writes in the textarea itself, as tall as the rich editor and growing
-     with its lines, inside the editor's frame and focus ring. */
+  /* Markdown mode: the Markdown as written, a line to a paragraph. Its syntax stays in view, dimmed, and
+     shows its effect: bold text is bold, a link's text has the link color and its address is dimmed,
+     headings are larger, a quote sits on a bar and code is monospaced. */
+  .f-editor__surface .f-editor__markdown {
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+  .f-editor__line {
+    margin: 0;
+  }
+  .f-editor__line:is(
+    .f-editor__line--h1,
+    .f-editor__line--h2,
+    .f-editor__line--h3,
+    .f-editor__line--h4,
+    .f-editor__line--h5,
+    .f-editor__line--h6
+  ) {
+    font-weight: 600;
+  }
+  .f-editor__line--h1 {
+    font-size: var(--f-text-2xl);
+  }
+  .f-editor__line--h2 {
+    font-size: var(--f-text-xl);
+  }
+  .f-editor__line--h3 {
+    font-size: var(--f-text-lg);
+  }
+  .f-editor__line--quote {
+    padding-inline-start: 10px;
+    border-inline-start: 3px solid var(--f-border);
+    color: var(--f-secondary);
+  }
+  .f-editor__line--code,
+  .f-editor__code {
+    background: var(--f-surface-secondary);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.875em;
+  }
+  .f-editor__line--code {
+    padding-inline: 8px;
+  }
+  .f-editor__code {
+    border-radius: 4px;
+  }
+  .f-editor__strong {
+    font-weight: 700;
+  }
+  .f-editor__emphasis {
+    font-style: italic;
+  }
+  .f-editor__strike {
+    text-decoration: line-through;
+  }
+  .f-editor__link {
+    color: var(--f-accent-text);
+  }
+  .f-editor__url,
+  .f-editor__syntax {
+    color: var(--f-secondary);
+  }
+  .f-editor__syntax {
+    font-weight: 400;
+  }
+  /* Without the editor plugin, Markdown mode's textarea is where people write: as tall as the editor and
+     growing with its lines, inside the editor's frame and focus ring. */
   .f-editor[data-fruit-mode='markdown']:not(.f-editor--inline) > textarea {
     min-height: var(--f-editor-min-height, 120px);
     max-height: var(--f-editor-max-height, 360px);

@@ -48,6 +48,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
     "@eslint/js": "^10.0.1",
+    "@lezer/markdown": "^1.8.0",
     "@playwright/test": "^1.63.0",
     "@tiptap/core": "^3.31.4",
     "@tiptap/pm": "^3.31.4",
@@ -62,11 +63,15 @@
   },
   "license": "MIT",
   "peerDependencies": {
+    "@lezer/markdown": "^1.8.0",
     "@tiptap/core": "^3.31.4",
     "@tiptap/pm": "^3.31.4",
     "@tiptap/starter-kit": "^3.31.4"
   },
   "peerDependenciesMeta": {
+    "@lezer/markdown": {
+      "optional": true
+    },
     "@tiptap/core": {
       "optional": true
     },

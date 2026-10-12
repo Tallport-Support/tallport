@@ -1,107 +1,223 @@
-import { publishValue } from './control-bridge.js';
+import { Extension } from '@tiptap/core';
+import StarterKit from '@tiptap/starter-kit';
+import { Plugin, PluginKey, TextSelection } from '@tiptap/pm/state';
+import { Decoration, DecorationSet } from '@tiptap/pm/view';
+import { Fragment, Slice } from '@tiptap/pm/model';
+import { closeHistory } from '@tiptap/pm/history';
+import { parser, GFM } from '@lezer/markdown';
 
 /**
- * An Editor in Markdown mode (data-fruit-mode="markdown"): the person writes Markdown in the native
- * textarea, and its value is that Markdown, as written. The toolbar writes syntax around the
- * selection, Enter continues a list or quote, pasted formatting arrives as Markdown, and undo is the
- * browser's own. Nothing is converted on the way in or out.
+ * An Editor in Markdown mode (data-fruit-mode="markdown"): the person writes Markdown, and the value is
+ * that Markdown, as written. Each line is a paragraph of plain text. The syntax stays in view, dimmed,
+ * and shows its effect on the text: bold text is bold, a link's text has the link color, a heading is
+ * larger, a quote sits on a bar and code is monospaced. Lezer's Markdown parser reads it as CommonMark
+ * with GitHub's extensions, as Laravel's Str::markdown renders it. The toolbar writes syntax around the
+ * selection, Enter continues a list or quote, and pasted formatting arrives as Markdown. Nothing is
+ * converted on the way in or out.
  */
 
+const markdown = parser.configure(GFM);
+const task = /^(\s*)([-+*]|(\d+)([.)]))\s\[[ xX]\]\s/;
 const list = /^(\s*)([-+*]|(\d+)([.)]))\s/;
 const quote = /^(\s*)>\s?/;
 
-/** Change the text between start and end, keeping the change in the browser's undo history. */
-function edit(control, start, end, text, select) {
-  control.focus();
-  control.setSelectionRange(start, end);
-  const done = text ? document.execCommand('insertText', false, text) : document.execCommand('delete');
-  if (!done) {
-    control.setRangeText(text, start, end, 'end');
-    control.dispatchEvent(new Event('input', { bubbles: true }));
-  }
-  if (select) control.setSelectionRange(...select);
-}
+/** Markdown as the editor's document: a paragraph for each line. */
+export const markdownContent = text => ({
+  type: 'doc',
+  content: String(text ?? '')
+    .replace(/\r\n?/g, '\n')
+    .split('\n')
+    .map(line => ({ type: 'paragraph', ...(line && { content: [{ type: 'text', text: line }] }) })),
+});
 
-/** The lines the selection touches, whole. */
-function lines(control) {
-  const { value, selectionStart, selectionEnd } = control;
-  const start = value.lastIndexOf('\n', selectionStart - 1) + 1;
-  // A selection that ends at the start of a line doesn't include that line.
-  const last = selectionEnd > selectionStart && value[selectionEnd - 1] === '\n' ? selectionEnd - 1 : selectionEnd;
-  const next = value.indexOf('\n', last);
-  const end = next < 0 ? value.length : next;
-  return { start, end, lines: value.slice(start, end).split('\n') };
-}
+/** The same lines as a slice that joins the lines around where it goes. */
+const lineSlice = (schema, text) =>
+  new Slice(
+    Fragment.from(text.split('\n').map(line => schema.nodes.paragraph.create(null, line ? schema.text(line) : null))),
+    1,
+    1,
+  );
 
 /**
- * Bold (**) and italic (*) around the selection; when it has them already, they come off. ***text***
- * is both, so italic on bold text adds a star on each side, and bold off leaves the italic.
+ * Offsets in the Markdown and positions in the document. Line n's paragraph opens at its offset plus n,
+ * and its text starts one position later.
  */
-function emphasize(control, marker) {
-  const { value, selectionStart: start, selectionEnd: end } = control;
-  const selected = value.slice(start, end);
-  const around = mark =>
-    value.slice(start - mark.length, start) === mark && value.slice(end, end + mark.length) === mark;
-  const bold = marker === '**';
-  const on = bold ? around('**') : around('***') || (around('*') && !around('**')) || around('_');
-  if (on) {
-    const size = bold ? 2 : 1;
-    return edit(control, start - size, end + size, selected, [start - size, end - size]);
-  }
-  // A selection that includes its own markers.
-  const inner = bold ? /^\*\*([\s\S]+)\*\*$/ : /^(?:\*(?!\*)([\s\S]+)(?<!\*)\*|_([\s\S]+)_)$/;
-  const match = inner.exec(selected);
-  if (match) {
-    const text = match[1] ?? match[2];
-    return edit(control, start, end, text, [start, start + text.length]);
-  }
-  edit(control, start, end, `${marker}${selected}${marker}`, [start + marker.length, end + marker.length]);
-}
-
-/** Lists and quotes start each line of the selection; when every line has them, they come off. */
-function prefix(control, kind) {
-  const { start, end, lines: current } = lines(control);
-  const filled = current.filter(line => line.trim());
-  const has = line =>
-    kind === 'blockquote'
-      ? quote.test(line)
-      : kind === 'orderedList'
-        ? list.exec(line)?.[3]
-        : list.exec(line) && !list.exec(line)[3];
-  const off = filled.length > 0 && filled.every(has);
-  let number = 0;
-  const next = current.map(line => {
-    if (!line.trim()) return line;
-    if (kind === 'blockquote') return off ? line.replace(quote, '$1') : `> ${line}`;
-    const text = line.replace(list, '$1');
-    if (off) return text;
-    const indent = text.match(/^\s*/)[0];
-    return `${indent}${kind === 'orderedList' ? `${++number}.` : '-'} ${text.slice(indent.length)}`;
+function lineStarts(doc) {
+  const starts = [];
+  let offset = 0;
+  doc.forEach(line => {
+    starts.push(offset);
+    offset += line.content.size + 1;
   });
-  const text = next.join('\n');
-  edit(control, start, end, text, [start, start + text.length]);
+  return starts;
+}
+function lineAt(starts, offset) {
+  let low = 0;
+  let high = starts.length - 1;
+  while (low < high) {
+    const middle = (low + high + 1) >> 1;
+    if (starts[middle] <= offset) low = middle;
+    else high = middle - 1;
+  }
+  return low;
+}
+const toPosition = (starts, offset) => offset + lineAt(starts, offset) + 1;
+function toOffset(doc, position) {
+  const $position = doc.resolve(position);
+  // Between paragraphs (a whole-document selection): the end of the line before.
+  return Math.max(0, position - $position.index(0) - 1);
 }
 
-/** The Markdown link around a position, if there is one. */
-function linkAt(value, position) {
-  for (const match of value.matchAll(/(!?)\[([^\]\n]*)\]\(([^)\s]*)\)/g)) {
-    const start = match.index;
-    const end = start + match[0].length;
-    if (!match[1] && position >= start && position <= end) return { start, end, text: match[2], href: match[3] };
-  }
+/** Syntax, dimmed; spans of text, styled by what they are; and whole lines, by the block they're in. */
+const syntax = new Set([
+  'HeaderMark',
+  'QuoteMark',
+  'ListMark',
+  'TaskMarker',
+  'EmphasisMark',
+  'StrikethroughMark',
+  'CodeMark',
+  'CodeInfo',
+  'LinkMark',
+  'LinkTitle',
+  'LinkLabel',
+  'TableDelimiter',
+  'HorizontalRule',
+  'HTMLTag',
+  'HTMLBlock',
+  'Comment',
+  'CommentBlock',
+  'ProcessingInstruction',
+  'ProcessingInstructionBlock',
+]);
+const textStyles = {
+  StrongEmphasis: 'strong',
+  Emphasis: 'emphasis',
+  Strikethrough: 'strike',
+  InlineCode: 'code',
+  Link: 'link',
+  Image: 'link',
+  Autolink: 'link',
+};
+const lineStyles = {
+  ATXHeading1: 'h1',
+  ATXHeading2: 'h2',
+  ATXHeading3: 'h3',
+  ATXHeading4: 'h4',
+  ATXHeading5: 'h5',
+  ATXHeading6: 'h6',
+  SetextHeading1: 'h1',
+  SetextHeading2: 'h2',
+  Blockquote: 'quote',
+  FencedCode: 'code',
+  CodeBlock: 'code',
+};
+// Spell checking stays out of code and addresses.
+const literal = { spellcheck: 'false' };
+
+function decorate(doc, tree, starts) {
+  const found = [];
+  const span = (from, to, name, attributes) => {
+    if (from < to)
+      found.push(
+        Decoration.inline(toPosition(starts, from), toPosition(starts, to), {
+          class: `f-editor__${name}`,
+          ...attributes,
+        }),
+      );
+  };
+  tree.iterate({
+    enter: node => {
+      const { name, from, to } = node;
+      if (lineStyles[name]) {
+        const last = lineAt(starts, Math.max(from, to - 1));
+        for (let line = lineAt(starts, from); line <= last; line++) {
+          const at = starts[line] + line;
+          found.push(
+            Decoration.node(at, at + doc.child(line).nodeSize, {
+              class: `f-editor__line--${lineStyles[name]}`,
+              ...(lineStyles[name] === 'code' && literal),
+            }),
+          );
+        }
+      }
+      if (textStyles[name]) span(from, to, textStyles[name], name === 'InlineCode' ? literal : undefined);
+      if (syntax.has(name)) span(from, to, 'syntax');
+      // An escape's backslash; a link's address; a bare address, which GitHub links.
+      if (name === 'Escape') span(from, from + 1, 'syntax');
+      if (name === 'URL') span(from, to, ['Link', 'Image'].includes(node.node.parent?.name) ? 'url' : 'link', literal);
+    },
+  });
+  return DecorationSet.create(doc, found);
+}
+
+/** The document read as Markdown: its text, its lines and its syntax tree, kept with each change. */
+const key = new PluginKey('fruitMarkdown');
+function read(doc) {
+  const lines = [];
+  doc.forEach(line => lines.push(line.textContent));
+  const text = lines.join('\n');
+  const starts = lineStarts(doc);
+  const tree = markdown.parse(text);
+  return { text, starts, tree, decorations: decorate(doc, tree, starts) };
+}
+const highlighting = new Plugin({
+  key,
+  state: {
+    init: (config, state) => read(state.doc),
+    apply: (transaction, value) => (transaction.docChanged ? read(transaction.doc) : value),
+  },
+  props: { decorations: state => key.getState(state).decorations },
+});
+
+/** The innermost node of one of the kinds that holds the whole range. */
+function enclosing(tree, from, to, names) {
+  for (let node = tree.resolveInner(from, 1); node; node = node.parent)
+    if (names.includes(node.name) && node.from <= from && node.to >= to) return node;
   return null;
 }
 
-/** The selection's text without its syntax: emphasis, code, links, images, headings, lists, quotes. */
-function plain(text) {
-  return text
-    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/<((?:https?|mailto):[^>\s]+)>/g, '$1')
-    .replace(/(\*\*|__|~~|`)(.+?)\1/g, '$2')
-    .replace(/(\*|_)(?=\S)(.+?)(?<=\S)\1/g, '$2')
-    .replace(/^(\s*)(#{1,6}\s+|>\s?|[-+*]\s+|\d+[.)]\s+)/gm, '$1');
+/** The lines the range touches, whole. A range that ends at the start of a line doesn't include it. */
+function lineRange(text, start, end) {
+  const from = text.lastIndexOf('\n', start - 1) + 1;
+  const last = end > start && text[end - 1] === '\n' ? end - 1 : end;
+  const next = text.indexOf('\n', last);
+  const to = next < 0 ? text.length : next;
+  return { from, to, lines: text.slice(from, to).split('\n') };
 }
+const prefixed = (kind, line) =>
+  kind === 'blockquote'
+    ? quote.test(line)
+    : kind === 'orderedList'
+      ? Boolean(list.exec(line)?.[3])
+      : Boolean(list.exec(line)) && !list.exec(line)[3];
+/** Every line with text in the range starts with the kind's syntax. */
+function prefixedLines(kind, lines) {
+  const filled = lines.filter(line => line.trim());
+  return filled.length > 0 && filled.every(line => prefixed(kind, line));
+}
+
+/** An offset after removing ranges of the text. */
+const shift = (offset, removed) =>
+  removed.reduce((at, { from, to }) => at - Math.min(Math.max(offset - from, 0), to - from), offset);
+
+/** Code copied from a code editor or a terminal: preformatted text, Markdown as written. */
+function preformatted(html) {
+  const body = new DOMParser().parseFromString(html, 'text/html').body;
+  const walker = body.ownerDocument.createTreeWalker(body, NodeFilter.SHOW_TEXT);
+  let found = false;
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (!node.data.trim()) continue;
+    if (!node.parentElement.closest('pre, [style*="white-space: pre"], [style*="white-space:pre"]')) return false;
+    found = true;
+  }
+  return found;
+}
+/** Content with formatting beyond paragraphs of text. */
+const formatted = content =>
+  (content ?? []).some(
+    node => node.marks?.length || !['paragraph', 'text', 'hardBreak'].includes(node.type) || formatted(node.content),
+  );
 
 /** Text written as Markdown that reads as itself: syntax characters escaped, not underscores inside words. */
 function escapeText(text) {
@@ -229,71 +345,220 @@ export function markdownFromDocument(document) {
 }
 
 /**
- * Markdown editing on the Editor's textarea. `read` turns HTML into a document within the field's
- * formats; `ask` opens the address popover; `commit` sends the change event. Returns a cleanup.
+ * Markdown editing for the Editor's Tiptap surface. `read` turns HTML into a document within the field's
+ * formats; `ask` opens the address popover; `commit` sends the change event; `editor` returns the
+ * Tiptap editor, once there is one. Returns the extensions and options to create it with, and what the
+ * Editor asks of a mode: its value, its commands and their state, content requests, paste and drop.
  */
-export function markdownEditing({ root, control, toolbar, read, ask, commit, images }) {
-  const toMarkdown = html => markdownFromDocument(read(html));
+export function markdownEditing({ root, control, read: readHtml, ask, commit, editor, images }) {
+  const toMarkdown = html => markdownFromDocument(readHtml(html));
   const blocked = () => control.matches(':disabled') || control.readOnly;
+  const current = () => {
+    const { state } = editor();
+    const { text, tree } = key.getState(state);
+    return {
+      text,
+      tree,
+      start: toOffset(state.doc, state.selection.from),
+      end: toOffset(state.doc, state.selection.to),
+    };
+  };
+  /**
+   * Replace ranges of the Markdown (offsets of the current text) as one step of undo, then select a
+   * range of the new text, or keep the selection where the change moved it.
+   */
+  const change = (changes, select) => {
+    const { view } = editor();
+    const { state } = view;
+    const { starts } = key.getState(state);
+    const transaction = state.tr;
+    for (const { from, to = from, insert = '' } of [...changes].sort((a, b) => b.from - a.from)) {
+      const start = toPosition(starts, from);
+      const end = toPosition(starts, to);
+      if (insert.includes('\n')) transaction.replace(start, end, lineSlice(state.schema, insert));
+      else if (insert) transaction.insertText(insert, start, end);
+      else if (end > start) transaction.delete(start, end);
+    }
+    if (select) {
+      const next = lineStarts(transaction.doc);
+      transaction.setSelection(
+        TextSelection.create(transaction.doc, toPosition(next, select[0]), toPosition(next, select[1])),
+      );
+    }
+    view.focus();
+    view.dispatch(closeHistory(transaction).scrollIntoView());
+  };
+  /** Content at the selection, the caret after it. */
+  const insert = text => {
+    const { start, end } = current();
+    change([{ from: start, to: end, insert: text }], [start + text.length, start + text.length]);
+  };
+  const emphasis = { bold: ['StrongEmphasis', '**'], italic: ['Emphasis', '*'] };
+  /**
+   * Bold (**) and italic (*): off text that has them, else around the selection, outside the spaces
+   * at its ends. ***text*** is both, so italic on bold text adds a star on each side, and bold off
+   * leaves the italic.
+   */
+  const emphasize = kind => {
+    const [name, marker] = emphasis[kind];
+    const { text, tree, start, end } = current();
+    const node = enclosing(tree, start, end, [name]);
+    if (node) {
+      const removed = [node.firstChild, node.lastChild].map(({ from, to }) => ({ from, to }));
+      return change(removed, [shift(start, removed), shift(end, removed)]);
+    }
+    const selected = text.slice(start, end);
+    const from = start + selected.length - selected.trimStart().length;
+    const to = Math.max(from, end - (selected.length - selected.trimEnd().length));
+    change(
+      [
+        { from, insert: marker },
+        { from: to, insert: marker },
+      ],
+      [from + marker.length, to + marker.length],
+    );
+  };
+  /** Lists and quotes start each line of the selection; when every line has them, they come off. */
+  const prefix = kind => {
+    const { text, start, end } = current();
+    const { from, to, lines } = lineRange(text, start, end);
+    const off = prefixedLines(kind, lines);
+    let number = 0;
+    const next = lines
+      .map(line => {
+        if (!line.trim()) return line;
+        if (kind === 'blockquote') return off ? line.replace(quote, '$1') : `> ${line}`;
+        const bare = line.replace(list, '$1');
+        if (off) return bare;
+        const indent = bare.match(/^\s*/)[0];
+        return `${indent}${kind === 'orderedList' ? `${++number}.` : '-'} ${bare.slice(indent.length)}`;
+      })
+      .join('\n');
+    change([{ from, to, insert: next }], [from, from + next.length]);
+  };
+  /**
+   * Remove Formatting: the syntax of the formatting the selection touches (the caret's line without
+   * one), and the headings, lists and quotes of its lines. Text and addresses without syntax stay.
+   */
+  const clear = () => {
+    const { text, tree, start, end } = current();
+    const lines = lineRange(text, start, end);
+    const range = start === end ? lines : { from: start, to: end };
+    const removed = [];
+    tree.iterate({
+      from: lines.from,
+      to: lines.to,
+      enter: node => {
+        const { name, from, to } = node;
+        const touched = from < range.to && to > range.from;
+        if (['HeaderMark', 'QuoteMark', 'ListMark', 'TaskMarker'].includes(name) && from >= lines.from) {
+          // Its space goes with it.
+          removed.push({ from, to: text[to] === ' ' ? to + 1 : to });
+        } else if (
+          touched &&
+          ['StrongEmphasis', 'Emphasis', 'Strikethrough', 'InlineCode', 'Autolink'].includes(name)
+        ) {
+          removed.push({ from, to: node.node.firstChild.to }, { from: node.node.lastChild.from, to });
+        } else if (touched && ['Link', 'Image'].includes(name)) {
+          // A link's text stays: everything from its "]" on goes, with its "[" or "![".
+          const [open, close] = node.node.getChildren('LinkMark');
+          removed.push({ from, to: open.to }, ...(close ? [{ from: close.from, to }] : []));
+        }
+      },
+    });
+    const merged = removed
+      .sort((a, b) => a.from - b.from)
+      .reduce((all, next) => {
+        const last = all.at(-1);
+        if (last && next.from <= last.to) last.to = Math.max(last.to, next.to);
+        else all.push({ ...next });
+        return all;
+      }, []);
+    change(merged, [shift(start, merged), shift(end, merged)]);
+  };
+  /** The link the selection is in: its text, between its first two marks, and its address. */
+  const linkAround = () => {
+    const { text, tree, start, end } = current();
+    const node = enclosing(tree, start, end, ['Link']);
+    if (!node) return { text, start, end };
+    const [open, close, parenthesis] = node.getChildren('LinkMark');
+    const url = node.getChild('URL');
+    return { text, start, end, node, open, close, parenthesis, url };
+  };
   const commands = {
-    bold: () => emphasize(control, '**'),
-    italic: () => emphasize(control, '*'),
-    bulletList: () => prefix(control, 'bulletList'),
-    orderedList: () => prefix(control, 'orderedList'),
-    blockquote: () => prefix(control, 'blockquote'),
-    undo: () => {
-      control.focus();
-      document.execCommand('undo');
-    },
-    redo: () => {
-      control.focus();
-      document.execCommand('redo');
-    },
-    clear: () => {
-      const {
-        start,
-        end,
-        lines: current,
-      } = control.selectionStart === control.selectionEnd
-        ? lines(control)
-        : { start: control.selectionStart, end: control.selectionEnd };
-      const text = plain(current ? current.join('\n') : control.value.slice(start, end));
-      edit(control, start, end, text, [start, start + text.length]);
-    },
+    bold: () => emphasize('bold'),
+    italic: () => emphasize('italic'),
+    bulletList: () => prefix('bulletList'),
+    orderedList: () => prefix('orderedList'),
+    blockquote: () => prefix('blockquote'),
+    clear,
+    undo: () => editor().chain().focus().undo().run(),
+    redo: () => editor().chain().focus().redo().run(),
     link: button => {
-      const { selectionStart: start, selectionEnd: end, value } = control;
-      const link = linkAt(value, start);
-      const selected = value.slice(start, end);
+      const { text, start, end, node, open, close, parenthesis, url } = linkAround();
+      const unlink = () =>
+        change(
+          [
+            { from: node.from, to: open.to },
+            { from: close.from, to: node.to },
+          ],
+          [node.from, node.from + close.from - open.to],
+        );
       ask(button, 'link', {
-        current: link?.href ?? '',
+        current: url ? text.slice(url.from, url.to) : '',
         apply: href => {
-          if (link) edit(control, link.start, link.end, `[${link.text}](${href})`);
-          else edit(control, start, end, selected ? `[${selected}](${href})` : `<${href}>`);
+          if (node && !href) unlink();
+          else if (url) change([{ from: url.from, to: url.to, insert: href }]);
+          else if (parenthesis) change([{ from: parenthesis.to, insert: href }]);
+          else if (node) change([{ from: close.to, to: node.to, insert: `(${href})` }]);
+          else if (href) {
+            const selected = text.slice(start, end);
+            insert(selected ? `[${selected}](${href})` : `<${href}>`);
+          }
         },
-        remove: link && (() => edit(control, link.start, link.end, link.text)),
+        remove: node && unlink,
       });
     },
     image: button => {
-      const { selectionStart: start, selectionEnd: end, value } = control;
-      ask(button, 'image', { apply: href => edit(control, start, end, `![${value.slice(start, end)}](${href})`) });
+      const { text, start, end } = current();
+      ask(button, 'image', { apply: href => insert(`![${text.slice(start, end)}](${href})`) });
     },
   };
-  const refresh = () => {
-    for (const button of toolbar.querySelectorAll('[data-fruit-command]')) {
-      const command = button.dataset.fruitCommand;
-      button.disabled = blocked() || !commands[command];
-      button.removeAttribute('aria-pressed');
-      if (['link', 'image'].includes(command)) button.setAttribute('aria-haspopup', 'dialog');
+  const run = (command, button) => {
+    if (!blocked() && commands[command]) commands[command](button);
+  };
+  const allowed = command => !!root.querySelector(`[data-fruit-command="${command}"]:not(:disabled)`);
+  const submit = () => {
+    if (root.dataset.fruitEnter !== 'submit' || !control.form || blocked()) return false;
+    control.form.requestSubmit();
+    return true;
+  };
+  /**
+   * Enter in a list or quote starts the next item; on an empty item, it ends the list. In code it's a
+   * new line, and in a chat's field (data-fruit-enter="submit") it sends outside a list.
+   */
+  const enter = () => {
+    if (editor().view.composing || blocked()) return false;
+    const { text, tree, start, end } = current();
+    const lineStart = text.lastIndexOf('\n', start - 1) + 1;
+    const lineEnd = text.indexOf('\n', start) < 0 ? text.length : text.indexOf('\n', start);
+    const line = text.slice(lineStart, lineEnd);
+    const item = task.exec(line) || list.exec(line) || quote.exec(line);
+    const code = enclosing(tree, start, start, ['FencedCode', 'CodeBlock']);
+    if (item && !code && start === end && start >= lineStart + item[0].length) {
+      const marker = item[0];
+      if (!line.slice(marker.length).trim() && start === lineEnd) {
+        change([{ from: lineStart, to: lineEnd, insert: item[1] }]);
+        return true;
+      }
+      const next = (item[3] ? marker.replace(item[3], String(Number(item[3]) + 1)) : marker).replace(/\[[xX]\]/, '[ ]');
+      insert(`\n${next}`);
+      return true;
     }
+    return code ? false : submit();
   };
-  const allowed = command => !!toolbar.querySelector(`[data-fruit-command="${command}"]:not(:disabled)`);
-  const click = event => {
-    const button = event.target.closest('[data-fruit-command]');
-    if (!button || button.disabled || !commands[button.dataset.fruitCommand]) return;
-    commands[button.dataset.fruitCommand](button);
-  };
-  /** Images go to the application, which uploads them and inserts their Markdown. */
-  const upload = (files, position) => {
+  /** Images go to the application, which uploads them and inserts their Markdown where they were put. */
+  const upload = (files, offset) => {
     const found = [...(files ?? [])].filter(file => file.type.startsWith('image/'));
     if (!found.length || !images) return false;
     control.dispatchEvent(
@@ -303,8 +568,8 @@ export function markdownEditing({ root, control, toolbar, read, ask, commit, ima
         detail: {
           files: found,
           insert: (src, alt = '') => {
-            const at = Math.min(position, control.value.length);
-            edit(control, at, at, `![${alt}](${src})`);
+            const at = Math.min(offset, current().text.length);
+            change([{ from: at, insert: `![${alt}](${src})` }]);
             commit();
           },
         },
@@ -312,82 +577,95 @@ export function markdownEditing({ root, control, toolbar, read, ask, commit, ima
     );
     return true;
   };
-  const keydown = event => {
-    if (blocked() || event.isComposing) return;
-    const key = event.key.toLowerCase();
-    const mod = (event.ctrlKey || event.metaKey) && !event.altKey && !event.shiftKey;
-    if (mod && (key === 'b' || key === 'i') && allowed(key === 'b' ? 'bold' : 'italic')) {
-      event.preventDefault();
-      commands[key === 'b' ? 'bold' : 'italic']();
-      return;
-    }
-    if (event.key !== 'Enter' || event.shiftKey || event.altKey) return;
-    const submit = root.dataset.fruitEnter === 'submit' && control.form;
-    if (event.ctrlKey || event.metaKey) {
-      if (!submit) return;
-      event.preventDefault();
-      control.form.requestSubmit();
-      return;
-    }
-    // In a list or quote, Enter starts the next item; on an empty item, it ends the list.
-    const { selectionStart: start, selectionEnd: end, value } = control;
-    const lineStart = value.lastIndexOf('\n', start - 1) + 1;
-    const lineEnd = value.indexOf('\n', start) < 0 ? value.length : value.indexOf('\n', start);
-    const line = value.slice(lineStart, lineEnd);
-    const item = start === end && (list.exec(line) || quote.exec(line));
-    if (item) {
-      event.preventDefault();
-      const marker = item[0];
-      if (!line.slice(marker.length).trim() && start === lineEnd) {
-        edit(control, lineStart, lineEnd, item[1]);
-        return;
-      }
-      const next = item[3] ? marker.replace(item[3], String(Number(item[3]) + 1)) : marker;
-      edit(control, start, end, `\n${next}`);
-      return;
-    }
-    if (submit) {
-      event.preventDefault();
-      control.form.requestSubmit();
-    }
+  /**
+   * Pasted or dropped content as Markdown: formatting read into the field's formats and written as its
+   * syntax; text, Markdown copied from this or another editor, and data-fruit-paste="plain" as it is.
+   */
+  const pasted = data => {
+    const text = (data?.getData('text/plain') ?? '').replace(/\r\n?/g, '\n');
+    const html = root.dataset.fruitPaste === 'plain' ? '' : data?.getData('text/html');
+    if (!html || preformatted(html)) return text;
+    const document = readHtml(html);
+    return formatted(document.content) || !text ? markdownFromDocument(document) : text;
   };
-  const paste = event => {
-    if (upload(event.clipboardData?.files, control.selectionStart)) {
-      event.preventDefault();
-      return;
-    }
-    if (root.dataset.fruitPaste === 'plain') return;
-    const html = event.clipboardData?.getData('text/html');
-    const markdown = html && toMarkdown(html);
-    if (!markdown) return;
-    event.preventDefault();
-    edit(control, control.selectionStart, control.selectionEnd, markdown);
-  };
-  const drop = event => {
-    if (!upload(event.dataTransfer?.files, control.selectionStart)) return;
-    event.preventDefault();
-  };
-  control.addEventListener('keydown', keydown);
-  control.addEventListener('paste', paste);
-  control.addEventListener('drop', drop);
-  toolbar.addEventListener('click', click);
-  const observer = new MutationObserver(refresh);
-  observer.observe(control, { attributes: true, attributeFilter: ['disabled', 'readonly'] });
-  refresh();
-  return {
-    /** Content requests: Markdown as it is, or HTML read into the field's formats. */
-    insert: ({ markdown, html }) => {
-      const text = markdown ?? (html ? toMarkdown(html) : '');
-      edit(control, control.selectionStart, control.selectionEnd, text);
+  const Markdown = Extension.create({
+    name: 'fruitMarkdown',
+    priority: 1000,
+    addProseMirrorPlugins: () => [highlighting],
+    addKeyboardShortcuts() {
+      const shortcut = command => () => {
+        if (allowed(command)) run(command);
+        return true;
+      };
+      return {
+        Enter: enter,
+        // A line break, without continuing a list.
+        'Shift-Enter': () => this.editor.commands.splitBlock(),
+        'Mod-Enter': submit,
+        'Mod-b': shortcut('bold'),
+        'Mod-i': shortcut('italic'),
+      };
     },
+  });
+  return {
+    extensions: [
+      StarterKit.configure({
+        paragraph: { HTMLAttributes: { class: 'f-editor__line' } },
+        blockquote: false,
+        bold: false,
+        bulletList: false,
+        code: false,
+        codeBlock: false,
+        gapcursor: false,
+        hardBreak: false,
+        heading: false,
+        horizontalRule: false,
+        italic: false,
+        link: false,
+        listItem: false,
+        listKeymap: false,
+        orderedList: false,
+        strike: false,
+        trailingNode: false,
+        underline: false,
+      }),
+      Markdown,
+    ],
+    // Copied lines read as the Markdown they are.
+    options: { coreExtensionOptions: { clipboardTextSerializer: { blockSeparator: '\n' } } },
+    content: markdownContent,
+    value: () => key.getState(editor().state).text,
+    can: command => (command === 'undo' || command === 'redo' ? editor().can()[command]() : Boolean(commands[command])),
+    pressed: command => {
+      const { text, tree, start, end } = current();
+      if (emphasis[command]) return Boolean(enclosing(tree, start, end, [emphasis[command][0]]));
+      return prefixedLines(command, lineRange(text, start, end).lines);
+    },
+    run,
+    /** Content requests: Markdown as it is, or HTML read into the field's formats. */
+    insert: ({ markdown: text, html }) => insert(text ?? (html ? toMarkdown(html) : '')),
     // Replacing it all doesn't take focus: a draft or template can arrive from the server.
-    set: ({ markdown, html }) => publishValue(control, markdown ?? (html ? toMarkdown(html) : '')),
-    destroy() {
-      observer.disconnect();
-      control.removeEventListener('keydown', keydown);
-      control.removeEventListener('paste', paste);
-      control.removeEventListener('drop', drop);
-      toolbar.removeEventListener('click', click);
+    set: ({ markdown: text, html }) =>
+      editor().commands.setContent(markdownContent(text ?? (html ? toMarkdown(html) : '')), { emitUpdate: true }),
+    paste: event => {
+      if (upload(event.clipboardData?.files, current().start)) return true;
+      const text = pasted(event.clipboardData);
+      if (!text) return false;
+      insert(text);
+      return true;
+    },
+    drop: (event, moved) => {
+      // Text dragged within the field moves as it is.
+      if (moved) return false;
+      const { view } = editor();
+      const position = view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos;
+      if (position === undefined) return false;
+      const at = toOffset(view.state.doc, position);
+      if (upload(event.dataTransfer?.files, at)) return true;
+      const text = pasted(event.dataTransfer);
+      if (!text) return false;
+      change([{ from: at, insert: text }], [at, at + text.length]);
+      return true;
     },
   };
 }
