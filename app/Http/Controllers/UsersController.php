@@ -43,7 +43,7 @@ class UsersController extends Controller
         $this->authorize('create', 'App\User');
         $mailboxes = auth()->user()->mailboxesCanView();
 
-        return view('users/create', ['mailboxes' => $mailboxes]);
+        return view('users/create', ['mailboxes' => $mailboxes, 'users' => $this->getUsersForSidebar(null)]);
     }
 
     /**
