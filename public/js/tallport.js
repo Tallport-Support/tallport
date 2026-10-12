@@ -117,7 +117,8 @@ window.Tallport = (function () {
 	function autoSave(form) {
 		clearTimeout(form.tallportAutoSave);
 		form.tallportAutoSave = setTimeout(function () {
-			post(form.action || window.location.href, new FormData(form)).then(function (response) {
+			// The attribute: a field named "action" hides form.action.
+			post(form.getAttribute('action') || window.location.href, new FormData(form)).then(function (response) {
 				clearFieldErrors(form);
 				if (!isSuccess(response)) {
 					if (!showFieldErrors(form, response && response.errors)) {
