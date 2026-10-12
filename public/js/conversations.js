@@ -952,6 +952,10 @@ document.addEventListener('alpine:init', function () {
 							var data = JSON.parse(event.substring(6));
 							if (data.status == 'success') {
 								finished = true;
+								if (!data.draft.trim()) {
+									self.fail((data.staff_notes || []).join('\n'));
+									return;
+								}
 								self.drafting = false;
 								self.reset('');
 								self.draft = data;

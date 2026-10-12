@@ -252,13 +252,14 @@ class AiTranslationsTest extends FeatureTestCase
      */
     public function testContextIsLimited()
     {
-        $long = $this->customerMessage(str_repeat('a', 2000));
-        $longer = $this->customerMessage(str_repeat('b', 2000));
+        foreach (range('a', 'g') as $letter) {
+            $last = $this->customerMessage(str_repeat($letter, 4000));
+        }
 
         $context = ChatTranslation::context($this->conversation);
 
-        $this->assertSame([['from' => 'customer', 'text' => str_repeat('b', 2000)]], $context);
-        $this->assertSame(['Waar blijft mijn bestelling?', str_repeat('a', 2000)], array_column(ChatTranslation::context($this->conversation, $longer->id), 'text'));
+        $this->assertSame(array_map(fn ($letter) => str_repeat($letter, 4000), range('b', 'g')), array_column($context, 'text'));
+        $this->assertSame(array_map(fn ($letter) => str_repeat($letter, 4000), range('a', 'f')), array_column(ChatTranslation::context($this->conversation, $last->id), 'text'));
     }
 
     /**

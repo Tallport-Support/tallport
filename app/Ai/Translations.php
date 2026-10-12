@@ -308,9 +308,11 @@ class Translations
             // As it looks (HTML) where that fits, else as text.
             $html = self::sourceHtml($thread);
             $as_html = $html !== '' && mb_strlen($html) <= Summaries::MAX_THREAD_CHARS * 3;
+            $deadline = microtime(true) + 120;
+            $context = ConversationContext::build($thread->conversation, $language, false, $thread->id, $deadline, $thread);
             [$answer] = (new ThreadTranslator($language, $as_html))->recordFor(Usage::FEATURE_TRANSLATION, $thread->conversation)->streamJson(
-                trim(TallportAgent::glossary($thread->conversation->mailbox)."\n\n".TallportAgent::data('message', $as_html ? $html : $text)),
-                $thread->type == Thread::TYPE_CUSTOMER ? self::broadcaster($thread->conversation, $language, fn ($answer) => [$thread->id => [$answer['translation'] ?? '', $as_html]]) : null
+                $context['prompt']."\n\n".TallportAgent::data('message', $as_html ? $html : $text),
+                $thread->type == Thread::TYPE_CUSTOMER ? self::broadcaster($thread->conversation, $language, fn ($answer) => [$thread->id => [$answer['translation'] ?? '', $as_html]]) : null, $deadline
             );
         }
         $data = Summaries::updateData($thread, function ($data) use ($language, $text, $truncated, $as_html, $answer) {

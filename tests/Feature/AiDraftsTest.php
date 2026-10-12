@@ -156,7 +156,8 @@ class AiDraftsTest extends FeatureTestCase
 
         ReplyDrafter::assertPrompted(function ($prompt) {
             return str_contains($prompt->prompt, 'Mijn Android app start niet.')
-                && !str_contains($prompt->prompt, 'Secret internal note')
+                && str_contains($prompt->prompt, 'Secret internal note')
+                && str_contains($prompt->prompt, 'internal_note')
                 && $prompt->agent->language == 'en';
         });
         // The draft so far (its start; the rest comes within 0.1 s, so it's held back).
@@ -293,6 +294,23 @@ class AiDraftsTest extends FeatureTestCase
             $this->assertSame($valid, $answer);
             $this->assertSame(2, $calls);
         }
+    }
+
+    public function testUnsupportedAnswerReturnsOnlyStaffNotesWithoutInventingAReply()
+    {
+        ReplyDrafter::fake([$this->draft([
+            'draft' => '', 'translation' => '', 'confidence' => 'low', 'documentation_urls' => [],
+            'staff_notes' => ['The supplied documentation does not explain this setting. Check the product documentation before replying.'],
+        ])]);
+
+        $events = $this->draftEvents($this->agent);
+
+        $this->assertCount(1, $events);
+        $this->assertSame('', $events[0]['draft']);
+        $this->assertSame('', $events[0]['translation']);
+        $this->assertSame('low', $events[0]['confidence']);
+        $this->assertSame(['The supplied documentation does not explain this setting. Check the product documentation before replying.'], $events[0]['staff_notes']);
+        ReplyDrafter::assertPromptedTimes(1);
     }
 
     public function testAiJobsHaveTheirOwnQueues()
@@ -596,6 +614,9 @@ class AiDraftsTest extends FeatureTestCase
 
     public function testDraftWithoutDocumentation()
     {
+        $document = new Document();
+        $document->forceFill(['mailbox_id' => $this->mailbox->id, 'title' => 'Android app', 'source_url' => 'https://docs.example.org/android', 'source_type' => 'url', 'content' => 'Restart the Android app.'])->save();
+        Documents::index($document);
         Embeddings::fake(function () {
             throw new \RuntimeException('Embeddings down');
         });

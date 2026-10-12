@@ -62,7 +62,7 @@ class AiAssistantTest extends FeatureTestCase
 
     protected function fakeAi()
     {
-        $summary = ['one_liner' => 'Customer asks where the order is', 'background' => ''];
+        $summary = ['one_liner' => 'Customer asks where the order is', 'background' => '', 'memory' => 'Customer asks where the order is.'];
         $translation = ['translation' => "Hello,\n\nWhere is my order?", 'same_language' => false, 'detected_language' => 'nl'];
         ConversationSummarizer::fake(fn () => new \Laravel\Ai\Responses\StructuredTextResponse(
             $summary, json_encode($summary), new \Laravel\Ai\Responses\Data\TextUsage(1, 1), new \Laravel\Ai\Responses\Data\Meta
@@ -683,7 +683,7 @@ class AiAssistantTest extends FeatureTestCase
 
         $this->agent->locale = 'de';
         $this->agent->save();
-        ConversationSummarizer::fake([['one_liner' => 'Kunde fragt nach der Bestellung', 'background' => '']]);
+        ConversationSummarizer::fake([['one_liner' => 'Kunde fragt nach der Bestellung', 'background' => '', 'memory' => 'Kunde fragt nach der Bestellung']]);
         ThreadTranslator::fake([['translation' => 'Wo bleibt meine Bestellung?', 'same_language' => false, 'detected_language' => 'nl']]);
 
         // The first view asks for them (queued), later views show them.
@@ -713,7 +713,7 @@ class AiAssistantTest extends FeatureTestCase
         $conversation = $this->receiveCustomerEmail();
         $this->assertFalse(Summaries::isStale($conversation->fresh(), 'en'));
 
-        ConversationSummarizer::fake([['one_liner' => 'Customer answered', 'background' => '']]);
+        ConversationSummarizer::fake([['one_liner' => 'Customer answered', 'background' => '', 'memory' => 'Customer answered']]);
         $this->sendReply($this->agent, [
             'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Our answer</p>',
         ]);
@@ -835,7 +835,7 @@ class AiAssistantTest extends FeatureTestCase
         $this->configureAi();
         $conversation = $this->receiveCustomerEmail();
 
-        ConversationSummarizer::fake([['one_liner' => 'Short one', 'background' => '- Should not be kept']]);
+        ConversationSummarizer::fake([['one_liner' => 'Short one', 'background' => '- Should not be kept', 'memory' => 'Order is missing.']]);
         Summaries::summarize($conversation, 'en');
         ConversationSummarizer::assertPrompted(fn ($prompt) => $prompt->agent->with_background === false);
         $this->assertSame('', Summaries::get($conversation->fresh(), 'en')['background']);
@@ -845,7 +845,7 @@ class AiAssistantTest extends FeatureTestCase
                 'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Note '.$i.'</p>', 'is_note' => 1,
             ]);
         }
-        ConversationSummarizer::fake([['one_liner' => 'Long one', 'background' => "- Restarting did not help\n- Still open: other users"]]);
+        ConversationSummarizer::fake([['one_liner' => 'Long one', 'background' => "- Restarting did not help\n- Still open: other users", 'memory' => 'Restarting did not help. Check other users.']]);
         Summaries::summarize($conversation->fresh(), 'en');
         ConversationSummarizer::assertPrompted(fn ($prompt) => $prompt->agent->with_background === true);
 
@@ -859,9 +859,9 @@ class AiAssistantTest extends FeatureTestCase
         $conversation = $this->receiveCustomerEmail();
         $stale = $conversation->fresh();
 
-        ConversationSummarizer::fake([['one_liner' => 'Order is missing', 'background' => '']]);
+        ConversationSummarizer::fake([['one_liner' => 'Order is missing', 'background' => '', 'memory' => 'Order is missing']]);
         Summaries::summarize($conversation, 'en');
-        ConversationSummarizer::fake([['one_liner' => 'Bestellung fehlt', 'background' => '']]);
+        ConversationSummarizer::fake([['one_liner' => 'Bestellung fehlt', 'background' => '', 'memory' => 'Bestellung fehlt']]);
         Summaries::summarize($stale, 'de');
 
         $saved = $conversation->fresh();

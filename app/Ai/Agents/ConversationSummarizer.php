@@ -3,6 +3,7 @@
 namespace App\Ai\Agents;
 
 use App\Ai\Settings;
+use App\Ai\ConversationContext;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Ai\Contracts\HasStructuredOutput;
 
@@ -33,7 +34,12 @@ class ConversationSummarizer extends TallportAgent implements HasStructuredOutpu
         return implode("\n", [
             'You summarize customer support conversations for the support team.',
             self::dataRules(),
+            self::conversationRules(),
             'Write in this language: '.Settings::languageName($this->language).' ('.$this->language.').',
+            'Update previous_summary using the supplied messages, which are the next batch after its thread_id. If there is no previous summary, start with these messages. If there are no new messages, retain the facts and translate the summary into the requested language.',
+            'Carry forward established facts, requirements, decisions, failed attempts, outstanding questions and commitments. Correct or remove earlier facts only when new messages support the change. Distinguish customer claims from staff-confirmed facts; keep uncertainty and attribution.',
+            'memory: a concise rolling record for future summaries, translations and drafts, at most 6000 characters. Include important older facts even if absent from this batch. Keep internal-note information explicitly labelled as private internal notes. Do not persist raw customer/account data or documentation excerpts; those are supplied afresh each time.',
+            'Use guidance, documentation and customer context to understand terminology and references. Do not report them as events or decisions that occurred in the conversation. Summarize only the messages processed so far; history_incomplete means some text or messages were omitted.',
             'one_liner: where the conversation stands now, in one line, max 25 words: what the customer needs and what is happening about it.',
             $this->with_background
                 ? 'background: at most 3 newline-separated Markdown bullets (each starts with "- "), max 20 words each, on what has already been tried and what is still open, so someone new to the conversation needs not read it all. Not a history: no retelling of the messages in order.'
@@ -54,6 +60,7 @@ class ConversationSummarizer extends TallportAgent implements HasStructuredOutpu
         return [
             'one_liner'  => $schema->string()->description('Where the conversation stands now, in one line. Max 25 words.')->required(),
             'background' => $schema->string()->description('At most 3 Markdown bullets on what has been tried and what is still open, or an empty string.')->required(),
+            'memory' => $schema->string()->max(ConversationContext::MAX_MEMORY_CHARS)->description('Rolling conversation facts, with private internal notes labelled.')->required(),
         ];
     }
 }

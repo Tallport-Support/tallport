@@ -36,6 +36,7 @@ class ChatTranslator extends TallportAgent
         return implode("\n", [
             'You translate a customer\'s chat messages for the support team.',
             self::dataRules(),
+            self::conversationRules(),
             self::glossaryRule(),
             'Translate each message to: '.Settings::languageName($this->language).' ('.$this->language.').',
             'The chat\'s earlier messages are given for context only, so that the meaning, references and tone come across; do not translate them.',

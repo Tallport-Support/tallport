@@ -28,6 +28,71 @@ class Documents
     const MAX_DOCUMENT_BYTES = 5000000;
 
     /**
+     * Current knowledge base text is usable while its delayed vector index is pending, and
+     * supplements semantic search with literal product/feature matches.
+     */
+    public static function searchKnowledgeBase($mailbox_id, $question, $limit)
+    {
+        $terms = self::keywords($question);
+        if (!$terms) {
+            return [];
+        }
+        $documents = Document::where('mailbox_id', $mailbox_id)->where('enabled', true)->where('source_type', \App\KbArticle::DOCUMENT_SOURCE_TYPE)
+            ->where(function ($query) use ($terms) {
+                foreach ($terms as $term) {
+                    $query->orWhereRaw('LOWER(content) LIKE ?', ['%'.$term.'%']);
+                }
+            })->select(['id', 'title'])->selectRaw('SUBSTR(content, 1, 100000) as content')
+            ->selectRaw(implode(' + ', array_fill(0, count($terms), '(CASE WHEN LOWER(content) LIKE ? THEN 1 ELSE 0 END)')).' as keyword_matches', array_map(fn ($term) => '%'.$term.'%', $terms))
+            ->orderByDesc('keyword_matches')->orderByDesc('updated_at')->orderByDesc('id')->limit(20)->get();
+        $results = [];
+        foreach ($documents as $document) {
+            foreach (self::chunks($document->content, ConversationContext::MAX_DOCUMENT_CHARS, 200) as $chunk) {
+                $text = mb_strtolower($chunk);
+                $matched = count(array_filter($terms, fn ($term) => str_contains($text, $term)));
+                if (!$matched) {
+                    continue;
+                }
+                $results[] = ['document_id' => $document->id, 'title' => $document->title, 'url' => '', 'content' => $chunk, 'score' => $matched / count($terms)];
+            }
+        }
+        usort($results, fn ($a, $b) => $b['score'] <=> $a['score']);
+
+        return array_slice($results, 0, $limit);
+    }
+
+    /**
+     * Keep a matching passage when a retrieved chunk exceeds the shared context's budget.
+     */
+    public static function excerpt($content, $question, $limit)
+    {
+        if (mb_strlen($content) <= $limit) {
+            return $content;
+        }
+        $terms = self::keywords($question);
+        $best = mb_substr($content, 0, $limit);
+        $score = -1;
+        foreach (self::chunks($content, $limit, 200) as $chunk) {
+            $text = mb_strtolower($chunk);
+            $matched = count(array_filter($terms, fn ($term) => str_contains($text, $term)));
+            if ($matched > $score) {
+                $best = $chunk;
+                $score = $matched;
+            }
+        }
+
+        return $best;
+    }
+
+    protected static function keywords($question)
+    {
+        preg_match_all('/[\p{L}\p{N}]{3,}/u', mb_strtolower($question), $matches);
+        $terms = array_values(array_diff(array_unique($matches[0]), ['the', 'and', 'how', 'can', 'use', 'does', 'with', 'for', 'our', 'your', 'you', 'have', 'what', 'this', 'that']));
+
+        return array_slice(array_map(fn ($term) => mb_strlen($term) > 5 ? preg_replace('/(ing|ers?|s)$/', '', $term) : $term, $terms), 0, 12);
+    }
+
+    /**
      * Whether documents can be indexed and searched.
      */
     public static function available()

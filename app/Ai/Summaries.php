@@ -3,14 +3,13 @@
 namespace App\Ai;
 
 use App\Ai\Agents\ConversationSummarizer;
-use App\Ai\Agents\TallportAgent;
 use App\Conversation;
 use App\Thread;
 use Illuminate\Support\Facades\DB;
 
 /**
  * Conversation summaries, by language, in conversations.ai_assistant:
- * {"summaries": {"en": {"one_liner", "background", "thread_id", "at"}}}: where the
+ * {"summaries": {"en": {"one_liner", "background", "memory", "thread_id", "at"}}}: where the
  * conversation stands, and for long ones what's been tried and what's open.
  * thread_id is the newest thread summarized: a newer one makes it stale.
  */
@@ -22,11 +21,11 @@ class Summaries
     const BACKGROUND_MIN_MESSAGES = 10;
 
     /**
-     * The newest threads a summary is made of.
+     * The maximum messages in each summary update.
      */
-    const MAX_THREADS = 30;
+    const MAX_THREADS = ConversationContext::MAX_MESSAGES;
 
-    const MAX_THREAD_CHARS = 4000;
+    const MAX_THREAD_CHARS = ConversationContext::MAX_MESSAGE_CHARS;
 
     public static function get(Conversation $conversation, $language)
     {
@@ -68,38 +67,42 @@ class Summaries
      */
     public static function summarize(Conversation $conversation, $language)
     {
-        $threads = self::threads($conversation)->get()->reverse()->values();
-        if (!count($threads)) {
-            return null;
-        }
+        return \Cache::lock('ai-summary:'.$conversation->id.':'.$language, 180)->get(function () use ($conversation, $language) {
+            if (!ConversationContext::threads($conversation)->exists()) {
+                return null;
+            }
+            $deadline = microtime(true) + 120;
+            $context = ConversationContext::build($conversation, $language, true, null, $deadline);
+            $with_background = ConversationContext::threads($conversation)->count() >= self::BACKGROUND_MIN_MESSAGES;
+            $remaining = (int) floor($deadline - microtime(true));
+            if ($remaining < 1) {
+                throw new \RuntimeException(__('The AI\'s answer could not be read.'));
+            }
+            $response = (new ConversationSummarizer($language, $with_background))->recordFor(Usage::FEATURE_SUMMARY, $conversation)
+                ->prompt($context['prompt'], timeout: $remaining);
+            if (!is_string($response['one_liner'] ?? null) || trim($response['one_liner']) === ''
+                || !is_string($response['memory'] ?? null) || trim($response['memory']) === ''
+            ) {
+                throw new \RuntimeException(__('The AI\'s answer could not be read.'));
+            }
+            $summary = [
+                'one_liner' => mb_substr(trim((string) $response['one_liner']), 0, 500),
+                'background' => $with_background ? mb_substr(trim((string) ($response['background'] ?? '')), 0, 2000) : '',
+                'memory' => mb_substr(trim($response['memory']), 0, ConversationContext::MAX_MEMORY_CHARS),
+                'thread_id' => $context['last_thread_id'],
+                'at' => now()->toDateTimeString(),
+            ];
+            self::updateData($conversation, function ($data) use ($language, $summary) {
+                if ((int) ($data['summaries'][$language]['thread_id'] ?? 0) > $summary['thread_id']) {
+                    return null;
+                }
+                $data['summaries'][$language] = $summary;
 
-        $with_background = self::threads($conversation)->limit(null)->count() >= self::BACKGROUND_MIN_MESSAGES;
-        $response = (new ConversationSummarizer($language, $with_background))->recordFor(Usage::FEATURE_SUMMARY, $conversation)->prompt(TallportAgent::data('conversation', [
-            'subject'  => (string) $conversation->subject,
-            'messages' => $threads->map(function (Thread $thread) {
-                return [
-                    'author' => $thread->getCreatedBy()->getFullName(),
-                    'type'   => $thread->type == Thread::TYPE_CUSTOMER ? 'customer_to_staff'
-                        : ($thread->type == Thread::TYPE_NOTE ? 'internal_note' : 'staff_to_customer'),
-                    'date'   => (string) $thread->created_at,
-                    'body'   => self::text($thread),
-                ];
-            })->all(),
-        ]));
+                return $data;
+            });
 
-        $summary = [
-            'one_liner'  => trim((string) $response['one_liner']),
-            'background' => $with_background ? trim((string) ($response['background'] ?? '')) : '',
-            'thread_id' => (int) $threads->last()->id,
-            'at'        => now()->toDateTimeString(),
-        ];
-        self::updateData($conversation, function ($data) use ($language, $summary) {
-            $data['summaries'][$language] = $summary;
-
-            return $data;
+            return self::get($conversation, $language);
         });
-
-        return $summary;
     }
 
     /**
@@ -107,18 +110,12 @@ class Summaries
      */
     protected static function threads(Conversation $conversation)
     {
-        return $conversation->threads()
-            ->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE, Thread::TYPE_NOTE])
-            ->where('state', Thread::STATE_PUBLISHED)
-            ->orderBy('id', 'desc')
-            ->limit(self::MAX_THREADS);
+        return ConversationContext::threads($conversation)->orderBy('id', 'desc')->limit(self::MAX_THREADS);
     }
 
     public static function text(Thread $thread)
     {
-        $text = trim(preg_replace("/\n{3,}/", "\n\n", (string) $thread->getBodyAsText()));
-
-        return mb_substr($text, 0, self::MAX_THREAD_CHARS);
+        return ConversationContext::text($thread);
     }
 
     public static function data($model)

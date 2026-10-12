@@ -25,9 +25,9 @@ class ChatTranslation
     /**
      * The conversation's latest messages sent along for context (and at most this much text).
      */
-    const CONTEXT_MESSAGES = 10;
+    const CONTEXT_MESSAGES = ConversationContext::MAX_MESSAGES;
 
-    const CONTEXT_CHARS = 3000;
+    const CONTEXT_CHARS = ConversationContext::MAX_HISTORY_CHARS;
 
     /**
      * Whether the conversation is translated: a chat (Telegram, Nostr) where the mailbox
@@ -108,11 +108,12 @@ class ChatTranslation
             throw new \RuntimeException(__('This mailbox has used its AI tokens for today.'));
         }
         $language = self::customerLanguage($conversation);
-        [$answer] = (new ReplyTranslator($language))->recordFor(Usage::FEATURE_REPLY_TRANSLATION, $conversation, null, $user ? $user->id : null)->streamJson(implode("\n\n", array_filter([
-            TallportAgent::glossary($conversation->mailbox),
-            TallportAgent::data('conversation', self::context($conversation)),
-            TallportAgent::data('reply', $html),
-        ])), $on_translation ? fn ($answer) => $on_translation((string) ($answer['translation'] ?? '')) : null);
+        $deadline = microtime(true) + 120;
+        $context = ConversationContext::build($conversation, $language, false, null, $deadline);
+        [$answer] = (new ReplyTranslator($language))->recordFor(Usage::FEATURE_REPLY_TRANSLATION, $conversation, null, $user ? $user->id : null)->streamJson(
+            $context['prompt']."\n\n".TallportAgent::data('reply', $html),
+            $on_translation ? fn ($answer) => $on_translation((string) ($answer['translation'] ?? '')) : null, $deadline
+        );
 
         $translation = trim((string) ($answer['translation'] ?? ''));
         if ($answer['same_language']) {
@@ -178,14 +179,16 @@ class ChatTranslation
         try {
             // Open pages show the translations as they're written.
             $ids = $batch->pluck('id')->all();
-            [$answer] = (new ChatTranslator($language, $ids))->recordFor(Usage::FEATURE_TRANSLATION, $conversation, null, null, count($batch))->streamJson(implode("\n\n", array_filter([
-                TallportAgent::glossary($conversation->mailbox),
-                TallportAgent::data('earlier_chat', self::context($conversation, $batch->first()->id)),
-                TallportAgent::data('messages', $batch->map(fn (Thread $thread) => ['id' => $thread->id, 'text' => Summaries::text($thread)])->all()),
-            ])), Translations::broadcaster($conversation, $language, fn ($answer) => collect((array) ($answer['messages'] ?? []))
-                ->filter(fn ($message) => is_array($message) && in_array((int) ($message['id'] ?? 0), $ids) && empty($message['same_language']))
-                ->mapWithKeys(fn ($message) => [(int) $message['id'] => [(string) ($message['translation'] ?? ''), false]])
-                ->all()));
+            $deadline = microtime(true) + 120;
+            $context = ConversationContext::build($conversation, $language, false, $batch->first()->id, $deadline, $batch->last());
+            [$answer] = (new ChatTranslator($language, $ids))->recordFor(Usage::FEATURE_TRANSLATION, $conversation, null, null, count($batch))->streamJson(
+                $context['prompt']."\n\n".TallportAgent::data('messages', $batch->map(fn (Thread $thread) => ['id' => $thread->id, 'text' => Summaries::text($thread)])->all()),
+                Translations::broadcaster($conversation, $language, fn ($answer) => collect((array) ($answer['messages'] ?? []))
+                    ->filter(fn ($message) => is_array($message) && in_array((int) ($message['id'] ?? 0), $ids) && empty($message['same_language']))
+                    ->mapWithKeys(fn ($message) => [(int) $message['id'] => [(string) ($message['translation'] ?? ''), false]])
+                    ->all()),
+                $deadline
+            );
         } catch (\Throwable $e) {
             Errors::report($e, 'Translation of conversation '.$conversation->id.':');
             $batch->each(fn (Thread $thread) => Translations::failed($thread, $language, $e));
@@ -209,31 +212,16 @@ class ChatTranslation
     }
 
     /**
-     * The conversation's latest messages (oldest first, notes left out), for the translation's
+     * The conversation's latest messages (oldest first), for the translation's
      * context; those before a message, if given. An email's quoted history is left out: a
      * customer's reply is cut where the quote starts when it's fetched
      * (FetchEmails::separateReply()), an agent's gets it only when it's sent.
      */
     public static function context(Conversation $conversation, $before_id = null)
     {
-        $threads = $conversation->threads()
-            ->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
-            ->where('state', Thread::STATE_PUBLISHED)
-            ->when($before_id, fn ($query) => $query->where('id', '<', $before_id))
-            ->orderBy('id', 'desc')
-            ->limit(self::CONTEXT_MESSAGES)
-            ->get();
-        $messages = [];
-        $chars = 0;
-        foreach ($threads as $thread) {
-            $text = mb_substr(Summaries::text($thread), 0, self::CONTEXT_CHARS);
-            $chars += mb_strlen($text);
-            if ($messages && $chars > self::CONTEXT_CHARS) {
-                break;
-            }
-            $messages[] = ['from' => $thread->type == Thread::TYPE_CUSTOMER ? 'customer' : 'support', 'text' => $text];
-        }
-
-        return array_reverse($messages);
+        return array_map(fn ($message) => [
+            'from' => $message['type'] == 'customer_to_staff' ? 'customer' : ($message['type'] == 'internal_note' ? 'internal_note' : 'support'),
+            'text' => $message['body'],
+        ], ConversationContext::history($conversation, null, $before_id)['messages']);
     }
 }

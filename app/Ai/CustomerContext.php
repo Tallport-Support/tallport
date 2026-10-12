@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Http;
 
 /**
  * Per mailbox: a URL that is sent the customer's email addresses when a
- * reply is drafted and returns JSON about the customer (signed with a
- * secret, like Help Scout's dynamic apps), and guidance for drafting.
+ * conversation's AI context is built and returns JSON about the customer (signed with a
+ * secret, like Help Scout's dynamic apps), and guidance for the support team.
  */
 class CustomerContext
 {
@@ -42,7 +42,7 @@ class CustomerContext
     }
 
     /**
-     * For a draft: [status, data, guidance].
+     * Shared conversation context: [status, data, guidance].
      */
     public static function forConversation(Conversation $conversation, ?float $deadline = null)
     {

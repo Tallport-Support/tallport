@@ -16,6 +16,7 @@ return array(
     'App\\Ai\\Agents\\TallportAgent' => $baseDir . '/app/Ai/Agents/TallportAgent.php',
     'App\\Ai\\Agents\\ThreadTranslator' => $baseDir . '/app/Ai/Agents/ThreadTranslator.php',
     'App\\Ai\\ChatTranslation' => $baseDir . '/app/Ai/ChatTranslation.php',
+    'App\\Ai\\ConversationContext' => $baseDir . '/app/Ai/ConversationContext.php',
     'App\\Ai\\CustomerContext' => $baseDir . '/app/Ai/CustomerContext.php',
     'App\\Ai\\Document' => $baseDir . '/app/Ai/Document.php',
     'App\\Ai\\DocumentApiKey' => $baseDir . '/app/Ai/DocumentApiKey.php',

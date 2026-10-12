@@ -832,6 +832,7 @@ class ComposerStaticInitfc9b7b2ca15b4d1aba40fc18ae3b6e13
         'App\\Ai\\Agents\\TallportAgent' => __DIR__ . '/../..' . '/app/Ai/Agents/TallportAgent.php',
         'App\\Ai\\Agents\\ThreadTranslator' => __DIR__ . '/../..' . '/app/Ai/Agents/ThreadTranslator.php',
         'App\\Ai\\ChatTranslation' => __DIR__ . '/../..' . '/app/Ai/ChatTranslation.php',
+        'App\\Ai\\ConversationContext' => __DIR__ . '/../..' . '/app/Ai/ConversationContext.php',
         'App\\Ai\\CustomerContext' => __DIR__ . '/../..' . '/app/Ai/CustomerContext.php',
         'App\\Ai\\Document' => __DIR__ . '/../..' . '/app/Ai/Document.php',
         'App\\Ai\\DocumentApiKey' => __DIR__ . '/../..' . '/app/Ai/DocumentApiKey.php',

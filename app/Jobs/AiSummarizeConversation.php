@@ -6,7 +6,7 @@ use App\Ai\Settings;
 use App\Ai\Summaries;
 use App\Conversation;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -14,7 +14,7 @@ use Illuminate\Queue\InteractsWithQueue;
 /**
  * Make or update a conversation's AI summary in a language.
  */
-class AiSummarizeConversation implements ShouldQueue, ShouldBeUnique
+class AiSummarizeConversation implements ShouldQueue, ShouldBeUniqueUntilProcessing
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
@@ -51,7 +51,7 @@ class AiSummarizeConversation implements ShouldQueue, ShouldBeUnique
         }
 
         try {
-            Summaries::summarize($conversation, $this->language);
+            $summary = Summaries::summarize($conversation, $this->language);
         } catch (\Throwable $e) {
             \App\Ai\Errors::report($e, 'Summary of conversation #'.$conversation->number.':');
 
@@ -61,6 +61,9 @@ class AiSummarizeConversation implements ShouldQueue, ShouldBeUnique
         $last_thread = $conversation->threads()->where('state', \App\Thread::STATE_PUBLISHED)->orderBy('id', 'desc')->first();
         if ($last_thread) {
             \App\Events\RealtimeConvNewThread::dispatchSelf($last_thread, ['ai_updated' => true]);
+        }
+        if ($summary && Summaries::isStale($conversation, $this->language)) {
+            self::request($conversation, $this->language);
         }
     }
 
