@@ -268,5 +268,7 @@ class AppServiceProvider extends ServiceProvider
                 $this->app->register($provider);
             }
         }
+        // Boost's browser logger takes Laravel's CSP nonce: Tallport's, so that it runs.
+        \Illuminate\Support\Facades\Vite::useCspNonce(\Helper::cspNonce());
     }
 }
