@@ -58,7 +58,9 @@
 @endphp
 <x-fruit::editor {{ $attributes->except('name') }} :name="$editor_name" :mode="$markdown ? 'markdown' : 'rich'" :formats="$formats" :wrapper="['class' => 'tallport-editor', 'data-upload-url' => $uploadUrl ?? route('uploads.upload')]">
     {{ $slot }}
-    @if ($editor_vars || isset($extras))
+    {{-- Plain PHP, not @if: Livewire marks @if blocks with comments, which would land in the text
+         (FruitUI's editor takes its slot as the text; Markdown shows them). --}}
+    <?php if ($editor_vars || isset($extras)): ?>
         <x-slot:extras>
             {{ $extras ?? '' }}
             @if ($editor_vars)
@@ -74,5 +76,5 @@
                 </x-fruit::menu>
             @endif
         </x-slot:extras>
-    @endif
+    <?php endif; ?>
 </x-fruit::editor>

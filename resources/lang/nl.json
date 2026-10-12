@@ -1825,5 +1825,8 @@
     "Remove this token?": "Dit token verwijderen?",
     "Not a GitHub account or organization name.": "Geen naam van een GitHub-account of -organisatie.",
     "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Elk token is voor een eigenaar, het account of de organisatie in de links; een token zonder eigenaar is voor alle andere.",
-    "The AI took too long to answer.": "De AI deed er te lang over om te antwoorden."
+    "The AI took too long to answer.": "De AI deed er te lang over om te antwoorden.",
+    "Searching the documentation…": "Documentatie doorzoeken…",
+    "Asking for the customer's details…": "Gegevens van de klant opvragen…",
+    "Thinking…": "Denkt na…"
 }

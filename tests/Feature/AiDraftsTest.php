@@ -84,15 +84,21 @@ class AiDraftsTest extends FeatureTestCase
      * A draft written into the browser: its server-sent events (the draft so far, then the
      * draft and its details or the error).
      */
-    protected function draftEvents($user)
+    /**
+     * The draft's events; its steps (the step events, in order) in $steps.
+     */
+    protected function draftEvents($user, &$steps = [])
     {
         $response = $this->requestDraft($user)->assertStatus(200)->assertHeader('Content-Type', 'text/event-stream; charset=utf-8');
 
-        return array_map(function ($event) {
+        $events = array_map(function ($event) {
             $this->assertStringStartsWith('data: ', $event);
 
             return json_decode(substr($event, 6), true);
         }, array_values(array_filter(explode("\n\n", $response->streamedContent()))));
+        $steps = array_column(array_filter($events, fn ($event) => isset($event['step'])), 'step');
+
+        return array_values(array_filter($events, fn ($event) => !isset($event['step'])));
     }
 
     protected function postForm($user, $uri, array $data)
@@ -152,7 +158,9 @@ class AiDraftsTest extends FeatureTestCase
         ]);
 
         $this->freezeTime();
-        $events = $this->draftEvents($this->agent);
+        $events = $this->draftEvents($this->agent, $steps);
+        // Each step shown as it starts.
+        $this->assertSame(['documentation', 'thinking'], $steps);
 
         ReplyDrafter::assertPrompted(function ($prompt) {
             return str_contains($prompt->prompt, 'Mijn Android app start niet.')

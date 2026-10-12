@@ -1826,5 +1826,8 @@
     "Remove this token?": "Remover este token?",
     "Not a GitHub account or organization name.": "Não é um nome de conta ou organização do GitHub.",
     "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Cada token é para um proprietário, a conta ou organização nos links; um token sem proprietário é para todos os outros.",
-    "The AI took too long to answer.": "A IA demorou demais para responder."
+    "The AI took too long to answer.": "A IA demorou demais para responder.",
+    "Searching the documentation…": "Pesquisando a documentação…",
+    "Asking for the customer's details…": "Solicitando os dados do cliente…",
+    "Thinking…": "Pensando…"
 }

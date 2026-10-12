@@ -1825,5 +1825,8 @@
     "Remove this token?": "Eliminați acest token?",
     "Not a GitHub account or organization name.": "Nu este numele unui cont sau al unei organizații GitHub.",
     "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Fiecare token este pentru un proprietar, contul sau organizația din linkuri; un token fără proprietar este pentru toți ceilalți.",
-    "The AI took too long to answer.": "AI-ului i-a luat prea mult timp să răspundă."
+    "The AI took too long to answer.": "AI-ului i-a luat prea mult timp să răspundă.",
+    "Searching the documentation…": "Se caută în documentație…",
+    "Asking for the customer's details…": "Se cer datele clientului…",
+    "Thinking…": "Se gândește…"
 }

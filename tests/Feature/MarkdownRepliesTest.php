@@ -50,6 +50,10 @@ class MarkdownRepliesTest extends FeatureTestCase
 
     public function testNotesAreMarkdown()
     {
+        // The text is only what was written: no Livewire markers in it.
+        $html = $this->composer()->call('open', 'note')->html();
+        $this->assertMatchesRegularExpression('#<textarea data-fruit-control[^>]*>\s*</textarea>#', $html);
+
         $this->composer()->call('open', 'note')->assertSet('markdown', true)->assertSee('data-fruit-mode="markdown"', false)
             ->set('body', "Ask **Casey**\n- size")->call('send');
 

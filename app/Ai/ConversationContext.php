@@ -19,14 +19,21 @@ class ConversationContext
     const MAX_DOCUMENT_CHARS = 6000;
     const MAX_DOCUMENTATION_CHARS = 12000;
 
-    public static function build(Conversation $conversation, $language, $incremental = false, $before_id = null, ?float $deadline = null, ?Thread $target = null)
+    public static function build(Conversation $conversation, $language, $incremental = false, $before_id = null, ?float $deadline = null, ?Thread $target = null, ?callable $on_step = null)
     {
         $deadline = $deadline ?? microtime(true) + 120;
         $summary = self::summary($conversation, $language, $before_id);
         $history = self::history($conversation, $incremental ? (int) ($summary['thread_id'] ?? 0) : null, $before_id);
         $latest = $target ?? $history['customer'];
         $question = trim(mb_substr((string) $conversation->subject, 0, 1000)."\n".($latest ? self::text($latest) : ''));
+        // $on_step: each slow step as it starts ('documentation', 'customer_context').
+        if ($on_step && Documents::available()) {
+            $on_step('documentation');
+        }
         $documentation = self::documentation($conversation, $question, self::documentationLocale($latest), $deadline);
+        if ($on_step && CustomerContext::settings($conversation->mailbox)['url'] !== '') {
+            $on_step('customer_context');
+        }
         $customer_context = CustomerContext::forConversation($conversation, $deadline);
         $data = [
             'subject' => mb_substr((string) $conversation->subject, 0, 1000),

@@ -1825,5 +1825,8 @@
     "Remove this token?": "Ta bort den här token?",
     "Not a GitHub account or organization name.": "Inte ett namn på ett GitHub-konto eller en organisation.",
     "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Varje token är för en ägare, kontot eller organisationen i länkarna; en token utan ägare är för alla andra.",
-    "The AI took too long to answer.": "AI-tjänsten tog för lång tid att svara."
+    "The AI took too long to answer.": "AI-tjänsten tog för lång tid att svara.",
+    "Searching the documentation…": "Söker i dokumentationen…",
+    "Asking for the customer's details…": "Hämtar kundens uppgifter…",
+    "Thinking…": "Tänker…"
 }

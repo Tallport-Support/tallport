@@ -1870,5 +1870,8 @@
     "Remove this token?": "要移除此權杖嗎？",
     "Not a GitHub account or organization name.": "不是 GitHub 帳號或組織名稱。",
     "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "每個權杖對應一個擁有者，即連結中的帳號或組織；沒有擁有者的權杖用於其他所有擁有者。",
-    "The AI took too long to answer.": "AI 回答時間過長。"
+    "The AI took too long to answer.": "AI 回答時間過長。",
+    "Searching the documentation…": "正在搜尋文件…",
+    "Asking for the customer's details…": "正在取得客戶資料…",
+    "Thinking…": "正在思考…"
 }

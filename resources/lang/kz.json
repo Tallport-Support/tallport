@@ -2219,5 +2219,8 @@
     "Remove this token?": "Бұл токенді жою керек пе?",
     "Not a GitHub account or organization name.": "GitHub тіркелгісінің немесе ұйымының атауы емес.",
     "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Әр токен бір иеге арналған: сілтемелердегі тіркелгі немесе ұйым; иесі жоқ токен қалғандарының бәріне арналған.",
-    "The AI took too long to answer.": "ЖИ жауап беруге тым ұзақ уақыт жұмсады."
+    "The AI took too long to answer.": "ЖИ жауап беруге тым ұзақ уақыт жұмсады.",
+    "Searching the documentation…": "Құжаттамадан іздеу…",
+    "Asking for the customer's details…": "Тұтынушы деректері сұралуда…",
+    "Thinking…": "Ойлануда…"
 }

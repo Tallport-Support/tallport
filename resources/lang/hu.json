@@ -1825,5 +1825,8 @@
     "Remove this token?": "Eltávolítja ezt a tokent?",
     "Not a GitHub account or organization name.": "Ez nem GitHub-fiók vagy -szervezet neve.",
     "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Minden token egy tulajdonosé, a hivatkozásokban szereplő fióké vagy szervezeté; a tulajdonos nélküli token az összes többié.",
-    "The AI took too long to answer.": "Az MI túl sokáig válaszolt."
+    "The AI took too long to answer.": "Az MI túl sokáig válaszolt.",
+    "Searching the documentation…": "Keresés a dokumentációban…",
+    "Asking for the customer's details…": "Az ügyfél adatainak lekérése…",
+    "Thinking…": "Gondolkodik…"
 }

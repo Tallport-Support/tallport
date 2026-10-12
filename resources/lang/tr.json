@@ -1825,5 +1825,8 @@
     "Remove this token?": "Bu belirteç kaldırılsın mı?",
     "Not a GitHub account or organization name.": "Bir GitHub hesabı veya kuruluşu adı değil.",
     "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Her belirteç bir sahip içindir: bağlantılardaki hesap veya kuruluş; sahibi olmayan belirteç diğer tümü içindir.",
-    "The AI took too long to answer.": "Yapay zekâ yanıt vermekte çok geç kaldı."
+    "The AI took too long to answer.": "Yapay zekâ yanıt vermekte çok geç kaldı.",
+    "Searching the documentation…": "Belgelerde aranıyor…",
+    "Asking for the customer's details…": "Müşterinin bilgileri isteniyor…",
+    "Thinking…": "Düşünüyor…"
 }

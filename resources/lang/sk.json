@@ -1825,5 +1825,8 @@
     "Remove this token?": "Odstrániť tento token?",
     "Not a GitHub account or organization name.": "Nie je to názov účtu ani organizácie na GitHube.",
     "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Každý token je pre jedného vlastníka, účet alebo organizáciu v odkazoch; token bez vlastníka je pre všetkých ostatných.",
-    "The AI took too long to answer.": "Odpoveď AI trvala príliš dlho."
+    "The AI took too long to answer.": "Odpoveď AI trvala príliš dlho.",
+    "Searching the documentation…": "Prehľadáva sa dokumentácia…",
+    "Asking for the customer's details…": "Zisťujú sa údaje o zákazníkovi…",
+    "Thinking…": "Premýšľa…"
 }

@@ -471,19 +471,20 @@ class ConversationComposer extends Component
     }
 
     /**
-     * An AI draft goes in a reply, with its translation (tallportAiDraft in public/js/conversations.js).
+     * An AI draft goes in a reply, with its translation (tallportAiDraft in public/js/conversations.js):
+     * its Markdown as written in a Markdown reply, else its HTML.
      */
     #[On('composer-ai-draft')]
-    public function aiDraft($html, $translation = '', $language = '')
+    public function aiDraft($html, $translation = '', $language = '', $markdown = null)
     {
         if ($this->mode != 'reply') {
             $this->mode = '';
             $this->open('reply');
         }
-        $this->body = (string) $html;
+        $this->body = (string) ($this->markdown && $markdown !== null ? $markdown : $html);
         $this->ai_draft_translation = (string) $translation;
         $this->ai_draft_translation_language = (string) $language;
-        $this->dispatch('fruit-editor-set', target: 'body', html: $this->body);
+        $this->dispatch('fruit-editor-set', target: 'body', html: (string) $html, markdown: (string) ($markdown ?? $html));
     }
 
     /**

@@ -1825,5 +1825,8 @@
     "Remove this token?": "להסיר את האסימון הזה?",
     "Not a GitHub account or organization name.": "זה אינו שם של חשבון או ארגון ב-GitHub.",
     "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "כל אסימון מיועד לבעלים אחד, החשבון או הארגון שבקישורים; אסימון ללא בעלים מיועד לכל האחרים.",
-    "The AI took too long to answer.": "לבינה המלאכותית לקח יותר מדי זמן לענות."
+    "The AI took too long to answer.": "לבינה המלאכותית לקח יותר מדי זמן לענות.",
+    "Searching the documentation…": "מחפש בתיעוד…",
+    "Asking for the customer's details…": "מבקש את פרטי הלקוח…",
+    "Thinking…": "חושב…"
 }

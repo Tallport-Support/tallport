@@ -1825,5 +1825,8 @@
     "Remove this token?": "このトークンを削除しますか？",
     "Not a GitHub account or organization name.": "GitHub のアカウント名または組織名ではありません。",
     "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "各トークンは 1 つの所有者（リンク内のアカウントまたは組織）用です。所有者のないトークンはその他すべてに使われます。",
-    "The AI took too long to answer.": "AI の回答に時間がかかりすぎました。"
+    "The AI took too long to answer.": "AI の回答に時間がかかりすぎました。",
+    "Searching the documentation…": "ドキュメントを検索中…",
+    "Asking for the customer's details…": "顧客の情報を問い合わせ中…",
+    "Thinking…": "考え中…"
 }

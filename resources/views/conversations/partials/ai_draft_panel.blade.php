@@ -1,6 +1,10 @@
 {{-- AI Assistant: a reply draft (App\Ai\Drafts), asked for by the toolbar's Draft with AI (tallportAiDraft in public/js/conversations.js). --}}
 <div class="ai-draft-panel" x-data="tallportAiDraft(@js(route('ai.drafts.store', ['id' => $conversation->id])), @js(App\Ai\Settings::language($conversation->mailbox, Auth::user())), @js([
         'drafting' => __('Drafting…'),
+        // Each step as it starts (Drafts::draft()), with the seconds it has taken.
+        'documentation'    => __('Searching the documentation…'),
+        'customer_context' => __('Asking for the customer\'s details…'),
+        'thinking'         => __('Thinking…'),
         'failed'   => __('Could not draft a reply.'),
      ]), @js(['inline' => !empty($chat), 'translated' => App\Ai\ChatTranslation::needed($conversation, Auth::user())]))" x-show="active" x-cloak x-on:ai-draft-request.window="request()">
     <x-fruit::suggestion :title="__('AI Draft')" x-bind:aria-busy="busy() ? 'true' : 'false'">

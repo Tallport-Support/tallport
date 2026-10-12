@@ -1917,5 +1917,8 @@
     "Remove this token?": "Voleu suprimir aquest testimoni?",
     "Not a GitHub account or organization name.": "No és un nom de compte ni d'organització de GitHub.",
     "Each token is for an owner, the account or organization in the links; a token without an owner is for all others.": "Cada testimoni és per a un propietari, el compte o l'organització dels enllaços; un testimoni sense propietari és per a tots els altres.",
-    "The AI took too long to answer.": "La IA ha trigat massa a respondre."
+    "The AI took too long to answer.": "La IA ha trigat massa a respondre.",
+    "Searching the documentation…": "S'està cercant a la documentació…",
+    "Asking for the customer's details…": "S'estan demanant les dades del client…",
+    "Thinking…": "Pensant…"
 }

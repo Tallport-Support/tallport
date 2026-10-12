@@ -817,12 +817,32 @@ document.addEventListener('alpine:init', function () {
 			draft: null,
 
 			reset: function (status) {
+				this.stopStep();
 				this.status = status || '';
 				this.failed = false;
 				this.detail = '';
 				this.meta = '';
 				this.html = '';
 				this.draft = null;
+			},
+
+			// A step of the draft (AiDraftsController::store()): shown with the seconds it takes, until
+			// the next one or the draft's text.
+			startStep: function (step) {
+				var self = this;
+				var started = Date.now();
+				var show = function () {
+					var seconds = Math.floor((Date.now() - started) / 1000);
+					self.status = texts[step] + (seconds ? ' ' + seconds + ' s' : '');
+				};
+				this.stopStep();
+				show();
+				this.step_timer = setInterval(show, 1000);
+			},
+
+			stopStep: function () {
+				clearInterval(this.step_timer);
+				this.step_timer = null;
 			},
 
 			// Waiting for the draft to start: the card shows a placeholder.
@@ -852,7 +872,7 @@ document.addEventListener('alpine:init', function () {
 				if (chat.inline) {
 					// What was in the field before goes back.
 					if (this.written) {
-						this.setField(this.before);
+						window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: this.before, markdown: this.before}}));
 					}
 					this.reset('');
 					this.lock(false);
@@ -864,9 +884,9 @@ document.addEventListener('alpine:init', function () {
 				this.detail = detail || '';
 			},
 
-			// The chat field, as the draft is written.
-			setField: function (html) {
-				window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: html}}));
+			// The chat field, as the draft is written: the draft's Markdown, as HTML for rich text.
+			setField: function (markdown) {
+				window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: markdownToHtml(markdown), markdown: markdown}}));
 			},
 
 			// The chat field (the editor and its buttons) while the draft is written: inert, as the
@@ -957,7 +977,9 @@ document.addEventListener('alpine:init', function () {
 								return;
 							}
 							var data = JSON.parse(event.substring(6));
-							if (data.status == 'success') {
+							if (data.step && texts[data.step]) {
+								self.startStep(data.step);
+							} else if (data.status == 'success') {
 								finished = true;
 								if (!data.draft.trim()) {
 									self.fail((data.staff_notes || []).join('\n'));
@@ -977,12 +999,16 @@ document.addEventListener('alpine:init', function () {
 								finished = true;
 								self.fail(data.msg, data.detail);
 							} else if (typeof data.draft == 'string') {
+								if (self.step_timer) {
+									self.stopStep();
+									self.status = texts.drafting;
+								}
 								self.html = markdownToHtml(data.draft);
 								// Translated on send: its translation, once it's being written.
 								var written = chat.translated ? data.translation : data.draft;
 								if (chat.inline && typeof written == 'string') {
 									self.written = true;
-									self.setField(markdownToHtml(written));
+									self.setField(written);
 								}
 							}
 						});
@@ -1005,9 +1031,9 @@ document.addEventListener('alpine:init', function () {
 				}
 				// Translated on send: the version in the agent's language is what they write.
 				if (chat.translated && this.draft.translation) {
-					return this.$wire.aiDraft(markdownToHtml(this.draft.translation), '', '');
+					return this.$wire.aiDraft(markdownToHtml(this.draft.translation), '', '', this.draft.translation);
 				}
-				return this.$wire.aiDraft(markdownToHtml(this.draft.draft), this.draft.translation || '', this.draft.translation ? translation_language : '');
+				return this.$wire.aiDraft(markdownToHtml(this.draft.draft), this.draft.translation || '', this.draft.translation ? translation_language : '', this.draft.draft);
 			}
 		};
 	});

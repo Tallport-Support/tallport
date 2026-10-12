@@ -39,12 +39,16 @@ class Drafts
 
     /**
      * Make a draft. $language: the language the user reads its translation in. $on_draft: the
-     * draft so far (Markdown), as it's written, and its translation so far.
+     * draft so far (Markdown), as it's written, and its translation so far. $on_step: each step as
+     * it starts ('documentation', 'customer_context', 'thinking': the model until it writes).
      */
-    public static function draft(Conversation $conversation, $language, ?callable $on_draft = null, ?float $deadline = null)
+    public static function draft(Conversation $conversation, $language, ?callable $on_draft = null, ?float $deadline = null, ?callable $on_step = null)
     {
         $deadline = $deadline ?? microtime(true) + 120;
-        $context = ConversationContext::build($conversation, $language, false, null, $deadline);
+        $context = ConversationContext::build($conversation, $language, false, null, $deadline, null, $on_step);
+        if ($on_step) {
+            $on_step('thinking');
+        }
         [$answer] = (new ReplyDrafter($language))->recordFor(Usage::FEATURE_DRAFT, $conversation)->streamJson(
             $context['prompt'], $on_draft ? fn ($answer) => $on_draft((string) ($answer['draft'] ?? ''), (string) ($answer['translation'] ?? '')) : null, $deadline
         );
