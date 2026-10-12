@@ -177,6 +177,7 @@ export function fruitTokenField() {
     suggestions,
     listName,
     list,
+    rendered,
     tokens = [];
   // With data-fruit-submit="list", one hidden name[] input per token posts the value instead of
   // the newline-delimited text, for controllers that expect an array.
@@ -207,39 +208,85 @@ export function fruitTokenField() {
   const announce = text => {
     status.textContent = text;
   };
+  // A token is selected while it has focus: its remove button, or the token itself when the field
+  // is read-only. Its text is selected too, so the browser's own Copy has something to copy.
+  const select = chip => {
+    if (!chip) return query.focus();
+    (chip.querySelector('button') || chip).focus();
+    if (chip.contains(document.activeElement)) document.getSelection()?.selectAllChildren(chip.firstChild);
+  };
+  const removeToken = index => {
+    const token = tokens[index];
+    publishValue(control, tokens.filter((_, i) => i !== index).join('\n'));
+    announce(fruitMessage(root, 'removed-message', 'Removed {value}', { value: token }));
+    query.focus();
+  };
   const render = () => {
+    const removable = !query.disabled && !query.readOnly;
+    // Other attribute changes (a morph, validation, styles) leave the tokens, and a selection, alone.
+    const state = JSON.stringify([parse(), removable, query.disabled]);
+    if (state === rendered) return syncList();
+    rendered = state;
     tokens = parse();
+    const selected = entry.querySelector('.f-chip:focus-within')?.firstChild.textContent;
     entry.querySelectorAll('.f-chip').forEach(chip => chip.remove());
     for (const [index, token] of tokens.entries()) {
       const chip = document.createElement('span');
       chip.className = 'f-chip';
       const text = document.createElement('span');
       text.textContent = token;
-      const remove = document.createElement('button');
-      remove.type = 'button';
-      remove.className = 'f-chip__remove';
-      remove.textContent = '×';
-      remove.setAttribute('aria-label', fruitMessage(root, 'remove-label', 'Remove {value}', { value: token }));
-      remove.disabled = query.disabled || query.readOnly;
-      remove.addEventListener('click', () => {
-        publishValue(control, tokens.filter((_, i) => i !== index).join('\n'));
-        announce(fruitMessage(root, 'removed-message', 'Removed {value}', { value: token }));
-        query.focus();
+      chip.append(text);
+      if (removable) {
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'f-chip__remove';
+        remove.innerHTML =
+          '<svg class="f-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
+        remove.setAttribute('aria-label', fruitMessage(root, 'remove-label', 'Remove {value}', { value: token }));
+        remove.addEventListener('click', () => removeToken(index));
+        chip.append(remove);
+      } else if (!query.disabled) chip.tabIndex = -1;
+      // A click selects the token without moving focus out of the field first.
+      chip.addEventListener('pointerdown', event => event.preventDefault());
+      chip.addEventListener('click', event => {
+        if (!event.target.closest('button')) select(chip);
       });
-      remove.addEventListener('keydown', event => {
-        const buttons = [...entry.querySelectorAll('button')];
+      chip.addEventListener('keydown', event => {
+        const chips = [...entry.querySelectorAll('.f-chip')];
         if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
           event.preventDefault();
-          (buttons[index + ((event.key === 'ArrowLeft') !== isRtl(entry) ? -1 : 1)] || query).focus();
-        }
-        if (event.key === 'Escape') {
+          select(chips[index + ((event.key === 'ArrowLeft') !== isRtl(entry) ? -1 : 1)]);
+        } else if (event.key === 'Escape') {
           event.preventDefault();
           query.focus();
-        }
+        } else if ((event.key === 'Backspace' || event.key === 'Delete') && removable) {
+          event.preventDefault();
+          removeToken(index);
+        } else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'c') {
+          if (document.getSelection()?.isCollapsed) select(chip);
+        } else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'x' && removable) {
+          // Browsers cut only editable text, so Cut copies the token and then removes it.
+          event.preventDefault();
+          select(chip);
+          if (document.execCommand('copy')) removeToken(index);
+        } else if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey && removable)
+          // Typing goes on in the entry, as it does after the last token.
+          query.focus();
       });
-      chip.append(text, remove);
+      chip.addEventListener('copy', event => {
+        if (!event.clipboardData) return;
+        event.preventDefault();
+        event.clipboardData.setData('text/plain', token);
+      });
+      chip.addEventListener('focusout', event => {
+        const selection = document.getSelection();
+        if (!chip.contains(event.relatedTarget) && selection?.anchorNode && chip.contains(selection.anchorNode))
+          selection.removeAllRanges();
+      });
       entry.insertBefore(chip, query);
     }
+    if (selected !== undefined)
+      select([...entry.querySelectorAll('.f-chip')].find(chip => chip.firstChild.textContent === selected));
     syncList();
   };
   const add = text => {
@@ -334,7 +381,7 @@ export function fruitTokenField() {
           event.preventDefault();
           add(query.value);
         } else if ((event.key === 'Backspace' || event.key === 'ArrowLeft') && !query.value)
-          entry.querySelector('.f-chip:last-of-type button')?.focus();
+          select([...entry.querySelectorAll('.f-chip')].at(-1));
         else if (event.key === 'Escape') {
           query.value = '';
           query.setCustomValidity('');
@@ -364,6 +411,8 @@ export function fruitTokenField() {
         control,
         query,
         reason => {
+          // A read-only field shows its tokens only, without an invitation to add more.
+          if (query.readOnly) query.placeholder = '';
           render();
           if (['value', 'reset'].includes(reason)) {
             query.value = '';

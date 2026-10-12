@@ -348,7 +348,43 @@ Pages that are read or filled in (settings, account and profile pages, a custome
 </form>
 ```
 
-Settings work best inside the app rather than as a separate full-width page: keep the app's frame, show the settings sections in the sidebar with a way back, and put each settings page in a narrow column. Settings for one thing (a mailbox, a view) open in place, in a dialog or an inspector.
+Settings work best inside the app rather than as a separate full-width page: keep the app's frame, show the settings categories in the sidebar with a way back to the app, as the first level of a [Drill-Down](#drill-down), and put each settings page in a narrow column on its level. Settings for one thing (a mailbox, a view) open in place, in a dialog or an inspector.
+
+## Drill-Down
+
+Settings, and other places you go down level by level (Mailboxes › Support › Connection, Users › a person › Permissions), show each level beside the one it was opened from. A row of one level opens the next; choosing another row replaces the levels after it. Earlier levels are a phone's width (18rem) and the deepest takes the rest of the window. Where they don't all fit (the deepest needs 24rem), the deepest levels show and the first of them has a Back Link to the hidden level before it; a phone shows one level at a time, each with its Back Link, as a phone's settings do. CSS alone decides what shows, from the Drill-Down's own width, so it works at any depth (up to six levels share even the widest window), without script, and through Livewire morphs.
+
+- **Levels**: the application renders the open path's levels in order, each an `x-fruit::drilldown-column` with a `title` (an `h2` that names the level's region). The first level can be a Sidebar with the `f-drilldown__column` class: the settings categories. Each level's content scrolls on its own; put a narrow Page of Form Sections in it, with section titles at level 3.
+- **Current rows**: the row that opened each next level has `aria-current`: `page` for the deepest level's row, `true` for the rows above it (a Sidebar Item included). It is selected, in the accent while its level has focus.
+- **Back**: give every level but the first a Back Link to the level before (`back` slot). It shows only while that level is hidden, so it's there on a phone and in narrow windows and out of the way when the levels fit. Going back opens the level before as the deepest.
+- **Actions**: buttons and links for the level (Open Mailbox, New User) go in the `actions` slot, beside the title.
+- **An optional level**: at the root of settings nothing is chosen yet. A wide window would otherwise show the categories beside empty space, so render the first page anyway, marked `optional`: it shows beside the categories where there's room, and a phone shows the categories instead.
+- **Focus**: `x-data="fruitDrilldown"` on the Drill-Down keeps focus in view as levels change, however they change (Alpine, a Livewire morph). The row that opened a level keeps focus while it's still shown; where it went out of view, focus moves to the new level's title, and going back to the row that leads where you were. Updates that don't change the levels leave focus alone.
+- **URLs**: every level is a URL (a route, or a Livewire `#[Url]` property), so each opens in a new tab, reloads where it was and works with the browser's Back. Rows are real links; with Livewire, `wire:click.prevent="$set(…)"` or `wire:navigate` opens a level without a full page load.
+- **Frame**: inside a Workspace the Drill-Down fills the frame, so `frame="fill"` makes it the whole window; dialogs and toasts go beside it in the Workspace.
+
+```blade
+<x-fruit::workspace frame="fill" aria-label="Settings">
+    <x-fruit::drilldown x-data="fruitDrilldown">
+        <x-fruit::sidebar class="f-drilldown__column" aria-label="Settings">
+            <x-fruit::sidebar-item href="/settings/mailboxes" aria-current="true">Mailboxes</x-fruit::sidebar-item>
+        </x-fruit::sidebar>
+        <x-fruit::drilldown-column title="Mailboxes" id="mailboxes">
+            <x-slot:back><x-fruit::back-link href="/settings" wire:navigate>Settings</x-fruit::back-link></x-slot:back>
+            <x-fruit::page width="narrow">
+                <x-fruit::form-section>
+                    <a class="f-form-row f-form-row--link" href="/settings/mailboxes/1" wire:navigate aria-current="page"><span>Support</span></a>
+                </x-fruit::form-section>
+            </x-fruit::page>
+        </x-fruit::drilldown-column>
+        <x-fruit::drilldown-column title="Support" id="mailbox">
+            <x-slot:back><x-fruit::back-link href="/settings/mailboxes" wire:navigate>Mailboxes</x-fruit::back-link></x-slot:back>
+            <x-slot:actions><a class="f-button f-button--small" href="/mailboxes/1">Open Mailbox</a></x-slot:actions>
+            <x-fruit::page width="narrow">…</x-fruit::page>
+        </x-fruit::drilldown-column>
+    </x-fruit::drilldown>
+</x-fruit::workspace>
+```
 
 ## Chat histories
 
@@ -419,7 +455,7 @@ Support replies/notes and Chat conversations/threads use the same `.f-composer` 
 </x-fruit::composer>
 ```
 
-**Recipient rows.** For From, To, Cc, Bcc and Subject, use `x-fruit::field layout="inline"`: a short label starts a full-width row, the control fills the rest without a box of its own, and hairlines separate the rows, as in mail apps. Stack the rows in a plain `div` so they sit without gaps. Token Field suggestions keep the row's width. Show Cc and Bcc on demand: a small ghost "Cc/Bcc" button after the To control, with `aria-controls` naming the rows, reveals them, moves focus to Cc and disappears; show them from the start when they already hold addresses or errors.
+**Recipient rows.** For From, To, Cc, Bcc and Subject, use `x-fruit::field layout="inline"`: a short label starts a full-width row, the control fills the rest without a box of its own, and hairlines separate the rows, as in mail apps. Stack the rows in a plain `div` so they sit without gaps. Token Field suggestions keep the row's width. Every recipient row, To included, uses a Token Field so addresses look and behave alike; a reply's fixed recipient is a `readonly` Token Field, whose tokens select and copy but have no remove button. Show Cc and Bcc on demand: a small ghost "Cc/Bcc" button after the To control, with `aria-controls` naming the rows, reveals them, moves focus to Cc and disappears; show them from the start when they already hold addresses or errors.
 
 ```blade
 <div x-data="{ copies: @js($cc !== '' || $bcc !== '') }">
@@ -565,7 +601,7 @@ Blade includes stable `wire:ignore` containers for generated UI. The named nativ
     placeholder="Add a recipient">{{ $cc }}</x-fruit::token-field>
 ```
 
-Token entry adds on Enter, comma, or a multiline/comma paste. Values are trimmed and exact duplicates are ignored. Empty Backspace/Left focuses the last remove button; arrows navigate remove buttons, Escape returns to entry. Adding is atomic for a paste: if application validation rejects any value, the native value is unchanged. Applications can cancel the bubbling `fruit-token-add` event and set `event.detail.error`, or normalize `event.detail.value`. Existing server-provided values are not validated by this event; validate the entire submitted string on the server.
+Token entry adds on Enter, comma, or a multiline/comma paste. Values are trimmed and exact duplicates are ignored. A token is selected while it has focus, shown in the accent: a click selects it, as do Backspace or Left in the empty entry for the last token. Left/Right move between tokens; Delete or Backspace removes the selected token, Ctrl/Cmd+C copies its value and Ctrl/Cmd+X cuts it; Escape or typing returns to entry. Its remove button stays a native button for pointers and Enter. A `readonly` field shows its tokens without remove buttons or a placeholder; they still select and copy. The textarea's `autofocus` passes to the entry, so a dialog that opens focuses it. Adding is atomic for a paste: if application validation rejects any value, the native value is unchanged. Applications can cancel the bubbling `fruit-token-add` event and set `event.detail.error`, or normalize `event.detail.value`. Existing server-provided values are not validated by this event; validate the entire submitted string on the server.
 
 On the server, `FruitUI\Fruit::tokens()` splits the value the way the field shows it: trimmed, without blank lines or exact duplicates. It also accepts the array that `submit="list"` posts. The `FruitUI\Rules\Tokens` rule applies ordinary Laravel rules to every token and reports a failure under the field's own key, so `x-fruit::field` shows it. Bind an existing array back with `implode("\n", $tags)`.
 
@@ -1053,7 +1089,7 @@ For other text, use the text styles on the reading scale: `f-large-title`, `f-ti
 
 ## Grouped settings
 
-Settings screens use a sidebar of categories beside a light grey content area (`--f-grouped-background`, not white), with settings in rounded groups a step lighter (`--f-grouped-surface`). The Settings example (`settings.html`, and `examples/laravel/settings.blade.php` for Livewire) shows every piece; Admin's workspace settings use the same groups.
+Settings screens are a [Drill-Down](#drill-down): a sidebar of categories, then each chosen page beside it as the next level, on a light grey background (`--f-grouped-background`, not white), with settings in rounded groups a step lighter (`--f-grouped-surface`). The Settings example (`settings.html`, and `examples/laravel/settings.blade.php` for Livewire) shows every piece; Admin's workspace settings use the same groups.
 
 - **Groups**: `x-fruit::form-section` takes a `title` (a named region, `level` 2–4), rows as its slot, and an optional `footer` of explanatory text. Each child of the group is a row with a hairline between.
 - **Rows**: `x-fruit::field layout="row"` puts the label and description on the leading side and the control on the trailing side, keeping Field's label, description and error associations. Textareas, editors and token fields take the full row. In narrow groups, text rows stack, while switches and checkboxes stay at the trailing edge.
@@ -1061,30 +1097,27 @@ Settings screens use a sidebar of categories beside a light grey content area (`
 - **Every row spans the group**: a checkbox, radio or switch placed directly as a row (with or without a description) takes the full width, so its separator does too.
 - **Disclosures**: an `x-fruit::disclosure` placed as a row has no box of its own; its title is the row and its content continues beneath.
 - **Actions and values**: `div.f-form-row` holds a title and help text beside a button, such as a destructive "Delete Mailbox…" in its own group at the end, which then asks for confirmation.
-- **Sub-pages**: a page with a few parts of equal weight can link them with Section Nav above the groups, each a URL (a Livewire `#[Url]` property or a route), rather than in-page tabs.
-- **Drilling down**: when something has settings of its own across several pages (a mailbox: Connection, Permissions, Auto Reply, and pages that modules add), keep them in one place. Its page holds the everyday settings, then a group of rows, one per further page: `a.f-form-row.f-form-row--link` with the label, the current value in `span.f-form-row__value` ("SMTP · smtp.forma.example", "3 people", "Off") and a chevron. A list of such items (Mailboxes) is a group of the same rows. A further page has a Back Link to its parent at the start of the title's row, so the header or toolbar keeps one height at every level: `x-fruit::page`'s `back` slot, or the toolbar's Back in an application shell. The sidebar keeps its category (Mailboxes) current at every level; don't add the open item to it. Rows scale to any number of pages and show each one's state at a glance, where tabs would wrap.
-- **Saving**: web forms usually save explicitly rather than applying each change at once. Put a save bar after the groups with the status first and Save last, enable Save when something changed (Livewire's `wire:dirty`), validate on the server so errors appear on their rows, and confirm with a toast.
+- **Drilling down**: when something has settings of its own across several pages (a mailbox: Connection, Permissions, Auto Reply, and pages that modules add), keep them in one place. Its page holds the everyday settings, then a group of rows, one per further page: `a.f-form-row.f-form-row--link` with the label, the current value in `span.f-form-row__value` ("SMTP · smtp.forma.example", "3 people", "Off") and a chevron. A list of such items (Mailboxes, Users) is a group of the same rows. Each row opens its page as the next level of the Drill-Down, beside the page it came from, and stays current (`aria-current`) while it's open. Tabs, pickers that switch the item ("Jamie Park ⌄") and cards that stand for further pages all become rows of the level before. The sidebar keeps its category (Mailboxes) current at every level; don't add the open item to it. Rows scale to any number of pages and show each one's state at a glance, where tabs would wrap.
+- **Saving**: settings save each change as it's made, with no save bar. Choices (switches, checkboxes, radios, selects) save at once and text when you leave the field: Livewire's `wire:model.live` and `wire:model.live.blur`. Validate the one changed field on the server (`validateOnly()` in `updated()`) and keep it only if it passes; otherwise its Field shows why, on its row, and the saved value stays. A page may be left half-finished; each field that passed is kept. No toast confirms an ordinary change. Forms that create or send something (a new mailbox, an invitation) still submit with a button.
 
 ```blade
-<form wire:submit="save" style="background: var(--f-grouped-background)">
-    <x-fruit::section-nav aria-label="Mailbox settings">…</x-fruit::section-nav>
+<x-fruit::form-section title="Automatic Reply" :level="3" footer="Sent once per conversation.">
+    <x-fruit::field label="Send an automatic reply" layout="row" description="To the first message of every new conversation.">
+        <x-fruit::switch wire:model.live="settings.autoReply" />
+    </x-fruit::field>
+    <x-fruit::field label="Subject" layout="row">
+        <x-fruit::input wire:model.live.blur="settings.autoSubject" />
+    </x-fruit::field>
+    <x-fruit::field label="Message" layout="row">
+        <x-fruit::textarea wire:model.live.blur="settings.autoBody" rows="4" />
+    </x-fruit::field>
+</x-fruit::form-section>
+```
 
-    <x-fruit::form-section title="Automatic Reply" footer="Sent once per conversation.">
-        <x-fruit::field label="Send an automatic reply" layout="row" description="To the first message of every new conversation.">
-            <x-fruit::switch wire:model.live="settings.autoReply" />
-        </x-fruit::field>
-        <x-fruit::field label="Subject" layout="row">
-            <x-fruit::input wire:model="settings.autoSubject" />
-        </x-fruit::field>
-        <x-fruit::field label="Message" layout="row">
-            <x-fruit::textarea wire:model="settings.autoBody" rows="4" />
-        </x-fruit::field>
-    </x-fruit::form-section>
-
-    <footer class="f-form-row">
-        <p class="f-help" role="status"><span wire:dirty>You have unsaved changes.</span></p>
-        <x-fruit::button type="button" wire:click="revert">Revert</x-fruit::button>
-        <x-fruit::button type="submit" variant="primary">Save</x-fruit::button>
-    </footer>
-</form>
+```php
+public function updated(string $property): void
+{
+    $this->validateOnly($property); // An error shows on the field's row; nothing is kept.
+    $this->mailbox->update([Str::after($property, 'settings.') => data_get($this, $property)]);
+}
 ```

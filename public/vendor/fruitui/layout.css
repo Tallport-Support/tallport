@@ -159,18 +159,18 @@
   .f-sidebar__item[data-fruit-mark] > .f-icon:not(.f-sidebar__chevron) {
     color: var(--f-mark);
   }
-  .f-sidebar__item:is([aria-current='page'], [data-current]) {
+  .f-sidebar__item:is([aria-current='page'], [aria-current='true'], [data-current]) {
     background: var(--f-selection-inactive);
     color: var(--f-text);
   }
-  .f-sidebar:focus-within .f-sidebar__item:is([aria-current='page'], [data-current]) {
+  .f-sidebar:focus-within .f-sidebar__item:is([aria-current='page'], [aria-current='true'], [data-current]) {
     background: var(--f-accent-fill);
     color: var(--f-on-accent);
   }
-  .f-sidebar:focus-within .f-sidebar__item:is([aria-current='page'], [data-current]) > .f-icon {
+  .f-sidebar:focus-within .f-sidebar__item:is([aria-current='page'], [aria-current='true'], [data-current]) > .f-icon {
     color: var(--f-on-accent);
   }
-  .f-sidebar__item:is([aria-current='page'], [data-current]) > .f-badge {
+  .f-sidebar__item:is([aria-current='page'], [aria-current='true'], [data-current]) > .f-badge {
     color: inherit;
     background: transparent;
   }
@@ -245,7 +245,7 @@
     }
   }
   @media (forced-colors: active) {
-    .f-sidebar__item:is([aria-current='page'], [data-current]) {
+    .f-sidebar__item:is([aria-current='page'], [aria-current='true'], [data-current]) {
       outline: 1px solid Highlight;
     }
   }
@@ -333,6 +333,141 @@
   .f-pane__scroll:focus-visible {
     outline-offset: calc(var(--f-focus-ring-width) * -1);
   }
+
+  /* Drill-down: levels side by side, each opened from a row of the level before, as settings drill
+     down. Earlier levels are a phone's width and the deepest takes the rest. Where they don't all
+     fit, the deepest levels show and the first of them leads back with its Back Link; a phone shows
+     one. CSS alone decides, at any depth: nothing to reapply after a Livewire morph.
+     The breakpoints assume 18rem levels beside a deepest level of at least 24rem. */
+  .f-drilldown {
+    container: fruit-drilldown / inline-size;
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+  }
+  /* Within a Workspace frame it takes the whole frame; dialogs and toasts stay beside it. */
+  .f-workspace > .f-drilldown {
+    grid-column: 1 / -1;
+  }
+  .f-drilldown__column {
+    container-type: inline-size;
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    width: 18rem;
+    min-width: 0;
+    min-height: 0;
+    border-inline-end: 1px solid var(--f-border);
+  }
+  .f-drilldown__column.f-sidebar {
+    width: var(--f-sidebar-width, 230px);
+  }
+  .f-drilldown__column:nth-last-child(1 of .f-drilldown__column) {
+    flex: 1;
+    width: auto;
+    border-inline-end: 0;
+  }
+  /* A level's title row: Back (shown only while the level before is hidden), the title, actions. */
+  .f-drilldown__header {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 6px;
+    min-height: 52px;
+    padding-block: 8px;
+    padding-inline: 16px 12px;
+    background: var(--f-material);
+    backdrop-filter: blur(24px) saturate(1.3);
+  }
+  .f-drilldown__header > .f-back {
+    display: none;
+    flex: none;
+    margin-inline-start: -8px;
+  }
+  .f-drilldown__title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    font-size: var(--f-text-md);
+    font-weight: 600;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .f-drilldown__title:focus-visible {
+    outline-offset: -2px;
+  }
+  .f-drilldown__actions {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 6px;
+  }
+  /* A narrow level's page keeps a phone's margins. */
+  @container (width < 30rem) {
+    .f-drilldown__column .f-page {
+      --f-page-inline: var(--f-page-padding-inline, 16px);
+    }
+  }
+  /* One level fits: the deepest. An optional level (shown beside its parent where there's room,
+     such as the first page beside a list nothing is chosen from yet) gives way to its parent. */
+  @container fruit-drilldown (width < 42rem) {
+    .f-drilldown__column:not(:nth-last-child(1 of .f-drilldown__column:not(.f-drilldown__column--optional))) {
+      display: none;
+    }
+    .f-drilldown__column:nth-last-child(1 of .f-drilldown__column:not(.f-drilldown__column--optional)) {
+      flex: 1;
+      width: auto;
+      border-inline-end: 0;
+    }
+    .f-drilldown__column:nth-last-child(1 of .f-drilldown__column:not(.f-drilldown__column--optional))
+      > .f-drilldown__header
+      > .f-back {
+      display: inline-flex;
+    }
+  }
+  @container fruit-drilldown (42rem <= width < 60rem) {
+    .f-drilldown__column:not(:nth-last-child(-n + 2 of .f-drilldown__column)) {
+      display: none;
+    }
+    .f-drilldown__column:nth-last-child(2 of .f-drilldown__column) > .f-drilldown__header > .f-back {
+      display: inline-flex;
+    }
+  }
+  @container fruit-drilldown (60rem <= width < 78rem) {
+    .f-drilldown__column:not(:nth-last-child(-n + 3 of .f-drilldown__column)) {
+      display: none;
+    }
+    .f-drilldown__column:nth-last-child(3 of .f-drilldown__column) > .f-drilldown__header > .f-back {
+      display: inline-flex;
+    }
+  }
+  @container fruit-drilldown (78rem <= width < 96rem) {
+    .f-drilldown__column:not(:nth-last-child(-n + 4 of .f-drilldown__column)) {
+      display: none;
+    }
+    .f-drilldown__column:nth-last-child(4 of .f-drilldown__column) > .f-drilldown__header > .f-back {
+      display: inline-flex;
+    }
+  }
+  @container fruit-drilldown (96rem <= width < 114rem) {
+    .f-drilldown__column:not(:nth-last-child(-n + 5 of .f-drilldown__column)) {
+      display: none;
+    }
+    .f-drilldown__column:nth-last-child(5 of .f-drilldown__column) > .f-drilldown__header > .f-back {
+      display: inline-flex;
+    }
+  }
+  /* Six levels at most share even the widest window; deeper paths keep leading back. */
+  @container fruit-drilldown (width >= 114rem) {
+    .f-drilldown__column:not(:nth-last-child(-n + 6 of .f-drilldown__column)) {
+      display: none;
+    }
+    .f-drilldown__column:nth-last-child(6 of .f-drilldown__column) > .f-drilldown__header > .f-back {
+      display: inline-flex;
+    }
+  }
+
   /* Overlay the existing divider, so adding resizing never consumes a grid track.
      Inert without the optional helper; applications hide handles in compact views.
      The handle lies on the far side of the line: a scroll area's scrollbar sits at its own end,

@@ -60,6 +60,8 @@ export function bridgeControl(component, control, query, sync, { presentation = 
       'spellcheck',
       'inputmode',
       'autocapitalize',
+      // A dialog focuses its autofocus control when it opens; the visible entry stands in for it.
+      'autofocus',
     ]) {
       if (control.hasAttribute(name)) query.setAttribute(name, control.getAttribute(name));
       else query.removeAttribute(name);

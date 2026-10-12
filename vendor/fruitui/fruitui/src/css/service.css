@@ -318,6 +318,28 @@
   .f-token-field__entry:has(input:disabled) {
     opacity: 0.45;
   }
+  /* A read-only field shows its tokens only; its entry keeps the row height but takes no room. */
+  .f-token-field__entry input:read-only {
+    flex: 0 0 0;
+    min-width: 0;
+    padding-inline: 0;
+  }
+  /* A selected token (focused, to remove or copy) takes the accent, as selected text does. */
+  .f-token-field .f-chip {
+    cursor: default;
+  }
+  .f-token-field .f-chip:focus-within {
+    background: var(--f-accent-fill);
+    color: var(--f-on-accent);
+  }
+  .f-token-field .f-chip :focus-visible,
+  .f-token-field .f-chip:focus-visible {
+    outline: none;
+  }
+  .f-token-field .f-chip ::selection {
+    background: transparent;
+    color: inherit;
+  }
   .f-chip {
     display: inline-flex;
     align-items: center;
@@ -331,20 +353,24 @@
     overflow-wrap: anywhere;
   }
   .f-chip__remove {
+    --f-icon-size: 12px;
     display: inline-grid;
     place-items: center;
     flex-shrink: 0;
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
+    margin-inline-end: -3px;
     padding: 0;
     border: 0;
     border-radius: var(--f-radius-xs);
     background: transparent;
     color: inherit;
-    font-size: var(--f-text-xl);
+  }
+  .f-chip__remove .f-icon {
+    stroke-width: 2.25;
   }
   .f-chip__remove:hover {
-    background: var(--f-hover);
+    background: color-mix(in srgb, currentColor 16%, transparent);
   }
 
   .f-spinner {
@@ -711,7 +737,8 @@
     .f-alert {
       border: 1px solid ButtonText;
     }
-    .f-combobox__option[aria-selected='true'] {
+    .f-combobox__option[aria-selected='true'],
+    .f-token-field .f-chip:focus-within {
       background: Highlight;
       color: HighlightText;
     }

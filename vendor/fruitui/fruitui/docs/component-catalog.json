@@ -375,7 +375,7 @@
       "sidebar": {
         "purpose": "Contain application navigation links and groups.",
         "element": "`nav`, navigation role.",
-        "state": "Links own `aria-current=page`; groups own native open state.",
+        "state": "Links own `aria-current=page` (or `true`, for the section a deeper level is open under, as in a Drill-Down); groups own native open state.",
         "keyboard": "Native Tab and link activation.",
         "options": "Accessible label. `header` slot: workspace identity; `footer` slot: account identity, pinned to the bottom. Default slot: headings (`p.f-sidebar__heading`), Sidebar Items and Sidebar Groups."
       },
@@ -840,9 +840,9 @@
     "contracts": {
       "token-field": {
         "purpose": "Enter removable independent text values.",
-        "element": "Native textarea; enhanced textbox and chip remove buttons.",
-        "state": "Newline-delimited string in the textarea; native required/disabled/readonly.",
-        "keyboard": "Enter/comma/paste add; empty Backspace focuses removal; chip Left/Right and Escape. With suggestions: Up/Down choose, Enter or Tab adds the highlighted suggestion, Escape closes the list.",
+        "element": "Native textarea; enhanced textbox and tokens with remove buttons (read-only tokens without).",
+        "state": "Newline-delimited string in the textarea; native required/disabled/readonly. A token is selected while it has focus.",
+        "keyboard": "Enter/comma/paste add; empty Backspace or Left selects the last token; a click selects a token. On a selected token: Left/Right move, Delete/Backspace remove (editable), Ctrl/Cmd+C copies its value, Ctrl/Cmd+X cuts it, Escape or typing returns to entry. With suggestions: Up/Down choose, Enter or Tab adds the highlighted suggestion, Escape closes the list.",
         "options": "Native textarea attributes; initial string slot; cancellable fruit-token-add validation; fruit-token-reset clears pending entry. `submit`: text (default, the newline-delimited value under its name) or list (one hidden `name[]` input per token once enhanced; without JavaScript the text posts; Fruit::tokens() and the Tokens rule accept both). `options` slot: `<option value label>` suggestions, excluding tokens already added. Typing sends a bubbling `fruit-suggest` event with `detail.query`; `search`: local (default, matches the options by word prefix) or server (shows the options as the application supplies them in answer, refreshing while the field has focus)."
       }
     }
@@ -1343,7 +1343,7 @@
         "element": "`section` labelled by its `h2`–`h4` title, with a `div` of rows and an optional footer paragraph.",
         "state": "No state; rows own their values. Each child of the rows box is one row, separated by a hairline.",
         "keyboard": "Rows keep their controls' keyboard behavior; no added keyboard model.",
-        "options": "A `title` makes it a named region. `level`: 2 (default), 3, 4. `footer`: explanatory text, or a named slot. Slot: rows, such as `x-fruit::field layout=\"row\"`, Fieldsets of choices, `div.f-form-row` for actions and values, or `a.f-form-row.f-form-row--link` for a row that opens a sub-page (its label, the current value in `f-form-row__value`, and a chevron), as settings drill down. Without a `title` the group is unnamed, for a group of such rows under the fields above it. Put sections on `--f-grouped-background`; groups use `--f-grouped-surface`."
+        "options": "A `title` makes it a named region. `level`: 2 (default), 3, 4. `footer`: explanatory text, or a named slot. Slot: rows, such as `x-fruit::field layout=\"row\"`, Fieldsets of choices, `div.f-form-row` for actions and values, or `a.f-form-row.f-form-row--link` for a row that opens a sub-page (its label, the current value in `f-form-row__value`, which gives way first when the row is short of room, and a chevron), as settings drill down; `aria-current` (`page` or `true`) selects the row whose page is open beside it in a Drill-Down. Without a `title` the group is unnamed, for a group of such rows under the fields above it. Put sections on `--f-grouped-background`; groups use `--f-grouped-surface`."
       }
     }
   },
@@ -1431,6 +1431,29 @@
         "state": "No state.",
         "keyboard": "No keyboard behavior of its own.",
         "options": "`width`: narrow (640px, forms and settings), medium (default, 880px, reading and detail pages), wide (1200px, tables). `title`, `description`, `level` (1 to 3, default 1). Slots: default (content), `back` (a Back Link to the parent page, starting the title's row so the header keeps its height at every level, as settings drill down), `actions` (beside the title), `nav` (section tabs such as Section Navigation, under the header and spaced from the content by the page, however the content is wrapped), `footer` (a save bar: status first, actions last). The page ends with `--f-page-padding-block` of space below its last section, so the end reads as the end; a shown save bar takes that space instead (hide it with `hidden` when a page has nothing to save). Set `--f-page-background` to the background the page sits on, so the save bar covers what scrolls beneath it; `--f-page-gap`, `--f-page-padding-block` and `--f-page-padding-inline` adjust spacing."
+      }
+    }
+  },
+  {
+    "id": "drilldown",
+    "kind": "pattern",
+    "classes": ["f-drilldown"],
+    "blade": ["drilldown", "drilldown-column"],
+    "uses": ["settings.html", "examples/laravel/settings.blade.php"],
+    "contracts": {
+      "drilldown": {
+        "purpose": "Show levels side by side, each opened from a row of the level before, as settings drill down.",
+        "element": "`div.f-drilldown`, a size container; native container, optional group/region.",
+        "state": "No state: the application renders the open path's levels in order, and marks the row leading to each next level with `aria-current` (`page` for the deepest, `true` above it). CSS alone shows the deepest levels that fit, at any depth and through Livewire morphs: earlier levels are 18rem beside a deepest level of at least 24rem, up to six at once; a phone shows one. The deepest level takes the remaining width.",
+        "keyboard": "Children own keyboard behavior, in document order. After navigating, applications keep focus on the row that opened a level while it's in view, else move it to the new level's title; going back, to the row that leads where you were.",
+        "options": "Native attributes. Default slot: Drill-Down Columns; the first can be a Sidebar with the `f-drilldown__column` class. Inside a Workspace it fills the frame; dialogs and toasts go beside it."
+      },
+      "drilldown-column": {
+        "purpose": "Show one level of a Drill-Down: its title row and its own scrolling content.",
+        "element": "`section` labelled by its `h2` title (`tabindex=-1`, to take focus after navigation), with a `header` title row and a `div.f-pane__scroll` for the content.",
+        "state": "No state. Its Back Link shows only while the level before it is hidden.",
+        "keyboard": "No keyboard behavior of its own; the title takes focus from the application.",
+        "options": "`title` (required). `optional`: a level shown beside its parent only where there's room, such as the first page beside a list nothing is chosen from yet; a phone shows the parent instead. Slots: default (the content, such as a narrow Page of Form Sections, their titles at level 3), `back` (a Back Link to the level before), `actions` (beside the title). Native section attributes, such as `id` (the title's id is `{id}-title`, else from the title) and `wire:key`."
       }
     }
   },

@@ -2721,6 +2721,35 @@ a.f-menu-item {
     opacity: 0.45;
   }
 
+/* A read-only field shows its tokens only; its entry keeps the row height but takes no room. */
+
+.f-token-field__entry input:read-only {
+    flex: 0 0 0;
+    min-width: 0;
+    padding-inline: 0;
+  }
+
+/* A selected token (focused, to remove or copy) takes the accent, as selected text does. */
+
+.f-token-field .f-chip {
+    cursor: default;
+  }
+
+.f-token-field .f-chip:focus-within {
+    background: var(--f-accent-fill);
+    color: var(--f-on-accent);
+  }
+
+.f-token-field .f-chip :focus-visible,
+  .f-token-field .f-chip:focus-visible {
+    outline: none;
+  }
+
+.f-token-field .f-chip ::selection {
+    background: transparent;
+    color: inherit;
+  }
+
 .f-chip {
     display: inline-flex;
     align-items: center;
@@ -2735,21 +2764,26 @@ a.f-menu-item {
   }
 
 .f-chip__remove {
+    --f-icon-size: 12px;
     display: inline-grid;
     place-items: center;
     flex-shrink: 0;
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
+    margin-inline-end: -3px;
     padding: 0;
     border: 0;
     border-radius: var(--f-radius-xs);
     background: transparent;
     color: inherit;
-    font-size: var(--f-text-xl);
+  }
+
+.f-chip__remove .f-icon {
+    stroke-width: 2.25;
   }
 
 .f-chip__remove:hover {
-    background: var(--f-hover);
+    background: color-mix(in srgb, currentColor 16%, transparent);
   }
 
 .f-spinner {
@@ -3177,7 +3211,8 @@ img.f-avatar {
     .f-alert {
       border: 1px solid ButtonText;
     }
-    .f-combobox__option[aria-selected='true'] {
+    .f-combobox__option[aria-selected='true'],
+    .f-token-field .f-chip:focus-within {
       background: Highlight;
       color: HighlightText;
     }
@@ -3858,8 +3893,11 @@ textarea.f-composer__input,
     font-size: var(--f-text-sm);
   }
 
+/* Hover shades the card's own surface, so its detail text keeps its contrast over any background,
+     such as a hovered message. */
+
 .f-attachment:hover {
-    background: var(--f-hover);
+    background-image: linear-gradient(var(--f-hover), var(--f-hover));
   }
 
 .f-attachment__body {
@@ -3902,7 +3940,7 @@ textarea.f-composer__input,
   }
 
 .f-attachment__frame:hover {
-    background: var(--f-hover);
+    background-image: linear-gradient(var(--f-hover), var(--f-hover));
   }
 
 .f-attachment__actions {
@@ -5306,7 +5344,10 @@ textarea.f-composer__input,
     flex: 1 1 auto;
   }
 
+/* Where the row is short of room, the value gives way before the label. */
+
 .f-form-row__value {
+    flex-shrink: 100;
     min-width: 0;
     margin-inline-start: auto;
     overflow: hidden;
@@ -5336,6 +5377,28 @@ textarea.f-composer__input,
     background: var(--f-hover);
   }
 
+/* The row whose page is open beside it (aria-current): selected, and in the accent while its
+     Drill-Down level has focus, as the sidebar's current item. */
+
+.f-form-row--link:is([aria-current='page'], [aria-current='true']) {
+    background: var(--f-selection-inactive);
+  }
+
+.f-drilldown__column:focus-within .f-form-row--link:is([aria-current='page'], [aria-current='true']) {
+    background: var(--f-accent-fill);
+    color: var(--f-on-accent);
+  }
+
+.f-drilldown__column:focus-within
+    .f-form-row--link:is([aria-current='page'], [aria-current='true'])
+    :is(.f-form-row__value, .f-help, .f-icon) {
+    color: inherit;
+  }
+
+.f-drilldown__column:focus-within .f-form-row--link:is([aria-current='page'], [aria-current='true'])::after {
+    background: currentColor;
+  }
+
 .f-form-row--link:focus-visible {
     outline-offset: calc(var(--f-focus-ring-width) * -1);
   }
@@ -5355,6 +5418,10 @@ textarea.f-composer__input,
 @media (forced-colors: active) {
     .f-form-row--link::after {
       background: CanvasText;
+    }
+    .f-form-row--link:is([aria-current='page'], [aria-current='true']) {
+      outline: 1px solid Highlight;
+      outline-offset: -1px;
     }
   }
 

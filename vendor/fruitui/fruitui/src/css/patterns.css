@@ -338,8 +338,10 @@
     text-decoration: none;
     font-size: var(--f-text-sm);
   }
+  /* Hover shades the card's own surface, so its detail text keeps its contrast over any background,
+     such as a hovered message. */
   .f-attachment:hover {
-    background: var(--f-hover);
+    background-image: linear-gradient(var(--f-hover), var(--f-hover));
   }
   .f-attachment__body {
     min-width: 0;
@@ -375,7 +377,7 @@
     background: transparent;
   }
   .f-attachment__frame:hover {
-    background: var(--f-hover);
+    background-image: linear-gradient(var(--f-hover), var(--f-hover));
   }
   .f-attachment__actions {
     display: flex;
@@ -1551,7 +1553,9 @@
   .f-form-row--link > :first-child:not(:only-child) {
     flex: 1 1 auto;
   }
+  /* Where the row is short of room, the value gives way before the label. */
   .f-form-row__value {
+    flex-shrink: 100;
     min-width: 0;
     margin-inline-start: auto;
     overflow: hidden;
@@ -1577,6 +1581,23 @@
   .f-form-row--link:hover {
     background: var(--f-hover);
   }
+  /* The row whose page is open beside it (aria-current): selected, and in the accent while its
+     Drill-Down level has focus, as the sidebar's current item. */
+  .f-form-row--link:is([aria-current='page'], [aria-current='true']) {
+    background: var(--f-selection-inactive);
+  }
+  .f-drilldown__column:focus-within .f-form-row--link:is([aria-current='page'], [aria-current='true']) {
+    background: var(--f-accent-fill);
+    color: var(--f-on-accent);
+  }
+  .f-drilldown__column:focus-within
+    .f-form-row--link:is([aria-current='page'], [aria-current='true'])
+    :is(.f-form-row__value, .f-help, .f-icon) {
+    color: inherit;
+  }
+  .f-drilldown__column:focus-within .f-form-row--link:is([aria-current='page'], [aria-current='true'])::after {
+    background: currentColor;
+  }
   .f-form-row--link:focus-visible {
     outline-offset: calc(var(--f-focus-ring-width) * -1);
   }
@@ -1592,6 +1613,10 @@
   @media (forced-colors: active) {
     .f-form-row--link::after {
       background: CanvasText;
+    }
+    .f-form-row--link:is([aria-current='page'], [aria-current='true']) {
+      outline: 1px solid Highlight;
+      outline-offset: -1px;
     }
   }
   /* Narrow sections stack text-like rows; switches and checkboxes stay at the trailing edge. */

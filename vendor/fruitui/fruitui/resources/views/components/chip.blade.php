@@ -1,2 +1,2 @@
 @php(\FruitUI\Support\ComponentContract::validate('chip', $attributes))
-<span {{ $attributes->class(['f-chip']) }}><span>{{ $slot }}</span>@isset($remove)<button type="button" {{ $remove->attributes->except(['type', 'aria-label'])->class(['f-chip__remove']) }} aria-label="{{ trim(strip_tags($remove)) }}">×</button>@endisset</span>
+<span {{ $attributes->class(['f-chip']) }}><span>{{ $slot }}</span>@isset($remove)<button type="button" {{ $remove->attributes->except(['type', 'aria-label'])->class(['f-chip__remove']) }} aria-label="{{ trim(strip_tags($remove)) }}"><svg class="f-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>@endisset</span>

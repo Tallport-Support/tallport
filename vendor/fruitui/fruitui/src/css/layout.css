@@ -158,18 +158,18 @@
   .f-sidebar__item[data-fruit-mark] > .f-icon:not(.f-sidebar__chevron) {
     color: var(--f-mark);
   }
-  .f-sidebar__item:is([aria-current='page'], [data-current]) {
+  .f-sidebar__item:is([aria-current='page'], [aria-current='true'], [data-current]) {
     background: var(--f-selection-inactive);
     color: var(--f-text);
   }
-  .f-sidebar:focus-within .f-sidebar__item:is([aria-current='page'], [data-current]) {
+  .f-sidebar:focus-within .f-sidebar__item:is([aria-current='page'], [aria-current='true'], [data-current]) {
     background: var(--f-accent-fill);
     color: var(--f-on-accent);
   }
-  .f-sidebar:focus-within .f-sidebar__item:is([aria-current='page'], [data-current]) > .f-icon {
+  .f-sidebar:focus-within .f-sidebar__item:is([aria-current='page'], [aria-current='true'], [data-current]) > .f-icon {
     color: var(--f-on-accent);
   }
-  .f-sidebar__item:is([aria-current='page'], [data-current]) > .f-badge {
+  .f-sidebar__item:is([aria-current='page'], [aria-current='true'], [data-current]) > .f-badge {
     color: inherit;
     background: transparent;
   }
@@ -244,7 +244,7 @@
     }
   }
   @media (forced-colors: active) {
-    .f-sidebar__item:is([aria-current='page'], [data-current]) {
+    .f-sidebar__item:is([aria-current='page'], [aria-current='true'], [data-current]) {
       outline: 1px solid Highlight;
     }
   }

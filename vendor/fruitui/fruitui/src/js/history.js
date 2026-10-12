@@ -16,10 +16,12 @@ export function fruitHistory({ threshold = 160 } = {}) {
     awayFromLatest: false,
     init() {
       scroller = this.$el;
-      stick = () => {
+      stick = ({ mutated = false } = {}) => {
         if (preserving) return;
-        // A scroll not seen yet (scrollIntoView, then growth in the same frame) decides first.
-        if (scroller.scrollTop !== top) following = distance() < 24;
+        // A scroll not seen yet (scrollIntoView, then growth in the same frame) decides first. Right
+        // after the content changes, though, the change itself can have moved the position (removed
+        // content clamps it; WebKit drops it to the top as a list re-renders), and no reader scrolled.
+        if (scroller.scrollTop !== top && !mutated) following = distance() < 24;
         if (following) scroller.scrollTop = scroller.scrollHeight;
         top = scroller.scrollTop;
       };
@@ -31,15 +33,16 @@ export function fruitHistory({ threshold = 160 } = {}) {
         top = scroller.scrollTop;
       };
       submit = () => this.jumpToLatest({ smooth: false });
-      resize = new ResizeObserver(stick);
+      resize = new ResizeObserver(() => stick());
       resize.observe(scroller);
       for (const child of scroller.children) resize.observe(child);
       mutation = new MutationObserver(records => {
         for (const record of records)
-          for (const node of record.addedNodes) if (node.nodeType === 1) resize.observe(node);
-        stick();
+          if (record.target === scroller)
+            for (const node of record.addedNodes) if (node.nodeType === 1) resize.observe(node);
+        stick({ mutated: true });
       });
-      mutation.observe(scroller, { childList: true });
+      mutation.observe(scroller, { childList: true, subtree: true });
       scroller.addEventListener('scroll', track, { passive: true });
       pane = scroller.parentElement?.closest('.f-pane') ?? scroller.parentElement;
       pane?.addEventListener('submit', submit);

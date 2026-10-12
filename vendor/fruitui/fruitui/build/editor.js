@@ -14305,7 +14305,8 @@ function U_(e, t, n, r, { presentation: i = n, focusRoot: a = n } = {}) {
 			"title",
 			"spellcheck",
 			"inputmode",
-			"autocapitalize"
+			"autocapitalize",
+			"autofocus"
 		]) t.hasAttribute(e) ? n.setAttribute(e, t.getAttribute(e)) : n.removeAttribute(e);
 		!n.hasAttribute("aria-label") && !n.hasAttribute("aria-labelledby") && a.length && n.setAttribute("aria-labelledby", a.map((e) => e.id).join(" ")), n.setAttribute("aria-required", String(t.required)), n.tabIndex = t.matches(":disabled") ? -1 : t.tabIndex, "disabled" in n && (n.disabled = t.matches(":disabled")), "readOnly" in n && (n.readOnly = t.readOnly || !1), i.className = [...new Set(`${l} ${t.className.split(/\s+/).filter((e) => e !== "f-input" || i === n).join(" ")}`.split(/\s+/).filter(Boolean))].join(" ");
 		let o = t.getAttribute("style") || u;

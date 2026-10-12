@@ -58,6 +58,8 @@ final class ComponentContract
         'page' => ['options' => ['width' => ['narrow', 'medium', 'wide']]],
         'accent-picker' => ['roles' => ['radiogroup']],
         'disclosure' => ['roles' => ['group']],
+        'drilldown' => ['roles' => ['group', 'region']],
+        'drilldown-column' => ['roles' => ['region']],
         'editor' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract', 'options' => ['paste' => ['rich', 'plain'], 'layout' => ['stacked', 'inline'], 'enter' => ['newline', 'submit']]],
         'empty-state' => ['roles' => ['group', 'region']],
         'field' => ['roles' => ['group']],
@@ -557,6 +559,26 @@ final class ComponentContract
         }
 
         return [(int) $level, ($attributes->get('id') ?? 'f-section-'.Str::slug($text)).'-title'];
+    }
+
+    /**
+     * A Drill-Down level is named by its title, so it needs one. The title's id follows the level's
+     * own id when it has one, and is rendered by the server, so a Livewire morph keeps the label.
+     *
+     * @return string The title's id
+     */
+    public static function drilldownColumn(mixed $title, mixed $optional, ComponentAttributeBag $attributes): string
+    {
+        self::validate('drilldown-column', $attributes);
+        if (! is_bool($optional)) {
+            throw new InvalidArgumentException('FruitUI drilldown-column optional must be a boolean.');
+        }
+        $text = trim(strip_tags($title instanceof Htmlable ? $title->toHtml() : (string) $title));
+        if ($text === '') {
+            throw new InvalidArgumentException('FruitUI drilldown-column requires a title that names its level.');
+        }
+
+        return ($attributes->get('id') ?? 'f-level-'.Str::slug($text)).'-title';
     }
 
     public static function wrapper(mixed $attributes): ComponentAttributeBag
