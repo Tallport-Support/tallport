@@ -1,8 +1,8 @@
-<form class="settings-form" method="POST" action="" id="ai_settings_form">
+<form class="settings-form" method="POST" action="" id="ai_settings_form" x-on:change="Tallport.autoSave($el)">
     {{ csrf_field() }}
 
     {{-- The providers set up (App\Ai\Settings::providers()); a new one added with Add Provider. --}}
-    <x-fruit::form-section :title="__('Providers')" :footer="__('API keys: leave the masked value unchanged to keep the current key. Some local providers do not require a key.')">
+    <x-fruit::form-section :title="__('Providers')" :level="3" :footer="__('API keys: leave the masked value unchanged to keep the current key. Some local providers do not require a key.')">
         @foreach ($ai_providers as $provider_id => $ai_provider)
             <x-fruit::disclosure class="ai-provider-block" :title="App\Ai\Providers::label($ai_provider)">
                 @include('settings/partials/ai_provider', ['field' => 'settings[aiassistant.providers]['.$provider_id.']', 'ai_provider' => $ai_provider])
@@ -20,7 +20,7 @@
     </x-fruit::form-section>
 
     {{-- Each feature's model: the primary, and a backup tried when the primary fails. --}}
-    <x-fruit::form-section :title="__('Models')" :footer="__('When the primary model fails (unreachable, out of credit, a wrong key or model), the backup is used.')">
+    <x-fruit::form-section :title="__('Models')" :level="3" :footer="__('When the primary model fails (unreachable, out of credit, a wrong key or model), the backup is used.')">
         <div>
             <x-fruit::table class="ai-models">
                 <thead>
@@ -61,7 +61,7 @@
         </div>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Documentation')">
+    <x-fruit::form-section :title="__('Documentation')" :level="3">
         <div class="f-form-row">
             <a class="f-button" href="{{ route('ai.documents') }}">{{ __('Manage Documentation') }}</a>
         </div>
@@ -106,7 +106,7 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Conversations')">
+    <x-fruit::form-section :title="__('Conversations')" :level="3">
         <x-fruit::field :label="__('Language')" :description="__('Summaries and translations are in this language, unless a mailbox or user has its own.')" layout="row">
             <x-fruit::select name="settings[aiassistant.translation_language]" id="ai_language">
                 @foreach ($ai_languages as $code => $name)
@@ -134,7 +134,7 @@
 
     {{-- Each mailbox's language, features, chat translation and customer context are on its own page. --}}
     @if (count($ai_mailboxes))
-        <x-fruit::form-section :title="__('Mailboxes')" :footer="__('Each mailbox\'s language, features, chat translation and customer context are on its own page, under Mailboxes.')">
+        <x-fruit::form-section :title="__('Mailboxes')" :level="3" :footer="__('Each mailbox\'s language, features, chat translation and customer context are on its own page, under Mailboxes.')">
             @foreach ($ai_mailboxes as $ai_mailbox)
                 <a wire:navigate href="{{ route('mailboxes.ai', ['id' => $ai_mailbox->id]) }}" class="f-form-row f-form-row--link">
                     <span class="mailbox-row__main">
@@ -148,7 +148,3 @@
     @endif
 
 </form>
-
-@section('page_footer')
-    <x-fruit::button type="submit" form="ai_settings_form" variant="primary">{{ __('Save') }}</x-fruit::button>
-@endsection

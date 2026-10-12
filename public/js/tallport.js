@@ -108,7 +108,29 @@ window.Tallport = (function () {
 		return window.FruitUI.confirm({title: options.message, confirm: options.confirm, tone: options.tone});
 	}
 
-	return {csrf: csrf, post: post, isSuccess: isSuccess, toast: toast, result: result, busy: busy, confirm: confirm};
+	/**
+	 * A settings form saved as it changes, with no Save button: the whole form, posted to its
+	 * action once the changes settle, so what modules add to it is saved too. A file is sent once.
+	 * The response may ask for a reload, for a change the whole page shows (the language).
+	 */
+	function autoSave(form) {
+		clearTimeout(form.tallportAutoSave);
+		form.tallportAutoSave = setTimeout(function () {
+			post(form.action || window.location.href, new FormData(form)).then(function (response) {
+				if (!isSuccess(response)) {
+					result(response);
+				} else if (response.reload) {
+					window.location.reload();
+				} else {
+					form.querySelectorAll('input[type="file"]').forEach(function (input) {
+						input.value = '';
+					});
+				}
+			});
+		}, 300);
+	}
+
+	return {csrf: csrf, post: post, isSuccess: isSuccess, toast: toast, result: result, busy: busy, confirm: confirm, autoSave: autoSave};
 })();
 
 document.addEventListener('fruit-dialog-error', function (event) {

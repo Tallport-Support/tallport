@@ -124,6 +124,40 @@ class SettingsControllerTest extends FeatureTestCase
         $this->assertSame('openai', Option::get('aiassistant.documentation.embedding_provider'));
     }
 
+    /**
+     * Saved as they change (Tallport.autoSave()), in the background: the section as a level beside
+     * the sidebar, no Save button; what's wrong is answered, and nothing is saved then.
+     */
+    public function testSavedAsTheyChange()
+    {
+        $this->actingAs($this->admin)->get(route('settings', ['section' => 'general']))->assertOk()
+            ->assertSee('f-drilldown', false)->assertSee('>General</h2>', false)->assertSee('Tallport.autoSave($el)', false)
+            ->assertDontSee('form="page-form"', false);
+
+        \Session::start();
+        $this->postAjax($this->admin, '/app-settings/general', ['settings' => ['company_name' => 'Saved Inc.', 'timezone' => 'UTC', 'locale' => 'en']])
+            ->assertOk()->assertJson(['status' => 'success', 'reload' => false]);
+        Option::$cache = [];
+        $this->assertSame('Saved Inc.', Option::get('company_name'));
+        $this->assertNull(session('flash_success_floating'), 'Nothing to show on the next page.');
+
+        $this->postAjax($this->admin, '/app-settings/ai', ['settings' => ['aiassistant.drafts_per_day' => 'many']])
+            ->assertStatus(422)->assertJsonPath('status', 'error');
+
+        // A provider added: the page reloads, so the form's new provider isn't sent again.
+        $this->postAjax($this->admin, '/app-settings/ai', ['settings' => ['aiassistant.providers' => [
+            'p1' => ['provider' => 'openai', 'api_key' => 'sk-one'], 'new' => ['provider' => 'anthropic', 'api_key' => 'sk-two'],
+        ]]])->assertJson(['status' => 'success', 'reload' => true]);
+        Option::$cache = [];
+        $this->postAjax($this->admin, '/app-settings/ai', ['settings' => ['aiassistant.providers' => [
+            'p1' => ['provider' => 'openai', 'api_key' => '******'], 'p2' => ['provider' => 'anthropic', 'api_key' => '******'],
+        ]]])->assertJson(['status' => 'success', 'reload' => false]);
+
+        // Retention keeps its Save button: what it deletes is shown before it's saved.
+        $this->actingAs($this->admin)->get(route('settings', ['section' => 'retention']))->assertOk()
+            ->assertSee('form="page-form"', false)->assertDontSee('Tallport.autoSave', false);
+    }
+
     public function testChangingEmbeddingSettingsQueuesExistingDocumentsAgain()
     {
         Option::set('aiassistant.api_key', encrypt('sk-test'));

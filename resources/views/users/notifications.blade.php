@@ -20,7 +20,7 @@
             <x-slot:back><x-fruit::back-link :href="route('users.profile', ['id' => $user->id])" wire:navigate>{{ $user->getFullName() }}</x-fruit::back-link></x-slot:back>
         @endif
         <x-fruit::page width="medium">
-            <form method="POST" action="{{ route('users.notifications.save', ['id' => $user->id]) }}" class="user-subscriptions" x-data="tallportAutoSave" x-on:change="save()">
+            <form method="POST" action="{{ route('users.notifications.save', ['id' => $user->id]) }}" class="user-subscriptions" x-on:change="Tallport.autoSave($el)">
                 {{ csrf_field() }}
                 <div class="f-table__scroll">
                     @include('users/subscriptions_table')

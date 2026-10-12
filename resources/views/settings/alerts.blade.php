@@ -3,10 +3,10 @@
     $alert_logs = (bool) old('settings.alert_logs', $settings['alert_logs']);
     $alert_logs_names = old('settings.alert_logs_names', $settings['alert_logs_names']);
 @endphp
-<form id="page-form" class="settings-form" method="POST" action="" x-data="{ alertFetch: @js($alert_fetch), alertLogs: @js($alert_logs) }">
+<form id="page-form" class="settings-form" method="POST" action="" x-data="{ alertFetch: @js($alert_fetch), alertLogs: @js($alert_logs) }" x-on:change="Tallport.autoSave($el)">
     {{ csrf_field() }}
 
-    <x-fruit::form-section :title="__('Email Alerts For Administrators')">
+    <x-fruit::form-section :title="__('Email Alerts For Administrators')" :level="3">
         <x-fruit::field :label="__('Fetching Problems')" :description="__('Send alert if application could not fetch emails for a period of time.')" layout="row">
             <x-fruit::switch name="settings[alert_fetch]" value="1" :checked="$alert_fetch" x-model="alertFetch" />
         </x-fruit::field>
@@ -43,14 +43,10 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Default Subscriptions For New Users')">
+    <x-fruit::form-section :title="__('Default Subscriptions For New Users')" :level="3">
         <div>
             @include('users/subscriptions_table', ['subscriptions_formname' => 'settings[subscription_defaults]'])
         </div>
     </x-fruit::form-section>
 
 </form>
-
-@section('page_footer')
-    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
-@endsection

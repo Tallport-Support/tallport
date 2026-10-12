@@ -64,30 +64,6 @@ document.addEventListener('alpine:init', function () {
 	 * checkbox, and on the user's own profile, the browser's permission for
 	 * push notifications.
 	 */
-	/**
-	 * A settings form saved as it changes (no Save button): the whole form, posted to its
-	 * action once the changes settle, so what modules add to it is saved too.
-	 */
-	window.Alpine.data('tallportAutoSave', function () {
-		var timer;
-		return {
-			save: function () {
-				var form = this.$el;
-				clearTimeout(timer);
-				timer = setTimeout(function () {
-					Tallport.post(form.action, new FormData(form)).then(function (response) {
-						if (!Tallport.isSuccess(response)) {
-							Tallport.result(response);
-						} else if (response.reload) {
-							// A change the whole page shows, such as the language.
-							window.location.reload();
-						}
-					});
-				}, 300);
-			}
-		};
-	});
-
 	window.Alpine.data('tallportSubscriptions', function () {
 		return {
 			init: function () {
@@ -127,7 +103,7 @@ document.addEventListener('alpine:init', function () {
 					Push.Permission.request(function () {}, function () {
 						self.$dispatch('fruit-dialog-open', {name: 'enable-push'});
 						checkbox.checked = false;
-						// Saved as it changes (tallportAutoSave): not subscribed after all.
+						// Saved as it changes (Tallport.autoSave()): not subscribed after all.
 						checkbox.dispatchEvent(new Event('change', {bubbles: true}));
 					});
 				}

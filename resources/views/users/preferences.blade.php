@@ -8,7 +8,7 @@
 @section('drilldown')
 <x-fruit::drilldown-column :title="__('Preferences')" id="user-preferences">
     <x-fruit::page width="narrow">
-        <form class="settings-form" method="POST" action="{{ route('users.preferences.save', ['id' => $user->id]) }}" x-data="tallportAutoSave" x-on:change="save()">
+        <form class="settings-form" method="POST" action="{{ route('users.preferences.save', ['id' => $user->id]) }}" x-on:change="Tallport.autoSave($el)">
             {{ csrf_field() }}
 
             <x-fruit::form-section :title="__('General')" :level="3">

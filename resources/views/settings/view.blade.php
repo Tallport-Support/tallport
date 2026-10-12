@@ -1,22 +1,19 @@
 @extends('layouts.app')
 
+@section('title', $section_name)
+
 @section('title_full', __('Settings').' - '.$section_name)
 
-@section('page_width', $section == 'api' ? 'medium' : 'narrow')
-
-@section('sidebar')
-    {{-- The sections are in the app's sidebar (partials/app_sidebar_settings). --}}
-    <x-page-nav :label="__('Settings')">
-        <x-slot:title><h1>{{ $section_name }}</h1></x-slot:title>
-    </x-page-nav>
-@endsection
-
-{{-- Converted to FruitUI: the whole main area is in its scope. --}}
-@section('main_class', 'fruit-ui')
-
-@section('content')
-    <div class="fruit-ui page-content">
-        @include('partials/flash_messages')
-        @include(\Eventy::filter('settings.view', 'settings/'.$section, $section))
-    </div>
+{{-- A settings section as a level beside the sidebar (layouts/app). Tallport's sections save as they
+     change; a section with a Save button of its own (a module's, or Retention's) keeps it, at the end. --}}
+@section('drilldown')
+    <x-fruit::drilldown-column :title="$section_name" :id="'settings-'.$section">
+        <x-fruit::page :width="$section == 'api' ? 'medium' : 'narrow'">
+            @include('partials/flash_messages')
+            @include(\Eventy::filter('settings.view', 'settings/'.$section, $section))
+            @hasSection('page_footer')
+                <div class="f-row settings-form__actions">@yield('page_footer')</div>
+            @endif
+        </x-fruit::page>
+    </x-fruit::drilldown-column>
 @endsection

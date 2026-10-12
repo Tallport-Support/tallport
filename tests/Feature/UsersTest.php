@@ -498,7 +498,7 @@ class UsersTest extends FeatureTestCase
         ])->json('status'));
         $this->assertSame([Subscription::MEDIUM_BROWSER], Subscription::where('user_id', $agent->id)->pluck('medium')->all());
         $this->actingAs($agent)->get('/users/notifications/'.$agent->id)->assertOk()
-            ->assertSee('x-data="tallportAutoSave"', false)->assertDontSee('Save Notifications')->assertDontSee('>Users</h2>', false);
+            ->assertSee('Tallport.autoSave($el)', false)->assertDontSee('Save Notifications')->assertDontSee('>Users</h2>', false);
 
         // Someone else's: Users, the person, then Notifications.
         $this->actingAs($this->admin)->get('/users/notifications/'.$agent->id)->assertOk()

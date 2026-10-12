@@ -4,10 +4,10 @@
     $custom_number = old('settings.custom_number', $settings['custom_number'] ? 'true' : 'false') === 'true';
     $customer_photos = old('settings.customer_photos', $settings['customer_photos']);
 @endphp
-<form id="page-form" class="settings-form" method="POST" action="" x-data="{ customNumber: @js($custom_number), customerPhotos: @js($customer_photos) }">
+<form id="page-form" class="settings-form" method="POST" action="" x-data="{ customNumber: @js($custom_number), customerPhotos: @js($customer_photos) }" x-on:change="Tallport.autoSave($el)">
     {{ csrf_field() }}
 
-    <x-fruit::form-section :title="__('General')">
+    <x-fruit::form-section :title="__('General')" :level="3">
         <x-fruit::field :label="__('Company Name')" layout="row">
             <x-fruit::input name="settings[company_name]" :value="old('settings.company_name', $settings['company_name'])" maxlength="60" required autofocus />
         </x-fruit::field>
@@ -31,7 +31,7 @@
         </x-fruit::fieldset>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Conversations')">
+    <x-fruit::form-section :title="__('Conversations')" :level="3">
         <x-fruit::fieldset :disabled="$locked('custom_number')">
             <legend>{{ __('Conversation Number') }}</legend>
             <x-fruit::radio name="settings[custom_number]" value="false" :checked="!$custom_number" x-on:change="customNumber = false">{{ __('Equal to conversation ID') }}</x-fruit::radio>
@@ -46,13 +46,13 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('User Permissions')" :footer="$locked_note('user_permissions')">
+    <x-fruit::form-section :title="__('User Permissions')" :level="3" :footer="$locked_note('user_permissions')">
         @foreach (App\User::getUserPermissionsList() as $permission_id)
             <x-fruit::checkbox name="settings[user_permissions][]" :value="$permission_id" :disabled="$locked('user_permissions')" :checked="in_array($permission_id, old('settings.user_permissions', $settings['user_permissions']))">{{ App\User::getUserPermissionName($permission_id) }}</x-fruit::checkbox>
         @endforeach
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Emails to Customers')">
+    <x-fruit::form-section :title="__('Emails to Customers')" :level="3">
         <x-fruit::field :label="__('Conversation History')" :description="$locked_note('email_conv_history')" layout="row">
             <x-fruit::select name="settings[email_conv_history]" required :disabled="$locked('email_conv_history')">
                 @foreach (['none' => __('Do not include previous messages'), 'last' => __('Include the last message'), 'full' => __('Send full conversation history')] as $history => $history_name)
@@ -94,7 +94,7 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Notification Emails to Users')">
+    <x-fruit::form-section :title="__('Notification Emails to Users')" :level="3">
         <x-fruit::field :label="__('Conversation History')" :description="$locked_note('email_user_history')" layout="row">
             <x-fruit::select name="settings[email_user_history]" required :disabled="$locked('email_user_history')">
                 @foreach (['none' => __('Do not include previous messages'), 'last' => __('Include the last message'), 'full' => __('Send full conversation history')] as $history => $history_name)
@@ -104,7 +104,7 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Attachment Reminder')" :footer="__('When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.')">
+    <x-fruit::form-section :title="__('Attachment Reminder')" :level="3" :footer="__('When a reply contains one of these (one per line) but has no attachment, Tallport asks before sending. Empty: never.')">
         <x-fruit::field :label="__('Words')">
             <x-fruit::textarea name="settings[attachment_reminder_phrases]" rows="4">{{ old('settings.attachment_reminder_phrases', $settings['attachment_reminder_phrases']) }}</x-fruit::textarea>
         </x-fruit::field>
@@ -113,7 +113,3 @@
     @action('settings.general.append', $settings, $errors)
 
 </form>
-
-@section('page_footer')
-    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
-@endsection

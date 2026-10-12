@@ -13,7 +13,7 @@
 <form id="page-form" class="settings-form" method="POST" action="" x-data x-on:change="Livewire.dispatch('retention-settings-changed', {settings: Object.fromEntries(new FormData($el))})">
     {{ csrf_field() }}
 
-    <x-fruit::form-section :title="__('Retention')" :footer="__('Deleted conversations stay in backups until those are replaced.')">
+    <x-fruit::form-section :title="__('Retention')" :level="3" :footer="__('Deleted conversations stay in backups until those are replaced.')">
         <x-fruit::field :label="__('Delete Old Conversations and Customers')" layout="row">
             <x-fruit::switch name="settings[retention_enabled]" value="1" :checked="(bool) old('settings.retention_enabled', $settings['retention_enabled'])" />
             <x-slot:description>{{ __('Off: only logs are cleaned up. On: every night, what the periods below no longer keep is deleted.') }}</x-slot:description>
@@ -22,7 +22,7 @@
         <livewire:retention-preview />
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Conversations')" :footer="__('A customer who writes again gets their expired conversations back, and all their conversations are kept longer. A conversation or customer on legal hold is never deleted.')">
+    <x-fruit::form-section :title="__('Conversations')" :level="3" :footer="__('A customer who writes again gets their expired conversations back, and all their conversations are kept longer. A conversation or customer on legal hold is never deleted.')">
         <x-fruit::field :label="__('Keep Closed Conversations For')" :description="__('After their last message, or the customer\'s last message in any conversation, whichever is later. Active and Pending conversations are kept.')" layout="row">
             <x-fruit::select name="settings[retention_keep_months]">{!! $retention_choice('retention_keep_months') !!}</x-fruit::select>
         </x-fruit::field>
@@ -34,7 +34,7 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Deleted and Spam')">
+    <x-fruit::form-section :title="__('Deleted and Spam')" :level="3">
         <x-fruit::field :label="__('Empty Deleted Folder After')" :description="__('Conversations agents deleted.')" layout="row">
             <x-fruit::select name="settings[retention_trash_days]">{!! $retention_choice('retention_trash_days') !!}</x-fruit::select>
         </x-fruit::field>
@@ -43,19 +43,19 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Customers')">
+    <x-fruit::form-section :title="__('Customers')" :level="3">
         <x-fruit::field :label="__('Delete Customers Without Conversations After')" :description="__('Counted from their last message. Writing again makes them a customer anew.')" layout="row">
             <x-fruit::select name="settings[retention_customer_months]">{!! $retention_choice('retention_customer_months') !!}</x-fruit::select>
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Team Chat')">
+    <x-fruit::form-section :title="__('Team Chat')" :level="3">
         <x-fruit::field :label="__('Delete Team Chat Messages After')" :description="__('Messages and their files, counted from when they were sent.')" layout="row">
             <x-fruit::select name="settings[retention_team_chat_months]">{!! $retention_choice('retention_team_chat_months') !!}</x-fruit::select>
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Logs')" :footer="__('Logs are cleaned up even when retention is off.')">
+    <x-fruit::form-section :title="__('Logs')" :level="3" :footer="__('Logs are cleaned up even when retention is off.')">
         <x-fruit::field :label="__('Outgoing Emails')" :description="__('Also used for the Outgoing Telegram log.')" layout="row">
             <x-fruit::select name="settings[retention_send_log_months]">{!! $retention_choice('retention_send_log_months') !!}</x-fruit::select>
         </x-fruit::field>

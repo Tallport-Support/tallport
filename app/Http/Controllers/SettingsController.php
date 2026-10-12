@@ -364,16 +364,33 @@ class SettingsController extends Controller
         }
 
         if ($section == 'ai') {
+            $providers = array_column(\App\Ai\Settings::providers(), 'id');
             $this->normalizeAiSettings(request());
         }
         if ($section == 'branding') {
             $error = $this->prepareBrandingSettings(request());
             if ($error) {
+                if (request()->ajax()) {
+                    return response()->json(['status' => 'error', 'msg' => collect($error)->flatten()->first()], 422);
+                }
+
                 return redirect()->route('settings', ['section' => $section])->withErrors($error)->withInput();
             }
         }
 
-        return $this->processSave($section, array_keys($settings));
+        $response = $this->processSave($section, array_keys($settings));
+
+        // Saved as it changes: a provider added or removed shows on a reload (the form's new
+        // provider would otherwise be sent, and added, again).
+        if ($section == 'ai' && request()->ajax() && $response instanceof \Illuminate\Http\JsonResponse
+            && $response->getData(true)['status'] == 'success') {
+            \Option::$cache = [];
+            if ($providers != array_column(\App\Ai\Settings::providers(), 'id')) {
+                $response->setData(['status' => 'success', 'reload' => true]);
+            }
+        }
+
+        return $response;
     }
 
     /**
@@ -509,6 +526,11 @@ class SettingsController extends Controller
         $validator = $this->getValidator($section);
 
         if ($validator && $validator->fails()) {
+            // Saved as it changes (Tallport.autoSave()): what's wrong, nothing saved.
+            if (request()->ajax()) {
+                return response()->json(['status' => 'error', 'msg' => $validator->errors()->first(), 'errors' => $validator->errors()], 422);
+            }
+
             return redirect()->route('settings', ['section' => $section])
                         ->withErrors($validator)
                         ->withInput();
@@ -615,11 +637,18 @@ class SettingsController extends Controller
         }
 
         // \Helper::clearCache prevents \Session::flash() from displaying.
-        $request->session()->flash('flash_success_floating', __('Settings updated'));
+        if (!$request->ajax()) {
+            $request->session()->flash('flash_success_floating', __('Settings updated'));
+        }
 
         $response = redirect()->route('settings', ['section' => $section]);
 
         $response = \Eventy::filter('settings.after_save', $response, $request, $section, $settings);
+
+        // Saved as it changes (Tallport.autoSave()); the page shows the branding, so it reloads.
+        if ($request->ajax()) {
+            return response()->json(['status' => 'success', 'reload' => $section == 'branding']);
+        }
 
         return $response;
     }

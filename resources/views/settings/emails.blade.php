@@ -1,7 +1,7 @@
-<form id="page-form" class="settings-form" method="POST" action="" x-data="{ driver: @js(old('settings.mail_driver', $settings['mail_driver'])) }">
+<form id="page-form" class="settings-form" method="POST" action="" x-data="{ driver: @js(old('settings.mail_driver', $settings['mail_driver'])) }" x-on:change="Tallport.autoSave($el)">
     {{ csrf_field() }}
 
-    <x-fruit::form-section :title="__('System Emails')" :footer="__('These settings are used to send system emails (alerts to admin and invitation emails to users).').' '.__('If you want to send system emails via webmail providers (Gmail, Yahoo, etc), use only SMTP method and make sure that SMTP username is equal to \'Mail From\', otherwise webmail provider won\'t send emails.')">
+    <x-fruit::form-section :title="__('System Emails')" :level="3" :footer="__('These settings are used to send system emails (alerts to admin and invitation emails to users).').' '.__('If you want to send system emails via webmail providers (Gmail, Yahoo, etc), use only SMTP method and make sure that SMTP username is equal to \'Mail From\', otherwise webmail provider won\'t send emails.')">
         <x-fruit::field :label="__('Mail From')" layout="row">
             <x-fruit::input type="email" name="settings[mail_from]" :value="old('settings.mail_from', $settings['mail_from'])" required autofocus />
         </x-fruit::field>
@@ -95,7 +95,7 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Send Test')" x-data="tallportMailSettings">
+    <x-fruit::form-section :title="__('Send Test')" :level="3" x-data="tallportMailSettings">
         <x-fruit::field :label="__('Send Test To')" :description="__('Make sure to save settings before testing.')" control-id="send_test" layout="row">
             <div class="f-input-group">
                 <input id="send_test" type="email" class="f-input" aria-describedby="send_test-description" value="{{ old('email', \App\Option::get('send_test_to')) }}" maxlength="128">
@@ -105,7 +105,7 @@
         <pre id="send_test_log" x-show="log" x-text="log" x-cloak></pre>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Fetching Emails')">
+    <x-fruit::form-section :title="__('Fetching Emails')" :level="3">
         <x-fruit::field :label="__('Fetching Interval')" :description="App\Misc\DatabaseSettings::lockedNote('fetch_schedule')" layout="row">
             <x-fruit::select name="settings[fetch_schedule]" :disabled="App\Misc\DatabaseSettings::lockedByEnv('fetch_schedule')">
                 <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_MINUTE }}" @selected(old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_MINUTE)>{{ __('Every minute') }}</option>
@@ -117,7 +117,7 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('No-Reply Addresses')">
+    <x-fruit::form-section :title="__('No-Reply Addresses')" :level="3">
         <x-fruit::field :label="__('Addresses')">
             <x-fruit::textarea name="settings[noreply_emails]" rows="5" placeholder="notifications@example.com&#10;mailer-daemon">{{ old('settings.noreply_emails', $settings['noreply_emails']) }}</x-fruit::textarea>
             <x-slot:description>
@@ -128,7 +128,3 @@
     </x-fruit::form-section>
 
 </form>
-
-@section('page_footer')
-    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
-@endsection

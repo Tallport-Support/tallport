@@ -1,7 +1,7 @@
-<form id="page-form" class="settings-form" method="POST" action="" enctype="multipart/form-data">
+<form id="page-form" class="settings-form" method="POST" action="" enctype="multipart/form-data" x-on:change="Tallport.autoSave($el)">
     {{ csrf_field() }}
 
-    <x-fruit::form-section :title="__('Branding')">
+    <x-fruit::form-section :title="__('Branding')" :level="3">
         {{-- Logo and banner each have a dark-mode version; without it, the light one shows in both. --}}
         @foreach ([
             [__('Header Logo'), '22 × 22, JPG PNG GIF SVG', ['branding.logo' => __('Light'), 'branding.logo_dark' => __('Dark')]],
@@ -60,7 +60,7 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Emails to Customers')">
+    <x-fruit::form-section :title="__('Emails to Customers')" :level="3">
         <x-fruit::field :label="__('Header')" :description="__('Above replies and auto replies.')">
             <x-editor id="branding_email_header" name="settings[branding.email_header]" rows="3">{{ old('settings.branding.email_header', $settings['branding.email_header']) }}</x-editor>
         </x-fruit::field>
@@ -74,7 +74,7 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Widgets')">
+    <x-fruit::form-section :title="__('Widgets')" :level="3">
         <x-fruit::field :label="__('Powered By')" layout="row">
             <x-fruit::switch name="settings[branding.widget_powered_by]" value="1" :checked="(bool) $settings['branding.widget_powered_by']" />
             <x-slot:description>{{ __('Show "Powered by" in widgets for customers (such as the knowledge base widget)') }}</x-slot:description>
@@ -82,7 +82,3 @@
     </x-fruit::form-section>
 
 </form>
-
-@section('page_footer')
-    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
-@endsection
