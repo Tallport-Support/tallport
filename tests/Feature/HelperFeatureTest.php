@@ -40,6 +40,29 @@ class HelperFeatureTest extends FeatureTestCase
     }
 
     /**
+     * Settings pages show the settings sidebar with their own item current. (Workflows and Saved
+     * Replies aren't settings pages: the main sidebar leads there too.)
+     */
+    public function testSettingsPagesKeepTheSettingsSidebar()
+    {
+        $admin = $this->createAdmin();
+        $mailbox = $this->createMailbox([$admin]);
+        $agent = $this->createUser();
+        // The current item's link, its attributes in any order.
+        $current = fn ($href) => '#<a (?=[^>]*href="'.preg_quote($href, '#').'")[^>]*aria-current="page"#';
+
+        foreach ([
+            route('mailboxes.matrix', ['id' => $mailbox->id]) => route('mailboxes'),
+            route('ai.documents')                             => route('settings', ['section' => 'ai']),
+            route('logs.telegram')                            => route('logs'),
+            route('users.security', ['id' => $agent->id])     => route('users'),
+        ] as $page => $item) {
+            $html = $this->actingAs($admin)->get($page)->assertOk()->getContent();
+            $this->assertMatchesRegularExpression($current($item), $html, $page);
+        }
+    }
+
+    /**
      * Restarting the queue workers queues one RestartQueueWorker job (for
      * workers on another file system), unless one is waiting already.
      */

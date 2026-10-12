@@ -21,10 +21,6 @@
         <form class="settings-form" method="POST" action="" id="form-fetching" x-data="tallportMailboxIncoming({{ $mailbox->id }})" x-on:change="changed" x-on:keyup="changed">
             {{ csrf_field() }}
 
-            <p class="f-help">
-                {!! __("You can read more about fetching emails :%a_begin%here:%a_end%.", ['%a_begin%' => '<a href="'.htmlspecialchars(config('app.freescout_repo')).'/wiki/Fetching-Emails" target="_blank">', '%a_end%' =>'</a>']) !!}
-            </p>
-
             <x-fruit::form-section :title="__('Fetching Emails')">
                 <div class="f-form-row">
                     <span class="f-label">{{ __('Status') }}</span>
@@ -94,7 +90,6 @@
                             @elseif ($mailbox->isOauthProvider(\MailHelper::OAUTH_PROVIDER_MICROSOFT) && $in_oauth_enabled)
                                  – <x-fruit::button type="submit" form="oauth-disconnect" variant="ghost" size="small">{{ __('Disconnect') }}</x-fruit::button>
                             @endif
-                            (<a href="{{ config('app.freescout_repo') }}/wiki/Connect-FreeScout-to-Microsoft-365-Exchange-via-oAuth" target="_blank">{{ __('Help') }}</a>)
                         </p>
                     @endif
 
@@ -109,7 +104,6 @@
                             @elseif ($mailbox->isOauthProvider(\MailHelper::OAUTH_PROVIDER_GOOGLE) && $in_oauth_enabled)
                                  – <x-fruit::button type="submit" form="oauth-disconnect" variant="ghost" size="small">{{ __('Disconnect') }}</x-fruit::button>
                             @endif
-                            (<a href="{{ config('app.freescout_repo') }}/wiki/Connect-FreeScout-to-Google-Workspace" target="_blank">{{ __('Help') }}</a>)
                         </p>
                     @endif
                 </div>

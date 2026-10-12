@@ -187,11 +187,15 @@ class Helper
                 'users.permissions',
                 'users.notifications',
                 'users.password',
+                'users.security',
             ],
             'logs' => [
                 'logs',
                 'logs.app',
                 'logs.ai',
+                'logs.telegram',
+                'logs.nostr',
+                'logs.matrix',
             ],
             'workflows' => [
                 'workflows',

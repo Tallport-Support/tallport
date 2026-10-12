@@ -22,7 +22,6 @@
             {{ csrf_field() }}
 
             <p class="f-help">
-                {!! __h("You can read more about sending emails :%a_begin%here:%a_end%.", ['%a_begin%' => '<a href="'.htmlspecialchars(config('app.freescout_repo')).'/wiki/Sending-emails" target="_blank">', '%a_end%' =>'</a>']) !!}
                 {{ __("To send system emails via webmail providers (Gmail, Yahoo, etc) use only SMTP method and make sure that SMTP username is equal to the mailbox email address (:%mailbox_email%), otherwise webmail provider won't send emails.", ['%mailbox_email%' => $mailbox->email]) }}
             </p>
 
@@ -45,11 +44,6 @@
                 <x-fruit::field :label="__('SMTP Server')" layout="row">
                     <x-fruit::input id="out_server" name="out_server" :value="old('out_server', $mailbox->out_server)" maxlength="255" :required="$mailbox->out_method == App\Mailbox::OUT_METHOD_SMTP" data-smtp-required="true" />
                 </x-fruit::field>
-                @if (strstr($mailbox->out_server ?? '', '.gmail.'))
-                    <p class="f-help">
-                        {!! __h("How to :%link_start%connect Gmail:%link_end% to Tallport.", ['%link_start%' => '<a href="'.htmlspecialchars(config('app.freescout_repo')).'/wiki/Connect-Gmail-to-FreeScout" target="_blank">', '%link_end%' => '</a>']) !!}
-                    </p>
-                @endif
 
                 <x-fruit::field :label="__('Port')" layout="row">
                     <x-fruit::number id="out_port" name="out_port" :value="old('out_port', $mailbox->out_port)" maxlength="5" :required="$mailbox->out_method == App\Mailbox::OUT_METHOD_SMTP" />
@@ -82,7 +76,6 @@
                             @elseif ($mailbox->isOauthProvider(\MailHelper::OAUTH_PROVIDER_MICROSOFT) && $out_oauth_enabled)
                                  – <x-fruit::button type="submit" form="oauth-disconnect" variant="ghost" size="small">{{ __('Disconnect') }}</x-fruit::button>
                             @endif
-                            (<a href="{{ config('app.freescout_repo') }}/wiki/Connect-FreeScout-to-Microsoft-365-Exchange-via-oAuth" target="_blank">{{ __('Help') }}</a>)
                         </p>
                     @endif
 
@@ -97,7 +90,6 @@
                             @elseif ($mailbox->isOauthProvider(\MailHelper::OAUTH_PROVIDER_GOOGLE) && $out_oauth_enabled)
                                  – <x-fruit::button type="submit" form="oauth-disconnect" variant="ghost" size="small">{{ __('Disconnect') }}</x-fruit::button>
                             @endif
-                            (<a href="{{ config('app.freescout_repo') }}/wiki/Connect-FreeScout-to-Google-Workspace" target="_blank">{{ __('Help') }}</a>)
                         </p>
                     @endif
                 </div>
