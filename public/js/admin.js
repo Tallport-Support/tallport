@@ -140,19 +140,20 @@ document.addEventListener('alpine:init', function () {
 	// Modules: activating, updating and deleting modules.
 	window.Alpine.data('tallportModules', function () {
 		// A modules.ajax request; the page reloads when it is done.
-		var request = function (button, data, reload_on) {
+		var request = function (button, data, reload_on, then_url) {
 			Tallport.busy(button, true);
 			Tallport.post(laroute.route('modules.ajax'), data).then(function (response) {
 				if (Tallport.isSuccess(response) || (reload_on && reload_on(response))) {
-					window.location.href = '';
+					window.location.href = then_url || '';
 				} else {
 					Tallport.result(response);
 					Tallport.busy(button, false);
 				}
 			});
 		};
+		// The module's level (modules/columns/module).
 		var alias = function (button) {
-			return button.closest('.module-card').getAttribute('data-alias');
+			return button.closest('[data-alias]').getAttribute('data-alias');
 		};
 
 		return {
@@ -166,7 +167,8 @@ document.addEventListener('alpine:init', function () {
 				var button = event.currentTarget;
 				Tallport.confirm({message: Lang.get('messages.confirm_delete_module'), confirm: Lang.get('messages.delete'), tone: 'danger'}).then(function (ok) {
 					if (ok) {
-						request(button, {action: 'delete', alias: alias(button)});
+						// Gone: back to the Modules.
+						request(button, {action: 'delete', alias: alias(button)}, null, button.closest('[data-modules-url]').getAttribute('data-modules-url'));
 					}
 				});
 			},

@@ -1,35 +1,11 @@
-@extends('layouts/level')
+@extends('layouts.app')
 
-@section('title', __('Modules'))
+@section('title', isset($module) ? App\Module::formatName($module['name']) : __('Modules'))
 
-@section('page_width', 'medium')
-
-@section('content')
-<div class="page-content" x-data="tallportModules">
-
-    @include('partials/flash_messages')
-
-    @if (!count($installed_modules))
-        <p class="f-muted" id="installed">{{ __('No modules are installed.') }}</p>
-    @else
-        <div class="page-toolbar f-row" id="installed">
-            <h2 class="f-title-3">{{ __('Installed Modules') }} <span class="f-muted">({{ count($installed_modules) }})</span></h2>
-        </div>
-
-        {{-- New versions are checked once the page is open. --}}
-        <livewire:module-updates lazy />
-
-        @if ($invalid_symlinks)
-            @include('modules/partials/invalid_symlinks')
-        @endif
-
-        <div class="modules-list">
-            @foreach ($installed_modules as $module)
-                @include('modules/partials/module_card')
-            @endforeach
-        </div>
-
-    @endif
-</div>
-
+{{-- Settings › Modules, and a module beside them (layouts/app). --}}
+@section('drilldown')
+    @include('modules/columns/modules')
+    @isset($module)
+        @include('modules/columns/module')
+    @endisset
 @endsection

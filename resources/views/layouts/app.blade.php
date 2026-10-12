@@ -64,7 +64,8 @@
             @hasSection('drilldown')
                 {{-- Settings as a drill-down (FruitUI): the sidebar, then a column per level, each opened
                      from a row of the one before; the window shows the deepest levels that fit. --}}
-                <x-fruit::workspace frame="fill" class="app-drilldown" :aria-label="__('Settings')">
+                {{-- The sidebar keeps the width set in the app (its splitter, Helper::columnWidthsStyle()). --}}
+                <x-fruit::workspace frame="fill" class="app-drilldown" :style="\App\Misc\Helper::columnWidthsStyle()" :aria-label="__('Settings')">
                     <h1 class="f-sr-only">@yield('title')</h1>
                     <x-fruit::drilldown x-data="fruitDrilldown">
                         @include('partials/app_sidebar', ['sidebar_column' => true])

@@ -69,6 +69,16 @@ class HelperFeatureTest extends FeatureTestCase
     }
 
     /**
+     * The sidebar's width, set in the app, is kept in Settings too.
+     */
+    public function testSettingsKeepTheSidebarWidth()
+    {
+        $html = $this->actingAs($this->createAdmin())->withUnencryptedCookie('tallport_columns', json_encode(['--f-sidebar-width' => 280]))
+            ->get(route('settings'))->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('#class="f-workspace[^"]*app-drilldown[^"]*"[^>]*style="--f-sidebar-width: 280px;"|style="--f-sidebar-width: 280px;"[^>]*class="f-workspace[^"]*app-drilldown#', $html);
+    }
+
+    /**
      * Restarting the queue workers queues one RestartQueueWorker job (for
      * workers on another file system), unless one is waiting already.
      */

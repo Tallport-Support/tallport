@@ -23,7 +23,7 @@ class ModulesController extends Controller
     /**
      * Modules.
      */
-    public function modules(Request $request)
+    public function modules(Request $request, $alias = null)
     {
         $installed_modules = [];
         $flashes = [];
@@ -79,7 +79,15 @@ class ModulesController extends Controller
             collect($installed_modules)->where('active', true)->pluck('alias')->toArray()
         );
 
+        // One module: a level beside the Modules.
+        $module = null;
+        if ($alias !== null) {
+            $module = collect($installed_modules)->firstWhere('alias', $alias);
+            abort_unless($module, 404);
+        }
+
         return view('modules/modules', [
+            'module'            => $module,
             'installed_modules' => $installed_modules,
             'flashes'           => $flashes,
             'invalid_symlinks'  => $invalid_symlinks,

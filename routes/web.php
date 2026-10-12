@@ -200,6 +200,7 @@ Route::post('/customers/{id}/merge', 'CustomersController@mergeSave');
 // Modules
 // There is a /public/modules folder, so route must have a different name
 Route::get('/modules/list', ['uses' => 'ModulesController@modules', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('modules');
+Route::get('/modules/list/{alias}', ['uses' => 'ModulesController@modules', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('modules.module');
 Route::post('/modules/ajax', ['uses' => 'ModulesController@ajax', 'laroute' => true, 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('modules.ajax');
 
 // System

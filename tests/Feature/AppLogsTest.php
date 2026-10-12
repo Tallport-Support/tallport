@@ -40,7 +40,9 @@ class AppLogsTest extends FeatureTestCase
 
     public function testViewAndDownloadLog()
     {
-        $this->logsPage(['l' => Crypt::encrypt('laravel.log')])->assertStatus(200)->assertSee('Something broke');
+        // A log beside the Logs.
+        $this->logsPage(['l' => Crypt::encrypt('laravel.log')])->assertStatus(200)->assertSee('Something broke')
+            ->assertSeeInOrder(['>Logs</h2>', '>App Logs</h2>'], false);
 
         $response = $this->logsPage(['dl' => Crypt::encrypt('other.log')]);
         $response->assertStatus(200);

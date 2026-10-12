@@ -6,7 +6,7 @@
                 {{ __('There are updates available') }}:
                 <ul id="new_versions_list">
                     @foreach ($updates as $alias => $update)
-                        <li><a href="#module-{{ $alias }}" data-module-alias="{{ $alias }}">{{ $update['name'] }} ({{ $update['version'] }})</a></li>
+                        <li><a href="{{ route('modules.module', ['alias' => $alias]) }}" wire:navigate data-module-alias="{{ $alias }}">{{ $update['name'] }} ({{ $update['version'] }})</a></li>
                     @endforeach
                 </ul>
             </div>

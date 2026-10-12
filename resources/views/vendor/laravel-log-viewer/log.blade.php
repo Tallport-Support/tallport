@@ -1,16 +1,8 @@
-@extends('layouts.app')
+@extends('secure/layout_log')
+
+@section('log_name', App\ActivityLog::NAME_APP_LOGS)
 
 @section('title_full', __('Logs').' - '.__('App Logs'))
-
-@section('page_width', 'wide')
-
-@section('main_class', 'fruit-ui')
-
-@section('sidebar')
-    <x-page-nav :label="__('Logs')">
-        <x-slot:title><h1>{{ __('Logs') }}</h1></x-slot:title>
-    </x-page-nav>
-@endsection
 
 @section('content')
     @php

@@ -153,6 +153,27 @@ class ModulesControllerTest extends FeatureTestCase
      * What the last action reported is shown once on the Modules page: one message, or
      * one per module after updating them all.
      */
+    /**
+     * Settings › Modules: a row per module with its state; a module opens beside them, with what it
+     * is and its actions; one that isn't there is a 404.
+     */
+    public function testModulesAndAModuleAsLevels()
+    {
+        $this->makeModule();
+
+        $html = $this->actingAs($this->admin)->get(route('modules'))->assertOk()
+            ->assertSee('>Modules</h2>', false)->assertSee('Inactive')->assertDontSee('module-card', false)->getContent();
+        $this->assertStringContainsString('href="'.route('modules.module', ['alias' => 'tpmodule']).'"', $html);
+
+        $html = $this->actingAs($this->admin)->get(route('modules.module', ['alias' => 'tpmodule']))->assertOk()
+            ->assertSeeInOrder(['>Modules</h2>', '>TpModule</h2>', 'Test module', '1.0.0', 'Activate', 'Danger Zone', 'Delete'], false)
+            ->assertSee('data-alias="tpmodule"', false)->getContent();
+        $this->assertMatchesRegularExpression('#<a (?=[^>]*href="'.preg_quote(route('modules.module', ['alias' => 'tpmodule']), '#').'")[^>]*aria-current="page"#', $html);
+
+        $this->actingAs($this->admin)->get(route('modules.module', ['alias' => 'nothing']))->assertNotFound();
+        $this->actingAs($this->createUser())->get(route('modules.module', ['alias' => 'tpmodule']))->assertStatus(403);
+    }
+
     public function testActionResultsAreShownOnce()
     {
         \Cache::forever('modules_flash', ['text' => '<strong>Activated it</strong>', 'unescaped' => true, 'type' => 'success']);

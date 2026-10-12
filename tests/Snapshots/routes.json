@@ -2106,6 +2106,22 @@
         "methods": [
             "GET"
         ],
+        "uri": "modules/list/{alias}",
+        "name": "modules.module",
+        "action": "ModulesController@modules",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "notifications",
         "name": "own.notifications",
         "action": "UsersController@ownNotifications",
