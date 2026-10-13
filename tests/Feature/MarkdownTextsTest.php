@@ -41,6 +41,8 @@ class MarkdownTextsTest extends FeatureTestCase
         $this->assertSame(Markdown::fromInput(['text_markdown' => '**Hi**'], 'text'), ["<p><strong>Hi</strong></p>", '**Hi**']);
         $this->assertSame(Markdown::fromInput(['text' => '<b>Hi</b>'], 'text'), ['<b>Hi</b>', null]);
         $this->assertNull(Markdown::fromInput([], 'text'));
+        // Stored with plain line breaks, as forms send them or not.
+        $this->assertSame("a\nb", Markdown::fromInput(['text_markdown' => "a\r\nb"], 'text')[1]);
         $this->assertTrue(Markdown::isMarkdown(null, '<p>&nbsp;</p>'));
         $this->assertFalse(Markdown::isMarkdown(null, '<p>Hi</p>'));
         $this->assertTrue(Markdown::isMarkdown('', '<p>Hi</p>'));

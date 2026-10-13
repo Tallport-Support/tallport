@@ -16893,33 +16893,36 @@ function Xb(e = []) {
 	}
 	return o(n.length), t;
 }
-var Zb = (e) => Xb(e.content).split("\n").map((e) => e.replace(/^(\s*)(#{1,6}\s|>|[-+]\s|\d+[.)]\s)/, (e, t, n) => `${t}\\${n}`)).join("\n"), Qb = (e, t, n) => e.split("\n").map((e, r) => r ? e && n + e : t + e).join("\n");
-function $b(e = []) {
-	return e.map(ex).filter((e) => e !== null).join("\n\n");
+var Zb = /^(\s*)(?:(#{1,6}|[-+])(?=\s|$)|(>)|(\d{1,9})([.)])(?=\s|$)|(-)(?=(?:\s*-){2,}\s*$))/, Qb = /^(\s*)([-=])(?=\2*\s*$)/, $b = (e) => Xb(e.content).split("\n").map((e, t) => {
+	let n = e.replace(Zb, (e, t, n, r, i, a, o) => i ? `${t}${i}\\${a}` : `${t}\\${n ?? r ?? o}`);
+	return t ? n.replace(Qb, "$1\\$2") : n;
+}).join("\n"), ex = (e, t, n) => e.split("\n").map((e, r) => r ? e && n + e : t + e).join("\n");
+function tx(e = []) {
+	return e.map(nx).filter((e) => e !== null).join("\n\n");
 }
-function ex(e) {
+function nx(e) {
 	switch (e.type) {
-		case "paragraph": return Zb(e);
+		case "paragraph": return $b(e);
 		case "heading": return `${"#".repeat(e.attrs?.level ?? 1)} ${Xb(e.content)}`;
-		case "blockquote": return $b(e.content).split("\n").map((e) => e ? `> ${e}` : ">").join("\n");
+		case "blockquote": return tx(e.content).split("\n").map((e) => e ? `> ${e}` : ">").join("\n");
 		case "bulletList":
 		case "orderedList": {
 			let t = e.attrs?.start ?? 1;
 			return (e.content ?? []).map((n) => {
 				let r = e.type === "orderedList" ? `${t++}. ` : "- ";
-				return Qb((n.content ?? []).map(ex).filter((e) => e !== null).join("\n"), r, " ".repeat(r.length));
+				return ex((n.content ?? []).map(nx).filter((e) => e !== null).join("\n"), r, " ".repeat(r.length));
 			}).join("\n");
 		}
 		case "codeBlock": return `\`\`\`${e.attrs?.language ?? ""}\n${(e.content ?? []).map((e) => e.text).join("")}\n\`\`\``;
 		case "horizontalRule": return "---";
-		default: return e.content ? $b(e.content) : null;
+		default: return e.content ? tx(e.content) : null;
 	}
 }
-function tx(e) {
-	return $b(e.content).replace(/\n{3,}/g, "\n\n").trim();
+function rx(e) {
+	return tx(e.content).replace(/\n{3,}/g, "\n\n").trim();
 }
-function nx({ root: e, control: t, read: n, ask: r, commit: i, editor: a, images: o }) {
-	let s = (e) => tx(n(e)), c = () => t.matches(":disabled") || t.readOnly, l = () => {
+function ix({ root: e, control: t, read: n, ask: r, commit: i, editor: a, images: o }) {
+	let s = (e) => rx(n(e)), c = () => t.matches(":disabled") || t.readOnly, l = () => {
 		let { state: e } = a(), { text: t, tree: n } = Rb.getState(e);
 		return {
 			text: t,
@@ -17129,7 +17132,7 @@ function nx({ root: e, control: t, read: n, ask: r, commit: i, editor: a, images
 		let r = (t?.getData("text/plain") ?? "").replace(/\r\n?/g, "\n"), i = e.dataset.fruitPaste === "plain" ? "" : t?.getData("text/html");
 		if (!i || Kb(i)) return r;
 		let a = n(i);
-		return qb(a.content) || !r ? tx(a) : r;
+		return qb(a.content) || !r ? rx(a) : r;
 	}, w = U.create({
 		name: "fruitMarkdown",
 		priority: 1e3,
@@ -17201,15 +17204,15 @@ function nx({ root: e, control: t, read: n, ask: r, commit: i, editor: a, images
 }
 //#endregion
 //#region src/js/popup.js
-var rx = (e) => getComputedStyle(e).direction === "rtl";
-function ix(e, t, { stretch: n = !1, above: r = !1, point: i = null, start: a = !1 } = {}) {
+var ax = (e) => getComputedStyle(e).direction === "rtl";
+function ox(e, t, { stretch: n = !1, above: r = !1, point: i = null, start: a = !1 } = {}) {
 	let o = typeof e.showPopover == "function", s = e.getAttribute("style"), c = !1;
 	o && (e.popover = "manual");
 	let l = () => {
 		if (!c || !o) return;
 		let s = t.getBoundingClientRect(), l = window.visualViewport, u = l?.offsetLeft || 0, d = l?.offsetTop || 0, f = l?.width || window.innerWidth, p = l?.height || window.innerHeight;
 		e.style.position = "fixed", e.style.inset = "auto", e.style.margin = "0", e.style.transform = "none", e.style.maxWidth = `${Math.max(0, f - 16)}px`, e.style.maxHeight = `${Math.max(40, p - 16)}px`, e.style.overflowY = "auto", n && (e.style.width = `${Math.min(s.width, f - 16)}px`);
-		let m = e.getBoundingClientRect(), h = i ? rx(i) ? s.left - m.width : s.left : n || rx(t) !== a ? s.left : s.right - m.width, g = (e) => e >= u + 8 && e + m.width <= u + f - 8, _ = i || n || g(h) ? h : [s.left, s.right - m.width].find(g) ?? h, v = d + p - s.bottom - 8, y = s.top - d - 8, b = r && y >= m.height || v < m.height && y > v, x = b ? y : v;
+		let m = e.getBoundingClientRect(), h = i ? ax(i) ? s.left - m.width : s.left : n || ax(t) !== a ? s.left : s.right - m.width, g = (e) => e >= u + 8 && e + m.width <= u + f - 8, _ = i || n || g(h) ? h : [s.left, s.right - m.width].find(g) ?? h, v = d + p - s.bottom - 8, y = s.top - d - 8, b = r && y >= m.height || v < m.height && y > v, x = b ? y : v;
 		e.style.maxHeight = `${Math.max(40, x)}px`;
 		let S = e.getBoundingClientRect().height;
 		e.style.left = `${Math.max(u + 8, Math.min(_, u + f - m.width - 8))}px`, e.style.top = `${Math.max(d + 8, Math.min(b ? s.top - S - 4 : s.bottom + 4, d + p - S - 8))}px`;
@@ -17228,12 +17231,12 @@ function ix(e, t, { stretch: n = !1, above: r = !1, point: i = null, start: a = 
 }
 //#endregion
 //#region src/js/messages.js
-function ax(e, t, n, r = {}) {
+function sx(e, t, n, r = {}) {
 	return (e.getAttribute(`data-fruit-${t}`) ?? n).replace(/\{(\w+)\}/g, (e, t) => String(r[t] ?? e));
 }
 //#endregion
 //#region src/js/editor.js
-var ox = Bf.create({
+var cx = Bf.create({
 	name: "image",
 	group: "inline",
 	inline: !0,
@@ -17252,7 +17255,7 @@ var ox = Bf.create({
 		return ["img", H(e)];
 	}
 });
-function sx(e) {
+function lx(e) {
 	let t = e === void 0 ? null : new Set(e.split(/\s+/).filter(Boolean)), n = (e) => !t || t.has(e), r = n("bulletList") || n("orderedList"), i = (e) => n(e) ? void 0 : !1;
 	return [
 		W_.configure({
@@ -17273,11 +17276,11 @@ function sx(e) {
 				horizontalRule: !1
 			}
 		}),
-		...n("image") ? [ox] : [],
-		cx
+		...n("image") ? [cx] : [],
+		ux
 	];
 }
-var cx = U.create({
+var ux = U.create({
 	name: "fruitEnterSubmits",
 	priority: 1e3,
 	addKeyboardShortcuts() {
@@ -17293,7 +17296,7 @@ var cx = U.create({
 		};
 	}
 });
-function lx(e) {
+function dx(e) {
 	e[X_] = !0, e.data("fruitEditor", () => {
 		let e, t, n, r, i, a, o, s, c, l, u, d, f, p, m, h, g, _ = {
 			bold: (e) => e.toggleBold(),
@@ -17315,14 +17318,14 @@ function lx(e) {
 			p?.();
 			let s = n === "link";
 			d = document.createElement("form"), d.className = "f-editor__popover", d.setAttribute("role", "dialog"), d.id = K_("fruit-editor-popover");
-			let c = ax(t, s ? "link-label" : "image-label", s ? "Link Address" : "Image Address");
+			let c = sx(t, s ? "link-label" : "image-label", s ? "Link Address" : "Image Address");
 			d.setAttribute("aria-label", c);
 			let l = document.createElement("input");
 			l.className = "f-input", l.type = "url", l.required = !s || !r, l.value = r, l.placeholder = "https://", l.setAttribute("aria-label", c);
 			let u = document.createElement("button");
-			if (u.className = "f-button f-button--primary f-button--small", u.type = "submit", u.textContent = ax(t, s ? "apply-label" : "insert-label", s ? "Apply" : "Insert"), d.append(l, u), s && r && o) {
+			if (u.className = "f-button f-button--primary f-button--small", u.type = "submit", u.textContent = sx(t, s ? "apply-label" : "insert-label", s ? "Apply" : "Insert"), d.append(l, u), s && r && o) {
 				let e = document.createElement("button");
-				e.className = "f-button f-button--ghost f-button--small", e.type = "button", e.textContent = ax(t, "remove-link-label", "Remove Link"), e.addEventListener("click", () => {
+				e.className = "f-button f-button--ghost f-button--small", e.type = "button", e.textContent = sx(t, "remove-link-label", "Remove Link"), e.addEventListener("click", () => {
 					o(), v(), p(!1);
 				}), d.append(e);
 			}
@@ -17332,7 +17335,7 @@ function lx(e) {
 				(t || s) && a(t), v(), p(!1);
 			}), d.addEventListener("keydown", (e) => {
 				e.key === "Escape" && (e.preventDefault(), e.stopPropagation(), p(!0));
-			}), i.append(d), f = ix(d, e, { start: !0 }), f.show(), e.setAttribute("aria-expanded", "true"), p = (t) => {
+			}), i.append(d), f = ox(d, e, { start: !0 }), f.show(), e.setAttribute("aria-expanded", "true"), p = (t) => {
 				f?.destroy(), d?.remove(), d = f = p = null, e.setAttribute("aria-expanded", "false"), t && e.focus();
 			}, l.focus();
 		}, b = (t) => {
@@ -17403,7 +17406,7 @@ function lx(e) {
 		}, te = (e) => {
 			let n = new Ff({
 				element: document.createElement("div"),
-				extensions: sx(t.dataset.fruitFormats)
+				extensions: lx(t.dataset.fruitFormats)
 			});
 			n.commands.setContent(e, { emitUpdate: !1 });
 			let r = n.getJSON();
@@ -17413,7 +17416,7 @@ function lx(e) {
 			init() {
 				if (t = this.$el, n = this.$el.querySelector("textarea[data-fruit-control]"), r = this.$el.querySelector(".f-editor__surface"), i = this.$el.querySelector(".f-editor__toolbar"), !n || !r || !i) return;
 				let d = t.dataset.fruitFormats;
-				t.dataset.fruitMode === "markdown" && (g = nx({
+				t.dataset.fruitMode === "markdown" && (g = ix({
 					root: t,
 					control: n,
 					ask: y,
@@ -17423,7 +17426,7 @@ function lx(e) {
 					images: d === void 0 || d.split(/\s+/).includes("image")
 				})), l = u = n.value, e = new Ff({
 					element: r,
-					extensions: g?.extensions ?? sx(d),
+					extensions: g?.extensions ?? lx(d),
 					content: g ? g.content(n.value) : n.value,
 					...g?.options,
 					editorProps: {
@@ -17461,7 +17464,7 @@ function lx(e) {
 					set: (t) => e.commands.setContent(f(t), { emitUpdate: !0 }),
 					toMarkdown: () => {
 						if (g) return;
-						let t = e.isEmpty ? "" : tx(e.getJSON()), i = r.contains(document.activeElement);
+						let t = e.isEmpty ? "" : rx(e.getJSON()), i = r.contains(document.activeElement);
 						this.destroy(), J_(n, t, { commit: !1 }), this.init(), i && e.commands.focus();
 					},
 					...g && {
@@ -17483,4 +17486,4 @@ function lx(e) {
 	});
 }
 //#endregion
-export { lx as default };
+export { dx as default };

@@ -75,7 +75,8 @@ class Markdown
     public static function fromInput(array $input, $name, ?array $formats = null)
     {
         if (array_key_exists($name.'_markdown', $input)) {
-            $markdown = (string) $input[$name.'_markdown'];
+            // Stored with plain line breaks (forms send \r\n).
+            $markdown = str_replace(["\r\n", "\r"], "\n", (string) $input[$name.'_markdown']);
 
             return [self::toHtml($markdown, $formats), $markdown];
         }

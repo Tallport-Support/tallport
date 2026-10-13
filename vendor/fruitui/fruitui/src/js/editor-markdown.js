@@ -279,11 +279,22 @@ function inline(content = []) {
   return out;
 }
 
-/** Lines that would read as syntax at the start of a paragraph line are escaped. */
+/**
+ * A paragraph line that would read as syntax is escaped: a heading, quote or list marker at its start (a
+ * number's period or parenthesis), a rule, and, below another line, a line of dashes or equals signs,
+ * which would make that line a heading.
+ */
+const blockStart = /^(\s*)(?:(#{1,6}|[-+])(?=\s|$)|(>)|(\d{1,9})([.)])(?=\s|$)|(-)(?=(?:\s*-){2,}\s*$))/;
+const underline = /^(\s*)([-=])(?=\2*\s*$)/;
 const paragraph = node =>
   inline(node.content)
     .split('\n')
-    .map(line => line.replace(/^(\s*)(#{1,6}\s|>|[-+]\s|\d+[.)]\s)/, (match, space, syntax) => `${space}\\${syntax}`))
+    .map((line, index) => {
+      const escaped = line.replace(blockStart, (match, space, marker, quote, number, delimiter, rule) =>
+        number ? `${space}${number}\\${delimiter}` : `${space}\\${marker ?? quote ?? rule}`,
+      );
+      return index ? escaped.replace(underline, '$1\\$2') : escaped;
+    })
     .join('\n');
 
 const indentLines = (text, first, rest) =>

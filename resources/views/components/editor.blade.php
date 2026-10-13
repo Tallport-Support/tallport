@@ -83,7 +83,7 @@
 </x-fruit::editor>
 @if ($switchable && !$markdown && $markdown_name !== null)
     <div class="f-row editor-switch" x-data="editorSwitch(@js($attributes->get('id')), @js($markdown_name))">
-        <x-fruit::button size="small" x-show="!switched" x-on:click="toMarkdown">{{ __('Switch to Markdown') }}</x-fruit::button>
-        <span class="f-help" x-text="switched ? @js(__('Markdown. Save to keep the change.')) : @js(__('Written before Markdown. Switching converts the text; nothing changes until you save.'))">{{ __('Written before Markdown. Switching converts the text; nothing changes until you save.') }}</span>
+        <x-fruit::button size="small" x-show="!switched" x-on:click="toMarkdown" :aria-describedby="$attributes->get('id').'-switch-note'">{{ __('Switch to Markdown') }}</x-fruit::button>
+        <span class="f-help" id="{{ $attributes->get('id') }}-switch-note" x-text="switched ? @js(__('Markdown. Save to keep the change.')) : @js(__('Written before Markdown. Switching converts the text; nothing changes until you save.'))">{{ __('Written before Markdown. Switching converts the text; nothing changes until you save.') }}</span>
     </div>
 @endif
