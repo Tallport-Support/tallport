@@ -831,18 +831,26 @@ document.addEventListener('alpine:init', function () {
 			startStep: function (step) {
 				var self = this;
 				var started = Date.now();
+				this.stopStep();
+				// Each step's timer stops itself once it's no longer the current one, or the draft is done.
+				var token = this.step_token;
+				var timer = null;
 				var show = function () {
+					if (token !== self.step_token || !self.drafting) {
+						clearInterval(timer);
+						return;
+					}
 					var seconds = Math.floor((Date.now() - started) / 1000);
 					self.status = texts[step] + (seconds ? ' ' + seconds + ' s' : '');
 				};
-				this.stopStep();
+				this.stepping = true;
 				show();
-				this.step_timer = setInterval(show, 1000);
+				timer = setInterval(show, 1000);
 			},
 
 			stopStep: function () {
-				clearInterval(this.step_timer);
-				this.step_timer = null;
+				this.step_token = (this.step_token || 0) + 1;
+				this.stepping = false;
 			},
 
 			// Waiting for the draft to start: the card shows a placeholder.
@@ -999,7 +1007,7 @@ document.addEventListener('alpine:init', function () {
 								finished = true;
 								self.fail(data.msg, data.detail);
 							} else if (typeof data.draft == 'string') {
-								if (self.step_timer) {
+								if (self.stepping) {
 									self.stopStep();
 									self.status = texts.drafting;
 								}
