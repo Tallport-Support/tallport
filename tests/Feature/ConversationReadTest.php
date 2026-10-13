@@ -208,6 +208,22 @@ class ConversationReadTest extends FeatureTestCase
         $this->assertSame([], $for_you()['folders']);
     }
 
+    /**
+     * Sent is a record of what the user did, not work waiting: never a dot. All Mailboxes'
+     * other folders follow their mailboxes'.
+     */
+    public function testNoDotForSent()
+    {
+        $this->createMailbox([$this->agent]);
+        $conversation = $this->conversation();
+        $this->sendReply($this->agent, ['conversation_id' => $conversation->id, 'mailbox_id' => $this->mailbox->id, 'body' => '<p>On it.</p>', 'status' => Conversation::STATUS_ACTIVE, 'user_id' => -1]);
+        ConversationRead::markRead([$conversation->id], $this->agent);
+
+        $for_you = Sidebar::unreadCounts($this->agent)['for_you']['folders'];
+        $this->assertArrayHasKey(-Folder::TYPE_UNASSIGNED, $for_you);
+        $this->assertArrayNotHasKey(-\App\Misc\AllMailboxes::TYPE_SENT, $for_you);
+    }
+
     public function testStarredDraftsAndSentCountUnreadMessagesWithoutDuplicatingTheMailboxTotal()
     {
         $this->createMailbox([$this->agent]);

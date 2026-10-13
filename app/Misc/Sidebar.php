@@ -231,15 +231,10 @@ class Sidebar
             }
         }
 
+        // Sent is a record of what the user did, not work waiting: no dot.
         if (AllMailboxes::isAvailable($user)) {
             foreach (AllMailboxes::TYPES as $type) {
-                if ($type == AllMailboxes::TYPE_SENT) {
-                    $sent = Thread::where('type', Thread::TYPE_MESSAGE)->where('created_by_user_id', $user->id)
-                        ->whereIn('conversation_id', (clone $active)->select('id'))->exists();
-                    if ($sent) {
-                        $result['folders'][-$type] = true;
-                    }
-                } elseif ($folders->where('type', $type)->contains(fn ($folder) => !empty($result['folders'][$folder->id]))) {
+                if ($type != AllMailboxes::TYPE_SENT && $folders->where('type', $type)->contains(fn ($folder) => !empty($result['folders'][$folder->id]))) {
                     $result['folders'][-$type] = true;
                 }
             }
