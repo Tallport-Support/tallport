@@ -406,6 +406,10 @@ class ConversationReplies
                 } else {
                     $conversation->user_id = null;
                 }
+                // Closed or spam: someone responsible (Conversation::takeOwnership()).
+                if (($conversation->isClosed() || $conversation->isSpam()) && $conversation->takeOwnership($user)) {
+                    $user_changed = true;
+                }
 
                 // To is a single email string.
                 $to = '';

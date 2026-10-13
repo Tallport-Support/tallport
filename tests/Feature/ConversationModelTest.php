@@ -718,8 +718,9 @@ class ConversationModelTest extends FeatureTestCase
         $this->assertSame([$order->id, $refund->id], $search('', ['mailbox' => $this->mailbox->id, 'status' => [Conversation::STATUS_ACTIVE, Conversation::STATUS_CLOSED]]));
         // A mailbox the user can't see is ignored.
         $this->assertSame([$order->id, $refund->id, $sales_one->id], $search('', ['mailbox' => $hidden->id]));
-        $this->assertSame([$order->id], $search('', ['assigned' => $this->agent->id]));
-        $this->assertSame([$refund->id, $sales_one->id], $search('', ['assigned' => Conversation::USER_UNASSIGNED]));
+        // Closing the refund made the agent responsible for it (Conversation::takeOwnership()).
+        $this->assertSame([$order->id, $refund->id], $search('', ['assigned' => $this->agent->id]));
+        $this->assertSame([$sales_one->id], $search('', ['assigned' => Conversation::USER_UNASSIGNED]));
         $this->assertSame([$refund->id], $search('', ['customer' => $refund->customer_id]));
         $this->assertSame([$order->id, $refund->id, $sales_one->id], $search('', ['state' => [Conversation::STATE_PUBLISHED]]));
         $this->assertSame([$order->id, $refund->id, $sales_one->id], $search('', ['state' => [Conversation::STATE_PUBLISHED, Conversation::STATE_DELETED]]));

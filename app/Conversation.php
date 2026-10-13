@@ -711,6 +711,9 @@ class Conversation extends Model
         $now = date('Y-m-d H:i:s');
 
         $this->status = $status;
+        if (in_array(self::toMainStatus($status), [self::STATUS_CLOSED, self::STATUS_SPAM])) {
+            $this->takeOwnership($user);
+        }
 
         if ($update_folder) {
             $this->updateFolder();
@@ -721,6 +724,23 @@ class Conversation extends Model
             $this->closed_by_user_id = $user->id;
             $this->closed_at = $now;
         }
+    }
+
+    /**
+     * Closed, marked as spam or deleted, a conversation always has someone responsible: with
+     * nobody assigned, the person doing it. Someone already assigned stays; a robot (automatic
+     * workflows) or the system takes nothing. The one place this rule is: setStatus(),
+     * deleteToFolder() and replies call it. Returns whether it was assigned now (the caller saves).
+     */
+    public function takeOwnership($user)
+    {
+        if ($this->user_id || !$user || !$user->id || $user->type == User::TYPE_ROBOT) {
+            return false;
+        }
+        $this->user_id = $user->id;
+        $this->user_updated_at = date('Y-m-d H:i:s');
+
+        return true;
     }
 
     // Returns array of status ids as keys and names as values.
@@ -1928,6 +1948,7 @@ class Conversation extends Model
         }
         
         $prev_status = $this->status;
+        $prev_user_id = $this->user_id;
 
         $this->setStatus($new_status, $user);
         $this->save();
@@ -1951,6 +1972,11 @@ class Conversation extends Model
 
         event(new ConversationStatusChanged($this));
         \Eventy::action('conversation.status_changed', $this, $user ?? null, $changed_on_reply = false, $prev_status);
+        // Taken by the person closing it (takeOwnership()).
+        if ($this->user_id != $prev_user_id) {
+            event(new ConversationUserChanged($this, $user));
+            \Eventy::action('conversation.user_changed', $this, $user, $prev_user_id);
+        }
     }
 
     public function changeUser($new_user_id, $user, $create_thread = true)
@@ -1986,8 +2012,10 @@ class Conversation extends Model
         //$folder_id = $this->getCurrentFolder();
 
         $prev_state = $this->state;
+        $prev_user_id = $this->user_id;
         $this->state = Conversation::STATE_DELETED;
         $this->user_updated_at = date('Y-m-d H:i:s');
+        $this->takeOwnership($user);
         $this->updateFolder();
         $this->save();
 
@@ -2016,6 +2044,10 @@ class Conversation extends Model
 
         \Eventy::action('conversation.deleted', $this, $user);
         \Eventy::action('conversation.state_changed', $this, $user, $prev_state);
+        if ($this->user_id != $prev_user_id) {
+            event(new ConversationUserChanged($this, $user));
+            \Eventy::action('conversation.user_changed', $this, $user, $prev_user_id);
+        }
     }
 
     public function deleteForever()

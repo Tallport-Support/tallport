@@ -369,7 +369,8 @@ class ConversationListTest extends FeatureTestCase
         // A row outside the selection: that row alone; the selection stays.
         $list->set('selected', [(string) $first->id, (string) $second->id])->call('rowAssignToMe', $third->id)->assertToasted('Assignee updated')
             ->assertSet('selected', [(string) $first->id, (string) $second->id]);
-        $this->assertSame([null, $this->agent->id], [$first->fresh()->user_id, $third->fresh()->user_id]);
+        // Closing the first made the agent responsible for it (Conversation::takeOwnership()).
+        $this->assertSame([$this->agent->id, $this->agent->id], [$first->fresh()->user_id, $third->fresh()->user_id]);
         $list->set('selected', [])->call('rowStar', $first->id, 0)->call('rowClose', $third->id, 0);
         $this->assertFalse($first->isStarredByUser($this->agent->id));
         $this->assertTrue($second->isStarredByUser($this->agent->id));

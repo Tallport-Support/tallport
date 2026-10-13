@@ -145,7 +145,9 @@ class ConversationActionsTest extends FeatureTestCase
 
         $this->assertSuccess(ConversationActions::changeStatus($conversation->fresh(), Conversation::STATUS_ACTIVE, $this->agent, request()));
         $this->assertEquals(Conversation::STATUS_ACTIVE, $conversation->fresh()->status);
-        $this->assertEquals(Folder::TYPE_UNASSIGNED, $this->folderType($conversation));
+        // Closing made the agent responsible (Conversation::takeOwnership()): reopened, it's theirs.
+        $this->assertEquals($this->agent->id, $conversation->fresh()->user_id);
+        $this->assertEquals(Folder::TYPE_ASSIGNED, $this->folderType($conversation));
     }
 
     public function testInvalidStatusIsRejected()
@@ -169,7 +171,8 @@ class ConversationActionsTest extends FeatureTestCase
         // "Not spam" restores the status it had before.
         $this->assertSuccess(ConversationActions::changeStatus($conversation->fresh(), 'not_spam', $this->agent, request()));
         $this->assertEquals(Conversation::STATUS_PENDING, $conversation->fresh()->status);
-        $this->assertEquals(Folder::TYPE_UNASSIGNED, $this->folderType($conversation));
+        $this->assertEquals($this->agent->id, $conversation->fresh()->user_id, 'Marking it spam made the agent responsible.');
+        $this->assertEquals(Folder::TYPE_ASSIGNED, $this->folderType($conversation));
     }
 
     public function testUserWithoutAccessCannotChangeStatus()
@@ -209,7 +212,8 @@ class ConversationActionsTest extends FeatureTestCase
 
         $this->assertSuccess(ConversationActions::restore($conversation->fresh(), $deleter));
         $this->assertEquals(Conversation::STATE_PUBLISHED, $conversation->fresh()->state);
-        $this->assertEquals(Folder::TYPE_UNASSIGNED, $this->folderType($conversation));
+        $this->assertEquals($deleter->id, $conversation->fresh()->user_id, 'Deleting made the deleter responsible.');
+        $this->assertEquals(Folder::TYPE_ASSIGNED, $this->folderType($conversation));
         $this->assertEquals(Thread::ACTION_TYPE_RESTORE_TICKET, $this->lastLineItem($conversation)->action_type);
 
         // Deleting forever only works from the Deleted folder.
