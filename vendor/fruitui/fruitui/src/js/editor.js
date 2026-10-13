@@ -2,7 +2,7 @@ import { Editor, Extension, Node, mergeAttributes } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import { bridgeControl, publishValue, fruitId } from './control-bridge.js';
 import { listenForEditorContent, EDITOR_PLUGIN } from './editor-content.js';
-import { markdownEditing } from './editor-markdown.js';
+import { markdownEditing, markdownFromDocument } from './editor-markdown.js';
 import { fruitPopup } from './popup.js';
 import { fruitMessage } from './messages.js';
 
@@ -360,6 +360,17 @@ export default function fruitEditor(Alpine) {
         stopContent = listenForEditorContent(this.$el, control, {
           insert: request => editor.chain().focus().insertContent(content(request)).run(),
           set: request => editor.commands.setContent(content(request), { emitUpdate: true }),
+          // Rich to Markdown: the document as Markdown, as pasted formatting is, then the editor again in
+          // Markdown mode (data-fruit-mode is set), focused if it was.
+          toMarkdown: () => {
+            if (markdown) return;
+            const text = editor.isEmpty ? '' : markdownFromDocument(editor.getJSON());
+            const focused = surface.contains(document.activeElement);
+            this.destroy();
+            publishValue(control, text, { commit: false });
+            this.init();
+            if (focused) editor.commands.focus();
+          },
           ...(markdown && { insert: markdown.insert, set: markdown.set }),
           commit,
         });
@@ -385,7 +396,10 @@ export default function fruitEditor(Alpine) {
         this.$el.removeEventListener('focusout', blur);
         toolbar?.removeEventListener('click', click);
         formatting?.removeEventListener('click', toggleFormatting);
-        if (formatting) formatting.hidden = true;
+        if (formatting) {
+          formatting.hidden = true;
+          formatting.setAttribute('aria-expanded', 'false');
+        }
         editor?.destroy();
         if (control) control.hidden = false;
         if (toolbar) {

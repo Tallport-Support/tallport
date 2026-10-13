@@ -14350,18 +14350,29 @@ function Y_(e, t, n, r, { presentation: i = n, focusRoot: a = n } = {}) {
 //#endregion
 //#region src/js/editor-content.js
 var X_ = Symbol.for("fruitui.editor");
-function Z_(e, t, { insert: n, set: r, commit: i }) {
-	let a = new AbortController(), o = (e) => {
-		let { html: a, markdown: o, target: s } = e.detail ?? {};
-		if (e.currentTarget === window && s !== t.id && s !== t.name || t.matches(":disabled") || t.readOnly) return;
-		let c = (e) => e == null ? void 0 : String(e);
-		(e.type === "fruit-editor-set" ? r : n)({
-			html: c(a),
-			markdown: c(o)
-		}), i();
+function Z_(e, t, { insert: n, set: r, toMarkdown: i, commit: a }) {
+	let o = new AbortController(), s = (o) => {
+		let { html: s, markdown: c, mode: l, target: u } = o.detail ?? {};
+		if ((o.currentTarget !== window || u === t.id || u === t.name) && !(t.matches(":disabled") || t.readOnly)) {
+			if (o.type === "fruit-editor-mode") {
+				if (l !== "markdown" || e.dataset.fruitMode === "markdown") return;
+				e.dataset.fruitMode = "markdown", i();
+			} else {
+				let e = (e) => e == null ? void 0 : String(e);
+				(o.type === "fruit-editor-set" ? r : n)({
+					html: e(s),
+					markdown: e(c)
+				});
+			}
+			a();
+		}
 	};
-	for (let t of ["fruit-editor-insert", "fruit-editor-set"]) e.addEventListener(t, o, { signal: a.signal }), window.addEventListener(t, o, { signal: a.signal });
-	return () => a.abort();
+	for (let t of [
+		"fruit-editor-insert",
+		"fruit-editor-set",
+		"fruit-editor-mode"
+	]) e.addEventListener(t, s, { signal: o.signal }), window.addEventListener(t, s, { signal: o.signal });
+	return () => o.abort();
 }
 //#endregion
 //#region node_modules/@lezer/common/dist/index.js
@@ -17448,6 +17459,11 @@ function lx(e) {
 				c = Z_(this.$el, n, {
 					insert: (t) => e.chain().focus().insertContent(f(t)).run(),
 					set: (t) => e.commands.setContent(f(t), { emitUpdate: !0 }),
+					toMarkdown: () => {
+						if (g) return;
+						let t = e.isEmpty ? "" : tx(e.getJSON()), i = r.contains(document.activeElement);
+						this.destroy(), J_(n, t, { commit: !1 }), this.init(), i && e.commands.focus();
+					},
 					...g && {
 						insert: g.insert,
 						set: g.set
@@ -17461,7 +17477,7 @@ function lx(e) {
 				}, i.addEventListener("click", o), ee(), r.hidden = !1, n.hidden = !0, w();
 			},
 			destroy() {
-				a?.(), c?.(), p?.(), this.$el.removeEventListener("focusout", s), i?.removeEventListener("click", o), m?.removeEventListener("click", h), m && (m.hidden = !0), e?.destroy(), n && (n.hidden = !1), i && (i.hidden = !0, i.inert = !1), r && (r.hidden = !0);
+				a?.(), c?.(), p?.(), this.$el.removeEventListener("focusout", s), i?.removeEventListener("click", o), m?.removeEventListener("click", h), m && (m.hidden = !0, m.setAttribute("aria-expanded", "false")), e?.destroy(), n && (n.hidden = !1), i && (i.hidden = !0, i.inert = !1), r && (r.hidden = !0);
 			}
 		};
 	});

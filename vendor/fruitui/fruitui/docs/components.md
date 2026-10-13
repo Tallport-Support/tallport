@@ -748,6 +748,17 @@ Without a bundler, link the prebuilt `editor.global.js` (published with the othe
 </x-fruit::editor>
 ```
 
+**Switching to Markdown.** A field written before it took Markdown can switch to it in place: dispatch `fruit-editor-mode` with `{ mode: 'markdown' }` on or inside the editor, or on `window` with `target`, as for the content requests below. The rich content becomes Markdown, converted as pasted formatting is, so from what the person sees within the field's `formats`, and the editor continues in Markdown mode (`data-fruit-mode="markdown"`). The textarea's value is now the Markdown, published with `input` and `change`, so the person reviews it and the form or `wire:model` saves it as usual; until then nothing is stored. The switch is done when the dispatch returns. It goes one way only: an editor already in Markdown mode, or a disabled or read-only one, ignores the request. The control that asks for it belongs to the application, typically a button below the field with a note that nothing changes until saved. The switch doesn't move focus; if the control goes away, focus the editor's text (`[role=textbox]`). FruitUI leaves the textarea's `name` and other native attributes alone, so a server that tells Markdown apart by name has the application rename the textarea after the switch; with Livewire, keep the mode in the component and render `mode="markdown"` from then on, so an update keeps it. Without the editor plugin, the textarea's HTML becomes its text.
+
+```blade
+<x-fruit::editor id="reply" name="reply">{{ $savedReply->html }}</x-fruit::editor>
+<x-fruit::button x-on:click="
+    $dispatch('fruit-editor-mode', { target: 'reply', mode: 'markdown' });
+    const reply = document.getElementById('reply');
+    if (reply.closest('.f-editor').dataset.fruitMode === 'markdown') reply.name = 'reply_markdown';
+">Switch to Markdown</x-fruit::button>
+```
+
 **Pasted and dropped images.** When someone pastes or drops image files, the textarea dispatches a bubbling `fruit-editor-upload` event whose `detail` holds the `files` and an `insert(url, alt)` function. Upload the files, then call `insert` with each address; the image goes where it was pasted or dropped.
 
 ```blade
