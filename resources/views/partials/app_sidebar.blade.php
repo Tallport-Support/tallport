@@ -55,9 +55,10 @@
             $sidebar_is_current = $sidebar_mailbox_id == $sidebar_mailbox->id;
             $sidebar_muted = (bool) $sidebar_user->mailboxSettings($sidebar_mailbox->id)->mute;
             $sidebar_open_count = $sidebar_counts['mailboxes'][$sidebar_mailbox->id] ?? 0;
+            $sidebar_mailbox_for_you = !empty($sidebar_counts['for_you']['mailboxes'][$sidebar_mailbox->id]);
         @endphp
         <details class="f-sidebar__group app-sidebar__mailbox" data-mailbox_id="{{ $sidebar_mailbox->id }}" @if ($sidebar_is_current || (!$sidebar_all && count($sidebar_mailboxes) == 1)) open @endif>
-            <summary class="f-sidebar__item" data-fruit-mark="{{ $sidebar_mailbox->accent ?: 'blue' }}" @if ($sidebar_open_count) aria-label="{{ __(':mailbox, :count unread', ['mailbox' => $sidebar_mailbox->name, 'count' => $sidebar_open_count]) }}" @endif data-label-unread="{{ __(':mailbox, :count unread', ['mailbox' => $sidebar_mailbox->name, 'count' => ':count']) }}" data-unread-count="{{ $sidebar_open_count }}">
+            <summary class="f-sidebar__item" data-fruit-mark="{{ $sidebar_mailbox->accent ?: 'blue' }}" @if ($sidebar_open_count) aria-label="{{ __(':mailbox, :count unread', ['mailbox' => $sidebar_mailbox->name, 'count' => $sidebar_open_count]) }}" @elseif ($sidebar_mailbox_for_you) aria-label="{{ __(':mailbox, conversations for you, all read', ['mailbox' => $sidebar_mailbox->name]) }}" @endif data-label-unread="{{ __(':mailbox, :count unread', ['mailbox' => $sidebar_mailbox->name, 'count' => ':count']) }}" data-label-read="{{ __(':mailbox, conversations for you, all read', ['mailbox' => $sidebar_mailbox->name]) }}" data-unread-count="{{ $sidebar_open_count }}" data-for-you="{{ $sidebar_mailbox_for_you ? 1 : 0 }}" data-dot="{{ __('Conversations for you, all read') }}">
                 @if ($sidebar_mailbox->isArchived())<x-icon.lock class="f-icon" aria-hidden="true" />@else<x-icon.mail class="f-icon" aria-hidden="true" />@endif
                 <span class="f-sidebar__identity mailbox-name">
                     @if (count($sidebar_mailboxes) == 1)
@@ -72,7 +73,7 @@
                         @action('menu.mailbox.after_name', $sidebar_mailbox)
                     @endif
                 </span>
-                @if ($sidebar_open_count)<span class="f-badge app-sidebar__mailbox-count">{{ $sidebar_open_count }}</span>@endif
+                @if ($sidebar_open_count)<span class="f-badge app-sidebar__mailbox-count">{{ $sidebar_open_count }}</span>@elseif ($sidebar_mailbox_for_you)<span class="f-badge f-badge--dot app-sidebar__mailbox-count" title="{{ __('Conversations for you, all read') }}">{{ __('Conversations for you, all read') }}</span>@endif
                 <svg class="f-icon f-sidebar__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>
             </summary>
             <div class="app-sidebar__folders" data-mailbox_id="{{ $sidebar_mailbox->id }}">

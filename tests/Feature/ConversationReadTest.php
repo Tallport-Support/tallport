@@ -174,6 +174,40 @@ class ConversationReadTest extends FeatureTestCase
         $this->assertGreaterThan(0, Sidebar::unreadCounts($this->agent)['mailboxes'][$this->mailbox->id]);
     }
 
+    /**
+     * With nothing unread, a dot where active conversations for the user (theirs or nobody's)
+     * are all read: not for pending ones, nor for someone else's.
+     */
+    public function testDotForReadActiveConversationsForTheUser()
+    {
+        $folders = $this->mailbox->folders()->get()->filter(fn ($folder) => !$folder->user_id || $folder->user_id == $this->agent->id)->pluck('id', 'type');
+        $conversation = $this->conversation();
+        $for_you = fn () => Sidebar::unreadCounts($this->agent)['for_you'];
+
+        // Unread: the count, and the dot's place taken.
+        $this->assertSame(1, Sidebar::unreadCounts($this->agent)['folders'][$folders[Folder::TYPE_UNASSIGNED]]);
+        ConversationRead::markRead([$conversation->id], $this->agent);
+        $this->assertTrue($for_you()['folders'][$folders[Folder::TYPE_UNASSIGNED]]);
+        $this->assertTrue($for_you()['mailboxes'][$this->mailbox->id]);
+        $html = $this->actingAs($this->agent)->get('/?dashboard=1')->getContent();
+        $this->assertStringContainsString('f-badge f-badge--dot active-count', $html);
+        $this->assertStringContainsString('aria-label="Unassigned, conversations for you, all read"', $html);
+
+        $conversation->changeUser($this->agent->id, $this->agent);
+        $this->assertArrayHasKey($folders[Folder::TYPE_MINE], $for_you()['folders']);
+        $this->assertArrayNotHasKey($folders[Folder::TYPE_UNASSIGNED], $for_you()['folders']);
+        $conversation->star($this->agent);
+        $this->assertArrayHasKey($folders[Folder::TYPE_STARRED], $for_you()['folders']);
+
+        // Someone else's, or pending: no dot.
+        $conversation->changeUser($this->teammate->id, $this->agent);
+        $this->assertSame([], $for_you()['folders']);
+        $this->assertSame([], $for_you()['mailboxes']);
+        $conversation->changeUser(-1, $this->agent);
+        $conversation->changeStatus(Conversation::STATUS_PENDING, $this->agent);
+        $this->assertSame([], $for_you()['folders']);
+    }
+
     public function testStarredDraftsAndSentCountUnreadMessagesWithoutDuplicatingTheMailboxTotal()
     {
         $this->createMailbox([$this->agent]);

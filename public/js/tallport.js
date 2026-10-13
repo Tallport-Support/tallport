@@ -268,41 +268,45 @@ document.addEventListener('submit', function (event) {
 		button.setAttribute('aria-busy', 'true');
 	}
 });
-// Counts are per user: a new message, a read, or a star can change several folders.
+// Counts are per user: a new message, a read, or a star can change several folders. With nothing
+// unread, a dot where active conversations for the user are all read (counts.for_you).
 window.tallportSidebarCounts = function (counts) {
-	function badge(parent, selector, className, count) {
-		var element = parent.querySelector(selector);
-		if (!count) {
-			element && element.remove();
-		} else if (element) {
-			element.textContent = count;
+	var for_you = counts.for_you || {};
+	// A folder's or mailbox's row: its count, its dot, or nothing; and its name for screen readers.
+	function badge(row, selector, className, count, dot) {
+		var element = row.querySelector(selector);
+		row.setAttribute('data-unread-count', count);
+		row.setAttribute('data-for-you', dot ? 1 : 0);
+		if (count) {
+			row.setAttribute('aria-label', row.getAttribute('data-label-unread').replace(':count', count));
+		} else if (dot) {
+			row.setAttribute('aria-label', row.getAttribute('data-label-read'));
 		} else {
+			row.removeAttribute('aria-label');
+		}
+		if (!count && !dot) {
+			element && element.remove();
+			return;
+		}
+		if (!element) {
 			element = document.createElement('span');
-			element.className = className;
-			element.textContent = count;
-			parent.insertBefore(element, parent.querySelector('.f-sidebar__chevron'));
+			row.insertBefore(element, row.querySelector('.f-sidebar__chevron'));
+		}
+		element.className = className + (count ? '' : ' f-badge--dot');
+		element.textContent = count || row.getAttribute('data-dot');
+		if (count) {
+			element.removeAttribute('title');
+		} else {
+			element.title = row.getAttribute('data-dot');
 		}
 	}
 	document.querySelectorAll('.app-folder-link[data-folder_id]').forEach(function (link) {
-		var count = parseInt((counts.folders || {})[link.getAttribute('data-folder_id')] || 0);
-		link.setAttribute('data-unread-count', count);
-		if (count) {
-			link.setAttribute('aria-label', link.getAttribute('data-label-unread').replace(':count', count));
-		} else {
-			link.removeAttribute('aria-label');
-		}
-		badge(link, '.active-count', 'f-badge active-count', count);
+		var id = link.getAttribute('data-folder_id');
+		badge(link, '.active-count', 'f-badge active-count', parseInt((counts.folders || {})[id] || 0), !!(for_you.folders || {})[id]);
 	});
 	document.querySelectorAll('.app-sidebar__mailbox[data-mailbox_id]').forEach(function (group) {
-		var summary = group.querySelector('summary');
-		var count = parseInt((counts.mailboxes || {})[group.getAttribute('data-mailbox_id')] || 0);
-		summary.setAttribute('data-unread-count', count);
-		if (count) {
-			summary.setAttribute('aria-label', summary.getAttribute('data-label-unread').replace(':count', count));
-		} else {
-			summary.removeAttribute('aria-label');
-		}
-		badge(summary, '.app-sidebar__mailbox-count', 'f-badge app-sidebar__mailbox-count', count);
+		var id = group.getAttribute('data-mailbox_id');
+		badge(group.querySelector('summary'), '.app-sidebar__mailbox-count', 'f-badge app-sidebar__mailbox-count', parseInt((counts.mailboxes || {})[id] || 0), !!(for_you.mailboxes || {})[id]);
 	});
 	var current = document.querySelector('.app-folder-link[aria-current="page"]');
 	if (current && !document.body.getAttribute('data-conversation_id')) {

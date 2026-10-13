@@ -439,7 +439,7 @@
         "element": "`span`; optional status role for a live count.",
         "state": "No value or interaction.",
         "keyboard": "No added keyboard behavior.",
-        "options": "`tone`: neutral (default), accent, success, warning, danger. `variant`: filled (default), outline. `dot` slot: a leading status dot. Slot: text; meaning never depends on color alone."
+        "options": "`tone`: neutral (default), accent, success, warning, danger. `variant`: filled (default), outline, or dot (`f-badge--dot`: a 7px dot alone in a count's 20px place, gray when neutral, the selected sidebar item's text color on it; its text names it for screen readers and, in Blade, is its `title` unless one is given; for something waiting that a count would overstate, such as a folder with conversations for you, all read, where its unread count would sit). `dot` slot: a leading status dot. Slot: text; meaning never depends on color alone."
       }
     }
   },

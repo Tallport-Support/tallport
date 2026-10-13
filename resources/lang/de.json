@@ -1824,5 +1824,7 @@
     "The AI took too long to answer.": "Die KI hat zu lange für die Antwort gebraucht.",
     "Searching the documentation…": "Dokumentation wird durchsucht…",
     "Asking for the customer's details…": "Kundendaten werden abgefragt…",
-    "Thinking…": "Denkt nach…"
+    "Thinking…": "Denkt nach…",
+    "Conversations for you, all read": "Unterhaltungen für Sie, alle gelesen",
+    ":mailbox, conversations for you, all read": ":mailbox, Unterhaltungen für Sie, alle gelesen"
 }

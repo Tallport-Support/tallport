@@ -1920,5 +1920,7 @@
     "The AI took too long to answer.": "La IA ha trigat massa a respondre.",
     "Searching the documentation…": "S'està cercant a la documentació…",
     "Asking for the customer's details…": "S'estan demanant les dades del client…",
-    "Thinking…": "Pensant…"
+    "Thinking…": "Pensant…",
+    "Conversations for you, all read": "Converses per a vós, totes llegides",
+    ":mailbox, conversations for you, all read": ":mailbox, converses per a vós, totes llegides"
 }

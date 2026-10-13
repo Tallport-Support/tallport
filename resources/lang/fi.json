@@ -1844,5 +1844,7 @@
     "The AI took too long to answer.": "Tekoälyn vastaus kesti liian kauan.",
     "Searching the documentation…": "Haetaan dokumentaatiosta…",
     "Asking for the customer's details…": "Kysytään asiakkaan tietoja…",
-    "Thinking…": "Miettii…"
+    "Thinking…": "Miettii…",
+    "Conversations for you, all read": "Keskustelut sinulle, kaikki luettu",
+    ":mailbox, conversations for you, all read": ":mailbox, keskustelut sinulle, kaikki luettu"
 }

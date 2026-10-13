@@ -169,12 +169,15 @@ function maybeShowConnectionRestored()
 					folders.innerHTML = fresh.innerHTML;
 				}
 			});
-			var counts = {folders: {}, mailboxes: {}};
+			var counts = {folders: {}, mailboxes: {}, for_you: {folders: {}, mailboxes: {}}};
 			page.querySelectorAll('.app-folder-link[data-folder_id]').forEach(function (link) {
 				counts.folders[link.getAttribute('data-folder_id')] = parseInt(link.getAttribute('data-unread-count') || 0);
+				counts.for_you.folders[link.getAttribute('data-folder_id')] = link.getAttribute('data-for-you') == '1';
 			});
 			page.querySelectorAll('.app-sidebar__mailbox[data-mailbox_id]').forEach(function (group) {
-				counts.mailboxes[group.getAttribute('data-mailbox_id')] = parseInt(group.querySelector('summary').getAttribute('data-unread-count') || 0);
+				var summary = group.querySelector('summary');
+				counts.mailboxes[group.getAttribute('data-mailbox_id')] = parseInt(summary.getAttribute('data-unread-count') || 0);
+				counts.for_you.mailboxes[group.getAttribute('data-mailbox_id')] = summary.getAttribute('data-for-you') == '1';
 			});
 			markCurrentFolder();
 			window.tallportSidebarCounts(counts);

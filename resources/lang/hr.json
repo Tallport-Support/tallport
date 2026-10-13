@@ -1828,5 +1828,7 @@
     "The AI took too long to answer.": "Umjetnoj inteligenciji trebalo je predugo da odgovori.",
     "Searching the documentation…": "Pretraživanje dokumentacije…",
     "Asking for the customer's details…": "Traženje podataka o kupcu…",
-    "Thinking…": "Razmišlja…"
+    "Thinking…": "Razmišlja…",
+    "Conversations for you, all read": "Razgovori za vas, svi pročitani",
+    ":mailbox, conversations for you, all read": ":mailbox, razgovori za vas, svi pročitani"
 }

@@ -1828,5 +1828,7 @@
     "The AI took too long to answer.": "AI-tjänsten tog för lång tid att svara.",
     "Searching the documentation…": "Söker i dokumentationen…",
     "Asking for the customer's details…": "Hämtar kundens uppgifter…",
-    "Thinking…": "Tänker…"
+    "Thinking…": "Tänker…",
+    "Conversations for you, all read": "Konversationer för dig, alla lästa",
+    ":mailbox, conversations for you, all read": ":mailbox, konversationer för dig, alla lästa"
 }

@@ -1828,5 +1828,7 @@
     "The AI took too long to answer.": "לבינה המלאכותית לקח יותר מדי זמן לענות.",
     "Searching the documentation…": "מחפש בתיעוד…",
     "Asking for the customer's details…": "מבקש את פרטי הלקוח…",
-    "Thinking…": "חושב…"
+    "Thinking…": "חושב…",
+    "Conversations for you, all read": "שיחות עבורך, כולן נקראו",
+    ":mailbox, conversations for you, all read": ":mailbox, שיחות עבורך, כולן נקראו"
 }

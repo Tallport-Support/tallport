@@ -41,7 +41,7 @@ final class ComponentContract
         'alert' => ['roles' => ['status', 'alert', 'group'], 'options' => ['tone' => ['info', 'success', 'warning', 'danger']]],
         'attachment' => ['roles' => ['link'], 'requires' => 'href'],
         'avatar' => [],
-        'badge' => ['roles' => ['status'], 'options' => ['tone' => ['neutral', 'accent', 'success', 'warning', 'danger'], 'variant' => ['filled', 'outline']]],
+        'badge' => ['roles' => ['status'], 'options' => ['tone' => ['neutral', 'accent', 'success', 'warning', 'danger'], 'variant' => ['filled', 'outline', 'dot']]],
         'button' => ['roles' => ['button'], 'options' => ['variant' => self::BUTTON_VARIANTS, 'type' => self::BUTTON_TYPES, 'size' => self::BUTTON_SIZES]],
         'copy-button' => ['roles' => ['button'], 'type' => 'button', 'options' => ['variant' => ['default', 'primary', 'ghost'], 'size' => self::BUTTON_SIZES]],
         'card' => ['roles' => ['group', 'region']],

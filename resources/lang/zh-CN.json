@@ -1829,5 +1829,7 @@
     "The AI took too long to answer.": "AI 回答用时过长。",
     "Searching the documentation…": "正在搜索文档…",
     "Asking for the customer's details…": "正在获取客户信息…",
-    "Thinking…": "正在思考…"
+    "Thinking…": "正在思考…",
+    "Conversations for you, all read": "给您的会话，均已读",
+    ":mailbox, conversations for you, all read": ":mailbox，给您的会话，均已读"
 }

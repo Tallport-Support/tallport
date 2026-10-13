@@ -1828,5 +1828,7 @@
     "The AI took too long to answer.": "ИИ отвечал слишком долго.",
     "Searching the documentation…": "Поиск в документации…",
     "Asking for the customer's details…": "Запрос данных клиента…",
-    "Thinking…": "Думает…"
+    "Thinking…": "Думает…",
+    "Conversations for you, all read": "Разговоры для вас, все прочитаны",
+    ":mailbox, conversations for you, all read": ":mailbox, разговоры для вас, все прочитаны"
 }

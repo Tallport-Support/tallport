@@ -1828,5 +1828,7 @@
     "The AI took too long to answer.": "Yapay zekâ yanıt vermekte çok geç kaldı.",
     "Searching the documentation…": "Belgelerde aranıyor…",
     "Asking for the customer's details…": "Müşterinin bilgileri isteniyor…",
-    "Thinking…": "Düşünüyor…"
+    "Thinking…": "Düşünüyor…",
+    "Conversations for you, all read": "Sizin için konuşmalar, tümü okundu",
+    ":mailbox, conversations for you, all read": ":mailbox, sizin için konuşmalar, tümü okundu"
 }

@@ -1831,5 +1831,7 @@
     "The AI took too long to answer.": "AI-en brukte for lang tid på å svare.",
     "Searching the documentation…": "Søker i dokumentasjonen…",
     "Asking for the customer's details…": "Henter kundens opplysninger…",
-    "Thinking…": "Tenker…"
+    "Thinking…": "Tenker…",
+    "Conversations for you, all read": "Samtaler for deg, alle lest",
+    ":mailbox, conversations for you, all read": ":mailbox, samtaler for deg, alle lest"
 }

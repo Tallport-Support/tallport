@@ -1828,5 +1828,7 @@
     "The AI took too long to answer.": "UI je za odgovor potrebovala predolgo.",
     "Searching the documentation…": "Iskanje po dokumentaciji…",
     "Asking for the customer's details…": "Pridobivanje podatkov o stranki…",
-    "Thinking…": "Razmišlja…"
+    "Thinking…": "Razmišlja…",
+    "Conversations for you, all read": "Pogovori za vas, vsi prebrani",
+    ":mailbox, conversations for you, all read": ":mailbox, pogovori za vas, vsi prebrani"
 }

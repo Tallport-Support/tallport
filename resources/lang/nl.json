@@ -1828,5 +1828,7 @@
     "The AI took too long to answer.": "De AI deed er te lang over om te antwoorden.",
     "Searching the documentation…": "Documentatie doorzoeken…",
     "Asking for the customer's details…": "Gegevens van de klant opvragen…",
-    "Thinking…": "Denkt na…"
+    "Thinking…": "Denkt na…",
+    "Conversations for you, all read": "Gesprekken voor u, alle gelezen",
+    ":mailbox, conversations for you, all read": ":mailbox, gesprekken voor u, alle gelezen"
 }

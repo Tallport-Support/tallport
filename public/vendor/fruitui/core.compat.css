@@ -892,6 +892,34 @@ textarea.f-input {
     background: currentColor;
   }
 
+/* Dot: the badge as a dot alone, in the place its count would take, such as a sidebar folder whose
+     conversations for you are all read. Its text names it for screen readers; neutral, it's gray. */
+
+.f-badge.f-badge--dot {
+    display: inline-block;
+    position: relative;
+    flex-shrink: 0;
+    width: 20px;
+    min-width: 0;
+    padding-inline: 0;
+    overflow: hidden;
+    background: transparent;
+    color: var(--f-internal-badge-tone, var(--f-tertiary));
+    text-indent: 20px;
+    white-space: nowrap;
+  }
+
+.f-badge--dot::before {
+    position: absolute;
+    inset: 0;
+    width: 7px;
+    height: 7px;
+    margin: auto;
+    border-radius: 50%;
+    background: currentColor;
+    content: '';
+  }
+
 .f-card {
     padding: var(--f-space-6);
     border: 1px solid var(--f-border);
@@ -1120,7 +1148,8 @@ textarea.f-input {
     .f-switch > input::before {
       background: ButtonText;
     }
-    .f-toast[data-tone]::before {
+    .f-toast[data-tone]::before,
+    .f-badge--dot::before {
       forced-color-adjust: none;
       background: CanvasText;
     }

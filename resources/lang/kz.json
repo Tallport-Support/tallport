@@ -2222,5 +2222,7 @@
     "The AI took too long to answer.": "ЖИ жауап беруге тым ұзақ уақыт жұмсады.",
     "Searching the documentation…": "Құжаттамадан іздеу…",
     "Asking for the customer's details…": "Тұтынушы деректері сұралуда…",
-    "Thinking…": "Ойлануда…"
+    "Thinking…": "Ойлануда…",
+    "Conversations for you, all read": "Сізге арналған әңгімелер, барлығы оқылған",
+    ":mailbox, conversations for you, all read": ":mailbox, сізге арналған әңгімелер, барлығы оқылған"
 }

@@ -1828,5 +1828,7 @@
     "The AI took too long to answer.": "Odpoveď AI trvala príliš dlho.",
     "Searching the documentation…": "Prehľadáva sa dokumentácia…",
     "Asking for the customer's details…": "Zisťujú sa údaje o zákazníkovi…",
-    "Thinking…": "Premýšľa…"
+    "Thinking…": "Premýšľa…",
+    "Conversations for you, all read": "Konverzácie pre vás, všetky prečítané",
+    ":mailbox, conversations for you, all read": ":mailbox, konverzácie pre vás, všetky prečítané"
 }

@@ -105,7 +105,7 @@ class Sidebar
     {
         $mailbox_ids = $user->mailboxesIdsCanView();
         if (!$mailbox_ids) {
-            return ['folders' => [], 'mailboxes' => []];
+            return ['folders' => [], 'mailboxes' => [], 'for_you' => ['folders' => [], 'mailboxes' => []]];
         }
 
         $folders = Folder::whereIn('mailbox_id', $mailbox_ids)
@@ -185,7 +185,67 @@ class Sidebar
             }
         }
 
-        return ['folders' => $counts, 'mailboxes' => $mailbox_counts];
+        return ['folders' => $counts, 'mailboxes' => $mailbox_counts, 'for_you' => self::forYou($user, $folders, $mailbox_ids)];
+    }
+
+    /**
+     * The folders and mailboxes that hold an active conversation for the user (assigned to them
+     * or to nobody): with nothing unread, the sidebar shows them a dot. [folders, mailboxes], as
+     * id => true.
+     */
+    protected static function forYou(User $user, $folders, array $mailbox_ids)
+    {
+        $active = Conversation::whereIn('mailbox_id', $mailbox_ids)
+            ->where('state', Conversation::STATE_PUBLISHED)->where('status', Conversation::STATUS_ACTIVE);
+        if ($user->canSeeOnlyAssignedConversations()) {
+            $active->where('user_id', $user->id);
+        } else {
+            $active->where(function ($query) use ($user) {
+                $query->whereNull('user_id')->orWhere('user_id', 0)->orWhere('user_id', $user->id);
+            });
+        }
+
+        $folder_by_id = $folders->keyBy('id');
+        $result = ['folders' => [], 'mailboxes' => []];
+        foreach ((clone $active)->select('mailbox_id', 'folder_id', 'user_id')->distinct()->get() as $row) {
+            $result['mailboxes'][$row->mailbox_id] = true;
+            // Assigned lists others' conversations; the user's are in Mine (by assignee, not folder).
+            $folder = $folder_by_id->get($row->folder_id);
+            if ($folder && $folder->type != Folder::TYPE_ASSIGNED) {
+                $result['folders'][$folder->id] = true;
+            }
+            if ($row->user_id == $user->id) {
+                $mine = $folders->first(fn ($folder) => $folder->mailbox_id == $row->mailbox_id && $folder->type == Folder::TYPE_MINE);
+                if ($mine) {
+                    $result['folders'][$mine->id] = true;
+                }
+            }
+        }
+        // Starred: the user's own list of conversations.
+        $starred_ids = $folders->where('type', Folder::TYPE_STARRED)->pluck('id')->all();
+        if ($starred_ids) {
+            $starred = ConversationFolder::whereIn('folder_id', $starred_ids)
+                ->whereIn('conversation_id', (clone $active)->select('id'))->distinct()->pluck('folder_id');
+            foreach ($starred as $folder_id) {
+                $result['folders'][$folder_id] = true;
+            }
+        }
+
+        if (AllMailboxes::isAvailable($user)) {
+            foreach (AllMailboxes::TYPES as $type) {
+                if ($type == AllMailboxes::TYPE_SENT) {
+                    $sent = Thread::where('type', Thread::TYPE_MESSAGE)->where('created_by_user_id', $user->id)
+                        ->whereIn('conversation_id', (clone $active)->select('id'))->exists();
+                    if ($sent) {
+                        $result['folders'][-$type] = true;
+                    }
+                } elseif ($folders->where('type', $type)->contains(fn ($folder) => !empty($result['folders'][$folder->id]))) {
+                    $result['folders'][-$type] = true;
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**

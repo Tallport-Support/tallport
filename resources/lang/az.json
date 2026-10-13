@@ -1828,5 +1828,7 @@
     "The AI took too long to answer.": "Süni intellekt çox gec cavab verdi.",
     "Searching the documentation…": "Sənədlər axtarılır…",
     "Asking for the customer's details…": "Müştərinin məlumatları soruşulur…",
-    "Thinking…": "Düşünür…"
+    "Thinking…": "Düşünür…",
+    "Conversations for you, all read": "Sizin üçün söhbətlər, hamısı oxunub",
+    ":mailbox, conversations for you, all read": ":mailbox, sizin üçün söhbətlər, hamısı oxunub"
 }
