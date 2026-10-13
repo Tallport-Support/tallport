@@ -8,8 +8,11 @@
     <div class="page-content">
         @include('partials/flash_messages')
 
-        <form id="page-form" class="settings-form" method="POST" action="" x-on:change="Tallport.autoSave($el)">
+        {{-- Saved with its button, not as it changes: an auto reply isn't sent half-written. --}}
+        <form id="page-form" class="settings-form" method="POST" action="">
             {{ csrf_field() }}
+            {{-- Enter in a field saves (the form's first submit button), not Add Language. --}}
+            <button type="submit" hidden aria-hidden="true" tabindex="-1"></button>
 
             <x-fruit::form-section :title="__('Auto Reply')" :level="3" :footer="__('Customers get the auto reply in their language if you add it here; otherwise the default one. Chinese, Japanese and Korean are recognised from the characters used, other languages by the AI (when it is set up).').' '.__('Auto replies don\'t include your mailbox signature, so be sure to add your contact information if necessary.')">
                 <x-fruit::field :label="__('Enable Auto Reply')" layout="row">
@@ -75,4 +78,8 @@
         </form>
     </div>
 
+@endsection
+
+@section('page_footer')
+    <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
 @endsection

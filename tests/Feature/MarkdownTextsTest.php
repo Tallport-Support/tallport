@@ -122,8 +122,10 @@ class MarkdownTextsTest extends FeatureTestCase
         $version = MailboxAutoReply::where('mailbox_id', $mailbox->id)->where('language', 'de')->first();
         $this->assertSame('**Danke**', $version->message_markdown);
         $this->assertSame('<p><strong>Danke</strong></p>', $version->message);
+        // Saved with its button, not as it changes: no auto reply goes out half-written.
         $this->actingAs($this->admin)->get(route('mailboxes.auto_reply', ['id' => $this->mailbox->id]))
-            ->assertSee('name="auto_reply_message_markdown"', false)->assertSee('name="versions[de][message_markdown]"', false);
+            ->assertSee('name="auto_reply_message_markdown"', false)->assertSee('name="versions[de][message_markdown]"', false)
+            ->assertDontSee('Tallport.autoSave', false)->assertSee('form="page-form"', false);
     }
 
     public function testKnowledgeBase()
