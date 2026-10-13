@@ -391,4 +391,14 @@ class ModulesControllerTest extends FeatureTestCase
     {
         $this->assertSame('Unknown action', $this->modulesAjax(['action' => 'no_such_action'])['msg']);
     }
+
+    /**
+     * With no modules, the list says so (CI has none; installations usually have some).
+     */
+    public function testNoModulesInstalled()
+    {
+        $html = view('modules/columns/modules', ['installed_modules' => [], 'invalid_symlinks' => [], 'module' => null])->render();
+
+        $this->assertStringContainsString('No modules are installed.', $html);
+    }
 }

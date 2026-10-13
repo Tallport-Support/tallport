@@ -6,7 +6,7 @@
         @include('partials/flash_messages')
 
         @if (!count($installed_modules))
-            <x-fruit::empty-state :title="__('No modules are installed.')" />
+            <x-fruit::empty-state><x-slot:title>{{ __('No modules are installed.') }}</x-slot:title></x-fruit::empty-state>
         @else
             {{-- New versions are checked once the page is open. --}}
             <livewire:module-updates lazy />
