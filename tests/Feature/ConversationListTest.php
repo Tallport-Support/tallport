@@ -64,6 +64,35 @@ class ConversationListTest extends FeatureTestCase
         $list->call('filterAssignee')->assertSee('Apple question');
     }
 
+    /**
+     * Show: the unread conversations, or a status the folder's conversations can have.
+     */
+    public function testShowsUnreadOrAStatus()
+    {
+        $read = $this->conversation('Read question');
+        $unread = $this->conversation('Unread question');
+        $pending = $this->conversation('Pending question');
+        \App\ConversationRead::markRead([$read->id, $pending->id], $this->agent);
+        $pending->changeStatus(Conversation::STATUS_PENDING, $this->agent);
+        $folder = $this->folder(Folder::TYPE_UNASSIGNED);
+
+        $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $folder])
+            ->assertSee('Read question')->assertSee('Unread question')
+            // Unassigned has no closed conversations: no Closed to choose.
+            ->assertSee("filterShow('unread')", false)->assertSee("filterShow('".Conversation::STATUS_PENDING."')", false)
+            ->assertDontSee("filterShow('".Conversation::STATUS_CLOSED."')", false);
+
+        $list->call('filterShow', 'unread')->assertSee('Unread question')->assertDontSee('Read question')->assertDontSee('Pending question');
+        $list->call('filterShow', Conversation::STATUS_PENDING)->assertSee('Pending question')->assertDontSee('Unread question');
+        $list->call('filterShow', Conversation::STATUS_CLOSED)->assertDontSee('question')->assertSee('There are no conversations here')->assertSee('conv-list__show', false);
+        $list->call('filterShow', 'nonsense')->assertSee('Read question')->assertSee('Unread question');
+
+        // Closed: all closed, only Unread to choose.
+        $read->changeStatus(Conversation::STATUS_CLOSED, $this->agent);
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_CLOSED)])
+            ->assertSee("filterShow('unread')", false)->assertDontSee("filterShow('".Conversation::STATUS_ACTIVE."')", false);
+    }
+
     public function testOneListQueryDoesNotChangeAnothersParameters()
     {
         $first = $this->conversation('First question');

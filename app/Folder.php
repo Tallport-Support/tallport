@@ -442,4 +442,20 @@ class Folder extends Model
             $this->meta = $metas;
         }
     }
+
+    /**
+     * The statuses its conversations can have, to show only one of them (the list's Show
+     * menu): none where they all have the same.
+     */
+    public function statuses()
+    {
+        if (in_array($this->type, [self::TYPE_UNASSIGNED, self::TYPE_MINE, self::TYPE_ASSIGNED])) {
+            return [Conversation::STATUS_ACTIVE, Conversation::STATUS_PENDING];
+        }
+        if (in_array($this->type, [self::TYPE_CLOSED, self::TYPE_SPAM])) {
+            return [];
+        }
+
+        return [Conversation::STATUS_ACTIVE, Conversation::STATUS_PENDING, Conversation::STATUS_CLOSED];
+    }
 }

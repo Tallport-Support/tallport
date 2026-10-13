@@ -114,6 +114,7 @@ class ConversationListQuery
         if (!empty($request->params['user_id'])) {
             $query_conversations->where('conversations.user_id', (int)$request->params['user_id']);
         }
+        self::show($query_conversations, $request->params['show'] ?? null, $user);
 
         return [
             'folder'               => $folder,
@@ -223,7 +224,20 @@ class ConversationListQuery
         if (!empty($request->params['user_id'])) {
             $query_conversations->where('conversations.user_id', (int)$request->params['user_id']);
         }
+        self::show($query_conversations, $request->params['show'] ?? null, $user);
 
         return $query_conversations->paginate(Conversation::DEFAULT_LIST_SIZE, ['*'], 'page', $request->page);
+    }
+
+    /**
+     * What the list's Show menu chose: the unread conversations, or those with a status.
+     */
+    public static function show($query, $show, $user)
+    {
+        if ($show == 'unread') {
+            \App\ConversationRead::whereUnread($query, $user);
+        } elseif (is_numeric($show) && array_key_exists((int) $show, Conversation::$statuses)) {
+            $query->where('conversations.status', (int) $show);
+        }
     }
 }

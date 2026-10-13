@@ -91,6 +91,29 @@ class ConversationRead extends Model
     }
 
     /**
+     * Only the conversations the user hasn't read (as unreadIds()), in a conversations query.
+     */
+    public static function whereUnread($query, $user)
+    {
+        $read_up_to = (int) \Option::get(self::OPTION_READ_UP_TO, 0);
+
+        return $query->whereExists(function ($threads) use ($user, $read_up_to) {
+            $threads->selectRaw('1')->from('threads')
+                ->leftJoin('conversation_reads', function ($join) use ($user) {
+                    $join->on('conversation_reads.conversation_id', '=', 'threads.conversation_id')
+                        ->where('conversation_reads.user_id', $user->id);
+                })
+                ->whereColumn('threads.conversation_id', 'conversations.id')
+                ->whereIn('threads.type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE, Thread::TYPE_NOTE])
+                ->where('threads.state', Thread::STATE_PUBLISHED)
+                ->where(function ($query) use ($user) {
+                    $query->whereNull('threads.created_by_user_id')->orWhere('threads.created_by_user_id', '!=', $user->id);
+                })
+                ->whereRaw('threads.id > case when conversation_reads.conversation_id is not null and conversation_reads.thread_id is null then 0 else coalesce(conversation_reads.thread_id, ?) end', [$read_up_to]);
+        });
+    }
+
+    /**
      * Unread messages in each conversation that concerns the user (assigned to them or to
      * nobody), for the sidebar. A conversation marked unread has a null marker: all its
      * messages are unread.

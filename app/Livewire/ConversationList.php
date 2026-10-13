@@ -127,6 +127,22 @@ class ConversationList extends Component
         $this->selected = [];
     }
 
+    /**
+     * Only the unread conversations ('unread'), or those with a status; none: all.
+     */
+    public function filterShow($show = null)
+    {
+        $params = $this->params;
+        if ($show == 'unread' || (is_numeric($show) && array_key_exists((int) $show, Conversation::$statuses))) {
+            $params['show'] = $show == 'unread' ? 'unread' : (int) $show;
+        } else {
+            unset($params['show']);
+        }
+        $this->params = $params;
+        $this->page = 1;
+        $this->selected = [];
+    }
+
     public function assign($user_id)
     {
         Conversation::bulkChangeUser((array) $this->selected, $user_id, auth()->user());

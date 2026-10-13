@@ -1,4 +1,4 @@
-@if (count($conversations) || (isset($params) && !empty($params['user_id'])))
+@if (count($conversations) || (isset($params) && (!empty($params['user_id']) || !empty($params['show']))))
     @php
         if (is_array($conversations)) {
             $conversations = collect($conversations);
@@ -66,6 +66,24 @@
                     <x-fruit::menu-link href="#" class="conv-col-sort" wire:click.prevent="sort('{{ $sort_field }}')" :aria-current="$sort_by == $sort_field ? 'true' : null">{{ $sort_title }}@if ($sort_by == $sort_field) {{ $sort_order == 'desc' ? '↑' : '↓' }}@endif</x-fruit::menu-link>
                 @endforeach
             </x-fruit::menu>
+            {{-- Show: all, the unread, or one of the statuses the folder's conversations can have (App\Livewire\ConversationList::filterShow()). --}}
+            @if (isset($selected))
+                @php
+                    $show = $params['show'] ?? null;
+                    $show_options = ['unread' => __('Unread')];
+                    foreach ($folder->statuses() as $show_status_option) {
+                        $show_options[$show_status_option] = App\Conversation::statusCodeToName($show_status_option);
+                    }
+                @endphp
+                <x-fruit::menu :title="__('Show')" :class="$show ? 'conv-list__show filtered' : 'conv-list__show'">
+                    <x-slot:trigger class="f-button--ghost f-button--small"><x-icon.funnel class="f-icon" aria-hidden="true" /> {{ $show ? ($show_options[$show] ?? __('All')) : __('All') }}</x-slot:trigger>
+                    <x-fruit::menu-link href="#" wire:click.prevent="filterShow" :aria-current="$show ? null : 'true'">{{ __('All') }}</x-fruit::menu-link>
+                    <x-fruit::menu-separator />
+                    @foreach ($show_options as $show_value => $show_label)
+                        <x-fruit::menu-link href="#" wire:click.prevent="filterShow('{{ $show_value }}')" :aria-current="(string) $show === (string) $show_value ? 'true' : null">{{ $show_label }}</x-fruit::menu-link>
+                    @endforeach
+                </x-fruit::menu>
+            @endif
             @if ($show_assigned)
                 @php
                     $assignees = App\User::assigneeFilterUsers(Auth::user(), $folder->id > 0 ? $folder->mailbox : null);
@@ -162,6 +180,13 @@
                 </li>
             @endforeach
         </x-fruit::item-list>
+        @if (!count($conversations))
+            {{-- Filtered to nothing: the header stays, to change the filter. --}}
+            <x-fruit::empty-state>
+                <x-slot:icon><x-icon.inbox /></x-slot:icon>
+                {{ __('There are no conversations here') }}
+            </x-fruit::empty-state>
+        @endif
 
         @if (count($conversations))
             <x-fruit::pagination class="conv-list__footer" :aria-label="__('Conversations')">
