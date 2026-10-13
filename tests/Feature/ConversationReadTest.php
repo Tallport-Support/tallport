@@ -148,6 +148,32 @@ class ConversationReadTest extends FeatureTestCase
         $this->assertStringContainsString('data-folder_id="'.$folder_ids[Folder::TYPE_DELETED].'"', $this->actingAs($this->agent)->get('/?dashboard=1')->assertOk()->getContent(), 'An unread folder stays visible before background totals catch up.');
     }
 
+    /**
+     * Conversations assigned to someone else don't concern the user: no folder (nor the mailbox)
+     * counts them, until they're assigned to the user or to nobody.
+     */
+    public function testOthersConversationsAreNotCounted()
+    {
+        $conversation = $this->conversation();
+        $conversation->star($this->agent);
+        $conversation->changeUser($this->teammate->id, $this->teammate);
+        foreach ([Conversation::STATUS_ACTIVE, Conversation::STATUS_CLOSED] as $status) {
+            $conversation->changeStatus($status, $this->teammate);
+            $counts = Sidebar::unreadCounts($this->agent);
+            $this->assertSame(0, array_sum($counts['folders']), 'Status '.$status);
+            $this->assertSame(0, $counts['mailboxes'][$this->mailbox->id]);
+        }
+        $conversation->deleteToFolder($this->teammate);
+        $this->assertSame(0, array_sum(Sidebar::unreadCounts($this->agent)['folders']));
+
+        // Unassigned again: counted.
+        $other = $this->conversation('Another question');
+        $other->changeUser($this->teammate->id, $this->teammate);
+        $this->assertSame(0, Sidebar::unreadCounts($this->agent)['mailboxes'][$this->mailbox->id]);
+        $other->changeUser(-1, $this->teammate);
+        $this->assertGreaterThan(0, Sidebar::unreadCounts($this->agent)['mailboxes'][$this->mailbox->id]);
+    }
+
     public function testStarredDraftsAndSentCountUnreadMessagesWithoutDuplicatingTheMailboxTotal()
     {
         $this->createMailbox([$this->agent]);

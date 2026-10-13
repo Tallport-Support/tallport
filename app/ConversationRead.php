@@ -91,8 +91,9 @@ class ConversationRead extends Model
     }
 
     /**
-     * Unread messages in each conversation the user can access, for the sidebar.
-     * A conversation marked unread has a null marker: all its messages are unread.
+     * Unread messages in each conversation that concerns the user (assigned to them or to
+     * nobody), for the sidebar. A conversation marked unread has a null marker: all its
+     * messages are unread.
      */
     public static function unreadMessageCounts($user)
     {
@@ -123,8 +124,13 @@ class ConversationRead extends Model
             })
             ->whereRaw('threads.id > case when conversation_reads.conversation_id is not null and conversation_reads.thread_id is null then 0 else coalesce(conversation_reads.thread_id, ?) end', [$read_up_to]);
 
+        // Only what concerns the user: assigned to them, or to nobody yet.
         if ($user->canSeeOnlyAssignedConversations()) {
             $query->where('conversations.user_id', $user->id);
+        } else {
+            $query->where(function ($query) use ($user) {
+                $query->whereNull('conversations.user_id')->orWhere('conversations.user_id', 0)->orWhere('conversations.user_id', $user->id);
+            });
         }
 
         return $query->selectRaw('conversations.id, conversations.mailbox_id, conversations.folder_id, conversations.user_id, conversations.status, conversations.state, count(*) as unread_count')
