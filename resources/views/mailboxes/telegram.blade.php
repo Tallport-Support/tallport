@@ -35,7 +35,10 @@
                 </x-fruit::alert>
             @endif
 
-            <form id="page-form" class="settings-form" method="POST" action="{{ route('mailboxes.telegram.save', ['id' => $mailbox->id]) }}" x-on:change="Tallport.autoSave($el)">
+            {{-- Saved with its button: the auto replies go to customers, never half-written. --}}
+            <form id="page-form" class="settings-form" method="POST" action="{{ route('mailboxes.telegram.save', ['id' => $mailbox->id]) }}">
+                {{-- Enter in a field saves (the form's first submit button), not Add Language. --}}
+                <button type="submit" hidden aria-hidden="true" tabindex="-1"></button>
                 {{ csrf_field() }}
 
                 <x-fruit::form-section :title="__('Bot')" :level="3">
@@ -83,6 +86,9 @@
                     @endif
                 </x-fruit::form-section>
 
+                <footer class="f-form-row settings-form__actions">
+                    <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
+                </footer>
             </form>
         </div>
     </div>

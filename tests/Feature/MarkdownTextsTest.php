@@ -123,9 +123,10 @@ class MarkdownTextsTest extends FeatureTestCase
         $this->assertSame('**Danke**', $version->message_markdown);
         $this->assertSame('<p><strong>Danke</strong></p>', $version->message);
         // Saved with its button, not as it changes: no auto reply goes out half-written.
-        $this->actingAs($this->admin)->get(route('mailboxes.auto_reply', ['id' => $this->mailbox->id]))
+        $html = $this->actingAs($this->admin)->get(route('mailboxes.auto_reply', ['id' => $this->mailbox->id]))
             ->assertSee('name="auto_reply_message_markdown"', false)->assertSee('name="versions[de][message_markdown]"', false)
-            ->assertDontSee('Tallport.autoSave', false)->assertSee('form="page-form"', false);
+            ->assertSee('form="page-form"', false)->getContent();
+        $this->assertDoesNotMatchRegularExpression('/<form id="page-form"[^>]*autoSave/', $html);
     }
 
     public function testKnowledgeBase()
@@ -165,5 +166,23 @@ class MarkdownTextsTest extends FeatureTestCase
         $this->assertSame('<p><em>Example Inc.</em></p>', Option::get('branding.email_footer'));
         $this->assertSame('<p>Old</p>', Option::get('branding.footer'));
         $this->assertNull(Option::get('branding.footer_markdown', null));
+    }
+
+    /**
+     * What customers receive is saved with a Save button, never as it's typed: the auto
+     * replies, Telegram's too, the signature and From name, and the emails' branding.
+     */
+    public function testCustomerFacingTextsHaveASaveButton()
+    {
+        foreach ([
+            route('mailboxes.auto_reply', ['id' => $this->mailbox->id]) => 'page-form',
+            route('mailboxes.telegram', ['id' => $this->mailbox->id]) => 'page-form',
+            route('mailboxes.update', ['id' => $this->mailbox->id]) => 'mailbox-form',
+            route('settings', ['section' => 'branding']) => 'page-form',
+        ] as $url => $form) {
+            $html = $this->actingAs($this->admin)->get($url)->assertOk()->getContent();
+            $this->assertMatchesRegularExpression('/<form id="'.$form.'"(?![^>]*autoSave)[^>]*>/', $html, $url);
+            $this->assertMatchesRegularExpression('#>\s*Save\s*</button>#', $html, $url);
+        }
     }
 }

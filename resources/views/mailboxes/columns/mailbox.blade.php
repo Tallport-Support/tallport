@@ -1,4 +1,4 @@
-{{-- A mailbox as a drill-down level (layouts/app): its settings, saved as they change, then a row for
+{{-- A mailbox as a drill-down level (layouts/app): its settings, saved with its button (the signature and From name go to customers), then a row for
      each further page with its current value ($mailbox_section: the open one's row is current), and
      deleting it. --}}
 <x-fruit::drilldown-column :title="$mailbox->name" id="mailbox">
@@ -12,7 +12,7 @@
         @if (empty($mailbox_section))
             @include('partials/flash_messages')
         @endif
-    <form id="mailbox-form" class="settings-form" method="POST" action="{{ route('mailboxes.update.save', ['id' => $mailbox->id]) }}" enctype="multipart/form-data" x-data="tallportMailboxUpdate(@js((string) App\Mailbox::FROM_NAME_CUSTOM))" x-on:change="Tallport.autoSave($el)">
+    <form id="mailbox-form" class="settings-form" method="POST" action="{{ route('mailboxes.update.save', ['id' => $mailbox->id]) }}" enctype="multipart/form-data" x-data="tallportMailboxUpdate(@js((string) App\Mailbox::FROM_NAME_CUSTOM))">
         {{ csrf_field() }}
 
         @action('mailbox.update.before_name', $mailbox, $errors)
@@ -109,6 +109,10 @@
 
         {{-- Its further pages: connection, permissions, auto reply, channels, workflows and more. --}}
         @include('mailboxes/settings_menu')
+
+        <footer class="f-form-row settings-form__actions">
+            <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
+        </footer>
 
         @if (auth()->user()->isAdmin())
             <x-fruit::form-section :title="__('Danger Zone')" :level="3">

@@ -1,4 +1,5 @@
-<form id="page-form" class="settings-form" method="POST" action="" enctype="multipart/form-data" x-on:change="Tallport.autoSave($el)">
+{{-- Saved with its button: the emails' header and footer go to customers, never half-written. --}}
+<form id="page-form" class="settings-form" method="POST" action="" enctype="multipart/form-data">
     {{ csrf_field() }}
 
     <x-fruit::form-section :title="__('Branding')" :level="3">
@@ -84,4 +85,7 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
+    <footer class="f-form-row settings-form__actions">
+        <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
+    </footer>
 </form>

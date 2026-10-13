@@ -225,7 +225,9 @@ class MailboxesTest extends FeatureTestCase
             ->assertDontSee('page-nav__switcher', false)
             ->assertSeeInOrder(['Reopen Window', 'Telegram', 'Nostr', 'Connection Settings', 'Not set up', 'Permissions', '2 people', 'Auto Reply', 'On', 'Workflows', 'Saved Replies'])
             ->assertDontSee('app-sidebar__mailbox-pages', false)->assertDontSee('form="page-form"', false)
-            ->assertSee('Tallport.autoSave($el)', false)->getContent();
+            // Saved with its button: the signature and From name go to customers.
+            ->assertSeeInOrder(['id="mailbox-form"', 'Save', 'Danger Zone'], false)->getContent();
+        $this->assertDoesNotMatchRegularExpression('/<form id="mailbox-form"[^>]*autoSave/', $html);
         $this->assertMatchesRegularExpression($current(route('mailboxes.update', ['id' => $mailbox->id]), 'page'), $html);
         // A further page: a level beside the mailbox, its row there current.
         $html = $this->actingAs($this->admin)->get(route('mailboxes.auto_reply', ['id' => $mailbox->id]))->assertOk()
