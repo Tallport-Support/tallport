@@ -1830,5 +1830,8 @@
     "Asking for the customer's details…": "Se cer datele clientului…",
     "Thinking…": "Se gândește…",
     "Conversations for you, all read": "Conversații pentru dumneavoastră, toate citite",
-    ":mailbox, conversations for you, all read": ":mailbox, conversații pentru dumneavoastră, toate citite"
+    ":mailbox, conversations for you, all read": ":mailbox, conversații pentru dumneavoastră, toate citite",
+    "Filter": "Filtru",
+    "Any Status": "Orice Stare",
+    "Clear Filters": "Șterge Filtrele"
 }

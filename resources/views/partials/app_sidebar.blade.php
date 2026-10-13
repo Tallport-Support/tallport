@@ -73,7 +73,7 @@
                         @action('menu.mailbox.after_name', $sidebar_mailbox)
                     @endif
                 </span>
-                @if ($sidebar_open_count)<span class="f-badge app-sidebar__mailbox-count">{{ $sidebar_open_count }}</span>@elseif ($sidebar_mailbox_for_you)<span class="f-badge f-badge--dot app-sidebar__mailbox-count" title="{{ __('Conversations for you, all read') }}">{{ __('Conversations for you, all read') }}</span>@endif
+                @if ($sidebar_open_count)<span class="f-badge app-sidebar__mailbox-count">{{ $sidebar_open_count }}</span>@elseif ($sidebar_mailbox_for_you)<span class="f-badge f-badge--dot app-sidebar__mailbox-count" role="img" aria-label="{{ __('Conversations for you, all read') }}" title="{{ __('Conversations for you, all read') }}"></span>@endif
                 <svg class="f-icon f-sidebar__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>
             </summary>
             <div class="app-sidebar__folders" data-mailbox_id="{{ $sidebar_mailbox->id }}">

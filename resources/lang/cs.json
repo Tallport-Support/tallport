@@ -1830,5 +1830,8 @@
     "Asking for the customer's details…": "Zjišťují se údaje o zákazníkovi…",
     "Thinking…": "Přemýšlí…",
     "Conversations for you, all read": "Konverzace pro vás, všechny přečtené",
-    ":mailbox, conversations for you, all read": ":mailbox, konverzace pro vás, všechny přečtené"
+    ":mailbox, conversations for you, all read": ":mailbox, konverzace pro vás, všechny přečtené",
+    "Filter": "Filtr",
+    "Any Status": "Jakýkoli Stav",
+    "Clear Filters": "Zrušit Filtry"
 }

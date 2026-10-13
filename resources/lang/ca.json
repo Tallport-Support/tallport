@@ -1922,5 +1922,7 @@
     "Asking for the customer's details…": "S'estan demanant les dades del client…",
     "Thinking…": "Pensant…",
     "Conversations for you, all read": "Converses per a vós, totes llegides",
-    ":mailbox, conversations for you, all read": ":mailbox, converses per a vós, totes llegides"
+    ":mailbox, conversations for you, all read": ":mailbox, converses per a vós, totes llegides",
+    "Any Status": "Qualsevol Estat",
+    "Clear Filters": "Esborra els Filtres"
 }

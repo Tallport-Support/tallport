@@ -1830,5 +1830,8 @@
     "Asking for the customer's details…": "顧客の情報を問い合わせ中…",
     "Thinking…": "考え中…",
     "Conversations for you, all read": "あなた宛ての会話、すべて既読",
-    ":mailbox, conversations for you, all read": ":mailbox、あなた宛ての会話、すべて既読"
+    ":mailbox, conversations for you, all read": ":mailbox、あなた宛ての会話、すべて既読",
+    "Filter": "フィルタ",
+    "Any Status": "すべてのステータス",
+    "Clear Filters": "フィルタをクリア"
 }

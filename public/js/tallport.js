@@ -292,11 +292,16 @@ window.tallportSidebarCounts = function (counts) {
 			element = document.createElement('span');
 			row.insertBefore(element, row.querySelector('.f-sidebar__chevron'));
 		}
+		// The dot: an image with no text (FruitUI's dot badge).
 		element.className = className + (count ? '' : ' f-badge--dot');
-		element.textContent = count || row.getAttribute('data-dot');
+		element.textContent = count || '';
 		if (count) {
-			element.removeAttribute('title');
+			['role', 'aria-label', 'title'].forEach(function (name) {
+				element.removeAttribute(name);
+			});
 		} else {
+			element.setAttribute('role', 'img');
+			element.setAttribute('aria-label', row.getAttribute('data-dot'));
 			element.title = row.getAttribute('data-dot');
 		}
 	}

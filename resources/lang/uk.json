@@ -1830,5 +1830,8 @@
     "Asking for the customer's details…": "Запит даних клієнта…",
     "Thinking…": "Думає…",
     "Conversations for you, all read": "Розмови для вас, усі прочитані",
-    ":mailbox, conversations for you, all read": ":mailbox, розмови для вас, усі прочитані"
+    ":mailbox, conversations for you, all read": ":mailbox, розмови для вас, усі прочитані",
+    "Filter": "Фільтр",
+    "Any Status": "Будь-Який Статус",
+    "Clear Filters": "Скинути Фільтри"
 }

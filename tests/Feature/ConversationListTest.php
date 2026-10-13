@@ -65,32 +65,40 @@ class ConversationListTest extends FeatureTestCase
     }
 
     /**
-     * Show: the unread conversations, or a status the folder's conversations can have.
+     * One Filter menu: Unread, a status the folder's conversations can have, both, and Clear Filters.
      */
-    public function testShowsUnreadOrAStatus()
+    public function testFiltersByUnreadAndStatus()
     {
         $read = $this->conversation('Read question');
         $unread = $this->conversation('Unread question');
         $pending = $this->conversation('Pending question');
+        $unread_pending = $this->conversation('Waiting question');
         \App\ConversationRead::markRead([$read->id, $pending->id], $this->agent);
         $pending->changeStatus(Conversation::STATUS_PENDING, $this->agent);
+        $unread_pending->changeStatus(Conversation::STATUS_PENDING, $this->agent);
         $folder = $this->folder(Folder::TYPE_UNASSIGNED);
 
         $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $folder])
             ->assertSee('Read question')->assertSee('Unread question')
+            ->assertSee('aria-label="Filter"', false)->assertSee('wire:click="filterUnread"', false)
             // Unassigned has no closed conversations: no Closed to choose.
-            ->assertSee("filterShow('unread')", false)->assertSee("filterShow('".Conversation::STATUS_PENDING."')", false)
-            ->assertDontSee("filterShow('".Conversation::STATUS_CLOSED."')", false);
+            ->assertSee('wire:click="filterShow('.Conversation::STATUS_PENDING.')"', false)
+            ->assertDontSee('wire:click="filterShow('.Conversation::STATUS_CLOSED.')"', false)
+            ->assertDontSee('Clear Filters');
 
-        $list->call('filterShow', 'unread')->assertSee('Unread question')->assertDontSee('Read question')->assertDontSee('Pending question');
-        $list->call('filterShow', Conversation::STATUS_PENDING)->assertSee('Pending question')->assertDontSee('Unread question');
-        $list->call('filterShow', Conversation::STATUS_CLOSED)->assertDontSee('question')->assertSee('There are no conversations here')->assertSee('conv-list__show', false);
-        $list->call('filterShow', 'nonsense')->assertSee('Read question')->assertSee('Unread question');
+        $list->call('filterUnread')->assertSee('Unread question')->assertSee('Waiting question')->assertDontSee('Read question')
+            ->assertSee('aria-label="Filter: Unread"', false)->assertSee('Clear Filters');
+        $list->call('filterShow', Conversation::STATUS_PENDING)->assertSee('Waiting question')->assertDontSee('Unread question')->assertDontSee('Pending question')
+            ->assertSee('aria-label="Filter: Unread, Pending"', false);
+        $list->call('filterUnread')->assertSee('Pending question')->assertSee('Waiting question')->assertDontSee('Unread question');
+        $list->call('filterShow', Conversation::STATUS_CLOSED)->assertDontSee('question')->assertSee('There are no conversations here')->assertSee('conv-list__filter', false);
+        $list->call('clearFilters')->assertSee('Read question')->assertSee('Unread question')->assertSee('Pending question');
+        $list->call('filterShow', 'nonsense')->assertSee('Read question')->assertSee('aria-label="Filter"', false);
 
         // Closed: all closed, only Unread to choose.
         $read->changeStatus(Conversation::STATUS_CLOSED, $this->agent);
         Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_CLOSED)])
-            ->assertSee("filterShow('unread')", false)->assertDontSee("filterShow('".Conversation::STATUS_ACTIVE."')", false);
+            ->assertSee('wire:click="filterUnread"', false)->assertDontSee('Any Status');
     }
 
     public function testOneListQueryDoesNotChangeAnothersParameters()
@@ -283,7 +291,8 @@ class ConversationListTest extends FeatureTestCase
         $first->save();
         $list->set('selected', [$ids[0]])->set('selected', $ids)
             // Different statuses: a ring, just "Status".
-            ->assertSeeHtml('conv-status-dot--mixed')->assertDontSeeHtml('aria-label="Status: Active"')->assertDontSeeHtml('aria-checked="true"');
+            ->assertSeeHtml('conv-status-dot--mixed')->assertDontSeeHtml('aria-label="Status: Active"');
+        $this->assertDoesNotMatchRegularExpression('/aria-checked="true"[^>]*data-status=/', $list->html());
 
         $list->call('changeStatus', Conversation::STATUS_PENDING)->assertToasted('Status updated')->assertRedirect();
         $this->assertSame([Conversation::STATUS_PENDING, Conversation::STATUS_PENDING], [$first->fresh()->status, $second->fresh()->status]);

@@ -128,15 +128,38 @@ class ConversationList extends Component
     }
 
     /**
-     * Only the unread conversations ('unread'), or those with a status; none: all.
+     * Only the unread conversations, or all again (the Filter menu's Unread).
      */
-    public function filterShow($show = null)
+    public function filterUnread()
+    {
+        $this->setParam('unread', empty($this->params['unread']) ? true : null);
+    }
+
+    /**
+     * Only the conversations with a status; none: any status.
+     */
+    public function filterShow($status = null)
+    {
+        $this->setParam('show', is_numeric($status) && array_key_exists((int) $status, Conversation::$statuses) ? (int) $status : null);
+    }
+
+    public function clearFilters()
+    {
+        foreach (['unread', 'show', 'user_id'] as $name) {
+            $this->setParam($name, null);
+        }
+    }
+
+    /**
+     * A filter's value (null: off), the list from its first page.
+     */
+    protected function setParam($name, $value)
     {
         $params = $this->params;
-        if ($show == 'unread' || (is_numeric($show) && array_key_exists((int) $show, Conversation::$statuses))) {
-            $params['show'] = $show == 'unread' ? 'unread' : (int) $show;
+        if ($value === null) {
+            unset($params[$name]);
         } else {
-            unset($params['show']);
+            $params[$name] = $value;
         }
         $this->params = $params;
         $this->page = 1;
@@ -341,6 +364,8 @@ class ConversationList extends Component
             'conversations_filter' => $list['conversations_filter'],
             'params'               => $this->params,
             'mailbox'              => $mailbox,
+            // Search results have their own filters.
+            'searching'            => isset($this->filter['q']),
         ]);
     }
 

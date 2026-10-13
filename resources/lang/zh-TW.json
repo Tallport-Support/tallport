@@ -1875,5 +1875,7 @@
     "Asking for the customer's details…": "正在取得客戶資料…",
     "Thinking…": "正在思考…",
     "Conversations for you, all read": "給您的對話，皆已讀",
-    ":mailbox, conversations for you, all read": ":mailbox，給您的對話，皆已讀"
+    ":mailbox, conversations for you, all read": ":mailbox，給您的對話，皆已讀",
+    "Any Status": "任何狀態",
+    "Clear Filters": "清除篩選"
 }

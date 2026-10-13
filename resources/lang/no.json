@@ -1833,5 +1833,8 @@
     "Asking for the customer's details…": "Henter kundens opplysninger…",
     "Thinking…": "Tenker…",
     "Conversations for you, all read": "Samtaler for deg, alle lest",
-    ":mailbox, conversations for you, all read": ":mailbox, samtaler for deg, alle lest"
+    ":mailbox, conversations for you, all read": ":mailbox, samtaler for deg, alle lest",
+    "Filter": "Filter",
+    "Any Status": "Alle Statuser",
+    "Clear Filters": "Fjern Filtre"
 }

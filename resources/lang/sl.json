@@ -1830,5 +1830,8 @@
     "Asking for the customer's details…": "Pridobivanje podatkov o stranki…",
     "Thinking…": "Razmišlja…",
     "Conversations for you, all read": "Pogovori za vas, vsi prebrani",
-    ":mailbox, conversations for you, all read": ":mailbox, pogovori za vas, vsi prebrani"
+    ":mailbox, conversations for you, all read": ":mailbox, pogovori za vas, vsi prebrani",
+    "Filter": "Filter",
+    "Any Status": "Katero Koli Stanje",
+    "Clear Filters": "Počisti Filtre"
 }

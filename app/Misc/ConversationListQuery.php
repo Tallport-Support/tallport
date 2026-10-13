@@ -114,7 +114,7 @@ class ConversationListQuery
         if (!empty($request->params['user_id'])) {
             $query_conversations->where('conversations.user_id', (int)$request->params['user_id']);
         }
-        self::show($query_conversations, $request->params['show'] ?? null, $user);
+        self::show($query_conversations, $request->params ?? [], $user);
 
         return [
             'folder'               => $folder,
@@ -224,20 +224,22 @@ class ConversationListQuery
         if (!empty($request->params['user_id'])) {
             $query_conversations->where('conversations.user_id', (int)$request->params['user_id']);
         }
-        self::show($query_conversations, $request->params['show'] ?? null, $user);
+        self::show($query_conversations, $request->params ?? [], $user);
 
         return $query_conversations->paginate(Conversation::DEFAULT_LIST_SIZE, ['*'], 'page', $request->page);
     }
 
     /**
-     * What the list's Show menu chose: the unread conversations, or those with a status.
+     * What the list's Filter menu chose: the unread conversations, those with a status, or both.
      */
-    public static function show($query, $show, $user)
+    public static function show($query, array $params, $user)
     {
-        if ($show == 'unread') {
+        if (!empty($params['unread'])) {
             \App\ConversationRead::whereUnread($query, $user);
-        } elseif (is_numeric($show) && array_key_exists((int) $show, Conversation::$statuses)) {
-            $query->where('conversations.status', (int) $show);
+        }
+        $status = $params['show'] ?? null;
+        if (is_numeric($status) && array_key_exists((int) $status, Conversation::$statuses)) {
+            $query->where('conversations.status', (int) $status);
         }
     }
 }

@@ -1831,5 +1831,8 @@
     "Asking for the customer's details…": "Solicitando os dados do cliente…",
     "Thinking…": "Pensando…",
     "Conversations for you, all read": "Conversas para você, todas lidas",
-    ":mailbox, conversations for you, all read": ":mailbox, conversas para você, todas lidas"
+    ":mailbox, conversations for you, all read": ":mailbox, conversas para você, todas lidas",
+    "Filter": "Filtrar",
+    "Any Status": "Qualquer Status",
+    "Clear Filters": "Limpar Filtros"
 }

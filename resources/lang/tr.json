@@ -1830,5 +1830,8 @@
     "Asking for the customer's details…": "Müşterinin bilgileri isteniyor…",
     "Thinking…": "Düşünüyor…",
     "Conversations for you, all read": "Sizin için konuşmalar, tümü okundu",
-    ":mailbox, conversations for you, all read": ":mailbox, sizin için konuşmalar, tümü okundu"
+    ":mailbox, conversations for you, all read": ":mailbox, sizin için konuşmalar, tümü okundu",
+    "Filter": "Filtre",
+    "Any Status": "Herhangi Bir Durum",
+    "Clear Filters": "Filtreleri Temizle"
 }

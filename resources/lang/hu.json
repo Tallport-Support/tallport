@@ -1830,5 +1830,8 @@
     "Asking for the customer's details…": "Az ügyfél adatainak lekérése…",
     "Thinking…": "Gondolkodik…",
     "Conversations for you, all read": "Neked szóló beszélgetések, mind elolvasva",
-    ":mailbox, conversations for you, all read": ":mailbox, neked szóló beszélgetések, mind elolvasva"
+    ":mailbox, conversations for you, all read": ":mailbox, neked szóló beszélgetések, mind elolvasva",
+    "Filter": "Szűrés",
+    "Any Status": "Bármely Állapot",
+    "Clear Filters": "Szűrők Törlése"
 }

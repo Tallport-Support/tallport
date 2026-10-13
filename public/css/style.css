@@ -2230,8 +2230,10 @@ h1.settings-toolbar__title {
     flex-direction: column;
     min-height: 0;
 }
-.conv-list__header .conv-owner.filtered {
-    color: var(--f-accent);
+/* The Filter menu while a filter is in effect: its button pressed. */
+.conv-list__header .conv-list__filter.filtered > summary {
+    background: var(--f-selection);
+    color: var(--f-selection-text);
 }
 .conv-list .conv-active .f-item-row__title {
     font-weight: 700;

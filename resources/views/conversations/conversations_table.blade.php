@@ -1,4 +1,4 @@
-@if (count($conversations) || (isset($params) && (!empty($params['user_id']) || !empty($params['show']))))
+@if (count($conversations) || (isset($params) && (!empty($params['user_id']) || !empty($params['show']) || !empty($params['unread']))))
     @php
         if (is_array($conversations)) {
             $conversations = collect($conversations);
@@ -66,36 +66,52 @@
                     <x-fruit::menu-link href="#" class="conv-col-sort" wire:click.prevent="sort('{{ $sort_field }}')" :aria-current="$sort_by == $sort_field ? 'true' : null">{{ $sort_title }}@if ($sort_by == $sort_field) {{ $sort_order == 'desc' ? '↑' : '↓' }}@endif</x-fruit::menu-link>
                 @endforeach
             </x-fruit::menu>
-            {{-- Show: all, the unread, or one of the statuses the folder's conversations can have (App\Livewire\ConversationList::filterShow()). --}}
-            @if (isset($selected))
-                @php
-                    $show = $params['show'] ?? null;
-                    $show_options = ['unread' => __('Unread')];
-                    foreach ($folder->statuses() as $show_status_option) {
-                        $show_options[$show_status_option] = App\Conversation::statusCodeToName($show_status_option);
-                    }
-                @endphp
-                <x-fruit::menu :title="__('Show')" :class="$show ? 'conv-list__show filtered' : 'conv-list__show'">
-                    <x-slot:trigger class="f-button--ghost f-button--small"><x-icon.funnel class="f-icon" aria-hidden="true" /> {{ $show ? ($show_options[$show] ?? __('All')) : __('All') }}</x-slot:trigger>
-                    <x-fruit::menu-link href="#" wire:click.prevent="filterShow" :aria-current="$show ? null : 'true'">{{ __('All') }}</x-fruit::menu-link>
-                    <x-fruit::menu-separator />
-                    @foreach ($show_options as $show_value => $show_label)
-                        <x-fruit::menu-link href="#" wire:click.prevent="filterShow('{{ $show_value }}')" :aria-current="(string) $show === (string) $show_value ? 'true' : null">{{ $show_label }}</x-fruit::menu-link>
-                    @endforeach
-                </x-fruit::menu>
-            @endif
-            @if ($show_assigned)
-                @php
-                    $assignees = App\User::assigneeFilterUsers(Auth::user(), $folder->id > 0 ? $folder->mailbox : null);
-                    $filter_assignee = !empty($params['user_id']) ? $assignees->firstWhere('id', (int) $params['user_id']) : null;
-                @endphp
-                <x-fruit::menu :title="__('Assigned To')" class="conv-owner @if (!empty($params['user_id'])) filtered @endif">
-                    <x-slot:trigger class="f-button--ghost f-button--small"><x-icon.funnel class="f-icon" aria-hidden="true" /> {{ $filter_assignee ? $filter_assignee->getFullName() : __('Assigned To') }}</x-slot:trigger>
-                    <x-fruit::menu-link href="#" wire:click.prevent="filterAssignee" :aria-current="empty($params['user_id']) ? 'true' : null">{{ __('Anyone') }}</x-fruit::menu-link>
-                    <x-fruit::menu-separator />
-                    @foreach ($assignees as $assignee)
-                        <x-fruit::menu-link href="#" wire:click.prevent="filterAssignee({{ $assignee->id }})" :aria-current="($params['user_id'] ?? null) == $assignee->id ? 'true' : null">{{ $assignee->getFullName() }}</x-fruit::menu-link>
-                    @endforeach
+            {{-- One Filter menu: Unread, a status the folder's conversations can have, and the assignee
+                 (App\Livewire\ConversationList); search results have their own filters. --}}
+            @php
+                $filter_lists = isset($selected) && empty($searching);
+                $filter_unread = !empty($params['unread']);
+                $filter_status = $params['show'] ?? null;
+                $filter_statuses = [];
+                foreach ($folder->id ? $folder->statuses() : [App\Conversation::STATUS_ACTIVE, App\Conversation::STATUS_PENDING, App\Conversation::STATUS_CLOSED] as $filter_status_option) {
+                    $filter_statuses[$filter_status_option] = App\Conversation::statusCodeToName($filter_status_option);
+                }
+                $assignees = $show_assigned ? App\User::assigneeFilterUsers(Auth::user(), $folder->id > 0 ? $folder->mailbox : null) : collect();
+                $filter_assignee = !empty($params['user_id']) ? $assignees->firstWhere('id', (int) $params['user_id']) : null;
+                $filter_active = array_values(array_filter([
+                    $filter_unread ? __('Unread') : null,
+                    $filter_status !== null ? ($filter_statuses[$filter_status] ?? null) : null,
+                    $filter_assignee ? $filter_assignee->getFullName() : null,
+                ]));
+            @endphp
+            @if ($filter_lists || $show_assigned)
+                <x-fruit::menu :title="__('Filter')" :class="$filter_active ? 'conv-list__filter filtered' : 'conv-list__filter'">
+                    <x-slot:trigger class="f-button--ghost f-button--small" :aria-label="$filter_active ? __('Filter').': '.implode(', ', $filter_active) : __('Filter')"><x-icon.funnel class="f-icon" aria-hidden="true" /> {{ $filter_active ? implode(', ', $filter_active) : __('Filter') }}<span class="f-menu__chevron" aria-hidden="true"></span></x-slot:trigger>
+                    @if ($filter_lists)
+                        <x-fruit::menu-group :label="__('Show')">
+                            <x-fruit::menu-checkbox :checked="$filter_unread" wire:click="filterUnread">{{ __('Unread') }}</x-fruit::menu-checkbox>
+                        </x-fruit::menu-group>
+                        @if (count($filter_statuses) > 1)
+                            <x-fruit::menu-group :label="__('Status')">
+                                <x-fruit::menu-radio :checked="$filter_status === null" wire:click="filterShow">{{ __('Any Status') }}</x-fruit::menu-radio>
+                                @foreach ($filter_statuses as $filter_status_value => $filter_status_label)
+                                    <x-fruit::menu-radio :checked="(string) $filter_status === (string) $filter_status_value" wire:click="filterShow({{ $filter_status_value }})">{{ $filter_status_label }}</x-fruit::menu-radio>
+                                @endforeach
+                            </x-fruit::menu-group>
+                        @endif
+                    @endif
+                    @if ($show_assigned)
+                        <x-fruit::menu-group :label="__('Assigned To')">
+                            <x-fruit::menu-radio :checked="empty($params['user_id'])" wire:click="filterAssignee">{{ __('Anyone') }}</x-fruit::menu-radio>
+                            @foreach ($assignees as $assignee)
+                                <x-fruit::menu-radio :checked="($params['user_id'] ?? null) == $assignee->id" wire:click="filterAssignee({{ $assignee->id }})">{{ $assignee->getFullName() }}</x-fruit::menu-radio>
+                            @endforeach
+                        </x-fruit::menu-group>
+                    @endif
+                    @if ($filter_active)
+                        <x-fruit::menu-separator />
+                        <x-fruit::menu-item wire:click="clearFilters">{{ __('Clear Filters') }}</x-fruit::menu-item>
+                    @endif
                 </x-fruit::menu>
             @endif
             @if (empty($no_checkboxes))

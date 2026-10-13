@@ -1830,5 +1830,8 @@
     "Asking for the customer's details…": "מבקש את פרטי הלקוח…",
     "Thinking…": "חושב…",
     "Conversations for you, all read": "שיחות עבורך, כולן נקראו",
-    ":mailbox, conversations for you, all read": ":mailbox, שיחות עבורך, כולן נקראו"
+    ":mailbox, conversations for you, all read": ":mailbox, שיחות עבורך, כולן נקראו",
+    "Filter": "סינון",
+    "Any Status": "כל סטטוס",
+    "Clear Filters": "ניקוי מסננים"
 }

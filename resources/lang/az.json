@@ -1830,5 +1830,8 @@
     "Asking for the customer's details…": "Müştərinin məlumatları soruşulur…",
     "Thinking…": "Düşünür…",
     "Conversations for you, all read": "Sizin üçün söhbətlər, hamısı oxunub",
-    ":mailbox, conversations for you, all read": ":mailbox, sizin üçün söhbətlər, hamısı oxunub"
+    ":mailbox, conversations for you, all read": ":mailbox, sizin üçün söhbətlər, hamısı oxunub",
+    "Filter": "Filtr",
+    "Any Status": "İstənilən Status",
+    "Clear Filters": "Filtrləri Təmizlə"
 }

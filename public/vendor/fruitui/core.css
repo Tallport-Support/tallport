@@ -761,19 +761,19 @@
     background: currentColor;
   }
   /* Dot: the badge as a dot alone, in the place its count would take, such as a sidebar folder whose
-     conversations for you are all read. Its text names it for screen readers; neutral, it's gray. */
+     conversations for you are all read. An image (role="img") named by its aria-label, with no text;
+     neutral, it's gray. */
   .f-badge.f-badge--dot {
     display: inline-block;
     position: relative;
     flex-shrink: 0;
     width: 20px;
     min-width: 0;
-    padding-inline: 0;
-    overflow: hidden;
+    height: 20px;
+    padding: 0;
     background: transparent;
     color: var(--f-internal-badge-tone, var(--f-tertiary));
-    text-indent: 20px;
-    white-space: nowrap;
+    vertical-align: middle;
   }
   .f-badge--dot::before {
     position: absolute;
