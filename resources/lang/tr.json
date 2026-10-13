@@ -1833,5 +1833,8 @@
     ":mailbox, conversations for you, all read": ":mailbox, sizin için konuşmalar, tümü okundu",
     "Filter": "Filtre",
     "Any Status": "Herhangi Bir Durum",
-    "Clear Filters": "Filtreleri Temizle"
+    "Clear Filters": "Filtreleri Temizle",
+    "Switch to Markdown": "Markdown'a Geç",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "Markdown'dan önce yazıldı. Geçiş metni dönüştürür; kaydedene kadar hiçbir şey değişmez.",
+    "Markdown. Save to keep the change.": "Markdown. Değişikliği korumak için kaydedin."
 }

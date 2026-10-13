@@ -1833,5 +1833,8 @@
     ":mailbox, conversations for you, all read": ":mailbox, розмови для вас, усі прочитані",
     "Filter": "Фільтр",
     "Any Status": "Будь-Який Статус",
-    "Clear Filters": "Скинути Фільтри"
+    "Clear Filters": "Скинути Фільтри",
+    "Switch to Markdown": "Перейти на Markdown",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "Написано до Markdown. Перехід перетворює текст; нічого не зміниться, доки ви не збережете.",
+    "Markdown. Save to keep the change.": "Markdown. Збережіть, щоб зберегти зміну."
 }

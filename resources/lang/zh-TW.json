@@ -1877,5 +1877,8 @@
     "Conversations for you, all read": "給您的對話，皆已讀",
     ":mailbox, conversations for you, all read": ":mailbox，給您的對話，皆已讀",
     "Any Status": "任何狀態",
-    "Clear Filters": "清除篩選"
+    "Clear Filters": "清除篩選",
+    "Switch to Markdown": "切換到 Markdown",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "寫於啟用 Markdown 之前。切換會轉換文字；儲存前不會有任何變更。",
+    "Markdown. Save to keep the change.": "Markdown。儲存以保留變更。"
 }

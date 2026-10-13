@@ -1833,5 +1833,8 @@
     ":mailbox, conversations for you, all read": ":mailbox、あなた宛ての会話、すべて既読",
     "Filter": "フィルタ",
     "Any Status": "すべてのステータス",
-    "Clear Filters": "フィルタをクリア"
+    "Clear Filters": "フィルタをクリア",
+    "Switch to Markdown": "Markdown に切り替え",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "Markdown 以前に書かれたテキストです。切り替えるとテキストが変換されます。保存するまで何も変わりません。",
+    "Markdown. Save to keep the change.": "Markdown。保存すると変更が保持されます。"
 }

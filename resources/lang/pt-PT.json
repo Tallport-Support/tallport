@@ -1833,5 +1833,8 @@
     ":mailbox, conversations for you, all read": ":mailbox, conversas para si, todas lidas",
     "Filter": "Filtrar",
     "Any Status": "Qualquer Estado",
-    "Clear Filters": "Limpar Filtros"
+    "Clear Filters": "Limpar Filtros",
+    "Switch to Markdown": "Mudar para Markdown",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "Escrito antes do Markdown. A mudança converte o texto; nada muda até guardar.",
+    "Markdown. Save to keep the change.": "Markdown. Guarde para manter a alteração."
 }

@@ -1833,5 +1833,8 @@
     ":mailbox, conversations for you, all read": ":mailbox, разговоры для вас, все прочитаны",
     "Filter": "Фильтр",
     "Any Status": "Любой Статус",
-    "Clear Filters": "Сбросить Фильтры"
+    "Clear Filters": "Сбросить Фильтры",
+    "Switch to Markdown": "Перейти на Markdown",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "Написано до Markdown. Переход преобразует текст; ничего не изменится, пока вы не сохраните.",
+    "Markdown. Save to keep the change.": "Markdown. Сохраните, чтобы оставить изменение."
 }

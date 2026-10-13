@@ -6,13 +6,16 @@
     the formatting allowed (FruitUI's formats; null: all); `markdown`: written and
     stored as Markdown (App\Misc\Markdown renders it), else rich text (HTML); in
     Markdown the field's name ends in _markdown (versions[en][message_markdown]),
-    which is how App\Misc\Markdown::fromInput() tells them apart.
+    which is how App\Misc\Markdown::fromInput() tells them apart. `switchable`: rich
+    text in a field that is otherwise Markdown (written before Markdown), with Switch
+    to Markdown below it (editorSwitch in public/js/editor.js).
 --}}
-@props(['vars' => false, 'excludeVars' => [], 'uploadUrl' => null, 'formats' => null, 'markdown' => false])
+@props(['vars' => false, 'excludeVars' => [], 'uploadUrl' => null, 'formats' => null, 'markdown' => false, 'switchable' => false])
 @php
     $editor_name = $attributes->get('name');
-    if ($markdown && $editor_name !== null) {
-        $editor_name = str_ends_with($editor_name, ']') ? substr($editor_name, 0, -1).'_markdown]' : $editor_name.'_markdown';
+    $markdown_name = $editor_name === null ? null : (str_ends_with($editor_name, ']') ? substr($editor_name, 0, -1).'_markdown]' : $editor_name.'_markdown');
+    if ($markdown) {
+        $editor_name = $markdown_name;
     }
     $editor_vars = [];
     if ($vars) {
@@ -78,3 +81,9 @@
         </x-slot:extras>
     <?php endif; ?>
 </x-fruit::editor>
+@if ($switchable && !$markdown && $markdown_name !== null)
+    <div class="f-row editor-switch" x-data="editorSwitch(@js($attributes->get('id')), @js($markdown_name))">
+        <x-fruit::button size="small" x-show="!switched" x-on:click="toMarkdown">{{ __('Switch to Markdown') }}</x-fruit::button>
+        <span class="f-help" x-text="switched ? @js(__('Markdown. Save to keep the change.')) : @js(__('Written before Markdown. Switching converts the text; nothing changes until you save.'))">{{ __('Written before Markdown. Switching converts the text; nothing changes until you save.') }}</span>
+    </div>
+@endif

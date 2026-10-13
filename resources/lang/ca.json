@@ -1924,5 +1924,8 @@
     "Conversations for you, all read": "Converses per a vós, totes llegides",
     ":mailbox, conversations for you, all read": ":mailbox, converses per a vós, totes llegides",
     "Any Status": "Qualsevol Estat",
-    "Clear Filters": "Esborra els Filtres"
+    "Clear Filters": "Esborra els Filtres",
+    "Switch to Markdown": "Canvia a Markdown",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "Escrit abans de Markdown. Canviar converteix el text; no canvia res fins que deseu.",
+    "Markdown. Save to keep the change.": "Markdown. Deseu per mantenir el canvi."
 }

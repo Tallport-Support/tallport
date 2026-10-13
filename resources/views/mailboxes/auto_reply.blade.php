@@ -35,7 +35,7 @@
 
                         <x-fruit::field :label="__('Message')" class="auto_reply_message-editor">
                             @php $message_markdown = App\Misc\Markdown::isMarkdown($mailbox->auto_reply_message_markdown, $mailbox->auto_reply_message); @endphp
-                            <x-editor id="auto_reply_message" name="auto_reply_message" rows="8" vars :exclude-vars="['user.']" :markdown="$message_markdown">{{ $message_markdown ? old('auto_reply_message_markdown', $mailbox->auto_reply_message_markdown) : old('auto_reply_message', $mailbox->auto_reply_message) }}</x-editor>
+                            <x-editor id="auto_reply_message" name="auto_reply_message" rows="8" vars :exclude-vars="['user.']" :markdown="$message_markdown" switchable>{{ $message_markdown ? old('auto_reply_message_markdown', $mailbox->auto_reply_message_markdown) : old('auto_reply_message', $mailbox->auto_reply_message) }}</x-editor>
                         </x-fruit::field>
                     </div>
 
@@ -51,7 +51,7 @@
 
                             <x-fruit::field :label="__('Message')" class="auto_reply_message-editor">
                                 @php $message_markdown = App\Misc\Markdown::isMarkdown($version->message_markdown, $version->message); @endphp
-                                <x-editor id="auto_reply_{{ $language }}_message" name="versions[{{ $language }}][message]" rows="8" vars :exclude-vars="['user.']" :markdown="$message_markdown">{{ $message_markdown ? old('versions.'.$language.'.message_markdown', $version->message_markdown) : old('versions.'.$language.'.message', $version->message) }}</x-editor>
+                                <x-editor id="auto_reply_{{ $language }}_message" name="versions[{{ $language }}][message]" rows="8" vars :exclude-vars="['user.']" :markdown="$message_markdown" switchable>{{ $message_markdown ? old('versions.'.$language.'.message_markdown', $version->message_markdown) : old('versions.'.$language.'.message', $version->message) }}</x-editor>
                             </x-fruit::field>
 
                             <div>

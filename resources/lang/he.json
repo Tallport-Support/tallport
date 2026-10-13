@@ -1833,5 +1833,8 @@
     ":mailbox, conversations for you, all read": ":mailbox, שיחות עבורך, כולן נקראו",
     "Filter": "סינון",
     "Any Status": "כל סטטוס",
-    "Clear Filters": "ניקוי מסננים"
+    "Clear Filters": "ניקוי מסננים",
+    "Switch to Markdown": "מעבר ל-Markdown",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "נכתב לפני Markdown. המעבר ממיר את הטקסט; שום דבר לא משתנה עד שתשמרו.",
+    "Markdown. Save to keep the change.": "Markdown. שמרו כדי לשמור את השינוי."
 }

@@ -1833,5 +1833,8 @@
     ":mailbox, conversations for you, all read": ":mailbox, neked szóló beszélgetések, mind elolvasva",
     "Filter": "Szűrés",
     "Any Status": "Bármely Állapot",
-    "Clear Filters": "Szűrők Törlése"
+    "Clear Filters": "Szűrők Törlése",
+    "Switch to Markdown": "Váltás Markdownra",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "Markdown előtt írva. A váltás átalakítja a szöveget; semmi sem változik, amíg nem mented.",
+    "Markdown. Save to keep the change.": "Markdown. Mentsd a változtatás megtartásához."
 }

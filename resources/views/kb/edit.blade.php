@@ -46,7 +46,7 @@
 
             <x-fruit::field :label="__('Article')">
                 @php $body_markdown = App\Misc\Markdown::isMarkdown($article->body_markdown, $article->body); @endphp
-                <x-editor id="kb_body" name="body" rows="14" :markdown="$body_markdown">{{ $body_markdown ? old('body_markdown', $article->body_markdown) : old('body', $article->body) }}</x-editor>
+                <x-editor id="kb_body" name="body" rows="14" :markdown="$body_markdown" switchable>{{ $body_markdown ? old('body_markdown', $article->body_markdown) : old('body', $article->body) }}</x-editor>
             </x-fruit::field>
 
         </form>

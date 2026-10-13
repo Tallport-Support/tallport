@@ -1833,5 +1833,8 @@
     ":mailbox, conversations for you, all read": ":mailbox, razgovori za vas, svi pročitani",
     "Filter": "Filtar",
     "Any Status": "Bilo Koji Status",
-    "Clear Filters": "Očisti Filtre"
+    "Clear Filters": "Očisti Filtre",
+    "Switch to Markdown": "Prebaci na Markdown",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "Napisano prije Markdowna. Prebacivanje pretvara tekst; ništa se ne mijenja dok ne spremite.",
+    "Markdown. Save to keep the change.": "Markdown. Spremite da zadržite promjenu."
 }

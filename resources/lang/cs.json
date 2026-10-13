@@ -1833,5 +1833,8 @@
     ":mailbox, conversations for you, all read": ":mailbox, konverzace pro vás, všechny přečtené",
     "Filter": "Filtr",
     "Any Status": "Jakýkoli Stav",
-    "Clear Filters": "Zrušit Filtry"
+    "Clear Filters": "Zrušit Filtry",
+    "Switch to Markdown": "Přepnout na Markdown",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "Napsáno před Markdownem. Přepnutí převede text; nic se nezmění, dokud neuložíte.",
+    "Markdown. Save to keep the change.": "Markdown. Uložte, aby se změna zachovala."
 }

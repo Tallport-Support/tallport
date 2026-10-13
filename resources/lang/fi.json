@@ -1849,5 +1849,8 @@
     ":mailbox, conversations for you, all read": ":mailbox, keskustelut sinulle, kaikki luettu",
     "Filter": "Suodata",
     "Any Status": "Mikä Tahansa Tila",
-    "Clear Filters": "Tyhjennä Suodattimet"
+    "Clear Filters": "Tyhjennä Suodattimet",
+    "Switch to Markdown": "Vaihda Markdowniin",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "Kirjoitettu ennen Markdownia. Vaihto muuntaa tekstin; mikään ei muutu ennen tallennusta.",
+    "Markdown. Save to keep the change.": "Markdown. Tallenna säilyttääksesi muutoksen."
 }

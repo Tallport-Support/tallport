@@ -1833,5 +1833,8 @@
     ":mailbox, conversations for you, all read": ":mailbox, konversationer för dig, alla lästa",
     "Filter": "Filter",
     "Any Status": "Valfri Status",
-    "Clear Filters": "Rensa Filter"
+    "Clear Filters": "Rensa Filter",
+    "Switch to Markdown": "Byt till Markdown",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "Skrivet före Markdown. Bytet konverterar texten; inget ändras förrän du sparar.",
+    "Markdown. Save to keep the change.": "Markdown. Spara för att behålla ändringen."
 }

@@ -75,3 +75,34 @@ document.addEventListener('alpine:init', function () {
 		};
 	});
 });
+
+/**
+ * Switch to Markdown, under rich text written before its field was Markdown (components/editor):
+ * FruitUI converts the text, and the field takes its Markdown name, as App\Misc\Markdown::fromInput()
+ * expects. Nothing is stored until the form is saved.
+ */
+document.addEventListener('alpine:init', function () {
+	window.Alpine.data('editorSwitch', function (id, markdown_name) {
+		return {
+			switched: false,
+			toMarkdown: function () {
+				var textarea = document.getElementById(id);
+				if (!textarea) {
+					return;
+				}
+				window.dispatchEvent(new CustomEvent('fruit-editor-mode', {detail: {target: id, mode: 'markdown'}}));
+				var editor = textarea.closest('.f-editor');
+				// Refused (disabled or read-only): it stays as it is.
+				if (!editor || editor.dataset.fruitMode !== 'markdown') {
+					return;
+				}
+				textarea.name = markdown_name;
+				this.switched = true;
+				var text = editor.querySelector('[role=textbox]');
+				if (text) {
+					text.focus();
+				}
+			}
+		};
+	});
+});

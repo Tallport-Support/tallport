@@ -1833,5 +1833,8 @@
     ":mailbox, conversations for you, all read": ":mailbox, gesprekken voor u, alle gelezen",
     "Filter": "Filter",
     "Any Status": "Elke Status",
-    "Clear Filters": "Filters Wissen"
+    "Clear Filters": "Filters Wissen",
+    "Switch to Markdown": "Overschakelen naar Markdown",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "Geschreven vóór Markdown. Overschakelen zet de tekst om; er verandert niets tot u opslaat.",
+    "Markdown. Save to keep the change.": "Markdown. Sla op om de wijziging te bewaren."
 }

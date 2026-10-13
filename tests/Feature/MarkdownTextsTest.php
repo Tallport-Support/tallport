@@ -73,11 +73,21 @@ class MarkdownTextsTest extends FeatureTestCase
         $saved_reply->text_markdown = null;
         $saved_reply->text = '<p style="color:red">Red</p>';
         $saved_reply->save();
+        // ...with Switch to Markdown, which gives the field its Markdown name (editorSwitch).
         $this->actingAs($this->admin)->get(route('mailboxes.saved_replies.edit', ['id' => $this->mailbox->id, 'saved_reply_id' => $saved_reply->id]))
-            ->assertSee('name="text"', false)->assertDontSee('name="text_markdown"', false);
+            ->assertSee('name="text"', false)->assertDontSee('name="text_markdown"', false)
+            ->assertSee("editorSwitch('saved_reply_text', 'text_markdown')", false)->assertSee('Switch to Markdown');
         $this->assertNull($this->postAjax($this->admin, route('saved_replies.ajax'), [
             'action' => 'get', 'saved_reply_id' => $saved_reply->id, 'mailbox_id' => $this->mailbox->id,
         ])->json('markdown'));
+
+        // Switched and saved: Markdown from then on.
+        $this->postForm(route('mailboxes.saved_replies.save', ['id' => $this->mailbox->id]), [
+            'saved_reply_id' => $saved_reply->id, 'name' => 'Thanks', 'text_markdown' => '**Red**',
+        ])->assertSessionHasNoErrors();
+        $this->assertSame('**Red**', $saved_reply->fresh()->text_markdown);
+        $this->actingAs($this->admin)->get(route('mailboxes.saved_replies.edit', ['id' => $this->mailbox->id, 'saved_reply_id' => $saved_reply->id]))
+            ->assertSee('name="text_markdown"', false)->assertDontSee('Switch to Markdown');
     }
 
     public function testSignature()

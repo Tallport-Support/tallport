@@ -2226,5 +2226,8 @@
     "Conversations for you, all read": "Сізге арналған әңгімелер, барлығы оқылған",
     ":mailbox, conversations for you, all read": ":mailbox, сізге арналған әңгімелер, барлығы оқылған",
     "Any Status": "Кез Келген Күй",
-    "Clear Filters": "Сүзгілерді Тазалау"
+    "Clear Filters": "Сүзгілерді Тазалау",
+    "Switch to Markdown": "Markdown-қа Ауысу",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "Markdown-қа дейін жазылған. Ауысу мәтінді түрлендіреді; сақтағанша ештеңе өзгермейді.",
+    "Markdown. Save to keep the change.": "Markdown. Өзгерісті сақтау үшін сақтаңыз."
 }

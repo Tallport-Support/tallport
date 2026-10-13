@@ -1834,5 +1834,8 @@
     ":mailbox, conversations for you, all read": ":mailbox，给您的会话，均已读",
     "Filter": "筛选",
     "Any Status": "任何状态",
-    "Clear Filters": "清除筛选"
+    "Clear Filters": "清除筛选",
+    "Switch to Markdown": "切换到 Markdown",
+    "Written before Markdown. Switching converts the text; nothing changes until you save.": "写于启用 Markdown 之前。切换会转换文本；保存前不会有任何更改。",
+    "Markdown. Save to keep the change.": "Markdown。保存以保留更改。"
 }
