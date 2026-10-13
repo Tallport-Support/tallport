@@ -60,6 +60,8 @@ class ConversationListTest extends FeatureTestCase
         $list->call('sort', 'subject')->assertSeeInOrder(['Apple question', 'Banana question']);
         $list->call('sort', 'subject')->assertSeeInOrder(['Banana question', 'Apple question']);
 
+        // The user first, as Me.
+        $list->assertSeeInOrder(['Anyone', 'Me', 'Kim Third'])->assertDontSee('Alex Agent');
         $list->call('filterAssignee', $sam->id)->assertSee('Banana question')->assertDontSee('Apple question');
         $list->call('filterAssignee')->assertSee('Apple question');
     }

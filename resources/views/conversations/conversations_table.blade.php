@@ -76,12 +76,14 @@
                 foreach ($folder->id ? $folder->statuses() : [App\Conversation::STATUS_ACTIVE, App\Conversation::STATUS_PENDING, App\Conversation::STATUS_CLOSED] as $filter_status_option) {
                     $filter_statuses[$filter_status_option] = App\Conversation::statusCodeToName($filter_status_option);
                 }
-                $assignees = $show_assigned ? App\User::assigneeFilterUsers(Auth::user(), $folder->id > 0 ? $folder->mailbox : null) : collect();
+                // The user first, as Me.
+                $assignees = $show_assigned ? App\User::assigneeFilterUsers(Auth::user(), $folder->id > 0 ? $folder->mailbox : null)->sortBy(fn ($assignee) => $assignee->id == Auth::id() ? 0 : 1)->values() : collect();
                 $filter_assignee = !empty($params['user_id']) ? $assignees->firstWhere('id', (int) $params['user_id']) : null;
+                $assignee_name = fn ($assignee) => $assignee->id == Auth::id() ? __('Me') : $assignee->getFullName();
                 $filter_active = array_values(array_filter([
                     $filter_unread ? __('Unread') : null,
                     $filter_status !== null ? ($filter_statuses[$filter_status] ?? null) : null,
-                    $filter_assignee ? $filter_assignee->getFullName() : null,
+                    $filter_assignee ? $assignee_name($filter_assignee) : null,
                 ]));
             @endphp
             @if ($filter_lists || $show_assigned)
@@ -104,7 +106,7 @@
                         <x-fruit::menu-group :label="__('Assigned To')">
                             <x-fruit::menu-radio :checked="empty($params['user_id'])" wire:click="filterAssignee">{{ __('Anyone') }}</x-fruit::menu-radio>
                             @foreach ($assignees as $assignee)
-                                <x-fruit::menu-radio :checked="($params['user_id'] ?? null) == $assignee->id" wire:click="filterAssignee({{ $assignee->id }})">{{ $assignee->getFullName() }}</x-fruit::menu-radio>
+                                <x-fruit::menu-radio :checked="($params['user_id'] ?? null) == $assignee->id" wire:click="filterAssignee({{ $assignee->id }})">{{ $assignee_name($assignee) }}</x-fruit::menu-radio>
                             @endforeach
                         </x-fruit::menu-group>
                     @endif
