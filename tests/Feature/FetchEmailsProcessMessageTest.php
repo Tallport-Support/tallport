@@ -746,6 +746,9 @@ class FetchEmailsProcessMessageTest extends FeatureTestCase
         $this->assertStringNotContainsString('Quoted answer', $reply);
         $this->assertStringNotContainsString('回复的原邮件', $reply);
         $this->assertStringNotContainsString('写道', $reply);
+        $this->assertStringNotContainsString('发件人', $reply);
+        // No blank lines left where the quote was.
+        $this->assertDoesNotMatchRegularExpression('/<br\s*\/?>\s*$/', $reply);
     }
 
     /**
@@ -803,6 +806,8 @@ class FetchEmailsProcessMessageTest extends FeatureTestCase
             'Mail Master' => ['<div>已经搞定了，谢谢</div><div class="ntes-mailmaster-quote" style="padding-top: 1px"><div style="margin-top: 2em">---- 回复的原邮件 ----</div>'.$card.'</div>', true],
             'Mail Master, more classes' => ['<div>已经搞定了，谢谢</div><div class="J-reply ntes-mailmaster-quote" style="padding-top: 1px"><div style="margin:2em 0 1em">---- 回复的原邮件 ----</div>'.$card.'</div>', true],
             'Webmail' => ['<div>已经搞定了，谢谢</div><div id="divNeteaseMailCard"></div><p>在 2026-10-03 18:28:31，"Support" &lt;support@example.org&gt; 写道：</p><blockquote id="isReplyContent" style="PADDING-LEFT: 1ex"><div>Quoted answer</div></blockquote>', true],
+            // The 163.com webmail's header lines above the quote, after an empty div.
+            'Webmail, header lines' => ['<div style="line-height:1.7">已经搞定了，谢谢<br><br><br><div  style="position:relative;zoom:1"></div><br>发件人：Support &lt;support@example.org&gt;<br>发送日期：2026-10-03 18:28:31<br>收件人：casey &lt;casey@example.org&gt;<br>主题：Re: Question<br><blockquote id="isReplyContent" style="PADDING-LEFT: 1ex"><div>Quoted answer</div></blockquote></div>', true],
             'Plain text' => ["已经搞定了，谢谢\n\n---- Replied Message ----\n| From | Support<support@example.org> |\n| Date | 10/03/2026 15:42 |\n| To | casey@example.org |\n| Subject | Re: Question |\nQuoted answer", false],
         ];
     }

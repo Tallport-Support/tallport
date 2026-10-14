@@ -115,6 +115,8 @@ class Mail
         '---- Replied Message ----',
         'regex:/<p>\s*在[^<]{1,300}写道：\s*<\/p>\s*<blockquote id="isReplyContent"/',
         '<blockquote id="isReplyContent"',
+        // The 163.com webmail's 发件人/发送日期/收件人/主题 lines above its quote: from the empty div before them.
+        'regex:/<div\s+style="position:relative;zoom:1"><\/div>(?=(?:[^<]++|<(?!blockquote\b))*+<blockquote id="isReplyContent")/su',
         '<div id=3D"divRplyFwdMsg" dir=', // Outlook
         '<div id="divRplyFwdMsg" dir=', // Outlook
         'regex:/<hr[^>]*>\s*<div[^>]+id="divRplyFwdMsg"/', // Outlook

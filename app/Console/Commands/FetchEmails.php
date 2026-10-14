@@ -1924,6 +1924,10 @@ class FetchEmails extends Command
                 if (\Str::startsWith($reply_separator, 'regex:')) {
                     $regex = preg_replace("/^regex:/", '', $reply_separator);
                     $parts = preg_split($regex, $result);
+                    // A separator PCRE can't run (backtracking, the body's encoding) is skipped: the email is still saved.
+                    if ($parts === false) {
+                        continue;
+                    }
                 } else {
                     $parts = explode($reply_separator, $result);
                 }
@@ -1952,7 +1956,8 @@ class FetchEmails extends Command
             if (count($reply_bodies)) {
                 usort($reply_bodies, $cmp_reply_length_desc);
 
-                return $reply_bodies[0];
+                // The blank lines left above the quote that was cut off.
+                return preg_replace('/(?:\s|&nbsp;|<br\s*\/?>)+$/iu', '', $reply_bodies[0]) ?? $reply_bodies[0];
             }
         }
 
