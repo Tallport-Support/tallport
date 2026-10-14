@@ -132,6 +132,7 @@
                 $unread_ids = App\ConversationRead::unreadIds($conversations, Auth::user());
                 // A translated conversation previews its latest message in the user's language.
                 $translated_previews = App\Ai\Translations::previews($conversations, Auth::user());
+                $translated_subjects = App\Ai\Translations::subjects($conversations, Auth::user());
                 // A row's status unless it's Active (most are), and not where all rows share one.
                 $show_status = !in_array($folder->type, [App\Folder::TYPE_CLOSED, App\Folder::TYPE_SPAM]);
             @endphp
@@ -162,7 +163,7 @@
                         <x-slot:title :title="$conversation->customer_email">@if (empty($no_customer)){{ $conv_customer_name }}@else{{ $conversation->getSubject() }}@endif</x-slot:title>
                         <x-slot:trailing :title="$conv_date_title ?: null">{{ $conv_waiting_since }}</x-slot:trailing>
                         @if (empty($no_customer))
-                            <x-slot:subtitle>@include('conversations/partials/badges'){{ '' }}@action('conversations_table.before_subject', $conversation){{ $conversation->getSubject() }}@action('conversations_table.after_subject', $conversation)</x-slot:subtitle>
+                            <x-slot:subtitle>@include('conversations/partials/badges'){{ '' }}@action('conversations_table.before_subject', $conversation)@if (isset($translated_subjects[$conversation->id]))<span title="{{ $conversation->getSubject() }}">{{ $translated_subjects[$conversation->id] }}</span>@else{{ $conversation->getSubject() }}@endif@action('conversations_table.after_subject', $conversation)</x-slot:subtitle>
                         @endif
                         <x-slot:preview>@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner){{ $ai_one_liner }}@elseif (isset($translated_previews[$conversation->id])){{ $translated_previews[$conversation->id] }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</x-slot:preview>
                         <x-slot:meta class="conv-row__meta">

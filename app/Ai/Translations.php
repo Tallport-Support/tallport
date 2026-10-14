@@ -29,7 +29,8 @@ class Translations
      */
     public static function previews($conversations, $user)
     {
-        $ids = collect($conversations)->pluck('id')->all();
+        $conversations = self::listed($conversations);
+        $ids = $conversations->pluck('id')->all();
         if (!$ids) {
             return [];
         }
@@ -37,15 +38,48 @@ class Translations
             ->where('state', Thread::STATE_PUBLISHED)->groupBy('conversation_id')->selectRaw('max(id) as id')->pluck('id');
         $previews = [];
         foreach (Thread::whereIn('id', $latest)->whereNotNull('ai_assistant')->get() as $thread) {
-            $conversation = collect($conversations)->firstWhere('id', $thread->conversation_id);
+            $conversation = $conversations->firstWhere('id', $thread->conversation_id);
             $language = $conversation ? Settings::language($conversation->mailbox_cached ?? $conversation->mailbox, $user) : null;
-            $translation = $language ? self::get($thread, $language) : null;
+            // Not for an agent who reads the message's language.
+            $translation = $language && !self::readAsWritten($thread, $user, $language) ? self::get($thread, $language) : null;
             if ($translation !== null && trim($translation) !== '') {
                 $previews[$thread->conversation_id] = \Helper::textPreview(self::isHtml($thread, $language) ? \Helper::htmlToText($translation) : $translation, \App\Conversation::PREVIEW_MAXLENGTH);
             }
         }
 
         return $previews;
+    }
+
+    /**
+     * Subjects in the user's language for a page of a list: translated with each conversation's
+     * first message. [conversation id => subject]
+     */
+    public static function subjects($conversations, $user)
+    {
+        $conversations = self::listed($conversations);
+        if ($conversations->isEmpty()) {
+            return [];
+        }
+        $first = Thread::whereIn('conversation_id', $conversations->pluck('id')->all())->groupBy('conversation_id')->selectRaw('min(id) as id')->pluck('id');
+        $subjects = [];
+        foreach (Thread::whereIn('id', $first)->whereNotNull('ai_assistant')->get() as $thread) {
+            $conversation = $conversations->firstWhere('id', $thread->conversation_id);
+            $language = $conversation ? Settings::language($conversation->mailbox_cached ?? $conversation->mailbox, $user) : null;
+            $subject = $language && !self::readAsWritten($thread, $user, $language) ? (Summaries::data($thread)['subjects'][$language] ?? null) : null;
+            if ($subject !== null && $subject !== '') {
+                $subjects[$thread->conversation_id] = $subject;
+            }
+        }
+
+        return $subjects;
+    }
+
+    /**
+     * A list's conversations: a page of them (a paginator) or a collection.
+     */
+    protected static function listed($conversations)
+    {
+        return collect($conversations instanceof \Illuminate\Contracts\Pagination\Paginator ? $conversations->items() : $conversations);
     }
 
     /**
@@ -335,8 +369,11 @@ class Translations
             $as_html = $html !== '' && mb_strlen($html) <= Summaries::MAX_THREAD_CHARS * 3;
             $deadline = microtime(true) + 120;
             $context = ConversationContext::build($thread->conversation, $language, false, $thread->id, $deadline, $thread);
-            [$answer] = (new ThreadTranslator($language, $as_html))->recordFor(Usage::FEATURE_TRANSLATION, $thread->conversation)->streamJson(
-                $context['prompt']."\n\n".TallportAgent::data('message', $as_html ? $html : $text),
+            // The conversation's first message: its subject too (shown in lists).
+            $subject = $thread->type == Thread::TYPE_CUSTOMER && trim((string) $thread->conversation->subject) !== ''
+                && $thread->id == Thread::where('conversation_id', $thread->conversation_id)->min('id');
+            [$answer] = (new ThreadTranslator($language, $as_html, $subject))->recordFor(Usage::FEATURE_TRANSLATION, $thread->conversation)->streamJson(
+                $context['prompt']."\n\n".($subject ? TallportAgent::data('subject', mb_substr((string) $thread->conversation->subject, 0, 1000))."\n\n" : '').TallportAgent::data('message', $as_html ? $html : $text),
                 $thread->type == Thread::TYPE_CUSTOMER ? self::broadcaster($thread->conversation, $language, fn ($answer) => [$thread->id => [$answer['translation'] ?? '', $as_html]]) : null, $deadline
             );
         }
@@ -358,6 +395,9 @@ class Translations
                 $data['same'] = array_values(array_unique(array_merge((array) ($data['same'] ?? []), [$language])));
             } else {
                 $data['translations'][$language] = trim((string) $answer['translation']);
+                if (trim((string) ($answer['subject'] ?? '')) !== '') {
+                    $data['subjects'][$language] = mb_substr(trim(strip_tags((string) $answer['subject'])), 0, 255);
+                }
                 $data['html'] = array_values(array_diff((array) ($data['html'] ?? []), [$language]));
                 if ($as_html) {
                     $data['html'][] = $language;

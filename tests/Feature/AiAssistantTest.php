@@ -455,6 +455,28 @@ class AiAssistantTest extends FeatureTestCase
         ThreadTranslator::assertNeverPrompted();
     }
 
+    /**
+     * The first message's translation brings the subject along: lists show it in the agent's
+     * language, the original as its title. Later messages don't ask for it.
+     */
+    public function testSubjectIsTranslatedWithTheFirstMessage()
+    {
+        $this->configureAi();
+        $translation = ['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'nl', 'subject' => 'My order'];
+        ThreadTranslator::fake(fn () => new \Laravel\Ai\Responses\StructuredTextResponse(
+            $translation, json_encode($translation), new \Laravel\Ai\Responses\Data\TextUsage(1, 1), new \Laravel\Ai\Responses\Data\Meta
+        ));
+        $this->receiveEmail($this->mailbox, $this->makeEmail([
+            'from' => 'Casey Customer <casey@customer.example.org>', 'to' => $this->mailbox->email,
+            'subject' => 'Mijn bestelling', 'body' => 'Waar blijft mijn bestelling?',
+        ]));
+        $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->first();
+
+        ThreadTranslator::assertPrompted(fn ($prompt) => str_contains($prompt->prompt, '<subject>') && str_contains($prompt->prompt, 'Mijn bestelling') && $prompt->agent->subject);
+        $this->assertSame([$conversation->id => 'My order'], Translations::subjects([$conversation], $this->agent));
+        $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id)->assertSee('<span title="Mijn bestelling">My order</span>', false);
+    }
+
     public function testCustomerMessageIsSummarizedAndTranslated()
     {
         $this->configureAi();
