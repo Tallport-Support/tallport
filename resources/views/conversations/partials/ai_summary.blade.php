@@ -1,5 +1,5 @@
 {{-- AI Assistant: where the conversation stands (App\Ai\Summaries), a slim line above the messages; for long
-     conversations, what's been tried and what's open behind Background. --}}
+     conversations, the line opens to what's been tried and what's open (FruitUI's quiet Disclosure). --}}
 @php
     $ai_language = App\Ai\Settings::language($conversation->mailbox, Auth::user());
     $ai_summary = App\Ai\Summaries::get($conversation, $ai_language) ?: App\Ai\Summaries::getAny($conversation, $ai_language);
@@ -19,12 +19,14 @@
 @if ($ai_one_liner !== '')
     <li>
         <div class="thread thread-type-ai-summary ai-summary-line" id="thread-ai-summary" title="{{ $ai_summary_title }}">
-            <x-icon.sparkles class="f-icon ai-assistant-icon" aria-hidden="true" /><span class="f-sr-only">{{ __('Summary') }}: </span><span>{{ $ai_one_liner }}</span>
+            <x-icon.sparkles class="f-icon ai-assistant-icon" aria-hidden="true" /><span class="f-sr-only">{{ __('Summary') }}: </span>
             @if ($ai_background)
-                <details class="ai-summary-line__background">
-                    <summary>{{ __('Background') }}</summary>
+                <details class="f-disclosure f-disclosure--quiet ai-summary-line__text">
+                    <summary>{{ $ai_one_liner }}</summary>
                     <ul class="ai-assistant-summary-list">@foreach ($ai_background as $ai_item)<li>{{ $ai_item }}</li>@endforeach</ul>
                 </details>
+            @else
+                <span class="ai-summary-line__text">{{ $ai_one_liner }}</span>
             @endif
         </div>
     </li>

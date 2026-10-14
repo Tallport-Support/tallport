@@ -835,48 +835,26 @@
     margin-top: var(--f-message-status-gap, 10px);
   }
   /* The message in its other language: a customer's original under its translation, or a reply as
-     it was sent. It stays collapsed under a quiet line with a translate icon, so a thread reads in the
-     reader's language; opening it shows that text below, on a bar, in its own lang. */
+     it was sent. A quiet Disclosure keeps it collapsed under a small label with a translate icon, so
+     a thread reads in the reader's language; it opens below, on a bar, in its own lang. */
   .f-message__original {
     margin-top: var(--f-message-original-gap, 8px);
   }
   .f-message__original > summary {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    max-width: 100%;
-    border-radius: var(--f-radius-sm);
     color: var(--f-secondary);
     font-size: var(--f-text-sm);
-    list-style: none;
-    cursor: pointer;
-  }
-  .f-message__original > summary::-webkit-details-marker {
-    display: none;
   }
   .f-message__original > summary:hover {
     color: var(--f-text);
   }
   .f-message__original-icon {
-    flex: none;
+    display: inline-block;
+    margin-inline-end: 6px;
+    vertical-align: -3px;
     color: var(--f-generated);
     --f-icon-size: 16px;
   }
-  .f-message__original-chevron {
-    flex: none;
-    --f-icon-size: 12px;
-  }
-  .f-message__original:not([open]) .f-message__original-chevron:dir(rtl) {
-    transform: scaleX(-1);
-  }
-  .f-message__original[open] .f-message__original-chevron {
-    transform: rotate(90deg);
-  }
   .f-message__original-text {
-    margin-top: 8px;
-    padding-inline-start: 12px;
-    border-inline-start: 2px solid var(--f-border);
-    color: var(--f-secondary);
     overflow-wrap: anywhere;
   }
   /* A picture in a message, received or sent, shows as a thumbnail where it sits, so the text around

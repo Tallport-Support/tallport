@@ -500,8 +500,9 @@ class AiAssistantTest extends FeatureTestCase
 
         $this->getConversationPage($this->agent, $conversation)
             ->assertStatus(200)
-            ->assertSee('ai-summary-line', false)->assertSee('<span>Customer asks where the order is</span>', false)
-            ->assertDontSee('ai-summary-line__background', false)
+            // No background: the sentence alone, not a disclosure.
+            ->assertSee('<span class="ai-summary-line__text">Customer asks where the order is</span>', false)
+            ->assertDontSee('f-disclosure--quiet ai-summary-line__text', false)
             // Read in the agent's language: the translation is the message, the original folded below it.
             ->assertSeeInOrder(['Where is my order?', 'f-message__original', 'Translated from'], false);
         $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id)
@@ -875,7 +876,7 @@ class AiAssistantTest extends FeatureTestCase
         ConversationSummarizer::assertPrompted(fn ($prompt) => $prompt->agent->with_background === true);
 
         $this->getConversationPage($this->agent, $conversation)->assertStatus(200)
-            ->assertSeeInOrder(['Long one', 'Background', 'Restarting did not help', 'Still open: other users']);
+            ->assertSeeInOrder(['f-disclosure f-disclosure--quiet', '<summary>Long one</summary>', 'Restarting did not help', 'Still open: other users'], false);
     }
 
     public function testSummariesInDifferentLanguagesAreKeptTogether()

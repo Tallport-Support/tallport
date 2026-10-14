@@ -1229,7 +1229,7 @@ a.disabled:focus {
 
 .ai-assistant-summary-list {
     margin: 0;
-    padding-left: 18px;
+    padding-inline-start: 18px;
 }
 .ai-assistant-summary-list li {
     margin: 0 0 6px;
@@ -1239,15 +1239,18 @@ a.disabled:focus {
 }
 /* The summary at the top of a conversation (conversations/partials/ai_summary). */
 .ai-summary-line {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
     padding: 10px 0;
     color: var(--f-secondary);
     font-size: var(--f-text-sm);
 }
-.ai-summary-line__background summary {
-    margin-top: 4px;
-    cursor: pointer;
+/* The sentence, or the quiet Disclosure that opens to the background: it wraps. */
+.ai-summary-line__text {
+    min-width: 0;
 }
-.ai-summary-line__background .ai-assistant-summary-list {
+.ai-summary-line__text .ai-assistant-summary-list {
     margin-top: 4px;
 }
 /* AI Assistant's sparkles: an AI one-liner in the list. */

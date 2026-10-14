@@ -329,7 +329,7 @@
         "element": "`details` with a native summary button.",
         "state": "Native open state.",
         "keyboard": "Tab focuses summary; Enter/Space toggles.",
-        "options": "`title`: summary text. Native details attributes. Slot: supporting content."
+        "options": "`title`: summary text. `variant`: box (default: a bordered box) or quiet (`f-disclosure--quiet`: no box; the summary a line in its context's text ending in a chevron, right while closed, left in right-to-left text, down when open, joined to the last word; the content below on a bar in the secondary color, as Message's `original` and Generated's `details` use it). Native details attributes. Slot: supporting content."
       }
     }
   },
@@ -1398,7 +1398,7 @@
         "element": "`div.f-generated`: a decorative sparkles icon, a visually hidden label, and the text.",
         "state": "No state; the application supplies the text.",
         "keyboard": "No keyboard behavior of its own; links in the text keep theirs.",
-        "options": "`label`: what it is, for assistive technology (default: Generated; for example Summary). Default slot: the text. In a Thread it sits without hairlines, like the cards. For a machine translation use Message's `translation` slot; for generated text with an author and time, Message `variant=\"generated\"`."
+        "options": "`label`: what it is, for assistive technology (default: Generated; for example Summary). Default slot: the text. `details` slot: what it opens to, such as a summary's background; the text becomes a quiet Disclosure's summary (`details.f-generated__text.f-disclosure--quiet`). In a Thread it sits without hairlines, like the cards. For a machine translation use Message's `original` slot; for generated text with an author and time, Message `variant=\"generated\"`."
       }
     }
   },

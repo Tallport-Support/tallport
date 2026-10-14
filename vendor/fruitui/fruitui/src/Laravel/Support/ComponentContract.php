@@ -57,7 +57,7 @@ final class ComponentContract
         'suggestion' => ['roles' => ['region']],
         'page' => ['options' => ['width' => ['narrow', 'medium', 'wide']]],
         'accent-picker' => ['roles' => ['radiogroup']],
-        'disclosure' => ['roles' => ['group']],
+        'disclosure' => ['roles' => ['group'], 'options' => ['variant' => ['box', 'quiet']]],
         'drilldown' => ['roles' => ['group', 'region']],
         'drilldown-column' => ['roles' => ['region']],
         'editor' => ['owns' => self::ENHANCED, 'message' => 'owns enhancement visibility and its single value contract', 'options' => ['paste' => ['rich', 'plain'], 'layout' => ['stacked', 'inline'], 'enter' => ['newline', 'submit'], 'mode' => ['rich', 'markdown']]],
@@ -379,7 +379,6 @@ final class ComponentContract
         }
     }
 
-    /** A message status line's tone: neutral (default), warning or danger. */
     /** A message's original, in its other language, is named by what the reader opens: "Translated from Danish". */
     public static function messageOriginal(mixed $label): string
     {
@@ -390,6 +389,7 @@ final class ComponentContract
         return $label;
     }
 
+    /** A message status line's tone: neutral (default), warning or danger. */
     public static function messageStatus(mixed $tone): string
     {
         if (! in_array($tone, ['neutral', 'warning', 'danger'], true)) {
