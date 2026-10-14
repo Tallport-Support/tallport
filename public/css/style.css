@@ -3283,6 +3283,12 @@ h1.settings-toolbar__title {
         --f-toast-top: 152px;
     }
 }
+/* Tablets: the conversation toolbar is two rows here too (Newer, Older, Status on the second). */
+@media (min-width: 768px) and (max-width: 1023px) {
+    :root {
+        --f-toast-top: 125px;
+    }
+}
 @media (min-width: 768px) {
     .conv-action-narrow {
         display: none !important;

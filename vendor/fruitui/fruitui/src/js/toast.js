@@ -11,7 +11,8 @@ export function toast(message, { tone = 'neutral' } = {}) {
 
 /**
  * The toast outlet: shows one message at a time from fruit-toast events, pauses while hovered or
- * focused, and uses the top layer where supported so open modal dialogs do not cover it.
+ * focused, and uses the top layer where supported so open modal dialogs do not cover it. A click on it
+ * closes it, and so does Escape that nothing else took, so it never keeps covering what's beneath.
  */
 export function fruitToast({ duration = 4000, message = null, tone = 'neutral', action = false } = {}) {
   if (!Number.isFinite(duration) || duration < 0)
@@ -42,6 +43,27 @@ export function fruitToast({ duration = 4000, message = null, tone = 'neutral', 
       for (const name of ['mouseenter', 'focusin']) this.$el.addEventListener(name, () => this.pauseNotice(), options);
       for (const name of ['mouseleave', 'focusout'])
         this.$el.addEventListener(name, () => this.resumeNotice(), options);
+      // A click anywhere but its action, unless it selected text to copy.
+      this.$el.addEventListener(
+        'click',
+        event => {
+          if (event.target.closest('.f-toast__action, a, button, input, select, textarea')) return;
+          if (String(window.getSelection?.() ?? '')) return;
+          this.dismissNotice();
+        },
+        options,
+      );
+      // Escape that a menu, picker or dialog didn't take: keyboard focus is never left under it.
+      window.addEventListener(
+        'keydown',
+        event => {
+          if (event.key !== 'Escape' || event.defaultPrevented || !this.notice) return;
+          if (!this.$el.contains(event.target) && event.target.closest?.('dialog[open], :popover-open')) return;
+          event.preventDefault();
+          this.dismissNotice();
+        },
+        options,
+      );
       if (message) this.notify(message, tone, action);
     },
     notify(text, tone = 'neutral', action = false) {

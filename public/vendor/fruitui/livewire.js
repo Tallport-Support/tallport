@@ -24,7 +24,11 @@ function n({ duration: t = 4e3, message: n = null, tone: r = "neutral", action: 
 			this.$el.classList.contains("f-toast") && typeof this.$el.showPopover == "function" && (this.$el.popover = "manual"), this.$el.setAttribute("aria-live", "polite"), window.addEventListener("fruit-toast", (e) => this.notify(e.detail?.message ?? "", e.detail?.tone), e);
 			for (let t of ["mouseenter", "focusin"]) this.$el.addEventListener(t, () => this.pauseNotice(), e);
 			for (let t of ["mouseleave", "focusout"]) this.$el.addEventListener(t, () => this.resumeNotice(), e);
-			n && this.notify(n, r, i);
+			this.$el.addEventListener("click", (e) => {
+				e.target.closest(".f-toast__action, a, button, input, select, textarea") || String(window.getSelection?.() ?? "") || this.dismissNotice();
+			}, e), window.addEventListener("keydown", (e) => {
+				e.key === "Escape" && !e.defaultPrevented && this.notice && (this.$el.contains(e.target) || !e.target.closest?.("dialog[open], :popover-open")) && (e.preventDefault(), this.dismissNotice());
+			}, e), n && this.notify(n, r, i);
 		},
 		notify(t, n = "neutral", r = !1) {
 			l(), e.includes(n) || (n = "neutral"), this.$el.setAttribute("aria-live", n === "danger" ? "assertive" : "polite"), n === "neutral" ? delete this.$el.dataset.tone : this.$el.dataset.tone = n, this.notice = String(t), this.showAction = !!(r && this.notice), s = u(n), this.$el.popover && (this.$el.matches(":popover-open") && this.$el.hidePopover(), this.$el.showPopover()), this.resumeNotice();
