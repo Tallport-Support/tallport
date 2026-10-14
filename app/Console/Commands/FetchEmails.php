@@ -1505,6 +1505,13 @@ class FetchEmails extends Command
         // Update folders counters
         $conversation->mailbox->updateFoldersCounters();
 
+        // A delivery notice is a conversation of its own, closed: read too, for everyone.
+        if ($this->saving_delivery_notice) {
+            foreach ($conversation->mailbox->usersHavingAccess() as $reader) {
+                \App\ConversationRead::markRead([$conversation->id], $reader);
+            }
+        }
+
         // A delivery notice notifies nobody and gets no auto reply (the events' listeners).
         $quiet = $this->saving_delivery_notice;
         $this->saving_delivery_notice = false;

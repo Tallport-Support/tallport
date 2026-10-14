@@ -365,6 +365,24 @@ class IncomingEmailEdgeCasesTest extends FeatureTestCase
         $this->assertCount(0, $this->sentEmailsTo('casey@customer.example.org'), 'No auto-reply loop.');
     }
 
+    /**
+     * A delivery notice is a closed conversation of its own, read for everyone: it doesn't
+     * count as unread in Closed.
+     */
+    public function testDeliveryNoticesAreRead()
+    {
+        $teammate = $this->createUser();
+        $this->mailbox->users()->attach($teammate->id);
+        $notice = $this->receiveFromCustomer(['subject' => 'Automatic reply: Away', 'headers' => ['Auto-Submitted' => 'auto-replied']]);
+
+        $this->assertSame(Conversation::STATUS_CLOSED, $notice->status);
+        $closed = $this->mailbox->folders()->where('type', \App\Folder::TYPE_CLOSED)->first();
+        foreach ([$this->agent, $teammate] as $user) {
+            $this->assertSame([], \App\ConversationRead::unreadIds([$notice], $user));
+            $this->assertSame(0, \App\Misc\Sidebar::unreadCounts($user)['folders'][$closed->id] ?? 0);
+        }
+    }
+
     public static function autoReplyHeaders()
     {
         return [
