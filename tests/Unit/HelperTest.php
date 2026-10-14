@@ -645,7 +645,8 @@ class HelperTest extends TestCase
     public function testGetRunningProcesses()
     {
         $marker = 'tallport-process-'.uniqid();
-        $process = proc_open(['php', '-r', 'sleep(10);', $marker], [], $pipes);
+        // PHP itself: a `php` on the path may be a wrapper that starts PHP as a second process.
+        $process = proc_open([PHP_BINARY, '-r', 'sleep(10);', $marker], [], $pipes);
         $pid = proc_get_status($process)['pid'];
 
         try {
