@@ -1059,15 +1059,18 @@ textarea.f-input {
   }
 
 .f-toast {
-    /* Also a manual popover in the top layer; these override the browser's popover defaults. */
+    /* At the window's top end, below an application's header row (--f-toast-top), so it covers
+       neither the header's controls nor a composer, save bar or dialog buttons at the bottom. Also a
+       manual popover in the top layer; these override the browser's popover defaults. */
     position: fixed;
-    inset: auto auto 24px 50%;
+    inset: auto;
+    inset-block-start: var(--f-toast-top, 80px);
+    inset-inline-end: 16px;
     margin: 0;
     overflow: visible;
     color: var(--f-text);
-    transform: translateX(-50%);
     width: max-content;
-    max-width: calc(100% - 32px);
+    max-width: min(28rem, calc(100% - 32px));
     padding: 11px 18px;
     border: 1px solid var(--f-border);
     border-radius: var(--f-radius);
