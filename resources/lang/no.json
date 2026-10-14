@@ -1842,5 +1842,7 @@
     "Markdown. Save to keep the change.": "Markdown. Lagre for å beholde endringen.",
     "Translated from :language": "Oversatt fra :language",
     "As the customer wrote it": "Slik kunden skrev det",
-    "Image": "Bilde"
+    "Image": "Bilde",
+    "Edited :when": "Redigert :when",
+    "Show Before Editing": "Vis Før Redigering"
 }

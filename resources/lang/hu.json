@@ -1839,5 +1839,7 @@
     "Markdown. Save to keep the change.": "Markdown. Mentsd a változtatás megtartásához.",
     "Translated from :language": "Fordítva erről: :language",
     "As the customer wrote it": "Ahogy az ügyfél írta",
-    "Image": "Kép"
+    "Image": "Kép",
+    "Edited :when": "Szerkesztve: :when",
+    "Show Before Editing": "Szerkesztés Előtti Változat Megjelenítése"
 }

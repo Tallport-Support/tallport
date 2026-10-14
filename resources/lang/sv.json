@@ -1839,5 +1839,7 @@
     "Markdown. Save to keep the change.": "Markdown. Spara för att behålla ändringen.",
     "Translated from :language": "Översatt från :language",
     "As the customer wrote it": "Som kunden skrev det",
-    "Image": "Bild"
+    "Image": "Bild",
+    "Edited :when": "Redigerad :when",
+    "Show Before Editing": "Visa Före Redigering"
 }

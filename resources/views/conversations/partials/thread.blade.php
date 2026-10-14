@@ -230,8 +230,10 @@
 
             @if ($thread->body_original)
                 <div class="thread-meta" x-data="{ original: false }">
-                    <span class="f-footnote f-muted">{{ __("Edited by :whom :when", ['whom' => $thread->getEditedByUserName(), 'when' => App\User::dateDiffForHumansWithHours($thread->edited_at)]) }}</span>
-                    <a href="#" class="f-footnote thread-original-show" x-show="!original" x-on:click.prevent="original = true">{{ __("Show Original") }}</a><a href="#" class="f-footnote thread-original-hide" x-show="original" x-cloak x-on:click.prevent="original = false">{{ __("Hide") }}</a>
+                    {{-- The editor's account may be gone since. --}}
+                    <span class="f-footnote f-muted">{{ trim($thread->getEditedByUserName()) !== '' ? __("Edited by :whom :when", ['whom' => $thread->getEditedByUserName(), 'when' => App\User::dateDiffForHumansWithHours($thread->edited_at)]) : __("Edited :when", ['when' => App\User::dateDiffForHumansWithHours($thread->edited_at)]) }}</span>
+                    {{-- Not the message's language original (the original slot): the text before it was edited. --}}
+                    <a href="#" class="f-footnote thread-original-show" x-show="!original" x-on:click.prevent="original = true">{{ __("Show Before Editing") }}</a><a href="#" class="f-footnote thread-original-hide" x-show="original" x-cloak x-on:click.prevent="original = false">{{ __("Hide") }}</a>
                     <div class="thread-original f-prose" x-show="original" x-cloak>{!! App\Misc\EmailColors::neutral(safe_raw_html(App\Misc\ExternalImages::original($thread))) !!}</div>
                 </div>
             @endif

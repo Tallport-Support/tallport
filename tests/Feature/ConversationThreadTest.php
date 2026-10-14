@@ -64,7 +64,7 @@ class ConversationThreadTest extends FeatureTestCase
         $thread->call('edit', $note->id)->assertSet('editing', $note->id)->assertSee('thread-editor-'.$note->id, false);
         $thread->call('saveEdit', $note->id, '')->assertToasted('Message cannot be empty', 'danger');
         $thread->call('saveEdit', $note->id, '<p>Second thought</p>')->assertSet('editing', null)
-            ->assertSee('Second thought')->assertSee('Show Original');
+            ->assertSee('Second thought')->assertSee('Show Before Editing');
         $this->assertStringContainsString('First thought', $note->fresh()->body_original);
 
         $thread->call('deleteNote', $note->id)->assertDontSee('Second thought');

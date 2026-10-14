@@ -1839,5 +1839,7 @@
     "Markdown. Save to keep the change.": "Markdown。保存すると変更が保持されます。",
     "Translated from :language": ":languageから翻訳",
     "As the customer wrote it": "顧客が書いたとおり",
-    "Image": "画像"
+    "Image": "画像",
+    "Edited :when": ":when に編集",
+    "Show Before Editing": "編集前を表示"
 }

@@ -1883,5 +1883,7 @@
     "Markdown. Save to keep the change.": "Markdown。儲存以保留變更。",
     "Translated from :language": "譯自:language",
     "As the customer wrote it": "客戶的原文",
-    "Image": "圖片"
+    "Image": "圖片",
+    "Edited :when": "於 :when 編輯",
+    "Show Before Editing": "顯示編輯前內容"
 }

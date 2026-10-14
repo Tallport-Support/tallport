@@ -1840,5 +1840,7 @@
     "Markdown. Save to keep the change.": "Markdown。保存以保留更改。",
     "Translated from :language": "译自:language",
     "As the customer wrote it": "客户的原文",
-    "Image": "图片"
+    "Image": "图片",
+    "Edited :when": "编辑于 :when",
+    "Show Before Editing": "显示编辑前内容"
 }

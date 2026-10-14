@@ -1839,5 +1839,7 @@
     "Markdown. Save to keep the change.": "Markdown. Збережіть, щоб зберегти зміну.",
     "Translated from :language": "Перекладено з мови: :language",
     "As the customer wrote it": "Як написав клієнт",
-    "Image": "Зображення"
+    "Image": "Зображення",
+    "Edited :when": "Відредаговано :when",
+    "Show Before Editing": "Показати до Редагування"
 }

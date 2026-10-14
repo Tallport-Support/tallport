@@ -1930,5 +1930,7 @@
     "Markdown. Save to keep the change.": "Markdown. Deseu per mantenir el canvi.",
     "Translated from :language": "Traduït del :language",
     "As the customer wrote it": "Tal com ho va escriure el client",
-    "Image": "Imatge"
+    "Image": "Imatge",
+    "Edited :when": "Editat :when",
+    "Show Before Editing": "Mostra Abans de l'Edició"
 }

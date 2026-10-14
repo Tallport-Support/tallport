@@ -1839,5 +1839,7 @@
     "Markdown. Save to keep the change.": "Markdown. Sla op om de wijziging te bewaren.",
     "Translated from :language": "Vertaald uit het :language",
     "As the customer wrote it": "Zoals de klant het schreef",
-    "Image": "Afbeelding"
+    "Image": "Afbeelding",
+    "Edited :when": "Gewijzigd op :when",
+    "Show Before Editing": "Toon Vóór Wijziging"
 }

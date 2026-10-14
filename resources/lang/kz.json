@@ -2232,5 +2232,7 @@
     "Markdown. Save to keep the change.": "Markdown. Өзгерісті сақтау үшін сақтаңыз.",
     "Translated from :language": "Аударылған тіл: :language",
     "As the customer wrote it": "Тұтынушы жазғандай",
-    "Image": "Сурет"
+    "Image": "Сурет",
+    "Edited :when": "Өзгертілді :when",
+    "Show Before Editing": "Өзгертуге Дейінгіні Көрсету"
 }

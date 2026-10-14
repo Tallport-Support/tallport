@@ -1839,5 +1839,7 @@
     "Markdown. Save to keep the change.": "Markdown. Salvați pentru a păstra modificarea.",
     "Translated from :language": "Tradus din: :language",
     "As the customer wrote it": "Așa cum a scris clientul",
-    "Image": "Imagine"
+    "Image": "Imagine",
+    "Edited :when": "Editat :when",
+    "Show Before Editing": "Arată Înainte de Editare"
 }

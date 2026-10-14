@@ -1839,5 +1839,7 @@
     "Markdown. Save to keep the change.": "Markdown. Salva per mantenere la modifica.",
     "Translated from :language": "Tradotto da: :language",
     "As the customer wrote it": "Come l'ha scritto il cliente",
-    "Image": "Immagine"
+    "Image": "Immagine",
+    "Edited :when": "Modificato :when",
+    "Show Before Editing": "Mostra Prima della Modifica"
 }

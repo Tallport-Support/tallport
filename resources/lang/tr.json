@@ -1839,5 +1839,7 @@
     "Markdown. Save to keep the change.": "Markdown. Değişikliği korumak için kaydedin.",
     "Translated from :language": ":language dilinden çevrildi",
     "As the customer wrote it": "Müşterinin yazdığı gibi",
-    "Image": "Görsel"
+    "Image": "Görsel",
+    "Edited :when": "Düzenlendi: :when",
+    "Show Before Editing": "Düzenlemeden Öncesini Göster"
 }

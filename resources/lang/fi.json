@@ -1855,5 +1855,7 @@
     "Markdown. Save to keep the change.": "Markdown. Tallenna säilyttääksesi muutoksen.",
     "Translated from :language": "Käännetty kielestä: :language",
     "As the customer wrote it": "Kuten asiakas sen kirjoitti",
-    "Image": "Kuva"
+    "Image": "Kuva",
+    "Edited :when": "Muokattu :when",
+    "Show Before Editing": "Näytä Ennen Muokkausta"
 }
