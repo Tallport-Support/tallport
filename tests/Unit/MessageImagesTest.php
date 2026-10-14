@@ -14,9 +14,10 @@ class MessageImagesTest extends TestCase
     {
         $html = MessageImages::thumbnails('<p>See <img src="https://help.example.com/storage/attachment/1/2/screen%20shot.png?id=3&amp;token=x" style="width: 900px; height:600px; border: 0"> and <img src="/storage/x.png" alt="Chart"></p>');
 
-        $this->assertStringContainsString('<a class="f-message__image" href="https://help.example.com/storage/attachment/1/2/screen%20shot.png?id=3&amp;token=x" target="_blank" rel="noopener" aria-label="screen shot.png"><img src="https://help.example.com/storage/attachment/1/2/screen%20shot.png?id=3&amp;token=x" style="border: 0"></a>', $html);
-        // Named by its alt.
-        $this->assertStringContainsString('<a class="f-message__image" href="/storage/x.png" target="_blank" rel="noopener"><img src="/storage/x.png" alt="Chart"></a>', $html);
+        // Opened in the attachment viewer: an attachment's own ID, so it's shown once.
+        $this->assertStringContainsString('<a class="f-message__image attachment-link" href="https://help.example.com/storage/attachment/1/2/screen%20shot.png?id=3&amp;token=x" target="_blank" rel="noopener" data-attachment-id="3" data-mime="image/*" data-file-name="screen shot.png" aria-label="screen shot.png"><img src="https://help.example.com/storage/attachment/1/2/screen%20shot.png?id=3&amp;token=x" style="border: 0"></a>', $html);
+        // Named by its alt; an ID of its own.
+        $this->assertStringContainsString('<a class="f-message__image attachment-link" href="/storage/x.png" target="_blank" rel="noopener" data-attachment-id="image-'.md5('/storage/x.png').'" data-mime="image/*" data-file-name="Chart"><img src="/storage/x.png" alt="Chart"></a>', $html);
     }
 
     public function testLinksSmallPicturesAndTextStayAsTheyAre()

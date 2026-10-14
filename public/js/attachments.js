@@ -45,7 +45,7 @@
 	var heicBlob = function (item) {
 		var id = item.getAttribute('data-attachment-id');
 		if (!decoded[id]) {
-			var url = item.querySelector('.attachment-link').getAttribute('href');
+			var url = linkOf(item).getAttribute('href');
 			decoded[id] = Promise.all([fetch(url, {credentials: 'same-origin'}).then(function (response) {
 				if (!response.ok) {
 					throw new Error(response.status);
@@ -68,7 +68,7 @@
 
 	// The address to show a HEIC attachment at: data: URLs, as the pages' CSP allows no blob: images.
 	var heicSource = function (item) {
-		var url = item.querySelector('.attachment-link').getAttribute('href');
+		var url = linkOf(item).getAttribute('href');
 		if (item.getAttribute('data-converted-url')) {
 			return Promise.resolve(item.getAttribute('data-converted-url'));
 		}
@@ -93,12 +93,12 @@
 		img.setAttribute('data-heic-pending', '');
 		nativeHeic().then(function (native) {
 			if (native) {
-				img.src = item.querySelector('.attachment-link').getAttribute('href');
+				img.src = linkOf(item).getAttribute('href');
 				return;
 			}
 			return heicBlob(item).then(function (blob) {
 				if (!blob) {
-					img.src = item.querySelector('.attachment-link').getAttribute('href');
+					img.src = linkOf(item).getAttribute('href');
 					return;
 				}
 				return createImageBitmap(blob).then(function (bitmap) {
@@ -164,10 +164,15 @@
 		});
 	};
 
+	// An item's link: in it, or the item itself (a picture in a message, App\Misc\MessageImages).
+	var linkOf = function (item) {
+		return item.matches('.attachment-link') ? item : item.querySelector('.attachment-link');
+	};
+
 	// What the viewer shows for an attachment, or ''.
 	var kind = function (item) {
 		var mime = (item.getAttribute('data-mime') || '').toLowerCase();
-		var link = item.querySelector('.attachment-link');
+		var link = linkOf(item);
 		var ext = ((link ? link.getAttribute('href') : '') || '').split('?')[0].split('.').pop().toLowerCase();
 		if (item.getAttribute('data-email-url')) {
 			return 'email';
@@ -194,7 +199,7 @@
 	};
 
 	var media = function (item, name) {
-		var url = item.querySelector('.attachment-link').getAttribute('href');
+		var url = linkOf(item).getAttribute('href');
 		var element;
 		switch (kind(item)) {
 			case 'image':
@@ -226,7 +231,7 @@
 	};
 
 	var show = function (item) {
-		var link = item.querySelector('.attachment-link');
+		var link = linkOf(item);
 		var list = items();
 		var index = list.findIndex(function (other) {
 			return other.getAttribute('data-attachment-id') == item.getAttribute('data-attachment-id');
