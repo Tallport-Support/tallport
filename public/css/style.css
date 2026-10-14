@@ -2720,7 +2720,7 @@ h1.settings-toolbar__title {
 .conv-ai-usage {
     margin: 0;
     padding: 12px 16px;
-    color: var(--f-tertiary);
+    color: var(--f-secondary);
     font-size: var(--f-text-xs);
 }
 .inspector-section > h3 {
@@ -3277,6 +3277,10 @@ h1.settings-toolbar__title {
 @media (max-width: 767px) {
     .conv-action-wide {
         display: none !important;
+    }
+    /* Toasts below the conversation toolbar's second row (Assign, Status, Newer, Older). */
+    :root {
+        --f-toast-top: 152px;
     }
 }
 @media (min-width: 768px) {
