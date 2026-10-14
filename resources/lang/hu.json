@@ -1841,5 +1841,6 @@
     "As the customer wrote it": "Ahogy az ügyfél írta",
     "Image": "Kép",
     "Edited :when": "Szerkesztve: :when",
-    "Show Before Editing": "Szerkesztés Előtti Változat Megjelenítése"
+    "Show Before Editing": "Szerkesztés Előtti Változat Megjelenítése",
+    "Users are allowed to edit own notes": "A felhasználók szerkeszthetik a saját jegyzeteiket"
 }

@@ -1857,5 +1857,6 @@
     "As the customer wrote it": "Kuten asiakas sen kirjoitti",
     "Image": "Kuva",
     "Edited :when": "Muokattu :when",
-    "Show Before Editing": "Näytä Ennen Muokkausta"
+    "Show Before Editing": "Näytä Ennen Muokkausta",
+    "Users are allowed to edit own notes": "Käyttäjät saavat muokata omia muistiinpanojaan"
 }

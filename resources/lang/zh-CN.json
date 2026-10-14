@@ -1842,5 +1842,6 @@
     "As the customer wrote it": "客户的原文",
     "Image": "图片",
     "Edited :when": "编辑于 :when",
-    "Show Before Editing": "显示编辑前内容"
+    "Show Before Editing": "显示编辑前内容",
+    "Users are allowed to edit own notes": "用户可以编辑自己的备注"
 }

@@ -1841,5 +1841,6 @@
     "As the customer wrote it": "Müşterinin yazdığı gibi",
     "Image": "Görsel",
     "Edited :when": "Düzenlendi: :when",
-    "Show Before Editing": "Düzenlemeden Öncesini Göster"
+    "Show Before Editing": "Düzenlemeden Öncesini Göster",
+    "Users are allowed to edit own notes": "Kullanıcılar kendi notlarını düzenleyebilir"
 }

@@ -1841,5 +1841,6 @@
     "As the customer wrote it": "Müştərinin yazdığı kimi",
     "Image": "Şəkil",
     "Edited :when": "Redaktə edildi: :when",
-    "Show Before Editing": "Redaktədən Əvvəlkini Göstər"
+    "Show Before Editing": "Redaktədən Əvvəlkini Göstər",
+    "Users are allowed to edit own notes": "İstifadəçilər öz qeydlərini redaktə edə bilər"
 }

@@ -66,12 +66,14 @@ class RemainingAjaxActionsTest extends FeatureTestCase
     {
         $conversation = $this->receiveConversation(['body' => 'Original text']);
         $thread = $conversation->threads()->first();
-
-        Livewire::actingAs($this->admin)->test(ConversationThread::class, ['conversation' => $conversation])
-            ->call('edit', $thread->id)->assertSet('editing', $thread->id)->assertSee('thread-editor-'.$thread->id, false)->assertSee('Original text');
-        // Agents may not edit others' notes.
         $this->sendReply($this->admin, ['mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Admin note</p>', 'is_note' => 1]);
         $note = $conversation->threads()->where('type', Thread::TYPE_NOTE)->first();
+
+        // One's own note: its editor; a customer's message: none, admins too.
+        Livewire::actingAs($this->admin)->test(ConversationThread::class, ['conversation' => $conversation])
+            ->call('edit', $note->id)->assertSet('editing', $note->id)->assertSee('thread-editor-'.$note->id, false)->assertSee('Admin note')
+            ->call('edit', $thread->id)->assertSet('editing', $note->id);
+        // Agents may not edit others' notes.
         Livewire::actingAs($this->agent)->test(ConversationThread::class, ['conversation' => $conversation])
             ->call('edit', $note->id)->assertSet('editing', null);
     }

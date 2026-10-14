@@ -2234,5 +2234,6 @@
     "As the customer wrote it": "Тұтынушы жазғандай",
     "Image": "Сурет",
     "Edited :when": "Өзгертілді :when",
-    "Show Before Editing": "Өзгертуге Дейінгіні Көрсету"
+    "Show Before Editing": "Өзгертуге Дейінгіні Көрсету",
+    "Users are allowed to edit own notes": "Пайдаланушылар өз ескертпелерін өңдей алады"
 }

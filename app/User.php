@@ -717,7 +717,7 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
     {
         $user_permission_names = [
             self::PERM_DELETE_CONVERSATIONS => __('Users are allowed to delete conversations'),
-            self::PERM_EDIT_CONVERSATIONS   => __('Users are allowed to edit own notes/replies'),
+            self::PERM_EDIT_CONVERSATIONS   => __('Users are allowed to edit own notes'),
             self::PERM_EDIT_SAVED_REPLIES   => __('Users are allowed to edit/delete saved replies'),
             self::PERM_EDIT_WORKFLOWS       => __('Users are allowed to manage workflows'),
             self::PERM_EDIT_KB              => __('Users are allowed to manage the knowledge base'),

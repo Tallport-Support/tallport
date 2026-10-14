@@ -1841,5 +1841,6 @@
     "As the customer wrote it": "顧客が書いたとおり",
     "Image": "画像",
     "Edited :when": ":when に編集",
-    "Show Before Editing": "編集前を表示"
+    "Show Before Editing": "編集前を表示",
+    "Users are allowed to edit own notes": "ユーザーは自分のメモを編集できます"
 }

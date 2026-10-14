@@ -1841,5 +1841,6 @@
     "As the customer wrote it": "Як написав клієнт",
     "Image": "Зображення",
     "Edited :when": "Відредаговано :when",
-    "Show Before Editing": "Показати до Редагування"
+    "Show Before Editing": "Показати до Редагування",
+    "Users are allowed to edit own notes": "Користувачі можуть редагувати власні нотатки"
 }

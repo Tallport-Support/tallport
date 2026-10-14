@@ -1841,5 +1841,6 @@
     "As the customer wrote it": "Come l'ha scritto il cliente",
     "Image": "Immagine",
     "Edited :when": "Modificato :when",
-    "Show Before Editing": "Mostra Prima della Modifica"
+    "Show Before Editing": "Mostra Prima della Modifica",
+    "Users are allowed to edit own notes": "Gli utenti possono modificare le proprie note"
 }

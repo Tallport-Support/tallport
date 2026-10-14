@@ -11,38 +11,20 @@ class ThreadPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can edit the thread.
-     *
-     * @param \App\User    $user
-     * @param \App\Thread  $thread
-     *
-     * @return mixed
+     * Whether the user can edit the thread: only their own notes. What was sent (replies,
+     * forwards), what customers wrote and what others wrote are as they are; drafts are
+     * edited in the composer. Admins, or users with the permission, in conversations they see.
      */
     public function edit(User $user, Thread $thread)
     {
-        if ((
-                // Thread created by user.
-                $thread->created_by_user_id 
-                && in_array($thread->type, [Thread::TYPE_MESSAGE, Thread::TYPE_NOTE])
-                && ($user->isAdmin() || (
-                        $user->hasPermission(User::PERM_EDIT_CONVERSATIONS)
-                        && $thread->created_by_user_id == $user->id
-                        && $thread->conversation
-                        && $thread->conversation->userHasAccessToMailbox($user->id)
-                        && $this->checkIsOnlyAssigned($thread->conversation, $user)
-                    )
-                )) || (
-                // Thread created by customer.
-                $thread->created_by_customer_id
-                && in_array($thread->type, [Thread::TYPE_CUSTOMER])
-                && $thread->conversation
-                && ($user->isAdmin() || ($thread->conversation->userHasAccessToMailbox($user->id) && $this->checkIsOnlyAssigned($thread->conversation, $user)))
-            )
-        ) {
-            return true;
-        } else {
-            return false;
-        }
+        return $thread->type == Thread::TYPE_NOTE
+            && $thread->created_by_user_id == $user->id
+            && $thread->conversation
+            && ($user->isAdmin() || (
+                $user->hasPermission(User::PERM_EDIT_CONVERSATIONS)
+                && $thread->conversation->userHasAccessToMailbox($user->id)
+                && $this->checkIsOnlyAssigned($thread->conversation, $user)
+            ));
     }
 
     public function delete(User $user, Thread $thread)

@@ -532,19 +532,36 @@ class ConversationActionsTest extends FeatureTestCase
 
     // Threads.
 
-    public function testEditCustomerMessageKeepsOriginal()
+    /**
+     * Only one's own notes can be edited, also by admins: not what customers wrote, not what
+     * was sent, not others' notes. An edited note keeps its original.
+     */
+    public function testOnlyOwnNotesCanBeEdited()
     {
         $admin = $this->createAdmin();
+        $this->mailbox->users()->attach($admin->id);
         $conversation = $this->receiveConversation(['body' => 'My phone number is 555-1234.']);
-        $thread = $conversation->threads()->first();
+        $this->sendReply($admin, ['mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Sent answer</p>']);
+        $this->sendReply($admin, ['mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Admin note</p>', 'is_note' => 1]);
+        $this->agent->permissions = [User::PERM_EDIT_CONVERSATIONS => true];
+        $this->agent->save();
+        $this->sendReply($this->agent, ['mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Agent note</p>', 'is_note' => 1]);
+        $threads = $conversation->threads()->get();
+        $customer = $threads->firstWhere('type', Thread::TYPE_CUSTOMER);
+        $reply = $threads->firstWhere('type', Thread::TYPE_MESSAGE);
+        $admin_note = $threads->first(fn ($thread) => $thread->type == Thread::TYPE_NOTE && $thread->created_by_user_id == $admin->id);
+        $agent_note = $threads->first(fn ($thread) => $thread->type == Thread::TYPE_NOTE && $thread->created_by_user_id == $this->agent->id);
 
-        $response = ConversationActions::editThread($thread->fresh(), '<p>My phone number is [removed].</p>', $admin);
+        foreach ([$customer, $reply, $agent_note] as $thread) {
+            $this->assertSame('Not enough permissions', ConversationActions::editThread($thread->fresh(), '<p>Changed</p>', $admin)['msg']);
+        }
+        $this->assertSame('Not enough permissions', ConversationActions::editThread($reply->fresh(), '<p>Changed</p>', $this->agent)['msg']);
 
-        $this->assertSuccess($response);
-        $thread->refresh();
-        $this->assertStringContainsString('[removed]', $thread->body);
-        $this->assertStringContainsString('555-1234', $thread->body_original);
-        $this->assertEquals($admin->id, $thread->edited_by_user_id);
+        $this->assertSuccess(ConversationActions::editThread($admin_note->fresh(), '<p>Admin note, edited</p>', $admin));
+        $admin_note->refresh();
+        $this->assertStringContainsString('edited', $admin_note->body);
+        $this->assertStringContainsString('Admin note', $admin_note->body_original);
+        $this->assertEquals($admin->id, $admin_note->edited_by_user_id);
     }
 
     public function testEditingOwnNoteNeedsPermission()
