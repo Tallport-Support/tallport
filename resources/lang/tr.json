@@ -1836,5 +1836,8 @@
     "Clear Filters": "Filtreleri Temizle",
     "Switch to Markdown": "Markdown'a Geç",
     "Written before Markdown. Switching converts the text; nothing changes until you save.": "Markdown'dan önce yazıldı. Geçiş metni dönüştürür; kaydedene kadar hiçbir şey değişmez.",
-    "Markdown. Save to keep the change.": "Markdown. Değişikliği korumak için kaydedin."
+    "Markdown. Save to keep the change.": "Markdown. Değişikliği korumak için kaydedin.",
+    "Translated from :language": ":language dilinden çevrildi",
+    "As the customer wrote it": "Müşterinin yazdığı gibi",
+    "Image": "Görsel"
 }

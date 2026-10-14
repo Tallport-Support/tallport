@@ -1852,5 +1852,8 @@
     "Clear Filters": "Tyhjennä Suodattimet",
     "Switch to Markdown": "Vaihda Markdowniin",
     "Written before Markdown. Switching converts the text; nothing changes until you save.": "Kirjoitettu ennen Markdownia. Vaihto muuntaa tekstin; mikään ei muutu ennen tallennusta.",
-    "Markdown. Save to keep the change.": "Markdown. Tallenna säilyttääksesi muutoksen."
+    "Markdown. Save to keep the change.": "Markdown. Tallenna säilyttääksesi muutoksen.",
+    "Translated from :language": "Käännetty kielestä: :language",
+    "As the customer wrote it": "Kuten asiakas sen kirjoitti",
+    "Image": "Kuva"
 }

@@ -58,17 +58,20 @@
         // (Replies kept before written_in was recorded: their translation was never detected.)
         $ai_written = $ai_data && ($ai_data['written_in'] ?? (empty($ai_data['language']) ? $ai_language : null)) === $ai_language;
         $ai_sent_in = $ai_written ? ($ai_data['sent_in'] ?? $ai_data['language'] ?? null) : null;
+        // A customer's message read in the agent's language: the translation is the message, the
+        // original folded below it (FruitUI's original slot).
+        $ai_read_translated = $ai_translation && !$ai_written;
+        $ai_original_language = $ai_read_translated ? (App\Ai\Summaries::data($thread)['language'] ?? null) : null;
+        $ai_translating = !$ai_translation && $ai_translation_wanted && $thread->type == App\Thread::TYPE_CUSTOMER && (App\Ai\Translations::reason($thread, $ai_language)[0] ?? '') == 'waiting';
     @endphp
     {{-- The chat view ($chat): name, meta and time on one line, the body beside the avatar. --}}
-    <x-fruit::message :layout="empty($chat) ? 'stacked' : 'inline'" :continued="!empty($continued) && !empty($chat)" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" :mine="$thread->type == App\Thread::TYPE_MESSAGE && $thread->created_by_user_id == Auth::user()->id" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()" :lang="$ai_written ? $ai_language : ($ai_translation ? (App\Ai\Summaries::data($thread)['language'] ?? null) : null)">
+    <x-fruit::message :layout="empty($chat) ? 'stacked' : 'inline'" :continued="!empty($continued) && !empty($chat)" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" :mine="$thread->type == App\Thread::TYPE_MESSAGE && $thread->created_by_user_id == Auth::user()->id" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()" :lang="$ai_translation ? $ai_language : null">
         @if ($ai_written)
-            <x-slot:translation :lang="$ai_sent_in"><span class="ai-sent-in">{{ $ai_sent_in ? __('Sent to the customer in :language', ['language' => App\Ai\Settings::displayName($ai_sent_in)]) : __('As sent to the customer') }}</span>{!! App\Misc\EmailColors::neutral(safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox))) !!}</x-slot:translation>
-        @elseif ($ai_translation)
-            {{-- The translation below the message, in the user's language. --}}
-            <x-slot:translation :lang="$ai_language">@include('conversations/partials/ai_translation')</x-slot:translation>
-        @elseif ($ai_translation_wanted && $thread->type == App\Thread::TYPE_CUSTOMER && (App\Ai\Translations::reason($thread, $ai_language)[0] ?? '') == 'waiting')
-            {{-- On its way: the translation shows here when it's done (realtime, AiTranslateThread). --}}
-            <x-slot:translation><span class="ai-translation-waiting" role="status"><x-fruit::spinner /> {{ __('Translating…') }}</span></x-slot:translation>
+            {{-- Written in the agent's language: what the customer received, folded. --}}
+            <x-slot:original :lang="$ai_sent_in" :label="$ai_sent_in ? __('Sent to the customer in :language', ['language' => App\Ai\Settings::displayName($ai_sent_in)]) : __('As sent to the customer')">{!! App\Misc\MessageImages::thumbnails(App\Misc\EmailColors::neutral(safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox)))) !!}</x-slot:original>
+        @elseif ($ai_read_translated)
+            {{-- Read in the agent's language: the message as the customer wrote it, folded. --}}
+            <x-slot:original :lang="$ai_original_language" :label="$ai_original_language ? __('Translated from :language', ['language' => App\Ai\Settings::displayName($ai_original_language)]) : __('As the customer wrote it')">{!! App\Misc\MessageImages::thumbnails(App\Misc\EmailColors::neutral(safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox)))) !!}</x-slot:original>
         @endif
         @if ($thread->has_attachments)
             <x-slot:attachments>@include('conversations/partials/thread_attachments')</x-slot:attachments>
@@ -217,8 +220,10 @@
                         {!! App\Misc\EmailColors::neutral(safe_raw_html($thread->getCleanBody())) !!}
                     @elseif ($ai_written)
                         {!! nl2br(e($ai_translation)) !!}
+                    @elseif ($ai_read_translated)
+                        {!! App\Misc\MessageImages::thumbnails((string) view('conversations/partials/ai_translation', compact('thread', 'ai_language', 'ai_translation'))) !!}
                     @else
-                        {!! App\Misc\EmailColors::neutral(safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox))) !!}
+                        {!! App\Misc\MessageImages::thumbnails(App\Misc\EmailColors::neutral(safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox)))) !!}
                     @endif
                 </div>
             @endunless
@@ -235,9 +240,15 @@
             @endif
         </div>
 
-        @if ($thread->opened_at)
+        @if ($thread->opened_at || $ai_translating)
             <x-slot:footer>
-                <span class="f-footnote f-muted">{{ __("Customer viewed :when", ['when' => App\User::dateDiffForHumansWithHours($thread->opened_at)]) }}</span>
+                @if ($ai_translating)
+                    {{-- On its way: the message shows translated when it's done (realtime, AiTranslateThread). --}}
+                    <span class="ai-translation-waiting" role="status"><x-fruit::spinner /> {{ __('Translating…') }}</span>
+                @endif
+                @if ($thread->opened_at)
+                    <span class="f-footnote f-muted">{{ __("Customer viewed :when", ['when' => App\User::dateDiffForHumansWithHours($thread->opened_at)]) }}</span>
+                @endif
             </x-slot:footer>
         @endif
 

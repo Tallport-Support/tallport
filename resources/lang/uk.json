@@ -1836,5 +1836,8 @@
     "Clear Filters": "Скинути Фільтри",
     "Switch to Markdown": "Перейти на Markdown",
     "Written before Markdown. Switching converts the text; nothing changes until you save.": "Написано до Markdown. Перехід перетворює текст; нічого не зміниться, доки ви не збережете.",
-    "Markdown. Save to keep the change.": "Markdown. Збережіть, щоб зберегти зміну."
+    "Markdown. Save to keep the change.": "Markdown. Збережіть, щоб зберегти зміну.",
+    "Translated from :language": "Перекладено з мови: :language",
+    "As the customer wrote it": "Як написав клієнт",
+    "Image": "Зображення"
 }

@@ -130,6 +130,8 @@
                 $row_menus = isset($selected) && empty($no_checkboxes);
                 $row_selection = $row_menus ? $conversations->whereIn('id', array_map('intval', (array) $selected)) : collect();
                 $unread_ids = App\ConversationRead::unreadIds($conversations, Auth::user());
+                // A translated conversation previews its latest message in the user's language.
+                $translated_previews = App\Ai\Translations::previews($conversations, Auth::user());
                 // A row's status unless it's Active (most are), and not where all rows share one.
                 $show_status = !in_array($folder->type, [App\Folder::TYPE_CLOSED, App\Folder::TYPE_SPAM]);
             @endphp
@@ -162,7 +164,7 @@
                         @if (empty($no_customer))
                             <x-slot:subtitle>@include('conversations/partials/badges'){{ '' }}@action('conversations_table.before_subject', $conversation){{ $conversation->getSubject() }}@action('conversations_table.after_subject', $conversation)</x-slot:subtitle>
                         @endif
-                        <x-slot:preview>@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner){{ $ai_one_liner }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</x-slot:preview>
+                        <x-slot:preview>@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner){{ $ai_one_liner }}@elseif (isset($translated_previews[$conversation->id])){{ $translated_previews[$conversation->id] }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</x-slot:preview>
                         <x-slot:meta class="conv-row__meta">
                             {{-- The number in search results only. --}}@if (!empty($params['show_number']))<span class="conv-number">#{{ $conversation->number }}</span>@endif
                             <span class="conv-channel" title="{{ $conv_channel_label }}">@if ($conversation->hasChannel())<x-icon.message-square class="f-icon" aria-hidden="true" />@elseif ($conversation->isPhone())<x-icon.phone class="f-icon" aria-hidden="true" />@else<x-icon.mail class="f-icon" aria-hidden="true" />@endif@if ($conversation->threads_count > 1)<span aria-hidden="true">{{ $conversation->threads_count }}</span>@endif<span class="f-sr-only">{{ $conv_channel_label }}</span></span>

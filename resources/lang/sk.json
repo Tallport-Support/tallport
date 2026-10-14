@@ -1836,5 +1836,8 @@
     "Clear Filters": "Zrušiť Filtre",
     "Switch to Markdown": "Prepnúť na Markdown",
     "Written before Markdown. Switching converts the text; nothing changes until you save.": "Napísané pred Markdownom. Prepnutie prevedie text; nič sa nezmení, kým neuložíte.",
-    "Markdown. Save to keep the change.": "Markdown. Uložte, aby sa zmena zachovala."
+    "Markdown. Save to keep the change.": "Markdown. Uložte, aby sa zmena zachovala.",
+    "Translated from :language": "Preložené z jazyka: :language",
+    "As the customer wrote it": "Ako to zákazník napísal",
+    "Image": "Obrázok"
 }

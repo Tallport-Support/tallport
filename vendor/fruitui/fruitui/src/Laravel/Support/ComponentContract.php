@@ -342,9 +342,12 @@ final class ComponentContract
     }
 
     /** A message's options; `mine` marks a sent message the viewer wrote. */
-    public static function message(mixed $layout, mixed $variant, mixed $direction, mixed $mine, ComponentAttributeBag $attributes, mixed $continued = false): void
+    public static function message(mixed $layout, mixed $variant, mixed $direction, mixed $mine, ComponentAttributeBag $attributes, mixed $continued = false, bool $translation = false): void
     {
         self::validate('message', $attributes, ['layout' => $layout, 'variant' => $variant, 'direction' => $direction]);
+        if ($translation) {
+            throw new InvalidArgumentException('FruitUI message has no translation slot: put the text in the reader\'s language in the message, and the other language in <x-slot:original label="Translated from Danish">.');
+        }
         if (! is_bool($mine)) {
             throw new InvalidArgumentException('FruitUI message mine must be a boolean.');
         }
@@ -377,6 +380,16 @@ final class ComponentContract
     }
 
     /** A message status line's tone: neutral (default), warning or danger. */
+    /** A message's original, in its other language, is named by what the reader opens: "Translated from Danish". */
+    public static function messageOriginal(mixed $label): string
+    {
+        if (! is_string($label) || trim($label) === '') {
+            throw new InvalidArgumentException('FruitUI message original needs a label naming it, such as label="Translated from Danish" or label="Sent in Danish".');
+        }
+
+        return $label;
+    }
+
     public static function messageStatus(mixed $tone): string
     {
         if (! in_array($tone, ['neutral', 'warning', 'danger'], true)) {

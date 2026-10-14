@@ -1836,5 +1836,8 @@
     "Clear Filters": "Počisti Filtre",
     "Switch to Markdown": "Preklopi na Markdown",
     "Written before Markdown. Switching converts the text; nothing changes until you save.": "Napisano pred Markdownom. Preklop pretvori besedilo; nič se ne spremeni, dokler ne shranite.",
-    "Markdown. Save to keep the change.": "Markdown. Shranite, da ohranite spremembo."
+    "Markdown. Save to keep the change.": "Markdown. Shranite, da ohranite spremembo.",
+    "Translated from :language": "Prevedeno iz jezika: :language",
+    "As the customer wrote it": "Kot je stranka napisala",
+    "Image": "Slika"
 }

@@ -1836,5 +1836,8 @@
     "Clear Filters": "Rensa Filter",
     "Switch to Markdown": "Byt till Markdown",
     "Written before Markdown. Switching converts the text; nothing changes until you save.": "Skrivet före Markdown. Bytet konverterar texten; inget ändras förrän du sparar.",
-    "Markdown. Save to keep the change.": "Markdown. Spara för att behålla ändringen."
+    "Markdown. Save to keep the change.": "Markdown. Spara för att behålla ändringen.",
+    "Translated from :language": "Översatt från :language",
+    "As the customer wrote it": "Som kunden skrev det",
+    "Image": "Bild"
 }

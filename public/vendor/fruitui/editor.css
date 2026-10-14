@@ -73,9 +73,13 @@
   .f-editor__popover > .f-input {
     flex: 1 1 12rem;
   }
+  /* A pasted screenshot stays a picture of a reasonable size while the reply is written; it's sent at
+     its own size. */
   .f-editor__surface img {
+    width: auto;
     max-width: 100%;
     height: auto;
+    max-height: var(--f-editor-image-height, 200px);
   }
   .f-editor [hidden] {
     display: none !important;

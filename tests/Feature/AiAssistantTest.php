@@ -480,10 +480,13 @@ class AiAssistantTest extends FeatureTestCase
             ->assertStatus(200)
             ->assertSee('ai-summary-line', false)->assertSee('<span>Customer asks where the order is</span>', false)
             ->assertDontSee('ai-summary-line__background', false)
-            ->assertSee('f-message__translation', false)
-            ->assertSee('Where is my order?');
+            // Read in the agent's language: the translation is the message, the original folded below it.
+            ->assertSeeInOrder(['Where is my order?', 'f-message__original', 'Translated from'], false);
         $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id)
             ->assertSee('Customer asks where the order is');
+
+        // The list previews it in the agent's language too (where there's no summary line).
+        $this->assertSame([$conversation->id => 'Hello, Where is my order?'], \App\Ai\Translations::previews([$conversation], $this->agent));
 
         // Shown once: viewing doesn't ask again.
         ConversationSummarizer::assertPromptedTimes(1);

@@ -1837,5 +1837,8 @@
     "Clear Filters": "清除筛选",
     "Switch to Markdown": "切换到 Markdown",
     "Written before Markdown. Switching converts the text; nothing changes until you save.": "写于启用 Markdown 之前。切换会转换文本；保存前不会有任何更改。",
-    "Markdown. Save to keep the change.": "Markdown。保存以保留更改。"
+    "Markdown. Save to keep the change.": "Markdown。保存以保留更改。",
+    "Translated from :language": "译自:language",
+    "As the customer wrote it": "客户的原文",
+    "Image": "图片"
 }

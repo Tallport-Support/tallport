@@ -1836,5 +1836,8 @@
     "Clear Filters": "Limpar Filtros",
     "Switch to Markdown": "Mudar para Markdown",
     "Written before Markdown. Switching converts the text; nothing changes until you save.": "Escrito antes do Markdown. A mudança converte o texto; nada muda até guardar.",
-    "Markdown. Save to keep the change.": "Markdown. Guarde para manter a alteração."
+    "Markdown. Save to keep the change.": "Markdown. Guarde para manter a alteração.",
+    "Translated from :language": "Traduzido de: :language",
+    "As the customer wrote it": "Tal como o cliente escreveu",
+    "Image": "Imagem"
 }

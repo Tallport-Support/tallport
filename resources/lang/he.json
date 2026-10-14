@@ -1836,5 +1836,8 @@
     "Clear Filters": "ניקוי מסננים",
     "Switch to Markdown": "מעבר ל-Markdown",
     "Written before Markdown. Switching converts the text; nothing changes until you save.": "נכתב לפני Markdown. המעבר ממיר את הטקסט; שום דבר לא משתנה עד שתשמרו.",
-    "Markdown. Save to keep the change.": "Markdown. שמרו כדי לשמור את השינוי."
+    "Markdown. Save to keep the change.": "Markdown. שמרו כדי לשמור את השינוי.",
+    "Translated from :language": "תורגם מ:language",
+    "As the customer wrote it": "כפי שהלקוח כתב",
+    "Image": "תמונה"
 }

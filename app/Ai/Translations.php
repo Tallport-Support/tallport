@@ -24,6 +24,31 @@ class Translations
     }
 
     /**
+     * Previews in the user's language for a page of a list: each conversation's latest message's
+     * translation, where there is one (none is asked for here). [conversation id => text]
+     */
+    public static function previews($conversations, $user)
+    {
+        $ids = collect($conversations)->pluck('id')->all();
+        if (!$ids) {
+            return [];
+        }
+        $latest = Thread::whereIn('conversation_id', $ids)->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
+            ->where('state', Thread::STATE_PUBLISHED)->groupBy('conversation_id')->selectRaw('max(id) as id')->pluck('id');
+        $previews = [];
+        foreach (Thread::whereIn('id', $latest)->whereNotNull('ai_assistant')->get() as $thread) {
+            $conversation = collect($conversations)->firstWhere('id', $thread->conversation_id);
+            $language = $conversation ? Settings::language($conversation->mailbox_cached ?? $conversation->mailbox, $user) : null;
+            $translation = $language ? self::get($thread, $language) : null;
+            if ($translation !== null && trim($translation) !== '') {
+                $previews[$thread->conversation_id] = \Helper::textPreview(self::isHtml($thread, $language) ? \Helper::htmlToText($translation) : $translation, \App\Conversation::PREVIEW_MAXLENGTH);
+            }
+        }
+
+        return $previews;
+    }
+
+    /**
      * A message's translation for the user reading it: a customer's message, or a
      * reply made from a draft with the draft's translation. Asks for a missing one.
      * Not for a customer's message in a language the user reads, unless they asked.

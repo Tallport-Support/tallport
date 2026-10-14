@@ -1839,5 +1839,8 @@
     "Clear Filters": "Fjern Filtre",
     "Switch to Markdown": "Bytt til Markdown",
     "Written before Markdown. Switching converts the text; nothing changes until you save.": "Skrevet før Markdown. Byttet konverterer teksten; ingenting endres før du lagrer.",
-    "Markdown. Save to keep the change.": "Markdown. Lagre for å beholde endringen."
+    "Markdown. Save to keep the change.": "Markdown. Lagre for å beholde endringen.",
+    "Translated from :language": "Oversatt fra :language",
+    "As the customer wrote it": "Slik kunden skrev det",
+    "Image": "Bilde"
 }

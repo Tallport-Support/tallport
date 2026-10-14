@@ -2229,5 +2229,8 @@
     "Clear Filters": "Сүзгілерді Тазалау",
     "Switch to Markdown": "Markdown-қа Ауысу",
     "Written before Markdown. Switching converts the text; nothing changes until you save.": "Markdown-қа дейін жазылған. Ауысу мәтінді түрлендіреді; сақтағанша ештеңе өзгермейді.",
-    "Markdown. Save to keep the change.": "Markdown. Өзгерісті сақтау үшін сақтаңыз."
+    "Markdown. Save to keep the change.": "Markdown. Өзгерісті сақтау үшін сақтаңыз.",
+    "Translated from :language": "Аударылған тіл: :language",
+    "As the customer wrote it": "Тұтынушы жазғандай",
+    "Image": "Сурет"
 }

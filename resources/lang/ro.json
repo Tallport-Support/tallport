@@ -1836,5 +1836,8 @@
     "Clear Filters": "Șterge Filtrele",
     "Switch to Markdown": "Comută la Markdown",
     "Written before Markdown. Switching converts the text; nothing changes until you save.": "Scris înainte de Markdown. Comutarea convertește textul; nimic nu se schimbă până nu salvați.",
-    "Markdown. Save to keep the change.": "Markdown. Salvați pentru a păstra modificarea."
+    "Markdown. Save to keep the change.": "Markdown. Salvați pentru a păstra modificarea.",
+    "Translated from :language": "Tradus din: :language",
+    "As the customer wrote it": "Așa cum a scris clientul",
+    "Image": "Imagine"
 }

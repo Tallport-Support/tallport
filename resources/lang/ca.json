@@ -1927,5 +1927,8 @@
     "Clear Filters": "Esborra els Filtres",
     "Switch to Markdown": "Canvia a Markdown",
     "Written before Markdown. Switching converts the text; nothing changes until you save.": "Escrit abans de Markdown. Canviar converteix el text; no canvia res fins que deseu.",
-    "Markdown. Save to keep the change.": "Markdown. Deseu per mantenir el canvi."
+    "Markdown. Save to keep the change.": "Markdown. Deseu per mantenir el canvi.",
+    "Translated from :language": "Traduït del :language",
+    "As the customer wrote it": "Tal com ho va escriure el client",
+    "Image": "Imatge"
 }

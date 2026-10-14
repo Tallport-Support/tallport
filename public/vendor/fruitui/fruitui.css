@@ -3962,30 +3962,69 @@
   .f-message__status + .f-message__body {
     margin-top: var(--f-message-status-gap, 10px);
   }
-  /* A machine translation of the message, kept with it and read first: an outlined card with a
-     translate icon above the original, announced as a translation. Give it the translation's lang. */
-  .f-message__translation {
-    display: flex;
-    gap: 10px;
-    margin-top: var(--f-message-body-gap, 4px);
-    padding: 10px 12px;
-    border: 1px solid var(--f-generated-border);
-    border-radius: var(--f-radius-md);
-    font-size: var(--f-text-base);
-    line-height: 1.6;
-    overflow-wrap: anywhere;
+  /* The message in its other language: a customer's original under its translation, or a reply as
+     it was sent. It stays collapsed under a quiet line with a translate icon, so a thread reads in the
+     reader's language; opening it shows that text below, on a bar, in its own lang. */
+  .f-message__original {
+    margin-top: var(--f-message-original-gap, 8px);
   }
-  .f-message__translation-icon {
+  .f-message__original > summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    border-radius: var(--f-radius-sm);
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+    list-style: none;
+    cursor: pointer;
+  }
+  .f-message__original > summary::-webkit-details-marker {
+    display: none;
+  }
+  .f-message__original > summary:hover {
+    color: var(--f-text);
+  }
+  .f-message__original-icon {
     flex: none;
-    margin-top: 3px;
     color: var(--f-generated);
     --f-icon-size: 16px;
   }
-  .f-message__translation-text {
-    min-width: 0;
+  .f-message__original-chevron {
+    flex: none;
+    --f-icon-size: 12px;
   }
-  .f-message__translation + .f-message__body {
-    margin-top: var(--f-message-translation-gap, 12px);
+  .f-message__original:not([open]) .f-message__original-chevron:dir(rtl) {
+    transform: scaleX(-1);
+  }
+  .f-message__original[open] .f-message__original-chevron {
+    transform: rotate(90deg);
+  }
+  .f-message__original-text {
+    margin-top: 8px;
+    padding-inline-start: 12px;
+    border-inline-start: 2px solid var(--f-border);
+    color: var(--f-secondary);
+    overflow-wrap: anywhere;
+  }
+  /* A picture in a message, received or sent, shows as a thumbnail where it sits, so the text around
+     it keeps its place; smaller pictures, such as logos, keep their size. Link it to the full image
+     with f-message__image. */
+  .f-message :is(.f-message__body, .f-message__original-text) img {
+    width: auto;
+    max-height: var(--f-message-image-height, 120px);
+    object-fit: contain;
+  }
+  .f-message__image {
+    display: inline-block;
+    vertical-align: top;
+    border-radius: var(--f-radius-sm);
+    cursor: zoom-in;
+  }
+  .f-message__image > img {
+    display: block;
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius-sm);
   }
   .f-message__footer {
     display: flex;
@@ -5454,9 +5493,13 @@
   .f-editor__popover > .f-input {
     flex: 1 1 12rem;
   }
+  /* A pasted screenshot stays a picture of a reasonable size while the reply is written; it's sent at
+     its own size. */
   .f-editor__surface img {
+    width: auto;
     max-width: 100%;
     height: auto;
+    max-height: var(--f-editor-image-height, 200px);
   }
   .f-editor [hidden] {
     display: none !important;
