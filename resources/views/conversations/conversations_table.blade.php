@@ -123,12 +123,14 @@
             @endif
         </x-fruit::list-header>
 
-        <div class="f-pane__scroll split-view__list">
+        @php
+            // The rows' menu (App\Livewire\ConversationList only): a selected row's acts on the selection.
+            $row_menus = isset($selected) && empty($no_checkboxes);
+            $row_selection_count = $row_menus ? $conversations->whereIn('id', array_map('intval', (array) $selected))->count() : 0;
+        @endphp
+        <div class="f-pane__scroll split-view__list" @if ($row_menus) x-data="tallportRowMenu" data-selection-title="{{ $row_selection_count > 1 ? trans_choice('Actions for :count conversation|Actions for :count conversations', $row_selection_count) : '' }}" @endif>
         <x-fruit::item-list class="conv-list__items" :id="empty($no_checkboxes) ? 'conversations' : null" :selection="empty($no_checkboxes) ? 'multiple' : 'none'" :aria-label="__('Conversations')">
             @php
-                // The rows' menus (App\Livewire\ConversationList only): a selected row's acts on the selection.
-                $row_menus = isset($selected) && empty($no_checkboxes);
-                $row_selection = $row_menus ? $conversations->whereIn('id', array_map('intval', (array) $selected)) : collect();
                 $unread_ids = App\ConversationRead::unreadIds($conversations, Auth::user());
                 // A translated conversation previews its latest message in the user's language.
                 $translated_previews = App\Ai\Translations::previews($conversations, Auth::user());
@@ -149,10 +151,11 @@
                     $conv_assignee = ($conversation->user_id && $folder->type != App\Folder::TYPE_MINE) ? $conversation->user : null;
                     // The channel's token: its icon, and the number of messages when there's more than one.
                     $conv_channel = $conversation->hasChannel() ? ($conversation->getChannelName() ?: __('Chat')) : ($conversation->isPhone() ? __('Phone') : __('Email'));
-                    $conv_menu_rows = $row_selection->contains('id', $conversation->id) ? $row_selection : collect([$conversation]);
                     $conv_channel_label = trans_choice(':channel, :count message|:channel, :count messages', $conversation->threads_count, ['channel' => $conv_channel]);
                 @endphp
-                <li class="conv-row @action('conversations_table.row_class', $conversation) @if ($conversation->isActive()) conv-active @endif @if ($conversation->isSpam()) conv-spam @endif" data-conversation_id="{{ $conversation->id }}" wire:key="conv-{{ $conversation->id }}">
+                <li class="conv-row @action('conversations_table.row_class', $conversation) @if ($conversation->isActive()) conv-active @endif @if ($conversation->isSpam()) conv-spam @endif" data-conversation_id="{{ $conversation->id }}"
+                    @if ($row_menus) data-url="{{ $conversation->url() }}" @if (in_array($conversation->id, $unread_ids)) data-unread @endif @if ($conversation->isStarredByUser()) data-starred @endif @if ($conversation->status == App\Conversation::STATUS_CLOSED) data-closed @endif @if ($conversation->isChatUnavailable()) data-chat-unavailable @endif @endif
+                    wire:key="conv-{{ $conversation->id }}">
                     @if (empty($no_checkboxes))
                         <x-fruit::checkbox class="conv-checkbox" :id="'cb-'.$conversation->id" :name="'cb_'.$conversation->id" :value="$conversation->id" wire:model.live="selected"><span class="f-sr-only">{{ __('Select Conversation') }}: {{ $conversation->getSubject() }}</span></x-fruit::checkbox>
                     @endif
@@ -179,28 +182,22 @@
                             @endif
                         </x-slot:meta>
                     </x-fruit::item-link>
-                    @if ($row_menus)
-                        {{-- The selection bar and the conversation's toolbar have the same commands. Keyed by what it acts on, so its label follows. --}}
-                        <x-fruit::context-menu wire:key="conv-menu-{{ $conversation->id }}-{{ $conv_menu_rows->pluck('id')->implode('-') }}"
-                            :title="count($conv_menu_rows) > 1 ? trans_choice('Actions for :count conversation|Actions for :count conversations', count($conv_menu_rows)) : __('Conversation Actions')">
-                            <x-fruit::menu-link :href="$conversation->url()" target="_blank">{{ __('Open in New Tab') }}</x-fruit::menu-link>
-                            <x-fruit::menu-item x-on:click="copyToClipboard({{ \Illuminate\Support\Js::from($conversation->url()) }}); Tallport.toast({{ \Illuminate\Support\Js::from(__('Copied')) }})">{{ __('Copy Link') }}</x-fruit::menu-item>
-                            <x-fruit::menu-separator />
-                            @php $conv_menu_read = $conv_menu_rows->contains(fn ($row) => in_array($row->id, $unread_ids)); @endphp
-                            <x-fruit::menu-item wire:click="rowRead({{ $conversation->id }}, {{ $conv_menu_read ? 1 : 0 }})">{{ $conv_menu_read ? __('Mark as Read') : __('Mark as Unread') }}</x-fruit::menu-item>
-                            @php $conv_menu_star = !$conv_menu_rows->every(fn ($row) => $row->isStarredByUser()); @endphp
-                            <x-fruit::menu-item wire:click="rowStar({{ $conversation->id }}, {{ $conv_menu_star ? 1 : 0 }})">{{ $conv_menu_star ? __('Star') : __('Unstar') }}</x-fruit::menu-item>
-                            <x-fruit::menu-item wire:click="rowAssignToMe({{ $conversation->id }})">{{ __('Assign to Me') }}</x-fruit::menu-item>
-                            <x-fruit::menu-separator />
-                            @php $conv_menu_close = !$conv_menu_rows->every(fn ($row) => $row->status == App\Conversation::STATUS_CLOSED); @endphp
-                            @if ($conv_menu_close || !$conv_menu_rows->every(fn ($row) => $row->isChatUnavailable()))
-                                <x-fruit::menu-item wire:click="rowClose({{ $conversation->id }}, {{ $conv_menu_close ? 1 : 0 }})">{{ $conv_menu_close ? __('Close') : __('Reopen') }}</x-fruit::menu-item>
-                            @endif
-                        </x-fruit::context-menu>
-                    @endif
                 </li>
             @endforeach
         </x-fruit::item-list>
+        @if ($row_menus)
+            {{-- One menu for every row (tallportRowMenu): a selected row's acts on the selection (ConversationList::rowTargets). The selection bar and the conversation's toolbar have the same commands. --}}
+            <x-fruit::context-menu targets="li.conv-row" :title="__('Conversation Actions')" x-bind:aria-label="menuTitle(target, {{ \Illuminate\Support\Js::from(__('Conversation Actions')) }})">
+                <x-fruit::menu-link href="#" x-bind:href="target?.dataset.url" target="_blank">{{ __('Open in New Tab') }}</x-fruit::menu-link>
+                <x-fruit::menu-item x-on:click="copyToClipboard(target.dataset.url); Tallport.toast({{ \Illuminate\Support\Js::from(__('Copied')) }})">{{ __('Copy Link') }}</x-fruit::menu-item>
+                <x-fruit::menu-separator />
+                <x-fruit::menu-item wire:click="rowRead(target.dataset.conversation_id, menuAny(target, 'unread') ? 1 : 0)" x-text="menuAny(target, 'unread') ? {{ \Illuminate\Support\Js::from(__('Mark as Read')) }} : {{ \Illuminate\Support\Js::from(__('Mark as Unread')) }}">{{ __('Mark as Unread') }}</x-fruit::menu-item>
+                <x-fruit::menu-item wire:click="rowStar(target.dataset.conversation_id, menuAll(target, 'starred') ? 0 : 1)" x-text="menuAll(target, 'starred') ? {{ \Illuminate\Support\Js::from(__('Unstar')) }} : {{ \Illuminate\Support\Js::from(__('Star')) }}">{{ __('Star') }}</x-fruit::menu-item>
+                <x-fruit::menu-item wire:click="rowAssignToMe(target.dataset.conversation_id)">{{ __('Assign to Me') }}</x-fruit::menu-item>
+                <x-fruit::menu-separator />
+                <x-fruit::menu-item wire:click="rowClose(target.dataset.conversation_id, menuAll(target, 'closed') ? 0 : 1)" x-show="!menuAll(target, 'closed') || !menuAll(target, 'chatUnavailable')" x-text="menuAll(target, 'closed') ? {{ \Illuminate\Support\Js::from(__('Reopen')) }} : {{ \Illuminate\Support\Js::from(__('Close')) }}">{{ __('Close') }}</x-fruit::menu-item>
+            </x-fruit::context-menu>
+        @endif
         @if (!count($conversations))
             {{-- Filtered to nothing: the header stays, to change the filter. --}}
             <x-fruit::empty-state>

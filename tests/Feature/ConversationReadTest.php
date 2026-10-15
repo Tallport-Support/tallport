@@ -263,10 +263,13 @@ class ConversationReadTest extends FeatureTestCase
 
         // The dot, and Unread for screen readers.
         $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $folder])
-            ->assertSeeHtml('wire:click="rowRead('.$first->id.', 1)"')->assertSeeHtml('<span class="f-item-row__unread" aria-hidden="true"></span><span class="f-sr-only">Unread</span>');
+            ->assertSeeHtml('<span class="f-item-row__unread" aria-hidden="true"></span><span class="f-sr-only">Unread</span>');
         $this->assertSame(2, substr_count($list->html(), 'f-item-row__unread'));
-        $list->call('rowRead', $first->id, 1)->assertSeeHtml('wire:click="rowRead('.$first->id.', 0)"')->assertDispatched('sidebar-counts');
+        // The row menu's label follows the row (tallportRowMenu).
+        $this->assertMatchesRegularExpression('#data-conversation_id="'.$first->id.'"[^>]*data-unread#', $list->html());
+        $list->call('rowRead', $first->id, 1)->assertDispatched('sidebar-counts');
         $this->assertSame(1, substr_count($list->html(), 'f-item-row__unread'));
+        $this->assertDoesNotMatchRegularExpression('#data-conversation_id="'.$first->id.'"[^>]*data-unread#', $list->html());
         $this->assertFalse($this->unread($first, $this->agent));
         $this->assertTrue($this->unread($second, $this->agent));
 

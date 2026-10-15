@@ -113,59 +113,89 @@ export function fruitMenu() {
  * A menu of commands for its parent element, opened by a secondary click, Shift+F10 or the
  * context-menu key. It appears at the pointer (or below the focused control), and closing it
  * returns focus to where it was. Offer the same commands elsewhere: context menus are hidden.
+ *
+ * With `data-fruit-targets` (a selector), one menu serves every matching element within its
+ * parent, such as the rows of a list: it opens for the one under the pointer or focus. Either
+ * way, `target` in its Alpine scope is the element it opens for, set before it shows.
  */
 export function fruitContextMenu() {
-  let menu, target, overlay, controller, origin, timer;
+  let menu, scope, selector, current, opening, overlay, controller, origin, timer;
   let point = { x: 0, y: 0 };
   const typeahead = { search: '', timer: null };
   const owns = node => node?.closest('[data-fruit-menu]') === menu;
   const isOpen = () => !menu.hidden;
+  const targetOf = node => {
+    if (!selector) return scope;
+    const match = node?.closest?.(selector);
+    return match && scope.contains(match) && !menu.contains(match) ? match : null;
+  };
   const close = restoreFocus => {
+    opening = null;
     if (!isOpen()) return;
     overlay.hide();
     menu.hidden = true;
-    target.removeAttribute('data-fruit-context-open');
+    current?.removeAttribute('data-fruit-context-open');
     if (restoreFocus && origin?.isConnected) origin.focus();
   };
-  const open = (x, y, from) => {
-    origin = from;
-    point = { x, y };
-    menu.hidden = false;
-    target.setAttribute('data-fruit-context-open', '');
-    overlay.show();
-    focusItem(enabledItems(menu, owns), 0);
-  };
   return {
+    target: null,
     init() {
       menu = this.$el;
-      target = menu.parentElement;
-      if (!target) return;
+      scope = menu.parentElement;
+      if (!scope) return;
+      selector = menu.dataset.fruitTargets;
+      this.target = selector ? null : scope;
       menu.setAttribute('data-fruit-menu', '');
       keepId(menu, 'fruit-context-menu');
       menu.hidden = true;
-      menu.querySelectorAll(menuItems).forEach(item => {
-        if (owns(item)) item.tabIndex = -1;
-      });
       const anchor = { getBoundingClientRect: () => new DOMRect(point.x, point.y, 0, 0) };
-      overlay = fruitPopup(menu, anchor, { point: target });
+      overlay = fruitPopup(menu, anchor, { point: scope });
+      // Its commands follow the target (x-text, x-show) before it shows and takes focus.
+      const open = (target, x, y, from) => {
+        close(false);
+        opening = target;
+        origin = from;
+        point = { x, y };
+        // Set anew even for the same element, whose data a morph may have changed.
+        this.target = null;
+        this.target = target;
+        this.$nextTick(() => {
+          if (opening !== target || !target.isConnected) return;
+          opening = null;
+          current = target;
+          menu.querySelectorAll(menuItems).forEach(item => {
+            if (owns(item)) item.tabIndex = -1;
+          });
+          menu.hidden = false;
+          target.setAttribute('data-fruit-context-open', '');
+          overlay.show();
+          focusItem(enabledItems(menu, owns), 0);
+        });
+      };
       controller = new AbortController();
       const listen = (node, event, handler) => node.addEventListener(event, handler, { signal: controller.signal });
       let fromKeyboard = false;
-      listen(target, 'contextmenu', event => {
-        if (menu.contains(event.target)) return;
+      listen(scope, 'contextmenu', event => {
+        const target = targetOf(event.target);
+        if (menu.contains(event.target) || !target) return;
         event.preventDefault();
         if (fromKeyboard) return;
-        open(event.clientX, event.clientY, document.activeElement);
+        open(target, event.clientX, event.clientY, document.activeElement);
       });
-      listen(target, 'keydown', event => {
-        if (menu.contains(event.target) || !((event.key === 'F10' && event.shiftKey) || event.key === 'ContextMenu'))
+      listen(scope, 'keydown', event => {
+        const target = targetOf(event.target);
+        if (
+          menu.contains(event.target) ||
+          !target ||
+          !((event.key === 'F10' && event.shiftKey) || event.key === 'ContextMenu')
+        )
           return;
         event.preventDefault();
         // The browser may also fire contextmenu for this key; open once, below the focused control.
         fromKeyboard = true;
         timer = setTimeout(() => (fromKeyboard = false), 0);
         const rect = event.target.getBoundingClientRect();
-        open(isRtl(target) ? rect.right : rect.left, rect.bottom, event.target);
+        open(target, isRtl(scope) ? rect.right : rect.left, rect.bottom, event.target);
       });
       listen(menu, 'keydown', event => {
         if (!owns(event.target)) return;
@@ -183,7 +213,7 @@ export function fruitContextMenu() {
         if (owns(item) && !item.matches(':disabled') && item.getAttribute('aria-disabled') !== 'true') close(true);
       });
       listen(document, 'pointerdown', event => {
-        if (isOpen() && !menu.contains(event.target)) close(false);
+        if (!menu.contains(event.target)) close(false);
       });
       listen(window, 'blur', () => close(false));
     },
@@ -192,7 +222,7 @@ export function fruitContextMenu() {
       clearTimeout(typeahead.timer);
       controller?.abort();
       overlay?.destroy();
-      target?.removeAttribute('data-fruit-context-open');
+      current?.removeAttribute('data-fruit-context-open');
     },
   };
 }

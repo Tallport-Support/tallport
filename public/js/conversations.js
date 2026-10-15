@@ -1047,6 +1047,38 @@ document.addEventListener('alpine:init', function () {
 	});
 
 	/**
+	 * The list's one row menu (conversations_table): what it acts on and its labels,
+	 * read from the rows' data attributes when it opens. A selected row's menu acts
+	 * on the selection, else on the row alone (ConversationList::rowTargets).
+	 */
+	window.Alpine.data('tallportRowMenu', function () {
+		var rows = function (row) {
+			if (!row) {
+				return [];
+			}
+			var checked = Array.prototype.filter.call(row.parentElement.querySelectorAll(':scope > li.conv-row'), function (li) {
+				var box = li.querySelector('.conv-checkbox input');
+				return box && box.checked;
+			});
+			return checked.indexOf(row) >= 0 ? checked : [row];
+		};
+		return {
+			menuAny: function (row, key) {
+				return rows(row).some(function (li) { return key in li.dataset; });
+			},
+			menuAll: function (row, key) {
+				var all = rows(row);
+				return all.length > 0 && all.every(function (li) { return key in li.dataset; });
+			},
+			// The selection's title comes from the server (its plural rules).
+			menuTitle: function (row, title) {
+				var list = row && row.closest('[data-selection-title]');
+				return (rows(row).length > 1 && list && list.dataset.selectionTitle) || title;
+			},
+		};
+	});
+
+	/**
 	 * Search: filters shown from the Filters menu, hidden ones disabled (not sent).
 	 * Any [data-filter] in #search-filters, modules' too (an .active .form-group).
 	 */

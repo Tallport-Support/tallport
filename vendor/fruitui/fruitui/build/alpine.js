@@ -1491,45 +1491,56 @@ function Q() {
 	};
 }
 function ve() {
-	let e, t, n, r, i, a, o = {
+	let e, t, n, r, i, a, o, s, c, l = {
 		x: 0,
 		y: 0
-	}, s = {
+	}, u = {
 		search: "",
 		timer: null
-	}, c = (t) => t?.closest("[data-fruit-menu]") === e, l = () => !e.hidden, u = (r) => {
-		l() && (n.hide(), e.hidden = !0, t.removeAttribute("data-fruit-context-open"), r && i?.isConnected && i.focus());
-	}, d = (r, a, s) => {
-		i = s, o = {
-			x: r,
-			y: a
-		}, e.hidden = !1, t.setAttribute("data-fruit-context-open", ""), n.show(), X(Y(e, c), 0);
+	}, d = (t) => t?.closest("[data-fruit-menu]") === e, p = () => !e.hidden, m = (r) => {
+		if (!n) return t;
+		let i = r?.closest?.(n);
+		return i && t.contains(i) && !e.contains(i) ? i : null;
+	}, h = (t) => {
+		i = null, p() && (a.hide(), e.hidden = !0, r?.removeAttribute("data-fruit-context-open"), t && s?.isConnected && s.focus());
 	};
 	return {
+		target: null,
 		init() {
 			if (e = this.$el, t = e.parentElement, !t) return;
-			e.setAttribute("data-fruit-menu", ""), f(e, "fruit-context-menu"), e.hidden = !0, e.querySelectorAll(J).forEach((e) => {
-				c(e) && (e.tabIndex = -1);
-			}), n = w(e, { getBoundingClientRect: () => new DOMRect(o.x, o.y, 0, 0) }, { point: t }), r = new AbortController();
-			let i = (e, t, n) => e.addEventListener(t, n, { signal: r.signal }), p = !1;
-			i(t, "contextmenu", (t) => {
-				e.contains(t.target) || (t.preventDefault(), !p && d(t.clientX, t.clientY, document.activeElement));
-			}), i(t, "keydown", (n) => {
-				if (e.contains(n.target) || !(n.key === "F10" && n.shiftKey || n.key === "ContextMenu")) return;
-				n.preventDefault(), p = !0, a = setTimeout(() => p = !1, 0);
-				let r = n.target.getBoundingClientRect();
-				d(C(t) ? r.right : r.left, r.bottom, n.target);
-			}), i(e, "keydown", (t) => {
-				c(t.target) && (t.key === "Escape" ? (t.preventDefault(), t.stopPropagation(), u(!0)) : t.key === "Tab" ? (t.preventDefault(), u(!0)) : Z(t, Y(e, c), s));
-			}), i(e, "click", (e) => {
+			n = e.dataset.fruitTargets, this.target = n ? null : t, e.setAttribute("data-fruit-menu", ""), f(e, "fruit-context-menu"), e.hidden = !0, a = w(e, { getBoundingClientRect: () => new DOMRect(l.x, l.y, 0, 0) }, { point: t });
+			let p = (t, n, o, c) => {
+				h(!1), i = t, s = c, l = {
+					x: n,
+					y: o
+				}, this.target = null, this.target = t, this.$nextTick(() => {
+					i === t && t.isConnected && (i = null, r = t, e.querySelectorAll(J).forEach((e) => {
+						d(e) && (e.tabIndex = -1);
+					}), e.hidden = !1, t.setAttribute("data-fruit-context-open", ""), a.show(), X(Y(e, d), 0));
+				});
+			};
+			o = new AbortController();
+			let g = (e, t, n) => e.addEventListener(t, n, { signal: o.signal }), _ = !1;
+			g(t, "contextmenu", (t) => {
+				let n = m(t.target);
+				!e.contains(t.target) && n && (t.preventDefault(), !_ && p(n, t.clientX, t.clientY, document.activeElement));
+			}), g(t, "keydown", (n) => {
+				let r = m(n.target);
+				if (e.contains(n.target) || !r || !(n.key === "F10" && n.shiftKey || n.key === "ContextMenu")) return;
+				n.preventDefault(), _ = !0, c = setTimeout(() => _ = !1, 0);
+				let i = n.target.getBoundingClientRect();
+				p(r, C(t) ? i.right : i.left, i.bottom, n.target);
+			}), g(e, "keydown", (t) => {
+				d(t.target) && (t.key === "Escape" ? (t.preventDefault(), t.stopPropagation(), h(!0)) : t.key === "Tab" ? (t.preventDefault(), h(!0)) : Z(t, Y(e, d), u));
+			}), g(e, "click", (e) => {
 				let t = e.target.closest(J);
-				c(t) && !t.matches(":disabled") && t.getAttribute("aria-disabled") !== "true" && u(!0);
-			}), i(document, "pointerdown", (t) => {
-				l() && !e.contains(t.target) && u(!1);
-			}), i(window, "blur", () => u(!1));
+				d(t) && !t.matches(":disabled") && t.getAttribute("aria-disabled") !== "true" && h(!0);
+			}), g(document, "pointerdown", (t) => {
+				e.contains(t.target) || h(!1);
+			}), g(window, "blur", () => h(!1));
 		},
 		destroy() {
-			clearTimeout(a), clearTimeout(s.timer), r?.abort(), n?.destroy(), t?.removeAttribute("data-fruit-context-open");
+			clearTimeout(c), clearTimeout(u.timer), o?.abort(), a?.destroy(), r?.removeAttribute("data-fruit-context-open");
 		}
 	};
 }

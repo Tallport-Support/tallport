@@ -347,18 +347,22 @@ class ConversationListTest extends FeatureTestCase
         $second = $this->conversation('Second question');
         $third = $this->conversation('Third question');
         $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)]);
-        $list->assertSeeHtml('aria-label="Conversation Actions"')
-            ->assertSeeInOrder(['Open in New Tab', 'Copy Link', 'Star', 'Assign to Me', 'Close'])->assertDontSee('Actions for');
+        // One menu for every row (tallportRowMenu), reading what it acts on from the rows.
+        $list->assertSeeHtml('aria-label="Conversation Actions"')->assertSeeHtml('data-fruit-targets="li.conv-row"')
+            ->assertSeeInOrder(['Open in New Tab', 'Copy Link', 'Star', 'Assign to Me', 'Close'])->assertDontSee('Actions for')
+            ->assertSeeHtml('wire:click="rowStar(target.dataset.conversation_id, menuAll(target, \'starred\') ? 0 : 1)"');
+        $this->assertSame(1, substr_count($list->html(), 'f-context-menu'));
+        $this->assertStringContainsString('data-url="'.e($third->url()).'"', $list->html());
 
         $list->call('rowStar', $first->id, 1)->assertToasted('Starred')->assertRedirect();
         $this->assertTrue($first->isStarredByUser($this->agent->id));
         $this->assertFalse($second->isStarredByUser($this->agent->id));
+        $this->assertMatchesRegularExpression('#data-conversation_id="'.$first->id.'"[^>]*data-starred#', Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)])->html());
 
-        // A selected row: the selection; toggles decided once (Star: not all are starred).
+        // A selected row: the selection (its title from the server, for its plural).
         $list = Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)])
             ->set('selected', [(string) $first->id, (string) $second->id])
-            ->assertSeeHtml('aria-label="Actions for 2 conversations"')
-            ->assertSeeHtml('wire:click="rowStar('.$first->id.', 1)"')->assertSeeHtml('wire:click="rowStar('.$second->id.', 1)"')->assertSeeHtml('copyToClipboard('.\Illuminate\Support\Js::from($third->url()).')');
+            ->assertSeeHtml('data-selection-title="Actions for 2 conversations"');
         $list->call('rowStar', $second->id, 1);
         $this->assertTrue($second->isStarredByUser($this->agent->id));
         $this->assertFalse($third->isStarredByUser($this->agent->id));

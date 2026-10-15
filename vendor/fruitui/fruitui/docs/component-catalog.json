@@ -1308,10 +1308,10 @@
     "contracts": {
       "context-menu": {
         "purpose": "Offer commands for the element it belongs to, on a secondary click or from the keyboard.",
-        "element": "`div` role=menu inside its target element; it floats in the top layer at the pointer.",
-        "state": "Hidden until opened. The target carries `data-fruit-context-open` while it shows; the helper owns focus and dismissal.",
+        "element": "`div` role=menu inside its target element, or beside a list with `targets`; it floats in the top layer at the pointer.",
+        "state": "Hidden until opened. The target carries `data-fruit-context-open` while it shows, and is `target` in the menu's Alpine scope; the helper owns focus and dismissal.",
         "keyboard": "Secondary click, Shift+F10 or the context-menu key opens it on the first item; arrows, Home/End, typeahead; Enter/Space activates; Escape or Tab closes and returns focus.",
-        "options": "`title` (default Actions). Slot: Menu Items, Checkboxes, Radios, Links, Separators and Groups. Offer the same commands elsewhere, since context menus are hidden."
+        "options": "`title` (default Actions). `targets`: a selector for the elements within its parent it serves (the rows of a list), one menu for all of them; commands read the one it opened for as `target`. Slot: Menu Items, Checkboxes, Radios, Links, Separators and Groups. Offer the same commands elsewhere, since context menus are hidden."
       }
     }
   },

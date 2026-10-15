@@ -539,7 +539,7 @@ Menus, Combobox, Token Field, Editor, Alert, Tabs, Section Nav, Pagination, Uplo
 | --- | --- | --- |
 | A persistent message | `f-alert` / `x-fruit::alert` | Application chooses message, tone, actions, and any live announcement role. |
 | Action commands | `f-menu` + `f-menu-item` | `fruitMenu` owns command focus and dismissal; application owns commands. |
-| Commands for one item, on right-click | `f-context-menu` / `x-fruit::context-menu` | `fruitContextMenu` owns opening, focus and dismissal; the same commands must also be reachable elsewhere. |
+| Commands for one item, on right-click | `f-context-menu` / `x-fruit::context-menu` | `fruitContextMenu` owns opening, focus and dismissal; one menu with `targets` serves every row of a list. The same commands must also be reachable elsewhere. |
 | Independent popup controls | Floating Disclosure | Ordinary controls retain their own keyboard contracts. |
 | One searchable existing option | `f-combobox` / `x-fruit::combobox` | The native single select owns its scalar value. |
 | Recipients or tags | `f-token-field` / `x-fruit::token-field` | The native textarea owns a newline-delimited string; `submit="list"` posts `name[]` values, and an `options` slot suggests entries (`search="server"` for server search). |
@@ -577,9 +577,25 @@ A Menu whose trigger is text, a pull-down button, shows a chevron after it: Blad
 
 ### Context menus
 
-A context menu holds commands for the element it sits in: put it inside a list item, message or card, after the content. A secondary click opens it at the pointer; Shift+F10 or the context-menu key opens it below the focused control. It uses the same Menu Items, Checkboxes, Radios, Links, Separators and Groups as Menu, with the same arrows, Home/End and typeahead. Escape or Tab closes it and returns focus; activating a command closes it too. While it is open, its target carries `data-fruit-context-open` and an accent outline.
+A context menu holds commands for the element it sits in: put it inside a message or card, after the content (for the rows of a list, see `targets` below). A secondary click opens it at the pointer; Shift+F10 or the context-menu key opens it below the focused control. It uses the same Menu Items, Checkboxes, Radios, Links, Separators and Groups as Menu, with the same arrows, Home/End and typeahead. Escape or Tab closes it and returns focus; activating a command closes it too. While it is open, its target carries `data-fruit-context-open` and an accent outline.
 
 Context menus are hidden by nature, so offer every command somewhere visible as well: a toolbar, a Menu, or the selection bar. Without JavaScript the browser's own context menu remains.
+
+In a list, put one menu beside the list instead of one in every row: `targets` (`data-fruit-targets` in HTML) is a selector for the rows it serves within its parent, and it opens for the one under the pointer or focus. `target` in the menu's Alpine scope is the element it opened for (its parent, without `targets`), set before it shows, so commands read the row's data with `x-text`, `x-show`, `@click` or `wire:click`; Livewire passes Alpine names in `wire:click` through, so `wire:click="close(target.dataset.id)"` calls `close` with that row's id. With `targets`, `target` is `null` until the menu first opens, so bindings that run before then use `target?.`. Elsewhere in the parent, the browser's own menu remains. A long server-rendered list stays small this way, since its rows no longer each carry the menu.
+
+```blade
+<x-fruit::item-list aria-label="Conversations">
+    @foreach ($tickets as $ticket)
+        <li wire:key="ticket-{{ $ticket->id }}" data-id="{{ $ticket->id }}" data-status="{{ $ticket->status }}">
+            <x-fruit::item-row wire:click="open({{ $ticket->id }})">{{ $ticket->subject }}</x-fruit::item-row>
+        </li>
+    @endforeach
+</x-fruit::item-list>
+<x-fruit::context-menu targets="li[data-id]" title="Conversation actions">
+    <x-fruit::menu-item wire:click="open(target.dataset.id)">Open Conversation</x-fruit::menu-item>
+    <x-fruit::menu-item wire:click="close(target.dataset.id)" x-show="target?.dataset.status === 'open'">Close Conversation</x-fruit::menu-item>
+</x-fruit::context-menu>
+```
 
 In a list with multiple selection, a context menu on a selected item acts on the whole selection, as mail apps do; say so in its label ("Actions for 3 conversations"). On any other item it acts on that item alone and leaves the selection as it is. A command that toggles (Mark as Read or Unread, Close or Reopen) names what it will do to the one item, or the selection bar's own wording for several. The Support example's conversation rows show it.
 
