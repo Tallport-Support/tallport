@@ -98,8 +98,7 @@ class ConversationPane extends Component
 
     public function render()
     {
-        $conversation = Conversation::find($this->conversation_id);
-        abort_unless($conversation && auth()->user()->can('view', $conversation), 403);
+        $conversation = $this->shownConversation();
         $user = auth()->user();
 
         return view('livewire.conversation-pane', ConversationsController::pageData($conversation, $this->openedFolder(), $user) + [

@@ -113,12 +113,9 @@ class ConversationToolbar extends Component
 
     protected function conversation()
     {
-        $conversation = Conversation::find($this->conversation_id);
-        if (!$conversation || !auth()->user() || !auth()->user()->can('view', $conversation)) {
-            abort(403);
-        }
+        abort_unless(auth()->user(), 403);
 
-        return $conversation;
+        return $this->shownConversation();
     }
 
     public function render()

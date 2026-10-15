@@ -22,8 +22,7 @@ class ConversationInspector extends Component
 
     public function render()
     {
-        $conversation = Conversation::find($this->conversation_id);
-        abort_unless($conversation && auth()->user()->can('view', $conversation), 403);
+        $conversation = $this->shownConversation();
         $data = ConversationsController::pageData($conversation, $this->openedFolder(), auth()->user());
 
         return view('livewire.conversation-inspector', [

@@ -88,6 +88,7 @@ trait ConversationOpens
 
             return null;
         }
+        $this->shown_conversation = $conversation;
         $this->conversation_id = $conversation->id;
         $this->folder_id = self::openedFolderId($conversation, $folder_id);
 
@@ -106,10 +107,32 @@ trait ConversationOpens
         return $folder ? $folder->id : $conversation->folder_id;
     }
 
+    /**
+     * The conversation shown, loaded once per request: the one just switched to, else found.
+     */
+    protected $shown_conversation;
+
+    protected function shownConversation()
+    {
+        if ($this->shown_conversation && $this->shown_conversation->id == $this->conversation_id) {
+            return $this->shown_conversation;
+        }
+        $conversation = Conversation::find($this->conversation_id);
+        abort_unless($conversation && auth()->user()->can('view', $conversation), 403);
+
+        return $this->shown_conversation = $conversation;
+    }
+
     protected function openedFolder()
     {
         if ((int) $this->folder_id < 0) {
             return AllMailboxes::folder(auth()->user(), (int) $this->folder_id);
+        }
+
+        // The conversation's own folder, loaded already.
+        $conversation = $this->shown_conversation;
+        if ($conversation && $conversation->relationLoaded('folder') && $conversation->folder && $conversation->folder->id == $this->folder_id) {
+            return $conversation->folder;
         }
 
         return Folder::find($this->folder_id);
