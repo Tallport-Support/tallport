@@ -36,3 +36,31 @@ export function fruitDialogModel() {
     },
   };
 }
+
+/**
+ * Escape in a same-origin frame inside a modal dialog (a text or HTML preview) closes the dialog, as
+ * it does from the dialog itself; keys go to the frame's own window otherwise. A cross-origin frame
+ * or a plugin, such as the browser's PDF viewer, keeps its keys.
+ */
+export function listenForDialogFrames(target = document) {
+  const load = event => {
+    const frame = event.target;
+    if (!(frame instanceof HTMLIFrameElement) || !frame.closest('dialog')) return;
+    let view;
+    try {
+      view = frame.contentWindow;
+      if (!view?.document) return;
+    } catch {
+      return;
+    }
+    view.addEventListener('keydown', key => {
+      const dialog = frame.closest('dialog');
+      if (key.key !== 'Escape' || key.defaultPrevented || !dialog?.matches(':modal')) return;
+      key.preventDefault();
+      if (typeof dialog.requestClose === 'function') dialog.requestClose();
+      else dialog.close();
+    });
+  };
+  target.addEventListener('load', load, true);
+  return () => target.removeEventListener('load', load, true);
+}

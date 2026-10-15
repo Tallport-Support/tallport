@@ -6,7 +6,7 @@ import { fruitListSelection } from './list-selection.js';
 import { dialog, listenForRemoteDialogs } from './remote-dialog.js';
 export { dialog } from './remote-dialog.js';
 export { confirm, fruitConfirmer } from './confirm.js';
-import { fruitDialogModel, listenForNamedDialogs } from './dialog.js';
+import { fruitDialogModel, listenForDialogFrames, listenForNamedDialogs } from './dialog.js';
 import { fruitSplitter } from './splitter.js';
 import { fruitHistory } from './history.js';
 import { fruitDrilldown } from './drilldown.js';
@@ -52,6 +52,7 @@ export default function fruitUI(Alpine) {
   if (typeof window !== 'undefined' && !listening) {
     listenForNamedDialogs(window);
     listenForRemoteDialogs(document);
+    listenForDialogFrames(document);
     listenForBusyButtons(document);
     listening = true;
   }

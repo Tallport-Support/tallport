@@ -310,37 +310,42 @@ function m(e, t, n, r, { presentation: i = n, focusRoot: a = n } = {}) {
 }
 //#endregion
 //#region src/js/remote-dialog.js
-var h = ["medium", "large"], g = (e, t) => document.querySelector("template[data-fruit-remote-dialog]")?.getAttribute(`data-fruit-${e}`) ?? t;
-function _(e, t) {
-	let n = d("fruit-dialog"), r = document.createElement("dialog");
-	return r.className = `f-dialog f-dialog--scroll${t === "large" ? " f-dialog--large" : ""}`, document.body.closest(".fruit-ui") || r.classList.add("fruit-ui"), r.setAttribute("aria-labelledby", `${n}-title`), r.innerHTML = `<header class="f-dialog__header"><h2 id="${n}-title"></h2><button class="f-button f-button--ghost f-button--icon" type="button" data-fruit-dialog-close><svg class="f-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header><div class="f-dialog__body"></div>`, r.querySelector("h2").textContent = e, r.querySelector("[data-fruit-dialog-close]").setAttribute("aria-label", g("close-label", "Close")), r;
+var h = ["medium", "large"], g = ["closerequest", "any"], _ = (e, t) => document.querySelector("template[data-fruit-remote-dialog]")?.getAttribute(`data-fruit-${e}`) ?? t;
+function v(e, t, n) {
+	let r = d("fruit-dialog"), i = document.createElement("dialog");
+	i.className = `f-dialog f-dialog--scroll${t === "large" ? " f-dialog--large" : ""}`, n === "any" && i.setAttribute("closedby", "any"), document.body.closest(".fruit-ui") || i.classList.add("fruit-ui"), i.setAttribute("aria-labelledby", `${r}-title`), i.innerHTML = `<header class="f-dialog__header f-dialog__header--truncate"><h2 id="${r}-title"></h2><button class="f-button f-button--ghost f-button--icon" type="button" data-fruit-dialog-close><svg class="f-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header><div class="f-dialog__body"></div>`;
+	let a = i.querySelector("h2");
+	return a.textContent = e, a.addEventListener("pointerenter", () => {
+		a.scrollWidth > a.clientWidth ? a.title = e : a.removeAttribute("title");
+	}), i.querySelector("[data-fruit-dialog-close]").setAttribute("aria-label", _("close-label", "Close")), i;
 }
-function v() {
+function y() {
 	let e = document.createElement("p");
-	e.className = "f-sr-only", e.setAttribute("role", "status"), e.textContent = g("loading-label", "Loading…");
+	e.className = "f-sr-only", e.setAttribute("role", "status"), e.textContent = _("loading-label", "Loading…");
 	let t = document.createElement("div");
 	return t.className = "f-skeleton", t.setAttribute("aria-hidden", "true"), t.innerHTML = "<div class=\"f-skeleton__line\"></div>".repeat(4), [e, t];
 }
-function y({ title: e, html: t, url: n, size: r = "medium", trigger: i = null } = {}) {
+function b({ title: e, html: t, url: n, size: r = "medium", closedBy: i = "closerequest", trigger: a = null } = {}) {
 	if (typeof e != "string" || !e.trim()) throw Error("FruitUI dialog needs a title.");
 	if (t === void 0 == (n === void 0)) throw Error("FruitUI dialog needs either html or url.");
 	if (!h.includes(r)) throw Error(`FruitUI dialog size must be one of: ${h.join(", ")}.`);
-	let a = _(e, r), o = a.querySelector(".f-dialog__body"), s = document.activeElement, c = new AbortController(), l, u, d, f = new Promise((e, t) => (l = e, u = t)), p = new Promise((e) => d = e);
-	f.catch(() => {});
-	let m = (e) => {
-		typeof e == "string" ? o.innerHTML = e : o.replaceChildren(e);
-		let t = o.lastElementChild;
-		t?.matches(".f-dialog__footer") && a.append(t), o.removeAttribute("aria-busy"), l(o), a.dispatchEvent(new CustomEvent("fruit-dialog-loaded", {
+	if (!g.includes(i)) throw Error(`FruitUI dialog closedBy must be one of: ${g.join(", ")}.`);
+	let o = v(e, r, i), s = o.querySelector(".f-dialog__body"), c = document.activeElement, l = new AbortController(), u, d, f, p = new Promise((e, t) => (u = e, d = t)), m = new Promise((e) => f = e);
+	p.catch(() => {});
+	let b = (e) => {
+		typeof e == "string" ? s.innerHTML = e : s.replaceChildren(e);
+		let t = s.lastElementChild;
+		t?.matches(".f-dialog__footer") && o.append(t), s.removeAttribute("aria-busy"), u(s), o.dispatchEvent(new CustomEvent("fruit-dialog-loaded", {
 			bubbles: !0,
 			detail: {
-				dialog: a,
-				body: o,
+				dialog: o,
+				body: s,
 				url: n,
-				trigger: i
+				trigger: a
 			}
 		}));
-	}, y = async () => {
-		o.setAttribute("aria-busy", "true"), o.replaceChildren(...v());
+	}, x = async () => {
+		s.setAttribute("aria-busy", "true"), s.replaceChildren(...y());
 		let e = null, t = "network";
 		try {
 			let r = await fetch(n, {
@@ -349,7 +354,7 @@ function y({ title: e, html: t, url: n, size: r = "medium", trigger: i = null } 
 					"X-Requested-With": "XMLHttpRequest"
 				},
 				credentials: "same-origin",
-				signal: c.signal
+				signal: l.signal
 			});
 			if (e = {
 				url: r.url,
@@ -361,19 +366,19 @@ function y({ title: e, html: t, url: n, size: r = "medium", trigger: i = null } 
 			if (!/^text\/html(?:\s*;|$)/i.test(e.contentType ?? "")) throw t = "content-type", Error(`FruitUI dialog expected HTML from ${n}.`);
 			let i = await r.text();
 			if (/^\s*(?:<!doctype\s+html\b|<html(?:\s|>))/i.test(i)) throw t = "document", Error(`FruitUI dialog received a full document from ${n}.`);
-			a.isConnected && m(i);
+			o.isConnected && b(i);
 		} catch (r) {
-			if (c.signal.aborted) return;
-			o.removeAttribute("aria-busy");
+			if (l.signal.aborted) return;
+			s.removeAttribute("aria-busy");
 			let i = document.createElement("p");
-			i.className = "f-error", i.setAttribute("role", "alert"), i.textContent = g("error-message", "Could not load this content.");
-			let s = document.createElement("button");
-			s.type = "button", s.className = "f-button", s.textContent = g("retry-label", "Try Again"), s.addEventListener("click", y);
-			let l = document.createElement("div");
-			l.append(s), o.replaceChildren(i, l), a.dispatchEvent(new CustomEvent("fruit-dialog-error", {
+			i.className = "f-error", i.setAttribute("role", "alert"), i.textContent = _("error-message", "Could not load this content.");
+			let a = document.createElement("button");
+			a.type = "button", a.className = "f-button", a.textContent = _("retry-label", "Try Again"), a.addEventListener("click", x);
+			let c = document.createElement("div");
+			c.append(a), s.replaceChildren(i, c), o.dispatchEvent(new CustomEvent("fruit-dialog-error", {
 				bubbles: !0,
 				detail: {
-					dialog: a,
+					dialog: o,
 					url: n,
 					error: r,
 					reason: t,
@@ -382,22 +387,22 @@ function y({ title: e, html: t, url: n, size: r = "medium", trigger: i = null } 
 			}));
 		}
 	};
-	return a.querySelector("[data-fruit-dialog-close]").addEventListener("click", () => a.close("")), a.addEventListener("close", () => {
-		c.abort(), u(/* @__PURE__ */ Error("FruitUI dialog closed before its content loaded.")), a.remove(), d(a.returnValue), s?.isConnected && typeof s.focus == "function" && s.focus();
-	}), document.body.append(a), a.showModal(), n === void 0 ? m(t) : y(), {
-		element: a,
-		body: o,
-		loaded: f,
-		closed: p,
-		close: (e) => a.close(e ?? "")
+	return o.querySelector("[data-fruit-dialog-close]").addEventListener("click", () => o.close("")), o.addEventListener("close", () => {
+		l.abort(), d(/* @__PURE__ */ Error("FruitUI dialog closed before its content loaded.")), o.remove(), f(o.returnValue), c?.isConnected && typeof c.focus == "function" && c.focus();
+	}), document.body.append(o), o.showModal(), n === void 0 ? b(t) : x(), {
+		element: o,
+		body: s,
+		loaded: p,
+		closed: m,
+		close: (e) => o.close(e ?? "")
 	};
 }
-function b(e = document) {
+function x(e = document) {
 	let t = (e) => {
 		let t = e.target.closest?.("[data-fruit-dialog-url]");
 		if (!t || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 		let n = t.dataset.fruitDialogUrl, r = (n && n !== "data-fruit-dialog-url" ? n : "") || t.getAttribute("href");
-		r && (e.preventDefault(), y({
+		r && (e.preventDefault(), b({
 			url: r,
 			title: t.dataset.fruitDialogTitle || t.textContent.trim(),
 			size: t.dataset.fruitDialogSize || "medium",
@@ -408,7 +413,7 @@ function b(e = document) {
 }
 //#endregion
 //#region src/js/dialog.js
-function x(e = window) {
+function S(e = window) {
 	let t = (e) => [...document.querySelectorAll("dialog[data-fruit-dialog]")].find((t) => t.dataset.fruitDialog === e), n = (e) => {
 		let n = t(e.detail?.name);
 		n && !n.open && n.showModal();
@@ -420,7 +425,7 @@ function x(e = window) {
 		e.removeEventListener("fruit-dialog-open", n), e.removeEventListener("fruit-dialog-close", r);
 	};
 }
-function S() {
+function C() {
 	return {
 		open: !1,
 		init() {
@@ -433,17 +438,34 @@ function S() {
 		}
 	};
 }
+function w(e = document) {
+	let t = (e) => {
+		let t = e.target;
+		if (!(t instanceof HTMLIFrameElement) || !t.closest("dialog")) return;
+		let n;
+		try {
+			if (n = t.contentWindow, !n?.document) return;
+		} catch {
+			return;
+		}
+		n.addEventListener("keydown", (e) => {
+			let n = t.closest("dialog");
+			e.key === "Escape" && !e.defaultPrevented && n?.matches(":modal") && (e.preventDefault(), typeof n.requestClose == "function" ? n.requestClose() : n.close());
+		});
+	};
+	return e.addEventListener("load", t, !0), () => e.removeEventListener("load", t, !0);
+}
 //#endregion
 //#region src/js/popup.js
-var C = (e) => getComputedStyle(e).direction === "rtl";
-function w(e, t, { stretch: n = !1, above: r = !1, point: i = null, start: a = !1 } = {}) {
+var T = (e) => getComputedStyle(e).direction === "rtl";
+function E(e, t, { stretch: n = !1, above: r = !1, point: i = null, start: a = !1 } = {}) {
 	let o = typeof e.showPopover == "function", s = e.getAttribute("style"), c = !1;
 	o && (e.popover = "manual");
 	let l = () => {
 		if (!c || !o) return;
 		let s = t.getBoundingClientRect(), l = window.visualViewport, u = l?.offsetLeft || 0, d = l?.offsetTop || 0, f = l?.width || window.innerWidth, p = l?.height || window.innerHeight;
 		e.style.position = "fixed", e.style.inset = "auto", e.style.margin = "0", e.style.transform = "none", e.style.maxWidth = `${Math.max(0, f - 16)}px`, e.style.maxHeight = `${Math.max(40, p - 16)}px`, e.style.overflowY = "auto", n && (e.style.width = `${Math.min(s.width, f - 16)}px`);
-		let m = e.getBoundingClientRect(), h = i ? C(i) ? s.left - m.width : s.left : n || C(t) !== a ? s.left : s.right - m.width, g = (e) => e >= u + 8 && e + m.width <= u + f - 8, _ = i || n || g(h) ? h : [s.left, s.right - m.width].find(g) ?? h, v = d + p - s.bottom - 8, y = s.top - d - 8, b = r && y >= m.height || v < m.height && y > v, x = b ? y : v;
+		let m = e.getBoundingClientRect(), h = i ? T(i) ? s.left - m.width : s.left : n || T(t) !== a ? s.left : s.right - m.width, g = (e) => e >= u + 8 && e + m.width <= u + f - 8, _ = i || n || g(h) ? h : [s.left, s.right - m.width].find(g) ?? h, v = d + p - s.bottom - 8, y = s.top - d - 8, b = r && y >= m.height || v < m.height && y > v, x = b ? y : v;
 		e.style.maxHeight = `${Math.max(40, x)}px`;
 		let S = e.getBoundingClientRect().height;
 		e.style.left = `${Math.max(u + 8, Math.min(_, u + f - m.width - 8))}px`, e.style.top = `${Math.max(d + 8, Math.min(b ? s.top - S - 4 : s.bottom + 4, d + p - S - 8))}px`;
@@ -460,8 +482,8 @@ function w(e, t, { stretch: n = !1, above: r = !1, point: i = null, start: a = !
 		}
 	};
 }
-function T(e, t, { above: n = !1, owns: r = (t) => t?.closest("details") === e, onToggle: i } = {}) {
-	let a = e.querySelector("summary"), o = w(t, a, { above: n }), s = new AbortController(), c = { signal: s.signal }, l = (t) => {
+function D(e, t, { above: n = !1, owns: r = (t) => t?.closest("details") === e, onToggle: i } = {}) {
+	let a = e.querySelector("summary"), o = E(t, a, { above: n }), s = new AbortController(), c = { signal: s.signal }, l = (t) => {
 		e.open = !1, o.hide(), t && a.focus();
 	};
 	return e.addEventListener("toggle", (t) => {
@@ -543,7 +565,7 @@ function ee({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280
 		},
 		move(e) {
 			if (!h || e.pointerId !== h.id) return;
-			let t = (C(l) ? -1 : 1) * (s === "start" ? -1 : 1);
+			let t = (T(l) ? -1 : 1) * (s === "start" ? -1 : 1);
 			this.set(h.width + (e.clientX - h.x) * t);
 		},
 		end(e = !0) {
@@ -571,7 +593,7 @@ function ee({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280
 				e.preventDefault(), e.stopPropagation(), this.cancel();
 				return;
 			}
-			let { width: t, upper: r } = this.bounds(), i = (C(l) ? -1 : 1) * (s === "start" ? -1 : 1), a = e.shiftKey ? 32 : 8, o = {
+			let { width: t, upper: r } = this.bounds(), i = (T(l) ? -1 : 1) * (s === "start" ? -1 : 1), a = e.shiftKey ? 32 : 8, o = {
 				ArrowLeft: t - a * i,
 				ArrowRight: t + a * i,
 				Home: n,
@@ -593,7 +615,7 @@ function ee({ pane: e, variable: t, min: n = 160, max: r = 420, reserve: i = 280
 }
 //#endregion
 //#region src/js/history.js
-function E({ threshold: e = 160 } = {}) {
+function te({ threshold: e = 160 } = {}) {
 	let t, n, r, i, a, o, s, c = !0, l = 0, u = !1, d = () => t.scrollHeight - t.scrollTop - t.clientHeight;
 	return {
 		awayFromLatest: !1,
@@ -646,31 +668,31 @@ function E({ threshold: e = 160 } = {}) {
 }
 //#endregion
 //#region src/js/drilldown.js
-var D = (e) => !!(e?.isConnected && e.getClientRects().length), O = "a:is(.f-form-row--link, .f-sidebar__item, .f-item-row)", k = `${O}[aria-current]:not([aria-current="false"])`, A = (e) => [...e.querySelectorAll(k)].map((e) => e.getAttribute("href")), j = (e) => [...e.querySelectorAll(".f-drilldown__column")].map((e) => `${e.getAttribute("aria-labelledby")} ${e.classList.contains("f-drilldown__column--optional")}`), M = (e) => {
+var O = (e) => !!(e?.isConnected && e.getClientRects().length), k = "a:is(.f-form-row--link, .f-sidebar__item, .f-item-row)", A = `${k}[aria-current]:not([aria-current="false"])`, j = (e) => [...e.querySelectorAll(A)].map((e) => e.getAttribute("href")), M = (e) => [...e.querySelectorAll(".f-drilldown__column")].map((e) => `${e.getAttribute("aria-labelledby")} ${e.classList.contains("f-drilldown__column--optional")}`), N = (e) => {
 	for (let t of e.querySelectorAll(".f-drilldown__column")) {
-		let e = t.querySelector(k), n = e?.closest(".f-pane__scroll, .f-pane--scroll");
-		if (!n || !t.contains(n) || !D(e)) continue;
+		let e = t.querySelector(A), n = e?.closest(".f-pane__scroll, .f-pane--scroll");
+		if (!n || !t.contains(n) || !O(e)) continue;
 		let r = n.getBoundingClientRect(), i = e.getBoundingClientRect();
 		i.top >= r.top && i.bottom <= r.bottom || (n.scrollTop += i.top + i.height / 2 - (r.top + r.height / 2));
 	}
 };
-function te() {
+function ne() {
 	let e, t;
 	return {
 		init() {
-			let n = this.$el, r = A(n), i = JSON.stringify([r, j(n)]), a = () => {
+			let n = this.$el, r = j(n), i = JSON.stringify([r, M(n)]), a = () => {
 				t = null;
 				let e = r;
-				r = A(n);
-				let a = JSON.stringify([r, j(n)]);
+				r = j(n);
+				let a = JSON.stringify([r, M(n)]);
 				if (a === i) return;
-				i = a, M(n);
+				i = a, N(n);
 				let o = document.activeElement;
-				if (o && o !== document.body && (!n.contains(o) || D(o))) return;
-				let s = r.length < e.length && r.every((t, n) => t === e[n]), c = [...n.querySelectorAll(`.f-drilldown__column ${O}[href]`)].filter((e) => D(e) && !e.closest(".f-drilldown__header")).filter((t) => e.includes(t.getAttribute("href"))).at(-1), l = [...n.querySelectorAll(".f-drilldown__title")].filter(D).at(-1);
+				if (o && o !== document.body && (!n.contains(o) || O(o))) return;
+				let s = r.length < e.length && r.every((t, n) => t === e[n]), c = [...n.querySelectorAll(`.f-drilldown__column ${k}[href]`)].filter((e) => O(e) && !e.closest(".f-drilldown__header")).filter((t) => e.includes(t.getAttribute("href"))).at(-1), l = [...n.querySelectorAll(".f-drilldown__title")].filter(O).at(-1);
 				(s ? c ?? l : l ?? c)?.focus({ preventScroll: !0 });
 			};
-			requestAnimationFrame(() => M(n)), e = new MutationObserver(() => {
+			requestAnimationFrame(() => N(n)), e = new MutationObserver(() => {
 				t ??= requestAnimationFrame(a);
 			}), e.observe(n, {
 				subtree: !0,
@@ -686,16 +708,16 @@ function te() {
 }
 //#endregion
 //#region src/js/busy.js
-var ne = ".f-button:is([aria-busy=\"true\"], [data-loading])";
-function re(e = document) {
+var re = ".f-button:is([aria-busy=\"true\"], [data-loading])";
+function ie(e = document) {
 	let t = (e) => {
-		e.target.closest?.(ne) && (e.preventDefault(), e.stopImmediatePropagation());
+		e.target.closest?.(re) && (e.preventDefault(), e.stopImmediatePropagation());
 	};
 	return e.addEventListener("click", t, !0), () => e.removeEventListener("click", t, !0);
 }
 //#endregion
 //#region src/js/suggestions.js
-function N(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anchor: s = t, messages: c = {
+function P(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anchor: s = t, messages: c = {
 	label: "label",
 	count: "count-message"
 } }) {
@@ -706,7 +728,7 @@ function N(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anc
 	f.id = d("fruit-suggestions"), f.className = "f-autocomplete__options", f.setAttribute("role", "listbox"), f.setAttribute("aria-label", o(e, c.label, "Suggestions")), f.hidden = !0;
 	let p = document.createElement("span");
 	p.className = "f-sr-only", p.setAttribute("role", "status"), (e.querySelector("[data-fruit-ui]") ?? e).append(f, p);
-	let m = w(f, s, { stretch: s.tagName !== "TEXTAREA" }), h = -1, g = [], _ = () => [...e.querySelector("datalist")?.options ?? []].filter((e) => !e.disabled && !a(e)), v = (e) => e.label || e.value, y = () => {
+	let m = E(f, s, { stretch: s.tagName !== "TEXTAREA" }), h = -1, g = [], _ = () => [...e.querySelector("datalist")?.options ?? []].filter((e) => !e.disabled && !a(e)), v = (e) => e.label || e.value, y = () => {
 		h = -1, g = [], f.hidden = !0, m.hide(), t.removeAttribute("aria-activedescendant");
 	}, b = (e) => {
 		h = e, [...f.children].forEach((e, t) => e.setAttribute("aria-selected", String(t === h)));
@@ -732,17 +754,17 @@ function N(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anc
 		t.setAttribute("aria-autocomplete", "list"), t.setAttribute("aria-haspopup", "listbox"), t.setAttribute("aria-controls", f.id);
 	};
 	C();
-	let T = new MutationObserver((e) => {
+	let w = new MutationObserver((e) => {
 		(t.getAttribute("aria-controls") !== f.id || !t.hasAttribute("aria-haspopup")) && C(), e.some((e) => (e.target.nodeType === Node.ELEMENT_NODE ? e.target : e.target.parentElement)?.closest("datalist") || [...e.addedNodes, ...e.removedNodes].some((e) => e.nodeName === "DATALIST")) && document.activeElement === t && S();
 	});
-	return T.observe(t, {
+	return w.observe(t, {
 		attributes: !0,
 		attributeFilter: [
 			"aria-autocomplete",
 			"aria-haspopup",
 			"aria-controls"
 		]
-	}), T.observe(e, {
+	}), w.observe(e, {
 		childList: !0,
 		subtree: !0,
 		characterData: !0,
@@ -756,7 +778,7 @@ function N(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anc
 	}), {
 		hide: y,
 		destroy() {
-			T.disconnect(), l.abort(), m.destroy(), f.remove(), p.remove();
+			w.disconnect(), l.abort(), m.destroy(), f.remove(), p.remove();
 			for (let e of [
 				"aria-autocomplete",
 				"aria-haspopup",
@@ -768,7 +790,7 @@ function N(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anc
 }
 //#endregion
 //#region src/js/autocomplete.js
-function ie() {
+function ae() {
 	let e, t, n, r = () => e.dataset.fruitTrigger || "", i = () => {
 		let e = t.selectionStart ?? t.value.length, n = t.value.slice(0, e), i = n.search(/[^\s,]*$/), a = n.slice(i), o = r();
 		return o ? a.startsWith(o) ? {
@@ -785,7 +807,7 @@ function ie() {
 		init() {
 			if (e = this.$el, t = e.querySelector("input:not([type=\"hidden\"]), textarea"), !t) return;
 			let a = null;
-			n = N(e, t, {
+			n = P(e, t, {
 				query() {
 					return a = i(), a && a.query;
 				},
@@ -804,7 +826,7 @@ function ie() {
 }
 //#endregion
 //#region src/js/command-palette.js
-function ae() {
+function oe() {
 	let e, t, n, r, i, a, o = -1, s = () => [...n.querySelectorAll("[role=\"option\"]")].filter((e) => !e.hidden && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true"), c = (e) => {
 		let r = s();
 		o = r.length ? (e + r.length) % r.length : -1;
@@ -852,13 +874,13 @@ function ae() {
 }
 //#endregion
 //#region src/js/dropzone.js
-var oe = (e, t) => {
+var se = (e, t) => {
 	let n = (e.accept || "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
 	if (!n.length) return !0;
 	let r = t.name.toLowerCase(), i = (t.type || "").toLowerCase();
 	return n.some((e) => e.startsWith(".") ? r.endsWith(e) : e.endsWith("/*") ? i.startsWith(e.slice(0, -1)) : i === e);
 };
-function se() {
+function ce() {
 	let e;
 	return {
 		init() {
@@ -875,7 +897,7 @@ function se() {
 			}), r("drop", (e) => {
 				if (!a(e) || n.disabled) return;
 				e.preventDefault(), i = 0, t.removeAttribute("data-dragging");
-				let r = [...e.dataTransfer.files].filter((e) => oe(n, e));
+				let r = [...e.dataTransfer.files].filter((e) => se(n, e));
 				if (!r.length) return;
 				let o = new DataTransfer();
 				for (let e of n.multiple ? r : r.slice(0, 1)) o.items.add(e);
@@ -889,22 +911,22 @@ function se() {
 }
 //#endregion
 //#region src/js/pickers.js
-var P = (e) => String(e).padStart(2, "0"), F = (e) => `${String(e.getFullYear()).padStart(4, "0")}-${P(e.getMonth() + 1)}-${P(e.getDate())}`, I = (e) => {
+var F = (e) => String(e).padStart(2, "0"), I = (e) => `${String(e.getFullYear()).padStart(4, "0")}-${F(e.getMonth() + 1)}-${F(e.getDate())}`, L = (e) => {
 	let t = /^(\d{4,})-(\d{2})-(\d{2})/.exec(e || "");
 	return t ? new Date(Number(t[1]), Number(t[2]) - 1, Number(t[3])) : null;
-}, L = (e, t) => new Date(e.getFullYear(), e.getMonth(), e.getDate() + t), R = (e, t) => {
+}, R = (e, t) => new Date(e.getFullYear(), e.getMonth(), e.getDate() + t), z = (e, t) => {
 	let n = new Date(e.getFullYear(), e.getMonth() + t, 1), r = new Date(n.getFullYear(), n.getMonth() + 1, 0).getDate();
 	return n.setDate(Math.min(e.getDate(), r)), n;
-}, z = (e, t) => !!(e && t) && F(e) === F(t), B = (e) => e.closest("[lang]")?.lang || navigator.language || "en";
-function V(e) {
+}, B = (e, t) => !!(e && t) && I(e) === I(t), V = (e) => e.closest("[lang]")?.lang || navigator.language || "en";
+function H(e) {
 	try {
 		let t = new Intl.Locale(e), n = t.getWeekInfo?.() ?? t.weekInfo;
 		if (n?.firstDay) return n.firstDay % 7;
 	} catch {}
 	return +!/^en(-US|-CA)?$/i.test(e);
 }
-function H(e, t, n, { onOpen: r, onFocus: i }) {
-	let a = w(n, t, { start: !0 }), o = new AbortController(), s = (e, t, n) => e.addEventListener(t, n, { signal: o.signal }), c = () => !n.hidden, l = () => {
+function U(e, t, n, { onOpen: r, onFocus: i }) {
+	let a = E(n, t, { start: !0 }), o = new AbortController(), s = (e, t, n) => e.addEventListener(t, n, { signal: o.signal }), c = () => !n.hidden, l = () => {
 		t.setAttribute("aria-haspopup", "dialog"), t.setAttribute("aria-controls", n.id);
 	}, u = (e) => {
 		c() && (a.hide(), n.hidden = !0, l(), e && t.focus());
@@ -934,57 +956,57 @@ function H(e, t, n, { onOpen: r, onFocus: i }) {
 		}
 	};
 }
-function ce() {
-	let e, t, n, r, i, a, s = /* @__PURE__ */ new Date(), c = /* @__PURE__ */ new Date(), l = () => I(t.value), u = () => [I(t.min), I(t.max)], f = (e) => {
+function le() {
+	let e, t, n, r, i, a, s = /* @__PURE__ */ new Date(), c = /* @__PURE__ */ new Date(), l = () => L(t.value), u = () => [L(t.min), L(t.max)], f = (e) => {
 		let [t, n] = u();
 		return !!(t && e < t || n && e > n);
 	}, m = (e) => {
 		let [t, n] = u();
 		return t && e < t ? t : n && e > n ? n : e;
 	}, h = () => {
-		let e = B(t);
+		let e = V(t);
 		r.textContent = new Intl.DateTimeFormat(e, {
 			month: "long",
 			year: "numeric"
 		}).format(s);
-		let n = L(s, -((s.getDay() - V(e) + 7) % 7)), a = new Intl.DateTimeFormat(e, { weekday: "narrow" }), o = new Intl.DateTimeFormat(e, { weekday: "long" }), u = new Intl.DateTimeFormat(e, { dateStyle: "full" }), d = document.createElement("tr");
+		let n = R(s, -((s.getDay() - H(e) + 7) % 7)), a = new Intl.DateTimeFormat(e, { weekday: "narrow" }), o = new Intl.DateTimeFormat(e, { weekday: "long" }), u = new Intl.DateTimeFormat(e, { dateStyle: "full" }), d = document.createElement("tr");
 		for (let e = 0; e < 7; e++) {
-			let t = L(n, e), r = document.createElement("th");
+			let t = R(n, e), r = document.createElement("th");
 			r.scope = "col", r.abbr = o.format(t), r.textContent = a.format(t), d.append(r);
 		}
 		let p = [];
 		for (let e = 0; e < 6; e++) {
 			let t = document.createElement("tr");
 			for (let r = 0; r < 7; r++) {
-				let i = L(n, e * 7 + r), a = document.createElement("td");
-				a.setAttribute("aria-selected", String(z(i, l())));
+				let i = R(n, e * 7 + r), a = document.createElement("td");
+				a.setAttribute("aria-selected", String(B(i, l())));
 				let o = document.createElement("button");
-				o.type = "button", o.className = "f-calendar__day", o.tabIndex = z(i, c) ? 0 : -1, o.textContent = String(i.getDate()), o.dataset.date = F(i), o.setAttribute("aria-label", u.format(i)), i.getMonth() !== s.getMonth() && (o.dataset.outside = ""), z(i, /* @__PURE__ */ new Date()) && o.setAttribute("aria-current", "date"), f(i) && o.setAttribute("aria-disabled", "true"), a.append(o), t.append(a);
+				o.type = "button", o.className = "f-calendar__day", o.tabIndex = B(i, c) ? 0 : -1, o.textContent = String(i.getDate()), o.dataset.date = I(i), o.setAttribute("aria-label", u.format(i)), i.getMonth() !== s.getMonth() && (o.dataset.outside = ""), B(i, /* @__PURE__ */ new Date()) && o.setAttribute("aria-current", "date"), f(i) && o.setAttribute("aria-disabled", "true"), a.append(o), t.append(a);
 			}
 			p.push(t);
 		}
 		i.tHead.replaceChildren(d), i.tBodies[0].replaceChildren(...p);
 	}, g = (e, t = !0) => {
-		c = e, s = new Date(e.getFullYear(), e.getMonth(), 1), h(), t && i.querySelector(`[data-date="${F(e)}"]`)?.focus();
+		c = e, s = new Date(e.getFullYear(), e.getMonth(), 1), h(), t && i.querySelector(`[data-date="${I(e)}"]`)?.focus();
 	}, _ = (e) => {
 		if (f(e)) return;
-		let n = F(e);
+		let n = I(e);
 		if (t.type === "datetime-local") {
 			let e = /* @__PURE__ */ new Date();
-			n += `T${t.value.split("T")[1] || `${P(e.getHours())}:${P(e.getMinutes())}`}`;
+			n += `T${t.value.split("T")[1] || `${F(e.getHours())}:${F(e.getMinutes())}`}`;
 		}
 		p(t, n), a.close(!0);
 	}, v = (e, n) => {
-		let r = C(t) ? -1 : 1;
+		let r = T(t) ? -1 : 1;
 		return {
-			ArrowLeft: () => L(n, -r),
-			ArrowRight: () => L(n, r),
-			ArrowUp: () => L(n, -7),
-			ArrowDown: () => L(n, 7),
-			Home: () => L(n, -((n.getDay() - V(B(t)) + 7) % 7)),
-			End: () => L(n, 6 - (n.getDay() - V(B(t)) + 7) % 7),
-			PageUp: () => R(n, e.shiftKey ? -12 : -1),
-			PageDown: () => R(n, e.shiftKey ? 12 : 1)
+			ArrowLeft: () => R(n, -r),
+			ArrowRight: () => R(n, r),
+			ArrowUp: () => R(n, -7),
+			ArrowDown: () => R(n, 7),
+			Home: () => R(n, -((n.getDay() - H(V(t)) + 7) % 7)),
+			End: () => R(n, 6 - (n.getDay() - H(V(t)) + 7) % 7),
+			PageUp: () => z(n, e.shiftKey ? -12 : -1),
+			PageDown: () => z(n, e.shiftKey ? 12 : 1)
 		}[e.key]?.();
 	};
 	return {
@@ -996,10 +1018,10 @@ function ce() {
 			let f = (t, n, r) => {
 				let i = document.createElement("button");
 				return i.type = "button", i.className = "f-calendar__nav", i.dataset.direction = t, i.setAttribute("aria-label", o(e, n, r)), i.addEventListener("click", () => {
-					c = m(R(c, t === "next" ? 1 : -1)), s = new Date(c.getFullYear(), c.getMonth(), 1), h();
+					c = m(z(c, t === "next" ? 1 : -1)), s = new Date(c.getFullYear(), c.getMonth(), 1), h();
 				}), i;
 			};
-			u.append(r, f("previous", "previous-label", "Previous Month"), f("next", "next-label", "Next Month")), i = document.createElement("table"), i.className = "f-calendar__grid", i.setAttribute("role", "grid"), i.setAttribute("aria-labelledby", r.id), i.append(document.createElement("thead"), document.createElement("tbody")), n.append(u, i), (e.querySelector("[data-fruit-ui]") ?? e).append(n), a = H(e, t, n, {
+			u.append(r, f("previous", "previous-label", "Previous Month"), f("next", "next-label", "Next Month")), i = document.createElement("table"), i.className = "f-calendar__grid", i.setAttribute("role", "grid"), i.setAttribute("aria-labelledby", r.id), i.append(document.createElement("thead"), document.createElement("tbody")), n.append(u, i), (e.querySelector("[data-fruit-ui]") ?? e).append(n), a = U(e, t, n, {
 				onOpen: () => g(m(l() ?? /* @__PURE__ */ new Date()), !1),
 				onFocus: () => i.querySelector(".f-calendar__day[tabindex=\"0\"]")?.focus()
 			}), e.setAttribute("data-ready", ""), a.listen(t, "click", (e) => {
@@ -1011,11 +1033,11 @@ function ce() {
 				a.isOpen() && e && g(e, !1);
 			}), a.listen(i, "click", (e) => {
 				let t = e.target.closest(".f-calendar__day");
-				t && _(I(t.dataset.date));
+				t && _(L(t.dataset.date));
 			}), a.listen(i, "keydown", (e) => {
 				let t = e.target.closest(".f-calendar__day");
 				if (!t) return;
-				let n = v(e, I(t.dataset.date));
+				let n = v(e, L(t.dataset.date));
 				n && (e.preventDefault(), g(n));
 			});
 		},
@@ -1024,7 +1046,7 @@ function ce() {
 		}
 	};
 }
-var U = [
+var ue = [
 	["Red", "#ff3b30"],
 	["Orange", "#ff9500"],
 	["Yellow", "#ffcc00"],
@@ -1038,13 +1060,13 @@ var U = [
 	["Pink", "#ff2d55"],
 	["Brown", "#a2845e"],
 	["Gray", "#8e8e93"]
-], W = 7, le = (e) => [
+], W = 7, de = (e) => [
 	1,
 	3,
 	5
 ].map((t) => parseInt(e.slice(t, t + 2), 16) / 255);
-function ue(e) {
-	let [t, n, r] = le(e), i = Math.max(t, n, r), a = i - Math.min(t, n, r), o = 0;
+function fe(e) {
+	let [t, n, r] = de(e), i = Math.max(t, n, r), a = i - Math.min(t, n, r), o = 0;
 	return a && (o = i === t ? (n - r) / a % 6 : i === n ? (r - t) / a + 2 : (t - n) / a + 4), [
 		(o * 60 + 360) % 360,
 		i ? a / i : 0,
@@ -1062,14 +1084,14 @@ function G(e, t, n) {
 		r(1)
 	].map((e) => Math.round(e * 255).toString(16).padStart(2, "0")).join("")}`;
 }
-function de() {
+function pe() {
 	let e, t, n, r, i, a, s, c, l, u, f, m = [
 		0,
 		0,
 		0
 	], h = () => {
 		let e = [...t.list?.options ?? []].filter((e) => /^#[0-9a-f]{6}$/i.test(e.value)).map((e) => [e.label || e.value, e.value.toLowerCase()]);
-		return e.length ? e : U;
+		return e.length ? e : ue;
 	}, g = () => [...r.querySelectorAll("[role=\"option\"]")], _ = () => {
 		let e = t.value.toLowerCase();
 		r.replaceChildren(...h().map(([t, n]) => {
@@ -1087,7 +1109,7 @@ function de() {
 			brightness: d(i)
 		})), l.value = String(Math.round(n)), document.activeElement !== u && (u.value = t.value);
 	}, y = () => {
-		let [e, n, r] = ue(t.value);
+		let [e, n, r] = fe(t.value);
 		m = [
 			n && r ? e : m[0],
 			n,
@@ -1134,7 +1156,7 @@ function de() {
 				maxlength: "7",
 				spellcheck: "false",
 				autocomplete: "off"
-			}), h.append(v, u), a.append(s, l, h), i.setAttribute("aria-controls", a.id = `${n.id}-editor`), n.append(r, i, a), _(), (e.querySelector("[data-fruit-ui]") ?? e).append(n), f = H(e, t, n, {
+			}), h.append(v, u), a.append(s, l, h), i.setAttribute("aria-controls", a.id = `${n.id}-editor`), n.append(r, i, a), _(), (e.querySelector("[data-fruit-ui]") ?? e).append(n), f = U(e, t, n, {
 				onOpen: () => {
 					_(), a.hidden = !0, i.hidden = !1, i.setAttribute("aria-expanded", "false");
 				},
@@ -1152,7 +1174,7 @@ function de() {
 			}), f.listen(r, "keydown", (e) => {
 				let n = g(), r = n.indexOf(document.activeElement);
 				if (r < 0) return;
-				let i = C(t) ? -1 : 1, a = {
+				let i = T(t) ? -1 : 1, a = {
 					ArrowRight: r + i,
 					ArrowLeft: r - i,
 					ArrowDown: r + W,
@@ -1164,20 +1186,20 @@ function de() {
 			}), f.listen(i, "click", () => {
 				a.hidden = !1, i.hidden = !0, i.setAttribute("aria-expanded", "true"), y(), s.focus();
 			});
-			let w = (e, t) => {
+			let C = (e, t) => {
 				let n = s.getBoundingClientRect(), r = (e) => Math.max(0, Math.min(1, e));
 				b([
 					m[0],
 					r((e.clientX - n.left) / n.width),
 					1 - r((e.clientY - n.top) / n.height)
 				], t);
-			}, T = !1;
+			}, w = !1;
 			f.listen(s, "pointerdown", (e) => {
-				e.button === 0 && (e.preventDefault(), s.focus(), s.setPointerCapture(e.pointerId), T = !0, w(e, !1));
+				e.button === 0 && (e.preventDefault(), s.focus(), s.setPointerCapture(e.pointerId), w = !0, C(e, !1));
 			}), f.listen(s, "pointermove", (e) => {
-				T && w(e, !1);
+				w && C(e, !1);
 			}), f.listen(s, "pointerup", (e) => {
-				T && (T = !1, w(e, !0));
+				w && (w = !1, C(e, !0));
 			}), f.listen(s, "keydown", (e) => {
 				let t = e.shiftKey ? .1 : .01, n = {
 					ArrowLeft: [-t, 0],
@@ -1215,8 +1237,8 @@ function de() {
 }
 //#endregion
 //#region src/js/editor-content.js
-var fe = Symbol.for("fruitui.editor");
-function pe(e, t, { insert: n, set: r, toMarkdown: i, commit: a }) {
+var me = Symbol.for("fruitui.editor");
+function he(e, t, { insert: n, set: r, toMarkdown: i, commit: a }) {
 	let o = new AbortController(), s = (o) => {
 		let { html: s, markdown: c, mode: l, target: u } = o.detail ?? {};
 		if ((o.currentTarget !== window || u === t.id || u === t.name) && !(t.matches(":disabled") || t.readOnly)) {
@@ -1246,7 +1268,7 @@ function K(e) {
 	for (let e of t.querySelectorAll("p, div, li, h1, h2, h3, h4, h5, h6, blockquote, pre")) e.append("\n\n");
 	return t.textContent.replace(/\n{3,}/g, "\n\n").trim();
 }
-function me() {
+function ge() {
 	let e, t, n;
 	return {
 		init() {
@@ -1255,7 +1277,7 @@ function me() {
 				e.key !== "Enter" || e.shiftKey || e.isComposing || e.defaultPrevented || this.$el.dataset.fruitEnter === "submit" && n.form && (e.preventDefault(), n.form.requestSubmit());
 			}, n.addEventListener("keydown", t);
 			let r = ({ html: e, markdown: t }) => this.$el.dataset.fruitMode === "markdown" ? t ?? (e ? K(e) : "") : e ?? t ?? "";
-			e = pe(this.$el, n, {
+			e = he(this.$el, n, {
 				toMarkdown: () => p(n, n.value ? K(n.value) : "", { commit: !1 }),
 				insert: (e) => {
 					let t = r(e), i = n.selectionStart ?? n.value.length, a = n.selectionEnd ?? i;
@@ -1272,7 +1294,7 @@ function me() {
 }
 //#endregion
 //#region src/js/selection.js
-function he() {
+function _e() {
 	let e, t, n, r, i, a, s, c, l, u = [], f = -1, h = !1, g = () => t.selectedOptions[0]?.label || "", _ = () => {
 		h = !1, l.hide(), r.hidden = !0, n.setAttribute("aria-expanded", "false"), n.removeAttribute("aria-activedescendant");
 	}, v = (e) => {
@@ -1295,7 +1317,7 @@ function he() {
 	};
 	return {
 		init() {
-			e = this.$el, t = e.querySelector("select[data-fruit-control]"), !(!t || t.multiple || t.size > 1) && (n = document.createElement("input"), n.type = "text", n.className = "f-input", n.autocomplete = "off", n.setAttribute("role", "combobox"), n.setAttribute("aria-autocomplete", "list"), n.setAttribute("aria-expanded", "false"), r = document.createElement("ul"), r.id = d("fruit-options"), r.className = "f-combobox__options", r.setAttribute("role", "listbox"), r.hidden = !0, i = this.$el.querySelector("[data-fruit-ui]"), a = !i, i || (i = document.createElement("div"), i.setAttribute("data-fruit-ui", ""), this.$el.append(i)), n.setAttribute("aria-controls", r.id), i.append(n, r), t.hidden = !0, l = w(r, n, { stretch: !0 }), n.value = g(), n.addEventListener("input", (e) => {
+			e = this.$el, t = e.querySelector("select[data-fruit-control]"), !(!t || t.multiple || t.size > 1) && (n = document.createElement("input"), n.type = "text", n.className = "f-input", n.autocomplete = "off", n.setAttribute("role", "combobox"), n.setAttribute("aria-autocomplete", "list"), n.setAttribute("aria-expanded", "false"), r = document.createElement("ul"), r.id = d("fruit-options"), r.className = "f-combobox__options", r.setAttribute("role", "listbox"), r.hidden = !0, i = this.$el.querySelector("[data-fruit-ui]"), a = !i, i || (i = document.createElement("div"), i.setAttribute("data-fruit-ui", ""), this.$el.append(i)), n.setAttribute("aria-controls", r.id), i.append(n, r), t.hidden = !0, l = E(r, n, { stretch: !0 }), n.value = g(), n.addEventListener("input", (e) => {
 				e.isComposing || t.dispatchEvent(new CustomEvent("fruit-suggest", {
 					bubbles: !0,
 					detail: { query: n.value.trim() }
@@ -1321,7 +1343,7 @@ function he() {
 		}
 	};
 }
-function ge() {
+function ve() {
 	let e, t, n, r, i, a, s, c, l, u, d, f, h, g = [], _ = () => {
 		f && (t.hasAttribute("name") && (d = t.name.replace(/\[\]$/, ""), t.removeAttribute("name")), f.replaceChildren(...g.map((e) => {
 			let n = document.createElement("input");
@@ -1357,7 +1379,7 @@ function ge() {
 				e.target.closest("button") || b(s);
 			}), s.addEventListener("keydown", (e) => {
 				let a = [...n.querySelectorAll(".f-chip")];
-				e.key === "ArrowLeft" || e.key === "ArrowRight" ? (e.preventDefault(), b(a[i + (e.key === "ArrowLeft" === C(n) ? 1 : -1)])) : e.key === "Escape" ? (e.preventDefault(), r.focus()) : (e.key === "Backspace" || e.key === "Delete") && t ? (e.preventDefault(), x(i)) : (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "c" ? document.getSelection()?.isCollapsed && b(s) : (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "x" && t ? (e.preventDefault(), b(s), document.execCommand("copy") && x(i)) : e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && t && r.focus();
+				e.key === "ArrowLeft" || e.key === "ArrowRight" ? (e.preventDefault(), b(a[i + (e.key === "ArrowLeft" === T(n) ? 1 : -1)])) : e.key === "Escape" ? (e.preventDefault(), r.focus()) : (e.key === "Backspace" || e.key === "Delete") && t ? (e.preventDefault(), x(i)) : (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "c" ? document.getSelection()?.isCollapsed && b(s) : (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "x" && t ? (e.preventDefault(), b(s), document.execCommand("copy") && x(i)) : e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && t && r.focus();
 			}), s.addEventListener("copy", (e) => {
 				e.clipboardData && (e.preventDefault(), e.clipboardData.setData("text/plain", a));
 			}), s.addEventListener("focusout", (e) => {
@@ -1366,7 +1388,7 @@ function ge() {
 			}), n.insertBefore(s, r);
 		}
 		a !== void 0 && b([...n.querySelectorAll(".f-chip")].find((e) => e.firstChild.textContent === a)), _();
-	}, w = (n) => {
+	}, C = (n) => {
 		if (r.disabled || r.readOnly) return !1;
 		let i = [...g];
 		for (let a of n.split(/[,\n]/).map((e) => e.trim()).filter(Boolean)) {
@@ -1390,10 +1412,10 @@ function ge() {
 	};
 	return {
 		init() {
-			e = this.$el, t = e.querySelector("textarea[data-fruit-control]"), t && (n = document.createElement("div"), n.className = "f-token-field__entry", r = document.createElement("input"), r.type = "text", r.autocomplete = "off", r.placeholder = o(e, "placeholder", "Add an item"), i = document.createElement("span"), i.className = "f-sr-only", i.setAttribute("role", "status"), a = this.$el.querySelector("[data-fruit-ui]"), s = !a, a || (a = document.createElement("div"), a.setAttribute("data-fruit-ui", ""), this.$el.append(a)), n.append(r), a.append(n, i), t.hidden = !0, e.dataset.fruitSubmit === "list" && t.name && (d = t.name.replace(/\[\]$/, ""), t.removeAttribute("name"), f = document.createElement("div"), f.hidden = !0, a.append(f)), e.querySelector("datalist") && (u = N(e, r, {
+			e = this.$el, t = e.querySelector("textarea[data-fruit-control]"), t && (n = document.createElement("div"), n.className = "f-token-field__entry", r = document.createElement("input"), r.type = "text", r.autocomplete = "off", r.placeholder = o(e, "placeholder", "Add an item"), i = document.createElement("span"), i.className = "f-sr-only", i.setAttribute("role", "status"), a = this.$el.querySelector("[data-fruit-ui]"), s = !a, a || (a = document.createElement("div"), a.setAttribute("data-fruit-ui", ""), this.$el.append(a)), n.append(r), a.append(n, i), t.hidden = !0, e.dataset.fruitSubmit === "list" && t.name && (d = t.name.replace(/\[\]$/, ""), t.removeAttribute("name"), f = document.createElement("div"), f.hidden = !0, a.append(f)), e.querySelector("datalist") && (u = P(e, r, {
 				query: () => r.value.trim() || null,
 				pick: (e) => {
-					w(e.value), r.focus();
+					C(e.value), r.focus();
 				},
 				filter: e.dataset.fruitSearch !== "server",
 				exclude: (e) => g.includes(e.value),
@@ -1405,17 +1427,17 @@ function ge() {
 			})), l = () => {
 				r.value = "", r.setCustomValidity(""), r.removeAttribute("aria-invalid"), i.textContent = "", S();
 			}, t.addEventListener("fruit-token-reset", l), r.addEventListener("keydown", (e) => {
-				e.isComposing || (e.key === "Enter" || e.key === "," ? (e.preventDefault(), w(r.value)) : (e.key === "Backspace" || e.key === "ArrowLeft") && !r.value ? b([...n.querySelectorAll(".f-chip")].at(-1)) : e.key === "Escape" ? (r.value = "", r.setCustomValidity(""), r.removeAttribute("aria-invalid")) : e.key === "Tab" && r.value.trim() && w(r.value));
+				e.isComposing || (e.key === "Enter" || e.key === "," ? (e.preventDefault(), C(r.value)) : (e.key === "Backspace" || e.key === "ArrowLeft") && !r.value ? b([...n.querySelectorAll(".f-chip")].at(-1)) : e.key === "Escape" ? (r.value = "", r.setCustomValidity(""), r.removeAttribute("aria-invalid")) : e.key === "Tab" && r.value.trim() && C(r.value));
 			}), r.addEventListener("input", (e) => {
 				r.setCustomValidity(""), r.removeAttribute("aria-invalid"), e.isComposing || t.dispatchEvent(new CustomEvent("fruit-suggest", {
 					bubbles: !0,
 					detail: { query: r.value.trim() }
 				}));
 			}), r.addEventListener("change", () => {
-				r.value.trim() && w(r.value);
+				r.value.trim() && C(r.value);
 			}), r.addEventListener("paste", (e) => {
 				let t = e.clipboardData?.getData("text");
-				t && /[,\n]/.test(t) && (e.preventDefault(), w(t));
+				t && /[,\n]/.test(t) && (e.preventDefault(), C(t));
 			}), c = m(this, t, r, (e) => {
 				r.readOnly && (r.placeholder = ""), S(), ["value", "reset"].includes(e) && (r.value = "", i.textContent = "");
 			}, {
@@ -1428,7 +1450,7 @@ function ge() {
 		}
 	};
 }
-function _e() {
+function ye() {
 	let e, t, n = () => {
 		let t = Math.max(0, Number.parseInt(e.dataset.count ?? "0", 10) || 0), n = (e.dataset.fruitTemplate || ":count selected").split("|"), r = e.closest("[lang]")?.lang || navigator.language || "en", i = n.length > 1 && new Intl.PluralRules(r).select(t) !== "one" ? n[1] : n[0], a = e.querySelector(".f-selection-bar__count");
 		a && (a.textContent = i.trim().replace(":count", String(t))), e.hidden = t === 0;
@@ -1449,26 +1471,26 @@ function _e() {
 //#region src/js/navigation.js
 var q = "[role=\"menuitem\"], [role=\"menuitemcheckbox\"], [role=\"menuitemradio\"]", J = (e, t) => [...e.querySelectorAll(q)].filter((e) => t(e) && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true" && e.getClientRects().length), Y = (e, t) => {
 	e.length && e[(t + e.length) % e.length].focus();
-}, ve = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
-function X(e, t, n) {
+}, X = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
+function Z(e, t, n) {
 	let r = t.indexOf(document.activeElement);
 	return [
 		"ArrowDown",
 		"ArrowUp",
 		"Home",
 		"End"
-	].includes(e.key) ? (e.preventDefault(), Y(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => ve(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
+	].includes(e.key) ? (e.preventDefault(), Y(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => X(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
 		n.search = "";
 	}, 600), !0);
 }
-function Z() {
+function be() {
 	let e, t, n, r, i, a, o, s = {
 		search: "",
 		timer: null
 	}, c = (t) => t?.closest("[data-fruit-menu], [x-data^=\"fruitMenu\"]") === e, l = () => J(n, c), u = (e) => Y(l(), e);
 	return {
 		init() {
-			e = this.$el, e.setAttribute("data-fruit-menu", ""), t = e.querySelector("summary"), n = e.querySelector("[role=\"menu\"]"), t && n && (r = T(e, n, {
+			e = this.$el, e.setAttribute("data-fruit-menu", ""), t = e.querySelector("summary"), n = e.querySelector("[role=\"menu\"]"), t && n && (r = D(e, n, {
 				above: e.classList.contains("f-menu--above"),
 				owns: c,
 				onToggle: (e) => {
@@ -1479,7 +1501,7 @@ function Z() {
 			}), i = (n) => {
 				if (!c(n.target)) return;
 				let i = l();
-				n.target === t && ["ArrowDown", "ArrowUp"].includes(n.key) ? (n.preventDefault(), e.open = !0, r.show(), u(n.key === "ArrowDown" ? 0 : i.length - 1)) : e.open && n.key === "Tab" ? o = setTimeout(() => r.close(!1), 0) : e.open && X(n, i, s);
+				n.target === t && ["ArrowDown", "ArrowUp"].includes(n.key) ? (n.preventDefault(), e.open = !0, r.show(), u(n.key === "ArrowDown" ? 0 : i.length - 1)) : e.open && n.key === "Tab" ? o = setTimeout(() => r.close(!1), 0) : e.open && Z(n, i, s);
 			}, a = (e) => {
 				let t = e.target.closest(q);
 				c(t) && !t.matches(":disabled") && t.getAttribute("aria-disabled") !== "true" && r.close(!0);
@@ -1490,7 +1512,7 @@ function Z() {
 		}
 	};
 }
-function ye() {
+function xe() {
 	let e, t, n, r, i, a, o, s, c, l = {
 		x: 0,
 		y: 0
@@ -1508,7 +1530,7 @@ function ye() {
 		target: null,
 		init() {
 			if (e = this.$el, t = e.parentElement, !t) return;
-			n = e.dataset.fruitTargets, this.target = n ? null : t, e.setAttribute("data-fruit-menu", ""), f(e, "fruit-context-menu"), e.hidden = !0, a = w(e, { getBoundingClientRect: () => new DOMRect(l.x, l.y, 0, 0) }, { point: t });
+			n = e.dataset.fruitTargets, this.target = n ? null : t, e.setAttribute("data-fruit-menu", ""), f(e, "fruit-context-menu"), e.hidden = !0, a = E(e, { getBoundingClientRect: () => new DOMRect(l.x, l.y, 0, 0) }, { point: t });
 			let p = (t, n, o, c) => {
 				h(!1), i = t, s = c, l = {
 					x: n,
@@ -1529,9 +1551,9 @@ function ye() {
 				if (e.contains(n.target) || !r || !(n.key === "F10" && n.shiftKey || n.key === "ContextMenu")) return;
 				n.preventDefault(), _ = !0, c = setTimeout(() => _ = !1, 0);
 				let i = n.target.getBoundingClientRect();
-				p(r, C(t) ? i.right : i.left, i.bottom, n.target);
+				p(r, T(t) ? i.right : i.left, i.bottom, n.target);
 			}), g(e, "keydown", (t) => {
-				d(t.target) && (t.key === "Escape" ? (t.preventDefault(), t.stopPropagation(), h(!0)) : t.key === "Tab" ? (t.preventDefault(), h(!0)) : X(t, J(e, d), u));
+				d(t.target) && (t.key === "Escape" ? (t.preventDefault(), t.stopPropagation(), h(!0)) : t.key === "Tab" ? (t.preventDefault(), h(!0)) : Z(t, J(e, d), u));
 			}), g(e, "click", (e) => {
 				let t = e.target.closest(q);
 				d(t) && !t.matches(":disabled") && t.getAttribute("aria-disabled") !== "true" && h(!0);
@@ -1544,13 +1566,13 @@ function ye() {
 		}
 	};
 }
-function be() {
+function Se() {
 	let e, t, n, r, i, a, o;
 	return {
 		init() {
 			e = this.$el;
 			let s = e.querySelector("[role=\"tooltip\"]");
-			s && (a = w(s, e.firstElementChild));
+			s && (a = E(s, e.firstElementChild));
 			let c = () => {
 				e.hasAttribute("data-dismissed") || a?.show();
 			};
@@ -1569,7 +1591,7 @@ function be() {
 		}
 	};
 }
-function xe() {
+function Ce() {
 	let e, t, n, r, i = (t) => t?.closest("[data-fruit-tabs], [x-data^=\"fruitTabs\"]") === e, a = () => [...e.querySelectorAll("[role=\"tab\"]")].filter(i), o = () => a().filter((e) => !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true"), s = (t) => {
 		for (let n of a()) {
 			let r = n === t;
@@ -1592,7 +1614,7 @@ function xe() {
 					"End"
 				].includes(t.key)) return;
 				t.preventDefault(), t.stopPropagation();
-				let i = C(e), a = t.key === "Home" ? 0 : t.key === "End" ? n.length - 1 : (r + (t.key === "ArrowRight" === i ? -1 : 1) + n.length) % n.length;
+				let i = T(e), a = t.key === "Home" ? 0 : t.key === "End" ? n.length - 1 : (r + (t.key === "ArrowRight" === i ? -1 : 1) + n.length) % n.length;
 				s(n[a]), n[a].focus();
 			}, e.addEventListener("click", n), e.addEventListener("keydown", t), r = new MutationObserver(c), r.observe(e, {
 				childList: !0,
@@ -1606,12 +1628,12 @@ function xe() {
 		}
 	};
 }
-function Se() {
+function we() {
 	let e;
 	return {
 		init() {
 			let t = this.$el, n = t.querySelector(".f-floating-disclosure__content");
-			t.querySelector("summary") && n && (e = T(t, n, {
+			t.querySelector("summary") && n && (e = D(t, n, {
 				above: t.classList.contains("f-floating-disclosure--above"),
 				owns: (e) => e?.closest(".f-floating-disclosure") === t
 			}));
@@ -1628,10 +1650,10 @@ function Se() {
 //#region src/js/alpine.js
 var Q = !1;
 function $(e) {
-	e[fe] || e.data("fruitEditor", me), e.data("fruitToast", n), e.magic("toast", () => t), e.data("fruitConfirmer", a), e.magic("confirm", () => i), e.data("fruitCopy", c), e.data("fruitListSelection", l), e.magic("dialog", () => y), e.data("fruitCombobox", he), e.data("fruitTokenField", ge), e.data("fruitSelectionBar", _e), e.data("fruitAutocomplete", ie), e.data("fruitCommandPalette", ae), e.data("fruitDropzone", se), e.data("fruitMenu", Z), e.data("fruitDatePicker", ce), e.data("fruitColorPicker", de), e.data("fruitContextMenu", ye), e.data("fruitTooltip", be), e.data("fruitTabs", xe), e.data("fruitSplitter", ee), e.data("fruitHistory", E), e.data("fruitDrilldown", te), e.data("fruitFloatingDisclosure", Se), e.data("fruitDialogModel", S), typeof window < "u" && !Q && (x(window), b(document), re(document), Q = !0);
+	e[me] || e.data("fruitEditor", ge), e.data("fruitToast", n), e.magic("toast", () => t), e.data("fruitConfirmer", a), e.magic("confirm", () => i), e.data("fruitCopy", c), e.data("fruitListSelection", l), e.magic("dialog", () => b), e.data("fruitCombobox", _e), e.data("fruitTokenField", ve), e.data("fruitSelectionBar", ye), e.data("fruitAutocomplete", ae), e.data("fruitCommandPalette", oe), e.data("fruitDropzone", ce), e.data("fruitMenu", be), e.data("fruitDatePicker", le), e.data("fruitColorPicker", pe), e.data("fruitContextMenu", xe), e.data("fruitTooltip", Se), e.data("fruitTabs", Ce), e.data("fruitSplitter", ee), e.data("fruitHistory", te), e.data("fruitDrilldown", ne), e.data("fruitFloatingDisclosure", we), e.data("fruitDialogModel", C), typeof window < "u" && !Q && (S(window), x(document), w(document), ie(document), Q = !0);
 }
 //#endregion
 //#region src/js/livewire.js
 window.Alpine ? $(window.Alpine) : document.addEventListener("alpine:init", () => $(window.Alpine), { once: !0 });
 //#endregion
-export { i as confirm, y as dialog, t as toast };
+export { i as confirm, b as dialog, t as toast };

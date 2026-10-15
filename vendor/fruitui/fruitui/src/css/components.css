@@ -487,15 +487,29 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
     padding: 18px 22px;
     border-bottom: 1px solid var(--f-border);
   }
+  /* A long title wraps, even within a word, instead of widening the dialog past the window. */
   .f-dialog__header h2 {
+    min-width: 0;
     font-size: var(--f-text-xl);
     font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  /* A title that may run long, such as a file name: one line, cut with an ellipsis. */
+  .f-dialog__header--truncate h2 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .f-dialog__header > .f-button {
+    flex: none;
   }
   .f-dialog__body {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 18px;
     padding: 22px;
   }

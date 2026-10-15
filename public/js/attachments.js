@@ -257,7 +257,7 @@
 		var wrapper = document.createElement('div');
 		wrapper.appendChild(body);
 		wrapper.appendChild(footer);
-		var dialog = FruitUI.dialog({title: name, html: wrapper.innerHTML, size: 'large'});
+		var dialog = FruitUI.dialog({title: name, html: wrapper.innerHTML, size: 'large', closedBy: 'any'});
 		var go = function (step) {
 			dialog.close();
 			show(list[index + step]);

@@ -1,20 +1,28 @@
 import { fruitId } from './control-bridge.js';
 
 const SIZES = ['medium', 'large'];
+const CLOSED_BY = ['closerequest', 'any'];
 
 /** Translated labels from the layout's <x-fruit::remote-dialog />, or English. */
 const label = (key, fallback) =>
   document.querySelector('template[data-fruit-remote-dialog]')?.getAttribute(`data-fruit-${key}`) ?? fallback;
 
-function frame(title, size) {
+function frame(title, size, closedBy) {
   const id = fruitId('fruit-dialog');
   const element = document.createElement('dialog');
   element.className = `f-dialog f-dialog--scroll${size === 'large' ? ' f-dialog--large' : ''}`;
+  if (closedBy === 'any') element.setAttribute('closedby', 'any');
   // Outside a .fruit-ui scope (the compat build), the dialog carries its own.
   if (!document.body.closest('.fruit-ui')) element.classList.add('fruit-ui');
   element.setAttribute('aria-labelledby', `${id}-title`);
-  element.innerHTML = `<header class="f-dialog__header"><h2 id="${id}-title"></h2><button class="f-button f-button--ghost f-button--icon" type="button" data-fruit-dialog-close><svg class="f-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header><div class="f-dialog__body"></div>`;
-  element.querySelector('h2').textContent = title;
+  element.innerHTML = `<header class="f-dialog__header f-dialog__header--truncate"><h2 id="${id}-title"></h2><button class="f-button f-button--ghost f-button--icon" type="button" data-fruit-dialog-close><svg class="f-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header><div class="f-dialog__body"></div>`;
+  const heading = element.querySelector('h2');
+  heading.textContent = title;
+  // A title cut short (a long file name) shows in full as its tooltip; its accessible name is whole.
+  heading.addEventListener('pointerenter', () => {
+    if (heading.scrollWidth > heading.clientWidth) heading.title = title;
+    else heading.removeAttribute('title');
+  });
   element.querySelector('[data-fruit-dialog-close]').setAttribute('aria-label', label('close-label', 'Close'));
   return element;
 }
@@ -36,16 +44,20 @@ function loading() {
  * `url` to load it from, shown with a skeleton meanwhile. Alpine starts on the inserted content
  * by itself. A trailing `.f-dialog__footer` in the content becomes the dialog's footer, and
  * `<form method="dialog">` buttons close it with their value. The dialog is removed on close.
+ * Escape closes it; `closedBy: 'any'` also closes it on a click outside, for viewers and other
+ * content without input to lose.
  *
  * Returns `{ element, body, loaded, closed, close(value) }`: `loaded` resolves with the body once
  * the content is in (a bubbling `fruit-dialog-loaded` event says the same), `closed` with the
  * dialog's return value.
  */
-export function dialog({ title, html, url, size = 'medium', trigger = null } = {}) {
+export function dialog({ title, html, url, size = 'medium', closedBy = 'closerequest', trigger = null } = {}) {
   if (typeof title !== 'string' || !title.trim()) throw new Error('FruitUI dialog needs a title.');
   if ((html === undefined) === (url === undefined)) throw new Error('FruitUI dialog needs either html or url.');
   if (!SIZES.includes(size)) throw new Error(`FruitUI dialog size must be one of: ${SIZES.join(', ')}.`);
-  const element = frame(title, size);
+  if (!CLOSED_BY.includes(closedBy))
+    throw new Error(`FruitUI dialog closedBy must be one of: ${CLOSED_BY.join(', ')}.`);
+  const element = frame(title, size, closedBy);
   const body = element.querySelector('.f-dialog__body');
   const opener = document.activeElement;
   const controller = new AbortController();
