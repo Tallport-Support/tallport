@@ -1053,11 +1053,12 @@ document.addEventListener('alpine:init', function () {
 	 */
 	window.Alpine.data('tallportRowMenu', function () {
 		var rows = function (row) {
-			if (!row) {
+			// Not a row any more: the list changed since the menu last opened.
+			if (!row || !row.parentElement) {
 				return [];
 			}
 			var checked = Array.prototype.filter.call(row.parentElement.querySelectorAll(':scope > li.conv-row'), function (li) {
-				var box = li.querySelector('.conv-checkbox input');
+				var box = li.querySelector('input.conv-checkbox');
 				return box && box.checked;
 			});
 			return checked.indexOf(row) >= 0 ? checked : [row];
