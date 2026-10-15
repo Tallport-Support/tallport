@@ -58,6 +58,8 @@ class ConversationOpenInPlaceTest extends FeatureTestCase
         // Read already: nothing for the list.
         $pane->dispatch('conversation-open', id: $first->id, folder_id: $first->folder_id);
         $pane->dispatch('conversation-open', id: $second->id, folder_id: $first->folder_id)->assertNotDispatched('conversations-changed')->assertNotDispatched('sidebar-counts');
+        // Notifications are read once the answer is sent (the request's end).
+        $this->app->terminate();
         $this->assertSame(0, \DB::table('notifications')->where('conversation_id', $second->id)->whereNull('read_at')->count());
         $this->assertSame($second->id, session('folder_conversation.'.$first->folder_id));
 

@@ -63,17 +63,19 @@ class ConversationPane extends Component
             return;
         }
         $user = auth()->user();
-        ConversationsController::markNotificationsRead($conversation, $user);
-        // Read now: an unread row in the list loses its dot.
-        $was_unread = (bool) \App\ConversationRead::unreadIds([$conversation], $user);
-        \App\ConversationRead::markRead($conversation->id, $user);
-        if ($was_unread) {
+        // Nothing on the page waits for these: after the answer is sent.
+        app()->terminating(function () use ($conversation, $user) {
+            ConversationsController::markNotificationsRead($conversation, $user);
+            \App\Events\RealtimeConvView::dispatchSelf($conversation->id, $user, false);
+            \App\Misc\CustomerPhotos::request($conversation->customer, $conversation->customer_email);
+        });
+        // Read now: an unread row in the list loses its dot. Read already: nothing to write.
+        if (\App\ConversationRead::unreadIds([$conversation], $user)) {
+            \App\ConversationRead::markRead($conversation->id, $user);
             $this->dispatch('conversations-changed');
             $this->dispatch('sidebar-counts', counts: \App\Misc\Sidebar::unreadCounts($user));
         }
         session()->put('folder_conversation.'.$this->folder_id, $conversation->id);
-        \App\Events\RealtimeConvView::dispatchSelf($conversation->id, $user, false);
-        \App\Misc\CustomerPhotos::request($conversation->customer, $conversation->customer_email);
         \Eventy::action('conversation.view.start', $conversation, request());
 
         // The page around it follows (public/js/conversations.js); loaded anew if its styles

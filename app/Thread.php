@@ -1711,22 +1711,27 @@ class Thread extends Model
      */
     protected function findSendJobId($model)
     {
-        $jobs = $this->findSendJobs($model, 'SendReplyToCustomer');
-        foreach ($jobs as $job) {
-            $command = \App\Job::getPayloadCommand($job->getPayloadDecoded());
-            if ($command && !empty($command->threads) && self::getLastThread($command->threads)->id == $this->id) {
-                return $job->id;
-            }
-        }
-
-        // A reply to Telegram or Nostr.
-        foreach (['SendReplyToTelegram', 'SendReplyToNostr', 'SendReplyToMatrix'] as $class) {
-            $jobs = $this->findSendJobs($model, $class);
-            foreach ($jobs as $job) {
-                $command = \App\Job::getPayloadCommand($job->getPayloadDecoded());
-                if ($command && ($command->thread_id ?? null) == $this->id) {
-                    return $job->id;
-                }
+        // One read of the queue (with Redis: all of it) for every kind of send job, matched in
+        // the serialized command: unserializing would load all of its models from the database.
+        foreach ($this->findSendJobs($model) as $job) {
+            $payload = $job->getPayloadDecoded();
+            $command = (string) ($payload['data']['command'] ?? '');
+            switch ($payload['displayName'] ?? '') {
+                case 'App\\Jobs\\SendReplyToCustomer':
+                    // The reply it sends: the newest of its threads.
+                    if (preg_match('/s:7:"threads";O:\d+:"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier":\d+:\{s:5:"class";s:\d+:"App\\\\Thread";s:2:"id";a:\d+:\{([^}]*)\}/', $command, $m)
+                        && preg_match_all('/i:\d+;i:(\d+);/', $m[1], $ids) && max(array_map('intval', $ids[1])) == $this->id
+                    ) {
+                        return $job->id;
+                    }
+                    break;
+                case 'App\\Jobs\\SendReplyToTelegram':
+                case 'App\\Jobs\\SendReplyToNostr':
+                case 'App\\Jobs\\SendReplyToMatrix':
+                    if (preg_match('/s:9:"thread_id";i:(\d+);/', $command, $m) && (int) $m[1] == $this->id) {
+                        return $job->id;
+                    }
+                    break;
             }
         }
 
@@ -1734,16 +1739,16 @@ class Thread extends Model
     }
 
     /**
-     * Failed or waiting jobs of a class that mention this reply.
+     * Failed or waiting jobs of the emails queue that mention this reply.
      */
-    protected function findSendJobs($model, $class)
+    protected function findSendJobs($model)
     {
         if ($model == \App\Job::class) {
-            return \App\Job::pending('emails', 'App\\Jobs\\'.$class, ';i:'.$this->id.';');
+            return \App\Job::pending('emails', null, ';i:'.$this->id.';');
         }
 
         return $model::where('queue', 'emails')
-            ->whereRaw("payload like ? escape '!'", ['%'.\App\Job::likeEscape('"displayName":'.json_encode('App\\Jobs\\'.$class)).'%'.\App\Job::likeEscape(';i:'.$this->id.';').'%'])
+            ->whereRaw("payload like ? escape '!'", ['%'.\App\Job::likeEscape(';i:'.$this->id.';').'%'])
             ->get();
     }
 

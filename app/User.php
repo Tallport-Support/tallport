@@ -626,8 +626,11 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
                 'Y' => 'y',
             ]);
 
-            // Remove dot from month name.
-            $formatter = new \IntlDateFormatter(
+            // Remove dot from month name. One formatter per locale, timezone and pattern (a page formats
+            // many dates; creating one is the costly part).
+            static $formatters = [];
+            $formatter_key = config('app.locale').'|'.config('app.timezone').'|'.$format;
+            $formatter = $formatters[$formatter_key] ??= new \IntlDateFormatter(
                 config('app.locale'),
                 \IntlDateFormatter::LONG,
                 \IntlDateFormatter::NONE,

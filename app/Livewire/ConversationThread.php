@@ -141,14 +141,22 @@ class ConversationThread extends Component
         return Thread::where('conversation_id', $this->conversation()->id)->find($thread_id);
     }
 
+    /**
+     * The conversation, loaded once per request (and again when another one opens).
+     */
+    protected $conversation_model;
+
     protected function conversation()
     {
+        if ($this->conversation_model && $this->conversation_model->id == $this->conversation_id) {
+            return $this->conversation_model;
+        }
         $conversation = Conversation::find($this->conversation_id);
         if (!$conversation || !auth()->user() || !auth()->user()->can('view', $conversation)) {
             abort(403);
         }
 
-        return $conversation;
+        return $this->conversation_model = $conversation;
     }
 
     public function render()
@@ -161,6 +169,12 @@ class ConversationThread extends Component
         // In a chat, a reply being written stays in its composer: drafts aren't messages.
         if ($this->chat) {
             $threads = $threads->filter(fn ($thread) => $thread->state != \App\Thread::STATE_DRAFT)->values();
+        }
+        // Each message with this conversation, not one loaded for each.
+        foreach ($threads as $thread) {
+            if ($thread->conversation_id == $conversation->id) {
+                $thread->setRelation('conversation', $conversation);
+            }
         }
 
         return view('livewire.conversation-thread', [
