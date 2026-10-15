@@ -275,7 +275,12 @@ function maybeShowConnectionRestored()
 				catchUp();
 			}
 		};
-		window.addEventListener('blur', function () { away = true; });
+		// A click into a frame on the page (an attachment's preview) blurs the window too: not away.
+		window.addEventListener('blur', function () {
+			if (!document.activeElement || document.activeElement.tagName != 'IFRAME') {
+				away = true;
+			}
+		});
 		document.addEventListener('visibilitychange', function () {
 			if (document.visibilityState == 'hidden') {
 				away = true;
