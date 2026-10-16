@@ -39,7 +39,7 @@ class MessageBodyTest extends TestCase
             '<div class="signature">Jordan Lee</div>',
         ] as $signature) {
             [$main, $found] = MessageBody::signature('<div>Yes, that works.</div>'.$signature.'<p>&nbsp;</p>');
-            $this->assertSame("<div>Yes, that works.</div><p>\u{a0}</p>", $main, $signature);
+            $this->assertSame('<div>Yes, that works.</div>', $main, $signature);
             $this->assertSame($signature, $found);
         }
     }
@@ -47,8 +47,8 @@ class MessageBodyTest extends TestCase
     public function testPlainTextSignature()
     {
         [$main, $signature] = MessageBody::signature("Yes, that works.<br />\n-- <br />\nJordan Lee<br />\nExample Ltd");
-        $this->assertSame('Yes, that works.<br>', $main);
-        $this->assertSame("\n-- <br>\nJordan Lee<br>\nExample Ltd", $signature);
+        $this->assertSame('Yes, that works.', $main);
+        $this->assertSame("\nJordan Lee<br>\nExample Ltd", $signature);
     }
 
     public function testUnsureLeavesItAsItIs()

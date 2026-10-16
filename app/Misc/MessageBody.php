@@ -65,6 +65,14 @@ class MessageBody
         }
 
         $signature = '';
+        if (!$found) {
+            // The "-- " line itself isn't part of it.
+            $delimiter = array_shift($nodes);
+            $delimiter->parentNode->removeChild($delimiter);
+            if ($nodes && strtolower($nodes[0]->nodeName) == 'br') {
+                $nodes[0]->parentNode->removeChild(array_shift($nodes));
+            }
+        }
         foreach ($nodes as $node) {
             $signature .= $document->saveHTML($node);
             $node->parentNode->removeChild($node);
@@ -74,7 +82,8 @@ class MessageBody
             return [$html, null];
         }
 
-        return [$main, $signature];
+        // What was before it ends without blank lines.
+        return [self::tidy($main), $signature];
     }
 
     /**

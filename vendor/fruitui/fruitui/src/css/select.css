@@ -4,6 +4,12 @@
   select.f-input:not([multiple], [size]) {
     white-space: nowrap;
   }
+  /* A quiet select's long value (a language with its own name beside it) wraps rather than running
+     past its container. */
+  select.f-input.f-input--quiet:not([multiple], [size]) {
+    white-space: normal;
+    overflow: hidden;
+  }
   select.f-input :where(option, optgroup) {
     font: inherit;
     color: var(--f-text);
