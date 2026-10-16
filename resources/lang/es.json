@@ -226,6 +226,7 @@
     "Email Alerts For Administrators": "Enviar Alerta a los Administradores",
     "Email Header": "Cabecera de Correo",
     "Email Signature": "Firma del Correo",
+    "Signature": "Firma",
     "Email Template": "Plantilla de Correo",
     "Email passed for delivery. If you don't receive a test email, check your mail server logs.": "Correo enviado. Si no se recibe el correo de prueba, revisar el registro del servidor.",
     "Email to customer": "Correo al cliente",

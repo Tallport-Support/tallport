@@ -225,6 +225,7 @@
     "Email Alerts For Administrators": "Envie Alertas de E-Mail para os Administradores",
     "Email Header": "Cabeçalho do Email",
     "Email Signature": "Assinatura de E-Mail",
+    "Signature": "Assinatura",
     "Email Template": "Modelo de Email",
     "Email passed for delivery. If you don't receive a test email, check your mail server logs.": "E-mail encaminhado para entrega. Se você não receber um e-mail de teste, verifique os logs do servidor de e-mail.",
     "Email to customer": "E-mail para o cliente",

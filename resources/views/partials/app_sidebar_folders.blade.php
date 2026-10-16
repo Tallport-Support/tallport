@@ -1,9 +1,18 @@
 {{-- A mailbox's folders in the sidebar (also sent when new messages come in: App\Events\RealtimeMailboxNewThread): the
      unread count, else a dot where active conversations for the user are all read (Sidebar::unreadCounts()). --}}
-@foreach (App\Misc\Sidebar::visibleFolders($sidebar_folders, $sidebar_current_folder_id, $sidebar_counts['folders']) as $sidebar_folder)
-    @php
-        $sidebar_count = $sidebar_counts['folders'][$sidebar_folder->id] ?? 0;
-        $sidebar_for_you = !empty($sidebar_counts['for_you']['folders'][$sidebar_folder->id]);
-    @endphp
-    <a href="{{ $sidebar_folder->url($sidebar_mailbox->id) }}" class="f-sidebar__item app-folder-link" @if ($sidebar_current_folder_id == $sidebar_folder->id) aria-current="page" @endif @if ($sidebar_count) aria-label="{{ __(':mailbox, :count unread', ['mailbox' => $sidebar_folder->getTypeName(), 'count' => $sidebar_count]) }}" @elseif ($sidebar_for_you) aria-label="{{ __(':mailbox, conversations for you, all read', ['mailbox' => $sidebar_folder->getTypeName()]) }}" @endif data-label-unread="{{ __(':mailbox, :count unread', ['mailbox' => $sidebar_folder->getTypeName(), 'count' => ':count']) }}" data-label-read="{{ __(':mailbox, conversations for you, all read', ['mailbox' => $sidebar_folder->getTypeName()]) }}" data-for-you="{{ $sidebar_for_you ? 1 : 0 }}" data-dot="{{ __('Conversations for you, all read') }}" data-folder_id="{{ $sidebar_folder->id }}"@if ($sidebar_mailbox->id < 0) data-mailbox_id="{{ $sidebar_mailbox->id }}"@endif data-unread-count="{{ $sidebar_count }}"><x-dynamic-component :component="App\Misc\Sidebar::folderIcon($sidebar_folder)" class="f-icon" aria-hidden="true" /><span class="f-sidebar__identity">{{ $sidebar_folder->getTypeName() }}</span>@if ($sidebar_count)<span class="f-badge active-count">{{ $sidebar_count }}</span>@elseif ($sidebar_for_you)<span class="f-badge f-badge--dot active-count" role="img" aria-label="{{ __('Conversations for you, all read') }}" title="{{ __('Conversations for you, all read') }}"></span>@endif</a>
+@php
+    $sidebar_visible = App\Misc\Sidebar::visibleFolders($sidebar_folders, $sidebar_current_folder_id, $sidebar_counts['folders']);
+    // Spam and Deleted under More, open when the current folder is there.
+    [$sidebar_more, $sidebar_main] = $sidebar_visible->partition(fn ($folder) => in_array($folder->type, [App\Folder::TYPE_SPAM, App\Folder::TYPE_DELETED]));
+@endphp
+@foreach ($sidebar_main as $sidebar_folder)
+    @include('partials/app_sidebar_folder')
 @endforeach
+@if (count($sidebar_more))
+    <x-fruit::sidebar-group :title="__('More')" class="app-sidebar__more" :open="$sidebar_more->contains('id', $sidebar_current_folder_id)">
+        <x-slot:icon><x-icon.ellipsis class="f-icon" aria-hidden="true" /></x-slot:icon>
+        @foreach ($sidebar_more as $sidebar_folder)
+            @include('partials/app_sidebar_folder')
+        @endforeach
+    </x-fruit::sidebar-group>
+@endif

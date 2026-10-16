@@ -228,6 +228,7 @@
     "Email Alerts For Administrators": "Сповіщення Електронною Поштою для Адміністраторів",
     "Email Header": "Заголовок Листа",
     "Email Signature": "Підпис Листа",
+    "Signature": "Підпис",
     "Email Template": "Шаблон Листа",
     "Email passed for delivery. If you don't receive a test email, check your mail server logs.": "Лист передано для доставки. Якщо ви не отримали тестовий лист, перевірте журнали вашого поштового сервера.",
     "Email to customer": "Лист клієнту",

@@ -231,6 +231,7 @@
     "Email Alerts For Administrators": "Wysyłaj Powiadomienia E-Mail do Administratorów",
     "Email Header": "Nagłówek E-Mail",
     "Email Signature": "Sygnaturka E-Mail",
+    "Signature": "Sygnaturka",
     "Email Template": "Szablon E-Mail",
     "Email passed for delivery. If you don't receive a test email, check your mail server logs.": "E-mail przekazany do dostarczenia. Jeśli nie otrzymasz testowego e-maila, sprawdź dzienniki serwera pocztowego.",
     "Email to customer": "E-mail do klienta",

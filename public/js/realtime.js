@@ -138,10 +138,25 @@ function maybeShowConnectionRestored()
 		document.querySelectorAll('.app-sidebar__folders a[data-folder_id]').forEach(function (item) {
 			if (item.getAttribute('data-folder_id') == attr('folder_id')) {
 				item.setAttribute('aria-current', 'page');
+				// Spam or Deleted: their More group open.
+				var more = item.closest('.app-sidebar__more');
+				if (more) {
+					more.open = true;
+				}
 			} else {
 				item.removeAttribute('aria-current');
 			}
 		});
+	};
+
+	// A mailbox's folders, fresh from the server; More stays open if it was.
+	var replaceFolders = function (folders, html) {
+		var open = !!folders.querySelector('.app-sidebar__more[open]');
+		folders.innerHTML = html;
+		var more = folders.querySelector('.app-sidebar__more');
+		if (more && open) {
+			more.open = true;
+		}
 	};
 
 	// After missed events: what could have changed, refreshed (also a page that was
@@ -166,7 +181,7 @@ function maybeShowConnectionRestored()
 			page.querySelectorAll('.app-sidebar__folders[data-mailbox_id]').forEach(function (fresh) {
 				var folders = document.querySelector('.app-sidebar__folders[data-mailbox_id="'+fresh.getAttribute('data-mailbox_id')+'"]');
 				if (folders) {
-					folders.innerHTML = fresh.innerHTML;
+					replaceFolders(folders, fresh.innerHTML);
 				}
 			});
 			var counts = {folders: {}, mailboxes: {}, for_you: {folders: {}, mailboxes: {}}};
@@ -424,11 +439,11 @@ function maybeShowConnectionRestored()
 					// Looked up now: wire:navigate may have replaced the page since.
 					var folders = document.querySelector('.app-sidebar__folders[data-mailbox_id="'+folders_mailbox_id+'"]');
 					if (folders && data.folders_html) {
-						folders.innerHTML = data.folders_html;
+						replaceFolders(folders, data.folders_html);
 					}
 					var all_folders = document.querySelector('.app-sidebar__folders[data-mailbox_id="-1"]');
 					if (all_folders && data.all_folders_html) {
-						all_folders.innerHTML = data.all_folders_html;
+						replaceFolders(all_folders, data.all_folders_html);
 					}
 					markCurrentFolder();
 					if (data.sidebar_counts) {

@@ -1150,6 +1150,7 @@ class ComposerStaticInitfc9b7b2ca15b4d1aba40fc18ae3b6e13
         'App\\Misc\\MailWebhooks' => __DIR__ . '/../..' . '/app/Misc/MailWebhooks.php',
         'App\\Misc\\MailboxSettings' => __DIR__ . '/../..' . '/app/Misc/MailboxSettings.php',
         'App\\Misc\\Markdown' => __DIR__ . '/../..' . '/app/Misc/Markdown.php',
+        'App\\Misc\\MessageBody' => __DIR__ . '/../..' . '/app/Misc/MessageBody.php',
         'App\\Misc\\MessageImages' => __DIR__ . '/../..' . '/app/Misc/MessageImages.php',
         'App\\Misc\\Minify' => __DIR__ . '/../..' . '/app/Misc/Minify.php',
         'App\\Misc\\MinifyFacade' => __DIR__ . '/../..' . '/app/Misc/MinifyFacade.php',

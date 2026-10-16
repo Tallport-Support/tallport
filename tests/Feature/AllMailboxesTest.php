@@ -195,6 +195,27 @@ class AllMailboxesTest extends FeatureTestCase
         $this->get(route('mailboxes.all', ['folder_id' => -Folder::TYPE_MINE]))->assertSee('Assigned to me');
     }
 
+    /**
+     * Spam and Deleted are under More, open where one of them is the current folder; the rest of
+     * the app is in the account menu.
+     */
+    public function testMoreFoldersAndTheAccountMenu()
+    {
+        $conversation = $this->conversation($this->support, 'Support question');
+        $conversation->deleteToFolder($this->agent);
+        $html = $this->actingAs($this->agent)->get(route('mailboxes.view', ['id' => $this->support->id]))->assertOk()->getContent();
+        $sidebar = substr($html, strpos($html, 'id="app-sidebar"'));
+        $this->assertMatchesRegularExpression('#<details class="f-sidebar__group app-sidebar__more">\s*<summary[^>]*>.*?More</span>.*?</summary>.*?>Spam<.*?>Deleted<.*?</details>#s', $sidebar);
+        $footer = substr($sidebar, strpos($sidebar, 'app-sidebar__footer'));
+        $this->assertStringContainsString('href="'.route('kb').'"', $footer);
+        $this->assertStringContainsString('app-sidebar__settings', $footer);
+        $this->assertStringNotContainsString('href="'.route('kb').'"', substr($sidebar, 0, strpos($sidebar, 'app-sidebar__footer')));
+
+        $spam = $this->support->folders()->where('type', Folder::TYPE_SPAM)->first();
+        $html = $this->get(route('mailboxes.view.folder', ['id' => $this->support->id, 'folder_id' => $spam->id]))->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('#<details class="f-sidebar__group app-sidebar__more" open="open">#', $html);
+    }
+
     public function testSettingsPagesListTheSettingsInTheSidebar()
     {
         $admin = $this->createAdmin();
@@ -218,8 +239,8 @@ class AllMailboxesTest extends FeatureTestCase
         $this->assertStringContainsString('app-sidebar__back', $html);
         $this->assertStringNotContainsString(route('settings', ['section' => 'general']), $html);
 
-        // Workflows and Saved Replies aren't settings: they're in the main sidebar. Logs is under Manage.
-        $this->assertStringNotContainsString(route('workflows'), $sidebar);
+        // Workflows and Saved Replies aren't settings: they're in the account menu. Logs is under Manage.
+        $this->assertStringNotContainsString(route('workflows'), substr($sidebar, 0, strpos($sidebar, 'app-sidebar__footer')));
         $this->assertStringContainsString(route('logs'), $sidebar);
         $html = $this->actingAs($admin)->get(route('mailboxes.view', ['id' => $this->support->id]))->getContent();
         $this->assertStringContainsString('href="'.route('workflows').'"', $html);

@@ -253,6 +253,7 @@
     "Email Alerts For Administrators": "管理員電子郵件警示",
     "Email Header": "電子郵件標頭",
     "Email Signature": "電子郵件簽名檔",
+    "Signature": "簽名檔",
     "Email Template": "電子郵件範本",
     "Email passed for delivery. If you don't receive a test email, check your mail server logs.": "電子郵件已通過傳遞。若未收到測試郵件，請檢查郵件伺服器日誌。",
     "Emails to Customers": "發送給客戶的電子郵件",

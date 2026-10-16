@@ -41,12 +41,11 @@
         $delivery_report = $thread_is_draft || !empty($chat) ? null : App\Misc\DeliveryReports::forThread($thread);
 
         // $older_thread: the one before it (partials/threads).
-        $show_status = !$older_thread || ($thread->status != App\Thread::STATUS_NOCHANGE && $thread->status != $older_thread->status);
         $show_user = !$older_thread || $thread->user_id != $older_thread->user_id || $older_thread->action_type == App\Thread::ACTION_TYPE_USER_CHANGED;
-        // Next to the author: "You" for the viewer's own, then the status and the assignee the thread left.
+        // Next to the author: "You" for the viewer's own, then the assignee the thread left (a reply's
+        // change has no line of its own). Not the status: the toolbar has it.
         $thread_meta_line = array_filter([
             $thread->type != App\Thread::TYPE_CUSTOMER && $thread->created_by_user_id == Auth::user()->id ? \Illuminate\Support\Str::ucfirst(__('you')) : '',
-            !$thread_is_draft && $show_status && in_array($thread->type, [App\Thread::TYPE_CUSTOMER, App\Thread::TYPE_MESSAGE, App\Thread::TYPE_NOTE]) ? $thread->getStatusName() : '',
             !$thread_is_draft && $show_user && in_array($thread->type, [App\Thread::TYPE_CUSTOMER, App\Thread::TYPE_MESSAGE, App\Thread::TYPE_NOTE]) ? ($thread->user_id ? ($thread->user_cached ? __('Assigned to').' '.$thread->user_cached->getFullName() : '') : __('Unassigned')) : '',
         ]);
 
@@ -62,16 +61,18 @@
         // original folded below it (FruitUI's original slot).
         $ai_read_translated = $ai_translation && !$ai_written;
         $ai_original_language = $ai_read_translated ? (App\Ai\Summaries::data($thread)['language'] ?? null) : null;
+        // The message as shown: empty space collapsed, its signature folded (partials/thread_body).
+        [$thread_body, $thread_signature] = $thread_is_draft ? [null, null] : App\Misc\MessageBody::forThread($thread, $conversation, $mailbox);
         $ai_translating = !$ai_translation && $ai_translation_wanted && $thread->type == App\Thread::TYPE_CUSTOMER && (App\Ai\Translations::reason($thread, $ai_language)[0] ?? '') == 'waiting';
     @endphp
     {{-- The chat view ($chat): name, meta and time on one line, the body beside the avatar. --}}
     <x-fruit::message :layout="empty($chat) ? 'stacked' : 'inline'" :continued="!empty($continued) && !empty($chat)" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" :mine="$thread->type == App\Thread::TYPE_MESSAGE && $thread->created_by_user_id == Auth::user()->id" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()" :lang="$ai_translation ? $ai_language : null">
         @if ($ai_written)
             {{-- Written in the agent's language: what the customer received, folded. --}}
-            <x-slot:original :lang="$ai_sent_in" :label="$ai_sent_in ? __('Sent to the customer in :language', ['language' => App\Ai\Settings::displayName($ai_sent_in)]) : __('As sent to the customer')">{!! App\Misc\MessageImages::thumbnails(App\Misc\EmailColors::neutral(safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox)))) !!}</x-slot:original>
+            <x-slot:original :lang="$ai_sent_in" :label="$ai_sent_in ? __('Sent to the customer in :language', ['language' => App\Ai\Settings::displayName($ai_sent_in)]) : __('As sent to the customer')">@include('conversations/partials/thread_body')</x-slot:original>
         @elseif ($ai_read_translated)
             {{-- Read in the agent's language: the message as the customer wrote it, folded. --}}
-            <x-slot:original :lang="$ai_original_language" :label="$ai_original_language ? __('Translated from :language', ['language' => App\Ai\Settings::displayName($ai_original_language)]) : __('As the customer wrote it')">{!! App\Misc\MessageImages::thumbnails(App\Misc\EmailColors::neutral(safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox)))) !!}</x-slot:original>
+            <x-slot:original :lang="$ai_original_language" :label="$ai_original_language ? __('Translated from :language', ['language' => App\Ai\Settings::displayName($ai_original_language)]) : __('As the customer wrote it')">@include('conversations/partials/thread_body')</x-slot:original>
         @endif
         @if ($thread->has_attachments)
             <x-slot:attachments>@include('conversations/partials/thread_attachments')</x-slot:attachments>
@@ -223,7 +224,7 @@
                     @elseif ($ai_read_translated)
                         {!! App\Misc\MessageImages::thumbnails((string) view('conversations/partials/ai_translation', compact('thread', 'ai_language', 'ai_translation'))) !!}
                     @else
-                        {!! App\Misc\MessageImages::thumbnails(App\Misc\EmailColors::neutral(safe_raw_html(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks(), $thread, $conversation, $mailbox)))) !!}
+                        @include('conversations/partials/thread_body')
                     @endif
                 </div>
             @endunless

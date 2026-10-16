@@ -334,6 +334,7 @@ return array(
     'App\\Misc\\MailWebhooks' => $baseDir . '/app/Misc/MailWebhooks.php',
     'App\\Misc\\MailboxSettings' => $baseDir . '/app/Misc/MailboxSettings.php',
     'App\\Misc\\Markdown' => $baseDir . '/app/Misc/Markdown.php',
+    'App\\Misc\\MessageBody' => $baseDir . '/app/Misc/MessageBody.php',
     'App\\Misc\\MessageImages' => $baseDir . '/app/Misc/MessageImages.php',
     'App\\Misc\\Minify' => $baseDir . '/app/Misc/Minify.php',
     'App\\Misc\\MinifyFacade' => $baseDir . '/app/Misc/MinifyFacade.php',

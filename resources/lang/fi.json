@@ -224,6 +224,7 @@
     "Email Alerts For Administrators": "Sähköpostihälytykset Järjestelmänvalvojille",
     "Email Header": "Sähköpostin Otsikko",
     "Email Signature": "Sähköpostin Allekirjoitus",
+    "Signature": "Allekirjoitus",
     "Email Template": "Sähköpostimalli",
     "Email passed for delivery. If you don't receive a test email, check your mail server logs.": "Sähköposti välitetty toimitusta varten. Jos et saa testisähköpostia, tarkista sähköpostipalvelimesi lokit.",
     "Email to customer": "Sähköposti asiakkaalle",

@@ -45,6 +45,31 @@
         <span class="photo-sm">@include('partials/person_photo', ['person' => Auth::user()])</span>
         <span class="app-sidebar__account-name">{{ Auth::user()->getFullName() }}@action('menu.user.name_append', Auth::user())</span>
     </x-slot:trigger>
+    {{-- The rest of the app: where the user may go. --}}
+    <x-fruit::menu-link wire:navigate :href="route('kb')">{{ __('Knowledge Base') }}</x-fruit::menu-link>
+    @if (App\Http\Controllers\ReportsController::canAccess($sidebar_user))
+        <x-fruit::menu-link wire:navigate :href="route('reports.conversations')">{{ __('Reports') }}</x-fruit::menu-link>
+    @endif
+    {{-- Builders people work in, not settings: workflows and saved replies (where the user may edit them). --}}
+    @php
+        $sidebar_workflow_mailbox = $sidebar_user->isAdmin() ? null : collect($sidebar_mailboxes)->pluck(0)->first(fn ($mailbox) => App\Workflow::canEdit($sidebar_user, $mailbox));
+        $sidebar_reply_mailbox = collect($sidebar_mailboxes)->pluck(0)->first(fn ($mailbox) => App\SavedReply::canManage($sidebar_user, $mailbox));
+    @endphp
+    @if ($sidebar_user->isAdmin() || $sidebar_workflow_mailbox)
+        <x-fruit::menu-link wire:navigate :href="$sidebar_user->isAdmin() ? route('workflows') : route('mailboxes.workflows', ['mailbox_id' => $sidebar_workflow_mailbox->id])">{{ __('Workflows') }}</x-fruit::menu-link>
+    @endif
+    @if ($sidebar_reply_mailbox)
+        <x-fruit::menu-link wire:navigate :href="route('mailboxes.saved_replies', ['id' => $sidebar_reply_mailbox->id])">{{ __('Saved Replies') }}</x-fruit::menu-link>
+    @endif
+    {{-- Settings: the sidebar then lists them (partials/app_sidebar_settings). --}}
+    @php
+        $sidebar_settings_url = $sidebar_user->isAdmin() ? route('settings')
+            : ($sidebar_user->hasPermission(App\User::PERM_EDIT_USERS) ? route('users')
+            : ($sidebar_user->can('viewMailboxMenu', $sidebar_user) ? route('mailboxes')
+            : route('own.profile')));
+    @endphp
+    <x-fruit::menu-link wire:navigate :href="$sidebar_settings_url" class="app-sidebar__settings">{{ __('Settings') }}</x-fruit::menu-link>
+    <x-fruit::menu-separator />
     <x-fruit::menu-link :href="route('own.profile')">{{ __('Profile') }}</x-fruit::menu-link>
     <x-fruit::menu-link :href="route('own.security')">{{ __('Security') }}</x-fruit::menu-link>
     <x-fruit::menu-link :href="route('own.preferences')">{{ __('Preferences') }}</x-fruit::menu-link>

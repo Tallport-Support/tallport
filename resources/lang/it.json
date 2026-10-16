@@ -231,6 +231,7 @@
     "Email Alerts For Administrators": "Invia Avvisi Email Agli Amministratori",
     "Email Header": "Header dell'Email",
     "Email Signature": "Firma dell'Email",
+    "Signature": "Firma",
     "Email Template": "Modello Email",
     "Email passed for delivery. If you don't receive a test email, check your mail server logs.": "Email in consegna. Se non ricevi un'email di prova, controlla i log del tuo server di posta",
     "Email to customer": "Email al cliente",

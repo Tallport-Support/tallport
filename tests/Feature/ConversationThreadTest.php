@@ -56,6 +56,21 @@ class ConversationThreadTest extends FeatureTestCase
         Livewire::actingAs($this->createUser())->test(ConversationThread::class, ['conversation' => $this->conversation])->assertForbidden();
     }
 
+    /**
+     * A message without the status under its sender, and with its signature folded away.
+     */
+    public function testSignatureFoldedAndNoStatusLine()
+    {
+        $customer_thread = $this->conversation->threads()->first();
+        $customer_thread->body = '<p>&nbsp;</p><div>Yes, that works.</div><div class="gmail_signature">Jordan Lee<br>Example Ltd</div><p>&nbsp;</p><p><br></p>';
+        $customer_thread->save();
+
+        $html = preg_replace('/<!--\[if (BLOCK|ENDBLOCK)\]><!\[endif\]-->/', '', $this->thread()->html());
+        $this->assertMatchesRegularExpression('#Yes, that works\.</div>\s*<details class="f-disclosure f-disclosure--quiet thread-signature">\s*<summary>Signature</summary>\s*<div>.*Jordan Lee<br>Example Ltd#s', $html);
+        $this->assertStringNotContainsString('<p>&nbsp;</p>', $html);
+        $this->assertStringNotContainsString('Active · ', $html);
+    }
+
     public function testEditsInPlaceAndDeletesNotes()
     {
         $note = $this->note('<p>First thought</p>');

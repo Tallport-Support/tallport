@@ -228,6 +228,7 @@
     "Email Alerts For Administrators": "管理者にメールアラートを送信します。",
     "Email Header": "メールヘッダー",
     "Email Signature": "メール署名",
+    "Signature": "署名",
     "Email Template": "メールテンプレート",
     "Email passed for delivery. If you don't receive a test email, check your mail server logs.": "メールの配信に成功しました。テストメールが届かない場合は、メールサーバーのログを確認してください。",
     "Email to customer": "顧客へのメール",
