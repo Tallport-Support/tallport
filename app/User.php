@@ -658,10 +658,11 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
      * Convert date into human readable format.
      *
      * @param Carbon $date
+     * @param bool   $short "3h" rather than "3 hours ago"
      *
      * @return string
      */
-    public static function dateDiffForHumans($date)
+    public static function dateDiffForHumans($date, $short = false)
     {
         if (!$date) {
             return '';
@@ -686,6 +687,9 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
             } else {
                 return self::dateFormat($date, 'M j, Y');
             }
+        } elseif ($short) {
+            // "3h", "2d": the time without "ago" (conversation lists).
+            return $date->diffForHumans(['short' => true, 'syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE]);
         } else {
             $diff_text = $date->diffForHumans();
             $diff_text = preg_replace('/minute[sn]?/', 'min', $diff_text);

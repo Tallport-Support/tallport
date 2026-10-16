@@ -143,15 +143,17 @@
                     $conv_target = (!empty(request()->x_embed) || !empty($params['target_blank']));
                     // The time shown: what the list is sorted by (Last Activity, Date Sent), else the folder's own.
                     $conv_sort_date = isset(App\Conversation::SORT_COLUMNS[$sort_by]) ? $conversation->{App\Conversation::SORT_COLUMNS[$sort_by]} : null;
-                    $conv_waiting_since = $conv_sort_date ? App\User::dateDiffForHumans($conv_sort_date) : $conversation->getWaitingSince($folder);
+                    $conv_since_field = $conv_sort_date ? null : $folder->getWaitingSinceField();
+                    $conv_waiting_since = App\User::dateDiffForHumans($conv_sort_date ?: ($conv_since_field ? ($conversation->$conv_since_field ?: $conversation->updated_at) : null), true);
                     $conv_date_title = !in_array($folder->type, [App\Folder::TYPE_CLOSED, App\Folder::TYPE_DRAFTS, App\Folder::TYPE_DELETED]) ? strip_tags(str_replace('<br/>', ' ', $conversation->getDateTitle())) : '';
                     $conv_customer_name = ($conversation->customer_id && $conversation->customer) ? $conversation->customer->getFullName(true) : $conversation->customer_email;
                     $ai_one_liner = $conversation->search_snippet === null ? (App\Ai\Summaries::getAny($conversation, App\Ai\Settings::language($conversation->mailbox_cached, Auth::user()))['one_liner'] ?? '') : '';
-                    // Not in Mine: the viewer's own.
-                    $conv_assignee = ($conversation->user_id && $folder->type != App\Folder::TYPE_MINE) ? $conversation->user : null;
-                    // The channel's token: its icon, and the number of messages when there's more than one.
-                    $conv_channel = $conversation->hasChannel() ? ($conversation->getChannelName() ?: __('Chat')) : ($conversation->isPhone() ? __('Phone') : __('Email'));
-                    $conv_channel_label = trans_choice(':channel, :count message|:channel, :count messages', $conversation->threads_count, ['channel' => $conv_channel]);
+                    // Not the viewer's own (all of Mine).
+                    $conv_assignee = ($conversation->user_id && $conversation->user_id != Auth::id()) ? $conversation->user : null;
+                    // The last line says only what differs from the usual: a chat's or a phone call's icon (not email's).
+                    $conv_channel = $conversation->hasChannel() ? ($conversation->getChannelName() ?: __('Chat')) : ($conversation->isPhone() ? __('Phone') : null);
+                    $conv_has_meta = !empty($params['show_number']) || $conv_channel || $conv_assignee || $conversation->has_attachments || !empty($viewers[$conversation->id])
+                        || ($show_status && (int) $conversation->status != App\Conversation::STATUS_ACTIVE);
                 @endphp
                 <li class="conv-row @action('conversations_table.row_class', $conversation) @if ($conversation->isActive()) conv-active @endif @if ($conversation->isSpam()) conv-spam @endif" data-conversation_id="{{ $conversation->id }}"
                     @if ($row_menus) data-url="{{ $conversation->url() }}" @if (in_array($conversation->id, $unread_ids)) data-unread @endif @if ($conversation->isStarredByUser()) data-starred @endif @if ($conversation->status == App\Conversation::STATUS_CLOSED) data-closed @endif @if ($conversation->isChatUnavailable()) data-chat-unavailable @endif @endif
@@ -169,9 +171,10 @@
                             <x-slot:subtitle>@include('conversations/partials/badges'){{ '' }}@action('conversations_table.before_subject', $conversation)@if (isset($translated_subjects[$conversation->id]))<span title="{{ $conversation->getSubject() }}">{{ $translated_subjects[$conversation->id] }}</span>@else{{ $conversation->getSubject() }}@endif@action('conversations_table.after_subject', $conversation)</x-slot:subtitle>
                         @endif
                         <x-slot:preview>@action('conversations_table.preview_prepend', $conversation)@if ($conversation->search_snippet !== null)<span class="search-snippet">{!! $conversation->search_snippet !!}</span>@elseif ($ai_one_liner){{ $ai_one_liner }}@elseif (isset($translated_previews[$conversation->id])){{ $translated_previews[$conversation->id] }}@elseif ($conversation->preview){{ $conversation->preview }}@endif</x-slot:preview>
+                        @if ($conv_has_meta)
                         <x-slot:meta class="conv-row__meta">
                             {{-- The number in search results only. --}}@if (!empty($params['show_number']))<span class="conv-number">#{{ $conversation->number }}</span>@endif
-                            <span class="conv-channel" title="{{ $conv_channel_label }}">@if ($conversation->hasChannel())<x-icon.message-square class="f-icon" aria-hidden="true" />@elseif ($conversation->isPhone())<x-icon.phone class="f-icon" aria-hidden="true" />@else<x-icon.mail class="f-icon" aria-hidden="true" />@endif@if ($conversation->threads_count > 1)<span aria-hidden="true">{{ $conversation->threads_count }}</span>@endif<span class="f-sr-only">{{ $conv_channel_label }}</span></span>
+                            @if ($conv_channel)<span class="conv-channel" title="{{ $conv_channel }}">@if ($conversation->hasChannel())<x-icon.message-square class="f-icon" aria-hidden="true" />@else<x-icon.phone class="f-icon" aria-hidden="true" />@endif<span class="f-sr-only">{{ $conv_channel }}</span></span>@endif
                             @if ($conv_assignee)<span class="conv-owner-name"><x-icon.user class="f-icon" aria-hidden="true" /> <span class="conv-owner-name__text">{{ $conv_assignee->getFullName() }}</span></span>@endif
                             @if ($conversation->has_attachments)<x-icon.paperclip class="f-icon" :aria-label="__('Attachments')" role="img" />@endif
                             @if (!empty($viewers[$conversation->id]))
@@ -181,6 +184,7 @@
                                 <span class="conv-row__status">@include('conversations/partials/status_dot', ['status' => (int) $conversation->status]){{ App\Conversation::statusCodeToName($conversation->status) }}</span>
                             @endif
                         </x-slot:meta>
+                        @endif
                     </x-fruit::item-link>
                 </li>
             @endforeach

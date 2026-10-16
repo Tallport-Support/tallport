@@ -200,7 +200,7 @@ class ConversationListTest extends FeatureTestCase
             ->assertSeeInOrder(['Sent early', 'Sent late'])
             ->call('sort', 'sent')->assertSet('sorting', ['sort_by' => 'sent', 'order' => 'desc'])
             ->assertSeeInOrder(['Date Sent', 'Sent late', 'Sent early'])
-            ->assertSee(\App\User::dateDiffForHumans(now()->subDays(3)));
+            ->assertSee('3d');
         $this->assertSame(['sort_by' => 'sent', 'order' => 'desc'], Conversation::savedSorting($this->agent->fresh())[Folder::TYPE_UNASSIGNED]);
         $list->call('sort', 'sent')->assertSet('sorting', ['sort_by' => 'sent', 'order' => 'asc'])
             ->assertSeeInOrder(['Sent early', 'Sent late']);
@@ -219,14 +219,19 @@ class ConversationListTest extends FeatureTestCase
         Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_MINE)])
             ->assertDontSeeHtml('data-fruit-mark');
 
-        // Mine is the viewer's own; elsewhere the assignee shows.
+        // The viewer's own never names them; someone else's names its assignee.
         Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_MINE)])
             ->assertSee('Mine question')->assertDontSeeHtml('conv-owner-name');
         Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => AllMailboxes::folder($this->agent, -Folder::TYPE_MINE)])
             ->assertSee('Mine question')->assertDontSeeHtml('conv-owner-name');
         $conversation->changeStatus(Conversation::STATUS_CLOSED, $this->agent);
         Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_CLOSED)])
-            ->assertSeeHtml('conv-owner-name')->assertSee('Alex Agent');
+            ->assertSee('Mine question')->assertDontSeeHtml('conv-owner-name');
+        $other = $this->createUser(['first_name' => 'Blair', 'last_name' => 'Colleague']);
+        $this->mailbox->users()->attach($other->id);
+        $conversation->changeUser($other->id, $this->agent);
+        Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_CLOSED)])
+            ->assertSeeHtml('conv-owner-name')->assertSee('Blair Colleague');
     }
 
     public function testFolderOpensAtAConversationInAWideWindow()
@@ -313,8 +318,8 @@ class ConversationListTest extends FeatureTestCase
     }
 
     /**
-     * Each row's channel leads its meta line: an icon, the number of messages when there's
-     * more than one, and both named for screen readers.
+     * A chat's or phone call's row leads its meta line with the channel's icon, named for
+     * screen readers; email, the usual, has none.
      */
     public function testChannelToken()
     {
@@ -328,12 +333,14 @@ class ConversationListTest extends FeatureTestCase
         $phone->save();
 
         $html = preg_replace('/<!--\[if (BLOCK|ENDBLOCK)\]><!\[endif\]-->/', '', Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)])->html());
-        $this->assertStringContainsString('<span class="conv-channel" title="Email, 1 message"><svg', $html);
-        $this->assertStringContainsString('<span class="f-sr-only">Email, 1 message</span>', $html);
-        $this->assertStringContainsString('title="Telegram, 6 messages"', $html);
-        $this->assertStringContainsString('<span aria-hidden="true">6</span><span class="f-sr-only">Telegram, 6 messages</span>', $html);
-        $this->assertStringContainsString('<span class="f-sr-only">Phone, 1 message</span>', $html);
-        // No badge for the channel any more.
+        // A chat's and a phone call's icon, not email's (the usual), and no count.
+        $this->assertSame(2, substr_count($html, 'class="conv-channel"'));
+        $this->assertStringContainsString('<span class="conv-channel" title="Telegram"><svg', $html);
+        $this->assertStringContainsString('<span class="f-sr-only">Telegram</span>', $html);
+        $this->assertStringContainsString('<span class="f-sr-only">Phone</span>', $html);
+        $this->assertStringNotContainsString('<span aria-hidden="true">6</span>', $html);
+        // The email's row has nothing else to say: no meta line.
+        $this->assertSame(2, substr_count($html, 'conv-row__meta'));
         $this->assertStringNotContainsString('f-badge conv-channel', $html);
     }
 

@@ -90,7 +90,7 @@ final class ComponentContract
         'radio' => ['roles' => ['radio'], 'type' => 'radio', 'emits' => ['type', 'role']],
         'range' => ['type' => 'range', 'emits' => ['type']],
         'section-nav' => ['roles' => ['navigation']],
-        'select' => ['options' => ['control-size' => ['regular', 'small']]],
+        'select' => ['options' => ['control-size' => ['regular', 'small'], 'variant' => ['default', 'quiet']]],
         'sidebar' => ['roles' => ['navigation']],
         'sidebar-group' => ['roles' => ['group']],
         'sidebar-item' => ['roles' => ['link'], 'requires' => 'href'],

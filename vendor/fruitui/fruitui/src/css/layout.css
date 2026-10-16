@@ -145,7 +145,7 @@
     text-decoration: none;
   }
   .f-sidebar__item:hover {
-    background: var(--f-hover);
+    background: var(--f-sidebar-hover);
   }
   .f-sidebar__item > .f-icon {
     color: var(--f-accent);

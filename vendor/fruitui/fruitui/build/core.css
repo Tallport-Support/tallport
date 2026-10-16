@@ -18,6 +18,8 @@
     --f-tertiary: light-dark(#76767d, #8f8f97);
     --f-border: light-dark(rgb(60 60 67 / 15%), rgb(235 235 245 / 14%));
     --f-hover: light-dark(rgb(60 60 67 / 6%), rgb(235 235 245 / 7%));
+    /* Half the hover: on a sidebar's tint a full one looks like the current item. */
+    --f-sidebar-hover: light-dark(rgb(60 60 67 / 3%), rgb(235 235 245 / 3.5%));
     /* The one brand color. Every accent shade derives from it, so a scope can set just --f-tint. */
     --f-tint: #006cde;
     --f-accent: light-dark(var(--f-tint), oklch(from var(--f-tint) calc(l + 0.13) c h));
@@ -376,6 +378,7 @@
       --f-text: light-dark(#222225, #f3f3f5);
       --f-border: color-mix(in srgb, var(--f-text) 45%, transparent);
       --f-hover: color-mix(in srgb, var(--f-text) 12%, transparent);
+      --f-sidebar-hover: color-mix(in srgb, var(--f-text) 6%, transparent);
       --f-secondary: color-mix(in srgb, var(--f-text) 85%, var(--f-bg));
       --f-tertiary: color-mix(in srgb, var(--f-text) 72%, var(--f-bg));
       --f-material: var(--f-surface-secondary);
@@ -610,6 +613,25 @@
     --f-control-padding-block: 3px;
     --f-control-padding-inline: 10px;
     --f-control-font-size: var(--f-text-sm);
+  }
+  /* A quiet select reads as its value, in the link color, until it is opened: a setting shown among
+     details (a customer's language) and changed now and then. It keeps a small hit area and the
+     focus ring; its text lines up with the text around it. */
+  .f-input--quiet {
+    width: auto;
+    max-width: calc(100% + 12px);
+    min-height: 0;
+    margin-inline: -6px;
+    padding: 1px 6px;
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+    color: var(--f-accent-text);
+    font-size: inherit;
+    field-sizing: content;
+  }
+  .f-input--quiet:enabled:hover {
+    background: var(--f-hover);
   }
   .f-help {
     color: var(--f-secondary);
@@ -859,6 +881,11 @@
     padding-inline-start: 12px;
     border-inline-start: 2px solid var(--f-border);
     color: var(--f-secondary);
+  }
+  /* Its content ends at its own last line, whatever spacing that content keeps below (a table or
+     paragraph in a message's prose). */
+  .f-disclosure--quiet > :not(summary) > :last-child {
+    margin-bottom: 0;
   }
   .f-dialog {
     width: min(480px, calc(100% - 32px));
@@ -2106,16 +2133,18 @@
     color: var(--f-accent-text);
     text-underline-offset: 2px;
   }
-  .f-prose table {
+  /* Data tables, with a grid. Not in a message: email lays itself out with tables, which keep
+     their own attributes there instead (a signature, a newsletter's columns). */
+  .f-prose table:not(:is(.f-message__body, .f-message__original-text) *) {
     width: 100%;
     border-collapse: collapse;
   }
-  .f-prose :is(th, td) {
+  .f-prose :is(th, td):not(:is(.f-message__body, .f-message__original-text) *) {
     padding: 8px 10px;
     border: 1px solid var(--f-border);
     text-align: start;
   }
-  .f-prose th {
+  .f-prose th:not(:is(.f-message__body, .f-message__original-text) *) {
     background: var(--f-surface-secondary);
   }
   .f-prose__scroll {
@@ -4025,11 +4054,13 @@
   .f-message__original {
     margin-top: var(--f-message-original-gap, 8px);
   }
-  .f-message__original > summary {
+  /* Any quiet Disclosure in a message (its original, a signature folded away in its body) opens
+     from a small secondary label, so it doesn't read as part of the message. */
+  .f-message .f-disclosure--quiet > summary {
     color: var(--f-secondary);
     font-size: var(--f-text-sm);
   }
-  .f-message__original > summary:hover {
+  .f-message .f-disclosure--quiet > summary:hover {
     color: var(--f-text);
   }
   .f-message__original-icon {

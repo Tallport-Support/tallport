@@ -137,16 +137,18 @@
     color: var(--f-accent-text);
     text-underline-offset: 2px;
   }
-  .f-prose table {
+  /* Data tables, with a grid. Not in a message: email lays itself out with tables, which keep
+     their own attributes there instead (a signature, a newsletter's columns). */
+  .f-prose table:not(:is(.f-message__body, .f-message__original-text) *) {
     width: 100%;
     border-collapse: collapse;
   }
-  .f-prose :is(th, td) {
+  .f-prose :is(th, td):not(:is(.f-message__body, .f-message__original-text) *) {
     padding: 8px 10px;
     border: 1px solid var(--f-border);
     text-align: start;
   }
-  .f-prose th {
+  .f-prose th:not(:is(.f-message__body, .f-message__original-text) *) {
     background: var(--f-surface-secondary);
   }
   .f-prose__scroll {

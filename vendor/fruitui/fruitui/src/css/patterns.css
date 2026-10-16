@@ -840,11 +840,13 @@
   .f-message__original {
     margin-top: var(--f-message-original-gap, 8px);
   }
-  .f-message__original > summary {
+  /* Any quiet Disclosure in a message (its original, a signature folded away in its body) opens
+     from a small secondary label, so it doesn't read as part of the message. */
+  .f-message .f-disclosure--quiet > summary {
     color: var(--f-secondary);
     font-size: var(--f-text-sm);
   }
-  .f-message__original > summary:hover {
+  .f-message .f-disclosure--quiet > summary:hover {
     color: var(--f-text);
   }
   .f-message__original-icon {

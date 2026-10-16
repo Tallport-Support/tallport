@@ -123,6 +123,7 @@
       --f-text: light-dark(#222225, #f3f3f5);
       --f-border: color-mix(in srgb, var(--f-text) 45%, transparent);
       --f-hover: color-mix(in srgb, var(--f-text) 12%, transparent);
+      --f-sidebar-hover: color-mix(in srgb, var(--f-text) 6%, transparent);
       --f-secondary: color-mix(in srgb, var(--f-text) 85%, var(--f-bg));
       --f-tertiary: color-mix(in srgb, var(--f-text) 72%, var(--f-bg));
       --f-material: var(--f-surface-secondary);

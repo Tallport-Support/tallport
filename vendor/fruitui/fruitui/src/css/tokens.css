@@ -17,6 +17,8 @@
     --f-tertiary: light-dark(#76767d, #8f8f97);
     --f-border: light-dark(rgb(60 60 67 / 15%), rgb(235 235 245 / 14%));
     --f-hover: light-dark(rgb(60 60 67 / 6%), rgb(235 235 245 / 7%));
+    /* Half the hover: on a sidebar's tint a full one looks like the current item. */
+    --f-sidebar-hover: light-dark(rgb(60 60 67 / 3%), rgb(235 235 245 / 3.5%));
     /* The one brand color. Every accent shade derives from it, so a scope can set just --f-tint. */
     --f-tint: #006cde;
     --f-accent: light-dark(var(--f-tint), oklch(from var(--f-tint) calc(l + 0.13) c h));

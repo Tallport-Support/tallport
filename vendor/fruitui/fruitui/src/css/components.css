@@ -208,6 +208,25 @@
     --f-control-padding-inline: 10px;
     --f-control-font-size: var(--f-text-sm);
   }
+  /* A quiet select reads as its value, in the link color, until it is opened: a setting shown among
+     details (a customer's language) and changed now and then. It keeps a small hit area and the
+     focus ring; its text lines up with the text around it. */
+  .f-input--quiet {
+    width: auto;
+    max-width: calc(100% + 12px);
+    min-height: 0;
+    margin-inline: -6px;
+    padding: 1px 6px;
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+    color: var(--f-accent-text);
+    font-size: inherit;
+    field-sizing: content;
+  }
+  .f-input--quiet:enabled:hover {
+    background: var(--f-hover);
+  }
   .f-help {
     color: var(--f-secondary);
     font-size: var(--f-text-sm);
@@ -456,6 +475,11 @@
     padding-inline-start: 12px;
     border-inline-start: 2px solid var(--f-border);
     color: var(--f-secondary);
+  }
+  /* Its content ends at its own last line, whatever spacing that content keeps below (a table or
+     paragraph in a message's prose). */
+  .f-disclosure--quiet > :not(summary) > :last-child {
+    margin-bottom: 0;
   }
   .f-dialog {
     width: min(480px, calc(100% - 32px));
