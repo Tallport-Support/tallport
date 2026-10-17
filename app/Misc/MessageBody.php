@@ -22,12 +22,29 @@ class MessageBody
      */
     const CONTENT = ['img', 'table', 'hr', 'iframe', 'video', 'audio', 'object', 'input', 'svg'];
 
+    const BLOCKS = ['div', 'p', 'blockquote', 'table', 'ul', 'ol', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'center', 'dl'];
+
+    /**
+     * The lines mail apps add to every message ("Get Outlook for iOS", "Sent from my
+     * iPhone"): marked by the app, else a short last line saying so (in common languages).
+     */
+    const APP_LINES = "//*[starts-with(@id, 'ms-outlook-') and contains(@id, 'signature')]"
+        ."|//*[starts-with(@id, 'ymail_') and contains(@id, 'signature')]"
+        ."|//*[contains(concat(' ', normalize-space(@class), ' '), ' yahoo-signature ')]"
+        ."|//*[starts-with(@id, 'AppleMailSignature') or @id='composer_signature']";
+
+    const APP_LINE_TEXT = '/^(.{0,12}Outlook (for|pour|für|para|per|voor|dla|för|på|pro) (iOS|Android).{0,15}'
+        .'|(Sent|Envoyé|Enviado|Verzonden|Inviato|Wysłane|Skickat|Sendt|Lähetetty|Odesláno)\\b.{0,25}\\b(iPhone|iPad|Android|Galaxy|Samsung|Huawei|Xiaomi|Yahoo Mail|Mail (for|pour|für) Windows|Outlook|Gmail)'
+        .'|Von meinem (iPhone|iPad|Android|Samsung|Galaxy).{0,20}gesendet'
+        .'|.{0,8}(iPhone|iPad)(から送信|에서 보냄)'
+        .'|(从我的|發自我的|从|發自).{0,8}(iPhone|iPad|Android)(发送|傳送)?)\\.?$/iu';
+
     /**
      * The thread's body and its signature, each as shown (null without one).
      */
     public static function forThread(\App\Thread $thread, $conversation = null, $mailbox = null)
     {
-        [$main, $signature] = self::signature((string) $thread->body);
+        [$main, $signature] = self::signature(self::withoutAppLines((string) $thread->body));
         $render = function ($html) {
             return MessageImages::thumbnails(self::tidy(EmailColors::neutral(safe_raw_html($html))));
         };
@@ -36,6 +53,85 @@ class MessageBody
             $render(\Eventy::filter('thread.body_output', $thread->getBodyWithFormatedLinks($main), $thread, $conversation, $mailbox)),
             $signature !== null ? $render($thread->getBodyWithFormatedLinks($signature)) : null,
         ];
+    }
+
+    /**
+     * The body without the mail app's line at its end.
+     */
+    public static function withoutAppLines($html)
+    {
+        $html = (string) $html;
+        if (!preg_match('/signature|Outlook|iPhone|iPad|Android|Galaxy|Samsung|Huawei|Xiaomi|Yahoo|Windows|Gmail/i', $html)) {
+            return $html;
+        }
+        [$document, $root] = self::load($html);
+        if (!$root) {
+            return $html;
+        }
+        $removed = false;
+        $xpath = new \DOMXPath($document);
+        foreach (iterator_to_array($xpath->query(self::APP_LINES, $root)) as $element) {
+            // The app's own line, at the end (Apple's and Samsung's elements may hold a real signature).
+            if ($element->parentNode && self::isAppLine($element->textContent) && self::atEnd($element, $root) && !self::inQuote($element)) {
+                $element->parentNode->removeChild($element);
+                $removed = true;
+            }
+        }
+        // Unmarked (plain text, or the app's markup lost): the last line.
+        $line = self::lastLine($root);
+        $text = implode('', array_map(fn ($node) => $node->textContent, $line));
+        if ($line && self::isAppLine($text) && !self::inQuote($line[0])) {
+            foreach ($line as $node) {
+                $node->parentNode->removeChild($node);
+            }
+            $removed = true;
+        }
+        if (!$removed || self::isBlank($root)) {
+            return $html;
+        }
+
+        return self::save($document, $root);
+    }
+
+    protected static function isAppLine($text)
+    {
+        $text = trim(preg_replace('/[\s\x{a0}]+/u', ' ', $text));
+
+        return $text !== '' && mb_strlen($text) <= 60 && preg_match(self::APP_LINE_TEXT, $text);
+    }
+
+    /**
+     * The nodes of the last line that shows: after the last line break, in the innermost
+     * block it ends in.
+     */
+    protected static function lastLine(\DOMElement $root)
+    {
+        for ($parent = $root;;) {
+            $line = [];
+            $trailing = true;
+            for ($node = $parent->lastChild; $node; $node = $node->previousSibling) {
+                $is_break = $node instanceof \DOMElement && strtolower($node->nodeName) == 'br';
+                if ($trailing && ($is_break || $node instanceof \DOMComment || self::isBlank($node))) {
+                    continue;
+                }
+                // A block is a line of its own.
+                $is_block = $node instanceof \DOMElement && in_array(strtolower($node->nodeName), self::BLOCKS);
+                if ($is_break || ($is_block && $line)) {
+                    break;
+                }
+                $trailing = false;
+                array_unshift($line, $node);
+                if ($is_block) {
+                    break;
+                }
+            }
+            if (count($line) == 1 && $line[0] instanceof \DOMElement && in_array(strtolower($line[0]->nodeName), ['div', 'p'])) {
+                $parent = $line[0];
+                continue;
+            }
+
+            return $line;
+        }
     }
 
     /**
