@@ -37,7 +37,8 @@
                     <header class="conv-heading">
                         <livewire:conversation-subject wire:key="subject-{{ $conversation->id }}" :conversation="$conversation" :viewers="$viewers" />
                         @if ($customer)
-                            <p>{{ $customer->getFullName(true) }}@if ($conversation->customer_email && $conversation->customer_email != $customer->getFullName(true)) · {{ $conversation->customer_email }}@endif</p>
+                            {{-- Who wrote in: only while the inspector (which names them) is out of sight. --}}
+                            <p class="conv-heading__customer">{{ $customer->getFullName(true) }}@if ($conversation->customer_email && $conversation->customer_email != $customer->getFullName(true)) · {{ $conversation->customer_email }}@endif</p>
                         @endif
                         {{-- How the conversation reaches the mailbox: its address, or a chat channel (Nostr, Telegram). --}}
                         @if ($conversation->hasChannel() && $conversation->getChannelName())

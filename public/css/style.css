@@ -1598,6 +1598,16 @@ a.disabled:focus {
         display: none;
     }
 }
+/* Who wrote in, under the subject (not the chat's heading, where it's the title): only while the
+   inspector is out of sight (it names them, with their email). */
+.app-workspace[data-inspector] .conv-heading:not(.conv-heading--chat) .conv-heading__customer {
+    display: none;
+}
+@container app (max-width: 1200px) {
+    .app-workspace[data-inspector] .conv-heading:not(.conv-heading--chat) .conv-heading__customer {
+        display: block;
+    }
+}
 @container app (max-width: 900px) {
     .app-workspace,
     .app-workspace[data-list],
