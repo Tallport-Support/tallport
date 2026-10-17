@@ -245,6 +245,12 @@ document.addEventListener('alpine:init', function () {
 				this.listeners.push(Livewire.on('composer-note-forget', function () {
 					self.forgetNote();
 				}));
+				// A reply turned into a note: kept in the browser at once, as its draft is gone.
+				this.listeners.push(Livewire.on('composer-note-remember', function () {
+					setTimeout(function () {
+						self.rememberNote();
+					});
+				}));
 				// The editor stays when the mode changes (Reply, Note, Forward): its placeholder follows.
 				this.$wire.$watch('mode', function (mode) {
 					var body = self.$root.querySelector('.conv-reply-body[data-placeholders]');

@@ -42,8 +42,9 @@ class ConversationComposerTest extends FeatureTestCase
 
         $composer->dispatch('composer-open', mode: 'reply')->assertSet('mode', 'reply')
             ->assertSee('btn-reply-submit', false)->assertSee('Send &amp; Active', false)->assertDontSee('Forward &amp; Pending', false)->assertDontSee('Add Note &amp; Close', false);
-        // An open composer stays as it is.
-        $composer->dispatch('composer-open', mode: 'note')->assertSet('mode', 'reply');
+        // Note and Reply turn what's being written into the other (testConvertsBetweenReplyAndNote); Forward leaves it.
+        $composer->dispatch('composer-open', mode: 'forward')->assertSet('mode', 'reply');
+        $composer->dispatch('composer-open', mode: 'note')->assertSet('mode', 'note')->assertSee('Add Note &amp; Close', false);
 
         $this->composer()->call('open', 'note')->assertSee('Add Note &amp; Close', false)->assertDontSee('name="cc"', false);
         $this->composer()->call('open', 'forward')->assertSee('name="to_email"', false)->assertSee('Forward &amp; Pending', false)->assertDontSee('Send &amp; Active', false);
@@ -251,6 +252,38 @@ class ConversationComposerTest extends FeatureTestCase
 
         $reply = $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $this->assertEqualsCanonicalizing(['photo.jpg', 'manual.pdf'], $reply->attachments->pluck('file_name')->all());
+    }
+
+    /**
+     * A reply being written becomes a note (its saved draft gone, its text and files kept),
+     * and back (a saved draft again), from the Note and Reply buttons and the switch link.
+     */
+    public function testConvertsBetweenReplyAndNote()
+    {
+        $file = \App\Attachment::create('photo.jpg', 'image/jpeg', null, 'jpeg', null, false);
+        $composer = $this->composer()->call('open', 'reply')
+            ->dispatch('composer-attach', attachments: [['id' => encrypt($file->id), 'name' => 'photo.jpg', 'size' => 4, 'url' => $file->url()]])
+            ->set('body', '<p>Shipping today.</p>')->call('saveDraft');
+        $draft = Thread::find($composer->get('thread_id'));
+        $this->assertSame($draft->id, $file->fresh()->thread_id);
+
+        $composer->dispatch('composer-open', mode: 'note')->assertSet('mode', 'note')->assertSet('thread_id', null)
+            ->assertSet('body', '<p>Shipping today.</p>')->assertSet('status', $this->conversation->status)
+            ->assertDispatched('conversation-thread-created')->assertDispatched('composer-note-remember');
+        $this->assertNull(Thread::find($draft->id), 'The reply draft is gone.');
+        $this->assertNotNull($file->fresh(), 'Its file stays for the note.');
+        $this->assertSame(['photo.jpg'], array_column($composer->get('attachments'), 'name'));
+
+        // Back to a reply: a saved draft again, and the note in the browser forgotten.
+        $composer->dispatch('composer-open', mode: 'reply')->assertSet('mode', 'reply')->assertDispatched('composer-note-forget');
+        $draft = Thread::find($composer->get('thread_id'));
+        $this->assertSame([Thread::STATE_DRAFT, '<p>Shipping today.</p>'], [$draft->state, $draft->body]);
+        $this->assertSame(['photo.jpg'], $draft->attachments->pluck('file_name')->all());
+
+        $composer->call('switchToNote')->assertSet('mode', 'note')->call('send')->assertRedirect();
+        $note = $this->conversation->threads()->where('type', Thread::TYPE_NOTE)->first();
+        $this->assertSame(['photo.jpg'], $note->attachments->pluck('file_name')->all());
+        $this->assertSame(0, $this->conversation->threads()->where('state', Thread::STATE_DRAFT)->count());
     }
 
     /**

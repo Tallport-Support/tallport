@@ -75,7 +75,7 @@ class ConversationChatViewTest extends FeatureTestCase
         $this->assertStringContainsString('thread-recipients', $html);
     }
 
-    public function testTheComposerStaysOpenAndSwitchesWhileEmpty()
+    public function testTheComposerStaysOpenAndSwitches()
     {
         $composer = Livewire::actingAs($this->agent)->test(ConversationComposer::class, ['conversation' => $this->conversation, 'chat' => true])
             ->assertSet('mode', 'reply');
@@ -84,8 +84,9 @@ class ConversationChatViewTest extends FeatureTestCase
         $composer->call('open', 'note')->assertSet('mode', 'note')
             ->call('discard')->assertSet('mode', 'reply');
 
-        // Written: it stays as it is.
-        $composer->set('body', '<p>Half a reply</p>')->call('open', 'note')->assertSet('mode', 'reply');
+        // Written: Note turns it into a note, Reply back into a reply, the text kept.
+        $composer->set('body', '<p>Half a reply</p>')->call('open', 'note')->assertSet('mode', 'note')->assertSet('body', '<p>Half a reply</p>')
+            ->call('open', 'reply')->assertSet('mode', 'reply')->assertSet('body', '<p>Half a reply</p>');
 
         // Sent: no page load; the history shows it, the composer is ready for the next one.
         $composer->call('send')->assertReturned(true)->assertNoRedirect()

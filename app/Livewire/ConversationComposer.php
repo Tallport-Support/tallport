@@ -155,13 +155,18 @@ class ConversationComposer extends Component
     }
 
     /**
-     * Opens the composer for a reply, a note or a forward. An open composer
-     * stays as it is: switching would leave a draft behind (in the chat view, an
-     * empty one switches).
+     * Opens the composer for a reply, a note or a forward. A reply being written
+     * becomes a note and the other way round (convertTo()); otherwise an open
+     * composer stays as it is (in the chat view, an empty one switches).
      */
     #[On('composer-open')]
     public function open($mode)
     {
+        if (in_array($this->mode, ['reply', 'note']) && in_array($mode, ['reply', 'note']) && $this->mode != $mode) {
+            $this->convertTo($mode);
+
+            return;
+        }
         if (!in_array($mode, ['reply', 'note', 'forward']) || $this->mode && !($this->chat && $this->mode != $mode && !$this->hasText() && !$this->thread_id)) {
             return;
         }
@@ -509,13 +514,58 @@ class ConversationComposer extends Component
 
     public function switchToNote()
     {
-        $body = $this->body;
-        // The text stays as it was written: rich text too.
-        $markdown = $this->markdown;
-        $this->mode = '';
-        $this->open('note');
-        $this->body = $body;
-        $this->markdown = $markdown;
+        $this->mode ? $this->convertTo('note') : $this->open('note');
+    }
+
+    /**
+     * Turns the reply being written into a note, or the note into a reply: its text (as
+     * written, rich text too) and files stay. A reply's saved draft goes, its files kept for
+     * the note (a note is kept in the browser until it's added); a note becomes a saved draft.
+     */
+    public function convertTo($mode)
+    {
+        if (!in_array($mode, ['reply', 'note']) || !in_array($this->mode, ['reply', 'note']) || $this->mode == $mode) {
+            return;
+        }
+        $conversation = $this->conversation();
+        $kept = ['body' => $this->body, 'markdown' => $this->markdown, 'attachments' => $this->attachments];
+        if ($this->thread_id) {
+            $this->discardDraftKeepingFiles($conversation);
+        }
+        if ($this->mode == 'note') {
+            $this->dispatch('composer-note-forget');
+        }
+
+        $this->resetFields($conversation);
+        foreach ($kept as $field => $value) {
+            $this->$field = $value;
+        }
+        $this->mode = $mode;
+        $this->dispatch('composer-opened', mode: $mode);
+        if ($mode == 'note') {
+            // A note keeps the status and the assignee.
+            $this->status = $conversation->status;
+            $this->user_id = $conversation->user_id ?: -1;
+            $this->dispatch('composer-note-remember');
+        } else {
+            $this->saveDraft();
+        }
+    }
+
+    /**
+     * Deletes the reply's saved draft; its files stay for what it becomes.
+     */
+    protected function discardDraftKeepingFiles($conversation)
+    {
+        $draft = Thread::where('conversation_id', $conversation->id)->where('state', Thread::STATE_DRAFT)
+            ->where('created_by_user_id', auth()->id())->find($this->thread_id);
+        if (!$draft) {
+            return;
+        }
+        $attachment_ids = array_map(fn ($attachment) => (int) decrypt($attachment['id']), $this->attachments);
+        \App\Attachment::where('thread_id', $draft->id)->whereIn('id', $attachment_ids)->update(['thread_id' => null]);
+        app(ConversationReplies::class)->discardDraft(['thread_id' => $draft->id, 'from_thread_id' => ''], auth()->user());
+        $this->dispatch('conversation-thread-created');
     }
 
     /**
