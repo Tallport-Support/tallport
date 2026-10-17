@@ -754,7 +754,6 @@
     "Translations Per Customer Per Hour": "Übersetzungen Pro Kunde Pro Stunde",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Tokens, die jedes Postfach pro Tag für alle KI-Funktionen verbrauchen darf. Sind sie aufgebraucht, ist die KI in diesem Postfach bis morgen nicht verfügbar. 0: kein Limit.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Nachrichten eines Kunden, die pro Stunde übersetzt werden, gegen Nachrichtenfluten; weitere werden unübersetzt angezeigt. 0: kein Limit.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Nicht übersetzt: Dieses Postfach hat seine KI-Tokens für heute aufgebraucht.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Nicht übersetzt: Dieser Kunde hat in der letzten Stunde mehr Nachrichten gesendet, als übersetzt werden.",
     "This mailbox has used its AI tokens for today.": "Dieses Postfach hat seine KI-Tokens für heute aufgebraucht.",
     "Send as Written": "Wie Geschrieben Senden",
@@ -1235,9 +1234,6 @@
     "Yesterday": "Gestern",
     "This Period": "Dieser Zeitraum",
     "Previous Period": "Vorheriger Zeitraum",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Nicht übersetzt: Die KI hat diese Nachricht bereits für :language gehalten, obwohl sie :detected erkannt hat.",
-    "Not translated: the message has no text.": "Nicht übersetzt: Die Nachricht enthält keinen Text.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Nicht übersetzt: Die KI ist fehlgeschlagen (:error). Sie versucht es erneut, wenn das Gespräch geöffnet wird.",
     "Only the first :count characters were translated.": "Nur die ersten :count Zeichen wurden übersetzt.",
     "After Fetching": "Nach dem Abrufen",
     "Choose a folder that is not fetched.": "Wählen Sie einen Ordner, der nicht abgerufen wird.",
@@ -1839,5 +1835,11 @@
     "Image": "Bild",
     "Edited :when": "Bearbeitet am :when",
     "Show Before Editing": "Vor der Bearbeitung Anzeigen",
-    "Users are allowed to edit own notes": "Benutzer dürfen ihre eigenen Notizen bearbeiten"
+    "Users are allowed to edit own notes": "Benutzer dürfen ihre eigenen Notizen bearbeiten",
+    "Not translated": "Nicht übersetzt",
+    "The AI took this message to be in :language already, though it detected :detected.": "Die KI hat diese Nachricht bereits für :language gehalten, obwohl sie :detected erkannt hat.",
+    "The message has no text.": "Die Nachricht enthält keinen Text.",
+    "This mailbox has used its AI tokens for today.": "Dieses Postfach hat seine KI-Tokens für heute aufgebraucht.",
+    "This customer sent more messages in the last hour than are translated.": "Dieser Kunde hat in der letzten Stunde mehr Nachrichten gesendet, als übersetzt werden.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "Die KI ist fehlgeschlagen (:error). Sie versucht es erneut, wenn das Gespräch geöffnet wird."
 }

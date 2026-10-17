@@ -761,7 +761,6 @@
     "Translations Per Customer Per Hour": "每位客户每小时翻译数",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "每个邮箱每天可用于所有 AI 功能的 Token 数。用完后，该邮箱中的 AI 在明天之前不可用。0：不限制。",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "每位客户每小时翻译的消息数，用于防止刷屏；超出的消息不翻译直接显示。0：不限制。",
-    "Not translated: this mailbox has used its AI tokens for today.": "未翻译：此邮箱今天的 AI Token 已用完。",
     "Not translated: this customer sent more messages in the last hour than are translated.": "未翻译：此客户在过去一小时内发送的消息超过了翻译上限。",
     "This mailbox has used its AI tokens for today.": "此邮箱今天的 AI Token 已用完。",
     "Send as Written": "按原文发送",
@@ -1242,9 +1241,6 @@
     "Yesterday": "昨天",
     "This Period": "此期间",
     "Previous Period": "上一期间",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "未翻译：AI 检测到 :detected，但认为此消息已经是 :language。",
-    "Not translated: the message has no text.": "未翻译：消息没有文本。",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "未翻译：AI 出错（:error）。打开对话时会重试。",
     "Only the first :count characters were translated.": "仅翻译了前 :count 个字符。",
     "After Fetching": "获取后",
     "Choose a folder that is not fetched.": "请选择一个不被获取的文件夹。",
@@ -1844,5 +1840,11 @@
     "Image": "图片",
     "Edited :when": "编辑于 :when",
     "Show Before Editing": "显示编辑前内容",
-    "Users are allowed to edit own notes": "用户可以编辑自己的备注"
+    "Users are allowed to edit own notes": "用户可以编辑自己的备注",
+    "Not translated": "未翻译",
+    "The AI took this message to be in :language already, though it detected :detected.": "AI 检测到 :detected，但认为此消息已经是 :language。",
+    "The message has no text.": "消息没有文本。",
+    "This mailbox has used its AI tokens for today.": "此邮箱今天的 AI Token 已用完。",
+    "This customer sent more messages in the last hour than are translated.": "此客户在过去一小时内发送的消息超过了翻译上限。",
+    "The AI failed (:error). It tries again when the conversation is opened.": "AI 出错（:error）。打开对话时会重试。"
 }

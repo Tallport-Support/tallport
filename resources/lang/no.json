@@ -763,7 +763,6 @@
     "Translations Per Customer Per Hour": "Oversettelser Per Kunde Per Time",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Tokens hver postkasse kan bruke per dag, for alle AI-funksjoner. Når de er brukt opp, er AI-en utilgjengelig i den postkassen til i morgen. 0: ingen grense.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Meldinger fra én kunde som oversettes per time, mot meldingsflom; flere vises uoversatt. 0: ingen grense.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Ikke oversatt: denne postkassen har brukt opp AI-tokens for i dag.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Ikke oversatt: denne kunden sendte flere meldinger den siste timen enn det som oversettes.",
     "This mailbox has used its AI tokens for today.": "Denne postkassen har brukt opp AI-tokens for i dag.",
     "Send as Written": "Send Som Skrevet",
@@ -1244,9 +1243,6 @@
     "Yesterday": "I går",
     "This Period": "Denne Perioden",
     "Previous Period": "Forrige Periode",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Ikke oversatt: AI-en antok at denne meldingen allerede var på :language, selv om den oppdaget :detected.",
-    "Not translated: the message has no text.": "Ikke oversatt: meldingen har ingen tekst.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Ikke oversatt: AI-en mislyktes (:error). Den prøver igjen når samtalen åpnes.",
     "Only the first :count characters were translated.": "Bare de første :count tegnene ble oversatt.",
     "After Fetching": "Etter Henting",
     "Choose a folder that is not fetched.": "Velg en mappe som ikke hentes.",
@@ -1846,5 +1842,11 @@
     "Image": "Bilde",
     "Edited :when": "Redigert :when",
     "Show Before Editing": "Vis Før Redigering",
-    "Users are allowed to edit own notes": "Brukere kan redigere sine egne notater"
+    "Users are allowed to edit own notes": "Brukere kan redigere sine egne notater",
+    "Not translated": "Ikke oversatt",
+    "The AI took this message to be in :language already, though it detected :detected.": "AI-en antok at denne meldingen allerede var på :language, selv om den oppdaget :detected.",
+    "The message has no text.": "Meldingen har ingen tekst.",
+    "This mailbox has used its AI tokens for today.": "Denne postkassen har brukt opp AI-tokens for i dag.",
+    "This customer sent more messages in the last hour than are translated.": "Denne kunden sendte flere meldinger den siste timen enn det som oversettes.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "AI-en mislyktes (:error). Den prøver igjen når samtalen åpnes."
 }

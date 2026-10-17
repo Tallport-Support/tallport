@@ -759,7 +759,6 @@
     "Translations Per Customer Per Hour": "Preklady Na Zákazníka Za Hodinu",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Tokeny, ktoré môže každý mailbox využiť za deň pre všetky funkcie AI. Po ich vyčerpaní je AI v tomto mailboxe nedostupná až do zajtra. 0: bez limitu.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Počet správ jedného zákazníka preložených za hodinu, ako ochrana proti zahlteniu; ďalšie sa zobrazia nepreložené. 0: bez limitu.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Nepreložené: tento mailbox už vyčerpal svoje AI tokeny na dnes.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Nepreložené: tento zákazník za poslednú hodinu poslal viac správ, než sa prekladá.",
     "This mailbox has used its AI tokens for today.": "Tento mailbox už vyčerpal svoje AI tokeny na dnes.",
     "Send as Written": "Odoslať Bez Prekladu",
@@ -1240,9 +1239,6 @@
     "Yesterday": "Včera",
     "This Period": "Toto Obdobie",
     "Previous Period": "Predchádzajúce Obdobie",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Nepreložené: AI usúdila, že táto správa už je v jazyku :language, hoci rozpoznala :detected.",
-    "Not translated: the message has no text.": "Nepreložené: správa neobsahuje žiadny text.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Nepreložené: AI zlyhala (:error). Skúsi to znova pri otvorení konverzácie.",
     "Only the first :count characters were translated.": "Preložených bolo len prvých :count znakov.",
     "After Fetching": "Po Načítaní",
     "Choose a folder that is not fetched.": "Vyberte priečinok, ktorý sa nenačítava.",
@@ -1843,5 +1839,11 @@
     "Image": "Obrázok",
     "Edited :when": "Upravené :when",
     "Show Before Editing": "Zobraziť Pred Úpravou",
-    "Users are allowed to edit own notes": "Používatelia môžu upravovať vlastné poznámky"
+    "Users are allowed to edit own notes": "Používatelia môžu upravovať vlastné poznámky",
+    "Not translated": "Nepreložené",
+    "The AI took this message to be in :language already, though it detected :detected.": "AI usúdila, že táto správa už je v jazyku :language, hoci rozpoznala :detected.",
+    "The message has no text.": "Správa neobsahuje žiadny text.",
+    "This mailbox has used its AI tokens for today.": "Tento mailbox už vyčerpal svoje AI tokeny na dnes.",
+    "This customer sent more messages in the last hour than are translated.": "Tento zákazník za poslednú hodinu poslal viac správ, než sa prekladá.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "AI zlyhala (:error). Skúsi to znova pri otvorení konverzácie."
 }

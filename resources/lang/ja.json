@@ -759,7 +759,6 @@
     "Translations Per Customer Per Hour": "顧客ごとの1時間あたりの翻訳数",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "各メールボックスが1日に使えるトークン数です（すべてのAI機能の合計）。使い切ると、そのメールボックスでは翌日までAIを利用できません。0：上限なし。",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "1人の顧客のメッセージを1時間に翻訳する数です（大量送信対策）。超えた分は翻訳せずに表示されます。0：上限なし。",
-    "Not translated: this mailbox has used its AI tokens for today.": "未翻訳：このメールボックスは本日分のAIトークンを使い切りました。",
     "Not translated: this customer sent more messages in the last hour than are translated.": "未翻訳：この顧客が過去1時間に送信したメッセージが翻訳の上限を超えています。",
     "This mailbox has used its AI tokens for today.": "このメールボックスは本日分のAIトークンを使い切りました。",
     "Send as Written": "原文のまま送信",
@@ -1240,9 +1239,6 @@
     "Yesterday": "昨日",
     "This Period": "この期間",
     "Previous Period": "前の期間",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "未翻訳：AIは:detectedを検出しましたが、このメッセージはすでに:languageであると判断しました。",
-    "Not translated: the message has no text.": "未翻訳：メッセージにテキストがありません。",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "未翻訳：AIでエラーが発生しました（:error）。会話を開くと再試行します。",
     "Only the first :count characters were translated.": "最初の:count文字のみ翻訳されました。",
     "After Fetching": "取得後",
     "Choose a folder that is not fetched.": "取得対象ではないフォルダーを選択してください。",
@@ -1843,5 +1839,11 @@
     "Image": "画像",
     "Edited :when": ":when に編集",
     "Show Before Editing": "編集前を表示",
-    "Users are allowed to edit own notes": "ユーザーは自分のメモを編集できます"
+    "Users are allowed to edit own notes": "ユーザーは自分のメモを編集できます",
+    "Not translated": "未翻訳",
+    "The AI took this message to be in :language already, though it detected :detected.": "AIは:detectedを検出しましたが、このメッセージはすでに:languageであると判断しました。",
+    "The message has no text.": "メッセージにテキストがありません。",
+    "This mailbox has used its AI tokens for today.": "このメールボックスは本日分のAIトークンを使い切りました。",
+    "This customer sent more messages in the last hour than are translated.": "この顧客が過去1時間に送信したメッセージが翻訳の上限を超えています。",
+    "The AI failed (:error). It tries again when the conversation is opened.": "AIでエラーが発生しました（:error）。会話を開くと再試行します。"
 }

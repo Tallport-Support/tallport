@@ -600,7 +600,7 @@ class AiAssistantTest extends FeatureTestCase
 
         $conversation = $this->receiveCustomerEmail();
         ThreadTranslator::assertNeverPrompted();
-        $this->getConversationPage($this->agent, $conversation)->assertSee('Not translated: this mailbox has used its AI tokens for today.');
+        $this->getConversationPage($this->agent, $conversation)->assertSee('f-message__original', false)->assertSee('Not translated')->assertSee('This mailbox has used its AI tokens for today.');
         $this->postAjax($this->agent, route('ai.drafts.store', ['id' => $conversation->id]), [])->assertStatus(429);
         // System Status says which mailboxes.
         $problems = collect(\App\Http\Controllers\SystemController::problems(\App\Http\Controllers\SystemController::statusData()))->keyBy(0);
@@ -619,7 +619,7 @@ class AiAssistantTest extends FeatureTestCase
         Option::$cache = [];
         $flood = $this->receiveCustomerEmail("Hallo,\n\nNog een vraag.");
         ThreadTranslator::assertPromptedTimes(1);
-        $this->getConversationPage($this->agent, $flood)->assertSee('Not translated: this customer sent more messages in the last hour than are translated.');
+        $this->getConversationPage($this->agent, $flood)->assertSee('Not translated')->assertSee('This customer sent more messages in the last hour than are translated.');
     }
 
     public function testMessageInTheTargetLanguageIsNotTranslated()
@@ -666,7 +666,7 @@ class AiAssistantTest extends FeatureTestCase
         ThreadTranslator::fake([['translation' => '', 'same_language' => true, 'detected_language' => 'nl']]);
         $conversation = $this->receiveCustomerEmail();
         $this->getConversationPage($this->agent, $conversation)
-            ->assertSee('Not translated: the AI took this message to be in English already, though it detected Dutch.');
+            ->assertSee('Not translated')->assertSee('The AI took this message to be in English already, though it detected Dutch.');
 
         // Failed: tried again when opened.
         ThreadTranslator::fake(function () {
@@ -678,7 +678,7 @@ class AiAssistantTest extends FeatureTestCase
         $this->assertSame('error', $kind);
         $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $message);
         $this->getConversationPage($this->agent, $conversation)
-            ->assertSee('Not translated: the AI failed ('.$message.'). It tries again when the conversation is opened.');
+            ->assertSee('Not translated')->assertSee('The AI failed ('.$message.'). It tries again when the conversation is opened.');
         ThreadTranslator::fake([['translation' => 'Another question.', 'same_language' => false, 'detected_language' => 'nl']]);
         $this->getConversationPage($this->agent, $conversation);
         $this->getConversationPage($this->agent, $conversation)->assertSee('Another question.')->assertDontSee('Not translated');
@@ -838,7 +838,7 @@ class AiAssistantTest extends FeatureTestCase
         $reason = Translations::reason($thread->fresh(), 'en');
         $this->assertSame('error', $reason[0]);
         $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $reason[1]);
-        $this->getConversationPage($this->agent, $conversation)->assertSee('Not translated: the AI failed')->assertDontSee('ai-translation-waiting', false);
+        $this->getConversationPage($this->agent, $conversation)->assertSee('Not translated')->assertSee('The AI failed')->assertDontSee('ai-translation-waiting', false);
     }
 
     public function testTerminalSummaryFailureIsReported()

@@ -3424,15 +3424,15 @@
     inset-inline-start: var(--f-item-row-leading-inset, 62px);
   }
   /* A mark (data-fruit-mark, a named accent) says what the row belongs to, such as its mailbox: a
-     short line beside the first two lines (the title and subtitle), never the only cue (the row
-     names it too, as text). Short and thin, so a list of marked rows doesn't become stripes. */
+     short line beside the title, never the only cue (the row names it too, as text). Short and
+     thin, so a list of marked rows doesn't become stripes. */
   .f-item-row[data-fruit-mark]::before {
     content: '';
     position: absolute;
-    inset-block-start: 16px;
+    inset-block-start: 19px;
     inset-inline-start: 4px;
     width: 2px;
-    height: min(40px, calc(100% - 32px));
+    height: 14px;
     border-radius: var(--f-radius-full);
     background: var(--f-mark);
   }
@@ -4074,7 +4074,7 @@
     display: inline-block;
     margin-inline-end: 6px;
     vertical-align: -3px;
-    color: var(--f-generated);
+    color: var(--f-secondary);
     --f-icon-size: 16px;
   }
   .f-message__original-text {
@@ -4276,7 +4276,7 @@
   .f-generated__icon {
     flex: none;
     margin-top: 3px;
-    color: var(--f-generated);
+    color: var(--f-secondary);
     --f-icon-size: 16px;
   }
   .f-generated__text {
@@ -4304,7 +4304,7 @@
   .f-suggestion__icon {
     flex: none;
     align-self: center;
-    color: var(--f-generated);
+    color: var(--f-secondary);
     --f-icon-size: 16px;
   }
   .f-suggestion__title {
@@ -4373,7 +4373,7 @@
   .f-suggestion__translation-icon {
     flex: none;
     margin-top: 3px;
-    color: var(--f-generated);
+    color: var(--f-secondary);
     --f-icon-size: 16px;
   }
   .f-suggestion__translation-text {

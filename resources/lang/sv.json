@@ -759,7 +759,6 @@
     "Translations Per Customer Per Hour": "Översättningar Per Kund Per Timme",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Tokens som varje brevlåda får använda per dag, för alla AI-funktioner. När de är förbrukade är AI inte tillgänglig i den brevlådan förrän i morgon. 0: ingen gräns.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Meddelanden från en kund som översätts per timme, mot meddelandeflöden; fler visas oöversatta. 0: ingen gräns.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Inte översatt: den här brevlådan har förbrukat sina AI-tokens för i dag.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Inte översatt: den här kunden skickade fler meddelanden den senaste timmen än som översätts.",
     "This mailbox has used its AI tokens for today.": "Den här brevlådan har förbrukat sina AI-tokens för i dag.",
     "Send as Written": "Skicka Som Skrivet",
@@ -1240,9 +1239,6 @@
     "Yesterday": "Igår",
     "This Period": "Denna Period",
     "Previous Period": "Föregående Period",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Inte översatt: AI antog att meddelandet redan var på :language, trots att den upptäckte :detected.",
-    "Not translated: the message has no text.": "Inte översatt: meddelandet har ingen text.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Inte översatt: AI misslyckades (:error). Den försöker igen när konversationen öppnas.",
     "Only the first :count characters were translated.": "Endast de första :count tecknen översattes.",
     "After Fetching": "Efter Hämtning",
     "Choose a folder that is not fetched.": "Välj en mapp som inte hämtas.",
@@ -1843,5 +1839,11 @@
     "Image": "Bild",
     "Edited :when": "Redigerad :when",
     "Show Before Editing": "Visa Före Redigering",
-    "Users are allowed to edit own notes": "Användare får redigera sina egna anteckningar"
+    "Users are allowed to edit own notes": "Användare får redigera sina egna anteckningar",
+    "Not translated": "Inte översatt",
+    "The AI took this message to be in :language already, though it detected :detected.": "AI antog att meddelandet redan var på :language, trots att den upptäckte :detected.",
+    "The message has no text.": "Meddelandet har ingen text.",
+    "This mailbox has used its AI tokens for today.": "Den här brevlådan har förbrukat sina AI-tokens för i dag.",
+    "This customer sent more messages in the last hour than are translated.": "Den här kunden skickade fler meddelanden den senaste timmen än som översätts.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "AI misslyckades (:error). Den försöker igen när konversationen öppnas."
 }

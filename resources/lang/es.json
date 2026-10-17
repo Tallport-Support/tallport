@@ -759,7 +759,6 @@
     "Translations Per Customer Per Hour": "Traducciones por Cliente por Hora",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Tokens que cada correo puede usar al día, para todas las funciones de IA. Cuando se agotan, la IA no está disponible en ese correo hasta mañana. 0: sin límite.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Mensajes de un cliente que se traducen por hora, contra avalanchas de mensajes; los demás se muestran sin traducir. 0: sin límite.",
-    "Not translated: this mailbox has used its AI tokens for today.": "No traducido: este correo ha agotado sus tokens de IA de hoy.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "No traducido: este cliente envió en la última hora más mensajes de los que se traducen.",
     "This mailbox has used its AI tokens for today.": "Este correo ha agotado sus tokens de IA de hoy.",
     "Send as Written": "Enviar Tal Cual",
@@ -1240,9 +1239,6 @@
     "Yesterday": "Ayer",
     "This Period": "Este Período",
     "Previous Period": "Período Anterior",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "No traducido: la IA consideró que este mensaje ya estaba en :language, aunque detectó :detected.",
-    "Not translated: the message has no text.": "No traducido: el mensaje no tiene texto.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "No traducido: la IA falló (:error). Lo vuelve a intentar cuando se abre la conversación.",
     "Only the first :count characters were translated.": "Solo se tradujeron los primeros :count caracteres.",
     "After Fetching": "Después de Rescatar",
     "Choose a folder that is not fetched.": "Elija una carpeta que no se rescate.",
@@ -1843,5 +1839,11 @@
     "Image": "Imagen",
     "Edited :when": "Editado el :when",
     "Show Before Editing": "Ver Antes de Editar",
-    "Users are allowed to edit own notes": "Los usuarios pueden editar sus propias notas"
+    "Users are allowed to edit own notes": "Los usuarios pueden editar sus propias notas",
+    "Not translated": "No traducido",
+    "The AI took this message to be in :language already, though it detected :detected.": "La IA consideró que este mensaje ya estaba en :language, aunque detectó :detected.",
+    "The message has no text.": "El mensaje no tiene texto.",
+    "This mailbox has used its AI tokens for today.": "Este correo ha agotado sus tokens de IA de hoy.",
+    "This customer sent more messages in the last hour than are translated.": "Este cliente envió en la última hora más mensajes de los que se traducen.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "La IA falló (:error). Lo vuelve a intentar cuando se abre la conversación."
 }

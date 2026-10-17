@@ -759,7 +759,6 @@
     "Translations Per Customer Per Hour": "Saatlik Müşteri Başına Çeviri",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Her posta kutusunun tüm yapay zekâ özellikleri için günde kullanabileceği token sayısı. Bittiğinde yapay zekâ o posta kutusunda yarına kadar kullanılamaz. 0: sınır yok.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Bir müşterinin saatte çevrilen mesaj sayısı, mesaj yağmuruna karşı; fazlası çevrilmeden gösterilir. 0: sınır yok.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Çevrilmedi: bu posta kutusu bugünkü yapay zekâ tokenlerini kullandı.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Çevrilmedi: bu müşteri son bir saatte çevrilenden daha fazla mesaj gönderdi.",
     "This mailbox has used its AI tokens for today.": "Bu posta kutusu bugünkü yapay zekâ tokenlerini kullandı.",
     "Send as Written": "Yazıldığı Gibi Gönder",
@@ -1240,9 +1239,6 @@
     "Yesterday": "Dün",
     "This Period": "Bu Dönem",
     "Previous Period": "Önceki Dönem",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Çevrilmedi: Yapay zekâ :detected algılamasına rağmen bu mesajın zaten :language olduğunu varsaydı.",
-    "Not translated: the message has no text.": "Çevrilmedi: mesajda metin yok.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Çevrilmedi: Yapay zekâ başarısız oldu (:error). Konuşma açıldığında yeniden dener.",
     "Only the first :count characters were translated.": "Yalnızca ilk :count karakter çevrildi.",
     "After Fetching": "Getirdikten Sonra",
     "Choose a folder that is not fetched.": "Getirilmeyen bir klasör seçin.",
@@ -1843,5 +1839,11 @@
     "Image": "Görsel",
     "Edited :when": "Düzenlendi: :when",
     "Show Before Editing": "Düzenlemeden Öncesini Göster",
-    "Users are allowed to edit own notes": "Kullanıcılar kendi notlarını düzenleyebilir"
+    "Users are allowed to edit own notes": "Kullanıcılar kendi notlarını düzenleyebilir",
+    "Not translated": "Çevrilmedi",
+    "The AI took this message to be in :language already, though it detected :detected.": "Yapay zekâ :detected algılamasına rağmen bu mesajın zaten :language olduğunu varsaydı.",
+    "The message has no text.": "Mesajda metin yok.",
+    "This mailbox has used its AI tokens for today.": "Bu posta kutusu bugünkü yapay zekâ tokenlerini kullandı.",
+    "This customer sent more messages in the last hour than are translated.": "Bu müşteri son bir saatte çevrilenden daha fazla mesaj gönderdi.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "Yapay zekâ başarısız oldu (:error). Konuşma açıldığında yeniden dener."
 }

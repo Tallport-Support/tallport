@@ -775,7 +775,6 @@
     "Translations Per Customer Per Hour": "Käännökset Asiakasta Kohden Tunnissa",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Tokenit, jotka kukin postilaatikko voi käyttää päivässä kaikkiin tekoälytoimintoihin. Kun ne on käytetty, tekoäly ei ole käytettävissä siinä postilaatikossa ennen huomista. 0: ei rajaa.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Yhden asiakkaan viestit, jotka käännetään tunnissa, viestitulvia vastaan; muut näytetään kääntämättöminä. 0: ei rajaa.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Ei käännetty: tämä postilaatikko on käyttänyt tämän päivän tekoälytokeninsa.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Ei käännetty: tämä asiakas lähetti viimeisen tunnin aikana enemmän viestejä kuin käännetään.",
     "This mailbox has used its AI tokens for today.": "Tämä postilaatikko on käyttänyt tämän päivän tekoälytokeninsa.",
     "Send as Written": "Lähetä Kääntämättä",
@@ -1256,9 +1255,6 @@
     "Yesterday": "Eilen",
     "This Period": "Tämä Jakso",
     "Previous Period": "Edellinen Jakso",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Ei käännetty: tekoäly piti tätä viestiä jo valmiiksi kielellä :language, vaikka se tunnisti kielen :detected.",
-    "Not translated: the message has no text.": "Ei käännetty: viestissä ei ole tekstiä.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Ei käännetty: tekoäly epäonnistui (:error). Se yrittää uudelleen, kun keskustelu avataan.",
     "Only the first :count characters were translated.": "Vain ensimmäiset :count merkkiä käännettiin.",
     "After Fetching": "Hakemisen Jälkeen",
     "Choose a folder that is not fetched.": "Valitse kansio, josta ei haeta.",
@@ -1859,5 +1855,11 @@
     "Image": "Kuva",
     "Edited :when": "Muokattu :when",
     "Show Before Editing": "Näytä Ennen Muokkausta",
-    "Users are allowed to edit own notes": "Käyttäjät saavat muokata omia muistiinpanojaan"
+    "Users are allowed to edit own notes": "Käyttäjät saavat muokata omia muistiinpanojaan",
+    "Not translated": "Ei käännetty",
+    "The AI took this message to be in :language already, though it detected :detected.": "Tekoäly piti tätä viestiä jo valmiiksi kielellä :language, vaikka se tunnisti kielen :detected.",
+    "The message has no text.": "Viestissä ei ole tekstiä.",
+    "This mailbox has used its AI tokens for today.": "Tämä postilaatikko on käyttänyt tämän päivän tekoälytokeninsa.",
+    "This customer sent more messages in the last hour than are translated.": "Tämä asiakas lähetti viimeisen tunnin aikana enemmän viestejä kuin käännetään.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "Tekoäly epäonnistui (:error). Se yrittää uudelleen, kun keskustelu avataan."
 }

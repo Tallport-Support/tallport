@@ -759,7 +759,6 @@
     "Translations Per Customer Per Hour": "תרגומים ללקוח לשעה",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "מספר הטוקנים שכל תיבת דואר יכולה לנצל ביום, עבור כל תכונות ה-AI. כשהם נגמרים, ה-AI אינו זמין בתיבת דואר זו עד מחר. 0: ללא הגבלה.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "מספר ההודעות של לקוח אחד שמתורגמות בשעה, נגד הצפה; הודעות נוספות מוצגות ללא תרגום. 0: ללא הגבלה.",
-    "Not translated: this mailbox has used its AI tokens for today.": "לא תורגם: תיבת דואר זו ניצלה את טוקני ה-AI שלה להיום.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "לא תורגם: לקוח זה שלח בשעה האחרונה יותר הודעות ממה שמתורגם.",
     "This mailbox has used its AI tokens for today.": "תיבת דואר זו ניצלה את טוקני ה-AI שלה להיום.",
     "Send as Written": "שלח כפי שנכתב",
@@ -1240,9 +1239,6 @@
     "Yesterday": "אתמול",
     "This Period": "תקופה זו",
     "Previous Period": "התקופה הקודמת",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "לא תורגם: ה-AI הניח שההודעה כבר בשפה :language, אף שזיהה :detected.",
-    "Not translated: the message has no text.": "לא תורגם: אין בהודעה טקסט.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "לא תורגם: ה-AI נכשל (:error). הוא ינסה שוב כשהשיחה תיפתח.",
     "Only the first :count characters were translated.": "רק :count התווים הראשונים תורגמו.",
     "After Fetching": "לאחר האחזור",
     "Choose a folder that is not fetched.": "בחר תיקייה שאינה מאוחזרת.",
@@ -1843,5 +1839,11 @@
     "Image": "תמונה",
     "Edited :when": "נערך :when",
     "Show Before Editing": "הצגה לפני העריכה",
-    "Users are allowed to edit own notes": "משתמשים רשאים לערוך את ההערות שלהם"
+    "Users are allowed to edit own notes": "משתמשים רשאים לערוך את ההערות שלהם",
+    "Not translated": "לא תורגם",
+    "The AI took this message to be in :language already, though it detected :detected.": "ה-AI הניח שההודעה כבר בשפה :language, אף שזיהה :detected.",
+    "The message has no text.": "אין בהודעה טקסט.",
+    "This mailbox has used its AI tokens for today.": "תיבת דואר זו ניצלה את טוקני ה-AI שלה להיום.",
+    "This customer sent more messages in the last hour than are translated.": "לקוח זה שלח בשעה האחרונה יותר הודעות ממה שמתורגם.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "ה-AI נכשל (:error). הוא ינסה שוב כשהשיחה תיפתח."
 }

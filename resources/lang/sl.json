@@ -759,7 +759,6 @@
     "Translations Per Customer Per Hour": "Prevodi na Stranko na Uro",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Žetoni, ki jih lahko vsak poštni predal porabi na dan, za vse funkcije AI. Ko jih zmanjka, AI v tem poštnem predalu do jutri ni na voljo. 0: brez omejitve.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Sporočila ene stranke, prevedena na uro, kot zaščita pred poplavo; ostala so prikazana neprevedena. 0: brez omejitve.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Ni prevedeno: ta poštni predal je porabil svoje žetone AI za danes.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Ni prevedeno: ta stranka je v zadnji uri poslala več sporočil, kot se jih prevede.",
     "This mailbox has used its AI tokens for today.": "Ta poštni predal je porabil svoje žetone AI za danes.",
     "Send as Written": "Pošlji Brez Prevoda",
@@ -1240,9 +1239,6 @@
     "Yesterday": "Včeraj",
     "This Period": "To Obdobje",
     "Previous Period": "Prejšnje Obdobje",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Ni prevedeno: AI je presodila, da je to sporočilo že v jeziku :language, čeprav je zaznala :detected.",
-    "Not translated: the message has no text.": "Ni prevedeno: sporočilo nima besedila.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Ni prevedeno: AI ni uspela (:error). Znova poskusi, ko se pogovor odpre.",
     "Only the first :count characters were translated.": "Prevedenih je bilo le prvih :count znakov.",
     "After Fetching": "Po Pridobitvi",
     "Choose a folder that is not fetched.": "Izberite mapo, ki se ne pridobiva.",
@@ -1843,5 +1839,11 @@
     "Image": "Slika",
     "Edited :when": "Urejeno :when",
     "Show Before Editing": "Prikaži Pred Urejanjem",
-    "Users are allowed to edit own notes": "Uporabniki lahko urejajo svoje opombe"
+    "Users are allowed to edit own notes": "Uporabniki lahko urejajo svoje opombe",
+    "Not translated": "Ni prevedeno",
+    "The AI took this message to be in :language already, though it detected :detected.": "AI je presodila, da je to sporočilo že v jeziku :language, čeprav je zaznala :detected.",
+    "The message has no text.": "Sporočilo nima besedila.",
+    "This mailbox has used its AI tokens for today.": "Ta poštni predal je porabil svoje žetone AI za danes.",
+    "This customer sent more messages in the last hour than are translated.": "Ta stranka je v zadnji uri poslala več sporočil, kot se jih prevede.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "AI ni uspela (:error). Znova poskusi, ko se pogovor odpre."
 }

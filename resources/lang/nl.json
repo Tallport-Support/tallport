@@ -760,7 +760,6 @@
     "Translations Per Customer Per Hour": "Vertalingen per Klant per Uur",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Tokens die elke mailbox per dag mag gebruiken, voor alle AI-functies. Zijn ze op, dan is de AI in die mailbox tot morgen niet beschikbaar. 0: geen limiet.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Aantal berichten van één klant dat per uur wordt vertaald, tegen overspoeling; de rest wordt onvertaald getoond. 0: geen limiet.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Niet vertaald: deze mailbox heeft zijn AI-tokens voor vandaag opgebruikt.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Niet vertaald: deze klant heeft het afgelopen uur meer berichten gestuurd dan er worden vertaald.",
     "This mailbox has used its AI tokens for today.": "Deze mailbox heeft zijn AI-tokens voor vandaag opgebruikt.",
     "Send as Written": "Verzenden Zoals Geschreven",
@@ -1241,9 +1240,6 @@
     "Yesterday": "Gisteren",
     "This Period": "Deze Periode",
     "Previous Period": "Vorige Periode",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Niet vertaald: de AI nam aan dat dit bericht al in :language was, hoewel :detected werd herkend.",
-    "Not translated: the message has no text.": "Niet vertaald: het bericht bevat geen tekst.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Niet vertaald: de AI gaf een fout (:error). Het wordt opnieuw geprobeerd wanneer het gesprek wordt geopend.",
     "Only the first :count characters were translated.": "Alleen de eerste :count tekens zijn vertaald.",
     "After Fetching": "Na het Ophalen",
     "Choose a folder that is not fetched.": "Kies een map die niet wordt opgehaald.",
@@ -1843,5 +1839,11 @@
     "Image": "Afbeelding",
     "Edited :when": "Gewijzigd op :when",
     "Show Before Editing": "Toon Vóór Wijziging",
-    "Users are allowed to edit own notes": "Gebruikers mogen hun eigen notities bewerken"
+    "Users are allowed to edit own notes": "Gebruikers mogen hun eigen notities bewerken",
+    "Not translated": "Niet vertaald",
+    "The AI took this message to be in :language already, though it detected :detected.": "De AI nam aan dat dit bericht al in :language was, hoewel :detected werd herkend.",
+    "The message has no text.": "Het bericht bevat geen tekst.",
+    "This mailbox has used its AI tokens for today.": "Deze mailbox heeft zijn AI-tokens voor vandaag opgebruikt.",
+    "This customer sent more messages in the last hour than are translated.": "Deze klant heeft het afgelopen uur meer berichten gestuurd dan er worden vertaald.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "De AI gaf een fout (:error). Het wordt opnieuw geprobeerd wanneer het gesprek wordt geopend."
 }

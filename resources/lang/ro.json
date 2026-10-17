@@ -759,7 +759,6 @@
     "Translations Per Customer Per Hour": "Traduceri per Client pe Oră",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Tokenuri pe care fiecare cutie poștală le poate folosi pe zi, pentru toate funcțiile AI. Când se epuizează, AI-ul nu este disponibil în acea cutie poștală până mâine. 0: fără limită.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Mesaje ale unui client traduse pe oră, împotriva avalanșelor de mesaje; restul sunt afișate netraduse. 0: fără limită.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Netradus: această cutie poștală și-a epuizat tokenurile AI pentru azi.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Netradus: acest client a trimis în ultima oră mai multe mesaje decât se traduc.",
     "This mailbox has used its AI tokens for today.": "Această cutie poștală și-a epuizat tokenurile AI pentru azi.",
     "Send as Written": "Trimite Așa Cum Este Scris",
@@ -1240,9 +1239,6 @@
     "Yesterday": "Ieri",
     "This Period": "Perioada Aceasta",
     "Previous Period": "Perioada Anterioară",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Netradus: AI-ul a considerat că acest mesaj este deja în :language, deși a detectat :detected.",
-    "Not translated: the message has no text.": "Netradus: mesajul nu are text.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Netradus: AI-ul a eșuat (:error). Încearcă din nou când conversația este deschisă.",
     "Only the first :count characters were translated.": "Au fost traduse doar primele :count caractere.",
     "After Fetching": "După Preluare",
     "Choose a folder that is not fetched.": "Alegeți un folder care nu este preluat.",
@@ -1843,5 +1839,11 @@
     "Image": "Imagine",
     "Edited :when": "Editat :when",
     "Show Before Editing": "Arată Înainte de Editare",
-    "Users are allowed to edit own notes": "Utilizatorii își pot edita propriile note"
+    "Users are allowed to edit own notes": "Utilizatorii își pot edita propriile note",
+    "Not translated": "Netradus",
+    "The AI took this message to be in :language already, though it detected :detected.": "AI-ul a considerat că acest mesaj este deja în :language, deși a detectat :detected.",
+    "The message has no text.": "Mesajul nu are text.",
+    "This mailbox has used its AI tokens for today.": "Această cutie poștală și-a epuizat tokenurile AI pentru azi.",
+    "This customer sent more messages in the last hour than are translated.": "Acest client a trimis în ultima oră mai multe mesaje decât se traduc.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "AI-ul a eșuat (:error). Încearcă din nou când conversația este deschisă."
 }

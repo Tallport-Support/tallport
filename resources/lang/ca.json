@@ -875,7 +875,6 @@
     "Translations Per Customer Per Hour": "Traduccions per Client per Hora",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Tokens que cada bústia pot utilitzar al dia, per a totes les funcions d'IA. Quan s'esgoten, la IA no està disponible en aquesta bústia fins demà. 0: sense límit.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Missatges d'un client traduïts per hora, contra les allaus de missatges; la resta es mostren sense traduir. 0: sense límit.",
-    "Not translated: this mailbox has used its AI tokens for today.": "No traduït: aquesta bústia ha esgotat els seus tokens d'IA d'avui.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "No traduït: aquest client ha enviat en l'última hora més missatges dels que es tradueixen.",
     "This mailbox has used its AI tokens for today.": "Aquesta bústia ha esgotat els seus tokens d'IA d'avui.",
     "Send as Written": "Envia Tal Com Està",
@@ -1346,9 +1345,6 @@
     "Yesterday": "Ahir",
     "This Period": "Aquest Període",
     "Previous Period": "Període Anterior",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "No traduït: la IA ha considerat que aquest missatge ja era en :language, tot i que ha detectat :detected.",
-    "Not translated: the message has no text.": "No traduït: el missatge no té text.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "No traduït: la IA ha fallat (:error). Ho torna a provar quan s'obre la conversa.",
     "Only the first :count characters were translated.": "Només s'han traduït els primers :count caràcters.",
     "After Fetching": "Després d'Obtenir",
     "Choose a folder that is not fetched.": "Tria una carpeta que no s'obtingui.",
@@ -1934,5 +1930,11 @@
     "Image": "Imatge",
     "Edited :when": "Editat :when",
     "Show Before Editing": "Mostra Abans de l'Edició",
-    "Users are allowed to edit own notes": "Els usuaris poden editar les seves pròpies notes"
+    "Users are allowed to edit own notes": "Els usuaris poden editar les seves pròpies notes",
+    "Not translated": "No traduït",
+    "The AI took this message to be in :language already, though it detected :detected.": "La IA ha considerat que aquest missatge ja era en :language, tot i que ha detectat :detected.",
+    "The message has no text.": "El missatge no té text.",
+    "This mailbox has used its AI tokens for today.": "Aquesta bústia ha esgotat els seus tokens d'IA d'avui.",
+    "This customer sent more messages in the last hour than are translated.": "Aquest client ha enviat en l'última hora més missatges dels que es tradueixen.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "La IA ha fallat (:error). Ho torna a provar quan s'obre la conversa."
 }

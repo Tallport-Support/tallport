@@ -759,7 +759,6 @@
     "Translations Per Customer Per Hour": "Перекладів на Клієнта на Годину",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Скільки токенів кожна поштова скринька може використати на день для всіх функцій ШІ. Коли їх вичерпано, ШІ у цій поштовій скриньці недоступний до завтра. 0: без обмежень.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Скільки повідомлень одного клієнта перекладається на годину, для захисту від напливу; решта показується без перекладу. 0: без обмежень.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Не перекладено: ця поштова скринька вичерпала свої токени ШІ на сьогодні.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Не перекладено: цей клієнт за останню годину надіслав більше повідомлень, ніж перекладається.",
     "This mailbox has used its AI tokens for today.": "Ця поштова скринька вичерпала свої токени ШІ на сьогодні.",
     "Send as Written": "Надіслати Без Перекладу",
@@ -1240,9 +1239,6 @@
     "Yesterday": "Вчора",
     "This Period": "Цей Період",
     "Previous Period": "Попередній Період",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Не перекладено: ШІ вважав, що це повідомлення вже мовою :language, хоча визначив :detected.",
-    "Not translated: the message has no text.": "Не перекладено: у повідомленні немає тексту.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Не перекладено: помилка ШІ (:error). Він спробує знову, коли розмову буде відкрито.",
     "Only the first :count characters were translated.": "Перекладено лише перші :count символів.",
     "After Fetching": "Після Отримання",
     "Choose a folder that is not fetched.": "Виберіть папку, з якої листи не отримуються.",
@@ -1843,5 +1839,11 @@
     "Image": "Зображення",
     "Edited :when": "Відредаговано :when",
     "Show Before Editing": "Показати до Редагування",
-    "Users are allowed to edit own notes": "Користувачі можуть редагувати власні нотатки"
+    "Users are allowed to edit own notes": "Користувачі можуть редагувати власні нотатки",
+    "Not translated": "Не перекладено",
+    "The AI took this message to be in :language already, though it detected :detected.": "ШІ вважав, що це повідомлення вже мовою :language, хоча визначив :detected.",
+    "The message has no text.": "У повідомленні немає тексту.",
+    "This mailbox has used its AI tokens for today.": "Ця поштова скринька вичерпала свої токени ШІ на сьогодні.",
+    "This customer sent more messages in the last hour than are translated.": "Цей клієнт за останню годину надіслав більше повідомлень, ніж перекладається.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "Помилка ШІ (:error). Він спробує знову, коли розмову буде відкрито."
 }

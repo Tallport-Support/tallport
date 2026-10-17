@@ -759,7 +759,6 @@
     "Translations Per Customer Per Hour": "Saatda Hər Müştəri Üçün Tərcümələr",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Hər poçt qutusunun bütün Sİ funksiyaları üçün gündə istifadə edə biləcəyi tokenlər. Onlar bitəndə Sİ həmin poçt qutusunda sabaha qədər əlçatan olmur. 0: limit yoxdur.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Bir müştərinin saatda tərcümə edilən mesajlarının sayı, mesaj axınına qarşı; artıq mesajlar tərcüməsiz göstərilir. 0: limit yoxdur.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Tərcümə edilmədi: bu poçt qutusu bugünkü Sİ tokenlərini istifadə edib.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Tərcümə edilmədi: bu müştəri son bir saatda tərcümə ediləndən daha çox mesaj göndərib.",
     "This mailbox has used its AI tokens for today.": "Bu poçt qutusu bugünkü Sİ tokenlərini istifadə edib.",
     "Send as Written": "Yazıldığı Kimi Göndər",
@@ -1240,9 +1239,6 @@
     "Yesterday": "Dünən",
     "This Period": "Bu Dövr",
     "Previous Period": "Əvvəlki Dövr",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Tərcümə edilmədi: Sİ :detected dilini aşkar etsə də, bu mesajın artıq :language dilində olduğunu qəbul etdi.",
-    "Not translated: the message has no text.": "Tərcümə edilmədi: mesajda mətn yoxdur.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Tərcümə edilmədi: Sİ-də xəta baş verdi (:error). Söhbət açılanda yenidən cəhd edir.",
     "Only the first :count characters were translated.": "Yalnız ilk :count simvol tərcümə edildi.",
     "After Fetching": "Əldə Etdikdən Sonra",
     "Choose a folder that is not fetched.": "Əldə edilməyən qovluq seçin.",
@@ -1843,5 +1839,11 @@
     "Image": "Şəkil",
     "Edited :when": "Redaktə edildi: :when",
     "Show Before Editing": "Redaktədən Əvvəlkini Göstər",
-    "Users are allowed to edit own notes": "İstifadəçilər öz qeydlərini redaktə edə bilər"
+    "Users are allowed to edit own notes": "İstifadəçilər öz qeydlərini redaktə edə bilər",
+    "Not translated": "Tərcümə edilmədi",
+    "The AI took this message to be in :language already, though it detected :detected.": "Sİ :detected dilini aşkar etsə də, bu mesajın artıq :language dilində olduğunu qəbul etdi.",
+    "The message has no text.": "Mesajda mətn yoxdur.",
+    "This mailbox has used its AI tokens for today.": "Bu poçt qutusu bugünkü Sİ tokenlərini istifadə edib.",
+    "This customer sent more messages in the last hour than are translated.": "Bu müştəri son bir saatda tərcümə ediləndən daha çox mesaj göndərib.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "Sİ-də xəta baş verdi (:error). Söhbət açılanda yenidən cəhd edir."
 }

@@ -759,7 +759,6 @@
     "Translations Per Customer Per Hour": "Traduzioni per Cliente all'Ora",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Token che ogni casella postale può usare al giorno, per tutte le funzioni IA. Quando sono esauriti, l'IA non è disponibile in quella casella postale fino a domani. 0: nessun limite.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Messaggi di un cliente tradotti all'ora, contro le raffiche di messaggi; gli altri sono mostrati senza traduzione. 0: nessun limite.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Non tradotto: questa casella postale ha esaurito i token IA di oggi.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Non tradotto: questo cliente ha inviato nell'ultima ora più messaggi di quanti ne vengano tradotti.",
     "This mailbox has used its AI tokens for today.": "Questa casella postale ha esaurito i token IA di oggi.",
     "Send as Written": "Invia Così Com'è",
@@ -1240,9 +1239,6 @@
     "Yesterday": "Ieri",
     "This Period": "Questo Periodo",
     "Previous Period": "Periodo Precedente",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Non tradotto: l'IA ha ritenuto che questo messaggio fosse già in :language, pur avendo rilevato :detected.",
-    "Not translated: the message has no text.": "Non tradotto: il messaggio non contiene testo.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Non tradotto: l'IA non è riuscita (:error). Riprova quando il ticket viene aperto.",
     "Only the first :count characters were translated.": "Sono stati tradotti solo i primi :count caratteri.",
     "After Fetching": "Dopo il Recupero",
     "Choose a folder that is not fetched.": "Scegli una cartella che non viene recuperata.",
@@ -1843,5 +1839,11 @@
     "Image": "Immagine",
     "Edited :when": "Modificato :when",
     "Show Before Editing": "Mostra Prima della Modifica",
-    "Users are allowed to edit own notes": "Gli utenti possono modificare le proprie note"
+    "Users are allowed to edit own notes": "Gli utenti possono modificare le proprie note",
+    "Not translated": "Non tradotto",
+    "The AI took this message to be in :language already, though it detected :detected.": "L'IA ha ritenuto che questo messaggio fosse già in :language, pur avendo rilevato :detected.",
+    "The message has no text.": "Il messaggio non contiene testo.",
+    "This mailbox has used its AI tokens for today.": "Questa casella postale ha esaurito i token IA di oggi.",
+    "This customer sent more messages in the last hour than are translated.": "Questo cliente ha inviato nell'ultima ora più messaggi di quanti ne vengano tradotti.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "L'IA non è riuscita (:error). Riprova quando il ticket viene aperto."
 }

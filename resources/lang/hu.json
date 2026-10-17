@@ -759,7 +759,6 @@
     "Translations Per Customer Per Hour": "Fordítások Ügyfelenként Óránként",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Ennyi tokent használhat fel naponta minden postafiók az összes MI-funkcióra. Ha elfogynak, az MI holnapig nem érhető el abban a postafiókban. 0: nincs korlát.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Egy ügyfél ennyi üzenete fordítódik le óránként, az üzenetáradat ellen; a többi fordítás nélkül jelenik meg. 0: nincs korlát.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Nincs lefordítva: ez a postafiók elhasználta mai MI-tokenjeit.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Nincs lefordítva: ez az ügyfél az elmúlt órában több üzenetet küldött, mint amennyi lefordítódik.",
     "This mailbox has used its AI tokens for today.": "Ez a postafiók elhasználta mai MI-tokenjeit.",
     "Send as Written": "Küldés Fordítás Nélkül",
@@ -1240,9 +1239,6 @@
     "Yesterday": "Tegnap",
     "This Period": "Ez az Időszak",
     "Previous Period": "Előző Időszak",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Nincs lefordítva: az MI úgy ítélte, hogy az üzenet már :language nyelvű, bár :detected nyelvet észlelt.",
-    "Not translated: the message has no text.": "Nincs lefordítva: az üzenetben nincs szöveg.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Nincs lefordítva: az MI hibát adott (:error). Újra megpróbálja, amikor megnyitják a beszélgetést.",
     "Only the first :count characters were translated.": "Csak az első :count karakter lett lefordítva.",
     "After Fetching": "Lekérés Után",
     "Choose a folder that is not fetched.": "Válasszon olyan mappát, amelyből nincs lekérés.",
@@ -1843,5 +1839,11 @@
     "Image": "Kép",
     "Edited :when": "Szerkesztve: :when",
     "Show Before Editing": "Szerkesztés Előtti Változat Megjelenítése",
-    "Users are allowed to edit own notes": "A felhasználók szerkeszthetik a saját jegyzeteiket"
+    "Users are allowed to edit own notes": "A felhasználók szerkeszthetik a saját jegyzeteiket",
+    "Not translated": "Nincs lefordítva",
+    "The AI took this message to be in :language already, though it detected :detected.": "Az MI úgy ítélte, hogy az üzenet már :language nyelvű, bár :detected nyelvet észlelt.",
+    "The message has no text.": "Az üzenetben nincs szöveg.",
+    "This mailbox has used its AI tokens for today.": "Ez a postafiók elhasználta mai MI-tokenjeit.",
+    "This customer sent more messages in the last hour than are translated.": "Ez az ügyfél az elmúlt órában több üzenetet küldött, mint amennyi lefordítódik.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "Az MI hibát adott (:error). Újra megpróbálja, amikor megnyitják a beszélgetést."
 }

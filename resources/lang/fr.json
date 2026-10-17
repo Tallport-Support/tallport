@@ -767,7 +767,6 @@
     "Translations Per Customer Per Hour": "Traductions par Client par Heure",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Jetons que chaque boîte de réception peut utiliser par jour, pour toutes les fonctions IA. Une fois épuisés, l'IA n'est plus disponible dans cette boîte de réception jusqu'à demain. 0 : aucune limite.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Messages d'un client traduits par heure, contre les afflux de messages ; les suivants sont affichés sans traduction. 0 : aucune limite.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Non traduit : cette boîte de réception a épuisé ses jetons IA pour aujourd'hui.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Non traduit : ce client a envoyé plus de messages au cours de la dernière heure que ce qui est traduit.",
     "This mailbox has used its AI tokens for today.": "Cette boîte de réception a épuisé ses jetons IA pour aujourd'hui.",
     "Send as Written": "Envoyer Tel Quel",
@@ -1248,9 +1247,6 @@
     "Yesterday": "Hier",
     "This Period": "Cette Période",
     "Previous Period": "Période Précédente",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Non traduit : l'IA a considéré que ce message était déjà en :language, bien qu'elle ait détecté :detected.",
-    "Not translated: the message has no text.": "Non traduit : le message ne contient pas de texte.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Non traduit : l'IA a échoué (:error). Elle réessaie à l'ouverture de la conversation.",
     "Only the first :count characters were translated.": "Seuls les :count premiers caractères ont été traduits.",
     "After Fetching": "Après la Récupération",
     "Choose a folder that is not fetched.": "Choisissez un dossier qui n'est pas récupéré.",
@@ -1850,5 +1846,11 @@
     "Image": "Image",
     "Edited :when": "Édité :when",
     "Show Before Editing": "Afficher Avant Modification",
-    "Users are allowed to edit own notes": "Les utilisateurs sont autorisés à modifier leurs propres notes"
+    "Users are allowed to edit own notes": "Les utilisateurs sont autorisés à modifier leurs propres notes",
+    "Not translated": "Non traduit",
+    "The AI took this message to be in :language already, though it detected :detected.": "L'IA a considéré que ce message était déjà en :language, bien qu'elle ait détecté :detected.",
+    "The message has no text.": "Le message ne contient pas de texte.",
+    "This mailbox has used its AI tokens for today.": "Cette boîte de réception a épuisé ses jetons IA pour aujourd'hui.",
+    "This customer sent more messages in the last hour than are translated.": "Ce client a envoyé plus de messages au cours de la dernière heure que ce qui est traduit.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "L'IA a échoué (:error). Elle réessaie à l'ouverture de la conversation."
 }

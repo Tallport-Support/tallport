@@ -759,7 +759,6 @@
     "Translations Per Customer Per Hour": "Переводов на Клиента в Час",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Сколько токенов каждый ящик может израсходовать в день на все функции ИИ. Когда они закончатся, ИИ в этом ящике недоступен до завтра. 0: без ограничений.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Сколько сообщений одного клиента переводится в час, для защиты от наплыва; остальные показываются без перевода. 0: без ограничений.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Не переведено: этот ящик израсходовал свои токены ИИ на сегодня.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Не переведено: этот клиент за последний час отправил больше сообщений, чем переводится.",
     "This mailbox has used its AI tokens for today.": "Этот ящик израсходовал свои токены ИИ на сегодня.",
     "Send as Written": "Отправить Без Перевода",
@@ -1240,9 +1239,6 @@
     "Yesterday": "Вчера",
     "This Period": "Этот Период",
     "Previous Period": "Предыдущий Период",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Не переведено: ИИ счёл, что это сообщение уже на языке :language, хотя определил :detected.",
-    "Not translated: the message has no text.": "Не переведено: в сообщении нет текста.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Не переведено: ошибка ИИ (:error). Он попробует снова, когда тикет будет открыт.",
     "Only the first :count characters were translated.": "Переведены только первые :count символов.",
     "After Fetching": "После Получения",
     "Choose a folder that is not fetched.": "Выберите папку, из которой не получаются письма.",
@@ -1843,5 +1839,11 @@
     "Image": "Изображение",
     "Edited :when": "Отредактировано :when",
     "Show Before Editing": "Показать до Редактирования",
-    "Users are allowed to edit own notes": "Пользователи могут редактировать свои заметки"
+    "Users are allowed to edit own notes": "Пользователи могут редактировать свои заметки",
+    "Not translated": "Не переведено",
+    "The AI took this message to be in :language already, though it detected :detected.": "ИИ счёл, что это сообщение уже на языке :language, хотя определил :detected.",
+    "The message has no text.": "В сообщении нет текста.",
+    "This mailbox has used its AI tokens for today.": "Этот ящик израсходовал свои токены ИИ на сегодня.",
+    "This customer sent more messages in the last hour than are translated.": "Этот клиент за последний час отправил больше сообщений, чем переводится.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "Ошибка ИИ (:error). Он попробует снова, когда тикет будет открыт."
 }

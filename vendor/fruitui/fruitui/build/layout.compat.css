@@ -147,9 +147,14 @@
 .f-sidebar__item:hover {
     background: var(--f-sidebar-hover);
   }
+/* Icons in the secondary color, the current item's in its text color: the accent is left for
+     what is selected. A marked item's icon keeps its mark, the legend for marked rows. */
 .f-sidebar__item > .f-icon {
-    color: var(--f-accent);
+    color: var(--f-secondary);
     --f-icon-size: 18px;
+  }
+.f-sidebar__item:is([aria-current='page'], [aria-current='true'], [data-current]) > .f-icon {
+    color: inherit;
   }
 .f-sidebar__item > .f-badge {
     margin-inline-start: auto;

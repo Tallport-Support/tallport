@@ -1259,7 +1259,7 @@ a.disabled:focus {
     width: 1.1em;
     height: 1.1em;
     margin-inline-end: 3px;
-    color: var(--f-generated, var(--f-accent));
+    color: var(--f-secondary);
     vertical-align: -3px;
 }
 .rpt-filters {
@@ -2500,10 +2500,6 @@ h1.settings-toolbar__title {
 }
 .keyboard-shortcuts__footer {
     justify-content: space-between;
-}
-/* Draft with AI, in the toolbar. */
-.conv-actions .ai-draft-action {
-    color: var(--f-accent-text);
 }
 /* The AI draft, below the composer. */
 .ai-draft-panel .f-suggestion {

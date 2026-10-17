@@ -1257,7 +1257,6 @@
     "Translations Per Customer Per Hour": "Сағатына Бір Клиентке Аудармалар",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Әр пошталық жәшік барлық ЖИ мүмкіндіктеріне күніне жұмсай алатын токендер. Олар таусылғанда, ЖИ сол пошталық жәшікте ертеңге дейін қолжетімсіз болады. 0: шектеусіз.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Бір клиенттің сағатына аударылатын хабарламалары, хабарлама тасқынына қарсы; қалғандары аударылмай көрсетіледі. 0: шектеусіз.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Аударылмады: бұл пошталық жәшік бүгінгі ЖИ токендерін жұмсап қойды.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Аударылмады: бұл клиент соңғы сағатта аударылатыннан көп хабарлама жіберді.",
     "This mailbox has used its AI tokens for today.": "Бұл пошталық жәшік бүгінгі ЖИ токендерін жұмсап қойды.",
     "Send as Written": "Жазылғандай Жіберу",
@@ -1706,9 +1705,6 @@
     "Times are medians: half of the conversations took less.": "Уақыттар медиана бойынша: тикеттердің жартысы азырақ уақыт алды.",
     "This Period": "Осы Кезең",
     "Previous Period": "Алдыңғы Кезең",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Аударылмады: ЖИ :detected тілін анықтаса да, бұл хабарлама онсыз да :language тілінде деп санады.",
-    "Not translated: the message has no text.": "Аударылмады: хабарламада мәтін жоқ.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Аударылмады: ЖИ-де қате орын алды (:error). Тикет ашылғанда қайта әрекет етеді.",
     "Only the first :count characters were translated.": "Тек алғашқы :count таңба аударылды.",
     "Choose a folder that is not fetched.": "Жүктелмейтін қалтаны таңдаңыз.",
     "Enter the IMAP folder to move fetched emails to.": "Жүктелген хаттар көшірілетін IMAP қалтасын енгізіңіз.",
@@ -2236,5 +2232,11 @@
     "Image": "Сурет",
     "Edited :when": "Өзгертілді :when",
     "Show Before Editing": "Өзгертуге Дейінгіні Көрсету",
-    "Users are allowed to edit own notes": "Пайдаланушылар өз ескертпелерін өңдей алады"
+    "Users are allowed to edit own notes": "Пайдаланушылар өз ескертпелерін өңдей алады",
+    "Not translated": "Аударылмады",
+    "The AI took this message to be in :language already, though it detected :detected.": "ЖИ :detected тілін анықтаса да, бұл хабарлама онсыз да :language тілінде деп санады.",
+    "The message has no text.": "Хабарламада мәтін жоқ.",
+    "This mailbox has used its AI tokens for today.": "Бұл пошталық жәшік бүгінгі ЖИ токендерін жұмсап қойды.",
+    "This customer sent more messages in the last hour than are translated.": "Бұл клиент соңғы сағатта аударылатыннан көп хабарлама жіберді.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "ЖИ-де қате орын алды (:error). Тикет ашылғанда қайта әрекет етеді."
 }

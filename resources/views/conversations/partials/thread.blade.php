@@ -63,7 +63,10 @@
         $ai_original_language = $ai_read_translated ? (App\Ai\Summaries::data($thread)['language'] ?? null) : null;
         // The message as shown: empty space collapsed, its signature folded (partials/thread_body).
         [$thread_body, $thread_signature] = $thread_is_draft ? [null, null] : App\Misc\MessageBody::forThread($thread, $conversation, $mailbox);
-        $ai_translating = !$ai_translation && $ai_translation_wanted && $thread->type == App\Thread::TYPE_CUSTOMER && (App\Ai\Translations::reason($thread, $ai_language)[0] ?? '') == 'waiting';
+        // A customer's message that wasn't translated: why (waiting shows in the translation's place).
+        $ai_reason = !$ai_translation && $ai_translation_wanted && $thread->type == App\Thread::TYPE_CUSTOMER ? App\Ai\Translations::reason($thread, $ai_language) : null;
+        $ai_translating = ($ai_reason[0] ?? '') == 'waiting';
+        $ai_untranslated = $ai_reason && !$ai_translating ? $ai_reason : null;
     @endphp
     {{-- The chat view ($chat): name, meta and time on one line, the body beside the avatar. --}}
     <x-fruit::message :layout="empty($chat) ? 'stacked' : 'inline'" :continued="!empty($continued) && !empty($chat)" :variant="$thread->isNote() ? 'note' : 'default'" :direction="$thread->type == App\Thread::TYPE_MESSAGE ? 'outgoing' : 'incoming'" :mine="$thread->type == App\Thread::TYPE_MESSAGE && $thread->created_by_user_id == Auth::user()->id" class="thread thread-type-{{ $thread_is_draft ? 'draft' : $thread->getTypeName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()" :lang="$ai_translation ? $ai_language : null">
@@ -73,6 +76,9 @@
         @elseif ($ai_read_translated)
             {{-- Read in the agent's language: the message as the customer wrote it, folded. --}}
             <x-slot:original :lang="$ai_original_language" :label="$ai_original_language ? __('Translated from :language', ['language' => App\Ai\Settings::displayName($ai_original_language)]) : __('As the customer wrote it')">@include('conversations/partials/thread_body')</x-slot:original>
+        @elseif ($ai_untranslated)
+            {{-- Not translated: why, folded. --}}
+            <x-slot:original :label="__('Not translated')">@include('conversations/partials/ai_translation_note')</x-slot:original>
         @endif
         @if ($thread->has_attachments)
             <x-slot:attachments>@include('conversations/partials/thread_attachments')</x-slot:attachments>
@@ -211,7 +217,6 @@
                 {{-- While Translate (its menu) works on this message. --}}
                 <p class="f-help ai-translating" wire:loading.flex wire:target="translate({{ $thread->id }})" role="status"><x-fruit::spinner /> {{ __('Translating…') }}</p>
             @endif
-            @include('conversations/partials/ai_translation_note')
             @action('thread.before_body', $thread, $loop, $threads, $conversation, $mailbox)
 
             {{-- A delivery report's own text is in its Delivery Report disclosure. --}}

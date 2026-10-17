@@ -759,7 +759,6 @@
     "Translations Per Customer Per Hour": "Prijevodi Po Kupcu Na Sat",
     "Tokens each mailbox may use per day, for all AI features. When they are used up, the AI is unavailable in that mailbox until tomorrow. 0: no limit.": "Tokeni koje svaki poštanski sandučić smije potrošiti dnevno, za sve AI značajke. Kada se potroše, AI u tom poštanskom sandučiću nije dostupna do sutra. 0: bez ograničenja.",
     "Messages of one customer translated per hour, against floods; more are shown untranslated. 0: no limit.": "Poruke jednog kupca koje se prevode na sat, protiv poplave poruka; ostale se prikazuju neprevedene. 0: bez ograničenja.",
-    "Not translated: this mailbox has used its AI tokens for today.": "Nije prevedeno: ovaj je poštanski sandučić potrošio svoje AI tokene za danas.",
     "Not translated: this customer sent more messages in the last hour than are translated.": "Nije prevedeno: ovaj je kupac u posljednjih sat vremena poslao više poruka nego što se prevodi.",
     "This mailbox has used its AI tokens for today.": "Ovaj je poštanski sandučić potrošio svoje AI tokene za danas.",
     "Send as Written": "Pošalji Bez Prijevoda",
@@ -1240,9 +1239,6 @@
     "Yesterday": "Jučer",
     "This Period": "Ovo Razdoblje",
     "Previous Period": "Prethodno Razdoblje",
-    "Not translated: the AI took this message to be in :language already, though it detected :detected.": "Nije prevedeno: AI je smatrala da je ova poruka već na jeziku :language, iako je prepoznala :detected.",
-    "Not translated: the message has no text.": "Nije prevedeno: poruka nema teksta.",
-    "Not translated: the AI failed (:error). It tries again when the conversation is opened.": "Nije prevedeno: AI nije uspjela (:error). Pokušat će ponovno kad se razgovor otvori.",
     "Only the first :count characters were translated.": "Prevedeno je samo prvih :count znakova.",
     "After Fetching": "Nakon Dohvaćanja",
     "Choose a folder that is not fetched.": "Odaberite mapu koja se ne dohvaća.",
@@ -1843,5 +1839,11 @@
     "Image": "Slika",
     "Edited :when": "Uređeno :when",
     "Show Before Editing": "Prikaži Prije Uređivanja",
-    "Users are allowed to edit own notes": "Korisnici smiju uređivati vlastite bilješke"
+    "Users are allowed to edit own notes": "Korisnici smiju uređivati vlastite bilješke",
+    "Not translated": "Nije prevedeno",
+    "The AI took this message to be in :language already, though it detected :detected.": "AI je smatrala da je ova poruka već na jeziku :language, iako je prepoznala :detected.",
+    "The message has no text.": "Poruka nema teksta.",
+    "This mailbox has used its AI tokens for today.": "Ovaj je poštanski sandučić potrošio svoje AI tokene za danas.",
+    "This customer sent more messages in the last hour than are translated.": "Ovaj je kupac u posljednjih sat vremena poslao više poruka nego što se prevodi.",
+    "The AI failed (:error). It tries again when the conversation is opened.": "AI nije uspjela (:error). Pokušat će ponovno kad se razgovor otvori."
 }
