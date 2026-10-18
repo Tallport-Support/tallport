@@ -881,6 +881,23 @@ class AiAssistantTest extends FeatureTestCase
             ->assertSeeInOrder(['f-disclosure f-disclosure--quiet', '<summary>Long one</summary>', 'Restarting did not help', 'Still open: other users'], false);
     }
 
+    /**
+     * The heading's summary follows a new one: the realtime update (conversation-thread-created) re-renders it.
+     */
+    public function testTheHeadingsSummaryFollowsANewOne()
+    {
+        $this->configureAi();
+        $conversation = $this->receiveCustomerEmail();
+        ConversationSummarizer::fake([['one_liner' => 'Order is missing', 'background' => '', 'memory' => 'Order is missing']]);
+        Summaries::summarize($conversation, 'en');
+        $heading = \Livewire\Livewire::actingAs($this->agent)->test(\App\Livewire\ConversationSubject::class, ['conversation' => $conversation->fresh()])
+            ->assertSee('Order is missing');
+
+        ConversationSummarizer::fake([['one_liner' => 'Order found', 'background' => '', 'memory' => 'Order found']]);
+        Summaries::summarize($conversation->fresh(), 'en');
+        $heading->dispatch('conversation-thread-created')->assertSee('Order found')->assertDontSee('Order is missing');
+    }
+
     public function testSummariesInDifferentLanguagesAreKeptTogether()
     {
         $this->configureAi();
