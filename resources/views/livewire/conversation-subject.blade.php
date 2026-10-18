@@ -1,7 +1,19 @@
-{{-- The heading's status, viewers, star and subject (App\Livewire\ConversationSubject). --}}
+{{-- The heading's status, mailbox, viewers, star and subject, then who wrote in and the AI summary (App\Livewire\ConversationSubject). --}}
 <div class="conv-heading__top @if ($is_following) conv-following @endif">
     <div class="conv-heading__overline">
-        <span>{{ $conversation->getStatusName() }} · #{{ $conversation->number }}</span>
+        @if ($compact)
+            <span>{{ $conversation->getStatusName() }} · #{{ $conversation->number }}</span>
+        @else
+            {{-- How the conversation reaches the mailbox beside it: its address, or a chat channel (Nostr, Telegram). --}}
+            <span class="conv-heading__overline-start">
+                <span>{{ $conversation->getStatusName() }} · #{{ $conversation->number }}</span>
+                @if ($conversation->hasChannel() && $conversation->getChannelName())
+                    <span class="conv-heading__mailbox"><x-icon.message-circle class="f-icon" aria-hidden="true" /><span>{{ $mailbox->name }} · {{ $conversation->getChannelName() }}</span></span>
+                @else
+                    <span class="conv-heading__mailbox"><x-icon.mail class="f-icon" aria-hidden="true" /><span>{{ $mailbox->name }}@if ($mailbox->email) · {{ $mailbox->email }}@endif</span></span>
+                @endif
+            </span>
+        @endif
         <span class="conv-heading__tools">
             <span id="conv-viewers" wire:ignore>
                 @foreach ($viewers as $viewer)
@@ -21,5 +33,10 @@
                 <button class="f-button f-button--primary" type="button" x-ref="save" x-on:click="Tallport.busy($el, true); $wire.saveSubject(subject).then(() => { Tallport.busy($el, false); editing = false })" aria-label="{{ __('Save') }}"><x-icon.check class="f-icon" aria-hidden="true" /></button>
             </div>
         </div>
+        @if ($customer)
+            {{-- Who wrote in: only while the inspector (which names them) is out of sight. --}}
+            <p class="conv-heading__customer">{{ $customer->getFullName(true) }}@if ($conversation->customer_email && $conversation->customer_email != $customer->getFullName(true)) · {{ $conversation->customer_email }}@endif</p>
+        @endif
+        @include('conversations/partials/ai_summary')
     @endunless
 </div>

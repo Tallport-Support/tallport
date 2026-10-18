@@ -1246,6 +1246,11 @@ a.disabled:focus {
     color: var(--f-secondary);
     font-size: var(--f-text-sm);
 }
+/* Under the subject. */
+.conv-heading .ai-summary-line {
+    margin-top: 12px;
+    padding: 0;
+}
 /* The sentence, or the quiet Disclosure that opens to the background: it wraps. */
 .ai-summary-line__text {
     min-width: 0;
@@ -2792,6 +2797,15 @@ h1.settings-toolbar__title {
     margin-bottom: 10px;
     color: var(--f-secondary);
     font-size: var(--f-text-2xs);
+}
+/* The status and number, then the mailbox; a narrow window puts the mailbox on its own line. */
+.conv-heading__overline-start {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 20px;
+    row-gap: 4px;
+    min-width: 0;
 }
 .conv-heading__tools {
     display: flex;

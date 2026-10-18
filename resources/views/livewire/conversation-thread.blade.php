@@ -11,7 +11,7 @@
         @endphp
         <x-fruit::history :aria-label="__('Conversation History')" class="conv-thread conv-history" wire:key="chat-{{ $conversation->id }}">
             @if ($ai_summary_html !== '')
-                <x-fruit::thread id="conv-layout-main" :aria-label="__('Summary')">{!! $ai_summary_html !!}</x-fruit::thread>
+                <x-fruit::thread id="conv-layout-main" :aria-label="__('Summary')"><li>{!! $ai_summary_html !!}</li></x-fruit::thread>
             @endif
             @foreach ($threads->groupBy(fn ($thread) => App\Misc\Helper::userDate($thread->created_at)) as $day => $day_threads)
                 @php $day_name = App\Misc\Helper::dayName($day_threads->first()->created_at); @endphp
@@ -31,7 +31,7 @@
         </x-fruit::history>
     @else
         <x-fruit::thread id="conv-layout-main" :aria-label="__('Conversation History')">
-            @include('conversations/partials/ai_summary')
+            {{-- The summary is in the heading (livewire/conversation-subject). --}}
             @include('conversations/partials/threads')
         </x-fruit::thread>
     @endif

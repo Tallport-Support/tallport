@@ -503,6 +503,8 @@ class AiAssistantTest extends FeatureTestCase
             // No background: the sentence alone, not a disclosure.
             ->assertSee('<span class="ai-summary-line__text">Customer asks where the order is</span>', false)
             ->assertDontSee('f-disclosure--quiet ai-summary-line__text', false)
+            // In the heading: the status and mailbox, the subject, then the summary; the messages follow.
+            ->assertSeeInOrder(['conv-heading__overline-start', 'conv-heading__mailbox', '<h2', 'ai-summary-line', 'id="conv-layout-main"'], false)
             // Read in the agent's language: the translation is the message, the original folded below it.
             ->assertSeeInOrder(['Where is my order?', 'f-message__original', 'Translated from'], false);
         $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id)

@@ -11,10 +11,10 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 
 /**
- * The open conversation's heading: its status and number, who else is viewing
- * it (updated by the realtime script), the star and the subject, which a user
- * may edit. A bell marks the conversations the user follows. Compact (the chat
- * view): the status, viewers and star without the subject.
+ * The open conversation's heading: its status and number, its mailbox, who else is
+ * viewing it (updated by the realtime script), the star and the subject, which a user
+ * may edit, then who wrote in and the AI summary. A bell marks the conversations the
+ * user follows. Compact (the chat view): the status, viewers and star without the rest.
  */
 class ConversationSubject extends Component
 {
@@ -62,6 +62,14 @@ class ConversationSubject extends Component
     }
 
     /**
+     * A new message, or the AI summary ready (public/js/realtime.js): the summary may have changed.
+     */
+    #[On('conversation-thread-created')]
+    public function refreshSummary()
+    {
+    }
+
+    /**
      * Following changed in the toolbar.
      */
     #[On('conversation-followed')]
@@ -88,6 +96,8 @@ class ConversationSubject extends Component
             'viewers'      => $this->viewers ?? [],
             'is_following' => $conversation->isUserFollowing(auth()->id()),
             'starred'      => $conversation->isStarredByUser(auth()->id()),
+            'mailbox'      => $conversation->mailbox,
+            'customer'     => $this->compact ? null : $conversation->customer,
         ]);
     }
 }
