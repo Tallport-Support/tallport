@@ -3,6 +3,6 @@
 @php($mark = \FruitUI\Support\ComponentContract::mark($mark, $markLabel, true))
 @php($unreadLabel = \FruitUI\Support\ComponentContract::unread($unread, $unreadLabel ?? __('Unread')))
 {{-- A row that is a destination: a real link that opens in a new tab and works without JavaScript. --}}
-<a {{ $attributes->merge(['aria-current' => $current ? 'page' : null, 'data-fruit-mark' => $mark])->class(['f-item-row', 'f-item-row--filled' => $variant === 'filled']) }}>
+<a {{ $attributes->merge(['aria-current' => $current ? 'page' : null, 'data-fruit-mark' => $mark, 'data-unread' => empty($unreadLabel) ? null : ''])->class(['f-item-row', 'f-item-row--filled' => $variant === 'filled']) }}>
     @include('fruit::partials.item-row-body')
 </a>

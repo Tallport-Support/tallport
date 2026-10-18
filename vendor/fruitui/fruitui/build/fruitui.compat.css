@@ -4032,12 +4032,19 @@ textarea.f-composer__input,
     gap: 8px;
   }
 
+/* The title is medium; an unread row's is bold (data-unread), so what's new stands out by weight
+     as well as its dot, whatever its status. */
+
 .f-item-row__title {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: var(--f-text-base);
+    font-weight: 500;
+  }
+
+.f-item-row[data-unread] .f-item-row__title {
     font-weight: 650;
   }
 

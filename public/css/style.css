@@ -2248,12 +2248,6 @@ h1.settings-toolbar__title {
     background: var(--f-selection);
     color: var(--f-selection-text);
 }
-.conv-list .conv-active .f-item-row__title {
-    font-weight: 700;
-}
-.conv-list .conv-row:not(.conv-active) .f-item-row__title {
-    font-weight: 500;
-}
 .conv-row__meta {
     display: flex;
     align-items: center;
