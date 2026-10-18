@@ -616,8 +616,8 @@
   }
   /* A quiet select reads as its value, in the link color, until it is opened: a setting shown among
      details (a customer's language) and changed now and then. It keeps a small hit area and the
-     focus ring; its text lines up with the text before it, and a long value wraps within its
-     container, the chevron still in view (select.css). */
+     focus ring; its text lines up with the text before it, and a long value ends in an ellipsis
+     within its container, the chevron still in view (select.css). */
   .f-input--quiet {
     width: auto;
     max-width: calc(100% + 6px);
@@ -1082,11 +1082,18 @@
   select.f-input:not([multiple], [size]) {
     white-space: nowrap;
   }
-  /* A quiet select's long value (a language with its own name beside it) wraps rather than running
-     past its container. */
+  /* A quiet select stays on one line: a long value (a language with its own name beside it) ends in
+     an ellipsis within its container, the chevron in view. The customizable select draws the value
+     through a button holding <selectedcontent> (the Blade adapter adds it); a native select ends it
+     itself. */
   select.f-input.f-input--quiet:not([multiple], [size]) {
-    white-space: normal;
     overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Only the customizable select draws it (below); elsewhere it stays out of sight and out of the
+     accessibility tree, where it would be an empty button. */
+  select.f-input--quiet > button {
+    display: none;
   }
   select.f-input :where(option, optgroup) {
     font: inherit;
@@ -1122,6 +1129,24 @@
         align-items: center;
         gap: var(--f-space-2);
         cursor: pointer;
+      }
+      select.f-input--quiet > button {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        max-width: 100%;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: inherit;
+        font: inherit;
+        cursor: inherit;
+      }
+      select.f-input--quiet selectedcontent {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       select.f-input::picker(select) {
         padding: var(--f-space-1);

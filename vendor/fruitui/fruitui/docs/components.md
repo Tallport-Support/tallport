@@ -106,7 +106,7 @@ Touch devices keep their operating system's picker. Unsupported browsers retain 
 </label>
 ```
 
-A detail that is changed now and then, such as a customer's language among their details, can show as its value instead of a box: `variant="quiet"` (`f-input--quiet`) draws the chosen option in the link color, without a frame, sized to its text, and opens the same native picker on a click or from the keyboard. It needs a label like any select. `control-size="small"` keeps the frame at a small button's height instead.
+A detail that is changed now and then, such as a customer's language among their details, can show as its value instead of a box: `variant="quiet"` (`f-input--quiet`) draws the chosen option in the link color, without a frame, sized to its text, and opens the same native picker on a click or from the keyboard. It stays on one line: a long value, such as a language with its own name beside it, ends in an ellipsis within its container, the chevron in view. In the customizable select that takes a button showing the chosen option, `<button type="button"><selectedcontent></selectedcontent></button>` before the options, which the Blade adapter adds (with `wire:ignore`, since the browser fills it); in HTML, add it yourself. It needs a label like any select. `control-size="small"` keeps the frame at a small button's height instead.
 
 ```blade
 <dt><label for="customer-language">Language</label></dt>

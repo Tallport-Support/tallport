@@ -38,7 +38,7 @@
 	@if (count($customer_emails) || count($customer->getPhones()) || $customer->getWebsites() || $customer->getSocialProfiles() || $location || $customer->address || $customer->zip || $sender_offset || $languages !== '' || $set_language || $customer->notes || count($nostr_keys))
 		<ul class="customer-snippet__details customer-contacts">
 			@foreach ($customer_emails as $email)
-				<li class="customer-email"><x-icon.mail class="f-icon" aria-hidden="true" />{!! $detail(__('Email')) !!}{{-- Copied on a click (said in a toast). --}}<button type="button" class="contact-main" title="{{ __('Copy') }}" aria-label="{{ __('Copy') }}: {{ $email->email }}" x-data x-on:click="copyToClipboard(@js($email->email)); Tallport.toast(@js(__('Copied')))">{{ $email->email }}</button></li>
+				<li class="customer-email"><x-icon.mail class="f-icon" aria-hidden="true" />{!! $detail(__('Email')) !!}{{-- Copied on a click (said in a toast). --}}<button type="button" class="contact-main" title="{{ $email->email }} · {{ __('Copy') }}" aria-label="{{ __('Copy') }}: {{ $email->email }}" x-data x-on:click="copyToClipboard(@js($email->email)); Tallport.toast(@js(__('Copied')))">{{ $email->email }}</button></li>
 				@if (!empty($email->delivery_problem['kind']))
 					{{-- Emails to it failed (App\Misc\DeliveryReports), until cleared. --}}
 					<li class="customer-delivery-problem" x-data>

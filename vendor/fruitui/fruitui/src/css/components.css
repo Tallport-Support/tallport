@@ -210,8 +210,8 @@
   }
   /* A quiet select reads as its value, in the link color, until it is opened: a setting shown among
      details (a customer's language) and changed now and then. It keeps a small hit area and the
-     focus ring; its text lines up with the text before it, and a long value wraps within its
-     container, the chevron still in view (select.css). */
+     focus ring; its text lines up with the text before it, and a long value ends in an ellipsis
+     within its container, the chevron still in view (select.css). */
   .f-input--quiet {
     width: auto;
     max-width: calc(100% + 6px);
