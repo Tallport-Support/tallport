@@ -126,8 +126,11 @@ Settings a customer can keep:
 
 ## AI
 
-You can provide the AI and bill the customer for it, while the customer can
-still use their own API keys, for privacy or cost.
+Providing AI is optional. Without it, customers enter their own API keys in
+Settings » AI, as in any installation, or don't use the AI.
+
+You can also provide the AI and bill the customer for it, while the customer
+can still use their own API keys, for privacy or cost.
 
 * **Your keys.** Settings » AI Provided by the Host, which only the operator
   sees: providers, API keys, models, the embedding provider and a daily token
