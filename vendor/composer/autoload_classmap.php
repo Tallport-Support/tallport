@@ -422,6 +422,7 @@ return array(
     'App\\Telegram\\TelegramSend' => $baseDir . '/app/Telegram/TelegramSend.php',
     'App\\Thread' => $baseDir . '/app/Thread.php',
     'App\\User' => $baseDir . '/app/User.php',
+    'App\\WebChat\\Identity' => $baseDir . '/app/WebChat/Identity.php',
     'App\\WebChat\\Visitor' => $baseDir . '/app/WebChat/Visitor.php',
     'App\\WebChat\\WebChat' => $baseDir . '/app/WebChat/WebChat.php',
     'App\\Workflow' => $baseDir . '/app/Workflow.php',

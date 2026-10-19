@@ -34,12 +34,20 @@ class WebChatSettingsController extends Controller
                 '<script src="'.$script.'" async></script>',
             ]),
             'link'     => $settings['widget'] === '' ? '' : url('/t/w').'?widget='.$settings['widget'],
+            'secret'   => \App\WebChat\Identity::hasSecret($mailbox) ? \App\WebChat\Identity::secret($mailbox) : '',
         ]);
     }
 
     public function settingsSave($id, Request $request)
     {
         $mailbox = Mailbox::findOrFail($id);
+        // The signing secret for signed-in visitors: made, or made anew (tokens signed with the old one stop working).
+        if (in_array($request->action, ['make_secret', 'rotate_secret'])) {
+            \App\WebChat\Identity::secret($mailbox, true);
+            \Session::flash('flash_success_floating', $request->action == 'rotate_secret' ? __('Secret rotated') : __('Secret made'));
+
+            return redirect()->route('mailboxes.web_chat', ['id' => $mailbox->id]);
+        }
         $request->validate([
             'origins'    => 'nullable|string|max:5000',
             'greeting'   => 'nullable|string|max:1000',

@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * Website chat visitors (App\WebChat): a browser on a website, known by the token its chat window
- * keeps. A customer once they write; their conversation, followed whichever channel it moves to.
+ * keeps. A customer once they write (or sign in on the website); their conversation, followed
+ * whichever channel it moves to.
  */
 class CreateWebChatVisitorsTable extends Migration
 {
@@ -19,6 +20,10 @@ class CreateWebChatVisitorsTable extends Migration
             $table->string('token', 64)->unique();
             $table->unsignedInteger('customer_id')->nullable()->index();
             $table->unsignedInteger('conversation_id')->nullable()->index();
+            // Signed in on the website (App\WebChat\Identity): who the website says they are, and what it
+            // tells the team about them (plan, account ID).
+            $table->string('identity', 64)->nullable()->index();
+            $table->text('data')->nullable();
             // The newest of the team's messages the visitor has seen (the unread count).
             $table->unsignedInteger('read_thread_id')->default(0);
             // The page of the website they were on.

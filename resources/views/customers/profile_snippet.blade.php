@@ -35,10 +35,13 @@
 		}
 		$set_language = !empty($conversation) && App\Ai\ChatTranslation::isOn($conversation) && !\Helper::isPrint() && Auth::check() && Auth::user()->can('view', $customer);
 		// Beside a website chat: the page of the website the visitor wrote from (App\WebChat).
-		$web_chat_page = !empty($conversation) && $conversation->channel == App\WebChat\WebChat::CHANNEL
-			? App\WebChat\Visitor::where('conversation_id', $conversation->id)->orderBy('updated_at', 'desc')->value('page') : null;
+		$web_chat_visitors = !empty($conversation) && $conversation->channel == App\WebChat\WebChat::CHANNEL
+			? App\WebChat\Visitor::where('conversation_id', $conversation->id)->orderBy('updated_at', 'desc')->get() : collect();
+		$web_chat_page = $web_chat_visitors->whereNotNull('page')->first()?->page;
+		// What the website says about them when they're signed in there (App\WebChat\Identity): plan, account ID.
+		$web_chat_data = (array) json_decode((string) $web_chat_visitors->whereNotNull('data')->first()?->data, true);
 	@endphp
-	@if ($web_chat_page || count($customer_emails) || count($customer->getPhones()) || $customer->getWebsites() || $customer->getSocialProfiles() || $location || $customer->address || $customer->zip || $sender_offset || $languages !== '' || $set_language || $customer->notes || count($nostr_keys))
+	@if ($web_chat_page || $web_chat_data || count($customer_emails) || count($customer->getPhones()) || $customer->getWebsites() || $customer->getSocialProfiles() || $location || $customer->address || $customer->zip || $sender_offset || $languages !== '' || $set_language || $customer->notes || count($nostr_keys))
 		<ul class="customer-snippet__details customer-contacts">
 			@foreach ($customer_emails as $email)
 				<li class="customer-email"><x-icon.mail class="f-icon" aria-hidden="true" />{!! $detail(__('Email')) !!}{{-- Copied on a click (said in a toast). --}}<button type="button" class="contact-main" title="{{ $email->email }} · {{ __('Copy') }}" aria-label="{{ __('Copy') }}: {{ $email->email }}" x-data x-on:click="copyToClipboard(@js($email->email)); Tallport.toast(@js(__('Copied')))">{{ $email->email }}</button></li>
@@ -63,6 +66,9 @@
 			@if ($web_chat_page)
 				<li class="customer-web-chat-page"><x-icon.globe class="f-icon" aria-hidden="true" />{!! $detail(__('Page')) !!}<a href="{{ $web_chat_page }}" target="_blank" rel="noopener noreferrer" title="{{ $web_chat_page }}">{{ preg_replace('#^https?://#', '', $web_chat_page) }}</a></li>
 			@endif
+			@foreach ($web_chat_data as $web_chat_name => $web_chat_value)
+				<li class="customer-web-chat-data"><x-icon.info class="f-icon" aria-hidden="true" /><span><span class="f-muted">{{ $web_chat_name }}:</span> {{ $web_chat_value }}</span></li>
+			@endforeach
 			@foreach ($customer->getSocialProfiles() as $sp)
 				<li><x-icon.link class="f-icon" aria-hidden="true" />{!! $detail(__('Social Profiles')) !!}<a href="{{ App\Customer::formatSocialProfile($sp)['value_url'] }}" target="_blank">{{ App\Customer::formatSocialProfile($sp)['type_name'] }}</a></li>
 			@endforeach

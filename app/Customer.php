@@ -1347,6 +1347,8 @@ class Customer extends Model
 
         \App\Matrix\MatrixRoom::where('customer_id', $customer2->id)->update(['customer_id' => $this->id]);
         \App\WebChat\Visitor::where('customer_id', $customer2->id)->update(['customer_id' => $this->id]);
+        // Website accounts (App\WebChat\Identity) stay theirs.
+        CustomerChannel::where('customer_id', $customer2->id)->where('channel', \App\WebChat\WebChat::CHANNEL)->update(['customer_id' => $this->id]);
 
         // Nostr keys go with the customer.
         \App\Nostr\CustomerKey::where('customer_id', $customer2->id)->update(['customer_id' => $this->id]);

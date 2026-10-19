@@ -205,6 +205,72 @@ class WebChatTest extends FeatureTestCase
         $this->assertSame($settings['widget'], WebChat::settings($mailbox->fresh())['widget'], 'The widget ID stays.');
     }
 
+    protected function signed(array $claims, $secret = null)
+    {
+        return \App\WebChat\Identity::sign($claims + ['exp' => time() + 600], $secret ?? \App\WebChat\Identity::secret($this->mailbox));
+    }
+
+    /**
+     * Signed in on the website: what they wrote moves to their account, and on another browser
+     * they get their chat back; someone else on the same browser starts afresh.
+     */
+    public function testSignedInVisitors()
+    {
+        $token = $this->visitorToken();
+        $this->api('POST', '/t/m', ['body' => 'Hello, before signing in'], $token)->assertOk();
+        $anonymous = Visitor::firstOrFail()->customer;
+
+        $identity = $this->signed(['sub' => 'acct-42', 'email' => 'Lena@Example.org', 'name' => 'Lena Novak', 'data' => ['plan' => 'Pro', 'nested' => ['ignored']]]);
+        $this->assertNull($this->api('POST', '/t/i', ['identity' => $identity], $token)->assertOk()->json('token'), 'The same visitor.');
+        $visitor = Visitor::firstOrFail();
+        $customer = $visitor->customer;
+        $this->assertSame(['lena@example.org', 'Lena', 'Novak'], [$customer->getMainEmail(), $customer->first_name, $customer->last_name]);
+        $this->assertNull(Customer::find($anonymous->id), 'Merged into their account.');
+        $this->assertSame($customer->id, $visitor->conversation->customer_id);
+        $this->assertSame($customer->id, Customer::getCustomerByChannel(WebChat::CHANNEL, 's:acct-42')->id);
+        $this->actingAs($this->agent)->get('/conversation/'.$visitor->conversation_id)->assertSee('plan:')->assertSee('Pro')->assertDontSee('ignored');
+
+        // Another browser: their chat back.
+        $phone = $this->api('POST', '/t/i', ['identity' => $this->signed(['sub' => 'acct-42'])])->assertOk()->json('token');
+        $this->assertSame(['Hello, before signing in'], array_column($this->api('GET', '/t/m?after=0', [], $phone)->json('messages'), 'body'));
+
+        // Someone else on the first browser: a new visitor, nothing of Lena's.
+        $other = $this->api('POST', '/t/i', ['identity' => $this->signed(['sub' => 'acct-7'])], $token)->assertOk()->json('token');
+        $this->assertNotNull($other);
+        $this->assertSame([], $this->api('GET', '/t/m?after=0', [], $other)->json('messages'));
+
+        // An address the website vouches for finds the customer with it.
+        $casey = $this->createCustomer('casey@customer.example.org');
+        $this->api('POST', '/t/i', ['identity' => $this->signed(['sub' => 'acct-9', 'email' => 'casey@customer.example.org'])])->assertOk();
+        $this->assertSame($casey->id, Customer::getCustomerByChannel(WebChat::CHANNEL, 's:acct-9')->id);
+    }
+
+    public function testOnlyValidSignaturesCount()
+    {
+        $secret = \App\WebChat\Identity::secret($this->mailbox);
+        $customers = Customer::count();
+        foreach ([
+            'wrong secret' => $this->signed(['sub' => 'a'], 'another-secret'),
+            'expired'      => $this->signed(['sub' => 'a', 'exp' => time() - 3600]),
+            'too long'     => $this->signed(['sub' => 'a', 'exp' => time() + 3 * 86400]),
+            'no exp'       => \App\WebChat\Identity::sign(['sub' => 'a'], $secret),
+            'no sub'       => $this->signed(['email' => 'a@example.org']),
+            'alg none'     => rtrim(strtr(base64_encode('{"alg":"none"}'), '+/', '-_'), '=').'.'.rtrim(strtr(base64_encode(json_encode(['sub' => 'a', 'exp' => time() + 60])), '+/', '-_'), '=').'.',
+            'garbage'      => 'not.a.token',
+        ] as $case => $identity) {
+            $this->api('POST', '/t/i', ['identity' => $identity])->assertStatus(422);
+        }
+        $this->assertSame($customers, Customer::count(), 'Nobody matched or made.');
+
+        // Rotated: the old secret no longer signs.
+        $old = $this->signed(['sub' => 'a']);
+        \Session::start();
+        $this->actingAs($this->admin)->post(route('mailboxes.web_chat.save', ['id' => $this->mailbox->id]), ['_token' => csrf_token(), 'action' => 'rotate_secret'])->assertRedirect();
+        $this->assertNotSame($secret, \App\WebChat\Identity::secret($this->mailbox->fresh()));
+        $this->api('POST', '/t/i', ['identity' => $old])->assertStatus(422);
+        $this->assertTrue(WebChat::settings($this->mailbox->fresh())['enabled'], 'Rotating changes nothing else.');
+    }
+
     public function testRetentionAndMerging()
     {
         $token = $this->visitorToken();

@@ -46,6 +46,7 @@ document.addEventListener('alpine:init', function () {
                     if (!data || data.tallport !== 1) return;
                     if (data.type === 'open') self.opened(data.focus);
                     else if (data.type === 'closed') self.shown = false;
+                    else if (data.type === 'identify') self.identify(data.token);
                     else if (data.type === 'logout') self.logout();
                     else if (data.type === 'appearance') self.appearance(data.value);
                 });
@@ -281,6 +282,23 @@ document.addEventListener('alpine:init', function () {
                     entry.state = 'failed';
                     if (error.status === 422 && error.message) self.error = error.message;
                 });
+            },
+
+            /**
+             * Signed in on the website, which signed who they are: what they wrote here moves to their
+             * account, and with nothing written yet, their latest chat continues; shown anew.
+             */
+            identify: function (identity) {
+                var self = this;
+                if (!identity) return;
+                var form = new FormData();
+                form.append('identity', identity);
+                this.api('POST', 'i', form).then(function (data) {
+                    if (data.token) self.token(data.token);
+                    clearTimeout(timer);
+                    Object.assign(self, { entries: greeting.slice(), cursor: 0, hasConversation: false });
+                    return self.poll();
+                }).catch(function () {});
             },
 
             /** Signed out on the website: a new, anonymous visitor. */

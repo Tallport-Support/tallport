@@ -6,6 +6,7 @@ use App\Attachment;
 use App\Conversation;
 use App\Misc\ChatConversations;
 use App\Thread;
+use App\WebChat\Identity;
 use App\WebChat\Visitor;
 use App\WebChat\WebChat;
 use Illuminate\Http\Request;
@@ -156,6 +157,52 @@ class WebChatController extends Controller
         \App\Misc\ChatLog::record(WebChat::META, $visitor->mailbox_id, 'receive', 'succeeded', '', ['thread_id' => $received['thread']->id]);
 
         return response()->json(['message' => $this->message($received['thread']->fresh())]);
+    }
+
+    /**
+     * The visitor signed in on the website (App\WebChat\Identity): what they wrote here moves to
+     * their account, and with nothing written yet, their latest chat continues. Someone else signing
+     * in on the same browser gets a new visitor (its token is returned), so nobody sees another's chat.
+     */
+    public function identify(Request $request)
+    {
+        $mailbox = $this->mailbox($request);
+        $this->limit('identify:'.$request->ip(), 60, 600);
+        $identity = Identity::hasSecret($mailbox) ? Identity::verify((string) $request->identity, Identity::secret($mailbox)) : null;
+        if (!$identity) {
+            return response()->json(['message' => 'The sign-in token is not valid.'], 422);
+        }
+        $channel_id = Identity::channelId($identity['sub']);
+        $visitor = Visitor::findByToken((string) $request->bearerToken(), $mailbox);
+        $token = null;
+        if (!$visitor || ($visitor->identity !== null && $visitor->identity !== $channel_id)) {
+            [$visitor, $token] = Visitor::start($mailbox);
+        }
+        $visitor->setRelation('mailbox', $mailbox);
+
+        \DB::transaction(function () use ($visitor, $identity, $channel_id, $mailbox) {
+            $customer = Identity::customer($identity);
+            if ($visitor->customer && $visitor->customer->id != $customer->id) {
+                $customer->mergeWith($visitor->customer);
+            }
+            $visitor->customer_id = $customer->id;
+            $visitor->identity = $channel_id;
+            $visitor->data = $identity['data'] ? json_encode($identity['data']) : null;
+            $visitor->unsetRelation('customer');
+            if (!$visitor->currentConversation()) {
+                $latest = Visitor::where('customer_id', $customer->id)->where('mailbox_id', $mailbox->id)->whereNotNull('conversation_id')
+                    ->orderBy('updated_at', 'desc')->value('conversation_id');
+                $visitor->conversation_id = $latest ?: ChatConversations::latest($mailbox, $customer, WebChat::CHANNEL)?->id;
+                $visitor->unsetRelation('conversation');
+                if (!$visitor->currentConversation()) {
+                    $visitor->conversation_id = null;
+                }
+            }
+            $visitor->last_seen_at = now();
+            $visitor->save();
+        });
+
+        return response()->json(['token' => $token]);
     }
 
     /**

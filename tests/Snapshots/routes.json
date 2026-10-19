@@ -2557,6 +2557,20 @@
     },
     {
         "methods": [
+            "POST"
+        ],
+        "uri": "t/i",
+        "name": "web_chat.identify",
+        "action": "WebChatController@identify",
+        "middleware": [
+            "open"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
             "GET"
         ],
         "uri": "t/m",

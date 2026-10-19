@@ -1238,6 +1238,7 @@ class ComposerStaticInitfc9b7b2ca15b4d1aba40fc18ae3b6e13
         'App\\Telegram\\TelegramSend' => __DIR__ . '/../..' . '/app/Telegram/TelegramSend.php',
         'App\\Thread' => __DIR__ . '/../..' . '/app/Thread.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
+        'App\\WebChat\\Identity' => __DIR__ . '/../..' . '/app/WebChat/Identity.php',
         'App\\WebChat\\Visitor' => __DIR__ . '/../..' . '/app/WebChat/Visitor.php',
         'App\\WebChat\\WebChat' => __DIR__ . '/../..' . '/app/WebChat/WebChat.php',
         'App\\Workflow' => __DIR__ . '/../..' . '/app/Workflow.php',

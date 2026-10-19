@@ -4918,6 +4918,20 @@
                 "nullable": true,
                 "default": "NULL"
             },
+            "identity": {
+                "type": "varchar(64)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "data": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
             "read_thread_id": {
                 "type": "int(10) unsigned",
                 "nullable": false,
@@ -4966,6 +4980,13 @@
                 "type": "BTREE",
                 "columns": [
                     "customer_id"
+                ]
+            },
+            "web_chat_visitors_identity_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "identity"
                 ]
             },
             "web_chat_visitors_mailbox_id_index": {
