@@ -118,7 +118,7 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
      *
      * @var array
      */
-    protected $guarded = ['role'];
+    protected $guarded = ['role', 'operator'];
 
     /**
      * The attributes that should be hidden for arrays, excluded from the model's JSON form.
@@ -236,6 +236,28 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
     public function isAdmin()
     {
         return $this->role == self::ROLE_ADMIN;
+    }
+
+    /**
+     * The host's administrator, set from the command line only (tallport:operator).
+     */
+    public function isOperator()
+    {
+        return $this->isAdmin() && (bool) $this->operator;
+    }
+
+    /**
+     * Whether this user may change the other's account (sign-in, role, deleting it):
+     * an admin outranks users, an operator outranks admins too. Equals don't, so an
+     * admin can't take over or remove another admin; the command line still can.
+     */
+    public function outranks($user)
+    {
+        if (!$this->isAdmin() || $this->id == $user->id) {
+            return false;
+        }
+
+        return !$user->isAdmin() || ($this->isOperator() && !$user->isOperator());
     }
 
     /**

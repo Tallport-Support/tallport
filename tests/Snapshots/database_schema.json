@@ -4848,6 +4848,11 @@
                 "type": "tinyint(1)",
                 "nullable": false,
                 "default": "0"
+            },
+            "operator": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
             }
         },
         "indexes": {

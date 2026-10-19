@@ -1804,6 +1804,7 @@
     "1 page|:count pages": ":count сторінка|:count сторінки|:count сторінок",
     "(You)": "(Ви)",
     "You can't change your own role.": "Ви не можете змінити власну роль.",
+    "You can't change another administrator's account.": "Ви не можете змінити обліковий запис іншого адміністратора.",
     "You can't turn off your own sign-in.": "Ви не можете вимкнути власний вхід.",
     "You can't remove yourself.": "Ви не можете видалити себе.",
     "Your Profile": "Ваш Профіль",

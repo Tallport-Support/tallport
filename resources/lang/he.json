@@ -1804,6 +1804,7 @@
     "1 page|:count pages": "עמוד אחד|:count עמודים",
     "(You)": "(את/ה)",
     "You can't change your own role.": "אי אפשר לשנות את התפקיד שלך.",
+    "You can't change another administrator's account.": "אי אפשר לשנות חשבון של מנהל אחר.",
     "You can't turn off your own sign-in.": "אי אפשר לכבות את הכניסה שלך.",
     "You can't remove yourself.": "אי אפשר להסיר את עצמך.",
     "Your Profile": "הפרופיל שלך",

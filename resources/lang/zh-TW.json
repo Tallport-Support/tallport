@@ -1849,6 +1849,7 @@
     "1 page|:count pages": ":count 個頁面",
     "(You)": "（您）",
     "You can't change your own role.": "您無法變更自己的角色。",
+    "You can't change another administrator's account.": "您無法變更其他管理員的帳戶。",
     "You can't turn off your own sign-in.": "您無法關閉自己的登入。",
     "You can't remove yourself.": "您無法移除自己。",
     "Your Profile": "您的個人資料",

@@ -1804,6 +1804,7 @@
     "1 page|:count pages": "1 sida|:count sidor",
     "(You)": "(Du)",
     "You can't change your own role.": "Du kan inte ändra din egen roll.",
+    "You can't change another administrator's account.": "Du kan inte ändra en annan administratörs konto.",
     "You can't turn off your own sign-in.": "Du kan inte stänga av din egen inloggning.",
     "You can't remove yourself.": "Du kan inte ta bort dig själv.",
     "Your Profile": "Din Profil",

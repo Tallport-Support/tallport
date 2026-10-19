@@ -1807,6 +1807,7 @@
     "1 page|:count pages": "1 side|:count sider",
     "(You)": "(Deg)",
     "You can't change your own role.": "Du kan ikke endre din egen rolle.",
+    "You can't change another administrator's account.": "Du kan ikke endre kontoen til en annen administrator.",
     "You can't turn off your own sign-in.": "Du kan ikke slå av din egen pålogging.",
     "You can't remove yourself.": "Du kan ikke fjerne deg selv.",
     "Your Profile": "Din Profil",

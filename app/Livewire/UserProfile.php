@@ -84,7 +84,7 @@ class UserProfile extends Component
     }
 
     /**
-     * The user: oneself (own), or someone who may be managed; not a deleted one.
+     * The user: oneself (own), or someone who may be managed (or, for an admin, seen); not a deleted one.
      */
     protected function user()
     {
@@ -92,11 +92,19 @@ class UserProfile extends Component
         abort_if($user->isDeleted(), 404);
         if ($this->mode == 'own') {
             abort_unless($user->id == auth()->id(), 403);
-        } else {
-            $this->authorize('update', $user);
+        } elseif (!auth()->user()->can('update', $user)) {
+            $this->authorize('view', $user);
         }
 
         return $user;
+    }
+
+    /**
+     * Whether the account can be changed here: not another admin's, unless one outranks them.
+     */
+    public function canChange()
+    {
+        return $this->mode == 'own' || auth()->user()->can('update', User::findOrFail($this->user_id));
     }
 
     /**
@@ -141,7 +149,7 @@ class UserProfile extends Component
         $user = $this->user();
         $auth_user = auth()->user();
         $fields = $this->mode == 'own' ? self::OWN_FIELDS : self::MANAGE_FIELDS;
-        if (!in_array($property, $fields) || (in_array($property, self::ADMIN_FIELDS) && !$auth_user->isAdmin())) {
+        if (!in_array($property, $fields) || (in_array($property, self::ADMIN_FIELDS) && !$auth_user->isAdmin()) || !$this->canChange()) {
             $this->mount($user, $this->mode, $this->section);
 
             return;
@@ -201,6 +209,7 @@ class UserProfile extends Component
     public function deletePhoto()
     {
         $user = $this->user();
+        abort_unless($this->canChange(), 403);
         $user->removePhoto();
         $user->save();
     }

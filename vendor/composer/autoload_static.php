@@ -890,6 +890,7 @@ class ComposerStaticInitfc9b7b2ca15b4d1aba40fc18ae3b6e13
         'App\\Console\\Commands\\NostrAnnounce' => __DIR__ . '/../..' . '/app/Console/Commands/NostrAnnounce.php',
         'App\\Console\\Commands\\NostrDiagnose' => __DIR__ . '/../..' . '/app/Console/Commands/NostrDiagnose.php',
         'App\\Console\\Commands\\NostrListen' => __DIR__ . '/../..' . '/app/Console/Commands/NostrListen.php',
+        'App\\Console\\Commands\\Operator' => __DIR__ . '/../..' . '/app/Console/Commands/Operator.php',
         'App\\Console\\Commands\\Receive' => __DIR__ . '/../..' . '/app/Console/Commands/Receive.php',
         'App\\Console\\Commands\\ReportReplies' => __DIR__ . '/../..' . '/app/Console/Commands/ReportReplies.php',
         'App\\Console\\Commands\\Retention' => __DIR__ . '/../..' . '/app/Console/Commands/Retention.php',

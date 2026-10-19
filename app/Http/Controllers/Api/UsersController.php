@@ -126,6 +126,10 @@ class UsersController extends ApiController
         if ($user->isAdmin() && User::nonDeleted()->where('role', User::ROLE_ADMIN)->count() < 2) {
             return $this->error('The only administrator can not be deleted', 'id');
         }
+        // An admin is removed only by someone who outranks them (an operator's key).
+        if ($user->isAdmin() && (!$this->access()->user() || !$this->access()->user()->outranks($user))) {
+            return $this->forbidden('Forbidden: An administrator can only be deleted with the API Key of an operator');
+        }
         $user->deleteUser($by_user, (array) $this->param($request, 'assignTo', []));
 
         return $this->noContent();

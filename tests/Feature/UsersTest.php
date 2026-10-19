@@ -321,11 +321,12 @@ class UsersTest extends FeatureTestCase
     {
         $agent = $this->createUser();
 
-        $profile = Livewire::actingAs($this->admin)->test(UserProfile::class, ['user' => $agent])->set('role', (string) User::ROLE_ADMIN);
-        $this->assertEquals(User::ROLE_ADMIN, $agent->fresh()->role);
-
-        $profile->set('disabled', true);
+        // Disabled first: once an admin, they're the admin's equal.
+        $profile = Livewire::actingAs($this->admin)->test(UserProfile::class, ['user' => $agent])->set('disabled', true);
         $this->assertEquals(User::STATUS_DISABLED, $agent->fresh()->status);
+
+        $profile->set('role', (string) User::ROLE_ADMIN);
+        $this->assertEquals(User::ROLE_ADMIN, $agent->fresh()->role);
 
         // A disabled user is logged out on their next request.
         $this->actingAs($agent->fresh())->get('/')->assertRedirect(route('login'));
@@ -351,10 +352,103 @@ class UsersTest extends FeatureTestCase
     public function testAdminCanBeDisabledWhileAnotherIsActive()
     {
         $other = $this->createAdmin();
+        $operator = $this->createAdmin(['email' => 'operator@example.org']);
+        $operator->operator = true;
+        $operator->save();
 
-        Livewire::actingAs($this->admin)->test(UserProfile::class, ['user' => $other])->set('disabled', true)->assertHasNoErrors();
+        Livewire::actingAs($operator)->test(UserProfile::class, ['user' => $other])->set('disabled', true)->assertHasNoErrors();
 
         $this->assertEquals(User::STATUS_DISABLED, $other->fresh()->status);
+    }
+
+    /**
+     * An admin sees another admin's account as it is but can't change, reset or delete it:
+     * that would hand their account over, or remove them.
+     */
+    public function testAdminsDontChangeEachOther()
+    {
+        $other = $this->createAdmin(['first_name' => 'Robin', 'email' => 'robin@example.org']);
+
+        $this->actingAs($this->admin)->get(route('users.profile', ['id' => $other->id]))->assertOk()
+            ->assertSee("You can't change another administrator's account.");
+        Livewire::actingAs($this->admin)->test(UserProfile::class, ['user' => $other])
+            ->set('email', 'taken@example.org')->assertSet('email', 'robin@example.org')
+            ->set('first_name', 'Mallory')->assertSet('first_name', 'Robin')
+            ->set('role', (string) User::ROLE_USER)
+            ->set('disabled', true)
+            ->call('deletePhoto')->assertForbidden();
+
+        foreach (['reset_password', 'send_invite', 'delete_user'] as $action) {
+            $this->assertSame('Not enough permissions', $this->postAjax($this->admin, '/users/ajax', ['action' => $action, 'user_id' => $other->id])->json()['msg'], $action);
+        }
+        $this->withSession(['auth.password_confirmed_at' => time()]);
+        $this->postForm($this->admin, route('users.security.reset', ['id' => $other->id]), [])->assertStatus(403);
+
+        $other = $other->fresh();
+        $this->assertSame(['robin@example.org', 'Robin', User::ROLE_ADMIN, User::STATUS_ACTIVE], [$other->email, $other->first_name, (int) $other->role, (int) $other->status]);
+        $this->assertCount(0, $this->sentEmailsTo('robin@example.org'));
+
+        // Users are theirs to manage, as before.
+        $agent = $this->createUser();
+        $this->assertTrue($this->admin->can('update', $agent));
+        $this->assertTrue($this->admin->can('delete', $agent));
+    }
+
+    /**
+     * The operator (tallport:operator) outranks admins; admins can't change the operator, and
+     * operators don't change each other.
+     */
+    public function testTheOperatorOutranksAdmins()
+    {
+        $this->artisan('tallport:operator', ['email' => 'host@example.org'])->assertExitCode(0);
+        $operator = User::where('email', 'host@example.org')->first();
+
+        $this->assertTrue($operator->outranks($this->admin));
+        $this->assertFalse($this->admin->outranks($operator));
+        $this->assertFalse($this->admin->can('update', $operator));
+
+        $this->withSession(['auth.password_confirmed_at' => time()]);
+        $this->postForm($operator, route('users.security.reset', ['id' => $this->admin->id]), [])->assertRedirect(route('users.security', ['id' => $this->admin->id]));
+        $this->assertSame('success', $this->postAjax($operator, '/users/ajax', ['action' => 'reset_password', 'user_id' => $this->admin->id])->json()['status']);
+        Livewire::actingAs($operator)->test(UserProfile::class, ['user' => $this->admin])->set('role', (string) User::ROLE_USER)->assertHasNoErrors();
+        $this->assertFalse($this->admin->fresh()->isAdmin());
+        $this->assertSame('success', $this->postAjax($operator, '/users/ajax', ['action' => 'delete_user', 'user_id' => $this->admin->id])->json()['status']);
+
+        $this->artisan('tallport:operator', ['email' => 'second-host@example.org'])->assertExitCode(0);
+        $this->assertFalse($operator->outranks(User::where('email', 'second-host@example.org')->first()));
+    }
+
+    /**
+     * The command line makes, recovers and removes the operator.
+     */
+    public function testOperatorCommand()
+    {
+        $this->artisan('tallport:operator', ['email' => 'host@example.org', '--first-name' => 'Hosting'])
+            ->expectsOutput('host@example.org is the operator.')->expectsOutputToContain('Password: ')->assertExitCode(0);
+        $operator = User::where('email', 'host@example.org')->first();
+        $this->assertTrue($operator->isOperator());
+        $this->assertSame('Hosting', $operator->first_name);
+        $this->assertEquals(User::INVITE_STATE_ACTIVATED, $operator->invite_state);
+
+        // Recovered: a new password, and two-factor authentication off.
+        $operator->forceFill(['two_factor_secret' => encrypt('secret'), 'two_factor_confirmed_at' => now(), 'status' => User::STATUS_DISABLED])->save();
+        $password = $operator->password;
+        $this->artisan('tallport:operator', ['email' => 'host@example.org', '--reset' => true])->expectsOutputToContain('Password: ')->assertExitCode(0);
+        $operator = $operator->fresh();
+        $this->assertNotSame($password, $operator->password);
+        $this->assertFalse($operator->hasEnabledTwoFactorAuthentication());
+        $this->assertEquals(User::STATUS_ACTIVE, $operator->status);
+
+        // An existing admin is made the operator; the flag isn't set through a form.
+        $this->artisan('tallport:operator', ['email' => $this->admin->email])->doesntExpectOutputToContain('Password: ')->assertExitCode(0);
+        $this->assertTrue($this->admin->fresh()->isOperator());
+        $agent = $this->createUser(['operator' => true]);
+        $this->assertFalse((bool) $agent->fresh()->operator);
+
+        $this->artisan('tallport:operator', ['email' => 'host@example.org', '--remove' => true])->assertExitCode(0);
+        $this->assertFalse($operator->fresh()->isOperator());
+        $this->assertTrue($operator->fresh()->isAdmin());
+        $this->artisan('tallport:operator', ['email' => 'nobody@example.org', '--remove' => true])->assertExitCode(1);
     }
 
     /**

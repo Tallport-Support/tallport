@@ -1805,6 +1805,7 @@
     "1 page|:count pages": ":count 个页面",
     "(You)": "（您）",
     "You can't change your own role.": "您不能更改自己的角色。",
+    "You can't change another administrator's account.": "您不能更改其他管理员的账户。",
     "You can't turn off your own sign-in.": "您不能关闭自己的登录。",
     "You can't remove yourself.": "您不能删除自己。",
     "Your Profile": "您的个人资料",

@@ -286,6 +286,29 @@
             }
         }
     },
+    "tallport:operator": {
+        "class": "App\\Console\\Commands\\Operator",
+        "description": "Make a user the operator, who outranks the other administrators",
+        "arguments": {
+            "email": {
+                "required": true,
+                "array": false,
+                "default": null
+            }
+        },
+        "options": {
+            "first-name": {
+                "value": "optional",
+                "default": "Operator"
+            },
+            "reset": {
+                "value": "none"
+            },
+            "remove": {
+                "value": "none"
+            }
+        }
+    },
     "tallport:receive": {
         "class": "App\\Console\\Commands\\Receive",
         "description": "Receive an email as if it had been fetched (from a file, or piped in by a mail server)",

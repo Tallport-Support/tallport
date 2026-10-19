@@ -1811,6 +1811,7 @@
     "1 page|:count pages": "1 page|:count pages",
     "(You)": "(Vous)",
     "You can't change your own role.": "Vous ne pouvez pas modifier votre propre rôle.",
+    "You can't change another administrator's account.": "Vous ne pouvez pas modifier le compte d'un autre administrateur.",
     "You can't turn off your own sign-in.": "Vous ne pouvez pas désactiver votre propre connexion.",
     "You can't remove yourself.": "Vous ne pouvez pas vous supprimer vous-même.",
     "Your Profile": "Votre Profil",

@@ -1804,6 +1804,7 @@
     "1 page|:count pages": ":count stran|:count strani|:count strani|:count strani",
     "(You)": "(Vi)",
     "You can't change your own role.": "Ne morete spremeniti svoje vloge.",
+    "You can't change another administrator's account.": "Ne morete spremeniti računa drugega skrbnika.",
     "You can't turn off your own sign-in.": "Ne morete izklopiti svoje prijave.",
     "You can't remove yourself.": "Ne morete odstraniti sebe.",
     "Your Profile": "Vaš Profil",

@@ -50,6 +50,7 @@ class UserSecurityController extends Controller
             'user'           => $user,
             'users'          => $own ? [] : (new UsersController())->getUsersForSidebar($id),
             'own'            => $own,
+            'can_reset'      => $own || $auth_user->outranks($user),
             'required'       => (bool) config('app.two_factor_required'),
             'must_turn_on'   => $own && RequireTwoFactor::mustTurnOn($user),
             'recovery_codes' => $own && $user->hasEnabledTwoFactorAuthentication()
@@ -66,10 +67,11 @@ class UserSecurityController extends Controller
      */
     public function reset($id, Request $request)
     {
-        if (!$request->user()->isAdmin()) {
+        $user = User::findOrFail($id);
+        // An admin's own, or someone they outrank: not another admin's (that would hand over their account).
+        if (!$request->user()->isAdmin() || ($user->id != $request->user()->id && !$request->user()->outranks($user))) {
             abort(403);
         }
-        $user = User::findOrFail($id);
 
         $user->forceFill([
             'two_factor_secret'         => null,

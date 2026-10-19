@@ -1804,6 +1804,7 @@
     "1 page|:count pages": ":count ページ",
     "(You)": "（あなた）",
     "You can't change your own role.": "自分のロールは変更できません。",
+    "You can't change another administrator's account.": "他の管理者のアカウントは変更できません。",
     "You can't turn off your own sign-in.": "自分のサインインはオフにできません。",
     "You can't remove yourself.": "自分自身は削除できません。",
     "Your Profile": "あなたのプロフィール",

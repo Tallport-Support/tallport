@@ -1804,6 +1804,7 @@
     "1 page|:count pages": "1 oldal|:count oldal",
     "(You)": "(Ön)",
     "You can't change your own role.": "Nem módosíthatja a saját szerepkörét.",
+    "You can't change another administrator's account.": "Nem módosíthatja egy másik adminisztrátor fiókját.",
     "You can't turn off your own sign-in.": "Nem kapcsolhatja ki a saját bejelentkezését.",
     "You can't remove yourself.": "Nem távolíthatja el saját magát.",
     "Your Profile": "Az Ön Profilja",

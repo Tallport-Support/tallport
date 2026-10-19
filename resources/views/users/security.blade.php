@@ -42,7 +42,8 @@
                             <form method="POST" action="{{ route('users.security.reset', ['id' => $user->id]) }}" class="f-form-row">
                                 {{ csrf_field() }}
                                 <p class="f-help">{{ __('For a user who lost their phone: they log in with their password only, and then set it up again.') }}</p>
-                                <x-fruit::button type="submit" variant="danger">{{ __('Reset Two-Factor Authentication and Passkeys') }}</x-fruit::button>
+                                <x-fruit::button type="submit" variant="danger" :disabled="!$can_reset">{{ __('Reset Two-Factor Authentication and Passkeys') }}</x-fruit::button>
+                                @unless ($can_reset)<p class="f-help">{{ __('You can\'t change another administrator\'s account.') }}</p>@endunless
                             </form>
                         @endif
                     @elseif ($user->hasEnabledTwoFactorAuthentication())

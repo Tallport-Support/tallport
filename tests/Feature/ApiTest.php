@@ -285,6 +285,14 @@ class ApiTest extends FeatureTestCase
         $this->api('DELETE', '/users/'.$nova->id)->assertStatus(400);
         $this->api('DELETE', '/users/'.$nova->id.'?byUserId='.$admin->id)->assertStatus(204);
         $this->assertTrue($nova->fresh()->isDeleted());
+
+        // An administrator only with an operator's key.
+        $other = $this->createAdmin();
+        $this->api('DELETE', '/users/'.$other->id.'?byUserId='.$admin->id)->assertStatus(403);
+        $this->api('DELETE', '/users/'.$other->id.'?byUserId='.$admin->id, [], $this->userKey($admin))->assertStatus(403);
+        $admin->operator = true;
+        $admin->save();
+        $this->api('DELETE', '/users/'.$other->id.'?byUserId='.$admin->id, [], $this->userKey($admin))->assertStatus(204);
     }
 
     public function testFoldersAndMissingModules()

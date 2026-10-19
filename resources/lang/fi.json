@@ -1820,6 +1820,7 @@
     "1 page|:count pages": "1 sivu|:count sivua",
     "(You)": "(Sinä)",
     "You can't change your own role.": "Et voi muuttaa omaa rooliasi.",
+    "You can't change another administrator's account.": "Et voi muuttaa toisen järjestelmänvalvojan tiliä.",
     "You can't turn off your own sign-in.": "Et voi poistaa omaa kirjautumistasi käytöstä.",
     "You can't remove yourself.": "Et voi poistaa itseäsi.",
     "Your Profile": "Profiilisi",

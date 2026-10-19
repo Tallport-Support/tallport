@@ -52,8 +52,9 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        if ($user->isAdmin() 
-            || $user->id == $model->id
+        if ($user->id == $model->id
+            // An admin doesn't change another admin's account; an operator does.
+            || $user->outranks($model)
             // Do not allow regular users edit admin profiles.
             || ($user->hasPermission(User::PERM_EDIT_USERS) && !$model->isAdmin())
         ) {
@@ -87,8 +88,8 @@ class UserPolicy
      */
     public function delete(User $user, User $model)
     {
-        // Not oneself: nobody would be left to sign in as them.
-        if ($user->isAdmin() && $user->id != $model->id) {
+        // Not oneself (nobody would be left to sign in as them), nor an equal.
+        if ($user->outranks($model)) {
             return true;
         } else {
             return false;
@@ -104,7 +105,7 @@ class UserPolicy
      */
     public function changeRole(User $user, User $model)
     {
-        if ($user->isAdmin()) {
+        if ($user->outranks($model)) {
             return true;
         } else {
             return false;

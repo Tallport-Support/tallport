@@ -2,7 +2,7 @@
      text when leaving the field. own: what one sets for oneself (/profile). manage: an account in
      Settings › Users › the person: who they are, the account, their other pages, then its actions. --}}
 <x-fruit::page width="narrow" x-data="tallportUserProfile" data-user_id="{{ $user->id }}">
-@php $oneself = $this->isOneself(); @endphp
+@php $oneself = $this->isOneself(); $can_change = $this->canChange(); @endphp
 @if ($mode == 'own')
     <x-fruit::form-section :title="__('Profile')" :level="3">
         @action('user.edit.before_first_name', $user)
@@ -67,7 +67,7 @@
         </div>
     </x-fruit::form-section>
 
-    <x-fruit::form-section :title="__('Account')" :level="3">
+    <x-fruit::form-section :title="__('Account')" :level="3" :footer="$can_change ? null : __('You can\'t change another administrator\'s account.')">
         @if ($user->invite_state == App\User::INVITE_STATE_SENT || $user->invite_state == App\User::INVITE_STATE_NOT_INVITED)
             <div class="f-form-row">
                 <span class="f-label">{{ __('Status') }}</span>
@@ -78,22 +78,29 @@
         @action('user.edit.before_first_name', $user)
 
         <x-fruit::field :label="__('First Name')" layout="row">
-            <x-fruit::input id="first_name" wire:model.live.blur="first_name" maxlength="20" required />
+            <x-fruit::input id="first_name" wire:model.live.blur="first_name" maxlength="20" required :readonly="!$can_change" />
         </x-fruit::field>
 
         <x-fruit::field :label="__('Last Name')" layout="row">
-            <x-fruit::input id="last_name" wire:model.live.blur="last_name" maxlength="30" />
+            <x-fruit::input id="last_name" wire:model.live.blur="last_name" maxlength="30" :readonly="!$can_change" />
         </x-fruit::field>
 
         @action('user.edit.before_email', $user)
 
         <x-fruit::field :label="__('Email')" layout="row">
-            <x-fruit::input type="email" id="email" wire:model.live.blur="email" maxlength="100" required :readonly="!auth()->user()->isAdmin()" />
+            <x-fruit::input type="email" id="email" wire:model.live.blur="email" maxlength="100" required :readonly="!auth()->user()->isAdmin() || !$can_change" />
         </x-fruit::field>
 
         @if (auth()->user()->isAdmin())
             @if ($oneself)
                 <x-fruit::field :label="__('Role')" layout="row" :description="__('You can\'t change your own role.')">
+                    <x-fruit::select id="role" wire:model.live="role" disabled>
+                        <option value="{{ App\User::ROLE_USER }}">{{ __('User') }}</option>
+                        <option value="{{ App\User::ROLE_ADMIN }}">{{ __('Administrator') }}</option>
+                    </x-fruit::select>
+                </x-fruit::field>
+            @elseif (!$can_change)
+                <x-fruit::field :label="__('Role')" layout="row">
                     <x-fruit::select id="role" wire:model.live="role" disabled>
                         <option value="{{ App\User::ROLE_USER }}">{{ __('User') }}</option>
                         <option value="{{ App\User::ROLE_ADMIN }}">{{ __('Administrator') }}</option>
@@ -111,7 +118,7 @@
 
             @if ($user->invite_state == App\User::INVITE_STATE_ACTIVATED)
                 <x-fruit::field :label="__('Disabled')" :description="$oneself ? __('You can\'t turn off your own sign-in.') : __('Prevent user from logging in')" layout="row">
-                    <x-fruit::switch id="user_disabled" wire:model.live="disabled" :disabled="$oneself" />
+                    <x-fruit::switch id="user_disabled" wire:model.live="disabled" :disabled="$oneself || !$can_change" />
                 </x-fruit::field>
             @endif
 
@@ -122,7 +129,7 @@
             @endif
 
             <x-fruit::field :label="__('AI Drafts Per Day')" :description="__('Leave blank to use the limit in the AI settings. 0 turns drafting off.')" layout="row">
-                <x-fruit::number id="ai_drafts_per_day" wire:model.live.blur="ai_drafts_per_day" min="0" max="10000" :placeholder="App\Ai\Settings::draftsPerDay(null)" />
+                <x-fruit::number id="ai_drafts_per_day" wire:model.live.blur="ai_drafts_per_day" min="0" max="10000" :placeholder="App\Ai\Settings::draftsPerDay(null)" :readonly="!$can_change" />
             </x-fruit::field>
         @endif
     </x-fruit::form-section>
@@ -144,11 +151,11 @@
         <x-fruit::form-section>
             <div class="f-form-row">
                 @if ($user->invite_state == App\User::INVITE_STATE_ACTIVATED)
-                    <button type="button" class="f-button f-button--ghost reset-password-trigger" @click="resetPassword($el)">{{ __('Reset Password') }}</button>
+                    <button type="button" class="f-button f-button--ghost reset-password-trigger" @click="resetPassword($el)" @disabled(!$can_change)>{{ __('Reset Password') }}</button>
                 @elseif ($user->invite_state == App\User::INVITE_STATE_SENT)
-                    <button type="button" class="f-button f-button--ghost resend-invite-trigger" @click="sendInvite($el, true)">{{ __('Re-send Invite Email') }}</button>
+                    <button type="button" class="f-button f-button--ghost resend-invite-trigger" @click="sendInvite($el, true)" @disabled(!$can_change)>{{ __('Re-send Invite Email') }}</button>
                 @else
-                    <button type="button" class="f-button f-button--ghost send-invite-trigger" @click="sendInvite($el, false)">{{ __('Send Invite Email') }}</button>
+                    <button type="button" class="f-button f-button--ghost send-invite-trigger" @click="sendInvite($el, false)" @disabled(!$can_change)>{{ __('Send Invite Email') }}</button>
                 @endif
             </div>
         </x-fruit::form-section>
@@ -162,13 +169,18 @@
                         <button type="button" id="delete-user-trigger" class="f-button f-button--danger" disabled aria-describedby="delete-user-oneself">{{ __('Delete User') }}</button>
                         <p class="f-help" id="delete-user-oneself">{{ __('You can\'t remove yourself.') }}</p>
                     </div>
+                @elseif (!$can_change)
+                    <div>
+                        <button type="button" id="delete-user-trigger" class="f-button f-button--danger" disabled aria-describedby="delete-user-equal">{{ __('Delete User') }}</button>
+                        <p class="f-help" id="delete-user-equal">{{ __('You can\'t change another administrator\'s account.') }}</p>
+                    </div>
                 @else
                     <button type="button" id="delete-user-trigger" class="f-button f-button--danger" @click="$dispatch('fruit-dialog-open', { name: 'delete-user' })">{{ __('Delete User') }}</button>
                 @endif
             </div>
         </x-fruit::form-section>
 
-        @unless ($oneself)
+        @if (!$oneself && $can_change)
             <x-fruit::dialog name="delete-user" aria-labelledby="delete-user-title">
                 <form x-data="{ typed: '' }" @submit.prevent="deleteUser($el)">
                     <header class="f-dialog__header"><h2 id="delete-user-title">{{ __('Delete User') }}</h2></header>
@@ -195,7 +207,7 @@
                     </footer>
                 </form>
             </x-fruit::dialog>
-        @endunless
+        @endif
     @endif
 @endif
 </x-fruit::page>

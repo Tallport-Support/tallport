@@ -2198,6 +2198,7 @@
     "1 page|:count pages": ":count бет",
     "(You)": "(Сіз)",
     "You can't change your own role.": "Өз рөліңізді өзгерте алмайсыз.",
+    "You can't change another administrator's account.": "Басқа әкімшінің тіркелгісін өзгерте алмайсыз.",
     "You can't turn off your own sign-in.": "Өз кіруіңізді өшіре алмайсыз.",
     "You can't remove yourself.": "Өзіңізді жоя алмайсыз.",
     "Your Profile": "Сіздің Профиліңіз",

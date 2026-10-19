@@ -1804,6 +1804,7 @@
     "1 page|:count pages": ":count stranica|:count stranice|:count stranica",
     "(You)": "(Vi)",
     "You can't change your own role.": "Ne možete promijeniti vlastitu ulogu.",
+    "You can't change another administrator's account.": "Ne možete promijeniti račun drugog administratora.",
     "You can't turn off your own sign-in.": "Ne možete isključiti vlastitu prijavu.",
     "You can't remove yourself.": "Ne možete ukloniti sami sebe.",
     "Your Profile": "Vaš Profil",

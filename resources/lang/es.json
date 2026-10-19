@@ -1804,6 +1804,7 @@
     "1 page|:count pages": "1 página|:count páginas",
     "(You)": "(Usted)",
     "You can't change your own role.": "No puede cambiar su propio rol.",
+    "You can't change another administrator's account.": "No puede cambiar la cuenta de otro administrador.",
     "You can't turn off your own sign-in.": "No puede desactivar su propio inicio de sesión.",
     "You can't remove yourself.": "No puede eliminarse a sí mismo.",
     "Your Profile": "Su Perfil",

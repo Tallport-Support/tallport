@@ -1804,6 +1804,7 @@
     "1 page|:count pages": ":count sayfa",
     "(You)": "(Siz)",
     "You can't change your own role.": "Kendi rolünüzü değiştiremezsiniz.",
+    "You can't change another administrator's account.": "Başka bir yöneticinin hesabını değiştiremezsiniz.",
     "You can't turn off your own sign-in.": "Kendi oturum açmanızı kapatamazsınız.",
     "You can't remove yourself.": "Kendinizi kaldıramazsınız.",
     "Your Profile": "Profiliniz",

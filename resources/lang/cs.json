@@ -1804,6 +1804,7 @@
     "1 page|:count pages": ":count stránka|:count stránky|:count stránek",
     "(You)": "(Vy)",
     "You can't change your own role.": "Nemůžete změnit svou vlastní roli.",
+    "You can't change another administrator's account.": "Nemůžete změnit účet jiného správce.",
     "You can't turn off your own sign-in.": "Nemůžete vypnout své vlastní přihlášení.",
     "You can't remove yourself.": "Nemůžete odebrat sami sebe.",
     "Your Profile": "Váš Profil",

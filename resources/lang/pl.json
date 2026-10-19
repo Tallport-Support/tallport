@@ -1804,6 +1804,7 @@
     "1 page|:count pages": ":count strona|:count strony|:count stron",
     "(You)": "(Ty)",
     "You can't change your own role.": "Nie możesz zmienić własnej roli.",
+    "You can't change another administrator's account.": "Nie możesz zmienić konta innego administratora.",
     "You can't turn off your own sign-in.": "Nie możesz wyłączyć własnego logowania.",
     "You can't remove yourself.": "Nie możesz usunąć samego siebie.",
     "Your Profile": "Twój Profil",

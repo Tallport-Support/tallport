@@ -74,6 +74,7 @@ return array(
     'App\\Console\\Commands\\NostrAnnounce' => $baseDir . '/app/Console/Commands/NostrAnnounce.php',
     'App\\Console\\Commands\\NostrDiagnose' => $baseDir . '/app/Console/Commands/NostrDiagnose.php',
     'App\\Console\\Commands\\NostrListen' => $baseDir . '/app/Console/Commands/NostrListen.php',
+    'App\\Console\\Commands\\Operator' => $baseDir . '/app/Console/Commands/Operator.php',
     'App\\Console\\Commands\\Receive' => $baseDir . '/app/Console/Commands/Receive.php',
     'App\\Console\\Commands\\ReportReplies' => $baseDir . '/app/Console/Commands/ReportReplies.php',
     'App\\Console\\Commands\\Retention' => $baseDir . '/app/Console/Commands/Retention.php',

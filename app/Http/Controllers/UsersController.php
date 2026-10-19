@@ -151,7 +151,10 @@ class UsersController extends Controller
             return redirect()->route('own.profile');
         }
 
-        $this->authorize('update', $user);
+        // Admins see another admin's account as it is, without changing it.
+        if (!auth()->user()->can('update', $user)) {
+            $this->authorize('view', $user);
+        }
 
         $users = $this->getUsersForSidebar($id);
 
@@ -300,6 +303,8 @@ class UsersController extends Controller
                         $response['msg'] = __('User not found');
                     } elseif (!$user->isActive()) {
                         $response['msg'] = __('The user is disabled or deleted.');
+                    } elseif (!$auth_user->outranks($user)) {
+                        $response['msg'] = __('Not enough permissions');
                     } elseif ($user->invite_state == User::INVITE_STATE_ACTIVATED) {
                         $response['msg'] = __('User already accepted invitation');
                     }
@@ -331,6 +336,8 @@ class UsersController extends Controller
                         $response['msg'] = __('User not found');
                     } elseif (!$user->isActive()) {
                         $response['msg'] = __('The user is disabled or deleted.');
+                    } elseif (!$auth_user->outranks($user)) {
+                        $response['msg'] = __('Not enough permissions');
                     }
                 }
 
