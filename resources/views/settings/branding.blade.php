@@ -78,12 +78,15 @@
         </x-fruit::field>
     </x-fruit::form-section>
 
+    {{-- The host's choice (HOSTING.md). --}}
+    @can('operate')
     <x-fruit::form-section :title="__('Widgets')" :level="3">
         <x-fruit::field :label="__('Powered By')" layout="row">
             <x-fruit::switch name="settings[branding.widget_powered_by]" value="1" :checked="(bool) $settings['branding.widget_powered_by']" />
             <x-slot:description>{{ __('Show "Powered by" in widgets for customers (such as the knowledge base widget)') }}</x-slot:description>
         </x-fruit::field>
     </x-fruit::form-section>
+    @endcan
 
     <footer class="f-form-row settings-form__actions">
         <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>

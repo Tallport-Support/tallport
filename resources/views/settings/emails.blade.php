@@ -1,6 +1,8 @@
-<form id="page-form" class="settings-form" method="POST" action="" x-data="{ driver: @js(old('settings.mail_driver', $settings['mail_driver'])) }" x-on:change="Tallport.autoSave($el)">
+<form id="page-form" class="settings-form" method="POST" action="" x-data="{ driver: @js(old('settings.mail_driver', $settings['mail_driver'] ?? '')) }" x-on:change="Tallport.autoSave($el)">
     {{ csrf_field() }}
 
+    {{-- The system's mail and fetching are the operator's (HOSTING.md). --}}
+    @can('operate')
     <x-fruit::form-section :title="__('System Emails')" :level="3" :footer="__('These settings are used to send system emails (alerts to admin and invitation emails to users).').' '.__('If you want to send system emails via webmail providers (Gmail, Yahoo, etc), use only SMTP method and make sure that SMTP username is equal to \'Mail From\', otherwise webmail provider won\'t send emails.')">
         <x-fruit::field :label="__('Mail From')" layout="row">
             <x-fruit::input type="email" name="settings[mail_from]" :value="old('settings.mail_from', $settings['mail_from'])" required autofocus />
@@ -116,6 +118,8 @@
             </x-fruit::select>
         </x-fruit::field>
     </x-fruit::form-section>
+
+    @endcan
 
     <x-fruit::form-section :title="__('No-Reply Addresses')" :level="3">
         <x-fruit::field :label="__('Addresses')">

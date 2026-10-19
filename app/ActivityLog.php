@@ -146,7 +146,8 @@ class ActivityLog extends Activity
         return array_merge(
             [self::NAME_OUT_EMAILS, self::NAME_OUT_TELEGRAM, self::NAME_OUT_NOSTR, self::NAME_OUT_MATRIX],
             array_values(array_diff(self::getLogNames(), $channels)),
-            [self::NAME_APP_LOGS, self::NAME_AI]
+            // The application log is the operator's (HOSTING.md).
+            auth()->user()?->can('operate') ? [self::NAME_APP_LOGS, self::NAME_AI] : [self::NAME_AI]
         );
     }
 

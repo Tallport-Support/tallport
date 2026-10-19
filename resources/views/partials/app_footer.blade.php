@@ -9,7 +9,7 @@
         {{-- Show version to admin only --}}
         @if (Auth::user() && Auth::user()->isAdmin())
             <br/>
-            <a href="{{ route('system') }}">{{ config('app.version') }}</a>
+            @can('operate')<a href="{{ route('system') }}">{{ config('app.version') }}</a>@else{{ config('app.version') }}@endcan
         @endif
     </div>
 @endif

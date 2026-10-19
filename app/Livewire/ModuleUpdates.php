@@ -21,7 +21,7 @@ class ModuleUpdates extends Component
 
     public function render()
     {
-        abort_unless(auth()->user() && auth()->user()->isAdmin(), 403);
+        abort_unless(auth()->user() && auth()->user()->can('operate'), 403);
 
         $updates = Module::availableUpdates();
         $this->dispatch('module-updates', versions: collect($updates)->map(fn ($update) => $update['version'])->all());

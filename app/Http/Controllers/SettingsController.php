@@ -105,10 +105,11 @@ class SettingsController extends Controller
                             'smtp'     => 'SMTP',
                         ] + \App\Misc\MailProviders::NAMES,
                     ],
-                    'validator_rules' => [
+                    // The system's mail is the operator's (HOSTING.md); the no-reply addresses aren't.
+                    'validator_rules' => auth()->user()?->can('operate') ? [
                         'settings.mail_host' => 'safehost',
                         'settings.mail_from' => 'required|email',
-                    ] + \App\Misc\MailProviders::systemRules(),
+                    ] + \App\Misc\MailProviders::systemRules() : [],
                     'settings' => \App\Misc\MailProviders::systemSettingsParams() + [
                         'fetch_schedule' => [
                             'env' => 'APP_FETCH_SCHEDULE',
@@ -301,6 +302,10 @@ class SettingsController extends Controller
                 $settings += [
                     'fetch_schedule'  => config('app.fetch_schedule'),
                 ];
+                // The system's mail and fetching are the operator's (HOSTING.md).
+                if (!auth()->user()?->can('operate')) {
+                    $settings = ['noreply_emails' => $settings['noreply_emails']];
+                }
                 break;
             case 'alerts':
                 $settings = Option::getOptions([
@@ -367,6 +372,10 @@ class SettingsController extends Controller
                 $settings = [];
                 foreach (\App\Misc\Branding::SETTINGS as $name) {
                     $settings[$name] = \App\Misc\Branding::get($name, $name == 'branding.widget_powered_by' ? true : '');
+                }
+                // "Powered by" is the host's choice (HOSTING.md).
+                if (!auth()->user()?->can('operate')) {
+                    unset($settings['branding.widget_powered_by']);
                 }
                 break;
             default:
@@ -737,6 +746,10 @@ class SettingsController extends Controller
 
             // Test sending emails from mailbox
             case 'send_test':
+                // Through the system's mail: the operator's (HOSTING.md).
+                if (!auth()->user()->can('operate')) {
+                    abort(403);
+                }
 
                 if (empty($request->to)) {
                     $response['msg'] = __('Please specify recipient of the test email');

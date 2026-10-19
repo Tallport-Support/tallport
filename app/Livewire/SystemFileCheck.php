@@ -49,7 +49,7 @@ class SystemFileCheck extends Component
 
     protected function authorizeAdmin()
     {
-        abort_unless(auth()->user() && auth()->user()->isAdmin(), 403);
+        abort_unless(auth()->user() && auth()->user()->can('operate'), 403);
     }
 
     public function render()

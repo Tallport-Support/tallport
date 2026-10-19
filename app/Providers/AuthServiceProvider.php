@@ -29,6 +29,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        // What only the highest-ranking administrator changes (HOSTING.md).
+        \Gate::define('operate', fn ($user) => $user->canOperate());
     }
 }

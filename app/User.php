@@ -247,6 +247,16 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
     }
 
     /**
+     * Whether this user may change what only the highest-ranking administrator may (the Gate
+     * "operate", HOSTING.md): with an operator, only the operator; without one, every admin.
+     */
+    public function canOperate()
+    {
+        return $this->isAdmin() && ($this->isOperator()
+            || !self::where('operator', true)->where('role', self::ROLE_ADMIN)->where('status', '!=', self::STATUS_DELETED)->exists());
+    }
+
+    /**
      * Whether this user may change the other's account (sign-in, role, deleting it):
      * an admin outranks users, an operator outranks admins too. Equals don't, so an
      * admin can't take over or remove another admin; the command line still can.

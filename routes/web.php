@@ -55,7 +55,7 @@ if (config('app.dashboard_path')) {
 	Route::get('/', config('app.home_controller'));
 }
 Route::get('/'.config('app.dashboard_path'), 'SecureController@dashboard')->name('dashboard');
-Route::get('/app-logs/app', ['uses' => 'AppLogsController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.app');
+Route::get('/app-logs/app', ['uses' => 'AppLogsController@index', 'middleware' => ['auth', 'roles', 'can:operate'], 'roles' => ['admin']])->name('logs.app');
 Route::get('/app-logs/ai', ['uses' => 'AiLogController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.ai');
 Route::get('/app-logs/out_telegram', ['uses' => 'ChannelLogsController@telegram', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.telegram');
 Route::get('/app-logs/out_nostr', ['uses' => 'ChannelLogsController@nostr', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.nostr');
@@ -199,17 +199,18 @@ Route::post('/customers/{id}/merge', 'CustomersController@mergeSave');
 
 // Modules
 // There is a /public/modules folder, so route must have a different name
-Route::get('/modules/list', ['uses' => 'ModulesController@modules', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('modules');
-Route::get('/modules/list/{alias}', ['uses' => 'ModulesController@modules', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('modules.module');
-Route::post('/modules/ajax', ['uses' => 'ModulesController@ajax', 'laroute' => true, 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('modules.ajax');
+// The operator's (HOSTING.md): the Gate "operate" lets every admin through when there's no operator.
+Route::get('/modules/list', ['uses' => 'ModulesController@modules', 'middleware' => ['auth', 'roles', 'can:operate'], 'roles' => ['admin']])->name('modules');
+Route::get('/modules/list/{alias}', ['uses' => 'ModulesController@modules', 'middleware' => ['auth', 'roles', 'can:operate'], 'roles' => ['admin']])->name('modules.module');
+Route::post('/modules/ajax', ['uses' => 'ModulesController@ajax', 'laroute' => true, 'middleware' => ['auth', 'roles', 'can:operate'], 'roles' => ['admin']])->name('modules.ajax');
 
 // System
-Route::get('/system/status', ['uses' => 'SystemController@status', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('system');
-Route::get('/system/tools', ['uses' => 'SystemController@tools', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('system.tools');
-Route::post('/system/tools', ['uses' => 'SystemController@toolsExecute', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('system.tools.action');
-Route::post('/system/ajax', ['uses' => 'SystemController@ajax', 'laroute' => true, 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('system.ajax');
-Route::post('/system/action', ['uses' => 'SystemController@action', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('system.action');
-Route::get('/system/ajax-html/{action}/{param?}', ['uses' => 'SystemController@ajaxHtml', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('system.ajax_html');
+Route::get('/system/status', ['uses' => 'SystemController@status', 'middleware' => ['auth', 'roles', 'can:operate'], 'roles' => ['admin']])->name('system');
+Route::get('/system/tools', ['uses' => 'SystemController@tools', 'middleware' => ['auth', 'roles', 'can:operate'], 'roles' => ['admin']])->name('system.tools');
+Route::post('/system/tools', ['uses' => 'SystemController@toolsExecute', 'middleware' => ['auth', 'roles', 'can:operate'], 'roles' => ['admin']])->name('system.tools.action');
+Route::post('/system/ajax', ['uses' => 'SystemController@ajax', 'laroute' => true, 'middleware' => ['auth', 'roles', 'can:operate'], 'roles' => ['admin']])->name('system.ajax');
+Route::post('/system/action', ['uses' => 'SystemController@action', 'middleware' => ['auth', 'roles', 'can:operate'], 'roles' => ['admin']])->name('system.action');
+Route::get('/system/ajax-html/{action}/{param?}', ['uses' => 'SystemController@ajaxHtml', 'middleware' => ['auth', 'roles', 'can:operate'], 'roles' => ['admin']])->name('system.ajax_html');
 
 // Uploads
 Route::post('/uploads/upload', ['uses' => 'SecureController@upload', 'laroute' => true])->middleware('throttle:100,1')->name('uploads.upload');

@@ -82,7 +82,7 @@ the command line.
 
 So that Tallport doesn't need testing twice, operator mode is one question
 the code asks: can this user change what only the highest-ranking
-administrator may change (a gate such as `can('operate')`)?
+administrator may change (the Gate `operate`, `User::canOperate()`)?
 
 * Without an operator, it's true for every administrator.
 * With one, it's true only for the operator.
@@ -91,6 +91,9 @@ Each locked-down page or setting asks that question and nothing else. Nothing
 outside the gate checks whether an operator exists. So the gate is tested in
 both situations, each locked-down entry point gets one test that it's refused
 to a customer administrator, and the rest of the suite runs as it does now.
+
+The one exception is AI Provided by the Host, which only an actual operator
+sees: without an operator there is no host to provide AI.
 
 ## Updates
 
@@ -103,17 +106,18 @@ in each installation, one at a time so a bad release stops early.
 
 The customer's administrators manage their help desk: users, mailboxes,
 mailbox connections, channels, workflows, saved replies, the knowledge base,
-retention, appearance, API keys and webhooks. The settings below run on your
-servers or cost you money, so in operator mode only the operator changes them.
+retention, appearance, alerts, API keys and webhooks. The pages and settings
+below run on your servers, so in operator mode only the operator sees and
+changes them. The others don't see them, and the server refuses them.
 
 | Where | What | Why |
 |---|---|---|
 | Modules | Activating, deactivating, deleting and updating modules | A module is PHP code that runs on your server. Updating downloads code from the module's own address. |
 | System » Tools | Migrate database, clear cache | They are maintenance work; you run them during updates. |
-| System » Status | Updates, the server's paths, PHP and permission fixes | They describe your server. The customer can't act on them. |
+| System » Status | The whole page: updates, background tasks, failed jobs, the server's paths, PHP and permission fixes | They describe your server. The customer can't act on them. |
 | Logs | Application log | It shows server paths and stack traces. |
-| Settings » Mail Settings | The system's outgoing mail (SMTP) and the fetch schedule | You provide the mail server for notifications. The fetch schedule is load on your server. |
-| Settings » Alerts | Log and fetch alerts about the server | They go to you, not the customer. |
+| Settings » Mail Settings | The system's outgoing mail (Mail From, the send method and its server or service, Send Test) and the fetch schedule | You provide the mail server for notifications. The fetch schedule is load on your server. The no-reply addresses stay the customer's. |
+| Settings » AI Provided by the Host | Your AI keys | See [AI](#ai). |
 | Settings » Appearance | "Powered by" in the chat widget | Your choice as the host. |
 | `.env` | Everything in it | Its values are security settings (trusted hosts, CSP, frame options, allowed extensions) and paths. |
 
@@ -121,6 +125,8 @@ Settings a customer can keep:
 
 * **General:** company name, locale, time zone, conversation numbers and
   email history.
+* **Alerts:** fetch and log alerts are about their own mailboxes and sending,
+  and the application log isn't offered there.
 * **Retention.**
 * **API & Webhooks**, apart from the CORS hosts.
 
@@ -172,20 +178,8 @@ can.
 
 Changes Tallport needs before it can be hosted like this.
 
-* **The gate** (`operate`, see
-  [Keeping it to one place](#keeping-it-to-one-place)), tested with and
-  without an operator.
 * **The operator in the user list.** Shown as the operator, and not counted
   as one of the customer's users.
-* **Operator's pages and settings.** Behind the gate, checked in the
-  controller (not only by hiding the menu item):
-  * Modules;
-  * System » Tools;
-  * Update Now and the server details on System » Status;
-  * the application log;
-  * Settings » Mail Settings' system mail and fetch schedule;
-  * Settings » Alerts;
-  * the chat widget's "Powered by".
 * **AI billing summary.** A monthly total of tokens on the host's keys per
   model, from the command line, so hosts don't have to query the AI log.
 * **Settings out of `.env`.** General (custom number, message size, email
