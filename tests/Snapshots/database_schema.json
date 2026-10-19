@@ -739,6 +739,11 @@
                 "default": "NULL",
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
+            },
+            "host": {
+                "type": "tinyint(1)",
+                "nullable": false,
+                "default": "0"
             }
         },
         "indexes": {

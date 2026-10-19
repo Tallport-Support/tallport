@@ -24,11 +24,11 @@
 
 @if ($sidebar_user->isAdmin())
     @php
-        $settings_icons = ['general' => 'settings', 'emails' => 'mail', 'alerts' => 'bell-ring', 'ai' => 'sparkles', 'api' => 'webhook', 'retention' => 'archive', 'branding' => 'palette'];
+        $settings_icons = ['general' => 'settings', 'emails' => 'mail', 'alerts' => 'bell-ring', 'ai' => 'sparkles', 'ai_host' => 'server', 'api' => 'webhook', 'retention' => 'archive', 'branding' => 'palette'];
     @endphp
     <p class="f-sidebar__heading">{{ __('Settings') }}</p>
     @foreach (app(App\Http\Controllers\SettingsController::class)->getSections() as $settings_name => $settings_info)
-        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('settings/'.$settings_name)" :href="route('settings', ['section' => $settings_name])" :aria-current="$settings_route == 'settings' && $settings_section == $settings_name ? 'page' : ($settings_route == 'settings.api.webhook' && $settings_name == 'api' ? 'true' : null)"><x-slot:icon><x-dynamic-component :component="'icon.'.($settings_icons[$settings_name] ?? 'settings')" class="f-icon" aria-hidden="true" /></x-slot:icon>{{ $settings_info['title'] }}</x-fruit::sidebar-item>
+        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('settings/'.$settings_name, ...(in_array($settings_name, ['ai', 'ai_host']) ? ['settings/partials/ai_keys'] : []))" :href="route('settings', ['section' => $settings_name])" :aria-current="$settings_route == 'settings' && $settings_section == $settings_name ? 'page' : ($settings_route == 'settings.api.webhook' && $settings_name == 'api' ? 'true' : null)"><x-slot:icon><x-dynamic-component :component="'icon.'.($settings_icons[$settings_name] ?? 'settings')" class="f-icon" aria-hidden="true" /></x-slot:icon>{{ $settings_info['title'] }}</x-fruit::sidebar-item>
     @endforeach
 @endif
 

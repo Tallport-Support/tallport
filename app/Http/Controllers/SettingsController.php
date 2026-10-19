@@ -184,7 +184,7 @@ class SettingsController extends Controller
                 $params = [
                     'template_vars' => [
                         'ai_languages' => \App\Ai\Settings::displayNames(),
-                        'ai_providers' => \App\Ai\Settings::providers(),
+                        'ai_providers' => \App\Ai\Settings::providers(\App\Ai\Settings::OWN),
                         'ai_features'  => array_combine(\App\Ai\Settings::MODEL_FEATURES, [__('Summaries'), __('Translations'), __('Drafts'), __('Language Detection')]),
                     ],
                     'validator_rules' => [
@@ -196,6 +196,26 @@ class SettingsController extends Controller
                     ],
                     'settings' => [
                         'aiassistant.documentation.embedding_api_key' => [
+                            'safe_password' => true,
+                            'encrypt'       => true,
+                        ],
+                    ],
+                ];
+                break;
+            // The AI keys the host provides (HOSTING.md): the operator's.
+            case 'ai_host':
+                $params = [
+                    'template_vars' => [
+                        'ai_providers' => \App\Ai\Settings::providers(\App\Ai\Settings::HOST),
+                        'ai_features'  => array_combine(\App\Ai\Settings::MODEL_FEATURES, [__('Summaries'), __('Translations'), __('Drafts'), __('Language Detection')]),
+                    ],
+                    'validator_rules' => [
+                        'settings.aiassistant\.host\.providers.*.base_url' => 'nullable|url:http,https',
+                        'settings.aiassistant\.host\.documentation\.embedding_base_url' => 'nullable|url:http,https',
+                        'settings.aiassistant\.host\.daily_tokens'     => 'nullable|integer|min:0|max:1000000000',
+                    ],
+                    'settings' => [
+                        'aiassistant.host.documentation.embedding_api_key' => [
                             'safe_password' => true,
                             'encrypt'       => true,
                         ],
@@ -298,13 +318,29 @@ class SettingsController extends Controller
                     'alert_logs_period' => config('app.alert_logs_period'),
                 ];
                 break;
+            case 'ai_host':
+                $settings = [];
+                foreach (auth()->user()?->isOperator() ? [\App\Ai\Settings::HOST] : [] as $set) {
+                    $settings += [
+                        $set.'providers'                        => \App\Ai\Settings::providers($set),
+                        $set.'models'                           => (array) Option::get($set.'models', []),
+                        $set.'daily_tokens'                     => \App\Ai\Settings::dailyTokens($set),
+                        $set.'documentation.embedding_provider' => \App\Ai\Settings::embeddingProviderIsSame($set) ? 'same' : \App\Ai\Settings::embeddingProvider($set),
+                        $set.'documentation.embedding_api_key'  => \Helper::decrypt(Option::get($set.'documentation.embedding_api_key', '')),
+                        $set.'documentation.embedding_base_url' => Option::get($set.'documentation.embedding_base_url', ''),
+                        $set.'documentation.embedding_model'    => Option::get($set.'documentation.embedding_model', ''),
+                    ];
+                }
+                break;
             case 'ai':
-                $settings = [
-                    'aiassistant.providers'                       => \App\Ai\Settings::providers(),
+                $own = \App\Ai\Settings::OWN;
+                $settings += [
+                    'aiassistant.own_keys'                        => (bool) Option::get('aiassistant.own_keys'),
+                    'aiassistant.providers'                       => \App\Ai\Settings::providers($own),
                     'aiassistant.models'                          => (array) Option::get('aiassistant.models', []),
-                    'aiassistant.daily_tokens'                    => \App\Ai\Settings::dailyTokens(),
+                    'aiassistant.daily_tokens'                    => \App\Ai\Settings::dailyTokens($own),
                     'aiassistant.translations_per_customer_hour'  => \App\Ai\Settings::translationsPerCustomerHour(),
-                    'aiassistant.documentation.embedding_provider' => \App\Ai\Settings::embeddingProviderIsSame() ? 'same' : \App\Ai\Settings::embeddingProvider(),
+                    'aiassistant.documentation.embedding_provider' => \App\Ai\Settings::embeddingProviderIsSame($own) ? 'same' : \App\Ai\Settings::embeddingProvider($own),
                     'aiassistant.documentation.embedding_api_key' => \Helper::decrypt(Option::get('aiassistant.documentation.embedding_api_key', '')),
                     'aiassistant.documentation.embedding_base_url' => Option::get('aiassistant.documentation.embedding_base_url', ''),
                     'aiassistant.documentation.embedding_model'   => Option::get('aiassistant.documentation.embedding_model', ''),
@@ -351,10 +387,15 @@ class SettingsController extends Controller
             'emails'  => ['title' => __('Mail Settings'), 'icon' => 'transfer', 'order' => 200],
             'alerts'  => ['title' => __('Alerts'), 'icon' => 'bell', 'order' => 300],
             'ai'      => ['title' => __('AI'), 'icon' => 'ai', 'order' => 400],
+            // The operator's (HOSTING.md).
+            'ai_host' => ['title' => __('AI Provided by the Host'), 'icon' => 'ai', 'order' => 410],
             'api'     => ['title' => __('API & Webhooks'), 'icon' => 'transfer', 'order' => 600],
             'retention' => ['title' => __('Retention'), 'icon' => 'archive', 'order' => 620],
             'branding' => ['title' => __('Appearance'), 'icon' => 'adjust', 'order' => 650],
         ];
+        if (!auth()->user()?->isOperator()) {
+            unset($sections['ai_host']);
+        }
         $sections = \Eventy::filter('settings.sections', $sections);
 
         return $sections;
@@ -373,8 +414,8 @@ class SettingsController extends Controller
             abort(404);
         }
 
-        if ($section == 'ai') {
-            $providers = array_column(\App\Ai\Settings::providers(), 'id');
+        if ($section == 'ai' || $section == 'ai_host') {
+            $providers = $this->aiProviderIds();
             $this->normalizeAiSettings(request());
         }
         if ($section == 'branding') {
@@ -392,10 +433,10 @@ class SettingsController extends Controller
 
         // Saved as it changes: a provider added or removed shows on a reload (the form's new
         // provider would otherwise be sent, and added, again).
-        if ($section == 'ai' && request()->ajax() && $response instanceof \Illuminate\Http\JsonResponse
+        if (($section == 'ai' || $section == 'ai_host') && request()->ajax() && $response instanceof \Illuminate\Http\JsonResponse
             && $response->getData(true)['status'] == 'success') {
             \Option::$cache = [];
-            if ($providers != array_column(\App\Ai\Settings::providers(), 'id')) {
+            if ($providers != $this->aiProviderIds()) {
                 $response->setData(['status' => 'success', 'reload' => true]);
             }
         }
@@ -437,16 +478,26 @@ class SettingsController extends Controller
     }
 
     /**
-     * The AI providers as stored: a masked key keeps the key, removed ones go, a new one
-     * (with a key, or keyless) gets the next id; at least one is kept.
+     * The providers of both sets of AI keys, by id (a page reloads when they change).
      */
-    protected function normalizeAiProviders(array $input)
+    protected function aiProviderIds()
     {
-        $current = \App\Ai\Settings::providers();
+        return array_merge(array_column(\App\Ai\Settings::providers(\App\Ai\Settings::OWN), 'id'), array_column(\App\Ai\Settings::providers(\App\Ai\Settings::HOST), 'id'));
+    }
+
+    /**
+     * The AI providers of a set as stored: a masked key keeps the key, removed ones go, a new one
+     * (with a key, or keyless) gets the next id (the host's h1, h2…, apart from the own p1, p2…);
+     * the own set keeps at least one, the host's may be emptied.
+     */
+    protected function normalizeAiProviders(array $input, $set = \App\Ai\Settings::OWN)
+    {
+        $current = \App\Ai\Settings::providers($set);
+        $letter = $set == \App\Ai\Settings::HOST ? 'h' : 'p';
         $providers = [];
         foreach ($input as $id => $provider) {
             $provider = (array) $provider;
-            if (!empty($provider['remove']) && count($input) > 1) {
+            if (!empty($provider['remove']) && (count($input) > 1 || $set == \App\Ai\Settings::HOST)) {
                 continue;
             }
             $key = (string) ($provider['api_key'] ?? '');
@@ -462,12 +513,12 @@ class SettingsController extends Controller
                 if ($entry['api_key'] === '' && \App\Ai\Providers::PRESETS[$entry['provider']]['requires_api_key']) {
                     continue;
                 }
-                $id = 'p'.(max(array_map(fn ($id) => (int) substr($id, 1), array_merge(array_keys($current), array_keys($providers), ['p0']))) + 1);
+                $id = $letter.(max(array_map(fn ($id) => (int) substr($id, 1), array_merge(array_keys($current), array_keys($providers), [$letter.'0']))) + 1);
             }
             $providers[$id] = ['id' => $id] + $entry;
         }
 
-        return array_values($providers ?: $current);
+        return array_values($providers ?: ($set == \App\Ai\Settings::HOST ? [] : $current));
     }
 
     /**
@@ -504,22 +555,24 @@ class SettingsController extends Controller
     protected function normalizeAiSettings(Request $request)
     {
         $input = (array) $request->settings;
-        foreach (['aiassistant.documentation.embedding_base_url'] as $name) {
-            if (isset($input[$name])) {
-                $input[$name] = rtrim(trim($input[$name]), '/');
+        // The host's keys are the operator's (HOSTING.md).
+        if (!$request->user()?->isOperator()) {
+            $input = array_filter($input, fn ($name) => !str_starts_with($name, \App\Ai\Settings::HOST), ARRAY_FILTER_USE_KEY);
+        }
+        foreach ([\App\Ai\Settings::OWN, \App\Ai\Settings::HOST] as $set) {
+            if (isset($input[$set.'documentation.embedding_base_url'])) {
+                $input[$set.'documentation.embedding_base_url'] = rtrim(trim($input[$set.'documentation.embedding_base_url']), '/');
             }
-        }
-        foreach (['aiassistant.documentation.embedding_model'] as $name) {
-            if (isset($input[$name])) {
-                $input[$name] = trim($input[$name]);
+            if (isset($input[$set.'documentation.embedding_model'])) {
+                $input[$set.'documentation.embedding_model'] = trim($input[$set.'documentation.embedding_model']);
             }
-        }
-        if (isset($input['aiassistant.providers'])) {
-            $input['aiassistant.providers'] = $this->normalizeAiProviders((array) $input['aiassistant.providers']);
-            $input['aiassistant.models'] = $this->normalizeAiModels((array) ($input['aiassistant.models'] ?? []), $input['aiassistant.providers']);
-        }
-        if (isset($input['aiassistant.documentation.embedding_provider']) && $input['aiassistant.documentation.embedding_provider'] != 'same') {
-            $input['aiassistant.documentation.embedding_provider'] = \App\Ai\Providers::normalize($input['aiassistant.documentation.embedding_provider']);
+            if (isset($input[$set.'providers'])) {
+                $input[$set.'providers'] = $this->normalizeAiProviders((array) ($input[$set.'providers'] ?? []), $set);
+                $input[$set.'models'] = $this->normalizeAiModels((array) ($input[$set.'models'] ?? []), $input[$set.'providers']);
+            }
+            if (isset($input[$set.'documentation.embedding_provider']) && $input[$set.'documentation.embedding_provider'] != 'same') {
+                $input[$set.'documentation.embedding_provider'] = \App\Ai\Providers::normalize($input[$set.'documentation.embedding_provider']);
+            }
         }
         foreach ([
             'aiassistant.documentation.chunk_size'       => [500, 20000],
@@ -555,7 +608,7 @@ class SettingsController extends Controller
 
         $request = \Eventy::filter('settings.before_save', $request, $section, $settings);
 
-        $embedding_fingerprint = $section == 'ai' ? \App\Ai\Documents::embeddingFingerprint() : null;
+        $embedding_fingerprint = in_array($section, ['ai', 'ai_host']) ? \App\Ai\Documents::embeddingFingerprint() : null;
 
         $cc_required = false;
         $restart_workers = false;

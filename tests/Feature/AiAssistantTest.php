@@ -942,6 +942,73 @@ class AiAssistantTest extends FeatureTestCase
      * Providers as stored: one without an ID, or with one taken, is left out; an
      * OpenAI-compatible one gets its address (trailing slash dropped).
      */
+    /**
+     * The keys the host provides (HOSTING.md): set by the operator only, used until the
+     * installation chooses its own; each call records whose keys it ran on.
+     */
+    public function testHostKeys()
+    {
+        $this->configureAi();
+        $this->assertFalse(Settings::usesHost(), 'Without a host\'s keys: the own, as always.');
+        $operator = $this->createAdmin();
+        $operator->operator = true;
+        $operator->save();
+
+        $this->actingAs($this->admin)->get('/app-settings/ai')->assertOk()->assertDontSee('AI Provided by the Host')->assertDontSee('Use Your Own API Keys');
+        $this->actingAs($this->admin)->get('/app-settings/ai_host')->assertNotFound();
+
+        $this->actingAs($operator)->get('/app-settings/ai_host')->assertOk()->assertSee('Embedding Provider');
+        $this->postForm($operator, '/app-settings/ai_host', ['settings' => [
+            'aiassistant.host.providers'    => ['new' => ['provider' => 'openai', 'api_key' => 'hostsecret']],
+            'aiassistant.host.models'       => ['summaries' => ['primary' => ['provider' => 'h1', 'model' => 'host-model']]],
+            'aiassistant.host.daily_tokens' => 1000,
+        ]])->assertRedirect();
+        Option::$cache = [];
+        $this->assertSame(['h1'], array_keys(Settings::providers(Settings::HOST)));
+        $this->assertTrue(Settings::usesHost());
+        $this->assertSame([['tallport-h1', 'host-model']], Settings::attempts('summaries'));
+        $this->assertSame(1000, Settings::dailyTokens());
+        $this->assertSame('sk-test', Settings::apiKey(Settings::OWN), 'The own keys are kept.');
+
+        // A customer's administrator sees the choice, not the host's keys, and can't change them.
+        $this->actingAs($this->admin)->get('/app-settings/ai')->assertOk()->assertSee('Use Your Own API Keys')->assertDontSee('AI Provided by the Host');
+        $this->postForm($this->admin, '/app-settings/ai', ['settings' => [
+            'aiassistant.host.providers' => ['h1' => ['provider' => 'openai', 'api_key' => 'mine']],
+            'aiassistant.providers'      => ['p1' => ['provider' => 'openai', 'api_key' => '******']],
+        ]]);
+        $this->postForm($this->admin, '/app-settings/ai_host', ['settings' => [
+            'aiassistant.host.providers' => ['h1' => ['provider' => 'openai', 'api_key' => 'mine']],
+        ]])->assertNotFound();
+        Option::$cache = [];
+        $this->assertSame('hostsecret', Settings::apiKey(Settings::HOST));
+
+        // Each call records whose keys it ran on; the host's key is redacted from errors.
+        $usage = \App\Ai\Usage::record((object) ['usage' => new \Laravel\Ai\Responses\Data\TextUsage(1, 1)], \App\Ai\Usage::FEATURE_TRANSLATION, null, $this->mailbox->id);
+        $this->assertTrue((bool) $usage->fresh()->host);
+        $this->assertSame('Refused: [redacted]', \App\Ai\Usage::redact('Refused: hostsecret'));
+
+        // Their own keys instead.
+        $this->postForm($this->admin, '/app-settings/ai', ['settings' => [
+            'aiassistant.own_keys'  => 1,
+            'aiassistant.providers' => ['p1' => ['provider' => 'openai', 'api_key' => '******']],
+            'aiassistant.models'    => ['summaries' => ['primary' => ['provider' => 'p1', 'model' => 'own-model']]],
+            'aiassistant.daily_tokens' => 5,
+        ]]);
+        Option::$cache = [];
+        $this->assertFalse(Settings::usesHost());
+        $this->assertSame([['tallport-p1', 'own-model']], Settings::attempts('summaries'));
+        $this->assertSame(5, Settings::dailyTokens());
+        $usage = \App\Ai\Usage::record((object) ['usage' => new \Laravel\Ai\Responses\Data\TextUsage(1, 1)], \App\Ai\Usage::FEATURE_TRANSLATION, null, $this->mailbox->id);
+        $this->assertFalse((bool) $usage->fresh()->host);
+
+        // The operator can take the host's keys away.
+        $this->postForm($operator, '/app-settings/ai_host', ['settings' => [
+            'aiassistant.host.providers' => ['h1' => ['provider' => 'openai', 'api_key' => '******', 'remove' => 1]],
+        ]]);
+        Option::$cache = [];
+        $this->assertSame([], Settings::providers(Settings::HOST));
+    }
+
     public function testProvidersAsStored()
     {
         Option::set('aiassistant.providers', [

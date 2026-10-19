@@ -95,6 +95,8 @@ class Usage extends Model
             'input_tokens'    => $known ? (int) $usage->inputTokens : null,
             'output_tokens'   => $known ? (int) $usage->outputTokens : null,
             'items'           => max(1, (int) $items),
+            // On the host's keys (HOSTING.md): what the host bills.
+            'host'            => Settings::usesHost(),
         ], $call));
     }
 
@@ -105,9 +107,12 @@ class Usage extends Model
     public static function redact($message)
     {
         $message = (string) $message;
-        $keys = [\Helper::decrypt(\Option::get('aiassistant.documentation.embedding_api_key', ''))];
-        foreach (Settings::providers() as $provider) {
-            $keys[] = \Helper::decrypt($provider['api_key']);
+        $keys = [];
+        foreach ([Settings::OWN, Settings::HOST] as $set) {
+            $keys[] = \Helper::decrypt(\Option::get($set.'documentation.embedding_api_key', ''));
+            foreach (Settings::providers($set) as $provider) {
+                $keys[] = \Helper::decrypt($provider['api_key']);
+            }
         }
         foreach ((array) \Option::get('aiassistant.customer_context_secret_key', []) as $secret) {
             $keys[] = \Helper::decrypt($secret);

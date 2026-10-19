@@ -67,15 +67,40 @@ class Settings
     const MODEL_FEATURES = ['summaries', 'translations', 'drafts', 'language'];
 
     /**
+     * The two sets of AI keys (providers, models, the embedding provider, the daily token limit):
+     * the installation's own (aiassistant.*), and the one its host provides (aiassistant.host.*,
+     * set by the operator, HOSTING.md). The host's is used while it's set up and the installation
+     * hasn't chosen its own keys (aiassistant.own_keys); without one, the own, as always.
+     */
+    const OWN = 'aiassistant.';
+    const HOST = 'aiassistant.host.';
+
+    public static function usesHost()
+    {
+        return !\Option::get('aiassistant.own_keys') && self::isConfigured(self::HOST);
+    }
+
+    /**
+     * A set (OWN or HOST); null: the one in use.
+     */
+    public static function set($set = null)
+    {
+        return $set ?? (self::usesHost() ? self::HOST : self::OWN);
+    }
+
+    /**
      * The providers set up (aiassistant.providers): id, provider (a Providers::PRESETS key),
      * api_key (encrypted), base_url, fast_mode (Providers::fastTierOptions(), where the
      * provider has it; off unless switched on). Before there were several: the one provider of the
      * aiassistant.provider, api_key and base_url options.
      */
-    public static function providers()
+    public static function providers($set = null)
     {
-        $providers = \Option::get('aiassistant.providers', null);
-        if (!is_array($providers)) {
+        $set = self::set($set);
+        $providers = \Option::get($set.'providers', null);
+        if (!is_array($providers) && $set == self::HOST) {
+            $providers = [];
+        } elseif (!is_array($providers)) {
             $providers = [
                 [
                     'id'       => 'p1',
@@ -115,36 +140,37 @@ class Settings
     /**
      * The first provider (the one before there were several; embeddings' "same").
      */
-    protected static function firstProvider()
+    protected static function firstProvider($set = null)
     {
-        return array_values(self::providers())[0] ?? ['id' => 'p1', 'provider' => 'openai', 'api_key' => '', 'base_url' => '', 'fast_mode' => false];
+        return array_values(self::providers($set))[0] ?? ['id' => 'p1', 'provider' => 'openai', 'api_key' => '', 'base_url' => '', 'fast_mode' => false];
     }
 
-    public static function provider()
+    public static function provider($set = null)
     {
-        return self::firstProvider()['provider'];
+        return self::firstProvider($set)['provider'];
     }
 
-    public static function apiKey()
+    public static function apiKey($set = null)
     {
-        return (string) \Helper::decrypt(self::firstProvider()['api_key']);
+        return (string) \Helper::decrypt(self::firstProvider($set)['api_key']);
     }
 
-    public static function baseUrl()
+    public static function baseUrl($set = null)
     {
-        return self::firstProvider()['base_url'];
+        return self::firstProvider($set)['base_url'];
     }
 
     /**
      * A feature's models as set: ['primary' => [provider id, model], 'backup' => ... or null].
      * Before: the aiassistant.model (translations: aiassistant.translation_model) of the one provider.
      */
-    public static function featureModels($feature)
+    public static function featureModels($feature, $set = null)
     {
-        $models = (array) (((array) \Option::get('aiassistant.models', []))[$feature] ?? []);
-        $first = self::firstProvider()['id'];
-        $old = trim((string) \Option::get('aiassistant.model', '')) ?: self::DEFAULT_MODEL;
-        if ($feature == 'translations') {
+        $set = self::set($set);
+        $models = (array) (((array) \Option::get($set.'models', []))[$feature] ?? []);
+        $first = self::firstProvider($set)['id'];
+        $old = ($set == self::OWN ? trim((string) \Option::get('aiassistant.model', '')) : '') ?: self::DEFAULT_MODEL;
+        if ($feature == 'translations' && $set == self::OWN) {
             $old = trim((string) \Option::get('aiassistant.translation_model', '')) ?: $old;
         }
         $pick = function ($model) {
@@ -180,9 +206,9 @@ class Settings
     /**
      * Whether a provider has been set up (an API key where one is needed).
      */
-    public static function isConfigured()
+    public static function isConfigured($set = null)
     {
-        foreach (self::providers() as $provider) {
+        foreach (self::providers($set) as $provider) {
             if (self::providerUsable($provider)) {
                 return true;
             }
@@ -191,43 +217,48 @@ class Settings
         return false;
     }
 
-    public static function embeddingProvider()
+    public static function embeddingProvider($set = null)
     {
-        $provider = strtolower(trim((string) \Option::get('aiassistant.documentation.embedding_provider', 'same')));
+        $set = self::set($set);
+        $provider = strtolower(trim((string) \Option::get($set.'documentation.embedding_provider', 'same')));
 
-        return $provider == 'same' || $provider == '' ? self::provider() : Providers::normalize($provider);
+        return $provider == 'same' || $provider == '' ? self::provider($set) : Providers::normalize($provider);
     }
 
-    public static function embeddingProviderIsSame()
+    public static function embeddingProviderIsSame($set = null)
     {
-        $provider = strtolower(trim((string) \Option::get('aiassistant.documentation.embedding_provider', 'same')));
+        $provider = strtolower(trim((string) \Option::get(self::set($set).'documentation.embedding_provider', 'same')));
 
         return $provider == 'same' || $provider == '';
     }
 
-    public static function embeddingApiKey()
+    public static function embeddingApiKey($set = null)
     {
-        $key = (string) \Helper::decrypt(\Option::get('aiassistant.documentation.embedding_api_key', ''));
+        $set = self::set($set);
+        $key = (string) \Helper::decrypt(\Option::get($set.'documentation.embedding_api_key', ''));
 
-        return $key === '' && self::embeddingProviderIsSame() ? self::apiKey() : $key;
+        return $key === '' && self::embeddingProviderIsSame($set) ? self::apiKey($set) : $key;
     }
 
-    public static function embeddingBaseUrl()
+    public static function embeddingBaseUrl($set = null)
     {
-        $url = rtrim(trim((string) \Option::get('aiassistant.documentation.embedding_base_url', '')), '/');
+        $set = self::set($set);
+        $url = rtrim(trim((string) \Option::get($set.'documentation.embedding_base_url', '')), '/');
 
-        return $url === '' && self::embeddingProviderIsSame() ? self::baseUrl() : $url;
+        return $url === '' && self::embeddingProviderIsSame($set) ? self::baseUrl($set) : $url;
     }
 
-    public static function embeddingModel()
+    public static function embeddingModel($set = null)
     {
-        return trim((string) \Option::get('aiassistant.documentation.embedding_model', ''))
-            ?: (string) Providers::PRESETS[self::embeddingProvider()]['embedding_model'];
+        $set = self::set($set);
+
+        return trim((string) \Option::get($set.'documentation.embedding_model', ''))
+            ?: (string) Providers::PRESETS[self::embeddingProvider($set)]['embedding_model'];
     }
 
-    public static function embeddingsAvailable()
+    public static function embeddingsAvailable($set = null)
     {
-        return Providers::supportsEmbeddings(self::embeddingProvider());
+        return Providers::supportsEmbeddings(self::embeddingProvider($set));
     }
 
     public static function chunkSize()
@@ -435,9 +466,9 @@ class Settings
     /**
      * Tokens each mailbox may use per day (all AI features); 0: no limit.
      */
-    public static function dailyTokens()
+    public static function dailyTokens($set = null)
     {
-        return max(0, (int) \Option::get('aiassistant.daily_tokens', 0));
+        return max(0, (int) \Option::get(self::set($set).'daily_tokens', 0));
     }
 
     /**

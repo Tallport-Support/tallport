@@ -113,7 +113,6 @@ servers or cost you money, so in operator mode only the operator changes them.
 | System » Status | Updates, the server's paths, PHP and permission fixes | They describe your server. The customer can't act on them. |
 | Logs | Application log | It shows server paths and stack traces. |
 | Settings » Mail Settings | The system's outgoing mail (SMTP) and the fetch schedule | You provide the mail server for notifications. The fetch schedule is load on your server. |
-| Settings » AI | Providers, API keys and the daily token limit, when you provide AI | The usage is billed to you. If a customer brings their own key, you enter it for them. |
 | Settings » Alerts | Log and fetch alerts about the server | They go to you, not the customer. |
 | Settings » Appearance | "Powered by" in the chat widget | Your choice as the host. |
 | `.env` | Everything in it | Its values are security settings (trusted hosts, CSP, frame options, allowed extensions) and paths. |
@@ -124,6 +123,33 @@ Settings a customer can keep:
   email history.
 * **Retention.**
 * **API & Webhooks**, apart from the CORS hosts.
+
+## AI
+
+You can provide the AI and bill the customer for it, while the customer can
+still use their own API keys, for privacy or cost.
+
+* **Your keys.** Settings » AI Provided by the Host, which only the operator
+  sees: providers, API keys, models, the embedding provider and a daily token
+  limit per mailbox. The customer's administrators don't see these keys and
+  can't change them.
+* **Their keys.** Once you provide AI, Settings » AI shows customers a switch,
+  Use Your Own API Keys. With it on, their own providers, models, embedding
+  provider and daily token limit are used instead of yours. There is no
+  fallback to your keys: someone choosing their own for privacy doesn't want
+  their conversations sent elsewhere when their keys fail.
+* **Which applies.** Your keys are used while you have set them up and the
+  customer hasn't switched to their own. Without your keys (any installation
+  that isn't hosted) the customer's own are used, as always.
+* **Billing.** Every AI call in the AI log (`aiassistant_usage`) records
+  whether it ran on your keys (`host`), with its tokens and model. That is
+  what you bill.
+* **The rest stays the customer's:** language, summaries, drafts per user,
+  translations per customer, chunking, and which mailboxes use which AI
+  features.
+
+Switching between the two sets re-indexes documentation, because the
+embeddings come from a different provider.
 
 ## Outgoing connections
 
@@ -155,9 +181,10 @@ Changes Tallport needs before it can be hosted like this.
   * Update Now and the server details on System » Status;
   * the application log;
   * Settings » Mail Settings' system mail and fetch schedule;
-  * Settings » AI's providers, keys and daily token limit;
   * Settings » Alerts;
   * the chat widget's "Powered by".
+* **AI billing summary.** A monthly total of tokens on the host's keys per
+  model, from the command line, so hosts don't have to query the AI log.
 * **Settings out of `.env`.** General (custom number, message size, email
   history, locale, time zone, user permissions), Mail Settings (fetch
   schedule), Alerts (log alerts) and API (CORS hosts) still write `.env`
