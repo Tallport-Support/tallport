@@ -142,6 +142,29 @@ body {
   color: var(--f-secondary);
   font-size: var(--f-text-2xs);
 }
+/* A message that wasn't sent: as FruitUI's failed-send line (.f-message__status[data-tone="danger"]), its
+   button's text lined up with the bubble's edge. */
+.widget-status {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 6px;
+  margin: 4px 0 0;
+  color: var(--f-danger);
+  font-size: var(--f-text-xs);
+}
+.widget-status__icon {
+  flex: none;
+  align-self: center;
+  --f-icon-size: 14px;
+}
+.widget-status .f-button {
+  min-height: 24px;
+  margin-block: -3px;
+  margin-inline: 4px -8px;
+  padding: 1px 8px;
+  font-size: var(--f-text-xs);
+}
 .widget-event {
   justify-content: center;
   padding-inline: 12px;

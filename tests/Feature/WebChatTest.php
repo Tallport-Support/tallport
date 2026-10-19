@@ -115,6 +115,8 @@ class WebChatTest extends FeatureTestCase
         $this->assertSame(['visitor', 'team'], array_column($messages, 'kind'));
         $this->assertSame(['Alex', 'A', 'Alex here, looking into it.'], [$messages[1]['author'], $messages[1]['initials'], $messages[1]['body']]);
         $this->assertSame('receipt.pdf', $messages[0]['files'][0]['name']);
+        // Shown at when the visitor could see it: once Undo had passed.
+        $this->assertSame($reply->created_at->copy()->addSeconds(Conversation::UNDO_TIMOUT)->toIso8601String(), $messages[1]['time']);
         $this->assertSame(1, $poll->json('unread'));
 
         // Read: the unread count goes.

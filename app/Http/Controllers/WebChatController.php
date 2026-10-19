@@ -284,7 +284,8 @@ class WebChatController extends Controller
             'author'   => $author,
             'initials' => $team ? mb_strtoupper(mb_substr($author, 0, 1)) : '',
             'body'     => \App\Misc\ChatDelivery::plainText($thread),
-            'time'     => $thread->created_at->toIso8601String(),
+            // The team's: when the visitor could see it, once Undo had passed.
+            'time'     => ($team ? $thread->created_at->copy()->addSeconds(Conversation::UNDO_TIMOUT) : $thread->created_at)->toIso8601String(),
             'files'    => $thread->attachments->map(fn ($attachment) => [
                 'id'   => $attachment->id,
                 'name' => $attachment->file_name,

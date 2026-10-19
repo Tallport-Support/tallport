@@ -57,7 +57,9 @@
                             <p class="widget-author" :class="{ 'f-sr-only': entry.kind === 'visitor' || !entry.first }" x-text="entry.kind === 'visitor' ? text.you : entry.author"></p>
                             <p class="widget-bubble" x-show="entry.body" x-text="entry.body"></p>
                             <template x-for="file in entry.files" :key="file.id"><a class="f-attachment widget-attachment" :href="file.url" :download="file.name"><span class="f-attachment__leading"><x-icon.file-text class="f-icon" aria-hidden="true" /></span><span class="f-attachment__body"><span x-text="file.name"></span><small class="f-attachment__detail" x-text="file.size"></small></span><span class="f-attachment__trailing"><x-icon.download class="f-icon" aria-hidden="true" /></span></a></template>
-                            <p class="widget-meta" x-show="entry.time && (entry.last || entry.state)"><time x-text="entry.time"></time><span x-text="entry.state ? ' · ' + text[entry.state] : ''"></span><button class="f-button f-button--ghost f-button--small" type="button" x-show="entry.state === 'failed'" @click="deliver(entry)" x-text="text.retry"></button></p>
+                            <p class="widget-meta" x-show="entry.time && entry.state !== 'failed' && (entry.last || entry.state)"><time x-text="entry.time"></time><span x-text="entry.state ? ' · ' + text[entry.state] : ''"></span></p>
+                            {{-- Not sent: as FruitUI's failed-send line (.f-message__status). --}}
+                            <p class="widget-status" x-show="entry.state === 'failed'" x-cloak><x-icon.circle-alert class="f-icon widget-status__icon" aria-hidden="true" /><span x-text="text.failed"></span><button class="f-button f-button--ghost f-button--small" type="button" @click="deliver(entry)" x-text="text.retry"></button></p>
                         </div>
                     </li>
                 </template>
