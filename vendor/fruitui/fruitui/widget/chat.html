@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en" class="fruit-ui" data-theme="system" data-fruit-accent="blue">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <title>Chat with Forma</title>
+  <link rel="stylesheet" href="/src/fruitui.css">
+  <link rel="stylesheet" href="/examples/widget/chat.css">
+  <script type="module" src="/examples/widget/chat.js"></script>
+</head>
+<body>
+  <!-- A website's chat window, in the frame the website's script (public/widget/t.js) places. Opened
+       on its own, as the website's "Chat with Us" link does without the script, it fills the window. -->
+  <div class="widget" x-data="widgetChat" :data-embedded="embedded" @keydown.escape="escape($event)">
+    <header class="widget-header">
+      <span class="f-avatar widget-team-mark" aria-hidden="true">F</span>
+      <div class="widget-heading">
+        <h1 id="widget-title" x-ref="title" tabindex="-1">Forma</h1>
+        <p>We usually reply within an hour</p>
+      </div>
+      <button class="f-button f-button--ghost f-button--icon widget-close" type="button" x-show="embedded" x-cloak @click="close" aria-label="Close Chat" title="Close Chat"><svg class="f-icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </header>
+    <div class="f-alert f-alert--warning widget-offline" role="status" x-show="!online" x-cloak><svg class="f-icon f-alert__icon" aria-hidden="true"><use href="#i-alert"/></svg><div class="f-alert__body">You’re offline. Your messages will be sent when you’re back.</div></div>
+    <div class="f-pane__scroll f-history widget-history" role="region" tabindex="0" aria-labelledby="widget-title" x-data="fruitHistory">
+      <ol class="widget-messages" role="list">
+        <template x-for="entry in timeline" :key="entry.id">
+          <li class="widget-entry" :data-kind="entry.kind" :data-first="entry.first" :data-last="entry.last" :data-entry-id="entry.id">
+            <template x-if="entry.kind === 'team' || entry.kind === 'visitor'">
+              <div class="widget-message" :data-state="entry.state">
+                <span class="f-avatar widget-avatar" :class="{ 'widget-team-mark': entry.team }" aria-hidden="true" x-show="entry.kind === 'team' && entry.first" x-text="entry.initials"></span>
+                <p class="widget-author" :class="{ 'f-sr-only': entry.kind === 'visitor' || !entry.first }" x-text="entry.kind === 'visitor' ? 'You' : entry.author"></p>
+                <p class="widget-bubble" x-show="entry.body" x-text="entry.body"></p>
+                <template x-for="file in entry.files" :key="file.id"><a class="f-attachment widget-attachment" :href="file.url" :download="file.name"><span class="f-attachment__leading"><svg class="f-icon" aria-hidden="true"><use href="#i-file"/></svg></span><span class="f-attachment__body"><span x-text="file.name"></span><small class="f-attachment__detail" x-text="file.size"></small></span><span class="f-attachment__trailing"><svg class="f-icon" aria-hidden="true"><use href="#i-download"/></svg></span></a></template>
+                <p class="widget-meta" x-show="entry.time && (entry.last || entry.state === 'sending' || entry.state === 'waiting')"><time x-text="entry.time"></time><span x-text="{ sending: ' · Sending…', waiting: ' · Waiting to send' }[entry.state] ?? ''"></span></p>
+              </div>
+            </template>
+            <template x-if="entry.kind === 'event'">
+              <p class="f-message-event widget-event"><span class="f-message-event__icon" aria-hidden="true"><svg class="f-icon"><use href="#i-envelope"/></svg></span><span class="f-message-event__text" x-text="entry.body"></span></p>
+            </template>
+            <!-- After the first message: the reply can go by email too, once a code confirms the address. -->
+            <template x-if="entry.kind === 'email'">
+              <section class="f-card widget-email" aria-labelledby="widget-email-title">
+                <h2 id="widget-email-title">Get the reply by email</h2>
+                <template x-if="emailStep === 'address'">
+                  <form @submit.prevent="sendCode" novalidate>
+                    <p class="widget-email-text">We’ll answer here. If you leave, we can email you the reply.</p>
+                    <label class="f-label" for="widget-email">Email</label>
+                    <div class="widget-email-row"><input id="widget-email" class="f-input" type="email" autocomplete="email" required x-model="emailDraft" :aria-invalid="emailError ? 'true' : 'false'" aria-describedby="widget-email-error" @input="emailError = ''"><button class="f-button" type="submit" :aria-busy="busy ? 'true' : null">Send Code</button></div>
+                    <p id="widget-email-error" class="f-error" x-show="emailError" x-text="emailError"></p>
+                  </form>
+                </template>
+                <template x-if="emailStep === 'code'">
+                  <form @submit.prevent="confirmCode" novalidate>
+                    <p class="widget-email-text">Enter the code we sent to <strong x-text="emailDraft"></strong>.</p>
+                    <label class="f-label" for="widget-code">Code</label>
+                    <div class="widget-email-row"><input id="widget-code" class="f-input widget-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required x-model="codeDraft" :aria-invalid="codeError ? 'true' : 'false'" aria-describedby="widget-code-error widget-code-help" @input="codeError = ''"><button class="f-button" type="submit" :aria-busy="busy ? 'true' : null">Confirm</button></div>
+                    <p id="widget-code-error" class="f-error" x-show="codeError" x-text="codeError"></p>
+                    <p id="widget-code-help" class="f-help" role="status" x-text="codeNotice"></p>
+                    <div class="widget-email-actions"><button class="f-button f-button--ghost f-button--small" type="button" @click="sendAgain" :disabled="codesSent >= 3">Send Again</button><button class="f-button f-button--ghost f-button--small" type="button" @click="changeAddress">Change Address</button></div>
+                  </form>
+                </template>
+              </section>
+            </template>
+          </li>
+        </template>
+      </ol>
+      <button class="f-button f-history__latest" type="button" x-show="awayFromLatest" x-cloak @click="jumpToLatest({ focus: true })"><svg class="f-icon" aria-hidden="true"><use href="#i-down"/></svg>Jump to Latest</button>
+    </div>
+    <p class="f-sr-only" role="status" x-text="announcement"></p>
+    <form class="f-composer widget-composer" @submit.prevent="send">
+      <label class="f-sr-only" for="widget-message">Message</label>
+      <ul class="widget-files" role="list" aria-label="Files to send" x-show="files.length" x-cloak>
+        <template x-for="file in files" :key="file.id"><li><span class="f-chip"><span x-text="file.name"></span><button class="f-chip__remove" type="button" @click="removeFile(file)" :aria-label="'Remove ' + file.name"><svg class="f-icon" aria-hidden="true"><use href="#i-close"/></svg></button></span></li></template>
+      </ul>
+      <div class="f-composer__field"><textarea id="widget-message" class="f-input f-composer__input" rows="1" x-ref="message" x-model="draft" placeholder="Message Forma" aria-describedby="widget-message-help" @keydown.enter="if (!$event.shiftKey && !$event.isComposing) { $event.preventDefault(); $el.form.requestSubmit(); }"></textarea><button class="f-button f-button--ghost f-button--icon" type="button" @click="$refs.files.click()" aria-label="Attach Files" title="Attach Files"><svg class="f-icon" aria-hidden="true"><use href="#i-attach"/></svg></button><input type="file" multiple hidden x-ref="files" @change="addFiles($event.target)"><button class="f-button f-button--primary f-button--icon f-composer__send" type="submit" aria-label="Send"><svg class="f-icon" aria-hidden="true"><use href="#i-send"/></svg></button></div>
+      <p id="widget-message-help" class="f-sr-only">Enter to send, Shift+Enter for a new line.</p>
+    </form>
+    <noscript><p class="widget-noscript">Enable JavaScript to chat with Forma, or email <a href="mailto:support@forma.example">support@forma.example</a>.</p></noscript>
+  </div>
+</body>
+</html>

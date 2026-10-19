@@ -1908,6 +1908,38 @@
         "methods": [
             "GET"
         ],
+        "uri": "mailbox/settings/{id}/website-chat",
+        "name": "mailboxes.web_chat",
+        "action": "WebChatSettingsController@settings",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/settings/{id}/website-chat",
+        "name": "mailboxes.web_chat.save",
+        "action": "WebChatSettingsController@settingsSave",
+        "middleware": [
+            "web",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
         "uri": "mailbox/workflows/{mailbox_id}",
         "name": "mailboxes.workflows",
         "action": "WorkflowsController@index",
@@ -2506,6 +2538,107 @@
         ],
         "where": {
             "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "t/f",
+        "name": "web_chat.file",
+        "action": "WebChatController@file",
+        "middleware": [
+            "open",
+            "throttle:120,1"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "t/m",
+        "name": "web_chat.messages",
+        "action": "WebChatController@messages",
+        "middleware": [
+            "open"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "t/m",
+        "name": "web_chat.send",
+        "action": "WebChatController@send",
+        "middleware": [
+            "open"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "t/r",
+        "name": "web_chat.read",
+        "action": "WebChatController@read",
+        "middleware": [
+            "open"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "t/v",
+        "name": "web_chat.start",
+        "action": "WebChatController@start",
+        "middleware": [
+            "open"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "t/w",
+        "name": "web_chat.window",
+        "action": "WebChatController@window",
+        "middleware": [
+            "open",
+            "throttle:120,1"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "t/{name}",
+        "name": "web_chat.asset",
+        "action": "WebChatController@asset",
+        "middleware": [
+            "open"
+        ],
+        "where": {
+            "id": "[0-9]+",
+            "name": "s|j"
         }
     },
     {

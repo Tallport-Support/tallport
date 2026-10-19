@@ -1,0 +1,313 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Attachment;
+use App\Conversation;
+use App\Misc\ChatConversations;
+use App\Thread;
+use App\WebChat\Visitor;
+use App\WebChat\WebChat;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+
+/**
+ * The website chat's window (/t/w) and the small JSON API it uses (App\WebChat). No session and no
+ * cookies: browsers block or split cookies in a frame from another website, so the window keeps a
+ * visitor token in its own storage and sends it as a bearer token. Every path is relative to /t/,
+ * so a website can serve the folder through its own domain.
+ */
+class WebChatController extends Controller
+{
+    /**
+     * The chat window: in the website's frame (the script, public/t/t.js), or on its own (the
+     * website's "Chat with us" link, the fallback without the script).
+     */
+    public function window(Request $request)
+    {
+        $mailbox = WebChat::mailbox($request->widget);
+        $settings = $mailbox ? WebChat::settings($mailbox) : null;
+        $origin = (string) $request->origin;
+        if (!$mailbox || ($origin !== '' && !WebChat::allows($settings, $origin))) {
+            // Not this website's: nothing it may show (the script leaves no button behind).
+            return response(__('This chat is not available here.'), 404)
+                ->header('Content-Security-Policy', "frame-ancestors 'none'");
+        }
+        $this->locale($request);
+
+        $response = response()->view('webchat/window', [
+            'mailbox'  => $mailbox,
+            'settings' => $settings,
+            'team'     => WebChat::teamName($mailbox),
+            'origin'   => $origin !== '' ? WebChat::origin($origin) : '',
+            'nonce'    => \Helper::cspNonce(),
+            'poll'     => ['active' => WebChat::POLL_ACTIVE, 'idle' => WebChat::POLL_IDLE, 'closed' => WebChat::POLL_CLOSED],
+        ]);
+
+        // Only the widget's websites may frame it (frame-ancestors makes browsers ignore X-Frame-Options).
+        return $response->header('Content-Security-Policy', implode('; ', [
+            "default-src 'self'",
+            "script-src 'self' 'nonce-".\Helper::cspNonce()."' 'unsafe-eval'",
+            "style-src 'self' 'unsafe-inline'",
+            "img-src 'self' data: blob:",
+            "connect-src 'self'",
+            "frame-ancestors 'self' ".implode(' ', $settings['origins']),
+        ]))->header('Referrer-Policy', 'no-referrer');
+    }
+
+    /**
+     * A new visitor: the token the window keeps.
+     */
+    public function start(Request $request)
+    {
+        $mailbox = $this->mailbox($request);
+        $this->limit('start:'.$request->ip(), 30, 3600);
+        [, $token] = Visitor::start($mailbox);
+
+        return response()->json(['token' => $token]);
+    }
+
+    /**
+     * The conversation so far (messages after `after`), how many of the team's are unread, and how
+     * soon to ask again.
+     */
+    public function messages(Request $request)
+    {
+        $visitor = $this->visitor($request);
+        $this->limit('poll:'.$visitor->id, 60, 60);
+        if (!$visitor->last_seen_at || $visitor->last_seen_at->lt(now()->subSeconds(30))) {
+            $visitor->last_seen_at = now();
+            $visitor->save();
+        }
+
+        $messages = [];
+        $unread = 0;
+        $cursor = (int) $request->after;
+        if ($conversation = $visitor->currentConversation()) {
+            foreach ($this->threads($conversation)->where('id', '>', $cursor)->get() as $thread) {
+                $messages[] = $this->message($thread);
+            }
+            $unread = $this->threads($conversation)->where('type', Thread::TYPE_MESSAGE)->where('id', '>', $visitor->read_thread_id)->count();
+            // Messages up to the cursor won't change; a reply the team can still undo shows later, with
+            // an older ID, so the cursor stays before it.
+            $pending = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->where('state', Thread::STATE_PUBLISHED)
+                ->where('created_at', '>', now()->subSeconds(Conversation::UNDO_TIMOUT))->min('id');
+            $cursor = max($cursor, $pending ? $pending - 1 : (int) collect($messages)->max('id'));
+        }
+
+        return response()->json(['messages' => $messages, 'unread' => $unread, 'cursor' => $cursor]);
+    }
+
+    /**
+     * A message from the visitor: text and files. The first makes them a customer and starts the
+     * conversation; later ones continue it while the mailbox's Reopen Window allows.
+     */
+    public function send(Request $request)
+    {
+        $visitor = $this->visitor($request);
+        $this->limit('send:'.$visitor->id, 20, 60);
+        $this->limit('send-widget:'.$visitor->mailbox_id, 600, 60);
+        $request->validate([
+            'body'    => 'nullable|string|max:'.WebChat::MAX_LENGTH,
+            'files'   => 'array|max:'.WebChat::MAX_FILES,
+            'files.*' => 'file|max:'.(WebChat::MAX_FILE_MB * 1024),
+            'page'    => 'nullable|string|max:2048',
+        ]);
+        $text = trim((string) $request->body);
+        $attachments = [];
+        foreach ((array) $request->file('files') as $file) {
+            $attachments[] = ['file_name' => $file->getClientOriginalName(), 'mime_type' => $file->getMimeType(), 'data' => base64_encode($file->get())];
+        }
+        if ($text === '' && !$attachments) {
+            return response()->json(['message' => __('Write a message.')], 422);
+        }
+        $page = $this->page($request->page);
+        if ($page) {
+            $visitor->page = $page;
+        }
+
+        $body = $text !== '' ? preg_replace('/\r\n?|\n/', '<br>', htmlspecialchars($text)) : htmlspecialchars(implode(', ', array_column($attachments, 'file_name')));
+        $received = \DB::transaction(function () use ($visitor, $text, $body, $attachments) {
+            $customer = $visitor->makeCustomer();
+            $conversation = $visitor->currentConversation();
+            $received = ChatConversations::receive($conversation, $customer, [
+                'subject'     => $this->subject($text !== '' ? $text : strip_tags($body)),
+                'mailbox_id'  => $visitor->mailbox_id,
+                'source_type' => Conversation::SOURCE_TYPE_WEB,
+                'channel'     => WebChat::CHANNEL,
+            ], [
+                'body'        => $body,
+                'attachments' => $attachments,
+                // A risky type is renamed, as in customers' emails.
+                'attachments_upload_mode' => \Helper::UPLOAD_MODE_BY_CUSTOMER,
+            ]);
+            if (empty($received['thread'])) {
+                return null;
+            }
+            $visitor->conversation_id = $received['conversation']->id;
+            $visitor->last_seen_at = now();
+            $visitor->save();
+
+            return $received;
+        });
+        if (!$received) {
+            return response()->json(['message' => __('Your message could not be sent. Try again.')], 500);
+        }
+        \App\Misc\ChatLog::record(WebChat::META, $visitor->mailbox_id, 'receive', 'succeeded', '', ['thread_id' => $received['thread']->id]);
+
+        return response()->json(['message' => $this->message($received['thread']->fresh())]);
+    }
+
+    /**
+     * The visitor has seen the team's messages up to this one.
+     */
+    public function read(Request $request)
+    {
+        $visitor = $this->visitor($request);
+        $this->limit('read:'.$visitor->id, 60, 60);
+        $thread_id = (int) $request->thread_id;
+        if ($thread_id > $visitor->read_thread_id && $visitor->conversation_id
+            && Thread::where('id', $thread_id)->where('conversation_id', $visitor->conversation_id)->exists()) {
+            $visitor->read_thread_id = $thread_id;
+            $visitor->save();
+        }
+
+        return response()->json([]);
+    }
+
+    /**
+     * A file in the conversation, by its token (links can't carry the visitor's token).
+     */
+    public function file(Request $request)
+    {
+        $attachment = Attachment::find((int) $request->id);
+        if (!$attachment || !\Helper::hashEquals($attachment->getToken(), (string) $request->token)
+            || !$attachment->thread || !Visitor::where('conversation_id', $attachment->thread->conversation_id)->exists()) {
+            abort(404);
+        }
+
+        return $attachment->download();
+    }
+
+    /**
+     * The window's styles (s) and script (j), from beside it (/t/), so a proxied website serves them
+     * too: FruitUI, Alpine (FruitUI's standalone build: the window has no Livewire) and its own.
+     */
+    public function asset($name)
+    {
+        $files = WebChat::assetFiles($name);
+        if (!$files) {
+            abort(404);
+        }
+        $contents = implode("\n", array_map(fn ($file) => file_get_contents(public_path($file)), $files));
+
+        return response($contents, 200, [
+            'Content-Type'  => $name == 's' ? 'text/css; charset=utf-8' : 'text/javascript; charset=utf-8',
+            'Cache-Control' => 'public, max-age=31536000, immutable',
+        ]);
+    }
+
+    /**
+     * The visitor's language, of those Tallport has: what the browser asks for.
+     */
+    protected function locale(Request $request)
+    {
+        $locales = (array) config('app.locales');
+        $preferred = $request->getPreferredLanguage(array_map(fn ($locale) => str_replace('-', '_', $locale), $locales));
+        if ($preferred) {
+            app()->setLocale(str_replace('_', '-', $preferred));
+        }
+    }
+
+    protected function mailbox(Request $request)
+    {
+        $mailbox = WebChat::mailbox($request->widget);
+        if (!$mailbox) {
+            abort(404);
+        }
+        // The window's origin: Tallport's, or an allowed website's that serves /t/ itself.
+        $origin = $request->headers->get('Origin');
+        if ($origin && !WebChat::allows(WebChat::settings($mailbox), $origin)) {
+            abort(403);
+        }
+
+        return $mailbox;
+    }
+
+    protected function visitor(Request $request)
+    {
+        $mailbox = $this->mailbox($request);
+        $visitor = Visitor::findByToken((string) $request->bearerToken(), $mailbox);
+        if (!$visitor) {
+            abort(401);
+        }
+
+        return $visitor->setRelation('mailbox', $mailbox);
+    }
+
+    /**
+     * At most $max per $seconds, or 429.
+     */
+    protected function limit($key, $max, $seconds)
+    {
+        if (RateLimiter::tooManyAttempts('web-chat:'.$key, $max)) {
+            abort(429);
+        }
+        RateLimiter::hit('web-chat:'.$key, $seconds);
+    }
+
+    /**
+     * What the visitor sees of the conversation: their messages and the team's replies (not notes,
+     * drafts or what the team can still undo).
+     */
+    protected function threads(Conversation $conversation)
+    {
+        return $conversation->threads()
+            ->where('state', Thread::STATE_PUBLISHED)
+            ->where(function ($query) {
+                $query->where('type', Thread::TYPE_CUSTOMER)
+                    ->orWhere(function ($query) {
+                        $query->where('type', Thread::TYPE_MESSAGE)->where('created_at', '<=', now()->subSeconds(Conversation::UNDO_TIMOUT));
+                    });
+            })
+            ->orderBy('id');
+    }
+
+    protected function message(Thread $thread)
+    {
+        $team = $thread->type == Thread::TYPE_MESSAGE;
+        $author = $team ? ($thread->created_by_user ? $thread->created_by_user->getFirstName() : WebChat::teamName($thread->conversation->mailbox)) : '';
+
+        return [
+            'id'       => $thread->id,
+            'kind'     => $team ? 'team' : 'visitor',
+            'author'   => $author,
+            'initials' => $team ? mb_strtoupper(mb_substr($author, 0, 1)) : '',
+            'body'     => \App\Misc\ChatDelivery::plainText($thread),
+            'time'     => $thread->created_at->toIso8601String(),
+            'files'    => $thread->attachments->map(fn ($attachment) => [
+                'id'   => $attachment->id,
+                'name' => $attachment->file_name,
+                'size' => $attachment->getSizeName(),
+                'url'  => 'f?'.http_build_query(['id' => $attachment->id, 'token' => $attachment->getToken()]),
+            ])->values()->all(),
+        ];
+    }
+
+    protected function subject($text)
+    {
+        $plain = trim(preg_replace('/\s+/u', ' ', html_entity_decode((string) $text, ENT_QUOTES, 'UTF-8')));
+
+        return mb_strlen($plain) > Conversation::SUBJECT_LENGTH ? mb_substr($plain, 0, Conversation::SUBJECT_LENGTH - 1).'…' : $plain;
+    }
+
+    /**
+     * The website's page the visitor is on: an http(s) address without its fragment.
+     */
+    protected function page($url)
+    {
+        $url = preg_replace('/#.*$/', '', trim((string) $url));
+
+        return preg_match('#^https?://#i', $url) ? mb_substr($url, 0, 2048) : null;
+    }
+}

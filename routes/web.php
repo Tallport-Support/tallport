@@ -75,6 +75,8 @@ Route::get('/mailbox/{id}/telegram', ['uses' => 'TelegramController@settings', '
 Route::post('/mailbox/{id}/telegram', ['uses' => 'TelegramController@settingsSave', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.telegram.save');
 
 // Nostr
+Route::get('/mailbox/settings/{id}/website-chat', ['uses' => 'WebChatSettingsController@settings', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.web_chat');
+Route::post('/mailbox/settings/{id}/website-chat', ['uses' => 'WebChatSettingsController@settingsSave', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.web_chat.save');
 Route::get('/mailbox/settings/{id}/matrix', ['uses' => 'MatrixController@mailboxSettings', 'middleware' => ['auth']])->name('mailboxes.matrix');
 Route::get('/mailbox/settings/{id}/nostr', ['uses' => 'NostrController@mailboxSettings', 'middleware' => ['auth']])->name('mailboxes.nostr');
 Route::post('/mailbox/settings/{id}/nostr', ['uses' => 'NostrController@mailboxSettingsSave', 'middleware' => ['auth']])->name('mailboxes.nostr.save');

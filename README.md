@@ -31,6 +31,7 @@ Credit for everything up to the fork goes to the FreeScout team.
 * [Telegram](#telegram)
 * [Nostr](#nostr)
 * [Matrix](#matrix)
+* [Website chat](#website-chat)
 * [Auto replies in languages](#auto-replies-in-languages)
 * [Modules](#modules)
 * [Development](#development)
@@ -503,6 +504,26 @@ Decrypted messages and files use Tallport's normal storage and permissions.
 
 Live Matrix client interoperability checks are still pending. See [MATRIX.md](MATRIX.md)
 for the implementation and acceptance status.
+
+## Website chat
+
+A mailbox can have a chat on your websites: **Chat > Website Chat**. Turn it on,
+list the websites it may be on, and add the code the page shows to every page of
+those websites. Visitors get a chat button; their messages become conversations
+in the mailbox, and agents reply from the normal conversation screen. Replies
+reach the visitor's window once they can no longer be undone. Conversations
+continue within the mailbox's Reopen Window, as in the other chats.
+
+The chat lives in one folder, `/t/`: the script (`t.js`), the window (`w`) and
+the small API the window uses. The window only appears on the websites listed
+(browsers enforce it with `frame-ancestors`) and uses no cookies: each visitor's
+browser keeps its own token. Its text is in the visitor's browser language,
+where Tallport has it. Without JavaScript, link to the chat itself; the page
+shows the link.
+
+Visitors become customers when they first write, and agents see the page they
+wrote from. With Retention on, visitors not seen for the customer period are
+removed.
 
 ## Auto replies in languages
 

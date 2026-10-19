@@ -34,6 +34,7 @@ class MailboxSettings
                 $pages[] = self::page(__('Auto Reply'), route('mailboxes.auto_reply', ['id' => $id]), $mailbox->auto_reply_enabled ? __('On') : __('Off'), routes: ['mailboxes.auto_reply']);
             }
             if ($user->isAdmin()) {
+                $pages[] = self::page(__('Website Chat'), route('mailboxes.web_chat', ['id' => $id]), \App\WebChat\WebChat::settings($mailbox)['enabled'] ? __('On') : __('Off'), routes: ['mailboxes.web_chat'], chat: true);
                 $pages[] = self::page(__('Telegram'), route('mailboxes.telegram', ['id' => $id]), \App\Telegram\Telegram::isEnabled($mailbox) ? __('Connected') : __('Not set up'), routes: ['mailboxes.telegram'], chat: true);
             }
             $matrix = \App\Matrix\MatrixMailbox::forMailbox($id);

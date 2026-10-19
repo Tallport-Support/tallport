@@ -85,6 +85,9 @@ class AppServiceProvider extends ServiceProvider
             if ($channel == \App\Nostr\Nostr::channel()) {
                 return 'Nostr';
             }
+            if ($channel == \App\WebChat\WebChat::CHANNEL) {
+                return \App\WebChat\WebChat::CHANNEL_NAME;
+            }
 
             return $channel == \App\Telegram\Telegram::CHANNEL ? \App\Telegram\Telegram::CHANNEL_NAME : $name;
         }, 10, 2);
@@ -96,6 +99,7 @@ class AppServiceProvider extends ServiceProvider
             $channels[\App\Telegram\Telegram::CHANNEL] = \App\Telegram\Telegram::CHANNEL_NAME;
             $channels[\App\Nostr\Nostr::channel()] = 'Nostr';
             $channels[\App\Matrix\Matrix::CHANNEL] = 'Matrix';
+            $channels[\App\WebChat\WebChat::CHANNEL] = \App\WebChat\WebChat::CHANNEL_NAME;
 
             return $channels;
         });

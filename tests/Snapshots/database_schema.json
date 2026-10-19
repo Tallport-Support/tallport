@@ -4891,6 +4891,99 @@
             }
         }
     },
+    "web_chat_visitors": {
+        "columns": {
+            "id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "token": {
+                "type": "varchar(64)",
+                "nullable": false,
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "customer_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "conversation_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "read_thread_id": {
+                "type": "int(10) unsigned",
+                "nullable": false,
+                "default": "0"
+            },
+            "page": {
+                "type": "varchar(2048)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "last_seen_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "updated_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            },
+            "web_chat_visitors_conversation_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "conversation_id"
+                ]
+            },
+            "web_chat_visitors_customer_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "customer_id"
+                ]
+            },
+            "web_chat_visitors_mailbox_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "mailbox_id"
+                ]
+            },
+            "web_chat_visitors_token_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "token"
+                ]
+            }
+        }
+    },
     "webhook_logs": {
         "columns": {
             "id": {

@@ -172,6 +172,7 @@ class Retention
             $counts['expired'] = self::expire($dry_run);
             $counts['customers'] = self::deleteCustomers($dry_run);
             $counts['team_chat'] = self::deleteTeamMessages($dry_run);
+            $counts['web_chat'] = self::deleteVisitors($dry_run);
         }
         if (!$dry_run) {
             \Option::set(self::LAST_RUN_OPTION, ['at' => now()->toDateTimeString()] + $counts);
@@ -307,11 +308,23 @@ class Retention
             \DB::table('emails')->whereIn('customer_id', $ids)->delete();
             \DB::table('customer_channel')->whereIn('customer_id', $ids)->delete();
             \DB::table('nostr_customer_keys')->whereIn('customer_id', $ids)->delete();
+            \DB::table('web_chat_visitors')->whereIn('customer_id', $ids)->delete();
             Customer::whereIn('id', $ids)->delete();
             $count += count($ids);
         });
 
         return $count;
+    }
+
+    /**
+     * Website chat visitors not seen for the customer period: their browser's link to the chat goes
+     * (the customer and conversations follow their own periods).
+     */
+    public static function deleteVisitors($dry_run = false)
+    {
+        $query = \App\WebChat\Visitor::where('last_seen_at', '<', now()->subMonths(self::get('retention_customer_months')));
+
+        return $dry_run ? $query->count() : $query->delete();
     }
 
     /**

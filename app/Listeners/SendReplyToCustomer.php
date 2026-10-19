@@ -114,6 +114,12 @@ class SendReplyToCustomer
             return;
         }
 
+        // Website chat: the visitor's window fetches it once it can't be undone; nothing to send.
+        if ($conversation->channel == \App\WebChat\WebChat::CHANNEL) {
+            \App\Misc\ChatDelivery::recordStatus($thread, \App\SendLog::STATUS_ACCEPTED);
+            return;
+        }
+
         // Modules' channels.
         if ($conversation->hasChannel()) {
             \Helper::backgroundAction('chat_conversation.send_reply', [$conversation, $replies, $conversation->customer], now()->addSeconds(Conversation::UNDO_TIMOUT));

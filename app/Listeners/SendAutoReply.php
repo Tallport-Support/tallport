@@ -48,8 +48,8 @@ class SendAutoReply
                 return;
             }
 
-            // Telegram and Nostr have their own auto reply, not by email.
-            if (in_array((int) $conversation->channel, [\App\Telegram\Telegram::CHANNEL, \App\Nostr\Nostr::channel(), \App\Matrix\Matrix::CHANNEL])) {
+            // Chats have their own auto reply (or, on websites, the greeting), not by email.
+            if (in_array((int) $conversation->channel, [\App\Telegram\Telegram::CHANNEL, \App\Nostr\Nostr::channel(), \App\Matrix\Matrix::CHANNEL, \App\WebChat\WebChat::CHANNEL])) {
                 return;
             }
 

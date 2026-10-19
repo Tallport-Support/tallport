@@ -29,3 +29,12 @@ Route::post('/mail/webhook/{provider}/{mailbox_id}/{token}', 'MailWebhooksContro
 Route::get('/.well-known/nostr.json', 'NostrController@nip05')->name('nostr.nip05');
 // Web Cron
 Route::get('/system/cron/{hash}', ['uses' => 'SystemController@cron'])->name('system.cron');
+// Website chat (App\WebChat): the window and its API, in one folder beside the script (public/t/t.js)
+// so a website can serve it through its own domain. Neutral names: blocklists match "chat".
+Route::get('/t/w', 'WebChatController@window')->withoutMiddleware(\App\Http\Middleware\FrameGuard::class)->middleware('throttle:120,1')->name('web_chat.window');
+Route::post('/t/v', 'WebChatController@start')->name('web_chat.start');
+Route::get('/t/m', 'WebChatController@messages')->name('web_chat.messages');
+Route::post('/t/m', 'WebChatController@send')->name('web_chat.send');
+Route::post('/t/r', 'WebChatController@read')->name('web_chat.read');
+Route::get('/t/f', 'WebChatController@file')->middleware('throttle:120,1')->name('web_chat.file');
+Route::get('/t/{name}', 'WebChatController@asset')->where('name', 's|j')->name('web_chat.asset');
