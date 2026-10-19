@@ -812,6 +812,34 @@ class FetchEmailsProcessMessageTest extends FeatureTestCase
         ];
     }
 
+    /**
+     * Foxmail's quote: a box of 发件人/发送时间/收件人/主题 lines at the top of a blockquote (and those lines in plain text).
+     *
+     * @dataProvider foxmailReplies
+     */
+    public function testFoxmailQuoteIsCutOff($body, $is_html)
+    {
+        $reply = (new FetchEmails())->separateReply($body, $is_html, true);
+
+        $this->assertStringContainsString('请帮我重新发一下账单', $reply);
+        $this->assertStringContainsString('谢谢', $reply);
+        $this->assertStringNotContainsString('发件人', $reply);
+        $this->assertStringNotContainsString('Quoted answer', $reply);
+    }
+
+    public static function foxmailReplies()
+    {
+        return [
+            'HTML' => ["<div><span></span>请帮我重新发一下账单。</div><div><br></div><div>谢谢</div>\n<div><br></div>\n"
+                .'<blockquote style="margin-Top: 0px; margin-Bottom: 0px; margin-Left: 0.5em; margin-Right: inherit"><div>&nbsp;</div>'
+                .'<div style="border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0cm 0cm 0cm"><div style="PADDING-RIGHT: 8px; BACKGROUND: #efefef">'
+                .'<div><b>发件人：</b>&nbsp;<a href="mailto:support@example.org">Support</a></div><div><b>发送时间：</b>&nbsp;2026-10-19&nbsp;11:02</div>'
+                .'<div><b>收件人：</b>&nbsp;<a href="mailto:casey@example.org">casey</a></div><div><b>主题：</b>&nbsp;Re: Question</div></div></div>'
+                .'<div><div class="FoxDiv20261019110726533305"><p>Quoted answer</p></div></div></blockquote>', true],
+            'Plain text' => ["请帮我重新发一下账单。\r\n\r\n谢谢\r\n\r\n \r\n发件人： Support\r\n发送时间： 2026-10-19 11:02\r\n收件人： casey\r\n主题： Re: Question\r\nQuoted answer", false],
+        ];
+    }
+
     public function testEncodedAttachmentName()
     {
         $command = new FetchEmails();

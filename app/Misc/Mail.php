@@ -117,6 +117,10 @@ class Mail
         '<blockquote id="isReplyContent"',
         // The 163.com webmail's 发件人/发送日期/收件人/主题 lines above its quote: from the empty div before them.
         'regex:/<div\s+style="position:relative;zoom:1"><\/div>(?=(?:[^<]++|<(?!blockquote\b))*+<blockquote id="isReplyContent")/su',
+        // Foxmail: its quote opens with an empty line and a box of 发件人/发送时间/收件人/主题 (From/Sent/To/Subject)
+        // under a #B5C4DF line; in plain text, those lines.
+        'regex:/<blockquote[^>]*>\s*<div>(?:&nbsp;|\s|\x{a0})*<\/div>\s*<div style="border:none;border-top:solid #B5C4DF 1\.0pt;/u',
+        'regex:/^[ \t]*(发件人|寄件者)[:：][^\r\n]*\r?\n[ \t]*(发送时间|寄件日期)[:：]/mu',
         '<div id=3D"divRplyFwdMsg" dir=', // Outlook
         '<div id="divRplyFwdMsg" dir=', // Outlook
         'regex:/<hr[^>]*>\s*<div[^>]+id="divRplyFwdMsg"/', // Outlook
