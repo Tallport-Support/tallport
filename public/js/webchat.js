@@ -15,7 +15,6 @@ document.addEventListener('alpine:init', function () {
         var timer = null;
         var sequence = 0;
         var clock = new Intl.DateTimeFormat(document.documentElement.lang || undefined, { hour: 'numeric', minute: '2-digit' });
-        var greeting = config.greeting ? [{ id: 'greeting', kind: 'team', team: true, author: config.team, initials: config.team.charAt(0).toUpperCase(), body: config.greeting, files: [] }] : [];
 
         function size(bytes) {
             return bytes < 1024 * 1024 ? Math.max(1, Math.round(bytes / 1024)) + ' KB' : (bytes / 1024 / 1024).toFixed(1) + ' MB';
@@ -27,7 +26,9 @@ document.addEventListener('alpine:init', function () {
             shown: window.parent === window || !host,
             online: navigator.onLine,
             text: config.text,
-            entries: greeting.slice(),
+            entries: [],
+            // The team's first message: to anyone, and by name once the website signs them in (the server's, with each poll).
+            greeting: config.greeting,
             draft: '',
             files: [],
             error: '',
@@ -134,9 +135,12 @@ document.addEventListener('alpine:init', function () {
 
             get timeline() {
                 var entries = this.entries.slice();
+                if (this.greeting) {
+                    entries.unshift({ id: 'greeting', kind: 'team', team: true, author: config.team, initials: config.team.charAt(0).toUpperCase(), body: this.greeting, files: [] });
+                }
                 // Where replies also go, after the greeting; or, after their first message, the offer.
                 if (this.email) {
-                    entries.splice(greeting.length, 0, { id: 'email-event', kind: 'event', body: this.text.repliesTo.replace(':email', this.email) });
+                    entries.splice(this.greeting ? 1 : 0, 0, { id: 'email-event', kind: 'event', body: this.text.repliesTo.replace(':email', this.email) });
                 } else {
                     var first = entries.findIndex(function (entry) { return entry.kind === 'visitor'; });
                     if (first >= 0) entries.splice(first + 1, 0, { id: 'email-card', kind: 'email' });
@@ -197,6 +201,7 @@ document.addEventListener('alpine:init', function () {
                     self.hasConversation = data.messages.length > 0 || self.hasConversation;
                     data.messages.forEach(function (message) { self.receive(message); });
                     self.cursor = Math.max(self.cursor, data.cursor || 0);
+                    if (data.greeting !== undefined) self.greeting = data.greeting;
                     self.emailState(data);
                     self.unread = data.unread;
                     if (self.shown) self.markRead();
@@ -284,6 +289,8 @@ document.addEventListener('alpine:init', function () {
                 started.then(function () {
                     var form = new FormData();
                     form.append('body', entry.body);
+                    // Their language, until detected in what they write (only the first: browsers add English).
+                    form.append('language', navigator.language || '');
                     form.append('page', params.get('page') || '');
                     entry.files.forEach(function (file) { form.append('files[]', file.file || file); });
                     return self.api('POST', 'm', form);
@@ -308,10 +315,11 @@ document.addEventListener('alpine:init', function () {
                 if (!identity) return;
                 var form = new FormData();
                 form.append('identity', identity);
+                form.append('language', navigator.language || '');
                 this.api('POST', 'i', form).then(function (data) {
                     if (data.token) self.token(data.token);
                     clearTimeout(timer);
-                    Object.assign(self, { entries: greeting.slice(), cursor: 0, hasConversation: false, email: null, emailStep: 'address', emailDraft: '' });
+                    Object.assign(self, { entries: [], cursor: 0, hasConversation: false, email: null, emailStep: 'address', emailDraft: '' });
                     return self.poll();
                 }).catch(function () {});
             },
@@ -399,7 +407,7 @@ document.addEventListener('alpine:init', function () {
                 clearTimeout(timer);
                 this.token(null);
                 memory = null;
-                Object.assign(this, { entries: greeting.slice(), draft: '', files: [], error: '', unread: 0, announcement: '', cursor: 0, hasConversation: false,
+                Object.assign(this, { entries: [], greeting: config.greeting, draft: '', files: [], error: '', unread: 0, announcement: '', cursor: 0, hasConversation: false,
                     email: null, emailStep: 'address', emailDraft: '', emailError: '', codeDraft: '', codeError: '', codeNotice: '', codesLeft: 3 });
                 this.post('unread', { count: 0, label: this.text.label });
             },

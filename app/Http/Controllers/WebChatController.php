@@ -103,6 +103,8 @@ class WebChatController extends Controller
             // The launcher's name with the count, in the visitor's language.
             'unread_label' => trans_choice(':name, :count unread message|:name, :count unread messages', $unread, ['name' => __('Chat with :name', ['name' => WebChat::teamName($visitor->mailbox)])]),
             'cursor'       => $cursor,
+            // By name once the website has signed them in.
+            'greeting'     => WebChat::greeting($visitor->mailbox, $visitor->customer),
         ] + $this->emailState($visitor));
     }
 
@@ -135,7 +137,8 @@ class WebChatController extends Controller
         }
 
         $body = $text !== '' ? preg_replace('/\r\n?|\n/', '<br>', htmlspecialchars($text)) : htmlspecialchars(implode(', ', array_column($attachments, 'file_name')));
-        $received = \DB::transaction(function () use ($visitor, $text, $body, $attachments) {
+        $request_language = (string) $request->language;
+        $received = \DB::transaction(function () use ($visitor, $text, $body, $attachments, $request_language) {
             $customer = $visitor->makeCustomer();
             $conversation = $visitor->currentConversation();
             $received = ChatConversations::receive($conversation, $customer, [
@@ -157,6 +160,8 @@ class WebChatController extends Controller
                 $received['conversation']->channel = WebChat::CHANNEL;
                 $received['conversation']->save();
             }
+            // Their language, until detected in what they write: the browser's first.
+            \App\Ai\ChatTranslation::setCustomerLanguageFromBrowser($customer, $request_language);
             $visitor->conversation_id = $received['conversation']->id;
             $visitor->last_seen_at = now();
             $visitor->save();
@@ -192,8 +197,9 @@ class WebChatController extends Controller
         }
         $visitor->setRelation('mailbox', $mailbox);
 
-        \DB::transaction(function () use ($visitor, $identity, $channel_id, $mailbox) {
+        \DB::transaction(function () use ($visitor, $identity, $channel_id, $mailbox, $request) {
             $customer = Identity::customer($identity);
+            \App\Ai\ChatTranslation::setCustomerLanguageFromBrowser($customer, (string) $request->language);
             if ($visitor->customer && $visitor->customer->id != $customer->id) {
                 $customer->mergeWith($visitor->customer);
             }
@@ -285,7 +291,20 @@ class WebChatController extends Controller
             abort(404);
         }
 
-        return $attachment->download();
+        // An image (by its contents too) shows in the browser, as its own type; anything else downloads.
+        $type = WebChat::imageType($attachment);
+        if ($type && $request->thumbnail && ($path = \App\Misc\AttachmentImages::thumbnail($attachment))) {
+            return Attachment::getDisk()->response($path, pathinfo($attachment->file_name, PATHINFO_FILENAME).'.jpg', [
+                'Content-Type' => 'image/jpeg', 'Cache-Control' => 'private, max-age=2592000', 'X-Content-Type-Options' => 'nosniff',
+            ], 'inline');
+        }
+        if ($type) {
+            return Attachment::getDisk()->response($attachment->getStorageFilePath(), $attachment->file_name, [
+                'Content-Type' => $type, 'Cache-Control' => 'private, max-age=2592000', 'X-Content-Type-Options' => 'nosniff',
+            ], 'inline');
+        }
+
+        return $attachment->download(false, ['X-Content-Type-Options' => 'nosniff']);
     }
 
     /**
@@ -385,12 +404,19 @@ class WebChatController extends Controller
             'body'     => \App\Misc\ChatDelivery::plainText($thread),
             // The team's: when the visitor could see it, once Undo had passed.
             'time'     => ($team ? $thread->created_at->copy()->addSeconds(Conversation::UNDO_TIMOUT) : $thread->created_at)->toIso8601String(),
-            'files'    => $thread->attachments->map(fn ($attachment) => [
-                'id'   => $attachment->id,
-                'name' => $attachment->file_name,
-                'size' => $attachment->getSizeName(),
-                'url'  => 'f?'.http_build_query(['id' => $attachment->id, 'token' => $attachment->getToken()]),
-            ])->values()->all(),
+            'files'    => $thread->attachments->map(function ($attachment) {
+                $url = 'f?'.http_build_query(['id' => $attachment->id, 'token' => $attachment->getToken()]);
+                $image = WebChat::imageType($attachment) !== null;
+
+                return [
+                    'id'        => $attachment->id,
+                    'name'      => $attachment->file_name,
+                    'size'      => $attachment->getSizeName(),
+                    'url'       => $url,
+                    // An image: a thumbnail that opens it in the browser.
+                    'thumbnail' => $image ? $url.'&thumbnail=1' : null,
+                ];
+            })->values()->all(),
         ];
     }
 

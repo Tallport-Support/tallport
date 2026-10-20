@@ -289,7 +289,7 @@ return [
 
     'customer_allowed_mime_types'    => env('APP_CUSTOMER_ALLOWED_MIME_TYPES') 
                                 ? explode(',', env('APP_CUSTOMER_ALLOWED_MIME_TYPES'))
-                                : ['image/jpg', 'image/jpeg', 'image/gif', 'image/bmp', 'image/x-ms-bmp', 'image/webp', 'audio/mpeg', 'audio/wav', 'audio/x-wav', 'audio/ogg', 'audio/x-ms-wma', 'application/pdf', 'text/plain', 'text/csv', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+                                : ['image/jpg', 'image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/x-ms-bmp', 'image/webp', 'audio/mpeg', 'audio/wav', 'audio/x-wav', 'audio/ogg', 'audio/x-ms-wma', 'application/pdf', 'text/plain', 'text/csv', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
 
     /*
     |--------------------------------------------------------------------------

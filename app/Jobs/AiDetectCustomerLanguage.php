@@ -51,6 +51,11 @@ class AiDetectCustomerLanguage implements ShouldQueue, ShouldBeUnique
         // The customer's own words: the subject and their first message in the conversation.
         $language = AutoReplies::recognize(AutoReplies::text($thread->conversation), array_keys(Settings::LANGUAGES), $thread->conversation->mailbox);
         ChatTranslation::setCustomerLanguage($thread->customer, $language);
+        // One look at what they wrote: unsure, the browser's language stays.
+        if ($thread->customer->getMeta(ChatTranslation::FROM_BROWSER)) {
+            $thread->customer->setMeta(ChatTranslation::FROM_BROWSER, null);
+            $thread->customer->save();
+        }
     }
 
     /**
@@ -72,7 +77,7 @@ class AiDetectCustomerLanguage implements ShouldQueue, ShouldBeUnique
             && $thread->state == Thread::STATE_PUBLISHED
             && $thread->conversation
             && $thread->customer
-            && !$thread->customer->language
+            && (!$thread->customer->language || $thread->customer->getMeta(ChatTranslation::FROM_BROWSER))
             && !$thread->isBounce();
     }
 }

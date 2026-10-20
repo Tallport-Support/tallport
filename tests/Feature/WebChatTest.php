@@ -212,6 +212,100 @@ class WebChatTest extends FeatureTestCase
         $this->assertNotSame($secret, WebChat::secret($this->mailbox->fresh(), 'proxy_secret'));
     }
 
+    /**
+     * The greeting: Tallport's, in the visitor's language and by name once signed in; the
+     * mailbox's own, by language, with its variables; or none.
+     */
+    public function testGreetings()
+    {
+        WebChat::saveSettings($this->mailbox, ['greeting_mode' => 'tallport']);
+        $this->get('/t/w?widget=forma')->assertSee('Hi, how can we help?');
+        $token = $this->visitorToken();
+        $this->api('POST', '/t/i', ['identity' => $this->signed(['sub' => 'acct-42', 'name' => 'Lena Novak'])], $token)->assertOk();
+        $this->assertSame('Hi Lena, how can we help?', $this->api('GET', '/t/m', [], $token)->json('greeting'));
+
+        WebChat::saveSettings($this->mailbox, ['greeting_mode' => 'custom', 'greeting' => 'Hello {%customer.firstName,fallback=there%}, welcome to {%mailbox.name%}.', 'greetings' => ['nl' => 'Hallo {%customer.firstName,fallback=daar%}!']]);
+        $this->assertSame('Hello Lena, welcome to Forma.', $this->api('GET', '/t/m', [], $token)->json('greeting'));
+        $this->assertSame('Hallo Lena!', $this->api('GET', '/t/m', [], $token, ['Accept-Language' => 'nl-NL'])->json('greeting'));
+        $this->get('/t/w?widget=forma')->assertSee('Hello there, welcome to Forma.');
+        $this->get('/t/w?widget=forma', ['Accept-Language' => 'nl'])->assertSee('Hallo daar!');
+
+        WebChat::saveSettings($this->mailbox, ['greeting_mode' => 'none']);
+        $this->assertSame('', $this->api('GET', '/t/m', [], $token)->json('greeting'));
+
+        // Before there was a choice: a written greeting is the own one, none is Tallport's.
+        WebChat::saveSettings($this->mailbox, ['greeting_mode' => null, 'greeting' => '']);
+        $this->assertSame('tallport', WebChat::settings($this->mailbox->fresh())['greeting_mode']);
+
+        // Versions by language on the settings page.
+        \Session::start();
+        $save = fn (array $data) => $this->actingAs($this->admin)->post(route('mailboxes.web_chat.save', ['id' => $this->mailbox->id]), ['_token' => csrf_token(), 'origins' => self::SITE] + $data);
+        $save(['greeting_mode' => 'custom', 'greeting' => 'Hi!', 'add_language' => 1, 'add_language_code' => 'de'])->assertRedirect();
+        $this->assertSame(['de' => ''], WebChat::settings($this->mailbox->fresh())['greetings']);
+        $save(['greeting_mode' => 'custom', 'greeting' => 'Hi!', 'greetings' => ['de' => 'Hallo!']]);
+        $this->assertSame(['de' => 'Hallo!'], WebChat::settings($this->mailbox->fresh())['greetings']);
+        $save(['greeting_mode' => 'custom', 'greeting' => 'Hi!', 'greetings' => ['de' => 'Hallo!'], 'remove_language' => 'de']);
+        $this->assertSame([], WebChat::settings($this->mailbox->fresh())['greetings']);
+        $this->actingAs($this->admin)->get(route('mailboxes.web_chat', ['id' => $this->mailbox->id]))->assertOk()->assertSee('Your Own Greeting');
+    }
+
+    /**
+     * The browser's first language is the customer's, until detected in what they write; an
+     * agent's choice stands.
+     */
+    public function testTheBrowsersLanguage()
+    {
+        $token = $this->visitorToken();
+        $this->api('POST', '/t/m', ['body' => 'Hello', 'language' => 'en-GB'], $token)->assertOk();
+        $customer = Visitor::firstOrFail()->customer;
+        $this->assertSame('en', $customer->language);
+        $this->assertTrue((bool) $customer->getMeta(\App\Ai\ChatTranslation::FROM_BROWSER));
+
+        // Detected in their message: that one.
+        \App\Ai\ChatTranslation::setCustomerLanguage($customer, 'nl');
+        $customer->refresh();
+        $this->assertSame('nl', $customer->language);
+        $this->assertNull($customer->getMeta(\App\Ai\ChatTranslation::FROM_BROWSER));
+        // And then no detection replaces it.
+        \App\Ai\ChatTranslation::setCustomerLanguage($customer, 'de');
+        $this->assertSame('nl', $customer->fresh()->language);
+
+        // An agent's choice: the browser doesn't change it.
+        $other = $this->createCustomer('casey@customer.example.org');
+        \App\Ai\ChatTranslation::setCustomerLanguage($other, 'fr', true);
+        \App\Ai\ChatTranslation::setCustomerLanguageFromBrowser($other, 'de-DE');
+        $this->assertSame('fr', $other->fresh()->language);
+
+        // Signing in, for a customer without one; regions map to Tallport's languages.
+        $this->api('POST', '/t/i', ['identity' => $this->signed(['sub' => 'acct-9']), 'language' => 'zh-TW'])->assertOk();
+        $this->assertSame('zh-Hant', Customer::getCustomerByChannel(WebChat::CHANNEL, 's:acct-9')->language);
+    }
+
+    /**
+     * Images, by their contents, show as thumbnails and open in the browser; anything else downloads.
+     */
+    public function testImagesAsThumbnails()
+    {
+        $png = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==');
+        $token = $this->visitorToken();
+        $this->api('POST', '/t/m', ['files' => [
+            UploadedFile::fake()->createWithContent('photo.png', $png),
+            UploadedFile::fake()->createWithContent('drawing.svg', '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'),
+            UploadedFile::fake()->createWithContent('fake.png', '<html><script>alert(1)</script></html>'),
+        ]], $token)->assertOk();
+        $files = collect($this->api('GET', '/t/m?after=0', [], $token)->json('messages.0.files'))->keyBy('name');
+
+        $this->assertNotNull($files['photo.png']['thumbnail']);
+        $this->get('/t/'.$files['photo.png']['url'])->assertOk()->assertHeader('Content-Type', 'image/png')->assertHeader('X-Content-Type-Options', 'nosniff')
+            ->assertHeader('Content-Disposition', 'inline; filename=photo.png');
+        $this->get('/t/'.$files['photo.png']['thumbnail'])->assertOk()->assertHeader('X-Content-Type-Options', 'nosniff');
+
+        foreach ($files->except('photo.png') as $name => $file) {
+            $this->assertNull($file['thumbnail'], $name);
+            $this->assertStringStartsWith('attachment', $this->get('/t/'.$file['url'])->assertOk()->headers->get('Content-Disposition'), $name);
+        }
+    }
+
     public function testSettings()
     {
         $mailbox = $this->createMailbox([], ['name' => 'Studio']);

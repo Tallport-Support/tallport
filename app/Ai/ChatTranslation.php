@@ -23,6 +23,11 @@ use App\Thread;
 class ChatTranslation
 {
     /**
+     * Customer meta: their language came from their browser, not yet from what they wrote.
+     */
+    const FROM_BROWSER = 'language_from_browser';
+
+    /**
      * The conversation's latest messages sent along for context (and at most this much text).
      */
     const CONTEXT_MESSAGES = ConversationContext::MAX_MESSAGES;
@@ -80,9 +85,34 @@ class ChatTranslation
      * The customer's language (their profile's): as an agent chose it, or as detected in their
      * message, kept only while they have none.
      */
+    /**
+     * A customer's language from their browser (App\WebChat: its first language), for one without
+     * any: what they write, once detected, replaces it (setCustomerLanguage()); an agent's choice
+     * stands. Only the first language: browsers add English by default.
+     */
+    public static function setCustomerLanguageFromBrowser($customer, $tag)
+    {
+        $language = \App\AutoReply\AutoReplies::fromLanguageTag((string) $tag, array_keys(Settings::LANGUAGES));
+        if (!$customer || $customer->language || !$language) {
+            return;
+        }
+        $customer->language = $language;
+        $customer->setMeta(self::FROM_BROWSER, true);
+        $customer->save();
+    }
+
     public static function setCustomerLanguage($customer, $language, $by_user = false)
     {
-        if (!$customer || !Settings::isLanguage($language) || (!$by_user && $customer->language)) {
+        // Taken from their browser (a website chat) until detected in what they write.
+        $from_browser = $customer && $customer->language && $customer->getMeta(self::FROM_BROWSER);
+        if (!$customer || !Settings::isLanguage($language) || (!$by_user && $customer->language && !$from_browser)) {
+            return;
+        }
+        if ($from_browser) {
+            $customer->setMeta(self::FROM_BROWSER, null);
+            $customer->language = $language;
+            $customer->save();
+
             return;
         }
         if (!$by_user) {

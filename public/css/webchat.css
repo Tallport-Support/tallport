@@ -134,8 +134,15 @@ body {
 .widget-entry[data-kind='visitor']:not([data-last]) .widget-bubble {
   border-end-end-radius: 6px;
 }
+/* A file: a row that downloads, or an image's thumbnail (a fixed width: a percentage collapses it in
+   its content-sized frame). */
 .widget-attachment {
+  --f-attachment-thumbnail-max-width: 15rem;
+  --f-attachment-thumbnail-height: 9rem;
   margin-top: 4px;
+}
+.widget-attachment > .f-attachment {
+  max-width: 100%;
 }
 .widget-meta {
   margin: 4px 12px 0;

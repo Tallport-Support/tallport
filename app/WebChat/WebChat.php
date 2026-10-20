@@ -9,7 +9,8 @@ use App\Mailbox;
  * chat window (/t/w, WebChatController) in a frame; visitors' messages arrive in a mailbox
  * (conversations of the chat type), and the window fetches the team's replies. Settings are in the
  * mailbox's "web_chat" meta: enabled, widget (the ID websites name), origins (the websites allowed),
- * greeting, reply_time and accent.
+ * greeting_mode (tallport, custom or none), greeting and greetings (custom: the main text, and versions
+ * by language), reply_time and accent.
  */
 class WebChat
 {
@@ -21,6 +22,11 @@ class WebChat
     const CHANNEL_NAME = 'Website';
 
     const META = 'web_chat';
+
+    /**
+     * The chat's first message: Tallport's (translated, by name when known), the mailbox's own, or none.
+     */
+    const GREETING_MODES = ['tallport', 'custom', 'none'];
 
     /**
      * Ready-made files for websites: proxies and signing visitors in (examples/website-chat).
@@ -56,11 +62,16 @@ class WebChat
     {
         $settings = (array) ($mailbox->meta[self::META] ?? []);
 
+        $greeting = (string) ($settings['greeting'] ?? '');
+
         return [
             'enabled'    => !empty($settings['enabled']),
             'widget'     => (string) ($settings['widget'] ?? ''),
             'origins'    => array_values(array_filter((array) ($settings['origins'] ?? []), 'is_string')),
-            'greeting'   => (string) ($settings['greeting'] ?? ''),
+            // Before there was a choice: a greeting written was the own one, none was Tallport's.
+            'greeting_mode' => in_array($settings['greeting_mode'] ?? null, self::GREETING_MODES, true) ? $settings['greeting_mode'] : ($greeting !== '' ? 'custom' : 'tallport'),
+            'greeting'   => $greeting,
+            'greetings'  => array_filter((array) ($settings['greetings'] ?? []), 'is_string'),
             'reply_time' => (string) ($settings['reply_time'] ?? ''),
             'accent'     => in_array($settings['accent'] ?? null, \FruitUI\Fruit::ACCENTS, true) ? $settings['accent'] : 'blue',
         ];
@@ -69,7 +80,7 @@ class WebChat
     public static function saveSettings(Mailbox $mailbox, array $settings)
     {
         $meta = (array) ($mailbox->meta[self::META] ?? []);
-        foreach (['enabled', 'widget', 'origins', 'greeting', 'reply_time', 'accent'] as $name) {
+        foreach (['enabled', 'widget', 'origins', 'greeting_mode', 'greeting', 'greetings', 'reply_time', 'accent'] as $name) {
             if (array_key_exists($name, $settings)) {
                 $meta[$name] = $settings[$name];
             }
@@ -234,6 +245,57 @@ class WebChat
         }
 
         return $request->ip();
+    }
+
+    /**
+     * The greeting in the current language, to a customer (by name, when they're signed in with
+     * one) or to anyone: Tallport's own, or the mailbox's (its version in that language, else the
+     * main text) with its variables ({%customer.firstName,fallback=there%}, {%mailbox.name%}…).
+     */
+    public static function greeting(Mailbox $mailbox, $customer = null)
+    {
+        $settings = self::settings($mailbox);
+        $first_name = $customer ? trim((string) $customer->first_name) : '';
+        if ($settings['greeting_mode'] == 'none') {
+            return '';
+        }
+        if ($settings['greeting_mode'] == 'tallport') {
+            return $first_name !== '' ? __('Hi :name, how can we help?', ['name' => $first_name]) : __('Hi, how can we help?');
+        }
+        $language = \App\Ai\Settings::fromLocale(app()->getLocale());
+        $text = trim((string) ($settings['greetings'][$language] ?? '')) ?: $settings['greeting'];
+        // Without a name, the variables' fallbacks show.
+        $data = ['mailbox' => $mailbox] + ($first_name !== '' ? ['customer' => $customer] : []);
+
+        return trim(str_replace(['<br />', '<br/>', '<br>'], '', \App\Misc\Mail::replaceMailVars($text, $data, false, true)));
+    }
+
+    /**
+     * Images the window shows as thumbnails and opens in the browser; anything else downloads.
+     */
+    const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
+
+    /**
+     * An attachment's image type, when both its stored type and its contents say it's one of
+     * IMAGE_TYPES (never the name alone: an SVG or HTML file is always a download); else null.
+     */
+    public static function imageType(\App\Attachment $attachment)
+    {
+        if (!in_array(strtolower((string) $attachment->mime_type), self::IMAGE_TYPES, true)) {
+            return null;
+        }
+        try {
+            $handle = fopen($attachment->getLocalFilePath(), 'rb');
+            $head = $handle ? (string) fread($handle, 4096) : '';
+            if ($handle) {
+                fclose($handle);
+            }
+        } catch (\Throwable $e) {
+            return null;
+        }
+        $type = $head !== '' ? (new \finfo(FILEINFO_MIME_TYPE))->buffer($head) : null;
+
+        return in_array($type, self::IMAGE_TYPES, true) ? $type : null;
     }
 
     /**

@@ -18,7 +18,7 @@
             'widget'   => $settings['widget'],
             'origin'   => $origin,
             'team'     => $team,
-            'greeting' => $settings['greeting'],
+            'greeting' => \App\WebChat\WebChat::greeting($mailbox),
             'poll'     => $poll,
             'maxFiles' => \App\WebChat\WebChat::MAX_FILES,
             'maxFileMb' => \App\WebChat\WebChat::MAX_FILE_MB,
@@ -91,7 +91,8 @@
                             <span class="f-avatar widget-avatar" :class="{ 'widget-team-mark': entry.team }" aria-hidden="true" x-show="entry.kind === 'team' && entry.first" x-text="entry.initials"></span>
                             <p class="widget-author" :class="{ 'f-sr-only': entry.kind === 'visitor' || !entry.first }" x-text="entry.kind === 'visitor' ? text.you : entry.author"></p>
                             <p class="widget-bubble" x-show="entry.body" x-text="entry.body"></p>
-                            <template x-for="file in entry.files" :key="file.id"><a class="f-attachment widget-attachment" :href="file.url" :download="file.name"><span class="f-attachment__leading"><x-icon.file-text class="f-icon" aria-hidden="true" /></span><span class="f-attachment__body"><span x-text="file.name"></span><small class="f-attachment__detail" x-text="file.size"></small></span><span class="f-attachment__trailing"><x-icon.download class="f-icon" aria-hidden="true" /></span></a></template>
+                            {{-- An image shows as a thumbnail and opens in a new tab; other files download. --}}
+                            <template x-for="file in entry.files" :key="file.id"><div class="widget-attachment"><template x-if="file.thumbnail"><a class="f-attachment f-attachment--thumbnail" :href="file.url" target="_blank" rel="noopener"><span class="f-attachment__thumbnail"><img :src="file.thumbnail" alt="" loading="lazy"></span><span class="f-attachment__body"><span x-text="file.name"></span><small class="f-attachment__detail" x-text="file.size"></small></span></a></template><template x-if="!file.thumbnail"><a class="f-attachment" :href="file.url" :download="file.name"><span class="f-attachment__leading"><x-icon.file-text class="f-icon" aria-hidden="true" /></span><span class="f-attachment__body"><span x-text="file.name"></span><small class="f-attachment__detail" x-text="file.size"></small></span><span class="f-attachment__trailing"><x-icon.download class="f-icon" aria-hidden="true" /></span></a></template></div></template>
                             <p class="widget-meta" x-show="entry.time && entry.state !== 'failed' && (entry.last || entry.state)"><time x-text="entry.time"></time><span x-text="entry.state ? ' · ' + text[entry.state] : ''"></span></p>
                             {{-- Not sent: as FruitUI's failed-send line (.f-message__status). --}}
                             <p class="widget-status" x-show="entry.state === 'failed'" x-cloak><x-icon.circle-alert class="f-icon widget-status__icon" aria-hidden="true" /><span x-text="text.failed"></span><button class="f-button f-button--ghost f-button--small" type="button" @click="deliver(entry)" x-text="text.retry"></button></p>
