@@ -50,11 +50,11 @@
             <button type="submit" class="f-button f-button--primary btn-reply-submit" wire:loading.attr="aria-busy" wire:target="send">{{ $send_label }}</button>
             <x-fruit::menu :title="__('More Send Options')" class="dropdown-send-status">
                 <x-slot:trigger class="f-button--primary f-button--icon" :aria-label="__('More Send Options')"><span class="f-menu__chevron" aria-hidden="true"></span></x-slot:trigger>
-                <ul class="menu-module-items">@action('conversation.prepend_send_dropdown', $conversation, $mailbox, !empty($is_new))</ul>
+                <ul class="menu-module-items" role="none">@action('conversation.prepend_send_dropdown', $conversation, $mailbox, !empty($is_new))</ul>
                 @foreach ($send_menu as $send_status => $send_menu_label)
                     <x-fruit::menu-link href="#" :data-send-status="$send_status" x-on:click.prevent="submit({{ $send_status }})">{{ $send_menu_label }}</x-fruit::menu-link>
                 @endforeach
-                <ul class="menu-module-items">@action('conversation.append_send_dropdown', $conversation, $mailbox, !empty($is_new))</ul>
+                <ul class="menu-module-items" role="none">@action('conversation.append_send_dropdown', $conversation, $mailbox, !empty($is_new))</ul>
                 @if (!empty($history))
                     {{-- How much of the conversation the email quotes. --}}
                     <x-fruit::menu-separator />

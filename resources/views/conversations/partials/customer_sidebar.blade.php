@@ -10,7 +10,7 @@
                 @if ($customer->getMeta(App\Misc\ExternalImages::META_KEY))
                     <x-fruit::menu-link href="#" class="external-images-block" :data-customer-id="$customer->id">{{ __('Hide images from other servers') }}</x-fruit::menu-link>
                 @endif
-                <ul class="menu-module-items">{{ \Eventy::action('conversation.customer.menu', $customer, $conversation) }}{{ \Eventy::action('customer_profile.menu', $customer, $conversation) }}</ul>
+                <ul class="menu-module-items" role="none">{{ \Eventy::action('conversation.customer.menu', $customer, $conversation) }}{{ \Eventy::action('customer_profile.menu', $customer, $conversation) }}</ul>
             </x-fruit::menu>
         @endif
         @include('customers/profile_snippet', ['customer' => $customer, 'main_email' => $conversation->customer_email ?? '', 'conversation' => $conversation ?? null])

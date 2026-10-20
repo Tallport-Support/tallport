@@ -21,9 +21,9 @@
             <x-slot:actions>
                 <x-fruit::menu :title="__('More Actions')" class="thread-options">
                     <x-slot:trigger class="f-button--ghost f-button--icon" :aria-label="__('More Actions')"><x-icon.ellipsis class="f-icon" aria-hidden="true" /></x-slot:trigger>
-                    <ul class="menu-module-items">@action('thread.menu', $thread)</ul>
+                    <ul class="menu-module-items" role="none">@action('thread.menu', $thread)</ul>
                     <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" data-fruit-dialog-url :data-fruit-dialog-title="__('Outgoing Emails')" data-fruit-dialog-size="large">{{ __("Outgoing Emails") }}</x-fruit::menu-link>
-                    <ul class="menu-module-items">@action('thread.menu.append', $thread)</ul>
+                    <ul class="menu-module-items" role="none">@action('thread.menu.append', $thread)</ul>
                 </x-fruit::menu>
             </x-slot:actions>
         @endif
@@ -289,7 +289,7 @@
                                 <button type="submit" role="menuitem" class="f-menu-item new-conv">{{ __("Clone Conversation") }}</button>
                             </form>
                         @endif
-                        <ul class="menu-module-items">@action('thread.menu', $thread)</ul>
+                        <ul class="menu-module-items" role="none">@action('thread.menu', $thread)</ul>
                         @if (Auth::user()->isAdmin())
                             <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" data-fruit-dialog-url :data-fruit-dialog-title="__('Outgoing Emails')" data-fruit-dialog-size="large">{{ __("Outgoing Emails") }}</x-fruit::menu-link>
                         @endif
@@ -299,7 +299,7 @@
                         @if ($thread->isReply() || $thread->isNote())
                             <x-fruit::menu-link :href="($page_uri ?? \Request::getRequestUri()).'&print_thread_id='.$thread->id.'&print=1'" target="_blank">{{ __("Print") }}</x-fruit::menu-link>
                         @endif
-                        <ul class="menu-module-items">@action('thread.menu.append', $thread)</ul>
+                        <ul class="menu-module-items" role="none">@action('thread.menu.append', $thread)</ul>
                     </x-fruit::menu>
                 @endif
             </x-slot:actions>

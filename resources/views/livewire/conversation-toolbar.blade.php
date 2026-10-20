@@ -34,7 +34,7 @@
 
         <x-fruit::menu :title="__('More Actions')" class="conv-action conv-more-actions">
             <x-slot:trigger class="f-button--ghost f-button--icon" :aria-label="__('More Actions')" :title="__('More Actions')"><x-icon.ellipsis class="f-icon" aria-hidden="true" /></x-slot:trigger>
-            <ul class="menu-module-items">@action('conversation.prepend_action_buttons', $conversation, $mailbox)</ul>
+            <ul class="menu-module-items" role="none">@action('conversation.prepend_action_buttons', $conversation, $mailbox)</ul>
             @foreach ($dropdown_actions as $action_key => $action)
                 @if ($action_key === 'delete_mobile')
                     <x-fruit::menu-link href="#" :class="$action['class'].' conv-action-narrow'" x-on:click.prevent="{{ $delete_confirm }}">@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['label'] }}</x-fruit::menu-link>
@@ -52,7 +52,7 @@
                         >@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['label'] }}</a>
                 @endif
             @endforeach
-            <ul class="menu-module-items">@action('conversation.append_action_buttons', $conversation, $mailbox)</ul>
+            <ul class="menu-module-items" role="none">@action('conversation.append_action_buttons', $conversation, $mailbox)</ul>
             {{-- A website chat's visitor (App\WebChat\Spam): their messages taken and dropped. --}}
             @if (App\WebChat\Visitor::where('conversation_id', $conversation->id)->exists())
                 <x-fruit::menu-separator />
