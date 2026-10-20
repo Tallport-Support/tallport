@@ -802,6 +802,7 @@
     "Up to :count files per message.": "Jusqu’à :count fichiers par message.",
     "Waiting to send": "En attente d’envoi",
     "Website Chat": "Tchat du Site Web",
+    "You can send messages again.": "Vous pouvez de nouveau envoyer des messages.",
     "Chat isn’t available right now. Try again later.": "Le tchat n’est pas disponible pour le moment. Réessayez plus tard.",
     "You’re sending messages quickly. You can send the next one :time.": "Vous envoyez des messages rapidement. Vous pourrez envoyer le suivant :time.",
     "You’ve sent a lot of files. You can send more :time.": "Vous avez envoyé beaucoup de fichiers. Vous pourrez en envoyer d’autres :time.",

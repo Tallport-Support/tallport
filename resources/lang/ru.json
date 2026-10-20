@@ -794,6 +794,7 @@
     "Up to :count files per message.": "Не более :count файлов в сообщении.",
     "Waiting to send": "Ожидает отправки",
     "Website Chat": "Чат на Сайте",
+    "You can send messages again.": "Вы снова можете отправлять сообщения.",
     "Chat isn’t available right now. Try again later.": "Чат сейчас недоступен. Попробуйте позже.",
     "You’re sending messages quickly. You can send the next one :time.": "Вы отправляете сообщения слишком быстро. Следующее можно отправить :time.",
     "You’ve sent a lot of files. You can send more :time.": "Вы отправили много файлов. Отправить ещё можно :time.",

@@ -371,16 +371,21 @@ document.addEventListener('alpine:init', function () {
                 this.waitUntil = Date.now() + seconds * 1000;
                 this.waitKind = kind;
                 clearInterval(this.waitTimer);
+                // Shown counting down; said once at the start and once when it's over (not every second).
+                var first = true;
                 var tick = function () {
                     var left = Math.ceil((self.waitUntil - Date.now()) / 1000);
                     if (left <= 0) {
                         clearInterval(self.waitTimer);
                         self.waitText = '';
+                        self.announcement = self.text.waitOver;
                         return;
                     }
                     var when = new Intl.RelativeTimeFormat(document.documentElement.lang || undefined, { numeric: 'auto' })
                         .format(left < 90 ? left : Math.ceil(left / 60), left < 90 ? 'second' : 'minute');
                     self.waitText = (kind === 'files' ? self.text.waitFiles : self.text.waitMessages).replace(':time', when);
+                    if (first) self.announcement = self.waitText;
+                    first = false;
                 };
                 tick();
                 this.waitTimer = setInterval(tick, 1000);

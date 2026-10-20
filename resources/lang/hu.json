@@ -794,6 +794,7 @@
     "Up to :count files per message.": "Üzenetenként legfeljebb :count fájl.",
     "Waiting to send": "Küldésre vár",
     "Website Chat": "Weboldal Chat",
+    "You can send messages again.": "Ismét küldhet üzeneteket.",
     "Chat isn’t available right now. Try again later.": "A chat jelenleg nem érhető el. Próbálja újra később.",
     "You’re sending messages quickly. You can send the next one :time.": "Gyorsan küldi az üzeneteket. A következőt :time küldheti el.",
     "You’ve sent a lot of files. You can send more :time.": "Sok fájlt küldött. Továbbiakat :time küldhet.",

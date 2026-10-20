@@ -134,20 +134,21 @@ class WebChatController extends Controller
             return response()->json(['message' => __('Write a message.')], 422);
         }
 
-        // A field only bots fill in, or someone blocked: taken, and dropped.
+        // Someone blocked: taken, and dropped.
         $mailbox = $visitor->mailbox;
         $ip_hash = Spam::ipHash(WebChat::clientIp($request, $mailbox));
-        if ($request->filled('website') || Spam::blocked($visitor, $ip_hash)) {
+        if (Spam::blocked($visitor, $ip_hash)) {
             return response()->json(['message' => ['id' => null, 'kind' => 'visitor', 'author' => '', 'initials' => '', 'body' => $text, 'time' => now()->toIso8601String(), 'files' => []]]);
         }
-        // A new chat: while the widget takes them, after a proof of work (harder for a first message
-        // sent the moment the window loaded).
+        // A new chat: while the widget takes them, after a proof of work, harder when it looks like a
+        // bot: a first message sent the moment the window loaded, or a field only bots fill in (a
+        // password manager might too, so a person still gets through).
         $new_chat = !$visitor->exists || !$visitor->currentConversation();
         if ($new_chat && !Spam::available($mailbox)) {
             return response()->json(['message' => __('Chat isn’t available right now. Try again later.'), 'unavailable' => true], 503);
         }
         if ($new_chat) {
-            $fast = $request->filled('elapsed') && (int) $request->elapsed < Spam::FAST_MS;
+            $fast = ($request->filled('elapsed') && (int) $request->elapsed < Spam::FAST_MS) || $request->filled('website');
             $required = Spam::difficulty($mailbox, $fast ? Spam::difficulty($mailbox) + 4 : 0);
             if (!Spam::solved($request->proof, $mailbox, $required)) {
                 return response()->json(['message' => '', 'challenge' => Spam::challenge($mailbox, $required)], 428);

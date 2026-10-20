@@ -794,6 +794,7 @@
     "Up to :count files per message.": "1つのメッセージにつき最大 :count 個のファイルまでです。",
     "Waiting to send": "送信待ち",
     "Website Chat": "ウェブサイトチャット",
+    "You can send messages again.": "再びメッセージを送信できます。",
     "Chat isn’t available right now. Try again later.": "現在チャットは利用できません。しばらくしてからもう一度お試しください。",
     "You’re sending messages quickly. You can send the next one :time.": "メッセージの送信が速すぎます。次のメッセージは :time に送信できます。",
     "You’ve sent a lot of files. You can send more :time.": "多くのファイルを送信しました。:time にさらに送信できます。",

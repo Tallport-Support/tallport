@@ -796,6 +796,7 @@
     "Up to :count files per message.": "每条消息最多 :count 个文件。",
     "Waiting to send": "等待发送",
     "Website Chat": "网站聊天",
+    "You can send messages again.": "您现在可以再次发送消息了。",
     "Chat isn’t available right now. Try again later.": "聊天暂时不可用。请稍后重试。",
     "You’re sending messages quickly. You can send the next one :time.": "您发送消息过快。您可以在:time发送下一条。",
     "You’ve sent a lot of files. You can send more :time.": "您已发送了很多文件。您可以在:time发送更多。",

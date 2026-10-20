@@ -789,6 +789,7 @@
     "Up to :count files per message.": "Bis zu :count Dateien pro Nachricht.",
     "Waiting to send": "Wartet auf Versand",
     "Website Chat": "Website-Chat",
+    "You can send messages again.": "Sie können wieder Nachrichten senden.",
     "Chat isn’t available right now. Try again later.": "Der Chat ist gerade nicht verfügbar. Versuchen Sie es später erneut.",
     "You’re sending messages quickly. You can send the next one :time.": "Sie senden Nachrichten sehr schnell. Die nächste können Sie :time senden.",
     "You’ve sent a lot of files. You can send more :time.": "Sie haben viele Dateien gesendet. Weitere können Sie :time senden.",

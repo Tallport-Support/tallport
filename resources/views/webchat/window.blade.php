@@ -37,6 +37,7 @@
                 // :time: "in 40 seconds", in the visitor's language (the browser's Intl.RelativeTimeFormat).
                 'waitMessages' => __('You’re sending messages quickly. You can send the next one :time.'),
                 'waitFiles'    => __('You’ve sent a lot of files. You can send more :time.'),
+                'waitOver'     => __('You can send messages again.'),
                 'remove'   => __('Remove :name'),
                 'repliesTo' => __('Replies also go to :email.'),
                 'emailInvalid' => __('Enter an email address, like name@example.com.'),
@@ -114,7 +115,7 @@
         <form class="f-composer widget-composer" @submit.prevent="send" x-show="available || hasConversation">
             {{-- Only bots fill this in. --}}
             <input type="text" name="website" x-ref="trap" class="widget-trap" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <p class="f-help widget-wait" role="status" x-show="waitText" x-text="waitText" x-cloak></p>
+            <p class="f-help widget-wait" x-show="waitText" x-text="waitText" x-cloak></p>
             <label class="f-sr-only" for="widget-message">{{ __('Message') }}</label>
             <p class="f-error" x-show="error" x-text="error" x-cloak></p>
             <ul class="widget-files" role="list" aria-label="{{ __('Files to send') }}" x-show="files.length" x-cloak>

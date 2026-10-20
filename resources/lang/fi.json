@@ -810,6 +810,7 @@
     "Up to :count files per message.": "Enintään :count tiedostoa viestiä kohden.",
     "Waiting to send": "Odottaa lähetystä",
     "Website Chat": "Verkkosivun Chat",
+    "You can send messages again.": "Voit taas lähettää viestejä.",
     "Chat isn’t available right now. Try again later.": "Chat ei ole juuri nyt käytettävissä. Yritä myöhemmin uudelleen.",
     "You’re sending messages quickly. You can send the next one :time.": "Lähetät viestejä nopeasti. :time voit lähettää seuraavan.",
     "You’ve sent a lot of files. You can send more :time.": "Olet lähettänyt paljon tiedostoja. :time voit lähettää lisää.",

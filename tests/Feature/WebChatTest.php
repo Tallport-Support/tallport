@@ -361,10 +361,11 @@ class WebChatTest extends FeatureTestCase
         $this->api('POST', '/t/m', ['body' => 'Hi', 'elapsed' => 300, 'proof' => $this->proof($harder)], $other)->assertOk();
         $this->getJson('/t/p?widget=forma')->assertOk()->assertJson(['difficulty' => \App\WebChat\Spam::DIFFICULTY]);
 
-        // A field only bots fill in: taken, and dropped.
-        $bot = $this->visitorToken();
-        $this->api('POST', '/t/m', ['body' => 'Buy now', 'website' => 'http://spam.example'], $bot)->assertOk()->assertJson(['message' => ['id' => null]]);
-        $this->assertSame(2, Conversation::count());
+        // A field only bots fill in (a password manager might): a harder proof, so a person still gets through.
+        $filled = $this->visitorToken();
+        $this->assertSame(\App\WebChat\Spam::DIFFICULTY + 4, $this->api('POST', '/t/m', ['body' => 'Hi', 'website' => 'https://lena.example'], $filled)->assertStatus(428)->json('challenge.difficulty'));
+        $this->api('POST', '/t/m', ['body' => 'Hi', 'website' => 'https://lena.example', 'proof' => $this->proof(\App\WebChat\Spam::DIFFICULTY + 4)], $filled)->assertOk();
+        $this->assertSame(3, Conversation::count());
     }
 
     /**

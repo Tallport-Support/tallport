@@ -794,6 +794,7 @@
     "Up to :count files per message.": "Mesaj başına en fazla :count dosya.",
     "Waiting to send": "Gönderilmeyi bekliyor",
     "Website Chat": "Web Sitesi Sohbeti",
+    "You can send messages again.": "Yeniden mesaj gönderebilirsiniz.",
     "Chat isn’t available right now. Try again later.": "Sohbet şu anda kullanılamıyor. Daha sonra tekrar deneyin.",
     "You’re sending messages quickly. You can send the next one :time.": "Mesajları hızlı gönderiyorsunuz. Bir sonrakini :time gönderebilirsiniz.",
     "You’ve sent a lot of files. You can send more :time.": "Çok sayıda dosya gönderdiniz. Daha fazlasını :time gönderebilirsiniz.",

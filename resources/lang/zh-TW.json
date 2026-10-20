@@ -851,6 +851,7 @@
     "Up to :count files per message.": "每則訊息最多 :count 個檔案。",
     "Waiting to send": "等待傳送",
     "Website Chat": "網站聊天",
+    "You can send messages again.": "您現在可以再次傳送訊息了。",
     "Chat isn’t available right now. Try again later.": "聊天暫時無法使用。請稍後再試。",
     "You’re sending messages quickly. You can send the next one :time.": "您傳送訊息過快。您可以在:time傳送下一則。",
     "You’ve sent a lot of files. You can send more :time.": "您已傳送了許多檔案。您可以在:time傳送更多。",

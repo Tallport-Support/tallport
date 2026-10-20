@@ -794,6 +794,7 @@
     "Up to :count files per message.": "Не більше :count файлів у повідомленні.",
     "Waiting to send": "Очікує надсилання",
     "Website Chat": "Чат на Сайті",
+    "You can send messages again.": "Ви знову можете надсилати повідомлення.",
     "Chat isn’t available right now. Try again later.": "Чат зараз недоступний. Спробуйте пізніше.",
     "You’re sending messages quickly. You can send the next one :time.": "Ви надсилаєте повідомлення занадто швидко. Наступне можна надіслати :time.",
     "You’ve sent a lot of files. You can send more :time.": "Ви надіслали багато файлів. Надіслати ще можна :time.",
