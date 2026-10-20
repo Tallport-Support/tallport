@@ -23,6 +23,11 @@ class WebChat
     const META = 'web_chat';
 
     /**
+     * Ready-made files for websites: proxies and signing visitors in (examples/website-chat).
+     */
+    const EXAMPLES_URL = 'https://github.com/Tallport-Support/tallport/tree/main/examples/website-chat';
+
+    /**
      * Polling, in seconds, as the window does it: while open and active, then slower; closed (for the
      * unread count, only with a conversation).
      */

@@ -46,48 +46,52 @@
             </form>
 
             @if ($snippet)
-                <x-fruit::form-section :title="__('On Your Website')" :level="3" :footer="__('Add the code to every page, before the closing body tag. For visitors without JavaScript, link to the chat itself.')">
+                <x-fruit::form-section :title="__('On Your Website')" :level="3" :footer="__('Add the code to every page, before the closing body tag.')">
                     <div class="f-form-row">
                         <pre>{{ $snippet }}</pre>
                         <x-fruit::copy-button size="small" :value="$snippet">{{ __('Copy') }}</x-fruit::copy-button>
                     </div>
-                    <div class="f-form-row">
-                        <a href="{{ $link }}" target="_blank" rel="noopener">{{ $link }}</a>
-                        <x-fruit::copy-button size="small" :value="$link">{{ __('Copy') }}</x-fruit::copy-button>
-                    </div>
+                    {{-- The chat on a page of its own: a "Chat with us" link, and the fallback without JavaScript. --}}
+                    <x-fruit::field :label="__('Chat Link')" :description="__('The chat on a page of its own: for a “Chat with Us” link in your menu or emails, and for visitors without JavaScript.')">
+                        <div class="f-input-group">
+                            <x-fruit::input id="web_chat_link" :value="$link" readonly />
+                            <x-fruit::copy-button :value="$link">{{ __('Copy') }}</x-fruit::copy-button>
+                        </div>
+                    </x-fruit::field>
                 </x-fruit::form-section>
 
-                {{-- A website serving /t/ through its own domain (README: Website chat). --}}
-                <x-fruit::form-section :title="__('Through Your Website’s Domain')" :level="3" :footer="__('A website can serve the chat’s folder, /t/, through its own domain, so visitors’ browsers only talk to it. Its proxy sends this secret in the X-Tallport-Proxy header; with it, Tallport counts each visitor’s own address for its limits. The README has the settings for common servers.')">
-                    <form method="POST" action="{{ route('mailboxes.web_chat.save', ['id' => $mailbox->id]) }}" class="f-form-row">
-                        {{ csrf_field() }}
+                {{-- A website serving /t/ through its own domain (examples/website-chat/proxy). --}}
+                <x-fruit::form-section :title="__('Through Your Website’s Domain')" :level="3" :footer="__('Your website serves the chat’s folder, /t/, so visitors’ browsers only talk to it. Its proxy sends this secret, so Tallport counts each visitor’s own address for its limits.')">
+                    <div class="f-form-row">
                         <span>{{ __('Proxy Secret') }}</span>
-                        @if ($proxy_secret)
-                            <span class="f-row">
+                        <form method="POST" action="{{ route('mailboxes.web_chat.save', ['id' => $mailbox->id]) }}" class="f-row">
+                            {{ csrf_field() }}
+                            @if ($proxy_secret)
                                 <x-fruit::copy-button size="small" :value="$proxy_secret">{{ __('Copy') }}</x-fruit::copy-button>
                                 <x-fruit::button type="submit" size="small" variant="danger" name="action" value="rotate_proxy_secret" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Make a new proxy secret? Until your website’s proxy sends the new one, its visitors are counted together for the limits.') }}">{{ __('Rotate') }}</x-fruit::button>
-                            </span>
-                        @else
-                            <x-fruit::button type="submit" size="small" name="action" value="make_proxy_secret">{{ __('Make Secret') }}</x-fruit::button>
-                        @endif
-                    </form>
+                            @else
+                                <x-fruit::button type="submit" size="small" name="action" value="make_proxy_secret">{{ __('Make Secret') }}</x-fruit::button>
+                            @endif
+                        </form>
+                    </div>
+                    <a class="f-form-row f-form-row--link" href="{{ App\WebChat\WebChat::EXAMPLES_URL }}/proxy" target="_blank" rel="noopener"><span>{{ __('Examples') }}</span><span class="f-form-row__value">nginx, Caddy, Apache, Cloudflare, Netlify, Vercel, PHP</span></a>
                 </x-fruit::form-section>
 
-                {{-- Visitors signed in on the website (App\WebChat\Identity). --}}
-                <x-fruit::form-section :title="__('Signed-In Visitors')" :level="3" :footer="__('Your website’s server signs who the visitor is with this secret: a JWT (HS256) with sub (their account ID), and optionally email, name, data (what your team sees, such as their plan), and exp, at most a day ahead. The page then calls tallport(\'identify\', token); on signing out, tallport(\'logout\'). They get their chat back on any device, and your team sees who they are.')">
-                    <form method="POST" action="{{ route('mailboxes.web_chat.save', ['id' => $mailbox->id]) }}" class="f-form-row">
-                        {{ csrf_field() }}
-                        @if ($secret)
-                            <span>{{ __('Secret') }}</span>
-                            <span class="f-row">
+                {{-- Visitors signed in on the website (App\WebChat\Identity, examples/website-chat/sign-in). --}}
+                <x-fruit::form-section :title="__('Signed-In Visitors')" :level="3" :footer="__('Your website’s server signs who the visitor is with this secret, and the page passes it on. They get their chat back on any device, and your team sees who they are.')">
+                    <div class="f-form-row">
+                        <span>{{ __('Secret') }}</span>
+                        <form method="POST" action="{{ route('mailboxes.web_chat.save', ['id' => $mailbox->id]) }}" class="f-row">
+                            {{ csrf_field() }}
+                            @if ($secret)
                                 <x-fruit::copy-button size="small" :value="$secret">{{ __('Copy') }}</x-fruit::copy-button>
                                 <x-fruit::button type="submit" size="small" variant="danger" name="action" value="rotate_secret" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Make a new secret? Signing in with the old one stops working until your website uses the new one.') }}">{{ __('Rotate') }}</x-fruit::button>
-                            </span>
-                        @else
-                            <span>{{ __('Secret') }}</span>
-                            <x-fruit::button type="submit" size="small" name="action" value="make_secret">{{ __('Make Secret') }}</x-fruit::button>
-                        @endif
-                    </form>
+                            @else
+                                <x-fruit::button type="submit" size="small" name="action" value="make_secret">{{ __('Make Secret') }}</x-fruit::button>
+                            @endif
+                        </form>
+                    </div>
+                    <a class="f-form-row f-form-row--link" href="{{ App\WebChat\WebChat::EXAMPLES_URL }}/sign-in" target="_blank" rel="noopener"><span>{{ __('Examples') }}</span><span class="f-form-row__value">PHP, Node.js, Python</span></a>
                 </x-fruit::form-section>
             @endif
         </div>

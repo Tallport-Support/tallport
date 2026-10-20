@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/t/:path*", "destination": "https://help.example.com/t/:path*" }
+  ]
+}

@@ -1,0 +1,3 @@
+# Tallport's website chat through your website's domain, on Netlify. Netlify can't add the proxy
+# secret, so its visitors count together for Tallport's limits per IP address.
+/t/*  https://help.example.com/t/:splat  200

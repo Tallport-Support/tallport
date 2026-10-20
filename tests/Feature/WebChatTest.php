@@ -290,6 +290,10 @@ class WebChatTest extends FeatureTestCase
         }
         $this->assertSame($customers, Customer::count(), 'Nobody matched or made.');
 
+        // The PHP example in examples/website-chat signs tokens Tallport takes.
+        require_once base_path('examples/website-chat/sign-in/sign.php');
+        $this->assertSame('acct-1', \App\WebChat\Identity::verify(tallport_token(['sub' => 'acct-1'], $secret), $secret)['sub']);
+
         // Rotated: the old secret no longer signs.
         $old = $this->signed(['sub' => 'a']);
         \Session::start();

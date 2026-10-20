@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteRule ^ index.php [L]
+# Lets the chat's token (the Authorization header) reach PHP.
+CGIPassAuth On

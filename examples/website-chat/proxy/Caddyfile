@@ -1,0 +1,10 @@
+# Tallport's website chat through your website's domain: inside your site's block.
+# Replace help.example.com with your Tallport address and SECRET with the proxy secret.
+handle /t/* {
+    reverse_proxy https://help.example.com {
+        header_up Host help.example.com
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Tallport-Proxy "SECRET"
+        header_up -Cookie
+    }
+}

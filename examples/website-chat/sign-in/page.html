@@ -1,0 +1,13 @@
+<!-- Tallport's website chat with a signed-in visitor: the snippet from Mailbox » Chat » Website Chat,
+     with the token your server made (sign.php, sign.js or sign.py) for the user signed in. -->
+<script>
+  window.tallport = window.tallport || function () { (tallport.q = tallport.q || []).push(arguments); };
+  tallport('init', { widget: 'YOUR-WIDGET-ID' });
+  tallport('identify', 'TOKEN-FROM-YOUR-SERVER');
+</script>
+<script src="https://help.example.com/t/t.js" async></script>
+
+<!-- When they sign out on your website (a new, anonymous visitor): -->
+<script>
+  // tallport('logout');
+</script>
