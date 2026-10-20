@@ -122,24 +122,16 @@ class Identity
     }
 
     /**
-     * A widget's signing secret: made when first asked for, and made anew to rotate it.
+     * A widget's signing secret (WebChat::secret()).
      */
     public static function secret(Mailbox $mailbox, $rotate = false)
     {
-        $meta = (array) ($mailbox->meta[WebChat::META] ?? []);
-        $secret = isset($meta['identity_secret']) ? (string) \Helper::decryptSoft($meta['identity_secret']) : '';
-        if ($secret === '' || $rotate) {
-            $secret = \Str::random(48);
-            $meta['identity_secret'] = \Helper::encrypt($secret);
-            $mailbox->setMetaParam(WebChat::META, $meta, true);
-        }
-
-        return $secret;
+        return WebChat::secret($mailbox, 'identity_secret', $rotate);
     }
 
     public static function hasSecret(Mailbox $mailbox)
     {
-        return !empty(((array) ($mailbox->meta[WebChat::META] ?? []))['identity_secret']);
+        return WebChat::hasSecret($mailbox, 'identity_secret');
     }
 
     /**

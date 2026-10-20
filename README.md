@@ -525,6 +525,148 @@ Visitors become customers when they first write, and agents see the page they
 wrote from. With Retention on, visitors not seen for the customer period are
 removed.
 
+### Serving the chat through your website's domain
+
+A website can serve the chat's folder, `/t/`, through its own domain. Visitors'
+browsers then only talk to the website, and blockers that block other domains
+don't stop the chat. Every address the chat uses is relative to `/t/`, so
+proxying that one folder is enough. Change the snippet's script to the
+website's own `/t/t.js`.
+
+- **Only the folder:** proxy `/t/` and nothing else, and pass no cookies (the
+  chat uses none).
+- **The proxy secret:** make one under **Chat > Website Chat**. The proxy sends
+  it in an `X-Tallport-Proxy` header, and the visitor's address as the first
+  entry of `X-Forwarded-For`. Only with the secret does Tallport use that
+  address for its limits per IP address. Without it, all visitors count as the
+  proxy's one address, and the limits per visitor and per widget still apply.
+- **Once proxied, the window is on the website's own origin.** The website's
+  own scripts can then read it, as they can read anything else on the
+  website.
+
+In the examples, Tallport is at `help.example.com` and `SECRET` is the proxy
+secret.
+
+**nginx** (`proxy_ssl_server_name` is needed for HTTPS to Tallport):
+
+```nginx
+location /t/ {
+    proxy_pass https://help.example.com/t/;
+    proxy_ssl_server_name on;
+    proxy_set_header Host help.example.com;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Tallport-Proxy "SECRET";
+    proxy_set_header Cookie "";
+    proxy_hide_header Set-Cookie;
+}
+```
+
+**Caddy**:
+
+```caddy
+handle /t/* {
+    reverse_proxy https://help.example.com {
+        header_up Host help.example.com
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Tallport-Proxy "SECRET"
+        header_up -Cookie
+    }
+}
+```
+
+**Apache** (with `mod_proxy`, `mod_proxy_http`, `mod_ssl` and `mod_headers`;
+Apache adds `X-Forwarded-For` itself):
+
+```apache
+SSLProxyEngine on
+ProxyPass /t/ https://help.example.com/t/
+ProxyPassReverse /t/ https://help.example.com/t/
+<Location /t/>
+    RequestHeader set X-Tallport-Proxy "SECRET"
+    RequestHeader unset Cookie
+</Location>
+```
+
+**Cloudflare** (a Worker on the website's route `/t/*`, with the secret in its
+`TALLPORT_PROXY` variable):
+
+```js
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    const headers = new Headers(request.headers);
+    headers.delete('Cookie');
+    headers.set('X-Forwarded-For', request.headers.get('CF-Connecting-IP'));
+    headers.set('X-Tallport-Proxy', env.TALLPORT_PROXY);
+    return fetch('https://help.example.com' + url.pathname + url.search, {
+      method: request.method,
+      headers,
+      body: request.body,
+    });
+  },
+};
+```
+
+**Netlify** (`_redirects`) and **Vercel** (`vercel.json`) can proxy the folder
+but can't add the secret, so their visitors count together for the limits per
+IP address:
+
+```
+/t/*  https://help.example.com/t/:splat  200
+```
+
+```json
+{ "rewrites": [{ "source": "/t/:path*", "destination": "https://help.example.com/t/:path*" }] }
+```
+
+**PHP**, for a website without a proxy of its own: put this in `/t/index.php`,
+and send every request for `/t/` to it (for Apache, the `.htaccess` below).
+
+```php
+<?php
+// Tallport's website chat, served through this website (README: Website chat).
+const TALLPORT = 'https://help.example.com';
+const SECRET = 'SECRET';
+
+$path = substr(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), strlen('/t/'));
+if (!preg_match('/^(t\.js|[wsjvmrfiec])$/', $path)) {
+    http_response_code(404);
+    exit;
+}
+$headers = ['X-Tallport-Proxy: '.SECRET, 'X-Forwarded-For: '.$_SERVER['REMOTE_ADDR']];
+foreach (['HTTP_ACCEPT' => 'Accept', 'HTTP_ACCEPT_LANGUAGE' => 'Accept-Language', 'HTTP_AUTHORIZATION' => 'Authorization', 'HTTP_ORIGIN' => 'Origin'] as $key => $name) {
+    if (isset($_SERVER[$key])) {
+        $headers[] = $name.': '.$_SERVER[$key];
+    }
+}
+$query = $_SERVER['QUERY_STRING'] ?? '';
+$curl = curl_init(TALLPORT.'/t/'.$path.($query !== '' ? '?'.$query : ''));
+curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER => true, CURLOPT_HEADER => true, CURLOPT_HTTPHEADER => $headers]);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $fields = $_POST;
+    foreach ($_FILES['files']['tmp_name'] ?? [] as $i => $file) {
+        $fields['files['.$i.']'] = new CURLFile($file, $_FILES['files']['type'][$i], $_FILES['files']['name'][$i]);
+    }
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $fields);
+}
+$response = (string) curl_exec($curl);
+$header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+http_response_code(curl_getinfo($curl, CURLINFO_RESPONSE_CODE) ?: 502);
+foreach (explode("\r\n", substr($response, 0, $header_size)) as $line) {
+    if (preg_match('/^(Content-Type|Content-Security-Policy|Content-Disposition|Cache-Control|Referrer-Policy):/i', $line)) {
+        header($line);
+    }
+}
+echo substr($response, $header_size);
+```
+
+```apache
+# /t/.htaccess
+RewriteEngine On
+RewriteRule ^ index.php [L]
+CGIPassAuth On
+```
+
 ## Auto replies in languages
 
 A mailbox's auto reply (mailbox settings » Auto Reply) can have versions in

@@ -62,7 +62,7 @@ class WebChatController extends Controller
     public function start(Request $request)
     {
         $mailbox = $this->mailbox($request);
-        $this->limit('start:'.$request->ip(), 30, 3600);
+        $this->limit('start:'.WebChat::clientIp($request, $mailbox), 30, 3600);
         [, $token] = Visitor::start($mailbox);
 
         return response()->json(['token' => $token]);
@@ -179,7 +179,7 @@ class WebChatController extends Controller
     public function identify(Request $request)
     {
         $mailbox = $this->mailbox($request);
-        $this->limit('identify:'.$request->ip(), 60, 600);
+        $this->limit('identify:'.WebChat::clientIp($request, $mailbox), 60, 600);
         $identity = Identity::hasSecret($mailbox) ? Identity::verify((string) $request->identity, Identity::secret($mailbox)) : null;
         if (!$identity) {
             return response()->json(['message' => 'The sign-in token is not valid.'], 422);
@@ -225,7 +225,7 @@ class WebChatController extends Controller
         $visitor = $this->visitor($request);
         $this->limit('email:'.$visitor->id, 10, 600);
         $this->locale($request);
-        $error = \App\WebChat\EmailCode::send($visitor, $request->email, $request->ip());
+        $error = \App\WebChat\EmailCode::send($visitor, $request->email, WebChat::clientIp($request, $visitor->mailbox));
 
         return $error ? response()->json(['message' => $error], 422) : response()->json($this->emailState($visitor->fresh()));
     }

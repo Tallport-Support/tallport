@@ -35,6 +35,7 @@ class WebChatSettingsController extends Controller
             ]),
             'link'     => $settings['widget'] === '' ? '' : url('/t/w').'?widget='.$settings['widget'],
             'secret'   => \App\WebChat\Identity::hasSecret($mailbox) ? \App\WebChat\Identity::secret($mailbox) : '',
+            'proxy_secret' => WebChat::hasSecret($mailbox, 'proxy_secret') ? WebChat::secret($mailbox, 'proxy_secret') : '',
         ]);
     }
 
@@ -42,9 +43,9 @@ class WebChatSettingsController extends Controller
     {
         $mailbox = Mailbox::findOrFail($id);
         // The signing secret for signed-in visitors: made, or made anew (tokens signed with the old one stop working).
-        if (in_array($request->action, ['make_secret', 'rotate_secret'])) {
-            \App\WebChat\Identity::secret($mailbox, true);
-            \Session::flash('flash_success_floating', $request->action == 'rotate_secret' ? __('Secret rotated') : __('Secret made'));
+        if (in_array($request->action, ['make_secret', 'rotate_secret', 'make_proxy_secret', 'rotate_proxy_secret'])) {
+            WebChat::secret($mailbox, str_contains($request->action, 'proxy') ? 'proxy_secret' : 'identity_secret', true);
+            \Session::flash('flash_success_floating', str_starts_with($request->action, 'rotate') ? __('Secret rotated') : __('Secret made'));
 
             return redirect()->route('mailboxes.web_chat', ['id' => $mailbox->id]);
         }

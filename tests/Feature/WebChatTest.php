@@ -185,6 +185,33 @@ class WebChatTest extends FeatureTestCase
         $this->api('POST', '/t/v')->assertStatus(429);
     }
 
+    /**
+     * A website's proxy for /t/: the visitor's address it passes on counts only with the proxy secret.
+     */
+    public function testAProxyWithItsSecret()
+    {
+        $secret = WebChat::secret($this->mailbox, 'proxy_secret');
+        $ip = fn (array $headers) => WebChat::clientIp(\Illuminate\Http\Request::create('/t/v', 'POST', [], [], [], $headers), $this->mailbox);
+
+        $this->assertSame('203.0.113.7', $ip(['HTTP_X_FORWARDED_FOR' => '203.0.113.7, 10.0.0.2', 'HTTP_X_TALLPORT_PROXY' => $secret, 'REMOTE_ADDR' => '198.51.100.1']));
+        $this->assertSame('198.51.100.1', $ip(['HTTP_X_FORWARDED_FOR' => '203.0.113.7', 'HTTP_X_TALLPORT_PROXY' => 'wrong', 'REMOTE_ADDR' => '198.51.100.1']));
+        $this->assertSame('198.51.100.1', $ip(['HTTP_X_FORWARDED_FOR' => '203.0.113.7', 'REMOTE_ADDR' => '198.51.100.1']));
+        $this->assertSame('198.51.100.1', $ip(['HTTP_X_FORWARDED_FOR' => 'not-an-ip', 'HTTP_X_TALLPORT_PROXY' => $secret, 'REMOTE_ADDR' => '198.51.100.1']));
+
+        // Each proxied visitor has their own limit.
+        for ($i = 0; $i < 30; $i++) {
+            $this->api('POST', '/t/v', [], null, ['X-Tallport-Proxy' => $secret, 'X-Forwarded-For' => '203.0.113.7'])->assertOk();
+        }
+        $this->api('POST', '/t/v', [], null, ['X-Tallport-Proxy' => $secret, 'X-Forwarded-For' => '203.0.113.7'])->assertStatus(429);
+        $this->api('POST', '/t/v', [], null, ['X-Tallport-Proxy' => $secret, 'X-Forwarded-For' => '203.0.113.8'])->assertOk();
+
+        // Made and rotated on the settings page.
+        \Session::start();
+        $this->actingAs($this->admin)->get(route('mailboxes.web_chat', ['id' => $this->mailbox->id]))->assertSee('Proxy Secret');
+        $this->actingAs($this->admin)->post(route('mailboxes.web_chat.save', ['id' => $this->mailbox->id]), ['_token' => csrf_token(), 'action' => 'rotate_proxy_secret'])->assertRedirect();
+        $this->assertNotSame($secret, WebChat::secret($this->mailbox->fresh(), 'proxy_secret'));
+    }
+
     public function testSettings()
     {
         $mailbox = $this->createMailbox([], ['name' => 'Studio']);

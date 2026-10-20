@@ -192,6 +192,46 @@ class WebChat
     }
 
     /**
+     * One of a widget's secrets (identity_secret: signing visitors in; proxy_secret: a website's
+     * proxy for /t/): made when first asked for, and made anew to rotate it.
+     */
+    public static function secret(Mailbox $mailbox, $name, $rotate = false)
+    {
+        $meta = (array) ($mailbox->meta[self::META] ?? []);
+        $secret = isset($meta[$name]) ? (string) \Helper::decryptSoft($meta[$name]) : '';
+        if ($secret === '' || $rotate) {
+            $secret = \Str::random(48);
+            $meta[$name] = \Helper::encrypt($secret);
+            $mailbox->setMetaParam(self::META, $meta, true);
+        }
+
+        return $secret;
+    }
+
+    public static function hasSecret(Mailbox $mailbox, $name)
+    {
+        return !empty(((array) ($mailbox->meta[self::META] ?? []))[$name]);
+    }
+
+    /**
+     * The visitor's address, for the limits per IP address. Through a website's proxy (which sends
+     * the widget's proxy secret in X-Tallport-Proxy) it's the one the proxy puts first in
+     * X-Forwarded-For; otherwise it's the address Tallport sees (its own trusted proxies apply).
+     */
+    public static function clientIp(\Illuminate\Http\Request $request, Mailbox $mailbox)
+    {
+        $proxy_secret = (string) $request->header('X-Tallport-Proxy');
+        if ($proxy_secret !== '' && self::hasSecret($mailbox, 'proxy_secret') && hash_equals(self::secret($mailbox, 'proxy_secret'), $proxy_secret)) {
+            $forwarded = trim(explode(',', (string) $request->server('HTTP_X_FORWARDED_FOR'))[0]);
+            if (filter_var($forwarded, FILTER_VALIDATE_IP)) {
+                return $forwarded;
+            }
+        }
+
+        return $request->ip();
+    }
+
+    /**
      * The team as the window shows it: the mailbox's name.
      */
     public static function teamName(Mailbox $mailbox)

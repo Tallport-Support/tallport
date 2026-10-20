@@ -57,6 +57,22 @@
                     </div>
                 </x-fruit::form-section>
 
+                {{-- A website serving /t/ through its own domain (README: Website chat). --}}
+                <x-fruit::form-section :title="__('Through Your Website’s Domain')" :level="3" :footer="__('A website can serve the chat’s folder, /t/, through its own domain, so visitors’ browsers only talk to it. Its proxy sends this secret in the X-Tallport-Proxy header; with it, Tallport counts each visitor’s own address for its limits. The README has the settings for common servers.')">
+                    <form method="POST" action="{{ route('mailboxes.web_chat.save', ['id' => $mailbox->id]) }}" class="f-form-row">
+                        {{ csrf_field() }}
+                        <span>{{ __('Proxy Secret') }}</span>
+                        @if ($proxy_secret)
+                            <span class="f-row">
+                                <x-fruit::copy-button size="small" :value="$proxy_secret">{{ __('Copy') }}</x-fruit::copy-button>
+                                <x-fruit::button type="submit" size="small" variant="danger" name="action" value="rotate_proxy_secret" x-data x-on:click.prevent="Tallport.confirm({message: $el.dataset.confirm, confirm: $el.textContent.trim(), tone: 'danger'}).then(ok => ok && $el.form.requestSubmit($el))" data-confirm="{{ __('Make a new proxy secret? Until your website’s proxy sends the new one, its visitors are counted together for the limits.') }}">{{ __('Rotate') }}</x-fruit::button>
+                            </span>
+                        @else
+                            <x-fruit::button type="submit" size="small" name="action" value="make_proxy_secret">{{ __('Make Secret') }}</x-fruit::button>
+                        @endif
+                    </form>
+                </x-fruit::form-section>
+
                 {{-- Visitors signed in on the website (App\WebChat\Identity). --}}
                 <x-fruit::form-section :title="__('Signed-In Visitors')" :level="3" :footer="__('Your website’s server signs who the visitor is with this secret: a JWT (HS256) with sub (their account ID), and optionally email, name, data (what your team sees, such as their plan), and exp, at most a day ahead. The page then calls tallport(\'identify\', token); on signing out, tallport(\'logout\'). They get their chat back on any device, and your team sees who they are.')">
                     <form method="POST" action="{{ route('mailboxes.web_chat.save', ['id' => $mailbox->id]) }}" class="f-form-row">
