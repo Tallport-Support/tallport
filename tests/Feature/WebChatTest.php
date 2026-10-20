@@ -118,6 +118,7 @@ class WebChatTest extends FeatureTestCase
         // Shown at when the visitor could see it: once Undo had passed.
         $this->assertSame($reply->created_at->copy()->addSeconds(Conversation::UNDO_TIMOUT)->toIso8601String(), $messages[1]['time']);
         $this->assertSame(1, $poll->json('unread'));
+        $this->assertSame('Chat with Forma, 1 unread message', $poll->json('unread_label'));
 
         // Read: the unread count goes.
         $this->api('POST', '/t/r', ['thread_id' => $reply->id], $token)->assertOk();
@@ -228,7 +229,7 @@ class WebChatTest extends FeatureTestCase
         $this->assertNull(Customer::find($anonymous->id), 'Merged into their account.');
         $this->assertSame($customer->id, $visitor->conversation->customer_id);
         $this->assertSame($customer->id, Customer::getCustomerByChannel(WebChat::CHANNEL, 's:acct-42')->id);
-        $this->actingAs($this->agent)->get('/conversation/'.$visitor->conversation_id)->assertSee('plan:')->assertSee('Pro')->assertDontSee('ignored');
+        $this->actingAs($this->agent)->get('/conversation/'.$visitor->conversation_id)->assertSee('Plan:')->assertSee('Pro')->assertDontSee('ignored');
 
         // Another browser: their chat back.
         $phone = $this->api('POST', '/t/i', ['identity' => $this->signed(['sub' => 'acct-42'])])->assertOk()->json('token');

@@ -76,6 +76,7 @@ class WebChatController extends Controller
     {
         $visitor = $this->visitor($request);
         $this->limit('poll:'.$visitor->id, 60, 60);
+        $this->locale($request);
         if (!$visitor->last_seen_at || $visitor->last_seen_at->lt(now()->subSeconds(30))) {
             $visitor->last_seen_at = now();
             $visitor->save();
@@ -96,7 +97,13 @@ class WebChatController extends Controller
             $cursor = max($cursor, $pending ? $pending - 1 : (int) collect($messages)->max('id'));
         }
 
-        return response()->json(['messages' => $messages, 'unread' => $unread, 'cursor' => $cursor] + $this->emailState($visitor));
+        return response()->json([
+            'messages'     => $messages,
+            'unread'       => $unread,
+            // The launcher's name with the count, in the visitor's language.
+            'unread_label' => trans_choice(':name, :count unread message|:name, :count unread messages', $unread, ['name' => __('Chat with :name', ['name' => WebChat::teamName($visitor->mailbox)])]),
+            'cursor'       => $cursor,
+        ] + $this->emailState($visitor));
     }
 
     /**

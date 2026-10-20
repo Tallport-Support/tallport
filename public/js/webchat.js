@@ -200,12 +200,8 @@ document.addEventListener('alpine:init', function () {
                     self.emailState(data);
                     self.unread = data.unread;
                     if (self.shown) self.markRead();
-                    else self.post('unread', { count: self.unread, label: self.unreadLabel() });
+                    else self.post('unread', { count: self.unread, label: data.unread_label });
                 }).catch(function () {}).then(function () { self.schedule(); });
-            },
-
-            unreadLabel: function () {
-                return this.text.unread.replace(':name', this.text.label).replace(':count', this.unread);
             },
 
             markRead: function () {

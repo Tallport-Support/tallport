@@ -67,7 +67,7 @@
 				<li class="customer-web-chat-page"><x-icon.globe class="f-icon" aria-hidden="true" />{!! $detail(__('Page')) !!}<a href="{{ $web_chat_page }}" target="_blank" rel="noopener noreferrer" title="{{ $web_chat_page }}">{{ preg_replace('#^https?://#', '', $web_chat_page) }}</a></li>
 			@endif
 			@foreach ($web_chat_data as $web_chat_name => $web_chat_value)
-				<li class="customer-web-chat-data"><x-icon.info class="f-icon" aria-hidden="true" /><span><span class="f-muted">{{ $web_chat_name }}:</span> {{ $web_chat_value }}</span></li>
+				<li class="customer-web-chat-data"><x-icon.info class="f-icon" aria-hidden="true" /><span><span class="f-muted">{{ ucfirst(str_replace(['_', '-'], ' ', $web_chat_name)) }}:</span> {{ $web_chat_value }}</span></li>
 			@endforeach
 			@foreach ($customer->getSocialProfiles() as $sp)
 				<li><x-icon.link class="f-icon" aria-hidden="true" />{!! $detail(__('Social Profiles')) !!}<a href="{{ App\Customer::formatSocialProfile($sp)['value_url'] }}" target="_blank">{{ App\Customer::formatSocialProfile($sp)['type_name'] }}</a></li>
