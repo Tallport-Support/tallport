@@ -80,7 +80,7 @@ class WebChat
     public static function saveSettings(Mailbox $mailbox, array $settings)
     {
         $meta = (array) ($mailbox->meta[self::META] ?? []);
-        foreach (['enabled', 'widget', 'origins', 'greeting_mode', 'greeting', 'greetings', 'reply_time', 'accent'] as $name) {
+        foreach (['enabled', 'widget', 'origins', 'greeting_mode', 'greeting', 'greetings', 'reply_time', 'accent', 'limit_new_chats', 'limit_messages', 'limit_uploads_mb'] as $name) {
             if (array_key_exists($name, $settings)) {
                 $meta[$name] = $settings[$name];
             }
@@ -163,6 +163,7 @@ class WebChat
         return [
             's' => ['vendor/fruitui/fruitui.css', 'css/webchat.css'],
             'j' => ['js/webchat.js', 'vendor/fruitui/standalone.global.js'],
+            'x' => ['js/webchat-worker.js'],
         ][$name] ?? null;
     }
 

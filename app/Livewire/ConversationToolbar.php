@@ -64,6 +64,21 @@ class ConversationToolbar extends Component
     }
 
     /**
+     * A website chat's visitor blocked or unblocked (App\WebChat\Spam): their messages taken and dropped.
+     */
+    public function toggleBlockVisitor()
+    {
+        $conversation = $this->conversation();
+        if (\App\WebChat\Spam::isBlocked($conversation)) {
+            \App\WebChat\Spam::unblock($conversation);
+            Fruit::toast(__('Visitor unblocked.'));
+        } else {
+            \App\WebChat\Spam::block($conversation);
+            Fruit::toast(__('Visitor blocked: their messages are dropped.'));
+        }
+    }
+
+    /**
      * The menu shows Follow or Unfollow by itself (Alpine).
      */
     public function follow($follow = true)

@@ -2627,6 +2627,20 @@
     },
     {
         "methods": [
+            "GET"
+        ],
+        "uri": "t/p",
+        "name": "web_chat.challenge",
+        "action": "WebChatController@challenge",
+        "middleware": [
+            "open"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
             "POST"
         ],
         "uri": "t/r",
@@ -2680,7 +2694,7 @@
         ],
         "where": {
             "id": "[0-9]+",
-            "name": "s|j"
+            "name": "s|j|x"
         }
     },
     {

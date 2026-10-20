@@ -47,6 +47,7 @@ class EventServiceProvider extends ServiceProvider
 
         'App\Events\ConversationStatusChanged' => [
             'App\Listeners\UpdateMailboxCounters',
+            'App\Listeners\BlockWebChatSpam',
         ],
 
         'App\Events\ConversationUserChanged' => [

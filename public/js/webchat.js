@@ -38,6 +38,14 @@ document.addEventListener('alpine:init', function () {
             cursor: 0,
             hasConversation: false,
             activeAt: Date.now(),
+            // New chats taken now (the widget's hourly limit); a visitor with a conversation keeps it.
+            available: config.available,
+            // Spam (App\WebChat\Spam): the proof of work being found, and a wait over a limit.
+            proof: null,
+            waitUntil: 0,
+            waitKind: '',
+            waitText: '',
+            waitTimer: null,
             // Replies by email: a confirmed or signed-in address, or one being confirmed with a code.
             email: null,
             emailStep: 'address',
@@ -74,8 +82,17 @@ document.addEventListener('alpine:init', function () {
                 });
                 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () { self.post('theme', self.colors()); });
                 // Not in an animation frame: browsers skip those in a hidden frame from another origin.
-                this.$nextTick(function () { self.post('ready', Object.assign({ label: self.text.label }, self.colors())); });
-                if (this.token()) this.poll();
+                // While new chats aren't taken, the button shows only for a visitor with a conversation.
+                var ready = function () {
+                    self.post('ready', Object.assign({ label: self.text.label, available: self.available || self.hasConversation }, self.colors()));
+                };
+                if (this.token()) {
+                    var polled = this.poll();
+                    if (!this.available) polled.then(ready);
+                    else this.$nextTick(ready);
+                } else {
+                    this.$nextTick(ready);
+                }
             },
 
             // The visitor's token: in the frame's storage, or (where storage is refused) for this page only.
@@ -98,7 +115,7 @@ document.addEventListener('alpine:init', function () {
                     if (response.status === 401) self.token(null);
                     return response.json().catch(function () { return {}; }).then(function (data) {
                         // A server error's own text isn't for visitors.
-                        if (!response.ok) throw Object.assign(new Error(response.status < 500 && data.message ? data.message : self.text.error), { status: response.status });
+                        if (!response.ok) throw Object.assign(new Error(response.status < 500 && data.message ? data.message : self.text.error), { status: response.status, data: data });
                         return data;
                     });
                 });
@@ -135,7 +152,8 @@ document.addEventListener('alpine:init', function () {
 
             get timeline() {
                 var entries = this.entries.slice();
-                if (this.greeting) {
+                // Not to a new visitor while new chats aren't taken.
+                if (this.greeting && (this.available || this.hasConversation)) {
                     entries.unshift({ id: 'greeting', kind: 'team', team: true, author: config.team, initials: config.team.charAt(0).toUpperCase(), body: this.greeting, files: [] });
                 }
                 // Where replies also go, after the greeting; or, after their first message, the offer.
@@ -281,29 +299,97 @@ document.addEventListener('alpine:init', function () {
             },
 
             /** Sending; offline, the message waits for the connection; a refusal can be tried again. */
-            deliver: function (entry) {
+            deliver: function (entry, challenge) {
                 var self = this;
                 if (!this.online) return void (entry.state = 'waiting');
+                if (this.waitUntil > Date.now()) return void (entry.state = 'failed');
                 entry.state = 'sending';
                 var started = this.token() ? Promise.resolve() : this.api('POST', 'v').then(function (data) { self.token(data.token); });
-                started.then(function () {
+                // A new chat needs the proof of work (begun while they typed; again, harder, when asked).
+                var proved = started.then(function () {
+                    return self.hasConversation ? null : self.prove(challenge);
+                });
+                proved.then(function (proof) {
                     var form = new FormData();
                     form.append('body', entry.body);
                     // Their language, until detected in what they write (only the first: browsers add English).
                     form.append('language', navigator.language || '');
                     form.append('page', params.get('page') || '');
+                    form.append('elapsed', Math.round(performance.now()));
+                    form.append('website', self.$refs.trap ? self.$refs.trap.value : '');
+                    if (proof) form.append('proof', proof);
                     entry.files.forEach(function (file) { form.append('files[]', file.file || file); });
                     return self.api('POST', 'm', form);
                 }).then(function (data) {
+                    // Taken: shown as sent (a blocked visitor's isn't kept, and gets no ID).
                     var index = self.entries.indexOf(entry);
-                    if (index >= 0) self.entries.splice(index, 1, self.entry(data.message));
+                    if (index >= 0 && data.message.id) self.entries.splice(index, 1, self.entry(data.message));
+                    else entry.state = '';
+                    self.proof = null;
                     self.hasConversation = true;
                     self.schedule(config.poll.active * 1000);
                 }).catch(function (error) {
+                    var data = error.data || {};
+                    self.proof = null;
+                    if (error.status === 428 && data.challenge && !challenge) return self.deliver(entry, data.challenge);
                     if (!navigator.onLine) return void (entry.state = 'waiting');
                     entry.state = 'failed';
-                    if (error.status === 422 && error.message) self.error = error.message;
+                    if (error.status === 429 && data.wait) self.wait(data.wait, data.kind);
+                    else if (error.status === 503) self.unavailable(error.message);
+                    else if (error.status === 422 && error.message) self.error = error.message;
                 });
+            },
+
+            /**
+             * The proof of work for a new chat, in a worker: for the given challenge, or a new one
+             * (started when they begin typing, so page views cost nothing).
+             */
+            prove: function (challenge) {
+                var self = this;
+                if (!challenge && this.proof) return this.proof;
+                var asked = challenge ? Promise.resolve(challenge) : this.api('GET', 'p');
+                var proof = asked.then(function (data) {
+                    return new Promise(function (resolve, reject) {
+                        var worker = new Worker('x?v=' + encodeURIComponent(config.workerVersion));
+                        worker.onmessage = function (event) { worker.terminate(); resolve(event.data.proof); };
+                        worker.onerror = function (event) { worker.terminate(); reject(event); };
+                        worker.postMessage(data);
+                    });
+                });
+                if (!challenge) this.proof = proof;
+                return proof;
+            },
+
+            typing: function () {
+                this.activeAt = Date.now();
+                if (!this.hasConversation && !this.proof) this.prove().catch(function () {});
+            },
+
+            /** Over a limit: how long until the next message (or files), counted down. */
+            wait: function (seconds, kind) {
+                var self = this;
+                this.waitUntil = Date.now() + seconds * 1000;
+                this.waitKind = kind;
+                clearInterval(this.waitTimer);
+                var tick = function () {
+                    var left = Math.ceil((self.waitUntil - Date.now()) / 1000);
+                    if (left <= 0) {
+                        clearInterval(self.waitTimer);
+                        self.waitText = '';
+                        return;
+                    }
+                    var when = new Intl.RelativeTimeFormat(document.documentElement.lang || undefined, { numeric: 'auto' })
+                        .format(left < 90 ? left : Math.ceil(left / 60), left < 90 ? 'second' : 'minute');
+                    self.waitText = (kind === 'files' ? self.text.waitFiles : self.text.waitMessages).replace(':time', when);
+                };
+                tick();
+                this.waitTimer = setInterval(tick, 1000);
+            },
+
+            /** New chats aren't taken now: said, and (for a new visitor) nothing to write in. */
+            unavailable: function (message) {
+                this.available = false;
+                this.error = message || this.text.unavailable;
             },
 
             /**

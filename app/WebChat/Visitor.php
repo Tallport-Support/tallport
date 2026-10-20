@@ -23,24 +23,32 @@ class Visitor extends Model
     ];
 
     /**
-     * A new visitor, and the token their window keeps.
+     * A new visitor, and the token their window keeps: nothing is stored until they write (or the
+     * website signs them in), so page views and polling write nothing (App\WebChat\Spam).
      */
     public static function start(Mailbox $mailbox)
     {
-        $token = \Str::random(48);
-        $visitor = self::create(['mailbox_id' => $mailbox->id, 'token' => hash('sha256', $token), 'last_seen_at' => now()]);
+        $token = Spam::newToken($mailbox);
 
-        return [$visitor, $token];
+        return [new self(['mailbox_id' => $mailbox->id, 'token' => hash('sha256', $token), 'last_seen_at' => now()]), $token];
     }
 
+    /**
+     * The visitor with this token: stored, or new (not stored yet) when the token is one the widget
+     * signed.
+     */
     public static function findByToken($token, Mailbox $mailbox)
     {
         $token = (string) $token;
         if (strlen($token) < 32) {
             return null;
         }
+        $visitor = self::where('token', hash('sha256', $token))->where('mailbox_id', $mailbox->id)->first();
+        if (!$visitor && Spam::validToken($token, $mailbox)) {
+            $visitor = new self(['mailbox_id' => $mailbox->id, 'token' => hash('sha256', $token), 'last_seen_at' => now()]);
+        }
 
-        return self::where('token', hash('sha256', $token))->where('mailbox_id', $mailbox->id)->first();
+        return $visitor;
     }
 
     public function mailbox()

@@ -53,6 +53,11 @@
                 @endif
             @endforeach
             <ul class="menu-module-items">@action('conversation.append_action_buttons', $conversation, $mailbox)</ul>
+            {{-- A website chat's visitor (App\WebChat\Spam): their messages taken and dropped. --}}
+            @if (App\WebChat\Visitor::where('conversation_id', $conversation->id)->exists())
+                <x-fruit::menu-separator />
+                <x-fruit::menu-checkbox :checked="App\WebChat\Spam::isBlocked($conversation)" wire:click="toggleBlockVisitor">{{ __('Block Visitor') }}</x-fruit::menu-checkbox>
+            @endif
             @if (Auth::user()->isAdmin())
                 {{-- Retention (Settings » Retention) never deletes a conversation on legal hold. --}}
                 <x-fruit::menu-separator />

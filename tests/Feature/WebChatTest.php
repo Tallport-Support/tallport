@@ -35,8 +35,40 @@ class WebChatTest extends FeatureTestCase
         \Illuminate\Support\Facades\RateLimiter::clear('web-chat:start:127.0.0.1');
     }
 
+    /**
+     * A solved proof of work for a new chat (App\WebChat\Spam), as the window's worker finds it.
+     */
+    protected function proof($at_least = 0)
+    {
+        $challenge = \App\WebChat\Spam::challenge($this->mailbox, $at_least);
+        $salt = explode('.', $challenge['challenge'])[1];
+        for ($nonce = 0; ; $nonce++) {
+            $hash = hash('sha256', $salt.':'.$nonce, true);
+            $bits = 0;
+            foreach (str_split($hash) as $byte) {
+                $byte = ord($byte);
+                if ($byte == 0) {
+                    $bits += 8;
+                    continue;
+                }
+                while (($byte & 0x80) == 0) {
+                    $bits++;
+                    $byte <<= 1;
+                }
+                break;
+            }
+            if ($bits >= $challenge['difficulty']) {
+                return $challenge['challenge'].':'.$nonce;
+            }
+        }
+    }
+
     protected function api($method, $uri, array $data = [], $token = null, array $headers = [])
     {
+        // Messages carry the proof a new chat needs (ignored after).
+        if ($method == 'POST' && str_starts_with($uri, '/t/m') && !array_key_exists('proof', $data)) {
+            $data['proof'] = $this->proof();
+        }
         $headers = array_merge(['Accept' => 'application/json'], $token ? ['Authorization' => 'Bearer '.$token] : [], $headers);
         $uri .= (str_contains($uri, '?') ? '&' : '?').'widget=forma';
 
@@ -81,7 +113,7 @@ class WebChatTest extends FeatureTestCase
     public function testAVisitorWritesAndTheTeamAnswers()
     {
         $token = $this->visitorToken();
-        $this->assertNull(Visitor::firstOrFail()->customer_id, 'No customer before they write.');
+        $this->assertSame(0, Visitor::count(), 'Nothing stored before they write.');
 
         $first = $this->api('POST', '/t/m', ['body' => "Where is my order?\n#1042", 'page' => self::SITE.'/orders#top'], $token)->assertOk()->json('message');
         $this->assertSame('visitor', $first['kind']);
@@ -304,6 +336,97 @@ class WebChatTest extends FeatureTestCase
             $this->assertNull($file['thumbnail'], $name);
             $this->assertStringStartsWith('attachment', $this->get('/t/'.$file['url'])->assertOk()->headers->get('Content-Disposition'), $name);
         }
+    }
+
+    /**
+     * Nothing is stored until someone writes, and a new chat needs its proof of work.
+     */
+    public function testNothingStoredUntilAProvenFirstMessage()
+    {
+        $token = $this->visitorToken();
+        $this->api('GET', '/t/m?after=0', [], $token)->assertOk()->assertJson(['messages' => []]);
+        $this->api('POST', '/t/r', ['thread_id' => 1], $token)->assertOk();
+        $this->assertSame(0, Visitor::count());
+
+        $this->api('POST', '/t/m', ['body' => 'Hello', 'proof' => ''], $token)->assertStatus(428)->assertJsonStructure(['challenge' => ['challenge', 'difficulty']]);
+        $proof = $this->proof();
+        $this->api('POST', '/t/m', ['body' => 'Hello', 'proof' => $proof], $token)->assertOk();
+        $this->assertSame(1, Visitor::count());
+
+        // A proof works once; a first message the moment the window loaded needs a harder one.
+        $other = $this->visitorToken();
+        $this->api('POST', '/t/m', ['body' => 'Hi', 'proof' => $proof], $other)->assertStatus(428);
+        $harder = $this->api('POST', '/t/m', ['body' => 'Hi', 'elapsed' => 300], $other)->assertStatus(428)->json('challenge.difficulty');
+        $this->assertSame(\App\WebChat\Spam::DIFFICULTY + 4, $harder);
+        $this->api('POST', '/t/m', ['body' => 'Hi', 'elapsed' => 300, 'proof' => $this->proof($harder)], $other)->assertOk();
+        $this->getJson('/t/p?widget=forma')->assertOk()->assertJson(['difficulty' => \App\WebChat\Spam::DIFFICULTY]);
+
+        // A field only bots fill in: taken, and dropped.
+        $bot = $this->visitorToken();
+        $this->api('POST', '/t/m', ['body' => 'Buy now', 'website' => 'http://spam.example'], $bot)->assertOk()->assertJson(['message' => ['id' => null]]);
+        $this->assertSame(2, Conversation::count());
+    }
+
+    /**
+     * The widget's hourly limit on new chats: the button goes for new visitors; those who write keep their chat.
+     */
+    public function testNewChatsLimit()
+    {
+        WebChat::saveSettings($this->mailbox, ['limit_new_chats' => 2]);
+        $first = $this->visitorToken();
+        $this->api('POST', '/t/m', ['body' => 'One'], $first)->assertOk();
+        $this->api('POST', '/t/m', ['body' => 'Two'], $this->visitorToken())->assertOk();
+
+        $this->api('POST', '/t/m', ['body' => 'Three'], $this->visitorToken())->assertStatus(503)->assertJson(['unavailable' => true]);
+        $this->assertFalse(\App\WebChat\Spam::available($this->mailbox));
+        $this->get('/t/w?widget=forma')->assertSee('\u0022available\u0022:false', false);
+        $this->api('POST', '/t/m', ['body' => 'Still here'], $first)->assertOk();
+        $this->assertSame(2, Conversation::count());
+    }
+
+    /**
+     * Writing too fast, or too many files: how long to wait.
+     */
+    public function testWaitingOverALimit()
+    {
+        $token = $this->visitorToken();
+        for ($i = 0; $i < \App\WebChat\Spam::VISITOR_PER_MINUTE; $i++) {
+            $this->api('POST', '/t/m', ['body' => 'Message '.$i], $token)->assertOk();
+        }
+        $wait = $this->api('POST', '/t/m', ['body' => 'One more'], $token)->assertStatus(429)->json();
+        $this->assertSame('messages', $wait['kind']);
+        $this->assertGreaterThan(0, $wait['wait']);
+
+        WebChat::saveSettings($this->mailbox, ['limit_uploads_mb' => 1]);
+        $other = $this->visitorToken();
+        $file = fn () => UploadedFile::fake()->createWithContent('notes.txt', str_repeat('a', 600 * 1024));
+        $this->api('POST', '/t/m', ['files' => [$file()]], $other)->assertOk();
+        $this->assertSame('files', $this->api('POST', '/t/m', ['files' => [$file()]], $other)->assertStatus(429)->json('kind'));
+    }
+
+    /**
+     * Block Visitor (or marking as spam): their messages, and those from their address, are taken
+     * and dropped; unblocked, they count again.
+     */
+    public function testBlockingAVisitor()
+    {
+        $token = $this->visitorToken();
+        $this->api('POST', '/t/m', ['body' => 'Hello'], $token)->assertOk();
+        $conversation = Visitor::firstOrFail()->conversation;
+
+        \Livewire\Livewire::actingAs($this->agent)->test(\App\Livewire\ConversationToolbar::class, ['conversation' => $conversation])->call('toggleBlockVisitor');
+        $this->assertTrue(\App\WebChat\Spam::isBlocked($conversation));
+        $this->api('POST', '/t/m', ['body' => 'Spam'], $token)->assertOk()->assertJson(['message' => ['id' => null]]);
+        $this->api('POST', '/t/m', ['body' => 'Spam from a new visitor'], $this->visitorToken())->assertOk()->assertJson(['message' => ['id' => null]]);
+        $this->assertSame(1, \App\Thread::where('type', Thread::TYPE_CUSTOMER)->count());
+
+        \Livewire\Livewire::actingAs($this->agent)->test(\App\Livewire\ConversationToolbar::class, ['conversation' => $conversation])->call('toggleBlockVisitor');
+        $this->api('POST', '/t/m', ['body' => 'Sorry'], $token)->assertOk()->assertJsonPath('message.body', 'Sorry');
+        $this->assertNotNull($this->api('GET', '/t/m', [], $token)->json('messages.1.id'));
+
+        // Marked as spam: blocked too.
+        \App\Misc\ConversationActions::changeStatus($conversation->fresh(), Conversation::STATUS_SPAM, $this->agent, request());
+        $this->assertTrue(\App\WebChat\Spam::isBlocked($conversation));
     }
 
     public function testSettings()

@@ -36,6 +36,7 @@ class WebChatSettingsController extends Controller
             'link'     => $settings['widget'] === '' ? '' : url('/t/w').'?widget='.$settings['widget'],
             'secret'   => \App\WebChat\Identity::hasSecret($mailbox) ? \App\WebChat\Identity::secret($mailbox) : '',
             'languages'       => \App\Ai\Settings::displayNames(),
+            'limits'          => \App\WebChat\Spam::limits($mailbox),
             'active_language' => session('web_chat_language'),
             'proxy_secret' => WebChat::hasSecret($mailbox, 'proxy_secret') ? WebChat::secret($mailbox, 'proxy_secret') : '',
         ]);
@@ -56,6 +57,9 @@ class WebChatSettingsController extends Controller
             'greeting_mode' => 'nullable|in:'.implode(',', WebChat::GREETING_MODES),
             'greeting'   => 'nullable|string|max:1000',
             'greetings.*' => 'nullable|string|max:1000',
+            'limit_new_chats'  => 'nullable|integer|min:1|max:100000',
+            'limit_messages'   => 'nullable|integer|min:1|max:1000000',
+            'limit_uploads_mb' => 'nullable|integer|min:1|max:1000000',
             'reply_time' => 'nullable|string|max:100',
             'accent'     => 'nullable|in:'.implode(',', \FruitUI\Fruit::ACCENTS),
         ]);
@@ -82,6 +86,9 @@ class WebChatSettingsController extends Controller
             \Session::flash('web_chat_language', $request->add_language_code);
         }
         WebChat::saveSettings($mailbox, [
+            'limit_new_chats'  => (int) ($request->limit_new_chats ?: \App\WebChat\Spam::LIMITS['new_chats']),
+            'limit_messages'   => (int) ($request->limit_messages ?: \App\WebChat\Spam::LIMITS['messages']),
+            'limit_uploads_mb' => (int) ($request->limit_uploads_mb ?: \App\WebChat\Spam::LIMITS['uploads_mb']),
             'greeting_mode' => $request->greeting_mode ?: 'tallport',
             'greetings'  => $greetings,
             'enabled'    => (bool) $request->enabled,

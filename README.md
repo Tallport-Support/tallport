@@ -525,6 +525,15 @@ Visitors become customers when they first write, and agents see the page they
 wrote from. With Retention on, visitors not seen for the customer period are
 removed.
 
+The chat can't be used to fill the database or load the server. Nothing is
+stored until a visitor writes, and a new chat first needs a small proof of
+work from the visitor's browser (no third parties). Each widget has hourly
+limits on new chats, messages and files (**Limits Per Hour**). When new chats
+reach theirs, the chat button doesn't show for new visitors until the hour is
+over. A visitor who writes too fast is told how long to wait. **Block Visitor**
+in a conversation's menu, or marking it as spam, drops that visitor's messages,
+and those from their address for a day.
+
 Two things a website can add, each with small files to copy in
 [examples/website-chat](examples/website-chat):
 

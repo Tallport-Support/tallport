@@ -195,6 +195,7 @@
   // or link calling open), never when the website opens it by itself, such as on page load.
   function open({ focus = navigator.userActivation?.isActive ?? true } = {}) {
     if (!ready) return void (openWhenReady = true);
+    if (!window.tallport.available) return;
     if (opened) return;
     opened = true;
     root.toggleAttribute('data-open', true);
@@ -224,9 +225,13 @@
       label.textContent = name;
       frame.title = name;
       theme(data);
-      launcher.hidden = false;
+      // While the chat takes no new chats, the button shows only for a visitor with a conversation;
+      // a website's own "Chat with us" link can check window.tallport.available and use its href.
+      const available = data.available !== false;
+      window.tallport.available = available;
+      launcher.hidden = !available;
       for (const [type, payload] of outbox.splice(0)) post(type, payload);
-      if (openWhenReady) open({ focus: false });
+      if (openWhenReady && available) open({ focus: false });
     } else if (data.type === 'theme') theme(data);
     else if (data.type === 'unread') setUnread(data.count, data.label);
     else if (data.type === 'close') close({ focus: true });
@@ -249,7 +254,7 @@
     } else if (!root) pending.push([command, ...args]);
     else commands[command]?.(...args);
   };
-  window.tallport = Object.assign(run, { loaded: true });
+  window.tallport = Object.assign(run, { loaded: true, available: false });
   const init = queued.find(([command]) => command === 'init');
   if (init) run(...init);
   else if (script.dataset.widget) run('init');

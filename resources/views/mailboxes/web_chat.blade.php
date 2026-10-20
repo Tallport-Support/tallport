@@ -81,6 +81,19 @@
                     </div>
                 </x-fruit::form-section>
 
+                {{-- Hourly limits for the widget (App\WebChat\Spam). --}}
+                <x-fruit::form-section :title="__('Limits Per Hour')" :level="3" :footer="__('So the chat can’t be used to fill your database or load your server. When new chats reach their limit, the chat button doesn’t show for new visitors until the hour is over; visitors who already write keep their chat.')">
+                    <x-fruit::field :label="__('New Chats')" layout="row">
+                        <x-fruit::number id="web_chat_limit_new_chats" name="limit_new_chats" min="1" max="100000" :value="old('limit_new_chats', $limits['new_chats'])" />
+                    </x-fruit::field>
+                    <x-fruit::field :label="__('Messages')" layout="row">
+                        <x-fruit::number id="web_chat_limit_messages" name="limit_messages" min="1" max="1000000" :value="old('limit_messages', $limits['messages'])" />
+                    </x-fruit::field>
+                    <x-fruit::field :label="__('Files (MB)')" layout="row">
+                        <x-fruit::number id="web_chat_limit_uploads_mb" name="limit_uploads_mb" min="1" max="1000000" :value="old('limit_uploads_mb', $limits['uploads_mb'])" />
+                    </x-fruit::field>
+                </x-fruit::form-section>
+
                 <footer class="f-form-row settings-form__actions">
                     <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
                 </footer>

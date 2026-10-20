@@ -20,6 +20,8 @@
             'team'     => $team,
             'greeting' => \App\WebChat\WebChat::greeting($mailbox),
             'poll'     => $poll,
+            'available' => $available,
+            'workerVersion' => \App\WebChat\WebChat::assetVersion('x'),
             'maxFiles' => \App\WebChat\WebChat::MAX_FILES,
             'maxFileMb' => \App\WebChat\WebChat::MAX_FILE_MB,
             'codeIntro' => __('Enter the code we sent to :email.', ['email' => '%EMAIL%']),
@@ -31,6 +33,10 @@
                 'failed'   => __('Not sent'),
                 'retry'    => __('Try Again'),
                 'error'    => __('Something went wrong. Try again.'),
+                'unavailable'  => __('Chat isn’t available right now. Try again later.'),
+                // :time: "in 40 seconds", in the visitor's language (the browser's Intl.RelativeTimeFormat).
+                'waitMessages' => __('You’re sending messages quickly. You can send the next one :time.'),
+                'waitFiles'    => __('You’ve sent a lot of files. You can send more :time.'),
                 'remove'   => __('Remove :name'),
                 'repliesTo' => __('Replies also go to :email.'),
                 'emailInvalid' => __('Enter an email address, like name@example.com.'),
@@ -103,13 +109,18 @@
             <button class="f-button f-history__latest" type="button" x-show="awayFromLatest" x-cloak @click="jumpToLatest({ focus: true })"><x-icon.chevron-down class="f-icon" aria-hidden="true" />{{ __('Jump to Latest') }}</button>
         </div>
         <p class="f-sr-only" role="status" x-text="announcement"></p>
-        <form class="f-composer widget-composer" @submit.prevent="send">
+        {{-- New chats aren't taken now (App\WebChat\Spam): said to a visitor without a conversation. --}}
+        <p class="f-alert widget-unavailable" role="status" x-show="!available && !hasConversation" x-cloak>{{ __('Chat isn’t available right now. Try again later.') }}</p>
+        <form class="f-composer widget-composer" @submit.prevent="send" x-show="available || hasConversation">
+            {{-- Only bots fill this in. --}}
+            <input type="text" name="website" x-ref="trap" class="widget-trap" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <p class="f-help widget-wait" role="status" x-show="waitText" x-text="waitText" x-cloak></p>
             <label class="f-sr-only" for="widget-message">{{ __('Message') }}</label>
             <p class="f-error" x-show="error" x-text="error" x-cloak></p>
             <ul class="widget-files" role="list" aria-label="{{ __('Files to send') }}" x-show="files.length" x-cloak>
                 <template x-for="file in files" :key="file.id"><li><span class="f-chip"><span x-text="file.name"></span><button class="f-chip__remove" type="button" @click="removeFile(file)" :aria-label="text.remove.replace(':name', file.name)"><x-icon.x class="f-icon" aria-hidden="true" /></button></span></li></template>
             </ul>
-            <div class="f-composer__field"><textarea id="widget-message" class="f-input f-composer__input" rows="1" x-ref="message" x-model="draft" maxlength="{{ \App\WebChat\WebChat::MAX_LENGTH }}" placeholder="{{ __('Message :name', ['name' => $team]) }}" aria-describedby="widget-message-help" @keydown.enter="if (!$event.shiftKey && !$event.isComposing) { $event.preventDefault(); $el.form.requestSubmit(); }"></textarea><button class="f-button f-button--ghost f-button--icon" type="button" @click="$refs.files.click()" aria-label="{{ __('Attach Files') }}" title="{{ __('Attach Files') }}"><x-icon.paperclip class="f-icon" aria-hidden="true" /></button><input type="file" multiple hidden x-ref="files" @change="addFiles($event.target)"><button class="f-button f-button--primary f-button--icon f-composer__send" type="submit" aria-label="{{ __('Send') }}"><x-icon.send class="f-icon" aria-hidden="true" /></button></div>
+            <div class="f-composer__field"><textarea id="widget-message" class="f-input f-composer__input" rows="1" x-ref="message" x-model="draft" @input="typing()" maxlength="{{ \App\WebChat\WebChat::MAX_LENGTH }}" placeholder="{{ __('Message :name', ['name' => $team]) }}" aria-describedby="widget-message-help" @keydown.enter="if (!$event.shiftKey && !$event.isComposing) { $event.preventDefault(); $el.form.requestSubmit(); }"></textarea><button class="f-button f-button--ghost f-button--icon" type="button" @click="$refs.files.click()" aria-label="{{ __('Attach Files') }}" title="{{ __('Attach Files') }}"><x-icon.paperclip class="f-icon" aria-hidden="true" /></button><input type="file" multiple hidden x-ref="files" @change="addFiles($event.target)"><button class="f-button f-button--primary f-button--icon f-composer__send" type="submit" :disabled="waitText !== ''" aria-label="{{ __('Send') }}"><x-icon.send class="f-icon" aria-hidden="true" /></button></div>
             <p id="widget-message-help" class="f-sr-only">{{ __('Enter to send, Shift+Enter for a new line.') }}</p>
         </form>
         <noscript><p class="widget-noscript">{{ __('Turn on JavaScript to chat with :name.', ['name' => $team]) }}</p></noscript>

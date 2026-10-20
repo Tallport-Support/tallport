@@ -249,3 +249,20 @@ body {
   padding: 16px;
   font-size: var(--f-text-sm);
 }
+
+/* A field only bots fill in: out of sight and reach. */
+.widget-trap {
+  position: absolute;
+  inset-inline-start: -10000px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+/* Over a limit: how long to wait; or new chats not taken now. */
+.widget-wait {
+  margin: 0 4px 6px;
+}
+.widget-unavailable {
+  flex: none;
+  margin: 10px 12px 12px;
+}

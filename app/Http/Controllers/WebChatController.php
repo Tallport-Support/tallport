@@ -7,6 +7,7 @@ use App\Conversation;
 use App\Misc\ChatConversations;
 use App\Thread;
 use App\WebChat\Identity;
+use App\WebChat\Spam;
 use App\WebChat\Visitor;
 use App\WebChat\WebChat;
 use Illuminate\Http\Request;
@@ -37,6 +38,7 @@ class WebChatController extends Controller
         $this->locale($request);
 
         $response = response()->view('webchat/window', [
+            'available' => Spam::available($mailbox),
             'mailbox'  => $mailbox,
             'settings' => $settings,
             'team'     => WebChat::teamName($mailbox),
@@ -52,6 +54,8 @@ class WebChatController extends Controller
             "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data: blob:",
             "connect-src 'self'",
+            // The proof of work's worker (/t/x).
+            "worker-src 'self'",
             "frame-ancestors 'self' ".implode(' ', $settings['origins']),
         ]))->header('Referrer-Policy', 'no-referrer');
     }
@@ -75,9 +79,9 @@ class WebChatController extends Controller
     public function messages(Request $request)
     {
         $visitor = $this->visitor($request);
-        $this->limit('poll:'.$visitor->id, 60, 60);
+        $this->limit('poll:'.$visitor->token, 60, 60);
         $this->locale($request);
-        if (!$visitor->last_seen_at || $visitor->last_seen_at->lt(now()->subSeconds(30))) {
+        if ($visitor->exists && (!$visitor->last_seen_at || $visitor->last_seen_at->lt(now()->subSeconds(30)))) {
             $visitor->last_seen_at = now();
             $visitor->save();
         }
@@ -85,7 +89,7 @@ class WebChatController extends Controller
         $messages = [];
         $unread = 0;
         $cursor = (int) $request->after;
-        if ($conversation = $visitor->currentConversation()) {
+        if ($visitor->exists && ($conversation = $visitor->currentConversation())) {
             foreach ($this->threads($conversation)->where('id', '>', $cursor)->get() as $thread) {
                 $messages[] = $this->message($thread);
             }
@@ -115,8 +119,6 @@ class WebChatController extends Controller
     public function send(Request $request)
     {
         $visitor = $this->visitor($request);
-        $this->limit('send:'.$visitor->id, 20, 60);
-        $this->limit('send-widget:'.$visitor->mailbox_id, 600, 60);
         $request->validate([
             'body'    => 'nullable|string|max:'.WebChat::MAX_LENGTH,
             'files'   => 'array|max:'.WebChat::MAX_FILES,
@@ -131,6 +133,30 @@ class WebChatController extends Controller
         if ($text === '' && !$attachments) {
             return response()->json(['message' => __('Write a message.')], 422);
         }
+
+        // A field only bots fill in, or someone blocked: taken, and dropped.
+        $mailbox = $visitor->mailbox;
+        $ip_hash = Spam::ipHash(WebChat::clientIp($request, $mailbox));
+        if ($request->filled('website') || Spam::blocked($visitor, $ip_hash)) {
+            return response()->json(['message' => ['id' => null, 'kind' => 'visitor', 'author' => '', 'initials' => '', 'body' => $text, 'time' => now()->toIso8601String(), 'files' => []]]);
+        }
+        // A new chat: while the widget takes them, after a proof of work (harder for a first message
+        // sent the moment the window loaded).
+        $new_chat = !$visitor->exists || !$visitor->currentConversation();
+        if ($new_chat && !Spam::available($mailbox)) {
+            return response()->json(['message' => __('Chat isn’t available right now. Try again later.'), 'unavailable' => true], 503);
+        }
+        if ($new_chat) {
+            $fast = $request->filled('elapsed') && (int) $request->elapsed < Spam::FAST_MS;
+            $required = Spam::difficulty($mailbox, $fast ? Spam::difficulty($mailbox) + 4 : 0);
+            if (!Spam::solved($request->proof, $mailbox, $required)) {
+                return response()->json(['message' => '', 'challenge' => Spam::challenge($mailbox, $required)], 428);
+            }
+        }
+        $kilobytes = (int) ceil(array_sum(array_map(fn ($file) => $file->getSize(), (array) $request->file('files'))) / 1024);
+        if ($wait = Spam::allowMessage($visitor, $ip_hash, $kilobytes)) {
+            return response()->json(['message' => '', 'wait' => $wait[0], 'kind' => $wait[1]], 429);
+        }
         $page = $this->page($request->page);
         if ($page) {
             $visitor->page = $page;
@@ -138,7 +164,11 @@ class WebChatController extends Controller
 
         $body = $text !== '' ? preg_replace('/\r\n?|\n/', '<br>', htmlspecialchars($text)) : htmlspecialchars(implode(', ', array_column($attachments, 'file_name')));
         $request_language = (string) $request->language;
-        $received = \DB::transaction(function () use ($visitor, $text, $body, $attachments, $request_language) {
+        $received = \DB::transaction(function () use ($visitor, $text, $body, $attachments, $request_language, $ip_hash) {
+            $visitor->ip_hash = $ip_hash;
+            if (!$visitor->exists) {
+                $visitor->save();
+            }
             $customer = $visitor->makeCustomer();
             $conversation = $visitor->currentConversation();
             $received = ChatConversations::receive($conversation, $customer, [
@@ -171,9 +201,24 @@ class WebChatController extends Controller
         if (!$received) {
             return response()->json(['message' => __('Your message could not be sent. Try again.')], 500);
         }
+        if ($new_chat) {
+            Spam::countNewChat($mailbox);
+        }
         \App\Misc\ChatLog::record(WebChat::META, $visitor->mailbox_id, 'receive', 'succeeded', '', ['thread_id' => $received['thread']->id]);
 
         return response()->json(['message' => $this->message($received['thread']->fresh())]);
+    }
+
+    /**
+     * A proof-of-work challenge for a new chat (App\WebChat\Spam): the window solves it while the
+     * visitor types their first message.
+     */
+    public function challenge(Request $request)
+    {
+        $mailbox = $this->mailbox($request);
+        $this->limit('challenge:'.WebChat::clientIp($request, $mailbox), 60, 600);
+
+        return response()->json(Spam::challenge($mailbox, min(Spam::MAX_DIFFICULTY, (int) $request->at_least)));
     }
 
     /**
@@ -229,7 +274,7 @@ class WebChatController extends Controller
     public function emailCode(Request $request)
     {
         $visitor = $this->visitor($request);
-        $this->limit('email:'.$visitor->id, 10, 600);
+        $this->limit('email:'.$visitor->token, 10, 600);
         $this->locale($request);
         $error = \App\WebChat\EmailCode::send($visitor, $request->email, WebChat::clientIp($request, $visitor->mailbox));
 
@@ -242,7 +287,7 @@ class WebChatController extends Controller
     public function confirmEmail(Request $request)
     {
         $visitor = $this->visitor($request);
-        $this->limit('confirm:'.$visitor->id, 20, 600);
+        $this->limit('confirm:'.$visitor->token, 20, 600);
         $this->locale($request);
         $error = \App\WebChat\EmailCode::confirm($visitor, $request->code);
 
@@ -269,7 +314,10 @@ class WebChatController extends Controller
     public function read(Request $request)
     {
         $visitor = $this->visitor($request);
-        $this->limit('read:'.$visitor->id, 60, 60);
+        $this->limit('read:'.$visitor->token, 60, 60);
+        if (!$visitor->exists) {
+            return response()->json([]);
+        }
         $thread_id = (int) $request->thread_id;
         if ($thread_id > $visitor->read_thread_id && $visitor->conversation_id
             && Thread::where('id', $thread_id)->where('conversation_id', $visitor->conversation_id)->exists()) {
@@ -321,6 +369,7 @@ class WebChatController extends Controller
 
         return response($contents, 200, [
             'Content-Type'  => $name == 's' ? 'text/css; charset=utf-8' : 'text/javascript; charset=utf-8',
+            'X-Content-Type-Options' => 'nosniff',
             'Cache-Control' => 'public, max-age=31536000, immutable',
         ]);
     }

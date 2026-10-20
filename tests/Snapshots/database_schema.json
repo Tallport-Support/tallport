@@ -4987,6 +4987,18 @@
                 "type": "timestamp",
                 "nullable": true,
                 "default": "NULL"
+            },
+            "blocked_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "ip_hash": {
+                "type": "varchar(64)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {
