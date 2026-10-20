@@ -18,7 +18,8 @@ class Visitor extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'last_seen_at' => 'datetime',
+        'last_seen_at'    => 'datetime',
+        'code_expires_at' => 'datetime',
     ];
 
     /**

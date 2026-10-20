@@ -96,16 +96,15 @@ class Identity
         }
         if (!$customer) {
             $names = preg_split('/\s+/u', $identity['name'], 2);
-            $data = ['first_name' => $names[0] ?? '', 'last_name' => $names[1] ?? ''];
-            $customer = $identity['email'] ? Customer::create($identity['email'], $data) : Customer::createWithoutEmail($data);
+            $customer = Customer::createWithoutEmail(['first_name' => $names[0] ?? '', 'last_name' => $names[1] ?? '']);
         } elseif ($identity['name'] !== '' && !$customer->first_name && !$customer->last_name) {
             $names = preg_split('/\s+/u', $identity['name'], 2);
             $customer->first_name = $names[0];
             $customer->last_name = $names[1] ?? '';
             $customer->save();
         }
-        if ($customer && $identity['email'] && !$customer->hasEmail($identity['email'])) {
-            $customer->addEmail($identity['email']);
+        if ($identity['email']) {
+            $customer = WebChat::takeEmail($customer, $identity['email']);
         }
         if ($customer && !Customer::getCustomerByChannel(WebChat::CHANNEL, $channel_id)) {
             $customer->addChannel(WebChat::CHANNEL, $channel_id);

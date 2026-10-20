@@ -2542,6 +2542,34 @@
     },
     {
         "methods": [
+            "POST"
+        ],
+        "uri": "t/c",
+        "name": "web_chat.confirm_email",
+        "action": "WebChatController@confirmEmail",
+        "middleware": [
+            "open"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "t/e",
+        "name": "web_chat.email_code",
+        "action": "WebChatController@emailCode",
+        "middleware": [
+            "open"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
             "GET"
         ],
         "uri": "t/f",

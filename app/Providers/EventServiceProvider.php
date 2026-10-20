@@ -70,6 +70,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         'App\Events\CustomerReplied' => [
+            'App\Listeners\FollowWebChatToEmail',
             'App\Listeners\SendNotificationToUsers',
             'App\Listeners\AiUpdateSummary',
             'App\Listeners\AiTranslateMessage',

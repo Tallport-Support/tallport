@@ -171,6 +171,11 @@ class Kernel extends ConsoleKernel
             \App\Http\Controllers\SystemController::cacheProblemCount();
         })->name('system-problem-count')->everyFiveMinutes()->withoutOverlapping();
 
+        // Website chat addresses never confirmed: forgotten once their code expired.
+        $schedule->call(function () {
+            \App\WebChat\EmailCode::forgetExpired();
+        })->name('web-chat-forget-codes')->hourly();
+
         // Webhook deliveries finished more than 3 days ago.
         $schedule->command('model:prune', ['--model' => [\App\Api\WebhookLog::class]])
             ->daily();

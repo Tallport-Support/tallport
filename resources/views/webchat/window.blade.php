@@ -22,6 +22,7 @@
             'poll'     => $poll,
             'maxFiles' => \App\WebChat\WebChat::MAX_FILES,
             'maxFileMb' => \App\WebChat\WebChat::MAX_FILE_MB,
+            'codeIntro' => __('Enter the code we sent to :email.', ['email' => '%EMAIL%']),
             'text'     => [
                 'label'    => __('Chat with :name', ['name' => $team]),
                 'unread'   => __(':name, unread messages: :count'),
@@ -30,7 +31,15 @@
                 'waiting'  => __('Waiting to send'),
                 'failed'   => __('Not sent'),
                 'retry'    => __('Try Again'),
+                'error'    => __('Error occurred'),
                 'remove'   => __('Remove :name'),
+                'repliesTo' => __('Replies also go to :email.'),
+                'emailInvalid' => __('Enter an email address, like name@example.com.'),
+                'codeInvalid'  => __('Enter the 6-digit code from the email.'),
+                'codeSent'     => __('It can take a minute to arrive.'),
+                'codeAgain'    => __('We sent a new code.'),
+                'codeLast'     => __('We sent a new code. You can ask for another one later.'),
+                'confirmed'    => __('Email confirmed.'),
                 'tooLarge' => __('Files can be up to :size MB.', ['size' => \App\WebChat\WebChat::MAX_FILE_MB]),
                 'tooMany'  => __('Up to :count files per message.', ['count' => \App\WebChat\WebChat::MAX_FILES]),
             ],
@@ -52,7 +61,34 @@
             <ol class="widget-messages" role="list">
                 <template x-for="entry in timeline" :key="entry.id">
                     <li class="widget-entry" :data-kind="entry.kind" :data-first="entry.first" :data-last="entry.last" :data-entry-id="entry.id">
-                        <div class="widget-message" :data-state="entry.state">
+                        <template x-if="entry.kind === 'event'">
+                            <p class="f-message-event widget-event"><span class="f-message-event__icon" aria-hidden="true"><x-icon.mail class="f-icon" /></span><span class="f-message-event__text" x-text="entry.body"></span></p>
+                        </template>
+                        {{-- After their first message: the reply can go by email too, once a code confirms the address. --}}
+                        <template x-if="entry.kind === 'email'">
+                            <section class="f-card widget-email" aria-labelledby="widget-email-title">
+                                <h2 id="widget-email-title">{{ __('Get the Reply by Email') }}</h2>
+                                <template x-if="emailStep === 'address'">
+                                    <form @submit.prevent="sendCode" novalidate>
+                                        <p class="widget-email-text">{{ __('We’ll answer here. If you leave, we can email you the reply.') }}</p>
+                                        <label class="f-label" for="widget-email">{{ __('Email') }}</label>
+                                        <div class="widget-email-row"><input id="widget-email" class="f-input" type="email" autocomplete="email" required x-model="emailDraft" :aria-invalid="emailError ? 'true' : 'false'" aria-describedby="widget-email-error" @input="emailError = ''"><button class="f-button" type="submit" :aria-busy="busy ? 'true' : null">{{ __('Send Code') }}</button></div>
+                                        <p id="widget-email-error" class="f-error" x-show="emailError" x-text="emailError"></p>
+                                    </form>
+                                </template>
+                                <template x-if="emailStep === 'code'">
+                                    <form @submit.prevent="confirmCode" novalidate>
+                                        <p class="widget-email-text" x-html="codeIntro"></p>
+                                        <label class="f-label" for="widget-code">{{ __('Code') }}</label>
+                                        <div class="widget-email-row"><input id="widget-code" class="f-input widget-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required x-model="codeDraft" :aria-invalid="codeError ? 'true' : 'false'" aria-describedby="widget-code-error widget-code-help" @input="codeError = ''"><button class="f-button" type="submit" :aria-busy="busy ? 'true' : null">{{ __('Confirm') }}</button></div>
+                                        <p id="widget-code-error" class="f-error" x-show="codeError" x-text="codeError"></p>
+                                        <p id="widget-code-help" class="f-help" role="status" x-text="codeNotice"></p>
+                                        <div class="widget-email-actions"><button class="f-button f-button--ghost f-button--small" type="button" @click="sendAgain" :disabled="codesLeft <= 0">{{ __('Send Again') }}</button><button class="f-button f-button--ghost f-button--small" type="button" @click="changeAddress">{{ __('Change Address') }}</button></div>
+                                    </form>
+                                </template>
+                            </section>
+                        </template>
+                        <div class="widget-message" :data-state="entry.state" x-show="entry.kind === 'team' || entry.kind === 'visitor'">
                             <span class="f-avatar widget-avatar" :class="{ 'widget-team-mark': entry.team }" aria-hidden="true" x-show="entry.kind === 'team' && entry.first" x-text="entry.initials"></span>
                             <p class="widget-author" :class="{ 'f-sr-only': entry.kind === 'visitor' || !entry.first }" x-text="entry.kind === 'visitor' ? text.you : entry.author"></p>
                             <p class="widget-bubble" x-show="entry.body" x-text="entry.body"></p>

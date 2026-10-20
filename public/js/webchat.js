@@ -37,6 +37,16 @@ document.addEventListener('alpine:init', function () {
             cursor: 0,
             hasConversation: false,
             activeAt: Date.now(),
+            // Replies by email: a confirmed or signed-in address, or one being confirmed with a code.
+            email: null,
+            emailStep: 'address',
+            emailDraft: '',
+            emailError: '',
+            codeDraft: '',
+            codeError: '',
+            codeNotice: '',
+            codesLeft: 3,
+            busy: false,
 
             init: function () {
                 var self = this;
@@ -86,7 +96,8 @@ document.addEventListener('alpine:init', function () {
                 return fetch(url, { method: method, headers: headers, body: body, credentials: 'omit' }).then(function (response) {
                     if (response.status === 401) self.token(null);
                     return response.json().catch(function () { return {}; }).then(function (data) {
-                        if (!response.ok) throw Object.assign(new Error(data.message || response.statusText), { status: response.status });
+                        // A server error's own text isn't for visitors.
+                        if (!response.ok) throw Object.assign(new Error(response.status < 500 && data.message ? data.message : self.text.error), { status: response.status });
                         return data;
                     });
                 });
@@ -122,7 +133,14 @@ document.addEventListener('alpine:init', function () {
             },
 
             get timeline() {
-                var entries = this.entries;
+                var entries = this.entries.slice();
+                // Where replies also go, after the greeting; or, after their first message, the offer.
+                if (this.email) {
+                    entries.splice(greeting.length, 0, { id: 'email-event', kind: 'event', body: this.text.repliesTo.replace(':email', this.email) });
+                } else {
+                    var first = entries.findIndex(function (entry) { return entry.kind === 'visitor'; });
+                    if (first >= 0) entries.splice(first + 1, 0, { id: 'email-card', kind: 'email' });
+                }
                 var talks = function (entry) { return entry && (entry.kind === 'team' || entry.kind === 'visitor'); };
                 var together = function (one, other) {
                     return talks(one) && talks(other) && one.kind === other.kind && one.author === other.author;
@@ -179,6 +197,7 @@ document.addEventListener('alpine:init', function () {
                     self.hasConversation = data.messages.length > 0 || self.hasConversation;
                     data.messages.forEach(function (message) { self.receive(message); });
                     self.cursor = Math.max(self.cursor, data.cursor || 0);
+                    self.emailState(data);
                     self.unread = data.unread;
                     if (self.shown) self.markRead();
                     else self.post('unread', { count: self.unread, label: self.unreadLabel() });
@@ -296,9 +315,87 @@ document.addEventListener('alpine:init', function () {
                 this.api('POST', 'i', form).then(function (data) {
                     if (data.token) self.token(data.token);
                     clearTimeout(timer);
-                    Object.assign(self, { entries: greeting.slice(), cursor: 0, hasConversation: false });
+                    Object.assign(self, { entries: greeting.slice(), cursor: 0, hasConversation: false, email: null, emailStep: 'address', emailDraft: '' });
                     return self.poll();
                 }).catch(function () {});
+            },
+
+            /** Where replies also go, from the server; an address waiting for its code shows that step. */
+            emailState: function (data) {
+                this.email = data.email || null;
+                if (data.pending && this.emailStep === 'address' && !this.emailDraft) {
+                    this.emailDraft = data.pending;
+                    this.emailStep = 'code';
+                }
+                if (data.codes_left !== undefined && data.codes_left !== null) this.codesLeft = data.codes_left;
+            },
+
+            get codeIntro() {
+                var strong = document.createElement('strong');
+                strong.textContent = this.emailDraft;
+                var span = document.createElement('span');
+                span.textContent = config.codeIntro;
+                return span.innerHTML.replace('%EMAIL%', strong.outerHTML);
+            },
+
+            emailPost: function (path, name, value) {
+                var form = new FormData();
+                form.append(name, value);
+                this.busy = true;
+                var self = this;
+                return this.api('POST', path, form).finally(function () { self.busy = false; });
+            },
+
+            sendCode: function () {
+                var self = this;
+                var input = document.getElementById('widget-email');
+                if (!this.emailDraft.trim() || !input.checkValidity()) {
+                    this.emailError = this.text.emailInvalid;
+                    return void input.focus();
+                }
+                this.emailPost('e', 'email', this.emailDraft.trim()).then(function (data) {
+                    self.emailState(data);
+                    self.codeNotice = self.text.codeSent;
+                    self.emailStep = 'code';
+                    self.$nextTick(function () { document.getElementById('widget-code').focus(); });
+                }).catch(function (error) {
+                    self.emailError = error.message;
+                    input.focus();
+                });
+            },
+
+            sendAgain: function () {
+                var self = this;
+                this.emailPost('e', 'email', this.emailDraft.trim()).then(function (data) {
+                    self.emailState(data);
+                    self.codeNotice = self.codesLeft > 0 ? self.text.codeAgain : self.text.codeLast;
+                }).catch(function (error) {
+                    self.codeNotice = error.message;
+                }).then(function () { document.getElementById('widget-code').focus(); });
+            },
+
+            changeAddress: function () {
+                this.emailStep = 'address';
+                this.codeDraft = '';
+                this.codeError = '';
+                this.$nextTick(function () { document.getElementById('widget-email').focus(); });
+            },
+
+            /** Only a confirmed address gets email: a mistyped one never receives the conversation. */
+            confirmCode: function () {
+                var self = this;
+                if (!/^\d{6}$/.test(this.codeDraft.trim())) {
+                    this.codeError = this.text.codeInvalid;
+                    return void document.getElementById('widget-code').focus();
+                }
+                this.emailPost('c', 'code', this.codeDraft.trim()).then(function (data) {
+                    self.emailState(data);
+                    self.announcement = self.text.confirmed;
+                    self.$refs.message.focus();
+                }).catch(function (error) {
+                    self.codeError = error.message;
+                    document.getElementById('widget-code').focus();
+                });
             },
 
             /** Signed out on the website: a new, anonymous visitor. */
@@ -306,7 +403,8 @@ document.addEventListener('alpine:init', function () {
                 clearTimeout(timer);
                 this.token(null);
                 memory = null;
-                Object.assign(this, { entries: greeting.slice(), draft: '', files: [], error: '', unread: 0, announcement: '', cursor: 0, hasConversation: false });
+                Object.assign(this, { entries: greeting.slice(), draft: '', files: [], error: '', unread: 0, announcement: '', cursor: 0, hasConversation: false,
+                    email: null, emailStep: 'address', emailDraft: '', emailError: '', codeDraft: '', codeError: '', codeNotice: '', codesLeft: 3 });
                 this.post('unread', { count: 0, label: this.text.label });
             },
         };

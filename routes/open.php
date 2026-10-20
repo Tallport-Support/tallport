@@ -39,3 +39,5 @@ Route::post('/t/r', 'WebChatController@read')->name('web_chat.read');
 Route::get('/t/f', 'WebChatController@file')->middleware('throttle:120,1')->name('web_chat.file');
 Route::get('/t/{name}', 'WebChatController@asset')->where('name', 's|j')->name('web_chat.asset');
 Route::post('/t/i', 'WebChatController@identify')->name('web_chat.identify');
+Route::post('/t/e', 'WebChatController@emailCode')->name('web_chat.email_code');
+Route::post('/t/c', 'WebChatController@confirmEmail')->name('web_chat.confirm_email');

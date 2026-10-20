@@ -96,7 +96,7 @@ class WebChatController extends Controller
             $cursor = max($cursor, $pending ? $pending - 1 : (int) collect($messages)->max('id'));
         }
 
-        return response()->json(['messages' => $messages, 'unread' => $unread, 'cursor' => $cursor]);
+        return response()->json(['messages' => $messages, 'unread' => $unread, 'cursor' => $cursor] + $this->emailState($visitor));
     }
 
     /**
@@ -144,6 +144,11 @@ class WebChatController extends Controller
             ]);
             if (empty($received['thread'])) {
                 return null;
+            }
+            // Back in the chat after answering by email: the conversation follows them here.
+            if ($received['conversation']->channel != WebChat::CHANNEL) {
+                $received['conversation']->channel = WebChat::CHANNEL;
+                $received['conversation']->save();
             }
             $visitor->conversation_id = $received['conversation']->id;
             $visitor->last_seen_at = now();
@@ -203,6 +208,46 @@ class WebChatController extends Controller
         });
 
         return response()->json(['token' => $token]);
+    }
+
+    /**
+     * "Get the reply by email": a code to the address (App\WebChat\EmailCode).
+     */
+    public function emailCode(Request $request)
+    {
+        $visitor = $this->visitor($request);
+        $this->limit('email:'.$visitor->id, 10, 600);
+        $this->locale($request);
+        $error = \App\WebChat\EmailCode::send($visitor, $request->email, $request->ip());
+
+        return $error ? response()->json(['message' => $error], 422) : response()->json($this->emailState($visitor->fresh()));
+    }
+
+    /**
+     * The code from the email: the address counts from now on.
+     */
+    public function confirmEmail(Request $request)
+    {
+        $visitor = $this->visitor($request);
+        $this->limit('confirm:'.$visitor->id, 20, 600);
+        $this->locale($request);
+        $error = \App\WebChat\EmailCode::confirm($visitor, $request->code);
+
+        return $error ? response()->json(['message' => $error], 422) : response()->json($this->emailState($visitor->fresh()));
+    }
+
+    /**
+     * Where replies also go (a confirmed or signed-in address), and an address waiting for its code.
+     */
+    protected function emailState(Visitor $visitor)
+    {
+        $waiting = \App\WebChat\EmailCode::waiting($visitor);
+
+        return [
+            'email'       => WebChat::email($visitor->customer),
+            'pending'     => $waiting ? $visitor->pending_email : null,
+            'codes_left'  => $waiting ? max(0, \App\WebChat\EmailCode::MAX_CODES - $visitor->codes_sent) : null,
+        ];
     }
 
     /**

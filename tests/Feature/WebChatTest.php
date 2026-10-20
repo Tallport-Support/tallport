@@ -271,6 +271,120 @@ class WebChatTest extends FeatureTestCase
         $this->assertTrue(WebChat::settings($this->mailbox->fresh())['enabled'], 'Rotating changes nothing else.');
     }
 
+    protected function codeFrom($email)
+    {
+        $sent = collect($this->sentEmailsTo($email))->last();
+        $this->assertNotNull($sent, 'A code was sent to '.$email);
+        preg_match('/\b(\d{6})\b/', $sent->getSubject(), $match);
+
+        return $match[1];
+    }
+
+    /**
+     * "Get the reply by email": the address counts once the code from it is entered.
+     */
+    public function testEmailCodes()
+    {
+        $token = $this->visitorToken();
+        $this->api('POST', '/t/e', ['email' => 'lena@example.org'], $token)->assertStatus(422)->assertJson(['message' => 'Write a message first.']);
+        $this->api('POST', '/t/m', ['body' => 'My secret order details'], $token)->assertOk();
+
+        $this->api('POST', '/t/e', ['email' => 'not an address'], $token)->assertStatus(422);
+        $this->api('POST', '/t/e', ['email' => 'Lena@Example.org'], $token)->assertOk()->assertJson(['pending' => 'lena@example.org', 'codes_left' => 2, 'email' => null]);
+        $sent = collect($this->sentEmailsTo('lena@example.org'))->last();
+        $this->assertStringNotContainsString('secret order', $sent->getBody(), 'Only the code and the team.');
+        $this->assertStringContainsString('Forma', $sent->getBody());
+        $code = $this->codeFrom('lena@example.org');
+
+        // Not yet: the address doesn't count, and a wrong code says so.
+        $this->assertNull($this->api('GET', '/t/m', [], $token)->json('email'));
+        $this->api('POST', '/t/c', ['code' => $code == '000000' ? '111111' : '000000'], $token)->assertStatus(422);
+
+        // Send Again: three codes in all; the latest works.
+        $this->api('POST', '/t/e', ['email' => 'lena@example.org'], $token)->assertOk()->assertJson(['codes_left' => 1]);
+        $this->api('POST', '/t/e', ['email' => 'lena@example.org'], $token)->assertOk()->assertJson(['codes_left' => 0]);
+        $this->api('POST', '/t/e', ['email' => 'lena@example.org'], $token)->assertStatus(422);
+        $this->api('POST', '/t/c', ['code' => $code], $token)->assertStatus(422);
+        $this->api('POST', '/t/c', ['code' => $this->codeFrom('lena@example.org')], $token)->assertOk()->assertJson(['email' => 'lena@example.org', 'pending' => null]);
+
+        $visitor = Visitor::firstOrFail();
+        $this->assertSame('lena@example.org', WebChat::email($visitor->customer));
+        $this->assertSame('lena@example.org', $visitor->conversation->customer_email);
+        $this->assertSame('lena@example.org', $this->api('GET', '/t/m', [], $token)->json('email'));
+    }
+
+    public function testAConfirmedAddressFindsItsCustomer()
+    {
+        $casey = $this->createCustomer('casey@customer.example.org');
+        $token = $this->visitorToken();
+        $this->api('POST', '/t/m', ['body' => 'Hello'], $token)->assertOk();
+        $this->api('POST', '/t/e', ['email' => 'casey@customer.example.org'], $token)->assertOk();
+        $this->api('POST', '/t/c', ['code' => $this->codeFrom('casey@customer.example.org')], $token)->assertOk();
+
+        $this->assertSame($casey->id, Visitor::firstOrFail()->customer_id);
+        $this->assertSame($casey->id, Visitor::firstOrFail()->conversation->customer_id);
+
+        // An address row left without its customer is taken over.
+        \DB::table('emails')->insert(['email' => 'left@example.org', 'customer_id' => 999999]);
+        $left = $this->visitorToken();
+        $this->api('POST', '/t/m', ['body' => 'Hi'], $left)->assertOk();
+        $this->api('POST', '/t/e', ['email' => 'left@example.org'], $left)->assertOk();
+        $this->api('POST', '/t/c', ['code' => $this->codeFrom('left@example.org')], $left)->assertOk()->assertJson(['email' => 'left@example.org']);
+
+        // Unconfirmed addresses are forgotten when their code expires.
+        $other = $this->visitorToken();
+        $this->api('POST', '/t/m', ['body' => 'Hi'], $other)->assertOk();
+        $this->api('POST', '/t/e', ['email' => 'someone@example.org'], $other)->assertOk();
+        $this->travel(61)->minutes();
+        $this->assertSame(1, \App\WebChat\EmailCode::forgetExpired());
+        $this->assertNull(Visitor::whereNotNull('pending_email')->first());
+    }
+
+    /**
+     * A reply the visitor doesn't see also goes by email; answering it moves the conversation to
+     * email, and writing in the chat brings it back.
+     */
+    public function testUnseenRepliesGoByEmail()
+    {
+        $token = $this->visitorToken();
+        $this->api('POST', '/t/i', ['identity' => $this->signed(['sub' => 'acct-42', 'email' => 'lena@example.org', 'name' => 'Lena Novak'])], $token)->assertOk();
+        $this->api('POST', '/t/m', ['body' => 'Where is my order?'], $token)->assertOk();
+        $visitor = Visitor::firstOrFail();
+        $conversation = $visitor->conversation;
+
+        // While they're around (the reply's own job ran at once here): no email.
+        $reply = $this->reply($conversation, 'It ships tomorrow.');
+        $this->assertCount(0, $this->sentEmailsTo('lena@example.org'));
+
+        // Gone from the website: by email.
+        Visitor::query()->update(['last_seen_at' => now()->subMinutes(10)]);
+        (new \App\Jobs\EmailWebChatReply($reply->id))->handle();
+        $emails = $this->sentEmailsTo('lena@example.org');
+        $this->assertCount(1, $emails);
+        $this->assertStringContainsString('It ships tomorrow.', $emails[0]->getBody());
+
+        // Seen in the chat: not again.
+        $visitor->refresh()->update(['read_thread_id' => $reply->id]);
+        (new \App\Jobs\EmailWebChatReply($reply->id))->handle();
+        $this->assertCount(1, $this->sentEmailsTo('lena@example.org'));
+
+        // Answered by email: the conversation is an email conversation now, still in the chat.
+        $message_id = trim((string) $emails[0]->getHeaders()->get('Message-ID')->getFieldBody(), '<>');
+        $this->receiveEmail($this->mailbox, $this->makeEmail([
+            'from' => 'Lena Novak <lena@example.org>', 'to' => $this->mailbox->email, 'subject' => 'Re: Where is my order?',
+            'in_reply_to' => $message_id, 'body' => 'Thanks, tomorrow is fine.',
+        ]));
+        $conversation->refresh();
+        $this->assertNull($conversation->channel);
+        $this->assertSame(2, $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->count());
+        $this->travel(Conversation::UNDO_TIMOUT + 1)->seconds();
+        $this->assertContains('Thanks, tomorrow is fine.', array_column($this->api('GET', '/t/m', [], $token)->json('messages'), 'body'));
+
+        // Back in the chat.
+        $this->api('POST', '/t/m', ['body' => 'One more thing'], $token)->assertOk();
+        $this->assertSame(WebChat::CHANNEL, (int) $conversation->fresh()->channel);
+    }
+
     public function testRetentionAndMerging()
     {
         $token = $this->visitorToken();

@@ -24,6 +24,12 @@ class CreateWebChatVisitorsTable extends Migration
             // tells the team about them (plan, account ID).
             $table->string('identity', 64)->nullable()->index();
             $table->text('data')->nullable();
+            // An address being confirmed with a code (App\WebChat\EmailCode), forgotten after an hour.
+            $table->string('pending_email', 191)->nullable();
+            $table->string('code_hash', 64)->nullable();
+            $table->timestamp('code_expires_at')->nullable()->index();
+            $table->unsignedTinyInteger('codes_sent')->default(0);
+            $table->unsignedTinyInteger('code_attempts')->default(0);
             // The newest of the team's messages the visitor has seen (the unread count).
             $table->unsignedInteger('read_thread_id')->default(0);
             // The page of the website they were on.

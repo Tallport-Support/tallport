@@ -125,6 +125,11 @@
         "without_overlapping": true
     },
     {
+        "description": "web-chat-forget-codes",
+        "expression": "0 * * * *",
+        "timezone": "UTC"
+    },
+    {
         "command": "artisan model:prune --model='App\\Api\\WebhookLog'",
         "expression": "0 0 * * *",
         "timezone": "UTC"

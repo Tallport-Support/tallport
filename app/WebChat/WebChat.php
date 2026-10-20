@@ -31,6 +31,12 @@ class WebChat
     const POLL_CLOSED = 60;
 
     /**
+     * A reply the visitor hasn't seen this many seconds after it showed (and who hasn't been on the
+     * website meanwhile) also goes by email, to an address that counts (App\Jobs\EmailWebChatReply).
+     */
+    const EMAIL_AFTER = 180;
+
+    /**
      * Attachments a visitor sends: at most this many per message, each at most this many megabytes.
      */
     const MAX_FILES = 5;
@@ -150,6 +156,39 @@ class WebChat
     public static function assetVersion($name)
     {
         return substr(md5(implode(',', array_map(fn ($file) => $file.filemtime(public_path($file)), self::assetFiles($name)))), 0, 10);
+    }
+
+    /**
+     * Where replies to a customer can also go: their first address, read fresh (getMainEmail()'s
+     * cache would keep an address added since, in this process, unknown).
+     */
+    public static function email($customer)
+    {
+        return $customer ? ($customer->emails()->orderBy('id')->value('email') ?: null) : null;
+    }
+
+    /**
+     * An address that now counts for the customer (confirmed with a code, or vouched for by the
+     * website): theirs; when another customer has it, they're the same person, merged into that
+     * one (returned); a row left without its customer is taken over.
+     */
+    public static function takeEmail(\App\Customer $customer, $email)
+    {
+        $row = \App\Email::where('email', $email)->first();
+        $owner = $row ? \App\Customer::find($row->customer_id) : null;
+        if ($owner && $owner->id != $customer->id) {
+            $owner->mergeWith($customer);
+
+            return $owner;
+        }
+        if ($row && !$owner) {
+            $row->customer_id = $customer->id;
+            $row->save();
+        } elseif (!$row) {
+            $customer->addEmail($email);
+        }
+
+        return $customer;
     }
 
     /**

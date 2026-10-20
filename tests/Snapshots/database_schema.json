@@ -4932,6 +4932,35 @@
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
             },
+            "pending_email": {
+                "type": "varchar(191)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "code_hash": {
+                "type": "varchar(64)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
+            },
+            "code_expires_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "codes_sent": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "0"
+            },
+            "code_attempts": {
+                "type": "tinyint(3) unsigned",
+                "nullable": false,
+                "default": "0"
+            },
             "read_thread_id": {
                 "type": "int(10) unsigned",
                 "nullable": false,
@@ -4966,6 +4995,13 @@
                 "type": "BTREE",
                 "columns": [
                     "id"
+                ]
+            },
+            "web_chat_visitors_code_expires_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "code_expires_at"
                 ]
             },
             "web_chat_visitors_conversation_id_index": {

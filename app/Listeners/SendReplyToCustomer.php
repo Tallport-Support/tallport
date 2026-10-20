@@ -117,6 +117,8 @@ class SendReplyToCustomer
         // Website chat: the visitor's window fetches it once it can't be undone; nothing to send.
         if ($conversation->channel == \App\WebChat\WebChat::CHANNEL) {
             \App\Misc\ChatDelivery::recordStatus($thread, \App\SendLog::STATUS_ACCEPTED);
+            // And by email when they don't see it in a while.
+            \App\Jobs\EmailWebChatReply::dispatch($thread->id)->delay(now()->addSeconds(Conversation::UNDO_TIMOUT + \App\WebChat\WebChat::EMAIL_AFTER))->onQueue('emails');
             return;
         }
 
