@@ -40,7 +40,7 @@
     @livewireStyles
     @action('layout.after_stylesheets')
 </head>
-<body class="fruit-ui locale-{{ app()->getLocale() }} @if (Helper::isLocaleRtl()) rtl @endif @if (!Auth::user()) user-is-guest @endif @if (Auth::user() && Auth::user()->isAdmin()) user-is-admin @endif @yield('body_class') @action('body.class')" @yield('body_attrs') @if (Auth::user()) data-auth_user_id="{{ Auth::user()->id }}" data-rendered-at="{{ time() }}" data-send-keys="{{ json_encode(App\Misc\KeyboardShortcuts::SEND) }}" @endif @if (Auth::user() && Auth::user()->hasKeyboardShortcuts()) data-keyboard-shortcuts="1" @endif>
+<body class="fruit-ui locale-{{ app()->getLocale() }} @if (Helper::isLocaleRtl()) rtl @endif @if (!Auth::user()) user-is-guest @endif @if (Auth::user() && Auth::user()->isAdmin()) user-is-admin @endif @yield('body_class') @action('body.class')" @yield('body_attrs') @if (Auth::user()) data-auth_user_id="{{ Auth::user()->id }}" data-rendered-at="{{ time() }}" data-send-keys="{{ json_encode(App\Misc\KeyboardShortcuts::SEND) }}" data-inbox="{{ json_encode(['key' => App\Inbox\Sync::sessionKey(), 'user' => Auth::user()->id, 'install' => substr(sha1(config('app.url').config('app.key')), 0, 12), 'url' => route('inbox.sync'), 'recent_days' => App\Inbox\Sync::RECENT_DAYS]) }}" @endif @if (Auth::user() && Auth::user()->hasKeyboardShortcuts()) data-keyboard-shortcuts="1" @endif>
 <div id="app">
 
         @php
@@ -188,7 +188,7 @@
     @php
         try {
     @endphp
-    {!! Minify::javascript(\Eventy::filter('javascripts', array('/js/lang.js', '/js/builds/vars.js', '/js/laroute.js', '/js/polycast/polycast.js', '/js/push/push.min.js', '/vendor/fruitui/livewire.global.js', '/vendor/fruitui/editor.global.js', '/js/tallport.js', '/js/mailboxes.js', '/js/users.js', '/js/customers.js', '/js/conversations.js', '/js/admin.js', '/js/editor.js', '/js/main.js', '/js/realtime.js', '/js/shortcuts.js', '/js/saved_replies.js', '/js/attachments.js', '/js/html5sortable.js', '/js/workflows.js', '/js/kb.js')), ['data-navigate-once' => true]) !!}
+    {!! Minify::javascript(\Eventy::filter('javascripts', array('/js/lang.js', '/js/builds/vars.js', '/js/laroute.js', '/js/polycast/polycast.js', '/js/push/push.min.js', '/vendor/fruitui/livewire.global.js', '/vendor/fruitui/editor.global.js', '/js/tallport.js', '/js/mailboxes.js', '/js/users.js', '/js/customers.js', '/js/conversations.js', '/js/admin.js', '/js/editor.js', '/js/main.js', '/js/realtime.js', '/js/inbox.js', '/js/shortcuts.js', '/js/saved_replies.js', '/js/attachments.js', '/js/html5sortable.js', '/js/workflows.js', '/js/kb.js')), ['data-navigate-once' => true]) !!}
     @php
         } catch (\Exception $e) {
             // To prevent 500 errors on update.

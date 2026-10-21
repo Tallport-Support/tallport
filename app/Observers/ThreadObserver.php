@@ -14,6 +14,7 @@ class ThreadObserver
      */
     public function created(Thread $thread)
     {
+        \App\Inbox\Changes::conversations($thread->conversation_id);
         // Update data in conversation
         $conversation = $thread->conversation;
 
@@ -96,6 +97,11 @@ class ThreadObserver
 
     }
 
+    public function deleted(Thread $thread)
+    {
+        \App\Inbox\Changes::conversations($thread->conversation_id);
+    }
+
     public function deleting(Thread $thread)
     {
         \Eventy::action('thread.deleting', $thread);
@@ -112,6 +118,8 @@ class ThreadObserver
         if ($thread->wasChanged('send_status') && $thread->isSendStatusError()) {
             \App\Events\RealtimeConvNewThread::dispatchSelf($thread, ['send_failed' => true]);
         }
+        // Its conversation's list row (the local inbox: preview, a draft sent).
+        \App\Inbox\Changes::conversations($thread->conversation_id);
         \Eventy::action('thread.updated', $thread);
     }
 }

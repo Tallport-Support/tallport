@@ -1296,6 +1296,7 @@ class Customer extends Model
         
         $user = auth()->user();
 
+        \App\Inbox\Changes::conversations($customer2->conversations()->get(['id', 'mailbox_id']));
         $customer2->conversations()->update(['customer_id' => $this->id]);
 
         // do {

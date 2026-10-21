@@ -125,6 +125,11 @@
         "without_overlapping": true
     },
     {
+        "description": "inbox-changes-prune",
+        "expression": "0 0 * * *",
+        "timezone": "UTC"
+    },
+    {
         "description": "web-chat-forget-codes",
         "expression": "0 * * * *",
         "timezone": "UTC"

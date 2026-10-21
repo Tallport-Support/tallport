@@ -14,6 +14,16 @@ class CustomerObserver
         $customer->setPhones($phones);
     }
 
+    /**
+     * A new name shows in the list rows of their recent conversations (the local inbox).
+     */
+    public function updated(Customer $customer)
+    {
+        if ($customer->wasChanged(['first_name', 'last_name'])) {
+            \App\Inbox\Changes::conversations($customer->conversations()->where('last_activity_at', '>', now()->subDays(\App\Inbox\Sync::RECENT_DAYS))->limit(500)->get(['id', 'mailbox_id']));
+        }
+    }
+
     public function deleting(Customer $customer)
     {
         \Eventy::action('customer.deleting', $customer);

@@ -118,6 +118,8 @@ Route::get('/notifications', 'UsersController@ownNotifications')->name('own.noti
 Route::get('/api-keys', 'ApiKeysController@own')->middleware('password.confirm')->name('own.api_keys');
 
 // Conversations
+// The browser's local copy of the inbox (App\Inbox\Sync).
+Route::get('/inbox/sync', 'InboxController@sync')->name('inbox.sync');
 Route::get('/conversation/{id}', ['uses' => 'ConversationsController@view', 'laroute' => true])->name('conversations.view');
 Route::post('/conversation/ajax', ['uses' => 'ConversationsController@ajax', 'laroute' => true])->name('conversations.ajax');
 Route::post('/attachments/{id}/delete', ['uses' => 'AttachmentsController@delete', 'laroute' => true])->name('attachments.delete');

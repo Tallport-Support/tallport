@@ -28,6 +28,7 @@ class ConversationObserver
     {
         // Better to do it manually
         //$conversation->mailbox->updateFoldersCounters();
+        \App\Inbox\Changes::conversations($conversation);
     }
 
     /**
@@ -57,6 +58,16 @@ class ConversationObserver
 
     public function updated(Conversation $conversation)
     {
+        // Its list row (the local inbox); moved, the mailbox it left hears too.
+        \App\Inbox\Changes::conversations($conversation);
+        if ($conversation->wasChanged('mailbox_id') && $conversation->getOriginal('mailbox_id')) {
+            \App\Inbox\Changes::hint($conversation->getOriginal('mailbox_id'));
+        }
         \Eventy::action('conversation.updated', $conversation);
+    }
+
+    public function deleted(Conversation $conversation)
+    {
+        \App\Inbox\Changes::conversations($conversation);
     }
 }

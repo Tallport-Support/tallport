@@ -83,7 +83,7 @@
     @endif
     <ul class="app-sidebar__module-items">@action('menu_right.user.after_profile')</ul>
     <x-fruit::menu-separator />
-    <x-fruit::menu-link href="#" id="logout-link" x-on:click.prevent="document.getElementById('logout-form').submit()">{{ __('Log Out') }}</x-fruit::menu-link>
+    <x-fruit::menu-link href="#" id="logout-link" x-on:click.prevent="(window.TallportInbox ? TallportInbox.forget() : Promise.resolve()).finally(() => document.getElementById('logout-form').submit())">{{ __('Log Out') }}</x-fruit::menu-link>
 </x-fruit::menu>
 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
     {{ csrf_field() }}

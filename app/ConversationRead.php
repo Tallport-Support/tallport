@@ -37,6 +37,7 @@ class ConversationRead extends Model
         }
         if ($rows) {
             self::upsert($rows, ['user_id', 'conversation_id'], ['thread_id']);
+            \App\Inbox\Changes::conversations(array_column($rows, 'conversation_id'));
         }
     }
 
@@ -51,6 +52,7 @@ class ConversationRead extends Model
         }
         if ($rows) {
             self::upsert($rows, ['user_id', 'conversation_id'], ['thread_id']);
+            \App\Inbox\Changes::conversations(array_column($rows, 'conversation_id'));
         }
     }
 

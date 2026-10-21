@@ -1932,6 +1932,45 @@
             }
         }
     },
+    "inbox_changes": {
+        "columns": {
+            "id": {
+                "type": "bigint(20) unsigned",
+                "nullable": false,
+                "extra": "auto_increment"
+            },
+            "conversation_id": {
+                "type": "int(10) unsigned",
+                "nullable": false
+            },
+            "mailbox_id": {
+                "type": "int(10) unsigned",
+                "nullable": true,
+                "default": "NULL"
+            },
+            "created_at": {
+                "type": "timestamp",
+                "nullable": true,
+                "default": "NULL"
+            }
+        },
+        "indexes": {
+            "inbox_changes_created_at_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "created_at"
+                ]
+            },
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "id"
+                ]
+            }
+        }
+    },
     "jobs": {
         "columns": {
             "id": {

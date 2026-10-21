@@ -171,6 +171,11 @@ class Kernel extends ConsoleKernel
             \App\Http\Controllers\SystemController::cacheProblemCount();
         })->name('system-problem-count')->everyFiveMinutes()->withoutOverlapping();
 
+        // The local inbox's change log: 30 days.
+        $schedule->call(function () {
+            \App\Inbox\Changes::prune();
+        })->name('inbox-changes-prune')->daily();
+
         // Website chat addresses never confirmed: forgotten once their code expired.
         $schedule->call(function () {
             \App\WebChat\EmailCode::forgetExpired();

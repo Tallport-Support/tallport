@@ -1,0 +1,194 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Conversation;
+use App\ConversationRead;
+use App\Folder;
+use App\Inbox\Changes;
+use App\Inbox\Sync;
+use App\Misc\ConversationListQuery;
+use App\User;
+use Tests\FeatureTestCase;
+
+/**
+ * The browser's local copy of the inbox (App\Inbox): the change log, and what a sync sends.
+ */
+class InboxSyncTest extends FeatureTestCase
+{
+    protected $agent;
+    protected $mailbox;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->agent = $this->createUser(['first_name' => 'Alex']);
+        $this->mailbox = $this->createMailbox([$this->agent], ['name' => 'Support']);
+        Changes::forget();
+    }
+
+    protected function conversation($subject, $mailbox = null)
+    {
+        $mailbox = $mailbox ?: $this->mailbox;
+        $this->receiveEmail($mailbox, $this->makeEmail([
+            'from' => 'Casey Customer <casey@customer.example.org>', 'to' => $mailbox->email, 'subject' => $subject,
+        ]));
+        Changes::forget();
+
+        return Conversation::where('mailbox_id', $mailbox->id)->orderBy('id', 'desc')->first();
+    }
+
+    protected function folder($type, $user = null)
+    {
+        return $this->mailbox->folders()->where('type', $type)->when($user, fn ($query) => $query->where('user_id', $user->id))->first();
+    }
+
+    protected function logged()
+    {
+        return \DB::table('inbox_changes')->pluck('conversation_id')->all();
+    }
+
+    /**
+     * Every change to what a list row shows is logged, once a request, with a hint for open tabs.
+     */
+    public function testChangesAreLogged()
+    {
+        $conversation = $this->conversation('Where is my order?');
+        $this->assertContains($conversation->id, $this->logged(), 'A new conversation.');
+
+        $checks = [
+            'status'   => fn () => $conversation->changeStatus(Conversation::STATUS_PENDING, $this->agent),
+            'assignee' => fn () => $conversation->changeUser($this->agent->id, $this->agent),
+            'star'     => fn () => $conversation->star($this->agent),
+            'read'     => fn () => ConversationRead::markRead([$conversation->id], $this->agent),
+            'unread'   => fn () => ConversationRead::markUnread([$conversation->id], $this->agent),
+            'reply'    => fn () => $this->sendReply($this->agent, ['mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => 'On its way.']),
+            'customer' => fn () => $conversation->customer->forceFill(['first_name' => 'Cassie'])->save(),
+        ];
+        foreach ($checks as $name => $change) {
+            \DB::table('inbox_changes')->delete();
+            Changes::forget();
+            $change();
+            $this->assertContains($conversation->id, $this->logged(), $name);
+        }
+
+        // Deleted forever: logged before it goes.
+        \DB::table('inbox_changes')->delete();
+        Changes::forget();
+        Conversation::deleteConversationsForever([$conversation->id]);
+        $this->assertContains($conversation->id, $this->logged());
+
+        $this->assertTrue(\DB::table('polycast_events')->where('event', 'App\\Events\\RealtimeInboxChanged')->exists(), 'Open tabs are told.');
+    }
+
+    /**
+     * A first sync: the folder in view first, then what's kept (unread, theirs and open, recent),
+     * only what they may see.
+     */
+    public function testAFirstSync()
+    {
+        $unread = $this->conversation('Unread question');
+        $mine = $this->conversation('Mine, read');
+        $mine->changeUser($this->agent->id, $this->agent);
+        ConversationRead::markRead([$mine->id], $this->agent);
+        $old = $this->conversation('Old and closed');
+        $old->changeStatus(Conversation::STATUS_CLOSED, $this->agent);
+        ConversationRead::markRead([$old->id], $this->agent);
+        Conversation::where('id', $old->id)->update(['last_activity_at' => now()->subDays(30)]);
+        $elsewhere = $this->conversation('Another mailbox', $this->createMailbox([], ['name' => 'Private']));
+
+        $sync = (new Sync($this->agent))->full(0, $this->folder(Folder::TYPE_CLOSED)->id);
+        $ids = array_column($sync['rows'], 'id');
+        $this->assertSame($old->id, $ids[0], 'The folder in view first.');
+        $this->assertContains($unread->id, $ids);
+        $this->assertContains($mine->id, $ids);
+        $this->assertNotContains($elsewhere->id, $ids, 'Not theirs to see.');
+        $this->assertFalse($sync['more']);
+        $this->assertSame((new Sync($this->agent))->scope(), $sync['scope']);
+
+        $rows = collect($sync['rows'])->keyBy('id');
+        $this->assertTrue($rows[$unread->id]['unread'] && $rows[$unread->id]['keep']);
+        $this->assertTrue(!$rows[$mine->id]['unread'] && $rows[$mine->id]['keep'], 'Theirs and open: kept.');
+        $this->assertFalse($rows[$old->id]['keep']);
+        $this->assertSame('Unread question', $rows[$unread->id]['subject']);
+
+        // Without the folder: only what's kept.
+        $this->assertNotContains($old->id, array_column((new Sync($this->agent))->full(0)['rows'], 'id'));
+    }
+
+    /**
+     * A row's folders are the folders whose lists show it, for this user.
+     */
+    public function testRowsAreInTheFoldersTheirListsShow()
+    {
+        $other = $this->createUser(['first_name' => 'Sam']);
+        $this->mailbox->users()->attach($other->id);
+        $this->mailbox->syncPersonalFolders([$this->agent->id, $other->id]);
+        $conversations = [];
+        foreach (['unassigned', 'mine', 'theirs', 'closed', 'spam', 'deleted', 'starred'] as $name) {
+            $conversations[$name] = $this->conversation(ucfirst($name));
+        }
+        $conversations['mine']->changeUser($this->agent->id, $this->agent);
+        $conversations['theirs']->changeUser($other->id, $this->agent);
+        $conversations['closed']->changeStatus(Conversation::STATUS_CLOSED, $this->agent);
+        $conversations['spam']->changeStatus(Conversation::STATUS_SPAM, $this->agent);
+        $conversations['deleted']->deleteToFolder($this->agent);
+        $conversations['starred']->star($this->agent);
+        $this->actingAs($this->agent);
+
+        $rows = collect((new Sync($this->agent))->rows(collect($conversations)->pluck('id')->all()))->keyBy('id');
+        foreach ($this->mailbox->folders()->where(fn ($query) => $query->whereNull('user_id')->orWhere('user_id', $this->agent->id))->get() as $folder) {
+            $listed = collect((new ConversationListQuery())->folderList($folder, $this->agent)['conversations']->items())->pluck('id')->sort()->values()->all();
+            $keyed = $rows->filter(fn ($row) => in_array($folder->id, $row['folders']))->keys()->sort()->values()->all();
+            $this->assertSame($listed, $keyed, 'Folder '.$folder->type);
+        }
+    }
+
+    /**
+     * After the first sync: what changed, rows again or gone; a cursor too old, or a new scope, starts over.
+     */
+    public function testChangesSinceTheCursor()
+    {
+        $conversation = $this->conversation('Question');
+        $gone = $this->conversation('Moving away');
+        $cursor = Changes::latest();
+
+        $conversation->changeStatus(Conversation::STATUS_PENDING, $this->agent);
+        $private = $this->createMailbox([], ['name' => 'Private']);
+        $gone->moveToMailbox($private, $this->agent);
+        $sync = (new Sync($this->agent))->since($cursor);
+        $this->assertSame([$conversation->id], array_column($sync['rows'], 'id'));
+        $this->assertSame(Conversation::STATUS_PENDING, $sync['rows'][0]['status']);
+        $this->assertSame([$gone->id], $sync['removed']);
+        $this->assertSame([], (new Sync($this->agent))->since($sync['cursor'])['rows'], 'Nothing new.');
+
+        // Its scope changes with what they may see.
+        $scope = (new Sync($this->agent))->scope();
+        $private->users()->attach($this->agent->id);
+        $this->assertNotSame($scope, (new Sync(User::find($this->agent->id)))->scope());
+
+        // The change log keeps 30 days; an older cursor starts over.
+        \DB::table('inbox_changes')->update(['created_at' => now()->subDays(31)]);
+        $this->conversation('New');
+        Changes::prune();
+        $this->assertTrue((new Sync($this->agent))->since($cursor)['restart']);
+    }
+
+    public function testTheEndpointAndTheSessionsKey()
+    {
+        $conversation = $this->conversation('Question');
+        $this->getJson(route('inbox.sync', ['page' => 0]))->assertUnauthorized();
+
+        $this->actingAs($this->agent)->getJson(route('inbox.sync', ['page' => 0]))->assertOk()->assertJsonPath('rows.0.id', $conversation->id)
+;
+        $this->assertStringContainsString('no-store', $this->actingAs($this->agent)->getJson(route('inbox.sync', ['page' => 0]))->headers->get('Cache-Control'));
+        $this->actingAs($this->agent)->getJson(route('inbox.sync', ['cursor' => 0]))->assertOk()->assertJsonStructure(['cursor', 'scope', 'rows', 'removed', 'more']);
+
+        // One key a session, on the page for the browser.
+        $page = $this->actingAs($this->agent)->get('/')->getContent();
+        $this->assertStringContainsString('data-inbox=', $page);
+        $this->assertSame(Sync::sessionKey(), Sync::sessionKey());
+        $this->assertSame(32, strlen(base64_decode(Sync::sessionKey())));
+    }
+}

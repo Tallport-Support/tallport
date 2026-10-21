@@ -455,6 +455,11 @@ function maybeShowConnectionRestored()
 					if (list && (list_mailbox_id == folders_mailbox_id || parseInt(list_mailbox_id) < 0) && !list.querySelector('.conv-checkbox:checked')) {
 						Livewire.dispatch('conversations-changed');
 					}
+				}).on('App\\Events\\RealtimeInboxChanged', function (data) {
+					// The local inbox syncs (inbox.js).
+					if (data && data.mailbox_id == folders_mailbox_id) {
+						window.dispatchEvent(new Event('tallport:inbox-changed'));
+					}
 				}).on('App\\Events\\RealtimeTeamMessage', function (data) {
 					if (!data || data.mailbox_id != folders_mailbox_id) {
 						return;

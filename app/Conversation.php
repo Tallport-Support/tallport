@@ -1668,6 +1668,7 @@ class Conversation extends Model
         if (!$folder_exists) {
             // This throws an exception if record exists
             $this->folders()->attach($folder->id);
+            \App\Inbox\Changes::conversations($this);
         }
         $folder->updateCounters();
 
@@ -1700,6 +1701,7 @@ class Conversation extends Model
         }
 
         $this->folders()->detach($folder->id);
+        \App\Inbox\Changes::conversations($this);
         $folder->updateCounters();
 
         return true;
@@ -2112,7 +2114,8 @@ class Conversation extends Model
                 // Before the migration.
             }
 
-            // Delete conversations.
+            // Delete conversations (out of browsers' local inbox too).
+            \App\Inbox\Changes::conversations(Conversation::whereIn('id', $ids)->get(['id', 'mailbox_id']));
             Conversation::whereIn('id', $ids)->delete();
             \App\Ai\DraftJob::forgetConversations($ids);
 
