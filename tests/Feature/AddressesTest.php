@@ -122,6 +122,7 @@ class AddressesTest extends FeatureTestCase
         $this->page('/mailbox/all/unassigned/'.$conversation->number)->assertSee('Question')
             ->assertSee('data-folder_id="'.-Folder::TYPE_UNASSIGNED.'"', false)
             ->assertSee('data-page-url="'.url('/mailbox/all/unassigned/'.$conversation->number).'"', false);
+        $this->actingAs($this->agent)->get('/mailbox/all/closed/'.$conversation->number)->assertRedirect(url('/mailbox/all/unassigned/'.$conversation->number));
         $this->page('/mailbox/all/'.-Folder::TYPE_UNASSIGNED)->assertSee('data-page-url="'.url('/mailbox/all/unassigned/'.$conversation->number).'"', false);
     }
 }

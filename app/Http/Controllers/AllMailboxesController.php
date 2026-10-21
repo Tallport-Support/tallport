@@ -38,11 +38,11 @@ class AllMailboxesController extends Controller
             if (!$conversation || !$user->can('viewCached', $conversation)) {
                 abort(404);
             }
-            // Not in that folder (any more): its own folder's address.
+            // Not in that folder (any more): its own folder's address, in All Mailboxes still.
+            \App\Misc\Sidebar::select($folder);
             if (!(clone AllMailboxes::query($folder, $user))->where('conversations.id', $conversation->id)->exists()) {
                 return redirect()->to(\App\Misc\Addresses::forConversation($conversation, \App\Misc\Sidebar::conversationFolder($conversation, $user), $thread_id));
             }
-            \App\Misc\Sidebar::select($folder);
             $request->attributes->set('address_folder', $folder);
             $request->attributes->set('address_thread', $thread_id ? (int) $thread_id : null);
 
