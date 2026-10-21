@@ -81,8 +81,14 @@ class AddressesTest extends FeatureTestCase
         config(['app.custom_number' => true]);
         Conversation::$custom_number_cache = null;
         $this->page('/mailbox/support/starred/5000')->assertSee('Where is my order?');
+        config(['app.custom_number' => false]);
         Conversation::$custom_number_cache = null;
         $this->actingAs($this->agent)->get('/mailbox/nonexistent/unassigned')->assertNotFound();
+        $this->actingAs($this->agent)->get('/mailbox/support/nonsense')->assertNotFound();
+
+        // Not in the folder its address names: on to its own folder's address.
+        $this->actingAs($this->agent)->get('/mailbox/support/closed/'.$conversation->number.'/'.$thread->id)
+            ->assertRedirect(url('/mailbox/support/unassigned/'.$conversation->number.'/'.$thread->id));
     }
 
     /**

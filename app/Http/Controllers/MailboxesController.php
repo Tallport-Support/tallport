@@ -741,12 +741,20 @@ class MailboxesController extends Controller
         $folder = null;
         if ($folder_id !== null) {
             $folder = \App\Misc\Addresses::findFolder($mailbox, $folder_id, $user);
+            // A folder that isn't (a mistyped word): not another folder instead.
+            if (!$folder) {
+                abort(404);
+            }
         }
         // A conversation beside the folder's list, perhaps at a message.
         if ($number && $folder) {
             $conversation = \App\Misc\Addresses::findConversation($mailbox, $number);
             if (!$conversation) {
                 abort(404);
+            }
+            // Not in that folder (any more): its own folder's address, as the link to share goes.
+            if (!(clone Conversation::getQueryByFolder($folder, $user->id))->where('conversations.id', $conversation->id)->exists()) {
+                return redirect()->to(\App\Misc\Addresses::forConversation($conversation, \App\Misc\Sidebar::conversationFolder($conversation, $user), $thread_id));
             }
             \App\Misc\Sidebar::select($folder);
             $request->attributes->set('address_folder', $folder);

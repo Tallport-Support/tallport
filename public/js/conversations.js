@@ -139,7 +139,9 @@ window.addEventListener('popstate', function (e) {
 	if (state.tallport_folder && state.tallport_folder.folder_id != document.body.getAttribute('data-folder_id')) {
 		folderOpen(state.tallport_folder.folder_id, state.tallport_conversation ? state.tallport_conversation.id : null);
 	} else if (state.tallport_conversation) {
-		conversationOpen(state.tallport_conversation);
+		conversationOpen(Object.assign({}, state.tallport_conversation, {
+			folder_id: state.tallport_conversation.folder_id || (state.tallport_folder && state.tallport_folder.folder_id) || ''
+		}));
 	}
 });
 document.addEventListener('livewire:init', function () {
@@ -174,7 +176,8 @@ document.addEventListener('livewire:navigated', function () {
 	// Livewire's own entry kept).
 	window.history.replaceState(Object.assign({}, window.history.state || {}, {tallport_conversation: {
 		id: parseInt(document.body.getAttribute('data-conversation_id')),
-		folder_id: new URLSearchParams(window.location.search).get('folder_id') || ''
+		// The folder it's shown beside (its address's), so Back here opens it there again.
+		folder_id: document.body.getAttribute('data-folder_id') || ''
 	}, tallport_folder: {folder_id: document.body.getAttribute('data-folder_id')}}), '');
 	// Shown after wire:navigate (perhaps prefetched on hover): now it's seen
 	// (ConversationsController::view() does this for a page loaded in full).
@@ -196,6 +199,9 @@ document.addEventListener('livewire:navigated', function () {
 	var focused = focus_thread ? document.getElementById('thread-'+focus_thread) : null;
 	if (focused) {
 		focused.scrollIntoView({block: 'center'});
+		// Keyboard and screen readers start there too.
+		focused.setAttribute('tabindex', '-1');
+		focused.focus({preventScroll: true});
 		focused.classList.add('thread-focused');
 		setTimeout(function () {
 			focused.classList.remove('thread-focused');
