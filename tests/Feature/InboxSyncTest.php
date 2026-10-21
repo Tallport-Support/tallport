@@ -113,6 +113,12 @@ class InboxSyncTest extends FeatureTestCase
         $this->assertFalse($rows[$old->id]['keep']);
         $this->assertSame('Unread question', $rows[$unread->id]['subject']);
 
+        // Starred: kept whatever its age.
+        $old->star($this->agent);
+        $starred = collect((new Sync($this->agent))->full(0)['rows'])->keyBy('id');
+        $this->assertTrue($starred[$old->id]['keep'] && $starred[$old->id]['starred']);
+        $old->unstar($this->agent);
+
         // Without the folder: only what's kept.
         $this->assertNotContains($old->id, array_column((new Sync($this->agent))->full(0)['rows'], 'id'));
     }
@@ -183,7 +189,7 @@ class InboxSyncTest extends FeatureTestCase
         $this->actingAs($this->agent)->getJson(route('inbox.sync', ['page' => 0]))->assertOk()->assertJsonPath('rows.0.id', $conversation->id)
 ;
         $this->assertStringContainsString('no-store', $this->actingAs($this->agent)->getJson(route('inbox.sync', ['page' => 0]))->headers->get('Cache-Control'));
-        $this->actingAs($this->agent)->getJson(route('inbox.sync', ['cursor' => 0]))->assertOk()->assertJsonStructure(['cursor', 'scope', 'rows', 'removed', 'more']);
+        $this->actingAs($this->agent)->getJson(route('inbox.sync', ['cursor' => Changes::latest()]))->assertOk()->assertJsonStructure(['cursor', 'scope', 'rows', 'removed', 'more']);
 
         // One key a session, on the page for the browser.
         $page = $this->actingAs($this->agent)->get('/')->getContent();

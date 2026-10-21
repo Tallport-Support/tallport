@@ -10,7 +10,7 @@ use App\User;
 /**
  * The browser's local copy of the inbox's list rows (public/js/inbox.js): what a user may see, as
  * a list row shows it. Kept in the browser: their unread conversations, those assigned to them and
- * not closed, and everything from the last few days, each with a ceiling. A first sync sends the
+ * not closed, those they starred, and everything from the last few days, each with a ceiling. A first sync sends the
  * folder in view first, then the rest in pages; after it, the change log (App\Inbox\Changes) says
  * which rows to send again.
  */
@@ -22,6 +22,7 @@ class Sync
     const RECENT_DAYS = 7;
     const MAX_UNREAD = 1000;
     const MAX_MINE = 1000;
+    const MAX_STARRED = 1000;
     const MAX_RECENT = 2000;
 
     /**
@@ -122,7 +123,7 @@ class Sync
     }
 
     /**
-     * The IDs kept in the browser, newest activity first: unread, theirs and open, recent.
+     * The IDs kept in the browser, newest activity first: unread, theirs and open, starred, recent.
      */
     public function keptIds()
     {
@@ -130,6 +131,7 @@ class Sync
         foreach ([
             [fn ($query) => ConversationRead::whereUnread($query, $this->user), self::MAX_UNREAD],
             [fn ($query) => $query->where('user_id', $this->user->id)->whereIn('status', [Conversation::STATUS_ACTIVE, Conversation::STATUS_PENDING])->where('state', Conversation::STATE_PUBLISHED), self::MAX_MINE],
+            [fn ($query) => $query->whereIn('id', $this->starredIds()), self::MAX_STARRED],
             [fn ($query) => $query->where('last_activity_at', '>=', now()->subDays(self::RECENT_DAYS)), self::MAX_RECENT],
         ] as [$condition, $limit]) {
             $query = $this->visible(Conversation::query());
@@ -141,6 +143,15 @@ class Sync
         arsort($ids);
 
         return array_keys($ids);
+    }
+
+    /**
+     * The conversations the user starred (a subquery).
+     */
+    protected function starredIds()
+    {
+        return \DB::table('conversation_folder')->join('folders', 'folders.id', '=', 'conversation_folder.folder_id')
+            ->where('folders.type', Folder::TYPE_STARRED)->where('folders.user_id', $this->user->id)->select('conversation_folder.conversation_id');
     }
 
     /**
@@ -175,6 +186,7 @@ class Sync
         $mine = $conversation->user_id == $this->user->id;
         $open = in_array($conversation->status, [Conversation::STATUS_ACTIVE, Conversation::STATUS_PENDING]) && $conversation->state == Conversation::STATE_PUBLISHED;
         $folders = $this->folderKeys($conversation, $mine && $open, $indirect);
+        $starred = in_array($this->starredFolderId($conversation->mailbox_id), $folders, true);
         $customer = $conversation->customer;
         $name = $customer ? $customer->getFullName(true) : (string) $conversation->customer_email;
         $date = fn ($value) => $value ? \Carbon\Carbon::parse($value)->getTimestamp() : null;
@@ -191,7 +203,7 @@ class Sync
             'subject'       => (string) $conversation->getSubject(),
             'preview'       => (string) $conversation->preview,
             'unread'        => (bool) $unread,
-            'starred'       => in_array($this->starredFolderId($conversation->mailbox_id), $folders, true),
+            'starred'       => $starred,
             'channel'       => $conversation->channel ? (int) $conversation->channel : null,
             'threads'       => (int) $conversation->threads_count,
             'attachments'   => (bool) $conversation->has_attachments,
@@ -200,8 +212,8 @@ class Sync
             'closed'        => $date($conversation->closed_at),
             'updated'       => $date($conversation->updated_at),
             'created'       => $date($conversation->created_at),
-            // Kept whatever its age: unread, or theirs and open.
-            'keep'          => $unread || ($mine && $open),
+            // Kept whatever its age: unread, theirs and open, or starred.
+            'keep'          => $unread || ($mine && $open) || $starred,
         ];
     }
 
