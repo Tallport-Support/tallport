@@ -120,7 +120,7 @@ Route::get('/api-keys', 'ApiKeysController@own')->middleware('password.confirm')
 // Conversations
 // The browser's local copy of the inbox (App\Inbox\Sync).
 Route::get('/inbox/sync', 'InboxController@sync')->name('inbox.sync');
-Route::get('/conversation/{id}', ['uses' => 'ConversationsController@view', 'laroute' => true])->name('conversations.view');
+Route::get('/conversation/{id}/{thread_id?}', ['uses' => 'ConversationsController@view', 'laroute' => true])->where(['id' => '\d+', 'thread_id' => '\d+'])->name('conversations.view');
 Route::post('/conversation/ajax', ['uses' => 'ConversationsController@ajax', 'laroute' => true])->name('conversations.ajax');
 Route::post('/attachments/{id}/delete', ['uses' => 'AttachmentsController@delete', 'laroute' => true])->name('attachments.delete');
 Route::get('/attachments/{id}/email', 'AttachmentsController@email')->name('attachments.email');
@@ -168,11 +168,11 @@ Route::post('/workflows/ajax', ['uses' => 'WorkflowsController@ajax', 'laroute' 
 Route::get('/reports/conversations', 'ReportsController@conversations')->name('reports.conversations');
 Route::get('/reports/productivity', 'ReportsController@productivity')->name('reports.productivity');
 
-Route::get('/mailbox/all/{folder_id?}', 'AllMailboxesController@view')->where('folder_id', '-?\d+')->name('mailboxes.all');
-Route::get('/mailbox/{id}', 'MailboxesController@view')->name('mailboxes.view');
+// Folders, and conversations beside their lists (App\Misc\Addresses): /mailbox/support/drafts/1042/58231.
+Route::get('/mailbox/all/{folder_id?}', 'AllMailboxesController@view')->where('folder_id', '-?\d+|[a-z]+')->name('mailboxes.all');
+Route::get('/mailbox/all/{folder_id}/{number}/{thread_id?}', 'AllMailboxesController@view')->where(['folder_id' => '[a-z]+|-?\d+', 'number' => '\d+', 'thread_id' => '\d+'])->name('mailboxes.all.conversation');
 Route::get('/chat', 'MailboxesController@teamChatOpen')->name('team_chat');
 Route::get('/chat/{id}', 'MailboxesController@teamChat')->name('mailboxes.team_chat');
-Route::get('/mailbox/{id}/{folder_id}', 'MailboxesController@view')->name('mailboxes.view.folder');
 Route::get('/mailbox/connection-settings/{id}/outgoing', 'MailboxesController@connectionOutgoing')->name('mailboxes.connection');
 Route::post('/mailbox/connection-settings/{id}/outgoing', 'MailboxesController@connectionOutgoingSave')->name('mailboxes.connection.save');
 Route::get('/mailbox/connection-settings/{id}/incoming', 'MailboxesController@connectionIncoming')->name('mailboxes.connection.incoming');
@@ -218,3 +218,9 @@ Route::get('/system/ajax-html/{action}/{param?}', ['uses' => 'SystemController@a
 
 // Uploads
 Route::post('/uploads/upload', ['uses' => 'SecureController@upload', 'laroute' => true])->middleware('throttle:100,1')->name('uploads.upload');
+
+// A mailbox's folders, and conversations beside their lists (App\Misc\Addresses), by its short
+// name or (older addresses) its ID: last, so the app's other /mailbox/... addresses match first.
+Route::get('/mailbox/{id}', 'MailboxesController@view')->where('id', '[a-z0-9-]+')->name('mailboxes.view');
+Route::get('/mailbox/{id}/{folder_id}', 'MailboxesController@view')->where(['id' => '[a-z0-9-]+', 'folder_id' => '[a-z]+|-?\d+'])->name('mailboxes.view.folder');
+Route::get('/mailbox/{id}/{folder_id}/{number}/{thread_id?}', 'MailboxesController@view')->where(['id' => '[a-z0-9-]+', 'folder_id' => '[a-z]+|-?\d+', 'number' => '\d+', 'thread_id' => '\d+'])->name('mailboxes.view.conversation');

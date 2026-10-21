@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('body_attrs')@parent data-mailbox_id="{{ $mailbox->id }}"@endsection
-@section('body_attrs')@parent data-folder_id="{{ $folder->id }}"@endsection
+@section('body_attrs')@parent data-folder_id="{{ $folder->id }}" data-page-url="{{ App\Misc\Addresses::folderUrl($folder) }}"@endsection
 
 @if ($sidebar_counts['folders'][$folder->id] ?? 0)
     @section('title', '('.$sidebar_counts['folders'][$folder->id].') '.$folder->getTypeName().' - '.$mailbox->name)

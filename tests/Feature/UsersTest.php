@@ -497,7 +497,7 @@ class UsersTest extends FeatureTestCase
         $this->assertTrue((bool) $agent->mailboxesWithSettings()->where('mailboxes.id', $this->mailbox->id)->first()->settings->hide);
         $component->call('selectAllMailboxes', false);
         $this->assertSame(0, $agent->mailboxes()->count());
-        $component->call('selectAllMailboxes', true)->assertSet('mailboxes', \App\Mailbox::pluck('id')->map(fn ($id) => (string) $id)->all());
+        $component->call('selectAllMailboxes', true)->assertSet('mailboxes', \App\Mailbox::orderBy('id')->pluck('id')->map(fn ($id) => (string) $id)->all());
 
         // Only known permissions and values.
         $component->set('permissions.'.User::PERM_EDIT_USERS, 'yes')->assertSet('permissions.'.User::PERM_EDIT_USERS, '');

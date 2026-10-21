@@ -3345,3 +3345,10 @@ body.fruit-ui {
     gap: 8px;
     color: var(--f-secondary);
 }
+
+/* The message an address names (App\Misc\Addresses): marked a moment when the page opens at it. */
+.thread-focused {
+  border-radius: var(--f-radius-md, 12px);
+  box-shadow: 0 0 0 2px var(--f-accent-fill);
+  transition: box-shadow 0.6s;
+}

@@ -90,7 +90,8 @@ class ConversationPane extends Component
             id: $conversation->id,
             mailbox_id: $conversation->mailbox_id,
             folder_id: $this->folder_id,
-            url: route('conversations.view', ['id' => $conversation->id]),
+            // Beside the folder in view (App\Misc\Addresses): reload and Back stay there.
+            url: \App\Misc\Addresses::forConversation($conversation, $this->openedFolder()),
             title: '#'.$conversation->number.' '.$conversation->getSubject().($customer ? ' - '.$customer->getFullName(true) : ''),
             styles: $styles,
         );

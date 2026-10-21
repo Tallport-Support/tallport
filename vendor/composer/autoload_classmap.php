@@ -311,6 +311,7 @@ return array(
     'App\\Matrix\\RoomState' => $baseDir . '/app/Matrix/RoomState.php',
     'App\\Matrix\\Syncer' => $baseDir . '/app/Matrix/Syncer.php',
     'App\\Matrix\\Verification' => $baseDir . '/app/Matrix/Verification.php',
+    'App\\Misc\\Addresses' => $baseDir . '/app/Misc/Addresses.php',
     'App\\Misc\\AllMailboxes' => $baseDir . '/app/Misc/AllMailboxes.php',
     'App\\Misc\\AttachmentImages' => $baseDir . '/app/Misc/AttachmentImages.php',
     'App\\Misc\\Branding' => $baseDir . '/app/Misc/Branding.php',

@@ -1023,6 +1023,39 @@ class Mailbox extends Model
         return $route;
     }
 
+    /**
+     * The short name in its addresses (/mailbox/support/drafts, App\Misc\Addresses).
+     */
+    public function getSlug()
+    {
+        return $this->slug ?: (string) $this->id;
+    }
+
+    /**
+     * A short name from a mailbox name: lowercase words with dashes, not one the app's own
+     * /mailbox/... addresses use (settings, new…), and not another mailbox's.
+     */
+    public static function makeSlug($name, $except_id = null)
+    {
+        $base = \Str::slug((string) $name) ?: 'mailbox';
+        // Not a number (those are IDs), nor a word of another /mailbox/ address.
+        $reserved = [];
+        foreach (\Route::getRoutes() as $route) {
+            if (preg_match('#^mailbox/([a-z0-9-]+)(/|$)#', $route->uri(), $match)) {
+                $reserved[] = $match[1];
+            }
+        }
+        if (ctype_digit($base) || in_array($base, $reserved, true)) {
+            $base .= '-mailbox';
+        }
+        $slug = $base;
+        for ($i = 2; self::where('slug', $slug)->when($except_id, fn ($query) => $query->where('id', '!=', $except_id))->exists(); $i++) {
+            $slug = $base.'-'.$i;
+        }
+
+        return $slug;
+    }
+
     public function getMeta($key, $default = null)
     {
         if (isset($this->meta[$key])) {

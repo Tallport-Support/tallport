@@ -116,7 +116,7 @@ class RealtimePayloadsTest extends FeatureTestCase
         $this->assertNotEmpty($payloads);
         $payload = $payloads[0]['payload'];
         $this->assertSame($this->mailbox->id, $payload['mailbox_id']);
-        $this->assertStringContainsString(route('mailboxes.view', ['id' => $this->mailbox->id]), $payload['folders_html']);
+        $this->assertStringContainsString(url('/mailbox/'.$this->mailbox->slug), $payload['folders_html']);
         $unassigned = $this->mailbox->folders()->where('type', \App\Folder::TYPE_UNASSIGNED)->first();
         $this->assertSame(1, $payload['sidebar_counts']['folders'][$unassigned->id]);
         $this->assertSame(1, $payload['sidebar_counts']['mailboxes'][$this->mailbox->id]);

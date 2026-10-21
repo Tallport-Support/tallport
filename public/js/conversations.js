@@ -47,8 +47,10 @@ document.addEventListener('click', function (e) {
  * the address, the title and the page's data follow when it's there (conversation-opened).
  */
 var conversationOpenLink = function (link) {
-	var match = (link.getAttribute('href') || '').match(/\/conversation\/(\d+)/);
-	return match ? {id: parseInt(match[1]), folder_id: new URL(link.href, window.location.href).searchParams.get('folder_id') || ''} : null;
+	// A row says its conversation (its address may be a folder's: /mailbox/support/drafts/1042).
+	var id = link.getAttribute('data-conversation_id');
+	var match = id ? null : (link.getAttribute('href') || '').match(/\/conversation\/(\d+)/);
+	return id || match ? {id: parseInt(id || match[1]), folder_id: document.body.getAttribute('data-folder_id') || ''} : null;
 };
 document.addEventListener('click', function (e) {
 	var link = e.target.closest && e.target.closest('a.conv-row__link, .conv-next-prev a');
@@ -188,6 +190,16 @@ document.addEventListener('livewire:navigated', function () {
 				window.dispatchEvent(new CustomEvent('sidebar-counts', {detail: {counts: response.sidebar_counts}}));
 			}
 		});
+	}
+	// The message its address names (/mailbox/support/drafts/1042/58231): in view, marked a moment.
+	var focus_thread = document.body.getAttribute('data-focus-thread');
+	var focused = focus_thread ? document.getElementById('thread-'+focus_thread) : null;
+	if (focused) {
+		focused.scrollIntoView({block: 'center'});
+		focused.classList.add('thread-focused');
+		setTimeout(function () {
+			focused.classList.remove('thread-focused');
+		}, 3000);
 	}
 	// After a message sent in the chat view, the next one can be typed right away.
 	if (sessionStorageGet('tallport_chat_focus') == document.body.getAttribute('data-conversation_id')) {

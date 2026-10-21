@@ -289,7 +289,7 @@ class ConversationAjaxEdgeCasesTest extends FeatureTestCase
 
         $response = $this->ajax($this->agent, ['action' => 'conversation_move', 'conversation_id' => $first->id, 'mailbox_id' => $sales->id]);
         $this->assertSuccess($response);
-        $this->assertSame(route('mailboxes.view.folder', ['id' => $this->mailbox->id, 'folder_id' => $unassigned->id]), $response['redirect_url']);
+        $this->assertSame(url('/mailbox/'.$this->mailbox->slug.'/unassigned'), $response['redirect_url']);
         $this->assertEquals($sales->id, $first->fresh()->mailbox_id);
 
         // Working in All Mailboxes: back there.

@@ -289,6 +289,8 @@
                                 <button type="submit" role="menuitem" class="f-menu-item new-conv">{{ __("Clone Conversation") }}</button>
                             </form>
                         @endif
+                        {{-- A link to this message for a co-worker: it opens in their own folder (App\Misc\Addresses). --}}
+                        <x-fruit::menu-link href="#" class="thread-copy-link" x-data x-on:click.prevent="copyToClipboard({{ \Illuminate\Support\Js::from(App\Misc\Addresses::forConversation($conversation, null, $thread->id)) }}); Tallport.toast({{ \Illuminate\Support\Js::from(__('Copied')) }})">{{ __('Copy Link') }}</x-fruit::menu-link>
                         <ul class="menu-module-items" role="none">@action('thread.menu', $thread)</ul>
                         @if (Auth::user()->isAdmin())
                             <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" data-fruit-dialog-url :data-fruit-dialog-title="__('Outgoing Emails')" data-fruit-dialog-size="large">{{ __("Outgoing Emails") }}</x-fruit::menu-link>

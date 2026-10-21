@@ -2455,6 +2455,13 @@
                 "default": "NULL",
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
+            },
+            "slug": {
+                "type": "varchar(100)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {
@@ -2463,6 +2470,13 @@
                 "type": "BTREE",
                 "columns": [
                     "email"
+                ]
+            },
+            "mailboxes_slug_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "slug"
                 ]
             },
             "PRIMARY": {

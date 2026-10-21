@@ -96,12 +96,15 @@ trait ConversationOpens
     }
 
     /**
-     * The folder a conversation is shown in, in the mailbox the user works in
-     * (App\Misc\Sidebar::conversationFolder()). $folder_id (where it was
-     * opened from) is ignored.
+     * The folder a conversation is shown in: the one it was opened from (the list beside it, its
+     * address, App\Misc\Addresses), else its own in the mailbox the user works in
+     * (App\Misc\Sidebar::conversationFolder()).
      */
     public static function openedFolderId(Conversation $conversation, $folder_id)
     {
+        if ($folder_id && self::findFolder($folder_id)) {
+            return (int) $folder_id;
+        }
         $folder = \App\Misc\Sidebar::conversationFolder($conversation);
 
         return $folder ? $folder->id : $conversation->folder_id;

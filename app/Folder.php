@@ -375,7 +375,8 @@ class Folder extends Model
 
     public function url($mailbox_id)
     {
-        return \Eventy::filter('folder.url', route('mailboxes.view.folder', ['id' => $mailbox_id, 'folder_id' => $this->id]), $mailbox_id, $this);
+        // /mailbox/support/drafts (App\Misc\Addresses).
+        return \Eventy::filter('folder.url', \App\Misc\Addresses::folderUrl($this), $mailbox_id, $this);
     }
 
     public static function create($data, $unique_per_user = true, $save = true)

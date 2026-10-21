@@ -9,6 +9,22 @@ class MailboxObserver
     /**
      * A color of its own (Mailbox::nextAccent()).
      */
+    /**
+     * Its short name follows its name; the one it had still leads to it (App\Misc\Addresses).
+     */
+    public function saving(Mailbox $mailbox)
+    {
+        if (!$mailbox->slug || $mailbox->isDirty('name')) {
+            $slug = Mailbox::makeSlug($mailbox->name, $mailbox->id);
+            if ($mailbox->slug && $slug != $mailbox->slug) {
+                $meta = (array) $mailbox->meta;
+                $meta['old_slugs'] = array_values(array_unique(array_merge((array) ($meta['old_slugs'] ?? []), [$mailbox->slug])));
+                $mailbox->meta = $meta;
+            }
+            $mailbox->slug = $slug;
+        }
+    }
+
     public function creating(Mailbox $mailbox)
     {
         if (!$mailbox->accent) {

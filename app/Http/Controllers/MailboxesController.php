@@ -716,25 +716,43 @@ class MailboxesController extends Controller
         ]);
     }
 
-    public function view(Request $request, $id, $folder_id = null)
+    /**
+     * A mailbox's folder, and a conversation beside its list (App\Misc\Addresses):
+     * /mailbox/support/drafts[/1042[/58231]]. Older addresses (IDs, a name it had) work too; the page then shows its own (data-page-url).
+     */
+    public function view(Request $request, $id, $folder_id = null, $number = null, $thread_id = null)
     {
         $user = auth()->user();
 
         // A folder of All Mailboxes (back from a conversation opened there).
-        if (in_array(-(int) $folder_id, \App\Misc\AllMailboxes::TYPES) && \App\Misc\AllMailboxes::isAvailable($user)) {
+        if ($folder_id !== null && ctype_digit(ltrim((string) $folder_id, '-')) && in_array(-(int) $folder_id, \App\Misc\AllMailboxes::TYPES) && \App\Misc\AllMailboxes::isAvailable($user)) {
             return redirect()->route('mailboxes.all', ['folder_id' => $folder_id]);
         }
 
-        $mailbox = Mailbox::findOrFailWithSettings($id, $user->id);
+        $found = \App\Misc\Addresses::findMailbox($id);
+        if (!$found) {
+            abort(404);
+        }
+        $mailbox = Mailbox::findOrFailWithSettings($found->id, $user->id);
         $this->authorize('viewCached', $mailbox);
 
         $folders = $mailbox->getAssesibleFolders();
 
         $folder = null;
-        if (!empty($folder_id)) {
-            $folder = $folders->filter(function ($item) use ($folder_id) {
-                return $item->id == $folder_id;
-            })->first();
+        if ($folder_id !== null) {
+            $folder = \App\Misc\Addresses::findFolder($mailbox, $folder_id, $user);
+        }
+        // A conversation beside the folder's list, perhaps at a message.
+        if ($number && $folder) {
+            $conversation = \App\Misc\Addresses::findConversation($mailbox, $number);
+            if (!$conversation) {
+                abort(404);
+            }
+            \App\Misc\Sidebar::select($folder);
+            $request->attributes->set('address_folder', $folder);
+            $request->attributes->set('address_thread', $thread_id ? (int) $thread_id : null);
+
+            return app(ConversationsController::class)->view($request, $conversation->id);
         }
         // By default we display Unassigned folder
         if (empty($folder)) {

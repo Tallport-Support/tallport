@@ -27,9 +27,10 @@ class ConversationsController extends Controller
     }
 
     /**
-     * View conversation.
+     * View conversation: /conversation/{id}[/{message}], the link to share, beside its own folder
+     * for whoever opens it; or, from a folder's address (App\Misc\Addresses), beside that folder.
      */
-    public function view(Request $request, $id)
+    public function view(Request $request, $id, $thread_id = null)
     {
         $conversation = Conversation::findOrFail($id);
         $this->authorize('viewCached', $conversation);
@@ -57,7 +58,12 @@ class ConversationsController extends Controller
 
             return redirect()->away($conversation->url(null, null, $request->except('folder_id')));
         }
-        $folder = \App\Misc\Sidebar::conversationFolder($conversation, $user) ?: new Folder();
+        $folder = $request->attributes->get('address_folder') ?: \App\Misc\Sidebar::conversationFolder($conversation, $user) ?: new Folder();
+        // A message to show (the address's last part): the page scrolls to it.
+        $thread_id = $request->attributes->get('address_thread', $thread_id);
+        if ($thread_id) {
+            $request->attributes->set('focus_thread_id', (int) $thread_id);
+        }
 
         // Opening the folder again comes back here (openFolder()).
         if (!$prefetchable && $folder->id) {
@@ -396,6 +402,8 @@ class ConversationsController extends Controller
         }
 
         $request->attributes->set('folder_opened', true);
+        // Beside the folder opened, at its address (App\Misc\Addresses).
+        $request->attributes->set('address_folder', $folder);
 
         return app(self::class)->view($request, $conversation_id);
     }

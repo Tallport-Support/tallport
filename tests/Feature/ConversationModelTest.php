@@ -379,7 +379,7 @@ class ConversationModelTest extends FeatureTestCase
         $this->actingAs($this->agent);
 
         $this->assertSame(
-            route('mailboxes.view.folder', ['id' => $this->mailbox->id, 'folder_id' => $conversation->folder_id]),
+            $conversation->folder->url($this->mailbox->id),
             $conversation->urlNext(-\App\Misc\AllMailboxes::TYPE_SENT)
         );
     }
