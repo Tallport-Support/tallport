@@ -152,6 +152,76 @@ class InboxSyncTest extends FeatureTestCase
     }
 
     /**
+     * With more than one mailbox, rows are in All Mailboxes' folders too (not Sent: the server's).
+     */
+    public function testRowsAreInAllMailboxesFolders()
+    {
+        $sales = $this->createMailbox([$this->agent], ['name' => 'Sales']);
+        $conversations = [$this->conversation('Unassigned'), $this->conversation('Mine', $sales), $this->conversation('Closed'), $this->conversation('Starred', $sales)];
+        $conversations[1]->changeUser($this->agent->id, $this->agent);
+        $conversations[2]->changeStatus(Conversation::STATUS_CLOSED, $this->agent);
+        $conversations[3]->star($this->agent);
+        $this->actingAs($this->agent);
+
+        $rows = collect((new Sync($this->agent))->rows(collect($conversations)->pluck('id')->all()))->keyBy('id');
+        foreach (\App\Misc\AllMailboxes::folders($this->agent) as $folder) {
+            if ($folder->type == \App\Misc\AllMailboxes::TYPE_SENT) {
+                continue;
+            }
+            $listed = collect((new ConversationListQuery())->folderList($folder, $this->agent)['conversations']->items())->pluck('id')->sort()->values()->all();
+            $keyed = $rows->filter(fn ($row) => in_array($folder->id, $row['folders']))->keys()->sort()->values()->all();
+            $this->assertSame($listed, $keyed, 'All Mailboxes folder '.$folder->type);
+        }
+        $this->assertArrayNotHasKey(-\App\Misc\AllMailboxes::TYPE_SENT, (new Sync($this->agent))->lists());
+    }
+
+    /**
+     * The browser draws a folder's list in the order the server gives it (public/js/inbox.js
+     * compare()): the same order as the server's list, also as the user sorted it.
+     */
+    public function testListsAreInTheServersOrder()
+    {
+        foreach (range(1, 6) as $i) {
+            $conversation = $this->conversation('Question '.$i);
+            if ($i % 2) {
+                $conversation->changeStatus(Conversation::STATUS_PENDING, $this->agent);
+            }
+            \DB::table('conversations')->where('id', $conversation->id)->update([
+                'last_reply_at' => now()->subHours(($i * 7) % 6),
+                'last_activity_at' => now()->subHours($i),
+                'updated_at' => now()->subMinutes($i * 3),
+            ]);
+        }
+        $this->actingAs($this->agent);
+        $folder = $this->folder(Folder::TYPE_UNASSIGNED);
+        $check = function () use ($folder) {
+            $spec = (new Sync($this->agent))->lists()[$folder->id];
+            $rows = (new Sync($this->agent))->rows(Conversation::pluck('id')->all());
+            usort($rows, function ($a, $b) use ($spec) {
+                foreach ($spec['order'] as [$field, $direction]) {
+                    $result = $a[$field] <=> $b[$field];
+                    if ($result) {
+                        return $direction == 'desc' ? -$result : $result;
+                    }
+                }
+
+                return 0;
+            });
+            request()->attributes->set('folder_list', []);
+            $listed = collect((new ConversationListQuery())->folderList($folder, $this->agent)['conversations']->items())->pluck('id')->all();
+            $this->assertSame($listed, array_column($rows, 'id'));
+
+            return $spec;
+        };
+        $this->assertSame([['status', 'asc'], ['last_reply', 'desc']], $check()['order']);
+        $this->assertSame('last_reply', $check()['time']);
+
+        Conversation::saveSorting($this->agent, Folder::TYPE_UNASSIGNED, ['sort_by' => 'activity', 'order' => 'asc']);
+        $this->assertSame([['last_activity', 'asc']], $check()['order']);
+        $this->assertSame('last_activity', $check()['time']);
+    }
+
+    /**
      * After the first sync: what changed, rows again or gone; a cursor too old, or a new scope, starts over.
      */
     public function testChangesSinceTheCursor()
@@ -194,6 +264,10 @@ class InboxSyncTest extends FeatureTestCase
         // One key a session, on the page for the browser.
         $page = $this->actingAs($this->agent)->get('/')->getContent();
         $this->assertStringContainsString('data-inbox=', $page);
+        // Times as the list writes them (User::dateDiffForHumans()).
+        $config = Sync::config($this->agent);
+        $this->assertSame('5m', $config['times']['m'][5]);
+        $this->assertSame('1w', $config['times']['d'][7]);
         $this->assertSame(Sync::sessionKey(), Sync::sessionKey());
         $this->assertSame(32, strlen(base64_decode(Sync::sessionKey())));
     }

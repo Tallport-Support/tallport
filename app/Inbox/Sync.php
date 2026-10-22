@@ -5,6 +5,7 @@ namespace App\Inbox;
 use App\Conversation;
 use App\ConversationRead;
 use App\Folder;
+use App\Misc\AllMailboxes;
 use App\User;
 
 /**
@@ -30,6 +31,26 @@ class Sync
      */
     const PAGE = 500;
     const CHANGES = 2000;
+
+    /**
+     * The rows' format: a browser's copy in another starts over.
+     */
+    const FORMAT = 2;
+
+    /**
+     * Columns lists are ordered by, as rows have them (public/js/inbox.js draws lists in that order).
+     */
+    const ORDER_COLUMNS = [
+        'status'           => 'status',
+        'last_reply_at'    => 'last_reply',
+        'last_activity_at' => 'last_activity',
+        'last_sent_at'     => 'last_sent',
+        'updated_at'       => 'updated',
+        'closed_at'        => 'closed',
+        'user_updated_at'  => 'user_updated',
+        'number'           => 'number',
+        'subject'          => 'subject',
+    ];
 
     protected $user;
 
@@ -57,6 +78,53 @@ class Sync
     }
 
     /**
+     * What the page gives the browser's copy (public/js/inbox.js), and how it draws a list row as
+     * the server does (conversations_table): the time shown ("3h", in the user's language, as
+     * User::dateDiffForHumans() writes it), names and labels.
+     */
+    public static function config(User $user)
+    {
+        $locale = app()->getLocale();
+        $times = \Cache::rememberForever('inbox_times_'.$locale, function () {
+            $short = fn ($ago) => now()->sub($ago)->diffForHumans(['short' => true, 'syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE]);
+            $times = [];
+            foreach (['m' => [59, 'minutes'], 'h' => [23, 'hours'], 'd' => [7, 'days']] as $unit => [$max, $name]) {
+                foreach (range(1, $max) as $count) {
+                    $times[$unit][$count] = $short(\Carbon\CarbonInterval::make($count.' '.$name));
+                }
+            }
+
+            return $times;
+        });
+        $statuses = [];
+        foreach (array_keys(Conversation::STATUS_TONES) as $status) {
+            $statuses[$status] = [Conversation::statusCodeToName($status), Conversation::STATUS_TONES[$status]];
+        }
+
+        return [
+            'key'         => self::sessionKey(),
+            'user'        => $user->id,
+            'install'     => substr(sha1(config('app.url').config('app.key')), 0, 12),
+            'url'         => route('inbox.sync'),
+            'recent_days' => self::RECENT_DAYS,
+            'locale'      => $locale,
+            'timezone'    => $user->timezone ?: config('app.timezone'),
+            'times'       => $times,
+            'statuses'    => $statuses,
+            'labels'      => [
+                'just_now'    => __('Just now'),
+                'unread'      => __('Unread'),
+                'phone'       => __('Phone'),
+                'attachments' => __('Attachments'),
+                'closed'      => __('Closed'),
+                'spam'        => __('Spam'),
+                'deleted'     => __('Deleted'),
+                'drafts'      => __('Drafts'),
+            ],
+        ];
+    }
+
+    /**
      * What the user may see, in short: when it changes (mailbox access, a role, "only assigned"),
      * the browser's copy starts over.
      */
@@ -65,7 +133,7 @@ class Sync
         $mailbox_ids = $this->mailboxIds();
         sort($mailbox_ids);
 
-        return substr(sha1(json_encode([$mailbox_ids, $this->user->isAdmin(), $this->user->canSeeOnlyAssignedConversations()])), 0, 16);
+        return substr(sha1(json_encode([self::FORMAT, $mailbox_ids, $this->user->isAdmin(), $this->user->canSeeOnlyAssignedConversations()])), 0, 16);
     }
 
     /**
@@ -75,7 +143,8 @@ class Sync
     {
         $cursor = Changes::latest();
         $ids = [];
-        if ($page == 0 && $folder_id && ($folder = Folder::find($folder_id)) && in_array($folder->mailbox_id, $this->mailboxIds())) {
+        $folder = $page == 0 && $folder_id ? ($folder_id < 0 ? AllMailboxes::folder($this->user, $folder_id) : Folder::find($folder_id)) : null;
+        if ($folder && ($folder->id < 0 || in_array($folder->mailbox_id, $this->mailboxIds()))) {
             $ids = collect((new \App\Misc\ConversationListQuery())->folderList($folder, $this->user)['conversations']->items())->pluck('id')->all();
         }
         $kept = $this->keptIds();
@@ -90,6 +159,7 @@ class Sync
             'rows'    => $this->rows(array_unique($ids)),
             'removed' => [],
             'folders' => $this->folderCounts(),
+            'lists'   => $this->lists(),
             'more'    => $next_offset < count($kept),
             'page'    => $page,
         ];
@@ -118,6 +188,7 @@ class Sync
             'rows'    => $rows,
             'removed' => array_values(array_diff($ids, array_column($rows, 'id'))),
             'folders' => $ids ? $this->folderCounts() : null,
+            'lists'   => $this->lists(),
             'more'    => $changes->count() >= self::CHANGES,
         ];
     }
@@ -164,14 +235,23 @@ class Sync
         }
         $rows = [];
         foreach (array_chunk($ids, 500) as $chunk) {
-            $conversations = $this->visible(Conversation::whereIn('id', $chunk))->with('customer')->get();
+            $conversations = $this->visible(Conversation::whereIn('id', $chunk))->with(['customer', 'user'])->get();
             if ($conversations->isEmpty()) {
                 continue;
             }
             $unread = array_flip(ConversationRead::unreadIds($conversations, $this->user));
             $indirect = \DB::table('conversation_folder')->whereIn('conversation_id', $conversations->pluck('id'))->get(['conversation_id', 'folder_id'])->groupBy('conversation_id');
+            $all = $this->allMailboxesKeys($conversations->pluck('id')->all());
+            // As the list shows them: in the user's language.
+            $subjects = \App\Ai\Translations::subjects($conversations, $this->user);
+            $previews = \App\Ai\Translations::previews($conversations, $this->user);
             foreach ($conversations as $conversation) {
-                $rows[] = $this->row($conversation, isset($unread[$conversation->id]), $indirect[$conversation->id] ?? collect());
+                $row = $this->row($conversation, isset($unread[$conversation->id]), $indirect[$conversation->id] ?? collect());
+                $row['folders'] = array_merge($row['folders'], $all[$conversation->id] ?? []);
+                $row['translated_subject'] = $subjects[$conversation->id] ?? null;
+                $one_liner = \App\Ai\Summaries::getAny($conversation, \App\Ai\Settings::language($conversation->mailbox_cached, $this->user))['one_liner'] ?? '';
+                $row['list_preview'] = (string) ($one_liner ?: ($previews[$conversation->id] ?? $conversation->preview));
+                $rows[] = $row;
             }
         }
 
@@ -188,6 +268,7 @@ class Sync
         $folders = $this->folderKeys($conversation, $mine && $open, $indirect);
         $starred = in_array($this->starredFolderId($conversation->mailbox_id), $folders, true);
         $customer = $conversation->customer;
+        $assignee = $conversation->user_id && $conversation->user_id != $this->user->id ? $conversation->user : null;
         $name = $customer ? $customer->getFullName(true) : (string) $conversation->customer_email;
         $date = fn ($value) => $value ? \Carbon\Carbon::parse($value)->getTimestamp() : null;
 
@@ -195,22 +276,29 @@ class Sync
             'id'            => $conversation->id,
             'number'        => $conversation->number,
             'mailbox_id'    => $conversation->mailbox_id,
+            // Across mailboxes: its mailbox's color and name (conversations_table).
+            'mark'          => [$conversation->mailbox_cached->accent ?: 'blue', __(':name mailbox', ['name' => $conversation->mailbox_cached->name])],
             'folders'       => $folders,
             'status'        => (int) $conversation->status,
             'state'         => (int) $conversation->state,
             'user_id'       => $conversation->user_id ? (int) $conversation->user_id : null,
+            'assignee'      => $assignee ? $assignee->getFullName() : null,
+            'type'          => (int) $conversation->type,
             'customer'      => ['id' => $conversation->customer_id, 'name' => $name, 'email' => (string) $conversation->customer_email],
             'subject'       => (string) $conversation->getSubject(),
             'preview'       => (string) $conversation->preview,
             'unread'        => (bool) $unread,
             'starred'       => $starred,
             'channel'       => $conversation->channel ? (int) $conversation->channel : null,
+            'channel_name'  => $conversation->hasChannel() ? ($conversation->getChannelName() ?: __('Chat')) : null,
             'threads'       => (int) $conversation->threads_count,
             'attachments'   => (bool) $conversation->has_attachments,
             'last_activity' => $date($conversation->last_activity_at),
             'last_reply'    => $date($conversation->last_reply_at),
             'closed'        => $date($conversation->closed_at),
             'updated'       => $date($conversation->updated_at),
+            'user_updated'  => $date($conversation->user_updated_at),
+            'last_sent'     => $date($conversation->last_sent_at),
             'created'       => $date($conversation->created_at),
             // Kept whatever its age: unread, theirs and open, or starred.
             'keep'          => $unread || ($mine && $open) || $starred,
@@ -240,6 +328,66 @@ class Sync
         }
 
         return array_values(array_unique($keys));
+    }
+
+    /**
+     * All Mailboxes' folders these conversations are in (minus their type), by All Mailboxes' own
+     * queries: [conversation ID => [folder ID, ...]]. Sent is left to the server (its order is
+     * by the user's own replies).
+     */
+    protected function allMailboxesKeys(array $ids)
+    {
+        $keys = [];
+        if (!AllMailboxes::isAvailable($this->user)) {
+            return $keys;
+        }
+        foreach (AllMailboxes::folders($this->user) as $folder) {
+            if ($folder->type == AllMailboxes::TYPE_SENT) {
+                continue;
+            }
+            foreach (AllMailboxes::query($folder, $this->user)->whereIn('conversations.id', $ids)->pluck('conversations.id') as $id) {
+                $keys[$id][] = (int) $folder->id;
+            }
+        }
+
+        return $keys;
+    }
+
+    /**
+     * How the browser draws each folder's list from its copy, as the server would: the order
+     * (row fields), the time shown, and how many it has. Only folders whose order rows have.
+     */
+    public function lists()
+    {
+        $folders = collect();
+        foreach ($this->mailboxIds() as $mailbox_id) {
+            $folders = $folders->merge($this->mailboxFolders($mailbox_id)['by_id']);
+        }
+        if (AllMailboxes::isAvailable($this->user)) {
+            $folders = $folders->merge(AllMailboxes::folders($this->user)->where('type', '!=', AllMailboxes::TYPE_SENT));
+        }
+        $lists = [];
+        foreach ($folders as $folder) {
+            $order = [];
+            foreach ($folder->getOrderByArray() as $block) {
+                foreach ($block as $column => $direction) {
+                    $order[] = [self::ORDER_COLUMNS[$column] ?? null, $direction];
+                }
+            }
+            if (!$order || in_array(null, array_column($order, 0), true)) {
+                continue;
+            }
+            $sorting = Conversation::getConvTableSorting(null, $folder);
+            $time = Conversation::SORT_COLUMNS[$sorting['sort_by']] ?? $folder->getWaitingSinceField();
+            $lists[$folder->id] = [
+                'type'  => (int) $folder->type,
+                'order' => $order,
+                'time'  => self::ORDER_COLUMNS[$time] ?? 'last_reply',
+                'total' => (int) $folder->total_count,
+            ];
+        }
+
+        return $lists;
     }
 
     protected function starredFolderId($mailbox_id)

@@ -1,7 +1,7 @@
 /*
  * The local inbox: a copy of the inbox's list rows in the browser (IndexedDB), kept up to date
- * from the server (App\Inbox\Sync, /inbox/sync), so lists can later draw from it at once. For now
- * nothing draws from it.
+ * from the server (App\Inbox\Sync, /inbox/sync). A folder opened in place draws its list from it
+ * at once (conversations.js), until the server's list is there.
  *
  * - What's kept: unread conversations, those assigned to the user and not closed, and the last
  *   few days of everything (the server sends a row's "keep"); rows fetched besides go after 3 days.
@@ -225,6 +225,8 @@
                     return wipe().then(checkKey).then(full);
                 }
                 return put(data.rows, false).then(function () {
+                    return data.lists ? setMeta('lists', data.lists) : null;
+                }).then(function () {
                     return data.folders ? encrypt(data.folders).then(function (box) { return setMeta('folders', box); }) : null;
                 }).then(function () {
                     if (data.more) {
@@ -246,6 +248,8 @@
             }
             return put(data.rows, true).then(function () {
                 return remove(data.removed);
+            }).then(function () {
+                return data.lists ? setMeta('lists', data.lists) : null;
             }).then(function () {
                 return data.folders ? encrypt(data.folders).then(function (box) { return setMeta('folders', box); }) : null;
             }).then(function () {
@@ -288,6 +292,65 @@
         });
     }
 
+    /** A row's field to order by: null first going up, last going down (as the database). */
+    function compare(a, b, order) {
+        for (var i = 0; i < order.length; i++) {
+            var field = order[i][0];
+            var x = a[field];
+            var y = b[field];
+            if (x === y) {
+                continue;
+            }
+            var result = x === null || x === undefined ? -1 : (y === null || y === undefined ? 1 : (typeof x == 'string' ? x.localeCompare(y) : x - y));
+            if (result) {
+                return order[i][1] == 'desc' ? -result : result;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * A folder's first page from the copy, in its list's order (App\Inbox\Sync::lists()), or
+     * null when the copy may not have all of it: the server's list then.
+     */
+    function list(folder_id, size) {
+        if (!dbName) {
+            return Promise.resolve(null);
+        }
+        return getMeta('lists').then(function (lists) {
+            var spec = lists && lists[folder_id];
+            if (!spec) {
+                return null;
+            }
+            return store('rows').then(function (s) {
+                return request(s.index('folders').getAll(IDBKeyRange.only(parseInt(folder_id))));
+            }).then(function (entries) {
+                if (entries.length < Math.min(size, spec.total)) {
+                    return null;
+                }
+                return Promise.all(entries.map(function (entry) { return decrypt(entry.box); })).then(function (rows) {
+                    rows.sort(function (a, b) { return compare(a, b, spec.order); });
+                    return { rows: rows.slice(0, size), spec: spec, config: config };
+                });
+            });
+        }).catch(function () {
+            return null;
+        });
+    }
+
+    /** Changed here (a Livewire action): synced now, not at the server's hint a few seconds on. */
+    var soon = null;
+    function syncSoon() {
+        clearTimeout(soon);
+        soon = setTimeout(function () {
+            if (wake) {
+                wake();
+            } else if (channel) {
+                channel.postMessage('sync');
+            }
+        }, 300);
+    }
+
     /** Signed out: the copy goes (the session's key with it). */
     function forget() {
         var deleting = (dbPromise || Promise.resolve(null)).then(function (db) {
@@ -325,7 +388,19 @@
         lead();
     }
 
-    window.TallportInbox = { forget: function () { return dbName ? forget() : Promise.resolve(); } };
+    window.TallportInbox = {
+        forget: function () { return dbName ? forget() : Promise.resolve(); },
+        list: list,
+    };
+
+    // Livewire starts before the page is loaded.
+    document.addEventListener('livewire:init', function () {
+        Livewire.hook('commit', function (hook) {
+            if (hook.commit.calls && hook.commit.calls.length) {
+                hook.succeed(syncSoon);
+            }
+        });
+    });
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', start);

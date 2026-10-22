@@ -100,8 +100,187 @@ var folderOpen = function (folder_id, conversation_id) {
 	}
 	document.body.setAttribute('data-folder_id', folder_id);
 	document.getElementById('app-content').setAttribute('aria-busy', 'true');
+	listDrawing = folder_id;
 	Livewire.dispatch('folder-open', {folder_id: parseInt(folder_id), conversation_id: conversation_id || null});
+	// At once from the browser's copy (public/js/inbox.js), until the server's list is there.
+	if (window.TallportInbox) {
+		TallportInbox.list(folder_id, 50).then(function (list) {
+			if (list && listDrawing === folder_id) {
+				listDraw(folder_id, list);
+			}
+		});
+	}
 };
+
+/**
+ * A folder's list drawn from the browser's copy as conversations_table draws it (its rows'
+ * main parts; the server's list, with the rest, replaces it in a moment).
+ */
+var listDrawing = null;
+var listTime = function (timestamp, config) {
+	if (!timestamp) {
+		return '';
+	}
+	var seconds = Math.floor(Date.now() / 1000) - timestamp;
+	if (seconds <= 60) {
+		return config.labels.just_now;
+	}
+	var days = Math.floor(seconds / 86400);
+	if (days > 7) {
+		var parts = {};
+		new Intl.DateTimeFormat(config.locale, {timeZone: config.timezone, month: 'short', day: 'numeric', year: 'numeric'}).formatToParts(new Date(timestamp * 1000)).forEach(function (part) {
+			parts[part.type] = part.value;
+		});
+		var this_year = new Intl.DateTimeFormat('en', {timeZone: config.timezone, year: 'numeric'}).format(new Date());
+		return parts.month+' '+parts.day+(parts.year != this_year ? ', '+parts.year : '');
+	}
+	if (days) {
+		return config.times.d[days];
+	}
+	var hours = Math.floor(seconds / 3600);
+	return hours ? config.times.h[hours] : config.times.m[Math.floor(seconds / 60)];
+};
+var listDraw = function (folder_id, list) {
+	var host = document.querySelector('.conv-list-host');
+	var parts = document.getElementById('conv-row-parts');
+	var folder_link = document.querySelector('.app-sidebar a[data-folder_id="'+folder_id+'"]');
+	if (!host || !parts || !folder_link) {
+		return;
+	}
+	var config = list.config;
+	var type = list.spec.type;
+	var all = parseInt(folder_id) < 0;
+	var el = function (tag, class_name, text) {
+		var node = document.createElement(tag);
+		if (class_name) {
+			node.className = class_name;
+		}
+		if (text) {
+			node.textContent = text;
+		}
+		return node;
+	};
+	var part = function (name, label) {
+		var node = parts.content.querySelector('[data-part="'+name+'"]').cloneNode(true);
+		node.removeAttribute('data-part');
+		if (label) {
+			node.setAttribute('aria-label', label);
+			node.setAttribute('title', label);
+		}
+		return node;
+	};
+	var section = el('section', 'table-conversations conv-list conv-list-local'+(all ? ' show-mailbox' : ''));
+	section.setAttribute('aria-busy', 'true');
+	var header = host.querySelector('.conv-list__header');
+	if (header) {
+		header = header.cloneNode(true);
+		header.inert = true;
+		section.appendChild(header);
+	}
+	var scroll = el('div', 'f-pane__scroll split-view__list');
+	var items = el('ul', 'f-item-list conv-list__items');
+	items.setAttribute('role', 'list');
+	list.rows.forEach(function (row) {
+		var li = el('li', 'conv-row'+(row.status == 1 ? ' conv-active' : '')+(row.status == 4 ? ' conv-spam' : ''));
+		li.setAttribute('data-conversation_id', row.id);
+		var link = el('a', 'f-item-row conv-row__link');
+		link.href = folder_link.href+'/'+row.number;
+		link.setAttribute('data-conversation_id', row.id);
+		if (all) {
+			link.setAttribute('data-fruit-mark', row.mark[0]);
+		}
+		if (row.unread) {
+			link.setAttribute('data-unread', '');
+		}
+		var top = el('span', 'f-item-row__top');
+		var title = el('span', 'f-item-row__title', row.customer.name || row.customer.email);
+		title.title = row.customer.email;
+		top.appendChild(title);
+		top.appendChild(el('span', 'f-item-row__time', listTime(row[list.spec.time] || row.updated, config)));
+		if (row.unread) {
+			top.appendChild(el('span', 'f-item-row__unread')).setAttribute('aria-hidden', 'true');
+			top.appendChild(el('span', 'f-sr-only', config.labels.unread));
+		}
+		link.appendChild(top);
+		var subtitle = el('span', 'f-item-row__subtitle');
+		if (row.status == 3 && type != 60) {
+			subtitle.append(part('closed', config.labels.closed), ' ');
+		}
+		if (row.status == 4 && type != 80) {
+			subtitle.append(part('spam', config.labels.spam), ' ');
+		}
+		if (row.state == 3 && type != 70) {
+			subtitle.append(part('deleted'), ' ');
+		}
+		if (row.state == 1 && type != 30) {
+			subtitle.append(part('drafts', config.labels.drafts), ' ');
+		}
+		if (row.translated_subject) {
+			subtitle.appendChild(el('span', '', row.translated_subject)).title = row.subject;
+		} else {
+			subtitle.append(row.subject);
+		}
+		link.appendChild(subtitle);
+		link.appendChild(el('span', 'f-item-row__preview', row.list_preview));
+		var meta = el('span', 'f-item-row__meta conv-row__meta');
+		if (row.channel || row.type == 2) {
+			var channel = el('span', 'conv-channel');
+			channel.title = row.channel ? row.channel_name : config.labels.phone;
+			channel.append(part(row.channel ? 'chat' : 'phone'), el('span', 'f-sr-only', channel.title));
+			meta.appendChild(channel);
+		}
+		if (row.assignee) {
+			var owner = el('span', 'conv-owner-name');
+			owner.append(part('user'), ' ', el('span', 'conv-owner-name__text', row.assignee));
+			meta.appendChild(owner);
+		}
+		if (row.attachments) {
+			meta.appendChild(part('attachments', config.labels.attachments));
+		}
+		if (type != 60 && type != 80 && row.status != 1 && config.statuses[row.status]) {
+			var status = el('span', 'conv-row__status');
+			var dot = el('span', 'f-badge f-badge--'+config.statuses[row.status][1]+' conv-status-dot');
+			dot.setAttribute('aria-hidden', 'true');
+			status.append(dot, config.statuses[row.status][0]);
+			meta.appendChild(status);
+		}
+		if (meta.childNodes.length) {
+			link.appendChild(meta);
+		}
+		if (all) {
+			link.appendChild(el('span', 'f-sr-only', row.mark[1]));
+		}
+		li.appendChild(link);
+		items.appendChild(li);
+	});
+	scroll.appendChild(items);
+	section.appendChild(scroll);
+	listUndraw();
+	host.after(section);
+	host.hidden = true;
+};
+var listUndraw = function () {
+	document.querySelectorAll('.conv-list-local').forEach(function (section) {
+		section.remove();
+	});
+	var host = document.querySelector('.conv-list-host');
+	if (host) {
+		host.hidden = false;
+	}
+};
+// The server's list is there (or didn't come): it shows.
+document.addEventListener('livewire:init', function () {
+	Livewire.hook('commit', function (hook) {
+		if (hook.component.name == 'conversation-list' && listDrawing !== null) {
+			var done = function () {
+				listDrawing = null;
+				listUndraw();
+			};
+			hook.succeed(done);
+			hook.fail(done);
+		}
+	});
+});
 // The sidebar's folders: in place beside an open conversation, else the folder's page
 // (wire:navigate, with its progress bar).
 document.addEventListener('click', function (e) {
