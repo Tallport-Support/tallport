@@ -219,6 +219,7 @@ class ConversationList extends Component
         $ids = Conversation::findMany($ids ?? array_map('intval', (array) $this->selected))
             ->filter(fn ($conversation) => $user->can('view', $conversation))->pluck('id')->all();
         $read ? ConversationRead::markRead($ids, $user) : ConversationRead::markUnread($ids, $user);
+        unset($this->params['opening_id']);
         if ($ids) {
             $this->dispatch('sidebar-counts', counts: \App\Misc\Sidebar::unreadCounts($user));
         }
@@ -276,6 +277,7 @@ class ConversationList extends Component
     public function conversationOpened($id)
     {
         $this->params['current_conversation_id'] = (int) $id;
+        unset($this->params['opening_id']);
         $this->skipRender();
     }
 
@@ -302,6 +304,8 @@ class ConversationList extends Component
         $this->mailbox_id = $folder->id < 0 ? AllMailboxes::MAILBOX_ID : $folder->mailbox_id;
         $this->params = array_intersect_key($this->params, ['target_blank' => 1]) + $list['params']
             + ['current_conversation_id' => $conversation_id ?: app(ConversationListQuery::class)->folderConversationId($folder, $user)];
+        // Opened with the folder: read (the pane marks it in the same request).
+        $this->params['opening_id'] = $this->params['current_conversation_id'];
         $this->filter = [];
         $this->page = 1;
         $this->selected = [];
