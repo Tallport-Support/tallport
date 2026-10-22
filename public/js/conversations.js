@@ -69,6 +69,14 @@ window.tallportNeighbour = function (step) {
 	});
 	return current >= 0 ? links[current + step] || null : null;
 };
+// A copy (paneDraw()): clicks do nothing in it, but Newer and Older.
+document.addEventListener('click', function (e) {
+	var copy = e.target.closest && e.target.closest('.pane-local');
+	if (copy && !e.target.closest('.conv-next-prev a')) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+	}
+}, true);
 document.addEventListener('click', function (e) {
 	// Newer and Older: from the list on screen (its address, its copy), else their links.
 	var nav = e.target.closest && e.target.closest('.conv-next-prev a');
@@ -1044,13 +1052,19 @@ var paneDraw = function (parts) {
 		copy.setAttribute('aria-busy', 'true');
 		// The toolbar's Newer and Older still step (style.css: nothing else answers; out of the
 		// keyboard and assistive technology).
-		copy.inert = selector != '#conv-toolbar';
+		// The customer panel inert. The conversation and its toolbar not: a chat's history can be
+		// scrolled (its own region), Newer and Older still step; nothing else answers (no focus,
+		// not read out, clicks ignored below).
+		copy.inert = selector == '#conv-layout-customer';
 		if (!copy.inert) {
 			copy.querySelectorAll('details[open]').forEach(function (details) {
 				details.removeAttribute('open');
 			});
-			copy.querySelectorAll('a, button, summary, input, select, textarea, [tabindex]').forEach(function (control) {
-				if (!control.closest('.conv-next-prev')) {
+			copy.querySelectorAll('[contenteditable]').forEach(function (editable) {
+				editable.setAttribute('contenteditable', 'false');
+			});
+			copy.querySelectorAll('a, button, summary, input, select, textarea, [tabindex], [contenteditable]').forEach(function (control) {
+				if (!control.closest('.conv-next-prev') && !control.matches('.f-history')) {
 					control.setAttribute('tabindex', '-1');
 					control.setAttribute('aria-hidden', 'true');
 				}
@@ -1067,7 +1081,8 @@ var paneDraw = function (parts) {
 	// The copy can be scrolled with the keyboard (it's inert: nothing in it takes focus).
 	var scroll = document.getElementById('app-content-scroll');
 	var heading = document.querySelector('.conv-pane.pane-local #conv-subject h2, .conv-pane.pane-local .conv-heading__customer');
-	if (scroll && !scroll.hasAttribute('tabindex')) {
+	// (A chat's copy: its history is the region that scrolls, and takes the focus itself.)
+	if (scroll && !scroll.hasAttribute('tabindex') && !document.querySelector('.conv-pane.pane-local .f-history')) {
 		scroll.setAttribute('tabindex', '0');
 		scroll.setAttribute('role', 'region');
 		scroll.setAttribute('aria-label', heading ? heading.textContent.trim() : document.title);
