@@ -1042,8 +1042,20 @@ var paneDraw = function (parts) {
 		copy.classList.add('pane-local');
 		copy.setAttribute('x-ignore', '');
 		copy.setAttribute('aria-busy', 'true');
-		// The toolbar's Newer and Older still step (style.css: nothing else answers).
+		// The toolbar's Newer and Older still step (style.css: nothing else answers; out of the
+		// keyboard and assistive technology).
 		copy.inert = selector != '#conv-toolbar';
+		if (!copy.inert) {
+			copy.querySelectorAll('details[open]').forEach(function (details) {
+				details.removeAttribute('open');
+			});
+			copy.querySelectorAll('a, button, summary, input, select, textarea, [tabindex]').forEach(function (control) {
+				if (!control.closest('.conv-next-prev')) {
+					control.setAttribute('tabindex', '-1');
+					control.setAttribute('aria-hidden', 'true');
+				}
+			});
+		}
 		real.after(copy);
 		real.style.display = 'none';
 		document.documentElement.classList.add('inbox-copy');
