@@ -101,7 +101,79 @@ var folderOpen = function (folder_id, conversation_id) {
 		});
 		return;
 	}
-	Livewire.dispatch('folder-open', {folder_id: parseInt(folder_id), conversation_id: conversation_id || null});
+	openLater(drawn, 'folder-open', {folder_id: parseInt(folder_id), conversation_id: conversation_id || null});
+};
+
+/**
+ * Asked of the server: at once when no copy could be shown, else after a moment without another
+ * click (switching quickly asks only for the last one). An answer for one left since is set aside
+ * (openStale): the copy of the one now wanted stays.
+ */
+var openSeq = 0;
+var openTimer = null;
+var openAsked = [];
+var openStale = {};
+var openLater = function (drawn, event, params) {
+	var seq = ++openSeq;
+	clearTimeout(openTimer);
+	drawn.then(function (shown) {
+		if (seq !== openSeq) {
+			return;
+		}
+		openTimer = setTimeout(function () {
+			openAsked.push(seq);
+			Livewire.dispatch(event, params);
+		}, shown ? 200 : 0);
+	});
+};
+document.addEventListener('livewire:init', function () {
+	Livewire.hook('request', function (hook) {
+		var body = typeof hook.payload == 'string' ? hook.payload : '';
+		if (body.indexOf('"folder-open"') < 0 && body.indexOf('"conversation-open"') < 0) {
+			return;
+		}
+		var seq = openAsked.shift();
+		hook.succeed(function (answer) {
+			// Left since: its parts are set aside as they arrive (morphed, conversation-opened).
+			if (seq !== undefined && seq !== openSeq) {
+				((answer && answer.json && answer.json.components) || []).forEach(function (component) {
+					try {
+						openStale[JSON.parse(component.snapshot).memo.id] = true;
+					} catch (e) {
+					}
+				});
+			}
+		});
+	});
+	// Done with an answer's part (after the other commit hooks).
+	Livewire.hook('commit', function (hook) {
+		var id = hook.component.id;
+		hook.succeed(function () {
+			setTimeout(function () {
+				delete openStale[id];
+			}, 0);
+		});
+	});
+});
+var openIsStale = function (component) {
+	return component ? !!openStale[component.id] : Object.keys(openStale).length > 0;
+};
+/** An answer set aside: the live parts stay hidden behind the copies. */
+var openSetAside = function () {
+	if (document.querySelector('.conv-list-local')) {
+		var host = document.querySelector('.conv-list-host');
+		if (host) {
+			host.hidden = true;
+		}
+	}
+	if (document.querySelector('.pane-local')) {
+		PANE_PARTS.forEach(function (selector) {
+			var real = document.querySelector(selector);
+			if (real && !real.classList.contains('pane-local')) {
+				real.style.display = 'none';
+			}
+		});
+	}
 };
 /** The sidebar and the page say which folder is open. */
 var folderMark = function (folder_id) {
@@ -430,6 +502,10 @@ document.addEventListener('livewire:init', function () {
 	// The live conversation (or list) shown again, by whichever request: no copy beside it.
 	Livewire.hook('morphed', function (hook) {
 		var name = hook.component && hook.component.name;
+		if (openIsStale(hook.component)) {
+			openSetAside();
+			return;
+		}
 		if (['conversation-pane', 'conversation-toolbar', 'conversation-inspector'].indexOf(name) >= 0) {
 			paneDrawing = null;
 			paneWanted = null;
@@ -465,6 +541,9 @@ document.addEventListener('livewire:init', function () {
 		}
 		if (hook.component.name == 'conversation-pane') {
 			var pane_done = function () {
+				if (openIsStale(hook.component)) {
+					return;
+				}
 				paneDrawing = null;
 				paneWanted = null;
 				paneUndraw();
@@ -474,6 +553,9 @@ document.addEventListener('livewire:init', function () {
 		}
 		if (hook.component.name == 'conversation-list') {
 			var done = function () {
+				if (openIsStale(hook.component)) {
+					return;
+				}
 				listDrawing = null;
 				listWanted = null;
 				listUndraw();
@@ -543,7 +625,7 @@ var conversationOpen = function (open) {
 		});
 		return;
 	}
-	Livewire.dispatch('conversation-open', open);
+	openLater(drawn, 'conversation-open', open);
 };
 
 /**
@@ -963,6 +1045,10 @@ window.addEventListener('popstate', function (e) {
 document.addEventListener('livewire:init', function () {
 	Livewire.on('conversation-opened', function (event) {
 		var data = Array.isArray(event) ? event[0] : event;
+		// One left since (another clicked meanwhile): the page stays with the one now wanted.
+		if (openIsStale()) {
+			return;
+		}
 		document.getElementById('app-content').removeAttribute('aria-busy');
 		document.title = data.title;
 		document.body.setAttribute('data-conversation_id', data.id);
