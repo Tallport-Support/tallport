@@ -11,20 +11,22 @@ use App\User;
 /**
  * The browser's local copy of the inbox's list rows (public/js/inbox.js): what a user may see, as
  * a list row shows it. Kept in the browser: their unread conversations, those assigned to them and
- * not closed, those they starred, and everything from the last few days, each with a ceiling. A first sync sends the
+ * not closed, the others not closed, those they starred, and everything from the last few days, each
+ * with a ceiling. A first sync sends the
  * folder in view first, then the rest in pages; after it, the change log (App\Inbox\Changes) says
  * which rows to send again.
  */
 class Sync
 {
     /**
-     * What's kept: unread, theirs and open, recent (days of activity), each with its ceiling.
+     * What's kept: unread, theirs and open, starred, recent (days of activity), open, each with its ceiling.
      */
     const RECENT_DAYS = 7;
     const MAX_UNREAD = 1000;
     const MAX_MINE = 1000;
     const MAX_STARRED = 1000;
     const MAX_RECENT = 2000;
+    const MAX_OPEN = 2000;
 
     /**
      * Rows a page of the first sync, and changed conversations an incremental one.
@@ -35,7 +37,7 @@ class Sync
     /**
      * The rows' format: a browser's copy in another starts over.
      */
-    const FORMAT = 2;
+    const FORMAT = 3;
 
     /**
      * Columns lists are ordered by, as rows have them (public/js/inbox.js draws lists in that order).
@@ -204,7 +206,7 @@ class Sync
     }
 
     /**
-     * The IDs kept in the browser, newest activity first: unread, theirs and open, starred, recent.
+     * The IDs kept in the browser, newest activity first: unread, theirs and open, starred, open, recent.
      */
     public function keptIds()
     {
@@ -213,6 +215,8 @@ class Sync
             [fn ($query) => ConversationRead::whereUnread($query, $this->user), self::MAX_UNREAD],
             [fn ($query) => $query->where('user_id', $this->user->id)->whereIn('status', [Conversation::STATUS_ACTIVE, Conversation::STATUS_PENDING])->where('state', Conversation::STATE_PUBLISHED), self::MAX_MINE],
             [fn ($query) => $query->whereIn('id', $this->starredIds()), self::MAX_STARRED],
+            // Open in a shared folder (Unassigned, Assigned): their lists draw from the copy too.
+            [fn ($query) => $query->whereIn('status', [Conversation::STATUS_ACTIVE, Conversation::STATUS_PENDING])->where('state', Conversation::STATE_PUBLISHED), self::MAX_OPEN],
             [fn ($query) => $query->where('last_activity_at', '>=', now()->subDays(self::RECENT_DAYS)), self::MAX_RECENT],
         ] as [$condition, $limit]) {
             $query = $this->visible(Conversation::query());
@@ -312,8 +316,8 @@ class Sync
             'user_updated'  => $date($conversation->user_updated_at),
             'last_sent'     => $date($conversation->last_sent_at),
             'created'       => $date($conversation->created_at),
-            // Kept whatever its age: unread, theirs and open, or starred.
-            'keep'          => $unread || ($mine && $open) || $starred,
+            // Kept whatever its age: unread, open, or starred.
+            'keep'          => $unread || $open || $starred,
         ];
     }
 

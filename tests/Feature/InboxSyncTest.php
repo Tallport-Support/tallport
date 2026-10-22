@@ -97,6 +97,9 @@ class InboxSyncTest extends FeatureTestCase
         ConversationRead::markRead([$old->id], $this->agent);
         Conversation::where('id', $old->id)->update(['last_activity_at' => now()->subDays(30)]);
         $elsewhere = $this->conversation('Another mailbox', $this->createMailbox([], ['name' => 'Private']));
+        $open = $this->conversation('Old, read and open');
+        ConversationRead::markRead([$open->id], $this->agent);
+        Conversation::where('id', $open->id)->update(['last_activity_at' => now()->subDays(30)]);
 
         $sync = (new Sync($this->agent))->full(0, $this->folder(Folder::TYPE_CLOSED)->id);
         $ids = array_column($sync['rows'], 'id');
@@ -111,6 +114,7 @@ class InboxSyncTest extends FeatureTestCase
         $this->assertTrue($rows[$unread->id]['unread'] && $rows[$unread->id]['keep']);
         $this->assertTrue(!$rows[$mine->id]['unread'] && $rows[$mine->id]['keep'], 'Theirs and open: kept.');
         $this->assertFalse($rows[$old->id]['keep']);
+        $this->assertTrue($rows[$open->id]['keep'], 'Open (Unassigned): kept whatever its age.');
         $this->assertSame('Unread question', $rows[$unread->id]['subject']);
 
         // Starred: kept whatever its age.

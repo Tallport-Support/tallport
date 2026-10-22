@@ -3357,3 +3357,8 @@ body.fruit-ui {
 .app-offline[hidden] {
     display: none;
 }
+
+/* While the browser's copy shows (public/js/conversations.js), no loading bar: it's there already. */
+.inbox-copy #nprogress {
+    display: none;
+}

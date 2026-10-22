@@ -349,6 +349,7 @@ var listDraw = function (folder_id, list, opened_id) {
 	listUndraw();
 	host.after(section);
 	host.hidden = true;
+	document.documentElement.classList.add('inbox-copy');
 	// The list's heading: the folder, its mailbox and how many.
 	var heading = document.querySelector('.app-list-title');
 	if (heading) {
@@ -360,6 +361,12 @@ var listDraw = function (folder_id, list, opened_id) {
 
 	return current;
 };
+/** No copy shown any more: the page's own loading bar again (style.css). */
+var copyGone = function () {
+	if (!document.querySelector('.conv-list-local, .pane-local')) {
+		document.documentElement.classList.remove('inbox-copy');
+	}
+};
 var listUndraw = function () {
 	document.querySelectorAll('.conv-list-local').forEach(function (section) {
 		section.remove();
@@ -368,8 +375,21 @@ var listUndraw = function () {
 	if (host) {
 		host.hidden = false;
 	}
+	copyGone();
 };
+// Livewire's loading bar (page loads): not read out (its role is one ARIA doesn't have).
+document.addEventListener('livewire:navigate', function () {
+	[200, 600].forEach(function (delay) {
+		setTimeout(function () {
+			var bar = document.getElementById('nprogress');
+			if (bar) {
+				bar.setAttribute('aria-hidden', 'true');
+			}
+		}, delay);
+	});
+});
 document.addEventListener('livewire:navigated', function () {
+	document.documentElement.classList.remove('inbox-copy');
 	listDrawing = null;
 	listWanted = null;
 	paneDrawing = null;
@@ -389,6 +409,10 @@ document.addEventListener('livewire:init', function () {
 			listDrawing = null;
 			listWanted = null;
 			listUndraw();
+			// A late answer may mark an earlier conversation: the one opened last.
+			if (conversationMarked) {
+				conversationMark(conversationMarked);
+			}
 		}
 	});
 	Livewire.hook('commit', function (hook) {
@@ -451,7 +475,9 @@ document.addEventListener('click', function (e) {
 	folderOpen(link.getAttribute('data-folder_id'));
 });
 /** The list says which conversation is open. */
+var conversationMarked = null;
 var conversationMark = function (id) {
+	conversationMarked = id;
 	document.querySelectorAll('a.conv-row__link[aria-current]').forEach(function (row) {
 		row.removeAttribute('aria-current');
 	});
@@ -704,6 +730,7 @@ var paneDraw = function (parts) {
 		copy.inert = true;
 		real.after(copy);
 		real.style.display = 'none';
+		document.documentElement.classList.add('inbox-copy');
 		copy.querySelectorAll('[data-snap-scroll]').forEach(function (node) {
 			var scroll = node.getAttribute('data-snap-scroll');
 			node.scrollTop = scroll == 'bottom' ? node.scrollHeight : parseInt(scroll);
@@ -731,6 +758,7 @@ var paneUndraw = function () {
 			real.style.display = '';
 		}
 	});
+	copyGone();
 };
 // Back and Forward between conversations and folders opened in place.
 window.addEventListener('popstate', function (e) {
@@ -756,6 +784,7 @@ document.addEventListener('livewire:init', function () {
 		document.body.setAttribute('data-folder_id', data.folder_id);
 		document.body.removeAttribute('data-page-url');
 		document.body.setAttribute('data-pane-version', data.version || '');
+		conversationMark(data.id);
 		paneDrawing = null;
 		paneWanted = null;
 		paneUndraw();
