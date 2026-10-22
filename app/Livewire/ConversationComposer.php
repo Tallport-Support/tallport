@@ -493,6 +493,19 @@ class ConversationComposer extends Component
     }
 
     /**
+     * An AI draft put in a translated reply (in the agent's language): the draft as written, in the
+     * customer's language, is its translation, ready to send, not translated again. $source: the
+     * reply as the editor has it (sendTranslation() sends it while that's unchanged).
+     */
+    public function aiDraftTranslated($source, $html)
+    {
+        if (!$this->translating() || trim(strip_tags((string) $html)) === '') {
+            return;
+        }
+        $this->translation = ['source' => (string) $source, 'html' => (string) $html, 'error' => ''];
+    }
+
+    /**
      * Customers matching what the user types in a recipient field (email => name).
      */
     #[Computed]

@@ -1703,9 +1703,19 @@ document.addEventListener('alpine:init', function () {
 				if (!this.draft) {
 					return Promise.resolve();
 				}
-				// Translated on send: the version in the agent's language is what they write.
+				// Translated on send: the version in the agent's language is what they write, and the
+				// draft as written (the customer's language) its translation, not made again.
 				if (chat.translated && this.draft.translation) {
-					return this.$wire.aiDraft(markdownToHtml(this.draft.translation), '', '', this.draft.translation);
+					var self = this;
+					var draft = this.draft;
+					return this.$wire.aiDraft(markdownToHtml(draft.translation), '', '', draft.translation).then(function () {
+						return new Promise(function (resolve) {
+							setTimeout(resolve, 50);
+						});
+					}).then(function () {
+						var body = document.getElementById('body');
+						return body ? self.$wire.aiDraftTranslated(body.value, markdownToHtml(draft.draft)) : null;
+					});
 				}
 				return this.$wire.aiDraft(markdownToHtml(this.draft.draft), this.draft.translation || '', this.draft.translation ? translation_language : '', this.draft.draft);
 			}

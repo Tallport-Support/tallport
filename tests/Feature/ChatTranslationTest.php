@@ -147,6 +147,31 @@ class ChatTranslationTest extends FeatureTestCase
     }
 
     /**
+     * An AI draft put in a translated reply: in the agent's language, with the draft as written (the
+     * customer's language) as its translation, sent without translating it again.
+     */
+    public function testAnInsertedAiDraftIsNotTranslatedAgain()
+    {
+        $this->setCustomerLanguage('nl');
+        ReplyTranslator::fake()->preventStrayPrompts();
+
+        $composer = $this->composer()
+            ->call('aiDraft', '<p>I will look into it.</p>', '', '', 'I will look into it.')
+            ->call('aiDraftTranslated', '<p>I will look into it.</p>', '<p>Ik zoek het voor u uit.</p>')
+            ->assertSee('Ik zoek het voor u uit.')->assertSee('Sent in Dutch');
+        $composer->call('sendTranslation', '<p>I will look into it.</p>')->assertReturned('sent');
+
+        $reply = $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
+        $this->assertStringContainsString('Ik zoek het voor u uit.', $reply->body);
+        $this->assertSame('I will look into it.', Translations::get($reply, 'en'));
+        ReplyTranslator::assertNeverPrompted();
+
+        // Not translated (the customer reads the agent's language): nothing set.
+        $this->setCustomerLanguage(null);
+        $this->composer()->call('aiDraftTranslated', '<p>Hi</p>', '<p>Hoi</p>')->assertSet('translation', null);
+    }
+
+    /**
      * The AI unavailable (or the mailbox's tokens used up): the reply isn't sent; the agent
      * sees why and can send it as written. One in the chat's language already goes as written.
      */
