@@ -2023,5 +2023,8 @@
     "The message has no text.": "El missatge no té text.",
     "This mailbox has used its AI tokens for today.": "Aquesta bústia ha esgotat els seus tokens d'IA d'avui.",
     "This customer sent more messages in the last hour than are translated.": "Aquest client ha enviat en l'última hora més missatges dels que es tradueixen.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "La IA ha fallat (:error). Ho torna a provar quan s'obre la conversa."
+    "The AI failed (:error). It tries again when the conversation is opened.": "La IA ha fallat (:error). Ho torna a provar quan s'obre la conversa.",
+    "Offline: showing the copy saved in this browser.": "Sense connexió: es mostra la còpia desada en aquest navegador.",
+    "You're offline. The change wasn't saved.": "No teniu connexió. El canvi no s'ha desat.",
+    "Not available offline.": "No disponible sense connexió."
 }

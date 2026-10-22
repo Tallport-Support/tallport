@@ -1948,5 +1948,8 @@
     "The message has no text.": "Viestissä ei ole tekstiä.",
     "This mailbox has used its AI tokens for today.": "Tämä postilaatikko on käyttänyt tämän päivän tekoälytokeninsa.",
     "This customer sent more messages in the last hour than are translated.": "Tämä asiakas lähetti viimeisen tunnin aikana enemmän viestejä kuin käännetään.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "Tekoäly epäonnistui (:error). Se yrittää uudelleen, kun keskustelu avataan."
+    "The AI failed (:error). It tries again when the conversation is opened.": "Tekoäly epäonnistui (:error). Se yrittää uudelleen, kun keskustelu avataan.",
+    "Offline: showing the copy saved in this browser.": "Offline-tila: näytetään tähän selaimeen tallennettu kopio.",
+    "You're offline. The change wasn't saved.": "Olet offline-tilassa. Muutosta ei tallennettu.",
+    "Not available offline.": "Ei käytettävissä offline-tilassa."
 }

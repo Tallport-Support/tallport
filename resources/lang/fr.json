@@ -1939,5 +1939,8 @@
     "The message has no text.": "Le message ne contient pas de texte.",
     "This mailbox has used its AI tokens for today.": "Cette boîte de réception a épuisé ses jetons IA pour aujourd'hui.",
     "This customer sent more messages in the last hour than are translated.": "Ce client a envoyé plus de messages au cours de la dernière heure que ce qui est traduit.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "L'IA a échoué (:error). Elle réessaie à l'ouverture de la conversation."
+    "The AI failed (:error). It tries again when the conversation is opened.": "L'IA a échoué (:error). Elle réessaie à l'ouverture de la conversation.",
+    "Offline: showing the copy saved in this browser.": "Hors ligne : affichage de la copie enregistrée dans ce navigateur.",
+    "You're offline. The change wasn't saved.": "Vous êtes hors ligne. La modification n'a pas été enregistrée.",
+    "Not available offline.": "Non disponible hors ligne."
 }

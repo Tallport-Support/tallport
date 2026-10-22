@@ -1932,5 +1932,8 @@
     "The message has no text.": "אין בהודעה טקסט.",
     "This mailbox has used its AI tokens for today.": "תיבת דואר זו ניצלה את טוקני ה-AI שלה להיום.",
     "This customer sent more messages in the last hour than are translated.": "לקוח זה שלח בשעה האחרונה יותר הודעות ממה שמתורגם.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "ה-AI נכשל (:error). הוא ינסה שוב כשהשיחה תיפתח."
+    "The AI failed (:error). It tries again when the conversation is opened.": "ה-AI נכשל (:error). הוא ינסה שוב כשהשיחה תיפתח.",
+    "Offline: showing the copy saved in this browser.": "לא מקוון: מוצג העותק השמור בדפדפן זה.",
+    "You're offline. The change wasn't saved.": "אין חיבור. השינוי לא נשמר.",
+    "Not available offline.": "לא זמין במצב לא מקוון."
 }

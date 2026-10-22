@@ -1976,5 +1976,8 @@
     "The message has no text.": "訊息沒有文字。",
     "This mailbox has used its AI tokens for today.": "此信箱今天的 AI Token 已用完。",
     "This customer sent more messages in the last hour than are translated.": "此客戶在過去一小時內傳送的訊息超過了翻譯上限。",
-    "The AI failed (:error). It tries again when the conversation is opened.": "AI 發生錯誤（:error）。開啟對話時會再試一次。"
+    "The AI failed (:error). It tries again when the conversation is opened.": "AI 發生錯誤（:error）。開啟對話時會再試一次。",
+    "Offline: showing the copy saved in this browser.": "離線：顯示此瀏覽器中儲存的副本。",
+    "You're offline. The change wasn't saved.": "已離線，變更未儲存。",
+    "Not available offline.": "離線時無法使用。"
 }

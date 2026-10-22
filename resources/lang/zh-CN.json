@@ -1933,5 +1933,8 @@
     "The message has no text.": "消息没有文本。",
     "This mailbox has used its AI tokens for today.": "此邮箱今天的 AI Token 已用完。",
     "This customer sent more messages in the last hour than are translated.": "此客户在过去一小时内发送的消息超过了翻译上限。",
-    "The AI failed (:error). It tries again when the conversation is opened.": "AI 出错（:error）。打开对话时会重试。"
+    "The AI failed (:error). It tries again when the conversation is opened.": "AI 出错（:error）。打开对话时会重试。",
+    "Offline: showing the copy saved in this browser.": "离线：显示此浏览器中保存的副本。",
+    "You're offline. The change wasn't saved.": "已离线，更改未保存。",
+    "Not available offline.": "离线时不可用。"
 }

@@ -1932,5 +1932,8 @@
     "The message has no text.": "Poruka nema teksta.",
     "This mailbox has used its AI tokens for today.": "Ovaj je poštanski sandučić potrošio svoje AI tokene za danas.",
     "This customer sent more messages in the last hour than are translated.": "Ovaj je kupac u posljednjih sat vremena poslao više poruka nego što se prevodi.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "AI nije uspjela (:error). Pokušat će ponovno kad se razgovor otvori."
+    "The AI failed (:error). It tries again when the conversation is opened.": "AI nije uspjela (:error). Pokušat će ponovno kad se razgovor otvori.",
+    "Offline: showing the copy saved in this browser.": "Izvan mreže: prikazuje se kopija spremljena u ovom pregledniku.",
+    "You're offline. The change wasn't saved.": "Niste povezani. Promjena nije spremljena.",
+    "Not available offline.": "Nije dostupno izvan mreže."
 }

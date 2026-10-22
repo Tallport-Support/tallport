@@ -1932,5 +1932,8 @@
     "The message has no text.": "Mesajul nu are text.",
     "This mailbox has used its AI tokens for today.": "Această cutie poștală și-a epuizat tokenurile AI pentru azi.",
     "This customer sent more messages in the last hour than are translated.": "Acest client a trimis în ultima oră mai multe mesaje decât se traduc.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "AI-ul a eșuat (:error). Încearcă din nou când conversația este deschisă."
+    "The AI failed (:error). It tries again when the conversation is opened.": "AI-ul a eșuat (:error). Încearcă din nou când conversația este deschisă.",
+    "Offline: showing the copy saved in this browser.": "Offline: se afișează copia salvată în acest browser.",
+    "You're offline. The change wasn't saved.": "Ești offline. Modificarea nu a fost salvată.",
+    "Not available offline.": "Indisponibil offline."
 }

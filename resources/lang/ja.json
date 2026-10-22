@@ -1932,5 +1932,8 @@
     "The message has no text.": "メッセージにテキストがありません。",
     "This mailbox has used its AI tokens for today.": "このメールボックスは本日分のAIトークンを使い切りました。",
     "This customer sent more messages in the last hour than are translated.": "この顧客が過去1時間に送信したメッセージが翻訳の上限を超えています。",
-    "The AI failed (:error). It tries again when the conversation is opened.": "AIでエラーが発生しました（:error）。会話を開くと再試行します。"
+    "The AI failed (:error). It tries again when the conversation is opened.": "AIでエラーが発生しました（:error）。会話を開くと再試行します。",
+    "Offline: showing the copy saved in this browser.": "オフライン：このブラウザーに保存されたコピーを表示しています。",
+    "You're offline. The change wasn't saved.": "オフラインです。変更は保存されませんでした。",
+    "Not available offline.": "オフラインでは利用できません。"
 }

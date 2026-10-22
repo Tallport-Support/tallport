@@ -100,7 +100,16 @@ var folderOpen = function (folder_id, conversation_id) {
 	}
 	document.body.setAttribute('data-folder_id', folder_id);
 	document.getElementById('app-content').setAttribute('aria-busy', 'true');
-	listFromCopy(folder_id, conversation_id);
+	var drawn = listFromCopy(folder_id, conversation_id);
+	// Offline: the browser's copy alone (or nothing to show).
+	if (offline()) {
+		drawn.then(function (shown) {
+			if (!shown) {
+				offlineToast('unavailable');
+			}
+		});
+		return;
+	}
 	Livewire.dispatch('folder-open', {folder_id: parseInt(folder_id), conversation_id: conversation_id || null});
 };
 
@@ -110,17 +119,20 @@ var folderOpen = function (folder_id, conversation_id) {
  */
 var listFromCopy = function (folder_id, conversation_id) {
 	listDrawing = folder_id;
-	if (window.TallportInbox && document.querySelector('.conv-list-host')) {
-		TallportInbox.list(folder_id, 50).then(function (list) {
-			if (list && listDrawing === folder_id) {
-				var opened_id = listDraw(folder_id, list, conversation_id || listOpened(folder_id));
-				// Beside it, the conversation it opens at.
-				if (opened_id && document.querySelector('.conv-pane')) {
-					paneFromCopy(opened_id);
-				}
-			}
-		});
+	if (!window.TallportInbox || !document.querySelector('.conv-list-host')) {
+		return Promise.resolve(false);
 	}
+	return TallportInbox.list(folder_id, 50).then(function (list) {
+		if (!list || listDrawing !== folder_id) {
+			return false;
+		}
+		var opened_id = listDraw(folder_id, list, conversation_id || listOpened(folder_id));
+		// Beside it, the conversation it opens at.
+		if (opened_id && document.querySelector('.conv-pane')) {
+			paneFromCopy(opened_id);
+		}
+		return true;
+	});
 };
 /** The conversation last opened in a folder, which it opens at again (as the server remembers). */
 var listOpened = function (folder_id, conversation_id) {
@@ -371,7 +383,15 @@ document.addEventListener('click', function (e) {
 	e.preventDefault();
 	if (!document.querySelector('.conv-pane') || !document.querySelector('.conv-list-host')) {
 		// A page without a conversation (an empty folder's, a narrow one): the list at once too.
-		listFromCopy(link.getAttribute('data-folder_id'));
+		var drawn = listFromCopy(link.getAttribute('data-folder_id'));
+		if (offline()) {
+			drawn.then(function (shown) {
+				if (!shown) {
+					offlineToast('unavailable');
+				}
+			});
+			return;
+		}
 		Livewire.navigate(link.href);
 		return;
 	}
@@ -389,7 +409,16 @@ var conversationOpen = function (open) {
 		}
 	});
 	document.getElementById('app-content').setAttribute('aria-busy', 'true');
-	paneFromCopy(open.id);
+	var drawn = paneFromCopy(open.id);
+	if (offline()) {
+		drawn.then(function (shown) {
+			document.getElementById('app-content').removeAttribute('aria-busy');
+			if (!shown) {
+				offlineToast('unavailable');
+			}
+		});
+		return;
+	}
 	Livewire.dispatch('conversation-open', open);
 };
 
@@ -416,23 +445,83 @@ var rowUndo = function () {
 		}
 	});
 	rowPending = [];
-	Tallport.toast(Lang.get('messages.error_occurred'), 'danger');
+	if (offline()) {
+		offlineToast('undone');
+	} else {
+		Tallport.toast(Lang.get('messages.error_occurred'), 'danger');
+	}
 };
-// Offline: a change shown at once wasn't saved.
+/**
+ * Offline (the connection gone in an open tab): what the browser's copy holds still shows
+ * (lists, conversations with a snapshot); what needs the server is disabled. Back online,
+ * the live ones replace the copies.
+ */
+var offline = function () {
+	return navigator.onLine === false;
+};
+var offlineToast = function (which) {
+	var notice = document.querySelector('.app-offline');
+	Tallport.toast(notice ? notice.getAttribute('data-'+which) : Lang.get('messages.error_occurred'), 'danger');
+};
+var OFFLINE_ACTIONS = '#conv-toolbar button, #conv-toolbar summary, .conv-pane button, .conv-pane summary, .conv-list__header button, .conv-list__header summary, .conv-list-host .f-context-menu button, .conv-list-host .f-context-menu a';
+var offlineDisable = function () {
+	var off = offline();
+	document.querySelectorAll('.app-offline').forEach(function (notice) {
+		notice.hidden = !off;
+	});
+	document.querySelectorAll(off ? OFFLINE_ACTIONS : '[data-offline-disabled]').forEach(function (node) {
+		if (off && !node.hasAttribute('data-offline-disabled') && !node.disabled && node.getAttribute('aria-disabled') != 'true') {
+			node.setAttribute('data-offline-disabled', '');
+			node.tagName == 'BUTTON' ? node.disabled = true : node.setAttribute('aria-disabled', 'true');
+		} else if (!off) {
+			node.removeAttribute('data-offline-disabled');
+			node.tagName == 'BUTTON' ? node.disabled = false : node.removeAttribute('aria-disabled');
+		}
+	});
+};
+// A disabled menu or link doesn't open.
+document.addEventListener('click', function (e) {
+	if (offline() && e.target.closest && e.target.closest('[data-offline-disabled]')) {
+		e.preventDefault();
+		e.stopPropagation();
+	}
+}, true);
 window.addEventListener('offline', function () {
+	// A change shown at once wasn't saved.
 	rowUndo();
+	offlineDisable();
+});
+window.addEventListener('online', function () {
+	offlineDisable();
+	// The live list and conversation in place of the copies.
+	if (listDrawing !== null && document.querySelector('.conv-list-local')) {
+		Livewire.dispatch('folder-open', {folder_id: parseInt(listDrawing), conversation_id: paneDrawing || null});
+	} else if (paneDrawing !== null && document.querySelector('.pane-local')) {
+		Livewire.dispatch('conversation-open', {id: paneDrawing, folder_id: document.body.getAttribute('data-folder_id') || ''});
+	}
+});
+document.addEventListener('livewire:navigated', offlineDisable);
+document.addEventListener('livewire:init', function () {
+	Livewire.hook('morphed', function () {
+		if (offline()) {
+			offlineDisable();
+		}
+	});
 });
 var paneDrawing = null;
 var paneDrawTimer = null;
 var paneFromCopy = function (id) {
 	paneDrawing = parseInt(id);
-	if (window.TallportInbox && document.querySelector('.conv-pane')) {
-		TallportInbox.pane(id).then(function (parts) {
-			if (parts && paneDrawing === parseInt(id)) {
-				paneDraw(parts);
-			}
-		});
+	if (!window.TallportInbox || !document.querySelector('.conv-pane')) {
+		return Promise.resolve(false);
 	}
+	return TallportInbox.pane(id).then(function (parts) {
+		if (parts && paneDrawing === parseInt(id)) {
+			paneDraw(parts);
+			return true;
+		}
+		return false;
+	});
 };
 var paneSnapshot = function () {
 	var id = document.body.getAttribute('data-conversation_id');
@@ -560,14 +649,21 @@ var paneDraw = function (parts) {
 		copy.inert = true;
 		real.after(copy);
 		real.style.display = 'none';
-		// Never for long, whatever happens to the request.
-		clearTimeout(paneDrawTimer);
-		paneDrawTimer = setTimeout(paneUndraw, 15000);
 		copy.querySelectorAll('[data-snap-scroll]').forEach(function (node) {
 			var scroll = node.getAttribute('data-snap-scroll');
 			node.scrollTop = scroll == 'bottom' ? node.scrollHeight : parseInt(scroll);
 		});
 	});
+	// Never for long, whatever happens to the request (offline: while it lasts).
+	clearTimeout(paneDrawTimer);
+	paneDrawTimer = setTimeout(function undrawLater() {
+		if (offline()) {
+			paneDrawTimer = setTimeout(undrawLater, 15000);
+		} else {
+			paneUndraw();
+		}
+	}, 15000);
+	offlineDisable();
 };
 var paneUndraw = function () {
 	document.querySelectorAll('.pane-local').forEach(function (node) {

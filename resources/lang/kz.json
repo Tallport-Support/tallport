@@ -2325,5 +2325,8 @@
     "The message has no text.": "Хабарламада мәтін жоқ.",
     "This mailbox has used its AI tokens for today.": "Бұл пошталық жәшік бүгінгі ЖИ токендерін жұмсап қойды.",
     "This customer sent more messages in the last hour than are translated.": "Бұл клиент соңғы сағатта аударылатыннан көп хабарлама жіберді.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "ЖИ-де қате орын алды (:error). Тикет ашылғанда қайта әрекет етеді."
+    "The AI failed (:error). It tries again when the conversation is opened.": "ЖИ-де қате орын алды (:error). Тикет ашылғанда қайта әрекет етеді.",
+    "Offline: showing the copy saved in this browser.": "Желіден тыс: осы браузерде сақталған көшірме көрсетілуде.",
+    "You're offline. The change wasn't saved.": "Желіден тыссыз. Өзгеріс сақталмады.",
+    "Not available offline.": "Желіден тыс қолжетімсіз."
 }

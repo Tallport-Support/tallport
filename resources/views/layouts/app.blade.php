@@ -108,6 +108,10 @@
                 @endif
                 <main id="app-content" class="f-pane f-pane--column app-workspace__content app-main @yield('main_class') @if (!$has_toolbar) app-workspace__pane--full @endif">
                     <div class="f-pane__scroll" id="app-content-scroll">
+                        @if (Auth::user())
+                            {{-- Offline: what the browser's copy shows (public/js/conversations.js); what needs the server is disabled. --}}
+                            <x-fruit::alert tone="warning" class="app-offline" role="status" hidden :data-undone="__('You\'re offline. The change wasn\'t saved.')" :data-unavailable="__('Not available offline.')">{{ __('Offline: showing the copy saved in this browser.') }}</x-fruit::alert>
+                        @endif
                         @if (($browser_check = \Helper::checkBrowser()) && $browser_check['msg'])
                             <x-fruit::alert tone="danger">{{ $browser_check["msg"] }}</x-fruit::alert>
                         @endif

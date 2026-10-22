@@ -1932,5 +1932,8 @@
     "The message has no text.": "В сообщении нет текста.",
     "This mailbox has used its AI tokens for today.": "Этот ящик израсходовал свои токены ИИ на сегодня.",
     "This customer sent more messages in the last hour than are translated.": "Этот клиент за последний час отправил больше сообщений, чем переводится.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "Ошибка ИИ (:error). Он попробует снова, когда тикет будет открыт."
+    "The AI failed (:error). It tries again when the conversation is opened.": "Ошибка ИИ (:error). Он попробует снова, когда тикет будет открыт.",
+    "Offline: showing the copy saved in this browser.": "Нет сети: показана копия, сохранённая в этом браузере.",
+    "You're offline. The change wasn't saved.": "Нет подключения к сети. Изменение не сохранено.",
+    "Not available offline.": "Недоступно без сети."
 }

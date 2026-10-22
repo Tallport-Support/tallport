@@ -1932,5 +1932,8 @@
     "The message has no text.": "Zpráva neobsahuje žádný text.",
     "This mailbox has used its AI tokens for today.": "Tato schránka již vyčerpala své AI tokeny na dnešek.",
     "This customer sent more messages in the last hour than are translated.": "Tento zákazník za poslední hodinu poslal více zpráv, než se překládá.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "AI selhala (:error). Zkusí to znovu při otevření konverzace."
+    "The AI failed (:error). It tries again when the conversation is opened.": "AI selhala (:error). Zkusí to znovu při otevření konverzace.",
+    "Offline: showing the copy saved in this browser.": "Offline: zobrazuje se kopie uložená v tomto prohlížeči.",
+    "You're offline. The change wasn't saved.": "Jste offline. Změna nebyla uložena.",
+    "Not available offline.": "Offline není k dispozici."
 }

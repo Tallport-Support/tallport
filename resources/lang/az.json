@@ -1932,5 +1932,8 @@
     "The message has no text.": "Mesajda mətn yoxdur.",
     "This mailbox has used its AI tokens for today.": "Bu poçt qutusu bugünkü Sİ tokenlərini istifadə edib.",
     "This customer sent more messages in the last hour than are translated.": "Bu müştəri son bir saatda tərcümə ediləndən daha çox mesaj göndərib.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "Sİ-də xəta baş verdi (:error). Söhbət açılanda yenidən cəhd edir."
+    "The AI failed (:error). It tries again when the conversation is opened.": "Sİ-də xəta baş verdi (:error). Söhbət açılanda yenidən cəhd edir.",
+    "Offline: showing the copy saved in this browser.": "Oflayn: bu brauzerdə saxlanmış nüsxə göstərilir.",
+    "You're offline. The change wasn't saved.": "Oflaynsınız. Dəyişiklik saxlanmadı.",
+    "Not available offline.": "Oflayn rejimdə əlçatan deyil."
 }

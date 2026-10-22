@@ -1935,5 +1935,8 @@
     "The message has no text.": "Meldingen har ingen tekst.",
     "This mailbox has used its AI tokens for today.": "Denne postkassen har brukt opp AI-tokens for i dag.",
     "This customer sent more messages in the last hour than are translated.": "Denne kunden sendte flere meldinger den siste timen enn det som oversettes.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "AI-en mislyktes (:error). Den prøver igjen når samtalen åpnes."
+    "The AI failed (:error). It tries again when the conversation is opened.": "AI-en mislyktes (:error). Den prøver igjen når samtalen åpnes.",
+    "Offline: showing the copy saved in this browser.": "Frakoblet: viser kopien som er lagret i denne nettleseren.",
+    "You're offline. The change wasn't saved.": "Du er frakoblet. Endringen ble ikke lagret.",
+    "Not available offline.": "Ikke tilgjengelig frakoblet."
 }

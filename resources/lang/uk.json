@@ -1932,5 +1932,8 @@
     "The message has no text.": "У повідомленні немає тексту.",
     "This mailbox has used its AI tokens for today.": "Ця поштова скринька вичерпала свої токени ШІ на сьогодні.",
     "This customer sent more messages in the last hour than are translated.": "Цей клієнт за останню годину надіслав більше повідомлень, ніж перекладається.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "Помилка ШІ (:error). Він спробує знову, коли розмову буде відкрито."
+    "The AI failed (:error). It tries again when the conversation is opened.": "Помилка ШІ (:error). Він спробує знову, коли розмову буде відкрито.",
+    "Offline: showing the copy saved in this browser.": "Немає мережі: показано копію, збережену в цьому браузері.",
+    "You're offline. The change wasn't saved.": "Немає підключення до мережі. Зміну не збережено.",
+    "Not available offline.": "Недоступно без мережі."
 }

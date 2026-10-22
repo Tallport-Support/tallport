@@ -342,6 +342,9 @@ class InboxSyncTest extends FeatureTestCase
         // One key a session, on the page for the browser.
         $page = $this->actingAs($this->agent)->get('/')->getContent();
         $this->assertStringContainsString('data-inbox=', $page);
+        // Offline (public/js/conversations.js): its notice, hidden until then, and what it says.
+        $this->assertMatchesRegularExpression('/class="f-alert f-alert--warning app-offline"[^>]*hidden/', $page);
+        $this->assertStringContainsString('data-unavailable="Not available offline."', $page);
         // Times as the list writes them (User::dateDiffForHumans()).
         $config = Sync::config($this->agent);
         $this->assertSame('5m', $config['times']['m'][5]);

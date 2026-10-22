@@ -3352,3 +3352,8 @@ body.fruit-ui {
   box-shadow: 0 0 0 2px var(--f-accent-fill);
   transition: box-shadow 0.6s;
 }
+
+/* Offline (public/js/conversations.js): the notice while it lasts. */
+.app-offline[hidden] {
+    display: none;
+}

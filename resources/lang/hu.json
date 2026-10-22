@@ -1932,5 +1932,8 @@
     "The message has no text.": "Az üzenetben nincs szöveg.",
     "This mailbox has used its AI tokens for today.": "Ez a postafiók elhasználta mai MI-tokenjeit.",
     "This customer sent more messages in the last hour than are translated.": "Ez az ügyfél az elmúlt órában több üzenetet küldött, mint amennyi lefordítódik.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "Az MI hibát adott (:error). Újra megpróbálja, amikor megnyitják a beszélgetést."
+    "The AI failed (:error). It tries again when the conversation is opened.": "Az MI hibát adott (:error). Újra megpróbálja, amikor megnyitják a beszélgetést.",
+    "Offline: showing the copy saved in this browser.": "Offline: a böngészőben mentett másolat látható.",
+    "You're offline. The change wasn't saved.": "Offline vagy. A módosítás nem lett mentve.",
+    "Not available offline.": "Offline nem érhető el."
 }

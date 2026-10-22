@@ -1932,5 +1932,8 @@
     "The message has no text.": "Mesajda metin yok.",
     "This mailbox has used its AI tokens for today.": "Bu posta kutusu bugünkü yapay zekâ tokenlerini kullandı.",
     "This customer sent more messages in the last hour than are translated.": "Bu müşteri son bir saatte çevrilenden daha fazla mesaj gönderdi.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "Yapay zekâ başarısız oldu (:error). Konuşma açıldığında yeniden dener."
+    "The AI failed (:error). It tries again when the conversation is opened.": "Yapay zekâ başarısız oldu (:error). Konuşma açıldığında yeniden dener.",
+    "Offline: showing the copy saved in this browser.": "Çevrimdışı: bu tarayıcıda kayıtlı kopya gösteriliyor.",
+    "You're offline. The change wasn't saved.": "Çevrimdışısınız. Değişiklik kaydedilmedi.",
+    "Not available offline.": "Çevrimdışıyken kullanılamaz."
 }

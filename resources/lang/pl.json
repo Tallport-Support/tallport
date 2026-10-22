@@ -1932,5 +1932,8 @@
     "The message has no text.": "Wiadomość nie zawiera tekstu.",
     "This mailbox has used its AI tokens for today.": "Ta skrzynka pocztowa wykorzystała już dzisiejsze tokeny AI.",
     "This customer sent more messages in the last hour than are translated.": "Ten klient wysłał w ostatniej godzinie więcej wiadomości, niż jest tłumaczonych.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "AI zwróciła błąd (:error). Spróbuje ponownie po otwarciu rozmowy."
+    "The AI failed (:error). It tries again when the conversation is opened.": "AI zwróciła błąd (:error). Spróbuje ponownie po otwarciu rozmowy.",
+    "Offline: showing the copy saved in this browser.": "Offline: wyświetlana jest kopia zapisana w tej przeglądarce.",
+    "You're offline. The change wasn't saved.": "Jesteś offline. Zmiana nie została zapisana.",
+    "Not available offline.": "Niedostępne offline."
 }

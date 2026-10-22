@@ -1932,5 +1932,8 @@
     "The message has no text.": "Het bericht bevat geen tekst.",
     "This mailbox has used its AI tokens for today.": "Deze mailbox heeft zijn AI-tokens voor vandaag opgebruikt.",
     "This customer sent more messages in the last hour than are translated.": "Deze klant heeft het afgelopen uur meer berichten gestuurd dan er worden vertaald.",
-    "The AI failed (:error). It tries again when the conversation is opened.": "De AI gaf een fout (:error). Het wordt opnieuw geprobeerd wanneer het gesprek wordt geopend."
+    "The AI failed (:error). It tries again when the conversation is opened.": "De AI gaf een fout (:error). Het wordt opnieuw geprobeerd wanneer het gesprek wordt geopend.",
+    "Offline: showing the copy saved in this browser.": "Offline: de kopie die in deze browser is bewaard wordt getoond.",
+    "You're offline. The change wasn't saved.": "U bent offline. De wijziging is niet opgeslagen.",
+    "Not available offline.": "Offline niet beschikbaar."
 }
