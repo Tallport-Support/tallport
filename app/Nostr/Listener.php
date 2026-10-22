@@ -626,6 +626,18 @@ class Listener
 
             return;
         }
+        // Updated since it started (tallport:after-app-update): it exits, and the scheduler starts it
+        // with the new code, not within its lifetime still with the old.
+        try {
+            if ((int) $this->withDb(fn () => \Option::get('app_updated_at', 0, true, false)) > $this->startedAt) {
+                $this->log('Tallport updated, exiting');
+                $this->stop('update');
+
+                return;
+            }
+        } catch (\Throwable $e) {
+            // The next tick tries again.
+        }
 
         try {
             $fingerprint = $this->withDb(function () {

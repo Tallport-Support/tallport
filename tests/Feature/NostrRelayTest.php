@@ -918,6 +918,26 @@ class NostrRelayTest extends FeatureTestCase
         $this->assertCount($count, $log);
     }
 
+    /**
+     * Updated since it started (tallport:after-app-update): it stops, so the scheduler starts it
+     * with the new code (not within its lifetime still with the old).
+     */
+    public function testAListenerStopsAfterAnUpdate()
+    {
+        $log = [];
+        $listener = $this->listener(new IncomingMessageHandler(), $log);
+        $listener->set('startedAt', time() - 10);
+        \App\Option::set('app_updated_at', time() - 20);
+        $listener->call('tick');
+        $this->assertFalse($listener->get('stopping'), 'Updated before it started.');
+
+        \App\Option::set('app_updated_at', time());
+        $listener->call('tick');
+        $this->assertTrue($listener->get('stopping'));
+        $this->assertSame('update', ListenerStatus::read()['stop_reason']);
+        $this->assertContains('Tallport updated, exiting', $log);
+    }
+
     public function testAStoppingListenerKeepsItsSuccessorsHeartbeat()
     {
         $log = [];
