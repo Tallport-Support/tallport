@@ -83,6 +83,8 @@ export function fruitMenu() {
         if (!owns(event.target)) return;
         const enabled = items();
         if (event.target === trigger && ['ArrowDown', 'ArrowUp'].includes(event.key)) {
+          // A disabled trigger (aria-disabled, as a summary can't take disabled) doesn't open.
+          if (trigger.getAttribute('aria-disabled') === 'true') return;
           event.preventDefault();
           details.open = true;
           floating.show();

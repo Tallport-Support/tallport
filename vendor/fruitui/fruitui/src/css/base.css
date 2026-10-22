@@ -29,7 +29,13 @@
   :where(.fruit-ui) :where(button) {
     cursor: pointer;
   }
-  :where(.fruit-ui) :where(button:disabled, input:disabled, select:disabled, textarea:disabled) {
+  /* Disabled controls; a link styled as a button or menu item, or a menu's trigger (summary), can't take
+     disabled, so aria-disabled="true" looks the same there (the Alpine plugin ignores its activation). */
+  :where(.fruit-ui) :where(button:disabled, input:disabled, select:disabled, textarea:disabled),
+  :where(.fruit-ui)
+    :where(a, button, summary, [role='button'], [role='tab'], [role='option'], [role^='menuitem']):where(
+      [aria-disabled='true']
+    ) {
     opacity: 0.45;
     cursor: not-allowed;
   }

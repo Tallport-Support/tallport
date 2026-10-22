@@ -121,7 +121,7 @@
     text-align: start;
     font-size: var(--f-text-base);
   }
-  .f-menu-item:is(:hover, :focus-visible):not(:disabled) {
+  .f-menu-item:is(:hover, :focus-visible):not(:disabled, [aria-disabled='true']) {
     background: var(--f-accent-fill);
     color: var(--f-on-accent);
     outline: none;
@@ -161,7 +161,7 @@
     font-size: var(--f-text-sm);
     letter-spacing: 0.04em;
   }
-  .f-menu-item:is(:hover, :focus-visible):not(:disabled) .f-menu-item__shortcut {
+  .f-menu-item:is(:hover, :focus-visible):not(:disabled, [aria-disabled='true']) .f-menu-item__shortcut {
     color: inherit;
   }
   .f-menu__separator {
@@ -541,7 +541,7 @@
     font-size: var(--f-text-base);
     text-decoration: none;
   }
-  .f-tab:hover {
+  .f-tab:hover:not(:where(:disabled, [aria-disabled='true'])) {
     background: var(--f-hover);
   }
   .f-tab[aria-selected='true'] {

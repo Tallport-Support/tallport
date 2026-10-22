@@ -9,8 +9,8 @@
       "button": {
         "purpose": "Invoke an action.",
         "element": "`button`, button role; native `aria-pressed` can describe a toggle action.",
-        "state": "Native disabled state; explicit form button type. `aria-busy=\"true\"` (or Livewire's `data-loading`) marks work in progress: after `--f-busy-delay` (150ms) a spinner covers the label, the width, focus and accessible name hold, and the Alpine plugin ignores further clicks.",
-        "keyboard": "Tab focuses; Enter/Space invokes; a busy button keeps focus and ignores activation.",
+        "state": "Native disabled state; explicit form button type. `aria-busy=\"true\"` (or Livewire's `data-loading`) marks work in progress: after `--f-busy-delay` (150ms) a spinner covers the label, the width, focus and accessible name hold, and the Alpine plugin ignores further clicks. A link styled as a button (`a.f-button`) takes `aria-disabled=\"true\"` instead of `disabled`: it looks the same, keeps focus, and the Alpine plugin ignores its activation.",
+        "keyboard": "Tab focuses; Enter/Space invokes; a busy button keeps focus and ignores activation; so does an `aria-disabled` link button.",
         "options": "`variant`: default, primary, ghost, danger. `size`: small (30px), regular (36px, default), large (44px). `type`: button (default), submit, reset. Slot: action label and optional decorative icon."
       }
     }
@@ -742,8 +742,8 @@
       "menu": {
         "purpose": "Disclose action commands.",
         "element": "`details`/`summary` with child menu.",
-        "state": "Native open state; helper owns focus and dismissal.",
-        "keyboard": "Enter/Space/Down/Up opens; arrows, Home/End, typeahead; Escape closes; Tab leaves.",
+        "state": "Native open state; helper owns focus and dismissal. A trigger with `aria-disabled=\"true\"` (an attribute of the trigger slot; a summary can't take `disabled`) looks disabled and doesn't open.",
+        "keyboard": "Enter/Space/Down/Up opens; arrows, Home/End, typeahead; Escape closes; Tab leaves; a disabled trigger doesn't open.",
         "options": "Title; trigger and menu-item content slots. A title trigger shows a pull-down chevron; a custom trigger adds `<span class=\"f-menu__chevron\" aria-hidden=\"true\">` when it shows text, and omits it for an icon-only button. Fixed fruitMenu helper; application state on parent. The menu floats above the page, inside the window, lined up with the trigger's end, or with its start when the end would cross the window's edge."
       }
     }
@@ -779,7 +779,7 @@
       "menu-link": {
         "purpose": "Navigate to a page from a menu.",
         "element": "`a` with role=menuitem and a required href.",
-        "state": "Native link; no owned state.",
+        "state": "Native link; no owned state. `aria-disabled=\"true\"` looks disabled, is skipped by the menu's arrow keys, and the Alpine plugin ignores its activation.",
         "keyboard": "Menu helper moves focus; Enter follows the link.",
         "options": "Native link attributes, including wire:navigate. `shortcut`: displayed key equivalent. Label slot."
       },

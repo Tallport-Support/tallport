@@ -463,6 +463,7 @@ var offlineToast = function (which) {
 	var notice = document.querySelector('.app-offline');
 	Tallport.toast(notice ? notice.getAttribute('data-'+which) : Lang.get('messages.error_occurred'), 'danger');
 };
+// Disabled: buttons as such, menus and links with aria-disabled (FruitUI keeps them shut).
 var OFFLINE_ACTIONS = '#conv-toolbar button, #conv-toolbar summary, .conv-pane button, .conv-pane summary, .conv-list__header button, .conv-list__header summary, .conv-list-host .f-context-menu button, .conv-list-host .f-context-menu a';
 var offlineDisable = function () {
 	var off = offline();
@@ -479,13 +480,6 @@ var offlineDisable = function () {
 		}
 	});
 };
-// A disabled menu or link doesn't open.
-document.addEventListener('click', function (e) {
-	if (offline() && e.target.closest && e.target.closest('[data-offline-disabled]')) {
-		e.preventDefault();
-		e.stopPropagation();
-	}
-}, true);
 window.addEventListener('offline', function () {
 	// A change shown at once wasn't saved.
 	rowUndo();

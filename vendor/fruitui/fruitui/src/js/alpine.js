@@ -11,6 +11,7 @@ import { fruitSplitter } from './splitter.js';
 import { fruitHistory } from './history.js';
 import { fruitDrilldown } from './drilldown.js';
 import { listenForBusyButtons } from './busy.js';
+import { listenForDisabledControls } from './disabled.js';
 import { fruitAutocomplete } from './autocomplete.js';
 import { fruitCommandPalette } from './command-palette.js';
 import { fruitDropzone } from './dropzone.js';
@@ -54,6 +55,7 @@ export default function fruitUI(Alpine) {
     listenForRemoteDialogs(document);
     listenForDialogFrames(document);
     listenForBusyButtons(document);
+    listenForDisabledControls(document);
     listening = true;
   }
 }

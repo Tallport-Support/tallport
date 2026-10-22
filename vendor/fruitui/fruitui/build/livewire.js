@@ -716,6 +716,15 @@ function ie(e = document) {
 	return e.addEventListener("click", t, !0), () => e.removeEventListener("click", t, !0);
 }
 //#endregion
+//#region src/js/disabled.js
+var ae = ":is(.f-button, .f-menu-item, .f-tab, summary)[aria-disabled=\"true\"]";
+function oe(e = document) {
+	let t = (e) => {
+		e.target.closest?.(ae) && (e.preventDefault(), e.stopImmediatePropagation());
+	};
+	return e.addEventListener("click", t, !0), () => e.removeEventListener("click", t, !0);
+}
+//#endregion
 //#region src/js/suggestions.js
 function P(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anchor: s = t, messages: c = {
 	label: "label",
@@ -790,7 +799,7 @@ function P(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anc
 }
 //#endregion
 //#region src/js/autocomplete.js
-function ae() {
+function se() {
 	let e, t, n, r = () => e.dataset.fruitTrigger || "", i = () => {
 		let e = t.selectionStart ?? t.value.length, n = t.value.slice(0, e), i = n.search(/[^\s,]*$/), a = n.slice(i), o = r();
 		return o ? a.startsWith(o) ? {
@@ -826,7 +835,7 @@ function ae() {
 }
 //#endregion
 //#region src/js/command-palette.js
-function oe() {
+function ce() {
 	let e, t, n, r, i, a, o = -1, s = () => [...n.querySelectorAll("[role=\"option\"]")].filter((e) => !e.hidden && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true"), c = (e) => {
 		let r = s();
 		o = r.length ? (e + r.length) % r.length : -1;
@@ -874,13 +883,13 @@ function oe() {
 }
 //#endregion
 //#region src/js/dropzone.js
-var se = (e, t) => {
+var le = (e, t) => {
 	let n = (e.accept || "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
 	if (!n.length) return !0;
 	let r = t.name.toLowerCase(), i = (t.type || "").toLowerCase();
 	return n.some((e) => e.startsWith(".") ? r.endsWith(e) : e.endsWith("/*") ? i.startsWith(e.slice(0, -1)) : i === e);
 };
-function ce() {
+function ue() {
 	let e;
 	return {
 		init() {
@@ -897,7 +906,7 @@ function ce() {
 			}), r("drop", (e) => {
 				if (!a(e) || n.disabled) return;
 				e.preventDefault(), i = 0, t.removeAttribute("data-dragging");
-				let r = [...e.dataTransfer.files].filter((e) => se(n, e));
+				let r = [...e.dataTransfer.files].filter((e) => le(n, e));
 				if (!r.length) return;
 				let o = new DataTransfer();
 				for (let e of n.multiple ? r : r.slice(0, 1)) o.items.add(e);
@@ -956,7 +965,7 @@ function U(e, t, n, { onOpen: r, onFocus: i }) {
 		}
 	};
 }
-function le() {
+function de() {
 	let e, t, n, r, i, a, s = /* @__PURE__ */ new Date(), c = /* @__PURE__ */ new Date(), l = () => L(t.value), u = () => [L(t.min), L(t.max)], f = (e) => {
 		let [t, n] = u();
 		return !!(t && e < t || n && e > n);
@@ -1046,7 +1055,7 @@ function le() {
 		}
 	};
 }
-var ue = [
+var fe = [
 	["Red", "#ff3b30"],
 	["Orange", "#ff9500"],
 	["Yellow", "#ffcc00"],
@@ -1060,13 +1069,13 @@ var ue = [
 	["Pink", "#ff2d55"],
 	["Brown", "#a2845e"],
 	["Gray", "#8e8e93"]
-], W = 7, de = (e) => [
+], W = 7, pe = (e) => [
 	1,
 	3,
 	5
 ].map((t) => parseInt(e.slice(t, t + 2), 16) / 255);
-function fe(e) {
-	let [t, n, r] = de(e), i = Math.max(t, n, r), a = i - Math.min(t, n, r), o = 0;
+function me(e) {
+	let [t, n, r] = pe(e), i = Math.max(t, n, r), a = i - Math.min(t, n, r), o = 0;
 	return a && (o = i === t ? (n - r) / a % 6 : i === n ? (r - t) / a + 2 : (t - n) / a + 4), [
 		(o * 60 + 360) % 360,
 		i ? a / i : 0,
@@ -1084,14 +1093,14 @@ function G(e, t, n) {
 		r(1)
 	].map((e) => Math.round(e * 255).toString(16).padStart(2, "0")).join("")}`;
 }
-function pe() {
+function he() {
 	let e, t, n, r, i, a, s, c, l, u, f, m = [
 		0,
 		0,
 		0
 	], h = () => {
 		let e = [...t.list?.options ?? []].filter((e) => /^#[0-9a-f]{6}$/i.test(e.value)).map((e) => [e.label || e.value, e.value.toLowerCase()]);
-		return e.length ? e : ue;
+		return e.length ? e : fe;
 	}, g = () => [...r.querySelectorAll("[role=\"option\"]")], _ = () => {
 		let e = t.value.toLowerCase();
 		r.replaceChildren(...h().map(([t, n]) => {
@@ -1109,7 +1118,7 @@ function pe() {
 			brightness: d(i)
 		})), l.value = String(Math.round(n)), document.activeElement !== u && (u.value = t.value);
 	}, y = () => {
-		let [e, n, r] = fe(t.value);
+		let [e, n, r] = me(t.value);
 		m = [
 			n && r ? e : m[0],
 			n,
@@ -1237,8 +1246,8 @@ function pe() {
 }
 //#endregion
 //#region src/js/editor-content.js
-var me = Symbol.for("fruitui.editor");
-function he(e, t, { insert: n, set: r, toMarkdown: i, commit: a }) {
+var ge = Symbol.for("fruitui.editor");
+function _e(e, t, { insert: n, set: r, toMarkdown: i, commit: a }) {
 	let o = new AbortController(), s = (o) => {
 		let { html: s, markdown: c, mode: l, target: u } = o.detail ?? {};
 		if ((o.currentTarget !== window || u === t.id || u === t.name) && !(t.matches(":disabled") || t.readOnly)) {
@@ -1268,7 +1277,7 @@ function K(e) {
 	for (let e of t.querySelectorAll("p, div, li, h1, h2, h3, h4, h5, h6, blockquote, pre")) e.append("\n\n");
 	return t.textContent.replace(/\n{3,}/g, "\n\n").trim();
 }
-function ge() {
+function ve() {
 	let e, t, n;
 	return {
 		init() {
@@ -1277,7 +1286,7 @@ function ge() {
 				e.key !== "Enter" || e.shiftKey || e.isComposing || e.defaultPrevented || this.$el.dataset.fruitEnter === "submit" && n.form && (e.preventDefault(), n.form.requestSubmit());
 			}, n.addEventListener("keydown", t);
 			let r = ({ html: e, markdown: t }) => this.$el.dataset.fruitMode === "markdown" ? t ?? (e ? K(e) : "") : e ?? t ?? "";
-			e = he(this.$el, n, {
+			e = _e(this.$el, n, {
 				toMarkdown: () => p(n, n.value ? K(n.value) : "", { commit: !1 }),
 				insert: (e) => {
 					let t = r(e), i = n.selectionStart ?? n.value.length, a = n.selectionEnd ?? i;
@@ -1294,7 +1303,7 @@ function ge() {
 }
 //#endregion
 //#region src/js/selection.js
-function _e() {
+function ye() {
 	let e, t, n, r, i, a, s, c, l, u = [], f = -1, h = !1, g = () => t.selectedOptions[0]?.label || "", _ = () => {
 		h = !1, l.hide(), r.hidden = !0, n.setAttribute("aria-expanded", "false"), n.removeAttribute("aria-activedescendant");
 	}, v = (e) => {
@@ -1343,7 +1352,7 @@ function _e() {
 		}
 	};
 }
-function ve() {
+function be() {
 	let e, t, n, r, i, a, s, c, l, u, d, f, h, g = [], _ = () => {
 		f && (t.hasAttribute("name") && (d = t.name.replace(/\[\]$/, ""), t.removeAttribute("name")), f.replaceChildren(...g.map((e) => {
 			let n = document.createElement("input");
@@ -1450,7 +1459,7 @@ function ve() {
 		}
 	};
 }
-function ye() {
+function xe() {
 	let e, t, n = () => {
 		let t = Math.max(0, Number.parseInt(e.dataset.count ?? "0", 10) || 0), n = (e.dataset.fruitTemplate || ":count selected").split("|"), r = e.closest("[lang]")?.lang || navigator.language || "en", i = n.length > 1 && new Intl.PluralRules(r).select(t) !== "one" ? n[1] : n[0], a = e.querySelector(".f-selection-bar__count");
 		a && (a.textContent = i.trim().replace(":count", String(t))), e.hidden = t === 0;
@@ -1471,19 +1480,19 @@ function ye() {
 //#region src/js/navigation.js
 var q = "[role=\"menuitem\"], [role=\"menuitemcheckbox\"], [role=\"menuitemradio\"]", J = (e, t) => [...e.querySelectorAll(q)].filter((e) => t(e) && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true" && e.getClientRects().length), Y = (e, t) => {
 	e.length && e[(t + e.length) % e.length].focus();
-}, X = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
-function Z(e, t, n) {
+}, Se = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
+function X(e, t, n) {
 	let r = t.indexOf(document.activeElement);
 	return [
 		"ArrowDown",
 		"ArrowUp",
 		"Home",
 		"End"
-	].includes(e.key) ? (e.preventDefault(), Y(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => X(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
+	].includes(e.key) ? (e.preventDefault(), Y(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => Se(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
 		n.search = "";
 	}, 600), !0);
 }
-function be() {
+function Ce() {
 	let e, t, n, r, i, a, o, s = {
 		search: "",
 		timer: null
@@ -1501,7 +1510,10 @@ function be() {
 			}), i = (n) => {
 				if (!c(n.target)) return;
 				let i = l();
-				n.target === t && ["ArrowDown", "ArrowUp"].includes(n.key) ? (n.preventDefault(), e.open = !0, r.show(), u(n.key === "ArrowDown" ? 0 : i.length - 1)) : e.open && n.key === "Tab" ? o = setTimeout(() => r.close(!1), 0) : e.open && Z(n, i, s);
+				if (n.target === t && ["ArrowDown", "ArrowUp"].includes(n.key)) {
+					if (t.getAttribute("aria-disabled") === "true") return;
+					n.preventDefault(), e.open = !0, r.show(), u(n.key === "ArrowDown" ? 0 : i.length - 1);
+				} else e.open && n.key === "Tab" ? o = setTimeout(() => r.close(!1), 0) : e.open && X(n, i, s);
 			}, a = (e) => {
 				let t = e.target.closest(q);
 				c(t) && !t.matches(":disabled") && t.getAttribute("aria-disabled") !== "true" && r.close(!0);
@@ -1512,7 +1524,7 @@ function be() {
 		}
 	};
 }
-function xe() {
+function we() {
 	let e, t, n, r, i, a, o, s, c, l = {
 		x: 0,
 		y: 0
@@ -1553,7 +1565,7 @@ function xe() {
 				let i = n.target.getBoundingClientRect();
 				p(r, T(t) ? i.right : i.left, i.bottom, n.target);
 			}), g(e, "keydown", (t) => {
-				d(t.target) && (t.key === "Escape" ? (t.preventDefault(), t.stopPropagation(), h(!0)) : t.key === "Tab" ? (t.preventDefault(), h(!0)) : Z(t, J(e, d), u));
+				d(t.target) && (t.key === "Escape" ? (t.preventDefault(), t.stopPropagation(), h(!0)) : t.key === "Tab" ? (t.preventDefault(), h(!0)) : X(t, J(e, d), u));
 			}), g(e, "click", (e) => {
 				let t = e.target.closest(q);
 				d(t) && !t.matches(":disabled") && t.getAttribute("aria-disabled") !== "true" && h(!0);
@@ -1566,7 +1578,7 @@ function xe() {
 		}
 	};
 }
-function Se() {
+function Te() {
 	let e, t, n, r, i, a, o;
 	return {
 		init() {
@@ -1591,7 +1603,7 @@ function Se() {
 		}
 	};
 }
-function Ce() {
+function Z() {
 	let e, t, n, r, i = (t) => t?.closest("[data-fruit-tabs], [x-data^=\"fruitTabs\"]") === e, a = () => [...e.querySelectorAll("[role=\"tab\"]")].filter(i), o = () => a().filter((e) => !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true"), s = (t) => {
 		for (let n of a()) {
 			let r = n === t;
@@ -1628,7 +1640,7 @@ function Ce() {
 		}
 	};
 }
-function we() {
+function Ee() {
 	let e;
 	return {
 		init() {
@@ -1650,7 +1662,7 @@ function we() {
 //#region src/js/alpine.js
 var Q = !1;
 function $(e) {
-	e[me] || e.data("fruitEditor", ge), e.data("fruitToast", n), e.magic("toast", () => t), e.data("fruitConfirmer", a), e.magic("confirm", () => i), e.data("fruitCopy", c), e.data("fruitListSelection", l), e.magic("dialog", () => b), e.data("fruitCombobox", _e), e.data("fruitTokenField", ve), e.data("fruitSelectionBar", ye), e.data("fruitAutocomplete", ae), e.data("fruitCommandPalette", oe), e.data("fruitDropzone", ce), e.data("fruitMenu", be), e.data("fruitDatePicker", le), e.data("fruitColorPicker", pe), e.data("fruitContextMenu", xe), e.data("fruitTooltip", Se), e.data("fruitTabs", Ce), e.data("fruitSplitter", ee), e.data("fruitHistory", te), e.data("fruitDrilldown", ne), e.data("fruitFloatingDisclosure", we), e.data("fruitDialogModel", C), typeof window < "u" && !Q && (S(window), x(document), w(document), ie(document), Q = !0);
+	e[ge] || e.data("fruitEditor", ve), e.data("fruitToast", n), e.magic("toast", () => t), e.data("fruitConfirmer", a), e.magic("confirm", () => i), e.data("fruitCopy", c), e.data("fruitListSelection", l), e.magic("dialog", () => b), e.data("fruitCombobox", ye), e.data("fruitTokenField", be), e.data("fruitSelectionBar", xe), e.data("fruitAutocomplete", se), e.data("fruitCommandPalette", ce), e.data("fruitDropzone", ue), e.data("fruitMenu", Ce), e.data("fruitDatePicker", de), e.data("fruitColorPicker", he), e.data("fruitContextMenu", we), e.data("fruitTooltip", Te), e.data("fruitTabs", Z), e.data("fruitSplitter", ee), e.data("fruitHistory", te), e.data("fruitDrilldown", ne), e.data("fruitFloatingDisclosure", Ee), e.data("fruitDialogModel", C), typeof window < "u" && !Q && (S(window), x(document), w(document), ie(document), oe(document), Q = !0);
 }
 //#endregion
 //#region src/js/livewire.js

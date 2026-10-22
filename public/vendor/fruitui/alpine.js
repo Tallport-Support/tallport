@@ -716,6 +716,15 @@ function ie(e = document) {
 	return e.addEventListener("click", t, !0), () => e.removeEventListener("click", t, !0);
 }
 //#endregion
+//#region src/js/disabled.js
+var ae = ":is(.f-button, .f-menu-item, .f-tab, summary)[aria-disabled=\"true\"]";
+function oe(e = document) {
+	let t = (e) => {
+		e.target.closest?.(ae) && (e.preventDefault(), e.stopImmediatePropagation());
+	};
+	return e.addEventListener("click", t, !0), () => e.removeEventListener("click", t, !0);
+}
+//#endregion
 //#region src/js/suggestions.js
 function P(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anchor: s = t, messages: c = {
 	label: "label",
@@ -790,7 +799,7 @@ function P(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anc
 }
 //#endregion
 //#region src/js/autocomplete.js
-function ae() {
+function F() {
 	let e, t, n, r = () => e.dataset.fruitTrigger || "", i = () => {
 		let e = t.selectionStart ?? t.value.length, n = t.value.slice(0, e), i = n.search(/[^\s,]*$/), a = n.slice(i), o = r();
 		return o ? a.startsWith(o) ? {
@@ -826,7 +835,7 @@ function ae() {
 }
 //#endregion
 //#region src/js/command-palette.js
-function oe() {
+function se() {
 	let e, t, n, r, i, a, o = -1, s = () => [...n.querySelectorAll("[role=\"option\"]")].filter((e) => !e.hidden && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true"), c = (e) => {
 		let r = s();
 		o = r.length ? (e + r.length) % r.length : -1;
@@ -874,13 +883,13 @@ function oe() {
 }
 //#endregion
 //#region src/js/dropzone.js
-var se = (e, t) => {
+var ce = (e, t) => {
 	let n = (e.accept || "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
 	if (!n.length) return !0;
 	let r = t.name.toLowerCase(), i = (t.type || "").toLowerCase();
 	return n.some((e) => e.startsWith(".") ? r.endsWith(e) : e.endsWith("/*") ? i.startsWith(e.slice(0, -1)) : i === e);
 };
-function ce() {
+function le() {
 	let e;
 	return {
 		init() {
@@ -897,7 +906,7 @@ function ce() {
 			}), r("drop", (e) => {
 				if (!a(e) || n.disabled) return;
 				e.preventDefault(), i = 0, t.removeAttribute("data-dragging");
-				let r = [...e.dataTransfer.files].filter((e) => se(n, e));
+				let r = [...e.dataTransfer.files].filter((e) => ce(n, e));
 				if (!r.length) return;
 				let o = new DataTransfer();
 				for (let e of n.multiple ? r : r.slice(0, 1)) o.items.add(e);
@@ -911,21 +920,21 @@ function ce() {
 }
 //#endregion
 //#region src/js/pickers.js
-var F = (e) => String(e).padStart(2, "0"), I = (e) => `${String(e.getFullYear()).padStart(4, "0")}-${F(e.getMonth() + 1)}-${F(e.getDate())}`, L = (e) => {
+var I = (e) => String(e).padStart(2, "0"), L = (e) => `${String(e.getFullYear()).padStart(4, "0")}-${I(e.getMonth() + 1)}-${I(e.getDate())}`, R = (e) => {
 	let t = /^(\d{4,})-(\d{2})-(\d{2})/.exec(e || "");
 	return t ? new Date(Number(t[1]), Number(t[2]) - 1, Number(t[3])) : null;
-}, R = (e, t) => new Date(e.getFullYear(), e.getMonth(), e.getDate() + t), z = (e, t) => {
+}, z = (e, t) => new Date(e.getFullYear(), e.getMonth(), e.getDate() + t), B = (e, t) => {
 	let n = new Date(e.getFullYear(), e.getMonth() + t, 1), r = new Date(n.getFullYear(), n.getMonth() + 1, 0).getDate();
 	return n.setDate(Math.min(e.getDate(), r)), n;
-}, B = (e, t) => !!(e && t) && I(e) === I(t), V = (e) => e.closest("[lang]")?.lang || navigator.language || "en";
-function H(e) {
+}, V = (e, t) => !!(e && t) && L(e) === L(t), H = (e) => e.closest("[lang]")?.lang || navigator.language || "en";
+function U(e) {
 	try {
 		let t = new Intl.Locale(e), n = t.getWeekInfo?.() ?? t.weekInfo;
 		if (n?.firstDay) return n.firstDay % 7;
 	} catch {}
 	return +!/^en(-US|-CA)?$/i.test(e);
 }
-function U(e, t, n, { onOpen: r, onFocus: i }) {
+function W(e, t, n, { onOpen: r, onFocus: i }) {
 	let a = E(n, t, { start: !0 }), o = new AbortController(), s = (e, t, n) => e.addEventListener(t, n, { signal: o.signal }), c = () => !n.hidden, l = () => {
 		t.setAttribute("aria-haspopup", "dialog"), t.setAttribute("aria-controls", n.id);
 	}, u = (e) => {
@@ -956,57 +965,57 @@ function U(e, t, n, { onOpen: r, onFocus: i }) {
 		}
 	};
 }
-function W() {
-	let e, t, n, r, i, a, s = /* @__PURE__ */ new Date(), c = /* @__PURE__ */ new Date(), l = () => L(t.value), u = () => [L(t.min), L(t.max)], f = (e) => {
+function ue() {
+	let e, t, n, r, i, a, s = /* @__PURE__ */ new Date(), c = /* @__PURE__ */ new Date(), l = () => R(t.value), u = () => [R(t.min), R(t.max)], f = (e) => {
 		let [t, n] = u();
 		return !!(t && e < t || n && e > n);
 	}, m = (e) => {
 		let [t, n] = u();
 		return t && e < t ? t : n && e > n ? n : e;
 	}, h = () => {
-		let e = V(t);
+		let e = H(t);
 		r.textContent = new Intl.DateTimeFormat(e, {
 			month: "long",
 			year: "numeric"
 		}).format(s);
-		let n = R(s, -((s.getDay() - H(e) + 7) % 7)), a = new Intl.DateTimeFormat(e, { weekday: "narrow" }), o = new Intl.DateTimeFormat(e, { weekday: "long" }), u = new Intl.DateTimeFormat(e, { dateStyle: "full" }), d = document.createElement("tr");
+		let n = z(s, -((s.getDay() - U(e) + 7) % 7)), a = new Intl.DateTimeFormat(e, { weekday: "narrow" }), o = new Intl.DateTimeFormat(e, { weekday: "long" }), u = new Intl.DateTimeFormat(e, { dateStyle: "full" }), d = document.createElement("tr");
 		for (let e = 0; e < 7; e++) {
-			let t = R(n, e), r = document.createElement("th");
+			let t = z(n, e), r = document.createElement("th");
 			r.scope = "col", r.abbr = o.format(t), r.textContent = a.format(t), d.append(r);
 		}
 		let p = [];
 		for (let e = 0; e < 6; e++) {
 			let t = document.createElement("tr");
 			for (let r = 0; r < 7; r++) {
-				let i = R(n, e * 7 + r), a = document.createElement("td");
-				a.setAttribute("aria-selected", String(B(i, l())));
+				let i = z(n, e * 7 + r), a = document.createElement("td");
+				a.setAttribute("aria-selected", String(V(i, l())));
 				let o = document.createElement("button");
-				o.type = "button", o.className = "f-calendar__day", o.tabIndex = B(i, c) ? 0 : -1, o.textContent = String(i.getDate()), o.dataset.date = I(i), o.setAttribute("aria-label", u.format(i)), i.getMonth() !== s.getMonth() && (o.dataset.outside = ""), B(i, /* @__PURE__ */ new Date()) && o.setAttribute("aria-current", "date"), f(i) && o.setAttribute("aria-disabled", "true"), a.append(o), t.append(a);
+				o.type = "button", o.className = "f-calendar__day", o.tabIndex = V(i, c) ? 0 : -1, o.textContent = String(i.getDate()), o.dataset.date = L(i), o.setAttribute("aria-label", u.format(i)), i.getMonth() !== s.getMonth() && (o.dataset.outside = ""), V(i, /* @__PURE__ */ new Date()) && o.setAttribute("aria-current", "date"), f(i) && o.setAttribute("aria-disabled", "true"), a.append(o), t.append(a);
 			}
 			p.push(t);
 		}
 		i.tHead.replaceChildren(d), i.tBodies[0].replaceChildren(...p);
 	}, g = (e, t = !0) => {
-		c = e, s = new Date(e.getFullYear(), e.getMonth(), 1), h(), t && i.querySelector(`[data-date="${I(e)}"]`)?.focus();
+		c = e, s = new Date(e.getFullYear(), e.getMonth(), 1), h(), t && i.querySelector(`[data-date="${L(e)}"]`)?.focus();
 	}, _ = (e) => {
 		if (f(e)) return;
-		let n = I(e);
+		let n = L(e);
 		if (t.type === "datetime-local") {
 			let e = /* @__PURE__ */ new Date();
-			n += `T${t.value.split("T")[1] || `${F(e.getHours())}:${F(e.getMinutes())}`}`;
+			n += `T${t.value.split("T")[1] || `${I(e.getHours())}:${I(e.getMinutes())}`}`;
 		}
 		p(t, n), a.close(!0);
 	}, v = (e, n) => {
 		let r = T(t) ? -1 : 1;
 		return {
-			ArrowLeft: () => R(n, -r),
-			ArrowRight: () => R(n, r),
-			ArrowUp: () => R(n, -7),
-			ArrowDown: () => R(n, 7),
-			Home: () => R(n, -((n.getDay() - H(V(t)) + 7) % 7)),
-			End: () => R(n, 6 - (n.getDay() - H(V(t)) + 7) % 7),
-			PageUp: () => z(n, e.shiftKey ? -12 : -1),
-			PageDown: () => z(n, e.shiftKey ? 12 : 1)
+			ArrowLeft: () => z(n, -r),
+			ArrowRight: () => z(n, r),
+			ArrowUp: () => z(n, -7),
+			ArrowDown: () => z(n, 7),
+			Home: () => z(n, -((n.getDay() - U(H(t)) + 7) % 7)),
+			End: () => z(n, 6 - (n.getDay() - U(H(t)) + 7) % 7),
+			PageUp: () => B(n, e.shiftKey ? -12 : -1),
+			PageDown: () => B(n, e.shiftKey ? 12 : 1)
 		}[e.key]?.();
 	};
 	return {
@@ -1018,10 +1027,10 @@ function W() {
 			let f = (t, n, r) => {
 				let i = document.createElement("button");
 				return i.type = "button", i.className = "f-calendar__nav", i.dataset.direction = t, i.setAttribute("aria-label", o(e, n, r)), i.addEventListener("click", () => {
-					c = m(z(c, t === "next" ? 1 : -1)), s = new Date(c.getFullYear(), c.getMonth(), 1), h();
+					c = m(B(c, t === "next" ? 1 : -1)), s = new Date(c.getFullYear(), c.getMonth(), 1), h();
 				}), i;
 			};
-			u.append(r, f("previous", "previous-label", "Previous Month"), f("next", "next-label", "Next Month")), i = document.createElement("table"), i.className = "f-calendar__grid", i.setAttribute("role", "grid"), i.setAttribute("aria-labelledby", r.id), i.append(document.createElement("thead"), document.createElement("tbody")), n.append(u, i), (e.querySelector("[data-fruit-ui]") ?? e).append(n), a = U(e, t, n, {
+			u.append(r, f("previous", "previous-label", "Previous Month"), f("next", "next-label", "Next Month")), i = document.createElement("table"), i.className = "f-calendar__grid", i.setAttribute("role", "grid"), i.setAttribute("aria-labelledby", r.id), i.append(document.createElement("thead"), document.createElement("tbody")), n.append(u, i), (e.querySelector("[data-fruit-ui]") ?? e).append(n), a = W(e, t, n, {
 				onOpen: () => g(m(l() ?? /* @__PURE__ */ new Date()), !1),
 				onFocus: () => i.querySelector(".f-calendar__day[tabindex=\"0\"]")?.focus()
 			}), e.setAttribute("data-ready", ""), a.listen(t, "click", (e) => {
@@ -1033,11 +1042,11 @@ function W() {
 				a.isOpen() && e && g(e, !1);
 			}), a.listen(i, "click", (e) => {
 				let t = e.target.closest(".f-calendar__day");
-				t && _(L(t.dataset.date));
+				t && _(R(t.dataset.date));
 			}), a.listen(i, "keydown", (e) => {
 				let t = e.target.closest(".f-calendar__day");
 				if (!t) return;
-				let n = v(e, L(t.dataset.date));
+				let n = v(e, R(t.dataset.date));
 				n && (e.preventDefault(), g(n));
 			});
 		},
@@ -1046,7 +1055,7 @@ function W() {
 		}
 	};
 }
-var le = [
+var de = [
 	["Red", "#ff3b30"],
 	["Orange", "#ff9500"],
 	["Yellow", "#ffcc00"],
@@ -1060,13 +1069,13 @@ var le = [
 	["Pink", "#ff2d55"],
 	["Brown", "#a2845e"],
 	["Gray", "#8e8e93"]
-], G = 7, ue = (e) => [
+], G = 7, fe = (e) => [
 	1,
 	3,
 	5
 ].map((t) => parseInt(e.slice(t, t + 2), 16) / 255);
-function de(e) {
-	let [t, n, r] = ue(e), i = Math.max(t, n, r), a = i - Math.min(t, n, r), o = 0;
+function pe(e) {
+	let [t, n, r] = fe(e), i = Math.max(t, n, r), a = i - Math.min(t, n, r), o = 0;
 	return a && (o = i === t ? (n - r) / a % 6 : i === n ? (r - t) / a + 2 : (t - n) / a + 4), [
 		(o * 60 + 360) % 360,
 		i ? a / i : 0,
@@ -1084,14 +1093,14 @@ function K(e, t, n) {
 		r(1)
 	].map((e) => Math.round(e * 255).toString(16).padStart(2, "0")).join("")}`;
 }
-function fe() {
+function me() {
 	let e, t, n, r, i, a, s, c, l, u, f, m = [
 		0,
 		0,
 		0
 	], h = () => {
 		let e = [...t.list?.options ?? []].filter((e) => /^#[0-9a-f]{6}$/i.test(e.value)).map((e) => [e.label || e.value, e.value.toLowerCase()]);
-		return e.length ? e : le;
+		return e.length ? e : de;
 	}, g = () => [...r.querySelectorAll("[role=\"option\"]")], _ = () => {
 		let e = t.value.toLowerCase();
 		r.replaceChildren(...h().map(([t, n]) => {
@@ -1109,7 +1118,7 @@ function fe() {
 			brightness: d(i)
 		})), l.value = String(Math.round(n)), document.activeElement !== u && (u.value = t.value);
 	}, y = () => {
-		let [e, n, r] = de(t.value);
+		let [e, n, r] = pe(t.value);
 		m = [
 			n && r ? e : m[0],
 			n,
@@ -1156,7 +1165,7 @@ function fe() {
 				maxlength: "7",
 				spellcheck: "false",
 				autocomplete: "off"
-			}), h.append(v, u), a.append(s, l, h), i.setAttribute("aria-controls", a.id = `${n.id}-editor`), n.append(r, i, a), _(), (e.querySelector("[data-fruit-ui]") ?? e).append(n), f = U(e, t, n, {
+			}), h.append(v, u), a.append(s, l, h), i.setAttribute("aria-controls", a.id = `${n.id}-editor`), n.append(r, i, a), _(), (e.querySelector("[data-fruit-ui]") ?? e).append(n), f = W(e, t, n, {
 				onOpen: () => {
 					_(), a.hidden = !0, i.hidden = !1, i.setAttribute("aria-expanded", "false");
 				},
@@ -1237,8 +1246,8 @@ function fe() {
 }
 //#endregion
 //#region src/js/editor-content.js
-var pe = Symbol.for("fruitui.editor");
-function me(e, t, { insert: n, set: r, toMarkdown: i, commit: a }) {
+var he = Symbol.for("fruitui.editor");
+function ge(e, t, { insert: n, set: r, toMarkdown: i, commit: a }) {
 	let o = new AbortController(), s = (o) => {
 		let { html: s, markdown: c, mode: l, target: u } = o.detail ?? {};
 		if ((o.currentTarget !== window || u === t.id || u === t.name) && !(t.matches(":disabled") || t.readOnly)) {
@@ -1268,7 +1277,7 @@ function q(e) {
 	for (let e of t.querySelectorAll("p, div, li, h1, h2, h3, h4, h5, h6, blockquote, pre")) e.append("\n\n");
 	return t.textContent.replace(/\n{3,}/g, "\n\n").trim();
 }
-function he() {
+function _e() {
 	let e, t, n;
 	return {
 		init() {
@@ -1277,7 +1286,7 @@ function he() {
 				e.key !== "Enter" || e.shiftKey || e.isComposing || e.defaultPrevented || this.$el.dataset.fruitEnter === "submit" && n.form && (e.preventDefault(), n.form.requestSubmit());
 			}, n.addEventListener("keydown", t);
 			let r = ({ html: e, markdown: t }) => this.$el.dataset.fruitMode === "markdown" ? t ?? (e ? q(e) : "") : e ?? t ?? "";
-			e = me(this.$el, n, {
+			e = ge(this.$el, n, {
 				toMarkdown: () => p(n, n.value ? q(n.value) : "", { commit: !1 }),
 				insert: (e) => {
 					let t = r(e), i = n.selectionStart ?? n.value.length, a = n.selectionEnd ?? i;
@@ -1294,7 +1303,7 @@ function he() {
 }
 //#endregion
 //#region src/js/selection.js
-function ge() {
+function ve() {
 	let e, t, n, r, i, a, s, c, l, u = [], f = -1, h = !1, g = () => t.selectedOptions[0]?.label || "", _ = () => {
 		h = !1, l.hide(), r.hidden = !0, n.setAttribute("aria-expanded", "false"), n.removeAttribute("aria-activedescendant");
 	}, v = (e) => {
@@ -1343,7 +1352,7 @@ function ge() {
 		}
 	};
 }
-function _e() {
+function ye() {
 	let e, t, n, r, i, a, s, c, l, u, d, f, h, g = [], _ = () => {
 		f && (t.hasAttribute("name") && (d = t.name.replace(/\[\]$/, ""), t.removeAttribute("name")), f.replaceChildren(...g.map((e) => {
 			let n = document.createElement("input");
@@ -1450,7 +1459,7 @@ function _e() {
 		}
 	};
 }
-function ve() {
+function be() {
 	let e, t, n = () => {
 		let t = Math.max(0, Number.parseInt(e.dataset.count ?? "0", 10) || 0), n = (e.dataset.fruitTemplate || ":count selected").split("|"), r = e.closest("[lang]")?.lang || navigator.language || "en", i = n.length > 1 && new Intl.PluralRules(r).select(t) !== "one" ? n[1] : n[0], a = e.querySelector(".f-selection-bar__count");
 		a && (a.textContent = i.trim().replace(":count", String(t))), e.hidden = t === 0;
@@ -1471,19 +1480,19 @@ function ve() {
 //#region src/js/navigation.js
 var J = "[role=\"menuitem\"], [role=\"menuitemcheckbox\"], [role=\"menuitemradio\"]", Y = (e, t) => [...e.querySelectorAll(J)].filter((e) => t(e) && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true" && e.getClientRects().length), X = (e, t) => {
 	e.length && e[(t + e.length) % e.length].focus();
-}, Z = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
-function Q(e, t, n) {
+}, xe = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
+function Z(e, t, n) {
 	let r = t.indexOf(document.activeElement);
 	return [
 		"ArrowDown",
 		"ArrowUp",
 		"Home",
 		"End"
-	].includes(e.key) ? (e.preventDefault(), X(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => Z(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
+	].includes(e.key) ? (e.preventDefault(), X(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => xe(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
 		n.search = "";
 	}, 600), !0);
 }
-function ye() {
+function Se() {
 	let e, t, n, r, i, a, o, s = {
 		search: "",
 		timer: null
@@ -1501,7 +1510,10 @@ function ye() {
 			}), i = (n) => {
 				if (!c(n.target)) return;
 				let i = l();
-				n.target === t && ["ArrowDown", "ArrowUp"].includes(n.key) ? (n.preventDefault(), e.open = !0, r.show(), u(n.key === "ArrowDown" ? 0 : i.length - 1)) : e.open && n.key === "Tab" ? o = setTimeout(() => r.close(!1), 0) : e.open && Q(n, i, s);
+				if (n.target === t && ["ArrowDown", "ArrowUp"].includes(n.key)) {
+					if (t.getAttribute("aria-disabled") === "true") return;
+					n.preventDefault(), e.open = !0, r.show(), u(n.key === "ArrowDown" ? 0 : i.length - 1);
+				} else e.open && n.key === "Tab" ? o = setTimeout(() => r.close(!1), 0) : e.open && Z(n, i, s);
 			}, a = (e) => {
 				let t = e.target.closest(J);
 				c(t) && !t.matches(":disabled") && t.getAttribute("aria-disabled") !== "true" && r.close(!0);
@@ -1512,7 +1524,7 @@ function ye() {
 		}
 	};
 }
-function be() {
+function Ce() {
 	let e, t, n, r, i, a, o, s, c, l = {
 		x: 0,
 		y: 0
@@ -1553,7 +1565,7 @@ function be() {
 				let i = n.target.getBoundingClientRect();
 				p(r, T(t) ? i.right : i.left, i.bottom, n.target);
 			}), g(e, "keydown", (t) => {
-				d(t.target) && (t.key === "Escape" ? (t.preventDefault(), t.stopPropagation(), h(!0)) : t.key === "Tab" ? (t.preventDefault(), h(!0)) : Q(t, Y(e, d), u));
+				d(t.target) && (t.key === "Escape" ? (t.preventDefault(), t.stopPropagation(), h(!0)) : t.key === "Tab" ? (t.preventDefault(), h(!0)) : Z(t, Y(e, d), u));
 			}), g(e, "click", (e) => {
 				let t = e.target.closest(J);
 				d(t) && !t.matches(":disabled") && t.getAttribute("aria-disabled") !== "true" && h(!0);
@@ -1566,7 +1578,7 @@ function be() {
 		}
 	};
 }
-function xe() {
+function we() {
 	let e, t, n, r, i, a, o;
 	return {
 		init() {
@@ -1591,7 +1603,7 @@ function xe() {
 		}
 	};
 }
-function Se() {
+function Q() {
 	let e, t, n, r, i = (t) => t?.closest("[data-fruit-tabs], [x-data^=\"fruitTabs\"]") === e, a = () => [...e.querySelectorAll("[role=\"tab\"]")].filter(i), o = () => a().filter((e) => !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true"), s = (t) => {
 		for (let n of a()) {
 			let r = n === t;
@@ -1628,7 +1640,7 @@ function Se() {
 		}
 	};
 }
-function Ce() {
+function Te() {
 	let e;
 	return {
 		init() {
@@ -1649,8 +1661,8 @@ function Ce() {
 //#endregion
 //#region src/js/alpine.js
 var $ = !1;
-function we(e) {
-	e[pe] || e.data("fruitEditor", he), e.data("fruitToast", n), e.magic("toast", () => t), e.data("fruitConfirmer", a), e.magic("confirm", () => i), e.data("fruitCopy", c), e.data("fruitListSelection", l), e.magic("dialog", () => b), e.data("fruitCombobox", ge), e.data("fruitTokenField", _e), e.data("fruitSelectionBar", ve), e.data("fruitAutocomplete", ae), e.data("fruitCommandPalette", oe), e.data("fruitDropzone", ce), e.data("fruitMenu", ye), e.data("fruitDatePicker", W), e.data("fruitColorPicker", fe), e.data("fruitContextMenu", be), e.data("fruitTooltip", xe), e.data("fruitTabs", Se), e.data("fruitSplitter", ee), e.data("fruitHistory", te), e.data("fruitDrilldown", ne), e.data("fruitFloatingDisclosure", Ce), e.data("fruitDialogModel", C), typeof window < "u" && !$ && (S(window), x(document), w(document), ie(document), $ = !0);
+function Ee(e) {
+	e[he] || e.data("fruitEditor", _e), e.data("fruitToast", n), e.magic("toast", () => t), e.data("fruitConfirmer", a), e.magic("confirm", () => i), e.data("fruitCopy", c), e.data("fruitListSelection", l), e.magic("dialog", () => b), e.data("fruitCombobox", ve), e.data("fruitTokenField", ye), e.data("fruitSelectionBar", be), e.data("fruitAutocomplete", F), e.data("fruitCommandPalette", se), e.data("fruitDropzone", le), e.data("fruitMenu", Se), e.data("fruitDatePicker", ue), e.data("fruitColorPicker", me), e.data("fruitContextMenu", Ce), e.data("fruitTooltip", we), e.data("fruitTabs", Q), e.data("fruitSplitter", ee), e.data("fruitHistory", te), e.data("fruitDrilldown", ne), e.data("fruitFloatingDisclosure", Te), e.data("fruitDialogModel", C), typeof window < "u" && !$ && (S(window), x(document), w(document), ie(document), oe(document), $ = !0);
 }
 //#endregion
-export { i as confirm, we as default, b as dialog, a as fruitConfirmer, n as fruitToast, t as toast };
+export { i as confirm, Ee as default, b as dialog, a as fruitConfirmer, n as fruitToast, t as toast };

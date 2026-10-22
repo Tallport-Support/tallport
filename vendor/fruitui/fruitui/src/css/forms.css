@@ -310,6 +310,8 @@
     color: var(--f-tertiary);
     text-decoration: line-through;
     cursor: not-allowed;
+    /* An unavailable day keeps its own look, not the dimmed disabled control. */
+    opacity: 1;
   }
   .f-color-palette__swatches {
     display: grid;

@@ -316,7 +316,14 @@ html.fruit-ui > body {
     cursor: pointer;
   }
 
-.fruit-ui :where(button:disabled, input:disabled, select:disabled, textarea:disabled) {
+/* Disabled controls; a link styled as a button or menu item, or a menu's trigger (summary), can't take
+     disabled, so aria-disabled="true" looks the same there (the Alpine plugin ignores its activation). */
+
+.fruit-ui :where(button:disabled, input:disabled, select:disabled, textarea:disabled),
+  .fruit-ui
+    :where(a, button, summary, [role='button'], [role='tab'], [role='option'], [role^='menuitem']):where(
+      [aria-disabled='true']
+    ) {
     opacity: 0.45;
     cursor: not-allowed;
   }
@@ -479,7 +486,9 @@ html.fruit-ui > body {
     white-space: nowrap;
   }
 
-.f-button:hover {
+/* Hover answers only controls that act: not disabled ones (aria-disabled too). */
+
+.f-button:hover:not(:where(:disabled, [aria-disabled='true'])) {
     background: var(--f-surface-secondary);
   }
 
@@ -489,7 +498,7 @@ html.fruit-ui > body {
     background: var(--f-accent-fill);
   }
 
-.f-button--primary:hover {
+.f-button--primary:hover:not(:where(:disabled, [aria-disabled='true'])) {
     background: var(--f-accent-fill-hover);
   }
 
@@ -503,7 +512,7 @@ html.fruit-ui > body {
     box-shadow: none;
   }
 
-.f-button--ghost:hover {
+.f-button--ghost:hover:not(:where(:disabled, [aria-disabled='true'])) {
     background: var(--f-hover);
   }
 
@@ -1795,6 +1804,8 @@ select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) {
     color: var(--f-tertiary);
     text-decoration: line-through;
     cursor: not-allowed;
+    /* An unavailable day keeps its own look, not the dimmed disabled control. */
+    opacity: 1;
   }
 
 .f-color-palette__swatches {
@@ -2661,7 +2672,7 @@ select.f-input:is([multiple], [size]:not([size='0'], [size='1'])) {
     font-size: var(--f-text-base);
   }
 
-.f-menu-item:is(:hover, :focus-visible):not(:disabled) {
+.f-menu-item:is(:hover, :focus-visible):not(:disabled, [aria-disabled='true']) {
     background: var(--f-accent-fill);
     color: var(--f-on-accent);
     outline: none;
@@ -2708,7 +2719,7 @@ a.f-menu-item {
     letter-spacing: 0.04em;
   }
 
-.f-menu-item:is(:hover, :focus-visible):not(:disabled) .f-menu-item__shortcut {
+.f-menu-item:is(:hover, :focus-visible):not(:disabled, [aria-disabled='true']) .f-menu-item__shortcut {
     color: inherit;
   }
 
@@ -3153,7 +3164,7 @@ a.f-menu-item {
     text-decoration: none;
   }
 
-.f-tab:hover {
+.f-tab:hover:not(:where(:disabled, [aria-disabled='true'])) {
     background: var(--f-hover);
   }
 
