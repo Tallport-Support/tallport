@@ -95,6 +95,8 @@ var folderOpen = function (folder_id, conversation_id) {
 			document.getElementById('app-content').removeAttribute('aria-busy');
 			if (!shown) {
 				offlineToast('unavailable');
+			} else if (typeof shown == 'string') {
+				window.history.replaceState(window.history.state, '', shown);
 			}
 		});
 		return;
@@ -160,11 +162,12 @@ var listFromCopy = function (folder_id, conversation_id) {
 		}
 		// Beside it, the conversation it opens at (offline: at its address).
 		if (opened_id && document.querySelector('.conv-pane')) {
+			// Shown: its address, for the page (offline).
 			return paneFromCopy(opened_id).then(function (shown) {
 				var row = document.querySelector('.conv-list-local a.conv-row__link[data-conversation_id="'+opened_id+'"]');
 				if (shown && offline() && row) {
-					window.history.replaceState(window.history.state, '', row.href);
 					document.body.setAttribute('data-conversation_id', opened_id);
+					return row.href;
 				}
 				return true;
 			});
@@ -433,7 +436,7 @@ document.addEventListener('click', function (e) {
 				offlineToast('unavailable');
 				return;
 			}
-			window.history.pushState({tallport_folder: {folder_id: offline_folder}}, '', link.href);
+			window.history.pushState({tallport_folder: {folder_id: offline_folder}}, '', typeof shown == 'string' ? shown : link.href);
 			folderMark(offline_folder);
 		});
 		return;
