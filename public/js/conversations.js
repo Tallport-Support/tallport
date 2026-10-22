@@ -445,6 +445,15 @@ document.addEventListener('livewire:init', function () {
 			setTimeout(headerSave, 100);
 		}
 	});
+	// A change shown at once that failed: undone with a message (rowUndo()), not Livewire's error page
+	// (an expired session still asks to reload).
+	Livewire.hook('request', function (hook) {
+		hook.fail(function (failure) {
+			if (rowPending.length && failure.status != 419 && failure.preventDefault) {
+				failure.preventDefault();
+			}
+		});
+	});
 	Livewire.hook('commit', function (hook) {
 		// A change shown at once (tallportRowMenu.rowNow()): kept when saved, undone if not.
 		if (['conversation-list', 'conversation-toolbar', 'conversation-subject'].indexOf(hook.component.name) >= 0) {
@@ -695,6 +704,8 @@ document.addEventListener('click', function (e) {
 		if (user_label) {
 			user_label.textContent = item.textContent.trim();
 		}
+		var user_prefix = (user_trigger.getAttribute('title') || '').split(': ')[0];
+		user_trigger.setAttribute('title', user_prefix+': '+item.textContent.trim());
 		if (row && ((row.type == 1 && user_id != -1) || (row.type == 20 && user_id != me) || (row.type == 40 && (user_id == -1 || user_id == me)))) {
 			nowLeave(row);
 		}
