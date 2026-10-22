@@ -69,6 +69,31 @@ window.tallportNeighbour = function (step) {
 	});
 	return current >= 0 ? links[current + step] || null : null;
 };
+/**
+ * Newer or Older, focused when pressed: the focus on the same in the toolbar now shown (the copy's,
+ * then the server's), or on the other at the end of the list; not lost to the page.
+ */
+var navFocus = null;
+var navRefocus = function () {
+	if (navFocus === null) {
+		return;
+	}
+	var toolbar = document.querySelector('#conv-toolbar.pane-local') || document.querySelector('#conv-toolbar');
+	var links = toolbar ? toolbar.querySelectorAll('.conv-next-prev a') : [];
+	var usable = function (link) {
+		return link && link.getAttribute('href') && link.getAttribute('href') != '#' && link.getAttribute('aria-disabled') != 'true';
+	};
+	var link = usable(links[navFocus]) ? links[navFocus] : (usable(links[1 - navFocus]) ? links[1 - navFocus] : null);
+	var active = document.activeElement;
+	if (link && (!active || active === document.body || active.closest('.conv-next-prev') || active.closest('[style*="display: none"]'))) {
+		link.focus();
+	}
+};
+document.addEventListener('focusin', function (e) {
+	if (navFocus !== null && !(e.target.closest && e.target.closest('.conv-next-prev'))) {
+		navFocus = null;
+	}
+});
 // A copy (paneDraw()): clicks do nothing in it, but Newer and Older.
 document.addEventListener('click', function (e) {
 	var copy = e.target.closest && e.target.closest('.pane-local');
@@ -81,7 +106,10 @@ document.addEventListener('click', function (e) {
 	// Newer and Older: from the list on screen (its address, its copy), else their links.
 	var nav = e.target.closest && e.target.closest('.conv-next-prev a');
 	if (nav && e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
-		var neighbour = tallportNeighbour(nav === nav.parentElement.querySelector('a') ? -1 : 1);
+		var newer = nav === nav.parentElement.querySelector('a');
+		// Pressed from the keyboard: the focus stays on it in the next toolbar (navRefocus()).
+		navFocus = document.activeElement === nav ? (newer ? 0 : 1) : null;
+		var neighbour = tallportNeighbour(newer ? -1 : 1);
 		if (neighbour) {
 			e.preventDefault();
 			e.stopImmediatePropagation();
@@ -548,6 +576,9 @@ document.addEventListener('livewire:init', function () {
 			paneDrawing = null;
 			paneWanted = null;
 			paneUndraw();
+			if (name == 'conversation-toolbar') {
+				setTimeout(navRefocus, 0);
+			}
 		} else if (name == 'conversation-list') {
 			listDrawing = null;
 			listWanted = null;
@@ -1098,6 +1129,7 @@ var paneDraw = function (parts) {
 		}
 	}, 15000);
 	offlineDisable();
+	navRefocus();
 };
 var paneUndraw = function () {
 	paneDrawing = null;
