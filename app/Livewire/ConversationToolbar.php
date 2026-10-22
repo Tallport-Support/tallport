@@ -133,6 +133,17 @@ class ConversationToolbar extends Component
         return $this->shownConversation();
     }
 
+    /**
+     * Changed from the list (ConversationList::changed()): shown anew when it's this one.
+     */
+    #[\Livewire\Attributes\On('conversation-changed')]
+    public function conversationChanged($ids)
+    {
+        if (!in_array((int) $this->conversation_id, array_map('intval', (array) $ids), true)) {
+            $this->skipRender();
+        }
+    }
+
     public function render()
     {
         $conversation = $this->conversation();

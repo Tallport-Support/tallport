@@ -301,7 +301,10 @@ class ConversationListTest extends FeatureTestCase
             ->assertSeeHtml('conv-status-dot--mixed')->assertDontSeeHtml('aria-label="Status: Active"');
         $this->assertDoesNotMatchRegularExpression('/aria-checked="true"[^>]*data-status=/', $list->html());
 
-        $list->call('changeStatus', Conversation::STATUS_PENDING)->assertToasted('Status updated')->assertRedirect();
+        // Shown anew in place (no reload): the counters and the open conversation follow.
+        $list->call('changeStatus', Conversation::STATUS_PENDING)->assertToasted('Status updated')->assertNoRedirect()
+            ->assertSet('selected', [])->assertDispatched('sidebar-counts')
+            ->assertDispatched('conversation-changed', ids: [$first->id, $second->id]);
         $this->assertSame([Conversation::STATUS_PENDING, Conversation::STATUS_PENDING], [$first->fresh()->status, $second->fresh()->status]);
 
         $list->set('selected', $ids)->call('assign', $this->agent->id)->assertToasted('Assignee updated');
@@ -361,7 +364,7 @@ class ConversationListTest extends FeatureTestCase
         $this->assertSame(1, substr_count($list->html(), 'f-context-menu'));
         $this->assertStringContainsString('data-url="'.e($third->url()).'"', $list->html());
 
-        $list->call('rowStar', $first->id, 1)->assertToasted('Starred')->assertRedirect();
+        $list->call('rowStar', $first->id, 1)->assertToasted('Starred')->assertNoRedirect()->assertDispatched('conversation-changed', ids: [$first->id]);
         $this->assertTrue($first->isStarredByUser($this->agent->id));
         $this->assertFalse($second->isStarredByUser($this->agent->id));
         $this->assertMatchesRegularExpression('#data-conversation_id="'.$first->id.'"[^>]*data-starred#', Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $this->folder(Folder::TYPE_UNASSIGNED)])->html());

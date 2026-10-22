@@ -1524,6 +1524,30 @@ document.addEventListener('alpine:init', function () {
 				var all = rows(row);
 				return all.length > 0 && all.every(function (li) { return key in li.dataset; });
 			},
+			/**
+			 * A change shown at once, before the server's list: read or unread, or out of this
+			 * folder. After the click (wire:click reads the rows as they were).
+			 */
+			rowNow: function (row, change) {
+				var targets = rows(row);
+				setTimeout(function () {
+					targets.forEach(function (li) {
+						var link = li.querySelector('a.conv-row__link');
+						if (change == 'leave') {
+							li.hidden = true;
+						} else if (change == 'read' && link) {
+							delete li.dataset.unread;
+							link.removeAttribute('data-unread');
+							link.querySelectorAll('.f-item-row__unread, .f-item-row__unread + .f-sr-only').forEach(function (node) {
+								node.remove();
+							});
+						} else if (change == 'unread' && link && !('unread' in li.dataset)) {
+							li.dataset.unread = '';
+							link.setAttribute('data-unread', '');
+						}
+					});
+				}, 0);
+			},
 			// The selection's title comes from the server (its plural rules).
 			menuTitle: function (row, title) {
 				var list = row && row.closest('[data-selection-title]');

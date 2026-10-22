@@ -168,9 +168,10 @@ class ConversationList extends Component
 
     public function assign($user_id)
     {
-        Conversation::bulkChangeUser((array) $this->selected, $user_id, auth()->user());
+        $ids = array_map('intval', (array) $this->selected);
+        Conversation::bulkChangeUser($ids, $user_id, auth()->user());
 
-        $this->reload(__('Assignee updated'));
+        $this->changed(__('Assignee updated'), $ids);
     }
 
     public function changeStatus($status)
@@ -180,9 +181,10 @@ class ConversationList extends Component
 
             return;
         }
-        Conversation::bulkChangeStatus((array) $this->selected, $status, auth()->user());
+        $ids = array_map('intval', (array) $this->selected);
+        Conversation::bulkChangeStatus($ids, $status, auth()->user());
 
-        $this->reload(__('Status updated'));
+        $this->changed(__('Status updated'), $ids);
     }
 
     /**
@@ -191,14 +193,15 @@ class ConversationList extends Component
     public function rowStar($id, $star)
     {
         $user = auth()->user();
-        foreach (Conversation::findMany($this->rowTargets($id)) as $conversation) {
+        $ids = $this->rowTargets($id);
+        foreach (Conversation::findMany($ids) as $conversation) {
             if (!$user->can('view', $conversation) || $conversation->isStarredByUser($user->id) == (bool) $star) {
                 continue;
             }
             $star ? $conversation->star($user) : $conversation->unstar($user);
         }
 
-        $this->reload($star ? __('Starred') : __('Unstarred'));
+        $this->changed($star ? __('Starred') : __('Unstarred'), $ids);
     }
 
     /**
@@ -230,9 +233,10 @@ class ConversationList extends Component
      */
     public function rowAssignToMe($id)
     {
-        Conversation::bulkChangeUser($this->rowTargets($id), auth()->id(), auth()->user());
+        $ids = $this->rowTargets($id);
+        Conversation::bulkChangeUser($ids, auth()->id(), auth()->user());
 
-        $this->reload(__('Assignee updated'));
+        $this->changed(__('Assignee updated'), $ids);
     }
 
     /**
@@ -240,9 +244,10 @@ class ConversationList extends Component
      */
     public function rowClose($id, $close)
     {
-        Conversation::bulkChangeStatus($this->rowTargets($id), $close ? Conversation::STATUS_CLOSED : Conversation::STATUS_ACTIVE, auth()->user());
+        $ids = $this->rowTargets($id);
+        Conversation::bulkChangeStatus($ids, $close ? Conversation::STATUS_CLOSED : Conversation::STATUS_ACTIVE, auth()->user());
 
-        $this->reload(__('Status updated'));
+        $this->changed(__('Status updated'), $ids);
     }
 
     /**
@@ -318,6 +323,19 @@ class ConversationList extends Component
     #[On('conversations-changed')]
     public function refresh()
     {
+    }
+
+    /**
+     * Changed from the list: it shows them anew (rows that left the folder go), the folders'
+     * counters follow, and the open conversation and the list's heading when it's among them.
+     */
+    protected function changed($message, array $ids)
+    {
+        Fruit::toast($message, 'success');
+        // Those it acted on are no longer selected (a row outside the selection leaves it as it is).
+        $this->selected = array_values(array_filter((array) $this->selected, fn ($id) => !in_array((int) $id, $ids)));
+        $this->dispatch('sidebar-counts', counts: \App\Misc\Sidebar::unreadCounts(auth()->user()));
+        $this->dispatch('conversation-changed', ids: array_values($ids));
     }
 
     /**

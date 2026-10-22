@@ -408,10 +408,10 @@ class ConversationActionsTest extends FeatureTestCase
         $second = $this->receiveConversation(['subject' => 'Second', 'from' => 'other@customer.example.org']);
         $ids = [$first->id, $second->id];
 
-        $this->folderList()->set('selected', $ids)->call('changeStatus', Conversation::STATUS_CLOSED)->assertRedirect();
+        $this->folderList()->set('selected', $ids)->call('changeStatus', Conversation::STATUS_CLOSED)->assertNoRedirect()->assertSet('selected', []);
         $this->assertEquals([Conversation::STATUS_CLOSED, Conversation::STATUS_CLOSED], Conversation::whereIn('id', $ids)->pluck('status')->all());
 
-        $this->folderList()->set('selected', $ids)->call('assign', $this->agent->id)->assertRedirect();
+        $this->folderList()->set('selected', $ids)->call('assign', $this->agent->id)->assertNoRedirect()->assertSet('selected', []);
         $this->assertEquals([$this->agent->id, $this->agent->id], Conversation::whereIn('id', $ids)->pluck('user_id')->all());
     }
 

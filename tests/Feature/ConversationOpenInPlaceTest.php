@@ -100,6 +100,28 @@ class ConversationOpenInPlaceTest extends FeatureTestCase
             ->assertSet('params.current_conversation_id', $second->id);
     }
 
+    /**
+     * Changed from the list: the open conversation and its toolbar are shown anew when it's
+     * among them; the list's heading counts anew.
+     */
+    public function testChangedFromTheList()
+    {
+        $conversation = $this->conversation('Broken zipper', 'casey@customer.example.org');
+        $pane = Livewire::actingAs($this->agent)->test(ConversationPane::class, ['conversation' => $conversation, 'folder' => $conversation->folder]);
+        $toolbar = Livewire::actingAs($this->agent)->test(ConversationToolbar::class, ['conversation' => $conversation]);
+        $conversation->changeStatus(Conversation::STATUS_PENDING, $this->agent);
+
+        $toolbar->dispatch('conversation-changed', ids: [$conversation->id + 1000])->assertSeeHtml('aria-label="Status: Active"');
+        $toolbar->dispatch('conversation-changed', ids: [$conversation->id])->assertSeeHtml('aria-label="Status: Pending"');
+        // Shown anew only when it's this one.
+        $this->assertArrayNotHasKey('html', $pane->dispatch('conversation-changed', ids: [$conversation->id + 1000])->effects);
+        $this->assertArrayHasKey('html', $pane->dispatch('conversation-changed', ids: [$conversation->id])->effects);
+        Livewire::actingAs($this->agent)->test(\App\Livewire\ConversationSubject::class, ['conversation' => $conversation])
+            ->tap(fn () => \App\Conversation::where('id', $conversation->id)->update(['status' => Conversation::STATUS_CLOSED]))
+            ->dispatch('conversation-changed', ids: [$conversation->id + 1000])->assertDontSee('Closed')
+            ->dispatch('conversation-changed', ids: [$conversation->id])->assertSee('Closed');
+    }
+
     public function testAnotherFolderOpensInPlace()
     {
         $unassigned = $this->conversation('Broken zipper', 'casey@customer.example.org');

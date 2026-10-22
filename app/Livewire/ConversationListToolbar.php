@@ -34,6 +34,14 @@ class ConversationListToolbar extends Component
         $this->folder_id = $folder->id;
     }
 
+    /**
+     * Changed from the list: how many it holds now.
+     */
+    #[On('conversation-changed')]
+    public function conversationChanged()
+    {
+    }
+
     public function render()
     {
         $folder = ConversationOpens::findFolder($this->folder_id);

@@ -127,6 +127,10 @@
             // The rows' menu (App\Livewire\ConversationList only): a selected row's acts on the selection.
             $row_menus = isset($selected) && empty($no_checkboxes);
             $row_selection_count = $row_menus ? $conversations->whereIn('id', array_map('intval', (array) $selected))->count() : 0;
+            // Rows a change takes out of this folder: gone at once (tallportRowMenu.rowNow()), before the server's list.
+            $row_leaves_closing = in_array($folder->type, [App\Folder::TYPE_UNASSIGNED, App\Folder::TYPE_MINE, App\Folder::TYPE_ASSIGNED]);
+            $row_leaves_reopening = $folder->type == App\Folder::TYPE_CLOSED;
+            $row_leaves_assigning = in_array($folder->type, [App\Folder::TYPE_UNASSIGNED, App\Folder::TYPE_ASSIGNED]);
         @endphp
         <div class="f-pane__scroll split-view__list" @if ($row_menus) x-data="tallportRowMenu" data-selection-title="{{ $row_selection_count > 1 ? trans_choice('Actions for :count conversation|Actions for :count conversations', $row_selection_count) : '' }}" @endif>
         <x-fruit::item-list class="conv-list__items" :id="empty($no_checkboxes) ? 'conversations' : null" :selection="empty($no_checkboxes) ? 'multiple' : 'none'" :aria-label="__('Conversations')">
@@ -197,11 +201,11 @@
                 <x-fruit::menu-link href="#" x-bind:href="target?.dataset.url" target="_blank">{{ __('Open in New Tab') }}</x-fruit::menu-link>
                 <x-fruit::menu-item x-on:click="copyToClipboard(target.dataset.url); Tallport.toast({{ \Illuminate\Support\Js::from(__('Copied')) }})">{{ __('Copy Link') }}</x-fruit::menu-item>
                 <x-fruit::menu-separator />
-                <x-fruit::menu-item wire:click="rowRead(target.dataset.conversation_id, menuAny(target, 'unread') ? 1 : 0)" x-text="menuAny(target, 'unread') ? {{ \Illuminate\Support\Js::from(__('Mark as Read')) }} : {{ \Illuminate\Support\Js::from(__('Mark as Unread')) }}">{{ __('Mark as Unread') }}</x-fruit::menu-item>
+                <x-fruit::menu-item x-on:click="rowNow(target, menuAny(target, 'unread') ? 'read' : 'unread')" wire:click="rowRead(target.dataset.conversation_id, menuAny(target, 'unread') ? 1 : 0)" x-text="menuAny(target, 'unread') ? {{ \Illuminate\Support\Js::from(__('Mark as Read')) }} : {{ \Illuminate\Support\Js::from(__('Mark as Unread')) }}">{{ __('Mark as Unread') }}</x-fruit::menu-item>
                 <x-fruit::menu-item wire:click="rowStar(target.dataset.conversation_id, menuAll(target, 'starred') ? 0 : 1)" x-text="menuAll(target, 'starred') ? {{ \Illuminate\Support\Js::from(__('Unstar')) }} : {{ \Illuminate\Support\Js::from(__('Star')) }}">{{ __('Star') }}</x-fruit::menu-item>
-                <x-fruit::menu-item wire:click="rowAssignToMe(target.dataset.conversation_id)">{{ __('Assign to Me') }}</x-fruit::menu-item>
+                <x-fruit::menu-item x-on:click="rowNow(target, {{ $row_leaves_assigning ? 'true' : 'false' }} ? 'leave' : null)" wire:click="rowAssignToMe(target.dataset.conversation_id)">{{ __('Assign to Me') }}</x-fruit::menu-item>
                 <x-fruit::menu-separator />
-                <x-fruit::menu-item wire:click="rowClose(target.dataset.conversation_id, menuAll(target, 'closed') ? 0 : 1)" x-show="!menuAll(target, 'closed') || !menuAll(target, 'chatUnavailable')" x-text="menuAll(target, 'closed') ? {{ \Illuminate\Support\Js::from(__('Reopen')) }} : {{ \Illuminate\Support\Js::from(__('Close')) }}">{{ __('Close') }}</x-fruit::menu-item>
+                <x-fruit::menu-item x-on:click="rowNow(target, (menuAll(target, 'closed') ? {{ $row_leaves_reopening ? 'true' : 'false' }} : {{ $row_leaves_closing ? 'true' : 'false' }}) ? 'leave' : null)" wire:click="rowClose(target.dataset.conversation_id, menuAll(target, 'closed') ? 0 : 1)" x-show="!menuAll(target, 'closed') || !menuAll(target, 'chatUnavailable')" x-text="menuAll(target, 'closed') ? {{ \Illuminate\Support\Js::from(__('Reopen')) }} : {{ \Illuminate\Support\Js::from(__('Close')) }}">{{ __('Close') }}</x-fruit::menu-item>
             </x-fruit::context-menu>
         @endif
         @if (!count($conversations))

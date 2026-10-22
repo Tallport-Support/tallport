@@ -77,6 +77,17 @@ class ConversationSubject extends Component
     {
     }
 
+    /**
+     * Changed from the list (ConversationList::changed()): its status, when it's this one.
+     */
+    #[On('conversation-changed')]
+    public function conversationChanged($ids)
+    {
+        if (!in_array((int) $this->conversation_id, array_map('intval', (array) $ids), true)) {
+            $this->skipRender();
+        }
+    }
+
     protected function conversation()
     {
         $conversation = Conversation::find($this->conversation_id);
