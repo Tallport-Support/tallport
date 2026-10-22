@@ -57,6 +57,31 @@ class ConversationToolbarTest extends FeatureTestCase
     }
 
     /**
+     * Deleted from a folder the user is viewing (Mine, though their conversations are in Assigned):
+     * on to the next there, in place; the last one, back to that folder.
+     */
+    public function testDeleteStaysInTheFolderBeingViewed()
+    {
+        $this->receiveEmail($this->mailbox, $this->makeEmail([
+            'from' => 'Sam Shopper <sam@customer.example.org>', 'to' => $this->mailbox->email, 'subject' => 'Lost parcel',
+        ]));
+        $other = Conversation::where('mailbox_id', $this->mailbox->id)->where('id', '!=', $this->conversation->id)->first();
+        foreach ([$this->conversation, $other] as $conversation) {
+            $conversation->changeUser($this->agent->id, $this->agent);
+        }
+        $this->agent->permissions = [\App\User::PERM_DELETE_CONVERSATIONS => true];
+        $this->agent->save();
+        $mine = $this->mailbox->folders()->where('type', \App\Folder::TYPE_MINE)->where('user_id', $this->agent->id)->first();
+        $toolbar = fn ($conversation) => Livewire::actingAs($this->agent)->test(ConversationToolbar::class, ['conversation' => $conversation->fresh(), 'folder' => $mine]);
+
+        $toolbar($this->conversation)->call('delete')->assertNoRedirect()->assertToasted('Conversation deleted')
+            ->assertDispatched('conversation-next', id: $other->id)->assertDispatched('conversations-changed');
+        $this->assertSame(Conversation::STATE_DELETED, $this->conversation->fresh()->state);
+
+        $toolbar($other)->call('delete')->assertRedirect($mine->url($this->mailbox->id));
+    }
+
+    /**
      * Closed where the user goes on (not staying in a conversation): the next one, opened in place.
      */
     public function testOnToTheNextConversation()

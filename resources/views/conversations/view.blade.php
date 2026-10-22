@@ -26,7 +26,7 @@
 @endif
 
 @section('toolbar')
-    <livewire:conversation-toolbar :conversation="$conversation" />
+    <livewire:conversation-toolbar :conversation="$conversation" :folder="$folder" />
 @endsection
 
 @section('inspector_label', __('Customer'))

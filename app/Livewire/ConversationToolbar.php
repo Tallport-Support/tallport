@@ -28,10 +28,11 @@ class ConversationToolbar extends Component
     #[Locked]
     public $x_embed;
 
-    public function mount($conversation)
+    public function mount($conversation, $folder = null)
     {
         $this->conversation_id = $conversation->id;
-        $this->folder_id = Conversation::getFolderParam();
+        // The folder it's shown beside (where Delete goes on), as the page's.
+        $this->folder_id = $folder ? $folder->id : self::openedFolderId($conversation, null);
         $this->x_embed = request()->x_embed;
     }
 
@@ -96,10 +97,32 @@ class ConversationToolbar extends Component
         return true;
     }
 
+    /**
+     * Deleted (its row gone at once in the browser): on to the next conversation of the folder
+     * being viewed (Mine, Starred, All Mailboxes… not its own folder), else that folder.
+     */
     public function delete()
     {
         $conversation = $this->conversation();
-        $this->done(ConversationActions::delete($conversation, auth()->user(), $conversation && $conversation->state == Conversation::STATE_DELETED));
+        $folder = $conversation ? $this->openedFolder() : null;
+        // Found before it's gone.
+        $next = $folder ? $conversation->getNearby('next', $folder->id, null, true) : null;
+        $result = ConversationActions::delete($conversation, auth()->user(), $conversation && $conversation->state == Conversation::STATE_DELETED);
+        if (!empty($result['msg']) && empty($result['status'])) {
+            Fruit::toast($result['msg'], 'danger');
+            $this->dispatch('conversations-changed');
+
+            return;
+        }
+        \Session::forget('flash_success_floating');
+        Fruit::toast(__('Conversation deleted'), 'success');
+        $this->dispatch('sidebar-counts', counts: \App\Misc\Sidebar::unreadCounts(auth()->user()));
+        $this->dispatch('conversations-changed');
+        if ($next) {
+            $this->dispatch('conversation-next', id: $next->id);
+        } else {
+            $this->redirect($folder ? ($folder->id < 0 ? route('mailboxes.all', ['folder_id' => $folder->id]) : $folder->url($folder->mailbox_id)) : $result['redirect_url'], navigate: true);
+        }
     }
 
     /**

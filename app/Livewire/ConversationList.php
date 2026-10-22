@@ -269,9 +269,10 @@ class ConversationList extends Component
 
             return;
         }
-        Conversation::bulkDelete((array) $this->selected, $user);
+        $ids = array_map('intval', (array) $this->selected);
+        Conversation::bulkDelete($ids, $user);
 
-        $this->reload(__('Conversations deleted'));
+        $this->changed(__('Conversations deleted'), $ids);
     }
 
     /**

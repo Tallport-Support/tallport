@@ -1,7 +1,7 @@
 {{-- The open conversation's toolbar (App\Livewire\ConversationToolbar). --}}
 <div id="conv-toolbar" class="conv-toolbar" x-data="{ following: @js($is_following) }">
     @php
-        $delete_confirm = 'Tallport.confirm({message: '.\Illuminate\Support\Js::from(__('Delete this conversation?')).', confirm: '.\Illuminate\Support\Js::from(__('Delete')).', tone: \'danger\'}).then(ok => ok && $wire.delete())';
+        $delete_confirm = 'Tallport.confirm({message: '.\Illuminate\Support\Js::from(__('Delete this conversation?')).', confirm: '.\Illuminate\Support\Js::from(__('Delete')).', tone: \'danger\'}).then(ok => ok && (tallportLeaveNow(), $wire.delete()))';
     @endphp
     <div class="conv-actions f-toolbar__group">
         @foreach ($toolbar_actions as $action_key => $action)

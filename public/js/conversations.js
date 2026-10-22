@@ -794,6 +794,23 @@ document.addEventListener('click', function (e) {
 	}
 	undos.forEach(nowPending);
 }, true);
+/**
+ * Deleted (ConversationToolbar::delete(), the selection's Delete): out of the list at once,
+ * undone as rowUndo() says. $selected: the selected rows, else the open conversation's.
+ */
+window.tallportLeaveNow = function (selected) {
+	var rows = selected
+		? Array.prototype.filter.call(document.querySelectorAll('.conv-list-host li.conv-row'), function (li) {
+			var box = li.querySelector('input.conv-checkbox');
+			return box && box.checked;
+		}).map(function (li) { return {li: li}; })
+		: [nowRow()].filter(Boolean);
+	rows.forEach(nowLeave);
+	if (rows.length) {
+		clearTimeout(rowPendingTimer);
+		rowPendingTimer = setTimeout(rowUndo, navigator.onLine === false ? 0 : 10000);
+	}
+};
 // On to the next conversation (the open one left its folder): in place.
 document.addEventListener('livewire:init', function () {
 	Livewire.on('conversation-next', function (event) {
